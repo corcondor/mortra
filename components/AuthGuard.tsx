@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 import type { User } from '@supabase/supabase-js'
 
@@ -8,15 +8,20 @@ const ALLOWED_EMAILS = [
   // 追加でアクセスを許可するメールはここに
 ]
 
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
+const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
+
 export function useAuth() {
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  // クライアントを useMemo でメモ化 — 毎レンダー再生成すると useEffect が無限ループする
+  const supabase = useMemo(
+    () => createBrowserClient(SUPABASE_URL, SUPABASE_KEY),
+    [],
   )
   const [user,    setUser]    = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!SUPABASE_URL || !SUPABASE_KEY) { setLoading(false); return }
     supabase.auth.getUser().then(({ data }) => {
       setUser(data.user); setLoading(false)
     })
@@ -41,7 +46,26 @@ export function useAuth() {
 
 interface Props { children: React.ReactNode }
 
-export function AuthGuard({ children }: Props) {
+// 環境変数が未設定の場合に表示するフォールバック
+function EnvVarError() {
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-[#05050f]">
+      <div className="glass rounded-2xl p-8 text-center space-y-3 max-w-sm w-full mx-4">
+        <div className="text-xl">⚠️</div>
+        <p className="text-[13px] text-white/60 font-semibold">環境変数が未設定</p>
+        <p className="text-[11px] text-white/35 leading-relaxed">
+          Vercel Dashboard → Settings → Environment Variables に<br />
+          <code className="text-apple-blue">NEXT_PUBLIC_SUPABASE_URL</code> と<br />
+          <code className="text-apple-blue">NEXT_PUBLIC_SUPABASE_ANON_KEY</code><br />
+          を追加して Redeploy してください。
+        </p>
+      </div>
+    </div>
+  )
+}
+
+// フック使用はここで（条件分岐より前に必ず呼ぶ）
+function AuthGuardInner({ children }: Props) {
   const { user, loading, allowed, signIn, signOut } = useAuth()
 
   if (loading) {
@@ -92,4 +116,10 @@ export function AuthGuard({ children }: Props) {
   }
 
   return <>{children}</>
+}
+
+export function AuthGuard({ children }: Props) {
+  // env vars が未設定 → クラッシュ前に案内画面を出す（フックは呼ばない）
+  if (!SUPABASE_URL || !SUPABASE_KEY) return <EnvVarError />
+  return <AuthGuardInner>{children}</AuthGuardInner>
 }
