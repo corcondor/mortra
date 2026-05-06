@@ -1,9 +1,11 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { SpeedInsights } from '@vercel/speed-insights/next'
+import { Analytics }     from '@vercel/analytics/next'
 
 export const metadata: Metadata = {
-  title: 'Math Corpus',
-  description: '難関大学数学 問題データベース',
+  title: 'Sakumon Station',
+  description: '難関大学・数学オリンピアード 問題生成・キュレーションプラットフォーム',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -19,6 +21,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-screen overflow-hidden text-white">
         {children}
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   )
