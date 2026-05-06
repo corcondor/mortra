@@ -28,8 +28,9 @@ function HomeInner() {
   const [tab,       setTab]       = useState<Tab>('list')
   const [filters,   setFilters]   = useState<Filters>(DEFAULT_FILTERS)
   const [page,      setPage]      = useState(0)
-  const [postTarget, setPostTarget] = useState<ProblemWithRating | null>(null)
-  const [showSearch, setShowSearch] = useState(false)
+  const [postTarget,   setPostTarget]   = useState<ProblemWithRating | null>(null)
+  const [showSearch,   setShowSearch]   = useState(false)
+  const [sidebarOpen,  setSidebarOpen]  = useState(false)
 
   // ── データ取得 ────────────────────────────────────────────────────────
   const loadProblems = useCallback(async () => {
@@ -102,17 +103,44 @@ function HomeInner() {
   }, [])
 
   return (
-    <div className="flex h-screen overflow-hidden text-white relative">
+    <div className="flex h-screen overflow-hidden text-white relative md:flex-row flex-col">
       <Background />
 
+      {/* Mobile sidebar backdrop */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <Sidebar filters={filters} onChange={handleFiltersChange} onReload={loadProblems} />
+      <div className={`fixed md:relative z-40 md:z-auto h-full transition-transform duration-300
+                       ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+        <Sidebar
+          filters={filters}
+          onChange={handleFiltersChange}
+          onReload={loadProblems}
+          onClose={() => setSidebarOpen(false)}
+        />
+      </div>
 
       {/* Main */}
       <main className="flex-1 flex flex-col overflow-hidden">
 
         {/* Top bar */}
-        <header className="flex items-center gap-4 px-6 py-3.5 border-b border-white/8 shrink-0">
+        <header className="flex items-center gap-4 px-4 md:px-6 py-3.5 border-b border-white/8 shrink-0">
+          {/* Hamburger (mobile only) */}
+          <button
+            onClick={() => setSidebarOpen(s => !s)}
+            className="md:hidden flex flex-col gap-1.5 p-1.5 text-white/50 hover:text-white/90"
+            aria-label="メニュー"
+          >
+            <span className="block w-5 h-0.5 bg-current rounded" />
+            <span className="block w-5 h-0.5 bg-current rounded" />
+            <span className="block w-5 h-0.5 bg-current rounded" />
+          </button>
+
           {/* Tabs */}
           <nav className="flex gap-1">
             {([['list','問題一覧'], ['selected','選択済み・生成']] as [Tab, string][]).map(([t, label]) => (
@@ -206,7 +234,7 @@ function HomeInner() {
 
               {/* Grid — page-flip animation on page change */}
               {loading ? (
-                <div className="grid grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3">
                   {Array(8).fill(0).map((_, i) => (
                     <div key={i} className="glass rounded-2xl h-64 animate-pulse" />
                   ))}
@@ -220,7 +248,7 @@ function HomeInner() {
                     exit={{    opacity: 0, rotateX:  8, y: -24 }}
                     transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
                     style={{ perspective: 1200, transformStyle: 'preserve-3d' }}
-                    className="grid grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3"
+                    className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3"
                   >
                     {paginated.map((p, i) => (
                       <ProblemCardCuration

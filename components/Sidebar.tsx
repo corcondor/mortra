@@ -30,9 +30,10 @@ interface Props {
   filters: Filters
   onChange: (f: Filters) => void
   onReload?: () => void
+  onClose?: () => void
 }
 
-export function Sidebar({ filters, onChange, onReload }: Props) {
+export function Sidebar({ filters, onChange, onReload, onClose }: Props) {
   const [stats,    setStats]    = useState<Stats | null>(null)
   const [syncing,  setSyncing]  = useState(false)
   const [purging,  setPurging]  = useState(false)
@@ -67,15 +68,23 @@ export function Sidebar({ filters, onChange, onReload }: Props) {
   const set = (patch: Partial<Filters>) => onChange({ ...filters, ...patch })
 
   return (
-    <aside className="w-56 shrink-0 flex flex-col gap-4 py-6 px-4
-                      border-r border-white/8 bg-black/20 overflow-y-auto">
+    <aside className="w-64 h-full shrink-0 flex flex-col gap-4 py-6 px-4
+                      border-r border-white/8 bg-[#07060f]/95 overflow-y-auto">
 
-      {/* Brand */}
-      <div>
-        <div className="text-[17px] font-bold tracking-tight text-white/90">
-          ✦ Sakumon<span className="text-apple-blue"> Station</span>
+      {/* Brand + close button */}
+      <div className="flex items-start justify-between">
+        <div>
+          <div className="text-[17px] font-bold tracking-tight text-white/90">
+            ✦ Sakumon<span className="text-apple-blue"> Station</span>
+          </div>
+          <div className="text-[11px] text-white/35 mt-0.5">数学問題 キュレーション</div>
         </div>
-        <div className="text-[11px] text-white/35 mt-0.5">数学問題 キュレーション</div>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="md:hidden text-white/30 hover:text-white/70 text-xl leading-none p-1"
+          >✕</button>
+        )}
       </div>
 
       {/* Stats */}
