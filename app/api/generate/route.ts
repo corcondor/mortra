@@ -209,6 +209,25 @@ export async function POST(req: NextRequest) {
           }
         }
 
+        // ── 自動淘汰: selected/posted 以外を削除 ─────────────────────
+        send('status', { step: 'purging', msg: '未選択問題を自動淘汰中…' })
+        try {
+          const { data: targets } = await supabaseAdmin
+            .from('ratings')
+            .select('problem_id')
+            .not('status', 'in', '("selected","posted")')
+          const ids = (targets ?? []).map((r: { problem_id: string }) => r.problem_id)
+          if (ids.length > 0) {
+            await supabaseAdmin.from('ratings').delete().in('problem_id', ids)
+            await supabaseAdmin.from('problems').delete().in('id', ids)
+            send('log', { msg: `🗑 淘汰完了: ${ids.length} 問削除` })
+          } else {
+            send('log', { msg: '淘汰対象なし' })
+          }
+        } catch (purgeErr) {
+          send('log', { msg: `淘汰エラー（続行）: ${String(purgeErr)}` })
+        }
+
         send('done', {
           generated: generated.length,
           total:     count,
