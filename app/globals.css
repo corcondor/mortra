@@ -8,8 +8,13 @@
   color-scheme: dark;
 }
 
-html, body {
+/* Three.js キャンバスの下に敷くフォールバック */
+html {
   background: var(--bg-deep);
+}
+
+html, body {
+  background: transparent;   /* Three.js キャンバスに任せる */
   color: #fff;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
     "Helvetica Neue", sans-serif;
