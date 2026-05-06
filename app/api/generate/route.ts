@@ -1,19 +1,18 @@
 import { NextRequest } from 'next/server'
-import { spawn }       from 'child_process'
-import path            from 'path'
-import os              from 'os'
-import fs              from 'fs/promises'
-import { IS_VERCEL, LOCAL_ONLY_RESPONSE } from '@/lib/env'
+import { supabaseAdmin } from '@/lib/supabase-admin'
+import {
+  makeAnalysisPrompt, makeSimilarPrompt,
+  makeFusionPrompt,   makeExpandPrompt,
+  extractJson,        type ParentProblem,
+} from '@/lib/prompts'
+import crypto from 'crypto'
 
-const PIPELINE_DIR = 'C:/Users/81808/.openclaw/workspace/automation/pipeline'
-const SCRIPTS_DIR  = 'C:/Users/81808/.openclaw/workspace/math-web/scripts'
-const PYTHON       = 'python'
+const DEEPSEEK_API_URL = 'https://api.deepseek.com/chat/completions'
+const MODEL            = 'deepseek-reasoner'   // DeepSeek-R1
 
-// ── シンプルな直列キュー ──────────────────────────────────────────
-// 複数ユーザーが同時にボタンを押しても1つずつ処理する
+// ── 直列キュー（同時に1生成のみ） ─────────────────────────────────────
 let _queue: (() => void)[] = []
-let _busy  = false
-
+let _busy = false
 function enqueue(): Promise<void> {
   return new Promise(resolve => {
     _queue.push(resolve)
@@ -23,125 +22,204 @@ function enqueue(): Promise<void> {
 function _drain() {
   if (_queue.length === 0) { _busy = false; return }
   _busy = true
-  const next = _queue.shift()!
-  next()
+  _queue.shift()!()
 }
-function dequeue() {
-  _drain()
+function dequeue() { _drain() }
+
+// ── DeepSeek API 呼び出し ──────────────────────────────────────────────
+async function callDeepSeek(prompt: string, onChunk?: (s: string) => void): Promise<string> {
+  const apiKey = process.env.DEEPSEEK_API_KEY
+  if (!apiKey) throw new Error('DEEPSEEK_API_KEY が設定されていません')
+
+  const res = await fetch(DEEPSEEK_API_URL, {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+    body: JSON.stringify({
+      model:    MODEL,
+      messages: [{ role: 'user', content: prompt }],
+      stream:   !!onChunk,
+      max_tokens: 8000,
+    }),
+  })
+
+  if (!res.ok) {
+    const err = await res.text()
+    throw new Error(`DeepSeek API error ${res.status}: ${err}`)
+  }
+
+  if (!onChunk) {
+    const json = await res.json()
+    return json.choices?.[0]?.message?.content ?? ''
+  }
+
+  // SSE ストリーミング
+  const reader = res.body!.getReader()
+  const dec    = new TextDecoder()
+  let full = ''
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) break
+    for (const line of dec.decode(value).split('\n')) {
+      if (!line.startsWith('data: ')) continue
+      const data = line.slice(6).trim()
+      if (data === '[DONE]') break
+      try {
+        const delta = JSON.parse(data).choices?.[0]?.delta?.content
+        if (delta) { full += delta; onChunk(delta) }
+      } catch { /* skip */ }
+    }
+  }
+  return full
 }
 
+// ── Supabase に保存 ────────────────────────────────────────────────────
+async function saveToSupabase(data: Record<string, unknown>, parents: ParentProblem[], mode: string, nextGen: number) {
+  const fp  = (data.final_problem ?? {}) as Record<string, unknown>
+  const ba  = (data.beauty_analysis ?? {}) as Record<string, unknown>
+
+  const id = (data.id as string | undefined) ?? crypto.randomBytes(6).toString('hex')
+  const problem = {
+    id,
+    topic_a:    parents[0]?.topic_a ?? 'unknown',
+    topic_b:    mode === 'fusion' ? (parents[parents.length - 1]?.topic_a ?? null) : (parents[0]?.topic_b ?? null),
+    variation:  0,
+    statement:  fp.statement as string ?? '',
+    answer:     fp.answer    as string ?? null,
+    difficulty: fp.difficulty as string ?? null,
+    solution:   fp.solution_outline as string ?? null,
+    inspiration: data.inspiration as string ?? null,
+    meta:       data.meta as string ?? null,
+    surprise:   Number(ba.surprise)              || 0,
+    minimality: Number(ba.minimality)            || 0,
+    connection: Number(ba.connection_strength)   || 0,
+    inevitability: Number(ba.inevitability)      || 0,
+    diff_cal:   Number(ba.difficulty_calibration)|| 0,
+    total:      Number(ba.total)                 || 0,
+    generation: nextGen,
+    parent_ids: parents.map(p => p.id),
+    source_file: null,
+  }
+
+  const { error: pErr } = await supabaseAdmin.from('problems').upsert(problem)
+  if (pErr) throw new Error(pErr.message)
+
+  const { error: rErr } = await supabaseAdmin.from('ratings').upsert({
+    problem_id: id, status: 'pending', x_posted: false,
+  }, { onConflict: 'problem_id', ignoreDuplicates: true })
+  if (rErr) throw new Error(rErr.message)
+
+  return problem
+}
+
+// ── GET: キュー状態確認 ────────────────────────────────────────────────
 export function GET() {
-  if (IS_VERCEL) return LOCAL_ONLY_RESPONSE()
-  return new Response(
-    JSON.stringify({ queueLength: _queue.length, busy: _busy }),
-    { headers: { 'Content-Type': 'application/json' } }
-  )
+  return Response.json({ queueLength: _queue.length, busy: _busy })
 }
 
-// ── ログ行からステップ判定 ────────────────────────────────────────
-function detectStep(line: string): string {
-  const l = line.toLowerCase()
-  if (l.includes('起動') || l.includes('start'))                    return 'start'
-  if (l.includes('gemini') || l.includes('chrome') || l.includes('接続'))  return 'opening'
-  if (l.includes('プロンプト') || l.includes('送信') || l.includes('入力')) return 'typing'
-  if (l.includes('待ち') || l.includes('wait') || l.includes('応答'))       return 'waiting'
-  if (l.includes('json') || l.includes('取得') || l.includes('成功'))       return 'extracting'
-  if (l.includes('保存') || l.includes('insert') || l.includes('db'))       return 'saving'
-  if (l.includes('同期') || l.includes('sync') || l.includes('supabase'))   return 'syncing'
-  if (l.includes('完了') || l.includes('✅'))                               return 'done'
-  return 'working'
-}
-
+// ── POST: 生成 ─────────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
-  if (IS_VERCEL) return LOCAL_ONLY_RESPONSE()
-  const { parents, mode = 'auto', count = 3 } = await req.json()
-  if (!parents || parents.length === 0)
-    return new Response(JSON.stringify({ error: 'parents required' }), { status: 400 })
+  const { parents, mode = 'auto', count = 3 } = await req.json() as {
+    parents: ParentProblem[]
+    mode?:   string
+    count?:  number
+  }
 
-  const tmpFile = path.join(os.tmpdir(), `parents_${Date.now()}.json`)
-  await fs.writeFile(tmpFile, JSON.stringify(parents), 'utf-8')
+  if (!parents || parents.length === 0)
+    return Response.json({ error: 'parents required' }, { status: 400 })
+
+  if (!process.env.DEEPSEEK_API_KEY)
+    return Response.json({ error: 'DEEPSEEK_API_KEY が設定されていません。Vercel の環境変数に追加してください。' }, { status: 503 })
+
+  const resolvedMode = mode === 'auto' ? (parents.length >= 2 ? 'fusion' : 'similar') : mode
+
+  // 現世代を取得
+  const { data: genData } = await supabaseAdmin
+    .from('problems')
+    .select('generation')
+    .order('generation', { ascending: false })
+    .limit(1)
+    .single()
+  const nextGen = ((genData?.generation as number | null) ?? 0) + 1
 
   const encoder = new TextEncoder()
-
-  const stream = new ReadableStream({
+  const stream  = new ReadableStream({
     async start(controller) {
       const send = (type: string, payload: Record<string, unknown>) => {
         try {
-          controller.enqueue(
-            encoder.encode(`data: ${JSON.stringify({ type, ...payload })}\n\n`)
-          )
-        } catch { /* client disconnected */ }
+          controller.enqueue(encoder.encode(
+            `data: ${JSON.stringify({ type, ...payload })}\n\n`
+          ))
+        } catch { /* closed */ }
       }
 
-      // キューに入れて待機
-      const qPos = _queue.length + (_busy ? 1 : 0)
-      if (qPos > 0) {
-        send('status', { step: 'queued', message: `キュー待ち（あと ${qPos} 件）...` })
-      }
+      await enqueue()
+      send('status', { step: 'start', msg: `DeepSeek-R1 で ${resolvedMode} 生成開始（${count}問）` })
 
-      await enqueue()   // 自分の番まで待つ
+      const generated: Record<string, unknown>[] = []
 
-      send('status', { step: 'start', message: '生成パイプライン起動...' })
-
-      const subEnv = {
-        ...process.env,
-        NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
-        SUPABASE_SERVICE_KEY:     process.env.SUPABASE_SERVICE_KEY ?? '',
-      }
-
-      const proc = spawn(PYTHON, [
-        path.join(PIPELINE_DIR, 'mutate_problems.py'),
-        '--parents-file', tmpFile,
-        '--mode',         mode,
-        '--count',        String(count),
-      ], { cwd: PIPELINE_DIR, env: subEnv })
-
-      proc.stdout.on('data', (d: Buffer) => {
-        d.toString().split('\n').filter(Boolean).forEach(line => {
-          send('log', { message: line, step: detectStep(line) })
-        })
-      })
-      proc.stderr.on('data', (d: Buffer) =>
-        d.toString().split('\n').filter(Boolean).forEach(line =>
-          send('log', { message: line, isError: true, step: 'working' })
-        )
-      )
-
-      proc.on('close', async (code: number) => {
-        await fs.unlink(tmpFile).catch(() => {})
-        dequeue()   // 次のキューを解放
-
-        if (code === 0) {
-          send('status', { step: 'syncing', message: 'Supabase に同期中...' })
-          const syncProc = spawn(PYTHON,
-            [path.join(SCRIPTS_DIR, 'sync_sqlite_supabase.py')],
-            { env: subEnv }
-          )
-          syncProc.stdout.on('data', (d: Buffer) =>
-            d.toString().split('\n').filter(Boolean).forEach(line =>
-              send('log', { message: line, step: 'syncing' })
-            )
-          )
-          syncProc.on('close', () => {
-            send('status', { step: 'complete', message: '完了！問題一覧を更新してください。' })
-            send('done', { ok: true })
-            controller.close()
-          })
-        } else {
-          send('status', { step: 'error', message: 'エラーが発生しました' })
-          send('done', { ok: false })
-          controller.close()
+      try {
+        // 分析フェーズ（similar/expand かつ1問の場合）
+        let analysis: Record<string, string> | undefined
+        if (resolvedMode !== 'fusion' && parents.length === 1) {
+          send('status', { step: 'analyzing', msg: '問題を深く分析中…' })
+          const raw = await callDeepSeek(makeAnalysisPrompt(parents[0]))
+          const a   = extractJson(raw)
+          if (a) analysis = a as Record<string, string>
+          send('log', { msg: `分析完了: ${analysis?.core_structure?.slice(0, 60) ?? 'OK'}` })
         }
-      })
 
-      // 15 分タイムアウト
-      setTimeout(() => {
-        proc.kill()
+        for (let i = 0; i < count; i++) {
+          send('status', { step: 'generating', msg: `生成中… (${i + 1}/${count})` })
+
+          let prompt: string
+          if (resolvedMode === 'fusion') {
+            prompt = makeFusionPrompt(parents)
+          } else if (resolvedMode === 'expand') {
+            prompt = makeExpandPrompt(parents[i % parents.length])
+          } else {
+            prompt = makeSimilarPrompt(parents[i % parents.length], analysis)
+          }
+
+          let data: Record<string, unknown> | null = null
+          for (let attempt = 1; attempt <= 3; attempt++) {
+            send('log', { msg: `API 呼び出し中… (試行 ${attempt}/3)` })
+            try {
+              const raw = await callDeepSeek(prompt)
+              data = extractJson(raw)
+              if (data) break
+              send('log', { msg: `JSON 抽出失敗、リトライ…` })
+            } catch (e) {
+              send('log', { msg: `エラー: ${String(e)}` })
+            }
+          }
+
+          if (data) {
+            data.id = crypto.randomBytes(6).toString('hex')
+            send('status', { step: 'saving', msg: '保存中…' })
+            try {
+              const saved = await saveToSupabase(data, parents, resolvedMode, nextGen)
+              const score = (data.beauty_analysis as Record<string, unknown>)?.total ?? '?'
+              send('log',    { msg: `✅ 保存完了 score=${score} → ${saved.statement.slice(0, 50)}…` })
+              generated.push(data)
+            } catch (e) {
+              send('log', { msg: `保存エラー: ${String(e)}` })
+            }
+          } else {
+            send('log', { msg: `❌ 生成失敗 (${i + 1}問目)` })
+          }
+        }
+
+        send('done', {
+          generated: generated.length,
+          total:     count,
+          msg:       `完了: ${generated.length}/${count} 問生成`,
+        })
+      } catch (e) {
+        send('status', { step: 'error', msg: String(e) })
+      } finally {
         dequeue()
-        send('status', { step: 'error', message: 'タイムアウト (15 分)' })
-        send('done', { ok: false })
         controller.close()
-      }, 900_000)
+      }
     },
   })
 
