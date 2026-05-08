@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Background }            from '@/components/Background'
 import { Sidebar, type Filters } from '@/components/Sidebar'
@@ -31,6 +31,7 @@ function HomeInner() {
   const [postTarget,   setPostTarget]   = useState<ProblemWithRating | null>(null)
   const [showSearch,   setShowSearch]   = useState(false)
   const [sidebarOpen,  setSidebarOpen]  = useState(false)
+  const contentRef = useRef<HTMLDivElement>(null)
 
   // ── データ取得 ────────────────────────────────────────────────────────
   const loadProblems = useCallback(async () => {
@@ -198,7 +199,7 @@ function HomeInner() {
         </header>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto scroll-smooth px-4 md:px-6 py-5">
+        <div ref={contentRef} className="flex-1 overflow-y-auto scroll-smooth px-4 md:px-6 py-5">
 
           {/* ── TAB 1: 問題一覧 ── */}
           {tab === 'list' && (
@@ -257,6 +258,7 @@ function HomeInner() {
                         <ProblemCardCuration
                           problem={p}
                           index={i}
+                          scrollRootRef={contentRef}
                           showSol={filters.showSol}
                           onStatusChange={handleStatusChange}
                           onPostClick={setPostTarget}

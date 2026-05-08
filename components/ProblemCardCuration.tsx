@@ -1,5 +1,5 @@
 'use client'
-import { useRef, useState } from 'react'
+import { RefObject, useRef, useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import type { ProblemWithRating } from '@/lib/types'
 import { DIFFICULTY_COLOR, DIFFICULTY_LABEL, TOPIC_EMOJI } from '@/lib/types'
@@ -15,23 +15,26 @@ const TOPIC_JP: Record<string,string> = {
 interface Props {
   problem: ProblemWithRating
   index: number
+  scrollRootRef?: RefObject<HTMLDivElement>
   showSol: boolean
   onStatusChange: (id: string, status: string) => void
   onPostClick: (p: ProblemWithRating) => void
 }
 
-export function ProblemCardCuration({ problem: p, index, showSol, onStatusChange, onPostClick }: Props) {
+export function ProblemCardCuration({ problem: p, index, scrollRootRef, showSol, onStatusChange, onPostClick }: Props) {
   const [busy,     setBusy]     = useState(false)
   const [expanded, setExpanded] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
     target: cardRef,
-    offset: ['start 84%', 'end 18%'],
+    container: scrollRootRef,
+    offset: ['start 92%', 'end 10%'],
   })
-  const y = useTransform(scrollYProgress, [0, 0.5, 1], [72, 0, -36])
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.96, 1, 0.96])
-  const rotateX = useTransform(scrollYProgress, [0, 0.5, 1], [5, 0, -4])
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.82, 1], [0.42, 1, 1, 0.62])
+  const y = useTransform(scrollYProgress, [0, 0.45, 1], [118, 0, -96])
+  const scale = useTransform(scrollYProgress, [0, 0.45, 1], [0.91, 1, 0.93])
+  const rotateX = useTransform(scrollYProgress, [0, 0.45, 1], [15, 0, -13])
+  const rotateZ = useTransform(scrollYProgress, [0, 0.45, 1], [1.6, 0, -1.2])
+  const opacity = useTransform(scrollYProgress, [0, 0.12, 0.78, 1], [0.34, 1, 1, 0.5])
 
   const status   = p.rating?.status ?? 'pending'
   const xPosted  = p.rating?.x_posted ?? false
@@ -60,7 +63,8 @@ export function ProblemCardCuration({ problem: p, index, showSol, onStatusChange
   return (
     <motion.div
       ref={cardRef}
-      style={{ y, scale, rotateX, opacity, transformPerspective: 1200 }}
+      style={{ y, scale, rotateX, rotateZ, opacity, transformPerspective: 1200 }}
+      data-note-index={index}
       className={`paper-note rounded-md p-5 md:p-7 flex flex-col gap-4 border ${borderColor} transition-colors max-w-3xl w-full mx-auto`}
     >
       {/* Header */}

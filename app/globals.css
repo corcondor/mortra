@@ -66,19 +66,19 @@ html, body {
 .note-scroll {
   display: flex;
   flex-direction: column;
-  gap: 4rem;
+  gap: 3.5rem;
   padding: 0.5rem 0 5rem;
-  scroll-snap-type: y mandatory;
+  scroll-snap-type: y proximity;
 }
 
 .note-stage {
-  min-height: min(760px, calc(100vh - 148px));
+  min-height: min(820px, calc(100vh - 112px));
   display: flex;
   align-items: center;
   justify-content: center;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-  perspective: 1200px;
+  scroll-snap-align: center;
+  perspective: 1500px;
+  transform-style: preserve-3d;
 }
 
 .paper-note {
@@ -94,6 +94,9 @@ html, body {
     0 8px 20px rgba(0,0,0,0.22),
     inset 0 1px 0 rgba(255,255,255,0.95);
   transform-origin: center top;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
 }
 
 .paper-note::after {
