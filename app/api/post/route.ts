@@ -1,26 +1,103 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { spawn } from 'child_process'
-import path      from 'path'
-import fs        from 'fs'
-import os        from 'os'
-import crypto    from 'crypto'
+import crypto from 'crypto'
+import fs from 'fs'
 import { supabaseAdmin } from '@/lib/supabase-admin'
-import { IS_VERCEL, LOCAL_ONLY_RESPONSE } from '@/lib/env'
 
-const SCRIPTS_DIR = path.join(process.cwd(), 'scripts')
-const PYTHON      = process.env.PYTHON_BIN ?? 'python'
+export const maxDuration = 120
 
-type RenderResult = {
-  imagePath: string | null
-  warning?: string
+type XCredentials = {
+  apiKey: string
+  apiSecret: string
+  accessToken: string
+  accessTokenSecret: string
 }
 
-type ScriptResult = {
-  code: number | null
-  stdout: string
-  stderr: string
-  timedOut: boolean
-  command: string
+type TweetResult = {
+  ok: boolean
+  tweet_id?: string
+  url?: string
+  error?: string
+  renderWarning?: string
+}
+
+function firstEnv(...names: string[]) {
+  for (const name of names) {
+    const value = process.env[name]?.trim()
+    if (value) return value
+  }
+  return ''
+}
+
+function readJsonConfig() {
+  const configPath = process.env.X_CONFIG_PATH?.trim()
+  if (!configPath) return null
+
+  try {
+    const raw = fs.readFileSync(configPath, 'utf8')
+    const data = JSON.parse(raw) as { x_api?: Record<string, string> }
+    return data.x_api ?? null
+  } catch {
+    return null
+  }
+}
+
+function getXCredentials(): XCredentials {
+  const config = readJsonConfig()
+  const credentials = {
+    apiKey: firstEnv('X_API_KEY', 'TWITTER_API_KEY', 'X_CONSUMER_KEY', 'TWITTER_CONSUMER_KEY') || config?.consumer_key || '',
+    apiSecret: firstEnv('X_API_SECRET', 'TWITTER_API_SECRET', 'X_CONSUMER_SECRET', 'TWITTER_CONSUMER_SECRET') || config?.consumer_secret || '',
+    accessToken: firstEnv('X_ACCESS_TOKEN', 'TWITTER_ACCESS_TOKEN') || config?.access_token || '',
+    accessTokenSecret: firstEnv('X_ACCESS_TOKEN_SECRET', 'TWITTER_ACCESS_TOKEN_SECRET') || config?.access_token_secret || '',
+  }
+
+  const missing = [
+    ['X_API_KEY', credentials.apiKey],
+    ['X_API_SECRET', credentials.apiSecret],
+    ['X_ACCESS_TOKEN', credentials.accessToken],
+    ['X_ACCESS_TOKEN_SECRET', credentials.accessTokenSecret],
+  ].filter(([, value]) => !value).map(([name]) => name)
+
+  if (missing.length > 0) {
+    throw new Error(`X API credentials missing: ${missing.join(', ')}`)
+  }
+
+  return credentials
+}
+
+function percent(value: string) {
+  return encodeURIComponent(value)
+    .replace(/[!'()*]/g, char => `%${char.charCodeAt(0).toString(16).toUpperCase()}`)
+}
+
+function oauthHeader(method: 'POST', url: string, credentials: XCredentials) {
+  const oauth: Record<string, string> = {
+    oauth_consumer_key: credentials.apiKey,
+    oauth_nonce: crypto.randomBytes(16).toString('hex'),
+    oauth_signature_method: 'HMAC-SHA1',
+    oauth_timestamp: Math.floor(Date.now() / 1000).toString(),
+    oauth_token: credentials.accessToken,
+    oauth_version: '1.0',
+  }
+
+  const parsedUrl = new URL(url)
+  const signatureParams = new URLSearchParams()
+  for (const [key, value] of parsedUrl.searchParams) signatureParams.append(key, value)
+  for (const [key, value] of Object.entries(oauth)) signatureParams.append(key, value)
+
+  const normalized = [...signatureParams.entries()]
+    .sort(([aKey, aValue], [bKey, bValue]) => aKey === bKey ? aValue.localeCompare(bValue) : aKey.localeCompare(bKey))
+    .map(([key, value]) => `${percent(key)}=${percent(value)}`)
+    .join('&')
+
+  const baseUrl = `${parsedUrl.protocol}//${parsedUrl.host}${parsedUrl.pathname}`
+  const signatureBase = [method, baseUrl, normalized].map(percent).join('&')
+  const signingKey = `${percent(credentials.apiSecret)}&${percent(credentials.accessTokenSecret)}`
+  const signature = crypto.createHmac('sha1', signingKey).update(signatureBase).digest('base64')
+
+  return 'OAuth ' + Object.entries({ ...oauth, oauth_signature: signature })
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, value]) => `${percent(key)}="${percent(value)}"`)
+    .join(', ')
 }
 
 function summarizeOutput(value: string, limit = 1200) {
@@ -28,126 +105,140 @@ function summarizeOutput(value: string, limit = 1200) {
   return text.length > limit ? `${text.slice(0, limit)}...` : text
 }
 
-function runPythonScript(name: string, args: string[], timeoutMs: number): Promise<ScriptResult> {
-  const script = path.join(SCRIPTS_DIR, name)
-  const command = `${PYTHON} ${script}`
-
-  return new Promise(resolve => {
-    let settled = false
-    let stdout = ''
-    let stderr = ''
-    let timer: ReturnType<typeof setTimeout> | undefined
-    const finish = (result: ScriptResult) => {
-      if (settled) return
-      settled = true
-      if (timer) clearTimeout(timer)
-      resolve(result)
-    }
-
-    const proc = spawn(PYTHON, [script, ...args])
-    proc.stdout.on('data', (d: Buffer) => { stdout += d.toString() })
-    proc.stderr.on('data', (d: Buffer) => { stderr += d.toString() })
-    proc.on('error', (error: Error) => {
-      finish({ code: null, stdout, stderr: stderr || error.message, timedOut: false, command })
-    })
-    proc.on('close', (code: number) => {
-      finish({ code, stdout, stderr, timedOut: false, command })
-    })
-    timer = setTimeout(() => {
-      proc.kill()
-      finish({ code: null, stdout, stderr, timedOut: true, command })
-    }, timeoutMs)
-  })
+function stripLatexDollars(text: string) {
+  return text
+    .replace(/\$\$([\s\S]*?)\$\$/g, '$1')
+    .replace(/\$((?:[^$\\]|\\.)*?)\$/g, '$1')
+    .replace(/\\\[([\s\S]*?)\\\]/g, '$1')
+    .replace(/\\\(([\s\S]*?)\\\)/g, '$1')
+    .trim()
 }
 
-/** PNG を一時ファイルにレンダリングする。失敗しても投稿はテキストのみで続行できる。 */
-async function renderPng(statement: string, answer: string, topic: string, score: number): Promise<RenderResult> {
-  const tmpFile = path.join(
-    os.tmpdir(),
-    `sakumon_post_${crypto.randomBytes(6).toString('hex')}.png`,
-  )
-  const result = await runPythonScript('render_math_png.py', [
-    '--statement', statement,
-    '--answer',    answer,
-    '--topic',     topic,
-    '--score',     String(score),
-    '--out',       tmpFile,
-  ], 20_000)
+function tweetText(statement: string) {
+  const text = stripLatexDollars(statement).replace(/\s+/g, ' ').trim()
+  return text.length > 270 ? `${text.slice(0, 267)}...` : text
+}
 
-  if (result.code === 0 && fs.existsSync(tmpFile)) return { imagePath: tmpFile }
+async function renderImage(req: NextRequest, body: Record<string, unknown>) {
+  const renderUrl = new URL('/api/render', req.url)
+  const res = await fetch(renderUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
 
-  try { fs.unlinkSync(tmpFile) } catch { /* ignore */ }
-  return {
-    imagePath: null,
-    warning: result.timedOut
-      ? '画像レンダリングがタイムアウトしたため、テキストのみで投稿します。'
-      : `画像レンダリングに失敗したため、テキストのみで投稿します: ${summarizeOutput(result.stderr) || summarizeOutput(result.stdout) || 'reason unknown'}`,
+  if (!res.ok) {
+    const data = await res.json().catch(() => null) as { error?: string; stderr?: string; code?: string } | null
+    const detail = data?.stderr || data?.error || `HTTP ${res.status}`
+    return { image: null, warning: `画像レンダリングに失敗したため、テキストのみで投稿します: ${detail}` }
   }
+
+  return { image: await res.arrayBuffer(), warning: undefined }
+}
+
+async function uploadMedia(image: ArrayBuffer, credentials: XCredentials) {
+  const url = 'https://upload.twitter.com/1.1/media/upload.json'
+  const form = new FormData()
+  form.append('media', new Blob([image], { type: 'image/png' }), 'sakumon.png')
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { Authorization: oauthHeader('POST', url, credentials) },
+    body: form,
+  })
+
+  const data = await res.json().catch(() => null) as { media_id_string?: string; errors?: unknown; error?: string } | null
+  if (!res.ok || !data?.media_id_string) {
+    throw new Error(`X media upload failed (${res.status}): ${summarizeOutput(JSON.stringify(data ?? {}))}`)
+  }
+
+  return data.media_id_string
+}
+
+async function createTweet(text: string, mediaId: string | null, credentials: XCredentials): Promise<TweetResult> {
+  const url = 'https://api.twitter.com/2/tweets'
+  const body = mediaId ? { text, media: { media_ids: [mediaId] } } : { text }
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: oauthHeader('POST', url, credentials),
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  })
+
+  const data = await res.json().catch(() => null) as { data?: { id?: string }; detail?: string; title?: string; errors?: unknown } | null
+  const tweetId = data?.data?.id
+  if (!res.ok || !tweetId) {
+    throw new Error(`X post failed (${res.status}): ${summarizeOutput(JSON.stringify(data ?? {}))}`)
+  }
+
+  return { ok: true, tweet_id: tweetId, url: `https://x.com/i/web/status/${tweetId}` }
 }
 
 export async function POST(req: NextRequest) {
-  if (IS_VERCEL && process.env.ENABLE_VERCEL_PYTHON_ACTIONS !== '1') return LOCAL_ONLY_RESPONSE()
-
   const body = await req.json()
-  const { problem_id, statement, answer, topic, score } = body as {
+  const { problem_id, statement, answer, topic, score, dry_run } = body as {
     problem_id: string
     statement:  string
     answer?:    string
     topic?:     string
     score?:     number
+    dry_run?:   boolean
   }
 
-  if (!problem_id || !statement)
+  if (!problem_id || !statement) {
     return NextResponse.json(
-      { error: 'problem_id and statement required' }, { status: 400 },
+      { ok: false, error: 'problem_id and statement required' },
+      { status: 400 },
     )
+  }
 
-  // 1. PNG レンダリング（失敗しても投稿は続行）
-  const render = await renderPng(
+  const render = await renderImage(req, {
     statement,
-    answer  ?? '',
-    topic   ?? '数学',
-    score   ?? 0,
-  )
-  const imagePath = render.imagePath
+    answer: answer ?? '',
+    topic: topic ?? '数学',
+    score: score ?? 0,
+  })
 
-  // 2. X 投稿
-  const args = ['--text', statement]
-  if (imagePath) args.push('--image-path', imagePath)
-
-  const result = await runPythonScript('post_to_x.py', args, 60_000)
-  if (imagePath) try { fs.unlinkSync(imagePath) } catch { /* ignore */ }
-
-  if (result.timedOut) {
+  if (dry_run) {
     return NextResponse.json({
-      ok: false,
-      error: 'posting timeout',
-      code: 'POST_TIMEOUT',
+      ok: true,
+      dryRun: true,
+      wouldAttachImage: !!render.image,
+      text: tweetText(statement),
       renderWarning: render.warning,
-    }, { status: 504 })
+    })
   }
 
-  if (result.code !== 0) {
+  let credentials: XCredentials
+  try {
+    credentials = getXCredentials()
+  } catch (error) {
     return NextResponse.json({
       ok: false,
-      error: summarizeOutput(result.stderr) || summarizeOutput(result.stdout) || 'posting failed',
-      code: 'POST_FAILED',
-      renderWarning: render.warning,
-      command: result.command,
-    }, { status: 500 })
+      code: 'X_CREDENTIALS_MISSING',
+      error: error instanceof Error ? error.message : String(error),
+    }, { status: 503 })
   }
 
-  let parsed: { ok: boolean; tweet_id?: string; url?: string; error?: string }
-  try   { parsed = JSON.parse(result.stdout.trim()) }
-  catch { parsed = { ok: false, error: 'invalid JSON from script' } }
+  try {
+    const mediaId = render.image ? await uploadMedia(render.image, credentials) : null
+    const result = await createTweet(tweetText(statement), mediaId, credentials)
 
-  if (parsed.ok) {
     await supabaseAdmin.from('ratings').upsert({
       problem_id,
       status:   'posted',
       x_posted: true,
     }, { onConflict: 'problem_id' })
-  }
 
-  return NextResponse.json({ ...parsed, renderWarning: render.warning })
+    return NextResponse.json({ ...result, renderWarning: render.warning })
+  } catch (error) {
+    return NextResponse.json({
+      ok: false,
+      code: 'X_POST_FAILED',
+      error: error instanceof Error ? error.message : String(error),
+      renderWarning: render.warning,
+    }, { status: 502 })
+  }
 }

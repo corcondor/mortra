@@ -136,7 +136,7 @@ export function PostModal({ problem, onClose, onPosted }: Props) {
                 ) : (
                   <div className="w-full h-full flex flex-col items-center justify-center gap-2 text-white/25 text-[13px] px-8 text-center">
                     <span>プレビューを生成できませんでした</span>
-                    <span className="text-[11px] text-white/18">ローカル投稿では画像なし投稿に切り替えられます</span>
+                    <span className="text-[11px] text-white/18">画像なし投稿に切り替えられます</span>
                   </div>
                 )}
               </div>
@@ -145,7 +145,7 @@ export function PostModal({ problem, onClose, onPosted }: Props) {
               <p className="text-[11px] text-white/25">
                 {previewUrl
                   ? '✦ 数式を画像として添付します。テキスト本文は問題文の先頭 270 字を使用。'
-                  : '✦ プレビューが無い場合はテキストのみで投稿します。本番VercelではPython投稿は無効です。'}
+                  : '✦ プレビューが無い場合はテキストのみで投稿します。X APIの環境変数が必要です。'}
               </p>
 
               {/* Success */}

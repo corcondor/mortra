@@ -14,7 +14,7 @@ macOS Spotlight × Apple glassmorphism の数学問題ビューア。
 
 ```bash
 cp .env.local.example .env.local
-# .env.local を編集して Supabase / DeepSeek / local Python action の値を貼り付け
+# .env.local を編集して Supabase / DeepSeek / X API の値を貼り付け
 ```
 
 ### 3. SQLite → Supabase 移行
@@ -59,13 +59,21 @@ vercel --prod
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_KEY`
 - `DEEPSEEK_API_KEY`
+- `X_API_KEY`
+- `X_API_SECRET`
+- `X_ACCESS_TOKEN`
+- `X_ACCESS_TOKEN_SECRET`
 
-ローカル専用:
+ローカル任意:
 
-- `PYTHON_BIN`（未設定時は `python`）
+- `DEEPSEEK_MODEL`（未設定時は `deepseek-v4-pro`）
+- `DEEPSEEK_HEALTH_MODEL`（未設定時は軽量確認用の `deepseek-v4-flash`）
+- `DEEPSEEK_MAX_TOKENS`（未設定時は `4000`）
+- `X_CONFIG_PATH`（既存のX投稿JSON設定をローカルだけで使う場合）
+- `PYTHON_BIN`（SQLite同期などPythonスクリプトをローカルで使う場合。未設定時は `python`）
 - `ENABLE_VERCEL_PYTHON_ACTIONS=1`（Vercel で Python と `scripts/*.py` を明示的に使う場合のみ）
 
-Vercel では `.vercelignore` により `scripts/` と `*.py` を除外しているため、画像プレビュー / X 投稿 / SQLite 同期はデフォルトでローカル専用です。
+画像プレビューは Next.js の `next/og` でPNG生成します。X投稿もNode実装なので、本番ではPythonは不要です。Vercel では `.vercelignore` により `scripts/` と `*.py` を除外しているため、Pythonを使うSQLite同期だけがデフォルトでローカル専用です。
 
 ## 今後の拡張 (MVP後)
 
