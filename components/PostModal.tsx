@@ -14,6 +14,7 @@ export function PostModal({ problem, onClose, onPosted }: Props) {
   const [error,      setError]      = useState<string | null>(null)
   const [tweetUrl,   setTweetUrl]   = useState<string | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [previewError, setPreviewError] = useState<string | null>(null)
   const [rendering,  setRendering]  = useState(false)
   const prevObjUrl = useRef<string | null>(null)
 
@@ -25,6 +26,7 @@ export function PostModal({ problem, onClose, onPosted }: Props) {
       prevObjUrl.current = null
     }
     setPreviewUrl(null)
+    setPreviewError(null)
     setError(null)
     setTweetUrl(null)
 
@@ -41,8 +43,12 @@ export function PostModal({ problem, onClose, onPosted }: Props) {
         score:     problem.total ?? 0,
       }),
     })
-      .then(res => {
-        if (!res.ok) throw new Error('render failed')
+      .then(async res => {
+        if (!res.ok) {
+          const data = await res.json().catch(() => null)
+          const detail = data?.stderr || data?.error || 'render failed'
+          throw new Error(detail)
+        }
         return res.blob()
       })
       .then(blob => {
@@ -50,7 +56,7 @@ export function PostModal({ problem, onClose, onPosted }: Props) {
         prevObjUrl.current = url
         setPreviewUrl(url)
       })
-      .catch(e => setError(String(e)))
+      .catch(e => setPreviewError(e instanceof Error ? e.message : String(e)))
       .finally(() => setRendering(false))
   }, [problem])
 
@@ -79,6 +85,7 @@ export function PostModal({ problem, onClose, onPosted }: Props) {
 
     if (data.ok) {
       setTweetUrl(data.url ?? null)
+      if (data.renderWarning) setPreviewError(data.renderWarning)
       onPosted(problem.id)
       setTimeout(onClose, 1800)
     } else {
@@ -127,15 +134,18 @@ export function PostModal({ problem, onClose, onPosted }: Props) {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={previewUrl} alt="card preview" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-white/20 text-[13px]">
-                    プレビューを生成できませんでした
+                  <div className="w-full h-full flex flex-col items-center justify-center gap-2 text-white/25 text-[13px] px-8 text-center">
+                    <span>プレビューを生成できませんでした</span>
+                    <span className="text-[11px] text-white/18">ローカル投稿では画像なし投稿に切り替えられます</span>
                   </div>
                 )}
               </div>
 
               {/* Char hint */}
               <p className="text-[11px] text-white/25">
-                ✦ 数式を画像として添付します。テキスト本文は問題文の先頭 270 字を使用。
+                {previewUrl
+                  ? '✦ 数式を画像として添付します。テキスト本文は問題文の先頭 270 字を使用。'
+                  : '✦ プレビューが無い場合はテキストのみで投稿します。本番VercelではPython投稿は無効です。'}
               </p>
 
               {/* Success */}
@@ -147,6 +157,12 @@ export function PostModal({ problem, onClose, onPosted }: Props) {
                     ポストを見る →
                   </a>
                 </div>
+              )}
+
+              {previewError && (
+                <p className="text-[11px] text-yellow-300/75 leading-relaxed">
+                  プレビュー: {previewError}
+                </p>
               )}
 
               {/* Error */}
@@ -168,7 +184,7 @@ export function PostModal({ problem, onClose, onPosted }: Props) {
                              text-[13px] font-semibold hover:bg-white/5 transition-colors
                              disabled:opacity-40"
                 >
-                  {posting ? '投稿中…' : tweetUrl ? '✓ 投稿済' : rendering ? '準備中…' : '𝕏 画像で投稿する'}
+                  {posting ? '投稿中…' : tweetUrl ? '✓ 投稿済' : rendering ? '準備中…' : previewUrl ? '𝕏 画像で投稿する' : '𝕏 テキストで投稿する'}
                 </button>
               </div>
             </div>

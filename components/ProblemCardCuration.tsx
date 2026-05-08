@@ -1,6 +1,6 @@
 'use client'
-import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { useRef, useState } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import type { ProblemWithRating } from '@/lib/types'
 import { DIFFICULTY_COLOR, DIFFICULTY_LABEL, TOPIC_EMOJI } from '@/lib/types'
 import { MathText } from './MathText'
@@ -23,6 +23,15 @@ interface Props {
 export function ProblemCardCuration({ problem: p, index, showSol, onStatusChange, onPostClick }: Props) {
   const [busy,     setBusy]     = useState(false)
   const [expanded, setExpanded] = useState(false)
+  const cardRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: ['start 84%', 'end 18%'],
+  })
+  const y = useTransform(scrollYProgress, [0, 0.5, 1], [72, 0, -36])
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.96, 1, 0.96])
+  const rotateX = useTransform(scrollYProgress, [0, 0.5, 1], [5, 0, -4])
+  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.82, 1], [0.42, 1, 1, 0.62])
 
   const status   = p.rating?.status ?? 'pending'
   const xPosted  = p.rating?.x_posted ?? false
@@ -32,9 +41,9 @@ export function ProblemCardCuration({ problem: p, index, showSol, onStatusChange
   const badge = `${TOPIC_JP[ta] ?? ta}${tb ? ` × ${TOPIC_JP[tb] ?? tb}` : ''}`
 
   const borderColor =
-    xPosted              ? 'border-apple-blue/40' :
-    status === 'selected' ? 'border-apple-green/40' :
-    status === 'rejected' ? 'border-white/5 opacity-50' : 'border-white/10'
+    xPosted               ? 'border-apple-blue/40 ring-1 ring-apple-blue/15' :
+    status === 'selected' ? 'border-apple-green/40 ring-1 ring-apple-green/15' :
+    status === 'rejected' ? 'border-zinc-300/80 opacity-60' : 'border-zinc-200/95'
 
   const setStatus = async (newStatus: string) => {
     setBusy(true)
@@ -50,27 +59,26 @@ export function ProblemCardCuration({ problem: p, index, showSol, onStatusChange
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.03, duration: 0.3, ease: [0.16,1,0.3,1] }}
-      className={`glass rounded-2xl p-4 flex flex-col gap-3 border ${borderColor} transition-colors`}
+      ref={cardRef}
+      style={{ y, scale, rotateX, opacity, transformPerspective: 1200 }}
+      className={`paper-note rounded-md p-5 md:p-7 flex flex-col gap-4 border ${borderColor} transition-colors max-w-3xl w-full mx-auto`}
     >
       {/* Header */}
       <div className="flex items-center gap-2 flex-wrap">
-        <span className="text-base">{TOPIC_EMOJI[ta] ?? '∑'}</span>
-        <span className="text-[10px] text-white/40 font-medium">{badge}</span>
+        <span className="text-base text-zinc-500">{TOPIC_EMOJI[ta] ?? '∑'}</span>
+        <span className="text-[10px] text-zinc-500 font-semibold tracking-wide">{badge}</span>
         <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md border ${diffClass}`}>
           {DIFFICULTY_LABEL[diff]}
         </span>
-        <span className="text-[10px] text-white/25">Gen {p.generation}</span>
+        <span className="text-[10px] text-zinc-400">Gen {p.generation}</span>
         {xPosted && <span className="text-[10px] text-apple-blue font-semibold ml-auto">✓ 投稿済</span>}
-        {!xPosted && <span className="text-[10px] text-white/25 ml-auto">{(p.total||0).toFixed(1)}</span>}
+        {!xPosted && <span className="text-[10px] text-zinc-400 ml-auto">{(p.total||0).toFixed(1)}</span>}
       </div>
 
       {/* Statement — expand/collapse */}
       <div>
         <div
-          className={`text-[13px] leading-relaxed text-white/80 transition-all
+          className={`text-[15px] md:text-[16px] leading-[1.9] text-zinc-900 transition-all
             ${expanded ? '' : 'line-clamp-4'}`}
         >
           <MathText text={p.statement} />
@@ -79,7 +87,7 @@ export function ProblemCardCuration({ problem: p, index, showSol, onStatusChange
         {p.statement.length > 120 && (
           <button
             onClick={() => setExpanded(v => !v)}
-            className="mt-1 text-[11px] text-white/30 hover:text-apple-blue transition-colors"
+            className="mt-2 text-[11px] text-zinc-500 hover:text-apple-blue transition-colors"
           >
             {expanded ? '▲ 閉じる' : '▼ 続きを見る'}
           </button>
@@ -88,27 +96,27 @@ export function ProblemCardCuration({ problem: p, index, showSol, onStatusChange
 
       {/* Answer */}
       {p.answer && (
-        <div className="text-[12px] text-apple-green/90 leading-relaxed">
+        <div className="text-[13px] text-emerald-700 leading-relaxed border-l-2 border-emerald-400/70 pl-3">
           <MathText text={p.answer} />
         </div>
       )}
 
       {/* Solution */}
       {showSol && p.solution && (
-        <div className="text-[11px] text-white/40 leading-relaxed border-t border-white/5 pt-2">
+        <div className="text-[11px] text-zinc-500 leading-relaxed border-t border-zinc-200 pt-3">
           {p.solution.slice(0, 200)}
         </div>
       )}
 
       {/* Score bar */}
       <div className="flex items-center gap-2">
-        <div className="flex-1 h-[2px] bg-white/10 rounded-full overflow-hidden">
+        <div className="flex-1 h-[2px] bg-zinc-200 rounded-full overflow-hidden">
           <div
             className="h-full score-bar"
             style={{ width: `${Math.min(100, ((p.total||0)/10)*100)}%` }}
           />
         </div>
-        <span className="text-[10px] text-white/25 tabular-nums">{(p.total||0).toFixed(1)}</span>
+        <span className="text-[10px] text-zinc-400 tabular-nums">{(p.total||0).toFixed(1)}</span>
       </div>
 
       {/* Action buttons */}
@@ -141,9 +149,9 @@ export function ProblemCardCuration({ problem: p, index, showSol, onStatusChange
 
       {/* Inspiration toggle */}
       {p.inspiration && (
-        <details className="text-[11px] text-white/35 cursor-pointer">
-          <summary className="list-none text-white/30 hover:text-white/60">💡 着想</summary>
-          <p className="mt-1.5 text-white/50 leading-relaxed">
+        <details className="text-[11px] text-zinc-500 cursor-pointer">
+          <summary className="list-none text-zinc-400 hover:text-zinc-700">💡 着想</summary>
+          <p className="mt-1.5 text-zinc-600 leading-relaxed">
             {p.inspiration.slice(0, 300)}
           </p>
         </details>
@@ -163,7 +171,7 @@ function ActionBtn({
       onClick={onClick}
       disabled={disabled}
       className={`text-[11px] font-medium px-2 py-1.5 rounded-xl border transition-all
-        ${active ? activeClass : 'border-white/10 text-white/40 hover:border-white/20 hover:text-white/70'}
+        ${active ? activeClass : 'border-zinc-300 text-zinc-500 hover:border-zinc-500 hover:text-zinc-900 bg-white/45'}
         disabled:opacity-40 disabled:cursor-not-allowed`}
     >
       {children}

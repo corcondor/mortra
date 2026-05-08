@@ -14,7 +14,7 @@ macOS Spotlight × Apple glassmorphism の数学問題ビューア。
 
 ```bash
 cp .env.local.example .env.local
-# .env.local を編集して SUPABASE_URL と ANON_KEY を貼り付け
+# .env.local を編集して Supabase / DeepSeek / local Python action の値を貼り付け
 ```
 
 ### 3. SQLite → Supabase 移行
@@ -29,10 +29,10 @@ python scripts/migrate.py
 ### 4. フロント起動
 
 ```bash
-cd math-web
+cd sakumon-station
 npm install
 npm run dev
-# → http://localhost:3000
+# → http://localhost:3002
 ```
 
 ## 使い方
@@ -52,6 +52,20 @@ npm run dev
 # 環境変数を Vercel Dashboard で設定
 vercel --prod
 ```
+
+必須環境変数:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_KEY`
+- `DEEPSEEK_API_KEY`
+
+ローカル専用:
+
+- `PYTHON_BIN`（未設定時は `python`）
+- `ENABLE_VERCEL_PYTHON_ACTIONS=1`（Vercel で Python と `scripts/*.py` を明示的に使う場合のみ）
+
+Vercel では `.vercelignore` により `scripts/` と `*.py` を除外しているため、画像プレビュー / X 投稿 / SQLite 同期はデフォルトでローカル専用です。
 
 ## 今後の拡張 (MVP後)
 

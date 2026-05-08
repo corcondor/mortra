@@ -198,7 +198,7 @@ function HomeInner() {
         </header>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto px-6 py-5">
+        <div className="flex-1 overflow-y-auto scroll-smooth px-4 md:px-6 py-5">
 
           {/* ── TAB 1: 問題一覧 ── */}
           {tab === 'list' && (
@@ -232,11 +232,13 @@ function HomeInner() {
                 </div>
               </div>
 
-              {/* Grid — page-flip animation on page change */}
+              {/* Scroll-linked note viewer */}
               {loading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3">
+                <div className="note-scroll">
                   {Array(8).fill(0).map((_, i) => (
-                    <div key={i} className="glass rounded-2xl h-64 animate-pulse" />
+                    <section key={i} className="note-stage">
+                      <div className="paper-note rounded-md h-[58vh] max-w-3xl w-full animate-pulse" />
+                    </section>
                   ))}
                 </div>
               ) : paginated.length > 0 ? (
@@ -248,17 +250,18 @@ function HomeInner() {
                     exit={{    opacity: 0, rotateX:  8, y: -24 }}
                     transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
                     style={{ perspective: 1200, transformStyle: 'preserve-3d' }}
-                    className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3"
+                    className="note-scroll"
                   >
                     {paginated.map((p, i) => (
-                      <ProblemCardCuration
-                        key={p.id}
-                        problem={p}
-                        index={i}
-                        showSol={filters.showSol}
-                        onStatusChange={handleStatusChange}
-                        onPostClick={setPostTarget}
-                      />
+                      <section key={p.id} className="note-stage">
+                        <ProblemCardCuration
+                          problem={p}
+                          index={i}
+                          showSol={filters.showSol}
+                          onStatusChange={handleStatusChange}
+                          onPostClick={setPostTarget}
+                        />
+                      </section>
                     ))}
                   </motion.div>
                 </AnimatePresence>
