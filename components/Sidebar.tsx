@@ -60,7 +60,9 @@ export function Sidebar({ filters, onChange, onReload, onClose }: Props) {
     const res  = await fetch('/api/purge', { method: 'POST' })
     const data = await res.json()
     setPurging(false)
-    setOpResult(data.ok ? `✅ ${data.deleted} 件削除` : `❌ ${data.error ?? '失敗'}`)
+    setOpResult(data.ok
+      ? `✅ ${data.deleted} 件削除（${data.checked ?? 0} 件確認）`
+      : `❌ ${data.error ?? '失敗'}`)
     fetchStats()
     onReload?.()
   }

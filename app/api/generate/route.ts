@@ -10,6 +10,66 @@ import crypto from 'crypto'
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/chat/completions'
 const MODEL            = 'deepseek-reasoner'   // DeepSeek-R1
 
+type SseType = 'status' | 'log' | 'done' | 'error'
+
+function deepSeekHttpError(status: number, body: string) {
+  const detail = body.replace(/\s+/g, ' ').trim().slice(0, 500)
+  if (status === 401 || status === 403) {
+    return `DeepSeek 認証エラー (${status}): API key が無効、または権限がありません。${detail}`
+  }
+  if (status === 429) {
+    return `DeepSeek rate limit (${status}): 利用量上限または混雑に達しました。時間を置いて再試行してください。${detail}`
+  }
+  if (status >= 500) {
+    return `DeepSeek サーバーエラー (${status}): DeepSeek 側で失敗しました。${detail}`
+  }
+  return `DeepSeek API error ${status}: ${detail || 'no response body'}`
+}
+
+function errorMessage(error: unknown) {
+  if (error instanceof Error) return error.message
+  return String(error)
+}
+
+type PurgeCandidate = {
+  id: string
+  rating?: { status?: string | null; x_posted?: boolean | null } | { status?: string | null; x_posted?: boolean | null }[] | null
+}
+
+function shouldPurge(candidate: PurgeCandidate, excludeIds: Set<string>) {
+  if (excludeIds.has(candidate.id)) return false
+  const rating = Array.isArray(candidate.rating) ? candidate.rating[0] : candidate.rating
+  if (!rating) return true
+  if (rating.x_posted === true) return false
+  return rating.status !== 'selected' && rating.status !== 'posted'
+}
+
+async function purgeUnselectedProblems(excludeIds: string[] = []) {
+  const excluded = new Set(excludeIds)
+  const { data, error } = await supabaseAdmin
+    .from('problems')
+    .select('id, rating:ratings(status,x_posted)')
+
+  if (error) throw new Error(error.message)
+
+  const candidates = (data ?? []) as PurgeCandidate[]
+  const ids = candidates
+    .filter(candidate => shouldPurge(candidate, excluded))
+    .map(candidate => candidate.id)
+
+  if (ids.length === 0) {
+    return { deleted: 0, considered: candidates.length, excluded: excluded.size }
+  }
+
+  const { error: rErr } = await supabaseAdmin.from('ratings').delete().in('problem_id', ids)
+  if (rErr) throw new Error(rErr.message)
+
+  const { count, error: pErr } = await supabaseAdmin.from('problems').delete({ count: 'exact' }).in('id', ids)
+  if (pErr) throw new Error(pErr.message)
+
+  return { deleted: count ?? ids.length, considered: candidates.length, excluded: excluded.size }
+}
+
 // ── 直列キュー（同時に1生成のみ） ─────────────────────────────────────
 let _queue: (() => void)[] = []
 let _busy = false
@@ -29,22 +89,29 @@ function dequeue() { _drain() }
 // ── DeepSeek API 呼び出し ──────────────────────────────────────────────
 async function callDeepSeek(prompt: string, onChunk?: (s: string) => void): Promise<string> {
   const apiKey = process.env.DEEPSEEK_API_KEY
-  if (!apiKey) throw new Error('DEEPSEEK_API_KEY が設定されていません')
+  if (!apiKey) {
+    throw new Error('DEEPSEEK_API_KEY が設定されていません。Vercel/ローカルの環境変数を確認してください。')
+  }
 
-  const res = await fetch(DEEPSEEK_API_URL, {
-    method:  'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-    body: JSON.stringify({
-      model:    MODEL,
-      messages: [{ role: 'user', content: prompt }],
-      stream:   !!onChunk,
-      max_tokens: 8000,
-    }),
-  })
+  let res: Response
+  try {
+    res = await fetch(DEEPSEEK_API_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        model:    MODEL,
+        messages: [{ role: 'user', content: prompt }],
+        stream:   !!onChunk,
+        max_tokens: 8000,
+      }),
+    })
+  } catch (error) {
+    throw new Error(`DeepSeek 接続エラー: ${errorMessage(error)}`)
+  }
 
   if (!res.ok) {
     const err = await res.text()
-    throw new Error(`DeepSeek API error ${res.status}: ${err}`)
+    throw new Error(deepSeekHttpError(res.status, err))
   }
 
   if (!onChunk) {
@@ -53,7 +120,9 @@ async function callDeepSeek(prompt: string, onChunk?: (s: string) => void): Prom
   }
 
   // SSE ストリーミング
-  const reader = res.body!.getReader()
+  if (!res.body) throw new Error('DeepSeek streaming response body が空です')
+
+  const reader = res.body.getReader()
   const dec    = new TextDecoder()
   let full = ''
   while (true) {
@@ -131,6 +200,7 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: 'DEEPSEEK_API_KEY が設定されていません。Vercel の環境変数に追加してください。' }, { status: 503 })
 
   const resolvedMode = mode === 'auto' ? (parents.length >= 2 ? 'fusion' : 'similar') : mode
+  const totalCount = Math.max(1, Math.min(Number(count) || 1, 10))
 
   // 現世代を取得
   const { data: genData } = await supabaseAdmin
@@ -144,32 +214,36 @@ export async function POST(req: NextRequest) {
   const encoder = new TextEncoder()
   const stream  = new ReadableStream({
     async start(controller) {
-      const send = (type: string, payload: Record<string, unknown>) => {
+      let lockAcquired = false
+      const send = (type: SseType, payload: Record<string, unknown>) => {
+        const message = payload.message ?? payload.msg
         try {
           controller.enqueue(encoder.encode(
-            `data: ${JSON.stringify({ type, ...payload })}\n\n`
+            `data: ${JSON.stringify({ type, ...payload, message })}\n\n`
           ))
         } catch { /* closed */ }
       }
 
+      send('status', { step: 'queued', message: '生成キューに登録しました' })
       await enqueue()
-      send('status', { step: 'start', msg: `DeepSeek-R1 で ${resolvedMode} 生成開始（${count}問）` })
+      lockAcquired = true
+      send('status', { step: 'start', message: `DeepSeek-R1 で ${resolvedMode} 生成開始（${totalCount}問）` })
 
-      const generated: Record<string, unknown>[] = []
+      const generated: Awaited<ReturnType<typeof saveToSupabase>>[] = []
 
       try {
         // 分析フェーズ（similar/expand かつ1問の場合）
         let analysis: Record<string, string> | undefined
         if (resolvedMode !== 'fusion' && parents.length === 1) {
-          send('status', { step: 'analyzing', msg: '問題を深く分析中…' })
+          send('status', { step: 'analyzing', message: '問題を深く分析中...' })
           const raw = await callDeepSeek(makeAnalysisPrompt(parents[0]))
           const a   = extractJson(raw)
           if (a) analysis = a as Record<string, string>
-          send('log', { msg: `分析完了: ${analysis?.core_structure?.slice(0, 60) ?? 'OK'}` })
+          send('log', { message: `分析完了: ${analysis?.core_structure?.slice(0, 60) ?? 'OK'}` })
         }
 
-        for (let i = 0; i < count; i++) {
-          send('status', { step: 'generating', msg: `生成中… (${i + 1}/${count})` })
+        for (let i = 0; i < totalCount; i++) {
+          send('status', { step: 'generating', message: `生成中... (${i + 1}/${totalCount})` })
 
           let prompt: string
           if (resolvedMode === 'fusion') {
@@ -181,62 +255,70 @@ export async function POST(req: NextRequest) {
           }
 
           let data: Record<string, unknown> | null = null
+          let lastFailure = ''
           for (let attempt = 1; attempt <= 3; attempt++) {
-            send('log', { msg: `API 呼び出し中… (試行 ${attempt}/3)` })
+            send('log', { message: `DeepSeek API 呼び出し中... (試行 ${attempt}/3)` })
             try {
               const raw = await callDeepSeek(prompt)
               data = extractJson(raw)
               if (data) break
-              send('log', { msg: `JSON 抽出失敗、リトライ…` })
+              lastFailure = `JSON 抽出失敗: 応答先頭=${raw.replace(/\s+/g, ' ').slice(0, 180)}`
+              send('log', { level: 'warn', message: `${lastFailure}。リトライします。` })
             } catch (e) {
-              send('log', { msg: `エラー: ${String(e)}` })
+              lastFailure = errorMessage(e)
+              send('log', { level: 'error', message: `DeepSeek エラー: ${lastFailure}` })
             }
           }
 
           if (data) {
             data.id = crypto.randomBytes(6).toString('hex')
-            send('status', { step: 'saving', msg: '保存中…' })
+            send('status', { step: 'saving', message: 'Supabase に保存中...' })
             try {
               const saved = await saveToSupabase(data, parents, resolvedMode, nextGen)
               const score = (data.beauty_analysis as Record<string, unknown>)?.total ?? '?'
-              send('log',    { msg: `✅ 保存完了 score=${score} → ${saved.statement.slice(0, 50)}…` })
-              generated.push(data)
+              send('log',    { message: `保存完了 score=${score} -> ${saved.statement.slice(0, 50)}...` })
+              generated.push(saved)
             } catch (e) {
-              send('log', { msg: `保存エラー: ${String(e)}` })
+              send('log', { level: 'error', message: `保存エラー: ${errorMessage(e)}` })
             }
           } else {
-            send('log', { msg: `❌ 生成失敗 (${i + 1}問目)` })
+            send('log', { level: 'error', message: `生成失敗 (${i + 1}問目): ${lastFailure || 'JSON を取得できませんでした'}` })
           }
         }
 
         // ── 自動淘汰: selected/posted 以外を削除 ─────────────────────
-        send('status', { step: 'purging', msg: '未選択問題を自動淘汰中…' })
+        send('status', { step: 'purging', message: '未選択問題を自動淘汰中...' })
+        let purgeDeleted = 0
         try {
-          const { data: targets } = await supabaseAdmin
-            .from('ratings')
-            .select('problem_id')
-            .not('status', 'in', '("selected","posted")')
-          const ids = (targets ?? []).map((r: { problem_id: string }) => r.problem_id)
-          if (ids.length > 0) {
-            await supabaseAdmin.from('ratings').delete().in('problem_id', ids)
-            await supabaseAdmin.from('problems').delete().in('id', ids)
-            send('log', { msg: `🗑 淘汰完了: ${ids.length} 問削除` })
+          const purge = await purgeUnselectedProblems(generated.map(problem => problem.id))
+          purgeDeleted = purge.deleted
+          if (purge.deleted > 0) {
+            send('log', {
+              message:
+                `淘汰完了: ${purge.deleted} 問削除 ` +
+                `(${purge.considered} 問確認、ratings 未作成の問題も対象、新規生成 ${purge.excluded} 問は保持)`,
+            })
           } else {
-            send('log', { msg: '淘汰対象なし' })
+            send('log', { message: `淘汰対象なし (${purge.considered} 問確認、新規生成 ${purge.excluded} 問は保持)` })
           }
         } catch (purgeErr) {
-          send('log', { msg: `淘汰エラー（続行）: ${String(purgeErr)}` })
+          send('log', { level: 'error', message: `淘汰エラー（生成結果は保持）: ${errorMessage(purgeErr)}` })
         }
 
+        const ok = generated.length === totalCount
         send('done', {
+          ok,
           generated: generated.length,
-          total:     count,
-          msg:       `完了: ${generated.length}/${count} 問生成`,
+          total:     totalCount,
+          purgeDeleted,
+          message:   ok
+            ? `完了: ${generated.length}/${totalCount} 問生成`
+            : `一部失敗: ${generated.length}/${totalCount} 問生成。ログを確認してください。`,
         })
       } catch (e) {
-        send('status', { step: 'error', msg: String(e) })
+        send('error', { step: 'error', message: errorMessage(e), ok: false })
       } finally {
-        dequeue()
+        if (lockAcquired) dequeue()
         controller.close()
       }
     },

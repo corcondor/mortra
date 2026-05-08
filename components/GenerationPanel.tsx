@@ -13,12 +13,11 @@ const TOPIC_JP: Record<string,string> = {
 // ボットカーソルのステップ定義
 const BOT_STEPS: Record<string, { emoji: string; label: string; color: string }> = {
   queued:     { emoji: '🕐', label: 'キュー待ち...',         color: 'text-white/50' },
-  start:      { emoji: '🚀', label: '起動中...',             color: 'text-white/60' },
-  opening:    { emoji: '🌐', label: 'Chrome/Gemini 接続中',  color: 'text-apple-blue' },
-  typing:     { emoji: '⌨️', label: 'プロンプト入力中',       color: 'text-yellow-400' },
-  waiting:    { emoji: '⏳', label: 'Gemini 応答待ち',        color: 'text-orange-400' },
-  extracting: { emoji: '📋', label: '回答を抽出中',           color: 'text-purple-400' },
-  saving:     { emoji: '💾', label: 'DB に保存中',            color: 'text-apple-green' },
+  start:      { emoji: '🚀', label: 'DeepSeek 接続中',       color: 'text-apple-blue' },
+  analyzing:  { emoji: '🔎', label: '構造分析中',            color: 'text-purple-400' },
+  generating: { emoji: '⏳', label: 'DeepSeek 生成中',       color: 'text-orange-400' },
+  saving:     { emoji: '💾', label: 'Supabase に保存中',     color: 'text-apple-green' },
+  purging:    { emoji: '🗑️', label: '未選択を淘汰中',        color: 'text-apple-pink' },
   syncing:    { emoji: '☁️', label: 'Supabase に同期中',      color: 'text-apple-blue' },
   working:    { emoji: '⚙️', label: '処理中...',              color: 'text-white/50' },
   complete:   { emoji: '✅', label: '完了！',                 color: 'text-apple-green' },
@@ -35,7 +34,7 @@ export function GenerationPanel({ selectedProblems, onStatusChange, onPostClick 
   const [generating,   setGenerating]   = useState(false)
   const [currentStep,  setCurrentStep]  = useState('start')
   const [logs,         setLogs]         = useState<string[]>([])
-  const [genDone,      setGenDone]      = useState<{ ok: boolean } | null>(null)
+  const [genDone,      setGenDone]      = useState<{ ok: boolean; message: string } | null>(null)
   const [fusionCount,  setFusionCount]  = useState(3)
   const [batchCount,   setBatchCount]   = useState(4)
   const [chosenIds,    setChosenIds]    = useState<string[]>([])
@@ -48,7 +47,7 @@ export function GenerationPanel({ selectedProblems, onStatusChange, onPostClick 
 
   // ── SSE ストリーミング生成 ──────────────────────────────────────────
   const run = async (parents: ProblemWithRating[], mode: string, count: number) => {
-    setGenerating(true); setLogs([]); setGenDone(null); setCurrentStep('start')
+    setGenerating(true); setLogs([]); setGenDone(null); setCurrentStep('queued')
 
     const parentData = parents.map(p => ({
       id: p.id, topic_a: p.topic_a, topic_b: p.topic_b,
@@ -62,11 +61,29 @@ export function GenerationPanel({ selectedProblems, onStatusChange, onPostClick 
       body:    JSON.stringify({ parents: parentData, mode, count }),
     })
 
-    if (!res.body) { setGenerating(false); return }
+    if (!res.ok) {
+      const data = await res.json().catch(() => null)
+      const message = data?.error ?? `生成APIエラー: ${res.status}`
+      setLogs(prev => [...prev, message])
+      setCurrentStep('error')
+      setGenDone({ ok: false, message })
+      setGenerating(false)
+      return
+    }
+
+    if (!res.body) {
+      const message = '生成APIのストリームが空です'
+      setLogs(prev => [...prev, message])
+      setCurrentStep('error')
+      setGenDone({ ok: false, message })
+      setGenerating(false)
+      return
+    }
 
     const reader  = res.body.getReader()
     const decoder = new TextDecoder()
     let   buffer  = ''
+    let doneSeen = false
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
@@ -79,11 +96,38 @@ export function GenerationPanel({ selectedProblems, onStatusChange, onPostClick 
         if (!part.startsWith('data: ')) continue
         try {
           const ev = JSON.parse(part.slice(6))
-          if (ev.type === 'status') setCurrentStep(ev.step)
-          if (ev.type === 'log')    setLogs(prev => [...prev, ev.message])
-          if (ev.type === 'done')   { setGenDone({ ok: ev.ok }); setGenerating(false) }
+          const message = String(ev.message ?? ev.msg ?? '')
+          if (ev.type === 'status') {
+            setCurrentStep(ev.step ?? 'working')
+            if (message) setLogs(prev => [...prev, message])
+          }
+          if (ev.type === 'log' && message) {
+            setLogs(prev => [...prev, message])
+          }
+          if (ev.type === 'error') {
+            doneSeen = true
+            setCurrentStep('error')
+            setLogs(prev => [...prev, message || '生成エラー'])
+            setGenDone({ ok: false, message: message || '生成エラー' })
+            setGenerating(false)
+          }
+          if (ev.type === 'done') {
+            doneSeen = true
+            const ok = ev.ok === true
+            const doneMessage = message || (ok ? '生成完了' : '生成に失敗しました')
+            setCurrentStep(ok ? 'complete' : 'error')
+            setLogs(prev => [...prev, doneMessage])
+            setGenDone({ ok, message: doneMessage })
+            setGenerating(false)
+          }
         } catch { /* ignore parse error */ }
       }
+    }
+    if (!doneSeen) {
+      const message = '生成ストリームが完了イベントなしで終了しました'
+      setCurrentStep('error')
+      setGenDone({ ok: false, message })
+      setLogs(prev => [...prev, message])
     }
     setGenerating(false)
   }
@@ -170,7 +214,7 @@ export function GenerationPanel({ selectedProblems, onStatusChange, onPostClick 
         {/* 生成完了メッセージ */}
         {genDone && !generating && (
           <div className={`text-[11px] mt-1 ${genDone.ok ? 'text-apple-green' : 'text-apple-pink'}`}>
-            {genDone.ok ? '✅ 生成・同期完了！ページを再読み込みすると新問題が表示されます。' : '❌ エラーが発生しました。ログを確認してください。'}
+            {genDone.ok ? `✅ ${genDone.message}。表示を更新すると新問題が表示されます。` : `❌ ${genDone.message}`}
           </div>
         )}
       </div>
@@ -270,7 +314,7 @@ export function GenerationPanel({ selectedProblems, onStatusChange, onPostClick 
               {logs.slice(-6).map((line, i) => (
                 <div key={i}
                   className={`text-[10px] leading-snug font-mono
-                    ${line.startsWith('E') || line.includes('ERROR')
+                    ${line.includes('エラー') || line.includes('失敗') || line.includes('ERROR')
                       ? 'text-apple-pink/70'
                       : 'text-white/35'}`}
                 >
