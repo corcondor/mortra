@@ -3,8 +3,8 @@ import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
 
-const WIDTH = 1200
-const HEIGHT = 675
+const WIDTH = 1600
+const HEIGHT = 2000
 
 function asText(value: unknown) {
   return typeof value === 'string' ? value : ''
@@ -17,6 +17,22 @@ function compact(value: string) {
 function clamp(value: string, max: number) {
   const text = compact(value)
   return text.length > max ? `${text.slice(0, max - 3)}...` : text
+}
+
+function problemFontSize(text: string) {
+  const length = text.length
+  if (length <= 220) return 58
+  if (length <= 420) return 50
+  if (length <= 700) return 42
+  if (length <= 1050) return 34
+  return 28
+}
+
+function answerFontSize(text: string) {
+  const length = text.length
+  if (length <= 120) return 38
+  if (length <= 260) return 32
+  return 27
 }
 
 function mathSafe(value: string) {
@@ -41,6 +57,11 @@ export async function POST(req: NextRequest) {
   const topicText = clamp(asText(topic) || '数学', 28)
   const scoreText = Number.isFinite(Number(score)) ? Number(score).toFixed(1) : '0.0'
   const answerText = mathSafe(asText(answer))
+  const problemSize = problemFontSize(statementText)
+  const answerSize = answerFontSize(answerText)
+  const displayStatement = clamp(statementText, 1800)
+  const displayAnswer = clamp(answerText, 520)
+  const wasClamped = compact(statementText).length > compact(displayStatement).length
 
   return new ImageResponse(
     (
@@ -65,7 +86,7 @@ export async function POST(req: NextRequest) {
             width: '100%',
             marginBottom: 30,
             color: '#667085',
-            fontSize: 28,
+            fontSize: 34,
             fontWeight: 700,
           }}
         >
@@ -83,39 +104,52 @@ export async function POST(req: NextRequest) {
             justifyContent: 'center',
             flex: 1,
             width: '100%',
-            padding: '42px 48px',
+            padding: '64px 72px',
             background: '#ffffff',
             border: '1px solid #e5e7eb',
-            borderRadius: 28,
+            borderRadius: 34,
             boxShadow: '0 18px 48px rgba(15, 23, 42, 0.14)',
           }}
         >
           <div
             style={{
-              fontSize: 42,
-              lineHeight: 1.55,
+              fontSize: problemSize,
+              lineHeight: 1.62,
               fontWeight: 700,
               whiteSpace: 'pre-wrap',
               wordBreak: 'break-word',
             }}
           >
-            {clamp(statementText, 360)}
+            {displayStatement}
           </div>
 
           {answerText && (
             <div
               style={{
-                marginTop: 34,
-                paddingTop: 26,
+                marginTop: 44,
+                paddingTop: 32,
                 borderTop: '3px solid #d1fae5',
                 color: '#047857',
-                fontSize: 30,
-                lineHeight: 1.45,
+                fontSize: answerSize,
+                lineHeight: 1.5,
                 whiteSpace: 'pre-wrap',
                 wordBreak: 'break-word',
               }}
             >
-              {clamp(answerText, 150)}
+              {displayAnswer}
+            </div>
+          )}
+
+          {wasClamped && (
+            <div
+              style={{
+                marginTop: 28,
+                color: '#b45309',
+                fontSize: 24,
+                lineHeight: 1.4,
+              }}
+            >
+              問題文が非常に長いため、画像表示は要約されています。
             </div>
           )}
         </div>

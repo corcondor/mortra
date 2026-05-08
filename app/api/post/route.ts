@@ -119,6 +119,11 @@ function tweetText(statement: string) {
   return text.length > 270 ? `${text.slice(0, 267)}...` : text
 }
 
+function imageTweetText(topic?: string) {
+  const label = topic?.trim() || '数学'
+  return `Sakumon Station\n${label}の問題です。問題文と解答は画像に添付しています。`
+}
+
 async function renderImage(req: NextRequest, body: Record<string, unknown>) {
   const renderUrl = new URL('/api/render', req.url)
   const res = await fetch(renderUrl, {
@@ -206,7 +211,7 @@ export async function POST(req: NextRequest) {
       ok: true,
       dryRun: true,
       wouldAttachImage: !!render.image,
-      text: tweetText(statement),
+      text: render.image ? imageTweetText(topic) : tweetText(statement),
       renderWarning: render.warning,
     })
   }
@@ -224,7 +229,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const mediaId = render.image ? await uploadMedia(render.image, credentials) : null
-    const result = await createTweet(tweetText(statement), mediaId, credentials)
+    const result = await createTweet(mediaId ? imageTweetText(topic) : tweetText(statement), mediaId, credentials)
 
     await supabaseAdmin.from('ratings').upsert({
       problem_id,
