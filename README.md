@@ -66,6 +66,7 @@ vercel --prod
 
 ローカル任意:
 
+- X投稿ENVは `TWITTER_CONSUMER_KEY`, `TWITTER_CONSUMER_SECRET`, `TWITTER_ACCESS_TOKEN`, `TWITTER_ACCESS_TOKEN_SECRET` という名前でも読み取れます。
 - `DEEPSEEK_MODEL`（未設定時は `deepseek-v4-pro`）
 - `DEEPSEEK_HEALTH_MODEL`（未設定時は軽量確認用の `deepseek-v4-flash`）
 - `DEEPSEEK_MAX_TOKENS`（未設定時は `4000`）

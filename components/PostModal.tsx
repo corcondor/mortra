@@ -124,7 +124,7 @@ export function PostModal({ problem, onClose, onPosted }: Props) {
 
               {/* Image preview */}
               <div className="rounded-xl overflow-hidden bg-black/40 border border-white/8"
-                   style={{ aspectRatio: '1200/628' }}>
+                   style={{ aspectRatio: '4/5' }}>
                 {rendering ? (
                   <div className="w-full h-full flex flex-col items-center justify-center gap-3 text-white/30 text-[13px]">
                     <div className="w-6 h-6 border-2 border-apple-blue border-t-transparent rounded-full animate-spin" />
@@ -144,7 +144,7 @@ export function PostModal({ problem, onClose, onPosted }: Props) {
               {/* Char hint */}
               <p className="text-[11px] text-white/25">
                 {previewUrl
-                  ? '✦ 数式を画像として添付します。テキスト本文は問題文の先頭 270 字を使用。'
+                  ? '✦ 問題文と解答を画像として添付します。投稿本文は短い案内文だけにします。'
                   : '✦ プレビューが無い場合はテキストのみで投稿します。X APIの環境変数が必要です。'}
               </p>
 
