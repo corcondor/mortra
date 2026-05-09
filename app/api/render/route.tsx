@@ -256,10 +256,14 @@ function formatTeXReadable(value: string): string {
     .replace(/\\\(([\s\S]*?)\\\)/g, '$1')
     .replace(/\\left\s*/g, '')
     .replace(/\\right\s*/g, '')
+    .replace(/\\!/g, '')       // negative thin space — 除去
     .replace(/\\,/g, ' ')
     .replace(/\\;/g, ' ')
-    .replace(/\\qquad/g, ' ')
+    .replace(/\\:/g, ' ')
+    .replace(/\\qquad/g, '  ')
     .replace(/\\quad/g, ' ')
+    .replace(/\\cdots/g, '...')
+    .replace(/\\ldots/g, '...')
     .replace(/\\\\(?=[A-Za-z])/g, '\\')
     .replace(/\\\\/g, '\n')
 

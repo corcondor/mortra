@@ -153,22 +153,28 @@ async function callDeepSeek(
   const reader = res.body.getReader()
   const dec    = new TextDecoder()
   let full = ''
-  while (true) {
+  let reasoning = ''
+  let streamDone = false
+
+  outer: while (!streamDone) {
     const { done, value } = await reader.read()
     if (done) break
     for (const line of dec.decode(value).split('\n')) {
       if (!line.startsWith('data: ')) continue
       const data = line.slice(6).trim()
-      if (data === '[DONE]') break
+      if (data === '[DONE]') { streamDone = true; break outer }
       try {
         const delta = JSON.parse(data).choices?.[0]?.delta
-        const reasoning = delta?.reasoning_content
-        const content = delta?.content
-        if (reasoning) onChunk(reasoning, 'reasoning')
-        if (content) { full += content; onChunk(content, 'content') }
+        const rc = delta?.reasoning_content
+        const cc = delta?.content
+        if (rc) { reasoning += rc; onChunk(rc, 'reasoning') }
+        if (cc) { full += cc; onChunk(cc, 'content') }
       } catch { /* skip */ }
     }
   }
+
+  // reasoning-only モデル（DeepSeek-R1等）: content が空なら reasoning から JSON を抽出
+  if (!full && reasoning) full = reasoning
   return full
 }
 
