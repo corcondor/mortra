@@ -12,18 +12,6 @@ const TOPIC_JP: Record<string,string> = {
   probability:'確率', functional_eq:'関数方程式', modular:'合同算術', matrix:'行列',
 }
 
-const BOT_STEPS: Record<string, { emoji: string; label: string; color: string }> = {
-  queued:     { emoji: '🕐', label: 'キュー待ち...',         color: 'text-white/50' },
-  start:      { emoji: '🚀', label: 'Worker 接続中',         color: 'text-apple-blue' },
-  analyzing:  { emoji: '🔎', label: '構造分析中',            color: 'text-purple-400' },
-  generating: { emoji: '⏳', label: 'DeepSeek 生成中',       color: 'text-orange-400' },
-  saving:     { emoji: '💾', label: 'Supabase に保存中',     color: 'text-apple-green' },
-  purging:    { emoji: '🗑️', label: '未選択を淘汰中',        color: 'text-apple-pink' },
-  working:    { emoji: '⚙️', label: '処理中...',              color: 'text-white/50' },
-  complete:   { emoji: '✅', label: '完了！',                 color: 'text-apple-green' },
-  error:      { emoji: '❌', label: 'エラー',                 color: 'text-apple-pink' },
-}
-
 interface Props {
   selectedProblems: ProblemWithRating[]
   accessToken:      string | null
@@ -40,9 +28,82 @@ function getSupabaseClient() {
   return createClient(url, anon)
 }
 
+// ── ログからフェーズ・進捗を解析 ─────────────────────────────────────────────
+interface Progress {
+  current: number
+  total: number
+  phase: 'analyzing' | 'generating' | 'verifying' | 'saving' | 'purging' | 'done'
+  label: string
+}
+
+function parseProgress(logs: string[]): Progress | null {
+  for (let i = logs.length - 1; i >= 0; i--) {
+    const line = logs[i]
+
+    // [生成 X/N], [検証 X/N], [保存 X/N], [完了 X/N]
+    const m = line.match(/\[(?:生成|検証|保存|完了)\s*(\d+)\/(\d+)\]/)
+    if (m) {
+      const current = parseInt(m[1])
+      const total   = parseInt(m[2])
+      const phase = line.includes('[検証') ? 'verifying'
+        : line.includes('[保存')           ? 'saving'
+        : line.includes('[完了')           ? 'done'
+        : 'generating'
+      // 完了は current 問分が終わった → 0-indexed で current が完了数
+      const progress = phase === 'done' ? current / total : (current - 1) / total
+      return { current, total, phase, label: `問題 ${current}/${total}` }
+      // suppress unused var
+      void progress
+    }
+
+    // 分析フェーズ
+    if (line.includes('[分析]')) {
+      return { current: 0, total: 1, phase: 'analyzing', label: '分析中' }
+    }
+
+    // 淘汰フェーズ
+    if (line.includes('[淘汰]')) {
+      return { current: 1, total: 1, phase: 'purging', label: '整理中' }
+    }
+  }
+  return null
+}
+
+/** ログ行のカラー分類 */
+function logLineColor(line: string): string {
+  if (line.includes('❌') || line.includes('FAIL') || line.includes('エラー') || line.includes('失敗'))
+    return 'text-red-400/80'
+  if (line.includes('⚠') || line.includes('warn') || line.includes('スキップ'))
+    return 'text-yellow-400/70'
+  if (line.includes('✅') || line.includes('✓') || line.includes('完了') || line.includes('PASS'))
+    return 'text-emerald-400/80'
+  if (line.includes('🎯') || line.includes('[生成'))
+    return 'text-blue-300/70'
+  if (line.includes('🔍') || line.includes('[検証') || line.includes('[分析'))
+    return 'text-purple-300/70'
+  if (line.includes('💾') || line.includes('[保存'))
+    return 'text-cyan-300/70'
+  if (line.includes('🔧'))
+    return 'text-orange-300/70'
+  return 'text-white/40'
+}
+
+/** フェーズ → アイコン */
+const PHASE_INFO: Record<string, { emoji: string; label: string; color: string }> = {
+  analyzing:  { emoji: '🔍', label: '構造分析中',       color: 'text-purple-400' },
+  generating: { emoji: '⏳', label: 'DeepSeek 生成中',  color: 'text-blue-400' },
+  verifying:  { emoji: '🔬', label: '数学的検証中',     color: 'text-yellow-400' },
+  saving:     { emoji: '💾', label: 'Supabase 保存中',  color: 'text-cyan-400' },
+  purging:    { emoji: '🗑️', label: '未選択を整理中',   color: 'text-pink-400' },
+  done:       { emoji: '✅', label: '完了！',            color: 'text-emerald-400' },
+  queued:     { emoji: '🕐', label: 'キュー待ち...',    color: 'text-white/50' },
+  start:      { emoji: '🚀', label: 'Worker 起動中',    color: 'text-blue-400' },
+  error:      { emoji: '❌', label: 'エラー',            color: 'text-red-400' },
+}
+
 export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId, onStatusChange, onPostClick }: Props) {
   const [generating,    setGenerating]    = useState(false)
-  const [currentStep,   setCurrentStep]   = useState('start')
+  const [uiPhase,       setUiPhase]       = useState<string>('start')
   const [logs,          setLogs]          = useState<string[]>([])
   const [genDone,       setGenDone]       = useState<{ ok: boolean; message: string } | null>(null)
   const [fusionCount,   setFusionCount]   = useState(3)
@@ -51,7 +112,6 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
   const [showUpgrade,   setShowUpgrade]   = useState(false)
   const [upgradeUsed,   setUpgradeUsed]   = useState(0)
   const logEndRef = useRef<HTMLDivElement>(null)
-  // Realtime チャンネル参照（クリーンアップ用）
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const channelRef = useRef<any>(null)
 
@@ -61,7 +121,7 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
 
   // ── 生成リクエスト ──────────────────────────────────────────────────────
   const run = async (parents: ProblemWithRating[], mode: string, count: number) => {
-    setGenerating(true); setLogs([]); setGenDone(null); setCurrentStep('queued')
+    setGenerating(true); setLogs([]); setGenDone(null); setUiPhase('queued')
 
     const parentData = parents.map(p => ({
       id: p.id, topic_a: p.topic_a, topic_b: p.topic_b,
@@ -69,20 +129,17 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
       inspiration: p.inspiration, total: p.total, solution: p.solution,
     }))
 
-    // Supabase Edge Function: enqueue-generation（0.1秒でjob_id返す）
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const enqueueUrl  = supabaseUrl
       ? `${supabaseUrl}/functions/v1/enqueue-generation`
       : '/api/generate'   // フォールバック（旧SSE方式）
 
-    // ── 旧SSEフォールバック ──────────────────────────────────────────────
     if (enqueueUrl === '/api/generate') {
       await runLegacySSE(enqueueUrl, parentData, mode, count)
       return
     }
 
-    // ── 新: 非同期キュー ────────────────────────────────────────────────
-    setCurrentStep('start')
+    setUiPhase('start')
 
     let jobId: string | null = null
     try {
@@ -105,7 +162,7 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
           return
         }
         setLogs(prev => [...prev, message])
-        setCurrentStep('error')
+        setUiPhase('error')
         setGenDone({ ok: false, message })
         setGenerating(false)
         return
@@ -113,12 +170,12 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
 
       const { job_id } = await res.json()
       jobId = job_id as string
-      setLogs(prev => [...prev, `ジョブ受付: ${jobId} — Worker が処理を開始します`])
-      setCurrentStep('generating')
+      setLogs([`🚀 ジョブ受付: ${jobId}`])
+      setUiPhase('generating')
     } catch (e) {
       const message = `エンキュー失敗: ${e}`
       setLogs(prev => [...prev, message])
-      setCurrentStep('error')
+      setUiPhase('error')
       setGenDone({ ok: false, message })
       setGenerating(false)
       return
@@ -129,7 +186,6 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
     // ── Supabase Realtime で generation_jobs を監視 ──────────────────────
     const sb = getSupabaseClient()
 
-    // 古いチャンネルがあれば解除
     if (channelRef.current) {
       await sb.removeChannel(channelRef.current)
       channelRef.current = null
@@ -150,12 +206,13 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
             const messages = jobLogs.map((l: { level: string; message: string }) => l.message)
             setLogs(messages)
 
-            // ステップ推定
+            // フェーズ推定（最後のログから）
             const last = messages[messages.length - 1] ?? ''
-            if (last.includes('分析'))          setCurrentStep('analyzing')
-            else if (last.includes('生成中'))   setCurrentStep('generating')
-            else if (last.includes('保存'))     setCurrentStep('saving')
-            else if (last.includes('淘汰'))     setCurrentStep('purging')
+            if (last.includes('[分析]'))      setUiPhase('analyzing')
+            else if (last.includes('[生成'))  setUiPhase('generating')
+            else if (last.includes('[検証'))  setUiPhase('verifying')
+            else if (last.includes('[保存'))  setUiPhase('saving')
+            else if (last.includes('[淘汰]')) setUiPhase('purging')
           }
 
           // ── 完了/失敗 ──────────────────────────────────────────────────
@@ -164,15 +221,14 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
             const generated = job.result?.generated?.length ?? 0
             const total     = job.result?.total ?? count
             const message   = ok
-              ? `完了: ${generated}/${total} 問生成。表示を更新してください。`
-              : (job.error ?? `失敗: 0/${total} 問生成`)
+              ? `✅ 完了: ${generated}/${total} 問生成。表示を更新してください。`
+              : (job.error ?? `❌ 失敗: 0/${total} 問生成`)
 
-            setCurrentStep(ok ? 'complete' : 'error')
+            setUiPhase(ok ? 'done' : 'error')
             setLogs(prev => [...prev, message])
             setGenDone({ ok, message })
             setGenerating(false)
 
-            // チャンネル解除
             sb.removeChannel(channel)
             channelRef.current = null
           }
@@ -185,13 +241,12 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
     // ── タイムアウトフォールバック（15分） ───────────────────────────────
     setTimeout(async () => {
       if (!generating) return
-      // まだ生成中なら DB を直接確認
       const { data: job } = await sb
         .from('generation_jobs').select('status,result,error').eq('id', jobId!).single()
-      if (job?.status === 'done' || job?.status === 'failed') return  // Realtime が来ていればOK
+      if (job?.status === 'done' || job?.status === 'failed') return
 
-      const message = '生成がタイムアウトしました（Workerの状態をダッシュボードで確認してください）'
-      setCurrentStep('error')
+      const message = '⏱️ タイムアウト（Workerの状態を確認してください）'
+      setUiPhase('error')
       setGenDone({ ok: false, message })
       setLogs(prev => [...prev, message])
       setGenerating(false)
@@ -200,7 +255,7 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
     }, 15 * 60 * 1000)
   }
 
-  // ── 旧SSEフォールバック（NEXT_PUBLIC_SUPABASE_URL未設定時） ────────────
+  // ── 旧SSEフォールバック ────────────────────────────────────────────────
   const runLegacySSE = async (
     url: string,
     parentData: unknown[],
@@ -220,11 +275,11 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
       const data = await res.json().catch(() => null)
       const message = data?.error ?? `生成APIエラー: ${res.status}`
       if (res.status === 402) { setUpgradeUsed(data?.used ?? 0); setShowUpgrade(true); setGenerating(false); return }
-      setLogs(prev => [...prev, message]); setCurrentStep('error'); setGenDone({ ok: false, message }); setGenerating(false); return
+      setLogs(prev => [...prev, message]); setUiPhase('error'); setGenDone({ ok: false, message }); setGenerating(false); return
     }
     if (!res.body) {
       const message = '生成APIのストリームが空です'
-      setLogs(prev => [...prev, message]); setCurrentStep('error'); setGenDone({ ok: false, message }); setGenerating(false); return
+      setLogs(prev => [...prev, message]); setUiPhase('error'); setGenDone({ ok: false, message }); setGenerating(false); return
     }
 
     const reader = res.body.getReader(); const decoder = new TextDecoder(); let buffer = ''; let doneSeen = false
@@ -236,18 +291,17 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
         if (!part.startsWith('data: ')) continue
         try {
           const ev = JSON.parse(part.slice(6)); const message = String(ev.message ?? ev.msg ?? '')
-          if (ev.type === 'status') { setCurrentStep(ev.step ?? 'working'); if (message) setLogs(prev => [...prev, message]) }
+          if (ev.type === 'status') { setUiPhase(ev.step ?? 'generating'); if (message) setLogs(prev => [...prev, message]) }
           if (ev.type === 'log' && message) setLogs(prev => [...prev, message])
-          if (ev.type === 'error') { doneSeen = true; setCurrentStep('error'); setLogs(prev => [...prev, message || '生成エラー']); setGenDone({ ok: false, message: message || '生成エラー' }); setGenerating(false) }
-          if (ev.type === 'done') { doneSeen = true; const ok = ev.ok === true; const dm = message || (ok ? '生成完了' : '生成に失敗しました'); setCurrentStep(ok ? 'complete' : 'error'); setLogs(prev => [...prev, dm]); setGenDone({ ok, message: dm }); setGenerating(false) }
+          if (ev.type === 'error') { doneSeen = true; setUiPhase('error'); setLogs(prev => [...prev, message || '生成エラー']); setGenDone({ ok: false, message: message || '生成エラー' }); setGenerating(false) }
+          if (ev.type === 'done') { doneSeen = true; const ok = ev.ok === true; const dm = message || (ok ? '生成完了' : '生成に失敗しました'); setUiPhase(ok ? 'done' : 'error'); setLogs(prev => [...prev, dm]); setGenDone({ ok, message: dm }); setGenerating(false) }
         } catch { /* ignore */ }
       }
     }
-    if (!doneSeen) { const msg = '生成ストリームが完了イベントなしで終了しました'; setCurrentStep('error'); setGenDone({ ok: false, message: msg }); setLogs(prev => [...prev, msg]) }
+    if (!doneSeen) { const msg = '生成ストリームが完了イベントなしで終了しました'; setUiPhase('error'); setGenDone({ ok: false, message: msg }); setLogs(prev => [...prev, msg]) }
     setGenerating(false)
   }
 
-  // コンポーネントアンマウント時にチャンネル解除
   useEffect(() => {
     return () => {
       if (channelRef.current) {
@@ -282,7 +336,18 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
   }
 
   const FREE_LIMIT = 10
-  const stepInfo = BOT_STEPS[currentStep] ?? BOT_STEPS.working
+
+  // ── 進捗パース ──────────────────────────────────────────────────────────
+  const progress = parseProgress(logs)
+  const phaseInfo = PHASE_INFO[uiPhase] ?? PHASE_INFO.start
+
+  // 進捗バーの割合計算
+  let progressPct = 0
+  if (progress) {
+    const completedCount = logs.filter(l => l.includes('[完了')).length
+    const totalCount     = progress.total
+    if (totalCount > 0) progressPct = Math.min(100, Math.round((completedCount / totalCount) * 100))
+  }
 
   return (
     <div className="space-y-4">
@@ -340,10 +405,10 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
           >類題</button>
         </div>
 
-        {/* 生成完了メッセージ */}
+        {/* 完了メッセージ */}
         {genDone && !generating && (
           <div className={`text-[11px] mt-1 ${genDone.ok ? 'text-apple-green' : 'text-apple-pink'}`}>
-            {genDone.ok ? `✅ ${genDone.message}` : `❌ ${genDone.message}`}
+            {genDone.message}
           </div>
         )}
       </div>
@@ -400,23 +465,35 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
         </div>
       ))}
 
-      {/* ── ボットカーソルパネル ────────────────────────────────────────── */}
-      {(generating || (genDone !== null)) && (
-        <div className={`fixed bottom-6 right-6 z-50 w-72 rounded-2xl p-4 shadow-2xl
+      {/* ── フローティング進捗パネル ────────────────────────────────────── */}
+      {(generating || genDone !== null) && (
+        <div className={`fixed bottom-6 right-6 z-50 w-80 rounded-2xl p-4 shadow-2xl
                          border transition-all duration-300
                          ${generating
-                           ? 'backdrop-blur-2xl bg-black/70 border-white/15'
+                           ? 'backdrop-blur-2xl bg-black/75 border-white/15'
                            : genDone?.ok
-                             ? 'bg-apple-green/10 border-apple-green/30'
-                             : 'bg-apple-pink/10 border-apple-pink/30'}`}>
-          <div className="flex items-center gap-3 mb-2">
-            <span className="text-2xl animate-bounce">{stepInfo.emoji}</span>
-            <div className="flex-1">
-              <div className={`text-[13px] font-semibold ${stepInfo.color}`}>{stepInfo.label}</div>
-              {generating && <div className="text-[10px] text-white/30">R1使用時は数分かかる場合があります</div>}
+                             ? 'bg-emerald-950/80 border-emerald-500/30 backdrop-blur-xl'
+                             : 'bg-red-950/80 border-red-500/30 backdrop-blur-xl'}`}>
+
+          {/* ヘッダー：フェーズ + アニメーション */}
+          <div className="flex items-center gap-3 mb-2.5">
+            <span className={`text-xl ${generating ? 'animate-bounce' : ''}`}>{phaseInfo.emoji}</span>
+            <div className="flex-1 min-w-0">
+              <div className={`text-[13px] font-semibold ${phaseInfo.color}`}>{phaseInfo.label}</div>
+              {/* 問題番号表示 */}
+              {progress && generating && (
+                <div className="text-[10px] text-white/40 tabular-nums">
+                  問題 {progress.current}/{progress.total}
+                  {uiPhase === 'verifying' && ' — 検証中'}
+                  {uiPhase === 'saving'    && ' — 保存中'}
+                </div>
+              )}
+              {!progress && generating && (
+                <div className="text-[10px] text-white/30">Worker 処理中...</div>
+              )}
             </div>
             {generating && (
-              <div className="flex gap-0.5">
+              <div className="flex gap-0.5 shrink-0">
                 {[0,1,2].map(i => (
                   <div key={i} className="w-1.5 h-1.5 rounded-full bg-apple-blue animate-bounce"
                     style={{ animationDelay: `${i * 0.15}s` }} />
@@ -425,16 +502,30 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
             )}
           </div>
 
+          {/* プログレスバー */}
+          {generating && progress && progress.total > 1 && (
+            <div className="mb-2.5">
+              <div className="flex justify-between text-[9px] text-white/25 mb-1">
+                <span>
+                  {logs.filter(l => l.includes('[完了')).length}/{progress.total} 問完了
+                </span>
+                <span>{progressPct}%</span>
+              </div>
+              <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-blue-500 to-emerald-500 rounded-full transition-all duration-700"
+                  style={{ width: `${progressPct}%` }}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* ログ表示 */}
           {logs.length > 0 && (
-            <div className="max-h-28 overflow-y-auto space-y-0.5 border-t border-white/8 pt-2 mt-1">
-              {logs.slice(-6).map((line, i) => (
-                <div key={i} className={`text-[10px] leading-snug font-mono
-                    ${line.includes('エラー') || line.includes('失敗') || line.includes('⚠')
-                      ? 'text-apple-pink/70'
-                      : line.includes('✓') || line.includes('完了')
-                        ? 'text-apple-green/70'
-                        : 'text-white/35'}`}>
-                  {line.slice(0, 72)}
+            <div className="max-h-36 overflow-y-auto space-y-0.5 border-t border-white/8 pt-2">
+              {logs.slice(-10).map((line, i) => (
+                <div key={i} className={`text-[10px] leading-snug font-mono ${logLineColor(line)}`}>
+                  {line.length > 76 ? line.slice(0, 73) + '...' : line}
                 </div>
               ))}
               <div ref={logEndRef} />
