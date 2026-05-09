@@ -61,7 +61,16 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
       inspiration: p.inspiration, total: p.total, solution: p.solution,
     }))
 
-    const res = await fetch('/api/generate', {
+    // Supabase Edge Function を優先使用（タイムアウトなし）
+    // フォールバック: Vercel /api/generate（60秒制限あり）
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const edgeFunctionUrl = supabaseUrl
+      ? `${supabaseUrl}/functions/v1/generate-problem`
+      : null
+
+    const generateUrl = edgeFunctionUrl ?? '/api/generate'
+
+    const res = await fetch(generateUrl, {
       method:  'POST',
       headers: {
         'Content-Type': 'application/json',
