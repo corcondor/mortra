@@ -42,6 +42,29 @@ CREATE INDEX IF NOT EXISTS idx_problems_difficulty ON problems(difficulty);
 CREATE INDEX IF NOT EXISTS idx_problems_total      ON problems(total DESC);
 CREATE INDEX IF NOT EXISTS idx_ratings_status      ON ratings(status);
 
+-- generation_jobs: 非同期生成キュー
+CREATE TABLE IF NOT EXISTS generation_jobs (
+  id         TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  status     TEXT DEFAULT 'pending'
+             CHECK (status IN ('pending','processing','done','failed')),
+  user_id    TEXT,
+  parents    JSONB NOT NULL,
+  mode       TEXT NOT NULL DEFAULT 'auto',
+  count      INTEGER NOT NULL DEFAULT 3,
+  logs       JSONB DEFAULT '[]',   -- [{level, message, ts}]
+  result     JSONB,                -- {ok, generated:[{id,statement}], total}
+  error      TEXT,
+  model      TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_gen_jobs_status     ON generation_jobs(status);
+CREATE INDEX IF NOT EXISTS idx_gen_jobs_user       ON generation_jobs(user_id);
+CREATE INDEX IF NOT EXISTS idx_gen_jobs_created    ON generation_jobs(created_at DESC);
+
+-- Realtime 有効化（Supabase ダッシュボード > Database > Replication で generation_jobs を ON にすること）
+
 -- Row Level Security (read-only public for MVP)
 ALTER TABLE problems ENABLE ROW LEVEL SECURITY;
 ALTER TABLE ratings  ENABLE ROW LEVEL SECURITY;

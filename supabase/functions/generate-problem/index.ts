@@ -7,7 +7,6 @@ import {
   makeAnalysisPrompt, makeSimilarPrompt,
   makeFusionPrompt,   makeExpandPrompt,
   makeVerificationPrompt,
-  makeR1FusionPrompt, makeR1SimilarPrompt,
   extractJson,
   type ParentProblem,
 } from '../_shared/prompts.ts'
@@ -132,11 +131,17 @@ async function callDeepSeek(
   const reader = res.body.getReader()
   const dec    = new TextDecoder()
   let full = '', reasoning = '', streamDone = false, finishReason = ''
+  // SSE ラインバッファ：TCPパケット境界で行が分断されても [DONE] を取りこぼさないよう
+  // 不完全な末尾行を次チャンクの先頭に持ち越す
+  let lineBuf = ''
 
   outer: while (!streamDone) {
     const { done, value } = await reader.read()
     if (done) break
-    for (const line of dec.decode(value).split('\n')) {
+    lineBuf += dec.decode(value)
+    const lines = lineBuf.split('\n')
+    lineBuf = lines.pop() ?? ''   // 不完全な最後の行は次チャンクへ
+    for (const line of lines) {
       if (!line.startsWith('data: ')) continue
       const data = line.slice(6).trim()
       if (data === '[DONE]') { streamDone = true; break outer }
@@ -306,8 +311,9 @@ Deno.serve(async (req: Request) => {
 
   const resolvedMode  = mode === 'auto' ? (parents.length >= 2 ? 'fusion' : 'similar') : mode
   const totalCount    = Math.max(1, Math.min(Number(count) || 1, 10))
-  const isR1          = MODEL.includes('reasoner')
-  const useStreaming   = !isR1  // R1は非ストリーミング（タイムアウト回避）
+  // ストリーミングを常に使用：R1は推論トークンが流れ続けるのでアイドルタイムアウトが発動しない
+  // 非ストリーミングは「沈黙」が続き ~17s でサーバー側に接続を切られる
+  const useStreaming   = true
 
   const { data: genData } = await supabase.from('problems')
     .select('generation').order('generation', { ascending: false }).limit(1).single()
@@ -344,12 +350,7 @@ Deno.serve(async (req: Request) => {
         for (let i = 0; i < totalCount; i++) {
           send('status', { step: 'generating', message: `生成中... (${i + 1}/${totalCount})` })
 
-          // R1は短いプロンプト専用（長いとAPIが17秒でタイムアウト）
-          const prompt = isR1
-            ? (resolvedMode === 'fusion'
-                ? makeR1FusionPrompt(parents)
-                : makeR1SimilarPrompt(parents[i % parents.length]))
-            : resolvedMode === 'fusion'  ? makeFusionPrompt(parents)
+          const prompt = resolvedMode === 'fusion'  ? makeFusionPrompt(parents)
             : resolvedMode === 'expand'  ? makeExpandPrompt(parents[i % parents.length])
             : makeSimilarPrompt(parents[i % parents.length], analysis)
 
@@ -405,23 +406,6 @@ Deno.serve(async (req: Request) => {
           }
 
           data.id = randomHex(6)
-
-          // R1はフラット構造 { statement, answer, solution_outline, difficulty, verification }
-          // V3は { final_problem: { statement, answer, ... }, beauty_analysis: { total, ... } }
-          // → 両方を final_problem フィールドに正規化
-          if (isR1 && !data.final_problem) {
-            data.final_problem = {
-              statement:        data.statement,
-              answer:           data.answer,
-              solution_outline: data.solution_outline,
-              difficulty:       data.difficulty ?? 'B',
-            }
-            data.beauty_analysis = {
-              surprise: 7, minimality: 8, connection_strength: 8,
-              inevitability: 8, difficulty_calibration: 7, total: 7.6,
-              comment: 'R1生成',
-            }
-          }
 
           const fp        = (data.final_problem ?? {}) as Record<string, unknown>
           const statement = String(fp.statement ?? '')

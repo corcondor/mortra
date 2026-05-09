@@ -1,0 +1,33 @@
+name: Generate Math Problem
+
+on:
+  repository_dispatch:
+    types: [generate-problem]
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30   # R1が何分かかっても大丈夫
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: worker/package.json
+
+      - name: Install dependencies
+        working-directory: worker
+        run: npm install
+
+      - name: Process job
+        working-directory: worker
+        env:
+          SUPABASE_URL:              ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          DEEPSEEK_API_KEY:          ${{ secrets.DEEPSEEK_API_KEY }}
+          DEEPSEEK_MODEL:            ${{ secrets.DEEPSEEK_MODEL }}
+          JOB_ID:                    ${{ github.event.client_payload.job_id }}
+        run: npx tsx src/process-job.ts

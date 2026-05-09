@@ -1,5 +1,6 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
+import { createClient } from '@supabase/supabase-js'
 import type { ProblemWithRating } from '@/lib/types'
 import { MathText } from './MathText'
 import { UpgradeModal } from './UpgradeModal'
@@ -11,15 +12,13 @@ const TOPIC_JP: Record<string,string> = {
   probability:'確率', functional_eq:'関数方程式', modular:'合同算術', matrix:'行列',
 }
 
-// ボットカーソルのステップ定義
 const BOT_STEPS: Record<string, { emoji: string; label: string; color: string }> = {
   queued:     { emoji: '🕐', label: 'キュー待ち...',         color: 'text-white/50' },
-  start:      { emoji: '🚀', label: 'DeepSeek 接続中',       color: 'text-apple-blue' },
+  start:      { emoji: '🚀', label: 'Worker 接続中',         color: 'text-apple-blue' },
   analyzing:  { emoji: '🔎', label: '構造分析中',            color: 'text-purple-400' },
   generating: { emoji: '⏳', label: 'DeepSeek 生成中',       color: 'text-orange-400' },
   saving:     { emoji: '💾', label: 'Supabase に保存中',     color: 'text-apple-green' },
   purging:    { emoji: '🗑️', label: '未選択を淘汰中',        color: 'text-apple-pink' },
-  syncing:    { emoji: '☁️', label: 'Supabase に同期中',      color: 'text-apple-blue' },
   working:    { emoji: '⚙️', label: '処理中...',              color: 'text-white/50' },
   complete:   { emoji: '✅', label: '完了！',                 color: 'text-apple-green' },
   error:      { emoji: '❌', label: 'エラー',                 color: 'text-apple-pink' },
@@ -34,6 +33,13 @@ interface Props {
   onPostClick:      (p: ProblemWithRating) => void
 }
 
+// Supabase クライアント（Realtime用）
+function getSupabaseClient() {
+  const url  = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  return createClient(url, anon)
+}
+
 export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId, onStatusChange, onPostClick }: Props) {
   const [generating,    setGenerating]    = useState(false)
   const [currentStep,   setCurrentStep]   = useState('start')
@@ -45,13 +51,15 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
   const [showUpgrade,   setShowUpgrade]   = useState(false)
   const [upgradeUsed,   setUpgradeUsed]   = useState(0)
   const logEndRef = useRef<HTMLDivElement>(null)
+  // Realtime チャンネル参照（クリーンアップ用）
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const channelRef = useRef<any>(null)
 
-  // ログ末尾に自動スクロール
   useEffect(() => {
     logEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [logs])
 
-  // ── SSE ストリーミング生成 ──────────────────────────────────────────
+  // ── 生成リクエスト ──────────────────────────────────────────────────────
   const run = async (parents: ProblemWithRating[], mode: string, count: number) => {
     setGenerating(true); setLogs([]); setGenDone(null); setCurrentStep('queued')
 
@@ -61,17 +69,146 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
       inspiration: p.inspiration, total: p.total, solution: p.solution,
     }))
 
-    // Supabase Edge Function を優先使用（タイムアウトなし）
-    // フォールバック: Vercel /api/generate（60秒制限あり）
+    // Supabase Edge Function: enqueue-generation（0.1秒でjob_id返す）
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const edgeFunctionUrl = supabaseUrl
-      ? `${supabaseUrl}/functions/v1/generate-problem`
-      : null
+    const enqueueUrl  = supabaseUrl
+      ? `${supabaseUrl}/functions/v1/enqueue-generation`
+      : '/api/generate'   // フォールバック（旧SSE方式）
 
-    const generateUrl = edgeFunctionUrl ?? '/api/generate'
+    // ── 旧SSEフォールバック ──────────────────────────────────────────────
+    if (enqueueUrl === '/api/generate') {
+      await runLegacySSE(enqueueUrl, parentData, mode, count)
+      return
+    }
 
-    const res = await fetch(generateUrl, {
-      method:  'POST',
+    // ── 新: 非同期キュー ────────────────────────────────────────────────
+    setCurrentStep('start')
+
+    let jobId: string | null = null
+    try {
+      const res = await fetch(enqueueUrl, {
+        method:  'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
+        body: JSON.stringify({ parents: parentData, mode, count }),
+      })
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null)
+        const message = data?.error ?? `エンキューエラー: ${res.status}`
+        if (res.status === 402) {
+          setUpgradeUsed(data?.used ?? 0)
+          setShowUpgrade(true)
+          setGenerating(false)
+          return
+        }
+        setLogs(prev => [...prev, message])
+        setCurrentStep('error')
+        setGenDone({ ok: false, message })
+        setGenerating(false)
+        return
+      }
+
+      const { job_id } = await res.json()
+      jobId = job_id as string
+      setLogs(prev => [...prev, `ジョブ受付: ${jobId} — Worker が処理を開始します`])
+      setCurrentStep('generating')
+    } catch (e) {
+      const message = `エンキュー失敗: ${e}`
+      setLogs(prev => [...prev, message])
+      setCurrentStep('error')
+      setGenDone({ ok: false, message })
+      setGenerating(false)
+      return
+    }
+
+    if (!jobId) return
+
+    // ── Supabase Realtime で generation_jobs を監視 ──────────────────────
+    const sb = getSupabaseClient()
+
+    // 古いチャンネルがあれば解除
+    if (channelRef.current) {
+      await sb.removeChannel(channelRef.current)
+      channelRef.current = null
+    }
+
+    const channel = sb
+      .channel(`job-${jobId}`)
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'generation_jobs', filter: `id=eq.${jobId}` },
+        (payload) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const job = payload.new as any
+
+          // ── ライブログ更新 ──────────────────────────────────────────────
+          const jobLogs: { level: string; message: string }[] = job.logs ?? []
+          if (jobLogs.length > 0) {
+            const messages = jobLogs.map((l: { level: string; message: string }) => l.message)
+            setLogs(messages)
+
+            // ステップ推定
+            const last = messages[messages.length - 1] ?? ''
+            if (last.includes('分析'))          setCurrentStep('analyzing')
+            else if (last.includes('生成中'))   setCurrentStep('generating')
+            else if (last.includes('保存'))     setCurrentStep('saving')
+            else if (last.includes('淘汰'))     setCurrentStep('purging')
+          }
+
+          // ── 完了/失敗 ──────────────────────────────────────────────────
+          if (job.status === 'done' || job.status === 'failed') {
+            const ok = job.status === 'done' && job.result?.ok === true
+            const generated = job.result?.generated?.length ?? 0
+            const total     = job.result?.total ?? count
+            const message   = ok
+              ? `完了: ${generated}/${total} 問生成。表示を更新してください。`
+              : (job.error ?? `失敗: 0/${total} 問生成`)
+
+            setCurrentStep(ok ? 'complete' : 'error')
+            setLogs(prev => [...prev, message])
+            setGenDone({ ok, message })
+            setGenerating(false)
+
+            // チャンネル解除
+            sb.removeChannel(channel)
+            channelRef.current = null
+          }
+        },
+      )
+      .subscribe()
+
+    channelRef.current = channel
+
+    // ── タイムアウトフォールバック（15分） ───────────────────────────────
+    setTimeout(async () => {
+      if (!generating) return
+      // まだ生成中なら DB を直接確認
+      const { data: job } = await sb
+        .from('generation_jobs').select('status,result,error').eq('id', jobId!).single()
+      if (job?.status === 'done' || job?.status === 'failed') return  // Realtime が来ていればOK
+
+      const message = '生成がタイムアウトしました（Workerの状態をダッシュボードで確認してください）'
+      setCurrentStep('error')
+      setGenDone({ ok: false, message })
+      setLogs(prev => [...prev, message])
+      setGenerating(false)
+      await sb.removeChannel(channel)
+      channelRef.current = null
+    }, 15 * 60 * 1000)
+  }
+
+  // ── 旧SSEフォールバック（NEXT_PUBLIC_SUPABASE_URL未設定時） ────────────
+  const runLegacySSE = async (
+    url: string,
+    parentData: unknown[],
+    mode: string,
+    count: number,
+  ) => {
+    const res = await fetch(url, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
@@ -82,80 +219,43 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
     if (!res.ok) {
       const data = await res.json().catch(() => null)
       const message = data?.error ?? `生成APIエラー: ${res.status}`
-      // 利用制限エラー (402) → アップグレードモーダルを表示
-      if (res.status === 402) {
-        setUpgradeUsed(data?.used ?? 0)
-        setShowUpgrade(true)
-        setGenerating(false)
-        return
-      }
-      setLogs(prev => [...prev, message])
-      setCurrentStep('error')
-      setGenDone({ ok: false, message })
-      setGenerating(false)
-      return
+      if (res.status === 402) { setUpgradeUsed(data?.used ?? 0); setShowUpgrade(true); setGenerating(false); return }
+      setLogs(prev => [...prev, message]); setCurrentStep('error'); setGenDone({ ok: false, message }); setGenerating(false); return
     }
-
     if (!res.body) {
       const message = '生成APIのストリームが空です'
-      setLogs(prev => [...prev, message])
-      setCurrentStep('error')
-      setGenDone({ ok: false, message })
-      setGenerating(false)
-      return
+      setLogs(prev => [...prev, message]); setCurrentStep('error'); setGenDone({ ok: false, message }); setGenerating(false); return
     }
 
-    const reader  = res.body.getReader()
-    const decoder = new TextDecoder()
-    let   buffer  = ''
-    let doneSeen = false
-
-    // eslint-disable-next-line no-constant-condition
+    const reader = res.body.getReader(); const decoder = new TextDecoder(); let buffer = ''; let doneSeen = false
     while (true) {
-      const { done, value } = await reader.read()
-      if (done) break
+      const { done, value } = await reader.read(); if (done) break
       buffer += decoder.decode(value, { stream: true })
-      const parts = buffer.split('\n\n')
-      buffer = parts.pop() ?? ''
+      const parts = buffer.split('\n\n'); buffer = parts.pop() ?? ''
       for (const part of parts) {
         if (!part.startsWith('data: ')) continue
         try {
-          const ev = JSON.parse(part.slice(6))
-          const message = String(ev.message ?? ev.msg ?? '')
-          if (ev.type === 'status') {
-            setCurrentStep(ev.step ?? 'working')
-            if (message) setLogs(prev => [...prev, message])
-          }
-          if (ev.type === 'log' && message) {
-            setLogs(prev => [...prev, message])
-          }
-          if (ev.type === 'error') {
-            doneSeen = true
-            setCurrentStep('error')
-            setLogs(prev => [...prev, message || '生成エラー'])
-            setGenDone({ ok: false, message: message || '生成エラー' })
-            setGenerating(false)
-          }
-          if (ev.type === 'done') {
-            doneSeen = true
-            const ok = ev.ok === true
-            const doneMessage = message || (ok ? '生成完了' : '生成に失敗しました')
-            setCurrentStep(ok ? 'complete' : 'error')
-            setLogs(prev => [...prev, doneMessage])
-            setGenDone({ ok, message: doneMessage })
-            setGenerating(false)
-          }
-        } catch { /* ignore parse error */ }
+          const ev = JSON.parse(part.slice(6)); const message = String(ev.message ?? ev.msg ?? '')
+          if (ev.type === 'status') { setCurrentStep(ev.step ?? 'working'); if (message) setLogs(prev => [...prev, message]) }
+          if (ev.type === 'log' && message) setLogs(prev => [...prev, message])
+          if (ev.type === 'error') { doneSeen = true; setCurrentStep('error'); setLogs(prev => [...prev, message || '生成エラー']); setGenDone({ ok: false, message: message || '生成エラー' }); setGenerating(false) }
+          if (ev.type === 'done') { doneSeen = true; const ok = ev.ok === true; const dm = message || (ok ? '生成完了' : '生成に失敗しました'); setCurrentStep(ok ? 'complete' : 'error'); setLogs(prev => [...prev, dm]); setGenDone({ ok, message: dm }); setGenerating(false) }
+        } catch { /* ignore */ }
       }
     }
-    if (!doneSeen) {
-      const message = '生成ストリームが完了イベントなしで終了しました'
-      setCurrentStep('error')
-      setGenDone({ ok: false, message })
-      setLogs(prev => [...prev, message])
-    }
+    if (!doneSeen) { const msg = '生成ストリームが完了イベントなしで終了しました'; setCurrentStep('error'); setGenDone({ ok: false, message: msg }); setLogs(prev => [...prev, msg]) }
     setGenerating(false)
   }
+
+  // コンポーネントアンマウント時にチャンネル解除
+  useEffect(() => {
+    return () => {
+      if (channelRef.current) {
+        const sb = getSupabaseClient()
+        sb.removeChannel(channelRef.current)
+      }
+    }
+  }, [])
 
   const toggleChosen = (id: string) =>
     setChosenIds(ids => ids.includes(id) ? ids.filter(x => x !== id) : [...ids, id])
@@ -166,11 +266,8 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
 
   const deselect = async (id: string) => {
     await fetch('/api/status', {
-      method:  'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-      },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
       body: JSON.stringify({ problem_id: id, status: 'pending' }),
     })
     onStatusChange(id, 'pending')
@@ -185,23 +282,15 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
   }
 
   const FREE_LIMIT = 10
-
   const stepInfo = BOT_STEPS[currentStep] ?? BOT_STEPS.working
 
   return (
     <div className="space-y-4">
-
-      {/* アップグレードモーダル */}
       {showUpgrade && (
-        <UpgradeModal
-          accessToken={accessToken}
-          used={upgradeUsed}
-          limit={FREE_LIMIT}
-          onClose={() => setShowUpgrade(false)}
-        />
+        <UpgradeModal accessToken={accessToken} used={upgradeUsed} limit={FREE_LIMIT} onClose={() => setShowUpgrade(false)} />
       )}
 
-      {/* ── Sticky 生成コントロール ───────────────────────────────────── */}
+      {/* ── Sticky 生成コントロール ─────────────────────────────────────── */}
       <div className="sticky top-0 z-20 backdrop-blur-2xl bg-black/50
                       border border-white/12 rounded-2xl p-4 shadow-xl space-y-3">
         <div className="text-[11px] font-semibold text-white/30 uppercase tracking-widest">
@@ -254,12 +343,12 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
         {/* 生成完了メッセージ */}
         {genDone && !generating && (
           <div className={`text-[11px] mt-1 ${genDone.ok ? 'text-apple-green' : 'text-apple-pink'}`}>
-            {genDone.ok ? `✅ ${genDone.message}。表示を更新すると新問題が表示されます。` : `❌ ${genDone.message}`}
+            {genDone.ok ? `✅ ${genDone.message}` : `❌ ${genDone.message}`}
           </div>
         )}
       </div>
 
-      {/* ── 選択済み問題リスト ─────────────────────────────────────────── */}
+      {/* ── 選択済み問題リスト ──────────────────────────────────────────── */}
       {selectedProblems.map(p => (
         <div key={p.id} className="glass rounded-2xl p-4">
           <div className="flex items-start justify-between gap-3">
@@ -280,7 +369,6 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
               )}
             </div>
 
-            {/* 個別アクション */}
             <div className="flex flex-col gap-1.5 shrink-0">
               <button onClick={() => run([p], 'similar', 3)} disabled={generating}
                 className="text-[11px] px-2.5 py-1.5 rounded-xl border border-white/10
@@ -304,7 +392,6 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
             </div>
           </div>
 
-          {/* 融合チェック */}
           <label className="flex items-center gap-2 mt-3 cursor-pointer select-none">
             <input type="checkbox" checked={chosenIds.includes(p.id)}
               onChange={() => toggleChosen(p.id)} className="accent-apple-blue" />
@@ -313,7 +400,7 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
         </div>
       ))}
 
-      {/* ── ボットカーソルパネル（生成中は常時表示） ──────────────────── */}
+      {/* ── ボットカーソルパネル ────────────────────────────────────────── */}
       {(generating || (genDone !== null)) && (
         <div className={`fixed bottom-6 right-6 z-50 w-72 rounded-2xl p-4 shadow-2xl
                          border transition-all duration-300
@@ -322,42 +409,31 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
                            : genDone?.ok
                              ? 'bg-apple-green/10 border-apple-green/30'
                              : 'bg-apple-pink/10 border-apple-pink/30'}`}>
-
-          {/* ヘッダー */}
           <div className="flex items-center gap-3 mb-2">
-            <span className={`text-2xl ${generating && currentStep === 'waiting' ? 'animate-spin' : 'animate-bounce'}`}>
-              {stepInfo.emoji}
-            </span>
+            <span className="text-2xl animate-bounce">{stepInfo.emoji}</span>
             <div className="flex-1">
-              <div className={`text-[13px] font-semibold ${stepInfo.color}`}>
-                {stepInfo.label}
-              </div>
-              {generating && (
-                <div className="text-[10px] text-white/30">最大15分かかります</div>
-              )}
+              <div className={`text-[13px] font-semibold ${stepInfo.color}`}>{stepInfo.label}</div>
+              {generating && <div className="text-[10px] text-white/30">R1使用時は数分かかる場合があります</div>}
             </div>
             {generating && (
               <div className="flex gap-0.5">
                 {[0,1,2].map(i => (
-                  <div key={i}
-                    className="w-1.5 h-1.5 rounded-full bg-apple-blue animate-bounce"
-                    style={{ animationDelay: `${i * 0.15}s` }}
-                  />
+                  <div key={i} className="w-1.5 h-1.5 rounded-full bg-apple-blue animate-bounce"
+                    style={{ animationDelay: `${i * 0.15}s` }} />
                 ))}
               </div>
             )}
           </div>
 
-          {/* ライブログ（最新 6 行） */}
           {logs.length > 0 && (
             <div className="max-h-28 overflow-y-auto space-y-0.5 border-t border-white/8 pt-2 mt-1">
               {logs.slice(-6).map((line, i) => (
-                <div key={i}
-                  className={`text-[10px] leading-snug font-mono
-                    ${line.includes('エラー') || line.includes('失敗') || line.includes('ERROR')
+                <div key={i} className={`text-[10px] leading-snug font-mono
+                    ${line.includes('エラー') || line.includes('失敗') || line.includes('⚠')
                       ? 'text-apple-pink/70'
-                      : 'text-white/35'}`}
-                >
+                      : line.includes('✓') || line.includes('完了')
+                        ? 'text-apple-green/70'
+                        : 'text-white/35'}`}>
                   {line.slice(0, 72)}
                 </div>
               ))}
