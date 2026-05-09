@@ -42,8 +42,8 @@ function pushLog(message: string, level = 'info') {
 async function flushLogs(jobId: string) {
   if (!logBuf.length) return
   const batch = logBuf.splice(0)
-  await supabase.rpc('append_job_logs', { p_job_id: jobId, p_logs: batch })
-    .catch(e => console.error('flushLogs:', e))
+  const { error } = await supabase.rpc('append_job_logs', { p_job_id: jobId, p_logs: batch })
+  if (error) console.error('flushLogs:', error.message)
 }
 
 // ── DeepSeek ─────────────────────────────────────────────────────────────────
@@ -308,7 +308,7 @@ async function processJob(jobId: string) {
         await supabase.from('usage').upsert(
           { user_id: userId, year_month: ym(), generations_count: 1 },
           { onConflict: 'user_id,year_month', ignoreDuplicates: false },
-        ).catch(()=>{})
+        )
       }
     }
 
