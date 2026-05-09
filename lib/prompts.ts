@@ -225,6 +225,60 @@ ${solution}
 \`\`\``
 }
 
+/**
+ * R1専用：短いプロンプト（長いプロンプトだとAPIが17秒でタイムアウトする）
+ */
+export function makeR1FusionPrompt(problems: ParentProblem[]): string {
+  const probs = problems.map((p, i) =>
+    `問題${i + 1}: ${p.statement}\n答え: ${p.answer ?? ''}`
+  ).join('\n\n')
+
+  return `難関大数学の作問専門家として、以下の2問の数学的構造を融合した新問題を作れ。
+
+${probs}
+
+要件：
+- 問題文は1文か2文で「〜を求めよ」で終わる（小問分割禁止）
+- 解く過程で両問題の核心技法が必要になる構造
+- 答えは整数・分数・既知定数（π,e,√n等）
+- 作成前に必ず答えを step-by-step で計算し確認すること
+
+以下のJSON形式のみで回答（他の文章不要）：
+\`\`\`json
+{
+  "statement": "問題文（LaTeX）",
+  "answer": "答え（LaTeX、計算済み）",
+  "solution_outline": "解法の骨格（150字以内）",
+  "difficulty": "A/B/C/D（A=最難）",
+  "verification": "答えの計算確認（簡潔に）"
+}
+\`\`\``
+}
+
+export function makeR1SimilarPrompt(p: ParentProblem): string {
+  return `難関大数学の作問専門家として、以下の問題の数学的核心を保った類題を作れ。
+
+元問題: ${p.statement}
+答え: ${p.answer ?? ''}
+
+要件：
+- 設定・数値は変えるが解法の核心一手は保つ
+- 単純な数値置き換えは禁止、新鮮さが必要
+- 答えは元問題と異なること
+- 作成前に必ず答えを step-by-step で計算し確認すること
+
+以下のJSON形式のみで回答（他の文章不要）：
+\`\`\`json
+{
+  "statement": "問題文（LaTeX）",
+  "answer": "答え（LaTeX、計算済み）",
+  "solution_outline": "解法の骨格（150字以内）",
+  "difficulty": "A/B/C/D（A=最難）",
+  "verification": "答えの計算確認（簡潔に）"
+}
+\`\`\``
+}
+
 /** AIの応答から JSON を抽出 */
 export function extractJson(text: string): Record<string, unknown> | null {
   // コードブロック内の JSON を優先

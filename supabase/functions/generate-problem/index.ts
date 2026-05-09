@@ -7,6 +7,7 @@ import {
   makeAnalysisPrompt, makeSimilarPrompt,
   makeFusionPrompt,   makeExpandPrompt,
   makeVerificationPrompt,
+  makeR1FusionPrompt, makeR1SimilarPrompt,
   extractJson,
   type ParentProblem,
 } from '../_shared/prompts.ts'
@@ -303,9 +304,10 @@ Deno.serve(async (req: Request) => {
     return new Response(JSON.stringify({ error: 'DEEPSEEK_API_KEY が設定されていません' }),
       { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
 
-  const resolvedMode = mode === 'auto' ? (parents.length >= 2 ? 'fusion' : 'similar') : mode
-  const totalCount   = Math.max(1, Math.min(Number(count) || 1, 10))
-  const useStreaming  = !MODEL.includes('reasoner')  // R1は非ストリーミング
+  const resolvedMode  = mode === 'auto' ? (parents.length >= 2 ? 'fusion' : 'similar') : mode
+  const totalCount    = Math.max(1, Math.min(Number(count) || 1, 10))
+  const isR1          = MODEL.includes('reasoner')
+  const useStreaming   = !isR1  // R1は非ストリーミング（タイムアウト回避）
 
   const { data: genData } = await supabase.from('problems')
     .select('generation').order('generation', { ascending: false }).limit(1).single()
@@ -342,9 +344,14 @@ Deno.serve(async (req: Request) => {
         for (let i = 0; i < totalCount; i++) {
           send('status', { step: 'generating', message: `生成中... (${i + 1}/${totalCount})` })
 
-          const prompt = resolvedMode === 'fusion'  ? makeFusionPrompt(parents)
-                       : resolvedMode === 'expand'  ? makeExpandPrompt(parents[i % parents.length])
-                       : makeSimilarPrompt(parents[i % parents.length], analysis)
+          // R1は短いプロンプト専用（長いとAPIが17秒でタイムアウト）
+          const prompt = isR1
+            ? (resolvedMode === 'fusion'
+                ? makeR1FusionPrompt(parents)
+                : makeR1SimilarPrompt(parents[i % parents.length]))
+            : resolvedMode === 'fusion'  ? makeFusionPrompt(parents)
+            : resolvedMode === 'expand'  ? makeExpandPrompt(parents[i % parents.length])
+            : makeSimilarPrompt(parents[i % parents.length], analysis)
 
           let data: Record<string, unknown> | null = null
           let lastFailure = ''
@@ -398,6 +405,24 @@ Deno.serve(async (req: Request) => {
           }
 
           data.id = randomHex(6)
+
+          // R1はフラット構造 { statement, answer, solution_outline, difficulty, verification }
+          // V3は { final_problem: { statement, answer, ... }, beauty_analysis: { total, ... } }
+          // → 両方を final_problem フィールドに正規化
+          if (isR1 && !data.final_problem) {
+            data.final_problem = {
+              statement:        data.statement,
+              answer:           data.answer,
+              solution_outline: data.solution_outline,
+              difficulty:       data.difficulty ?? 'B',
+            }
+            data.beauty_analysis = {
+              surprise: 7, minimality: 8, connection_strength: 8,
+              inevitability: 8, difficulty_calibration: 7, total: 7.6,
+              comment: 'R1生成',
+            }
+          }
+
           const fp        = (data.final_problem ?? {}) as Record<string, unknown>
           const statement = String(fp.statement ?? '')
           const answer    = String(fp.answer    ?? '')
