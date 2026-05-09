@@ -29,13 +29,16 @@ async function incrementUsage(userId: string) {
 }
 
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/chat/completions'
-// deepseek-reasoner = R1（推論モデル）、deepseek-chat = V3（高速モデル）
-const MODEL            = process.env.DEEPSEEK_MODEL ?? 'deepseek-reasoner'
+// deepseek-chat = V3（安定・高速）、deepseek-reasoner = R1（高品質だがAPI接続が不安定）
+// VercelのHobbyプランは60s制限があるためデフォルトはV3を推奨
+const MODEL            = process.env.DEEPSEEK_MODEL ?? 'deepseek-chat'
 const FAST_MODEL       = process.env.DEEPSEEK_FAST_MODEL ?? 'deepseek-chat'
-// R1は推論トレース(reasoning_content)+JSON本文で合計32k超えることがある。余裕を持って設定
-const MAX_TOKENS       = Number(process.env.DEEPSEEK_MAX_TOKENS ?? 32000)
+// V3: 8000で十分。R1を使う場合は env で DEEPSEEK_MAX_TOKENS=32000 に設定
+const MAX_TOKENS       = Number(process.env.DEEPSEEK_MAX_TOKENS ?? 8000)
 // 分析・検証など軽いタスクはトークン節約
 const FAST_MAX_TOKENS  = 6000
+// 1回のDeepSeek API呼び出しのタイムアウト（ms）
+const DEEPSEEK_TIMEOUT_MS = Number(process.env.DEEPSEEK_TIMEOUT_MS ?? 90000)
 
 type SseType = 'status' | 'log' | 'done' | 'error'
 
@@ -150,6 +153,9 @@ async function callDeepSeek(
   // R1（deepseek-reasoner）は temperature=1 推奨。V3はデフォルト(1.0)のまま
   const isReasoner = model.includes('reasoner')
 
+  const controller = new AbortController()
+  const timeoutId  = setTimeout(() => controller.abort(), DEEPSEEK_TIMEOUT_MS)
+
   let res: Response
   try {
     res = await fetch(DEEPSEEK_API_URL, {
@@ -162,18 +168,25 @@ async function callDeepSeek(
         max_tokens: maxTokens,
         ...(isReasoner ? { temperature: 1 } : {}),
       }),
+      signal: controller.signal,
     })
   } catch (error) {
+    clearTimeout(timeoutId)
+    if ((error as Error)?.name === 'AbortError') {
+      throw new Error(`DeepSeek タイムアウト (${DEEPSEEK_TIMEOUT_MS / 1000}s): 応答がありませんでした。時間を置いて再試行してください。`)
+    }
     throw new Error(`DeepSeek 接続エラー: ${errorMessage(error)}`)
   }
 
   if (!res.ok) {
+    clearTimeout(timeoutId)
     const err = await res.text()
     throw new Error(deepSeekHttpError(res.status, err))
   }
 
   if (!onChunk) {
     const json = await res.json() as { choices?: { message?: { content?: string; finish_reason?: string } }[] }
+    clearTimeout(timeoutId)
     const choice = json.choices?.[0]
     if (choice?.message?.finish_reason === 'length') {
       throw new Error(`トークン上限(${maxTokens})に達して応答が途切れました。DEEPSEEK_MAX_TOKENS を増やしてください。`)
@@ -211,16 +224,20 @@ async function callDeepSeek(
     }
   }
 
+  clearTimeout(timeoutId)
+
   if (!streamDone) {
     // [DONE] を受け取らずにストリームが終了
     if (finishReason === 'length') {
       throw new Error(`トークン上限(${maxTokens})に達して応答が途切れました。DEEPSEEK_MAX_TOKENS を増やしてください（現在: ${maxTokens}）。`)
     }
-    // finish_reason が不明な場合も警告（内容が取れていれば続行）
     if (!full && !reasoning) {
-      throw new Error('DeepSeek から応答なしでストリームが終了しました。')
+      throw new Error('DeepSeek から内容なしでストリームが終了しました。DeepSeek API が混雑している可能性があります。')
     }
-    // 部分的でも内容があれば続行（onChunk で通知は不要なのでそのまま）
+    // reasoning は受け取ったが content(JSON) がない場合は再試行を促す
+    if (!full && reasoning) {
+      throw new Error(`DeepSeek の推論が途中で切断されました（推論 ${reasoning.length} chars 取得済み）。再試行します。`)
+    }
   }
 
   // reasoning-only モデル（DeepSeek-R1等）: content が空なら reasoning から JSON を抽出
