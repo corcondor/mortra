@@ -19,6 +19,211 @@ function clamp(value: string, max: number) {
   return text.length > max ? `${text.slice(0, max - 3)}...` : text
 }
 
+const COMMAND_REPLACEMENTS: Record<string, string> = {
+  alpha: 'alpha',
+  beta: 'beta',
+  gamma: 'gamma',
+  delta: 'delta',
+  epsilon: 'epsilon',
+  varepsilon: 'epsilon',
+  zeta: 'zeta',
+  eta: 'eta',
+  theta: 'theta',
+  vartheta: 'theta',
+  lambda: 'lambda',
+  mu: 'mu',
+  nu: 'nu',
+  xi: 'xi',
+  pi: 'pi',
+  rho: 'rho',
+  sigma: 'sigma',
+  tau: 'tau',
+  phi: 'phi',
+  varphi: 'phi',
+  chi: 'chi',
+  psi: 'psi',
+  omega: 'omega',
+  Gamma: 'Gamma',
+  Delta: 'Delta',
+  Theta: 'Theta',
+  Lambda: 'Lambda',
+  Xi: 'Xi',
+  Pi: 'Pi',
+  Sigma: 'Sigma',
+  Phi: 'Phi',
+  Psi: 'Psi',
+  Omega: 'Omega',
+  infty: 'infinity',
+  cdot: '*',
+  times: '*',
+  div: '/',
+  pm: '+-',
+  mp: '-+',
+  le: '<=',
+  leq: '<=',
+  ge: '>=',
+  geq: '>=',
+  neq: '!=',
+  ne: '!=',
+  approx: '~=',
+  sim: '~',
+  equiv: '==',
+  propto: 'propto',
+  in: 'in',
+  notin: 'notin',
+  subset: 'subset',
+  subseteq: 'subseteq',
+  superset: 'superset',
+  supseteq: 'supseteq',
+  cap: 'cap',
+  cup: 'cup',
+  emptyset: 'emptyset',
+  forall: 'forall',
+  exists: 'exists',
+  neg: 'not',
+  land: 'and',
+  lor: 'or',
+  to: '->',
+  rightarrow: '->',
+  leftarrow: '<-',
+  leftrightarrow: '<->',
+  mapsto: '|->',
+  implies: '=>',
+  iff: '<=>',
+  sum: 'sum',
+  prod: 'prod',
+  int: 'int',
+  lim: 'lim',
+  sin: 'sin',
+  cos: 'cos',
+  tan: 'tan',
+  log: 'log',
+  ln: 'ln',
+  exp: 'exp',
+  max: 'max',
+  min: 'min',
+  gcd: 'gcd',
+  lcm: 'lcm',
+  mod: 'mod',
+  pmod: 'mod',
+}
+
+const BLACKBOARD: Record<string, string> = {
+  N: 'N',
+  Z: 'Z',
+  Q: 'Q',
+  R: 'R',
+  C: 'C',
+}
+
+function readGroup(text: string, start: number, open = '{', close = '}') {
+  let i = start
+  while (text[i] === ' ') i++
+  if (text[i] !== open) return null
+
+  let depth = 0
+  for (let pos = i; pos < text.length; pos++) {
+    if (text[pos] === open) depth++
+    if (text[pos] === close) depth--
+    if (depth === 0) {
+      return { value: text.slice(i + 1, pos), end: pos + 1 }
+    }
+  }
+
+  return null
+}
+
+function replaceTwoArgCommand(text: string, commands: string[], format: (a: string, b: string) => string) {
+  let out = ''
+  let i = 0
+  while (i < text.length) {
+    const command = commands.find(name => text.startsWith(`\\${name}`, i))
+    if (!command) {
+      out += text[i]
+      i++
+      continue
+    }
+
+    const first = readGroup(text, i + command.length + 1)
+    const second = first ? readGroup(text, first.end) : null
+    if (!first || !second) {
+      out += text[i]
+      i++
+      continue
+    }
+
+    out += format(formatTeXReadable(first.value), formatTeXReadable(second.value))
+    i = second.end
+  }
+  return out
+}
+
+function replaceOneArgCommand(text: string, commands: string[], format: (a: string) => string) {
+  let out = ''
+  let i = 0
+  while (i < text.length) {
+    const command = commands.find(name => text.startsWith(`\\${name}`, i))
+    if (!command) {
+      out += text[i]
+      i++
+      continue
+    }
+
+    const group = readGroup(text, i + command.length + 1)
+    if (!group) {
+      out += text[i]
+      i++
+      continue
+    }
+
+    out += format(formatTeXReadable(group.value))
+    i = group.end
+  }
+  return out
+}
+
+function replaceSqrt(text: string) {
+  let out = ''
+  let i = 0
+  while (i < text.length) {
+    if (!text.startsWith('\\sqrt', i)) {
+      out += text[i]
+      i++
+      continue
+    }
+
+    let pos = i + '\\sqrt'.length
+    const root = readGroup(text, pos, '[', ']')
+    if (root) pos = root.end
+    const radicand = readGroup(text, pos)
+    if (!radicand) {
+      out += text[i]
+      i++
+      continue
+    }
+
+    const rootText = root ? formatTeXReadable(root.value) : ''
+    const radicandText = formatTeXReadable(radicand.value)
+    out += rootText ? `root(${rootText}, ${radicandText})` : `sqrt(${radicandText})`
+    i = radicand.end
+  }
+  return out
+}
+
+function toScript(value: string, fallbackPrefix: string) {
+  const text = formatTeXReadable(value).trim()
+  if (!text) return ''
+  return `${fallbackPrefix}${text.length === 1 ? text : `(${text})`}`
+}
+
+function replaceScripts(text: string) {
+  return text
+    .replace(/\^\{([^{}]+)\}/g, (_, value: string) => toScript(value, '^'))
+    .replace(/_\{([^{}]+)\}/g, (_, value: string) => toScript(value, '_'))
+    .replace(/\^([A-Za-z0-9+\-=()])/g, (_, value: string) => toScript(value, '^'))
+    .replace(/_([A-Za-z0-9+\-=()])/g, (_, value: string) => toScript(value, '_'))
+}
+
 function problemFontSize(text: string) {
   const length = text.length
   if (length <= 220) return 58
@@ -36,11 +241,50 @@ function answerFontSize(text: string) {
 }
 
 function mathSafe(value: string) {
-  return value
+  return formatTeXReadable(value)
     .replace(/\$\$([\s\S]*?)\$\$/g, '$1')
     .replace(/\$((?:[^$\\]|\\.)*?)\$/g, '$1')
     .replace(/\\\[([\s\S]*?)\\\]/g, '$1')
     .replace(/\\\(([\s\S]*?)\\\)/g, '$1')
+}
+
+function formatTeXReadable(value: string): string {
+  let text = value
+    .replace(/\$\$([\s\S]*?)\$\$/g, '$1')
+    .replace(/\$((?:[^$\\]|\\.)*?)\$/g, '$1')
+    .replace(/\\\[([\s\S]*?)\\\]/g, '$1')
+    .replace(/\\\(([\s\S]*?)\\\)/g, '$1')
+    .replace(/\\left\s*/g, '')
+    .replace(/\\right\s*/g, '')
+    .replace(/\\,/g, ' ')
+    .replace(/\\;/g, ' ')
+    .replace(/\\qquad/g, ' ')
+    .replace(/\\quad/g, ' ')
+    .replace(/\\\\(?=[A-Za-z])/g, '\\')
+    .replace(/\\\\/g, '\n')
+
+  text = replaceTwoArgCommand(text, ['frac', 'dfrac', 'tfrac'], (a, b) => `(${a})/(${b})`)
+  text = replaceTwoArgCommand(text, ['binom', 'dbinom', 'tbinom'], (a, b) => `C(${a}, ${b})`)
+  text = replaceSqrt(text)
+  text = replaceOneArgCommand(text, ['pmod'], value => `(mod ${value})`)
+  text = replaceOneArgCommand(text, ['mathbb'], value => BLACKBOARD[value] ?? value)
+  text = replaceOneArgCommand(text, ['mathcal', 'mathbf', 'mathit'], value => value)
+  text = replaceOneArgCommand(text, ['operatorname', 'mathrm', 'text'], value => value)
+  text = replaceOneArgCommand(text, ['overline'], value => `overline(${value})`)
+  text = replaceOneArgCommand(text, ['vec'], value => `vec(${value})`)
+  text = replaceOneArgCommand(text, ['bar'], value => `bar(${value})`)
+  text = replaceOneArgCommand(text, ['hat'], value => `hat(${value})`)
+
+  for (const [command, replacement] of Object.entries(COMMAND_REPLACEMENTS)) {
+    text = text.replace(new RegExp(`\\\\${command}\\b`, 'g'), replacement)
+  }
+
+  text = replaceScripts(text)
+  return text
+    .replace(/[{}]/g, '')
+    .replace(/\\([A-Za-z]+)/g, '$1')
+    .replace(/[ \t]{2,}/g, ' ')
+    .trim()
 }
 
 export async function POST(req: NextRequest) {
