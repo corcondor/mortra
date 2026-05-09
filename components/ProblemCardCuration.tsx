@@ -17,11 +17,12 @@ interface Props {
   index: number
   scrollRootRef?: RefObject<HTMLDivElement>
   showSol: boolean
+  accessToken: string | null
   onStatusChange: (id: string, status: string) => void
   onPostClick: (p: ProblemWithRating) => void
 }
 
-export function ProblemCardCuration({ problem: p, index, scrollRootRef, showSol, onStatusChange, onPostClick }: Props) {
+export function ProblemCardCuration({ problem: p, index, scrollRootRef, showSol, accessToken, onStatusChange, onPostClick }: Props) {
   const [busy,     setBusy]     = useState(false)
   const [expanded, setExpanded] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
@@ -53,7 +54,10 @@ export function ProblemCardCuration({ problem: p, index, scrollRootRef, showSol,
     const toggle = (status === newStatus) ? 'pending' : newStatus
     await fetch('/api/status', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      },
       body: JSON.stringify({ problem_id: p.id, status: toggle }),
     })
     onStatusChange(p.id, toggle)

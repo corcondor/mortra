@@ -33,39 +33,13 @@ interface Props {
   onClose?: () => void
 }
 
-export function Sidebar({ filters, onChange, onReload, onClose }: Props) {
-  const [stats,    setStats]    = useState<Stats | null>(null)
-  const [syncing,  setSyncing]  = useState(false)
-  const [purging,  setPurging]  = useState(false)
-  const [opResult, setOpResult] = useState<string | null>(null)
+export function Sidebar({ filters, onChange, onClose }: Props) {
+  const [stats, setStats] = useState<Stats | null>(null)
 
   const fetchStats = useCallback(() =>
     fetch('/api/stats').then(r => r.json()).then(setStats), [])
 
   useEffect(() => { fetchStats() }, [fetchStats])
-
-  const handleSync = async () => {
-    setSyncing(true); setOpResult(null)
-    const res  = await fetch('/api/sync', { method: 'POST' })
-    const data = await res.json()
-    setSyncing(false)
-    setOpResult(data.ok ? '✅ 同期完了' : `❌ ${data.error ?? '失敗'}`)
-    fetchStats()
-    onReload?.()
-  }
-
-  const handlePurge = async () => {
-    if (!confirm('selected/posted 以外の問題を SQLite + Supabase から削除します。よろしいですか？')) return
-    setPurging(true); setOpResult(null)
-    const res  = await fetch('/api/purge', { method: 'POST' })
-    const data = await res.json()
-    setPurging(false)
-    setOpResult(data.ok
-      ? `✅ ${data.deleted} 件削除（${data.checked ?? 0} 件確認）`
-      : `❌ ${data.error ?? '失敗'}`)
-    fetchStats()
-    onReload?.()
-  }
 
   const set = (patch: Partial<Filters>) => onChange({ ...filters, ...patch })
 
@@ -197,49 +171,6 @@ export function Sidebar({ filters, onChange, onReload, onClose }: Props) {
         <span className="text-[12px] text-white/50">解法を表示</span>
       </label>
 
-      <div className="border-t border-white/8" />
-
-      {/* Operations */}
-      <div className="flex flex-col gap-2">
-        <button
-          onClick={onReload}
-          className="text-[12px] text-white/40 hover:text-white/70 px-3 py-2
-                     rounded-xl border border-white/10 hover:border-white/20 transition-colors"
-        >
-          🔄 表示を更新
-        </button>
-        <button
-          onClick={handleSync}
-          disabled={syncing}
-          className="text-[12px] text-apple-blue/70 hover:text-apple-blue px-3 py-2
-                     rounded-xl border border-apple-blue/20 hover:border-apple-blue/40 transition-colors
-                     disabled:opacity-40"
-        >
-          {syncing ? '同期中…' : '☁️ SQLite→Supabase 同期'}
-        </button>
-        <button
-          onClick={handlePurge}
-          disabled={purging}
-          className="text-[12px] text-apple-pink/60 hover:text-apple-pink px-3 py-2
-                     rounded-xl border border-apple-pink/20 hover:border-apple-pink/40 transition-colors
-                     disabled:opacity-40"
-        >
-          {purging ? '削除中…' : '🗑️ 未選択を淘汰'}
-        </button>
-        <a
-          href="/api/setup-gemini"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[12px] text-white/25 hover:text-white/50 px-3 py-2
-                     rounded-xl border border-white/8 hover:border-white/15 transition-colors text-center"
-        >
-          🔑 Gemini ログイン設定
-        </a>
-      </div>
-
-      {opResult && (
-        <div className="text-[11px] text-white/50 px-1">{opResult}</div>
-      )}
     </aside>
   )
 }

@@ -1,52 +1,53 @@
 'use client'
 import { useEffect, useState, useMemo } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
-import type { User } from '@supabase/supabase-js'
+import type { User, Session } from '@supabase/supabase-js'
 
-const ALLOWED_EMAILS = [
-  'imtceed@gmail.com',
-  // 追加でアクセスを許可するメールはここに
-]
+/** オーナーのメールアドレス — 無制限生成 & 管理権限 */
+export const ADMIN_EMAIL = 'imtceed@gmail.com'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
 const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
 
 export function useAuth() {
-  // クライアントを useMemo でメモ化 — 毎レンダー再生成すると useEffect が無限ループする
   const supabase = useMemo(
     () => createBrowserClient(SUPABASE_URL, SUPABASE_KEY),
     [],
   )
-  const [user,    setUser]    = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [user,        setUser]        = useState<User | null>(null)
+  const [session,     setSession]     = useState<Session | null>(null)
+  const [loading,     setLoading]     = useState(true)
 
   useEffect(() => {
     if (!SUPABASE_URL || !SUPABASE_KEY) { setLoading(false); return }
-    supabase.auth.getUser().then(({ data }) => {
-      setUser(data.user); setLoading(false)
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session)
+      setUser(data.session?.user ?? null)
+      setLoading(false)
     })
-    const { data: sub } = supabase.auth.onAuthStateChange((_, session) => {
-      setUser(session?.user ?? null)
+    const { data: sub } = supabase.auth.onAuthStateChange((_, s) => {
+      setSession(s)
+      setUser(s?.user ?? null)
     })
     return () => sub.subscription.unsubscribe()
   }, [supabase])
 
   const signIn = () =>
     supabase.auth.signInWithOAuth({
-      provider:  'google',
-      options: { redirectTo: window.location.origin },
+      provider: 'google',
+      options:  { redirectTo: window.location.origin },
     })
 
   const signOut = () => supabase.auth.signOut()
 
-  const allowed = user ? ALLOWED_EMAILS.includes(user.email ?? '') : false
+  const isAdmin     = user?.email === ADMIN_EMAIL
+  const accessToken = session?.access_token ?? null
 
-  return { user, loading, allowed, signIn, signOut }
+  return { user, loading, isAdmin, accessToken, signIn, signOut, supabase }
 }
 
 interface Props { children: React.ReactNode }
 
-// 環境変数が未設定の場合に表示するフォールバック
 function EnvVarError() {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-[#05050f]">
@@ -64,9 +65,8 @@ function EnvVarError() {
   )
 }
 
-// フック使用はここで（条件分岐より前に必ず呼ぶ）
 function AuthGuardInner({ children }: Props) {
-  const { user, loading, allowed, signIn, signOut } = useAuth()
+  const { user, loading, signIn, signOut } = useAuth()
 
   if (loading) {
     return (
@@ -100,26 +100,10 @@ function AuthGuardInner({ children }: Props) {
     )
   }
 
-  if (!allowed) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-[#05050f]">
-        <div className="glass rounded-2xl p-8 text-center space-y-4 max-w-sm w-full mx-4">
-          <div className="text-2xl">🚫</div>
-          <p className="text-[13px] text-white/60">{user.email} はアクセス権がありません</p>
-          <button onClick={signOut}
-            className="text-[12px] text-white/40 hover:text-white/70 px-4 py-2 border border-white/10 rounded-xl">
-            ログアウト
-          </button>
-        </div>
-      </div>
-    )
-  }
-
   return <>{children}</>
 }
 
 export function AuthGuard({ children }: Props) {
-  // env vars が未設定 → クラッシュ前に案内画面を出す（フックは呼ばない）
   if (!SUPABASE_URL || !SUPABASE_KEY) return <EnvVarError />
   return <AuthGuardInner>{children}</AuthGuardInner>
 }

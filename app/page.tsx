@@ -22,7 +22,7 @@ export default function Home() {
 }
 
 function HomeInner() {
-  const { user, signOut } = useAuth()
+  const { user, signOut, accessToken, isAdmin, supabase } = useAuth()
   const [problems,  setProblems]  = useState<ProblemWithRating[]>([])
   const [loading,   setLoading]   = useState(true)
   const [tab,       setTab]       = useState<Tab>('list')
@@ -33,26 +33,21 @@ function HomeInner() {
   const [sidebarOpen,  setSidebarOpen]  = useState(false)
   const contentRef = useRef<HTMLDivElement>(null)
 
-  // ── データ取得 ────────────────────────────────────────────────────────
+  // ── データ取得（Supabase クライアント経由 = ユーザーセッションで RLS が効く） ──
   const loadProblems = useCallback(async () => {
     setLoading(true)
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/problems?select=*,rating:ratings(*)&order=total.desc`,
-      {
-        headers: {
-          apikey:        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
-        },
-      },
-    )
-    const data = await res.json()
-    const normalized = (data ?? []).map((p: any) => ({
+    const { data, error } = await supabase
+      .from('problems')
+      .select('*, rating:ratings(*)')
+      .order('total', { ascending: false })
+    if (error) { console.error(error); setLoading(false); return }
+    const normalized = (data ?? []).map((p: Record<string, unknown>) => ({
       ...p,
-      rating: Array.isArray(p.rating) ? p.rating[0] ?? null : p.rating,
+      rating: Array.isArray(p.rating) ? (p.rating as unknown[])[0] ?? null : p.rating,
     }))
-    setProblems(normalized)
+    setProblems(normalized as ProblemWithRating[])
     setLoading(false)
-  }, [])
+  }, [supabase])
 
   useEffect(() => { loadProblems() }, [loadProblems])
 
@@ -63,7 +58,6 @@ function HomeInner() {
     if (filters.status) ps = ps.filter(p => (p.rating?.status ?? 'pending') === filters.status)
     if (filters.sort === 'surprise')   ps.sort((a, b) => (b.surprise||0) - (a.surprise||0))
     else if (filters.sort === 'topic') ps.sort((a, b) => a.topic_a.localeCompare(b.topic_a))
-    // default: total (already sorted)
     return ps
   }, [problems, filters])
 
@@ -76,7 +70,7 @@ function HomeInner() {
     setProblems(prev => prev.map(p =>
       p.id !== id ? p : {
         ...p,
-        rating: { ...(p.rating ?? { problem_id: id, x_posted: false, note: null, updated_at: '' }), status: status as any },
+        rating: { ...(p.rating ?? { problem_id: id, x_posted: false, note: null, updated_at: '' }), status: status as never },
       }
     ))
   }, [])
@@ -85,12 +79,11 @@ function HomeInner() {
     setProblems(prev => prev.map(p =>
       p.id !== id ? p : {
         ...p,
-        rating: { ...(p.rating ?? { problem_id: id, status: 'posted' as any, note: null, updated_at: '' }), x_posted: true, status: 'posted' as any },
+        rating: { ...(p.rating ?? { problem_id: id, status: 'posted' as never, note: null, updated_at: '' }), x_posted: true, status: 'posted' as never },
       }
     ))
   }, [])
 
-  // フィルター変更時はページをリセット
   const handleFiltersChange = (f: Filters) => { setFilters(f); setPage(0) }
 
   // ── CMD+K でSpotlight ─────────────────────────────────────────────────
@@ -131,7 +124,6 @@ function HomeInner() {
 
         {/* Top bar */}
         <header className="flex items-center gap-4 px-4 md:px-6 py-3.5 border-b border-white/8 shrink-0">
-          {/* Hamburger (mobile only) */}
           <button
             onClick={() => setSidebarOpen(s => !s)}
             className="md:hidden flex flex-col gap-1.5 p-1.5 text-white/50 hover:text-white/90"
@@ -187,6 +179,9 @@ function HomeInner() {
                   className="w-7 h-7 rounded-full border border-white/15"
                 />
               )}
+              {isAdmin && (
+                <span className="text-[10px] text-apple-blue/70 font-semibold">ADMIN</span>
+              )}
               <button
                 onClick={signOut}
                 className="text-[11px] text-white/25 hover:text-white/60 transition-colors"
@@ -204,7 +199,6 @@ function HomeInner() {
           {/* ── TAB 1: 問題一覧 ── */}
           {tab === 'list' && (
             <div>
-              {/* Sub-header */}
               <div className="flex items-center gap-4 mb-5">
                 <div>
                   <h1 className="text-[22px] font-bold tracking-tight text-white/90">問題一覧</h1>
@@ -213,7 +207,6 @@ function HomeInner() {
                   </p>
                 </div>
                 <div className="flex-1" />
-                {/* Pagination */}
                 <div className="flex items-center gap-2">
                   <button
                     disabled={page === 0}
@@ -233,7 +226,6 @@ function HomeInner() {
                 </div>
               </div>
 
-              {/* Scroll-linked note viewer */}
               {loading ? (
                 <div className="note-scroll">
                   {Array(8).fill(0).map((_, i) => (
@@ -260,6 +252,7 @@ function HomeInner() {
                           index={i}
                           scrollRootRef={contentRef}
                           showSol={filters.showSol}
+                          accessToken={accessToken}
                           onStatusChange={handleStatusChange}
                           onPostClick={setPostTarget}
                         />
@@ -284,6 +277,9 @@ function HomeInner() {
               </div>
               <GenerationPanel
                 selectedProblems={selected}
+                accessToken={accessToken}
+                isAdmin={isAdmin}
+                userId={user?.id ?? null}
                 onStatusChange={handleStatusChange}
                 onPostClick={setPostTarget}
               />

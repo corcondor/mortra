@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from 'react'
 import type { ProblemWithRating } from '@/lib/types'
 import { MathText } from './MathText'
+import { UpgradeModal } from './UpgradeModal'
 
 const TOPIC_JP: Record<string,string> = {
   analysis:'実解析', algebra:'代数', geometry:'幾何', number_theory:'整数論',
@@ -26,18 +27,23 @@ const BOT_STEPS: Record<string, { emoji: string; label: string; color: string }>
 
 interface Props {
   selectedProblems: ProblemWithRating[]
+  accessToken:      string | null
+  isAdmin:          boolean
+  userId:           string | null
   onStatusChange:   (id: string, status: string) => void
   onPostClick:      (p: ProblemWithRating) => void
 }
 
-export function GenerationPanel({ selectedProblems, onStatusChange, onPostClick }: Props) {
-  const [generating,   setGenerating]   = useState(false)
-  const [currentStep,  setCurrentStep]  = useState('start')
-  const [logs,         setLogs]         = useState<string[]>([])
-  const [genDone,      setGenDone]      = useState<{ ok: boolean; message: string } | null>(null)
-  const [fusionCount,  setFusionCount]  = useState(3)
-  const [batchCount,   setBatchCount]   = useState(4)
-  const [chosenIds,    setChosenIds]    = useState<string[]>([])
+export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId, onStatusChange, onPostClick }: Props) {
+  const [generating,    setGenerating]    = useState(false)
+  const [currentStep,   setCurrentStep]   = useState('start')
+  const [logs,          setLogs]          = useState<string[]>([])
+  const [genDone,       setGenDone]       = useState<{ ok: boolean; message: string } | null>(null)
+  const [fusionCount,   setFusionCount]   = useState(3)
+  const [batchCount,    setBatchCount]    = useState(4)
+  const [chosenIds,     setChosenIds]     = useState<string[]>([])
+  const [showUpgrade,   setShowUpgrade]   = useState(false)
+  const [upgradeUsed,   setUpgradeUsed]   = useState(0)
   const logEndRef = useRef<HTMLDivElement>(null)
 
   // ログ末尾に自動スクロール
@@ -57,13 +63,23 @@ export function GenerationPanel({ selectedProblems, onStatusChange, onPostClick 
 
     const res = await fetch('/api/generate', {
       method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ parents: parentData, mode, count }),
+      headers: {
+        'Content-Type': 'application/json',
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      },
+      body: JSON.stringify({ parents: parentData, mode, count }),
     })
 
     if (!res.ok) {
       const data = await res.json().catch(() => null)
       const message = data?.error ?? `生成APIエラー: ${res.status}`
+      // 利用制限エラー (402) → アップグレードモーダルを表示
+      if (res.status === 402) {
+        setUpgradeUsed(data?.used ?? 0)
+        setShowUpgrade(true)
+        setGenerating(false)
+        return
+      }
       setLogs(prev => [...prev, message])
       setCurrentStep('error')
       setGenDone({ ok: false, message })
@@ -142,8 +158,11 @@ export function GenerationPanel({ selectedProblems, onStatusChange, onPostClick 
   const deselect = async (id: string) => {
     await fetch('/api/status', {
       method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ problem_id: id, status: 'pending' }),
+      headers: {
+        'Content-Type': 'application/json',
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      },
+      body: JSON.stringify({ problem_id: id, status: 'pending' }),
     })
     onStatusChange(id, 'pending')
   }
@@ -156,10 +175,22 @@ export function GenerationPanel({ selectedProblems, onStatusChange, onPostClick 
     )
   }
 
+  const FREE_LIMIT = 10
+
   const stepInfo = BOT_STEPS[currentStep] ?? BOT_STEPS.working
 
   return (
     <div className="space-y-4">
+
+      {/* アップグレードモーダル */}
+      {showUpgrade && (
+        <UpgradeModal
+          accessToken={accessToken}
+          used={upgradeUsed}
+          limit={FREE_LIMIT}
+          onClose={() => setShowUpgrade(false)}
+        />
+      )}
 
       {/* ── Sticky 生成コントロール ───────────────────────────────────── */}
       <div className="sticky top-0 z-20 backdrop-blur-2xl bg-black/50

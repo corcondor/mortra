@@ -9,6 +9,24 @@ import crypto from 'crypto'
 
 export const maxDuration = 300
 
+import { ADMIN_EMAIL, FREE_GENERATIONS_PER_MONTH, currentYearMonth } from '@/lib/billing'
+
+/** 生成回数をインクリメント（存在しなければ作成） */
+async function incrementUsage(userId: string) {
+  const yearMonth = currentYearMonth()
+  // upsert: count +1
+  await supabaseAdmin.rpc('increment_usage', { p_user_id: userId, p_year_month: yearMonth })
+    .then(({ error }) => {
+      if (error) {
+        // RPC が存在しない場合は手動でupsert
+        return supabaseAdmin
+          .from('usage')
+          .upsert({ user_id: userId, year_month: yearMonth, generations_count: 1 },
+            { onConflict: 'user_id,year_month', ignoreDuplicates: false })
+      }
+    })
+}
+
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/chat/completions'
 const MODEL            = process.env.DEEPSEEK_MODEL ?? 'deepseek-v4-pro'
 const HEALTH_MODEL     = process.env.DEEPSEEK_HEALTH_MODEL ?? 'deepseek-v4-flash'
@@ -54,17 +72,20 @@ async function listDeepSeekModels() {
   return (data.data ?? []).map(model => model.id).filter(Boolean) as string[]
 }
 
+type RatingRow = { status?: string | null; x_posted?: boolean | null }
 type PurgeCandidate = {
   id: string
-  rating?: { status?: string | null; x_posted?: boolean | null } | { status?: string | null; x_posted?: boolean | null }[] | null
+  rating?: RatingRow | RatingRow[] | null
 }
 
 function shouldPurge(candidate: PurgeCandidate, excludeIds: Set<string>) {
   if (excludeIds.has(candidate.id)) return false
-  const rating = Array.isArray(candidate.rating) ? candidate.rating[0] : candidate.rating
-  if (!rating) return true
-  if (rating.x_posted === true) return false
-  return rating.status !== 'selected' && rating.status !== 'posted'
+  // 全ユーザーの ratings を確認: いずれかが selected/posted なら保持
+  const ratings: RatingRow[] = Array.isArray(candidate.rating)
+    ? candidate.rating
+    : candidate.rating ? [candidate.rating] : []
+  if (ratings.length === 0) return true
+  return !ratings.some(r => r.x_posted === true || r.status === 'selected' || r.status === 'posted')
 }
 
 async function purgeUnselectedProblems(excludeIds: string[] = []) {
@@ -179,7 +200,7 @@ async function callDeepSeek(
 }
 
 // ── Supabase に保存 ────────────────────────────────────────────────────
-async function saveToSupabase(data: Record<string, unknown>, parents: ParentProblem[], mode: string, nextGen: number) {
+async function saveToSupabase(data: Record<string, unknown>, parents: ParentProblem[], mode: string, nextGen: number, userId?: string | null) {
   const fp  = (data.final_problem ?? {}) as Record<string, unknown>
   const ba  = (data.beauty_analysis ?? {}) as Record<string, unknown>
 
@@ -209,9 +230,10 @@ async function saveToSupabase(data: Record<string, unknown>, parents: ParentProb
   const { error: pErr } = await supabaseAdmin.from('problems').upsert(problem)
   if (pErr) throw new Error(pErr.message)
 
-  const { error: rErr } = await supabaseAdmin.from('ratings').upsert({
-    problem_id: id, status: 'pending', x_posted: false,
-  }, { onConflict: 'problem_id', ignoreDuplicates: true })
+  const { error: rErr } = await supabaseAdmin.from('ratings').upsert(
+    { user_id: userId ?? 'system', problem_id: id, status: 'pending', x_posted: false },
+    { onConflict: 'user_id,problem_id', ignoreDuplicates: true },
+  )
   if (rErr) throw new Error(rErr.message)
 
   return problem
@@ -247,6 +269,51 @@ export async function GET(req: NextRequest) {
 
 // ── POST: 生成 ─────────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
+  // ── 認証 & 利用制限チェック ──────────────────────────────────────────
+  const authHeader = req.headers.get('Authorization')
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null
+  let userId: string | null = null
+  let userEmail: string | null = null
+  let isAdmin = false
+
+  if (token) {
+    const { data } = await supabaseAdmin.auth.getUser(token)
+    userId    = data.user?.id ?? null
+    userEmail = data.user?.email ?? null
+    isAdmin   = userEmail === ADMIN_EMAIL
+  }
+
+  // 非管理者は月間生成数をチェック
+  if (userId && !isAdmin) {
+    const yearMonth = currentYearMonth()
+    const { data: usageData } = await supabaseAdmin
+      .from('usage')
+      .select('generations_count')
+      .eq('user_id', userId)
+      .eq('year_month', yearMonth)
+      .single()
+
+    const used = (usageData?.generations_count as number) ?? 0
+
+    // サブスクリプション確認
+    const { data: subData } = await supabaseAdmin
+      .from('subscriptions')
+      .select('status')
+      .eq('user_id', userId)
+      .single()
+
+    const isPaid = subData?.status === 'active'
+
+    if (!isPaid && used >= FREE_GENERATIONS_PER_MONTH) {
+      return Response.json({
+        error: `無料枠（月${FREE_GENERATIONS_PER_MONTH}回）を使い切りました。プレミアムプランにアップグレードしてください。`,
+        code:  'USAGE_LIMIT_EXCEEDED',
+        used,
+        limit: FREE_GENERATIONS_PER_MONTH,
+      }, { status: 402 })
+    }
+  }
+
   const { parents, mode = 'auto', count = 3, dry_run = false } = await req.json() as {
     parents: ParentProblem[]
     mode?:   string
@@ -355,9 +422,13 @@ export async function POST(req: NextRequest) {
             } else {
               send('status', { step: 'saving', message: 'Supabase に保存中...' })
               try {
-                const saved = await saveToSupabase(data, parents, resolvedMode, nextGen)
+                const saved = await saveToSupabase(data, parents, resolvedMode, nextGen, userId)
                 send('log',    { message: `保存完了 score=${score} -> ${saved.statement.slice(0, 50)}...` })
                 generated.push(saved)
+                // 生成数をインクリメント（管理者は除く）
+                if (userId && !isAdmin) {
+                  await incrementUsage(userId).catch(() => { /* 失敗しても続行 */ })
+                }
               } catch (e) {
                 send('log', { level: 'error', message: `保存エラー: ${errorMessage(e)}` })
               }
