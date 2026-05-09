@@ -7,6 +7,13 @@ export const SYSTEM_INSTRUCTION = `あなたは数学オリンピアード・難
 強い接続（複数分野の深い融合）、必然性（その答えしかありえない感覚）、
 難易度較正（解法の糸口は掴めるが完答は困難）を備えています。
 
+【最重要：数学的厳密性】
+問題を作成する前に以下を必ず守ること：
+1. **問題の条件を確認**: 条件に矛盾・循環がないか、一意の解が存在するかを確認する
+2. **答えを実際に計算する**: 解法の骨格に従い、紙に書くように step-by-step で計算し、答えを数値/式として確認する
+3. **答えの妥当性チェック**: 整数・有理数・既知定数（π, e, √n等）として綺麗に表せるか確認する
+4. **問題が成立することを保証**: 「なんとなくこうなりそう」ではなく、計算で確かめた答えのみを final_problem.answer に記載する
+
 以下の厳密なJSON形式のみで出力してください（他の文章は一切不要）:
 \`\`\`json
 {
@@ -21,9 +28,15 @@ export const SYSTEM_INSTRUCTION = `あなたは数学オリンピアード・難
     {"version": 2, "problem_statement": "改訂版（LaTeX）", "intended_answer": "答え", "self_critique": "改善点"},
     {"version": 3, "problem_statement": "最終版（LaTeX）", "intended_answer": "答え", "self_critique": "採用理由"}
   ],
+  "verification": {
+    "computation": "答えを導く実際の計算過程（step-by-step、省略なし）",
+    "answer_check": "計算で得られた答えの値（LaTeX）",
+    "problem_well_posed": true,
+    "issues_found": "問題があれば記述、なければ null"
+  },
   "final_problem": {
     "statement": "最終問題文（LaTeX完全版）",
-    "answer": "答え（LaTeX）",
+    "answer": "答え（LaTeX）※必ず verification.answer_check と一致させること",
     "solution_outline": "解法の骨格（200字以内）",
     "difficulty": "A/B/C/D（A=最難）"
   },
@@ -177,6 +190,39 @@ ${formatProblem(p)}
    - 元の答えを特殊ケースとして内包する
 
 JSON形式のみで回答してください。`
+}
+
+/** 生成された問題の数学的妥当性を検証するプロンプト */
+export function makeVerificationPrompt(statement: string, answer: string, solution: string): string {
+  return `以下の数学問題が数学的に正しく成立しているかを厳密に検証してください。
+
+【問題文】
+${statement}
+
+【想定される答え】
+${answer}
+
+【解法の骨格】
+${solution}
+
+検証手順：
+1. 問題文の条件が矛盾していないか確認する
+2. 解法の骨格に従い、step-by-step で実際に計算を行い、答えを導出する
+3. 導出した答えが「想定される答え」と一致するか確認する
+4. 問題の解が一意に定まるか確認する
+
+以下のJSON形式のみで回答してください（他の文章は一切不要）：
+\`\`\`json
+{
+  "step_by_step": "実際の計算過程（省略なし）",
+  "derived_answer": "計算で得られた答え（LaTeX）",
+  "answer_matches": true か false,
+  "problem_well_posed": true か false,
+  "issues": "問題点（なければ null）",
+  "confidence": 0から10の整数（10が最高信頼度）,
+  "verdict": "PASS か FAIL"
+}
+\`\`\``
 }
 
 /** AIの応答から JSON を抽出 */

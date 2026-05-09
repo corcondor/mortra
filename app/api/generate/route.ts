@@ -3,6 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase-admin'
 import {
   makeAnalysisPrompt, makeSimilarPrompt,
   makeFusionPrompt,   makeExpandPrompt,
+  makeVerificationPrompt,
   extractJson,        type ParentProblem,
 } from '@/lib/prompts'
 import crypto from 'crypto'
@@ -28,9 +29,10 @@ async function incrementUsage(userId: string) {
 }
 
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/chat/completions'
-const MODEL            = process.env.DEEPSEEK_MODEL ?? 'deepseek-v4-pro'
-const HEALTH_MODEL     = process.env.DEEPSEEK_HEALTH_MODEL ?? 'deepseek-v4-flash'
-const MAX_TOKENS       = Number(process.env.DEEPSEEK_MAX_TOKENS ?? 4000)
+// deepseek-reasoner = R1（推論モデル）、deepseek-chat = V3（高速モデル）
+const MODEL            = process.env.DEEPSEEK_MODEL ?? 'deepseek-reasoner'
+const FAST_MODEL       = process.env.DEEPSEEK_FAST_MODEL ?? 'deepseek-chat'
+const MAX_TOKENS       = Number(process.env.DEEPSEEK_MAX_TOKENS ?? 8000)
 
 type SseType = 'status' | 'log' | 'done' | 'error'
 
@@ -248,7 +250,7 @@ export async function GET(req: NextRequest) {
       return Response.json({
         ok: models.includes(MODEL),
         generationModel: MODEL,
-        healthModel: HEALTH_MODEL,
+        fastModel: FAST_MODEL,
         availableModels: models,
         message: models.includes(MODEL)
           ? 'DeepSeek API key is valid and generation model is available.'
@@ -258,7 +260,7 @@ export async function GET(req: NextRequest) {
       return Response.json({
         ok: false,
         generationModel: MODEL,
-        healthModel: HEALTH_MODEL,
+        fastModel: FAST_MODEL,
         error: errorMessage(error),
       }, { status: 503 })
     }
@@ -364,7 +366,7 @@ export async function POST(req: NextRequest) {
         let analysis: Record<string, string> | undefined
         if (resolvedMode !== 'fusion' && parents.length === 1) {
           send('status', { step: 'analyzing', message: '問題を深く分析中...' })
-          const raw = await callDeepSeek(makeAnalysisPrompt(parents[0]))
+          const raw = await callDeepSeek(makeAnalysisPrompt(parents[0]), undefined, 4000, FAST_MODEL)
           const a   = extractJson(raw)
           if (a) analysis = a as Record<string, string>
           send('log', { message: `分析完了: ${analysis?.core_structure?.slice(0, 60) ?? 'OK'}` })
@@ -385,7 +387,7 @@ export async function POST(req: NextRequest) {
           let data: Record<string, unknown> | null = null
           let lastFailure = ''
           for (let attempt = 1; attempt <= 3; attempt++) {
-            send('log', { message: `DeepSeek API 呼び出し中... (試行 ${attempt}/3)` })
+            send('log', { message: `DeepSeek (${MODEL}) 呼び出し中... (試行 ${attempt}/3)` })
             try {
               let received = 0
               let lastProgress = Date.now()
@@ -396,8 +398,8 @@ export async function POST(req: NextRequest) {
                 lastProgress = now
                 send('log', {
                   message: kind === 'reasoning'
-                    ? `DeepSeek 推論中... (${received} chars)`
-                    : `DeepSeek 応答受信中... (${received} chars)`,
+                    ? `推論中... (${received} chars)`
+                    : `応答受信中... (${received} chars)`,
                 })
               })
               data = extractJson(raw)
@@ -414,10 +416,73 @@ export async function POST(req: NextRequest) {
             data.id = crypto.randomBytes(6).toString('hex')
             const fp = (data.final_problem ?? {}) as Record<string, unknown>
             const statement = String(fp.statement ?? '')
+            const answer    = String(fp.answer    ?? '')
+            const solution  = String(fp.solution_outline ?? (data.verification as Record<string,unknown>)?.computation ?? '')
             const score = (data.beauty_analysis as Record<string, unknown>)?.total ?? '?'
 
+            // ── 数学的妥当性の検証 ────────────────────────────────────
+            // モデルが既に verification フィールドを埋めているか確認
+            const embeddedVerif = (data.verification ?? {}) as Record<string, unknown>
+            const embeddedWellPosed = embeddedVerif.problem_well_posed
+            const embeddedIssues   = embeddedVerif.issues_found
+
+            let verificationPassed = true
+            if (embeddedWellPosed === false) {
+              // モデル自身が問題ありと判定
+              send('log', {
+                level: 'warn',
+                message: `⚠ モデルが問題不成立を報告: ${String(embeddedIssues ?? '詳細不明')}。この問題はスキップします。`,
+              })
+              verificationPassed = false
+            } else {
+              // 外部検証（FAST_MODEL でダブルチェック）
+              send('status', { step: 'verifying', message: `数学的妥当性を検証中... (${i + 1}/${totalCount})` })
+              try {
+                const verifyRaw = await callDeepSeek(
+                  makeVerificationPrompt(statement, answer, solution),
+                  undefined,
+                  4000,
+                  FAST_MODEL,
+                )
+                const verifyResult = extractJson(verifyRaw) as Record<string, unknown> | null
+                if (verifyResult) {
+                  const verdict    = String(verifyResult.verdict ?? 'UNKNOWN').toUpperCase()
+                  const confidence = Number(verifyResult.confidence ?? 5)
+                  const issues     = verifyResult.issues
+                  const matches    = verifyResult.answer_matches
+                  const wellPosed  = verifyResult.problem_well_posed
+
+                  if (verdict === 'FAIL' || !wellPosed || confidence < 5 || matches === false) {
+                    send('log', {
+                      level: 'warn',
+                      message: `⚠ 検証失敗 (verdict=${verdict}, confidence=${confidence}): ${String(issues ?? '詳細なし')}。この問題はスキップします。`,
+                    })
+                    verificationPassed = false
+                  } else {
+                    send('log', {
+                      message: `✓ 検証OK (verdict=${verdict}, confidence=${confidence})`,
+                    })
+                    // 検証で得られた答えで上書き（より正確）
+                    if (verifyResult.derived_answer && matches === true) {
+                      fp.answer = verifyResult.derived_answer
+                    }
+                  }
+                } else {
+                  // 検証JSON取得失敗 → 警告のみ、保存は続行
+                  send('log', { level: 'warn', message: '検証レスポンスのJSON解析に失敗。問題はそのまま保存します。' })
+                }
+              } catch (verifyErr) {
+                send('log', { level: 'warn', message: `検証エラー（保存は続行）: ${errorMessage(verifyErr)}` })
+              }
+            }
+
+            if (!verificationPassed) {
+              // 検証失敗 → 生成カウントに含めない、保存しない
+              continue
+            }
+
             if (dry_run) {
-              send('log', { message: `dry run: Supabase 保存をスキップ score=${score} -> ${statement.slice(0, 50)}...` })
+              send('log', { message: `dry run: 保存スキップ score=${score} -> ${statement.slice(0, 50)}...` })
               generated.push({ id: data.id as string, statement })
             } else {
               send('status', { step: 'saving', message: 'Supabase に保存中...' })
