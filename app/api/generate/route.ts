@@ -33,8 +33,10 @@ const DEEPSEEK_API_URL = 'https://api.deepseek.com/chat/completions'
 // VercelのHobbyプランは60s制限があるためデフォルトはV3を推奨
 const MODEL            = process.env.DEEPSEEK_MODEL ?? 'deepseek-chat'
 const FAST_MODEL       = process.env.DEEPSEEK_FAST_MODEL ?? 'deepseek-chat'
-// V3: 8000で十分。R1を使う場合は env で DEEPSEEK_MAX_TOKENS=32000 に設定
-const MAX_TOKENS       = Number(process.env.DEEPSEEK_MAX_TOKENS ?? 8000)
+// V3: 8000で十分。R1(deepseek-reasoner)を使う場合は env で DEEPSEEK_MAX_TOKENS=32000 に設定
+const MAX_TOKENS       = Number(process.env.DEEPSEEK_MAX_TOKENS ?? (
+  (process.env.DEEPSEEK_MODEL ?? 'deepseek-chat').includes('reasoner') ? 32000 : 8000
+))
 // 分析・検証など軽いタスクはトークン節約
 const FAST_MAX_TOKENS  = 6000
 // 1回のDeepSeek API呼び出しのタイムアウト（ms）
@@ -430,22 +432,42 @@ export async function POST(req: NextRequest) {
 
           let data: Record<string, unknown> | null = null
           let lastFailure = ''
+
+          // R1は非ストリーミングで呼ぶ（ストリームが途中で切れる問題を回避）
+          // V3はストリーミングでリアルタイム表示
+          const useStreaming = !MODEL.includes('reasoner')
+
           for (let attempt = 1; attempt <= 3; attempt++) {
             send('log', { message: `DeepSeek (${MODEL}) 呼び出し中... (試行 ${attempt}/3)` })
+
+            // R1用: 応答待ち中のkeepAliveタイマー（SSE接続を維持）
+            let keepAliveTimer: ReturnType<typeof setInterval> | null = null
+            let waitSec = 0
+            if (!useStreaming) {
+              keepAliveTimer = setInterval(() => {
+                waitSec += 5
+                send('log', { message: `R1 推論中... (${waitSec}s 経過、応答待ち)` })
+              }, 5000)
+            }
+
             try {
               let received = 0
               let lastProgress = Date.now()
-              const raw = await callDeepSeek(prompt, (chunk, kind) => {
-                received += chunk.length
-                const now = Date.now()
-                if (now - lastProgress < 3500) return
-                lastProgress = now
-                send('log', {
-                  message: kind === 'reasoning'
-                    ? `推論中... (${received} chars)`
-                    : `応答受信中... (${received} chars)`,
-                })
-              })
+              const onChunk = useStreaming
+                ? (chunk: string, kind: 'content' | 'reasoning') => {
+                    received += chunk.length
+                    const now = Date.now()
+                    if (now - lastProgress < 3500) return
+                    lastProgress = now
+                    send('log', {
+                      message: kind === 'reasoning'
+                        ? `推論中... (${received} chars)`
+                        : `応答受信中... (${received} chars)`,
+                    })
+                  }
+                : undefined
+
+              const raw = await callDeepSeek(prompt, onChunk)
               data = extractJson(raw)
               if (data) break
               lastFailure = `JSON 抽出失敗: 応答先頭=${raw.replace(/\s+/g, ' ').slice(0, 180)}`
@@ -453,6 +475,13 @@ export async function POST(req: NextRequest) {
             } catch (e) {
               lastFailure = errorMessage(e)
               send('log', { level: 'error', message: `DeepSeek エラー: ${lastFailure}` })
+              // リトライ前に少し待つ（DeepSeek混雑対策）
+              if (attempt < 3) {
+                send('log', { message: `5秒後にリトライします...` })
+                await new Promise(r => setTimeout(r, 5000))
+              }
+            } finally {
+              if (keepAliveTimer) clearInterval(keepAliveTimer)
             }
           }
 
