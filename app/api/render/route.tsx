@@ -3,313 +3,181 @@ import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
 
-const WIDTH = 1600
-const HEIGHT = 2000
+const WIDTH  = 1200
+const HEIGHT = 628
 
-function asText(value: unknown) {
-  return typeof value === 'string' ? value : ''
-}
+// ── セグメント型 ──────────────────────────────────────────────────────────────
+type Seg =
+  | { type: 'text';  text: string }
+  | { type: 'math';  latex: string; block: boolean }
 
-function compact(value: string) {
-  return value.replace(/\s+/g, ' ').trim()
-}
-
-function clamp(value: string, max: number) {
-  const text = compact(value)
-  return text.length > max ? `${text.slice(0, max - 3)}...` : text
-}
-
-const COMMAND_REPLACEMENTS: Record<string, string> = {
-  alpha: 'alpha',
-  beta: 'beta',
-  gamma: 'gamma',
-  delta: 'delta',
-  epsilon: 'epsilon',
-  varepsilon: 'epsilon',
-  zeta: 'zeta',
-  eta: 'eta',
-  theta: 'theta',
-  vartheta: 'theta',
-  lambda: 'lambda',
-  mu: 'mu',
-  nu: 'nu',
-  xi: 'xi',
-  pi: 'pi',
-  rho: 'rho',
-  sigma: 'sigma',
-  tau: 'tau',
-  phi: 'phi',
-  varphi: 'phi',
-  chi: 'chi',
-  psi: 'psi',
-  omega: 'omega',
-  Gamma: 'Gamma',
-  Delta: 'Delta',
-  Theta: 'Theta',
-  Lambda: 'Lambda',
-  Xi: 'Xi',
-  Pi: 'Pi',
-  Sigma: 'Sigma',
-  Phi: 'Phi',
-  Psi: 'Psi',
-  Omega: 'Omega',
-  infty: 'infinity',
-  cdot: '*',
-  times: '*',
-  div: '/',
-  pm: '+-',
-  mp: '-+',
-  le: '<=',
-  leq: '<=',
-  ge: '>=',
-  geq: '>=',
-  neq: '!=',
-  ne: '!=',
-  approx: '~=',
-  sim: '~',
-  equiv: '==',
-  propto: 'propto',
-  in: 'in',
-  notin: 'notin',
-  subset: 'subset',
-  subseteq: 'subseteq',
-  superset: 'superset',
-  supseteq: 'supseteq',
-  cap: 'cap',
-  cup: 'cup',
-  emptyset: 'emptyset',
-  forall: 'forall',
-  exists: 'exists',
-  neg: 'not',
-  land: 'and',
-  lor: 'or',
-  to: '->',
-  rightarrow: '->',
-  leftarrow: '<-',
-  leftrightarrow: '<->',
-  mapsto: '|->',
-  implies: '=>',
-  iff: '<=>',
-  sum: 'sum',
-  prod: 'prod',
-  int: 'int',
-  lim: 'lim',
-  sin: 'sin',
-  cos: 'cos',
-  tan: 'tan',
-  log: 'log',
-  ln: 'ln',
-  exp: 'exp',
-  max: 'max',
-  min: 'min',
-  gcd: 'gcd',
-  lcm: 'lcm',
-  mod: 'mod',
-  pmod: 'mod',
-}
-
-const BLACKBOARD: Record<string, string> = {
-  N: 'N',
-  Z: 'Z',
-  Q: 'Q',
-  R: 'R',
-  C: 'C',
-}
-
-function readGroup(text: string, start: number, open = '{', close = '}') {
-  let i = start
-  while (text[i] === ' ') i++
-  if (text[i] !== open) return null
-
-  let depth = 0
-  for (let pos = i; pos < text.length; pos++) {
-    if (text[pos] === open) depth++
-    if (text[pos] === close) depth--
-    if (depth === 0) {
-      return { value: text.slice(i + 1, pos), end: pos + 1 }
-    }
+// ── LaTeX デリミタを解析してセグメント配列に ──────────────────────────────────
+function parseSegments(src: string): Seg[] {
+  const segs: Seg[] = []
+  // $$...$$ / \[...\] → block、 $...$ / \(...\) → inline
+  const re = /\$\$([\s\S]*?)\$\$|\\\[([\s\S]*?)\\\]|\$([^$\n]+?)\$|\\\(([^)]*?)\\\)/g
+  let last = 0
+  let m: RegExpExecArray | null
+  while ((m = re.exec(src)) !== null) {
+    if (m.index > last) segs.push({ type: 'text', text: src.slice(last, m.index) })
+    const latex = (m[1] ?? m[2] ?? m[3] ?? m[4] ?? '').trim()
+    if (latex) segs.push({ type: 'math', latex, block: !!(m[1] ?? m[2]) })
+    last = m.index + m[0].length
   }
-
-  return null
+  if (last < src.length) segs.push({ type: 'text', text: src.slice(last) })
+  return segs
 }
 
-function replaceTwoArgCommand(text: string, commands: string[], format: (a: string, b: string) => string) {
-  let out = ''
-  let i = 0
-  while (i < text.length) {
-    const command = commands.find(name => text.startsWith(`\\${name}`, i))
-    if (!command) {
-      out += text[i]
-      i++
-      continue
+// ── codecogs から PNG を base64 DataURL に変換 ───────────────────────────────
+async function mathPng(latex: string): Promise<string | null> {
+  try {
+    const formula = `\\dpi{150}\\large ${latex}`
+    const url = `https://latex.codecogs.com/png.image?${encodeURIComponent(formula)}`
+
+    const controller = new AbortController()
+    const tid = setTimeout(() => controller.abort(), 6000)
+    let res: Response
+    try {
+      res = await fetch(url, { signal: controller.signal })
+    } finally {
+      clearTimeout(tid)
     }
 
-    const first = readGroup(text, i + command.length + 1)
-    const second = first ? readGroup(text, first.end) : null
-    if (!first || !second) {
-      out += text[i]
-      i++
-      continue
-    }
+    if (!res.ok) return null
+    const buf = await res.arrayBuffer()
+    const bytes = new Uint8Array(buf)
 
-    out += format(formatTeXReadable(first.value), formatTeXReadable(second.value))
-    i = second.end
+    // Uint8Array → base64（チャンク処理で stack overflow 回避）
+    const chunks: string[] = []
+    for (let i = 0; i < bytes.length; i += 4096) {
+      chunks.push(String.fromCharCode(...bytes.subarray(i, Math.min(i + 4096, bytes.length))))
+    }
+    return `data:image/png;base64,${btoa(chunks.join(''))}`
+  } catch {
+    return null
   }
-  return out
 }
 
-function replaceOneArgCommand(text: string, commands: string[], format: (a: string) => string) {
-  let out = ''
-  let i = 0
-  while (i < text.length) {
-    const command = commands.find(name => text.startsWith(`\\${name}`, i))
-    if (!command) {
-      out += text[i]
-      i++
-      continue
-    }
-
-    const group = readGroup(text, i + command.length + 1)
-    if (!group) {
-      out += text[i]
-      i++
-      continue
-    }
-
-    out += format(formatTeXReadable(group.value))
-    i = group.end
-  }
-  return out
-}
-
-function replaceSqrt(text: string) {
-  let out = ''
-  let i = 0
-  while (i < text.length) {
-    if (!text.startsWith('\\sqrt', i)) {
-      out += text[i]
-      i++
-      continue
-    }
-
-    let pos = i + '\\sqrt'.length
-    const root = readGroup(text, pos, '[', ']')
-    if (root) pos = root.end
-    const radicand = readGroup(text, pos)
-    if (!radicand) {
-      out += text[i]
-      i++
-      continue
-    }
-
-    const rootText = root ? formatTeXReadable(root.value) : ''
-    const radicandText = formatTeXReadable(radicand.value)
-    out += rootText ? `root(${rootText}, ${radicandText})` : `sqrt(${radicandText})`
-    i = radicand.end
-  }
-  return out
-}
-
-function toScript(value: string, fallbackPrefix: string) {
-  const text = formatTeXReadable(value).trim()
-  if (!text) return ''
-  return `${fallbackPrefix}${text.length === 1 ? text : `(${text})`}`
-}
-
-function replaceScripts(text: string) {
-  return text
-    .replace(/\^\{([^{}]+)\}/g, (_, value: string) => toScript(value, '^'))
-    .replace(/_\{([^{}]+)\}/g, (_, value: string) => toScript(value, '_'))
-    .replace(/\^([A-Za-z0-9+\-=()])/g, (_, value: string) => toScript(value, '^'))
-    .replace(/_([A-Za-z0-9+\-=()])/g, (_, value: string) => toScript(value, '_'))
-}
-
-function problemFontSize(text: string) {
-  const length = text.length
-  if (length <= 220) return 58
-  if (length <= 420) return 50
-  if (length <= 700) return 42
-  if (length <= 1050) return 34
-  return 28
-}
-
-function answerFontSize(text: string) {
-  const length = text.length
-  if (length <= 120) return 38
-  if (length <= 260) return 32
-  return 27
-}
-
-function mathSafe(value: string) {
-  return formatTeXReadable(value)
-    .replace(/\$\$([\s\S]*?)\$\$/g, '$1')
-    .replace(/\$((?:[^$\\]|\\.)*?)\$/g, '$1')
-    .replace(/\\\[([\s\S]*?)\\\]/g, '$1')
-    .replace(/\\\(([\s\S]*?)\\\)/g, '$1')
-}
-
-function formatTeXReadable(value: string): string {
-  let text = value
-    .replace(/\$\$([\s\S]*?)\$\$/g, '$1')
-    .replace(/\$((?:[^$\\]|\\.)*?)\$/g, '$1')
-    .replace(/\\\[([\s\S]*?)\\\]/g, '$1')
-    .replace(/\\\(([\s\S]*?)\\\)/g, '$1')
-    .replace(/\\left\s*/g, '')
-    .replace(/\\right\s*/g, '')
-    .replace(/\\!/g, '')       // negative thin space — 除去
-    .replace(/\\,/g, ' ')
-    .replace(/\\;/g, ' ')
-    .replace(/\\:/g, ' ')
-    .replace(/\\qquad/g, '  ')
-    .replace(/\\quad/g, ' ')
-    .replace(/\\cdots/g, '...')
-    .replace(/\\ldots/g, '...')
-    .replace(/\\\\(?=[A-Za-z])/g, '\\')
-    .replace(/\\\\/g, '\n')
-
-  text = replaceTwoArgCommand(text, ['frac', 'dfrac', 'tfrac'], (a, b) => `(${a})/(${b})`)
-  text = replaceTwoArgCommand(text, ['binom', 'dbinom', 'tbinom'], (a, b) => `C(${a}, ${b})`)
-  text = replaceSqrt(text)
-  text = replaceOneArgCommand(text, ['pmod'], value => `(mod ${value})`)
-  text = replaceOneArgCommand(text, ['mathbb'], value => BLACKBOARD[value] ?? value)
-  text = replaceOneArgCommand(text, ['mathcal', 'mathbf', 'mathit'], value => value)
-  text = replaceOneArgCommand(text, ['operatorname', 'mathrm', 'text'], value => value)
-  text = replaceOneArgCommand(text, ['overline'], value => `overline(${value})`)
-  text = replaceOneArgCommand(text, ['vec'], value => `vec(${value})`)
-  text = replaceOneArgCommand(text, ['bar'], value => `bar(${value})`)
-  text = replaceOneArgCommand(text, ['hat'], value => `hat(${value})`)
-
-  for (const [command, replacement] of Object.entries(COMMAND_REPLACEMENTS)) {
-    text = text.replace(new RegExp(`\\\\${command}\\b`, 'g'), replacement)
-  }
-
-  text = replaceScripts(text)
-  return text
-    .replace(/[{}]/g, '')
-    .replace(/\\([A-Za-z]+)/g, '$1')
-    .replace(/[ \t]{2,}/g, ' ')
+// ── PNG 取得失敗時の Unicode フォールバック ──────────────────────────────────
+function texFallback(latex: string): string {
+  return latex
+    .replace(/\\alpha/g,      'α').replace(/\\beta/g,      'β')
+    .replace(/\\gamma/g,      'γ').replace(/\\delta/g,      'δ')
+    .replace(/\\epsilon/g,    'ε').replace(/\\varepsilon/g, 'ε')
+    .replace(/\\zeta/g,       'ζ').replace(/\\eta/g,        'η')
+    .replace(/\\theta/g,      'θ').replace(/\\vartheta/g,   'θ')
+    .replace(/\\lambda/g,     'λ').replace(/\\mu/g,         'μ')
+    .replace(/\\nu/g,         'ν').replace(/\\xi/g,         'ξ')
+    .replace(/\\pi/g,         'π').replace(/\\rho/g,        'ρ')
+    .replace(/\\sigma/g,      'σ').replace(/\\tau/g,        'τ')
+    .replace(/\\phi/g,        'φ').replace(/\\varphi/g,     'φ')
+    .replace(/\\chi/g,        'χ').replace(/\\psi/g,        'ψ')
+    .replace(/\\omega/g,      'ω').replace(/\\Gamma/g,      'Γ')
+    .replace(/\\Delta/g,      'Δ').replace(/\\Theta/g,      'Θ')
+    .replace(/\\Lambda/g,     'Λ').replace(/\\Pi/g,         'Π')
+    .replace(/\\Sigma/g,      'Σ').replace(/\\Phi/g,        'Φ')
+    .replace(/\\Psi/g,        'Ψ').replace(/\\Omega/g,      'Ω')
+    .replace(/\\infty/g,      '∞').replace(/\\times/g,      '×')
+    .replace(/\\cdot/g,       '·').replace(/\\pm/g,         '±')
+    .replace(/\\leq?/g,       '≤').replace(/\\geq?/g,       '≥')
+    .replace(/\\neq?/g,       '≠').replace(/\\approx/g,     '≈')
+    .replace(/\\sqrt\{([^{}]*)\}/g,           '√($1)')
+    .replace(/\\frac\{([^{}]*)\}\{([^{}]*)\}/g, '($1)/($2)')
+    .replace(/\\[a-zA-Z]+\{([^{}]*)\}/g,      '$1')
+    .replace(/\\[a-zA-Z]+/g, '').replace(/[{}]/g, '')
     .trim()
 }
 
-export async function POST(req: NextRequest) {
-  const { statement, answer, topic, score } = await req.json().catch(() => ({}))
-  const statementText = mathSafe(asText(statement))
+// ── ブロック数式の高さ判定 ──────────────────────────────────────────────────
+function mathImgHeight(latex: string, block: boolean, fontSize: number): number {
+  if (block) return fontSize * 2.4
+  if (/\\frac|\\sum|\\int|\\prod|\\binom|\\lim/.test(latex)) return fontSize * 1.9
+  return fontSize * 1.2
+}
 
-  if (!statementText) {
+// ── フォントサイズ（テキスト全体の長さ依存） ─────────────────────────────────
+function stmtFontSize(len: number): number {
+  if (len <= 120) return 34
+  if (len <= 250) return 30
+  if (len <= 400) return 26
+  if (len <= 600) return 22
+  return 19
+}
+
+function ansFontSize(len: number): number {
+  if (len <= 80)  return 28
+  if (len <= 180) return 24
+  return 20
+}
+
+// ── API ──────────────────────────────────────────────────────────────────────
+export async function POST(req: NextRequest) {
+  const body = await req.json().catch(() => ({})) as Record<string, unknown>
+  const statement = typeof body.statement === 'string' ? body.statement.trim() : ''
+  const answer    = typeof body.answer    === 'string' ? body.answer.trim()    : ''
+  const topic     = typeof body.topic     === 'string' ? body.topic.trim()     : '数学'
+  const score     = Number(body.score)
+
+  if (!statement) {
     return NextResponse.json(
       { ok: false, error: 'statement required', code: 'STATEMENT_REQUIRED' },
       { status: 400 },
     )
   }
 
-  const topicText = clamp(asText(topic) || '数学', 28)
-  const scoreText = Number.isFinite(Number(score)) ? Number(score).toFixed(1) : '0.0'
-  const answerText = mathSafe(asText(answer))
-  const problemSize = problemFontSize(statementText)
-  const answerSize = answerFontSize(answerText)
-  const displayStatement = clamp(statementText, 1800)
-  const displayAnswer = clamp(answerText, 520)
-  const wasClamped = compact(statementText).length > compact(displayStatement).length
+  const stSegs = parseSegments(statement)
+  const anSegs = answer ? parseSegments(answer) : []
+
+  // 全数式を重複排除して並列フェッチ
+  const mathSet = new Set<string>()
+  ;[...stSegs, ...anSegs].forEach(s => { if (s.type === 'math') mathSet.add(s.latex) })
+  const mathList = [...mathSet]
+  const fetched  = await Promise.allSettled(mathList.map(mathPng))
+
+  const pngMap = new Map<string, string | null>()
+  mathList.forEach((latex, i) => {
+    const r = fetched[i]
+    pngMap.set(latex, r.status === 'fulfilled' ? r.value : null)
+  })
+
+  const topicLabel = topic || '数学'
+  const scoreLabel = Number.isFinite(score) ? score.toFixed(1) : '0.0'
+  const sFontSize  = stmtFontSize(statement.length)
+  const aFontSize  = ansFontSize(answer.length)
+
+  // セグメント → JSX
+  function renderSegs(segs: Seg[], fontSize: number, color: string) {
+    return segs.map((seg, i) => {
+      if (seg.type === 'text') {
+        return (
+          <span key={i} style={{ fontSize, color, lineHeight: 1.75, fontFamily: 'sans-serif' }}>
+            {seg.text}
+          </span>
+        )
+      }
+      const png = pngMap.get(seg.latex)
+      const h   = mathImgHeight(seg.latex, seg.block, fontSize)
+      if (png) {
+        return (
+          <img
+            key={i}
+            src={png}
+            style={{
+              height: h,
+              alignSelf: 'center',
+              margin: seg.block ? '8px 0' : '0 2px',
+            }}
+          />
+        )
+      }
+      // PNG 失敗 → Unicode フォールバック
+      return (
+        <span key={i} style={{ fontSize: fontSize * 0.88, color, fontFamily: 'serif', letterSpacing: 0.5 }}>
+          {texFallback(seg.latex)}
+        </span>
+      )
+    })
+  }
 
   return new ImageResponse(
     (
@@ -319,85 +187,72 @@ export async function POST(req: NextRequest) {
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          background: '#f7fafc',
-          color: '#111827',
-          padding: 58,
-          border: '1px solid #d7dee8',
+          background: '#f8fafc',
+          padding: 48,
           fontFamily: 'sans-serif',
+          color: '#1e293b',
         }}
       >
+        {/* ヘッダー */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            width: '100%',
-            marginBottom: 30,
-            color: '#667085',
-            fontSize: 34,
+            marginBottom: 20,
+            fontSize: 26,
             fontWeight: 700,
           }}
         >
-          <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
             <span style={{ color: '#0a84ff' }}>Sakumon Station</span>
-            <span>{topicText}</span>
+            <span style={{ color: '#94a3b8', fontWeight: 400 }}>{topicLabel}</span>
           </div>
-          <span>score {scoreText}</span>
+          <span style={{ color: '#94a3b8', fontWeight: 400 }}>score {scoreLabel}</span>
         </div>
 
+        {/* 問題カード */}
         <div
           style={{
+            flex: 1,
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
-            flex: 1,
-            width: '100%',
-            padding: '64px 72px',
             background: '#ffffff',
-            border: '1px solid #e5e7eb',
-            borderRadius: 34,
-            boxShadow: '0 18px 48px rgba(15, 23, 42, 0.14)',
+            borderRadius: 20,
+            padding: '36px 52px',
+            border: '1px solid #e2e8f0',
+            boxShadow: '0 8px 28px rgba(15,23,42,0.09)',
+            overflow: 'hidden',
           }}
         >
+          {/* 問題文 */}
           <div
             style={{
-              fontSize: problemSize,
-              lineHeight: 1.62,
-              fontWeight: 700,
-              whiteSpace: 'pre-wrap',
-              wordBreak: 'break-word',
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              fontWeight: 600,
+              gap: 3,
             }}
           >
-            {displayStatement}
+            {renderSegs(stSegs, sFontSize, '#1e293b')}
           </div>
 
-          {answerText && (
+          {/* 解答（あれば） */}
+          {anSegs.length > 0 && (
             <div
               style={{
-                marginTop: 44,
-                paddingTop: 32,
-                borderTop: '3px solid #d1fae5',
-                color: '#047857',
-                fontSize: answerSize,
-                lineHeight: 1.5,
-                whiteSpace: 'pre-wrap',
-                wordBreak: 'break-word',
+                marginTop: 24,
+                paddingTop: 20,
+                borderTop: '2px solid #d1fae5',
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                gap: 3,
               }}
             >
-              {displayAnswer}
-            </div>
-          )}
-
-          {wasClamped && (
-            <div
-              style={{
-                marginTop: 28,
-                color: '#b45309',
-                fontSize: 24,
-                lineHeight: 1.4,
-              }}
-            >
-              問題文が非常に長いため、画像表示は要約されています。
+              {renderSegs(anSegs, aFontSize, '#047857')}
             </div>
           )}
         </div>
@@ -406,9 +261,7 @@ export async function POST(req: NextRequest) {
     {
       width: WIDTH,
       height: HEIGHT,
-      headers: {
-        'Cache-Control': 'no-store',
-      },
+      headers: { 'Cache-Control': 'no-store' },
     },
   )
 }
