@@ -232,6 +232,7 @@ async function upsertProblem(p) {
       'Prefer':        'resolution=merge-duplicates',
     },
     body: JSON.stringify({
+      user_id:    '5172c721-35b8-455e-bbc5-fc4d656c020b',
       problem_id: p.id,
       status:     'selected',
       x_posted:   false,
