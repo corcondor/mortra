@@ -32,7 +32,10 @@ const DEEPSEEK_API_URL = 'https://api.deepseek.com/chat/completions'
 // deepseek-reasoner = R1（推論モデル）、deepseek-chat = V3（高速モデル）
 const MODEL            = process.env.DEEPSEEK_MODEL ?? 'deepseek-reasoner'
 const FAST_MODEL       = process.env.DEEPSEEK_FAST_MODEL ?? 'deepseek-chat'
-const MAX_TOKENS       = Number(process.env.DEEPSEEK_MAX_TOKENS ?? 8000)
+// R1は推論トレース(reasoning_content)+JSON本文で合計32k超えることがある。余裕を持って設定
+const MAX_TOKENS       = Number(process.env.DEEPSEEK_MAX_TOKENS ?? 32000)
+// 分析・検証など軽いタスクはトークン節約
+const FAST_MAX_TOKENS  = 6000
 
 type SseType = 'status' | 'log' | 'done' | 'error'
 
@@ -144,6 +147,9 @@ async function callDeepSeek(
     throw new Error('DEEPSEEK_API_KEY が設定されていません。Vercel/ローカルの環境変数を確認してください。')
   }
 
+  // R1（deepseek-reasoner）は temperature=1 推奨。V3はデフォルト(1.0)のまま
+  const isReasoner = model.includes('reasoner')
+
   let res: Response
   try {
     res = await fetch(DEEPSEEK_API_URL, {
@@ -154,6 +160,7 @@ async function callDeepSeek(
         messages: [{ role: 'user', content: prompt }],
         stream:   !!onChunk,
         max_tokens: maxTokens,
+        ...(isReasoner ? { temperature: 1 } : {}),
       }),
     })
   } catch (error) {
@@ -166,8 +173,12 @@ async function callDeepSeek(
   }
 
   if (!onChunk) {
-    const json = await res.json()
-    return json.choices?.[0]?.message?.content ?? ''
+    const json = await res.json() as { choices?: { message?: { content?: string; finish_reason?: string } }[] }
+    const choice = json.choices?.[0]
+    if (choice?.message?.finish_reason === 'length') {
+      throw new Error(`トークン上限(${maxTokens})に達して応答が途切れました。DEEPSEEK_MAX_TOKENS を増やしてください。`)
+    }
+    return choice?.message?.content ?? ''
   }
 
   // SSE ストリーミング
@@ -178,6 +189,7 @@ async function callDeepSeek(
   let full = ''
   let reasoning = ''
   let streamDone = false
+  let finishReason = ''
 
   outer: while (!streamDone) {
     const { done, value } = await reader.read()
@@ -187,13 +199,28 @@ async function callDeepSeek(
       const data = line.slice(6).trim()
       if (data === '[DONE]') { streamDone = true; break outer }
       try {
-        const delta = JSON.parse(data).choices?.[0]?.delta
+        const parsed = JSON.parse(data)
+        const delta  = parsed.choices?.[0]?.delta
+        const fr     = parsed.choices?.[0]?.finish_reason
+        if (fr)  finishReason = fr
         const rc = delta?.reasoning_content
         const cc = delta?.content
         if (rc) { reasoning += rc; onChunk(rc, 'reasoning') }
         if (cc) { full += cc; onChunk(cc, 'content') }
       } catch { /* skip */ }
     }
+  }
+
+  if (!streamDone) {
+    // [DONE] を受け取らずにストリームが終了
+    if (finishReason === 'length') {
+      throw new Error(`トークン上限(${maxTokens})に達して応答が途切れました。DEEPSEEK_MAX_TOKENS を増やしてください（現在: ${maxTokens}）。`)
+    }
+    // finish_reason が不明な場合も警告（内容が取れていれば続行）
+    if (!full && !reasoning) {
+      throw new Error('DeepSeek から応答なしでストリームが終了しました。')
+    }
+    // 部分的でも内容があれば続行（onChunk で通知は不要なのでそのまま）
   }
 
   // reasoning-only モデル（DeepSeek-R1等）: content が空なら reasoning から JSON を抽出
@@ -366,7 +393,7 @@ export async function POST(req: NextRequest) {
         let analysis: Record<string, string> | undefined
         if (resolvedMode !== 'fusion' && parents.length === 1) {
           send('status', { step: 'analyzing', message: '問題を深く分析中...' })
-          const raw = await callDeepSeek(makeAnalysisPrompt(parents[0]), undefined, 4000, FAST_MODEL)
+          const raw = await callDeepSeek(makeAnalysisPrompt(parents[0]), undefined, FAST_MAX_TOKENS, FAST_MODEL)
           const a   = extractJson(raw)
           if (a) analysis = a as Record<string, string>
           send('log', { message: `分析完了: ${analysis?.core_structure?.slice(0, 60) ?? 'OK'}` })
@@ -441,7 +468,7 @@ export async function POST(req: NextRequest) {
                 const verifyRaw = await callDeepSeek(
                   makeVerificationPrompt(statement, answer, solution),
                   undefined,
-                  4000,
+                  FAST_MAX_TOKENS,
                   FAST_MODEL,
                 )
                 const verifyResult = extractJson(verifyRaw) as Record<string, unknown> | null
