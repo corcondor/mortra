@@ -119,6 +119,7 @@ function fmt(p: ParentProblem, idx?: number): string {
 }
 
 const SYS = `あなたは数学オリンピアード・難関大学入試の専門作問者です。
+⚡ 応答はJSONブロックのみ。前置き・確認メッセージ・コードブロック外のテキスト一切不要。
 
 ◆ 必須手順（この順番で実行）：
 【1】A案 vs B案  ── 2つの競合アプローチを考え、数学的に優れている方を選ぶ
@@ -298,6 +299,7 @@ const makeRepair = (stmt: string, ans: string, sol: string, issues: string, deri
     : ''
 
   return `以下の数学問題に問題が見つかりました。修正してください。
+⚡ 応答はJSONブロックのみ。前置き・説明不要。
 
 【元の問題文】
 ${stmt}
@@ -335,6 +337,8 @@ ${findAllInstruction ? `\n${findAllInstruction}\n` : ''}
 const makeParentRepair = (p: ParentProblem, issues: string) =>
   `以下の数学問題は不成立が確認されました。修正してください。
 
+⚡ 応答はJSONブロックのみ。余分な説明・前置き・コードブロック外のテキスト不要。
+
 ${fmt(p)}
 
 【確認された問題点】
@@ -344,6 +348,7 @@ ${issues}
 - 数学的核心（分野・解法の核心一手）は保持する
 - 条件の矛盾を解消し、解が一意に存在するよう修正する
 - 問題文は簡潔に（不要な条件は削る）
+- 修正後の答えをstep-by-stepで確認し、answersフィールドに記載
 
 \`\`\`json
 {
@@ -419,14 +424,14 @@ async function processJob(jobId: string) {
       try {
         const checkRaw = await callDeepSeek(
           `以下の数学問題が数学的に成立しているか確認してください。\n\n${fmt(p)}\n\n` +
-          `step-by-step で答えを確認し、JSONのみで返してください：\n` +
+          `step-by-step で答えを確認し、JSONのみで返してください（前置き・説明不要）：\n` +
           `\`\`\`json\n{"well_posed":true,"issues":null,"confidence":8}\n\`\`\``,
           FAST_MODEL, 3000,
         )
         const check = extractJson(checkRaw)
         if (check && check.well_posed === false && Number(check.confidence ?? 0) >= 6) {
-          log(`⚠ [親問題${pi+1}] 不成立 → 修正中... (issues: ${String(check.issues ?? '').slice(0, 60)})`, 'warn')
-          const repairRaw = await callDeepSeek(makeParentRepair(p, String(check.issues ?? '')), MODEL, MAX_TOKENS)
+          log(`⚠ [親問題${pi+1}] 不成立 (ID:${p.id}) → 修正中... (issues: ${String(check.issues ?? '').slice(0, 60)})`, 'warn')
+          const repairRaw = await callDeepSeek(makeParentRepair(p, String(check.issues ?? '')), FAST_MODEL, 3000)
           const repaired = extractJson(repairRaw)
           if (repaired?.statement) {
             const newStmt = String(repaired.statement)
@@ -439,12 +444,13 @@ async function processJob(jobId: string) {
             }).eq('id', p.id)
             // ローカル参照も更新
             parents[pi] = { ...p, statement: newStmt, answer: newAns, solution: newSol }
-            log(`✓ [親問題${pi+1}] 修正完了: ${String(repaired.fix_explanation ?? '').slice(0, 60)}`)
+            log(`✓ [親問題${pi+1}] 修正完了 [ID:${p.id}]: ${String(repaired.fix_explanation ?? '').slice(0, 60)}`)
           } else {
-            log(`⚠ [親問題${pi+1}] 修正失敗 → そのまま使用`, 'warn')
+            log(`❌ [親問題${pi+1}] 修正失敗 [ID:${p.id}] → ジョブを中断します`, 'error')
+            throw new Error(`親問題${pi+1}(ID:${p.id})の修正に失敗しました。問題を手動で確認・編集してから再実行してください。`)
           }
         } else {
-          log(`✓ [親問題${pi+1}] 成立確認OK`)
+          log(`✓ [親問題${pi+1}] 成立確認OK [ID:${p.id}]`)
         }
       } catch(e) {
         log(`⚠ [親問題${pi+1}] チェックエラー（スキップ）: ${e}`, 'warn')
@@ -701,6 +707,8 @@ async function processJob(jobId: string) {
 const makeVerify = (stmt: string, ans: string, sol: string) =>
   `以下の数学問題を厳密に検証してください。
 
+⚡ 応答はJSONブロックのみ。前置き・説明・コードブロック外のテキスト不要。
+
 【問題文】
 ${stmt}
 
@@ -710,10 +718,10 @@ ${ans}
 【解法の骨格】
 ${sol}
 
-## 検証手順
+## 検証手順（省略なし）
 1. 「すべて求めよ」「全て見つけよ」型の問題か確認する
 2. 反例を探す（n=0,1,境界値で問題が崩壊しないか）
-3. step-by-step で実際に計算（省略なし）
+3. step-by-step で実際に計算（省略なし・具体的な式変形を全て書く）
 4. 具体値を代入して検算
 5. 「すべて求めよ」型なら：条件を満たす解が1つ以上実際に存在するか確認（空集合は問題として不成立）
 
