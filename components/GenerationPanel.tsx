@@ -238,19 +238,67 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
 
     channelRef.current = channel
 
-    // ── タイムアウトフォールバック（15分） ───────────────────────────────
-    setTimeout(async () => {
-      if (!generating) return
-      const { data: job } = await sb
-        .from('generation_jobs').select('status,result,error').eq('id', jobId!).single()
-      if (job?.status === 'done' || job?.status === 'failed') return
+    // ── ポーリングフォールバック（Realtimeが届かない場合の保険） ─────────
+    // Realtimeが有効でも無効でも、5秒ごとにAPIで状態を確認する
+    let pollDone = false
+    const pollInterval = setInterval(async () => {
+      if (pollDone) return
+      try {
+        const res = await fetch(`/api/job-status?job_id=${jobId}`)
+        if (!res.ok) return
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const job = await res.json() as any
 
+        // ログ更新（Realtimeより遅れて来た場合もここで補完）
+        const jobLogs: { level: string; message: string }[] = job.logs ?? []
+        if (jobLogs.length > 0) {
+          const messages = jobLogs.map((l: { level: string; message: string }) => l.message)
+          setLogs(messages)
+          const last = messages[messages.length - 1] ?? ''
+          if (last.includes('[分析]'))      setUiPhase('analyzing')
+          else if (last.includes('[生成'))  setUiPhase('generating')
+          else if (last.includes('[検証'))  setUiPhase('verifying')
+          else if (last.includes('[保存'))  setUiPhase('saving')
+          else if (last.includes('[淘汰]')) setUiPhase('purging')
+        }
+
+        // 完了/失敗の検出
+        if (job.status === 'done' || job.status === 'failed') {
+          pollDone = true
+          clearInterval(pollInterval)
+          const ok      = job.status === 'done' && job.result?.ok === true
+          const generated = job.result?.generated?.length ?? 0
+          const total     = job.result?.total ?? count
+          const message   = ok
+            ? `✅ 完了: ${generated}/${total} 問生成。表示を更新してください。`
+            : generated === 0
+              ? `❌ 0/${total} 問生成 — 全問が検証でスキップされました`
+              : (job.error ?? `❌ 失敗: ${generated}/${total} 問生成`)
+
+          setUiPhase(ok ? 'done' : 'error')
+          setLogs(prev => {
+            const last = prev[prev.length - 1]
+            return last === message ? prev : [...prev, message]
+          })
+          setGenDone({ ok, message })
+          setGenerating(false)
+          await sb.removeChannel(channel)
+          channelRef.current = null
+        }
+      } catch { /* ignore polling errors */ }
+    }, 5000)
+
+    // ── タイムアウトフォールバック（15分） ───────────────────────────────
+    setTimeout(() => {
+      if (pollDone) return
+      pollDone = true
+      clearInterval(pollInterval)
       const message = '⏱️ タイムアウト（Workerの状態を確認してください）'
       setUiPhase('error')
       setGenDone({ ok: false, message })
       setLogs(prev => [...prev, message])
       setGenerating(false)
-      await sb.removeChannel(channel)
+      sb.removeChannel(channel)
       channelRef.current = null
     }, 15 * 60 * 1000)
   }
