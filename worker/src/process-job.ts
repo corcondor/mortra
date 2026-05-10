@@ -424,10 +424,10 @@ async function processJob(jobId: string) {
     // ────────────────────────────────────────────────────────────────────────
     // Phase 0: 親問題の修正
     // ────────────────────────────────────────────────────────────────────────
-    log('🔍 [親問題チェック] 妥当性を確認中...')
-    for (let pi = 0; pi < parents.length; pi++) {
-      const p = parents[pi]
-      if (!p.statement || !p.answer) continue
+    // 全親問題を並列チェック
+    log('🔍 [親問題チェック] 全問を並列確認中...')
+    const parentCheckResults = await Promise.all(parents.map(async (p, pi) => {
+      if (!p.statement || !p.answer) return p
       try {
         const checkRaw = await callDeepSeek(
           `以下の数学問題が数学的に成立しているか確認してください。\n\n${fmt(p)}\n\n` +
@@ -457,26 +457,25 @@ async function processJob(jobId: string) {
             const newStmt = String(repaired.statement)
             const newAns  = String(repaired.answer ?? p.answer ?? '')
             const newSol  = String(repaired.solution_outline ?? p.solution ?? '')
-            // DB更新（修正版で上書き）
             await supabase.from('problems').update({
               statement: newStmt, answer: newAns, solution: newSol,
               updated_at: new Date().toISOString(),
             }).eq('id', p.id)
-            // ローカル参照も修正版に更新
-            parents[pi] = { ...p, statement: newStmt, answer: newAns, solution: newSol }
             log(`✓ [親問題${pi+1}] 修正完了・DB保存済 [ID:${p.id}]: ${String(repaired.fix_explanation ?? '').slice(0, 60)}`)
+            return { ...p, statement: newStmt, answer: newAns, solution: newSol }
           } else {
-            // 3回試みても修正できなければジョブ中断（壊れた問題は使わない）
             log(`❌ [親問題${pi+1}] 3回試みても修正不能 [ID:${p.id}] → ジョブ中断`, 'error')
-            throw new Error(`親問題${pi+1}(ID:${p.id})を3回試みても修正できませんでした。UIから手動で問題文を編集してから再実行してください。`)
+            throw new Error(`親問題${pi+1}(ID:${p.id})を3回試みても修正できませんでした。UIから手動で編集してから再実行してください。`)
           }
         } else {
           log(`✓ [親問題${pi+1}] 成立確認OK [ID:${p.id}]`)
+          return p
         }
       } catch(e) {
-        log(`⚠ [親問題${pi+1}] チェックエラー（スキップ）: ${e}`, 'warn')
+        throw e  // 上位に伝播させてジョブ中断
       }
-    }
+    }))
+    parents = parentCheckResults
 
     // ────────────────────────────────────────────────────────────────────────
     // Phase 1: 構造分析（類題のみ）
@@ -497,97 +496,75 @@ async function processJob(jobId: string) {
     }
 
     // ────────────────────────────────────────────────────────────────────────
-    // Phase 2: 生成ループ（count問になるまでリトライ）
+    // Phase 2: 並列生成（count×2タスクを同時起動、先着count問を採用）
     // ────────────────────────────────────────────────────────────────────────
-    const generated: { id: string; statement: string }[] = []
-    const prevStatements: string[] = []  // 多様性確保：過去の試みを記録
-    const maxAttempts = count * 4        // 最大 count×4 回試みる
-    let totalAttempts = 0
+    const topic_b = resolved === 'fusion'
+      ? (parents[parents.length-1]?.topic_a ?? null)
+      : (parents[0]?.topic_b ?? null)
 
-    while (generated.length < count && totalAttempts < maxAttempts) {
-      totalAttempts++
-      const nth = `${generated.length + 1}/${count}`
-      log(`🎯 [生成 ${nth}] 試み${totalAttempts} (残${maxAttempts - totalAttempts}回)`)
+    /** 1スロット分：生成→自己修正→検証→保存 を行い、成功したらproblem情報を返す */
+    const runSlot = async (slotIdx: number): Promise<{ id: string; statement: string } | null> => {
+      const tag = `S${slotIdx}`
+      log(`🎯 [${tag}] 生成開始...`)
 
-      // プロンプト生成（試み番号・過去の問題を渡す）
       const prompt = resolved === 'fusion'
-        ? makeFusion(parents, totalAttempts, prevStatements)
+        ? makeFusion(parents, slotIdx, [])
         : resolved === 'expand'
-          ? makeExpand(parents[totalAttempts % parents.length], totalAttempts)
-          : makeSimilar(parents[totalAttempts % parents.length], analysis, totalAttempts, prevStatements)
+          ? makeExpand(parents[slotIdx % parents.length], slotIdx)
+          : makeSimilar(parents[slotIdx % parents.length], analysis, slotIdx, [])
 
-      // DeepSeek呼び出し（2回まで）
+      // 生成（2回まで）
       let rawData: Record<string, unknown> | null = null
       for (let attempt = 1; attempt <= 2; attempt++) {
         try {
           const raw = await callDeepSeek(prompt, MODEL, MAX_TOKENS,
-            msg => log(`🎯 [生成 ${nth}]${msg}`))
+            msg => log(`🎯 [${tag}]${msg}`))
           rawData = extractJson(raw)
           if (rawData) break
-          log(`⚠ [生成 ${nth}] JSON抽出失敗 (${attempt}/2)`, 'warn')
+          log(`⚠ [${tag}] JSON失敗(${attempt}/2)`, 'warn')
         } catch(e) {
-          log(`❌ [生成 ${nth}] エラー: ${e}`, 'error')
-          if (attempt < 2) await new Promise(r => setTimeout(r, 3000))
+          log(`❌ [${tag}] 生成エラー: ${e}`, 'error')
+          if (attempt < 2) await new Promise(r => setTimeout(r, 2000))
         }
       }
-      if (!rawData) continue
+      if (!rawData) return null
 
-      // プラン情報を表示
       const plan = rawData.plan as Record<string, string> | undefined
-      if (plan?.chosen) {
-        log(`💡 [生成 ${nth}] ${plan.chosen}案: ${plan.reason?.slice(0, 60) ?? ''}`)
-      }
+      if (plan?.chosen) log(`💡 [${tag}] ${plan.chosen}案: ${plan.reason?.slice(0, 50) ?? ''}`)
       const wc = rawData.weakness_check as Record<string, string> | undefined
-      if (wc?.fix) {
-        log(`🔧 [生成 ${nth}] 弱点修正: ${wc.fix.slice(0, 60)}`)
-      }
+      if (wc?.fix) log(`🔧 [${tag}] 弱点修正: ${wc.fix.slice(0, 50)}`)
 
-      // 問題文・答え・解法を取り出す
-      const fp   = (rawData.final_problem ?? {}) as Record<string, unknown>
-      const ba   = (rawData.beauty_analysis ?? {}) as Record<string, unknown>
-      let stmt   = String(fp.statement ?? '')
-      let ans    = String(fp.answer ?? '')
-      let sol    = String(fp.solution_outline ?? '')
+      const fp  = (rawData.final_problem ?? {}) as Record<string, unknown>
+      const ba  = (rawData.beauty_analysis ?? {}) as Record<string, unknown>
+      let stmt  = String(fp.statement ?? '')
+      let ans   = String(fp.answer ?? '')
+      let sol   = String(fp.solution_outline ?? '')
+      if (!stmt) { log(`⚠ [${tag}] statement空 → スキップ`, 'warn'); return null }
 
-      if (!stmt) { log(`⚠ [生成 ${nth}] statement が空 → スキップ`, 'warn'); continue }
-
-      // 多様性記録（生成できた問題文を追加）
-      prevStatements.push(stmt)
-
-      // 生成モデル自身が不成立と言っている場合は修正を試みる
+      // 自己申告で不成立なら修正
       const emb = (rawData.verification ?? {}) as Record<string, unknown>
       if (emb.problem_well_posed === false) {
-        const embIssues = String(emb.issues_found ?? '')
         const isFindAll = /すべて求め|すべて見つけ|全ての.*求め|すべての.*求め/i.test(stmt)
-        if (isFindAll) {
-          log(`⚠ [生成 ${nth}] 自己申告: 「すべて求めよ」型で不成立 → 条件を修正します...`, 'warn')
-        } else {
-          log(`⚠ [生成 ${nth}] 自己申告: 不成立 → 修正を試みます...`, 'warn')
-        }
+        log(`⚠ [${tag}] 自己申告: ${isFindAll ? '「すべて求めよ」型で' : ''}不成立 → 修正中...`, 'warn')
         const repairRaw = await callDeepSeek(
-          makeRepair(stmt, ans, sol, embIssues, null),
+          makeRepair(stmt, ans, sol, String(emb.issues_found ?? ''), null),
           FAST_MODEL, FAST_MAX,
         ).catch(() => null)
-        if (repairRaw) {
-          const repaired = extractJson(repairRaw)
-          if (repaired?.statement) {
-            stmt = String(repaired.statement)
-            ans  = String(repaired.answer ?? ans)
-            sol  = String(repaired.solution_outline ?? sol)
-            log(`🔧 [生成 ${nth}] 自己修正: ${String(repaired.fix_explanation ?? '').slice(0, 60)}`)
-          }
+        const repaired = repairRaw ? extractJson(repairRaw) : null
+        if (repaired?.statement) {
+          stmt = String(repaired.statement)
+          ans  = String(repaired.answer ?? ans)
+          sol  = String(repaired.solution_outline ?? sol)
+          log(`🔧 [${tag}] 自己修正: ${String(repaired.fix_explanation ?? '').slice(0, 50)}`)
         }
       }
 
-      // ── 独立検証 ────────────────────────────────────────────────────────
-      log(`🔍 [検証 ${nth}] step-by-step で確認中...`)
-      let verifyOk = true
+      // 独立検証
+      log(`🔍 [${tag}] 検証中...`)
       try {
-        const vRaw = await callDeepSeek(
-          makeVerify(stmt, ans, sol), FAST_MODEL, FAST_MAX)
+        const vRaw = await callDeepSeek(makeVerify(stmt, ans, sol), FAST_MODEL, FAST_MAX)
         const vr = extractJson(vRaw)
         if (vr) {
-          const verdict    = String(vr.verdict ?? '').toUpperCase()
           const conf       = Number(vr.confidence ?? 5)
           const wellPosed  = vr.problem_well_posed !== false
           const ansMatches = vr.answer_matches === true
@@ -595,14 +572,9 @@ async function processJob(jobId: string) {
           const issues     = vr.issues ? String(vr.issues) : ''
 
           if (!wellPosed && conf >= 6) {
-            // 問題自体が成立しない → 修正を試みる
-            const noSol = vr.no_solution_exists === true
+            const noSol    = vr.no_solution_exists === true
             const isFindAll = vr.is_find_all_type === true
-            if (noSol && isFindAll) {
-              log(`⚠ [検証 ${nth}] 「すべて求めよ」型で解が存在しない (conf=${conf}) → 問題文を修正します...`, 'warn')
-            } else {
-              log(`⚠ [検証 ${nth}] 不成立 (conf=${conf}) → 修正します...`, 'warn')
-            }
+            log(`⚠ [${tag}] ${noSol && isFindAll ? '「すべて求めよ」解なし' : '不成立'} (conf=${conf}) → 修正中...`, 'warn')
             const repairRaw = await callDeepSeek(
               makeRepair(stmt, ans, sol, issues, derived), FAST_MODEL, FAST_MAX,
             ).catch(() => null)
@@ -611,86 +583,85 @@ async function processJob(jobId: string) {
               stmt = String(repaired.statement)
               ans  = String(repaired.answer ?? ans)
               sol  = String(repaired.solution_outline ?? sol)
-              log(`🔧 [検証 ${nth}] 修正完了: ${String(repaired.fix_explanation ?? '').slice(0, 60)}`)
-              // 修正後に再度検証（簡易）
-              const v2Raw = await callDeepSeek(makeVerify(stmt, ans, sol), FAST_MODEL, FAST_MAX).catch(() => '')
-              const v2 = extractJson(v2Raw)
+              log(`🔧 [${tag}] 検証修正: ${String(repaired.fix_explanation ?? '').slice(0, 50)}`)
+              // 再検証
+              const v2 = extractJson(
+                await callDeepSeek(makeVerify(stmt, ans, sol), FAST_MODEL, FAST_MAX).catch(() => '')
+              )
               if (v2 && v2.problem_well_posed === false) {
-                log(`⚠ [検証 ${nth}] 再検証でも不成立 → スキップ`, 'warn')
-                verifyOk = false
-              } else {
-                log(`✓ [検証 ${nth}] 修正後の再検証OK`)
-                if (v2?.derived_answer) ans = String(v2.derived_answer)
+                log(`⚠ [${tag}] 再検証でも不成立 → スキップ`, 'warn'); return null
               }
+              if (v2?.derived_answer) ans = String(v2.derived_answer)
+              log(`✓ [${tag}] 再検証OK`)
             } else {
-              log(`⚠ [検証 ${nth}] 修正失敗 → スキップ`, 'warn')
-              verifyOk = false
+              log(`⚠ [${tag}] 修正失敗 → スキップ`, 'warn'); return null
             }
           } else if (!ansMatches && derived && conf >= 6) {
-            // 問題は成立するが答えが違う → 検証モデルの答えで上書き
-            log(`🔧 [検証 ${nth}] 答えを修正 (conf=${conf}): ${derived.slice(0, 50)}`)
+            log(`🔧 [${tag}] 答え修正(conf=${conf}): ${derived.slice(0, 40)}`)
             ans = derived
           } else if (!wellPosed && conf < 6) {
-            // 信頼度が低い → とりあえず通す（人間がレビュー）
-            log(`⚠ [検証 ${nth}] 低信頼度(conf=${conf}) → 一応保存（要確認）`, 'warn')
+            log(`⚠ [${tag}] 低信頼度(conf=${conf}) → 一応保存（要確認）`, 'warn')
           } else {
-            log(`✓ [検証 ${nth}] PASS (verdict=${verdict}, conf=${conf})`)
+            log(`✓ [${tag}] PASS (conf=${conf})`)
             if (derived && ansMatches) ans = derived
           }
         }
       } catch(e) {
-        log(`⚠ [検証 ${nth}] エラー（保存続行）: ${e}`, 'warn')
+        log(`⚠ [${tag}] 検証エラー（保存続行）: ${e}`, 'warn')
       }
 
-      if (!verifyOk) continue
-
-      // ── 保存 ────────────────────────────────────────────────────────────
-      log(`💾 [保存 ${nth}] Supabase に書き込み中...`)
+      // 保存
       const problem = {
         id: randomHex(6),
-        topic_a:      parents[0]?.topic_a ?? 'unknown',
-        topic_b:      resolved === 'fusion'
-          ? (parents[parents.length-1]?.topic_a ?? null)
-          : (parents[0]?.topic_b ?? null),
-        variation:    0,
-        statement:    stmt,
-        answer:       ans || null,
-        difficulty:   fp.difficulty as string ?? null,
-        solution:     sol,
-        inspiration:  rawData.inspiration as string ?? null,
-        meta:         rawData.meta as string ?? null,
-        surprise:     Number(ba.surprise)              || 0,
-        minimality:   Number(ba.minimality)            || 0,
-        connection:   Number(ba.connection_strength)   || 0,
-        inevitability:Number(ba.inevitability)         || 0,
-        diff_cal:     Number(ba.difficulty_calibration)|| 0,
-        total:        Number(ba.total)                 || 0,
-        generation:   nextGen,
-        parent_ids:   parents.map(p => p.id),
-        source_file:  null,
+        topic_a:       parents[0]?.topic_a ?? 'unknown',
+        topic_b,
+        variation:     0,
+        statement:     stmt,
+        answer:        ans || null,
+        difficulty:    fp.difficulty as string ?? null,
+        solution:      sol,
+        inspiration:   rawData.inspiration as string ?? null,
+        meta:          rawData.meta as string ?? null,
+        surprise:      Number(ba.surprise)               || 0,
+        minimality:    Number(ba.minimality)             || 0,
+        connection:    Number(ba.connection_strength)    || 0,
+        inevitability: Number(ba.inevitability)          || 0,
+        diff_cal:      Number(ba.difficulty_calibration) || 0,
+        total:         Number(ba.total)                  || 0,
+        generation:    nextGen,
+        parent_ids:    parents.map(p => p.id),
+        source_file:   null,
       }
-
       const { error: pe } = await supabase.from('problems').upsert(problem)
-      if (pe) {
-        log(`❌ [保存 ${nth}] 保存エラー: ${pe.message}`, 'error')
-        continue
-      }
+      if (pe) { log(`❌ [${tag}] 保存エラー: ${pe.message}`, 'error'); return null }
 
       await supabase.from('ratings').upsert(
         { user_id: userId ?? 'system', problem_id: problem.id, status: 'pending', x_posted: false },
         { onConflict: 'user_id,problem_id', ignoreDuplicates: true },
       )
+      log(`✅ [${tag}] 保存完了 [ID:${problem.id}] score=${Number(ba.total).toFixed(1)} → ${stmt.slice(0, 50)}...`)
+      return { id: problem.id, statement: problem.statement }
+    }
 
-      const score = Number(ba.total) || 0
-      log(`✅ [完了 ${nth}] score=${score.toFixed(1)} 難=${fp.difficulty ?? '?'} → ${stmt.slice(0, 50)}...`)
-      generated.push({ id: problem.id, statement: problem.statement })
+    // count×2 スロットを並列起動し、先着 count 問を採用
+    log(`🚀 [並列生成] ${count}問目標 → ${count * 2}スロット同時起動`)
+    const slotResults = await Promise.allSettled(
+      Array.from({ length: count * 2 }, (_, i) => runSlot(i + 1))
+    )
+    const generated = slotResults
+      .filter((r): r is PromiseFulfilledResult<{ id: string; statement: string }> =>
+        r.status === 'fulfilled' && r.value !== null)
+      .map(r => r.value)
+      .slice(0, count)
 
-      if (userId) {
-        await supabase.from('usage').upsert(
-          { user_id: userId, year_month: ym(), generations_count: 1 },
-          { onConflict: 'user_id,year_month', ignoreDuplicates: false },
-        )
-      }
+    const totalAttempts = count * 2
+    log(`📊 [並列生成] ${generated.length}/${count} 問成功（${count * 2}スロット中）`)
+
+    if (userId && generated.length > 0) {
+      await supabase.from('usage').upsert(
+        { user_id: userId, year_month: ym(), generations_count: generated.length },
+        { onConflict: 'user_id,year_month', ignoreDuplicates: false },
+      )
     }
 
     // ── 淘汰 ────────────────────────────────────────────────────────────────
