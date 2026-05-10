@@ -333,12 +333,18 @@ ${findAllInstruction ? `\n${findAllInstruction}\n` : ''}
 \`\`\``
 }
 
-/** 親問題の修正プロンプト */
-const makeParentRepair = (p: ParentProblem, issues: string) =>
-  `以下の数学問題は不成立が確認されました。修正してください。
+/** 親問題の修正プロンプト（リトライ番号に応じて指示を強化） */
+const makeParentRepair = (p: ParentProblem, issues: string, attempt = 1) => {
+  const attemptNote = attempt === 1
+    ? ''
+    : attempt === 2
+    ? `\n⚠ 前回の修正でJSONを正しく返せませんでした。今回は必ずJSONブロック内にのみ回答してください。\n`
+    : `\n🚨 2回失敗しています。条件を大きく変えてでも必ず成立する問題に修正してください。JSONブロックのみで返答。\n`
+
+  return `以下の数学問題は不成立が確認されました。修正してください。（試み${attempt}/3）
 
 ⚡ 応答はJSONブロックのみ。余分な説明・前置き・コードブロック外のテキスト不要。
-
+${attemptNote}
 ${fmt(p)}
 
 【確認された問題点】
@@ -346,18 +352,19 @@ ${issues}
 
 ## 修正の指示
 - 数学的核心（分野・解法の核心一手）は保持する
-- 条件の矛盾を解消し、解が一意に存在するよう修正する
+- 条件の矛盾を解消し、解が1つ以上存在するよう修正する（解なしは絶対に不可）
 - 問題文は簡潔に（不要な条件は削る）
-- 修正後の答えをstep-by-stepで確認し、answersフィールドに記載
+- 修正後の答えをstep-by-stepで検算し、正しいことを確認してから answer に記載
 
 \`\`\`json
 {
   "statement": "修正後の問題文（LaTeX）",
   "answer": "修正後の答え（LaTeX）",
   "solution_outline": "解法の骨格",
-  "fix_explanation": "何をどう修正したか"
+  "fix_explanation": "何をどう修正したか（具体的に）"
 }
 \`\`\``
+}
 
 // ── ユーティリティ ────────────────────────────────────────────────────────────
 function randomHex(n = 6) {
@@ -430,24 +437,38 @@ async function processJob(jobId: string) {
         )
         const check = extractJson(checkRaw)
         if (check && check.well_posed === false && Number(check.confidence ?? 0) >= 6) {
-          log(`⚠ [親問題${pi+1}] 不成立 (ID:${p.id}) → 修正中... (issues: ${String(check.issues ?? '').slice(0, 60)})`, 'warn')
-          const repairRaw = await callDeepSeek(makeParentRepair(p, String(check.issues ?? '')), FAST_MODEL, 3000)
-          const repaired = extractJson(repairRaw)
+          const issues = String(check.issues ?? '')
+          log(`⚠ [親問題${pi+1}] 不成立 (ID:${p.id}) → 修正中... (issues: ${issues.slice(0, 60)})`, 'warn')
+
+          // 最大3回リトライして修正を試みる
+          let repaired: Record<string, unknown> | null = null
+          for (let ri = 1; ri <= 3; ri++) {
+            log(`🔧 [親問題${pi+1}] 修正試み ${ri}/3...`)
+            const repairRaw = await callDeepSeek(
+              makeParentRepair(p, issues, ri),
+              FAST_MODEL, 4000,
+            ).catch(() => null)
+            repaired = repairRaw ? extractJson(repairRaw) : null
+            if (repaired?.statement) break
+            log(`⚠ [親問題${pi+1}] 試み${ri}失敗（JSON取得できず）`, 'warn')
+          }
+
           if (repaired?.statement) {
             const newStmt = String(repaired.statement)
             const newAns  = String(repaired.answer ?? p.answer ?? '')
             const newSol  = String(repaired.solution_outline ?? p.solution ?? '')
-            // DB更新
+            // DB更新（修正版で上書き）
             await supabase.from('problems').update({
               statement: newStmt, answer: newAns, solution: newSol,
               updated_at: new Date().toISOString(),
             }).eq('id', p.id)
-            // ローカル参照も更新
+            // ローカル参照も修正版に更新
             parents[pi] = { ...p, statement: newStmt, answer: newAns, solution: newSol }
-            log(`✓ [親問題${pi+1}] 修正完了 [ID:${p.id}]: ${String(repaired.fix_explanation ?? '').slice(0, 60)}`)
+            log(`✓ [親問題${pi+1}] 修正完了・DB保存済 [ID:${p.id}]: ${String(repaired.fix_explanation ?? '').slice(0, 60)}`)
           } else {
-            log(`❌ [親問題${pi+1}] 修正失敗 [ID:${p.id}] → ジョブを中断します`, 'error')
-            throw new Error(`親問題${pi+1}(ID:${p.id})の修正に失敗しました。問題を手動で確認・編集してから再実行してください。`)
+            // 3回試みても修正できなければジョブ中断（壊れた問題は使わない）
+            log(`❌ [親問題${pi+1}] 3回試みても修正不能 [ID:${p.id}] → ジョブ中断`, 'error')
+            throw new Error(`親問題${pi+1}(ID:${p.id})を3回試みても修正できませんでした。UIから手動で問題文を編集してから再実行してください。`)
           }
         } else {
           log(`✓ [親問題${pi+1}] 成立確認OK [ID:${p.id}]`)
