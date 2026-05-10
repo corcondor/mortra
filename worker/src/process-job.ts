@@ -282,8 +282,22 @@ ${fmt(p)}
 JSON形式のみで回答。`
 
 /** 問題修正プロンプト（検証失敗後に呼ぶ） */
-const makeRepair = (stmt: string, ans: string, sol: string, issues: string, derivedAnswer: string | null) =>
-  `以下の数学問題に問題が見つかりました。修正してください。
+const makeRepair = (stmt: string, ans: string, sol: string, issues: string, derivedAnswer: string | null) => {
+  // 「すべて求めよ」系かどうかを検出
+  const isFindAll = /すべて求め|すべて見つけ|全ての.*求め|すべての.*求め|find all|enumerate all/i.test(stmt)
+  const isNoSolution = /解が存在しない|解なし|条件を満たす.*存在しない|no solution|empty/i.test(issues)
+
+  const findAllInstruction = isFindAll && isNoSolution
+    ? `⚠ 重要: この問題は「すべて求めよ」型ですが、解が存在しないことが確認されました。
+以下のいずれかの方針で修正してください（どちらでもよい）：
+- 【方針A】条件を緩めて解が1つ以上存在するよう変更する（例: $n \\geq 2$ → $n \\geq 1$、係数を変える、等）
+- 【方針B】問題の聞き方を変える（例: 「すべて求めよ」→「最小値を求めよ」「〜が成立する条件を求めよ」）
+方針Aを優先し、数学的に自然な変更にすること。`
+    : isFindAll
+    ? `注意: この問題は「すべて求めよ」型です。答えが空集合にならないよう確認し、解が存在することを step-by-step で確認してください。`
+    : ''
+
+  return `以下の数学問題に問題が見つかりました。修正してください。
 
 【元の問題文】
 ${stmt}
@@ -298,10 +312,10 @@ ${sol}
 ${issues}
 
 ${derivedAnswer ? `【検証モデルが計算した正しい答え（これを使うこと）】\n${derivedAnswer}\n` : ''}
-
+${findAllInstruction ? `\n${findAllInstruction}\n` : ''}
 ## 修正の指示
 1. 問題の条件の矛盾・曖昧さを解消する
-2. 解が一意に存在するよう条件を整理・追加する
+2. 解が必ず1つ以上存在するよう条件を整理・追加する（「すべて求めよ」型なら解が空にならないこと）
 3. ${derivedAnswer ? `答えを「${derivedAnswer}」と整合するよう問題文を修正` : '問題が成立するよう条件を修正'}
 4. 問題文は最小限に（冗長な条件は削る）
 5. 修正後も step-by-step で答えを確認すること
@@ -315,6 +329,7 @@ ${derivedAnswer ? `【検証モデルが計算した正しい答え（これを�
   "verification": "修正後の答えの確認計算（step-by-step）"
 }
 \`\`\``
+}
 
 /** 親問題の修正プロンプト */
 const makeParentRepair = (p: ParentProblem, issues: string) =>
@@ -515,9 +530,15 @@ async function processJob(jobId: string) {
       // 生成モデル自身が不成立と言っている場合は修正を試みる
       const emb = (rawData.verification ?? {}) as Record<string, unknown>
       if (emb.problem_well_posed === false) {
-        log(`⚠ [生成 ${nth}] 自己申告: 不成立 → 修正を試みます...`, 'warn')
+        const embIssues = String(emb.issues_found ?? '')
+        const isFindAll = /すべて求め|すべて見つけ|全ての.*求め|すべての.*求め/i.test(stmt)
+        if (isFindAll) {
+          log(`⚠ [生成 ${nth}] 自己申告: 「すべて求めよ」型で不成立 → 条件を修正します...`, 'warn')
+        } else {
+          log(`⚠ [生成 ${nth}] 自己申告: 不成立 → 修正を試みます...`, 'warn')
+        }
         const repairRaw = await callDeepSeek(
-          makeRepair(stmt, ans, sol, String(emb.issues_found ?? ''), null),
+          makeRepair(stmt, ans, sol, embIssues, null),
           FAST_MODEL, FAST_MAX,
         ).catch(() => null)
         if (repairRaw) {
@@ -548,7 +569,13 @@ async function processJob(jobId: string) {
 
           if (!wellPosed && conf >= 6) {
             // 問題自体が成立しない → 修正を試みる
-            log(`⚠ [検証 ${nth}] 不成立 (conf=${conf}) → 修正します...`, 'warn')
+            const noSol = vr.no_solution_exists === true
+            const isFindAll = vr.is_find_all_type === true
+            if (noSol && isFindAll) {
+              log(`⚠ [検証 ${nth}] 「すべて求めよ」型で解が存在しない (conf=${conf}) → 問題文を修正します...`, 'warn')
+            } else {
+              log(`⚠ [検証 ${nth}] 不成立 (conf=${conf}) → 修正します...`, 'warn')
+            }
             const repairRaw = await callDeepSeek(
               makeRepair(stmt, ans, sol, issues, derived), FAST_MODEL, FAST_MAX,
             ).catch(() => null)
@@ -684,23 +711,30 @@ ${ans}
 ${sol}
 
 ## 検証手順
-1. 反例を探す（n=0,1,境界値で問題が崩壊しないか）
-2. step-by-step で実際に計算（省略なし）
-3. 具体値を代入して検算
+1. 「すべて求めよ」「全て見つけよ」型の問題か確認する
+2. 反例を探す（n=0,1,境界値で問題が崩壊しないか）
+3. step-by-step で実際に計算（省略なし）
+4. 具体値を代入して検算
+5. 「すべて求めよ」型なら：条件を満たす解が1つ以上実際に存在するか確認（空集合は問題として不成立）
 
 \`\`\`json
 {
+  "is_find_all_type": false,
   "counterexample_attempt": "反例を探した結果",
   "step_by_step": "実際の計算（省略なし）",
   "numerical_check": "具体値での検算",
   "derived_answer": "計算で得られた答え（LaTeX）",
   "answer_matches": true,
   "problem_well_posed": true,
+  "no_solution_exists": false,
   "issues": null,
   "confidence": 8,
   "verdict": "PASS"
 }
-\`\`\``
+\`\`\`
+
+注意: "no_solution_exists": true は「すべて求めよ」系で解が1つも存在しない場合のみ true にする。
+この場合は必ず "problem_well_posed": false とし、issues に「解が存在しない」と明記してください。`
 
 // ── エントリポイント ──────────────────────────────────────────────────────────
 const targetJobId = process.env.JOB_ID
