@@ -507,15 +507,25 @@ async function processJob(jobId: string) {
             const conf    = Number(vr.confidence ?? 5)
             const issues  = vr.issues ? ` (${String(vr.issues).slice(0, 60)})` : ''
 
-            if (verdict === 'FAIL' || vr.problem_well_posed === false || conf < 5 || vr.answer_matches === false) {
-              log(`⚠ [検証 ${nth}] FAIL (verdict=${verdict}, conf=${conf})${issues} → スキップ`, 'warn')
+            const wellPosed   = vr.problem_well_posed !== false
+            const ansMatches  = vr.answer_matches === true
+            const hasDerived  = vr.derived_answer && String(vr.derived_answer).trim().length > 0
+
+            if (!wellPosed || conf < 4) {
+              // 問題自体が不成立 or 信頼度が低すぎる → 完全スキップ
+              log(`⚠ [検証 ${nth}] 不成立 (conf=${conf}, well_posed=${wellPosed})${issues} → スキップ`, 'warn')
               ok = false
+            } else if (ansMatches) {
+              // 完全一致 → そのまま保存
+              log(`✓ [検証 ${nth}] PASS (conf=${conf})`)
+            } else if (hasDerived && conf >= 6) {
+              // 答えは違うが問題は成立・検証モデルが正解を計算できている → 答えを上書き保存
+              log(`🔧 [検証 ${nth}] 答えを検証値で修正 (conf=${conf}): ${String(vr.derived_answer).slice(0, 50)}`)
+              fp.answer = vr.derived_answer
             } else {
-              log(`✓ [検証 ${nth}] PASS (verdict=${verdict}, conf=${conf})`)
-              // 検証で計算した答えで上書き
-              if (vr.derived_answer && vr.answer_matches === true) {
-                fp.answer = vr.derived_answer
-              }
+              // 答えが間違いで代替答えも不明 → スキップ
+              log(`⚠ [検証 ${nth}] 答え不一致・代替なし (conf=${conf})${issues} → スキップ`, 'warn')
+              ok = false
             }
           }
         } catch(e) {
