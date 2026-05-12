@@ -8,9 +8,10 @@ import { GenerationPanel }       from '@/components/GenerationPanel'
 import { PostModal }             from '@/components/PostModal'
 import { SpotlightSearch }       from '@/components/SpotlightSearch'
 import { AuthGuard, useAuth }    from '@/components/AuthGuard'
+import { PastExamDB, type PastExamEntry } from '@/components/PastExamDB'
 import type { ProblemWithRating } from '@/lib/types'
 
-type Tab = 'list' | 'selected'
+type Tab = 'list' | 'selected' | 'pastexam'
 
 const DEFAULT_FILTERS: Filters = {
   topic: null, status: null,
@@ -28,9 +29,15 @@ function HomeInner() {
   const [tab,       setTab]       = useState<Tab>('list')
   const [filters,   setFilters]   = useState<Filters>(DEFAULT_FILTERS)
   const [page,      setPage]      = useState(0)
-  const [postTarget,   setPostTarget]   = useState<ProblemWithRating | null>(null)
-  const [showSearch,   setShowSearch]   = useState(false)
-  const [sidebarOpen,  setSidebarOpen]  = useState(false)
+  const [postTarget,    setPostTarget]   = useState<ProblemWithRating | null>(null)
+  const [showSearch,    setShowSearch]   = useState(false)
+  const [sidebarOpen,   setSidebarOpen]  = useState(false)
+  const [fusionExams,   setFusionExams]  = useState<PastExamEntry[]>([])
+  const [examTexts,     setExamTexts]    = useState<Record<string, string>>({})
+  const [examFusionCount, setExamFusionCount] = useState(3)
+  const [examRunning,   setExamRunning]  = useState(false)
+  const [examLogs,      setExamLogs]     = useState<string[]>([])
+  const [examDone,      setExamDone]     = useState<{ ok: boolean; message: string } | null>(null)
   const contentRef = useRef<HTMLDivElement>(null)
 
   // ── データ取得（Supabase クライアント経由 = ユーザーセッションで RLS が効く） ──
@@ -86,6 +93,63 @@ function HomeInner() {
 
   const handleFiltersChange = (f: Filters) => { setFilters(f); setPage(0) }
 
+  // ── 過去問融合生成ハンドラ ─────────────────────────────────────────────
+  const handleStartFusion = (exams: PastExamEntry[]) => {
+    setFusionExams(exams)
+    setExamTexts({})
+    setExamLogs([])
+    setExamDone(null)
+    setTab('pastexam')
+  }
+
+  const handleExamFusion = async () => {
+    const missingText = fusionExams.find(e => !examTexts[e.id]?.trim())
+    if (missingText) {
+      alert(`「${missingText.univShort} ${missingText.year} ${missingText.type}」の問題文を入力してください`)
+      return
+    }
+    setExamRunning(true); setExamLogs([]); setExamDone(null)
+
+    const parents = fusionExams.map(e => ({
+      id:        e.id,
+      topic_a:   e.univCode,
+      topic_b:   e.type,
+      statement: examTexts[e.id] ?? '',
+      answer:    '',
+      inspiration: `${e.univName} ${e.year}年度${e.type}`,
+      total:     80,
+      solution:  '',
+    }))
+
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const enqueueUrl  = supabaseUrl
+      ? `${supabaseUrl}/functions/v1/enqueue-generation`
+      : '/api/generate'
+
+    try {
+      const res = await fetch(enqueueUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
+        body: JSON.stringify({ parents, mode: 'fusion', count: examFusionCount }),
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => null)
+        const msg = data?.error ?? `エラー: ${res.status}`
+        setExamLogs([msg]); setExamDone({ ok: false, message: msg }); setExamRunning(false); return
+      }
+      const { job_id } = await res.json()
+      setExamLogs([`🚀 ジョブ受付: ${job_id} — 「選択済み・生成」タブで進捗を確認できます`])
+      setExamDone({ ok: true, message: `✅ エンキュー完了 (${job_id})` })
+    } catch (e) {
+      const msg = `送信失敗: ${e}`
+      setExamLogs([msg]); setExamDone({ ok: false, message: msg })
+    }
+    setExamRunning(false)
+  }
+
   // ── CMD+K でSpotlight ─────────────────────────────────────────────────
   useEffect(() => {
     const h = (e: KeyboardEvent) => {
@@ -136,7 +200,7 @@ function HomeInner() {
 
           {/* Tabs */}
           <nav className="flex gap-1">
-            {([['list','問題一覧'], ['selected','選択済み・生成']] as [Tab, string][]).map(([t, label]) => (
+            {([['list','問題一覧'], ['selected','選択済み・生成'], ['pastexam','過去問DB']] as [Tab, string][]).map(([t, label]) => (
               <button
                 key={t}
                 onClick={() => setTab(t)}
@@ -263,6 +327,104 @@ function HomeInner() {
               ) : (
                 <div className="glass rounded-2xl p-10 text-center text-white/30 text-sm">
                   条件に一致する問題がありません
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ── TAB 3: 過去問DB ── */}
+          {tab === 'pastexam' && fusionExams.length === 0 && (
+            <PastExamDB onStartFusion={handleStartFusion} isAdmin={isAdmin} />
+          )}
+
+          {/* 過去問 融合生成パネル */}
+          {tab === 'pastexam' && fusionExams.length > 0 && (
+            <div className="max-w-2xl mx-auto space-y-4">
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setFusionExams([])}
+                  className="text-white/40 hover:text-white/80 text-sm transition-colors"
+                >← 戻る</button>
+                <h1 className="text-[20px] font-bold text-white/90">過去問 融合生成</h1>
+              </div>
+
+              {fusionExams.map(e => (
+                <div key={e.id} className="glass rounded-2xl p-4 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-white/80">
+                      {e.univName}　{e.year}年度　{e.type}
+                    </span>
+                    <a
+                      href={e.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[12px] text-apple-blue/70 hover:text-apple-blue underline transition-colors"
+                    >
+                      問題を開く →
+                    </a>
+                  </div>
+                  <p className="text-[11px] text-white/30">
+                    上のリンクで問題を確認し、問題文（LaTeX可）を貼り付けてください
+                  </p>
+                  <textarea
+                    value={examTexts[e.id] ?? ''}
+                    onChange={ev => setExamTexts(prev => ({ ...prev, [e.id]: ev.target.value }))}
+                    placeholder={`${e.univShort} ${e.year} ${e.type} の問題文をここに貼り付け…`}
+                    rows={5}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2
+                               text-[12px] text-white/80 placeholder-white/20 outline-none
+                               focus:border-apple-blue/40 resize-y font-mono"
+                  />
+                </div>
+              ))}
+
+              {/* 生成数 + 実行ボタン */}
+              <div className="glass rounded-2xl p-4 space-y-3">
+                <div className="flex items-center gap-3">
+                  <span className="text-[12px] text-white/60 w-20 shrink-0">生成数</span>
+                  <input
+                    type="range" min={1} max={6} value={examFusionCount}
+                    onChange={ev => setExamFusionCount(+ev.target.value)}
+                    className="flex-1 accent-apple-blue h-1"
+                  />
+                  <span className="text-[12px] text-white/50 tabular-nums w-4 text-right">
+                    {examFusionCount}
+                  </span>
+                </div>
+
+                <button
+                  onClick={handleExamFusion}
+                  disabled={examRunning || !isAdmin}
+                  className="w-full py-2.5 bg-apple-blue hover:bg-apple-blue/80
+                             disabled:opacity-40 text-white text-[13px] font-semibold
+                             rounded-xl transition-all"
+                >
+                  {examRunning ? '送信中…' : `⚡ ${examFusionCount} 問 融合生成`}
+                </button>
+                {!isAdmin && (
+                  <p className="text-[11px] text-white/25 text-center">
+                    管理者のみ生成可能
+                  </p>
+                )}
+              </div>
+
+              {/* ログ */}
+              {examLogs.length > 0 && (
+                <div className="glass rounded-2xl p-4 space-y-1 font-mono text-[11px]">
+                  {examLogs.map((l, i) => <div key={i} className="text-white/60">{l}</div>)}
+                  {examDone && (
+                    <div className={`mt-2 font-semibold ${examDone.ok ? 'text-emerald-400' : 'text-red-400'}`}>
+                      {examDone.message}
+                    </div>
+                  )}
+                  {examDone?.ok && (
+                    <button
+                      onClick={() => { setTab('selected'); setFusionExams([]) }}
+                      className="mt-2 text-apple-blue hover:text-apple-blue/80 underline text-[11px]"
+                    >
+                      選択済み・生成タブで進捗を確認 →
+                    </button>
+                  )}
                 </div>
               )}
             </div>
