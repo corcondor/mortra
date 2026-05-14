@@ -102,17 +102,34 @@ function stmtFontSize(len: number): number {
   return 19
 }
 
-function ansFontSize(len: number): number {
-  if (len <= 80)  return 28
-  if (len <= 180) return 24
-  return 20
+
+// ── 日本語フォント読み込み（Satori の文字化け防止） ──────────────────────────
+async function loadJapaneseFont(): Promise<ArrayBuffer | null> {
+  try {
+    const controller = new AbortController()
+    setTimeout(() => controller.abort(), 5000)
+    // Google Fonts CSS から woff2 URL を取得
+    const css = await fetch(
+      'https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700',
+      {
+        headers: { 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' },
+        signal: controller.signal,
+      }
+    ).then(r => r.text())
+    // 最初の woff2 URL を抽出
+    const m = css.match(/url\((https:\/\/fonts\.gstatic\.com\/[^)]+)\)/)
+    if (!m) return null
+    return await fetch(m[1], { signal: controller.signal }).then(r => r.arrayBuffer())
+  } catch {
+    return null
+  }
 }
 
 // ── API ──────────────────────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
   const body      = await req.json().catch(() => ({})) as Record<string, unknown>
   const statement = typeof body.statement === 'string' ? body.statement.trim() : ''
-  const answer    = typeof body.answer    === 'string' ? body.answer.trim()    : ''
+  // answer は投稿画像には含めない（X投稿では問題文のみ表示）
   const topic     = typeof body.topic     === 'string' ? body.topic.trim()     : '数学'
   const score     = Number(body.score)
 
@@ -124,16 +141,13 @@ export async function POST(req: NextRequest) {
   }
 
   const sFontSize = stmtFontSize(statement.length)
-  const aFontSize = ansFontSize(answer.length)
 
   const stSegs = parseSegments(statement)
-  const anSegs = answer ? parseSegments(answer) : []
 
   // 数式を (latex, targetFontPx) のペアで重複排除してフェッチ
   type MathKey = string  // `${latex}__${targetPx}`
   const mathMap = new Map<MathKey, { latex: string; targetPx: number }>()
   stSegs.forEach(s => { if (s.type === 'math') { const k = `${s.latex}__${sFontSize}`; mathMap.set(k, { latex: s.latex, targetPx: sFontSize }) } })
-  anSegs.forEach(s => { if (s.type === 'math') { const k = `${s.latex}__${aFontSize}`; mathMap.set(k, { latex: s.latex, targetPx: aFontSize }) } })
 
   const mathEntries  = [...mathMap.entries()]
   const fetchResults = await Promise.allSettled(
@@ -149,13 +163,16 @@ export async function POST(req: NextRequest) {
   const topicLabel = topic || '数学'
   const scoreLabel = Number.isFinite(score) ? score.toFixed(1) : '0.0'
 
+  // フォント読み込み（失敗しても続行）
+  const fontData = await loadJapaneseFont()
+
   // ── セグメント → JSX ─────────────────────────────────────────────────────
   // block 数式はフレックスラインを占有するよう flexBasis:'100%' で折り返させる
   function renderSegs(segs: Seg[], fontSize: number, color: string) {
     return segs.map((seg, i) => {
       if (seg.type === 'text') {
         return (
-          <span key={i} style={{ fontSize, color, lineHeight: 1.75, fontFamily: 'sans-serif', flexShrink: 1 }}>
+          <span key={i} style={{ fontSize, color, lineHeight: 1.75, fontFamily: "'Noto Sans JP', sans-serif", flexShrink: 1 }}>
             {seg.text}
           </span>
         )
@@ -274,33 +291,17 @@ export async function POST(req: NextRequest) {
           boxShadow:     '0 8px 28px rgba(15,23,42,0.09)',
           overflow:      'hidden',
         }}>
-          {/* 問題文 */}
+          {/* 問題文のみ（解答は含めない） */}
           <div style={{
-            display:     'flex',
-            flexWrap:    'wrap',
-            alignItems:  'center',
-            fontWeight:  600,
-            gap:         4,
-            maxWidth:    CONTENT_W,
+            display:    'flex',
+            flexWrap:   'wrap',
+            alignItems: 'center',
+            fontWeight: 600,
+            gap:        4,
+            maxWidth:   CONTENT_W,
           }}>
             {renderSegs(stSegs, sFontSize, '#1e293b')}
           </div>
-
-          {/* 解答 */}
-          {anSegs.length > 0 && (
-            <div style={{
-              marginTop:   24,
-              paddingTop:  20,
-              borderTop:   '2px solid #d1fae5',
-              display:     'flex',
-              flexWrap:    'wrap',
-              alignItems:  'center',
-              gap:         4,
-              maxWidth:    CONTENT_W,
-            }}>
-              {renderSegs(anSegs, aFontSize, '#047857')}
-            </div>
-          )}
         </div>
       </div>
     ),
@@ -308,6 +309,14 @@ export async function POST(req: NextRequest) {
       width:   WIDTH,
       height:  HEIGHT,
       headers: { 'Cache-Control': 'no-store' },
+      ...(fontData ? {
+        fonts: [{
+          name:   'Noto Sans JP',
+          data:   fontData,
+          weight: 400 as const,
+          style:  'normal' as const,
+        }],
+      } : {}),
     },
   )
 }

@@ -25,11 +25,13 @@ export interface Problem {
 }
 
 export interface Rating {
-  problem_id: string
-  status: RatingStatus
-  x_posted: boolean
-  note: string | null
-  updated_at: string
+  problem_id:       string
+  status:           RatingStatus
+  x_posted:         boolean
+  note:             string | null
+  is_incorrect:     boolean
+  corrected_answer: string | null
+  updated_at:       string
 }
 
 export interface ProblemWithRating extends Problem {

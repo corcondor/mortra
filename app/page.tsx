@@ -74,20 +74,40 @@ function HomeInner() {
   const paginated  = filtered.slice(page * filters.perPage, (page + 1) * filters.perPage)
 
   // ── ステータス更新（楽観的UI） ─────────────────────────────────────────
+  const blankRating = (id: string) => ({
+    problem_id: id, status: 'pending' as never, x_posted: false,
+    note: null, is_incorrect: false, corrected_answer: null, updated_at: '',
+  })
+
   const handleStatusChange = useCallback((id: string, status: string) => {
     setProblems(prev => prev.map(p =>
       p.id !== id ? p : {
         ...p,
-        rating: { ...(p.rating ?? { problem_id: id, x_posted: false, note: null, updated_at: '' }), status: status as never },
+        rating: { ...(p.rating ?? blankRating(id)), status: status as never },
       }
     ))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const handleAnswerChange = useCallback((id: string, correctedAnswer: string | null, isIncorrect: boolean) => {
+    setProblems(prev => prev.map(p =>
+      p.id !== id ? p : {
+        ...p,
+        rating: {
+          ...(p.rating ?? blankRating(id)),
+          is_incorrect:     isIncorrect,
+          corrected_answer: correctedAnswer,
+        },
+      }
+    ))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handlePosted = useCallback((id: string) => {
     setProblems(prev => prev.map(p =>
       p.id !== id ? p : {
         ...p,
-        rating: { ...(p.rating ?? { problem_id: id, status: 'posted' as never, note: null, updated_at: '' }), x_posted: true, status: 'posted' as never },
+        rating: { ...(p.rating ?? blankRating(id)), x_posted: true, status: 'posted' as never },
       }
     ))
   }, [])
@@ -322,6 +342,7 @@ function HomeInner() {
                           showSol={filters.showSol}
                           accessToken={accessToken}
                           onStatusChange={handleStatusChange}
+                          onAnswerChange={handleAnswerChange}
                           onPostClick={setPostTarget}
                         />
                       </section>

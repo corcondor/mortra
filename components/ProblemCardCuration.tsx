@@ -18,50 +18,99 @@ interface Props {
   scrollRootRef?: RefObject<HTMLDivElement>
   showSol: boolean
   accessToken: string | null
-  onStatusChange: (id: string, status: string) => void
+  onStatusChange:  (id: string, status: string) => void
+  onAnswerChange:  (id: string, correctedAnswer: string | null, isIncorrect: boolean) => void
   onPostClick: (p: ProblemWithRating) => void
 }
 
-export function ProblemCardCuration({ problem: p, index, scrollRootRef, showSol, accessToken, onStatusChange, onPostClick }: Props) {
-  const [busy,     setBusy]     = useState(false)
-  const [expanded, setExpanded] = useState(false)
+export function ProblemCardCuration({
+  problem: p, index, scrollRootRef, showSol,
+  accessToken, onStatusChange, onAnswerChange, onPostClick,
+}: Props) {
+  const [busy,           setBusy]           = useState(false)
+  const [expanded,       setExpanded]       = useState(false)
+  const [editingAnswer,  setEditingAnswer]  = useState(false)
+  const [answerDraft,    setAnswerDraft]    = useState('')
+  const [savingAnswer,   setSavingAnswer]   = useState(false)
+
   const cardRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
-    target: cardRef,
-    container: scrollRootRef,
+    target: cardRef, container: scrollRootRef,
     offset: ['start 92%', 'end 10%'],
   })
-  const y = useTransform(scrollYProgress, [0, 0.45, 1], [118, 0, -96])
-  const scale = useTransform(scrollYProgress, [0, 0.45, 1], [0.91, 1, 0.93])
+  const y       = useTransform(scrollYProgress, [0, 0.45, 1], [118, 0, -96])
+  const scale   = useTransform(scrollYProgress, [0, 0.45, 1], [0.91, 1, 0.93])
   const rotateX = useTransform(scrollYProgress, [0, 0.45, 1], [15, 0, -13])
   const rotateZ = useTransform(scrollYProgress, [0, 0.45, 1], [1.6, 0, -1.2])
   const opacity = useTransform(scrollYProgress, [0, 0.12, 0.78, 1], [0.34, 1, 1, 0.5])
 
-  const status   = p.rating?.status ?? 'pending'
-  const xPosted  = p.rating?.x_posted ?? false
-  const diff     = p.difficulty ?? 'C'
+  const status      = p.rating?.status      ?? 'pending'
+  const xPosted     = p.rating?.x_posted    ?? false
+  const isIncorrect = p.rating?.is_incorrect ?? false
+  const correctedAns = p.rating?.corrected_answer ?? null
+  const displayAnswer = correctedAns ?? p.answer
+
+  const diff      = p.difficulty ?? 'C'
   const diffClass = DIFFICULTY_COLOR[diff] ?? DIFFICULTY_COLOR.C
   const ta = p.topic_a, tb = p.topic_b ?? ''
   const badge = `${TOPIC_JP[ta] ?? ta}${tb ? ` × ${TOPIC_JP[tb] ?? tb}` : ''}`
 
   const borderColor =
-    xPosted               ? 'border-apple-blue/40 ring-1 ring-apple-blue/15' :
-    status === 'selected' ? 'border-apple-green/40 ring-1 ring-apple-green/15' :
-    status === 'rejected' ? 'border-zinc-300/80 opacity-60' : 'border-zinc-200/95'
+    isIncorrect            ? 'border-red-400/50 ring-1 ring-red-400/20' :
+    xPosted                ? 'border-apple-blue/40 ring-1 ring-apple-blue/15' :
+    status === 'selected'  ? 'border-apple-green/40 ring-1 ring-apple-green/15' :
+    status === 'rejected'  ? 'border-zinc-300/80 opacity-60' : 'border-zinc-200/95'
+
+  const authHeaders = (): Record<string, string> => ({
+    'Content-Type': 'application/json',
+    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+  })
 
   const setStatus = async (newStatus: string) => {
     setBusy(true)
     const toggle = (status === newStatus) ? 'pending' : newStatus
     await fetch('/api/status', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-      },
+      headers: authHeaders(),
       body: JSON.stringify({ problem_id: p.id, status: toggle }),
     })
     onStatusChange(p.id, toggle)
     setBusy(false)
+  }
+
+  const toggleIncorrect = async () => {
+    setBusy(true)
+    const next = !isIncorrect
+    await fetch('/api/correct', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ problem_id: p.id, is_incorrect: next }),
+    })
+    onAnswerChange(p.id, correctedAns, next)
+    if (next) {
+      setAnswerDraft(correctedAns ?? p.answer ?? '')
+      setEditingAnswer(true)
+    } else {
+      setEditingAnswer(false)
+    }
+    setBusy(false)
+  }
+
+  const saveAnswer = async () => {
+    setSavingAnswer(true)
+    const trimmed = answerDraft.trim() || null
+    await fetch('/api/correct', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({
+        problem_id:       p.id,
+        is_incorrect:     true,
+        corrected_answer: trimmed,
+      }),
+    })
+    onAnswerChange(p.id, trimmed, true)
+    setEditingAnswer(false)
+    setSavingAnswer(false)
   }
 
   return (
@@ -79,19 +128,25 @@ export function ProblemCardCuration({ problem: p, index, scrollRootRef, showSol,
           {DIFFICULTY_LABEL[diff]}
         </span>
         <span className="text-[10px] text-zinc-400">Gen {p.generation}</span>
+
+        {/* 誤問バッジ */}
+        {isIncorrect && (
+          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md border
+                           border-red-400/40 bg-red-50 text-red-500">
+            ⚠ 誤問{correctedAns ? '（修正済）' : '（未修正）'}
+          </span>
+        )}
+
         {xPosted && <span className="text-[10px] text-apple-blue font-semibold ml-auto">✓ 投稿済</span>}
         {!xPosted && <span className="text-[10px] text-zinc-400 ml-auto">{(p.total||0).toFixed(1)}</span>}
       </div>
 
-      {/* Statement — expand/collapse */}
+      {/* Statement */}
       <div>
-        <div
-          className={`text-[15px] md:text-[16px] leading-[1.9] text-zinc-900 transition-all
-            ${expanded ? '' : 'line-clamp-4'}`}
-        >
+        <div className={`text-[15px] md:text-[16px] leading-[1.9] text-zinc-900 transition-all
+          ${expanded ? '' : 'line-clamp-4'}`}>
           <MathText text={p.statement} />
         </div>
-        {/* expand toggle — show only if text is long enough to be clipped */}
         {p.statement.length > 120 && (
           <button
             onClick={() => setExpanded(v => !v)}
@@ -102,10 +157,60 @@ export function ProblemCardCuration({ problem: p, index, scrollRootRef, showSol,
         )}
       </div>
 
-      {/* Answer */}
-      {p.answer && (
-        <div className="text-[13px] text-emerald-700 leading-relaxed border-l-2 border-emerald-400/70 pl-3">
-          <MathText text={p.answer} />
+      {/* Answer — 通常表示 or 編集モード */}
+      {displayAnswer && !editingAnswer && (
+        <div className={`text-[13px] leading-relaxed border-l-2 pl-3 flex items-start gap-2
+          ${isIncorrect
+            ? correctedAns
+              ? 'border-emerald-400/70 text-emerald-700'
+              : 'border-red-300 text-red-600'
+            : 'border-emerald-400/70 text-emerald-700'}`}
+        >
+          <MathText text={displayAnswer} />
+          {isIncorrect && (
+            <button
+              onClick={() => { setAnswerDraft(displayAnswer); setEditingAnswer(true) }}
+              className="shrink-0 text-[10px] text-zinc-400 hover:text-zinc-700 ml-1 mt-0.5"
+            >
+              ✏ 編集
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Answer 編集パネル */}
+      {editingAnswer && (
+        <div className="flex flex-col gap-2 border border-red-200 rounded-xl p-3 bg-red-50/50">
+          <p className="text-[11px] text-red-500 font-medium">修正後の答えを入力（LaTeX可）</p>
+          <textarea
+            value={answerDraft}
+            onChange={e => setAnswerDraft(e.target.value)}
+            rows={3}
+            className="w-full text-[13px] text-zinc-800 bg-white border border-zinc-300 rounded-lg
+                       px-3 py-2 outline-none focus:border-apple-blue resize-y font-mono"
+            placeholder="修正後の答え..."
+          />
+          {answerDraft.trim() && (
+            <div className="text-[12px] text-emerald-700 border-l-2 border-emerald-400/70 pl-2">
+              <MathText text={answerDraft} />
+            </div>
+          )}
+          <div className="flex gap-2">
+            <button
+              onClick={saveAnswer}
+              disabled={savingAnswer}
+              className="px-3 py-1 bg-emerald-500 text-white text-[11px] font-semibold
+                         rounded-lg hover:bg-emerald-600 disabled:opacity-40 transition-colors"
+            >
+              {savingAnswer ? '保存中…' : '保存'}
+            </button>
+            <button
+              onClick={() => setEditingAnswer(false)}
+              className="px-3 py-1 text-zinc-500 text-[11px] hover:text-zinc-800 transition-colors"
+            >
+              キャンセル
+            </button>
+          </div>
         </div>
       )}
 
@@ -119,31 +224,33 @@ export function ProblemCardCuration({ problem: p, index, scrollRootRef, showSol,
       {/* Score bar */}
       <div className="flex items-center gap-2">
         <div className="flex-1 h-[2px] bg-zinc-200 rounded-full overflow-hidden">
-          <div
-            className="h-full score-bar"
-            style={{ width: `${Math.min(100, ((p.total||0)/10)*100)}%` }}
-          />
+          <div className="h-full score-bar" style={{ width: `${Math.min(100, ((p.total||0)/10)*100)}%` }} />
         </div>
         <span className="text-[10px] text-zinc-400 tabular-nums">{(p.total||0).toFixed(1)}</span>
       </div>
 
-      {/* Action buttons */}
-      <div className="grid grid-cols-3 gap-1.5">
+      {/* Action buttons — 4列 */}
+      <div className="grid grid-cols-4 gap-1.5">
         <ActionBtn
           active={status === 'selected'}
           activeClass="bg-apple-green/20 border-apple-green/40 text-apple-green"
-          onClick={() => setStatus('selected')}
-          disabled={busy}
+          onClick={() => setStatus('selected')} disabled={busy}
         >
           {status === 'selected' ? '✓ 選択中' : '⭐ 選択'}
         </ActionBtn>
         <ActionBtn
           active={status === 'rejected'}
           activeClass="bg-white/10 border-white/20 text-white/60"
-          onClick={() => setStatus('rejected')}
-          disabled={busy}
+          onClick={() => setStatus('rejected')} disabled={busy}
         >
           {status === 'rejected' ? '↩ 戻す' : 'スキップ'}
+        </ActionBtn>
+        <ActionBtn
+          active={isIncorrect}
+          activeClass="bg-red-50 border-red-400/40 text-red-500"
+          onClick={toggleIncorrect} disabled={busy}
+        >
+          {isIncorrect ? '✓ 誤問' : '⚠ 誤問'}
         </ActionBtn>
         <ActionBtn
           active={xPosted}
@@ -155,13 +262,11 @@ export function ProblemCardCuration({ problem: p, index, scrollRootRef, showSol,
         </ActionBtn>
       </div>
 
-      {/* Inspiration toggle */}
+      {/* Inspiration */}
       {p.inspiration && (
         <details className="text-[11px] text-zinc-500 cursor-pointer">
           <summary className="list-none text-zinc-400 hover:text-zinc-700">💡 着想</summary>
-          <p className="mt-1.5 text-zinc-600 leading-relaxed">
-            {p.inspiration.slice(0, 300)}
-          </p>
+          <p className="mt-1.5 text-zinc-600 leading-relaxed">{p.inspiration.slice(0, 300)}</p>
         </details>
       )}
     </motion.div>
