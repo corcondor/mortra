@@ -5,7 +5,20 @@ import { Analytics }     from '@vercel/analytics/next'
 
 export const metadata: Metadata = {
   title: 'Sakumon Station',
-  description: '難関大学・数学オリンピアード 問題生成・キュレーションプラットフォーム',
+  description: 'AIが東大・京大レベルの数学問題を自動生成。良問を選び抜いてXで発信したい人のための、作問・管理ツールです。',
+  openGraph: {
+    title: 'Sakumon Station',
+    description: 'AIが東大・京大レベルの数学問題を自動生成。良問を選び抜いてXで発信したい人のための、作問・管理ツールです。',
+    url: 'https://sakumon-web.vercel.app/',
+    siteName: 'Sakumon Station',
+    locale: 'ja_JP',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Sakumon Station',
+    description: 'AIが東大・京大レベルの数学問題を自動生成。良問を選び抜いてXで発信したい人のための、作問・管理ツールです。',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
