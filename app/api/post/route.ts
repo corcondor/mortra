@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import crypto from 'crypto'
 import fs from 'fs'
 import { supabaseAdmin } from '@/lib/supabase-admin'
+import { buildOAuthHeader, percent } from '@/lib/x-oauth'
 
 export const maxDuration = 120
 
@@ -64,40 +64,9 @@ function getXCredentials(): XCredentials {
   return credentials
 }
 
-function percent(value: string) {
-  return encodeURIComponent(value)
-    .replace(/[!'()*]/g, char => `%${char.charCodeAt(0).toString(16).toUpperCase()}`)
-}
-
 function oauthHeader(method: 'POST', url: string, credentials: XCredentials) {
-  const oauth: Record<string, string> = {
-    oauth_consumer_key: credentials.apiKey,
-    oauth_nonce: crypto.randomBytes(16).toString('hex'),
-    oauth_signature_method: 'HMAC-SHA1',
-    oauth_timestamp: Math.floor(Date.now() / 1000).toString(),
-    oauth_token: credentials.accessToken,
-    oauth_version: '1.0',
-  }
-
-  const parsedUrl = new URL(url)
-  const signatureParams = new URLSearchParams()
-  for (const [key, value] of parsedUrl.searchParams) signatureParams.append(key, value)
-  for (const [key, value] of Object.entries(oauth)) signatureParams.append(key, value)
-
-  const normalized = [...signatureParams.entries()]
-    .sort(([aKey, aValue], [bKey, bValue]) => aKey === bKey ? aValue.localeCompare(bValue) : aKey.localeCompare(bKey))
-    .map(([key, value]) => `${percent(key)}=${percent(value)}`)
-    .join('&')
-
-  const baseUrl = `${parsedUrl.protocol}//${parsedUrl.host}${parsedUrl.pathname}`
-  const signatureBase = [method, baseUrl, normalized].map(percent).join('&')
-  const signingKey = `${percent(credentials.apiSecret)}&${percent(credentials.accessTokenSecret)}`
-  const signature = crypto.createHmac('sha1', signingKey).update(signatureBase).digest('base64')
-
-  return 'OAuth ' + Object.entries({ ...oauth, oauth_signature: signature })
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([key, value]) => `${percent(key)}="${percent(value)}"`)
-    .join(', ')
+  return buildOAuthHeader(method, url, credentials.apiKey, credentials.apiSecret,
+    { oauth_token: credentials.accessToken }, credentials.accessTokenSecret)
 }
 
 function summarizeOutput(value: string, limit = 1200) {
@@ -216,15 +185,52 @@ export async function POST(req: NextRequest) {
     })
   }
 
+  // ── ユーザー自身のX認証トークンを優先して使う ────────────────────────
   let credentials: XCredentials
-  try {
-    credentials = getXCredentials()
-  } catch (error) {
-    return NextResponse.json({
-      ok: false,
-      code: 'X_CREDENTIALS_MISSING',
-      error: error instanceof Error ? error.message : String(error),
-    }, { status: 503 })
+  const authToken = req.headers.get('Authorization')?.replace('Bearer ', '') ?? ''
+  const baseApiKey    = process.env.X_API_KEY?.trim()    ?? ''
+  const baseApiSecret = process.env.X_API_SECRET?.trim() ?? ''
+
+  if (authToken && baseApiKey && baseApiSecret) {
+    const { data: { user } } = await supabaseAdmin.auth.getUser(authToken)
+    if (user) {
+      const { data: xToken } = await supabaseAdmin
+        .from('user_x_tokens')
+        .select('access_token, access_token_secret')
+        .eq('user_id', user.id)
+        .single()
+
+      if (xToken?.access_token) {
+        credentials = {
+          apiKey:            baseApiKey,
+          apiSecret:         baseApiSecret,
+          accessToken:       xToken.access_token,
+          accessTokenSecret: xToken.access_token_secret,
+        }
+      } else {
+        return NextResponse.json({
+          ok: false,
+          code: 'X_NOT_CONNECTED',
+          error: 'Xアカウントが接続されていません。設定からXアカウントを接続してください。',
+        }, { status: 403 })
+      }
+    } else {
+      // ユーザー認証なし → env vars フォールバック（管理者用）
+      try { credentials = getXCredentials() }
+      catch (e) {
+        return NextResponse.json({ ok: false, code: 'X_CREDENTIALS_MISSING',
+          error: e instanceof Error ? e.message : String(e) }, { status: 503 })
+      }
+    }
+  } else {
+    try { credentials = getXCredentials() }
+    catch (error) {
+      return NextResponse.json({
+        ok: false,
+        code: 'X_CREDENTIALS_MISSING',
+        error: error instanceof Error ? error.message : String(error),
+      }, { status: 503 })
+    }
   }
 
   try {

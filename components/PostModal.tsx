@@ -4,12 +4,13 @@ import { useState, useEffect, useRef } from 'react'
 import type { ProblemWithRating } from '@/lib/types'
 
 interface Props {
-  problem: ProblemWithRating | null
-  onClose: () => void
-  onPosted: (id: string) => void
+  problem:     ProblemWithRating | null
+  accessToken: string | null
+  onClose:     () => void
+  onPosted:    (id: string) => void
 }
 
-export function PostModal({ problem, onClose, onPosted }: Props) {
+export function PostModal({ problem, accessToken, onClose, onPosted }: Props) {
   const [posting,    setPosting]    = useState(false)
   const [error,      setError]      = useState<string | null>(null)
   const [tweetUrl,   setTweetUrl]   = useState<string | null>(null)
@@ -71,7 +72,10 @@ export function PostModal({ problem, onClose, onPosted }: Props) {
 
     const res  = await fetch('/api/post', {
       method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      },
       body:    JSON.stringify({
         problem_id: problem.id,
         statement:  problem.statement,

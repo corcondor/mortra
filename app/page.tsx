@@ -9,6 +9,7 @@ import { PostModal }             from '@/components/PostModal'
 import { SpotlightSearch }       from '@/components/SpotlightSearch'
 import { AuthGuard, useAuth }    from '@/components/AuthGuard'
 import { PastExamDB, type PastExamEntry } from '@/components/PastExamDB'
+import { XConnectButton } from '@/components/XConnectButton'
 import type { ProblemWithRating } from '@/lib/types'
 
 type Tab = 'list' | 'selected' | 'pastexam'
@@ -231,6 +232,9 @@ function HomeInner() {
             <span>検索</span>
             <kbd className="text-[10px] border border-white/10 rounded px-1">⌘K</kbd>
           </button>
+
+          {/* X接続 */}
+          {user && <XConnectButton accessToken={accessToken} />}
 
           {/* User avatar + logout */}
           {user && (
@@ -468,6 +472,7 @@ function HomeInner() {
       {/* Post modal */}
       <PostModal
         problem={postTarget}
+        accessToken={accessToken}
         onClose={() => setPostTarget(null)}
         onPosted={handlePosted}
       />
