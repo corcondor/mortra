@@ -106,20 +106,36 @@ function stmtFontSize(len: number): number {
 // ── 日本語フォント読み込み（Satori の文字化け防止） ──────────────────────────
 async function loadJapaneseFont(): Promise<ArrayBuffer | null> {
   try {
-    const controller = new AbortController()
-    setTimeout(() => controller.abort(), 5000)
-    // Google Fonts CSS から woff2 URL を取得
-    const css = await fetch(
-      'https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700',
-      {
-        headers: { 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' },
-        signal: controller.signal,
-      }
-    ).then(r => r.text())
-    // 最初の woff2 URL を抽出
-    const m = css.match(/url\((https:\/\/fonts\.gstatic\.com\/[^)]+)\)/)
-    if (!m) return null
-    return await fetch(m[1], { signal: controller.signal }).then(r => r.arrayBuffer())
+    // Step1: CSS から woff2 URL を取得（3 s タイムアウト）
+    const ac1 = new AbortController()
+    const t1  = setTimeout(() => ac1.abort(), 3000)
+    let css: string
+    try {
+      css = await fetch(
+        'https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400',
+        {
+          headers: { 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' },
+          signal: ac1.signal,
+        }
+      ).then(r => r.text())
+    } finally {
+      clearTimeout(t1)
+    }
+
+    // latin サブセットの URL を探す（CJK は容量大のため除外）
+    const latinMatch = css.match(/\/\* latin \*\/[\s\S]*?url\((https:\/\/fonts\.gstatic\.com\/[^)]+\.woff2)\)/)
+    const anyMatch   = css.match(/url\((https:\/\/fonts\.gstatic\.com\/[^)]+\.woff2)\)/)
+    const woff2Url   = (latinMatch?.[1] ?? anyMatch?.[1]) ?? null
+    if (!woff2Url) return null
+
+    // Step2: woff2 バイナリを取得（4 s タイムアウト・別 AbortController）
+    const ac2 = new AbortController()
+    const t2  = setTimeout(() => ac2.abort(), 4000)
+    try {
+      return await fetch(woff2Url, { signal: ac2.signal }).then(r => r.arrayBuffer())
+    } finally {
+      clearTimeout(t2)
+    }
   } catch {
     return null
   }
@@ -150,9 +166,14 @@ export async function POST(req: NextRequest) {
   stSegs.forEach(s => { if (s.type === 'math') { const k = `${s.latex}__${sFontSize}`; mathMap.set(k, { latex: s.latex, targetPx: sFontSize }) } })
 
   const mathEntries  = [...mathMap.entries()]
-  const fetchResults = await Promise.allSettled(
-    mathEntries.map(([, { latex, targetPx }]) => mathPng(latex, targetPx))
-  )
+
+  // 数式 PNG フェッチとフォント読み込みを並列実行（edge timeout 節約）
+  const [fetchResults, fontData] = await Promise.all([
+    Promise.allSettled(
+      mathEntries.map(([, { latex, targetPx }]) => mathPng(latex, targetPx))
+    ),
+    loadJapaneseFont(),
+  ])
 
   const pngMap = new Map<MathKey, string | null>()
   mathEntries.forEach(([key], i) => {
@@ -162,9 +183,6 @@ export async function POST(req: NextRequest) {
 
   const topicLabel = topic || '数学'
   const scoreLabel = Number.isFinite(score) ? score.toFixed(1) : '0.0'
-
-  // フォント読み込み（失敗しても続行）
-  const fontData = await loadJapaneseFont()
 
   // ── セグメント → JSX ─────────────────────────────────────────────────────
   // block 数式はフレックスラインを占有するよう flexBasis:'100%' で折り返させる
@@ -248,6 +266,7 @@ export async function POST(req: NextRequest) {
     })
   }
 
+  try {
   return new ImageResponse(
     (
       <div
@@ -319,4 +338,11 @@ export async function POST(req: NextRequest) {
       } : {}),
     },
   )
+  } catch (err) {
+    console.error('[render] ImageResponse error:', err)
+    return NextResponse.json(
+      { ok: false, error: String(err) },
+      { status: 500 },
+    )
+  }
 }
