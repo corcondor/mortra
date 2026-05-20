@@ -129,6 +129,15 @@ export function ProblemCardCuration({
         </span>
         <span className="text-[10px] text-zinc-400">Gen {p.generation}</span>
 
+        {/* 数値ゼロバッジ：問題文に数字が一つもない場合 */}
+        {!/\d/.test(p.statement) && (
+          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md border
+                           border-amber-400/50 bg-amber-50 text-amber-600"
+                title="問題文に数字なし・一行完全列挙型">
+            ✦ 数値ゼロ
+          </span>
+        )}
+
         {/* 誤問バッジ */}
         {isIncorrect && (
           <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md border
