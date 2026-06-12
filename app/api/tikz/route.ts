@@ -3,13 +3,13 @@
  * POST /api/tikz  { problem_id?, statement?, type? }
  * type: 'auto' | 'passage_region' | 'solid' | 'graph'
  *
- * → Claude で TikZ コードを生成 → Supabase に保存 → TikZ ソースを返す
+ * DeepSeek (OpenAI互換) で TikZ コードを生成 → Supabase にキャッシュ
  */
 import { NextRequest, NextResponse } from 'next/server'
-import Anthropic from '@anthropic-ai/sdk'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
+const DEEPSEEK_API_URL = 'https://api.deepseek.com/chat/completions'
+const MODEL = process.env.DEEPSEEK_MODEL ?? 'deepseek-chat'
 
 // ── TikZ 生成プロンプト ────────────────────────────────────────────────────
 
@@ -73,7 +73,6 @@ export async function POST(req: NextRequest) {
 
   let statement = rawStatement ?? ''
 
-  // problem_id が指定された場合は DB から取得
   if (problem_id && !statement) {
     const { data } = await supabaseAdmin
       .from('problems')
@@ -86,23 +85,38 @@ export async function POST(req: NextRequest) {
 
   if (!statement) return NextResponse.json({ error: 'statement required' }, { status: 400 })
 
+  const apiKey = process.env.DEEPSEEK_API_KEY
+  if (!apiKey) return NextResponse.json({ error: 'DEEPSEEK_API_KEY not set' }, { status: 500 })
+
   const type = rawType ?? detectType(statement)
   const prompt = buildPrompt(statement, type)
 
-  // Claude で TikZ 生成
-  const msg = await client.messages.create({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 2048,
-    messages: [{ role: 'user', content: prompt }],
+  const res = await fetch(DEEPSEEK_API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: MODEL,
+      max_tokens: 2048,
+      messages: [{ role: 'user', content: prompt }],
+    }),
   })
 
-  const raw = msg.content[0].type === 'text' ? msg.content[0].text : ''
+  if (!res.ok) {
+    const err = await res.text()
+    return NextResponse.json({ error: `DeepSeek error ${res.status}: ${err}` }, { status: 502 })
+  }
 
-  // \\begin{tikzpicture}...\\end{tikzpicture} を抽出
+  const data = await res.json()
+  const raw: string = data.choices?.[0]?.message?.content ?? ''
+
+  // \begin{tikzpicture}...\end{tikzpicture} を抽出
   const match = raw.match(/\\begin\{tikzpicture\}[\s\S]*?\\end\{tikzpicture\}/)
   const tikz = match ? match[0] : raw
 
-  // DB に保存（meta フィールドを更新）
+  // DB にキャッシュ
   if (problem_id) {
     const { data: cur } = await supabaseAdmin
       .from('problems').select('meta').eq('id', problem_id).single()
