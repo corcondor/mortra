@@ -1,6 +1,6 @@
 'use client'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { ProblemWithRating } from '@/lib/types'
 import { DIFFICULTY_COLOR, DIFFICULTY_LABEL, TOPIC_EMOJI } from '@/lib/types'
 import { MathText } from './MathText'
@@ -28,7 +28,7 @@ function ScoreRow({ label, value }: { label: string; value: number }) {
 type TikzState =
   | { status: 'idle' }
   | { status: 'loading' }
-  | { status: 'done'; code: string; type: string }
+  | { status: 'done'; code: string; type: string; verified?: boolean }
   | { status: 'error'; message: string }
 
 type VerifyState =
@@ -37,17 +37,48 @@ type VerifyState =
   | { status: 'done'; result: string; valid: boolean }
   | { status: 'error'; message: string }
 
+type PdfState =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'error'; message: string }
+
+interface ProblemMeta {
+  title?: string
+  tags?: string[]
+  points?: number
+  features?: string
+  difficulty10?: number
+  tikz?: string
+  tikz_type?: string
+  tikz_verified?: boolean
+}
+
 export function ProblemDetail({ problem, onClose }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [tikz, setTikz] = useState<TikzState>({ status: 'idle' })
   const [verify, setVerify] = useState<VerifyState>({ status: 'idle' })
+  const [pdf, setPdf] = useState<PdfState>({ status: 'idle' })
+  const [tikzPreviewUrl, setTikzPreviewUrl] = useState<string | null>(null)
+  const [previewLoading, setPreviewLoading] = useState(false)
   const [copied, setCopied] = useState(false)
+
+  const meta: ProblemMeta = useMemo(() => {
+    if (!problem?.meta) return {}
+    try { return JSON.parse(problem.meta) } catch { return {} }
+  }, [problem?.meta])
 
   useEffect(() => {
     if (problem) {
       scrollRef.current?.scrollTo(0, 0)
-      setTikz({ status: 'idle' })
+      // キャッシュ済み TikZ があれば即表示
+      if (meta.tikz) {
+        setTikz({ status: 'done', code: meta.tikz, type: meta.tikz_type ?? 'auto', verified: meta.tikz_verified })
+      } else {
+        setTikz({ status: 'idle' })
+      }
       setVerify({ status: 'idle' })
+      setPdf({ status: 'idle' })
+      setTikzPreviewUrl(prev => { if (prev) URL.revokeObjectURL(prev); return null })
     }
   }, [problem?.id])
 
@@ -68,7 +99,7 @@ export function ProblemDetail({ problem, onClose }: Props) {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? 'Unknown error')
-      setTikz({ status: 'done', code: data.tikz, type: data.type })
+      setTikz({ status: 'done', code: data.tikz, type: data.type, verified: data.verified })
     } catch (e: any) {
       setTikz({ status: 'error', message: e.message })
     }
@@ -88,6 +119,57 @@ export function ProblemDetail({ problem, onClose }: Props) {
       setVerify({ status: 'done', result: data.wolfram_result, valid: data.valid })
     } catch (e: any) {
       setVerify({ status: 'error', message: e.message })
+    }
+  }
+
+  /** 鉄緑会風 解説プリント PDF をダウンロード */
+  async function downloadPdf() {
+    if (!problem) return
+    setPdf({ status: 'loading' })
+    try {
+      const res = await fetch('/api/pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ problem_id: problem.id }),
+      })
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.log ? `${data.error}\n${data.log}` : data.error)
+      }
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `sakumon-${problem.id.slice(0, 8)}.pdf`
+      a.click()
+      URL.revokeObjectURL(url)
+      setPdf({ status: 'idle' })
+    } catch (e: any) {
+      setPdf({ status: 'error', message: e.message })
+    }
+  }
+
+  /** TikZ 図のみコンパイルしてインラインプレビュー */
+  async function previewTikz() {
+    if (!problem) return
+    setPreviewLoading(true)
+    try {
+      const res = await fetch('/api/pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ problem_id: problem.id, mode: 'tikz' }),
+      })
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error)
+      }
+      const blob = await res.blob()
+      setTikzPreviewUrl(prev => { if (prev) URL.revokeObjectURL(prev); return URL.createObjectURL(blob) })
+    } catch (e: any) {
+      setTikz(t => t.status === 'done' ? t : { status: 'error', message: e.message })
+      alert(`図プレビュー失敗: ${e.message}`)
+    } finally {
+      setPreviewLoading(false)
     }
   }
 
@@ -145,7 +227,13 @@ export function ProblemDetail({ problem, onClose }: Props) {
                     <span className="text-2xl">{TOPIC_EMOJI[problem.topic_a] ?? '∑'}</span>
                     <span className={`text-xs font-semibold px-2 py-1 rounded-lg border ${diffClass}`}>
                       {DIFFICULTY_LABEL[diff]}
+                      {meta.difficulty10 ? ` ${meta.difficulty10}/10` : ''}
                     </span>
+                    {meta.points && (
+                      <span className="text-xs font-semibold px-2 py-1 rounded-lg border text-white/60 border-white/15 bg-white/5">
+                        {meta.points}点
+                      </span>
+                    )}
                     <span className="text-xs text-white/40">
                       {problem.topic_a}{problem.topic_b ? ` · ${problem.topic_b}` : ''}
                     </span>
@@ -158,6 +246,17 @@ export function ProblemDetail({ problem, onClose }: Props) {
                   </button>
                 </div>
 
+                {/* Tags */}
+                {meta.tags && meta.tags.length > 0 && (
+                  <div className="flex gap-1.5 flex-wrap -mt-2">
+                    {meta.tags.map(t => (
+                      <span key={t} className="text-[11px] px-2 py-0.5 rounded-full bg-apple-blue/10 text-apple-blue/90 border border-apple-blue/20">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
                 {/* Statement */}
                 <section>
                   <h3 className="text-[11px] uppercase tracking-widest text-white/30 mb-3">問題文</h3>
@@ -165,6 +264,16 @@ export function ProblemDetail({ problem, onClose }: Props) {
                     <MathText text={problem.statement} large />
                   </div>
                 </section>
+
+                {/* Features (特徴・狙い) */}
+                {meta.features && (
+                  <section>
+                    <h3 className="text-[11px] uppercase tracking-widest text-white/30 mb-3">特徴・狙い</h3>
+                    <div className="glass rounded-2xl px-5 py-4 text-[13px] leading-relaxed text-white/70">
+                      <MathText text={meta.features} />
+                    </div>
+                  </section>
+                )}
 
                 {/* Action buttons */}
                 <div className="flex gap-2 flex-wrap">
@@ -177,12 +286,52 @@ export function ProblemDetail({ problem, onClose }: Props) {
                     {tikz.status === 'loading' ? (
                       <>
                         <span className="inline-block w-3 h-3 border border-white/40 border-t-white/80 rounded-full animate-spin" />
-                        生成中…
+                        生成+検証中…
                       </>
                     ) : (
                       <>
                         <span className="text-base leading-none">📐</span>
-                        TikZ 図示
+                        {tikz.status === 'done' ? 'TikZ 再生成' : 'TikZ 図示'}
+                      </>
+                    )}
+                  </button>
+
+                  {/* TikZ figure preview */}
+                  {tikz.status === 'done' && (
+                    <button
+                      onClick={previewTikz}
+                      disabled={previewLoading}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl glass glass-hover text-[12px] text-white/70 hover:text-white transition-colors disabled:opacity-50"
+                    >
+                      {previewLoading ? (
+                        <>
+                          <span className="inline-block w-3 h-3 border border-white/40 border-t-white/80 rounded-full animate-spin" />
+                          描画中…
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-base leading-none">🖼️</span>
+                          図プレビュー
+                        </>
+                      )}
+                    </button>
+                  )}
+
+                  {/* PDF download (鉄緑会風) */}
+                  <button
+                    onClick={downloadPdf}
+                    disabled={pdf.status === 'loading'}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl glass glass-hover text-[12px] text-white/70 hover:text-white transition-colors disabled:opacity-50"
+                  >
+                    {pdf.status === 'loading' ? (
+                      <>
+                        <span className="inline-block w-3 h-3 border border-white/40 border-t-white/80 rounded-full animate-spin" />
+                        組版中…
+                      </>
+                    ) : (
+                      <>
+                        <span className="text-base leading-none">📄</span>
+                        PDF保存
                       </>
                     )}
                   </button>
@@ -208,6 +357,25 @@ export function ProblemDetail({ problem, onClose }: Props) {
                     </button>
                   )}
                 </div>
+
+                {pdf.status === 'error' && (
+                  <p className="text-[12px] text-red-400/80 whitespace-pre-wrap">PDF生成エラー: {pdf.message}</p>
+                )}
+
+                {/* TikZ figure preview (compiled PDF) */}
+                {tikzPreviewUrl && (
+                  <section>
+                    <h3 className="text-[11px] uppercase tracking-widest text-white/30 mb-3">図プレビュー</h3>
+                    <object
+                      data={tikzPreviewUrl}
+                      type="application/pdf"
+                      className="w-full rounded-2xl bg-white"
+                      style={{ height: 360 }}
+                    >
+                      <a href={tikzPreviewUrl} target="_blank" className="text-apple-blue text-[12px]">PDFを開く</a>
+                    </object>
+                  </section>
+                )}
 
                 {/* Wolfram result */}
                 {verify.status === 'done' && (
@@ -239,6 +407,9 @@ export function ProblemDetail({ problem, onClose }: Props) {
                       <h3 className="text-[11px] uppercase tracking-widest text-white/30">
                         TikZ コード
                         <span className="ml-2 normal-case text-white/20">({tikz.type})</span>
+                        {tikz.verified && (
+                          <span className="ml-2 normal-case text-green-400/70">✓ コンパイル検証済</span>
+                        )}
                       </h3>
                       <button
                         onClick={copyTikz}

@@ -1,12 +1,16 @@
 /**
- * Level 2-3: TikZ 自動生成
+ * Level 2-3: TikZ 自動生成（コンパイル検証付き）
  * POST /api/tikz  { problem_id?, statement?, type? }
  * type: 'auto' | 'passage_region' | 'solid' | 'graph'
  *
- * DeepSeek (OpenAI互換) で TikZ コードを生成 → Supabase にキャッシュ
+ * DeepSeek で TikZ 生成 → texlive.net で実コンパイル検証 →
+ * 失敗時はエラーログを渡して1回リトライ → 成功したものだけキャッシュ
  */
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
+import { buildTikzStandalone, compileTex } from '@/lib/latex'
+
+export const maxDuration = 120
 
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/chat/completions'
 const MODEL = process.env.DEEPSEEK_MODEL ?? 'deepseek-chat'
@@ -19,9 +23,11 @@ function buildPrompt(statement: string, type: string): string {
 
 ルール:
 - \\begin{tikzpicture} ... \\end{tikzpicture} のみ出力（preamble不要）
+- 使用可能な TikZ ライブラリは calc, arrows.meta, intersections, patterns, decorations.markings のみ
+- pgfplots や外部パッケージは使用禁止
+- 図中に日本語文字を使わない（英字・数式のみ。数式は $...$ で）
 - scale は適切に設定（大きすぎず小さすぎず）
-- 軸、ラベル、グリッド線を適切に追加
-- 日本語ラベルは使わない（英字・数式のみ）
+- 軸、ラベルを適切に追加
 - 説明文は不要。コードのみ返す`
 
   if (type === 'passage_region') {
@@ -30,7 +36,7 @@ function buildPrompt(statement: string, type: string): string {
 特に「通過領域」問題では:
 - 動く図形を薄い色で数枚描く（例: fill opacity=0.1）
 - 通過領域の境界を太線で強調
-- 境界がリマソン曲線の場合は \\draw[domain=...] plot ({...},{...}) で描く
+- 境界が媒介変数曲線の場合は \\draw[domain=...] plot ({...},{...}) で描く
 
 問題文:
 ${statement}`
@@ -40,7 +46,7 @@ ${statement}`
     return `${BASE}
 
 特に「立体・断面」問題では:
-- 3D っぽく見えるよう斜め射影（x方向に 0.4*cos(210°) 等）を使う
+- 3D っぽく見えるよう斜め射影（x方向に 0.4*cos(210) 等）を使う
 - 断面は fill=gray!30 で表示
 - 不可視辺は dashed
 
@@ -65,6 +71,37 @@ function detectType(statement: string): string {
   return 'auto'
 }
 
+// ── DeepSeek 呼び出し ─────────────────────────────────────────────────────
+
+async function callDeepSeek(messages: { role: string; content: string }[]): Promise<string> {
+  const apiKey = process.env.DEEPSEEK_API_KEY
+  if (!apiKey) throw new Error('DEEPSEEK_API_KEY not set')
+
+  const res = await fetch(DEEPSEEK_API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({ model: MODEL, max_tokens: 2048, messages }),
+  })
+
+  if (res.status === 402) {
+    throw new Error('DeepSeek APIの残高が不足しています。platform.deepseek.com でチャージしてください。')
+  }
+  if (!res.ok) {
+    throw new Error(`DeepSeek error ${res.status}: ${(await res.text()).slice(0, 200)}`)
+  }
+
+  const data = await res.json()
+  return data.choices?.[0]?.message?.content ?? ''
+}
+
+function extractTikz(raw: string): string | null {
+  const match = raw.match(/\\begin\{tikzpicture\}[\s\S]*?\\end\{tikzpicture\}/)
+  return match ? match[0] : null
+}
+
 // ── メインハンドラ ────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
@@ -76,7 +113,7 @@ export async function POST(req: NextRequest) {
   if (problem_id && !statement) {
     const { data } = await supabaseAdmin
       .from('problems')
-      .select('statement, meta')
+      .select('statement')
       .eq('id', problem_id)
       .single()
     if (!data) return NextResponse.json({ error: 'Problem not found' }, { status: 404 })
@@ -85,52 +122,65 @@ export async function POST(req: NextRequest) {
 
   if (!statement) return NextResponse.json({ error: 'statement required' }, { status: 400 })
 
-  const apiKey = process.env.DEEPSEEK_API_KEY
-  if (!apiKey) return NextResponse.json({ error: 'DEEPSEEK_API_KEY not set' }, { status: 500 })
-
   const type = rawType ?? detectType(statement)
   const prompt = buildPrompt(statement, type)
 
-  const res = await fetch(DEEPSEEK_API_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      max_tokens: 2048,
-      messages: [{ role: 'user', content: prompt }],
-    }),
-  })
+  try {
+    const messages = [{ role: 'user', content: prompt }]
+    let raw = await callDeepSeek(messages)
+    let tikz = extractTikz(raw)
+    if (!tikz) {
+      return NextResponse.json({ error: 'TikZコードを抽出できませんでした' }, { status: 502 })
+    }
 
-  if (!res.ok) {
-    const err = await res.text()
-    return NextResponse.json({ error: `DeepSeek error ${res.status}: ${err}` }, { status: 502 })
+    // ── コンパイル検証（失敗時はログを渡して1回リトライ） ──
+    let verified = false
+    let compileLog = ''
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const result = await compileTex(buildTikzStandalone(tikz), 'pdflatex')
+      if (result.ok) { verified = true; break }
+      compileLog = result.log ?? ''
+      if (attempt === 0) {
+        messages.push({ role: 'assistant', content: tikz })
+        messages.push({
+          role: 'user',
+          content: `このTikZコードはコンパイルに失敗しました。エラー:\n${compileLog}\n\n修正した完全なtikzpicture環境のみを返してください。`,
+        })
+        raw = await callDeepSeek(messages)
+        const fixed = extractTikz(raw)
+        if (fixed) tikz = fixed
+      }
+    }
+
+    if (!verified) {
+      return NextResponse.json(
+        { error: 'TikZのコンパイルに失敗しました（2回試行）', log: compileLog.slice(0, 800) },
+        { status: 422 },
+      )
+    }
+
+    // DB にキャッシュ（検証済みのみ）
+    if (problem_id) {
+      const { data: cur } = await supabaseAdmin
+        .from('problems').select('meta').eq('id', problem_id).single()
+      let meta: Record<string, unknown> = {}
+      try { meta = cur?.meta ? JSON.parse(cur.meta) : {} } catch { /* 旧形式 */ }
+      meta.tikz = tikz
+      meta.tikz_type = type
+      meta.tikz_verified = true
+      meta.tikz_at = new Date().toISOString()
+      await supabaseAdmin
+        .from('problems')
+        .update({ meta: JSON.stringify(meta) })
+        .eq('id', problem_id)
+    }
+
+    return NextResponse.json({ tikz, type, problem_id, verified: true })
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e)
+    const status = msg.includes('残高') ? 402 : 502
+    return NextResponse.json({ error: msg }, { status })
   }
-
-  const data = await res.json()
-  const raw: string = data.choices?.[0]?.message?.content ?? ''
-
-  // \begin{tikzpicture}...\end{tikzpicture} を抽出
-  const match = raw.match(/\\begin\{tikzpicture\}[\s\S]*?\\end\{tikzpicture\}/)
-  const tikz = match ? match[0] : raw
-
-  // DB にキャッシュ
-  if (problem_id) {
-    const { data: cur } = await supabaseAdmin
-      .from('problems').select('meta').eq('id', problem_id).single()
-    const meta = cur?.meta ? JSON.parse(cur.meta) : {}
-    meta.tikz = tikz
-    meta.tikz_type = type
-    meta.tikz_at = new Date().toISOString()
-    await supabaseAdmin
-      .from('problems')
-      .update({ meta: JSON.stringify(meta) })
-      .eq('id', problem_id)
-  }
-
-  return NextResponse.json({ tikz, type, problem_id })
 }
 
 /** GET /api/tikz?problem_id=xxx → キャッシュ済み TikZ を返す */
@@ -140,8 +190,9 @@ export async function GET(req: NextRequest) {
 
   const { data } = await supabaseAdmin
     .from('problems').select('meta').eq('id', id).single()
-  const meta = data?.meta ? JSON.parse(data.meta) : {}
+  let meta: Record<string, unknown> = {}
+  try { meta = data?.meta ? JSON.parse(data.meta) : {} } catch { /* 旧形式 */ }
 
   if (!meta.tikz) return NextResponse.json({ error: 'No TikZ cached' }, { status: 404 })
-  return NextResponse.json({ tikz: meta.tikz, type: meta.tikz_type })
+  return NextResponse.json({ tikz: meta.tikz, type: meta.tikz_type, verified: !!meta.tikz_verified })
 }

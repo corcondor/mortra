@@ -117,6 +117,29 @@ def parse_tex_file(path: Path) -> list[dict]:
 
 # ── PDF パース（テキスト抽出） ────────────────────────────────────────────
 
+# 解答区切りパターン（改行区切りも含む）
+_SOL_RE = re.compile(
+    r'(?:【解答?】|【答】|〔解答?〕|\[解答?\]'
+    r'|解答\s*\n|解答\s*$|解答[．.。]'
+    r'|答[．.。\n]|Answer\s*[\n:]|Solution\s*[\n:])',
+    re.MULTILINE,
+)
+
+# 質問マーカー：これがなければ問題文ではない
+_QUESTION_RE = re.compile(
+    r'(?:求めよ|示せ|証明せよ|求めなさい|答えよ|述べよ|調べよ'
+    r'|を求め|を示し|を証明|何個|何通|何乗|何マス|何枚|何本|何種類|何点'
+    r'|いくらか|いくつか|どのような|必要があるか|存在するか|成り立つか|最低何)'
+)
+
+def _restore_math(text: str) -> str:
+    """PDF抽出で失われた上付き文字を部分的に復元する"""
+    # x2 → x^2 のような単純パターン（アルファベット直後の孤立数字）
+    # ただし問題番号や係数と区別するため前後文脈を使う
+    text = re.sub(r'(?<=[a-zA-Zα-ωΑ-Ω])(\d)(?=[＋\+\-＝=\*\)　\s,，．.]|$)', r'^\1', text)
+    return text
+
+
 def parse_pdf_file(path: Path) -> list[dict]:
     """PDF から問題を抽出（テキストベース）"""
     try:
@@ -134,15 +157,27 @@ def parse_pdf_file(path: Path) -> list[dict]:
     with pdf_obj as pdf:
         full_text = '\n'.join(p.extract_text() or '' for p in pdf.pages)
 
-    # 問題番号パターン: [1], (1), 問1, 第1問 などで分割
-    blocks = re.split(r'\n(?=(?:\[?\d+\]?[\.\s]|問\s*\d+|第\s*\d+\s*問))', full_text)
+    # 問題番号パターン: 行頭の 問N / 第N問 / [N] / N. / N.M / 全角数字のみ
+    # 単独数字行（ページ番号）や (1) サブ問題は分割しない
+    blocks = re.split(
+        r'(?m)(?:^|\n)(?=(?:'
+        r'問\s*\d+'                    # 問1, 問 1
+        r'|第\s*\d+\s*問'              # 第1問
+        r'|\[\d+\]'                   # [1]
+        r'|\d+\.\d+[\s\n♣♠♦♥◆◇○●]'  # 3.11 ♣ (総集編形式)
+        r'|\d+\.\s'                   # 1. (ドット+スペース)
+        r'|[１-９][０-９]*[\s\n（]'   # 全角数字 (東工大模試形式)
+        r'))',
+        full_text,
+    )
 
     for block in blocks:
         block = block.strip()
-        if len(block) < 30:
+        if len(block) < 50:
             continue
+
         # 解答部分を分離
-        sol_m = re.search(r'(?:【解答】|解答[．.]\s*|Answer\s*:)', block)
+        sol_m = _SOL_RE.search(block)
         if sol_m:
             statement = block[:sol_m.start()].strip()
             solution  = block[sol_m.end():].strip()
@@ -150,10 +185,31 @@ def parse_pdf_file(path: Path) -> list[dict]:
             statement = block
             solution  = ''
 
-        # タイトル（最初の1行）
+        # 質問マーカーがなければ問題文でない（解答断片・前書きなど）
+        if not _QUESTION_RE.search(statement):
+            continue
+
+        # 解答的な書き出しで始まるブロックはスキップ（例：「まず〜を求める：」）
+        first_content = '\n'.join(l for l in statement.split('\n')[1:4] if l.strip())
+        if re.match(r'^\s*(?:まず|よって|ゆえに|したがって|∴|一方|ここで|以上から|これより)', first_content):
+            continue
+
+        # 解答的な計算行が問題文の50%超を占める場合はスキップ
+        stmt_lines = statement.split('\n')
+        calc_lines = sum(
+            1 for l in stmt_lines
+            if re.match(r'^\s*[A-Za-zα-ωΑ-Ω∴]\s*=\s*\S', l)
+        )
+        if len(stmt_lines) >= 4 and calc_lines / len(stmt_lines) > 0.5:
+            continue
+
+        statement = _restore_math(statement)
+        solution  = _restore_math(solution)
+
+        # タイトル（最初の1行、問題番号込み）
         first_line = statement.split('\n')[0][:60]
 
-        if len(statement) > 20:
+        if len(statement) > 40:
             problems.append({
                 'title':    first_line,
                 'statement': statement,
