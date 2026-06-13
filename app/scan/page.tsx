@@ -1,11 +1,12 @@
 'use client'
 /**
  * /scan — 写真 → LaTeX → 鉄緑会風PDF (TeX64 再現)
- * 画像を選択 or 貼り付け → Vision AI で LaTeX 書き起こし → 編集 → PDF生成・保存
- * 水墨画風の和風UI (Three.js)
+ * sakumon app 統合ページ。画像を選択/貼り付け → Vision AI で LaTeX 書き起こし
+ * → 編集 → PDF生成・保存。
  */
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { InkBackground } from '@/components/InkBackground'
+import { Background } from '@/components/Background'
+import { AuthGuard } from '@/components/AuthGuard'
 
 interface HistoryEntry {
   id: string
@@ -20,6 +21,10 @@ type Phase = 'idle' | 'ocr' | 'compiling'
 const HISTORY_KEY = 'scan-history-v1'
 
 export default function ScanPage() {
+  return <AuthGuard><ScanInner /></AuthGuard>
+}
+
+function ScanInner() {
   const [image, setImage] = useState<string | null>(null)
   const [quality, setQuality] = useState<'standard' | 'high'>('standard')
   const [title, setTitle] = useState('')
@@ -119,45 +124,47 @@ export default function ScanPage() {
     a.click()
   }
 
-  function restoreEntry(h: HistoryEntry) {
-    setTitle(h.title); setStatement(h.statement); setSolution(h.solution)
-  }
-
-  function deleteEntry(id: string) {
-    setHistory(prev => {
-      const next = prev.filter(h => h.id !== id)
-      localStorage.setItem(HISTORY_KEY, JSON.stringify(next))
-      return next
-    })
-  }
-
   const busy = phase !== 'idle'
 
   return (
-    <div className="min-h-screen text-[#2a2a2e]" style={{ fontFamily: '"Hiragino Mincho ProN", "Yu Mincho", serif' }}>
-      <InkBackground />
+    <div className="h-screen overflow-y-auto text-white">
+      <Background />
 
       <div className="flex min-h-screen">
         {/* ── 履歴サイドバー ── */}
-        <aside className="w-60 shrink-0 border-r border-black/10 bg-white/40 backdrop-blur-sm p-4 hidden md:block">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-xl font-bold tracking-wider">墨写</span>
-            <span className="text-[10px] text-black/40 tracking-widest">SCAN → TeX</span>
+        <aside className="w-60 shrink-0 border-r border-white/8 bg-[#07060f]/95 p-4 hidden md:flex flex-col gap-3">
+          <div>
+            <div className="text-[17px] font-bold tracking-tight text-white/90">
+              ✦ Sakumon<span className="text-apple-blue"> Station</span>
+            </div>
+            <div className="text-[11px] text-white/35 mt-0.5">📷 写真 → LaTeX → PDF</div>
           </div>
-          <a href="/" className="text-[11px] text-black/40 hover:text-black/70">← Sakumon Station</a>
-          <div className="mt-5 text-[11px] text-black/40 tracking-widest mb-2">履歴</div>
-          <div className="space-y-1.5 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 140px)' }}>
-            {history.length === 0 && <p className="text-[11px] text-black/30">まだありません</p>}
+          <nav className="flex flex-col gap-1">
+            <a href="/" className="text-[12px] px-3 py-1.5 rounded-lg text-white/40 hover:text-white/70 hover:bg-white/5">✦ キュレーション</a>
+            <a href="/ideas" className="text-[12px] px-3 py-1.5 rounded-lg text-white/40 hover:text-white/70 hover:bg-white/5">🌳 アイデアツリー</a>
+          </nav>
+          <div className="border-t border-white/8" />
+          <div className="text-[10px] font-semibold text-white/30 uppercase tracking-widest">履歴</div>
+          <div className="space-y-1.5 overflow-y-auto flex-1">
+            {history.length === 0 && <p className="text-[11px] text-white/25">まだありません</p>}
             {history.map(h => (
               <div key={h.id}
-                className="group rounded-lg px-3 py-2 bg-white/50 hover:bg-white/80 cursor-pointer border border-black/5 transition-colors"
-                onClick={() => restoreEntry(h)}>
+                className="group glass glass-hover rounded-xl px-3 py-2 cursor-pointer transition-colors"
+                onClick={() => { setTitle(h.title); setStatement(h.statement); setSolution(h.solution) }}>
                 <div className="flex justify-between items-start gap-1">
-                  <span className="text-[12px] font-semibold leading-tight">{h.title}</span>
-                  <button onClick={e => { e.stopPropagation(); deleteEntry(h.id) }}
-                    className="opacity-0 group-hover:opacity-100 text-black/30 hover:text-black/70 text-[11px]">✕</button>
+                  <span className="text-[12px] font-semibold leading-tight text-white/80">{h.title}</span>
+                  <button
+                    onClick={e => {
+                      e.stopPropagation()
+                      setHistory(prev => {
+                        const next = prev.filter(x => x.id !== h.id)
+                        localStorage.setItem(HISTORY_KEY, JSON.stringify(next))
+                        return next
+                      })
+                    }}
+                    className="opacity-0 group-hover:opacity-100 text-white/30 hover:text-white/70 text-[11px]">✕</button>
                 </div>
-                <span className="text-[10px] text-black/35">{h.date}</span>
+                <span className="text-[10px] text-white/30">{h.date}</span>
               </div>
             ))}
           </div>
@@ -168,12 +175,12 @@ export default function ScanPage() {
           {/* 入力カラム */}
           <section className="space-y-4">
             <div className="flex items-center justify-between">
-              <h1 className="text-lg font-bold tracking-wide">写真 → LaTeX → PDF</h1>
-              <div className="flex rounded-full border border-black/15 overflow-hidden text-[12px]">
+              <h1 className="text-[15px] font-bold text-white/90">写真 → LaTeX → PDF</h1>
+              <div className="flex rounded-full glass overflow-hidden text-[12px]">
                 <button onClick={() => setQuality('standard')}
-                  className={`px-3 py-1 ${quality === 'standard' ? 'bg-[#2a2a2e] text-white' : 'bg-white/50'}`}>標準</button>
+                  className={`px-3 py-1 transition-colors ${quality === 'standard' ? 'bg-apple-blue/30 text-apple-blue' : 'text-white/40 hover:text-white/70'}`}>標準</button>
                 <button onClick={() => setQuality('high')}
-                  className={`px-3 py-1 ${quality === 'high' ? 'bg-[#2a2a2e] text-white' : 'bg-white/50'}`}>高品質</button>
+                  className={`px-3 py-1 transition-colors ${quality === 'high' ? 'bg-apple-blue/30 text-apple-blue' : 'text-white/40 hover:text-white/70'}`}>高品質</button>
               </div>
             </div>
 
@@ -182,69 +189,69 @@ export default function ScanPage() {
               onClick={() => fileRef.current?.click()}
               onDragOver={e => e.preventDefault()}
               onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) loadFile(f) }}
-              className="rounded-2xl border-2 border-dashed border-black/20 bg-white/40 backdrop-blur-sm
-                         min-h-[200px] flex items-center justify-center cursor-pointer hover:border-black/40 transition-colors overflow-hidden"
+              className="rounded-2xl border-2 border-dashed border-white/15 glass
+                         min-h-[200px] flex items-center justify-center cursor-pointer hover:border-white/35 transition-colors overflow-hidden"
             >
               {image
                 ? <img src={image} alt="入力画像" className="max-h-[320px] w-full object-contain" />
-                : <div className="text-center text-black/40 text-[13px] p-8">
-                    <div className="text-3xl mb-2">⛩</div>
+                : <div className="text-center text-white/35 text-[13px] p-8">
+                    <div className="text-3xl mb-2">📷</div>
                     クリックして画像を選択<br />または Ctrl+V で貼り付け / ドラッグ&ドロップ
                   </div>}
             </div>
             <input ref={fileRef} type="file" accept="image/*" className="hidden"
               onChange={e => { const f = e.target.files?.[0]; if (f) loadFile(f) }} />
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <button onClick={runOcr} disabled={!image || busy}
-                className="px-4 py-2 rounded-xl bg-[#2a2a2e] text-white text-[13px] disabled:opacity-40 hover:bg-black transition-colors">
+                className="px-4 py-2 rounded-xl bg-apple-blue/80 hover:bg-apple-blue text-white text-[13px] font-semibold disabled:opacity-40 transition-colors">
                 {phase === 'ocr' ? '読み取り中…' : '⌘ LaTeX 書き起こし'}
               </button>
               <button onClick={generatePdf} disabled={!statement.trim() || busy}
-                className="px-4 py-2 rounded-xl border border-[#2a2a2e] text-[13px] disabled:opacity-40 bg-white/60 hover:bg-white transition-colors">
+                className="px-4 py-2 rounded-xl glass glass-hover text-[13px] text-white/80 disabled:opacity-40 transition-colors">
                 {phase === 'compiling' ? '組版中…' : '▷ PDFを生成'}
               </button>
               {pdfUrl && (
                 <button onClick={downloadPdf}
-                  className="px-4 py-2 rounded-xl border border-black/20 text-[13px] bg-white/60 hover:bg-white transition-colors">
+                  className="px-4 py-2 rounded-xl glass glass-hover text-[13px] text-white/80 transition-colors">
                   ↓ 保存
                 </button>
               )}
             </div>
 
             {error && (
-              <p className="text-[12px] text-red-700/90 whitespace-pre-wrap bg-red-50/70 rounded-xl p-3 border border-red-200">{error}</p>
+              <p className="text-[12px] text-red-400/90 whitespace-pre-wrap glass rounded-xl p-3 border border-red-500/30">{error}</p>
             )}
 
             {/* LaTeX 編集 */}
             <div className="space-y-3">
               <input value={title} onChange={e => setTitle(e.target.value)} placeholder="タイトル"
-                className="w-full rounded-xl border border-black/15 bg-white/60 px-3 py-2 text-[13px] focus:outline-none focus:border-black/40" />
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-[13px] text-white/80 outline-none focus:border-white/30" />
               <div>
-                <label className="text-[11px] text-black/40 tracking-widest">問題文 (LaTeX)</label>
+                <label className="text-[10px] font-semibold text-white/30 uppercase tracking-widest">問題文 (LaTeX)</label>
                 <textarea value={statement} onChange={e => setStatement(e.target.value)} rows={6}
                   placeholder="$\int_0^1 x^2\,dx$ を求めよ."
-                  className="w-full rounded-xl border border-black/15 bg-white/60 px-3 py-2 text-[12px] font-mono focus:outline-none focus:border-black/40" />
+                  className="w-full mt-1.5 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-[12px] font-mono text-white/80 outline-none focus:border-white/30" />
               </div>
               <div>
-                <label className="text-[11px] text-black/40 tracking-widest">解答 (LaTeX・省略可)</label>
+                <label className="text-[10px] font-semibold text-white/30 uppercase tracking-widest">解答 (LaTeX・省略可)</label>
                 <textarea value={solution} onChange={e => setSolution(e.target.value)} rows={8}
-                  className="w-full rounded-xl border border-black/15 bg-white/60 px-3 py-2 text-[12px] font-mono focus:outline-none focus:border-black/40" />
+                  className="w-full mt-1.5 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-[12px] font-mono text-white/80 outline-none focus:border-white/30" />
               </div>
             </div>
           </section>
 
           {/* PDF プレビューカラム */}
           <section className="space-y-2">
-            <h2 className="text-[11px] text-black/40 tracking-widest">PDF プレビュー（鉄緑会風）</h2>
+            <h2 className="text-[10px] font-semibold text-white/30 uppercase tracking-widest">PDF プレビュー（鉄緑会風）</h2>
             {pdfUrl ? (
               <object data={pdfUrl} type="application/pdf"
-                className="w-full rounded-2xl border border-black/10 bg-white shadow-lg"
+                className="w-full rounded-2xl bg-white"
                 style={{ height: 'calc(100vh - 120px)' }}>
-                <a href={pdfUrl} target="_blank" className="text-[13px] underline">PDFを開く</a>
+                <a href={pdfUrl} target="_blank" className="text-apple-blue text-[13px] underline">PDFを開く</a>
               </object>
             ) : (
-              <div className="rounded-2xl border border-black/10 bg-white/50 backdrop-blur-sm flex items-center justify-center text-black/30 text-[13px]"
+              <div className="glass rounded-2xl flex items-center justify-center text-white/25 text-[13px]"
                 style={{ height: 'calc(100vh - 120px)' }}>
                 生成するとここに表示されます
               </div>

@@ -1,12 +1,12 @@
 'use client'
 /**
- * /ideas — 作問アイデアツリー
+ * /ideas — 作問アイデアツリー (sakumon app 統合ページ)
  * 左: インデント箇条書きエディタ / 右: ツリー可視化 (SVG)
  * AIブラッシュアップ → 問題化 → 鉄緑会風PDF保存
- * 水墨画風和風UI
  */
 import { useEffect, useMemo, useState } from 'react'
-import { InkBackground } from '@/components/InkBackground'
+import { Background } from '@/components/Background'
+import { AuthGuard } from '@/components/AuthGuard'
 
 interface TreeNode {
   id: number
@@ -71,16 +71,21 @@ function layout(roots: TreeNode[]): { nodes: TreeNode[]; links: [TreeNode, TreeN
   return { nodes, links, height: Math.max(200, 40 + leafY * 64 + 40) }
 }
 
+// ダークテーマのノード配色（深度別）
 const DEPTH_STYLE = [
-  { fill: '#ffffff', stroke: '#2a2a2e', text: '#2a2a2e' },   // テーマ
-  { fill: '#eef4ff', stroke: '#3b6bb5', text: '#27496d' },   // 観点
-  { fill: '#fdf0ee', stroke: '#b54b3b', text: '#7a2e22' },   // 素材
-  { fill: '#eefaf0', stroke: '#3b8a4e', text: '#1f5e2e' },   // 方針
+  { fill: 'rgba(255,255,255,0.08)', stroke: 'rgba(255,255,255,0.6)',  text: 'rgba(255,255,255,0.92)' }, // テーマ
+  { fill: 'rgba(64,128,255,0.12)',  stroke: 'rgba(110,168,254,0.7)', text: 'rgba(190,215,255,0.95)' }, // 観点
+  { fill: 'rgba(255,99,72,0.10)',   stroke: 'rgba(255,138,118,0.7)', text: 'rgba(255,205,195,0.95)' }, // 素材
+  { fill: 'rgba(64,200,120,0.10)',  stroke: 'rgba(120,220,160,0.7)', text: 'rgba(195,245,215,0.95)' }, // 方針
 ]
 
 type Phase = 'idle' | 'brushup' | 'problemize' | 'compiling'
 
 export default function IdeasPage() {
+  return <AuthGuard><IdeasInner /></AuthGuard>
+}
+
+function IdeasInner() {
   const [outline, setOutline] = useState(DEFAULT_OUTLINE)
   const [prevOutline, setPrevOutline] = useState<string | null>(null)
   const [phase, setPhase] = useState<Phase>('idle')
@@ -155,61 +160,62 @@ export default function IdeasPage() {
   const busy = phase !== 'idle'
 
   return (
-    <div className="min-h-screen text-[#2a2a2e]" style={{ fontFamily: '"Hiragino Mincho ProN", "Yu Mincho", serif' }}>
-      <InkBackground />
+    <div className="h-screen overflow-y-auto text-white">
+      <Background />
 
       <div className="p-5 max-w-[1600px] mx-auto space-y-4">
         {/* ヘッダ */}
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-baseline gap-3">
-            <h1 className="text-xl font-bold tracking-wider">想樹</h1>
-            <span className="text-[11px] text-black/40 tracking-widest">作問アイデアツリー</span>
-            <a href="/" className="text-[11px] text-black/40 hover:text-black/70">← Sakumon Station</a>
-            <a href="/scan" className="text-[11px] text-black/40 hover:text-black/70">墨写 →</a>
+            <h1 className="text-[17px] font-bold text-white/90">
+              🌳 アイデアツリー
+            </h1>
+            <a href="/" className="text-[11px] text-white/35 hover:text-white/70">✦ キュレーション</a>
+            <a href="/scan" className="text-[11px] text-white/35 hover:text-white/70">📷 スキャン</a>
           </div>
           <div className="flex gap-2">
             {prevOutline && (
               <button onClick={() => { setOutline(prevOutline); setPrevOutline(null) }}
-                className="px-3 py-1.5 rounded-xl border border-black/20 text-[12px] bg-white/60 hover:bg-white">
+                className="px-3 py-1.5 rounded-xl glass glass-hover text-[12px] text-white/60">
                 ↩ 元に戻す
               </button>
             )}
             <button onClick={brushup} disabled={busy}
-              className="px-4 py-1.5 rounded-xl border border-[#2a2a2e] text-[13px] bg-white/60 hover:bg-white disabled:opacity-40">
+              className="px-4 py-1.5 rounded-xl glass glass-hover text-[13px] text-white/80 disabled:opacity-40">
               {phase === 'brushup' ? '深掘り中…' : '✦ AIブラッシュアップ'}
             </button>
             <button onClick={problemize} disabled={busy}
-              className="px-4 py-1.5 rounded-xl bg-[#2a2a2e] text-white text-[13px] hover:bg-black disabled:opacity-40">
+              className="px-4 py-1.5 rounded-xl bg-apple-blue/80 hover:bg-apple-blue text-white text-[13px] font-semibold disabled:opacity-40 transition-colors">
               {phase === 'problemize' ? '作問中…' : '⚡ 問題化'}
             </button>
           </div>
         </div>
 
         {error && (
-          <p className="text-[12px] text-red-700/90 whitespace-pre-wrap bg-red-50/70 rounded-xl p-3 border border-red-200">{error}</p>
+          <p className="text-[12px] text-red-400/90 whitespace-pre-wrap glass rounded-xl p-3 border border-red-500/30">{error}</p>
         )}
 
         <div className="grid lg:grid-cols-[380px_1fr] gap-4">
           {/* アウトラインエディタ */}
           <section>
-            <label className="text-[11px] text-black/40 tracking-widest">アウトライン（「- 」+ 2スペースインデント）</label>
+            <label className="text-[10px] font-semibold text-white/30 uppercase tracking-widest">アウトライン（「- 」+ 2スペースインデント）</label>
             <textarea
               value={outline}
               onChange={e => setOutline(e.target.value)}
               spellCheck={false}
-              className="w-full rounded-2xl border border-black/15 bg-white/60 backdrop-blur-sm px-4 py-3 text-[13px] font-mono leading-relaxed focus:outline-none focus:border-black/40"
-              style={{ height: 'calc(100vh - 180px)', minHeight: 300 }}
+              className="w-full mt-1.5 bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-[13px] font-mono leading-relaxed text-white/80 outline-none focus:border-white/30"
+              style={{ height: 'calc(100vh - 190px)', minHeight: 300 }}
             />
           </section>
 
           {/* ツリー可視化 */}
-          <section className="rounded-2xl border border-black/10 bg-white/50 backdrop-blur-sm overflow-auto"
-            style={{ height: 'calc(100vh - 180px)', minHeight: 300 }}>
+          <section className="glass rounded-2xl overflow-auto"
+            style={{ height: 'calc(100vh - 190px)', minHeight: 300 }}>
             <svg width={width} height={tree.height}>
               {tree.links.map(([a, b]) => (
                 <path key={`${a.id}-${b.id}`}
                   d={`M ${a.x + 200} ${a.y} C ${a.x + 230} ${a.y}, ${b.x - 30} ${b.y}, ${b.x} ${b.y}`}
-                  fill="none" stroke="#2a2a2e" strokeWidth={1} opacity={0.5} />
+                  fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth={1} />
               ))}
               {tree.nodes.map(n => {
                 const s = DEPTH_STYLE[Math.min(n.depth, DEPTH_STYLE.length - 1)]
@@ -234,24 +240,24 @@ export default function IdeasPage() {
 
         {/* 生成された問題 */}
         {generated && (
-          <section className="rounded-2xl border border-black/15 bg-white/70 backdrop-blur-sm p-5 space-y-3">
+          <section className="glass rounded-2xl p-5 space-y-3">
             <div className="flex items-center justify-between">
-              <h2 className="font-bold">【{generated.title}】</h2>
+              <h2 className="font-bold text-white/90">【{generated.title}】</h2>
               <button onClick={savePdf} disabled={busy}
-                className="px-4 py-1.5 rounded-xl bg-[#2a2a2e] text-white text-[13px] hover:bg-black disabled:opacity-40">
+                className="px-4 py-1.5 rounded-xl bg-apple-blue/80 hover:bg-apple-blue text-white text-[13px] font-semibold disabled:opacity-40 transition-colors">
                 {phase === 'compiling' ? '組版中…' : '📄 鉄緑会風PDFで保存'}
               </button>
             </div>
             <div>
-              <div className="text-[11px] text-black/40 tracking-widest mb-1">問題文</div>
-              <pre className="text-[12px] font-mono whitespace-pre-wrap bg-white/70 rounded-xl p-3 border border-black/10">{generated.statement}</pre>
+              <div className="text-[10px] font-semibold text-white/30 uppercase tracking-widest mb-1">問題文</div>
+              <pre className="text-[12px] font-mono whitespace-pre-wrap bg-white/5 rounded-xl p-3 border border-white/10 text-white/80">{generated.statement}</pre>
             </div>
             <details>
-              <summary className="text-[12px] cursor-pointer text-black/50">模範解答を表示</summary>
-              <pre className="text-[12px] font-mono whitespace-pre-wrap bg-white/70 rounded-xl p-3 border border-black/10 mt-2">{generated.solution}</pre>
+              <summary className="text-[12px] cursor-pointer text-white/50 hover:text-white/80">模範解答を表示</summary>
+              <pre className="text-[12px] font-mono whitespace-pre-wrap bg-white/5 rounded-xl p-3 border border-white/10 text-white/70 mt-2">{generated.solution}</pre>
             </details>
             {pdfUrl && (
-              <object data={pdfUrl} type="application/pdf" className="w-full rounded-xl border border-black/10 bg-white" style={{ height: 480 }} />
+              <object data={pdfUrl} type="application/pdf" className="w-full rounded-xl bg-white" style={{ height: 480 }} />
             )}
           </section>
         )}

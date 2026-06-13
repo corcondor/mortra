@@ -2,6 +2,7 @@
 import { useEffect, useState, useMemo } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 import type { User } from '@supabase/supabase-js'
+import { Background } from './Background'
 
 const ALLOWED_EMAILS = [
   'imtceed@gmail.com',
@@ -78,7 +79,8 @@ function AuthGuardInner({ children }: Props) {
 
   if (!user) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-[#05050f]">
+      <div className="fixed inset-0 flex items-center justify-center">
+        <Background />
         <div className="glass rounded-2xl p-8 text-center space-y-4 max-w-sm w-full mx-4">
           <div className="text-[22px] font-bold text-white/90">✦ Sakumon Station</div>
           <p className="text-[13px] text-white/40">Google アカウントでログインしてください</p>

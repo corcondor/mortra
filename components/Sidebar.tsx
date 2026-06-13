@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState, useCallback } from 'react'
+import { usePathname } from 'next/navigation'
 
 export interface Filters {
   topic: string | null
@@ -34,6 +35,7 @@ interface Props {
 }
 
 export function Sidebar({ filters, onChange, onReload, onClose }: Props) {
+  const pathname = usePathname()
   const [stats,    setStats]    = useState<Stats | null>(null)
   const [syncing,  setSyncing]  = useState(false)
   const [purging,  setPurging]  = useState(false)
@@ -88,6 +90,28 @@ export function Sidebar({ filters, onChange, onReload, onClose }: Props) {
           >✕</button>
         )}
       </div>
+
+      {/* Page nav */}
+      <nav className="flex flex-col gap-1">
+        {[
+          ['✦', 'キュレーション', '/'],
+          ['📷', 'スキャン（写真→PDF）', '/scan'],
+          ['🌳', 'アイデアツリー', '/ideas'],
+        ].map(([icon, label, href]) => (
+          <a
+            key={href}
+            href={href}
+            className={`flex items-center gap-2 text-[12px] px-3 py-1.5 rounded-lg transition-colors
+              ${pathname === href
+                ? 'bg-apple-blue/20 text-apple-blue'
+                : 'text-white/40 hover:text-white/70 hover:bg-white/5'}`}
+          >
+            <span>{icon}</span>{label}
+          </a>
+        ))}
+      </nav>
+
+      <div className="border-t border-white/8" />
 
       {/* Stats */}
       {stats && (
