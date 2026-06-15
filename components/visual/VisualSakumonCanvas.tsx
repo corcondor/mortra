@@ -2,9 +2,10 @@
 
 import { PointerEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Background } from '@/components/Background'
+import { compileVisualProblem } from '@/lib/visual/compiler'
 
 type ToolId = 'select' | 'point' | 'segment' | 'circle' | 'polygon' | 'rotate' | 'trace' | 'measure'
-type Mode = '2d' | 'passage' | 'verifier'
+type Mode = '2d' | 'passage' | 'verifier' | 'compiler'
 type Point = { x: number; y: number }
 
 const VIEW_W = 960
@@ -121,6 +122,7 @@ export function VisualSakumonCanvas() {
   const [endAngle, setEndAngle] = useState(84)
   const [dragging, setDragging] = useState(false)
   const [toast, setToast] = useState('Autosaved locally')
+  const [compilerPrompt, setCompilerPrompt] = useState('三角形ABCを点Pのまわりに回転させるとき、通過領域の面積を求めよ。境界の切替点も検証せよ。')
 
   const square = useMemo(() => ({ x: 288, y: 142, size: 334 }), [])
   const currentAngle = startAngle + (endAngle - startAngle) * frame / 100
@@ -184,6 +186,21 @@ export function VisualSakumonCanvas() {
     const side = Math.round(verifier.side)
     return `正方形 S の近くに点 P を取り、一辺 ${side} の正三角形 ABC を点 P のまわりに ${Math.abs(endAngle - startAngle)}° 回転させる。三角形 ABC が通過する領域の境界を図示し、その面積を求めよ。`
   }, [endAngle, startAngle, verifier.side])
+
+  const compilerResult = useMemo(() => compileVisualProblem({
+    prompt: compilerPrompt,
+    sceneGraph,
+    metrics: {
+      area: verifier.area,
+      side: verifier.side,
+      samplesInSquare: verifier.samplesInSquare,
+      totalSamples: traces.all.length,
+      currentInside: verifier.currentInside,
+      enoughSweep: verifier.enoughSweep,
+      centerInside: verifier.centerInside,
+    },
+    sweepRange: [startAngle, endAngle],
+  }), [compilerPrompt, endAngle, sceneGraph, startAngle, traces.all.length, verifier])
 
   const advanceFrame = useCallback(() => {
     setFrame((value) => value >= 100 ? 0 : value + 1)
@@ -254,14 +271,14 @@ export function VisualSakumonCanvas() {
           </div>
 
           <div className="hidden items-center gap-1 rounded-md border border-white/10 bg-white/6 p-1 md:flex">
-            {(['2d', 'passage', 'verifier'] as Mode[]).map((item) => (
+            {(['2d', 'passage', 'verifier', 'compiler'] as Mode[]).map((item) => (
               <button
                 key={item}
                 type="button"
                 onClick={() => setMode(item)}
                 className={`rounded px-3 py-1.5 text-[11px] font-medium transition ${mode === item ? 'bg-white text-black' : 'text-white/62 hover:bg-white/10'}`}
               >
-                {item === '2d' ? '2D' : item === 'passage' ? 'Passage' : 'Verifier'}
+                {item === '2d' ? '2D' : item === 'passage' ? 'Passage' : item === 'verifier' ? 'Verifier' : 'Compiler'}
               </button>
             ))}
           </div>
@@ -388,6 +405,15 @@ export function VisualSakumonCanvas() {
                     <text x="46" y="106" fill="rgba(255,255,255,0.72)" fontSize="14">samples in S: {verifier.samplesInSquare}/{traces.all.length}</text>
                   </g>
                 )}
+                {mode === 'compiler' && (
+                  <g>
+                    <rect x="28" y="28" width="410" height="132" rx="8" fill="rgba(0,0,0,0.5)" stroke="rgba(10,132,255,0.38)" />
+                    <text x="46" y="58" fill="#bfdbfe" fontSize="17" fontWeight="700">Problem Compiler</text>
+                    <text x="46" y="86" fill="rgba(255,255,255,0.72)" fontSize="14">type: {compilerResult.problem_type.slice(0, 3).join(' / ')}</text>
+                    <text x="46" y="110" fill="rgba(255,255,255,0.72)" fontSize="14">next: {compilerResult.next_action}</text>
+                    <text x="46" y="134" fill="rgba(255,255,255,0.72)" fontSize="14">tool: {compilerResult.compiled_json.tool}</text>
+                  </g>
+                )}
               </svg>
             </div>
 
@@ -466,6 +492,61 @@ export function VisualSakumonCanvas() {
             <section className="mt-3 rounded-md border border-white/10 bg-white/6 p-3">
               <h2 className="mb-2 text-sm font-semibold">Generated Problem</h2>
               <p className="text-xs leading-6 text-white/66">{generatedProblem}</p>
+            </section>
+
+            <section className="mt-3 rounded-md border border-white/10 bg-white/6 p-3">
+              <div className="mb-3 flex items-center justify-between gap-2">
+                <h2 className="text-sm font-semibold">Compiler Plan</h2>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCompilerPrompt(generatedProblem)
+                    setMode('compiler')
+                    setToast('Problem compiled')
+                  }}
+                  className="rounded border border-apple-blue/40 bg-apple-blue/15 px-2 py-1 text-[10px] font-semibold text-blue-100 hover:bg-apple-blue/25"
+                >
+                  Use Scene
+                </button>
+              </div>
+              <textarea
+                value={compilerPrompt}
+                onChange={(event) => setCompilerPrompt(event.target.value)}
+                className="h-20 w-full resize-none rounded border border-white/10 bg-black/22 p-2 text-[11px] leading-5 text-white/70 outline-none focus:border-apple-blue/60"
+                aria-label="compiler prompt"
+              />
+              <div className="mt-3 rounded border border-white/8 bg-black/18 p-2">
+                <div className="mb-2 flex items-center justify-between text-[11px]">
+                  <span className="font-semibold text-white/72">next_action</span>
+                  <span className="text-apple-green">{compilerResult.next_action}</span>
+                </div>
+                <pre className="max-h-36 overflow-auto whitespace-pre-wrap break-all text-[10px] leading-4 text-white/52">
+                  {JSON.stringify(compilerResult.compiled_json, null, 2)}
+                </pre>
+              </div>
+              <div className="mt-3 space-y-2">
+                {compilerResult.tool_pipeline.slice(0, 4).map((action) => (
+                  <div key={action.id} className="rounded border border-white/8 bg-black/18 px-3 py-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-semibold text-white/78">{action.tool}</span>
+                      <span className={action.status === 'ready' ? 'text-[10px] text-apple-green' : action.status === 'blocked' ? 'text-[10px] text-apple-pink' : 'text-[10px] text-apple-gold'}>
+                        {action.status}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-[10px] leading-4 text-white/46">{action.purpose}</p>
+                  </div>
+                ))}
+              </div>
+              {compilerResult.risk_flags.length > 0 && (
+                <div className="mt-3 rounded border border-amber-300/20 bg-amber-300/8 p-2">
+                  <div className="mb-1 text-[11px] font-semibold text-amber-100">Risk flags</div>
+                  <ul className="space-y-1">
+                    {compilerResult.risk_flags.map((flag) => (
+                      <li key={flag} className="text-[10px] leading-4 text-amber-100/72">{flag}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </section>
 
             <section className="mt-3 rounded-md border border-white/10 bg-white/6 p-3">
