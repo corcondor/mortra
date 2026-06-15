@@ -1,5 +1,5 @@
 'use client'
-import { RefObject, useRef, useState } from 'react'
+import { RefObject, useMemo, useRef, useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import type { ProblemWithRating } from '@/lib/types'
 import { DIFFICULTY_COLOR, DIFFICULTY_LABEL, TOPIC_EMOJI } from '@/lib/types'
@@ -54,6 +54,18 @@ export function ProblemCardCuration({
   const diffClass = DIFFICULTY_COLOR[diff] ?? DIFFICULTY_COLOR.C
   const ta = p.topic_a, tb = p.topic_b ?? ''
   const badge = `${TOPIC_JP[ta] ?? ta}${tb ? ` × ${TOPIC_JP[tb] ?? tb}` : ''}`
+  const meta = useMemo<Record<string, unknown>>(() => {
+    try { return p.meta ? JSON.parse(p.meta) as Record<string, unknown> : {} }
+    catch { return {} }
+  }, [p.meta])
+  const tags = useMemo(() => {
+    const raw = Array.isArray(meta.tags) ? meta.tags : []
+    return raw.filter((tag): tag is string => typeof tag === 'string' && tag.trim().length > 0).slice(0, 6)
+  }, [meta])
+  const features = typeof meta.features === 'string' ? meta.features : null
+  const sourceLabel = typeof meta.university_short === 'string'
+    ? `${meta.university_short}${typeof meta.year === 'string' ? ` ${meta.year}` : ''}`
+    : null
 
   const borderColor =
     isIncorrect            ? 'border-red-400/50 ring-1 ring-red-400/20' :
@@ -127,7 +139,9 @@ export function ProblemCardCuration({
         <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md border ${diffClass}`}>
           {DIFFICULTY_LABEL[diff]}
         </span>
-        <span className="text-[10px] text-zinc-400">Gen {p.generation}</span>
+        <span className="text-[10px] text-zinc-400">
+          {sourceLabel ?? `Gen ${p.generation}`}
+        </span>
 
         {/* 数値ゼロバッジ：問題文に数字が一つもない場合 */}
         {!/\d/.test(p.statement) && (
@@ -149,6 +163,26 @@ export function ProblemCardCuration({
         {xPosted && <span className="text-[10px] text-apple-blue font-semibold ml-auto">✓ 投稿済</span>}
         {!xPosted && <span className="text-[10px] text-zinc-400 ml-auto">{(p.total||0).toFixed(1)}</span>}
       </div>
+
+      {(tags.length > 0 || features) && (
+        <div className="flex flex-col gap-2 border-y border-zinc-200/70 py-2">
+          {tags.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {tags.map(tag => (
+                <span
+                  key={tag}
+                  className="rounded-md border border-zinc-300 bg-white/60 px-1.5 py-0.5 text-[10px] font-medium text-zinc-500"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+          {features && (
+            <p className="text-[11px] leading-relaxed text-zinc-500">{features}</p>
+          )}
+        </div>
+      )}
 
       {/* Statement */}
       <div>
