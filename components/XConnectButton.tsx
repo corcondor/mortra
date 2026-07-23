@@ -67,13 +67,13 @@ export function XConnectButton({ accessToken }: Props) {
   if (status?.connected) {
     return (
       <div className="flex items-center gap-2">
-        <span className="text-[11px] text-white/50">
-          𝕏 <span className="text-white/70 font-medium">@{status.x_username}</span> で投稿
+        <span className="text-[11px] text-[#667085]">
+          𝕏 <span className="font-medium text-[#344054]">@{status.x_username}</span> で投稿
         </span>
         <button
           onClick={handleDisconnect}
           disabled={disconnecting}
-          className="text-[10px] text-white/25 hover:text-white/60 transition-colors"
+          className="text-[10px] text-[#98a2b3] transition-colors hover:text-[#475467]"
         >
           {disconnecting ? '…' : '解除'}
         </button>
@@ -85,8 +85,8 @@ export function XConnectButton({ accessToken }: Props) {
     <button
       onClick={handleConnect}
       disabled={connecting}
-      className="flex items-center gap-1.5 text-[12px] text-white/50 hover:text-white/80
-                 border border-white/15 hover:border-white/30 rounded-xl px-3 py-1.5
+      className="flex items-center gap-1.5 rounded border border-[#d0d5dd] px-3 py-1.5 text-[12px] text-[#667085]
+                 transition-all hover:border-[#98a2b3] hover:text-[#344054]
                  transition-all disabled:opacity-40"
     >
       <span>𝕏</span>

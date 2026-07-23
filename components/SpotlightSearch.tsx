@@ -63,10 +63,10 @@ export function SpotlightSearch({ problems }: Props) {
           transition={{ duration: 0.5, ease: [0.16,1,0.3,1] }}
           className="mb-8 text-center"
         >
-          <h1 className="text-3xl font-semibold tracking-tight text-white/90">
+          <h1 className="text-3xl font-semibold text-[#14213d]">
             Math Corpus
           </h1>
-          <p className="text-sm text-white/35 mt-1">
+          <p className="mt-1 text-sm text-[#667085]">
             {problems.length} problems · ⌘K to focus
           </p>
         </motion.div>
@@ -80,7 +80,7 @@ export function SpotlightSearch({ problems }: Props) {
         >
           <div className="relative">
             {/* magnifier icon */}
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 text-lg select-none pointer-events-none">
+            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 select-none text-lg text-[#98a2b3]">
               ⌕
             </span>
             <input
@@ -91,12 +91,12 @@ export function SpotlightSearch({ problems }: Props) {
               onChange={e => setQuery(e.target.value)}
               onKeyDown={handleKey}
               placeholder="問題を検索… (テーマ、キーワード)"
-              className="spotlight-input w-full rounded-2xl pl-11 pr-4 py-4 text-base"
+              className="spotlight-input w-full rounded-md py-4 pl-11 pr-4 text-base"
             />
             {query && (
               <button
                 onClick={() => { setQuery(''); inputRef.current?.focus() }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/25 hover:text-white/60 transition-colors text-sm"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-[#98a2b3] transition-colors hover:text-[#344054]"
               >
                 ✕
               </button>
@@ -117,7 +117,7 @@ export function SpotlightSearch({ problems }: Props) {
                 className={`text-[11px] px-2.5 py-1 rounded-full border transition-all duration-150
                   ${topicFilter === t
                     ? 'bg-apple-blue/20 border-apple-blue/50 text-apple-blue'
-                    : 'border-white/10 text-white/35 hover:border-white/25 hover:text-white/60'
+                    : 'border-[#d0d5dd] text-[#667085] hover:border-[#98a2b3] hover:text-[#344054]'
                   }`}
               >
                 {t}
@@ -148,7 +148,7 @@ export function SpotlightSearch({ problems }: Props) {
                 key="empty"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="text-center text-white/30 text-sm py-8"
+                className="py-8 text-center text-sm text-[#667085]"
               >
                 「{query}」に一致する問題が見つかりません
               </motion.p>

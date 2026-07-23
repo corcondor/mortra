@@ -80,23 +80,23 @@ function logLineColor(line: string): string {
   if (line.includes('🎯') || line.includes('[生成'))
     return 'text-blue-300/70'
   if (line.includes('🔍') || line.includes('[検証') || line.includes('[分析'))
-    return 'text-purple-300/70'
+    return 'text-[#175cd3]'
   if (line.includes('💾') || line.includes('[保存'))
-    return 'text-cyan-300/70'
+    return 'text-[#067647]'
   if (line.includes('🔧'))
     return 'text-orange-300/70'
-  return 'text-white/40'
+  return 'text-[#667085]'
 }
 
 /** フェーズ → アイコン */
 const PHASE_INFO: Record<string, { emoji: string; label: string; color: string }> = {
-  analyzing:  { emoji: '🔍', label: '構造分析中',       color: 'text-purple-400' },
+  analyzing:  { emoji: '🔍', label: '構造分析中',       color: 'text-[#175cd3]' },
   generating: { emoji: '⏳', label: 'DeepSeek 生成中',  color: 'text-blue-400' },
   verifying:  { emoji: '🔬', label: '数学的検証中',     color: 'text-yellow-400' },
-  saving:     { emoji: '💾', label: 'Supabase 保存中',  color: 'text-cyan-400' },
-  purging:    { emoji: '🗑️', label: '未選択を整理中',   color: 'text-pink-400' },
+  saving:     { emoji: '💾', label: 'Supabase 保存中',  color: 'text-[#067647]' },
+  purging:    { emoji: '🗑️', label: '未選択を整理中',   color: 'text-[#b54708]' },
   done:       { emoji: '✅', label: '完了！',            color: 'text-emerald-400' },
-  queued:     { emoji: '🕐', label: 'キュー待ち...',    color: 'text-white/50' },
+  queued:     { emoji: '🕐', label: 'キュー待ち...',    color: 'text-[#667085]' },
   start:      { emoji: '🚀', label: 'Worker 起動中',    color: 'text-blue-400' },
   error:      { emoji: '❌', label: 'エラー',            color: 'text-red-400' },
 }
@@ -377,7 +377,7 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
 
   if (selectedProblems.length === 0) {
     return (
-      <div className="glass rounded-2xl p-6 text-center text-white/30 text-sm">
+      <div className="glass rounded-md p-6 text-center text-sm text-[#667085]">
         問題一覧タブで ⭐ 選択 を押すと、ここに表示されます
       </div>
     )
@@ -404,51 +404,50 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
       )}
 
       {/* ── Sticky 生成コントロール ─────────────────────────────────────── */}
-      <div className="sticky top-0 z-20 backdrop-blur-2xl bg-black/50
-                      border border-white/12 rounded-2xl p-4 shadow-xl space-y-3">
-        <div className="text-[11px] font-semibold text-white/30 uppercase tracking-widest">
+      <div className="sticky top-0 z-20 space-y-3 rounded-md border border-[#d8dee9] bg-white p-4 shadow-sm">
+        <div className="text-[11px] font-semibold uppercase text-[#667085]">
           生成コントロール
         </div>
 
         {/* 融合生成 */}
         <div className="flex items-center gap-2.5">
           <div className="shrink-0 w-24">
-            <div className="text-[11px] text-white/60 font-medium">融合生成</div>
-            <div className="text-[10px] text-white/30">
+            <div className="text-[11px] font-medium text-[#344054]">融合生成</div>
+            <div className="text-[10px] text-[#667085]">
               {chosen.length >= 2 ? `${chosen.length} 問選択` : `全 ${selectedProblems.length} 問`}
             </div>
           </div>
           <input type="range" min={1} max={6} value={fusionCount}
             onChange={e => setFusionCount(+e.target.value)}
             className="flex-1 accent-apple-blue h-1" />
-          <span className="text-[11px] text-white/40 tabular-nums w-5 text-right">{fusionCount}</span>
+          <span className="w-5 text-right text-[11px] tabular-nums text-[#475467]">{fusionCount}</span>
           <button
             onClick={() => run(fusionTarget, 'fusion', fusionCount)}
             disabled={fusionDisabled}
             className="shrink-0 px-4 py-1.5 bg-apple-blue text-white text-[12px] font-semibold
-                       rounded-xl hover:bg-apple-blue/80 transition-colors
+                       rounded hover:bg-apple-blue/80 transition-colors
                        disabled:opacity-40 disabled:cursor-not-allowed"
           >融合</button>
         </div>
         {chosen.length === 1 && (
-          <p className="text-[10px] text-apple-pink/70 pl-24">2 問以上チェックしてください</p>
+          <p className="pl-24 text-[10px] text-[#b42318]">2 問以上チェックしてください</p>
         )}
 
         {/* 一括類題 */}
         <div className="flex items-center gap-2.5">
           <div className="shrink-0 w-24">
-            <div className="text-[11px] text-white/60 font-medium">一括類題</div>
-            <div className="text-[10px] text-white/30">全 {selectedProblems.length} 問</div>
+            <div className="text-[11px] font-medium text-[#344054]">一括類題</div>
+            <div className="text-[10px] text-[#667085]">全 {selectedProblems.length} 問</div>
           </div>
           <input type="range" min={2} max={10} value={batchCount}
             onChange={e => setBatchCount(+e.target.value)}
             className="flex-1 accent-apple-blue h-1" />
-          <span className="text-[11px] text-white/40 tabular-nums w-5 text-right">{batchCount}</span>
+          <span className="w-5 text-right text-[11px] tabular-nums text-[#475467]">{batchCount}</span>
           <button
             onClick={() => run(selectedProblems, 'similar', batchCount)}
             disabled={generating}
-            className="shrink-0 px-4 py-1.5 bg-white/10 text-white/80 text-[12px] font-semibold
-                       rounded-xl border border-white/15 hover:bg-white/15 transition-colors
+            className="shrink-0 rounded border border-[#d0d5dd] bg-white px-4 py-1.5 text-[12px] font-semibold text-[#344054]
+                       transition-colors hover:border-[#98a2b3] hover:bg-[#f8fafc]
                        disabled:opacity-40 disabled:cursor-not-allowed"
           >類題</button>
         </div>
@@ -463,16 +462,16 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
 
       {/* ── 選択済み問題リスト ──────────────────────────────────────────── */}
       {selectedProblems.map(p => (
-        <div key={p.id} className="glass rounded-2xl p-4">
+        <div key={p.id} className="glass rounded-md p-4">
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2 flex-wrap">
-                <span className="text-[10px] text-white/40">{TOPIC_JP[p.topic_a] ?? p.topic_a}</span>
-                {p.topic_b && <span className="text-[10px] text-white/25">× {TOPIC_JP[p.topic_b] ?? p.topic_b}</span>}
-                <span className="text-[10px] text-white/25">Gen {p.generation}</span>
+                <span className="text-[10px] text-[#475467]">{TOPIC_JP[p.topic_a] ?? p.topic_a}</span>
+                {p.topic_b && <span className="text-[10px] text-[#667085]">× {TOPIC_JP[p.topic_b] ?? p.topic_b}</span>}
+                <span className="text-[10px] text-[#98a2b3]">Gen {p.generation}</span>
                 <span className="text-[10px] text-apple-blue/60">{(p.total||0).toFixed(1)}</span>
               </div>
-              <div className="text-[13px] text-white/70 leading-relaxed">
+              <div className="text-[13px] leading-relaxed text-[#344054]">
                 <MathText text={p.statement} />
               </div>
               {p.answer && (
@@ -484,44 +483,44 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
 
             <div className="flex flex-col gap-1.5 shrink-0">
               <button onClick={() => run([p], 'similar', 3)} disabled={generating}
-                className="text-[11px] px-2.5 py-1.5 rounded-xl border border-white/10
-                           text-white/50 hover:border-apple-blue/40 hover:text-apple-blue transition-all
+                className="rounded border border-[#d0d5dd] px-2.5 py-1.5 text-[11px]
+                           text-[#475467] transition-all hover:border-apple-blue/40 hover:text-apple-blue
                            disabled:opacity-40">🔁 類題</button>
               <button onClick={() => run([p], 'expand', 2)} disabled={generating}
-                className="text-[11px] px-2.5 py-1.5 rounded-xl border border-white/10
-                           text-white/50 hover:border-purple-400/40 hover:text-purple-400 transition-all
+                className="rounded border border-[#d0d5dd] px-2.5 py-1.5 text-[11px]
+                           text-[#475467] transition-all hover:border-[#84adff] hover:text-[#175cd3]
                            disabled:opacity-40">📐 高次元</button>
               <button
                 onClick={() => !p.rating?.x_posted && onPostClick(p)}
                 disabled={!!p.rating?.x_posted}
-                className={`text-[11px] px-2.5 py-1.5 rounded-xl border transition-all disabled:opacity-40
+                className={`rounded border px-2.5 py-1.5 text-[11px] transition-all disabled:opacity-40
                   ${p.rating?.x_posted
                     ? 'border-apple-blue/30 text-apple-blue'
-                    : 'border-white/10 text-white/50 hover:border-apple-blue/40 hover:text-apple-blue'}`}
+                    : 'border-[#d0d5dd] text-[#475467] hover:border-apple-blue/40 hover:text-apple-blue'}`}
               >{p.rating?.x_posted ? '✓ 済' : '𝕏 投稿'}</button>
               <button onClick={() => deselect(p.id)}
-                className="text-[10px] px-2.5 py-1 rounded-xl border border-white/8
-                           text-white/25 hover:text-white/50 transition-colors">解除</button>
+                className="rounded border border-[#d0d5dd] px-2.5 py-1 text-[10px]
+                           text-[#667085] transition-colors hover:text-[#344054]">解除</button>
             </div>
           </div>
 
           <label className="flex items-center gap-2 mt-3 cursor-pointer select-none">
             <input type="checkbox" checked={chosenIds.includes(p.id)}
               onChange={() => toggleChosen(p.id)} className="accent-apple-blue" />
-            <span className="text-[11px] text-white/40">融合生成に含める</span>
+            <span className="text-[11px] text-[#667085]">融合生成に含める</span>
           </label>
         </div>
       ))}
 
       {/* ── フローティング進捗パネル ────────────────────────────────────── */}
       {(generating || genDone !== null) && (
-        <div className={`fixed bottom-6 right-6 z-50 w-80 rounded-2xl p-4 shadow-2xl
+        <div className={`fixed bottom-6 right-6 z-50 w-80 rounded-md p-4 shadow-xl
                          border transition-all duration-300
                          ${generating
-                           ? 'backdrop-blur-2xl bg-black/75 border-white/15'
+                           ? 'bg-white border-[#d0d5dd]'
                            : genDone?.ok
-                             ? 'bg-emerald-950/80 border-emerald-500/30 backdrop-blur-xl'
-                             : 'bg-red-950/80 border-red-500/30 backdrop-blur-xl'}`}>
+                             ? 'bg-[#ecfdf3] border-[#75e0a7]'
+                             : 'bg-[#fef3f2] border-[#fda29b]'}`}>
 
           {/* ヘッダー：フェーズ + アニメーション */}
           <div className="flex items-center gap-3 mb-2.5">
@@ -530,14 +529,14 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
               <div className={`text-[13px] font-semibold ${phaseInfo.color}`}>{phaseInfo.label}</div>
               {/* 問題番号表示 */}
               {progress && generating && (
-                <div className="text-[10px] text-white/40 tabular-nums">
+                <div className="text-[10px] tabular-nums text-[#667085]">
                   問題 {progress.current}/{progress.total}
                   {uiPhase === 'verifying' && ' — 検証中'}
                   {uiPhase === 'saving'    && ' — 保存中'}
                 </div>
               )}
               {!progress && generating && (
-                <div className="text-[10px] text-white/30">Worker 処理中...</div>
+                <div className="text-[10px] text-[#667085]">Worker 処理中...</div>
               )}
             </div>
             {generating && (
@@ -553,7 +552,7 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
           {/* プログレスバー */}
           {generating && progress && progress.total > 1 && (
             <div className="mb-2.5">
-              <div className="flex justify-between text-[9px] text-white/25 mb-1">
+              <div className="mb-1 flex justify-between text-[9px] text-[#667085]">
                 <span>
                   {logs.filter(l => l.includes('[完了')).length}/{progress.total} 問完了
                 </span>
@@ -570,7 +569,7 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
 
           {/* ログ表示 */}
           {logs.length > 0 && (
-            <div className="max-h-36 overflow-y-auto space-y-0.5 border-t border-white/8 pt-2">
+            <div className="max-h-36 space-y-0.5 overflow-y-auto border-t border-[#e4e7ec] pt-2">
               {logs.slice(-10).map((line, i) => (
                 <div key={i} className={`text-[10px] leading-snug font-mono ${logLineColor(line)}`}>
                   {line.length > 76 ? line.slice(0, 73) + '...' : line}

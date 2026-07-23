@@ -6,7 +6,10 @@
     "dev": "next dev -p 3002",
     "build": "next build",
     "start": "next start -p 3002",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:discord": "node --test tests/discord-interactions.test.mjs",
+    "mathos:sync-discord": "node scripts/sync-mathos-discord.mjs",
+    "discord:register": "node scripts/register-discord-commands.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.104.1",

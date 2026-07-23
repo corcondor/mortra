@@ -1,6 +1,5 @@
 'use client'
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
 import { Background }            from '@/components/Background'
 import { Sidebar, type Filters } from '@/components/Sidebar'
 import { ProblemCardCuration }   from '@/components/ProblemCardCuration'
@@ -182,13 +181,13 @@ function HomeInner() {
   }, [])
 
   return (
-    <div className="flex h-screen overflow-hidden text-white relative md:flex-row flex-col">
+    <div className="light-shell relative flex h-screen flex-col overflow-hidden text-[#14213d] md:flex-row">
       <Background />
 
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm md:hidden"
+          className="fixed inset-0 z-30 bg-[#14213d]/30 md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -205,34 +204,34 @@ function HomeInner() {
       </div>
 
       {/* Main */}
-      <main className="flex-1 flex flex-col overflow-hidden">
+      <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
 
         {/* Top bar */}
-        <header className="flex items-center gap-4 px-4 md:px-6 py-3.5 border-b border-white/8 shrink-0">
+        <header className="flex h-16 shrink-0 items-center gap-3 border-b border-[#d8dee9] bg-white px-3 md:px-5">
           <button
             onClick={() => setSidebarOpen(s => !s)}
-            className="md:hidden flex flex-col gap-1.5 p-1.5 text-white/50 hover:text-white/90"
+            className="flex h-9 w-9 flex-col items-center justify-center gap-1.5 text-[#667085] md:hidden"
             aria-label="メニュー"
           >
-            <span className="block w-5 h-0.5 bg-current rounded" />
-            <span className="block w-5 h-0.5 bg-current rounded" />
-            <span className="block w-5 h-0.5 bg-current rounded" />
+            <span className="block h-px w-5 bg-current" />
+            <span className="block h-px w-5 bg-current" />
+            <span className="block h-px w-5 bg-current" />
           </button>
 
           {/* Tabs */}
-          <nav className="flex gap-1">
+          <nav className="flex h-full items-stretch gap-1 overflow-x-auto" aria-label="主要機能">
             {([['list','問題一覧'], ['selected','選択済み・生成'], ['pastexam','過去問DB']] as [Tab, string][]).map(([t, label]) => (
               <button
                 key={t}
                 onClick={() => setTab(t)}
-                className={`px-4 py-1.5 text-[13px] font-medium rounded-xl transition-all
+                className={`relative whitespace-nowrap border-b-2 px-3 text-[12px] font-semibold transition-colors md:px-4 md:text-[13px]
                   ${tab === t
-                    ? 'bg-white/10 text-white/90'
-                    : 'text-white/40 hover:text-white/70'}`}
+                    ? 'border-[#175cd3] text-[#175cd3]'
+                    : 'border-transparent text-[#667085] hover:text-[#344054]'}`}
               >
                 {label}
                 {t === 'selected' && selected.length > 0 && (
-                  <span className="ml-1.5 text-[10px] bg-apple-blue text-white px-1.5 py-0.5 rounded-full">
+                  <span className="ml-1.5 rounded-full bg-[#175cd3] px-1.5 py-0.5 text-[10px] text-white">
                     {selected.length}
                   </span>
                 )}
@@ -245,12 +244,12 @@ function HomeInner() {
           {/* Spotlight trigger */}
           <button
             onClick={() => setShowSearch(true)}
-            className="flex items-center gap-2 glass rounded-xl px-3 py-1.5 text-[12px] text-white/30
-                       hover:text-white/60 hover:bg-white/8 transition-all"
+            className="hidden h-9 items-center gap-2 rounded border border-[#d0d5dd] bg-white px-3 text-[12px] text-[#667085] transition-colors hover:border-[#98a2b3] md:flex"
+            aria-label="問題を検索"
           >
-            <span>⌕</span>
+            <span aria-hidden>⌕</span>
             <span>検索</span>
-            <kbd className="text-[10px] border border-white/10 rounded px-1">⌘K</kbd>
+            <kbd className="rounded border border-[#e4e7ec] bg-[#f8fafc] px-1 text-[10px]">⌘K</kbd>
           </button>
 
           {/* X接続 */}
@@ -264,15 +263,15 @@ function HomeInner() {
                 <img
                   src={user.user_metadata.avatar_url}
                   alt="avatar"
-                  className="w-7 h-7 rounded-full border border-white/15"
+                  className="h-7 w-7 rounded-full border border-[#d0d5dd]"
                 />
               )}
               {isAdmin && (
-                <span className="text-[10px] text-apple-blue/70 font-semibold">ADMIN</span>
+                <span className="text-[10px] font-semibold text-[#175cd3]">ADMIN</span>
               )}
               <button
                 onClick={signOut}
-                className="text-[11px] text-white/25 hover:text-white/60 transition-colors"
+                className="text-[11px] text-[#667085] transition-colors hover:text-[#344054]"
                 title="ログアウト"
               >
                 ログアウト
@@ -282,15 +281,16 @@ function HomeInner() {
         </header>
 
         {/* Content */}
-        <div ref={contentRef} className="flex-1 overflow-y-auto scroll-smooth px-4 md:px-6 py-5">
+        <div ref={contentRef} className="flex-1 overflow-y-auto px-3 py-4 md:px-5 md:py-5">
 
           {/* ── TAB 1: 問題一覧 ── */}
           {tab === 'list' && (
-            <div>
-              <div className="flex items-center gap-4 mb-5">
+            <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_220px]">
+              <div className="min-w-0">
+              <div className="mb-4 flex items-center gap-4">
                 <div>
-                  <h1 className="text-[22px] font-bold tracking-tight text-white/90">問題一覧</h1>
-                  <p className="text-[12px] text-white/30 mt-0.5">
+                  <h1 className="text-[22px] font-bold text-[#14213d]">問題一覧</h1>
+                  <p className="mt-0.5 text-[12px] text-[#667085]">
                     {loading ? '読み込み中…' : `${filtered.length} 件  ·  ${page + 1} / ${totalPages} ページ`}
                   </p>
                 </div>
@@ -299,18 +299,18 @@ function HomeInner() {
                   <button
                     disabled={page === 0}
                     onClick={() => setPage(p => p - 1)}
-                    className="w-8 h-8 flex items-center justify-center glass rounded-xl
-                               text-white/50 hover:text-white/90 disabled:opacity-30 transition-colors"
-                  >◀</button>
-                  <span className="text-[12px] text-white/40 tabular-nums w-16 text-center">
+                    className="glass flex h-8 w-8 items-center justify-center rounded text-[#667085] transition-colors hover:border-[#98a2b3] hover:text-[#175cd3] disabled:opacity-30"
+                    aria-label="前のページ"
+                  >‹</button>
+                  <span className="w-16 text-center text-[12px] tabular-nums text-[#667085]">
                     {page + 1} / {totalPages}
                   </span>
                   <button
                     disabled={page >= totalPages - 1}
                     onClick={() => setPage(p => p + 1)}
-                    className="w-8 h-8 flex items-center justify-center glass rounded-xl
-                               text-white/50 hover:text-white/90 disabled:opacity-30 transition-colors"
-                  >▶</button>
+                    className="glass flex h-8 w-8 items-center justify-center rounded text-[#667085] transition-colors hover:border-[#98a2b3] hover:text-[#175cd3] disabled:opacity-30"
+                    aria-label="次のページ"
+                  >›</button>
                 </div>
               </div>
 
@@ -318,19 +318,13 @@ function HomeInner() {
                 <div className="note-scroll">
                   {Array(8).fill(0).map((_, i) => (
                     <section key={i} className="note-stage">
-                      <div className="paper-note rounded-md h-[58vh] max-w-3xl w-full animate-pulse" />
+                      <div className="paper-note h-[286px] w-full animate-pulse rounded-md" />
                     </section>
                   ))}
                 </div>
               ) : paginated.length > 0 ? (
-                <AnimatePresence mode="wait">
-                  <motion.div
+                  <div
                     key={page}
-                    initial={{ opacity: 0, rotateX: -8, y: 24 }}
-                    animate={{ opacity: 1, rotateX: 0,  y: 0 }}
-                    exit={{    opacity: 0, rotateX:  8, y: -24 }}
-                    transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
-                    style={{ perspective: 1200, transformStyle: 'preserve-3d' }}
                     className="note-scroll"
                   >
                     {paginated.map((p, i) => (
@@ -347,13 +341,14 @@ function HomeInner() {
                         />
                       </section>
                     ))}
-                  </motion.div>
-                </AnimatePresence>
+                  </div>
               ) : (
-                <div className="glass rounded-2xl p-10 text-center text-white/30 text-sm">
+                <div className="glass rounded-md p-10 text-center text-sm text-[#667085]">
                   条件に一致する問題がありません
                 </div>
               )}
+              </div>
+              <ReviewRail problems={problems} />
             </div>
           )}
 
@@ -364,19 +359,19 @@ function HomeInner() {
 
           {/* 過去問 融合生成パネル */}
           {tab === 'pastexam' && fusionExams.length > 0 && (
-            <div className="max-w-2xl mx-auto space-y-4">
+            <div className="mx-auto max-w-3xl space-y-4">
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setFusionExams([])}
-                  className="text-white/40 hover:text-white/80 text-sm transition-colors"
+                  className="text-sm text-[#667085] transition-colors hover:text-[#175cd3]"
                 >← 戻る</button>
-                <h1 className="text-[20px] font-bold text-white/90">過去問 融合生成</h1>
+                <h1 className="text-[20px] font-bold text-[#14213d]">過去問 融合生成</h1>
               </div>
 
               {fusionExams.map(e => (
-                <div key={e.id} className="glass rounded-2xl p-4 space-y-2">
+                <div key={e.id} className="glass space-y-2 rounded-md p-4">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-white/80">
+                    <span className="font-semibold text-[#344054]">
                       {e.univName}　{e.year}年度　{e.type}
                     </span>
                     <a
@@ -388,7 +383,7 @@ function HomeInner() {
                       問題を開く →
                     </a>
                   </div>
-                  <p className="text-[11px] text-white/30">
+                  <p className="text-[11px] text-[#667085]">
                     上のリンクで問題を確認し、問題文（LaTeX可）を貼り付けてください
                   </p>
                   <textarea
@@ -396,23 +391,21 @@ function HomeInner() {
                     onChange={ev => setExamTexts(prev => ({ ...prev, [e.id]: ev.target.value }))}
                     placeholder={`${e.univShort} ${e.year} ${e.type} の問題文をここに貼り付け…`}
                     rows={5}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2
-                               text-[12px] text-white/80 placeholder-white/20 outline-none
-                               focus:border-apple-blue/40 resize-y font-mono"
+                    className="w-full resize-y rounded border border-[#d0d5dd] bg-white px-3 py-2 font-mono text-[12px] text-[#344054] outline-none placeholder:text-[#98a2b3] focus:border-[#84adff]"
                   />
                 </div>
               ))}
 
               {/* 生成数 + 実行ボタン */}
-              <div className="glass rounded-2xl p-4 space-y-3">
+              <div className="glass space-y-3 rounded-md p-4">
                 <div className="flex items-center gap-3">
-                  <span className="text-[12px] text-white/60 w-20 shrink-0">生成数</span>
+                  <span className="w-20 shrink-0 text-[12px] text-[#475467]">生成数</span>
                   <input
                     type="range" min={1} max={6} value={examFusionCount}
                     onChange={ev => setExamFusionCount(+ev.target.value)}
                     className="flex-1 accent-apple-blue h-1"
                   />
-                  <span className="text-[12px] text-white/50 tabular-nums w-4 text-right">
+                  <span className="w-4 text-right text-[12px] tabular-nums text-[#475467]">
                     {examFusionCount}
                   </span>
                 </div>
@@ -420,14 +413,12 @@ function HomeInner() {
                 <button
                   onClick={handleExamFusion}
                   disabled={examRunning || !isAdmin}
-                  className="w-full py-2.5 bg-apple-blue hover:bg-apple-blue/80
-                             disabled:opacity-40 text-white text-[13px] font-semibold
-                             rounded-xl transition-all"
+                  className="w-full rounded bg-[#175cd3] py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#004eeb] disabled:opacity-40"
                 >
                   {examRunning ? '送信中…' : `⚡ ${examFusionCount} 問 融合生成`}
                 </button>
                 {!isAdmin && (
-                  <p className="text-[11px] text-white/25 text-center">
+                    <p className="text-center text-[11px] text-[#667085]">
                     管理者のみ生成可能
                   </p>
                 )}
@@ -435,8 +426,8 @@ function HomeInner() {
 
               {/* ログ */}
               {examLogs.length > 0 && (
-                <div className="glass rounded-2xl p-4 space-y-1 font-mono text-[11px]">
-                  {examLogs.map((l, i) => <div key={i} className="text-white/60">{l}</div>)}
+                <div className="glass space-y-1 rounded-md p-4 font-mono text-[11px]">
+                  {examLogs.map((l, i) => <div key={i} className="text-[#475467]">{l}</div>)}
                   {examDone && (
                     <div className={`mt-2 font-semibold ${examDone.ok ? 'text-emerald-400' : 'text-red-400'}`}>
                       {examDone.message}
@@ -457,10 +448,10 @@ function HomeInner() {
 
           {/* ── TAB 2: 選択済み + 生成 ── */}
           {tab === 'selected' && (
-            <div className="max-w-2xl mx-auto">
+            <div className="mx-auto max-w-4xl">
               <div className="mb-5">
-                <h1 className="text-[22px] font-bold tracking-tight text-white/90">選択済み問題</h1>
-                <p className="text-[12px] text-white/30 mt-0.5">{selected.length} 件</p>
+                <h1 className="text-[22px] font-bold text-[#14213d]">選択済み問題</h1>
+                <p className="mt-0.5 text-[12px] text-[#667085]">{selected.length} 件</p>
               </div>
               <GenerationPanel
                 selectedProblems={selected}
@@ -477,13 +468,13 @@ function HomeInner() {
 
       {/* Spotlight overlay */}
       {showSearch && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex flex-col items-center pt-[15vh]">
+        <div className="fixed inset-0 z-50 flex flex-col items-center bg-[#14213d]/35 pt-[15vh]">
           <div className="w-full max-w-2xl px-4">
             <SpotlightSearch problems={problems} />
           </div>
           <button
             onClick={() => setShowSearch(false)}
-            className="mt-4 text-white/30 text-sm hover:text-white/60"
+            className="mt-4 text-sm text-white hover:text-white/80"
           >
             Esc で閉じる
           </button>
@@ -498,5 +489,61 @@ function HomeInner() {
         onPosted={handlePosted}
       />
     </div>
+  )
+}
+
+function ReviewRail({ problems }: { problems: ProblemWithRating[] }) {
+  const summary = useMemo(() => {
+    let selected = 0
+    let rejected = 0
+    let posted = 0
+    let incorrect = 0
+
+    for (const problem of problems) {
+      const status = problem.rating?.status ?? 'pending'
+      if (status === 'selected') selected += 1
+      if (status === 'rejected') rejected += 1
+      if (problem.rating?.x_posted) posted += 1
+      if (problem.rating?.is_incorrect) incorrect += 1
+    }
+
+    return {
+      selected,
+      rejected,
+      posted,
+      incorrect,
+      pending: Math.max(0, problems.length - selected - rejected),
+    }
+  }, [problems])
+
+  const rows = [
+    { label: '未判定', value: summary.pending, color: 'bg-[#98a2b3]' },
+    { label: '選択済み', value: summary.selected, color: 'bg-[#175cd3]' },
+    { label: '投稿済み', value: summary.posted, color: 'bg-[#067647]' },
+    { label: '除外', value: summary.rejected, color: 'bg-[#667085]' },
+    { label: '要修正', value: summary.incorrect, color: 'bg-[#d92d20]' },
+  ]
+
+  return (
+    <aside className="glass sticky top-0 hidden rounded-md xl:block" aria-labelledby="review-heading">
+      <div className="border-b border-[#e4e7ec] px-4 py-3">
+        <h2 id="review-heading" className="text-[13px] font-bold text-[#14213d]">レビュー状況</h2>
+        <p className="mt-0.5 text-[10px] text-[#667085]">現在の問題ライブラリ</p>
+      </div>
+      <div className="space-y-3 px-4 py-4">
+        {rows.map(row => (
+          <div key={row.label} className="flex items-center gap-2.5">
+            <span className={`h-2 w-2 rounded-full ${row.color}`} aria-hidden />
+            <span className="flex-1 text-[11px] text-[#667085]">{row.label}</span>
+            <span className="text-[12px] font-semibold tabular-nums text-[#344054]">{row.value}</span>
+          </div>
+        ))}
+      </div>
+      <div className="border-t border-[#e4e7ec] px-4 py-3">
+        <p className="text-[10px] leading-5 text-[#667085]">
+          問題を比較し、選択した候補を「選択・生成」で融合・類題生成できます。
+        </p>
+      </div>
+    </aside>
   )
 }
