@@ -1,0 +1,86 @@
+import { createHash } from 'node:crypto'
+import { readFile } from 'node:fs/promises'
+import { createClient } from '@supabase/supabase-js'
+
+const source = new URL(
+  '../data/mathos/continuous_verified_problem_batch1.json',
+  import.meta.url,
+)
+const batch = JSON.parse(await readFile(source, 'utf8'))
+
+const accepted = batch.problems.filter(
+  (problem) =>
+    problem.accepted &&
+    problem.verification?.exact_backend &&
+    problem.verification?.independent_check &&
+    problem.lift_certificate?.type_checked &&
+    problem.novelty?.corpus_novel,
+)
+
+const hashProblem = (problem) =>
+  createHash('sha256')
+    .update(
+      [
+        problem.candidate_id,
+        problem.family_id,
+        problem.statement_tex,
+        problem.answer_tex,
+      ].join('\u241f'),
+    )
+    .digest('hex')
+
+const rows = accepted.map((problem) => {
+  const problemHash = hashProblem(problem)
+  const shortId = problemHash.slice(0, 10)
+  return {
+    id: `mathos-${shortId}`,
+    topic_a: problem.domain,
+    topic_b: problem.family_id,
+    variation: 0,
+    statement: problem.statement_tex,
+    answer: problem.answer_tex,
+    difficulty: 'C',
+    solution: problem.solution_tex,
+    surprise: 8,
+    minimality: 7,
+    connection: 8,
+    inevitability: 8,
+    diff_cal: 7,
+    total: 7.6,
+    inspiration: problem.lift_certificate.morphism_chain.join(' → '),
+    meta: JSON.stringify({
+      problemHash,
+      shortId,
+      candidateId: problem.candidate_id,
+      familyId: problem.family_id,
+      verificationMethod: problem.verification.method,
+      maximumSurfaceJaccard: problem.novelty.maximum_surface_jaccard,
+      morphismChain: problem.lift_certificate.morphism_chain,
+      gates: {
+        exactBackend: true,
+        independentCheck: true,
+        typeChecked: true,
+        corpusNovel: true,
+      },
+    }),
+    generation: 0,
+    parent_ids: [],
+    source_file: 'mathos_discord_verified',
+  }
+})
+
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+const serviceKey = process.env.SUPABASE_SERVICE_KEY
+if (!url || !serviceKey) {
+  throw new Error('NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_KEY are required')
+}
+
+const supabase = createClient(url, serviceKey, {
+  auth: { persistSession: false, autoRefreshToken: false },
+})
+const { error } = await supabase.from('problems').upsert(rows, {
+  onConflict: 'id',
+})
+if (error) throw error
+
+console.log(`Synced ${rows.length} verified MathOS problems.`)
