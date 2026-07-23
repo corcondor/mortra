@@ -1,6 +1,5 @@
 'use client'
-import { RefObject, useRef, useState } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { RefObject, useState } from 'react'
 import type { ProblemWithRating } from '@/lib/types'
 import { DIFFICULTY_COLOR, DIFFICULTY_LABEL, TOPIC_EMOJI } from '@/lib/types'
 import { MathText } from './MathText'
@@ -33,16 +32,7 @@ export function ProblemCardCuration({
   const [answerDraft,    setAnswerDraft]    = useState('')
   const [savingAnswer,   setSavingAnswer]   = useState(false)
 
-  const cardRef = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({
-    target: cardRef, container: scrollRootRef,
-    offset: ['start 92%', 'end 10%'],
-  })
-  const y       = useTransform(scrollYProgress, [0, 0.45, 1], [118, 0, -96])
-  const scale   = useTransform(scrollYProgress, [0, 0.45, 1], [0.91, 1, 0.93])
-  const rotateX = useTransform(scrollYProgress, [0, 0.45, 1], [15, 0, -13])
-  const rotateZ = useTransform(scrollYProgress, [0, 0.45, 1], [1.6, 0, -1.2])
-  const opacity = useTransform(scrollYProgress, [0, 0.12, 0.78, 1], [0.34, 1, 1, 0.5])
+  void scrollRootRef
 
   const status      = p.rating?.status      ?? 'pending'
   const xPosted     = p.rating?.x_posted    ?? false
@@ -114,15 +104,13 @@ export function ProblemCardCuration({
   }
 
   return (
-    <motion.div
-      ref={cardRef}
-      style={{ y, scale, rotateX, rotateZ, opacity, transformPerspective: 1200 }}
+    <article
       data-note-index={index}
-      className={`paper-note rounded-md p-5 md:p-7 flex flex-col gap-4 border ${borderColor} transition-colors max-w-3xl w-full mx-auto`}
+      className={`paper-note rounded-md p-4 md:p-5 flex flex-col gap-3 border ${borderColor} transition-colors w-full`}
     >
       {/* Header */}
       <div className="flex items-center gap-2 flex-wrap">
-        <span className="text-base text-zinc-500">{TOPIC_EMOJI[ta] ?? '∑'}</span>
+        <span className="text-sm text-zinc-500" aria-hidden>{TOPIC_EMOJI[ta] ?? '∑'}</span>
         <span className="text-[10px] text-zinc-500 font-semibold tracking-wide">{badge}</span>
         <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md border ${diffClass}`}>
           {DIFFICULTY_LABEL[diff]}
@@ -131,7 +119,7 @@ export function ProblemCardCuration({
 
         {/* 数値ゼロバッジ：問題文に数字が一つもない場合 */}
         {!/\d/.test(p.statement) && (
-          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md border
+          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded border
                            border-amber-400/50 bg-amber-50 text-amber-600"
                 title="問題文に数字なし・一行完全列挙型">
             ✦ 数値ゼロ
@@ -140,7 +128,7 @@ export function ProblemCardCuration({
 
         {/* 誤問バッジ */}
         {isIncorrect && (
-          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md border
+          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded border
                            border-red-400/40 bg-red-50 text-red-500">
             ⚠ 誤問{correctedAns ? '（修正済）' : '（未修正）'}
           </span>
@@ -152,7 +140,7 @@ export function ProblemCardCuration({
 
       {/* Statement */}
       <div>
-        <div className={`text-[15px] md:text-[16px] leading-[1.9] text-zinc-900 transition-all
+        <div className={`text-[14px] md:text-[15px] leading-[1.8] text-zinc-900 transition-all
           ${expanded ? '' : 'line-clamp-4'}`}>
           <MathText text={p.statement} />
         </div>
@@ -189,13 +177,13 @@ export function ProblemCardCuration({
 
       {/* Answer 編集パネル */}
       {editingAnswer && (
-        <div className="flex flex-col gap-2 border border-red-200 rounded-xl p-3 bg-red-50/50">
+        <div className="flex flex-col gap-2 border border-red-200 rounded-md p-3 bg-red-50/50">
           <p className="text-[11px] text-red-500 font-medium">修正後の答えを入力（LaTeX可）</p>
           <textarea
             value={answerDraft}
             onChange={e => setAnswerDraft(e.target.value)}
             rows={3}
-            className="w-full text-[13px] text-zinc-800 bg-white border border-zinc-300 rounded-lg
+            className="w-full text-[13px] text-zinc-800 bg-white border border-zinc-300 rounded
                        px-3 py-2 outline-none focus:border-apple-blue resize-y font-mono"
             placeholder="修正後の答え..."
           />
@@ -208,8 +196,8 @@ export function ProblemCardCuration({
             <button
               onClick={saveAnswer}
               disabled={savingAnswer}
-              className="px-3 py-1 bg-emerald-500 text-white text-[11px] font-semibold
-                         rounded-lg hover:bg-emerald-600 disabled:opacity-40 transition-colors"
+              className="px-3 py-1 bg-emerald-600 text-white text-[11px] font-semibold
+                         rounded hover:bg-emerald-700 disabled:opacity-40 transition-colors"
             >
               {savingAnswer ? '保存中…' : '保存'}
             </button>
@@ -249,7 +237,7 @@ export function ProblemCardCuration({
         </ActionBtn>
         <ActionBtn
           active={status === 'rejected'}
-          activeClass="bg-white/10 border-white/20 text-white/60"
+          activeClass="bg-zinc-100 border-zinc-300 text-zinc-700"
           onClick={() => setStatus('rejected')} disabled={busy}
         >
           {status === 'rejected' ? '↩ 戻す' : 'スキップ'}
@@ -278,7 +266,7 @@ export function ProblemCardCuration({
           <p className="mt-1.5 text-zinc-600 leading-relaxed">{p.inspiration.slice(0, 300)}</p>
         </details>
       )}
-    </motion.div>
+    </article>
   )
 }
 
@@ -292,7 +280,7 @@ function ActionBtn({
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`text-[11px] font-medium px-2 py-1.5 rounded-xl border transition-all
+      className={`text-[11px] font-medium px-2 py-1.5 rounded border transition-all
         ${active ? activeClass : 'border-zinc-300 text-zinc-500 hover:border-zinc-500 hover:text-zinc-900 bg-white/45'}
         disabled:opacity-40 disabled:cursor-not-allowed`}
     >

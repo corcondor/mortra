@@ -115,8 +115,8 @@ export function PastExamDB({ onStartFusion, isAdmin }: Props) {
       {/* ヘッダー */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-[22px] font-bold tracking-tight text-white/90">過去問データベース</h1>
-          <p className="text-[12px] text-white/30 mt-0.5">
+          <h1 className="text-[22px] font-bold text-[#14213d]">過去問データベース</h1>
+          <p className="mt-0.5 text-[12px] text-[#667085]">
             国公立大学 入試数学 2010〜2025 ·{' '}
             <a href="https://mathexamtest.jp" target="_blank" rel="noopener noreferrer"
                className="text-apple-blue/70 hover:text-apple-blue underline">
@@ -131,7 +131,7 @@ export function PastExamDB({ onStartFusion, isAdmin }: Props) {
             onClick={() => onStartFusion(selectedEntries)}
             disabled={!isAdmin}
             className="flex items-center gap-2 bg-apple-blue hover:bg-apple-blue/80 disabled:opacity-40
-                       text-white text-[13px] font-semibold px-4 py-2 rounded-xl transition-all"
+                       rounded px-4 py-2 text-[13px] font-semibold text-white transition-all"
           >
             <span>⚡</span>
             <span>選択した {checked.size} 問で融合生成</span>
@@ -145,13 +145,13 @@ export function PastExamDB({ onStartFusion, isAdmin }: Props) {
           {selectedEntries.map(e => (
             <div key={e.id}
                  className="flex items-center gap-1.5 bg-apple-blue/15 border border-apple-blue/30
-                            rounded-lg px-2.5 py-1 text-[11px] text-apple-blue">
+                             rounded px-2.5 py-1 text-[11px] text-apple-blue">
               <span>{e.univShort} {e.year} {e.type}</span>
               <button onClick={() => toggle(e.id)}
                       className="text-apple-blue/60 hover:text-apple-blue">✕</button>
             </div>
           ))}
-          <span className="text-[11px] text-white/25 self-center">
+          <span className="self-center text-[11px] text-[#667085]">
             （最大2問まで選択可）
           </span>
         </div>
@@ -163,8 +163,8 @@ export function PastExamDB({ onStartFusion, isAdmin }: Props) {
         <select
           value={filterUniv}
           onChange={e => setFilterUniv(e.target.value)}
-          className="bg-white/5 border border-white/10 rounded-xl px-3 py-1.5
-                     text-[12px] text-white/70 outline-none min-w-[120px]"
+          className="min-w-[120px] rounded border border-[#d0d5dd] bg-white px-3 py-1.5
+                     text-[12px] text-[#344054] outline-none focus:border-[#84adff]"
         >
           <option value="">すべての大学</option>
           {UNIVERSITIES.map(u => (
@@ -176,8 +176,8 @@ export function PastExamDB({ onStartFusion, isAdmin }: Props) {
         <select
           value={filterYear}
           onChange={e => setFilterYear(e.target.value ? Number(e.target.value) : '')}
-          className="bg-white/5 border border-white/10 rounded-xl px-3 py-1.5
-                     text-[12px] text-white/70 outline-none"
+          className="rounded border border-[#d0d5dd] bg-white px-3 py-1.5
+                     text-[12px] text-[#344054] outline-none focus:border-[#84adff]"
         >
           <option value="">すべての年度</option>
           {years.map(y => <option key={y} value={y}>{y}年</option>)}
@@ -189,26 +189,26 @@ export function PastExamDB({ onStartFusion, isAdmin }: Props) {
             <button
               key={t}
               onClick={() => setFilterType(t)}
-              className={`px-3 py-1.5 text-[12px] rounded-xl transition-all
+              className={`rounded px-3 py-1.5 text-[12px] transition-all
                 ${filterType === t
-                  ? 'bg-white/15 text-white/90'
-                  : 'text-white/40 hover:text-white/70 hover:bg-white/5'}`}
+                  ? 'bg-[#eff6ff] font-semibold text-[#175cd3]'
+                  : 'text-[#667085] hover:bg-[#f8fafc] hover:text-[#344054]'}`}
             >
               {t || 'すべて'}
             </button>
           ))}
         </div>
 
-        <span className="text-[11px] text-white/25 self-center ml-auto">
+        <span className="ml-auto self-center text-[11px] text-[#667085]">
           {filtered.length} 件
         </span>
       </div>
 
       {/* テーブル */}
-      <div className="glass rounded-2xl overflow-hidden">
+      <div className="glass overflow-hidden rounded-md">
         <table className="w-full text-[12px]">
           <thead>
-            <tr className="border-b border-white/8 text-white/30 text-[10px] uppercase tracking-widest">
+            <tr className="border-b border-[#e4e7ec] text-[10px] uppercase text-[#667085]">
               <th className="py-2.5 px-3 text-left w-8"></th>
               <th className="py-2.5 px-3 text-left">大学</th>
               <th className="py-2.5 px-3 text-left">年度</th>
@@ -224,10 +224,10 @@ export function PastExamDB({ onStartFusion, isAdmin }: Props) {
                 <tr
                   key={e.id}
                   onClick={() => !disabled && toggle(e.id)}
-                  className={`border-b border-white/5 transition-colors cursor-pointer
+                  className={`cursor-pointer border-b border-[#eef0f4] transition-colors
                     ${isChecked  ? 'bg-apple-blue/10'        : ''}
-                    ${disabled   ? 'opacity-30 cursor-default' : 'hover:bg-white/4'}
-                    ${i % 2 === 0 ? '' : 'bg-white/[0.015]'}`}
+                    ${disabled   ? 'cursor-default opacity-30' : 'hover:bg-[#f8fafc]'}
+                    ${i % 2 === 0 ? '' : 'bg-[#fbfcfe]'}`}
                 >
                   {/* チェックボックス */}
                   <td className="py-2.5 px-3">
@@ -242,20 +242,20 @@ export function PastExamDB({ onStartFusion, isAdmin }: Props) {
 
                   {/* 大学名 */}
                   <td className="py-2.5 px-3">
-                    <span className="font-semibold text-white/80">{e.univShort}</span>
-                    <span className="text-white/30 ml-1 hidden sm:inline">
+                    <span className="font-semibold text-[#344054]">{e.univShort}</span>
+                    <span className="ml-1 hidden text-[#667085] sm:inline">
                       {e.univName !== UNIVERSITIES.find(u => u.code === e.univCode)?.short
                         ? '' : ''}
                     </span>
                   </td>
 
                   {/* 年度 */}
-                  <td className="py-2.5 px-3 text-white/60 tabular-nums">{e.year}</td>
+                  <td className="px-3 py-2.5 tabular-nums text-[#475467]">{e.year}</td>
 
                   {/* 区分 */}
                   <td className="py-2.5 px-3">
                     <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium
-                      ${e.type === '前期' ? 'bg-emerald-500/15 text-emerald-400' : 'bg-orange-500/15 text-orange-400'}`}>
+                      ${e.type === '前期' ? 'bg-emerald-50 text-emerald-700' : 'bg-orange-50 text-orange-700'}`}>
                       {e.type}
                     </span>
                   </td>
@@ -278,12 +278,12 @@ export function PastExamDB({ onStartFusion, isAdmin }: Props) {
         </table>
 
         {filtered.length === 0 && (
-          <div className="py-12 text-center text-white/25 text-sm">
+          <div className="py-12 text-center text-sm text-[#667085]">
             条件に一致する問題がありません
           </div>
         )}
         {filtered.length > 200 && (
-          <div className="py-3 text-center text-white/25 text-[11px]">
+          <div className="py-3 text-center text-[11px] text-[#667085]">
             絞り込んで表示中（200件まで）
           </div>
         )}

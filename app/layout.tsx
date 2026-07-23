@@ -4,11 +4,11 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Analytics }     from '@vercel/analytics/next'
 
 export const metadata: Metadata = {
-  title: 'Sakumon Station',
-  description: 'AIが東大・京大レベルの数学問題を自動生成。良問を選び抜いてXで発信したい人のための、作問・管理ツールです。',
+  title: '作問ステーション | Sakumon Station',
+  description: 'MathOSで数学問題を生成・検証・比較し、作問過程を管理するワークスペースです。',
   openGraph: {
-    title: 'Sakumon Station',
-    description: 'AIが東大・京大レベルの数学問題を自動生成。良問を選び抜いてXで発信したい人のための、作問・管理ツールです。',
+    title: '作問ステーション | Sakumon Station',
+    description: 'MathOSで数学問題を生成・検証・比較し、作問過程を管理するワークスペースです。',
     url: 'https://sakumon-web.vercel.app/',
     siteName: 'Sakumon Station',
     locale: 'ja_JP',
@@ -16,8 +16,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary',
-    title: 'Sakumon Station',
-    description: 'AIが東大・京大レベルの数学問題を自動生成。良問を選び抜いてXで発信したい人のための、作問・管理ツールです。',
+    title: '作問ステーション | Sakumon Station',
+    description: 'MathOSで数学問題を生成・検証・比較し、作問過程を管理するワークスペースです。',
   },
 }
 
@@ -32,7 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           crossOrigin="anonymous"
         />
       </head>
-      <body className="min-h-screen overflow-hidden text-white">
+      <body className="min-h-screen overflow-hidden text-[#14213d]">
         {children}
         <SpeedInsights />
         <Analytics />
