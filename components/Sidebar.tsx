@@ -86,6 +86,7 @@ export function Sidebar({ filters, onChange, onReload, onClose }: Props) {
             ['∑', 'キュレーション', '/'],
             ['▣', 'スキャン・PDF', '/scan'],
             ['⑂', 'アイデアツリー', '/ideas'],
+            ['◈', '概念ツリー作問', '/tree'],
           ].map(([icon, label, href]) => {
             const active = pathname === href
             return (
