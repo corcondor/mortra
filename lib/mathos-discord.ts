@@ -478,6 +478,11 @@ export async function recordDiscordRating(
       id: `discord-rating:${shortId}:${userId}`,
       status: 'done',
       user_id: userId,
+      parents: {
+        source: 'discord_rating',
+        short_id: shortId,
+        rating,
+      },
       mode: 'discord_rating',
       count: 1,
       result: { short_id: shortId, rating, rated_at: now },
