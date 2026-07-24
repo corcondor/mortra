@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-24T11:06:54.310681+00:00",
+  "generated_at": "2026-07-24T11:36:12.513796+00:00",
   "method": {
     "difficulty_floor": "textbook families (weighted geometric, affine recurrence, power sums, telescoping) are excluded; only 難関大以上 kept",
     "name": "MathOS combined verified Discord pool",
@@ -12,8 +12,9 @@
     ],
     "sources": [
       "continuous_verified_problem_batch1 (hand-authored, verified)",
-      "parametric_problem_engine (hard families only)",
-      "concept_tree_synthesis (convex-hull composition trees)"
+      "parametric_problem_engine (number-theory technique families)",
+      "concept_tree_synthesis (convex-hull composition trees)",
+      "geometry_fusion_synthesis (passage regions, trig×floor, trig×abs)"
     ]
   },
   "problems": [
@@ -679,87 +680,6 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{2^{n}}{4} + \\frac{\\operatorname{im}{\\left(\\left(1 - i\\right)^{n}\\right)}}{4} - \\frac{\\operatorname{im}{\\left(\\left(1 + i\\right)^{n}\\right)}}{4}",
-      "candidate_id": "param:binomial.roots_of_unity_filter:e1e1e260a8",
-      "difficulty": "A",
-      "domain": "combinatorics_number_theory",
-      "family_id": "binomial.roots_of_unity_filter",
-      "lift_certificate": {
-        "morphism_chain": [
-          "BinomialGeneratingFunction",
-          "RootOfUnityFilter",
-          "CyclotomicClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\zeta=e^{2\\pi i/4}\\) とおくと，\\(\\frac1{4}\\sum_{j=0}^{3}\\zeta^{-3j}(1+\\zeta^j)^n\\) が \\(k\\equiv3\\ (\\mathrm{mod}\\ 4)\\) の項だけを取り出す。整理して \\(\\frac{2^{n}}{4} + \\frac{\\operatorname{im}{\\left(\\left(1 - i\\right)^{n}\\right)}}{4} - \\frac{\\operatorname{im}{\\left(\\left(1 + i\\right)^{n}\\right)}}{4}\\)。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k\\equiv 3\\,(\\mathrm{mod}\\ 4)}\\binom{n}{k}\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "cyclotomic_filter_plus_exhaustive_binomial_sum"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{2^{n}}{6} - \\frac{\\operatorname{re}{\\left(\\sqrt[3]{-1} \\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n}\\right)}}{6} - \\frac{\\operatorname{re}{\\left(\\left(-1\\right)^{\\frac{2}{3}} \\left(1 + e^{\\frac{i \\pi}{3}}\\right)^{n}\\right)}}{6} + \\frac{\\operatorname{re}{\\left(\\left(1 + e^{\\frac{i \\pi}{3}}\\right)^{n} e^{\\frac{i \\pi \\left(1 - n\\right)}{3}}\\right)}}{6} + \\frac{\\operatorname{re}{\\left(\\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n} e^{\\frac{2 i \\pi \\left(1 - n\\right)}{3}}\\right)}}{6}",
-      "candidate_id": "param:binomial.roots_of_unity_filter:269a83d03f",
-      "difficulty": "A",
-      "domain": "combinatorics_number_theory",
-      "family_id": "binomial.roots_of_unity_filter",
-      "lift_certificate": {
-        "morphism_chain": [
-          "BinomialGeneratingFunction",
-          "RootOfUnityFilter",
-          "CyclotomicClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\zeta=e^{2\\pi i/6}\\) とおくと，\\(\\frac1{6}\\sum_{j=0}^{5}\\zeta^{-1j}(1+\\zeta^j)^n\\) が \\(k\\equiv1\\ (\\mathrm{mod}\\ 6)\\) の項だけを取り出す。整理して \\(\\frac{2^{n}}{6} - \\frac{\\operatorname{re}{\\left(\\sqrt[3]{-1} \\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n}\\right)}}{6} - \\frac{\\operatorname{re}{\\left(\\left(-1\\right)^{\\frac{2}{3}} \\left(1 + e^{\\frac{i \\pi}{3}}\\right)^{n}\\right)}}{6} + \\frac{\\operatorname{re}{\\left(\\left(1 + e^{\\frac{i \\pi}{3}}\\right)^{n} e^{\\frac{i \\pi \\left(1 - n\\right)}{3}}\\right)}}{6} + \\frac{\\operatorname{re}{\\left(\\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n} e^{\\frac{2 i \\pi \\left(1 - n\\right)}{3}}\\right)}}{6}\\)。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k\\equiv 1\\,(\\mathrm{mod}\\ 6)}\\binom{n}{k}\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "cyclotomic_filter_plus_exhaustive_binomial_sum"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{2^{n}}{6} - \\frac{\\operatorname{re}{\\left(\\sqrt[3]{-1} \\left(1 + e^{\\frac{i \\pi}{3}}\\right)^{n}\\right)}}{6} + \\frac{\\operatorname{re}{\\left(\\left(-1\\right)^{\\frac{2}{3}} \\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n}\\right)}}{6} + \\frac{\\operatorname{re}{\\left(\\left(1 + e^{\\frac{i \\pi}{3}}\\right)^{n} e^{\\frac{i \\pi \\left(2 - n\\right)}{3}}\\right)}}{6} + \\frac{\\operatorname{re}{\\left(\\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n} e^{- \\frac{2 i \\pi \\left(n + 1\\right)}{3}}\\right)}}{6}",
-      "candidate_id": "param:binomial.roots_of_unity_filter:0fefe9676c",
-      "difficulty": "A",
-      "domain": "combinatorics_number_theory",
-      "family_id": "binomial.roots_of_unity_filter",
-      "lift_certificate": {
-        "morphism_chain": [
-          "BinomialGeneratingFunction",
-          "RootOfUnityFilter",
-          "CyclotomicClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\zeta=e^{2\\pi i/6}\\) とおくと，\\(\\frac1{6}\\sum_{j=0}^{5}\\zeta^{-2j}(1+\\zeta^j)^n\\) が \\(k\\equiv2\\ (\\mathrm{mod}\\ 6)\\) の項だけを取り出す。整理して \\(\\frac{2^{n}}{6} - \\frac{\\operatorname{re}{\\left(\\sqrt[3]{-1} \\left(1 + e^{\\frac{i \\pi}{3}}\\right)^{n}\\right)}}{6} + \\frac{\\operatorname{re}{\\left(\\left(-1\\right)^{\\frac{2}{3}} \\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n}\\right)}}{6} + \\frac{\\operatorname{re}{\\left(\\left(1 + e^{\\frac{i \\pi}{3}}\\right)^{n} e^{\\frac{i \\pi \\left(2 - n\\right)}{3}}\\right)}}{6} + \\frac{\\operatorname{re}{\\left(\\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n} e^{- \\frac{2 i \\pi \\left(n + 1\\right)}{3}}\\right)}}{6}\\)。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k\\equiv 2\\,(\\mathrm{mod}\\ 6)}\\binom{n}{k}\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "cyclotomic_filter_plus_exhaustive_binomial_sum"
-      }
-    },
-    {
-      "accepted": true,
       "answer_tex": "9",
       "candidate_id": "param:finite_field.circle_point_count:d2163359f7",
       "difficulty": "A",
@@ -891,438 +811,6 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "character_sum_formula_plus_exhaustive_pair_count"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "25",
-      "candidate_id": "param:finite_field.circle_point_count:be3a13d744",
-      "difficulty": "A",
-      "domain": "number_theory",
-      "family_id": "finite_field.circle_point_count",
-      "lift_certificate": {
-        "morphism_chain": [
-          "QuadraticCharacterSum",
-          "GaussSumReduction",
-          "ResidueCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "平方剰余の指標 \\(\\eta\\) を用いると，解の個数は \\(\\sum_{x}\\bigl(1+\\eta(0-x^2)\\bigr)\\) に等しい。\\(p=13\\equiv1\\pmod4\\) と \\(\\eta(-1)=1\\) から，個数は \\(25\\) となる。",
-      "statement_tex": "\\(\\mathbb F_{13}\\) 上で，\\(x^2+y^2\\equiv 0\\pmod{13}\\) を満たす組 \\((x,y)\\)（\\(0\\le x,y<13\\)）の個数を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "character_sum_formula_plus_exhaustive_pair_count"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "33",
-      "candidate_id": "param:finite_field.circle_point_count:f6cb539407",
-      "difficulty": "A",
-      "domain": "number_theory",
-      "family_id": "finite_field.circle_point_count",
-      "lift_certificate": {
-        "morphism_chain": [
-          "QuadraticCharacterSum",
-          "GaussSumReduction",
-          "ResidueCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "平方剰余の指標 \\(\\eta\\) を用いると，解の個数は \\(\\sum_{x}\\bigl(1+\\eta(0-x^2)\\bigr)\\) に等しい。\\(p=17\\equiv1\\pmod4\\) と \\(\\eta(-1)=1\\) から，個数は \\(33\\) となる。",
-      "statement_tex": "\\(\\mathbb F_{17}\\) 上で，\\(x^2+y^2\\equiv 0\\pmod{17}\\) を満たす組 \\((x,y)\\)（\\(0\\le x,y<17\\)）の個数を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "character_sum_formula_plus_exhaustive_pair_count"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "16",
-      "candidate_id": "param:finite_field.circle_point_count:8176d0e134",
-      "difficulty": "A",
-      "domain": "number_theory",
-      "family_id": "finite_field.circle_point_count",
-      "lift_certificate": {
-        "morphism_chain": [
-          "QuadraticCharacterSum",
-          "GaussSumReduction",
-          "ResidueCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "平方剰余の指標 \\(\\eta\\) を用いると，解の個数は \\(\\sum_{x}\\bigl(1+\\eta(1-x^2)\\bigr)\\) に等しい。\\(p=17\\equiv1\\pmod4\\) と \\(\\eta(-1)=1\\) から，個数は \\(16\\) となる。",
-      "statement_tex": "\\(\\mathbb F_{17}\\) 上で，\\(x^2+y^2\\equiv 1\\pmod{17}\\) を満たす組 \\((x,y)\\)（\\(0\\le x,y<17\\)）の個数を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "character_sum_formula_plus_exhaustive_pair_count"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "n + 1",
-      "candidate_id": "param:spectral.tridiagonal_determinant:4b6d84175d",
-      "difficulty": "B",
-      "domain": "linear_algebra",
-      "family_id": "spectral.tridiagonal_determinant",
-      "lift_certificate": {
-        "morphism_chain": [
-          "LaplaceExpansion",
-          "LinearRecurrence",
-          "CharacteristicRootClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "最終行で余因子展開すると \\(D_n=2D_{n-1}-1^2 D_{n-2}\\)（\\(D_1=2,\\ D_2=3\\)）。特性方程式 \\(t^2-2t+1^2=0\\) を解いて一般項を求めると \\(D_n=n + 1\\)。",
-      "statement_tex": "整数 \\(n\\ge1\\) に対し，主対角成分が \\(2\\)，隣接成分が \\(-1\\)，他が \\(0\\) の \\(n\\) 次三重対角行列の行列式 \\(D_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "cofactor_recurrence_plus_characteristic_root_solution"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{2^{- n} \\sqrt{5} \\left(- \\left(3 - \\sqrt{5}\\right)^{n + 1} + \\left(\\sqrt{5} + 3\\right)^{n + 1}\\right)}{10}",
-      "candidate_id": "param:spectral.tridiagonal_determinant:6f23a67b25",
-      "difficulty": "B",
-      "domain": "linear_algebra",
-      "family_id": "spectral.tridiagonal_determinant",
-      "lift_certificate": {
-        "morphism_chain": [
-          "LaplaceExpansion",
-          "LinearRecurrence",
-          "CharacteristicRootClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "最終行で余因子展開すると \\(D_n=3D_{n-1}-1^2 D_{n-2}\\)（\\(D_1=3,\\ D_2=8\\)）。特性方程式 \\(t^2-3t+1^2=0\\) を解いて一般項を求めると \\(D_n=\\frac{2^{- n} \\sqrt{5} \\left(- \\left(3 - \\sqrt{5}\\right)^{n + 1} + \\left(\\sqrt{5} + 3\\right)^{n + 1}\\right)}{10}\\)。",
-      "statement_tex": "整数 \\(n\\ge1\\) に対し，主対角成分が \\(3\\)，隣接成分が \\(-1\\)，他が \\(0\\) の \\(n\\) 次三重対角行列の行列式 \\(D_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "cofactor_recurrence_plus_characteristic_root_solution"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{\\sqrt{3} \\left(- \\left(2 - \\sqrt{3}\\right)^{n + 1} + \\left(\\sqrt{3} + 2\\right)^{n + 1}\\right)}{6}",
-      "candidate_id": "param:spectral.tridiagonal_determinant:4512ce7a55",
-      "difficulty": "B",
-      "domain": "linear_algebra",
-      "family_id": "spectral.tridiagonal_determinant",
-      "lift_certificate": {
-        "morphism_chain": [
-          "LaplaceExpansion",
-          "LinearRecurrence",
-          "CharacteristicRootClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "最終行で余因子展開すると \\(D_n=4D_{n-1}-1^2 D_{n-2}\\)（\\(D_1=4,\\ D_2=15\\)）。特性方程式 \\(t^2-4t+1^2=0\\) を解いて一般項を求めると \\(D_n=\\frac{\\sqrt{3} \\left(- \\left(2 - \\sqrt{3}\\right)^{n + 1} + \\left(\\sqrt{3} + 2\\right)^{n + 1}\\right)}{6}\\)。",
-      "statement_tex": "整数 \\(n\\ge1\\) に対し，主対角成分が \\(4\\)，隣接成分が \\(-1\\)，他が \\(0\\) の \\(n\\) 次三重対角行列の行列式 \\(D_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "cofactor_recurrence_plus_characteristic_root_solution"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{2^{- n} \\sqrt{21} \\left(- \\left(5 - \\sqrt{21}\\right)^{n + 1} + \\left(\\sqrt{21} + 5\\right)^{n + 1}\\right)}{42}",
-      "candidate_id": "param:spectral.tridiagonal_determinant:4d345cdc1d",
-      "difficulty": "B",
-      "domain": "linear_algebra",
-      "family_id": "spectral.tridiagonal_determinant",
-      "lift_certificate": {
-        "morphism_chain": [
-          "LaplaceExpansion",
-          "LinearRecurrence",
-          "CharacteristicRootClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "最終行で余因子展開すると \\(D_n=5D_{n-1}-1^2 D_{n-2}\\)（\\(D_1=5,\\ D_2=24\\)）。特性方程式 \\(t^2-5t+1^2=0\\) を解いて一般項を求めると \\(D_n=\\frac{2^{- n} \\sqrt{21} \\left(- \\left(5 - \\sqrt{21}\\right)^{n + 1} + \\left(\\sqrt{21} + 5\\right)^{n + 1}\\right)}{42}\\)。",
-      "statement_tex": "整数 \\(n\\ge1\\) に対し，主対角成分が \\(5\\)，隣接成分が \\(-1\\)，他が \\(0\\) の \\(n\\) 次三重対角行列の行列式 \\(D_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "cofactor_recurrence_plus_characteristic_root_solution"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{\\sqrt{2} \\left(- \\left(3 - 2 \\sqrt{2}\\right)^{n + 1} + \\left(2 \\sqrt{2} + 3\\right)^{n + 1}\\right)}{8}",
-      "candidate_id": "param:spectral.tridiagonal_determinant:987f4caf08",
-      "difficulty": "B",
-      "domain": "linear_algebra",
-      "family_id": "spectral.tridiagonal_determinant",
-      "lift_certificate": {
-        "morphism_chain": [
-          "LaplaceExpansion",
-          "LinearRecurrence",
-          "CharacteristicRootClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "最終行で余因子展開すると \\(D_n=6D_{n-1}-1^2 D_{n-2}\\)（\\(D_1=6,\\ D_2=35\\)）。特性方程式 \\(t^2-6t+1^2=0\\) を解いて一般項を求めると \\(D_n=\\frac{\\sqrt{2} \\left(- \\left(3 - 2 \\sqrt{2}\\right)^{n + 1} + \\left(2 \\sqrt{2} + 3\\right)^{n + 1}\\right)}{8}\\)。",
-      "statement_tex": "整数 \\(n\\ge1\\) に対し，主対角成分が \\(6\\)，隣接成分が \\(-1\\)，他が \\(0\\) の \\(n\\) 次三重対角行列の行列式 \\(D_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "cofactor_recurrence_plus_characteristic_root_solution"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{2^{- n} \\sqrt{5} \\left(- \\left(7 - 3 \\sqrt{5}\\right)^{n + 1} + \\left(3 \\sqrt{5} + 7\\right)^{n + 1}\\right)}{30}",
-      "candidate_id": "param:spectral.tridiagonal_determinant:f380585da1",
-      "difficulty": "B",
-      "domain": "linear_algebra",
-      "family_id": "spectral.tridiagonal_determinant",
-      "lift_certificate": {
-        "morphism_chain": [
-          "LaplaceExpansion",
-          "LinearRecurrence",
-          "CharacteristicRootClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "最終行で余因子展開すると \\(D_n=7D_{n-1}-1^2 D_{n-2}\\)（\\(D_1=7,\\ D_2=48\\)）。特性方程式 \\(t^2-7t+1^2=0\\) を解いて一般項を求めると \\(D_n=\\frac{2^{- n} \\sqrt{5} \\left(- \\left(7 - 3 \\sqrt{5}\\right)^{n + 1} + \\left(3 \\sqrt{5} + 7\\right)^{n + 1}\\right)}{30}\\)。",
-      "statement_tex": "整数 \\(n\\ge1\\) に対し，主対角成分が \\(7\\)，隣接成分が \\(-1\\)，他が \\(0\\) の \\(n\\) 次三重対角行列の行列式 \\(D_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "cofactor_recurrence_plus_characteristic_root_solution"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{2^{- n} \\sqrt{7} i \\left(\\left(3 - \\sqrt{7} i\\right)^{n + 1} - \\left(3 + \\sqrt{7} i\\right)^{n + 1}\\right)}{14}",
-      "candidate_id": "param:spectral.tridiagonal_determinant:ef8f29665d",
-      "difficulty": "B",
-      "domain": "linear_algebra",
-      "family_id": "spectral.tridiagonal_determinant",
-      "lift_certificate": {
-        "morphism_chain": [
-          "LaplaceExpansion",
-          "LinearRecurrence",
-          "CharacteristicRootClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "最終行で余因子展開すると \\(D_n=3D_{n-1}-2^2 D_{n-2}\\)（\\(D_1=3,\\ D_2=5\\)）。特性方程式 \\(t^2-3t+2^2=0\\) を解いて一般項を求めると \\(D_n=\\frac{2^{- n} \\sqrt{7} i \\left(\\left(3 - \\sqrt{7} i\\right)^{n + 1} - \\left(3 + \\sqrt{7} i\\right)^{n + 1}\\right)}{14}\\)。",
-      "statement_tex": "整数 \\(n\\ge1\\) に対し，主対角成分が \\(3\\)，隣接成分が \\(-2\\)，他が \\(0\\) の \\(n\\) 次三重対角行列の行列式 \\(D_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "cofactor_recurrence_plus_characteristic_root_solution"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{4 \\cdot 2^{2 n}}{3} - \\frac{1}{3}",
-      "candidate_id": "param:spectral.tridiagonal_determinant:c0bd3279ef",
-      "difficulty": "B",
-      "domain": "linear_algebra",
-      "family_id": "spectral.tridiagonal_determinant",
-      "lift_certificate": {
-        "morphism_chain": [
-          "LaplaceExpansion",
-          "LinearRecurrence",
-          "CharacteristicRootClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "最終行で余因子展開すると \\(D_n=5D_{n-1}-2^2 D_{n-2}\\)（\\(D_1=5,\\ D_2=21\\)）。特性方程式 \\(t^2-5t+2^2=0\\) を解いて一般項を求めると \\(D_n=\\frac{4 \\cdot 2^{2 n}}{3} - \\frac{1}{3}\\)。",
-      "statement_tex": "整数 \\(n\\ge1\\) に対し，主対角成分が \\(5\\)，隣接成分が \\(-2\\)，他が \\(0\\) の \\(n\\) 次三重対角行列の行列式 \\(D_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "cofactor_recurrence_plus_characteristic_root_solution"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "0",
-      "candidate_id": "param:finite_field.shifted_power_product:52a999f37c",
-      "difficulty": "A",
-      "domain": "number_theory",
-      "family_id": "finite_field.shifted_power_product",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FieldPolynomialFactor",
-          "RootEvaluation",
-          "ModularProduct"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\prod_{k=1}^{p-1}(X-k)=X^{p-1}-1\\) を用い，\\(1+k^{2}\\) の積を \\(k^{2}=-1\\) の根と関連づけて評価する。\\(p=5\\) の場合，値は \\(0\\) となる。",
-      "statement_tex": "奇素数 \\(p=5\\) に対し，\\(\\mathbb F_{5}\\) における積 \\(\\displaystyle\\prod_{k=1}^{4}\\bigl(1+k^{2}\\bigr)\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "field_polynomial_evaluation_plus_reversed_order_recompute"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "1",
-      "candidate_id": "param:finite_field.shifted_power_product:254a56f52a",
-      "difficulty": "A",
-      "domain": "number_theory",
-      "family_id": "finite_field.shifted_power_product",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FieldPolynomialFactor",
-          "RootEvaluation",
-          "ModularProduct"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\prod_{k=1}^{p-1}(X-k)=X^{p-1}-1\\) を用い，\\(1+k^{4}\\) の積を \\(k^{4}=-1\\) の根と関連づけて評価する。\\(p=5\\) の場合，値は \\(1\\) となる。",
-      "statement_tex": "奇素数 \\(p=5\\) に対し，\\(\\mathbb F_{5}\\) における積 \\(\\displaystyle\\prod_{k=1}^{4}\\bigl(1+k^{4}\\bigr)\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "field_polynomial_evaluation_plus_reversed_order_recompute"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "4",
-      "candidate_id": "param:finite_field.shifted_power_product:d9e8741874",
-      "difficulty": "A",
-      "domain": "number_theory",
-      "family_id": "finite_field.shifted_power_product",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FieldPolynomialFactor",
-          "RootEvaluation",
-          "ModularProduct"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\prod_{k=1}^{p-1}(X-k)=X^{p-1}-1\\) を用い，\\(1+k^{2}\\) の積を \\(k^{2}=-1\\) の根と関連づけて評価する。\\(p=7\\) の場合，値は \\(4\\) となる。",
-      "statement_tex": "奇素数 \\(p=7\\) に対し，\\(\\mathbb F_{7}\\) における積 \\(\\displaystyle\\prod_{k=1}^{6}\\bigl(1+k^{2}\\bigr)\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "field_polynomial_evaluation_plus_reversed_order_recompute"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "3",
-      "candidate_id": "param:finite_field.shifted_power_product:87f037fb2d",
-      "difficulty": "A",
-      "domain": "number_theory",
-      "family_id": "finite_field.shifted_power_product",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FieldPolynomialFactor",
-          "RootEvaluation",
-          "ModularProduct"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\prod_{k=1}^{p-1}(X-k)=X^{p-1}-1\\) を用い，\\(1+k^{4}\\) の積を \\(k^{4}=-1\\) の根と関連づけて評価する。\\(p=13\\) の場合，値は \\(3\\) となる。",
-      "statement_tex": "奇素数 \\(p=13\\) に対し，\\(\\mathbb F_{13}\\) における積 \\(\\displaystyle\\prod_{k=1}^{12}\\bigl(1+k^{4}\\bigr)\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "field_polynomial_evaluation_plus_reversed_order_recompute"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "16",
-      "candidate_id": "param:finite_field.shifted_power_product:902c596bdf",
-      "difficulty": "A",
-      "domain": "number_theory",
-      "family_id": "finite_field.shifted_power_product",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FieldPolynomialFactor",
-          "RootEvaluation",
-          "ModularProduct"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\prod_{k=1}^{p-1}(X-k)=X^{p-1}-1\\) を用い，\\(1+k^{4}\\) の積を \\(k^{4}=-1\\) の根と関連づけて評価する。\\(p=29\\) の場合，値は \\(16\\) となる。",
-      "statement_tex": "奇素数 \\(p=29\\) に対し，\\(\\mathbb F_{29}\\) における積 \\(\\displaystyle\\prod_{k=1}^{28}\\bigl(1+k^{4}\\bigr)\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "field_polynomial_evaluation_plus_reversed_order_recompute"
       }
     },
     {
@@ -1746,15 +1234,555 @@
         "independent_check": true,
         "method": "symbolic_proof_interior_critical_point"
       }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{7}{12}",
+      "candidate_id": "geomfusion:passage_region.line_family_sweep:000",
+      "difficulty": "A",
+      "domain": "geometry",
+      "family_id": "passage_region.line_family_sweep",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ParametricLineFamily",
+          "ExistenceElimination",
+          "SweptRegionArea"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "各 \\(x\\) を固定すると \\(y={a}tx-t^2\\) は \\(t\\) の上に凸な二次関数。\\(t={a}x/2\\) が区間内なら最大値 \\((2x)^2/4\\)，端点で最小値をとる。区間ごとに \\(y\\) の動く幅を \\(x\\) で積分すると面積が定まる。",
+      "statement_tex": "実数 \\(t\\)（\\(0\\le t\\le 1\\)）を動かすとき，直線 \\(y=2tx-t^2\\) が通過する領域を \\(D\\) とする。\\(0\\le x\\le 1\\) の範囲で \\(D\\) の面積を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parameter_existence_elimination_plus_numeric_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{31}{12}",
+      "candidate_id": "geomfusion:passage_region.line_family_sweep:001",
+      "difficulty": "A",
+      "domain": "geometry",
+      "family_id": "passage_region.line_family_sweep",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ParametricLineFamily",
+          "ExistenceElimination",
+          "SweptRegionArea"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "各 \\(x\\) を固定すると \\(y={a}tx-t^2\\) は \\(t\\) の上に凸な二次関数。\\(t={a}x/2\\) が区間内なら最大値 \\((2x)^2/4\\)，端点で最小値をとる。区間ごとに \\(y\\) の動く幅を \\(x\\) で積分すると面積が定まる。",
+      "statement_tex": "実数 \\(t\\)（\\(0\\le t\\le 1\\)）を動かすとき，直線 \\(y=2tx-t^2\\) が通過する領域を \\(D\\) とする。\\(0\\le x\\le 2\\) の範囲で \\(D\\) の面積を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parameter_existence_elimination_plus_numeric_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{7}{3}",
+      "candidate_id": "geomfusion:passage_region.line_family_sweep:002",
+      "difficulty": "A",
+      "domain": "geometry",
+      "family_id": "passage_region.line_family_sweep",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ParametricLineFamily",
+          "ExistenceElimination",
+          "SweptRegionArea"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "各 \\(x\\) を固定すると \\(y={a}tx-t^2\\) は \\(t\\) の上に凸な二次関数。\\(t={a}x/2\\) が区間内なら最大値 \\((2x)^2/4\\)，端点で最小値をとる。区間ごとに \\(y\\) の動く幅を \\(x\\) で積分すると面積が定まる。",
+      "statement_tex": "実数 \\(t\\)（\\(0\\le t\\le 2\\)）を動かすとき，直線 \\(y=2tx-t^2\\) が通過する領域を \\(D\\) とする。\\(0\\le x\\le 1\\) の範囲で \\(D\\) の面積を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parameter_existence_elimination_plus_numeric_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{14}{3}",
+      "candidate_id": "geomfusion:passage_region.line_family_sweep:003",
+      "difficulty": "A",
+      "domain": "geometry",
+      "family_id": "passage_region.line_family_sweep",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ParametricLineFamily",
+          "ExistenceElimination",
+          "SweptRegionArea"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "各 \\(x\\) を固定すると \\(y={a}tx-t^2\\) は \\(t\\) の上に凸な二次関数。\\(t={a}x/2\\) が区間内なら最大値 \\((2x)^2/4\\)，端点で最小値をとる。区間ごとに \\(y\\) の動く幅を \\(x\\) で積分すると面積が定まる。",
+      "statement_tex": "実数 \\(t\\)（\\(0\\le t\\le 2\\)）を動かすとき，直線 \\(y=2tx-t^2\\) が通過する領域を \\(D\\) とする。\\(0\\le x\\le 2\\) の範囲で \\(D\\) の面積を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parameter_existence_elimination_plus_numeric_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{8}{9}",
+      "candidate_id": "geomfusion:passage_region.line_family_sweep:004",
+      "difficulty": "A",
+      "domain": "geometry",
+      "family_id": "passage_region.line_family_sweep",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ParametricLineFamily",
+          "ExistenceElimination",
+          "SweptRegionArea"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "各 \\(x\\) を固定すると \\(y={a}tx-t^2\\) は \\(t\\) の上に凸な二次関数。\\(t={a}x/2\\) が区間内なら最大値 \\((3x)^2/4\\)，端点で最小値をとる。区間ごとに \\(y\\) の動く幅を \\(x\\) で積分すると面積が定まる。",
+      "statement_tex": "実数 \\(t\\)（\\(0\\le t\\le 1\\)）を動かすとき，直線 \\(y=3tx-t^2\\) が通過する領域を \\(D\\) とする。\\(0\\le x\\le 1\\) の範囲で \\(D\\) の面積を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parameter_existence_elimination_plus_numeric_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{79}{18}",
+      "candidate_id": "geomfusion:passage_region.line_family_sweep:005",
+      "difficulty": "A",
+      "domain": "geometry",
+      "family_id": "passage_region.line_family_sweep",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ParametricLineFamily",
+          "ExistenceElimination",
+          "SweptRegionArea"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "各 \\(x\\) を固定すると \\(y={a}tx-t^2\\) は \\(t\\) の上に凸な二次関数。\\(t={a}x/2\\) が区間内なら最大値 \\((3x)^2/4\\)，端点で最小値をとる。区間ごとに \\(y\\) の動く幅を \\(x\\) で積分すると面積が定まる。",
+      "statement_tex": "実数 \\(t\\)（\\(0\\le t\\le 1\\)）を動かすとき，直線 \\(y=3tx-t^2\\) が通過する領域を \\(D\\) とする。\\(0\\le x\\le 2\\) の範囲で \\(D\\) の面積を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parameter_existence_elimination_plus_numeric_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{25}{12}",
+      "candidate_id": "geomfusion:passage_region.line_family_sweep:006",
+      "difficulty": "A",
+      "domain": "geometry",
+      "family_id": "passage_region.line_family_sweep",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ParametricLineFamily",
+          "ExistenceElimination",
+          "SweptRegionArea"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "各 \\(x\\) を固定すると \\(y={a}tx-t^2\\) は \\(t\\) の上に凸な二次関数。\\(t={a}x/2\\) が区間内なら最大値 \\((3x)^2/4\\)，端点で最小値をとる。区間ごとに \\(y\\) の動く幅を \\(x\\) で積分すると面積が定まる。",
+      "statement_tex": "実数 \\(t\\)（\\(0\\le t\\le 2\\)）を動かすとき，直線 \\(y=3tx-t^2\\) が通過する領域を \\(D\\) とする。\\(0\\le x\\le 1\\) の範囲で \\(D\\) の面積を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parameter_existence_elimination_plus_numeric_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{64}{9}",
+      "candidate_id": "geomfusion:passage_region.line_family_sweep:007",
+      "difficulty": "A",
+      "domain": "geometry",
+      "family_id": "passage_region.line_family_sweep",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ParametricLineFamily",
+          "ExistenceElimination",
+          "SweptRegionArea"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "各 \\(x\\) を固定すると \\(y={a}tx-t^2\\) は \\(t\\) の上に凸な二次関数。\\(t={a}x/2\\) が区間内なら最大値 \\((3x)^2/4\\)，端点で最小値をとる。区間ごとに \\(y\\) の動く幅を \\(x\\) で積分すると面積が定まる。",
+      "statement_tex": "実数 \\(t\\)（\\(0\\le t\\le 2\\)）を動かすとき，直線 \\(y=3tx-t^2\\) が通過する領域を \\(D\\) とする。\\(0\\le x\\le 2\\) の範囲で \\(D\\) の面積を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parameter_existence_elimination_plus_numeric_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{31}{24}",
+      "candidate_id": "geomfusion:passage_region.line_family_sweep:008",
+      "difficulty": "A",
+      "domain": "geometry",
+      "family_id": "passage_region.line_family_sweep",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ParametricLineFamily",
+          "ExistenceElimination",
+          "SweptRegionArea"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "各 \\(x\\) を固定すると \\(y={a}tx-t^2\\) は \\(t\\) の上に凸な二次関数。\\(t={a}x/2\\) が区間内なら最大値 \\((4x)^2/4\\)，端点で最小値をとる。区間ごとに \\(y\\) の動く幅を \\(x\\) で積分すると面積が定まる。",
+      "statement_tex": "実数 \\(t\\)（\\(0\\le t\\le 1\\)）を動かすとき，直線 \\(y=4tx-t^2\\) が通過する領域を \\(D\\) とする。\\(0\\le x\\le 1\\) の範囲で \\(D\\) の面積を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parameter_existence_elimination_plus_numeric_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{151}{24}",
+      "candidate_id": "geomfusion:passage_region.line_family_sweep:009",
+      "difficulty": "A",
+      "domain": "geometry",
+      "family_id": "passage_region.line_family_sweep",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ParametricLineFamily",
+          "ExistenceElimination",
+          "SweptRegionArea"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "各 \\(x\\) を固定すると \\(y={a}tx-t^2\\) は \\(t\\) の上に凸な二次関数。\\(t={a}x/2\\) が区間内なら最大値 \\((4x)^2/4\\)，端点で最小値をとる。区間ごとに \\(y\\) の動く幅を \\(x\\) で積分すると面積が定まる。",
+      "statement_tex": "実数 \\(t\\)（\\(0\\le t\\le 1\\)）を動かすとき，直線 \\(y=4tx-t^2\\) が通過する領域を \\(D\\) とする。\\(0\\le x\\le 2\\) の範囲で \\(D\\) の面積を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parameter_existence_elimination_plus_numeric_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{31}{3}",
+      "candidate_id": "geomfusion:passage_region.line_family_sweep:010",
+      "difficulty": "A",
+      "domain": "geometry",
+      "family_id": "passage_region.line_family_sweep",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ParametricLineFamily",
+          "ExistenceElimination",
+          "SweptRegionArea"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "各 \\(x\\) を固定すると \\(y={a}tx-t^2\\) は \\(t\\) の上に凸な二次関数。\\(t={a}x/2\\) が区間内なら最大値 \\((4x)^2/4\\)，端点で最小値をとる。区間ごとに \\(y\\) の動く幅を \\(x\\) で積分すると面積が定まる。",
+      "statement_tex": "実数 \\(t\\)（\\(0\\le t\\le 2\\)）を動かすとき，直線 \\(y=4tx-t^2\\) が通過する領域を \\(D\\) とする。\\(0\\le x\\le 2\\) の範囲で \\(D\\) の面積を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parameter_existence_elimination_plus_numeric_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{83}{30}",
+      "candidate_id": "geomfusion:passage_region.parabola_family_sweep:011",
+      "difficulty": "A",
+      "domain": "geometry",
+      "family_id": "passage_region.parabola_family_sweep",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ParametricParabolaFamily",
+          "ExistenceElimination",
+          "SweptRegionArea"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "\\(x\\) を固定すると \\(y=tx^2-t^2\\) は \\(t\\) の上に凸な二次関数で，頂点 \\(t=x^2/2\\) と区間端 \\(t=\\pm T\\) の値から \\(y\\) の動く範囲が定まる。これを \\(x\\) で積分する。",
+      "statement_tex": "実数 \\(t\\)（\\(-1\\le t\\le 1\\)）を動かすとき，放物線 \\(y=tx^2-t^2\\) が通過する領域の，\\(-1\\le x\\le 1\\) における面積を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parameter_existence_elimination_plus_numeric_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{16 \\sqrt{2}}{15} + \\frac{32}{3}",
+      "candidate_id": "geomfusion:passage_region.parabola_family_sweep:012",
+      "difficulty": "A",
+      "domain": "geometry",
+      "family_id": "passage_region.parabola_family_sweep",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ParametricParabolaFamily",
+          "ExistenceElimination",
+          "SweptRegionArea"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "\\(x\\) を固定すると \\(y=tx^2-t^2\\) は \\(t\\) の上に凸な二次関数で，頂点 \\(t=x^2/2\\) と区間端 \\(t=\\pm T\\) の値から \\(y\\) の動く範囲が定まる。これを \\(x\\) で積分する。",
+      "statement_tex": "実数 \\(t\\)（\\(-1\\le t\\le 1\\)）を動かすとき，放物線 \\(y=tx^2-t^2\\) が通過する領域の，\\(-2\\le x\\le 2\\) における面積を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parameter_existence_elimination_plus_numeric_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{283}{30}",
+      "candidate_id": "geomfusion:passage_region.parabola_family_sweep:013",
+      "difficulty": "A",
+      "domain": "geometry",
+      "family_id": "passage_region.parabola_family_sweep",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ParametricParabolaFamily",
+          "ExistenceElimination",
+          "SweptRegionArea"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "\\(x\\) を固定すると \\(y=tx^2-t^2\\) は \\(t\\) の上に凸な二次関数で，頂点 \\(t=x^2/2\\) と区間端 \\(t=\\pm T\\) の値から \\(y\\) の動く範囲が定まる。これを \\(x\\) で積分する。",
+      "statement_tex": "実数 \\(t\\)（\\(-2\\le t\\le 2\\)）を動かすとき，放物線 \\(y=tx^2-t^2\\) が通過する領域の，\\(-1\\le x\\le 1\\) における面積を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parameter_existence_elimination_plus_numeric_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{448}{15}",
+      "candidate_id": "geomfusion:passage_region.parabola_family_sweep:014",
+      "difficulty": "A",
+      "domain": "geometry",
+      "family_id": "passage_region.parabola_family_sweep",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ParametricParabolaFamily",
+          "ExistenceElimination",
+          "SweptRegionArea"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "\\(x\\) を固定すると \\(y=tx^2-t^2\\) は \\(t\\) の上に凸な二次関数で，頂点 \\(t=x^2/2\\) と区間端 \\(t=\\pm T\\) の値から \\(y\\) の動く範囲が定まる。これを \\(x\\) で積分する。",
+      "statement_tex": "実数 \\(t\\)（\\(-2\\le t\\le 2\\)）を動かすとき，放物線 \\(y=tx^2-t^2\\) が通過する領域の，\\(-2\\le x\\le 2\\) における面積を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parameter_existence_elimination_plus_numeric_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{201}{10}",
+      "candidate_id": "geomfusion:passage_region.parabola_family_sweep:015",
+      "difficulty": "A",
+      "domain": "geometry",
+      "family_id": "passage_region.parabola_family_sweep",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ParametricParabolaFamily",
+          "ExistenceElimination",
+          "SweptRegionArea"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "\\(x\\) を固定すると \\(y=tx^2-t^2\\) は \\(t\\) の上に凸な二次関数で，頂点 \\(t=x^2/2\\) と区間端 \\(t=\\pm T\\) の値から \\(y\\) の動く範囲が定まる。これを \\(x\\) で積分する。",
+      "statement_tex": "実数 \\(t\\)（\\(-3\\le t\\le 3\\)）を動かすとき，放物線 \\(y=tx^2-t^2\\) が通過する領域の，\\(-1\\le x\\le 1\\) における面積を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parameter_existence_elimination_plus_numeric_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{276}{5}",
+      "candidate_id": "geomfusion:passage_region.parabola_family_sweep:016",
+      "difficulty": "A",
+      "domain": "geometry",
+      "family_id": "passage_region.parabola_family_sweep",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ParametricParabolaFamily",
+          "ExistenceElimination",
+          "SweptRegionArea"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "\\(x\\) を固定すると \\(y=tx^2-t^2\\) は \\(t\\) の上に凸な二次関数で，頂点 \\(t=x^2/2\\) と区間端 \\(t=\\pm T\\) の値から \\(y\\) の動く範囲が定まる。これを \\(x\\) で積分する。",
+      "statement_tex": "実数 \\(t\\)（\\(-3\\le t\\le 3\\)）を動かすとき，放物線 \\(y=tx^2-t^2\\) が通過する領域の，\\(-2\\le x\\le 2\\) における面積を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parameter_existence_elimination_plus_numeric_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{5}{2}",
+      "candidate_id": "geomfusion:fusion.trig_absolute_value_integral:017",
+      "difficulty": "A",
+      "domain": "real_analysis",
+      "family_id": "fusion.trig_absolute_value_integral",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TrigDifference",
+          "SignPartition",
+          "AbsoluteIntegral"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "\\(\\sin x=\\sin 2x\\) となる \\(x\\) で符号が変わる。各区間で絶対値を外し，符号に注意して積分を足し合わせる。",
+      "statement_tex": "定積分 \\(\\displaystyle\\int_0^{\\pi}\\left|\\sin x-\\sin 2x\\right|\\,dx\\) を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "sign_partition_plus_high_precision_quadrature"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "- \\pi",
+      "candidate_id": "geomfusion:fusion.trig_floor_integral:018",
+      "difficulty": "A",
+      "domain": "real_analysis",
+      "family_id": "fusion.trig_floor_integral",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TrigLevelSets",
+          "FloorStep",
+          "PiecewiseIntegral"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "\\(0+2\\sin x\\) が各整数値をまたぐ \\(x\\) を求め，床関数が一定になる区間の長さに整数値を掛けて足す。対称性を使うと計算が軽くなる。",
+      "statement_tex": "\\(\\lfloor\\ \\rfloor\\) を床関数とする。定積分 \\(\\displaystyle\\int_0^{2\\pi}\\lfloor 0+2\\sin x\\rfloor\\,dx\\) を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "level_set_partition_plus_high_precision_quadrature"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\pi",
+      "candidate_id": "geomfusion:fusion.trig_floor_integral:019",
+      "difficulty": "A",
+      "domain": "real_analysis",
+      "family_id": "fusion.trig_floor_integral",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TrigLevelSets",
+          "FloorStep",
+          "PiecewiseIntegral"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "\\(1+2\\sin x\\) が各整数値をまたぐ \\(x\\) を求め，床関数が一定になる区間の長さに整数値を掛けて足す。対称性を使うと計算が軽くなる。",
+      "statement_tex": "\\(\\lfloor\\ \\rfloor\\) を床関数とする。定積分 \\(\\displaystyle\\int_0^{2\\pi}\\lfloor 1+2\\sin x\\rfloor\\,dx\\) を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "level_set_partition_plus_high_precision_quadrature"
+      }
     }
   ],
   "source_note": "Mechanically assembled from MathOS generators after every acceptance gate. Each problem carries an exact backend derivation plus an independent check; the Discord bot never edits these records.",
   "summary": {
-    "accepted": 62,
+    "accepted": 63,
     "all_backend_verified": true,
     "difficulty_counts": {
-      "A": 33,
-      "B": 10,
+      "A": 42,
+      "B": 2,
       "C": 19
     },
     "domain_counts": {
@@ -1763,15 +1791,16 @@
       "analytic_geometry": 1,
       "combinatorics": 1,
       "combinatorics_analysis": 1,
-      "combinatorics_number_theory": 9,
+      "combinatorics_number_theory": 6,
       "complex_geometry": 1,
-      "linear_algebra": 10,
+      "geometry": 17,
+      "linear_algebra": 2,
       "linear_algebra_number_theory": 2,
-      "number_theory": 16,
+      "number_theory": 8,
       "probability": 2,
-      "real_analysis": 3
+      "real_analysis": 6
     },
-    "families": 24,
+    "families": 26,
     "family_counts": {
       "algebraic_geometry.cubic_discriminant_triangle_area": 1,
       "analysis.boundary_layer_integral_limit": 1,
@@ -1779,27 +1808,30 @@
       "arithmetic_matrix.gcd_incidence_determinant": 1,
       "asymptotic.recurrence_square_increment": 1,
       "binomial.beta_integral_duality": 1,
-      "binomial.roots_of_unity_filter": 8,
+      "binomial.roots_of_unity_filter": 5,
       "binomial.roots_of_unity_filter_mod3": 1,
       "complex_geometry.reciprocal_root_polygon_area": 1,
       "concept_tree.convex_hull_extremum": 14,
       "conic_duality.tangent_intercept_centroid_minimum": 1,
-      "finite_field.circle_point_count": 8,
+      "finite_field.circle_point_count": 5,
       "finite_field.inverse_square_product_character": 1,
       "finite_field.quadratic_form_zero_count": 1,
-      "finite_field.shifted_power_product": 5,
+      "fusion.trig_absolute_value_integral": 1,
+      "fusion.trig_floor_integral": 2,
       "lattice_paths.dyck_reflection_catalan_count": 1,
       "multiplicative.mobius_divisor_sum_totient_ratio": 1,
+      "passage_region.line_family_sweep": 11,
+      "passage_region.parabola_family_sweep": 6,
       "polynomial.interpolation_harmonic_observable": 1,
       "probability.left_to_right_maxima_expectation": 1,
       "probability.random_bridge_zero_count": 1,
       "recurrence.cassini_fibonacci_determinant_invariant": 1,
-      "spectral.tridiagonal_determinant": 8,
       "spectral_graph.cycle_laplacian_pseudodeterminant": 1,
       "spectral_graph.path_laplacian_tridiagonal_determinant": 1
     },
     "from_concept_tree": 14,
+    "from_geometry_fusion": 20,
     "from_hand_authored": 19,
-    "from_parametric_engine": 29
+    "from_parametric_engine": 10
   }
 }
