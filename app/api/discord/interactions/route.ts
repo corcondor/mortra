@@ -15,7 +15,9 @@ import {
   deliverMathOSProblem,
   findMathOSSolution,
   mathOSDiscordStats,
+  mathosProblemComponents,
   problemEmbed,
+  recordDiscordRating,
   solutionEmbed,
 } from '@/lib/mathos-discord'
 
@@ -37,19 +39,7 @@ async function completeSakumon(interaction: DiscordInteraction) {
     })
     await sendDiscordFollowup(interaction, {
       embeds: [problemEmbed(problem)],
-      components: [
-        {
-          type: 1,
-          components: [
-            {
-              type: 2,
-              style: 2,
-              label: '解答を見る',
-              custom_id: `mathos_answer:${problem.shortId}`,
-            },
-          ],
-        },
-      ],
+      components: mathosProblemComponents(problem.shortId),
     })
   } catch (error) {
     await sendDiscordFollowup(interaction, {
@@ -57,6 +47,28 @@ async function completeSakumon(interaction: DiscordInteraction) {
         error instanceof Error
           ? `MathOSエラー: ${error.message}`
           : 'MathOSで問題を取得できませんでした。',
+      flags: 64,
+    })
+  }
+}
+
+async function completeRating(
+  interaction: DiscordInteraction,
+  shortId: string,
+  rating: number,
+) {
+  try {
+    await recordDiscordRating(shortId, rating, interactionUserId(interaction))
+    await sendDiscordFollowup(interaction, {
+      content: `#${shortId} を ${rating}/5 で評価しました。フィードバックありがとう！`,
+      flags: 64,
+    })
+  } catch (error) {
+    await sendDiscordFollowup(interaction, {
+      content:
+        error instanceof Error
+          ? `評価の記録に失敗: ${error.message}`
+          : '評価を記録できませんでした。',
       flags: 64,
     })
   }
@@ -179,13 +191,19 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  if (
-    interaction.type === DISCORD_INTERACTION.messageComponent &&
-    interaction.data?.custom_id?.startsWith('mathos_answer:')
-  ) {
-    const problemId = interaction.data.custom_id.slice('mathos_answer:'.length)
-    after(() => completeAnswer(interaction, problemId))
-    return json(deferredResponse(true))
+  if (interaction.type === DISCORD_INTERACTION.messageComponent) {
+    const customId = interaction.data?.custom_id ?? ''
+    if (customId.startsWith('mathos_answer:')) {
+      const problemId = customId.slice('mathos_answer:'.length)
+      after(() => completeAnswer(interaction, problemId))
+      return json(deferredResponse(true))
+    }
+    if (customId.startsWith('mathos_rate:')) {
+      const [, shortId, ratingStr] = customId.split(':')
+      const rating = Number(ratingStr)
+      after(() => completeRating(interaction, shortId, rating))
+      return json(deferredResponse(true))
+    }
   }
 
   return json(immediateMessage('未対応のDiscord Interactionです。'))

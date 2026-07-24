@@ -435,3 +435,71 @@ export function solutionEmbed(problem: MathOSProblem) {
     footer: { text: `構造族: ${problem.familyId}` },
   }
 }
+
+// Discord のメッセージコンポーネント: 1〜5 の評価ボタン + 解答ボタン。
+// 人間が問題を直接見た評価を集め、作問器の改良フィードバックにする。
+export function mathosProblemComponents(shortId: string) {
+  return [
+    {
+      type: 1,
+      components: [1, 2, 3, 4, 5].map((n) => ({
+        type: 2,
+        style: n <= 2 ? 4 : n === 3 ? 2 : 3,
+        label: `${n}`,
+        custom_id: `mathos_rate:${shortId}:${n}`,
+      })),
+    },
+    {
+      type: 1,
+      components: [
+        {
+          type: 2,
+          style: 2,
+          label: '解答を見る',
+          custom_id: `mathos_answer:${shortId}`,
+        },
+      ],
+    },
+  ]
+}
+
+export async function recordDiscordRating(
+  shortId: string,
+  rating: number,
+  userId: string,
+): Promise<void> {
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+    throw new Error('評価は1〜5で指定してください。')
+  }
+  const now = new Date().toISOString()
+  // (user, problem) ごとに1件。付け直しは上書き。
+  const { error } = await supabaseAdmin.from('generation_jobs').upsert(
+    {
+      id: `discord-rating:${shortId}:${userId}`,
+      status: 'done',
+      user_id: userId,
+      mode: 'discord_rating',
+      count: 1,
+      result: { short_id: shortId, rating, rated_at: now },
+      model: 'human_feedback',
+      updated_at: now,
+    },
+    { onConflict: 'id' },
+  )
+  if (error) throw new Error(`MathOS rating: ${error.message}`)
+}
+
+export async function mathOSRatingSummary(shortId: string) {
+  const { data, error } = await supabaseAdmin
+    .from('generation_jobs')
+    .select('result')
+    .eq('mode', 'discord_rating')
+    .like('id', `discord-rating:${shortId}:%`)
+  if (error) throw new Error(`MathOS rating summary: ${error.message}`)
+  const ratings = ((data ?? []) as { result: { rating?: number } | null }[])
+    .map((row) => Number(row.result?.rating))
+    .filter((value) => Number.isFinite(value))
+  const count = ratings.length
+  const average = count > 0 ? ratings.reduce((a, b) => a + b, 0) / count : null
+  return { count, average }
+}
