@@ -1,16 +1,19 @@
 {
-  "generated_at": "2026-07-24T07:05:54.482132+00:00",
+  "generated_at": "2026-07-24T11:06:54.310681+00:00",
   "method": {
+    "difficulty_floor": "textbook families (weighted geometric, affine recurrence, power sums, telescoping) are excluded; only 難関大以上 kept",
     "name": "MathOS combined verified Discord pool",
     "selection_gates": [
       "exact backend derivation",
       "independent numeric or exhaustive check",
       "typed morphism chain",
-      "surface + structural novelty across sources"
+      "surface + structural novelty across sources",
+      "difficulty floor (contest-grade families only)"
     ],
     "sources": [
       "continuous_verified_problem_batch1 (hand-authored, verified)",
-      "parametric_problem_engine (structure-changing families)"
+      "parametric_problem_engine (hard families only)",
+      "concept_tree_synthesis (convex-hull composition trees)"
     ]
   },
   "problems": [
@@ -352,33 +355,6 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\displaystyle\\frac{n(n+3)}{4(n+1)(n+2)}",
-      "candidate_id": "phase13_telescoping_triple_partial_fraction",
-      "difficulty": "C",
-      "domain": "algebra",
-      "family_id": "series.telescoping_triple_partial_fraction",
-      "lift_certificate": {
-        "morphism_chain": [
-          "PartialFraction",
-          "TelescopeCollapse",
-          "SimplifyRational"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.4684
-      },
-      "solution_tex": "部分分数分解 \\(\\frac1{k(k+1)(k+2)}=\\frac12\\!\\left(\\frac1{k(k+1)}-\\frac1{(k+1)(k+2)}\\right)\\) を用いる。和は望遠鏡的に打ち消し合い，\\(\\frac12\\!\\left(\\frac12-\\frac1{(n+1)(n+2)}\\right)=\\frac{n(n+3)}{4(n+1)(n+2)}\\) となる。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}\\frac1{k(k+1)(k+2)}\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_summation_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
       "answer_tex": "\\displaystyle\\frac{2^n+2\\cos\\frac{n\\pi}3}{3}",
       "candidate_id": "phase14_roots_of_unity_binomial_filter",
       "difficulty": "C",
@@ -564,1113 +540,6 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "exhaustive_dyck_enumeration_plus_reflection_formula"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "2 \\cdot 2^{n} n - 2 \\cdot 2^{n} + 2",
-      "candidate_id": "param:series.weighted_geometric_sum:d82bf3b6bc",
-      "difficulty": "C",
-      "domain": "algebra",
-      "family_id": "series.weighted_geometric_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "WeightedShift",
-          "GeometricCollapse",
-          "RationalClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(S=\\sum_{k=1}^{n}k r^k\\)（\\(r=2\\)）とおく。\\(S-rS\\) を計算すると各項がずれて等比和に帰着し，整理して \\(S=2 \\cdot 2^{n} n - 2 \\cdot 2^{n} + 2\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k\\left(2\\right)^k\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_summation_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{3 \\cdot 3^{n} n}{2} - \\frac{3 \\cdot 3^{n}}{4} + \\frac{3}{4}",
-      "candidate_id": "param:series.weighted_geometric_sum:4e6cebe13b",
-      "difficulty": "C",
-      "domain": "algebra",
-      "family_id": "series.weighted_geometric_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "WeightedShift",
-          "GeometricCollapse",
-          "RationalClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(S=\\sum_{k=1}^{n}k r^k\\)（\\(r=3\\)）とおく。\\(S-rS\\) を計算すると各項がずれて等比和に帰着し，整理して \\(S=\\frac{3 \\cdot 3^{n} n}{2} - \\frac{3 \\cdot 3^{n}}{4} + \\frac{3}{4}\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k\\left(3\\right)^k\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_summation_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{4 \\cdot 4^{n} n}{3} - \\frac{4 \\cdot 4^{n}}{9} + \\frac{4}{9}",
-      "candidate_id": "param:series.weighted_geometric_sum:a1648745d4",
-      "difficulty": "C",
-      "domain": "algebra",
-      "family_id": "series.weighted_geometric_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "WeightedShift",
-          "GeometricCollapse",
-          "RationalClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(S=\\sum_{k=1}^{n}k r^k\\)（\\(r=4\\)）とおく。\\(S-rS\\) を計算すると各項がずれて等比和に帰着し，整理して \\(S=\\frac{4 \\cdot 4^{n} n}{3} - \\frac{4 \\cdot 4^{n}}{9} + \\frac{4}{9}\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k\\left(4\\right)^k\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_summation_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{5 \\cdot 5^{n} n}{4} - \\frac{5 \\cdot 5^{n}}{16} + \\frac{5}{16}",
-      "candidate_id": "param:series.weighted_geometric_sum:a46d674cd4",
-      "difficulty": "C",
-      "domain": "algebra",
-      "family_id": "series.weighted_geometric_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "WeightedShift",
-          "GeometricCollapse",
-          "RationalClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(S=\\sum_{k=1}^{n}k r^k\\)（\\(r=5\\)）とおく。\\(S-rS\\) を計算すると各項がずれて等比和に帰着し，整理して \\(S=\\frac{5 \\cdot 5^{n} n}{4} - \\frac{5 \\cdot 5^{n}}{16} + \\frac{5}{16}\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k\\left(5\\right)^k\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_summation_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "2^{- n} \\left(2^{n + 1} - n - 2\\right)",
-      "candidate_id": "param:series.weighted_geometric_sum:9e33fe89f3",
-      "difficulty": "B",
-      "domain": "algebra",
-      "family_id": "series.weighted_geometric_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "WeightedShift",
-          "GeometricCollapse",
-          "RationalClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(S=\\sum_{k=1}^{n}k r^k\\)（\\(r=\\frac{1}{2}\\)）とおく。\\(S-rS\\) を計算すると各項がずれて等比和に帰着し，整理して \\(S=2^{- n} \\left(2^{n + 1} - n - 2\\right)\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k\\left(\\frac{1}{2}\\right)^k\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_summation_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{3^{- n} \\left(3^{n + 1} - 2 n - 3\\right)}{4}",
-      "candidate_id": "param:series.weighted_geometric_sum:5db531e37e",
-      "difficulty": "B",
-      "domain": "algebra",
-      "family_id": "series.weighted_geometric_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "WeightedShift",
-          "GeometricCollapse",
-          "RationalClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(S=\\sum_{k=1}^{n}k r^k\\)（\\(r=\\frac{1}{3}\\)）とおく。\\(S-rS\\) を計算すると各項がずれて等比和に帰着し，整理して \\(S=\\frac{3^{- n} \\left(3^{n + 1} - 2 n - 3\\right)}{4}\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k\\left(\\frac{1}{3}\\right)^k\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_summation_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{4^{- n} \\left(4 \\cdot 2^{2 n} - 3 n - 4\\right)}{9}",
-      "candidate_id": "param:series.weighted_geometric_sum:349a3c5315",
-      "difficulty": "B",
-      "domain": "algebra",
-      "family_id": "series.weighted_geometric_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "WeightedShift",
-          "GeometricCollapse",
-          "RationalClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(S=\\sum_{k=1}^{n}k r^k\\)（\\(r=\\frac{1}{4}\\)）とおく。\\(S-rS\\) を計算すると各項がずれて等比和に帰着し，整理して \\(S=\\frac{4^{- n} \\left(4 \\cdot 2^{2 n} - 3 n - 4\\right)}{9}\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k\\left(\\frac{1}{4}\\right)^k\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_summation_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "2 \\cdot 3^{- n} \\left(- 2^{n} n - 3 \\cdot 2^{n} + 3 \\cdot 3^{n}\\right)",
-      "candidate_id": "param:series.weighted_geometric_sum:4ae04d523a",
-      "difficulty": "B",
-      "domain": "algebra",
-      "family_id": "series.weighted_geometric_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "WeightedShift",
-          "GeometricCollapse",
-          "RationalClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(S=\\sum_{k=1}^{n}k r^k\\)（\\(r=\\frac{2}{3}\\)）とおく。\\(S-rS\\) を計算すると各項がずれて等比和に帰着し，整理して \\(S=2 \\cdot 3^{- n} \\left(- 2^{n} n - 3 \\cdot 2^{n} + 3 \\cdot 3^{n}\\right)\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k\\left(\\frac{2}{3}\\right)^k\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_summation_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "3 \\cdot 2^{- n} \\left(2 \\cdot 2^{n} + 3^{n} n - 2 \\cdot 3^{n}\\right)",
-      "candidate_id": "param:series.weighted_geometric_sum:ee0c494636",
-      "difficulty": "B",
-      "domain": "algebra",
-      "family_id": "series.weighted_geometric_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "WeightedShift",
-          "GeometricCollapse",
-          "RationalClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(S=\\sum_{k=1}^{n}k r^k\\)（\\(r=\\frac{3}{2}\\)）とおく。\\(S-rS\\) を計算すると各項がずれて等比和に帰着し，整理して \\(S=3 \\cdot 2^{- n} \\left(2 \\cdot 2^{n} + 3^{n} n - 2 \\cdot 3^{n}\\right)\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k\\left(\\frac{3}{2}\\right)^k\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_summation_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "3 \\cdot 4^{- n} \\left(4 \\cdot 2^{2 n} - 3^{n} n - 4 \\cdot 3^{n}\\right)",
-      "candidate_id": "param:series.weighted_geometric_sum:aff70e8f94",
-      "difficulty": "B",
-      "domain": "algebra",
-      "family_id": "series.weighted_geometric_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "WeightedShift",
-          "GeometricCollapse",
-          "RationalClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(S=\\sum_{k=1}^{n}k r^k\\)（\\(r=\\frac{3}{4}\\)）とおく。\\(S-rS\\) を計算すると各項がずれて等比和に帰着し，整理して \\(S=3 \\cdot 4^{- n} \\left(4 \\cdot 2^{2 n} - 3^{n} n - 4 \\cdot 3^{n}\\right)\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k\\left(\\frac{3}{4}\\right)^k\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_summation_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "3^{- n} \\left(12 \\cdot 3^{n} + 4 \\cdot 4^{n} n - 12 \\cdot 4^{n}\\right)",
-      "candidate_id": "param:series.weighted_geometric_sum:38f3ee14f1",
-      "difficulty": "B",
-      "domain": "algebra",
-      "family_id": "series.weighted_geometric_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "WeightedShift",
-          "GeometricCollapse",
-          "RationalClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(S=\\sum_{k=1}^{n}k r^k\\)（\\(r=\\frac{4}{3}\\)）とおく。\\(S-rS\\) を計算すると各項がずれて等比和に帰着し，整理して \\(S=3^{- n} \\left(12 \\cdot 3^{n} + 4 \\cdot 4^{n} n - 12 \\cdot 4^{n}\\right)\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k\\left(\\frac{4}{3}\\right)^k\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_summation_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{2 \\left(-2\\right)^{n} n}{3} + \\frac{2 \\left(-2\\right)^{n}}{9} - \\frac{2}{9}",
-      "candidate_id": "param:series.weighted_geometric_sum:4bc30848e1",
-      "difficulty": "C",
-      "domain": "algebra",
-      "family_id": "series.weighted_geometric_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "WeightedShift",
-          "GeometricCollapse",
-          "RationalClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(S=\\sum_{k=1}^{n}k r^k\\)（\\(r=-2\\)）とおく。\\(S-rS\\) を計算すると各項がずれて等比和に帰着し，整理して \\(S=\\frac{2 \\left(-2\\right)^{n} n}{3} + \\frac{2 \\left(-2\\right)^{n}}{9} - \\frac{2}{9}\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k\\left(-2\\right)^k\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_summation_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{3 \\left(-3\\right)^{n} n}{4} + \\frac{3 \\left(-3\\right)^{n}}{16} - \\frac{3}{16}",
-      "candidate_id": "param:series.weighted_geometric_sum:11276324c0",
-      "difficulty": "C",
-      "domain": "algebra",
-      "family_id": "series.weighted_geometric_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "WeightedShift",
-          "GeometricCollapse",
-          "RationalClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(S=\\sum_{k=1}^{n}k r^k\\)（\\(r=-3\\)）とおく。\\(S-rS\\) を計算すると各項がずれて等比和に帰着し，整理して \\(S=\\frac{3 \\left(-3\\right)^{n} n}{4} + \\frac{3 \\left(-3\\right)^{n}}{16} - \\frac{3}{16}\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k\\left(-3\\right)^k\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_summation_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{2^{- n} \\left(3 \\left(-1\\right)^{n} n + 2 \\left(-1\\right)^{n} - 2^{n + 1}\\right)}{9}",
-      "candidate_id": "param:series.weighted_geometric_sum:bf1fc16328",
-      "difficulty": "B",
-      "domain": "algebra",
-      "family_id": "series.weighted_geometric_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "WeightedShift",
-          "GeometricCollapse",
-          "RationalClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(S=\\sum_{k=1}^{n}k r^k\\)（\\(r=- \\frac{1}{2}\\)）とおく。\\(S-rS\\) を計算すると各項がずれて等比和に帰着し，整理して \\(S=\\frac{2^{- n} \\left(3 \\left(-1\\right)^{n} n + 2 \\left(-1\\right)^{n} - 2^{n + 1}\\right)}{9}\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k\\left(- \\frac{1}{2}\\right)^k\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_summation_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{3^{- n} \\left(4 \\left(-1\\right)^{n} n + 3 \\left(-1\\right)^{n} - 3^{n + 1}\\right)}{16}",
-      "candidate_id": "param:series.weighted_geometric_sum:7aee4d02c8",
-      "difficulty": "B",
-      "domain": "algebra",
-      "family_id": "series.weighted_geometric_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "WeightedShift",
-          "GeometricCollapse",
-          "RationalClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(S=\\sum_{k=1}^{n}k r^k\\)（\\(r=- \\frac{1}{3}\\)）とおく。\\(S-rS\\) を計算すると各項がずれて等比和に帰着し，整理して \\(S=\\frac{3^{- n} \\left(4 \\left(-1\\right)^{n} n + 3 \\left(-1\\right)^{n} - 3^{n + 1}\\right)}{16}\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k\\left(- \\frac{1}{3}\\right)^k\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_summation_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{n \\left(n + 1\\right) \\left(2 n + 1\\right)}{6}",
-      "candidate_id": "param:series.faulhaber_power_sum:44236cf923",
-      "difficulty": "C",
-      "domain": "algebra",
-      "family_id": "series.faulhaber_power_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FiniteDifference",
-          "TelescopeCollapse",
-          "PolynomialClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\sum_{k=1}^{n}k^{2}\\) は \\(n\\) の \\(3\\) 次多項式である。差分 \\((k+1)^{3}-k^{3}\\) の和を望遠鏡的にとり，低次の冪和へ帰着させると \\(\\frac{n \\left(n + 1\\right) \\left(2 n + 1\\right)}{6}\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k^{2}\\) を \\(n\\) の多項式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_faulhaber_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{n^{2} \\left(n + 1\\right)^{2}}{4}",
-      "candidate_id": "param:series.faulhaber_power_sum:931f553c87",
-      "difficulty": "B",
-      "domain": "algebra",
-      "family_id": "series.faulhaber_power_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FiniteDifference",
-          "TelescopeCollapse",
-          "PolynomialClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\sum_{k=1}^{n}k^{3}\\) は \\(n\\) の \\(4\\) 次多項式である。差分 \\((k+1)^{4}-k^{4}\\) の和を望遠鏡的にとり，低次の冪和へ帰着させると \\(\\frac{n^{2} \\left(n + 1\\right)^{2}}{4}\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k^{3}\\) を \\(n\\) の多項式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_faulhaber_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{n^{5}}{5} + \\frac{n^{4}}{2} + \\frac{n^{3}}{3} - \\frac{n}{30}",
-      "candidate_id": "param:series.faulhaber_power_sum:2c53b23f30",
-      "difficulty": "B",
-      "domain": "algebra",
-      "family_id": "series.faulhaber_power_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FiniteDifference",
-          "TelescopeCollapse",
-          "PolynomialClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\sum_{k=1}^{n}k^{4}\\) は \\(n\\) の \\(5\\) 次多項式である。差分 \\((k+1)^{5}-k^{5}\\) の和を望遠鏡的にとり，低次の冪和へ帰着させると \\(\\frac{n^{5}}{5} + \\frac{n^{4}}{2} + \\frac{n^{3}}{3} - \\frac{n}{30}\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k^{4}\\) を \\(n\\) の多項式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_faulhaber_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{n^{2} \\left(n + 1\\right)^{2} \\left(2 n^{2} + 2 n - 1\\right)}{12}",
-      "candidate_id": "param:series.faulhaber_power_sum:9b2765635c",
-      "difficulty": "A",
-      "domain": "algebra",
-      "family_id": "series.faulhaber_power_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FiniteDifference",
-          "TelescopeCollapse",
-          "PolynomialClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\sum_{k=1}^{n}k^{5}\\) は \\(n\\) の \\(6\\) 次多項式である。差分 \\((k+1)^{6}-k^{6}\\) の和を望遠鏡的にとり，低次の冪和へ帰着させると \\(\\frac{n^{2} \\left(n + 1\\right)^{2} \\left(2 n^{2} + 2 n - 1\\right)}{12}\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k^{5}\\) を \\(n\\) の多項式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_faulhaber_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{n^{7}}{7} + \\frac{n^{6}}{2} + \\frac{n^{5}}{2} - \\frac{n^{3}}{6} + \\frac{n}{42}",
-      "candidate_id": "param:series.faulhaber_power_sum:8d68e0338f",
-      "difficulty": "A",
-      "domain": "algebra",
-      "family_id": "series.faulhaber_power_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FiniteDifference",
-          "TelescopeCollapse",
-          "PolynomialClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\sum_{k=1}^{n}k^{6}\\) は \\(n\\) の \\(7\\) 次多項式である。差分 \\((k+1)^{7}-k^{7}\\) の和を望遠鏡的にとり，低次の冪和へ帰着させると \\(\\frac{n^{7}}{7} + \\frac{n^{6}}{2} + \\frac{n^{5}}{2} - \\frac{n^{3}}{6} + \\frac{n}{42}\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k^{6}\\) を \\(n\\) の多項式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_faulhaber_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{n^{2} \\left(3 n^{6} + 12 n^{5} + 14 n^{4} - 7 n^{2} + 2\\right)}{24}",
-      "candidate_id": "param:series.faulhaber_power_sum:5155e3c5bf",
-      "difficulty": "A",
-      "domain": "algebra",
-      "family_id": "series.faulhaber_power_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FiniteDifference",
-          "TelescopeCollapse",
-          "PolynomialClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\sum_{k=1}^{n}k^{7}\\) は \\(n\\) の \\(8\\) 次多項式である。差分 \\((k+1)^{8}-k^{8}\\) の和を望遠鏡的にとり，低次の冪和へ帰着させると \\(\\frac{n^{2} \\left(3 n^{6} + 12 n^{5} + 14 n^{4} - 7 n^{2} + 2\\right)}{24}\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k^{7}\\) を \\(n\\) の多項式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_faulhaber_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{n \\left(10 n^{8} + 45 n^{7} + 60 n^{6} - 42 n^{4} + 20 n^{2} - 3\\right)}{90}",
-      "candidate_id": "param:series.faulhaber_power_sum:a109a3eb4a",
-      "difficulty": "A",
-      "domain": "algebra",
-      "family_id": "series.faulhaber_power_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FiniteDifference",
-          "TelescopeCollapse",
-          "PolynomialClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\sum_{k=1}^{n}k^{8}\\) は \\(n\\) の \\(9\\) 次多項式である。差分 \\((k+1)^{9}-k^{9}\\) の和を望遠鏡的にとり，低次の冪和へ帰着させると \\(\\frac{n \\left(10 n^{8} + 45 n^{7} + 60 n^{6} - 42 n^{4} + 20 n^{2} - 3\\right)}{90}\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k^{8}\\) を \\(n\\) の多項式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_faulhaber_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{n^{2} \\left(2 n^{8} + 10 n^{7} + 15 n^{6} - 14 n^{4} + 10 n^{2} - 3\\right)}{20}",
-      "candidate_id": "param:series.faulhaber_power_sum:6e306eb320",
-      "difficulty": "A",
-      "domain": "algebra",
-      "family_id": "series.faulhaber_power_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FiniteDifference",
-          "TelescopeCollapse",
-          "PolynomialClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\sum_{k=1}^{n}k^{9}\\) は \\(n\\) の \\(10\\) 次多項式である。差分 \\((k+1)^{10}-k^{10}\\) の和を望遠鏡的にとり，低次の冪和へ帰着させると \\(\\frac{n^{2} \\left(2 n^{8} + 10 n^{7} + 15 n^{6} - 14 n^{4} + 10 n^{2} - 3\\right)}{20}\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k^{9}\\) を \\(n\\) の多項式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_faulhaber_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "n \\left(\\frac{n^{10}}{11} + \\frac{n^{9}}{2} + \\frac{5 n^{8}}{6} - n^{6} + n^{4} - \\frac{n^{2}}{2} + \\frac{5}{66}\\right)",
-      "candidate_id": "param:series.faulhaber_power_sum:1ebc3c75c8",
-      "difficulty": "A",
-      "domain": "algebra",
-      "family_id": "series.faulhaber_power_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FiniteDifference",
-          "TelescopeCollapse",
-          "PolynomialClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\sum_{k=1}^{n}k^{10}\\) は \\(n\\) の \\(11\\) 次多項式である。差分 \\((k+1)^{11}-k^{11}\\) の和を望遠鏡的にとり，低次の冪和へ帰着させると \\(n \\left(\\frac{n^{10}}{11} + \\frac{n^{9}}{2} + \\frac{5 n^{8}}{6} - n^{6} + n^{4} - \\frac{n^{2}}{2} + \\frac{5}{66}\\right)\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k^{10}\\) を \\(n\\) の多項式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_faulhaber_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{n^{2} \\left(2 n^{10} + 12 n^{9} + 22 n^{8} - 33 n^{6} + 44 n^{4} - 33 n^{2} + 10\\right)}{24}",
-      "candidate_id": "param:series.faulhaber_power_sum:96a6b8320b",
-      "difficulty": "A",
-      "domain": "algebra",
-      "family_id": "series.faulhaber_power_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FiniteDifference",
-          "TelescopeCollapse",
-          "PolynomialClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\sum_{k=1}^{n}k^{11}\\) は \\(n\\) の \\(12\\) 次多項式である。差分 \\((k+1)^{12}-k^{12}\\) の和を望遠鏡的にとり，低次の冪和へ帰着させると \\(\\frac{n^{2} \\left(2 n^{10} + 12 n^{9} + 22 n^{8} - 33 n^{6} + 44 n^{4} - 33 n^{2} + 10\\right)}{24}\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k^{11}\\) を \\(n\\) の多項式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_faulhaber_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{n \\left(210 n^{12} + 1365 n^{11} + 2730 n^{10} - 5005 n^{8} + 8580 n^{6} - 9009 n^{4} + 4550 n^{2} - 691\\right)}{2730}",
-      "candidate_id": "param:series.faulhaber_power_sum:0ea09f8a3a",
-      "difficulty": "A",
-      "domain": "algebra",
-      "family_id": "series.faulhaber_power_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FiniteDifference",
-          "TelescopeCollapse",
-          "PolynomialClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\sum_{k=1}^{n}k^{12}\\) は \\(n\\) の \\(13\\) 次多項式である。差分 \\((k+1)^{13}-k^{13}\\) の和を望遠鏡的にとり，低次の冪和へ帰着させると \\(\\frac{n \\left(210 n^{12} + 1365 n^{11} + 2730 n^{10} - 5005 n^{8} + 8580 n^{6} - 9009 n^{4} + 4550 n^{2} - 691\\right)}{2730}\\) を得る。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}k^{12}\\) を \\(n\\) の多項式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_faulhaber_plus_numeric_partial_sums"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "2^{n} - 1",
-      "candidate_id": "param:recurrence.affine_closed_form:f9d1c6623a",
-      "difficulty": "C",
-      "domain": "algebra",
-      "family_id": "recurrence.affine_closed_form",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FixedPointShift",
-          "GeometricConjugation",
-          "ClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "不動点 \\(\\alpha=\\frac{1}{1-2}=-1\\) をとると \\(a_{n+1}-\\alpha=2(a_n-\\alpha)\\)。よって \\(a_n-\\alpha=2^{n-1}(a_1-\\alpha)\\) となり \\(a_n=2^{n} - 1\\)。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=2a_n+1\\) で定める。一般項 \\(a_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "fixed_point_conjugation_plus_iterated_check"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "3 \\cdot 2^{n - 1} - 1",
-      "candidate_id": "param:recurrence.affine_closed_form:b8718fc096",
-      "difficulty": "C",
-      "domain": "algebra",
-      "family_id": "recurrence.affine_closed_form",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FixedPointShift",
-          "GeometricConjugation",
-          "ClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "不動点 \\(\\alpha=\\frac{1}{1-2}=-1\\) をとると \\(a_{n+1}-\\alpha=2(a_n-\\alpha)\\)。よって \\(a_n-\\alpha=2^{n-1}(a_1-\\alpha)\\) となり \\(a_n=3 \\cdot 2^{n - 1} - 1\\)。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=2,\\ a_{n+1}=2a_n+1\\) で定める。一般項 \\(a_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "fixed_point_conjugation_plus_iterated_check"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "2^{n} + 1",
-      "candidate_id": "param:recurrence.affine_closed_form:277657ab4a",
-      "difficulty": "C",
-      "domain": "algebra",
-      "family_id": "recurrence.affine_closed_form",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FixedPointShift",
-          "GeometricConjugation",
-          "ClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "不動点 \\(\\alpha=\\frac{-1}{1-2}=1\\) をとると \\(a_{n+1}-\\alpha=2(a_n-\\alpha)\\)。よって \\(a_n-\\alpha=2^{n-1}(a_1-\\alpha)\\) となり \\(a_n=2^{n} + 1\\)。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=3,\\ a_{n+1}=2a_n+-1\\) で定める。一般項 \\(a_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "fixed_point_conjugation_plus_iterated_check"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "2^{n + 1} - 3",
-      "candidate_id": "param:recurrence.affine_closed_form:1afda7b0fb",
-      "difficulty": "C",
-      "domain": "algebra",
-      "family_id": "recurrence.affine_closed_form",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FixedPointShift",
-          "GeometricConjugation",
-          "ClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "不動点 \\(\\alpha=\\frac{3}{1-2}=-3\\) をとると \\(a_{n+1}-\\alpha=2(a_n-\\alpha)\\)。よって \\(a_n-\\alpha=2^{n-1}(a_1-\\alpha)\\) となり \\(a_n=2^{n + 1} - 3\\)。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=2a_n+3\\) で定める。一般項 \\(a_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "fixed_point_conjugation_plus_iterated_check"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "2 \\cdot 3^{n - 1} - 1",
-      "candidate_id": "param:recurrence.affine_closed_form:00c431230f",
-      "difficulty": "C",
-      "domain": "algebra",
-      "family_id": "recurrence.affine_closed_form",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FixedPointShift",
-          "GeometricConjugation",
-          "ClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "不動点 \\(\\alpha=\\frac{2}{1-3}=-1\\) をとると \\(a_{n+1}-\\alpha=3(a_n-\\alpha)\\)。よって \\(a_n-\\alpha=3^{n-1}(a_1-\\alpha)\\) となり \\(a_n=2 \\cdot 3^{n - 1} - 1\\)。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=3a_n+2\\) で定める。一般項 \\(a_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "fixed_point_conjugation_plus_iterated_check"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "3^{n} + 1",
-      "candidate_id": "param:recurrence.affine_closed_form:ef62867824",
-      "difficulty": "C",
-      "domain": "algebra",
-      "family_id": "recurrence.affine_closed_form",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FixedPointShift",
-          "GeometricConjugation",
-          "ClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "不動点 \\(\\alpha=\\frac{-2}{1-3}=1\\) をとると \\(a_{n+1}-\\alpha=3(a_n-\\alpha)\\)。よって \\(a_n-\\alpha=3^{n-1}(a_1-\\alpha)\\) となり \\(a_n=3^{n} + 1\\)。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=4,\\ a_{n+1}=3a_n+-2\\) で定める。一般項 \\(a_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "fixed_point_conjugation_plus_iterated_check"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{5 \\cdot 3^{n}}{6} - \\frac{1}{2}",
-      "candidate_id": "param:recurrence.affine_closed_form:ebec879f9d",
-      "difficulty": "C",
-      "domain": "algebra",
-      "family_id": "recurrence.affine_closed_form",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FixedPointShift",
-          "GeometricConjugation",
-          "ClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "不動点 \\(\\alpha=\\frac{1}{1-3}=- \\frac{1}{2}\\) をとると \\(a_{n+1}-\\alpha=3(a_n-\\alpha)\\)。よって \\(a_n-\\alpha=3^{n-1}(a_1-\\alpha)\\) となり \\(a_n=\\frac{5 \\cdot 3^{n}}{6} - \\frac{1}{2}\\)。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=2,\\ a_{n+1}=3a_n+1\\) で定める。一般項 \\(a_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "fixed_point_conjugation_plus_iterated_check"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{3^{n}}{6} + \\frac{1}{2}",
-      "candidate_id": "param:recurrence.affine_closed_form:3424ed4ce0",
-      "difficulty": "C",
-      "domain": "algebra",
-      "family_id": "recurrence.affine_closed_form",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FixedPointShift",
-          "GeometricConjugation",
-          "ClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "不動点 \\(\\alpha=\\frac{-1}{1-3}=\\frac{1}{2}\\) をとると \\(a_{n+1}-\\alpha=3(a_n-\\alpha)\\)。よって \\(a_n-\\alpha=3^{n-1}(a_1-\\alpha)\\) となり \\(a_n=\\frac{3^{n}}{6} + \\frac{1}{2}\\)。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=3a_n+-1\\) で定める。一般項 \\(a_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "fixed_point_conjugation_plus_iterated_check"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "3 \\cdot 2^{2 n - 2} - 1",
-      "candidate_id": "param:recurrence.affine_closed_form:f48e27a505",
-      "difficulty": "C",
-      "domain": "algebra",
-      "family_id": "recurrence.affine_closed_form",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FixedPointShift",
-          "GeometricConjugation",
-          "ClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "不動点 \\(\\alpha=\\frac{3}{1-4}=-1\\) をとると \\(a_{n+1}-\\alpha=4(a_n-\\alpha)\\)。よって \\(a_n-\\alpha=4^{n-1}(a_1-\\alpha)\\) となり \\(a_n=3 \\cdot 2^{2 n - 2} - 1\\)。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=2,\\ a_{n+1}=4a_n+3\\) で定める。一般項 \\(a_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "fixed_point_conjugation_plus_iterated_check"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "1",
-      "candidate_id": "param:recurrence.affine_closed_form:00656a7c4e",
-      "difficulty": "C",
-      "domain": "algebra",
-      "family_id": "recurrence.affine_closed_form",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FixedPointShift",
-          "GeometricConjugation",
-          "ClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "不動点 \\(\\alpha=\\frac{-3}{1-4}=1\\) をとると \\(a_{n+1}-\\alpha=4(a_n-\\alpha)\\)。よって \\(a_n-\\alpha=4^{n-1}(a_1-\\alpha)\\) となり \\(a_n=1\\)。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=4a_n+-3\\) で定める。一般項 \\(a_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "fixed_point_conjugation_plus_iterated_check"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{5^{n}}{4} - \\frac{1}{4}",
-      "candidate_id": "param:recurrence.affine_closed_form:27a55cc00e",
-      "difficulty": "C",
-      "domain": "algebra",
-      "family_id": "recurrence.affine_closed_form",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FixedPointShift",
-          "GeometricConjugation",
-          "ClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "不動点 \\(\\alpha=\\frac{1}{1-5}=- \\frac{1}{4}\\) をとると \\(a_{n+1}-\\alpha=5(a_n-\\alpha)\\)。よって \\(a_n-\\alpha=5^{n-1}(a_1-\\alpha)\\) となり \\(a_n=\\frac{5^{n}}{4} - \\frac{1}{4}\\)。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=5a_n+1\\) で定める。一般項 \\(a_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "fixed_point_conjugation_plus_iterated_check"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{5^{n}}{2} + \\frac{1}{2}",
-      "candidate_id": "param:recurrence.affine_closed_form:83bec93895",
-      "difficulty": "C",
-      "domain": "algebra",
-      "family_id": "recurrence.affine_closed_form",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FixedPointShift",
-          "GeometricConjugation",
-          "ClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "不動点 \\(\\alpha=\\frac{-2}{1-5}=\\frac{1}{2}\\) をとると \\(a_{n+1}-\\alpha=5(a_n-\\alpha)\\)。よって \\(a_n-\\alpha=5^{n-1}(a_1-\\alpha)\\) となり \\(a_n=\\frac{5^{n}}{2} + \\frac{1}{2}\\)。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=3,\\ a_{n+1}=5a_n+-2\\) で定める。一般項 \\(a_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "fixed_point_conjugation_plus_iterated_check"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{1}{3} - \\frac{\\left(-2\\right)^{n}}{3}",
-      "candidate_id": "param:recurrence.affine_closed_form:7f6ae4f138",
-      "difficulty": "C",
-      "domain": "algebra",
-      "family_id": "recurrence.affine_closed_form",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FixedPointShift",
-          "GeometricConjugation",
-          "ClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "不動点 \\(\\alpha=\\frac{1}{1--2}=\\frac{1}{3}\\) をとると \\(a_{n+1}-\\alpha=-2(a_n-\\alpha)\\)。よって \\(a_n-\\alpha=-2^{n-1}(a_1-\\alpha)\\) となり \\(a_n=\\frac{1}{3} - \\frac{\\left(-2\\right)^{n}}{3}\\)。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=-2a_n+1\\) で定める。一般項 \\(a_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "fixed_point_conjugation_plus_iterated_check"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\left(-2\\right)^{n - 1} + 1",
-      "candidate_id": "param:recurrence.affine_closed_form:16d4dc7175",
-      "difficulty": "C",
-      "domain": "algebra",
-      "family_id": "recurrence.affine_closed_form",
-      "lift_certificate": {
-        "morphism_chain": [
-          "FixedPointShift",
-          "GeometricConjugation",
-          "ClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "不動点 \\(\\alpha=\\frac{3}{1--2}=1\\) をとると \\(a_{n+1}-\\alpha=-2(a_n-\\alpha)\\)。よって \\(a_n-\\alpha=-2^{n-1}(a_1-\\alpha)\\) となり \\(a_n=\\left(-2\\right)^{n - 1} + 1\\)。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=2,\\ a_{n+1}=-2a_n+3\\) で定める。一般項 \\(a_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "fixed_point_conjugation_plus_iterated_check"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "2^{n - 1}",
-      "candidate_id": "param:binomial.roots_of_unity_filter:5ae3355429",
-      "difficulty": "B",
-      "domain": "combinatorics_number_theory",
-      "family_id": "binomial.roots_of_unity_filter",
-      "lift_certificate": {
-        "morphism_chain": [
-          "BinomialGeneratingFunction",
-          "RootOfUnityFilter",
-          "CyclotomicClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\zeta=e^{2\\pi i/2}\\) とおくと，\\(\\frac1{2}\\sum_{j=0}^{1}\\zeta^{-0j}(1+\\zeta^j)^n\\) が \\(k\\equiv0\\ (\\mathrm{mod}\\ 2)\\) の項だけを取り出す。整理して \\(2^{n - 1}\\)。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k\\equiv 0\\,(\\mathrm{mod}\\ 2)}\\binom{n}{k}\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "cyclotomic_filter_plus_exhaustive_binomial_sum"
       }
     },
     {
@@ -1883,60 +752,6 @@
       },
       "solution_tex": "\\(\\zeta=e^{2\\pi i/6}\\) とおくと，\\(\\frac1{6}\\sum_{j=0}^{5}\\zeta^{-2j}(1+\\zeta^j)^n\\) が \\(k\\equiv2\\ (\\mathrm{mod}\\ 6)\\) の項だけを取り出す。整理して \\(\\frac{2^{n}}{6} - \\frac{\\operatorname{re}{\\left(\\sqrt[3]{-1} \\left(1 + e^{\\frac{i \\pi}{3}}\\right)^{n}\\right)}}{6} + \\frac{\\operatorname{re}{\\left(\\left(-1\\right)^{\\frac{2}{3}} \\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n}\\right)}}{6} + \\frac{\\operatorname{re}{\\left(\\left(1 + e^{\\frac{i \\pi}{3}}\\right)^{n} e^{\\frac{i \\pi \\left(2 - n\\right)}{3}}\\right)}}{6} + \\frac{\\operatorname{re}{\\left(\\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n} e^{- \\frac{2 i \\pi \\left(n + 1\\right)}{3}}\\right)}}{6}\\)。",
       "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k\\equiv 2\\,(\\mathrm{mod}\\ 6)}\\binom{n}{k}\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "cyclotomic_filter_plus_exhaustive_binomial_sum"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{2^{n}}{6} - \\frac{\\operatorname{re}{\\left(\\sqrt[3]{-1} \\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n}\\right)}}{6} + \\frac{\\operatorname{re}{\\left(\\left(-1\\right)^{\\frac{2}{3}} \\left(1 + e^{\\frac{i \\pi}{3}}\\right)^{n}\\right)}}{6} + \\frac{\\operatorname{re}{\\left(\\left(1 + e^{\\frac{i \\pi}{3}}\\right)^{n} e^{- \\frac{i \\pi \\left(n + 2\\right)}{3}}\\right)}}{6} + \\frac{\\operatorname{re}{\\left(\\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n} e^{\\frac{2 i \\pi \\left(1 - n\\right)}{3}}\\right)}}{6}",
-      "candidate_id": "param:binomial.roots_of_unity_filter:fe0aef810c",
-      "difficulty": "A",
-      "domain": "combinatorics_number_theory",
-      "family_id": "binomial.roots_of_unity_filter",
-      "lift_certificate": {
-        "morphism_chain": [
-          "BinomialGeneratingFunction",
-          "RootOfUnityFilter",
-          "CyclotomicClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\zeta=e^{2\\pi i/6}\\) とおくと，\\(\\frac1{6}\\sum_{j=0}^{5}\\zeta^{-4j}(1+\\zeta^j)^n\\) が \\(k\\equiv4\\ (\\mathrm{mod}\\ 6)\\) の項だけを取り出す。整理して \\(\\frac{2^{n}}{6} - \\frac{\\operatorname{re}{\\left(\\sqrt[3]{-1} \\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n}\\right)}}{6} + \\frac{\\operatorname{re}{\\left(\\left(-1\\right)^{\\frac{2}{3}} \\left(1 + e^{\\frac{i \\pi}{3}}\\right)^{n}\\right)}}{6} + \\frac{\\operatorname{re}{\\left(\\left(1 + e^{\\frac{i \\pi}{3}}\\right)^{n} e^{- \\frac{i \\pi \\left(n + 2\\right)}{3}}\\right)}}{6} + \\frac{\\operatorname{re}{\\left(\\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n} e^{\\frac{2 i \\pi \\left(1 - n\\right)}{3}}\\right)}}{6}\\)。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k\\equiv 4\\,(\\mathrm{mod}\\ 6)}\\binom{n}{k}\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "cyclotomic_filter_plus_exhaustive_binomial_sum"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{2^{n}}{6} + \\frac{\\operatorname{re}{\\left(\\sqrt[3]{-1} \\left(1 + e^{\\frac{i \\pi}{3}}\\right)^{n}\\right)}}{6} + \\frac{\\operatorname{re}{\\left(\\left(-1\\right)^{\\frac{2}{3}} \\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n}\\right)}}{6} + \\frac{\\operatorname{re}{\\left(\\left(1 + e^{\\frac{i \\pi}{3}}\\right)^{n} e^{- \\frac{i \\pi \\left(n + 1\\right)}{3}}\\right)}}{6} + \\frac{\\operatorname{re}{\\left(\\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n} e^{- \\frac{2 i \\pi \\left(n + 1\\right)}{3}}\\right)}}{6}",
-      "candidate_id": "param:binomial.roots_of_unity_filter:8a33a93613",
-      "difficulty": "A",
-      "domain": "combinatorics_number_theory",
-      "family_id": "binomial.roots_of_unity_filter",
-      "lift_certificate": {
-        "morphism_chain": [
-          "BinomialGeneratingFunction",
-          "RootOfUnityFilter",
-          "CyclotomicClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\zeta=e^{2\\pi i/6}\\) とおくと，\\(\\frac1{6}\\sum_{j=0}^{5}\\zeta^{-5j}(1+\\zeta^j)^n\\) が \\(k\\equiv5\\ (\\mathrm{mod}\\ 6)\\) の項だけを取り出す。整理して \\(\\frac{2^{n}}{6} + \\frac{\\operatorname{re}{\\left(\\sqrt[3]{-1} \\left(1 + e^{\\frac{i \\pi}{3}}\\right)^{n}\\right)}}{6} + \\frac{\\operatorname{re}{\\left(\\left(-1\\right)^{\\frac{2}{3}} \\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n}\\right)}}{6} + \\frac{\\operatorname{re}{\\left(\\left(1 + e^{\\frac{i \\pi}{3}}\\right)^{n} e^{- \\frac{i \\pi \\left(n + 1\\right)}{3}}\\right)}}{6} + \\frac{\\operatorname{re}{\\left(\\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n} e^{- \\frac{2 i \\pi \\left(n + 1\\right)}{3}}\\right)}}{6}\\)。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k\\equiv 5\\,(\\mathrm{mod}\\ 6)}\\binom{n}{k}\\) を \\(n\\) の式で表せ。",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
@@ -2161,276 +976,6 @@
     },
     {
       "accepted": true,
-      "answer_tex": "20",
-      "candidate_id": "param:finite_field.circle_point_count:2fa7884b15",
-      "difficulty": "A",
-      "domain": "number_theory",
-      "family_id": "finite_field.circle_point_count",
-      "lift_certificate": {
-        "morphism_chain": [
-          "QuadraticCharacterSum",
-          "GaussSumReduction",
-          "ResidueCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "平方剰余の指標 \\(\\eta\\) を用いると，解の個数は \\(\\sum_{x}\\bigl(1+\\eta(1-x^2)\\bigr)\\) に等しい。\\(p=19\\equiv3\\pmod4\\) と \\(\\eta(-1)=-1\\) から，個数は \\(20\\) となる。",
-      "statement_tex": "\\(\\mathbb F_{19}\\) 上で，\\(x^2+y^2\\equiv 1\\pmod{19}\\) を満たす組 \\((x,y)\\)（\\(0\\le x,y<19\\)）の個数を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "character_sum_formula_plus_exhaustive_pair_count"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "24",
-      "candidate_id": "param:finite_field.circle_point_count:171784d82a",
-      "difficulty": "A",
-      "domain": "number_theory",
-      "family_id": "finite_field.circle_point_count",
-      "lift_certificate": {
-        "morphism_chain": [
-          "QuadraticCharacterSum",
-          "GaussSumReduction",
-          "ResidueCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "平方剰余の指標 \\(\\eta\\) を用いると，解の個数は \\(\\sum_{x}\\bigl(1+\\eta(1-x^2)\\bigr)\\) に等しい。\\(p=23\\equiv3\\pmod4\\) と \\(\\eta(-1)=-1\\) から，個数は \\(24\\) となる。",
-      "statement_tex": "\\(\\mathbb F_{23}\\) 上で，\\(x^2+y^2\\equiv 1\\pmod{23}\\) を満たす組 \\((x,y)\\)（\\(0\\le x,y<23\\)）の個数を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "character_sum_formula_plus_exhaustive_pair_count"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "57",
-      "candidate_id": "param:finite_field.circle_point_count:89f46a2ee6",
-      "difficulty": "A",
-      "domain": "number_theory",
-      "family_id": "finite_field.circle_point_count",
-      "lift_certificate": {
-        "morphism_chain": [
-          "QuadraticCharacterSum",
-          "GaussSumReduction",
-          "ResidueCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "平方剰余の指標 \\(\\eta\\) を用いると，解の個数は \\(\\sum_{x}\\bigl(1+\\eta(0-x^2)\\bigr)\\) に等しい。\\(p=29\\equiv1\\pmod4\\) と \\(\\eta(-1)=1\\) から，個数は \\(57\\) となる。",
-      "statement_tex": "\\(\\mathbb F_{29}\\) 上で，\\(x^2+y^2\\equiv 0\\pmod{29}\\) を満たす組 \\((x,y)\\)（\\(0\\le x,y<29\\)）の個数を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "character_sum_formula_plus_exhaustive_pair_count"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "28",
-      "candidate_id": "param:finite_field.circle_point_count:b42ce0ba84",
-      "difficulty": "A",
-      "domain": "number_theory",
-      "family_id": "finite_field.circle_point_count",
-      "lift_certificate": {
-        "morphism_chain": [
-          "QuadraticCharacterSum",
-          "GaussSumReduction",
-          "ResidueCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "平方剰余の指標 \\(\\eta\\) を用いると，解の個数は \\(\\sum_{x}\\bigl(1+\\eta(1-x^2)\\bigr)\\) に等しい。\\(p=29\\equiv1\\pmod4\\) と \\(\\eta(-1)=1\\) から，個数は \\(28\\) となる。",
-      "statement_tex": "\\(\\mathbb F_{29}\\) 上で，\\(x^2+y^2\\equiv 1\\pmod{29}\\) を満たす組 \\((x,y)\\)（\\(0\\le x,y<29\\)）の個数を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "character_sum_formula_plus_exhaustive_pair_count"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "32",
-      "candidate_id": "param:finite_field.circle_point_count:c52c2abca3",
-      "difficulty": "A",
-      "domain": "number_theory",
-      "family_id": "finite_field.circle_point_count",
-      "lift_certificate": {
-        "morphism_chain": [
-          "QuadraticCharacterSum",
-          "GaussSumReduction",
-          "ResidueCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "平方剰余の指標 \\(\\eta\\) を用いると，解の個数は \\(\\sum_{x}\\bigl(1+\\eta(1-x^2)\\bigr)\\) に等しい。\\(p=31\\equiv3\\pmod4\\) と \\(\\eta(-1)=-1\\) から，個数は \\(32\\) となる。",
-      "statement_tex": "\\(\\mathbb F_{31}\\) 上で，\\(x^2+y^2\\equiv 1\\pmod{31}\\) を満たす組 \\((x,y)\\)（\\(0\\le x,y<31\\)）の個数を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "character_sum_formula_plus_exhaustive_pair_count"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "73",
-      "candidate_id": "param:finite_field.circle_point_count:198a50814f",
-      "difficulty": "A",
-      "domain": "number_theory",
-      "family_id": "finite_field.circle_point_count",
-      "lift_certificate": {
-        "morphism_chain": [
-          "QuadraticCharacterSum",
-          "GaussSumReduction",
-          "ResidueCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "平方剰余の指標 \\(\\eta\\) を用いると，解の個数は \\(\\sum_{x}\\bigl(1+\\eta(0-x^2)\\bigr)\\) に等しい。\\(p=37\\equiv1\\pmod4\\) と \\(\\eta(-1)=1\\) から，個数は \\(73\\) となる。",
-      "statement_tex": "\\(\\mathbb F_{37}\\) 上で，\\(x^2+y^2\\equiv 0\\pmod{37}\\) を満たす組 \\((x,y)\\)（\\(0\\le x,y<37\\)）の個数を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "character_sum_formula_plus_exhaustive_pair_count"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "36",
-      "candidate_id": "param:finite_field.circle_point_count:6fc4b93e80",
-      "difficulty": "A",
-      "domain": "number_theory",
-      "family_id": "finite_field.circle_point_count",
-      "lift_certificate": {
-        "morphism_chain": [
-          "QuadraticCharacterSum",
-          "GaussSumReduction",
-          "ResidueCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "平方剰余の指標 \\(\\eta\\) を用いると，解の個数は \\(\\sum_{x}\\bigl(1+\\eta(1-x^2)\\bigr)\\) に等しい。\\(p=37\\equiv1\\pmod4\\) と \\(\\eta(-1)=1\\) から，個数は \\(36\\) となる。",
-      "statement_tex": "\\(\\mathbb F_{37}\\) 上で，\\(x^2+y^2\\equiv 1\\pmod{37}\\) を満たす組 \\((x,y)\\)（\\(0\\le x,y<37\\)）の個数を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "character_sum_formula_plus_exhaustive_pair_count"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "81",
-      "candidate_id": "param:finite_field.circle_point_count:b95ceb13ae",
-      "difficulty": "A",
-      "domain": "number_theory",
-      "family_id": "finite_field.circle_point_count",
-      "lift_certificate": {
-        "morphism_chain": [
-          "QuadraticCharacterSum",
-          "GaussSumReduction",
-          "ResidueCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "平方剰余の指標 \\(\\eta\\) を用いると，解の個数は \\(\\sum_{x}\\bigl(1+\\eta(0-x^2)\\bigr)\\) に等しい。\\(p=41\\equiv1\\pmod4\\) と \\(\\eta(-1)=1\\) から，個数は \\(81\\) となる。",
-      "statement_tex": "\\(\\mathbb F_{41}\\) 上で，\\(x^2+y^2\\equiv 0\\pmod{41}\\) を満たす組 \\((x,y)\\)（\\(0\\le x,y<41\\)）の個数を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "character_sum_formula_plus_exhaustive_pair_count"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "40",
-      "candidate_id": "param:finite_field.circle_point_count:dc1772bfe1",
-      "difficulty": "A",
-      "domain": "number_theory",
-      "family_id": "finite_field.circle_point_count",
-      "lift_certificate": {
-        "morphism_chain": [
-          "QuadraticCharacterSum",
-          "GaussSumReduction",
-          "ResidueCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "平方剰余の指標 \\(\\eta\\) を用いると，解の個数は \\(\\sum_{x}\\bigl(1+\\eta(1-x^2)\\bigr)\\) に等しい。\\(p=41\\equiv1\\pmod4\\) と \\(\\eta(-1)=1\\) から，個数は \\(40\\) となる。",
-      "statement_tex": "\\(\\mathbb F_{41}\\) 上で，\\(x^2+y^2\\equiv 1\\pmod{41}\\) を満たす組 \\((x,y)\\)（\\(0\\le x,y<41\\)）の個数を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "character_sum_formula_plus_exhaustive_pair_count"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "44",
-      "candidate_id": "param:finite_field.circle_point_count:41030f2248",
-      "difficulty": "A",
-      "domain": "number_theory",
-      "family_id": "finite_field.circle_point_count",
-      "lift_certificate": {
-        "morphism_chain": [
-          "QuadraticCharacterSum",
-          "GaussSumReduction",
-          "ResidueCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "平方剰余の指標 \\(\\eta\\) を用いると，解の個数は \\(\\sum_{x}\\bigl(1+\\eta(1-x^2)\\bigr)\\) に等しい。\\(p=43\\equiv3\\pmod4\\) と \\(\\eta(-1)=-1\\) から，個数は \\(44\\) となる。",
-      "statement_tex": "\\(\\mathbb F_{43}\\) 上で，\\(x^2+y^2\\equiv 1\\pmod{43}\\) を満たす組 \\((x,y)\\)（\\(0\\le x,y<43\\)）の個数を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "character_sum_formula_plus_exhaustive_pair_count"
-      }
-    },
-    {
-      "accepted": true,
       "answer_tex": "n + 1",
       "candidate_id": "param:spectral.tridiagonal_determinant:4b6d84175d",
       "difficulty": "B",
@@ -2647,114 +1192,6 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{2^{- n} \\sqrt{33} \\left(- \\left(7 - \\sqrt{33}\\right)^{n + 1} + \\left(\\sqrt{33} + 7\\right)^{n + 1}\\right)}{66}",
-      "candidate_id": "param:spectral.tridiagonal_determinant:162e91e48f",
-      "difficulty": "B",
-      "domain": "linear_algebra",
-      "family_id": "spectral.tridiagonal_determinant",
-      "lift_certificate": {
-        "morphism_chain": [
-          "LaplaceExpansion",
-          "LinearRecurrence",
-          "CharacteristicRootClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "最終行で余因子展開すると \\(D_n=7D_{n-1}-2^2 D_{n-2}\\)（\\(D_1=7,\\ D_2=45\\)）。特性方程式 \\(t^2-7t+2^2=0\\) を解いて一般項を求めると \\(D_n=\\frac{2^{- n} \\sqrt{33} \\left(- \\left(7 - \\sqrt{33}\\right)^{n + 1} + \\left(\\sqrt{33} + 7\\right)^{n + 1}\\right)}{66}\\)。",
-      "statement_tex": "整数 \\(n\\ge1\\) に対し，主対角成分が \\(7\\)，隣接成分が \\(-2\\)，他が \\(0\\) の \\(n\\) 次三重対角行列の行列式 \\(D_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "cofactor_recurrence_plus_characteristic_root_solution"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{\\sqrt{11} \\cdot 2^{- n} i \\left(\\left(5 - \\sqrt{11} i\\right)^{n + 1} - \\left(5 + \\sqrt{11} i\\right)^{n + 1}\\right)}{22}",
-      "candidate_id": "param:spectral.tridiagonal_determinant:8eb82b650a",
-      "difficulty": "B",
-      "domain": "linear_algebra",
-      "family_id": "spectral.tridiagonal_determinant",
-      "lift_certificate": {
-        "morphism_chain": [
-          "LaplaceExpansion",
-          "LinearRecurrence",
-          "CharacteristicRootClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "最終行で余因子展開すると \\(D_n=5D_{n-1}-3^2 D_{n-2}\\)（\\(D_1=5,\\ D_2=16\\)）。特性方程式 \\(t^2-5t+3^2=0\\) を解いて一般項を求めると \\(D_n=\\frac{\\sqrt{11} \\cdot 2^{- n} i \\left(\\left(5 - \\sqrt{11} i\\right)^{n + 1} - \\left(5 + \\sqrt{11} i\\right)^{n + 1}\\right)}{22}\\)。",
-      "statement_tex": "整数 \\(n\\ge1\\) に対し，主対角成分が \\(5\\)，隣接成分が \\(-3\\)，他が \\(0\\) の \\(n\\) 次三重対角行列の行列式 \\(D_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "cofactor_recurrence_plus_characteristic_root_solution"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{2^{- n} \\sqrt{3} i \\left(\\left(1 - \\sqrt{3} i\\right)^{n + 1} - \\left(1 + \\sqrt{3} i\\right)^{n + 1}\\right)}{6}",
-      "candidate_id": "param:spectral.tridiagonal_determinant:967528808d",
-      "difficulty": "B",
-      "domain": "linear_algebra",
-      "family_id": "spectral.tridiagonal_determinant",
-      "lift_certificate": {
-        "morphism_chain": [
-          "LaplaceExpansion",
-          "LinearRecurrence",
-          "CharacteristicRootClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "最終行で余因子展開すると \\(D_n=1D_{n-1}-1^2 D_{n-2}\\)（\\(D_1=1,\\ D_2=0\\)）。特性方程式 \\(t^2-1t+1^2=0\\) を解いて一般項を求めると \\(D_n=\\frac{2^{- n} \\sqrt{3} i \\left(\\left(1 - \\sqrt{3} i\\right)^{n + 1} - \\left(1 + \\sqrt{3} i\\right)^{n + 1}\\right)}{6}\\)。",
-      "statement_tex": "整数 \\(n\\ge1\\) に対し，主対角成分が \\(1\\)，隣接成分が \\(-1\\)，他が \\(0\\) の \\(n\\) 次三重対角行列の行列式 \\(D_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "cofactor_recurrence_plus_characteristic_root_solution"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{\\sqrt{5} i \\left(\\left(2 - \\sqrt{5} i\\right)^{n + 1} - \\left(2 + \\sqrt{5} i\\right)^{n + 1}\\right)}{10}",
-      "candidate_id": "param:spectral.tridiagonal_determinant:3c8f09724d",
-      "difficulty": "B",
-      "domain": "linear_algebra",
-      "family_id": "spectral.tridiagonal_determinant",
-      "lift_certificate": {
-        "morphism_chain": [
-          "LaplaceExpansion",
-          "LinearRecurrence",
-          "CharacteristicRootClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "最終行で余因子展開すると \\(D_n=4D_{n-1}-3^2 D_{n-2}\\)（\\(D_1=4,\\ D_2=7\\)）。特性方程式 \\(t^2-4t+3^2=0\\) を解いて一般項を求めると \\(D_n=\\frac{\\sqrt{5} i \\left(\\left(2 - \\sqrt{5} i\\right)^{n + 1} - \\left(2 + \\sqrt{5} i\\right)^{n + 1}\\right)}{10}\\)。",
-      "statement_tex": "整数 \\(n\\ge1\\) に対し，主対角成分が \\(4\\)，隣接成分が \\(-3\\)，他が \\(0\\) の \\(n\\) 次三重対角行列の行列式 \\(D_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "cofactor_recurrence_plus_characteristic_root_solution"
-      }
-    },
-    {
-      "accepted": true,
       "answer_tex": "0",
       "candidate_id": "param:finite_field.shifted_power_product:52a999f37c",
       "difficulty": "A",
@@ -2887,32 +1324,454 @@
         "independent_check": true,
         "method": "field_polynomial_evaluation_plus_reversed_order_recompute"
       }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "8",
+      "candidate_id": "Maximize[](HullArea[](Embed[k=3](EvenQuartic[c=4]())))",
+      "difficulty": "A",
+      "domain": "algebraic_geometry",
+      "family_id": "concept_tree.convex_hull_extremum",
+      "lift_certificate": {
+        "morphism_chain": [
+          "Maximize",
+          " HullArea",
+          " Embed",
+          "k=3 EvenQuartic",
+          "c=4 "
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "",
+      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-4x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に点 \\((r,r^3)\\) を対応させるとき，これら4点の凸包の面積の最大値を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_proof_interior_critical_point"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "32",
+      "candidate_id": "Maximize[](HullArea[](Embed[k=5](EvenQuartic[c=4]())))",
+      "difficulty": "A",
+      "domain": "algebraic_geometry",
+      "family_id": "concept_tree.convex_hull_extremum",
+      "lift_certificate": {
+        "morphism_chain": [
+          "Maximize",
+          " HullArea",
+          " Embed",
+          "k=5 EvenQuartic",
+          "c=4 "
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "",
+      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-4x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に点 \\((r,r^5)\\) を対応させるとき，これら4点の凸包の面積の最大値を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_proof_interior_critical_point"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "16",
+      "candidate_id": "Maximize[](HullArea[](Embed[k=2](EvenQuartic[c=6]())))",
+      "difficulty": "A",
+      "domain": "algebraic_geometry",
+      "family_id": "concept_tree.convex_hull_extremum",
+      "lift_certificate": {
+        "morphism_chain": [
+          "Maximize",
+          " HullArea",
+          " Embed",
+          "k=2 EvenQuartic",
+          "c=6 "
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "",
+      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-6x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に点 \\((r,r^2)\\) を対応させるとき，これら4点の凸包の面積の最大値を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_proof_interior_critical_point"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "18",
+      "candidate_id": "Maximize[](HullArea[](Embed[k=3](EvenQuartic[c=6]())))",
+      "difficulty": "A",
+      "domain": "algebraic_geometry",
+      "family_id": "concept_tree.convex_hull_extremum",
+      "lift_certificate": {
+        "morphism_chain": [
+          "Maximize",
+          " HullArea",
+          " Embed",
+          "k=3 EvenQuartic",
+          "c=6 "
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "",
+      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-6x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に点 \\((r,r^3)\\) を対応させるとき，これら4点の凸包の面積の最大値を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_proof_interior_critical_point"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "96",
+      "candidate_id": "Maximize[](HullArea[](Embed[k=4](EvenQuartic[c=6]())))",
+      "difficulty": "A",
+      "domain": "algebraic_geometry",
+      "family_id": "concept_tree.convex_hull_extremum",
+      "lift_certificate": {
+        "morphism_chain": [
+          "Maximize",
+          " HullArea",
+          " Embed",
+          "k=4 EvenQuartic",
+          "c=6 "
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "",
+      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-6x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に点 \\((r,r^4)\\) を対応させるとき，これら4点の凸包の面積の最大値を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_proof_interior_critical_point"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "50",
+      "candidate_id": "Maximize[](HullArea[](Embed[k=3](EvenQuartic[c=10]())))",
+      "difficulty": "A",
+      "domain": "algebraic_geometry",
+      "family_id": "concept_tree.convex_hull_extremum",
+      "lift_certificate": {
+        "morphism_chain": [
+          "Maximize",
+          " HullArea",
+          " Embed",
+          "k=3 EvenQuartic",
+          "c=10 "
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "",
+      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-10x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に点 \\((r,r^3)\\) を対応させるとき，これら4点の凸包の面積の最大値を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_proof_interior_critical_point"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "72",
+      "candidate_id": "Maximize[](HullArea[](Embed[k=3](EvenQuartic[c=12]())))",
+      "difficulty": "A",
+      "domain": "algebraic_geometry",
+      "family_id": "concept_tree.convex_hull_extremum",
+      "lift_certificate": {
+        "morphism_chain": [
+          "Maximize",
+          " HullArea",
+          " Embed",
+          "k=3 EvenQuartic",
+          "c=12 "
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "",
+      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-12x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に点 \\((r,r^3)\\) を対応させるとき，これら4点の凸包の面積の最大値を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_proof_interior_critical_point"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "-24",
+      "candidate_id": "Minimize[](Difference[](HullArea[](Embed[k=3](EvenQuartic[c=4]())),HullArea[](Embed[k=5](EvenQuartic[c=4]()))))",
+      "difficulty": "A",
+      "domain": "algebraic_geometry",
+      "family_id": "concept_tree.convex_hull_extremum",
+      "lift_certificate": {
+        "morphism_chain": [
+          "Minimize",
+          " Difference",
+          " HullArea",
+          " Embed",
+          "k=3 EvenQuartic",
+          "c=4 ,HullArea",
+          " Embed",
+          "k=5 EvenQuartic",
+          "c=4 "
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "",
+      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-4x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に対し，点 \\((r,r^3)\\) から定まる「これら4点の凸包の面積」から，点 \\((r,r^5)\\) から定まる「これら4点の凸包の面積」を引いた差の最小値を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_proof_interior_critical_point"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "-50",
+      "candidate_id": "Minimize[](Difference[](HullArea[](Embed[k=3](EvenQuartic[c=5]())),HullArea[](Embed[k=5](EvenQuartic[c=5]()))))",
+      "difficulty": "A",
+      "domain": "algebraic_geometry",
+      "family_id": "concept_tree.convex_hull_extremum",
+      "lift_certificate": {
+        "morphism_chain": [
+          "Minimize",
+          " Difference",
+          " HullArea",
+          " Embed",
+          "k=3 EvenQuartic",
+          "c=5 ,HullArea",
+          " Embed",
+          "k=5 EvenQuartic",
+          "c=5 "
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "",
+      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-5x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に対し，点 \\((r,r^3)\\) から定まる「これら4点の凸包の面積」から，点 \\((r,r^5)\\) から定まる「これら4点の凸包の面積」を引いた差の最小値を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_proof_interior_critical_point"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "108",
+      "candidate_id": "Maximize[](HullArea[](Embed[k=5](EvenQuartic[c=6]())))",
+      "difficulty": "A",
+      "domain": "algebraic_geometry",
+      "family_id": "concept_tree.convex_hull_extremum",
+      "lift_certificate": {
+        "morphism_chain": [
+          "Maximize",
+          " HullArea",
+          " Embed",
+          "k=5 EvenQuartic",
+          "c=6 "
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "",
+      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-6x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に点 \\((r,r^5)\\) を対応させるとき，これら4点の凸包の面積の最大値を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_proof_interior_critical_point"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "-80",
+      "candidate_id": "Minimize[](Difference[](HullArea[](Embed[k=2](EvenQuartic[c=6]())),HullArea[](Embed[k=4](EvenQuartic[c=6]()))))",
+      "difficulty": "A",
+      "domain": "algebraic_geometry",
+      "family_id": "concept_tree.convex_hull_extremum",
+      "lift_certificate": {
+        "morphism_chain": [
+          "Minimize",
+          " Difference",
+          " HullArea",
+          " Embed",
+          "k=2 EvenQuartic",
+          "c=6 ,HullArea",
+          " Embed",
+          "k=4 EvenQuartic",
+          "c=6 "
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "",
+      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-6x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に対し，点 \\((r,r^2)\\) から定まる「これら4点の凸包の面積」から，点 \\((r,r^4)\\) から定まる「これら4点の凸包の面積」を引いた差の最小値を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_proof_interior_critical_point"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "-90",
+      "candidate_id": "Minimize[](Difference[](HullArea[](Embed[k=3](EvenQuartic[c=6]())),HullArea[](Embed[k=5](EvenQuartic[c=6]()))))",
+      "difficulty": "A",
+      "domain": "algebraic_geometry",
+      "family_id": "concept_tree.convex_hull_extremum",
+      "lift_certificate": {
+        "morphism_chain": [
+          "Minimize",
+          " Difference",
+          " HullArea",
+          " Embed",
+          "k=3 EvenQuartic",
+          "c=6 ,HullArea",
+          " Embed",
+          "k=5 EvenQuartic",
+          "c=6 "
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "",
+      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-6x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に対し，点 \\((r,r^3)\\) から定まる「これら4点の凸包の面積」から，点 \\((r,r^5)\\) から定まる「これら4点の凸包の面積」を引いた差の最小値を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_proof_interior_critical_point"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "256",
+      "candidate_id": "Maximize[](HullArea[](Embed[k=5](EvenQuartic[c=8]())))",
+      "difficulty": "A",
+      "domain": "algebraic_geometry",
+      "family_id": "concept_tree.convex_hull_extremum",
+      "lift_certificate": {
+        "morphism_chain": [
+          "Maximize",
+          " HullArea",
+          " Embed",
+          "k=5 EvenQuartic",
+          "c=8 "
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "",
+      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-8x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に点 \\((r,r^5)\\) を対応させるとき，これら4点の凸包の面積の最大値を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_proof_interior_critical_point"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "500",
+      "candidate_id": "Maximize[](HullArea[](Embed[k=5](EvenQuartic[c=10]())))",
+      "difficulty": "A",
+      "domain": "algebraic_geometry",
+      "family_id": "concept_tree.convex_hull_extremum",
+      "lift_certificate": {
+        "morphism_chain": [
+          "Maximize",
+          " HullArea",
+          " Embed",
+          "k=5 EvenQuartic",
+          "c=10 "
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "solution_tex": "",
+      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-10x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に点 \\((r,r^5)\\) を対応させるとき，これら4点の凸包の面積の最大値を求めよ。",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_proof_interior_critical_point"
+      }
     }
   ],
   "source_note": "Mechanically assembled from MathOS generators after every acceptance gate. Each problem carries an exact backend derivation plus an independent check; the Discord bot never edits these records.",
   "summary": {
-    "accepted": 106,
+    "accepted": 62,
     "all_backend_verified": true,
     "difficulty_counts": {
-      "A": 39,
-      "B": 26,
-      "C": 41
+      "A": 33,
+      "B": 10,
+      "C": 19
     },
     "domain_counts": {
-      "algebra": 42,
-      "algebraic_geometry": 1,
+      "algebra": 1,
+      "algebraic_geometry": 15,
       "analytic_geometry": 1,
       "combinatorics": 1,
       "combinatorics_analysis": 1,
-      "combinatorics_number_theory": 12,
+      "combinatorics_number_theory": 9,
       "complex_geometry": 1,
-      "linear_algebra": 14,
+      "linear_algebra": 10,
       "linear_algebra_number_theory": 2,
-      "number_theory": 26,
+      "number_theory": 16,
       "probability": 2,
       "real_analysis": 3
     },
-    "families": 27,
+    "families": 24,
     "family_counts": {
       "algebraic_geometry.cubic_discriminant_triangle_area": 1,
       "analysis.boundary_layer_integral_limit": 1,
@@ -2920,11 +1779,12 @@
       "arithmetic_matrix.gcd_incidence_determinant": 1,
       "asymptotic.recurrence_square_increment": 1,
       "binomial.beta_integral_duality": 1,
-      "binomial.roots_of_unity_filter": 11,
+      "binomial.roots_of_unity_filter": 8,
       "binomial.roots_of_unity_filter_mod3": 1,
       "complex_geometry.reciprocal_root_polygon_area": 1,
+      "concept_tree.convex_hull_extremum": 14,
       "conic_duality.tangent_intercept_centroid_minimum": 1,
-      "finite_field.circle_point_count": 18,
+      "finite_field.circle_point_count": 8,
       "finite_field.inverse_square_product_character": 1,
       "finite_field.quadratic_form_zero_count": 1,
       "finite_field.shifted_power_product": 5,
@@ -2933,16 +1793,13 @@
       "polynomial.interpolation_harmonic_observable": 1,
       "probability.left_to_right_maxima_expectation": 1,
       "probability.random_bridge_zero_count": 1,
-      "recurrence.affine_closed_form": 14,
       "recurrence.cassini_fibonacci_determinant_invariant": 1,
-      "series.faulhaber_power_sum": 11,
-      "series.telescoping_triple_partial_fraction": 1,
-      "series.weighted_geometric_sum": 15,
-      "spectral.tridiagonal_determinant": 12,
+      "spectral.tridiagonal_determinant": 8,
       "spectral_graph.cycle_laplacian_pseudodeterminant": 1,
       "spectral_graph.path_laplacian_tridiagonal_determinant": 1
     },
-    "from_hand_authored": 20,
-    "from_parametric_engine": 86
+    "from_concept_tree": 14,
+    "from_hand_authored": 19,
+    "from_parametric_engine": 29
   }
 }
