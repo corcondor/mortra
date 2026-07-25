@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-25T04:39:30.522955+00:00",
+  "generated_at": "2026-07-25T05:08:25.349790+00:00",
   "method": {
     "gates": [
       "backend verified",
@@ -10,6 +10,76 @@
     "similarity_definition": "SIMILARITY.md: char 3-gram Jaccard, computed (not hardcoded)"
   },
   "problems": [
+    {
+      "accepted": true,
+      "answer_tex": "-1 + 2 i",
+      "candidate_id": "construct:construct.complex_affine_limit:084",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 10.89
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_affine_limit",
+      "lift_certificate": {
+        "morphism_chain": [
+          "FixedPointShift",
+          "ContractionHalf",
+          "ComplexLimit"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2583
+      },
+      "solution_tex": "不動点 \\(w=(w+-1 + 2 i)/2\\) より \\(w=-1 + 2 i\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
+      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(-1 + 2 i)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
+      "tool": "fixed_point",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "complex_affine_fixed_point_limit"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "12",
+      "candidate_id": "construct:construct.complex_rotation_period:047",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 9.8
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_rotation_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimitiveRootOfUnity",
+          "DeMoivrePower",
+          "MinimalPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2014
+      },
+      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{2\\pi}{12}\\) の回転で，\\(\\gcd(1,12)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=12\\)、すなわち \\(n=12\\)（高校：ド・モアブル）。",
+      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{2\\pi}{12}+i\\sin\\dfrac{2\\pi}{12}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "polar_form",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "de_moivre_primitive_root_period"
+      }
+    },
     {
       "accepted": true,
       "answer_tex": "3",
@@ -183,6 +253,181 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "paley_strongly_regular_lambda"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{1}{3 n - 2}",
+      "candidate_id": "construct:construct.reciprocal_recurrence:076",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 6.41
+      },
+      "domain": "algebra",
+      "family_id": "construct.reciprocal_recurrence",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ReciprocalTransform",
+          "LinearRecurrence",
+          "GeneralTerm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.3895
+      },
+      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=1b_n+3\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{1+3a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
+      "tool": "reciprocal_transform",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "reciprocal_linearization"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{1}{4}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:048",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1103
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{4}=1\\) より \\(p_k=k/4\\)。",
+      "statement_tex": "数直線上の点が \\(k=1\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=4\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "(0,\\ \\frac{1}{2})",
+      "candidate_id": "construct:construct.parabola_right_angle_chord:071",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 1,
+        "construct": 0,
+        "score": 4.88
+      },
+      "domain": "geometry",
+      "family_id": "construct.parabola_right_angle_chord",
+      "lift_certificate": {
+        "morphism_chain": [
+          "RightAngleCondition",
+          "SlopeProductInvariant",
+          "FixedPoint"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1143
+      },
+      "solution_tex": "\\(A=(a,2a^2),B=(b,2b^2)\\)。\\(OA\\perp OB\\) から傾きの積 \\(\\tfrac{2a^2}{a}\\cdot\\tfrac{2b^2}{b}=2^2ab=-1\\)，すなわち \\(ab=-1/2^2\\)（一定）。弦 \\(AB\\) は \\(y=2(a+b)x-2ab\\) で \\(x=0\\) のとき \\(y=1/2\\)。定点 \\((0,1/2)\\)（高校）。",
+      "statement_tex": "放物線 \\(y=2 x^{2}\\) 上の相異なる2点 \\(A,B\\) と原点 \\(O\\) が \\(\\angle AOB=90^\\circ\\) を満たしながら動く。このとき弦 \\(AB\\) が必ず通る定点を求めよ。",
+      "tool": "slope_product",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parabola_slope_product_fixed_point"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "1 + i",
+      "candidate_id": "construct:construct.complex_affine_limit:081",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 10.83
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_affine_limit",
+      "lift_certificate": {
+        "morphism_chain": [
+          "FixedPointShift",
+          "ContractionHalf",
+          "ComplexLimit"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2627
+      },
+      "solution_tex": "不動点 \\(w=(w+1 + i)/2\\) より \\(w=1 + i\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
+      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(1 + i)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
+      "tool": "fixed_point",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "complex_affine_fixed_point_limit"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "3",
+      "candidate_id": "construct:construct.complex_rotation_period:034",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 9.74
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_rotation_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimitiveRootOfUnity",
+          "DeMoivrePower",
+          "MinimalPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2028
+      },
+      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{2\\pi}{3}\\) の回転で，\\(\\gcd(1,3)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=3\\)、すなわち \\(n=3\\)（高校：ド・モアブル）。",
+      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{2\\pi}{3}+i\\sin\\dfrac{2\\pi}{3}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "polar_form",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "de_moivre_primitive_root_period"
       }
     },
     {
@@ -362,6 +607,181 @@
     },
     {
       "accepted": true,
+      "answer_tex": "\\frac{1}{2^{n + 1} - 3}",
+      "candidate_id": "construct:construct.reciprocal_recurrence:077",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 6.41
+      },
+      "domain": "algebra",
+      "family_id": "construct.reciprocal_recurrence",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ReciprocalTransform",
+          "LinearRecurrence",
+          "GeneralTerm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.3895
+      },
+      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=2b_n+3\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{2+3a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
+      "tool": "reciprocal_transform",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "reciprocal_linearization"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{1}{2}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:049",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1103
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{4}=1\\) より \\(p_k=k/4\\)。",
+      "statement_tex": "数直線上の点が \\(k=2\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=4\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "(0,\\ \\frac{1}{3})",
+      "candidate_id": "construct:construct.parabola_right_angle_chord:072",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 1,
+        "construct": 0,
+        "score": 4.88
+      },
+      "domain": "geometry",
+      "family_id": "construct.parabola_right_angle_chord",
+      "lift_certificate": {
+        "morphism_chain": [
+          "RightAngleCondition",
+          "SlopeProductInvariant",
+          "FixedPoint"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1143
+      },
+      "solution_tex": "\\(A=(a,3a^2),B=(b,3b^2)\\)。\\(OA\\perp OB\\) から傾きの積 \\(\\tfrac{3a^2}{a}\\cdot\\tfrac{3b^2}{b}=3^2ab=-1\\)，すなわち \\(ab=-1/3^2\\)（一定）。弦 \\(AB\\) は \\(y=3(a+b)x-3ab\\) で \\(x=0\\) のとき \\(y=1/3\\)。定点 \\((0,1/3)\\)（高校）。",
+      "statement_tex": "放物線 \\(y=3 x^{2}\\) 上の相異なる2点 \\(A,B\\) と原点 \\(O\\) が \\(\\angle AOB=90^\\circ\\) を満たしながら動く。このとき弦 \\(AB\\) が必ず通る定点を求めよ。",
+      "tool": "slope_product",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parabola_slope_product_fixed_point"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "2 - i",
+      "candidate_id": "construct:construct.complex_affine_limit:082",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 10.83
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_affine_limit",
+      "lift_certificate": {
+        "morphism_chain": [
+          "FixedPointShift",
+          "ContractionHalf",
+          "ComplexLimit"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2627
+      },
+      "solution_tex": "不動点 \\(w=(w+2 - i)/2\\) より \\(w=2 - i\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
+      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(2 - i)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
+      "tool": "fixed_point",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "complex_affine_fixed_point_limit"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "3",
+      "candidate_id": "construct:construct.complex_rotation_period:035",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 9.74
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_rotation_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimitiveRootOfUnity",
+          "DeMoivrePower",
+          "MinimalPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2028
+      },
+      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{4\\pi}{3}\\) の回転で，\\(\\gcd(2,3)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=3\\)、すなわち \\(n=3\\)（高校：ド・モアブル）。",
+      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{4\\pi}{3}+i\\sin\\dfrac{4\\pi}{3}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "polar_form",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "de_moivre_primitive_root_period"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "2",
       "candidate_id": "construct:construct.mobius_iteration_period:004",
       "difficulty": {
@@ -537,6 +957,181 @@
     },
     {
       "accepted": true,
+      "answer_tex": "\\frac{1}{2 n - 1}",
+      "candidate_id": "construct:construct.reciprocal_recurrence:079",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 6.41
+      },
+      "domain": "algebra",
+      "family_id": "construct.reciprocal_recurrence",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ReciprocalTransform",
+          "LinearRecurrence",
+          "GeneralTerm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.3895
+      },
+      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=1b_n+2\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{1+2a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
+      "tool": "reciprocal_transform",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "reciprocal_linearization"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{3}{4}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:050",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1096
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{4}=1\\) より \\(p_k=k/4\\)。",
+      "statement_tex": "数直線上の点が \\(k=3\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=4\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "(0,\\ \\frac{1}{4})",
+      "candidate_id": "construct:construct.parabola_right_angle_chord:073",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 1,
+        "construct": 0,
+        "score": 4.88
+      },
+      "domain": "geometry",
+      "family_id": "construct.parabola_right_angle_chord",
+      "lift_certificate": {
+        "morphism_chain": [
+          "RightAngleCondition",
+          "SlopeProductInvariant",
+          "FixedPoint"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1143
+      },
+      "solution_tex": "\\(A=(a,4a^2),B=(b,4b^2)\\)。\\(OA\\perp OB\\) から傾きの積 \\(\\tfrac{4a^2}{a}\\cdot\\tfrac{4b^2}{b}=4^2ab=-1\\)，すなわち \\(ab=-1/4^2\\)（一定）。弦 \\(AB\\) は \\(y=4(a+b)x-4ab\\) で \\(x=0\\) のとき \\(y=1/4\\)。定点 \\((0,1/4)\\)（高校）。",
+      "statement_tex": "放物線 \\(y=4 x^{2}\\) 上の相異なる2点 \\(A,B\\) と原点 \\(O\\) が \\(\\angle AOB=90^\\circ\\) を満たしながら動く。このとき弦 \\(AB\\) が必ず通る定点を求めよ。",
+      "tool": "slope_product",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parabola_slope_product_fixed_point"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "3 i",
+      "candidate_id": "construct:construct.complex_affine_limit:083",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 10.8
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_affine_limit",
+      "lift_certificate": {
+        "morphism_chain": [
+          "FixedPointShift",
+          "ContractionHalf",
+          "ComplexLimit"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.265
+      },
+      "solution_tex": "不動点 \\(w=(w+3 i)/2\\) より \\(w=3 i\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
+      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(3 i)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
+      "tool": "fixed_point",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "complex_affine_fixed_point_limit"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "4",
+      "candidate_id": "construct:construct.complex_rotation_period:036",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 9.74
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_rotation_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimitiveRootOfUnity",
+          "DeMoivrePower",
+          "MinimalPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2028
+      },
+      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{2\\pi}{4}\\) の回転で，\\(\\gcd(1,4)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=4\\)、すなわち \\(n=4\\)（高校：ド・モアブル）。",
+      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{2\\pi}{4}+i\\sin\\dfrac{2\\pi}{4}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "polar_form",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "de_moivre_primitive_root_period"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "10",
       "candidate_id": "construct:construct.linear_recurrence_mod_period:016",
       "difficulty": {
@@ -677,6 +1272,181 @@
     },
     {
       "accepted": true,
+      "answer_tex": "\\frac{1}{n}",
+      "candidate_id": "construct:construct.reciprocal_recurrence:074",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 6.39
+      },
+      "domain": "algebra",
+      "family_id": "construct.reciprocal_recurrence",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ReciprocalTransform",
+          "LinearRecurrence",
+          "GeneralTerm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.3936
+      },
+      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=1b_n+1\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{1+a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
+      "tool": "reciprocal_transform",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "reciprocal_linearization"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{1}{5}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:051",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1103
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{5}=1\\) より \\(p_k=k/5\\)。",
+      "statement_tex": "数直線上の点が \\(k=1\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=5\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "(0,\\ 1)",
+      "candidate_id": "construct:construct.parabola_right_angle_chord:070",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 1,
+        "construct": 0,
+        "score": 4.86
+      },
+      "domain": "geometry",
+      "family_id": "construct.parabola_right_angle_chord",
+      "lift_certificate": {
+        "morphism_chain": [
+          "RightAngleCondition",
+          "SlopeProductInvariant",
+          "FixedPoint"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1151
+      },
+      "solution_tex": "\\(A=(a,1a^2),B=(b,1b^2)\\)。\\(OA\\perp OB\\) から傾きの積 \\(\\tfrac{1a^2}{a}\\cdot\\tfrac{1b^2}{b}=1^2ab=-1\\)，すなわち \\(ab=-1/1^2\\)（一定）。弦 \\(AB\\) は \\(y=1(a+b)x-1ab\\) で \\(x=0\\) のとき \\(y=1/1\\)。定点 \\((0,1/1)\\)（高校）。",
+      "statement_tex": "放物線 \\(y=x^{2}\\) 上の相異なる2点 \\(A,B\\) と原点 \\(O\\) が \\(\\angle AOB=90^\\circ\\) を満たしながら動く。このとき弦 \\(AB\\) が必ず通る定点を求めよ。",
+      "tool": "slope_product",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parabola_slope_product_fixed_point"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "i",
+      "candidate_id": "construct:construct.complex_affine_limit:080",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 10.77
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_affine_limit",
+      "lift_certificate": {
+        "morphism_chain": [
+          "FixedPointShift",
+          "ContractionHalf",
+          "ComplexLimit"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2672
+      },
+      "solution_tex": "不動点 \\(w=(w+i)/2\\) より \\(w=i\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
+      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(i)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
+      "tool": "fixed_point",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "complex_affine_fixed_point_limit"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "4",
+      "candidate_id": "construct:construct.complex_rotation_period:037",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 9.74
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_rotation_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimitiveRootOfUnity",
+          "DeMoivrePower",
+          "MinimalPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2028
+      },
+      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{6\\pi}{4}\\) の回転で，\\(\\gcd(3,4)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=4\\)、すなわち \\(n=4\\)（高校：ド・モアブル）。",
+      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{6\\pi}{4}+i\\sin\\dfrac{6\\pi}{4}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "polar_form",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "de_moivre_primitive_root_period"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "4",
       "candidate_id": "construct:construct.linear_recurrence_mod_period:017",
       "difficulty": {
@@ -778,6 +1548,146 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "paley_strongly_regular_lambda"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{1}{2^{n} - 1}",
+      "candidate_id": "construct:construct.reciprocal_recurrence:075",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 6.39
+      },
+      "domain": "algebra",
+      "family_id": "construct.reciprocal_recurrence",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ReciprocalTransform",
+          "LinearRecurrence",
+          "GeneralTerm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.3936
+      },
+      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=2b_n+1\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{2+a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
+      "tool": "reciprocal_transform",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "reciprocal_linearization"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{2}{5}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:052",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1103
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{5}=1\\) より \\(p_k=k/5\\)。",
+      "statement_tex": "数直線上の点が \\(k=2\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=5\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "3",
+      "candidate_id": "construct:construct.complex_affine_limit:085",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 10.77
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_affine_limit",
+      "lift_certificate": {
+        "morphism_chain": [
+          "FixedPointShift",
+          "ContractionHalf",
+          "ComplexLimit"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2672
+      },
+      "solution_tex": "不動点 \\(w=(w+3)/2\\) より \\(w=3\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
+      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(3)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
+      "tool": "fixed_point",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "complex_affine_fixed_point_limit"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "5",
+      "candidate_id": "construct:construct.complex_rotation_period:038",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 9.74
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_rotation_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimitiveRootOfUnity",
+          "DeMoivrePower",
+          "MinimalPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2028
+      },
+      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{2\\pi}{5}\\) の回転で，\\(\\gcd(1,5)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=5\\)、すなわち \\(n=5\\)（高校：ド・モアブル）。",
+      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{2\\pi}{5}+i\\sin\\dfrac{2\\pi}{5}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "polar_form",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "de_moivre_primitive_root_period"
       }
     },
     {
@@ -887,6 +1797,111 @@
     },
     {
       "accepted": true,
+      "answer_tex": "\\frac{2}{3^{n} - 1}",
+      "candidate_id": "construct:construct.reciprocal_recurrence:078",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 6.39
+      },
+      "domain": "algebra",
+      "family_id": "construct.reciprocal_recurrence",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ReciprocalTransform",
+          "LinearRecurrence",
+          "GeneralTerm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.3936
+      },
+      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=3b_n+1\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{3+a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
+      "tool": "reciprocal_transform",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "reciprocal_linearization"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{3}{5}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:053",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1096
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{5}=1\\) より \\(p_k=k/5\\)。",
+      "statement_tex": "数直線上の点が \\(k=3\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=5\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "5",
+      "candidate_id": "construct:construct.complex_rotation_period:039",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 9.74
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_rotation_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimitiveRootOfUnity",
+          "DeMoivrePower",
+          "MinimalPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2028
+      },
+      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{4\\pi}{5}\\) の回転で，\\(\\gcd(2,5)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=5\\)、すなわち \\(n=5\\)（高校：ド・モアブル）。",
+      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{4\\pi}{5}+i\\sin\\dfrac{4\\pi}{5}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "polar_form",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "de_moivre_primitive_root_period"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "12",
       "candidate_id": "construct:construct.linear_recurrence_mod_period:020",
       "difficulty": {
@@ -918,6 +1933,76 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{4}{5}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:054",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1096
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{5}=1\\) より \\(p_k=k/5\\)。",
+      "statement_tex": "数直線上の点が \\(k=4\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=5\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "5",
+      "candidate_id": "construct:construct.complex_rotation_period:040",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 9.74
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_rotation_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimitiveRootOfUnity",
+          "DeMoivrePower",
+          "MinimalPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2028
+      },
+      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{6\\pi}{5}\\) の回転で，\\(\\gcd(3,5)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=5\\)、すなわち \\(n=5\\)（高校：ド・モアブル）。",
+      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{6\\pi}{5}+i\\sin\\dfrac{6\\pi}{5}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "polar_form",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "de_moivre_primitive_root_period"
       }
     },
     {
@@ -957,6 +2042,76 @@
     },
     {
       "accepted": true,
+      "answer_tex": "\\frac{1}{6}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:055",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1103
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{6}=1\\) より \\(p_k=k/6\\)。",
+      "statement_tex": "数直線上の点が \\(k=1\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=6\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "6",
+      "candidate_id": "construct:construct.complex_rotation_period:041",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 9.74
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_rotation_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimitiveRootOfUnity",
+          "DeMoivrePower",
+          "MinimalPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2028
+      },
+      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{2\\pi}{6}\\) の回転で，\\(\\gcd(1,6)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=6\\)、すなわち \\(n=6\\)（高校：ド・モアブル）。",
+      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{2\\pi}{6}+i\\sin\\dfrac{2\\pi}{6}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "polar_form",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "de_moivre_primitive_root_period"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "8",
       "candidate_id": "construct:construct.linear_recurrence_mod_period:022",
       "difficulty": {
@@ -988,6 +2143,76 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{1}{3}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:056",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1103
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{6}=1\\) より \\(p_k=k/6\\)。",
+      "statement_tex": "数直線上の点が \\(k=2\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=6\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "7",
+      "candidate_id": "construct:construct.complex_rotation_period:042",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 9.74
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_rotation_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimitiveRootOfUnity",
+          "DeMoivrePower",
+          "MinimalPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2028
+      },
+      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{2\\pi}{7}\\) の回転で，\\(\\gcd(1,7)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=7\\)、すなわち \\(n=7\\)（高校：ド・モアブル）。",
+      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{2\\pi}{7}+i\\sin\\dfrac{2\\pi}{7}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "polar_form",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "de_moivre_primitive_root_period"
       }
     },
     {
@@ -1027,6 +2252,76 @@
     },
     {
       "accepted": true,
+      "answer_tex": "\\frac{1}{2}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:057",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1096
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{6}=1\\) より \\(p_k=k/6\\)。",
+      "statement_tex": "数直線上の点が \\(k=3\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=6\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "7",
+      "candidate_id": "construct:construct.complex_rotation_period:043",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 9.74
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_rotation_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimitiveRootOfUnity",
+          "DeMoivrePower",
+          "MinimalPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2028
+      },
+      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{4\\pi}{7}\\) の回転で，\\(\\gcd(2,7)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=7\\)、すなわち \\(n=7\\)（高校：ド・モアブル）。",
+      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{4\\pi}{7}+i\\sin\\dfrac{4\\pi}{7}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "polar_form",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "de_moivre_primitive_root_period"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "8",
       "candidate_id": "construct:construct.linear_recurrence_mod_period:025",
       "difficulty": {
@@ -1058,6 +2353,76 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{2}{3}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:058",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1096
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{6}=1\\) より \\(p_k=k/6\\)。",
+      "statement_tex": "数直線上の点が \\(k=4\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=6\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "7",
+      "candidate_id": "construct:construct.complex_rotation_period:044",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 9.74
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_rotation_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimitiveRootOfUnity",
+          "DeMoivrePower",
+          "MinimalPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2028
+      },
+      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{6\\pi}{7}\\) の回転で，\\(\\gcd(3,7)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=7\\)、すなわち \\(n=7\\)（高校：ド・モアブル）。",
+      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{6\\pi}{7}+i\\sin\\dfrac{6\\pi}{7}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "polar_form",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "de_moivre_primitive_root_period"
       }
     },
     {
@@ -1097,6 +2462,76 @@
     },
     {
       "accepted": true,
+      "answer_tex": "\\frac{5}{6}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:059",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1096
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{6}=1\\) より \\(p_k=k/6\\)。",
+      "statement_tex": "数直線上の点が \\(k=5\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=6\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "8",
+      "candidate_id": "construct:construct.complex_rotation_period:045",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 9.74
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_rotation_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimitiveRootOfUnity",
+          "DeMoivrePower",
+          "MinimalPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2028
+      },
+      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{2\\pi}{8}\\) の回転で，\\(\\gcd(1,8)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=8\\)、すなわち \\(n=8\\)（高校：ド・モアブル）。",
+      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{2\\pi}{8}+i\\sin\\dfrac{2\\pi}{8}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "polar_form",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "de_moivre_primitive_root_period"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "20",
       "candidate_id": "construct:construct.linear_recurrence_mod_period:013",
       "difficulty": {
@@ -1128,6 +2563,76 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{1}{7}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:060",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1103
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{7}=1\\) より \\(p_k=k/7\\)。",
+      "statement_tex": "数直線上の点が \\(k=1\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=7\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "8",
+      "candidate_id": "construct:construct.complex_rotation_period:046",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 9.74
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_rotation_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimitiveRootOfUnity",
+          "DeMoivrePower",
+          "MinimalPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2028
+      },
+      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{6\\pi}{8}\\) の回転で，\\(\\gcd(3,8)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=8\\)、すなわち \\(n=8\\)（高校：ド・モアブル）。",
+      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{6\\pi}{8}+i\\sin\\dfrac{6\\pi}{8}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "polar_form",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "de_moivre_primitive_root_period"
       }
     },
     {
@@ -1167,6 +2672,41 @@
     },
     {
       "accepted": true,
+      "answer_tex": "\\frac{2}{7}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:061",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1103
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{7}=1\\) より \\(p_k=k/7\\)。",
+      "statement_tex": "数直線上の点が \\(k=2\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=7\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "12",
       "candidate_id": "construct:construct.linear_recurrence_mod_period:015",
       "difficulty": {
@@ -1199,6 +2739,286 @@
         "independent_check": true,
         "method": "companion_matrix_modular_order"
       }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{3}{7}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:062",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1096
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{7}=1\\) より \\(p_k=k/7\\)。",
+      "statement_tex": "数直線上の点が \\(k=3\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=7\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{4}{7}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:063",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1096
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{7}=1\\) より \\(p_k=k/7\\)。",
+      "statement_tex": "数直線上の点が \\(k=4\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=7\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{5}{7}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:064",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1096
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{7}=1\\) より \\(p_k=k/7\\)。",
+      "statement_tex": "数直線上の点が \\(k=5\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=7\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{6}{7}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:065",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1096
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{7}=1\\) より \\(p_k=k/7\\)。",
+      "statement_tex": "数直線上の点が \\(k=6\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=7\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{8}{15}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:066",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 4.41
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.0962
+      },
+      "solution_tex": "\\(p_k=\\tfrac{2}{3}p_{k+1}+\\tfrac{1}{3}p_{k-1}\\)。特性比 \\(r=\\frac{1}{2}\\) で \\(p_k=\\dfrac{1-r^k}{1-r^N}\\)（高校：漸化式）。",
+      "statement_tex": "数直線上の点が \\(k=1\\) から出発し，各回 右へ確率 \\(\\tfrac{2}{3}\\)、左へ \\(\\tfrac{1}{3}\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=4\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{24}{31}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:067",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 4.41
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1026
+      },
+      "solution_tex": "\\(p_k=\\tfrac{2}{3}p_{k+1}+\\tfrac{1}{3}p_{k-1}\\)。特性比 \\(r=\\frac{1}{2}\\) で \\(p_k=\\dfrac{1-r^k}{1-r^N}\\)（高校：漸化式）。",
+      "statement_tex": "数直線上の点が \\(k=2\\) から出発し，各回 右へ確率 \\(\\tfrac{2}{3}\\)、左へ \\(\\tfrac{1}{3}\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=5\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{81}{91}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:069",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 4.41
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1026
+      },
+      "solution_tex": "\\(p_k=\\tfrac{3}{4}p_{k+1}+\\tfrac{1}{4}p_{k-1}\\)。特性比 \\(r=\\frac{1}{3}\\) で \\(p_k=\\dfrac{1-r^k}{1-r^N}\\)（高校：漸化式）。",
+      "statement_tex": "数直線上の点が \\(k=2\\) から出発し，各回 右へ確率 \\(\\tfrac{3}{4}\\)、左へ \\(\\tfrac{1}{4}\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=6\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{7}{31}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:068",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 4.35
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.0955
+      },
+      "solution_tex": "\\(p_k=\\tfrac{1}{3}p_{k+1}+\\tfrac{2}{3}p_{k-1}\\)。特性比 \\(r=2\\) で \\(p_k=\\dfrac{1-r^k}{1-r^N}\\)（高校：漸化式）。",
+      "statement_tex": "数直線上の点が \\(k=3\\) から出発し，各回 右へ確率 \\(\\tfrac{1}{3}\\)、左へ \\(\\tfrac{2}{3}\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=5\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
     }
   ],
   "source_note": "対象を構築し条件を課す難問。表層類似度は SIMILARITY.md の定義で実計算。",
@@ -1206,23 +3026,33 @@
     "dropped_not_novel": 0,
     "dropped_too_easy": 0,
     "family_counts": {
+      "construct.complex_affine_limit": 6,
+      "construct.complex_rotation_period": 14,
       "construct.cubic_tangent_midpoint_locus": 6,
+      "construct.gambler_ruin_probability": 22,
       "construct.linear_recurrence_mod_period": 15,
       "construct.mobius_fixed_points": 4,
       "construct.mobius_iteration_period": 3,
-      "construct.paley_common_neighbors": 6
+      "construct.paley_common_neighbors": 6,
+      "construct.parabola_right_angle_chord": 4,
+      "construct.reciprocal_recurrence": 6
     },
-    "generated": 34,
+    "generated": 86,
     "jaccard_range": [
-      0.1163,
+      0.0955,
       0.4059
     ],
-    "kept": 34,
+    "kept": 86,
     "tool_counts": {
+      "fixed_point": 6,
+      "linear_recurrence": 22,
       "matrix_eigen": 4,
       "matrix_mod_order": 15,
       "matrix_power": 3,
+      "polar_form": 14,
       "quadratic_residue": 6,
+      "reciprocal_transform": 6,
+      "slope_product": 4,
       "symbolic_intersection": 6
     },
     "world_corpus_size": 28095
