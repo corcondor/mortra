@@ -55,12 +55,19 @@ async function completeSakumon(interaction: DiscordInteraction) {
 async function completeRating(
   interaction: DiscordInteraction,
   shortId: string,
+  dimension: string,
   rating: number,
 ) {
   try {
-    await recordDiscordRating(shortId, rating, interactionUserId(interaction))
+    await recordDiscordRating(
+      shortId,
+      dimension,
+      rating,
+      interactionUserId(interaction),
+    )
+    const label = dimension === 'diff' ? '難易度' : '新規性'
     await sendDiscordFollowup(interaction, {
-      content: `#${shortId} を ${rating}/5 で評価しました。フィードバックありがとう！`,
+      content: `#${shortId} の${label}を ${rating}/5 で評価しました。ありがとう！`,
       flags: 64,
     })
   } catch (error) {
@@ -199,9 +206,9 @@ export async function POST(request: NextRequest) {
       return json(deferredResponse(true))
     }
     if (customId.startsWith('mathos_rate:')) {
-      const [, shortId, ratingStr] = customId.split(':')
+      const [, shortId, dimension, ratingStr] = customId.split(':')
       const rating = Number(ratingStr)
-      after(() => completeRating(interaction, shortId, rating))
+      after(() => completeRating(interaction, shortId, dimension, rating))
       return json(deferredResponse(true))
     }
   }

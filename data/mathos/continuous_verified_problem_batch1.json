@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-25T02:44:05.002939+00:00",
+  "generated_at": "2026-07-25T04:39:30.522955+00:00",
   "method": {
     "gates": [
       "backend verified",
@@ -47,76 +47,6 @@
     },
     {
       "accepted": true,
-      "answer_tex": "3",
-      "candidate_id": "construct:construct.mobius_iteration_period:006",
-      "difficulty": {
-        "band": "B_hard_university",
-        "condition": 0,
-        "construct": 2,
-        "score": 9.75
-      },
-      "domain": "algebra",
-      "family_id": "construct.mobius_iteration_period",
-      "lift_certificate": {
-        "morphism_chain": [
-          "MobiusToMatrix",
-          "MatrixPower",
-          "ScalarPeriod"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "continuous_verified_problem_batch1",
-        "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.2308
-      },
-      "solution_tex": "\\(f\\) を行列 \\(M=\\begin{pmatrix}1&-1\\\\1&0\\end{pmatrix}\\) に対応させると \\(f_n\\leftrightarrow M^n\\)。\\(M^n\\) がスカラー行列になる最小の \\(n\\) が答え。固有値の比が1の原始冪根であることから定まる。",
-      "statement_tex": "関数 \\(f(x)=\\frac{x - 1}{x}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f_n\\) が恒等写像となる最小の正の整数 \\(n\\) を求めよ。",
-      "tool": "matrix_power",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "mobius_matrix_power_period"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "2",
-      "candidate_id": "construct:construct.mobius_iteration_period:004",
-      "difficulty": {
-        "band": "B_hard_university",
-        "condition": 0,
-        "construct": 2,
-        "score": 9.73
-      },
-      "domain": "algebra",
-      "family_id": "construct.mobius_iteration_period",
-      "lift_certificate": {
-        "morphism_chain": [
-          "MobiusToMatrix",
-          "MatrixPower",
-          "ScalarPeriod"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "continuous_verified_problem_batch1",
-        "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.2231
-      },
-      "solution_tex": "\\(f\\) を行列 \\(M=\\begin{pmatrix}0&-1\\\\1&0\\end{pmatrix}\\) に対応させると \\(f_n\\leftrightarrow M^n\\)。\\(M^n\\) がスカラー行列になる最小の \\(n\\) が答え。固有値の比が1の原始冪根であることから定まる。",
-      "statement_tex": "関数 \\(f(x)=- \\frac{1}{x}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f_n\\) が恒等写像となる最小の正の整数 \\(n\\) を求めよ。",
-      "tool": "matrix_power",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "mobius_matrix_power_period"
-      }
-    },
-    {
-      "accepted": true,
       "answer_tex": "5",
       "candidate_id": "construct:construct.linear_recurrence_mod_period:027",
       "difficulty": {
@@ -148,6 +78,146 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "y=x \\left(28 x^{2} - 3\\right)",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:028",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.79
+      },
+      "domain": "geometry_algebra",
+      "family_id": "construct.cubic_tangent_midpoint_locus",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TangentLine",
+          "CubicReintersection",
+          "MidpointLocus"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1163
+      },
+      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
+      "statement_tex": "曲線 \\(C: y=x^{3} - 3 x\\) 上の点 \\(P(t,\\,t^{3} - 3 t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "tool": "symbolic_intersection",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_tangent_intersection_locus"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "1, 3",
+      "candidate_id": "construct:construct.mobius_fixed_points:000",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 8.4
+      },
+      "domain": "algebra",
+      "family_id": "construct.mobius_fixed_points",
+      "lift_certificate": {
+        "morphism_chain": [
+          "MobiusToMatrix",
+          "Eigenstructure",
+          "FixedPointSolve"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1938
+      },
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}5&-3\\\\1&1\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{5 x - 3}{x + 1}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "tool": "matrix_eigen",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "mobius_matrix_eigen_fixed_points"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "2",
+      "candidate_id": "construct:construct.paley_common_neighbors:007",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.46
+      },
+      "domain": "number_theory_graph",
+      "family_id": "construct.paley_common_neighbors",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ResidueVertices",
+          "QuadraticResidueEdges",
+          "CommonNeighborCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1307
+      },
+      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=2\\)。平方剰余の指標和で示せる。",
+      "statement_tex": "素数 \\(p=13\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{13}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
+      "tool": "quadratic_residue",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "paley_strongly_regular_lambda"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "3",
+      "candidate_id": "construct:construct.mobius_iteration_period:006",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 9.75
+      },
+      "domain": "algebra",
+      "family_id": "construct.mobius_iteration_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "MobiusToMatrix",
+          "MatrixPower",
+          "ScalarPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2308
+      },
+      "solution_tex": "\\(f\\) を行列 \\(M=\\begin{pmatrix}1&-1\\\\1&0\\end{pmatrix}\\) に対応させると \\(f_n\\leftrightarrow M^n\\)。\\(M^n\\) がスカラー行列になる最小の \\(n\\) が答え。固有値の比が1の原始冪根であることから定まる。",
+      "statement_tex": "関数 \\(f(x)=\\frac{x - 1}{x}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f_n\\) が恒等写像となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "matrix_power",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "mobius_matrix_power_period"
       }
     },
     {
@@ -187,6 +257,146 @@
     },
     {
       "accepted": true,
+      "answer_tex": "y=28 x^{3} + 2 x",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:032",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.79
+      },
+      "domain": "geometry_algebra",
+      "family_id": "construct.cubic_tangent_midpoint_locus",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TangentLine",
+          "CubicReintersection",
+          "MidpointLocus"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1163
+      },
+      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
+      "statement_tex": "曲線 \\(C: y=x^{3} + 2 x\\) 上の点 \\(P(t,\\,t^{3} + 2 t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "tool": "symbolic_intersection",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_tangent_intersection_locus"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{1}{2} - \\frac{\\sqrt{17}}{2}, \\frac{1}{2} + \\frac{\\sqrt{17}}{2}",
+      "candidate_id": "construct:construct.mobius_fixed_points:001",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 8.39
+      },
+      "domain": "algebra",
+      "family_id": "construct.mobius_fixed_points",
+      "lift_certificate": {
+        "morphism_chain": [
+          "MobiusToMatrix",
+          "Eigenstructure",
+          "FixedPointSolve"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2016
+      },
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}3&4\\\\1&2\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{3 x + 4}{x + 2}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "tool": "matrix_eigen",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "mobius_matrix_eigen_fixed_points"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "3",
+      "candidate_id": "construct:construct.paley_common_neighbors:008",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.46
+      },
+      "domain": "number_theory_graph",
+      "family_id": "construct.paley_common_neighbors",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ResidueVertices",
+          "QuadraticResidueEdges",
+          "CommonNeighborCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1307
+      },
+      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=3\\)。平方剰余の指標和で示せる。",
+      "statement_tex": "素数 \\(p=17\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{17}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
+      "tool": "quadratic_residue",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "paley_strongly_regular_lambda"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "2",
+      "candidate_id": "construct:construct.mobius_iteration_period:004",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 9.73
+      },
+      "domain": "algebra",
+      "family_id": "construct.mobius_iteration_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "MobiusToMatrix",
+          "MatrixPower",
+          "ScalarPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2231
+      },
+      "solution_tex": "\\(f\\) を行列 \\(M=\\begin{pmatrix}0&-1\\\\1&0\\end{pmatrix}\\) に対応させると \\(f_n\\leftrightarrow M^n\\)。\\(M^n\\) がスカラー行列になる最小の \\(n\\) が答え。固有値の比が1の原始冪根であることから定まる。",
+      "statement_tex": "関数 \\(f(x)=- \\frac{1}{x}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f_n\\) が恒等写像となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "matrix_power",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "mobius_matrix_power_period"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "24",
       "candidate_id": "construct:construct.linear_recurrence_mod_period:023",
       "difficulty": {
@@ -218,6 +428,111 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "y=x \\left(28 x^{2} - 5\\right)",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:033",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.79
+      },
+      "domain": "geometry_algebra",
+      "family_id": "construct.cubic_tangent_midpoint_locus",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TangentLine",
+          "CubicReintersection",
+          "MidpointLocus"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1163
+      },
+      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
+      "statement_tex": "曲線 \\(C: y=x^{3} - 5 x\\) 上の点 \\(P(t,\\,t^{3} - 5 t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "tool": "symbolic_intersection",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_tangent_intersection_locus"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "-3, 1",
+      "candidate_id": "construct:construct.mobius_fixed_points:003",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 8.39
+      },
+      "domain": "algebra",
+      "family_id": "construct.mobius_fixed_points",
+      "lift_certificate": {
+        "morphism_chain": [
+          "MobiusToMatrix",
+          "Eigenstructure",
+          "FixedPointSolve"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1923
+      },
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}2&3\\\\1&4\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{2 x + 3}{x + 4}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "tool": "matrix_eigen",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "mobius_matrix_eigen_fixed_points"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "6",
+      "candidate_id": "construct:construct.paley_common_neighbors:009",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.46
+      },
+      "domain": "number_theory_graph",
+      "family_id": "construct.paley_common_neighbors",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ResidueVertices",
+          "QuadraticResidueEdges",
+          "CommonNeighborCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1307
+      },
+      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=6\\)。平方剰余の指標和で示せる。",
+      "statement_tex": "素数 \\(p=29\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{29}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
+      "tool": "quadratic_residue",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "paley_strongly_regular_lambda"
       }
     },
     {
@@ -257,6 +572,111 @@
     },
     {
       "accepted": true,
+      "answer_tex": "y=28 x^{3} - x",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:029",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.75
+      },
+      "domain": "geometry_algebra",
+      "family_id": "construct.cubic_tangent_midpoint_locus",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TangentLine",
+          "CubicReintersection",
+          "MidpointLocus"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1172
+      },
+      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
+      "statement_tex": "曲線 \\(C: y=x^{3} - x\\) 上の点 \\(P(t,\\,t^{3} - t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "tool": "symbolic_intersection",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_tangent_intersection_locus"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "1, 6",
+      "candidate_id": "construct:construct.mobius_fixed_points:002",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 8.36
+      },
+      "domain": "algebra",
+      "family_id": "construct.mobius_fixed_points",
+      "lift_certificate": {
+        "morphism_chain": [
+          "MobiusToMatrix",
+          "Eigenstructure",
+          "FixedPointSolve"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1953
+      },
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}7&-6\\\\1&0\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{7 x - 6}{x}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "tool": "matrix_eigen",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "mobius_matrix_eigen_fixed_points"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "8",
+      "candidate_id": "construct:construct.paley_common_neighbors:010",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.46
+      },
+      "domain": "number_theory_graph",
+      "family_id": "construct.paley_common_neighbors",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ResidueVertices",
+          "QuadraticResidueEdges",
+          "CommonNeighborCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1307
+      },
+      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=8\\)。平方剰余の指標和で示せる。",
+      "statement_tex": "素数 \\(p=37\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{37}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
+      "tool": "quadratic_residue",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "paley_strongly_regular_lambda"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "4",
       "candidate_id": "construct:construct.linear_recurrence_mod_period:017",
       "difficulty": {
@@ -292,6 +712,76 @@
     },
     {
       "accepted": true,
+      "answer_tex": "y=28 x^{3} + x",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:031",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.75
+      },
+      "domain": "geometry_algebra",
+      "family_id": "construct.cubic_tangent_midpoint_locus",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TangentLine",
+          "CubicReintersection",
+          "MidpointLocus"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1172
+      },
+      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
+      "statement_tex": "曲線 \\(C: y=x^{3} + x\\) 上の点 \\(P(t,\\,t^{3} + t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "tool": "symbolic_intersection",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_tangent_intersection_locus"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "9",
+      "candidate_id": "construct:construct.paley_common_neighbors:011",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.46
+      },
+      "domain": "number_theory_graph",
+      "family_id": "construct.paley_common_neighbors",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ResidueVertices",
+          "QuadraticResidueEdges",
+          "CommonNeighborCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1307
+      },
+      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=9\\)。平方剰余の指標和で示せる。",
+      "statement_tex": "素数 \\(p=41\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{41}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
+      "tool": "quadratic_residue",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "paley_strongly_regular_lambda"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "6",
       "candidate_id": "construct:construct.linear_recurrence_mod_period:018",
       "difficulty": {
@@ -323,6 +813,76 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "y=28 x^{3}",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:030",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.67
+      },
+      "domain": "geometry_algebra",
+      "family_id": "construct.cubic_tangent_midpoint_locus",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TangentLine",
+          "CubicReintersection",
+          "MidpointLocus"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.12
+      },
+      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
+      "statement_tex": "曲線 \\(C: y=x^{3}\\) 上の点 \\(P(t,\\,t^{3})\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "tool": "symbolic_intersection",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_tangent_intersection_locus"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "12",
+      "candidate_id": "construct:construct.paley_common_neighbors:012",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.46
+      },
+      "domain": "number_theory_graph",
+      "family_id": "construct.paley_common_neighbors",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ResidueVertices",
+          "QuadraticResidueEdges",
+          "CommonNeighborCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1307
+      },
+      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=12\\)。平方剰余の指標和で示せる。",
+      "statement_tex": "素数 \\(p=53\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{53}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
+      "tool": "quadratic_residue",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "paley_strongly_regular_lambda"
       }
     },
     {
@@ -638,566 +1198,6 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "companion_matrix_modular_order"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "y=x \\left(28 x^{2} - 3\\right)",
-      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:028",
-      "difficulty": {
-        "band": "B_hard_university",
-        "condition": 0,
-        "construct": 1,
-        "score": 8.79
-      },
-      "domain": "geometry_algebra",
-      "family_id": "construct.cubic_tangent_midpoint_locus",
-      "lift_certificate": {
-        "morphism_chain": [
-          "TangentLine",
-          "CubicReintersection",
-          "MidpointLocus"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "sakumon_curation",
-        "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1163
-      },
-      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
-      "statement_tex": "曲線 \\(C: y=x^{3} - 3 x\\) 上の点 \\(P(t,\\,t^{3} - 3 t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
-      "tool": "symbolic_intersection",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_tangent_intersection_locus"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "y=28 x^{3} + 2 x",
-      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:032",
-      "difficulty": {
-        "band": "B_hard_university",
-        "condition": 0,
-        "construct": 1,
-        "score": 8.79
-      },
-      "domain": "geometry_algebra",
-      "family_id": "construct.cubic_tangent_midpoint_locus",
-      "lift_certificate": {
-        "morphism_chain": [
-          "TangentLine",
-          "CubicReintersection",
-          "MidpointLocus"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "sakumon_curation",
-        "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1163
-      },
-      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
-      "statement_tex": "曲線 \\(C: y=x^{3} + 2 x\\) 上の点 \\(P(t,\\,t^{3} + 2 t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
-      "tool": "symbolic_intersection",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_tangent_intersection_locus"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "y=x \\left(28 x^{2} - 5\\right)",
-      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:033",
-      "difficulty": {
-        "band": "B_hard_university",
-        "condition": 0,
-        "construct": 1,
-        "score": 8.79
-      },
-      "domain": "geometry_algebra",
-      "family_id": "construct.cubic_tangent_midpoint_locus",
-      "lift_certificate": {
-        "morphism_chain": [
-          "TangentLine",
-          "CubicReintersection",
-          "MidpointLocus"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "sakumon_curation",
-        "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1163
-      },
-      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
-      "statement_tex": "曲線 \\(C: y=x^{3} - 5 x\\) 上の点 \\(P(t,\\,t^{3} - 5 t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
-      "tool": "symbolic_intersection",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_tangent_intersection_locus"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "y=28 x^{3} - x",
-      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:029",
-      "difficulty": {
-        "band": "B_hard_university",
-        "condition": 0,
-        "construct": 1,
-        "score": 8.75
-      },
-      "domain": "geometry_algebra",
-      "family_id": "construct.cubic_tangent_midpoint_locus",
-      "lift_certificate": {
-        "morphism_chain": [
-          "TangentLine",
-          "CubicReintersection",
-          "MidpointLocus"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "sakumon_curation",
-        "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1172
-      },
-      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
-      "statement_tex": "曲線 \\(C: y=x^{3} - x\\) 上の点 \\(P(t,\\,t^{3} - t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
-      "tool": "symbolic_intersection",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_tangent_intersection_locus"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "y=28 x^{3} + x",
-      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:031",
-      "difficulty": {
-        "band": "B_hard_university",
-        "condition": 0,
-        "construct": 1,
-        "score": 8.75
-      },
-      "domain": "geometry_algebra",
-      "family_id": "construct.cubic_tangent_midpoint_locus",
-      "lift_certificate": {
-        "morphism_chain": [
-          "TangentLine",
-          "CubicReintersection",
-          "MidpointLocus"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "sakumon_curation",
-        "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1172
-      },
-      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
-      "statement_tex": "曲線 \\(C: y=x^{3} + x\\) 上の点 \\(P(t,\\,t^{3} + t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
-      "tool": "symbolic_intersection",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_tangent_intersection_locus"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "y=28 x^{3}",
-      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:030",
-      "difficulty": {
-        "band": "B_hard_university",
-        "condition": 0,
-        "construct": 1,
-        "score": 8.67
-      },
-      "domain": "geometry_algebra",
-      "family_id": "construct.cubic_tangent_midpoint_locus",
-      "lift_certificate": {
-        "morphism_chain": [
-          "TangentLine",
-          "CubicReintersection",
-          "MidpointLocus"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "sakumon_curation",
-        "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.12
-      },
-      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
-      "statement_tex": "曲線 \\(C: y=x^{3}\\) 上の点 \\(P(t,\\,t^{3})\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
-      "tool": "symbolic_intersection",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_tangent_intersection_locus"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "1, 3",
-      "candidate_id": "construct:construct.mobius_fixed_points:000",
-      "difficulty": {
-        "band": "B_hard_university",
-        "condition": 0,
-        "construct": 2,
-        "score": 8.4
-      },
-      "domain": "algebra",
-      "family_id": "construct.mobius_fixed_points",
-      "lift_certificate": {
-        "morphism_chain": [
-          "MobiusToMatrix",
-          "Eigenstructure",
-          "FixedPointSolve"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "continuous_verified_problem_batch1",
-        "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1938
-      },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}5&-3\\\\1&1\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{5 x - 3}{x + 1}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
-      "tool": "matrix_eigen",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "mobius_matrix_eigen_fixed_points"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{1}{2} - \\frac{\\sqrt{17}}{2}, \\frac{1}{2} + \\frac{\\sqrt{17}}{2}",
-      "candidate_id": "construct:construct.mobius_fixed_points:001",
-      "difficulty": {
-        "band": "B_hard_university",
-        "condition": 0,
-        "construct": 2,
-        "score": 8.39
-      },
-      "domain": "algebra",
-      "family_id": "construct.mobius_fixed_points",
-      "lift_certificate": {
-        "morphism_chain": [
-          "MobiusToMatrix",
-          "Eigenstructure",
-          "FixedPointSolve"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "continuous_verified_problem_batch1",
-        "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.2016
-      },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}3&4\\\\1&2\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{3 x + 4}{x + 2}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
-      "tool": "matrix_eigen",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "mobius_matrix_eigen_fixed_points"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "-3, 1",
-      "candidate_id": "construct:construct.mobius_fixed_points:003",
-      "difficulty": {
-        "band": "B_hard_university",
-        "condition": 0,
-        "construct": 2,
-        "score": 8.39
-      },
-      "domain": "algebra",
-      "family_id": "construct.mobius_fixed_points",
-      "lift_certificate": {
-        "morphism_chain": [
-          "MobiusToMatrix",
-          "Eigenstructure",
-          "FixedPointSolve"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "continuous_verified_problem_batch1",
-        "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1923
-      },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}2&3\\\\1&4\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{2 x + 3}{x + 4}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
-      "tool": "matrix_eigen",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "mobius_matrix_eigen_fixed_points"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "1, 6",
-      "candidate_id": "construct:construct.mobius_fixed_points:002",
-      "difficulty": {
-        "band": "B_hard_university",
-        "condition": 0,
-        "construct": 2,
-        "score": 8.36
-      },
-      "domain": "algebra",
-      "family_id": "construct.mobius_fixed_points",
-      "lift_certificate": {
-        "morphism_chain": [
-          "MobiusToMatrix",
-          "Eigenstructure",
-          "FixedPointSolve"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "continuous_verified_problem_batch1",
-        "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1953
-      },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}7&-6\\\\1&0\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{7 x - 6}{x}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
-      "tool": "matrix_eigen",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "mobius_matrix_eigen_fixed_points"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "2",
-      "candidate_id": "construct:construct.paley_common_neighbors:007",
-      "difficulty": {
-        "band": "C_standard_university",
-        "condition": 0,
-        "construct": 1,
-        "score": 7.46
-      },
-      "domain": "number_theory_graph",
-      "family_id": "construct.paley_common_neighbors",
-      "lift_certificate": {
-        "morphism_chain": [
-          "ResidueVertices",
-          "QuadraticResidueEdges",
-          "CommonNeighborCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "continuous_verified_problem_batch1",
-        "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1307
-      },
-      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=2\\)。平方剰余の指標和で示せる。",
-      "statement_tex": "素数 \\(p=13\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{13}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
-      "tool": "quadratic_residue",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "paley_strongly_regular_lambda"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "3",
-      "candidate_id": "construct:construct.paley_common_neighbors:008",
-      "difficulty": {
-        "band": "C_standard_university",
-        "condition": 0,
-        "construct": 1,
-        "score": 7.46
-      },
-      "domain": "number_theory_graph",
-      "family_id": "construct.paley_common_neighbors",
-      "lift_certificate": {
-        "morphism_chain": [
-          "ResidueVertices",
-          "QuadraticResidueEdges",
-          "CommonNeighborCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "continuous_verified_problem_batch1",
-        "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1307
-      },
-      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=3\\)。平方剰余の指標和で示せる。",
-      "statement_tex": "素数 \\(p=17\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{17}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
-      "tool": "quadratic_residue",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "paley_strongly_regular_lambda"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "6",
-      "candidate_id": "construct:construct.paley_common_neighbors:009",
-      "difficulty": {
-        "band": "C_standard_university",
-        "condition": 0,
-        "construct": 1,
-        "score": 7.46
-      },
-      "domain": "number_theory_graph",
-      "family_id": "construct.paley_common_neighbors",
-      "lift_certificate": {
-        "morphism_chain": [
-          "ResidueVertices",
-          "QuadraticResidueEdges",
-          "CommonNeighborCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "continuous_verified_problem_batch1",
-        "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1307
-      },
-      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=6\\)。平方剰余の指標和で示せる。",
-      "statement_tex": "素数 \\(p=29\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{29}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
-      "tool": "quadratic_residue",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "paley_strongly_regular_lambda"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "8",
-      "candidate_id": "construct:construct.paley_common_neighbors:010",
-      "difficulty": {
-        "band": "C_standard_university",
-        "condition": 0,
-        "construct": 1,
-        "score": 7.46
-      },
-      "domain": "number_theory_graph",
-      "family_id": "construct.paley_common_neighbors",
-      "lift_certificate": {
-        "morphism_chain": [
-          "ResidueVertices",
-          "QuadraticResidueEdges",
-          "CommonNeighborCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "continuous_verified_problem_batch1",
-        "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1307
-      },
-      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=8\\)。平方剰余の指標和で示せる。",
-      "statement_tex": "素数 \\(p=37\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{37}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
-      "tool": "quadratic_residue",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "paley_strongly_regular_lambda"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "9",
-      "candidate_id": "construct:construct.paley_common_neighbors:011",
-      "difficulty": {
-        "band": "C_standard_university",
-        "condition": 0,
-        "construct": 1,
-        "score": 7.46
-      },
-      "domain": "number_theory_graph",
-      "family_id": "construct.paley_common_neighbors",
-      "lift_certificate": {
-        "morphism_chain": [
-          "ResidueVertices",
-          "QuadraticResidueEdges",
-          "CommonNeighborCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "continuous_verified_problem_batch1",
-        "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1307
-      },
-      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=9\\)。平方剰余の指標和で示せる。",
-      "statement_tex": "素数 \\(p=41\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{41}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
-      "tool": "quadratic_residue",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "paley_strongly_regular_lambda"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "12",
-      "candidate_id": "construct:construct.paley_common_neighbors:012",
-      "difficulty": {
-        "band": "C_standard_university",
-        "condition": 0,
-        "construct": 1,
-        "score": 7.46
-      },
-      "domain": "number_theory_graph",
-      "family_id": "construct.paley_common_neighbors",
-      "lift_certificate": {
-        "morphism_chain": [
-          "ResidueVertices",
-          "QuadraticResidueEdges",
-          "CommonNeighborCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "continuous_verified_problem_batch1",
-        "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1307
-      },
-      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=12\\)。平方剰余の指標和で示せる。",
-      "statement_tex": "素数 \\(p=53\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{53}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
-      "tool": "quadratic_residue",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "paley_strongly_regular_lambda"
       }
     }
   ],

@@ -410,6 +410,13 @@ export function problemEmbed(problem: MathOSProblem) {
         value: `\`${problem.verificationMethod}\`\n既存集合との最大表層類似度: \`${similarity}\``,
         inline: false,
       },
+      {
+        name: '評価してください',
+        value:
+          '**難**n = 難易度(1易→5難)、**新**n = 新規性/既視感(1見たことある→5新規)。' +
+          '両方タップで作問器の改良に使います。',
+        inline: false,
+      },
     ],
     footer: { text: '型検査・厳密計算・独立検証・新規性検査を通過' },
   }
@@ -436,8 +443,8 @@ export function solutionEmbed(problem: MathOSProblem) {
   }
 }
 
-// Discord のメッセージコンポーネント: 1〜5 の評価ボタン + 解答ボタン。
-// 人間が問題を直接見た評価を集め、作問器の改良フィードバックにする。
+// Discord のメッセージコンポーネント: 2軸(難易度・新規性) の 1〜5 評価 + 解答。
+// 難易度=解くのが難しいか、新規性=見たことがあるか(既視感)。人間の評価を集める。
 export function mathosProblemComponents(shortId: string) {
   return [
     {
@@ -445,8 +452,17 @@ export function mathosProblemComponents(shortId: string) {
       components: [1, 2, 3, 4, 5].map((n) => ({
         type: 2,
         style: n <= 2 ? 4 : n === 3 ? 2 : 3,
-        label: `${n}`,
-        custom_id: `mathos_rate:${shortId}:${n}`,
+        label: `難${n}`,
+        custom_id: `mathos_rate:${shortId}:diff:${n}`,
+      })),
+    },
+    {
+      type: 1,
+      components: [1, 2, 3, 4, 5].map((n) => ({
+        type: 2,
+        style: n <= 2 ? 4 : n === 3 ? 2 : 3,
+        label: `新${n}`,
+        custom_id: `mathos_rate:${shortId}:nov:${n}`,
       })),
     },
     {
@@ -463,29 +479,38 @@ export function mathosProblemComponents(shortId: string) {
   ]
 }
 
+const RATING_DIMENSIONS: Record<string, string> = {
+  diff: 'difficulty',
+  nov: 'novelty',
+}
+
 export async function recordDiscordRating(
   shortId: string,
+  dimension: string,
   rating: number,
   userId: string,
 ): Promise<void> {
+  const dim = RATING_DIMENSIONS[dimension]
+  if (!dim) throw new Error('評価軸が不正です。')
   if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
     throw new Error('評価は1〜5で指定してください。')
   }
   const now = new Date().toISOString()
-  // (user, problem) ごとに1件。付け直しは上書き。
+  // (user, problem, 軸) ごとに1件。付け直しは上書き。
   const { error } = await supabaseAdmin.from('generation_jobs').upsert(
     {
-      id: `discord-rating:${shortId}:${userId}`,
+      id: `discord-rating:${shortId}:${dim}:${userId}`,
       status: 'done',
       user_id: userId,
       parents: {
         source: 'discord_rating',
         short_id: shortId,
+        dimension: dim,
         rating,
       },
       mode: 'discord_rating',
       count: 1,
-      result: { short_id: shortId, rating, rated_at: now },
+      result: { short_id: shortId, dimension: dim, rating, rated_at: now },
       model: 'human_feedback',
       updated_at: now,
     },
