@@ -1,1837 +1,1230 @@
 {
-  "generated_at": "2026-07-24T11:36:12.513796+00:00",
+  "generated_at": "2026-07-25T02:44:05.002939+00:00",
   "method": {
-    "difficulty_floor": "textbook families (weighted geometric, affine recurrence, power sums, telescoping) are excluded; only 難関大以上 kept",
-    "name": "MathOS combined verified Discord pool",
-    "selection_gates": [
-      "exact backend derivation",
-      "independent numeric or exhaustive check",
-      "typed morphism chain",
-      "surface + structural novelty across sources",
-      "difficulty floor (contest-grade families only)"
+    "gates": [
+      "backend verified",
+      "world-novel (σ_surface<0.60, no exact)",
+      "difficulty B+"
     ],
-    "sources": [
-      "continuous_verified_problem_batch1 (hand-authored, verified)",
-      "parametric_problem_engine (number-theory technique families)",
-      "concept_tree_synthesis (convex-hull composition trees)",
-      "geometry_fusion_synthesis (passage regions, trig×floor, trig×abs)"
-    ]
+    "name": "Object-construction pool (real similarity)",
+    "similarity_definition": "SIMILARITY.md: char 3-gram Jaccard, computed (not hardcoded)"
   },
   "problems": [
     {
       "accepted": true,
-      "answer_tex": "3\\sqrt3",
-      "candidate_id": "phase01b_cubic_discriminant_triangle",
-      "difficulty": "C",
-      "domain": "algebraic_geometry",
-      "family_id": "algebraic_geometry.cubic_discriminant_triangle_area",
-      "lift_certificate": {
-        "morphism_chain": [
-          "RootSet",
-          "ParabolaEmbedding",
-          "VandermondeArea",
-          "Discriminant",
-          "Maximum"
-        ],
-        "type_checked": true
+      "answer_tex": "3",
+      "candidate_id": "construct:construct.mobius_iteration_period:005",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 9.77
       },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.5614
-      },
-      "solution_tex": "3実根を \\(\\alpha,\\beta,\\gamma\\) とする。放物線上の3点の面積 \\(S\\) はVandermonde行列式から \\(2S=|(\\alpha-\\beta)(\\beta-\\gamma)(\\gamma-\\alpha)|\\)。一方 \\(x^3-3x+t\\) の判別式は \\(108-27t^2\\) だから \\(4S^2=108-27t^2\\)。3実根をもつ範囲は \\(|t|<2\\) であり，\\(t=0\\) のとき \\(\\boxed{S=3\\sqrt3}\\)。",
-      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^3-3x+t=0\\) が相異なる3実根をもつとする。各実根 \\(r\\) に点 \\((r,r^2)\\) を対応させて得られる三角形の面積の最大値を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "symbolic_discriminant_plus_direct_root_area_scan"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "n\\sin\\frac{\\pi}{n}",
-      "candidate_id": "phase02_reciprocal_complex_root_polygon",
-      "difficulty": "C",
-      "domain": "complex_geometry",
-      "family_id": "complex_geometry.reciprocal_root_polygon_area",
-      "lift_certificate": {
-        "morphism_chain": [
-          "ComplexRootSet",
-          "CyclicOrder",
-          "ConvexHull",
-          "Area",
-          "Maximum"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1356
-      },
-      "solution_tex": "\\(t=\\cos\\theta\\;(0<\\theta<\\pi)\\) とおく。根の偏角の間隔は \\(2\\theta/n,\\ 2(\\pi-\\theta)/n\\) と交互に並ぶので，\\(A_n(t)=\\frac n2\\{\\sin(2\\theta/n)+\\sin(2(\\pi-\\theta)/n)\\}\\)。加法定理よりこれは \\(n\\sin(\\pi/n)\\cos((2\\theta-\\pi)/n)\\) であり，\\(\\theta=\\pi/2\\)，すなわち \\(t=0\\) のとき最大となる。",
-      "statement_tex": "整数 \\(n\\ge2\\) と \\(-1<t<1\\) に対し，方程式 \\(z^{2n}-2tz^n+1=0\\) の全ての根を複素数平面上の点とみなす。それらの凸包の面積を \\(A_n(t)\\) とするとき，\\(\\max_{-1<t<1}A_n(t)\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "trigonometric_normal_form_plus_grid_search"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\begin{cases}4&(p=2),\\\\3&(p=3),\\\\2p-1&(p\\equiv1\\pmod3),\\\\1&(p>2,\\ p\\equiv2\\pmod3).\\end{cases}",
-      "candidate_id": "phase03_finite_field_quadratic_zero_count",
-      "difficulty": "C",
-      "domain": "number_theory",
-      "family_id": "finite_field.quadratic_form_zero_count",
-      "lift_certificate": {
-        "morphism_chain": [
-          "LinearElimination",
-          "Projectivize",
-          "RootOfUnityReduction",
-          "Cardinality"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0892
-      },
-      "solution_tex": "\\(p\\ne2\\) では \\(z=-x-y\\) を代入して \\(x^2+xy+y^2=0\\) を得る。\\(y\\ne0\\) なら \\(r=x/y\\) は \\(r^2+r+1=0\\) を満たす。これは \\(p=3\\) では重根をもち，\\(p\\ne3\\) では \\(\\mathbb F_p\\) に非自明な3乗根がある場合，すなわち \\(p\\equiv1\\pmod3\\) に限り2根をもつ。\\(y=0\\) の零解と \\(p=2\\) を別に数えれば答を得る。",
-      "statement_tex": "素数 \\(p\\) に対し，\\(0\\le x,y,z<p\\) かつ \\(x+y+z\\equiv x^2+y^2+z^2\\equiv0\\pmod p\\) を満たす組 \\((x,y,z)\\) の個数を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "finite_field_elimination_plus_exhaustive_prime_scan"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\displaystyle\\sum_{k=1}^{2027}\\frac1k",
-      "candidate_id": "phase04_interpolation_harmonic_observable",
-      "difficulty": "C",
       "domain": "algebra",
-      "family_id": "polynomial.interpolation_harmonic_observable",
+      "family_id": "construct.mobius_iteration_period",
       "lift_certificate": {
         "morphism_chain": [
-          "Interpolation",
-          "VanishingTransform",
-          "Differentiate",
-          "EvaluateAtZero"
+          "MobiusToMatrix",
+          "MatrixPower",
+          "ScalarPeriod"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0775
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.229
       },
-      "solution_tex": "\\(Q(x)=xP(x)-1\\) とおくと，\\(\\deg Q\\le 2027\\) かつ \\(Q(1)=\\cdots=Q(2027)=0\\) である。\\(Q(0)=-1\\) より \\(Q(x)=\\frac1{2027!}\\prod_{k=1}^{2027}(x-k)\\)。一方 \\(Q'(0)=P(0)\\) だから，対数微分を用いて \\(P(0)=\\sum_{k=1}^{2027}1/k\\)。",
-      "statement_tex": "次数が \\( 2026 \\) 以下の実係数多項式 \\(P(x)\\) が \\(P(k)=1/k\\;(k=1,2,\\ldots,2027)\\) を満たすとき，\\(P(0)\\) の値を求めよ。",
+      "solution_tex": "\\(f\\) を行列 \\(M=\\begin{pmatrix}0&-1\\\\1&-1\\end{pmatrix}\\) に対応させると \\(f_n\\leftrightarrow M^n\\)。\\(M^n\\) がスカラー行列になる最小の \\(n\\) が答え。固有値の比が1の原始冪根であることから定まる。",
+      "statement_tex": "関数 \\(f(x)=- \\frac{1}{x - 1}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f_n\\) が恒等写像となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "matrix_power",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "symbolic_interpolation_family_check"
+        "method": "mobius_matrix_power_period"
       }
     },
     {
       "accepted": true,
-      "answer_tex": "n^2",
-      "candidate_id": "phase05_cycle_laplacian_pseudodeterminant",
-      "difficulty": "C",
-      "domain": "linear_algebra",
-      "family_id": "spectral_graph.cycle_laplacian_pseudodeterminant",
+      "answer_tex": "3",
+      "candidate_id": "construct:construct.mobius_iteration_period:006",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 9.75
+      },
+      "domain": "algebra",
+      "family_id": "construct.mobius_iteration_period",
       "lift_certificate": {
         "morphism_chain": [
-          "Laplacian",
-          "FourierSpectrum",
-          "RemoveKernel",
-          "FiniteProduct"
+          "MobiusToMatrix",
+          "MatrixPower",
+          "ScalarPeriod"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1205
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2308
       },
-      "solution_tex": "\\(\\zeta=e^{2\\pi i/n}\\) とおくと固有値は \\(\\lambda_k=2-\\zeta^k-\\zeta^{-k}=4\\sin^2(\\pi k/n)\\)\\((k=0,\\ldots,n-1)\\)。したがって零でない固有値の積は \\(\\left(\\prod_{k=1}^{n-1}2\\sin(\\pi k/n)\\right)^2=n^2\\)。",
-      "statement_tex": "整数 \\(n\\ge3\\) に対し，\\(n\\) 頂点の閉路グラフのラプラシアン行列を \\(L_n\\) とする。\\(L_n\\) の \\(0\\) でない固有値を重複度込みですべて掛けた値を求めよ。",
+      "solution_tex": "\\(f\\) を行列 \\(M=\\begin{pmatrix}1&-1\\\\1&0\\end{pmatrix}\\) に対応させると \\(f_n\\leftrightarrow M^n\\)。\\(M^n\\) がスカラー行列になる最小の \\(n\\) が答え。固有値の比が1の原始冪根であることから定まる。",
+      "statement_tex": "関数 \\(f(x)=\\frac{x - 1}{x}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f_n\\) が恒等写像となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "matrix_power",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "exact_principal_cofactor_plus_rank_check"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\displaystyle\\frac{4^n}{\\binom{2n}{n}}-1",
-      "candidate_id": "phase06_random_bridge_zero_observable",
-      "difficulty": "C",
-      "domain": "probability",
-      "family_id": "probability.random_bridge_zero_count",
-      "lift_certificate": {
-        "morphism_chain": [
-          "BridgePathSpace",
-          "ZeroIndicators",
-          "Expectation",
-          "FiniteSum"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0792
-      },
-      "solution_tex": "\\(S_{2j}=0\\) となる列は \\(\\binom{2j}{j}\\binom{2n-2j}{n-j}\\) 個である。指示関数の線形性から期待値はこれを \\(\\binom{2n}{n}\\) で割って\\(j=1,\\ldots,n\\) について足したものになる。母関数 \\((1-4x)^{-1/2}\\) の係数比較により \\(\\sum_{j=0}^n\\binom{2j}{j}\\binom{2n-2j}{n-j}=4^n\\)だから結論を得る。",
-      "statement_tex": "\\(+1\\) を \\(n\\) 個，\\(-1\\) を \\(n\\) 個並べてできる列を一様に選ぶ。第 \\(k\\) 項までの和を \\(S_k\\) とし，\\(N=\\#\\{k\\in\\{1,\\ldots,2n\\}\\mid S_k=0\\}\\) とおく。\\(N\\) の期待値 \\(\\operatorname{E}[N]\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "exhaustive_path_enumeration_plus_binomial_convolution"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\displaystyle\\frac{(n!)^2}{(2n+1)!}",
-      "candidate_id": "phase07_binomial_beta_duality",
-      "difficulty": "C",
-      "domain": "combinatorics_analysis",
-      "family_id": "binomial.beta_integral_duality",
-      "lift_certificate": {
-        "morphism_chain": [
-          "BinomialExpansion",
-          "IntegralTransform",
-          "BetaEvaluation"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1131
-      },
-      "solution_tex": "\\((1-x)^n=\\sum_{k=0}^n(-1)^k\\binom nkx^k\\) に \\(x^n\\) を掛けて \\(0\\) から \\(1\\) まで積分する。左辺はベータ積分 \\(B(n+1,n+1)=(n!)^2/(2n+1)!\\)，右辺は問題の和になる。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=0}^{n}(-1)^k\\binom{n}{k}\\frac1{n+k+1}\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "exact_finite_sum_plus_beta_integral_identity"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{2\\sqrt2}{3}",
-      "candidate_id": "phase08_tangent_intercept_centroid",
-      "difficulty": "C",
-      "domain": "analytic_geometry",
-      "family_id": "conic_duality.tangent_intercept_centroid_minimum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "TangentDual",
-          "AxisIntercepts",
-          "Centroid",
-          "Norm",
-          "Minimum"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1265
-      },
-      "solution_tex": "\\(A=(a,0),B=(0,b)\\) とおく。直線 \\(x/a+y/b=1\\) が \\(xy=1\\) に接する条件は \\(ab=4\\)。重心は \\(G=(a/3,b/3)\\) なので \\(OG^2=(a^2+b^2)/9\\ge2ab/9=8/9\\)。等号は \\(a=b=2\\)のとき成立する。",
-      "statement_tex": "第1象限で双曲線 \\(xy=1\\) に接する直線が正の \\(x\\) 軸，\\(y\\) 軸と交わる点をそれぞれ \\(A,B\\) とする。三角形 \\(OAB\\) の重心 \\(G\\) について，\\(OG\\) の最小値を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "tangency_discriminant_plus_global_AMGM_check"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "P_p=\\begin{cases}0&(p\\equiv1\\pmod4),\\\\4&(p\\equiv3\\pmod4).\\end{cases}",
-      "candidate_id": "phase09_finite_field_inverse_square_product",
-      "difficulty": "C",
-      "domain": "number_theory",
-      "family_id": "finite_field.inverse_square_product_character",
-      "lift_certificate": {
-        "morphism_chain": [
-          "ClearInverses",
-          "ExtensionFieldEvaluation",
-          "QuadraticCharacter",
-          "CaseSplit"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1404
-      },
-      "solution_tex": "\\(p\\equiv1\\pmod4\\) なら \\(k^2=-1\\) となる因子があり積は0。\\(p\\equiv3\\pmod4\\) では \\(\\mathbb F_{p^2}\\) で \\(i^2=-1\\)とおく。\\(\\prod_{k\\in\\mathbb F_p^\\times}(X-k)=X^{p-1}-1\\)を \\(X=\\pm i\\) に代入すると \\(\\prod(k^2+1)=(-2)^2=4\\)。Wilsonの定理より \\(\\prod k^2=1\\) だから \\(P_p=4\\)。",
-      "statement_tex": "奇素数 \\(p\\) に対し，\\(\\mathbb F_p\\) における積 \\(\\displaystyle P_p=\\prod_{k=1}^{p-1}(1+k^{-2})\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "extension_field_factorization_plus_modular_enumeration"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\displaystyle\\det A_n=\\prod_{k=1}^{n}\\varphi(k)",
-      "candidate_id": "phase10_gcd_matrix_incidence_factorization",
-      "difficulty": "C",
-      "domain": "linear_algebra_number_theory",
-      "family_id": "arithmetic_matrix.gcd_incidence_determinant",
-      "lift_certificate": {
-        "morphism_chain": [
-          "DivisorIncidence",
-          "Triangularize",
-          "Determinant"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0789
-      },
-      "solution_tex": "\\(\\gcd(i,j)=\\sum_{d\\mid i,\\ d\\mid j}\\varphi(d)\\) を用いる。\\(E_{id}=1_{d\\mid i}\\)，\\(D=\\operatorname{diag}(\\varphi(1),\\ldots,\\varphi(n))\\) とおけば \\(A_n=EDE^T\\)。\\(E\\) は対角成分1の下三角行列なので \\(\\det E=1\\)。よって \\(\\det A_n=\\det D=\\prod_{k=1}^n\\varphi(k)\\)。",
-      "statement_tex": "\\((i,j)\\) 成分が \\(\\gcd(i,j)\\) である \\(n\\) 次正方行列 \\(A_n\\) の行列式を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "exact_integer_determinants_plus_incidence_factorization"
+        "method": "mobius_matrix_power_period"
       }
     },
     {
       "accepted": true,
       "answer_tex": "2",
-      "candidate_id": "phase11_nonlinear_recurrence_square_increment",
-      "difficulty": "C",
-      "domain": "real_analysis",
-      "family_id": "asymptotic.recurrence_square_increment",
+      "candidate_id": "construct:construct.mobius_iteration_period:004",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 9.73
+      },
+      "domain": "algebra",
+      "family_id": "construct.mobius_iteration_period",
       "lift_certificate": {
         "morphism_chain": [
-          "SquareObservable",
-          "IncrementLimit",
-          "StolzCesaro",
-          "PositiveSquareRoot"
+          "MobiusToMatrix",
+          "MatrixPower",
+          "ScalarPeriod"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.3036
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2231
       },
-      "solution_tex": "\\(a_n>0\\) かつ単調増加なので \\(a_n\\to\\infty\\)。\\(a_{n+1}^2-a_n^2=4+4/a_n^2\\to4\\) である。Stolz--Cesaroの定理から \\(a_n^2/n\\to4\\)。\\(a_n>0\\) より求める極限は \\(2\\)。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=a_n+2/a_n\\) で定める。\\(\\displaystyle\\lim_{n\\to\\infty}a_n/\\sqrt n\\) を求めよ。",
+      "solution_tex": "\\(f\\) を行列 \\(M=\\begin{pmatrix}0&-1\\\\1&0\\end{pmatrix}\\) に対応させると \\(f_n\\leftrightarrow M^n\\)。\\(M^n\\) がスカラー行列になる最小の \\(n\\) が答え。固有値の比が1の原始冪根であることから定まる。",
+      "statement_tex": "関数 \\(f(x)=- \\frac{1}{x}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f_n\\) が恒等写像となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "matrix_power",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "increment_limit_proof_plus_long_horizon_simulation"
+        "method": "mobius_matrix_power_period"
       }
     },
     {
       "accepted": true,
-      "answer_tex": "\\log 2",
-      "candidate_id": "phase12_boundary_layer_integral_limit",
-      "difficulty": "C",
-      "domain": "real_analysis",
-      "family_id": "analysis.boundary_layer_integral_limit",
-      "lift_certificate": {
-        "morphism_chain": [
-          "ComplementIntegral",
-          "PowerSubstitution",
-          "DominatedConvergence"
-        ],
-        "type_checked": true
+      "answer_tex": "5",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:027",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.87
       },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.2321
-      },
-      "solution_tex": "\\(1-I_n=\\int_0^1x^n/(1+x^n)\\,dx\\) である。\\(u=x^n\\) とおけば \\(n(1-I_n)=\\int_0^1u^{1/n}/(1+u)\\,du\\)。被積分関数は \\(1/(1+u)\\) に収束し，1で支配されるので，極限は \\(\\int_0^1du/(1+u)=\\log2\\)。",
-      "statement_tex": "\\(I_n=\\displaystyle\\int_0^1\\frac{dx}{1+x^n}\\) とおく。\\(\\displaystyle\\lim_{n\\to\\infty}n(1-I_n)\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "exact_substitution_plus_high_precision_quadrature"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\displaystyle\\frac{2^n+2\\cos\\frac{n\\pi}3}{3}",
-      "candidate_id": "phase14_roots_of_unity_binomial_filter",
-      "difficulty": "C",
-      "domain": "combinatorics_number_theory",
-      "family_id": "binomial.roots_of_unity_filter_mod3",
-      "lift_certificate": {
-        "morphism_chain": [
-          "BinomialGeneratingFunction",
-          "RootOfUnityFilter",
-          "TrigonometricNormalForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.3131
-      },
-      "solution_tex": "\\(\\omega=e^{2\\pi i/3}\\) とおくと，\\(1+\\omega+\\omega^2=0\\) より \\(\\frac13\\sum_{j=0}^{2}(1+\\omega^j)^n\\) が \\(3\\mid k\\) の項だけを取り出す。\\((1+1)^n=2^n\\)，\\((1+\\omega)^n+(1+\\omega^2)^n=2\\cos(n\\pi/3)\\) だから，和は \\(\\dfrac{2^n+2\\cos(n\\pi/3)}3\\)。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{3\\mid k}\\binom{n}{k}\\)（\\(k\\) は \\(3\\) の倍数を走る）を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "exact_binomial_sum_vs_root_of_unity_filter"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\dfrac{\\pi}{4}",
-      "candidate_id": "phase15_king_property_symmetric_integral",
-      "difficulty": "C",
-      "domain": "real_analysis",
-      "family_id": "analysis.reflection_symmetric_integral",
-      "lift_certificate": {
-        "morphism_chain": [
-          "ReflectionSubstitution",
-          "PairwiseAddition",
-          "EvaluateMeasure"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.2421
-      },
-      "solution_tex": "\\(x\\mapsto \\frac\\pi2-x\\) と置換すると \\(\\sin\\) と \\(\\cos\\) が入れ替わり，\\(I_n=\\int_0^{\\pi/2}\\frac{\\cos^n x}{\\sin^n x+\\cos^n x}\\,dx\\)。元の \\(I_n\\) と辺々加えると被積分関数は \\(1\\) になるので \\(2I_n=\\int_0^{\\pi/2}dx=\\frac\\pi2\\)，すなわち \\(I_n=\\frac\\pi4\\)（\\(n\\) によらない）。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle I_n=\\int_0^{\\pi/2}\\frac{\\sin^n x}{\\sin^n x+\\cos^n x}\\,dx\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "reflection_symmetry_proof_plus_high_precision_quadrature"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "n+1",
-      "candidate_id": "phase16_tridiagonal_path_determinant",
-      "difficulty": "C",
-      "domain": "linear_algebra",
-      "family_id": "spectral_graph.path_laplacian_tridiagonal_determinant",
-      "lift_certificate": {
-        "morphism_chain": [
-          "LaplaceExpansion",
-          "SolveRecurrence",
-          "EvaluateClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.25
-      },
-      "solution_tex": "最終行で余因子展開すると \\(D_n=2D_{n-1}-D_{n-2}\\)（\\(D_1=2,\\ D_2=3\\)）を得る。これは公差 \\(1\\) の等差数列で \\(D_n=n+1\\)。",
-      "statement_tex": "整数 \\(n\\ge1\\) に対し，主対角成分が \\(2\\)，隣接成分が \\(-1\\)，他が \\(0\\) の \\(n\\) 次三重対角行列を \\(T_n\\) とする。\\(\\det T_n\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "exact_integer_determinant_plus_cofactor_recurrence"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\displaystyle\\sum_{k=1}^{n}\\frac1k",
-      "candidate_id": "phase17_permutation_record_expectation",
-      "difficulty": "C",
-      "domain": "probability",
-      "family_id": "probability.left_to_right_maxima_expectation",
-      "lift_certificate": {
-        "morphism_chain": [
-          "RecordIndicator",
-          "LinearityExpectation",
-          "HarmonicSum"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.119
-      },
-      "solution_tex": "第 \\(i\\) 項が左からの最大値になるのは，最初の \\(i\\) 項の中で第 \\(i\\) 項が最大のときで，その確率は \\(1/i\\)。指示関数の期待値の線形性より，求める期待値は \\(\\sum_{i=1}^{n}\\frac1i=H_n\\)。",
-      "statement_tex": "\\(1,2,\\ldots,n\\) の順列を一様に選ぶ。左から見てそれまでの最大値を更新する項の個数（左から右への最大値の個数）の期待値を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "exhaustive_position_indicator_plus_total_expectation"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\displaystyle\\frac{\\varphi(n)}{n}=\\prod_{p\\mid n}\\left(1-\\frac1p\\right)",
-      "candidate_id": "phase18_mobius_divisor_sum_totient",
-      "difficulty": "C",
       "domain": "number_theory",
-      "family_id": "multiplicative.mobius_divisor_sum_totient_ratio",
+      "family_id": "construct.linear_recurrence_mod_period",
       "lift_certificate": {
         "morphism_chain": [
-          "DivisorSumExpansion",
-          "PrimePowerReduction",
-          "MultiplicativeAssembly"
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.3218
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.3714
       },
-      "solution_tex": "\\(f(n)=\\sum_{d\\mid n}\\mu(d)/d\\) は乗法的関数のディリクレ畳み込みで与えられる。素数冪 \\(p^a\\) では \\(f(p^a)=1-1/p\\) だから，乗法性より \\(f(n)=\\prod_{p\\mid n}(1-1/p)=\\varphi(n)/n\\)。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{d\\mid n}\\frac{\\mu(d)}{d}\\)（\\(\\mu\\) はメビウス関数）を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}3&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 11\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=3a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 11\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "exact_divisor_sum_vs_totient_and_euler_product"
+        "method": "companion_matrix_modular_order"
       }
     },
     {
       "accepted": true,
-      "answer_tex": "(-1)^n",
-      "candidate_id": "phase19_cassini_fibonacci_matrix_invariant",
-      "difficulty": "C",
-      "domain": "linear_algebra_number_theory",
-      "family_id": "recurrence.cassini_fibonacci_determinant_invariant",
-      "lift_certificate": {
-        "morphism_chain": [
-          "MatrixModel",
-          "DeterminantFunctor",
-          "SignReduction"
-        ],
-        "type_checked": true
+      "answer_tex": "10",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:019",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.86
       },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1901
-      },
-      "solution_tex": "\\(A=\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) とおくと \\(A^n=\\begin{pmatrix}F_{n+1}&F_n\\\\F_n&F_{n-1}\\end{pmatrix}\\)。両辺の行列式をとると \\(\\det(A^n)=(\\det A)^n=(-1)^n\\)，左辺は \\(F_{n+1}F_{n-1}-F_n^2\\) だから \\(F_{n-1}F_{n+1}-F_n^2=(-1)^n\\)。",
-      "statement_tex": "フィボナッチ数列を \\(F_1=F_2=1,\\ F_{n+2}=F_{n+1}+F_n\\) で定める。\\(n\\ge2\\) に対し \\(F_{n-1}F_{n+1}-F_n^2\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "exact_fibonacci_identity_plus_matrix_determinant"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\displaystyle\\frac1{n+1}\\binom{2n}{n}",
-      "candidate_id": "phase20_catalan_dyck_reflection",
-      "difficulty": "C",
-      "domain": "combinatorics",
-      "family_id": "lattice_paths.dyck_reflection_catalan_count",
-      "lift_certificate": {
-        "morphism_chain": [
-          "LatticePathEncoding",
-          "ReflectionPrinciple",
-          "BinomialDifference"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0685
-      },
-      "solution_tex": "対角線を越える経路を鏡像原理で数える。全 \\(\\binom{2n}{n}\\) 通りから，境界を越える経路（\\((-1,1)\\) を始点とする経路と一対一対応し \\(\\binom{2n}{n-1}\\) 通り）を引くと，\\(\\binom{2n}{n}-\\binom{2n}{n-1}=\\frac1{n+1}\\binom{2n}{n}\\)。",
-      "statement_tex": "格子点 \\((0,0)\\) から \\((n,n)\\) へ，右または上へ 1 ずつ進む最短経路のうち，直線 \\(y=x\\) を越えない（常に \\(y\\le x\\) を保つ）ものの総数を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "exhaustive_dyck_enumeration_plus_reflection_formula"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{2^{n}}{3} - \\frac{\\operatorname{re}{\\left(\\sqrt[3]{-1} \\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n}\\right)}}{3} + \\frac{\\operatorname{re}{\\left(\\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n} e^{\\frac{2 i \\pi \\left(1 - n\\right)}{3}}\\right)}}{3}",
-      "candidate_id": "param:binomial.roots_of_unity_filter:eae6f6cacd",
-      "difficulty": "B",
-      "domain": "combinatorics_number_theory",
-      "family_id": "binomial.roots_of_unity_filter",
-      "lift_certificate": {
-        "morphism_chain": [
-          "BinomialGeneratingFunction",
-          "RootOfUnityFilter",
-          "CyclotomicClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\zeta=e^{2\\pi i/3}\\) とおくと，\\(\\frac1{3}\\sum_{j=0}^{2}\\zeta^{-1j}(1+\\zeta^j)^n\\) が \\(k\\equiv1\\ (\\mathrm{mod}\\ 3)\\) の項だけを取り出す。整理して \\(\\frac{2^{n}}{3} - \\frac{\\operatorname{re}{\\left(\\sqrt[3]{-1} \\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n}\\right)}}{3} + \\frac{\\operatorname{re}{\\left(\\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n} e^{\\frac{2 i \\pi \\left(1 - n\\right)}{3}}\\right)}}{3}\\)。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k\\equiv 1\\,(\\mathrm{mod}\\ 3)}\\binom{n}{k}\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "cyclotomic_filter_plus_exhaustive_binomial_sum"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{2^{n}}{3} + \\frac{\\operatorname{re}{\\left(\\left(-1\\right)^{\\frac{2}{3}} \\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n}\\right)}}{3} + \\frac{\\operatorname{re}{\\left(\\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n} e^{- \\frac{2 i \\pi \\left(n + 1\\right)}{3}}\\right)}}{3}",
-      "candidate_id": "param:binomial.roots_of_unity_filter:264078cbd8",
-      "difficulty": "B",
-      "domain": "combinatorics_number_theory",
-      "family_id": "binomial.roots_of_unity_filter",
-      "lift_certificate": {
-        "morphism_chain": [
-          "BinomialGeneratingFunction",
-          "RootOfUnityFilter",
-          "CyclotomicClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\zeta=e^{2\\pi i/3}\\) とおくと，\\(\\frac1{3}\\sum_{j=0}^{2}\\zeta^{-2j}(1+\\zeta^j)^n\\) が \\(k\\equiv2\\ (\\mathrm{mod}\\ 3)\\) の項だけを取り出す。整理して \\(\\frac{2^{n}}{3} + \\frac{\\operatorname{re}{\\left(\\left(-1\\right)^{\\frac{2}{3}} \\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n}\\right)}}{3} + \\frac{\\operatorname{re}{\\left(\\left(1 + e^{\\frac{2 i \\pi}{3}}\\right)^{n} e^{- \\frac{2 i \\pi \\left(n + 1\\right)}{3}}\\right)}}{3}\\)。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k\\equiv 2\\,(\\mathrm{mod}\\ 3)}\\binom{n}{k}\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "cyclotomic_filter_plus_exhaustive_binomial_sum"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{2^{n}}{4} + \\frac{\\operatorname{re}{\\left(\\left(1 - i\\right)^{n}\\right)}}{4} + \\frac{\\operatorname{re}{\\left(\\left(1 + i\\right)^{n}\\right)}}{4}",
-      "candidate_id": "param:binomial.roots_of_unity_filter:413254a0a6",
-      "difficulty": "A",
-      "domain": "combinatorics_number_theory",
-      "family_id": "binomial.roots_of_unity_filter",
-      "lift_certificate": {
-        "morphism_chain": [
-          "BinomialGeneratingFunction",
-          "RootOfUnityFilter",
-          "CyclotomicClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\zeta=e^{2\\pi i/4}\\) とおくと，\\(\\frac1{4}\\sum_{j=0}^{3}\\zeta^{-0j}(1+\\zeta^j)^n\\) が \\(k\\equiv0\\ (\\mathrm{mod}\\ 4)\\) の項だけを取り出す。整理して \\(\\frac{2^{n}}{4} + \\frac{\\operatorname{re}{\\left(\\left(1 - i\\right)^{n}\\right)}}{4} + \\frac{\\operatorname{re}{\\left(\\left(1 + i\\right)^{n}\\right)}}{4}\\)。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k\\equiv 0\\,(\\mathrm{mod}\\ 4)}\\binom{n}{k}\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "cyclotomic_filter_plus_exhaustive_binomial_sum"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{2^{n}}{4} - \\frac{\\operatorname{im}{\\left(\\left(1 - i\\right)^{n}\\right)}}{4} + \\frac{\\operatorname{im}{\\left(\\left(1 + i\\right)^{n}\\right)}}{4}",
-      "candidate_id": "param:binomial.roots_of_unity_filter:64fb901878",
-      "difficulty": "A",
-      "domain": "combinatorics_number_theory",
-      "family_id": "binomial.roots_of_unity_filter",
-      "lift_certificate": {
-        "morphism_chain": [
-          "BinomialGeneratingFunction",
-          "RootOfUnityFilter",
-          "CyclotomicClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\zeta=e^{2\\pi i/4}\\) とおくと，\\(\\frac1{4}\\sum_{j=0}^{3}\\zeta^{-1j}(1+\\zeta^j)^n\\) が \\(k\\equiv1\\ (\\mathrm{mod}\\ 4)\\) の項だけを取り出す。整理して \\(\\frac{2^{n}}{4} - \\frac{\\operatorname{im}{\\left(\\left(1 - i\\right)^{n}\\right)}}{4} + \\frac{\\operatorname{im}{\\left(\\left(1 + i\\right)^{n}\\right)}}{4}\\)。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k\\equiv 1\\,(\\mathrm{mod}\\ 4)}\\binom{n}{k}\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "cyclotomic_filter_plus_exhaustive_binomial_sum"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{2^{n}}{4} - \\frac{\\operatorname{re}{\\left(\\left(1 - i\\right)^{n}\\right)}}{4} - \\frac{\\operatorname{re}{\\left(\\left(1 + i\\right)^{n}\\right)}}{4}",
-      "candidate_id": "param:binomial.roots_of_unity_filter:95c9b6e94a",
-      "difficulty": "A",
-      "domain": "combinatorics_number_theory",
-      "family_id": "binomial.roots_of_unity_filter",
-      "lift_certificate": {
-        "morphism_chain": [
-          "BinomialGeneratingFunction",
-          "RootOfUnityFilter",
-          "CyclotomicClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\zeta=e^{2\\pi i/4}\\) とおくと，\\(\\frac1{4}\\sum_{j=0}^{3}\\zeta^{-2j}(1+\\zeta^j)^n\\) が \\(k\\equiv2\\ (\\mathrm{mod}\\ 4)\\) の項だけを取り出す。整理して \\(\\frac{2^{n}}{4} - \\frac{\\operatorname{re}{\\left(\\left(1 - i\\right)^{n}\\right)}}{4} - \\frac{\\operatorname{re}{\\left(\\left(1 + i\\right)^{n}\\right)}}{4}\\)。",
-      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k\\equiv 2\\,(\\mathrm{mod}\\ 4)}\\binom{n}{k}\\) を \\(n\\) の式で表せ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "cyclotomic_filter_plus_exhaustive_binomial_sum"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "9",
-      "candidate_id": "param:finite_field.circle_point_count:d2163359f7",
-      "difficulty": "A",
       "domain": "number_theory",
-      "family_id": "finite_field.circle_point_count",
+      "family_id": "construct.linear_recurrence_mod_period",
       "lift_certificate": {
         "morphism_chain": [
-          "QuadraticCharacterSum",
-          "GaussSumReduction",
-          "ResidueCount"
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.3981
       },
-      "solution_tex": "平方剰余の指標 \\(\\eta\\) を用いると，解の個数は \\(\\sum_{x}\\bigl(1+\\eta(0-x^2)\\bigr)\\) に等しい。\\(p=5\\equiv1\\pmod4\\) と \\(\\eta(-1)=1\\) から，個数は \\(9\\) となる。",
-      "statement_tex": "\\(\\mathbb F_{5}\\) 上で，\\(x^2+y^2\\equiv 0\\pmod{5}\\) を満たす組 \\((x,y)\\)（\\(0\\le x,y<5\\)）の個数を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&2\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 11\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+2a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 11\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "character_sum_formula_plus_exhaustive_pair_count"
+        "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "24",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:023",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.86
+      },
+      "domain": "number_theory",
+      "family_id": "construct.linear_recurrence_mod_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.3714
+      },
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 11\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 11\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "10",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:016",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.84
+      },
+      "domain": "number_theory",
+      "family_id": "construct.linear_recurrence_mod_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.402
+      },
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 11\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 11\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "companion_matrix_modular_order"
       }
     },
     {
       "accepted": true,
       "answer_tex": "4",
-      "candidate_id": "param:finite_field.circle_point_count:43f56dc6e5",
-      "difficulty": "A",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:017",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.84
+      },
       "domain": "number_theory",
-      "family_id": "finite_field.circle_point_count",
+      "family_id": "construct.linear_recurrence_mod_period",
       "lift_certificate": {
         "morphism_chain": [
-          "QuadraticCharacterSum",
-          "GaussSumReduction",
-          "ResidueCount"
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.402
       },
-      "solution_tex": "平方剰余の指標 \\(\\eta\\) を用いると，解の個数は \\(\\sum_{x}\\bigl(1+\\eta(1-x^2)\\bigr)\\) に等しい。\\(p=5\\equiv1\\pmod4\\) と \\(\\eta(-1)=1\\) から，個数は \\(4\\) となる。",
-      "statement_tex": "\\(\\mathbb F_{5}\\) 上で，\\(x^2+y^2\\equiv 1\\pmod{5}\\) を満たす組 \\((x,y)\\)（\\(0\\le x,y<5\\)）の個数を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&2\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 5\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+2a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 5\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "character_sum_formula_plus_exhaustive_pair_count"
+        "method": "companion_matrix_modular_order"
       }
     },
     {
       "accepted": true,
-      "answer_tex": "1",
-      "candidate_id": "param:finite_field.circle_point_count:5317fb89fa",
-      "difficulty": "A",
+      "answer_tex": "6",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:018",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.84
+      },
       "domain": "number_theory",
-      "family_id": "finite_field.circle_point_count",
+      "family_id": "construct.linear_recurrence_mod_period",
       "lift_certificate": {
         "morphism_chain": [
-          "QuadraticCharacterSum",
-          "GaussSumReduction",
-          "ResidueCount"
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.402
       },
-      "solution_tex": "平方剰余の指標 \\(\\eta\\) を用いると，解の個数は \\(\\sum_{x}\\bigl(1+\\eta(0-x^2)\\bigr)\\) に等しい。\\(p=7\\equiv3\\pmod4\\) と \\(\\eta(-1)=-1\\) から，個数は \\(1\\) となる。",
-      "statement_tex": "\\(\\mathbb F_{7}\\) 上で，\\(x^2+y^2\\equiv 0\\pmod{7}\\) を満たす組 \\((x,y)\\)（\\(0\\le x,y<7\\)）の個数を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&2\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 7\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+2a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 7\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "character_sum_formula_plus_exhaustive_pair_count"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "8",
-      "candidate_id": "param:finite_field.circle_point_count:b790c4c103",
-      "difficulty": "A",
-      "domain": "number_theory",
-      "family_id": "finite_field.circle_point_count",
-      "lift_certificate": {
-        "morphism_chain": [
-          "QuadraticCharacterSum",
-          "GaussSumReduction",
-          "ResidueCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "平方剰余の指標 \\(\\eta\\) を用いると，解の個数は \\(\\sum_{x}\\bigl(1+\\eta(1-x^2)\\bigr)\\) に等しい。\\(p=7\\equiv3\\pmod4\\) と \\(\\eta(-1)=-1\\) から，個数は \\(8\\) となる。",
-      "statement_tex": "\\(\\mathbb F_{7}\\) 上で，\\(x^2+y^2\\equiv 1\\pmod{7}\\) を満たす組 \\((x,y)\\)（\\(0\\le x,y<7\\)）の個数を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "character_sum_formula_plus_exhaustive_pair_count"
+        "method": "companion_matrix_modular_order"
       }
     },
     {
       "accepted": true,
       "answer_tex": "12",
-      "candidate_id": "param:finite_field.circle_point_count:ec3d854565",
-      "difficulty": "A",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:020",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.84
+      },
       "domain": "number_theory",
-      "family_id": "finite_field.circle_point_count",
+      "family_id": "construct.linear_recurrence_mod_period",
       "lift_certificate": {
         "morphism_chain": [
-          "QuadraticCharacterSum",
-          "GaussSumReduction",
-          "ResidueCount"
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.375
       },
-      "solution_tex": "平方剰余の指標 \\(\\eta\\) を用いると，解の個数は \\(\\sum_{x}\\bigl(1+\\eta(1-x^2)\\bigr)\\) に等しい。\\(p=11\\equiv3\\pmod4\\) と \\(\\eta(-1)=-1\\) から，個数は \\(12\\) となる。",
-      "statement_tex": "\\(\\mathbb F_{11}\\) 上で，\\(x^2+y^2\\equiv 1\\pmod{11}\\) を満たす組 \\((x,y)\\)（\\(0\\le x,y<11\\)）の個数を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 5\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 5\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "character_sum_formula_plus_exhaustive_pair_count"
+        "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "6",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:021",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.84
+      },
+      "domain": "number_theory",
+      "family_id": "construct.linear_recurrence_mod_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.375
+      },
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 7\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 7\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "companion_matrix_modular_order"
       }
     },
     {
       "accepted": true,
       "answer_tex": "8",
-      "candidate_id": "Maximize[](HullArea[](Embed[k=3](EvenQuartic[c=4]())))",
-      "difficulty": "A",
-      "domain": "algebraic_geometry",
-      "family_id": "concept_tree.convex_hull_extremum",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:022",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.84
+      },
+      "domain": "number_theory",
+      "family_id": "construct.linear_recurrence_mod_period",
       "lift_certificate": {
         "morphism_chain": [
-          "Maximize",
-          " HullArea",
-          " Embed",
-          "k=3 EvenQuartic",
-          "c=4 "
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.375
       },
-      "solution_tex": "",
-      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-4x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に点 \\((r,r^3)\\) を対応させるとき，これら4点の凸包の面積の最大値を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 8\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 8\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "symbolic_proof_interior_critical_point"
+        "method": "companion_matrix_modular_order"
       }
     },
     {
       "accepted": true,
-      "answer_tex": "32",
-      "candidate_id": "Maximize[](HullArea[](Embed[k=5](EvenQuartic[c=4]())))",
-      "difficulty": "A",
-      "domain": "algebraic_geometry",
-      "family_id": "concept_tree.convex_hull_extremum",
+      "answer_tex": "10",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:024",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.84
+      },
+      "domain": "number_theory",
+      "family_id": "construct.linear_recurrence_mod_period",
       "lift_certificate": {
         "morphism_chain": [
-          "Maximize",
-          " HullArea",
-          " Embed",
-          "k=5 EvenQuartic",
-          "c=4 "
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.375
       },
-      "solution_tex": "",
-      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-4x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に点 \\((r,r^5)\\) を対応させるとき，これら4点の凸包の面積の最大値を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}3&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 5\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=3a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 5\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "symbolic_proof_interior_critical_point"
+        "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "8",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:025",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.84
+      },
+      "domain": "number_theory",
+      "family_id": "construct.linear_recurrence_mod_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.375
+      },
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}3&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 7\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=3a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 7\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "6",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:026",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.84
+      },
+      "domain": "number_theory",
+      "family_id": "construct.linear_recurrence_mod_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.375
+      },
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}3&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 8\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=3a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 8\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "20",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:013",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.82
+      },
+      "domain": "number_theory",
+      "family_id": "construct.linear_recurrence_mod_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.4059
+      },
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 5\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 5\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "companion_matrix_modular_order"
       }
     },
     {
       "accepted": true,
       "answer_tex": "16",
-      "candidate_id": "Maximize[](HullArea[](Embed[k=2](EvenQuartic[c=6]())))",
-      "difficulty": "A",
-      "domain": "algebraic_geometry",
-      "family_id": "concept_tree.convex_hull_extremum",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:014",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.82
+      },
+      "domain": "number_theory",
+      "family_id": "construct.linear_recurrence_mod_period",
       "lift_certificate": {
         "morphism_chain": [
-          "Maximize",
-          " HullArea",
-          " Embed",
-          "k=2 EvenQuartic",
-          "c=6 "
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.4059
       },
-      "solution_tex": "",
-      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-6x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に点 \\((r,r^2)\\) を対応させるとき，これら4点の凸包の面積の最大値を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 7\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 7\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "symbolic_proof_interior_critical_point"
+        "method": "companion_matrix_modular_order"
       }
     },
     {
       "accepted": true,
-      "answer_tex": "18",
-      "candidate_id": "Maximize[](HullArea[](Embed[k=3](EvenQuartic[c=6]())))",
-      "difficulty": "A",
-      "domain": "algebraic_geometry",
-      "family_id": "concept_tree.convex_hull_extremum",
+      "answer_tex": "12",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:015",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.82
+      },
+      "domain": "number_theory",
+      "family_id": "construct.linear_recurrence_mod_period",
       "lift_certificate": {
         "morphism_chain": [
-          "Maximize",
-          " HullArea",
-          " Embed",
-          "k=3 EvenQuartic",
-          "c=6 "
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.4059
       },
-      "solution_tex": "",
-      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-6x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に点 \\((r,r^3)\\) を対応させるとき，これら4点の凸包の面積の最大値を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 8\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 8\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "symbolic_proof_interior_critical_point"
+        "method": "companion_matrix_modular_order"
       }
     },
     {
       "accepted": true,
-      "answer_tex": "96",
-      "candidate_id": "Maximize[](HullArea[](Embed[k=4](EvenQuartic[c=6]())))",
-      "difficulty": "A",
-      "domain": "algebraic_geometry",
-      "family_id": "concept_tree.convex_hull_extremum",
+      "answer_tex": "y=x \\left(28 x^{2} - 3\\right)",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:028",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.79
+      },
+      "domain": "geometry_algebra",
+      "family_id": "construct.cubic_tangent_midpoint_locus",
       "lift_certificate": {
         "morphism_chain": [
-          "Maximize",
-          " HullArea",
-          " Embed",
-          "k=4 EvenQuartic",
-          "c=6 "
+          "TangentLine",
+          "CubicReintersection",
+          "MidpointLocus"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1163
       },
-      "solution_tex": "",
-      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-6x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に点 \\((r,r^4)\\) を対応させるとき，これら4点の凸包の面積の最大値を求めよ。",
+      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
+      "statement_tex": "曲線 \\(C: y=x^{3} - 3 x\\) 上の点 \\(P(t,\\,t^{3} - 3 t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "tool": "symbolic_intersection",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "symbolic_proof_interior_critical_point"
+        "method": "symbolic_tangent_intersection_locus"
       }
     },
     {
       "accepted": true,
-      "answer_tex": "50",
-      "candidate_id": "Maximize[](HullArea[](Embed[k=3](EvenQuartic[c=10]())))",
-      "difficulty": "A",
-      "domain": "algebraic_geometry",
-      "family_id": "concept_tree.convex_hull_extremum",
+      "answer_tex": "y=28 x^{3} + 2 x",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:032",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.79
+      },
+      "domain": "geometry_algebra",
+      "family_id": "construct.cubic_tangent_midpoint_locus",
       "lift_certificate": {
         "morphism_chain": [
-          "Maximize",
-          " HullArea",
-          " Embed",
-          "k=3 EvenQuartic",
-          "c=10 "
+          "TangentLine",
+          "CubicReintersection",
+          "MidpointLocus"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1163
       },
-      "solution_tex": "",
-      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-10x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に点 \\((r,r^3)\\) を対応させるとき，これら4点の凸包の面積の最大値を求めよ。",
+      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
+      "statement_tex": "曲線 \\(C: y=x^{3} + 2 x\\) 上の点 \\(P(t,\\,t^{3} + 2 t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "tool": "symbolic_intersection",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "symbolic_proof_interior_critical_point"
+        "method": "symbolic_tangent_intersection_locus"
       }
     },
     {
       "accepted": true,
-      "answer_tex": "72",
-      "candidate_id": "Maximize[](HullArea[](Embed[k=3](EvenQuartic[c=12]())))",
-      "difficulty": "A",
-      "domain": "algebraic_geometry",
-      "family_id": "concept_tree.convex_hull_extremum",
+      "answer_tex": "y=x \\left(28 x^{2} - 5\\right)",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:033",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.79
+      },
+      "domain": "geometry_algebra",
+      "family_id": "construct.cubic_tangent_midpoint_locus",
       "lift_certificate": {
         "morphism_chain": [
-          "Maximize",
-          " HullArea",
-          " Embed",
-          "k=3 EvenQuartic",
-          "c=12 "
+          "TangentLine",
+          "CubicReintersection",
+          "MidpointLocus"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1163
       },
-      "solution_tex": "",
-      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-12x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に点 \\((r,r^3)\\) を対応させるとき，これら4点の凸包の面積の最大値を求めよ。",
+      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
+      "statement_tex": "曲線 \\(C: y=x^{3} - 5 x\\) 上の点 \\(P(t,\\,t^{3} - 5 t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "tool": "symbolic_intersection",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "symbolic_proof_interior_critical_point"
+        "method": "symbolic_tangent_intersection_locus"
       }
     },
     {
       "accepted": true,
-      "answer_tex": "-24",
-      "candidate_id": "Minimize[](Difference[](HullArea[](Embed[k=3](EvenQuartic[c=4]())),HullArea[](Embed[k=5](EvenQuartic[c=4]()))))",
-      "difficulty": "A",
-      "domain": "algebraic_geometry",
-      "family_id": "concept_tree.convex_hull_extremum",
+      "answer_tex": "y=28 x^{3} - x",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:029",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.75
+      },
+      "domain": "geometry_algebra",
+      "family_id": "construct.cubic_tangent_midpoint_locus",
       "lift_certificate": {
         "morphism_chain": [
-          "Minimize",
-          " Difference",
-          " HullArea",
-          " Embed",
-          "k=3 EvenQuartic",
-          "c=4 ,HullArea",
-          " Embed",
-          "k=5 EvenQuartic",
-          "c=4 "
+          "TangentLine",
+          "CubicReintersection",
+          "MidpointLocus"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1172
       },
-      "solution_tex": "",
-      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-4x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に対し，点 \\((r,r^3)\\) から定まる「これら4点の凸包の面積」から，点 \\((r,r^5)\\) から定まる「これら4点の凸包の面積」を引いた差の最小値を求めよ。",
+      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
+      "statement_tex": "曲線 \\(C: y=x^{3} - x\\) 上の点 \\(P(t,\\,t^{3} - t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "tool": "symbolic_intersection",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "symbolic_proof_interior_critical_point"
+        "method": "symbolic_tangent_intersection_locus"
       }
     },
     {
       "accepted": true,
-      "answer_tex": "-50",
-      "candidate_id": "Minimize[](Difference[](HullArea[](Embed[k=3](EvenQuartic[c=5]())),HullArea[](Embed[k=5](EvenQuartic[c=5]()))))",
-      "difficulty": "A",
-      "domain": "algebraic_geometry",
-      "family_id": "concept_tree.convex_hull_extremum",
+      "answer_tex": "y=28 x^{3} + x",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:031",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.75
+      },
+      "domain": "geometry_algebra",
+      "family_id": "construct.cubic_tangent_midpoint_locus",
       "lift_certificate": {
         "morphism_chain": [
-          "Minimize",
-          " Difference",
-          " HullArea",
-          " Embed",
-          "k=3 EvenQuartic",
-          "c=5 ,HullArea",
-          " Embed",
-          "k=5 EvenQuartic",
-          "c=5 "
+          "TangentLine",
+          "CubicReintersection",
+          "MidpointLocus"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1172
       },
-      "solution_tex": "",
-      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-5x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に対し，点 \\((r,r^3)\\) から定まる「これら4点の凸包の面積」から，点 \\((r,r^5)\\) から定まる「これら4点の凸包の面積」を引いた差の最小値を求めよ。",
+      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
+      "statement_tex": "曲線 \\(C: y=x^{3} + x\\) 上の点 \\(P(t,\\,t^{3} + t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "tool": "symbolic_intersection",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "symbolic_proof_interior_critical_point"
+        "method": "symbolic_tangent_intersection_locus"
       }
     },
     {
       "accepted": true,
-      "answer_tex": "108",
-      "candidate_id": "Maximize[](HullArea[](Embed[k=5](EvenQuartic[c=6]())))",
-      "difficulty": "A",
-      "domain": "algebraic_geometry",
-      "family_id": "concept_tree.convex_hull_extremum",
+      "answer_tex": "y=28 x^{3}",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:030",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.67
+      },
+      "domain": "geometry_algebra",
+      "family_id": "construct.cubic_tangent_midpoint_locus",
       "lift_certificate": {
         "morphism_chain": [
-          "Maximize",
-          " HullArea",
-          " Embed",
-          "k=5 EvenQuartic",
-          "c=6 "
+          "TangentLine",
+          "CubicReintersection",
+          "MidpointLocus"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.12
       },
-      "solution_tex": "",
-      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-6x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に点 \\((r,r^5)\\) を対応させるとき，これら4点の凸包の面積の最大値を求めよ。",
+      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
+      "statement_tex": "曲線 \\(C: y=x^{3}\\) 上の点 \\(P(t,\\,t^{3})\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "tool": "symbolic_intersection",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "symbolic_proof_interior_critical_point"
+        "method": "symbolic_tangent_intersection_locus"
       }
     },
     {
       "accepted": true,
-      "answer_tex": "-80",
-      "candidate_id": "Minimize[](Difference[](HullArea[](Embed[k=2](EvenQuartic[c=6]())),HullArea[](Embed[k=4](EvenQuartic[c=6]()))))",
-      "difficulty": "A",
-      "domain": "algebraic_geometry",
-      "family_id": "concept_tree.convex_hull_extremum",
+      "answer_tex": "1, 3",
+      "candidate_id": "construct:construct.mobius_fixed_points:000",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 8.4
+      },
+      "domain": "algebra",
+      "family_id": "construct.mobius_fixed_points",
       "lift_certificate": {
         "morphism_chain": [
-          "Minimize",
-          " Difference",
-          " HullArea",
-          " Embed",
-          "k=2 EvenQuartic",
-          "c=6 ,HullArea",
-          " Embed",
-          "k=4 EvenQuartic",
-          "c=6 "
+          "MobiusToMatrix",
+          "Eigenstructure",
+          "FixedPointSolve"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1938
       },
-      "solution_tex": "",
-      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-6x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に対し，点 \\((r,r^2)\\) から定まる「これら4点の凸包の面積」から，点 \\((r,r^4)\\) から定まる「これら4点の凸包の面積」を引いた差の最小値を求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}5&-3\\\\1&1\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{5 x - 3}{x + 1}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "symbolic_proof_interior_critical_point"
+        "method": "mobius_matrix_eigen_fixed_points"
       }
     },
     {
       "accepted": true,
-      "answer_tex": "-90",
-      "candidate_id": "Minimize[](Difference[](HullArea[](Embed[k=3](EvenQuartic[c=6]())),HullArea[](Embed[k=5](EvenQuartic[c=6]()))))",
-      "difficulty": "A",
-      "domain": "algebraic_geometry",
-      "family_id": "concept_tree.convex_hull_extremum",
+      "answer_tex": "\\frac{1}{2} - \\frac{\\sqrt{17}}{2}, \\frac{1}{2} + \\frac{\\sqrt{17}}{2}",
+      "candidate_id": "construct:construct.mobius_fixed_points:001",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 8.39
+      },
+      "domain": "algebra",
+      "family_id": "construct.mobius_fixed_points",
       "lift_certificate": {
         "morphism_chain": [
-          "Minimize",
-          " Difference",
-          " HullArea",
-          " Embed",
-          "k=3 EvenQuartic",
-          "c=6 ,HullArea",
-          " Embed",
-          "k=5 EvenQuartic",
-          "c=6 "
+          "MobiusToMatrix",
+          "Eigenstructure",
+          "FixedPointSolve"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2016
       },
-      "solution_tex": "",
-      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-6x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に対し，点 \\((r,r^3)\\) から定まる「これら4点の凸包の面積」から，点 \\((r,r^5)\\) から定まる「これら4点の凸包の面積」を引いた差の最小値を求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}3&4\\\\1&2\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{3 x + 4}{x + 2}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "symbolic_proof_interior_critical_point"
+        "method": "mobius_matrix_eigen_fixed_points"
       }
     },
     {
       "accepted": true,
-      "answer_tex": "256",
-      "candidate_id": "Maximize[](HullArea[](Embed[k=5](EvenQuartic[c=8]())))",
-      "difficulty": "A",
-      "domain": "algebraic_geometry",
-      "family_id": "concept_tree.convex_hull_extremum",
+      "answer_tex": "-3, 1",
+      "candidate_id": "construct:construct.mobius_fixed_points:003",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 8.39
+      },
+      "domain": "algebra",
+      "family_id": "construct.mobius_fixed_points",
       "lift_certificate": {
         "morphism_chain": [
-          "Maximize",
-          " HullArea",
-          " Embed",
-          "k=5 EvenQuartic",
-          "c=8 "
+          "MobiusToMatrix",
+          "Eigenstructure",
+          "FixedPointSolve"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1923
       },
-      "solution_tex": "",
-      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-8x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に点 \\((r,r^5)\\) を対応させるとき，これら4点の凸包の面積の最大値を求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}2&3\\\\1&4\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{2 x + 3}{x + 4}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "symbolic_proof_interior_critical_point"
+        "method": "mobius_matrix_eigen_fixed_points"
       }
     },
     {
       "accepted": true,
-      "answer_tex": "500",
-      "candidate_id": "Maximize[](HullArea[](Embed[k=5](EvenQuartic[c=10]())))",
-      "difficulty": "A",
-      "domain": "algebraic_geometry",
-      "family_id": "concept_tree.convex_hull_extremum",
+      "answer_tex": "1, 6",
+      "candidate_id": "construct:construct.mobius_fixed_points:002",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 8.36
+      },
+      "domain": "algebra",
+      "family_id": "construct.mobius_fixed_points",
       "lift_certificate": {
         "morphism_chain": [
-          "Maximize",
-          " HullArea",
-          " Embed",
-          "k=5 EvenQuartic",
-          "c=10 "
+          "MobiusToMatrix",
+          "Eigenstructure",
+          "FixedPointSolve"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1953
       },
-      "solution_tex": "",
-      "statement_tex": "実数 \\(t\\) に対し，方程式 \\(x^4-10x^2+t=0\\) が相異なる4実根をもつとする。各実根 \\(r\\) に点 \\((r,r^5)\\) を対応させるとき，これら4点の凸包の面積の最大値を求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}7&-6\\\\1&0\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{7 x - 6}{x}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "symbolic_proof_interior_critical_point"
+        "method": "mobius_matrix_eigen_fixed_points"
       }
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{7}{12}",
-      "candidate_id": "geomfusion:passage_region.line_family_sweep:000",
-      "difficulty": "A",
-      "domain": "geometry",
-      "family_id": "passage_region.line_family_sweep",
+      "answer_tex": "2",
+      "candidate_id": "construct:construct.paley_common_neighbors:007",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.46
+      },
+      "domain": "number_theory_graph",
+      "family_id": "construct.paley_common_neighbors",
       "lift_certificate": {
         "morphism_chain": [
-          "ParametricLineFamily",
-          "ExistenceElimination",
-          "SweptRegionArea"
+          "ResidueVertices",
+          "QuadraticResidueEdges",
+          "CommonNeighborCount"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1307
       },
-      "solution_tex": "各 \\(x\\) を固定すると \\(y={a}tx-t^2\\) は \\(t\\) の上に凸な二次関数。\\(t={a}x/2\\) が区間内なら最大値 \\((2x)^2/4\\)，端点で最小値をとる。区間ごとに \\(y\\) の動く幅を \\(x\\) で積分すると面積が定まる。",
-      "statement_tex": "実数 \\(t\\)（\\(0\\le t\\le 1\\)）を動かすとき，直線 \\(y=2tx-t^2\\) が通過する領域を \\(D\\) とする。\\(0\\le x\\le 1\\) の範囲で \\(D\\) の面積を求めよ。",
+      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=2\\)。平方剰余の指標和で示せる。",
+      "statement_tex": "素数 \\(p=13\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{13}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
+      "tool": "quadratic_residue",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "parameter_existence_elimination_plus_numeric_area"
+        "method": "paley_strongly_regular_lambda"
       }
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{31}{12}",
-      "candidate_id": "geomfusion:passage_region.line_family_sweep:001",
-      "difficulty": "A",
-      "domain": "geometry",
-      "family_id": "passage_region.line_family_sweep",
+      "answer_tex": "3",
+      "candidate_id": "construct:construct.paley_common_neighbors:008",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.46
+      },
+      "domain": "number_theory_graph",
+      "family_id": "construct.paley_common_neighbors",
       "lift_certificate": {
         "morphism_chain": [
-          "ParametricLineFamily",
-          "ExistenceElimination",
-          "SweptRegionArea"
+          "ResidueVertices",
+          "QuadraticResidueEdges",
+          "CommonNeighborCount"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1307
       },
-      "solution_tex": "各 \\(x\\) を固定すると \\(y={a}tx-t^2\\) は \\(t\\) の上に凸な二次関数。\\(t={a}x/2\\) が区間内なら最大値 \\((2x)^2/4\\)，端点で最小値をとる。区間ごとに \\(y\\) の動く幅を \\(x\\) で積分すると面積が定まる。",
-      "statement_tex": "実数 \\(t\\)（\\(0\\le t\\le 1\\)）を動かすとき，直線 \\(y=2tx-t^2\\) が通過する領域を \\(D\\) とする。\\(0\\le x\\le 2\\) の範囲で \\(D\\) の面積を求めよ。",
+      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=3\\)。平方剰余の指標和で示せる。",
+      "statement_tex": "素数 \\(p=17\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{17}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
+      "tool": "quadratic_residue",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "parameter_existence_elimination_plus_numeric_area"
+        "method": "paley_strongly_regular_lambda"
       }
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{7}{3}",
-      "candidate_id": "geomfusion:passage_region.line_family_sweep:002",
-      "difficulty": "A",
-      "domain": "geometry",
-      "family_id": "passage_region.line_family_sweep",
+      "answer_tex": "6",
+      "candidate_id": "construct:construct.paley_common_neighbors:009",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.46
+      },
+      "domain": "number_theory_graph",
+      "family_id": "construct.paley_common_neighbors",
       "lift_certificate": {
         "morphism_chain": [
-          "ParametricLineFamily",
-          "ExistenceElimination",
-          "SweptRegionArea"
+          "ResidueVertices",
+          "QuadraticResidueEdges",
+          "CommonNeighborCount"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1307
       },
-      "solution_tex": "各 \\(x\\) を固定すると \\(y={a}tx-t^2\\) は \\(t\\) の上に凸な二次関数。\\(t={a}x/2\\) が区間内なら最大値 \\((2x)^2/4\\)，端点で最小値をとる。区間ごとに \\(y\\) の動く幅を \\(x\\) で積分すると面積が定まる。",
-      "statement_tex": "実数 \\(t\\)（\\(0\\le t\\le 2\\)）を動かすとき，直線 \\(y=2tx-t^2\\) が通過する領域を \\(D\\) とする。\\(0\\le x\\le 1\\) の範囲で \\(D\\) の面積を求めよ。",
+      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=6\\)。平方剰余の指標和で示せる。",
+      "statement_tex": "素数 \\(p=29\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{29}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
+      "tool": "quadratic_residue",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "parameter_existence_elimination_plus_numeric_area"
+        "method": "paley_strongly_regular_lambda"
       }
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{14}{3}",
-      "candidate_id": "geomfusion:passage_region.line_family_sweep:003",
-      "difficulty": "A",
-      "domain": "geometry",
-      "family_id": "passage_region.line_family_sweep",
+      "answer_tex": "8",
+      "candidate_id": "construct:construct.paley_common_neighbors:010",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.46
+      },
+      "domain": "number_theory_graph",
+      "family_id": "construct.paley_common_neighbors",
       "lift_certificate": {
         "morphism_chain": [
-          "ParametricLineFamily",
-          "ExistenceElimination",
-          "SweptRegionArea"
+          "ResidueVertices",
+          "QuadraticResidueEdges",
+          "CommonNeighborCount"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1307
       },
-      "solution_tex": "各 \\(x\\) を固定すると \\(y={a}tx-t^2\\) は \\(t\\) の上に凸な二次関数。\\(t={a}x/2\\) が区間内なら最大値 \\((2x)^2/4\\)，端点で最小値をとる。区間ごとに \\(y\\) の動く幅を \\(x\\) で積分すると面積が定まる。",
-      "statement_tex": "実数 \\(t\\)（\\(0\\le t\\le 2\\)）を動かすとき，直線 \\(y=2tx-t^2\\) が通過する領域を \\(D\\) とする。\\(0\\le x\\le 2\\) の範囲で \\(D\\) の面積を求めよ。",
+      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=8\\)。平方剰余の指標和で示せる。",
+      "statement_tex": "素数 \\(p=37\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{37}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
+      "tool": "quadratic_residue",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "parameter_existence_elimination_plus_numeric_area"
+        "method": "paley_strongly_regular_lambda"
       }
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{8}{9}",
-      "candidate_id": "geomfusion:passage_region.line_family_sweep:004",
-      "difficulty": "A",
-      "domain": "geometry",
-      "family_id": "passage_region.line_family_sweep",
+      "answer_tex": "9",
+      "candidate_id": "construct:construct.paley_common_neighbors:011",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.46
+      },
+      "domain": "number_theory_graph",
+      "family_id": "construct.paley_common_neighbors",
       "lift_certificate": {
         "morphism_chain": [
-          "ParametricLineFamily",
-          "ExistenceElimination",
-          "SweptRegionArea"
+          "ResidueVertices",
+          "QuadraticResidueEdges",
+          "CommonNeighborCount"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1307
       },
-      "solution_tex": "各 \\(x\\) を固定すると \\(y={a}tx-t^2\\) は \\(t\\) の上に凸な二次関数。\\(t={a}x/2\\) が区間内なら最大値 \\((3x)^2/4\\)，端点で最小値をとる。区間ごとに \\(y\\) の動く幅を \\(x\\) で積分すると面積が定まる。",
-      "statement_tex": "実数 \\(t\\)（\\(0\\le t\\le 1\\)）を動かすとき，直線 \\(y=3tx-t^2\\) が通過する領域を \\(D\\) とする。\\(0\\le x\\le 1\\) の範囲で \\(D\\) の面積を求めよ。",
+      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=9\\)。平方剰余の指標和で示せる。",
+      "statement_tex": "素数 \\(p=41\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{41}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
+      "tool": "quadratic_residue",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "parameter_existence_elimination_plus_numeric_area"
+        "method": "paley_strongly_regular_lambda"
       }
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{79}{18}",
-      "candidate_id": "geomfusion:passage_region.line_family_sweep:005",
-      "difficulty": "A",
-      "domain": "geometry",
-      "family_id": "passage_region.line_family_sweep",
+      "answer_tex": "12",
+      "candidate_id": "construct:construct.paley_common_neighbors:012",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.46
+      },
+      "domain": "number_theory_graph",
+      "family_id": "construct.paley_common_neighbors",
       "lift_certificate": {
         "morphism_chain": [
-          "ParametricLineFamily",
-          "ExistenceElimination",
-          "SweptRegionArea"
+          "ResidueVertices",
+          "QuadraticResidueEdges",
+          "CommonNeighborCount"
         ],
         "type_checked": true
       },
       "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1307
       },
-      "solution_tex": "各 \\(x\\) を固定すると \\(y={a}tx-t^2\\) は \\(t\\) の上に凸な二次関数。\\(t={a}x/2\\) が区間内なら最大値 \\((3x)^2/4\\)，端点で最小値をとる。区間ごとに \\(y\\) の動く幅を \\(x\\) で積分すると面積が定まる。",
-      "statement_tex": "実数 \\(t\\)（\\(0\\le t\\le 1\\)）を動かすとき，直線 \\(y=3tx-t^2\\) が通過する領域を \\(D\\) とする。\\(0\\le x\\le 2\\) の範囲で \\(D\\) の面積を求めよ。",
+      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=12\\)。平方剰余の指標和で示せる。",
+      "statement_tex": "素数 \\(p=53\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{53}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
+      "tool": "quadratic_residue",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "parameter_existence_elimination_plus_numeric_area"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{25}{12}",
-      "candidate_id": "geomfusion:passage_region.line_family_sweep:006",
-      "difficulty": "A",
-      "domain": "geometry",
-      "family_id": "passage_region.line_family_sweep",
-      "lift_certificate": {
-        "morphism_chain": [
-          "ParametricLineFamily",
-          "ExistenceElimination",
-          "SweptRegionArea"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "各 \\(x\\) を固定すると \\(y={a}tx-t^2\\) は \\(t\\) の上に凸な二次関数。\\(t={a}x/2\\) が区間内なら最大値 \\((3x)^2/4\\)，端点で最小値をとる。区間ごとに \\(y\\) の動く幅を \\(x\\) で積分すると面積が定まる。",
-      "statement_tex": "実数 \\(t\\)（\\(0\\le t\\le 2\\)）を動かすとき，直線 \\(y=3tx-t^2\\) が通過する領域を \\(D\\) とする。\\(0\\le x\\le 1\\) の範囲で \\(D\\) の面積を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "parameter_existence_elimination_plus_numeric_area"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{64}{9}",
-      "candidate_id": "geomfusion:passage_region.line_family_sweep:007",
-      "difficulty": "A",
-      "domain": "geometry",
-      "family_id": "passage_region.line_family_sweep",
-      "lift_certificate": {
-        "morphism_chain": [
-          "ParametricLineFamily",
-          "ExistenceElimination",
-          "SweptRegionArea"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "各 \\(x\\) を固定すると \\(y={a}tx-t^2\\) は \\(t\\) の上に凸な二次関数。\\(t={a}x/2\\) が区間内なら最大値 \\((3x)^2/4\\)，端点で最小値をとる。区間ごとに \\(y\\) の動く幅を \\(x\\) で積分すると面積が定まる。",
-      "statement_tex": "実数 \\(t\\)（\\(0\\le t\\le 2\\)）を動かすとき，直線 \\(y=3tx-t^2\\) が通過する領域を \\(D\\) とする。\\(0\\le x\\le 2\\) の範囲で \\(D\\) の面積を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "parameter_existence_elimination_plus_numeric_area"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{31}{24}",
-      "candidate_id": "geomfusion:passage_region.line_family_sweep:008",
-      "difficulty": "A",
-      "domain": "geometry",
-      "family_id": "passage_region.line_family_sweep",
-      "lift_certificate": {
-        "morphism_chain": [
-          "ParametricLineFamily",
-          "ExistenceElimination",
-          "SweptRegionArea"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "各 \\(x\\) を固定すると \\(y={a}tx-t^2\\) は \\(t\\) の上に凸な二次関数。\\(t={a}x/2\\) が区間内なら最大値 \\((4x)^2/4\\)，端点で最小値をとる。区間ごとに \\(y\\) の動く幅を \\(x\\) で積分すると面積が定まる。",
-      "statement_tex": "実数 \\(t\\)（\\(0\\le t\\le 1\\)）を動かすとき，直線 \\(y=4tx-t^2\\) が通過する領域を \\(D\\) とする。\\(0\\le x\\le 1\\) の範囲で \\(D\\) の面積を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "parameter_existence_elimination_plus_numeric_area"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{151}{24}",
-      "candidate_id": "geomfusion:passage_region.line_family_sweep:009",
-      "difficulty": "A",
-      "domain": "geometry",
-      "family_id": "passage_region.line_family_sweep",
-      "lift_certificate": {
-        "morphism_chain": [
-          "ParametricLineFamily",
-          "ExistenceElimination",
-          "SweptRegionArea"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "各 \\(x\\) を固定すると \\(y={a}tx-t^2\\) は \\(t\\) の上に凸な二次関数。\\(t={a}x/2\\) が区間内なら最大値 \\((4x)^2/4\\)，端点で最小値をとる。区間ごとに \\(y\\) の動く幅を \\(x\\) で積分すると面積が定まる。",
-      "statement_tex": "実数 \\(t\\)（\\(0\\le t\\le 1\\)）を動かすとき，直線 \\(y=4tx-t^2\\) が通過する領域を \\(D\\) とする。\\(0\\le x\\le 2\\) の範囲で \\(D\\) の面積を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "parameter_existence_elimination_plus_numeric_area"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{31}{3}",
-      "candidate_id": "geomfusion:passage_region.line_family_sweep:010",
-      "difficulty": "A",
-      "domain": "geometry",
-      "family_id": "passage_region.line_family_sweep",
-      "lift_certificate": {
-        "morphism_chain": [
-          "ParametricLineFamily",
-          "ExistenceElimination",
-          "SweptRegionArea"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "各 \\(x\\) を固定すると \\(y={a}tx-t^2\\) は \\(t\\) の上に凸な二次関数。\\(t={a}x/2\\) が区間内なら最大値 \\((4x)^2/4\\)，端点で最小値をとる。区間ごとに \\(y\\) の動く幅を \\(x\\) で積分すると面積が定まる。",
-      "statement_tex": "実数 \\(t\\)（\\(0\\le t\\le 2\\)）を動かすとき，直線 \\(y=4tx-t^2\\) が通過する領域を \\(D\\) とする。\\(0\\le x\\le 2\\) の範囲で \\(D\\) の面積を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "parameter_existence_elimination_plus_numeric_area"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{83}{30}",
-      "candidate_id": "geomfusion:passage_region.parabola_family_sweep:011",
-      "difficulty": "A",
-      "domain": "geometry",
-      "family_id": "passage_region.parabola_family_sweep",
-      "lift_certificate": {
-        "morphism_chain": [
-          "ParametricParabolaFamily",
-          "ExistenceElimination",
-          "SweptRegionArea"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(x\\) を固定すると \\(y=tx^2-t^2\\) は \\(t\\) の上に凸な二次関数で，頂点 \\(t=x^2/2\\) と区間端 \\(t=\\pm T\\) の値から \\(y\\) の動く範囲が定まる。これを \\(x\\) で積分する。",
-      "statement_tex": "実数 \\(t\\)（\\(-1\\le t\\le 1\\)）を動かすとき，放物線 \\(y=tx^2-t^2\\) が通過する領域の，\\(-1\\le x\\le 1\\) における面積を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "parameter_existence_elimination_plus_numeric_area"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{16 \\sqrt{2}}{15} + \\frac{32}{3}",
-      "candidate_id": "geomfusion:passage_region.parabola_family_sweep:012",
-      "difficulty": "A",
-      "domain": "geometry",
-      "family_id": "passage_region.parabola_family_sweep",
-      "lift_certificate": {
-        "morphism_chain": [
-          "ParametricParabolaFamily",
-          "ExistenceElimination",
-          "SweptRegionArea"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(x\\) を固定すると \\(y=tx^2-t^2\\) は \\(t\\) の上に凸な二次関数で，頂点 \\(t=x^2/2\\) と区間端 \\(t=\\pm T\\) の値から \\(y\\) の動く範囲が定まる。これを \\(x\\) で積分する。",
-      "statement_tex": "実数 \\(t\\)（\\(-1\\le t\\le 1\\)）を動かすとき，放物線 \\(y=tx^2-t^2\\) が通過する領域の，\\(-2\\le x\\le 2\\) における面積を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "parameter_existence_elimination_plus_numeric_area"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{283}{30}",
-      "candidate_id": "geomfusion:passage_region.parabola_family_sweep:013",
-      "difficulty": "A",
-      "domain": "geometry",
-      "family_id": "passage_region.parabola_family_sweep",
-      "lift_certificate": {
-        "morphism_chain": [
-          "ParametricParabolaFamily",
-          "ExistenceElimination",
-          "SweptRegionArea"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(x\\) を固定すると \\(y=tx^2-t^2\\) は \\(t\\) の上に凸な二次関数で，頂点 \\(t=x^2/2\\) と区間端 \\(t=\\pm T\\) の値から \\(y\\) の動く範囲が定まる。これを \\(x\\) で積分する。",
-      "statement_tex": "実数 \\(t\\)（\\(-2\\le t\\le 2\\)）を動かすとき，放物線 \\(y=tx^2-t^2\\) が通過する領域の，\\(-1\\le x\\le 1\\) における面積を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "parameter_existence_elimination_plus_numeric_area"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{448}{15}",
-      "candidate_id": "geomfusion:passage_region.parabola_family_sweep:014",
-      "difficulty": "A",
-      "domain": "geometry",
-      "family_id": "passage_region.parabola_family_sweep",
-      "lift_certificate": {
-        "morphism_chain": [
-          "ParametricParabolaFamily",
-          "ExistenceElimination",
-          "SweptRegionArea"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(x\\) を固定すると \\(y=tx^2-t^2\\) は \\(t\\) の上に凸な二次関数で，頂点 \\(t=x^2/2\\) と区間端 \\(t=\\pm T\\) の値から \\(y\\) の動く範囲が定まる。これを \\(x\\) で積分する。",
-      "statement_tex": "実数 \\(t\\)（\\(-2\\le t\\le 2\\)）を動かすとき，放物線 \\(y=tx^2-t^2\\) が通過する領域の，\\(-2\\le x\\le 2\\) における面積を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "parameter_existence_elimination_plus_numeric_area"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{201}{10}",
-      "candidate_id": "geomfusion:passage_region.parabola_family_sweep:015",
-      "difficulty": "A",
-      "domain": "geometry",
-      "family_id": "passage_region.parabola_family_sweep",
-      "lift_certificate": {
-        "morphism_chain": [
-          "ParametricParabolaFamily",
-          "ExistenceElimination",
-          "SweptRegionArea"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(x\\) を固定すると \\(y=tx^2-t^2\\) は \\(t\\) の上に凸な二次関数で，頂点 \\(t=x^2/2\\) と区間端 \\(t=\\pm T\\) の値から \\(y\\) の動く範囲が定まる。これを \\(x\\) で積分する。",
-      "statement_tex": "実数 \\(t\\)（\\(-3\\le t\\le 3\\)）を動かすとき，放物線 \\(y=tx^2-t^2\\) が通過する領域の，\\(-1\\le x\\le 1\\) における面積を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "parameter_existence_elimination_plus_numeric_area"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{276}{5}",
-      "candidate_id": "geomfusion:passage_region.parabola_family_sweep:016",
-      "difficulty": "A",
-      "domain": "geometry",
-      "family_id": "passage_region.parabola_family_sweep",
-      "lift_certificate": {
-        "morphism_chain": [
-          "ParametricParabolaFamily",
-          "ExistenceElimination",
-          "SweptRegionArea"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(x\\) を固定すると \\(y=tx^2-t^2\\) は \\(t\\) の上に凸な二次関数で，頂点 \\(t=x^2/2\\) と区間端 \\(t=\\pm T\\) の値から \\(y\\) の動く範囲が定まる。これを \\(x\\) で積分する。",
-      "statement_tex": "実数 \\(t\\)（\\(-3\\le t\\le 3\\)）を動かすとき，放物線 \\(y=tx^2-t^2\\) が通過する領域の，\\(-2\\le x\\le 2\\) における面積を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "parameter_existence_elimination_plus_numeric_area"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{5}{2}",
-      "candidate_id": "geomfusion:fusion.trig_absolute_value_integral:017",
-      "difficulty": "A",
-      "domain": "real_analysis",
-      "family_id": "fusion.trig_absolute_value_integral",
-      "lift_certificate": {
-        "morphism_chain": [
-          "TrigDifference",
-          "SignPartition",
-          "AbsoluteIntegral"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(\\sin x=\\sin 2x\\) となる \\(x\\) で符号が変わる。各区間で絶対値を外し，符号に注意して積分を足し合わせる。",
-      "statement_tex": "定積分 \\(\\displaystyle\\int_0^{\\pi}\\left|\\sin x-\\sin 2x\\right|\\,dx\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "sign_partition_plus_high_precision_quadrature"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "- \\pi",
-      "candidate_id": "geomfusion:fusion.trig_floor_integral:018",
-      "difficulty": "A",
-      "domain": "real_analysis",
-      "family_id": "fusion.trig_floor_integral",
-      "lift_certificate": {
-        "morphism_chain": [
-          "TrigLevelSets",
-          "FloorStep",
-          "PiecewiseIntegral"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(0+2\\sin x\\) が各整数値をまたぐ \\(x\\) を求め，床関数が一定になる区間の長さに整数値を掛けて足す。対称性を使うと計算が軽くなる。",
-      "statement_tex": "\\(\\lfloor\\ \\rfloor\\) を床関数とする。定積分 \\(\\displaystyle\\int_0^{2\\pi}\\lfloor 0+2\\sin x\\rfloor\\,dx\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "level_set_partition_plus_high_precision_quadrature"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\pi",
-      "candidate_id": "geomfusion:fusion.trig_floor_integral:019",
-      "difficulty": "A",
-      "domain": "real_analysis",
-      "family_id": "fusion.trig_floor_integral",
-      "lift_certificate": {
-        "morphism_chain": [
-          "TrigLevelSets",
-          "FloorStep",
-          "PiecewiseIntegral"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "solution_tex": "\\(1+2\\sin x\\) が各整数値をまたぐ \\(x\\) を求め，床関数が一定になる区間の長さに整数値を掛けて足す。対称性を使うと計算が軽くなる。",
-      "statement_tex": "\\(\\lfloor\\ \\rfloor\\) を床関数とする。定積分 \\(\\displaystyle\\int_0^{2\\pi}\\lfloor 1+2\\sin x\\rfloor\\,dx\\) を求めよ。",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "level_set_partition_plus_high_precision_quadrature"
+        "method": "paley_strongly_regular_lambda"
       }
     }
   ],
-  "source_note": "Mechanically assembled from MathOS generators after every acceptance gate. Each problem carries an exact backend derivation plus an independent check; the Discord bot never edits these records.",
+  "source_note": "対象を構築し条件を課す難問。表層類似度は SIMILARITY.md の定義で実計算。",
   "summary": {
-    "accepted": 63,
-    "all_backend_verified": true,
-    "difficulty_counts": {
-      "A": 42,
-      "B": 2,
-      "C": 19
-    },
-    "domain_counts": {
-      "algebra": 1,
-      "algebraic_geometry": 15,
-      "analytic_geometry": 1,
-      "combinatorics": 1,
-      "combinatorics_analysis": 1,
-      "combinatorics_number_theory": 6,
-      "complex_geometry": 1,
-      "geometry": 17,
-      "linear_algebra": 2,
-      "linear_algebra_number_theory": 2,
-      "number_theory": 8,
-      "probability": 2,
-      "real_analysis": 6
-    },
-    "families": 26,
+    "dropped_not_novel": 0,
+    "dropped_too_easy": 0,
     "family_counts": {
-      "algebraic_geometry.cubic_discriminant_triangle_area": 1,
-      "analysis.boundary_layer_integral_limit": 1,
-      "analysis.reflection_symmetric_integral": 1,
-      "arithmetic_matrix.gcd_incidence_determinant": 1,
-      "asymptotic.recurrence_square_increment": 1,
-      "binomial.beta_integral_duality": 1,
-      "binomial.roots_of_unity_filter": 5,
-      "binomial.roots_of_unity_filter_mod3": 1,
-      "complex_geometry.reciprocal_root_polygon_area": 1,
-      "concept_tree.convex_hull_extremum": 14,
-      "conic_duality.tangent_intercept_centroid_minimum": 1,
-      "finite_field.circle_point_count": 5,
-      "finite_field.inverse_square_product_character": 1,
-      "finite_field.quadratic_form_zero_count": 1,
-      "fusion.trig_absolute_value_integral": 1,
-      "fusion.trig_floor_integral": 2,
-      "lattice_paths.dyck_reflection_catalan_count": 1,
-      "multiplicative.mobius_divisor_sum_totient_ratio": 1,
-      "passage_region.line_family_sweep": 11,
-      "passage_region.parabola_family_sweep": 6,
-      "polynomial.interpolation_harmonic_observable": 1,
-      "probability.left_to_right_maxima_expectation": 1,
-      "probability.random_bridge_zero_count": 1,
-      "recurrence.cassini_fibonacci_determinant_invariant": 1,
-      "spectral_graph.cycle_laplacian_pseudodeterminant": 1,
-      "spectral_graph.path_laplacian_tridiagonal_determinant": 1
+      "construct.cubic_tangent_midpoint_locus": 6,
+      "construct.linear_recurrence_mod_period": 15,
+      "construct.mobius_fixed_points": 4,
+      "construct.mobius_iteration_period": 3,
+      "construct.paley_common_neighbors": 6
     },
-    "from_concept_tree": 14,
-    "from_geometry_fusion": 20,
-    "from_hand_authored": 19,
-    "from_parametric_engine": 10
+    "generated": 34,
+    "jaccard_range": [
+      0.1163,
+      0.4059
+    ],
+    "kept": 34,
+    "tool_counts": {
+      "matrix_eigen": 4,
+      "matrix_mod_order": 15,
+      "matrix_power": 3,
+      "quadratic_residue": 6,
+      "symbolic_intersection": 6
+    },
+    "world_corpus_size": 28095
   }
 }
