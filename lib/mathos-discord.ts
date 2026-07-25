@@ -210,10 +210,17 @@ async function loadPool(): Promise<MathOSProblem[]> {
     .eq('source_file', SOURCE_FILE)
 
   if (error) throw new Error(`MathOS DB pool: ${error.message}`)
-  const parsed = ((data ?? []) as ProblemRow[])
+  const fromDb = ((data ?? []) as ProblemRow[])
     .map(parseProblemRow)
     .filter((problem): problem is MathOSProblem => problem !== null)
-  return parsed.length > 0 ? parsed : verifiedMathOSProblems
+
+  // DB とバンドルは *合併* する。以前は「DB に1件でもあればバンドルを捨てる」
+  // 実装だったため、ライブ生成が数件書き込んだだけで 763 問のバンドルが丸ごと
+  // 隠れ、同じ問題ばかり配信されていた。
+  const merged = new Map<string, MathOSProblem>()
+  for (const problem of verifiedMathOSProblems) merged.set(problem.problemHash, problem)
+  for (const problem of fromDb) merged.set(problem.problemHash, problem)
+  return [...merged.values()]
 }
 
 async function replayedDelivery(
@@ -434,23 +441,18 @@ export async function findMathOSSolution(
 
 export async function mathOSDiscordStats() {
   try {
-    const [
-      { count: poolCount, error: poolError },
-      { count: claims, error: claimError },
-    ] = await Promise.all([
-      supabaseAdmin
-        .from('problems')
-        .select('*', { count: 'exact', head: true })
-        .eq('source_file', SOURCE_FILE),
+    const [pool, { count: claims, error: claimError }] = await Promise.all([
+      loadPool(),
       supabaseAdmin
         .from('generation_jobs')
         .select('*', { count: 'exact', head: true })
         .eq('mode', CLAIM_MODE),
     ])
 
-    if (poolError) throw new Error(`MathOS pool stats: ${poolError.message}`)
     if (claimError) throw new Error(`MathOS delivery stats: ${claimError.message}`)
-    const verifiedPool = poolCount ?? verifiedMathOSProblems.length
+    // バンドル + DB の合併後の実数（以前は DB の件数しか数えておらず、
+    // 763 問あるのに 9 と表示されていた）
+    const verifiedPool = pool.length
     const delivered = claims ?? 0
     return {
       verifiedPool,
