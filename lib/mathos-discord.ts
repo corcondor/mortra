@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto'
 import verifiedBatch from '@/data/mathos/continuous_verified_problem_batch1.json'
 import { supabaseAdmin } from '@/lib/supabase-admin'
+import { generateLiveProblem } from '@/lib/mathos-live'
 
 const SOURCE_FILE = 'mathos_discord_verified'
 const EVENT_MODE = 'discord_sakumon'
@@ -311,12 +312,90 @@ function rotateForInteraction(
   return [...problems.slice(offset), ...problems.slice(0, offset)]
 }
 
+/**
+ * その場で1問構築して Supabase に保存する（エンター即作問）。
+ * 保存先は配信プールと同じ source_file なので、以降 loadPool / 解答表示 /
+ * 評価がそのまま効き、叩くたびにプールが育つ。
+ */
+export async function deliverLiveProblem(
+  input: DeliveryInput,
+): Promise<MathOSProblem | null> {
+  const live = generateLiveProblem(input.domain)
+  if (!live) return null
+
+  const problemHash = createHash('sha256')
+    .update([live.familyId, live.statementTex, live.answerTex].join('␟'))
+    .digest('hex')
+  const shortId = problemHash.slice(0, 10)
+  const problem: MathOSProblem = {
+    problemHash,
+    shortId,
+    candidateId: `live:${live.familyId}:${shortId}`,
+    domain: live.domain,
+    familyId: live.familyId,
+    statementTex: live.statementTex,
+    answerTex: live.answerTex,
+    solutionTex: live.solutionTex,
+    verificationMethod: live.verificationMethod,
+    maximumSurfaceJaccard: undefined,
+    morphismChain: live.morphismChain,
+  }
+
+  const { error } = await supabaseAdmin.from('problems').upsert(
+    {
+      id: `mathos-${shortId}`,
+      topic_a: live.domain,
+      topic_b: live.familyId,
+      variation: 0,
+      statement: live.statementTex,
+      answer: live.answerTex,
+      difficulty: 'B',
+      solution: live.solutionTex,
+      surprise: 8,
+      minimality: 7,
+      connection: 8,
+      inevitability: 8,
+      diff_cal: 7,
+      total: 7.6,
+      inspiration: live.morphismChain.join(' → '),
+      meta: JSON.stringify({
+        problemHash,
+        shortId,
+        candidateId: problem.candidateId,
+        familyId: live.familyId,
+        verificationMethod: live.verificationMethod,
+        morphismChain: live.morphismChain,
+        parameters: live.parameters,
+        tool: live.tool,
+        generatedLive: true,
+      }),
+      generation: 0,
+      parent_ids: [],
+      source_file: SOURCE_FILE,
+    },
+    { onConflict: 'id' },
+  )
+  if (error) throw new Error(`MathOS live persist: ${error.message}`)
+  return problem
+}
+
 export async function deliverMathOSProblem(
   input: DeliveryInput,
 ): Promise<MathOSProblem> {
   try {
     const replay = await replayedDelivery(input.interactionId)
     if (replay) return replay
+
+    // エンター即作問: まずその場で新しい問題を構築する。
+    try {
+      const live = await deliverLiveProblem(input)
+      if (live && (await claimCandidate(live, input))) {
+        await recordEvent(live, input)
+        return live
+      }
+    } catch {
+      // ライブ生成/保存に失敗したら既存プールへフォールバック
+    }
 
     const candidates = rotateForInteraction(
       (await loadPool()).filter((problem) =>
