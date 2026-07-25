@@ -85,5 +85,11 @@ test('the bundled MathOS pool contains only gate-passing problems', async () => 
       problem.lift_certificate.type_checked &&
       problem.novelty.corpus_novel,
   )
-  assert.equal(accepted.length, 811)
+  assert.equal(accepted.length, batch.summary.total)
+  assert.ok(accepted.length >= 800)
+  assert.ok(
+    accepted.some((problem) =>
+      problem.family_id.startsWith('deep.'),
+    ),
+  )
 })

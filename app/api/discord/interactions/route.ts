@@ -14,6 +14,7 @@ import {
   canonicalDomain,
   deliverMathOSProblem,
   findMathOSSolution,
+  helpEmbed,
   mathOSDiscordStats,
   mathosProblemComponents,
   problemEmbed,
@@ -193,6 +194,14 @@ export async function POST(request: NextRequest) {
       case 'mathos_status':
         after(() => completeStatus(interaction))
         return json(deferredResponse(true))
+      case 'help':
+        return json({
+          type: 4,
+          data: {
+            embeds: [helpEmbed()],
+            flags: 64,
+          },
+        })
       default:
         return json(immediateMessage('未対応のMathOSコマンドです。'))
     }

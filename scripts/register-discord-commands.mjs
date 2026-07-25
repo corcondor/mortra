@@ -54,6 +54,11 @@ const commands = [
     name: 'mathos_status',
     description: 'MathOSの検証済み問題数と配信状況を表示します',
   },
+  {
+    ...common,
+    name: 'help',
+    description: 'CorcondorAIとMathOSのコマンド一覧を表示します',
+  },
 ]
 
 const response = await fetch(

@@ -614,3 +614,43 @@ export async function mathOSRatingSummary(shortId: string) {
   const average = count > 0 ? ratings.reduce((a, b) => a + b, 0) / count : null
   return { count, average }
 }
+
+export function helpEmbed() {
+  return {
+    title: 'CorcondorAI / MathOS コマンド',
+    description:
+      'DMとCorcondorAI導入済みサーバーの両方で使えます。' +
+      'スラッシュコマンドはBotのオンライン表示に依存しません。',
+    color: 0x7c3aed,
+    fields: [
+      {
+        name: '/sakumon [domain]',
+        value:
+          '検証済みの新作問題を1問表示します。分野は省略可能です。\n' +
+          '例: `/sakumon domain:整数・数論`',
+        inline: false,
+      },
+      {
+        name: '/mathos_answer problem_id',
+        value:
+          '問題に表示された10文字IDから解答と射の合成を表示します。' +
+          '問題下の「解答を見る」ボタンでも開けます。',
+        inline: false,
+      },
+      {
+        name: '/mathos_status',
+        value: '検証済み候補、配信済み、未配信の件数を表示します。',
+        inline: false,
+      },
+      {
+        name: '/help',
+        value: 'このコマンド一覧を表示します。',
+        inline: false,
+      },
+    ],
+    footer: {
+      text:
+        '自由文のDM・メンション返信にはGateway版CorcondorAIの稼働が必要です。',
+    },
+  }
+}
