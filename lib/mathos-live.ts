@@ -59,10 +59,10 @@ export type LiveProblem = {
 
 // ---------- F1 ギャンブラーの破産（確率漸化式・高校） ----------
 function gambler(): LiveProblem | null {
-  const N = 4 + Math.floor(Math.random() * 9) // 4..12
+  const N = 4 + Math.floor(Math.random() * 25) // 4..28
   const k = 1 + Math.floor(Math.random() * (N - 1))
   const biased = Math.random() < 0.5
-  const [pa, pb] = biased ? pick<number[]>([[2, 1], [1, 2], [3, 1], [1, 3], [3, 2]]) : [1, 1]
+  const [pa, pb] = biased ? pick<number[]>([[2,1],[1,2],[3,1],[1,3],[3,2],[2,3],[4,1],[1,4],[5,2],[2,5],[5,3],[3,5],[4,3],[3,4]]) : [1, 1]
 
   let answer: Rat
   let solution: string
@@ -110,8 +110,8 @@ function gambler(): LiveProblem | null {
 
 // ---------- F2 線形漸化式の mod m 周期（整数・高校） ----------
 function recurrenceModPeriod(): LiveProblem | null {
-  const [s, t] = pick<number[]>([[1, 1], [1, 2], [2, 1], [3, -1], [1, 3], [2, 3], [3, 1], [1, -1], [4, 1], [2, -1]])
-  const m: number = pick([5, 7, 8, 9, 11, 13, 16, 17, 19, 23] as const)
+  const [s, t] = pick<number[]>([[1,1],[1,2],[2,1],[3,-1],[1,3],[2,3],[3,1],[1,-1],[4,1],[2,-1],[5,1],[1,4],[3,2],[4,-1],[2,5],[5,-2],[6,1],[1,5],[3,4],[4,3]])
+  const m: number = 3 + Math.floor(Math.random() * 45) // 3..47
   let a = 0, b = 1, period = 0
   const limit = m * m * 6
   for (let i = 1; i <= limit; i++) {
@@ -153,7 +153,7 @@ function recurrenceModPeriod(): LiveProblem | null {
 
 // ---------- F3 複素回転の周期（ド・モアブル・高校） ----------
 function complexRotation(): LiveProblem | null {
-  const k: number = pick([3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 16, 18, 20, 24] as const)
+  const k: number = 3 + Math.floor(Math.random() * 45) // 3..47
   const cands: number[] = []
   for (let m = 1; m < k; m++) if (gcdNum(m, k) === 1) cands.push(m)
   if (!cands.length) return null
@@ -182,7 +182,7 @@ function complexRotation(): LiveProblem | null {
 
 // ---------- F4 Paleyグラフ（平方剰余・整数） ----------
 function paley(): LiveProblem | null {
-  const p: number = pick([13, 17, 29, 37, 41, 53, 61, 73, 89, 97, 101, 109, 113] as const)
+  const p: number = pick([13,17,29,37,41,53,61,73,89,97,101,109,113,137,149,157,173,181,193,197,229,233,241,257,269,277,281,293] as const)
   const QR = new Set<number>()
   for (let x = 1; x < p; x++) QR.add((x * x) % p)
   let r0 = p
@@ -213,7 +213,7 @@ function paley(): LiveProblem | null {
 
 // ---------- F5 放物線の直角弦の定点（二次関数・高校） ----------
 function parabolaFixedPoint(): LiveProblem | null {
-  const c = 1 + Math.floor(Math.random() * 10)
+  const c = 1 + Math.floor(Math.random() * 30)
   const fixedY = rat(1, c)
   // 独立検証: 任意の a について b=-1/(c^2 a) とし、弦が (0,1/c) を通るか
   for (const a of [1, 2, 0.5, 3]) {
@@ -283,6 +283,76 @@ function mobiusPeriod(): LiveProblem | null {
   }
 }
 
+
+// ---------- F7 逆数変換の漸化式（数列・高校） ----------
+function reciprocalRecurrence(): LiveProblem | null {
+  const pp = 1 + Math.floor(Math.random() * 9)
+  const qq = 1 + Math.floor(Math.random() * 9)
+  // b_n = 1/a_n は b_{n+1} = p b_n + q, b_1 = 1
+  // 独立検証: 逐次計算と閉形式が一致するか
+  const bClosed = (n: number) =>
+    pp === 1 ? 1 + qq * (n - 1) : Math.pow(pp, n - 1) + (qq * (Math.pow(pp, n - 1) - 1)) / (pp - 1)
+  let a = 1
+  for (let n = 1; n <= 12; n++) {
+    if (Math.abs(1 / a - bClosed(n)) > 1e-6 * Math.max(1, Math.abs(bClosed(n)))) return null
+    a = a / (pp + qq * a)
+  }
+  const denom = `${pp}${qq === 1 ? '+a_n' : `+${qq}a_n`}`
+  const closedTex =
+    pp === 1
+      ? `\\dfrac{1}{${qq === 1 ? 'n' : `${qq}n-${qq - 1}`}}`
+      : `\\dfrac{${pp - 1}}{(${pp + qq - 1})\\cdot ${pp}^{n-1}-${qq}}`
+  return {
+    familyId: 'construct.reciprocal_recurrence',
+    domain: 'algebra',
+    tool: 'reciprocal_transform',
+    parameters: { p: pp, q: qq },
+    statementTex:
+      `数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{${denom}}\\) で定める。` +
+      `一般項 \\(a_n\\) を求めよ。`,
+    answerTex: closedTex,
+    solutionTex:
+      `逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=${pp}b_n+${qq}\\)（高校：逆数変換で線形漸化式）。` +
+      `これを解いて \\(a_n=1/b_n\\)。`,
+    morphismChain: ['ReciprocalTransform', 'LinearRecurrence', 'GeneralTerm'],
+    verificationMethod: 'reciprocal_linearization_plus_sequential_check',
+  }
+}
+
+// ---------- F8 複素アフィン漸化式の極限（複素数平面・高校） ----------
+function complexAffineLimit(): LiveProblem | null {
+  const br = Math.floor(Math.random() * 13) - 6
+  const bi = Math.floor(Math.random() * 13) - 6
+  if (br === 0 && bi === 0) return null
+  // z_{n+1} = (z_n + b)/2 → 不動点 w = b
+  // 独立検証: 数値反復
+  let zr = 1, zi = 0
+  for (let i = 0; i < 300; i++) { zr = (zr + br) / 2; zi = (zi + bi) / 2 }
+  if (Math.abs(zr - br) > 1e-9 || Math.abs(zi - bi) > 1e-9) return null
+  const fmt = (re: number, im: number) => {
+    if (im === 0) return `${re}`
+    const imPart = im === 1 ? 'i' : im === -1 ? '-i' : `${im}i`
+    if (re === 0) return imPart
+    return `${re}${im > 0 ? '+' : ''}${imPart}`
+  }
+  const bTex = fmt(br, bi)
+  return {
+    familyId: 'construct.complex_affine_limit',
+    domain: 'complex',
+    tool: 'fixed_point',
+    parameters: { br, bi },
+    statementTex:
+      `複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(${bTex})}{2}\\) で定める。` +
+      `\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。`,
+    answerTex: bTex,
+    solutionTex:
+      `不動点 \\(w=(w+(${bTex}))/2\\) より \\(w=${bTex}\\)。` +
+      `\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。`,
+    morphismChain: ['FixedPointShift', 'ContractionHalf', 'ComplexLimit'],
+    verificationMethod: 'complex_fixed_point_plus_numeric_iteration',
+  }
+}
+
 const GENERATORS: Array<() => LiveProblem | null> = [
   gambler,
   recurrenceModPeriod,
@@ -290,6 +360,8 @@ const GENERATORS: Array<() => LiveProblem | null> = [
   paley,
   parabolaFixedPoint,
   mobiusPeriod,
+  reciprocalRecurrence,
+  complexAffineLimit,
 ]
 
 /** その場で1問構築する。族はランダム、失敗したら別の族を試す。 */
