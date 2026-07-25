@@ -85,5 +85,5 @@ test('the bundled MathOS pool contains only gate-passing problems', async () => 
       problem.lift_certificate.type_checked &&
       problem.novelty.corpus_novel,
   )
-  assert.equal(accepted.length, 176)
+  assert.equal(accepted.length, 309)
 })
