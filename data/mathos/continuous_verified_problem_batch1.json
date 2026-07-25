@@ -1,13 +1,9 @@
 {
-  "generated_at": "2026-07-25T05:08:25.349790+00:00",
+  "generated_at": "2026-07-25T06:13:56.137108+00:00",
   "method": {
-    "gates": [
-      "backend verified",
-      "world-novel (σ_surface<0.60, no exact)",
-      "difficulty B+"
-    ],
-    "name": "Object-construction pool (real similarity)",
-    "similarity_definition": "SIMILARITY.md: char 3-gram Jaccard, computed (not hardcoded)"
+    "loop": "compose -> verify -> novelty -> grade -> accumulate",
+    "name": "MathOS autonomous pool",
+    "similarity_definition": "SIMILARITY.md"
   },
   "problems": [
     {
@@ -187,13 +183,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "1, 3",
-      "candidate_id": "construct:construct.mobius_fixed_points:000",
+      "answer_tex": "- \\frac{1}{2}, 3",
+      "candidate_id": "construct:construct.mobius_fixed_points:009",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.4
+        "score": 8.41
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -208,11 +204,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1938
+        "maximum_surface_jaccard": 0.2
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}5&-3\\\\1&1\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{5 x - 3}{x + 1}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}7&3\\\\2&2\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{7 x + 3}{2 x + 2}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -222,13 +217,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "2",
-      "candidate_id": "construct:construct.paley_common_neighbors:007",
+      "answer_tex": "24",
+      "candidate_id": "construct:construct.paley_common_neighbors:029",
       "difficulty": {
         "band": "C_standard_university",
         "condition": 0,
         "construct": 1,
-        "score": 7.46
+        "score": 7.5
       },
       "domain": "number_theory_graph",
       "family_id": "construct.paley_common_neighbors",
@@ -243,11 +238,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1307
+        "maximum_surface_jaccard": 0.1299
       },
-      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=2\\)。平方剰余の指標和で示せる。",
-      "statement_tex": "素数 \\(p=13\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{13}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
+      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=24\\)。平方剰余の指標和で示せる。",
+      "statement_tex": "素数 \\(p=101\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{101}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
       "tool": "quadratic_residue",
       "verification": {
         "exact_backend": true,
@@ -292,13 +286,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{1}{4}",
-      "candidate_id": "construct:construct.gambler_ruin_probability:048",
+      "answer_tex": "\\frac{10}{11}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:217",
       "difficulty": {
         "band": "D_textbook",
         "condition": 0,
         "construct": 0,
-        "score": 5.53
+        "score": 5.58
       },
       "domain": "probability",
       "family_id": "construct.gambler_ruin_probability",
@@ -313,11 +307,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1103
+        "maximum_surface_jaccard": 0.1096
       },
-      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{4}=1\\) より \\(p_k=k/4\\)。",
-      "statement_tex": "数直線上の点が \\(k=1\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=4\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{11}=1\\) より \\(p_k=k/11\\)。",
+      "statement_tex": "数直線上の点が \\(k=10\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=11\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
       "tool": "linear_recurrence",
       "verification": {
         "exact_backend": true,
@@ -327,13 +320,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "(0,\\ \\frac{1}{2})",
-      "candidate_id": "construct:construct.parabola_right_angle_chord:071",
+      "answer_tex": "(0,\\ \\frac{1}{10})",
+      "candidate_id": "construct:construct.parabola_right_angle_chord:363",
       "difficulty": {
         "band": "D_textbook",
         "condition": 1,
         "construct": 0,
-        "score": 4.88
+        "score": 4.96
       },
       "domain": "geometry",
       "family_id": "construct.parabola_right_angle_chord",
@@ -348,11 +341,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1143
+        "maximum_surface_jaccard": 0.1135
       },
-      "solution_tex": "\\(A=(a,2a^2),B=(b,2b^2)\\)。\\(OA\\perp OB\\) から傾きの積 \\(\\tfrac{2a^2}{a}\\cdot\\tfrac{2b^2}{b}=2^2ab=-1\\)，すなわち \\(ab=-1/2^2\\)（一定）。弦 \\(AB\\) は \\(y=2(a+b)x-2ab\\) で \\(x=0\\) のとき \\(y=1/2\\)。定点 \\((0,1/2)\\)（高校）。",
-      "statement_tex": "放物線 \\(y=2 x^{2}\\) 上の相異なる2点 \\(A,B\\) と原点 \\(O\\) が \\(\\angle AOB=90^\\circ\\) を満たしながら動く。このとき弦 \\(AB\\) が必ず通る定点を求めよ。",
+      "solution_tex": "\\(A=(a,10a^2),B=(b,10b^2)\\)。\\(OA\\perp OB\\) から傾きの積 \\(\\tfrac{10a^2}{a}\\cdot\\tfrac{10b^2}{b}=10^2ab=-1\\)，すなわち \\(ab=-1/10^2\\)（一定）。弦 \\(AB\\) は \\(y=10(a+b)x-10ab\\) で \\(x=0\\) のとき \\(y=1/10\\)。定点 \\((0,1/10)\\)（高校）。",
+      "statement_tex": "放物線 \\(y=10 x^{2}\\) 上の相異なる2点 \\(A,B\\) と原点 \\(O\\) が \\(\\angle AOB=90^\\circ\\) を満たしながら動く。このとき弦 \\(AB\\) が必ず通る定点を求めよ。",
       "tool": "slope_product",
       "verification": {
         "exact_backend": true,
@@ -362,13 +354,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "1 + i",
-      "candidate_id": "construct:construct.complex_affine_limit:081",
+      "answer_tex": "-3 + 2 i",
+      "candidate_id": "construct:construct.complex_affine_limit:392",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 1,
-        "score": 10.83
+        "score": 10.89
       },
       "domain": "complex",
       "family_id": "construct.complex_affine_limit",
@@ -383,11 +375,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.2627
+        "maximum_surface_jaccard": 0.2583
       },
-      "solution_tex": "不動点 \\(w=(w+1 + i)/2\\) より \\(w=1 + i\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
-      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(1 + i)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
+      "solution_tex": "不動点 \\(w=(w+-3 + 2 i)/2\\) より \\(w=-3 + 2 i\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
+      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(-3 + 2 i)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
       "tool": "fixed_point",
       "verification": {
         "exact_backend": true,
@@ -397,13 +388,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "3",
-      "candidate_id": "construct:construct.complex_rotation_period:034",
+      "answer_tex": "10",
+      "candidate_id": "construct:construct.complex_rotation_period:145",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 1,
-        "score": 9.74
+        "score": 9.8
       },
       "domain": "complex",
       "family_id": "construct.complex_rotation_period",
@@ -418,11 +409,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.2028
+        "maximum_surface_jaccard": 0.2014
       },
-      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{2\\pi}{3}\\) の回転で，\\(\\gcd(1,3)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=3\\)、すなわち \\(n=3\\)（高校：ド・モアブル）。",
-      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{2\\pi}{3}+i\\sin\\dfrac{2\\pi}{3}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
+      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{2\\pi}{10}\\) の回転で，\\(\\gcd(1,10)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=10\\)、すなわち \\(n=10\\)（高校：ド・モアブル）。",
+      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{2\\pi}{10}+i\\sin\\dfrac{2\\pi}{10}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
       "tool": "polar_form",
       "verification": {
         "exact_backend": true,
@@ -467,13 +457,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "10",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:019",
+      "answer_tex": "14",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:059",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 1,
-        "score": 8.86
+        "score": 8.87
       },
       "domain": "number_theory",
       "family_id": "construct.linear_recurrence_mod_period",
@@ -488,11 +478,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.3981
+        "maximum_surface_jaccard": 0.3714
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&2\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 11\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+2a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 11\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}3&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 13\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=3a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 13\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -537,13 +526,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{1}{2} - \\frac{\\sqrt{17}}{2}, \\frac{1}{2} + \\frac{\\sqrt{17}}{2}",
-      "candidate_id": "construct:construct.mobius_fixed_points:001",
+      "answer_tex": "1, 3",
+      "candidate_id": "construct:construct.mobius_fixed_points:000",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.39
+        "score": 8.4
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -559,10 +548,10 @@
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
         "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.2016
+        "maximum_surface_jaccard": 0.1938
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}3&4\\\\1&2\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{3 x + 4}{x + 2}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}5&-3\\\\1&1\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{5 x - 3}{x + 1}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -572,13 +561,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "3",
-      "candidate_id": "construct:construct.paley_common_neighbors:008",
+      "answer_tex": "26",
+      "candidate_id": "construct:construct.paley_common_neighbors:030",
       "difficulty": {
         "band": "C_standard_university",
         "condition": 0,
         "construct": 1,
-        "score": 7.46
+        "score": 7.5
       },
       "domain": "number_theory_graph",
       "family_id": "construct.paley_common_neighbors",
@@ -593,11 +582,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1307
+        "maximum_surface_jaccard": 0.1299
       },
-      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=3\\)。平方剰余の指標和で示せる。",
-      "statement_tex": "素数 \\(p=17\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{17}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
+      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=26\\)。平方剰余の指標和で示せる。",
+      "statement_tex": "素数 \\(p=109\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{109}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
       "tool": "quadratic_residue",
       "verification": {
         "exact_backend": true,
@@ -642,13 +630,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{1}{2}",
-      "candidate_id": "construct:construct.gambler_ruin_probability:049",
+      "answer_tex": "\\frac{11}{12}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:228",
       "difficulty": {
         "band": "D_textbook",
         "condition": 0,
         "construct": 0,
-        "score": 5.53
+        "score": 5.58
       },
       "domain": "probability",
       "family_id": "construct.gambler_ruin_probability",
@@ -663,11 +651,355 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
         "maximum_surface_jaccard": 0.1103
       },
-      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{4}=1\\) より \\(p_k=k/4\\)。",
-      "statement_tex": "数直線上の点が \\(k=2\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=4\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{12}=1\\) より \\(p_k=k/12\\)。",
+      "statement_tex": "数直線上の点が \\(k=11\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=12\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "(0,\\ \\frac{1}{2})",
+      "candidate_id": "construct:construct.parabola_right_angle_chord:071",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 1,
+        "construct": 0,
+        "score": 4.88
+      },
+      "domain": "geometry",
+      "family_id": "construct.parabola_right_angle_chord",
+      "lift_certificate": {
+        "morphism_chain": [
+          "RightAngleCondition",
+          "SlopeProductInvariant",
+          "FixedPoint"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1143
+      },
+      "solution_tex": "\\(A=(a,2a^2),B=(b,2b^2)\\)。\\(OA\\perp OB\\) から傾きの積 \\(\\tfrac{2a^2}{a}\\cdot\\tfrac{2b^2}{b}=2^2ab=-1\\)，すなわち \\(ab=-1/2^2\\)（一定）。弦 \\(AB\\) は \\(y=2(a+b)x-2ab\\) で \\(x=0\\) のとき \\(y=1/2\\)。定点 \\((0,1/2)\\)（高校）。",
+      "statement_tex": "放物線 \\(y=2 x^{2}\\) 上の相異なる2点 \\(A,B\\) と原点 \\(O\\) が \\(\\angle AOB=90^\\circ\\) を満たしながら動く。このとき弦 \\(AB\\) が必ず通る定点を求めよ。",
+      "tool": "slope_product",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parabola_slope_product_fixed_point"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "1 - 2 i",
+      "candidate_id": "construct:construct.complex_affine_limit:386",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 10.86
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_affine_limit",
+      "lift_certificate": {
+        "morphism_chain": [
+          "FixedPointShift",
+          "ContractionHalf",
+          "ComplexLimit"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.2605
+      },
+      "solution_tex": "不動点 \\(w=(w+1 - 2 i)/2\\) より \\(w=1 - 2 i\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
+      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(1 - 2 i)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
+      "tool": "fixed_point",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "complex_affine_fixed_point_limit"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "11",
+      "candidate_id": "construct:construct.complex_rotation_period:147",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 9.8
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_rotation_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimitiveRootOfUnity",
+          "DeMoivrePower",
+          "MinimalPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.2098
+      },
+      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{2\\pi}{11}\\) の回転で，\\(\\gcd(1,11)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=11\\)、すなわち \\(n=11\\)（高校：ド・モアブル）。",
+      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{2\\pi}{11}+i\\sin\\dfrac{2\\pi}{11}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "polar_form",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "de_moivre_primitive_root_period"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "2",
+      "candidate_id": "construct:construct.mobius_iteration_period:004",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 9.73
+      },
+      "domain": "algebra",
+      "family_id": "construct.mobius_iteration_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "MobiusToMatrix",
+          "MatrixPower",
+          "ScalarPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2231
+      },
+      "solution_tex": "\\(f\\) を行列 \\(M=\\begin{pmatrix}0&-1\\\\1&0\\end{pmatrix}\\) に対応させると \\(f_n\\leftrightarrow M^n\\)。\\(M^n\\) がスカラー行列になる最小の \\(n\\) が答え。固有値の比が1の原始冪根であることから定まる。",
+      "statement_tex": "関数 \\(f(x)=- \\frac{1}{x}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f_n\\) が恒等写像となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "matrix_power",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "mobius_matrix_power_period"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "11",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:104",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.87
+      },
+      "domain": "number_theory",
+      "family_id": "construct.linear_recurrence_mod_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.3714
+      },
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 11\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 11\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "y=x \\left(28 x^{2} - 5\\right)",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:033",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.79
+      },
+      "domain": "geometry_algebra",
+      "family_id": "construct.cubic_tangent_midpoint_locus",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TangentLine",
+          "CubicReintersection",
+          "MidpointLocus"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1163
+      },
+      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
+      "statement_tex": "曲線 \\(C: y=x^{3} - 5 x\\) 上の点 \\(P(t,\\,t^{3} - 5 t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "tool": "symbolic_intersection",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_tangent_intersection_locus"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{1}{2} - \\frac{\\sqrt{17}}{2}, \\frac{1}{2} + \\frac{\\sqrt{17}}{2}",
+      "candidate_id": "construct:construct.mobius_fixed_points:001",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 8.39
+      },
+      "domain": "algebra",
+      "family_id": "construct.mobius_fixed_points",
+      "lift_certificate": {
+        "morphism_chain": [
+          "MobiusToMatrix",
+          "Eigenstructure",
+          "FixedPointSolve"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2016
+      },
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}3&4\\\\1&2\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{3 x + 4}{x + 2}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "tool": "matrix_eigen",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "mobius_matrix_eigen_fixed_points"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "27",
+      "candidate_id": "construct:construct.paley_common_neighbors:031",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.5
+      },
+      "domain": "number_theory_graph",
+      "family_id": "construct.paley_common_neighbors",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ResidueVertices",
+          "QuadraticResidueEdges",
+          "CommonNeighborCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1299
+      },
+      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=27\\)。平方剰余の指標和で示せる。",
+      "statement_tex": "素数 \\(p=113\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{113}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
+      "tool": "quadratic_residue",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "paley_strongly_regular_lambda"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{1}{2 n - 1}",
+      "candidate_id": "construct:construct.reciprocal_recurrence:079",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 6.41
+      },
+      "domain": "algebra",
+      "family_id": "construct.reciprocal_recurrence",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ReciprocalTransform",
+          "LinearRecurrence",
+          "GeneralTerm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.3895
+      },
+      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=1b_n+2\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{1+2a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
+      "tool": "reciprocal_transform",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "reciprocal_linearization"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{1}{10}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:199",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.56
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1103
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{10}=1\\) より \\(p_k=k/10\\)。",
+      "statement_tex": "数直線上の点が \\(k=1\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=10\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
       "tool": "linear_recurrence",
       "verification": {
         "exact_backend": true,
@@ -703,6 +1035,1546 @@
       },
       "solution_tex": "\\(A=(a,3a^2),B=(b,3b^2)\\)。\\(OA\\perp OB\\) から傾きの積 \\(\\tfrac{3a^2}{a}\\cdot\\tfrac{3b^2}{b}=3^2ab=-1\\)，すなわち \\(ab=-1/3^2\\)（一定）。弦 \\(AB\\) は \\(y=3(a+b)x-3ab\\) で \\(x=0\\) のとき \\(y=1/3\\)。定点 \\((0,1/3)\\)（高校）。",
       "statement_tex": "放物線 \\(y=3 x^{2}\\) 上の相異なる2点 \\(A,B\\) と原点 \\(O\\) が \\(\\angle AOB=90^\\circ\\) を満たしながら動く。このとき弦 \\(AB\\) が必ず通る定点を求めよ。",
+      "tool": "slope_product",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parabola_slope_product_fixed_point"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "2 + 3 i",
+      "candidate_id": "construct:construct.complex_affine_limit:387",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 10.86
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_affine_limit",
+      "lift_certificate": {
+        "morphism_chain": [
+          "FixedPointShift",
+          "ContractionHalf",
+          "ComplexLimit"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.2605
+      },
+      "solution_tex": "不動点 \\(w=(w+2 + 3 i)/2\\) より \\(w=2 + 3 i\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
+      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(2 + 3 i)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
+      "tool": "fixed_point",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "complex_affine_fixed_point_limit"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "15",
+      "candidate_id": "construct:construct.complex_rotation_period:154",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 9.8
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_rotation_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimitiveRootOfUnity",
+          "DeMoivrePower",
+          "MinimalPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.2014
+      },
+      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{2\\pi}{15}\\) の回転で，\\(\\gcd(1,15)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=15\\)、すなわち \\(n=15\\)（高校：ド・モアブル）。",
+      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{2\\pi}{15}+i\\sin\\dfrac{2\\pi}{15}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "polar_form",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "de_moivre_primitive_root_period"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "13",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:105",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.87
+      },
+      "domain": "number_theory",
+      "family_id": "construct.linear_recurrence_mod_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.3714
+      },
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 13\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 13\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "y=x \\left(28 x^{2} - 9\\right)",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:108",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.79
+      },
+      "domain": "geometry_algebra",
+      "family_id": "construct.cubic_tangent_midpoint_locus",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TangentLine",
+          "CubicReintersection",
+          "MidpointLocus"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1163
+      },
+      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
+      "statement_tex": "曲線 \\(C: y=x^{3} - 9 x\\) 上の点 \\(P(t,\\,t^{3} - 9 t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "tool": "symbolic_intersection",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_tangent_intersection_locus"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "-3, 1",
+      "candidate_id": "construct:construct.mobius_fixed_points:003",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 8.39
+      },
+      "domain": "algebra",
+      "family_id": "construct.mobius_fixed_points",
+      "lift_certificate": {
+        "morphism_chain": [
+          "MobiusToMatrix",
+          "Eigenstructure",
+          "FixedPointSolve"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1923
+      },
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}2&3\\\\1&4\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{2 x + 3}{x + 4}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "tool": "matrix_eigen",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "mobius_matrix_eigen_fixed_points"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "2",
+      "candidate_id": "construct:construct.paley_common_neighbors:007",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.46
+      },
+      "domain": "number_theory_graph",
+      "family_id": "construct.paley_common_neighbors",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ResidueVertices",
+          "QuadraticResidueEdges",
+          "CommonNeighborCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1307
+      },
+      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=2\\)。平方剰余の指標和で示せる。",
+      "statement_tex": "素数 \\(p=13\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{13}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
+      "tool": "quadratic_residue",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "paley_strongly_regular_lambda"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{3}{2 \\cdot 3^{n} - 3}",
+      "candidate_id": "construct:construct.reciprocal_recurrence:370",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 6.41
+      },
+      "domain": "algebra",
+      "family_id": "construct.reciprocal_recurrence",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ReciprocalTransform",
+          "LinearRecurrence",
+          "GeneralTerm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.3895
+      },
+      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=3b_n+2\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{3+2a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
+      "tool": "reciprocal_transform",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "reciprocal_linearization"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{3}{10}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:201",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.56
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1096
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{10}=1\\) より \\(p_k=k/10\\)。",
+      "statement_tex": "数直線上の点が \\(k=3\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=10\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "(0,\\ \\frac{1}{4})",
+      "candidate_id": "construct:construct.parabola_right_angle_chord:073",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 1,
+        "construct": 0,
+        "score": 4.88
+      },
+      "domain": "geometry",
+      "family_id": "construct.parabola_right_angle_chord",
+      "lift_certificate": {
+        "morphism_chain": [
+          "RightAngleCondition",
+          "SlopeProductInvariant",
+          "FixedPoint"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1143
+      },
+      "solution_tex": "\\(A=(a,4a^2),B=(b,4b^2)\\)。\\(OA\\perp OB\\) から傾きの積 \\(\\tfrac{4a^2}{a}\\cdot\\tfrac{4b^2}{b}=4^2ab=-1\\)，すなわち \\(ab=-1/4^2\\)（一定）。弦 \\(AB\\) は \\(y=4(a+b)x-4ab\\) で \\(x=0\\) のとき \\(y=1/4\\)。定点 \\((0,1/4)\\)（高校）。",
+      "statement_tex": "放物線 \\(y=4 x^{2}\\) 上の相異なる2点 \\(A,B\\) と原点 \\(O\\) が \\(\\angle AOB=90^\\circ\\) を満たしながら動く。このとき弦 \\(AB\\) が必ず通る定点を求めよ。",
+      "tool": "slope_product",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parabola_slope_product_fixed_point"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "-2 + i",
+      "candidate_id": "construct:construct.complex_affine_limit:388",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 10.86
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_affine_limit",
+      "lift_certificate": {
+        "morphism_chain": [
+          "FixedPointShift",
+          "ContractionHalf",
+          "ComplexLimit"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.2605
+      },
+      "solution_tex": "不動点 \\(w=(w+-2 + i)/2\\) より \\(w=-2 + i\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
+      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(-2 + i)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
+      "tool": "fixed_point",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "complex_affine_fixed_point_limit"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "16",
+      "candidate_id": "construct:construct.complex_rotation_period:157",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 9.8
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_rotation_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimitiveRootOfUnity",
+          "DeMoivrePower",
+          "MinimalPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.2014
+      },
+      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{2\\pi}{16}\\) の回転で，\\(\\gcd(1,16)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=16\\)、すなわち \\(n=16\\)（高校：ド・モアブル）。",
+      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{2\\pi}{16}+i\\sin\\dfrac{2\\pi}{16}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "polar_form",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "de_moivre_primitive_root_period"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "17",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:107",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.87
+      },
+      "domain": "number_theory",
+      "family_id": "construct.linear_recurrence_mod_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.3714
+      },
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 17\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 17\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "y=28 x^{3} - 7 x",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:109",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.79
+      },
+      "domain": "geometry_algebra",
+      "family_id": "construct.cubic_tangent_midpoint_locus",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TangentLine",
+          "CubicReintersection",
+          "MidpointLocus"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1163
+      },
+      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
+      "statement_tex": "曲線 \\(C: y=x^{3} - 7 x\\) 上の点 \\(P(t,\\,t^{3} - 7 t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "tool": "symbolic_intersection",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_tangent_intersection_locus"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "-1, 2",
+      "candidate_id": "construct:construct.mobius_fixed_points:008",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 8.39
+      },
+      "domain": "algebra",
+      "family_id": "construct.mobius_fixed_points",
+      "lift_certificate": {
+        "morphism_chain": [
+          "MobiusToMatrix",
+          "Eigenstructure",
+          "FixedPointSolve"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.2016
+      },
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}5&2\\\\1&4\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{5 x + 2}{x + 4}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "tool": "matrix_eigen",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "mobius_matrix_eigen_fixed_points"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "3",
+      "candidate_id": "construct:construct.paley_common_neighbors:008",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.46
+      },
+      "domain": "number_theory_graph",
+      "family_id": "construct.paley_common_neighbors",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ResidueVertices",
+          "QuadraticResidueEdges",
+          "CommonNeighborCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1307
+      },
+      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=3\\)。平方剰余の指標和で示せる。",
+      "statement_tex": "素数 \\(p=17\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{17}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
+      "tool": "quadratic_residue",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "paley_strongly_regular_lambda"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{1}{4 n - 3}",
+      "candidate_id": "construct:construct.reciprocal_recurrence:372",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 6.41
+      },
+      "domain": "algebra",
+      "family_id": "construct.reciprocal_recurrence",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ReciprocalTransform",
+          "LinearRecurrence",
+          "GeneralTerm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.3895
+      },
+      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=1b_n+4\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{1+4a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
+      "tool": "reciprocal_transform",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "reciprocal_linearization"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{7}{10}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:205",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.56
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1096
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{10}=1\\) より \\(p_k=k/10\\)。",
+      "statement_tex": "数直線上の点が \\(k=7\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=10\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "(0,\\ \\frac{1}{5})",
+      "candidate_id": "construct:construct.parabola_right_angle_chord:358",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 1,
+        "construct": 0,
+        "score": 4.88
+      },
+      "domain": "geometry",
+      "family_id": "construct.parabola_right_angle_chord",
+      "lift_certificate": {
+        "morphism_chain": [
+          "RightAngleCondition",
+          "SlopeProductInvariant",
+          "FixedPoint"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1143
+      },
+      "solution_tex": "\\(A=(a,5a^2),B=(b,5b^2)\\)。\\(OA\\perp OB\\) から傾きの積 \\(\\tfrac{5a^2}{a}\\cdot\\tfrac{5b^2}{b}=5^2ab=-1\\)，すなわち \\(ab=-1/5^2\\)（一定）。弦 \\(AB\\) は \\(y=5(a+b)x-5ab\\) で \\(x=0\\) のとき \\(y=1/5\\)。定点 \\((0,1/5)\\)（高校）。",
+      "statement_tex": "放物線 \\(y=5 x^{2}\\) 上の相異なる2点 \\(A,B\\) と原点 \\(O\\) が \\(\\angle AOB=90^\\circ\\) を満たしながら動く。このとき弦 \\(AB\\) が必ず通る定点を求めよ。",
+      "tool": "slope_product",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parabola_slope_product_fixed_point"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "1 + 4 i",
+      "candidate_id": "construct:construct.complex_affine_limit:391",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 10.86
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_affine_limit",
+      "lift_certificate": {
+        "morphism_chain": [
+          "FixedPointShift",
+          "ContractionHalf",
+          "ComplexLimit"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.2605
+      },
+      "solution_tex": "不動点 \\(w=(w+1 + 4 i)/2\\) より \\(w=1 + 4 i\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
+      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(1 + 4 i)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
+      "tool": "fixed_point",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "complex_affine_fixed_point_limit"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "18",
+      "candidate_id": "construct:construct.complex_rotation_period:160",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 9.8
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_rotation_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimitiveRootOfUnity",
+          "DeMoivrePower",
+          "MinimalPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.2014
+      },
+      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{2\\pi}{18}\\) の回転で，\\(\\gcd(1,18)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=18\\)、すなわち \\(n=18\\)（高校：ド・モアブル）。",
+      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{2\\pi}{18}+i\\sin\\dfrac{2\\pi}{18}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "polar_form",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "de_moivre_primitive_root_period"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "10",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:019",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.86
+      },
+      "domain": "number_theory",
+      "family_id": "construct.linear_recurrence_mod_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.3981
+      },
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&2\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 11\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+2a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 11\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "y=28 x^{3} - 6 x",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:110",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.79
+      },
+      "domain": "geometry_algebra",
+      "family_id": "construct.cubic_tangent_midpoint_locus",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TangentLine",
+          "CubicReintersection",
+          "MidpointLocus"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1163
+      },
+      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
+      "statement_tex": "曲線 \\(C: y=x^{3} - 6 x\\) 上の点 \\(P(t,\\,t^{3} - 6 t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "tool": "symbolic_intersection",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_tangent_intersection_locus"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "1 - \\sqrt{6}, 1 + \\sqrt{6}",
+      "candidate_id": "construct:construct.mobius_fixed_points:010",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 8.39
+      },
+      "domain": "algebra",
+      "family_id": "construct.mobius_fixed_points",
+      "lift_certificate": {
+        "morphism_chain": [
+          "MobiusToMatrix",
+          "Eigenstructure",
+          "FixedPointSolve"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.2016
+      },
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}4&5\\\\1&2\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{4 x + 5}{x + 2}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "tool": "matrix_eigen",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "mobius_matrix_eigen_fixed_points"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "6",
+      "candidate_id": "construct:construct.paley_common_neighbors:009",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.46
+      },
+      "domain": "number_theory_graph",
+      "family_id": "construct.paley_common_neighbors",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ResidueVertices",
+          "QuadraticResidueEdges",
+          "CommonNeighborCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1307
+      },
+      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=6\\)。平方剰余の指標和で示せる。",
+      "statement_tex": "素数 \\(p=29\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{29}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
+      "tool": "quadratic_residue",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "paley_strongly_regular_lambda"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{1}{3 \\cdot 2^{n} - 5}",
+      "candidate_id": "construct:construct.reciprocal_recurrence:373",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 6.41
+      },
+      "domain": "algebra",
+      "family_id": "construct.reciprocal_recurrence",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ReciprocalTransform",
+          "LinearRecurrence",
+          "GeneralTerm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.3895
+      },
+      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=2b_n+5\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{2+5a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
+      "tool": "reciprocal_transform",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "reciprocal_linearization"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{9}{10}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:207",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.56
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1096
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{10}=1\\) より \\(p_k=k/10\\)。",
+      "statement_tex": "数直線上の点が \\(k=9\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=10\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "(0,\\ \\frac{1}{6})",
+      "candidate_id": "construct:construct.parabola_right_angle_chord:359",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 1,
+        "construct": 0,
+        "score": 4.88
+      },
+      "domain": "geometry",
+      "family_id": "construct.parabola_right_angle_chord",
+      "lift_certificate": {
+        "morphism_chain": [
+          "RightAngleCondition",
+          "SlopeProductInvariant",
+          "FixedPoint"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1143
+      },
+      "solution_tex": "\\(A=(a,6a^2),B=(b,6b^2)\\)。\\(OA\\perp OB\\) から傾きの積 \\(\\tfrac{6a^2}{a}\\cdot\\tfrac{6b^2}{b}=6^2ab=-1\\)，すなわち \\(ab=-1/6^2\\)（一定）。弦 \\(AB\\) は \\(y=6(a+b)x-6ab\\) で \\(x=0\\) のとき \\(y=1/6\\)。定点 \\((0,1/6)\\)（高校）。",
+      "statement_tex": "放物線 \\(y=6 x^{2}\\) 上の相異なる2点 \\(A,B\\) と原点 \\(O\\) が \\(\\angle AOB=90^\\circ\\) を満たしながら動く。このとき弦 \\(AB\\) が必ず通る定点を求めよ。",
+      "tool": "slope_product",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parabola_slope_product_fixed_point"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "2 + 2 i",
+      "candidate_id": "construct:construct.complex_affine_limit:393",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 10.86
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_affine_limit",
+      "lift_certificate": {
+        "morphism_chain": [
+          "FixedPointShift",
+          "ContractionHalf",
+          "ComplexLimit"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.2605
+      },
+      "solution_tex": "不動点 \\(w=(w+2 + 2 i)/2\\) より \\(w=2 + 2 i\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
+      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(2 + 2 i)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
+      "tool": "fixed_point",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "complex_affine_fixed_point_limit"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "20",
+      "candidate_id": "construct:construct.complex_rotation_period:162",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 9.8
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_rotation_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimitiveRootOfUnity",
+          "DeMoivrePower",
+          "MinimalPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.2014
+      },
+      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{2\\pi}{20}\\) の回転で，\\(\\gcd(1,20)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=20\\)、すなわち \\(n=20\\)（高校：ド・モアブル）。",
+      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{2\\pi}{20}+i\\sin\\dfrac{2\\pi}{20}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "polar_form",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "de_moivre_primitive_root_period"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "24",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:023",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.86
+      },
+      "domain": "number_theory",
+      "family_id": "construct.linear_recurrence_mod_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.3714
+      },
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 11\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 11\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "y=28 x^{3} - 4 x",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:112",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.79
+      },
+      "domain": "geometry_algebra",
+      "family_id": "construct.cubic_tangent_midpoint_locus",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TangentLine",
+          "CubicReintersection",
+          "MidpointLocus"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1163
+      },
+      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
+      "statement_tex": "曲線 \\(C: y=x^{3} - 4 x\\) 上の点 \\(P(t,\\,t^{3} - 4 t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "tool": "symbolic_intersection",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_tangent_intersection_locus"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{3}{2} - \\frac{\\sqrt{13}}{2}, \\frac{3}{2} + \\frac{\\sqrt{13}}{2}",
+      "candidate_id": "construct:construct.mobius_fixed_points:011",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 8.39
+      },
+      "domain": "algebra",
+      "family_id": "construct.mobius_fixed_points",
+      "lift_certificate": {
+        "morphism_chain": [
+          "MobiusToMatrix",
+          "Eigenstructure",
+          "FixedPointSolve"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1938
+      },
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}6&1\\\\1&3\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{6 x + 1}{x + 3}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "tool": "matrix_eigen",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "mobius_matrix_eigen_fixed_points"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "8",
+      "candidate_id": "construct:construct.paley_common_neighbors:010",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.46
+      },
+      "domain": "number_theory_graph",
+      "family_id": "construct.paley_common_neighbors",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ResidueVertices",
+          "QuadraticResidueEdges",
+          "CommonNeighborCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1307
+      },
+      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=8\\)。平方剰余の指標和で示せる。",
+      "statement_tex": "素数 \\(p=37\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{37}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
+      "tool": "quadratic_residue",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "paley_strongly_regular_lambda"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{1}{3^{n} - 2}",
+      "candidate_id": "construct:construct.reciprocal_recurrence:375",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 6.41
+      },
+      "domain": "algebra",
+      "family_id": "construct.reciprocal_recurrence",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ReciprocalTransform",
+          "LinearRecurrence",
+          "GeneralTerm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.3895
+      },
+      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=3b_n+4\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{3+4a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
+      "tool": "reciprocal_transform",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "reciprocal_linearization"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{1}{11}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:208",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.56
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1103
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{11}=1\\) より \\(p_k=k/11\\)。",
+      "statement_tex": "数直線上の点が \\(k=1\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=11\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "(0,\\ \\frac{1}{7})",
+      "candidate_id": "construct:construct.parabola_right_angle_chord:360",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 1,
+        "construct": 0,
+        "score": 4.88
+      },
+      "domain": "geometry",
+      "family_id": "construct.parabola_right_angle_chord",
+      "lift_certificate": {
+        "morphism_chain": [
+          "RightAngleCondition",
+          "SlopeProductInvariant",
+          "FixedPoint"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1143
+      },
+      "solution_tex": "\\(A=(a,7a^2),B=(b,7b^2)\\)。\\(OA\\perp OB\\) から傾きの積 \\(\\tfrac{7a^2}{a}\\cdot\\tfrac{7b^2}{b}=7^2ab=-1\\)，すなわち \\(ab=-1/7^2\\)（一定）。弦 \\(AB\\) は \\(y=7(a+b)x-7ab\\) で \\(x=0\\) のとき \\(y=1/7\\)。定点 \\((0,1/7)\\)（高校）。",
+      "statement_tex": "放物線 \\(y=7 x^{2}\\) 上の相異なる2点 \\(A,B\\) と原点 \\(O\\) が \\(\\angle AOB=90^\\circ\\) を満たしながら動く。このとき弦 \\(AB\\) が必ず通る定点を求めよ。",
+      "tool": "slope_product",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parabola_slope_product_fixed_point"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "1 + i",
+      "candidate_id": "construct:construct.complex_affine_limit:081",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 10.83
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_affine_limit",
+      "lift_certificate": {
+        "morphism_chain": [
+          "FixedPointShift",
+          "ContractionHalf",
+          "ComplexLimit"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2627
+      },
+      "solution_tex": "不動点 \\(w=(w+1 + i)/2\\) より \\(w=1 + i\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
+      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(1 + i)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
+      "tool": "fixed_point",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "complex_affine_fixed_point_limit"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "24",
+      "candidate_id": "construct:construct.complex_rotation_period:164",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 9.8
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_rotation_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimitiveRootOfUnity",
+          "DeMoivrePower",
+          "MinimalPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.2014
+      },
+      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{2\\pi}{24}\\) の回転で，\\(\\gcd(1,24)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=24\\)、すなわち \\(n=24\\)（高校：ド・モアブル）。",
+      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{2\\pi}{24}+i\\sin\\dfrac{2\\pi}{24}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "polar_form",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "de_moivre_primitive_root_period"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "120",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:065",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.86
+      },
+      "domain": "number_theory",
+      "family_id": "construct.linear_recurrence_mod_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.3981
+      },
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&3\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 11\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+3a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 11\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "y=28 x^{3} - 2 x",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:114",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.79
+      },
+      "domain": "geometry_algebra",
+      "family_id": "construct.cubic_tangent_midpoint_locus",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TangentLine",
+          "CubicReintersection",
+          "MidpointLocus"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1163
+      },
+      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
+      "statement_tex": "曲線 \\(C: y=x^{3} - 2 x\\) 上の点 \\(P(t,\\,t^{3} - 2 t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "tool": "symbolic_intersection",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_tangent_intersection_locus"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "- \\sqrt{5}, \\sqrt{5}",
+      "candidate_id": "construct:construct.mobius_fixed_points:012",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 8.39
+      },
+      "domain": "algebra",
+      "family_id": "construct.mobius_fixed_points",
+      "lift_certificate": {
+        "morphism_chain": [
+          "MobiusToMatrix",
+          "Eigenstructure",
+          "FixedPointSolve"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.2016
+      },
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}2&5\\\\1&2\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{2 x + 5}{x + 2}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "tool": "matrix_eigen",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "mobius_matrix_eigen_fixed_points"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "9",
+      "candidate_id": "construct:construct.paley_common_neighbors:011",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.46
+      },
+      "domain": "number_theory_graph",
+      "family_id": "construct.paley_common_neighbors",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ResidueVertices",
+          "QuadraticResidueEdges",
+          "CommonNeighborCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1307
+      },
+      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=9\\)。平方剰余の指標和で示せる。",
+      "statement_tex": "素数 \\(p=41\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{41}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
+      "tool": "quadratic_residue",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "paley_strongly_regular_lambda"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{2}{4^{n} - 2}",
+      "candidate_id": "construct:construct.reciprocal_recurrence:376",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 6.41
+      },
+      "domain": "algebra",
+      "family_id": "construct.reciprocal_recurrence",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ReciprocalTransform",
+          "LinearRecurrence",
+          "GeneralTerm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.3895
+      },
+      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=4b_n+3\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{4+3a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
+      "tool": "reciprocal_transform",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "reciprocal_linearization"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{2}{11}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:209",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.56
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1103
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{11}=1\\) より \\(p_k=k/11\\)。",
+      "statement_tex": "数直線上の点が \\(k=2\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=11\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "(0,\\ \\frac{1}{8})",
+      "candidate_id": "construct:construct.parabola_right_angle_chord:361",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 1,
+        "construct": 0,
+        "score": 4.88
+      },
+      "domain": "geometry",
+      "family_id": "construct.parabola_right_angle_chord",
+      "lift_certificate": {
+        "morphism_chain": [
+          "RightAngleCondition",
+          "SlopeProductInvariant",
+          "FixedPoint"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1143
+      },
+      "solution_tex": "\\(A=(a,8a^2),B=(b,8b^2)\\)。\\(OA\\perp OB\\) から傾きの積 \\(\\tfrac{8a^2}{a}\\cdot\\tfrac{8b^2}{b}=8^2ab=-1\\)，すなわち \\(ab=-1/8^2\\)（一定）。弦 \\(AB\\) は \\(y=8(a+b)x-8ab\\) で \\(x=0\\) のとき \\(y=1/8\\)。定点 \\((0,1/8)\\)（高校）。",
+      "statement_tex": "放物線 \\(y=8 x^{2}\\) 上の相異なる2点 \\(A,B\\) と原点 \\(O\\) が \\(\\angle AOB=90^\\circ\\) を満たしながら動く。このとき弦 \\(AB\\) が必ず通る定点を求めよ。",
       "tool": "slope_product",
       "verification": {
         "exact_backend": true,
@@ -748,6 +2620,314 @@
     {
       "accepted": true,
       "answer_tex": "3",
+      "candidate_id": "construct:construct.complex_rotation_period:034",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 9.74
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_rotation_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimitiveRootOfUnity",
+          "DeMoivrePower",
+          "MinimalPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2028
+      },
+      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{2\\pi}{3}\\) の回転で，\\(\\gcd(1,3)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=3\\)、すなわち \\(n=3\\)（高校：ド・モアブル）。",
+      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{2\\pi}{3}+i\\sin\\dfrac{2\\pi}{3}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "polar_form",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "de_moivre_primitive_root_period"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "156",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:066",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.86
+      },
+      "domain": "number_theory",
+      "family_id": "construct.linear_recurrence_mod_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.3981
+      },
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&3\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 13\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+3a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 13\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "y=x \\left(28 x^{2} + 3\\right)",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:119",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.79
+      },
+      "domain": "geometry_algebra",
+      "family_id": "construct.cubic_tangent_midpoint_locus",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TangentLine",
+          "CubicReintersection",
+          "MidpointLocus"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1163
+      },
+      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
+      "statement_tex": "曲線 \\(C: y=x^{3} + 3 x\\) 上の点 \\(P(t,\\,t^{3} + 3 t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "tool": "symbolic_intersection",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_tangent_intersection_locus"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "- 2 \\sqrt{2}, 2 \\sqrt{2}",
+      "candidate_id": "construct:construct.mobius_fixed_points:013",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 8.39
+      },
+      "domain": "algebra",
+      "family_id": "construct.mobius_fixed_points",
+      "lift_certificate": {
+        "morphism_chain": [
+          "MobiusToMatrix",
+          "Eigenstructure",
+          "FixedPointSolve"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1923
+      },
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}3&8\\\\1&3\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{3 x + 8}{x + 3}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "tool": "matrix_eigen",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "mobius_matrix_eigen_fixed_points"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "12",
+      "candidate_id": "construct:construct.paley_common_neighbors:012",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.46
+      },
+      "domain": "number_theory_graph",
+      "family_id": "construct.paley_common_neighbors",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ResidueVertices",
+          "QuadraticResidueEdges",
+          "CommonNeighborCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1307
+      },
+      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=12\\)。平方剰余の指標和で示せる。",
+      "statement_tex": "素数 \\(p=53\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{53}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
+      "tool": "quadratic_residue",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "paley_strongly_regular_lambda"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{10}{3 \\cdot 5^{n} - 5}",
+      "candidate_id": "construct:construct.reciprocal_recurrence:377",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 6.41
+      },
+      "domain": "algebra",
+      "family_id": "construct.reciprocal_recurrence",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ReciprocalTransform",
+          "LinearRecurrence",
+          "GeneralTerm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.3895
+      },
+      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=5b_n+2\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{5+2a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
+      "tool": "reciprocal_transform",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "reciprocal_linearization"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{3}{11}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:210",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.56
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1096
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{11}=1\\) より \\(p_k=k/11\\)。",
+      "statement_tex": "数直線上の点が \\(k=3\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=11\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "(0,\\ \\frac{1}{9})",
+      "candidate_id": "construct:construct.parabola_right_angle_chord:362",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 1,
+        "construct": 0,
+        "score": 4.88
+      },
+      "domain": "geometry",
+      "family_id": "construct.parabola_right_angle_chord",
+      "lift_certificate": {
+        "morphism_chain": [
+          "RightAngleCondition",
+          "SlopeProductInvariant",
+          "FixedPoint"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1143
+      },
+      "solution_tex": "\\(A=(a,9a^2),B=(b,9b^2)\\)。\\(OA\\perp OB\\) から傾きの積 \\(\\tfrac{9a^2}{a}\\cdot\\tfrac{9b^2}{b}=9^2ab=-1\\)，すなわち \\(ab=-1/9^2\\)（一定）。弦 \\(AB\\) は \\(y=9(a+b)x-9ab\\) で \\(x=0\\) のとき \\(y=1/9\\)。定点 \\((0,1/9)\\)（高校）。",
+      "statement_tex": "放物線 \\(y=9 x^{2}\\) 上の相異なる2点 \\(A,B\\) と原点 \\(O\\) が \\(\\angle AOB=90^\\circ\\) を満たしながら動く。このとき弦 \\(AB\\) が必ず通る定点を求めよ。",
+      "tool": "slope_product",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "parabola_slope_product_fixed_point"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "4 + i",
+      "candidate_id": "construct:construct.complex_affine_limit:390",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 10.83
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_affine_limit",
+      "lift_certificate": {
+        "morphism_chain": [
+          "FixedPointShift",
+          "ContractionHalf",
+          "ComplexLimit"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.2627
+      },
+      "solution_tex": "不動点 \\(w=(w+4 + i)/2\\) より \\(w=4 + i\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
+      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(4 + i)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
+      "tool": "fixed_point",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "complex_affine_fixed_point_limit"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "3",
       "candidate_id": "construct:construct.complex_rotation_period:035",
       "difficulty": {
         "band": "B_hard_university",
@@ -782,43 +2962,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "2",
-      "candidate_id": "construct:construct.mobius_iteration_period:004",
-      "difficulty": {
-        "band": "B_hard_university",
-        "condition": 0,
-        "construct": 2,
-        "score": 9.73
-      },
-      "domain": "algebra",
-      "family_id": "construct.mobius_iteration_period",
-      "lift_certificate": {
-        "morphism_chain": [
-          "MobiusToMatrix",
-          "MatrixPower",
-          "ScalarPeriod"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "continuous_verified_problem_batch1",
-        "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.2231
-      },
-      "solution_tex": "\\(f\\) を行列 \\(M=\\begin{pmatrix}0&-1\\\\1&0\\end{pmatrix}\\) に対応させると \\(f_n\\leftrightarrow M^n\\)。\\(M^n\\) がスカラー行列になる最小の \\(n\\) が答え。固有値の比が1の原始冪根であることから定まる。",
-      "statement_tex": "関数 \\(f(x)=- \\frac{1}{x}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f_n\\) が恒等写像となる最小の正の整数 \\(n\\) を求めよ。",
-      "tool": "matrix_power",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "mobius_matrix_power_period"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "24",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:023",
+      "answer_tex": "52",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:081",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -838,11 +2983,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
         "maximum_surface_jaccard": 0.3714
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 11\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 11\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}3&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 13\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=3a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 13\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -852,8 +2996,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "y=x \\left(28 x^{2} - 5\\right)",
-      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:033",
+      "answer_tex": "y=28 x^{3} + 4 x",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:120",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -873,11 +3017,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
         "maximum_surface_jaccard": 0.1163
       },
       "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
-      "statement_tex": "曲線 \\(C: y=x^{3} - 5 x\\) 上の点 \\(P(t,\\,t^{3} - 5 t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "statement_tex": "曲線 \\(C: y=x^{3} + 4 x\\) 上の点 \\(P(t,\\,t^{3} + 4 t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
       "tool": "symbolic_intersection",
       "verification": {
         "exact_backend": true,
@@ -887,8 +3030,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "-3, 1",
-      "candidate_id": "construct:construct.mobius_fixed_points:003",
+      "answer_tex": "\\frac{3}{2} - \\frac{\\sqrt{17}}{2}, \\frac{3}{2} + \\frac{\\sqrt{17}}{2}",
+      "candidate_id": "construct:construct.mobius_fixed_points:015",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -908,11 +3051,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1923
+        "maximum_surface_jaccard": 0.2016
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}2&3\\\\1&4\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{2 x + 3}{x + 4}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}7&2\\\\1&4\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{7 x + 2}{x + 4}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -922,8 +3064,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "6",
-      "candidate_id": "construct:construct.paley_common_neighbors:009",
+      "answer_tex": "14",
+      "candidate_id": "construct:construct.paley_common_neighbors:025",
       "difficulty": {
         "band": "C_standard_university",
         "condition": 0,
@@ -943,11 +3085,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
         "maximum_surface_jaccard": 0.1307
       },
-      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=6\\)。平方剰余の指標和で示せる。",
-      "statement_tex": "素数 \\(p=29\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{29}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
+      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=14\\)。平方剰余の指標和で示せる。",
+      "statement_tex": "素数 \\(p=61\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{61}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
       "tool": "quadratic_residue",
       "verification": {
         "exact_backend": true,
@@ -957,8 +3098,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{1}{2 n - 1}",
-      "candidate_id": "construct:construct.reciprocal_recurrence:079",
+      "answer_tex": "\\frac{1}{5 n - 4}",
+      "candidate_id": "construct:construct.reciprocal_recurrence:378",
       "difficulty": {
         "band": "C_standard_university",
         "condition": 0,
@@ -978,11 +3119,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
         "maximum_surface_jaccard": 0.3895
       },
-      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=1b_n+2\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{1+2a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
+      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=1b_n+5\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{1+5a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
       "tool": "reciprocal_transform",
       "verification": {
         "exact_backend": true,
@@ -992,13 +3132,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{3}{4}",
-      "candidate_id": "construct:construct.gambler_ruin_probability:050",
+      "answer_tex": "\\frac{4}{11}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:211",
       "difficulty": {
         "band": "D_textbook",
         "condition": 0,
         "construct": 0,
-        "score": 5.53
+        "score": 5.56
       },
       "domain": "probability",
       "family_id": "construct.gambler_ruin_probability",
@@ -1013,11 +3153,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
         "maximum_surface_jaccard": 0.1096
       },
-      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{4}=1\\) より \\(p_k=k/4\\)。",
-      "statement_tex": "数直線上の点が \\(k=3\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=4\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{11}=1\\) より \\(p_k=k/11\\)。",
+      "statement_tex": "数直線上の点が \\(k=4\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=11\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
       "tool": "linear_recurrence",
       "verification": {
         "exact_backend": true,
@@ -1027,13 +3166,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "(0,\\ \\frac{1}{4})",
-      "candidate_id": "construct:construct.parabola_right_angle_chord:073",
+      "answer_tex": "(0,\\ 1)",
+      "candidate_id": "construct:construct.parabola_right_angle_chord:070",
       "difficulty": {
         "band": "D_textbook",
         "condition": 1,
         "construct": 0,
-        "score": 4.88
+        "score": 4.86
       },
       "domain": "geometry",
       "family_id": "construct.parabola_right_angle_chord",
@@ -1049,10 +3188,10 @@
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
         "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1143
+        "maximum_surface_jaccard": 0.1151
       },
-      "solution_tex": "\\(A=(a,4a^2),B=(b,4b^2)\\)。\\(OA\\perp OB\\) から傾きの積 \\(\\tfrac{4a^2}{a}\\cdot\\tfrac{4b^2}{b}=4^2ab=-1\\)，すなわち \\(ab=-1/4^2\\)（一定）。弦 \\(AB\\) は \\(y=4(a+b)x-4ab\\) で \\(x=0\\) のとき \\(y=1/4\\)。定点 \\((0,1/4)\\)（高校）。",
-      "statement_tex": "放物線 \\(y=4 x^{2}\\) 上の相異なる2点 \\(A,B\\) と原点 \\(O\\) が \\(\\angle AOB=90^\\circ\\) を満たしながら動く。このとき弦 \\(AB\\) が必ず通る定点を求めよ。",
+      "solution_tex": "\\(A=(a,1a^2),B=(b,1b^2)\\)。\\(OA\\perp OB\\) から傾きの積 \\(\\tfrac{1a^2}{a}\\cdot\\tfrac{1b^2}{b}=1^2ab=-1\\)，すなわち \\(ab=-1/1^2\\)（一定）。弦 \\(AB\\) は \\(y=1(a+b)x-1ab\\) で \\(x=0\\) のとき \\(y=1/1\\)。定点 \\((0,1/1)\\)（高校）。",
+      "statement_tex": "放物線 \\(y=x^{2}\\) 上の相異なる2点 \\(A,B\\) と原点 \\(O\\) が \\(\\angle AOB=90^\\circ\\) を満たしながら動く。このとき弦 \\(AB\\) が必ず通る定点を求めよ。",
       "tool": "slope_product",
       "verification": {
         "exact_backend": true,
@@ -1062,13 +3201,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "3 i",
-      "candidate_id": "construct:construct.complex_affine_limit:083",
+      "answer_tex": "5 - i",
+      "candidate_id": "construct:construct.complex_affine_limit:394",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 1,
-        "score": 10.8
+        "score": 10.83
       },
       "domain": "complex",
       "family_id": "construct.complex_affine_limit",
@@ -1083,11 +3222,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.265
+        "maximum_surface_jaccard": 0.2627
       },
-      "solution_tex": "不動点 \\(w=(w+3 i)/2\\) より \\(w=3 i\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
-      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(3 i)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
+      "solution_tex": "不動点 \\(w=(w+5 - i)/2\\) より \\(w=5 - i\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
+      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(5 - i)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
       "tool": "fixed_point",
       "verification": {
         "exact_backend": true,
@@ -1167,13 +3305,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "y=28 x^{3} - x",
-      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:029",
+      "answer_tex": "y=x \\left(28 x^{2} + 5\\right)",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:121",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 1,
-        "score": 8.75
+        "score": 8.79
       },
       "domain": "geometry_algebra",
       "family_id": "construct.cubic_tangent_midpoint_locus",
@@ -1188,11 +3326,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1172
+        "maximum_surface_jaccard": 0.1163
       },
       "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
-      "statement_tex": "曲線 \\(C: y=x^{3} - x\\) 上の点 \\(P(t,\\,t^{3} - t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "statement_tex": "曲線 \\(C: y=x^{3} + 5 x\\) 上の点 \\(P(t,\\,t^{3} + 5 t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
       "tool": "symbolic_intersection",
       "verification": {
         "exact_backend": true,
@@ -1237,8 +3374,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "8",
-      "candidate_id": "construct:construct.paley_common_neighbors:010",
+      "answer_tex": "17",
+      "candidate_id": "construct:construct.paley_common_neighbors:026",
       "difficulty": {
         "band": "C_standard_university",
         "condition": 0,
@@ -1258,11 +3395,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
         "maximum_surface_jaccard": 0.1307
       },
-      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=8\\)。平方剰余の指標和で示せる。",
-      "statement_tex": "素数 \\(p=37\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{37}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
+      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=17\\)。平方剰余の指標和で示せる。",
+      "statement_tex": "素数 \\(p=73\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{73}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
       "tool": "quadratic_residue",
       "verification": {
         "exact_backend": true,
@@ -1272,13 +3408,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{1}{n}",
-      "candidate_id": "construct:construct.reciprocal_recurrence:074",
+      "answer_tex": "\\frac{1}{2^{n + 2} - 7}",
+      "candidate_id": "construct:construct.reciprocal_recurrence:379",
       "difficulty": {
         "band": "C_standard_university",
         "condition": 0,
         "construct": 1,
-        "score": 6.39
+        "score": 6.41
       },
       "domain": "algebra",
       "family_id": "construct.reciprocal_recurrence",
@@ -1293,11 +3429,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.3936
+        "maximum_surface_jaccard": 0.3895
       },
-      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=1b_n+1\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{1+a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
+      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=2b_n+7\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{2+7a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
       "tool": "reciprocal_transform",
       "verification": {
         "exact_backend": true,
@@ -1307,13 +3442,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{1}{5}",
-      "candidate_id": "construct:construct.gambler_ruin_probability:051",
+      "answer_tex": "\\frac{5}{11}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:212",
       "difficulty": {
         "band": "D_textbook",
         "condition": 0,
         "construct": 0,
-        "score": 5.53
+        "score": 5.56
       },
       "domain": "probability",
       "family_id": "construct.gambler_ruin_probability",
@@ -1328,11 +3463,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1103
+        "maximum_surface_jaccard": 0.1096
       },
-      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{5}=1\\) より \\(p_k=k/5\\)。",
-      "statement_tex": "数直線上の点が \\(k=1\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=5\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{11}=1\\) より \\(p_k=k/11\\)。",
+      "statement_tex": "数直線上の点が \\(k=5\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=11\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
       "tool": "linear_recurrence",
       "verification": {
         "exact_backend": true,
@@ -1342,48 +3476,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "(0,\\ 1)",
-      "candidate_id": "construct:construct.parabola_right_angle_chord:070",
-      "difficulty": {
-        "band": "D_textbook",
-        "condition": 1,
-        "construct": 0,
-        "score": 4.86
-      },
-      "domain": "geometry",
-      "family_id": "construct.parabola_right_angle_chord",
-      "lift_certificate": {
-        "morphism_chain": [
-          "RightAngleCondition",
-          "SlopeProductInvariant",
-          "FixedPoint"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "sakumon_curation",
-        "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1151
-      },
-      "solution_tex": "\\(A=(a,1a^2),B=(b,1b^2)\\)。\\(OA\\perp OB\\) から傾きの積 \\(\\tfrac{1a^2}{a}\\cdot\\tfrac{1b^2}{b}=1^2ab=-1\\)，すなわち \\(ab=-1/1^2\\)（一定）。弦 \\(AB\\) は \\(y=1(a+b)x-1ab\\) で \\(x=0\\) のとき \\(y=1/1\\)。定点 \\((0,1/1)\\)（高校）。",
-      "statement_tex": "放物線 \\(y=x^{2}\\) 上の相異なる2点 \\(A,B\\) と原点 \\(O\\) が \\(\\angle AOB=90^\\circ\\) を満たしながら動く。このとき弦 \\(AB\\) が必ず通る定点を求めよ。",
-      "tool": "slope_product",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "parabola_slope_product_fixed_point"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "i",
-      "candidate_id": "construct:construct.complex_affine_limit:080",
+      "answer_tex": "3 i",
+      "candidate_id": "construct:construct.complex_affine_limit:083",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 1,
-        "score": 10.77
+        "score": 10.8
       },
       "domain": "complex",
       "family_id": "construct.complex_affine_limit",
@@ -1399,10 +3498,10 @@
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
         "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.2672
+        "maximum_surface_jaccard": 0.265
       },
-      "solution_tex": "不動点 \\(w=(w+i)/2\\) より \\(w=i\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
-      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(i)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
+      "solution_tex": "不動点 \\(w=(w+3 i)/2\\) より \\(w=3 i\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
+      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(3 i)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
       "tool": "fixed_point",
       "verification": {
         "exact_backend": true,
@@ -1482,13 +3581,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "y=28 x^{3} + x",
-      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:031",
+      "answer_tex": "y=28 x^{3} + 6 x",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:122",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 1,
-        "score": 8.75
+        "score": 8.79
       },
       "domain": "geometry_algebra",
       "family_id": "construct.cubic_tangent_midpoint_locus",
@@ -1503,11 +3602,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1172
+        "maximum_surface_jaccard": 0.1163
       },
       "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
-      "statement_tex": "曲線 \\(C: y=x^{3} + x\\) 上の点 \\(P(t,\\,t^{3} + t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "statement_tex": "曲線 \\(C: y=x^{3} + 6 x\\) 上の点 \\(P(t,\\,t^{3} + 6 t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
       "tool": "symbolic_intersection",
       "verification": {
         "exact_backend": true,
@@ -1517,8 +3615,42 @@
     },
     {
       "accepted": true,
-      "answer_tex": "9",
-      "candidate_id": "construct:construct.paley_common_neighbors:011",
+      "answer_tex": "2, 3",
+      "candidate_id": "construct:construct.mobius_fixed_points:005",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 8.36
+      },
+      "domain": "algebra",
+      "family_id": "construct.mobius_fixed_points",
+      "lift_certificate": {
+        "morphism_chain": [
+          "MobiusToMatrix",
+          "Eigenstructure",
+          "FixedPointSolve"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1953
+      },
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}5&-6\\\\1&0\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{5 x - 6}{x}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "tool": "matrix_eigen",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "mobius_matrix_eigen_fixed_points"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "21",
+      "candidate_id": "construct:construct.paley_common_neighbors:027",
       "difficulty": {
         "band": "C_standard_university",
         "condition": 0,
@@ -1538,11 +3670,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
         "maximum_surface_jaccard": 0.1307
       },
-      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=9\\)。平方剰余の指標和で示せる。",
-      "statement_tex": "素数 \\(p=41\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{41}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
+      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=21\\)。平方剰余の指標和で示せる。",
+      "statement_tex": "素数 \\(p=89\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{89}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
       "tool": "quadratic_residue",
       "verification": {
         "exact_backend": true,
@@ -1552,8 +3683,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{1}{2^{n} - 1}",
-      "candidate_id": "construct:construct.reciprocal_recurrence:075",
+      "answer_tex": "\\frac{1}{n}",
+      "candidate_id": "construct:construct.reciprocal_recurrence:074",
       "difficulty": {
         "band": "C_standard_university",
         "condition": 0,
@@ -1576,8 +3707,8 @@
         "exact_jukenmath_collision": false,
         "maximum_surface_jaccard": 0.3936
       },
-      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=2b_n+1\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{2+a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
+      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=1b_n+1\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{1+a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
       "tool": "reciprocal_transform",
       "verification": {
         "exact_backend": true,
@@ -1587,13 +3718,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{2}{5}",
-      "candidate_id": "construct:construct.gambler_ruin_probability:052",
+      "answer_tex": "\\frac{6}{11}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:213",
       "difficulty": {
         "band": "D_textbook",
         "condition": 0,
         "construct": 0,
-        "score": 5.53
+        "score": 5.56
       },
       "domain": "probability",
       "family_id": "construct.gambler_ruin_probability",
@@ -1608,11 +3739,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1103
+        "maximum_surface_jaccard": 0.1096
       },
-      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{5}=1\\) より \\(p_k=k/5\\)。",
-      "statement_tex": "数直線上の点が \\(k=2\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=5\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{11}=1\\) より \\(p_k=k/11\\)。",
+      "statement_tex": "数直線上の点が \\(k=6\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=11\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
       "tool": "linear_recurrence",
       "verification": {
         "exact_backend": true,
@@ -1622,13 +3752,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "3",
-      "candidate_id": "construct:construct.complex_affine_limit:085",
+      "answer_tex": "- i",
+      "candidate_id": "construct:construct.complex_affine_limit:389",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 1,
-        "score": 10.77
+        "score": 10.8
       },
       "domain": "complex",
       "family_id": "construct.complex_affine_limit",
@@ -1643,11 +3773,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.2672
+        "maximum_surface_jaccard": 0.265
       },
-      "solution_tex": "不動点 \\(w=(w+3)/2\\) より \\(w=3\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
-      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(3)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
+      "solution_tex": "不動点 \\(w=(w+- i)/2\\) より \\(w=- i\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
+      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(- i)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
       "tool": "fixed_point",
       "verification": {
         "exact_backend": true,
@@ -1727,13 +3856,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "y=28 x^{3}",
-      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:030",
+      "answer_tex": "y=28 x^{3} - x",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:029",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 1,
-        "score": 8.67
+        "score": 8.75
       },
       "domain": "geometry_algebra",
       "family_id": "construct.cubic_tangent_midpoint_locus",
@@ -1749,10 +3878,10 @@
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
         "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.12
+        "maximum_surface_jaccard": 0.1172
       },
       "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
-      "statement_tex": "曲線 \\(C: y=x^{3}\\) 上の点 \\(P(t,\\,t^{3})\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "statement_tex": "曲線 \\(C: y=x^{3} - x\\) 上の点 \\(P(t,\\,t^{3} - t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
       "tool": "symbolic_intersection",
       "verification": {
         "exact_backend": true,
@@ -1762,8 +3891,42 @@
     },
     {
       "accepted": true,
-      "answer_tex": "12",
-      "candidate_id": "construct:construct.paley_common_neighbors:012",
+      "answer_tex": "1, 5",
+      "candidate_id": "construct:construct.mobius_fixed_points:006",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 8.36
+      },
+      "domain": "algebra",
+      "family_id": "construct.mobius_fixed_points",
+      "lift_certificate": {
+        "morphism_chain": [
+          "MobiusToMatrix",
+          "Eigenstructure",
+          "FixedPointSolve"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1953
+      },
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}6&-5\\\\1&0\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{6 x - 5}{x}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "tool": "matrix_eigen",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "mobius_matrix_eigen_fixed_points"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "23",
+      "candidate_id": "construct:construct.paley_common_neighbors:028",
       "difficulty": {
         "band": "C_standard_university",
         "condition": 0,
@@ -1783,11 +3946,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
         "maximum_surface_jaccard": 0.1307
       },
-      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=12\\)。平方剰余の指標和で示せる。",
-      "statement_tex": "素数 \\(p=53\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{53}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
+      "solution_tex": "これは Paley グラフ。強正則グラフで，隣接2頂点の共通隣接点数は \\(\\lambda=(p-5)/4=23\\)。平方剰余の指標和で示せる。",
+      "statement_tex": "素数 \\(p=97\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{97}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。辺で結ばれた2頂点の共通の隣接頂点の個数を求めよ。",
       "tool": "quadratic_residue",
       "verification": {
         "exact_backend": true,
@@ -1797,8 +3959,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{2}{3^{n} - 1}",
-      "candidate_id": "construct:construct.reciprocal_recurrence:078",
+      "answer_tex": "\\frac{1}{2^{n} - 1}",
+      "candidate_id": "construct:construct.reciprocal_recurrence:075",
       "difficulty": {
         "band": "C_standard_university",
         "condition": 0,
@@ -1821,8 +3983,8 @@
         "exact_jukenmath_collision": false,
         "maximum_surface_jaccard": 0.3936
       },
-      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=3b_n+1\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{3+a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
+      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=2b_n+1\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{2+a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
       "tool": "reciprocal_transform",
       "verification": {
         "exact_backend": true,
@@ -1832,13 +3994,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{3}{5}",
-      "candidate_id": "construct:construct.gambler_ruin_probability:053",
+      "answer_tex": "\\frac{7}{11}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:214",
       "difficulty": {
         "band": "D_textbook",
         "condition": 0,
         "construct": 0,
-        "score": 5.53
+        "score": 5.56
       },
       "domain": "probability",
       "family_id": "construct.gambler_ruin_probability",
@@ -1853,16 +4015,49 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
         "maximum_surface_jaccard": 0.1096
       },
-      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{5}=1\\) より \\(p_k=k/5\\)。",
-      "statement_tex": "数直線上の点が \\(k=3\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=5\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{11}=1\\) より \\(p_k=k/11\\)。",
+      "statement_tex": "数直線上の点が \\(k=7\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=11\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
       "tool": "linear_recurrence",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
         "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "5 i",
+      "candidate_id": "construct:construct.complex_affine_limit:395",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 10.8
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_affine_limit",
+      "lift_certificate": {
+        "morphism_chain": [
+          "FixedPointShift",
+          "ContractionHalf",
+          "ComplexLimit"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.265
+      },
+      "solution_tex": "不動点 \\(w=(w+5 i)/2\\) より \\(w=5 i\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
+      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(5 i)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
+      "tool": "fixed_point",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "complex_affine_fixed_point_limit"
       }
     },
     {
@@ -1937,13 +4132,117 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{4}{5}",
-      "candidate_id": "construct:construct.gambler_ruin_probability:054",
+      "answer_tex": "y=28 x^{3} + x",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:031",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.75
+      },
+      "domain": "geometry_algebra",
+      "family_id": "construct.cubic_tangent_midpoint_locus",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TangentLine",
+          "CubicReintersection",
+          "MidpointLocus"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1172
+      },
+      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
+      "statement_tex": "曲線 \\(C: y=x^{3} + x\\) 上の点 \\(P(t,\\,t^{3} + t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "tool": "symbolic_intersection",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_tangent_intersection_locus"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "1, 2",
+      "candidate_id": "construct:construct.mobius_fixed_points:007",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 8.36
+      },
+      "domain": "algebra",
+      "family_id": "construct.mobius_fixed_points",
+      "lift_certificate": {
+        "morphism_chain": [
+          "MobiusToMatrix",
+          "Eigenstructure",
+          "FixedPointSolve"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1953
+      },
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}3&-2\\\\1&0\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{3 x - 2}{x}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "tool": "matrix_eigen",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "mobius_matrix_eigen_fixed_points"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{2}{3^{n} - 1}",
+      "candidate_id": "construct:construct.reciprocal_recurrence:078",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 6.39
+      },
+      "domain": "algebra",
+      "family_id": "construct.reciprocal_recurrence",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ReciprocalTransform",
+          "LinearRecurrence",
+          "GeneralTerm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.3936
+      },
+      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=3b_n+1\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{3+a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
+      "tool": "reciprocal_transform",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "reciprocal_linearization"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{8}{11}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:215",
       "difficulty": {
         "band": "D_textbook",
         "condition": 0,
         "construct": 0,
-        "score": 5.53
+        "score": 5.56
       },
       "domain": "probability",
       "family_id": "construct.gambler_ruin_probability",
@@ -1958,16 +4257,50 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
         "maximum_surface_jaccard": 0.1096
       },
-      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{5}=1\\) より \\(p_k=k/5\\)。",
-      "statement_tex": "数直線上の点が \\(k=4\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=5\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{11}=1\\) より \\(p_k=k/11\\)。",
+      "statement_tex": "数直線上の点が \\(k=8\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=11\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
       "tool": "linear_recurrence",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
         "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "i",
+      "candidate_id": "construct:construct.complex_affine_limit:080",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 10.77
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_affine_limit",
+      "lift_certificate": {
+        "morphism_chain": [
+          "FixedPointShift",
+          "ContractionHalf",
+          "ComplexLimit"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2672
+      },
+      "solution_tex": "不動点 \\(w=(w+i)/2\\) より \\(w=i\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
+      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(i)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
+      "tool": "fixed_point",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "complex_affine_fixed_point_limit"
       }
     },
     {
@@ -2042,13 +4375,82 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{1}{6}",
-      "candidate_id": "construct:construct.gambler_ruin_probability:055",
+      "answer_tex": "y=28 x^{3}",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:030",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.67
+      },
+      "domain": "geometry_algebra",
+      "family_id": "construct.cubic_tangent_midpoint_locus",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TangentLine",
+          "CubicReintersection",
+          "MidpointLocus"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.12
+      },
+      "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
+      "statement_tex": "曲線 \\(C: y=x^{3}\\) 上の点 \\(P(t,\\,t^{3})\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "tool": "symbolic_intersection",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_tangent_intersection_locus"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{3}{4^{n} - 1}",
+      "candidate_id": "construct:construct.reciprocal_recurrence:371",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 6.39
+      },
+      "domain": "algebra",
+      "family_id": "construct.reciprocal_recurrence",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ReciprocalTransform",
+          "LinearRecurrence",
+          "GeneralTerm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.3936
+      },
+      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=4b_n+1\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{4+a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
+      "tool": "reciprocal_transform",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "reciprocal_linearization"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{9}{11}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:216",
       "difficulty": {
         "band": "D_textbook",
         "condition": 0,
         "construct": 0,
-        "score": 5.53
+        "score": 5.56
       },
       "domain": "probability",
       "family_id": "construct.gambler_ruin_probability",
@@ -2063,16 +4465,50 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1103
+        "maximum_surface_jaccard": 0.1096
       },
-      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{6}=1\\) より \\(p_k=k/6\\)。",
-      "statement_tex": "数直線上の点が \\(k=1\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=6\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{11}=1\\) より \\(p_k=k/11\\)。",
+      "statement_tex": "数直線上の点が \\(k=9\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=11\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
       "tool": "linear_recurrence",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
         "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "3",
+      "candidate_id": "construct:construct.complex_affine_limit:085",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 10.77
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_affine_limit",
+      "lift_certificate": {
+        "morphism_chain": [
+          "FixedPointShift",
+          "ContractionHalf",
+          "ComplexLimit"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.2672
+      },
+      "solution_tex": "不動点 \\(w=(w+3)/2\\) より \\(w=3\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
+      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(3)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
+      "tool": "fixed_point",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "complex_affine_fixed_point_limit"
       }
     },
     {
@@ -2147,13 +4583,47 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{1}{3}",
-      "candidate_id": "construct:construct.gambler_ruin_probability:056",
+      "answer_tex": "\\frac{4}{5^{n} - 1}",
+      "candidate_id": "construct:construct.reciprocal_recurrence:374",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 6.39
+      },
+      "domain": "algebra",
+      "family_id": "construct.reciprocal_recurrence",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ReciprocalTransform",
+          "LinearRecurrence",
+          "GeneralTerm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.3936
+      },
+      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=5b_n+1\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{5+a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
+      "tool": "reciprocal_transform",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "reciprocal_linearization"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{1}{12}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:218",
       "difficulty": {
         "band": "D_textbook",
         "condition": 0,
         "construct": 0,
-        "score": 5.53
+        "score": 5.56
       },
       "domain": "probability",
       "family_id": "construct.gambler_ruin_probability",
@@ -2168,11 +4638,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1103
+        "maximum_surface_jaccard": 0.1111
       },
-      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{6}=1\\) より \\(p_k=k/6\\)。",
-      "statement_tex": "数直線上の点が \\(k=2\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=6\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{12}=1\\) より \\(p_k=k/12\\)。",
+      "statement_tex": "数直線上の点が \\(k=1\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=12\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
       "tool": "linear_recurrence",
       "verification": {
         "exact_backend": true,
@@ -2252,13 +4721,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{1}{2}",
-      "candidate_id": "construct:construct.gambler_ruin_probability:057",
+      "answer_tex": "\\frac{5}{12}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:222",
       "difficulty": {
         "band": "D_textbook",
         "condition": 0,
         "construct": 0,
-        "score": 5.53
+        "score": 5.56
       },
       "domain": "probability",
       "family_id": "construct.gambler_ruin_probability",
@@ -2273,11 +4742,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1096
+        "maximum_surface_jaccard": 0.1103
       },
-      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{6}=1\\) より \\(p_k=k/6\\)。",
-      "statement_tex": "数直線上の点が \\(k=3\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=6\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{12}=1\\) より \\(p_k=k/12\\)。",
+      "statement_tex": "数直線上の点が \\(k=5\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=12\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
       "tool": "linear_recurrence",
       "verification": {
         "exact_backend": true,
@@ -2357,13 +4825,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{2}{3}",
-      "candidate_id": "construct:construct.gambler_ruin_probability:058",
+      "answer_tex": "\\frac{7}{12}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:224",
       "difficulty": {
         "band": "D_textbook",
         "condition": 0,
         "construct": 0,
-        "score": 5.53
+        "score": 5.56
       },
       "domain": "probability",
       "family_id": "construct.gambler_ruin_probability",
@@ -2378,11 +4846,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1096
+        "maximum_surface_jaccard": 0.1103
       },
-      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{6}=1\\) より \\(p_k=k/6\\)。",
-      "statement_tex": "数直線上の点が \\(k=4\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=6\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{12}=1\\) より \\(p_k=k/12\\)。",
+      "statement_tex": "数直線上の点が \\(k=7\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=12\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
       "tool": "linear_recurrence",
       "verification": {
         "exact_backend": true,
@@ -2462,8 +4929,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{5}{6}",
-      "candidate_id": "construct:construct.gambler_ruin_probability:059",
+      "answer_tex": "\\frac{1}{4}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:048",
       "difficulty": {
         "band": "D_textbook",
         "condition": 0,
@@ -2484,10 +4951,10 @@
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
         "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1096
+        "maximum_surface_jaccard": 0.1103
       },
-      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{6}=1\\) より \\(p_k=k/6\\)。",
-      "statement_tex": "数直線上の点が \\(k=5\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=6\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{4}=1\\) より \\(p_k=k/4\\)。",
+      "statement_tex": "数直線上の点が \\(k=1\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=4\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
       "tool": "linear_recurrence",
       "verification": {
         "exact_backend": true,
@@ -2532,13 +4999,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "20",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:013",
+      "answer_tex": "28",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:037",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 1,
-        "score": 8.82
+        "score": 8.84
       },
       "domain": "number_theory",
       "family_id": "construct.linear_recurrence_mod_period",
@@ -2553,11 +5020,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.4059
+        "maximum_surface_jaccard": 0.402
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 5\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 5\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 13\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 13\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -2567,8 +5033,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{1}{7}",
-      "candidate_id": "construct:construct.gambler_ruin_probability:060",
+      "answer_tex": "\\frac{1}{2}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:049",
       "difficulty": {
         "band": "D_textbook",
         "condition": 0,
@@ -2591,8 +5057,8 @@
         "exact_jukenmath_collision": false,
         "maximum_surface_jaccard": 0.1103
       },
-      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{7}=1\\) より \\(p_k=k/7\\)。",
-      "statement_tex": "数直線上の点が \\(k=1\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=7\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{4}=1\\) より \\(p_k=k/4\\)。",
+      "statement_tex": "数直線上の点が \\(k=2\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=4\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
       "tool": "linear_recurrence",
       "verification": {
         "exact_backend": true,
@@ -2637,6 +5103,386 @@
     },
     {
       "accepted": true,
+      "answer_tex": "36",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:039",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.84
+      },
+      "domain": "number_theory",
+      "family_id": "construct.linear_recurrence_mod_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.402
+      },
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 17\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 17\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{3}{4}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:050",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1096
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{4}=1\\) より \\(p_k=k/4\\)。",
+      "statement_tex": "数直線上の点が \\(k=3\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=4\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "9",
+      "candidate_id": "construct:construct.complex_rotation_period:141",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 9.74
+      },
+      "domain": "complex",
+      "family_id": "construct.complex_rotation_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimitiveRootOfUnity",
+          "DeMoivrePower",
+          "MinimalPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.2028
+      },
+      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{2\\pi}{9}\\) の回転で，\\(\\gcd(1,9)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=9\\)、すなわち \\(n=9\\)（高校：ド・モアブル）。",
+      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{2\\pi}{9}+i\\sin\\dfrac{2\\pi}{9}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
+      "tool": "polar_form",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "de_moivre_primitive_root_period"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "18",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:042",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.84
+      },
+      "domain": "number_theory",
+      "family_id": "construct.linear_recurrence_mod_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.402
+      },
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&2\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 9\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+2a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 9\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{1}{5}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:051",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1103
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{5}=1\\) より \\(p_k=k/5\\)。",
+      "statement_tex": "数直線上の点が \\(k=1\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=5\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "7",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:101",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.84
+      },
+      "domain": "number_theory",
+      "family_id": "construct.linear_recurrence_mod_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.375
+      },
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 7\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 7\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{2}{5}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:052",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1103
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{5}=1\\) より \\(p_k=k/5\\)。",
+      "statement_tex": "数直線上の点が \\(k=2\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=5\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "9",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:103",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.84
+      },
+      "domain": "number_theory",
+      "family_id": "construct.linear_recurrence_mod_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.375
+      },
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 9\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 9\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{3}{5}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:053",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1096
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{5}=1\\) より \\(p_k=k/5\\)。",
+      "statement_tex": "数直線上の点が \\(k=3\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=5\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "20",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:013",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.82
+      },
+      "domain": "number_theory",
+      "family_id": "construct.linear_recurrence_mod_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.4059
+      },
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 5\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 5\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{4}{5}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:054",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1096
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{5}=1\\) より \\(p_k=k/5\\)。",
+      "statement_tex": "数直線上の点が \\(k=4\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=5\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "16",
       "candidate_id": "construct:construct.linear_recurrence_mod_period:014",
       "difficulty": {
@@ -2672,8 +5518,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{2}{7}",
-      "candidate_id": "construct:construct.gambler_ruin_probability:061",
+      "answer_tex": "\\frac{1}{6}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:055",
       "difficulty": {
         "band": "D_textbook",
         "condition": 0,
@@ -2696,8 +5542,8 @@
         "exact_jukenmath_collision": false,
         "maximum_surface_jaccard": 0.1103
       },
-      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{7}=1\\) より \\(p_k=k/7\\)。",
-      "statement_tex": "数直線上の点が \\(k=2\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=7\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{6}=1\\) より \\(p_k=k/6\\)。",
+      "statement_tex": "数直線上の点が \\(k=1\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=6\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
       "tool": "linear_recurrence",
       "verification": {
         "exact_backend": true,
@@ -2738,6 +5584,216 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{1}{3}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:056",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1103
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{6}=1\\) より \\(p_k=k/6\\)。",
+      "statement_tex": "数直線上の点が \\(k=2\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=6\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{1}{2}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:057",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1096
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{6}=1\\) より \\(p_k=k/6\\)。",
+      "statement_tex": "数直線上の点が \\(k=3\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=6\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{2}{3}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:058",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1096
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{6}=1\\) より \\(p_k=k/6\\)。",
+      "statement_tex": "数直線上の点が \\(k=4\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=6\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{5}{6}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:059",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1096
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{6}=1\\) より \\(p_k=k/6\\)。",
+      "statement_tex": "数直線上の点が \\(k=5\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=6\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{1}{7}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:060",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1103
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{7}=1\\) より \\(p_k=k/7\\)。",
+      "statement_tex": "数直線上の点が \\(k=1\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=7\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{2}{7}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:061",
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.53
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "exact_jukenmath_collision": false,
+        "maximum_surface_jaccard": 0.1103
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{7}=1\\) より \\(p_k=k/7\\)。",
+      "statement_tex": "数直線上の点が \\(k=2\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=7\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
       }
     },
     {
@@ -2882,13 +5938,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{8}{15}",
-      "candidate_id": "construct:construct.gambler_ruin_probability:066",
+      "answer_tex": "\\frac{1}{8}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:184",
       "difficulty": {
         "band": "D_textbook",
         "condition": 0,
         "construct": 0,
-        "score": 4.41
+        "score": 5.53
       },
       "domain": "probability",
       "family_id": "construct.gambler_ruin_probability",
@@ -2903,11 +5959,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.0962
+        "maximum_surface_jaccard": 0.1103
       },
-      "solution_tex": "\\(p_k=\\tfrac{2}{3}p_{k+1}+\\tfrac{1}{3}p_{k-1}\\)。特性比 \\(r=\\frac{1}{2}\\) で \\(p_k=\\dfrac{1-r^k}{1-r^N}\\)（高校：漸化式）。",
-      "statement_tex": "数直線上の点が \\(k=1\\) から出発し，各回 右へ確率 \\(\\tfrac{2}{3}\\)、左へ \\(\\tfrac{1}{3}\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=4\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{8}=1\\) より \\(p_k=k/8\\)。",
+      "statement_tex": "数直線上の点が \\(k=1\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=8\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
       "tool": "linear_recurrence",
       "verification": {
         "exact_backend": true,
@@ -2917,13 +5972,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{24}{31}",
-      "candidate_id": "construct:construct.gambler_ruin_probability:067",
+      "answer_tex": "\\frac{3}{8}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:186",
       "difficulty": {
         "band": "D_textbook",
         "condition": 0,
         "construct": 0,
-        "score": 4.41
+        "score": 5.53
       },
       "domain": "probability",
       "family_id": "construct.gambler_ruin_probability",
@@ -2938,11 +5993,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1026
+        "maximum_surface_jaccard": 0.1096
       },
-      "solution_tex": "\\(p_k=\\tfrac{2}{3}p_{k+1}+\\tfrac{1}{3}p_{k-1}\\)。特性比 \\(r=\\frac{1}{2}\\) で \\(p_k=\\dfrac{1-r^k}{1-r^N}\\)（高校：漸化式）。",
-      "statement_tex": "数直線上の点が \\(k=2\\) から出発し，各回 右へ確率 \\(\\tfrac{2}{3}\\)、左へ \\(\\tfrac{1}{3}\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=5\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{8}=1\\) より \\(p_k=k/8\\)。",
+      "statement_tex": "数直線上の点が \\(k=3\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=8\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
       "tool": "linear_recurrence",
       "verification": {
         "exact_backend": true,
@@ -2952,13 +6006,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{81}{91}",
-      "candidate_id": "construct:construct.gambler_ruin_probability:069",
+      "answer_tex": "\\frac{5}{8}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:188",
       "difficulty": {
         "band": "D_textbook",
         "condition": 0,
         "construct": 0,
-        "score": 4.41
+        "score": 5.53
       },
       "domain": "probability",
       "family_id": "construct.gambler_ruin_probability",
@@ -2973,11 +6027,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.1026
+        "maximum_surface_jaccard": 0.1096
       },
-      "solution_tex": "\\(p_k=\\tfrac{3}{4}p_{k+1}+\\tfrac{1}{4}p_{k-1}\\)。特性比 \\(r=\\frac{1}{3}\\) で \\(p_k=\\dfrac{1-r^k}{1-r^N}\\)（高校：漸化式）。",
-      "statement_tex": "数直線上の点が \\(k=2\\) から出発し，各回 右へ確率 \\(\\tfrac{3}{4}\\)、左へ \\(\\tfrac{1}{4}\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=6\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{8}=1\\) より \\(p_k=k/8\\)。",
+      "statement_tex": "数直線上の点が \\(k=5\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=8\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
       "tool": "linear_recurrence",
       "verification": {
         "exact_backend": true,
@@ -2987,13 +6040,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{7}{31}",
-      "candidate_id": "construct:construct.gambler_ruin_probability:068",
+      "answer_tex": "\\frac{7}{8}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:190",
       "difficulty": {
         "band": "D_textbook",
         "condition": 0,
         "construct": 0,
-        "score": 4.35
+        "score": 5.53
       },
       "domain": "probability",
       "family_id": "construct.gambler_ruin_probability",
@@ -3008,11 +6061,10 @@
       "novelty": {
         "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.0955
+        "maximum_surface_jaccard": 0.1096
       },
-      "solution_tex": "\\(p_k=\\tfrac{1}{3}p_{k+1}+\\tfrac{2}{3}p_{k-1}\\)。特性比 \\(r=2\\) で \\(p_k=\\dfrac{1-r^k}{1-r^N}\\)（高校：漸化式）。",
-      "statement_tex": "数直線上の点が \\(k=3\\) から出発し，各回 右へ確率 \\(\\tfrac{1}{3}\\)、左へ \\(\\tfrac{2}{3}\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=5\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{8}=1\\) より \\(p_k=k/8\\)。",
+      "statement_tex": "数直線上の点が \\(k=7\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=8\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
       "tool": "linear_recurrence",
       "verification": {
         "exact_backend": true,
@@ -3021,40 +6073,33 @@
       }
     }
   ],
-  "source_note": "対象を構築し条件を課す難問。表層類似度は SIMILARITY.md の定義で実計算。",
   "summary": {
-    "dropped_not_novel": 0,
-    "dropped_too_easy": 0,
+    "added_this_run": 0,
+    "band_counts": {
+      "B_hard_university": 97,
+      "C_standard_university": 29,
+      "D_textbook": 50
+    },
     "family_counts": {
-      "construct.complex_affine_limit": 6,
-      "construct.complex_rotation_period": 14,
-      "construct.cubic_tangent_midpoint_locus": 6,
-      "construct.gambler_ruin_probability": 22,
-      "construct.linear_recurrence_mod_period": 15,
-      "construct.mobius_fixed_points": 4,
+      "construct.complex_affine_limit": 16,
+      "construct.complex_rotation_period": 22,
+      "construct.cubic_tangent_midpoint_locus": 15,
+      "construct.gambler_ruin_probability": 40,
+      "construct.linear_recurrence_mod_period": 27,
+      "construct.mobius_fixed_points": 14,
       "construct.mobius_iteration_period": 3,
-      "construct.paley_common_neighbors": 6,
-      "construct.parabola_right_angle_chord": 4,
-      "construct.reciprocal_recurrence": 6
+      "construct.paley_common_neighbors": 13,
+      "construct.parabola_right_angle_chord": 10,
+      "construct.reciprocal_recurrence": 16
     },
-    "generated": 86,
-    "jaccard_range": [
-      0.0955,
-      0.4059
-    ],
-    "kept": 86,
-    "tool_counts": {
-      "fixed_point": 6,
-      "linear_recurrence": 22,
-      "matrix_eigen": 4,
-      "matrix_mod_order": 15,
-      "matrix_power": 3,
-      "polar_form": 14,
-      "quadratic_residue": 6,
-      "reciprocal_transform": 6,
-      "slope_product": 4,
-      "symbolic_intersection": 6
+    "previous": 301,
+    "run_stats": {
+      "dup": 396,
+      "generated": 396,
+      "not_novel": 0,
+      "unverified": 0
     },
+    "total": 176,
     "world_corpus_size": 28095
   }
 }
