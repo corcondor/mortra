@@ -44,6 +44,26 @@ export async function GET() {
     result.anonKey = { error: e instanceof Error ? e.message : String(e) }
   }
 
+  // ページと同じクエリ（ratings を JOIN・全列・件数制限なし）を再現
+  try {
+    const anon2 = createClient(url, anonKey, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    })
+    const started = Date.now()
+    const { data, error } = await anon2
+      .from('problems')
+      .select('*, rating:ratings(*)')
+      .order('total', { ascending: false })
+    result.pageQuery = {
+      rows: data?.length ?? 0,
+      ms: Date.now() - started,
+      approxBytes: data ? JSON.stringify(data).length : 0,
+      error: error?.message ?? null,
+    }
+  } catch (e) {
+    result.pageQuery = { error: e instanceof Error ? e.message : String(e) }
+  }
+
   const svc = (result.serviceRole as { count?: number })?.count ?? 0
   const anon = (result.anonKey as { count?: number })?.count ?? 0
   result.diagnosis =
