@@ -43,14 +43,31 @@ function HomeInner() {
   // ── データ取得（Supabase クライアント経由 = ユーザーセッションで RLS が効く） ──
   const loadProblems = useCallback(async () => {
     setLoading(true)
+    // 5,000件超を ratings と JOIN して全件取得すると DB が statement timeout に
+    // なり、一覧が空になっていた。スコア上位に絞り、ratings は別途まとめて引く。
+    const LIMIT = 600
     const { data, error } = await supabase
       .from('problems')
-      .select('*, rating:ratings(*)')
+      .select('*')
       .order('total', { ascending: false })
+      .limit(LIMIT)
     if (error) { console.error(error); setLoading(false); return }
-    const normalized = (data ?? []).map((p: Record<string, unknown>) => ({
+
+    const rows = (data ?? []) as Record<string, unknown>[]
+    const ids = rows.map((p) => String(p.id))
+    const ratingById = new Map<string, unknown>()
+    if (ids.length) {
+      const { data: ratings } = await supabase
+        .from('ratings')
+        .select('*')
+        .in('problem_id', ids)
+      for (const r of (ratings ?? []) as Record<string, unknown>[]) {
+        ratingById.set(String(r.problem_id), r)
+      }
+    }
+    const normalized = rows.map((p) => ({
       ...p,
-      rating: Array.isArray(p.rating) ? (p.rating as unknown[])[0] ?? null : p.rating,
+      rating: ratingById.get(String(p.id)) ?? null,
     }))
     setProblems(normalized as ProblemWithRating[])
     setLoading(false)
