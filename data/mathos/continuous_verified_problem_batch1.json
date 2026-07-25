@@ -1,9 +1,7 @@
 {
-  "generated_at": "2026-07-25T20:54:45.667499+00:00",
+  "generated_at": "2026-07-25T21:43:18.378683+00:00",
   "method": {
-    "loop": "compose -> verify -> novelty -> grade -> accumulate",
-    "name": "MathOS autonomous pool",
-    "similarity_definition": "SIMILARITY.md"
+    "name": "MathOS autonomous pool (parallel shards merged)"
   },
   "problems": [
     {
@@ -81,6 +79,48 @@
     },
     {
       "accepted": true,
+      "answer_tex": "8",
+      "candidate_id": "construct:ultradeep.cyclotomic_distance_norm_divisor_count:011",
+      "difficulty": {
+        "band": "A_olympiad",
+        "condition": 2,
+        "construct": 1,
+        "score": 14.97
+      },
+      "domain": "complex_algebra_number_theory",
+      "family_id": "ultradeep.cyclotomic_distance_norm_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "RootOfUnity",
+          "CoprimeIndexFilter",
+          "PrimitiveRootSet",
+          "DistanceMultiset",
+          "DistanceProduct",
+          "CyclotomicPolynomial",
+          "PolynomialEvaluation",
+          "AlgebraicNorm",
+          "IntegerInvariant",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1111
+      },
+      "solution_tex": "積に現れるのは原始 \\(9\\) 乗根だから，\\(\\prod(4-\\zeta_j)=\\Phi_{9}(4)=4161\\)。共役が対になるので絶対値の積も \\(L=4161\\)。\\(L=3\\cdot 19\\cdot 73\\) より，正の約数は \\(8\\) 個。",
+      "statement_tex": "\\(\\zeta_j=\\cos\\frac{2\\pi j}{9}+i\\sin\\frac{2\\pi j}{9}\\) とし，\\(1\\le j\\le 9\\) かつ \\(\\gcd(j,9)=1\\) を満たす \\(j\\) について \\(L=\\prod |4-\\zeta_j|\\) と定める。\\(L\\) が整数であることを示し，\\(L\\) の正の約数の個数を求めよ。",
+      "tool": "cyclotomic_polynomial+algebraic_norm+numeric_product",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "cyclotomic_evaluation_vs_numeric_primitive_root_product"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "- \\frac{15 \\sqrt{10 - 2 \\sqrt{5}}}{16} + \\frac{15 \\sqrt{3} \\left(1 + \\sqrt{5}\\right)}{16}",
       "candidate_id": "construct:layered.rotation_orbit_hull_area:509",
       "difficulty": {
@@ -111,6 +151,48 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "roots_of_unity_orbit_regular_polygon_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "54",
+      "candidate_id": "construct:ultradeep.cubic_root_triangle_discriminant_divisor_count:015",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 13.92
+      },
+      "domain": "algebraic_geometry_number_theory",
+      "family_id": "ultradeep.cubic_root_triangle_discriminant_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CubicPolynomial",
+          "ThreeRealRootSet",
+          "ParabolaEmbedding",
+          "TriangleConstruction",
+          "VandermondeDeterminant",
+          "AreaSquare",
+          "PolynomialDiscriminant",
+          "IntegerNormalization",
+          "PrimeFactorization",
+          "DivisorCount",
+          "ArithmeticObservation"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1354
+      },
+      "solution_tex": "Vandermonde 行列式から \\(4S^2\\) は三次式の判別式に等しい。判別式は \\(27(4\\cdot 4^6-(-16)^2)=27\\cdot 16128\\) だから \\(M=16128=2^{8}\\cdot 3^{2}\\cdot 7\\)。したがって正の約数は \\(54\\) 個。",
+      "statement_tex": "方程式 \\(x^3-48x+(-16)=0\\) の3実根を \\(\\alpha,\\beta,\\gamma\\) とする。放物線 \\(y=x^2\\) 上の3点 \\((\\alpha,\\alpha^2),(\\beta,\\beta^2),(\\gamma,\\gamma^2)\\) が作る三角形の面積を \\(S\\) とし，\\(M=\\frac{4S^2}{27}\\) と定める。\\(M\\) が整数であることを示し，\\(M\\) の正の約数の個数を求めよ。",
+      "tool": "cubic_discriminant+vandermonde_area+numeric_roots",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_discriminant_identity_vs_numeric_root_triangle_area"
       }
     },
     {
@@ -150,6 +232,49 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "adjacency_trace_vs_exhaustive_triangle_count"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "210",
+      "candidate_id": "construct:ultradeep.paley_spanning_tree_divisor_count:003",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 12.95
+      },
+      "domain": "spectral_graph_number_theory",
+      "family_id": "ultradeep.paley_spanning_tree_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimeField",
+          "QuadraticResidueSet",
+          "PaleyGraph",
+          "AdjacencyMatrix",
+          "AdjacencySpectrum",
+          "LaplacianTransform",
+          "LaplacianSpectrum",
+          "NonzeroEigenvalueProduct",
+          "MatrixTreeTheorem",
+          "SpanningTreeCount",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1216
+      },
+      "solution_tex": "Paley グラフの隣接行列の非自明固有値は \\(\\frac{-1\\pm\\sqrt{29}}2\\)（各重複度 \\(14\\)）。次数 \\(14\\) のラプラシアンの非零固有値の積を Kirchhoff の定理で\\(29\\) で割ると \\(\\tau=29^{13}\\left(\\frac{29-1}4\\right)^{14}=7^{14}\\cdot 29^{13}\\)。したがって約数の個数は \\(210\\)。",
+      "statement_tex": "素数 \\(p=29\\) に対し，頂点集合 \\(\\mathbb Z_{29}\\) 上で，\\(x-y\\) が平方剰余であるときに \\(x,y\\) を結んで得られる Paley グラフを \\(G\\) とする。\\(G\\) の全域木の個数を \\(\\tau\\) とするとき，\\(\\tau\\) の正の約数の個数を求めよ。",
+      "tool": "paley_spectrum+matrix_tree+exact_determinant",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "spectral_tree_formula_vs_exact_laplacian_cofactor"
       }
     },
     {
@@ -335,6 +460,47 @@
     },
     {
       "accepted": true,
+      "answer_tex": "24",
+      "candidate_id": "construct:ultradeep.paley_four_cycle_divisor_count:002",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 9.38
+      },
+      "domain": "graph_combinatorics_number_theory",
+      "family_id": "ultradeep.paley_four_cycle_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimeField",
+          "QuadraticResidueSet",
+          "PaleyGraph",
+          "StronglyRegularParameters",
+          "CommonNeighborRelation",
+          "OppositeVertexPairing",
+          "FourCycleDoubleCount",
+          "CycleCount",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1176
+      },
+      "solution_tex": "隣接2頂点の共通隣接点は \\(6\\) 個，非隣接2頂点では \\(7\\) 個。向かい合う頂点対で二重計数すると \\(C=3654\\)。\\(C=2\\cdot 3^{2}\\cdot 7\\cdot 29\\) なので，正の約数は \\(24\\) 個。",
+      "statement_tex": "素数 \\(p=29\\) に対し，頂点集合 \\(\\mathbb Z_{29}\\) 上で，\\(x-y\\) が平方剰余であるときに \\(x,y\\) を結んで得られる Paley グラフを \\(G\\) とする。\\(G\\) に含まれる単純な長さ4の閉路の個数を \\(C\\) とする。\\(C\\) の正の約数の個数を求めよ。",
+      "tool": "strongly_regular_graph+trace_four+factorization",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "common_neighbor_double_count_vs_adjacency_trace_four"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "54",
       "candidate_id": "construct:construct.linear_recurrence_mod_period:507",
       "difficulty": {
@@ -467,6 +633,49 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "paley_graph_triangle_enumeration_vs_closed_form"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "24",
+      "candidate_id": "construct:ultradeep.gambler_absorption_variance_divisor_count:030",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.59
+      },
+      "domain": "probability_linear_algebra_number_theory",
+      "family_id": "ultradeep.gambler_absorption_variance_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PathStateSpace",
+          "AbsorbingBoundary",
+          "SymmetricRandomWalk",
+          "HittingTime",
+          "FirstMomentConditioning",
+          "FirstMomentLinearSystem",
+          "SecondMomentConditioning",
+          "SecondMomentLinearSystem",
+          "VarianceTransform",
+          "IntegerInvariant",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0773
+      },
+      "solution_tex": "一次モーメントの差分方程式から \\(E[T]=3(12-3)\\)。二次モーメントにも条件付けして解くと \\(\\operatorname{Var}(T)=\\frac{3(12-3)(12^2-2-2\\cdot 3(12-3))}{3}=792\\)。\\(792=2^{3}\\cdot 3^{2}\\cdot 11\\) より約数は \\(24\\) 個。",
+      "statement_tex": "点 \\(0,1,\\ldots,12\\) 上を動く対称ランダムウォークを考える。初期位置は \\(3\\) で，各時刻に確率 \\(\\frac12\\) ずつで左右に1動き，\\(0\\) または \\(12\\) に着いたら停止する。停止時刻を \\(T\\) とするとき，\\(\\operatorname{Var}(T)\\) の正の約数の個数を求めよ。",
+      "tool": "absorbing_markov_moments+linear_system+factorization",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "closed_variance_formula_vs_exact_two_moment_linear_system"
       }
     },
     {
@@ -755,6 +964,48 @@
     },
     {
       "accepted": true,
+      "answer_tex": "4",
+      "candidate_id": "construct:ultradeep.cyclotomic_distance_norm_divisor_count:002",
+      "difficulty": {
+        "band": "A_olympiad",
+        "condition": 2,
+        "construct": 1,
+        "score": 14.92
+      },
+      "domain": "complex_algebra_number_theory",
+      "family_id": "ultradeep.cyclotomic_distance_norm_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "RootOfUnity",
+          "CoprimeIndexFilter",
+          "PrimitiveRootSet",
+          "DistanceMultiset",
+          "DistanceProduct",
+          "CyclotomicPolynomial",
+          "PolynomialEvaluation",
+          "AlgebraicNorm",
+          "IntegerInvariant",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1111
+      },
+      "solution_tex": "積に現れるのは原始 \\(5\\) 乗根だから，\\(\\prod(4-\\zeta_j)=\\Phi_{5}(4)=341\\)。共役が対になるので絶対値の積も \\(L=341\\)。\\(L=11\\cdot 31\\) より，正の約数は \\(4\\) 個。",
+      "statement_tex": "\\(\\zeta_j=\\cos\\frac{2\\pi j}{5}+i\\sin\\frac{2\\pi j}{5}\\) とし，\\(1\\le j\\le 5\\) かつ \\(\\gcd(j,5)=1\\) を満たす \\(j\\) について \\(L=\\prod |4-\\zeta_j|\\) と定める。\\(L\\) が整数であることを示し，\\(L\\) の正の約数の個数を求めよ。",
+      "tool": "cyclotomic_polynomial+algebraic_norm+numeric_product",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "cyclotomic_evaluation_vs_numeric_primitive_root_product"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "9 \\sin{\\left(\\frac{\\pi}{9} \\right)}",
       "candidate_id": "construct:layered.rotation_orbit_hull_area:511",
       "difficulty": {
@@ -785,6 +1036,48 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "roots_of_unity_orbit_regular_polygon_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "26",
+      "candidate_id": "construct:ultradeep.cubic_root_triangle_discriminant_divisor_count:014",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 13.87
+      },
+      "domain": "algebraic_geometry_number_theory",
+      "family_id": "ultradeep.cubic_root_triangle_discriminant_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CubicPolynomial",
+          "ThreeRealRootSet",
+          "ParabolaEmbedding",
+          "TriangleConstruction",
+          "VandermondeDeterminant",
+          "AreaSquare",
+          "PolynomialDiscriminant",
+          "IntegerNormalization",
+          "PrimeFactorization",
+          "DivisorCount",
+          "ArithmeticObservation"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1354
+      },
+      "solution_tex": "Vandermonde 行列式から \\(4S^2\\) は三次式の判別式に等しい。判別式は \\(27(4\\cdot 4^6-(-64)^2)=27\\cdot 12288\\) だから \\(M=12288=2^{12}\\cdot 3\\)。したがって正の約数は \\(26\\) 個。",
+      "statement_tex": "方程式 \\(x^3-48x+(-64)=0\\) の3実根を \\(\\alpha,\\beta,\\gamma\\) とする。放物線 \\(y=x^2\\) 上の3点 \\((\\alpha,\\alpha^2),(\\beta,\\beta^2),(\\gamma,\\gamma^2)\\) が作る三角形の面積を \\(S\\) とし，\\(M=\\frac{4S^2}{27}\\) と定める。\\(M\\) が整数であることを示し，\\(M\\) の正の約数の個数を求めよ。",
+      "tool": "cubic_discriminant+vandermonde_area+numeric_roots",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_discriminant_identity_vs_numeric_root_triangle_area"
       }
     },
     {
@@ -824,6 +1117,49 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "adjacency_trace_vs_exhaustive_triangle_count"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "666",
+      "candidate_id": "construct:ultradeep.paley_spanning_tree_divisor_count:004",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 12.95
+      },
+      "domain": "spectral_graph_number_theory",
+      "family_id": "ultradeep.paley_spanning_tree_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimeField",
+          "QuadraticResidueSet",
+          "PaleyGraph",
+          "AdjacencyMatrix",
+          "AdjacencySpectrum",
+          "LaplacianTransform",
+          "LaplacianSpectrum",
+          "NonzeroEigenvalueProduct",
+          "MatrixTreeTheorem",
+          "SpanningTreeCount",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1216
+      },
+      "solution_tex": "Paley グラフの隣接行列の非自明固有値は \\(\\frac{-1\\pm\\sqrt{37}}2\\)（各重複度 \\(18\\)）。次数 \\(18\\) のラプラシアンの非零固有値の積を Kirchhoff の定理で\\(37\\) で割ると \\(\\tau=37^{17}\\left(\\frac{37-1}4\\right)^{18}=3^{36}\\cdot 37^{17}\\)。したがって約数の個数は \\(666\\)。",
+      "statement_tex": "素数 \\(p=37\\) に対し，頂点集合 \\(\\mathbb Z_{37}\\) 上で，\\(x-y\\) が平方剰余であるときに \\(x,y\\) を結んで得られる Paley グラフを \\(G\\) とする。\\(G\\) の全域木の個数を \\(\\tau\\) とするとき，\\(\\tau\\) の正の約数の個数を求めよ。",
+      "tool": "paley_spectrum+matrix_tree+exact_determinant",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "spectral_tree_formula_vs_exact_laplacian_cofactor"
       }
     },
     {
@@ -969,6 +1305,47 @@
     },
     {
       "accepted": true,
+      "answer_tex": "36",
+      "candidate_id": "construct:ultradeep.paley_four_cycle_divisor_count:003",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 9.37
+      },
+      "domain": "graph_combinatorics_number_theory",
+      "family_id": "ultradeep.paley_four_cycle_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimeField",
+          "QuadraticResidueSet",
+          "PaleyGraph",
+          "StronglyRegularParameters",
+          "CommonNeighborRelation",
+          "OppositeVertexPairing",
+          "FourCycleDoubleCount",
+          "CycleCount",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1176
+      },
+      "solution_tex": "隣接2頂点の共通隣接点は \\(8\\) 個，非隣接2頂点では \\(9\\) 個。向かい合う頂点対で二重計数すると \\(C=10656\\)。\\(C=2^{5}\\cdot 3^{2}\\cdot 37\\) なので，正の約数は \\(36\\) 個。",
+      "statement_tex": "素数 \\(p=37\\) に対し，頂点集合 \\(\\mathbb Z_{37}\\) 上で，\\(x-y\\) が平方剰余であるときに \\(x,y\\) を結んで得られる Paley グラフを \\(G\\) とする。\\(G\\) に含まれる単純な長さ4の閉路の個数を \\(C\\) とする。\\(C\\) の正の約数の個数を求めよ。",
+      "tool": "strongly_regular_graph+trace_four+factorization",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "common_neighbor_double_count_vs_adjacency_trace_four"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "840",
       "candidate_id": "construct:construct.linear_recurrence_mod_period:606",
       "difficulty": {
@@ -1101,6 +1478,49 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "paley_graph_triangle_enumeration_vs_closed_form"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "32",
+      "candidate_id": "construct:ultradeep.gambler_absorption_variance_divisor_count:032",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.59
+      },
+      "domain": "probability_linear_algebra_number_theory",
+      "family_id": "ultradeep.gambler_absorption_variance_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PathStateSpace",
+          "AbsorbingBoundary",
+          "SymmetricRandomWalk",
+          "HittingTime",
+          "FirstMomentConditioning",
+          "FirstMomentLinearSystem",
+          "SecondMomentConditioning",
+          "SecondMomentLinearSystem",
+          "VarianceTransform",
+          "IntegerInvariant",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0773
+      },
+      "solution_tex": "一次モーメントの差分方程式から \\(E[T]=5(12-5)\\)。二次モーメントにも条件付けして解くと \\(\\operatorname{Var}(T)=\\frac{5(12-5)(12^2-2-2\\cdot 5(12-5))}{3}=840\\)。\\(840=2^{3}\\cdot 3\\cdot 5\\cdot 7\\) より約数は \\(32\\) 個。",
+      "statement_tex": "点 \\(0,1,\\ldots,12\\) 上を動く対称ランダムウォークを考える。初期位置は \\(5\\) で，各時刻に確率 \\(\\frac12\\) ずつで左右に1動き，\\(0\\) または \\(12\\) に着いたら停止する。停止時刻を \\(T\\) とするとき，\\(\\operatorname{Var}(T)\\) の正の約数の個数を求めよ。",
+      "tool": "absorbing_markov_moments+linear_system+factorization",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "closed_variance_formula_vs_exact_two_moment_linear_system"
       }
     },
     {
@@ -1350,6 +1770,48 @@
     },
     {
       "accepted": true,
+      "answer_tex": "3",
+      "candidate_id": "construct:ultradeep.cyclotomic_distance_norm_divisor_count:001",
+      "difficulty": {
+        "band": "A_olympiad",
+        "condition": 2,
+        "construct": 1,
+        "score": 14.91
+      },
+      "domain": "complex_algebra_number_theory",
+      "family_id": "ultradeep.cyclotomic_distance_norm_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "RootOfUnity",
+          "CoprimeIndexFilter",
+          "PrimitiveRootSet",
+          "DistanceMultiset",
+          "DistanceProduct",
+          "CyclotomicPolynomial",
+          "PolynomialEvaluation",
+          "AlgebraicNorm",
+          "IntegerInvariant",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1111
+      },
+      "solution_tex": "積に現れるのは原始 \\(5\\) 乗根だから，\\(\\prod(3-\\zeta_j)=\\Phi_{5}(3)=121\\)。共役が対になるので絶対値の積も \\(L=121\\)。\\(L=11^{2}\\) より，正の約数は \\(3\\) 個。",
+      "statement_tex": "\\(\\zeta_j=\\cos\\frac{2\\pi j}{5}+i\\sin\\frac{2\\pi j}{5}\\) とし，\\(1\\le j\\le 5\\) かつ \\(\\gcd(j,5)=1\\) を満たす \\(j\\) について \\(L=\\prod |3-\\zeta_j|\\) と定める。\\(L\\) が整数であることを示し，\\(L\\) の正の約数の個数を求めよ。",
+      "tool": "cyclotomic_polynomial+algebraic_norm+numeric_product",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "cyclotomic_evaluation_vs_numeric_primitive_root_product"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "\\frac{7 \\sin{\\left(\\frac{2 \\pi}{7} \\right)}}{2}",
       "candidate_id": "construct:layered.rotation_orbit_hull_area:504",
       "difficulty": {
@@ -1380,6 +1842,48 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "roots_of_unity_orbit_regular_polygon_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "20",
+      "candidate_id": "construct:ultradeep.cubic_root_triangle_discriminant_divisor_count:001",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 13.85
+      },
+      "domain": "algebraic_geometry_number_theory",
+      "family_id": "ultradeep.cubic_root_triangle_discriminant_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CubicPolynomial",
+          "ThreeRealRootSet",
+          "ParabolaEmbedding",
+          "TriangleConstruction",
+          "VandermondeDeterminant",
+          "AreaSquare",
+          "PolynomialDiscriminant",
+          "IntegerNormalization",
+          "PrimeFactorization",
+          "DivisorCount",
+          "ArithmeticObservation"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1361
+      },
+      "solution_tex": "Vandermonde 行列式から \\(4S^2\\) は三次式の判別式に等しい。判別式は \\(27(4\\cdot 2^6-(-4)^2)=27\\cdot 240\\) だから \\(M=240=2^{4}\\cdot 3\\cdot 5\\)。したがって正の約数は \\(20\\) 個。",
+      "statement_tex": "方程式 \\(x^3-12x+(-4)=0\\) の3実根を \\(\\alpha,\\beta,\\gamma\\) とする。放物線 \\(y=x^2\\) 上の3点 \\((\\alpha,\\alpha^2),(\\beta,\\beta^2),(\\gamma,\\gamma^2)\\) が作る三角形の面積を \\(S\\) とし，\\(M=\\frac{4S^2}{27}\\) と定める。\\(M\\) が整数であることを示し，\\(M\\) の正の約数の個数を求めよ。",
+      "tool": "cubic_discriminant+vandermonde_area+numeric_roots",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_discriminant_identity_vs_numeric_root_triangle_area"
       }
     },
     {
@@ -1419,6 +1923,49 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "adjacency_trace_vs_exhaustive_triangle_count"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "136",
+      "candidate_id": "construct:ultradeep.paley_spanning_tree_divisor_count:002",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 12.92
+      },
+      "domain": "spectral_graph_number_theory",
+      "family_id": "ultradeep.paley_spanning_tree_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimeField",
+          "QuadraticResidueSet",
+          "PaleyGraph",
+          "AdjacencyMatrix",
+          "AdjacencySpectrum",
+          "LaplacianTransform",
+          "LaplacianSpectrum",
+          "NonzeroEigenvalueProduct",
+          "MatrixTreeTheorem",
+          "SpanningTreeCount",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1216
+      },
+      "solution_tex": "Paley グラフの隣接行列の非自明固有値は \\(\\frac{-1\\pm\\sqrt{17}}2\\)（各重複度 \\(8\\)）。次数 \\(8\\) のラプラシアンの非零固有値の積を Kirchhoff の定理で\\(17\\) で割ると \\(\\tau=17^{7}\\left(\\frac{17-1}4\\right)^{8}=2^{16}\\cdot 17^{7}\\)。したがって約数の個数は \\(136\\)。",
+      "statement_tex": "素数 \\(p=17\\) に対し，頂点集合 \\(\\mathbb Z_{17}\\) 上で，\\(x-y\\) が平方剰余であるときに \\(x,y\\) を結んで得られる Paley グラフを \\(G\\) とする。\\(G\\) の全域木の個数を \\(\\tau\\) とするとき，\\(\\tau\\) の正の約数の個数を求めよ。",
+      "tool": "paley_spectrum+matrix_tree+exact_determinant",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "spectral_tree_formula_vs_exact_laplacian_cofactor"
       }
     },
     {
@@ -1565,6 +2112,47 @@
     },
     {
       "accepted": true,
+      "answer_tex": "20",
+      "candidate_id": "construct:ultradeep.paley_four_cycle_divisor_count:004",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 9.36
+      },
+      "domain": "graph_combinatorics_number_theory",
+      "family_id": "ultradeep.paley_four_cycle_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimeField",
+          "QuadraticResidueSet",
+          "PaleyGraph",
+          "StronglyRegularParameters",
+          "CommonNeighborRelation",
+          "OppositeVertexPairing",
+          "FourCycleDoubleCount",
+          "CycleCount",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1176
+      },
+      "solution_tex": "隣接2頂点の共通隣接点は \\(9\\) 個，非隣接2頂点では \\(10\\) 個。向かい合う頂点対で二重計数すると \\(C=16605\\)。\\(C=3^{4}\\cdot 5\\cdot 41\\) なので，正の約数は \\(20\\) 個。",
+      "statement_tex": "素数 \\(p=41\\) に対し，頂点集合 \\(\\mathbb Z_{41}\\) 上で，\\(x-y\\) が平方剰余であるときに \\(x,y\\) を結んで得られる Paley グラフを \\(G\\) とする。\\(G\\) に含まれる単純な長さ4の閉路の個数を \\(C\\) とする。\\(C\\) の正の約数の個数を求めよ。",
+      "tool": "strongly_regular_graph+trace_four+factorization",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "common_neighbor_double_count_vs_adjacency_trace_four"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "27",
       "candidate_id": "construct:construct.linear_recurrence_mod_period:667",
       "difficulty": {
@@ -1697,6 +2285,49 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "paley_graph_triangle_enumeration_vs_closed_form"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "18",
+      "candidate_id": "construct:ultradeep.gambler_absorption_variance_divisor_count:026",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.58
+      },
+      "domain": "probability_linear_algebra_number_theory",
+      "family_id": "ultradeep.gambler_absorption_variance_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PathStateSpace",
+          "AbsorbingBoundary",
+          "SymmetricRandomWalk",
+          "HittingTime",
+          "FirstMomentConditioning",
+          "FirstMomentLinearSystem",
+          "SecondMomentConditioning",
+          "SecondMomentLinearSystem",
+          "VarianceTransform",
+          "IntegerInvariant",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0765
+      },
+      "solution_tex": "一次モーメントの差分方程式から \\(E[T]=4(11-4)\\)。二次モーメントにも条件付けして解くと \\(\\operatorname{Var}(T)=\\frac{4(11-4)(11^2-2-2\\cdot 4(11-4))}{3}=588\\)。\\(588=2^{2}\\cdot 3\\cdot 7^{2}\\) より約数は \\(18\\) 個。",
+      "statement_tex": "点 \\(0,1,\\ldots,11\\) 上を動く対称ランダムウォークを考える。初期位置は \\(4\\) で，各時刻に確率 \\(\\frac12\\) ずつで左右に1動き，\\(0\\) または \\(11\\) に着いたら停止する。停止時刻を \\(T\\) とするとき，\\(\\operatorname{Var}(T)\\) の正の約数の個数を求めよ。",
+      "tool": "absorbing_markov_moments+linear_system+factorization",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "closed_variance_formula_vs_exact_two_moment_linear_system"
       }
     },
     {
@@ -1946,6 +2577,48 @@
     },
     {
       "accepted": true,
+      "answer_tex": "2",
+      "candidate_id": "construct:ultradeep.cyclotomic_distance_norm_divisor_count:000",
+      "difficulty": {
+        "band": "A_olympiad",
+        "condition": 2,
+        "construct": 1,
+        "score": 14.87
+      },
+      "domain": "complex_algebra_number_theory",
+      "family_id": "ultradeep.cyclotomic_distance_norm_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "RootOfUnity",
+          "CoprimeIndexFilter",
+          "PrimitiveRootSet",
+          "DistanceMultiset",
+          "DistanceProduct",
+          "CyclotomicPolynomial",
+          "PolynomialEvaluation",
+          "AlgebraicNorm",
+          "IntegerInvariant",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1111
+      },
+      "solution_tex": "積に現れるのは原始 \\(5\\) 乗根だから，\\(\\prod(2-\\zeta_j)=\\Phi_{5}(2)=31\\)。共役が対になるので絶対値の積も \\(L=31\\)。\\(L=31\\) より，正の約数は \\(2\\) 個。",
+      "statement_tex": "\\(\\zeta_j=\\cos\\frac{2\\pi j}{5}+i\\sin\\frac{2\\pi j}{5}\\) とし，\\(1\\le j\\le 5\\) かつ \\(\\gcd(j,5)=1\\) を満たす \\(j\\) について \\(L=\\prod |2-\\zeta_j|\\) と定める。\\(L\\) が整数であることを示し，\\(L\\) の正の約数の個数を求めよ。",
+      "tool": "cyclotomic_polynomial+algebraic_norm+numeric_product",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "cyclotomic_evaluation_vs_numeric_primitive_root_product"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "\\frac{9 \\sin{\\left(\\frac{2 \\pi}{9} \\right)}}{2}",
       "candidate_id": "construct:layered.rotation_orbit_hull_area:506",
       "difficulty": {
@@ -1976,6 +2649,48 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "roots_of_unity_orbit_regular_polygon_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "8",
+      "candidate_id": "construct:ultradeep.cubic_root_triangle_discriminant_divisor_count:002",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 13.83
+      },
+      "domain": "algebraic_geometry_number_theory",
+      "family_id": "ultradeep.cubic_root_triangle_discriminant_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CubicPolynomial",
+          "ThreeRealRootSet",
+          "ParabolaEmbedding",
+          "TriangleConstruction",
+          "VandermondeDeterminant",
+          "AreaSquare",
+          "PolynomialDiscriminant",
+          "IntegerNormalization",
+          "PrimeFactorization",
+          "DivisorCount",
+          "ArithmeticObservation"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1361
+      },
+      "solution_tex": "Vandermonde 行列式から \\(4S^2\\) は三次式の判別式に等しい。判別式は \\(27(4\\cdot 2^6-(-1)^2)=27\\cdot 255\\) だから \\(M=255=3\\cdot 5\\cdot 17\\)。したがって正の約数は \\(8\\) 個。",
+      "statement_tex": "方程式 \\(x^3-12x+(-1)=0\\) の3実根を \\(\\alpha,\\beta,\\gamma\\) とする。放物線 \\(y=x^2\\) 上の3点 \\((\\alpha,\\alpha^2),(\\beta,\\beta^2),(\\gamma,\\gamma^2)\\) が作る三角形の面積を \\(S\\) とし，\\(M=\\frac{4S^2}{27}\\) と定める。\\(M\\) が整数であることを示し，\\(M\\) の正の約数の個数を求めよ。",
+      "tool": "cubic_discriminant+vandermonde_area+numeric_roots",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_discriminant_identity_vs_numeric_root_triangle_area"
       }
     },
     {
@@ -2015,6 +2730,49 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "adjacency_trace_vs_exhaustive_triangle_count"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "42",
+      "candidate_id": "construct:ultradeep.paley_spanning_tree_divisor_count:001",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 12.91
+      },
+      "domain": "spectral_graph_number_theory",
+      "family_id": "ultradeep.paley_spanning_tree_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimeField",
+          "QuadraticResidueSet",
+          "PaleyGraph",
+          "AdjacencyMatrix",
+          "AdjacencySpectrum",
+          "LaplacianTransform",
+          "LaplacianSpectrum",
+          "NonzeroEigenvalueProduct",
+          "MatrixTreeTheorem",
+          "SpanningTreeCount",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1216
+      },
+      "solution_tex": "Paley グラフの隣接行列の非自明固有値は \\(\\frac{-1\\pm\\sqrt{13}}2\\)（各重複度 \\(6\\)）。次数 \\(6\\) のラプラシアンの非零固有値の積を Kirchhoff の定理で\\(13\\) で割ると \\(\\tau=13^{5}\\left(\\frac{13-1}4\\right)^{6}=3^{6}\\cdot 13^{5}\\)。したがって約数の個数は \\(42\\)。",
+      "statement_tex": "素数 \\(p=13\\) に対し，頂点集合 \\(\\mathbb Z_{13}\\) 上で，\\(x-y\\) が平方剰余であるときに \\(x,y\\) を結んで得られる Paley グラフを \\(G\\) とする。\\(G\\) の全域木の個数を \\(\\tau\\) とするとき，\\(\\tau\\) の正の約数の個数を求めよ。",
+      "tool": "paley_spectrum+matrix_tree+exact_determinant",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "spectral_tree_formula_vs_exact_laplacian_cofactor"
       }
     },
     {
@@ -2161,6 +2919,47 @@
     },
     {
       "accepted": true,
+      "answer_tex": "12",
+      "candidate_id": "construct:ultradeep.paley_four_cycle_divisor_count:001",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 9.34
+      },
+      "domain": "graph_combinatorics_number_theory",
+      "family_id": "ultradeep.paley_four_cycle_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimeField",
+          "QuadraticResidueSet",
+          "PaleyGraph",
+          "StronglyRegularParameters",
+          "CommonNeighborRelation",
+          "OppositeVertexPairing",
+          "FourCycleDoubleCount",
+          "CycleCount",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1176
+      },
+      "solution_tex": "隣接2頂点の共通隣接点は \\(3\\) 個，非隣接2頂点では \\(4\\) 個。向かい合う頂点対で二重計数すると \\(C=306\\)。\\(C=2\\cdot 3^{2}\\cdot 17\\) なので，正の約数は \\(12\\) 個。",
+      "statement_tex": "素数 \\(p=17\\) に対し，頂点集合 \\(\\mathbb Z_{17}\\) 上で，\\(x-y\\) が平方剰余であるときに \\(x,y\\) を結んで得られる Paley グラフを \\(G\\) とする。\\(G\\) に含まれる単純な長さ4の閉路の個数を \\(C\\) とする。\\(C\\) の正の約数の個数を求めよ。",
+      "tool": "strongly_regular_graph+trace_four+factorization",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "common_neighbor_double_count_vs_adjacency_trace_four"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "528",
       "candidate_id": "construct:construct.linear_recurrence_mod_period:669",
       "difficulty": {
@@ -2293,6 +3092,49 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "paley_graph_triangle_enumeration_vs_closed_form"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "20",
+      "candidate_id": "construct:ultradeep.gambler_absorption_variance_divisor_count:018",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.56
+      },
+      "domain": "probability_linear_algebra_number_theory",
+      "family_id": "ultradeep.gambler_absorption_variance_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PathStateSpace",
+          "AbsorbingBoundary",
+          "SymmetricRandomWalk",
+          "HittingTime",
+          "FirstMomentConditioning",
+          "FirstMomentLinearSystem",
+          "SecondMomentConditioning",
+          "SecondMomentLinearSystem",
+          "VarianceTransform",
+          "IntegerInvariant",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0773
+      },
+      "solution_tex": "一次モーメントの差分方程式から \\(E[T]=1(10-1)\\)。二次モーメントにも条件付けして解くと \\(\\operatorname{Var}(T)=\\frac{1(10-1)(10^2-2-2\\cdot 1(10-1))}{3}=240\\)。\\(240=2^{4}\\cdot 3\\cdot 5\\) より約数は \\(20\\) 個。",
+      "statement_tex": "点 \\(0,1,\\ldots,10\\) 上を動く対称ランダムウォークを考える。初期位置は \\(1\\) で，各時刻に確率 \\(\\frac12\\) ずつで左右に1動き，\\(0\\) または \\(10\\) に着いたら停止する。停止時刻を \\(T\\) とするとき，\\(\\operatorname{Var}(T)\\) の正の約数の個数を求めよ。",
+      "tool": "absorbing_markov_moments+linear_system+factorization",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "closed_variance_formula_vs_exact_two_moment_linear_system"
       }
     },
     {
@@ -2575,6 +3417,48 @@
     },
     {
       "accepted": true,
+      "answer_tex": "21",
+      "candidate_id": "construct:ultradeep.cubic_root_triangle_discriminant_divisor_count:010",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 13.83
+      },
+      "domain": "algebraic_geometry_number_theory",
+      "family_id": "ultradeep.cubic_root_triangle_discriminant_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CubicPolynomial",
+          "ThreeRealRootSet",
+          "ParabolaEmbedding",
+          "TriangleConstruction",
+          "VandermondeDeterminant",
+          "AreaSquare",
+          "PolynomialDiscriminant",
+          "IntegerNormalization",
+          "PrimeFactorization",
+          "DivisorCount",
+          "ArithmeticObservation"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1368
+      },
+      "solution_tex": "Vandermonde 行列式から \\(4S^2\\) は三次式の判別式に等しい。判別式は \\(27(4\\cdot 3^6-(0)^2)=27\\cdot 2916\\) だから \\(M=2916=2^{2}\\cdot 3^{6}\\)。したがって正の約数は \\(21\\) 個。",
+      "statement_tex": "方程式 \\(x^3-27x+(0)=0\\) の3実根を \\(\\alpha,\\beta,\\gamma\\) とする。放物線 \\(y=x^2\\) 上の3点 \\((\\alpha,\\alpha^2),(\\beta,\\beta^2),(\\gamma,\\gamma^2)\\) が作る三角形の面積を \\(S\\) とし，\\(M=\\frac{4S^2}{27}\\) と定める。\\(M\\) が整数であることを示し，\\(M\\) の正の約数の個数を求めよ。",
+      "tool": "cubic_discriminant+vandermonde_area+numeric_roots",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_discriminant_identity_vs_numeric_root_triangle_area"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "25620",
       "candidate_id": "construct:deep.paley_spectrum_triangles:548",
       "difficulty": {
@@ -2610,6 +3494,49 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "adjacency_trace_vs_exhaustive_triangle_count"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "2",
+      "candidate_id": "construct:ultradeep.paley_spanning_tree_divisor_count:000",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 12.76
+      },
+      "domain": "spectral_graph_number_theory",
+      "family_id": "ultradeep.paley_spanning_tree_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimeField",
+          "QuadraticResidueSet",
+          "PaleyGraph",
+          "AdjacencyMatrix",
+          "AdjacencySpectrum",
+          "LaplacianTransform",
+          "LaplacianSpectrum",
+          "NonzeroEigenvalueProduct",
+          "MatrixTreeTheorem",
+          "SpanningTreeCount",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1233
+      },
+      "solution_tex": "Paley グラフの隣接行列の非自明固有値は \\(\\frac{-1\\pm\\sqrt{5}}2\\)（各重複度 \\(2\\)）。次数 \\(2\\) のラプラシアンの非零固有値の積を Kirchhoff の定理で\\(5\\) で割ると \\(\\tau=5^{1}\\left(\\frac{5-1}4\\right)^{2}=5\\)。したがって約数の個数は \\(2\\)。",
+      "statement_tex": "素数 \\(p=5\\) に対し，頂点集合 \\(\\mathbb Z_{5}\\) 上で，\\(x-y\\) が平方剰余であるときに \\(x,y\\) を結んで得られる Paley グラフを \\(G\\) とする。\\(G\\) の全域木の個数を \\(\\tau\\) とするとき，\\(\\tau\\) の正の約数の個数を求めよ。",
+      "tool": "paley_spectrum+matrix_tree+exact_determinant",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "spectral_tree_formula_vs_exact_laplacian_cofactor"
       }
     },
     {
@@ -2717,6 +3644,47 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "de_moivre_primitive_root_period"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "8",
+      "candidate_id": "construct:ultradeep.paley_four_cycle_divisor_count:000",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 9.31
+      },
+      "domain": "graph_combinatorics_number_theory",
+      "family_id": "ultradeep.paley_four_cycle_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimeField",
+          "QuadraticResidueSet",
+          "PaleyGraph",
+          "StronglyRegularParameters",
+          "CommonNeighborRelation",
+          "OppositeVertexPairing",
+          "FourCycleDoubleCount",
+          "CycleCount",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1176
+      },
+      "solution_tex": "隣接2頂点の共通隣接点は \\(2\\) 個，非隣接2頂点では \\(3\\) 個。向かい合う頂点対で二重計数すると \\(C=78\\)。\\(C=2\\cdot 3\\cdot 13\\) なので，正の約数は \\(8\\) 個。",
+      "statement_tex": "素数 \\(p=13\\) に対し，頂点集合 \\(\\mathbb Z_{13}\\) 上で，\\(x-y\\) が平方剰余であるときに \\(x,y\\) を結んで得られる Paley グラフを \\(G\\) とする。\\(G\\) に含まれる単純な長さ4の閉路の個数を \\(C\\) とする。\\(C\\) の正の約数の個数を求めよ。",
+      "tool": "strongly_regular_graph+trace_four+factorization",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "common_neighbor_double_count_vs_adjacency_trace_four"
       }
     },
     {
@@ -2853,6 +3821,49 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "paley_graph_triangle_enumeration_vs_closed_form"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "15",
+      "candidate_id": "construct:ultradeep.gambler_absorption_variance_divisor_count:021",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.55
+      },
+      "domain": "probability_linear_algebra_number_theory",
+      "family_id": "ultradeep.gambler_absorption_variance_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PathStateSpace",
+          "AbsorbingBoundary",
+          "SymmetricRandomWalk",
+          "HittingTime",
+          "FirstMomentConditioning",
+          "FirstMomentLinearSystem",
+          "SecondMomentConditioning",
+          "SecondMomentLinearSystem",
+          "VarianceTransform",
+          "IntegerInvariant",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0769
+      },
+      "solution_tex": "一次モーメントの差分方程式から \\(E[T]=4(10-4)\\)。二次モーメントにも条件付けして解くと \\(\\operatorname{Var}(T)=\\frac{4(10-4)(10^2-2-2\\cdot 4(10-4))}{3}=400\\)。\\(400=2^{4}\\cdot 5^{2}\\) より約数は \\(15\\) 個。",
+      "statement_tex": "点 \\(0,1,\\ldots,10\\) 上を動く対称ランダムウォークを考える。初期位置は \\(4\\) で，各時刻に確率 \\(\\frac12\\) ずつで左右に1動き，\\(0\\) または \\(10\\) に着いたら停止する。停止時刻を \\(T\\) とするとき，\\(\\operatorname{Var}(T)\\) の正の約数の個数を求めよ。",
+      "tool": "absorbing_markov_moments+linear_system+factorization",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "closed_variance_formula_vs_exact_two_moment_linear_system"
       }
     },
     {
@@ -3096,6 +4107,48 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "roots_of_unity_orbit_regular_polygon_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "14",
+      "candidate_id": "construct:ultradeep.cubic_root_triangle_discriminant_divisor_count:000",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 13.82
+      },
+      "domain": "algebraic_geometry_number_theory",
+      "family_id": "ultradeep.cubic_root_triangle_discriminant_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CubicPolynomial",
+          "ThreeRealRootSet",
+          "ParabolaEmbedding",
+          "TriangleConstruction",
+          "VandermondeDeterminant",
+          "AreaSquare",
+          "PolynomialDiscriminant",
+          "IntegerNormalization",
+          "PrimeFactorization",
+          "DivisorCount",
+          "ArithmeticObservation"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1361
+      },
+      "solution_tex": "Vandermonde 行列式から \\(4S^2\\) は三次式の判別式に等しい。判別式は \\(27(4\\cdot 2^6-(-8)^2)=27\\cdot 192\\) だから \\(M=192=2^{6}\\cdot 3\\)。したがって正の約数は \\(14\\) 個。",
+      "statement_tex": "方程式 \\(x^3-12x+(-8)=0\\) の3実根を \\(\\alpha,\\beta,\\gamma\\) とする。放物線 \\(y=x^2\\) 上の3点 \\((\\alpha,\\alpha^2),(\\beta,\\beta^2),(\\gamma,\\gamma^2)\\) が作る三角形の面積を \\(S\\) とし，\\(M=\\frac{4S^2}{27}\\) と定める。\\(M\\) が整数であることを示し，\\(M\\) の正の約数の個数を求めよ。",
+      "tool": "cubic_discriminant+vandermonde_area+numeric_roots",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_discriminant_identity_vs_numeric_root_triangle_area"
       }
     },
     {
@@ -3382,6 +4435,49 @@
     },
     {
       "accepted": true,
+      "answer_tex": "14",
+      "candidate_id": "construct:ultradeep.gambler_absorption_variance_divisor_count:031",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.53
+      },
+      "domain": "probability_linear_algebra_number_theory",
+      "family_id": "ultradeep.gambler_absorption_variance_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PathStateSpace",
+          "AbsorbingBoundary",
+          "SymmetricRandomWalk",
+          "HittingTime",
+          "FirstMomentConditioning",
+          "FirstMomentLinearSystem",
+          "SecondMomentConditioning",
+          "SecondMomentLinearSystem",
+          "VarianceTransform",
+          "IntegerInvariant",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0773
+      },
+      "solution_tex": "一次モーメントの差分方程式から \\(E[T]=4(12-4)\\)。二次モーメントにも条件付けして解くと \\(\\operatorname{Var}(T)=\\frac{4(12-4)(12^2-2-2\\cdot 4(12-4))}{3}=832\\)。\\(832=2^{6}\\cdot 13\\) より約数は \\(14\\) 個。",
+      "statement_tex": "点 \\(0,1,\\ldots,12\\) 上を動く対称ランダムウォークを考える。初期位置は \\(4\\) で，各時刻に確率 \\(\\frac12\\) ずつで左右に1動き，\\(0\\) または \\(12\\) に着いたら停止する。停止時刻を \\(T\\) とするとき，\\(\\operatorname{Var}(T)\\) の正の約数の個数を求めよ。",
+      "tool": "absorbing_markov_moments+linear_system+factorization",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "closed_variance_formula_vs_exact_two_moment_linear_system"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "42",
       "candidate_id": "construct:construct.paley_common_neighbors:411",
       "difficulty": {
@@ -3621,6 +4717,48 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "roots_of_unity_orbit_regular_polygon_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "15",
+      "candidate_id": "construct:ultradeep.cubic_root_triangle_discriminant_divisor_count:017",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 13.79
+      },
+      "domain": "algebraic_geometry_number_theory",
+      "family_id": "ultradeep.cubic_root_triangle_discriminant_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CubicPolynomial",
+          "ThreeRealRootSet",
+          "ParabolaEmbedding",
+          "TriangleConstruction",
+          "VandermondeDeterminant",
+          "AreaSquare",
+          "PolynomialDiscriminant",
+          "IntegerNormalization",
+          "PrimeFactorization",
+          "DivisorCount",
+          "ArithmeticObservation"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1368
+      },
+      "solution_tex": "Vandermonde 行列式から \\(4S^2\\) は三次式の判別式に等しい。判別式は \\(27(4\\cdot 4^6-(0)^2)=27\\cdot 16384\\) だから \\(M=16384=2^{14}\\)。したがって正の約数は \\(15\\) 個。",
+      "statement_tex": "方程式 \\(x^3-48x+(0)=0\\) の3実根を \\(\\alpha,\\beta,\\gamma\\) とする。放物線 \\(y=x^2\\) 上の3点 \\((\\alpha,\\alpha^2),(\\beta,\\beta^2),(\\gamma,\\gamma^2)\\) が作る三角形の面積を \\(S\\) とし，\\(M=\\frac{4S^2}{27}\\) と定める。\\(M\\) が整数であることを示し，\\(M\\) の正の約数の個数を求めよ。",
+      "tool": "cubic_discriminant+vandermonde_area+numeric_roots",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_discriminant_identity_vs_numeric_root_triangle_area"
       }
     },
     {
@@ -3908,6 +5046,49 @@
     },
     {
       "accepted": true,
+      "answer_tex": "16",
+      "candidate_id": "construct:ultradeep.gambler_absorption_variance_divisor_count:014",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.5
+      },
+      "domain": "probability_linear_algebra_number_theory",
+      "family_id": "ultradeep.gambler_absorption_variance_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PathStateSpace",
+          "AbsorbingBoundary",
+          "SymmetricRandomWalk",
+          "HittingTime",
+          "FirstMomentConditioning",
+          "FirstMomentLinearSystem",
+          "SecondMomentConditioning",
+          "SecondMomentLinearSystem",
+          "VarianceTransform",
+          "IntegerInvariant",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0769
+      },
+      "solution_tex": "一次モーメントの差分方程式から \\(E[T]=1(9-1)\\)。二次モーメントにも条件付けして解くと \\(\\operatorname{Var}(T)=\\frac{1(9-1)(9^2-2-2\\cdot 1(9-1))}{3}=168\\)。\\(168=2^{3}\\cdot 3\\cdot 7\\) より約数は \\(16\\) 個。",
+      "statement_tex": "点 \\(0,1,\\ldots,9\\) 上を動く対称ランダムウォークを考える。初期位置は \\(1\\) で，各時刻に確率 \\(\\frac12\\) ずつで左右に1動き，\\(0\\) または \\(9\\) に着いたら停止する。停止時刻を \\(T\\) とするとき，\\(\\operatorname{Var}(T)\\) の正の約数の個数を求めよ。",
+      "tool": "absorbing_markov_moments+linear_system+factorization",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "closed_variance_formula_vs_exact_two_moment_linear_system"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "33",
       "candidate_id": "construct:construct.paley_common_neighbors:502",
       "difficulty": {
@@ -4147,6 +5328,48 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "roots_of_unity_orbit_regular_polygon_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "9",
+      "candidate_id": "construct:ultradeep.cubic_root_triangle_discriminant_divisor_count:003",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 13.76
+      },
+      "domain": "algebraic_geometry_number_theory",
+      "family_id": "ultradeep.cubic_root_triangle_discriminant_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CubicPolynomial",
+          "ThreeRealRootSet",
+          "ParabolaEmbedding",
+          "TriangleConstruction",
+          "VandermondeDeterminant",
+          "AreaSquare",
+          "PolynomialDiscriminant",
+          "IntegerNormalization",
+          "PrimeFactorization",
+          "DivisorCount",
+          "ArithmeticObservation"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1368
+      },
+      "solution_tex": "Vandermonde 行列式から \\(4S^2\\) は三次式の判別式に等しい。判別式は \\(27(4\\cdot 2^6-(0)^2)=27\\cdot 256\\) だから \\(M=256=2^{8}\\)。したがって正の約数は \\(9\\) 個。",
+      "statement_tex": "方程式 \\(x^3-12x+(0)=0\\) の3実根を \\(\\alpha,\\beta,\\gamma\\) とする。放物線 \\(y=x^2\\) 上の3点 \\((\\alpha,\\alpha^2),(\\beta,\\beta^2),(\\gamma,\\gamma^2)\\) が作る三角形の面積を \\(S\\) とし，\\(M=\\frac{4S^2}{27}\\) と定める。\\(M\\) が整数であることを示し，\\(M\\) の正の約数の個数を求めよ。",
+      "tool": "cubic_discriminant+vandermonde_area+numeric_roots",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_discriminant_identity_vs_numeric_root_triangle_area"
       }
     },
     {
@@ -4391,6 +5614,49 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "paley_graph_triangle_enumeration_vs_closed_form"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "12",
+      "candidate_id": "construct:ultradeep.gambler_absorption_variance_divisor_count:008",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.48
+      },
+      "domain": "probability_linear_algebra_number_theory",
+      "family_id": "ultradeep.gambler_absorption_variance_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PathStateSpace",
+          "AbsorbingBoundary",
+          "SymmetricRandomWalk",
+          "HittingTime",
+          "FirstMomentConditioning",
+          "FirstMomentLinearSystem",
+          "SecondMomentConditioning",
+          "SecondMomentLinearSystem",
+          "VarianceTransform",
+          "IntegerInvariant",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0773
+      },
+      "solution_tex": "一次モーメントの差分方程式から \\(E[T]=2(7-2)\\)。二次モーメントにも条件付けして解くと \\(\\operatorname{Var}(T)=\\frac{2(7-2)(7^2-2-2\\cdot 2(7-2))}{3}=90\\)。\\(90=2\\cdot 3^{2}\\cdot 5\\) より約数は \\(12\\) 個。",
+      "statement_tex": "点 \\(0,1,\\ldots,7\\) 上を動く対称ランダムウォークを考える。初期位置は \\(2\\) で，各時刻に確率 \\(\\frac12\\) ずつで左右に1動き，\\(0\\) または \\(7\\) に着いたら停止する。停止時刻を \\(T\\) とするとき，\\(\\operatorname{Var}(T)\\) の正の約数の個数を求めよ。",
+      "tool": "absorbing_markov_moments+linear_system+factorization",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "closed_variance_formula_vs_exact_two_moment_linear_system"
       }
     },
     {
@@ -4809,6 +6075,49 @@
     },
     {
       "accepted": true,
+      "answer_tex": "6",
+      "candidate_id": "construct:ultradeep.gambler_absorption_variance_divisor_count:002",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.45
+      },
+      "domain": "probability_linear_algebra_number_theory",
+      "family_id": "ultradeep.gambler_absorption_variance_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PathStateSpace",
+          "AbsorbingBoundary",
+          "SymmetricRandomWalk",
+          "HittingTime",
+          "FirstMomentConditioning",
+          "FirstMomentLinearSystem",
+          "SecondMomentConditioning",
+          "SecondMomentLinearSystem",
+          "VarianceTransform",
+          "IntegerInvariant",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0769
+      },
+      "solution_tex": "一次モーメントの差分方程式から \\(E[T]=1(5-1)\\)。二次モーメントにも条件付けして解くと \\(\\operatorname{Var}(T)=\\frac{1(5-1)(5^2-2-2\\cdot 1(5-1))}{3}=20\\)。\\(20=2^{2}\\cdot 5\\) より約数は \\(6\\) 個。",
+      "statement_tex": "点 \\(0,1,\\ldots,5\\) 上を動く対称ランダムウォークを考える。初期位置は \\(1\\) で，各時刻に確率 \\(\\frac12\\) ずつで左右に1動き，\\(0\\) または \\(5\\) に着いたら停止する。停止時刻を \\(T\\) とするとき，\\(\\operatorname{Var}(T)\\) の正の約数の個数を求めよ。",
+      "tool": "absorbing_markov_moments+linear_system+factorization",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "closed_variance_formula_vs_exact_two_moment_linear_system"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "48",
       "candidate_id": "construct:construct.paley_common_neighbors:537",
       "difficulty": {
@@ -5222,6 +6531,49 @@
     },
     {
       "accepted": true,
+      "answer_tex": "8",
+      "candidate_id": "construct:ultradeep.gambler_absorption_variance_divisor_count:004",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.45
+      },
+      "domain": "probability_linear_algebra_number_theory",
+      "family_id": "ultradeep.gambler_absorption_variance_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PathStateSpace",
+          "AbsorbingBoundary",
+          "SymmetricRandomWalk",
+          "HittingTime",
+          "FirstMomentConditioning",
+          "FirstMomentLinearSystem",
+          "SecondMomentConditioning",
+          "SecondMomentLinearSystem",
+          "VarianceTransform",
+          "IntegerInvariant",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0769
+      },
+      "solution_tex": "一次モーメントの差分方程式から \\(E[T]=1(6-1)\\)。二次モーメントにも条件付けして解くと \\(\\operatorname{Var}(T)=\\frac{1(6-1)(6^2-2-2\\cdot 1(6-1))}{3}=40\\)。\\(40=2^{3}\\cdot 5\\) より約数は \\(8\\) 個。",
+      "statement_tex": "点 \\(0,1,\\ldots,6\\) 上を動く対称ランダムウォークを考える。初期位置は \\(1\\) で，各時刻に確率 \\(\\frac12\\) ずつで左右に1動き，\\(0\\) または \\(6\\) に着いたら停止する。停止時刻を \\(T\\) とするとき，\\(\\operatorname{Var}(T)\\) の正の約数の個数を求めよ。",
+      "tool": "absorbing_markov_moments+linear_system+factorization",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "closed_variance_formula_vs_exact_two_moment_linear_system"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "36",
       "candidate_id": "construct:construct.paley_common_neighbors:648",
       "difficulty": {
@@ -5592,6 +6944,49 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "mobius_matrix_eigen_fixed_points"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "10",
+      "candidate_id": "construct:ultradeep.gambler_absorption_variance_divisor_count:005",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.45
+      },
+      "domain": "probability_linear_algebra_number_theory",
+      "family_id": "ultradeep.gambler_absorption_variance_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PathStateSpace",
+          "AbsorbingBoundary",
+          "SymmetricRandomWalk",
+          "HittingTime",
+          "FirstMomentConditioning",
+          "FirstMomentLinearSystem",
+          "SecondMomentConditioning",
+          "SecondMomentLinearSystem",
+          "VarianceTransform",
+          "IntegerInvariant",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0773
+      },
+      "solution_tex": "一次モーメントの差分方程式から \\(E[T]=2(6-2)\\)。二次モーメントにも条件付けして解くと \\(\\operatorname{Var}(T)=\\frac{2(6-2)(6^2-2-2\\cdot 2(6-2))}{3}=48\\)。\\(48=2^{4}\\cdot 3\\) より約数は \\(10\\) 個。",
+      "statement_tex": "点 \\(0,1,\\ldots,6\\) 上を動く対称ランダムウォークを考える。初期位置は \\(2\\) で，各時刻に確率 \\(\\frac12\\) ずつで左右に1動き，\\(0\\) または \\(6\\) に着いたら停止する。停止時刻を \\(T\\) とするとき，\\(\\operatorname{Var}(T)\\) の正の約数の個数を求めよ。",
+      "tool": "absorbing_markov_moments+linear_system+factorization",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "closed_variance_formula_vs_exact_two_moment_linear_system"
       }
     },
     {
@@ -5967,6 +7362,49 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "mobius_matrix_eigen_fixed_points"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "4",
+      "candidate_id": "construct:ultradeep.gambler_absorption_variance_divisor_count:000",
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.4
+      },
+      "domain": "probability_linear_algebra_number_theory",
+      "family_id": "ultradeep.gambler_absorption_variance_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PathStateSpace",
+          "AbsorbingBoundary",
+          "SymmetricRandomWalk",
+          "HittingTime",
+          "FirstMomentConditioning",
+          "FirstMomentLinearSystem",
+          "SecondMomentConditioning",
+          "SecondMomentLinearSystem",
+          "VarianceTransform",
+          "IntegerInvariant",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0769
+      },
+      "solution_tex": "一次モーメントの差分方程式から \\(E[T]=1(4-1)\\)。二次モーメントにも条件付けして解くと \\(\\operatorname{Var}(T)=\\frac{1(4-1)(4^2-2-2\\cdot 1(4-1))}{3}=8\\)。\\(8=2^{3}\\) より約数は \\(4\\) 個。",
+      "statement_tex": "点 \\(0,1,\\ldots,4\\) 上を動く対称ランダムウォークを考える。初期位置は \\(1\\) で，各時刻に確率 \\(\\frac12\\) ずつで左右に1動き，\\(0\\) または \\(4\\) に着いたら停止する。停止時刻を \\(T\\) とするとき，\\(\\operatorname{Var}(T)\\) の正の約数の個数を求めよ。",
+      "tool": "absorbing_markov_moments+linear_system+factorization",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "closed_variance_formula_vs_exact_two_moment_linear_system"
       }
     },
     {
@@ -18467,13 +19905,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "5",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:058",
+      "answer_tex": "203",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:261",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 1,
-        "score": 8.87
+        "score": 8.88
       },
       "domain": "number_theory",
       "family_id": "construct.linear_recurrence_mod_period",
@@ -18488,10 +19926,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1622
+        "maximum_surface_jaccard": 0.1676
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}3&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 11\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=3a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 11\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}3&5\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 29\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=3a_{n+1}+5a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 29\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -18637,13 +20075,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "14",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:059",
+      "answer_tex": "152",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:911",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 1,
-        "score": 8.87
+        "score": 8.88
       },
       "domain": "number_theory",
       "family_id": "construct.linear_recurrence_mod_period",
@@ -18658,10 +20096,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1622
+        "maximum_surface_jaccard": 0.1685
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}3&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 13\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=3a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 13\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}6&6\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 37\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=6a_{n+1}+6a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 37\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -18807,8 +20245,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "11",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:104",
+      "answer_tex": "5",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:058",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -18830,8 +20268,8 @@
         "corpus_novel": true,
         "maximum_surface_jaccard": 0.1622
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 11\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 11\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}3&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 11\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=3a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 11\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -18977,8 +20415,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "13",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:105",
+      "answer_tex": "14",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:059",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -19000,8 +20438,8 @@
         "corpus_novel": true,
         "maximum_surface_jaccard": 0.1622
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 13\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 13\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}3&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 13\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=3a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 13\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -19147,8 +20585,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "17",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:107",
+      "answer_tex": "11",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:104",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -19170,8 +20608,8 @@
         "corpus_novel": true,
         "maximum_surface_jaccard": 0.1622
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 17\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 17\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 11\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 11\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -19317,8 +20755,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "3",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:555",
+      "answer_tex": "13",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:105",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -19338,10 +20776,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.163
+        "maximum_surface_jaccard": 0.1622
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}-1&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 27\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=-a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 27\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 13\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 13\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -19487,8 +20925,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "33",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:972",
+      "answer_tex": "17",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:107",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -19510,8 +20948,8 @@
         "corpus_novel": true,
         "maximum_surface_jaccard": 0.1622
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 33\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 33\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 17\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 17\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -19657,8 +21095,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "37",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:1396",
+      "answer_tex": "3",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:555",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -19678,10 +21116,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1622
+        "maximum_surface_jaccard": 0.163
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 37\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 37\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}-1&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 27\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=-a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 27\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -19827,8 +21265,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "31",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:1539",
+      "answer_tex": "33",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:972",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -19850,8 +21288,8 @@
         "corpus_novel": true,
         "maximum_surface_jaccard": 0.1622
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 31\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 31\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 33\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 33\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -19963,8 +21401,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "29",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:3630",
+      "answer_tex": "37",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:1396",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -19986,8 +21424,8 @@
         "corpus_novel": true,
         "maximum_surface_jaccard": 0.1622
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 29\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 29\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 37\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 37\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -20099,8 +21537,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "23",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:1698",
+      "answer_tex": "31",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:1539",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -20122,8 +21560,8 @@
         "corpus_novel": true,
         "maximum_surface_jaccard": 0.1622
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 23\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 23\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 31\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 31\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -20235,13 +21673,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "8",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:045",
+      "answer_tex": "29",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:3630",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 1,
-        "score": 8.86
+        "score": 8.87
       },
       "domain": "number_theory",
       "family_id": "construct.linear_recurrence_mod_period",
@@ -20256,10 +21694,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1749
+        "maximum_surface_jaccard": 0.1622
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&2\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 17\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+2a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 17\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 29\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 29\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -20371,13 +21809,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "120",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:065",
+      "answer_tex": "23",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:1698",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 1,
-        "score": 8.86
+        "score": 8.87
       },
       "domain": "number_theory",
       "family_id": "construct.linear_recurrence_mod_period",
@@ -20392,10 +21830,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1749
+        "maximum_surface_jaccard": 0.1622
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&3\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 11\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+3a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 11\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 23\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 23\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -20507,8 +21945,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "156",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:066",
+      "answer_tex": "8",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:045",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -20530,8 +21968,8 @@
         "corpus_novel": true,
         "maximum_surface_jaccard": 0.1749
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&3\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 13\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+3a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 13\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&2\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 17\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+2a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 17\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -20643,8 +22081,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "52",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:081",
+      "answer_tex": "120",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:065",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -20664,10 +22102,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1685
+        "maximum_surface_jaccard": 0.1749
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}3&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 13\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=3a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 13\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&3\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 11\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+3a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 11\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -20779,8 +22217,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "264",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:602",
+      "answer_tex": "156",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:066",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -20802,8 +22240,8 @@
         "corpus_novel": true,
         "maximum_surface_jaccard": 0.1749
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&5\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 23\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+5a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 23\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&3\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 13\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+3a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 13\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -20915,8 +22353,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "35",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:732",
+      "answer_tex": "52",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:081",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -20936,10 +22374,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1749
+        "maximum_surface_jaccard": 0.1685
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&4\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 29\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+4a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 29\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}3&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 13\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=3a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 13\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -21051,8 +22489,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "40",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:870",
+      "answer_tex": "264",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:602",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -21072,10 +22510,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1685
+        "maximum_surface_jaccard": 0.1749
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}6&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 40\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=6a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 40\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&5\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 23\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+5a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 23\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -21187,8 +22625,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "64",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:414",
+      "answer_tex": "35",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:732",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -21208,10 +22646,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1685
+        "maximum_surface_jaccard": 0.1749
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}3&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 31\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=3a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 31\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&4\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 29\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+4a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 29\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -21323,8 +22761,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "105",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:1338",
+      "answer_tex": "40",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:870",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -21344,10 +22782,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1749
+        "maximum_surface_jaccard": 0.1685
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&5\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 29\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+5a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 29\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}6&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 40\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=6a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 40\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -21459,8 +22897,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "116",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:1655",
+      "answer_tex": "64",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:414",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -21482,8 +22920,8 @@
         "corpus_novel": true,
         "maximum_surface_jaccard": 0.1685
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}5&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 29\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=5a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 29\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}3&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 31\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=3a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 31\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -21595,13 +23033,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "10",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:036",
+      "answer_tex": "105",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:1338",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 1,
-        "score": 8.84
+        "score": 8.86
       },
       "domain": "number_theory",
       "family_id": "construct.linear_recurrence_mod_period",
@@ -21616,10 +23054,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1758
+        "maximum_surface_jaccard": 0.1749
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 11\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 11\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&5\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 29\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+5a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 29\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -21731,13 +23169,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "28",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:037",
+      "answer_tex": "116",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:1655",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 1,
-        "score": 8.84
+        "score": 8.86
       },
       "domain": "number_theory",
       "family_id": "construct.linear_recurrence_mod_period",
@@ -21752,10 +23190,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1758
+        "maximum_surface_jaccard": 0.1685
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 13\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 13\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}5&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 29\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=5a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 29\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -21867,8 +23305,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "36",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:039",
+      "answer_tex": "10",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:036",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -21890,8 +23328,8 @@
         "corpus_novel": true,
         "maximum_surface_jaccard": 0.1758
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 17\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 17\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 11\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 11\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -22003,8 +23441,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "4",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:040",
+      "answer_tex": "28",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:037",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -22026,8 +23464,8 @@
         "corpus_novel": true,
         "maximum_surface_jaccard": 0.1758
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&2\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 5\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+2a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 5\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 13\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 13\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -22139,8 +23577,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "6",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:041",
+      "answer_tex": "36",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:039",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -22162,8 +23600,8 @@
         "corpus_novel": true,
         "maximum_surface_jaccard": 0.1758
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&2\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 7\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+2a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 7\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 17\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 17\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -22275,8 +23713,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "18",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:042",
+      "answer_tex": "4",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:040",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -22298,8 +23736,8 @@
         "corpus_novel": true,
         "maximum_surface_jaccard": 0.1758
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&2\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 9\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+2a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 9\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&2\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 5\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+2a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 5\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -22411,8 +23849,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "7",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:101",
+      "answer_tex": "6",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:041",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -22432,10 +23870,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.163
+        "maximum_surface_jaccard": 0.1758
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 7\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 7\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&2\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 7\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+2a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 7\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -22547,8 +23985,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "9",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:103",
+      "answer_tex": "18",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:042",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -22568,10 +24006,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.163
+        "maximum_surface_jaccard": 0.1758
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 9\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 9\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&2\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 9\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+2a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 9\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -22683,13 +24121,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "20",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:032",
+      "answer_tex": "7",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:101",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 1,
-        "score": 8.82
+        "score": 8.84
       },
       "domain": "number_theory",
       "family_id": "construct.linear_recurrence_mod_period",
@@ -22704,10 +24142,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1768
+        "maximum_surface_jaccard": 0.163
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 5\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 5\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 7\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 7\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -22819,13 +24257,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "16",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:033",
+      "answer_tex": "9",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:103",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 1,
-        "score": 8.82
+        "score": 8.84
       },
       "domain": "number_theory",
       "family_id": "construct.linear_recurrence_mod_period",
@@ -22840,10 +24278,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1768
+        "maximum_surface_jaccard": 0.163
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 7\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 7\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}2&-1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 9\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=2a_{n+1}-a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 9\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -22955,8 +24393,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "12",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:034",
+      "answer_tex": "20",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:032",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -22978,8 +24416,8 @@
         "corpus_novel": true,
         "maximum_surface_jaccard": 0.1768
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 8\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 8\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 5\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 5\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -23091,8 +24529,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "24",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:035",
+      "answer_tex": "16",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:033",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -23114,8 +24552,8 @@
         "corpus_novel": true,
         "maximum_surface_jaccard": 0.1768
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 9\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 9\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 7\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 7\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -23227,13 +24665,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "44",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:3123",
+      "answer_tex": "12",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:034",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 1,
-        "score": 8.73
+        "score": 8.82
       },
       "domain": "number_theory",
       "family_id": "construct.linear_recurrence_mod_period",
@@ -23248,10 +24686,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.153
+        "maximum_surface_jaccard": 0.1768
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}0&-2\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 23\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=-2a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 23\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 8\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 8\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -23363,13 +24801,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "2",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:831",
+      "answer_tex": "24",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:035",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 1,
-        "score": 8.68
+        "score": 8.82
       },
       "domain": "number_theory",
       "family_id": "construct.linear_recurrence_mod_period",
@@ -23384,10 +24822,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1611
+        "maximum_surface_jaccard": 0.1768
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}0&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 15\\) でこの行列の乗法的位数が周期。",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 15\\) で見たときの最小周期を求めよ。",
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 9\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 9\\) で見たときの最小周期を求めよ。",
       "tool": "matrix_mod_order",
       "verification": {
         "exact_backend": true,
@@ -23499,6 +24937,40 @@
     },
     {
       "accepted": true,
+      "answer_tex": "44",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:3123",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.73
+      },
+      "domain": "number_theory",
+      "family_id": "construct.linear_recurrence_mod_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.153
+      },
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}0&-2\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 23\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=-2a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 23\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "\\frac{5}{14}",
       "candidate_id": "construct:construct.mobius_fixed_points:1555",
       "difficulty": {
@@ -23597,6 +25069,40 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "complex_affine_fixed_point_limit"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "2",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:831",
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.68
+      },
+      "domain": "number_theory",
+      "family_id": "construct.linear_recurrence_mod_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1611
+      },
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}0&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 15\\) でこの行列の乗法的位数が周期。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 15\\) で見たときの最小周期を求めよ。",
+      "tool": "matrix_mod_order",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "companion_matrix_modular_order"
       }
     },
     {
@@ -24315,13 +25821,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "- \\frac{3}{2}",
-      "candidate_id": "construct:construct.mobius_fixed_points:1155",
+      "answer_tex": "\\frac{4}{11}",
+      "candidate_id": "construct:construct.mobius_fixed_points:033",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.55
+        "score": 8.56
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -24336,10 +25842,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1047
+        "maximum_surface_jaccard": 0.1012
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}9&6\\\\0&5\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{9 x}{5} + \\frac{6}{5}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-2&4\\\\0&9\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{4}{9} - \\frac{2 x}{9}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -24417,13 +25923,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{4}{3}",
-      "candidate_id": "construct:construct.mobius_fixed_points:643",
+      "answer_tex": "- \\frac{4}{3}",
+      "candidate_id": "construct:construct.mobius_fixed_points:084",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.55
+        "score": 8.56
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -24438,10 +25944,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1174
+        "maximum_surface_jaccard": 0.1004
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}5&4\\\\0&8\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{5 x}{8} + \\frac{1}{2}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}6&-4\\\\0&9\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{2 x}{3} - \\frac{4}{9}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -24519,13 +26025,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "-9",
-      "candidate_id": "construct:construct.mobius_fixed_points:772",
+      "answer_tex": "\\frac{6}{17}",
+      "candidate_id": "construct:construct.mobius_fixed_points:222",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.55
+        "score": 8.56
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -24540,10 +26046,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1047
+        "maximum_surface_jaccard": 0.102
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}6&9\\\\0&5\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{6 x}{5} + \\frac{9}{5}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-9&6\\\\0&8\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{3}{4} - \\frac{9 x}{8}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -24621,13 +26127,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{1}{3}",
-      "candidate_id": "construct:construct.mobius_fixed_points:1028",
+      "answer_tex": "\\frac{2}{15}",
+      "candidate_id": "construct:construct.mobius_fixed_points:228",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.55
+        "score": 8.56
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -24642,10 +26148,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1189
+        "maximum_surface_jaccard": 0.1082
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-1&-1\\\\0&-4\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{x}{4} + \\frac{1}{4}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-6&2\\\\0&9\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{2}{9} - \\frac{2 x}{3}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -24723,13 +26229,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{3}{2}",
-      "candidate_id": "construct:construct.mobius_fixed_points:890",
+      "answer_tex": "\\frac{3}{17}",
+      "candidate_id": "construct:construct.mobius_fixed_points:357",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.55
+        "score": 8.56
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -24744,10 +26250,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1053
+        "maximum_surface_jaccard": 0.1126
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-1&-6\\\\0&-5\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{x}{5} + \\frac{6}{5}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-8&3\\\\0&9\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{1}{3} - \\frac{8 x}{9}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -24825,13 +26331,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{7}{5}",
-      "candidate_id": "construct:construct.mobius_fixed_points:1682",
+      "answer_tex": "\\frac{7}{11}",
+      "candidate_id": "construct:construct.mobius_fixed_points:747",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.55
+        "score": 8.56
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -24846,10 +26352,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1164
+        "maximum_surface_jaccard": 0.1156
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-1&-7\\\\0&-6\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{x}{6} + \\frac{7}{6}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-5&7\\\\0&6\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{7}{6} - \\frac{5 x}{6}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -24927,13 +26433,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{8}{3}",
-      "candidate_id": "construct:construct.mobius_fixed_points:2682",
+      "answer_tex": "- \\frac{9}{8}",
+      "candidate_id": "construct:construct.mobius_fixed_points:849",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.55
+        "score": 8.56
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -24948,10 +26454,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1034
+        "maximum_surface_jaccard": 0.094
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}6&8\\\\0&9\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{2 x}{3} + \\frac{8}{9}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}1&9\\\\0&-7\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=- \\frac{x}{7} - \\frac{9}{7}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -25029,8 +26535,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{6}{5}",
-      "candidate_id": "construct:construct.mobius_fixed_points:3444",
+      "answer_tex": "- \\frac{3}{2}",
+      "candidate_id": "construct:construct.mobius_fixed_points:1155",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -25050,10 +26556,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.104
+        "maximum_surface_jaccard": 0.1047
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}3&6\\\\0&8\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{3 x}{8} + \\frac{3}{4}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}9&6\\\\0&5\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{9 x}{5} + \\frac{6}{5}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -25131,13 +26637,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{5}{4}",
-      "candidate_id": "construct:construct.mobius_fixed_points:1462",
+      "answer_tex": "\\frac{4}{3}",
+      "candidate_id": "construct:construct.mobius_fixed_points:643",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.54
+        "score": 8.55
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -25152,10 +26658,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1092
+        "maximum_surface_jaccard": 0.1174
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-1&5\\\\0&3\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{5}{3} - \\frac{x}{3}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}5&4\\\\0&8\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{5 x}{8} + \\frac{1}{2}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -25233,13 +26739,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "- \\frac{4}{7}",
-      "candidate_id": "construct:construct.mobius_fixed_points:2326",
+      "answer_tex": "-9",
+      "candidate_id": "construct:construct.mobius_fixed_points:772",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.54
+        "score": 8.55
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -25254,10 +26760,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1228
+        "maximum_surface_jaccard": 0.1047
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-1&4\\\\0&-8\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{x}{8} - \\frac{1}{2}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}6&9\\\\0&5\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{6 x}{5} + \\frac{9}{5}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -25335,13 +26841,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{3}{10}",
-      "candidate_id": "construct:construct.mobius_fixed_points:838",
+      "answer_tex": "\\frac{1}{3}",
+      "candidate_id": "construct:construct.mobius_fixed_points:1028",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.54
+        "score": 8.55
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -25356,10 +26862,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1111
+        "maximum_surface_jaccard": 0.1189
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-2&3\\\\0&8\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{3}{8} - \\frac{x}{4}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-1&-1\\\\0&-4\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{x}{4} + \\frac{1}{4}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -25437,13 +26943,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{7}{12}",
-      "candidate_id": "construct:construct.mobius_fixed_points:863",
+      "answer_tex": "\\frac{3}{2}",
+      "candidate_id": "construct:construct.mobius_fixed_points:890",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.54
+        "score": 8.55
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -25458,10 +26964,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1082
+        "maximum_surface_jaccard": 0.1053
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-4&7\\\\0&8\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{7}{8} - \\frac{x}{2}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-1&-6\\\\0&-5\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{x}{5} + \\frac{6}{5}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -25539,13 +27045,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "- \\frac{3}{8}",
-      "candidate_id": "construct:construct.mobius_fixed_points:1041",
+      "answer_tex": "\\frac{7}{5}",
+      "candidate_id": "construct:construct.mobius_fixed_points:1682",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.54
+        "score": 8.55
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -25560,10 +27066,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1228
+        "maximum_surface_jaccard": 0.1164
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-1&3\\\\0&-9\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{x}{9} - \\frac{1}{3}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-1&-7\\\\0&-6\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{x}{6} + \\frac{7}{6}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -25641,13 +27147,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "- \\frac{3}{4}",
-      "candidate_id": "construct:construct.mobius_fixed_points:1046",
+      "answer_tex": "\\frac{8}{3}",
+      "candidate_id": "construct:construct.mobius_fixed_points:2682",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.54
+        "score": 8.55
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -25662,10 +27168,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1179
+        "maximum_surface_jaccard": 0.1034
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-1&6\\\\0&-9\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{x}{9} - \\frac{2}{3}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}6&8\\\\0&9\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{2 x}{3} + \\frac{8}{9}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -25743,13 +27249,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{7}{8}",
-      "candidate_id": "construct:construct.mobius_fixed_points:1760",
+      "answer_tex": "\\frac{6}{5}",
+      "candidate_id": "construct:construct.mobius_fixed_points:3444",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.54
+        "score": 8.55
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -25764,10 +27270,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1082
+        "maximum_surface_jaccard": 0.104
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}2&-7\\\\0&-6\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{7}{6} - \\frac{x}{3}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}3&6\\\\0&8\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{3 x}{8} + \\frac{3}{4}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -25845,13 +27351,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{1}{8}",
-      "candidate_id": "construct:construct.mobius_fixed_points:2523",
+      "answer_tex": "\\frac{7}{3}",
+      "candidate_id": "construct:construct.mobius_fixed_points:187",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.54
+        "score": 8.55
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -25866,10 +27372,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1228
+        "maximum_surface_jaccard": 0.1149
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-2&1\\\\0&6\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{1}{6} - \\frac{x}{3}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-3&-7\\\\0&-6\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{x}{2} + \\frac{7}{6}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -25947,13 +27453,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{1}{4}",
-      "candidate_id": "construct:construct.mobius_fixed_points:1137",
+      "answer_tex": "\\frac{3}{8}",
+      "candidate_id": "construct:construct.mobius_fixed_points:216",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.53
+        "score": 8.55
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -25968,10 +27474,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1189
+        "maximum_surface_jaccard": 0.1278
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}1&1\\\\0&5\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{x}{5} + \\frac{1}{5}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-1&-3\\\\0&-9\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{x}{9} + \\frac{1}{3}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -26049,13 +27555,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{1}{7}",
-      "candidate_id": "construct:construct.mobius_fixed_points:1519",
+      "answer_tex": "\\frac{5}{4}",
+      "candidate_id": "construct:construct.mobius_fixed_points:1462",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.53
+        "score": 8.54
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -26070,10 +27576,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1189
+        "maximum_surface_jaccard": 0.1092
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}1&1\\\\0&8\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{x}{8} + \\frac{1}{8}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-1&5\\\\0&3\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{5}{3} - \\frac{x}{3}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -26151,13 +27657,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "1 - \\frac{\\sqrt{33}}{3}, 1 + \\frac{\\sqrt{33}}{3}",
-      "candidate_id": "construct:construct.mobius_fixed_points:1536",
+      "answer_tex": "- \\frac{4}{7}",
+      "candidate_id": "construct:construct.mobius_fixed_points:2326",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.47
+        "score": 8.54
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -26172,10 +27678,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1051
+        "maximum_surface_jaccard": 0.1228
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-8&-8\\\\-3&-2\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{- 8 x - 8}{- 3 x - 2}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-1&4\\\\0&-8\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{x}{8} - \\frac{1}{2}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -26253,13 +27759,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "- \\frac{\\sqrt{73}}{4} - \\frac{7}{4}, - \\frac{7}{4} + \\frac{\\sqrt{73}}{4}",
-      "candidate_id": "construct:construct.mobius_fixed_points:1879",
+      "answer_tex": "\\frac{3}{10}",
+      "candidate_id": "construct:construct.mobius_fixed_points:838",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.47
+        "score": 8.54
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -26276,8 +27782,8 @@
         "corpus_novel": true,
         "maximum_surface_jaccard": 0.1111
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-2&-3\\\\-2&-9\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{- 2 x - 3}{- 2 x - 9}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-2&3\\\\0&8\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{3}{8} - \\frac{x}{4}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -26355,13 +27861,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{1}{6} - \\frac{\\sqrt{73}}{6}, \\frac{1}{6} + \\frac{\\sqrt{73}}{6}",
-      "candidate_id": "construct:construct.mobius_fixed_points:2677",
+      "answer_tex": "\\frac{7}{12}",
+      "candidate_id": "construct:construct.mobius_fixed_points:863",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.47
+        "score": 8.54
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -26376,10 +27882,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0977
+        "maximum_surface_jaccard": 0.1082
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-9&-6\\\\-3&-8\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{- 9 x - 6}{- 3 x - 8}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-4&7\\\\0&8\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{7}{8} - \\frac{x}{2}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -26457,13 +27963,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "- \\frac{\\sqrt{85}}{6} - \\frac{1}{6}, - \\frac{1}{6} + \\frac{\\sqrt{85}}{6}",
-      "candidate_id": "construct:construct.mobius_fixed_points:3680",
+      "answer_tex": "- \\frac{3}{8}",
+      "candidate_id": "construct:construct.mobius_fixed_points:1041",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.47
+        "score": 8.54
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -26478,10 +27984,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1051
+        "maximum_surface_jaccard": 0.1228
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-8&-7\\\\-3&-9\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{- 8 x - 7}{- 3 x - 9}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-1&3\\\\0&-9\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{x}{9} - \\frac{1}{3}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -26559,13 +28065,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "-2, 1",
-      "candidate_id": "construct:construct.mobius_fixed_points:3737",
+      "answer_tex": "- \\frac{3}{4}",
+      "candidate_id": "construct:construct.mobius_fixed_points:1046",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.47
+        "score": 8.54
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -26580,10 +28086,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1012
+        "maximum_surface_jaccard": 0.1179
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-5&-4\\\\-2&-7\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{- 5 x - 4}{- 2 x - 7}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-1&6\\\\0&-9\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{x}{9} - \\frac{2}{3}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -26661,13 +28167,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "1 - \\sqrt{3}, 1 + \\sqrt{3}",
-      "candidate_id": "construct:construct.mobius_fixed_points:4025",
+      "answer_tex": "\\frac{7}{8}",
+      "candidate_id": "construct:construct.mobius_fixed_points:1760",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.47
+        "score": 8.54
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -26682,10 +28188,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1012
+        "maximum_surface_jaccard": 0.1082
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-5&-4\\\\-2&-1\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{- 5 x - 4}{- 2 x - 1}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}2&-7\\\\0&-6\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{7}{6} - \\frac{x}{3}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -26763,13 +28269,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{1}{2} - \\frac{\\sqrt{105}}{6}, \\frac{1}{2} + \\frac{\\sqrt{105}}{6}",
-      "candidate_id": "construct:construct.mobius_fixed_points:4047",
+      "answer_tex": "\\frac{1}{8}",
+      "candidate_id": "construct:construct.mobius_fixed_points:2523",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.47
+        "score": 8.54
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -26784,10 +28290,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0977
+        "maximum_surface_jaccard": 0.1228
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-8&-8\\\\-3&-5\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{- 8 x - 8}{- 3 x - 5}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-2&1\\\\0&6\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{1}{6} - \\frac{x}{3}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -26865,13 +28371,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "- \\frac{\\sqrt{15}}{2} - \\frac{1}{2}, - \\frac{1}{2} + \\frac{\\sqrt{15}}{2}",
-      "candidate_id": "construct:construct.mobius_fixed_points:402",
+      "answer_tex": "\\frac{5}{8}",
+      "candidate_id": "construct:construct.mobius_fixed_points:051",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.47
+        "score": 8.54
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -26886,10 +28392,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0994
+        "maximum_surface_jaccard": 0.1082
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-2&-7\\\\-2&-4\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{- 2 x - 7}{- 2 x - 4}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}2&-5\\\\0&-6\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{5}{6} - \\frac{x}{3}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -26967,13 +28473,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "- \\sqrt{3}, \\sqrt{3}",
-      "candidate_id": "construct:construct.mobius_fixed_points:448",
+      "answer_tex": "\\frac{1}{4}",
+      "candidate_id": "construct:construct.mobius_fixed_points:1137",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.47
+        "score": 8.53
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -26988,10 +28494,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1055
+        "maximum_surface_jaccard": 0.1189
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-3&-6\\\\-2&-3\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{- 3 x - 6}{- 2 x - 3}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}1&1\\\\0&5\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{x}{5} + \\frac{1}{5}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -27069,13 +28575,13 @@
     },
     {
       "accepted": true,
-      "answer_tex": "- \\frac{\\sqrt{6}}{3}, \\frac{\\sqrt{6}}{3}",
-      "candidate_id": "construct:construct.mobius_fixed_points:544",
+      "answer_tex": "\\frac{1}{7}",
+      "candidate_id": "construct:construct.mobius_fixed_points:1519",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
         "construct": 2,
-        "score": 8.47
+        "score": 8.53
       },
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
@@ -27090,10 +28596,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1094
+        "maximum_surface_jaccard": 0.1189
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-4&-2\\\\-3&-4\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{- 4 x - 2}{- 3 x - 4}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}1&1\\\\0&8\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{x}{8} + \\frac{1}{8}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -27171,8 +28677,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "- \\frac{1}{2}, 1",
-      "candidate_id": "construct:construct.mobius_fixed_points:595",
+      "answer_tex": "1 - \\frac{\\sqrt{33}}{3}, 1 + \\frac{\\sqrt{33}}{3}",
+      "candidate_id": "construct:construct.mobius_fixed_points:1536",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -27192,10 +28698,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0995
+        "maximum_surface_jaccard": 0.1051
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-6&-1\\\\-2&-5\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{- 6 x - 1}{- 2 x - 5}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-8&-8\\\\-3&-2\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{- 8 x - 8}{- 3 x - 2}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -27273,8 +28779,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "1 - \\frac{\\sqrt{6}}{2}, 1 + \\frac{\\sqrt{6}}{2}",
-      "candidate_id": "construct:construct.mobius_fixed_points:610",
+      "answer_tex": "- \\frac{\\sqrt{73}}{4} - \\frac{7}{4}, - \\frac{7}{4} + \\frac{\\sqrt{73}}{4}",
+      "candidate_id": "construct:construct.mobius_fixed_points:1879",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -27294,10 +28800,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.102
+        "maximum_surface_jaccard": 0.1111
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-5&-1\\\\-2&-1\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{- 5 x - 1}{- 2 x - 1}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-2&-3\\\\-2&-9\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{- 2 x - 3}{- 2 x - 9}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -27375,8 +28881,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "- \\frac{3 \\sqrt{3}}{2} - \\frac{3}{2}, - \\frac{3}{2} + \\frac{3 \\sqrt{3}}{2}",
-      "candidate_id": "construct:construct.mobius_fixed_points:613",
+      "answer_tex": "\\frac{1}{6} - \\frac{\\sqrt{73}}{6}, \\frac{1}{6} + \\frac{\\sqrt{73}}{6}",
+      "candidate_id": "construct:construct.mobius_fixed_points:2677",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -27396,10 +28902,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1107
+        "maximum_surface_jaccard": 0.0977
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-2&-9\\\\-2&-8\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{- 2 x - 9}{- 2 x - 8}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-9&-6\\\\-3&-8\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{- 9 x - 6}{- 3 x - 8}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -27477,8 +28983,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{7}{4} - \\frac{\\sqrt{97}}{4}, \\frac{7}{4} + \\frac{\\sqrt{97}}{4}",
-      "candidate_id": "construct:construct.mobius_fixed_points:665",
+      "answer_tex": "- \\frac{\\sqrt{85}}{6} - \\frac{1}{6}, - \\frac{1}{6} + \\frac{\\sqrt{85}}{6}",
+      "candidate_id": "construct:construct.mobius_fixed_points:3680",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -27500,8 +29006,8 @@
         "corpus_novel": true,
         "maximum_surface_jaccard": 0.1051
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-9&-6\\\\-2&-2\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{- 9 x - 6}{- 2 x - 2}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-8&-7\\\\-3&-9\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{- 8 x - 7}{- 3 x - 9}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -27579,8 +29085,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{5}{4} - \\frac{\\sqrt{41}}{4}, \\frac{5}{4} + \\frac{\\sqrt{41}}{4}",
-      "candidate_id": "construct:construct.mobius_fixed_points:732",
+      "answer_tex": "-2, 1",
+      "candidate_id": "construct:construct.mobius_fixed_points:3737",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -27600,10 +29106,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1051
+        "maximum_surface_jaccard": 0.1012
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-9&-2\\\\-2&-4\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{- 9 x - 2}{- 2 x - 4}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-5&-4\\\\-2&-7\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{- 5 x - 4}{- 2 x - 7}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -27681,8 +29187,8 @@
     },
     {
       "accepted": true,
-      "answer_tex": "- \\frac{\\sqrt{65}}{4} - \\frac{3}{4}, - \\frac{3}{4} + \\frac{\\sqrt{65}}{4}",
-      "candidate_id": "construct:construct.mobius_fixed_points:845",
+      "answer_tex": "1 - \\sqrt{3}, 1 + \\sqrt{3}",
+      "candidate_id": "construct:construct.mobius_fixed_points:4025",
       "difficulty": {
         "band": "B_hard_university",
         "condition": 0,
@@ -27702,10 +29208,10 @@
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0994
+        "maximum_surface_jaccard": 0.1012
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-2&-7\\\\-2&-5\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
-      "statement_tex": "関数 \\(f(x)=\\frac{- 2 x - 7}{- 2 x - 5}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}-5&-4\\\\-2&-1\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "statement_tex": "関数 \\(f(x)=\\frac{- 5 x - 4}{- 2 x - 1}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "tool": "matrix_eigen",
       "verification": {
         "exact_backend": true,
@@ -27749,11 +29255,10 @@
     }
   ],
   "summary": {
-    "added_this_run": 484,
     "band_counts": {
-      "A_olympiad": 11,
-      "B_hard_university": 518,
-      "C_standard_university": 112,
+      "A_olympiad": 15,
+      "B_hard_university": 538,
+      "C_standard_university": 124,
       "D_textbook": 170
     },
     "family_counts": {
@@ -27761,7 +29266,7 @@
       "construct.complex_rotation_period": 38,
       "construct.cubic_tangent_midpoint_locus": 25,
       "construct.gambler_ruin_probability": 150,
-      "construct.linear_recurrence_mod_period": 108,
+      "construct.linear_recurrence_mod_period": 110,
       "construct.mobius_fixed_points": 150,
       "construct.mobius_iteration_period": 4,
       "construct.paley_common_neighbors": 20,
@@ -27775,16 +29280,14 @@
       "layered.cubic_tangent_iteration": 4,
       "layered.paley_triangle_count": 8,
       "layered.recurrence_period_observable": 12,
-      "layered.rotation_orbit_hull_area": 14
+      "layered.rotation_orbit_hull_area": 14,
+      "ultradeep.cubic_root_triangle_discriminant_divisor_count": 8,
+      "ultradeep.cyclotomic_distance_norm_divisor_count": 4,
+      "ultradeep.gambler_absorption_variance_divisor_count": 12,
+      "ultradeep.paley_four_cycle_divisor_count": 5,
+      "ultradeep.paley_spanning_tree_divisor_count": 5
     },
-    "previous": 784,
-    "run_stats": {
-      "dup": 2598,
-      "generated": 3082,
-      "not_novel": 0,
-      "unverified": 0
-    },
-    "total": 811,
-    "world_corpus_size": 28074
+    "shards": 15,
+    "total": 847
   }
 }
