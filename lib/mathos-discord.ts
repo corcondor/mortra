@@ -1,11 +1,18 @@
 import { createHash } from 'node:crypto'
 import verifiedBatch from '@/data/mathos/continuous_verified_problem_batch1.json'
 import { supabaseAdmin } from '@/lib/supabase-admin'
-import { generateLiveProblem } from '@/lib/mathos-live'
+import {
+  canonicalDomain,
+  domainMatches,
+  orderForInteraction,
+  structureKeyFromRecord,
+} from '@/lib/mathos-selection'
 
-const SOURCE_FILE = 'mathos_discord_verified'
+export { canonicalDomain } from '@/lib/mathos-selection'
+
+const SOURCE_FILE = 'mathos_discord_entrance_v2'
 const EVENT_MODE = 'discord_sakumon'
-const CLAIM_MODE = 'discord_sakumon_claim'
+const CLAIM_MODE = 'discord_sakumon_structure_claim_v2'
 
 type BatchProblem = {
   accepted: boolean
@@ -13,11 +20,20 @@ type BatchProblem = {
   candidate_id: string
   domain: string
   family_id: string
+  structure_key?: string
   statement_tex: string
   solution_tex: string
   lift_certificate: {
     type_checked: boolean
     morphism_chain?: string[]
+    constraint_skeleton?: unknown
+    query_signature?: unknown
+  }
+  curriculum_certificate: {
+    scope: string
+    type_checked: boolean
+    lowering_chain: string[]
+    uses_only_school_level_primitives: boolean
   }
   novelty: {
     corpus_novel: boolean
@@ -36,6 +52,8 @@ export type MathOSProblem = {
   candidateId: string
   domain: string
   familyId: string
+  structureKey: string
+  curriculumScope: string
   statementTex: string
   answerTex: string
   solutionTex: string
@@ -72,44 +90,6 @@ type JobRow = {
   result: JobResult | null
 }
 
-const DOMAIN_ALIASES: Record<string, string[]> = {
-  algebra: ['algebra', '代数', '方程式', '多項式'],
-  geometry: [
-    'geometry',
-    '幾何',
-    '図形',
-    'algebraic_geometry',
-    'complex_geometry',
-    'analytic_geometry',
-  ],
-  number_theory: [
-    'number_theory',
-    'linear_algebra_number_theory',
-    '整数',
-    '数論',
-    '素数',
-    '合同',
-  ],
-  probability: ['probability', '確率', '期待値'],
-  analysis: [
-    'analysis',
-    'real_analysis',
-    'combinatorics_analysis',
-    '解析',
-    '微分',
-    '積分',
-    '極限',
-  ],
-  linear_algebra: [
-    'linear_algebra',
-    'linear_algebra_number_theory',
-    '線形代数',
-    '行列',
-  ],
-  combinatorics: ['combinatorics', 'combinatorics_analysis', '組合せ', '数え上げ'],
-  complex: ['complex', 'complex_geometry', '複素数'],
-}
-
 function hashProblem(problem: BatchProblem): string {
   return createHash('sha256')
     .update(
@@ -129,7 +109,12 @@ function accepted(problem: BatchProblem): boolean {
       problem.verification.exact_backend &&
       problem.verification.independent_check &&
       problem.lift_certificate.type_checked &&
-      problem.novelty.corpus_novel,
+      problem.novelty.corpus_novel &&
+      problem.curriculum_certificate?.scope ===
+        'jp_upper_secondary_math_IA_IIB_IIIC' &&
+      problem.curriculum_certificate.type_checked &&
+      problem.curriculum_certificate.uses_only_school_level_primitives &&
+      problem.curriculum_certificate.lowering_chain.length > 0,
   )
 }
 
@@ -141,6 +126,8 @@ function fromBatch(problem: BatchProblem): MathOSProblem {
     candidateId: problem.candidate_id,
     domain: problem.domain,
     familyId: problem.family_id,
+    structureKey: structureKeyFromRecord(problem),
+    curriculumScope: problem.curriculum_certificate.scope,
     statementTex: problem.statement_tex,
     answerTex: problem.answer_tex,
     solutionTex: problem.solution_tex,
@@ -156,41 +143,26 @@ export const verifiedMathOSProblems = (
   .filter(accepted)
   .map(fromBatch)
 
-export function canonicalDomain(input?: string): string | undefined {
-  if (!input) return undefined
-  const normalized = input.trim().toLowerCase()
-  if (!normalized || normalized === 'おまかせ' || normalized === 'any') {
-    return undefined
-  }
-
-  for (const [canonical, aliases] of Object.entries(DOMAIN_ALIASES)) {
-    if (
-      canonical === normalized ||
-      aliases.some((alias) => alias.toLowerCase() === normalized)
-    ) {
-      return canonical
-    }
-  }
-  return normalized
-}
-
-export function domainMatches(problemDomain: string, requested?: string): boolean {
-  const canonical = canonicalDomain(requested)
-  if (!canonical) return true
-  const aliases = DOMAIN_ALIASES[canonical] ?? [canonical]
-  return aliases.some((alias) => alias.toLowerCase() === problemDomain.toLowerCase())
-}
-
 function parseProblemRow(row: ProblemRow): MathOSProblem | null {
   try {
     const meta = JSON.parse(row.meta ?? '{}') as Partial<MathOSProblem>
-    if (!meta.problemHash || !meta.shortId || !meta.candidateId) return null
+    if (
+      !meta.problemHash ||
+      !meta.shortId ||
+      !meta.candidateId ||
+      !meta.structureKey ||
+      meta.curriculumScope !== 'jp_upper_secondary_math_IA_IIB_IIIC'
+    ) {
+      return null
+    }
     return {
       problemHash: meta.problemHash,
       shortId: meta.shortId,
       candidateId: meta.candidateId,
       domain: row.topic_a,
       familyId: row.topic_b ?? meta.familyId ?? 'unknown',
+      structureKey: meta.structureKey,
+      curriculumScope: meta.curriculumScope,
       statementTex: row.statement,
       answerTex: row.answer ?? '',
       solutionTex: row.solution ?? '',
@@ -244,8 +216,9 @@ async function claimCandidate(
   input: DeliveryInput,
 ): Promise<boolean> {
   const now = new Date().toISOString()
+  const claimId = structureClaimId(input.userId, problem.structureKey)
   const { error } = await supabaseAdmin.from('generation_jobs').insert({
-    id: `discord-claim:${problem.problemHash}`,
+    id: claimId,
     status: 'done',
     user_id: input.userId,
     parents: {
@@ -258,6 +231,7 @@ async function claimCandidate(
     count: 1,
     result: {
       problem_hash: problem.problemHash,
+      structure_key: problem.structureKey,
       short_id: problem.shortId,
       problem_id: `mathos-${problem.shortId}`,
     },
@@ -269,6 +243,13 @@ async function claimCandidate(
   return error.code !== '23505'
     ? Promise.reject(new Error(`MathOS candidate claim: ${error.message}`))
     : false
+}
+
+function structureClaimId(userId: string, structureKey: string): string {
+  const digest = createHash('sha256')
+    .update(`${userId}:${structureKey}`)
+    .digest('hex')
+  return `discord-structure-claim:${digest}`
 }
 
 async function recordEvent(
@@ -290,6 +271,7 @@ async function recordEvent(
     count: 1,
     result: {
       problem_hash: problem.problemHash,
+      structure_key: problem.structureKey,
       short_id: problem.shortId,
       problem_id: `mathos-${problem.shortId}`,
     },
@@ -301,133 +283,33 @@ async function recordEvent(
     await supabaseAdmin
       .from('generation_jobs')
       .delete()
-      .eq('id', `discord-claim:${problem.problemHash}`)
+      .eq('id', structureClaimId(input.userId, problem.structureKey))
     throw new Error(`MathOS event record: ${error.message}`)
   }
-}
-
-function rotateForInteraction(
-  problems: MathOSProblem[],
-  interactionId: string,
-): MathOSProblem[] {
-  if (problems.length < 2) return problems
-  const offset =
-    Number.parseInt(
-      createHash('sha256').update(interactionId).digest('hex').slice(0, 8),
-      16,
-    ) % problems.length
-  return [...problems.slice(offset), ...problems.slice(0, offset)]
-}
-
-/**
- * その場で1問構築して Supabase に保存する（エンター即作問）。
- * 保存先は配信プールと同じ source_file なので、以降 loadPool / 解答表示 /
- * 評価がそのまま効き、叩くたびにプールが育つ。
- */
-export async function deliverLiveProblem(
-  input: DeliveryInput,
-): Promise<MathOSProblem | null> {
-  const live = generateLiveProblem(input.domain)
-  if (!live) return null
-
-  const problemHash = createHash('sha256')
-    .update([live.familyId, live.statementTex, live.answerTex].join('␟'))
-    .digest('hex')
-  const shortId = problemHash.slice(0, 10)
-  const problem: MathOSProblem = {
-    problemHash,
-    shortId,
-    candidateId: `live:${live.familyId}:${shortId}`,
-    domain: live.domain,
-    familyId: live.familyId,
-    statementTex: live.statementTex,
-    answerTex: live.answerTex,
-    solutionTex: live.solutionTex,
-    verificationMethod: live.verificationMethod,
-    maximumSurfaceJaccard: undefined,
-    morphismChain: live.morphismChain,
-  }
-
-  const { error } = await supabaseAdmin.from('problems').upsert(
-    {
-      id: `mathos-${shortId}`,
-      topic_a: live.domain,
-      topic_b: live.familyId,
-      variation: 0,
-      statement: live.statementTex,
-      answer: live.answerTex,
-      difficulty: 'B',
-      solution: live.solutionTex,
-      surprise: 8,
-      minimality: 7,
-      connection: 8,
-      inevitability: 8,
-      diff_cal: 7,
-      total: 7.6,
-      inspiration: live.morphismChain.join(' → '),
-      meta: JSON.stringify({
-        problemHash,
-        shortId,
-        candidateId: problem.candidateId,
-        familyId: live.familyId,
-        verificationMethod: live.verificationMethod,
-        morphismChain: live.morphismChain,
-        parameters: live.parameters,
-        tool: live.tool,
-        generatedLive: true,
-      }),
-      generation: 0,
-      parent_ids: [],
-      source_file: SOURCE_FILE,
-    },
-    { onConflict: 'id' },
-  )
-  if (error) throw new Error(`MathOS live persist: ${error.message}`)
-  return problem
 }
 
 export async function deliverMathOSProblem(
   input: DeliveryInput,
 ): Promise<MathOSProblem> {
-  try {
-    const replay = await replayedDelivery(input.interactionId)
-    if (replay) return replay
+  const replay = await replayedDelivery(input.interactionId)
+  if (replay) return replay
 
-    // エンター即作問: まずその場で新しい問題を構築する。
-    try {
-      const live = await deliverLiveProblem(input)
-      if (live && (await claimCandidate(live, input))) {
-        await recordEvent(live, input)
-        return live
-      }
-    } catch {
-      // ライブ生成/保存に失敗したら既存プールへフォールバック
-    }
+  const candidates = orderForInteraction(
+    (await loadPool()).filter((problem) =>
+      domainMatches(problem.domain, input.domain),
+    ),
+    input.interactionId,
+  )
 
-    const candidates = rotateForInteraction(
-      (await loadPool()).filter((problem) =>
-        domainMatches(problem.domain, input.domain),
-      ),
-      input.interactionId,
-    )
-
-    for (const candidate of candidates) {
-      if (!(await claimCandidate(candidate, input))) continue
-      await recordEvent(candidate, input)
-      return candidate
-    }
-
-    throw new Error('この条件の検証済み未配信問題がありません。')
-  } catch (error) {
-    const fallback = rotateForInteraction(
-      verifiedMathOSProblems.filter((problem) =>
-        domainMatches(problem.domain, input.domain),
-      ),
-      `${input.userId}:${input.interactionId}`,
-    )[0]
-    if (fallback) return fallback
-    throw error
+  for (const candidate of candidates) {
+    if (!(await claimCandidate(candidate, input))) continue
+    await recordEvent(candidate, input)
+    return candidate
   }
+
+  throw new Error(
+    'この条件には、まだ配信していない別構造の問題がありません。',
+  )
 }
 
 export async function findMathOSSolution(
@@ -439,19 +321,19 @@ export async function findMathOSSolution(
   return pool.find((problem) => problem.shortId === normalized) ?? null
 }
 
-export async function mathOSDiscordStats() {
+export async function mathOSDiscordStats(userId: string) {
   try {
     const [pool, { count: claims, error: claimError }] = await Promise.all([
       loadPool(),
       supabaseAdmin
         .from('generation_jobs')
         .select('*', { count: 'exact', head: true })
-        .eq('mode', CLAIM_MODE),
+        .eq('mode', CLAIM_MODE)
+        .eq('user_id', userId),
     ])
 
     if (claimError) throw new Error(`MathOS delivery stats: ${claimError.message}`)
-    // バンドル + DB の合併後の実数（以前は DB の件数しか数えておらず、
-    // 763 問あるのに 9 と表示されていた）
+    // 配信数ではなく、構造署名で商を取った受験数学プールを数える。
     const verifiedPool = pool.length
     const delivered = claims ?? 0
     return {
@@ -481,6 +363,7 @@ export function problemEmbed(problem: MathOSProblem) {
     color: 0x2563eb,
     fields: [
       { name: '分野', value: problem.domain.slice(0, 1024), inline: true },
+      { name: '範囲', value: '大学受験数学', inline: true },
       {
         name: '構造族',
         value: `\`${problem.familyId.slice(0, 900)}\``,
@@ -626,7 +509,8 @@ export function helpEmbed() {
       {
         name: '/sakumon [domain]',
         value:
-          '検証済みの新作問題を1問表示します。分野は省略可能です。\n' +
+          '大学受験範囲の検証済み問題を、構造単位でランダムに1問表示します。' +
+          '同じ構造の数値違いは繰り返しません。分野は省略可能です。\n' +
           '例: `/sakumon domain:整数・数論`',
         inline: false,
       },
@@ -639,7 +523,8 @@ export function helpEmbed() {
       },
       {
         name: '/mathos_status',
-        value: '検証済み候補、配信済み、未配信の件数を表示します。',
+        value:
+          'あなた向けの検証済み構造、配信済み構造、未配信構造の件数を表示します。',
         inline: false,
       },
       {

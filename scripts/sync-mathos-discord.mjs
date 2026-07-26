@@ -14,7 +14,11 @@ const accepted = batch.problems.filter(
     problem.verification?.exact_backend &&
     problem.verification?.independent_check &&
     problem.lift_certificate?.type_checked &&
-    problem.novelty?.corpus_novel,
+    problem.novelty?.corpus_novel &&
+    problem.curriculum_certificate?.scope ===
+      'jp_upper_secondary_math_IA_IIB_IIIC' &&
+    problem.curriculum_certificate?.type_checked &&
+    problem.curriculum_certificate?.uses_only_school_level_primitives,
 )
 
 const hashProblem = (problem) =>
@@ -53,6 +57,9 @@ const rows = accepted.map((problem) => {
       shortId,
       candidateId: problem.candidate_id,
       familyId: problem.family_id,
+      structureKey: problem.structure_key,
+      curriculumScope: problem.curriculum_certificate.scope,
+      loweringChain: problem.curriculum_certificate.lowering_chain,
       verificationMethod: problem.verification.method,
       maximumSurfaceJaccard: problem.novelty.maximum_surface_jaccard,
       morphismChain: problem.lift_certificate.morphism_chain,
@@ -65,7 +72,7 @@ const rows = accepted.map((problem) => {
     }),
     generation: 0,
     parent_ids: [],
-    source_file: 'mathos_discord_verified',
+    source_file: 'mathos_discord_entrance_v2',
   }
 })
 

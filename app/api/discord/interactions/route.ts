@@ -114,7 +114,7 @@ async function completeAnswer(
 
 async function completeStatus(interaction: DiscordInteraction) {
   try {
-    const stats = await mathOSDiscordStats()
+    const stats = await mathOSDiscordStats(interactionUserId(interaction))
     await sendDiscordFollowup(interaction, {
       embeds: [
         {
@@ -122,17 +122,17 @@ async function completeStatus(interaction: DiscordInteraction) {
           color: 0x0f766e,
           fields: [
             {
-              name: '検証済み候補',
+              name: '検証済み構造',
               value: String(stats.verifiedPool),
               inline: true,
             },
             {
-              name: '配信済み',
+              name: '配信済み構造',
               value: String(stats.delivered),
               inline: true,
             },
             {
-              name: '未配信',
+              name: '未配信構造',
               value: String(stats.remaining),
               inline: true,
             },

@@ -29,6 +29,29 @@ const {
   verifyDiscordRequest,
 } = module.exports
 
+const selectionSource = await readFile(
+  new URL('../lib/mathos-selection.ts', import.meta.url),
+  'utf8',
+)
+const selectionCompiled = ts.transpileModule(selectionSource, {
+  compilerOptions: {
+    module: ts.ModuleKind.CommonJS,
+    target: ts.ScriptTarget.ES2022,
+    esModuleInterop: true,
+  },
+}).outputText
+const selectionModule = { exports: {} }
+new Function('require', 'module', 'exports', selectionCompiled)(
+  require,
+  selectionModule,
+  selectionModule.exports,
+)
+const {
+  canonicalDomain,
+  domainMatches,
+  orderForInteraction,
+} = selectionModule.exports
+
 test('accepts a valid Discord Ed25519 signature and rejects tampering', () => {
   const { privateKey, publicKey } = generateKeyPairSync('ed25519')
   const publicDer = publicKey.export({ format: 'der', type: 'spki' })
@@ -83,13 +106,71 @@ test('the bundled MathOS pool contains only gate-passing problems', async () => 
       problem.verification.exact_backend &&
       problem.verification.independent_check &&
       problem.lift_certificate.type_checked &&
-      problem.novelty.corpus_novel,
+      problem.novelty.corpus_novel &&
+      problem.curriculum_certificate?.scope ===
+        'jp_upper_secondary_math_IA_IIB_IIIC' &&
+      problem.curriculum_certificate?.type_checked,
   )
-  assert.equal(accepted.length, batch.summary.total)
-  assert.ok(accepted.length >= 800)
+  assert.equal(accepted.length, batch.summary.certified_structures)
+  assert.ok(accepted.length >= 30)
+  assert.equal(
+    new Set(accepted.map((problem) => problem.structure_key)).size,
+    accepted.length,
+  )
+  assert.equal(
+    accepted.filter((problem) =>
+      /gambler|paley|graph/i.test(problem.family_id),
+    ).length,
+    0,
+  )
   assert.ok(
     accepted.some((problem) =>
-      problem.family_id.startsWith('deep.'),
+      problem.family_id.includes('geometry'),
     ),
+  )
+})
+
+test('geometry requests include every geometry subdomain', () => {
+  assert.equal(canonicalDomain('幾何'), 'geometry')
+  for (const domain of [
+    'geometry',
+    'algebraic_geometry',
+    'analytic_geometry',
+    'complex_geometry',
+    'differential_geometry',
+    'euclidean_geometry',
+    'geometry_algebra',
+    'geometry_analysis',
+    'projective_geometry',
+  ]) {
+    assert.equal(domainMatches(domain, '幾何'), true, domain)
+  }
+  assert.equal(domainMatches('probability', '幾何'), false)
+})
+
+test('different Discord interactions randomize structures without weighting', async () => {
+  const batch = JSON.parse(
+    await readFile(
+      new URL(
+        '../data/mathos/continuous_verified_problem_batch1.json',
+        import.meta.url,
+      ),
+      'utf8',
+    ),
+  )
+  const selectable = batch.problems.map((problem) => ({
+    structureKey: problem.structure_key,
+    domain: problem.domain,
+  }))
+  const firstSelections = new Set(
+    Array.from({ length: 100 }, (_, index) =>
+      orderForInteraction(selectable, `interaction-${index}`)[0]
+        .structureKey,
+    ),
+  )
+  assert.ok(firstSelections.size >= 28)
+  assert.equal(
+    orderForInteraction(selectable, 'same-event')[0].structureKey,
+    orderForInteraction(selectable, 'same-event')[0].structureKey,
   )
 })
