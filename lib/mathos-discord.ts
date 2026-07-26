@@ -10,7 +10,6 @@ import {
 
 export { canonicalDomain } from '@/lib/mathos-selection'
 
-const SOURCE_FILE = 'mathos_discord_entrance_v2'
 const EVENT_MODE = 'discord_sakumon'
 const CLAIM_MODE = 'discord_sakumon_structure_claim_v2'
 
@@ -68,16 +67,6 @@ export type DeliveryInput = {
   channelId?: string
   guildId?: string
   domain?: string
-}
-
-type ProblemRow = {
-  id: string
-  topic_a: string
-  topic_b: string | null
-  statement: string
-  answer: string | null
-  solution: string | null
-  meta: string | null
 }
 
 type JobResult = {
@@ -143,56 +132,10 @@ export const verifiedMathOSProblems = (
   .filter(accepted)
   .map(fromBatch)
 
-function parseProblemRow(row: ProblemRow): MathOSProblem | null {
-  try {
-    const meta = JSON.parse(row.meta ?? '{}') as Partial<MathOSProblem>
-    if (
-      !meta.problemHash ||
-      !meta.shortId ||
-      !meta.candidateId ||
-      !meta.structureKey ||
-      meta.curriculumScope !== 'jp_upper_secondary_math_IA_IIB_IIIC'
-    ) {
-      return null
-    }
-    return {
-      problemHash: meta.problemHash,
-      shortId: meta.shortId,
-      candidateId: meta.candidateId,
-      domain: row.topic_a,
-      familyId: row.topic_b ?? meta.familyId ?? 'unknown',
-      structureKey: meta.structureKey,
-      curriculumScope: meta.curriculumScope,
-      statementTex: row.statement,
-      answerTex: row.answer ?? '',
-      solutionTex: row.solution ?? '',
-      verificationMethod: meta.verificationMethod ?? 'unknown',
-      maximumSurfaceJaccard: meta.maximumSurfaceJaccard,
-      morphismChain: meta.morphismChain ?? [],
-    }
-  } catch {
-    return null
-  }
-}
-
 async function loadPool(): Promise<MathOSProblem[]> {
-  const { data, error } = await supabaseAdmin
-    .from('problems')
-    .select('id,topic_a,topic_b,statement,answer,solution,meta')
-    .eq('source_file', SOURCE_FILE)
-
-  if (error) throw new Error(`MathOS DB pool: ${error.message}`)
-  const fromDb = ((data ?? []) as ProblemRow[])
-    .map(parseProblemRow)
-    .filter((problem): problem is MathOSProblem => problem !== null)
-
-  // DB とバンドルは *合併* する。以前は「DB に1件でもあればバンドルを捨てる」
-  // 実装だったため、ライブ生成が数件書き込んだだけで 763 問のバンドルが丸ごと
-  // 隠れ、同じ問題ばかり配信されていた。
-  const merged = new Map<string, MathOSProblem>()
-  for (const problem of verifiedMathOSProblems) merged.set(problem.problemHash, problem)
-  for (const problem of fromDb) merged.set(problem.problemHash, problem)
-  return [...merged.values()]
+  // The certified bundle is the delivery authority. Reading the large problems
+  // table here made every slash command depend on a slow full-table filter.
+  return verifiedMathOSProblems
 }
 
 async function replayedDelivery(
