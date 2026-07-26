@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-26T07:41:49.198892+00:00",
+  "generated_at": "2026-07-26T12:41:21.089181+00:00",
   "method": {
     "name": "MathOS Japanese entrance-mathematics structural pool",
     "numeric_variants_count_as_new": false,
@@ -7,6 +7,108 @@
     "selection_unit": "family_id + morphism_chain + constraint_skeleton + query_signature"
   },
   "problems": [
+    {
+      "accepted": true,
+      "answer_tex": "- \\frac{9}{17}",
+      "candidate_id": "construct:construct.mobius_fixed_points:402",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "MobiusToMatrix",
+          "Eigenstructure",
+          "FixedPointSolve"
+        ],
+        "lowering_chain": [
+          "rational_function",
+          "quadratic_equation",
+          "fixed_point_equation"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 8.58
+      },
+      "domain": "algebra",
+      "family_id": "construct.mobius_fixed_points",
+      "lift_certificate": {
+        "morphism_chain": [
+          "MobiusToMatrix",
+          "Eigenstructure",
+          "FixedPointSolve"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1908
+      },
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}9&9\\\\0&-8\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "関数 \\(f(x)=- \\frac{9 x}{8} - \\frac{9}{8}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "structure_key": "0dea4a35d5307045f3b07358fdc35fb8ad2a734bfb70e773211d8d1fbcedae7f",
+      "tool": "matrix_eigen",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "mobius_matrix_eigen_fixed_points"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "6",
+      "candidate_id": "construct:construct.mobius_iteration_period:948",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "MobiusToMatrix",
+          "MatrixPower",
+          "ScalarPeriod"
+        ],
+        "lowering_chain": [
+          "rational_function",
+          "function_composition",
+          "periodicity"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 2,
+        "score": 9.79
+      },
+      "domain": "algebra",
+      "family_id": "construct.mobius_iteration_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "MobiusToMatrix",
+          "MatrixPower",
+          "ScalarPeriod"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.218
+      },
+      "solution_tex": "\\(f\\) を行列 \\(M=\\begin{pmatrix}0&-6\\\\2&6\\end{pmatrix}\\) に対応させると \\(f_n\\leftrightarrow M^n\\)。\\(M^n\\) がスカラー行列になる最小の \\(n\\) が答え。固有値の比が1の原始冪根であることから定まる。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "関数 \\(f(x)=- \\frac{6}{2 x + 6}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f_n\\) が恒等写像となる最小の正の整数 \\(n\\) を求めよ。",
+      "structure_key": "2715ee12d84a06ec6df36e5f0a6bd403ccf28a0aec3abdb1838beb900d0fb59f",
+      "tool": "matrix_power",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "mobius_matrix_power_period"
+      }
+    },
     {
       "accepted": true,
       "answer_tex": "\\frac{1}{3 n - 2}",
@@ -2661,6 +2763,109 @@
     },
     {
       "accepted": true,
+      "answer_tex": "1230",
+      "candidate_id": "construct:layered.paley_triangle_count:496",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "QuadraticResidueGraph",
+          "EdgeCommonNeighbors",
+          "TriangleCount"
+        ],
+        "lowering_chain": [
+          "modular_arithmetic",
+          "quadratic_residues",
+          "counting_by_cases",
+          "combination_counting"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": {
+        "band": "B_hard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 8.18
+      },
+      "domain": "number_theory_graph",
+      "family_id": "layered.paley_triangle_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "QuadraticResidueGraph",
+          "EdgeCommonNeighbors",
+          "TriangleCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0845
+      },
+      "solution_tex": "各辺について共通隣接点は \\((p-5)/4\\) 個なので，三角形は \\(\\frac{p(p-1)}{2}\\cdot\\frac{p-5}{4}\\div3=\\frac{p(p-1)(p-5)}{48}\\) 個。\\(p=41\\) を代入して \\(1230\\)。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "素数 \\(p=41\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{41}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。\\(G\\) に含まれる三角形の個数を求めよ。",
+      "structure_key": "376d0cb02f4c4252ffe9d0650b9767e0c0ae3d18f2c6cd5a4cbcce826097dd7c",
+      "tool": "quadratic_residue+counting",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "paley_graph_triangle_enumeration_vs_closed_form"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\frac{10}{11}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:217",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "lowering_chain": [
+          "probability_recurrence",
+          "arithmetic_sequence",
+          "boundary_condition"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": {
+        "band": "D_textbook",
+        "condition": 0,
+        "construct": 0,
+        "score": 5.58
+      },
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "continuous_verified_problem_batch1",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1096
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{11}=1\\) より \\(p_k=k/11\\)。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "数直線上の点が \\(k=10\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=11\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "structure_key": "b19479dced4b6a044ac145c794677caf5bc66b23cecfe8e840105e5cee63512a",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "\\displaystyle\\sum_{k=1}^{n}\\frac1k",
       "candidate_id": "phase17_permutation_record_expectation",
       "curriculum_certificate": {
@@ -2871,6 +3076,76 @@
             }
           }
         }
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "24",
+      "candidate_id": "construct:ultradeep.gambler_absorption_variance_divisor_count:030",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "PathStateSpace",
+          "AbsorbingBoundary",
+          "SymmetricRandomWalk",
+          "HittingTime",
+          "FirstMomentConditioning",
+          "FirstMomentLinearSystem",
+          "SecondMomentConditioning",
+          "SecondMomentLinearSystem",
+          "VarianceTransform",
+          "IntegerInvariant",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "lowering_chain": [
+          "probability_recurrence",
+          "expectation_linearity",
+          "boundary_condition",
+          "divisor_counting"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": {
+        "band": "C_standard_university",
+        "condition": 0,
+        "construct": 1,
+        "score": 7.59
+      },
+      "domain": "probability_linear_algebra_number_theory",
+      "family_id": "ultradeep.gambler_absorption_variance_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PathStateSpace",
+          "AbsorbingBoundary",
+          "SymmetricRandomWalk",
+          "HittingTime",
+          "FirstMomentConditioning",
+          "FirstMomentLinearSystem",
+          "SecondMomentConditioning",
+          "SecondMomentLinearSystem",
+          "VarianceTransform",
+          "IntegerInvariant",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0773
+      },
+      "solution_tex": "一次モーメントの差分方程式から \\(E[T]=3(12-3)\\)。二次モーメントにも条件付けして解くと \\(\\operatorname{Var}(T)=\\frac{3(12-3)(12^2-2-2\\cdot 3(12-3))}{3}=792\\)。\\(792=2^{3}\\cdot 3^{2}\\cdot 11\\) より約数は \\(24\\) 個。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "点 \\(0,1,\\ldots,12\\) 上を動く対称ランダムウォークを考える。初期位置は \\(3\\) で，各時刻に確率 \\(\\frac12\\) ずつで左右に1動き，\\(0\\) または \\(12\\) に着いたら停止する。停止時刻を \\(T\\) とするとき，\\(\\operatorname{Var}(T)\\) の正の約数の個数を求めよ。",
+      "structure_key": "e26640a3a80433f827b2f25a575a5202426057207eeeb34337712e7610f9629c",
+      "tool": "absorbing_markov_moments+linear_system+factorization",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "closed_variance_formula_vs_exact_two_moment_linear_system"
       }
     },
     {
@@ -3552,9 +3827,9 @@
     }
   ],
   "summary": {
-    "certified_structures": 34,
+    "certified_structures": 39,
     "domain_counts": {
-      "algebra": 2,
+      "algebra": 4,
       "algebraic_geometry": 2,
       "algebraic_geometry_number_theory": 1,
       "analytic_geometry": 2,
@@ -3570,11 +3845,13 @@
       "geometry_analysis": 1,
       "linear_algebra_number_theory": 1,
       "number_theory": 2,
-      "probability": 1,
+      "number_theory_graph": 1,
+      "probability": 2,
+      "probability_linear_algebra_number_theory": 1,
       "projective_geometry": 1,
       "real_analysis": 5
     },
-    "families": 34,
+    "families": 39,
     "family_counts": {
       "algebraic_geometry.cubic_discriminant_triangle_area": 1,
       "algebraic_geometry.even_quartic_parabola_hull_area": 1,
@@ -3587,7 +3864,10 @@
       "construct.complex_affine_limit": 1,
       "construct.complex_rotation_period": 1,
       "construct.cubic_tangent_midpoint_locus": 1,
+      "construct.gambler_ruin_probability": 1,
       "construct.linear_recurrence_mod_period": 1,
+      "construct.mobius_fixed_points": 1,
+      "construct.mobius_iteration_period": 1,
       "construct.parabola_right_angle_chord": 1,
       "construct.reciprocal_recurrence": 1,
       "deep.polygon_subset_centroid": 1,
@@ -3597,6 +3877,7 @@
       "fusion.trig_floor_integral": 1,
       "lattice_paths.dyck_reflection_catalan_count": 1,
       "layered.cubic_tangent_iteration": 1,
+      "layered.paley_triangle_count": 1,
       "layered.recurrence_period_observable": 1,
       "layered.rotation_orbit_hull_area": 1,
       "passage_region.line_family_sweep": 1,
@@ -3606,21 +3887,22 @@
       "recurrence.cassini_fibonacci_determinant_invariant": 1,
       "ultradeep.cubic_root_triangle_discriminant_divisor_count": 1,
       "ultradeep.cyclotomic_distance_norm_divisor_count": 1,
+      "ultradeep.gambler_absorption_variance_divisor_count": 1,
       "ultradeep.geometry_astroid_envelope_area": 1,
       "ultradeep.geometry_ellipse_tangent_pair_locus": 1,
       "ultradeep.geometry_orthocenter_locus_area": 1,
       "ultradeep.geometry_parabola_normal_envelope": 1
     },
-    "geometry_algebra_structures": 24,
+    "geometry_algebra_structures": 27,
     "rejected": {
-      "same_structure_variant": 82,
-      "scope_lowering": 60
+      "same_structure_variant": 101,
+      "scope_lowering": 36
     },
     "source_counts": {
-      "construct_atlas": 18,
+      "construct_atlas": 23,
       "geometry_fusion": 4,
       "typed_continuous": 12
     },
-    "total_instances": 34
+    "total_instances": 39
   }
 }
