@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-26T12:43:37.052797+00:00",
+  "generated_at": "2026-07-27T11:57:09.459449+00:00",
   "method": {
     "name": "MathOS Japanese entrance-mathematics structural pool",
     "numeric_variants_count_as_new": false,
@@ -1990,6 +1990,330 @@
     },
     {
       "accepted": true,
+      "answer_exact": "3*sqrt(3)/4",
+      "answer_tex": "\\frac{3 \\sqrt{3}}{4}",
+      "candidate_id": "traceback:traceback.regular_polygon.area:0001",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "RegularPolygon",
+          "TriangleDecomposition",
+          "AreaSum"
+        ],
+        "lowering_chain": [
+          "trigonometric_ratio",
+          "triangle_decomposition",
+          "area_sum"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "B",
+      "domain": "complex_geometry",
+      "family_id": "traceback.regular_polygon.area",
+      "lift_certificate": {
+        "morphism_chain": [
+          "RegularPolygon",
+          "TriangleDecomposition",
+          "AreaSum"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "regular_polygon",
+        "depth": 4,
+        "hidden_intermediates": 1,
+        "node": "area",
+        "param": 3
+      },
+      "solution_tex": "中心と隣接2頂点が作る三角形 \\(3\\) 個に分割すると，面積は \\(\\frac{3}{2}\\sin\\frac{2\\pi}{3}\\)。",
+      "source_generator": "traceback_closure",
+      "statement_tex": "単位円に内接する正 \\(3\\) 角形の頂点を \\(z_j=\\cos\\frac{2\\pi j}{3}+i\\sin\\frac{2\\pi j}{3}\\ (j=0,1,\\ldots,2)\\) とする。この正多角形の面積を求めよ。",
+      "structure_key": "57b96bdb5ee798f683ea0e52e7181a8e112688cf9fc289560e69bbbe8bbe00e3",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "1",
+      "answer_tex": "1",
+      "candidate_id": "traceback:traceback.regular_polygon.centroid_zero_subsets:0004",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "RegularPolygon",
+          "SubsetFamily",
+          "VanishingSum",
+          "SymmetryCount"
+        ],
+        "lowering_chain": [
+          "complex_plane",
+          "symmetry",
+          "subset_counting"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "B",
+      "domain": "complex_geometry",
+      "family_id": "traceback.regular_polygon.centroid_zero_subsets",
+      "lift_certificate": {
+        "morphism_chain": [
+          "RegularPolygon",
+          "SubsetFamily",
+          "VanishingSum",
+          "SymmetryCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "regular_polygon",
+        "depth": 5,
+        "hidden_intermediates": 1,
+        "node": "centroid_zero_subsets",
+        "param": 3
+      },
+      "solution_tex": "重心が中心 ⟺ その部分集合の頂点の和が 0。巡回対称性から正多角形をなす部分集合とその合併が該当する。",
+      "source_generator": "traceback_closure",
+      "statement_tex": "単位円に内接する正 \\(3\\) 角形の頂点を \\(z_j=\\cos\\frac{2\\pi j}{3}+i\\sin\\frac{2\\pi j}{3}\\ (j=0,1,\\ldots,2)\\) とする。頂点の空でない部分集合であって，その重心が円の中心と一致するものの個数を求めよ。",
+      "structure_key": "28a0620167351a12fbf05031aee12432e3fa6a4cb0224ed03158357624ba15a3",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "0",
+      "answer_tex": "0",
+      "candidate_id": "traceback:traceback.regular_polygon.diagonal_count:0003",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "RegularPolygon",
+          "PairCounting",
+          "EdgeExclusion"
+        ],
+        "lowering_chain": [
+          "combination_counting"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "B",
+      "domain": "complex_geometry",
+      "family_id": "traceback.regular_polygon.diagonal_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "RegularPolygon",
+          "PairCounting",
+          "EdgeExclusion"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "regular_polygon",
+        "depth": 4,
+        "hidden_intermediates": 1,
+        "node": "diagonal_count",
+        "param": 3
+      },
+      "solution_tex": "頂点対は \\(\\binom{3}{2}\\) 通り，そのうち辺が \\(3\\) 本なので 対角線は \\(\\frac{3(3-3)}{2}\\) 本。",
+      "source_generator": "traceback_closure",
+      "statement_tex": "単位円に内接する正 \\(3\\) 角形の頂点を \\(z_j=\\cos\\frac{2\\pi j}{3}+i\\sin\\frac{2\\pi j}{3}\\ (j=0,1,\\ldots,2)\\) とする。この正多角形の対角線の本数を求めよ。",
+      "structure_key": "5e41c237bddec18ffcd240c76c8d49cd9e214119460211db02716e887f68a3b3",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "2",
+      "answer_tex": "2",
+      "candidate_id": "traceback:traceback.regular_polygon.distance_product_divisors:0005",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "RootOfUnity",
+          "PolynomialFactorization",
+          "DistanceProduct",
+          "IntegerValue",
+          "DivisorCount"
+        ],
+        "lowering_chain": [
+          "complex_plane",
+          "polynomial_factorization",
+          "divisor_counting"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "B",
+      "domain": "complex_geometry",
+      "family_id": "traceback.regular_polygon.distance_product_divisors",
+      "lift_certificate": {
+        "morphism_chain": [
+          "RootOfUnity",
+          "PolynomialFactorization",
+          "DistanceProduct",
+          "IntegerValue",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "regular_polygon",
+        "depth": 7,
+        "hidden_intermediates": 2,
+        "node": "distance_product_divisors",
+        "param": 3
+      },
+      "solution_tex": "上と同様に \\(L=3\\)。その約数の個数を数える。",
+      "source_generator": "traceback_closure",
+      "statement_tex": "単位円に内接する正 \\(3\\) 角形の頂点を \\(z_j=\\cos\\frac{2\\pi j}{3}+i\\sin\\frac{2\\pi j}{3}\\ (j=0,1,\\ldots,2)\\) とする。頂点 \\(z_0\\) から他の頂点までの距離の積を \\(L\\) とするとき，\\(L\\) の正の約数の個数を求めよ。",
+      "structure_key": "e6dfa90af9f48c5d67fcec63249ce763d9d7f5bcc80d19f3fcb9da303586a92f",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "9",
+      "answer_tex": "9",
+      "candidate_id": "traceback:traceback.regular_polygon.sum_sq_pairwise:0002",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "RegularPolygon",
+          "VectorSumVanishing",
+          "SquaredDistanceSum"
+        ],
+        "lowering_chain": [
+          "complex_plane",
+          "vector_sum",
+          "squared_distance"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "B",
+      "domain": "complex_geometry",
+      "family_id": "traceback.regular_polygon.sum_sq_pairwise",
+      "lift_certificate": {
+        "morphism_chain": [
+          "RegularPolygon",
+          "VectorSumVanishing",
+          "SquaredDistanceSum"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "regular_polygon",
+        "depth": 4,
+        "hidden_intermediates": 1,
+        "node": "sum_sq_pairwise",
+        "param": 3
+      },
+      "solution_tex": "\\(\\sum_j z_j=0\\) を使うと \\(\\sum_{i<k}|z_i-z_k|^2=n\\sum_j|z_j|^2-|\\sum_j z_j|^2=3^2\\)。",
+      "source_generator": "traceback_closure",
+      "statement_tex": "単位円に内接する正 \\(3\\) 角形の頂点を \\(z_j=\\cos\\frac{2\\pi j}{3}+i\\sin\\frac{2\\pi j}{3}\\ (j=0,1,\\ldots,2)\\) とする。相異なる2頂点の距離の平方の総和を求めよ。",
+      "structure_key": "1dc5b5ba0e49fc34ef60ba7df6f84a93b4aef226689350f5d04adef5b785d051",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "3",
+      "answer_tex": "3",
+      "candidate_id": "traceback:traceback.regular_polygon.vertex_distance_product:0000",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "RootOfUnity",
+          "PolynomialFactorization",
+          "LimitEvaluation",
+          "DistanceProduct"
+        ],
+        "lowering_chain": [
+          "complex_plane",
+          "polynomial_factorization",
+          "limit_evaluation"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "B",
+      "domain": "complex_geometry",
+      "family_id": "traceback.regular_polygon.vertex_distance_product",
+      "lift_certificate": {
+        "morphism_chain": [
+          "RootOfUnity",
+          "PolynomialFactorization",
+          "LimitEvaluation",
+          "DistanceProduct"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "regular_polygon",
+        "depth": 6,
+        "hidden_intermediates": 2,
+        "node": "vertex_distance_product",
+        "param": 3
+      },
+      "solution_tex": "\\(z^{3}-1=\\prod_j (z-z_j)\\) の両辺を \\(z-1\\) で割り \\(z\\to1\\) とすると 積は \\(3\\) に等しい。",
+      "source_generator": "traceback_closure",
+      "statement_tex": "単位円に内接する正 \\(3\\) 角形の頂点を \\(z_j=\\cos\\frac{2\\pi j}{3}+i\\sin\\frac{2\\pi j}{3}\\ (j=0,1,\\ldots,2)\\) とする。頂点 \\(z_0\\) から他の 2 個の頂点までの距離の積を求めよ。",
+      "structure_key": "0321e6727a65902e59421edc4d1a70ce4892955c7572d94d4f27f01fd69cfb93",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "4(y-50)^3=675x^2",
       "candidate_id": "construct:ultradeep.geometry_parabola_normal_envelope:024",
       "curriculum_certificate": {
@@ -2379,6 +2703,234 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "tangent_reintersection_iteration_closed_form"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "(-2)**n*t",
+      "answer_tex": "\\left(-2\\right)^{n} t",
+      "candidate_id": "traceback:traceback.cubic_tangent.iterate_x_n:0061",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "CubicCurve",
+          "TangentLine",
+          "RootSumRelation",
+          "GeometricIteration",
+          "GeneralTerm"
+        ],
+        "lowering_chain": [
+          "differentiation",
+          "geometric_sequence",
+          "general_term"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "B",
+      "domain": "geometry_algebra",
+      "family_id": "traceback.cubic_tangent.iterate_x_n",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CubicCurve",
+          "TangentLine",
+          "RootSumRelation",
+          "GeometricIteration",
+          "GeneralTerm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "cubic_tangent",
+        "depth": 6,
+        "hidden_intermediates": 1,
+        "node": "iterate_x_n",
+        "param": -9
+      },
+      "solution_tex": "1 回で \\(x\\mapsto -2x\\) なので \\(x_n=(-2)^n t\\)。",
+      "source_generator": "traceback_closure",
+      "statement_tex": "曲線 \\(C: y=x^{3} - 9 x\\) と，その上の点 \\(P_0(t,\\,f(t))\\)（\\(t>0\\)）を考える。接線が C と再び交わる点を次の点とする操作を \\(n\\) 回繰り返して得られる点の \\(x\\) 座標を求めよ。",
+      "structure_key": "faea94412b197b45a8fa3d261168b54ae4b1f629176620e54969a61a580e3a0d",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "log(2)",
+      "answer_tex": "\\log{\\left(2 \\right)}",
+      "candidate_id": "traceback:traceback.cubic_tangent.log_growth_limit:0062",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "CubicCurve",
+          "TangentLine",
+          "GeometricIteration",
+          "GeneralTerm",
+          "GrowthRate",
+          "LogarithmicLimit"
+        ],
+        "lowering_chain": [
+          "geometric_sequence",
+          "logarithm",
+          "limit_evaluation"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "B",
+      "domain": "geometry_algebra",
+      "family_id": "traceback.cubic_tangent.log_growth_limit",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CubicCurve",
+          "TangentLine",
+          "GeometricIteration",
+          "GeneralTerm",
+          "GrowthRate",
+          "LogarithmicLimit"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "cubic_tangent",
+        "depth": 7,
+        "hidden_intermediates": 1,
+        "node": "log_growth_limit",
+        "param": -9
+      },
+      "solution_tex": "\\(|x_n|=2^n|t|\\) より \\(\\frac{\\log|x_n|}{n}=\\log2+\\frac{\\log|t|}{n}\\to\\log2\\)。",
+      "source_generator": "traceback_closure",
+      "statement_tex": "曲線 \\(C: y=x^{3} - 9 x\\) と，その上の点 \\(P_0(t,\\,f(t))\\)（\\(t>0\\)）を考える。接線が C と再び交わる点を次の点とする操作を繰り返して得られる点の \\(x\\) 座標を \\(x_n\\) とするとき，\\(\\displaystyle\\lim_{n\\to\\infty}\\frac{\\log|x_n|}{n}\\) を求めよ。",
+      "structure_key": "2324500552db7d66a55c92e5dabf555a086a94607b41b3d9bea671b9a3cdd763",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "x*(28*x**2 - 9)",
+      "answer_tex": "x \\left(28 x^{2} - 9\\right)",
+      "candidate_id": "traceback:traceback.cubic_tangent.midpoint_locus:0063",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "CubicCurve",
+          "TangentLine",
+          "Reintersection",
+          "Midpoint",
+          "LocusElimination"
+        ],
+        "lowering_chain": [
+          "differentiation",
+          "midpoint",
+          "locus_elimination"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "B",
+      "domain": "geometry_algebra",
+      "family_id": "traceback.cubic_tangent.midpoint_locus",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CubicCurve",
+          "TangentLine",
+          "Reintersection",
+          "Midpoint",
+          "LocusElimination"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "cubic_tangent",
+        "depth": 6,
+        "hidden_intermediates": 1,
+        "node": "midpoint_locus",
+        "param": -9
+      },
+      "solution_tex": "中点の座標を \\(t\\) で表し，\\(t\\) を消去する。",
+      "source_generator": "traceback_closure",
+      "statement_tex": "曲線 \\(C: y=x^{3} - 9 x\\) と，その上の点 \\(P_0(t,\\,f(t))\\)（\\(t>0\\)）を考える。\\(P_0\\) と再交点の中点が描く軌跡を \\(y\\) について求めよ。",
+      "structure_key": "40c875ecc89e6cb6a7186dfe7ce9a73898e6e1e17f5825b1765bc0bb1ea3c5a2",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "-2*t",
+      "answer_tex": "- 2 t",
+      "candidate_id": "traceback:traceback.cubic_tangent.reintersection_x:0060",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "CubicCurve",
+          "TangentLine",
+          "RootSumRelation",
+          "Reintersection"
+        ],
+        "lowering_chain": [
+          "differentiation",
+          "cubic_equation",
+          "vieta_relations"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "B",
+      "domain": "geometry_algebra",
+      "family_id": "traceback.cubic_tangent.reintersection_x",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CubicCurve",
+          "TangentLine",
+          "RootSumRelation",
+          "Reintersection"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "cubic_tangent",
+        "depth": 5,
+        "hidden_intermediates": 1,
+        "node": "reintersection_x",
+        "param": -9
+      },
+      "solution_tex": "接点が重根になることと根の和が 0 であることから，残る根は \\(-2t\\)。",
+      "source_generator": "traceback_closure",
+      "statement_tex": "曲線 \\(C: y=x^{3} - 9 x\\) と，その上の点 \\(P_0(t,\\,f(t))\\)（\\(t>0\\)）を考える。\\(P_0\\) における接線が \\(C\\) と再び交わる点の \\(x\\) 座標を \\(t\\) で表せ。",
+      "structure_key": "30d129e967536d87508bed9ee287d945bdde8e619d191ac8998323e26e7d43eb",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
       }
     },
     {
@@ -3654,7 +4206,7 @@
     }
   ],
   "summary": {
-    "certified_structures": 36,
+    "certified_structures": 46,
     "domain_counts": {
       "algebra": 4,
       "algebraic_geometry": 2,
@@ -3664,11 +4216,11 @@
       "combinatorics_number_theory": 1,
       "complex": 2,
       "complex_algebra_number_theory": 1,
-      "complex_geometry": 4,
+      "complex_geometry": 10,
       "differential_geometry": 1,
       "euclidean_geometry": 1,
       "geometry": 3,
-      "geometry_algebra": 2,
+      "geometry_algebra": 6,
       "geometry_analysis": 1,
       "linear_algebra_number_theory": 1,
       "number_theory": 2,
@@ -3676,7 +4228,7 @@
       "projective_geometry": 1,
       "real_analysis": 5
     },
-    "families": 36,
+    "families": 46,
     "family_counts": {
       "algebraic_geometry.cubic_discriminant_triangle_area": 1,
       "algebraic_geometry.even_quartic_parabola_hull_area": 1,
@@ -3708,6 +4260,16 @@
       "polynomial.interpolation_harmonic_observable": 1,
       "probability.left_to_right_maxima_expectation": 1,
       "recurrence.cassini_fibonacci_determinant_invariant": 1,
+      "traceback.cubic_tangent.iterate_x_n": 1,
+      "traceback.cubic_tangent.log_growth_limit": 1,
+      "traceback.cubic_tangent.midpoint_locus": 1,
+      "traceback.cubic_tangent.reintersection_x": 1,
+      "traceback.regular_polygon.area": 1,
+      "traceback.regular_polygon.centroid_zero_subsets": 1,
+      "traceback.regular_polygon.diagonal_count": 1,
+      "traceback.regular_polygon.distance_product_divisors": 1,
+      "traceback.regular_polygon.sum_sq_pairwise": 1,
+      "traceback.regular_polygon.vertex_distance_product": 1,
       "ultradeep.cubic_root_triangle_discriminant_divisor_count": 1,
       "ultradeep.cyclotomic_distance_norm_divisor_count": 1,
       "ultradeep.geometry_astroid_envelope_area": 1,
@@ -3715,16 +4277,17 @@
       "ultradeep.geometry_orthocenter_locus_area": 1,
       "ultradeep.geometry_parabola_normal_envelope": 1
     },
-    "geometry_algebra_structures": 26,
+    "geometry_algebra_structures": 36,
     "rejected": {
-      "same_structure_variant": 89,
+      "same_structure_variant": 179,
       "scope_lowering": 51
     },
     "source_counts": {
       "construct_atlas": 20,
       "geometry_fusion": 4,
+      "traceback_closure": 10,
       "typed_continuous": 12
     },
-    "total_instances": 36
+    "total_instances": 46
   }
 }
