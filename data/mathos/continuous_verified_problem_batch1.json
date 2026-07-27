@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-27T11:57:09.459449+00:00",
+  "generated_at": "2026-07-27T16:44:31.517168+00:00",
   "method": {
     "name": "MathOS Japanese entrance-mathematics structural pool",
     "numeric_variants_count_as_new": false,
@@ -9,8 +9,9 @@
   "problems": [
     {
       "accepted": true,
-      "answer_tex": "- \\frac{9}{17}",
-      "candidate_id": "construct:construct.mobius_fixed_points:402",
+      "answer_exact": "1, 3",
+      "answer_tex": "1, 3",
+      "candidate_id": "construct:construct.mobius_fixed_points:035",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "MobiusToMatrix",
@@ -19,19 +20,15 @@
         ],
         "lowering_chain": [
           "rational_function",
+          "function_composition",
           "quadratic_equation",
-          "fixed_point_equation"
+          "simultaneous_equations"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": {
-        "band": "B_hard_university",
-        "condition": 0,
-        "construct": 2,
-        "score": 8.58
-      },
+      "difficulty": "A",
       "domain": "algebra",
       "family_id": "construct.mobius_fixed_points",
       "lift_certificate": {
@@ -43,13 +40,19 @@
         "type_checked": true
       },
       "novelty": {
-        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1908
+        "maximum_surface_jaccard": 0.0
       },
-      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}9&9\\\\0&-8\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
+      "parameters": {
+        "a": 5,
+        "b": -3,
+        "c": 1,
+        "d": 1,
+        "question": "fixed"
+      },
+      "solution_tex": "\\(f(x)=x\\) は \\((cx+d)x=ax+b\\)、すなわち二次方程式に帰着し，その解が不動点。行列 \\(M=\\begin{pmatrix}5&-3\\\\1&1\\end{pmatrix}\\) の固有ベクトルの傾きに対応する。",
       "source_generator": "construct_atlas",
-      "statement_tex": "関数 \\(f(x)=- \\frac{9 x}{8} - \\frac{9}{8}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
+      "statement_tex": "関数 \\(f(x)=\\frac{5 x - 3}{x + 1}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f\\) の不動点をすべて求めよ。",
       "structure_key": "0dea4a35d5307045f3b07358fdc35fb8ad2a734bfb70e773211d8d1fbcedae7f",
       "tool": "matrix_eigen",
       "verification": {
@@ -60,59 +63,9 @@
     },
     {
       "accepted": true,
-      "answer_tex": "6",
-      "candidate_id": "construct:construct.mobius_iteration_period:948",
-      "curriculum_certificate": {
-        "abstract_morphism_chain": [
-          "MobiusToMatrix",
-          "MatrixPower",
-          "ScalarPeriod"
-        ],
-        "lowering_chain": [
-          "rational_function",
-          "function_composition",
-          "periodicity"
-        ],
-        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
-        "type_checked": true,
-        "uses_only_school_level_primitives": true
-      },
-      "difficulty": {
-        "band": "B_hard_university",
-        "condition": 0,
-        "construct": 2,
-        "score": 9.79
-      },
-      "domain": "algebra",
-      "family_id": "construct.mobius_iteration_period",
-      "lift_certificate": {
-        "morphism_chain": [
-          "MobiusToMatrix",
-          "MatrixPower",
-          "ScalarPeriod"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "continuous_verified_problem_batch1",
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.218
-      },
-      "solution_tex": "\\(f\\) を行列 \\(M=\\begin{pmatrix}0&-6\\\\2&6\\end{pmatrix}\\) に対応させると \\(f_n\\leftrightarrow M^n\\)。\\(M^n\\) がスカラー行列になる最小の \\(n\\) が答え。固有値の比が1の原始冪根であることから定まる。",
-      "source_generator": "construct_atlas",
-      "statement_tex": "関数 \\(f(x)=- \\frac{6}{2 x + 6}\\) を定める。合成を \\(f_1=f,\\ f_{n+1}=f\\circ f_n\\) で帰納的に定める。\\(f_n\\) が恒等写像となる最小の正の整数 \\(n\\) を求めよ。",
-      "structure_key": "2715ee12d84a06ec6df36e5f0a6bd403ccf28a0aec3abdb1838beb900d0fb59f",
-      "tool": "matrix_power",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "mobius_matrix_power_period"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_tex": "\\frac{1}{3 n - 2}",
-      "candidate_id": "construct:construct.reciprocal_recurrence:076",
+      "answer_exact": "1/n",
+      "answer_tex": "\\frac{1}{n}",
+      "candidate_id": "construct:construct.reciprocal_recurrence:043",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "ReciprocalTransform",
@@ -121,19 +74,14 @@
         ],
         "lowering_chain": [
           "recurrence",
-          "algebraic_transform",
-          "sequence_limit"
+          "algebraic_identity",
+          "general_term"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": {
-        "band": "C_standard_university",
-        "condition": 0,
-        "construct": 1,
-        "score": 6.41
-      },
+      "difficulty": "A",
       "domain": "algebra",
       "family_id": "construct.reciprocal_recurrence",
       "lift_certificate": {
@@ -145,14 +93,16 @@
         "type_checked": true
       },
       "novelty": {
-        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.3895
+        "maximum_surface_jaccard": 0.0
       },
-      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=1b_n+3\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
+      "parameters": {
+        "p": 1,
+        "q": 1
+      },
+      "solution_tex": "逆数 \\(b_n=1/a_n\\) をとると \\(b_{n+1}=1b_n+1\\)（高校：逆数変換で線形漸化式）。これを解いて \\(a_n=1/b_n\\)。",
       "source_generator": "construct_atlas",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{1+3a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_1=1,\\ a_{n+1}=\\dfrac{a_n}{1+a_n}\\) で定める。一般項 \\(a_n\\) を求めよ。",
       "structure_key": "200e423f84a3bf56bc1e01f343cbdf0e1f128c406b5c17413744ec05ac6a1be8",
       "tool": "reciprocal_transform",
       "verification": {
@@ -174,8 +124,11 @@
         ],
         "lowering_chain": [
           "polynomial_factorization",
-          "finite_difference",
-          "differentiation"
+          "simultaneous_equations",
+          "roots_of_unity",
+          "sum_of_series",
+          "differentiation",
+          "remainder_theorem"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
@@ -359,6 +312,201 @@
     },
     {
       "accepted": true,
+      "answer_tex": "\\displaystyle\\frac{n(n+3)}{4(n+1)(n+2)}",
+      "candidate_id": "phase13_telescoping_triple_partial_fraction",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "PartialFraction",
+          "TelescopeCollapse",
+          "SimplifyRational"
+        ],
+        "lowering_chain": [
+          "rational_function",
+          "algebraic_identity",
+          "sum_of_series"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "domain": "algebra",
+      "family_id": "series.telescoping_triple_partial_fraction",
+      "lift_certificate": {
+        "errors": [],
+        "family_id": "series.telescoping_triple_partial_fraction",
+        "morphism_chain": [
+          "PartialFraction",
+          "TelescopeCollapse",
+          "SimplifyRational"
+        ],
+        "query_sort": "RationalFunction",
+        "type_checked": true,
+        "typed_edges": [
+          {
+            "codomain": "TelescopingDifferenceFamily",
+            "domain": "RationalTermFamily",
+            "name": "PartialFraction"
+          },
+          {
+            "codomain": "BoundaryTermFamily",
+            "domain": "TelescopingDifferenceFamily",
+            "name": "TelescopeCollapse"
+          },
+          {
+            "codomain": "RationalFunction",
+            "domain": "BoundaryTermFamily",
+            "name": "SimplifyRational"
+          }
+        ]
+      },
+      "morphisms": [
+        {
+          "codomain": "TelescopingDifferenceFamily",
+          "domain": "RationalTermFamily",
+          "name": "PartialFraction"
+        },
+        {
+          "codomain": "BoundaryTermFamily",
+          "domain": "TelescopingDifferenceFamily",
+          "name": "TelescopeCollapse"
+        },
+        {
+          "codomain": "RationalFunction",
+          "domain": "BoundaryTermFamily",
+          "name": "SimplifyRational"
+        }
+      ],
+      "novelty": {
+        "closest": [
+          {
+            "id": "phase07_binomial_beta_duality",
+            "score": 0.4684,
+            "source": "current_batch"
+          },
+          {
+            "id": "phase09_finite_field_inverse_square_product",
+            "score": 0.1919,
+            "source": "current_batch"
+          },
+          {
+            "id": "phase05_cycle_laplacian_pseudodeterminant",
+            "score": 0.1217,
+            "source": "current_batch"
+          },
+          {
+            "id": "phase12_boundary_layer_integral_limit",
+            "score": 0.1132,
+            "source": "current_batch"
+          },
+          {
+            "id": "phase02_reciprocal_complex_root_polygon",
+            "score": 0.1027,
+            "source": "current_batch"
+          }
+        ],
+        "comparison_counts": {
+          "external": 0,
+          "previously_generated": 13,
+          "public": 0,
+          "self_authored": 0,
+          "total": 13
+        },
+        "corpus_novel": true,
+        "exact_matches": [],
+        "maximum_surface_jaccard": 0.4684,
+        "scope_note": "Novelty combines a surface n-gram collision test over the public, self-authored, previously generated, and external corpora with a structural check on family id and morphism-chain signature. It is not a proof of worldwide historical originality.",
+        "structural": {
+          "chain_collision": false,
+          "compared_prior_chains": 13,
+          "compared_prior_families": 13,
+          "family_collision": false,
+          "family_id": "series.telescoping_triple_partial_fraction",
+          "morphism_chain_signature": "PartialFraction>TelescopeCollapse>SimplifyRational",
+          "structural_novel": true
+        },
+        "surface_novel": true,
+        "threshold": 0.78
+      },
+      "phase_diagram": {
+        "mechanism": "partial fraction then telescoping cancellation",
+        "parameter": "upper limit n",
+        "tested_values": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39
+        ]
+      },
+      "query_sort": "RationalFunction",
+      "semantic_parser_observation": {
+        "canonical_signature": "1e1fffaba1a48cf48d2531d3",
+        "definitions": [
+          "Equals",
+          "Find",
+          "FiniteSum",
+          "Integer",
+          "Natural"
+        ],
+        "morphism_chain": [
+          "FiniteSum"
+        ],
+        "note": "This is an independent parser observation. Acceptance uses the declared generation certificate and backend verification.",
+        "query_signature": "compute:FiniteSum:v0",
+        "status": "observed",
+        "type_checked": true,
+        "warnings": []
+      },
+      "solution_tex": "部分分数分解 \\(\\frac1{k(k+1)(k+2)}=\\frac12\\!\\left(\\frac1{k(k+1)}-\\frac1{(k+1)(k+2)}\\right)\\) を用いる。和は望遠鏡的に打ち消し合い，\\(\\frac12\\!\\left(\\frac12-\\frac1{(n+1)(n+2)}\\right)=\\frac{n(n+3)}{4(n+1)(n+2)}\\) となる。",
+      "source_generator": "typed_continuous",
+      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=1}^{n}\\frac1{k(k+1)(k+2)}\\) を求めよ。",
+      "structure_key": "be41a9aca8fbc1251e5fb503f8c6d265fa38426dd3879326afafb1037f24b474",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_summation_plus_numeric_partial_sums",
+        "trace": {
+          "closed_form": "n*(n + 3)/(4*(n + 1)*(n + 2))",
+          "symbolic_sum": "n*(n + 3)/(4*(n + 1)*(n + 2))"
+        }
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "3\\sqrt3",
       "candidate_id": "phase01b_cubic_discriminant_triangle",
       "curriculum_certificate": {
@@ -370,10 +518,13 @@
           "Maximum"
         ],
         "lowering_chain": [
-          "polynomial_roots",
-          "vieta_relations",
-          "coordinate_area",
-          "one_variable_extremum"
+          "polynomial_factorization",
+          "parabola",
+          "coordinate_geometry",
+          "area_shoelace",
+          "quadratic_discriminant",
+          "extremum",
+          "differentiation"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
@@ -543,10 +694,13 @@
           "Maximum"
         ],
         "lowering_chain": [
-          "polynomial_roots",
-          "vieta_relations",
-          "coordinate_area",
-          "one_variable_extremum"
+          "polynomial_factorization",
+          "parabola",
+          "coordinate_geometry",
+          "convex_hull",
+          "area_shoelace",
+          "extremum",
+          "differentiation"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
@@ -708,8 +862,9 @@
     },
     {
       "accepted": true,
-      "answer_tex": "54",
-      "candidate_id": "construct:ultradeep.cubic_root_triangle_discriminant_divisor_count:015",
+      "answer_exact": "14",
+      "answer_tex": "14",
+      "candidate_id": "construct:ultradeep.cubic_root_triangle_discriminant_divisor_count:060",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CubicPolynomial",
@@ -725,21 +880,26 @@
           "ArithmeticObservation"
         ],
         "lowering_chain": [
-          "polynomial_roots",
+          "polynomial_expansion",
           "vieta_relations",
-          "coordinate_area",
-          "integer_factorization"
+          "differentiation",
+          "extremum",
+          "quadratic_discriminant",
+          "parabola",
+          "coordinate_geometry",
+          "triangle_area",
+          "polynomial_factorization",
+          "algebraic_identity",
+          "area_shoelace",
+          "integer_arithmetic",
+          "prime_factorization",
+          "divisor_counting"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": {
-        "band": "B_hard_university",
-        "condition": 0,
-        "construct": 2,
-        "score": 13.92
-      },
+      "difficulty": "A",
       "domain": "algebraic_geometry_number_theory",
       "family_id": "ultradeep.cubic_root_triangle_discriminant_divisor_count",
       "lift_certificate": {
@@ -759,13 +919,16 @@
         "type_checked": true
       },
       "novelty": {
-        "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1354
+        "maximum_surface_jaccard": 0.0
       },
-      "solution_tex": "Vandermonde 行列式から \\(4S^2\\) は三次式の判別式に等しい。判別式は \\(27(4\\cdot 4^6-(-16)^2)=27\\cdot 16128\\) だから \\(M=16128=2^{8}\\cdot 3^{2}\\cdot 7\\)。したがって正の約数は \\(54\\) 個。",
+      "parameters": {
+        "a": 2,
+        "t": -8
+      },
+      "solution_tex": "Vandermonde 行列式から \\(4S^2\\) は三次式の判別式に等しい。判別式は \\(27(4\\cdot 2^6-(-8)^2)=27\\cdot 192\\) だから \\(M=192=2^{6}\\cdot 3\\)。したがって正の約数は \\(14\\) 個。",
       "source_generator": "construct_atlas",
-      "statement_tex": "方程式 \\(x^3-48x+(-16)=0\\) の3実根を \\(\\alpha,\\beta,\\gamma\\) とする。放物線 \\(y=x^2\\) 上の3点 \\((\\alpha,\\alpha^2),(\\beta,\\beta^2),(\\gamma,\\gamma^2)\\) が作る三角形の面積を \\(S\\) とし，\\(M=\\frac{4S^2}{27}\\) と定める。\\(M\\) が整数であることを示し，\\(M\\) の正の約数の個数を求めよ。",
+      "statement_tex": "方程式 \\(x^3-12x+(-8)=0\\) の3実根を \\(\\alpha,\\beta,\\gamma\\) とする。放物線 \\(y=x^2\\) 上の3点 \\((\\alpha,\\alpha^2),(\\beta,\\beta^2),(\\gamma,\\gamma^2)\\) が作る三角形の面積を \\(S\\) とし，\\(M=\\frac{4S^2}{27}\\) と定める。\\(M\\) が整数であることを示し，\\(M\\) の正の約数の個数を求めよ。",
       "structure_key": "e0a264f1914bea36208952b3901948c9cc08ddf904503d5c863c15ce4bbc2546",
       "tool": "cubic_discriminant+vandermonde_area+numeric_roots",
       "verification": {
@@ -787,10 +950,15 @@
           "Minimum"
         ],
         "lowering_chain": [
-          "differentiation",
           "tangent_line",
-          "centroid",
-          "quadratic_minimum"
+          "parameter_elimination",
+          "line_equation",
+          "coordinate_geometry",
+          "midpoint",
+          "complex_modulus",
+          "distance_formula",
+          "extremum",
+          "differentiation"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
@@ -963,8 +1131,9 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{105 \\pi}{8}",
-      "candidate_id": "construct:ultradeep.geometry_astroid_envelope_area:026",
+      "answer_exact": "3*pi/2",
+      "answer_tex": "\\frac{3 \\pi}{2}",
+      "candidate_id": "construct:ultradeep.geometry_astroid_envelope_area:061",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CircleParameter",
@@ -979,22 +1148,22 @@
           "AreaObservation"
         ],
         "lowering_chain": [
-          "trigonometric_parameter",
-          "tangent_line",
+          "circle_equation",
+          "ellipse",
+          "coordinate_geometry",
+          "line_equation",
           "parameter_elimination",
-          "definite_integral",
-          "area"
+          "envelope",
+          "differentiation",
+          "parametric_curve",
+          "area_integral",
+          "definite_integral"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": {
-        "band": "B_hard_university",
-        "condition": 0,
-        "construct": 0,
-        "score": 8.87
-      },
+      "difficulty": "A",
       "domain": "analytic_geometry",
       "family_id": "ultradeep.geometry_astroid_envelope_area",
       "lift_certificate": {
@@ -1013,13 +1182,16 @@
         "type_checked": true
       },
       "novelty": {
-        "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.123
+        "maximum_surface_jaccard": 0.0
       },
-      "solution_tex": "直線族を \\(F=\\frac{x}{5\\cos\\theta}+\\frac{y}{7\\sin\\theta}-1=0\\) とする。\\(F=F_\\theta=0\\) から \\(x=5\\cos^3\\theta,\\ y=7\\sin^3\\theta\\)。したがって包絡線はアステロイドであり，Greenの公式より \\(\\frac12\\oint(x\\,dy-y\\,dx)=\\frac{105 \\pi}{8}\\)。",
+      "parameters": {
+        "a": 2,
+        "b": 2
+      },
+      "solution_tex": "直線族を \\(F=\\frac{x}{2\\cos\\theta}+\\frac{y}{2\\sin\\theta}-1=0\\) とする。\\(F=F_\\theta=0\\) から \\(x=2\\cos^3\\theta,\\ y=2\\sin^3\\theta\\)。したがって包絡線はアステロイドであり，Greenの公式より \\(\\frac12\\oint(x\\,dy-y\\,dx)=\\frac{3 \\pi}{2}\\)。",
       "source_generator": "construct_atlas",
-      "statement_tex": "\\(0<\\theta<\\frac{\\pi}{2}\\) に対し，点 \\(A_\\theta=(5\\cos\\theta,0)\\), \\(B_\\theta=(0,7\\sin\\theta)\\) をとる。直線 \\(A_\\theta B_\\theta\\) を対称性により全象限へ拡張して得られる直線族の包絡線が囲む面積を求めよ。",
+      "statement_tex": "\\(0<\\theta<\\frac{\\pi}{2}\\) に対し，点 \\(A_\\theta=(2\\cos\\theta,0)\\), \\(B_\\theta=(0,2\\sin\\theta)\\) をとる。直線 \\(A_\\theta B_\\theta\\) を対称性により全象限へ拡張して得られる直線族の包絡線が囲む面積を求めよ。",
       "structure_key": "568e4bfe2943fff66d01fdc92759fe1edd68d750a9f041c4e15177ba8fcc8335",
       "tool": "line_envelope+stationarity+numeric_shoelace",
       "verification": {
@@ -1039,9 +1211,10 @@
           "BinomialDifference"
         ],
         "lowering_chain": [
-          "lattice_path",
+          "counting",
           "combination",
-          "reflection_bijection"
+          "symmetry",
+          "algebraic_identity"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
@@ -1210,6 +1383,535 @@
     },
     {
       "accepted": true,
+      "answer_exact": "8",
+      "answer_tex": "8",
+      "candidate_id": "construct:traceback.lattice_path.catalan_divisor_count:020",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "PathStateSpace",
+          "ReflectionBijection",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "lowering_chain": [
+          "counting",
+          "recurrence",
+          "combination",
+          "symmetry",
+          "prime_factorization",
+          "divisor_counting"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "combinatorics",
+      "family_id": "traceback.lattice_path.catalan_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PathStateSpace",
+          "ReflectionBijection",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "lattice_path",
+        "depth": 6,
+        "hidden_intermediates": 2,
+        "node": "catalan_divisor_count",
+        "param": 5
+      },
+      "solution_tex": "鏡映で経路数を求めたのち素因数分解する。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "格子点 \\((0,0)\\) から \\((5,5)\\) まで，右または上に 1 ずつ進んで到達する最短経路を考える。対角線より上に出ない経路の総数の正の約数の個数を求めよ。",
+      "structure_key": "b821a93c351155ad7cc5f07e1286d2626f34aa8db34f8eb9ab044927078c7233",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "42",
+      "answer_tex": "42",
+      "candidate_id": "construct:traceback.lattice_path.catalan_paths:017",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "PathStateSpace",
+          "ReflectionBijection",
+          "SubsetCount"
+        ],
+        "lowering_chain": [
+          "counting",
+          "recurrence",
+          "combination",
+          "symmetry"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "combinatorics",
+      "family_id": "traceback.lattice_path.catalan_paths",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PathStateSpace",
+          "ReflectionBijection",
+          "SubsetCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "lattice_path",
+        "depth": 4,
+        "hidden_intermediates": 1,
+        "node": "catalan_paths",
+        "param": 5
+      },
+      "solution_tex": "越える経路を \\(y=x+1\\) で鏡映すると別の端点への経路と1対1に対応し，差を取ってカタラン数を得る。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "格子点 \\((0,0)\\) から \\((5,5)\\) まで，右または上に 1 ずつ進んで到達する最短経路を考える。直線 \\(y=x\\) より上側に出ない経路は何通りあるか。",
+      "structure_key": "fe64053dc25ea51536c4509f2cc8d4705afa403746a23a06b71906114d3c62a5",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "14",
+      "answer_tex": "14",
+      "candidate_id": "construct:traceback.lattice_path.strictly_above_paths:018",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "PathStateSpace",
+          "ReflectionBijection",
+          "SubsetCount"
+        ],
+        "lowering_chain": [
+          "counting",
+          "recurrence",
+          "combination",
+          "symmetry"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "combinatorics",
+      "family_id": "traceback.lattice_path.strictly_above_paths",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PathStateSpace",
+          "ReflectionBijection",
+          "SubsetCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "lattice_path",
+        "depth": 4,
+        "hidden_intermediates": 1,
+        "node": "strictly_above_paths",
+        "param": 5
+      },
+      "solution_tex": "最初と最後の一歩を固定し，残りに鏡映の議論を適用する。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "格子点 \\((0,0)\\) から \\((5,5)\\) まで，右または上に 1 ずつ進んで到達する最短経路を考える。出発直後から到着直前まで直線 \\(y=x\\) に一度も触れない経路は何通りあるか。",
+      "structure_key": "1c824b489a9b32e9daff6b663d040f0be46fef7d7afa329a14c550c6be2ec08c",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "400",
+      "answer_tex": "400",
+      "candidate_id": "construct:traceback.lattice_path.through_center_paths:021",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "PathStateSpace",
+          "SubsetCount"
+        ],
+        "lowering_chain": [
+          "counting",
+          "recurrence",
+          "combination"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "combinatorics",
+      "family_id": "traceback.lattice_path.through_center_paths",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PathStateSpace",
+          "SubsetCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "lattice_path",
+        "depth": 3,
+        "hidden_intermediates": 1,
+        "node": "through_center_paths",
+        "param": 6
+      },
+      "solution_tex": "中点までとそこからの経路数の積を取る。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "格子点 \\((0,0)\\) から \\((6,6)\\) まで，右または上に 1 ずつ進んで到達する最短経路を考える。点 \\((3,3)\\) を通る経路は何通りあるか。",
+      "structure_key": "a15416bb9772279339225840ea27efd2e6093e1a042293067a2aea033b368776",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "252",
+      "answer_tex": "252",
+      "candidate_id": "construct:traceback.lattice_path.total_paths:016",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "PathStateSpace",
+          "SubsetCount"
+        ],
+        "lowering_chain": [
+          "counting",
+          "recurrence",
+          "combination"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "combinatorics",
+      "family_id": "traceback.lattice_path.total_paths",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PathStateSpace",
+          "SubsetCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "lattice_path",
+        "depth": 3,
+        "hidden_intermediates": 1,
+        "node": "total_paths",
+        "param": 5
+      },
+      "solution_tex": "\\(2n\\) 回の移動のうち右を選ぶ位置を決めればよく \\(\\binom{10}{5}\\)。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "格子点 \\((0,0)\\) から \\((5,5)\\) まで，右または上に 1 ずつ進んで到達する最短経路を考える。経路は全部で何通りあるか。",
+      "structure_key": "5f23d6766115875ce34189e92e8464890633111374d2fd2e7dc5c3351eceb3c7",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "18",
+      "answer_tex": "18",
+      "candidate_id": "construct:traceback.lattice_path.total_paths_divisor_count:019",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "PathStateSpace",
+          "SubsetCount",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "lowering_chain": [
+          "counting",
+          "recurrence",
+          "combination",
+          "prime_factorization",
+          "divisor_counting"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "combinatorics",
+      "family_id": "traceback.lattice_path.total_paths_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PathStateSpace",
+          "SubsetCount",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "lattice_path",
+        "depth": 5,
+        "hidden_intermediates": 1,
+        "node": "total_paths_divisor_count",
+        "param": 5
+      },
+      "solution_tex": "総数を素因数分解し，指数に1を足して掛ける。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "格子点 \\((0,0)\\) から \\((5,5)\\) まで，右または上に 1 ずつ進んで到達する最短経路を考える。経路の総数の正の約数の個数を求めよ。",
+      "structure_key": "f59184d2437289f7a5f05c7da3312a7e866bca9ccc36fbb8fb09778d4a6c9fb4",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\displaystyle\\frac{(n!)^2}{(2n+1)!}",
+      "candidate_id": "phase07_binomial_beta_duality",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "BinomialExpansion",
+          "IntegralTransform",
+          "BetaEvaluation"
+        ],
+        "lowering_chain": [
+          "polynomial_expansion",
+          "combination",
+          "definite_integral"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "domain": "combinatorics_analysis",
+      "family_id": "binomial.beta_integral_duality",
+      "lift_certificate": {
+        "errors": [],
+        "family_id": "binomial.beta_integral_duality",
+        "morphism_chain": [
+          "BinomialExpansion",
+          "IntegralTransform",
+          "BetaEvaluation"
+        ],
+        "query_sort": "RationalFunction",
+        "type_checked": true,
+        "typed_edges": [
+          {
+            "codomain": "Polynomial",
+            "domain": "FiniteBinomialSum",
+            "name": "BinomialExpansion"
+          },
+          {
+            "codomain": "BetaIntegral",
+            "domain": "Polynomial",
+            "name": "IntegralTransform"
+          },
+          {
+            "codomain": "RationalFunction",
+            "domain": "BetaIntegral",
+            "name": "BetaEvaluation"
+          }
+        ]
+      },
+      "morphisms": [
+        {
+          "codomain": "Polynomial",
+          "domain": "FiniteBinomialSum",
+          "name": "BinomialExpansion"
+        },
+        {
+          "codomain": "BetaIntegral",
+          "domain": "Polynomial",
+          "name": "IntegralTransform"
+        },
+        {
+          "codomain": "RationalFunction",
+          "domain": "BetaIntegral",
+          "name": "BetaEvaluation"
+        }
+      ],
+      "novelty": {
+        "closest": [
+          {
+            "id": "phase05_cycle_laplacian_pseudodeterminant",
+            "score": 0.1102,
+            "source": "current_batch"
+          },
+          {
+            "id": "phase02_reciprocal_complex_root_polygon",
+            "score": 0.1019,
+            "source": "current_batch"
+          },
+          {
+            "id": "phase03_finite_field_quadratic_zero_count",
+            "score": 0.0833,
+            "source": "current_batch"
+          },
+          {
+            "id": "phase06_random_bridge_zero_observable",
+            "score": 0.0809,
+            "source": "current_batch"
+          },
+          {
+            "id": "phase01b_cubic_discriminant_triangle",
+            "score": 0.0638,
+            "source": "current_batch"
+          }
+        ],
+        "comparison_counts": {
+          "external": 0,
+          "previously_generated": 7,
+          "public": 0,
+          "self_authored": 0,
+          "total": 7
+        },
+        "corpus_novel": true,
+        "exact_matches": [],
+        "maximum_surface_jaccard": 0.1102,
+        "scope_note": "Novelty combines a surface n-gram collision test over the public, self-authored, previously generated, and external corpora with a structural check on family id and morphism-chain signature. It is not a proof of worldwide historical originality.",
+        "structural": {
+          "chain_collision": false,
+          "compared_prior_chains": 7,
+          "compared_prior_families": 7,
+          "family_collision": false,
+          "family_id": "binomial.beta_integral_duality",
+          "morphism_chain_signature": "BinomialExpansion>IntegralTransform>BetaEvaluation",
+          "structural_novel": true
+        },
+        "surface_novel": true,
+        "threshold": 0.78
+      },
+      "phase_diagram": {
+        "duality": "alternating finite sum <-> beta integral",
+        "parameter": "n",
+        "tested_values": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24
+        ]
+      },
+      "query_sort": "RationalFunction",
+      "semantic_parser_observation": {
+        "canonical_signature": "838fa280041632ed6b05e807",
+        "definitions": [
+          "Equals",
+          "Find",
+          "FiniteSum",
+          "Integer",
+          "Natural"
+        ],
+        "morphism_chain": [
+          "FiniteSum"
+        ],
+        "note": "This is an independent parser observation. Acceptance uses the declared generation certificate and backend verification.",
+        "query_signature": "compute:FiniteSum:v0",
+        "status": "observed",
+        "type_checked": true,
+        "warnings": []
+      },
+      "solution_tex": "\\((1-x)^n=\\sum_{k=0}^n(-1)^k\\binom nkx^k\\) に \\(x^n\\) を掛けて \\(0\\) から \\(1\\) まで積分する。左辺はベータ積分 \\(B(n+1,n+1)=(n!)^2/(2n+1)!\\)，右辺は問題の和になる。",
+      "source_generator": "typed_continuous",
+      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{k=0}^{n}(-1)^k\\binom{n}{k}\\frac1{n+k+1}\\) を求めよ。",
+      "structure_key": "afe69d6239466f55e12cf0890ba37192d7c8d9714d3fc7b7fd7d6ef28151fc3b",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "exact_finite_sum_plus_beta_integral_identity",
+        "trace": {
+          "tested_values": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24
+          ]
+        }
+      }
+    },
+    {
+      "accepted": true,
       "answer_tex": "\\displaystyle\\frac{2^n+2\\cos\\frac{n\\pi}3}{3}",
       "candidate_id": "phase14_roots_of_unity_binomial_filter",
       "curriculum_certificate": {
@@ -1219,9 +1921,11 @@
           "TrigonometricNormalForm"
         ],
         "lowering_chain": [
-          "binomial_theorem",
-          "complex_plane",
-          "roots_of_unity"
+          "combination",
+          "polynomial_expansion",
+          "roots_of_unity",
+          "sum_of_series",
+          "trigonometric_identity"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
@@ -1439,8 +2143,9 @@
     },
     {
       "accepted": true,
-      "answer_tex": "-1 + 2 i",
-      "candidate_id": "construct:construct.complex_affine_limit:084",
+      "answer_exact": "I",
+      "answer_tex": "i",
+      "candidate_id": "construct:construct.complex_affine_limit:044",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "FixedPointShift",
@@ -1448,20 +2153,17 @@
           "ComplexLimit"
         ],
         "lowering_chain": [
-          "complex_number",
+          "recurrence",
+          "algebraic_identity",
           "geometric_sequence",
-          "sequence_limit"
+          "limit",
+          "complex_plane"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": {
-        "band": "B_hard_university",
-        "condition": 0,
-        "construct": 1,
-        "score": 10.89
-      },
+      "difficulty": "A",
       "domain": "complex",
       "family_id": "construct.complex_affine_limit",
       "lift_certificate": {
@@ -1473,14 +2175,16 @@
         "type_checked": true
       },
       "novelty": {
-        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "exact_jukenmath_collision": false,
-        "maximum_surface_jaccard": 0.2583
+        "maximum_surface_jaccard": 0.0
       },
-      "solution_tex": "不動点 \\(w=(w+-1 + 2 i)/2\\) より \\(w=-1 + 2 i\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
+      "parameters": {
+        "bi": 1,
+        "br": 0
+      },
+      "solution_tex": "不動点 \\(w=(w+i)/2\\) より \\(w=i\\)。\\(z_{n+1}-w=\\tfrac12(z_n-w)\\) だから \\(|z_n-w|\\to0\\)（高校：複素数平面）。",
       "source_generator": "construct_atlas",
-      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(-1 + 2 i)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
+      "statement_tex": "複素数列を \\(z_1=1,\\ z_{n+1}=\\dfrac{z_n+(i)}{2}\\) で定める。\\(z_n\\) の \\(n\\to\\infty\\) における極限を求めよ。",
       "structure_key": "299ea976f2c18ab5b310f5b434c8cd91a50fd68ae6c1fd299cc6c1a9a3f10dad",
       "tool": "fixed_point",
       "verification": {
@@ -1491,8 +2195,9 @@
     },
     {
       "accepted": true,
-      "answer_tex": "33",
-      "candidate_id": "construct:construct.complex_rotation_period:416",
+      "answer_exact": "3",
+      "answer_tex": "3",
+      "candidate_id": "construct:construct.complex_rotation_period:040",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "PrimitiveRootOfUnity",
@@ -1500,20 +2205,15 @@
           "MinimalPeriod"
         ],
         "lowering_chain": [
-          "complex_plane",
+          "roots_of_unity",
           "de_moivre",
-          "integer_period"
+          "periodicity"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": {
-        "band": "B_hard_university",
-        "condition": 0,
-        "construct": 1,
-        "score": 9.85
-      },
+      "difficulty": "A",
       "domain": "complex",
       "family_id": "construct.complex_rotation_period",
       "lift_certificate": {
@@ -1525,13 +2225,16 @@
         "type_checked": true
       },
       "novelty": {
-        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.2
+        "maximum_surface_jaccard": 0.0
       },
-      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{10\\pi}{33}\\) の回転で，\\(\\gcd(5,33)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=33\\)、すなわち \\(n=33\\)（高校：ド・モアブル）。",
+      "parameters": {
+        "k": 3,
+        "m": 1
+      },
+      "solution_tex": "\\(z_n=\\alpha^{n-1}\\)。\\(\\alpha\\) は偏角 \\(\\tfrac{2\\pi}{3}\\) の回転で，\\(\\gcd(1,3)=1\\) だから \\(\\alpha^{n-1}=1\\) となる最小は \\(n-1=3\\)、すなわち \\(n=3\\)（高校：ド・モアブル）。",
       "source_generator": "construct_atlas",
-      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{10\\pi}{33}+i\\sin\\dfrac{10\\pi}{33}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
+      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{2\\pi}{3}+i\\sin\\dfrac{2\\pi}{3}\\) に対し，複素数列を \\(z_1=1,\\ z_{n+1}=\\alpha z_n\\) で定める。\\(z_n=1\\) となる最小の正の整数 \\(n\\) を求めよ。",
       "structure_key": "07e290f1c1b2ea3d1faffec734b82de1fea184edc8fec9f2480a20bc54c7e230",
       "tool": "polar_form",
       "verification": {
@@ -1542,8 +2245,9 @@
     },
     {
       "accepted": true,
-      "answer_tex": "8",
-      "candidate_id": "construct:ultradeep.cyclotomic_distance_norm_divisor_count:011",
+      "answer_exact": "2",
+      "answer_tex": "2",
+      "candidate_id": "construct:ultradeep.cyclotomic_distance_norm_divisor_count:058",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RootOfUnity",
@@ -1559,21 +2263,23 @@
           "DivisorCount"
         ],
         "lowering_chain": [
-          "complex_plane",
           "roots_of_unity",
+          "gcd_lcm",
+          "counting",
+          "distance_formula",
           "polynomial_factorization",
-          "integer_factorization"
+          "remainder_theorem",
+          "polynomial_expansion",
+          "integer_arithmetic",
+          "algebraic_identity",
+          "prime_factorization",
+          "divisor_counting"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": {
-        "band": "A_olympiad",
-        "condition": 2,
-        "construct": 1,
-        "score": 14.97
-      },
+      "difficulty": "A",
       "domain": "complex_algebra_number_theory",
       "family_id": "ultradeep.cyclotomic_distance_norm_divisor_count",
       "lift_certificate": {
@@ -1593,13 +2299,16 @@
         "type_checked": true
       },
       "novelty": {
-        "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1111
+        "maximum_surface_jaccard": 0.0
       },
-      "solution_tex": "積に現れるのは原始 \\(9\\) 乗根だから，\\(\\prod(4-\\zeta_j)=\\Phi_{9}(4)=4161\\)。共役が対になるので絶対値の積も \\(L=4161\\)。\\(L=3\\cdot 19\\cdot 73\\) より，正の約数は \\(8\\) 個。",
+      "parameters": {
+        "a": 2,
+        "n": 5
+      },
+      "solution_tex": "積に現れるのは原始 \\(5\\) 乗根だから，\\(\\prod(2-\\zeta_j)=\\Phi_{5}(2)=31\\)。共役が対になるので絶対値の積も \\(L=31\\)。\\(L=31\\) より，正の約数は \\(2\\) 個。",
       "source_generator": "construct_atlas",
-      "statement_tex": "\\(\\zeta_j=\\cos\\frac{2\\pi j}{9}+i\\sin\\frac{2\\pi j}{9}\\) とし，\\(1\\le j\\le 9\\) かつ \\(\\gcd(j,9)=1\\) を満たす \\(j\\) について \\(L=\\prod |4-\\zeta_j|\\) と定める。\\(L\\) が整数であることを示し，\\(L\\) の正の約数の個数を求めよ。",
+      "statement_tex": "\\(\\zeta_j=\\cos\\frac{2\\pi j}{5}+i\\sin\\frac{2\\pi j}{5}\\) とし，\\(1\\le j\\le 5\\) かつ \\(\\gcd(j,5)=1\\) を満たす \\(j\\) について \\(L=\\prod |2-\\zeta_j|\\) と定める。\\(L\\) が整数であることを示し，\\(L\\) の正の約数の個数を求めよ。",
       "structure_key": "8e0a8f218b9459c41c1367e2768c0d8473fb6bc0229de7fd4dc82ecbe4035af5",
       "tool": "cyclotomic_polynomial+algebraic_norm+numeric_product",
       "verification": {
@@ -1623,8 +2332,12 @@
         "lowering_chain": [
           "complex_plane",
           "roots_of_unity",
-          "polygon_area",
-          "trigonometry"
+          "symmetry",
+          "counting",
+          "convex_hull",
+          "area_shoelace",
+          "extremum",
+          "differentiation"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
@@ -1813,8 +2526,9 @@
     },
     {
       "accepted": true,
-      "answer_tex": "99",
-      "candidate_id": "construct:deep.polygon_subset_centroid:647",
+      "answer_exact": "1",
+      "answer_tex": "1",
+      "candidate_id": "construct:deep.polygon_subset_centroid:055",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RootOfUnity",
@@ -1827,21 +2541,21 @@
           "SubsetCount"
         ],
         "lowering_chain": [
-          "complex_plane",
           "roots_of_unity",
-          "centroid",
-          "combination"
+          "regular_polygon",
+          "combination",
+          "coordinate_geometry",
+          "midpoint",
+          "sum_of_series",
+          "polynomial_factorization",
+          "symmetry",
+          "counting"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": {
-        "band": "C_standard_university",
-        "condition": 0,
-        "construct": 1,
-        "score": 7.49
-      },
+      "difficulty": "A",
       "domain": "complex_geometry",
       "family_id": "deep.polygon_subset_centroid",
       "lift_certificate": {
@@ -1858,13 +2572,15 @@
         "type_checked": true
       },
       "novelty": {
-        "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1078
+        "maximum_surface_jaccard": 0.0
       },
-      "solution_tex": "重心が中心であることは \\(\\sum_{j\\in S}z_j=0\\) と同値。\\(z_j\\) は1の \\(12\\) 乗根なので，和が消える部分集合を数えればよい。巡回対称性から，正多角形をなす頂点集合とその合併が条件を満たす。",
+      "parameters": {
+        "n": 3
+      },
+      "solution_tex": "重心が中心であることは \\(\\sum_{j\\in S}z_j=0\\) と同値。\\(z_j\\) は1の \\(3\\) 乗根なので，和が消える部分集合を数えればよい。巡回対称性から，正多角形をなす頂点集合とその合併が条件を満たす。",
       "source_generator": "construct_atlas",
-      "statement_tex": "単位円に内接する正 \\(12\\) 角形の頂点を \\(z_j=\\cos\\frac{2\\pi j}{12}+i\\sin\\frac{2\\pi j}{12}\\ (j=0,1,\\ldots,11)\\) とする。空でない部分集合 \\(S\\) であって，\\(S\\) に属する頂点の重心が円の中心と一致するものの個数を求めよ。",
+      "statement_tex": "単位円に内接する正 \\(3\\) 角形の頂点を \\(z_j=\\cos\\frac{2\\pi j}{3}+i\\sin\\frac{2\\pi j}{3}\\ (j=0,1,\\ldots,2)\\) とする。空でない部分集合 \\(S\\) であって，\\(S\\) に属する頂点の重心が円の中心と一致するものの個数を求めよ。",
       "structure_key": "ebff2ddac65bcc9377b4a429508add3f9b20a245ca9f6a3bba48808fd3066669",
       "tool": "roots_of_unity+subset_enumeration",
       "verification": {
@@ -1875,8 +2591,9 @@
     },
     {
       "accepted": true,
-      "answer_tex": "6",
-      "candidate_id": "construct:deep.rotation_diagonal_product_divisors:571",
+      "answer_exact": "2",
+      "answer_tex": "2",
+      "candidate_id": "construct:deep.rotation_diagonal_product_divisors:053",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RootOfUnity",
@@ -1889,22 +2606,20 @@
           "DivisorCount"
         ],
         "lowering_chain": [
-          "complex_plane",
           "roots_of_unity",
-          "distance",
+          "regular_polygon",
+          "distance_formula",
           "polynomial_factorization",
-          "integer_factorization"
+          "limit",
+          "integer_arithmetic",
+          "prime_factorization",
+          "divisor_counting"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": {
-        "band": "B_hard_university",
-        "condition": 0,
-        "construct": 2,
-        "score": 12.45
-      },
+      "difficulty": "A",
       "domain": "complex_geometry",
       "family_id": "deep.rotation_diagonal_product_divisors",
       "lift_certificate": {
@@ -1921,13 +2636,15 @@
         "type_checked": true
       },
       "novelty": {
-        "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1078
+        "maximum_surface_jaccard": 0.0
       },
-      "solution_tex": "\\(z^{12}-1=\\prod_{j=0}^{11}(z-z_j)\\) の両辺を \\(z-1\\) で割り \\(z\\to1\\) とすると \\(\\prod_{j=1}^{11}(1-z_j)=12\\)。絶対値をとって \\(L=12\\)。よって約数の個数は \\(6\\)。",
+      "parameters": {
+        "n": 3
+      },
+      "solution_tex": "\\(z^{3}-1=\\prod_{j=0}^{2}(z-z_j)\\) の両辺を \\(z-1\\) で割り \\(z\\to1\\) とすると \\(\\prod_{j=1}^{2}(1-z_j)=3\\)。絶対値をとって \\(L=3\\)。よって約数の個数は \\(2\\)。",
       "source_generator": "construct_atlas",
-      "statement_tex": "単位円に内接する正 \\(12\\) 角形の頂点を \\(z_j=\\cos\\frac{2\\pi j}{12}+i\\sin\\frac{2\\pi j}{12}\\ (j=0,1,\\ldots,11)\\) とする。頂点 \\(z_0\\) から他の \\(11\\) 個の頂点までの距離の積を \\(L\\) とするとき，\\(L\\) の正の約数の個数を求めよ。",
+      "statement_tex": "単位円に内接する正 \\(3\\) 角形の頂点を \\(z_j=\\cos\\frac{2\\pi j}{3}+i\\sin\\frac{2\\pi j}{3}\\ (j=0,1,\\ldots,2)\\) とする。頂点 \\(z_0\\) から他の \\(2\\) 個の頂点までの距離の積を \\(L\\) とするとき，\\(L\\) の正の約数の個数を求めよ。",
       "structure_key": "2d58e72e18e77439f266b410e481c01108e1ce0913b3fd3d5a87da999fe61186",
       "tool": "roots_of_unity+product+divisor_function",
       "verification": {
@@ -1938,8 +2655,9 @@
     },
     {
       "accepted": true,
-      "answer_tex": "- \\frac{15 \\sqrt{10 - 2 \\sqrt{5}}}{16} + \\frac{15 \\sqrt{3} \\left(1 + \\sqrt{5}\\right)}{16}",
-      "candidate_id": "construct:layered.rotation_orbit_hull_area:509",
+      "answer_exact": "3*sqrt(3)/4",
+      "answer_tex": "\\frac{3 \\sqrt{3}}{4}",
+      "candidate_id": "construct:layered.rotation_orbit_hull_area:049",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RootOfUnityOrbit",
@@ -1947,21 +2665,17 @@
           "ShoelaceArea"
         ],
         "lowering_chain": [
-          "complex_plane",
+          "roots_of_unity",
           "de_moivre",
+          "symmetry",
           "regular_polygon",
-          "area"
+          "area_shoelace"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": {
-        "band": "A_olympiad",
-        "condition": 0,
-        "construct": 1,
-        "score": 14.57
-      },
+      "difficulty": "A",
       "domain": "complex_geometry",
       "family_id": "layered.rotation_orbit_hull_area",
       "lift_certificate": {
@@ -1973,13 +2687,15 @@
         "type_checked": true
       },
       "novelty": {
-        "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1125
+        "maximum_surface_jaccard": 0.0
       },
-      "solution_tex": "\\(z_j\\) は単位円周上の正 \\(15\\) 角形の頂点。中心から各頂点への三角形 \\(15\\) 個に分割すると，面積は \\(\\frac{15}{2}\\sin\\frac{2\\pi}{15}=- \\frac{15 \\sqrt{10 - 2 \\sqrt{5}}}{16} + \\frac{15 \\sqrt{3} \\left(1 + \\sqrt{5}\\right)}{16}\\)。",
+      "parameters": {
+        "k": 3
+      },
+      "solution_tex": "\\(z_j\\) は単位円周上の正 \\(3\\) 角形の頂点。中心から各頂点への三角形 \\(3\\) 個に分割すると，面積は \\(\\frac{3}{2}\\sin\\frac{2\\pi}{3}=\\frac{3 \\sqrt{3}}{4}\\)。",
       "source_generator": "construct_atlas",
-      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{2\\pi}{15}+i\\sin\\dfrac{2\\pi}{15}\\) に対し，\\(z_j=\\alpha^j\\ (j=0,1,\\ldots,14)\\) が定める複素数平面上の \\(15\\) 個の点をとる。これらの点の凸包の面積を求めよ。",
+      "statement_tex": "複素数 \\(\\alpha=\\cos\\dfrac{2\\pi}{3}+i\\sin\\dfrac{2\\pi}{3}\\) に対し，\\(z_j=\\alpha^j\\ (j=0,1,\\ldots,2)\\) が定める複素数平面上の \\(3\\) 個の点をとる。これらの点の凸包の面積を求めよ。",
       "structure_key": "78f19bd063c54e82920203aade70e1df81eace7253c7119e6b39083df1a455a5",
       "tool": "roots_of_unity+shoelace",
       "verification": {
@@ -1992,7 +2708,7 @@
       "accepted": true,
       "answer_exact": "3*sqrt(3)/4",
       "answer_tex": "\\frac{3 \\sqrt{3}}{4}",
-      "candidate_id": "traceback:traceback.regular_polygon.area:0001",
+      "candidate_id": "construct:traceback.regular_polygon.area:001",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RegularPolygon",
@@ -2000,15 +2716,16 @@
           "AreaSum"
         ],
         "lowering_chain": [
-          "trigonometric_ratio",
-          "triangle_decomposition",
-          "area_sum"
+          "regular_polygon",
+          "triangle_area",
+          "coordinate_geometry",
+          "sum_of_series"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": "B",
+      "difficulty": "A",
       "domain": "complex_geometry",
       "family_id": "traceback.regular_polygon.area",
       "lift_certificate": {
@@ -2031,7 +2748,7 @@
         "param": 3
       },
       "solution_tex": "中心と隣接2頂点が作る三角形 \\(3\\) 個に分割すると，面積は \\(\\frac{3}{2}\\sin\\frac{2\\pi}{3}\\)。",
-      "source_generator": "traceback_closure",
+      "source_generator": "construct_atlas",
       "statement_tex": "単位円に内接する正 \\(3\\) 角形の頂点を \\(z_j=\\cos\\frac{2\\pi j}{3}+i\\sin\\frac{2\\pi j}{3}\\ (j=0,1,\\ldots,2)\\) とする。この正多角形の面積を求めよ。",
       "structure_key": "57b96bdb5ee798f683ea0e52e7181a8e112688cf9fc289560e69bbbe8bbe00e3",
       "tool": "deduction_closure+traceback",
@@ -2045,7 +2762,7 @@
       "accepted": true,
       "answer_exact": "1",
       "answer_tex": "1",
-      "candidate_id": "traceback:traceback.regular_polygon.centroid_zero_subsets:0004",
+      "candidate_id": "construct:traceback.regular_polygon.centroid_zero_subsets:004",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RegularPolygon",
@@ -2054,15 +2771,18 @@
           "SymmetryCount"
         ],
         "lowering_chain": [
-          "complex_plane",
+          "regular_polygon",
+          "combination",
+          "roots_of_unity",
+          "sum_of_series",
           "symmetry",
-          "subset_counting"
+          "counting"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": "B",
+      "difficulty": "A",
       "domain": "complex_geometry",
       "family_id": "traceback.regular_polygon.centroid_zero_subsets",
       "lift_certificate": {
@@ -2086,7 +2806,7 @@
         "param": 3
       },
       "solution_tex": "重心が中心 ⟺ その部分集合の頂点の和が 0。巡回対称性から正多角形をなす部分集合とその合併が該当する。",
-      "source_generator": "traceback_closure",
+      "source_generator": "construct_atlas",
       "statement_tex": "単位円に内接する正 \\(3\\) 角形の頂点を \\(z_j=\\cos\\frac{2\\pi j}{3}+i\\sin\\frac{2\\pi j}{3}\\ (j=0,1,\\ldots,2)\\) とする。頂点の空でない部分集合であって，その重心が円の中心と一致するものの個数を求めよ。",
       "structure_key": "28a0620167351a12fbf05031aee12432e3fa6a4cb0224ed03158357624ba15a3",
       "tool": "deduction_closure+traceback",
@@ -2100,7 +2820,7 @@
       "accepted": true,
       "answer_exact": "0",
       "answer_tex": "0",
-      "candidate_id": "traceback:traceback.regular_polygon.diagonal_count:0003",
+      "candidate_id": "construct:traceback.regular_polygon.diagonal_count:003",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RegularPolygon",
@@ -2108,13 +2828,15 @@
           "EdgeExclusion"
         ],
         "lowering_chain": [
-          "combination_counting"
+          "regular_polygon",
+          "counting",
+          "combination"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": "B",
+      "difficulty": "A",
       "domain": "complex_geometry",
       "family_id": "traceback.regular_polygon.diagonal_count",
       "lift_certificate": {
@@ -2137,7 +2859,7 @@
         "param": 3
       },
       "solution_tex": "頂点対は \\(\\binom{3}{2}\\) 通り，そのうち辺が \\(3\\) 本なので 対角線は \\(\\frac{3(3-3)}{2}\\) 本。",
-      "source_generator": "traceback_closure",
+      "source_generator": "construct_atlas",
       "statement_tex": "単位円に内接する正 \\(3\\) 角形の頂点を \\(z_j=\\cos\\frac{2\\pi j}{3}+i\\sin\\frac{2\\pi j}{3}\\ (j=0,1,\\ldots,2)\\) とする。この正多角形の対角線の本数を求めよ。",
       "structure_key": "5e41c237bddec18ffcd240c76c8d49cd9e214119460211db02716e887f68a3b3",
       "tool": "deduction_closure+traceback",
@@ -2151,7 +2873,7 @@
       "accepted": true,
       "answer_exact": "2",
       "answer_tex": "2",
-      "candidate_id": "traceback:traceback.regular_polygon.distance_product_divisors:0005",
+      "candidate_id": "construct:traceback.regular_polygon.distance_product_divisors:005",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RootOfUnity",
@@ -2161,15 +2883,18 @@
           "DivisorCount"
         ],
         "lowering_chain": [
-          "complex_plane",
+          "roots_of_unity",
           "polynomial_factorization",
+          "distance_formula",
+          "integer_arithmetic",
+          "prime_factorization",
           "divisor_counting"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": "B",
+      "difficulty": "A",
       "domain": "complex_geometry",
       "family_id": "traceback.regular_polygon.distance_product_divisors",
       "lift_certificate": {
@@ -2194,7 +2919,7 @@
         "param": 3
       },
       "solution_tex": "上と同様に \\(L=3\\)。その約数の個数を数える。",
-      "source_generator": "traceback_closure",
+      "source_generator": "construct_atlas",
       "statement_tex": "単位円に内接する正 \\(3\\) 角形の頂点を \\(z_j=\\cos\\frac{2\\pi j}{3}+i\\sin\\frac{2\\pi j}{3}\\ (j=0,1,\\ldots,2)\\) とする。頂点 \\(z_0\\) から他の頂点までの距離の積を \\(L\\) とするとき，\\(L\\) の正の約数の個数を求めよ。",
       "structure_key": "e6dfa90af9f48c5d67fcec63249ce763d9d7f5bcc80d19f3fcb9da303586a92f",
       "tool": "deduction_closure+traceback",
@@ -2208,7 +2933,7 @@
       "accepted": true,
       "answer_exact": "9",
       "answer_tex": "9",
-      "candidate_id": "traceback:traceback.regular_polygon.sum_sq_pairwise:0002",
+      "candidate_id": "construct:traceback.regular_polygon.sum_sq_pairwise:002",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RegularPolygon",
@@ -2216,15 +2941,17 @@
           "SquaredDistanceSum"
         ],
         "lowering_chain": [
-          "complex_plane",
-          "vector_sum",
-          "squared_distance"
+          "regular_polygon",
+          "vector_addition",
+          "roots_of_unity",
+          "distance_formula",
+          "sum_of_series"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": "B",
+      "difficulty": "A",
       "domain": "complex_geometry",
       "family_id": "traceback.regular_polygon.sum_sq_pairwise",
       "lift_certificate": {
@@ -2247,7 +2974,7 @@
         "param": 3
       },
       "solution_tex": "\\(\\sum_j z_j=0\\) を使うと \\(\\sum_{i<k}|z_i-z_k|^2=n\\sum_j|z_j|^2-|\\sum_j z_j|^2=3^2\\)。",
-      "source_generator": "traceback_closure",
+      "source_generator": "construct_atlas",
       "statement_tex": "単位円に内接する正 \\(3\\) 角形の頂点を \\(z_j=\\cos\\frac{2\\pi j}{3}+i\\sin\\frac{2\\pi j}{3}\\ (j=0,1,\\ldots,2)\\) とする。相異なる2頂点の距離の平方の総和を求めよ。",
       "structure_key": "1dc5b5ba0e49fc34ef60ba7df6f84a93b4aef226689350f5d04adef5b785d051",
       "tool": "deduction_closure+traceback",
@@ -2261,7 +2988,7 @@
       "accepted": true,
       "answer_exact": "3",
       "answer_tex": "3",
-      "candidate_id": "traceback:traceback.regular_polygon.vertex_distance_product:0000",
+      "candidate_id": "construct:traceback.regular_polygon.vertex_distance_product:000",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RootOfUnity",
@@ -2270,15 +2997,16 @@
           "DistanceProduct"
         ],
         "lowering_chain": [
-          "complex_plane",
+          "roots_of_unity",
           "polynomial_factorization",
-          "limit_evaluation"
+          "limit",
+          "distance_formula"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": "B",
+      "difficulty": "A",
       "domain": "complex_geometry",
       "family_id": "traceback.regular_polygon.vertex_distance_product",
       "lift_certificate": {
@@ -2302,7 +3030,7 @@
         "param": 3
       },
       "solution_tex": "\\(z^{3}-1=\\prod_j (z-z_j)\\) の両辺を \\(z-1\\) で割り \\(z\\to1\\) とすると 積は \\(3\\) に等しい。",
-      "source_generator": "traceback_closure",
+      "source_generator": "construct_atlas",
       "statement_tex": "単位円に内接する正 \\(3\\) 角形の頂点を \\(z_j=\\cos\\frac{2\\pi j}{3}+i\\sin\\frac{2\\pi j}{3}\\ (j=0,1,\\ldots,2)\\) とする。頂点 \\(z_0\\) から他の 2 個の頂点までの距離の積を求めよ。",
       "structure_key": "0321e6727a65902e59421edc4d1a70ce4892955c7572d94d4f27f01fd69cfb93",
       "tool": "deduction_closure+traceback",
@@ -2314,8 +3042,451 @@
     },
     {
       "accepted": true,
-      "answer_tex": "4(y-50)^3=675x^2",
-      "candidate_id": "construct:ultradeep.geometry_parabola_normal_envelope:024",
+      "answer_exact": "36/61",
+      "answer_tex": "\\frac{36}{61}",
+      "candidate_id": "construct:traceback.ellipse_tangent.center_to_polar_dist_sq:015",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "EllipseObject",
+          "DualLinePair",
+          "CoordinateSolve"
+        ],
+        "lowering_chain": [
+          "ellipse",
+          "line_equation",
+          "tangent_line",
+          "coordinate_geometry",
+          "simultaneous_equations"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "conic_geometry",
+      "family_id": "traceback.ellipse_tangent.center_to_polar_dist_sq",
+      "lift_certificate": {
+        "morphism_chain": [
+          "EllipseObject",
+          "DualLinePair",
+          "CoordinateSolve"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "ellipse_tangent",
+        "depth": 5,
+        "hidden_intermediates": 2,
+        "node": "center_to_polar_dist_sq",
+        "param": [
+          5,
+          3,
+          2,
+          5
+        ]
+      },
+      "solution_tex": "接点弦 \\(\\frac{p x}{a^2}+\\frac{q y}{b^2}=1\\) と原点の距離を点と直線の距離公式で求める。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "楕円 \\(E:\\dfrac{x^2}{25}+\\dfrac{y^2}{9}=1\\) の外部の点 \\(P\\) から \\(E\\) に2本の接線を引き，接点を \\(T_1,T_2\\) とする。原点から接点弦までの距離の平方を求めよ。",
+      "structure_key": "9fc82f8d8f4798432d49bf69b8c7d6cc32a4b6b6fa3aab2268ee6b34641b61e1",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "29524/625",
+      "answer_tex": "\\frac{29524}{625}",
+      "candidate_id": "construct:traceback.ellipse_tangent.chord_length_sq:010",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "EllipseObject",
+          "TangentLine",
+          "DualLinePair",
+          "EdgeLengthObservation"
+        ],
+        "lowering_chain": [
+          "ellipse",
+          "tangent_line",
+          "differentiation",
+          "line_equation",
+          "distance_formula"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "conic_geometry",
+      "family_id": "traceback.ellipse_tangent.chord_length_sq",
+      "lift_certificate": {
+        "morphism_chain": [
+          "EllipseObject",
+          "TangentLine",
+          "DualLinePair",
+          "EdgeLengthObservation"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "ellipse_tangent",
+        "depth": 5,
+        "hidden_intermediates": 1,
+        "node": "chord_length_sq",
+        "param": [
+          5,
+          3,
+          2,
+          5
+        ]
+      },
+      "solution_tex": "接点弦は \\(\\frac{p x}{a^2}+\\frac{q y}{b^2}=1\\)。楕円との交点を求めて距離を計算する。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "楕円 \\(E:\\dfrac{x^2}{25}+\\dfrac{y^2}{9}=1\\) の外部の点 \\(P\\) から \\(E\\) に2本の接線を引き，接点を \\(T_1,T_2\\) とする。2つの接点を結ぶ線分の長さの平方を求めよ。",
+      "structure_key": "78fe131d2a1fc73ab38447a483eca338ed592e6e892e6bc0e4bedd3be80bc671",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "-4/5",
+      "answer_tex": "- \\frac{4}{5}",
+      "candidate_id": "construct:traceback.ellipse_tangent.chord_midpoint_x:013",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "EllipseObject",
+          "TangentLine",
+          "MidpointLocus"
+        ],
+        "lowering_chain": [
+          "ellipse",
+          "tangent_line",
+          "differentiation",
+          "midpoint",
+          "locus",
+          "parameter_elimination"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "conic_geometry",
+      "family_id": "traceback.ellipse_tangent.chord_midpoint_x",
+      "lift_certificate": {
+        "morphism_chain": [
+          "EllipseObject",
+          "TangentLine",
+          "MidpointLocus"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "ellipse_tangent",
+        "depth": 4,
+        "hidden_intermediates": 1,
+        "node": "chord_midpoint_x",
+        "param": [
+          5,
+          3,
+          2,
+          5
+        ]
+      },
+      "solution_tex": "接点弦と楕円の連立から2交点を求め，中点を取る。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "楕円 \\(E:\\dfrac{x^2}{25}+\\dfrac{y^2}{9}=1\\) の外部の点 \\(P\\) から \\(E\\) に2本の接線を引き，接点を \\(T_1,T_2\\) とする。2つの接点を結ぶ線分の中点の \\(x\\) 座標を求めよ。",
+      "structure_key": "9fa20c43be5dd74dfeea2dae2ed75030246b88c5ac69d5f702b0495fdc459dd4",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "3993/50",
+      "answer_tex": "\\frac{3993}{50}",
+      "candidate_id": "construct:traceback.ellipse_tangent.contact_triangle_area:012",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "EllipseObject",
+          "TangentLine",
+          "CoordinateSolve",
+          "ShoelaceArea"
+        ],
+        "lowering_chain": [
+          "ellipse",
+          "tangent_line",
+          "differentiation",
+          "coordinate_geometry",
+          "simultaneous_equations",
+          "area_shoelace"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "conic_geometry",
+      "family_id": "traceback.ellipse_tangent.contact_triangle_area",
+      "lift_certificate": {
+        "morphism_chain": [
+          "EllipseObject",
+          "TangentLine",
+          "CoordinateSolve",
+          "ShoelaceArea"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "ellipse_tangent",
+        "depth": 6,
+        "hidden_intermediates": 2,
+        "node": "contact_triangle_area",
+        "param": [
+          5,
+          3,
+          2,
+          5
+        ]
+      },
+      "solution_tex": "接点と P の座標を求め，三角形の面積公式を用いる。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "楕円 \\(E:\\dfrac{x^2}{25}+\\dfrac{y^2}{9}=1\\) の外部の点 \\(P\\) から \\(E\\) に2本の接線を引き，接点を \\(T_1,T_2\\) とする。P と2つの接点が作る三角形の面積を求めよ。",
+      "structure_key": "37053fc74a1f26892b62d98e6b73385424048296ed6b5bc8a140c8d060f07f4a",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "34",
+      "answer_tex": "34",
+      "candidate_id": "construct:traceback.ellipse_tangent.monge_radius_sq:014",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "EllipseObject",
+          "TangentLine",
+          "RightAngleCondition",
+          "CircleParameter"
+        ],
+        "lowering_chain": [
+          "ellipse",
+          "tangent_line",
+          "differentiation",
+          "inner_product",
+          "circle_equation"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "conic_geometry",
+      "family_id": "traceback.ellipse_tangent.monge_radius_sq",
+      "lift_certificate": {
+        "morphism_chain": [
+          "EllipseObject",
+          "TangentLine",
+          "RightAngleCondition",
+          "CircleParameter"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "ellipse_tangent",
+        "depth": 6,
+        "hidden_intermediates": 2,
+        "node": "monge_radius_sq",
+        "param": [
+          5,
+          3,
+          2,
+          5
+        ]
+      },
+      "solution_tex": "傾きの二次方程式で解の積 \\(=-1\\) とおくと \\(x^2+y^2=a^2+b^2\\) を得る。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "楕円 \\(E:\\dfrac{x^2}{25}+\\dfrac{y^2}{9}=1\\) の外部の点 \\(P\\) から \\(E\\) に2本の接線を引き，接点を \\(T_1,T_2\\) とする。2本の接線が直交するような点 P 全体は円をなす。その半径の平方を求めよ。",
+      "structure_key": "bcffdf8275879a7a867dc5c85130c5eb19f380cb850728d12652b9a9f565be78",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "63/800",
+      "answer_tex": "\\frac{63}{800}",
+      "candidate_id": "construct:traceback.ellipse_tangent.tangent_slope_product:011",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "EllipseObject",
+          "TangentLine",
+          "CoordinateSolve"
+        ],
+        "lowering_chain": [
+          "ellipse",
+          "tangent_line",
+          "differentiation",
+          "coordinate_geometry",
+          "simultaneous_equations"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "conic_geometry",
+      "family_id": "traceback.ellipse_tangent.tangent_slope_product",
+      "lift_certificate": {
+        "morphism_chain": [
+          "EllipseObject",
+          "TangentLine",
+          "CoordinateSolve"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "ellipse_tangent",
+        "depth": 4,
+        "hidden_intermediates": 1,
+        "node": "tangent_slope_product",
+        "param": [
+          5,
+          3,
+          2,
+          5
+        ]
+      },
+      "solution_tex": "P を通る傾き \\(m\\) の直線を楕円に代入し，判別式 \\(=0\\) が与える \\(m\\) の二次方程式の解と係数の関係から積を読む。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "楕円 \\(E:\\dfrac{x^2}{25}+\\dfrac{y^2}{9}=1\\) の外部の点 \\(P\\) から \\(E\\) に2本の接線を引き，接点を \\(T_1,T_2\\) とする。2本の接線の傾きの積を求めよ。",
+      "structure_key": "dcc31bcb86502679cea792b8a5ef22aa29aa8f4e56afcfa55f142527cd11e78f",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "6*sqrt(3)",
+      "answer_tex": "6 \\sqrt{3}",
+      "candidate_id": "construct:ultradeep.geometry_regular_polygon_minkowski_perimeter:065",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "RootOfUnityChart",
+          "RegularPolygon",
+          "HalfStepRotation",
+          "SecondRegularPolygon",
+          "MinkowskiAddition",
+          "SupportDirectionMerge",
+          "VertexSumHull",
+          "RegularDoublePolygon",
+          "EdgeLengthObservation",
+          "PerimeterObservation"
+        ],
+        "lowering_chain": [
+          "roots_of_unity",
+          "complex_plane",
+          "regular_polygon",
+          "de_moivre",
+          "symmetry",
+          "vector_addition",
+          "convex_hull",
+          "distance_formula",
+          "sum_of_series"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "solution_tex_lowered": "両多角形の辺の法線方向は交互に現れるため，\\(P+Q\\) は正 \\(6\\)角形になる。隣接頂点間の距離は \\(2\\cdot 1\\sin\\frac{\\pi}{3}\\)。したがって周長は \\(6\\cdot2\\cdot 1\\sin\\frac{\\pi}{3}=6 \\sqrt{3}\\)。",
+        "statement_tex_lowered": "同じ中心・外接円半径 \\(1\\) の正 \\(3\\) 角形 \\(P,Q\\) があり，\\(Q\\) は \\(P\\) を中心のまわりに \\(\\frac{\\pi}{3}\\) 回転したものとする。図形 \\(P+Q=\\{p+q\\mid p\\in P,q\\in Q\\}\\) の周長を求めよ。",
+        "surface_rewritten": true,
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "convex_geometry",
+      "family_id": "ultradeep.geometry_regular_polygon_minkowski_perimeter",
+      "lift_certificate": {
+        "morphism_chain": [
+          "RootOfUnityChart",
+          "RegularPolygon",
+          "HalfStepRotation",
+          "SecondRegularPolygon",
+          "MinkowskiAddition",
+          "SupportDirectionMerge",
+          "VertexSumHull",
+          "RegularDoublePolygon",
+          "EdgeLengthObservation",
+          "PerimeterObservation"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "R": 1,
+        "n": 3
+      },
+      "solution_tex": "両多角形の辺の法線方向は交互に現れるため，\\(P+Q\\) は正 \\(6\\)角形になる。隣接頂点間の距離は \\(2\\cdot 1\\sin\\frac{\\pi}{3}\\)。したがって周長は \\(6\\cdot2\\cdot 1\\sin\\frac{\\pi}{3}=6 \\sqrt{3}\\)。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "同じ中心・外接円半径 \\(1\\) の正 \\(3\\) 角形 \\(P,Q\\) があり，\\(Q\\) は \\(P\\) を中心のまわりに \\(\\frac{\\pi}{3}\\) 回転したものとする。図形 \\(P+Q=\\{p+q\\mid p\\in P,q\\in Q\\}\\) の周長を求めよ。",
+      "statement_tex_original": "同じ中心・外接円半径 \\(1\\) の正 \\(3\\) 角形 \\(P,Q\\) があり，\\(Q\\) は \\(P\\) を中心のまわりに \\(\\frac{\\pi}{3}\\) 回転したものとする。Minkowski和 \\(P+Q=\\{p+q\\mid p\\in P,q\\in Q\\}\\) の周長を求めよ。",
+      "structure_key": "1936c00e1d7b7e66c33e0d6d4b9eaaac8f731097634f3faba0499b0ae6186a31",
+      "tool": "minkowski_sum+support_faces+convex_hull",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "regular_polygon_formula_vs_all_vertex_sums_convex_hull"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "-27*x**2 + 4*y**3 - 24*y**2 + 48*y - 32",
+      "answer_tex": "4(y-2)^3=27x^2",
+      "candidate_id": "construct:ultradeep.geometry_parabola_normal_envelope:063",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "ParabolaObject",
@@ -2332,20 +3503,20 @@
         "lowering_chain": [
           "parabola",
           "differentiation",
+          "vector_addition",
           "normal_line",
           "parameter_elimination",
+          "envelope",
+          "extremum",
+          "parametric_curve",
+          "simultaneous_equations",
           "locus"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": {
-        "band": "D_textbook",
-        "condition": 0,
-        "construct": 0,
-        "score": 2.28
-      },
+      "difficulty": "A",
       "domain": "differential_geometry",
       "family_id": "ultradeep.geometry_parabola_normal_envelope",
       "lift_certificate": {
@@ -2364,13 +3535,15 @@
         "type_checked": true
       },
       "novelty": {
-        "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0804
+        "maximum_surface_jaccard": 0.0
       },
-      "solution_tex": "\\(C\\) を \\(P(t)=(50t,25t^2)\\) と表示する。法線族は \\(F=x+ty-50t-25t^3=0\\)。\\(F=F_t=0\\) から \\(x=-50t^3,\\ y=50+75t^2\\)。消去すると \\(4(y-50)^3=675x^2\\)。",
+      "parameters": {
+        "a": 1
+      },
+      "solution_tex": "\\(C\\) を \\(P(t)=(2t,1t^2)\\) と表示する。法線族は \\(F=x+ty-2t-1t^3=0\\)。\\(F=F_t=0\\) から \\(x=-2t^3,\\ y=2+3t^2\\)。消去すると \\(4(y-2)^3=27x^2\\)。",
       "source_generator": "construct_atlas",
-      "statement_tex": "放物線 \\(C:y=\\frac{x^2}{100}\\) 上の各点で法線を引く。この法線族の包絡線の方程式を求めよ。",
+      "statement_tex": "放物線 \\(C:y=\\frac{x^2}{4}\\) 上の各点で法線を引く。この法線族の包絡線の方程式を求めよ。",
       "structure_key": "7fcf6a83ea08477c5a48c89807bea907f203677653cd93960ee94cf258a52c7b",
       "tool": "normal_family+resultant+evolute",
       "verification": {
@@ -2381,8 +3554,9 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{125 \\pi}{4}",
-      "candidate_id": "construct:ultradeep.geometry_orthocenter_locus_area:009",
+      "answer_exact": "8*pi",
+      "answer_tex": "8 \\pi",
+      "candidate_id": "construct:ultradeep.geometry_orthocenter_locus_area:064",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "EllipseObject",
@@ -2398,21 +3572,22 @@
         ],
         "lowering_chain": [
           "ellipse",
+          "coordinate_geometry",
+          "triangle_area",
           "inner_product",
-          "orthocenter",
+          "line_equation",
+          "triangle_center",
+          "simultaneous_equations",
+          "vector_addition",
           "parameter_elimination",
-          "area"
+          "area_shoelace",
+          "area_integral"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": {
-        "band": "B_hard_university",
-        "condition": 0,
-        "construct": 2,
-        "score": 12.2
-      },
+      "difficulty": "A",
       "domain": "euclidean_geometry",
       "family_id": "ultradeep.geometry_orthocenter_locus_area",
       "lift_certificate": {
@@ -2431,13 +3606,16 @@
         "type_checked": true
       },
       "novelty": {
-        "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0874
+        "maximum_surface_jaccard": 0.0
       },
-      "solution_tex": "\\(P=(5\\cos t,4\\sin t)\\) とおく。\\(AB\\) が水平なので垂心の \\(x\\) 座標は \\(5\\cos t\\)。もう1本の高さから \\(H=(5\\cos t,\\frac{25}{4}\\sin t)\\)。したがって軌跡は半軸 \\(5,\\frac{25}{4}\\) の楕円で，面積は \\(\\frac{125 \\pi}{4}\\)。",
+      "parameters": {
+        "a": 2,
+        "b": 1
+      },
+      "solution_tex": "\\(P=(2\\cos t,1\\sin t)\\) とおく。\\(AB\\) が水平なので垂心の \\(x\\) 座標は \\(2\\cos t\\)。もう1本の高さから \\(H=(2\\cos t,\\frac{4}{1}\\sin t)\\)。したがって軌跡は半軸 \\(2,\\frac{4}{1}\\) の楕円で，面積は \\(8 \\pi\\)。",
       "source_generator": "construct_atlas",
-      "statement_tex": "楕円 \\(E:\\frac{x^2}{25}+\\frac{y^2}{16}=1\\) の長軸の端点を \\(A=(-5,0),B=(5,0)\\) とする。\\(E\\) 上を動く点 \\(P\\ne A,B\\) に対し，三角形 \\(ABP\\) の垂心を \\(H\\) とする。\\(H\\) の軌跡が囲む面積を求めよ。",
+      "statement_tex": "楕円 \\(E:\\frac{x^2}{4}+\\frac{y^2}{1}=1\\) の長軸の端点を \\(A=(-2,0),B=(2,0)\\) とする。\\(E\\) 上を動く点 \\(P\\ne A,B\\) に対し，三角形 \\(ABP\\) の垂心を \\(H\\) とする。\\(H\\) の軌跡が囲む面積を求めよ。",
       "structure_key": "a3648490745d0017d9abc8e3b60888e11db9a75538d76193eba2bcd8f9103e5b",
       "tool": "orthocenter+linear_image+numeric_shoelace",
       "verification": {
@@ -2448,8 +3626,9 @@
     },
     {
       "accepted": true,
-      "answer_tex": "(0,\\ \\frac{1}{10})",
-      "candidate_id": "construct:construct.parabola_right_angle_chord:363",
+      "answer_exact": "(0, 1)",
+      "answer_tex": "(0,\\ 1)",
+      "candidate_id": "construct:construct.parabola_right_angle_chord:042",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RightAngleCondition",
@@ -2457,20 +3636,16 @@
           "FixedPoint"
         ],
         "lowering_chain": [
-          "coordinate_geometry",
           "inner_product",
-          "quadratic_equation"
+          "line_equation",
+          "algebraic_identity",
+          "simultaneous_equations"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": {
-        "band": "D_textbook",
-        "condition": 1,
-        "construct": 0,
-        "score": 4.96
-      },
+      "difficulty": "A",
       "domain": "geometry",
       "family_id": "construct.parabola_right_angle_chord",
       "lift_certificate": {
@@ -2482,13 +3657,15 @@
         "type_checked": true
       },
       "novelty": {
-        "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1135
+        "maximum_surface_jaccard": 0.0
       },
-      "solution_tex": "\\(A=(a,10a^2),B=(b,10b^2)\\)。\\(OA\\perp OB\\) から傾きの積 \\(\\tfrac{10a^2}{a}\\cdot\\tfrac{10b^2}{b}=10^2ab=-1\\)，すなわち \\(ab=-1/10^2\\)（一定）。弦 \\(AB\\) は \\(y=10(a+b)x-10ab\\) で \\(x=0\\) のとき \\(y=1/10\\)。定点 \\((0,1/10)\\)（高校）。",
+      "parameters": {
+        "c": 1
+      },
+      "solution_tex": "\\(A=(a,1a^2),B=(b,1b^2)\\)。\\(OA\\perp OB\\) から傾きの積 \\(\\tfrac{1a^2}{a}\\cdot\\tfrac{1b^2}{b}=1^2ab=-1\\)，すなわち \\(ab=-1/1^2\\)（一定）。弦 \\(AB\\) は \\(y=1(a+b)x-1ab\\) で \\(x=0\\) のとき \\(y=1/1\\)。定点 \\((0,1/1)\\)（高校）。",
       "source_generator": "construct_atlas",
-      "statement_tex": "放物線 \\(y=10 x^{2}\\) 上の相異なる2点 \\(A,B\\) と原点 \\(O\\) が \\(\\angle AOB=90^\\circ\\) を満たしながら動く。このとき弦 \\(AB\\) が必ず通る定点を求めよ。",
+      "statement_tex": "放物線 \\(y=x^{2}\\) 上の相異なる2点 \\(A,B\\) と原点 \\(O\\) が \\(\\angle AOB=90^\\circ\\) を満たしながら動く。このとき弦 \\(AB\\) が必ず通る定点を求めよ。",
       "structure_key": "2ee5348e50d57ba71f331e50de9aa7fb2fa0d1e78646d4e47ed0cd841c047af9",
       "tool": "slope_product",
       "verification": {
@@ -2509,10 +3686,10 @@
           "SweptRegionArea"
         ],
         "lowering_chain": [
-          "quadratic_range",
+          "line_equation",
           "parameter_elimination",
-          "definite_integral",
-          "area"
+          "quadratic_range",
+          "area_integral"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
@@ -2560,10 +3737,10 @@
           "SweptRegionArea"
         ],
         "lowering_chain": [
-          "quadratic_range",
+          "parabola",
           "parameter_elimination",
-          "definite_integral",
-          "area"
+          "quadratic_range",
+          "area_integral"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
@@ -2600,8 +3777,9 @@
     },
     {
       "accepted": true,
-      "answer_tex": "y=28 x^{3} - 10 x",
-      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:399",
+      "answer_exact": "x*(28*x**2 - 9)",
+      "answer_tex": "y=x \\left(28 x^{2} - 9\\right)",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:039",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "TangentLine",
@@ -2609,22 +3787,18 @@
           "MidpointLocus"
         ],
         "lowering_chain": [
-          "differentiation",
           "tangent_line",
+          "differentiation",
           "vieta_relations",
-          "parameter_elimination",
-          "locus"
+          "midpoint",
+          "locus",
+          "parameter_elimination"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": {
-        "band": "B_hard_university",
-        "condition": 0,
-        "construct": 1,
-        "score": 8.83
-      },
+      "difficulty": "A",
       "domain": "geometry_algebra",
       "family_id": "construct.cubic_tangent_midpoint_locus",
       "lift_certificate": {
@@ -2636,13 +3810,15 @@
         "type_checked": true
       },
       "novelty": {
-        "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1154
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "coeff": -9
       },
       "solution_tex": "\\(P\\) での接線と \\(C\\) の交点は \\(x=-2t\\)（三次方程式の根の和より）。よって \\(Q(-2t,\\cdot)\\)，中点 \\(M\\) を \\(t\\) で表し消去すると軌跡が得られる。",
       "source_generator": "construct_atlas",
-      "statement_tex": "曲線 \\(C: y=x^{3} - 10 x\\) 上の点 \\(P(t,\\,t^{3} - 10 t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
+      "statement_tex": "曲線 \\(C: y=x^{3} - 9 x\\) 上の点 \\(P(t,\\,t^{3} - 9 t)\\) における接線が \\(C\\) と再び交わる点を \\(Q\\) とする。\\(t\\) が動くとき，線分 \\(PQ\\) の中点 \\(M\\) の軌跡を求めよ。",
       "structure_key": "94ff898c00762570bcd3986ead795bd4cbbe2640bdf34c3499f1e431a1568fca",
       "tool": "symbolic_intersection",
       "verification": {
@@ -2653,8 +3829,9 @@
     },
     {
       "accepted": true,
-      "answer_tex": "- 32 t",
-      "candidate_id": "construct:layered.cubic_tangent_iteration:517",
+      "answer_exact": "4*t",
+      "answer_tex": "4 t",
+      "candidate_id": "construct:layered.cubic_tangent_iteration:050",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "TangentLine",
@@ -2663,21 +3840,18 @@
           "GeneralTerm"
         ],
         "lowering_chain": [
-          "differentiation",
           "tangent_line",
+          "differentiation",
+          "vieta_relations",
+          "geometric_sequence",
           "recurrence",
-          "mathematical_induction"
+          "general_term"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": {
-        "band": "C_standard_university",
-        "condition": 0,
-        "construct": 1,
-        "score": 7.18
-      },
+      "difficulty": "A",
       "domain": "geometry_algebra",
       "family_id": "layered.cubic_tangent_iteration",
       "lift_certificate": {
@@ -2690,13 +3864,16 @@
         "type_checked": true
       },
       "novelty": {
-        "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0762
+        "maximum_surface_jaccard": 0.0
       },
-      "solution_tex": "\\(P_i\\) の \\(x\\) 座標を \\(x_i\\) とすると，接点での重根と三次方程式の根の和から \\(x_{i+1}=-2x_i\\)。よって \\(x_n=(-2)^n t\\)，\\(n=5\\) で \\(- 32 t\\)。",
+      "parameters": {
+        "coeff": -5,
+        "n": 2
+      },
+      "solution_tex": "\\(P_i\\) の \\(x\\) 座標を \\(x_i\\) とすると，接点での重根と三次方程式の根の和から \\(x_{i+1}=-2x_i\\)。よって \\(x_n=(-2)^n t\\)，\\(n=2\\) で \\(4 t\\)。",
       "source_generator": "construct_atlas",
-      "statement_tex": "曲線 \\(C: y=x^{3} - 5 x\\) 上の点 \\(P_0(t,\\,t^{3} - 5 t)\\) をとる。\\(P_i\\) における \\(C\\) の接線が \\(C\\) と再び交わる点を \\(P_{i+1}\\) と定める。点 \\(P_{5}\\) の \\(x\\) 座標を \\(t\\) を用いて表せ。",
+      "statement_tex": "曲線 \\(C: y=x^{3} - 5 x\\) 上の点 \\(P_0(t,\\,t^{3} - 5 t)\\) をとる。\\(P_i\\) における \\(C\\) の接線が \\(C\\) と再び交わる点を \\(P_{i+1}\\) と定める。点 \\(P_{2}\\) の \\(x\\) 座標を \\(t\\) を用いて表せ。",
       "structure_key": "5b762083a0d6905ab7c87f31674390b04eac84e376995246a3b5fb75fa61b2b7",
       "tool": "symbolic_intersection+iteration",
       "verification": {
@@ -2709,7 +3886,7 @@
       "accepted": true,
       "answer_exact": "(-2)**n*t",
       "answer_tex": "\\left(-2\\right)^{n} t",
-      "candidate_id": "traceback:traceback.cubic_tangent.iterate_x_n:0061",
+      "candidate_id": "construct:traceback.cubic_tangent.iterate_x_n:007",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CubicCurve",
@@ -2720,14 +3897,18 @@
         ],
         "lowering_chain": [
           "differentiation",
+          "coordinate_geometry",
+          "tangent_line",
+          "vieta_relations",
           "geometric_sequence",
+          "recurrence",
           "general_term"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": "B",
+      "difficulty": "A",
       "domain": "geometry_algebra",
       "family_id": "traceback.cubic_tangent.iterate_x_n",
       "lift_certificate": {
@@ -2752,7 +3933,7 @@
         "param": -9
       },
       "solution_tex": "1 回で \\(x\\mapsto -2x\\) なので \\(x_n=(-2)^n t\\)。",
-      "source_generator": "traceback_closure",
+      "source_generator": "construct_atlas",
       "statement_tex": "曲線 \\(C: y=x^{3} - 9 x\\) と，その上の点 \\(P_0(t,\\,f(t))\\)（\\(t>0\\)）を考える。接線が C と再び交わる点を次の点とする操作を \\(n\\) 回繰り返して得られる点の \\(x\\) 座標を求めよ。",
       "structure_key": "faea94412b197b45a8fa3d261168b54ae4b1f629176620e54969a61a580e3a0d",
       "tool": "deduction_closure+traceback",
@@ -2766,7 +3947,7 @@
       "accepted": true,
       "answer_exact": "log(2)",
       "answer_tex": "\\log{\\left(2 \\right)}",
-      "candidate_id": "traceback:traceback.cubic_tangent.log_growth_limit:0062",
+      "candidate_id": "construct:traceback.cubic_tangent.log_growth_limit:008",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CubicCurve",
@@ -2777,15 +3958,20 @@
           "LogarithmicLimit"
         ],
         "lowering_chain": [
+          "differentiation",
+          "coordinate_geometry",
+          "tangent_line",
           "geometric_sequence",
-          "logarithm",
-          "limit_evaluation"
+          "recurrence",
+          "general_term",
+          "limit",
+          "logarithm"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": "B",
+      "difficulty": "A",
       "domain": "geometry_algebra",
       "family_id": "traceback.cubic_tangent.log_growth_limit",
       "lift_certificate": {
@@ -2811,7 +3997,7 @@
         "param": -9
       },
       "solution_tex": "\\(|x_n|=2^n|t|\\) より \\(\\frac{\\log|x_n|}{n}=\\log2+\\frac{\\log|t|}{n}\\to\\log2\\)。",
-      "source_generator": "traceback_closure",
+      "source_generator": "construct_atlas",
       "statement_tex": "曲線 \\(C: y=x^{3} - 9 x\\) と，その上の点 \\(P_0(t,\\,f(t))\\)（\\(t>0\\)）を考える。接線が C と再び交わる点を次の点とする操作を繰り返して得られる点の \\(x\\) 座標を \\(x_n\\) とするとき，\\(\\displaystyle\\lim_{n\\to\\infty}\\frac{\\log|x_n|}{n}\\) を求めよ。",
       "structure_key": "2324500552db7d66a55c92e5dabf555a086a94607b41b3d9bea671b9a3cdd763",
       "tool": "deduction_closure+traceback",
@@ -2825,7 +4011,7 @@
       "accepted": true,
       "answer_exact": "x*(28*x**2 - 9)",
       "answer_tex": "x \\left(28 x^{2} - 9\\right)",
-      "candidate_id": "traceback:traceback.cubic_tangent.midpoint_locus:0063",
+      "candidate_id": "construct:traceback.cubic_tangent.midpoint_locus:009",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CubicCurve",
@@ -2836,14 +4022,19 @@
         ],
         "lowering_chain": [
           "differentiation",
+          "coordinate_geometry",
+          "tangent_line",
+          "vieta_relations",
+          "simultaneous_equations",
           "midpoint",
-          "locus_elimination"
+          "locus",
+          "parameter_elimination"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": "B",
+      "difficulty": "A",
       "domain": "geometry_algebra",
       "family_id": "traceback.cubic_tangent.midpoint_locus",
       "lift_certificate": {
@@ -2868,7 +4059,7 @@
         "param": -9
       },
       "solution_tex": "中点の座標を \\(t\\) で表し，\\(t\\) を消去する。",
-      "source_generator": "traceback_closure",
+      "source_generator": "construct_atlas",
       "statement_tex": "曲線 \\(C: y=x^{3} - 9 x\\) と，その上の点 \\(P_0(t,\\,f(t))\\)（\\(t>0\\)）を考える。\\(P_0\\) と再交点の中点が描く軌跡を \\(y\\) について求めよ。",
       "structure_key": "40c875ecc89e6cb6a7186dfe7ce9a73898e6e1e17f5825b1765bc0bb1ea3c5a2",
       "tool": "deduction_closure+traceback",
@@ -2882,7 +4073,7 @@
       "accepted": true,
       "answer_exact": "-2*t",
       "answer_tex": "- 2 t",
-      "candidate_id": "traceback:traceback.cubic_tangent.reintersection_x:0060",
+      "candidate_id": "construct:traceback.cubic_tangent.reintersection_x:006",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CubicCurve",
@@ -2892,14 +4083,16 @@
         ],
         "lowering_chain": [
           "differentiation",
-          "cubic_equation",
-          "vieta_relations"
+          "coordinate_geometry",
+          "tangent_line",
+          "vieta_relations",
+          "simultaneous_equations"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": "B",
+      "difficulty": "A",
       "domain": "geometry_algebra",
       "family_id": "traceback.cubic_tangent.reintersection_x",
       "lift_certificate": {
@@ -2923,7 +4116,7 @@
         "param": -9
       },
       "solution_tex": "接点が重根になることと根の和が 0 であることから，残る根は \\(-2t\\)。",
-      "source_generator": "traceback_closure",
+      "source_generator": "construct_atlas",
       "statement_tex": "曲線 \\(C: y=x^{3} - 9 x\\) と，その上の点 \\(P_0(t,\\,f(t))\\)（\\(t>0\\)）を考える。\\(P_0\\) における接線が \\(C\\) と再び交わる点の \\(x\\) 座標を \\(t\\) で表せ。",
       "structure_key": "30d129e967536d87508bed9ee287d945bdde8e619d191ac8998323e26e7d43eb",
       "tool": "deduction_closure+traceback",
@@ -2935,8 +4128,9 @@
     },
     {
       "accepted": true,
+      "answer_exact": "log(2)",
       "answer_tex": "\\log{\\left(2 \\right)}",
-      "candidate_id": "construct:deep.tangent_iteration_growth:552",
+      "candidate_id": "construct:deep.tangent_iteration_growth:052",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CubicCurve",
@@ -2950,21 +4144,21 @@
         ],
         "lowering_chain": [
           "differentiation",
+          "coordinate_geometry",
           "tangent_line",
+          "vieta_relations",
+          "simultaneous_equations",
+          "geometric_sequence",
           "recurrence",
-          "logarithm",
-          "sequence_limit"
+          "general_term",
+          "limit",
+          "logarithm"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": {
-        "band": "B_hard_university",
-        "condition": 0,
-        "construct": 1,
-        "score": 11.0
-      },
+      "difficulty": "A",
       "domain": "geometry_analysis",
       "family_id": "deep.tangent_iteration_growth",
       "lift_certificate": {
@@ -2981,9 +4175,11 @@
         "type_checked": true
       },
       "novelty": {
-        "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1475
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "coeff": -9
       },
       "solution_tex": "接点で重根をもつことと三次方程式の根の和の関係から \\(x_{i+1}=-2x_i\\)。したがって \\(x_n=(-2)^n t\\)，\\(|x_n|=2^n|t|\\)。\\(\\frac{\\log|x_n|}{n}=\\log 2+\\frac{\\log|t|}{n}\\to\\log 2\\)。",
       "source_generator": "construct_atlas",
@@ -2998,124 +4194,482 @@
     },
     {
       "accepted": true,
-      "answer_tex": "(-1)^n",
-      "candidate_id": "phase19_cassini_fibonacci_matrix_invariant",
+      "answer_exact": "8",
+      "answer_tex": "8",
+      "candidate_id": "construct:ultradeep.paley_four_cycle_divisor_count:057",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
-          "MatrixModel",
-          "DeterminantFunctor",
-          "SignReduction"
+          "PrimeField",
+          "QuadraticResidueSet",
+          "PaleyGraph",
+          "StronglyRegularParameters",
+          "CommonNeighborRelation",
+          "OppositeVertexPairing",
+          "FourCycleDoubleCount",
+          "CycleCount",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "lowering_chain": [
+          "congruence",
+          "integer_arithmetic",
+          "square_number",
+          "counting",
+          "combination",
+          "regular_polygon",
+          "symmetry",
+          "prime_factorization",
+          "divisor_counting"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "solution_tex_lowered": "隣接2頂点の共通隣接点は \\(2\\) 個，非隣接2頂点では \\(3\\) 個。向かい合う頂点対で二重計数すると \\(C=78\\)。\\(C=2\\cdot 3\\cdot 13\\) なので，正の約数は \\(8\\) 個。",
+        "statement_tex_lowered": "素数 \\(p=13\\) に対し，頂点集合 \\(\\{0,1,\\dots,12\\}\\) 上で，\\(x-y\\) が平方数と合同であるときに \\(x,y\\) を結んで得られるグラフを \\(G\\) とする。\\(G\\) に含まれる単純な長さ4の閉路の個数を \\(C\\) とする。\\(C\\) の正の約数の個数を求めよ。",
+        "surface_rewritten": true,
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "graph_combinatorics_number_theory",
+      "family_id": "ultradeep.paley_four_cycle_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PrimeField",
+          "QuadraticResidueSet",
+          "PaleyGraph",
+          "StronglyRegularParameters",
+          "CommonNeighborRelation",
+          "OppositeVertexPairing",
+          "FourCycleDoubleCount",
+          "CycleCount",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "p": 13
+      },
+      "solution_tex": "隣接2頂点の共通隣接点は \\(2\\) 個，非隣接2頂点では \\(3\\) 個。向かい合う頂点対で二重計数すると \\(C=78\\)。\\(C=2\\cdot 3\\cdot 13\\) なので，正の約数は \\(8\\) 個。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "素数 \\(p=13\\) に対し，頂点集合 \\(\\{0,1,\\dots,12\\}\\) 上で，\\(x-y\\) が平方数と合同であるときに \\(x,y\\) を結んで得られるグラフを \\(G\\) とする。\\(G\\) に含まれる単純な長さ4の閉路の個数を \\(C\\) とする。\\(C\\) の正の約数の個数を求めよ。",
+      "statement_tex_original": "素数 \\(p=13\\) に対し，頂点集合 \\(\\mathbb Z_{13}\\) 上で，\\(x-y\\) が平方剰余であるときに \\(x,y\\) を結んで得られる Paley グラフを \\(G\\) とする。\\(G\\) に含まれる単純な長さ4の閉路の個数を \\(C\\) とする。\\(C\\) の正の約数の個数を求めよ。",
+      "structure_key": "10c5438026bff0150f0cf52ff55d950d679abcba58ae46f6b134926b1d0e94ee",
+      "tool": "strongly_regular_graph+trace_four+factorization",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "common_neighbor_double_count_vs_adjacency_trace_four"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "20",
+      "answer_tex": "20",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:038",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
         ],
         "lowering_chain": [
           "recurrence",
-          "mathematical_induction",
-          "algebraic_identity"
+          "general_term",
+          "congruence",
+          "periodicity"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "domain": "linear_algebra_number_theory",
-      "family_id": "recurrence.cassini_fibonacci_determinant_invariant",
+      "difficulty": "A",
+      "domain": "number_theory",
+      "family_id": "construct.linear_recurrence_mod_period",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "m": 5,
+        "s": 1,
+        "t": 1
+      },
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 5\\) でこの行列の乗法的位数が周期。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 5\\) で見たときの最小周期を求めよ。",
+      "structure_key": "8c8d211140494ea81250dd9d89589c9b9cb1dee8490369026bb1e74e41e06019",
+      "tool": "matrix_mod_order",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "companion_matrix_modular_order"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "1",
+      "answer_tex": "1",
+      "candidate_id": "construct:deep.recurrence_period_quadratic_character:054",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "LinearRecurrence",
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder",
+          "MinimalPeriod",
+          "PrimeFactorization",
+          "EulerCriterion",
+          "LegendreSymbol"
+        ],
+        "lowering_chain": [
+          "recurrence",
+          "general_term",
+          "congruence",
+          "periodicity",
+          "prime_factorization",
+          "square_number"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "solution_tex_lowered": "\\((a_{n+1},a_n)\\) は随伴行列 \\(\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) を掛けて進むので，\\(\\bmod\\ 7\\) でのこの行列の位数が周期 \\(T=16\\)。その最大素因数は \\(q=2\\)。オイラーの規準 \\(q^{(7-1)/2}\\equiv1\\pmod{7}\\) より \\(\\left(\\frac{2}{7}\\right)=1\\)。",
+        "statement_tex_lowered": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 7\\) で見たときの最小周期を \\(T\\) とし，\\(T\\) の最大の素因数を \\(q\\) とする。\\(q\\) が \\(7\\) を法として平方数と合同ならば \\(1\\)，そうでなければ \\(-1\\) とする。この値を求めよ。",
+        "surface_rewritten": true,
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "number_theory",
+      "family_id": "deep.recurrence_period_quadratic_character",
+      "lift_certificate": {
+        "morphism_chain": [
+          "LinearRecurrence",
+          "CompanionMatrix",
+          "ModularReduction",
+          "MultiplicativeOrder",
+          "MinimalPeriod",
+          "PrimeFactorization",
+          "EulerCriterion",
+          "LegendreSymbol"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "p": 7,
+        "s": 1,
+        "t": 1
+      },
+      "solution_tex": "\\((a_{n+1},a_n)\\) は随伴行列 \\(\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) を掛けて進むので，\\(\\bmod\\ 7\\) でのこの行列の位数が周期 \\(T=16\\)。その最大素因数は \\(q=2\\)。オイラーの規準 \\(q^{(7-1)/2}\\equiv1\\pmod{7}\\) より \\(\\left(\\frac{2}{7}\\right)=1\\)。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 7\\) で見たときの最小周期を \\(T\\) とし，\\(T\\) の最大の素因数を \\(q\\) とする。\\(q\\) が \\(7\\) を法として平方数と合同ならば \\(1\\)，そうでなければ \\(-1\\) とする。この値を求めよ。",
+      "statement_tex_original": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 7\\) で見たときの最小周期を \\(T\\) とし，\\(T\\) の最大の素因数を \\(q\\) とする。ルジャンドル記号 \\(\\left(\\dfrac{q}{7}\\right)\\) の値を求めよ。",
+      "structure_key": "cd56d0712bee34f9ea21851936e7ea74178e0c53e867a2cb8fd89e1712c39106",
+      "tool": "matrix_mod_order+legendre_symbol",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "modular_period_then_euler_criterion"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "6",
+      "answer_tex": "6",
+      "candidate_id": "construct:layered.recurrence_period_observable:045",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "CompanionMatrix",
+          "ModularPeriod",
+          "DivisorCount"
+        ],
+        "lowering_chain": [
+          "recurrence",
+          "general_term",
+          "congruence",
+          "periodicity",
+          "prime_factorization",
+          "divisor_counting"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "number_theory",
+      "family_id": "layered.recurrence_period_observable",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CompanionMatrix",
+          "ModularPeriod",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "m": 5,
+        "obs": "divisors",
+        "s": 1,
+        "t": 1
+      },
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\1&0\\end{pmatrix}\\) をかけて進むので，\\(\\bmod\\ 5\\) での位数が周期。周期は \\(20\\)。その約数の個数を数える。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 5\\) で見ると周期的になる。その周期の正の約数の個数を求めよ。",
+      "structure_key": "9f758d0ad20a54bf91992559c6fae0df09e299ccc0e6222550820d363e0c55ed",
+      "tool": "matrix_mod_order+arith_function",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "modular_period_then_arithmetic_function"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "5",
+      "answer_tex": "5",
+      "candidate_id": "construct:layered.recurrence_period_observable:046",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "CompanionMatrix",
+          "ModularPeriod",
+          "LargestPrimeFactor"
+        ],
+        "lowering_chain": [
+          "recurrence",
+          "general_term",
+          "congruence",
+          "periodicity",
+          "prime_factorization"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "number_theory",
+      "family_id": "layered.recurrence_period_observable",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CompanionMatrix",
+          "ModularPeriod",
+          "LargestPrimeFactor"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "m": 5,
+        "obs": "max_prime",
+        "s": 1,
+        "t": 1
+      },
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\1&0\\end{pmatrix}\\) をかけて進むので，\\(\\bmod\\ 5\\) での位数が周期。周期は \\(20\\)。素因数分解して最大の素因数をとる。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 5\\) で見ると周期的になる。その周期の最大の素因数を求めよ。",
+      "structure_key": "69ec9359b0faf2619f60fcd8239a0f888d8c20920b5eeee1d715d42794da814d",
+      "tool": "matrix_mod_order+arith_function",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "modular_period_then_arithmetic_function"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "8",
+      "answer_tex": "8",
+      "candidate_id": "construct:layered.recurrence_period_observable:047",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "CompanionMatrix",
+          "ModularPeriod",
+          "EulerTotient"
+        ],
+        "lowering_chain": [
+          "recurrence",
+          "general_term",
+          "congruence",
+          "periodicity",
+          "gcd_lcm",
+          "counting"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "number_theory",
+      "family_id": "layered.recurrence_period_observable",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CompanionMatrix",
+          "ModularPeriod",
+          "EulerTotient"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "m": 5,
+        "obs": "totient",
+        "s": 1,
+        "t": 1
+      },
+      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&1\\1&0\\end{pmatrix}\\) をかけて進むので，\\(\\bmod\\ 5\\) での位数が周期。周期は \\(20\\)。\\(\\varphi(20)\\) を求める。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 5\\) で見ると周期的になる。その周期を \\(T\\) とするとき，\\(1\\le k\\le T\\) で \\(\\gcd(k,T)=1\\) を満たす \\(k\\) の個数を求めよ。",
+      "structure_key": "4ef6047ff0aa60ce3a0f94b8855b687f99812c63fe4076e9011faf79c09ca58a",
+      "tool": "matrix_mod_order+arith_function",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "modular_period_then_arithmetic_function"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_tex": "\\displaystyle\\frac{\\varphi(n)}{n}=\\prod_{p\\mid n}\\left(1-\\frac1p\\right)",
+      "candidate_id": "phase18_mobius_divisor_sum_totient",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "DivisorSumExpansion",
+          "PrimePowerReduction",
+          "MultiplicativeAssembly"
+        ],
+        "lowering_chain": [
+          "divisor_counting",
+          "sum_of_series",
+          "prime_factorization",
+          "congruence"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "domain": "number_theory",
+      "family_id": "multiplicative.mobius_divisor_sum_totient_ratio",
       "lift_certificate": {
         "errors": [],
-        "family_id": "recurrence.cassini_fibonacci_determinant_invariant",
+        "family_id": "multiplicative.mobius_divisor_sum_totient_ratio",
         "morphism_chain": [
-          "MatrixModel",
-          "DeterminantFunctor",
-          "SignReduction"
+          "DivisorSumExpansion",
+          "PrimePowerReduction",
+          "MultiplicativeAssembly"
         ],
-        "query_sort": "SignInvariant",
+        "query_sort": "MultiplicativeClosedForm",
         "type_checked": true,
         "typed_edges": [
           {
-            "codomain": "MatrixPowerFamily",
-            "domain": "FibonacciRecurrenceFamily",
-            "name": "MatrixModel"
+            "codomain": "MultiplicativeFunctionFamily",
+            "domain": "MobiusDivisorSumFamily",
+            "name": "DivisorSumExpansion"
           },
           {
-            "codomain": "DeterminantInvariantFamily",
-            "domain": "MatrixPowerFamily",
-            "name": "DeterminantFunctor"
+            "codomain": "EulerProductFamily",
+            "domain": "MultiplicativeFunctionFamily",
+            "name": "PrimePowerReduction"
           },
           {
-            "codomain": "SignInvariant",
-            "domain": "DeterminantInvariantFamily",
-            "name": "SignReduction"
+            "codomain": "MultiplicativeClosedForm",
+            "domain": "EulerProductFamily",
+            "name": "MultiplicativeAssembly"
           }
         ]
       },
       "morphisms": [
         {
-          "codomain": "MatrixPowerFamily",
-          "domain": "FibonacciRecurrenceFamily",
-          "name": "MatrixModel"
+          "codomain": "MultiplicativeFunctionFamily",
+          "domain": "MobiusDivisorSumFamily",
+          "name": "DivisorSumExpansion"
         },
         {
-          "codomain": "DeterminantInvariantFamily",
-          "domain": "MatrixPowerFamily",
-          "name": "DeterminantFunctor"
+          "codomain": "EulerProductFamily",
+          "domain": "MultiplicativeFunctionFamily",
+          "name": "PrimePowerReduction"
         },
         {
-          "codomain": "SignInvariant",
-          "domain": "DeterminantInvariantFamily",
-          "name": "SignReduction"
+          "codomain": "MultiplicativeClosedForm",
+          "domain": "EulerProductFamily",
+          "name": "MultiplicativeAssembly"
         }
       ],
       "novelty": {
         "closest": [
           {
-            "id": "phase11_nonlinear_recurrence_square_increment",
-            "score": 0.1901,
-            "source": "current_batch"
-          },
-          {
-            "id": "phase16_tridiagonal_path_determinant",
-            "score": 0.1508,
-            "source": "current_batch"
-          },
-          {
-            "id": "phase05_cycle_laplacian_pseudodeterminant",
-            "score": 0.1288,
+            "id": "phase13_telescoping_triple_partial_fraction",
+            "score": 0.3218,
             "source": "current_batch"
           },
           {
             "id": "phase07_binomial_beta_duality",
-            "score": 0.1057,
+            "score": 0.27,
             "source": "current_batch"
           },
           {
-            "id": "phase02_reciprocal_complex_root_polygon",
-            "score": 0.1037,
+            "id": "phase14_roots_of_unity_binomial_filter",
+            "score": 0.2524,
+            "source": "current_batch"
+          },
+          {
+            "id": "phase15_king_property_symmetric_integral",
+            "score": 0.2075,
+            "source": "current_batch"
+          },
+          {
+            "id": "phase05_cycle_laplacian_pseudodeterminant",
+            "score": 0.1111,
             "source": "current_batch"
           }
         ],
         "comparison_counts": {
           "external": 0,
-          "previously_generated": 19,
+          "previously_generated": 18,
           "public": 0,
           "self_authored": 0,
-          "total": 19
+          "total": 18
         },
         "corpus_novel": true,
         "exact_matches": [],
-        "maximum_surface_jaccard": 0.1901,
+        "maximum_surface_jaccard": 0.3218,
         "scope_note": "Novelty combines a surface n-gram collision test over the public, self-authored, previously generated, and external corpora with a structural check on family id and morphism-chain signature. It is not a proof of worldwide historical originality.",
         "structural": {
           "chain_collision": false,
-          "compared_prior_chains": 19,
-          "compared_prior_families": 19,
+          "compared_prior_chains": 18,
+          "compared_prior_families": 18,
           "family_collision": false,
-          "family_id": "recurrence.cassini_fibonacci_determinant_invariant",
-          "morphism_chain_signature": "MatrixModel>DeterminantFunctor>SignReduction",
+          "family_id": "multiplicative.mobius_divisor_sum_totient_ratio",
+          "morphism_chain_signature": "DivisorSumExpansion>PrimePowerReduction>MultiplicativeAssembly",
           "structural_novel": true
         },
         "surface_novel": true,
         "threshold": 0.78
       },
       "phase_diagram": {
-        "invariant": "det of the Fibonacci companion matrix power",
-        "parameter": "index n",
+        "parameter": "integer n",
+        "structure": "Dirichlet convolution of multiplicative functions",
         "tested_values": [
           1,
           2,
@@ -3146,171 +4700,996 @@
           27,
           28,
           29,
-          30
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60
         ]
       },
-      "query_sort": "SignInvariant",
+      "query_sort": "MultiplicativeClosedForm",
       "semantic_parser_observation": {
-        "canonical_signature": "ebf5d4ba86fc95132b5e27b3",
+        "canonical_signature": "20f94a0ac09d3644914f4877",
         "definitions": [
-          "Equals",
+          "Curve2",
           "Find",
-          "Sequence"
+          "FiniteSum",
+          "Integer",
+          "Natural"
         ],
-        "morphism_chain": [],
+        "morphism_chain": [
+          "FiniteSum"
+        ],
         "note": "This is an independent parser observation. Acceptance uses the declared generation certificate and backend verification.",
-        "query_signature": "compute:Unknown:v0",
+        "query_signature": "compute:FiniteSum:v0",
         "status": "observed",
         "type_checked": true,
-        "warnings": [
-          "no_composable_morphism"
-        ]
+        "warnings": []
       },
-      "solution_tex": "\\(A=\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\\) とおくと \\(A^n=\\begin{pmatrix}F_{n+1}&F_n\\\\F_n&F_{n-1}\\end{pmatrix}\\)。両辺の行列式をとると \\(\\det(A^n)=(\\det A)^n=(-1)^n\\)，左辺は \\(F_{n+1}F_{n-1}-F_n^2\\) だから \\(F_{n-1}F_{n+1}-F_n^2=(-1)^n\\)。",
+      "solution_tex": "\\(f(n)=\\sum_{d\\mid n}\\mu(d)/d\\) は乗法的関数のディリクレ畳み込みで与えられる。素数冪 \\(p^a\\) では \\(f(p^a)=1-1/p\\) だから，乗法性より \\(f(n)=\\prod_{p\\mid n}(1-1/p)=\\varphi(n)/n\\)。",
       "source_generator": "typed_continuous",
-      "statement_tex": "フィボナッチ数列を \\(F_1=F_2=1,\\ F_{n+2}=F_{n+1}+F_n\\) で定める。\\(n\\ge2\\) に対し \\(F_{n-1}F_{n+1}-F_n^2\\) を求めよ。",
-      "structure_key": "20cac83772bb0faf5edb017f2e55196a997dd70e308a88e400a78422e3cd20bc",
+      "statement_tex": "正の整数 \\(n\\) に対し，\\(\\displaystyle\\sum_{d\\mid n}\\frac{\\mu(d)}{d}\\)（\\(\\mu\\) はメビウス関数）を求めよ。",
+      "structure_key": "5c42ae3f41945b9532c98fb5eef3e0df96aec498ce0852d1b9c36f427c0cb47c",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "exact_fibonacci_identity_plus_matrix_determinant",
+        "method": "exact_divisor_sum_vs_totient_and_euler_product",
         "trace": {
-          "identity": {
-            "1": -1,
-            "2": 1,
-            "3": -1,
-            "4": 1,
-            "5": -1,
-            "6": 1,
-            "7": -1,
-            "8": 1,
-            "9": -1,
-            "10": 1,
-            "11": -1,
-            "12": 1,
-            "13": -1,
-            "14": 1,
-            "15": -1,
-            "16": 1,
-            "17": -1,
-            "18": 1,
-            "19": -1,
-            "20": 1,
-            "21": -1,
-            "22": 1,
-            "23": -1,
-            "24": 1,
-            "25": -1,
-            "26": 1,
-            "27": -1,
-            "28": 1,
-            "29": -1,
-            "30": 1
+          "divisor_sum": {
+            "1": "1",
+            "2": "1/2",
+            "3": "2/3",
+            "4": "1/2",
+            "5": "4/5",
+            "6": "1/3",
+            "7": "6/7",
+            "8": "1/2",
+            "9": "2/3",
+            "10": "2/5",
+            "11": "10/11",
+            "12": "1/3",
+            "13": "12/13",
+            "14": "3/7",
+            "15": "8/15",
+            "16": "1/2",
+            "17": "16/17",
+            "18": "1/3",
+            "19": "18/19",
+            "20": "2/5",
+            "21": "4/7",
+            "22": "5/11",
+            "23": "22/23",
+            "24": "1/3",
+            "25": "4/5",
+            "26": "6/13",
+            "27": "2/3",
+            "28": "3/7",
+            "29": "28/29",
+            "30": "4/15",
+            "31": "30/31",
+            "32": "1/2",
+            "33": "20/33",
+            "34": "8/17",
+            "35": "24/35",
+            "36": "1/3",
+            "37": "36/37",
+            "38": "9/19",
+            "39": "8/13",
+            "40": "2/5",
+            "41": "40/41",
+            "42": "2/7",
+            "43": "42/43",
+            "44": "5/11",
+            "45": "8/15",
+            "46": "11/23",
+            "47": "46/47",
+            "48": "1/3",
+            "49": "6/7",
+            "50": "2/5",
+            "51": "32/51",
+            "52": "6/13",
+            "53": "52/53",
+            "54": "1/3",
+            "55": "8/11",
+            "56": "3/7",
+            "57": "12/19",
+            "58": "14/29",
+            "59": "58/59",
+            "60": "4/15"
           }
         }
       }
     },
     {
       "accepted": true,
-      "answer_tex": "54",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:507",
+      "answer_exact": "7",
+      "answer_tex": "7",
+      "candidate_id": "construct:traceback.digit_power.digit_count:022",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
-          "CompanionMatrix",
-          "ModularReduction",
-          "MultiplicativeOrder"
+          "PowerSequence",
+          "DecimalDigitCount"
         ],
         "lowering_chain": [
-          "recurrence",
-          "congruence",
-          "finite_state_iteration"
+          "geometric_sequence",
+          "exponential",
+          "logarithm",
+          "integer_arithmetic"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": {
-        "band": "B_hard_university",
-        "condition": 0,
-        "construct": 1,
-        "score": 8.91
-      },
+      "difficulty": "A",
       "domain": "number_theory",
-      "family_id": "construct.linear_recurrence_mod_period",
+      "family_id": "traceback.digit_power.digit_count",
       "lift_certificate": {
         "morphism_chain": [
-          "CompanionMatrix",
-          "ModularReduction",
-          "MultiplicativeOrder"
+          "PowerSequence",
+          "DecimalDigitCount"
         ],
         "type_checked": true
       },
       "novelty": {
-        "closest_source": "continuous_verified_problem_batch1",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.3645
+        "maximum_surface_jaccard": 0.0
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}-5&-4\\\\1&0\\end{pmatrix}\\) をかけて進む。\\(\\bmod\\ 27\\) でこの行列の乗法的位数が周期。",
+      "parameters": {
+        "construction": "digit_power",
+        "depth": 3,
+        "hidden_intermediates": 1,
+        "node": "digit_count",
+        "param": 20
+      },
+      "solution_tex": "\\(\\log_{10}2^{20}=20\\log_{10}2\\) の整数部分に1を足す。",
       "source_generator": "construct_atlas",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=-5a_{n+1}-4a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 27\\) で見たときの最小周期を求めよ。",
-      "structure_key": "8c8d211140494ea81250dd9d89589c9b9cb1dee8490369026bb1e74e41e06019",
-      "tool": "matrix_mod_order",
+      "statement_tex": "\\(2^{20}\\) を10進法で表す。必要ならば \\(\\log_{10}2=0.3010\\ldots\\) を用いてよい。\\(2^{20}\\) は何桁の整数か。",
+      "structure_key": "d2d4f2d5d2858cfb89b1af277ad36e48106d09bf84c397a562699969ffd644ed",
+      "tool": "deduction_closure+traceback",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "companion_matrix_modular_order"
+        "method": "deduction_closure_node_with_traceback"
       }
     },
     {
       "accepted": true,
-      "answer_tex": "32",
-      "candidate_id": "construct:layered.recurrence_period_observable:485",
+      "answer_exact": "6",
+      "answer_tex": "6",
+      "candidate_id": "construct:traceback.digit_power.digit_increase_count:024",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
-          "CompanionMatrix",
-          "ModularPeriod",
-          "EulerTotient"
+          "PowerSequence",
+          "DecimalDigitCount",
+          "ArithmeticObservation"
         ],
         "lowering_chain": [
-          "recurrence",
-          "congruence",
-          "finite_counting",
-          "integer_factorization"
+          "geometric_sequence",
+          "exponential",
+          "logarithm",
+          "integer_arithmetic"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": {
-        "band": "A_olympiad",
-        "condition": 1,
-        "construct": 2,
-        "score": 15.67
-      },
+      "difficulty": "A",
       "domain": "number_theory",
-      "family_id": "layered.recurrence_period_observable",
+      "family_id": "traceback.digit_power.digit_increase_count",
       "lift_certificate": {
         "morphism_chain": [
-          "CompanionMatrix",
-          "ModularPeriod",
-          "EulerTotient"
+          "PowerSequence",
+          "DecimalDigitCount",
+          "ArithmeticObservation"
         ],
         "type_checked": true
       },
       "novelty": {
-        "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1416
+        "maximum_surface_jaccard": 0.0
       },
-      "solution_tex": "\\((a_{n+1},a_n)\\) は行列 \\(\\begin{pmatrix}1&3\\1&0\\end{pmatrix}\\) をかけて進むので，\\(\\bmod\\ 11\\) での位数が周期。周期は \\(120\\)。\\(\\varphi(120)\\) を求める。",
+      "parameters": {
+        "construction": "digit_power",
+        "depth": 5,
+        "hidden_intermediates": 2,
+        "node": "digit_increase_count",
+        "param": 20
+      },
+      "solution_tex": "桁数は \\(\\lfloor n\\log_{10}2\\rfloor+1\\)。増える回数は最終桁数から1を引いた数に等しい。",
       "source_generator": "construct_atlas",
-      "statement_tex": "数列 \\((a_n)\\) を \\(a_0=0,\\ a_1=1,\\ a_{n+2}=a_{n+1}+3a_n\\) で定める。\\((a_n)\\) を \\(\\bmod\\ 11\\) で見ると周期的になる。その周期を \\(T\\) とするとき，\\(1\\le k\\le T\\) で \\(\\gcd(k,T)=1\\) を満たす \\(k\\) の個数を求めよ。",
-      "structure_key": "4ef6047ff0aa60ce3a0f94b8855b687f99812c63fe4076e9011faf79c09ca58a",
-      "tool": "matrix_mod_order+arith_function",
+      "statement_tex": "\\(2^{20}\\) を10進法で表す。必要ならば \\(\\log_{10}2=0.3010\\ldots\\) を用いてよい。\\(n=1,2,\\ldots,20\\) のうち，\\(2^{n}\\) の桁数が \\(2^{n-1}\\) より増えるような \\(n\\) の個数を求めよ。",
+      "structure_key": "b75efd73c7be0b1f779b60021f812920460b45527ea9db6f1ddea4ca96e10270",
+      "tool": "deduction_closure+traceback",
       "verification": {
         "exact_backend": true,
         "independent_check": true,
-        "method": "modular_period_then_arithmetic_function"
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "31",
+      "answer_tex": "31",
+      "candidate_id": "construct:traceback.digit_power.digit_sum:026",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "PowerSequence",
+          "ArithmeticObservation"
+        ],
+        "lowering_chain": [
+          "geometric_sequence",
+          "exponential",
+          "integer_arithmetic"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "number_theory",
+      "family_id": "traceback.digit_power.digit_sum",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PowerSequence",
+          "ArithmeticObservation"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "digit_power",
+        "depth": 3,
+        "hidden_intermediates": 1,
+        "node": "digit_sum",
+        "param": 20
+      },
+      "solution_tex": "10進表示を求めて各位を加える。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "\\(2^{20}\\) を10進法で表す。必要ならば \\(\\log_{10}2=0.3010\\ldots\\) を用いてよい。\\(2^{20}\\) の各位の数字の和を求めよ。",
+      "structure_key": "46d5ce6bfdb7c5cb9513bf65c8d4121422f71ce59422030349b9ad3b9fbe2f4c",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "1",
+      "answer_tex": "1",
+      "candidate_id": "construct:traceback.digit_power.leading_digit:023",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "PowerSequence",
+          "LeadingDigit"
+        ],
+        "lowering_chain": [
+          "geometric_sequence",
+          "exponential",
+          "logarithm",
+          "integer_arithmetic"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "number_theory",
+      "family_id": "traceback.digit_power.leading_digit",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PowerSequence",
+          "LeadingDigit"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "digit_power",
+        "depth": 3,
+        "hidden_intermediates": 1,
+        "node": "leading_digit",
+        "param": 20
+      },
+      "solution_tex": "\\(20\\log_{10}2\\) の小数部分 \\(f\\) に対し \\(10^{f}\\) の整数部分が最高位。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "\\(2^{20}\\) を10進法で表す。必要ならば \\(\\log_{10}2=0.3010\\ldots\\) を用いてよい。\\(2^{20}\\) の最高位の数字を求めよ。",
+      "structure_key": "457da2e65e49c92eb4ed27e9df462ec6e02cb99419fb91030c1cda87da3a583d",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "6",
+      "answer_tex": "6",
+      "candidate_id": "construct:traceback.digit_power.leading_one_count:025",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "PowerSequence",
+          "LeadingDigit",
+          "ArithmeticObservation"
+        ],
+        "lowering_chain": [
+          "geometric_sequence",
+          "exponential",
+          "logarithm",
+          "integer_arithmetic"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "number_theory",
+      "family_id": "traceback.digit_power.leading_one_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PowerSequence",
+          "LeadingDigit",
+          "ArithmeticObservation"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "digit_power",
+        "depth": 4,
+        "hidden_intermediates": 1,
+        "node": "leading_one_count",
+        "param": 20
+      },
+      "solution_tex": "最高位が1になるのは桁数が増えた直後に限る。よって桁数の増加回数に一致する。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "\\(2^{20}\\) を10進法で表す。必要ならば \\(\\log_{10}2=0.3010\\ldots\\) を用いてよい。\\(n=1,2,\\ldots,20\\) のうち，\\(2^{n}\\) の最高位が 1 となる \\(n\\) の個数を求めよ。",
+      "structure_key": "6b29de275d093be69516d4ebbc5cdcdf755f6c8b3388efc5a4f92f705d4d4332",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "26",
+      "answer_tex": "26",
+      "candidate_id": "construct:layered.paley_triangle_count:048",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "QuadraticResidueGraph",
+          "EdgeCommonNeighbors",
+          "TriangleCount"
+        ],
+        "lowering_chain": [
+          "congruence",
+          "square_number",
+          "counting",
+          "combination"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "solution_tex_lowered": "各辺について共通隣接点は \\((p-5)/4\\) 個なので，三角形は \\(\\frac{p(p-1)}{2}\\cdot\\frac{p-5}{4}\\div3=\\frac{p(p-1)(p-5)}{48}\\) 個。\\(p=13\\) を代入して \\(26\\)。",
+        "statement_tex_lowered": "素数 \\(p=13\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\{0,1,\\dots,12\\}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方数と合同なとき辺で結ぶことで定める。\\(G\\) に含まれる三角形の個数を求めよ。",
+        "surface_rewritten": true,
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "number_theory_graph",
+      "family_id": "layered.paley_triangle_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "QuadraticResidueGraph",
+          "EdgeCommonNeighbors",
+          "TriangleCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "p": 13
+      },
+      "solution_tex": "各辺について共通隣接点は \\((p-5)/4\\) 個なので，三角形は \\(\\frac{p(p-1)}{2}\\cdot\\frac{p-5}{4}\\div3=\\frac{p(p-1)(p-5)}{48}\\) 個。\\(p=13\\) を代入して \\(26\\)。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "素数 \\(p=13\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\{0,1,\\dots,12\\}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方数と合同なとき辺で結ぶことで定める。\\(G\\) に含まれる三角形の個数を求めよ。",
+      "statement_tex_original": "素数 \\(p=13\\)（\\(p\\equiv1\\pmod4\\)）に対し，頂点集合 \\(\\mathbb Z_{13}\\) 上のグラフ \\(G\\) を，2頂点 \\(x,y\\) が \\(x-y\\) が平方剰余のとき辺で結ぶことで定める。\\(G\\) に含まれる三角形の個数を求めよ。",
+      "structure_key": "376d0cb02f4c4252ffe9d0650b9767e0c0ae3d18f2c6cd5a4cbcce826097dd7c",
+      "tool": "quadratic_residue+counting",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "paley_graph_triangle_enumeration_vs_closed_form"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "265/64",
+      "answer_tex": "\\frac{265}{64}",
+      "candidate_id": "construct:traceback.triangle_centers.OH_dist_sq:034",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "TriangleConstruction",
+          "CircleParameter",
+          "OrthocenterIntersection",
+          "EdgeLengthObservation"
+        ],
+        "lowering_chain": [
+          "coordinate_geometry",
+          "triangle_area",
+          "circle_equation",
+          "triangle_center",
+          "inner_product",
+          "distance_formula"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "plane_geometry",
+      "family_id": "traceback.triangle_centers.OH_dist_sq",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TriangleConstruction",
+          "CircleParameter",
+          "OrthocenterIntersection",
+          "EdgeLengthObservation"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "triangle_centers",
+        "depth": 6,
+        "hidden_intermediates": 2,
+        "node": "OH_dist_sq",
+        "param": [
+          0,
+          0,
+          14,
+          0,
+          5,
+          12
+        ]
+      },
+      "solution_tex": "外心と垂心を求めて距離を計算する。\\(OH^2=9R^2-(a^2+b^2+c^2)\\) でも確かめられる。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "座標平面上の3点 \\(A(0,0)\\), \\(B(14,0)\\), \\(C(5,12)\\) を頂点とする三角形 \\(ABC\\) を考える。外心と垂心の距離の平方を求めよ。",
+      "structure_key": "4a41653ca77c17c8de3e0a09b413e0a30231f67e71d60239398a324ac00585e0",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "84",
+      "answer_tex": "84",
+      "candidate_id": "construct:traceback.triangle_centers.area:027",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "TriangleConstruction",
+          "ShoelaceArea"
+        ],
+        "lowering_chain": [
+          "coordinate_geometry",
+          "triangle_area",
+          "area_shoelace"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "plane_geometry",
+      "family_id": "traceback.triangle_centers.area",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TriangleConstruction",
+          "ShoelaceArea"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "triangle_centers",
+        "depth": 2,
+        "hidden_intermediates": 0,
+        "node": "area",
+        "param": [
+          0,
+          0,
+          14,
+          0,
+          5,
+          12
+        ]
+      },
+      "solution_tex": "座標から面積公式で直接求める。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "座標平面上の3点 \\(A(0,0)\\), \\(B(14,0)\\), \\(C(5,12)\\) を頂点とする三角形 \\(ABC\\) を考える。この三角形の面積を求めよ。",
+      "structure_key": "40f5050caeb827cd715f0d4cde06eadb9eb6ef7e54571c6f630c9ab4d7a893c6",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "4225/64",
+      "answer_tex": "\\frac{4225}{64}",
+      "candidate_id": "construct:traceback.triangle_centers.circumradius_sq:028",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "TriangleConstruction",
+          "CircleParameter",
+          "CoordinateSolve"
+        ],
+        "lowering_chain": [
+          "coordinate_geometry",
+          "triangle_area",
+          "circle_equation",
+          "simultaneous_equations"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "plane_geometry",
+      "family_id": "traceback.triangle_centers.circumradius_sq",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TriangleConstruction",
+          "CircleParameter",
+          "CoordinateSolve"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "triangle_centers",
+        "depth": 4,
+        "hidden_intermediates": 1,
+        "node": "circumradius_sq",
+        "param": [
+          0,
+          0,
+          14,
+          0,
+          5,
+          12
+        ]
+      },
+      "solution_tex": "2辺の垂直二等分線を連立して外心を求め，頂点までの距離を測る。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "座標平面上の3点 \\(A(0,0)\\), \\(B(14,0)\\), \\(C(5,12)\\) を頂点とする三角形 \\(ABC\\) を考える。外接円の半径の平方を求めよ。",
+      "structure_key": "f76f3f8e0c150ef86579cacefbbc6955d52e22529b56482963ecfa96fb3f747e",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "3/16",
+      "answer_tex": "\\frac{3}{16}",
+      "candidate_id": "construct:traceback.triangle_centers.euler_line_slope:031",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "TriangleConstruction",
+          "CircleParameter",
+          "OrthocenterIntersection",
+          "JoiningLine"
+        ],
+        "lowering_chain": [
+          "coordinate_geometry",
+          "triangle_area",
+          "circle_equation",
+          "triangle_center",
+          "inner_product",
+          "line_equation"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "plane_geometry",
+      "family_id": "traceback.triangle_centers.euler_line_slope",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TriangleConstruction",
+          "CircleParameter",
+          "OrthocenterIntersection",
+          "JoiningLine"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "triangle_centers",
+        "depth": 6,
+        "hidden_intermediates": 2,
+        "node": "euler_line_slope",
+        "param": [
+          0,
+          0,
+          14,
+          0,
+          5,
+          12
+        ]
+      },
+      "solution_tex": "外心と垂心を求め，2点を通る直線の傾きを計算する。重心も同じ直線上にある。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "座標平面上の3点 \\(A(0,0)\\), \\(B(14,0)\\), \\(C(5,12)\\) を頂点とする三角形 \\(ABC\\) を考える。外心と垂心を通る直線の傾きを求めよ。",
+      "structure_key": "33408db96af16f7e699c065538a273cd0bfea5e52a4c361298bffce3daed25a3",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "6",
+      "answer_tex": "6",
+      "candidate_id": "construct:traceback.triangle_centers.incenter_x:033",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "TriangleConstruction",
+          "EdgeLengthObservation",
+          "IncenterWeights"
+        ],
+        "lowering_chain": [
+          "coordinate_geometry",
+          "triangle_area",
+          "distance_formula",
+          "triangle_center"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "plane_geometry",
+      "family_id": "traceback.triangle_centers.incenter_x",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TriangleConstruction",
+          "EdgeLengthObservation",
+          "IncenterWeights"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "triangle_centers",
+        "depth": 4,
+        "hidden_intermediates": 1,
+        "node": "incenter_x",
+        "param": [
+          0,
+          0,
+          14,
+          0,
+          5,
+          12
+        ]
+      },
+      "solution_tex": "内心は \\(\\frac{aA+bB+cC}{a+b+c}\\)（\\(a,b,c\\) は対辺の長さ）。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "座標平面上の3点 \\(A(0,0)\\), \\(B(14,0)\\), \\(C(5,12)\\) を頂点とする三角形 \\(ABC\\) を考える。内心の \\(x\\) 座標を求めよ。",
+      "structure_key": "9baa7f214010cc2ff622830837e9bc3defc29db87d4554c50d6d6410e1c8ee7c",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "4",
+      "answer_tex": "4",
+      "candidate_id": "construct:traceback.triangle_centers.inradius:029",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "TriangleConstruction",
+          "EdgeLengthObservation",
+          "IncenterWeights"
+        ],
+        "lowering_chain": [
+          "coordinate_geometry",
+          "triangle_area",
+          "distance_formula",
+          "triangle_center"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "plane_geometry",
+      "family_id": "traceback.triangle_centers.inradius",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TriangleConstruction",
+          "EdgeLengthObservation",
+          "IncenterWeights"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "triangle_centers",
+        "depth": 4,
+        "hidden_intermediates": 1,
+        "node": "inradius",
+        "param": [
+          0,
+          0,
+          14,
+          0,
+          5,
+          12
+        ]
+      },
+      "solution_tex": "\\(S=rs\\)（\\(s\\) は半周長）から \\(r=S/s\\)。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "座標平面上の3点 \\(A(0,0)\\), \\(B(14,0)\\), \\(C(5,12)\\) を頂点とする三角形 \\(ABC\\) を考える。内接円の半径を求めよ。",
+      "structure_key": "cb8daa2142f67890ad1d79ac0518bbc86587ac30c56eab42e9792cb9283af12b",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "4225/256",
+      "answer_tex": "\\frac{4225}{256}",
+      "candidate_id": "construct:traceback.triangle_centers.nine_point_radius_sq:032",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "TriangleConstruction",
+          "CentroidMap",
+          "CircleParameter"
+        ],
+        "lowering_chain": [
+          "coordinate_geometry",
+          "triangle_area",
+          "midpoint",
+          "circle_equation"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "plane_geometry",
+      "family_id": "traceback.triangle_centers.nine_point_radius_sq",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TriangleConstruction",
+          "CentroidMap",
+          "CircleParameter"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "triangle_centers",
+        "depth": 4,
+        "hidden_intermediates": 1,
+        "node": "nine_point_radius_sq",
+        "param": [
+          0,
+          0,
+          14,
+          0,
+          5,
+          12
+        ]
+      },
+      "solution_tex": "3辺の中点を通る円を求めると，半径は外接円の半分になる。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "座標平面上の3点 \\(A(0,0)\\), \\(B(14,0)\\), \\(C(5,12)\\) を頂点とする三角形 \\(ABC\\) を考える。各辺の中点3つを通る円の半径の平方を求めよ。",
+      "structure_key": "4243211c1230dace42ea07307a363b86150afddedfbc464648a8a37326bb6b4c",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "5",
+      "answer_tex": "5",
+      "candidate_id": "construct:traceback.triangle_centers.orthocenter_x:030",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "TriangleConstruction",
+          "OrthocenterIntersection",
+          "CoordinateSolve"
+        ],
+        "lowering_chain": [
+          "coordinate_geometry",
+          "triangle_area",
+          "triangle_center",
+          "inner_product",
+          "simultaneous_equations"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "plane_geometry",
+      "family_id": "traceback.triangle_centers.orthocenter_x",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TriangleConstruction",
+          "OrthocenterIntersection",
+          "CoordinateSolve"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "triangle_centers",
+        "depth": 5,
+        "hidden_intermediates": 2,
+        "node": "orthocenter_x",
+        "param": [
+          0,
+          0,
+          14,
+          0,
+          5,
+          12
+        ]
+      },
+      "solution_tex": "2頂点から対辺への垂線を連立する。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "座標平面上の3点 \\(A(0,0)\\), \\(B(14,0)\\), \\(C(5,12)\\) を頂点とする三角形 \\(ABC\\) を考える。垂心の \\(x\\) 座標を求めよ。",
+      "structure_key": "d445f3325363170381e58dc6bd14034b65136d55775e712e514cdf44e246cf45",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "1/4",
+      "answer_tex": "\\frac{1}{4}",
+      "candidate_id": "construct:construct.gambler_ruin_probability:041",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "lowering_chain": [
+          "probability",
+          "recurrence_probability",
+          "recurrence",
+          "simultaneous_equations",
+          "geometric_sequence",
+          "general_term"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "probability",
+      "family_id": "construct.gambler_ruin_probability",
+      "lift_certificate": {
+        "morphism_chain": [
+          "AbsorbingWalk",
+          "BoundaryRecurrence",
+          "RatioClosedForm"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "N": 4,
+        "k": 1,
+        "pa": 1,
+        "pb": 1
+      },
+      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{4}=1\\) より \\(p_k=k/4\\)。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "数直線上の点が \\(k=1\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=4\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
+      "structure_key": "b19479dced4b6a044ac145c794677caf5bc66b23cecfe8e840105e5cee63512a",
+      "tool": "linear_recurrence",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "gambler_ruin_boundary_recurrence"
       }
     },
     {
@@ -3324,9 +5703,9 @@
           "HarmonicSum"
         ],
         "lowering_chain": [
-          "permutation",
-          "indicator_counting",
-          "expectation"
+          "probability",
+          "expectation",
+          "sum_of_series"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
@@ -3529,8 +5908,269 @@
     },
     {
       "accepted": true,
-      "answer_tex": "\\frac{x^2}{25}+\\frac{y^2}{16}=\\frac{1}{\\left(\\frac{1}{4} + \\frac{\\sqrt{5}}{4}\\right)^{2}}",
-      "candidate_id": "construct:ultradeep.geometry_ellipse_tangent_pair_locus:056",
+      "answer_tex": "\\displaystyle\\frac{4^n}{\\binom{2n}{n}}-1",
+      "candidate_id": "phase06_random_bridge_zero_observable",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "BridgePathSpace",
+          "ZeroIndicators",
+          "Expectation",
+          "FiniteSum"
+        ],
+        "lowering_chain": [
+          "counting",
+          "combination",
+          "expectation",
+          "sum_of_series"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "domain": "probability",
+      "family_id": "probability.random_bridge_zero_count",
+      "lift_certificate": {
+        "errors": [],
+        "family_id": "probability.random_bridge_zero_count",
+        "morphism_chain": [
+          "BridgePathSpace",
+          "ZeroIndicators",
+          "Expectation",
+          "FiniteSum"
+        ],
+        "query_sort": "Rational",
+        "type_checked": true,
+        "typed_edges": [
+          {
+            "codomain": "FiniteProbabilitySpace",
+            "domain": "BalancedSignMultiset",
+            "name": "BridgePathSpace"
+          },
+          {
+            "codomain": "IndicatorFamily",
+            "domain": "FiniteProbabilitySpace",
+            "name": "ZeroIndicators"
+          },
+          {
+            "codomain": "ProbabilityFamily",
+            "domain": "IndicatorFamily",
+            "name": "Expectation"
+          },
+          {
+            "codomain": "Rational",
+            "domain": "ProbabilityFamily",
+            "name": "FiniteSum"
+          }
+        ]
+      },
+      "morphisms": [
+        {
+          "codomain": "FiniteProbabilitySpace",
+          "domain": "BalancedSignMultiset",
+          "name": "BridgePathSpace"
+        },
+        {
+          "codomain": "IndicatorFamily",
+          "domain": "FiniteProbabilitySpace",
+          "name": "ZeroIndicators"
+        },
+        {
+          "codomain": "ProbabilityFamily",
+          "domain": "IndicatorFamily",
+          "name": "Expectation"
+        },
+        {
+          "codomain": "Rational",
+          "domain": "ProbabilityFamily",
+          "name": "FiniteSum"
+        }
+      ],
+      "novelty": {
+        "closest": [
+          {
+            "id": "phase02_reciprocal_complex_root_polygon",
+            "score": 0.0741,
+            "source": "current_batch"
+          },
+          {
+            "id": "phase04_interpolation_harmonic_observable",
+            "score": 0.0707,
+            "source": "current_batch"
+          },
+          {
+            "id": "phase05_cycle_laplacian_pseudodeterminant",
+            "score": 0.0638,
+            "source": "current_batch"
+          },
+          {
+            "id": "phase03_finite_field_quadratic_zero_count",
+            "score": 0.0359,
+            "source": "current_batch"
+          },
+          {
+            "id": "phase01b_cubic_discriminant_triangle",
+            "score": 0.0245,
+            "source": "current_batch"
+          }
+        ],
+        "comparison_counts": {
+          "external": 0,
+          "previously_generated": 6,
+          "public": 0,
+          "self_authored": 0,
+          "total": 6
+        },
+        "corpus_novel": true,
+        "exact_matches": [],
+        "maximum_surface_jaccard": 0.0741,
+        "scope_note": "Novelty combines a surface n-gram collision test over the public, self-authored, previously generated, and external corpora with a structural check on family id and morphism-chain signature. It is not a proof of worldwide historical originality.",
+        "structural": {
+          "chain_collision": false,
+          "compared_prior_chains": 6,
+          "compared_prior_families": 6,
+          "family_collision": false,
+          "family_id": "probability.random_bridge_zero_count",
+          "morphism_chain_signature": "BridgePathSpace>ZeroIndicators>Expectation>FiniteSum",
+          "structural_novel": true
+        },
+        "surface_novel": true,
+        "threshold": 0.78
+      },
+      "phase_diagram": {
+        "observable": "number of returns to zero",
+        "parameter": "bridge half-length n",
+        "tested_values": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      "query_sort": "Rational",
+      "semantic_parser_observation": {
+        "canonical_signature": "28b6d1adf0fc322f08eaca70",
+        "definitions": [
+          "Equals",
+          "Expectation",
+          "Find",
+          "Member",
+          "Or"
+        ],
+        "morphism_chain": [
+          "Expectation"
+        ],
+        "note": "This is an independent parser observation. Acceptance uses the declared generation certificate and backend verification.",
+        "query_signature": "compute:Expectation:v0(v1,v2)",
+        "status": "observed",
+        "type_checked": true,
+        "warnings": []
+      },
+      "solution_tex": "\\(S_{2j}=0\\) となる列は \\(\\binom{2j}{j}\\binom{2n-2j}{n-j}\\) 個である。指示関数の線形性から期待値はこれを \\(\\binom{2n}{n}\\) で割って\\(j=1,\\ldots,n\\) について足したものになる。母関数 \\((1-4x)^{-1/2}\\) の係数比較により \\(\\sum_{j=0}^n\\binom{2j}{j}\\binom{2n-2j}{n-j}=4^n\\)だから結論を得る。",
+      "source_generator": "typed_continuous",
+      "statement_tex": "\\(+1\\) を \\(n\\) 個，\\(-1\\) を \\(n\\) 個並べてできる列を一様に選ぶ。第 \\(k\\) 項までの和を \\(S_k\\) とし，\\(N=\\#\\{k\\in\\{1,\\ldots,2n\\}\\mid S_k=0\\}\\) とおく。\\(N\\) の期待値 \\(\\operatorname{E}[N]\\) を求めよ。",
+      "structure_key": "c415d75dcc77d5b019f5768757cffe14f235ab6b2893622155e64e75bcc9b0e9",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "exhaustive_path_enumeration_plus_binomial_convolution",
+        "trace": {
+          "enumerated_expectations": {
+            "1": "1",
+            "2": "5/3",
+            "3": "11/5",
+            "4": "93/35",
+            "5": "193/63",
+            "6": "793/231",
+            "7": "1619/429"
+          }
+        }
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "4",
+      "answer_tex": "4",
+      "candidate_id": "construct:ultradeep.gambler_absorption_variance_divisor_count:059",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "PathStateSpace",
+          "AbsorbingBoundary",
+          "SymmetricRandomWalk",
+          "HittingTime",
+          "FirstMomentConditioning",
+          "FirstMomentLinearSystem",
+          "SecondMomentConditioning",
+          "SecondMomentLinearSystem",
+          "VarianceTransform",
+          "IntegerInvariant",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "lowering_chain": [
+          "counting",
+          "recurrence",
+          "recurrence_probability",
+          "simultaneous_equations",
+          "probability",
+          "expectation",
+          "conditional_probability",
+          "variance",
+          "integer_arithmetic",
+          "algebraic_identity",
+          "prime_factorization",
+          "divisor_counting"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "probability_linear_algebra_number_theory",
+      "family_id": "ultradeep.gambler_absorption_variance_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "PathStateSpace",
+          "AbsorbingBoundary",
+          "SymmetricRandomWalk",
+          "HittingTime",
+          "FirstMomentConditioning",
+          "FirstMomentLinearSystem",
+          "SecondMomentConditioning",
+          "SecondMomentLinearSystem",
+          "VarianceTransform",
+          "IntegerInvariant",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "N": 4,
+        "k": 1
+      },
+      "solution_tex": "一次モーメントの差分方程式から \\(E[T]=1(4-1)\\)。二次モーメントにも条件付けして解くと \\(\\operatorname{Var}(T)=\\frac{1(4-1)(4^2-2-2\\cdot 1(4-1))}{3}=8\\)。\\(8=2^{3}\\) より約数は \\(4\\) 個。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "点 \\(0,1,\\ldots,4\\) 上を動く対称ランダムウォークを考える。初期位置は \\(1\\) で，各時刻に確率 \\(\\frac12\\) ずつで左右に1動き，\\(0\\) または \\(4\\) に着いたら停止する。停止時刻を \\(T\\) とするとき，\\(\\operatorname{Var}(T)\\) の正の約数の個数を求めよ。",
+      "structure_key": "e26640a3a80433f827b2f25a575a5202426057207eeeb34337712e7610f9629c",
+      "tool": "absorbing_markov_moments+linear_system+factorization",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "closed_variance_formula_vs_exact_two_moment_linear_system"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "4",
+      "answer_tex": "\\frac{x^2}{4}+\\frac{y^2}{1}=4",
+      "candidate_id": "construct:ultradeep.geometry_ellipse_tangent_pair_locus:062",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "EllipseObject",
@@ -3546,22 +6186,22 @@
         ],
         "lowering_chain": [
           "ellipse",
-          "differentiation",
-          "tangent_line",
-          "simultaneous_equations",
+          "trigonometric_identity",
+          "complex_plane",
           "parameter_elimination",
+          "symmetry",
+          "tangent_line",
+          "line_equation",
+          "simultaneous_equations",
+          "de_moivre",
+          "coordinate_geometry",
           "locus"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
         "uses_only_school_level_primitives": true
       },
-      "difficulty": {
-        "band": "B_hard_university",
-        "condition": 0,
-        "construct": 2,
-        "score": 13.77
-      },
+      "difficulty": "A",
       "domain": "projective_geometry",
       "family_id": "ultradeep.geometry_ellipse_tangent_pair_locus",
       "lift_certificate": {
@@ -3580,13 +6220,17 @@
         "type_checked": true
       },
       "novelty": {
-        "closest_source": "sakumon_curation",
         "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1329
+        "maximum_surface_jaccard": 0.0
       },
-      "solution_tex": "2本の接線の方程式を加減して解くと \\(Q(t)=(5\\sec\\frac{\\pi}{5}\\cos t,4\\sec\\frac{\\pi}{5}\\sin t)\\)。よって軌跡は \\(\\frac{x^2}{25}+\\frac{y^2}{16}=\\frac{1}{\\left(\\frac{1}{4} + \\frac{\\sqrt{5}}{4}\\right)^{2}}\\)。",
+      "parameters": {
+        "a": 2,
+        "b": 1,
+        "k": 3
+      },
+      "solution_tex": "2本の接線の方程式を加減して解くと \\(Q(t)=(2\\sec\\frac{\\pi}{3}\\cos t,1\\sec\\frac{\\pi}{3}\\sin t)\\)。よって軌跡は \\(\\frac{x^2}{4}+\\frac{y^2}{1}=4\\)。",
       "source_generator": "construct_atlas",
-      "statement_tex": "楕円 \\(E:\\frac{x^2}{25}+\\frac{y^2}{16}=1\\) 上の点を \\(P(t)=(5\\cos t,4\\sin t)\\) とする。\\(P(t+\\frac{\\pi}{5})\\) と \\(P(t-\\frac{\\pi}{5})\\) における2本の接線の交点を \\(Q(t)\\)とするとき，\\(Q(t)\\) の軌跡の方程式を求めよ。",
+      "statement_tex": "楕円 \\(E:\\frac{x^2}{4}+\\frac{y^2}{1}=1\\) 上の点を \\(P(t)=(2\\cos t,1\\sin t)\\) とする。\\(P(t+\\frac{\\pi}{3})\\) と \\(P(t-\\frac{\\pi}{3})\\) における2本の接線の交点を \\(Q(t)\\)とするとき，\\(Q(t)\\) の軌跡の方程式を求めよ。",
       "structure_key": "7d68a689badb53510ef9c0dda8ecc420f375758c372b94da5ee92efcf95cb8eb",
       "tool": "dual_conic+tangent_intersection+linear_system",
       "verification": {
@@ -3607,9 +6251,10 @@
         ],
         "lowering_chain": [
           "definite_integral",
-          "substitution",
-          "inequality",
-          "sequence_limit"
+          "area_integral",
+          "algebraic_identity",
+          "limit",
+          "inequality"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
@@ -3774,8 +6419,9 @@
         ],
         "lowering_chain": [
           "definite_integral",
-          "substitution",
-          "trigonometric_identity"
+          "symmetry",
+          "vector_addition",
+          "area_integral"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
@@ -3943,9 +6589,13 @@
           "PositiveSquareRoot"
         ],
         "lowering_chain": [
-          "recurrence",
-          "inequality",
-          "sequence_limit"
+          "square_number",
+          "integer_arithmetic",
+          "limit",
+          "differentiation",
+          "sequence",
+          "quadratic_equation",
+          "inequality"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
         "type_checked": true,
@@ -4119,8 +6769,9 @@
           "AbsoluteIntegral"
         ],
         "lowering_chain": [
+          "trigonometric_identity",
           "trigonometric_equation",
-          "sign_partition",
+          "inequality",
           "definite_integral"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
@@ -4167,8 +6818,9 @@
           "PiecewiseIntegral"
         ],
         "lowering_chain": [
-          "trigonometric_inequality",
-          "piecewise_function",
+          "trigonometric_equation",
+          "inequality",
+          "counting",
           "definite_integral"
         ],
         "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
@@ -4206,88 +6858,127 @@
     }
   ],
   "summary": {
-    "certified_structures": 46,
+    "certified_structures": 81,
     "domain_counts": {
       "algebra": 4,
       "algebraic_geometry": 2,
       "algebraic_geometry_number_theory": 1,
       "analytic_geometry": 2,
-      "combinatorics": 1,
+      "combinatorics": 7,
+      "combinatorics_analysis": 1,
       "combinatorics_number_theory": 1,
       "complex": 2,
       "complex_algebra_number_theory": 1,
       "complex_geometry": 10,
+      "conic_geometry": 6,
+      "convex_geometry": 1,
       "differential_geometry": 1,
       "euclidean_geometry": 1,
       "geometry": 3,
       "geometry_algebra": 6,
       "geometry_analysis": 1,
-      "linear_algebra_number_theory": 1,
-      "number_theory": 2,
-      "probability": 1,
+      "graph_combinatorics_number_theory": 1,
+      "number_theory": 11,
+      "number_theory_graph": 1,
+      "plane_geometry": 8,
+      "probability": 3,
+      "probability_linear_algebra_number_theory": 1,
       "projective_geometry": 1,
       "real_analysis": 5
     },
-    "families": 46,
+    "families": 79,
     "family_counts": {
       "algebraic_geometry.cubic_discriminant_triangle_area": 1,
       "algebraic_geometry.even_quartic_parabola_hull_area": 1,
       "analysis.boundary_layer_integral_limit": 1,
       "analysis.reflection_symmetric_integral": 1,
       "asymptotic.recurrence_square_increment": 1,
+      "binomial.beta_integral_duality": 1,
       "binomial.roots_of_unity_filter_mod3": 1,
       "complex_geometry.reciprocal_root_polygon_area": 1,
       "conic_duality.tangent_intercept_centroid_minimum": 1,
       "construct.complex_affine_limit": 1,
       "construct.complex_rotation_period": 1,
       "construct.cubic_tangent_midpoint_locus": 1,
+      "construct.gambler_ruin_probability": 1,
       "construct.linear_recurrence_mod_period": 1,
       "construct.mobius_fixed_points": 1,
-      "construct.mobius_iteration_period": 1,
       "construct.parabola_right_angle_chord": 1,
       "construct.reciprocal_recurrence": 1,
       "deep.polygon_subset_centroid": 1,
+      "deep.recurrence_period_quadratic_character": 1,
       "deep.rotation_diagonal_product_divisors": 1,
       "deep.tangent_iteration_growth": 1,
       "fusion.trig_absolute_value_integral": 1,
       "fusion.trig_floor_integral": 1,
       "lattice_paths.dyck_reflection_catalan_count": 1,
       "layered.cubic_tangent_iteration": 1,
-      "layered.recurrence_period_observable": 1,
+      "layered.paley_triangle_count": 1,
+      "layered.recurrence_period_observable": 3,
       "layered.rotation_orbit_hull_area": 1,
+      "multiplicative.mobius_divisor_sum_totient_ratio": 1,
       "passage_region.line_family_sweep": 1,
       "passage_region.parabola_family_sweep": 1,
       "polynomial.interpolation_harmonic_observable": 1,
       "probability.left_to_right_maxima_expectation": 1,
-      "recurrence.cassini_fibonacci_determinant_invariant": 1,
+      "probability.random_bridge_zero_count": 1,
+      "series.telescoping_triple_partial_fraction": 1,
       "traceback.cubic_tangent.iterate_x_n": 1,
       "traceback.cubic_tangent.log_growth_limit": 1,
       "traceback.cubic_tangent.midpoint_locus": 1,
       "traceback.cubic_tangent.reintersection_x": 1,
+      "traceback.digit_power.digit_count": 1,
+      "traceback.digit_power.digit_increase_count": 1,
+      "traceback.digit_power.digit_sum": 1,
+      "traceback.digit_power.leading_digit": 1,
+      "traceback.digit_power.leading_one_count": 1,
+      "traceback.ellipse_tangent.center_to_polar_dist_sq": 1,
+      "traceback.ellipse_tangent.chord_length_sq": 1,
+      "traceback.ellipse_tangent.chord_midpoint_x": 1,
+      "traceback.ellipse_tangent.contact_triangle_area": 1,
+      "traceback.ellipse_tangent.monge_radius_sq": 1,
+      "traceback.ellipse_tangent.tangent_slope_product": 1,
+      "traceback.lattice_path.catalan_divisor_count": 1,
+      "traceback.lattice_path.catalan_paths": 1,
+      "traceback.lattice_path.strictly_above_paths": 1,
+      "traceback.lattice_path.through_center_paths": 1,
+      "traceback.lattice_path.total_paths": 1,
+      "traceback.lattice_path.total_paths_divisor_count": 1,
       "traceback.regular_polygon.area": 1,
       "traceback.regular_polygon.centroid_zero_subsets": 1,
       "traceback.regular_polygon.diagonal_count": 1,
       "traceback.regular_polygon.distance_product_divisors": 1,
       "traceback.regular_polygon.sum_sq_pairwise": 1,
       "traceback.regular_polygon.vertex_distance_product": 1,
+      "traceback.triangle_centers.OH_dist_sq": 1,
+      "traceback.triangle_centers.area": 1,
+      "traceback.triangle_centers.circumradius_sq": 1,
+      "traceback.triangle_centers.euler_line_slope": 1,
+      "traceback.triangle_centers.incenter_x": 1,
+      "traceback.triangle_centers.inradius": 1,
+      "traceback.triangle_centers.nine_point_radius_sq": 1,
+      "traceback.triangle_centers.orthocenter_x": 1,
       "ultradeep.cubic_root_triangle_discriminant_divisor_count": 1,
       "ultradeep.cyclotomic_distance_norm_divisor_count": 1,
+      "ultradeep.gambler_absorption_variance_divisor_count": 1,
       "ultradeep.geometry_astroid_envelope_area": 1,
       "ultradeep.geometry_ellipse_tangent_pair_locus": 1,
       "ultradeep.geometry_orthocenter_locus_area": 1,
-      "ultradeep.geometry_parabola_normal_envelope": 1
+      "ultradeep.geometry_parabola_normal_envelope": 1,
+      "ultradeep.geometry_regular_polygon_minkowski_perimeter": 1,
+      "ultradeep.paley_four_cycle_divisor_count": 1
     },
-    "geometry_algebra_structures": 36,
+    "geometry_algebra_structures": 51,
     "rejected": {
-      "same_structure_variant": 179,
-      "scope_lowering": 51
+      "same_structure_variant": 51,
+      "scope_lowering": 10
     },
     "source_counts": {
-      "construct_atlas": 20,
+      "construct_atlas": 62,
       "geometry_fusion": 4,
-      "traceback_closure": 10,
-      "typed_continuous": 12
+      "typed_continuous": 15
     },
-    "total_instances": 46
+    "surface_rewritten": 4,
+    "total_instances": 81
   }
 }

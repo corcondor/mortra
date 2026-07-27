@@ -37,8 +37,70 @@ function splitBareLatex(raw: string): MathSegment[] {
   return result
 }
 
+/**
+ * 過去問の .tex から取り込んだ問題文には、数式ではない LaTeX の版面指示が
+ * 混ざっている。小問を `\begin{description}\item[(1)]` で書いてあるのが典型で、
+ * これは数式の外にあるため KaTeX に渡らず `\item` のまま画面に残ってしまう。
+ * 一覧の上位600問のうち381問がこれで崩れていた（\item だけで1081回）。
+ *
+ * ここで版面指示だけを日本語の見た目に直す。数式の中身には触れない
+ * （description / enumerate / itemize は数式中に現れないので安全）。
+ */
+export function normalizeStatement(text: string): string {
+  if (!text) return ''
+  let out = text
+
+  // 文書クラス・プリアンブル（.tex 全文が入っている行がある）
+  out = out.replace(/\\documentclass(\[[^\]]*\])?\{[^}]*\}/g, '')
+  out = out.replace(/\\usepackage(\[[^\]]*\])?\{[^}]*\}/g, '')
+  out = out.replace(/\\geometry\{[^}]*\}/g, '')
+  out = out.replace(/\\(?:begin|end)\{document\}/g, '')
+
+  // 箇条書き環境そのものは表示に不要
+  out = out.replace(/\\(?:begin|end)\{(?:description|enumerate|itemize)\}/g, '')
+
+  // \item[(1)] → 改行して (1)、ラベルなしの \item → 中黒
+  out = out.replace(/\\item\s*\[([^\]]*)\]/g, '\n$1 ')
+  out = out.replace(/\\item\b/g, '\n・')
+
+  // \ding{172} / \ding{"AC} は丸数字。TeX では先頭の " が16進を意味する。
+  // pifont の 172-181 が ①-⑩、182-191 が ❶-❿。
+  out = out.replace(/\\ding\{"?([0-9A-Fa-f]+)\}/g, (_, digits: string) => {
+    const raw = String(digits)
+    const hex = /[A-Fa-f]/.test(raw) || _.includes('"')
+    const code = parseInt(raw, hex ? 16 : 10)
+    if (code >= 172 && code <= 181) return '①②③④⑤⑥⑦⑧⑨⑩'[code - 172]
+    if (code >= 182 && code <= 191) return '❶❷❸❹❺❻❼❽❾❿'[code - 182]
+    return ''
+  })
+
+  // ルビは親文字だけ残す
+  out = out.replace(/\\ruby\{([^}]*)\}\{[^}]*\}/g, '$1')
+
+  // 図版は本文に出せないので落とす
+  out = out.replace(/\\includegraphics(\[[^\]]*\])?\{[^}]*\}/g, '')
+
+  // 余白・字下げの指示は空白へ
+  out = out.replace(/\\[hv]space\*?\{[^}]*\}/g, ' ')
+  out = out.replace(/\\(?:medskip|bigskip|smallskip|noindent|par|newpage|clearpage)\b/g, '')
+
+  // 見出しは中身だけ残す
+  out = out.replace(/\\(?:sub)*section\*?\{([^}]*)\}/g, '\n$1\n')
+  out = out.replace(/\\paragraph\*?\{([^}]*)\}/g, '\n$1 ')
+
+  // 取り込み時にエスケープが解けず文字列 "\n" のまま残っているものを改行へ。
+  // \newline も同じ扱い。\noindent 等は上で処理済みなので後置で安全。
+  out = out.replace(/\\newline\b/g, '\n')
+  out = out.replace(/\\n(?![A-Za-z])/g, '\n')
+
+  // 3行以上の空行は詰める
+  out = out.replace(/\n{3,}/g, '\n\n')
+  return out.trim()
+}
+
 export function parseMath(text: string): MathSegment[] {
   if (!text) return []
+  text = normalizeStatement(text)
   const segs: MathSegment[] = []
   let lastIndex = 0
   let m: RegExpExecArray | null
