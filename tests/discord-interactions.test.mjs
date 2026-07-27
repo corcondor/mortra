@@ -117,11 +117,21 @@ test('the bundled MathOS pool contains only gate-passing problems', async () => 
     new Set(accepted.map((problem) => problem.structure_key)).size,
     accepted.length,
   )
-  assert.equal(
-    accepted.filter((problem) =>
-      /gambler|paley|graph/i.test(problem.family_id),
-    ).length,
-    0,
+  // 族の名前ではなく、配信される文章そのものを検査する。
+  // 内部で平方剰余やグラフを使うこと自体は禁止しない。禁止するのは、
+  // 高校の語彙へ書き換えられないまま配信されることだけ。
+  // 例:「x-y が平方数と合同なとき結んで得られるグラフ」は高校範囲であり、
+  // 「Paley グラフ」という固有名詞が残っていたら未整形とみなす。
+  const outOfVocabulary =
+    /Paley|ラプラシアン|隣接行列|全域木|固有値|スペクトル|Minkowski|ミンコフスキー|ルジャンドル記号|行列木定理/
+  const unlowered = accepted.filter((problem) =>
+    outOfVocabulary.test(
+      `${problem.statement_tex ?? ''} ${problem.solution_tex ?? ''}`,
+    ),
+  )
+  assert.deepEqual(
+    unlowered.map((problem) => problem.family_id),
+    [],
   )
   assert.ok(
     accepted.some((problem) =>
