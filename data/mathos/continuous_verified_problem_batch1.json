@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-28T14:50:50.588798+00:00",
+  "generated_at": "2026-07-28T16:58:48.675664+00:00",
   "method": {
     "name": "MathOS Japanese entrance-mathematics structural pool",
     "numeric_variants_count_as_new": false,
@@ -11,7 +11,7 @@
       "accepted": true,
       "answer_exact": "1, 3",
       "answer_tex": "1, 3",
-      "candidate_id": "construct:construct.mobius_fixed_points:067",
+      "candidate_id": "construct:construct.mobius_fixed_points:065",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "MobiusToMatrix",
@@ -88,7 +88,7 @@
       "accepted": true,
       "answer_exact": "1/n",
       "answer_tex": "\\frac{1}{n}",
-      "candidate_id": "construct:construct.reciprocal_recurrence:075",
+      "candidate_id": "construct:construct.reciprocal_recurrence:073",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "ReciprocalTransform",
@@ -1029,7 +1029,7 @@
       "accepted": true,
       "answer_exact": "14",
       "answer_tex": "14",
-      "candidate_id": "construct:ultradeep.cubic_root_triangle_discriminant_divisor_count:092",
+      "candidate_id": "construct:ultradeep.cubic_root_triangle_discriminant_divisor_count:090",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CubicPolynomial",
@@ -1412,7 +1412,7 @@
       "accepted": true,
       "answer_exact": "3*pi/2",
       "answer_tex": "\\frac{3 \\pi}{2}",
-      "candidate_id": "construct:ultradeep.geometry_astroid_envelope_area:093",
+      "candidate_id": "construct:ultradeep.geometry_astroid_envelope_area:091",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CircleParameter",
@@ -2033,160 +2033,6 @@
     },
     {
       "accepted": true,
-      "answer_exact": "400",
-      "answer_tex": "400",
-      "candidate_id": "construct:traceback.lattice_path.through_center_paths:021",
-      "curriculum_certificate": {
-        "abstract_morphism_chain": [
-          "PathStateSpace",
-          "SubsetCount"
-        ],
-        "lowering_by_morphism": [
-          {
-            "morphism": "PathStateSpace",
-            "primitives": [
-              "counting",
-              "recurrence"
-            ]
-          },
-          {
-            "morphism": "SubsetCount",
-            "primitives": [
-              "counting",
-              "combination"
-            ]
-          }
-        ],
-        "lowering_chain": [
-          "counting",
-          "recurrence",
-          "combination"
-        ],
-        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
-        "type_checked": true,
-        "uses_only_school_level_primitives": true
-      },
-      "difficulty": "A",
-      "domain": "combinatorics",
-      "family_id": "traceback.lattice_path.through_center_paths",
-      "lift_certificate": {
-        "morphism_chain": [
-          "PathStateSpace",
-          "SubsetCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "parameters": {
-        "construction": "lattice_path",
-        "depth": 3,
-        "hidden": [
-          "経路の前半と後半への分割"
-        ],
-        "hidden_intermediates": 1,
-        "node": "through_center_paths",
-        "param": 6,
-        "premises": [
-          "格子点 (0,0) から (6,6) へ右または上に1ずつ進む最短経路"
-        ],
-        "scope": [
-          "場合の数",
-          "組合せ"
-        ]
-      },
-      "solution_tex": "中点までとそこからの経路数の積を取る。",
-      "source_generator": "construct_atlas",
-      "statement_tex": "格子点 \\((0,0)\\) から \\((6,6)\\) まで，右または上に 1 ずつ進んで到達する最短経路を考える。点 \\((3,3)\\) を通る経路は何通りあるか。",
-      "structure_key": "a15416bb9772279339225840ea27efd2e6093e1a042293067a2aea033b368776",
-      "tool": "deduction_closure+traceback",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "deduction_closure_node_with_traceback"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_exact": "252",
-      "answer_tex": "252",
-      "candidate_id": "construct:traceback.lattice_path.total_paths:016",
-      "curriculum_certificate": {
-        "abstract_morphism_chain": [
-          "PathStateSpace",
-          "SubsetCount"
-        ],
-        "lowering_by_morphism": [
-          {
-            "morphism": "PathStateSpace",
-            "primitives": [
-              "counting",
-              "recurrence"
-            ]
-          },
-          {
-            "morphism": "SubsetCount",
-            "primitives": [
-              "counting",
-              "combination"
-            ]
-          }
-        ],
-        "lowering_chain": [
-          "counting",
-          "recurrence",
-          "combination"
-        ],
-        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
-        "type_checked": true,
-        "uses_only_school_level_primitives": true
-      },
-      "difficulty": "A",
-      "domain": "combinatorics",
-      "family_id": "traceback.lattice_path.total_paths",
-      "lift_certificate": {
-        "morphism_chain": [
-          "PathStateSpace",
-          "SubsetCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "parameters": {
-        "construction": "lattice_path",
-        "depth": 3,
-        "hidden": [
-          "右と上の並べ替え"
-        ],
-        "hidden_intermediates": 1,
-        "node": "total_paths",
-        "param": 5,
-        "premises": [
-          "格子点 (0,0) から (5,5) へ右または上に1ずつ進む最短経路"
-        ],
-        "scope": [
-          "場合の数",
-          "組合せ"
-        ]
-      },
-      "solution_tex": "\\(2n\\) 回の移動のうち右を選ぶ位置を決めればよく \\(\\binom{10}{5}\\)。",
-      "source_generator": "construct_atlas",
-      "statement_tex": "格子点 \\((0,0)\\) から \\((5,5)\\) まで，右または上に 1 ずつ進んで到達する最短経路を考える。経路は全部で何通りあるか。",
-      "structure_key": "5f23d6766115875ce34189e92e8464890633111374d2fd2e7dc5c3351eceb3c7",
-      "tool": "deduction_closure+traceback",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "deduction_closure_node_with_traceback"
-      }
-    },
-    {
-      "accepted": true,
       "answer_exact": "18",
       "answer_tex": "18",
       "candidate_id": "construct:traceback.lattice_path.total_paths_divisor_count:019",
@@ -2765,7 +2611,7 @@
       "accepted": true,
       "answer_exact": "I",
       "answer_tex": "i",
-      "candidate_id": "construct:construct.complex_affine_limit:076",
+      "candidate_id": "construct:construct.complex_affine_limit:074",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "FixedPointShift",
@@ -2840,7 +2686,7 @@
       "accepted": true,
       "answer_exact": "3",
       "answer_tex": "3",
-      "candidate_id": "construct:construct.complex_rotation_period:072",
+      "candidate_id": "construct:construct.complex_rotation_period:070",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "PrimitiveRootOfUnity",
@@ -2911,7 +2757,7 @@
       "accepted": true,
       "answer_exact": "2",
       "answer_tex": "2",
-      "candidate_id": "construct:ultradeep.cyclotomic_distance_norm_divisor_count:090",
+      "candidate_id": "construct:ultradeep.cyclotomic_distance_norm_divisor_count:088",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RootOfUnity",
@@ -3303,7 +3149,7 @@
       "accepted": true,
       "answer_exact": "1",
       "answer_tex": "1",
-      "candidate_id": "construct:deep.polygon_subset_centroid:087",
+      "candidate_id": "construct:deep.polygon_subset_centroid:085",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RootOfUnity",
@@ -3422,7 +3268,7 @@
       "accepted": true,
       "answer_exact": "2",
       "answer_tex": "2",
-      "candidate_id": "construct:deep.rotation_diagonal_product_divisors:085",
+      "candidate_id": "construct:deep.rotation_diagonal_product_divisors:083",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RootOfUnity",
@@ -3539,7 +3385,7 @@
       "accepted": true,
       "answer_exact": "3*sqrt(3)/4",
       "answer_tex": "\\frac{3 \\sqrt{3}}{4}",
-      "candidate_id": "construct:layered.rotation_orbit_hull_area:081",
+      "candidate_id": "construct:layered.rotation_orbit_hull_area:079",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RootOfUnityOrbit",
@@ -5149,166 +4995,6 @@
     },
     {
       "accepted": true,
-      "answer_exact": "25/16",
-      "answer_tex": "\\frac{25}{16}",
-      "candidate_id": "construct:traceback.hyperbola_asymptote.eccentricity_sq:041",
-      "curriculum_certificate": {
-        "abstract_morphism_chain": [
-          "HyperbolaObject",
-          "Eccentricity"
-        ],
-        "lowering_by_morphism": [
-          {
-            "morphism": "HyperbolaObject",
-            "primitives": [
-              "hyperbola"
-            ]
-          },
-          {
-            "morphism": "Eccentricity",
-            "primitives": [
-              "hyperbola",
-              "algebraic_identity"
-            ]
-          }
-        ],
-        "lowering_chain": [
-          "hyperbola",
-          "algebraic_identity"
-        ],
-        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
-        "type_checked": true,
-        "uses_only_school_level_primitives": true
-      },
-      "difficulty": "A",
-      "domain": "conic_geometry",
-      "family_id": "traceback.hyperbola_asymptote.eccentricity_sq",
-      "lift_certificate": {
-        "morphism_chain": [
-          "HyperbolaObject",
-          "Eccentricity"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "parameters": {
-        "construction": "hyperbola_asymptote",
-        "depth": 3,
-        "hidden": [
-          "焦点距離と a の比"
-        ],
-        "hidden_intermediates": 1,
-        "node": "eccentricity_sq",
-        "param": [
-          4,
-          3,
-          20,
-          4
-        ],
-        "premises": [
-          "双曲線 x^2/4^2-y^2/3^2=1 と，その上の点における接線・2本の漸近線"
-        ],
-        "scope": [
-          "双曲線",
-          "離心率"
-        ]
-      },
-      "solution_tex": "\\(e^2=\\frac{a^2+b^2}{a^2}\\)。",
-      "source_generator": "construct_atlas",
-      "statement_tex": "双曲線 \\(H:\\dfrac{x^2}{16}-\\dfrac{y^2}{9}=1\\) を考える。離心率の平方を求めよ。",
-      "structure_key": "e5278ae0f2f37d6047de46885635b33dea7814c0c552e67649920aaf3116b333",
-      "tool": "deduction_closure+traceback",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "deduction_closure_node_with_traceback"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_exact": "8",
-      "answer_tex": "8",
-      "candidate_id": "construct:traceback.hyperbola_asymptote.focal_distance_difference:038",
-      "curriculum_certificate": {
-        "abstract_morphism_chain": [
-          "HyperbolaObject",
-          "FocalProperty"
-        ],
-        "lowering_by_morphism": [
-          {
-            "morphism": "HyperbolaObject",
-            "primitives": [
-              "hyperbola"
-            ]
-          },
-          {
-            "morphism": "FocalProperty",
-            "primitives": [
-              "hyperbola",
-              "distance_formula"
-            ]
-          }
-        ],
-        "lowering_chain": [
-          "hyperbola",
-          "distance_formula"
-        ],
-        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
-        "type_checked": true,
-        "uses_only_school_level_primitives": true
-      },
-      "difficulty": "A",
-      "domain": "conic_geometry",
-      "family_id": "traceback.hyperbola_asymptote.focal_distance_difference",
-      "lift_certificate": {
-        "morphism_chain": [
-          "HyperbolaObject",
-          "FocalProperty"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "parameters": {
-        "construction": "hyperbola_asymptote",
-        "depth": 3,
-        "hidden": [
-          "焦点の座標"
-        ],
-        "hidden_intermediates": 1,
-        "node": "focal_distance_difference",
-        "param": [
-          4,
-          3,
-          20,
-          4
-        ],
-        "premises": [
-          "双曲線 x^2/4^2-y^2/3^2=1 と，その上の点における接線・2本の漸近線"
-        ],
-        "scope": [
-          "双曲線",
-          "2点間の距離"
-        ]
-      },
-      "solution_tex": "双曲線の定義そのもので \\(2a\\)。",
-      "source_generator": "construct_atlas",
-      "statement_tex": "双曲線 \\(H:\\dfrac{x^2}{16}-\\dfrac{y^2}{9}=1\\) を考える。双曲線上の点から2つの焦点までの距離の差の絶対値を求めよ。",
-      "structure_key": "8d6c8a83c8fbcb79381477fba5366a32979e7fc82f148b36637ef072e75a9c76",
-      "tool": "deduction_closure+traceback",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "deduction_closure_node_with_traceback"
-      }
-    },
-    {
-      "accepted": true,
       "answer_exact": "9/4",
       "answer_tex": "\\frac{9}{4}",
       "candidate_id": "construct:traceback.hyperbola_asymptote.semi_latus_rectum:040",
@@ -5402,7 +5088,7 @@
       "accepted": true,
       "answer_exact": "75/4",
       "answer_tex": "\\frac{75}{4}",
-      "candidate_id": "construct:traceback.parabola_focal_chord.chord_length:056",
+      "candidate_id": "construct:traceback.parabola_focal_chord.chord_length:055",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "ParabolaObject",
@@ -5490,7 +5176,7 @@
       "accepted": true,
       "answer_exact": "75/8",
       "answer_tex": "\\frac{75}{8}",
-      "candidate_id": "construct:traceback.parabola_focal_chord.midpoint_to_directrix:060",
+      "candidate_id": "construct:traceback.parabola_focal_chord.midpoint_to_directrix:059",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "ParabolaObject",
@@ -5581,7 +5267,7 @@
       "accepted": true,
       "answer_exact": "12",
       "answer_tex": "12",
-      "candidate_id": "construct:traceback.parabola_focal_chord.min_chord_length:059",
+      "candidate_id": "construct:traceback.parabola_focal_chord.min_chord_length:058",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "ParabolaObject",
@@ -5673,7 +5359,7 @@
       "accepted": true,
       "answer_exact": "-1",
       "answer_tex": "-1",
-      "candidate_id": "construct:traceback.parabola_focal_chord.parameter_product:054",
+      "candidate_id": "construct:traceback.parabola_focal_chord.parameter_product:053",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "ParabolaObject",
@@ -5763,7 +5449,7 @@
       "accepted": true,
       "answer_exact": "1/3",
       "answer_tex": "\\frac{1}{3}",
-      "candidate_id": "construct:traceback.parabola_focal_chord.reciprocal_focal_radii_sum:055",
+      "candidate_id": "construct:traceback.parabola_focal_chord.reciprocal_focal_radii_sum:054",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "ParabolaObject",
@@ -5856,7 +5542,7 @@
       "accepted": true,
       "answer_exact": "-3",
       "answer_tex": "-3",
-      "candidate_id": "construct:traceback.parabola_focal_chord.tangent_intersection_x:057",
+      "candidate_id": "construct:traceback.parabola_focal_chord.tangent_intersection_x:056",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "ParabolaObject",
@@ -5949,7 +5635,7 @@
       "accepted": true,
       "answer_exact": "-1",
       "answer_tex": "-1",
-      "candidate_id": "construct:traceback.parabola_focal_chord.tangent_slope_product:058",
+      "candidate_id": "construct:traceback.parabola_focal_chord.tangent_slope_product:057",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "ParabolaObject",
@@ -6041,7 +5727,7 @@
       "accepted": true,
       "answer_exact": "6*sqrt(3)",
       "answer_tex": "6 \\sqrt{3}",
-      "candidate_id": "construct:ultradeep.geometry_regular_polygon_minkowski_perimeter:097",
+      "candidate_id": "construct:ultradeep.geometry_regular_polygon_minkowski_perimeter:095",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RootOfUnityChart",
@@ -6185,7 +5871,7 @@
       "accepted": true,
       "answer_exact": "-27*x**2 + 4*y**3 - 24*y**2 + 48*y - 32",
       "answer_tex": "4(y-2)^3=27x^2",
-      "candidate_id": "construct:ultradeep.geometry_parabola_normal_envelope:095",
+      "candidate_id": "construct:ultradeep.geometry_parabola_normal_envelope:093",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "ParabolaObject",
@@ -6328,7 +6014,7 @@
       "accepted": true,
       "answer_exact": "8*pi",
       "answer_tex": "8 \\pi",
-      "candidate_id": "construct:ultradeep.geometry_orthocenter_locus_area:096",
+      "candidate_id": "construct:ultradeep.geometry_orthocenter_locus_area:094",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "EllipseObject",
@@ -6470,7 +6156,7 @@
       "accepted": true,
       "answer_exact": "(0, 1)",
       "answer_tex": "(0,\\ 1)",
-      "candidate_id": "construct:construct.parabola_right_angle_chord:074",
+      "candidate_id": "construct:construct.parabola_right_angle_chord:072",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RightAngleCondition",
@@ -6688,7 +6374,7 @@
       "accepted": true,
       "answer_exact": "x*(28*x**2 - 9)",
       "answer_tex": "y=x \\left(28 x^{2} - 9\\right)",
-      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:071",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:069",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "TangentLine",
@@ -6765,7 +6451,7 @@
       "accepted": true,
       "answer_exact": "4*t",
       "answer_tex": "4 t",
-      "candidate_id": "construct:layered.cubic_tangent_iteration:082",
+      "candidate_id": "construct:layered.cubic_tangent_iteration:080",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "TangentLine",
@@ -7283,7 +6969,7 @@
       "accepted": true,
       "answer_exact": "log(2)",
       "answer_tex": "\\log{\\left(2 \\right)}",
-      "candidate_id": "construct:deep.tangent_iteration_growth:084",
+      "candidate_id": "construct:deep.tangent_iteration_growth:082",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CubicCurve",
@@ -7405,7 +7091,7 @@
       "accepted": true,
       "answer_exact": "8",
       "answer_tex": "8",
-      "candidate_id": "construct:ultradeep.paley_four_cycle_divisor_count:089",
+      "candidate_id": "construct:ultradeep.paley_four_cycle_divisor_count:087",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "PrimeField",
@@ -7551,7 +7237,7 @@
       "accepted": true,
       "answer_exact": "20",
       "answer_tex": "20",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:070",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:068",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CompanionMatrix",
@@ -7625,7 +7311,7 @@
       "accepted": true,
       "answer_exact": "1",
       "answer_tex": "1",
-      "candidate_id": "construct:deep.recurrence_period_quadratic_character:086",
+      "candidate_id": "construct:deep.recurrence_period_quadratic_character:084",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "LinearRecurrence",
@@ -7748,7 +7434,7 @@
       "accepted": true,
       "answer_exact": "6",
       "answer_tex": "6",
-      "candidate_id": "construct:layered.recurrence_period_observable:077",
+      "candidate_id": "construct:layered.recurrence_period_observable:075",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CompanionMatrix",
@@ -7826,7 +7512,7 @@
       "accepted": true,
       "answer_exact": "5",
       "answer_tex": "5",
-      "candidate_id": "construct:layered.recurrence_period_observable:078",
+      "candidate_id": "construct:layered.recurrence_period_observable:076",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CompanionMatrix",
@@ -7902,7 +7588,7 @@
       "accepted": true,
       "answer_exact": "8",
       "answer_tex": "8",
-      "candidate_id": "construct:layered.recurrence_period_observable:079",
+      "candidate_id": "construct:layered.recurrence_period_observable:077",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CompanionMatrix",
@@ -8278,85 +7964,6 @@
     },
     {
       "accepted": true,
-      "answer_exact": "7",
-      "answer_tex": "7",
-      "candidate_id": "construct:traceback.digit_power.digit_count:022",
-      "curriculum_certificate": {
-        "abstract_morphism_chain": [
-          "PowerSequence",
-          "DecimalDigitCount"
-        ],
-        "lowering_by_morphism": [
-          {
-            "morphism": "PowerSequence",
-            "primitives": [
-              "geometric_sequence",
-              "exponential"
-            ]
-          },
-          {
-            "morphism": "DecimalDigitCount",
-            "primitives": [
-              "logarithm",
-              "integer_arithmetic"
-            ]
-          }
-        ],
-        "lowering_chain": [
-          "geometric_sequence",
-          "exponential",
-          "logarithm",
-          "integer_arithmetic"
-        ],
-        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
-        "type_checked": true,
-        "uses_only_school_level_primitives": true
-      },
-      "difficulty": "A",
-      "domain": "number_theory",
-      "family_id": "traceback.digit_power.digit_count",
-      "lift_certificate": {
-        "morphism_chain": [
-          "PowerSequence",
-          "DecimalDigitCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "parameters": {
-        "construction": "digit_power",
-        "depth": 3,
-        "hidden": [
-          "常用対数 log10(2) の評価"
-        ],
-        "hidden_intermediates": 1,
-        "node": "digit_count",
-        "param": 20,
-        "premises": [
-          "2 の 20 乗の10進表示"
-        ],
-        "scope": [
-          "指数",
-          "常用対数",
-          "桁数"
-        ]
-      },
-      "solution_tex": "\\(\\log_{10}2^{20}=20\\log_{10}2\\) の整数部分に1を足す。",
-      "source_generator": "construct_atlas",
-      "statement_tex": "\\(2^{20}\\) を10進法で表す。必要ならば \\(\\log_{10}2=0.3010\\ldots\\) を用いてよい。\\(2^{20}\\) は何桁の整数か。",
-      "structure_key": "d2d4f2d5d2858cfb89b1af277ad36e48106d09bf84c397a562699969ffd644ed",
-      "tool": "deduction_closure+traceback",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "deduction_closure_node_with_traceback"
-      }
-    },
-    {
-      "accepted": true,
       "answer_exact": "6",
       "answer_tex": "6",
       "candidate_id": "construct:traceback.digit_power.digit_increase_count:024",
@@ -8436,161 +8043,6 @@
       "source_generator": "construct_atlas",
       "statement_tex": "\\(2^{20}\\) を10進法で表す。必要ならば \\(\\log_{10}2=0.3010\\ldots\\) を用いてよい。\\(n=1,2,\\ldots,20\\) のうち，\\(2^{n}\\) の桁数が \\(2^{n-1}\\) より増えるような \\(n\\) の個数を求めよ。",
       "structure_key": "b75efd73c7be0b1f779b60021f812920460b45527ea9db6f1ddea4ca96e10270",
-      "tool": "deduction_closure+traceback",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "deduction_closure_node_with_traceback"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_exact": "31",
-      "answer_tex": "31",
-      "candidate_id": "construct:traceback.digit_power.digit_sum:026",
-      "curriculum_certificate": {
-        "abstract_morphism_chain": [
-          "PowerSequence",
-          "ArithmeticObservation"
-        ],
-        "lowering_by_morphism": [
-          {
-            "morphism": "PowerSequence",
-            "primitives": [
-              "geometric_sequence",
-              "exponential"
-            ]
-          },
-          {
-            "morphism": "ArithmeticObservation",
-            "primitives": [
-              "integer_arithmetic"
-            ]
-          }
-        ],
-        "lowering_chain": [
-          "geometric_sequence",
-          "exponential",
-          "integer_arithmetic"
-        ],
-        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
-        "type_checked": true,
-        "uses_only_school_level_primitives": true
-      },
-      "difficulty": "A",
-      "domain": "number_theory",
-      "family_id": "traceback.digit_power.digit_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "PowerSequence",
-          "ArithmeticObservation"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "parameters": {
-        "construction": "digit_power",
-        "depth": 3,
-        "hidden": [
-          "10 進展開の各位"
-        ],
-        "hidden_intermediates": 1,
-        "node": "digit_sum",
-        "param": 20,
-        "premises": [
-          "2 の 20 乗の10進表示"
-        ],
-        "scope": [
-          "指数",
-          "整数の性質"
-        ]
-      },
-      "solution_tex": "10進表示を求めて各位を加える。",
-      "source_generator": "construct_atlas",
-      "statement_tex": "\\(2^{20}\\) を10進法で表す。必要ならば \\(\\log_{10}2=0.3010\\ldots\\) を用いてよい。\\(2^{20}\\) の各位の数字の和を求めよ。",
-      "structure_key": "46d5ce6bfdb7c5cb9513bf65c8d4121422f71ce59422030349b9ad3b9fbe2f4c",
-      "tool": "deduction_closure+traceback",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "deduction_closure_node_with_traceback"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_exact": "1",
-      "answer_tex": "1",
-      "candidate_id": "construct:traceback.digit_power.leading_digit:023",
-      "curriculum_certificate": {
-        "abstract_morphism_chain": [
-          "PowerSequence",
-          "LeadingDigit"
-        ],
-        "lowering_by_morphism": [
-          {
-            "morphism": "PowerSequence",
-            "primitives": [
-              "geometric_sequence",
-              "exponential"
-            ]
-          },
-          {
-            "morphism": "LeadingDigit",
-            "primitives": [
-              "logarithm",
-              "integer_arithmetic"
-            ]
-          }
-        ],
-        "lowering_chain": [
-          "geometric_sequence",
-          "exponential",
-          "logarithm",
-          "integer_arithmetic"
-        ],
-        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
-        "type_checked": true,
-        "uses_only_school_level_primitives": true
-      },
-      "difficulty": "A",
-      "domain": "number_theory",
-      "family_id": "traceback.digit_power.leading_digit",
-      "lift_certificate": {
-        "morphism_chain": [
-          "PowerSequence",
-          "LeadingDigit"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "parameters": {
-        "construction": "digit_power",
-        "depth": 3,
-        "hidden": [
-          "常用対数の小数部分"
-        ],
-        "hidden_intermediates": 1,
-        "node": "leading_digit",
-        "param": 20,
-        "premises": [
-          "2 の 20 乗の10進表示"
-        ],
-        "scope": [
-          "指数",
-          "常用対数",
-          "小数部分"
-        ]
-      },
-      "solution_tex": "\\(20\\log_{10}2\\) の小数部分 \\(f\\) に対し \\(10^{f}\\) の整数部分が最高位。",
-      "source_generator": "construct_atlas",
-      "statement_tex": "\\(2^{20}\\) を10進法で表す。必要ならば \\(\\log_{10}2=0.3010\\ldots\\) を用いてよい。\\(2^{20}\\) の最高位の数字を求めよ。",
-      "structure_key": "457da2e65e49c92eb4ed27e9df462ec6e02cb99419fb91030c1cda87da3a583d",
       "tool": "deduction_closure+traceback",
       "verification": {
         "exact_backend": true,
@@ -8689,7 +8141,7 @@
       "accepted": true,
       "answer_exact": "26",
       "answer_tex": "26",
-      "candidate_id": "construct:layered.paley_triangle_count:080",
+      "candidate_id": "construct:layered.paley_triangle_count:078",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "QuadraticResidueGraph",
@@ -8767,7 +8219,7 @@
       "accepted": true,
       "answer_exact": "36",
       "answer_tex": "36",
-      "candidate_id": "construct:traceback.cyclic_quadrilateral.area:061",
+      "candidate_id": "construct:traceback.cyclic_quadrilateral.area:060",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CyclicQuadrilateral",
@@ -8868,7 +8320,7 @@
       "accepted": true,
       "answer_exact": "1625/64",
       "answer_tex": "\\frac{1625}{64}",
-      "candidate_id": "construct:traceback.cyclic_quadrilateral.circumradius_sq:064",
+      "candidate_id": "construct:traceback.cyclic_quadrilateral.circumradius_sq:063",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CyclicQuadrilateral",
@@ -8959,7 +8411,7 @@
       "accepted": true,
       "answer_exact": "7/25",
       "answer_tex": "\\frac{7}{25}",
-      "candidate_id": "construct:traceback.cyclic_quadrilateral.cos_angle_a:065",
+      "candidate_id": "construct:traceback.cyclic_quadrilateral.cos_angle_a:064",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CyclicQuadrilateral",
@@ -9049,7 +8501,7 @@
       "accepted": true,
       "answer_exact": "65",
       "answer_tex": "65",
-      "candidate_id": "construct:traceback.cyclic_quadrilateral.diagonal_ac_sq:063",
+      "candidate_id": "construct:traceback.cyclic_quadrilateral.diagonal_ac_sq:062",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CyclicQuadrilateral",
@@ -9140,7 +8592,7 @@
       "accepted": true,
       "answer_exact": "78",
       "answer_tex": "78",
-      "candidate_id": "construct:traceback.cyclic_quadrilateral.diagonal_product:062",
+      "candidate_id": "construct:traceback.cyclic_quadrilateral.diagonal_product:061",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CyclicQuadrilateral",
@@ -9222,84 +8674,6 @@
       "source_generator": "construct_atlas",
       "statement_tex": "円に内接する四角形 \\(ABCD\\) があり，\\(AB=4,\\ BC=5,\\ CD=7,\\ DA=10\\) である。2本の対角線の長さの積を求めよ。",
       "structure_key": "c6d10e0ddd04fe3eddacb53d6d739600d39db03d0986b939370efdb572542d10",
-      "tool": "deduction_closure+traceback",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "deduction_closure_node_with_traceback"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_exact": "13",
-      "answer_tex": "13",
-      "candidate_id": "construct:traceback.cyclic_quadrilateral.semiperimeter:066",
-      "curriculum_certificate": {
-        "abstract_morphism_chain": [
-          "CyclicQuadrilateral",
-          "ArithmeticObservation"
-        ],
-        "lowering_by_morphism": [
-          {
-            "morphism": "CyclicQuadrilateral",
-            "primitives": [
-              "circle_equation",
-              "trigonometric_ratio"
-            ]
-          },
-          {
-            "morphism": "ArithmeticObservation",
-            "primitives": [
-              "integer_arithmetic"
-            ]
-          }
-        ],
-        "lowering_chain": [
-          "circle_equation",
-          "trigonometric_ratio",
-          "integer_arithmetic"
-        ],
-        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
-        "type_checked": true,
-        "uses_only_school_level_primitives": true
-      },
-      "difficulty": "A",
-      "domain": "plane_geometry",
-      "family_id": "traceback.cyclic_quadrilateral.semiperimeter",
-      "lift_certificate": {
-        "morphism_chain": [
-          "CyclicQuadrilateral",
-          "ArithmeticObservation"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "parameters": {
-        "construction": "cyclic_quadrilateral",
-        "depth": 2,
-        "hidden": [],
-        "hidden_intermediates": 0,
-        "node": "semiperimeter",
-        "param": [
-          4,
-          5,
-          7,
-          10
-        ],
-        "premises": [
-          "円に内接し，4辺の長さが順に 4, 5, 7, 10 である四角形 ABCD"
-        ],
-        "scope": [
-          "四角形"
-        ]
-      },
-      "solution_tex": "4辺の和の半分。",
-      "source_generator": "construct_atlas",
-      "statement_tex": "円に内接する四角形 \\(ABCD\\) があり，\\(AB=4,\\ BC=5,\\ CD=7,\\ DA=10\\) である。この四角形の周の長さの半分を求めよ。",
-      "structure_key": "80b2dd1890c53c03d01630e4f6deb0b81cb1aed8b040c2e133e6728b8d358205",
       "tool": "deduction_closure+traceback",
       "verification": {
         "exact_backend": true,
@@ -9986,87 +9360,6 @@
     },
     {
       "accepted": true,
-      "answer_exact": "84",
-      "answer_tex": "84",
-      "candidate_id": "construct:traceback.triangle_centers.area:027",
-      "curriculum_certificate": {
-        "abstract_morphism_chain": [
-          "TriangleConstruction",
-          "ShoelaceArea"
-        ],
-        "lowering_by_morphism": [
-          {
-            "morphism": "TriangleConstruction",
-            "primitives": [
-              "coordinate_geometry",
-              "triangle_area"
-            ]
-          },
-          {
-            "morphism": "ShoelaceArea",
-            "primitives": [
-              "area_shoelace"
-            ]
-          }
-        ],
-        "lowering_chain": [
-          "coordinate_geometry",
-          "triangle_area",
-          "area_shoelace"
-        ],
-        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
-        "type_checked": true,
-        "uses_only_school_level_primitives": true
-      },
-      "difficulty": "A",
-      "domain": "plane_geometry",
-      "family_id": "traceback.triangle_centers.area",
-      "lift_certificate": {
-        "morphism_chain": [
-          "TriangleConstruction",
-          "ShoelaceArea"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "parameters": {
-        "construction": "triangle_centers",
-        "depth": 2,
-        "hidden": [],
-        "hidden_intermediates": 0,
-        "node": "area",
-        "param": [
-          0,
-          0,
-          14,
-          0,
-          5,
-          12
-        ],
-        "premises": [
-          "3点 A(0,0), B(14,0), C(5,12) を頂点とする三角形"
-        ],
-        "scope": [
-          "座標平面",
-          "三角形の面積"
-        ]
-      },
-      "solution_tex": "座標から面積公式で直接求める。",
-      "source_generator": "construct_atlas",
-      "statement_tex": "座標平面上の3点 \\(A(0,0)\\), \\(B(14,0)\\), \\(C(5,12)\\) を頂点とする三角形 \\(ABC\\) を考える。この三角形の面積を求めよ。",
-      "structure_key": "40f5050caeb827cd715f0d4cde06eadb9eb6ef7e54571c6f630c9ab4d7a893c6",
-      "tool": "deduction_closure+traceback",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "deduction_closure_node_with_traceback"
-      }
-    },
-    {
-      "accepted": true,
       "answer_exact": "4225/64",
       "answer_tex": "\\frac{4225}{64}",
       "candidate_id": "construct:traceback.triangle_centers.circumradius_sq:028",
@@ -10645,7 +9938,7 @@
       "accepted": true,
       "answer_exact": "1/4",
       "answer_tex": "\\frac{1}{4}",
-      "candidate_id": "construct:construct.gambler_ruin_probability:073",
+      "candidate_id": "construct:construct.gambler_ruin_probability:071",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "AbsorbingWalk",
@@ -11166,85 +10459,6 @@
     },
     {
       "accepted": true,
-      "answer_exact": "10",
-      "answer_tex": "10",
-      "candidate_id": "construct:traceback.dice_sum.modal_sum:048",
-      "curriculum_certificate": {
-        "abstract_morphism_chain": [
-          "DiceGeneratingFunction",
-          "ModalOutcome"
-        ],
-        "lowering_by_morphism": [
-          {
-            "morphism": "DiceGeneratingFunction",
-            "primitives": [
-              "probability",
-              "polynomial_expansion",
-              "counting"
-            ]
-          },
-          {
-            "morphism": "ModalOutcome",
-            "primitives": [
-              "counting",
-              "combination"
-            ]
-          }
-        ],
-        "lowering_chain": [
-          "probability",
-          "polynomial_expansion",
-          "counting",
-          "combination"
-        ],
-        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
-        "type_checked": true,
-        "uses_only_school_level_primitives": true
-      },
-      "difficulty": "A",
-      "domain": "probability",
-      "family_id": "traceback.dice_sum.modal_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "DiceGeneratingFunction",
-          "ModalOutcome"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "parameters": {
-        "construction": "dice_sum",
-        "depth": 3,
-        "hidden": [
-          "分布の対称性"
-        ],
-        "hidden_intermediates": 1,
-        "node": "modal_sum",
-        "param": 3,
-        "premises": [
-          "3 個のさいころを同時に投げたときの出目の和"
-        ],
-        "scope": [
-          "確率",
-          "場合の数"
-        ]
-      },
-      "solution_tex": "分布は \\(\\frac{7n}{2}\\) について対称なので中央の値が最頻。",
-      "source_generator": "construct_atlas",
-      "statement_tex": "1 から 6 の目をもつさいころを 3 個同時に投げ，出た目の和を \\(S\\) とする。和として最も起こりやすい値を求めよ。",
-      "structure_key": "b12e61fbaba4f280d068c54d20655fa944e59e100fd940e53c6890c5af20422e",
-      "tool": "deduction_closure+traceback",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "deduction_closure_node_with_traceback"
-      }
-    },
-    {
-      "accepted": true,
       "answer_exact": "4",
       "answer_tex": "4",
       "candidate_id": "construct:traceback.dice_sum.modal_ways_divisor_count:050",
@@ -11435,163 +10649,6 @@
     },
     {
       "accepted": true,
-      "answer_exact": "216",
-      "answer_tex": "216",
-      "candidate_id": "construct:traceback.dice_sum.total_outcomes:053",
-      "curriculum_certificate": {
-        "abstract_morphism_chain": [
-          "DiceGeneratingFunction",
-          "SubsetCount"
-        ],
-        "lowering_by_morphism": [
-          {
-            "morphism": "DiceGeneratingFunction",
-            "primitives": [
-              "probability",
-              "polynomial_expansion",
-              "counting"
-            ]
-          },
-          {
-            "morphism": "SubsetCount",
-            "primitives": [
-              "counting",
-              "combination"
-            ]
-          }
-        ],
-        "lowering_chain": [
-          "probability",
-          "polynomial_expansion",
-          "counting",
-          "combination"
-        ],
-        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
-        "type_checked": true,
-        "uses_only_school_level_primitives": true
-      },
-      "difficulty": "A",
-      "domain": "probability",
-      "family_id": "traceback.dice_sum.total_outcomes",
-      "lift_certificate": {
-        "morphism_chain": [
-          "DiceGeneratingFunction",
-          "SubsetCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "parameters": {
-        "construction": "dice_sum",
-        "depth": 2,
-        "hidden": [],
-        "hidden_intermediates": 0,
-        "node": "total_outcomes",
-        "param": 3,
-        "premises": [
-          "3 個のさいころを同時に投げたときの出目の和"
-        ],
-        "scope": [
-          "場合の数"
-        ]
-      },
-      "solution_tex": "\\(6^{3}\\)。",
-      "source_generator": "construct_atlas",
-      "statement_tex": "1 から 6 の目をもつさいころを 3 個同時に投げ，出た目の和を \\(S\\) とする。目の出方は全部で何通りか。",
-      "structure_key": "069fed9c2b12aa823656c72f3bddc51c8b9150634b397565f2d84b69db3455c8",
-      "tool": "deduction_closure+traceback",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "deduction_closure_node_with_traceback"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_exact": "105",
-      "answer_tex": "105",
-      "candidate_id": "construct:traceback.dice_sum.variance_times_12:051",
-      "curriculum_certificate": {
-        "abstract_morphism_chain": [
-          "DiceGeneratingFunction",
-          "VarianceOfSum"
-        ],
-        "lowering_by_morphism": [
-          {
-            "morphism": "DiceGeneratingFunction",
-            "primitives": [
-              "probability",
-              "polynomial_expansion",
-              "counting"
-            ]
-          },
-          {
-            "morphism": "VarianceOfSum",
-            "primitives": [
-              "variance",
-              "expectation"
-            ]
-          }
-        ],
-        "lowering_chain": [
-          "probability",
-          "polynomial_expansion",
-          "counting",
-          "variance",
-          "expectation"
-        ],
-        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
-        "type_checked": true,
-        "uses_only_school_level_primitives": true
-      },
-      "difficulty": "A",
-      "domain": "probability",
-      "family_id": "traceback.dice_sum.variance_times_12",
-      "lift_certificate": {
-        "morphism_chain": [
-          "DiceGeneratingFunction",
-          "VarianceOfSum"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0
-      },
-      "parameters": {
-        "construction": "dice_sum",
-        "depth": 4,
-        "hidden": [
-          "1個あたりの分散 35/12",
-          "独立性による分散の加法性"
-        ],
-        "hidden_intermediates": 2,
-        "node": "variance_times_12",
-        "param": 3,
-        "premises": [
-          "3 個のさいころを同時に投げたときの出目の和"
-        ],
-        "scope": [
-          "確率",
-          "分散"
-        ]
-      },
-      "solution_tex": "1個の分散は \\(\\frac{35}{12}\\)。独立なので和の分散は \\(\\frac{35\\cdot3}{12}\\)。",
-      "source_generator": "construct_atlas",
-      "statement_tex": "1 から 6 の目をもつさいころを 3 個同時に投げ，出た目の和を \\(S\\) とする。和の分散の 12 倍を求めよ。",
-      "structure_key": "17257c485a717e03b6fe8aafa54097ae0ed21dd9f50422c71105eac448252563",
-      "tool": "deduction_closure+traceback",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "deduction_closure_node_with_traceback"
-      }
-    },
-    {
-      "accepted": true,
       "answer_exact": "27",
       "answer_tex": "27",
       "candidate_id": "construct:traceback.dice_sum.ways_for_modal_sum:049",
@@ -11683,7 +10740,7 @@
       "accepted": true,
       "answer_exact": "4",
       "answer_tex": "4",
-      "candidate_id": "construct:ultradeep.gambler_absorption_variance_divisor_count:091",
+      "candidate_id": "construct:ultradeep.gambler_absorption_variance_divisor_count:089",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "PathStateSpace",
@@ -11845,7 +10902,7 @@
       "accepted": true,
       "answer_exact": "4",
       "answer_tex": "\\frac{x^2}{4}+\\frac{y^2}{1}=4",
-      "candidate_id": "construct:ultradeep.geometry_ellipse_tangent_pair_locus:094",
+      "candidate_id": "construct:ultradeep.geometry_ellipse_tangent_pair_locus:092",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "EllipseObject",
@@ -12723,19 +11780,19 @@
     }
   ],
   "summary": {
-    "certified_structures": 113,
+    "certified_structures": 101,
     "domain_counts": {
       "algebra": 4,
       "algebraic_geometry": 2,
       "algebraic_geometry_number_theory": 1,
       "analytic_geometry": 2,
-      "combinatorics": 7,
+      "combinatorics": 5,
       "combinatorics_analysis": 1,
       "combinatorics_number_theory": 1,
       "complex": 2,
       "complex_algebra_number_theory": 1,
       "complex_geometry": 10,
-      "conic_geometry": 20,
+      "conic_geometry": 18,
       "convex_geometry": 1,
       "differential_geometry": 1,
       "euclidean_geometry": 1,
@@ -12743,15 +11800,15 @@
       "geometry_algebra": 6,
       "geometry_analysis": 1,
       "graph_combinatorics_number_theory": 1,
-      "number_theory": 11,
+      "number_theory": 8,
       "number_theory_graph": 1,
-      "plane_geometry": 20,
-      "probability": 9,
+      "plane_geometry": 18,
+      "probability": 6,
       "probability_linear_algebra_number_theory": 1,
       "projective_geometry": 1,
       "real_analysis": 5
     },
-    "families": 111,
+    "families": 99,
     "family_counts": {
       "algebraic_geometry.cubic_discriminant_triangle_area": 1,
       "algebraic_geometry.even_quartic_parabola_hull_area": 1,
@@ -12797,17 +11854,10 @@
       "traceback.cyclic_quadrilateral.cos_angle_a": 1,
       "traceback.cyclic_quadrilateral.diagonal_ac_sq": 1,
       "traceback.cyclic_quadrilateral.diagonal_product": 1,
-      "traceback.cyclic_quadrilateral.semiperimeter": 1,
-      "traceback.dice_sum.modal_sum": 1,
       "traceback.dice_sum.modal_ways_divisor_count": 1,
       "traceback.dice_sum.prob_sum_divisible_by_3": 1,
-      "traceback.dice_sum.total_outcomes": 1,
-      "traceback.dice_sum.variance_times_12": 1,
       "traceback.dice_sum.ways_for_modal_sum": 1,
-      "traceback.digit_power.digit_count": 1,
       "traceback.digit_power.digit_increase_count": 1,
-      "traceback.digit_power.digit_sum": 1,
-      "traceback.digit_power.leading_digit": 1,
       "traceback.digit_power.leading_one_count": 1,
       "traceback.ellipse_tangent.center_to_polar_dist_sq": 1,
       "traceback.ellipse_tangent.chord_length_sq": 1,
@@ -12819,8 +11869,6 @@
       "traceback.hyperbola_asymptote.asymptote_intersection_x": 1,
       "traceback.hyperbola_asymptote.asymptote_triangle_area": 1,
       "traceback.hyperbola_asymptote.director_circle_radius_sq": 1,
-      "traceback.hyperbola_asymptote.eccentricity_sq": 1,
-      "traceback.hyperbola_asymptote.focal_distance_difference": 1,
       "traceback.hyperbola_asymptote.semi_latus_rectum": 1,
       "traceback.incircle_excircle.contact_segment_longest": 1,
       "traceback.incircle_excircle.euler_OI_sq": 1,
@@ -12831,8 +11879,6 @@
       "traceback.lattice_path.catalan_divisor_count": 1,
       "traceback.lattice_path.catalan_paths": 1,
       "traceback.lattice_path.strictly_above_paths": 1,
-      "traceback.lattice_path.through_center_paths": 1,
-      "traceback.lattice_path.total_paths": 1,
       "traceback.lattice_path.total_paths_divisor_count": 1,
       "traceback.parabola_focal_chord.chord_length": 1,
       "traceback.parabola_focal_chord.midpoint_to_directrix": 1,
@@ -12848,7 +11894,6 @@
       "traceback.regular_polygon.sum_sq_pairwise": 1,
       "traceback.regular_polygon.vertex_distance_product": 1,
       "traceback.triangle_centers.OH_dist_sq": 1,
-      "traceback.triangle_centers.area": 1,
       "traceback.triangle_centers.circumradius_sq": 1,
       "traceback.triangle_centers.euler_line_slope": 1,
       "traceback.triangle_centers.incenter_x": 1,
@@ -12865,17 +11910,18 @@
       "ultradeep.geometry_regular_polygon_minkowski_perimeter": 1,
       "ultradeep.paley_four_cycle_divisor_count": 1
     },
-    "geometry_algebra_structures": 77,
+    "geometry_algebra_structures": 73,
     "rejected": {
-      "same_structure_variant": 83,
-      "scope_lowering": 10
+      "same_structure_variant": 71,
+      "scope_lowering": 10,
+      "too_few_operations": 20
     },
     "source_counts": {
-      "construct_atlas": 94,
+      "construct_atlas": 82,
       "geometry_fusion": 4,
       "typed_continuous": 15
     },
     "surface_rewritten": 4,
-    "total_instances": 113
+    "total_instances": 101
   }
 }
