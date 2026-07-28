@@ -1,81 +1,71 @@
 'use client'
 
 /**
- * 6軸アームが黒板に作図する。
+ * 6軸アームが黒板と空間に作図する。
  *
- * アニメーションではなく運動学で動かしている。各経由点についてペン先の
- * 位置と姿勢（板の法線）を与え、球面手首の decoupling で関節角を閉形式で
- * 解き、その角度を順運動学に入れてリンクを描いている。
- * つまり画面の腕は、解いた関節角の結果として、そこにある。
+ * 3つが本物であることが要点:
+ *   1. 姿勢  — 逆運動学は球面手首の decoupling で閉形式に解いている
+ *   2. 軌道  — 関節角は最小ジャーク spline（節点で4階微分まで連続）で繋ぐ
+ *   3. 筆跡  — 描く線は順運動学で出したペン先の位置そのもの
+ * 画面の線は「アームが通った跡」であって、別に用意した図をなぞってはいない。
  */
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import {
-  ARM,
-  forwardAll,
-  inverse,
-  lerpJoints,
-  positionOf,
-  type Vec3,
+  ARM, forwardAll, inverse, positionOf, type Vec3,
 } from '@/lib/kinematics'
-import { ninePointConstruction, resample, type P2 } from '@/lib/construction'
+import {
+  FIGURES, figureComplexity, resample3, type Figure, type P3,
+} from '@/lib/figures'
+import {
+  peakDerivatives, planJointTrajectory, sampleAt, timeParameterize,
+} from '@/lib/trajectory'
 
-const BOARD_Y = 55            // 板面の位置
-const APPROACH: Vec3 = [0, 1, 0]  // ペンは板に垂直
 const BOARD_UP: Vec3 = [0, 0, 1]
-const LIFT = 6                // ペンを浮かせる距離
-const BOARD_Z = 46            // 板の中心高さ
+const DEFAULT_APPROACH: Vec3 = [0, 1, 0]
+const LIFT = 7
 
-type Waypoint = {
-  joints: number[]
-  world: THREE.Vector3
-  penDown: boolean
-  stroke: number
-  label: string
-}
+type Marker = { penDown: boolean; stroke: number; label: string }
 
-/** 板面座標 → ワールド座標 */
-function toWorld(p: P2, lift = 0): Vec3 {
-  return [p.x, BOARD_Y - lift, BOARD_Z + p.y]
-}
-
-function buildPlan(): { plan: Waypoint[]; unreachable: number } {
-  const { strokes } = ninePointConstruction()
-  const plan: Waypoint[] = []
+function buildPlan(figure: Figure) {
+  const waypoints: number[][] = []
+  const markers: Marker[] = []
   let unreachable = 0
-  strokes.forEach((stroke, index) => {
-    const dense = resample(stroke.points)
-    // ペンを上げたまま描き始めへ移動する
-    const approachPoints = [dense[0]]
-    for (const [pointList, penDown, lift] of [
-      [approachPoints, false, LIFT],
-      [dense, true, 0],
-      [[dense[dense.length - 1]], false, LIFT],
-    ] as [P2[], boolean, number][]) {
-      for (const p of pointList) {
-        const target = toWorld(p, lift)
-        const joints = inverse(target, APPROACH, BOARD_UP, true)
-        if (!joints) { unreachable++; continue }
-        plan.push({
-          joints,
-          world: new THREE.Vector3(target[0], target[1], target[2]),
-          penDown,
-          stroke: index,
-          label: stroke.label,
-        })
-      }
-    }
+
+  const push = (p: P3, approach: Vec3, marker: Marker) => {
+    const joints = inverse([p.x, p.y, p.z], approach, BOARD_UP, true)
+    if (!joints) { unreachable++; return }
+    waypoints.push(joints)
+    markers.push(marker)
+  }
+
+  figure.strokes.forEach((stroke, index) => {
+    const approach: Vec3 = stroke.approach
+      ? [stroke.approach.x, stroke.approach.y, stroke.approach.z]
+      : DEFAULT_APPROACH
+    const dense = resample3(stroke.points)
+    if (!dense.length) return
+    const lift = (p: P3): P3 => ({
+      x: p.x - approach[0] * LIFT,
+      y: p.y - approach[1] * LIFT,
+      z: p.z - approach[2] * LIFT,
+    })
+    const up: Marker = { penDown: false, stroke: index, label: stroke.label }
+    const down: Marker = { penDown: true, stroke: index, label: stroke.label }
+    push(lift(dense[0]), approach, up)
+    for (const p of dense) push(p, approach, down)
+    push(lift(dense[dense.length - 1]), approach, up)
   })
-  return { plan, unreachable }
+
+  const durations = timeParameterize(waypoints)
+  const perJoint = planJointTrajectory(waypoints, durations)
+  const total = durations.reduce((a, b) => a + b, 0)
+  const peak = peakDerivatives(perJoint)
+  return { waypoints, markers, durations, perJoint, total, unreachable, peak }
 }
 
-/** 2点間に円柱を張る */
-function orientSegment(
-  mesh: THREE.Mesh,
-  a: THREE.Vector3,
-  b: THREE.Vector3,
-) {
+function orientSegment(mesh: THREE.Mesh, a: THREE.Vector3, b: THREE.Vector3) {
   const direction = new THREE.Vector3().subVectors(b, a)
   const length = direction.length()
   if (length < 1e-6) { mesh.visible = false; return }
@@ -83,112 +73,106 @@ function orientSegment(
   mesh.position.copy(a).addScaledVector(direction, 0.5)
   mesh.scale.set(1, length, 1)
   mesh.quaternion.setFromUnitVectors(
-    new THREE.Vector3(0, 1, 0),
-    direction.clone().normalize(),
+    new THREE.Vector3(0, 1, 0), direction.clone().normalize(),
   )
 }
 
 export default function RobotPage() {
   const mountRef = useRef<HTMLDivElement>(null)
+  const [figureIndex, setFigureIndex] = useState(0)
   const [speed, setSpeed] = useState(1)
   const [running, setRunning] = useState(true)
   const [angles, setAngles] = useState<number[]>([0, 0, 0, 0, 0, 0])
+  const [jerk, setJerk] = useState(0)
   const [caption, setCaption] = useState('準備中')
   const [progress, setProgress] = useState(0)
-  const [meta, setMeta] = useState({ steps: 0, points: 0, unreachable: 0 })
+  const [stats, setStats] = useState({
+    points: 0, unreachable: 0, seconds: 0,
+    peak: { speed: 0, acceleration: 0, jerk: 0 },
+  })
+
   const speedRef = useRef(1)
   const runningRef = useRef(true)
   const resetRef = useRef(false)
-
   useEffect(() => { speedRef.current = speed }, [speed])
   useEffect(() => { runningRef.current = running }, [running])
+
+  const figure = FIGURES[figureIndex]
+  const complexity = useMemo(() => figureComplexity(figure), [figure])
 
   useEffect(() => {
     const mount = mountRef.current
     if (!mount) return
 
-    const { plan, unreachable } = buildPlan()
-    const { strokes, facts } = ninePointConstruction()
-    setMeta({ steps: strokes.length, points: plan.length, unreachable })
-    void facts
+    const plan = buildPlan(figure)
+    setStats({
+      points: plan.waypoints.length,
+      unreachable: plan.unreachable,
+      seconds: plan.total,
+      peak: plan.peak,
+    })
 
     const scene = new THREE.Scene()
-    scene.background = new THREE.Color(0x0b0d0c)
-    scene.fog = new THREE.Fog(0x0b0d0c, 180, 420)
-
+    scene.background = new THREE.Color(0x0a0c0b)
     const camera = new THREE.PerspectiveCamera(
-      42, mount.clientWidth / mount.clientHeight, 0.1, 1000,
+      42, mount.clientWidth / mount.clientHeight, 0.1, 1200,
     )
-    camera.position.set(78, -95, 92)
     camera.up.set(0, 0, 1)
-    camera.lookAt(0, BOARD_Y, BOARD_Z)
-
     const renderer = new THREE.WebGLRenderer({ antialias: true })
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     renderer.setSize(mount.clientWidth, mount.clientHeight)
     mount.appendChild(renderer.domElement)
 
     scene.add(new THREE.AmbientLight(0xffffff, 0.55))
-    const key = new THREE.DirectionalLight(0xffffff, 1.1)
-    key.position.set(60, -80, 120)
+    const key = new THREE.DirectionalLight(0xffffff, 1.15)
+    key.position.set(70, -90, 130)
     scene.add(key)
-    const rim = new THREE.DirectionalLight(0x88bbff, 0.5)
-    rim.position.set(-70, -40, 40)
+    const rim = new THREE.DirectionalLight(0x88bbff, 0.45)
+    rim.position.set(-80, -50, 40)
     scene.add(rim)
 
-    // 黒板
     const board = new THREE.Mesh(
-      new THREE.PlaneGeometry(120, 84),
-      new THREE.MeshStandardMaterial({
-        color: 0x21302a, roughness: 0.95, metalness: 0.0,
-      }),
+      new THREE.PlaneGeometry(124, 88),
+      new THREE.MeshStandardMaterial({ color: 0x1f2d27, roughness: 0.96 }),
     )
-    board.position.set(0, BOARD_Y + 0.6, BOARD_Z)
+    board.position.set(0, 55.8, 46)
     board.rotation.x = Math.PI / 2
     scene.add(board)
     const frame = new THREE.Mesh(
-      new THREE.BoxGeometry(126, 2.2, 90),
+      new THREE.BoxGeometry(130, 2.2, 94),
       new THREE.MeshStandardMaterial({ color: 0x6b4a2c, roughness: 0.8 }),
     )
-    frame.position.set(0, BOARD_Y + 2.2, BOARD_Z)
+    frame.position.set(0, 57.4, 46)
     scene.add(frame)
-
-    // 台座
     const base = new THREE.Mesh(
       new THREE.CylinderGeometry(11, 13, 6, 40),
-      new THREE.MeshStandardMaterial({ color: 0x2a2f33, roughness: 0.5, metalness: 0.6 }),
+      new THREE.MeshStandardMaterial({ color: 0x2a2f33, roughness: 0.5, metalness: 0.65 }),
     )
     base.position.set(0, 0, 3)
     base.rotation.x = Math.PI / 2
     scene.add(base)
-    const floor = new THREE.Mesh(
-      new THREE.PlaneGeometry(400, 400),
-      new THREE.MeshStandardMaterial({ color: 0x121514, roughness: 1 }),
-    )
-    scene.add(floor)
+    scene.add(new THREE.Mesh(
+      new THREE.PlaneGeometry(500, 500),
+      new THREE.MeshStandardMaterial({ color: 0x101312, roughness: 1 }),
+    ))
 
-    // アームのリンクと関節
     const linkMaterial = new THREE.MeshStandardMaterial({
-      color: 0xd8dde0, roughness: 0.35, metalness: 0.75,
+      color: 0xd8dde0, roughness: 0.35, metalness: 0.78,
     })
     const jointMaterial = new THREE.MeshStandardMaterial({
-      color: 0xffb454, roughness: 0.4, metalness: 0.4,
+      color: 0xffb454, roughness: 0.4, metalness: 0.45,
     })
     const links: THREE.Mesh[] = []
     const joints: THREE.Mesh[] = []
     for (let i = 0; i < ARM.length; i++) {
       const link = new THREE.Mesh(
-        new THREE.CylinderGeometry(2.6 - i * 0.22, 2.6 - i * 0.22, 1, 20),
-        linkMaterial,
+        new THREE.CylinderGeometry(2.6 - i * 0.22, 2.6 - i * 0.22, 1, 20), linkMaterial,
       )
-      scene.add(link)
-      links.push(link)
+      scene.add(link); links.push(link)
       const joint = new THREE.Mesh(
-        new THREE.CylinderGeometry(3.4 - i * 0.28, 3.4 - i * 0.28, 3.2, 24),
-        jointMaterial,
+        new THREE.CylinderGeometry(3.4 - i * 0.28, 3.4 - i * 0.28, 3.2, 24), jointMaterial,
       )
-      scene.add(joint)
-      joints.push(joint)
+      scene.add(joint); joints.push(joint)
     }
     const pen = new THREE.Mesh(
       new THREE.ConeGeometry(1.1, 5, 16),
@@ -196,47 +180,40 @@ export default function RobotPage() {
     )
     scene.add(pen)
 
-    // 描いた線を貯める
     const inkGroup = new THREE.Group()
     scene.add(inkGroup)
-    const inkColors = [0xf6f2e7, 0x9fe0b0, 0xffd79a, 0x8fd0ff]
-    let currentPositions: number[] = []
+    const inkColors = [0xf6f2e7, 0x9fe0b0, 0xffd79a, 0x8fd0ff, 0xffa8c0]
     let currentLine: THREE.Line | null = null
+    let currentCount = 0
+    let lastStroke = -1
 
     const startLine = (strokeIndex: number) => {
-      currentPositions = []
       const geometry = new THREE.BufferGeometry()
-      geometry.setAttribute(
-        'position',
-        new THREE.BufferAttribute(new Float32Array(6000), 3),
-      )
+      geometry.setAttribute('position',
+        new THREE.BufferAttribute(new Float32Array(9000), 3))
       geometry.setDrawRange(0, 0)
-      currentLine = new THREE.Line(
-        geometry,
-        new THREE.LineBasicMaterial({
-          color: inkColors[strokeIndex % inkColors.length],
-        }),
-      )
+      currentLine = new THREE.Line(geometry, new THREE.LineBasicMaterial({
+        color: inkColors[strokeIndex % inkColors.length],
+      }))
+      currentCount = 0
       inkGroup.add(currentLine)
     }
+    /** ペン先の実位置を筆跡に足す（図をなぞるのではなく腕の跡を残す） */
     const pushInk = (v: THREE.Vector3) => {
-      if (!currentLine) return
-      currentPositions.push(v.x, v.y - 0.4, v.z)
-      const attribute = currentLine.geometry.getAttribute(
-        'position',
-      ) as THREE.BufferAttribute
-      const count = Math.min(currentPositions.length / 3, 2000)
-      for (let i = 0; i < count * 3; i++) attribute.array[i] = currentPositions[i]
+      if (!currentLine || currentCount >= 2900) return
+      const attribute = currentLine.geometry.getAttribute('position') as THREE.BufferAttribute
+      attribute.array[currentCount * 3] = v.x
+      attribute.array[currentCount * 3 + 1] = v.y
+      attribute.array[currentCount * 3 + 2] = v.z
+      currentCount++
       attribute.needsUpdate = true
-      currentLine.geometry.setDrawRange(0, count)
+      currentLine.geometry.setDrawRange(0, currentCount)
     }
 
-    let index = 0
-    let blend = 0
-    let shown = [...(plan[0]?.joints ?? [0, 0, 0, 0, 0, 0])]
-    let lastStroke = -1
+    let elapsed = 0
     let raf = 0
     let disposed = false
+    let lastNow = performance.now()
 
     const drawArm = (jointAngles: number[]) => {
       const frames = forwardAll(jointAngles)
@@ -246,93 +223,93 @@ export default function RobotPage() {
         const point = new THREE.Vector3(p[0], p[1], p[2])
         orientSegment(links[i], previous, point)
         joints[i].position.copy(point)
-        const zAxis = new THREE.Vector3(m[2], m[6], m[10])
-        joints[i].quaternion.setFromUnitVectors(
-          new THREE.Vector3(0, 1, 0), zAxis.normalize(),
-        )
+        const axis = new THREE.Vector3(m[2], m[6], m[10]).normalize()
+        joints[i].quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), axis)
         previous = point
       })
-      const tip = previous
       const last = frames[frames.length - 1]
       const dir = new THREE.Vector3(last[2], last[6], last[10]).normalize()
-      pen.position.copy(tip).addScaledVector(dir, -2.5)
+      pen.position.copy(previous).addScaledVector(dir, -2.5)
       pen.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir)
+      return previous
     }
 
     const tick = () => {
       if (disposed) return
       raf = requestAnimationFrame(tick)
+      const now = performance.now()
+      const dt = Math.min(0.05, (now - lastNow) / 1000)
+      lastNow = now
 
       if (resetRef.current) {
         resetRef.current = false
-        index = 0; blend = 0; lastStroke = -1
-        shown = [...(plan[0]?.joints ?? shown)]
-        inkGroup.clear()
+        elapsed = 0
+        lastStroke = -1
         currentLine = null
+        inkGroup.clear()
+      }
+      if (runningRef.current && elapsed < plan.total) {
+        elapsed = Math.min(plan.total, elapsed + dt * speedRef.current)
       }
 
-      if (runningRef.current && index < plan.length - 1) {
-        blend += 0.16 * speedRef.current
-        while (blend >= 1 && index < plan.length - 1) {
-          blend -= 1
-          index++
-          const wp = plan[index]
-          if (wp.penDown) {
-            if (wp.stroke !== lastStroke) {
-              lastStroke = wp.stroke
-              startLine(wp.stroke)
-              setCaption(`${wp.stroke + 1}. ${wp.label}`)
-            }
-            pushInk(wp.world)
-          }
+      const sample = sampleAt(plan.perJoint, plan.durations, elapsed)
+      const marker = plan.markers[Math.min(sample.segment, plan.markers.length - 1)]
+      const tip = drawArm(sample.joints)
+
+      if (marker?.penDown) {
+        if (marker.stroke !== lastStroke) {
+          lastStroke = marker.stroke
+          startLine(marker.stroke)
+          setCaption(`${marker.stroke + 1}. ${marker.label}`)
         }
-        const from = plan[index].joints
-        const to = plan[Math.min(index + 1, plan.length - 1)].joints
-        shown = lerpJoints(from, to, Math.min(1, Math.max(0, blend)))
-        setProgress(index / Math.max(1, plan.length - 1))
-        setAngles(shown.map((r) => (r * 180) / Math.PI))
+        pushInk(tip)
       }
+      setAngles(sample.joints.map((r) => (r * 180) / Math.PI))
+      setJerk(Math.max(...sample.jerk.map(Math.abs)))
+      setProgress(plan.total ? elapsed / plan.total : 0)
 
-      drawArm(shown)
       renderer.render(scene, camera)
     }
-    drawArm(shown)
+
+    // 視点
+    let azimuth = 0.55
+    let elevation = 0.3
+    let radius = figure.dimension === 3 ? 150 : 165
+    const applyCamera = () => {
+      camera.position.set(
+        radius * Math.sin(azimuth) * Math.cos(elevation),
+        -radius * Math.cos(azimuth) * Math.cos(elevation),
+        30 + radius * Math.sin(elevation),
+      )
+      camera.lookAt(0, figure.dimension === 3 ? 24 : 34, 38)
+    }
+    applyCamera()
     tick()
 
     const onResize = () => {
-      if (!mount) return
       camera.aspect = mount.clientWidth / mount.clientHeight
       camera.updateProjectionMatrix()
       renderer.setSize(mount.clientWidth, mount.clientHeight)
     }
     window.addEventListener('resize', onResize)
-
-    // ドラッグで視点を回す
     let dragging = false
-    let lastX = 0
-    let lastY = 0
-    let azimuth = Math.atan2(camera.position.x, -camera.position.y)
-    let elevation = 0.28
-    const radius = 155
-    const applyCamera = () => {
-      camera.position.set(
-        radius * Math.sin(azimuth) * Math.cos(elevation),
-        -radius * Math.cos(azimuth) * Math.cos(elevation),
-        BOARD_Z + radius * Math.sin(elevation),
-      )
-      camera.lookAt(0, BOARD_Y * 0.5, BOARD_Z * 0.8)
-    }
-    applyCamera()
+    let lastX = 0, lastY = 0
     const down = (e: PointerEvent) => { dragging = true; lastX = e.clientX; lastY = e.clientY }
     const move = (e: PointerEvent) => {
       if (!dragging) return
       azimuth += (e.clientX - lastX) * 0.006
-      elevation = Math.max(-0.4, Math.min(1.1, elevation + (e.clientY - lastY) * 0.004))
+      elevation = Math.max(-0.45, Math.min(1.15, elevation + (e.clientY - lastY) * 0.004))
       lastX = e.clientX; lastY = e.clientY
       applyCamera()
     }
     const up = () => { dragging = false }
+    const wheel = (e: WheelEvent) => {
+      e.preventDefault()
+      radius = Math.max(70, Math.min(300, radius + e.deltaY * 0.15))
+      applyCamera()
+    }
     renderer.domElement.addEventListener('pointerdown', down)
+    renderer.domElement.addEventListener('wheel', wheel, { passive: false })
     window.addEventListener('pointermove', move)
     window.addEventListener('pointerup', up)
 
@@ -341,6 +318,7 @@ export default function RobotPage() {
       cancelAnimationFrame(raf)
       window.removeEventListener('resize', onResize)
       renderer.domElement.removeEventListener('pointerdown', down)
+      renderer.domElement.removeEventListener('wheel', wheel)
       window.removeEventListener('pointermove', move)
       window.removeEventListener('pointerup', up)
       renderer.dispose()
@@ -348,82 +326,105 @@ export default function RobotPage() {
         mount.removeChild(renderer.domElement)
       }
     }
+  }, [figure])
+
+  const selectFigure = useCallback((index: number) => {
+    setFigureIndex(index)
+    setRunning(true)
+    setProgress(0)
   }, [])
 
-  const { facts } = ninePointConstruction()
-
   return (
-    <main className="min-h-screen bg-[#0b0d0c] px-4 py-6 text-[#dfe6e2] sm:px-8">
+    <main className="min-h-screen bg-[#0a0c0b] px-4 py-6 text-[#dfe6e2] sm:px-8">
       <div className="mx-auto max-w-6xl">
-        <header className="mb-4 flex flex-wrap items-baseline justify-between gap-3">
-          <div>
-            <h1 className="text-lg tracking-[0.3em]">6軸アーム作図</h1>
-            <p className="mt-1 text-xs text-[#7f9b8c]">
-              九点円とオイラー線を、逆運動学で解いた関節角で実際に描いています
-            </p>
-          </div>
-          <div className="text-xs text-[#7f9b8c]">
-            {meta.steps} 工程 · 経由点 {meta.points} · 到達不能 {meta.unreachable}
-          </div>
+        <header className="mb-3">
+          <h1 className="text-lg tracking-[0.3em]">6軸アーム作図</h1>
+          <p className="mt-1 text-xs text-[#7f9b8c]">
+            逆運動学（球面手首の閉形式）＋ 最小ジャーク軌道。線はペン先が通った跡です。
+          </p>
         </header>
+
+        <div className="mb-3 flex flex-wrap gap-1.5 text-xs">
+          {FIGURES.map((f, i) => (
+            <button
+              key={f.id}
+              onClick={() => selectFigure(i)}
+              className="rounded border px-2.5 py-1"
+              style={{
+                borderColor: i === figureIndex ? '#9fe0b0' : '#2b3833',
+                color: i === figureIndex ? '#9fe0b0' : '#8b9a92',
+                background: i === figureIndex ? '#16211c' : 'transparent',
+              }}
+            >
+              {f.dimension === 3 ? '立体 ' : ''}{f.title}
+            </button>
+          ))}
+        </div>
 
         <div
           ref={mountRef}
           className="w-full overflow-hidden rounded border border-[#26302c]"
-          style={{ height: '58vh', minHeight: 380, cursor: 'grab' }}
+          style={{ height: '56vh', minHeight: 360, cursor: 'grab' }}
         />
 
-        <div className="mt-3 h-1 w-full rounded bg-[#1b211e]">
-          <div
-            className="h-1 rounded bg-[#9fe0b0] transition-[width] duration-150"
-            style={{ width: `${progress * 100}%` }}
-          />
+        <div className="mt-2 h-1 w-full rounded bg-[#1b211e]">
+          <div className="h-1 rounded bg-[#9fe0b0]"
+            style={{ width: `${progress * 100}%` }} />
         </div>
 
-        <div className="mt-3 grid gap-4 md:grid-cols-[1fr_auto]">
+        <div className="mt-3 grid gap-4 md:grid-cols-[1fr_300px]">
           <div>
             <div className="text-sm text-[#f2efe6]">{caption}</div>
+            <div className="mt-1 text-[11px] text-[#6f8a7d]">
+              作図 {complexity.operations} 工程（印 {complexity.marks} / 補助線{' '}
+              {complexity.auxiliary}）· 経由点 {stats.points} · 到達不能{' '}
+              {stats.unreachable} · 総時間 {stats.seconds.toFixed(1)}s
+            </div>
+
             <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
-              <button
-                onClick={() => setRunning((r) => !r)}
-                className="rounded border border-[#31403a] px-3 py-1.5 hover:bg-[#18211d]"
-              >
+              <button onClick={() => setRunning((r) => !r)}
+                className="rounded border border-[#31403a] px-3 py-1.5 hover:bg-[#18211d]">
                 {running ? '一時停止' : '再生'}
               </button>
-              <button
-                onClick={() => { resetRef.current = true; setRunning(true) }}
-                className="rounded border border-[#31403a] px-3 py-1.5 hover:bg-[#18211d]"
-              >
+              <button onClick={() => { resetRef.current = true; setRunning(true) }}
+                className="rounded border border-[#31403a] px-3 py-1.5 hover:bg-[#18211d]">
                 最初から
               </button>
-              <span className="ml-2 text-[#6f8a7d]">速さ</span>
-              {[0.5, 1, 2, 4].map((s) => (
-                <button
-                  key={s}
-                  onClick={() => setSpeed(s)}
+              <span className="ml-1 text-[#6f8a7d]">速さ</span>
+              {[0.5, 1, 2, 4, 8].map((s) => (
+                <button key={s} onClick={() => setSpeed(s)}
                   className="rounded border px-2 py-1"
                   style={{
                     borderColor: speed === s ? '#9fe0b0' : '#31403a',
                     color: speed === s ? '#9fe0b0' : '#7f9b8c',
-                  }}
-                >
-                  ×{s}
-                </button>
+                  }}>×{s}</button>
               ))}
-              <span className="ml-2 text-[#6f8a7d]">画面をドラッグで視点移動</span>
+              <span className="ml-1 text-[#6f8a7d]">
+                ドラッグで視点 · ホイールで寄り引き
+              </span>
             </div>
 
-            <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-6">
+            <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-6">
               {angles.map((deg, i) => (
                 <div key={i} className="rounded border border-[#26302c] px-2 py-1.5">
-                  <div className="text-[10px] tracking-widest text-[#6f8a7d]">
-                    J{i + 1}
-                  </div>
-                  <div className="font-mono text-sm text-[#cfe6d8]">
-                    {deg.toFixed(1)}°
-                  </div>
+                  <div className="text-[10px] tracking-widest text-[#6f8a7d]">J{i + 1}</div>
+                  <div className="font-mono text-sm text-[#cfe6d8]">{deg.toFixed(1)}°</div>
                 </div>
               ))}
+            </div>
+            <div className="mt-2 text-[11px] leading-relaxed text-[#6f8a7d]">
+              現在のジャーク{' '}
+              <span className="font-mono text-[#ffd79a]">{jerk.toFixed(1)}</span>
+              {' '}rad/s³　·　軌道全体のピーク 速度{' '}
+              <span className="font-mono text-[#cfe6d8]">
+                {stats.peak.speed.toFixed(2)}
+              </span>{' '}rad/s ／ 加速度{' '}
+              <span className="font-mono text-[#cfe6d8]">
+                {stats.peak.acceleration.toFixed(1)}
+              </span>{' '}rad/s²
+              <br />
+              節点で位置・速度・加速度・ジャーク・スナップまで連続しているので、
+              段差なく繋がります。
             </div>
           </div>
 
@@ -431,15 +432,17 @@ export default function RobotPage() {
             <div className="mb-2 tracking-[0.2em] text-[#6f8a7d]">
               この図から切り出せる量
             </div>
-            {facts.map((fact) => (
-              <div key={fact.label} className="flex justify-between gap-6 py-0.5">
+            {figure.facts.map((fact) => (
+              <div key={fact.label} className="flex justify-between gap-4 py-0.5">
                 <span className="text-[#9db5a8]">{fact.label}</span>
-                <span className="font-mono text-[#ffd79a]">{fact.value}</span>
+                <span className="text-right font-mono text-[#ffd79a]">{fact.value}</span>
               </div>
             ))}
             <div className="mt-3 border-t border-[#26302c] pt-2 text-[10px] leading-relaxed text-[#6f8a7d]">
-              手首3軸が1点で交わる球面手首（Pieper の条件）なので、
-              位置は J1–J3、姿勢は J4–J6 に分離して閉形式で解けます。
+              対応する MathOS の族:
+              <div className="mt-1 space-y-0.5 font-mono text-[#7fa891]">
+                {figure.families.map((family) => <div key={family}>{family}</div>)}
+              </div>
             </div>
           </div>
         </div>
