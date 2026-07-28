@@ -158,28 +158,40 @@ function HomeInner() {
       solution:  '',
     }))
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const enqueueUrl  = supabaseUrl
-      ? `${supabaseUrl}/functions/v1/enqueue-generation`
-      : '/api/generate'
-
+    // MathOS で生成する。外部 LLM を使わないので API 残高で止まらない。
     try {
-      const res = await fetch(enqueueUrl, {
+      const res = await fetch('/api/mathos-generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
         },
-        body: JSON.stringify({ parents, mode: 'fusion', count: examFusionCount }),
+        body: JSON.stringify({
+          count: examFusionCount,
+          domain: parents[0]?.topic_a || undefined,
+        }),
       })
       if (!res.ok) {
         const data = await res.json().catch(() => null)
         const msg = data?.error ?? `エラー: ${res.status}`
         setExamLogs([msg]); setExamDone({ ok: false, message: msg }); setExamRunning(false); return
       }
-      const { job_id } = await res.json()
-      setExamLogs([`🚀 ジョブ受付: ${job_id} — 「選択済み・生成」タブで進捗を確認できます`])
-      setExamDone({ ok: true, message: `✅ エンキュー完了 (${job_id})` })
+      const data = await res.json() as {
+        generated: number
+        requested: number
+        engine: string
+        cards: { family_id?: string; answer_tex?: string }[]
+        errors: string[]
+      }
+      const lines = data.cards.map(
+        (card, index) => `${index + 1}. ${card.family_id ?? '?'} → ${card.answer_tex ?? '?'}`,
+      )
+      const ok = data.generated > 0
+      const msg = ok
+        ? `✅ 完了: ${data.generated}/${data.requested} 問（${data.engine}）`
+        : `❌ 生成できませんでした（${data.errors[0] ?? '理由不明'}）`
+      setExamLogs([...lines, ...data.errors, msg])
+      setExamDone({ ok, message: msg })
     } catch (e) {
       const msg = `送信失敗: ${e}`
       setExamLogs([msg]); setExamDone({ ok: false, message: msg })

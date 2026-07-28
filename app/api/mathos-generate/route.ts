@@ -174,7 +174,9 @@ export async function POST(request: NextRequest) {
     for (let attempt = 0; attempt < 30; attempt++) {
       const candidate = generateLiveProblem(domain)
       if (!candidate) continue
-      const runKey = `${candidate.familyId}::${canonical(candidate.answerTex)}`
+      // 同じ族を数字違いで2度返さない。射の連鎖が同じなら同じ問題であり、
+      // 1回の生成で「ギャンブラーの破産」が3つ並ぶのは水増しにすぎない。
+      const runKey = candidate.familyId
       if (seenThisRun.has(runKey)) continue
       const s = await assessNovelty(
         candidate.statementTex,

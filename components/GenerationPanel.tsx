@@ -120,41 +120,35 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
   }, [logs])
 
   // ── 生成リクエスト ──────────────────────────────────────────────────────
+  // ── 生成リクエスト（MathOS: 外部 LLM を使わない） ──────────────────────
+  // 以前は Supabase の enqueue-generation に投げて DeepSeek ワーカーが書いて
+  // いたため、API 残高が切れると生成が止まっていた。MathOS は対象を構築して
+  // SymPy 相当の厳密計算で答えを出すので、外部 API に依存しない。
   const run = async (parents: ProblemWithRating[], mode: string, count: number) => {
-    setGenerating(true); setLogs([]); setGenDone(null); setUiPhase('queued')
+    setGenerating(true); setLogs([]); setGenDone(null); setUiPhase('start')
 
-    const parentData = parents.map(p => ({
-      id: p.id, topic_a: p.topic_a, topic_b: p.topic_b,
-      statement: p.statement, answer: p.answer,
-      inspiration: p.inspiration, total: p.total, solution: p.solution,
-    }))
+    // 親問題の分野を引き継いで、同じ領域の構造を引く
+    const domain = parents[0]?.topic_a || undefined
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const enqueueUrl  = supabaseUrl
-      ? `${supabaseUrl}/functions/v1/enqueue-generation`
-      : '/api/generate'   // フォールバック（旧SSE方式）
+    setUiPhase('generating')
+    setLogs([
+      `MathOS で ${count} 問を構築します（${mode}${domain ? ` / ${domain}` : ''}）`,
+      '外部 LLM は使いません。対象を構築し、厳密計算で答えを出します。',
+    ])
 
-    if (enqueueUrl === '/api/generate') {
-      await runLegacySSE(enqueueUrl, parentData, mode, count)
-      return
-    }
-
-    setUiPhase('start')
-
-    let jobId: string | null = null
     try {
-      const res = await fetch(enqueueUrl, {
-        method:  'POST',
+      const res = await fetch('/api/mathos-generate', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
         },
-        body: JSON.stringify({ parents: parentData, mode, count }),
+        body: JSON.stringify({ count, domain }),
       })
 
       if (!res.ok) {
         const data = await res.json().catch(() => null)
-        const message = data?.error ?? `エンキューエラー: ${res.status}`
+        const message = data?.error ?? `生成エラー: ${res.status}`
         if (res.status === 402) {
           setUpgradeUsed(data?.used ?? 0)
           setShowUpgrade(true)
@@ -168,185 +162,37 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
         return
       }
 
-      const { job_id } = await res.json()
-      jobId = job_id as string
-      setLogs([`🚀 ジョブ受付: ${jobId}`])
-      setUiPhase('generating')
-    } catch (e) {
-      const message = `エンキュー失敗: ${e}`
-      setLogs(prev => [...prev, message])
-      setUiPhase('error')
-      setGenDone({ ok: false, message })
-      setGenerating(false)
-      return
-    }
-
-    if (!jobId) return
-
-    // ── Supabase Realtime で generation_jobs を監視 ──────────────────────
-    const sb = getSupabaseClient()
-
-    if (channelRef.current) {
-      await sb.removeChannel(channelRef.current)
-      channelRef.current = null
-    }
-
-    const channel = sb
-      .channel(`job-${jobId}`)
-      .on(
-        'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'generation_jobs', filter: `id=eq.${jobId}` },
-        (payload) => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const job = payload.new as any
-
-          // ── ライブログ更新 ──────────────────────────────────────────────
-          const jobLogs: { level: string; message: string }[] = job.logs ?? []
-          if (jobLogs.length > 0) {
-            const messages = jobLogs.map((l: { level: string; message: string }) => l.message)
-            setLogs(messages)
-
-            // フェーズ推定（最後のログから）
-            const last = messages[messages.length - 1] ?? ''
-            if (last.includes('[分析]'))      setUiPhase('analyzing')
-            else if (last.includes('[生成'))  setUiPhase('generating')
-            else if (last.includes('[検証'))  setUiPhase('verifying')
-            else if (last.includes('[保存'))  setUiPhase('saving')
-            else if (last.includes('[淘汰]')) setUiPhase('purging')
-          }
-
-          // ── 完了/失敗 ──────────────────────────────────────────────────
-          if (job.status === 'done' || job.status === 'failed') {
-            const ok = job.status === 'done' && job.result?.ok === true
-            const generated = job.result?.generated?.length ?? 0
-            const total     = job.result?.total ?? count
-            const message   = ok
-              ? `✅ 完了: ${generated}/${total} 問生成。表示を更新してください。`
-              : (job.error ?? `❌ 失敗: 0/${total} 問生成`)
-
-            setUiPhase(ok ? 'done' : 'error')
-            setLogs(prev => [...prev, message])
-            setGenDone({ ok, message })
-            setGenerating(false)
-
-            sb.removeChannel(channel)
-            channelRef.current = null
-          }
-        },
-      )
-      .subscribe()
-
-    channelRef.current = channel
-
-    // ── ポーリングフォールバック（Realtimeが届かない場合の保険） ─────────
-    // Realtimeが有効でも無効でも、5秒ごとにAPIで状態を確認する
-    let pollDone = false
-    const pollInterval = setInterval(async () => {
-      if (pollDone) return
-      try {
-        const res = await fetch(`/api/job-status?job_id=${jobId}`)
-        if (!res.ok) return
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const job = await res.json() as any
-
-        // ログ更新（Realtimeより遅れて来た場合もここで補完）
-        const jobLogs: { level: string; message: string }[] = job.logs ?? []
-        if (jobLogs.length > 0) {
-          const messages = jobLogs.map((l: { level: string; message: string }) => l.message)
-          setLogs(messages)
-          const last = messages[messages.length - 1] ?? ''
-          if (last.includes('[分析]'))      setUiPhase('analyzing')
-          else if (last.includes('[生成'))  setUiPhase('generating')
-          else if (last.includes('[検証'))  setUiPhase('verifying')
-          else if (last.includes('[保存'))  setUiPhase('saving')
-          else if (last.includes('[淘汰]')) setUiPhase('purging')
-        }
-
-        // 完了/失敗の検出
-        if (job.status === 'done' || job.status === 'failed') {
-          pollDone = true
-          clearInterval(pollInterval)
-          const ok      = job.status === 'done' && job.result?.ok === true
-          const generated = job.result?.generated?.length ?? 0
-          const total     = job.result?.total ?? count
-          const message   = ok
-            ? `✅ 完了: ${generated}/${total} 問生成。表示を更新してください。`
-            : generated === 0
-              ? `❌ 0/${total} 問生成 — 全問が検証でスキップされました`
-              : (job.error ?? `❌ 失敗: ${generated}/${total} 問生成`)
-
-          setUiPhase(ok ? 'done' : 'error')
-          setLogs(prev => {
-            const last = prev[prev.length - 1]
-            return last === message ? prev : [...prev, message]
-          })
-          setGenDone({ ok, message })
-          setGenerating(false)
-          await sb.removeChannel(channel)
-          channelRef.current = null
-        }
-      } catch { /* ignore polling errors */ }
-    }, 5000)
-
-    // ── タイムアウトフォールバック（15分） ───────────────────────────────
-    setTimeout(() => {
-      if (pollDone) return
-      pollDone = true
-      clearInterval(pollInterval)
-      const message = '⏱️ タイムアウト（Workerの状態を確認してください）'
-      setUiPhase('error')
-      setGenDone({ ok: false, message })
-      setLogs(prev => [...prev, message])
-      setGenerating(false)
-      sb.removeChannel(channel)
-      channelRef.current = null
-    }, 15 * 60 * 1000)
-  }
-
-  // ── 旧SSEフォールバック ────────────────────────────────────────────────
-  const runLegacySSE = async (
-    url: string,
-    parentData: unknown[],
-    mode: string,
-    count: number,
-  ) => {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-      },
-      body: JSON.stringify({ parents: parentData, mode, count }),
-    })
-
-    if (!res.ok) {
-      const data = await res.json().catch(() => null)
-      const message = data?.error ?? `生成APIエラー: ${res.status}`
-      if (res.status === 402) { setUpgradeUsed(data?.used ?? 0); setShowUpgrade(true); setGenerating(false); return }
-      setLogs(prev => [...prev, message]); setUiPhase('error'); setGenDone({ ok: false, message }); setGenerating(false); return
-    }
-    if (!res.body) {
-      const message = '生成APIのストリームが空です'
-      setLogs(prev => [...prev, message]); setUiPhase('error'); setGenDone({ ok: false, message }); setGenerating(false); return
-    }
-
-    const reader = res.body.getReader(); const decoder = new TextDecoder(); let buffer = ''; let doneSeen = false
-    while (true) {
-      const { done, value } = await reader.read(); if (done) break
-      buffer += decoder.decode(value, { stream: true })
-      const parts = buffer.split('\n\n'); buffer = parts.pop() ?? ''
-      for (const part of parts) {
-        if (!part.startsWith('data: ')) continue
-        try {
-          const ev = JSON.parse(part.slice(6)); const message = String(ev.message ?? ev.msg ?? '')
-          if (ev.type === 'status') { setUiPhase(ev.step ?? 'generating'); if (message) setLogs(prev => [...prev, message]) }
-          if (ev.type === 'log' && message) setLogs(prev => [...prev, message])
-          if (ev.type === 'error') { doneSeen = true; setUiPhase('error'); setLogs(prev => [...prev, message || '生成エラー']); setGenDone({ ok: false, message: message || '生成エラー' }); setGenerating(false) }
-          if (ev.type === 'done') { doneSeen = true; const ok = ev.ok === true; const dm = message || (ok ? '生成完了' : '生成に失敗しました'); setUiPhase(ok ? 'done' : 'error'); setLogs(prev => [...prev, dm]); setGenDone({ ok, message: dm }); setGenerating(false) }
-        } catch { /* ignore */ }
+      setUiPhase('verifying')
+      const data = await res.json() as {
+        generated: number
+        requested: number
+        engine: string
+        cards: { family_id?: string; answer_tex?: string; similarity?: { max?: number } }[]
+        errors: string[]
       }
+
+      const lines = data.cards.map((card, index) => {
+        const similarity = card.similarity?.max
+        const suffix =
+          typeof similarity === 'number'
+            ? `（既存との最大類似度 ${(similarity * 100).toFixed(0)}%）`
+            : ''
+        return `${index + 1}. ${card.family_id ?? '?'} → ${card.answer_tex ?? '?'} ${suffix}`
+      })
+      const ok = data.generated > 0
+      const message = ok
+        ? `✅ 完了: ${data.generated}/${data.requested} 問（${data.engine}）。表示を更新してください。`
+        : `❌ 生成できませんでした（${data.errors[0] ?? '理由不明'}）`
+
+      setUiPhase(ok ? 'done' : 'error')
+      setLogs(prev => [...prev, ...lines, ...data.errors, message])
+      setGenDone({ ok, message })
+    } catch (e) {
+      const message = `生成失敗: ${e}`
+      setLogs(prev => [...prev, message])
+      setUiPhase('error')
+      setGenDone({ ok: false, message })
     }
-    if (!doneSeen) { const msg = '生成ストリームが完了イベントなしで終了しました'; setUiPhase('error'); setGenDone({ ok: false, message: msg }); setLogs(prev => [...prev, msg]) }
     setGenerating(false)
   }
 
