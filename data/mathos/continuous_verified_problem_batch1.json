@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-27T16:44:31.517168+00:00",
+  "generated_at": "2026-07-28T07:02:37.983759+00:00",
   "method": {
     "name": "MathOS Japanese entrance-mathematics structural pool",
     "numeric_variants_count_as_new": false,
@@ -11,7 +11,7 @@
       "accepted": true,
       "answer_exact": "1, 3",
       "answer_tex": "1, 3",
-      "candidate_id": "construct:construct.mobius_fixed_points:035",
+      "candidate_id": "construct:construct.mobius_fixed_points:054",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "MobiusToMatrix",
@@ -65,7 +65,7 @@
       "accepted": true,
       "answer_exact": "1/n",
       "answer_tex": "\\frac{1}{n}",
-      "candidate_id": "construct:construct.reciprocal_recurrence:043",
+      "candidate_id": "construct:construct.reciprocal_recurrence:062",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "ReciprocalTransform",
@@ -864,7 +864,7 @@
       "accepted": true,
       "answer_exact": "14",
       "answer_tex": "14",
-      "candidate_id": "construct:ultradeep.cubic_root_triangle_discriminant_divisor_count:060",
+      "candidate_id": "construct:ultradeep.cubic_root_triangle_discriminant_divisor_count:079",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CubicPolynomial",
@@ -1133,7 +1133,7 @@
       "accepted": true,
       "answer_exact": "3*pi/2",
       "answer_tex": "\\frac{3 \\pi}{2}",
-      "candidate_id": "construct:ultradeep.geometry_astroid_envelope_area:061",
+      "candidate_id": "construct:ultradeep.geometry_astroid_envelope_area:080",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CircleParameter",
@@ -2145,7 +2145,7 @@
       "accepted": true,
       "answer_exact": "I",
       "answer_tex": "i",
-      "candidate_id": "construct:construct.complex_affine_limit:044",
+      "candidate_id": "construct:construct.complex_affine_limit:063",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "FixedPointShift",
@@ -2197,7 +2197,7 @@
       "accepted": true,
       "answer_exact": "3",
       "answer_tex": "3",
-      "candidate_id": "construct:construct.complex_rotation_period:040",
+      "candidate_id": "construct:construct.complex_rotation_period:059",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "PrimitiveRootOfUnity",
@@ -2247,7 +2247,7 @@
       "accepted": true,
       "answer_exact": "2",
       "answer_tex": "2",
-      "candidate_id": "construct:ultradeep.cyclotomic_distance_norm_divisor_count:058",
+      "candidate_id": "construct:ultradeep.cyclotomic_distance_norm_divisor_count:077",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RootOfUnity",
@@ -2528,7 +2528,7 @@
       "accepted": true,
       "answer_exact": "1",
       "answer_tex": "1",
-      "candidate_id": "construct:deep.polygon_subset_centroid:055",
+      "candidate_id": "construct:deep.polygon_subset_centroid:074",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RootOfUnity",
@@ -2593,7 +2593,7 @@
       "accepted": true,
       "answer_exact": "2",
       "answer_tex": "2",
-      "candidate_id": "construct:deep.rotation_diagonal_product_divisors:053",
+      "candidate_id": "construct:deep.rotation_diagonal_product_divisors:072",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RootOfUnity",
@@ -2657,7 +2657,7 @@
       "accepted": true,
       "answer_exact": "3*sqrt(3)/4",
       "answer_tex": "\\frac{3 \\sqrt{3}}{4}",
-      "candidate_id": "construct:layered.rotation_orbit_hull_area:049",
+      "candidate_id": "construct:layered.rotation_orbit_hull_area:068",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RootOfUnityOrbit",
@@ -3410,9 +3410,423 @@
     },
     {
       "accepted": true,
+      "answer_exact": "144/25",
+      "answer_tex": "\\frac{144}{25}",
+      "candidate_id": "construct:traceback.hyperbola_asymptote.asymptote_distance_product:036",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "HyperbolaObject",
+          "AsymptoteLine",
+          "CoordinateSolve"
+        ],
+        "lowering_chain": [
+          "hyperbola",
+          "line_equation",
+          "coordinate_geometry",
+          "simultaneous_equations"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "conic_geometry",
+      "family_id": "traceback.hyperbola_asymptote.asymptote_distance_product",
+      "lift_certificate": {
+        "morphism_chain": [
+          "HyperbolaObject",
+          "AsymptoteLine",
+          "CoordinateSolve"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "hyperbola_asymptote",
+        "depth": 5,
+        "hidden_intermediates": 2,
+        "node": "asymptote_distance_product",
+        "param": [
+          4,
+          3,
+          20,
+          4
+        ]
+      },
+      "solution_tex": "距離の積は \\(\\frac{|b^2x_0^2-a^2y_0^2|}{a^2+b^2}\\)。双曲線の式より分子は \\(a^2b^2\\) で一定。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "双曲線 \\(H:\\dfrac{x^2}{16}-\\dfrac{y^2}{9}=1\\) を考える。双曲線上の点から2本の漸近線までの距離の積を求めよ。",
+      "structure_key": "c63dc86165107f9afb47dbc5e614eaf3dc722054bb94743d6350ccf9732b46e7",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "8",
+      "answer_tex": "8",
+      "candidate_id": "construct:traceback.hyperbola_asymptote.asymptote_intersection_x:037",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "HyperbolaObject",
+          "TangentLine",
+          "AsymptoteLine",
+          "LinearIntersection"
+        ],
+        "lowering_chain": [
+          "hyperbola",
+          "tangent_line",
+          "differentiation",
+          "line_equation",
+          "simultaneous_equations"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "conic_geometry",
+      "family_id": "traceback.hyperbola_asymptote.asymptote_intersection_x",
+      "lift_certificate": {
+        "morphism_chain": [
+          "HyperbolaObject",
+          "TangentLine",
+          "AsymptoteLine",
+          "LinearIntersection"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "hyperbola_asymptote",
+        "depth": 5,
+        "hidden_intermediates": 1,
+        "node": "asymptote_intersection_x",
+        "param": [
+          4,
+          3,
+          20,
+          4
+        ]
+      },
+      "solution_tex": "接線と漸近線を連立する。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "双曲線 \\(H:\\dfrac{x^2}{16}-\\dfrac{y^2}{9}=1\\) を考える。接線と漸近線 \\(y=\\frac{b}{a}x\\) の交点の \\(x\\) 座標を求めよ。",
+      "structure_key": "08b292a9582f515e827712b9843df5f2133d590ab3aa858d6a2d4ba8d39b7332",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "12",
+      "answer_tex": "12",
+      "candidate_id": "construct:traceback.hyperbola_asymptote.asymptote_triangle_area:035",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "HyperbolaObject",
+          "TangentLine",
+          "AsymptoteLine",
+          "ShoelaceArea"
+        ],
+        "lowering_chain": [
+          "hyperbola",
+          "tangent_line",
+          "differentiation",
+          "line_equation",
+          "area_shoelace"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "conic_geometry",
+      "family_id": "traceback.hyperbola_asymptote.asymptote_triangle_area",
+      "lift_certificate": {
+        "morphism_chain": [
+          "HyperbolaObject",
+          "TangentLine",
+          "AsymptoteLine",
+          "ShoelaceArea"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "hyperbola_asymptote",
+        "depth": 6,
+        "hidden_intermediates": 2,
+        "node": "asymptote_triangle_area",
+        "param": [
+          4,
+          3,
+          20,
+          4
+        ]
+      },
+      "solution_tex": "接点を \\((x_0,y_0)\\) とすると接線は \\(\\frac{xx_0}{a^2}-\\frac{yy_0}{b^2}=1\\)。漸近線 \\(y=\\pm\\frac{b}{a}x\\) との交点を求めて面積を計算すると \\(ab\\) となり，接点によらない。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "双曲線 \\(H:\\dfrac{x^2}{16}-\\dfrac{y^2}{9}=1\\) を考える。接線と2本の漸近線が囲む三角形の面積を求めよ。（この値は接点の取り方によらないことを確かめよ。）",
+      "structure_key": "9d6b15a13a06eb352cab9223e703fb2072f994929a555d448c6723409bcc05f3",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "7",
+      "answer_tex": "7",
+      "candidate_id": "construct:traceback.hyperbola_asymptote.director_circle_radius_sq:039",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "HyperbolaObject",
+          "TangentLine",
+          "RightAngleCondition",
+          "CircleParameter"
+        ],
+        "lowering_chain": [
+          "hyperbola",
+          "tangent_line",
+          "differentiation",
+          "inner_product",
+          "circle_equation"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "conic_geometry",
+      "family_id": "traceback.hyperbola_asymptote.director_circle_radius_sq",
+      "lift_certificate": {
+        "morphism_chain": [
+          "HyperbolaObject",
+          "TangentLine",
+          "RightAngleCondition",
+          "CircleParameter"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "hyperbola_asymptote",
+        "depth": 6,
+        "hidden_intermediates": 2,
+        "node": "director_circle_radius_sq",
+        "param": [
+          4,
+          3,
+          20,
+          4
+        ]
+      },
+      "solution_tex": "傾き \\(m\\) の接線条件から \\(m\\) の二次方程式を作り，解の積 \\(=-1\\) とおくと \\(x^2+y^2=a^2-b^2\\)。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "双曲線 \\(H:\\dfrac{x^2}{16}-\\dfrac{y^2}{9}=1\\) を考える。双曲線に引いた2本の接線が直交するような点全体は円をなす。その半径の平方を求めよ。",
+      "structure_key": "00d86d0af2c8efe4406d62a77b82a359bed1068780c0663978f8b06fdc1852cb",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "25/16",
+      "answer_tex": "\\frac{25}{16}",
+      "candidate_id": "construct:traceback.hyperbola_asymptote.eccentricity_sq:041",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "HyperbolaObject",
+          "Eccentricity"
+        ],
+        "lowering_chain": [
+          "hyperbola",
+          "algebraic_identity"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "conic_geometry",
+      "family_id": "traceback.hyperbola_asymptote.eccentricity_sq",
+      "lift_certificate": {
+        "morphism_chain": [
+          "HyperbolaObject",
+          "Eccentricity"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "hyperbola_asymptote",
+        "depth": 3,
+        "hidden_intermediates": 1,
+        "node": "eccentricity_sq",
+        "param": [
+          4,
+          3,
+          20,
+          4
+        ]
+      },
+      "solution_tex": "\\(e^2=\\frac{a^2+b^2}{a^2}\\)。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "双曲線 \\(H:\\dfrac{x^2}{16}-\\dfrac{y^2}{9}=1\\) を考える。離心率の平方を求めよ。",
+      "structure_key": "e5278ae0f2f37d6047de46885635b33dea7814c0c552e67649920aaf3116b333",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "8",
+      "answer_tex": "8",
+      "candidate_id": "construct:traceback.hyperbola_asymptote.focal_distance_difference:038",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "HyperbolaObject",
+          "FocalProperty"
+        ],
+        "lowering_chain": [
+          "hyperbola",
+          "distance_formula"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "conic_geometry",
+      "family_id": "traceback.hyperbola_asymptote.focal_distance_difference",
+      "lift_certificate": {
+        "morphism_chain": [
+          "HyperbolaObject",
+          "FocalProperty"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "hyperbola_asymptote",
+        "depth": 3,
+        "hidden_intermediates": 1,
+        "node": "focal_distance_difference",
+        "param": [
+          4,
+          3,
+          20,
+          4
+        ]
+      },
+      "solution_tex": "双曲線の定義そのもので \\(2a\\)。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "双曲線 \\(H:\\dfrac{x^2}{16}-\\dfrac{y^2}{9}=1\\) を考える。双曲線上の点から2つの焦点までの距離の差の絶対値を求めよ。",
+      "structure_key": "8d6c8a83c8fbcb79381477fba5366a32979e7fc82f148b36637ef072e75a9c76",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "9/4",
+      "answer_tex": "\\frac{9}{4}",
+      "candidate_id": "construct:traceback.hyperbola_asymptote.semi_latus_rectum:040",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "HyperbolaObject",
+          "FocalProperty",
+          "CoordinateSolve"
+        ],
+        "lowering_chain": [
+          "hyperbola",
+          "distance_formula",
+          "coordinate_geometry",
+          "simultaneous_equations"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "conic_geometry",
+      "family_id": "traceback.hyperbola_asymptote.semi_latus_rectum",
+      "lift_certificate": {
+        "morphism_chain": [
+          "HyperbolaObject",
+          "FocalProperty",
+          "CoordinateSolve"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "hyperbola_asymptote",
+        "depth": 4,
+        "hidden_intermediates": 1,
+        "node": "semi_latus_rectum",
+        "param": [
+          4,
+          3,
+          20,
+          4
+        ]
+      },
+      "solution_tex": "\\(x=\\sqrt{a^2+b^2}\\) を代入して \\(y\\) を求める。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "双曲線 \\(H:\\dfrac{x^2}{16}-\\dfrac{y^2}{9}=1\\) を考える。焦点を通り主軸に垂直な弦の長さの半分を求めよ。",
+      "structure_key": "73df612eafd2c8bf07ac0d2a6d1e4a79574b8abdd367c9d24bb3c30ba8276ad3",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
       "answer_exact": "6*sqrt(3)",
       "answer_tex": "6 \\sqrt{3}",
-      "candidate_id": "construct:ultradeep.geometry_regular_polygon_minkowski_perimeter:065",
+      "candidate_id": "construct:ultradeep.geometry_regular_polygon_minkowski_perimeter:084",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RootOfUnityChart",
@@ -3486,7 +3900,7 @@
       "accepted": true,
       "answer_exact": "-27*x**2 + 4*y**3 - 24*y**2 + 48*y - 32",
       "answer_tex": "4(y-2)^3=27x^2",
-      "candidate_id": "construct:ultradeep.geometry_parabola_normal_envelope:063",
+      "candidate_id": "construct:ultradeep.geometry_parabola_normal_envelope:082",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "ParabolaObject",
@@ -3556,7 +3970,7 @@
       "accepted": true,
       "answer_exact": "8*pi",
       "answer_tex": "8 \\pi",
-      "candidate_id": "construct:ultradeep.geometry_orthocenter_locus_area:064",
+      "candidate_id": "construct:ultradeep.geometry_orthocenter_locus_area:083",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "EllipseObject",
@@ -3628,7 +4042,7 @@
       "accepted": true,
       "answer_exact": "(0, 1)",
       "answer_tex": "(0,\\ 1)",
-      "candidate_id": "construct:construct.parabola_right_angle_chord:042",
+      "candidate_id": "construct:construct.parabola_right_angle_chord:061",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RightAngleCondition",
@@ -3779,7 +4193,7 @@
       "accepted": true,
       "answer_exact": "x*(28*x**2 - 9)",
       "answer_tex": "y=x \\left(28 x^{2} - 9\\right)",
-      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:039",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:058",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "TangentLine",
@@ -3831,7 +4245,7 @@
       "accepted": true,
       "answer_exact": "4*t",
       "answer_tex": "4 t",
-      "candidate_id": "construct:layered.cubic_tangent_iteration:050",
+      "candidate_id": "construct:layered.cubic_tangent_iteration:069",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "TangentLine",
@@ -4130,7 +4544,7 @@
       "accepted": true,
       "answer_exact": "log(2)",
       "answer_tex": "\\log{\\left(2 \\right)}",
-      "candidate_id": "construct:deep.tangent_iteration_growth:052",
+      "candidate_id": "construct:deep.tangent_iteration_growth:071",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CubicCurve",
@@ -4196,7 +4610,7 @@
       "accepted": true,
       "answer_exact": "8",
       "answer_tex": "8",
-      "candidate_id": "construct:ultradeep.paley_four_cycle_divisor_count:057",
+      "candidate_id": "construct:ultradeep.paley_four_cycle_divisor_count:076",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "PrimeField",
@@ -4269,7 +4683,7 @@
       "accepted": true,
       "answer_exact": "20",
       "answer_tex": "20",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:038",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:057",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CompanionMatrix",
@@ -4321,7 +4735,7 @@
       "accepted": true,
       "answer_exact": "1",
       "answer_tex": "1",
-      "candidate_id": "construct:deep.recurrence_period_quadratic_character:054",
+      "candidate_id": "construct:deep.recurrence_period_quadratic_character:073",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "LinearRecurrence",
@@ -4389,7 +4803,7 @@
       "accepted": true,
       "answer_exact": "6",
       "answer_tex": "6",
-      "candidate_id": "construct:layered.recurrence_period_observable:045",
+      "candidate_id": "construct:layered.recurrence_period_observable:064",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CompanionMatrix",
@@ -4444,7 +4858,7 @@
       "accepted": true,
       "answer_exact": "5",
       "answer_tex": "5",
-      "candidate_id": "construct:layered.recurrence_period_observable:046",
+      "candidate_id": "construct:layered.recurrence_period_observable:065",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CompanionMatrix",
@@ -4498,7 +4912,7 @@
       "accepted": true,
       "answer_exact": "8",
       "answer_tex": "8",
-      "candidate_id": "construct:layered.recurrence_period_observable:047",
+      "candidate_id": "construct:layered.recurrence_period_observable:066",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CompanionMatrix",
@@ -5093,7 +5507,7 @@
       "accepted": true,
       "answer_exact": "26",
       "answer_tex": "26",
-      "candidate_id": "construct:layered.paley_triangle_count:048",
+      "candidate_id": "construct:layered.paley_triangle_count:067",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "QuadraticResidueGraph",
@@ -5141,6 +5555,373 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "paley_graph_triangle_enumeration_vs_closed_form"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "6",
+      "answer_tex": "6",
+      "candidate_id": "construct:traceback.incircle_excircle.contact_segment_longest:047",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "TriangleConstruction",
+          "IncircleRadius",
+          "EdgeLengthObservation"
+        ],
+        "lowering_chain": [
+          "coordinate_geometry",
+          "triangle_area",
+          "triangle_center",
+          "distance_formula"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "plane_geometry",
+      "family_id": "traceback.incircle_excircle.contact_segment_longest",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TriangleConstruction",
+          "IncircleRadius",
+          "EdgeLengthObservation"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "incircle_excircle",
+        "depth": 4,
+        "hidden_intermediates": 1,
+        "node": "contact_segment_longest",
+        "param": [
+          0,
+          0,
+          14,
+          0,
+          5,
+          12
+        ]
+      },
+      "solution_tex": "1つの頂点から内接円に引いた2本の接線の長さは等しく \\(s-a\\)。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "座標平面上の3点 \\(A(0,0)\\), \\(B(14,0)\\), \\(C(5,12)\\) を頂点とする三角形 \\(ABC\\) を考える。最長辺に対する頂点から内接円の接点までの長さを求めよ。",
+      "structure_key": "62a9da05d9a522966af03959f0bc50cffbba0c4617976d22dd6624c8d0564ff0",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "65/64",
+      "answer_tex": "\\frac{65}{64}",
+      "candidate_id": "construct:traceback.incircle_excircle.euler_OI_sq:046",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "TriangleConstruction",
+          "CircleParameter",
+          "IncircleRadius",
+          "EulerTriangleIdentity"
+        ],
+        "lowering_chain": [
+          "coordinate_geometry",
+          "triangle_area",
+          "circle_equation",
+          "triangle_center",
+          "algebraic_identity"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "plane_geometry",
+      "family_id": "traceback.incircle_excircle.euler_OI_sq",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TriangleConstruction",
+          "CircleParameter",
+          "IncircleRadius",
+          "EulerTriangleIdentity"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "incircle_excircle",
+        "depth": 5,
+        "hidden_intermediates": 1,
+        "node": "euler_OI_sq",
+        "param": [
+          0,
+          0,
+          14,
+          0,
+          5,
+          12
+        ]
+      },
+      "solution_tex": "オイラーの定理 \\(OI^2=R^2-2Rr\\) による。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "座標平面上の3点 \\(A(0,0)\\), \\(B(14,0)\\), \\(C(5,12)\\) を頂点とする三角形 \\(ABC\\) を考える。外心と内心の距離の平方を求めよ。",
+      "structure_key": "2ee98f29b28f9004cb2fd35191bf5ca4dcaad9e632cc2eb9a84b115cf33454b7",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "1764",
+      "answer_tex": "1764",
+      "candidate_id": "construct:traceback.incircle_excircle.exradii_product:044",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "TriangleConstruction",
+          "ExcircleRadius",
+          "IncircleRadius"
+        ],
+        "lowering_chain": [
+          "coordinate_geometry",
+          "triangle_area",
+          "triangle_center"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "plane_geometry",
+      "family_id": "traceback.incircle_excircle.exradii_product",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TriangleConstruction",
+          "ExcircleRadius",
+          "IncircleRadius"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "incircle_excircle",
+        "depth": 4,
+        "hidden_intermediates": 1,
+        "node": "exradii_product",
+        "param": [
+          0,
+          0,
+          14,
+          0,
+          5,
+          12
+        ]
+      },
+      "solution_tex": "\\(r_Ar_Br_C=\\frac{S^2}{r}\\)。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "座標平面上の3点 \\(A(0,0)\\), \\(B(14,0)\\), \\(C(5,12)\\) を頂点とする三角形 \\(ABC\\) を考える。3つの傍接円の半径の積を求めよ。",
+      "structure_key": "16c91e71744d1a32c458ea39a9d105630177a9b837c067ac0b10aabb216a4e48",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "1/4",
+      "answer_tex": "\\frac{1}{4}",
+      "candidate_id": "construct:traceback.incircle_excircle.exradii_reciprocal_sum:045",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "TriangleConstruction",
+          "ExcircleRadius",
+          "IncircleRadius"
+        ],
+        "lowering_chain": [
+          "coordinate_geometry",
+          "triangle_area",
+          "triangle_center"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "plane_geometry",
+      "family_id": "traceback.incircle_excircle.exradii_reciprocal_sum",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TriangleConstruction",
+          "ExcircleRadius",
+          "IncircleRadius"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "incircle_excircle",
+        "depth": 4,
+        "hidden_intermediates": 1,
+        "node": "exradii_reciprocal_sum",
+        "param": [
+          0,
+          0,
+          14,
+          0,
+          5,
+          12
+        ]
+      },
+      "solution_tex": "\\(\\frac1{r_A}+\\frac1{r_B}+\\frac1{r_C}=\\frac1r\\)。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "座標平面上の3点 \\(A(0,0)\\), \\(B(14,0)\\), \\(C(5,12)\\) を頂点とする三角形 \\(ABC\\) を考える。3つの傍接円の半径の逆数の和を求めよ。",
+      "structure_key": "a9143d1e9761800255d46bae159f6b6fb45e3bd4a2b39bfc0951225f3ab0b1e5",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "73/2",
+      "answer_tex": "\\frac{73}{2}",
+      "candidate_id": "construct:traceback.incircle_excircle.exradii_sum:043",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "TriangleConstruction",
+          "ExcircleRadius",
+          "CircleParameter"
+        ],
+        "lowering_chain": [
+          "coordinate_geometry",
+          "triangle_area",
+          "triangle_center",
+          "circle_equation"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "plane_geometry",
+      "family_id": "traceback.incircle_excircle.exradii_sum",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TriangleConstruction",
+          "ExcircleRadius",
+          "CircleParameter"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "incircle_excircle",
+        "depth": 4,
+        "hidden_intermediates": 1,
+        "node": "exradii_sum",
+        "param": [
+          0,
+          0,
+          14,
+          0,
+          5,
+          12
+        ]
+      },
+      "solution_tex": "\\(r_A+r_B+r_C=4R+r\\) を用いてもよい。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "座標平面上の3点 \\(A(0,0)\\), \\(B(14,0)\\), \\(C(5,12)\\) を頂点とする三角形 \\(ABC\\) を考える。3つの傍接円の半径の和を求めよ。",
+      "structure_key": "f9e687e6940198b6bbfc4b21ed90ec05310343f8c882d663a5a3946003baea8f",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "14",
+      "answer_tex": "14",
+      "candidate_id": "construct:traceback.incircle_excircle.exradius_opposite_longest:042",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "TriangleConstruction",
+          "EdgeLengthObservation",
+          "ExcircleRadius"
+        ],
+        "lowering_chain": [
+          "coordinate_geometry",
+          "triangle_area",
+          "distance_formula",
+          "triangle_center"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "plane_geometry",
+      "family_id": "traceback.incircle_excircle.exradius_opposite_longest",
+      "lift_certificate": {
+        "morphism_chain": [
+          "TriangleConstruction",
+          "EdgeLengthObservation",
+          "ExcircleRadius"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "incircle_excircle",
+        "depth": 4,
+        "hidden_intermediates": 1,
+        "node": "exradius_opposite_longest",
+        "param": [
+          0,
+          0,
+          14,
+          0,
+          5,
+          12
+        ]
+      },
+      "solution_tex": "\\(r_A=\\frac{S}{s-a}\\)。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "座標平面上の3点 \\(A(0,0)\\), \\(B(14,0)\\), \\(C(5,12)\\) を頂点とする三角形 \\(ABC\\) を考える。最長辺に接する傍接円の半径を求めよ。",
+      "structure_key": "3e0efa6562647399a10ae74a009019d4ee04e8233c0d239690ae1e7a9de84258",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
       }
     },
     {
@@ -5641,7 +6422,7 @@
       "accepted": true,
       "answer_exact": "1/4",
       "answer_tex": "\\frac{1}{4}",
-      "candidate_id": "construct:construct.gambler_ruin_probability:041",
+      "candidate_id": "construct:construct.gambler_ruin_probability:060",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "AbsorbingWalk",
@@ -6091,9 +6872,334 @@
     },
     {
       "accepted": true,
+      "answer_exact": "10",
+      "answer_tex": "10",
+      "candidate_id": "construct:traceback.dice_sum.modal_sum:048",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "DiceGeneratingFunction",
+          "ModalOutcome"
+        ],
+        "lowering_chain": [
+          "probability",
+          "polynomial_expansion",
+          "counting",
+          "combination"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "probability",
+      "family_id": "traceback.dice_sum.modal_sum",
+      "lift_certificate": {
+        "morphism_chain": [
+          "DiceGeneratingFunction",
+          "ModalOutcome"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "dice_sum",
+        "depth": 3,
+        "hidden_intermediates": 1,
+        "node": "modal_sum",
+        "param": 3
+      },
+      "solution_tex": "分布は \\(\\frac{7n}{2}\\) について対称なので中央の値が最頻。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "1 から 6 の目をもつさいころを 3 個同時に投げ，出た目の和を \\(S\\) とする。和として最も起こりやすい値を求めよ。",
+      "structure_key": "b12e61fbaba4f280d068c54d20655fa944e59e100fd940e53c6890c5af20422e",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
       "answer_exact": "4",
       "answer_tex": "4",
-      "candidate_id": "construct:ultradeep.gambler_absorption_variance_divisor_count:059",
+      "candidate_id": "construct:traceback.dice_sum.modal_ways_divisor_count:050",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "DiceGeneratingFunction",
+          "ModalOutcome",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "lowering_chain": [
+          "probability",
+          "polynomial_expansion",
+          "counting",
+          "combination",
+          "prime_factorization",
+          "divisor_counting"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "probability",
+      "family_id": "traceback.dice_sum.modal_ways_divisor_count",
+      "lift_certificate": {
+        "morphism_chain": [
+          "DiceGeneratingFunction",
+          "ModalOutcome",
+          "PrimeFactorization",
+          "DivisorCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "dice_sum",
+        "depth": 5,
+        "hidden_intermediates": 1,
+        "node": "modal_ways_divisor_count",
+        "param": 3
+      },
+      "solution_tex": "場合の数を求めてから素因数分解する。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "1 から 6 の目をもつさいころを 3 個同時に投げ，出た目の和を \\(S\\) とする。和が 10 となる目の出方の総数の，正の約数の個数を求めよ。",
+      "structure_key": "4f09618c1b5282df638391b44959d472dc545549981e21c868cd615e513e1b42",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "1/3",
+      "answer_tex": "\\frac{1}{3}",
+      "candidate_id": "construct:traceback.dice_sum.prob_sum_divisible_by_3:052",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "DiceGeneratingFunction",
+          "RootOfUnityFilter",
+          "ComplexRootSet"
+        ],
+        "lowering_chain": [
+          "probability",
+          "polynomial_expansion",
+          "counting",
+          "roots_of_unity",
+          "sum_of_series",
+          "complex_plane"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "probability",
+      "family_id": "traceback.dice_sum.prob_sum_divisible_by_3",
+      "lift_certificate": {
+        "morphism_chain": [
+          "DiceGeneratingFunction",
+          "RootOfUnityFilter",
+          "ComplexRootSet"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "dice_sum",
+        "depth": 4,
+        "hidden_intermediates": 1,
+        "node": "prob_sum_divisible_by_3",
+        "param": 3
+      },
+      "solution_tex": "\\(f(z)=(z+\\cdots+z^6)^n\\) とすると，求める場合の数は \\(\\frac{f(1)+f(\\omega)+f(\\omega^2)}{3}\\)。\\(\\omega\\) は 1 の虚数3乗根。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "1 から 6 の目をもつさいころを 3 個同時に投げ，出た目の和を \\(S\\) とする。和が 3 の倍数となる確率を求めよ。",
+      "structure_key": "3a14c533748f1ab3c91eb82eea6403eb6f5c3575db984f5cdc74c6786c945731",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "216",
+      "answer_tex": "216",
+      "candidate_id": "construct:traceback.dice_sum.total_outcomes:053",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "DiceGeneratingFunction",
+          "SubsetCount"
+        ],
+        "lowering_chain": [
+          "probability",
+          "polynomial_expansion",
+          "counting",
+          "combination"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "probability",
+      "family_id": "traceback.dice_sum.total_outcomes",
+      "lift_certificate": {
+        "morphism_chain": [
+          "DiceGeneratingFunction",
+          "SubsetCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "dice_sum",
+        "depth": 2,
+        "hidden_intermediates": 0,
+        "node": "total_outcomes",
+        "param": 3
+      },
+      "solution_tex": "\\(6^{3}\\)。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "1 から 6 の目をもつさいころを 3 個同時に投げ，出た目の和を \\(S\\) とする。目の出方は全部で何通りか。",
+      "structure_key": "069fed9c2b12aa823656c72f3bddc51c8b9150634b397565f2d84b69db3455c8",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "105",
+      "answer_tex": "105",
+      "candidate_id": "construct:traceback.dice_sum.variance_times_12:051",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "DiceGeneratingFunction",
+          "VarianceOfSum"
+        ],
+        "lowering_chain": [
+          "probability",
+          "polynomial_expansion",
+          "counting",
+          "variance",
+          "expectation"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "probability",
+      "family_id": "traceback.dice_sum.variance_times_12",
+      "lift_certificate": {
+        "morphism_chain": [
+          "DiceGeneratingFunction",
+          "VarianceOfSum"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "dice_sum",
+        "depth": 4,
+        "hidden_intermediates": 2,
+        "node": "variance_times_12",
+        "param": 3
+      },
+      "solution_tex": "1個の分散は \\(\\frac{35}{12}\\)。独立なので和の分散は \\(\\frac{35\\cdot3}{12}\\)。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "1 から 6 の目をもつさいころを 3 個同時に投げ，出た目の和を \\(S\\) とする。和の分散の 12 倍を求めよ。",
+      "structure_key": "17257c485a717e03b6fe8aafa54097ae0ed21dd9f50422c71105eac448252563",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "27",
+      "answer_tex": "27",
+      "candidate_id": "construct:traceback.dice_sum.ways_for_modal_sum:049",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "DiceGeneratingFunction",
+          "ModalOutcome",
+          "SubsetCount"
+        ],
+        "lowering_chain": [
+          "probability",
+          "polynomial_expansion",
+          "counting",
+          "combination"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "probability",
+      "family_id": "traceback.dice_sum.ways_for_modal_sum",
+      "lift_certificate": {
+        "morphism_chain": [
+          "DiceGeneratingFunction",
+          "ModalOutcome",
+          "SubsetCount"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "dice_sum",
+        "depth": 4,
+        "hidden_intermediates": 1,
+        "node": "ways_for_modal_sum",
+        "param": 3
+      },
+      "solution_tex": "各さいころに対応する多項式の積を展開し，該当する次数の係数を読む。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "1 から 6 の目をもつさいころを 3 個同時に投げ，出た目の和を \\(S\\) とする。和が 10 となる目の出方は何通りか。",
+      "structure_key": "12a201f72610691f2eb268548d86cb9639f9c037b1cafc7c5a6d8e2ccb81d384",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "4",
+      "answer_tex": "4",
+      "candidate_id": "construct:ultradeep.gambler_absorption_variance_divisor_count:078",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "PathStateSpace",
@@ -6170,7 +7276,7 @@
       "accepted": true,
       "answer_exact": "4",
       "answer_tex": "\\frac{x^2}{4}+\\frac{y^2}{1}=4",
-      "candidate_id": "construct:ultradeep.geometry_ellipse_tangent_pair_locus:062",
+      "candidate_id": "construct:ultradeep.geometry_ellipse_tangent_pair_locus:081",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "EllipseObject",
@@ -6858,7 +7964,7 @@
     }
   ],
   "summary": {
-    "certified_structures": 81,
+    "certified_structures": 100,
     "domain_counts": {
       "algebra": 4,
       "algebraic_geometry": 2,
@@ -6870,7 +7976,7 @@
       "complex": 2,
       "complex_algebra_number_theory": 1,
       "complex_geometry": 10,
-      "conic_geometry": 6,
+      "conic_geometry": 13,
       "convex_geometry": 1,
       "differential_geometry": 1,
       "euclidean_geometry": 1,
@@ -6880,13 +7986,13 @@
       "graph_combinatorics_number_theory": 1,
       "number_theory": 11,
       "number_theory_graph": 1,
-      "plane_geometry": 8,
-      "probability": 3,
+      "plane_geometry": 14,
+      "probability": 9,
       "probability_linear_algebra_number_theory": 1,
       "projective_geometry": 1,
       "real_analysis": 5
     },
-    "families": 79,
+    "families": 98,
     "family_counts": {
       "algebraic_geometry.cubic_discriminant_triangle_area": 1,
       "algebraic_geometry.even_quartic_parabola_hull_area": 1,
@@ -6927,6 +8033,12 @@
       "traceback.cubic_tangent.log_growth_limit": 1,
       "traceback.cubic_tangent.midpoint_locus": 1,
       "traceback.cubic_tangent.reintersection_x": 1,
+      "traceback.dice_sum.modal_sum": 1,
+      "traceback.dice_sum.modal_ways_divisor_count": 1,
+      "traceback.dice_sum.prob_sum_divisible_by_3": 1,
+      "traceback.dice_sum.total_outcomes": 1,
+      "traceback.dice_sum.variance_times_12": 1,
+      "traceback.dice_sum.ways_for_modal_sum": 1,
       "traceback.digit_power.digit_count": 1,
       "traceback.digit_power.digit_increase_count": 1,
       "traceback.digit_power.digit_sum": 1,
@@ -6938,6 +8050,19 @@
       "traceback.ellipse_tangent.contact_triangle_area": 1,
       "traceback.ellipse_tangent.monge_radius_sq": 1,
       "traceback.ellipse_tangent.tangent_slope_product": 1,
+      "traceback.hyperbola_asymptote.asymptote_distance_product": 1,
+      "traceback.hyperbola_asymptote.asymptote_intersection_x": 1,
+      "traceback.hyperbola_asymptote.asymptote_triangle_area": 1,
+      "traceback.hyperbola_asymptote.director_circle_radius_sq": 1,
+      "traceback.hyperbola_asymptote.eccentricity_sq": 1,
+      "traceback.hyperbola_asymptote.focal_distance_difference": 1,
+      "traceback.hyperbola_asymptote.semi_latus_rectum": 1,
+      "traceback.incircle_excircle.contact_segment_longest": 1,
+      "traceback.incircle_excircle.euler_OI_sq": 1,
+      "traceback.incircle_excircle.exradii_product": 1,
+      "traceback.incircle_excircle.exradii_reciprocal_sum": 1,
+      "traceback.incircle_excircle.exradii_sum": 1,
+      "traceback.incircle_excircle.exradius_opposite_longest": 1,
       "traceback.lattice_path.catalan_divisor_count": 1,
       "traceback.lattice_path.catalan_paths": 1,
       "traceback.lattice_path.strictly_above_paths": 1,
@@ -6968,17 +8093,17 @@
       "ultradeep.geometry_regular_polygon_minkowski_perimeter": 1,
       "ultradeep.paley_four_cycle_divisor_count": 1
     },
-    "geometry_algebra_structures": 51,
+    "geometry_algebra_structures": 64,
     "rejected": {
-      "same_structure_variant": 51,
+      "same_structure_variant": 70,
       "scope_lowering": 10
     },
     "source_counts": {
-      "construct_atlas": 62,
+      "construct_atlas": 81,
       "geometry_fusion": 4,
       "typed_continuous": 15
     },
     "surface_rewritten": 4,
-    "total_instances": 81
+    "total_instances": 100
   }
 }
