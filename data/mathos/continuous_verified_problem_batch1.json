@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-28T07:02:37.983759+00:00",
+  "generated_at": "2026-07-28T14:50:50.588798+00:00",
   "method": {
     "name": "MathOS Japanese entrance-mathematics structural pool",
     "numeric_variants_count_as_new": false,
@@ -11,12 +11,35 @@
       "accepted": true,
       "answer_exact": "1, 3",
       "answer_tex": "1, 3",
-      "candidate_id": "construct:construct.mobius_fixed_points:054",
+      "candidate_id": "construct:construct.mobius_fixed_points:067",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "MobiusToMatrix",
           "Eigenstructure",
           "FixedPointSolve"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "MobiusToMatrix",
+            "primitives": [
+              "rational_function",
+              "function_composition"
+            ]
+          },
+          {
+            "morphism": "Eigenstructure",
+            "primitives": [
+              "quadratic_equation",
+              "simultaneous_equations"
+            ]
+          },
+          {
+            "morphism": "FixedPointSolve",
+            "primitives": [
+              "quadratic_equation",
+              "simultaneous_equations"
+            ]
+          }
         ],
         "lowering_chain": [
           "rational_function",
@@ -65,12 +88,34 @@
       "accepted": true,
       "answer_exact": "1/n",
       "answer_tex": "\\frac{1}{n}",
-      "candidate_id": "construct:construct.reciprocal_recurrence:062",
+      "candidate_id": "construct:construct.reciprocal_recurrence:075",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "ReciprocalTransform",
           "LinearRecurrence",
           "GeneralTerm"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "ReciprocalTransform",
+            "primitives": [
+              "recurrence",
+              "algebraic_identity"
+            ]
+          },
+          {
+            "morphism": "LinearRecurrence",
+            "primitives": [
+              "recurrence",
+              "general_term"
+            ]
+          },
+          {
+            "morphism": "GeneralTerm",
+            "primitives": [
+              "general_term"
+            ]
+          }
         ],
         "lowering_chain": [
           "recurrence",
@@ -121,6 +166,34 @@
           "VanishingTransform",
           "Differentiate",
           "EvaluateAtZero"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "Interpolation",
+            "primitives": [
+              "polynomial_factorization",
+              "simultaneous_equations"
+            ]
+          },
+          {
+            "morphism": "VanishingTransform",
+            "primitives": [
+              "roots_of_unity",
+              "sum_of_series"
+            ]
+          },
+          {
+            "morphism": "Differentiate",
+            "primitives": [
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "EvaluateAtZero",
+            "primitives": [
+              "remainder_theorem"
+            ]
+          }
         ],
         "lowering_chain": [
           "polynomial_factorization",
@@ -320,6 +393,29 @@
           "TelescopeCollapse",
           "SimplifyRational"
         ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "PartialFraction",
+            "primitives": [
+              "rational_function",
+              "algebraic_identity"
+            ]
+          },
+          {
+            "morphism": "TelescopeCollapse",
+            "primitives": [
+              "sum_of_series",
+              "algebraic_identity"
+            ]
+          },
+          {
+            "morphism": "SimplifyRational",
+            "primitives": [
+              "rational_function",
+              "algebraic_identity"
+            ]
+          }
+        ],
         "lowering_chain": [
           "rational_function",
           "algebraic_identity",
@@ -517,6 +613,41 @@
           "Discriminant",
           "Maximum"
         ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "RootSet",
+            "primitives": [
+              "polynomial_factorization"
+            ]
+          },
+          {
+            "morphism": "ParabolaEmbedding",
+            "primitives": [
+              "parabola",
+              "coordinate_geometry"
+            ]
+          },
+          {
+            "morphism": "VandermondeArea",
+            "primitives": [
+              "area_shoelace",
+              "polynomial_factorization"
+            ]
+          },
+          {
+            "morphism": "Discriminant",
+            "primitives": [
+              "quadratic_discriminant"
+            ]
+          },
+          {
+            "morphism": "Maximum",
+            "primitives": [
+              "extremum",
+              "differentiation"
+            ]
+          }
+        ],
         "lowering_chain": [
           "polynomial_factorization",
           "parabola",
@@ -693,6 +824,40 @@
           "Area",
           "Maximum"
         ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "RootSet",
+            "primitives": [
+              "polynomial_factorization"
+            ]
+          },
+          {
+            "morphism": "ParabolaEmbedding",
+            "primitives": [
+              "parabola",
+              "coordinate_geometry"
+            ]
+          },
+          {
+            "morphism": "ConvexHull",
+            "primitives": [
+              "convex_hull"
+            ]
+          },
+          {
+            "morphism": "Area",
+            "primitives": [
+              "area_shoelace"
+            ]
+          },
+          {
+            "morphism": "Maximum",
+            "primitives": [
+              "extremum",
+              "differentiation"
+            ]
+          }
+        ],
         "lowering_chain": [
           "polynomial_factorization",
           "parabola",
@@ -864,7 +1029,7 @@
       "accepted": true,
       "answer_exact": "14",
       "answer_tex": "14",
-      "candidate_id": "construct:ultradeep.cubic_root_triangle_discriminant_divisor_count:079",
+      "candidate_id": "construct:ultradeep.cubic_root_triangle_discriminant_divisor_count:092",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CubicPolynomial",
@@ -878,6 +1043,83 @@
           "PrimeFactorization",
           "DivisorCount",
           "ArithmeticObservation"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "CubicPolynomial",
+            "primitives": [
+              "polynomial_expansion",
+              "vieta_relations"
+            ]
+          },
+          {
+            "morphism": "ThreeRealRootSet",
+            "primitives": [
+              "differentiation",
+              "extremum",
+              "quadratic_discriminant"
+            ]
+          },
+          {
+            "morphism": "ParabolaEmbedding",
+            "primitives": [
+              "parabola",
+              "coordinate_geometry"
+            ]
+          },
+          {
+            "morphism": "TriangleConstruction",
+            "primitives": [
+              "coordinate_geometry",
+              "triangle_area"
+            ]
+          },
+          {
+            "morphism": "VandermondeDeterminant",
+            "primitives": [
+              "polynomial_factorization",
+              "algebraic_identity"
+            ]
+          },
+          {
+            "morphism": "AreaSquare",
+            "primitives": [
+              "area_shoelace"
+            ]
+          },
+          {
+            "morphism": "PolynomialDiscriminant",
+            "primitives": [
+              "vieta_relations",
+              "polynomial_expansion",
+              "quadratic_discriminant"
+            ]
+          },
+          {
+            "morphism": "IntegerNormalization",
+            "primitives": [
+              "integer_arithmetic"
+            ]
+          },
+          {
+            "morphism": "PrimeFactorization",
+            "primitives": [
+              "prime_factorization"
+            ]
+          },
+          {
+            "morphism": "DivisorCount",
+            "primitives": [
+              "prime_factorization",
+              "divisor_counting"
+            ]
+          },
+          {
+            "morphism": "ArithmeticObservation",
+            "primitives": [
+              "integer_arithmetic"
+            ]
+          }
         ],
         "lowering_chain": [
           "polynomial_expansion",
@@ -948,6 +1190,43 @@
           "Centroid",
           "Norm",
           "Minimum"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "TangentDual",
+            "primitives": [
+              "tangent_line",
+              "parameter_elimination"
+            ]
+          },
+          {
+            "morphism": "AxisIntercepts",
+            "primitives": [
+              "line_equation",
+              "coordinate_geometry"
+            ]
+          },
+          {
+            "morphism": "Centroid",
+            "primitives": [
+              "coordinate_geometry",
+              "midpoint"
+            ]
+          },
+          {
+            "morphism": "Norm",
+            "primitives": [
+              "complex_modulus",
+              "distance_formula"
+            ]
+          },
+          {
+            "morphism": "Minimum",
+            "primitives": [
+              "extremum",
+              "differentiation"
+            ]
+          }
         ],
         "lowering_chain": [
           "tangent_line",
@@ -1133,7 +1412,7 @@
       "accepted": true,
       "answer_exact": "3*pi/2",
       "answer_tex": "\\frac{3 \\pi}{2}",
-      "candidate_id": "construct:ultradeep.geometry_astroid_envelope_area:080",
+      "candidate_id": "construct:ultradeep.geometry_astroid_envelope_area:093",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CircleParameter",
@@ -1146,6 +1425,75 @@
           "ClosedCurveOrientation",
           "GreenAreaMorphism",
           "AreaObservation"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "CircleParameter",
+            "primitives": [
+              "circle_equation"
+            ]
+          },
+          {
+            "morphism": "AxisEndpointPair",
+            "primitives": [
+              "ellipse",
+              "coordinate_geometry"
+            ]
+          },
+          {
+            "morphism": "JoiningLine",
+            "primitives": [
+              "line_equation"
+            ]
+          },
+          {
+            "morphism": "LineFamily",
+            "primitives": [
+              "line_equation",
+              "parameter_elimination"
+            ]
+          },
+          {
+            "morphism": "EnvelopeStationarity",
+            "primitives": [
+              "envelope",
+              "parameter_elimination",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "ParameterElimination",
+            "primitives": [
+              "parameter_elimination"
+            ]
+          },
+          {
+            "morphism": "AstroidIdentification",
+            "primitives": [
+              "parametric_curve",
+              "envelope"
+            ]
+          },
+          {
+            "morphism": "ClosedCurveOrientation",
+            "primitives": [
+              "parametric_curve",
+              "area_integral"
+            ]
+          },
+          {
+            "morphism": "GreenAreaMorphism",
+            "primitives": [
+              "definite_integral",
+              "area_integral"
+            ]
+          },
+          {
+            "morphism": "AreaObservation",
+            "primitives": [
+              "area_integral"
+            ]
+          }
         ],
         "lowering_chain": [
           "circle_equation",
@@ -1209,6 +1557,30 @@
           "LatticePathEncoding",
           "ReflectionPrinciple",
           "BinomialDifference"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "LatticePathEncoding",
+            "primitives": [
+              "counting",
+              "combination"
+            ]
+          },
+          {
+            "morphism": "ReflectionPrinciple",
+            "primitives": [
+              "counting",
+              "combination",
+              "symmetry"
+            ]
+          },
+          {
+            "morphism": "BinomialDifference",
+            "primitives": [
+              "combination",
+              "algebraic_identity"
+            ]
+          }
         ],
         "lowering_chain": [
           "counting",
@@ -1393,6 +1765,36 @@
           "PrimeFactorization",
           "DivisorCount"
         ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "PathStateSpace",
+            "primitives": [
+              "counting",
+              "recurrence"
+            ]
+          },
+          {
+            "morphism": "ReflectionBijection",
+            "primitives": [
+              "counting",
+              "combination",
+              "symmetry"
+            ]
+          },
+          {
+            "morphism": "PrimeFactorization",
+            "primitives": [
+              "prime_factorization"
+            ]
+          },
+          {
+            "morphism": "DivisorCount",
+            "primitives": [
+              "prime_factorization",
+              "divisor_counting"
+            ]
+          }
+        ],
         "lowering_chain": [
           "counting",
           "recurrence",
@@ -1424,9 +1826,21 @@
       "parameters": {
         "construction": "lattice_path",
         "depth": 6,
+        "hidden": [
+          "鏡映による数え上げ",
+          "素因数分解"
+        ],
         "hidden_intermediates": 2,
         "node": "catalan_divisor_count",
-        "param": 5
+        "param": 5,
+        "premises": [
+          "格子点 (0,0) から (5,5) へ右または上に1ずつ進む最短経路"
+        ],
+        "scope": [
+          "場合の数",
+          "1対1対応",
+          "約数の個数"
+        ]
       },
       "solution_tex": "鏡映で経路数を求めたのち素因数分解する。",
       "source_generator": "construct_atlas",
@@ -1449,6 +1863,30 @@
           "PathStateSpace",
           "ReflectionBijection",
           "SubsetCount"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "PathStateSpace",
+            "primitives": [
+              "counting",
+              "recurrence"
+            ]
+          },
+          {
+            "morphism": "ReflectionBijection",
+            "primitives": [
+              "counting",
+              "combination",
+              "symmetry"
+            ]
+          },
+          {
+            "morphism": "SubsetCount",
+            "primitives": [
+              "counting",
+              "combination"
+            ]
+          }
         ],
         "lowering_chain": [
           "counting",
@@ -1478,9 +1916,20 @@
       "parameters": {
         "construction": "lattice_path",
         "depth": 4,
+        "hidden": [
+          "対角線を越える経路の鏡映"
+        ],
         "hidden_intermediates": 1,
         "node": "catalan_paths",
-        "param": 5
+        "param": 5,
+        "premises": [
+          "格子点 (0,0) から (5,5) へ右または上に1ずつ進む最短経路"
+        ],
+        "scope": [
+          "場合の数",
+          "組合せ",
+          "1対1対応"
+        ]
       },
       "solution_tex": "越える経路を \\(y=x+1\\) で鏡映すると別の端点への経路と1対1に対応し，差を取ってカタラン数を得る。",
       "source_generator": "construct_atlas",
@@ -1503,6 +1952,30 @@
           "PathStateSpace",
           "ReflectionBijection",
           "SubsetCount"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "PathStateSpace",
+            "primitives": [
+              "counting",
+              "recurrence"
+            ]
+          },
+          {
+            "morphism": "ReflectionBijection",
+            "primitives": [
+              "counting",
+              "combination",
+              "symmetry"
+            ]
+          },
+          {
+            "morphism": "SubsetCount",
+            "primitives": [
+              "counting",
+              "combination"
+            ]
+          }
         ],
         "lowering_chain": [
           "counting",
@@ -1532,9 +2005,20 @@
       "parameters": {
         "construction": "lattice_path",
         "depth": 4,
+        "hidden": [
+          "最初の一歩を固定した後の鏡映"
+        ],
         "hidden_intermediates": 1,
         "node": "strictly_above_paths",
-        "param": 5
+        "param": 5,
+        "premises": [
+          "格子点 (0,0) から (5,5) へ右または上に1ずつ進む最短経路"
+        ],
+        "scope": [
+          "場合の数",
+          "組合せ",
+          "1対1対応"
+        ]
       },
       "solution_tex": "最初と最後の一歩を固定し，残りに鏡映の議論を適用する。",
       "source_generator": "construct_atlas",
@@ -1556,6 +2040,22 @@
         "abstract_morphism_chain": [
           "PathStateSpace",
           "SubsetCount"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "PathStateSpace",
+            "primitives": [
+              "counting",
+              "recurrence"
+            ]
+          },
+          {
+            "morphism": "SubsetCount",
+            "primitives": [
+              "counting",
+              "combination"
+            ]
+          }
         ],
         "lowering_chain": [
           "counting",
@@ -1583,9 +2083,19 @@
       "parameters": {
         "construction": "lattice_path",
         "depth": 3,
+        "hidden": [
+          "経路の前半と後半への分割"
+        ],
         "hidden_intermediates": 1,
         "node": "through_center_paths",
-        "param": 6
+        "param": 6,
+        "premises": [
+          "格子点 (0,0) から (6,6) へ右または上に1ずつ進む最短経路"
+        ],
+        "scope": [
+          "場合の数",
+          "組合せ"
+        ]
       },
       "solution_tex": "中点までとそこからの経路数の積を取る。",
       "source_generator": "construct_atlas",
@@ -1607,6 +2117,22 @@
         "abstract_morphism_chain": [
           "PathStateSpace",
           "SubsetCount"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "PathStateSpace",
+            "primitives": [
+              "counting",
+              "recurrence"
+            ]
+          },
+          {
+            "morphism": "SubsetCount",
+            "primitives": [
+              "counting",
+              "combination"
+            ]
+          }
         ],
         "lowering_chain": [
           "counting",
@@ -1634,9 +2160,19 @@
       "parameters": {
         "construction": "lattice_path",
         "depth": 3,
+        "hidden": [
+          "右と上の並べ替え"
+        ],
         "hidden_intermediates": 1,
         "node": "total_paths",
-        "param": 5
+        "param": 5,
+        "premises": [
+          "格子点 (0,0) から (5,5) へ右または上に1ずつ進む最短経路"
+        ],
+        "scope": [
+          "場合の数",
+          "組合せ"
+        ]
       },
       "solution_tex": "\\(2n\\) 回の移動のうち右を選ぶ位置を決めればよく \\(\\binom{10}{5}\\)。",
       "source_generator": "construct_atlas",
@@ -1660,6 +2196,35 @@
           "SubsetCount",
           "PrimeFactorization",
           "DivisorCount"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "PathStateSpace",
+            "primitives": [
+              "counting",
+              "recurrence"
+            ]
+          },
+          {
+            "morphism": "SubsetCount",
+            "primitives": [
+              "counting",
+              "combination"
+            ]
+          },
+          {
+            "morphism": "PrimeFactorization",
+            "primitives": [
+              "prime_factorization"
+            ]
+          },
+          {
+            "morphism": "DivisorCount",
+            "primitives": [
+              "prime_factorization",
+              "divisor_counting"
+            ]
+          }
         ],
         "lowering_chain": [
           "counting",
@@ -1691,9 +2256,20 @@
       "parameters": {
         "construction": "lattice_path",
         "depth": 5,
+        "hidden": [
+          "二項係数の素因数分解"
+        ],
         "hidden_intermediates": 1,
         "node": "total_paths_divisor_count",
-        "param": 5
+        "param": 5,
+        "premises": [
+          "格子点 (0,0) から (5,5) へ右または上に1ずつ進む最短経路"
+        ],
+        "scope": [
+          "場合の数",
+          "素因数分解",
+          "約数の個数"
+        ]
       },
       "solution_tex": "総数を素因数分解し，指数に1を足して掛ける。",
       "source_generator": "construct_atlas",
@@ -1715,6 +2291,28 @@
           "BinomialExpansion",
           "IntegralTransform",
           "BetaEvaluation"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "BinomialExpansion",
+            "primitives": [
+              "polynomial_expansion",
+              "combination"
+            ]
+          },
+          {
+            "morphism": "IntegralTransform",
+            "primitives": [
+              "definite_integral"
+            ]
+          },
+          {
+            "morphism": "BetaEvaluation",
+            "primitives": [
+              "definite_integral",
+              "polynomial_expansion"
+            ]
+          }
         ],
         "lowering_chain": [
           "polynomial_expansion",
@@ -1919,6 +2517,28 @@
           "BinomialGeneratingFunction",
           "RootOfUnityFilter",
           "TrigonometricNormalForm"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "BinomialGeneratingFunction",
+            "primitives": [
+              "combination",
+              "polynomial_expansion"
+            ]
+          },
+          {
+            "morphism": "RootOfUnityFilter",
+            "primitives": [
+              "roots_of_unity",
+              "sum_of_series"
+            ]
+          },
+          {
+            "morphism": "TrigonometricNormalForm",
+            "primitives": [
+              "trigonometric_identity"
+            ]
+          }
         ],
         "lowering_chain": [
           "combination",
@@ -2145,12 +2765,35 @@
       "accepted": true,
       "answer_exact": "I",
       "answer_tex": "i",
-      "candidate_id": "construct:construct.complex_affine_limit:063",
+      "candidate_id": "construct:construct.complex_affine_limit:076",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "FixedPointShift",
           "ContractionHalf",
           "ComplexLimit"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "FixedPointShift",
+            "primitives": [
+              "recurrence",
+              "algebraic_identity"
+            ]
+          },
+          {
+            "morphism": "ContractionHalf",
+            "primitives": [
+              "geometric_sequence",
+              "limit"
+            ]
+          },
+          {
+            "morphism": "ComplexLimit",
+            "primitives": [
+              "complex_plane",
+              "limit"
+            ]
+          }
         ],
         "lowering_chain": [
           "recurrence",
@@ -2197,12 +2840,33 @@
       "accepted": true,
       "answer_exact": "3",
       "answer_tex": "3",
-      "candidate_id": "construct:construct.complex_rotation_period:059",
+      "candidate_id": "construct:construct.complex_rotation_period:072",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "PrimitiveRootOfUnity",
           "DeMoivrePower",
           "MinimalPeriod"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "PrimitiveRootOfUnity",
+            "primitives": [
+              "roots_of_unity",
+              "de_moivre"
+            ]
+          },
+          {
+            "morphism": "DeMoivrePower",
+            "primitives": [
+              "de_moivre"
+            ]
+          },
+          {
+            "morphism": "MinimalPeriod",
+            "primitives": [
+              "periodicity"
+            ]
+          }
         ],
         "lowering_chain": [
           "roots_of_unity",
@@ -2247,7 +2911,7 @@
       "accepted": true,
       "answer_exact": "2",
       "answer_tex": "2",
-      "candidate_id": "construct:ultradeep.cyclotomic_distance_norm_divisor_count:077",
+      "candidate_id": "construct:ultradeep.cyclotomic_distance_norm_divisor_count:090",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RootOfUnity",
@@ -2261,6 +2925,82 @@
           "IntegerInvariant",
           "PrimeFactorization",
           "DivisorCount"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "RootOfUnity",
+            "primitives": [
+              "roots_of_unity"
+            ]
+          },
+          {
+            "morphism": "CoprimeIndexFilter",
+            "primitives": [
+              "gcd_lcm",
+              "counting"
+            ]
+          },
+          {
+            "morphism": "PrimitiveRootSet",
+            "primitives": [
+              "roots_of_unity"
+            ]
+          },
+          {
+            "morphism": "DistanceMultiset",
+            "primitives": [
+              "distance_formula",
+              "counting"
+            ]
+          },
+          {
+            "morphism": "DistanceProduct",
+            "primitives": [
+              "distance_formula",
+              "polynomial_factorization"
+            ]
+          },
+          {
+            "morphism": "CyclotomicPolynomial",
+            "primitives": [
+              "polynomial_factorization",
+              "roots_of_unity"
+            ]
+          },
+          {
+            "morphism": "PolynomialEvaluation",
+            "primitives": [
+              "remainder_theorem",
+              "polynomial_expansion"
+            ]
+          },
+          {
+            "morphism": "AlgebraicNorm",
+            "primitives": [
+              "polynomial_factorization",
+              "integer_arithmetic"
+            ]
+          },
+          {
+            "morphism": "IntegerInvariant",
+            "primitives": [
+              "integer_arithmetic",
+              "algebraic_identity"
+            ]
+          },
+          {
+            "morphism": "PrimeFactorization",
+            "primitives": [
+              "prime_factorization"
+            ]
+          },
+          {
+            "morphism": "DivisorCount",
+            "primitives": [
+              "prime_factorization",
+              "divisor_counting"
+            ]
+          }
         ],
         "lowering_chain": [
           "roots_of_unity",
@@ -2328,6 +3068,41 @@
           "ConvexHull",
           "Area",
           "Maximum"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "ComplexRootSet",
+            "primitives": [
+              "complex_plane",
+              "roots_of_unity"
+            ]
+          },
+          {
+            "morphism": "CyclicOrder",
+            "primitives": [
+              "symmetry",
+              "counting"
+            ]
+          },
+          {
+            "morphism": "ConvexHull",
+            "primitives": [
+              "convex_hull"
+            ]
+          },
+          {
+            "morphism": "Area",
+            "primitives": [
+              "area_shoelace"
+            ]
+          },
+          {
+            "morphism": "Maximum",
+            "primitives": [
+              "extremum",
+              "differentiation"
+            ]
+          }
         ],
         "lowering_chain": [
           "complex_plane",
@@ -2528,7 +3303,7 @@
       "accepted": true,
       "answer_exact": "1",
       "answer_tex": "1",
-      "candidate_id": "construct:deep.polygon_subset_centroid:074",
+      "candidate_id": "construct:deep.polygon_subset_centroid:087",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RootOfUnity",
@@ -2539,6 +3314,60 @@
           "CyclotomicRelation",
           "SymmetryReduction",
           "SubsetCount"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "RootOfUnity",
+            "primitives": [
+              "roots_of_unity"
+            ]
+          },
+          {
+            "morphism": "RegularPolygon",
+            "primitives": [
+              "regular_polygon"
+            ]
+          },
+          {
+            "morphism": "SubsetFamily",
+            "primitives": [
+              "combination"
+            ]
+          },
+          {
+            "morphism": "CentroidMap",
+            "primitives": [
+              "coordinate_geometry",
+              "midpoint"
+            ]
+          },
+          {
+            "morphism": "VanishingSum",
+            "primitives": [
+              "roots_of_unity",
+              "sum_of_series"
+            ]
+          },
+          {
+            "morphism": "CyclotomicRelation",
+            "primitives": [
+              "roots_of_unity",
+              "polynomial_factorization"
+            ]
+          },
+          {
+            "morphism": "SymmetryReduction",
+            "primitives": [
+              "symmetry"
+            ]
+          },
+          {
+            "morphism": "SubsetCount",
+            "primitives": [
+              "counting",
+              "combination"
+            ]
+          }
         ],
         "lowering_chain": [
           "roots_of_unity",
@@ -2593,7 +3422,7 @@
       "accepted": true,
       "answer_exact": "2",
       "answer_tex": "2",
-      "candidate_id": "construct:deep.rotation_diagonal_product_divisors:072",
+      "candidate_id": "construct:deep.rotation_diagonal_product_divisors:085",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RootOfUnity",
@@ -2604,6 +3433,59 @@
           "DistanceProduct",
           "IntegerValue",
           "DivisorCount"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "RootOfUnity",
+            "primitives": [
+              "roots_of_unity"
+            ]
+          },
+          {
+            "morphism": "RegularPolygon",
+            "primitives": [
+              "regular_polygon"
+            ]
+          },
+          {
+            "morphism": "VertexDistances",
+            "primitives": [
+              "distance_formula",
+              "regular_polygon"
+            ]
+          },
+          {
+            "morphism": "PolynomialFactorization",
+            "primitives": [
+              "polynomial_factorization"
+            ]
+          },
+          {
+            "morphism": "LimitEvaluation",
+            "primitives": [
+              "limit"
+            ]
+          },
+          {
+            "morphism": "DistanceProduct",
+            "primitives": [
+              "distance_formula",
+              "polynomial_factorization"
+            ]
+          },
+          {
+            "morphism": "IntegerValue",
+            "primitives": [
+              "integer_arithmetic"
+            ]
+          },
+          {
+            "morphism": "DivisorCount",
+            "primitives": [
+              "prime_factorization",
+              "divisor_counting"
+            ]
+          }
         ],
         "lowering_chain": [
           "roots_of_unity",
@@ -2657,12 +3539,34 @@
       "accepted": true,
       "answer_exact": "3*sqrt(3)/4",
       "answer_tex": "\\frac{3 \\sqrt{3}}{4}",
-      "candidate_id": "construct:layered.rotation_orbit_hull_area:068",
+      "candidate_id": "construct:layered.rotation_orbit_hull_area:081",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RootOfUnityOrbit",
           "RegularPolygon",
           "ShoelaceArea"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "RootOfUnityOrbit",
+            "primitives": [
+              "roots_of_unity",
+              "de_moivre",
+              "symmetry"
+            ]
+          },
+          {
+            "morphism": "RegularPolygon",
+            "primitives": [
+              "regular_polygon"
+            ]
+          },
+          {
+            "morphism": "ShoelaceArea",
+            "primitives": [
+              "area_shoelace"
+            ]
+          }
         ],
         "lowering_chain": [
           "roots_of_unity",
@@ -2715,6 +3619,28 @@
           "TriangleDecomposition",
           "AreaSum"
         ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "RegularPolygon",
+            "primitives": [
+              "regular_polygon"
+            ]
+          },
+          {
+            "morphism": "TriangleDecomposition",
+            "primitives": [
+              "triangle_area",
+              "coordinate_geometry"
+            ]
+          },
+          {
+            "morphism": "AreaSum",
+            "primitives": [
+              "triangle_area",
+              "sum_of_series"
+            ]
+          }
+        ],
         "lowering_chain": [
           "regular_polygon",
           "triangle_area",
@@ -2743,9 +3669,19 @@
       "parameters": {
         "construction": "regular_polygon",
         "depth": 4,
+        "hidden": [
+          "中心から各頂点への三角形分割"
+        ],
         "hidden_intermediates": 1,
         "node": "area",
-        "param": 3
+        "param": 3,
+        "premises": [
+          "単位円に内接する正3角形の頂点 z_j (j=0..2)"
+        ],
+        "scope": [
+          "三角比",
+          "面積"
+        ]
       },
       "solution_tex": "中心と隣接2頂点が作る三角形 \\(3\\) 個に分割すると，面積は \\(\\frac{3}{2}\\sin\\frac{2\\pi}{3}\\)。",
       "source_generator": "construct_atlas",
@@ -2769,6 +3705,34 @@
           "SubsetFamily",
           "VanishingSum",
           "SymmetryCount"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "RegularPolygon",
+            "primitives": [
+              "regular_polygon"
+            ]
+          },
+          {
+            "morphism": "SubsetFamily",
+            "primitives": [
+              "combination"
+            ]
+          },
+          {
+            "morphism": "VanishingSum",
+            "primitives": [
+              "roots_of_unity",
+              "sum_of_series"
+            ]
+          },
+          {
+            "morphism": "SymmetryCount",
+            "primitives": [
+              "symmetry",
+              "counting"
+            ]
+          }
         ],
         "lowering_chain": [
           "regular_polygon",
@@ -2801,9 +3765,20 @@
       "parameters": {
         "construction": "regular_polygon",
         "depth": 5,
+        "hidden": [
+          "和が消える部分集合の巡回対称性"
+        ],
         "hidden_intermediates": 1,
         "node": "centroid_zero_subsets",
-        "param": 3
+        "param": 3,
+        "premises": [
+          "単位円に内接する正3角形の頂点 z_j (j=0..2)"
+        ],
+        "scope": [
+          "複素数平面",
+          "対称性",
+          "組合せ"
+        ]
       },
       "solution_tex": "重心が中心 ⟺ その部分集合の頂点の和が 0。巡回対称性から正多角形をなす部分集合とその合併が該当する。",
       "source_generator": "construct_atlas",
@@ -2826,6 +3801,28 @@
           "RegularPolygon",
           "PairCounting",
           "EdgeExclusion"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "RegularPolygon",
+            "primitives": [
+              "regular_polygon"
+            ]
+          },
+          {
+            "morphism": "PairCounting",
+            "primitives": [
+              "counting",
+              "combination"
+            ]
+          },
+          {
+            "morphism": "EdgeExclusion",
+            "primitives": [
+              "counting",
+              "combination"
+            ]
+          }
         ],
         "lowering_chain": [
           "regular_polygon",
@@ -2854,9 +3851,18 @@
       "parameters": {
         "construction": "regular_polygon",
         "depth": 4,
+        "hidden": [
+          "辺を除く頂点対の数え上げ"
+        ],
         "hidden_intermediates": 1,
         "node": "diagonal_count",
-        "param": 3
+        "param": 3,
+        "premises": [
+          "単位円に内接する正3角形の頂点 z_j (j=0..2)"
+        ],
+        "scope": [
+          "組合せ"
+        ]
       },
       "solution_tex": "頂点対は \\(\\binom{3}{2}\\) 通り，そのうち辺が \\(3\\) 本なので 対角線は \\(\\frac{3(3-3)}{2}\\) 本。",
       "source_generator": "construct_atlas",
@@ -2881,6 +3887,40 @@
           "DistanceProduct",
           "IntegerValue",
           "DivisorCount"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "RootOfUnity",
+            "primitives": [
+              "roots_of_unity"
+            ]
+          },
+          {
+            "morphism": "PolynomialFactorization",
+            "primitives": [
+              "polynomial_factorization"
+            ]
+          },
+          {
+            "morphism": "DistanceProduct",
+            "primitives": [
+              "distance_formula",
+              "polynomial_factorization"
+            ]
+          },
+          {
+            "morphism": "IntegerValue",
+            "primitives": [
+              "integer_arithmetic"
+            ]
+          },
+          {
+            "morphism": "DivisorCount",
+            "primitives": [
+              "prime_factorization",
+              "divisor_counting"
+            ]
+          }
         ],
         "lowering_chain": [
           "roots_of_unity",
@@ -2914,9 +3954,21 @@
       "parameters": {
         "construction": "regular_polygon",
         "depth": 7,
+        "hidden": [
+          "円分多項式の因数分解",
+          "L が整数であること"
+        ],
         "hidden_intermediates": 2,
         "node": "distance_product_divisors",
-        "param": 3
+        "param": 3,
+        "premises": [
+          "単位円に内接する正3角形の頂点 z_j (j=0..2)"
+        ],
+        "scope": [
+          "複素数平面",
+          "因数分解",
+          "約数"
+        ]
       },
       "solution_tex": "上と同様に \\(L=3\\)。その約数の個数を数える。",
       "source_generator": "construct_atlas",
@@ -2939,6 +3991,28 @@
           "RegularPolygon",
           "VectorSumVanishing",
           "SquaredDistanceSum"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "RegularPolygon",
+            "primitives": [
+              "regular_polygon"
+            ]
+          },
+          {
+            "morphism": "VectorSumVanishing",
+            "primitives": [
+              "vector_addition",
+              "roots_of_unity"
+            ]
+          },
+          {
+            "morphism": "SquaredDistanceSum",
+            "primitives": [
+              "distance_formula",
+              "sum_of_series"
+            ]
+          }
         ],
         "lowering_chain": [
           "regular_polygon",
@@ -2969,9 +4043,20 @@
       "parameters": {
         "construction": "regular_polygon",
         "depth": 4,
+        "hidden": [
+          "頂点ベクトルの総和が 0"
+        ],
         "hidden_intermediates": 1,
         "node": "sum_sq_pairwise",
-        "param": 3
+        "param": 3,
+        "premises": [
+          "単位円に内接する正3角形の頂点 z_j (j=0..2)"
+        ],
+        "scope": [
+          "複素数平面",
+          "ベクトル",
+          "対称性"
+        ]
       },
       "solution_tex": "\\(\\sum_j z_j=0\\) を使うと \\(\\sum_{i<k}|z_i-z_k|^2=n\\sum_j|z_j|^2-|\\sum_j z_j|^2=3^2\\)。",
       "source_generator": "construct_atlas",
@@ -2995,6 +4080,33 @@
           "PolynomialFactorization",
           "LimitEvaluation",
           "DistanceProduct"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "RootOfUnity",
+            "primitives": [
+              "roots_of_unity"
+            ]
+          },
+          {
+            "morphism": "PolynomialFactorization",
+            "primitives": [
+              "polynomial_factorization"
+            ]
+          },
+          {
+            "morphism": "LimitEvaluation",
+            "primitives": [
+              "limit"
+            ]
+          },
+          {
+            "morphism": "DistanceProduct",
+            "primitives": [
+              "distance_formula",
+              "polynomial_factorization"
+            ]
+          }
         ],
         "lowering_chain": [
           "roots_of_unity",
@@ -3025,9 +4137,21 @@
       "parameters": {
         "construction": "regular_polygon",
         "depth": 6,
+        "hidden": [
+          "円分多項式 z^n-1 の因数分解",
+          "z→1 の極限"
+        ],
         "hidden_intermediates": 2,
         "node": "vertex_distance_product",
-        "param": 3
+        "param": 3,
+        "premises": [
+          "単位円に内接する正3角形の頂点 z_j (j=0..2)"
+        ],
+        "scope": [
+          "複素数平面",
+          "因数分解",
+          "極限"
+        ]
       },
       "solution_tex": "\\(z^{3}-1=\\prod_j (z-z_j)\\) の両辺を \\(z-1\\) で割り \\(z\\to1\\) とすると 積は \\(3\\) に等しい。",
       "source_generator": "construct_atlas",
@@ -3050,6 +4174,28 @@
           "EllipseObject",
           "DualLinePair",
           "CoordinateSolve"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "EllipseObject",
+            "primitives": [
+              "ellipse"
+            ]
+          },
+          {
+            "morphism": "DualLinePair",
+            "primitives": [
+              "line_equation",
+              "tangent_line"
+            ]
+          },
+          {
+            "morphism": "CoordinateSolve",
+            "primitives": [
+              "coordinate_geometry",
+              "simultaneous_equations"
+            ]
+          }
         ],
         "lowering_chain": [
           "ellipse",
@@ -3080,6 +4226,10 @@
       "parameters": {
         "construction": "ellipse_tangent",
         "depth": 5,
+        "hidden": [
+          "接点弦の方程式",
+          "点と直線の距離"
+        ],
         "hidden_intermediates": 2,
         "node": "center_to_polar_dist_sq",
         "param": [
@@ -3087,6 +4237,13 @@
           3,
           2,
           5
+        ],
+        "premises": [
+          "楕円 x^2/5^2+y^2/3^2=1 と，そこから引いた2本の接線の交点 P"
+        ],
+        "scope": [
+          "楕円",
+          "点と直線の距離"
         ]
       },
       "solution_tex": "接点弦 \\(\\frac{p x}{a^2}+\\frac{q y}{b^2}=1\\) と原点の距離を点と直線の距離公式で求める。",
@@ -3111,6 +4268,34 @@
           "TangentLine",
           "DualLinePair",
           "EdgeLengthObservation"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "EllipseObject",
+            "primitives": [
+              "ellipse"
+            ]
+          },
+          {
+            "morphism": "TangentLine",
+            "primitives": [
+              "tangent_line",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "DualLinePair",
+            "primitives": [
+              "line_equation",
+              "tangent_line"
+            ]
+          },
+          {
+            "morphism": "EdgeLengthObservation",
+            "primitives": [
+              "distance_formula"
+            ]
+          }
         ],
         "lowering_chain": [
           "ellipse",
@@ -3142,6 +4327,9 @@
       "parameters": {
         "construction": "ellipse_tangent",
         "depth": 5,
+        "hidden": [
+          "接点弦（極線）の方程式"
+        ],
         "hidden_intermediates": 1,
         "node": "chord_length_sq",
         "param": [
@@ -3149,6 +4337,14 @@
           3,
           2,
           5
+        ],
+        "premises": [
+          "楕円 x^2/5^2+y^2/3^2=1 と，そこから引いた2本の接線の交点 P"
+        ],
+        "scope": [
+          "楕円",
+          "接線",
+          "2点間の距離"
         ]
       },
       "solution_tex": "接点弦は \\(\\frac{p x}{a^2}+\\frac{q y}{b^2}=1\\)。楕円との交点を求めて距離を計算する。",
@@ -3172,6 +4368,29 @@
           "EllipseObject",
           "TangentLine",
           "MidpointLocus"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "EllipseObject",
+            "primitives": [
+              "ellipse"
+            ]
+          },
+          {
+            "morphism": "TangentLine",
+            "primitives": [
+              "tangent_line",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "MidpointLocus",
+            "primitives": [
+              "midpoint",
+              "locus",
+              "parameter_elimination"
+            ]
+          }
         ],
         "lowering_chain": [
           "ellipse",
@@ -3203,6 +4422,9 @@
       "parameters": {
         "construction": "ellipse_tangent",
         "depth": 4,
+        "hidden": [
+          "接点弦と楕円の交点"
+        ],
         "hidden_intermediates": 1,
         "node": "chord_midpoint_x",
         "param": [
@@ -3210,6 +4432,14 @@
           3,
           2,
           5
+        ],
+        "premises": [
+          "楕円 x^2/5^2+y^2/3^2=1 と，そこから引いた2本の接線の交点 P"
+        ],
+        "scope": [
+          "楕円",
+          "接線",
+          "中点"
         ]
       },
       "solution_tex": "接点弦と楕円の連立から2交点を求め，中点を取る。",
@@ -3234,6 +4464,34 @@
           "TangentLine",
           "CoordinateSolve",
           "ShoelaceArea"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "EllipseObject",
+            "primitives": [
+              "ellipse"
+            ]
+          },
+          {
+            "morphism": "TangentLine",
+            "primitives": [
+              "tangent_line",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "CoordinateSolve",
+            "primitives": [
+              "coordinate_geometry",
+              "simultaneous_equations"
+            ]
+          },
+          {
+            "morphism": "ShoelaceArea",
+            "primitives": [
+              "area_shoelace"
+            ]
+          }
         ],
         "lowering_chain": [
           "ellipse",
@@ -3266,6 +4524,10 @@
       "parameters": {
         "construction": "ellipse_tangent",
         "depth": 6,
+        "hidden": [
+          "接点の座標",
+          "P の座標"
+        ],
         "hidden_intermediates": 2,
         "node": "contact_triangle_area",
         "param": [
@@ -3273,6 +4535,14 @@
           3,
           2,
           5
+        ],
+        "premises": [
+          "楕円 x^2/5^2+y^2/3^2=1 と，そこから引いた2本の接線の交点 P"
+        ],
+        "scope": [
+          "楕円",
+          "接線",
+          "座標平面の面積"
         ]
       },
       "solution_tex": "接点と P の座標を求め，三角形の面積公式を用いる。",
@@ -3297,6 +4567,33 @@
           "TangentLine",
           "RightAngleCondition",
           "CircleParameter"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "EllipseObject",
+            "primitives": [
+              "ellipse"
+            ]
+          },
+          {
+            "morphism": "TangentLine",
+            "primitives": [
+              "tangent_line",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "RightAngleCondition",
+            "primitives": [
+              "inner_product"
+            ]
+          },
+          {
+            "morphism": "CircleParameter",
+            "primitives": [
+              "circle_equation"
+            ]
+          }
         ],
         "lowering_chain": [
           "ellipse",
@@ -3328,6 +4625,10 @@
       "parameters": {
         "construction": "ellipse_tangent",
         "depth": 6,
+        "hidden": [
+          "2接線が直交する条件",
+          "傾きの積 = -1"
+        ],
         "hidden_intermediates": 2,
         "node": "monge_radius_sq",
         "param": [
@@ -3335,6 +4636,14 @@
           3,
           2,
           5
+        ],
+        "premises": [
+          "楕円 x^2/5^2+y^2/3^2=1 と，そこから引いた2本の接線の交点 P"
+        ],
+        "scope": [
+          "楕円",
+          "判別式",
+          "円の方程式"
         ]
       },
       "solution_tex": "傾きの二次方程式で解の積 \\(=-1\\) とおくと \\(x^2+y^2=a^2+b^2\\) を得る。",
@@ -3358,6 +4667,28 @@
           "EllipseObject",
           "TangentLine",
           "CoordinateSolve"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "EllipseObject",
+            "primitives": [
+              "ellipse"
+            ]
+          },
+          {
+            "morphism": "TangentLine",
+            "primitives": [
+              "tangent_line",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "CoordinateSolve",
+            "primitives": [
+              "coordinate_geometry",
+              "simultaneous_equations"
+            ]
+          }
         ],
         "lowering_chain": [
           "ellipse",
@@ -3388,6 +4719,9 @@
       "parameters": {
         "construction": "ellipse_tangent",
         "depth": 4,
+        "hidden": [
+          "接線が接する条件（判別式 0）"
+        ],
         "hidden_intermediates": 1,
         "node": "tangent_slope_product",
         "param": [
@@ -3395,6 +4729,14 @@
           3,
           2,
           5
+        ],
+        "premises": [
+          "楕円 x^2/5^2+y^2/3^2=1 と，そこから引いた2本の接線の交点 P"
+        ],
+        "scope": [
+          "楕円",
+          "判別式",
+          "解と係数の関係"
         ]
       },
       "solution_tex": "P を通る傾き \\(m\\) の直線を楕円に代入し，判別式 \\(=0\\) が与える \\(m\\) の二次方程式の解と係数の関係から積を読む。",
@@ -3418,6 +4760,28 @@
           "HyperbolaObject",
           "AsymptoteLine",
           "CoordinateSolve"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "HyperbolaObject",
+            "primitives": [
+              "hyperbola"
+            ]
+          },
+          {
+            "morphism": "AsymptoteLine",
+            "primitives": [
+              "hyperbola",
+              "line_equation"
+            ]
+          },
+          {
+            "morphism": "CoordinateSolve",
+            "primitives": [
+              "coordinate_geometry",
+              "simultaneous_equations"
+            ]
+          }
         ],
         "lowering_chain": [
           "hyperbola",
@@ -3447,6 +4811,10 @@
       "parameters": {
         "construction": "hyperbola_asymptote",
         "depth": 5,
+        "hidden": [
+          "点と直線の距離",
+          "双曲線の方程式で b^2x^2-a^2y^2 を消す"
+        ],
         "hidden_intermediates": 2,
         "node": "asymptote_distance_product",
         "param": [
@@ -3454,6 +4822,13 @@
           3,
           20,
           4
+        ],
+        "premises": [
+          "双曲線 x^2/4^2-y^2/3^2=1 と，その上の点における接線・2本の漸近線"
+        ],
+        "scope": [
+          "双曲線",
+          "点と直線の距離"
         ]
       },
       "solution_tex": "距離の積は \\(\\frac{|b^2x_0^2-a^2y_0^2|}{a^2+b^2}\\)。双曲線の式より分子は \\(a^2b^2\\) で一定。",
@@ -3478,6 +4853,35 @@
           "TangentLine",
           "AsymptoteLine",
           "LinearIntersection"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "HyperbolaObject",
+            "primitives": [
+              "hyperbola"
+            ]
+          },
+          {
+            "morphism": "TangentLine",
+            "primitives": [
+              "tangent_line",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "AsymptoteLine",
+            "primitives": [
+              "hyperbola",
+              "line_equation"
+            ]
+          },
+          {
+            "morphism": "LinearIntersection",
+            "primitives": [
+              "simultaneous_equations",
+              "line_equation"
+            ]
+          }
         ],
         "lowering_chain": [
           "hyperbola",
@@ -3509,6 +4913,9 @@
       "parameters": {
         "construction": "hyperbola_asymptote",
         "depth": 5,
+        "hidden": [
+          "接線の方程式"
+        ],
         "hidden_intermediates": 1,
         "node": "asymptote_intersection_x",
         "param": [
@@ -3516,6 +4923,14 @@
           3,
           20,
           4
+        ],
+        "premises": [
+          "双曲線 x^2/4^2-y^2/3^2=1 と，その上の点における接線・2本の漸近線"
+        ],
+        "scope": [
+          "双曲線",
+          "接線",
+          "連立方程式"
         ]
       },
       "solution_tex": "接線と漸近線を連立する。",
@@ -3540,6 +4955,34 @@
           "TangentLine",
           "AsymptoteLine",
           "ShoelaceArea"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "HyperbolaObject",
+            "primitives": [
+              "hyperbola"
+            ]
+          },
+          {
+            "morphism": "TangentLine",
+            "primitives": [
+              "tangent_line",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "AsymptoteLine",
+            "primitives": [
+              "hyperbola",
+              "line_equation"
+            ]
+          },
+          {
+            "morphism": "ShoelaceArea",
+            "primitives": [
+              "area_shoelace"
+            ]
+          }
         ],
         "lowering_chain": [
           "hyperbola",
@@ -3571,6 +5014,10 @@
       "parameters": {
         "construction": "hyperbola_asymptote",
         "depth": 6,
+        "hidden": [
+          "接点を (a\\sec\\theta, b\\tan\\theta) と置く",
+          "漸近線との交点"
+        ],
         "hidden_intermediates": 2,
         "node": "asymptote_triangle_area",
         "param": [
@@ -3578,6 +5025,14 @@
           3,
           20,
           4
+        ],
+        "premises": [
+          "双曲線 x^2/4^2-y^2/3^2=1 と，その上の点における接線・2本の漸近線"
+        ],
+        "scope": [
+          "双曲線",
+          "接線",
+          "座標平面の面積"
         ]
       },
       "solution_tex": "接点を \\((x_0,y_0)\\) とすると接線は \\(\\frac{xx_0}{a^2}-\\frac{yy_0}{b^2}=1\\)。漸近線 \\(y=\\pm\\frac{b}{a}x\\) との交点を求めて面積を計算すると \\(ab\\) となり，接点によらない。",
@@ -3602,6 +5057,33 @@
           "TangentLine",
           "RightAngleCondition",
           "CircleParameter"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "HyperbolaObject",
+            "primitives": [
+              "hyperbola"
+            ]
+          },
+          {
+            "morphism": "TangentLine",
+            "primitives": [
+              "tangent_line",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "RightAngleCondition",
+            "primitives": [
+              "inner_product"
+            ]
+          },
+          {
+            "morphism": "CircleParameter",
+            "primitives": [
+              "circle_equation"
+            ]
+          }
         ],
         "lowering_chain": [
           "hyperbola",
@@ -3633,6 +5115,10 @@
       "parameters": {
         "construction": "hyperbola_asymptote",
         "depth": 6,
+        "hidden": [
+          "接する条件（判別式 0）",
+          "傾きの積 = -1"
+        ],
         "hidden_intermediates": 2,
         "node": "director_circle_radius_sq",
         "param": [
@@ -3640,6 +5126,14 @@
           3,
           20,
           4
+        ],
+        "premises": [
+          "双曲線 x^2/4^2-y^2/3^2=1 と，その上の点における接線・2本の漸近線"
+        ],
+        "scope": [
+          "双曲線",
+          "判別式",
+          "円の方程式"
         ]
       },
       "solution_tex": "傾き \\(m\\) の接線条件から \\(m\\) の二次方程式を作り，解の積 \\(=-1\\) とおくと \\(x^2+y^2=a^2-b^2\\)。",
@@ -3662,6 +5156,21 @@
         "abstract_morphism_chain": [
           "HyperbolaObject",
           "Eccentricity"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "HyperbolaObject",
+            "primitives": [
+              "hyperbola"
+            ]
+          },
+          {
+            "morphism": "Eccentricity",
+            "primitives": [
+              "hyperbola",
+              "algebraic_identity"
+            ]
+          }
         ],
         "lowering_chain": [
           "hyperbola",
@@ -3688,6 +5197,9 @@
       "parameters": {
         "construction": "hyperbola_asymptote",
         "depth": 3,
+        "hidden": [
+          "焦点距離と a の比"
+        ],
         "hidden_intermediates": 1,
         "node": "eccentricity_sq",
         "param": [
@@ -3695,6 +5207,13 @@
           3,
           20,
           4
+        ],
+        "premises": [
+          "双曲線 x^2/4^2-y^2/3^2=1 と，その上の点における接線・2本の漸近線"
+        ],
+        "scope": [
+          "双曲線",
+          "離心率"
         ]
       },
       "solution_tex": "\\(e^2=\\frac{a^2+b^2}{a^2}\\)。",
@@ -3717,6 +5236,21 @@
         "abstract_morphism_chain": [
           "HyperbolaObject",
           "FocalProperty"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "HyperbolaObject",
+            "primitives": [
+              "hyperbola"
+            ]
+          },
+          {
+            "morphism": "FocalProperty",
+            "primitives": [
+              "hyperbola",
+              "distance_formula"
+            ]
+          }
         ],
         "lowering_chain": [
           "hyperbola",
@@ -3743,6 +5277,9 @@
       "parameters": {
         "construction": "hyperbola_asymptote",
         "depth": 3,
+        "hidden": [
+          "焦点の座標"
+        ],
         "hidden_intermediates": 1,
         "node": "focal_distance_difference",
         "param": [
@@ -3750,6 +5287,13 @@
           3,
           20,
           4
+        ],
+        "premises": [
+          "双曲線 x^2/4^2-y^2/3^2=1 と，その上の点における接線・2本の漸近線"
+        ],
+        "scope": [
+          "双曲線",
+          "2点間の距離"
         ]
       },
       "solution_tex": "双曲線の定義そのもので \\(2a\\)。",
@@ -3773,6 +5317,28 @@
           "HyperbolaObject",
           "FocalProperty",
           "CoordinateSolve"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "HyperbolaObject",
+            "primitives": [
+              "hyperbola"
+            ]
+          },
+          {
+            "morphism": "FocalProperty",
+            "primitives": [
+              "hyperbola",
+              "distance_formula"
+            ]
+          },
+          {
+            "morphism": "CoordinateSolve",
+            "primitives": [
+              "coordinate_geometry",
+              "simultaneous_equations"
+            ]
+          }
         ],
         "lowering_chain": [
           "hyperbola",
@@ -3802,6 +5368,9 @@
       "parameters": {
         "construction": "hyperbola_asymptote",
         "depth": 4,
+        "hidden": [
+          "焦点の x 座標を代入"
+        ],
         "hidden_intermediates": 1,
         "node": "semi_latus_rectum",
         "param": [
@@ -3809,6 +5378,13 @@
           3,
           20,
           4
+        ],
+        "premises": [
+          "双曲線 x^2/4^2-y^2/3^2=1 と，その上の点における接線・2本の漸近線"
+        ],
+        "scope": [
+          "双曲線",
+          "焦点"
         ]
       },
       "solution_tex": "\\(x=\\sqrt{a^2+b^2}\\) を代入して \\(y\\) を求める。",
@@ -3824,9 +5400,648 @@
     },
     {
       "accepted": true,
+      "answer_exact": "75/4",
+      "answer_tex": "\\frac{75}{4}",
+      "candidate_id": "construct:traceback.parabola_focal_chord.chord_length:056",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "ParabolaObject",
+          "FocalProperty",
+          "EdgeLengthObservation"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "ParabolaObject",
+            "primitives": [
+              "parabola"
+            ]
+          },
+          {
+            "morphism": "FocalProperty",
+            "primitives": [
+              "hyperbola",
+              "distance_formula"
+            ]
+          },
+          {
+            "morphism": "EdgeLengthObservation",
+            "primitives": [
+              "distance_formula"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "parabola",
+          "hyperbola",
+          "distance_formula"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "conic_geometry",
+      "family_id": "traceback.parabola_focal_chord.chord_length",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ParabolaObject",
+          "FocalProperty",
+          "EdgeLengthObservation"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "parabola_focal_chord",
+        "depth": 4,
+        "hidden": [
+          "焦点距離の和"
+        ],
+        "hidden_intermediates": 1,
+        "node": "chord_length",
+        "param": [
+          3,
+          2,
+          1
+        ],
+        "premises": [
+          "放物線 y^2=4*3x の焦点を通る弦 AB"
+        ],
+        "scope": [
+          "放物線",
+          "2点間の距離"
+        ]
+      },
+      "solution_tex": "\\(AB=AF+BF=p(t_1^2+t_2^2+2)\\)。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "放物線 \\(y^2=12x\\) の焦点を \\(F\\) とし，\\(F\\) を通る弦を \\(AB\\) とする。この焦点弦の長さを求めよ。",
+      "structure_key": "fe1b3a5f0ad3cbb984af6381213234f5d56688152567f7058dd0f27132e6eb32",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "75/8",
+      "answer_tex": "\\frac{75}{8}",
+      "candidate_id": "construct:traceback.parabola_focal_chord.midpoint_to_directrix:060",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "ParabolaObject",
+          "FocalProperty",
+          "Midpoint"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "ParabolaObject",
+            "primitives": [
+              "parabola"
+            ]
+          },
+          {
+            "morphism": "FocalProperty",
+            "primitives": [
+              "hyperbola",
+              "distance_formula"
+            ]
+          },
+          {
+            "morphism": "Midpoint",
+            "primitives": [
+              "midpoint"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "parabola",
+          "hyperbola",
+          "distance_formula",
+          "midpoint"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "conic_geometry",
+      "family_id": "traceback.parabola_focal_chord.midpoint_to_directrix",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ParabolaObject",
+          "FocalProperty",
+          "Midpoint"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "parabola_focal_chord",
+        "depth": 5,
+        "hidden": [
+          "準線 x=-p",
+          "中点の x 座標"
+        ],
+        "hidden_intermediates": 2,
+        "node": "midpoint_to_directrix",
+        "param": [
+          3,
+          2,
+          1
+        ],
+        "premises": [
+          "放物線 y^2=4*3x の焦点を通る弦 AB"
+        ],
+        "scope": [
+          "放物線",
+          "準線",
+          "中点"
+        ]
+      },
+      "solution_tex": "中点の \\(x\\) 座標に \\(p\\) を足す。これは \\(AB/2\\) に等しく，\\(AB\\) を直径とする円は準線に接する。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "放物線 \\(y^2=12x\\) の焦点を \\(F\\) とし，\\(F\\) を通る弦を \\(AB\\) とする。弦 \\(AB\\) の中点から準線までの距離を求めよ。",
+      "structure_key": "958b38f11e598178683da5c707b35a99a28d51bdd1f4f4d0a89d61e32898b3f3",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "12",
+      "answer_tex": "12",
+      "candidate_id": "construct:traceback.parabola_focal_chord.min_chord_length:059",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "ParabolaObject",
+          "FocalProperty",
+          "Minimum"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "ParabolaObject",
+            "primitives": [
+              "parabola"
+            ]
+          },
+          {
+            "morphism": "FocalProperty",
+            "primitives": [
+              "hyperbola",
+              "distance_formula"
+            ]
+          },
+          {
+            "morphism": "Minimum",
+            "primitives": [
+              "extremum",
+              "differentiation"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "parabola",
+          "hyperbola",
+          "distance_formula",
+          "extremum",
+          "differentiation"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "conic_geometry",
+      "family_id": "traceback.parabola_focal_chord.min_chord_length",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ParabolaObject",
+          "FocalProperty",
+          "Minimum"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "parabola_focal_chord",
+        "depth": 4,
+        "hidden": [
+          "t^2+1/t^2 の最小値"
+        ],
+        "hidden_intermediates": 1,
+        "node": "min_chord_length",
+        "param": [
+          3,
+          2,
+          1
+        ],
+        "premises": [
+          "放物線 y^2=4*3x の焦点を通る弦 AB"
+        ],
+        "scope": [
+          "放物線",
+          "相加相乗平均",
+          "最小値"
+        ]
+      },
+      "solution_tex": "\\(AB=p(t^2+\\frac1{t^2}+2)\\)。相加相乗平均より \\(t^2+\\frac1{t^2}\\ge2\\) で 最小 \\(4p\\)（通径）。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "放物線 \\(y^2=12x\\) の焦点を \\(F\\) とし，\\(F\\) を通る弦を \\(AB\\) とする。焦点を通る弦の長さの最小値を求めよ。",
+      "structure_key": "99035009ba4e5184a69cb567b26caa4b245ac89aecbe96bfde5ff8dc4252d682",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "-1",
+      "answer_tex": "-1",
+      "candidate_id": "construct:traceback.parabola_focal_chord.parameter_product:054",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "ParabolaObject",
+          "FocalProperty",
+          "ParameterElimination"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "ParabolaObject",
+            "primitives": [
+              "parabola"
+            ]
+          },
+          {
+            "morphism": "FocalProperty",
+            "primitives": [
+              "hyperbola",
+              "distance_formula"
+            ]
+          },
+          {
+            "morphism": "ParameterElimination",
+            "primitives": [
+              "parameter_elimination"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "parabola",
+          "hyperbola",
+          "distance_formula",
+          "parameter_elimination"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "conic_geometry",
+      "family_id": "traceback.parabola_focal_chord.parameter_product",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ParabolaObject",
+          "FocalProperty",
+          "ParameterElimination"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "parabola_focal_chord",
+        "depth": 4,
+        "hidden": [
+          "焦点を通る条件"
+        ],
+        "hidden_intermediates": 1,
+        "node": "parameter_product",
+        "param": [
+          3,
+          2,
+          1
+        ],
+        "premises": [
+          "放物線 y^2=4*3x の焦点を通る弦 AB"
+        ],
+        "scope": [
+          "放物線",
+          "媒介変数",
+          "共線条件"
+        ]
+      },
+      "solution_tex": "\\((pt^2,2pt)\\) と置くと，2点と焦点が一直線上にある条件から \\(t_1t_2=-1\\)。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "放物線 \\(y^2=12x\\) の焦点を \\(F\\) とし，\\(F\\) を通る弦を \\(AB\\) とする。\\(A,B\\) の媒介変数をそれぞれ \\(t_1,t_2\\) とするとき，\\(t_1t_2\\) の値を求めよ。",
+      "structure_key": "73341c0154b7f34f96958184e500421b907025d1573ef20825803eb9be457caf",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "1/3",
+      "answer_tex": "\\frac{1}{3}",
+      "candidate_id": "construct:traceback.parabola_focal_chord.reciprocal_focal_radii_sum:055",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "ParabolaObject",
+          "FocalProperty",
+          "SimplifyRational"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "ParabolaObject",
+            "primitives": [
+              "parabola"
+            ]
+          },
+          {
+            "morphism": "FocalProperty",
+            "primitives": [
+              "hyperbola",
+              "distance_formula"
+            ]
+          },
+          {
+            "morphism": "SimplifyRational",
+            "primitives": [
+              "rational_function",
+              "algebraic_identity"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "parabola",
+          "hyperbola",
+          "distance_formula",
+          "rational_function",
+          "algebraic_identity"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "conic_geometry",
+      "family_id": "traceback.parabola_focal_chord.reciprocal_focal_radii_sum",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ParabolaObject",
+          "FocalProperty",
+          "SimplifyRational"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "parabola_focal_chord",
+        "depth": 5,
+        "hidden": [
+          "焦点距離 = 準線までの距離",
+          "t_1t_2=-1"
+        ],
+        "hidden_intermediates": 2,
+        "node": "reciprocal_focal_radii_sum",
+        "param": [
+          3,
+          2,
+          1
+        ],
+        "premises": [
+          "放物線 y^2=4*3x の焦点を通る弦 AB"
+        ],
+        "scope": [
+          "放物線",
+          "焦点と準線",
+          "式の整理"
+        ]
+      },
+      "solution_tex": "準線の性質から \\(AF=p(t_1^2+1)\\)。\\(t_1t_2=-1\\) を使うと和は \\(\\frac{1}{p}\\) となり，弦によらない。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "放物線 \\(y^2=12x\\) の焦点を \\(F\\) とし，\\(F\\) を通る弦を \\(AB\\) とする。\\(\\dfrac{1}{AF}+\\dfrac{1}{BF}\\) の値を求めよ。（この値が弦の取り方によらないことを確かめよ。）",
+      "structure_key": "edff23b4e141d27fdce7b00b3d16dfbf101ed091b0b41f8bc3fc99bbb68dc469",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "-3",
+      "answer_tex": "-3",
+      "candidate_id": "construct:traceback.parabola_focal_chord.tangent_intersection_x:057",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "ParabolaObject",
+          "TangentLine",
+          "LinearIntersection"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "ParabolaObject",
+            "primitives": [
+              "parabola"
+            ]
+          },
+          {
+            "morphism": "TangentLine",
+            "primitives": [
+              "tangent_line",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "LinearIntersection",
+            "primitives": [
+              "simultaneous_equations",
+              "line_equation"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "parabola",
+          "tangent_line",
+          "differentiation",
+          "simultaneous_equations",
+          "line_equation"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "conic_geometry",
+      "family_id": "traceback.parabola_focal_chord.tangent_intersection_x",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ParabolaObject",
+          "TangentLine",
+          "LinearIntersection"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "parabola_focal_chord",
+        "depth": 5,
+        "hidden": [
+          "接線 ty=x+pt^2",
+          "t_1t_2=-1"
+        ],
+        "hidden_intermediates": 2,
+        "node": "tangent_intersection_x",
+        "param": [
+          3,
+          2,
+          1
+        ],
+        "premises": [
+          "放物線 y^2=4*3x の焦点を通る弦 AB"
+        ],
+        "scope": [
+          "放物線",
+          "接線",
+          "準線"
+        ]
+      },
+      "solution_tex": "接線を連立すると交点は \\((pt_1t_2,\\ p(t_1+t_2))\\)。\\(t_1t_2=-1\\) より \\(x=-p\\)，すなわち交点は常に準線上にある。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "放物線 \\(y^2=12x\\) の焦点を \\(F\\) とし，\\(F\\) を通る弦を \\(AB\\) とする。\\(A,B\\) における2本の接線の交点の \\(x\\) 座標を求めよ。（この点がどんな直線上にあるかを述べよ。）",
+      "structure_key": "21486822f9169940b5c8992ec0ddea0463eec2fa9aa4709bfc2b597121eec75b",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "-1",
+      "answer_tex": "-1",
+      "candidate_id": "construct:traceback.parabola_focal_chord.tangent_slope_product:058",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "ParabolaObject",
+          "TangentLine",
+          "SlopeProductInvariant"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "ParabolaObject",
+            "primitives": [
+              "parabola"
+            ]
+          },
+          {
+            "morphism": "TangentLine",
+            "primitives": [
+              "tangent_line",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "SlopeProductInvariant",
+            "primitives": [
+              "line_equation",
+              "algebraic_identity"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "parabola",
+          "tangent_line",
+          "differentiation",
+          "line_equation",
+          "algebraic_identity"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "conic_geometry",
+      "family_id": "traceback.parabola_focal_chord.tangent_slope_product",
+      "lift_certificate": {
+        "morphism_chain": [
+          "ParabolaObject",
+          "TangentLine",
+          "SlopeProductInvariant"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "parabola_focal_chord",
+        "depth": 4,
+        "hidden": [
+          "接線の傾きが 1/t であること"
+        ],
+        "hidden_intermediates": 1,
+        "node": "tangent_slope_product",
+        "param": [
+          3,
+          2,
+          1
+        ],
+        "premises": [
+          "放物線 y^2=4*3x の焦点を通る弦 AB"
+        ],
+        "scope": [
+          "放物線",
+          "接線",
+          "垂直条件"
+        ]
+      },
+      "solution_tex": "接線の傾きは \\(1/t\\) なので積は \\(\\frac{1}{t_1t_2}=-1\\)。つまり2接線は常に直交する。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "放物線 \\(y^2=12x\\) の焦点を \\(F\\) とし，\\(F\\) を通る弦を \\(AB\\) とする。\\(A,B\\) における2本の接線の傾きの積を求めよ。",
+      "structure_key": "9faa7d30373ecfd722f5679e2fe9092e470b04a69c8545f448adf6d3613c596f",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
       "answer_exact": "6*sqrt(3)",
       "answer_tex": "6 \\sqrt{3}",
-      "candidate_id": "construct:ultradeep.geometry_regular_polygon_minkowski_perimeter:084",
+      "candidate_id": "construct:ultradeep.geometry_regular_polygon_minkowski_perimeter:097",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RootOfUnityChart",
@@ -3839,6 +6054,76 @@
           "RegularDoublePolygon",
           "EdgeLengthObservation",
           "PerimeterObservation"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "RootOfUnityChart",
+            "primitives": [
+              "roots_of_unity",
+              "complex_plane"
+            ]
+          },
+          {
+            "morphism": "RegularPolygon",
+            "primitives": [
+              "regular_polygon"
+            ]
+          },
+          {
+            "morphism": "HalfStepRotation",
+            "primitives": [
+              "de_moivre",
+              "complex_plane"
+            ]
+          },
+          {
+            "morphism": "SecondRegularPolygon",
+            "primitives": [
+              "regular_polygon",
+              "symmetry"
+            ]
+          },
+          {
+            "morphism": "MinkowskiAddition",
+            "primitives": [
+              "vector_addition",
+              "convex_hull"
+            ]
+          },
+          {
+            "morphism": "SupportDirectionMerge",
+            "primitives": [
+              "vector_addition",
+              "convex_hull"
+            ]
+          },
+          {
+            "morphism": "VertexSumHull",
+            "primitives": [
+              "vector_addition",
+              "convex_hull"
+            ]
+          },
+          {
+            "morphism": "RegularDoublePolygon",
+            "primitives": [
+              "regular_polygon",
+              "symmetry"
+            ]
+          },
+          {
+            "morphism": "EdgeLengthObservation",
+            "primitives": [
+              "distance_formula"
+            ]
+          },
+          {
+            "morphism": "PerimeterObservation",
+            "primitives": [
+              "distance_formula",
+              "sum_of_series"
+            ]
+          }
         ],
         "lowering_chain": [
           "roots_of_unity",
@@ -3900,7 +6185,7 @@
       "accepted": true,
       "answer_exact": "-27*x**2 + 4*y**3 - 24*y**2 + 48*y - 32",
       "answer_tex": "4(y-2)^3=27x^2",
-      "candidate_id": "construct:ultradeep.geometry_parabola_normal_envelope:082",
+      "candidate_id": "construct:ultradeep.geometry_parabola_normal_envelope:095",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "ParabolaObject",
@@ -3913,6 +6198,79 @@
           "EvoluteParametrization",
           "ResultantElimination",
           "ImplicitCurveObservation"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "ParabolaObject",
+            "primitives": [
+              "parabola"
+            ]
+          },
+          {
+            "morphism": "TangentVector",
+            "primitives": [
+              "differentiation",
+              "vector_addition"
+            ]
+          },
+          {
+            "morphism": "NormalDirection",
+            "primitives": [
+              "normal_line",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "NormalLine",
+            "primitives": [
+              "normal_line",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "NormalLineFamily",
+            "primitives": [
+              "normal_line",
+              "parameter_elimination"
+            ]
+          },
+          {
+            "morphism": "EnvelopeStationarity",
+            "primitives": [
+              "envelope",
+              "parameter_elimination",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "StationaryParameterSolve",
+            "primitives": [
+              "differentiation",
+              "extremum"
+            ]
+          },
+          {
+            "morphism": "EvoluteParametrization",
+            "primitives": [
+              "parametric_curve",
+              "normal_line",
+              "envelope"
+            ]
+          },
+          {
+            "morphism": "ResultantElimination",
+            "primitives": [
+              "simultaneous_equations",
+              "parameter_elimination"
+            ]
+          },
+          {
+            "morphism": "ImplicitCurveObservation",
+            "primitives": [
+              "locus",
+              "parameter_elimination"
+            ]
+          }
         ],
         "lowering_chain": [
           "parabola",
@@ -3970,7 +6328,7 @@
       "accepted": true,
       "answer_exact": "8*pi",
       "answer_tex": "8 \\pi",
-      "candidate_id": "construct:ultradeep.geometry_orthocenter_locus_area:083",
+      "candidate_id": "construct:ultradeep.geometry_orthocenter_locus_area:096",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "EllipseObject",
@@ -3983,6 +6341,76 @@
           "ImageEllipse",
           "DeterminantAreaScaling",
           "AreaObservation"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "EllipseObject",
+            "primitives": [
+              "ellipse"
+            ]
+          },
+          {
+            "morphism": "MajorAxisVertexPair",
+            "primitives": [
+              "ellipse",
+              "coordinate_geometry"
+            ]
+          },
+          {
+            "morphism": "MovingTriangle",
+            "primitives": [
+              "coordinate_geometry",
+              "triangle_area"
+            ]
+          },
+          {
+            "morphism": "AltitudeConstraint",
+            "primitives": [
+              "inner_product",
+              "line_equation"
+            ]
+          },
+          {
+            "morphism": "OrthocenterIntersection",
+            "primitives": [
+              "triangle_center",
+              "inner_product"
+            ]
+          },
+          {
+            "morphism": "CoordinateSolve",
+            "primitives": [
+              "coordinate_geometry",
+              "simultaneous_equations"
+            ]
+          },
+          {
+            "morphism": "LinearImageRecognition",
+            "primitives": [
+              "coordinate_geometry",
+              "vector_addition"
+            ]
+          },
+          {
+            "morphism": "ImageEllipse",
+            "primitives": [
+              "ellipse",
+              "parameter_elimination"
+            ]
+          },
+          {
+            "morphism": "DeterminantAreaScaling",
+            "primitives": [
+              "area_shoelace",
+              "coordinate_geometry"
+            ]
+          },
+          {
+            "morphism": "AreaObservation",
+            "primitives": [
+              "area_integral"
+            ]
+          }
         ],
         "lowering_chain": [
           "ellipse",
@@ -4042,12 +6470,33 @@
       "accepted": true,
       "answer_exact": "(0, 1)",
       "answer_tex": "(0,\\ 1)",
-      "candidate_id": "construct:construct.parabola_right_angle_chord:061",
+      "candidate_id": "construct:construct.parabola_right_angle_chord:074",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "RightAngleCondition",
           "SlopeProductInvariant",
           "FixedPoint"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "RightAngleCondition",
+            "primitives": [
+              "inner_product"
+            ]
+          },
+          {
+            "morphism": "SlopeProductInvariant",
+            "primitives": [
+              "line_equation",
+              "algebraic_identity"
+            ]
+          },
+          {
+            "morphism": "FixedPoint",
+            "primitives": [
+              "simultaneous_equations"
+            ]
+          }
         ],
         "lowering_chain": [
           "inner_product",
@@ -4098,6 +6547,29 @@
           "ParametricLineFamily",
           "ExistenceElimination",
           "SweptRegionArea"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "ParametricLineFamily",
+            "primitives": [
+              "line_equation",
+              "parameter_elimination"
+            ]
+          },
+          {
+            "morphism": "ExistenceElimination",
+            "primitives": [
+              "parameter_elimination",
+              "quadratic_range"
+            ]
+          },
+          {
+            "morphism": "SweptRegionArea",
+            "primitives": [
+              "parameter_elimination",
+              "area_integral"
+            ]
+          }
         ],
         "lowering_chain": [
           "line_equation",
@@ -4150,6 +6622,29 @@
           "ExistenceElimination",
           "SweptRegionArea"
         ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "ParametricParabolaFamily",
+            "primitives": [
+              "parabola",
+              "parameter_elimination"
+            ]
+          },
+          {
+            "morphism": "ExistenceElimination",
+            "primitives": [
+              "parameter_elimination",
+              "quadratic_range"
+            ]
+          },
+          {
+            "morphism": "SweptRegionArea",
+            "primitives": [
+              "parameter_elimination",
+              "area_integral"
+            ]
+          }
+        ],
         "lowering_chain": [
           "parabola",
           "parameter_elimination",
@@ -4193,12 +6688,37 @@
       "accepted": true,
       "answer_exact": "x*(28*x**2 - 9)",
       "answer_tex": "y=x \\left(28 x^{2} - 9\\right)",
-      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:058",
+      "candidate_id": "construct:construct.cubic_tangent_midpoint_locus:071",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "TangentLine",
           "CubicReintersection",
           "MidpointLocus"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "TangentLine",
+            "primitives": [
+              "tangent_line",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "CubicReintersection",
+            "primitives": [
+              "vieta_relations",
+              "tangent_line",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "MidpointLocus",
+            "primitives": [
+              "midpoint",
+              "locus",
+              "parameter_elimination"
+            ]
+          }
         ],
         "lowering_chain": [
           "tangent_line",
@@ -4245,13 +6765,43 @@
       "accepted": true,
       "answer_exact": "4*t",
       "answer_tex": "4 t",
-      "candidate_id": "construct:layered.cubic_tangent_iteration:069",
+      "candidate_id": "construct:layered.cubic_tangent_iteration:082",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "TangentLine",
           "CubicReintersection",
           "GeometricIteration",
           "GeneralTerm"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "TangentLine",
+            "primitives": [
+              "tangent_line",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "CubicReintersection",
+            "primitives": [
+              "vieta_relations",
+              "tangent_line",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "GeometricIteration",
+            "primitives": [
+              "geometric_sequence",
+              "recurrence"
+            ]
+          },
+          {
+            "morphism": "GeneralTerm",
+            "primitives": [
+              "general_term"
+            ]
+          }
         ],
         "lowering_chain": [
           "tangent_line",
@@ -4309,6 +6859,41 @@
           "GeometricIteration",
           "GeneralTerm"
         ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "CubicCurve",
+            "primitives": [
+              "differentiation",
+              "coordinate_geometry"
+            ]
+          },
+          {
+            "morphism": "TangentLine",
+            "primitives": [
+              "tangent_line",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "RootSumRelation",
+            "primitives": [
+              "vieta_relations"
+            ]
+          },
+          {
+            "morphism": "GeometricIteration",
+            "primitives": [
+              "geometric_sequence",
+              "recurrence"
+            ]
+          },
+          {
+            "morphism": "GeneralTerm",
+            "primitives": [
+              "general_term"
+            ]
+          }
+        ],
         "lowering_chain": [
           "differentiation",
           "coordinate_geometry",
@@ -4342,9 +6927,21 @@
       "parameters": {
         "construction": "cubic_tangent",
         "depth": 6,
+        "hidden": [
+          "1 回の操作が x を -2 倍にすること"
+        ],
         "hidden_intermediates": 1,
         "node": "iterate_x_n",
-        "param": -9
+        "param": -9,
+        "premises": [
+          "曲線 \\(C: y=x^{3} - 9 x\\) 上の点 \\(P_0(t,\\,t^{3} - 9 t)\\)",
+          "接線が C と再び交わる点を次の点とする操作"
+        ],
+        "scope": [
+          "微分",
+          "数列",
+          "等比数列"
+        ]
       },
       "solution_tex": "1 回で \\(x\\mapsto -2x\\) なので \\(x_n=(-2)^n t\\)。",
       "source_generator": "construct_atlas",
@@ -4370,6 +6967,49 @@
           "GeneralTerm",
           "GrowthRate",
           "LogarithmicLimit"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "CubicCurve",
+            "primitives": [
+              "differentiation",
+              "coordinate_geometry"
+            ]
+          },
+          {
+            "morphism": "TangentLine",
+            "primitives": [
+              "tangent_line",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "GeometricIteration",
+            "primitives": [
+              "geometric_sequence",
+              "recurrence"
+            ]
+          },
+          {
+            "morphism": "GeneralTerm",
+            "primitives": [
+              "general_term"
+            ]
+          },
+          {
+            "morphism": "GrowthRate",
+            "primitives": [
+              "geometric_sequence",
+              "limit"
+            ]
+          },
+          {
+            "morphism": "LogarithmicLimit",
+            "primitives": [
+              "logarithm",
+              "limit"
+            ]
+          }
         ],
         "lowering_chain": [
           "differentiation",
@@ -4406,9 +7046,21 @@
       "parameters": {
         "construction": "cubic_tangent",
         "depth": 7,
+        "hidden": [
+          "x_n=(-2)^n t という一般項"
+        ],
         "hidden_intermediates": 1,
         "node": "log_growth_limit",
-        "param": -9
+        "param": -9,
+        "premises": [
+          "曲線 \\(C: y=x^{3} - 9 x\\) 上の点 \\(P_0(t,\\,t^{3} - 9 t)\\)",
+          "接線が C と再び交わる点を次の点とする操作"
+        ],
+        "scope": [
+          "数列",
+          "対数",
+          "極限"
+        ]
       },
       "solution_tex": "\\(|x_n|=2^n|t|\\) より \\(\\frac{\\log|x_n|}{n}=\\log2+\\frac{\\log|t|}{n}\\to\\log2\\)。",
       "source_generator": "construct_atlas",
@@ -4433,6 +7085,42 @@
           "Reintersection",
           "Midpoint",
           "LocusElimination"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "CubicCurve",
+            "primitives": [
+              "differentiation",
+              "coordinate_geometry"
+            ]
+          },
+          {
+            "morphism": "TangentLine",
+            "primitives": [
+              "tangent_line",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "Reintersection",
+            "primitives": [
+              "vieta_relations",
+              "simultaneous_equations"
+            ]
+          },
+          {
+            "morphism": "Midpoint",
+            "primitives": [
+              "midpoint"
+            ]
+          },
+          {
+            "morphism": "LocusElimination",
+            "primitives": [
+              "locus",
+              "parameter_elimination"
+            ]
+          }
         ],
         "lowering_chain": [
           "differentiation",
@@ -4468,9 +7156,20 @@
       "parameters": {
         "construction": "cubic_tangent",
         "depth": 6,
+        "hidden": [
+          "再交点の x 座標が -2t であること"
+        ],
         "hidden_intermediates": 1,
         "node": "midpoint_locus",
-        "param": -9
+        "param": -9,
+        "premises": [
+          "曲線 \\(C: y=x^{3} - 9 x\\) 上の点 \\(P_0(t,\\,t^{3} - 9 t)\\)"
+        ],
+        "scope": [
+          "微分",
+          "軌跡",
+          "文字消去"
+        ]
       },
       "solution_tex": "中点の座標を \\(t\\) で表し，\\(t\\) を消去する。",
       "source_generator": "construct_atlas",
@@ -4494,6 +7193,35 @@
           "TangentLine",
           "RootSumRelation",
           "Reintersection"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "CubicCurve",
+            "primitives": [
+              "differentiation",
+              "coordinate_geometry"
+            ]
+          },
+          {
+            "morphism": "TangentLine",
+            "primitives": [
+              "tangent_line",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "RootSumRelation",
+            "primitives": [
+              "vieta_relations"
+            ]
+          },
+          {
+            "morphism": "Reintersection",
+            "primitives": [
+              "vieta_relations",
+              "simultaneous_equations"
+            ]
+          }
         ],
         "lowering_chain": [
           "differentiation",
@@ -4525,9 +7253,20 @@
       "parameters": {
         "construction": "cubic_tangent",
         "depth": 5,
+        "hidden": [
+          "三次方程式の根の和（接点は重根）"
+        ],
         "hidden_intermediates": 1,
         "node": "reintersection_x",
-        "param": -9
+        "param": -9,
+        "premises": [
+          "曲線 \\(C: y=x^{3} - 9 x\\) 上の点 \\(P_0(t,\\,t^{3} - 9 t)\\)"
+        ],
+        "scope": [
+          "微分",
+          "三次方程式",
+          "解と係数の関係"
+        ]
       },
       "solution_tex": "接点が重根になることと根の和が 0 であることから，残る根は \\(-2t\\)。",
       "source_generator": "construct_atlas",
@@ -4544,7 +7283,7 @@
       "accepted": true,
       "answer_exact": "log(2)",
       "answer_tex": "\\log{\\left(2 \\right)}",
-      "candidate_id": "construct:deep.tangent_iteration_growth:071",
+      "candidate_id": "construct:deep.tangent_iteration_growth:084",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CubicCurve",
@@ -4555,6 +7294,62 @@
           "GeneralTerm",
           "GrowthRate",
           "LogarithmicLimit"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "CubicCurve",
+            "primitives": [
+              "differentiation",
+              "coordinate_geometry"
+            ]
+          },
+          {
+            "morphism": "TangentLine",
+            "primitives": [
+              "tangent_line",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "Reintersection",
+            "primitives": [
+              "vieta_relations",
+              "simultaneous_equations"
+            ]
+          },
+          {
+            "morphism": "RootSumRelation",
+            "primitives": [
+              "vieta_relations"
+            ]
+          },
+          {
+            "morphism": "GeometricIteration",
+            "primitives": [
+              "geometric_sequence",
+              "recurrence"
+            ]
+          },
+          {
+            "morphism": "GeneralTerm",
+            "primitives": [
+              "general_term"
+            ]
+          },
+          {
+            "morphism": "GrowthRate",
+            "primitives": [
+              "geometric_sequence",
+              "limit"
+            ]
+          },
+          {
+            "morphism": "LogarithmicLimit",
+            "primitives": [
+              "logarithm",
+              "limit"
+            ]
+          }
         ],
         "lowering_chain": [
           "differentiation",
@@ -4610,7 +7405,7 @@
       "accepted": true,
       "answer_exact": "8",
       "answer_tex": "8",
-      "candidate_id": "construct:ultradeep.paley_four_cycle_divisor_count:076",
+      "candidate_id": "construct:ultradeep.paley_four_cycle_divisor_count:089",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "PrimeField",
@@ -4623,6 +7418,79 @@
           "CycleCount",
           "PrimeFactorization",
           "DivisorCount"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "PrimeField",
+            "primitives": [
+              "congruence",
+              "integer_arithmetic"
+            ]
+          },
+          {
+            "morphism": "QuadraticResidueSet",
+            "primitives": [
+              "congruence",
+              "square_number",
+              "counting"
+            ]
+          },
+          {
+            "morphism": "PaleyGraph",
+            "primitives": [
+              "congruence",
+              "square_number",
+              "counting"
+            ]
+          },
+          {
+            "morphism": "StronglyRegularParameters",
+            "primitives": [
+              "counting",
+              "combination"
+            ]
+          },
+          {
+            "morphism": "CommonNeighborRelation",
+            "primitives": [
+              "counting",
+              "congruence"
+            ]
+          },
+          {
+            "morphism": "OppositeVertexPairing",
+            "primitives": [
+              "regular_polygon",
+              "symmetry"
+            ]
+          },
+          {
+            "morphism": "FourCycleDoubleCount",
+            "primitives": [
+              "counting",
+              "combination"
+            ]
+          },
+          {
+            "morphism": "CycleCount",
+            "primitives": [
+              "counting",
+              "combination"
+            ]
+          },
+          {
+            "morphism": "PrimeFactorization",
+            "primitives": [
+              "prime_factorization"
+            ]
+          },
+          {
+            "morphism": "DivisorCount",
+            "primitives": [
+              "prime_factorization",
+              "divisor_counting"
+            ]
+          }
         ],
         "lowering_chain": [
           "congruence",
@@ -4683,12 +7551,34 @@
       "accepted": true,
       "answer_exact": "20",
       "answer_tex": "20",
-      "candidate_id": "construct:construct.linear_recurrence_mod_period:057",
+      "candidate_id": "construct:construct.linear_recurrence_mod_period:070",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CompanionMatrix",
           "ModularReduction",
           "MultiplicativeOrder"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "CompanionMatrix",
+            "primitives": [
+              "recurrence",
+              "general_term"
+            ]
+          },
+          {
+            "morphism": "ModularReduction",
+            "primitives": [
+              "congruence"
+            ]
+          },
+          {
+            "morphism": "MultiplicativeOrder",
+            "primitives": [
+              "congruence",
+              "periodicity"
+            ]
+          }
         ],
         "lowering_chain": [
           "recurrence",
@@ -4735,7 +7625,7 @@
       "accepted": true,
       "answer_exact": "1",
       "answer_tex": "1",
-      "candidate_id": "construct:deep.recurrence_period_quadratic_character:073",
+      "candidate_id": "construct:deep.recurrence_period_quadratic_character:086",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "LinearRecurrence",
@@ -4746,6 +7636,61 @@
           "PrimeFactorization",
           "EulerCriterion",
           "LegendreSymbol"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "LinearRecurrence",
+            "primitives": [
+              "recurrence",
+              "general_term"
+            ]
+          },
+          {
+            "morphism": "CompanionMatrix",
+            "primitives": [
+              "recurrence",
+              "general_term"
+            ]
+          },
+          {
+            "morphism": "ModularReduction",
+            "primitives": [
+              "congruence"
+            ]
+          },
+          {
+            "morphism": "MultiplicativeOrder",
+            "primitives": [
+              "congruence",
+              "periodicity"
+            ]
+          },
+          {
+            "morphism": "MinimalPeriod",
+            "primitives": [
+              "periodicity"
+            ]
+          },
+          {
+            "morphism": "PrimeFactorization",
+            "primitives": [
+              "prime_factorization"
+            ]
+          },
+          {
+            "morphism": "EulerCriterion",
+            "primitives": [
+              "congruence",
+              "square_number"
+            ]
+          },
+          {
+            "morphism": "LegendreSymbol",
+            "primitives": [
+              "congruence",
+              "square_number"
+            ]
+          }
         ],
         "lowering_chain": [
           "recurrence",
@@ -4803,12 +7748,35 @@
       "accepted": true,
       "answer_exact": "6",
       "answer_tex": "6",
-      "candidate_id": "construct:layered.recurrence_period_observable:064",
+      "candidate_id": "construct:layered.recurrence_period_observable:077",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CompanionMatrix",
           "ModularPeriod",
           "DivisorCount"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "CompanionMatrix",
+            "primitives": [
+              "recurrence",
+              "general_term"
+            ]
+          },
+          {
+            "morphism": "ModularPeriod",
+            "primitives": [
+              "congruence",
+              "periodicity"
+            ]
+          },
+          {
+            "morphism": "DivisorCount",
+            "primitives": [
+              "prime_factorization",
+              "divisor_counting"
+            ]
+          }
         ],
         "lowering_chain": [
           "recurrence",
@@ -4858,12 +7826,34 @@
       "accepted": true,
       "answer_exact": "5",
       "answer_tex": "5",
-      "candidate_id": "construct:layered.recurrence_period_observable:065",
+      "candidate_id": "construct:layered.recurrence_period_observable:078",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CompanionMatrix",
           "ModularPeriod",
           "LargestPrimeFactor"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "CompanionMatrix",
+            "primitives": [
+              "recurrence",
+              "general_term"
+            ]
+          },
+          {
+            "morphism": "ModularPeriod",
+            "primitives": [
+              "congruence",
+              "periodicity"
+            ]
+          },
+          {
+            "morphism": "LargestPrimeFactor",
+            "primitives": [
+              "prime_factorization"
+            ]
+          }
         ],
         "lowering_chain": [
           "recurrence",
@@ -4912,12 +7902,35 @@
       "accepted": true,
       "answer_exact": "8",
       "answer_tex": "8",
-      "candidate_id": "construct:layered.recurrence_period_observable:066",
+      "candidate_id": "construct:layered.recurrence_period_observable:079",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "CompanionMatrix",
           "ModularPeriod",
           "EulerTotient"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "CompanionMatrix",
+            "primitives": [
+              "recurrence",
+              "general_term"
+            ]
+          },
+          {
+            "morphism": "ModularPeriod",
+            "primitives": [
+              "congruence",
+              "periodicity"
+            ]
+          },
+          {
+            "morphism": "EulerTotient",
+            "primitives": [
+              "gcd_lcm",
+              "counting"
+            ]
+          }
         ],
         "lowering_chain": [
           "recurrence",
@@ -4972,6 +7985,29 @@
           "DivisorSumExpansion",
           "PrimePowerReduction",
           "MultiplicativeAssembly"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "DivisorSumExpansion",
+            "primitives": [
+              "divisor_counting",
+              "sum_of_series"
+            ]
+          },
+          {
+            "morphism": "PrimePowerReduction",
+            "primitives": [
+              "prime_factorization",
+              "congruence"
+            ]
+          },
+          {
+            "morphism": "MultiplicativeAssembly",
+            "primitives": [
+              "prime_factorization",
+              "divisor_counting"
+            ]
+          }
         ],
         "lowering_chain": [
           "divisor_counting",
@@ -5250,6 +8286,22 @@
           "PowerSequence",
           "DecimalDigitCount"
         ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "PowerSequence",
+            "primitives": [
+              "geometric_sequence",
+              "exponential"
+            ]
+          },
+          {
+            "morphism": "DecimalDigitCount",
+            "primitives": [
+              "logarithm",
+              "integer_arithmetic"
+            ]
+          }
+        ],
         "lowering_chain": [
           "geometric_sequence",
           "exponential",
@@ -5277,9 +8329,20 @@
       "parameters": {
         "construction": "digit_power",
         "depth": 3,
+        "hidden": [
+          "常用対数 log10(2) の評価"
+        ],
         "hidden_intermediates": 1,
         "node": "digit_count",
-        "param": 20
+        "param": 20,
+        "premises": [
+          "2 の 20 乗の10進表示"
+        ],
+        "scope": [
+          "指数",
+          "常用対数",
+          "桁数"
+        ]
       },
       "solution_tex": "\\(\\log_{10}2^{20}=20\\log_{10}2\\) の整数部分に1を足す。",
       "source_generator": "construct_atlas",
@@ -5302,6 +8365,28 @@
           "PowerSequence",
           "DecimalDigitCount",
           "ArithmeticObservation"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "PowerSequence",
+            "primitives": [
+              "geometric_sequence",
+              "exponential"
+            ]
+          },
+          {
+            "morphism": "DecimalDigitCount",
+            "primitives": [
+              "logarithm",
+              "integer_arithmetic"
+            ]
+          },
+          {
+            "morphism": "ArithmeticObservation",
+            "primitives": [
+              "integer_arithmetic"
+            ]
+          }
         ],
         "lowering_chain": [
           "geometric_sequence",
@@ -5331,9 +8416,21 @@
       "parameters": {
         "construction": "digit_power",
         "depth": 5,
+        "hidden": [
+          "桁数の階段関数",
+          "log10(2) の無理性"
+        ],
         "hidden_intermediates": 2,
         "node": "digit_increase_count",
-        "param": 20
+        "param": 20,
+        "premises": [
+          "2 の 20 乗の10進表示"
+        ],
+        "scope": [
+          "指数",
+          "常用対数",
+          "ガウス記号"
+        ]
       },
       "solution_tex": "桁数は \\(\\lfloor n\\log_{10}2\\rfloor+1\\)。増える回数は最終桁数から1を引いた数に等しい。",
       "source_generator": "construct_atlas",
@@ -5355,6 +8452,21 @@
         "abstract_morphism_chain": [
           "PowerSequence",
           "ArithmeticObservation"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "PowerSequence",
+            "primitives": [
+              "geometric_sequence",
+              "exponential"
+            ]
+          },
+          {
+            "morphism": "ArithmeticObservation",
+            "primitives": [
+              "integer_arithmetic"
+            ]
+          }
         ],
         "lowering_chain": [
           "geometric_sequence",
@@ -5382,9 +8494,19 @@
       "parameters": {
         "construction": "digit_power",
         "depth": 3,
+        "hidden": [
+          "10 進展開の各位"
+        ],
         "hidden_intermediates": 1,
         "node": "digit_sum",
-        "param": 20
+        "param": 20,
+        "premises": [
+          "2 の 20 乗の10進表示"
+        ],
+        "scope": [
+          "指数",
+          "整数の性質"
+        ]
       },
       "solution_tex": "10進表示を求めて各位を加える。",
       "source_generator": "construct_atlas",
@@ -5406,6 +8528,22 @@
         "abstract_morphism_chain": [
           "PowerSequence",
           "LeadingDigit"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "PowerSequence",
+            "primitives": [
+              "geometric_sequence",
+              "exponential"
+            ]
+          },
+          {
+            "morphism": "LeadingDigit",
+            "primitives": [
+              "logarithm",
+              "integer_arithmetic"
+            ]
+          }
         ],
         "lowering_chain": [
           "geometric_sequence",
@@ -5434,9 +8572,20 @@
       "parameters": {
         "construction": "digit_power",
         "depth": 3,
+        "hidden": [
+          "常用対数の小数部分"
+        ],
         "hidden_intermediates": 1,
         "node": "leading_digit",
-        "param": 20
+        "param": 20,
+        "premises": [
+          "2 の 20 乗の10進表示"
+        ],
+        "scope": [
+          "指数",
+          "常用対数",
+          "小数部分"
+        ]
       },
       "solution_tex": "\\(20\\log_{10}2\\) の小数部分 \\(f\\) に対し \\(10^{f}\\) の整数部分が最高位。",
       "source_generator": "construct_atlas",
@@ -5459,6 +8608,28 @@
           "PowerSequence",
           "LeadingDigit",
           "ArithmeticObservation"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "PowerSequence",
+            "primitives": [
+              "geometric_sequence",
+              "exponential"
+            ]
+          },
+          {
+            "morphism": "LeadingDigit",
+            "primitives": [
+              "logarithm",
+              "integer_arithmetic"
+            ]
+          },
+          {
+            "morphism": "ArithmeticObservation",
+            "primitives": [
+              "integer_arithmetic"
+            ]
+          }
         ],
         "lowering_chain": [
           "geometric_sequence",
@@ -5488,9 +8659,20 @@
       "parameters": {
         "construction": "digit_power",
         "depth": 4,
+        "hidden": [
+          "桁上がりの直後だけ最高位が1になること"
+        ],
         "hidden_intermediates": 1,
         "node": "leading_one_count",
-        "param": 20
+        "param": 20,
+        "premises": [
+          "2 の 20 乗の10進表示"
+        ],
+        "scope": [
+          "指数",
+          "常用対数",
+          "ガウス記号"
+        ]
       },
       "solution_tex": "最高位が1になるのは桁数が増えた直後に限る。よって桁数の増加回数に一致する。",
       "source_generator": "construct_atlas",
@@ -5507,12 +8689,36 @@
       "accepted": true,
       "answer_exact": "26",
       "answer_tex": "26",
-      "candidate_id": "construct:layered.paley_triangle_count:067",
+      "candidate_id": "construct:layered.paley_triangle_count:080",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "QuadraticResidueGraph",
           "EdgeCommonNeighbors",
           "TriangleCount"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "QuadraticResidueGraph",
+            "primitives": [
+              "congruence",
+              "square_number",
+              "counting"
+            ]
+          },
+          {
+            "morphism": "EdgeCommonNeighbors",
+            "primitives": [
+              "counting",
+              "congruence"
+            ]
+          },
+          {
+            "morphism": "TriangleCount",
+            "primitives": [
+              "counting",
+              "combination"
+            ]
+          }
         ],
         "lowering_chain": [
           "congruence",
@@ -5559,6 +8765,550 @@
     },
     {
       "accepted": true,
+      "answer_exact": "36",
+      "answer_tex": "36",
+      "candidate_id": "construct:traceback.cyclic_quadrilateral.area:061",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "CyclicQuadrilateral",
+          "InscribedAngle",
+          "CosineRule",
+          "ShoelaceArea"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "CyclicQuadrilateral",
+            "primitives": [
+              "circle_equation",
+              "trigonometric_ratio"
+            ]
+          },
+          {
+            "morphism": "InscribedAngle",
+            "primitives": [
+              "circle_equation",
+              "trigonometric_ratio"
+            ]
+          },
+          {
+            "morphism": "CosineRule",
+            "primitives": [
+              "sine_cosine_rule"
+            ]
+          },
+          {
+            "morphism": "ShoelaceArea",
+            "primitives": [
+              "area_shoelace"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "circle_equation",
+          "trigonometric_ratio",
+          "sine_cosine_rule",
+          "area_shoelace"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "plane_geometry",
+      "family_id": "traceback.cyclic_quadrilateral.area",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CyclicQuadrilateral",
+          "InscribedAngle",
+          "CosineRule",
+          "ShoelaceArea"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "cyclic_quadrilateral",
+        "depth": 6,
+        "hidden": [
+          "対角の和が 180 度",
+          "余弦定理を2つ立てて cos を消去"
+        ],
+        "hidden_intermediates": 2,
+        "node": "area",
+        "param": [
+          4,
+          5,
+          7,
+          10
+        ],
+        "premises": [
+          "円に内接し，4辺の長さが順に 4, 5, 7, 10 である四角形 ABCD"
+        ],
+        "scope": [
+          "円周角",
+          "余弦定理",
+          "面積"
+        ]
+      },
+      "solution_tex": "対角の和が \\(180^\\circ\\) なので \\(\\cos C=-\\cos A\\)。対角線について余弦定理を2通りに立てて \\(\\cos A\\) を消すと \\(S=\\sqrt{(s-a)(s-b)(s-c)(s-d)}\\)。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "円に内接する四角形 \\(ABCD\\) があり，\\(AB=4,\\ BC=5,\\ CD=7,\\ DA=10\\) である。この四角形の面積を求めよ。",
+      "structure_key": "c28dbef88885bc06073cbd02e09bf099b0f111ca6a8eeb9f9f755dfda0149a29",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "1625/64",
+      "answer_tex": "\\frac{1625}{64}",
+      "candidate_id": "construct:traceback.cyclic_quadrilateral.circumradius_sq:064",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "CyclicQuadrilateral",
+          "CircleParameter",
+          "CosineRule"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "CyclicQuadrilateral",
+            "primitives": [
+              "circle_equation",
+              "trigonometric_ratio"
+            ]
+          },
+          {
+            "morphism": "CircleParameter",
+            "primitives": [
+              "circle_equation"
+            ]
+          },
+          {
+            "morphism": "CosineRule",
+            "primitives": [
+              "sine_cosine_rule"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "circle_equation",
+          "trigonometric_ratio",
+          "sine_cosine_rule"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "plane_geometry",
+      "family_id": "traceback.cyclic_quadrilateral.circumradius_sq",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CyclicQuadrilateral",
+          "CircleParameter",
+          "CosineRule"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "cyclic_quadrilateral",
+        "depth": 5,
+        "hidden": [
+          "正弦定理",
+          "面積の表示"
+        ],
+        "hidden_intermediates": 2,
+        "node": "circumradius_sq",
+        "param": [
+          4,
+          5,
+          7,
+          10
+        ],
+        "premises": [
+          "円に内接し，4辺の長さが順に 4, 5, 7, 10 である四角形 ABCD"
+        ],
+        "scope": [
+          "円周角",
+          "正弦定理",
+          "外接円"
+        ]
+      },
+      "solution_tex": "\\(R=\\frac{\\sqrt{(ab+cd)(ac+bd)(ad+bc)}}{4S}\\)。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "円に内接する四角形 \\(ABCD\\) があり，\\(AB=4,\\ BC=5,\\ CD=7,\\ DA=10\\) である。外接円の半径の平方を求めよ。",
+      "structure_key": "ad3eadc53b2ae4caea84dbd9de37b2879254a6ef0ee342e113ce90f01a954c08",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "7/25",
+      "answer_tex": "\\frac{7}{25}",
+      "candidate_id": "construct:traceback.cyclic_quadrilateral.cos_angle_a:065",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "CyclicQuadrilateral",
+          "InscribedAngle",
+          "CosineRule"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "CyclicQuadrilateral",
+            "primitives": [
+              "circle_equation",
+              "trigonometric_ratio"
+            ]
+          },
+          {
+            "morphism": "InscribedAngle",
+            "primitives": [
+              "circle_equation",
+              "trigonometric_ratio"
+            ]
+          },
+          {
+            "morphism": "CosineRule",
+            "primitives": [
+              "sine_cosine_rule"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "circle_equation",
+          "trigonometric_ratio",
+          "sine_cosine_rule"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "plane_geometry",
+      "family_id": "traceback.cyclic_quadrilateral.cos_angle_a",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CyclicQuadrilateral",
+          "InscribedAngle",
+          "CosineRule"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "cyclic_quadrilateral",
+        "depth": 4,
+        "hidden": [
+          "対角線 BD に余弦定理を2通り"
+        ],
+        "hidden_intermediates": 1,
+        "node": "cos_angle_a",
+        "param": [
+          4,
+          5,
+          7,
+          10
+        ],
+        "premises": [
+          "円に内接し，4辺の長さが順に 4, 5, 7, 10 である四角形 ABCD"
+        ],
+        "scope": [
+          "円周角",
+          "余弦定理"
+        ]
+      },
+      "solution_tex": "対角線 \\(BD\\) について2つの三角形で余弦定理を立て，\\(\\cos C=-\\cos A\\) を使う。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "円に内接する四角形 \\(ABCD\\) があり，\\(AB=4,\\ BC=5,\\ CD=7,\\ DA=10\\) である。\\(\\angle A\\) の余弦を求めよ。",
+      "structure_key": "20fdaad27042103206854c7df3eef2a980924800d78cfde26ad30af86e3779a9",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "65",
+      "answer_tex": "65",
+      "candidate_id": "construct:traceback.cyclic_quadrilateral.diagonal_ac_sq:063",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "CyclicQuadrilateral",
+          "InscribedAngle",
+          "CosineRule"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "CyclicQuadrilateral",
+            "primitives": [
+              "circle_equation",
+              "trigonometric_ratio"
+            ]
+          },
+          {
+            "morphism": "InscribedAngle",
+            "primitives": [
+              "circle_equation",
+              "trigonometric_ratio"
+            ]
+          },
+          {
+            "morphism": "CosineRule",
+            "primitives": [
+              "sine_cosine_rule"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "circle_equation",
+          "trigonometric_ratio",
+          "sine_cosine_rule"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "plane_geometry",
+      "family_id": "traceback.cyclic_quadrilateral.diagonal_ac_sq",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CyclicQuadrilateral",
+          "InscribedAngle",
+          "CosineRule"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "cyclic_quadrilateral",
+        "depth": 5,
+        "hidden": [
+          "2つの三角形に余弦定理",
+          "対角の cos が符号違い"
+        ],
+        "hidden_intermediates": 2,
+        "node": "diagonal_ac_sq",
+        "param": [
+          4,
+          5,
+          7,
+          10
+        ],
+        "premises": [
+          "円に内接し，4辺の長さが順に 4, 5, 7, 10 である四角形 ABCD"
+        ],
+        "scope": [
+          "円周角",
+          "余弦定理"
+        ]
+      },
+      "solution_tex": "\\(\\triangle ABC\\) と \\(\\triangle ACD\\) に余弦定理を立て，\\(\\cos B=-\\cos D\\) で消去する。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "円に内接する四角形 \\(ABCD\\) があり，\\(AB=4,\\ BC=5,\\ CD=7,\\ DA=10\\) である。対角線 \\(AC\\) の長さの平方を求めよ。",
+      "structure_key": "0e62ca5426a9c502f0057022f2f59669ca6a58f6be304e3a846002a47f84f8ed",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "78",
+      "answer_tex": "78",
+      "candidate_id": "construct:traceback.cyclic_quadrilateral.diagonal_product:062",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "CyclicQuadrilateral",
+          "InscribedAngle",
+          "PtolemyRelation"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "CyclicQuadrilateral",
+            "primitives": [
+              "circle_equation",
+              "trigonometric_ratio"
+            ]
+          },
+          {
+            "morphism": "InscribedAngle",
+            "primitives": [
+              "circle_equation",
+              "trigonometric_ratio"
+            ]
+          },
+          {
+            "morphism": "PtolemyRelation",
+            "primitives": [
+              "circle_equation",
+              "sine_cosine_rule",
+              "algebraic_identity"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "circle_equation",
+          "trigonometric_ratio",
+          "sine_cosine_rule",
+          "algebraic_identity"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "plane_geometry",
+      "family_id": "traceback.cyclic_quadrilateral.diagonal_product",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CyclicQuadrilateral",
+          "InscribedAngle",
+          "PtolemyRelation"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "cyclic_quadrilateral",
+        "depth": 4,
+        "hidden": [
+          "トレミーの定理 AC・BD = AB・CD + BC・DA"
+        ],
+        "hidden_intermediates": 1,
+        "node": "diagonal_product",
+        "param": [
+          4,
+          5,
+          7,
+          10
+        ],
+        "premises": [
+          "円に内接し，4辺の長さが順に 4, 5, 7, 10 である四角形 ABCD"
+        ],
+        "scope": [
+          "円周角",
+          "トレミーの定理"
+        ]
+      },
+      "solution_tex": "円に内接する四角形ではトレミーの定理が成り立ち，\\(AC\\cdot BD=ac+bd=78\\)。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "円に内接する四角形 \\(ABCD\\) があり，\\(AB=4,\\ BC=5,\\ CD=7,\\ DA=10\\) である。2本の対角線の長さの積を求めよ。",
+      "structure_key": "c6d10e0ddd04fe3eddacb53d6d739600d39db03d0986b939370efdb572542d10",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "13",
+      "answer_tex": "13",
+      "candidate_id": "construct:traceback.cyclic_quadrilateral.semiperimeter:066",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "CyclicQuadrilateral",
+          "ArithmeticObservation"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "CyclicQuadrilateral",
+            "primitives": [
+              "circle_equation",
+              "trigonometric_ratio"
+            ]
+          },
+          {
+            "morphism": "ArithmeticObservation",
+            "primitives": [
+              "integer_arithmetic"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "circle_equation",
+          "trigonometric_ratio",
+          "integer_arithmetic"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "domain": "plane_geometry",
+      "family_id": "traceback.cyclic_quadrilateral.semiperimeter",
+      "lift_certificate": {
+        "morphism_chain": [
+          "CyclicQuadrilateral",
+          "ArithmeticObservation"
+        ],
+        "type_checked": true
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0
+      },
+      "parameters": {
+        "construction": "cyclic_quadrilateral",
+        "depth": 2,
+        "hidden": [],
+        "hidden_intermediates": 0,
+        "node": "semiperimeter",
+        "param": [
+          4,
+          5,
+          7,
+          10
+        ],
+        "premises": [
+          "円に内接し，4辺の長さが順に 4, 5, 7, 10 である四角形 ABCD"
+        ],
+        "scope": [
+          "四角形"
+        ]
+      },
+      "solution_tex": "4辺の和の半分。",
+      "source_generator": "construct_atlas",
+      "statement_tex": "円に内接する四角形 \\(ABCD\\) があり，\\(AB=4,\\ BC=5,\\ CD=7,\\ DA=10\\) である。この四角形の周の長さの半分を求めよ。",
+      "structure_key": "80b2dd1890c53c03d01630e4f6deb0b81cb1aed8b040c2e133e6728b8d358205",
+      "tool": "deduction_closure+traceback",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
       "answer_exact": "6",
       "answer_tex": "6",
       "candidate_id": "construct:traceback.incircle_excircle.contact_segment_longest:047",
@@ -5567,6 +9317,28 @@
           "TriangleConstruction",
           "IncircleRadius",
           "EdgeLengthObservation"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "TriangleConstruction",
+            "primitives": [
+              "coordinate_geometry",
+              "triangle_area"
+            ]
+          },
+          {
+            "morphism": "IncircleRadius",
+            "primitives": [
+              "triangle_area",
+              "triangle_center"
+            ]
+          },
+          {
+            "morphism": "EdgeLengthObservation",
+            "primitives": [
+              "distance_formula"
+            ]
+          }
         ],
         "lowering_chain": [
           "coordinate_geometry",
@@ -5596,6 +9368,9 @@
       "parameters": {
         "construction": "incircle_excircle",
         "depth": 4,
+        "hidden": [
+          "接線の長さが等しいこと"
+        ],
         "hidden_intermediates": 1,
         "node": "contact_segment_longest",
         "param": [
@@ -5605,6 +9380,13 @@
           0,
           5,
           12
+        ],
+        "premises": [
+          "3辺の長さが 15, 13, 14 の三角形の内接円と3つの傍接円"
+        ],
+        "scope": [
+          "内接円",
+          "接線の長さ"
         ]
       },
       "solution_tex": "1つの頂点から内接円に引いた2本の接線の長さは等しく \\(s-a\\)。",
@@ -5629,6 +9411,36 @@
           "CircleParameter",
           "IncircleRadius",
           "EulerTriangleIdentity"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "TriangleConstruction",
+            "primitives": [
+              "coordinate_geometry",
+              "triangle_area"
+            ]
+          },
+          {
+            "morphism": "CircleParameter",
+            "primitives": [
+              "circle_equation"
+            ]
+          },
+          {
+            "morphism": "IncircleRadius",
+            "primitives": [
+              "triangle_area",
+              "triangle_center"
+            ]
+          },
+          {
+            "morphism": "EulerTriangleIdentity",
+            "primitives": [
+              "triangle_center",
+              "circle_equation",
+              "algebraic_identity"
+            ]
+          }
         ],
         "lowering_chain": [
           "coordinate_geometry",
@@ -5660,6 +9472,9 @@
       "parameters": {
         "construction": "incircle_excircle",
         "depth": 5,
+        "hidden": [
+          "オイラーの定理 OI^2 = R^2-2Rr"
+        ],
         "hidden_intermediates": 1,
         "node": "euler_OI_sq",
         "param": [
@@ -5669,6 +9484,14 @@
           0,
           5,
           12
+        ],
+        "premises": [
+          "3辺の長さが 15, 13, 14 の三角形の内接円と3つの傍接円"
+        ],
+        "scope": [
+          "外接円",
+          "内接円",
+          "2点間の距離"
         ]
       },
       "solution_tex": "オイラーの定理 \\(OI^2=R^2-2Rr\\) による。",
@@ -5692,6 +9515,29 @@
           "TriangleConstruction",
           "ExcircleRadius",
           "IncircleRadius"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "TriangleConstruction",
+            "primitives": [
+              "coordinate_geometry",
+              "triangle_area"
+            ]
+          },
+          {
+            "morphism": "ExcircleRadius",
+            "primitives": [
+              "triangle_area",
+              "triangle_center"
+            ]
+          },
+          {
+            "morphism": "IncircleRadius",
+            "primitives": [
+              "triangle_area",
+              "triangle_center"
+            ]
+          }
         ],
         "lowering_chain": [
           "coordinate_geometry",
@@ -5720,6 +9566,9 @@
       "parameters": {
         "construction": "incircle_excircle",
         "depth": 4,
+        "hidden": [
+          "積が S^2/r に等しいこと"
+        ],
         "hidden_intermediates": 1,
         "node": "exradii_product",
         "param": [
@@ -5729,6 +9578,13 @@
           0,
           5,
           12
+        ],
+        "premises": [
+          "3辺の長さが 15, 13, 14 の三角形の内接円と3つの傍接円"
+        ],
+        "scope": [
+          "三角形の面積",
+          "傍接円"
         ]
       },
       "solution_tex": "\\(r_Ar_Br_C=\\frac{S^2}{r}\\)。",
@@ -5752,6 +9608,29 @@
           "TriangleConstruction",
           "ExcircleRadius",
           "IncircleRadius"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "TriangleConstruction",
+            "primitives": [
+              "coordinate_geometry",
+              "triangle_area"
+            ]
+          },
+          {
+            "morphism": "ExcircleRadius",
+            "primitives": [
+              "triangle_area",
+              "triangle_center"
+            ]
+          },
+          {
+            "morphism": "IncircleRadius",
+            "primitives": [
+              "triangle_area",
+              "triangle_center"
+            ]
+          }
         ],
         "lowering_chain": [
           "coordinate_geometry",
@@ -5780,6 +9659,9 @@
       "parameters": {
         "construction": "incircle_excircle",
         "depth": 4,
+        "hidden": [
+          "逆数の和が 1/r に等しいこと"
+        ],
         "hidden_intermediates": 1,
         "node": "exradii_reciprocal_sum",
         "param": [
@@ -5789,6 +9671,14 @@
           0,
           5,
           12
+        ],
+        "premises": [
+          "3辺の長さが 15, 13, 14 の三角形の内接円と3つの傍接円"
+        ],
+        "scope": [
+          "三角形の面積",
+          "内接円",
+          "傍接円"
         ]
       },
       "solution_tex": "\\(\\frac1{r_A}+\\frac1{r_B}+\\frac1{r_C}=\\frac1r\\)。",
@@ -5812,6 +9702,28 @@
           "TriangleConstruction",
           "ExcircleRadius",
           "CircleParameter"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "TriangleConstruction",
+            "primitives": [
+              "coordinate_geometry",
+              "triangle_area"
+            ]
+          },
+          {
+            "morphism": "ExcircleRadius",
+            "primitives": [
+              "triangle_area",
+              "triangle_center"
+            ]
+          },
+          {
+            "morphism": "CircleParameter",
+            "primitives": [
+              "circle_equation"
+            ]
+          }
         ],
         "lowering_chain": [
           "coordinate_geometry",
@@ -5841,6 +9753,9 @@
       "parameters": {
         "construction": "incircle_excircle",
         "depth": 4,
+        "hidden": [
+          "和が 4R+r に等しいこと"
+        ],
         "hidden_intermediates": 1,
         "node": "exradii_sum",
         "param": [
@@ -5850,6 +9765,14 @@
           0,
           5,
           12
+        ],
+        "premises": [
+          "3辺の長さが 15, 13, 14 の三角形の内接円と3つの傍接円"
+        ],
+        "scope": [
+          "三角形の面積",
+          "傍接円",
+          "外接円"
         ]
       },
       "solution_tex": "\\(r_A+r_B+r_C=4R+r\\) を用いてもよい。",
@@ -5873,6 +9796,28 @@
           "TriangleConstruction",
           "EdgeLengthObservation",
           "ExcircleRadius"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "TriangleConstruction",
+            "primitives": [
+              "coordinate_geometry",
+              "triangle_area"
+            ]
+          },
+          {
+            "morphism": "EdgeLengthObservation",
+            "primitives": [
+              "distance_formula"
+            ]
+          },
+          {
+            "morphism": "ExcircleRadius",
+            "primitives": [
+              "triangle_area",
+              "triangle_center"
+            ]
+          }
         ],
         "lowering_chain": [
           "coordinate_geometry",
@@ -5902,6 +9847,9 @@
       "parameters": {
         "construction": "incircle_excircle",
         "depth": 4,
+        "hidden": [
+          "傍接円の半径 r_A = S/(s-a)"
+        ],
         "hidden_intermediates": 1,
         "node": "exradius_opposite_longest",
         "param": [
@@ -5911,6 +9859,13 @@
           0,
           5,
           12
+        ],
+        "premises": [
+          "3辺の長さが 15, 13, 14 の三角形の内接円と3つの傍接円"
+        ],
+        "scope": [
+          "三角形の面積",
+          "傍接円"
         ]
       },
       "solution_tex": "\\(r_A=\\frac{S}{s-a}\\)。",
@@ -5935,6 +9890,34 @@
           "CircleParameter",
           "OrthocenterIntersection",
           "EdgeLengthObservation"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "TriangleConstruction",
+            "primitives": [
+              "coordinate_geometry",
+              "triangle_area"
+            ]
+          },
+          {
+            "morphism": "CircleParameter",
+            "primitives": [
+              "circle_equation"
+            ]
+          },
+          {
+            "morphism": "OrthocenterIntersection",
+            "primitives": [
+              "triangle_center",
+              "inner_product"
+            ]
+          },
+          {
+            "morphism": "EdgeLengthObservation",
+            "primitives": [
+              "distance_formula"
+            ]
+          }
         ],
         "lowering_chain": [
           "coordinate_geometry",
@@ -5967,6 +9950,10 @@
       "parameters": {
         "construction": "triangle_centers",
         "depth": 6,
+        "hidden": [
+          "外心と垂心の座標",
+          "OH^2 = 9R^2-(a^2+b^2+c^2)"
+        ],
         "hidden_intermediates": 2,
         "node": "OH_dist_sq",
         "param": [
@@ -5976,6 +9963,14 @@
           0,
           5,
           12
+        ],
+        "premises": [
+          "3点 A(0,0), B(14,0), C(5,12) を頂点とする三角形"
+        ],
+        "scope": [
+          "座標平面",
+          "円",
+          "2点間の距離"
         ]
       },
       "solution_tex": "外心と垂心を求めて距離を計算する。\\(OH^2=9R^2-(a^2+b^2+c^2)\\) でも確かめられる。",
@@ -5998,6 +9993,21 @@
         "abstract_morphism_chain": [
           "TriangleConstruction",
           "ShoelaceArea"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "TriangleConstruction",
+            "primitives": [
+              "coordinate_geometry",
+              "triangle_area"
+            ]
+          },
+          {
+            "morphism": "ShoelaceArea",
+            "primitives": [
+              "area_shoelace"
+            ]
+          }
         ],
         "lowering_chain": [
           "coordinate_geometry",
@@ -6025,6 +10035,7 @@
       "parameters": {
         "construction": "triangle_centers",
         "depth": 2,
+        "hidden": [],
         "hidden_intermediates": 0,
         "node": "area",
         "param": [
@@ -6034,6 +10045,13 @@
           0,
           5,
           12
+        ],
+        "premises": [
+          "3点 A(0,0), B(14,0), C(5,12) を頂点とする三角形"
+        ],
+        "scope": [
+          "座標平面",
+          "三角形の面積"
         ]
       },
       "solution_tex": "座標から面積公式で直接求める。",
@@ -6057,6 +10075,28 @@
           "TriangleConstruction",
           "CircleParameter",
           "CoordinateSolve"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "TriangleConstruction",
+            "primitives": [
+              "coordinate_geometry",
+              "triangle_area"
+            ]
+          },
+          {
+            "morphism": "CircleParameter",
+            "primitives": [
+              "circle_equation"
+            ]
+          },
+          {
+            "morphism": "CoordinateSolve",
+            "primitives": [
+              "coordinate_geometry",
+              "simultaneous_equations"
+            ]
+          }
         ],
         "lowering_chain": [
           "coordinate_geometry",
@@ -6086,6 +10126,9 @@
       "parameters": {
         "construction": "triangle_centers",
         "depth": 4,
+        "hidden": [
+          "2辺の垂直二等分線の交点"
+        ],
         "hidden_intermediates": 1,
         "node": "circumradius_sq",
         "param": [
@@ -6095,6 +10138,14 @@
           0,
           5,
           12
+        ],
+        "premises": [
+          "3点 A(0,0), B(14,0), C(5,12) を頂点とする三角形"
+        ],
+        "scope": [
+          "座標平面",
+          "垂直二等分線",
+          "円"
         ]
       },
       "solution_tex": "2辺の垂直二等分線を連立して外心を求め，頂点までの距離を測る。",
@@ -6119,6 +10170,34 @@
           "CircleParameter",
           "OrthocenterIntersection",
           "JoiningLine"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "TriangleConstruction",
+            "primitives": [
+              "coordinate_geometry",
+              "triangle_area"
+            ]
+          },
+          {
+            "morphism": "CircleParameter",
+            "primitives": [
+              "circle_equation"
+            ]
+          },
+          {
+            "morphism": "OrthocenterIntersection",
+            "primitives": [
+              "triangle_center",
+              "inner_product"
+            ]
+          },
+          {
+            "morphism": "JoiningLine",
+            "primitives": [
+              "line_equation"
+            ]
+          }
         ],
         "lowering_chain": [
           "coordinate_geometry",
@@ -6151,6 +10230,10 @@
       "parameters": {
         "construction": "triangle_centers",
         "depth": 6,
+        "hidden": [
+          "外心と垂心の座標",
+          "重心もこの直線上にあること"
+        ],
         "hidden_intermediates": 2,
         "node": "euler_line_slope",
         "param": [
@@ -6160,6 +10243,13 @@
           0,
           5,
           12
+        ],
+        "premises": [
+          "3点 A(0,0), B(14,0), C(5,12) を頂点とする三角形"
+        ],
+        "scope": [
+          "座標平面",
+          "直線の傾き"
         ]
       },
       "solution_tex": "外心と垂心を求め，2点を通る直線の傾きを計算する。重心も同じ直線上にある。",
@@ -6183,6 +10273,28 @@
           "TriangleConstruction",
           "EdgeLengthObservation",
           "IncenterWeights"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "TriangleConstruction",
+            "primitives": [
+              "coordinate_geometry",
+              "triangle_area"
+            ]
+          },
+          {
+            "morphism": "EdgeLengthObservation",
+            "primitives": [
+              "distance_formula"
+            ]
+          },
+          {
+            "morphism": "IncenterWeights",
+            "primitives": [
+              "triangle_center",
+              "coordinate_geometry"
+            ]
+          }
         ],
         "lowering_chain": [
           "coordinate_geometry",
@@ -6212,6 +10324,9 @@
       "parameters": {
         "construction": "triangle_centers",
         "depth": 4,
+        "hidden": [
+          "辺の長さを重みとする内分"
+        ],
         "hidden_intermediates": 1,
         "node": "incenter_x",
         "param": [
@@ -6221,6 +10336,14 @@
           0,
           5,
           12
+        ],
+        "premises": [
+          "3点 A(0,0), B(14,0), C(5,12) を頂点とする三角形"
+        ],
+        "scope": [
+          "座標平面",
+          "角の二等分線",
+          "内分点"
         ]
       },
       "solution_tex": "内心は \\(\\frac{aA+bB+cC}{a+b+c}\\)（\\(a,b,c\\) は対辺の長さ）。",
@@ -6244,6 +10367,28 @@
           "TriangleConstruction",
           "EdgeLengthObservation",
           "IncenterWeights"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "TriangleConstruction",
+            "primitives": [
+              "coordinate_geometry",
+              "triangle_area"
+            ]
+          },
+          {
+            "morphism": "EdgeLengthObservation",
+            "primitives": [
+              "distance_formula"
+            ]
+          },
+          {
+            "morphism": "IncenterWeights",
+            "primitives": [
+              "triangle_center",
+              "coordinate_geometry"
+            ]
+          }
         ],
         "lowering_chain": [
           "coordinate_geometry",
@@ -6273,6 +10418,9 @@
       "parameters": {
         "construction": "triangle_centers",
         "depth": 4,
+        "hidden": [
+          "面積と周長の関係 S=rs"
+        ],
         "hidden_intermediates": 1,
         "node": "inradius",
         "param": [
@@ -6282,6 +10430,13 @@
           0,
           5,
           12
+        ],
+        "premises": [
+          "3点 A(0,0), B(14,0), C(5,12) を頂点とする三角形"
+        ],
+        "scope": [
+          "三角形の面積",
+          "内接円"
         ]
       },
       "solution_tex": "\\(S=rs\\)（\\(s\\) は半周長）から \\(r=S/s\\)。",
@@ -6305,6 +10460,28 @@
           "TriangleConstruction",
           "CentroidMap",
           "CircleParameter"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "TriangleConstruction",
+            "primitives": [
+              "coordinate_geometry",
+              "triangle_area"
+            ]
+          },
+          {
+            "morphism": "CentroidMap",
+            "primitives": [
+              "coordinate_geometry",
+              "midpoint"
+            ]
+          },
+          {
+            "morphism": "CircleParameter",
+            "primitives": [
+              "circle_equation"
+            ]
+          }
         ],
         "lowering_chain": [
           "coordinate_geometry",
@@ -6334,6 +10511,9 @@
       "parameters": {
         "construction": "triangle_centers",
         "depth": 4,
+        "hidden": [
+          "九点円が外接円の半分の半径をもつこと"
+        ],
         "hidden_intermediates": 1,
         "node": "nine_point_radius_sq",
         "param": [
@@ -6343,6 +10523,14 @@
           0,
           5,
           12
+        ],
+        "premises": [
+          "3点 A(0,0), B(14,0), C(5,12) を頂点とする三角形"
+        ],
+        "scope": [
+          "座標平面",
+          "中点",
+          "円"
         ]
       },
       "solution_tex": "3辺の中点を通る円を求めると，半径は外接円の半分になる。",
@@ -6366,6 +10554,29 @@
           "TriangleConstruction",
           "OrthocenterIntersection",
           "CoordinateSolve"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "TriangleConstruction",
+            "primitives": [
+              "coordinate_geometry",
+              "triangle_area"
+            ]
+          },
+          {
+            "morphism": "OrthocenterIntersection",
+            "primitives": [
+              "triangle_center",
+              "inner_product"
+            ]
+          },
+          {
+            "morphism": "CoordinateSolve",
+            "primitives": [
+              "coordinate_geometry",
+              "simultaneous_equations"
+            ]
+          }
         ],
         "lowering_chain": [
           "coordinate_geometry",
@@ -6396,6 +10607,10 @@
       "parameters": {
         "construction": "triangle_centers",
         "depth": 5,
+        "hidden": [
+          "2本の垂線の交点",
+          "オイラー線の関係 H=A+B+C-2O"
+        ],
         "hidden_intermediates": 2,
         "node": "orthocenter_x",
         "param": [
@@ -6405,6 +10620,14 @@
           0,
           5,
           12
+        ],
+        "premises": [
+          "3点 A(0,0), B(14,0), C(5,12) を頂点とする三角形"
+        ],
+        "scope": [
+          "座標平面",
+          "垂線",
+          "内積"
         ]
       },
       "solution_tex": "2頂点から対辺への垂線を連立する。",
@@ -6422,12 +10645,35 @@
       "accepted": true,
       "answer_exact": "1/4",
       "answer_tex": "\\frac{1}{4}",
-      "candidate_id": "construct:construct.gambler_ruin_probability:060",
+      "candidate_id": "construct:construct.gambler_ruin_probability:073",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "AbsorbingWalk",
           "BoundaryRecurrence",
           "RatioClosedForm"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "AbsorbingWalk",
+            "primitives": [
+              "probability",
+              "recurrence_probability"
+            ]
+          },
+          {
+            "morphism": "BoundaryRecurrence",
+            "primitives": [
+              "recurrence",
+              "simultaneous_equations"
+            ]
+          },
+          {
+            "morphism": "RatioClosedForm",
+            "primitives": [
+              "geometric_sequence",
+              "general_term"
+            ]
+          }
         ],
         "lowering_chain": [
           "probability",
@@ -6482,6 +10728,27 @@
           "RecordIndicator",
           "LinearityExpectation",
           "HarmonicSum"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "RecordIndicator",
+            "primitives": [
+              "probability",
+              "expectation"
+            ]
+          },
+          {
+            "morphism": "LinearityExpectation",
+            "primitives": [
+              "expectation"
+            ]
+          },
+          {
+            "morphism": "HarmonicSum",
+            "primitives": [
+              "sum_of_series"
+            ]
+          }
         ],
         "lowering_chain": [
           "probability",
@@ -6698,6 +10965,33 @@
           "Expectation",
           "FiniteSum"
         ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "BridgePathSpace",
+            "primitives": [
+              "counting",
+              "combination"
+            ]
+          },
+          {
+            "morphism": "ZeroIndicators",
+            "primitives": [
+              "counting"
+            ]
+          },
+          {
+            "morphism": "Expectation",
+            "primitives": [
+              "expectation"
+            ]
+          },
+          {
+            "morphism": "FiniteSum",
+            "primitives": [
+              "sum_of_series"
+            ]
+          }
+        ],
         "lowering_chain": [
           "counting",
           "combination",
@@ -6880,6 +11174,23 @@
           "DiceGeneratingFunction",
           "ModalOutcome"
         ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "DiceGeneratingFunction",
+            "primitives": [
+              "probability",
+              "polynomial_expansion",
+              "counting"
+            ]
+          },
+          {
+            "morphism": "ModalOutcome",
+            "primitives": [
+              "counting",
+              "combination"
+            ]
+          }
+        ],
         "lowering_chain": [
           "probability",
           "polynomial_expansion",
@@ -6907,9 +11218,19 @@
       "parameters": {
         "construction": "dice_sum",
         "depth": 3,
+        "hidden": [
+          "分布の対称性"
+        ],
         "hidden_intermediates": 1,
         "node": "modal_sum",
-        "param": 3
+        "param": 3,
+        "premises": [
+          "3 個のさいころを同時に投げたときの出目の和"
+        ],
+        "scope": [
+          "確率",
+          "場合の数"
+        ]
       },
       "solution_tex": "分布は \\(\\frac{7n}{2}\\) について対称なので中央の値が最頻。",
       "source_generator": "construct_atlas",
@@ -6933,6 +11254,36 @@
           "ModalOutcome",
           "PrimeFactorization",
           "DivisorCount"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "DiceGeneratingFunction",
+            "primitives": [
+              "probability",
+              "polynomial_expansion",
+              "counting"
+            ]
+          },
+          {
+            "morphism": "ModalOutcome",
+            "primitives": [
+              "counting",
+              "combination"
+            ]
+          },
+          {
+            "morphism": "PrimeFactorization",
+            "primitives": [
+              "prime_factorization"
+            ]
+          },
+          {
+            "morphism": "DivisorCount",
+            "primitives": [
+              "prime_factorization",
+              "divisor_counting"
+            ]
+          }
         ],
         "lowering_chain": [
           "probability",
@@ -6965,9 +11316,20 @@
       "parameters": {
         "construction": "dice_sum",
         "depth": 5,
+        "hidden": [
+          "係数の素因数分解"
+        ],
         "hidden_intermediates": 1,
         "node": "modal_ways_divisor_count",
-        "param": 3
+        "param": 3,
+        "premises": [
+          "3 個のさいころを同時に投げたときの出目の和"
+        ],
+        "scope": [
+          "確率",
+          "場合の数",
+          "約数の個数"
+        ]
       },
       "solution_tex": "場合の数を求めてから素因数分解する。",
       "source_generator": "construct_atlas",
@@ -6990,6 +11352,30 @@
           "DiceGeneratingFunction",
           "RootOfUnityFilter",
           "ComplexRootSet"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "DiceGeneratingFunction",
+            "primitives": [
+              "probability",
+              "polynomial_expansion",
+              "counting"
+            ]
+          },
+          {
+            "morphism": "RootOfUnityFilter",
+            "primitives": [
+              "roots_of_unity",
+              "sum_of_series"
+            ]
+          },
+          {
+            "morphism": "ComplexRootSet",
+            "primitives": [
+              "complex_plane",
+              "roots_of_unity"
+            ]
+          }
         ],
         "lowering_chain": [
           "probability",
@@ -7021,9 +11407,20 @@
       "parameters": {
         "construction": "dice_sum",
         "depth": 4,
+        "hidden": [
+          "1 の 3 乗根 \\omega を代入して係数を取り出す"
+        ],
         "hidden_intermediates": 1,
         "node": "prob_sum_divisible_by_3",
-        "param": 3
+        "param": 3,
+        "premises": [
+          "3 個のさいころを同時に投げたときの出目の和"
+        ],
+        "scope": [
+          "確率",
+          "複素数",
+          "1の3乗根"
+        ]
       },
       "solution_tex": "\\(f(z)=(z+\\cdots+z^6)^n\\) とすると，求める場合の数は \\(\\frac{f(1)+f(\\omega)+f(\\omega^2)}{3}\\)。\\(\\omega\\) は 1 の虚数3乗根。",
       "source_generator": "construct_atlas",
@@ -7045,6 +11442,23 @@
         "abstract_morphism_chain": [
           "DiceGeneratingFunction",
           "SubsetCount"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "DiceGeneratingFunction",
+            "primitives": [
+              "probability",
+              "polynomial_expansion",
+              "counting"
+            ]
+          },
+          {
+            "morphism": "SubsetCount",
+            "primitives": [
+              "counting",
+              "combination"
+            ]
+          }
         ],
         "lowering_chain": [
           "probability",
@@ -7073,9 +11487,16 @@
       "parameters": {
         "construction": "dice_sum",
         "depth": 2,
+        "hidden": [],
         "hidden_intermediates": 0,
         "node": "total_outcomes",
-        "param": 3
+        "param": 3,
+        "premises": [
+          "3 個のさいころを同時に投げたときの出目の和"
+        ],
+        "scope": [
+          "場合の数"
+        ]
       },
       "solution_tex": "\\(6^{3}\\)。",
       "source_generator": "construct_atlas",
@@ -7097,6 +11518,23 @@
         "abstract_morphism_chain": [
           "DiceGeneratingFunction",
           "VarianceOfSum"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "DiceGeneratingFunction",
+            "primitives": [
+              "probability",
+              "polynomial_expansion",
+              "counting"
+            ]
+          },
+          {
+            "morphism": "VarianceOfSum",
+            "primitives": [
+              "variance",
+              "expectation"
+            ]
+          }
         ],
         "lowering_chain": [
           "probability",
@@ -7126,9 +11564,20 @@
       "parameters": {
         "construction": "dice_sum",
         "depth": 4,
+        "hidden": [
+          "1個あたりの分散 35/12",
+          "独立性による分散の加法性"
+        ],
         "hidden_intermediates": 2,
         "node": "variance_times_12",
-        "param": 3
+        "param": 3,
+        "premises": [
+          "3 個のさいころを同時に投げたときの出目の和"
+        ],
+        "scope": [
+          "確率",
+          "分散"
+        ]
       },
       "solution_tex": "1個の分散は \\(\\frac{35}{12}\\)。独立なので和の分散は \\(\\frac{35\\cdot3}{12}\\)。",
       "source_generator": "construct_atlas",
@@ -7151,6 +11600,30 @@
           "DiceGeneratingFunction",
           "ModalOutcome",
           "SubsetCount"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "DiceGeneratingFunction",
+            "primitives": [
+              "probability",
+              "polynomial_expansion",
+              "counting"
+            ]
+          },
+          {
+            "morphism": "ModalOutcome",
+            "primitives": [
+              "counting",
+              "combination"
+            ]
+          },
+          {
+            "morphism": "SubsetCount",
+            "primitives": [
+              "counting",
+              "combination"
+            ]
+          }
         ],
         "lowering_chain": [
           "probability",
@@ -7180,9 +11653,20 @@
       "parameters": {
         "construction": "dice_sum",
         "depth": 4,
+        "hidden": [
+          "(z+z^2+…+z^6)^n の係数"
+        ],
         "hidden_intermediates": 1,
         "node": "ways_for_modal_sum",
-        "param": 3
+        "param": 3,
+        "premises": [
+          "3 個のさいころを同時に投げたときの出目の和"
+        ],
+        "scope": [
+          "確率",
+          "場合の数",
+          "多項式の展開"
+        ]
       },
       "solution_tex": "各さいころに対応する多項式の積を展開し，該当する次数の係数を読む。",
       "source_generator": "construct_atlas",
@@ -7199,7 +11683,7 @@
       "accepted": true,
       "answer_exact": "4",
       "answer_tex": "4",
-      "candidate_id": "construct:ultradeep.gambler_absorption_variance_divisor_count:078",
+      "candidate_id": "construct:ultradeep.gambler_absorption_variance_divisor_count:091",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "PathStateSpace",
@@ -7214,6 +11698,91 @@
           "IntegerInvariant",
           "PrimeFactorization",
           "DivisorCount"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "PathStateSpace",
+            "primitives": [
+              "counting",
+              "recurrence"
+            ]
+          },
+          {
+            "morphism": "AbsorbingBoundary",
+            "primitives": [
+              "recurrence_probability",
+              "simultaneous_equations"
+            ]
+          },
+          {
+            "morphism": "SymmetricRandomWalk",
+            "primitives": [
+              "probability",
+              "recurrence_probability"
+            ]
+          },
+          {
+            "morphism": "HittingTime",
+            "primitives": [
+              "expectation",
+              "recurrence_probability"
+            ]
+          },
+          {
+            "morphism": "FirstMomentConditioning",
+            "primitives": [
+              "conditional_probability",
+              "expectation"
+            ]
+          },
+          {
+            "morphism": "FirstMomentLinearSystem",
+            "primitives": [
+              "expectation",
+              "simultaneous_equations"
+            ]
+          },
+          {
+            "morphism": "SecondMomentConditioning",
+            "primitives": [
+              "conditional_probability",
+              "variance"
+            ]
+          },
+          {
+            "morphism": "SecondMomentLinearSystem",
+            "primitives": [
+              "variance",
+              "simultaneous_equations"
+            ]
+          },
+          {
+            "morphism": "VarianceTransform",
+            "primitives": [
+              "variance",
+              "expectation"
+            ]
+          },
+          {
+            "morphism": "IntegerInvariant",
+            "primitives": [
+              "integer_arithmetic",
+              "algebraic_identity"
+            ]
+          },
+          {
+            "morphism": "PrimeFactorization",
+            "primitives": [
+              "prime_factorization"
+            ]
+          },
+          {
+            "morphism": "DivisorCount",
+            "primitives": [
+              "prime_factorization",
+              "divisor_counting"
+            ]
+          }
         ],
         "lowering_chain": [
           "counting",
@@ -7276,7 +11845,7 @@
       "accepted": true,
       "answer_exact": "4",
       "answer_tex": "\\frac{x^2}{4}+\\frac{y^2}{1}=4",
-      "candidate_id": "construct:ultradeep.geometry_ellipse_tangent_pair_locus:081",
+      "candidate_id": "construct:ultradeep.geometry_ellipse_tangent_pair_locus:094",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "EllipseObject",
@@ -7289,6 +11858,77 @@
           "HomothetyRecognition",
           "ConicElimination",
           "LocusEquationObservation"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "EllipseObject",
+            "primitives": [
+              "ellipse"
+            ]
+          },
+          {
+            "morphism": "TrigonometricChart",
+            "primitives": [
+              "trigonometric_identity",
+              "complex_plane"
+            ]
+          },
+          {
+            "morphism": "PairedParameterShift",
+            "primitives": [
+              "parameter_elimination",
+              "symmetry"
+            ]
+          },
+          {
+            "morphism": "TangentDualization",
+            "primitives": [
+              "tangent_line",
+              "parameter_elimination"
+            ]
+          },
+          {
+            "morphism": "DualLinePair",
+            "primitives": [
+              "line_equation",
+              "tangent_line"
+            ]
+          },
+          {
+            "morphism": "LinearIntersection",
+            "primitives": [
+              "simultaneous_equations",
+              "line_equation"
+            ]
+          },
+          {
+            "morphism": "TrigonometricDiagonalization",
+            "primitives": [
+              "trigonometric_identity",
+              "de_moivre"
+            ]
+          },
+          {
+            "morphism": "HomothetyRecognition",
+            "primitives": [
+              "coordinate_geometry",
+              "symmetry"
+            ]
+          },
+          {
+            "morphism": "ConicElimination",
+            "primitives": [
+              "parameter_elimination",
+              "simultaneous_equations"
+            ]
+          },
+          {
+            "morphism": "LocusEquationObservation",
+            "primitives": [
+              "locus",
+              "parameter_elimination"
+            ]
+          }
         ],
         "lowering_chain": [
           "ellipse",
@@ -7354,6 +11994,29 @@
           "ComplementIntegral",
           "PowerSubstitution",
           "DominatedConvergence"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "ComplementIntegral",
+            "primitives": [
+              "definite_integral",
+              "area_integral"
+            ]
+          },
+          {
+            "morphism": "PowerSubstitution",
+            "primitives": [
+              "definite_integral",
+              "algebraic_identity"
+            ]
+          },
+          {
+            "morphism": "DominatedConvergence",
+            "primitives": [
+              "limit",
+              "inequality"
+            ]
+          }
         ],
         "lowering_chain": [
           "definite_integral",
@@ -7522,6 +12185,27 @@
           "ReflectionSubstitution",
           "PairwiseAddition",
           "EvaluateMeasure"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "ReflectionSubstitution",
+            "primitives": [
+              "definite_integral",
+              "symmetry"
+            ]
+          },
+          {
+            "morphism": "PairwiseAddition",
+            "primitives": [
+              "vector_addition"
+            ]
+          },
+          {
+            "morphism": "EvaluateMeasure",
+            "primitives": [
+              "area_integral"
+            ]
+          }
         ],
         "lowering_chain": [
           "definite_integral",
@@ -7693,6 +12377,36 @@
           "IncrementLimit",
           "StolzCesaro",
           "PositiveSquareRoot"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "SquareObservable",
+            "primitives": [
+              "square_number",
+              "integer_arithmetic"
+            ]
+          },
+          {
+            "morphism": "IncrementLimit",
+            "primitives": [
+              "limit",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "StolzCesaro",
+            "primitives": [
+              "limit",
+              "sequence"
+            ]
+          },
+          {
+            "morphism": "PositiveSquareRoot",
+            "primitives": [
+              "quadratic_equation",
+              "inequality"
+            ]
+          }
         ],
         "lowering_chain": [
           "square_number",
@@ -7874,6 +12588,28 @@
           "SignPartition",
           "AbsoluteIntegral"
         ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "TrigDifference",
+            "primitives": [
+              "trigonometric_identity"
+            ]
+          },
+          {
+            "morphism": "SignPartition",
+            "primitives": [
+              "trigonometric_equation",
+              "inequality"
+            ]
+          },
+          {
+            "morphism": "AbsoluteIntegral",
+            "primitives": [
+              "definite_integral",
+              "trigonometric_equation"
+            ]
+          }
+        ],
         "lowering_chain": [
           "trigonometric_identity",
           "trigonometric_equation",
@@ -7923,6 +12659,29 @@
           "FloorStep",
           "PiecewiseIntegral"
         ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "TrigLevelSets",
+            "primitives": [
+              "trigonometric_equation",
+              "inequality"
+            ]
+          },
+          {
+            "morphism": "FloorStep",
+            "primitives": [
+              "inequality",
+              "counting"
+            ]
+          },
+          {
+            "morphism": "PiecewiseIntegral",
+            "primitives": [
+              "definite_integral",
+              "inequality"
+            ]
+          }
+        ],
         "lowering_chain": [
           "trigonometric_equation",
           "inequality",
@@ -7964,7 +12723,7 @@
     }
   ],
   "summary": {
-    "certified_structures": 100,
+    "certified_structures": 113,
     "domain_counts": {
       "algebra": 4,
       "algebraic_geometry": 2,
@@ -7976,7 +12735,7 @@
       "complex": 2,
       "complex_algebra_number_theory": 1,
       "complex_geometry": 10,
-      "conic_geometry": 13,
+      "conic_geometry": 20,
       "convex_geometry": 1,
       "differential_geometry": 1,
       "euclidean_geometry": 1,
@@ -7986,13 +12745,13 @@
       "graph_combinatorics_number_theory": 1,
       "number_theory": 11,
       "number_theory_graph": 1,
-      "plane_geometry": 14,
+      "plane_geometry": 20,
       "probability": 9,
       "probability_linear_algebra_number_theory": 1,
       "projective_geometry": 1,
       "real_analysis": 5
     },
-    "families": 98,
+    "families": 111,
     "family_counts": {
       "algebraic_geometry.cubic_discriminant_triangle_area": 1,
       "algebraic_geometry.even_quartic_parabola_hull_area": 1,
@@ -8033,6 +12792,12 @@
       "traceback.cubic_tangent.log_growth_limit": 1,
       "traceback.cubic_tangent.midpoint_locus": 1,
       "traceback.cubic_tangent.reintersection_x": 1,
+      "traceback.cyclic_quadrilateral.area": 1,
+      "traceback.cyclic_quadrilateral.circumradius_sq": 1,
+      "traceback.cyclic_quadrilateral.cos_angle_a": 1,
+      "traceback.cyclic_quadrilateral.diagonal_ac_sq": 1,
+      "traceback.cyclic_quadrilateral.diagonal_product": 1,
+      "traceback.cyclic_quadrilateral.semiperimeter": 1,
       "traceback.dice_sum.modal_sum": 1,
       "traceback.dice_sum.modal_ways_divisor_count": 1,
       "traceback.dice_sum.prob_sum_divisible_by_3": 1,
@@ -8069,6 +12834,13 @@
       "traceback.lattice_path.through_center_paths": 1,
       "traceback.lattice_path.total_paths": 1,
       "traceback.lattice_path.total_paths_divisor_count": 1,
+      "traceback.parabola_focal_chord.chord_length": 1,
+      "traceback.parabola_focal_chord.midpoint_to_directrix": 1,
+      "traceback.parabola_focal_chord.min_chord_length": 1,
+      "traceback.parabola_focal_chord.parameter_product": 1,
+      "traceback.parabola_focal_chord.reciprocal_focal_radii_sum": 1,
+      "traceback.parabola_focal_chord.tangent_intersection_x": 1,
+      "traceback.parabola_focal_chord.tangent_slope_product": 1,
       "traceback.regular_polygon.area": 1,
       "traceback.regular_polygon.centroid_zero_subsets": 1,
       "traceback.regular_polygon.diagonal_count": 1,
@@ -8093,17 +12865,17 @@
       "ultradeep.geometry_regular_polygon_minkowski_perimeter": 1,
       "ultradeep.paley_four_cycle_divisor_count": 1
     },
-    "geometry_algebra_structures": 64,
+    "geometry_algebra_structures": 77,
     "rejected": {
-      "same_structure_variant": 70,
+      "same_structure_variant": 83,
       "scope_lowering": 10
     },
     "source_counts": {
-      "construct_atlas": 81,
+      "construct_atlas": 94,
       "geometry_fusion": 4,
       "typed_continuous": 15
     },
     "surface_rewritten": 4,
-    "total_instances": 100
+    "total_instances": 113
   }
 }
