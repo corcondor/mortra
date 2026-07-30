@@ -128,6 +128,9 @@ export function inverse(
   approach: Vec3,
   boardUp: Vec3,
   elbowUp = true,
+  baseFlip = false,
+  wristFlip = false,
+  seedTheta4 = 0,
 ): number[] | null {
   const [ax, ay, az] = normalize(approach)
   // 1) 手首中心
@@ -135,8 +138,8 @@ export function inverse(
   const wy = target[1] - D6 * ay
   const wz = target[2] - D6 * az
 
-  // 2) 基部旋回
-  const theta1 = Math.atan2(wy, wx)
+  // 2) 基部旋回。反対向きに振って裏から届く解も同じ点に到達する
+  const theta1 = Math.atan2(wy, wx) + (baseFlip ? Math.PI : 0)
 
   // 3) 肩・肘。この DH 表では手首中心が
   //      R = a2*cos(t2) + d4*sin(t2+t3)
@@ -144,7 +147,7 @@ export function inverse(
   //    となる。(sin(t2+t3), -cos(t2+t3)) = (cos w, sin w), w = t2+t3-pi/2 と
   //    置くと、長さ a2 と d4 の平面 2 リンクそのものになる。
   //    よって余弦定理の値は cos(w - t2) = sin(t3) に等しい。
-  const r = Math.hypot(wx, wy)
+  const r = (baseFlip ? -1 : 1) * Math.hypot(wx, wy)
   const s = wz - D1
   const distSq = r * r + s * s
   const sin3 = (distSq - A2 * A2 - D4 * D4) / (2 * A2 * D4)
@@ -172,20 +175,24 @@ export function inverse(
   const R03 = rotationOf(acc)
   const R36 = rotMul(rotTranspose(R03), R06)
 
-  // ZYZ オイラー角
+  // ZYZ オイラー角。theta5 の符号で 2 通りの解がある
+  const sign = wristFlip ? -1 : 1
   const theta5 = Math.atan2(
-    Math.hypot(R36[2], R36[5]), // sqrt(r13^2 + r23^2)
-    R36[8],                     // r33
+    sign * Math.hypot(R36[2], R36[5]), // sqrt(r13^2 + r23^2)
+    R36[8],                            // r33
   )
   let theta4: number
   let theta6: number
-  if (Math.abs(Math.sin(theta5)) < 1e-8) {
-    // 特異点（手首が伸び切り）: 4 と 6 の和しか決まらないので 4 を 0 に置く
-    theta4 = 0
-    theta6 = Math.atan2(-R36[1], R36[0])
+  if (Math.abs(Math.sin(theta5)) < 1e-6) {
+    // 手首特異点: theta4 と theta6 は和（または差）しか決まらない。
+    // 0 に固定すると通過のたびに 180 度飛ぶので、直前の値を保って
+    // 残りを theta6 に寄せる。こうすると特異点を跨いでも連続になる。
+    theta4 = seedTheta4
+    const total = Math.atan2(-R36[1], R36[0])
+    theta6 = R36[8] > 0 ? total - theta4 : total + theta4
   } else {
-    theta4 = Math.atan2(R36[5], R36[2])
-    theta6 = Math.atan2(R36[7], -R36[6])
+    theta4 = Math.atan2(sign * R36[5], sign * R36[2])
+    theta6 = Math.atan2(sign * R36[7], -sign * R36[6])
   }
   return [theta1, theta2, theta3, theta4, theta5, theta6]
 }
@@ -201,6 +208,116 @@ export function cross(a: Vec3, b: Vec3): Vec3 {
     a[2] * b[0] - a[0] * b[2],
     a[0] * b[1] - a[1] * b[0],
   ]
+}
+
+/** 角度を base から ±π 以内へ巻き戻す */
+export function unwrapNear(angle: number, base: number): number {
+  let value = angle
+  while (value - base > Math.PI) value -= 2 * Math.PI
+  while (value - base < -Math.PI) value += 2 * Math.PI
+  return value
+}
+
+/**
+ * 直前の姿勢に最も近い解を選ぶ逆運動学。
+ *
+ * atan2 が返す角は ±π で折り返すので、素直に使うと 2 度動かしたいところで
+ * 358 度回る解が出る。軌道を張るとその大回転をそのまま補間してしまい、
+ * 腕が暴れる。実測すると立体の作図で 358.9 度の跳びが出ていた。
+ *
+ * さらに球面手首には (t4, t5, t6) と (t4+pi, -t5, t6+pi) という
+ * 同じ姿勢を与える 2 通りがあるので、直前に近い方を選ぶ。
+ */
+export function inverseAll(
+  target: Vec3,
+  approach: Vec3,
+  boardUp: Vec3,
+  seedTheta4 = 0,
+): number[][] {
+  const solutions: number[][] = []
+  for (const baseFlip of [false, true]) {
+    for (const elbowUp of [true, false]) {
+      for (const wristFlip of [false, true]) {
+        const solution = inverse(
+          target, approach, boardUp, elbowUp, baseFlip, wristFlip, seedTheta4,
+        )
+        if (solution) solutions.push(solution)
+      }
+    }
+  }
+  return solutions
+}
+
+/** approach 軸のまわりに boardUp を phi だけ回す（ロドリゲスの公式） */
+function rollAbout(axis: Vec3, vector: Vec3, phi: number): Vec3 {
+  const k = normalize(axis)
+  const cos = Math.cos(phi)
+  const sin = Math.sin(phi)
+  const kv = cross(k, vector)
+  const kd = k[0] * vector[0] + k[1] * vector[1] + k[2] * vector[2]
+  return [
+    vector[0] * cos + kv[0] * sin + k[0] * kd * (1 - cos),
+    vector[1] * cos + kv[1] * sin + k[1] * kd * (1 - cos),
+    vector[2] * cos + kv[2] * sin + k[2] * kd * (1 - cos),
+  ]
+}
+
+/** 手首特異点に近いほど大きい罰則。|sin(theta5)| が 0 に近いと theta4 が定まらない */
+const SINGULARITY_FLOOR = 0.22
+
+export function inverseNear(
+  target: Vec3,
+  approach: Vec3,
+  boardUp: Vec3,
+  previous: number[] | null,
+  elbowUp = true,
+  tiltSteps = 6,
+  maxTilt = 0.22, // 約 12.6 度
+): number[] | null {
+  if (!previous) {
+    return inverse(target, approach, boardUp, elbowUp)
+  }
+  // 選択肢は 2 種類ある。
+  //  * 解の枝: 6R は 1 姿勢に最大 8 解（基部の表裏 × 肘の上下 × 手首の裏返し）
+  //  * ペンの傾き: ペン先の位置は指定どおりでも、軸の傾きは少し変えてよい
+  //
+  // ペンの「軸まわりの回転」は使えない。それは theta6 に丸ごと吸収されるので、
+  // theta5（手首特異点までの距離）を動かせないためである。効くのは傾きの方。
+  // 特異点の近くではわずかな移動で theta4 が数十度動き、腕が跳ねて見える。
+  const tilts: Vec3[] = [normalize(approach)]
+  const side = normalize(cross(boardUp, approach))
+  const other = cross(normalize(approach), side)
+  for (let s = 1; s <= tiltSteps; s++) {
+    const phi = (s / tiltSteps) * Math.PI * 2
+    const amount = maxTilt
+    tilts.push(normalize([
+      approach[0] + amount * (side[0] * Math.cos(phi) + other[0] * Math.sin(phi)),
+      approach[1] + amount * (side[1] * Math.cos(phi) + other[1] * Math.sin(phi)),
+      approach[2] + amount * (side[2] * Math.cos(phi) + other[2] * Math.sin(phi)),
+    ]))
+  }
+
+  let best: number[] | null = null
+  let bestCost = Infinity
+  for (const tilted of tilts) {
+    for (const candidate of inverseAll(target, tilted, boardUp, previous[3] ?? 0)) {
+      const wrapped = candidate.map((angle, index) =>
+        unwrapNear(angle, previous[index] ?? 0),
+      )
+      let cost = 0
+      for (let i = 0; i < wrapped.length; i++) {
+        // 手首側は多少回っても手先は暴れないので重みを下げる
+        const weight = i < 3 ? 1 : 0.7
+        cost = Math.max(cost, weight * Math.abs(wrapped[i] - (previous[i] ?? 0)))
+      }
+      const away = Math.abs(Math.sin(wrapped[4]))
+      if (away < SINGULARITY_FLOOR) {
+        cost += (SINGULARITY_FLOOR - away) * 6
+      }
+      if (cost < bestCost) { bestCost = cost; best = wrapped }
+    }
+  }
+  return best
 }
 
 /** 関節角を滑らかに補間する（最短回りを選ぶ） */

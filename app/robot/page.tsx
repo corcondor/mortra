@@ -12,58 +12,10 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
-import {
-  ARM, forwardAll, inverse, positionOf, type Vec3,
-} from '@/lib/kinematics'
-import {
-  FIGURES, figureComplexity, resample3, type Figure, type P3,
-} from '@/lib/figures'
-import {
-  peakDerivatives, planJointTrajectory, sampleAt, timeParameterize,
-} from '@/lib/trajectory'
-
-const BOARD_UP: Vec3 = [0, 0, 1]
-const DEFAULT_APPROACH: Vec3 = [0, 1, 0]
-const LIFT = 7
-
-type Marker = { penDown: boolean; stroke: number; label: string }
-
-function buildPlan(figure: Figure) {
-  const waypoints: number[][] = []
-  const markers: Marker[] = []
-  let unreachable = 0
-
-  const push = (p: P3, approach: Vec3, marker: Marker) => {
-    const joints = inverse([p.x, p.y, p.z], approach, BOARD_UP, true)
-    if (!joints) { unreachable++; return }
-    waypoints.push(joints)
-    markers.push(marker)
-  }
-
-  figure.strokes.forEach((stroke, index) => {
-    const approach: Vec3 = stroke.approach
-      ? [stroke.approach.x, stroke.approach.y, stroke.approach.z]
-      : DEFAULT_APPROACH
-    const dense = resample3(stroke.points)
-    if (!dense.length) return
-    const lift = (p: P3): P3 => ({
-      x: p.x - approach[0] * LIFT,
-      y: p.y - approach[1] * LIFT,
-      z: p.z - approach[2] * LIFT,
-    })
-    const up: Marker = { penDown: false, stroke: index, label: stroke.label }
-    const down: Marker = { penDown: true, stroke: index, label: stroke.label }
-    push(lift(dense[0]), approach, up)
-    for (const p of dense) push(p, approach, down)
-    push(lift(dense[dense.length - 1]), approach, up)
-  })
-
-  const durations = timeParameterize(waypoints)
-  const perJoint = planJointTrajectory(waypoints, durations)
-  const total = durations.reduce((a, b) => a + b, 0)
-  const peak = peakDerivatives(perJoint)
-  return { waypoints, markers, durations, perJoint, total, unreachable, peak }
-}
+import { ARM, forwardAll, positionOf } from '@/lib/kinematics'
+import { FIGURES, figureComplexity } from '@/lib/figures'
+import { sampleAt } from '@/lib/trajectory'
+import { buildPlan } from '@/lib/plan'
 
 function orientSegment(mesh: THREE.Mesh, a: THREE.Vector3, b: THREE.Vector3) {
   const direction = new THREE.Vector3().subVectors(b, a)

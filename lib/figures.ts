@@ -292,7 +292,12 @@ function cubeSectionFigure(): Figure {
     mid3(c[6], c[7]), mid3(c[7], c[4]), mid3(c[4], c[0]),
   ]
   const centre = inSpace(0, 0, 0)
-  const outward = (p: P3): P3 => unit3(add3(sub3(p, centre), { x: 0, y: 6, z: 0 }))
+  // ペンの向きは板向き（+y）を主にして、位置に応じて少しだけ傾ける。
+  // 純粋な外向きにすると向きが球面全体に散らばり、辺から辺へ移るときに
+  // 手首が 180 度反転する。実測で関節が 179.7 度跳んでいた。
+  // 空間の線を引くのにペンが外を向いている必要はない。
+  const outward = (p: P3): P3 =>
+    unit3(add3(unit3(sub3(p, centre)), { x: 0, y: 3.4, z: 0 }))
 
   const strokes: Stroke3[] = edges.map(([i, j], index) =>
     polyline([c[i], c[j]], `立方体の辺 ${index + 1}/12`, 'solid', outward(mid3(c[i], c[j]))),
@@ -333,7 +338,9 @@ function tetrahedronFigure(): Figure {
     inSpace(s, s, s), inSpace(s, -s, -s), inSpace(-s, s, -s), inSpace(-s, -s, s),
   ]
   const centre = inSpace(0, 0, 0)
-  const outward = (p: P3): P3 => unit3(add3(sub3(p, centre), { x: 0, y: 5, z: 0 }))
+  // 立方体と同じ理由で、板向きを主にした緩やかな傾きにする
+  const outward = (p: P3): P3 =>
+    unit3(add3(unit3(sub3(p, centre)), { x: 0, y: 3.4, z: 0 }))
   const edges: [number, number][] = [[0, 1], [0, 2], [0, 3], [1, 2], [1, 3], [2, 3]]
   const strokes: Stroke3[] = edges.map(([i, j], index) =>
     polyline([v[i], v[j]], `正四面体の辺 ${index + 1}/6`, 'solid', outward(mid3(v[i], v[j]))),
