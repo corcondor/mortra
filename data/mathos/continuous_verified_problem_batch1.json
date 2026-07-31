@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-30T19:14:09.977056+00:00",
+  "generated_at": "2026-07-31T06:05:52.369727+00:00",
   "method": {
     "name": "MathOS Japanese entrance-mathematics structural pool",
     "numeric_variants_count_as_new": false,
@@ -817,6 +817,316 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "symbolic_discriminant_identity_vs_numeric_root_triangle_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "a*b",
+      "answer_tex": "ab\\quad\\text{（}P=(a/\\sqrt2,b/\\sqrt2)\\text{ のとき）}",
+      "candidate_id": "relation:relation.ellipse.tangent_intercept_area_minimum",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "EllipseObject",
+          "ParametricPoint",
+          "TangentLine",
+          "AxisIntercepts",
+          "Area",
+          "SubstituteConstraint",
+          "SquareCompletion",
+          "Minimum"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "EllipseObject",
+            "primitives": [
+              "ellipse"
+            ]
+          },
+          {
+            "morphism": "ParametricPoint",
+            "primitives": [
+              "parametric_curve",
+              "coordinate_geometry"
+            ]
+          },
+          {
+            "morphism": "TangentLine",
+            "primitives": [
+              "tangent_line",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "AxisIntercepts",
+            "primitives": [
+              "line_equation",
+              "coordinate_geometry"
+            ]
+          },
+          {
+            "morphism": "Area",
+            "primitives": [
+              "area_shoelace"
+            ]
+          },
+          {
+            "morphism": "SubstituteConstraint",
+            "primitives": [
+              "simultaneous_equations",
+              "algebraic_identity"
+            ]
+          },
+          {
+            "morphism": "SquareCompletion",
+            "primitives": [
+              "polynomial_factorization",
+              "inequality"
+            ]
+          },
+          {
+            "morphism": "Minimum",
+            "primitives": [
+              "extremum",
+              "differentiation"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "ellipse",
+          "parametric_curve",
+          "coordinate_geometry",
+          "tangent_line",
+          "differentiation",
+          "line_equation",
+          "area_shoelace",
+          "simultaneous_equations",
+          "algebraic_identity",
+          "polynomial_factorization",
+          "inequality",
+          "extremum"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "difficulty_score": 11.75,
+      "domain": "analytic_geometry",
+      "family_id": "relation.ellipse.tangent_intercept_area_minimum",
+      "lift_certificate": {
+        "constraint_skeleton": [
+          "positive(a,b,u,v)",
+          "u^2+v^2=1",
+          "tangent_at(a*u,b*v)"
+        ],
+        "morphism_chain": [
+          "EllipseObject",
+          "ParametricPoint",
+          "TangentLine",
+          "AxisIntercepts",
+          "Area",
+          "SubstituteConstraint",
+          "SquareCompletion",
+          "Minimum"
+        ],
+        "query_signature": "relation:min",
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1026,
+        "measured": true,
+        "reference_corpus_size": 28074
+      },
+      "parameters": {
+        "constraint_skeleton": [
+          "positive(a,b,u,v)",
+          "u^2+v^2=1",
+          "tangent_at(a*u,b*v)"
+        ],
+        "kind": "min",
+        "relation_certificate": {
+          "bound_exact": "a*b",
+          "constraint_exact": "u**2 + v**2 - 1",
+          "counterexample_set": "EmptySet",
+          "equality_points": [
+            "u=v=sqrt(2)/2"
+          ],
+          "factorization_exact": "a*b*(u - v)**2/(2*u*v)",
+          "factorization_tex": "\\frac{a b \\left(u - v\\right)^{2}}{2 u v}",
+          "global_relation_verified": true,
+          "identity_verified": true,
+          "independent_numeric_check": true,
+          "kind": "min",
+          "residual_exact": "-a*b + a*b/(2*u*v)"
+        },
+        "scope": [
+          "楕円",
+          "接線",
+          "座標",
+          "面積",
+          "不等式"
+        ]
+      },
+      "solution_tex": "接線は \\(ux/a+vy/b=1\\) なので切片は \\(a/u,b/v\\)。よって\\[S_P=\\frac{ab}{2uv}.\\]制約 \\(u^2+v^2=1\\) を用いると\\[S_P-ab=\\frac{ab(u-v)^2}{2uv}\\geq0.\\]等号は \\(u=v=1/\\sqrt2\\) のとき。",
+      "source_generator": "relation_closure",
+      "statement_tex": "正の実数 \\(a,b\\) に対し，楕円\\(E:x^2/a^2+y^2/b^2=1\\) を定める。第1象限の点\\(P=(au,bv)\\ (u,v>0,\\ u^2+v^2=1)\\) における接線と両座標軸が囲む三角形の面積を \\(S_P\\) とする。\\(S_P\\) の最小値と，そのときの \\(P\\) を求めよ。",
+      "structure_key": "6f558da375d15cfb704c6845d7074efcbb68d107daf58196c87376b02f33d0e2",
+      "tool": "relation_closure",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "identity_mod_ellipse_constraint_plus_pythagorean_samples"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "4*p",
+      "answer_tex": "4p\\quad\\text{（}t=1\\text{ のとき）}",
+      "candidate_id": "relation:relation.parabola.focal_chord_minimum",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "ParabolaObject",
+          "ParametricPoint",
+          "FocalChordConstraint",
+          "DistanceFormula",
+          "SimplifyRational",
+          "SquareCompletion",
+          "Minimum"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "ParabolaObject",
+            "primitives": [
+              "parabola"
+            ]
+          },
+          {
+            "morphism": "ParametricPoint",
+            "primitives": [
+              "parametric_curve",
+              "coordinate_geometry"
+            ]
+          },
+          {
+            "morphism": "FocalChordConstraint",
+            "primitives": [
+              "parabola",
+              "line_equation"
+            ]
+          },
+          {
+            "morphism": "DistanceFormula",
+            "primitives": [
+              "distance_formula"
+            ]
+          },
+          {
+            "morphism": "SimplifyRational",
+            "primitives": [
+              "rational_function",
+              "algebraic_identity"
+            ]
+          },
+          {
+            "morphism": "SquareCompletion",
+            "primitives": [
+              "polynomial_factorization",
+              "inequality"
+            ]
+          },
+          {
+            "morphism": "Minimum",
+            "primitives": [
+              "extremum",
+              "differentiation"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "parabola",
+          "parametric_curve",
+          "coordinate_geometry",
+          "line_equation",
+          "distance_formula",
+          "rational_function",
+          "algebraic_identity",
+          "polynomial_factorization",
+          "inequality",
+          "extremum",
+          "differentiation"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "difficulty_score": 9.45,
+      "domain": "analytic_geometry",
+      "family_id": "relation.parabola.focal_chord_minimum",
+      "lift_certificate": {
+        "constraint_skeleton": [
+          "positive(p)",
+          "positive(t)",
+          "focal_chord(P_t,Q_t)"
+        ],
+        "morphism_chain": [
+          "ParabolaObject",
+          "ParametricPoint",
+          "FocalChordConstraint",
+          "DistanceFormula",
+          "SimplifyRational",
+          "SquareCompletion",
+          "Minimum"
+        ],
+        "query_signature": "relation:min",
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "selfauthored",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0842,
+        "measured": true,
+        "reference_corpus_size": 28074
+      },
+      "parameters": {
+        "constraint_skeleton": [
+          "positive(p)",
+          "positive(t)",
+          "focal_chord(P_t,Q_t)"
+        ],
+        "kind": "min",
+        "relation_certificate": {
+          "bound_exact": "4*p",
+          "counterexample_set": "EmptySet",
+          "equality_points": [
+            "1"
+          ],
+          "factorization_exact": "p*(t - 1/t)**2",
+          "factorization_tex": "p \\left(t - \\frac{1}{t}\\right)^{2}",
+          "global_relation_verified": true,
+          "identity_verified": true,
+          "independent_numeric_check": true,
+          "kind": "min",
+          "residual_exact": "p*(t - 1)**2*(t + 1)**2/t**2"
+        },
+        "scope": [
+          "放物線",
+          "焦点弦",
+          "距離",
+          "不等式"
+        ]
+      },
+      "solution_tex": "2点の媒介変数の積は \\(-1\\) なので \\(P_tQ_t\\) は焦点弦である。距離公式を整理すると\\[|P_tQ_t|=p\\left(t+\\frac1t\\right)^2.\\]さらに\\[|P_tQ_t|-4p=p\\left(t-\\frac1t\\right)^2\\geq0.\\]よって最小値は \\(4p\\)，等号は \\(t=1\\) のとき。",
+      "source_generator": "relation_closure",
+      "statement_tex": "正の実数 \\(p,t\\) に対し，放物線 \\(C:y^2=4px\\) 上の2点\\(P_t=(pt^2,2pt)\\)，\\(Q_t=(p/t^2,-2p/t)\\) を定める。線分 \\(P_tQ_t\\) が \\(C\\) の焦点を通ることを示し，その長さの最小値を求めよ。",
+      "structure_key": "2309f5282e0d783b2482d515dbd62c4325e81c5bb087e0f133ee2b3989a6b735",
+      "tool": "relation_closure",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "exact_distance_identity_plus_rational_samples"
       }
     },
     {
@@ -22403,6 +22713,292 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "deduction_closure_node_with_traceback"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "D_n-L_n=n(n-5)/2",
+      "answer_tex": "D_n\\geq L_n\\quad\\text{（等号は }n=5\\text{）}",
+      "candidate_id": "relation:relation.regular_polygon.distance_product_vs_diagonals",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "RootOfUnity",
+          "PolynomialFactorization",
+          "LimitEvaluation",
+          "DistanceProduct",
+          "PairCounting",
+          "EdgeExclusion",
+          "SubstituteConstraint",
+          "InequalityProof"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "RootOfUnity",
+            "primitives": [
+              "roots_of_unity"
+            ]
+          },
+          {
+            "morphism": "PolynomialFactorization",
+            "primitives": [
+              "polynomial_factorization"
+            ]
+          },
+          {
+            "morphism": "LimitEvaluation",
+            "primitives": [
+              "limit"
+            ]
+          },
+          {
+            "morphism": "DistanceProduct",
+            "primitives": [
+              "distance_formula",
+              "polynomial_factorization"
+            ]
+          },
+          {
+            "morphism": "PairCounting",
+            "primitives": [
+              "counting",
+              "combination"
+            ]
+          },
+          {
+            "morphism": "EdgeExclusion",
+            "primitives": [
+              "counting",
+              "combination"
+            ]
+          },
+          {
+            "morphism": "SubstituteConstraint",
+            "primitives": [
+              "simultaneous_equations",
+              "algebraic_identity"
+            ]
+          },
+          {
+            "morphism": "InequalityProof",
+            "primitives": [
+              "inequality",
+              "algebraic_identity"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "roots_of_unity",
+          "polynomial_factorization",
+          "limit",
+          "distance_formula",
+          "counting",
+          "combination",
+          "simultaneous_equations",
+          "algebraic_identity",
+          "inequality"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "difficulty_score": 15.65,
+      "domain": "complex_geometry_combinatorics",
+      "family_id": "relation.regular_polygon.distance_product_vs_diagonals",
+      "lift_certificate": {
+        "constraint_skeleton": [
+          "integer(n)",
+          "n>=5",
+          "regular_polygon(n)"
+        ],
+        "morphism_chain": [
+          "RootOfUnity",
+          "PolynomialFactorization",
+          "LimitEvaluation",
+          "DistanceProduct",
+          "PairCounting",
+          "EdgeExclusion",
+          "SubstituteConstraint",
+          "InequalityProof"
+        ],
+        "query_signature": "relation:sos",
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "selfauthored",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.119,
+        "measured": true,
+        "reference_corpus_size": 28074
+      },
+      "parameters": {
+        "constraint_skeleton": [
+          "integer(n)",
+          "n>=5",
+          "regular_polygon(n)"
+        ],
+        "kind": "sos",
+        "relation_certificate": {
+          "bound_exact": "0",
+          "counterexample_set": "EmptySet",
+          "equality_points": [
+            "5"
+          ],
+          "factorization_exact": "n*(n - 5)/2",
+          "factorization_tex": "\\frac{n \\left(n - 5\\right)}{2}",
+          "global_relation_verified": true,
+          "identity_verified": true,
+          "independent_numeric_check": true,
+          "kind": "sos",
+          "residual_exact": "n*(n - 5)/2"
+        },
+        "scope": [
+          "複素数平面",
+          "正多角形",
+          "組合せ",
+          "不等式"
+        ]
+      },
+      "solution_tex": "\\(z^n-1\\) を \\(z-1\\) で割って \\(z\\to1\\) とすれば\\(L_n=n\\)。一方，頂点対から辺を除いて\\(D_n=\\binom n2-n=\\frac{n(n-3)}2\\)。したがって\\[D_n-L_n=\\frac{n(n-5)}2\\geq0.\\]等号は \\(n=5\\) のときに限る。",
+      "source_generator": "relation_closure",
+      "statement_tex": "正の整数 \\(n\\geq5\\) に対し，単位円に内接する正 \\(n\\) 角形を次のように定める。1つの頂点から他の全頂点までの距離の積を\\(L_n\\)，この正多角形の対角線の総数を \\(D_n\\) とする。\\(D_n\\geq L_n\\) を示し，等号が成立する \\(n\\) を求めよ。",
+      "structure_key": "d93706d2ba80e63085c1492f4f8e8978508d4ef58534f25e8231413d348a7485",
+      "tool": "relation_closure",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "exact_identity_plus_integer_grid"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "c^2-(a+b)^2/4=3*(a-b)^2/4",
+      "answer_tex": "c\\geq(a+b)/2\\quad\\text{（等号は }a=b\\text{）}",
+      "candidate_id": "relation:relation.triangle.sixty_degree_side_bound",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "CosineRule",
+          "TrigonometricNormalForm",
+          "SubstituteConstraint",
+          "SquareCompletion",
+          "InequalityProof",
+          "EqualityCase"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "CosineRule",
+            "primitives": [
+              "sine_cosine_rule"
+            ]
+          },
+          {
+            "morphism": "TrigonometricNormalForm",
+            "primitives": [
+              "trigonometric_identity"
+            ]
+          },
+          {
+            "morphism": "SubstituteConstraint",
+            "primitives": [
+              "simultaneous_equations",
+              "algebraic_identity"
+            ]
+          },
+          {
+            "morphism": "SquareCompletion",
+            "primitives": [
+              "polynomial_factorization",
+              "inequality"
+            ]
+          },
+          {
+            "morphism": "InequalityProof",
+            "primitives": [
+              "inequality",
+              "algebraic_identity"
+            ]
+          },
+          {
+            "morphism": "EqualityCase",
+            "primitives": [
+              "inequality"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "sine_cosine_rule",
+          "trigonometric_identity",
+          "simultaneous_equations",
+          "algebraic_identity",
+          "polynomial_factorization",
+          "inequality"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "A",
+      "difficulty_score": 13.57,
+      "domain": "euclidean_geometry",
+      "family_id": "relation.triangle.sixty_degree_side_bound",
+      "lift_certificate": {
+        "constraint_skeleton": [
+          "triangle(a,b,c)",
+          "angle(C)=60deg"
+        ],
+        "morphism_chain": [
+          "CosineRule",
+          "TrigonometricNormalForm",
+          "SubstituteConstraint",
+          "SquareCompletion",
+          "InequalityProof",
+          "EqualityCase"
+        ],
+        "query_signature": "relation:sos",
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "selfauthored",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1158,
+        "measured": true,
+        "reference_corpus_size": 28074
+      },
+      "parameters": {
+        "constraint_skeleton": [
+          "triangle(a,b,c)",
+          "angle(C)=60deg"
+        ],
+        "kind": "sos",
+        "relation_certificate": {
+          "bound_exact": "(a+b)/2",
+          "counterexample_set": "EmptySet",
+          "equality_points": [
+            "a=b"
+          ],
+          "factorization_exact": "3*(a - b)**2/4",
+          "factorization_tex": "\\frac{3 \\left(a - b\\right)^{2}}{4}",
+          "global_relation_verified": true,
+          "identity_verified": true,
+          "independent_numeric_check": true,
+          "kind": "sos",
+          "residual_exact": "3*(a - b)**2/4"
+        },
+        "scope": [
+          "余弦定理",
+          "不等式",
+          "等号条件"
+        ]
+      },
+      "solution_tex": "余弦定理より \\(c^2=a^2+b^2-ab\\)。したがって\\[c^2-\\left(\\frac{a+b}{2}\\right)^2=\\frac34(a-b)^2\\geq0.\\]両辺は正なので所望の不等式が従い，等号は \\(a=b\\) と同値。",
+      "source_generator": "relation_closure",
+      "statement_tex": "三角形 \\(ABC\\) で \\(\\angle C=60^\\circ\\) とする。\\(BC=a,\\ CA=b,\\ AB=c\\) と定めるとき，\\[c\\geq\\frac{a+b}{2}\\]を示し，等号が成立するための必要十分条件を求めよ。",
+      "structure_key": "35ad2baa1d08b4380c9c03b87791db1491cf7a433dc54040012a3aab0821a236",
+      "tool": "relation_closure",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "cosine_rule_identity_plus_integer_samples"
       }
     },
     {
@@ -59259,17 +59855,18 @@
     }
   ],
   "summary": {
-    "certified_structures": 448,
+    "certified_structures": 452,
     "domain_counts": {
       "algebra": 2,
       "algebraic_geometry": 2,
       "algebraic_geometry_number_theory": 1,
-      "analytic_geometry": 1,
+      "analytic_geometry": 3,
       "combinatorics": 79,
       "complex": 2,
       "complex_algebra_number_theory": 1,
       "complex_geometry": 78,
-      "euclidean_geometry": 1,
+      "complex_geometry_combinatorics": 1,
+      "euclidean_geometry": 2,
       "geometry": 1,
       "geometry_algebra": 2,
       "geometry_analysis": 1,
@@ -59280,7 +59877,7 @@
       "projective_geometry": 1,
       "real_analysis": 2
     },
-    "families": 446,
+    "families": 450,
     "family_counts": {
       "algebraic_geometry.cubic_discriminant_triangle_area": 1,
       "algebraic_geometry.even_quartic_parabola_hull_area": 1,
@@ -59719,6 +60316,10 @@
       "passage_region.line_family_sweep": 1,
       "polynomial.interpolation_harmonic_observable": 1,
       "probability.random_bridge_zero_count": 1,
+      "relation.ellipse.tangent_intercept_area_minimum": 1,
+      "relation.parabola.focal_chord_minimum": 1,
+      "relation.regular_polygon.distance_product_vs_diagonals": 1,
+      "relation.triangle.sixty_degree_side_bound": 1,
       "traceback.cubic_tangent.log_growth_limit": 1,
       "traceback.regular_polygon.distance_product_divisors": 1,
       "traceback.regular_polygon.sum_sq_pairwise": 1,
@@ -59729,20 +60330,21 @@
       "ultradeep.geometry_orthocenter_locus_area": 1,
       "ultradeep.paley_four_cycle_divisor_count": 1
     },
-    "geometry_algebra_structures": 304,
+    "geometry_algebra_structures": 308,
     "rejected": {
       "same_structure_variant": 14,
       "scope_lowering": 10,
-      "too_easy": 147,
+      "too_easy": 162,
       "too_few_operations": 20
     },
     "source_counts": {
       "closure_composition": 419,
       "construct_atlas": 21,
       "geometry_fusion": 2,
+      "relation_closure": 4,
       "typed_continuous": 6
     },
     "surface_rewritten": 2,
-    "total_instances": 448
+    "total_instances": 452
   }
 }
