@@ -25,6 +25,7 @@ export default function Home() {
 function HomeInner() {
   const { user, signOut, accessToken, isAdmin, supabase } = useAuth()
   const [problems,  setProblems]  = useState<ProblemWithRating[]>([])
+  const [source,    setSource]    = useState<'own' | 'past' | 'all'>('own')
   const [loading,   setLoading]   = useState(true)
   const [tab,       setTab]       = useState<Tab>('list')
   const [filters,   setFilters]   = useState<Filters>(DEFAULT_FILTERS)
@@ -45,10 +46,18 @@ function HomeInner() {
     setLoading(true)
     // 5,000件超を ratings と JOIN して全件取得すると DB が statement timeout に
     // なり、一覧が空になっていた。スコア上位に絞り、ratings は別途まとめて引く。
+    // 出所で分ける。過去問の source_file は 01_tokyo/... のように数字で始まる。
+    // 自作（MathOS 生成・手作り）はそれ以外か null。
+    // 分けないと total 降順の上位600件が過去問で埋まり、
+    // 自作の問題が一覧に1問も出てこない（実測で 0/600 だった）。
     const LIMIT = 600
-    const { data, error } = await supabase
-      .from('problems')
-      .select('*')
+    let query = supabase.from('problems').select('*')
+    if (source === 'own') {
+      query = query.or('source_file.is.null,source_file.not.like.0*')
+    } else if (source === 'past') {
+      query = query.like('source_file', '0%')
+    }
+    const { data, error } = await query
       .order('total', { ascending: false })
       .limit(LIMIT)
     if (error) { console.error(error); setLoading(false); return }
@@ -71,7 +80,7 @@ function HomeInner() {
     }))
     setProblems(normalized as ProblemWithRating[])
     setLoading(false)
-  }, [supabase])
+  }, [supabase, source])
 
   useEffect(() => { loadProblems() }, [loadProblems])
 
@@ -316,9 +325,33 @@ function HomeInner() {
           {tab === 'list' && (
             <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_220px]">
               <div className="min-w-0">
+              {/* 出所の切り替え。過去問と自作を混ぜると選別ができない。 */}
+              <div className="mb-3 flex flex-wrap items-center gap-1.5">
+                {([
+                  ['own',  '自作（MathOS・手作り）'],
+                  ['past', '過去問'],
+                  ['all',  'すべて'],
+                ] as ['own' | 'past' | 'all', string][]).map(([key, label]) => (
+                  <button
+                    key={key}
+                    onClick={() => { setSource(key); setPage(0) }}
+                    className="rounded-full border px-3.5 py-1.5 text-[12px] font-medium transition-colors"
+                    style={{
+                      borderColor: source === key ? '#175cd3' : '#d0d5dd',
+                      background:  source === key ? '#eff6ff' : '#fff',
+                      color:       source === key ? '#175cd3' : '#667085',
+                    }}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+
               <div className="mb-4 flex items-center gap-4">
                 <div>
-                  <h1 className="text-[22px] font-bold text-[#14213d]">問題一覧</h1>
+                  <h1 className="text-[22px] font-bold text-[#14213d]">
+                    {source === 'past' ? '過去問' : source === 'own' ? '自作の問題' : '問題一覧'}
+                  </h1>
                   <p className="mt-0.5 text-[12px] text-[#667085]">
                     {loading ? '読み込み中…' : `${filtered.length} 件  ·  ${page + 1} / ${totalPages} ページ`}
                   </p>
