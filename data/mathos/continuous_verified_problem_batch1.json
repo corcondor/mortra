@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-31T07:51:00.286495+00:00",
+  "generated_at": "2026-07-31T09:16:56.123504+00:00",
   "method": {
     "difficulty_policy": "annotation_only_until_human_rating_auc_reaches_0.7",
     "name": "MathOS Japanese entrance-mathematics structural pool",
@@ -388,6 +388,231 @@
             11
           ]
         }
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "y**3 - 3*y**2 - 9*y + 19",
+      "answer_tex": "y^{3} - 3 y^{2} - 9 y + 19",
+      "candidate_id": "iterated-relation:affine-root-set",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "PolynomialRootSet",
+          "AffineRootMap",
+          "PolynomialPullback",
+          "PolynomialExpansion"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "PolynomialRootSet",
+            "primitives": [
+              "vieta_relations",
+              "polynomial_factorization"
+            ]
+          },
+          {
+            "morphism": "AffineRootMap",
+            "primitives": [
+              "function_composition",
+              "simultaneous_equations"
+            ]
+          },
+          {
+            "morphism": "PolynomialPullback",
+            "primitives": [
+              "function_composition",
+              "polynomial_expansion"
+            ]
+          },
+          {
+            "morphism": "PolynomialExpansion",
+            "primitives": [
+              "polynomial_expansion"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "vieta_relations",
+          "polynomial_factorization",
+          "function_composition",
+          "simultaneous_equations",
+          "polynomial_expansion"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty_score": 8.68,
+      "domain": "algebra",
+      "family_id": "relation.polynomial_root_set.affine_image",
+      "lift_certificate": {
+        "constraint_skeleton": [
+          "P(alpha)=P(beta)=P(gamma)=0",
+          "root_map(r)=2*r+1"
+        ],
+        "morphism_chain": [
+          "PolynomialRootSet",
+          "AffineRootMap",
+          "PolynomialPullback",
+          "PolynomialExpansion"
+        ],
+        "query_signature": "polynomial_of_affine_root_image",
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1707,
+        "measured": true,
+        "reference_corpus_size": 28074
+      },
+      "quality_annotations": {
+        "below_legacy_difficulty_threshold": false,
+        "below_legacy_morphism_threshold": false,
+        "human_calibrated": false,
+        "legacy_difficulty_score": 8.68,
+        "legacy_difficulty_threshold": 8.4,
+        "legacy_morphism_threshold": 3,
+        "minimum_auc_for_gating": 0.7,
+        "morphism_count": 4,
+        "observed_human_auc": 0.086,
+        "policy": "annotation_only"
+      },
+      "relation_certificate": {
+        "counterexample_set": "EmptySet",
+        "global_relation_verified": true,
+        "identity_residuals": {
+          "polynomial_pullback": "0",
+          "resultant_elimination": "0"
+        },
+        "identity_verified": true,
+        "image_polynomial": "y**3 - 3*y**2 - 9*y + 19",
+        "independent_check": true,
+        "kind": "polynomial_root_set_relation",
+        "map": "root -> 2*root+1",
+        "source_polynomial": "x**3 - 3*x + 1"
+      },
+      "solution_tex": "新しい根を \\(y=2x+1\\) とおけば \\(x=(y-1)/2\\)。したがって求めるモニック多項式は\\[2^3\\left\\{\\left(\\frac{y-1}{2}\\right)^3-3\\left(\\frac{y-1}{2}\\right)+1\\right\\}=y^3-3y^2-9y+19.\\]",
+      "source_generator": "iterated_relation_closure",
+      "statement_tex": "方程式 \\(x^3-3x+1=0\\) の3根を\\(\\alpha,\\beta,\\gamma\\) とする。\\(2\\alpha+1,2\\beta+1,2\\gamma+1\\) を3根にもつモニック多項式を求めよ。",
+      "structure_key": "19b892810167ff7b7feda8a8af1b64e93428dff3096c444d09e34cf14f2bc91c",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_relation_identity_plus_independent_exact_or_numeric_orbit"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "y**3 - 5*y**2 - 2*y + 1",
+      "answer_tex": "y^{3} - 5 y^{2} - 2 y + 1",
+      "candidate_id": "iterated-relation:reciprocal-root-set",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "PolynomialRootSet",
+          "ReciprocalRootMap",
+          "CoefficientReversal",
+          "PolynomialExpansion"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "PolynomialRootSet",
+            "primitives": [
+              "vieta_relations",
+              "polynomial_factorization"
+            ]
+          },
+          {
+            "morphism": "ReciprocalRootMap",
+            "primitives": [
+              "rational_function",
+              "simultaneous_equations"
+            ]
+          },
+          {
+            "morphism": "CoefficientReversal",
+            "primitives": [
+              "polynomial_expansion",
+              "polynomial_factorization"
+            ]
+          },
+          {
+            "morphism": "PolynomialExpansion",
+            "primitives": [
+              "polynomial_expansion"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "vieta_relations",
+          "polynomial_factorization",
+          "rational_function",
+          "simultaneous_equations",
+          "polynomial_expansion"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty_score": 5.93,
+      "domain": "algebra",
+      "family_id": "relation.polynomial_root_set.reciprocal_image",
+      "lift_certificate": {
+        "constraint_skeleton": [
+          "P(alpha)=P(beta)=P(gamma)=0",
+          "P(0)!=0",
+          "root_map(r)=1/r"
+        ],
+        "morphism_chain": [
+          "PolynomialRootSet",
+          "ReciprocalRootMap",
+          "CoefficientReversal",
+          "PolynomialExpansion"
+        ],
+        "query_signature": "polynomial_of_reciprocal_root_image",
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1721,
+        "measured": true,
+        "reference_corpus_size": 28074
+      },
+      "quality_annotations": {
+        "below_legacy_difficulty_threshold": true,
+        "below_legacy_morphism_threshold": false,
+        "human_calibrated": false,
+        "legacy_difficulty_score": 5.93,
+        "legacy_difficulty_threshold": 8.4,
+        "legacy_morphism_threshold": 3,
+        "minimum_auc_for_gating": 0.7,
+        "morphism_count": 4,
+        "observed_human_auc": 0.086,
+        "policy": "annotation_only"
+      },
+      "relation_certificate": {
+        "counterexample_set": "EmptySet",
+        "global_relation_verified": true,
+        "identity_residuals": {
+          "coefficient_reversal": "0",
+          "resultant_elimination": "0"
+        },
+        "identity_verified": true,
+        "image_polynomial": "y**3 - 5*y**2 - 2*y + 1",
+        "independent_check": true,
+        "kind": "polynomial_root_set_relation",
+        "map": "root -> 1/root",
+        "source_polynomial": "x**3 - 2*x**2 - 5*x + 1"
+      },
+      "solution_tex": "定数項が \\(1\\) なので3根はいずれも0でない。\\(y=1/x\\) として元の方程式に代入し，\\(y^3\\) を掛けると\\[y^3-5y^2-2y+1=0.\\]",
+      "source_generator": "iterated_relation_closure",
+      "statement_tex": "方程式 \\(x^3-2x^2-5x+1=0\\) の3根を\\(\\alpha,\\beta,\\gamma\\) とする。\\(1/\\alpha,1/\\beta,1/\\gamma\\) を3根にもつモニック多項式を求めよ。",
+      "structure_key": "10629ee3cde4541f63d0d1d85ddfd2c4af85a9359eabe6bff5f52166009967cb",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_relation_identity_plus_independent_exact_or_numeric_orbit"
       }
     },
     {
@@ -79666,6 +79891,271 @@
     },
     {
       "accepted": true,
+      "answer_exact": "(3*2**n + 2)/2**n",
+      "answer_tex": "a_n=3+2^{1-n}",
+      "candidate_id": "iterated-relation:affine-sequence",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "AffineRecurrence",
+          "FixedPointCoordinate",
+          "GeometricIteration",
+          "GeneralTerm",
+          "MonotoneBound"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "AffineRecurrence",
+            "primitives": [
+              "recurrence",
+              "function_composition"
+            ]
+          },
+          {
+            "morphism": "FixedPointCoordinate",
+            "primitives": [
+              "simultaneous_equations",
+              "recurrence"
+            ]
+          },
+          {
+            "morphism": "GeometricIteration",
+            "primitives": [
+              "geometric_sequence",
+              "recurrence"
+            ]
+          },
+          {
+            "morphism": "GeneralTerm",
+            "primitives": [
+              "general_term"
+            ]
+          },
+          {
+            "morphism": "MonotoneBound",
+            "primitives": [
+              "inequality",
+              "mathematical_induction"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "recurrence",
+          "function_composition",
+          "simultaneous_equations",
+          "geometric_sequence",
+          "general_term",
+          "inequality",
+          "mathematical_induction"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty_score": 7.13,
+      "domain": "sequence",
+      "family_id": "relation.sequence.affine_fixed_point_coordinate",
+      "lift_certificate": {
+        "constraint_skeleton": [
+          "n>=0",
+          "a_0=5",
+          "2*a_(n+1)=a_n+3"
+        ],
+        "morphism_chain": [
+          "AffineRecurrence",
+          "FixedPointCoordinate",
+          "GeometricIteration",
+          "GeneralTerm",
+          "MonotoneBound"
+        ],
+        "query_signature": "sequence_closed_form_and_order_relation",
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1492,
+        "measured": true,
+        "reference_corpus_size": 28074
+      },
+      "quality_annotations": {
+        "below_legacy_difficulty_threshold": true,
+        "below_legacy_morphism_threshold": false,
+        "human_calibrated": false,
+        "legacy_difficulty_score": 7.13,
+        "legacy_difficulty_threshold": 8.4,
+        "legacy_morphism_threshold": 3,
+        "minimum_auc_for_gating": 0.7,
+        "morphism_count": 5,
+        "observed_human_auc": 0.086,
+        "policy": "annotation_only"
+      },
+      "relation_certificate": {
+        "closed_form": "(3*2**n + 2)/2**n",
+        "coordinate_relation": "a_(n+1)-(3)=1/2*(a_n-(3))",
+        "counterexample_set": "EmptySet",
+        "fixed_point": "3",
+        "global_relation_verified": true,
+        "identity_residuals": {
+          "fixed_point_coordinate": "0",
+          "induction_step": "0"
+        },
+        "identity_verified": true,
+        "independent_check": true,
+        "independent_exact_samples": [
+          "5",
+          "4",
+          "7/2",
+          "13/4",
+          "25/8",
+          "49/16",
+          "97/32",
+          "193/64"
+        ],
+        "kind": "sequence_relation"
+      },
+      "solution_tex": "写像 \\(u\\mapsto(u+3)/2\\) の不動点は \\(3\\) である。そこで \\(b_n=a_n-3\\) とおくと\\(b_{n+1}=b_n/2,\\ b_0=2\\)。したがって\\(a_n=3+2^{1-n}\\)。右辺から\\(3<a_{n+1}<a_n\\) も直ちに従う。",
+      "source_generator": "iterated_relation_closure",
+      "statement_tex": "数列 \\(\\{a_n\\}\\) を \\(a_0=5\\)，\\(a_{n+1}=(a_n+3)/2\\) で定める。\\(a_n\\) を \\(n\\) の式で表し，\\(3<a_{n+1}<a_n\\) を示せ。",
+      "structure_key": "ab67da154b7dfa90873303138ff90f17e26ae0919159cb1e164548170238f925",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_relation_identity_plus_independent_exact_or_numeric_orbit"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "1 - (1/2)**(2**n)",
+      "answer_tex": "x_n=1-2^{-2^n},\\quad\\lim_{n\\to\\infty}x_n=1",
+      "candidate_id": "iterated-relation:error-squaring",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "NonlinearIteration",
+          "ErrorCoordinate",
+          "RepeatedSquaring",
+          "GeneralTerm",
+          "LimitEvaluation"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "NonlinearIteration",
+            "primitives": [
+              "recurrence",
+              "polynomial_expansion"
+            ]
+          },
+          {
+            "morphism": "ErrorCoordinate",
+            "primitives": [
+              "algebraic_identity",
+              "recurrence"
+            ]
+          },
+          {
+            "morphism": "RepeatedSquaring",
+            "primitives": [
+              "recurrence",
+              "exponential"
+            ]
+          },
+          {
+            "morphism": "GeneralTerm",
+            "primitives": [
+              "general_term"
+            ]
+          },
+          {
+            "morphism": "LimitEvaluation",
+            "primitives": [
+              "limit"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "recurrence",
+          "polynomial_expansion",
+          "algebraic_identity",
+          "exponential",
+          "general_term",
+          "limit"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty_score": 6.89,
+      "domain": "sequence_analysis",
+      "family_id": "relation.iteration.error_squaring_coordinate",
+      "lift_certificate": {
+        "constraint_skeleton": [
+          "n>=0",
+          "x_0=1/2",
+          "x_(n+1)=2*x_n-x_n^2"
+        ],
+        "morphism_chain": [
+          "NonlinearIteration",
+          "ErrorCoordinate",
+          "RepeatedSquaring",
+          "GeneralTerm",
+          "LimitEvaluation"
+        ],
+        "query_signature": "iteration_closed_form_and_limit",
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1395,
+        "measured": true,
+        "reference_corpus_size": 28074
+      },
+      "quality_annotations": {
+        "below_legacy_difficulty_threshold": true,
+        "below_legacy_morphism_threshold": false,
+        "human_calibrated": false,
+        "legacy_difficulty_score": 6.89,
+        "legacy_difficulty_threshold": 8.4,
+        "legacy_morphism_threshold": 3,
+        "minimum_auc_for_gating": 0.7,
+        "morphism_count": 5,
+        "observed_human_auc": 0.086,
+        "policy": "annotation_only"
+      },
+      "relation_certificate": {
+        "closed_form": "1 - (1/2)**(2**n)",
+        "coordinate_map": "error=1-state",
+        "coordinate_relation": "error_(n+1)=error_n^2",
+        "counterexample_set": "EmptySet",
+        "global_relation_verified": true,
+        "identity_residuals": {
+          "error_squaring": "0",
+          "induction_step": "0"
+        },
+        "identity_verified": true,
+        "independent_check": true,
+        "independent_exact_samples": [
+          "1/2",
+          "3/4",
+          "15/16",
+          "255/256",
+          "65535/65536",
+          "4294967295/4294967296",
+          "18446744073709551615/18446744073709551616"
+        ],
+        "kind": "iteration_relation"
+      },
+      "solution_tex": "\\(e_n=1-x_n\\) とおくと\\[e_{n+1}=1-(2x_n-x_n^2)=(1-x_n)^2=e_n^2.\\]よって \\(e_n=(1/2)^{2^n}\\) であり，\\(x_n=1-2^{-2^n}\\to1\\)。",
+      "source_generator": "iterated_relation_closure",
+      "statement_tex": "数列 \\(\\{x_n\\}\\) を \\(x_0=1/2\\)，\\(x_{n+1}=2x_n-x_n^2\\) で定める。\\(x_n\\) を \\(n\\) の式で表し，極限を求めよ。",
+      "structure_key": "f73873ae511ee7e559ca32a55a2a77ddb1e6864a1b296aaafe376d54686010e8",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_relation_identity_plus_independent_exact_or_numeric_orbit"
+      }
+    },
+    {
+      "accepted": true,
       "answer_exact": "1",
       "answer_tex": "1",
       "candidate_id": "relation:relation.triangle_angles.cos_sum_maximum",
@@ -80032,9 +80522,9 @@
     }
   ],
   "summary": {
-    "certified_structures": 570,
+    "certified_structures": 574,
     "domain_counts": {
-      "algebra": 4,
+      "algebra": 6,
       "algebra_inequality": 12,
       "algebraic_geometry": 2,
       "algebraic_geometry_number_theory": 1,
@@ -80061,9 +80551,11 @@
       "probability_linear_algebra_number_theory": 1,
       "projective_geometry": 1,
       "real_analysis": 5,
+      "sequence": 1,
+      "sequence_analysis": 1,
       "trigonometry": 3
     },
-    "families": 568,
+    "families": 572,
     "family_counts": {
       "algebraic_geometry.cubic_discriminant_triangle_area": 1,
       "algebraic_geometry.even_quartic_parabola_hull_area": 1,
@@ -80552,8 +81044,12 @@
       "relation.constrained_symmetric.weighted_minimum": 1,
       "relation.constrained_symmetric.weighted_prove_bound": 1,
       "relation.ellipse.tangent_intercept_area_minimum": 1,
+      "relation.iteration.error_squaring_coordinate": 1,
       "relation.parabola.focal_chord_minimum": 1,
+      "relation.polynomial_root_set.affine_image": 1,
+      "relation.polynomial_root_set.reciprocal_image": 1,
       "relation.regular_polygon.distance_product_vs_diagonals": 1,
+      "relation.sequence.affine_fixed_point_coordinate": 1,
       "relation.triangle.sixty_degree_side_bound": 1,
       "relation.triangle_angles.cos_sum_maximum": 1,
       "relation.triangle_angles.sin_product_maximum": 1,
@@ -80634,9 +81130,9 @@
       "ultradeep.geometry_regular_polygon_minkowski_perimeter": 1,
       "ultradeep.paley_four_cycle_divisor_count": 1
     },
-    "geometry_algebra_structures": 379,
+    "geometry_algebra_structures": 381,
     "quality_flags": {
-      "below_legacy_difficulty_threshold": 185,
+      "below_legacy_difficulty_threshold": 188,
       "below_legacy_morphism_threshold": 20
     },
     "rejected": {
@@ -80647,11 +81143,12 @@
       "closure_composition": 437,
       "construct_atlas": 92,
       "geometry_fusion": 4,
+      "iterated_relation_closure": 4,
       "passage_region_closure": 3,
       "relation_closure": 19,
       "typed_continuous": 15
     },
     "surface_rewritten": 4,
-    "total_instances": 570
+    "total_instances": 574
   }
 }

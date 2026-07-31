@@ -120,6 +120,25 @@ test('立方体の断面が正六角形になっている', () => {
   console.log(`  6辺すべて長さ ${first.toFixed(4)}、6頂点すべて中心から ${radii[0].toFixed(4)}`)
 })
 
+test('通過領域の境界が曲線族の各縦断面の最小値・最大値に一致する', () => {
+  const figure = fig.FIGURES.find((f) => f.id === 'passage_region')
+  assert.ok(figure)
+  const family = figure.strokes.filter((s) => /^曲線族/.test(s.label))
+  const sections = figure.strokes.filter((s) => /縦断面/.test(s.label))
+  assert.equal(family.length, 5)
+  assert.equal(sections.length, 6)
+
+  for (const section of sections) {
+    const [low, high] = section.points
+    const x = (low.x + 9) / 18
+    const values = [0, 0.25, 0.5, 0.75, 1].map(
+      (t) => 46 + 7 * (x + 2 * x * t - t * t),
+    )
+    assert.ok(Math.abs(low.z - Math.min(...values)) < 1e-9)
+    assert.ok(Math.abs(high.z - Math.max(...values)) < 1e-9)
+  }
+})
+
 test('正四面体で外接球と内接球の半径比が 3 : 1', () => {
   const figure = fig.FIGURES.find((f) => f.id === 'tetrahedron')
   const centre = figure.strokes.find((s) => /外接球の中心/.test(s.label)).points[2]

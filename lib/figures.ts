@@ -452,12 +452,80 @@ function regularPolygonFigure(n = 9): Figure {
   }
 }
 
+// ---------------------------------------------------------------------------
+// 平面figure: パラメータ曲線族の通過領域と包絡線
+// ---------------------------------------------------------------------------
+function passageRegionFigure(): Figure {
+  const xLow = -1
+  const xHigh = 2
+  const tx = (value: number) => 18 * value - 9
+  const ty = (value: number) => 7 * value
+  const valueAt = (x: number, t: number) => x + 2 * x * t - t * t
+  const lowerAt = (x: number) => (x <= 0.5 ? 3 * x - 1 : x)
+  const upperAt = (x: number) => {
+    if (x <= 0) return x
+    if (x <= 1) return x + x * x
+    return 3 * x - 1
+  }
+  const curve = (fn: (x: number) => number, samples = 90): P3[] =>
+    Array.from({ length: samples + 1 }, (_, index) => {
+      const x = xLow + ((xHigh - xLow) * index) / samples
+      return onBoard(tx(x), ty(fn(x)))
+    })
+
+  const strokes: Stroke3[] = []
+  for (const parameter of [0, 0.25, 0.5, 0.75, 1]) {
+    strokes.push(polyline(
+      curve((x) => valueAt(x, parameter)),
+      `曲線族 t=${parameter.toFixed(2)}`,
+      'curve',
+    ))
+  }
+  strokes.push(
+    polyline(curve(lowerAt), '各 x における最小値の境界', 'line'),
+    polyline(curve(upperAt), '各 x における最大値の境界（包絡線を含む）', 'line'),
+  )
+  for (const x of [-0.75, -0.25, 0.25, 0.75, 1.25, 1.75]) {
+    strokes.push(polyline(
+      [
+        onBoard(tx(x), ty(lowerAt(x))),
+        onBoard(tx(x), ty(upperAt(x))),
+      ],
+      `x=${x.toFixed(2)} の縦断面`,
+      'aux',
+    ))
+  }
+  strokes.push(
+    mark(onBoard(tx(0), ty(0)), '停留点が区間へ入る点 x=0'),
+    mark(onBoard(tx(0.5), ty(0.5)), '下端が切り替わる点 x=1/2'),
+    mark(onBoard(tx(1), ty(2)), '停留点が区間を出る点 x=1'),
+  )
+
+  return {
+    id: 'passage_region',
+    title: '曲線族の通過領域・包絡線',
+    families: [
+      'passage_region.quadratic_interval_image',
+      'passage_region.quadratic_interval_area',
+      'passage_region.quadratic_envelope_boundary',
+    ],
+    dimension: 2,
+    strokes,
+    facts: [
+      { label: '曲線族', value: 'y=x+2xt-t², 0≤t≤1' },
+      { label: '上側境界（0≤x≤1）', value: 'y=x+x²' },
+      { label: '0≤x≤1 における通過領域の面積', value: '7/12' },
+    ],
+  }
+}
+
 export const FIGURES: Figure[] = [
   ninePointFigure(),
   hyperbolaFigure(),
   parabolaFigure(),
   cyclicQuadFigure(),
   regularPolygonFigure(9),
+  passageRegionFigure(),
   cubeSectionFigure(),
   tetrahedronFigure(),
 ]
