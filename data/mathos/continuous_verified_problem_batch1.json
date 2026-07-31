@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-31T06:51:50.860601+00:00",
+  "generated_at": "2026-07-31T07:51:00.286495+00:00",
   "method": {
     "difficulty_policy": "annotation_only_until_human_rating_auc_reaches_0.7",
     "name": "MathOS Japanese entrance-mathematics structural pool",
@@ -35011,6 +35011,389 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "tangent_iteration_ratio_then_log_limit"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "129/2",
+      "answer_tex": "\\frac{129}{2}",
+      "candidate_id": "passage-closure:area",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "ParametricGraph",
+          "ContinuousIntervalImage",
+          "QuadraticParameterExtrema",
+          "PiecewiseRegionBounds",
+          "VerticalSliceWidth",
+          "PiecewiseIntegral"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "ParametricGraph",
+            "primitives": [
+              "parametric_curve",
+              "quadratic_range"
+            ]
+          },
+          {
+            "morphism": "ContinuousIntervalImage",
+            "primitives": [
+              "quadratic_range",
+              "inequality"
+            ]
+          },
+          {
+            "morphism": "QuadraticParameterExtrema",
+            "primitives": [
+              "quadratic_extremum",
+              "inequality"
+            ]
+          },
+          {
+            "morphism": "PiecewiseRegionBounds",
+            "primitives": [
+              "quadratic_range",
+              "inequality"
+            ]
+          },
+          {
+            "morphism": "VerticalSliceWidth",
+            "primitives": [
+              "inequality",
+              "area_integral"
+            ]
+          },
+          {
+            "morphism": "PiecewiseIntegral",
+            "primitives": [
+              "definite_integral",
+              "inequality"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "parametric_curve",
+          "quadratic_range",
+          "inequality",
+          "quadratic_extremum",
+          "area_integral",
+          "definite_integral"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty_score": 4.17,
+      "domain": "geometry_analysis",
+      "family_id": "passage_region.quadratic_interval_area",
+      "lift_certificate": {
+        "constraint_skeleton": [
+          "t_low <= t <= t_high",
+          "y = C(x) + B(x)t - q t^2",
+          "x_low <= x <= x_high"
+        ],
+        "morphism_chain": [
+          "ParametricGraph",
+          "ContinuousIntervalImage",
+          "QuadraticParameterExtrema",
+          "PiecewiseRegionBounds",
+          "VerticalSliceWidth",
+          "PiecewiseIntegral"
+        ],
+        "query_signature": "integrate_vertical_slice_width",
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.08,
+        "measured": true,
+        "reference_corpus_size": 28074
+      },
+      "quality_annotations": {
+        "below_legacy_difficulty_threshold": true,
+        "below_legacy_morphism_threshold": false,
+        "human_calibrated": false,
+        "legacy_difficulty_score": 4.17,
+        "legacy_difficulty_threshold": 8.4,
+        "legacy_morphism_threshold": 3,
+        "minimum_auc_for_gating": 0.7,
+        "morphism_count": 6,
+        "observed_human_auc": 0.086,
+        "policy": "annotation_only"
+      },
+      "region_certificate": {
+        "critical_x": [
+          "-1",
+          "1",
+          "3"
+        ],
+        "envelope_polynomial": "-2*(17*x**2 - 6*x - 8*y + 1)",
+        "exact_identity_check": true,
+        "identity_residuals": {
+          "derivative": "0",
+          "endpoint_switch": "0",
+          "stationary_parameter": "0",
+          "stationary_value": "0"
+        },
+        "independent_exact_slice_check": true,
+        "kind": "continuous_quadratic_parameter_image",
+        "lower_bound": "Piecewise((x**2 + 6*x - 10, x <= 1), (x**2 - 3*x - 1, True))",
+        "quantified_set": "Exists[t, -1<=t<=2 && y=-2*t**2 + 3*t*x - t + x**2]",
+        "stationary_parameter": "3*x/4 - 1/4",
+        "theorem": "the continuous image of a real interval is an interval; a quadratic reaches extrema at endpoints or a stationary point",
+        "upper_bound": "Piecewise((x**2 - 3*x - 1, x <= -1), ((17*x**2 - 6*x + 1)/8, x <= 3), (x**2 + 6*x - 10, True))"
+      },
+      "solution_tex": "\\(x\\) を固定し，\\(t\\) の二次関数の端点値と停留値を比較する。切替点で \\(x\\) の区間を分け，上端と下端の差を\\(-2\\) から \\(3\\) まで積分する。",
+      "source_generator": "passage_region_closure",
+      "statement_tex": "実数 \\(t\\) が \\(-1\\le t\\le2\\) を動くとき，曲線 \\(y=x^2+(3x-1)t-2t^2\\) が通過する領域のうち \\(-2\\le x\\le3\\) の部分の面積を求めよ。",
+      "structure_key": "70c430f0db6c37983ba7ac0b4bfacd7cb7053a673393fda7abf99aa585339ae9",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic endpoint/stationary identities plus independent exact rational slice enumeration"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "-1<=x<=2;Piecewise((3*x - 1, x <= 1/2), (x, True))<=y<=Piecewise((x, x <= 0), (x*(x + 1), x <= 1), (3*x - 1, True))",
+      "answer_tex": "-1\\le x\\le2,\\quad \\begin{cases} 3 x - 1 & \\text{for}\\: x \\leq \\frac{1}{2} \\\\x & \\text{otherwise} \\end{cases}\\le y\\le\\begin{cases} x & \\text{for}\\: x \\leq 0 \\\\x \\left(x + 1\\right) & \\text{for}\\: x \\leq 1 \\\\3 x - 1 & \\text{otherwise} \\end{cases}",
+      "candidate_id": "passage-closure:region",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "ParametricGraph",
+          "ContinuousIntervalImage",
+          "QuadraticParameterExtrema",
+          "PiecewiseRegionBounds"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "ParametricGraph",
+            "primitives": [
+              "parametric_curve",
+              "quadratic_range"
+            ]
+          },
+          {
+            "morphism": "ContinuousIntervalImage",
+            "primitives": [
+              "quadratic_range",
+              "inequality"
+            ]
+          },
+          {
+            "morphism": "QuadraticParameterExtrema",
+            "primitives": [
+              "quadratic_extremum",
+              "inequality"
+            ]
+          },
+          {
+            "morphism": "PiecewiseRegionBounds",
+            "primitives": [
+              "quadratic_range",
+              "inequality"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "parametric_curve",
+          "quadratic_range",
+          "inequality",
+          "quadratic_extremum"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty_score": 4.34,
+      "domain": "geometry_analysis",
+      "family_id": "passage_region.quadratic_interval_image",
+      "lift_certificate": {
+        "constraint_skeleton": [
+          "t_low <= t <= t_high",
+          "y = C(x) + B(x)t - q t^2",
+          "x_low <= x <= x_high"
+        ],
+        "morphism_chain": [
+          "ParametricGraph",
+          "ContinuousIntervalImage",
+          "QuadraticParameterExtrema",
+          "PiecewiseRegionBounds"
+        ],
+        "query_signature": "describe_quantified_region",
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "mathnet",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0576,
+        "measured": true,
+        "reference_corpus_size": 28074
+      },
+      "quality_annotations": {
+        "below_legacy_difficulty_threshold": true,
+        "below_legacy_morphism_threshold": false,
+        "human_calibrated": false,
+        "legacy_difficulty_score": 4.34,
+        "legacy_difficulty_threshold": 8.4,
+        "legacy_morphism_threshold": 3,
+        "minimum_auc_for_gating": 0.7,
+        "morphism_count": 4,
+        "observed_human_auc": 0.086,
+        "policy": "annotation_only"
+      },
+      "region_certificate": {
+        "critical_x": [
+          "0",
+          "1/2",
+          "1"
+        ],
+        "envelope_polynomial": "-4*(x**2 + x - y)",
+        "exact_identity_check": true,
+        "identity_residuals": {
+          "derivative": "0",
+          "endpoint_switch": "0",
+          "stationary_parameter": "0",
+          "stationary_value": "0"
+        },
+        "independent_exact_slice_check": true,
+        "kind": "continuous_quadratic_parameter_image",
+        "lower_bound": "Piecewise((3*x - 1, x <= 1/2), (x, True))",
+        "quantified_set": "Exists[t, 0<=t<=1 && y=-t**2 + 2*t*x + x]",
+        "stationary_parameter": "x",
+        "theorem": "the continuous image of a real interval is an interval; a quadratic reaches extrema at endpoints or a stationary point",
+        "upper_bound": "Piecewise((x, x <= 0), (x*(x + 1), x <= 1), (3*x - 1, True))"
+      },
+      "solution_tex": "\\(x\\) を固定する。右辺は \\(t\\) の二次関数なので，区間 \\(0\\le t\\le1\\) での最小値と最大値は端点または停留点 \\(t=x\\) で生じる。停留点が区間内にあるか，また両端の値の大小がどこで替わるかを場合分けする。二次関数は連続だから，その間の全ての \\(y\\) を通る。",
+      "source_generator": "passage_region_closure",
+      "statement_tex": "実数 \\(t\\) が \\(0\\le t\\le1\\) を動くとき，曲線 \\(y=x+2xt-t^2\\) が通過する領域のうち \\(-1\\le x\\le2\\) の部分を不等式で表せ。",
+      "structure_key": "13486103c90ca5a889966d5927405b1b32de88336bc9b022a4338a44fee3221a",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic endpoint/stationary identities plus independent exact rational slice enumeration"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "y=(4*x**3 + 16*x**2 + 8*x + 1)/4; -3/4<=x<=3/4",
+      "answer_tex": "y=\\frac{4 x^{3} + 16 x^{2} + 8 x + 1}{4},\\quad - \\frac{3}{4}\\le x\\le \\frac{3}{4}",
+      "candidate_id": "passage-closure:envelope-boundary",
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "ParametricGraph",
+          "DifferentiateParameter",
+          "StationaryParameterElimination",
+          "BoundaryComponent"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "ParametricGraph",
+            "primitives": [
+              "parametric_curve",
+              "quadratic_range"
+            ]
+          },
+          {
+            "morphism": "DifferentiateParameter",
+            "primitives": [
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "StationaryParameterElimination",
+            "primitives": [
+              "differentiation",
+              "parameter_elimination"
+            ]
+          },
+          {
+            "morphism": "BoundaryComponent",
+            "primitives": [
+              "parameter_elimination",
+              "inequality"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "parametric_curve",
+          "quadratic_range",
+          "differentiation",
+          "parameter_elimination",
+          "inequality"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty_score": 5.4,
+      "domain": "geometry_analysis",
+      "family_id": "passage_region.quadratic_stationary_boundary",
+      "lift_certificate": {
+        "constraint_skeleton": [
+          "t_low <= t <= t_high",
+          "y = C(x) + B(x)t - q t^2",
+          "x_low <= x <= x_high"
+        ],
+        "morphism_chain": [
+          "ParametricGraph",
+          "DifferentiateParameter",
+          "StationaryParameterElimination",
+          "BoundaryComponent"
+        ],
+        "query_signature": "derive_nonendpoint_upper_boundary",
+        "type_checked": true
+      },
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0728,
+        "measured": true,
+        "reference_corpus_size": 28074
+      },
+      "quality_annotations": {
+        "below_legacy_difficulty_threshold": true,
+        "below_legacy_morphism_threshold": false,
+        "human_calibrated": false,
+        "legacy_difficulty_score": 5.4,
+        "legacy_difficulty_threshold": 8.4,
+        "legacy_morphism_threshold": 3,
+        "minimum_auc_for_gating": 0.7,
+        "morphism_count": 4,
+        "observed_human_auc": 0.086,
+        "policy": "annotation_only"
+      },
+      "region_certificate": {
+        "critical_x": [
+          "-3/4",
+          "0",
+          "3/4"
+        ],
+        "envelope_polynomial": "-4*x**3 - 16*x**2 - 8*x + 4*y - 1",
+        "exact_identity_check": true,
+        "identity_residuals": {
+          "derivative": "0",
+          "endpoint_switch": "0",
+          "stationary_parameter": "0",
+          "stationary_value": "0"
+        },
+        "independent_exact_slice_check": true,
+        "kind": "continuous_quadratic_parameter_image",
+        "lower_bound": "Piecewise((x**3 + 8*x - 2, x <= 0), (x**3 - 4*x - 2, True))",
+        "quantified_set": "Exists[t, -1<=t<=2 && y=-t**2 + 4*t*x + t + x**3]",
+        "stationary_parameter": "2*x + 1/2",
+        "theorem": "the continuous image of a real interval is an interval; a quadratic reaches extrema at endpoints or a stationary point",
+        "upper_bound": "Piecewise((x**3 - 4*x - 2, x <= -3/4), ((4*x**3 + 16*x**2 + 8*x + 1)/4, x <= 3/4), (x**3 + 8*x - 2, True))"
+      },
+      "solution_tex": "端点でない上側境界では \\(t\\) に関する停留条件\\(\\partial y/\\partial t=0\\) が必要である。これより \\(t=2 x + \\frac{1}{2}\\)。これを元の式へ代入し，さらに \\(-1\\le t\\le2\\) を\\(x\\) の条件へ直す。",
+      "source_generator": "passage_region_closure",
+      "statement_tex": "実数 \\(t\\) が \\(-1\\le t\\le2\\) を動くとき，曲線 \\(y=x^3+(4x+1)t-t^2\\) が通過する領域を考える。その上側境界のうち，\\(t\\) が端点でない部分の方程式とその \\(x\\) の範囲を求めよ。",
+      "structure_key": "d5cab43073ed09e539272953a375e2be4566a7fc8244b57341fc488aca6442db",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic endpoint/stationary identities plus independent exact rational slice enumeration"
       }
     },
     {
@@ -79649,7 +80032,7 @@
     }
   ],
   "summary": {
-    "certified_structures": 567,
+    "certified_structures": 570,
     "domain_counts": {
       "algebra": 4,
       "algebra_inequality": 12,
@@ -79669,7 +80052,7 @@
       "euclidean_geometry": 2,
       "geometry": 3,
       "geometry_algebra": 6,
-      "geometry_analysis": 1,
+      "geometry_analysis": 4,
       "graph_combinatorics_number_theory": 1,
       "number_theory": 11,
       "number_theory_graph": 1,
@@ -79680,7 +80063,7 @@
       "real_analysis": 5,
       "trigonometry": 3
     },
-    "families": 565,
+    "families": 568,
     "family_counts": {
       "algebraic_geometry.cubic_discriminant_triangle_area": 1,
       "algebraic_geometry.even_quartic_parabola_hull_area": 1,
@@ -80150,6 +80533,9 @@
       "multiplicative.mobius_divisor_sum_totient_ratio": 1,
       "passage_region.line_family_sweep": 1,
       "passage_region.parabola_family_sweep": 1,
+      "passage_region.quadratic_interval_area": 1,
+      "passage_region.quadratic_interval_image": 1,
+      "passage_region.quadratic_stationary_boundary": 1,
       "polynomial.interpolation_harmonic_observable": 1,
       "probability.left_to_right_maxima_expectation": 1,
       "probability.random_bridge_zero_count": 1,
@@ -80248,9 +80634,9 @@
       "ultradeep.geometry_regular_polygon_minkowski_perimeter": 1,
       "ultradeep.paley_four_cycle_divisor_count": 1
     },
-    "geometry_algebra_structures": 376,
+    "geometry_algebra_structures": 379,
     "quality_flags": {
-      "below_legacy_difficulty_threshold": 182,
+      "below_legacy_difficulty_threshold": 185,
       "below_legacy_morphism_threshold": 20
     },
     "rejected": {
@@ -80261,10 +80647,11 @@
       "closure_composition": 437,
       "construct_atlas": 92,
       "geometry_fusion": 4,
+      "passage_region_closure": 3,
       "relation_closure": 19,
       "typed_continuous": 15
     },
     "surface_rewritten": 4,
-    "total_instances": 567
+    "total_instances": 570
   }
 }
