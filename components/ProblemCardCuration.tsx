@@ -4,6 +4,14 @@ import type { ProblemWithRating } from '@/lib/types'
 import { DIFFICULTY_COLOR, DIFFICULTY_LABEL, TOPIC_EMOJI } from '@/lib/types'
 import { MathText } from './MathText'
 
+const REPAIR_REASONS = [
+  ['unnatural_connection', '接続が不自然'],
+  ['too_easy', '簡単すぎる'],
+  ['too_typical', '典型的すぎる'],
+  ['short_proof', '構想が短い'],
+  ['unnatural_wording', '文章が不自然'],
+] as const
+
 const TOPIC_JP: Record<string,string> = {
   analysis:'実解析', algebra:'代数', geometry:'幾何', number_theory:'整数論',
   complex:'複素数', recurrence:'漸化式', polynomial:'多項式',
@@ -31,6 +39,16 @@ export function ProblemCardCuration({
   const [editingAnswer,  setEditingAnswer]  = useState(false)
   const [answerDraft,    setAnswerDraft]    = useState('')
   const [savingAnswer,   setSavingAnswer]   = useState(false)
+  const [feedbackReasons, setFeedbackReasons] = useState<string[]>(() => {
+    try {
+      const note = p.rating?.note ? JSON.parse(p.rating.note) : null
+      return Array.isArray(note?.curation_feedback?.reasons)
+        ? note.curation_feedback.reasons.filter((reason: unknown): reason is string => typeof reason === 'string')
+        : []
+    } catch {
+      return []
+    }
+  })
 
   void scrollRootRef
 
@@ -78,6 +96,22 @@ export function ProblemCardCuration({
     })
     onStatusChange(p.id, toggle)
     setBusy(false)
+  }
+
+  const toggleFeedbackReason = async (reason: string) => {
+    const next = feedbackReasons.includes(reason)
+      ? feedbackReasons.filter(item => item !== reason)
+      : [...feedbackReasons, reason]
+    setFeedbackReasons(next)
+    await fetch('/api/status', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({
+        problem_id: p.id,
+        status: 'rejected',
+        feedback_reasons: next,
+      }),
+    })
   }
 
   const toggleIncorrect = async () => {
@@ -292,6 +326,31 @@ export function ProblemCardCuration({
           {xPosted ? '✓ 済' : '𝕏 投稿'}
         </ActionBtn>
       </div>
+
+      {status === 'rejected' && (
+        <div className="border-t border-zinc-200 pt-2">
+          <p className="mb-2 text-[10px] font-semibold text-zinc-500">改善理由（構造は修復候補として残します）</p>
+          <div className="flex flex-wrap gap-1.5">
+            {REPAIR_REASONS.map(([value, label]) => {
+              const active = feedbackReasons.includes(value)
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => toggleFeedbackReason(value)}
+                  className={`rounded border px-2 py-1 text-[10px] transition-colors ${
+                    active
+                      ? 'border-[#175cd3] bg-[#eff6ff] font-semibold text-[#175cd3]'
+                      : 'border-zinc-300 bg-white text-zinc-500 hover:border-zinc-400'
+                  }`}
+                >
+                  {label}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Inspiration */}
       {p.inspiration && (

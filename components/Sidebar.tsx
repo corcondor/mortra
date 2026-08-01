@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 export interface Filters {
   topic: string | null
   status: string | null
-  sort: 'total' | 'surprise' | 'topic'
+  sort: 'newest' | 'total' | 'surprise' | 'topic'
   perPage: number
   showSol: boolean
 }
@@ -179,6 +179,7 @@ export function Sidebar({ filters, onChange, onReload, onClose }: Props) {
             onChange={event => set({ sort: event.target.value as Filters['sort'] })}
             className="mt-2 h-9 w-full rounded border border-[#cfd6e1] bg-white px-2.5 text-[12px] text-[#344054] outline-none focus:border-[#84adff]"
           >
+            <option value="newest">新着順</option>
             <option value="total">品質スコア順</option>
             <option value="surprise">新規性順</option>
             <option value="topic">トピック順</option>

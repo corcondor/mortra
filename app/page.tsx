@@ -15,8 +15,10 @@ type Tab = 'list' | 'selected' | 'pastexam'
 
 const DEFAULT_FILTERS: Filters = {
   topic: null, status: null,
-  sort: 'total', perPage: 12, showSol: false,
+  sort: 'newest', perPage: 12, showSol: false,
 }
+
+type ProblemSource = 'current' | 'own' | 'past' | 'all'
 
 export default function Home() {
   return <AuthGuard><HomeInner /></AuthGuard>
@@ -25,7 +27,7 @@ export default function Home() {
 function HomeInner() {
   const { user, signOut, accessToken, isAdmin, supabase } = useAuth()
   const [problems,  setProblems]  = useState<ProblemWithRating[]>([])
-  const [source,    setSource]    = useState<'own' | 'past' | 'all'>('own')
+  const [source,    setSource]    = useState<ProblemSource>('current')
   const [loading,   setLoading]   = useState(true)
   const [tab,       setTab]       = useState<Tab>('list')
   const [filters,   setFilters]   = useState<Filters>(DEFAULT_FILTERS)
@@ -52,7 +54,9 @@ function HomeInner() {
     // 自作の問題が一覧に1問も出てこない（実測で 0/600 だった）。
     const LIMIT = 600
     let query = supabase.from('problems').select('*')
-    if (source === 'own') {
+    if (source === 'current') {
+      query = query.eq('source_file', 'mathos_discord_entrance_v2')
+    } else if (source === 'own') {
       query = query.or('source_file.is.null,source_file.not.like.0*')
     } else if (source === 'past') {
       query = query.like('source_file', '0%')
@@ -98,7 +102,8 @@ function HomeInner() {
     let ps = [...problems]
     if (filters.topic)  ps = ps.filter(p => p.topic_a === filters.topic || p.topic_b === filters.topic)
     if (filters.status) ps = ps.filter(p => (p.rating?.status ?? 'pending') === filters.status)
-    if (filters.sort === 'surprise')   ps.sort((a, b) => (b.surprise||0) - (a.surprise||0))
+    if (filters.sort === 'newest')     ps.sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
+    else if (filters.sort === 'surprise')   ps.sort((a, b) => (b.surprise||0) - (a.surprise||0))
     else if (filters.sort === 'topic') ps.sort((a, b) => a.topic_a.localeCompare(b.topic_a))
     return ps
   }, [problems, filters])
@@ -337,10 +342,11 @@ function HomeInner() {
               {/* 出所の切り替え。過去問と自作を混ぜると選別ができない。 */}
               <div className="mb-3 flex flex-wrap items-center gap-1.5">
                 {([
+                  ['current', '最新MathOS'],
                   ['own',  '自作（MathOS・手作り）'],
                   ['past', '過去問'],
                   ['all',  'すべて'],
-                ] as ['own' | 'past' | 'all', string][]).map(([key, label]) => (
+                ] as [ProblemSource, string][]).map(([key, label]) => (
                   <button
                     key={key}
                     onClick={() => { setSource(key); setPage(0) }}
@@ -359,7 +365,7 @@ function HomeInner() {
               <div className="mb-4 flex items-center gap-4">
                 <div>
                   <h1 className="text-[22px] font-bold text-[#14213d]">
-                    {source === 'past' ? '過去問' : source === 'own' ? '自作の問題' : '問題一覧'}
+                    {source === 'current' ? '最新のMathOS問題' : source === 'past' ? '過去問' : source === 'own' ? '自作の問題' : '問題一覧'}
                   </h1>
                   <p className="mt-0.5 text-[12px] text-[#667085]">
                     {loading ? '読み込み中…' : `${filtered.length} 件  ·  ${page + 1} / ${totalPages} ページ`}

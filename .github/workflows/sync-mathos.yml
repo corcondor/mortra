@@ -40,3 +40,17 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: node scripts/sync-mathos-discord.mjs
+
+      - name: Export repair-oriented selection feedback
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/export-selection-feedback.mjs
+
+      - name: Upload selection feedback report
+        uses: actions/upload-artifact@v4
+        with:
+          name: mathos-selection-feedback
+          path: |
+            data/mathos/selection-feedback.json
+            docs/selection-feedback.md

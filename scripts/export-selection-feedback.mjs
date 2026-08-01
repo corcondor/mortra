@@ -27,7 +27,7 @@ const ratings = []
 for (let offset = 0; offset < ids.length; offset += 200) {
   const { data, error } = await supabase
     .from('ratings')
-    .select('problem_id,status,updated_at')
+    .select('problem_id,status,updated_at,note')
     .in('problem_id', ids.slice(offset, offset + 200))
     .in('status', ['selected', 'rejected'])
   if (error) throw error
@@ -47,18 +47,26 @@ for (const rating of ratings) {
   try { meta = row?.meta ? JSON.parse(row.meta) : {} } catch { /* ignore malformed history */ }
   const structureKey = meta.structureKey
   if (!structureKey) continue
+  let note = {}
+  try { note = rating.note ? JSON.parse(rating.note) : {} } catch { /* retain unspecified feedback */ }
+  const repairReasons = Array.isArray(note?.curation_feedback?.reasons)
+    ? note.curation_feedback.reasons.filter((reason) => typeof reason === 'string')
+    : []
   diagnostics.push({
     selected: rating.status === 'selected',
     scalar_bridge: meta.verificationMethod === 'composed_closure_with_traceback',
     morphism_count: (meta.morphismChain ?? []).length,
     statement_length: row?.statement?.length ?? 0,
+    repair_reasons: repairReasons,
   })
   const group = groups.get(structureKey) ?? {
     structure_key: structureKey,
     statuses: [],
+    repair_reasons: [],
     row_count: 0,
   }
   group.statuses.push(rating.status)
+  group.repair_reasons.push(...repairReasons)
   group.row_count += 1
   groups.set(structureKey, group)
 }
@@ -71,6 +79,8 @@ const structures = [...groups.values()].map((group) => {
   return {
     structure_key: group.structure_key,
     label: statuses.length === 1 ? statuses[0] : 'conflict',
+    disposition: statuses.includes('selected') ? 'retain' : 'repair',
+    repair_reasons: [...new Set(group.repair_reasons)],
     vote_rows: group.row_count,
     features: {
       interaction_verified: graph.interaction_verified === true,
@@ -113,11 +123,16 @@ const auc = (score) => {
 const scalarBridge = diagnostics.filter((row) => row.scalar_bridge)
 const selectedDiagnostics = diagnostics.filter((row) => row.selected)
 const rejectedDiagnostics = diagnostics.filter((row) => !row.selected)
+const repairReasonCounts = rejectedDiagnostics.reduce((counts, row) => {
+  const reasons = row.repair_reasons.length ? row.repair_reasons : ['unspecified']
+  for (const reason of reasons) counts[reason] = (counts[reason] ?? 0) + 1
+  return counts
+}, {})
 const payload = {
   generated_at: new Date().toISOString(),
   unit: 'structure_key',
   policy: {
-    purpose: 'calibrate abstract structural gates, never memorize statements',
+    purpose: 'calibrate abstract repair operators, never memorize statements',
     allowed_features: [
       'proof DAG connectivity',
       'typed morphism count and composition',
@@ -132,7 +147,8 @@ const payload = {
       'numeric parameters',
       'answers',
     ],
-    conflicts: 'exclude from calibration until re-rated',
+    rejected_semantics: 'repair signal, never automatic deletion of the mathematical structure',
+    conflicts: 'retain and exclude from binary calibration until re-rated',
     split: 'hold out entire structure and morphism-chain clusters',
   },
   summary: {
@@ -162,6 +178,7 @@ const payload = {
     rejected_statement_length_median: median(
       rejectedDiagnostics.map((row) => row.statement_length),
     ),
+    repair_reason_counts: repairReasonCounts,
     auc: {
       reject_scalar_bridge: auc((row) => row.scalar_bridge ? 0 : 1),
       morphism_count: auc((row) => row.morphism_count),
@@ -190,10 +207,12 @@ const lines = [
   `- 無関係な数値接続: ${payload.summary.scalar_bridge_rows}問中、選択${payload.summary.scalar_bridge_selected}・スキップ${payload.summary.scalar_bridge_rejected}`,
   `- 射の個数中央値: 選択${payload.summary.selected_morphism_median}、スキップ${payload.summary.rejected_morphism_median}`,
   `- 問題文長中央値: 選択${payload.summary.selected_statement_length_median}、スキップ${payload.summary.rejected_statement_length_median}`,
+  `- 修復理由: ${JSON.stringify(payload.summary.repair_reason_counts)}`,
   `- 識別AUC: 数値接続除外${payload.summary.auc.reject_scalar_bridge}、射の個数${payload.summary.auc.morphism_count}、短さ${payload.summary.auc.shorter_statement}`,
   '',
   '## 学習契約',
   '',
+  '- スキップは構造の削除票ではなく、現状の問題表現に対する修復信号として扱う。',
   '- 問題文、答え、数値、問題ID、族名を特徴量にしない。',
   '- 証明DAGの合流、型付き射、制約相互作用、query、検証契約だけを使う。',
   '- 同じ構造の重複票は一票にまとめ、選択とスキップが競合した構造は較正から外す。',
