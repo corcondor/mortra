@@ -246,14 +246,68 @@ export default function RobotPage() {
     }
     applyCamera()
 
-    /** 書き出し: 時間を固定間隔で刻み、1 枚ずつ PNG にして API へ送る */
+    /**
+     * 書き出し: 時間を固定間隔で刻み、1 枚ずつ PNG にして API へ送る。
+     *
+     * ただの記録ではなく、見せ方を作る。この図の驚きは
+     * 「無関係に見える 9 点が 1 つの円に乗る」ことなので、
+     *   序盤  引きで作図の全体を見せる
+     *   中盤  寄っていく（点が増えていくのを近くで見せる）
+     *   終盤  円が 9 点を貫くところで最も寄る
+     *   最後  少し引いて完成図を回しながら見せる
+     * というカメラ運びにする。
+     */
     const runExport = async () => {
       const fps = 30
       const step = 1 / fps
-      // 30 秒に収める（リールの尺）。長い図は早送りする。
-      const speed = Math.max(1, plan.total / 30)
+      const holdSeconds = 3.5           // 完成図を見せる尺
+      const drawSeconds = 26.5          // 作図の尺
       const session = figure.id
+      const speed = plan.total / drawSeconds
       let index = 0
+
+      const easeInOut = (u: number) =>
+        u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2
+
+      // 図の中心を実際に計算して、そこを見る。
+      // 原点を見ていると被写体が画面の端に寄って小さくなる。
+      const centre = new THREE.Vector3()
+      let count = 0
+      for (const stroke of figure.strokes) {
+        for (const p of stroke.points) {
+          centre.add(new THREE.Vector3(p.x, p.y, p.z))
+          count++
+        }
+      }
+      if (count) centre.multiplyScalar(1 / count)
+
+      /** 進行度 0→1 に対するカメラ */
+      const choreograph = (u: number, dist: number, az: number, el: number) => {
+        camera.position.set(
+          centre.x + dist * Math.sin(az) * Math.cos(el),
+          centre.y - dist * Math.cos(az) * Math.cos(el),
+          centre.z + dist * Math.sin(el),
+        )
+        camera.lookAt(centre)
+      }
+
+      const shot = (u: number) => {
+        const e = easeInOut(Math.min(1, Math.max(0, u)))
+        // 引き 120 → 寄り 62
+        choreograph(u, 120 - 58 * e, 0.28 + 0.50 * e, 0.30 - 0.14 * e)
+      }
+
+      const shoot = async () => {
+        renderer.render(scene, camera)
+        const dataUrl = renderer.domElement.toDataURL('image/png')
+        await fetch('/api/frames', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ index, dataUrl, session }),
+        })
+        index++
+      }
+
       elapsed = 0
       for (let t = 0; t <= plan.total; t += step * speed) {
         if (disposed) return
@@ -268,16 +322,23 @@ export default function RobotPage() {
           }
           pushInk(tip)
         }
-        renderer.render(scene, camera)
-        const dataUrl = renderer.domElement.toDataURL('image/png')
-        await fetch('/api/frames', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ index, dataUrl, session }),
-        })
-        index++
+        shot(t / plan.total)
+        await shoot()
         setProgress(t / plan.total)
         setCaption(`書き出し中 ${index} 枚`)
+      }
+
+      // 完成図を回しながら見せる。腕は邪魔なので隠す。
+      links.forEach((m) => { m.visible = false })
+      joints.forEach((m) => { m.visible = false })
+      pen.visible = false
+      const holdFrames = Math.round(holdSeconds * fps)
+      for (let i = 0; i < holdFrames; i++) {
+        if (disposed) return
+        const u = i / holdFrames
+        // 完成図をゆっくり回して見せる
+        choreograph(u, 64 - 4 * Math.sin(u * Math.PI), 0.78 + 0.34 * u, 0.16 + 0.06 * u)
+        await shoot()
       }
       setCaption(`書き出し完了 ${index} 枚（${session}）`)
     }
