@@ -1,0 +1,231 @@
+{
+  "generated_at": "2026-08-01T09:50:03.666830+00:00",
+  "source": {
+    "pool": "problem_synthesis/entrance_exam_pool.json",
+    "unresolved": "problem_synthesis/unresolved_candidates.json"
+  },
+  "summary": {
+    "problems": 138,
+    "families": 136,
+    "verified": 138,
+    "morphism_chains": 138,
+    "proof_graphs": 1,
+    "unresolved": 115,
+    "unresolved_depth_floor": 14,
+    "reference_corpus": 28074,
+    "human_runtime_corpus": 176,
+    "human_difficulty_auc": 0.086,
+    "excluded_non_interacting_compositions": 427
+  },
+  "structure": {
+    "source_counts": {
+      "construct_atlas": 92,
+      "typed_continuous": 15,
+      "iterated_relation_closure": 4,
+      "relation_closure": 19,
+      "geometry_fusion": 4,
+      "passage_region_closure": 3,
+      "selfauthored_motif_guided": 1
+    },
+    "depth_distribution": {
+      "2": 10,
+      "3": 63,
+      "4": 36,
+      "5": 9,
+      "6": 3,
+      "7": 2,
+      "8": 6,
+      "10": 6,
+      "11": 2,
+      "12": 1
+    },
+    "depth_median": 3.0,
+    "depth_p90": 8,
+    "depth_max": 12,
+    "depth_10_or_more": 9,
+    "composition_count": 0,
+    "composition_stage_counts": {},
+    "single_scalar_bridge_count": 0
+  },
+  "measurement_audit": {
+    "depth_vs_legacy_score_pearson": 0.489,
+    "depth_vs_statement_length_pearson": 0.594,
+    "legacy_score_vs_statement_length_pearson": 0.777,
+    "legacy_score_vs_statement_length_spearman": 0.684
+  },
+  "representation": {
+    "implemented": "linear_morphism_chain",
+    "missing": [
+      "proof_dependency_dag",
+      "lemma_dependencies",
+      "failed_branches",
+      "alternative_proofs"
+    ]
+  },
+  "high_depth_examples": [
+    {
+      "family_id": "ultradeep.gambler_absorption_variance_divisor_count",
+      "domain": "probability_linear_algebra_number_theory",
+      "source_generator": "construct_atlas",
+      "statement_tex": "点 \\(0,1,\\ldots,4\\) 上を動く対称ランダムウォークを考える。初期位置は \\(1\\) で，各時刻に確率 \\(\\frac12\\) ずつで左右に1動き，\\(0\\) または \\(4\\) に着いたら停止する。停止時刻を \\(T\\) とするとき，\\(\\operatorname{Var}(T)\\) の正の約数の個数を求めよ。",
+      "answer_tex": "4",
+      "morphisms": [
+        "PathStateSpace",
+        "AbsorbingBoundary",
+        "SymmetricRandomWalk",
+        "HittingTime",
+        "FirstMomentConditioning",
+        "FirstMomentLinearSystem",
+        "SecondMomentConditioning",
+        "SecondMomentLinearSystem",
+        "VarianceTransform",
+        "IntegerInvariant",
+        "PrimeFactorization",
+        "DivisorCount"
+      ],
+      "verification_method": "closed_variance_formula_vs_exact_two_moment_linear_system"
+    },
+    {
+      "family_id": "ultradeep.cubic_root_triangle_discriminant_divisor_count",
+      "domain": "algebraic_geometry_number_theory",
+      "source_generator": "construct_atlas",
+      "statement_tex": "方程式 \\(x^3-12x+(-8)=0\\) の3実根を \\(\\alpha,\\beta,\\gamma\\) とする。放物線 \\(y=x^2\\) 上の3点 \\((\\alpha,\\alpha^2),(\\beta,\\beta^2),(\\gamma,\\gamma^2)\\) が作る三角形の面積を \\(S\\) とし，\\(M=\\frac{4S^2}{27}\\) と定める。\\(M\\) が整数であることを示し，\\(M\\) の正の約数の個数を求めよ。",
+      "answer_tex": "14",
+      "morphisms": [
+        "CubicPolynomial",
+        "ThreeRealRootSet",
+        "ParabolaEmbedding",
+        "TriangleConstruction",
+        "VandermondeDeterminant",
+        "AreaSquare",
+        "PolynomialDiscriminant",
+        "IntegerNormalization",
+        "PrimeFactorization",
+        "DivisorCount",
+        "ArithmeticObservation"
+      ],
+      "verification_method": "symbolic_discriminant_identity_vs_numeric_root_triangle_area"
+    },
+    {
+      "family_id": "ultradeep.cyclotomic_distance_norm_divisor_count",
+      "domain": "complex_algebra_number_theory",
+      "source_generator": "construct_atlas",
+      "statement_tex": "\\(\\zeta_j=\\cos\\frac{2\\pi j}{5}+i\\sin\\frac{2\\pi j}{5}\\) とし，\\(1\\le j\\le 5\\) かつ \\(\\gcd(j,5)=1\\) を満たす \\(j\\) について \\(L=\\prod |2-\\zeta_j|\\) と定める。\\(L\\) が整数であることを示し，\\(L\\) の正の約数の個数を求めよ。",
+      "answer_tex": "2",
+      "morphisms": [
+        "RootOfUnity",
+        "CoprimeIndexFilter",
+        "PrimitiveRootSet",
+        "DistanceMultiset",
+        "DistanceProduct",
+        "CyclotomicPolynomial",
+        "PolynomialEvaluation",
+        "AlgebraicNorm",
+        "IntegerInvariant",
+        "PrimeFactorization",
+        "DivisorCount"
+      ],
+      "verification_method": "cyclotomic_evaluation_vs_numeric_primitive_root_product"
+    },
+    {
+      "family_id": "ultradeep.geometry_astroid_envelope_area",
+      "domain": "analytic_geometry",
+      "source_generator": "construct_atlas",
+      "statement_tex": "\\(0<\\theta<\\frac{\\pi}{2}\\) に対し，点 \\(A_\\theta=(2\\cos\\theta,0)\\), \\(B_\\theta=(0,2\\sin\\theta)\\) をとる。直線 \\(A_\\theta B_\\theta\\) を対称性により全象限へ拡張して得られる直線族の包絡線が囲む面積を求めよ。",
+      "answer_tex": "\\frac{3 \\pi}{2}",
+      "morphisms": [
+        "CircleParameter",
+        "AxisEndpointPair",
+        "JoiningLine",
+        "LineFamily",
+        "EnvelopeStationarity",
+        "ParameterElimination",
+        "AstroidIdentification",
+        "ClosedCurveOrientation",
+        "GreenAreaMorphism",
+        "AreaObservation"
+      ],
+      "verification_method": "symbolic_envelope_conditions_vs_numeric_shoelace"
+    },
+    {
+      "family_id": "ultradeep.geometry_ellipse_tangent_pair_locus",
+      "domain": "projective_geometry",
+      "source_generator": "construct_atlas",
+      "statement_tex": "楕円 \\(E:\\frac{x^2}{4}+\\frac{y^2}{1}=1\\) 上の点を \\(P(t)=(2\\cos t,1\\sin t)\\) とする。\\(P(t+\\frac{\\pi}{3})\\) と \\(P(t-\\frac{\\pi}{3})\\) における2本の接線の交点を \\(Q(t)\\)とするとき，\\(Q(t)\\) の軌跡の方程式を求めよ。",
+      "answer_tex": "\\frac{x^2}{4}+\\frac{y^2}{1}=4",
+      "morphisms": [
+        "EllipseObject",
+        "TrigonometricChart",
+        "PairedParameterShift",
+        "TangentDualization",
+        "DualLinePair",
+        "LinearIntersection",
+        "TrigonometricDiagonalization",
+        "HomothetyRecognition",
+        "ConicElimination",
+        "LocusEquationObservation"
+      ],
+      "verification_method": "closed_intersection_formula_vs_numeric_two_line_solve"
+    },
+    {
+      "family_id": "ultradeep.geometry_orthocenter_locus_area",
+      "domain": "euclidean_geometry",
+      "source_generator": "construct_atlas",
+      "statement_tex": "楕円 \\(E:\\frac{x^2}{4}+\\frac{y^2}{1}=1\\) の長軸の端点を \\(A=(-2,0),B=(2,0)\\) とする。\\(E\\) 上を動く点 \\(P\\ne A,B\\) に対し，三角形 \\(ABP\\) の垂心を \\(H\\) とする。\\(H\\) の軌跡が囲む面積を求めよ。",
+      "answer_tex": "8 \\pi",
+      "morphisms": [
+        "EllipseObject",
+        "MajorAxisVertexPair",
+        "MovingTriangle",
+        "AltitudeConstraint",
+        "OrthocenterIntersection",
+        "CoordinateSolve",
+        "LinearImageRecognition",
+        "ImageEllipse",
+        "DeterminantAreaScaling",
+        "AreaObservation"
+      ],
+      "verification_method": "altitude_coordinate_formula_vs_numeric_locus_shoelace"
+    },
+    {
+      "family_id": "ultradeep.geometry_parabola_normal_envelope",
+      "domain": "differential_geometry",
+      "source_generator": "construct_atlas",
+      "statement_tex": "放物線 \\(C:y=\\frac{x^2}{4}\\) 上の各点で法線を引く。この法線族の包絡線の方程式を求めよ。",
+      "answer_tex": "4(y-2)^3=27x^2",
+      "morphisms": [
+        "ParabolaObject",
+        "TangentVector",
+        "NormalDirection",
+        "NormalLine",
+        "NormalLineFamily",
+        "EnvelopeStationarity",
+        "StationaryParameterSolve",
+        "EvoluteParametrization",
+        "ResultantElimination",
+        "ImplicitCurveObservation"
+      ],
+      "verification_method": "symbolic_resultant_identity_vs_parametric_substitution"
+    },
+    {
+      "family_id": "ultradeep.geometry_regular_polygon_minkowski_perimeter",
+      "domain": "convex_geometry",
+      "source_generator": "construct_atlas",
+      "statement_tex": "同じ中心・外接円半径 \\(1\\) の正 \\(3\\) 角形 \\(P,Q\\) があり，\\(Q\\) は \\(P\\) を中心のまわりに \\(\\frac{\\pi}{3}\\) 回転したものとする。図形 \\(P+Q=\\{p+q\\mid p\\in P,q\\in Q\\}\\) の周長を求めよ。",
+      "answer_tex": "6 \\sqrt{3}",
+      "morphisms": [
+        "RootOfUnityChart",
+        "RegularPolygon",
+        "HalfStepRotation",
+        "SecondRegularPolygon",
+        "MinkowskiAddition",
+        "SupportDirectionMerge",
+        "VertexSumHull",
+        "RegularDoublePolygon",
+        "EdgeLengthObservation",
+        "PerimeterObservation"
+      ],
+      "verification_method": "regular_polygon_formula_vs_all_vertex_sums_convex_hull"
+    }
+  ]
+}

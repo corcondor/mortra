@@ -1,0 +1,193 @@
+{
+  "method": "selfauthored_proof_motif_guided_synthesis",
+  "problems": [
+    {
+      "accepted": true,
+      "answer_exact": [
+        "1/12",
+        "1/2"
+      ],
+      "answer_tex": "\\(\\dfrac1{12},\\ \\dfrac12\\)",
+      "candidate_id": "motif:quadratic-root-lattice-limit:001",
+      "constraint_skeleton": [
+        "1<=a,b<=n",
+        "discriminant>=0",
+        "n->infinity"
+      ],
+      "difficulty": "unrated_human",
+      "domain": "probability_algebra_analysis",
+      "family_id": "motif.quadratic_root_lattice_limit",
+      "lift_certificate": {
+        "type_checked": true,
+        "morphism_chain": [
+          "UniformLatticePair",
+          "QuadraticDiscriminant",
+          "LatticeRescaling",
+          "RegionLimit",
+          "AreaObservation",
+          "RootDifference",
+          "RestrictedAverage"
+        ],
+        "constraint_skeleton": [
+          "finite_grid",
+          "real_root_event",
+          "scaling_limit"
+        ],
+        "query_signature": "Pair(Limit(Probability),Limit(RestrictedAverage))"
+      },
+      "novelty": {
+        "corpus_novel": true,
+        "provisional": true
+      },
+      "proof_graph": {
+        "nodes": [
+          {
+            "id": "grid",
+            "kind": "object",
+            "label": "finite lattice of coefficient pairs"
+          },
+          {
+            "id": "quadratic",
+            "kind": "object",
+            "label": "quadratic family and its roots"
+          },
+          {
+            "id": "rescale",
+            "kind": "transform",
+            "morphism": "LatticeRescaling"
+          },
+          {
+            "id": "disc",
+            "kind": "transform",
+            "morphism": "QuadraticDiscriminant"
+          },
+          {
+            "id": "region",
+            "kind": "lemma",
+            "morphism": "RegionLimit"
+          },
+          {
+            "id": "area",
+            "kind": "transform",
+            "morphism": "AreaObservation"
+          },
+          {
+            "id": "gap",
+            "kind": "transform",
+            "morphism": "RootDifference"
+          },
+          {
+            "id": "average",
+            "kind": "lemma",
+            "morphism": "RestrictedAverage"
+          },
+          {
+            "id": "q1",
+            "kind": "query",
+            "label": "limiting proportion"
+          },
+          {
+            "id": "q2",
+            "kind": "query",
+            "label": "limiting restricted average"
+          }
+        ],
+        "edges": [
+          {
+            "source": "grid",
+            "target": "rescale"
+          },
+          {
+            "source": "quadratic",
+            "target": "disc"
+          },
+          {
+            "source": "rescale",
+            "target": "region"
+          },
+          {
+            "source": "disc",
+            "target": "region"
+          },
+          {
+            "source": "region",
+            "target": "area"
+          },
+          {
+            "source": "area",
+            "target": "q1"
+          },
+          {
+            "source": "quadratic",
+            "target": "gap"
+          },
+          {
+            "source": "gap",
+            "target": "average"
+          },
+          {
+            "source": "region",
+            "target": "average"
+          },
+          {
+            "source": "average",
+            "target": "q2"
+          }
+        ]
+      },
+      "proof_graph_certificate": {
+        "present": true,
+        "valid_dag": true,
+        "interaction_verified": true,
+        "reason": "interaction_verified",
+        "node_count": 10,
+        "edge_count": 10,
+        "root_count": 2,
+        "merge_count": 2,
+        "terminal_count": 2
+      },
+      "solution_tex": "判別式より \\((a,b)\\in S_n\\) は \\(a^2\\ge4bn\\) と同値である。\n\\(u=a/n,\\ v=b/n\\) とおくと，格子点は領域\n\\(D=\\{(u,v)\\mid0\\le u\\le1,\\ 0\\le v\\le u^2/4\\}\\) を近似する。したがって\n\\[\n\\lim_{n\\to\\infty}\\frac{|S_n|}{n^2}\n=\\iint_Ddu\\,dv=\\int_0^1\\frac{u^2}{4}\\,du=\\frac1{12}.\n\\]\nまた二解の差は判別式の平方根だから\n\\[\n\\frac{|\\alpha_{a,b}-\\beta_{a,b}|}{\\sqrt n}\n=\\sqrt{u^2-4v}.\n\\]\nよってリーマン和により\n\\[\n\\lim_{n\\to\\infty}M_n\n=\\frac{\\displaystyle\\int_0^1\\int_0^{u^2/4}\\sqrt{u^2-4v}\\,dv\\,du}\n{\\displaystyle\\int_0^1u^2/4\\,du}\n=\\frac{1/24}{1/12}=\\frac12.\n\\]",
+      "statement_tex": "正の整数 \\(n\\) に対し，\n\\[\nS_n=\\left\\{(a,b)\\in\\{1,2,\\ldots,n\\}^2\\ \\middle|\\\nx^2-\\frac{a}{\\sqrt n}x+b=0\\text{ が実数解をもつ}\\right\\}\n\\]\nとする。また \\((a,b)\\in S_n\\) に対応する二解を\n\\(\\alpha_{a,b},\\beta_{a,b}\\) とし，\n\\[\nM_n=\\frac1{|S_n|}\\sum_{(a,b)\\in S_n}\n\\frac{|\\alpha_{a,b}-\\beta_{a,b}|}{\\sqrt n}\n\\]\nとおく。次の極限を求めよ。\n\\[\n\\text{(1) }\\lim_{n\\to\\infty}\\frac{|S_n|}{n^2},\n\\qquad\n\\text{(2) }\\lim_{n\\to\\infty}M_n.\n\\]",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "symbolic_double_integral_plus_finite_lattice_check",
+        "finite_check": {
+          "n": 1000.0,
+          "proportion": 0.082986,
+          "restricted_average": 0.5000916656908638
+        },
+        "semantic_chain_check": {
+          "passed": true,
+          "expected": [
+            "UniformLatticePair",
+            "QuadraticDiscriminant",
+            "LatticeRescaling",
+            "RegionLimit",
+            "AreaObservation",
+            "RootDifference",
+            "RestrictedAverage"
+          ],
+          "observed": [
+            "AreaObservation",
+            "Discriminant",
+            "LatticeRescaling",
+            "QuadraticDiscriminant",
+            "RegionLimit",
+            "RestrictedAverage",
+            "RootDifference",
+            "UniformLatticePair"
+          ],
+          "missing": [],
+          "statement_status": "type_checked",
+          "solution_status": "needs_review"
+        }
+      }
+    }
+  ],
+  "summary": {
+    "generated": 1,
+    "accepted": 1,
+    "interaction_verified": 1
+  }
+}
