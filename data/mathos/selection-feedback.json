@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-01T15:49:53.911Z",
+  "generated_at": "2026-08-01T18:45:31.800Z",
   "unit": "structure_key",
   "policy": {
     "purpose": "calibrate abstract repair operators, never memorize statements",
@@ -17,34 +17,39 @@
       "numeric parameters",
       "answers"
     ],
-    "rejected_semantics": "repair signal, never automatic deletion of the mathematical structure",
+    "rejected_semantics": "remove the current representative from active delivery; retain the abstract repair signal and vote history",
     "conflicts": "retain and exclude from binary calibration until re-rated",
     "split": "hold out entire structure and morphism-chain clusters"
   },
   "summary": {
-    "raw_vote_rows": 184,
-    "raw_selected": 32,
-    "raw_rejected": 152,
-    "unique_structures": 162,
-    "selected_structures": 26,
-    "rejected_structures": 134,
-    "conflicting_structures": 2,
-    "current_pool_structures_with_votes": 57,
-    "duplicate_vote_rows_collapsed": 22,
+    "raw_vote_rows": 245,
+    "raw_selected": 38,
+    "raw_rejected": 207,
+    "unique_structures": 221,
+    "selected_structures": 31,
+    "rejected_structures": 187,
+    "conflicting_structures": 3,
+    "current_pool_structures_with_votes": 27,
+    "duplicate_vote_rows_collapsed": 24,
     "scalar_bridge_rows": 95,
     "scalar_bridge_selected": 0,
     "scalar_bridge_rejected": 95,
-    "selected_morphism_median": 4.5,
-    "rejected_morphism_median": 6,
-    "selected_statement_length_median": 106,
-    "rejected_statement_length_median": 180,
+    "selected_morphism_median": 5,
+    "rejected_morphism_median": 5,
+    "selected_statement_length_median": 108.5,
+    "rejected_statement_length_median": 153.5,
     "repair_reason_counts": {
-      "unspecified": 137
+      "unspecified": 108,
+      "too_easy": 69,
+      "too_typical": 50,
+      "unnatural_connection": 7,
+      "short_proof": 7,
+      "unnatural_wording": 3
     },
     "auc": {
-      "reject_scalar_bridge": 0.847,
-      "morphism_count": 0.474,
-      "shorter_statement": 0.672
+      "reject_scalar_bridge": 0.747,
+      "morphism_count": 0.579,
+      "shorter_statement": 0.587
     }
   },
   "structures": [
@@ -52,34 +57,19 @@
       "structure_key": "07e290f1c1b2ea3d1faffec734b82de1fea184edc8fec9f2480a20bc54c7e230",
       "label": "rejected",
       "disposition": "repair",
-      "repair_reasons": [],
-      "vote_rows": 1,
+      "repair_reasons": [
+        "too_easy"
+      ],
+      "vote_rows": 2,
       "features": {
         "interaction_verified": false,
         "proof_node_count": 0,
         "proof_edge_count": 0,
         "proof_merge_count": 0,
-        "morphism_count": 3,
+        "morphism_count": 0,
         "constraint_count": 0,
         "has_query_signature": false,
-        "active_in_current_pool": true
-      }
-    },
-    {
-      "structure_key": "a3648490745d0017d9abc8e3b60888e11db9a75538d76193eba2bcd8f9103e5b",
-      "label": "rejected",
-      "disposition": "repair",
-      "repair_reasons": [],
-      "vote_rows": 1,
-      "features": {
-        "interaction_verified": false,
-        "proof_node_count": 0,
-        "proof_edge_count": 0,
-        "proof_merge_count": 0,
-        "morphism_count": 10,
-        "constraint_count": 0,
-        "has_query_signature": false,
-        "active_in_current_pool": true
+        "active_in_current_pool": false
       }
     },
     {
@@ -135,10 +125,12 @@
     },
     {
       "structure_key": "73341c0154b7f34f96958184e500421b907025d1573ef20825803eb9be457caf",
-      "label": "selected",
+      "label": "conflict",
       "disposition": "retain",
-      "repair_reasons": [],
-      "vote_rows": 1,
+      "repair_reasons": [
+        "too_easy"
+      ],
+      "vote_rows": 2,
       "features": {
         "interaction_verified": false,
         "proof_node_count": 0,
@@ -188,7 +180,9 @@
       "structure_key": "0dea4a35d5307045f3b07358fdc35fb8ad2a734bfb70e773211d8d1fbcedae7f",
       "label": "conflict",
       "disposition": "retain",
-      "repair_reasons": [],
+      "repair_reasons": [
+        "too_easy"
+      ],
       "vote_rows": 2,
       "features": {
         "interaction_verified": false,
@@ -321,23 +315,6 @@
       }
     },
     {
-      "structure_key": "99035009ba4e5184a69cb567b26caa4b245ac89aecbe96bfde5ff8dc4252d682",
-      "label": "rejected",
-      "disposition": "repair",
-      "repair_reasons": [],
-      "vote_rows": 1,
-      "features": {
-        "interaction_verified": false,
-        "proof_node_count": 0,
-        "proof_edge_count": 0,
-        "proof_merge_count": 0,
-        "morphism_count": 3,
-        "constraint_count": 0,
-        "has_query_signature": false,
-        "active_in_current_pool": true
-      }
-    },
-    {
       "structure_key": "8c841551e5d847d26044ed38e2379c306049d8a6cdac3ce48a9099af49ac40d5",
       "label": "rejected",
       "disposition": "repair",
@@ -348,27 +325,10 @@
         "proof_node_count": 0,
         "proof_edge_count": 0,
         "proof_merge_count": 0,
-        "morphism_count": 4,
-        "constraint_count": 3,
-        "has_query_signature": true,
-        "active_in_current_pool": true
-      }
-    },
-    {
-      "structure_key": "958b38f11e598178683da5c707b35a99a28d51bdd1f4f4d0a89d61e32898b3f3",
-      "label": "rejected",
-      "disposition": "repair",
-      "repair_reasons": [],
-      "vote_rows": 1,
-      "features": {
-        "interaction_verified": false,
-        "proof_node_count": 0,
-        "proof_edge_count": 0,
-        "proof_merge_count": 0,
-        "morphism_count": 3,
+        "morphism_count": 0,
         "constraint_count": 0,
         "has_query_signature": false,
-        "active_in_current_pool": true
+        "active_in_current_pool": false
       }
     },
     {
@@ -495,6 +455,44 @@
       "label": "rejected",
       "disposition": "repair",
       "repair_reasons": [],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "958b38f11e598178683da5c707b35a99a28d51bdd1f4f4d0a89d61e32898b3f3",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "99035009ba4e5184a69cb567b26caa4b245ac89aecbe96bfde5ff8dc4252d682",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy"
+      ],
       "vote_rows": 1,
       "features": {
         "interaction_verified": false,
@@ -746,23 +744,6 @@
       }
     },
     {
-      "structure_key": "08b292a9582f515e827712b9843df5f2133d590ab3aa858d6a2d4ba8d39b7332",
-      "label": "rejected",
-      "disposition": "repair",
-      "repair_reasons": [],
-      "vote_rows": 1,
-      "features": {
-        "interaction_verified": false,
-        "proof_node_count": 0,
-        "proof_edge_count": 0,
-        "proof_merge_count": 0,
-        "morphism_count": 4,
-        "constraint_count": 0,
-        "has_query_signature": false,
-        "active_in_current_pool": true
-      }
-    },
-    {
       "structure_key": "974d8f2d7f0aa526eb297d2d7cdccddf84d89beeb9adf6de39f1fea5b5506531",
       "label": "rejected",
       "disposition": "repair",
@@ -777,23 +758,6 @@
         "constraint_count": 0,
         "has_query_signature": false,
         "active_in_current_pool": false
-      }
-    },
-    {
-      "structure_key": "4243211c1230dace42ea07307a363b86150afddedfbc464648a8a37326bb6b4c",
-      "label": "rejected",
-      "disposition": "repair",
-      "repair_reasons": [],
-      "vote_rows": 1,
-      "features": {
-        "interaction_verified": false,
-        "proof_node_count": 0,
-        "proof_edge_count": 0,
-        "proof_merge_count": 0,
-        "morphism_count": 3,
-        "constraint_count": 0,
-        "has_query_signature": false,
-        "active_in_current_pool": true
       }
     },
     {
@@ -848,125 +812,6 @@
       }
     },
     {
-      "structure_key": "c6d10e0ddd04fe3eddacb53d6d739600d39db03d0986b939370efdb572542d10",
-      "label": "rejected",
-      "disposition": "repair",
-      "repair_reasons": [],
-      "vote_rows": 1,
-      "features": {
-        "interaction_verified": false,
-        "proof_node_count": 0,
-        "proof_edge_count": 0,
-        "proof_merge_count": 0,
-        "morphism_count": 3,
-        "constraint_count": 0,
-        "has_query_signature": false,
-        "active_in_current_pool": true
-      }
-    },
-    {
-      "structure_key": "d2d4f2d5d2858cfb89b1af277ad36e48106d09bf84c397a562699969ffd644ed",
-      "label": "rejected",
-      "disposition": "repair",
-      "repair_reasons": [],
-      "vote_rows": 1,
-      "features": {
-        "interaction_verified": false,
-        "proof_node_count": 0,
-        "proof_edge_count": 0,
-        "proof_merge_count": 0,
-        "morphism_count": 2,
-        "constraint_count": 0,
-        "has_query_signature": false,
-        "active_in_current_pool": true
-      }
-    },
-    {
-      "structure_key": "d445f3325363170381e58dc6bd14034b65136d55775e712e514cdf44e246cf45",
-      "label": "rejected",
-      "disposition": "repair",
-      "repair_reasons": [],
-      "vote_rows": 1,
-      "features": {
-        "interaction_verified": false,
-        "proof_node_count": 0,
-        "proof_edge_count": 0,
-        "proof_merge_count": 0,
-        "morphism_count": 3,
-        "constraint_count": 0,
-        "has_query_signature": false,
-        "active_in_current_pool": true
-      }
-    },
-    {
-      "structure_key": "9faa7d30373ecfd722f5679e2fe9092e470b04a69c8545f448adf6d3613c596f",
-      "label": "rejected",
-      "disposition": "repair",
-      "repair_reasons": [],
-      "vote_rows": 1,
-      "features": {
-        "interaction_verified": false,
-        "proof_node_count": 0,
-        "proof_edge_count": 0,
-        "proof_merge_count": 0,
-        "morphism_count": 3,
-        "constraint_count": 0,
-        "has_query_signature": false,
-        "active_in_current_pool": true
-      }
-    },
-    {
-      "structure_key": "457da2e65e49c92eb4ed27e9df462ec6e02cb99419fb91030c1cda87da3a583d",
-      "label": "rejected",
-      "disposition": "repair",
-      "repair_reasons": [],
-      "vote_rows": 1,
-      "features": {
-        "interaction_verified": false,
-        "proof_node_count": 0,
-        "proof_edge_count": 0,
-        "proof_merge_count": 0,
-        "morphism_count": 2,
-        "constraint_count": 0,
-        "has_query_signature": false,
-        "active_in_current_pool": true
-      }
-    },
-    {
-      "structure_key": "6f558da375d15cfb704c6845d7074efcbb68d107daf58196c87376b02f33d0e2",
-      "label": "rejected",
-      "disposition": "repair",
-      "repair_reasons": [],
-      "vote_rows": 1,
-      "features": {
-        "interaction_verified": false,
-        "proof_node_count": 0,
-        "proof_edge_count": 0,
-        "proof_merge_count": 0,
-        "morphism_count": 8,
-        "constraint_count": 3,
-        "has_query_signature": true,
-        "active_in_current_pool": true
-      }
-    },
-    {
-      "structure_key": "a15416bb9772279339225840ea27efd2e6093e1a042293067a2aea033b368776",
-      "label": "rejected",
-      "disposition": "repair",
-      "repair_reasons": [],
-      "vote_rows": 1,
-      "features": {
-        "interaction_verified": false,
-        "proof_node_count": 0,
-        "proof_edge_count": 0,
-        "proof_merge_count": 0,
-        "morphism_count": 2,
-        "constraint_count": 0,
-        "has_query_signature": false,
-        "active_in_current_pool": true
-      }
-    },
-    {
       "structure_key": "c415d75dcc77d5b019f5768757cffe14f235ab6b2893622155e64e75bcc9b0e9",
       "label": "selected",
       "disposition": "retain",
@@ -1001,54 +846,61 @@
       }
     },
     {
-      "structure_key": "2ee98f29b28f9004cb2fd35191bf5ca4dcaad9e632cc2eb9a84b115cf33454b7",
-      "label": "selected",
-      "disposition": "retain",
-      "repair_reasons": [],
+      "structure_key": "9faa7d30373ecfd722f5679e2fe9092e470b04a69c8545f448adf6d3613c596f",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy"
+      ],
       "vote_rows": 1,
       "features": {
         "interaction_verified": false,
         "proof_node_count": 0,
         "proof_edge_count": 0,
         "proof_merge_count": 0,
-        "morphism_count": 4,
+        "morphism_count": 0,
         "constraint_count": 0,
         "has_query_signature": false,
-        "active_in_current_pool": true
+        "active_in_current_pool": false
       }
     },
     {
-      "structure_key": "0e62ca5426a9c502f0057022f2f59669ca6a58f6be304e3a846002a47f84f8ed",
+      "structure_key": "a15416bb9772279339225840ea27efd2e6093e1a042293067a2aea033b368776",
       "label": "rejected",
       "disposition": "repair",
-      "repair_reasons": [],
+      "repair_reasons": [
+        "too_easy",
+        "too_typical"
+      ],
       "vote_rows": 1,
       "features": {
         "interaction_verified": false,
         "proof_node_count": 0,
         "proof_edge_count": 0,
         "proof_merge_count": 0,
-        "morphism_count": 3,
+        "morphism_count": 0,
         "constraint_count": 0,
         "has_query_signature": false,
-        "active_in_current_pool": true
+        "active_in_current_pool": false
       }
     },
     {
       "structure_key": "62a9da05d9a522966af03959f0bc50cffbba0c4617976d22dd6624c8d0564ff0",
       "label": "rejected",
       "disposition": "repair",
-      "repair_reasons": [],
+      "repair_reasons": [
+        "too_typical"
+      ],
       "vote_rows": 1,
       "features": {
         "interaction_verified": false,
         "proof_node_count": 0,
         "proof_edge_count": 0,
         "proof_merge_count": 0,
-        "morphism_count": 3,
+        "morphism_count": 0,
         "constraint_count": 0,
         "has_query_signature": false,
-        "active_in_current_pool": true
+        "active_in_current_pool": false
       }
     },
     {
@@ -1062,14 +914,14 @@
         "proof_node_count": 0,
         "proof_edge_count": 0,
         "proof_merge_count": 0,
-        "morphism_count": 4,
-        "constraint_count": 3,
-        "has_query_signature": true,
-        "active_in_current_pool": true
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
       }
     },
     {
-      "structure_key": "fe64053dc25ea51536c4509f2cc8d4705afa403746a23a06b71906114d3c62a5",
+      "structure_key": "81138b327d77656503227ee45d3cc69e9f8b48f5ea451a4f502f76cee13ced89",
       "label": "rejected",
       "disposition": "repair",
       "repair_reasons": [],
@@ -1079,10 +931,205 @@
         "proof_node_count": 0,
         "proof_edge_count": 0,
         "proof_merge_count": 0,
-        "morphism_count": 3,
+        "morphism_count": 0,
         "constraint_count": 0,
         "has_query_signature": false,
-        "active_in_current_pool": true
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "c6d10e0ddd04fe3eddacb53d6d739600d39db03d0986b939370efdb572542d10",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "a3648490745d0017d9abc8e3b60888e11db9a75538d76193eba2bcd8f9103e5b",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "0e62ca5426a9c502f0057022f2f59669ca6a58f6be304e3a846002a47f84f8ed",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "08b292a9582f515e827712b9843df5f2133d590ab3aa858d6a2d4ba8d39b7332",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "2ee98f29b28f9004cb2fd35191bf5ca4dcaad9e632cc2eb9a84b115cf33454b7",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "fe64053dc25ea51536c4509f2cc8d4705afa403746a23a06b71906114d3c62a5",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical",
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "4243211c1230dace42ea07307a363b86150afddedfbc464648a8a37326bb6b4c",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical",
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "d2d4f2d5d2858cfb89b1af277ad36e48106d09bf84c397a562699969ffd644ed",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy",
+        "too_typical"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "d445f3325363170381e58dc6bd14034b65136d55775e712e514cdf44e246cf45",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy",
+        "too_typical"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "6f558da375d15cfb704c6845d7074efcbb68d107daf58196c87376b02f33d0e2",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical",
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
       }
     },
     {
@@ -1171,23 +1218,6 @@
       }
     },
     {
-      "structure_key": "6d2a4e853bc9293eee42f6bdff2c49e33ba31a9ca20cf17d35d1f83d3b64421d",
-      "label": "selected",
-      "disposition": "retain",
-      "repair_reasons": [],
-      "vote_rows": 1,
-      "features": {
-        "interaction_verified": false,
-        "proof_node_count": 0,
-        "proof_edge_count": 0,
-        "proof_merge_count": 0,
-        "morphism_count": 4,
-        "constraint_count": 0,
-        "has_query_signature": false,
-        "active_in_current_pool": true
-      }
-    },
-    {
       "structure_key": "cc1c82cd0e3560e01fe2feea61ccdc9608553010d9b3ca7ca524580dd20b9c4c",
       "label": "selected",
       "disposition": "retain",
@@ -1208,17 +1238,19 @@
       "structure_key": "7d68a689badb53510ef9c0dda8ecc420f375758c372b94da5ee92efcf95cb8eb",
       "label": "conflict",
       "disposition": "retain",
-      "repair_reasons": [],
+      "repair_reasons": [
+        "too_easy"
+      ],
       "vote_rows": 2,
       "features": {
         "interaction_verified": false,
         "proof_node_count": 0,
         "proof_edge_count": 0,
         "proof_merge_count": 0,
-        "morphism_count": 10,
+        "morphism_count": 0,
         "constraint_count": 0,
         "has_query_signature": false,
-        "active_in_current_pool": true
+        "active_in_current_pool": false
       }
     },
     {
@@ -1457,23 +1489,6 @@
         "constraint_count": 0,
         "has_query_signature": false,
         "active_in_current_pool": false
-      }
-    },
-    {
-      "structure_key": "00d86d0af2c8efe4406d62a77b82a359bed1068780c0663978f8b06fdc1852cb",
-      "label": "rejected",
-      "disposition": "repair",
-      "repair_reasons": [],
-      "vote_rows": 1,
-      "features": {
-        "interaction_verified": false,
-        "proof_node_count": 0,
-        "proof_edge_count": 0,
-        "proof_merge_count": 0,
-        "morphism_count": 4,
-        "constraint_count": 0,
-        "has_query_signature": false,
-        "active_in_current_pool": true
       }
     },
     {
@@ -1902,105 +1917,62 @@
       }
     },
     {
-      "structure_key": "c63dc86165107f9afb47dbc5e614eaf3dc722054bb94743d6350ccf9732b46e7",
-      "label": "rejected",
-      "disposition": "repair",
-      "repair_reasons": [],
-      "vote_rows": 1,
-      "features": {
-        "interaction_verified": false,
-        "proof_node_count": 0,
-        "proof_edge_count": 0,
-        "proof_merge_count": 0,
-        "morphism_count": 3,
-        "constraint_count": 0,
-        "has_query_signature": false,
-        "active_in_current_pool": true
-      }
-    },
-    {
-      "structure_key": "c28dbef88885bc06073cbd02e09bf099b0f111ca6a8eeb9f9f755dfda0149a29",
-      "label": "rejected",
-      "disposition": "repair",
-      "repair_reasons": [],
-      "vote_rows": 1,
-      "features": {
-        "interaction_verified": false,
-        "proof_node_count": 0,
-        "proof_edge_count": 0,
-        "proof_merge_count": 0,
-        "morphism_count": 4,
-        "constraint_count": 0,
-        "has_query_signature": false,
-        "active_in_current_pool": true
-      }
-    },
-    {
       "structure_key": "be41a9aca8fbc1251e5fb503f8c6d265fa38426dd3879326afafb1037f24b474",
       "label": "rejected",
       "disposition": "repair",
-      "repair_reasons": [],
+      "repair_reasons": [
+        "too_typical"
+      ],
       "vote_rows": 1,
       "features": {
         "interaction_verified": false,
         "proof_node_count": 0,
         "proof_edge_count": 0,
         "proof_merge_count": 0,
-        "morphism_count": 3,
+        "morphism_count": 0,
         "constraint_count": 0,
         "has_query_signature": false,
-        "active_in_current_pool": true
+        "active_in_current_pool": false
       }
     },
     {
-      "structure_key": "9fc82f8d8f4798432d49bf69b8c7d6cc32a4b6b6fa3aab2268ee6b34641b61e1",
+      "structure_key": "c63dc86165107f9afb47dbc5e614eaf3dc722054bb94743d6350ccf9732b46e7",
       "label": "rejected",
       "disposition": "repair",
-      "repair_reasons": [],
+      "repair_reasons": [
+        "too_easy",
+        "too_typical"
+      ],
       "vote_rows": 1,
       "features": {
         "interaction_verified": false,
         "proof_node_count": 0,
         "proof_edge_count": 0,
         "proof_merge_count": 0,
-        "morphism_count": 3,
+        "morphism_count": 0,
         "constraint_count": 0,
         "has_query_signature": false,
-        "active_in_current_pool": true
+        "active_in_current_pool": false
       }
     },
     {
-      "structure_key": "ebff2ddac65bcc9377b4a429508add3f9b20a245ca9f6a3bba48808fd3066669",
+      "structure_key": "00d86d0af2c8efe4406d62a77b82a359bed1068780c0663978f8b06fdc1852cb",
       "label": "rejected",
       "disposition": "repair",
-      "repair_reasons": [],
+      "repair_reasons": [
+        "too_typical",
+        "too_easy"
+      ],
       "vote_rows": 1,
       "features": {
         "interaction_verified": false,
         "proof_node_count": 0,
         "proof_edge_count": 0,
         "proof_merge_count": 0,
-        "morphism_count": 8,
+        "morphism_count": 0,
         "constraint_count": 0,
         "has_query_signature": false,
-        "active_in_current_pool": true
-      }
-    },
-    {
-      "structure_key": "145577578079194ba0019aaf0f8e94583f46df5cc5ebc65fde20bd05035beea5",
-      "label": "rejected",
-      "disposition": "repair",
-      "repair_reasons": [],
-      "vote_rows": 1,
-      "features": {
-        "interaction_verified": false,
-        "proof_node_count": 0,
-        "proof_edge_count": 0,
-        "proof_merge_count": 0,
-        "morphism_count": 4,
-        "constraint_count": 3,
-        "has_query_signature": true,
-        "active_in_current_pool": true
+        "active_in_current_pool": false
       }
     },
     {
@@ -2021,20 +1993,42 @@
       }
     },
     {
-      "structure_key": "82efb0dd5c0f1a26c6359d919637b9190a26afa56effda033dcd4b6201f9c36e",
+      "structure_key": "ebff2ddac65bcc9377b4a429508add3f9b20a245ca9f6a3bba48808fd3066669",
       "label": "rejected",
       "disposition": "repair",
-      "repair_reasons": [],
+      "repair_reasons": [
+        "unnatural_connection"
+      ],
       "vote_rows": 1,
       "features": {
         "interaction_verified": false,
         "proof_node_count": 0,
         "proof_edge_count": 0,
         "proof_merge_count": 0,
-        "morphism_count": 3,
+        "morphism_count": 0,
         "constraint_count": 0,
         "has_query_signature": false,
-        "active_in_current_pool": true
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "9fc82f8d8f4798432d49bf69b8c7d6cc32a4b6b6fa3aab2268ee6b34641b61e1",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical",
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
       }
     },
     {
@@ -2069,6 +2063,23 @@
         "constraint_count": 0,
         "has_query_signature": false,
         "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "6d2a4e853bc9293eee42f6bdff2c49e33ba31a9ca20cf17d35d1f83d3b64421d",
+      "label": "selected",
+      "disposition": "retain",
+      "repair_reasons": [],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 4,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": true
       }
     },
     {
@@ -2140,23 +2151,6 @@
       }
     },
     {
-      "structure_key": "1c824b489a9b32e9daff6b663d040f0be46fef7d7afa329a14c550c6be2ec08c",
-      "label": "rejected",
-      "disposition": "repair",
-      "repair_reasons": [],
-      "vote_rows": 1,
-      "features": {
-        "interaction_verified": false,
-        "proof_node_count": 0,
-        "proof_edge_count": 0,
-        "proof_merge_count": 0,
-        "morphism_count": 3,
-        "constraint_count": 0,
-        "has_query_signature": false,
-        "active_in_current_pool": true
-      }
-    },
-    {
       "structure_key": "568e4bfe2943fff66d01fdc92759fe1edd68d750a9f041c4e15177ba8fcc8335",
       "label": "selected",
       "disposition": "retain",
@@ -2174,7 +2168,27 @@
       }
     },
     {
-      "structure_key": "fe1b3a5f0ad3cbb984af6381213234f5d56688152567f7058dd0f27132e6eb32",
+      "structure_key": "8d6c8a83c8fbcb79381477fba5366a32979e7fc82f148b36637ef072e75a9c76",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical",
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "145577578079194ba0019aaf0f8e94583f46df5cc5ebc65fde20bd05035beea5",
       "label": "rejected",
       "disposition": "repair",
       "repair_reasons": [],
@@ -2184,65 +2198,539 @@
         "proof_node_count": 0,
         "proof_edge_count": 0,
         "proof_merge_count": 0,
-        "morphism_count": 3,
+        "morphism_count": 0,
         "constraint_count": 0,
         "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "c28dbef88885bc06073cbd02e09bf099b0f111ca6a8eeb9f9f755dfda0149a29",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "339ec3646207fa42a7f73de67cfd6beb2d2f826cb7c9760f31ceb80bd4866454",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "998fbd1e769e070598668508d80d946aecd741473f692db008ec73d94828d2b5",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "35ad2baa1d08b4380c9c03b87791db1491cf7a433dc54040012a3aab0821a236",
+      "label": "selected",
+      "disposition": "retain",
+      "repair_reasons": [],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 6,
+        "constraint_count": 2,
+        "has_query_signature": true,
         "active_in_current_pool": true
       }
     },
     {
-      "structure_key": "8d6c8a83c8fbcb79381477fba5366a32979e7fc82f148b36637ef072e75a9c76",
+      "structure_key": "2d58e72e18e77439f266b410e481c01108e1ce0913b3fd3d5a87da999fe61186",
       "label": "rejected",
       "disposition": "repair",
-      "repair_reasons": [],
+      "repair_reasons": [
+        "too_easy"
+      ],
       "vote_rows": 1,
       "features": {
         "interaction_verified": false,
         "proof_node_count": 0,
         "proof_edge_count": 0,
         "proof_merge_count": 0,
-        "morphism_count": 2,
+        "morphism_count": 0,
         "constraint_count": 0,
         "has_query_signature": false,
-        "active_in_current_pool": true
+        "active_in_current_pool": false
       }
     },
     {
       "structure_key": "200e423f84a3bf56bc1e01f343cbdf0e1f128c406b5c17413744ec05ac6a1be8",
       "label": "rejected",
       "disposition": "repair",
-      "repair_reasons": [],
+      "repair_reasons": [
+        "too_easy"
+      ],
       "vote_rows": 1,
       "features": {
         "interaction_verified": false,
         "proof_node_count": 0,
         "proof_edge_count": 0,
         "proof_merge_count": 0,
-        "morphism_count": 3,
+        "morphism_count": 0,
         "constraint_count": 0,
         "has_query_signature": false,
-        "active_in_current_pool": true
+        "active_in_current_pool": false
       }
     },
     {
-      "structure_key": "f59184d2437289f7a5f05c7da3312a7e866bca9ccc36fbb8fb09778d4a6c9fb4",
+      "structure_key": "78f19bd063c54e82920203aade70e1df81eace7253c7119e6b39083df1a455a5",
       "label": "rejected",
       "disposition": "repair",
-      "repair_reasons": [],
+      "repair_reasons": [
+        "too_easy"
+      ],
       "vote_rows": 1,
       "features": {
         "interaction_verified": false,
         "proof_node_count": 0,
         "proof_edge_count": 0,
         "proof_merge_count": 0,
-        "morphism_count": 4,
+        "morphism_count": 0,
         "constraint_count": 0,
         "has_query_signature": false,
-        "active_in_current_pool": true
+        "active_in_current_pool": false
       }
     },
     {
-      "structure_key": "29f96ea58481ff53e9bb2fad52523ed028fc20cdb101e92f9f4cf2bbd07042fd",
+      "structure_key": "4ef6047ff0aa60ce3a0f94b8855b687f99812c63fe4076e9011faf79c09ca58a",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "69ec9359b0faf2619f60fcd8239a0f888d8c20920b5eeee1d715d42794da814d",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "1936c00e1d7b7e66c33e0d6d4b9eaaac8f731097634f3faba0499b0ae6186a31",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "edff23b4e141d27fdce7b00b3d16dfbf101ed091b0b41f8bc3fc99bbb68dc469",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "2ee5348e50d57ba71f331e50de9aa7fb2fa0d1e78646d4e47ed0cd841c047af9",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "20fdaad27042103206854c7df3eef2a980924800d78cfde26ad30af86e3779a9",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "8c8d211140494ea81250dd9d89589c9b9cb1dee8490369026bb1e74e41e06019",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "fe1b3a5f0ad3cbb984af6381213234f5d56688152567f7058dd0f27132e6eb32",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "21486822f9169940b5c8992ec0ddea0463eec2fa9aa4709bfc2b597121eec75b",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "3e0efa6562647399a10ae74a009019d4ee04e8233c0d239690ae1e7a9de84258",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical",
+        "too_easy",
+        "short_proof"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "82efb0dd5c0f1a26c6359d919637b9190a26afa56effda033dcd4b6201f9c36e",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "0321e6727a65902e59421edc4d1a70ce4892955c7572d94d4f27f01fd69cfb93",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical",
+        "too_easy",
+        "short_proof"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "b75efd73c7be0b1f779b60021f812920460b45527ea9db6f1ddea4ca96e10270",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy",
+        "unnatural_wording"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "457da2e65e49c92eb4ed27e9df462ec6e02cb99419fb91030c1cda87da3a583d",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical",
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "33408db96af16f7e699c065538a273cd0bfea5e52a4c361298bffce3daed25a3",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy",
+        "too_typical",
+        "short_proof"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "9baa7f214010cc2ff622830837e9bc3defc29db87d4554c50d6d6410e1c8ee7c",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy",
+        "too_typical"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "0a08ca425166e796f74fc636a7f1681116b01d7c5e1d0baf071b43d8e2276846",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "unnatural_connection",
+        "unnatural_wording",
+        "short_proof"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "77b2058f23b53edd0283057a01413ef804c5b79a825e6c68b1fab045ab495747",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "5e41c237bddec18ffcd240c76c8d49cd9e214119460211db02716e887f68a3b3",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical",
+        "unnatural_wording",
+        "unnatural_connection"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "1c824b489a9b32e9daff6b663d040f0be46fef7d7afa329a14c550c6be2ec08c",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical",
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "8bc74125d6a1208a5a20a788215e1fa84bf3a50e881311896d6c1b7fb7de1886",
       "label": "selected",
       "disposition": "retain",
       "repair_reasons": [],
@@ -2256,6 +2744,391 @@
         "constraint_count": 0,
         "has_query_signature": false,
         "active_in_current_pool": true
+      }
+    },
+    {
+      "structure_key": "f76f3f8e0c150ef86579cacefbbc6955d52e22529b56482963ecfa96fb3f747e",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical",
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "28a0620167351a12fbf05031aee12432e3fa6a4cb0224ed03158357624ba15a3",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical",
+        "unnatural_connection",
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "e6dfa90af9f48c5d67fcec63249ce763d9d7f5bcc80d19f3fcb9da303586a92f",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "78fe131d2a1fc73ab38447a483eca338ed592e6e892e6bc0e4bedd3be80bc671",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "1dc5b5ba0e49fc34ef60ba7df6f84a93b4aef226689350f5d04adef5b785d051",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy",
+        "too_typical"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "e5278ae0f2f37d6047de46885635b33dea7814c0c552e67649920aaf3116b333",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical",
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "37053fc74a1f26892b62d98e6b73385424048296ed6b5bc8a140c8d060f07f4a",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "57b96bdb5ee798f683ea0e52e7181a8e112688cf9fc289560e69bbbe8bbe00e3",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy",
+        "too_typical"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "5f23d6766115875ce34189e92e8464890633111374d2fd2e7dc5c3351eceb3c7",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy",
+        "too_typical"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "4a41653ca77c17c8de3e0a09b413e0a30231f67e71d60239398a324ac00585e0",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy",
+        "too_typical"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "16c91e71744d1a32c458ea39a9d105630177a9b837c067ac0b10aabb216a4e48",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical",
+        "too_easy",
+        "unnatural_connection"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "a9143d1e9761800255d46bae159f6b6fb45e3bd4a2b39bfc0951225f3ab0b1e5",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical",
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "5c42ae3f41945b9532c98fb5eef3e0df96aec498ce0852d1b9c36f427c0cb47c",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical",
+        "short_proof"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "fe113bd28e4c557d8ee1c7a734f143976871dc888df9b476fe0974d117d98655",
+      "label": "selected",
+      "disposition": "retain",
+      "repair_reasons": [],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": true,
+        "proof_node_count": 12,
+        "proof_edge_count": 12,
+        "proof_merge_count": 3,
+        "morphism_count": 9,
+        "constraint_count": 3,
+        "has_query_signature": true,
+        "active_in_current_pool": true
+      }
+    },
+    {
+      "structure_key": "17d42b591cacbac433b7e4ffbc4c2c96749470a6403aad54a460f7c6d2654a4d",
+      "label": "selected",
+      "disposition": "retain",
+      "repair_reasons": [],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": true,
+        "proof_node_count": 13,
+        "proof_edge_count": 15,
+        "proof_merge_count": 5,
+        "morphism_count": 9,
+        "constraint_count": 3,
+        "has_query_signature": true,
+        "active_in_current_pool": true
+      }
+    },
+    {
+      "structure_key": "3613de91702e0f822e4551dee02da533c38951b2ae8cc24715caef8937675fb9",
+      "label": "selected",
+      "disposition": "retain",
+      "repair_reasons": [],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": true,
+        "proof_node_count": 10,
+        "proof_edge_count": 9,
+        "proof_merge_count": 2,
+        "morphism_count": 6,
+        "constraint_count": 3,
+        "has_query_signature": true,
+        "active_in_current_pool": true
+      }
+    },
+    {
+      "structure_key": "35a0f4c1269eeeb2dab5612372dbc8d7245c425ba9fda24c9f6c467521bc0224",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy",
+        "too_typical"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "ce7630dda86dbf1151cdf04d78f567261e0e0dff50e1d0c3534c67a8f3c308ff",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy",
+        "too_typical"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "e6516c5b357cde7d4d470e5bc76d322bf87e55553f37984fe55538fb24375c9a",
+      "label": "selected",
+      "disposition": "retain",
+      "repair_reasons": [],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 3,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": true
+      }
+    },
+    {
+      "structure_key": "56a073bcfa10a23440b47aa95b50ac01d5cd21d1f77919f3625d3ca4fe3a526e",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy",
+        "too_typical"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
       }
     },
     {
@@ -2273,40 +3146,6 @@
         "constraint_count": 0,
         "has_query_signature": false,
         "active_in_current_pool": false
-      }
-    },
-    {
-      "structure_key": "49531348dcdaf96042e42999ead8e4c5351ba360b3ea6940b195dac1244ffd3b",
-      "label": "rejected",
-      "disposition": "repair",
-      "repair_reasons": [],
-      "vote_rows": 1,
-      "features": {
-        "interaction_verified": false,
-        "proof_node_count": 0,
-        "proof_edge_count": 0,
-        "proof_merge_count": 0,
-        "morphism_count": 0,
-        "constraint_count": 0,
-        "has_query_signature": false,
-        "active_in_current_pool": false
-      }
-    },
-    {
-      "structure_key": "b821a93c351155ad7cc5f07e1286d2626f34aa8db34f8eb9ab044927078c7233",
-      "label": "rejected",
-      "disposition": "repair",
-      "repair_reasons": [],
-      "vote_rows": 1,
-      "features": {
-        "interaction_verified": false,
-        "proof_node_count": 0,
-        "proof_edge_count": 0,
-        "proof_merge_count": 0,
-        "morphism_count": 4,
-        "constraint_count": 0,
-        "has_query_signature": false,
-        "active_in_current_pool": true
       }
     },
     {
@@ -2439,10 +3278,10 @@
         "proof_node_count": 0,
         "proof_edge_count": 0,
         "proof_merge_count": 0,
-        "morphism_count": 4,
-        "constraint_count": 2,
-        "has_query_signature": true,
-        "active_in_current_pool": true
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
       }
     },
     {
@@ -2548,7 +3387,99 @@
       }
     },
     {
+      "structure_key": "64cf8ca748dd7713e862895c5999e304210af15b89ec75f7a765a45c94acfc00",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "6bbd5e5cd96eb4c151d1a7618b943171a6e5fb92eba84a5149286f55bd6fb00f",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "b821a93c351155ad7cc5f07e1286d2626f34aa8db34f8eb9ab044927078c7233",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "unnatural_connection",
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
       "structure_key": "e9d48f41bb09590c385e222823dd2a62b8761ee2ad8eddbf2b9deba99cfd65be",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "29f96ea58481ff53e9bb2fad52523ed028fc20cdb101e92f9f4cf2bbd07042fd",
+      "label": "selected",
+      "disposition": "retain",
+      "repair_reasons": [],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 5,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": true
+      }
+    },
+    {
+      "structure_key": "49531348dcdaf96042e42999ead8e4c5351ba360b3ea6940b195dac1244ffd3b",
       "label": "rejected",
       "disposition": "repair",
       "repair_reasons": [],
@@ -2718,23 +3649,6 @@
       }
     },
     {
-      "structure_key": "40f5050caeb827cd715f0d4cde06eadb9eb6ef7e54571c6f630c9ab4d7a893c6",
-      "label": "rejected",
-      "disposition": "repair",
-      "repair_reasons": [],
-      "vote_rows": 1,
-      "features": {
-        "interaction_verified": false,
-        "proof_node_count": 0,
-        "proof_edge_count": 0,
-        "proof_merge_count": 0,
-        "morphism_count": 2,
-        "constraint_count": 0,
-        "has_query_signature": false,
-        "active_in_current_pool": true
-      }
-    },
-    {
       "structure_key": "aa3848f35817aae4eda7e5276275c82d8a162373e680e51c35bf2e0a9e84a987",
       "label": "rejected",
       "disposition": "repair",
@@ -2755,17 +3669,20 @@
       "structure_key": "dc06fc3282185ba52c2f4077ae7e7d74b011fbf5ae0ae7f7e42c5dc0b804ac3d",
       "label": "rejected",
       "disposition": "repair",
-      "repair_reasons": [],
+      "repair_reasons": [
+        "too_typical",
+        "too_easy"
+      ],
       "vote_rows": 1,
       "features": {
         "interaction_verified": false,
         "proof_node_count": 0,
         "proof_edge_count": 0,
         "proof_merge_count": 0,
-        "morphism_count": 3,
+        "morphism_count": 0,
         "constraint_count": 0,
         "has_query_signature": false,
-        "active_in_current_pool": true
+        "active_in_current_pool": false
       }
     },
     {
@@ -2790,6 +3707,317 @@
       "label": "rejected",
       "disposition": "repair",
       "repair_reasons": [],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "9f758d0ad20a54bf91992559c6fae0df09e299ccc0e6222550820d363e0c55ed",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "606df1186c4d46f31632dc7965cfa492c84c809e787b61b7151430bd40dcf138",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "2309f5282e0d783b2482d515dbd62c4325e81c5bb087e0f133ee2b3989a6b735",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "ad3eadc53b2ae4caea84dbd9de37b2879254a6ef0ee342e113ce90f01a954c08",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "299ea976f2c18ab5b310f5b434c8cd91a50fd68ae6c1fd299cc6c1a9a3f10dad",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "bcffdf8275879a7a867dc5c85130c5eb19f380cb850728d12652b9a9f565be78",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical",
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "f9e687e6940198b6bbfc4b21ed90ec05310343f8c882d663a5a3946003baea8f",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical",
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "9d6b15a13a06eb352cab9223e703fb2072f994929a555d448c6723409bcc05f3",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical",
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "f59184d2437289f7a5f05c7da3312a7e866bca9ccc36fbb8fb09778d4a6c9fb4",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "unnatural_connection",
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "3c3b1ef7c1646a34b73653826f7677a2fcd82684f543710c933c17b6cd7ef3ef",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical",
+        "too_easy",
+        "short_proof"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "40f5050caeb827cd715f0d4cde06eadb9eb6ef7e54571c6f630c9ab4d7a893c6",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy",
+        "too_typical"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "46d5ce6bfdb7c5cb9513bf65c8d4121422f71ce59422030349b9ad3b9fbe2f4c",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_easy",
+        "too_typical"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "9fa20c43be5dd74dfeea2dae2ed75030246b88c5ac69d5f702b0495fdc459dd4",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "73df612eafd2c8bf07ac0d2a6d1e4a79574b8abdd367c9d24bb3c30ba8276ad3",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical",
+        "too_easy"
+      ],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 0,
+        "constraint_count": 0,
+        "has_query_signature": false,
+        "active_in_current_pool": false
+      }
+    },
+    {
+      "structure_key": "ab67da154b7dfa90873303138ff90f17e26ae0919159cb1e164548170238f925",
+      "label": "selected",
+      "disposition": "retain",
+      "repair_reasons": [],
+      "vote_rows": 1,
+      "features": {
+        "interaction_verified": false,
+        "proof_node_count": 0,
+        "proof_edge_count": 0,
+        "proof_merge_count": 0,
+        "morphism_count": 5,
+        "constraint_count": 3,
+        "has_query_signature": true,
+        "active_in_current_pool": true
+      }
+    },
+    {
+      "structure_key": "cb8daa2142f67890ad1d79ac0518bbc86587ac30c56eab42e9792cb9283af12b",
+      "label": "rejected",
+      "disposition": "repair",
+      "repair_reasons": [
+        "too_typical",
+        "too_easy",
+        "short_proof"
+      ],
       "vote_rows": 1,
       "features": {
         "interaction_verified": false,
