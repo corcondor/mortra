@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-01T09:49:52.012146+00:00",
+  "generated_at": "2026-08-01T09:54:06.760083+00:00",
   "method": {
     "difficulty_policy": "annotation_only_until_human_rating_auc_reaches_0.7",
     "hard_problem_policy": "proof DAG with converging constraints required; flat scalar bridge compositions are excluded",
@@ -16250,8 +16250,8 @@
     },
     {
       "accepted": true,
-      "answer_exact": "14",
-      "answer_tex": "14",
+      "answer_exact": "10",
+      "answer_tex": "10",
       "candidate_id": "construct:traceback.dice_sum.modal_sum:048",
       "curriculum_certificate": {
         "abstract_morphism_chain": [
@@ -16286,7 +16286,7 @@
         "uses_only_school_level_primitives": true
       },
       "difficulty": "A",
-      "difficulty_score": 3.82,
+      "difficulty_score": 3.8,
       "domain": "probability",
       "family_id": "traceback.dice_sum.modal_sum",
       "lift_certificate": {
@@ -16307,14 +16307,13 @@
         "construction": "dice_sum",
         "depth": 3,
         "hidden": [
-          "分布の対称性",
-          "最頻値の一意性"
+          "分布の対称性"
         ],
-        "hidden_intermediates": 2,
+        "hidden_intermediates": 1,
         "node": "modal_sum",
-        "param": 4,
+        "param": 3,
         "premises": [
-          "4 個のさいころを同時に投げたときの出目の和"
+          "3 個のさいころを同時に投げたときの出目の和"
         ],
         "scope": [
           "確率",
@@ -16334,7 +16333,7 @@
         "below_legacy_difficulty_threshold": true,
         "below_legacy_morphism_threshold": true,
         "human_calibrated": false,
-        "legacy_difficulty_score": 3.82,
+        "legacy_difficulty_score": 3.8,
         "legacy_difficulty_threshold": 8.4,
         "legacy_morphism_threshold": 3,
         "minimum_auc_for_gating": 0.7,
@@ -16343,9 +16342,9 @@
         "policy": "annotation_only"
       },
       "research_tier": "verified_standard",
-      "solution_tex": "分布は \\(\\frac{7n}{2}\\) について対称で，この整数が唯一の最頻値。",
+      "solution_tex": "分布は \\(\\frac{7n}{2}\\) について対称なので中央の値が最頻。",
       "source_generator": "construct_atlas",
-      "statement_tex": "1 から 6 の目をもつさいころを 4 個同時に投げ，出た目の和を \\(S\\) とする。和として最も起こりやすい値を求めよ。",
+      "statement_tex": "1 から 6 の目をもつさいころを 3 個同時に投げ，出た目の和を \\(S\\) とする。和として最も起こりやすい値を求めよ。",
       "structure_key": "b12e61fbaba4f280d068c54d20655fa944e59e100fd940e53c6890c5af20422e",
       "tool": "deduction_closure+traceback",
       "verification": {
@@ -19037,12 +19036,12 @@
     },
     "geometry_algebra_structures": 98,
     "quality_flags": {
-      "below_legacy_difficulty_threshold": 170,
-      "below_legacy_morphism_threshold": 20
+      "below_legacy_difficulty_threshold": 171,
+      "below_legacy_morphism_threshold": 21
     },
     "rejected": {
       "non_interacting_composition": 427,
-      "same_structure_variant": 81,
+      "same_structure_variant": 82,
       "scope_lowering": 10
     },
     "source_counts": {
