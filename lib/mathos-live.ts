@@ -45,6 +45,46 @@ function pick<T>(arr: readonly T[]): T {
   return arr[Math.floor(Math.random() * arr.length)]
 }
 
+function linearExpression(xCoefficient: number, yCoefficient: number): string {
+  const term = (coefficient: number, variable: string, first: boolean) => {
+    if (coefficient === 0) return ''
+    const sign = coefficient < 0 ? '-' : first ? '' : '+'
+    const magnitude = Math.abs(coefficient) === 1 ? '' : Math.abs(coefficient)
+    return `${sign}${magnitude}${variable}`
+  }
+  const xTerm = term(xCoefficient, 'x', true)
+  return `${xTerm}${term(yCoefficient, 'y', xTerm.length === 0)}` || '0'
+}
+
+function scaledTexAnswer(expression: string, factor: number): string {
+  if (factor === 1) return expression
+
+  const integer = expression.match(/^(\d+)$/)
+  if (integer) return `${factor * Number(integer[1])}`
+
+  const fraction = expression.match(/^\\dfrac\{(\d+)\}\{(\d+)\}$/)
+  if (fraction) return ratTex(rat(factor * Number(fraction[1]), Number(fraction[2])))
+
+  const mixedPi = expression.match(/^(\d+)\+(\d*)\\pi$/)
+  if (mixedPi) {
+    const piCoefficient = mixedPi[2] ? Number(mixedPi[2]) : 1
+    return `${factor * Number(mixedPi[1])}+${factor * piCoefficient}\\pi`
+  }
+
+  const piTerm = expression.match(/^(?:(\d+)|\\dfrac\{(\d+)\}\{(\d+)\})?\\pi$/)
+  if (piTerm) {
+    const coefficient = piTerm[1]
+      ? rat(Number(piTerm[1]))
+      : piTerm[2]
+        ? rat(Number(piTerm[2]), Number(piTerm[3]))
+        : rat(1)
+    const scaled = rat(coefficient.n * factor, coefficient.d)
+    return `${scaled.n === scaled.d ? '' : ratTex(scaled)}\\pi`
+  }
+
+  return `${factor}\\left(${expression}\\right)`
+}
+
 export type LiveProblem = {
   familyId: string
   domain: string
@@ -353,26 +393,258 @@ function complexAffineLimit(): LiveProblem | null {
   }
 }
 
-const GENERATORS: Array<() => LiveProblem | null> = [
-  gambler,
-  recurrenceModPeriod,
-  complexRotation,
-  paley,
-  parabolaFixedPoint,
-  mobiusPeriod,
-  reciprocalRecurrence,
-  complexAffineLimit,
+// ---------- F9 座標軸上を動く切片を結ぶ線分の通過領域 ----------
+function axisInterceptSegmentRegion(): LiveProblem | null {
+  const c = 3 + Math.floor(Math.random() * 12)
+  const exactArea = rat(c * c, 6)
+
+  // 独立検算: 境界 y=(sqrt(c)-sqrt(x))^2 を中点則で積分する。
+  const divisions = 1200
+  let numericArea = 0
+  for (let i = 0; i < divisions; i++) {
+    const x = c * (i + 0.5) / divisions
+    numericArea += Math.pow(Math.sqrt(c) - Math.sqrt(x), 2) * c / divisions
+  }
+  if (Math.abs(numericArea - ratNum(exactArea)) > 1e-3) return null
+
+  return {
+    familyId: 'construct.axis_intercept_segment_swept_region',
+    domain: 'geometry',
+    tool: 'parameter_elimination_and_integration',
+    parameters: { c },
+    statementTex:
+      `正の数 \\(a,b\\) が \\(a+b=${c}\\) を満たしながら動く。点 ` +
+      `\\(A=(a,0),\\ B=(0,b)\\) を結ぶ線分 \\(AB\\) の通過領域の面積を求めよ。`,
+    answerTex: ratTex(exactArea),
+    solutionTex:
+      `点 \\((x,y)\\) がある線分上にある条件は \\(x/a+y/b=1\\)。` +
+      `\\(a+b=${c}\\) の下で左辺の最小値は \\((\\sqrt{x}+\\sqrt{y})^2/${c}\\) だから，` +
+      `通過領域は \\(\\sqrt{x}+\\sqrt{y}\\le\\sqrt{${c}}\\)。よって ` +
+      `\\(\\int_0^{${c}}(\\sqrt{${c}}-\\sqrt{x})^2\\,dx=${ratTex(exactArea)}\\)。`,
+    morphismChain: ['MovingIntercepts', 'SegmentIncidence', 'ParameterMinimization', 'SweptRegion', 'AreaIntegral'],
+    verificationMethod: 'parameter_elimination_plus_midpoint_area_check',
+  }
+}
+
+// ---------- F10 円板を線分に沿って動かした通過領域（Minkowski和） ----------
+function translatedDiskRegion(): LiveProblem | null {
+  const radius = 1 + Math.floor(Math.random() * 5)
+  const length = 3 + Math.floor(Math.random() * 12)
+  const integerPart = 2 * radius * length
+  const piPart = radius * radius
+
+  // 独立検算: 各xでの縦断面長を数値積分する。
+  const left = -radius
+  const right = length + radius
+  const divisions = 2400
+  let numericArea = 0
+  for (let i = 0; i < divisions; i++) {
+    const x = left + (right - left) * (i + 0.5) / divisions
+    const distance = x < 0 ? -x : x > length ? x - length : 0
+    const halfHeight = Math.sqrt(Math.max(0, radius * radius - distance * distance))
+    numericArea += 2 * halfHeight * (right - left) / divisions
+  }
+  const exactNumeric = integerPart + piPart * Math.PI
+  if (Math.abs(numericArea - exactNumeric) > 2e-3) return null
+
+  return {
+    familyId: 'construct.translated_disk_swept_region',
+    domain: 'geometry',
+    tool: 'minkowski_sum',
+    parameters: { radius, length },
+    statementTex:
+      `半径 \\(${radius}\\) の円板 \\(D\\) を，その中心が線分 ` +
+      `\\(\\{(t,0)\\mid 0\\le t\\le ${length}\\}\\) 上を自由に動くように移動させる。` +
+      `このとき円板 \\(D\\) の通過領域の面積を求めよ。`,
+    answerTex: `${integerPart}+${piPart === 1 ? '' : piPart}\\pi`,
+    solutionTex:
+      `通過領域は長さ \\(${length}\\) の線分と半径 \\(${radius}\\) の円板のMinkowski和である。` +
+      `中央の長方形と両端の半円に分けると面積は ` +
+      `\\(2\\cdot${radius}\\cdot${length}+\\pi${radius}^2=${integerPart}+${piPart === 1 ? '' : piPart}\\pi\\)。`,
+    morphismChain: ['CenterPath', 'DiskTranslation', 'MinkowskiSum', 'CapsuleDecomposition', 'Area'],
+    verificationMethod: 'minkowski_decomposition_plus_cross_section_quadrature',
+  }
+}
+
+// ---------- F11 原点中心の長方形を回転させた通過領域 ----------
+function rotatingRectangleRegion(): LiveProblem | null {
+  const width = 2 * (1 + Math.floor(Math.random() * 6))
+  const height = 2 * (1 + Math.floor(Math.random() * 6))
+  if (width === height) return null
+  const radiusSquaredNumerator = width * width + height * height
+  const areaCoefficient = rat(radiusSquaredNumerator, 4)
+
+  // 独立検算: 4頂点の回転半径がすべて外接円半径に一致する。
+  const cornerRadiusSquared = Math.pow(width / 2, 2) + Math.pow(height / 2, 2)
+  if (Math.abs(cornerRadiusSquared - radiusSquaredNumerator / 4) > 1e-12) return null
+
+  return {
+    familyId: 'construct.rotating_rectangle_swept_region',
+    domain: 'geometry',
+    tool: 'rotation_orbit',
+    parameters: { width, height },
+    statementTex:
+      `縦 \\(${height}\\)，横 \\(${width}\\) の長方形 \\(R\\) の中心を原点に固定し，` +
+      `平面内で自由に回転させる。長方形 \\(R\\) の通過領域の面積を求めよ。`,
+    answerTex: `${ratTex(areaCoefficient)}\\pi`,
+    solutionTex:
+      `中心から長方形内の点までの距離は半対角線 ` +
+      `\\(\\frac12\\sqrt{${width}^2+${height}^2}\\) 以下である。逆に各半径方向へ長方形を回せるので，` +
+      `通過領域はこの半径の円板全体。面積は \\(${ratTex(areaCoefficient)}\\pi\\)。`,
+    morphismChain: ['Rectangle', 'RotationGroupAction', 'RadialOrbit', 'Circumdisk', 'Area'],
+    verificationMethod: 'rotation_orbit_bound_plus_corner_radius_check',
+  }
+}
+
+// ---------- F12 円周上の固定長弦が掃く通過領域 ----------
+function fixedChordRegion(): LiveProblem | null {
+  const radius = 3 + Math.floor(Math.random() * 8)
+  const halfChord = 1 + Math.floor(Math.random() * (radius - 1))
+  const chord = 2 * halfChord
+  const coefficient = halfChord * halfChord
+  const innerRadiusSquared = radius * radius - coefficient
+
+  // 独立検算: annulus面積 π(R²-h²) が π(d/2)² に一致する。
+  if (radius * radius - innerRadiusSquared !== coefficient) return null
+
+  return {
+    familyId: 'construct.fixed_chord_swept_region',
+    domain: 'geometry',
+    tool: 'rotation_orbit_and_annulus',
+    parameters: { radius, chord },
+    statementTex:
+      `半径 \\(${radius}\\) の円周上を，\\(PQ=${chord}\\) を保ちながら2点 \\(P,Q\\) が動く。` +
+      `線分 \\(PQ\\) の通過領域の面積を求めよ。`,
+    answerTex: `${coefficient === 1 ? '' : coefficient}\\pi`,
+    solutionTex:
+      `弦 \\(PQ\\) と中心の距離を \\(h\\) とすると ` +
+      `\\(h^2=${radius}^2-(${chord}/2)^2=${innerRadiusSquared}\\)。` +
+      `弦を回転した通過領域は内半径 \\(h\\)，外半径 \\(${radius}\\) の円環だから，` +
+      `面積は \\(\\pi(${radius}^2-h^2)=${coefficient}\\pi\\)。`,
+    morphismChain: ['FixedLengthChord', 'DistanceFromCenter', 'RotationOrbit', 'Annulus', 'Area'],
+    verificationMethod: 'chord_distance_identity_plus_annulus_area_check',
+  }
+}
+
+type LiveGenerator = () => LiveProblem | null
+
+/**
+ * 任意の通過領域問題を可逆線形写像で持ち上げる共通の射。
+ * 元の問題族ごとの特別扱いはせず、面積測度の変換則 |det T| だけを合成する。
+ */
+function affineImageOfSweptRegion(baseGenerator: LiveGenerator): LiveGenerator {
+  return () => {
+    const base = baseGenerator()
+    if (!base) return null
+    const [m11, m12, m21, m22] = pick<number[]>([
+      [2, 1, 1, 2],
+      [1, 1, -1, 2],
+      [3, 1, 1, 1],
+      [2, -1, 1, 1],
+    ])
+    const determinant = Math.abs(m11 * m22 - m12 * m21)
+    if (!determinant) return null
+
+    const premise = base.statementTex.replace(
+      /の通過領域の面積を求めよ。$/,
+      'の通過領域を \\(S\\) とする。',
+    )
+    if (premise === base.statementTex) return null
+    const linearMap =
+      `\\(T(x,y)=(${linearExpression(m11, m12)},${linearExpression(m21, m22)})\\)`
+    const answer = scaledTexAnswer(base.answerTex, determinant)
+
+    return {
+      familyId: `compose.affine_image.${base.familyId}`,
+      domain: 'geometry',
+      tool: `${base.tool}+jacobian_determinant`,
+      parameters: { ...base.parameters, m11, m12, m21, m22, determinant },
+      statementTex:
+        `${premise} 線形変換 ${linearMap} による像 \\(T(S)\\) の面積を求めよ。`,
+      answerTex: answer,
+      solutionTex:
+        `${base.solutionTex} したがって \\(S\\) の面積は \\(${base.answerTex}\\)。` +
+        `一方，線形変換 \\(T\\) は面積を ` +
+        `\\(|\\det T|=|${m11}\\cdot${m22}-(${m12})\\cdot${m21}|=${determinant}\\) 倍する。` +
+        `ゆえに \\(T(S)\\) の面積は \\(${answer}\\)。`,
+      morphismChain: [...base.morphismChain, 'LinearImage', 'JacobianDeterminant', 'AreaScale'],
+      verificationMethod: `${base.verificationMethod}_plus_exact_determinant_scale`,
+    }
+  }
+}
+
+const affineAxisInterceptRegion = affineImageOfSweptRegion(axisInterceptSegmentRegion)
+const affineTranslatedDiskRegion = affineImageOfSweptRegion(translatedDiskRegion)
+const affineRotatingRectangleRegion = affineImageOfSweptRegion(rotatingRectangleRegion)
+const affineFixedChordRegion = affineImageOfSweptRegion(fixedChordRegion)
+
+type GeneratorSpec = {
+  generate: LiveGenerator
+  domain: string
+  tags: string[]
+  depth: number
+}
+
+const GENERATORS: GeneratorSpec[] = [
+  { generate: gambler, domain: 'probability', tags: ['probability', 'recurrence', 'hitting_probability'], depth: 3 },
+  { generate: recurrenceModPeriod, domain: 'number_theory', tags: ['number_theory', 'recurrence', 'period', 'modular'], depth: 3 },
+  { generate: complexRotation, domain: 'complex', tags: ['complex', 'rotation', 'period'], depth: 3 },
+  { generate: paley, domain: 'number_theory_graph', tags: ['number_theory', 'graph', 'quadratic_residue'], depth: 3 },
+  { generate: parabolaFixedPoint, domain: 'geometry', tags: ['geometry', 'locus', 'invariant', 'parabola'], depth: 3 },
+  { generate: mobiusPeriod, domain: 'algebra', tags: ['algebra', 'iteration', 'matrix', 'period'], depth: 3 },
+  { generate: reciprocalRecurrence, domain: 'algebra', tags: ['algebra', 'recurrence', 'transformation'], depth: 3 },
+  { generate: complexAffineLimit, domain: 'complex', tags: ['complex', 'recurrence', 'limit', 'fixed_point'], depth: 3 },
+  { generate: axisInterceptSegmentRegion, domain: 'geometry', tags: ['geometry', 'passage_region', 'area', 'segment', 'parameter_elimination'], depth: 5 },
+  { generate: translatedDiskRegion, domain: 'geometry', tags: ['geometry', 'passage_region', 'area', 'segment', 'disk', 'minkowski_sum'], depth: 5 },
+  { generate: rotatingRectangleRegion, domain: 'geometry', tags: ['geometry', 'passage_region', 'area', 'rotation', 'group_action'], depth: 5 },
+  { generate: fixedChordRegion, domain: 'geometry', tags: ['geometry', 'passage_region', 'area', 'segment', 'chord', 'rotation'], depth: 5 },
+  { generate: affineAxisInterceptRegion, domain: 'geometry', tags: ['geometry', 'passage_region', 'area', 'segment', 'parameter_elimination', 'linear_map'], depth: 8 },
+  { generate: affineTranslatedDiskRegion, domain: 'geometry', tags: ['geometry', 'passage_region', 'area', 'segment', 'disk', 'minkowski_sum', 'linear_map'], depth: 8 },
+  { generate: affineRotatingRectangleRegion, domain: 'geometry', tags: ['geometry', 'passage_region', 'area', 'rotation', 'group_action', 'linear_map'], depth: 8 },
+  { generate: affineFixedChordRegion, domain: 'geometry', tags: ['geometry', 'passage_region', 'area', 'segment', 'chord', 'rotation', 'linear_map'], depth: 8 },
 ]
 
-/** その場で1問構築する。族はランダム、失敗したら別の族を試す。 */
-export function generateLiveProblem(domain?: string): LiveProblem | null {
-  const order = [...GENERATORS].sort(() => Math.random() - 0.5)
-  for (const gen of order) {
+export type LiveGenerationRequest = {
+  domain?: string
+  focusTags?: string[]
+  excludedFamilies?: string[]
+  preferDepth?: boolean
+}
+
+function domainMatches(requested: string | undefined, actual: string): boolean {
+  if (!requested) return true
+  return actual.includes(requested) || requested.includes(actual) ||
+    (requested.includes('geometry') && actual === 'geometry')
+}
+
+/** 選択問題の意味タグとの一致度で族を並べ、同点だけをランダム化して構築する。 */
+export function generateLiveProblem(request: LiveGenerationRequest = {}): LiveProblem | null {
+  const focus = new Set(request.focusTags ?? [])
+  const excluded = new Set(request.excludedFamilies ?? [])
+  const scored = GENERATORS.map((spec) => {
+    const tagScore = spec.tags.reduce((score, tag) => score + (focus.has(tag) ? 4 : 0), 0)
+    const domainScore = domainMatches(request.domain, spec.domain) ? 3 : 0
+    const depthScore = request.preferDepth ? spec.depth * 0.35 : 0
+    return { spec, score: tagScore + domainScore + depthScore + Math.random() * 0.35 }
+  }).sort((a, b) => b.score - a.score)
+
+  const bestScore = scored[0]?.score ?? 0
+  const relevant = scored.filter(({ spec, score }) => {
+    if (excluded.size && excluded.has(spec.generate.name)) return false
+    if (focus.size) return score >= Math.max(3, bestScore - 4.2)
+    return domainMatches(request.domain, spec.domain)
+  })
+  const deepestRelevant = relevant.reduce((depth, { spec }) => Math.max(depth, spec.depth), 0)
+  const order = request.preferDepth
+    ? relevant.filter(({ spec }) => spec.depth === deepestRelevant)
+    : relevant
+
+  for (const { spec } of order) {
     for (let attempt = 0; attempt < 6; attempt++) {
       try {
-        const p = gen()
+        const p = spec.generate()
         if (!p) continue
-        if (domain && !p.domain.includes(domain) && !domain.includes(p.domain)) continue
+        if (excluded.has(p.familyId)) continue
         return p
       } catch {
         continue

@@ -19,13 +19,19 @@ interface Props {
   userId: string | null
   onStatusChange: (id: string, status: string) => void
   onPostClick: (p: ProblemWithRating) => void
+  onGenerated?: () => void | Promise<void>
 }
 
 type GenerationCard = {
   family_id?: string
   answer_tex?: string
   statement_tex?: string
+  solution_tex?: string
+  domain?: string
+  morphism_chain?: string[]
   similarity?: { score?: number; max?: number }
+  inherited_tags?: string[]
+  parent_ids?: string[]
 }
 
 type GenerationResult = {
@@ -57,6 +63,7 @@ const PHASE_INFO: Record<string, { label: string; note: string; color: string }>
   saving: { label: '問題を保存中', note: '検証済み候補をライブラリへ追加しています', color: 'text-emerald-300' },
   complete: { label: '次の問題へ', note: '1問の構築と検証が完了しました', color: 'text-emerald-300' },
   done: { label: '生成完了', note: '検証済み問題を保存しました', color: 'text-emerald-300' },
+  partial: { label: '一部完了', note: '生成できた問題を保存し、残りは棄却しました', color: 'text-amber-300' },
   error: { label: '生成を停止', note: '処理内容を確認してください', color: 'text-rose-300' },
 }
 
@@ -76,6 +83,7 @@ const PHASE_RANK: Record<string, number> = {
   saving: 3,
   complete: 4,
   done: 4,
+  partial: 4,
 }
 
 function logLineColor(line: string): string {
@@ -91,11 +99,12 @@ export function GenerationPanel({
   accessToken,
   onStatusChange,
   onPostClick,
+  onGenerated,
 }: Props) {
   const [generating, setGenerating] = useState(false)
   const [uiPhase, setUiPhase] = useState('start')
   const [logs, setLogs] = useState<string[]>([])
-  const [genDone, setGenDone] = useState<{ ok: boolean; message: string } | null>(null)
+  const [genDone, setGenDone] = useState<{ ok: boolean; partial?: boolean; message: string } | null>(null)
   const [fusionCount, setFusionCount] = useState(3)
   const [batchCount, setBatchCount] = useState(4)
   const [chosenIds, setChosenIds] = useState<string[]>([])
@@ -109,6 +118,8 @@ export function GenerationPanel({
   const [draft, setDraft] = useState('')
   const [visibleDraft, setVisibleDraft] = useState('')
   const [windowOpen, setWindowOpen] = useState(false)
+  const [deepSearch, setDeepSearch] = useState(true)
+  const [generatedCards, setGeneratedCards] = useState<GenerationCard[]>([])
   const logEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -139,13 +150,16 @@ export function GenerationPanel({
       return `${index + 1}. ${card.family_id ?? '?'} → ${card.answer_tex ?? '?'}${suffix}`
     })
     const ok = data.generated > 0
+    const partial = ok && data.generated < data.requested
     const message = ok
-      ? `完了: ${data.generated}/${data.requested} 問を生成・検証・保存しました。`
+      ? `${partial ? '一部完了' : '完了'}: ${data.generated}/${data.requested} 問を生成・検証・保存しました。${partial ? ' 残りは構造条件または新規性検査で棄却されました。' : ''}`
       : `生成できませんでした（${data.errors[0] ?? '理由不明'}）`
-    setUiPhase(ok ? 'done' : 'error')
+    setUiPhase(partial ? 'partial' : ok ? 'done' : 'error')
     setCompleted(data.generated)
+    setGeneratedCards(data.cards)
     setLogs(previous => [...previous, ...lines, ...data.errors, message].slice(-30))
-    setGenDone({ ok, message })
+    setGenDone({ ok, partial, message })
+    if (ok) void onGenerated?.()
   }
 
   const applyEvent = (event: StreamEvent) => {
@@ -159,7 +173,7 @@ export function GenerationPanel({
     if (event.draft) setDraft(previous => previous === event.draft ? previous : event.draft!)
     if (event.familyId) setFamilyId(event.familyId)
     if (event.morphisms) setMorphisms(event.morphisms)
-    if (event.phase === 'complete' && typeof event.current === 'number') setCompleted(event.current)
+    if (event.phase === 'complete') setCompleted(value => Math.min(value + 1, event.total ?? total))
     if (event.message) setLogs(previous => [...previous, event.message!].slice(-30))
   }
 
@@ -175,6 +189,7 @@ export function GenerationPanel({
     setFamilyId(null)
     setMorphisms([])
     setDraft('')
+    setGeneratedCards([])
     setWindowOpen(true)
 
     const domain = parents[0]?.topic_a || undefined
@@ -190,7 +205,22 @@ export function GenerationPanel({
           'Content-Type': 'application/json',
           ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
         },
-        body: JSON.stringify({ count, domain, stream: true }),
+        body: JSON.stringify({
+          count,
+          domain,
+          stream: true,
+          searchDepth: deepSearch ? 'deep' : 'standard',
+          mode,
+          parents: parents.map(parent => ({
+            id: parent.id,
+            topic_a: parent.topic_a,
+            topic_b: parent.topic_b,
+            statement: parent.statement,
+            answer: parent.answer,
+            inspiration: parent.inspiration,
+            meta: parent.meta,
+          })),
+        }),
       })
 
       if (!response.ok) {
@@ -310,12 +340,60 @@ export function GenerationPanel({
           >類題</button>
         </div>
 
+        <label className="flex cursor-pointer items-center justify-between border-t border-zinc-800 pt-3">
+          <span>
+            <span className="block text-[11px] font-medium text-zinc-200">深層探索</span>
+            <span className="block text-[9px] text-zinc-500">選択問題の構造を保ち、最大240秒探索</span>
+          </span>
+          <input
+            type="checkbox"
+            checked={deepSearch}
+            onChange={event => setDeepSearch(event.target.checked)}
+            disabled={generating}
+            className="h-4 w-4 accent-blue-500"
+          />
+        </label>
+
         {genDone && !generating && (
-          <div className={`mt-1 text-[11px] ${genDone.ok ? 'text-emerald-300' : 'text-rose-300'}`}>
+          <div className={`mt-1 text-[11px] ${genDone.partial ? 'text-amber-300' : genDone.ok ? 'text-emerald-300' : 'text-rose-300'}`}>
             {genDone.message}
           </div>
         )}
       </div>
+
+      {generatedCards.length > 0 && (
+        <section className="space-y-2" aria-labelledby="generated-results-heading">
+          <div className="flex items-end justify-between">
+            <div>
+              <h2 id="generated-results-heading" className="text-[14px] font-semibold text-zinc-100">今回生成した問題</h2>
+              <p className="text-[10px] text-zinc-500">その場で新規構成・検証済み・問題一覧にも自動反映</p>
+            </div>
+            <span className="text-[10px] tabular-nums text-emerald-300">{generatedCards.length} 問</span>
+          </div>
+          {generatedCards.map((card, index) => (
+            <article key={`${card.family_id}-${index}`} className="rounded-md border border-emerald-500/25 bg-emerald-500/[0.04] p-4">
+              <div className="mb-2 flex flex-wrap items-center gap-2 text-[9px] text-zinc-500">
+                <span className="font-semibold text-emerald-300">生成 {index + 1}</span>
+                <span>{card.family_id ?? 'unknown family'}</span>
+                {card.morphism_chain?.length ? <span>{card.morphism_chain.length} morphisms</span> : null}
+              </div>
+              {card.inherited_tags?.length ? (
+                <div className="mb-2 text-[10px] text-cyan-300">
+                  選択元から継承: {card.inherited_tags.join(' / ')}
+                </div>
+              ) : null}
+              <div className="text-[13px] leading-7 text-zinc-100">
+                <MathText text={card.statement_tex ?? ''} />
+              </div>
+              {card.answer_tex && (
+                <div className="mt-2 border-t border-zinc-800 pt-2 text-[12px] text-emerald-300">
+                  答え: <MathText text={card.answer_tex} />
+                </div>
+              )}
+            </article>
+          ))}
+        </section>
+      )}
 
       {selectedProblems.map(problem => (
         <div key={problem.id} className="glass rounded-md p-4">
@@ -358,7 +436,7 @@ export function GenerationPanel({
           aria-label="MathOS生成状況"
         >
           <header className="flex h-12 items-center gap-3 border-b border-zinc-800 px-4">
-            <span className={`h-2.5 w-2.5 rounded-full ${generating ? 'animate-pulse bg-blue-400' : genDone?.ok ? 'bg-emerald-400' : 'bg-rose-400'}`} />
+            <span className={`h-2.5 w-2.5 rounded-full ${generating ? 'animate-pulse bg-blue-400' : genDone?.partial ? 'bg-amber-400' : genDone?.ok ? 'bg-emerald-400' : 'bg-rose-400'}`} />
             <div className="min-w-0 flex-1">
               <div className={`text-[12px] font-semibold ${phaseInfo.color}`}>{phaseInfo.label}</div>
               <div className="truncate text-[10px] text-zinc-500">{phaseInfo.note}</div>

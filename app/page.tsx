@@ -55,14 +55,14 @@ function HomeInner() {
     const LIMIT = 600
     let query = supabase.from('problems').select('*')
     if (source === 'current') {
-      query = query.eq('source_file', 'mathos_discord_entrance_v2')
+      query = query.in('source_file', ['mathos_discord_entrance_v2', 'mathos_live_session'])
     } else if (source === 'own') {
       query = query.or('source_file.is.null,source_file.not.like.0*')
     } else if (source === 'past') {
       query = query.like('source_file', '0%')
     }
     const { data, error } = await query
-      .order('total', { ascending: false })
+      .order(source === 'current' ? 'created_at' : 'total', { ascending: false })
       .limit(LIMIT)
     if (error) { console.error(error); setLoading(false); return }
 
@@ -207,7 +207,8 @@ function HomeInner() {
         },
         body: JSON.stringify({
           count: examFusionCount,
-          domain: parents[0]?.topic_a || undefined,
+          parents,
+          searchDepth: 'deep',
         }),
       })
       if (!res.ok) {
@@ -556,6 +557,7 @@ function HomeInner() {
                 userId={user?.id ?? null}
                 onStatusChange={handleStatusChange}
                 onPostClick={setPostTarget}
+                onGenerated={loadProblems}
               />
             </div>
           )}
