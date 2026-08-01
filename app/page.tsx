@@ -117,6 +117,14 @@ function HomeInner() {
     () => problems.filter(p => !p.rating || p.rating.status === 'pending').length,
     [problems],
   )
+  const sidebarStats = useMemo(() => ({
+    total: problems.length,
+    selected: problems.filter(p => p.rating?.status === 'selected').length,
+    skipped: problems.filter(p => p.rating?.status === 'rejected').length,
+    posted: problems.filter(p => p.rating?.x_posted).length,
+    pending: unreviewed,
+    generations: problems.reduce((maximum, problem) => Math.max(maximum, problem.generation ?? 0), 0),
+  }), [problems, unreviewed])
   const totalPages = Math.max(1, Math.ceil(filtered.length / filters.perPage))
   const paginated  = filtered.slice(page * filters.perPage, (page + 1) * filters.perPage)
 
@@ -257,6 +265,7 @@ function HomeInner() {
                        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
         <Sidebar
           filters={filters}
+          stats={sidebarStats}
           onChange={handleFiltersChange}
           onReload={loadProblems}
           onClose={() => setSidebarOpen(false)}

@@ -1,5 +1,4 @@
 'use client'
-import { useEffect, useState, useCallback } from 'react'
 import { usePathname } from 'next/navigation'
 
 export interface Filters {
@@ -34,27 +33,17 @@ const TOPIC_JP: Record<string, string> = {
 
 interface Props {
   filters: Filters
+  stats: Stats
   onChange: (filters: Filters) => void
   onReload?: () => void
   onClose?: () => void
 }
 
-export function Sidebar({ filters, onChange, onReload, onClose }: Props) {
+export function Sidebar({ filters, stats, onChange, onReload, onClose }: Props) {
   const pathname = usePathname()
-  const [stats, setStats] = useState<Stats | null>(null)
-
-  const fetchStats = useCallback(() => {
-    fetch('/api/stats')
-      .then(response => response.json())
-      .then(setStats)
-      .catch(() => setStats(null))
-  }, [])
-
-  useEffect(() => { fetchStats() }, [fetchStats])
 
   const set = (patch: Partial<Filters>) => onChange({ ...filters, ...patch })
   const reload = () => {
-    fetchStats()
     onReload?.()
   }
 
@@ -118,15 +107,13 @@ export function Sidebar({ filters, onChange, onReload, onClose }: Props) {
             </button>
           </div>
           <dl className="divide-y divide-[#eef0f4] border-y border-[#e4e7ec] text-[12px]">
-            <Stat label="総問題数" value={stats?.total} />
-            <Stat label="選択済み" value={stats?.selected} tone="blue" />
-            <Stat label="保留票" value={stats?.pending} />
-            <Stat label="投稿済み" value={stats?.posted} tone="green" />
-            <Stat label="除外" value={stats?.skipped} tone="red" />
+            <Stat label="表示中" value={stats.total} />
+            <Stat label="選択済み" value={stats.selected} tone="blue" />
+            <Stat label="未評価" value={stats.pending} />
+            <Stat label="投稿済み" value={stats.posted} tone="green" />
+            <Stat label="修復候補" value={stats.skipped} tone="red" />
           </dl>
-          {stats ? (
-            <p className="mt-2 text-[10px] text-[#98a2b3]">生成世代 Gen {stats.generations}</p>
-          ) : null}
+          <p className="mt-2 text-[10px] text-[#98a2b3]">表示中の最大世代 Gen {stats.generations}</p>
         </section>
 
         <section>
