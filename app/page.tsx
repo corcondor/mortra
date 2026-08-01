@@ -83,8 +83,12 @@ function HomeInner() {
         .from('ratings')
         .select('*')
         .in('problem_id', ids)
-      for (const r of (ratings ?? []) as Record<string, unknown>[]) {
-        ratingById.set(String(r.problem_id), r)
+      const ratingRows = (ratings ?? []) as Record<string, unknown>[]
+      for (const r of ratingRows) {
+        if (r.user_id == null) ratingById.set(String(r.problem_id), r)
+      }
+      for (const r of ratingRows) {
+        if (user?.id && r.user_id === user.id) ratingById.set(String(r.problem_id), r)
       }
     }
     const normalized = rows.map((p) => ({
@@ -93,7 +97,7 @@ function HomeInner() {
     }))
     setProblems(normalized as ProblemWithRating[])
     setLoading(false)
-  }, [supabase, source])
+  }, [supabase, source, user?.id])
 
   useEffect(() => { loadProblems() }, [loadProblems])
 
@@ -109,6 +113,10 @@ function HomeInner() {
   }, [problems, filters])
 
   const selected   = useMemo(() => problems.filter(p => p.rating?.status === 'selected'), [problems])
+  const unreviewed = useMemo(
+    () => problems.filter(p => !p.rating || p.rating.status === 'pending').length,
+    [problems],
+  )
   const totalPages = Math.max(1, Math.ceil(filtered.length / filters.perPage))
   const paginated  = filtered.slice(page * filters.perPage, (page + 1) * filters.perPage)
 
@@ -368,7 +376,9 @@ function HomeInner() {
                     {source === 'current' ? '最新のMathOS問題' : source === 'past' ? '過去問' : source === 'own' ? '自作の問題' : '問題一覧'}
                   </h1>
                   <p className="mt-0.5 text-[12px] text-[#667085]">
-                    {loading ? '読み込み中…' : `${filtered.length} 件  ·  ${page + 1} / ${totalPages} ページ`}
+                    {loading
+                      ? '読み込み中…'
+                      : `${filtered.length} 件 · 未評価 ${unreviewed} 件 · ${page + 1} / ${totalPages} ページ`}
                   </p>
                 </div>
                 <div className="flex-1" />

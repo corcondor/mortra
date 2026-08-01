@@ -120,7 +120,7 @@ export function Sidebar({ filters, onChange, onReload, onClose }: Props) {
           <dl className="divide-y divide-[#eef0f4] border-y border-[#e4e7ec] text-[12px]">
             <Stat label="総問題数" value={stats?.total} />
             <Stat label="選択済み" value={stats?.selected} tone="blue" />
-            <Stat label="未判定" value={stats?.pending} />
+            <Stat label="保留票" value={stats?.pending} />
             <Stat label="投稿済み" value={stats?.posted} tone="green" />
             <Stat label="除外" value={stats?.skipped} tone="red" />
           </dl>
