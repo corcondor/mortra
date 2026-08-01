@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-01T09:54:06.760083+00:00",
+  "generated_at": "2026-08-01T10:40:23.356806+00:00",
   "method": {
     "difficulty_policy": "annotation_only_until_human_rating_auc_reaches_0.7",
     "hard_problem_policy": "proof DAG with converging constraints required; flat scalar bridge compositions are excluded",
@@ -7131,6 +7131,416 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "exact_identity_plus_integer_grid"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": "9/70",
+      "answer_tex": "\\(\\dfrac9{70}\\)",
+      "candidate_id": "morphology:octagon-product-probability:001",
+      "constraint_skeleton": [
+        "regular_8_gon_roots_of_unity",
+        "uniform_4_subset",
+        "product_equals_identity"
+      ],
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "RegularPolygon",
+          "RootOfUnityChart",
+          "CyclicOrbit",
+          "OrbitResidues",
+          "FiniteFourierTransform",
+          "CoefficientEncoding",
+          "CoefficientClass",
+          "UniformMeasure",
+          "Expectation"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "RegularPolygon",
+            "primitives": [
+              "regular_polygon"
+            ]
+          },
+          {
+            "morphism": "RootOfUnityChart",
+            "primitives": [
+              "roots_of_unity",
+              "complex_plane"
+            ]
+          },
+          {
+            "morphism": "CyclicOrbit",
+            "primitives": [
+              "roots_of_unity",
+              "symmetry"
+            ]
+          },
+          {
+            "morphism": "OrbitResidues",
+            "primitives": [
+              "congruence",
+              "periodicity"
+            ]
+          },
+          {
+            "morphism": "FiniteFourierTransform",
+            "primitives": [
+              "roots_of_unity",
+              "sum_of_series"
+            ]
+          },
+          {
+            "morphism": "CoefficientEncoding",
+            "primitives": [
+              "polynomial_expansion",
+              "sum_of_series"
+            ]
+          },
+          {
+            "morphism": "CoefficientClass",
+            "primitives": [
+              "counting",
+              "combination"
+            ]
+          },
+          {
+            "morphism": "UniformMeasure",
+            "primitives": [
+              "probability",
+              "counting"
+            ]
+          },
+          {
+            "morphism": "Expectation",
+            "primitives": [
+              "expectation"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "regular_polygon",
+          "roots_of_unity",
+          "complex_plane",
+          "symmetry",
+          "congruence",
+          "periodicity",
+          "sum_of_series",
+          "polynomial_expansion",
+          "counting",
+          "combination",
+          "probability",
+          "expectation"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "unrated_human",
+      "difficulty_score": 18.09,
+      "domain": "complex_geometry_combinatorics_probability",
+      "family_id": "morphology.cyclic_configuration_character_count",
+      "lift_certificate": {
+        "constraint_skeleton": [
+          "cyclic_orbit",
+          "fixed_cardinality_subset",
+          "identity_product"
+        ],
+        "morphism_chain": [
+          "RegularPolygon",
+          "RootOfUnityChart",
+          "CyclicOrbit",
+          "OrbitResidues",
+          "FiniteFourierTransform",
+          "CoefficientEncoding",
+          "CoefficientClass",
+          "UniformMeasure",
+          "Expectation"
+        ],
+        "query_signature": "Probability(Product(ChosenVertices)=1)",
+        "type_checked": true
+      },
+      "morphology_certificate": {
+        "detour": 0,
+        "edge_count": 7,
+        "edges": [
+          {
+            "description": "expose cyclic symmetry of the same point set",
+            "name": "CyclicOrbit",
+            "source": "ComplexConfiguration",
+            "target": "CyclicGroupAction",
+            "transport": [
+              "cyclic_order",
+              "orbit"
+            ]
+          },
+          {
+            "description": "index cyclic orbits by residue classes",
+            "name": "OrbitResidues",
+            "source": "CyclicGroupAction",
+            "target": "ResidueClassStructure",
+            "transport": [
+              "orbit",
+              "period"
+            ]
+          },
+          {
+            "description": "Fourier analyze residue restrictions",
+            "name": "FiniteFourierTransform",
+            "source": "ResidueClassStructure",
+            "target": "CharacterSum",
+            "transport": [
+              "class_membership",
+              "period"
+            ]
+          },
+          {
+            "description": "encode the same restriction in generating-function coefficients",
+            "name": "CoefficientEncoding",
+            "source": "CharacterSum",
+            "target": "GeneratingFunction",
+            "transport": [
+              "coefficient_constraint",
+              "period"
+            ]
+          },
+          {
+            "description": "interpret coefficients as counted objects",
+            "name": "CoefficientClass",
+            "source": "GeneratingFunction",
+            "target": "CombinatorialClass",
+            "transport": [
+              "coefficient",
+              "size"
+            ]
+          },
+          {
+            "description": "equip the same finite class with uniform measure",
+            "name": "UniformMeasure",
+            "source": "CombinatorialClass",
+            "target": "ProbabilitySpace",
+            "transport": [
+              "sample_space",
+              "cardinality"
+            ]
+          },
+          {
+            "description": "take expectation without changing the outcomes",
+            "name": "Expectation",
+            "source": "ProbabilitySpace",
+            "target": "ExpectationObservable",
+            "transport": [
+              "sample_space",
+              "observable"
+            ]
+          }
+        ],
+        "morphism_alignment_checked": true,
+        "morphism_chain_aligned": true,
+        "nodes": [
+          "ComplexConfiguration",
+          "CyclicGroupAction",
+          "ResidueClassStructure",
+          "CharacterSum",
+          "GeneratingFunction",
+          "CombinatorialClass",
+          "ProbabilitySpace",
+          "ExpectationObservable"
+        ],
+        "present": true,
+        "reason": "adjacent_typed_path",
+        "shortest_edge_count": 7,
+        "theories": [
+          "complex_geometry",
+          "group_theory",
+          "number_theory",
+          "harmonic_number_theory",
+          "algebraic_combinatorics",
+          "combinatorics",
+          "probability",
+          "probability"
+        ],
+        "theory_transitions": 6,
+        "transported_invariants": [
+          "cardinality",
+          "class_membership",
+          "coefficient",
+          "coefficient_constraint",
+          "cyclic_order",
+          "observable",
+          "orbit",
+          "period",
+          "sample_space",
+          "size"
+        ],
+        "valid": true
+      },
+      "morphology_path": [
+        "ComplexConfiguration",
+        "CyclicGroupAction",
+        "ResidueClassStructure",
+        "CharacterSum",
+        "GeneratingFunction",
+        "CombinatorialClass",
+        "ProbabilitySpace",
+        "ExpectationObservable"
+      ],
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.118,
+        "measured": true,
+        "reference_corpus_size": 28074
+      },
+      "proof_graph": {
+        "edges": [
+          {
+            "source": "octagon",
+            "target": "root_chart"
+          },
+          {
+            "source": "root_chart",
+            "target": "exponent_subset"
+          },
+          {
+            "source": "selection",
+            "target": "exponent_subset"
+          },
+          {
+            "source": "exponent_subset",
+            "target": "residue"
+          },
+          {
+            "source": "target",
+            "target": "residue"
+          },
+          {
+            "source": "residue",
+            "target": "filter"
+          },
+          {
+            "source": "filter",
+            "target": "generating"
+          },
+          {
+            "source": "generating",
+            "target": "favorable"
+          },
+          {
+            "source": "selection",
+            "target": "total"
+          },
+          {
+            "source": "favorable",
+            "target": "probability"
+          },
+          {
+            "source": "total",
+            "target": "probability"
+          },
+          {
+            "source": "probability",
+            "target": "answer"
+          }
+        ],
+        "nodes": [
+          {
+            "id": "octagon",
+            "kind": "object",
+            "label": "regular octagon"
+          },
+          {
+            "id": "selection",
+            "kind": "constraint",
+            "label": "uniform four-subset"
+          },
+          {
+            "id": "target",
+            "kind": "constraint",
+            "label": "product equals one"
+          },
+          {
+            "id": "root_chart",
+            "kind": "transform",
+            "morphism": "RootOfUnityChart"
+          },
+          {
+            "id": "exponent_subset",
+            "kind": "transform",
+            "morphism": "CyclicOrbit"
+          },
+          {
+            "id": "residue",
+            "kind": "lemma",
+            "morphism": "OrbitResidues"
+          },
+          {
+            "id": "filter",
+            "kind": "transform",
+            "morphism": "FiniteFourierTransform"
+          },
+          {
+            "id": "generating",
+            "kind": "transform",
+            "morphism": "CoefficientEncoding"
+          },
+          {
+            "id": "favorable",
+            "kind": "lemma",
+            "morphism": "CoefficientClass"
+          },
+          {
+            "id": "total",
+            "kind": "transform",
+            "morphism": "SubsetCount"
+          },
+          {
+            "id": "probability",
+            "kind": "conclusion",
+            "morphism": "UniformMeasure"
+          },
+          {
+            "id": "answer",
+            "kind": "query",
+            "morphism": "Expectation"
+          }
+        ]
+      },
+      "proof_graph_certificate": {
+        "edge_count": 12,
+        "interaction_verified": true,
+        "merge_count": 3,
+        "node_count": 12,
+        "present": true,
+        "reason": "interaction_verified",
+        "root_count": 3,
+        "terminal_count": 2,
+        "valid_dag": true
+      },
+      "quality_annotations": {
+        "below_legacy_difficulty_threshold": false,
+        "below_legacy_morphism_threshold": false,
+        "human_calibrated": false,
+        "legacy_difficulty_score": 18.09,
+        "legacy_difficulty_threshold": 8.4,
+        "legacy_morphism_threshold": 3,
+        "minimum_auc_for_gating": 0.7,
+        "morphism_count": 9,
+        "observed_human_auc": 0.086,
+        "policy": "annotation_only"
+      },
+      "research_tier": "interaction_verified",
+      "solution_tex": "選んだ頂点の指数を \\(0\\le a<b<c<d\\le7\\) とする。\n積が \\(1\\) であることは\n\\[\na+b+c+d\\equiv0\\pmod 8\n\\]\nと同値である。合同条件を数えるため \\(\\omega=\\zeta\\) とおき、1の冪根\nフィルタを用いると、条件を満たす4点集合の個数 \\(N\\) は\n\\[\nN=\\frac18\\sum_{m=0}^{7}[t^4]\n\\prod_{j=0}^{7}(1+t\\omega^{mj})\n\\]\nである。\\(d=(m,8),\\ l=8/d\\) とすれば\n\\[\n\\prod_{j=0}^{7}(1+t\\omega^{mj})=(1-(-t)^l)^d.\n\\]\nしたがって \\(t^4\\) の係数は、\\(m=0\\) で \\(70\\)、\\(m=2,6\\) で\nそれぞれ \\(-2\\)、\\(m=4\\) で \\(6\\)、奇数 \\(m\\) で \\(0\\) である。よって\n\\[\nN=\\frac{70-2-2+6}{8}=9.\n\\]\n全ての選び方は \\(\\binom84=70\\) 通りなので、求める確率は\n\\[\n\\boxed{\\frac9{70}}\n\\]\nである。",
+      "source_generator": "typed_morphology_path",
+      "statement_tex": "\\(\\zeta=\\cos\\dfrac{\\pi}{4}+i\\sin\\dfrac{\\pi}{4}\\) とする。\n複素数平面上の正八角形の頂点\n\\[\n1,\\zeta,\\zeta^2,\\ldots,\\zeta^7\n\\]\nから異なる4点を無作為に選ぶ。選んだ4点を表す複素数の積が\n\\(1\\) となる確率を求めよ。",
+      "structure_key": "fe113bd28e4c557d8ee1c7a734f143976871dc888df9b476fe0974d117d98655",
+      "verification": {
+        "character_filter_count": 9,
+        "exact_backend": true,
+        "favorable_count": 9,
+        "independent_check": true,
+        "method": "subset_enumeration_plus_exact_root_of_unity_filter",
+        "total_count": 70
       }
     },
     {
@@ -16833,11 +17243,16 @@
       "curriculum_certificate": {
         "abstract_morphism_chain": [
           "UniformLatticePair",
+          "CoefficientInstantiation",
           "QuadraticDiscriminant",
+          "DiscriminantFilter",
           "LatticeRescaling",
+          "ScalingLimit",
           "RegionLimit",
+          "RegionMeasure",
           "AreaObservation",
           "RootDifference",
+          "RestrictedMoment",
           "RestrictedAverage"
         ],
         "lowering_by_morphism": [
@@ -16849,9 +17264,23 @@
             ]
           },
           {
+            "morphism": "CoefficientInstantiation",
+            "primitives": [
+              "integer_arithmetic",
+              "counting"
+            ]
+          },
+          {
             "morphism": "QuadraticDiscriminant",
             "primitives": [
               "quadratic_discriminant"
+            ]
+          },
+          {
+            "morphism": "DiscriminantFilter",
+            "primitives": [
+              "quadratic_discriminant",
+              "inequality"
             ]
           },
           {
@@ -16862,10 +17291,23 @@
             ]
           },
           {
+            "morphism": "ScalingLimit",
+            "primitives": [
+              "coordinate_geometry",
+              "limit"
+            ]
+          },
+          {
             "morphism": "RegionLimit",
             "primitives": [
               "limit",
               "definite_integral"
+            ]
+          },
+          {
+            "morphism": "RegionMeasure",
+            "primitives": [
+              "area_integral"
             ]
           },
           {
@@ -16882,6 +17324,13 @@
             ]
           },
           {
+            "morphism": "RestrictedMoment",
+            "primitives": [
+              "definite_integral",
+              "probability"
+            ]
+          },
+          {
             "morphism": "RestrictedAverage",
             "primitives": [
               "counting",
@@ -16893,7 +17342,9 @@
         "lowering_chain": [
           "counting",
           "probability",
+          "integer_arithmetic",
           "quadratic_discriminant",
+          "inequality",
           "coordinate_geometry",
           "limit",
           "definite_integral",
@@ -16918,16 +17369,119 @@
         ],
         "morphism_chain": [
           "UniformLatticePair",
+          "CoefficientInstantiation",
           "QuadraticDiscriminant",
+          "DiscriminantFilter",
           "LatticeRescaling",
+          "ScalingLimit",
           "RegionLimit",
+          "RegionMeasure",
           "AreaObservation",
           "RootDifference",
+          "RestrictedMoment",
           "RestrictedAverage"
         ],
         "query_signature": "Pair(Limit(Probability),Limit(RestrictedAverage))",
         "type_checked": true
       },
+      "morphology_certificate": {
+        "detour": 0,
+        "edge_count": 5,
+        "edges": [
+          {
+            "description": "instantiate coefficients on a finite grid",
+            "name": "CoefficientInstantiation",
+            "source": "QuadraticCoefficientFamily",
+            "target": "CoefficientLattice",
+            "transport": [
+              "coefficients",
+              "discriminant"
+            ]
+          },
+          {
+            "description": "retain exactly the real-root coefficient pairs",
+            "name": "DiscriminantFilter",
+            "source": "CoefficientLattice",
+            "target": "DiscriminantFeasibleLattice",
+            "transport": [
+              "coefficients",
+              "real_root_existence"
+            ]
+          },
+          {
+            "description": "rescale the grid while preserving the feasibility inequality",
+            "name": "ScalingLimit",
+            "source": "DiscriminantFeasibleLattice",
+            "target": "SemialgebraicRegion",
+            "transport": [
+              "membership",
+              "boundary",
+              "density"
+            ]
+          },
+          {
+            "description": "observe area or measure",
+            "name": "RegionMeasure",
+            "source": "SemialgebraicRegion",
+            "target": "MeasureObservable",
+            "transport": [
+              "membership",
+              "boundary"
+            ]
+          },
+          {
+            "description": "normalize a weighted integral over the same region",
+            "name": "RestrictedMoment",
+            "source": "MeasureObservable",
+            "target": "ConditionalMomentObservable",
+            "transport": [
+              "measure",
+              "normalization"
+            ]
+          }
+        ],
+        "morphism_alignment_checked": true,
+        "morphism_chain_aligned": true,
+        "nodes": [
+          "QuadraticCoefficientFamily",
+          "CoefficientLattice",
+          "DiscriminantFeasibleLattice",
+          "SemialgebraicRegion",
+          "MeasureObservable",
+          "ConditionalMomentObservable"
+        ],
+        "present": true,
+        "reason": "adjacent_typed_path",
+        "shortest_edge_count": 5,
+        "theories": [
+          "algebra",
+          "discrete_algebra",
+          "algebraic_geometry",
+          "real_algebraic_geometry",
+          "analysis",
+          "probability_analysis"
+        ],
+        "theory_transitions": 5,
+        "transported_invariants": [
+          "boundary",
+          "coefficients",
+          "density",
+          "discriminant",
+          "measure",
+          "membership",
+          "normalization",
+          "real_root_existence"
+        ],
+        "valid": true
+      },
+      "morphology_path": [
+        "QuadraticCoefficientFamily",
+        "CoefficientLattice",
+        "DiscriminantFeasibleLattice",
+        "SemialgebraicRegion",
+        "MeasureObservable",
+        "ConditionalMomentObservable"
+      ],
       "novelty": {
         "closest_source": "sakumon_curation",
         "corpus_novel": true,
@@ -17050,7 +17604,7 @@
         "legacy_difficulty_threshold": 8.4,
         "legacy_morphism_threshold": 3,
         "minimum_auc_for_gating": 0.7,
-        "morphism_count": 7,
+        "morphism_count": 12,
         "observed_human_auc": 0.086,
         "policy": "annotation_only"
       },
@@ -17058,7 +17612,7 @@
       "solution_tex": "判別式より \\((a,b)\\in S_n\\) は \\(a^2\\ge4bn\\) と同値である。\n\\(u=a/n,\\ v=b/n\\) とおくと，格子点は領域\n\\(D=\\{(u,v)\\mid0\\le u\\le1,\\ 0\\le v\\le u^2/4\\}\\) を近似する。したがって\n\\[\n\\lim_{n\\to\\infty}\\frac{|S_n|}{n^2}\n=\\iint_Ddu\\,dv=\\int_0^1\\frac{u^2}{4}\\,du=\\frac1{12}.\n\\]\nまた二解の差は判別式の平方根だから\n\\[\n\\frac{|\\alpha_{a,b}-\\beta_{a,b}|}{\\sqrt n}\n=\\sqrt{u^2-4v}.\n\\]\nよってリーマン和により\n\\[\n\\lim_{n\\to\\infty}M_n\n=\\frac{\\displaystyle\\int_0^1\\int_0^{u^2/4}\\sqrt{u^2-4v}\\,dv\\,du}\n{\\displaystyle\\int_0^1u^2/4\\,du}\n=\\frac{1/24}{1/12}=\\frac12.\n\\]",
       "source_generator": "selfauthored_motif_guided",
       "statement_tex": "正の整数 \\(n\\) に対し，\n\\[\nS_n=\\left\\{(a,b)\\in\\{1,2,\\ldots,n\\}^2\\ \\middle|\\\nx^2-\\frac{a}{\\sqrt n}x+b=0\\text{ が実数解をもつ}\\right\\}\n\\]\nとする。また \\((a,b)\\in S_n\\) に対応する二解を\n\\(\\alpha_{a,b},\\beta_{a,b}\\) とし，\n\\[\nM_n=\\frac1{|S_n|}\\sum_{(a,b)\\in S_n}\n\\frac{|\\alpha_{a,b}-\\beta_{a,b}|}{\\sqrt n}\n\\]\nとおく。次の極限を求めよ。\n\\[\n\\text{(1) }\\lim_{n\\to\\infty}\\frac{|S_n|}{n^2},\n\\qquad\n\\text{(2) }\\lim_{n\\to\\infty}M_n.\n\\]",
-      "structure_key": "8f9aeac42d287771be146b8e919c36857768b471d2435df66fbc1319dd0e6a7a",
+      "structure_key": "34ad092f7eff05aaaf12aeff8c639a1761a43e7b1633cc010254de7f0e1a8d81",
       "verification": {
         "exact_backend": true,
         "finite_check": {
@@ -18861,7 +19415,10 @@
     }
   ],
   "summary": {
-    "certified_structures": 138,
+    "certified_structures": 139,
+    "disabled_generators": {
+      "closure_composition": "scalar_bridge_bypasses_morphology_graph"
+    },
     "domain_counts": {
       "algebra": 6,
       "algebra_inequality": 12,
@@ -18875,6 +19432,7 @@
       "complex_algebra_number_theory": 1,
       "complex_geometry": 10,
       "complex_geometry_combinatorics": 1,
+      "complex_geometry_combinatorics_probability": 1,
       "conic_geometry": 20,
       "convex_geometry": 1,
       "differential_geometry": 1,
@@ -18895,7 +19453,7 @@
       "sequence_analysis": 1,
       "trigonometry": 3
     },
-    "families": 136,
+    "families": 137,
     "family_counts": {
       "algebraic_geometry.cubic_discriminant_triangle_area": 1,
       "algebraic_geometry.even_quartic_parabola_hull_area": 1,
@@ -18925,6 +19483,7 @@
       "layered.paley_triangle_count": 1,
       "layered.recurrence_period_observable": 3,
       "layered.rotation_orbit_hull_area": 1,
+      "morphology.cyclic_configuration_character_count": 1,
       "motif.quadratic_root_lattice_limit": 1,
       "multiplicative.mobius_divisor_sum_totient_ratio": 1,
       "passage_region.line_family_sweep": 1,
@@ -19034,13 +19593,12 @@
       "ultradeep.geometry_regular_polygon_minkowski_perimeter": 1,
       "ultradeep.paley_four_cycle_divisor_count": 1
     },
-    "geometry_algebra_structures": 98,
+    "geometry_algebra_structures": 99,
     "quality_flags": {
       "below_legacy_difficulty_threshold": 171,
       "below_legacy_morphism_threshold": 21
     },
     "rejected": {
-      "non_interacting_composition": 427,
       "same_structure_variant": 82,
       "scope_lowering": 10
     },
@@ -19051,9 +19609,10 @@
       "passage_region_closure": 3,
       "relation_closure": 19,
       "selfauthored_motif_guided": 1,
-      "typed_continuous": 15
+      "typed_continuous": 15,
+      "typed_morphology_path": 1
     },
     "surface_rewritten": 4,
-    "total_instances": 138
+    "total_instances": 139
   }
 }
