@@ -7,6 +7,7 @@ const source = new URL(
   import.meta.url,
 )
 const batch = JSON.parse(await readFile(source, 'utf8'))
+const poolGeneratedAt = batch.generated_at ?? new Date().toISOString()
 
 const accepted = batch.problems.filter(
   (problem) =>
@@ -69,6 +70,8 @@ const rows = accepted.map((problem) => {
         typeChecked: true,
         corpusNovel: true,
       },
+      activePool: true,
+      poolGeneratedAt,
     }),
     generation: 0,
     parent_ids: [],
@@ -85,9 +88,31 @@ if (!url || !serviceKey) {
 const supabase = createClient(url, serviceKey, {
   auth: { persistSession: false, autoRefreshToken: false },
 })
+
+// Keep historical votes for research, but do not keep superseded variants in
+// the curation UI. Earlier syncs used candidate IDs as row IDs, so the same
+// structure could survive under several IDs even after the pool quotient had
+// collapsed it to one representative.
+const { data: previousRows, error: previousError } = await supabase
+  .from('problems')
+  .select('id,meta')
+  .eq('source_file', 'mathos_discord_entrance_v2')
+if (previousError) throw previousError
+
+// Move the previous snapshot out of the active namespace in one operation.
+// The following upsert restores exactly the current representatives. Ratings
+// remain attached to archived rows and are still available to research tools.
+const { error: archiveError } = await supabase
+  .from('problems')
+  .update({ source_file: 'mathos_discord_archive' })
+  .eq('source_file', 'mathos_discord_entrance_v2')
+if (archiveError) throw archiveError
+
 const { error } = await supabase.from('problems').upsert(rows, {
   onConflict: 'id',
 })
 if (error) throw error
 
-console.log(`Synced ${rows.length} verified MathOS problems.`)
+console.log(
+  `Synced ${rows.length} verified MathOS problems; archived ${(previousRows ?? []).length} previous rows.`,
+)

@@ -62,7 +62,16 @@ function HomeInner() {
       .limit(LIMIT)
     if (error) { console.error(error); setLoading(false); return }
 
-    const rows = (data ?? []) as Record<string, unknown>[]
+    const rows = ((data ?? []) as Record<string, unknown>[]).filter((row) => {
+      if (row.source_file === 'mathos_discord_archive') return false
+      if (row.source_file !== 'mathos_discord_entrance_v2') return true
+      try {
+        const meta = typeof row.meta === 'string' ? JSON.parse(row.meta) : row.meta
+        return meta?.activePool !== false
+      } catch {
+        return true
+      }
+    })
     const ids = rows.map((p) => String(p.id))
     const ratingById = new Map<string, unknown>()
     if (ids.length) {
