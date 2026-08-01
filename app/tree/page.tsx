@@ -105,7 +105,7 @@ function TreeInner() {
   const kSame = mode === 'branch' && k === k2
 
   return (
-    <div className="relative min-h-screen">
+    <div className="dark-shell relative min-h-screen bg-[#09090b] text-zinc-100">
       <Background />
       <div className="relative mx-auto max-w-4xl px-5 py-10">
         <header className="mb-6">

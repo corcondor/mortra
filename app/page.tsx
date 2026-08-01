@@ -249,13 +249,13 @@ function HomeInner() {
   }, [])
 
   return (
-    <div className="light-shell relative flex h-screen flex-col overflow-hidden text-[#14213d] md:flex-row">
+    <div className="dark-shell relative flex h-screen flex-col overflow-hidden bg-[#09090b] text-zinc-100 md:flex-row">
       <Background />
 
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-30 bg-[#14213d]/30 md:hidden"
+          className="fixed inset-0 z-30 bg-black/70 md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -276,10 +276,10 @@ function HomeInner() {
       <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
 
         {/* Top bar */}
-        <header className="flex h-16 shrink-0 items-center gap-3 border-b border-[#d8dee9] bg-white px-3 md:px-5">
+        <header className="flex h-16 shrink-0 items-center gap-3 border-b border-zinc-800 bg-[#111113] px-3 md:px-5">
           <button
             onClick={() => setSidebarOpen(s => !s)}
-            className="flex h-9 w-9 flex-col items-center justify-center gap-1.5 text-[#667085] md:hidden"
+            className="flex h-9 w-9 flex-col items-center justify-center gap-1.5 text-zinc-400 md:hidden"
             aria-label="メニュー"
           >
             <span className="block h-px w-5 bg-current" />
@@ -295,12 +295,12 @@ function HomeInner() {
                 onClick={() => setTab(t)}
                 className={`relative whitespace-nowrap border-b-2 px-3 text-[12px] font-semibold transition-colors md:px-4 md:text-[13px]
                   ${tab === t
-                    ? 'border-[#175cd3] text-[#175cd3]'
-                    : 'border-transparent text-[#667085] hover:text-[#344054]'}`}
+                    ? 'border-blue-400 text-blue-300'
+                    : 'border-transparent text-zinc-500 hover:text-zinc-200'}`}
               >
                 {label}
                 {t === 'selected' && selected.length > 0 && (
-                  <span className="ml-1.5 rounded-full bg-[#175cd3] px-1.5 py-0.5 text-[10px] text-white">
+                  <span className="ml-1.5 rounded-full bg-blue-600 px-1.5 py-0.5 text-[10px] text-white">
                     {selected.length}
                   </span>
                 )}
@@ -313,12 +313,12 @@ function HomeInner() {
           {/* Spotlight trigger */}
           <button
             onClick={() => setShowSearch(true)}
-            className="hidden h-9 items-center gap-2 rounded border border-[#d0d5dd] bg-white px-3 text-[12px] text-[#667085] transition-colors hover:border-[#98a2b3] md:flex"
+            className="hidden h-9 items-center gap-2 rounded border border-zinc-700 bg-zinc-900 px-3 text-[12px] text-zinc-400 transition-colors hover:border-zinc-500 hover:text-zinc-200 md:flex"
             aria-label="問題を検索"
           >
             <span aria-hidden>⌕</span>
             <span>検索</span>
-            <kbd className="rounded border border-[#e4e7ec] bg-[#f8fafc] px-1 text-[10px]">⌘K</kbd>
+            <kbd className="rounded border border-zinc-700 bg-zinc-800 px-1 text-[10px]">⌘K</kbd>
           </button>
 
           {/* X接続 */}
@@ -332,15 +332,15 @@ function HomeInner() {
                 <img
                   src={user.user_metadata.avatar_url}
                   alt="avatar"
-                  className="h-7 w-7 rounded-full border border-[#d0d5dd]"
+                  className="h-7 w-7 rounded-full border border-zinc-700"
                 />
               )}
               {isAdmin && (
-                <span className="text-[10px] font-semibold text-[#175cd3]">ADMIN</span>
+                <span className="text-[10px] font-semibold text-blue-400">ADMIN</span>
               )}
               <button
                 onClick={signOut}
-                className="text-[11px] text-[#667085] transition-colors hover:text-[#344054]"
+                className="text-[11px] text-zinc-500 transition-colors hover:text-zinc-200"
                 title="ログアウト"
               >
                 ログアウト
@@ -369,9 +369,9 @@ function HomeInner() {
                     onClick={() => { setSource(key); setPage(0) }}
                     className="rounded-full border px-3.5 py-1.5 text-[12px] font-medium transition-colors"
                     style={{
-                      borderColor: source === key ? '#175cd3' : '#d0d5dd',
-                      background:  source === key ? '#eff6ff' : '#fff',
-                      color:       source === key ? '#175cd3' : '#667085',
+                      borderColor: source === key ? '#60a5fa' : '#3f3f46',
+                      background:  source === key ? '#172033' : '#151517',
+                      color:       source === key ? '#93c5fd' : '#a1a1aa',
                     }}
                   >
                     {label}

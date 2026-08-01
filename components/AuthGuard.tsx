@@ -50,14 +50,14 @@ interface Props { children: React.ReactNode }
 
 function EnvVarError() {
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-[#f7f9fc]">
+    <div className="fixed inset-0 flex items-center justify-center bg-[#09090b] text-zinc-100">
       <div className="glass mx-4 w-full max-w-sm space-y-3 rounded-md p-8 text-center">
-        <div className="text-xl text-[#b42318]">!</div>
-        <p className="text-[13px] font-semibold text-[#344054]">環境変数が未設定</p>
-        <p className="text-[11px] leading-relaxed text-[#667085]">
+        <div className="text-xl text-rose-400">!</div>
+        <p className="text-[13px] font-semibold text-zinc-100">環境変数が未設定</p>
+        <p className="text-[11px] leading-relaxed text-zinc-400">
           Vercel Dashboard → Settings → Environment Variables に<br />
-          <code className="text-[#175cd3]">NEXT_PUBLIC_SUPABASE_URL</code> と<br />
-          <code className="text-[#175cd3]">NEXT_PUBLIC_SUPABASE_ANON_KEY</code><br />
+          <code className="text-blue-400">NEXT_PUBLIC_SUPABASE_URL</code> と<br />
+          <code className="text-blue-400">NEXT_PUBLIC_SUPABASE_ANON_KEY</code><br />
           を追加して Redeploy してください。
         </p>
       </div>
@@ -70,48 +70,48 @@ function AuthGuardInner({ children }: Props) {
 
   if (loading) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-[#f7f9fc]">
-        <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#175cd3] border-t-transparent" />
+      <div className="fixed inset-0 flex items-center justify-center bg-[#09090b]">
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-blue-400 border-t-transparent" />
       </div>
     )
   }
 
   if (!user) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-[#f7f9fc] px-4">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(23,92,211,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(23,92,211,0.035)_1px,transparent_1px)] bg-[size:24px_24px]" />
-        <main className="relative grid w-full max-w-4xl overflow-hidden rounded-md border border-[#d8dee9] bg-white shadow-[0_16px_50px_rgba(16,24,40,0.10)] md:grid-cols-[1.2fr_0.8fr]">
-          <section className="border-b border-[#e4e7ec] p-7 md:border-b-0 md:border-r md:p-10">
+      <div className="fixed inset-0 flex items-center justify-center bg-[#09090b] px-4 text-zinc-100">
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.018)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.018)_1px,transparent_1px)] bg-[size:24px_24px]" />
+        <main className="relative grid w-full max-w-4xl overflow-hidden rounded-md border border-zinc-800 bg-[#141416] shadow-[0_24px_80px_rgba(0,0,0,0.55)] md:grid-cols-[1.2fr_0.8fr]">
+          <section className="border-b border-zinc-800 p-7 md:border-b-0 md:border-r md:p-10">
             <div className="mb-8 flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded bg-[#14213d] text-lg font-bold text-white">Σ</span>
+              <span className="flex h-10 w-10 items-center justify-center rounded bg-blue-600 text-lg font-bold text-white">Σ</span>
               <div>
-                <h1 className="text-[20px] font-bold text-[#14213d]">作問ステーション</h1>
-                <p className="text-[11px] text-[#667085]">Sakumon Station powered by MathOS</p>
+                <h1 className="text-[20px] font-bold text-zinc-100">作問ステーション</h1>
+                <p className="text-[11px] text-zinc-500">Sakumon Station powered by MathOS</p>
               </div>
             </div>
-            <h2 className="max-w-lg text-[24px] font-bold leading-snug text-[#14213d]">
+            <h2 className="max-w-lg text-[24px] font-bold leading-snug text-zinc-100">
               数学問題を生成し、検証し、選び抜く。
             </h2>
-            <p className="mt-3 max-w-lg text-[13px] leading-7 text-[#667085]">
+            <p className="mt-3 max-w-lg text-[13px] leading-7 text-zinc-400">
               問題ライブラリの比較、過去問からの構造抽出、候補の融合生成、解答検証を一つの作業画面で管理します。
             </p>
-            <ol className="mt-7 grid gap-3 text-[12px] text-[#475467] sm:grid-cols-3 md:grid-cols-1 lg:grid-cols-3">
+            <ol className="mt-7 grid gap-3 text-[12px] text-zinc-300 sm:grid-cols-3 md:grid-cols-1 lg:grid-cols-3">
               {['問題を比較', '構造を合成', '検証して公開'].map((label, index) => (
-                <li key={label} className="border-l-2 border-[#b2ccff] pl-3">
-                  <span className="block text-[10px] font-bold text-[#175cd3]">0{index + 1}</span>
+                <li key={label} className="border-l-2 border-blue-500/50 pl-3">
+                  <span className="block text-[10px] font-bold text-blue-400">0{index + 1}</span>
                   {label}
                 </li>
               ))}
             </ol>
           </section>
           <section className="flex flex-col justify-center p-7 md:p-9">
-            <h2 className="text-[16px] font-bold text-[#14213d]">ワークスペースに入る</h2>
-            <p className="mt-1 text-[12px] leading-5 text-[#667085]">
+            <h2 className="text-[16px] font-bold text-zinc-100">ワークスペースに入る</h2>
+            <p className="mt-1 text-[12px] leading-5 text-zinc-400">
               Googleアカウントで認証します。
             </p>
           <button
             onClick={signIn}
-              className="mt-6 flex w-full items-center justify-center gap-2 rounded border border-[#d0d5dd] bg-white py-3 text-[13px] font-semibold text-[#344054] transition-colors hover:border-[#98a2b3] hover:bg-[#f8fafc]"
+              className="mt-6 flex w-full items-center justify-center gap-2 rounded border border-zinc-700 bg-zinc-900 py-3 text-[13px] font-semibold text-zinc-100 transition-colors hover:border-zinc-500 hover:bg-zinc-800"
           >
             <svg viewBox="0 0 24 24" width="18" height="18">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -121,7 +121,7 @@ function AuthGuardInner({ children }: Props) {
             </svg>
             Google でログイン
           </button>
-            <p className="mt-4 text-center text-[10px] leading-5 text-[#98a2b3]">
+            <p className="mt-4 text-center text-[10px] leading-5 text-zinc-600">
               認証後、問題一覧・生成履歴・過去問DBを利用できます。
             </p>
           </section>

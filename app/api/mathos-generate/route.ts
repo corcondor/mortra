@@ -152,22 +152,52 @@ function gradeDifficulty(statement: string, solution: string) {
   return { band, score: Number(score.toFixed(2)), construct, condition }
 }
 
-export async function POST(request: NextRequest) {
-  let count = 1
-  let domain: string | undefined
-  try {
-    const body = await request.json()
-    count = Math.min(Math.max(Number(body?.count ?? 1), 1), 10)
-    domain = body?.domain || undefined
-  } catch {
-    // 既定値で続行
-  }
+type GenerationResult = {
+  generated: number
+  requested: number
+  engine: string
+  cards: Record<string, unknown>[]
+  errors: string[]
+}
 
+type ProgressEvent = {
+  phase: 'start' | 'searching' | 'structuring' | 'novelty' | 'verifying' | 'saving' | 'complete' | 'error'
+  message: string
+  current: number
+  total: number
+  draft?: string
+  familyId?: string
+  morphisms?: string[]
+  similarity?: number
+}
+
+type ProgressEmitter = (event: ProgressEvent) => void
+
+async function generateCards(
+  count: number,
+  domain: string | undefined,
+  emit: ProgressEmitter = () => undefined,
+): Promise<GenerationResult> {
   const cards: Record<string, unknown>[] = []
   const errors: string[] = []
-
   const seenThisRun = new Set<string>()
+
+  emit({
+    phase: 'start',
+    message: `MathOS が ${count} 問の構築セッションを開始しました`,
+    current: 0,
+    total: count,
+  })
+
   for (let i = 0; i < count; i++) {
+    const current = i + 1
+    emit({
+      phase: 'searching',
+      message: `問題 ${current}/${count}: Task Atlas から構成可能な経路を探索`,
+      current,
+      total: count,
+    })
+
     // 既出でない問題が出るまで引き直す（重複判定は (族, 答え) と完全一致）
     let live: ReturnType<typeof generateLiveProblem> = null
     let sim: Awaited<ReturnType<typeof assessNovelty>> | null = null
@@ -175,9 +205,20 @@ export async function POST(request: NextRequest) {
       const candidate = generateLiveProblem(domain)
       if (!candidate) continue
       // 同じ族を数字違いで2度返さない。射の連鎖が同じなら同じ問題であり、
-      // 1回の生成で「ギャンブラーの破産」が3つ並ぶのは水増しにすぎない。
+      // 1回の生成で同型問題が並ぶのは水増しにすぎない。
       const runKey = candidate.familyId
       if (seenThisRun.has(runKey)) continue
+
+      emit({
+        phase: 'structuring',
+        message: `${candidate.familyId}: ${candidate.morphismChain.length} 本の射を持つ構造候補を構成`,
+        current,
+        total: count,
+        draft: candidate.statementTex,
+        familyId: candidate.familyId,
+        morphisms: candidate.morphismChain,
+      })
+
       const s = await assessNovelty(
         candidate.statementTex,
         candidate.familyId,
@@ -187,13 +228,35 @@ export async function POST(request: NextRequest) {
         live = candidate
         sim = s
         seenThisRun.add(runKey)
+        emit({
+          phase: 'novelty',
+          message: `既存 ${s.comparedAgainst} 問と照合。最大表層類似度 ${(s.score * 100).toFixed(0)}%`,
+          current,
+          total: count,
+          draft: candidate.statementTex,
+          familyId: candidate.familyId,
+          morphisms: candidate.morphismChain,
+          similarity: s.score,
+        })
         break
       }
     }
     if (!live || !sim) {
-      errors.push('新規な問題を引けず（この族は既に出尽くしている可能性）')
+      const message = '新規な問題を引けませんでした（この構造族は出尽くしている可能性があります）'
+      errors.push(message)
+      emit({ phase: 'error', message, current, total: count })
       continue
     }
+
+    emit({
+      phase: 'verifying',
+      message: `${live.verificationMethod}: 厳密解と独立検算の証明書を確認`,
+      current,
+      total: count,
+      draft: live.statementTex,
+      familyId: live.familyId,
+      morphisms: live.morphismChain,
+    })
 
     const diff = gradeDifficulty(live.statementTex, live.solutionTex)
 
@@ -211,6 +274,16 @@ export async function POST(request: NextRequest) {
       similarity: sim,
       generatedBy: 'mathos_live',
     }
+
+    emit({
+      phase: 'saving',
+      message: `検証済み問題をライブラリへ保存`,
+      current,
+      total: count,
+      draft: live.statementTex,
+      familyId: live.familyId,
+      morphisms: live.morphismChain,
+    })
 
     const { error } = await supabaseAdmin.from('problems').upsert(
       {
@@ -232,9 +305,14 @@ export async function POST(request: NextRequest) {
       },
       { onConflict: 'id' },
     )
-    if (error) { errors.push(`保存失敗: ${error.message}`); continue }
+    if (error) {
+      const message = `保存失敗: ${error.message}`
+      errors.push(message)
+      emit({ phase: 'error', message, current, total: count })
+      continue
+    }
 
-    cards.push({
+    const card = {
       id,
       statement_tex: live.statementTex,
       answer_tex: live.answerTex,
@@ -246,15 +324,72 @@ export async function POST(request: NextRequest) {
       verification: { method: live.verificationMethod, exact_backend: true, independent_check: true },
       difficulty: diff,
       similarity: sim,
+    }
+    cards.push(card)
+    emit({
+      phase: 'complete',
+      message: `問題 ${current}/${count} を生成・検証・保存しました`,
+      current,
+      total: count,
+      draft: live.statementTex,
+      familyId: live.familyId,
+      morphisms: live.morphismChain,
     })
   }
 
-  return NextResponse.json({
+  return {
     generated: cards.length,
     requested: count,
     engine: 'MathOS live (no LLM)',
     cards,
     errors,
+  }
+}
+
+export async function POST(request: NextRequest) {
+  let count = 1
+  let domain: string | undefined
+  let stream = false
+  try {
+    const body = await request.json()
+    count = Math.min(Math.max(Number(body?.count ?? 1), 1), 10)
+    domain = body?.domain || undefined
+    stream = body?.stream === true
+  } catch {
+    // 既定値で続行
+  }
+
+  if (!stream) return NextResponse.json(await generateCards(count, domain))
+
+  const encoder = new TextEncoder()
+  const responseStream = new ReadableStream({
+    async start(controller) {
+      const send = (event: ProgressEvent | { phase: 'done'; result: GenerationResult }) => {
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`))
+      }
+      try {
+        const result = await generateCards(count, domain, send)
+        send({ phase: 'done', result })
+      } catch (error) {
+        send({
+          phase: 'error',
+          message: error instanceof Error ? error.message : String(error),
+          current: 0,
+          total: count,
+        })
+      } finally {
+        controller.close()
+      }
+    },
+  })
+
+  return new Response(responseStream, {
+    headers: {
+      'Content-Type': 'text/event-stream; charset=utf-8',
+      'Cache-Control': 'no-cache, no-transform',
+      Connection: 'keep-alive',
+      'X-Accel-Buffering': 'no',
+    },
   })
 }
 
@@ -262,6 +397,6 @@ export async function GET() {
   return NextResponse.json({
     engine: 'MathOS live (no LLM)',
     pool_bundled: POOL.length,
-    usage: 'POST { count?: 1-10, domain?: string }',
+    usage: 'POST { count?: 1-10, domain?: string, stream?: boolean }',
   })
 }

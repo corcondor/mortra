@@ -32,7 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           crossOrigin="anonymous"
         />
       </head>
-      <body className="min-h-screen overflow-hidden text-[#14213d]">
+      <body className="min-h-screen overflow-hidden bg-[#09090b] text-zinc-100">
         {children}
         <SpeedInsights />
         <Analytics />

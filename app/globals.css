@@ -3,16 +3,16 @@
 @tailwind utilities;
 
 :root {
-  --ink: #14213d;
-  --muted: #667085;
-  --line: #d8dee9;
-  --blue: #175cd3;
-  --blue-soft: #eff6ff;
-  --green: #067647;
-  --red: #b42318;
-  --surface: #ffffff;
-  --canvas: #f7f9fc;
-  color-scheme: light;
+  --ink: #f4f4f5;
+  --muted: #a1a1aa;
+  --line: #2b2b31;
+  --blue: #60a5fa;
+  --blue-soft: #172033;
+  --green: #34d399;
+  --red: #fb7185;
+  --surface: #151517;
+  --canvas: #09090b;
+  color-scheme: dark;
 }
 
 * {
@@ -57,15 +57,15 @@ a:focus-visible {
   z-index: -20;
   background-color: var(--canvas);
   background-image:
-    linear-gradient(rgba(23, 92, 211, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(23, 92, 211, 0.035) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
 .glass {
   background: var(--surface);
   border: 1px solid var(--line);
-  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
 }
 
 .glass-hover {
@@ -73,8 +73,8 @@ a:focus-visible {
 }
 
 .glass-hover:hover {
-  border-color: #b7c7e6;
-  box-shadow: 0 4px 14px rgba(16, 24, 40, 0.07);
+  border-color: #52525b;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
 }
 
 .note-scroll {
@@ -93,30 +93,30 @@ a:focus-visible {
   position: relative;
   min-height: 286px;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.97);
-  color: #101828;
-  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06);
+  background: #151517;
+  color: #e4e4e7;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.32);
   content-visibility: auto;
   contain-intrinsic-size: 330px;
 }
 
 .paper-note:hover {
-  border-color: #a9bce0;
-  box-shadow: 0 5px 18px rgba(16, 24, 40, 0.08);
+  border-color: #52525b;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32);
 }
 
 .spotlight-input {
-  background: #fff;
+  background: #111113;
   border: 1.5px solid var(--line);
-  color: #101828;
+  color: #f4f4f5;
   caret-color: var(--blue);
   outline: none;
   transition: border-color 160ms ease, box-shadow 160ms ease;
 }
 
 .spotlight-input:focus {
-  border-color: #84adff;
-  box-shadow: 0 0 0 3px rgba(23, 92, 211, 0.12);
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.14);
 }
 
 .spotlight-input::placeholder {
@@ -147,14 +147,85 @@ a:focus-visible {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c7d0df;
+  background: #3f3f46;
   border: 2px solid transparent;
   border-radius: 999px;
   background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #98a2b3;
+  background-color: #52525b;
+}
+
+/* Legacy light utility colors are contained here while the workspace migrates. */
+.dark-shell [class*="bg-white"] {
+  background-color: #151517 !important;
+}
+
+.dark-shell [class*="bg-[#f8fafc]"],
+.dark-shell [class*="bg-[#f7f9fc]"],
+.dark-shell [class*="bg-[#f9fafb]"],
+.dark-shell [class*="bg-[#fcfcfd]"] {
+  background-color: #111113 !important;
+}
+
+.dark-shell [class*="bg-[#eff6ff]"] {
+  background-color: #172033 !important;
+}
+
+.dark-shell [class*="bg-[#fffaeb]"] {
+  background-color: #211b0f !important;
+}
+
+.dark-shell [class*="bg-[#effcf6]"] {
+  background-color: #10231d !important;
+}
+
+.dark-shell [class*="text-[#14213d]"],
+.dark-shell [class*="text-[#101828]"],
+.dark-shell [class*="text-zinc-900"],
+.dark-shell [class*="text-zinc-800"] {
+  color: #f4f4f5 !important;
+}
+
+.dark-shell [class*="text-[#344054]"],
+.dark-shell [class*="text-[#475467]"],
+.dark-shell [class*="text-zinc-700"],
+.dark-shell [class*="text-zinc-600"] {
+  color: #d4d4d8 !important;
+}
+
+.dark-shell [class*="text-[#667085]"],
+.dark-shell [class*="text-[#98a2b3]"],
+.dark-shell [class*="text-zinc-500"] {
+  color: #a1a1aa !important;
+}
+
+.dark-shell [class*="border-[#d"],
+.dark-shell [class*="border-[#e"],
+.dark-shell [class*="border-zinc-300"] {
+  border-color: #2b2b31 !important;
+}
+
+.dark-shell input,
+.dark-shell textarea,
+.dark-shell select {
+  color-scheme: dark;
+}
+
+.mathos-generation-window {
+  animation: mathos-window-in 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes mathos-window-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 @media (max-width: 1100px) {

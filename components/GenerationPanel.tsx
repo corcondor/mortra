@@ -1,214 +1,245 @@
 'use client'
-import { useState, useRef, useEffect } from 'react'
-import { createClient } from '@supabase/supabase-js'
+
+import { useEffect, useRef, useState } from 'react'
 import type { ProblemWithRating } from '@/lib/types'
 import { MathText } from './MathText'
 import { UpgradeModal } from './UpgradeModal'
 
-const TOPIC_JP: Record<string,string> = {
-  analysis:'実解析', algebra:'代数', geometry:'幾何', number_theory:'整数論',
-  complex:'複素数', recurrence:'漸化式', polynomial:'多項式',
-  trigonometry:'三角関数', combinatorics:'組合せ', inequality:'不等式',
-  probability:'確率', functional_eq:'関数方程式', modular:'合同算術', matrix:'行列',
+const TOPIC_JP: Record<string, string> = {
+  analysis: '実解析', algebra: '代数', geometry: '幾何', number_theory: '整数論',
+  complex: '複素数', recurrence: '漸化式', polynomial: '多項式',
+  trigonometry: '三角関数', combinatorics: '組合せ', inequality: '不等式',
+  probability: '確率', functional_eq: '関数方程式', modular: '合同算術', matrix: '行列',
 }
 
 interface Props {
   selectedProblems: ProblemWithRating[]
-  accessToken:      string | null
-  isAdmin:          boolean
-  userId:           string | null
-  onStatusChange:   (id: string, status: string) => void
-  onPostClick:      (p: ProblemWithRating) => void
+  accessToken: string | null
+  isAdmin: boolean
+  userId: string | null
+  onStatusChange: (id: string, status: string) => void
+  onPostClick: (p: ProblemWithRating) => void
 }
 
-// Supabase クライアント（Realtime用）
-function getSupabaseClient() {
-  const url  = process.env.NEXT_PUBLIC_SUPABASE_URL!
-  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  return createClient(url, anon)
+type GenerationCard = {
+  family_id?: string
+  answer_tex?: string
+  statement_tex?: string
+  similarity?: { score?: number; max?: number }
 }
 
-// ── ログからフェーズ・進捗を解析 ─────────────────────────────────────────────
-interface Progress {
-  current: number
-  total: number
-  phase: 'analyzing' | 'generating' | 'verifying' | 'saving' | 'purging' | 'done'
-  label: string
+type GenerationResult = {
+  generated: number
+  requested: number
+  engine: string
+  cards: GenerationCard[]
+  errors: string[]
 }
 
-function parseProgress(logs: string[]): Progress | null {
-  for (let i = logs.length - 1; i >= 0; i--) {
-    const line = logs[i]
-
-    // [生成 X/N], [検証 X/N], [保存 X/N], [完了 X/N]
-    const m = line.match(/\[(?:生成|検証|保存|完了)\s*(\d+)\/(\d+)\]/)
-    if (m) {
-      const current = parseInt(m[1])
-      const total   = parseInt(m[2])
-      const phase = line.includes('[検証') ? 'verifying'
-        : line.includes('[保存')           ? 'saving'
-        : line.includes('[完了')           ? 'done'
-        : 'generating'
-      // 完了は current 問分が終わった → 0-indexed で current が完了数
-      const progress = phase === 'done' ? current / total : (current - 1) / total
-      return { current, total, phase, label: `問題 ${current}/${total}` }
-      // suppress unused var
-      void progress
-    }
-
-    // 分析フェーズ
-    if (line.includes('[分析]')) {
-      return { current: 0, total: 1, phase: 'analyzing', label: '分析中' }
-    }
-
-    // 淘汰フェーズ
-    if (line.includes('[淘汰]')) {
-      return { current: 1, total: 1, phase: 'purging', label: '整理中' }
-    }
-  }
-  return null
+type StreamEvent = {
+  phase: 'start' | 'searching' | 'structuring' | 'novelty' | 'verifying' | 'saving' | 'complete' | 'error' | 'done'
+  message?: string
+  current?: number
+  total?: number
+  draft?: string
+  familyId?: string
+  morphisms?: string[]
+  similarity?: number
+  result?: GenerationResult
 }
 
-/** ログ行のカラー分類 */
+const PHASE_INFO: Record<string, { label: string; note: string; color: string }> = {
+  start: { label: 'MathOS 起動中', note: '生成セッションを準備しています', color: 'text-blue-300' },
+  searching: { label: 'MathOS 試行中', note: '構成可能な経路を探索しています', color: 'text-blue-300' },
+  structuring: { label: '構造を構成中', note: '対象と射から問題文を組み立てています', color: 'text-cyan-300' },
+  novelty: { label: '新規性を照合中', note: '既存問題との同型・表層類似を調べています', color: 'text-violet-300' },
+  verifying: { label: '厳密検証中', note: '解と独立検算の証明書を確認しています', color: 'text-amber-300' },
+  saving: { label: '問題を保存中', note: '検証済み候補をライブラリへ追加しています', color: 'text-emerald-300' },
+  complete: { label: '次の問題へ', note: '1問の構築と検証が完了しました', color: 'text-emerald-300' },
+  done: { label: '生成完了', note: '検証済み問題を保存しました', color: 'text-emerald-300' },
+  error: { label: '生成を停止', note: '処理内容を確認してください', color: 'text-rose-300' },
+}
+
+const STAGES = [
+  { key: 'searching', label: '構造探索' },
+  { key: 'novelty', label: '新規性' },
+  { key: 'verifying', label: '厳密検証' },
+  { key: 'saving', label: '保存' },
+] as const
+
+const PHASE_RANK: Record<string, number> = {
+  start: -1,
+  searching: 0,
+  structuring: 0,
+  novelty: 1,
+  verifying: 2,
+  saving: 3,
+  complete: 4,
+  done: 4,
+}
+
 function logLineColor(line: string): string {
-  if (line.includes('❌') || line.includes('FAIL') || line.includes('エラー') || line.includes('失敗'))
-    return 'text-red-400/80'
-  if (line.includes('⚠') || line.includes('warn') || line.includes('スキップ'))
-    return 'text-yellow-400/70'
-  if (line.includes('✅') || line.includes('✓') || line.includes('完了') || line.includes('PASS'))
-    return 'text-emerald-400/80'
-  if (line.includes('🎯') || line.includes('[生成'))
-    return 'text-blue-300/70'
-  if (line.includes('🔍') || line.includes('[検証') || line.includes('[分析'))
-    return 'text-[#175cd3]'
-  if (line.includes('💾') || line.includes('[保存'))
-    return 'text-[#067647]'
-  if (line.includes('🔧'))
-    return 'text-orange-300/70'
-  return 'text-[#667085]'
+  if (line.includes('失敗') || line.includes('停止') || line.includes('エラー')) return 'text-rose-300'
+  if (line.includes('完了') || line.includes('保存しました')) return 'text-emerald-300'
+  if (line.includes('検証')) return 'text-amber-200'
+  if (line.includes('構造') || line.includes('探索')) return 'text-blue-200'
+  return 'text-zinc-400'
 }
 
-/** フェーズ → アイコン */
-const PHASE_INFO: Record<string, { emoji: string; label: string; color: string }> = {
-  analyzing:  { emoji: '🔍', label: '構造分析中',       color: 'text-[#175cd3]' },
-  generating: { emoji: '⏳', label: 'DeepSeek 生成中',  color: 'text-blue-400' },
-  verifying:  { emoji: '🔬', label: '数学的検証中',     color: 'text-yellow-400' },
-  saving:     { emoji: '💾', label: 'Supabase 保存中',  color: 'text-[#067647]' },
-  purging:    { emoji: '🗑️', label: '未選択を整理中',   color: 'text-[#b54708]' },
-  done:       { emoji: '✅', label: '完了！',            color: 'text-emerald-400' },
-  queued:     { emoji: '🕐', label: 'キュー待ち...',    color: 'text-[#667085]' },
-  start:      { emoji: '🚀', label: 'Worker 起動中',    color: 'text-blue-400' },
-  error:      { emoji: '❌', label: 'エラー',            color: 'text-red-400' },
-}
-
-export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId, onStatusChange, onPostClick }: Props) {
-  const [generating,    setGenerating]    = useState(false)
-  const [uiPhase,       setUiPhase]       = useState<string>('start')
-  const [logs,          setLogs]          = useState<string[]>([])
-  const [genDone,       setGenDone]       = useState<{ ok: boolean; message: string } | null>(null)
-  const [fusionCount,   setFusionCount]   = useState(3)
-  const [batchCount,    setBatchCount]    = useState(4)
-  const [chosenIds,     setChosenIds]     = useState<string[]>([])
-  const [showUpgrade,   setShowUpgrade]   = useState(false)
-  const [upgradeUsed,   setUpgradeUsed]   = useState(0)
+export function GenerationPanel({
+  selectedProblems,
+  accessToken,
+  onStatusChange,
+  onPostClick,
+}: Props) {
+  const [generating, setGenerating] = useState(false)
+  const [uiPhase, setUiPhase] = useState('start')
+  const [logs, setLogs] = useState<string[]>([])
+  const [genDone, setGenDone] = useState<{ ok: boolean; message: string } | null>(null)
+  const [fusionCount, setFusionCount] = useState(3)
+  const [batchCount, setBatchCount] = useState(4)
+  const [chosenIds, setChosenIds] = useState<string[]>([])
+  const [showUpgrade, setShowUpgrade] = useState(false)
+  const [upgradeUsed, setUpgradeUsed] = useState(0)
+  const [current, setCurrent] = useState(0)
+  const [total, setTotal] = useState(1)
+  const [completed, setCompleted] = useState(0)
+  const [familyId, setFamilyId] = useState<string | null>(null)
+  const [morphisms, setMorphisms] = useState<string[]>([])
+  const [draft, setDraft] = useState('')
+  const [visibleDraft, setVisibleDraft] = useState('')
+  const [windowOpen, setWindowOpen] = useState(false)
   const logEndRef = useRef<HTMLDivElement>(null)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const channelRef = useRef<any>(null)
 
   useEffect(() => {
     logEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [logs])
 
-  // ── 生成リクエスト ──────────────────────────────────────────────────────
-  // ── 生成リクエスト（MathOS: 外部 LLM を使わない） ──────────────────────
-  // 以前は Supabase の enqueue-generation に投げて DeepSeek ワーカーが書いて
-  // いたため、API 残高が切れると生成が止まっていた。MathOS は対象を構築して
-  // SymPy 相当の厳密計算で答えを出すので、外部 API に依存しない。
+  useEffect(() => {
+    if (!draft) {
+      setVisibleDraft('')
+      return
+    }
+    setVisibleDraft('')
+    let index = 0
+    const timer = window.setInterval(() => {
+      index = Math.min(index + 3, draft.length)
+      setVisibleDraft(draft.slice(0, index))
+      if (index >= draft.length) window.clearInterval(timer)
+    }, 12)
+    return () => window.clearInterval(timer)
+  }, [draft])
+
+  const finish = (data: GenerationResult) => {
+    const lines = data.cards.map((card, index) => {
+      const similarity = card.similarity?.score ?? card.similarity?.max
+      const suffix = typeof similarity === 'number'
+        ? ` / 最大類似度 ${(similarity * 100).toFixed(0)}%`
+        : ''
+      return `${index + 1}. ${card.family_id ?? '?'} → ${card.answer_tex ?? '?'}${suffix}`
+    })
+    const ok = data.generated > 0
+    const message = ok
+      ? `完了: ${data.generated}/${data.requested} 問を生成・検証・保存しました。`
+      : `生成できませんでした（${data.errors[0] ?? '理由不明'}）`
+    setUiPhase(ok ? 'done' : 'error')
+    setCompleted(data.generated)
+    setLogs(previous => [...previous, ...lines, ...data.errors, message].slice(-30))
+    setGenDone({ ok, message })
+  }
+
+  const applyEvent = (event: StreamEvent) => {
+    if (event.phase === 'done' && event.result) {
+      finish(event.result)
+      return
+    }
+    setUiPhase(event.phase)
+    if (typeof event.current === 'number') setCurrent(event.current)
+    if (typeof event.total === 'number') setTotal(event.total)
+    if (event.draft) setDraft(previous => previous === event.draft ? previous : event.draft!)
+    if (event.familyId) setFamilyId(event.familyId)
+    if (event.morphisms) setMorphisms(event.morphisms)
+    if (event.phase === 'complete' && typeof event.current === 'number') setCompleted(event.current)
+    if (event.message) setLogs(previous => [...previous, event.message!].slice(-30))
+  }
+
+  // MathOS は外部 LLM を使わず、構造探索・厳密計算・独立検証を順に実行する。
   const run = async (parents: ProblemWithRating[], mode: string, count: number) => {
-    setGenerating(true); setLogs([]); setGenDone(null); setUiPhase('start')
+    setGenerating(true)
+    setLogs([])
+    setGenDone(null)
+    setUiPhase('start')
+    setCurrent(0)
+    setTotal(count)
+    setCompleted(0)
+    setFamilyId(null)
+    setMorphisms([])
+    setDraft('')
+    setWindowOpen(true)
 
-    // 親問題の分野を引き継いで、同じ領域の構造を引く
     const domain = parents[0]?.topic_a || undefined
-
-    setUiPhase('generating')
     setLogs([
       `MathOS で ${count} 問を構築します（${mode}${domain ? ` / ${domain}` : ''}）`,
-      '外部 LLM は使いません。対象を構築し、厳密計算で答えを出します。',
+      '対象・射・制約を探索し、厳密計算と独立検算を行います。',
     ])
 
     try {
-      const res = await fetch('/api/mathos-generate', {
+      const response = await fetch('/api/mathos-generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
         },
-        body: JSON.stringify({ count, domain }),
+        body: JSON.stringify({ count, domain, stream: true }),
       })
 
-      if (!res.ok) {
-        const data = await res.json().catch(() => null)
-        const message = data?.error ?? `生成エラー: ${res.status}`
-        if (res.status === 402) {
+      if (!response.ok) {
+        const data = await response.json().catch(() => null)
+        const message = data?.error ?? `生成エラー: ${response.status}`
+        if (response.status === 402) {
           setUpgradeUsed(data?.used ?? 0)
           setShowUpgrade(true)
-          setGenerating(false)
+          setWindowOpen(false)
           return
         }
-        setLogs(prev => [...prev, message])
-        setUiPhase('error')
-        setGenDone({ ok: false, message })
-        setGenerating(false)
-        return
+        throw new Error(message)
       }
 
-      setUiPhase('verifying')
-      const data = await res.json() as {
-        generated: number
-        requested: number
-        engine: string
-        cards: { family_id?: string; answer_tex?: string; similarity?: { max?: number } }[]
-        errors: string[]
+      if (!response.body) throw new Error('生成ストリームを開始できませんでした')
+      const reader = response.body.getReader()
+      const decoder = new TextDecoder()
+      let buffer = ''
+      let receivedFinal = false
+
+      while (true) {
+        const { value, done } = await reader.read()
+        if (done) break
+        buffer += decoder.decode(value, { stream: true })
+        const chunks = buffer.split('\n\n')
+        buffer = chunks.pop() ?? ''
+        for (const chunk of chunks) {
+          const dataLine = chunk.split('\n').find(line => line.startsWith('data: '))
+          if (!dataLine) continue
+          const event = JSON.parse(dataLine.slice(6)) as StreamEvent
+          if (event.phase === 'done') receivedFinal = true
+          applyEvent(event)
+        }
       }
-
-      const lines = data.cards.map((card, index) => {
-        const similarity = card.similarity?.max
-        const suffix =
-          typeof similarity === 'number'
-            ? `（既存との最大類似度 ${(similarity * 100).toFixed(0)}%）`
-            : ''
-        return `${index + 1}. ${card.family_id ?? '?'} → ${card.answer_tex ?? '?'} ${suffix}`
-      })
-      const ok = data.generated > 0
-      const message = ok
-        ? `✅ 完了: ${data.generated}/${data.requested} 問（${data.engine}）。表示を更新してください。`
-        : `❌ 生成できませんでした（${data.errors[0] ?? '理由不明'}）`
-
-      setUiPhase(ok ? 'done' : 'error')
-      setLogs(prev => [...prev, ...lines, ...data.errors, message])
-      setGenDone({ ok, message })
-    } catch (e) {
-      const message = `生成失敗: ${e}`
-      setLogs(prev => [...prev, message])
+      if (!receivedFinal) throw new Error('生成結果を受信する前に接続が終了しました')
+    } catch (error) {
+      const message = `生成失敗: ${error instanceof Error ? error.message : String(error)}`
+      setLogs(previous => [...previous, message])
       setUiPhase('error')
       setGenDone({ ok: false, message })
+    } finally {
+      setGenerating(false)
     }
-    setGenerating(false)
   }
 
-  useEffect(() => {
-    return () => {
-      if (channelRef.current) {
-        const sb = getSupabaseClient()
-        sb.removeChannel(channelRef.current)
-      }
-    }
-  }, [])
-
   const toggleChosen = (id: string) =>
-    setChosenIds(ids => ids.includes(id) ? ids.filter(x => x !== id) : [...ids, id])
+    setChosenIds(ids => ids.includes(id) ? ids.filter(value => value !== id) : [...ids, id])
 
-  const chosen       = selectedProblems.filter(p => chosenIds.includes(p.id))
+  const chosen = selectedProblems.filter(problem => chosenIds.includes(problem.id))
   const fusionTarget = chosen.length >= 2 ? chosen : selectedProblems
   const fusionDisabled = generating || (chosen.length > 0 && chosen.length < 2)
 
@@ -223,25 +254,17 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
 
   if (selectedProblems.length === 0) {
     return (
-      <div className="glass rounded-md p-6 text-center text-sm text-[#667085]">
-        問題一覧タブで ⭐ 選択 を押すと、ここに表示されます
+      <div className="glass rounded-md p-6 text-center text-sm text-zinc-400">
+        問題一覧タブで「選択」を押すと、ここに表示されます
       </div>
     )
   }
 
-  const FREE_LIMIT = 10
-
-  // ── 進捗パース ──────────────────────────────────────────────────────────
-  const progress = parseProgress(logs)
   const phaseInfo = PHASE_INFO[uiPhase] ?? PHASE_INFO.start
-
-  // 進捗バーの割合計算
-  let progressPct = 0
-  if (progress) {
-    const completedCount = logs.filter(l => l.includes('[完了')).length
-    const totalCount     = progress.total
-    if (totalCount > 0) progressPct = Math.min(100, Math.round((completedCount / totalCount) * 100))
-  }
+  const phaseRank = PHASE_RANK[uiPhase] ?? -1
+  const withinProblem = Math.max(0, Math.min(1, (phaseRank + 1) / STAGES.length))
+  const progressPct = Math.round(Math.min(1, (completed + (generating ? withinProblem : 0)) / Math.max(total, 1)) * 100)
+  const FREE_LIMIT = 10
 
   return (
     <div className="space-y-4">
@@ -249,183 +272,173 @@ export function GenerationPanel({ selectedProblems, accessToken, isAdmin, userId
         <UpgradeModal accessToken={accessToken} used={upgradeUsed} limit={FREE_LIMIT} onClose={() => setShowUpgrade(false)} />
       )}
 
-      {/* ── Sticky 生成コントロール ─────────────────────────────────────── */}
-      <div className="sticky top-0 z-20 space-y-3 rounded-md border border-[#d8dee9] bg-white p-4 shadow-sm">
-        <div className="text-[11px] font-semibold uppercase text-[#667085]">
-          生成コントロール
-        </div>
+      <div className="sticky top-0 z-20 space-y-3 rounded-md border border-zinc-800 bg-[#141416] p-4 shadow-[0_10px_30px_rgba(0,0,0,0.28)]">
+        <div className="text-[11px] font-semibold uppercase text-zinc-500">生成コントロール</div>
 
-        {/* 融合生成 */}
         <div className="flex items-center gap-2.5">
-          <div className="shrink-0 w-24">
-            <div className="text-[11px] font-medium text-[#344054]">融合生成</div>
-            <div className="text-[10px] text-[#667085]">
+          <div className="w-24 shrink-0">
+            <div className="text-[11px] font-medium text-zinc-200">融合生成</div>
+            <div className="text-[10px] text-zinc-500">
               {chosen.length >= 2 ? `${chosen.length} 問選択` : `全 ${selectedProblems.length} 問`}
             </div>
           </div>
           <input type="range" min={1} max={6} value={fusionCount}
-            onChange={e => setFusionCount(+e.target.value)}
-            className="flex-1 accent-apple-blue h-1" />
-          <span className="w-5 text-right text-[11px] tabular-nums text-[#475467]">{fusionCount}</span>
+            onChange={event => setFusionCount(+event.target.value)}
+            className="h-1 flex-1 accent-blue-500" />
+          <span className="w-5 text-right text-[11px] tabular-nums text-zinc-400">{fusionCount}</span>
           <button
             onClick={() => run(fusionTarget, 'fusion', fusionCount)}
             disabled={fusionDisabled}
-            className="shrink-0 px-4 py-1.5 bg-apple-blue text-white text-[12px] font-semibold
-                       rounded hover:bg-apple-blue/80 transition-colors
-                       disabled:opacity-40 disabled:cursor-not-allowed"
-          >融合</button>
+            className="shrink-0 rounded bg-blue-600 px-4 py-1.5 text-[12px] font-semibold text-white transition-colors hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-40"
+          >生成</button>
         </div>
-        {chosen.length === 1 && (
-          <p className="pl-24 text-[10px] text-[#b42318]">2 問以上チェックしてください</p>
-        )}
+        {chosen.length === 1 && <p className="pl-24 text-[10px] text-rose-300">2 問以上チェックしてください</p>}
 
-        {/* 一括類題 */}
         <div className="flex items-center gap-2.5">
-          <div className="shrink-0 w-24">
-            <div className="text-[11px] font-medium text-[#344054]">一括類題</div>
-            <div className="text-[10px] text-[#667085]">全 {selectedProblems.length} 問</div>
+          <div className="w-24 shrink-0">
+            <div className="text-[11px] font-medium text-zinc-200">一括類題</div>
+            <div className="text-[10px] text-zinc-500">全 {selectedProblems.length} 問</div>
           </div>
           <input type="range" min={2} max={10} value={batchCount}
-            onChange={e => setBatchCount(+e.target.value)}
-            className="flex-1 accent-apple-blue h-1" />
-          <span className="w-5 text-right text-[11px] tabular-nums text-[#475467]">{batchCount}</span>
+            onChange={event => setBatchCount(+event.target.value)}
+            className="h-1 flex-1 accent-blue-500" />
+          <span className="w-5 text-right text-[11px] tabular-nums text-zinc-400">{batchCount}</span>
           <button
             onClick={() => run(selectedProblems, 'similar', batchCount)}
             disabled={generating}
-            className="shrink-0 rounded border border-[#d0d5dd] bg-white px-4 py-1.5 text-[12px] font-semibold text-[#344054]
-                       transition-colors hover:border-[#98a2b3] hover:bg-[#f8fafc]
-                       disabled:opacity-40 disabled:cursor-not-allowed"
+            className="shrink-0 rounded border border-zinc-700 bg-zinc-900 px-4 py-1.5 text-[12px] font-semibold text-zinc-200 transition-colors hover:border-zinc-500 hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-40"
           >類題</button>
         </div>
 
-        {/* 完了メッセージ */}
         {genDone && !generating && (
-          <div className={`text-[11px] mt-1 ${genDone.ok ? 'text-apple-green' : 'text-apple-pink'}`}>
+          <div className={`mt-1 text-[11px] ${genDone.ok ? 'text-emerald-300' : 'text-rose-300'}`}>
             {genDone.message}
           </div>
         )}
       </div>
 
-      {/* ── 選択済み問題リスト ──────────────────────────────────────────── */}
-      {selectedProblems.map(p => (
-        <div key={p.id} className="glass rounded-md p-4">
+      {selectedProblems.map(problem => (
+        <div key={problem.id} className="glass rounded-md p-4">
           <div className="flex items-start justify-between gap-3">
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-2 flex-wrap">
-                <span className="text-[10px] text-[#475467]">{TOPIC_JP[p.topic_a] ?? p.topic_a}</span>
-                {p.topic_b && <span className="text-[10px] text-[#667085]">× {TOPIC_JP[p.topic_b] ?? p.topic_b}</span>}
-                <span className="text-[10px] text-[#98a2b3]">Gen {p.generation}</span>
-                <span className="text-[10px] text-apple-blue/60">{(p.total||0).toFixed(1)}</span>
+            <div className="min-w-0 flex-1">
+              <div className="mb-2 flex flex-wrap items-center gap-2">
+                <span className="text-[10px] text-zinc-300">{TOPIC_JP[problem.topic_a] ?? problem.topic_a}</span>
+                {problem.topic_b && <span className="text-[10px] text-zinc-500">× {TOPIC_JP[problem.topic_b] ?? problem.topic_b}</span>}
+                <span className="text-[10px] text-zinc-600">Gen {problem.generation}</span>
+                <span className="text-[10px] text-blue-400">{(problem.total || 0).toFixed(1)}</span>
               </div>
-              <div className="text-[13px] leading-relaxed text-[#344054]">
-                <MathText text={p.statement} />
-              </div>
-              {p.answer && (
-                <div className="text-[12px] text-apple-green/80 mt-1.5 leading-relaxed">
-                  <MathText text={p.answer} />
-                </div>
+              <div className="text-[13px] leading-relaxed text-zinc-200"><MathText text={problem.statement} /></div>
+              {problem.answer && (
+                <div className="mt-1.5 text-[12px] leading-relaxed text-emerald-300"><MathText text={problem.answer} /></div>
               )}
             </div>
 
-            <div className="flex flex-col gap-1.5 shrink-0">
-              <button onClick={() => run([p], 'similar', 3)} disabled={generating}
-                className="rounded border border-[#d0d5dd] px-2.5 py-1.5 text-[11px]
-                           text-[#475467] transition-all hover:border-apple-blue/40 hover:text-apple-blue
-                           disabled:opacity-40">🔁 類題</button>
-              <button onClick={() => run([p], 'expand', 2)} disabled={generating}
-                className="rounded border border-[#d0d5dd] px-2.5 py-1.5 text-[11px]
-                           text-[#475467] transition-all hover:border-[#84adff] hover:text-[#175cd3]
-                           disabled:opacity-40">📐 高次元</button>
-              <button
-                onClick={() => !p.rating?.x_posted && onPostClick(p)}
-                disabled={!!p.rating?.x_posted}
-                className={`rounded border px-2.5 py-1.5 text-[11px] transition-all disabled:opacity-40
-                  ${p.rating?.x_posted
-                    ? 'border-apple-blue/30 text-apple-blue'
-                    : 'border-[#d0d5dd] text-[#475467] hover:border-apple-blue/40 hover:text-apple-blue'}`}
-              >{p.rating?.x_posted ? '✓ 済' : '𝕏 投稿'}</button>
-              <button onClick={() => deselect(p.id)}
-                className="rounded border border-[#d0d5dd] px-2.5 py-1 text-[10px]
-                           text-[#667085] transition-colors hover:text-[#344054]">解除</button>
+            <div className="flex shrink-0 flex-col gap-1.5">
+              <ActionButton onClick={() => run([problem], 'similar', 3)} disabled={generating}>類題</ActionButton>
+              <ActionButton onClick={() => run([problem], 'expand', 2)} disabled={generating}>高次元</ActionButton>
+              <ActionButton onClick={() => !problem.rating?.x_posted && onPostClick(problem)} disabled={!!problem.rating?.x_posted}>
+                {problem.rating?.x_posted ? '投稿済み' : 'X 投稿'}
+              </ActionButton>
+              <ActionButton onClick={() => deselect(problem.id)}>解除</ActionButton>
             </div>
           </div>
 
-          <label className="flex items-center gap-2 mt-3 cursor-pointer select-none">
-            <input type="checkbox" checked={chosenIds.includes(p.id)}
-              onChange={() => toggleChosen(p.id)} className="accent-apple-blue" />
-            <span className="text-[11px] text-[#667085]">融合生成に含める</span>
+          <label className="mt-3 flex cursor-pointer select-none items-center gap-2">
+            <input type="checkbox" checked={chosenIds.includes(problem.id)}
+              onChange={() => toggleChosen(problem.id)} className="accent-blue-500" />
+            <span className="text-[11px] text-zinc-500">融合生成に含める</span>
           </label>
         </div>
       ))}
 
-      {/* ── フローティング進捗パネル ────────────────────────────────────── */}
-      {(generating || genDone !== null) && (
-        <div className={`fixed bottom-6 right-6 z-50 w-80 rounded-md p-4 shadow-xl
-                         border transition-all duration-300
-                         ${generating
-                           ? 'bg-white border-[#d0d5dd]'
-                           : genDone?.ok
-                             ? 'bg-[#ecfdf3] border-[#75e0a7]'
-                             : 'bg-[#fef3f2] border-[#fda29b]'}`}>
-
-          {/* ヘッダー：フェーズ + アニメーション */}
-          <div className="flex items-center gap-3 mb-2.5">
-            <span className={`text-xl ${generating ? 'animate-bounce' : ''}`}>{phaseInfo.emoji}</span>
-            <div className="flex-1 min-w-0">
-              <div className={`text-[13px] font-semibold ${phaseInfo.color}`}>{phaseInfo.label}</div>
-              {/* 問題番号表示 */}
-              {progress && generating && (
-                <div className="text-[10px] tabular-nums text-[#667085]">
-                  問題 {progress.current}/{progress.total}
-                  {uiPhase === 'verifying' && ' — 検証中'}
-                  {uiPhase === 'saving'    && ' — 保存中'}
-                </div>
-              )}
-              {!progress && generating && (
-                <div className="text-[10px] text-[#667085]">Worker 処理中...</div>
-              )}
+      {windowOpen && (generating || genDone !== null) && (
+        <aside
+          className="mathos-generation-window fixed bottom-3 left-3 right-3 z-50 overflow-hidden rounded-md border border-zinc-700 bg-[#111113] shadow-[0_24px_80px_rgba(0,0,0,0.62)] sm:bottom-6 sm:left-auto sm:right-6 sm:w-[440px]"
+          aria-live="polite"
+          aria-label="MathOS生成状況"
+        >
+          <header className="flex h-12 items-center gap-3 border-b border-zinc-800 px-4">
+            <span className={`h-2.5 w-2.5 rounded-full ${generating ? 'animate-pulse bg-blue-400' : genDone?.ok ? 'bg-emerald-400' : 'bg-rose-400'}`} />
+            <div className="min-w-0 flex-1">
+              <div className={`text-[12px] font-semibold ${phaseInfo.color}`}>{phaseInfo.label}</div>
+              <div className="truncate text-[10px] text-zinc-500">{phaseInfo.note}</div>
             </div>
-            {generating && (
-              <div className="flex gap-0.5 shrink-0">
-                {[0,1,2].map(i => (
-                  <div key={i} className="w-1.5 h-1.5 rounded-full bg-apple-blue animate-bounce"
-                    style={{ animationDelay: `${i * 0.15}s` }} />
-                ))}
-              </div>
+            <span className="text-[10px] tabular-nums text-zinc-500">{Math.min(current || 1, total)}/{total}</span>
+            {!generating && (
+              <button
+                type="button"
+                onClick={() => setWindowOpen(false)}
+                className="flex h-7 w-7 items-center justify-center rounded text-lg text-zinc-500 hover:bg-zinc-800 hover:text-zinc-200"
+                aria-label="生成状況を閉じる"
+              >×</button>
             )}
-          </div>
+          </header>
 
-          {/* プログレスバー */}
-          {generating && progress && progress.total > 1 && (
-            <div className="mb-2.5">
-              <div className="mb-1 flex justify-between text-[9px] text-[#667085]">
-                <span>
-                  {logs.filter(l => l.includes('[完了')).length}/{progress.total} 問完了
+          <div className="space-y-3 p-4">
+            <div className="grid grid-cols-4 gap-1.5" aria-label="生成工程">
+              {STAGES.map((stage, index) => {
+                const active = generating && index === Math.min(phaseRank, 3)
+                const passed = phaseRank > index || uiPhase === 'done'
+                return (
+                  <div key={stage.key} className="min-w-0">
+                    <div className={`mb-1 h-1 rounded-full transition-colors duration-300 ${passed ? 'bg-emerald-400' : active ? 'animate-pulse bg-blue-400' : 'bg-zinc-800'}`} />
+                    <div className={`truncate text-[9px] ${passed ? 'text-emerald-300' : active ? 'text-blue-300' : 'text-zinc-600'}`}>{stage.label}</div>
+                  </div>
+                )
+              })}
+            </div>
+
+            <div className="overflow-hidden rounded border border-zinc-800 bg-[#0a0a0b]">
+              <div className="flex items-center justify-between border-b border-zinc-800 px-3 py-2">
+                <span className="text-[9px] font-semibold uppercase text-zinc-500">Problem draft</span>
+                <span className="max-w-[230px] truncate text-[9px] text-zinc-600">
+                  {familyId ? `${familyId} / ${morphisms.length} morphisms` : 'waiting for structure'}
                 </span>
+              </div>
+              <div className="min-h-[92px] max-h-36 overflow-y-auto whitespace-pre-wrap px-3 py-2.5 font-mono text-[11px] leading-5 text-zinc-200">
+                {visibleDraft || '構成可能な対象と射を探索しています...'}
+                {generating && <span className="ml-0.5 inline-block h-3.5 w-[2px] animate-pulse bg-blue-400 align-middle" />}
+              </div>
+            </div>
+
+            <div>
+              <div className="mb-1.5 flex items-center justify-between text-[9px] text-zinc-500">
+                <span>{completed}/{total} 問完了</span>
                 <span>{progressPct}%</span>
               </div>
-              <div className="h-1 bg-white/10 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-blue-500 to-emerald-500 rounded-full transition-all duration-700"
-                  style={{ width: `${progressPct}%` }}
-                />
+              <div className="h-1 overflow-hidden rounded-full bg-zinc-800">
+                <div className="h-full rounded-full bg-blue-500 transition-[width] duration-500" style={{ width: `${progressPct}%` }} />
               </div>
             </div>
-          )}
 
-          {/* ログ表示 */}
-          {logs.length > 0 && (
-            <div className="max-h-36 space-y-0.5 overflow-y-auto border-t border-[#e4e7ec] pt-2">
-              {logs.slice(-10).map((line, i) => (
-                <div key={i} className={`text-[10px] leading-snug font-mono ${logLineColor(line)}`}>
-                  {line.length > 76 ? line.slice(0, 73) + '...' : line}
+            <div className="max-h-24 space-y-1 overflow-y-auto border-t border-zinc-800 pt-2 font-mono">
+              {logs.slice(-6).map((line, index) => (
+                <div key={`${line}-${index}`} className={`text-[9px] leading-4 ${logLineColor(line)}`}>
+                  <span className="mr-1.5 text-zinc-700">›</span>{line}
                 </div>
               ))}
               <div ref={logEndRef} />
             </div>
-          )}
-        </div>
+          </div>
+        </aside>
       )}
     </div>
+  )
+}
+
+function ActionButton({ children, onClick, disabled = false }: {
+  children: React.ReactNode
+  onClick: () => void
+  disabled?: boolean
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className="rounded border border-zinc-700 bg-zinc-900 px-2.5 py-1.5 text-[10px] text-zinc-400 transition-colors hover:border-zinc-500 hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-40"
+    >
+      {children}
+    </button>
   )
 }

@@ -48,20 +48,20 @@ export function Sidebar({ filters, stats, onChange, onReload, onClose }: Props) 
   }
 
   return (
-    <aside className="flex h-full w-[232px] shrink-0 flex-col overflow-y-auto border-r border-[#d8dee9] bg-white">
-      <div className="flex h-16 items-center justify-between border-b border-[#e4e7ec] px-4">
+    <aside className="flex h-full w-[232px] shrink-0 flex-col overflow-y-auto border-r border-zinc-800 bg-[#111113]">
+      <div className="flex h-16 items-center justify-between border-b border-zinc-800 px-4">
         <div className="min-w-0">
-          <div className="flex items-center gap-2 text-[15px] font-bold text-[#14213d]">
-            <span className="flex h-7 w-7 items-center justify-center rounded bg-[#14213d] text-sm text-white">Σ</span>
+          <div className="flex items-center gap-2 text-[15px] font-bold text-zinc-100">
+            <span className="flex h-7 w-7 items-center justify-center rounded bg-blue-600 text-sm text-white">Σ</span>
             <span>作問ステーション</span>
           </div>
-          <div className="ml-9 mt-0.5 text-[10px] text-[#667085]">MathOS 作問・検証</div>
+          <div className="ml-9 mt-0.5 text-[10px] text-zinc-500">MathOS 作問・検証</div>
         </div>
         {onClose ? (
           <button
             type="button"
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center text-lg text-[#667085] md:hidden"
+            className="flex h-8 w-8 items-center justify-center text-lg text-zinc-500 md:hidden"
             aria-label="メニューを閉じる"
           >
             ×
@@ -70,7 +70,7 @@ export function Sidebar({ filters, stats, onChange, onReload, onClose }: Props) 
       </div>
 
       <div className="space-y-5 px-4 py-4">
-        <nav className="space-y-1 border-b border-[#e4e7ec] pb-4" aria-label="ワークスペース">
+        <nav className="space-y-1 border-b border-zinc-800 pb-4" aria-label="ワークスペース">
           {[
             ['∑', 'キュレーション', '/'],
             ['▣', 'スキャン・PDF', '/scan'],
@@ -84,8 +84,8 @@ export function Sidebar({ filters, stats, onChange, onReload, onClose }: Props) 
                 href={href}
                 className={`flex h-9 items-center gap-2 rounded px-3 text-[12px] font-medium transition-colors ${
                   active
-                    ? 'bg-[#eff6ff] text-[#175cd3]'
-                    : 'text-[#475467] hover:bg-[#f8fafc] hover:text-[#14213d]'
+                    ? 'bg-blue-500/10 text-blue-300'
+                    : 'text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100'
                 }`}
               >
                 <span className="w-4 text-center" aria-hidden>{icon}</span>
@@ -101,19 +101,19 @@ export function Sidebar({ filters, stats, onChange, onReload, onClose }: Props) 
             <button
               type="button"
               onClick={reload}
-              className="text-[11px] font-medium text-[#175cd3] hover:text-[#004eeb]"
+              className="text-[11px] font-medium text-blue-400 hover:text-blue-300"
             >
               更新
             </button>
           </div>
-          <dl className="divide-y divide-[#eef0f4] border-y border-[#e4e7ec] text-[12px]">
+          <dl className="divide-y divide-zinc-800 border-y border-zinc-800 text-[12px]">
             <Stat label="表示中" value={stats.total} />
             <Stat label="選択済み" value={stats.selected} tone="blue" />
             <Stat label="未評価" value={stats.pending} />
             <Stat label="投稿済み" value={stats.posted} tone="green" />
             <Stat label="修復候補" value={stats.skipped} tone="red" />
           </dl>
-          <p className="mt-2 text-[10px] text-[#98a2b3]">表示中の最大世代 Gen {stats.generations}</p>
+          <p className="mt-2 text-[10px] text-zinc-600">表示中の最大世代 Gen {stats.generations}</p>
         </section>
 
         <section>
@@ -121,7 +121,7 @@ export function Sidebar({ filters, stats, onChange, onReload, onClose }: Props) 
           <select
             value={filters.topic ?? ''}
             onChange={event => set({ topic: event.target.value || null })}
-            className="mt-2 h-9 w-full rounded border border-[#cfd6e1] bg-white px-2.5 text-[12px] text-[#344054] outline-none focus:border-[#84adff]"
+            className="mt-2 h-9 w-full rounded border border-zinc-700 bg-zinc-900 px-2.5 text-[12px] text-zinc-200 outline-none focus:border-blue-400"
           >
             <option value="">すべての領域</option>
             {TOPICS.map(topic => (
@@ -132,7 +132,7 @@ export function Sidebar({ filters, stats, onChange, onReload, onClose }: Props) 
 
         <section>
           <Label>ステータス</Label>
-          <div className="mt-2 overflow-hidden rounded border border-[#d8dee9]">
+          <div className="mt-2 overflow-hidden rounded border border-zinc-800">
             {([
               ['すべて', null],
               ['未判定', 'pending'],
@@ -145,10 +145,10 @@ export function Sidebar({ filters, stats, onChange, onReload, onClose }: Props) 
                   key={label}
                   type="button"
                   onClick={() => set({ status: value })}
-                  className={`flex h-9 w-full items-center justify-between border-b border-[#eef0f4] px-3 text-left text-[12px] last:border-0 ${
+                  className={`flex h-9 w-full items-center justify-between border-b border-zinc-800 px-3 text-left text-[12px] last:border-0 ${
                     active
-                      ? 'bg-[#eff6ff] font-semibold text-[#175cd3]'
-                      : 'bg-white text-[#475467] hover:bg-[#f8fafc]'
+                      ? 'bg-blue-500/10 font-semibold text-blue-300'
+                      : 'bg-[#151517] text-zinc-400 hover:bg-zinc-900'
                   }`}
                 >
                   <span>{label}</span>
@@ -164,7 +164,7 @@ export function Sidebar({ filters, stats, onChange, onReload, onClose }: Props) 
           <select
             value={filters.sort}
             onChange={event => set({ sort: event.target.value as Filters['sort'] })}
-            className="mt-2 h-9 w-full rounded border border-[#cfd6e1] bg-white px-2.5 text-[12px] text-[#344054] outline-none focus:border-[#84adff]"
+            className="mt-2 h-9 w-full rounded border border-zinc-700 bg-zinc-900 px-2.5 text-[12px] text-zinc-200 outline-none focus:border-blue-400"
           >
             <option value="newest">新着順</option>
             <option value="total">品質スコア順</option>
@@ -176,7 +176,7 @@ export function Sidebar({ filters, stats, onChange, onReload, onClose }: Props) 
         <section>
           <div className="mb-2 flex items-center justify-between">
             <Label>表示件数</Label>
-            <span className="text-[11px] font-semibold tabular-nums text-[#344054]">{filters.perPage}件</span>
+            <span className="text-[11px] font-semibold tabular-nums text-zinc-300">{filters.perPage}件</span>
           </div>
           <input
             type="range"
@@ -189,8 +189,8 @@ export function Sidebar({ filters, stats, onChange, onReload, onClose }: Props) 
           />
         </section>
 
-        <label className="flex cursor-pointer items-center justify-between border-t border-[#e4e7ec] pt-4">
-          <span className="text-[12px] font-medium text-[#344054]">解答・解説を表示</span>
+        <label className="flex cursor-pointer items-center justify-between border-t border-zinc-800 pt-4">
+          <span className="text-[12px] font-medium text-zinc-300">解答・解説を表示</span>
           <input
             type="checkbox"
             checked={filters.showSol}
@@ -205,7 +205,7 @@ export function Sidebar({ filters, stats, onChange, onReload, onClose }: Props) 
 
 function Label({ children, id }: { children: React.ReactNode; id?: string }) {
   return (
-    <h2 id={id} className="text-[10px] font-bold uppercase text-[#667085]">
+    <h2 id={id} className="text-[10px] font-bold uppercase text-zinc-500">
       {children}
     </h2>
   )
@@ -221,15 +221,15 @@ function Stat({
   tone?: 'default' | 'blue' | 'green' | 'red'
 }) {
   const toneClass = {
-    default: 'text-[#344054]',
-    blue: 'text-[#175cd3]',
-    green: 'text-[#067647]',
-    red: 'text-[#b42318]',
+    default: 'text-zinc-300',
+    blue: 'text-blue-400',
+    green: 'text-emerald-400',
+    red: 'text-rose-400',
   }[tone]
 
   return (
     <div className="flex items-center justify-between py-2">
-      <dt className="text-[#667085]">{label}</dt>
+      <dt className="text-zinc-500">{label}</dt>
       <dd className={`font-semibold tabular-nums ${toneClass}`}>{value ?? '—'}</dd>
     </div>
   )
