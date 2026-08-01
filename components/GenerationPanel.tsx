@@ -31,6 +31,8 @@ type GenerationCard = {
   morphism_chain?: string[]
   similarity?: { score?: number; max?: number }
   inherited_tags?: string[]
+  unmapped_tags?: string[]
+  atlas_expansion?: boolean
   parent_ids?: string[]
 }
 
@@ -217,6 +219,7 @@ export function GenerationPanel({
             topic_b: parent.topic_b,
             statement: parent.statement,
             answer: parent.answer,
+            solution: parent.solution,
             inspiration: parent.inspiration,
             meta: parent.meta,
           })),
@@ -334,7 +337,7 @@ export function GenerationPanel({
             className="h-1 flex-1 accent-blue-500" />
           <span className="w-5 text-right text-[11px] tabular-nums text-zinc-400">{batchCount}</span>
           <button
-            onClick={() => run(selectedProblems, 'similar', batchCount)}
+            onClick={() => run(selectedProblems, 'batch', batchCount)}
             disabled={generating}
             className="shrink-0 rounded border border-zinc-700 bg-zinc-900 px-4 py-1.5 text-[12px] font-semibold text-zinc-200 transition-colors hover:border-zinc-500 hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-40"
           >類題</button>
@@ -376,10 +379,16 @@ export function GenerationPanel({
                 <span className="font-semibold text-emerald-300">生成 {index + 1}</span>
                 <span>{card.family_id ?? 'unknown family'}</span>
                 {card.morphism_chain?.length ? <span>{card.morphism_chain.length} morphisms</span> : null}
+                {card.parent_ids?.length ? <span>親: {card.parent_ids.join(', ')}</span> : null}
               </div>
               {card.inherited_tags?.length ? (
                 <div className="mb-2 text-[10px] text-cyan-300">
                   選択元から継承: {card.inherited_tags.join(' / ')}
+                </div>
+              ) : null}
+              {card.atlas_expansion && card.unmapped_tags?.length ? (
+                <div className="mb-2 text-[10px] text-amber-300">
+                  Atlas拡張候補: {card.unmapped_tags.join(' / ')}
                 </div>
               ) : null}
               <div className="text-[13px] leading-7 text-zinc-100">

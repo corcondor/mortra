@@ -208,6 +208,7 @@ type ParentInput = {
   topic_b?: string | null
   statement?: string
   answer?: string | null
+  solution?: string | null
   inspiration?: string | null
   meta?: string | Record<string, unknown> | null
 }
@@ -235,6 +236,15 @@ const TAG_PATTERNS: Array<[string, RegExp]> = [
   ['centroid', /重心|centroid/i],
   ['tangent', /接線|tangent/i],
   ['intersection', /交点|intersection/i],
+  ['triangle', /三角形|triangle/i],
+  ['polynomial_roots', /方程式[^。\n]{0,140}(?:解|根)|(?:解|根)[^。\n]{0,100}(?:方程式|多項式)|polynomial[_\s-]?roots?|root[_\s-]?polynomial/i],
+  ['symmetric_polynomial', /解と係数|対称式|vieta|symmetric[_\s-]?polynomial/i],
+  ['heron', /ヘロン|heron/i],
+  ['circle_centers', /外心|内心|傍心|外接円|内接円|傍接円|circumcenter|incenter|excenter/i],
+  ['curvature', /曲率|curvature/i],
+  ['center_distance', /中心間距離|center[_\s-]?distance|OI\^?2/i],
+  ['radius_ratio', /半径[^。\n]{0,40}比|R\s*\/\s*r|radius[_\s-]?ratio/i],
+  ['dynamical_system', /反復|周期[^。\n]{0,40}軌道|力学系|dynamical[_\s-]?system|orbit/i],
   ['rotation', /回転|rotation/i],
   ['probability', /確率|期待値|probability|expectation/i],
   ['number_theory', /整数|素数|合同|剰余|number[_\s-]?theory|modular/i],
@@ -255,32 +265,55 @@ function buildGenerationProfile(
   mode: GenerationProfile['mode'] = 'batch',
 ): GenerationProfile {
   const tagCounts = new Map<string, number>()
+  const evidenceCounts = new Map<string, number>()
+  const parentTagSets: Set<string>[] = []
   const addTags = (text: string, weight: number) => {
     for (const tag of new Set(inferTags(text))) {
       tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + weight)
     }
   }
+  const addEvidenceTags = (text: string, weight: number) => {
+    addTags(text, weight)
+    for (const tag of new Set(inferTags(text))) {
+      evidenceCounts.set(tag, (evidenceCounts.get(tag) ?? 0) + weight)
+    }
+  }
   for (const parent of parents) {
     // 類題の核は分類ラベルではなく問題本文。topic/meta は補助証拠としてだけ使う。
-    addTags(parent.statement ?? '', 4)
+    addEvidenceTags(parent.statement ?? '', 4)
     addTags([parent.topic_a, parent.topic_b].filter(Boolean).join(' '), 1)
-    addTags([parent.answer, parent.inspiration, typeof parent.meta === 'string'
+    addEvidenceTags([parent.answer, parent.solution, parent.inspiration, typeof parent.meta === 'string'
       ? parent.meta
       : JSON.stringify(parent.meta ?? {})].filter(Boolean).join(' '), 1)
+    parentTagSets.push(new Set(inferTags([
+      parent.statement,
+      parent.answer,
+      parent.solution,
+      parent.inspiration,
+      typeof parent.meta === 'string' ? parent.meta : JSON.stringify(parent.meta ?? {}),
+    ].filter(Boolean).join(' '))))
   }
   const tags = [...tagCounts.entries()]
     .sort((a, b) => b[1] - a[1])
     .map(([tag]) => tag)
 
-  const specificPriority = [
-    'passage_region', 'envelope', 'volume', 'minkowski_sum', 'probability',
-    'number_theory', 'complex', 'recurrence', 'iteration', 'limit', 'locus', 'area',
+  const queryTags = new Set(['area', 'volume', 'radius_ratio', 'curvature', 'center_distance'])
+  const semanticTags = tags.filter(tag =>
+    evidenceCounts.has(tag) && !['geometry', 'algebra', 'circle'].includes(tag),
+  )
+  const structuralTags = [
+    ...semanticTags.filter(tag => !queryTags.has(tag)),
+    ...semanticTags.filter(tag => queryTags.has(tag)),
   ]
-  const strongestSpecific = specificPriority.find(tag => tagCounts.has(tag))
-  const structuralTags = tags.filter(tag => !['geometry', 'algebra'].includes(tag))
+  const commonStructuralTags = structuralTags.filter(tag =>
+    parentTagSets.length > 0 && parentTagSets.every(parentTags => parentTags.has(tag)),
+  )
+  const fusionStructuralTags = commonStructuralTags.filter(tag => tag !== 'area')
   const requiredTags = mode === 'similar' || mode === 'expand'
     ? structuralTags.slice(0, 3)
-    : strongestSpecific ? [strongestSpecific] : []
+    : mode === 'fusion'
+      ? (fusionStructuralTags.length ? fusionStructuralTags : structuralTags.slice(0, 1)).slice(0, 3)
+      : []
 
   let domain = fallbackDomain
   if (tags.some(tag => ['passage_region', 'envelope', 'locus', 'area', 'volume', 'geometry'].includes(tag))) {
@@ -343,7 +376,7 @@ type ProgressEmitter = (event: ProgressEvent) => void
 
 async function generateCards(
   count: number,
-  profile: GenerationProfile,
+  profiles: GenerationProfile[],
   searchDepth: 'standard' | 'deep',
   emit: ProgressEmitter = () => undefined,
 ): Promise<GenerationResult> {
@@ -352,19 +385,31 @@ async function generateCards(
   const seenFamilies = new Set<string>()
   const seenCandidates = new Set<string>()
   const corpus = await loadNoveltyCorpus()
-  const maxAttempts = searchDepth === 'deep' ? 180 : 50
+  const isBatch = profiles.length > 1
+  const attemptsPerProfile = isBatch ? 12 : searchDepth === 'deep' ? 180 : 50
+  const maxAttempts = isBatch
+    ? Math.min(720, Math.max(180, profiles.length * attemptsPerProfile))
+    : attemptsPerProfile
   const deadline = Date.now() + (searchDepth === 'deep' ? 240_000 : 45_000)
-  const focusLabel = profile.tags.slice(0, 5).join(' / ') || profile.domain || 'all'
+  const firstProfile = profiles[0] ?? buildGenerationProfile([])
+  const focusLabel = profiles.length > 1
+    ? `${profiles.length} 個の親構造を個別探索`
+    : firstProfile.tags.slice(0, 5).join(' / ') || firstProfile.domain || 'all'
+  const requiredLabel = profiles.length === 1 && firstProfile.requiredTags.length
+    ? ` / 継承: ${firstProfile.requiredTags.join(' + ')}`
+    : ''
 
   emit({
     phase: 'start',
-    message: `MathOS が${searchDepth === 'deep' ? '深層' : '標準'}探索を開始: ${focusLabel}`,
+    message: `MathOS が${searchDepth === 'deep' ? '深層' : '標準'}探索を開始: ${focusLabel}${requiredLabel}`,
     current: 0,
     total: count,
   })
 
   for (let i = 0; i < count; i++) {
     const current = i + 1
+    let profileIndex = i % profiles.length
+    let profile = profiles[profileIndex] ?? firstProfile
     emit({
       phase: 'searching',
       message: `問題 ${current}/${count}: Task Atlas から構成可能な経路を探索`,
@@ -376,7 +421,12 @@ async function generateCards(
     // 後半だけ同族の別パラメータを許し、要求数を満たせる可能性を残す。
     let live: ReturnType<typeof generateLiveProblem> = null
     let sim: ReturnType<typeof assessNovelty> | null = null
+    let inheritedTags: string[] = []
     for (let attempt = 0; attempt < maxAttempts && Date.now() < deadline; attempt++) {
+      if (isBatch && attempt > 0 && attempt % attemptsPerProfile === 0) {
+        profileIndex = (profileIndex + 1) % profiles.length
+        profile = profiles[profileIndex] ?? firstProfile
+      }
       if (attempt > 0 && attempt % 30 === 0) {
         emit({
           phase: 'searching',
@@ -400,18 +450,28 @@ async function generateCards(
         candidate.familyId,
         candidate.domain,
         candidate.statementTex,
+        candidate.solutionTex,
+        candidate.tool,
+        candidate.verificationMethod,
         candidate.morphismChain.join(' '),
       ].join(' '))
-      const preservesRequiredStructure = profile.mode === 'similar' || profile.mode === 'expand'
-        ? profile.requiredTags.every(tag => candidateTags.includes(tag))
-        : profile.requiredTags.some(tag => candidateTags.includes(tag))
-      if (profile.requiredTags.length && !preservesRequiredStructure) {
+      const profileAttempt = isBatch ? attempt % attemptsPerProfile : attempt
+      const requiredCount = profileAttempt < Math.floor(attemptsPerProfile * 0.55)
+        ? profile.requiredTags.length
+        : profileAttempt < Math.floor(attemptsPerProfile * 0.8)
+          ? Math.min(profile.requiredTags.length, 2)
+          : Math.min(profile.requiredTags.length, 1)
+      const attemptRequiredTags = profile.requiredTags.slice(0, requiredCount)
+      const preservesRequiredStructure = profile.mode === 'similar' || profile.mode === 'expand' || profile.mode === 'fusion'
+        ? attemptRequiredTags.every(tag => candidateTags.includes(tag))
+        : attemptRequiredTags.some(tag => candidateTags.includes(tag))
+      if (attemptRequiredTags.length && !preservesRequiredStructure) {
         continue
       }
 
       emit({
         phase: 'structuring',
-        message: `${candidate.familyId}: 選択問題の ${profile.requiredTags.join(' / ') || profile.domain || '構造'} を保ち、${candidate.morphismChain.length} 本の射を構成`,
+        message: `${candidate.familyId}: 選択問題の ${attemptRequiredTags.join(' / ') || profile.domain || '構造'} を保ち、${candidate.morphismChain.length} 本の射を構成`,
         current,
         total: count,
         draft: candidate.statementTex,
@@ -428,6 +488,7 @@ async function generateCards(
       if (!s.duplicate) {
         live = candidate
         sim = s
+        inheritedTags = attemptRequiredTags
         seenFamilies.add(candidate.familyId)
         emit({
           phase: 'novelty',
@@ -443,7 +504,7 @@ async function generateCards(
       }
     }
     if (!live || !sim) {
-      const message = '新規な問題を引けませんでした（この構造族は出尽くしている可能性があります）'
+      const message = '選択問題から検証可能な射列を構成できませんでした。未接続タグをAtlas拡張候補として確認してください'
       errors.push(message)
       emit({ phase: 'error', message, current, total: count })
       continue
@@ -478,8 +539,11 @@ async function generateCards(
       parentContext: {
         parentIds: profile.parentIds,
         focusTags: profile.tags,
-        requiredTags: profile.requiredTags,
+        requestedTags: profile.requiredTags,
+        inheritedTags,
+        unmappedTags: profile.requiredTags.filter(tag => !inheritedTags.includes(tag)),
       },
+      atlasExpansion: inheritedTags.length < profile.requiredTags.length,
     }
 
     emit({
@@ -531,7 +595,9 @@ async function generateCards(
       verification: { method: live.verificationMethod, exact_backend: true, independent_check: true },
       difficulty: diff,
       similarity: sim,
-      inherited_tags: profile.requiredTags,
+      inherited_tags: inheritedTags,
+      unmapped_tags: profile.requiredTags.filter(tag => !inheritedTags.includes(tag)),
+      atlas_expansion: inheritedTags.length < profile.requiredTags.length,
       parent_ids: profile.parentIds,
     }
     cards.push(card)
@@ -568,16 +634,25 @@ export async function POST(request: NextRequest) {
     count = Math.min(Math.max(Number(body?.count ?? 1), 1), 10)
     domain = body?.domain || undefined
     stream = body?.stream === true
-    parents = Array.isArray(body?.parents) ? body.parents.slice(0, 20) : []
+    parents = Array.isArray(body?.parents) ? body.parents.slice(0, 250) : []
     searchDepth = body?.searchDepth === 'standard' ? 'standard' : 'deep'
     mode = ['similar', 'fusion', 'expand'].includes(body?.mode) ? body.mode : 'batch'
   } catch {
     // 既定値で続行
   }
 
-  const profile = buildGenerationProfile(parents, domain, mode)
+  const shuffledParents = [...parents]
+  for (let i = shuffledParents.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[shuffledParents[i], shuffledParents[j]] = [shuffledParents[j], shuffledParents[i]]
+  }
+  const profiles = mode === 'batch' && shuffledParents.length > 0
+    ? shuffledParents.map(parent => {
+        return buildGenerationProfile([parent], parent.topic_a || domain, 'similar')
+      })
+    : [buildGenerationProfile(parents, domain, mode)]
 
-  if (!stream) return NextResponse.json(await generateCards(count, profile, searchDepth))
+  if (!stream) return NextResponse.json(await generateCards(count, profiles, searchDepth))
 
   const encoder = new TextEncoder()
   const responseStream = new ReadableStream({
@@ -586,7 +661,7 @@ export async function POST(request: NextRequest) {
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`))
       }
       try {
-        const result = await generateCards(count, profile, searchDepth, send)
+        const result = await generateCards(count, profiles, searchDepth, send)
         send({ phase: 'done', result })
       } catch (error) {
         send({
@@ -615,6 +690,6 @@ export async function GET() {
   return NextResponse.json({
     engine: 'MathOS live (no LLM)',
     pool_bundled: POOL.length,
-    usage: 'POST { count?: 1-10, domain?: string, parents?: Parent[], mode?: similar|fusion|expand, searchDepth?: standard|deep, stream?: boolean }',
+    usage: 'POST { count?: 1-10, domain?: string, parents?: Parent[], mode?: similar|fusion|expand|batch, searchDepth?: standard|deep, stream?: boolean }',
   })
 }

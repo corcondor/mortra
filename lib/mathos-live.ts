@@ -85,6 +85,102 @@ function scaledTexAnswer(expression: string, factor: number): string {
   return `${factor}\\left(${expression}\\right)`
 }
 
+type RootTriangleData = {
+  e1: number
+  e2: number
+  e3: number
+  semiperimeter: number
+  areaSquared: number
+  roots: number[]
+}
+
+function cubicValue(x: number, e1: number, e2: number, e3: number): number {
+  return x * x * x - e1 * x * x + e2 * x - e3
+}
+
+function bisectRoot(
+  left: number,
+  right: number,
+  e1: number,
+  e2: number,
+  e3: number,
+): number | null {
+  let lo = left
+  let hi = right
+  let flo = cubicValue(lo, e1, e2, e3)
+  const fhi = cubicValue(hi, e1, e2, e3)
+  if (flo === 0) return lo
+  if (fhi === 0) return hi
+  if (flo * fhi > 0) return null
+  for (let i = 0; i < 90; i++) {
+    const mid = (lo + hi) / 2
+    const fm = cubicValue(mid, e1, e2, e3)
+    if (flo * fm <= 0) {
+      hi = mid
+    } else {
+      lo = mid
+      flo = fm
+    }
+  }
+  return (lo + hi) / 2
+}
+
+function hasIntegerRoot(e1: number, e2: number, e3: number): boolean {
+  for (let divisor = 1; divisor * divisor <= e3; divisor++) {
+    if (e3 % divisor !== 0) continue
+    if (cubicValue(divisor, e1, e2, e3) === 0) return true
+    if (cubicValue(e3 / divisor, e1, e2, e3) === 0) return true
+  }
+  return false
+}
+
+/**
+ * 整数係数三次式を先に作り、その根が相異なる正の無理数かつ三角形を成す候補だけを採用する。
+ * 答えのための対称式計算と、数値的な根の再構成を独立な検証経路として持つ。
+ */
+function constructIrrationalRootTriangle(): RootTriangleData | null {
+  for (let attempt = 0; attempt < 240; attempt++) {
+    const a = 4 + Math.floor(Math.random() * 8)
+    const b = 4 + Math.floor(Math.random() * 8)
+    const minC = Math.abs(a - b) + 2
+    const maxC = a + b - 2
+    if (minC > maxC) continue
+    const c = minC + Math.floor(Math.random() * (maxC - minC + 1))
+    const e1 = a + b + c
+    if (e1 % 2 !== 0) continue
+    const e2 = a * b + b * c + c * a
+    const e3 = a * b * c + pick([-2, -1, 1, 2])
+    if (e3 <= 0 || hasIntegerRoot(e1, e2, e3)) continue
+
+    const discriminant =
+      e1 * e1 * e2 * e2 - 4 * e2 * e2 * e2 - 4 * e1 * e1 * e1 * e3 -
+      27 * e3 * e3 + 18 * e1 * e2 * e3
+    if (discriminant <= 0) continue
+
+    const derivativeDiscriminant = e1 * e1 - 3 * e2
+    if (derivativeDiscriminant <= 0) continue
+    const criticalOffset = Math.sqrt(derivativeDiscriminant)
+    const criticalLeft = (e1 - criticalOffset) / 3
+    const criticalRight = (e1 + criticalOffset) / 3
+    const upper = e1 + e2 + e3 + 1
+    const roots = [
+      bisectRoot(0, criticalLeft, e1, e2, e3),
+      bisectRoot(criticalLeft, criticalRight, e1, e2, e3),
+      bisectRoot(criticalRight, upper, e1, e2, e3),
+    ]
+    if (roots.some(root => root == null)) continue
+    const numericRoots = (roots as number[]).sort((x, y) => x - y)
+    if (numericRoots[0] <= 0 || numericRoots[2] >= numericRoots[0] + numericRoots[1]) continue
+
+    const semiperimeter = e1 / 2
+    const areaSquared = semiperimeter * cubicValue(semiperimeter, e1, e2, e3)
+    if (!Number.isInteger(areaSquared) || areaSquared <= 0) continue
+
+    return { e1, e2, e3, semiperimeter, areaSquared, roots: numericRoots }
+  }
+  return null
+}
+
 export type LiveProblem = {
   familyId: string
   domain: string
@@ -526,6 +622,110 @@ function fixedChordRegion(): LiveProblem | null {
   }
 }
 
+// ---------- F13-F15 三次式の根から作る三角形の対称不変量 ----------
+type RootTriangleQuery = 'curvature_sum' | 'center_distance_sum' | 'radius_ratio'
+
+function rootTriangleInvariant(query: RootTriangleQuery): LiveProblem | null {
+  const data = constructIrrationalRootTriangle()
+  if (!data) return null
+  const { e1, e2, e3, semiperimeter: s, areaSquared, roots } = data
+  const polynomial = `x^3-${e1}x^2+${e2}x-${e3}=0`
+  const sharedStatement =
+    `三次方程式 \\(${polynomial}\\) は3つの相異なる正の無理数解 ` +
+    `\\(a,b,c\\) をもち，これらは三角形の3辺の長さになる。`
+  const sharedSolution =
+    `\\(P(x)=x^3-${e1}x^2+${e2}x-${e3}\\) とする。Vietaの公式より ` +
+    `\\(a+b+c=${e1},\\ ab+bc+ca=${e2},\\ abc=${e3}\\)，したがって半周長は \\(s=${s}\\)。` +
+    `Heronの公式を根多項式で書けば ` +
+    `\\(\\Delta^2=s(s-a)(s-b)(s-c)=sP(s)=${areaSquared}\\)。`
+
+  let familyId: string
+  let statementTex: string
+  let answer: Rat
+  let solutionTex: string
+  let numericValue: number
+  let verificationMethod: string
+  let finalMorphisms: string[]
+
+  if (query === 'curvature_sum') {
+    familyId = 'construct.root_triangle.curvature_square_sum'
+    statementTex =
+      `${sharedStatement} 内接円の曲率を \\(\\kappa_0\\)，3つの傍接円の曲率を ` +
+      `\\(\\kappa_1,\\kappa_2,\\kappa_3\\) とするとき，` +
+      `\\(\\kappa_0^2+\\kappa_1^2+\\kappa_2^2+\\kappa_3^2\\) を求めよ。`
+    answer = rat(e1 * e1 - 2 * e2, areaSquared)
+    solutionTex =
+      `${sharedSolution} 各曲率は \\(s/\\Delta,(s-a)/\\Delta,(s-b)/\\Delta,(s-c)/\\Delta\\)。` +
+      `分子の二乗和は相殺して \\(a^2+b^2+c^2=${e1 * e1 - 2 * e2}\\) となるから，` +
+      `求める値は \\(${ratTex(answer)}\\)。`
+    numericValue = (s * s + roots.reduce((sum, root) => sum + (s - root) ** 2, 0)) / areaSquared
+    verificationMethod = 'vieta_heron_curvature_identity_plus_numeric_roots'
+    finalMorphisms = ['IncircleExcircles', 'CurvatureDual', 'SymmetricCancellation']
+  } else if (query === 'center_distance_sum') {
+    familyId = 'construct.root_triangle.center_distance_square_sum'
+    statementTex =
+      `${sharedStatement} 外心を \\(O\\)，内心を \\(I\\)，3つの傍心を ` +
+      `\\(I_1,I_2,I_3\\) とするとき，` +
+      `\\(OI^2+OI_1^2+OI_2^2+OI_3^2\\) を求めよ。`
+    answer = rat(3 * e3 * e3, 4 * areaSquared)
+    solutionTex =
+      `${sharedSolution} Eulerの距離公式と \\(r_1+r_2+r_3-r=4R\\) より距離の二乗和は ` +
+      `\\(12R^2\\)。また \\(R=abc/(4\\Delta)=${e3}/(4\\Delta)\\) だから，` +
+      `求める値は \\(${ratTex(answer)}\\)。`
+    const numericArea = Math.sqrt(areaSquared)
+    const numericCircumradius = roots.reduce((product, root) => product * root, 1) / (4 * numericArea)
+    const numericInradius = numericArea / s
+    const numericExradii = roots.map(root => numericArea / (s - root))
+    numericValue = numericCircumradius ** 2 - 2 * numericCircumradius * numericInradius +
+      numericExradii.reduce(
+        (sum, exradius) => sum + numericCircumradius ** 2 + 2 * numericCircumradius * exradius,
+        0,
+      )
+    verificationMethod = 'euler_center_identity_plus_numeric_root_triangle'
+    finalMorphisms = ['TriangleCenters', 'EulerDistanceIdentity', 'RadiusCancellation']
+  } else {
+    familyId = 'construct.root_triangle.circumradius_inradius_ratio'
+    statementTex =
+      `${sharedStatement} 外接円半径を \\(R\\)，内接円半径を \\(r\\) とするとき，` +
+      `比 \\(R/r\\) を求めよ。`
+    answer = rat(e3 * s, 4 * areaSquared)
+    solutionTex =
+      `${sharedSolution} \\(R=abc/(4\\Delta)\\)，\\(r=\\Delta/s\\) より ` +
+      `\\(R/r=abcs/(4\\Delta^2)\\)。対称式を代入すると \\(${ratTex(answer)}\\)。`
+    const numericArea = Math.sqrt(areaSquared)
+    const numericCircumradius = roots.reduce((product, root) => product * root, 1) / (4 * numericArea)
+    numericValue = numericCircumradius / (numericArea / s)
+    verificationMethod = 'vieta_heron_radius_ratio_plus_numeric_roots'
+    finalMorphisms = ['Circumradius', 'Inradius', 'RadiusRatio']
+  }
+
+  if (Math.abs(numericValue - ratNum(answer)) > 1e-9) return null
+
+  return {
+    familyId,
+    domain: 'geometry_algebra',
+    tool: 'vieta_heron_triangle_invariants',
+    parameters: { e1, e2, e3, semiperimeter: s, areaSquared },
+    statementTex,
+    answerTex: ratTex(answer),
+    solutionTex,
+    morphismChain: [
+      'CubicPolynomial',
+      'IrrationalRootMultiset',
+      'VietaSymmetricSums',
+      'TriangleInequalityCertificate',
+      'HeronPolynomialEvaluation',
+      ...finalMorphisms,
+      'ExactRationalEvaluation',
+    ],
+    verificationMethod,
+  }
+}
+
+const rootTriangleCurvatureSum = () => rootTriangleInvariant('curvature_sum')
+const rootTriangleCenterDistanceSum = () => rootTriangleInvariant('center_distance_sum')
+const rootTriangleRadiusRatio = () => rootTriangleInvariant('radius_ratio')
+
 type LiveGenerator = () => LiveProblem | null
 
 /**
@@ -602,6 +802,9 @@ const GENERATORS: GeneratorSpec[] = [
   { generate: affineTranslatedDiskRegion, domain: 'geometry', tags: ['geometry', 'passage_region', 'area', 'segment', 'disk', 'minkowski_sum', 'linear_map'], depth: 8 },
   { generate: affineRotatingRectangleRegion, domain: 'geometry', tags: ['geometry', 'passage_region', 'area', 'rotation', 'group_action', 'linear_map'], depth: 8 },
   { generate: affineFixedChordRegion, domain: 'geometry', tags: ['geometry', 'passage_region', 'area', 'segment', 'chord', 'rotation', 'linear_map'], depth: 8 },
+  { generate: rootTriangleCurvatureSum, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'circle_centers', 'curvature'], depth: 9 },
+  { generate: rootTriangleCenterDistanceSum, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'circle_centers', 'center_distance'], depth: 9 },
+  { generate: rootTriangleRadiusRatio, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'circle_centers', 'radius_ratio'], depth: 9 },
 ]
 
 export type LiveGenerationRequest = {
