@@ -56,11 +56,23 @@ const unit3 = (a: P3): P3 => {
   return { x: a.x / n, y: a.y / n, z: a.z / n }
 }
 
+/**
+ * 点の印。
+ *
+ * 以前は十字を 1 本の折れ線で描いていた。ペンを上げないので
+ * 「横棒 → 中心へ戻る → 縦棒」と繋がり、画面ではジグザグの走り書きに
+ * 見えていた。1 筆で閉じる小さなひし形にすると、同じ「点を打った」
+ * 意味のまま線が乱れない。
+ */
 function mark(p: P3, label: string, size = 1.2, approach?: P3): Stroke3 {
+  const r = size * 0.9
   return {
     points: [
-      { ...p, x: p.x - size }, { ...p, x: p.x + size }, { ...p },
-      { ...p, z: p.z - size }, { ...p, z: p.z + size },
+      { ...p, x: p.x - r },
+      { ...p, z: p.z - r },
+      { ...p, x: p.x + r },
+      { ...p, z: p.z + r },
+      { ...p, x: p.x - r },
     ],
     label, kind: 'mark', approach,
   }

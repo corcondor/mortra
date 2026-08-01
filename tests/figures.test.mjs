@@ -36,6 +36,20 @@ const kin = await import(pathToFileURL(join(outDir, 'kinematics.js')).href)
 const BOARD_UP = [0, 0, 1]
 const DEFAULT_APPROACH = [0, 1, 0]
 
+/**
+ * 印の中心。点列の形に依存しないよう、ひし形の頂点の平均で取る。
+ * 以前は十字の 3 番目の点を中心としていたが、十字は 1 筆で描くと
+ * 中心を通り直すためジグザグに見えたので、ひし形に変えた。
+ */
+function markCentre(stroke) {
+  const pts = stroke.points.slice(0, 4)
+  return {
+    x: pts.reduce((a, q) => a + q.x, 0) / pts.length,
+    y: pts.reduce((a, q) => a + q.y, 0) / pts.length,
+    z: pts.reduce((a, q) => a + q.z, 0) / pts.length,
+  }
+}
+
 test('図が7つ以上あり、平面と立体の両方を含む', () => {
   assert.ok(fig.FIGURES.length >= 7, `図が少ない: ${fig.FIGURES.length}`)
   const solid = fig.FIGURES.filter((f) => f.dimension === 3)
@@ -87,7 +101,7 @@ test('九点円の図で、9点が本当に同一円周上にある', () => {
   )
   assert.equal(wanted.length, 9)
   for (const stroke of wanted) {
-    const p = stroke.points[2]
+    const p = markCentre(stroke)
     const d = Math.hypot(p.x - centre.x, p.z - centre.z)
     assert.ok(Math.abs(d - radius) < 1e-6, `${stroke.label}: ${d} vs ${radius}`)
   }
@@ -109,9 +123,11 @@ test('立方体の断面が正六角形になっている', () => {
   // 6 頂点が中心から等距離
   const marks = figure.strokes.filter((s) => /辺の中点 \d\/6/.test(s.label))
   assert.equal(marks.length, 6)
-  const centre = figure.strokes.find((s) => /立方体の中心/.test(s.label)).points[2]
+  const centre = markCentre(
+    figure.strokes.find((s) => /立方体の中心/.test(s.label)),
+  )
   const radii = marks.map((s) => {
-    const p = s.points[2]
+    const p = markCentre(s)
     return Math.hypot(p.x - centre.x, p.y - centre.y, p.z - centre.z)
   })
   for (const r of radii) {
@@ -141,11 +157,13 @@ test('通過領域の境界が曲線族の各縦断面の最小値・最大値�
 
 test('正四面体で外接球と内接球の半径比が 3 : 1', () => {
   const figure = fig.FIGURES.find((f) => f.id === 'tetrahedron')
-  const centre = figure.strokes.find((s) => /外接球の中心/.test(s.label)).points[2]
+  const centre = markCentre(
+    figure.strokes.find((s) => /外接球の中心/.test(s.label)),
+  )
   const contacts = figure.strokes.filter((s) => /内接球の接点/.test(s.label))
   assert.equal(contacts.length, 4)
   const inner = contacts.map((s) => {
-    const p = s.points[2]
+    const p = markCentre(s)
     return Math.hypot(p.x - centre.x, p.y - centre.y, p.z - centre.z)
   })
   for (const r of inner) {

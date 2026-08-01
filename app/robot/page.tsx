@@ -49,6 +49,14 @@ export default function RobotPage() {
   useEffect(() => { speedRef.current = speed }, [speed])
   useEffect(() => { runningRef.current = running }, [running])
 
+  // ?figure=<id> で図を指定できる。書き出しを図ごとに回すために使う。
+  useEffect(() => {
+    const wanted = new URLSearchParams(window.location.search).get('figure')
+    if (!wanted) return
+    const index = FIGURES.findIndex((f) => f.id === wanted)
+    if (index >= 0) setFigureIndex(index)
+  }, [])
+
   const figure = FIGURES[figureIndex]
   const complexity = useMemo(() => figureComplexity(figure), [figure])
 
@@ -148,27 +156,59 @@ export default function RobotPage() {
     let currentCount = 0
     let lastStroke = -1
 
+    // WebGL では線幅が 1px 固定で linewidth が効かない。少しずつずらした
+    // 複製を重ねて太さを作り、外側を加算合成にして発光させる。
+    // ずらし幅は小さくする。大きいと立体では平行な別々の線に見えてしまう
+    // （実際に立方体でそうなった）。細かく重ねて 1 本の太い線に見せる。
+    const t = 0.075
+    const g = 0.19
+    const INK_LAYERS = [
+      { dx: 0, dz: 0, opacity: 1, add: false },
+      { dx: t, dz: 0, opacity: 1, add: false },
+      { dx: -t, dz: 0, opacity: 1, add: false },
+      { dx: 0, dz: t, opacity: 1, add: false },
+      { dx: 0, dz: -t, opacity: 1, add: false },
+      { dx: t, dz: t, opacity: 1, add: false },
+      { dx: -t, dz: -t, opacity: 1, add: false },
+      { dx: g, dz: g, opacity: 0.22, add: true },
+      { dx: -g, dz: g, opacity: 0.22, add: true },
+      { dx: g, dz: -g, opacity: 0.22, add: true },
+      { dx: -g, dz: -g, opacity: 0.22, add: true },
+    ]
+    let currentLayers: THREE.Line[] = []
+
     const startLine = (strokeIndex: number) => {
-      const geometry = new THREE.BufferGeometry()
-      geometry.setAttribute('position',
-        new THREE.BufferAttribute(new Float32Array(9000), 3))
-      geometry.setDrawRange(0, 0)
-      currentLine = new THREE.Line(geometry, new THREE.LineBasicMaterial({
-        color: inkColors[strokeIndex % inkColors.length],
-      }))
+      currentLayers = INK_LAYERS.map((layer) => {
+        const geometry = new THREE.BufferGeometry()
+        geometry.setAttribute('position',
+          new THREE.BufferAttribute(new Float32Array(9000), 3))
+        geometry.setDrawRange(0, 0)
+        const line = new THREE.Line(geometry, new THREE.LineBasicMaterial({
+          color: inkColors[strokeIndex % inkColors.length],
+          transparent: layer.opacity < 1,
+          opacity: layer.opacity,
+          blending: layer.add ? THREE.AdditiveBlending : THREE.NormalBlending,
+          depthWrite: !layer.add,
+        }))
+        inkGroup.add(line)
+        return line
+      })
+      currentLine = currentLayers[0]
       currentCount = 0
-      inkGroup.add(currentLine)
     }
     /** ペン先の実位置を筆跡に足す（図をなぞるのではなく腕の跡を残す） */
     const pushInk = (v: THREE.Vector3) => {
-      if (!currentLine || currentCount >= 2900) return
-      const attribute = currentLine.geometry.getAttribute('position') as THREE.BufferAttribute
-      attribute.array[currentCount * 3] = v.x
-      attribute.array[currentCount * 3 + 1] = v.y
-      attribute.array[currentCount * 3 + 2] = v.z
+      if (!currentLayers.length || currentCount >= 2900) return
+      currentLayers.forEach((line, i) => {
+        const layer = INK_LAYERS[i]
+        const attribute = line.geometry.getAttribute('position') as THREE.BufferAttribute
+        attribute.array[currentCount * 3] = v.x + layer.dx
+        attribute.array[currentCount * 3 + 1] = v.y
+        attribute.array[currentCount * 3 + 2] = v.z + layer.dz
+        attribute.needsUpdate = true
+        line.geometry.setDrawRange(0, currentCount + 1)
+      })
       currentCount++
-      attribute.needsUpdate = true
-      currentLine.geometry.setDrawRange(0, currentCount)
     }
 
     let elapsed = 0
@@ -336,8 +376,24 @@ export default function RobotPage() {
       for (let i = 0; i < holdFrames; i++) {
         if (disposed) return
         const u = i / holdFrames
-        // 完成図をゆっくり回して見せる
-        choreograph(u, 64 - 4 * Math.sin(u * Math.PI), 0.78 + 0.34 * u, 0.16 + 0.06 * u)
+        if (figure.dimension === 3) {
+          // 立体は「figure 自体を回す」。カメラを一周させると黒板を
+          // 突き抜けて真っ茶色の画になる（実際にそうなった）。
+          // 描いた線は世界座標で持っているので、重心まわりの回転を
+          // group の position で打ち消して与える。
+          const angle = 2 * Math.PI * u
+          const cos = Math.cos(angle)
+          const sin = Math.sin(angle)
+          inkGroup.rotation.z = angle
+          inkGroup.position.set(
+            centre.x - (centre.x * cos - centre.y * sin),
+            centre.y - (centre.x * sin + centre.y * cos),
+            0,
+          )
+          choreograph(u, 74, 0.52, 0.20)
+        } else {
+          choreograph(u, 64 - 4 * Math.sin(u * Math.PI), 0.78 + 0.34 * u, 0.16 + 0.06 * u)
+        }
         await shoot()
       }
       setCaption(`書き出し完了 ${index} 枚（${session}）`)
