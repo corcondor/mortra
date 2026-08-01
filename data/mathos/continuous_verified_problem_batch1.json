@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-01T10:54:06.273581+00:00",
+  "generated_at": "2026-08-01T12:20:22.691708+00:00",
   "method": {
     "difficulty_policy": "annotation_only_until_human_rating_auc_reaches_0.7",
     "hard_problem_policy": "proof DAG with converging constraints required; flat scalar bridge compositions are excluded",
@@ -6294,6 +6294,370 @@
     },
     {
       "accepted": true,
+      "answer_exact": "9",
+      "answer_tex": "\\(9\\)",
+      "candidate_id": "morphology:dodecagon-antipodal-independent:001",
+      "constraint_skeleton": [
+        "regular_12_gon",
+        "four_subset",
+        "zero_centroid",
+        "nonadjacent"
+      ],
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "RegularPolygon",
+          "ComplexRootEncoding",
+          "InvariantQuotient",
+          "AntipodalFactorization",
+          "CompatibilityClass",
+          "CardinalityObservation"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "RegularPolygon",
+            "primitives": [
+              "regular_polygon"
+            ]
+          },
+          {
+            "morphism": "ComplexRootEncoding",
+            "primitives": [
+              "complex_plane",
+              "roots_of_unity"
+            ]
+          },
+          {
+            "morphism": "InvariantQuotient",
+            "primitives": [
+              "vieta_relations",
+              "algebraic_identity"
+            ]
+          },
+          {
+            "morphism": "AntipodalFactorization",
+            "primitives": [
+              "roots_of_unity",
+              "polynomial_factorization"
+            ]
+          },
+          {
+            "morphism": "CompatibilityClass",
+            "primitives": [
+              "counting",
+              "combination",
+              "symmetry"
+            ]
+          },
+          {
+            "morphism": "CardinalityObservation",
+            "primitives": [
+              "counting"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "regular_polygon",
+          "complex_plane",
+          "roots_of_unity",
+          "vieta_relations",
+          "algebraic_identity",
+          "polynomial_factorization",
+          "counting",
+          "combination",
+          "symmetry"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "unrated_human",
+      "difficulty_score": 11.98,
+      "domain": "complex_geometry_algebra_combinatorics",
+      "domain_components": [
+        "complex_geometry",
+        "algebra",
+        "combinatorics"
+      ],
+      "family_id": "morphology.unit_roots_antipodal_compatibility_count",
+      "lift_certificate": {
+        "constraint_skeleton": [
+          "unit_root_subset",
+          "vanishing_first_symmetric_sum",
+          "adjacency_exclusion"
+        ],
+        "morphism_chain": [
+          "RegularPolygon",
+          "ComplexRootEncoding",
+          "InvariantQuotient",
+          "AntipodalFactorization",
+          "CompatibilityClass",
+          "CardinalityObservation"
+        ],
+        "query_signature": "Cardinality(Compatible(AntipodalPairs))",
+        "type_checked": true
+      },
+      "morphology_certificate": {
+        "detour": 0,
+        "edge_count": 5,
+        "edges": [
+          {
+            "description": "view complex points as roots",
+            "name": "ComplexRootEncoding",
+            "requires": [],
+            "source": "ComplexConfiguration",
+            "target": "RootConfiguration",
+            "transport": [
+              "point_set",
+              "multiplicity",
+              "cyclic_order"
+            ]
+          },
+          {
+            "description": "take symmetric invariants of roots",
+            "name": "InvariantQuotient",
+            "requires": [],
+            "source": "RootConfiguration",
+            "target": "SymmetricInvariant",
+            "transport": [
+              "symmetry_orbit",
+              "multiplicity"
+            ]
+          },
+          {
+            "description": "factor a centrally symmetric unit-root set into opposite pairs",
+            "name": "AntipodalFactorization",
+            "requires": [
+              "unit_roots",
+              "four_distinct_roots",
+              "vanishing_odd_coefficients"
+            ],
+            "source": "SymmetricInvariant",
+            "target": "AntipodalOrbitStructure",
+            "transport": [
+              "root_set",
+              "even_polynomial",
+              "cyclic_order"
+            ]
+          },
+          {
+            "description": "form the class of compatible selections of opposite pairs",
+            "name": "CompatibilityClass",
+            "requires": [],
+            "source": "AntipodalOrbitStructure",
+            "target": "CombinatorialClass",
+            "transport": [
+              "opposite_pairs",
+              "compatibility_relation"
+            ]
+          },
+          {
+            "description": "count the same constrained class",
+            "name": "CardinalityObservation",
+            "requires": [],
+            "source": "CombinatorialClass",
+            "target": "CardinalityObservable",
+            "transport": [
+              "class_membership",
+              "cardinality"
+            ]
+          }
+        ],
+        "established_conditions": [
+          "four_distinct_roots",
+          "unit_roots",
+          "vanishing_odd_coefficients"
+        ],
+        "morphism_alignment_checked": true,
+        "morphism_chain_aligned": true,
+        "nodes": [
+          "ComplexConfiguration",
+          "RootConfiguration",
+          "SymmetricInvariant",
+          "AntipodalOrbitStructure",
+          "CombinatorialClass",
+          "CardinalityObservable"
+        ],
+        "present": true,
+        "reason": "adjacent_typed_path",
+        "required_conditions": [
+          "four_distinct_roots",
+          "unit_roots",
+          "vanishing_odd_coefficients"
+        ],
+        "shortest_edge_count": 5,
+        "theories": [
+          "complex_geometry",
+          "algebra",
+          "invariant_theory",
+          "complex_geometry",
+          "combinatorics",
+          "combinatorics"
+        ],
+        "theory_transitions": 4,
+        "transported_invariants": [
+          "cardinality",
+          "class_membership",
+          "compatibility_relation",
+          "cyclic_order",
+          "even_polynomial",
+          "multiplicity",
+          "opposite_pairs",
+          "point_set",
+          "root_set",
+          "symmetry_orbit"
+        ],
+        "valid": true
+      },
+      "morphology_conditions": [
+        "unit_roots",
+        "four_distinct_roots",
+        "vanishing_odd_coefficients"
+      ],
+      "morphology_path": [
+        "ComplexConfiguration",
+        "RootConfiguration",
+        "SymmetricInvariant",
+        "AntipodalOrbitStructure",
+        "CombinatorialClass",
+        "CardinalityObservable"
+      ],
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.0758,
+        "measured": true,
+        "reference_corpus_size": 28074
+      },
+      "proof_graph": {
+        "edges": [
+          {
+            "source": "polygon",
+            "target": "roots"
+          },
+          {
+            "source": "roots",
+            "target": "symmetric"
+          },
+          {
+            "source": "choose_four",
+            "target": "symmetric"
+          },
+          {
+            "source": "centroid",
+            "target": "symmetric"
+          },
+          {
+            "source": "symmetric",
+            "target": "antipodal"
+          },
+          {
+            "source": "antipodal",
+            "target": "compatible"
+          },
+          {
+            "source": "nonadjacent",
+            "target": "compatible"
+          },
+          {
+            "source": "compatible",
+            "target": "count"
+          },
+          {
+            "source": "count",
+            "target": "answer"
+          }
+        ],
+        "nodes": [
+          {
+            "id": "polygon",
+            "kind": "object",
+            "label": "regular dodecagon"
+          },
+          {
+            "id": "choose_four",
+            "kind": "constraint",
+            "label": "four vertices"
+          },
+          {
+            "id": "centroid",
+            "kind": "constraint",
+            "label": "centroid at center"
+          },
+          {
+            "id": "nonadjacent",
+            "kind": "constraint",
+            "label": "no adjacent vertices"
+          },
+          {
+            "id": "roots",
+            "kind": "transform",
+            "morphism": "ComplexRootEncoding"
+          },
+          {
+            "id": "symmetric",
+            "kind": "lemma",
+            "morphism": "InvariantQuotient"
+          },
+          {
+            "id": "antipodal",
+            "kind": "lemma",
+            "morphism": "AntipodalFactorization"
+          },
+          {
+            "id": "compatible",
+            "kind": "lemma",
+            "morphism": "CompatibilityClass"
+          },
+          {
+            "id": "count",
+            "kind": "conclusion",
+            "morphism": "CardinalityObservation"
+          },
+          {
+            "id": "answer",
+            "kind": "query",
+            "label": "number of selections"
+          }
+        ]
+      },
+      "proof_graph_certificate": {
+        "edge_count": 9,
+        "interaction_verified": true,
+        "merge_count": 2,
+        "node_count": 10,
+        "present": true,
+        "reason": "interaction_verified",
+        "root_count": 4,
+        "terminal_count": 2,
+        "valid_dag": true
+      },
+      "quality_annotations": {
+        "below_legacy_difficulty_threshold": false,
+        "below_legacy_morphism_threshold": false,
+        "human_calibrated": false,
+        "legacy_difficulty_score": 11.98,
+        "legacy_difficulty_threshold": 8.4,
+        "legacy_morphism_threshold": 3,
+        "minimum_auc_for_gating": 0.7,
+        "morphism_count": 6,
+        "observed_human_auc": 0.086,
+        "policy": "annotation_only"
+      },
+      "research_tier": "interaction_verified",
+      "solution_tex": "中心を原点、頂点を絶対値1の複素数 \\(z_1,z_2,z_3,z_4\\) とする。\n重心条件は \\(z_1+z_2+z_3+z_4=0\\) である。これらを根にもつ多項式では1次の\n係数が0であり、\\(|z_j|=1\\) から3次の係数も0になる。したがって多項式は偶関数で、\n根は \\(z,-z,w,-w\\) の形、すなわち選ぶ4頂点は2組の対蹠点対である。\n\n対蹠点対は全部で6組ある。そこから2組を選ぶ \\(\\binom62=15\\) 通りのうち、対応する\n直径が隣り合う頂点を含むものは、6組を円周状に並べたときの隣接する2組に対応し\n6通りある。よって求める個数は\n\\[\n\\boxed{15-6=9}\n\\]\n通りである。",
+      "source_generator": "typed_morphology_geometry",
+      "statement_tex": "正十二角形の頂点から4頂点を選ぶ。ただし、選んだどの2頂点も\n隣り合わず、4頂点の重心が正十二角形の中心と一致するものとする。このような\n4頂点の選び方は何通りあるか。",
+      "structure_key": "3613de91702e0f822e4551dee02da533c38951b2ae8cc24715caef8937675fb9",
+      "verification": {
+        "enumerated_count": 9,
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "exact_root_enumeration_plus_antipodal_pair_classification",
+        "pair_count": 9
+      }
+    },
+    {
+      "accepted": true,
       "answer_exact": "9/70",
       "answer_tex": "\\(\\dfrac9{70}\\)",
       "candidate_id": "morphology:octagon-product-probability:001",
@@ -6431,6 +6795,7 @@
           {
             "description": "expose cyclic symmetry of the same point set",
             "name": "CyclicOrbit",
+            "requires": [],
             "source": "ComplexConfiguration",
             "target": "CyclicGroupAction",
             "transport": [
@@ -6441,6 +6806,7 @@
           {
             "description": "index cyclic orbits by residue classes",
             "name": "OrbitResidues",
+            "requires": [],
             "source": "CyclicGroupAction",
             "target": "ResidueClassStructure",
             "transport": [
@@ -6451,6 +6817,7 @@
           {
             "description": "Fourier analyze residue restrictions",
             "name": "FiniteFourierTransform",
+            "requires": [],
             "source": "ResidueClassStructure",
             "target": "CharacterSum",
             "transport": [
@@ -6461,6 +6828,7 @@
           {
             "description": "encode the same restriction in generating-function coefficients",
             "name": "CoefficientEncoding",
+            "requires": [],
             "source": "CharacterSum",
             "target": "GeneratingFunction",
             "transport": [
@@ -6471,6 +6839,7 @@
           {
             "description": "interpret coefficients as counted objects",
             "name": "CoefficientClass",
+            "requires": [],
             "source": "GeneratingFunction",
             "target": "CombinatorialClass",
             "transport": [
@@ -6481,6 +6850,7 @@
           {
             "description": "equip the same finite class with uniform measure",
             "name": "UniformMeasure",
+            "requires": [],
             "source": "CombinatorialClass",
             "target": "ProbabilitySpace",
             "transport": [
@@ -6491,6 +6861,7 @@
           {
             "description": "take expectation without changing the outcomes",
             "name": "Expectation",
+            "requires": [],
             "source": "ProbabilitySpace",
             "target": "ExpectationObservable",
             "transport": [
@@ -6499,6 +6870,7 @@
             ]
           }
         ],
+        "established_conditions": [],
         "morphism_alignment_checked": true,
         "morphism_chain_aligned": true,
         "nodes": [
@@ -6513,6 +6885,7 @@
         ],
         "present": true,
         "reason": "adjacent_typed_path",
+        "required_conditions": [],
         "shortest_edge_count": 7,
         "theories": [
           "complex_geometry",
@@ -10135,6 +10508,439 @@
         "exact_backend": true,
         "independent_check": true,
         "method": "parameter_existence_elimination_plus_numeric_area"
+      }
+    },
+    {
+      "accepted": true,
+      "answer_exact": [
+        "3Y=4X^2+1",
+        "2"
+      ],
+      "answer_tex": "\\(3Y=4X^2+1,\\ 2\\)",
+      "candidate_id": "morphology:parabola-tangent-centroid-area:001",
+      "constraint_skeleton": [
+        "parabola",
+        "moving_secant",
+        "two_tangents",
+        "centroid"
+      ],
+      "curriculum_certificate": {
+        "abstract_morphism_chain": [
+          "ParabolaObject",
+          "CoordinateRealization",
+          "EquationEncoding",
+          "RootExtraction",
+          "InvariantQuotient",
+          "TangentLine",
+          "Centroid",
+          "InvariantLocus",
+          "ExtremalObservation"
+        ],
+        "lowering_by_morphism": [
+          {
+            "morphism": "ParabolaObject",
+            "primitives": [
+              "parabola"
+            ]
+          },
+          {
+            "morphism": "CoordinateRealization",
+            "primitives": [
+              "coordinate_geometry",
+              "distance_formula"
+            ]
+          },
+          {
+            "morphism": "EquationEncoding",
+            "primitives": [
+              "simultaneous_equations",
+              "polynomial_expansion"
+            ]
+          },
+          {
+            "morphism": "RootExtraction",
+            "primitives": [
+              "quadratic_equation",
+              "vieta_relations"
+            ]
+          },
+          {
+            "morphism": "InvariantQuotient",
+            "primitives": [
+              "vieta_relations",
+              "algebraic_identity"
+            ]
+          },
+          {
+            "morphism": "TangentLine",
+            "primitives": [
+              "tangent_line",
+              "differentiation"
+            ]
+          },
+          {
+            "morphism": "Centroid",
+            "primitives": [
+              "coordinate_geometry",
+              "midpoint"
+            ]
+          },
+          {
+            "morphism": "InvariantLocus",
+            "primitives": [
+              "coordinate_geometry",
+              "parameter_elimination"
+            ]
+          },
+          {
+            "morphism": "ExtremalObservation",
+            "primitives": [
+              "locus",
+              "extremum",
+              "differentiation"
+            ]
+          }
+        ],
+        "lowering_chain": [
+          "parabola",
+          "coordinate_geometry",
+          "distance_formula",
+          "simultaneous_equations",
+          "polynomial_expansion",
+          "quadratic_equation",
+          "vieta_relations",
+          "algebraic_identity",
+          "tangent_line",
+          "differentiation",
+          "midpoint",
+          "parameter_elimination",
+          "locus",
+          "extremum"
+        ],
+        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
+        "type_checked": true,
+        "uses_only_school_level_primitives": true
+      },
+      "difficulty": "unrated_human",
+      "difficulty_score": 16.8,
+      "domain": "geometry_algebra_analysis",
+      "domain_components": [
+        "geometry",
+        "algebra",
+        "analysis"
+      ],
+      "family_id": "morphology.parabola_root_invariant_locus_extremum",
+      "lift_certificate": {
+        "constraint_skeleton": [
+          "secant_root_pair",
+          "tangent_intersection",
+          "centroid_observation"
+        ],
+        "morphism_chain": [
+          "ParabolaObject",
+          "CoordinateRealization",
+          "EquationEncoding",
+          "RootExtraction",
+          "InvariantQuotient",
+          "TangentLine",
+          "Centroid",
+          "InvariantLocus",
+          "ExtremalObservation"
+        ],
+        "query_signature": "Pair(Locus(Centroid),Minimum(Area(TangentTriangle)))",
+        "type_checked": true
+      },
+      "morphology_certificate": {
+        "detour": 1,
+        "edge_count": 6,
+        "edges": [
+          {
+            "description": "choose coordinates while preserving incidence and distance",
+            "name": "CoordinateRealization",
+            "requires": [],
+            "source": "EuclideanConfiguration",
+            "target": "CoordinateConfiguration",
+            "transport": [
+              "incidence",
+              "metric"
+            ]
+          },
+          {
+            "description": "encode geometric constraints as polynomial equations",
+            "name": "EquationEncoding",
+            "requires": [],
+            "source": "CoordinateConfiguration",
+            "target": "PolynomialFamily",
+            "transport": [
+              "solution_set",
+              "multiplicity"
+            ]
+          },
+          {
+            "description": "pass from coefficients to the root configuration",
+            "name": "RootExtraction",
+            "requires": [],
+            "source": "PolynomialFamily",
+            "target": "RootConfiguration",
+            "transport": [
+              "solution_set",
+              "multiplicity"
+            ]
+          },
+          {
+            "description": "take symmetric invariants of roots",
+            "name": "InvariantQuotient",
+            "requires": [],
+            "source": "RootConfiguration",
+            "target": "SymmetricInvariant",
+            "transport": [
+              "symmetry_orbit",
+              "multiplicity"
+            ]
+          },
+          {
+            "description": "reconstruct a geometric locus from root invariants",
+            "name": "InvariantLocus",
+            "requires": [],
+            "source": "SymmetricInvariant",
+            "target": "LocusFamily",
+            "transport": [
+              "elementary_symmetric_values",
+              "parameter"
+            ]
+          },
+          {
+            "description": "observe a locus together with an extremal quantity",
+            "name": "ExtremalObservation",
+            "requires": [],
+            "source": "LocusFamily",
+            "target": "GeometricObservable",
+            "transport": [
+              "locus",
+              "feasible_parameter",
+              "objective"
+            ]
+          }
+        ],
+        "established_conditions": [],
+        "morphism_alignment_checked": true,
+        "morphism_chain_aligned": true,
+        "nodes": [
+          "EuclideanConfiguration",
+          "CoordinateConfiguration",
+          "PolynomialFamily",
+          "RootConfiguration",
+          "SymmetricInvariant",
+          "LocusFamily",
+          "GeometricObservable"
+        ],
+        "present": true,
+        "reason": "adjacent_typed_path",
+        "required_conditions": [],
+        "shortest_edge_count": 5,
+        "theories": [
+          "geometry",
+          "analytic_geometry",
+          "algebra",
+          "algebra",
+          "invariant_theory",
+          "analytic_geometry",
+          "geometry_analysis"
+        ],
+        "theory_transitions": 5,
+        "transported_invariants": [
+          "elementary_symmetric_values",
+          "feasible_parameter",
+          "incidence",
+          "locus",
+          "metric",
+          "multiplicity",
+          "objective",
+          "parameter",
+          "solution_set",
+          "symmetry_orbit"
+        ],
+        "valid": true
+      },
+      "morphology_path": [
+        "EuclideanConfiguration",
+        "CoordinateConfiguration",
+        "PolynomialFamily",
+        "RootConfiguration",
+        "SymmetricInvariant",
+        "LocusFamily",
+        "GeometricObservable"
+      ],
+      "novelty": {
+        "closest_source": "sakumon_curation",
+        "corpus_novel": true,
+        "maximum_surface_jaccard": 0.1366,
+        "measured": true,
+        "reference_corpus_size": 28074
+      },
+      "proof_graph": {
+        "edges": [
+          {
+            "source": "parabola",
+            "target": "coordinate"
+          },
+          {
+            "source": "coordinate",
+            "target": "intersection"
+          },
+          {
+            "source": "line",
+            "target": "intersection"
+          },
+          {
+            "source": "intersection",
+            "target": "roots"
+          },
+          {
+            "source": "roots",
+            "target": "symmetric"
+          },
+          {
+            "source": "symmetric",
+            "target": "tangent_vertex"
+          },
+          {
+            "source": "tangent_rule",
+            "target": "tangent_vertex"
+          },
+          {
+            "source": "symmetric",
+            "target": "centroid"
+          },
+          {
+            "source": "tangent_vertex",
+            "target": "centroid"
+          },
+          {
+            "source": "centroid",
+            "target": "locus"
+          },
+          {
+            "source": "roots",
+            "target": "area"
+          },
+          {
+            "source": "tangent_vertex",
+            "target": "area"
+          },
+          {
+            "source": "area",
+            "target": "minimum"
+          },
+          {
+            "source": "locus",
+            "target": "answer"
+          },
+          {
+            "source": "minimum",
+            "target": "answer"
+          }
+        ],
+        "nodes": [
+          {
+            "id": "parabola",
+            "kind": "object",
+            "label": "y=x^2"
+          },
+          {
+            "id": "line",
+            "kind": "constraint",
+            "label": "y=mx+1"
+          },
+          {
+            "id": "tangent_rule",
+            "kind": "premise",
+            "label": "tangents at both roots"
+          },
+          {
+            "id": "coordinate",
+            "kind": "transform",
+            "morphism": "CoordinateRealization"
+          },
+          {
+            "id": "intersection",
+            "kind": "transform",
+            "morphism": "EquationEncoding"
+          },
+          {
+            "id": "roots",
+            "kind": "transform",
+            "morphism": "RootExtraction"
+          },
+          {
+            "id": "symmetric",
+            "kind": "lemma",
+            "morphism": "InvariantQuotient"
+          },
+          {
+            "id": "tangent_vertex",
+            "kind": "lemma",
+            "morphism": "TangentLine"
+          },
+          {
+            "id": "centroid",
+            "kind": "transform",
+            "morphism": "Centroid"
+          },
+          {
+            "id": "locus",
+            "kind": "lemma",
+            "morphism": "InvariantLocus"
+          },
+          {
+            "id": "area",
+            "kind": "transform",
+            "morphism": "TriangleConstruction"
+          },
+          {
+            "id": "minimum",
+            "kind": "lemma",
+            "morphism": "ExtremalObservation"
+          },
+          {
+            "id": "answer",
+            "kind": "query",
+            "label": "locus and minimum area"
+          }
+        ]
+      },
+      "proof_graph_certificate": {
+        "edge_count": 15,
+        "interaction_verified": true,
+        "merge_count": 5,
+        "node_count": 13,
+        "present": true,
+        "reason": "interaction_verified",
+        "root_count": 3,
+        "terminal_count": 1,
+        "valid_dag": true
+      },
+      "quality_annotations": {
+        "below_legacy_difficulty_threshold": false,
+        "below_legacy_morphism_threshold": false,
+        "human_calibrated": false,
+        "legacy_difficulty_score": 16.8,
+        "legacy_difficulty_threshold": 8.4,
+        "legacy_morphism_threshold": 3,
+        "minimum_auc_for_gating": 0.7,
+        "morphism_count": 9,
+        "observed_human_auc": 0.086,
+        "policy": "annotation_only"
+      },
+      "research_tier": "interaction_verified",
+      "solution_tex": "\\(P,Q\\) の \\(x\\) 座標を \\(u,v\\) とすると\n\\[\nu+v=m,\\qquad uv=-1\n\\]\nである。放物線上の点 \\((t,t^2)\\) における接線は\n\\(y=2tx-t^2\\) だから、2接線の交点は\n\\[\nR\\left(\\frac{u+v}{2},uv\\right)=\\left(\\frac m2,-1\\right).\n\\]\nよって重心は\n\\[\nX=\\frac m2,\\qquad\nY=\\frac{u^2+v^2-1}{3}=\\frac{m^2+1}{3}.\n\\]\nしたがって軌跡は\n\\[\n\\boxed{3Y=4X^2+1}.\n\\]\nまた \\(|u-v|=\\sqrt{m^2+4}\\) であり、行列式で面積を計算すると\n\\[\n[PQR]=\\frac{(m^2+4)^{3/2}}4\\ge2.\n\\]\n等号は \\(m=0\\) のとき成立するので、最小値は \\(\\boxed2\\) である。",
+      "source_generator": "typed_morphology_geometry",
+      "statement_tex": "放物線 \\(C:y=x^2\\) と直線 \\(\\ell_m:y=mx+1\\) の交点を\n\\(P,Q\\) とする。\\(P,Q\\) における \\(C\\) の接線の交点を \\(R\\)、三角形\n\\(PQR\\) の重心を \\(G(X,Y)\\) とする。\\(m\\) が実数全体を動くとき、\n\\(G\\) の軌跡を求め、さらに三角形 \\(PQR\\) の面積の最小値を求めよ。",
+      "structure_key": "17d42b591cacbac433b7e4ffbc4c2c96749470a6403aad54a460f7c6d2654a4d",
+      "verification": {
+        "exact_backend": true,
+        "independent_check": true,
+        "method": "vieta_symbolic_locus_area_plus_direct_coordinate_samples"
       }
     },
     {
@@ -13900,113 +14706,6 @@
     },
     {
       "accepted": true,
-      "answer_exact": "1/4",
-      "answer_tex": "\\frac{1}{4}",
-      "candidate_id": "construct:construct.gambler_ruin_probability:071",
-      "curriculum_certificate": {
-        "abstract_morphism_chain": [
-          "AbsorbingWalk",
-          "BoundaryRecurrence",
-          "RatioClosedForm"
-        ],
-        "lowering_by_morphism": [
-          {
-            "morphism": "AbsorbingWalk",
-            "primitives": [
-              "probability",
-              "recurrence_probability"
-            ]
-          },
-          {
-            "morphism": "BoundaryRecurrence",
-            "primitives": [
-              "recurrence",
-              "simultaneous_equations"
-            ]
-          },
-          {
-            "morphism": "RatioClosedForm",
-            "primitives": [
-              "geometric_sequence",
-              "general_term"
-            ]
-          }
-        ],
-        "lowering_chain": [
-          "probability",
-          "recurrence_probability",
-          "recurrence",
-          "simultaneous_equations",
-          "geometric_sequence",
-          "general_term"
-        ],
-        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
-        "type_checked": true,
-        "uses_only_school_level_primitives": true
-      },
-      "difficulty": "A",
-      "difficulty_score": 5.53,
-      "domain": "probability",
-      "domain_components": [
-        "probability"
-      ],
-      "family_id": "construct.gambler_ruin_probability",
-      "lift_certificate": {
-        "morphism_chain": [
-          "AbsorbingWalk",
-          "BoundaryRecurrence",
-          "RatioClosedForm"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "sakumon_curation",
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0809,
-        "measured": true,
-        "reference_corpus_size": 28074
-      },
-      "parameters": {
-        "N": 4,
-        "k": 1,
-        "pa": 1,
-        "pb": 1
-      },
-      "proof_graph_certificate": {
-        "edge_count": 0,
-        "interaction_verified": false,
-        "merge_count": 0,
-        "node_count": 0,
-        "present": false,
-        "reason": "proof_graph_missing",
-        "valid_dag": false
-      },
-      "quality_annotations": {
-        "below_legacy_difficulty_threshold": true,
-        "below_legacy_morphism_threshold": false,
-        "human_calibrated": false,
-        "legacy_difficulty_score": 5.53,
-        "legacy_difficulty_threshold": 8.4,
-        "legacy_morphism_threshold": 3,
-        "minimum_auc_for_gating": 0.7,
-        "morphism_count": 3,
-        "observed_human_auc": 0.086,
-        "policy": "annotation_only"
-      },
-      "research_tier": "verified_standard",
-      "solution_tex": "到達確率を \\(p_k\\) とおくと \\(p_k=\\tfrac12 p_{k+1}+\\tfrac12 p_{k-1}\\)。これは等差数列で \\(p_0=0,\\ p_{4}=1\\) より \\(p_k=k/4\\)。",
-      "source_generator": "construct_atlas",
-      "statement_tex": "数直線上の点が \\(k=1\\) から出発し，各回 左右へ等確率 \\(\\tfrac12\\) で \\(\\pm1\\) 動く。\\(0\\) または \\(N=4\\) に達したら止まる。\\(N\\) に先に到達する確率を求めよ。",
-      "structure_key": "b19479dced4b6a044ac145c794677caf5bc66b23cecfe8e840105e5cee63512a",
-      "tool": "linear_recurrence",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "gambler_ruin_boundary_recurrence"
-      }
-    },
-    {
-      "accepted": true,
       "answer_tex": "\\displaystyle\\sum_{k=1}^{n}\\frac1k",
       "candidate_id": "phase17_permutation_record_expectation",
       "curriculum_certificate": {
@@ -14416,590 +15115,6 @@
     },
     {
       "accepted": true,
-      "answer_exact": "10",
-      "answer_tex": "10",
-      "candidate_id": "construct:traceback.dice_sum.modal_sum:048",
-      "curriculum_certificate": {
-        "abstract_morphism_chain": [
-          "DiceGeneratingFunction",
-          "ModalOutcome"
-        ],
-        "lowering_by_morphism": [
-          {
-            "morphism": "DiceGeneratingFunction",
-            "primitives": [
-              "probability",
-              "polynomial_expansion",
-              "counting"
-            ]
-          },
-          {
-            "morphism": "ModalOutcome",
-            "primitives": [
-              "counting",
-              "combination"
-            ]
-          }
-        ],
-        "lowering_chain": [
-          "probability",
-          "polynomial_expansion",
-          "counting",
-          "combination"
-        ],
-        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
-        "type_checked": true,
-        "uses_only_school_level_primitives": true
-      },
-      "difficulty": "A",
-      "difficulty_score": 3.8,
-      "domain": "probability",
-      "domain_components": [
-        "probability"
-      ],
-      "family_id": "traceback.dice_sum.modal_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "DiceGeneratingFunction",
-          "ModalOutcome"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "sakumon_curation",
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1053,
-        "measured": true,
-        "reference_corpus_size": 28074
-      },
-      "parameters": {
-        "construction": "dice_sum",
-        "depth": 3,
-        "hidden": [
-          "分布の対称性"
-        ],
-        "hidden_intermediates": 1,
-        "node": "modal_sum",
-        "param": 3,
-        "premises": [
-          "3 個のさいころを同時に投げたときの出目の和"
-        ],
-        "scope": [
-          "確率",
-          "場合の数"
-        ]
-      },
-      "proof_graph_certificate": {
-        "edge_count": 0,
-        "interaction_verified": false,
-        "merge_count": 0,
-        "node_count": 0,
-        "present": false,
-        "reason": "proof_graph_missing",
-        "valid_dag": false
-      },
-      "quality_annotations": {
-        "below_legacy_difficulty_threshold": true,
-        "below_legacy_morphism_threshold": true,
-        "human_calibrated": false,
-        "legacy_difficulty_score": 3.8,
-        "legacy_difficulty_threshold": 8.4,
-        "legacy_morphism_threshold": 3,
-        "minimum_auc_for_gating": 0.7,
-        "morphism_count": 2,
-        "observed_human_auc": 0.086,
-        "policy": "annotation_only"
-      },
-      "research_tier": "verified_standard",
-      "solution_tex": "分布は \\(\\frac{7n}{2}\\) について対称なので中央の値が最頻。",
-      "source_generator": "construct_atlas",
-      "statement_tex": "1 から 6 の目をもつさいころを 3 個同時に投げ，出た目の和を \\(S\\) とする。和として最も起こりやすい値を求めよ。",
-      "structure_key": "b12e61fbaba4f280d068c54d20655fa944e59e100fd940e53c6890c5af20422e",
-      "tool": "deduction_closure+traceback",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "deduction_closure_node_with_traceback"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_exact": "4",
-      "answer_tex": "4",
-      "candidate_id": "construct:traceback.dice_sum.modal_ways_divisor_count:050",
-      "curriculum_certificate": {
-        "abstract_morphism_chain": [
-          "DiceGeneratingFunction",
-          "ModalOutcome",
-          "PrimeFactorization",
-          "DivisorCount"
-        ],
-        "lowering_by_morphism": [
-          {
-            "morphism": "DiceGeneratingFunction",
-            "primitives": [
-              "probability",
-              "polynomial_expansion",
-              "counting"
-            ]
-          },
-          {
-            "morphism": "ModalOutcome",
-            "primitives": [
-              "counting",
-              "combination"
-            ]
-          },
-          {
-            "morphism": "PrimeFactorization",
-            "primitives": [
-              "prime_factorization"
-            ]
-          },
-          {
-            "morphism": "DivisorCount",
-            "primitives": [
-              "prime_factorization",
-              "divisor_counting"
-            ]
-          }
-        ],
-        "lowering_chain": [
-          "probability",
-          "polynomial_expansion",
-          "counting",
-          "combination",
-          "prime_factorization",
-          "divisor_counting"
-        ],
-        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
-        "type_checked": true,
-        "uses_only_school_level_primitives": true
-      },
-      "difficulty": "A",
-      "difficulty_score": 4.9,
-      "domain": "probability",
-      "domain_components": [
-        "probability"
-      ],
-      "family_id": "traceback.dice_sum.modal_ways_divisor_count",
-      "lift_certificate": {
-        "morphism_chain": [
-          "DiceGeneratingFunction",
-          "ModalOutcome",
-          "PrimeFactorization",
-          "DivisorCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "sakumon_curation",
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.1386,
-        "measured": true,
-        "reference_corpus_size": 28074
-      },
-      "parameters": {
-        "construction": "dice_sum",
-        "depth": 5,
-        "hidden": [
-          "係数の素因数分解"
-        ],
-        "hidden_intermediates": 1,
-        "node": "modal_ways_divisor_count",
-        "param": 3,
-        "premises": [
-          "3 個のさいころを同時に投げたときの出目の和"
-        ],
-        "scope": [
-          "確率",
-          "場合の数",
-          "約数の個数"
-        ]
-      },
-      "proof_graph_certificate": {
-        "edge_count": 0,
-        "interaction_verified": false,
-        "merge_count": 0,
-        "node_count": 0,
-        "present": false,
-        "reason": "proof_graph_missing",
-        "valid_dag": false
-      },
-      "quality_annotations": {
-        "below_legacy_difficulty_threshold": true,
-        "below_legacy_morphism_threshold": false,
-        "human_calibrated": false,
-        "legacy_difficulty_score": 4.9,
-        "legacy_difficulty_threshold": 8.4,
-        "legacy_morphism_threshold": 3,
-        "minimum_auc_for_gating": 0.7,
-        "morphism_count": 4,
-        "observed_human_auc": 0.086,
-        "policy": "annotation_only"
-      },
-      "research_tier": "verified_standard",
-      "solution_tex": "場合の数を求めてから素因数分解する。",
-      "source_generator": "construct_atlas",
-      "statement_tex": "1 から 6 の目をもつさいころを 3 個同時に投げ，出た目の和を \\(S\\) とする。和が 10 となる目の出方の総数の，正の約数の個数を求めよ。",
-      "structure_key": "4f09618c1b5282df638391b44959d472dc545549981e21c868cd615e513e1b42",
-      "tool": "deduction_closure+traceback",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "deduction_closure_node_with_traceback"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_exact": "1/3",
-      "answer_tex": "\\frac{1}{3}",
-      "candidate_id": "construct:traceback.dice_sum.prob_sum_divisible_by_3:052",
-      "curriculum_certificate": {
-        "abstract_morphism_chain": [
-          "DiceGeneratingFunction",
-          "RootOfUnityFilter",
-          "ComplexRootSet"
-        ],
-        "lowering_by_morphism": [
-          {
-            "morphism": "DiceGeneratingFunction",
-            "primitives": [
-              "probability",
-              "polynomial_expansion",
-              "counting"
-            ]
-          },
-          {
-            "morphism": "RootOfUnityFilter",
-            "primitives": [
-              "roots_of_unity",
-              "sum_of_series"
-            ]
-          },
-          {
-            "morphism": "ComplexRootSet",
-            "primitives": [
-              "complex_plane",
-              "roots_of_unity"
-            ]
-          }
-        ],
-        "lowering_chain": [
-          "probability",
-          "polynomial_expansion",
-          "counting",
-          "roots_of_unity",
-          "sum_of_series",
-          "complex_plane"
-        ],
-        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
-        "type_checked": true,
-        "uses_only_school_level_primitives": true
-      },
-      "difficulty": "A",
-      "difficulty_score": 5.6,
-      "domain": "probability",
-      "domain_components": [
-        "probability"
-      ],
-      "family_id": "traceback.dice_sum.prob_sum_divisible_by_3",
-      "lift_certificate": {
-        "morphism_chain": [
-          "DiceGeneratingFunction",
-          "RootOfUnityFilter",
-          "ComplexRootSet"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "sakumon_curation",
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0957,
-        "measured": true,
-        "reference_corpus_size": 28074
-      },
-      "parameters": {
-        "construction": "dice_sum",
-        "depth": 4,
-        "hidden": [
-          "1 の 3 乗根 \\omega を代入して係数を取り出す"
-        ],
-        "hidden_intermediates": 1,
-        "node": "prob_sum_divisible_by_3",
-        "param": 3,
-        "premises": [
-          "3 個のさいころを同時に投げたときの出目の和"
-        ],
-        "scope": [
-          "確率",
-          "複素数",
-          "1の3乗根"
-        ]
-      },
-      "proof_graph_certificate": {
-        "edge_count": 0,
-        "interaction_verified": false,
-        "merge_count": 0,
-        "node_count": 0,
-        "present": false,
-        "reason": "proof_graph_missing",
-        "valid_dag": false
-      },
-      "quality_annotations": {
-        "below_legacy_difficulty_threshold": true,
-        "below_legacy_morphism_threshold": false,
-        "human_calibrated": false,
-        "legacy_difficulty_score": 5.6,
-        "legacy_difficulty_threshold": 8.4,
-        "legacy_morphism_threshold": 3,
-        "minimum_auc_for_gating": 0.7,
-        "morphism_count": 3,
-        "observed_human_auc": 0.086,
-        "policy": "annotation_only"
-      },
-      "research_tier": "verified_standard",
-      "solution_tex": "\\(f(z)=(z+\\cdots+z^6)^n\\) とすると，求める場合の数は \\(\\frac{f(1)+f(\\omega)+f(\\omega^2)}{3}\\)。\\(\\omega\\) は 1 の虚数3乗根。",
-      "source_generator": "construct_atlas",
-      "statement_tex": "1 から 6 の目をもつさいころを 3 個同時に投げ，出た目の和を \\(S\\) とする。和が 3 の倍数となる確率を求めよ。",
-      "structure_key": "3a14c533748f1ab3c91eb82eea6403eb6f5c3575db984f5cdc74c6786c945731",
-      "tool": "deduction_closure+traceback",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "deduction_closure_node_with_traceback"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_exact": "105",
-      "answer_tex": "105",
-      "candidate_id": "construct:traceback.dice_sum.variance_times_12:051",
-      "curriculum_certificate": {
-        "abstract_morphism_chain": [
-          "DiceGeneratingFunction",
-          "VarianceOfSum"
-        ],
-        "lowering_by_morphism": [
-          {
-            "morphism": "DiceGeneratingFunction",
-            "primitives": [
-              "probability",
-              "polynomial_expansion",
-              "counting"
-            ]
-          },
-          {
-            "morphism": "VarianceOfSum",
-            "primitives": [
-              "variance",
-              "expectation"
-            ]
-          }
-        ],
-        "lowering_chain": [
-          "probability",
-          "polynomial_expansion",
-          "counting",
-          "variance",
-          "expectation"
-        ],
-        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
-        "type_checked": true,
-        "uses_only_school_level_primitives": true
-      },
-      "difficulty": "A",
-      "difficulty_score": 3.82,
-      "domain": "probability",
-      "domain_components": [
-        "probability"
-      ],
-      "family_id": "traceback.dice_sum.variance_times_12",
-      "lift_certificate": {
-        "morphism_chain": [
-          "DiceGeneratingFunction",
-          "VarianceOfSum"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "sakumon_curation",
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0989,
-        "measured": true,
-        "reference_corpus_size": 28074
-      },
-      "parameters": {
-        "construction": "dice_sum",
-        "depth": 4,
-        "hidden": [
-          "1個あたりの分散 35/12",
-          "独立性による分散の加法性"
-        ],
-        "hidden_intermediates": 2,
-        "node": "variance_times_12",
-        "param": 3,
-        "premises": [
-          "3 個のさいころを同時に投げたときの出目の和"
-        ],
-        "scope": [
-          "確率",
-          "分散"
-        ]
-      },
-      "proof_graph_certificate": {
-        "edge_count": 0,
-        "interaction_verified": false,
-        "merge_count": 0,
-        "node_count": 0,
-        "present": false,
-        "reason": "proof_graph_missing",
-        "valid_dag": false
-      },
-      "quality_annotations": {
-        "below_legacy_difficulty_threshold": true,
-        "below_legacy_morphism_threshold": true,
-        "human_calibrated": false,
-        "legacy_difficulty_score": 3.82,
-        "legacy_difficulty_threshold": 8.4,
-        "legacy_morphism_threshold": 3,
-        "minimum_auc_for_gating": 0.7,
-        "morphism_count": 2,
-        "observed_human_auc": 0.086,
-        "policy": "annotation_only"
-      },
-      "research_tier": "verified_standard",
-      "solution_tex": "1個の分散は \\(\\frac{35}{12}\\)。独立なので和の分散は \\(\\frac{35\\cdot3}{12}\\)。",
-      "source_generator": "construct_atlas",
-      "statement_tex": "1 から 6 の目をもつさいころを 3 個同時に投げ，出た目の和を \\(S\\) とする。和の分散の 12 倍を求めよ。",
-      "structure_key": "17257c485a717e03b6fe8aafa54097ae0ed21dd9f50422c71105eac448252563",
-      "tool": "deduction_closure+traceback",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "deduction_closure_node_with_traceback"
-      }
-    },
-    {
-      "accepted": true,
-      "answer_exact": "27",
-      "answer_tex": "27",
-      "candidate_id": "construct:traceback.dice_sum.ways_for_modal_sum:049",
-      "curriculum_certificate": {
-        "abstract_morphism_chain": [
-          "DiceGeneratingFunction",
-          "ModalOutcome",
-          "SubsetCount"
-        ],
-        "lowering_by_morphism": [
-          {
-            "morphism": "DiceGeneratingFunction",
-            "primitives": [
-              "probability",
-              "polynomial_expansion",
-              "counting"
-            ]
-          },
-          {
-            "morphism": "ModalOutcome",
-            "primitives": [
-              "counting",
-              "combination"
-            ]
-          },
-          {
-            "morphism": "SubsetCount",
-            "primitives": [
-              "counting",
-              "combination"
-            ]
-          }
-        ],
-        "lowering_chain": [
-          "probability",
-          "polynomial_expansion",
-          "counting",
-          "combination"
-        ],
-        "scope": "jp_upper_secondary_math_IA_IIB_IIIC",
-        "type_checked": true,
-        "uses_only_school_level_primitives": true
-      },
-      "difficulty": "A",
-      "difficulty_score": 4.76,
-      "domain": "probability",
-      "domain_components": [
-        "probability"
-      ],
-      "family_id": "traceback.dice_sum.ways_for_modal_sum",
-      "lift_certificate": {
-        "morphism_chain": [
-          "DiceGeneratingFunction",
-          "ModalOutcome",
-          "SubsetCount"
-        ],
-        "type_checked": true
-      },
-      "novelty": {
-        "closest_source": "sakumon_curation",
-        "corpus_novel": true,
-        "maximum_surface_jaccard": 0.0612,
-        "measured": true,
-        "reference_corpus_size": 28074
-      },
-      "parameters": {
-        "construction": "dice_sum",
-        "depth": 4,
-        "hidden": [
-          "(z+z^2+…+z^6)^n の係数"
-        ],
-        "hidden_intermediates": 1,
-        "node": "ways_for_modal_sum",
-        "param": 3,
-        "premises": [
-          "3 個のさいころを同時に投げたときの出目の和"
-        ],
-        "scope": [
-          "確率",
-          "場合の数",
-          "多項式の展開"
-        ]
-      },
-      "proof_graph_certificate": {
-        "edge_count": 0,
-        "interaction_verified": false,
-        "merge_count": 0,
-        "node_count": 0,
-        "present": false,
-        "reason": "proof_graph_missing",
-        "valid_dag": false
-      },
-      "quality_annotations": {
-        "below_legacy_difficulty_threshold": true,
-        "below_legacy_morphism_threshold": false,
-        "human_calibrated": false,
-        "legacy_difficulty_score": 4.76,
-        "legacy_difficulty_threshold": 8.4,
-        "legacy_morphism_threshold": 3,
-        "minimum_auc_for_gating": 0.7,
-        "morphism_count": 3,
-        "observed_human_auc": 0.086,
-        "policy": "annotation_only"
-      },
-      "research_tier": "verified_standard",
-      "solution_tex": "各さいころに対応する多項式の積を展開し，該当する次数の係数を読む。",
-      "source_generator": "construct_atlas",
-      "statement_tex": "1 から 6 の目をもつさいころを 3 個同時に投げ，出た目の和を \\(S\\) とする。和が 10 となる目の出方は何通りか。",
-      "structure_key": "12a201f72610691f2eb268548d86cb9639f9c037b1cafc7c5a6d8e2ccb81d384",
-      "tool": "deduction_closure+traceback",
-      "verification": {
-        "exact_backend": true,
-        "independent_check": true,
-        "method": "deduction_closure_node_with_traceback"
-      }
-    },
-    {
-      "accepted": true,
       "answer_exact": [
         "1/12",
         "1/2"
@@ -15167,6 +15282,7 @@
           {
             "description": "instantiate coefficients on a finite grid",
             "name": "CoefficientInstantiation",
+            "requires": [],
             "source": "QuadraticCoefficientFamily",
             "target": "CoefficientLattice",
             "transport": [
@@ -15177,6 +15293,7 @@
           {
             "description": "retain exactly the real-root coefficient pairs",
             "name": "DiscriminantFilter",
+            "requires": [],
             "source": "CoefficientLattice",
             "target": "DiscriminantFeasibleLattice",
             "transport": [
@@ -15187,6 +15304,7 @@
           {
             "description": "rescale the grid while preserving the feasibility inequality",
             "name": "ScalingLimit",
+            "requires": [],
             "source": "DiscriminantFeasibleLattice",
             "target": "SemialgebraicRegion",
             "transport": [
@@ -15198,6 +15316,7 @@
           {
             "description": "observe area or measure",
             "name": "RegionMeasure",
+            "requires": [],
             "source": "SemialgebraicRegion",
             "target": "MeasureObservable",
             "transport": [
@@ -15208,6 +15327,7 @@
           {
             "description": "normalize a weighted integral over the same region",
             "name": "RestrictedMoment",
+            "requires": [],
             "source": "MeasureObservable",
             "target": "ConditionalMomentObservable",
             "transport": [
@@ -15216,6 +15336,7 @@
             ]
           }
         ],
+        "established_conditions": [],
         "morphism_alignment_checked": true,
         "morphism_chain_aligned": true,
         "nodes": [
@@ -15228,6 +15349,7 @@
         ],
         "present": true,
         "reason": "adjacent_typed_path",
+        "required_conditions": [],
         "shortest_edge_count": 5,
         "theories": [
           "algebra",
@@ -17036,9 +17158,10 @@
     }
   ],
   "summary": {
-    "certified_structures": 121,
+    "certified_structures": 117,
     "disabled_generators": {
-      "closure_composition": "scalar_bridge_bypasses_morphology_graph"
+      "closure_composition": "scalar_bridge_bypasses_morphology_graph",
+      "traceback_dice_sum": "audience_rejected_repetitive_construction"
     },
     "domain_counts": {
       "algebra": 6,
@@ -17048,15 +17171,17 @@
       "combinatorics": 7,
       "complex": 2,
       "complex_geometry": 10,
+      "complex_geometry_algebra_combinatorics": 1,
       "complex_geometry_combinatorics_probability": 1,
       "conic_geometry": 20,
       "convex_geometry": 1,
       "differential_geometry": 1,
       "euclidean_geometry": 2,
       "geometry": 3,
+      "geometry_algebra_analysis": 1,
       "number_theory": 11,
       "plane_geometry": 19,
-      "probability": 8,
+      "probability": 2,
       "probability_algebra_analysis": 1,
       "projective_geometry": 1,
       "real_analysis": 5,
@@ -17064,7 +17189,7 @@
       "sequence_analysis": 1,
       "trigonometry": 3
     },
-    "families": 119,
+    "families": 115,
     "family_counts": {
       "algebraic_geometry.cubic_discriminant_triangle_area": 1,
       "algebraic_geometry.even_quartic_parabola_hull_area": 1,
@@ -17075,7 +17200,6 @@
       "conic_duality.tangent_intercept_centroid_minimum": 1,
       "construct.complex_affine_limit": 1,
       "construct.complex_rotation_period": 1,
-      "construct.gambler_ruin_probability": 1,
       "construct.linear_recurrence_mod_period": 1,
       "construct.mobius_fixed_points": 1,
       "construct.parabola_right_angle_chord": 1,
@@ -17089,6 +17213,8 @@
       "layered.recurrence_period_observable": 3,
       "layered.rotation_orbit_hull_area": 1,
       "morphology.cyclic_configuration_character_count": 1,
+      "morphology.parabola_root_invariant_locus_extremum": 1,
+      "morphology.unit_roots_antipodal_compatibility_count": 1,
       "motif.quadratic_root_lattice_limit": 1,
       "multiplicative.mobius_divisor_sum_totient_ratio": 1,
       "passage_region.line_family_sweep": 1,
@@ -17124,11 +17250,6 @@
       "traceback.cyclic_quadrilateral.cos_angle_a": 1,
       "traceback.cyclic_quadrilateral.diagonal_ac_sq": 1,
       "traceback.cyclic_quadrilateral.diagonal_product": 1,
-      "traceback.dice_sum.modal_sum": 1,
-      "traceback.dice_sum.modal_ways_divisor_count": 1,
-      "traceback.dice_sum.prob_sum_divisible_by_3": 1,
-      "traceback.dice_sum.variance_times_12": 1,
-      "traceback.dice_sum.ways_for_modal_sum": 1,
       "traceback.digit_power.digit_count": 1,
       "traceback.digit_power.digit_increase_count": 1,
       "traceback.digit_power.digit_sum": 1,
@@ -17186,26 +17307,29 @@
       "ultradeep.geometry_parabola_normal_envelope": 1,
       "ultradeep.geometry_regular_polygon_minkowski_perimeter": 1
     },
-    "geometry_algebra_structures": 85,
+    "geometry_algebra_structures": 87,
     "quality_flags": {
-      "below_legacy_difficulty_threshold": 157,
-      "below_legacy_morphism_threshold": 21
+      "below_legacy_difficulty_threshold": 145,
+      "below_legacy_morphism_threshold": 16
     },
     "rejected": {
       "composite_domain_without_morphology_path": 26,
-      "same_structure_variant": 78,
+      "delivery_topic:dice_sum": 11,
+      "delivery_topic:gambler_ruin": 1,
+      "same_structure_variant": 72,
       "scope_lowering": 6
     },
     "source_counts": {
-      "construct_atlas": 80,
+      "construct_atlas": 74,
       "geometry_fusion": 4,
       "iterated_relation_closure": 4,
       "relation_closure": 18,
       "selfauthored_motif_guided": 1,
       "typed_continuous": 13,
+      "typed_morphology_geometry": 2,
       "typed_morphology_path": 1
     },
     "surface_rewritten": 2,
-    "total_instances": 121
+    "total_instances": 117
   }
 }
