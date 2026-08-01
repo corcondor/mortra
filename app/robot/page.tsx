@@ -70,7 +70,16 @@ export default function RobotPage() {
       42, mount.clientWidth / mount.clientHeight, 0.1, 1200,
     )
     camera.up.set(0, 0, 1)
-    const renderer = new THREE.WebGLRenderer({ antialias: true })
+    // ?export=1 のときは書き出しモード。requestAnimationFrame は画面が
+    // 表示されていないと止まるので、時間を自分で刻んで 1 枚ずつ PNG にする。
+    // toDataURL を使うので preserveDrawingBuffer が要る。
+    const exporting =
+      typeof window !== 'undefined' &&
+      new URLSearchParams(window.location.search).get('export') === '1'
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      preserveDrawingBuffer: exporting,
+    })
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     renderer.setSize(mount.clientWidth, mount.clientHeight)
     mount.appendChild(renderer.domElement)
@@ -236,7 +245,48 @@ export default function RobotPage() {
       camera.lookAt(0, figure.dimension === 3 ? 24 : 34, 38)
     }
     applyCamera()
-    tick()
+
+    /** 書き出し: 時間を固定間隔で刻み、1 枚ずつ PNG にして API へ送る */
+    const runExport = async () => {
+      const fps = 30
+      const step = 1 / fps
+      // 30 秒に収める（リールの尺）。長い図は早送りする。
+      const speed = Math.max(1, plan.total / 30)
+      const session = figure.id
+      let index = 0
+      elapsed = 0
+      for (let t = 0; t <= plan.total; t += step * speed) {
+        if (disposed) return
+        elapsed = t
+        const sample = sampleAt(plan.perJoint, plan.durations, elapsed)
+        const marker = plan.markers[Math.min(sample.segment, plan.markers.length - 1)]
+        const tip = drawArm(sample.joints)
+        if (marker?.penDown) {
+          if (marker.stroke !== lastStroke) {
+            lastStroke = marker.stroke
+            startLine(marker.stroke)
+          }
+          pushInk(tip)
+        }
+        renderer.render(scene, camera)
+        const dataUrl = renderer.domElement.toDataURL('image/png')
+        await fetch('/api/frames', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ index, dataUrl, session }),
+        })
+        index++
+        setProgress(t / plan.total)
+        setCaption(`書き出し中 ${index} 枚`)
+      }
+      setCaption(`書き出し完了 ${index} 枚（${session}）`)
+    }
+
+    if (exporting) {
+      void runExport()
+    } else {
+      tick()
+    }
 
     const onResize = () => {
       camera.aspect = mount.clientWidth / mount.clientHeight

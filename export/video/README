@@ -1,0 +1,14 @@
+# 動画の書き出し手順
+
+1. dev サーバを起動
+2. ブラウザを縦（620x1100 程度）にして http://localhost:3002/robot?export=1 を開く
+   → export/frames/<図のid>/ に PNG が連番で並ぶ
+3. MP4 にする（リール用 1080x1920）
+
+ffmpeg -y -framerate 30 -i export/frames/nine_point/%05d.png \
+  -vf "crop=1174:1174:0:0,scale=1080:1080:flags=lanczos,pad=1080:1920:0:420:color=0x0a0c0b" \
+  -c:v libx264 -pix_fmt yuv420p -crf 20 -movflags +faststart \
+  export/video/robot_ninepoint_reel.mp4
+
+crop の数値は書き出したフレームの幅に合わせて変える。
+図を変えるときは /robot で図を選んでから ?export=1 を付ける。
