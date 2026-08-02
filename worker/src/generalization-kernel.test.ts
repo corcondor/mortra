@@ -52,3 +52,12 @@ test('plans a genuine multi-input roadmap for a map acting on a finite orbit', (
   )
   assert.deepEqual(result.certificate.roadmap[0].parent_ids.sort(), ['map', 'orbit'])
 })
+
+test('sharing only a scalar codomain is not accepted as a fusion', () => {
+  const result = generalizeParents([
+    { id: 'integral', statement: '関数 f の積分で定まる数列の極限を求めよ。' },
+    { id: 'solid', statement: '四面体を平面で切断して得られる断面積の最大値を求めよ。' },
+  ], 5)
+  assert.equal(result.certificate.target_sort, null)
+  assert.equal(result.certificate.roadmap.length, 0)
+})

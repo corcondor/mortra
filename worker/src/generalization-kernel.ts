@@ -244,7 +244,8 @@ function bestCommonTarget(graphs: SemanticHypergraph[], maxDepth: number) {
     const totalCost = paths.reduce((sum, path) => sum + path.edges.length, 0)
     const executable = paths.flatMap(path => path.edges).every(edge => edge.backend.length > 0)
     return { target, paths, totalCost, executable }
-  }).sort((left, right) =>
+  }).filter(candidate => candidate.paths.every(path => path.edges.length > 0))
+    .sort((left, right) =>
     Number(right.executable) - Number(left.executable) || left.totalCost - right.totalCost,
   )
   return ranked[0] ?? null
@@ -257,38 +258,47 @@ function parentIdsFromMask(graphs: SemanticHypergraph[], mask: number): string[]
 function planJointHypergraph(graphs: SemanticHypergraph[], maxDepth: number) {
   if (!graphs.length || graphs.length > 30) return null
   const fullMask = (1 << graphs.length) - 1
-  const initial = new Map<string, number>()
+  type Provenance = { mask: number; fused: boolean }
+  const initial = new Map<string, Provenance>()
   graphs.forEach((graph, index) => {
     const mask = 1 << index
-    for (const sort of graph.root_sorts) initial.set(sort, (initial.get(sort) ?? 0) | mask)
+    for (const sort of graph.root_sorts) {
+      const previous = initial.get(sort)
+      initial.set(sort, { mask: (previous?.mask ?? 0) | mask, fused: false })
+    }
   })
-  type State = { known: Map<string, number>; steps: RoadmapStep[] }
+  type State = { known: Map<string, Provenance>; steps: RoadmapStep[] }
   const queue: State[] = [{ known: initial, steps: [] }]
   const seen = new Set<string>()
   const preferredTargets = new Set(['Scalar', 'Integer', 'Proof'])
-  const keyOf = (known: Map<string, number>) => [...known.entries()]
+  const keyOf = (known: Map<string, Provenance>) => [...known.entries()]
     .sort(([left], [right]) => left.localeCompare(right))
-    .map(([sort, mask]) => `${sort}:${mask}`)
+    .map(([sort, provenance]) => `${sort}:${provenance.mask}:${Number(provenance.fused)}`)
     .join('|')
   seen.add(keyOf(initial))
 
   for (let cursor = 0; cursor < queue.length && cursor < 10_000; cursor++) {
     const state = queue[cursor]
     const completed = [...state.known.entries()]
-      .filter(([sort, mask]) => mask === fullMask && preferredTargets.has(sort))
+      .filter(([sort, provenance]) => provenance.mask === fullMask && provenance.fused && preferredTargets.has(sort))
       .sort(([left], [right]) => Number(right === 'Scalar') - Number(left === 'Scalar'))[0]
     if (completed && state.steps.length > 0) return { target: completed[0], roadmap: state.steps }
     if (state.steps.length >= maxDepth) continue
 
     for (const edge of HYPER_MORPHISM_ATLAS) {
-      const masks = edge.sources.map(source => state.known.get(source) ?? 0)
-      if (masks.some(mask => mask === 0)) continue
-      const combinedMask = masks.reduce((mask, sourceMask) => mask | sourceMask, 0)
-      const previousMask = state.known.get(edge.target) ?? 0
-      const nextMask = previousMask | combinedMask
-      if (nextMask === previousMask) continue
+      const inputs = edge.sources.map(source => state.known.get(source))
+      if (inputs.some(input => !input)) continue
+      const provenances = inputs as Provenance[]
+      const combinedMask = provenances.reduce((mask, input) => mask | input.mask, 0)
+      const combinesDistinctInputs = edge.sources.length > 1 &&
+        new Set(provenances.map(input => input.mask)).size > 1
+      const combinedFused = provenances.some(input => input.fused) ||
+        (combinesDistinctInputs && combinedMask === fullMask)
+      const previous = state.known.get(edge.target) ?? { mask: 0, fused: false }
+      const next = { mask: previous.mask | combinedMask, fused: previous.fused || combinedFused }
+      if (next.mask === previous.mask && next.fused === previous.fused) continue
       const known = new Map(state.known)
-      known.set(edge.target, nextMask)
+      known.set(edge.target, next)
       const key = keyOf(known)
       if (seen.has(key)) continue
       seen.add(key)
