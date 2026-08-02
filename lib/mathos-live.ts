@@ -215,6 +215,20 @@ export type StructureBlueprint = {
   tags: string[]
   morphismChain: string[]
   proofCertificate?: ProofCertificateStep[]
+  fusionContract?: {
+    ports: Array<{
+      id: string
+      role: 'object' | 'morphism' | 'constraint' | 'observable'
+      accepts: string[]
+      witnessSteps: string[]
+    }>
+    bridges: Array<{
+      id: string
+      consumes: string[]
+      produces: string
+      witnessStep: string
+    }>
+  }
   executable: true
 }
 
@@ -638,6 +652,104 @@ function cyclotomicMobiusOrbitMoment(): LiveProblem | null {
       tags: ['complex', 'roots_of_unity', 'mobius', 'cross_ratio', 'iteration', 'matrix', 'polynomial_roots', 'power_sum', 'symmetric_polynomial'],
       morphismChain,
       proofCertificate,
+      fusionContract: {
+        ports: [
+          {
+            id: 'finite_root_orbit',
+            role: 'object',
+            accepts: ['roots_of_unity', 'polynomial_roots', 'symmetric_polynomial', 'power_sum'],
+            witnessSteps: ['ParsePrimitiveRoot', 'MapRootSet', 'LogDerivativeCyclotomic'],
+          },
+          {
+            id: 'projective_dynamics',
+            role: 'morphism',
+            accepts: ['mobius', 'cross_ratio', 'iteration', 'matrix', 'projective_geometry'],
+            witnessSteps: ['DefineMobiusChart', 'PreserveCrossRatio', 'DeriveRecurrenceMap'],
+          },
+        ],
+        bridges: [{
+          id: 'mobius_conjugates_rotation',
+          consumes: ['finite_root_orbit', 'projective_dynamics'],
+          produces: 'finite_projective_orbit',
+          witnessStep: 'ConjugateRotation',
+        }],
+      },
+      executable: true,
+    },
+  }
+}
+
+// ---------- F9 積分状態列を不等式で制御する解析ブリッジ ----------
+function integralRecurrenceSqueeze(): LiveProblem | null {
+  const lambda = 1 + Math.floor(Math.random() * 6)
+  const limit = rat(1, lambda + 1)
+  const proofCertificate: ProofCertificateStep[] = [
+    { id: 'DefineIntegralState', claim: 'I_n を重み付きモーメントとして定義', verifier: 'symbolic_identity' },
+    { id: 'ExtractKernelIdentity', claim: 'lambda*x/(1+lambda*x)=1-1/(1+lambda*x)', verifier: 'symbolic_identity' },
+    { id: 'IntegrateKernelIdentity', claim: 'lambda I_n+I_{n-1}=1/n を導出', verifier: 'symbolic_identity' },
+    { id: 'ChooseEndpointModel', claim: '端点値 1/(1+lambda) を比較対象に選ぶ', verifier: 'symbolic_identity' },
+    { id: 'FactorPositiveRemainder', claim: '端点モデルとの差を非負積分に分解', verifier: 'symbolic_identity' },
+    { id: 'BoundPositiveRemainder', claim: '分母を1で下から評価して差を有理式で上から抑える', verifier: 'order_check' },
+    { id: 'SqueezeEndpointConcentration', claim: '上下界を n 倍して挟み撃ちする', verifier: 'order_check' },
+    { id: 'EvaluateScaledLimit', claim: `lim n I_n=${ratTex(limit)}`, verifier: 'symbolic_identity' },
+  ]
+  const morphismChain = proofCertificate.map(step => step.id)
+  const familyId = 'runtime.integral_state.endpoint_squeeze'
+  return {
+    familyId,
+    domain: 'analysis',
+    tool: 'typed_integral_identity_and_order_verifier',
+    parameters: { lambda },
+    statementTex:
+      `正の整数 \\(n\\) に対して \\(I_n=\\displaystyle\\int_0^1\\dfrac{x^n}{1+${lambda}x}\\,dx\\) とおく。` +
+      `(1) \\(${lambda}I_n+I_{n-1}=\\dfrac1n\\) を示せ。` +
+      `(2) \\(I_n\\) と \\(\\dfrac{1}{${lambda + 1}(n+1)}\\) の差を積分で表し，その差を \\(n\\) の有理式で評価せよ。` +
+      `(3) \\(\\displaystyle\\lim_{n\\to\\infty}nI_n\\) を求めよ。`,
+    answerTex: ratTex(limit),
+    solutionTex:
+      `恒等式 \\(\\dfrac{${lambda}x}{1+${lambda}x}=1-\\dfrac1{1+${lambda}x}\\) を積分して ` +
+      `\\(${lambda}I_n+I_{n-1}=1/n\\) を得る。また ` +
+      `\\[I_n-\\frac1{${lambda + 1}(n+1)}` +
+      `=\\frac{${lambda}}{${lambda + 1}}\\int_0^1\\frac{x^n(1-x)}{1+${lambda}x}\\,dx.\\]` +
+      `したがって ` +
+      `\\[0\\le I_n-\\frac1{${lambda + 1}(n+1)}` +
+      `\\le\\frac{${lambda}}{${lambda + 1}(n+1)(n+2)}.\\]` +
+      `両辺を \\(n\\) 倍して挟み撃ちすれば \\(\\lim nI_n=${ratTex(limit)}\\)。`,
+    morphismChain,
+    proofCertificate,
+    verificationMethod: 'exact_integrand_identity_plus_positive_remainder_bound',
+    structureBlueprint: {
+      id: familyId,
+      version: 1,
+      kernel: 'weighted_integral_state',
+      observable: 'scaled_endpoint_limit',
+      operators: ['kernel_identity', 'integral_recurrence', 'positive_remainder', 'squeeze'],
+      domain: 'analysis',
+      tags: ['integral', 'recurrence', 'inequality', 'limit', 'asymptotic'],
+      morphismChain,
+      proofCertificate,
+      fusionContract: {
+        ports: [
+          {
+            id: 'integral_state_dynamics',
+            role: 'object',
+            accepts: ['integral', 'recurrence', 'limit', 'asymptotic'],
+            witnessSteps: ['DefineIntegralState', 'ExtractKernelIdentity', 'IntegrateKernelIdentity'],
+          },
+          {
+            id: 'order_control',
+            role: 'constraint',
+            accepts: ['inequality', 'integral', 'exponential', 'logarithm', 'special_function'],
+            witnessSteps: ['ChooseEndpointModel', 'FactorPositiveRemainder', 'BoundPositiveRemainder'],
+          },
+        ],
+        bridges: [{
+          id: 'positive_remainder_controls_state_limit',
+          consumes: ['integral_state_dynamics', 'order_control'],
+          produces: 'certified_scaled_limit',
+          witnessStep: 'SqueezeEndpointConcentration',
+        }],
+      },
       executable: true,
     },
   }
@@ -1377,6 +1489,7 @@ const GENERATORS: GeneratorSpec[] = [
   { generate: parabolaFixedPoint, domain: 'geometry', tags: ['geometry', 'locus', 'invariant', 'parabola'], depth: 3 },
   { generate: mobiusPeriod, domain: 'algebra', tags: ['algebra', 'iteration', 'matrix', 'period'], depth: 3 },
   { generate: cyclotomicMobiusOrbitMoment, domain: 'complex_algebra', tags: ['complex', 'roots_of_unity', 'mobius', 'cross_ratio', 'iteration', 'matrix', 'polynomial_roots', 'power_sum', 'symmetric_polynomial'], depth: 22 },
+  { generate: integralRecurrenceSqueeze, domain: 'analysis', tags: ['integral', 'recurrence', 'inequality', 'limit', 'asymptotic'], depth: 8 },
   { generate: reciprocalRecurrence, domain: 'algebra', tags: ['algebra', 'recurrence', 'transformation'], depth: 3 },
   { generate: complexAffineLimit, domain: 'complex', tags: ['complex', 'recurrence', 'limit', 'fixed_point'], depth: 3 },
   { generate: axisInterceptSegmentRegion, domain: 'geometry', tags: ['geometry', 'passage_region', 'area', 'segment', 'parameter_elimination'], depth: 5 },

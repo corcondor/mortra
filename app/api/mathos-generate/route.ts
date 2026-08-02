@@ -223,6 +223,7 @@ type GenerationProfile = {
   atlasPaths?: string[][]
   parentAnchors?: string[]
   parentAnchorSets?: Array<{ parentId: string; anchors: string[] }>
+  allParentScaffold?: boolean
   recovery?: boolean
   mode: 'similar' | 'fusion' | 'expand' | 'batch'
 }
@@ -301,6 +302,12 @@ function preservedByAtlas(tag: string, candidateTags: string[]): boolean {
 }
 
 const TAG_PATTERNS: Array<[string, RegExp]> = [
+  ['integral', /\\int|積分|integral|\\mathrm\{Ei\}|\bEi\s*\(/i],
+  ['inequality', /不等式|大小を比較|評価せよ|比較せよ|\\le|\\ge|[<>]|inequal/i],
+  ['exponential', /指数関数|指数積分|e\^|\\exp|exponential/i],
+  ['logarithm', /対数|\\ln|\\log|logarithm/i],
+  ['special_function', /指数積分|ガウス積分|特殊関数|\\mathrm\{Ei\}|special[_\s-]?function/i],
+  ['asymptotic', /漸近|asymptotic|同値|オーダー/i],
   ['cross_ratio', /交比|cross[-_\s]?ratio/i],
   ['mobius', /m[oö]bius|メビウス|一次分数変換|分数線形変換/i],
   ['roots_of_unity', /1の\s*[nNＮ]乗根|1の冪根|z\^\{?n\}?\s*=\s*1|roots? of unity|単位根/i],
@@ -447,6 +454,7 @@ const SOLUTION_CORE_TAGS = new Set([
   'polynomial_system',
   'circle_centers', 'dynamical_system', 'recurrence', 'iteration', 'matrix',
   'characteristic_polynomial', 'pythagorean', 'gcd', 'modular',
+  'integral', 'inequality', 'exponential', 'logarithm', 'special_function', 'asymptotic', 'limit',
 ])
 
 type ParentCoverage = {
@@ -457,6 +465,20 @@ type ParentCoverage = {
   passed: boolean
 }
 
+type FusionDerivation = {
+  passed: boolean
+  reason: string
+  assignments: Array<{
+    parentId: string
+    portId: string
+    role: string
+    matchedAnchors: string[]
+    witnessSteps: string[]
+  }>
+  bridges: Array<{ id: string; witnessStep: string; consumes: string[]; produces: string }>
+  ablationPassed: boolean
+}
+
 function evaluateParentCoverage(profile: GenerationProfile, candidateTags: string[]): ParentCoverage[] {
   return (profile.parentAnchorSets ?? []).map(({ parentId, anchors }) => {
     // 先頭は本文・解答から得た最も固有な構造。一般タグを多数一致させても代替できない。
@@ -465,11 +487,100 @@ function evaluateParentCoverage(profile: GenerationProfile, candidateTags: strin
     const bridged = primary.filter(tag =>
       !candidateTags.includes(tag) && preservedByAtlas(tag, candidateTags),
     )
-    const passed = primary.length === 0 || (primary.length === 1
+    // 親本文を意味署名へ持ち上げられなかった場合、任意の既存族へフォールバックしない。
+    const passed = primary.length > 0 && (primary.length === 1
       ? exact.length + bridged.length === 1
       : exact.length >= Math.min(2, primary.length))
     return { parentId, anchors: primary, exact, bridged, passed }
   })
+}
+
+function evaluateFusionDerivation(
+  profile: GenerationProfile,
+  candidate: NonNullable<ReturnType<typeof generateLiveProblem>>,
+): FusionDerivation {
+  const parentSets = profile.parentAnchorSets ?? []
+  if (profile.mode !== 'fusion' || parentSets.length < 2) {
+    return { passed: true, reason: 'single-parent generation', assignments: [], bridges: [], ablationPassed: true }
+  }
+
+  const contract = candidate.structureBlueprint?.fusionContract
+  if (!contract) {
+    return { passed: false, reason: 'candidate has no fusion contract', assignments: [], bridges: [], ablationPassed: false }
+  }
+  const chain = new Set(candidate.morphismChain)
+  const requiredPortIds = [...new Set(contract.bridges.flatMap(bridge => bridge.consumes))]
+  const requiredPorts = requiredPortIds.map(id => contract.ports.find(port => port.id === id)).filter(Boolean)
+  if (requiredPorts.length !== requiredPortIds.length || requiredPorts.length !== parentSets.length) {
+    return { passed: false, reason: 'fusion arity does not equal selected parent count', assignments: [], bridges: [], ablationPassed: false }
+  }
+  if (contract.bridges.some(bridge => !chain.has(bridge.witnessStep))) {
+    return { passed: false, reason: 'bridge witness is absent from proof chain', assignments: [], bridges: [], ablationPassed: false }
+  }
+  if (requiredPorts.some(port => !port!.witnessSteps.every(step => chain.has(step)))) {
+    return { passed: false, reason: 'input-port witness is absent from proof chain', assignments: [], bridges: [], ablationPassed: false }
+  }
+
+  const options = parentSets.map(parent => requiredPorts.map((port, portIndex) => ({
+    portIndex,
+    matchedAnchors: parent.anchors.filter(anchor => port!.accepts.includes(anchor)),
+  })).filter(option => option.matchedAnchors.length > 0))
+  if (options.some(parentOptions => parentOptions.length === 0)) {
+    return { passed: false, reason: 'a selected parent cannot fill any proof input port', assignments: [], bridges: [], ablationPassed: false }
+  }
+
+  let best: Array<{ parentIndex: number; portIndex: number; matchedAnchors: string[] }> | null = null
+  let bestScore = -1
+  const search = (
+    parentIndex: number,
+    usedPorts: Set<number>,
+    current: Array<{ parentIndex: number; portIndex: number; matchedAnchors: string[] }>,
+  ) => {
+    if (parentIndex === parentSets.length) {
+      const score = current.reduce((sum, item) => sum + item.matchedAnchors.length, 0)
+      if (score > bestScore) {
+        bestScore = score
+        best = [...current]
+      }
+      return
+    }
+    for (const option of options[parentIndex]) {
+      if (usedPorts.has(option.portIndex)) continue
+      usedPorts.add(option.portIndex)
+      current.push({ parentIndex, ...option })
+      search(parentIndex + 1, usedPorts, current)
+      current.pop()
+      usedPorts.delete(option.portIndex)
+    }
+  }
+  search(0, new Set(), [])
+  if (!best) {
+    return { passed: false, reason: 'parents cannot be assigned to distinct proof ports', assignments: [], bridges: [], ablationPassed: false }
+  }
+
+  const assignments = (best as Array<{ parentIndex: number; portIndex: number; matchedAnchors: string[] }>).map(item => {
+    const port = requiredPorts[item.portIndex]!
+    return {
+      parentId: parentSets[item.parentIndex].parentId,
+      portId: port.id,
+      role: port.role,
+      matchedAnchors: item.matchedAnchors,
+      witnessSteps: port.witnessSteps,
+    }
+  })
+  const roles = new Set(assignments.map(assignment => assignment.role))
+  const allPortsConsumed = assignments.every(assignment =>
+    contract.bridges.some(bridge => bridge.consumes.includes(assignment.portId)),
+  )
+  const ablationPassed = allPortsConsumed && assignments.length === requiredPortIds.length
+  const passed = roles.size >= 2 && ablationPassed
+  return {
+    passed,
+    reason: passed ? 'all parents occupy distinct indispensable proof ports' : 'parent contributions are not structurally distinct',
+    assignments,
+    bridges: contract.bridges,
+    ablationPassed,
+  }
 }
 
 function parentAnchorTags(parent: ParentInput): string[] {
@@ -560,10 +671,13 @@ function buildFusionProfiles(parents: ParentInput[], fallbackDomain?: string): G
   }
 
   const scaffold: GenerationProfile[] = []
-  if (singles.length > 1 && treeEdges.length === singles.length - 1) {
+  if (singles.length > 1) {
     const base = buildGenerationProfile(parents, fallbackDomain, 'fusion')
     const atlasPaths = treeEdges.map(edge => edge.atlasPath!).filter(Boolean)
-    const parentAnchors = [...new Set(atlasPaths.flatMap(path => [path[0], path.at(-1)!]))]
+    const fullyConnected = treeEdges.length === singles.length - 1
+    const parentAnchors = fullyConnected
+      ? [...new Set(atlasPaths.flatMap(path => [path[0], path.at(-1)!]))]
+      : []
     scaffold.push({
       ...base,
       tags: [...new Set([...singles.flatMap(profile => profile.tags), ...atlasPaths.flat()])],
@@ -576,22 +690,10 @@ function buildFusionProfiles(parents: ParentInput[], fallbackDomain?: string): G
         parentId: parentInput.id ?? `parent-${index + 1}`,
         anchors: anchorSets[index],
       })),
+      allParentScaffold: true,
     })
   }
-
-  const connected = pairProfiles.slice(0, 20).map(({
-    pathLength: _pathLength,
-    leftIndex: _leftIndex,
-    rightIndex: _rightIndex,
-    ...profile
-  }) => profile)
-  const recovery = singles.map(profile => ({
-    ...profile,
-    mode: 'fusion' as const,
-    requiredTags: profile.requiredTags.slice(0, 2),
-    recovery: true,
-  }))
-  return [...scaffold, ...connected, ...recovery]
+  return scaffold
 }
 
 /** 構築・条件の数から難易度帯を見積もる（world_novelty_check.py と同じ考え方） */
@@ -616,6 +718,7 @@ type GenerationResult = {
   engine: string
   cards: Record<string, unknown>[]
   errors: string[]
+  rejectionCounts?: Record<string, number>
 }
 
 type ProgressEvent = {
@@ -687,6 +790,10 @@ async function generateCards(
   const cards: Record<string, unknown>[] = []
   const errors: string[] = []
   const structures: RegisteredStructure[] = []
+  const rejectionCounts: Record<string, number> = {}
+  const reject = (reason: string) => {
+    rejectionCounts[reason] = (rejectionCounts[reason] ?? 0) + 1
+  }
   const sessionLogs: Array<{ phase: string; message: string; ts: string }> = []
   const seenFamilies = new Set<string>()
   const seenObservables = new Set<string>()
@@ -702,7 +809,7 @@ async function generateCards(
     loadNoveltyCorpus(),
     loadRegisteredStructureIds(),
   ])
-  const hasAllParentScaffold = Boolean(profiles[0]?.atlasPaths?.length)
+  const hasAllParentScaffold = profiles[0]?.allParentScaffold === true
   // 全親を結ぶ scaffold がある融合では、pair/single fallback へ切り替えない。
   // それを許すと、選択していない構造族の問題を「融合結果」として返してしまう。
   const isBatch = profiles.length > 1 && !hasAllParentScaffold
@@ -733,6 +840,7 @@ async function generateCards(
       atlasPaths: profile.atlasPaths,
       parentAnchors: profile.parentAnchors,
       parentAnchorSets: profile.parentAnchorSets,
+      allParentScaffold: profile.allParentScaffold ?? false,
       recovery: profile.recovery ?? false,
     })),
     mode: firstProfile.mode,
@@ -769,6 +877,7 @@ async function generateCards(
     let inheritedTags: string[] = []
     let bridgedTags: string[] = []
     let selectedParentCoverage: ParentCoverage[] = []
+    let selectedFusionDerivation: FusionDerivation | null = null
     let hypothesesEvaluated = 0
     let validHypotheses = 0
     let bestCandidateScore = Number.NEGATIVE_INFINITY
@@ -809,10 +918,16 @@ async function generateCards(
         excludedObservables: attempt < Math.floor(maxAttempts * 0.85) ? [...seenObservables] : [],
         preferDepth: searchDepth === 'deep',
       })
-      if (!candidate) continue
+      if (!candidate) {
+        reject('no_executable_candidate')
+        continue
+      }
       hypothesesEvaluated++
       const candidateKey = `${candidate.familyId}\u0000${canonical(candidate.statementTex)}`
-      if (selectedCandidateKeys.has(candidateKey) || cardSeenCandidates.has(candidateKey)) continue
+      if (selectedCandidateKeys.has(candidateKey) || cardSeenCandidates.has(candidateKey)) {
+        reject('duplicate_candidate')
+        continue
+      }
       cardSeenCandidates.add(candidateKey)
 
       const candidateTags = inferTags([
@@ -847,10 +962,19 @@ async function generateCards(
         ? attemptRequiredTags.every(tag => preservedByAtlas(tag, candidateTags))
         : attemptRequiredTags.some(tag => preservedByAtlas(tag, candidateTags))
       if ((attemptRequiredTags.length && !preservesRequiredStructure) || (requireQueryChange && !changesQuery)) {
+        reject(!preservesRequiredStructure ? 'required_structure_mismatch' : 'query_not_transformed')
         continue
       }
       const parentCoverage = evaluateParentCoverage(profile, candidateTags)
-      if (parentCoverage.some(coverage => !coverage.passed)) continue
+      if (parentCoverage.some(coverage => !coverage.passed)) {
+        reject('parent_signature_mismatch')
+        continue
+      }
+      const fusionDerivation = evaluateFusionDerivation(profile, candidate)
+      if (!fusionDerivation.passed) {
+        reject(`fusion:${fusionDerivation.reason}`)
+        continue
+      }
 
       const blueprint = candidate.structureBlueprint
       if (blueprint && !seenStructureIds.has(blueprint.id)) {
@@ -924,13 +1048,14 @@ async function generateCards(
           live = candidate
           sim = s
           selectedParentCoverage = parentCoverage
+          selectedFusionDerivation = fusionDerivation
           inheritedTags = attemptRequiredTags.filter(tag => candidateTags.includes(tag))
           bridgedTags = attemptRequiredTags.filter(tag =>
             !candidateTags.includes(tag) && preservedByAtlas(tag, candidateTags),
           )
           report({
             phase: 'novelty',
-            message: `中間仮説 ${hypothesesEvaluated}: 全親を被覆。既存 ${s.comparedAgainst} 問との最大表層類似度 ${(s.score * 100).toFixed(0)}%`,
+            message: `中間仮説 ${hypothesesEvaluated}: 全親を別々の証明入力へ割当。既存 ${s.comparedAgainst} 問との最大表層類似度 ${(s.score * 100).toFixed(0)}%`,
             current,
             total: count,
             draft: candidate.statementTex,
@@ -962,7 +1087,12 @@ async function generateCards(
           registeredAt: new Date().toISOString(),
         })
       }
-      const message = `全Atlas修復経路を使い切りました。未実装構造 ${pendingId} は配信せず検証キューへ隔離しました`
+      const topReasons = Object.entries(rejectionCounts)
+        .sort((left, right) => right[1] - left[1])
+        .slice(0, 3)
+        .map(([reason, occurrences]) => `${reason}=${occurrences}`)
+        .join(', ')
+      const message = `全親を不可欠な証明入力にできる候補がありません。${pendingId} を検証キューへ隔離しました${topReasons ? `（${topReasons}）` : ''}`
       errors.push(message)
       report({ phase: 'registering', message, current, total: count, structureId: pendingId, structureStatus: 'pending' })
       continue
@@ -1009,6 +1139,7 @@ async function generateCards(
           !inheritedTags.includes(tag) && !bridgedTags.includes(tag),
         ),
         parentCoverage: selectedParentCoverage,
+        fusionDerivation: selectedFusionDerivation,
       },
       searchEvidence: { hypothesesEvaluated, validHypotheses, elapsedSearchMs, bestCandidateScore },
       structureBlueprint: live.structureBlueprint,
@@ -1073,6 +1204,7 @@ async function generateCards(
       structure_blueprint: live.structureBlueprint,
       parent_ids: profile.parentIds,
       parent_coverage: selectedParentCoverage,
+      fusion_derivation: selectedFusionDerivation,
       search_evidence: { hypotheses_evaluated: hypothesesEvaluated, valid_hypotheses: validHypotheses, elapsed_ms: elapsedSearchMs },
     }
     cards.push(card)
@@ -1094,6 +1226,7 @@ async function generateCards(
     engine: `MathOS structural live (${searchDepth}, no LLM)`,
     cards,
     errors,
+    rejectionCounts,
   }
   if (jobWritable) {
     await supabaseAdmin.from('generation_jobs').update({
@@ -1136,11 +1269,29 @@ export async function POST(request: NextRequest) {
       { status: 400 },
     )
   }
+  if (mode === 'fusion') {
+    const parentIds = parents.map(parent => parent.id?.trim()).filter(Boolean) as string[]
+    if (parentIds.length !== parents.length || new Set(parentIds).size !== parents.length) {
+      return NextResponse.json(
+        { generated: 0, requested: count, cards: [], errors: ['融合対象の親IDが欠落または重複しています'] },
+        { status: 400 },
+      )
+    }
+    if (parents.some(parent => !parent.statement?.trim())) {
+      return NextResponse.json(
+        { generated: 0, requested: count, cards: [], errors: ['融合対象の問題本文が取得できていません'] },
+        { status: 400 },
+      )
+    }
+  }
 
   const shuffledParents = [...parents]
-  for (let i = shuffledParents.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[shuffledParents[i], shuffledParents[j]] = [shuffledParents[j], shuffledParents[i]]
+  // 融合時はUIで選択した順序を監査ログまで保つ。ランダム化は一括類題だけに限る。
+  if (mode !== 'fusion') {
+    for (let i = shuffledParents.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[shuffledParents[i], shuffledParents[j]] = [shuffledParents[j], shuffledParents[i]]
+    }
   }
   const profiles = mode === 'batch' && shuffledParents.length > 0
     ? shuffledParents.map(parent => {

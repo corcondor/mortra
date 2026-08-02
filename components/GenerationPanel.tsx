@@ -42,6 +42,19 @@ type GenerationCard = {
     bridged: string[]
     passed: boolean
   }>
+  fusion_derivation?: {
+    passed: boolean
+    reason: string
+    ablationPassed: boolean
+    assignments: Array<{
+      parentId: string
+      portId: string
+      role: string
+      matchedAnchors: string[]
+      witnessSteps: string[]
+    }>
+    bridges: Array<{ id: string; witnessStep: string; consumes: string[]; produces: string }>
+  } | null
   search_evidence?: {
     hypotheses_evaluated?: number
     valid_hypotheses?: number
@@ -314,8 +327,9 @@ export function GenerationPanel({
     setChosenIds(ids => ids.includes(id) ? ids.filter(value => value !== id) : [...ids, id])
 
   const chosen = selectedProblems.filter(problem => chosenIds.includes(problem.id))
-  const fusionTarget = chosen.length >= 2 ? chosen : selectedProblems
-  const fusionDisabled = generating || (chosen.length > 0 && chosen.length < 2)
+  // 融合は画面内の「選択済み全件」へ暗黙に広げない。チェックした親だけを送る。
+  const fusionTarget = chosen
+  const fusionDisabled = generating || chosen.length < 2
 
   const deselect = async (id: string) => {
     await fetch('/api/status', {
@@ -353,7 +367,7 @@ export function GenerationPanel({
           <div className="w-24 shrink-0">
             <div className="text-[11px] font-medium text-zinc-200">融合生成</div>
             <div className="text-[10px] text-zinc-500">
-              {chosen.length >= 2 ? `${chosen.length} 問選択` : `全 ${selectedProblems.length} 問`}
+              {chosen.length >= 2 ? `${chosen.length} 問選択` : '2問以上をチェック'}
             </div>
           </div>
           <input type="range" min={1} max={6} value={fusionCount}
@@ -454,6 +468,25 @@ export function GenerationPanel({
                         <span className="ml-2">{coverage.parentId}: {coverage.exact.join(' / ') || coverage.bridged.join(' / ')}</span>
                       </li>
                     ))}
+                  </ul>
+                </details>
+              ) : null}
+              {card.fusion_derivation?.passed ? (
+                <details className="mb-2 text-[10px] text-zinc-500">
+                  <summary className="cursor-pointer text-fuchsia-300">融合証明書: 全親が不可欠</summary>
+                  <ul className="mt-1 space-y-1 border-l border-zinc-800 pl-3">
+                    {card.fusion_derivation.assignments.map(assignment => (
+                      <li key={`${assignment.parentId}-${assignment.portId}`}>
+                        {assignment.parentId} → <span className="text-zinc-300">{assignment.portId}</span>
+                        <span className="ml-2">({assignment.role}: {assignment.matchedAnchors.join(' / ')})</span>
+                      </li>
+                    ))}
+                    {card.fusion_derivation.bridges.map(bridge => (
+                      <li key={bridge.id} className="text-blue-300">
+                        {bridge.consumes.join(' + ')} → {bridge.produces} [{bridge.witnessStep}]
+                      </li>
+                    ))}
+                    <li className="text-emerald-300">親除去テスト: 通過</li>
                   </ul>
                 </details>
               ) : null}

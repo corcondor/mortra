@@ -47,6 +47,12 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: node scripts/export-selection-feedback.mjs
 
+      - name: Cluster unsupported fusion structures
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/export-fusion-gaps.mjs
+
       - name: Upload selection feedback report
         uses: actions/upload-artifact@v4
         with:
@@ -54,3 +60,5 @@ jobs:
           path: |
             data/mathos/selection-feedback.json
             docs/selection-feedback.md
+            data/mathos/fusion-gaps.json
+            docs/fusion-gaps.md
