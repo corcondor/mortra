@@ -44,8 +44,8 @@ async function flushLogs(jobId: string): Promise<void> {
   const batch = pendingLogs.splice(0)   // atomic swap
 
   // logs 列を JSONB concatenate で追記
-  await supabase.rpc('append_job_logs', { p_job_id: jobId, p_logs: batch })
-    .catch(err => console.error('[flushLogs]', err))
+  const { error } = await supabase.rpc('append_job_logs', { p_job_id: jobId, p_logs: batch })
+  if (error) console.error('[flushLogs]', error)
 }
 
 function pushLog(jobId: string, message: string, level = 'info'): void {
@@ -415,7 +415,7 @@ async function processJob(job: Record<string, unknown>): Promise<void> {
         await supabase.from('usage').upsert(
           { user_id: userId, year_month: ym, generations_count: 1 },
           { onConflict: 'user_id,year_month', ignoreDuplicates: false },
-        ).catch(() => {})
+        )
       }
     }
 

@@ -24,7 +24,7 @@ jobs:
 
       - name: Verify structural discovery
         working-directory: worker
-        run: npm test
+        run: npm test && npm run build
 
       - name: Process job
         working-directory: worker

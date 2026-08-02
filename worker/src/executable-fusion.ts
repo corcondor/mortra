@@ -201,7 +201,16 @@ function observableText(observable: 'trace' | 'norm' | 'inverse_trace', exponent
   return `\\displaystyle \\sum_{k=1}^{n}T_M^{\\circ ${exponent}}(z_k)`
 }
 
-export function synthesizeExecutableFusions(parents: DiscoveryParent[], requested: number): ExecutableFusionCard[] {
+export type ExecutableFusionOptions = {
+  minIteration?: number
+  maxIteration?: number
+}
+
+export function synthesizeExecutableFusions(
+  parents: DiscoveryParent[],
+  requested: number,
+  options: ExecutableFusionOptions = {},
+): ExecutableFusionCard[] {
   const startedAt = Date.now()
   const mobius = extractMobiusMap(parents)
   const rootParentId = findRootOrbitParent(parents)
@@ -209,7 +218,9 @@ export function synthesizeExecutableFusions(parents: DiscoveryParent[], requeste
   const parentIds = parents.map((parent, index) => String(parent.id || `parent-${index + 1}`))
   const cards: ExecutableFusionCard[] = []
   const observables = ['trace', 'norm', 'inverse_trace'] as const
-  for (let exponent = 2; cards.length < requested && exponent <= 5; exponent++) {
+  const minIteration = Math.max(2, Math.floor(options.minIteration ?? 2))
+  const maxIteration = Math.max(minIteration, Math.floor(options.maxIteration ?? 5))
+  for (let exponent = minIteration; cards.length < requested && exponent <= maxIteration; exponent++) {
     const iterated = power(mobius.matrix, exponent)
     const [a, b, c, d] = iterated
     if (a === 0n || c === 0n || a * d === b * c) continue

@@ -92,10 +92,19 @@ type GenerationResult = {
   discovered?: number
   discoveryQueued?: boolean
   discoveryJobId?: string
+  backgroundResearch?: boolean
+  searchState?: {
+    round?: number
+    depth?: number
+    hypotheses_evaluated?: number
+    continuing?: boolean
+    next_attempt_at?: string | null
+    frontier?: Array<{ source: string; target: string; obligation: string }>
+  }
 }
 
 type StreamEvent = {
-  phase: 'start' | 'searching' | 'inducing' | 'registering' | 'structuring' | 'novelty' | 'verifying' | 'saving' | 'complete' | 'error' | 'done'
+  phase: 'start' | 'searching' | 'researching' | 'inducing' | 'registering' | 'structuring' | 'novelty' | 'verifying' | 'saving' | 'complete' | 'error' | 'done'
   message?: string
   current?: number
   total?: number
@@ -111,6 +120,7 @@ type StreamEvent = {
 const PHASE_INFO: Record<string, { label: string; note: string; color: string }> = {
   start: { label: 'MathOS 起動中', note: '生成セッションを準備しています', color: 'text-blue-300' },
   searching: { label: 'MathOS 試行中', note: '構成可能な経路を探索しています', color: 'text-blue-300' },
+  researching: { label: '自律研究を継続中', note: '探索frontierを保存し、次の戦略を自動実行します', color: 'text-cyan-300' },
   inducing: { label: '新構造を構成中', note: '親問題から型付き対象と観測を導出しています', color: 'text-cyan-300' },
   registering: { label: '構造を登録中', note: '実行可能な射列をDBへ記録しています', color: 'text-fuchsia-300' },
   structuring: { label: '構造を構成中', note: '対象と射から問題文を組み立てています', color: 'text-cyan-300' },
@@ -135,6 +145,7 @@ const STAGES = [
 const PHASE_RANK: Record<string, number> = {
   start: -1,
   searching: 0,
+  researching: 0,
   inducing: 1,
   registering: 2,
   structuring: 2,
@@ -255,6 +266,8 @@ export function GenerationPanel({
       '既存Atlas外の構造です。選択した問題本文から対象・射・制約を再構成します。',
       `探索ジョブ ${jobId.slice(0, 8)} をMathOS本体へ渡しました。`,
     ].slice(-30))
+    let deliveredLogs = 0
+    let observedRound = 0
     for (let attempt = 0; attempt < 200; attempt++) {
       if (attempt > 0) await new Promise(resolve => window.setTimeout(resolve, 3_000))
       const response = await fetch(`/api/job-status?job_id=${encodeURIComponent(jobId)}`, { cache: 'no-store' })
@@ -265,16 +278,30 @@ export function GenerationPanel({
         result?: GenerationResult
         error?: string | null
       }
-      const jobLines = (job.logs ?? []).map(item => typeof item === 'string' ? item : item.message ?? '').filter(Boolean)
+      const allJobLines = (job.logs ?? []).map(item => typeof item === 'string' ? item : item.message ?? '').filter(Boolean)
+      const jobLines = allJobLines.slice(deliveredLogs)
+      deliveredLogs = allJobLines.length
       if (jobLines.length) setLogs(previous => [...previous, ...jobLines].slice(-30))
       if (job.status === 'done' && job.result) {
         finish(job.result)
         return
       }
       if (job.status === 'failed') throw new Error(job.error ?? '未知構造探索が失敗しました')
-      setUiPhase(job.status === 'processing' ? 'inducing' : 'searching')
+      const state = job.result?.searchState
+      if (state?.round && state.round !== observedRound) {
+        observedRound = state.round
+        setLogs(previous => [
+          ...previous,
+          `自律探索 round ${state.round} / 深さ ${state.depth ?? '?'} / 累積仮説 ${state.hypotheses_evaluated ?? '?'}`,
+          `未解決frontier ${state.frontier?.length ?? 0} 件を保持。次回も自動再開します。`,
+        ].slice(-30))
+      }
+      setUiPhase(state?.continuing ? 'researching' : job.status === 'processing' ? 'inducing' : 'searching')
     }
-    throw new Error('未知構造探索が10分以内に完了しませんでした。ジョブはバックグラウンドで継続します。')
+    const message = `探索ジョブ ${jobId.slice(0, 8)} はバックグラウンドで自律研究を継続しています。再度相談する必要はありません。`
+    setUiPhase('researching')
+    setLogs(previous => [...previous, message].slice(-30))
+    setGenDone({ ok: true, partial: true, message })
   }
 
   const applyEvent = async (event: StreamEvent) => {
