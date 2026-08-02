@@ -31,6 +31,7 @@ test('synthesizes requested verified problems instead of pending structures', ()
   assert.match(cards[0].statement_tex, /\\sum/)
   assert.doesNotMatch(cards[0].statement_tex, /\\su2/)
   assert.match(cards[0].answer_tex, /11/)
+  assert.doesNotMatch(cards[0].answer_tex, /-\\frac\{-/)
 })
 
 test('does not invent a bridge when either structural input is absent', () => {

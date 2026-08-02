@@ -173,6 +173,14 @@ function linear(a: bigint, b: bigint): string {
   return `${a}z${b === 0n ? '' : signed(b)}`
 }
 
+function correctionTerm(coefficient: bigint, numerator: string, denominator: string): string {
+  if (coefficient === 0n) return ''
+  const sign = coefficient > 0n ? '+' : '-'
+  const magnitude = absBigInt(coefficient)
+  const coefficientText = magnitude === 1n ? '' : String(magnitude)
+  return `${sign}\\frac{${coefficientText}${numerator}}{${denominator}}`
+}
+
 function answerFor(matrix: Matrix2, observable: 'trace' | 'norm' | 'inverse_trace'): string {
   const [a, b, c, d] = matrix
   const parity = '(-1)^n'
@@ -180,11 +188,11 @@ function answerFor(matrix: Matrix2, observable: 'trace' | 'norm' | 'inverse_trac
     return `\\frac{${b}^{n}-${parity}${a}^{n}}{${d}^{n}-${parity}${c}^{n}}`
   }
   if (observable === 'inverse_trace') {
-    const determinant = d * a - c * b
-    return `\\frac{${c}n}{${a}}-\\frac{${determinant}n(-${b})^{n-1}}{${a}\\left((- ${b})^n-${a}^n\\right)}`.replace(/\(- /g, '(-')
+    const correction = c * b - d * a
+    return `\\frac{${c}n}{${a}}${correctionTerm(correction, `n(-${b})^{n-1}`, `${a}\\left((- ${b})^n-${a}^n\\right)` )}`.replace(/\(- /g, '(-')
   }
-  const determinantTerm = b * c - a * d
-  return `\\frac{${a}n}{${c}}-\\frac{${determinantTerm}n(-${d})^{n-1}}{${c}\\left((- ${d})^n-${c}^n\\right)}`.replace(/\(- /g, '(-')
+  const correction = a * d - b * c
+  return `\\frac{${a}n}{${c}}${correctionTerm(correction, `n(-${d})^{n-1}`, `${c}\\left((- ${d})^n-${c}^n\\right)` )}`.replace(/\(- /g, '(-')
 }
 
 function observableText(observable: 'trace' | 'norm' | 'inverse_trace', exponent: number): string {
