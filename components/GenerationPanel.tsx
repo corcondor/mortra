@@ -101,6 +101,24 @@ type GenerationResult = {
     next_attempt_at?: string | null
     frontier?: Array<{ source: string; target: string; obligation: string }>
   }
+  generalization?: {
+    id: string
+    method: string
+    target_sort: string | null
+    common_operators: string[]
+    common_sorts: string[]
+    roadmap: Array<{
+      id: string
+      source: string
+      target: string
+      morphism: string
+      preserves: string[]
+      backend: string[]
+      status: 'proved' | 'open'
+      parent_ids: string[]
+    }>
+    proof_obligations: string[]
+  }
 }
 
 type StreamEvent = {
@@ -157,6 +175,8 @@ const PHASE_RANK: Record<string, number> = {
   partial: 6,
 }
 
+const ACTIVE_RESEARCH_JOB_KEY = 'mathos.activeResearchJob'
+
 function logLineColor(line: string): string {
   if (line.includes('失敗') || line.includes('停止') || line.includes('エラー')) return 'text-rose-300'
   if (line.includes('完了') || line.includes('保存しました')) return 'text-emerald-300'
@@ -195,6 +215,8 @@ export function GenerationPanel({
   const [deepSearch, setDeepSearch] = useState(true)
   const [searchBudgetSeconds, setSearchBudgetSeconds] = useState(90)
   const [generatedCards, setGeneratedCards] = useState<GenerationCard[]>([])
+  const [roadmap, setRoadmap] = useState<NonNullable<GenerationResult['generalization']>['roadmap']>([])
+  const [roadmapTarget, setRoadmapTarget] = useState<string | null>(null)
   const logEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -215,6 +237,17 @@ export function GenerationPanel({
     }, 12)
     return () => window.clearInterval(timer)
   }, [draft])
+
+  useEffect(() => {
+    const jobId = window.localStorage.getItem(ACTIVE_RESEARCH_JOB_KEY)
+    if (!jobId) return
+    setGenerating(true)
+    setWindowOpen(true)
+    setLogs([`未完了の探索ジョブ ${jobId.slice(0, 8)} を再接続しています。`])
+    void pollDiscoveryJob(jobId).finally(() => setGenerating(false))
+    // Mount-time recovery deliberately runs once for the persisted job id.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const finish = (data: GenerationResult) => {
     const lines = data.cards.map((card, index) => {
@@ -240,6 +273,8 @@ export function GenerationPanel({
     setTotal(data.requested)
     setCompleted(data.generated || discovered)
     setGeneratedCards(data.cards)
+    setRoadmap(data.generalization?.roadmap ?? [])
+    setRoadmapTarget(data.generalization?.target_sort ?? null)
     const finalCard = data.cards[0]
     if (finalCard) {
       setDraft(finalCard.statement_tex ?? '')
@@ -250,10 +285,17 @@ export function GenerationPanel({
     }
     setLogs(previous => [...previous, ...lines, ...data.errors, message].slice(-30))
     setGenDone({ ok, partial, message })
-    if (data.generated > 0) void onGenerated?.()
+    if (data.generated > 0) {
+      window.localStorage.removeItem(ACTIVE_RESEARCH_JOB_KEY)
+      if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+        new Notification('MathOS 作問完了', { body: `${data.generated}問を生成・検証しました。` })
+      }
+      void onGenerated?.()
+    }
   }
 
   const pollDiscoveryJob = async (jobId: string) => {
+    window.localStorage.setItem(ACTIVE_RESEARCH_JOB_KEY, jobId)
     setUiPhase('inducing')
     setCompleted(0)
     setStructureId(null)
@@ -268,8 +310,8 @@ export function GenerationPanel({
     ].slice(-30))
     let deliveredLogs = 0
     let observedRound = 0
-    for (let attempt = 0; attempt < 200; attempt++) {
-      if (attempt > 0) await new Promise(resolve => window.setTimeout(resolve, 3_000))
+    for (let attempt = 0; attempt < 5_760; attempt++) {
+      if (attempt > 0) await new Promise(resolve => window.setTimeout(resolve, 5_000))
       const response = await fetch(`/api/job-status?job_id=${encodeURIComponent(jobId)}`, { cache: 'no-store' })
       if (!response.ok) throw new Error(`未知構造探索の状態取得に失敗しました: ${response.status}`)
       const job = await response.json() as {
@@ -286,8 +328,16 @@ export function GenerationPanel({
         finish(job.result)
         return
       }
-      if (job.status === 'failed') throw new Error(job.error ?? '未知構造探索が失敗しました')
+      if (job.status === 'failed') {
+        window.localStorage.removeItem(ACTIVE_RESEARCH_JOB_KEY)
+        throw new Error(job.error ?? '未知構造探索が失敗しました')
+      }
       const state = job.result?.searchState
+      const generalization = job.result?.generalization
+      if (generalization) {
+        setRoadmap(generalization.roadmap ?? [])
+        setRoadmapTarget(generalization.target_sort ?? null)
+      }
       if (state?.round && state.round !== observedRound) {
         observedRound = state.round
         setLogs(previous => [
@@ -298,7 +348,7 @@ export function GenerationPanel({
       }
       setUiPhase(state?.continuing ? 'researching' : job.status === 'processing' ? 'inducing' : 'searching')
     }
-    const message = `探索ジョブ ${jobId.slice(0, 8)} はバックグラウンドで自律研究を継続しています。再度相談する必要はありません。`
+    const message = `探索ジョブ ${jobId.slice(0, 8)} は8時間を超えてバックグラウンド研究を継続しています。次回アクセス時に自動再接続します。`
     setUiPhase('researching')
     setLogs(previous => [...previous, message].slice(-30))
     setGenDone({ ok: true, partial: true, message })
@@ -340,6 +390,8 @@ export function GenerationPanel({
     setMorphisms([])
     setDraft('')
     setGeneratedCards([])
+    setRoadmap([])
+    setRoadmapTarget(null)
     setWindowOpen(true)
 
     const domain = parents[0]?.topic_a || undefined
@@ -752,6 +804,29 @@ export function GenerationPanel({
             {morphisms.length > 0 && (
               <div className="truncate border-t border-zinc-800 pt-2 font-mono text-[9px] text-cyan-300">
                 {morphisms.length} 検証段: {morphisms.slice(-4).join(' → ')}
+              </div>
+            )}
+
+            {roadmap.length > 0 && (
+              <div className="rounded border border-cyan-500/20 bg-cyan-500/[0.03] p-2.5">
+                <div className="mb-2 flex items-center justify-between text-[9px]">
+                  <span className="font-semibold uppercase text-cyan-300">Proof roadmap</span>
+                  <span className="max-w-[210px] truncate text-zinc-500">target: {roadmapTarget ?? 'searching'}</span>
+                </div>
+                <div className="max-h-36 space-y-1.5 overflow-y-auto pr-1">
+                  {roadmap.slice(0, 20).map((step, index) => (
+                    <div key={`${step.id}-${index}`} className="grid grid-cols-[18px_1fr] gap-1.5 font-mono text-[9px] leading-4">
+                      <span className={`flex h-[18px] w-[18px] items-center justify-center rounded-full border ${step.status === 'proved' ? 'border-emerald-500/50 text-emerald-300' : 'border-amber-500/40 text-amber-300'}`}>
+                        {index + 1}
+                      </span>
+                      <div className="min-w-0">
+                        <div className="truncate text-zinc-200">{step.source} → {step.target}</div>
+                        <div className="truncate text-cyan-400">{step.morphism}</div>
+                        <div className="truncate text-zinc-600">保存: {step.preserves.join(' / ') || '検証中'} · {step.backend.join(' / ') || 'backend探索中'}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 

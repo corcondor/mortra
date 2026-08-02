@@ -524,6 +524,7 @@ export async function processJob(jobId: string) {
           cards,
           searchState,
           strategyAttempts: autonomous.attempts,
+          generalization: autonomous.generalization,
           structures: cards.map(card => ({ blueprint: card.structure_blueprint, status: 'new', parentIds: card.parent_ids, registeredAt: new Date().toISOString() })),
           errors: [],
           rejectionCounts: {},
@@ -542,6 +543,7 @@ export async function processJob(jobId: string) {
         ...discovery,
         searchState,
         strategyAttempts: autonomous.attempts,
+        generalization: autonomous.generalization,
         backgroundResearch: true,
       }
       log(`⏳ [探索継続] 実行証明は未完成。frontier=${searchState.frontier.length} を保存し、${searchState.next_attempt_at} に自動再開`)

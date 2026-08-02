@@ -8,6 +8,7 @@ import {
   synthesizeExecutableFusions,
   type ExecutableFusionCard,
 } from './executable-fusion'
+import { generalizeParents, type GeneralizationCertificate } from './generalization-kernel'
 
 export type StrategyAttempt = {
   strategy: string
@@ -38,6 +39,7 @@ export type SynthesisContext = {
   requested: number
   round: number
   depth: number
+  generalization: GeneralizationCertificate
 }
 
 export type SynthesisStrategy = {
@@ -52,6 +54,7 @@ export type AutonomousSynthesisResult = {
   discovery: ReturnType<typeof discoverParentStructures>
   state: AutonomousSearchState
   attempts: StrategyAttempt[]
+  generalization: GeneralizationCertificate
 }
 
 function fingerprint(parents: DiscoveryParent[]): string {
@@ -71,12 +74,9 @@ const RATIONAL_MAP_FINITE_ORBIT: SynthesisStrategy = {
   id: 'rational-map-finite-algebraic-orbit',
   version: 1,
   supports(context) {
-    const hasRationalMap = context.parents.some(parent =>
-      /T\s*\(\s*z\s*\)\s*=\s*\\frac|一次分数変換|m[oö]bius/i.test(sourceText(parent)),
-    )
-    const hasFiniteOrbit = context.parents.some(parent =>
-      /z\s*\^\s*\{?n\}?\s*=\s*1|1\s*の\s*n\s*乗根|1の冪根|roots? of unity/i.test(sourceText(parent)),
-    )
+    const operators = new Set(context.generalization.bindings.map(binding => binding.canonical))
+    const hasRationalMap = operators.has('MobiusMap')
+    const hasFiniteOrbit = operators.has('RootsOfUnity')
     return {
       applicable: hasRationalMap && hasFiniteOrbit,
       reason: hasRationalMap && hasFiniteOrbit
@@ -138,20 +138,28 @@ export function runAutonomousSynthesis(
   state.round += 1
   state.depth = Math.min(30, Math.max(2, state.depth + (state.round > 1 ? 1 : 0)))
   const discovery = discoverParentStructures(parents, requested)
+  const generalized = generalizeParents(parents, state.depth)
   state.hypotheses_evaluated += discovery.hypotheses.length
-  state.frontier = discovery.hypotheses.slice(0, 24).flatMap(hypothesis =>
-    hypothesis.paths.map(path => ({
-      source: path.start_sort,
-      target: hypothesis.target_sort,
-      obligation: hypothesis.proof_obligations[1],
-    })),
-  )
+  state.frontier = generalized.certificate.roadmap.length
+    ? generalized.certificate.roadmap.slice(0, 48).map(step => ({
+        source: step.source,
+        target: step.target,
+        obligation: `${step.morphism} preserves ${step.preserves.join(', ')}`,
+      }))
+    : discovery.hypotheses.slice(0, 24).flatMap(hypothesis =>
+        hypothesis.paths.map(path => ({
+          source: path.start_sort,
+          target: hypothesis.target_sort,
+          obligation: hypothesis.proof_obligations[1],
+        })),
+      )
 
   const context: SynthesisContext = {
     parents,
     requested,
     round: state.round,
     depth: state.depth,
+    generalization: generalized.certificate,
   }
   const roundAttempts: StrategyAttempt[] = []
   const cards: ExecutableFusionCard[] = []
@@ -192,7 +200,7 @@ export function runAutonomousSynthesis(
   state.next_attempt_at = state.continuing
     ? new Date(now.getTime() + 15 * 60 * 1000).toISOString()
     : null
-  return { cards, discovery, state, attempts: roundAttempts }
+  return { cards, discovery, state, attempts: roundAttempts, generalization: generalized.certificate }
 }
 
 export function summarizeLift(parents: DiscoveryParent[]) {
