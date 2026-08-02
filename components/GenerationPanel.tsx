@@ -225,8 +225,18 @@ export function GenerationPanel({
       ? `${partial ? '一部完了' : '完了'}: ${data.generated}/${data.requested} 問を生成・検証・保存しました。${partial ? ' 残りは構造条件または新規性検査で棄却されました。' : ''}`
       : `生成できませんでした（${data.errors[0] ?? '理由不明'}）`
     setUiPhase(discovered > 0 ? 'done' : partial ? 'partial' : ok ? 'done' : 'error')
+    setCurrent(data.requested)
+    setTotal(data.requested)
     setCompleted(data.generated || discovered)
     setGeneratedCards(data.cards)
+    const finalCard = data.cards[0]
+    if (finalCard) {
+      setDraft(finalCard.statement_tex ?? '')
+      setFamilyId(finalCard.family_id ?? null)
+      setMorphisms(finalCard.morphism_chain ?? [])
+      setStructureId(finalCard.structure_blueprint?.id ?? null)
+      setStructureStatus(finalCard.unresolved ? 'pending' : 'new')
+    }
     setLogs(previous => [...previous, ...lines, ...data.errors, message].slice(-30))
     setGenDone({ ok, partial, message })
     if (data.generated > 0) void onGenerated?.()
@@ -234,6 +244,12 @@ export function GenerationPanel({
 
   const pollDiscoveryJob = async (jobId: string) => {
     setUiPhase('inducing')
+    setCompleted(0)
+    setStructureId(null)
+    setStructureStatus(null)
+    setFamilyId(null)
+    setMorphisms([])
+    setDraft('選択した親問題を再解析し、実行可能な中間命題を探索しています。')
     setLogs(previous => [
       ...previous,
       '既存Atlas外の構造です。選択した問題本文から対象・射・制約を再構成します。',
