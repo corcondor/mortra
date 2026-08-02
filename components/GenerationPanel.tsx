@@ -207,6 +207,9 @@ export function GenerationPanel({
 
   const finish = (data: GenerationResult) => {
     const lines = data.cards.map((card, index) => {
+      if (card.unresolved) {
+        return `${index + 1}. ${card.structure_blueprint?.observable ?? card.family_id ?? '?'} / 要検証`
+      }
       const similarity = card.similarity?.score ?? card.similarity?.max
       const suffix = typeof similarity === 'number'
         ? ` / 最大類似度 ${(similarity * 100).toFixed(0)}%`
@@ -498,7 +501,9 @@ export function GenerationPanel({
                   : 'その場で新規構成・検証済み・問題一覧にも自動反映'}
               </p>
             </div>
-            <span className="text-[10px] tabular-nums text-emerald-300">{generatedCards.length} 問</span>
+            <span className="text-[10px] tabular-nums text-emerald-300">
+              {generatedCards.length} {generatedCards.some(card => card.unresolved) ? '件' : '問'}
+            </span>
           </div>
           {generatedCards.map((card, index) => (
             <article key={`${card.family_id}-${index}`} className={`rounded-md border p-4 ${card.unresolved ? 'border-amber-500/25 bg-amber-500/[0.04]' : 'border-emerald-500/25 bg-emerald-500/[0.04]'}`}>
@@ -530,7 +535,9 @@ export function GenerationPanel({
               ) : null}
               {card.fusion_derivation?.passed ? (
                 <details className="mb-2 text-[10px] text-zinc-500">
-                  <summary className="cursor-pointer text-fuchsia-300">融合証明書: 全親が不可欠</summary>
+                  <summary className="cursor-pointer text-fuchsia-300">
+                    {card.unresolved ? '探索証明書: 全親を別々の入力として使用' : '融合証明書: 全親が不可欠'}
+                  </summary>
                   <ul className="mt-1 space-y-1 border-l border-zinc-800 pl-3">
                     {card.fusion_derivation.assignments.map(assignment => (
                       <li key={`${assignment.parentId}-${assignment.portId}`}>
@@ -543,7 +550,9 @@ export function GenerationPanel({
                         {bridge.consumes.join(' + ')} → {bridge.produces} [{bridge.witnessStep}]
                       </li>
                     ))}
-                    <li className="text-emerald-300">親除去テスト: 通過</li>
+                    <li className="text-emerald-300">
+                      {card.unresolved ? '親除去で候補の構造署名が変化' : '親除去テスト: 通過'}
+                    </li>
                   </ul>
                   {card.fusion_derivation.intermediatePropositions?.length ? (
                     <ol className="mt-2 max-h-40 space-y-1 overflow-y-auto border-l border-zinc-800 pl-3">

@@ -160,8 +160,11 @@ export function discoverParentStructures(parents: DiscoveryParent[], requested =
       morphism_chain: plan.paths.flatMap(path => path.morphisms.map(edge => edge.name)),
       fusion_derivation: {
         passed: true,
-        reason: 'all selected parents have a distinct typed conjectural path to one candidate codomain',
-        ablationPassed: new Set(parentIds).size === parentIds.length,
+        reason: 'all selected parents have a distinct typed conjectural path; mathematical indispensability is not yet proved',
+        ablationPassed: graphs.every((_, removedIndex) => {
+          const reducedStarts = plan.paths.filter((_, index) => index !== removedIndex).map(path => path.start_sort)
+          return `${plan.constructor}[${reducedStarts.join(',')}]` !== plan.target_sort
+        }),
         assignments: plan.paths.map((path, index) => ({
           parentId: path.parent_id,
           portId: `input_${index + 1}`,
