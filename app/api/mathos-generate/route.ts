@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
-import { generateLiveProblem } from '@/lib/mathos-live'
+import { generateLiveProblem, type StructureBlueprint } from '@/lib/mathos-live'
 import verifiedBatch from '@/data/mathos/continuous_verified_problem_batch1.json'
 
 export const runtime = 'nodejs'
@@ -217,8 +217,39 @@ type GenerationProfile = {
   domain?: string
   tags: string[]
   requiredTags: string[]
+  queryTags: string[]
   parentIds: string[]
   mode: 'similar' | 'fusion' | 'expand' | 'batch'
+}
+
+const QUERY_TAGS = new Set([
+  'area', 'volume', 'radius_ratio', 'radius_product', 'circumradius',
+  'curvature', 'center_distance', 'reciprocal_invariant', 'limit',
+])
+
+// 直接一致しないときも、Atlas上で意味のある隣接射だけを許す。遠距離ジャンプはしない。
+const EXECUTABLE_TAG_BRIDGES: Record<string, string[]> = {
+  centroid: ['triangle', 'circle_centers'],
+  circle_centers: ['triangle'],
+  heron: ['triangle', 'symmetric_polynomial'],
+  tangent: ['parabola', 'locus'],
+  intersection: ['polynomial_roots', 'algebra'],
+  envelope: ['locus', 'passage_region', 'parabola'],
+  locus: ['passage_region', 'parabola'],
+  minkowski_sum: ['passage_region', 'disk'],
+  polynomial_roots: ['symmetric_polynomial', 'algebra'],
+  dynamical_system: ['iteration', 'recurrence'],
+  iteration: ['recurrence', 'matrix'],
+  ellipse: ['locus', 'tangent'],
+}
+
+function expandedFocusTags(tags: string[]): string[] {
+  return [...new Set(tags.flatMap(tag => [tag, ...(EXECUTABLE_TAG_BRIDGES[tag] ?? [])]))]
+}
+
+function preservedByAtlas(tag: string, candidateTags: string[]): boolean {
+  return candidateTags.includes(tag) ||
+    (EXECUTABLE_TAG_BRIDGES[tag] ?? []).some(neighbor => candidateTags.includes(neighbor))
 }
 
 const TAG_PATTERNS: Array<[string, RegExp]> = [
@@ -244,6 +275,9 @@ const TAG_PATTERNS: Array<[string, RegExp]> = [
   ['curvature', /曲率|curvature/i],
   ['center_distance', /中心間距離|center[_\s-]?distance|OI\^?2/i],
   ['radius_ratio', /半径[^。\n]{0,40}比|R\s*\/\s*r|radius[_\s-]?ratio/i],
+  ['radius_product', /半径[^。\n]{0,40}積|radius[_\s-]?product/i],
+  ['circumradius', /外接円半径|circumradius/i],
+  ['reciprocal_invariant', /逆数[^。\n]{0,30}(?:和|不変)|reciprocal[_\s-]?invariant/i],
   ['dynamical_system', /反復|周期[^。\n]{0,40}軌道|力学系|dynamical[_\s-]?system|orbit/i],
   ['rotation', /回転|rotation/i],
   ['probability', /確率|期待値|probability|expectation/i],
@@ -297,13 +331,12 @@ function buildGenerationProfile(
     .sort((a, b) => b[1] - a[1])
     .map(([tag]) => tag)
 
-  const queryTags = new Set(['area', 'volume', 'radius_ratio', 'curvature', 'center_distance'])
   const semanticTags = tags.filter(tag =>
     evidenceCounts.has(tag) && !['geometry', 'algebra', 'circle'].includes(tag),
   )
   const structuralTags = [
-    ...semanticTags.filter(tag => !queryTags.has(tag)),
-    ...semanticTags.filter(tag => queryTags.has(tag)),
+    ...semanticTags.filter(tag => !QUERY_TAGS.has(tag)),
+    ...semanticTags.filter(tag => QUERY_TAGS.has(tag)),
   ]
   const commonStructuralTags = structuralTags.filter(tag =>
     parentTagSets.length > 0 && parentTagSets.every(parentTags => parentTags.has(tag)),
@@ -332,6 +365,7 @@ function buildGenerationProfile(
     domain,
     tags,
     requiredTags,
+    queryTags: semanticTags.filter(tag => QUERY_TAGS.has(tag)),
     parentIds: parents.flatMap(parent => parent.id ? [parent.id] : []),
     mode,
   }
@@ -362,7 +396,7 @@ type GenerationResult = {
 }
 
 type ProgressEvent = {
-  phase: 'start' | 'searching' | 'structuring' | 'novelty' | 'verifying' | 'saving' | 'complete' | 'error'
+  phase: 'start' | 'searching' | 'inducing' | 'registering' | 'structuring' | 'novelty' | 'verifying' | 'saving' | 'complete' | 'error'
   message: string
   current: number
   total: number
@@ -370,9 +404,55 @@ type ProgressEvent = {
   familyId?: string
   morphisms?: string[]
   similarity?: number
+  structureId?: string
+  structureStatus?: 'new' | 'reused' | 'pending'
 }
 
 type ProgressEmitter = (event: ProgressEvent) => void
+
+type RegisteredStructure = {
+  blueprint: StructureBlueprint | {
+    id: string
+    version: 1
+    kernel: 'unresolved_parent_structure'
+    observable: string
+    operators: string[]
+    domain: string
+    tags: string[]
+    morphismChain: string[]
+    executable: false
+  }
+  status: 'new' | 'reused' | 'pending'
+  parentIds: string[]
+  registeredAt: string
+}
+
+function stableStructureId(profile: GenerationProfile): string {
+  const source = [...profile.requiredTags, ...profile.queryTags, profile.domain ?? 'unknown'].sort().join('|')
+  let hash = 2166136261
+  for (let index = 0; index < source.length; index++) {
+    hash ^= source.charCodeAt(index)
+    hash = Math.imul(hash, 16777619)
+  }
+  return `pending.${(hash >>> 0).toString(36)}`
+}
+
+async function loadRegisteredStructureIds(): Promise<Set<string>> {
+  const { data } = await supabaseAdmin
+    .from('generation_jobs')
+    .select('result')
+    .eq('status', 'done')
+    .not('result', 'is', null)
+    .order('created_at', { ascending: false })
+    .limit(100)
+  const ids = new Set<string>()
+  for (const row of (data ?? []) as Array<{ result?: { structures?: RegisteredStructure[] } | null }>) {
+    for (const structure of row.result?.structures ?? []) {
+      if (structure.status !== 'pending') ids.add(structure.blueprint.id)
+    }
+  }
+  return ids
+}
 
 async function generateCards(
   count: number,
@@ -382,9 +462,21 @@ async function generateCards(
 ): Promise<GenerationResult> {
   const cards: Record<string, unknown>[] = []
   const errors: string[] = []
+  const structures: RegisteredStructure[] = []
+  const sessionLogs: Array<{ phase: string; message: string; ts: string }> = []
   const seenFamilies = new Set<string>()
   const seenCandidates = new Set<string>()
-  const corpus = await loadNoveltyCorpus()
+  const seenStructureIds = new Set<string>()
+  const jobId = crypto.randomUUID()
+  let jobWritable = true
+  const report: ProgressEmitter = event => {
+    sessionLogs.push({ phase: event.phase, message: event.message, ts: new Date().toISOString() })
+    emit(event)
+  }
+  const [corpus, registeredStructureIds] = await Promise.all([
+    loadNoveltyCorpus(),
+    loadRegisteredStructureIds(),
+  ])
   const isBatch = profiles.length > 1
   const attemptsPerProfile = isBatch ? 12 : searchDepth === 'deep' ? 180 : 50
   const maxAttempts = isBatch
@@ -399,7 +491,25 @@ async function generateCards(
     ? ` / 継承: ${firstProfile.requiredTags.join(' + ')}`
     : ''
 
-  emit({
+  const { error: jobError } = await supabaseAdmin.from('generation_jobs').insert({
+    id: jobId,
+    status: 'processing',
+    parents: profiles.map(profile => ({
+      parentIds: profile.parentIds,
+      tags: profile.tags,
+      requiredTags: profile.requiredTags,
+      queryTags: profile.queryTags,
+    })),
+    mode: firstProfile.mode,
+    count,
+    logs: [],
+    result: { phase: 'started', structures: [] },
+    model: 'mathos-typed-structure-dsl-v1',
+    updated_at: new Date().toISOString(),
+  })
+  if (jobError) jobWritable = false
+
+  report({
     phase: 'start',
     message: `MathOS が${searchDepth === 'deep' ? '深層' : '標準'}探索を開始: ${focusLabel}${requiredLabel}`,
     current: 0,
@@ -410,7 +520,7 @@ async function generateCards(
     const current = i + 1
     let profileIndex = i % profiles.length
     let profile = profiles[profileIndex] ?? firstProfile
-    emit({
+    report({
       phase: 'searching',
       message: `問題 ${current}/${count}: Task Atlas から構成可能な経路を探索`,
       current,
@@ -422,13 +532,14 @@ async function generateCards(
     let live: ReturnType<typeof generateLiveProblem> = null
     let sim: ReturnType<typeof assessNovelty> | null = null
     let inheritedTags: string[] = []
+    let bridgedTags: string[] = []
     for (let attempt = 0; attempt < maxAttempts && Date.now() < deadline; attempt++) {
       if (isBatch && attempt > 0 && attempt % attemptsPerProfile === 0) {
         profileIndex = (profileIndex + 1) % profiles.length
         profile = profiles[profileIndex] ?? firstProfile
       }
       if (attempt > 0 && attempt % 30 === 0) {
-        emit({
+        report({
           phase: 'searching',
           message: `問題 ${current}/${count}: ${attempt} 候補を検査。構造条件を保ったまま探索を継続`,
           current,
@@ -437,7 +548,8 @@ async function generateCards(
       }
       const candidate = generateLiveProblem({
         domain: profile.domain,
-        focusTags: profile.tags,
+        focusTags: expandedFocusTags(profile.tags),
+        avoidQueryTags: profile.queryTags,
         excludedFamilies: attempt < Math.floor(maxAttempts * 0.6) ? [...seenFamilies] : [],
         preferDepth: searchDepth === 'deep',
       })
@@ -454,6 +566,7 @@ async function generateCards(
         candidate.tool,
         candidate.verificationMethod,
         candidate.morphismChain.join(' '),
+        candidate.structureBlueprint?.tags.join(' '),
       ].join(' '))
       const profileAttempt = isBatch ? attempt % attemptsPerProfile : attempt
       const requiredCount = profileAttempt < Math.floor(attemptsPerProfile * 0.55)
@@ -462,14 +575,64 @@ async function generateCards(
           ? Math.min(profile.requiredTags.length, 2)
           : Math.min(profile.requiredTags.length, 1)
       const attemptRequiredTags = profile.requiredTags.slice(0, requiredCount)
+      const candidateQueryTags = candidateTags.filter(tag => QUERY_TAGS.has(tag))
+      const changesQuery = profile.queryTags.length === 0 ||
+        candidateQueryTags.every(tag => !profile.queryTags.includes(tag))
+      const requireQueryChange = profile.queryTags.length > 0 &&
+        profileAttempt < Math.floor(attemptsPerProfile * 0.85)
       const preservesRequiredStructure = profile.mode === 'similar' || profile.mode === 'expand' || profile.mode === 'fusion'
-        ? attemptRequiredTags.every(tag => candidateTags.includes(tag))
-        : attemptRequiredTags.some(tag => candidateTags.includes(tag))
-      if (attemptRequiredTags.length && !preservesRequiredStructure) {
+        ? attemptRequiredTags.every(tag => preservedByAtlas(tag, candidateTags))
+        : attemptRequiredTags.some(tag => preservedByAtlas(tag, candidateTags))
+      if ((attemptRequiredTags.length && !preservesRequiredStructure) || (requireQueryChange && !changesQuery)) {
         continue
       }
 
-      emit({
+      const blueprint = candidate.structureBlueprint
+      if (blueprint && !seenStructureIds.has(blueprint.id)) {
+        seenStructureIds.add(blueprint.id)
+        const status = registeredStructureIds.has(blueprint.id) ? 'reused' : 'new'
+        const structure: RegisteredStructure = {
+          blueprint,
+          status,
+          parentIds: profile.parentIds,
+          registeredAt: new Date().toISOString(),
+        }
+        structures.push(structure)
+        report({
+          phase: 'inducing',
+          message: `${blueprint.kernel} から観測 ${blueprint.observable} への型付き射列を合成`,
+          current,
+          total: count,
+          draft: candidate.statementTex,
+          familyId: candidate.familyId,
+          morphisms: candidate.morphismChain,
+          structureId: blueprint.id,
+          structureStatus: status,
+        })
+        report({
+          phase: 'registering',
+          message: status === 'new'
+            ? `新しい実行可能構造 ${blueprint.id} をDBへ登録`
+            : `登録済み構造 ${blueprint.id} をDBから再利用`,
+          current,
+          total: count,
+          draft: candidate.statementTex,
+          familyId: candidate.familyId,
+          morphisms: candidate.morphismChain,
+          structureId: blueprint.id,
+          structureStatus: status,
+        })
+        if (jobWritable) {
+          const { error } = await supabaseAdmin.from('generation_jobs').update({
+            logs: sessionLogs,
+            result: { phase: 'registering', structures },
+            updated_at: new Date().toISOString(),
+          }).eq('id', jobId)
+          if (error) jobWritable = false
+        }
+      }
+
+      report({
         phase: 'structuring',
         message: `${candidate.familyId}: 選択問題の ${attemptRequiredTags.join(' / ') || profile.domain || '構造'} を保ち、${candidate.morphismChain.length} 本の射を構成`,
         current,
@@ -488,9 +651,12 @@ async function generateCards(
       if (!s.duplicate) {
         live = candidate
         sim = s
-        inheritedTags = attemptRequiredTags
+        inheritedTags = attemptRequiredTags.filter(tag => candidateTags.includes(tag))
+        bridgedTags = attemptRequiredTags.filter(tag =>
+          !candidateTags.includes(tag) && preservedByAtlas(tag, candidateTags),
+        )
         seenFamilies.add(candidate.familyId)
-        emit({
+        report({
           phase: 'novelty',
           message: `既存 ${s.comparedAgainst} 問と照合。最大表層類似度 ${(s.score * 100).toFixed(0)}%`,
           current,
@@ -504,13 +670,33 @@ async function generateCards(
       }
     }
     if (!live || !sim) {
-      const message = '選択問題から検証可能な射列を構成できませんでした。未接続タグをAtlas拡張候補として確認してください'
+      const pendingId = stableStructureId(profile)
+      if (!seenStructureIds.has(pendingId)) {
+        seenStructureIds.add(pendingId)
+        structures.push({
+          blueprint: {
+            id: pendingId,
+            version: 1,
+            kernel: 'unresolved_parent_structure',
+            observable: profile.queryTags[0] ?? 'unknown',
+            operators: [],
+            domain: profile.domain ?? 'unknown',
+            tags: profile.requiredTags,
+            morphismChain: [],
+            executable: false,
+          },
+          status: 'pending',
+          parentIds: profile.parentIds,
+          registeredAt: new Date().toISOString(),
+        })
+      }
+      const message = `実行射が不足する構造 ${pendingId} をAtlas保留キューへ登録し、次候補の探索へ進みました`
       errors.push(message)
-      emit({ phase: 'error', message, current, total: count })
+      report({ phase: 'registering', message, current, total: count, structureId: pendingId, structureStatus: 'pending' })
       continue
     }
 
-    emit({
+    report({
       phase: 'verifying',
       message: `${live.verificationMethod}: 厳密解と独立検算の証明書を確認`,
       current,
@@ -541,12 +727,16 @@ async function generateCards(
         focusTags: profile.tags,
         requestedTags: profile.requiredTags,
         inheritedTags,
-        unmappedTags: profile.requiredTags.filter(tag => !inheritedTags.includes(tag)),
+        bridgedTags,
+        unmappedTags: profile.requiredTags.filter(tag =>
+          !inheritedTags.includes(tag) && !bridgedTags.includes(tag),
+        ),
       },
-      atlasExpansion: inheritedTags.length < profile.requiredTags.length,
+      structureBlueprint: live.structureBlueprint,
+      atlasExpansion: bridgedTags.length > 0 || inheritedTags.length < profile.requiredTags.length,
     }
 
-    emit({
+    report({
       phase: 'saving',
       message: `検証済み問題をライブラリへ保存`,
       current,
@@ -579,7 +769,7 @@ async function generateCards(
     if (error) {
       const message = `保存失敗: ${error.message}`
       errors.push(message)
-      emit({ phase: 'error', message, current, total: count })
+      report({ phase: 'error', message, current, total: count })
       continue
     }
 
@@ -596,13 +786,17 @@ async function generateCards(
       difficulty: diff,
       similarity: sim,
       inherited_tags: inheritedTags,
-      unmapped_tags: profile.requiredTags.filter(tag => !inheritedTags.includes(tag)),
-      atlas_expansion: inheritedTags.length < profile.requiredTags.length,
+      bridged_tags: bridgedTags,
+      unmapped_tags: profile.requiredTags.filter(tag =>
+        !inheritedTags.includes(tag) && !bridgedTags.includes(tag),
+      ),
+      atlas_expansion: bridgedTags.length > 0 || inheritedTags.length < profile.requiredTags.length,
+      structure_blueprint: live.structureBlueprint,
       parent_ids: profile.parentIds,
     }
     cards.push(card)
     addToNoveltyCorpus(corpus, live.statementTex, live.familyId, live.answerTex, id)
-    emit({
+    report({
       phase: 'complete',
       message: `問題 ${current}/${count} を生成・検証・保存しました`,
       current,
@@ -613,13 +807,23 @@ async function generateCards(
     })
   }
 
-  return {
+  const result = {
     generated: cards.length,
     requested: count,
     engine: `MathOS structural live (${searchDepth}, no LLM)`,
     cards,
     errors,
   }
+  if (jobWritable) {
+    await supabaseAdmin.from('generation_jobs').update({
+      status: cards.length > 0 ? 'done' : 'failed',
+      logs: sessionLogs,
+      result: { ...result, structures },
+      error: cards.length > 0 ? null : errors.join(' / '),
+      updated_at: new Date().toISOString(),
+    }).eq('id', jobId)
+  }
+  return result
 }
 
 export async function POST(request: NextRequest) {

@@ -191,6 +191,23 @@ export type LiveProblem = {
   solutionTex: string
   morphismChain: string[]
   verificationMethod: string
+  structureBlueprint?: StructureBlueprint
+}
+
+/**
+ * 実行時に発見される構造を、安全に再実行できる宣言的DSL。
+ * 任意コードは保存せず、実装済みの構成核・観測・変換の識別子だけを合成する。
+ */
+export type StructureBlueprint = {
+  id: string
+  version: 1
+  kernel: string
+  observable: string
+  operators: string[]
+  domain: string
+  tags: string[]
+  morphismChain: string[]
+  executable: true
 }
 
 // ---------- F1 ギャンブラーの破産（確率漸化式・高校） ----------
@@ -623,21 +640,54 @@ function fixedChordRegion(): LiveProblem | null {
 }
 
 // ---------- F13-F15 三次式の根から作る三角形の対称不変量 ----------
-type RootTriangleQuery = 'curvature_sum' | 'center_distance_sum' | 'radius_ratio'
+type RootTriangleQuery =
+  | 'curvature_sum'
+  | 'center_distance_sum'
+  | 'radius_ratio'
+  | 'euler_center_distance'
+  | 'side_square_sum'
+  | 'reciprocal_side_square_sum'
+  | 'area_square'
+  | 'in_exradius_product'
+  | 'circumradius_square'
+
+const ROOT_TRIANGLE_QUERY_TAGS: Record<RootTriangleQuery, string[]> = {
+  curvature_sum: ['curvature'],
+  center_distance_sum: ['center_distance', 'circle_centers'],
+  radius_ratio: ['radius_ratio', 'circle_centers'],
+  euler_center_distance: ['center_distance', 'circle_centers'],
+  side_square_sum: ['symmetric_polynomial'],
+  reciprocal_side_square_sum: ['symmetric_polynomial', 'reciprocal_invariant'],
+  area_square: ['area'],
+  in_exradius_product: ['circle_centers', 'radius_product'],
+  circumradius_square: ['circle_centers', 'circumradius'],
+}
 
 function rootTriangleInvariant(query: RootTriangleQuery): LiveProblem | null {
   const data = constructIrrationalRootTriangle()
   if (!data) return null
   const { e1, e2, e3, semiperimeter: s, areaSquared, roots } = data
-  const polynomial = `x^3-${e1}x^2+${e2}x-${e3}=0`
-  const sharedStatement =
-    `三次方程式 \\(${polynomial}\\) は3つの相異なる正の無理数解 ` +
-    `\\(a,b,c\\) をもち，これらは三角形の3辺の長さになる。`
-  const sharedSolution =
-    `\\(P(x)=x^3-${e1}x^2+${e2}x-${e3}\\) とする。Vietaの公式より ` +
-    `\\(a+b+c=${e1},\\ ab+bc+ca=${e2},\\ abc=${e3}\\)，したがって半周長は \\(s=${s}\\)。` +
-    `Heronの公式を根多項式で書けば ` +
-    `\\(\\Delta^2=s(s-a)(s-b)(s-c)=sP(s)=${areaSquared}\\)。`
+  const shift = pick([0, 1, 1, 2])
+  const sourceE1 = e1 - 3 * shift
+  const sourceE2 = e2 - 2 * shift * e1 + 3 * shift * shift
+  const sourceE3 = e3 - shift * e2 + shift * shift * e1 - shift ** 3
+  const polynomial = `x^3-${sourceE1}x^2+${sourceE2}x-${sourceE3}=0`
+  const sharedStatement = shift === 0
+    ? `三次方程式 \\(${polynomial}\\) は3つの相異なる正の無理数解 ` +
+      `\\(a,b,c\\) をもち，これらは三角形の3辺の長さになる。`
+    : `三次方程式 \\(${polynomial}\\) の3つの相異なる無理数解を \\(u,v,w\\) とする。` +
+      `\\(a=u+${shift},\\ b=v+${shift},\\ c=w+${shift}\\) は三角形の3辺の長さになる。`
+  const sharedSolution = shift === 0
+    ? `\\(P(x)=x^3-${e1}x^2+${e2}x-${e3}\\) とする。Vietaの公式より ` +
+      `\\(a+b+c=${e1},\\ ab+bc+ca=${e2},\\ abc=${e3}\\)，したがって半周長は \\(s=${s}\\)。` +
+      `Heronの公式を根多項式で書けば ` +
+      `\\(\\Delta^2=s(s-a)(s-b)(s-c)=sP(s)=${areaSquared}\\)。`
+    : `\\(P(x)=x^3-${sourceE1}x^2+${sourceE2}x-${sourceE3}\\) とおく。` +
+      `Vietaの公式を \\(u,v,w\\) に適用し，さらに一様移動 ` +
+      `\\((u,v,w)\\mapsto(a,b,c)=(u+${shift},v+${shift},w+${shift})\\) を施すと，` +
+      `\\(a+b+c=${e1},\\ ab+bc+ca=${e2},\\ abc=${e3}\\)。半周長は \\(s=${s}\\) で，` +
+      `\\(Q(x)=P(x-${shift})\\) とおけば \\(Q\\) の根は \\(a,b,c\\)。したがって ` +
+      `\\(\\Delta^2=s(s-a)(s-b)(s-c)=sQ(s)=${areaSquared}\\)。`
 
   let familyId: string
   let statementTex: string
@@ -683,7 +733,7 @@ function rootTriangleInvariant(query: RootTriangleQuery): LiveProblem | null {
       )
     verificationMethod = 'euler_center_identity_plus_numeric_root_triangle'
     finalMorphisms = ['TriangleCenters', 'EulerDistanceIdentity', 'RadiusCancellation']
-  } else {
+  } else if (query === 'radius_ratio') {
     familyId = 'construct.root_triangle.circumradius_inradius_ratio'
     statementTex =
       `${sharedStatement} 外接円半径を \\(R\\)，内接円半径を \\(r\\) とするとき，` +
@@ -697,34 +747,140 @@ function rootTriangleInvariant(query: RootTriangleQuery): LiveProblem | null {
     numericValue = numericCircumradius / (numericArea / s)
     verificationMethod = 'vieta_heron_radius_ratio_plus_numeric_roots'
     finalMorphisms = ['Circumradius', 'Inradius', 'RadiusRatio']
+  } else if (query === 'euler_center_distance') {
+    familyId = 'runtime.root_triangle.euler_center_distance'
+    statementTex =
+      `${sharedStatement} 外心を \\(O\\)，内心を \\(I\\) とするとき，距離の二乗 \\(OI^2\\) を求めよ。`
+    answer = ratSub(rat(e3 * e3, 16 * areaSquared), rat(e3, e1))
+    solutionTex =
+      `${sharedSolution} \\(R=abc/(4\\Delta)\\)，\\(r=\\Delta/s\\) と Euler の公式 ` +
+      `\\(OI^2=R^2-2Rr\\) を用いる。Vieta の対称式だけで ` +
+      `\\(OI^2=${ratTex(answer)}\\) を得る。`
+    const numericArea = Math.sqrt(areaSquared)
+    const numericCircumradius = roots.reduce((product, root) => product * root, 1) / (4 * numericArea)
+    const numericInradius = numericArea / s
+    numericValue = numericCircumradius ** 2 - 2 * numericCircumradius * numericInradius
+    verificationMethod = 'euler_center_distance_symbolic_plus_numeric_roots'
+    finalMorphisms = ['Circumradius', 'Inradius', 'EulerCenterDistance']
+  } else if (query === 'side_square_sum') {
+    familyId = 'runtime.root_triangle.side_square_sum'
+    statementTex =
+      `${sharedStatement} \\(a^2+b^2+c^2\\) の値を求めよ。`
+    answer = rat(e1 * e1 - 2 * e2)
+    solutionTex =
+      `${sharedSolution} Vieta の公式から ` +
+      `\\(a^2+b^2+c^2=(a+b+c)^2-2(ab+bc+ca)=${ratTex(answer)}\\)。`
+    numericValue = roots.reduce((sum, root) => sum + root * root, 0)
+    verificationMethod = 'vieta_power_sum_plus_numeric_roots'
+    finalMorphisms = ['NewtonPowerSum', 'QuadraticObservable']
+  } else if (query === 'reciprocal_side_square_sum') {
+    familyId = 'runtime.root_triangle.reciprocal_side_square_sum'
+    statementTex =
+      `${sharedStatement} \\(\\dfrac1{a^2}+\\dfrac1{b^2}+\\dfrac1{c^2}\\) の値を求めよ。`
+    answer = rat(e2 * e2 - 2 * e1 * e3, e3 * e3)
+    solutionTex =
+      `${sharedSolution} 分母を \\((abc)^2\\) にそろえると分子は ` +
+      `\\((ab+bc+ca)^2-2abc(a+b+c)\\)。Vieta の公式より ` +
+      `\\(${ratTex(answer)}\\) となる。`
+    numericValue = roots.reduce((sum, root) => sum + 1 / (root * root), 0)
+    verificationMethod = 'vieta_reciprocal_power_sum_plus_numeric_roots'
+    finalMorphisms = ['ReciprocalRootImage', 'NewtonPowerSum', 'QuadraticObservable']
+  } else if (query === 'area_square') {
+    familyId = 'runtime.root_triangle.area_square'
+    statementTex =
+      `${sharedStatement} この三角形の面積を \\(\\Delta\\) とするとき，\\(\\Delta^2\\) を求めよ。`
+    answer = rat(areaSquared)
+    solutionTex =
+      `${sharedSolution} よって \\(\\Delta^2=${areaSquared}\\)。`
+    numericValue = s * roots.reduce((product, root) => product * (s - root), 1)
+    verificationMethod = 'heron_polynomial_evaluation_plus_numeric_roots'
+    finalMorphisms = ['HeronArea', 'SquareObservable']
+  } else if (query === 'in_exradius_product') {
+    familyId = 'runtime.root_triangle.in_exradius_product'
+    statementTex =
+      `${sharedStatement} 内接円半径を \\(r\\)，3つの傍接円半径を ` +
+      `\\(r_1,r_2,r_3\\) とするとき，積 \\(rr_1r_2r_3\\) を求めよ。`
+    answer = rat(areaSquared)
+    solutionTex =
+      `${sharedSolution} \\(r=\\Delta/s\\)，\\(r_1=\\Delta/(s-a)\\) などより ` +
+      `\\(rr_1r_2r_3=\\Delta^4/[s(s-a)(s-b)(s-c)]=\\Delta^2=${areaSquared}\\)。`
+    const numericArea = Math.sqrt(areaSquared)
+    numericValue = (numericArea / s) * roots.reduce(
+      (product, root) => product * numericArea / (s - root),
+      1,
+    )
+    verificationMethod = 'in_exradius_product_identity_plus_numeric_roots'
+    finalMorphisms = ['IncircleExcircles', 'RadiusProduct', 'HeronCancellation']
+  } else {
+    familyId = 'runtime.root_triangle.circumradius_square'
+    statementTex =
+      `${sharedStatement} 外接円半径を \\(R\\) とするとき，\\(R^2\\) を求めよ。`
+    answer = rat(e3 * e3, 16 * areaSquared)
+    solutionTex =
+      `${sharedSolution} \\(R=abc/(4\\Delta)\\) と Vieta の公式より ` +
+      `\\(R^2=(abc)^2/(16\\Delta^2)=${ratTex(answer)}\\)。`
+    const numericArea = Math.sqrt(areaSquared)
+    numericValue = (roots.reduce((product, root) => product * root, 1) / (4 * numericArea)) ** 2
+    verificationMethod = 'circumradius_square_vieta_plus_numeric_roots'
+    finalMorphisms = ['Circumradius', 'SquareObservable']
   }
 
   if (Math.abs(numericValue - ratNum(answer)) > 1e-9) return null
 
+  const morphismChain = [
+    'CubicPolynomial',
+    'IrrationalRootMultiset',
+    'VietaSymmetricSums',
+    ...(shift === 0 ? [] : ['UniformRootTranslation']),
+    'TriangleInequalityCertificate',
+    'HeronPolynomialEvaluation',
+    ...finalMorphisms,
+    'ExactRationalEvaluation',
+  ]
+  const tags = [
+    'geometry',
+    'algebra',
+    'triangle',
+    'polynomial_roots',
+    'symmetric_polynomial',
+    'heron',
+    ...ROOT_TRIANGLE_QUERY_TAGS[query],
+  ]
+  const structureId = `runtime.root_triangle.${shift === 0 ? 'direct' : 'shifted'}.${query}`
+  familyId = structureId
   return {
     familyId,
     domain: 'geometry_algebra',
     tool: 'vieta_heron_triangle_invariants',
-    parameters: { e1, e2, e3, semiperimeter: s, areaSquared },
+    parameters: { e1, e2, e3, sourceE1, sourceE2, sourceE3, shift, semiperimeter: s, areaSquared },
     statementTex,
     answerTex: ratTex(answer),
     solutionTex,
-    morphismChain: [
-      'CubicPolynomial',
-      'IrrationalRootMultiset',
-      'VietaSymmetricSums',
-      'TriangleInequalityCertificate',
-      'HeronPolynomialEvaluation',
-      ...finalMorphisms,
-      'ExactRationalEvaluation',
-    ],
+    morphismChain,
     verificationMethod,
+    structureBlueprint: {
+      id: structureId,
+      version: 1,
+      kernel: 'irrational_cubic_root_triangle',
+      observable: query,
+      operators: shift === 0 ? [] : ['uniform_root_translation'],
+      domain: 'geometry_algebra',
+      tags: [...new Set(tags)],
+      morphismChain,
+      executable: true,
+    },
   }
 }
 
 const rootTriangleCurvatureSum = () => rootTriangleInvariant('curvature_sum')
 const rootTriangleCenterDistanceSum = () => rootTriangleInvariant('center_distance_sum')
 const rootTriangleRadiusRatio = () => rootTriangleInvariant('radius_ratio')
+const rootTriangleEulerCenterDistance = () => rootTriangleInvariant('euler_center_distance')
+const rootTriangleSideSquareSum = () => rootTriangleInvariant('side_square_sum')
+const rootTriangleReciprocalSideSquareSum = () => rootTriangleInvariant('reciprocal_side_square_sum')
+const rootTriangleAreaSquare = () => rootTriangleInvariant('area_square')
+const rootTriangleInExradiusProduct = () => rootTriangleInvariant('in_exradius_product')
+const rootTriangleCircumradiusSquare = () => rootTriangleInvariant('circumradius_square')
 
 type LiveGenerator = () => LiveProblem | null
 
@@ -732,7 +888,11 @@ type LiveGenerator = () => LiveProblem | null
  * 任意の通過領域問題を可逆線形写像で持ち上げる共通の射。
  * 元の問題族ごとの特別扱いはせず、面積測度の変換則 |det T| だけを合成する。
  */
-function affineImageOfSweptRegion(baseGenerator: LiveGenerator): LiveGenerator {
+function affineImageOfSweptRegion(
+  baseGenerator: LiveGenerator,
+  kernel: string,
+  tags: string[],
+): LiveGenerator {
   return () => {
     const base = baseGenerator()
     if (!base) return null
@@ -754,6 +914,7 @@ function affineImageOfSweptRegion(baseGenerator: LiveGenerator): LiveGenerator {
       `\\(T(x,y)=(${linearExpression(m11, m12)},${linearExpression(m21, m22)})\\)`
     const answer = scaledTexAnswer(base.answerTex, determinant)
 
+    const morphismChain = [...base.morphismChain, 'LinearImage', 'JacobianDeterminant', 'AreaScale']
     return {
       familyId: `compose.affine_image.${base.familyId}`,
       domain: 'geometry',
@@ -767,16 +928,43 @@ function affineImageOfSweptRegion(baseGenerator: LiveGenerator): LiveGenerator {
         `一方，線形変換 \\(T\\) は面積を ` +
         `\\(|\\det T|=|${m11}\\cdot${m22}-(${m12})\\cdot${m21}|=${determinant}\\) 倍する。` +
         `ゆえに \\(T(S)\\) の面積は \\(${answer}\\)。`,
-      morphismChain: [...base.morphismChain, 'LinearImage', 'JacobianDeterminant', 'AreaScale'],
+      morphismChain,
       verificationMethod: `${base.verificationMethod}_plus_exact_determinant_scale`,
+      structureBlueprint: {
+        id: `runtime.swept_region.${kernel}.affine_measure`,
+        version: 1,
+        kernel,
+        observable: 'area',
+        operators: ['invertible_linear_image'],
+        domain: 'geometry',
+        tags: [...new Set(['geometry', 'passage_region', 'area', 'linear_map', ...tags])],
+        morphismChain,
+        executable: true,
+      },
     }
   }
 }
 
-const affineAxisInterceptRegion = affineImageOfSweptRegion(axisInterceptSegmentRegion)
-const affineTranslatedDiskRegion = affineImageOfSweptRegion(translatedDiskRegion)
-const affineRotatingRectangleRegion = affineImageOfSweptRegion(rotatingRectangleRegion)
-const affineFixedChordRegion = affineImageOfSweptRegion(fixedChordRegion)
+const affineAxisInterceptRegion = affineImageOfSweptRegion(
+  axisInterceptSegmentRegion,
+  'axis_intercept_segment_region',
+  ['segment', 'parameter_elimination'],
+)
+const affineTranslatedDiskRegion = affineImageOfSweptRegion(
+  translatedDiskRegion,
+  'translated_disk_minkowski_region',
+  ['segment', 'disk', 'minkowski_sum'],
+)
+const affineRotatingRectangleRegion = affineImageOfSweptRegion(
+  rotatingRectangleRegion,
+  'rotating_rectangle_region',
+  ['rotation', 'group_action'],
+)
+const affineFixedChordRegion = affineImageOfSweptRegion(
+  fixedChordRegion,
+  'fixed_chord_region',
+  ['segment', 'chord', 'rotation'],
+)
 
 type GeneratorSpec = {
   generate: LiveGenerator
@@ -805,11 +993,18 @@ const GENERATORS: GeneratorSpec[] = [
   { generate: rootTriangleCurvatureSum, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'circle_centers', 'curvature'], depth: 9 },
   { generate: rootTriangleCenterDistanceSum, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'circle_centers', 'center_distance'], depth: 9 },
   { generate: rootTriangleRadiusRatio, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'circle_centers', 'radius_ratio'], depth: 9 },
+  { generate: rootTriangleEulerCenterDistance, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'circle_centers', 'center_distance'], depth: 9 },
+  { generate: rootTriangleSideSquareSum, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'power_sum'], depth: 9 },
+  { generate: rootTriangleReciprocalSideSquareSum, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'reciprocal_invariant'], depth: 10 },
+  { generate: rootTriangleAreaSquare, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'area'], depth: 8 },
+  { generate: rootTriangleInExradiusProduct, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'circle_centers', 'radius_product'], depth: 10 },
+  { generate: rootTriangleCircumradiusSquare, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'circle_centers', 'circumradius'], depth: 9 },
 ]
 
 export type LiveGenerationRequest = {
   domain?: string
   focusTags?: string[]
+  avoidQueryTags?: string[]
   excludedFamilies?: string[]
   preferDepth?: boolean
 }
@@ -823,12 +1018,14 @@ function domainMatches(requested: string | undefined, actual: string): boolean {
 /** 選択問題の意味タグとの一致度で族を並べ、同点だけをランダム化して構築する。 */
 export function generateLiveProblem(request: LiveGenerationRequest = {}): LiveProblem | null {
   const focus = new Set(request.focusTags ?? [])
+  const avoidedQueries = new Set(request.avoidQueryTags ?? [])
   const excluded = new Set(request.excludedFamilies ?? [])
   const scored = GENERATORS.map((spec) => {
     const tagScore = spec.tags.reduce((score, tag) => score + (focus.has(tag) ? 4 : 0), 0)
+    const queryPenalty = spec.tags.some(tag => avoidedQueries.has(tag)) ? 8 : 0
     const domainScore = domainMatches(request.domain, spec.domain) ? 3 : 0
     const depthScore = request.preferDepth ? spec.depth * 0.35 : 0
-    return { spec, score: tagScore + domainScore + depthScore + Math.random() * 0.35 }
+    return { spec, score: tagScore + domainScore + depthScore - queryPenalty + Math.random() * 0.35 }
   }).sort((a, b) => b.score - a.score)
 
   const bestScore = scored[0]?.score ?? 0
@@ -837,10 +1034,9 @@ export function generateLiveProblem(request: LiveGenerationRequest = {}): LivePr
     if (focus.size) return score >= Math.max(3, bestScore - 4.2)
     return domainMatches(request.domain, spec.domain)
   })
-  const deepestRelevant = relevant.reduce((depth, { spec }) => Math.max(depth, spec.depth), 0)
-  const order = request.preferDepth
-    ? relevant.filter(({ spec }) => spec.depth === deepestRelevant)
-    : relevant
+  // scoreには既に深さの加点が入っている。最深層だけへ絞ると、使用済みの観測を
+  // 除外した後も同じ族を再試行し続けるため、候補列全体を順に探索する。
+  const order = relevant
 
   for (const { spec } of order) {
     for (let attempt = 0; attempt < 6; attempt++) {
@@ -848,6 +1044,19 @@ export function generateLiveProblem(request: LiveGenerationRequest = {}): LivePr
         const p = spec.generate()
         if (!p) continue
         if (excluded.has(p.familyId)) continue
+        if (!p.structureBlueprint) {
+          p.structureBlueprint = {
+            id: `runtime.${p.familyId}`,
+            version: 1,
+            kernel: p.morphismChain[0] ?? spec.generate.name,
+            observable: p.morphismChain.at(-1) ?? 'answer',
+            operators: p.morphismChain.slice(1, -1),
+            domain: p.domain,
+            tags: spec.tags,
+            morphismChain: p.morphismChain,
+            executable: true,
+          }
+        }
         return p
       } catch {
         continue

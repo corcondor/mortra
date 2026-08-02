@@ -31,9 +31,16 @@ type GenerationCard = {
   morphism_chain?: string[]
   similarity?: { score?: number; max?: number }
   inherited_tags?: string[]
+  bridged_tags?: string[]
   unmapped_tags?: string[]
   atlas_expansion?: boolean
   parent_ids?: string[]
+  structure_blueprint?: {
+    id?: string
+    kernel?: string
+    observable?: string
+    executable?: boolean
+  }
 }
 
 type GenerationResult = {
@@ -45,7 +52,7 @@ type GenerationResult = {
 }
 
 type StreamEvent = {
-  phase: 'start' | 'searching' | 'structuring' | 'novelty' | 'verifying' | 'saving' | 'complete' | 'error' | 'done'
+  phase: 'start' | 'searching' | 'inducing' | 'registering' | 'structuring' | 'novelty' | 'verifying' | 'saving' | 'complete' | 'error' | 'done'
   message?: string
   current?: number
   total?: number
@@ -53,12 +60,16 @@ type StreamEvent = {
   familyId?: string
   morphisms?: string[]
   similarity?: number
+  structureId?: string
+  structureStatus?: 'new' | 'reused' | 'pending'
   result?: GenerationResult
 }
 
 const PHASE_INFO: Record<string, { label: string; note: string; color: string }> = {
   start: { label: 'MathOS 起動中', note: '生成セッションを準備しています', color: 'text-blue-300' },
   searching: { label: 'MathOS 試行中', note: '構成可能な経路を探索しています', color: 'text-blue-300' },
+  inducing: { label: '新構造を構成中', note: '親問題から型付き対象と観測を導出しています', color: 'text-cyan-300' },
+  registering: { label: '構造を登録中', note: '実行可能な射列をDBへ記録しています', color: 'text-fuchsia-300' },
   structuring: { label: '構造を構成中', note: '対象と射から問題文を組み立てています', color: 'text-cyan-300' },
   novelty: { label: '新規性を照合中', note: '既存問題との同型・表層類似を調べています', color: 'text-violet-300' },
   verifying: { label: '厳密検証中', note: '解と独立検算の証明書を確認しています', color: 'text-amber-300' },
@@ -70,7 +81,9 @@ const PHASE_INFO: Record<string, { label: string; note: string; color: string }>
 }
 
 const STAGES = [
-  { key: 'searching', label: '構造探索' },
+  { key: 'searching', label: '経路探索' },
+  { key: 'inducing', label: '型構成' },
+  { key: 'registering', label: '構造登録' },
   { key: 'novelty', label: '新規性' },
   { key: 'verifying', label: '厳密検証' },
   { key: 'saving', label: '保存' },
@@ -79,20 +92,23 @@ const STAGES = [
 const PHASE_RANK: Record<string, number> = {
   start: -1,
   searching: 0,
-  structuring: 0,
-  novelty: 1,
-  verifying: 2,
-  saving: 3,
-  complete: 4,
-  done: 4,
-  partial: 4,
+  inducing: 1,
+  registering: 2,
+  structuring: 2,
+  novelty: 3,
+  verifying: 4,
+  saving: 5,
+  complete: 6,
+  done: 6,
+  partial: 6,
 }
 
 function logLineColor(line: string): string {
   if (line.includes('失敗') || line.includes('停止') || line.includes('エラー')) return 'text-rose-300'
   if (line.includes('完了') || line.includes('保存しました')) return 'text-emerald-300'
   if (line.includes('検証')) return 'text-amber-200'
-  if (line.includes('構造') || line.includes('探索')) return 'text-blue-200'
+  if (line.includes('DB') || line.includes('登録')) return 'text-fuchsia-200'
+  if (line.includes('構造') || line.includes('探索') || line.includes('射列')) return 'text-blue-200'
   return 'text-zinc-400'
 }
 
@@ -116,6 +132,8 @@ export function GenerationPanel({
   const [total, setTotal] = useState(1)
   const [completed, setCompleted] = useState(0)
   const [familyId, setFamilyId] = useState<string | null>(null)
+  const [structureId, setStructureId] = useState<string | null>(null)
+  const [structureStatus, setStructureStatus] = useState<'new' | 'reused' | 'pending' | null>(null)
   const [morphisms, setMorphisms] = useState<string[]>([])
   const [draft, setDraft] = useState('')
   const [visibleDraft, setVisibleDraft] = useState('')
@@ -174,6 +192,8 @@ export function GenerationPanel({
     if (typeof event.total === 'number') setTotal(event.total)
     if (event.draft) setDraft(previous => previous === event.draft ? previous : event.draft!)
     if (event.familyId) setFamilyId(event.familyId)
+    if (event.structureId) setStructureId(event.structureId)
+    if (event.structureStatus) setStructureStatus(event.structureStatus)
     if (event.morphisms) setMorphisms(event.morphisms)
     if (event.phase === 'complete') setCompleted(value => Math.min(value + 1, event.total ?? total))
     if (event.message) setLogs(previous => [...previous, event.message!].slice(-30))
@@ -189,6 +209,8 @@ export function GenerationPanel({
     setTotal(count)
     setCompleted(0)
     setFamilyId(null)
+    setStructureId(null)
+    setStructureStatus(null)
     setMorphisms([])
     setDraft('')
     setGeneratedCards([])
@@ -386,6 +408,16 @@ export function GenerationPanel({
                   選択元から継承: {card.inherited_tags.join(' / ')}
                 </div>
               ) : null}
+              {card.bridged_tags?.length ? (
+                <div className="mb-2 text-[10px] text-fuchsia-300">
+                  Atlas上の隣接射で変換: {card.bridged_tags.join(' / ')}
+                </div>
+              ) : null}
+              {card.structure_blueprint?.id ? (
+                <div className="mb-2 text-[10px] text-zinc-500">
+                  実行構造: {card.structure_blueprint.id}
+                </div>
+              ) : null}
               {card.atlas_expansion && card.unmapped_tags?.length ? (
                 <div className="mb-2 text-[10px] text-amber-300">
                   Atlas拡張候補: {card.unmapped_tags.join(' / ')}
@@ -462,9 +494,9 @@ export function GenerationPanel({
           </header>
 
           <div className="space-y-3 p-4">
-            <div className="grid grid-cols-4 gap-1.5" aria-label="生成工程">
+            <div className="grid grid-cols-6 gap-1" aria-label="生成工程">
               {STAGES.map((stage, index) => {
-                const active = generating && index === Math.min(phaseRank, 3)
+                const active = generating && index === Math.min(phaseRank, STAGES.length - 1)
                 const passed = phaseRank > index || uiPhase === 'done'
                 return (
                   <div key={stage.key} className="min-w-0">
@@ -479,7 +511,11 @@ export function GenerationPanel({
               <div className="flex items-center justify-between border-b border-zinc-800 px-3 py-2">
                 <span className="text-[9px] font-semibold uppercase text-zinc-500">Problem draft</span>
                 <span className="max-w-[230px] truncate text-[9px] text-zinc-600">
-                  {familyId ? `${familyId} / ${morphisms.length} morphisms` : 'waiting for structure'}
+                  {structureId
+                    ? `${structureStatus === 'new' ? 'NEW' : structureStatus === 'reused' ? 'REUSE' : 'PENDING'} ${structureId}`
+                    : familyId
+                      ? `${familyId} / ${morphisms.length} morphisms`
+                      : 'waiting for structure'}
                 </span>
               </div>
               <div className="min-h-[92px] max-h-36 overflow-y-auto whitespace-pre-wrap px-3 py-2.5 font-mono text-[11px] leading-5 text-zinc-200">
