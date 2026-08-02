@@ -514,6 +514,135 @@ function complexAffineLimit(): LiveProblem | null {
   }
 }
 
+// ---------- Möbius 共役で得る有限軌道の二次モーメント ----------
+function cyclotomicMobiusOrbitMoment(): LiveProblem | null {
+  const n = pick([5, 7, 8, 9, 11])
+  const a = pick([2, 3, 4])
+  const A = Math.pow(a, n)
+  const observable = pick(['second_moment', 'pairwise_product', 'centered_second_moment'] as const)
+  const denominator = (A - 1) * (A - 1)
+  const firstMoment = rat(n * (A + 1), A - 1)
+  const secondMoment = rat(n * (A * A + (4 * n - 2) * A + 1), denominator)
+  const pairwiseProduct = rat(
+    n * n * (A + 1) * (A + 1) - n * (A * A + (4 * n - 2) * A + 1),
+    2 * denominator,
+  )
+  const centeredSecondMoment = rat(4 * n * (n - 1) * A, denominator)
+  const answer = observable === 'second_moment'
+    ? secondMoment
+    : observable === 'pairwise_product'
+      ? pairwiseProduct
+      : centeredSecondMoment
+
+  type Complex = { re: number; im: number }
+  const add = (x: Complex, y: Complex): Complex => ({ re: x.re + y.re, im: x.im + y.im })
+  const sub = (x: Complex, y: Complex): Complex => ({ re: x.re - y.re, im: x.im - y.im })
+  const mul = (x: Complex, y: Complex): Complex => ({
+    re: x.re * y.re - x.im * y.im,
+    im: x.re * y.im + x.im * y.re,
+  })
+  const div = (x: Complex, y: Complex): Complex => {
+    const d = y.re * y.re + y.im * y.im
+    return { re: (x.re * y.re + x.im * y.im) / d, im: (x.im * y.re - x.re * y.im) / d }
+  }
+  let numericSum: Complex = { re: 0, im: 0 }
+  let numericSquareSum: Complex = { re: 0, im: 0 }
+  const orbit: Complex[] = []
+  for (let k = 0; k < n; k++) {
+    const theta = 2 * Math.PI * k / n
+    const z = { re: Math.cos(theta), im: Math.sin(theta) }
+    const w = div(add({ re: a, im: 0 }, z), sub({ re: a, im: 0 }, z))
+    orbit.push(w)
+    numericSum = add(numericSum, w)
+    numericSquareSum = add(numericSquareSum, mul(w, w))
+  }
+  let numericObservable = numericSquareSum
+  if (observable === 'pairwise_product') {
+    numericObservable = { re: 0, im: 0 }
+    for (let j = 0; j < orbit.length; j++) {
+      for (let k = j + 1; k < orbit.length; k++) {
+        numericObservable = add(numericObservable, mul(orbit[j], orbit[k]))
+      }
+    }
+  } else if (observable === 'centered_second_moment') {
+    const mean = { re: numericSum.re / n, im: numericSum.im / n }
+    numericObservable = orbit.reduce((sum, value) => {
+      const centered = sub(value, mean)
+      return add(sum, mul(centered, centered))
+    }, { re: 0, im: 0 })
+  }
+  if (Math.abs(numericObservable.re - ratNum(answer)) > 1e-8 || Math.abs(numericObservable.im) > 1e-8) return null
+
+  const queryTex = observable === 'second_moment'
+    ? `\\displaystyle\\sum_{k=0}^{${n - 1}}w_k^2`
+    : observable === 'pairwise_product'
+      ? `\\displaystyle\\sum_{0\\le j<k\\le ${n - 1}}w_jw_k`
+      : `\\displaystyle\\sum_{k=0}^{${n - 1}}\\left(w_k-\\frac1{${n}}\\sum_{j=0}^{${n - 1}}w_j\\right)^2`
+
+  const proofCertificate: ProofCertificateStep[] = [
+    { id: 'ParsePrimitiveRoot', claim: `zeta を1の ${n} 乗根として型付け`, verifier: 'symbolic_identity' },
+    { id: 'DefineMobiusChart', claim: `phi(z)=(${a}+z)/(${a}-z) を射影直線のチャートとして定義`, verifier: 'symbolic_identity' },
+    { id: 'InvertMobiusChart', claim: `phi^{-1}(w)=${a}(w-1)/(w+1)`, verifier: 'symbolic_identity' },
+    { id: 'DefineRotationAction', claim: 'R(z)=zeta z は位数 n の作用', verifier: 'symbolic_identity' },
+    { id: 'ConjugateRotation', claim: 'M=phi o R o phi^{-1} を構成', verifier: 'symbolic_identity' },
+    { id: 'DeriveRecurrenceMap', claim: '共役作用を問題文の一次分数漸化式へ展開', verifier: 'symbolic_identity' },
+    { id: 'InitializeOrbit', claim: 'w_0=phi(1)', verifier: 'symbolic_identity' },
+    { id: 'InductOrbitRepresentation', claim: '帰納的に w_k=phi(zeta^k)', verifier: 'symbolic_identity' },
+    { id: 'CloseFiniteOrbit', claim: 'w_n=w_0 で軌道が閉じる', verifier: 'exact_integer' },
+    { id: 'PreserveCrossRatio', claim: 'Möbius共役が交比を保存することを確認', verifier: 'symbolic_identity' },
+    { id: 'MapRootSet', claim: '軌道を z^n-1 の全根の像へ同定', verifier: 'symbolic_identity' },
+    { id: 'IntroduceFirstResolvent', claim: 'L_1(a)=sum 1/(a-zeta^k) を導入', verifier: 'symbolic_identity' },
+    { id: 'LogDerivativeCyclotomic', claim: 'L_1(a)=(d/da)log(a^n-1)', verifier: 'symbolic_identity' },
+    { id: 'EvaluateFirstResolvent', claim: `L_1(${a})=n a^(n-1)/(a^n-1)`, verifier: 'symbolic_identity' },
+    { id: 'DifferentiateResolvent', claim: 'L_2(a)=sum 1/(a-zeta^k)^2=-L_1\'(a)', verifier: 'symbolic_identity' },
+    { id: 'EvaluateSecondResolvent', claim: 'L_2 を a と n の有理式へ簡約', verifier: 'symbolic_identity' },
+    { id: 'ExpandOrbitSquare', claim: 'w_k^2=4a^2/(a-zeta^k)^2-4a/(a-zeta^k)+1', verifier: 'symbolic_identity' },
+    { id: 'SubstituteResolvents', claim: '二次モーメントへ L_1,L_2 を代入', verifier: 'symbolic_identity' },
+    { id: 'CommonDenominator', claim: '分母を (a^n-1)^2 に統一', verifier: 'symbolic_identity' },
+    { id: 'SelectObservable', claim: `一次・二次モーメントから ${observable} を構成`, verifier: 'symbolic_identity' },
+    { id: 'ExactRationalReduction', claim: `厳密値を ${ratTex(answer)} へ既約化`, verifier: 'exact_integer' },
+    { id: 'DirectOrbitEvaluation', claim: '全 n 点を複素数で直接構成し二乗和を再計算', verifier: 'numeric_crosscheck' },
+    { id: 'ExactNumericAgreement', claim: '厳密値と独立数値計算が 1e-8 未満で一致', verifier: 'numeric_crosscheck' },
+  ]
+  const morphismChain = proofCertificate.map(step => step.id)
+  const familyId = `runtime.cyclotomic_mobius_orbit.${observable}`
+  return {
+    familyId,
+    domain: 'complex_algebra',
+    tool: 'mobius_conjugacy_cyclotomic_log_derivative',
+    parameters: { n, a },
+    statementTex:
+      `\\(\\zeta=\\cos\\dfrac{2\\pi}{${n}}+i\\sin\\dfrac{2\\pi}{${n}}\\) とする。複素数列 \\((w_k)\\) を ` +
+      `\\(w_0=\\dfrac{${a}+1}{${a}-1}\\)，` +
+      `\\(w_{k+1}=\\dfrac{(1+\\zeta)w_k+(1-\\zeta)}{(1-\\zeta)w_k+(1+\\zeta)}\\) で定める。` +
+      `\\(${queryTex}\\) を求めよ.`,
+    answerTex: ratTex(answer),
+    solutionTex:
+      `\\(\\phi(z)=\\dfrac{${a}+z}{${a}-z}\\) とおく。与えられた漸化式は ` +
+      `\\(\\phi\\circ(z\\mapsto\\zeta z)\\circ\\phi^{-1}\\) なので \\(w_k=\\phi(\\zeta^k)\\)。` +
+      `\\(D=${a}^{${n}}-1\\) とすると，\\(z^{${n}}-1\\) の対数微分から ` +
+      `\\(\\sum\\dfrac1{${a}-\\zeta^k}=\\dfrac{${n}${a}^{${n - 1}}}{D}\\)，さらに微分して ` +
+      `\\(\\sum\\dfrac1{(${a}-\\zeta^k)^2}=\\dfrac{${n}(${a}^{${2 * n - 2}}+${n - 1}${a}^{${n - 2}})}{D^2}\\)。` +
+      `\\(w_k=\\dfrac{2${a}}{${a}-\\zeta^k}-1\\) を二乗して一次・二次モーメントを求め，` +
+      `指定された ${observable} に組み替えると \\(${ratTex(answer)}\\) を得る。`,
+    morphismChain,
+    proofCertificate,
+    verificationMethod: 'cyclotomic_log_derivative_plus_direct_complex_orbit',
+    structureBlueprint: {
+      id: familyId,
+      version: 1,
+      kernel: 'finite_cyclic_action_on_projective_line',
+      observable,
+      operators: ['mobius_conjugacy', 'cyclotomic_resolvent', 'log_derivative'],
+      domain: 'complex_algebra',
+      tags: ['complex', 'roots_of_unity', 'mobius', 'cross_ratio', 'iteration', 'matrix', 'polynomial_roots', 'power_sum', 'symmetric_polynomial'],
+      morphismChain,
+      proofCertificate,
+      executable: true,
+    },
+  }
+}
+
 // ---------- F9 座標軸上を動く切片を結ぶ線分の通過領域 ----------
 function axisInterceptSegmentRegion(): LiveProblem | null {
   const c = 3 + Math.floor(Math.random() * 12)
@@ -1247,6 +1376,7 @@ const GENERATORS: GeneratorSpec[] = [
   { generate: paley, domain: 'number_theory_graph', tags: ['number_theory', 'graph', 'quadratic_residue'], depth: 3 },
   { generate: parabolaFixedPoint, domain: 'geometry', tags: ['geometry', 'locus', 'invariant', 'parabola'], depth: 3 },
   { generate: mobiusPeriod, domain: 'algebra', tags: ['algebra', 'iteration', 'matrix', 'period'], depth: 3 },
+  { generate: cyclotomicMobiusOrbitMoment, domain: 'complex_algebra', tags: ['complex', 'roots_of_unity', 'mobius', 'cross_ratio', 'iteration', 'matrix', 'polynomial_roots', 'power_sum', 'symmetric_polynomial'], depth: 22 },
   { generate: reciprocalRecurrence, domain: 'algebra', tags: ['algebra', 'recurrence', 'transformation'], depth: 3 },
   { generate: complexAffineLimit, domain: 'complex', tags: ['complex', 'recurrence', 'limit', 'fixed_point'], depth: 3 },
   { generate: axisInterceptSegmentRegion, domain: 'geometry', tags: ['geometry', 'passage_region', 'area', 'segment', 'parameter_elimination'], depth: 5 },
@@ -1279,6 +1409,7 @@ export type LiveGenerationRequest = {
   avoidQueryTags?: string[]
   excludedFamilies?: string[]
   excludedObservables?: string[]
+  excludedKernels?: string[]
   preferDepth?: boolean
 }
 
@@ -1294,11 +1425,14 @@ export function generateLiveProblem(request: LiveGenerationRequest = {}): LivePr
   const avoidedQueries = new Set(request.avoidQueryTags ?? [])
   const excluded = new Set(request.excludedFamilies ?? [])
   const excludedObservables = new Set(request.excludedObservables ?? [])
+  const excludedKernels = new Set(request.excludedKernels ?? [])
   const scored = GENERATORS.map((spec) => {
     const tagScore = spec.tags.reduce((score, tag) => score + (focus.has(tag) ? 4 : 0), 0)
     const queryPenalty = spec.tags.some(tag => avoidedQueries.has(tag)) ? 8 : 0
     const domainScore = domainMatches(request.domain, spec.domain) ? 3 : 0
-    const depthScore = request.preferDepth ? spec.depth * 0.35 : 0
+    // 深さは同程度の構造一致を並べ替える補助値。線形加点すると深い一族が
+    // 選択問題の意味を無視して常勝するため、対数で上限を抑える。
+    const depthScore = request.preferDepth ? Math.log2(spec.depth + 1) * 0.7 : 0
     return { spec, score: tagScore + domainScore + depthScore - queryPenalty + Math.random() * 0.35 }
   }).sort((a, b) => b.score - a.score)
 
@@ -1319,6 +1453,7 @@ export function generateLiveProblem(request: LiveGenerationRequest = {}): LivePr
         if (!p) continue
         if (excluded.has(p.familyId)) continue
         if (p.structureBlueprint && excludedObservables.has(p.structureBlueprint.observable)) continue
+        if (p.structureBlueprint && excludedKernels.has(p.structureBlueprint.kernel)) continue
         if (!p.structureBlueprint) {
           p.structureBlueprint = {
             id: `runtime.${p.familyId}`,

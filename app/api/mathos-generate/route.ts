@@ -222,6 +222,7 @@ type GenerationProfile = {
   atlasPath?: string[]
   atlasPaths?: string[][]
   parentAnchors?: string[]
+  parentAnchorSets?: Array<{ parentId: string; anchors: string[] }>
   recovery?: boolean
   mode: 'similar' | 'fusion' | 'expand' | 'batch'
 }
@@ -256,6 +257,11 @@ const EXECUTABLE_TAG_BRIDGES: Record<string, string[]> = {
   dynamical_system: ['iteration', 'recurrence'],
   iteration: ['recurrence', 'matrix'],
   ellipse: ['locus', 'tangent'],
+  mobius: ['iteration', 'matrix', 'cross_ratio', 'roots_of_unity'],
+  cross_ratio: ['mobius', 'projective_geometry'],
+  roots_of_unity: ['complex', 'polynomial_roots', 'mobius'],
+  projective_geometry: ['cross_ratio', 'mobius'],
+  power_sum: ['symmetric_polynomial', 'polynomial_roots'],
 }
 
 function expandedFocusTags(tags: string[]): string[] {
@@ -295,6 +301,11 @@ function preservedByAtlas(tag: string, candidateTags: string[]): boolean {
 }
 
 const TAG_PATTERNS: Array<[string, RegExp]> = [
+  ['cross_ratio', /交比|cross[-_\s]?ratio/i],
+  ['mobius', /m[oö]bius|メビウス|一次分数変換|分数線形変換/i],
+  ['roots_of_unity', /1の\s*[nNＮ]乗根|1の冪根|z\^\{?n\}?\s*=\s*1|roots? of unity|単位根/i],
+  ['projective_geometry', /射影|projective/i],
+  ['power_sum', /べき和|冪和|power[_\s-]?sum/i],
   ['passage_region', /通過領域|掃過領域|swept[_\s-]?region|passage[_\s-]?region/i],
   ['envelope', /包絡線|envelope/i],
   ['locus', /軌跡|locus/i],
@@ -417,21 +428,49 @@ function buildGenerationProfile(
     requiredTags,
     queryTags: semanticTags.filter(tag => QUERY_TAGS.has(tag)),
     parentIds: parents.flatMap(parent => parent.id ? [parent.id] : []),
+    parentAnchorSets: parents.map((parent, index) => ({
+      parentId: parent.id ?? `parent-${index + 1}`,
+      anchors: parentAnchorTags(parent),
+    })),
     mode,
   }
 }
 
 const FUSION_GENERIC_TAGS = new Set([
-  'geometry', 'algebra', 'circle', 'area', 'volume', 'probability', 'complex',
+  'geometry', 'algebra', 'circle', 'area', 'volume', 'probability', 'complex', 'number_theory',
 ])
 
 const SOLUTION_CORE_TAGS = new Set([
+  'cross_ratio', 'mobius', 'roots_of_unity', 'projective_geometry', 'power_sum',
   'passage_region', 'envelope', 'locus', 'minkowski_sum', 'centroid', 'tangent',
   'intersection', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron',
   'polynomial_system',
   'circle_centers', 'dynamical_system', 'recurrence', 'iteration', 'matrix',
   'characteristic_polynomial', 'pythagorean', 'gcd', 'modular',
 ])
+
+type ParentCoverage = {
+  parentId: string
+  anchors: string[]
+  exact: string[]
+  bridged: string[]
+  passed: boolean
+}
+
+function evaluateParentCoverage(profile: GenerationProfile, candidateTags: string[]): ParentCoverage[] {
+  return (profile.parentAnchorSets ?? []).map(({ parentId, anchors }) => {
+    // 先頭は本文・解答から得た最も固有な構造。一般タグを多数一致させても代替できない。
+    const primary = anchors.slice(0, 3)
+    const exact = primary.filter(tag => candidateTags.includes(tag))
+    const bridged = primary.filter(tag =>
+      !candidateTags.includes(tag) && preservedByAtlas(tag, candidateTags),
+    )
+    const passed = primary.length === 0 || (primary.length === 1
+      ? exact.length + bridged.length === 1
+      : exact.length >= Math.min(2, primary.length))
+    return { parentId, anchors: primary, exact, bridged, passed }
+  })
+}
 
 function parentAnchorTags(parent: ParentInput): string[] {
   const statementTags = inferTags(parent.statement ?? '')
@@ -533,6 +572,10 @@ function buildFusionProfiles(parents: ParentInput[], fallbackDomain?: string): G
       parentIds: [...new Set(singles.flatMap(profile => profile.parentIds))],
       atlasPaths,
       parentAnchors,
+      parentAnchorSets: parents.map((parentInput, index) => ({
+        parentId: parentInput.id ?? `parent-${index + 1}`,
+        anchors: anchorSets[index],
+      })),
     })
   }
 
@@ -647,7 +690,7 @@ async function generateCards(
   const sessionLogs: Array<{ phase: string; message: string; ts: string }> = []
   const seenFamilies = new Set<string>()
   const seenObservables = new Set<string>()
-  const seenCandidates = new Set<string>()
+  const selectedCandidateKeys = new Set<string>()
   const seenStructureIds = new Set<string>()
   const jobId = crypto.randomUUID()
   let jobWritable = true
@@ -659,16 +702,20 @@ async function generateCards(
     loadNoveltyCorpus(),
     loadRegisteredStructureIds(),
   ])
-  const isBatch = profiles.length > 1
   const hasAllParentScaffold = Boolean(profiles[0]?.atlasPaths?.length)
-  const attemptsPerProfile = hasAllParentScaffold ? 60 : isBatch ? 12 : searchDepth === 'deep' ? 180 : 50
+  // 全親を結ぶ scaffold がある融合では、pair/single fallback へ切り替えない。
+  // それを許すと、選択していない構造族の問題を「融合結果」として返してしまう。
+  const isBatch = profiles.length > 1 && !hasAllParentScaffold
+  const attemptsPerProfile = isBatch ? 2_000 : searchDepth === 'deep' ? 2_000_000 : 500_000
   const maxAttempts = isBatch
-    ? Math.min(720, Math.max(180, profiles.length * attemptsPerProfile))
+    ? Math.min(20_000, Math.max(1_000, profiles.length * attemptsPerProfile))
     : attemptsPerProfile
   const deadline = Date.now() + searchBudgetSeconds * 1000
   const firstProfile = profiles[0] ?? buildGenerationProfile([])
-  const focusLabel = profiles.length > 1
-    ? `${profiles.length} 個の親構造を個別探索`
+  const focusLabel = hasAllParentScaffold
+    ? `${firstProfile.parentIds.length} 個の選択問題を結ぶAtlas中継網`
+    : profiles.length > 1
+      ? `${profiles.length} 個の親構造を個別探索`
     : firstProfile.tags.slice(0, 5).join(' / ') || firstProfile.domain || 'all'
   const requiredLabel = profiles.length === 1 && firstProfile.requiredTags.length
     ? ` / 継承: ${firstProfile.requiredTags.join(' + ')}`
@@ -685,6 +732,7 @@ async function generateCards(
       atlasPath: profile.atlasPath,
       atlasPaths: profile.atlasPaths,
       parentAnchors: profile.parentAnchors,
+      parentAnchorSets: profile.parentAnchorSets,
       recovery: profile.recovery ?? false,
     })),
     mode: firstProfile.mode,
@@ -720,7 +768,19 @@ async function generateCards(
     let sim: ReturnType<typeof assessNovelty> | null = null
     let inheritedTags: string[] = []
     let bridgedTags: string[] = []
+    let selectedParentCoverage: ParentCoverage[] = []
+    let hypothesesEvaluated = 0
+    let validHypotheses = 0
+    let bestCandidateScore = Number.NEGATIVE_INFINITY
+    const cardSeenCandidates = new Set<string>()
+    const cardSearchStartedAt = Date.now()
+    const targetCardMillis = searchBudgetSeconds * 1000 / Math.max(1, count)
+    const minimumSearchEnd = searchDepth === 'deep'
+      ? Math.min(deadline, cardSearchStartedAt + Math.max(8_000, targetCardMillis * 0.67))
+      : cardSearchStartedAt
+    const minimumHypotheses = searchDepth === 'deep' ? 300 : 60
     for (let attempt = 0; attempt < maxAttempts && Date.now() < deadline; attempt++) {
+      if (Date.now() >= minimumSearchEnd && hypothesesEvaluated >= minimumHypotheses && live) break
       if (isBatch && attempt > 0 && attempt % attemptsPerProfile === 0) {
         profileIndex = (profileIndex + 1) % profiles.length
         profile = profiles[profileIndex] ?? firstProfile
@@ -733,10 +793,10 @@ async function generateCards(
           total: count,
         })
       }
-      if (attempt > 0 && attempt % 30 === 0) {
+      if (attempt > 0 && attempt % 25_000 === 0) {
         report({
           phase: 'searching',
-          message: `問題 ${current}/${count}: ${attempt} 候補を検査。構造条件を保ったまま探索を継続`,
+          message: `問題 ${current}/${count}: ${hypothesesEvaluated} 個の中間仮説を検査。全親の構造署名を保ったまま探索を継続`,
           current,
           total: count,
         })
@@ -750,9 +810,10 @@ async function generateCards(
         preferDepth: searchDepth === 'deep',
       })
       if (!candidate) continue
+      hypothesesEvaluated++
       const candidateKey = `${candidate.familyId}\u0000${canonical(candidate.statementTex)}`
-      if (seenCandidates.has(candidateKey)) continue
-      seenCandidates.add(candidateKey)
+      if (selectedCandidateKeys.has(candidateKey) || cardSeenCandidates.has(candidateKey)) continue
+      cardSeenCandidates.add(candidateKey)
 
       const candidateTags = inferTags([
         candidate.familyId,
@@ -764,8 +825,13 @@ async function generateCards(
         candidate.morphismChain.join(' '),
         candidate.structureBlueprint?.tags.join(' '),
       ].join(' '))
+      for (const tag of candidate.structureBlueprint?.tags ?? []) {
+        if (!candidateTags.includes(tag)) candidateTags.push(tag)
+      }
       const profileAttempt = isBatch ? attempt % attemptsPerProfile : attempt
-      const requiredCount = profileAttempt < Math.floor(attemptsPerProfile * 0.55)
+      const requiredCount = ['similar', 'expand', 'fusion'].includes(profile.mode)
+        ? profile.requiredTags.length
+        : profileAttempt < Math.floor(attemptsPerProfile * 0.55)
         ? profile.requiredTags.length
         : profileAttempt < Math.floor(attemptsPerProfile * 0.8)
           ? Math.min(profile.requiredTags.length, 2)
@@ -783,6 +849,8 @@ async function generateCards(
       if ((attemptRequiredTags.length && !preservesRequiredStructure) || (requireQueryChange && !changesQuery)) {
         continue
       }
+      const parentCoverage = evaluateParentCoverage(profile, candidateTags)
+      if (parentCoverage.some(coverage => !coverage.passed)) continue
 
       const blueprint = candidate.structureBlueprint
       if (blueprint && !seenStructureIds.has(blueprint.id)) {
@@ -846,25 +914,31 @@ async function generateCards(
         corpus,
       )
       if (!s.duplicate) {
-        live = candidate
-        sim = s
-        inheritedTags = attemptRequiredTags.filter(tag => candidateTags.includes(tag))
-        bridgedTags = attemptRequiredTags.filter(tag =>
-          !candidateTags.includes(tag) && preservedByAtlas(tag, candidateTags),
-        )
-        seenFamilies.add(candidate.familyId)
-        if (candidate.structureBlueprint) seenObservables.add(candidate.structureBlueprint.observable)
-        report({
-          phase: 'novelty',
-          message: `既存 ${s.comparedAgainst} 問と照合。最大表層類似度 ${(s.score * 100).toFixed(0)}%`,
-          current,
-          total: count,
-          draft: candidate.statementTex,
-          familyId: candidate.familyId,
-          morphisms: candidate.morphismChain,
-          similarity: s.score,
-        })
-        break
+        validHypotheses++
+        const exactCoverage = parentCoverage.reduce((sum, coverage) => sum + coverage.exact.length, 0)
+        const bridgedCoverage = parentCoverage.reduce((sum, coverage) => sum + coverage.bridged.length, 0)
+        const candidateScore = exactCoverage * 12 + bridgedCoverage * 2 +
+          Math.min(candidate.morphismChain.length, 30) * 0.2 + (1 - s.score) * 4
+        if (candidateScore > bestCandidateScore) {
+          bestCandidateScore = candidateScore
+          live = candidate
+          sim = s
+          selectedParentCoverage = parentCoverage
+          inheritedTags = attemptRequiredTags.filter(tag => candidateTags.includes(tag))
+          bridgedTags = attemptRequiredTags.filter(tag =>
+            !candidateTags.includes(tag) && preservedByAtlas(tag, candidateTags),
+          )
+          report({
+            phase: 'novelty',
+            message: `中間仮説 ${hypothesesEvaluated}: 全親を被覆。既存 ${s.comparedAgainst} 問との最大表層類似度 ${(s.score * 100).toFixed(0)}%`,
+            current,
+            total: count,
+            draft: candidate.statementTex,
+            familyId: candidate.familyId,
+            morphisms: candidate.morphismChain,
+            similarity: s.score,
+          })
+        }
       }
     }
     if (!live || !sim) {
@@ -893,6 +967,11 @@ async function generateCards(
       report({ phase: 'registering', message, current, total: count, structureId: pendingId, structureStatus: 'pending' })
       continue
     }
+
+    seenFamilies.add(live.familyId)
+    if (live.structureBlueprint) seenObservables.add(live.structureBlueprint.observable)
+    selectedCandidateKeys.add(`${live.familyId}\u0000${canonical(live.statementTex)}`)
+    const elapsedSearchMs = Date.now() - cardSearchStartedAt
 
     report({
       phase: 'verifying',
@@ -929,7 +1008,9 @@ async function generateCards(
         unmappedTags: profile.requiredTags.filter(tag =>
           !inheritedTags.includes(tag) && !bridgedTags.includes(tag),
         ),
+        parentCoverage: selectedParentCoverage,
       },
+      searchEvidence: { hypothesesEvaluated, validHypotheses, elapsedSearchMs, bestCandidateScore },
       structureBlueprint: live.structureBlueprint,
       atlasExpansion: bridgedTags.length > 0 || inheritedTags.length < profile.requiredTags.length,
     }
@@ -991,6 +1072,8 @@ async function generateCards(
       atlas_expansion: bridgedTags.length > 0 || inheritedTags.length < profile.requiredTags.length,
       structure_blueprint: live.structureBlueprint,
       parent_ids: profile.parentIds,
+      parent_coverage: selectedParentCoverage,
+      search_evidence: { hypotheses_evaluated: hypothesesEvaluated, valid_hypotheses: validHypotheses, elapsed_ms: elapsedSearchMs },
     }
     cards.push(card)
     addToNoveltyCorpus(corpus, live.statementTex, live.familyId, live.answerTex, id)
@@ -1037,12 +1120,21 @@ export async function POST(request: NextRequest) {
     count = Math.min(Math.max(Number(body?.count ?? 1), 1), 10)
     domain = body?.domain || undefined
     stream = body?.stream === true
-    parents = Array.isArray(body?.parents) ? body.parents.slice(0, 250) : []
+    parents = Array.isArray(body?.parents)
+      ? body.parents.filter((parent: unknown): parent is ParentInput => Boolean(parent) && typeof parent === 'object').slice(0, 250)
+      : []
     searchDepth = body?.searchDepth === 'standard' ? 'standard' : 'deep'
     searchBudgetSeconds = Math.min(Math.max(Number(body?.searchBudgetSeconds ?? (searchDepth === 'deep' ? 90 : 30)), 20), 180)
     mode = ['similar', 'fusion', 'expand'].includes(body?.mode) ? body.mode : 'batch'
   } catch {
     // 既定値で続行
+  }
+
+  if (mode === 'fusion' && parents.length < 2) {
+    return NextResponse.json(
+      { generated: 0, requested: count, cards: [], errors: ['融合生成には2問以上の親問題が必要です'] },
+      { status: 400 },
+    )
   }
 
   const shuffledParents = [...parents]

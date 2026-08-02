@@ -35,6 +35,18 @@ type GenerationCard = {
   unmapped_tags?: string[]
   atlas_expansion?: boolean
   parent_ids?: string[]
+  parent_coverage?: Array<{
+    parentId: string
+    anchors: string[]
+    exact: string[]
+    bridged: string[]
+    passed: boolean
+  }>
+  search_evidence?: {
+    hypotheses_evaluated?: number
+    valid_hypotheses?: number
+    elapsed_ms?: number
+  }
   structure_blueprint?: {
     id?: string
     kernel?: string
@@ -375,7 +387,7 @@ export function GenerationPanel({
         <label className="flex cursor-pointer items-center justify-between border-t border-zinc-800 pt-3">
           <span>
             <span className="block text-[11px] font-medium text-zinc-200">深層探索</span>
-            <span className="block text-[9px] text-zinc-500">接続失敗時も別チャートへ自動修復</span>
+            <span className="block text-[9px] text-zinc-500">選択した全問題の構造署名を保持して中間仮説を比較</span>
           </span>
           <input
             type="checkbox"
@@ -426,7 +438,25 @@ export function GenerationPanel({
                 <span>{card.family_id ?? 'unknown family'}</span>
                 {card.morphism_chain?.length ? <span>{card.morphism_chain.length} 検証段</span> : null}
                 {card.parent_ids?.length ? <span>親: {card.parent_ids.join(', ')}</span> : null}
+                {card.search_evidence?.hypotheses_evaluated ? (
+                  <span>
+                    仮説 {card.search_evidence.hypotheses_evaluated.toLocaleString()} 件 / {Math.round((card.search_evidence.elapsed_ms ?? 0) / 1000)} 秒
+                  </span>
+                ) : null}
               </div>
+              {card.parent_coverage?.length ? (
+                <details className="mb-2 text-[10px] text-zinc-500">
+                  <summary className="cursor-pointer text-cyan-300">選択問題ごとの構造保持を確認</summary>
+                  <ul className="mt-1 space-y-1 border-l border-zinc-800 pl-3">
+                    {card.parent_coverage.map(coverage => (
+                      <li key={coverage.parentId}>
+                        <span className={coverage.passed ? 'text-emerald-300' : 'text-rose-300'}>{coverage.passed ? '保持' : '不一致'}</span>
+                        <span className="ml-2">{coverage.parentId}: {coverage.exact.join(' / ') || coverage.bridged.join(' / ')}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              ) : null}
               {card.inherited_tags?.length ? (
                 <div className="mb-2 text-[10px] text-cyan-300">
                   選択元から継承: {card.inherited_tags.join(' / ')}
@@ -445,7 +475,7 @@ export function GenerationPanel({
               {card.structure_blueprint?.proofCertificate?.length ? (
                 <details className="mb-3 border-y border-zinc-800 py-2">
                   <summary className="cursor-pointer text-[10px] text-blue-300">
-                    証明証明書 {card.structure_blueprint.proofCertificate.length} 段を表示
+                    検証証明書 {card.structure_blueprint.proofCertificate.length} 段を表示
                   </summary>
                   <ol className="mt-2 max-h-48 space-y-1 overflow-y-auto pr-2 text-[9px] leading-4 text-zinc-500">
                     {card.structure_blueprint.proofCertificate.map((step, stepIndex) => (
