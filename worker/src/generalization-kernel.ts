@@ -20,6 +20,7 @@ export type SemanticEdge = {
   preserves: string[]
   backend: string[]
   proved: boolean
+  contributes_provenance: boolean
 }
 
 export type SemanticHypergraph = {
@@ -227,6 +228,7 @@ export function buildSemanticHypergraph(parent: DiscoveryParent): SemanticHyperg
       preserves: schema.preserves,
       backend: schema.backend,
       proved: false,
+      contributes_provenance: schema.role !== 'query',
     })
   }
   for (const definition of language.ir.definitions) {
@@ -387,7 +389,7 @@ function planJointHypergraph(graphs: SemanticHypergraph[], maxDepth: number, max
       target: edge.target,
       preserves: edge.preserves,
       backend: edge.backend,
-      originMask: 1 << graphIndex,
+      originMask: edge.contributes_provenance ? 1 << graphIndex : 0,
     }))),
   ]
 

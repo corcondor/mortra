@@ -71,3 +71,11 @@ test('a detected operator from one parent may act on a compatible object from an
   assert.ok(step)
   assert.deepEqual(new Set(step.parent_ids), new Set(['operator', 'object']))
 })
+
+test('a query word alone does not count as a parent contribution', () => {
+  const result = generalizeParents([
+    { id: 'equation', statement: '関数 f に対し I_n=\\int_0^1 x^n f(x)dx と定める。' },
+    { id: 'proof-query', statement: '素数 p と整数 a に対し、条件を示せ。' },
+  ], 5)
+  assert.equal(result.certificate.target_sort, null)
+})
