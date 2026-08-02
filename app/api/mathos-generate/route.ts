@@ -219,6 +219,10 @@ type GenerationProfile = {
   requiredTags: string[]
   queryTags: string[]
   parentIds: string[]
+  atlasPath?: string[]
+  atlasPaths?: string[][]
+  parentAnchors?: string[]
+  recovery?: boolean
   mode: 'similar' | 'fusion' | 'expand' | 'batch'
 }
 
@@ -230,14 +234,25 @@ const QUERY_TAGS = new Set([
 // 直接一致しないときも、Atlas上で意味のある隣接射だけを許す。遠距離ジャンプはしない。
 const EXECUTABLE_TAG_BRIDGES: Record<string, string[]> = {
   centroid: ['triangle', 'circle_centers'],
-  circle_centers: ['triangle'],
-  heron: ['triangle', 'symmetric_polynomial'],
+  circle_centers: ['triangle', 'pythagorean', 'heron'],
+  heron: ['triangle', 'symmetric_polynomial', 'circle_centers'],
   tangent: ['parabola', 'locus'],
   intersection: ['polynomial_roots', 'algebra'],
   envelope: ['locus', 'passage_region', 'parabola'],
   locus: ['passage_region', 'parabola'],
   minkowski_sum: ['passage_region', 'disk'],
   polynomial_roots: ['symmetric_polynomial', 'algebra'],
+  symmetric_polynomial: ['polynomial_roots', 'heron', 'algebra'],
+  recurrence: ['iteration', 'matrix', 'characteristic_polynomial'],
+  matrix: ['recurrence', 'iteration', 'characteristic_polynomial'],
+  characteristic_polynomial: ['matrix', 'recurrence', 'polynomial_roots'],
+  polynomial_system: ['algebra', 'polynomial_roots', 'dynamical_system'],
+  triangle: ['heron', 'circle_centers', 'pythagorean'],
+  pythagorean: ['triangle', 'number_theory', 'circle_centers', 'gcd'],
+  number_theory: ['pythagorean', 'gcd', 'modular', 'parity'],
+  gcd: ['number_theory', 'pythagorean', 'modular'],
+  modular: ['number_theory', 'gcd', 'parity'],
+  parity: ['number_theory', 'modular'],
   dynamical_system: ['iteration', 'recurrence'],
   iteration: ['recurrence', 'matrix'],
   ellipse: ['locus', 'tangent'],
@@ -247,9 +262,36 @@ function expandedFocusTags(tags: string[]): string[] {
   return [...new Set(tags.flatMap(tag => [tag, ...(EXECUTABLE_TAG_BRIDGES[tag] ?? [])]))]
 }
 
+function atlasNeighbors(tag: string): string[] {
+  const direct = EXECUTABLE_TAG_BRIDGES[tag] ?? []
+  const reverse = Object.entries(EXECUTABLE_TAG_BRIDGES)
+    .filter(([, neighbors]) => neighbors.includes(tag))
+    .map(([source]) => source)
+  return [...new Set([...direct, ...reverse])]
+}
+
+function shortestAtlasPath(from: string, to: string, maxEdges = 4): string[] | null {
+  if (from === to) return [from]
+  const queue: string[][] = [[from]]
+  const visited = new Set([from])
+  while (queue.length) {
+    const path = queue.shift()!
+    if (path.length - 1 >= maxEdges) continue
+    for (const neighbor of atlasNeighbors(path.at(-1)!)) {
+      if (visited.has(neighbor)) continue
+      const next = [...path, neighbor]
+      if (neighbor === to) return next
+      visited.add(neighbor)
+      queue.push(next)
+    }
+  }
+  return null
+}
+
 function preservedByAtlas(tag: string, candidateTags: string[]): boolean {
-  return candidateTags.includes(tag) ||
-    (EXECUTABLE_TAG_BRIDGES[tag] ?? []).some(neighbor => candidateTags.includes(neighbor))
+  return candidateTags.includes(tag) || candidateTags.some(candidateTag =>
+    shortestAtlasPath(tag, candidateTag, 1) !== null,
+  )
 }
 
 const TAG_PATTERNS: Array<[string, RegExp]> = [
@@ -268,7 +310,13 @@ const TAG_PATTERNS: Array<[string, RegExp]> = [
   ['tangent', /接線|tangent/i],
   ['intersection', /交点|intersection/i],
   ['triangle', /三角形|triangle/i],
+  ['pythagorean', /ピタゴラス|直角三角形|pythagorean/i],
+  ['gcd', /互いに素|最大公約数|gcd|coprime/i],
+  ['parity', /偶奇|奇数|偶数|parity/i],
+  ['modular', /合同|剰余|modulo|mod\b/i],
+  ['inradius', /内接円半径|内接円の半径|inradius/i],
   ['polynomial_roots', /方程式[^。\n]{0,140}(?:解|根)|(?:解|根)[^。\n]{0,100}(?:方程式|多項式)|polynomial[_\s-]?roots?|root[_\s-]?polynomial/i],
+  ['polynomial_system', /連立|x\^\d+[^。\n]{0,100}y\^\d+|polynomial[_\s-]?system/i],
   ['symmetric_polynomial', /解と係数|対称式|vieta|symmetric[_\s-]?polynomial/i],
   ['heron', /ヘロン|heron/i],
   ['circle_centers', /外心|内心|傍心|外接円|内接円|傍接円|circumcenter|incenter|excenter/i],
@@ -283,6 +331,8 @@ const TAG_PATTERNS: Array<[string, RegExp]> = [
   ['probability', /確率|期待値|probability|expectation/i],
   ['number_theory', /整数|素数|合同|剰余|number[_\s-]?theory|modular/i],
   ['recurrence', /数列|漸化式|recurrence|sequence/i],
+  ['matrix', /行列|固有値|matrix|eigenvalue/i],
+  ['characteristic_polynomial', /特性方程式|特性多項式|characteristic[_\s-]?polynomial/i],
   ['iteration', /反復|合成|iteration|iterate|mobius/i],
   ['complex', /複素|complex/i],
   ['limit', /極限|limit/i],
@@ -369,6 +419,136 @@ function buildGenerationProfile(
     parentIds: parents.flatMap(parent => parent.id ? [parent.id] : []),
     mode,
   }
+}
+
+const FUSION_GENERIC_TAGS = new Set([
+  'geometry', 'algebra', 'circle', 'area', 'volume', 'probability', 'complex',
+])
+
+const SOLUTION_CORE_TAGS = new Set([
+  'passage_region', 'envelope', 'locus', 'minkowski_sum', 'centroid', 'tangent',
+  'intersection', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron',
+  'polynomial_system',
+  'circle_centers', 'dynamical_system', 'recurrence', 'iteration', 'matrix',
+  'characteristic_polynomial', 'pythagorean', 'gcd', 'modular',
+])
+
+function parentAnchorTags(parent: ParentInput): string[] {
+  const statementTags = inferTags(parent.statement ?? '')
+  const solutionTags = inferTags([
+    parent.solution,
+    parent.inspiration,
+    typeof parent.meta === 'string' ? parent.meta : JSON.stringify(parent.meta ?? {}),
+  ].filter(Boolean).join(' ')).filter(tag => SOLUTION_CORE_TAGS.has(tag))
+  const candidates = [...new Set([...statementTags, ...solutionTags])]
+    .filter(tag => !QUERY_TAGS.has(tag))
+  const specific = candidates.filter(tag => !FUSION_GENERIC_TAGS.has(tag))
+  return specific.length ? specific : candidates
+}
+
+/**
+ * 融合は全親のタグをAND結合しない。各親をチャートとして持ち上げ、Atlas上で
+ * 最短経路が存在する親ペアだけを候補にする。接続不能な親は後段の単独修復へ回す。
+ */
+function buildFusionProfiles(parents: ParentInput[], fallbackDomain?: string): GenerationProfile[] {
+  const singles = parents.map(parent => buildGenerationProfile(
+    [parent],
+    parent.topic_a || fallbackDomain,
+    'similar',
+  ))
+  const anchorSets = parents.map((parentInput, index) => {
+    const anchors = parentAnchorTags(parentInput)
+    if (anchors.length) return anchors
+    const fallback = singles[index].tags.filter(tag => !QUERY_TAGS.has(tag))
+    const specific = fallback.filter(tag => !FUSION_GENERIC_TAGS.has(tag))
+    return (specific.length ? specific : fallback).slice(0, 1)
+  })
+  const pairProfiles: Array<GenerationProfile & { pathLength: number; leftIndex: number; rightIndex: number }> = []
+
+  for (let leftIndex = 0; leftIndex < singles.length; leftIndex++) {
+    for (let rightIndex = leftIndex + 1; rightIndex < singles.length; rightIndex++) {
+      const left = singles[leftIndex]
+      const right = singles[rightIndex]
+      const leftTags = anchorSets[leftIndex]
+      const rightTags = anchorSets[rightIndex]
+      let bestPath: string[] | null = null
+      for (const leftTag of leftTags) {
+        for (const rightTag of rightTags) {
+          const path = shortestAtlasPath(leftTag, rightTag, 4)
+          if (path && (!bestPath || path.length < bestPath.length)) bestPath = path
+        }
+      }
+      if (!bestPath) continue
+
+      const pairParents = [parents[leftIndex], parents[rightIndex]]
+      const base = buildGenerationProfile(pairParents, fallbackDomain, 'fusion')
+      pairProfiles.push({
+        ...base,
+        tags: [...new Set([...left.tags, ...right.tags, ...bestPath])],
+        requiredTags: [...new Set([bestPath[0], bestPath.at(-1)!])],
+        queryTags: [...new Set([...left.queryTags, ...right.queryTags])],
+        parentIds: [...new Set([...left.parentIds, ...right.parentIds])],
+        atlasPath: bestPath,
+        pathLength: bestPath.length - 1,
+        leftIndex,
+        rightIndex,
+      })
+    }
+  }
+
+  pairProfiles.sort((a, b) => a.pathLength - b.pathLength || b.tags.length - a.tags.length)
+
+  // Kruskal法で、選択された全親を結ぶ最小Atlas中継網を作る。
+  const parent = singles.map((_, index) => index)
+  const find = (index: number): number => {
+    let cursor = index
+    while (parent[cursor] !== cursor) cursor = parent[cursor]
+    while (parent[index] !== index) {
+      const next = parent[index]
+      parent[index] = cursor
+      index = next
+    }
+    return cursor
+  }
+  const treeEdges: typeof pairProfiles = []
+  for (const edge of pairProfiles) {
+    const leftRoot = find(edge.leftIndex)
+    const rightRoot = find(edge.rightIndex)
+    if (leftRoot === rightRoot) continue
+    parent[leftRoot] = rightRoot
+    treeEdges.push(edge)
+    if (treeEdges.length === singles.length - 1) break
+  }
+
+  const scaffold: GenerationProfile[] = []
+  if (singles.length > 1 && treeEdges.length === singles.length - 1) {
+    const base = buildGenerationProfile(parents, fallbackDomain, 'fusion')
+    const atlasPaths = treeEdges.map(edge => edge.atlasPath!).filter(Boolean)
+    const parentAnchors = [...new Set(atlasPaths.flatMap(path => [path[0], path.at(-1)!]))]
+    scaffold.push({
+      ...base,
+      tags: [...new Set([...singles.flatMap(profile => profile.tags), ...atlasPaths.flat()])],
+      requiredTags: parentAnchors,
+      queryTags: [...new Set(singles.flatMap(profile => profile.queryTags))],
+      parentIds: [...new Set(singles.flatMap(profile => profile.parentIds))],
+      atlasPaths,
+      parentAnchors,
+    })
+  }
+
+  const connected = pairProfiles.slice(0, 20).map(({
+    pathLength: _pathLength,
+    leftIndex: _leftIndex,
+    rightIndex: _rightIndex,
+    ...profile
+  }) => profile)
+  const recovery = singles.map(profile => ({
+    ...profile,
+    mode: 'fusion' as const,
+    requiredTags: profile.requiredTags.slice(0, 2),
+    recovery: true,
+  }))
+  return [...scaffold, ...connected, ...recovery]
 }
 
 /** 構築・条件の数から難易度帯を見積もる（world_novelty_check.py と同じ考え方） */
@@ -458,6 +638,7 @@ async function generateCards(
   count: number,
   profiles: GenerationProfile[],
   searchDepth: 'standard' | 'deep',
+  searchBudgetSeconds: number,
   emit: ProgressEmitter = () => undefined,
 ): Promise<GenerationResult> {
   const cards: Record<string, unknown>[] = []
@@ -479,11 +660,12 @@ async function generateCards(
     loadRegisteredStructureIds(),
   ])
   const isBatch = profiles.length > 1
-  const attemptsPerProfile = isBatch ? 12 : searchDepth === 'deep' ? 180 : 50
+  const hasAllParentScaffold = Boolean(profiles[0]?.atlasPaths?.length)
+  const attemptsPerProfile = hasAllParentScaffold ? 60 : isBatch ? 12 : searchDepth === 'deep' ? 180 : 50
   const maxAttempts = isBatch
     ? Math.min(720, Math.max(180, profiles.length * attemptsPerProfile))
     : attemptsPerProfile
-  const deadline = Date.now() + (searchDepth === 'deep' ? 240_000 : 45_000)
+  const deadline = Date.now() + searchBudgetSeconds * 1000
   const firstProfile = profiles[0] ?? buildGenerationProfile([])
   const focusLabel = profiles.length > 1
     ? `${profiles.length} 個の親構造を個別探索`
@@ -500,6 +682,10 @@ async function generateCards(
       tags: profile.tags,
       requiredTags: profile.requiredTags,
       queryTags: profile.queryTags,
+      atlasPath: profile.atlasPath,
+      atlasPaths: profile.atlasPaths,
+      parentAnchors: profile.parentAnchors,
+      recovery: profile.recovery ?? false,
     })),
     mode: firstProfile.mode,
     count,
@@ -512,14 +698,14 @@ async function generateCards(
 
   report({
     phase: 'start',
-    message: `MathOS が${searchDepth === 'deep' ? '深層' : '標準'}探索を開始: ${focusLabel}${requiredLabel}`,
+    message: `MathOS が${searchDepth === 'deep' ? '深層' : '標準'}探索を開始（最大${searchBudgetSeconds}秒）: ${focusLabel}${requiredLabel}`,
     current: 0,
     total: count,
   })
 
   for (let i = 0; i < count; i++) {
     const current = i + 1
-    let profileIndex = i % profiles.length
+    let profileIndex = hasAllParentScaffold ? 0 : i % profiles.length
     let profile = profiles[profileIndex] ?? firstProfile
     report({
       phase: 'searching',
@@ -538,6 +724,14 @@ async function generateCards(
       if (isBatch && attempt > 0 && attempt % attemptsPerProfile === 0) {
         profileIndex = (profileIndex + 1) % profiles.length
         profile = profiles[profileIndex] ?? firstProfile
+        report({
+          phase: 'searching',
+          message: profile.recovery
+            ? `問題 ${current}/${count}: 接続不能な全親融合をやめ、単独親チャートから再lift`
+            : `問題 ${current}/${count}: Atlas中継網 ${profile.atlasPaths?.map(path => path.join(' → ')).join(' / ') || profile.atlasPath?.join(' → ') || '直接同型'} へ探索を切替`,
+          current,
+          total: count,
+        })
       }
       if (attempt > 0 && attempt % 30 === 0) {
         report({
@@ -577,9 +771,10 @@ async function generateCards(
           ? Math.min(profile.requiredTags.length, 2)
           : Math.min(profile.requiredTags.length, 1)
       const attemptRequiredTags = profile.requiredTags.slice(0, requiredCount)
-      const candidateQueryTags = candidateTags.filter(tag => QUERY_TAGS.has(tag))
-      const changesQuery = profile.queryTags.length === 0 ||
-        candidateQueryTags.every(tag => !profile.queryTags.includes(tag))
+      const candidateObservable = candidate.structureBlueprint?.observable ?? ''
+      const changesQuery = profile.queryTags.length === 0 || profile.queryTags.every(tag =>
+        !candidateObservable.includes(tag) && !tag.includes(candidateObservable),
+      )
       const requireQueryChange = profile.queryTags.length > 0 &&
         profileAttempt < Math.floor(attemptsPerProfile * 0.85)
       const preservesRequiredStructure = profile.mode === 'similar' || profile.mode === 'expand' || profile.mode === 'fusion'
@@ -693,7 +888,7 @@ async function generateCards(
           registeredAt: new Date().toISOString(),
         })
       }
-      const message = `実行射が不足する構造 ${pendingId} をAtlas保留キューへ登録し、次候補の探索へ進みました`
+      const message = `全Atlas修復経路を使い切りました。未実装構造 ${pendingId} は配信せず検証キューへ隔離しました`
       errors.push(message)
       report({ phase: 'registering', message, current, total: count, structureId: pendingId, structureStatus: 'pending' })
       continue
@@ -835,6 +1030,7 @@ export async function POST(request: NextRequest) {
   let stream = false
   let parents: ParentInput[] = []
   let searchDepth: 'standard' | 'deep' = 'deep'
+  let searchBudgetSeconds = 90
   let mode: GenerationProfile['mode'] = 'batch'
   try {
     const body = await request.json()
@@ -843,6 +1039,7 @@ export async function POST(request: NextRequest) {
     stream = body?.stream === true
     parents = Array.isArray(body?.parents) ? body.parents.slice(0, 250) : []
     searchDepth = body?.searchDepth === 'standard' ? 'standard' : 'deep'
+    searchBudgetSeconds = Math.min(Math.max(Number(body?.searchBudgetSeconds ?? (searchDepth === 'deep' ? 90 : 30)), 20), 180)
     mode = ['similar', 'fusion', 'expand'].includes(body?.mode) ? body.mode : 'batch'
   } catch {
     // 既定値で続行
@@ -857,9 +1054,11 @@ export async function POST(request: NextRequest) {
     ? shuffledParents.map(parent => {
         return buildGenerationProfile([parent], parent.topic_a || domain, 'similar')
       })
-    : [buildGenerationProfile(parents, domain, mode)]
+    : mode === 'fusion' && shuffledParents.length > 1
+      ? buildFusionProfiles(shuffledParents, domain)
+      : [buildGenerationProfile(parents, domain, mode)]
 
-  if (!stream) return NextResponse.json(await generateCards(count, profiles, searchDepth))
+  if (!stream) return NextResponse.json(await generateCards(count, profiles, searchDepth, searchBudgetSeconds))
 
   const encoder = new TextEncoder()
   const responseStream = new ReadableStream({
@@ -868,7 +1067,7 @@ export async function POST(request: NextRequest) {
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`))
       }
       try {
-        const result = await generateCards(count, profiles, searchDepth, send)
+        const result = await generateCards(count, profiles, searchDepth, searchBudgetSeconds, send)
         send({ phase: 'done', result })
       } catch (error) {
         send({
@@ -897,6 +1096,6 @@ export async function GET() {
   return NextResponse.json({
     engine: 'MathOS live (no LLM)',
     pool_bundled: POOL.length,
-    usage: 'POST { count?: 1-10, domain?: string, parents?: Parent[], mode?: similar|fusion|expand|batch, searchDepth?: standard|deep, stream?: boolean }',
+    usage: 'POST { count?: 1-10, domain?: string, parents?: Parent[], mode?: similar|fusion|expand|batch, searchDepth?: standard|deep, searchBudgetSeconds?: 20-180, stream?: boolean }',
   })
 }

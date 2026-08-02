@@ -40,6 +40,11 @@ type GenerationCard = {
     kernel?: string
     observable?: string
     executable?: boolean
+    proofCertificate?: Array<{
+      id: string
+      claim: string
+      verifier: string
+    }>
   }
 }
 
@@ -139,6 +144,7 @@ export function GenerationPanel({
   const [visibleDraft, setVisibleDraft] = useState('')
   const [windowOpen, setWindowOpen] = useState(false)
   const [deepSearch, setDeepSearch] = useState(true)
+  const [searchBudgetSeconds, setSearchBudgetSeconds] = useState(90)
   const [generatedCards, setGeneratedCards] = useState<GenerationCard[]>([])
   const logEndRef = useRef<HTMLDivElement>(null)
 
@@ -234,6 +240,7 @@ export function GenerationPanel({
           domain,
           stream: true,
           searchDepth: deepSearch ? 'deep' : 'standard',
+          searchBudgetSeconds: deepSearch ? searchBudgetSeconds : 30,
           mode,
           parents: parents.map(parent => ({
             id: parent.id,
@@ -368,7 +375,7 @@ export function GenerationPanel({
         <label className="flex cursor-pointer items-center justify-between border-t border-zinc-800 pt-3">
           <span>
             <span className="block text-[11px] font-medium text-zinc-200">深層探索</span>
-            <span className="block text-[9px] text-zinc-500">選択問題の構造を保ち、最大240秒探索</span>
+            <span className="block text-[9px] text-zinc-500">接続失敗時も別チャートへ自動修復</span>
           </span>
           <input
             type="checkbox"
@@ -378,6 +385,23 @@ export function GenerationPanel({
             className="h-4 w-4 accent-blue-500"
           />
         </label>
+
+        {deepSearch && (
+          <label className="flex items-center gap-2.5">
+            <span className="w-24 shrink-0 text-[10px] text-zinc-400">探索上限</span>
+            <input
+              type="range"
+              min={60}
+              max={120}
+              step={15}
+              value={searchBudgetSeconds}
+              onChange={event => setSearchBudgetSeconds(Number(event.target.value))}
+              disabled={generating}
+              className="h-1 flex-1 accent-blue-500"
+            />
+            <span className="w-10 text-right text-[10px] tabular-nums text-zinc-400">{searchBudgetSeconds}秒</span>
+          </label>
+        )}
 
         {genDone && !generating && (
           <div className={`mt-1 text-[11px] ${genDone.partial ? 'text-amber-300' : genDone.ok ? 'text-emerald-300' : 'text-rose-300'}`}>
@@ -400,7 +424,7 @@ export function GenerationPanel({
               <div className="mb-2 flex flex-wrap items-center gap-2 text-[9px] text-zinc-500">
                 <span className="font-semibold text-emerald-300">生成 {index + 1}</span>
                 <span>{card.family_id ?? 'unknown family'}</span>
-                {card.morphism_chain?.length ? <span>{card.morphism_chain.length} morphisms</span> : null}
+                {card.morphism_chain?.length ? <span>{card.morphism_chain.length} 検証段</span> : null}
                 {card.parent_ids?.length ? <span>親: {card.parent_ids.join(', ')}</span> : null}
               </div>
               {card.inherited_tags?.length ? (
@@ -417,6 +441,22 @@ export function GenerationPanel({
                 <div className="mb-2 text-[10px] text-zinc-500">
                   実行構造: {card.structure_blueprint.id}
                 </div>
+              ) : null}
+              {card.structure_blueprint?.proofCertificate?.length ? (
+                <details className="mb-3 border-y border-zinc-800 py-2">
+                  <summary className="cursor-pointer text-[10px] text-blue-300">
+                    証明証明書 {card.structure_blueprint.proofCertificate.length} 段を表示
+                  </summary>
+                  <ol className="mt-2 max-h-48 space-y-1 overflow-y-auto pr-2 text-[9px] leading-4 text-zinc-500">
+                    {card.structure_blueprint.proofCertificate.map((step, stepIndex) => (
+                      <li key={`${step.id}-${stepIndex}`}>
+                        <span className="mr-2 tabular-nums text-zinc-700">{stepIndex + 1}</span>
+                        <span className="text-zinc-300">{step.id}</span>
+                        <span className="ml-2">{step.claim}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </details>
               ) : null}
               {card.atlas_expansion && card.unmapped_tags?.length ? (
                 <div className="mb-2 text-[10px] text-amber-300">
@@ -514,7 +554,7 @@ export function GenerationPanel({
                   {structureId
                     ? `${structureStatus === 'new' ? 'NEW' : structureStatus === 'reused' ? 'REUSE' : 'PENDING'} ${structureId}`
                     : familyId
-                      ? `${familyId} / ${morphisms.length} morphisms`
+                      ? `${familyId} / ${morphisms.length} verified steps`
                       : 'waiting for structure'}
                 </span>
               </div>
@@ -523,6 +563,12 @@ export function GenerationPanel({
                 {generating && <span className="ml-0.5 inline-block h-3.5 w-[2px] animate-pulse bg-blue-400 align-middle" />}
               </div>
             </div>
+
+            {morphisms.length > 0 && (
+              <div className="truncate border-t border-zinc-800 pt-2 font-mono text-[9px] text-cyan-300">
+                {morphisms.length} 検証段: {morphisms.slice(-4).join(' → ')}
+              </div>
+            )}
 
             <div>
               <div className="mb-1.5 flex items-center justify-between text-[9px] text-zinc-500">

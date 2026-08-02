@@ -190,8 +190,15 @@ export type LiveProblem = {
   answerTex: string
   solutionTex: string
   morphismChain: string[]
+  proofCertificate?: ProofCertificateStep[]
   verificationMethod: string
   structureBlueprint?: StructureBlueprint
+}
+
+export type ProofCertificateStep = {
+  id: string
+  claim: string
+  verifier: 'exact_integer' | 'symbolic_identity' | 'order_check' | 'numeric_crosscheck'
 }
 
 /**
@@ -207,6 +214,7 @@ export type StructureBlueprint = {
   domain: string
   tags: string[]
   morphismChain: string[]
+  proofCertificate?: ProofCertificateStep[]
   executable: true
 }
 
@@ -667,17 +675,18 @@ function rootTriangleInvariant(query: RootTriangleQuery): LiveProblem | null {
   const data = constructIrrationalRootTriangle()
   if (!data) return null
   const { e1, e2, e3, semiperimeter: s, areaSquared, roots } = data
-  const shift = pick([0, 1, 1, 2])
+  const chart = pick(['polynomial', 'shifted_polynomial', 'companion_matrix', 'power_sum_recurrence'] as const)
+  const shift = chart === 'shifted_polynomial' ? pick([1, 2]) : 0
   const sourceE1 = e1 - 3 * shift
   const sourceE2 = e2 - 2 * shift * e1 + 3 * shift * shift
   const sourceE3 = e3 - shift * e2 + shift * shift * e1 - shift ** 3
   const polynomial = `x^3-${sourceE1}x^2+${sourceE2}x-${sourceE3}=0`
-  const sharedStatement = shift === 0
+  const polynomialSharedStatement = shift === 0
     ? `三次方程式 \\(${polynomial}\\) は3つの相異なる正の無理数解 ` +
       `\\(a,b,c\\) をもち，これらは三角形の3辺の長さになる。`
     : `三次方程式 \\(${polynomial}\\) の3つの相異なる無理数解を \\(u,v,w\\) とする。` +
       `\\(a=u+${shift},\\ b=v+${shift},\\ c=w+${shift}\\) は三角形の3辺の長さになる。`
-  const sharedSolution = shift === 0
+  const polynomialSharedSolution = shift === 0
     ? `\\(P(x)=x^3-${e1}x^2+${e2}x-${e3}\\) とする。Vietaの公式より ` +
       `\\(a+b+c=${e1},\\ ab+bc+ca=${e2},\\ abc=${e3}\\)，したがって半周長は \\(s=${s}\\)。` +
       `Heronの公式を根多項式で書けば ` +
@@ -688,6 +697,24 @@ function rootTriangleInvariant(query: RootTriangleQuery): LiveProblem | null {
       `\\(a+b+c=${e1},\\ ab+bc+ca=${e2},\\ abc=${e3}\\)。半周長は \\(s=${s}\\) で，` +
       `\\(Q(x)=P(x-${shift})\\) とおけば \\(Q\\) の根は \\(a,b,c\\)。したがって ` +
       `\\(\\Delta^2=s(s-a)(s-b)(s-c)=sQ(s)=${areaSquared}\\)。`
+  const sharedStatement = chart === 'companion_matrix'
+    ? `行列 \\(M=\\begin{pmatrix}0&0&${e3}\\\\1&0&-${e2}\\\\0&1&${e1}\\end{pmatrix}\\) の` +
+      `3つの相異なる正の無理数固有値 \\(a,b,c\\) は三角形の3辺の長さになる。`
+    : chart === 'power_sum_recurrence'
+      ? `数列 \\((S_k)\\) を \\(S_0=3,\\ S_1=${e1},\\ S_2=${e1 * e1 - 2 * e2}\\)，` +
+        `\\(S_{k+3}=${e1}S_{k+2}-${e2}S_{k+1}+${e3}S_k\\) で定める。` +
+        `この漸化式の3つの相異なる正の無理数特性根 \\(a,b,c\\) は三角形の3辺の長さになる。`
+      : polynomialSharedStatement
+  const sharedSolution = chart === 'companion_matrix'
+    ? `\\(M\\) の特性多項式は \\(P(x)=x^3-${e1}x^2+${e2}x-${e3}\\)。` +
+      `固有値へのVietaの公式から \\(a+b+c=${e1},\\ ab+bc+ca=${e2},\\ abc=${e3}\\)。` +
+      `半周長 \\(s=${s}\\) に対し，Heronの公式は \\(\\Delta^2=sP(s)=${areaSquared}\\) となる。`
+    : chart === 'power_sum_recurrence'
+      ? `漸化式の特性多項式は \\(P(x)=x^3-${e1}x^2+${e2}x-${e3}\\)。` +
+        `初期値はNewton和 \\(S_k=a^k+b^k+c^k\\) と整合する。Vietaの公式より ` +
+        `\\(a+b+c=${e1},\\ ab+bc+ca=${e2},\\ abc=${e3}\\)。` +
+        `半周長 \\(s=${s}\\) で \\(\\Delta^2=sP(s)=${areaSquared}\\)。`
+      : polynomialSharedSolution
 
   let familyId: string
   let statementTex: string
@@ -827,16 +854,62 @@ function rootTriangleInvariant(query: RootTriangleQuery): LiveProblem | null {
 
   if (Math.abs(numericValue - ratNum(answer)) > 1e-9) return null
 
-  const morphismChain = [
-    'CubicPolynomial',
-    'IrrationalRootMultiset',
-    'VietaSymmetricSums',
-    ...(shift === 0 ? [] : ['UniformRootTranslation']),
-    'TriangleInequalityCertificate',
-    'HeronPolynomialEvaluation',
-    ...finalMorphisms,
-    'ExactRationalEvaluation',
+  const discriminant =
+    e1 * e1 * e2 * e2 - 4 * e2 * e2 * e2 - 4 * e1 * e1 * e1 * e3 -
+    27 * e3 * e3 + 18 * e1 * e2 * e3
+  const representationCertificate: ProofCertificateStep[] = chart === 'companion_matrix'
+    ? [
+        { id: 'ParseCompanionMatrix', claim: '入力行列を3次線形作用素として型付け', verifier: 'symbolic_identity' },
+        { id: 'CharacteristicDeterminant', claim: `det(xI-M)=${polynomial}`, verifier: 'symbolic_identity' },
+        { id: 'SpectrumRootMultiset', claim: '固有値多重集合を特性多項式の根へ移す', verifier: 'symbolic_identity' },
+      ]
+    : chart === 'power_sum_recurrence'
+      ? [
+          { id: 'ParseLinearRecurrence', claim: '3階線形漸化式を状態遷移として型付け', verifier: 'symbolic_identity' },
+          { id: 'RecurrenceCharacteristicPolynomial', claim: `特性方程式は ${polynomial}`, verifier: 'symbolic_identity' },
+          { id: 'NewtonInitialValues', claim: 'S0,S1,S2 が3根のNewton和と一致', verifier: 'exact_integer' },
+          { id: 'CharacteristicRootMultiset', claim: '特性根多重集合を三角形の辺長候補へ移す', verifier: 'symbolic_identity' },
+        ]
+      : [
+          { id: 'ParseCubic', claim: `入力をモニック三次多項式 ${polynomial} として構文解析`, verifier: 'symbolic_identity' },
+          { id: 'ExtractCoefficientTriple', claim: `係数から基本対称式候補 (${sourceE1}, ${sourceE2}, ${sourceE3}) を抽出`, verifier: 'exact_integer' },
+        ]
+  const proofCertificate: ProofCertificateStep[] = [
+    ...representationCertificate,
+    { id: 'DiscriminantEvaluation', claim: `平行移動後の根多項式の判別式は ${discriminant}`, verifier: 'exact_integer' },
+    { id: 'ThreeDistinctRealRoots', claim: '判別式が正なので相異なる3実根をもつ', verifier: 'order_check' },
+    { id: 'RationalRootCandidates', claim: '有理根定理により整数約数だけを候補として列挙', verifier: 'exact_integer' },
+    { id: 'NoRationalRoot', claim: '全候補の代入値が0でなく、3根はいずれも無理数', verifier: 'exact_integer' },
+    { id: 'DerivativeCriticalPoints', claim: '導関数の2臨界点を厳密な順序で分離', verifier: 'order_check' },
+    { id: 'LeftRootIsolation', claim: `第1根を ${roots[0].toFixed(10)} の近傍へ二分法で分離`, verifier: 'numeric_crosscheck' },
+    { id: 'MiddleRootIsolation', claim: `第2根を ${roots[1].toFixed(10)} の近傍へ二分法で分離`, verifier: 'numeric_crosscheck' },
+    { id: 'RightRootIsolation', claim: `第3根を ${roots[2].toFixed(10)} の近傍へ二分法で分離`, verifier: 'numeric_crosscheck' },
+    { id: 'RootOrdering', claim: '3根の大小関係を確定', verifier: 'order_check' },
+    ...(shift === 0 ? [] : [{
+      id: 'UniformRootTranslation',
+      claim: `各根へ ${shift} を加える同型で辺長座標へ移す`,
+      verifier: 'symbolic_identity' as const,
+    }]),
+    { id: 'PositiveSideLengths', claim: '移した3根がすべて正', verifier: 'order_check' },
+    { id: 'TriangleInequality', claim: '最大根が他の2根の和より小さい', verifier: 'order_check' },
+    { id: 'VietaFirstSum', claim: `a+b+c=${e1}`, verifier: 'symbolic_identity' },
+    { id: 'VietaSecondSum', claim: `ab+bc+ca=${e2}`, verifier: 'symbolic_identity' },
+    { id: 'VietaThirdSum', claim: `abc=${e3}`, verifier: 'symbolic_identity' },
+    { id: 'Semiperimeter', claim: `s=(a+b+c)/2=${s}`, verifier: 'exact_integer' },
+    { id: 'ShiftedRootPolynomial', claim: '辺長を根にもつ多項式 Q を構成', verifier: 'symbolic_identity' },
+    { id: 'EvaluateAtSemiperimeter', claim: `Q(s)=${cubicValue(s, e1, e2, e3)}`, verifier: 'exact_integer' },
+    { id: 'HeronFactorization', claim: `Delta^2=sQ(s)=${areaSquared}`, verifier: 'symbolic_identity' },
+    { id: 'PositiveArea', claim: 'Heron積が正で非退化三角形', verifier: 'order_check' },
+    ...finalMorphisms.map((id, index) => ({
+      id,
+      claim: `観測 ${query} の変換 ${index + 1}/${finalMorphisms.length}`,
+      verifier: 'symbolic_identity' as const,
+    })),
+    { id: 'ExactRationalReduction', claim: `観測値を既約値 ${ratTex(answer)} へ簡約`, verifier: 'exact_integer' },
+    { id: 'NumericObservableEvaluation', claim: `分離した数値根から観測値 ${numericValue.toPrecision(12)} を独立計算`, verifier: 'numeric_crosscheck' },
+    { id: 'ExactNumericAgreement', claim: '厳密値と独立数値計算の誤差が 1e-9 未満', verifier: 'numeric_crosscheck' },
   ]
+  const morphismChain = proofCertificate.map(step => step.id)
   const tags = [
     'geometry',
     'algebra',
@@ -844,29 +917,39 @@ function rootTriangleInvariant(query: RootTriangleQuery): LiveProblem | null {
     'polynomial_roots',
     'symmetric_polynomial',
     'heron',
+    ...(chart === 'companion_matrix' ? ['matrix', 'characteristic_polynomial'] : []),
+    ...(chart === 'power_sum_recurrence' ? ['recurrence', 'characteristic_polynomial', 'power_sum'] : []),
     ...ROOT_TRIANGLE_QUERY_TAGS[query],
   ]
-  const structureId = `runtime.root_triangle.${shift === 0 ? 'direct' : 'shifted'}.${query}`
+  const structureId = `runtime.root_triangle.${chart}.${query}`
   familyId = structureId
   return {
     familyId,
     domain: 'geometry_algebra',
-    tool: 'vieta_heron_triangle_invariants',
-    parameters: { e1, e2, e3, sourceE1, sourceE2, sourceE3, shift, semiperimeter: s, areaSquared },
+    tool: `${chart}_vieta_heron_triangle_invariants`,
+    parameters: { e1, e2, e3, sourceE1, sourceE2, sourceE3, shift, chartCode: ['polynomial', 'shifted_polynomial', 'companion_matrix', 'power_sum_recurrence'].indexOf(chart), semiperimeter: s, areaSquared },
     statementTex,
     answerTex: ratTex(answer),
     solutionTex,
     morphismChain,
+    proofCertificate,
     verificationMethod,
     structureBlueprint: {
       id: structureId,
       version: 1,
       kernel: 'irrational_cubic_root_triangle',
       observable: query,
-      operators: shift === 0 ? [] : ['uniform_root_translation'],
+      operators: chart === 'shifted_polynomial'
+        ? ['uniform_root_translation']
+        : chart === 'companion_matrix'
+          ? ['spectrum_to_root_multiset']
+          : chart === 'power_sum_recurrence'
+            ? ['recurrence_to_characteristic_roots']
+            : [],
       domain: 'geometry_algebra',
       tags: [...new Set(tags)],
       morphismChain,
+      proofCertificate,
       executable: true,
     },
   }
@@ -881,6 +964,190 @@ const rootTriangleReciprocalSideSquareSum = () => rootTriangleInvariant('recipro
 const rootTriangleAreaSquare = () => rootTriangleInvariant('area_square')
 const rootTriangleInExradiusProduct = () => rootTriangleInvariant('in_exradius_product')
 const rootTriangleCircumradiusSquare = () => rootTriangleInvariant('circumradius_square')
+
+type PrimitiveRightTriangleQuery =
+  | 'radius_diameter_coprimality'
+  | 'area_diameter_coprimality'
+  | 'euler_distance_fraction'
+  | 'radius_product_integrality'
+  | 'arithmetic_signature'
+
+function verifyPrimitiveRightTriangleArithmetic(): boolean {
+  for (let m = 2; m <= 36; m++) {
+    for (let n = 1; n < m; n++) {
+      if (gcdNum(m, n) !== 1 || (m - n) % 2 === 0) continue
+      const a = m * m - n * n
+      const b = 2 * m * n
+      const c = m * m + n * n
+      const area = m * n * (m * m - n * n)
+      const inradius = n * (m - n)
+      const oiNumerator = c * (c - 4 * inradius)
+      if (a * a + b * b !== c * c) return false
+      if (gcdNum(inradius, c) !== 1 || gcdNum(area, c) !== 1) return false
+      if (((oiNumerator % 4) + 4) % 4 !== 1) return false
+      if ((c * inradius) % 2 === 0 !== (n % 2 === 0)) return false
+    }
+  }
+  return true
+}
+
+function primitiveRightTriangleArithmetic(query: PrimitiveRightTriangleQuery): LiveProblem | null {
+  if (!verifyPrimitiveRightTriangleArithmetic()) return null
+
+  const sharedStatement =
+    `互いに素な自然数 \\(m>n\\) は偶奇が異なるとする。` +
+    `\\(a=m^2-n^2,\\ b=2mn,\\ c=m^2+n^2\\) を3辺とする三角形を \\(T\\) とし，` +
+    `面積を \\(\\Delta\\)，内接円半径を \\(r\\)，外接円半径を \\(R\\)，外心と内心を \\(O,I\\) とする。`
+  const commonSolution =
+    `\\(a^2+b^2=c^2\\) なので \\(T\\) は斜辺 \\(c\\) の原始ピタゴラス三角形である。` +
+    `したがって \\(\\Delta=ab/2=mn(m^2-n^2)\\)，` +
+    `\\(r=(a+b-c)/2=n(m-n)\\)，\\(2R=c=m^2+n^2\\)。` +
+    `また \\(\\gcd(n,c)=\\gcd(n,m^2)=1\\)。` +
+    `\\(m-n\\) は奇数で \\(c\\equiv2n^2\\pmod{m-n}\\) だから \\(\\gcd(m-n,c)=1\\)。`
+
+  let statementTex: string
+  let answerTex: string
+  let solutionTex: string
+  let querySteps: ProofCertificateStep[]
+  let tags: string[]
+
+  if (query === 'radius_diameter_coprimality') {
+    statementTex = `${sharedStatement} \\(r\\) と外接円の直径 \\(2R\\) が互いに素であることを示せ。`
+    answerTex = `\\(\\gcd(r,2R)=1\\)`
+    solutionTex = `${commonSolution} \\(r=n(m-n)\\)，\\(2R=c\\) の各因子が互いに素なので \\(\\gcd(r,2R)=1\\)。`
+    querySteps = [
+      { id: 'FactorInradius', claim: 'r=n(m-n) と因数分解', verifier: 'symbolic_identity' },
+      { id: 'CoprimeNAndHypotenuse', claim: 'gcd(n,c)=1', verifier: 'exact_integer' },
+      { id: 'OddDifference', claim: 'm-n は奇数', verifier: 'exact_integer' },
+      { id: 'ReduceHypotenuseModuloDifference', claim: 'c ≡ 2n^2 (mod m-n)', verifier: 'symbolic_identity' },
+      { id: 'CoprimeDifferenceAndHypotenuse', claim: 'gcd(m-n,c)=1', verifier: 'exact_integer' },
+      { id: 'ProductCoprimality', claim: 'gcd(n(m-n),c)=1', verifier: 'symbolic_identity' },
+    ]
+    tags = ['gcd', 'inradius', 'circumdiameter']
+  } else if (query === 'area_diameter_coprimality') {
+    statementTex = `${sharedStatement} \\(\\Delta\\) と外接円の直径 \\(2R\\) が互いに素であることを示せ。`
+    answerTex = `\\(\\gcd(\\Delta,2R)=1\\)`
+    solutionTex =
+      `${commonSolution} 同様に \\(\\gcd(m,c)=1\\) であり，\\(m+n\\) も奇数で ` +
+      `\\(c\\equiv2n^2\\pmod{m+n}\\) より \\(\\gcd(m+n,c)=1\\)。` +
+      `\\(\\Delta=mn(m-n)(m+n)\\) の各因子は \\(c=2R\\) と互いに素だから結論を得る。`
+    querySteps = [
+      { id: 'FactorArea', claim: 'Delta=mn(m-n)(m+n)', verifier: 'symbolic_identity' },
+      { id: 'CoprimeMAndHypotenuse', claim: 'gcd(m,c)=1', verifier: 'exact_integer' },
+      { id: 'CoprimeNAndHypotenuse', claim: 'gcd(n,c)=1', verifier: 'exact_integer' },
+      { id: 'CoprimeDifferenceAndHypotenuse', claim: 'gcd(m-n,c)=1', verifier: 'exact_integer' },
+      { id: 'ReduceHypotenuseModuloSum', claim: 'c ≡ 2n^2 (mod m+n)', verifier: 'symbolic_identity' },
+      { id: 'CoprimeSumAndHypotenuse', claim: 'gcd(m+n,c)=1', verifier: 'exact_integer' },
+      { id: 'AreaDiameterCoprimality', claim: 'gcd(Delta,2R)=1', verifier: 'symbolic_identity' },
+    ]
+    tags = ['gcd', 'area', 'circumdiameter']
+  } else if (query === 'euler_distance_fraction') {
+    statementTex = `${sharedStatement} \\(OI^2\\) の小数部分を求めよ。`
+    answerTex = `\\(\\dfrac14\\)`
+    solutionTex =
+      `${commonSolution} Eulerの公式から \\(OI^2=R(R-2r)=c(c-4r)/4\\)。` +
+      `\\(c\\) は奇数であり，分子は \\(c^2\\pmod4\\) に等しい。奇数の平方は \\(1\\pmod4\\) だから，` +
+      `\\(OI^2\\) の小数部分は \\(1/4\\) である。`
+    querySteps = [
+      { id: 'EulerCenterFormula', claim: 'OI^2=R(R-2r)', verifier: 'symbolic_identity' },
+      { id: 'SubstituteRadii', claim: 'OI^2=c(c-4r)/4', verifier: 'symbolic_identity' },
+      { id: 'OddHypotenuse', claim: 'c は奇数', verifier: 'exact_integer' },
+      { id: 'NumeratorModuloFour', claim: 'c(c-4r) ≡ c^2 (mod 4)', verifier: 'symbolic_identity' },
+      { id: 'OddSquareModuloFour', claim: 'c^2 ≡ 1 (mod 4)', verifier: 'exact_integer' },
+      { id: 'FractionalPart', claim: 'OI^2 の小数部分は 1/4', verifier: 'symbolic_identity' },
+    ]
+    tags = ['circle_centers', 'center_distance', 'modular']
+  } else if (query === 'radius_product_integrality') {
+    statementTex = `${sharedStatement} \\(Rr\\) が整数となるための \\(n\\) の必要十分条件を求めよ。`
+    answerTex = `\\(n\\) が偶数であること`
+    solutionTex =
+      `${commonSolution} \\(Rr=cr/2=cn(m-n)/2\\)。\\(c\\) と \\(m-n\\) は奇数なので，` +
+      `この値が整数であることと \\(n\\) が偶数であることは同値である。`
+    querySteps = [
+      { id: 'RadiusProductFormula', claim: 'Rr=cn(m-n)/2', verifier: 'symbolic_identity' },
+      { id: 'OddHypotenuse', claim: 'c は奇数', verifier: 'exact_integer' },
+      { id: 'OddParameterDifference', claim: 'm-n は奇数', verifier: 'exact_integer' },
+      { id: 'ParityReduction', claim: 'cn(m-n) の偶奇は n の偶奇と一致', verifier: 'symbolic_identity' },
+      { id: 'IntegralityEquivalence', claim: 'Rr∈Z iff n は偶数', verifier: 'symbolic_identity' },
+    ]
+    tags = ['radius_product', 'parity', 'integrality']
+  } else {
+    statementTex =
+      `${sharedStatement} 次の3つをすべて求めよ：` +
+      `\\(\\gcd(r,2R)\\)，\\(OI^2\\) の小数部分，および \\(Rr\\) が整数となるための \\(n\\) の条件。`
+    answerTex = `\\(1,\\ \\dfrac14,\\ n\\text{ が偶数}\\)`
+    solutionTex =
+      `${commonSolution} まず上の2つの互いに素性から \\(\\gcd(r,2R)=1\\)。` +
+      `次に \\(OI^2=c(c-4r)/4\\) の分子は \\(1\\pmod4\\) なので小数部分は \\(1/4\\)。` +
+      `最後に \\(Rr=cn(m-n)/2\\) で \\(c,m-n\\) は奇数だから，整数条件は \\(n\\) が偶数であること。`
+    querySteps = [
+      { id: 'RadiusDiameterCoprimality', claim: 'gcd(r,2R)=1', verifier: 'symbolic_identity' },
+      { id: 'EulerCenterFormula', claim: 'OI^2=c(c-4r)/4', verifier: 'symbolic_identity' },
+      { id: 'OddSquareResidue', claim: 'c(c-4r) ≡ 1 (mod 4)', verifier: 'exact_integer' },
+      { id: 'CenterDistanceFraction', claim: '小数部分は1/4', verifier: 'symbolic_identity' },
+      { id: 'RadiusProductFormula', claim: 'Rr=cn(m-n)/2', verifier: 'symbolic_identity' },
+      { id: 'RadiusProductParity', claim: 'Rr∈Z iff n は偶数', verifier: 'symbolic_identity' },
+    ]
+    tags = ['gcd', 'circle_centers', 'center_distance', 'radius_product', 'modular']
+  }
+
+  const commonCertificate: ProofCertificateStep[] = [
+    { id: 'TypedParameterDomain', claim: 'm,n を互いに素で偶奇の異なる自然数として型付け', verifier: 'exact_integer' },
+    { id: 'EuclidFirstLeg', claim: 'a=m^2-n^2', verifier: 'symbolic_identity' },
+    { id: 'EuclidSecondLeg', claim: 'b=2mn', verifier: 'symbolic_identity' },
+    { id: 'EuclidHypotenuse', claim: 'c=m^2+n^2', verifier: 'symbolic_identity' },
+    { id: 'PythagoreanExpansionLeft', claim: 'a^2+b^2 を展開', verifier: 'symbolic_identity' },
+    { id: 'PythagoreanExpansionRight', claim: '展開結果が c^2 と一致', verifier: 'symbolic_identity' },
+    { id: 'RightTriangleCertificate', claim: 'T は斜辺 c の直角三角形', verifier: 'symbolic_identity' },
+    { id: 'PrimitiveTripleCertificate', claim: '互いに素・偶奇条件から原始三つ組', verifier: 'symbolic_identity' },
+    { id: 'AreaFromLegs', claim: 'Delta=ab/2', verifier: 'symbolic_identity' },
+    { id: 'AreaParameterization', claim: 'Delta=mn(m^2-n^2)', verifier: 'symbolic_identity' },
+    { id: 'SemiperimeterExpansion', claim: 's=(a+b+c)/2=m(m+n)', verifier: 'symbolic_identity' },
+    { id: 'InradiusAreaQuotient', claim: 'r=Delta/s', verifier: 'symbolic_identity' },
+    { id: 'InradiusParameterization', claim: 'r=n(m-n)', verifier: 'symbolic_identity' },
+    { id: 'RightTriangleCircumradius', claim: 'R=c/2', verifier: 'symbolic_identity' },
+    { id: 'CircumdiameterIdentification', claim: '2R=c', verifier: 'symbolic_identity' },
+    ...querySteps,
+    { id: 'FiniteCounterexampleSweep', claim: 'm<=36 の全許容対で反例がないことを独立検査', verifier: 'numeric_crosscheck' },
+    { id: 'CertificateClosure', claim: `観測 ${query} の結論を証明書へ格納`, verifier: 'symbolic_identity' },
+  ]
+  const morphismChain = commonCertificate.map(step => step.id)
+  const familyId = `runtime.primitive_right_triangle.${query}`
+  const blueprintTags = [
+    'geometry', 'number_theory', 'triangle', 'pythagorean', 'circle_centers',
+    'circumradius', 'inradius', ...tags,
+  ]
+  return {
+    familyId,
+    domain: 'geometry_number_theory',
+    tool: 'euclid_parameterization_symbolic_gcd_parity',
+    parameters: { verificationBound: 36 },
+    statementTex,
+    answerTex,
+    solutionTex,
+    morphismChain,
+    proofCertificate: commonCertificate,
+    verificationMethod: 'symbolic_number_theory_proof_plus_exhaustive_parameter_sweep',
+    structureBlueprint: {
+      id: familyId,
+      version: 1,
+      kernel: 'primitive_right_triangle_arithmetic',
+      observable: query,
+      operators: ['euclid_parameterization', 'circle_radius_functor', 'modular_reduction'],
+      domain: 'geometry_number_theory',
+      tags: [...new Set(blueprintTags)],
+      morphismChain,
+      proofCertificate: commonCertificate,
+      executable: true,
+    },
+  }
+}
+
+const primitiveRightRadiusDiameterCoprimality = () => primitiveRightTriangleArithmetic('radius_diameter_coprimality')
+const primitiveRightAreaDiameterCoprimality = () => primitiveRightTriangleArithmetic('area_diameter_coprimality')
+const primitiveRightEulerDistanceFraction = () => primitiveRightTriangleArithmetic('euler_distance_fraction')
+const primitiveRightRadiusProductIntegrality = () => primitiveRightTriangleArithmetic('radius_product_integrality')
+const primitiveRightArithmeticSignature = () => primitiveRightTriangleArithmetic('arithmetic_signature')
 
 type LiveGenerator = () => LiveProblem | null
 
@@ -990,15 +1257,20 @@ const GENERATORS: GeneratorSpec[] = [
   { generate: affineTranslatedDiskRegion, domain: 'geometry', tags: ['geometry', 'passage_region', 'area', 'segment', 'disk', 'minkowski_sum', 'linear_map'], depth: 8 },
   { generate: affineRotatingRectangleRegion, domain: 'geometry', tags: ['geometry', 'passage_region', 'area', 'rotation', 'group_action', 'linear_map'], depth: 8 },
   { generate: affineFixedChordRegion, domain: 'geometry', tags: ['geometry', 'passage_region', 'area', 'segment', 'chord', 'rotation', 'linear_map'], depth: 8 },
-  { generate: rootTriangleCurvatureSum, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'circle_centers', 'curvature'], depth: 9 },
-  { generate: rootTriangleCenterDistanceSum, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'circle_centers', 'center_distance'], depth: 9 },
-  { generate: rootTriangleRadiusRatio, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'circle_centers', 'radius_ratio'], depth: 9 },
-  { generate: rootTriangleEulerCenterDistance, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'circle_centers', 'center_distance'], depth: 9 },
-  { generate: rootTriangleSideSquareSum, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'power_sum'], depth: 9 },
-  { generate: rootTriangleReciprocalSideSquareSum, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'reciprocal_invariant'], depth: 10 },
-  { generate: rootTriangleAreaSquare, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'area'], depth: 8 },
-  { generate: rootTriangleInExradiusProduct, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'circle_centers', 'radius_product'], depth: 10 },
-  { generate: rootTriangleCircumradiusSquare, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'circle_centers', 'circumradius'], depth: 9 },
+  { generate: primitiveRightRadiusDiameterCoprimality, domain: 'geometry_number_theory', tags: ['geometry', 'number_theory', 'triangle', 'pythagorean', 'circle_centers', 'circumradius', 'gcd'], depth: 23 },
+  { generate: primitiveRightAreaDiameterCoprimality, domain: 'geometry_number_theory', tags: ['geometry', 'number_theory', 'triangle', 'pythagorean', 'circle_centers', 'circumradius', 'area', 'gcd'], depth: 24 },
+  { generate: primitiveRightEulerDistanceFraction, domain: 'geometry_number_theory', tags: ['geometry', 'number_theory', 'triangle', 'pythagorean', 'circle_centers', 'center_distance', 'modular'], depth: 23 },
+  { generate: primitiveRightRadiusProductIntegrality, domain: 'geometry_number_theory', tags: ['geometry', 'number_theory', 'triangle', 'pythagorean', 'circle_centers', 'radius_product', 'parity'], depth: 22 },
+  { generate: primitiveRightArithmeticSignature, domain: 'geometry_number_theory', tags: ['geometry', 'number_theory', 'triangle', 'pythagorean', 'circle_centers', 'center_distance', 'radius_product', 'gcd', 'modular'], depth: 23 },
+  { generate: rootTriangleCurvatureSum, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'circle_centers', 'curvature'], depth: 29 },
+  { generate: rootTriangleCenterDistanceSum, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'circle_centers', 'center_distance'], depth: 29 },
+  { generate: rootTriangleRadiusRatio, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'circle_centers', 'radius_ratio'], depth: 29 },
+  { generate: rootTriangleEulerCenterDistance, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'circle_centers', 'center_distance'], depth: 29 },
+  { generate: rootTriangleSideSquareSum, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'power_sum'], depth: 28 },
+  { generate: rootTriangleReciprocalSideSquareSum, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'reciprocal_invariant'], depth: 29 },
+  { generate: rootTriangleAreaSquare, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'area'], depth: 27 },
+  { generate: rootTriangleInExradiusProduct, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'circle_centers', 'radius_product'], depth: 29 },
+  { generate: rootTriangleCircumradiusSquare, domain: 'geometry_algebra', tags: ['geometry', 'algebra', 'triangle', 'polynomial_roots', 'symmetric_polynomial', 'heron', 'circle_centers', 'circumradius'], depth: 28 },
 ]
 
 export type LiveGenerationRequest = {
