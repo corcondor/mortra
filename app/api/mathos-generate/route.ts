@@ -719,6 +719,39 @@ type GenerationResult = {
   cards: Record<string, unknown>[]
   errors: string[]
   rejectionCounts?: Record<string, number>
+  discoveryQueued?: boolean
+  discoveryJobId?: string
+}
+
+async function enqueueParentConditionedDiscovery(
+  result: GenerationResult,
+  parents: ParentInput[],
+  count: number,
+  mode: GenerationProfile['mode'],
+): Promise<GenerationResult> {
+  if (mode !== 'fusion' || result.generated > 0 || parents.length < 2) return result
+  const { data, error } = await supabaseAdmin.functions.invoke('enqueue-generation', {
+    body: {
+      parents,
+      mode: 'mathos_discovery',
+      count: Math.max(1, Math.min(count, 10)),
+    },
+  })
+  if (error || !data?.job_id) {
+    return {
+      ...result,
+      errors: [
+        ...result.errors,
+        `未知構造探索キューの起動に失敗しました: ${error?.message ?? 'job id missing'}`,
+      ],
+    }
+  }
+  return {
+    ...result,
+    discoveryQueued: true,
+    discoveryJobId: String(data.job_id),
+    errors: result.errors.filter(message => !message.startsWith('全親を不可欠な証明入力')),
+  }
 }
 
 type ProgressEvent = {
@@ -1301,7 +1334,10 @@ export async function POST(request: NextRequest) {
       ? buildFusionProfiles(shuffledParents, domain)
       : [buildGenerationProfile(parents, domain, mode)]
 
-  if (!stream) return NextResponse.json(await generateCards(count, profiles, searchDepth, searchBudgetSeconds))
+  if (!stream) {
+    const result = await generateCards(count, profiles, searchDepth, searchBudgetSeconds)
+    return NextResponse.json(await enqueueParentConditionedDiscovery(result, parents, count, mode))
+  }
 
   const encoder = new TextEncoder()
   const responseStream = new ReadableStream({
@@ -1310,7 +1346,8 @@ export async function POST(request: NextRequest) {
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`))
       }
       try {
-        const result = await generateCards(count, profiles, searchDepth, searchBudgetSeconds, send)
+        const generated = await generateCards(count, profiles, searchDepth, searchBudgetSeconds, send)
+        const result = await enqueueParentConditionedDiscovery(generated, parents, count, mode)
         send({ phase: 'done', result })
       } catch (error) {
         send({

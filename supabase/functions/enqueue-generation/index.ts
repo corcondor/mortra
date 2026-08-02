@@ -91,7 +91,9 @@ Deno.serve(async (req: Request) => {
 
   // ── GitHub Actions を起動（GITHUB_TOKEN が設定されている場合） ──────────
   const githubToken = Deno.env.get('GITHUB_TOKEN')
-  const githubRepo  = Deno.env.get('GITHUB_REPO')   // "owner/repo" 形式
+  const githubRepo = mode === 'mathos_discovery'
+    ? (Deno.env.get('MATHOS_GITHUB_REPO') ?? 'corcondor/mathos')
+    : Deno.env.get('GITHUB_REPO')   // "owner/repo" 形式
 
   if (githubToken && githubRepo) {
     // repository_dispatch で generate.yml をトリガー
@@ -106,7 +108,7 @@ Deno.serve(async (req: Request) => {
         },
         body: JSON.stringify({
           event_type: 'generate-problem',
-          client_payload: { job_id: job.id },
+          client_payload: { job_id: job.id, mode },
         }),
       },
     )

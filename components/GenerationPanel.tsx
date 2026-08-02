@@ -35,6 +35,8 @@ type GenerationCard = {
   unmapped_tags?: string[]
   atlas_expansion?: boolean
   parent_ids?: string[]
+  unresolved?: boolean
+  discovery_status?: 'research_pending' | 'backend_candidate' | 'verified'
   parent_coverage?: Array<{
     parentId: string
     anchors: string[]
@@ -54,6 +56,14 @@ type GenerationCard = {
       witnessSteps: string[]
     }>
     bridges: Array<{ id: string; witnessStep: string; consumes: string[]; produces: string }>
+    intermediatePropositions?: Array<{
+      parentId: string
+      morphism: string
+      source: string
+      target: string
+      proposition: string
+      proved: boolean
+    }>
   } | null
   search_evidence?: {
     hypotheses_evaluated?: number
@@ -79,6 +89,9 @@ type GenerationResult = {
   engine: string
   cards: GenerationCard[]
   errors: string[]
+  discovered?: number
+  discoveryQueued?: boolean
+  discoveryJobId?: string
 }
 
 type StreamEvent = {
@@ -200,21 +213,57 @@ export function GenerationPanel({
         : ''
       return `${index + 1}. ${card.family_id ?? '?'} → ${card.answer_tex ?? '?'}${suffix}`
     })
-    const ok = data.generated > 0
+    const discovered = data.discovered ?? 0
+    const ok = data.generated > 0 || discovered > 0
     const partial = ok && data.generated < data.requested
-    const message = ok
+    const message = discovered > 0 && data.generated === 0
+      ? `未知構造を一から探索し、中間構造候補 ${discovered} 件を研究キューへ保存しました。未証明のため公開問題にはまだ追加していません。`
+      : ok
       ? `${partial ? '一部完了' : '完了'}: ${data.generated}/${data.requested} 問を生成・検証・保存しました。${partial ? ' 残りは構造条件または新規性検査で棄却されました。' : ''}`
       : `生成できませんでした（${data.errors[0] ?? '理由不明'}）`
-    setUiPhase(partial ? 'partial' : ok ? 'done' : 'error')
-    setCompleted(data.generated)
+    setUiPhase(discovered > 0 ? 'done' : partial ? 'partial' : ok ? 'done' : 'error')
+    setCompleted(data.generated || discovered)
     setGeneratedCards(data.cards)
     setLogs(previous => [...previous, ...lines, ...data.errors, message].slice(-30))
     setGenDone({ ok, partial, message })
-    if (ok) void onGenerated?.()
+    if (data.generated > 0) void onGenerated?.()
   }
 
-  const applyEvent = (event: StreamEvent) => {
+  const pollDiscoveryJob = async (jobId: string) => {
+    setUiPhase('inducing')
+    setLogs(previous => [
+      ...previous,
+      '既存Atlas外の構造です。選択した問題本文から対象・射・制約を再構成します。',
+      `探索ジョブ ${jobId.slice(0, 8)} をMathOS本体へ渡しました。`,
+    ].slice(-30))
+    for (let attempt = 0; attempt < 200; attempt++) {
+      if (attempt > 0) await new Promise(resolve => window.setTimeout(resolve, 3_000))
+      const response = await fetch(`/api/job-status?job_id=${encodeURIComponent(jobId)}`, { cache: 'no-store' })
+      if (!response.ok) throw new Error(`未知構造探索の状態取得に失敗しました: ${response.status}`)
+      const job = await response.json() as {
+        status: 'pending' | 'processing' | 'done' | 'failed'
+        logs?: Array<{ message?: string }> | string[]
+        result?: GenerationResult
+        error?: string | null
+      }
+      const jobLines = (job.logs ?? []).map(item => typeof item === 'string' ? item : item.message ?? '').filter(Boolean)
+      if (jobLines.length) setLogs(previous => [...previous, ...jobLines].slice(-30))
+      if (job.status === 'done' && job.result) {
+        finish(job.result)
+        return
+      }
+      if (job.status === 'failed') throw new Error(job.error ?? '未知構造探索が失敗しました')
+      setUiPhase(job.status === 'processing' ? 'inducing' : 'searching')
+    }
+    throw new Error('未知構造探索が10分以内に完了しませんでした。ジョブはバックグラウンドで継続します。')
+  }
+
+  const applyEvent = async (event: StreamEvent) => {
     if (event.phase === 'done' && event.result) {
+      if (event.result.discoveryQueued && event.result.discoveryJobId) {
+        await pollDiscoveryJob(event.result.discoveryJobId)
+        return
+      }
       finish(event.result)
       return
     }
@@ -309,7 +358,7 @@ export function GenerationPanel({
           if (!dataLine) continue
           const event = JSON.parse(dataLine.slice(6)) as StreamEvent
           if (event.phase === 'done') receivedFinal = true
-          applyEvent(event)
+          await applyEvent(event)
         }
       }
       if (!receivedFinal) throw new Error('生成結果を受信する前に接続が終了しました')
@@ -440,15 +489,23 @@ export function GenerationPanel({
         <section className="space-y-2" aria-labelledby="generated-results-heading">
           <div className="flex items-end justify-between">
             <div>
-              <h2 id="generated-results-heading" className="text-[14px] font-semibold text-zinc-100">今回生成した問題</h2>
-              <p className="text-[10px] text-zinc-500">その場で新規構成・検証済み・問題一覧にも自動反映</p>
+              <h2 id="generated-results-heading" className="text-[14px] font-semibold text-zinc-100">
+                {generatedCards.some(card => card.unresolved) ? '今回発見した構造候補' : '今回生成した問題'}
+              </h2>
+              <p className="text-[10px] text-zinc-500">
+                {generatedCards.some(card => card.unresolved)
+                  ? '選択問題から一から構成・未証明候補は研究キューで継続検証'
+                  : 'その場で新規構成・検証済み・問題一覧にも自動反映'}
+              </p>
             </div>
             <span className="text-[10px] tabular-nums text-emerald-300">{generatedCards.length} 問</span>
           </div>
           {generatedCards.map((card, index) => (
-            <article key={`${card.family_id}-${index}`} className="rounded-md border border-emerald-500/25 bg-emerald-500/[0.04] p-4">
+            <article key={`${card.family_id}-${index}`} className={`rounded-md border p-4 ${card.unresolved ? 'border-amber-500/25 bg-amber-500/[0.04]' : 'border-emerald-500/25 bg-emerald-500/[0.04]'}`}>
               <div className="mb-2 flex flex-wrap items-center gap-2 text-[9px] text-zinc-500">
-                <span className="font-semibold text-emerald-300">生成 {index + 1}</span>
+                <span className={`font-semibold ${card.unresolved ? 'text-amber-300' : 'text-emerald-300'}`}>
+                  {card.unresolved ? '研究候補' : '生成'} {index + 1}
+                </span>
                 <span>{card.family_id ?? 'unknown family'}</span>
                 {card.morphism_chain?.length ? <span>{card.morphism_chain.length} 検証段</span> : null}
                 {card.parent_ids?.length ? <span>親: {card.parent_ids.join(', ')}</span> : null}
@@ -488,6 +545,19 @@ export function GenerationPanel({
                     ))}
                     <li className="text-emerald-300">親除去テスト: 通過</li>
                   </ul>
+                  {card.fusion_derivation.intermediatePropositions?.length ? (
+                    <ol className="mt-2 max-h-40 space-y-1 overflow-y-auto border-l border-zinc-800 pl-3">
+                      {card.fusion_derivation.intermediatePropositions.map((item, propositionIndex) => (
+                        <li key={`${item.parentId}-${item.morphism}-${propositionIndex}`}>
+                          <span className={item.proved ? 'text-emerald-300' : 'text-amber-300'}>
+                            {item.proved ? '検証済み' : '要検証'}
+                          </span>
+                          <span className="ml-2 text-zinc-300">{item.source} → {item.target}</span>
+                          <span className="ml-2">{item.proposition}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  ) : null}
                 </details>
               ) : null}
               {card.inherited_tags?.length ? (
@@ -502,7 +572,7 @@ export function GenerationPanel({
               ) : null}
               {card.structure_blueprint?.id ? (
                 <div className="mb-2 text-[10px] text-zinc-500">
-                  実行構造: {card.structure_blueprint.id}
+                  {card.unresolved ? '保留構造' : '実行構造'}: {card.structure_blueprint.id}
                 </div>
               ) : null}
               {card.structure_blueprint?.proofCertificate?.length ? (

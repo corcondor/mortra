@@ -22,6 +22,10 @@ jobs:
         working-directory: worker
         run: npm install
 
+      - name: Verify structural discovery
+        working-directory: worker
+        run: npm test
+
       - name: Process job
         working-directory: worker
         env:
