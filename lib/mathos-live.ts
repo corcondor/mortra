@@ -1006,6 +1006,7 @@ export type LiveGenerationRequest = {
   focusTags?: string[]
   avoidQueryTags?: string[]
   excludedFamilies?: string[]
+  excludedObservables?: string[]
   preferDepth?: boolean
 }
 
@@ -1020,6 +1021,7 @@ export function generateLiveProblem(request: LiveGenerationRequest = {}): LivePr
   const focus = new Set(request.focusTags ?? [])
   const avoidedQueries = new Set(request.avoidQueryTags ?? [])
   const excluded = new Set(request.excludedFamilies ?? [])
+  const excludedObservables = new Set(request.excludedObservables ?? [])
   const scored = GENERATORS.map((spec) => {
     const tagScore = spec.tags.reduce((score, tag) => score + (focus.has(tag) ? 4 : 0), 0)
     const queryPenalty = spec.tags.some(tag => avoidedQueries.has(tag)) ? 8 : 0
@@ -1044,6 +1046,7 @@ export function generateLiveProblem(request: LiveGenerationRequest = {}): LivePr
         const p = spec.generate()
         if (!p) continue
         if (excluded.has(p.familyId)) continue
+        if (p.structureBlueprint && excludedObservables.has(p.structureBlueprint.observable)) continue
         if (!p.structureBlueprint) {
           p.structureBlueprint = {
             id: `runtime.${p.familyId}`,

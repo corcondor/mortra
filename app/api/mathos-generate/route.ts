@@ -465,6 +465,7 @@ async function generateCards(
   const structures: RegisteredStructure[] = []
   const sessionLogs: Array<{ phase: string; message: string; ts: string }> = []
   const seenFamilies = new Set<string>()
+  const seenObservables = new Set<string>()
   const seenCandidates = new Set<string>()
   const seenStructureIds = new Set<string>()
   const jobId = crypto.randomUUID()
@@ -551,6 +552,7 @@ async function generateCards(
         focusTags: expandedFocusTags(profile.tags),
         avoidQueryTags: profile.queryTags,
         excludedFamilies: attempt < Math.floor(maxAttempts * 0.6) ? [...seenFamilies] : [],
+        excludedObservables: attempt < Math.floor(maxAttempts * 0.85) ? [...seenObservables] : [],
         preferDepth: searchDepth === 'deep',
       })
       if (!candidate) continue
@@ -656,6 +658,7 @@ async function generateCards(
           !candidateTags.includes(tag) && preservedByAtlas(tag, candidateTags),
         )
         seenFamilies.add(candidate.familyId)
+        if (candidate.structureBlueprint) seenObservables.add(candidate.structureBlueprint.observable)
         report({
           phase: 'novelty',
           message: `既存 ${s.comparedAgainst} 問と照合。最大表層類似度 ${(s.score * 100).toFixed(0)}%`,
