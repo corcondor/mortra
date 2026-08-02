@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import { generateLiveProblem, type StructureBlueprint } from '@/lib/mathos-live'
 import verifiedBatch from '@/data/mathos/continuous_verified_problem_batch1.json'
+import { generalizeParents, type GeneralizationCertificate } from '../../../worker/src/generalization-kernel'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -721,6 +722,7 @@ type GenerationResult = {
   rejectionCounts?: Record<string, number>
   discoveryQueued?: boolean
   discoveryJobId?: string
+  generalization?: GeneralizationCertificate
 }
 
 async function enqueueParentConditionedDiscovery(
@@ -1333,10 +1335,37 @@ export async function POST(request: NextRequest) {
     : mode === 'fusion' && shuffledParents.length > 1
       ? buildFusionProfiles(shuffledParents, domain)
       : [buildGenerationProfile(parents, domain, mode)]
+  const generalization = parents.length
+    ? generalizeParents(
+        parents,
+        searchDepth === 'deep' ? 8 : 4,
+        Math.max(10_000, searchBudgetSeconds * 1_000),
+      ).certificate
+    : undefined
+  const needsStructuralDiscovery = mode === 'fusion' && !generalization?.target_sort
+
+  const attachGeneralization = (result: GenerationResult): GenerationResult => ({
+    ...result,
+    generalization,
+  })
 
   if (!stream) {
-    const result = await generateCards(count, profiles, searchDepth, searchBudgetSeconds)
-    return NextResponse.json(await enqueueParentConditionedDiscovery(result, parents, count, mode))
+    const generated = needsStructuralDiscovery
+      ? {
+          generated: 0,
+          requested: count,
+          engine: 'MathOS parent-conditioned structural search',
+          cards: [],
+          errors: ['既存の共同射ではなく、選択端点から中間構造を自己拡張探索します'],
+        }
+      : await generateCards(count, profiles, searchDepth, searchBudgetSeconds)
+    const result = await enqueueParentConditionedDiscovery(
+      attachGeneralization(generated),
+      parents,
+      count,
+      mode,
+    )
+    return NextResponse.json(result)
   }
 
   const encoder = new TextEncoder()
@@ -1346,8 +1375,29 @@ export async function POST(request: NextRequest) {
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`))
       }
       try {
-        const generated = await generateCards(count, profiles, searchDepth, searchBudgetSeconds, send)
-        const result = await enqueueParentConditionedDiscovery(generated, parents, count, mode)
+        const generated = needsStructuralDiscovery
+          ? (() => {
+              send({
+                phase: 'inducing',
+                message: '固定端点の間に既知の共同射がないため、中間構造の自己拡張探索へ移行します',
+                current: 0,
+                total: count,
+              })
+              return {
+                generated: 0,
+                requested: count,
+                engine: 'MathOS parent-conditioned structural search',
+                cards: [],
+                errors: ['選択端点から中間構造を自己拡張探索中'],
+              }
+            })()
+          : await generateCards(count, profiles, searchDepth, searchBudgetSeconds, send)
+        const result = await enqueueParentConditionedDiscovery(
+          attachGeneralization(generated),
+          parents,
+          count,
+          mode,
+        )
         send({ phase: 'done', result })
       } catch (error) {
         send({
