@@ -104,6 +104,7 @@ type GenerationResult = {
   generalization?: {
     id: string
     method: string
+    parent_ids: string[]
     target_sort: string | null
     common_operators: string[]
     common_sorts: string[]
@@ -362,6 +363,19 @@ export function GenerationPanel({
         setRoadmapTarget(generalization.target_sort ?? null)
         setLanguageAnalysis(generalization.language_analysis ?? [])
         setSearchEvidence(generalization.search_evidence)
+        setActiveParents(previous => previous.length
+          ? previous
+          : generalization.parent_ids.map(id => ({ id, statement: '保存済み親問題' })))
+      }
+      const researchCards = job.result?.cards ?? []
+      if (job.status === 'processing' && researchCards.length > 0) {
+        setGeneratedCards(researchCards)
+        const leading = researchCards[0]
+        setDraft(leading.statement_tex ?? '中間構造候補を検証しています。')
+        setFamilyId(leading.family_id ?? null)
+        setMorphisms(leading.morphism_chain ?? [])
+        setStructureId(leading.structure_blueprint?.id ?? null)
+        setStructureStatus('pending')
       }
       if (state?.round && state.round !== observedRound) {
         observedRound = state.round
