@@ -42,7 +42,7 @@ export type RoadmapStep = {
 
 export type GeneralizationCertificate = {
   id: string
-  method: 'typed-hypergraph-anti-unification'
+  method: 'typed-operator-overlap-and-hypergraph-planning-v1'
   parent_ids: string[]
   common_operators: string[]
   common_sorts: string[]
@@ -115,6 +115,32 @@ const MORPHISM_ATLAS: readonly MorphismSchema[] = [
   { name: 'CompanionRepresentation', source: 'Sequence', target: 'Matrix2', preserves: ['orbit', 'initial-state'], backend: ['linear-recurrence'] },
   { name: 'ResidueProjection', source: 'Integer', target: 'FiniteSet', preserves: ['congruence-class'], backend: ['modular-arithmetic'] },
   { name: 'Counting', source: 'FiniteSet', target: 'Integer', preserves: ['bijection-class'], backend: ['enumeration'] },
+]
+
+type HyperMorphismSchema = {
+  name: string
+  sources: string[]
+  target: string
+  preserves: string[]
+  backend: string[]
+}
+
+const HYPER_MORPHISM_ATLAS: readonly HyperMorphismSchema[] = [
+  ...MORPHISM_ATLAS.map(edge => ({ ...edge, sources: [edge.source] })),
+  {
+    name: 'MapOrbitEvaluation',
+    sources: ['RationalSelfMap', 'FiniteAlgebraicOrbit'],
+    target: 'FiniteFamily',
+    preserves: ['map-action', 'orbit-index', 'multiplicity'],
+    backend: ['rational-normal-form', 'cyclotomic-polynomial'],
+  },
+  {
+    name: 'ConstraintPullback',
+    sources: ['PolynomialSystem', 'AlgebraicSet'],
+    target: 'SemialgebraicSet',
+    preserves: ['joint-solution-set', 'projection'],
+    backend: ['groebner-basis', 'quantifier-elimination'],
+  },
 ]
 
 function hash(value: unknown, length = 12): string {
@@ -224,6 +250,64 @@ function bestCommonTarget(graphs: SemanticHypergraph[], maxDepth: number) {
   return ranked[0] ?? null
 }
 
+function parentIdsFromMask(graphs: SemanticHypergraph[], mask: number): string[] {
+  return graphs.filter((_, index) => (mask & (1 << index)) !== 0).map(graph => graph.parent_id)
+}
+
+function planJointHypergraph(graphs: SemanticHypergraph[], maxDepth: number) {
+  if (!graphs.length || graphs.length > 30) return null
+  const fullMask = (1 << graphs.length) - 1
+  const initial = new Map<string, number>()
+  graphs.forEach((graph, index) => {
+    const mask = 1 << index
+    for (const sort of graph.root_sorts) initial.set(sort, (initial.get(sort) ?? 0) | mask)
+  })
+  type State = { known: Map<string, number>; steps: RoadmapStep[] }
+  const queue: State[] = [{ known: initial, steps: [] }]
+  const seen = new Set<string>()
+  const preferredTargets = new Set(['Scalar', 'Integer', 'Proof'])
+  const keyOf = (known: Map<string, number>) => [...known.entries()]
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([sort, mask]) => `${sort}:${mask}`)
+    .join('|')
+  seen.add(keyOf(initial))
+
+  for (let cursor = 0; cursor < queue.length && cursor < 10_000; cursor++) {
+    const state = queue[cursor]
+    const completed = [...state.known.entries()]
+      .filter(([sort, mask]) => mask === fullMask && preferredTargets.has(sort))
+      .sort(([left], [right]) => Number(right === 'Scalar') - Number(left === 'Scalar'))[0]
+    if (completed && state.steps.length > 0) return { target: completed[0], roadmap: state.steps }
+    if (state.steps.length >= maxDepth) continue
+
+    for (const edge of HYPER_MORPHISM_ATLAS) {
+      const masks = edge.sources.map(source => state.known.get(source) ?? 0)
+      if (masks.some(mask => mask === 0)) continue
+      const combinedMask = masks.reduce((mask, sourceMask) => mask | sourceMask, 0)
+      const previousMask = state.known.get(edge.target) ?? 0
+      const nextMask = previousMask | combinedMask
+      if (nextMask === previousMask) continue
+      const known = new Map(state.known)
+      known.set(edge.target, nextMask)
+      const key = keyOf(known)
+      if (seen.has(key)) continue
+      seen.add(key)
+      const step: RoadmapStep = {
+        id: `joint-${state.steps.length + 1}-${edge.name}`,
+        source: edge.sources.join(' × '),
+        target: edge.target,
+        morphism: edge.name,
+        preserves: edge.preserves,
+        backend: edge.backend,
+        status: 'open',
+        parent_ids: parentIdsFromMask(graphs, combinedMask),
+      }
+      queue.push({ known, steps: [...state.steps, step] })
+    }
+  }
+  return null
+}
+
 export function generalizeParents(
   parents: DiscoveryParent[],
   maxDepth = 6,
@@ -238,9 +322,12 @@ export function generalizeParents(
     : []
   const commonOperators = intersect(operatorSets)
   const commonSorts = intersect(sortSets)
-  const join = bestCommonTarget(graphs, maxDepth)
+  const jointPlan = planJointHypergraph(graphs, maxDepth)
+  const join = jointPlan ? null : bestCommonTarget(graphs, maxDepth)
   const roadmap: RoadmapStep[] = []
-  if (join) {
+  if (jointPlan) {
+    roadmap.push(...jointPlan.roadmap)
+  } else if (join) {
     join.paths.forEach((path, parentIndex) => {
       path.edges.forEach((edge, edgeIndex) => roadmap.push({
         id: `r${parentIndex + 1}-${edgeIndex + 1}-${edge.name}`,
@@ -272,12 +359,12 @@ export function generalizeParents(
     graphs,
     certificate: {
       id: `generalization.${hash({ parents: graphs.map(graph => graph.parent_id), commonOperators, commonSorts, roadmap })}`,
-      method: 'typed-hypergraph-anti-unification',
+      method: 'typed-operator-overlap-and-hypergraph-planning-v1',
       parent_ids: graphs.map(graph => graph.parent_id),
       common_operators: commonOperators,
       common_sorts: commonSorts,
       bindings,
-      target_sort: join?.target ?? null,
+      target_sort: jointPlan?.target ?? join?.target ?? null,
       roadmap,
       proof_obligations: proofObligations,
       negative_transfer_checks: [

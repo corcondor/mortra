@@ -39,3 +39,16 @@ test('does not fabricate a common target for disconnected opaque structures', ()
   assert.equal(result.certificate.roadmap.length, 0)
   assert.match(result.certificate.proof_obligations[0], /No common executable codomain/)
 })
+
+test('plans a genuine multi-input roadmap for a map acting on a finite orbit', () => {
+  const result = generalizeParents([
+    { id: 'map', statement: '一次分数変換 T(z)=\\frac{3z+2}{z+2} を考える。' },
+    { id: 'orbit', statement: 'z_1,\\ldots,z_n を z^n=1 の全ての解とする。' },
+  ], 4)
+  assert.equal(result.certificate.target_sort, 'Scalar')
+  assert.deepEqual(
+    result.certificate.roadmap.map(step => step.morphism),
+    ['MapOrbitEvaluation', 'FiniteSummation'],
+  )
+  assert.deepEqual(result.certificate.roadmap[0].parent_ids.sort(), ['map', 'orbit'])
+})
