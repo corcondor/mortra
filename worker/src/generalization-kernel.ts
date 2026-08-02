@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto'
 import type { DiscoveryParent } from './parent-conditioned-discovery'
+import { elaborateMathematicalText } from './mathematical-language'
 
 export type SemanticRole = 'object' | 'operator' | 'relation' | 'query'
 
@@ -27,6 +28,16 @@ export type SemanticHypergraph = {
   edges: SemanticEdge[]
   root_sorts: string[]
   query_sorts: string[]
+  language_analysis: {
+    token_count: number
+    parse_count: number
+    parse_truncated: boolean
+    clause_count: number
+    quantifier_prefix: string[]
+    definitions: Array<{ symbol: string; canonical: string; sort: string }>
+    unresolved_references: string[]
+    diagnostics: string[]
+  }
 }
 
 export type RoadmapStep = {
@@ -52,6 +63,13 @@ export type GeneralizationCertificate = {
   proof_obligations: string[]
   negative_transfer_checks: string[]
   executable_backends: string[]
+  language_analysis: SemanticHypergraph['language_analysis'][]
+  search_evidence: {
+    max_depth: number
+    max_states: number
+    states_explored: number
+    exhausted: boolean
+  }
 }
 
 type OperatorSchema = {
@@ -167,16 +185,25 @@ function identifierNodes(text: string, id: string): SemanticNode[] {
   }))
 }
 
+function inferredSort(text: string): string {
+  for (const schema of OPERATOR_SCHEMAS) {
+    if (schema.patterns.some(pattern => pattern.test(text))) return schema.output
+  }
+  return `OpaqueSort[${hash(text, 10)}]`
+}
+
 export function buildSemanticHypergraph(parent: DiscoveryParent): SemanticHypergraph {
   const id = parentId(parent)
   const text = textOf(parent)
+  const language = elaborateMathematicalText(text, inferredSort)
   const nodes = identifierNodes(text, id)
   const edges: SemanticEdge[] = []
   const rootSorts = new Set<string>()
   const querySorts = new Set<string>()
 
+  const clauses = language.forest.analyses[language.ir.selected_analysis]?.clauses ?? []
   for (const schema of OPERATOR_SCHEMAS) {
-    const match = schema.patterns.map(pattern => text.match(pattern)).find(Boolean)
+    const match = clauses.flatMap(clause => schema.patterns.map(pattern => clause.raw.match(pattern))).find(Boolean)
     if (!match) continue
     const nodeId = `${id}:op:${schema.canonical}`
     nodes.push({
@@ -187,8 +214,9 @@ export function buildSemanticHypergraph(parent: DiscoveryParent): SemanticHyperg
       surface: match[0],
       parent_id: id,
     })
+    // The input object exists in the parent. The output is only available after
+    // the detected operator has actually been applied by the planner.
     rootSorts.add(schema.input)
-    rootSorts.add(schema.output)
     if (schema.role === 'query') querySorts.add(schema.output)
     edges.push({
       source: schema.input,
@@ -199,6 +227,28 @@ export function buildSemanticHypergraph(parent: DiscoveryParent): SemanticHyperg
       proved: false,
     })
   }
+  for (const definition of language.ir.definitions) {
+    nodes.push({
+      id: `${id}:${definition.id}`,
+      role: 'object',
+      canonical: definition.canonical,
+      sort: definition.inferred_sort,
+      surface: definition.symbol,
+      parent_id: id,
+    })
+    rootSorts.add(definition.inferred_sort)
+  }
+  language.ir.quantifiers.forEach((quantifier, index) => {
+    nodes.push({
+      id: `${id}:quantifier:${index}`,
+      role: 'relation',
+      canonical: `${quantifier.kind === 'forall' ? 'Forall' : 'Exists'}[${index}]`,
+      sort: 'Proposition',
+      surface: `${quantifier.kind}:${quantifier.variable ?? '?'}`,
+      parent_id: id,
+    })
+    rootSorts.add('Proposition')
+  })
   if (!rootSorts.size) rootSorts.add(`OpaqueSort[${hash(text || id, 10)}]`)
   return {
     parent_id: id,
@@ -206,6 +256,20 @@ export function buildSemanticHypergraph(parent: DiscoveryParent): SemanticHyperg
     edges,
     root_sorts: [...rootSorts],
     query_sorts: [...querySorts],
+    language_analysis: {
+      token_count: language.forest.tokens.length,
+      parse_count: language.forest.analyses.length,
+      parse_truncated: language.forest.truncated,
+      clause_count: clauses.length,
+      quantifier_prefix: language.ir.quantifier_prefix,
+      definitions: language.ir.definitions.map(definition => ({
+        symbol: definition.symbol,
+        canonical: definition.canonical,
+        sort: definition.inferred_sort,
+      })),
+      unresolved_references: language.ir.unresolved_references,
+      diagnostics: language.ir.diagnostics,
+    },
   }
 }
 
@@ -255,72 +319,112 @@ function parentIdsFromMask(graphs: SemanticHypergraph[], mask: number): string[]
   return graphs.filter((_, index) => (mask & (1 << index)) !== 0).map(graph => graph.parent_id)
 }
 
-function planJointHypergraph(graphs: SemanticHypergraph[], maxDepth: number) {
-  if (!graphs.length || graphs.length > 30) return null
+function planJointHypergraph(graphs: SemanticHypergraph[], maxDepth: number, maxStates: number) {
+  if (!graphs.length || graphs.length > 30) return { plan: null, statesExplored: 0, exhausted: true }
   const fullMask = (1 << graphs.length) - 1
   type Provenance = { mask: number; fused: boolean }
-  const initial = new Map<string, Provenance>()
+  const initial = new Map<string, Provenance[]>()
   graphs.forEach((graph, index) => {
     const mask = 1 << index
     for (const sort of graph.root_sorts) {
-      const previous = initial.get(sort)
-      initial.set(sort, { mask: (previous?.mask ?? 0) | mask, fused: false })
+      const alternatives = initial.get(sort) ?? []
+      if (!alternatives.some(item => item.mask === mask && !item.fused)) {
+        alternatives.push({ mask, fused: false })
+      }
+      initial.set(sort, alternatives)
     }
   })
-  type State = { known: Map<string, Provenance>; steps: RoadmapStep[] }
+  type State = { known: Map<string, Provenance[]>; steps: RoadmapStep[] }
   const queue: State[] = [{ known: initial, steps: [] }]
   const seen = new Set<string>()
   const preferredTargets = new Set(['Scalar', 'Integer', 'Proof'])
-  const keyOf = (known: Map<string, Provenance>) => [...known.entries()]
+  const keyOf = (known: Map<string, Provenance[]>) => [...known.entries()]
     .sort(([left], [right]) => left.localeCompare(right))
-    .map(([sort, provenance]) => `${sort}:${provenance.mask}:${Number(provenance.fused)}`)
+    .map(([sort, alternatives]) => `${sort}:${alternatives
+      .map(provenance => `${provenance.mask}.${Number(provenance.fused)}`)
+      .sort()
+      .join(',')}`)
     .join('|')
   seen.add(keyOf(initial))
+  const planningEdges = [
+    ...HYPER_MORPHISM_ATLAS.map(edge => ({ ...edge, originMask: 0 })),
+    ...graphs.flatMap((graph, graphIndex) => graph.edges.map(edge => ({
+      name: edge.morphism,
+      sources: [edge.source],
+      target: edge.target,
+      preserves: edge.preserves,
+      backend: edge.backend,
+      originMask: 1 << graphIndex,
+    }))),
+  ]
 
-  for (let cursor = 0; cursor < queue.length && cursor < 10_000; cursor++) {
+  let statesExplored = 0
+  for (let cursor = 0; cursor < queue.length && cursor < maxStates; cursor++) {
+    statesExplored++
     const state = queue[cursor]
     const completed = [...state.known.entries()]
-      .filter(([sort, provenance]) => provenance.mask === fullMask && provenance.fused && preferredTargets.has(sort))
+      .filter(([sort, alternatives]) => alternatives.some(provenance =>
+        provenance.mask === fullMask && provenance.fused,
+      ) && preferredTargets.has(sort))
       .sort(([left], [right]) => Number(right === 'Scalar') - Number(left === 'Scalar'))[0]
-    if (completed && state.steps.length > 0) return { target: completed[0], roadmap: state.steps }
+    if (completed && state.steps.length > 0) return {
+      plan: { target: completed[0], roadmap: state.steps },
+      statesExplored,
+      exhausted: false,
+    }
     if (state.steps.length >= maxDepth) continue
 
-    for (const edge of HYPER_MORPHISM_ATLAS) {
-      const inputs = edge.sources.map(source => state.known.get(source))
-      if (inputs.some(input => !input)) continue
-      const provenances = inputs as Provenance[]
-      const combinedMask = provenances.reduce((mask, input) => mask | input.mask, 0)
-      const combinesDistinctInputs = edge.sources.length > 1 &&
-        new Set(provenances.map(input => input.mask)).size > 1
-      const combinedFused = provenances.some(input => input.fused) ||
-        (combinesDistinctInputs && combinedMask === fullMask)
-      const previous = state.known.get(edge.target) ?? { mask: 0, fused: false }
-      const next = { mask: previous.mask | combinedMask, fused: previous.fused || combinedFused }
-      if (next.mask === previous.mask && next.fused === previous.fused) continue
-      const known = new Map(state.known)
-      known.set(edge.target, next)
-      const key = keyOf(known)
-      if (seen.has(key)) continue
-      seen.add(key)
-      const step: RoadmapStep = {
-        id: `joint-${state.steps.length + 1}-${edge.name}`,
-        source: edge.sources.join(' × '),
-        target: edge.target,
-        morphism: edge.name,
-        preserves: edge.preserves,
-        backend: edge.backend,
-        status: 'open',
-        parent_ids: parentIdsFromMask(graphs, combinedMask),
+    for (const edge of planningEdges) {
+      const alternatives = edge.sources.map(source => state.known.get(source) ?? [])
+      if (alternatives.some(options => options.length === 0)) continue
+      const combinations: Provenance[][] = [[]]
+      for (const options of alternatives) {
+        const prior = combinations.splice(0)
+        for (const combination of prior) {
+          for (const option of options) combinations.push([...combination, option])
+        }
       }
-      queue.push({ known, steps: [...state.steps, step] })
+      for (const provenances of combinations) {
+        const inputMask = provenances.reduce((mask, input) => mask | input.mask, 0)
+        const combinedMask = inputMask | edge.originMask
+        const contributorMasks = [...provenances.map(input => input.mask), edge.originMask].filter(Boolean)
+        const hasDistinctContributors = new Set(contributorMasks).size > 1
+        const combinedFused = provenances.some(input => input.fused) ||
+          (hasDistinctContributors && combinedMask === fullMask)
+        const previous = state.known.get(edge.target) ?? []
+        const dominated = previous.some(item =>
+          item.mask === combinedMask && (item.fused || !combinedFused),
+        )
+        if (dominated) continue
+        const nextAlternatives = previous
+          .filter(item => item.mask !== combinedMask || combinedFused || !item.fused)
+          .concat({ mask: combinedMask, fused: combinedFused })
+        const known = new Map(state.known)
+        known.set(edge.target, nextAlternatives)
+        const key = keyOf(known)
+        if (seen.has(key)) continue
+        seen.add(key)
+        const step: RoadmapStep = {
+          id: `joint-${state.steps.length + 1}-${edge.name}`,
+          source: edge.sources.join(' × '),
+          target: edge.target,
+          morphism: edge.name,
+          preserves: edge.preserves,
+          backend: edge.backend,
+          status: 'open',
+          parent_ids: parentIdsFromMask(graphs, combinedMask),
+        }
+        queue.push({ known, steps: [...state.steps, step] })
+      }
     }
   }
-  return null
+  return { plan: null, statesExplored, exhausted: queue.length <= statesExplored }
 }
 
 export function generalizeParents(
   parents: DiscoveryParent[],
   maxDepth = 6,
+  maxStates = 10_000,
 ): { graphs: SemanticHypergraph[]; certificate: GeneralizationCertificate } {
   const graphs = parents.map(buildSemanticHypergraph)
   const operatorSets = graphs.map(graph => new Set(graph.nodes
@@ -332,8 +436,11 @@ export function generalizeParents(
     : []
   const commonOperators = intersect(operatorSets)
   const commonSorts = intersect(sortSets)
-  const jointPlan = planJointHypergraph(graphs, maxDepth)
-  const join = jointPlan ? null : bestCommonTarget(graphs, maxDepth)
+  const jointSearch = planJointHypergraph(graphs, maxDepth, maxStates)
+  const jointPlan = jointSearch.plan
+  // Multiple parents must meet in one provenance-carrying construction. Merely
+  // mapping them separately into a common codomain is not a fusion.
+  const join = jointPlan || parents.length > 1 ? null : bestCommonTarget(graphs, maxDepth)
   const roadmap: RoadmapStep[] = []
   if (jointPlan) {
     roadmap.push(...jointPlan.roadmap)
@@ -364,7 +471,7 @@ export function generalizeParents(
     `${step.morphism}: ${step.source} -> ${step.target} is defined under the parent constraints`,
     `${step.morphism} preserves ${step.preserves.join(', ') || 'the required observable'}`,
   ])
-  if (!join) proofObligations.push('No common executable codomain was found; expand the typed atlas without inventing a scalar bridge')
+  if (!jointPlan && !join) proofObligations.push('No joint executable construction was found; synthesize typed intermediate morphisms without inventing a scalar bridge')
   return {
     graphs,
     certificate: {
@@ -384,6 +491,13 @@ export function generalizeParents(
         'reject any roadmap edge without an executable backend contract',
       ],
       executable_backends: executableBackends,
+      language_analysis: graphs.map(graph => graph.language_analysis),
+      search_evidence: {
+        max_depth: maxDepth,
+        max_states: maxStates,
+        states_explored: jointSearch.statesExplored,
+        exhausted: jointSearch.exhausted,
+      },
     },
   }
 }

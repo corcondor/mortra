@@ -37,7 +37,7 @@ test('does not fabricate a common target for disconnected opaque structures', ()
   ])
   assert.equal(result.certificate.target_sort, null)
   assert.equal(result.certificate.roadmap.length, 0)
-  assert.match(result.certificate.proof_obligations[0], /No common executable codomain/)
+  assert.match(result.certificate.proof_obligations[0], /No joint executable construction/)
 })
 
 test('plans a genuine multi-input roadmap for a map acting on a finite orbit', () => {
@@ -48,9 +48,9 @@ test('plans a genuine multi-input roadmap for a map acting on a finite orbit', (
   assert.equal(result.certificate.target_sort, 'Scalar')
   assert.deepEqual(
     result.certificate.roadmap.map(step => step.morphism),
-    ['MapOrbitEvaluation', 'FiniteSummation'],
+    ['MobiusMap', 'MapOrbitEvaluation', 'FiniteSummation'],
   )
-  assert.deepEqual(result.certificate.roadmap[0].parent_ids.sort(), ['map', 'orbit'])
+  assert.deepEqual(result.certificate.roadmap[1].parent_ids.sort(), ['map', 'orbit'])
 })
 
 test('sharing only a scalar codomain is not accepted as a fusion', () => {
@@ -60,4 +60,14 @@ test('sharing only a scalar codomain is not accepted as a fusion', () => {
   ], 5)
   assert.equal(result.certificate.target_sort, null)
   assert.equal(result.certificate.roadmap.length, 0)
+})
+
+test('a detected operator from one parent may act on a compatible object from another parent', () => {
+  const result = generalizeParents([
+    { id: 'operator', statement: '関数 f を積分して値を求めよ。' },
+    { id: 'object', statement: '関数 g(x) に対し方程式 g(x)=0 の根を考える。' },
+  ], 4)
+  const step = result.certificate.roadmap.find(item => item.morphism === 'Integral')
+  assert.ok(step)
+  assert.deepEqual(new Set(step.parent_ids), new Set(['operator', 'object']))
 })

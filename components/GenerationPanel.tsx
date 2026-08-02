@@ -118,6 +118,22 @@ type GenerationResult = {
       parent_ids: string[]
     }>
     proof_obligations: string[]
+    language_analysis?: Array<{
+      token_count: number
+      parse_count: number
+      parse_truncated: boolean
+      clause_count: number
+      quantifier_prefix: string[]
+      definitions: Array<{ symbol: string; canonical: string; sort: string }>
+      unresolved_references: string[]
+      diagnostics: string[]
+    }>
+    search_evidence?: {
+      max_depth: number
+      max_states: number
+      states_explored: number
+      exhausted: boolean
+    }
   }
 }
 
@@ -217,6 +233,9 @@ export function GenerationPanel({
   const [generatedCards, setGeneratedCards] = useState<GenerationCard[]>([])
   const [roadmap, setRoadmap] = useState<NonNullable<GenerationResult['generalization']>['roadmap']>([])
   const [roadmapTarget, setRoadmapTarget] = useState<string | null>(null)
+  const [languageAnalysis, setLanguageAnalysis] = useState<NonNullable<GenerationResult['generalization']>['language_analysis']>([])
+  const [searchEvidence, setSearchEvidence] = useState<NonNullable<GenerationResult['generalization']>['search_evidence']>(undefined)
+  const [activeParents, setActiveParents] = useState<Array<{ id: string; statement: string }>>([])
   const logEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -275,6 +294,8 @@ export function GenerationPanel({
     setGeneratedCards(data.cards)
     setRoadmap(data.generalization?.roadmap ?? [])
     setRoadmapTarget(data.generalization?.target_sort ?? null)
+    setLanguageAnalysis(data.generalization?.language_analysis ?? [])
+    setSearchEvidence(data.generalization?.search_evidence)
     const finalCard = data.cards[0]
     if (finalCard) {
       setDraft(finalCard.statement_tex ?? '')
@@ -337,6 +358,8 @@ export function GenerationPanel({
       if (generalization) {
         setRoadmap(generalization.roadmap ?? [])
         setRoadmapTarget(generalization.target_sort ?? null)
+        setLanguageAnalysis(generalization.language_analysis ?? [])
+        setSearchEvidence(generalization.search_evidence)
       }
       if (state?.round && state.round !== observedRound) {
         observedRound = state.round
@@ -392,6 +415,9 @@ export function GenerationPanel({
     setGeneratedCards([])
     setRoadmap([])
     setRoadmapTarget(null)
+    setLanguageAnalysis([])
+    setSearchEvidence(undefined)
+    setActiveParents(parents.map(parent => ({ id: parent.id, statement: parent.statement })))
     setWindowOpen(true)
 
     const domain = parents[0]?.topic_a || undefined
@@ -771,6 +797,20 @@ export function GenerationPanel({
           </header>
 
           <div className="space-y-3 p-4">
+            <details open className="rounded border border-zinc-800 bg-[#0a0a0b]">
+              <summary className="cursor-pointer px-3 py-2 text-[9px] font-semibold uppercase text-zinc-500">
+                固定端点 {activeParents.length} 問
+              </summary>
+              <div className="max-h-28 space-y-2 overflow-y-auto border-t border-zinc-800 px-3 py-2">
+                {activeParents.map((parent, index) => (
+                  <div key={parent.id} className="text-[9px] leading-4 text-zinc-400">
+                    <span className="mr-2 font-mono text-blue-300">P{index + 1} {parent.id.slice(0, 8)}</span>
+                    <span>{parent.statement.replace(/\s+/g, ' ').slice(0, 100)}</span>
+                  </div>
+                ))}
+              </div>
+            </details>
+
             <div className="grid grid-cols-6 gap-1" aria-label="生成工程">
               {STAGES.map((stage, index) => {
                 const active = generating && index === Math.min(phaseRank, STAGES.length - 1)
@@ -783,6 +823,32 @@ export function GenerationPanel({
                 )
               })}
             </div>
+
+            {languageAnalysis && languageAnalysis.length > 0 && (
+              <details className="rounded border border-zinc-800 bg-[#0a0a0b]">
+                <summary className="cursor-pointer px-3 py-2 text-[9px] font-semibold uppercase text-zinc-500">
+                  字句・構文・意味解析 {languageAnalysis.length}/{activeParents.length} 親
+                </summary>
+                <div className="max-h-40 space-y-2 overflow-y-auto border-t border-zinc-800 px-3 py-2 text-[9px] leading-4 text-zinc-400">
+                  {languageAnalysis.map((analysis, index) => (
+                    <div key={index} className="border-b border-zinc-900 pb-2 last:border-0">
+                      <div className="text-zinc-300">
+                        P{index + 1}: {analysis.token_count} token / {analysis.clause_count} 節 / {analysis.parse_count} 構文候補
+                        {analysis.parse_truncated ? '（上限到達）' : ''}
+                      </div>
+                      {analysis.quantifier_prefix.length > 0 && <div>量化: {analysis.quantifier_prefix.join(' → ')}</div>}
+                      {analysis.definitions.length > 0 && <div>定義: {analysis.definitions.map(item => `${item.symbol}:${item.sort}`).join(' / ')}</div>}
+                      {analysis.unresolved_references.length > 0 && <div className="text-amber-300">未解決参照: {analysis.unresolved_references.join(', ')}</div>}
+                    </div>
+                  ))}
+                  {searchEvidence && (
+                    <div className="text-cyan-300">
+                      深さ {searchEvidence.max_depth} / 状態上限 {searchEvidence.max_states.toLocaleString()} / 検査 {searchEvidence.states_explored.toLocaleString()}
+                    </div>
+                  )}
+                </div>
+              </details>
+            )}
 
             <div className="overflow-hidden rounded border border-zinc-800 bg-[#0a0a0b]">
               <div className="flex items-center justify-between border-b border-zinc-800 px-3 py-2">

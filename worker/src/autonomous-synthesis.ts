@@ -32,6 +32,7 @@ export type AutonomousSearchState = {
   frontier: Array<{ source: string; target: string; obligation: string }>
   continuing: boolean
   next_attempt_at: string | null
+  state_budget?: number
 }
 
 export type SynthesisContext = {
@@ -136,9 +137,10 @@ export function runAutonomousSynthesis(
 ): AutonomousSynthesisResult {
   const state = compatibleState(parents, previous)
   state.round += 1
-  state.depth = Math.min(30, Math.max(2, state.depth + (state.round > 1 ? 1 : 0)))
+  state.depth = Math.max(2, state.depth + (state.round > 1 ? 1 : 0))
+  state.state_budget = Math.max(10_000, 10_000 * state.round)
   const discovery = discoverParentStructures(parents, requested)
-  const generalized = generalizeParents(parents, state.depth)
+  const generalized = generalizeParents(parents, state.depth, state.state_budget)
   state.hypotheses_evaluated += discovery.hypotheses.length
   state.frontier = generalized.certificate.roadmap.length
     ? generalized.certificate.roadmap.slice(0, 48).map(step => ({
