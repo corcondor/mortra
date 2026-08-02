@@ -87,7 +87,7 @@ type OperatorSchema = {
 // This is an operator vocabulary. Entries define mathematical meaning and type,
 // never a finished problem family, dataset id, or numeric answer.
 const OPERATOR_SCHEMAS: readonly OperatorSchema[] = [
-  { canonical: 'Integral', patterns: [/\\int\b/i, /積分/], input: 'Function', output: 'Scalar', preserves: ['linearity'], backend: ['symbolic-integration', 'numeric-quadrature'] },
+  { canonical: 'Integral', patterns: [/\\int(?![A-Za-z])/i, /積分/], input: 'Function', output: 'Scalar', preserves: ['linearity'], backend: ['symbolic-integration', 'numeric-quadrature'] },
   { canonical: 'Derivative', patterns: [/\\frac\s*\{d|f\s*['′]|微分|導関数/], input: 'DifferentiableFunction', output: 'Function', preserves: ['local-contact'], backend: ['symbolic-differentiation'] },
   { canonical: 'Limit', patterns: [/\\lim\b/i, /極限/], input: 'FilteredObject', output: 'Scalar', preserves: ['asymptotic-class'], backend: ['limit-engine', 'interval-bound'] },
   { canonical: 'Sum', patterns: [/\\sum\b/i, /総和|和を求め/], input: 'FiniteFamily', output: 'Scalar', preserves: ['index-set', 'multiplicity'], backend: ['exact-summation'] },

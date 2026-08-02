@@ -278,14 +278,24 @@ function declarationsOf(raw: string, clause: number, offset: number): Declaratio
 }
 
 function relationsOf(raw: string, tokens: MathToken[], clause: number, offset: number): RelationSyntax[] {
-  return tokens.filter(token => token.kind === 'relation').map(token => ({
-    operator: token.value,
-    lhs: raw.slice(0, Math.max(0, token.start - offset)).trim(),
-    rhs: raw.slice(Math.max(0, token.end - offset)).trim(),
-    clause,
-    start: token.start,
-    end: token.end,
-  })).filter(relation => relation.lhs.length > 0 && relation.rhs.length > 0)
+  return tokens.filter(token => token.kind === 'relation').map(token => {
+    const localStart = Math.max(0, token.start - offset)
+    const localEnd = Math.max(0, token.end - offset)
+    const prefix = raw.slice(0, localStart)
+    const boundaryMarkers = ['、', ',', '。', 'に対し', 'に対して']
+    const boundary = Math.max(...boundaryMarkers.map(marker => {
+      const index = prefix.lastIndexOf(marker)
+      return index < 0 ? -1 : index + marker.length - 1
+    }))
+    return {
+      operator: token.value,
+      lhs: prefix.slice(boundary + 1).trim(),
+      rhs: raw.slice(localEnd).replace(/(?:とする|と定める|で定める|と定義する).*$/u, '').trim(),
+      clause,
+      start: token.start,
+      end: token.end,
+    }
+  }).filter(relation => relation.lhs.length > 0 && relation.rhs.length > 0)
 }
 
 function clauseRanges(text: string): Array<{ raw: string; start: number }> {
@@ -351,11 +361,13 @@ export function elaborateMathematicalText(
   const definitions = selected.clauses.flatMap(clause => clause.definitions).map(definition => {
     const bodyTokens = lexMathematicalText(definition.body)
     const dependencies = [...new Set(bodyTokens.filter(token => token.kind === 'identifier').map(token => token.value))]
+    const valueSort = inferSort(definition.body)
+    const indexMatch = definition.symbol.match(/_\{?([A-Za-z][A-Za-z0-9]*)\}?/u)
     return {
       ...definition,
       id: `definition.${hash([definition.symbol, normalizedBody(definition.body)])}`,
       canonical: `DefinedObject[${hash(normalizedBody(definition.body), 10)}]`,
-      inferred_sort: inferSort(definition.body),
+      inferred_sort: indexMatch ? `Sequence[${valueSort}]` : valueSort,
       dependencies,
     }
   })
@@ -378,10 +390,19 @@ export function elaborateMathematicalText(
     canonical: `Relation[${relation.operator},${normalizedBody(relation.lhs)},${normalizedBody(relation.rhs)}]`,
   }))
   const identifiers = [...new Set(forest.tokens.filter(token => token.kind === 'identifier').map(token => token.value))]
+  const definitionIndices = definitions.flatMap(definition => {
+    const match = definition.symbol.match(/_\{?([A-Za-z][A-Za-z0-9]*)\}?/u)
+    return match ? [match[1]] : []
+  })
+  const integrationDifferentials = identifiers.filter(identifier => /^d[A-Za-z]$/u.test(identifier))
+  const integrationVariables = integrationDifferentials.map(identifier => identifier.slice(1))
   const bound = [...new Set([
     ...quantifiers.map(quantifier => quantifier.variable).filter((value): value is string => Boolean(value)),
     ...declarations.map(declaration => declaration.symbol),
     ...definitions.flatMap(definition => definition.symbol.split(',')),
+    ...definitionIndices,
+    ...integrationDifferentials,
+    ...integrationVariables,
   ])]
   const defined = new Set(definitions.flatMap(definition => definition.symbol.split(',')))
   const unresolved = identifiers.filter(identifier => !bound.includes(identifier) && !defined.has(identifier))

@@ -48,9 +48,9 @@ test('plans a genuine multi-input roadmap for a map acting on a finite orbit', (
   assert.equal(result.certificate.target_sort, 'Scalar')
   assert.deepEqual(
     result.certificate.roadmap.map(step => step.morphism),
-    ['MobiusMap', 'MapOrbitEvaluation', 'FiniteSummation'],
+    ['MobiusMap', 'RootsOfUnity', 'MapOrbitEvaluation', 'FiniteSummation'],
   )
-  assert.deepEqual(result.certificate.roadmap[1].parent_ids.sort(), ['map', 'orbit'])
+  assert.deepEqual(result.certificate.roadmap[2].parent_ids.sort(), ['map', 'orbit'])
 })
 
 test('sharing only a scalar codomain is not accepted as a fusion', () => {

@@ -55,5 +55,10 @@ test('typed declarations induce ordered implicit universal quantifiers', () => {
 test('equation-style definitions and relations are elaborated structurally', () => {
   const result = elaborateMathematicalText('関数 f に対し I_n=\\int_0^1 x^n f(x)dx と定める。')
   assert.equal(result.ir.definitions[0]?.symbol, 'I_n')
+  assert.match(result.ir.definitions[0]?.inferred_sort ?? '', /^Sequence\[/)
   assert.ok(result.ir.constraints.some(item => item.operator === '='))
+  assert.equal(result.ir.constraints[0]?.lhs, 'I_n')
+  assert.ok(!result.ir.unresolved_references.includes('n'))
+  assert.ok(!result.ir.unresolved_references.includes('x'))
+  assert.ok(!result.ir.unresolved_references.includes('dx'))
 })
