@@ -43,3 +43,17 @@ test('alpha-renaming preserves normalized defined-object structure', () => {
   const right = elaborateMathematicalText('Yを t^2+t=0 の解全体と定める。')
   assert.equal(left.ir.definitions[0].canonical, right.ir.definitions[0].canonical)
 })
+
+test('typed declarations induce ordered implicit universal quantifiers', () => {
+  const result = elaborateMathematicalText('素数 p と整数 a に対し、a が p を法として平方剰余となる条件を示せ。')
+  assert.deepEqual(result.ir.declarations.map(item => [item.symbol, item.sort]), [['p', 'Prime'], ['a', 'Integer']])
+  assert.deepEqual(result.ir.quantifier_prefix, ['forall:p', 'forall:a'])
+  assert.ok(!result.ir.unresolved_references.includes('p'))
+  assert.ok(!result.ir.unresolved_references.includes('a'))
+})
+
+test('equation-style definitions and relations are elaborated structurally', () => {
+  const result = elaborateMathematicalText('関数 f に対し I_n=\\int_0^1 x^n f(x)dx と定める。')
+  assert.equal(result.ir.definitions[0]?.symbol, 'I_n')
+  assert.ok(result.ir.constraints.some(item => item.operator === '='))
+})

@@ -125,6 +125,8 @@ type GenerationResult = {
       clause_count: number
       quantifier_prefix: string[]
       definitions: Array<{ symbol: string; canonical: string; sort: string }>
+      declarations: Array<{ symbol: string; sort: string; implicit_forall: boolean }>
+      constraints: Array<{ operator: string; canonical: string }>
       unresolved_references: string[]
       diagnostics: string[]
     }>
@@ -837,7 +839,9 @@ export function GenerationPanel({
                         {analysis.parse_truncated ? '（上限到達）' : ''}
                       </div>
                       {analysis.quantifier_prefix.length > 0 && <div>量化: {analysis.quantifier_prefix.join(' → ')}</div>}
+                      {analysis.declarations?.length > 0 && <div>宣言: {analysis.declarations.map(item => `${item.symbol}:${item.sort}`).join(' / ')}</div>}
                       {analysis.definitions.length > 0 && <div>定義: {analysis.definitions.map(item => `${item.symbol}:${item.sort}`).join(' / ')}</div>}
+                      {analysis.constraints?.length > 0 && <div>関係式: {analysis.constraints.map(item => item.operator).join(' / ')}</div>}
                       {analysis.unresolved_references.length > 0 && <div className="text-amber-300">未解決参照: {analysis.unresolved_references.join(', ')}</div>}
                     </div>
                   ))}

@@ -34,6 +34,25 @@ export type DefinitionSyntax = {
   end: number
 }
 
+export type DeclarationSyntax = {
+  symbol: string
+  sort: string
+  surface_sort: string
+  implicit_forall: boolean
+  clause: number
+  start: number
+  end: number
+}
+
+export type RelationSyntax = {
+  operator: string
+  lhs: string
+  rhs: string
+  clause: number
+  start: number
+  end: number
+}
+
 export type QuerySyntax = {
   kind: 'compute' | 'prove' | 'classify' | 'optimize' | 'measure' | 'observe'
   clause: number
@@ -45,6 +64,8 @@ export type ClauseSyntax = {
   tokens: MathToken[]
   quantifiers: QuantifierSyntax[]
   definitions: DefinitionSyntax[]
+  declarations: DeclarationSyntax[]
+  relations: RelationSyntax[]
   query: QuerySyntax | null
 }
 
@@ -70,6 +91,8 @@ export type ElaboratedDefinition = DefinitionSyntax & {
 export type ElaboratedMathematicalIR = {
   selected_analysis: number
   definitions: ElaboratedDefinition[]
+  declarations: DeclarationSyntax[]
+  constraints: Array<RelationSyntax & { canonical: string }>
   quantifiers: QuantifierSyntax[]
   quantifier_prefix: string[]
   query: QuerySyntax | null
@@ -85,6 +108,11 @@ const KEYWORDS = [
   'とする', '求めよ', '示せ', '証明せよ', '分類せよ', '最大値', '最小値',
 ]
 const MULTI_RELATIONS = ['<=>', '=>', '<=', '>=', '!=', '==', '≦', '≧', '≠', '∈', '⊂', '⊆', '→', '↦']
+const SORT_WORDS: Record<string, string> = {
+  関数: 'Function', 数列: 'Sequence', 整数: 'Integer', 自然数: 'Natural', 実数: 'Real',
+  複素数: 'Complex', 素数: 'Prime', 点: 'Point', 直線: 'Line', 曲線: 'Curve', 円: 'Circle',
+  三角形: 'Triangle', 集合: 'Set', 多項式: 'Polynomial', 行列: 'Matrix', 確率変数: 'RandomVariable',
+}
 
 function hash(value: unknown, length = 12): string {
   return createHash('sha256').update(JSON.stringify(value)).digest('hex').slice(0, length)
@@ -220,7 +248,44 @@ function definitionsOf(raw: string, clause: number, offset: number): DefinitionS
     const start = offset + (match.index ?? 0)
     definitions.push({ symbol: match[1].replace(/\s+/g, ''), body: match[2].trim(), clause, start, end: start + match[0].length })
   }
+  const equalityPattern = /([A-Za-zα-ωΑ-Ω](?:_\{?[A-Za-z0-9]+\}?)?)\s*=\s*([^。；;]+?)\s*(?:とする|と定める|で定める|と定義する)/gu
+  for (const match of raw.matchAll(equalityPattern)) {
+    const start = offset + (match.index ?? 0)
+    if (definitions.some(definition => definition.symbol === match[1] && definition.start === start)) continue
+    definitions.push({ symbol: match[1], body: match[2].trim(), clause, start, end: start + match[0].length })
+  }
   return definitions
+}
+
+function declarationsOf(raw: string, clause: number, offset: number): DeclarationSyntax[] {
+  const declarations: DeclarationSyntax[] = []
+  const sortPattern = Object.keys(SORT_WORDS).sort((left, right) => right.length - left.length).join('|')
+  const pattern = new RegExp(`(${sortPattern})\\s*([A-Za-zα-ωΑ-Ω](?:_\\{?[A-Za-z0-9]+\\}?)?)`, 'gu')
+  const implicitForall = /に対し|に対して|任意|すべて|全て/.test(raw)
+  for (const match of raw.matchAll(pattern)) {
+    const start = offset + (match.index ?? 0)
+    declarations.push({
+      symbol: match[2],
+      sort: SORT_WORDS[match[1]],
+      surface_sort: match[1],
+      implicit_forall: implicitForall,
+      clause,
+      start,
+      end: start + match[0].length,
+    })
+  }
+  return declarations
+}
+
+function relationsOf(raw: string, tokens: MathToken[], clause: number, offset: number): RelationSyntax[] {
+  return tokens.filter(token => token.kind === 'relation').map(token => ({
+    operator: token.value,
+    lhs: raw.slice(0, Math.max(0, token.start - offset)).trim(),
+    rhs: raw.slice(Math.max(0, token.end - offset)).trim(),
+    clause,
+    start: token.start,
+    end: token.end,
+  })).filter(relation => relation.lhs.length > 0 && relation.rhs.length > 0)
 }
 
 function clauseRanges(text: string): Array<{ raw: string; start: number }> {
@@ -244,6 +309,8 @@ export function parseMathematicalText(text: string, maxAnalyses = 32): Mathemati
       tokens: clauseTokens,
       quantifiers: quantifiersOf(clauseTokens, index),
       definitions: definitionsOf(range.raw, index, range.start),
+      declarations: declarationsOf(range.raw, index, range.start),
+      relations: relationsOf(range.raw, clauseTokens, index, range.start),
       query: queryOf(range.raw, index),
     }
   })
@@ -292,11 +359,28 @@ export function elaborateMathematicalText(
       dependencies,
     }
   })
-  const quantifiers = selected.clauses.flatMap(clause => clause.quantifiers)
+  const declarations = selected.clauses.flatMap(clause => clause.declarations)
+  const explicitQuantifiers = selected.clauses.flatMap(clause => clause.quantifiers)
+  const explicitVariables = new Set(explicitQuantifiers.map(quantifier => quantifier.variable).filter(Boolean))
+  const implicitQuantifiers: QuantifierSyntax[] = declarations
+    .filter(declaration => declaration.implicit_forall && !explicitVariables.has(declaration.symbol))
+    .map(declaration => ({
+      kind: 'forall',
+      variable: declaration.symbol,
+      clause: declaration.clause,
+      start: declaration.start,
+      end: declaration.end,
+    }))
+  const quantifiers = [...explicitQuantifiers, ...implicitQuantifiers]
     .sort((left, right) => left.start - right.start)
+  const constraints = selected.clauses.flatMap(clause => clause.relations).map(relation => ({
+    ...relation,
+    canonical: `Relation[${relation.operator},${normalizedBody(relation.lhs)},${normalizedBody(relation.rhs)}]`,
+  }))
   const identifiers = [...new Set(forest.tokens.filter(token => token.kind === 'identifier').map(token => token.value))]
   const bound = [...new Set([
     ...quantifiers.map(quantifier => quantifier.variable).filter((value): value is string => Boolean(value)),
+    ...declarations.map(declaration => declaration.symbol),
     ...definitions.flatMap(definition => definition.symbol.split(',')),
   ])]
   const defined = new Set(definitions.flatMap(definition => definition.symbol.split(',')))
@@ -306,6 +390,8 @@ export function elaborateMathematicalText(
     ir: {
       selected_analysis: 0,
       definitions,
+      declarations,
+      constraints,
       quantifiers,
       quantifier_prefix: quantifiers.map(quantifier => `${quantifier.kind}:${quantifier.variable ?? '?'}`),
       query: [...selected.clauses].reverse().find(clause => clause.query)?.query ?? null,

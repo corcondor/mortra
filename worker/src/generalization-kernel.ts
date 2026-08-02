@@ -35,6 +35,8 @@ export type SemanticHypergraph = {
     clause_count: number
     quantifier_prefix: string[]
     definitions: Array<{ symbol: string; canonical: string; sort: string }>
+    declarations: Array<{ symbol: string; sort: string; implicit_forall: boolean }>
+    constraints: Array<{ operator: string; canonical: string }>
     unresolved_references: string[]
     diagnostics: string[]
   }
@@ -238,6 +240,28 @@ export function buildSemanticHypergraph(parent: DiscoveryParent): SemanticHyperg
     })
     rootSorts.add(definition.inferred_sort)
   }
+  for (const declaration of language.ir.declarations) {
+    nodes.push({
+      id: `${id}:declaration:${declaration.symbol}`,
+      role: 'object',
+      canonical: `Declared[${declaration.sort}]`,
+      sort: declaration.sort,
+      surface: declaration.symbol,
+      parent_id: id,
+    })
+    rootSorts.add(declaration.sort)
+  }
+  for (const constraint of language.ir.constraints) {
+    nodes.push({
+      id: `${id}:constraint:${hash(constraint.canonical, 8)}`,
+      role: 'relation',
+      canonical: constraint.canonical,
+      sort: 'Proposition',
+      surface: `${constraint.lhs} ${constraint.operator} ${constraint.rhs}`,
+      parent_id: id,
+    })
+    rootSorts.add('Proposition')
+  }
   language.ir.quantifiers.forEach((quantifier, index) => {
     nodes.push({
       id: `${id}:quantifier:${index}`,
@@ -266,6 +290,15 @@ export function buildSemanticHypergraph(parent: DiscoveryParent): SemanticHyperg
         symbol: definition.symbol,
         canonical: definition.canonical,
         sort: definition.inferred_sort,
+      })),
+      declarations: language.ir.declarations.map(declaration => ({
+        symbol: declaration.symbol,
+        sort: declaration.sort,
+        implicit_forall: declaration.implicit_forall,
+      })),
+      constraints: language.ir.constraints.map(constraint => ({
+        operator: constraint.operator,
+        canonical: constraint.canonical,
       })),
       unresolved_references: language.ir.unresolved_references,
       diagnostics: language.ir.diagnostics,
