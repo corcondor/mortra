@@ -99,8 +99,6 @@ type GenerationResult = {
   discoveryQueued?: boolean
   discoveryJobId?: string
   backgroundResearch?: boolean
-  provider_waiting?: boolean
-  provider_error?: string
   searchState?: {
     round?: number
     depth?: number
@@ -168,7 +166,6 @@ const PHASE_INFO: Record<string, { label: string; note: string; color: string }>
   start: { label: 'MathOS 起動中', note: '生成セッションを準備しています', color: 'text-blue-300' },
   searching: { label: 'MathOS 試行中', note: '構成可能な経路を探索しています', color: 'text-blue-300' },
   researching: { label: '自律研究を継続中', note: '探索frontierを保存し、次の戦略を自動実行します', color: 'text-cyan-300' },
-  provider_waiting: { label: '外部検証器の復旧待ち', note: '探索状態を保存し、利用可能になり次第自動再開します', color: 'text-amber-300' },
   inducing: { label: '新構造を構成中', note: '親問題から型付き対象と観測を導出しています', color: 'text-cyan-300' },
   registering: { label: '構造を登録中', note: '実行可能な射列をDBへ記録しています', color: 'text-fuchsia-300' },
   structuring: { label: '構造を構成中', note: '対象と射から問題文を組み立てています', color: 'text-cyan-300' },
@@ -410,13 +407,11 @@ export function GenerationPanel({
           ...previous,
           `自律探索 round ${state.round} / 深さ ${state.depth ?? '?'} / 累積仮説 ${state.hypotheses_evaluated ?? '?'}`,
           state.stagnant_rounds
-            ? `同一frontierが ${state.stagnant_rounds} 回続いたため、深さ延長を止めて未知射の合成へ切り替えます。`
+            ? `同一frontierが ${state.stagnant_rounds} 回続いています。型付き列挙と実行backendだけで次候補を探索します。`
             : `未解決frontier ${state.frontier?.length ?? 0} 件を保持。次回も自動再開します。`,
         ].slice(-30))
       }
-      setUiPhase(job.result?.provider_waiting
-        ? 'provider_waiting'
-        : state?.continuing ? 'researching' : job.status === 'processing' ? 'inducing' : 'searching')
+      setUiPhase(state?.continuing ? 'researching' : job.status === 'processing' ? 'inducing' : 'searching')
     }
     const message = `探索ジョブ ${activeJobId.slice(0, 8)} は8時間を超えてバックグラウンド研究を継続しています。次回アクセス時に自動再接続します。`
     setUiPhase('researching')

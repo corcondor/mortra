@@ -9,7 +9,6 @@ import {
   runAutonomousSynthesis,
   type AutonomousSearchState,
 } from './autonomous-synthesis'
-import type { GeneralizationCertificate } from './generalization-kernel'
 
 // ── 環境変数 ─────────────────────────────────────────────────────────────────
 const SUPABASE_URL              = process.env.SUPABASE_URL!
@@ -19,10 +18,6 @@ const MODEL      = process.env.DEEPSEEK_MODEL      ?? 'deepseek-chat'
 const FAST_MODEL = process.env.DEEPSEEK_FAST_MODEL ?? 'deepseek-chat'
 const MAX_TOKENS = Number(process.env.DEEPSEEK_MAX_TOKENS ?? '8000')
 const FAST_MAX   = 5000
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? ''
-const OPENAI_MODEL = process.env.OPENAI_MODEL ?? 'gpt-4.1'
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN ?? ''
-const GITHUB_MODELS_MODEL = process.env.GITHUB_MODELS_MODEL ?? 'openai/gpt-4.1'
 
 if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY || !DEEPSEEK_API_KEY) {
   console.error('必須環境変数が未設定')
@@ -38,31 +33,6 @@ interface ParentProblem {
   topic_a: string; topic_b?: string | null
 }
 interface LogEntry { level: string; message: string; ts: string }
-
-type ResearchFusionProposal = {
-  statement: string
-  answer: string
-  solution: string
-  inspiration: string
-  domain: string
-  difficulty: string
-  parentUsage: Array<{ parent_id: string; structural_anchor: string; role: string }>
-  roadmap: Array<{
-    source: string
-    target: string
-    morphism: string
-    preserves: string[]
-    verifier: string
-  }>
-  verifierConfidence: number
-}
-
-class TransientInferenceError extends Error {
-  constructor(message: string) {
-    super(message)
-    this.name = 'TransientInferenceError'
-  }
-}
 
 // ── ログ ─────────────────────────────────────────────────────────────────────
 let logBuf: LogEntry[] = []
@@ -90,56 +60,7 @@ async function callDeepSeek(
       stream: true, max_tokens: maxTokens,
     }),
   })
-  if (!res.ok) {
-    const deepSeekError = `DeepSeek ${res.status}: ${(await res.text()).slice(0, 200)}`
-    let openAIError = 'OpenAI fallback is not configured'
-    if (OPENAI_API_KEY) {
-      onProgress?.(`DeepSeekを利用できないため OpenAI (${OPENAI_MODEL}) に切替`)
-      const openAI = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${OPENAI_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: OPENAI_MODEL,
-          messages: [{ role: 'user', content: prompt }],
-          max_tokens: Math.min(maxTokens, 16_000),
-        }),
-      })
-      if (openAI.ok) {
-        const payload = await openAI.json() as { choices?: Array<{ message?: { content?: string } }> }
-        const content = payload.choices?.[0]?.message?.content
-        if (content) return content
-        openAIError = 'OpenAI returned no content'
-      } else {
-        openAIError = `OpenAI ${openAI.status}: ${(await openAI.text()).slice(0, 200)}`
-      }
-    }
-    if (!GITHUB_TOKEN) throw new Error(`${deepSeekError}; ${openAIError}`)
-    onProgress?.(`DeepSeekを利用できないため GitHub Models (${GITHUB_MODELS_MODEL}) に切替`)
-    const fallback = await fetch('https://models.github.ai/inference/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/vnd.github+json',
-        Authorization: `Bearer ${GITHUB_TOKEN}`,
-        'X-GitHub-Api-Version': '2026-03-10',
-      },
-      body: JSON.stringify({
-        model: GITHUB_MODELS_MODEL,
-        messages: [{ role: 'user', content: prompt }],
-        max_tokens: Math.min(maxTokens, 16_000),
-      }),
-    })
-    if (!fallback.ok) {
-      throw new TransientInferenceError(`${deepSeekError}; ${openAIError}; GitHub Models ${fallback.status}: ${(await fallback.text()).slice(0, 200)}`)
-    }
-    const payload = await fallback.json() as { choices?: Array<{ message?: { content?: string } }> }
-    const content = payload.choices?.[0]?.message?.content
-    if (!content) throw new Error(`${deepSeekError}; ${openAIError}; GitHub Models returned no content`)
-    return content
-  }
+  if (!res.ok) throw new Error(`DeepSeek ${res.status}: ${(await res.text()).slice(0, 200)}`)
   if (!res.body) throw new Error('no body')
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -589,157 +510,6 @@ async function validateAndRepairParents(
   }))
 }
 
-function normalizedTrigrams(text: string): Set<string> {
-  const normalized = text.replace(/\\[A-Za-z]+/g, 'T').replace(/[\s{}$\\。、，．]/g, '').toLowerCase()
-  const grams = new Set<string>()
-  for (let index = 0; index + 3 <= normalized.length; index++) grams.add(normalized.slice(index, index + 3))
-  return grams
-}
-
-function structuralSimilarity(left: string, right: string): number {
-  const a = normalizedTrigrams(left)
-  const b = normalizedTrigrams(right)
-  if (!a.size || !b.size) return 0
-  let overlap = 0
-  for (const item of a) if (b.has(item)) overlap++
-  return overlap / Math.max(1, a.size + b.size - overlap)
-}
-
-function researchFusionPrompt(
-  parents: ParentProblem[],
-  certificate: GeneralizationCertificate,
-  attempt: number,
-  priorStatements: string[],
-): string {
-  const parentText = parents.map((parent, index) => fmt(parent, index + 1)).join('\n\n')
-  const bindings = certificate.bindings.map(binding =>
-    `${binding.parent_id}: ${binding.canonical}:${binding.sort} (surface=${binding.surface})`,
-  ).join('\n') || '既知bindingなし。問題文から型を再構成すること。'
-  const prior = priorStatements.length
-    ? `\n既に棄却・生成した問題（同じ構造を避ける）:\n${priorStatements.map(value => `- ${value}`).join('\n')}`
-    : ''
-  return `${SYS}
-
-# 未知構造からの親条件付き探索（試行 ${attempt}）
-${parentText}
-
-## 構文・意味解析で得た既知binding
-${bindings}
-
-## 探索規則
-- 既存の問題族名や完成済みテンプレートを選ばず、親問題の対象・関係・量化・queryから型付き中間命題を作る。
-- 各親から少なくとも1個の構造を必須入力として使い、一方を消すと問題の主張または解法が変わること。
-- 数値だけを次段へ渡す接続、無関係な分野の直結、元問題の数値変更は禁止。
-- 射列は必要な長さだけ作る。段数を水増しせず、各射について source / target / 保存量 / 検証器を示す。
-- 問題文を先に模倣せず、射列と証明ロードマップを作ってから短い問題文へ逆算する。
-- 高校数学の語彙で提示できる場合は高校数学へ落とし込む。
-${prior}
-
-次のJSONだけを返す:
-{
-  "parent_usage":[{"parent_id":"実際の親ID","structural_anchor":"親から抽出した対象または関係","role":"新問題で不可欠な理由"}],
-  "morphism_roadmap":[{"source":"型","target":"型","morphism":"射","preserves":["保存量"],"verifier":"CAS・数値・論理検査の具体名"}],
-  "ablation":{"every_parent_essential":true,"reason":"一つずつ除いた結果"},
-  "novelty":{"not_parameter_substitution":true,"reason":"表層でなく構造を変えた点"},
-  "inspiration":"構成の数学的必然性",
-  "final_problem":{"statement":"問題文LaTeX","answer":"答えLaTeX","solution_outline":"省略しない解法","difficulty":"A/B/C/D","domain":"分野"}
-}`
-}
-
-async function synthesizeResearchFusion(
-  parents: ParentProblem[],
-  certificate: GeneralizationCertificate,
-  priorStatements: string[],
-  log: (message: string, level?: string) => void,
-): Promise<ResearchFusionProposal | null> {
-  const parentIds = new Set(parents.map(parent => parent.id))
-  for (let attempt = 1; attempt <= 3; attempt++) {
-    log(`🧪 [未知射の合成] 親の型付き端点から中間命題を探索 ${attempt}/3`)
-    const raw = await callDeepSeek(
-      researchFusionPrompt(parents, certificate, attempt, priorStatements),
-      MODEL, MAX_TOKENS,
-      message => log(`🧪 [未知射の合成] ${message}`),
-    ).catch(error => {
-      log(`⚠ [未知射の合成] 提案器エラー: ${String(error)}`, 'warn')
-      return null
-    })
-    const parsed = raw ? extractJson(raw) : null
-    if (!parsed) continue
-    const finalProblem = (parsed.final_problem ?? {}) as Record<string, unknown>
-    const statement = String(finalProblem.statement ?? '')
-    const answer = String(finalProblem.answer ?? '')
-    const solution = String(finalProblem.solution_outline ?? '')
-    const parentUsage = Array.isArray(parsed.parent_usage)
-      ? parsed.parent_usage.filter(item => item && typeof item === 'object').map(item => {
-          const record = item as Record<string, unknown>
-          return {
-            parent_id: String(record.parent_id ?? ''),
-            structural_anchor: String(record.structural_anchor ?? ''),
-            role: String(record.role ?? ''),
-          }
-        })
-      : []
-    const usedIds = new Set(parentUsage.map(item => item.parent_id))
-    const roadmap = Array.isArray(parsed.morphism_roadmap)
-      ? parsed.morphism_roadmap.filter(item => item && typeof item === 'object').map(item => {
-          const record = item as Record<string, unknown>
-          return {
-            source: String(record.source ?? ''), target: String(record.target ?? ''),
-            morphism: String(record.morphism ?? ''),
-            preserves: Array.isArray(record.preserves) ? record.preserves.map(String) : [],
-            verifier: String(record.verifier ?? ''),
-          }
-        })
-      : []
-    const ablation = (parsed.ablation ?? {}) as Record<string, unknown>
-    const novelty = (parsed.novelty ?? {}) as Record<string, unknown>
-    const structurallyComplete = statement && answer && solution &&
-      [...parentIds].every(id => usedIds.has(id)) &&
-      parentUsage.every(item => item.structural_anchor && item.role) &&
-      roadmap.length >= 3 && roadmap.every(step => step.source && step.target && step.morphism && step.verifier) &&
-      ablation.every_parent_essential === true && novelty.not_parameter_substitution === true
-    if (!structurallyComplete) {
-      log('⚠ [未知射の合成] 親被覆・射の型・ablationのいずれかが不足したため棄却', 'warn')
-      priorStatements.push(statement)
-      continue
-    }
-    const maxSimilarity = Math.max(...parents.map(parent => structuralSimilarity(statement, parent.statement)), 0)
-    if (maxSimilarity > 0.62 || priorStatements.some(previous => structuralSimilarity(statement, previous) > 0.68)) {
-      log(`⚠ [新規性] 表層類似度 ${maxSimilarity.toFixed(2)} が高いため棄却`, 'warn')
-      priorStatements.push(statement)
-      continue
-    }
-
-    log('🔍 [独立検証] 問題成立性・答え・親の必須性を二重監査中...')
-    const audits: Record<string, unknown>[] = []
-    for (let auditIndex = 0; auditIndex < 2; auditIndex++) {
-      const auditRaw = await callDeepSeek(makeVerify(statement, answer, solution), FAST_MODEL, FAST_MAX).catch(() => null)
-      const audit = auditRaw ? extractJson(auditRaw) : null
-      if (audit) audits.push(audit)
-    }
-    const passed = audits.length === 2 && audits.every(audit =>
-      audit.problem_well_posed !== false && audit.answer_matches === true && Number(audit.confidence ?? 0) >= 7,
-    )
-    if (!passed) {
-      log('⚠ [独立検証] 二重監査が一致しなかったため、この候補は公開しません', 'warn')
-      priorStatements.push(statement)
-      continue
-    }
-    return {
-      statement,
-      answer: String(audits[0].derived_answer ?? answer),
-      solution,
-      inspiration: String(parsed.inspiration ?? ''),
-      domain: String(finalProblem.domain ?? parents[0]?.topic_a ?? 'unknown'),
-      difficulty: String(finalProblem.difficulty ?? 'A'),
-      parentUsage,
-      roadmap,
-      verifierConfidence: Math.min(...audits.map(audit => Number(audit.confidence ?? 0))),
-    }
-  }
-  return null
-}
-
 // ── メイン処理 ───────────────────────────────────────────────────────────────
 export async function processJob(jobId: string) {
   console.log(`Processing job: ${jobId}`)
@@ -751,8 +521,6 @@ export async function processJob(jobId: string) {
 
   const flushInterval = setInterval(() => flushLogs(jobId), 3000)
   const log = (msg: string, level = 'info') => pushLog(msg, level)
-  let isResearchJob = false
-  let persistedResult: Record<string, unknown> = {}
 
   try {
     const { data: job, error } = await supabase
@@ -761,13 +529,8 @@ export async function processJob(jobId: string) {
 
     let parents   = job.parents as ParentProblem[]
     const mode    = String(job.mode ?? 'auto')
-    isResearchJob = mode === 'mathos_discovery'
-    persistedResult = job.result && typeof job.result === 'object'
-      ? job.result as Record<string, unknown>
-      : {}
     const count   = Number(job.count) || 3
     const userId  = job.user_id as string | null
-    parents = await validateAndRepairParents(parents, log)
     if (mode === 'mathos_discovery') {
       const previousResult = job.result as { searchState?: AutonomousSearchState } | null
       log(`🔎 [未知構造探索] ${parents.length} 個の親問題を演算子・対象・制約へlift`)
@@ -835,147 +598,7 @@ export async function processJob(jobId: string) {
       }
 
       if ((searchState.stagnant_rounds ?? 0) > 0) {
-        log(`⚠ [停滞検出] frontierが${searchState.stagnant_rounds}回連続で不変です。深さだけを増やす処理を停止し、親条件付きの未知射合成へ切り替えます。`, 'warn')
-      } else {
-        log('🧩 [Atlas外] 登録済み戦略が適用不能なため、選択親から新しい型付き射列を合成します。')
-      }
-      const proposals: ResearchFusionProposal[] = []
-      const priorStatements: string[] = []
-      for (let proposalIndex = 0; proposalIndex < count; proposalIndex++) {
-        const proposal = await synthesizeResearchFusion(
-          parents,
-          autonomous.generalization,
-          priorStatements,
-          log,
-        )
-        if (!proposal) break
-        proposals.push(proposal)
-        priorStatements.push(proposal.statement)
-      }
-      if (proposals.length) {
-        const { data: latest } = await supabase.from('problems')
-          .select('generation').order('generation', { ascending: false }).limit(1).single()
-        const generation = ((latest?.generation as number | null) ?? 0) + 1
-        const cards = []
-        for (const [index, proposal] of proposals.entries()) {
-          const problemId = `research-${randomHex(12)}`
-          const structureId = `induced.${searchState.frontier_fingerprint}.${index + 1}`
-          const parentIds = parents.map(parent => parent.id)
-          const proofCertificate = proposal.roadmap.map((step, stepIndex) => ({
-            id: `roadmap-${stepIndex + 1}`,
-            claim: `${step.morphism}: ${step.source} -> ${step.target}; preserves ${step.preserves.join(', ') || 'declared invariant'}`,
-            verifier: step.verifier,
-          }))
-          const card = {
-            id: problemId,
-            family_id: `research.parent_conditioned.${searchState.frontier_fingerprint}`,
-            statement_tex: proposal.statement,
-            answer_tex: proposal.answer,
-            solution_tex: proposal.solution,
-            domain: proposal.domain,
-            morphism_chain: proposal.roadmap.map(step => step.morphism),
-            parent_ids: parentIds,
-            unresolved: false as const,
-            discovery_status: 'backend_candidate' as const,
-            verification: {
-              method: 'typed parent coverage + novelty gate + two independent model audits',
-              exact_backend: false,
-              independent_check: true,
-              confidence: proposal.verifierConfidence,
-            },
-            fusion_derivation: {
-              passed: true,
-              reason: 'every selected parent supplies an explicitly named structural anchor and deleting a parent was audited to change the construction',
-              ablationPassed: true,
-              assignments: proposal.parentUsage.map(item => ({
-                parentId: item.parent_id,
-                portId: `parent_${item.parent_id}`,
-                role: item.role,
-                matchedAnchors: [item.structural_anchor],
-                witnessSteps: proposal.roadmap.map(step => step.morphism),
-              })),
-              bridges: [{
-                id: 'induced-parent-conditioned-roadmap',
-                witnessStep: proposal.roadmap.map(step => step.morphism).join(' -> '),
-                consumes: proposal.parentUsage.map(item => `parent_${item.parent_id}`),
-                produces: proposal.roadmap.at(-1)?.target ?? 'Problem',
-              }],
-              intermediatePropositions: proposal.roadmap.map(step => ({
-                parentId: parentIds.join(','), morphism: step.morphism,
-                source: step.source, target: step.target,
-                proposition: `${step.morphism} preserves ${step.preserves.join(', ') || 'the stated invariant'}`,
-                proved: false,
-              })),
-            },
-            structure_blueprint: {
-              id: structureId,
-              version: 1,
-              kernel: 'parent_conditioned_induced_morphism_program',
-              observable: proposal.roadmap.at(-1)?.target ?? 'Problem',
-              operators: proposal.roadmap.map(step => step.morphism),
-              domain: proposal.domain,
-              tags: [...new Set(proposal.roadmap.flatMap(step => [step.source, step.target]))],
-              morphismChain: proposal.roadmap.map(step => step.morphism),
-              executable: false,
-              proofCertificate,
-            },
-            search_evidence: {
-              hypotheses_evaluated: searchState.hypotheses_evaluated,
-              valid_hypotheses: proposals.length,
-              elapsed_ms: 0,
-            },
-          }
-          const { error: saveError } = await supabase.from('problems').upsert({
-            id: problemId,
-            topic_a: proposal.domain,
-            topic_b: 'parent_conditioned_discovery',
-            variation: 0,
-            statement: proposal.statement,
-            answer: proposal.answer,
-            difficulty: proposal.difficulty,
-            solution: proposal.solution,
-            inspiration: proposal.inspiration,
-            meta: JSON.stringify({
-              generatedBy: 'mathos_parent_conditioned_induction',
-              verificationLevel: 'model_audited_not_formal',
-              parentContext: { parentIds, parentUsage: proposal.parentUsage },
-              structureBlueprint: card.structure_blueprint,
-              verification: card.verification,
-            }),
-            surprise: 8, minimality: 7, connection: 8, inevitability: 7, diff_cal: 8, total: 8,
-            generation,
-            parent_ids: parentIds,
-            source_file: 'mathos_parent_conditioned_induction',
-          }, { onConflict: 'id' })
-          if (saveError) throw new Error(`induced problem save failed: ${saveError.message}`)
-          await supabase.from('ratings').upsert(
-            { user_id: userId ?? 'system', problem_id: problemId, status: 'pending', x_posted: false },
-            { onConflict: 'user_id,problem_id', ignoreDuplicates: true },
-          )
-          cards.push(card)
-        }
-        searchState.continuing = false
-        searchState.next_attempt_at = null
-        const result = {
-          engine: 'MathOS parent-conditioned morphism induction (proposal search + verifier gates)',
-          generated: cards.length,
-          discovered: discovery.hypotheses.length,
-          requested: count,
-          cards,
-          searchState,
-          strategyAttempts: autonomous.attempts,
-          generalization: autonomous.generalization,
-          errors: cards.length < count ? [`${count}問中${cards.length}問だけが全ゲートを通過しました。`] : [],
-          rejectionCounts: {},
-        }
-        log(`✅ [生成完了] Atlas外から${cards.length}問を構成し、親被覆・新規性・二重監査を通過しました`)
-        clearInterval(flushInterval)
-        await flushLogs(jobId)
-        await supabase.from('generation_jobs').update({
-          status: 'done', model: 'mathos-parent-conditioned-induction', result, error: null,
-          updated_at: new Date().toISOString(),
-        }).eq('id', jobId)
-        return
+        log(`⚠ [停滞検出] frontierが${searchState.stagnant_rounds}回連続で不変です。未登録の実行射を捏造せず、型付き列挙とbackend接続だけで探索を継続します。`, 'warn')
       }
       const result = {
         ...discovery,
@@ -996,6 +619,7 @@ export async function processJob(jobId: string) {
       }).eq('id', jobId)
       return
     }
+    parents = await validateAndRepairParents(parents, log)
     const resolved = mode === 'auto' ? (parents.length >= 2 ? 'fusion' : 'similar') : mode
 
     const { data: gd } = await supabase.from('problems')
@@ -1217,32 +841,6 @@ export async function processJob(jobId: string) {
     }).eq('id', jobId)
 
   } catch(e) {
-    if (isResearchJob && e instanceof TransientInferenceError) {
-      const previousState = persistedResult.searchState && typeof persistedResult.searchState === 'object'
-        ? persistedResult.searchState as Record<string, unknown>
-        : {}
-      const nextAttemptAt = new Date(Date.now() + 15 * 60 * 1000).toISOString()
-      log(`⏸️ [外部検証器待ち] 全推論providerが一時利用不能です。探索状態を保存し、${nextAttemptAt} に自動再開します。`, 'warn')
-      clearInterval(flushInterval)
-      await flushLogs(jobId)
-      await supabase.from('generation_jobs').update({
-        status: 'processing',
-        model: 'mathos-provider-failover-wait',
-        result: {
-          ...persistedResult,
-          provider_waiting: true,
-          provider_error: e.message.slice(0, 500),
-          searchState: {
-            ...previousState,
-            continuing: true,
-            next_attempt_at: nextAttemptAt,
-          },
-        },
-        error: null,
-        updated_at: new Date().toISOString(),
-      }).eq('id', jobId)
-      return
-    }
     log(`❌ [致命的エラー] ${e}`, 'error')
     clearInterval(flushInterval)
     await flushLogs(jobId)

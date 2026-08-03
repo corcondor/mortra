@@ -4,10 +4,6 @@ on:
   repository_dispatch:
     types: [generate-problem]
 
-permissions:
-  contents: read
-  models: read
-
 jobs:
   generate:
     runs-on: ubuntu-latest
@@ -38,9 +34,5 @@ jobs:
           DEEPSEEK_API_KEY:          ${{ secrets.DEEPSEEK_API_KEY }}
           DEEPSEEK_MODEL:            ${{ secrets.DEEPSEEK_MODEL }}
           DEEPSEEK_MAX_TOKENS:       ${{ secrets.DEEPSEEK_MAX_TOKENS }}
-          OPENAI_API_KEY:            ${{ secrets.OPENAI_API_KEY }}
-          OPENAI_MODEL:              gpt-4.1
-          GITHUB_TOKEN:              ${{ github.token }}
-          GITHUB_MODELS_MODEL:       openai/gpt-4.1
           JOB_ID:                    ${{ github.event.client_payload.job_id }}
         run: npx tsx src/process-job.ts

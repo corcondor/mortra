@@ -5,10 +5,6 @@ on:
     - cron: '*/15 * * * *'
   workflow_dispatch:
 
-permissions:
-  contents: read
-  models: read
-
 concurrency:
   group: mathos-autonomous-research
   cancel-in-progress: false
@@ -38,8 +34,4 @@ jobs:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
           DEEPSEEK_MODEL: ${{ secrets.DEEPSEEK_MODEL }}
           DEEPSEEK_MAX_TOKENS: ${{ secrets.DEEPSEEK_MAX_TOKENS }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          OPENAI_MODEL: gpt-4.1
-          GITHUB_TOKEN: ${{ github.token }}
-          GITHUB_MODELS_MODEL: openai/gpt-4.1
         run: npx tsx src/research-sweep.ts
