@@ -109,7 +109,7 @@ export function enumerateTypedTerms(
 ): TypedEnumerationResult {
   const maxDepth = Math.max(1, options.maxDepth ?? 6)
   const maxStates = Math.max(1, options.maxStates ?? 10_000)
-  const goalSorts = new Set(options.goalSorts ?? ['Scalar', 'Integer', 'Proof'])
+  const goalSorts = new Set(options.goalSorts ?? ['Scalar', 'Integer', 'Proof', 'FiniteAlgebraicOrbit'])
   const rules = [...(options.rules ?? executableMorphismAtlas()), ...graphRules(graphs)]
     .filter(rule => rule.backend.length > 0)
   const terms = rootTerms(graphs)

@@ -739,19 +739,56 @@ async function enqueueParentConditionedDiscovery(
       count: Math.max(1, Math.min(count, 10)),
     },
   })
-  if (error || !data?.job_id) {
+  if (!error && data?.job_id) {
+    return {
+      ...result,
+      discoveryQueued: true,
+      discoveryJobId: String(data.job_id),
+      errors: result.errors.filter(message => !message.startsWith('全親を不可欠な証明入力')),
+    }
+  }
+
+  // The scheduled no-LLM research worker can start directly from this row.
+  // This keeps generation alive even when the optional Edge dispatcher is unavailable.
+  const fallbackJobId = crypto.randomUUID()
+  const now = new Date().toISOString()
+  const { error: fallbackError } = await supabaseAdmin.from('generation_jobs').insert({
+    id: fallbackJobId,
+    status: 'processing',
+    parents,
+    mode: 'mathos_discovery',
+    count: Math.max(1, Math.min(count, 10)),
+    logs: [{
+      level: 'info',
+      message: 'Edge dispatcherを迂回し、MathOS定期研究キューへ直接登録しました。',
+      ts: now,
+    }],
+    result: {
+      engine: 'MathOS scheduled structural discovery (no LLM)',
+      generated: 0,
+      requested: count,
+      cards: [],
+      errors: [],
+      backgroundResearch: true,
+      searchState: { continuing: true, next_attempt_at: null },
+    },
+    error: null,
+    model: 'mathos-autonomous-structural-search-no-llm',
+    updated_at: now,
+  })
+  if (fallbackError) {
     return {
       ...result,
       errors: [
         ...result.errors,
-        `未知構造探索キューの起動に失敗しました: ${error?.message ?? 'job id missing'}`,
+        `未知構造探索ジョブを保存できませんでした: ${fallbackError.message}`,
       ],
     }
   }
   return {
     ...result,
     discoveryQueued: true,
-    discoveryJobId: String(data.job_id),
+    discoveryJobId: fallbackJobId,
     errors: result.errors.filter(message => !message.startsWith('全親を不可欠な証明入力')),
   }
 }
@@ -1342,7 +1379,9 @@ export async function POST(request: NextRequest) {
         Math.max(10_000, searchBudgetSeconds * 1_000),
       ).certificate
     : undefined
-  const needsStructuralDiscovery = mode === 'fusion' && !generalization?.target_sort
+  // Fusion is always a long-running synthesis job. Keeping it inside a Vercel
+  // request would make valid 30-180 second searches look like network errors.
+  const needsStructuralDiscovery = mode === 'fusion'
 
   const attachGeneralization = (result: GenerationResult): GenerationResult => ({
     ...result,
@@ -1356,7 +1395,9 @@ export async function POST(request: NextRequest) {
           requested: count,
           engine: 'MathOS parent-conditioned structural search',
           cards: [],
-          errors: ['既存の共同射ではなく、選択端点から中間構造を自己拡張探索します'],
+          errors: [generalization?.target_sort
+            ? '共同型経路を初期frontierとして、選択端点から実行プログラムを合成します'
+            : '既存の共同射ではなく、選択端点から中間構造を自己拡張探索します'],
         }
       : await generateCards(count, profiles, searchDepth, searchBudgetSeconds)
     const result = await enqueueParentConditionedDiscovery(
@@ -1379,7 +1420,9 @@ export async function POST(request: NextRequest) {
           ? (() => {
               send({
                 phase: 'inducing',
-                message: '固定端点の間に既知の共同射がないため、中間構造の自己拡張探索へ移行します',
+                message: generalization?.target_sort
+                  ? '選択した全親を固定端点とし、長時間workerで中間射と実行プログラムを合成します'
+                  : '固定端点の間に既知の共同射がないため、中間構造の自己拡張探索へ移行します',
                 current: 0,
                 total: count,
               })
@@ -1388,7 +1431,7 @@ export async function POST(request: NextRequest) {
                 requested: count,
                 engine: 'MathOS parent-conditioned structural search',
                 cards: [],
-                errors: ['選択端点から中間構造を自己拡張探索中'],
+                errors: ['選択端点から中間構造と実行プログラムを自己拡張探索中'],
               }
             })()
           : await generateCards(count, profiles, searchDepth, searchBudgetSeconds, send)
@@ -1400,11 +1443,22 @@ export async function POST(request: NextRequest) {
         )
         send({ phase: 'done', result })
       } catch (error) {
+        const message = error instanceof Error ? error.message : String(error)
         send({
           phase: 'error',
-          message: error instanceof Error ? error.message : String(error),
+          message,
           current: 0,
           total: count,
+        })
+        send({
+          phase: 'done',
+          result: attachGeneralization({
+            generated: 0,
+            requested: count,
+            engine: 'MathOS structural live (no LLM)',
+            cards: [],
+            errors: [message],
+          }),
         })
       } finally {
         controller.close()

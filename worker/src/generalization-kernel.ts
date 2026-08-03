@@ -171,6 +171,13 @@ const HYPER_MORPHISM_ATLAS: readonly HyperMorphismSchema[] = [
     backend: ['resultant', 'square-free-reduction'],
   },
   {
+    name: 'RootMinkowskiDifference',
+    sources: ['FiniteAlgebraicOrbit', 'FiniteAlgebraicOrbit'],
+    target: 'FiniteAlgebraicOrbit',
+    preserves: ['both-parent-provenance', 'algebraicity', 'finite-support'],
+    backend: ['resultant', 'square-free-reduction'],
+  },
+  {
     name: 'RootPointwiseProduct',
     sources: ['FiniteAlgebraicOrbit', 'FiniteAlgebraicOrbit'],
     target: 'FiniteAlgebraicOrbit',

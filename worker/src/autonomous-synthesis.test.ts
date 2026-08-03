@@ -15,8 +15,9 @@ test('runs a typed strategy registry and returns verified cards', () => {
   const result = runAutonomousSynthesis(parents, 3)
   assert.equal(result.cards.length, 3)
   assert.equal(result.state.continuing, false)
-  assert.equal(result.attempts[0].strategy, 'rational-map-finite-algebraic-orbit')
+  assert.equal(result.attempts[0].strategy, 'typed-composite-program-synthesis')
   assert.equal(result.attempts[0].generated, 3)
+  assert.equal(result.state.synthesized_programs?.length, 3)
 })
 
 test('routes unseen polynomial parents to the generic elimination backend', () => {
@@ -28,8 +29,7 @@ test('routes unseen polynomial parents to the generic elimination backend', () =
   assert.equal(result.cards.length, 1)
   assert.equal(result.cards[0].family_id, 'discovered.polynomial_root_sum')
   assert.deepEqual(result.attempts.map(attempt => [attempt.strategy, attempt.applicable]), [
-    ['rational-map-finite-algebraic-orbit', false],
-    ['polynomial-root-set-composition', true],
+    ['typed-composite-program-synthesis', true],
   ])
 })
 
@@ -84,7 +84,11 @@ test('strategies are selected by their typed support contract, not problem ids',
       execute: context => { seen.push(...context.parents.map(parent => String(parent.id))); return [] },
     },
   ]
-  const result = runAutonomousSynthesis(parents, 1, null, strategies)
-  assert.deepEqual(seen, ['map', 'orbit'])
+  const opaqueParents = [
+    { id: 'left', statement: '未知対象 A を考える。' },
+    { id: 'right', statement: '未知対象 B を考える。' },
+  ]
+  const result = runAutonomousSynthesis(opaqueParents, 1, null, strategies)
+  assert.deepEqual(seen, ['left', 'right'])
   assert.deepEqual(result.attempts.map(attempt => attempt.applicable), [false, true])
 })

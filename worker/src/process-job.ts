@@ -546,6 +546,7 @@ export async function processJob(jobId: string) {
         log(`${attempt.applicable ? '🔧' : '↪'} [${attempt.strategy}@${attempt.version}] ${attempt.reason}`)
       }
       if (cards.length) {
+        log(`🧬 [複合射登録] ${searchState.synthesized_programs?.length ?? 0} 個の実行プログラムを証明書付きで登録`)
         const { data: latest } = await supabase.from('problems')
           .select('generation').order('generation', { ascending: false }).limit(1).single()
         const generation = ((latest?.generation as number | null) ?? 0) + 1

@@ -104,7 +104,7 @@ function runBackend(left: PolynomialInput, right: PolynomialInput, operation: Op
     const result = spawnSync(command, args, {
       input: request,
       encoding: 'utf8',
-      timeout: 45_000,
+      timeout: 120_000,
       maxBuffer: 4 * 1024 * 1024,
     })
     if (result.error && (result.error as NodeJS.ErrnoException).code === 'ENOENT') continue

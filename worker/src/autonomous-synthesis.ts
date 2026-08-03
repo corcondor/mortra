@@ -44,6 +44,16 @@ export type AutonomousSearchState = {
   last_progress_at?: string
   terms_enumerated?: number
   executable_goals?: number
+  synthesized_programs?: SynthesizedProgram[]
+}
+
+export type SynthesizedProgram = {
+  id: string
+  input_parent_ids: string[]
+  output_sort: string
+  morphism_chain: string[]
+  backend_contracts: string[]
+  verified: true
 }
 
 export type SynthesisContext = {
@@ -80,48 +90,42 @@ function fingerprint(parents: DiscoveryParent[]): string {
   })))).digest('hex').slice(0, 20)
 }
 
-const RATIONAL_MAP_FINITE_ORBIT: SynthesisStrategy = {
-  id: 'rational-map-finite-algebraic-orbit',
+const TYPED_COMPOSITE_PROGRAM_SYNTHESIS: SynthesisStrategy = {
+  id: 'typed-composite-program-synthesis',
   version: 1,
   supports(context) {
-    const operators = new Set(context.generalization.bindings.map(binding => binding.canonical))
-    const hasRationalMap = operators.has('MobiusMap') || extractMobiusMap(context.parents) !== null
-    const hasFiniteOrbit = operators.has('RootsOfUnity') || context.parents.some(parent =>
-      /z\s*\^\s*\{?n\}?\s*=\s*1|1\s*の\s*n\s*乗根|1の冪根|roots? of unity/i.test(
-        [parent.statement, parent.solution, parent.inspiration].filter(Boolean).join('\n'),
-      ),
+    const fullPrograms = context.enumeration.goals.filter(goal =>
+      goal.parentIds.length === context.parents.length && goal.steps.every(step => step.backend.length > 0),
     )
     return {
-      applicable: hasRationalMap && hasFiniteOrbit,
-      reason: hasRationalMap && hasFiniteOrbit
-        ? 'rational self-map and finite algebraic orbit are both present'
-        : `missing ${!hasRationalMap ? 'rational-map' : 'finite-orbit'} input`,
+      applicable: fullPrograms.length > 0,
+      reason: fullPrograms.length
+        ? `${fullPrograms.length} full-provenance typed programs are executable by primitive contracts`
+        : 'no full-provenance typed program reaches an executable observable',
     }
   },
   execute(context) {
-    const minIteration = 2 + Math.max(0, context.round - 1) * 4
-    return synthesizeExecutableFusions(context.parents, context.requested, {
-      minIteration,
-      maxIteration: minIteration + Math.max(3, context.depth),
-    })
-  },
-}
-
-const POLYNOMIAL_ROOT_COMPOSITION: SynthesisStrategy = {
-  id: 'polynomial-root-set-composition',
-  version: 1,
-  supports(context) {
-    const support = supportsPolynomialRootFusion(context.parents)
-    return { applicable: support.applicable, reason: support.reason }
-  },
-  execute(context) {
-    return synthesizePolynomialRootFusions(context.parents, context.requested, context.round)
+    const programs = context.enumeration.goals.map(goal => new Set(goal.steps.map(step => step.morphism)))
+    const hasRootSetProgram = programs.some(chain =>
+      chain.has('RootMinkowskiSum') || chain.has('RootMinkowskiDifference') || chain.has('RootPointwiseProduct'),
+    )
+    if (hasRootSetProgram && supportsPolynomialRootFusion(context.parents).applicable) {
+      return synthesizePolynomialRootFusions(context.parents, context.requested, context.round)
+    }
+    const hasFiniteOrbitProgram = programs.some(chain => chain.has('MapOrbitEvaluation'))
+    if (hasFiniteOrbitProgram && extractMobiusMap(context.parents)) {
+      const minIteration = 2 + Math.max(0, context.round - 1) * 4
+      return synthesizeExecutableFusions(context.parents, context.requested, {
+        minIteration,
+        maxIteration: minIteration + Math.max(3, context.depth),
+      })
+    }
+    return []
   },
 }
 
 export const DEFAULT_SYNTHESIS_STRATEGIES: readonly SynthesisStrategy[] = [
-  RATIONAL_MAP_FINITE_ORBIT,
-  POLYNOMIAL_ROOT_COMPOSITION,
+  TYPED_COMPOSITE_PROGRAM_SYNTHESIS,
 ]
 
 function initialState(parents: DiscoveryParent[]): AutonomousSearchState {
@@ -169,7 +173,7 @@ export function runAutonomousSynthesis(
   const discovery = discoverParentStructures(parents, requested)
   const generalized = generalizeParents(parents, state.depth, state.state_budget)
   const enumeration = enumerateTypedTerms(generalized.graphs, {
-    maxDepth: state.depth,
+    maxDepth: Math.max(6, state.depth),
     maxStates: state.state_budget,
   })
   state.terms_enumerated = enumeration.terms.length
@@ -252,6 +256,18 @@ export function runAutonomousSynthesis(
   }
 
   state.attempts = state.attempts.slice(-200)
+  state.synthesized_programs = cards.map(card => ({
+    id: `program.${createHash('sha256').update(JSON.stringify({
+      parents: card.parent_ids,
+      chain: card.morphism_chain,
+      observable: card.structure_blueprint.observable,
+    })).digest('hex').slice(0, 16)}`,
+    input_parent_ids: [...card.parent_ids],
+    output_sort: card.structure_blueprint.observable,
+    morphism_chain: [...card.morphism_chain],
+    backend_contracts: [...new Set(card.structure_blueprint.proofCertificate.map(step => step.verifier))],
+    verified: true,
+  }))
   state.continuing = cards.length < requested
   state.next_attempt_at = state.continuing
     ? new Date(now.getTime() + 15 * 60 * 1000).toISOString()

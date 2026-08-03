@@ -110,6 +110,7 @@ type GenerationResult = {
     last_progress_at?: string
     terms_enumerated?: number
     executable_goals?: number
+    synthesized_programs?: Array<{ id: string; morphism_chain: string[]; verified: true }>
   }
   generalization?: {
     id: string
@@ -407,7 +408,8 @@ export function GenerationPanel({
         observedRound = state.round
         setLogs(previous => [
           ...previous,
-          `自律探索 round ${state.round} / 深さ ${state.depth ?? '?'} / 型付き項 ${state.terms_enumerated ?? '?'} / 全親goal ${state.executable_goals ?? 0}`,
+          `自律探索 round ${state.round} / 深さ ${state.depth ?? '?'} / 型付き項 ${state.terms_enumerated ?? '?'} / 全選択問題を使う実行候補 ${state.executable_goals ?? 0}`,
+          `自動登録済み複合射 ${state.synthesized_programs?.length ?? 0} 件`,
           state.stagnant_rounds
             ? `同一frontierが ${state.stagnant_rounds} 回続いています。型付き列挙と実行backendだけで次候補を探索します。`
             : `未解決frontier ${state.frontier?.length ?? 0} 件を保持。次回も自動再開します。`,
