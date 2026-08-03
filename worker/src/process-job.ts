@@ -57,6 +57,13 @@ type ResearchFusionProposal = {
   verifierConfidence: number
 }
 
+class TransientInferenceError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'TransientInferenceError'
+  }
+}
+
 // ── ログ ─────────────────────────────────────────────────────────────────────
 let logBuf: LogEntry[] = []
 function pushLog(message: string, level = 'info') {
@@ -126,7 +133,7 @@ async function callDeepSeek(
       }),
     })
     if (!fallback.ok) {
-      throw new Error(`${deepSeekError}; ${openAIError}; GitHub Models ${fallback.status}: ${(await fallback.text()).slice(0, 200)}`)
+      throw new TransientInferenceError(`${deepSeekError}; ${openAIError}; GitHub Models ${fallback.status}: ${(await fallback.text()).slice(0, 200)}`)
     }
     const payload = await fallback.json() as { choices?: Array<{ message?: { content?: string } }> }
     const content = payload.choices?.[0]?.message?.content
@@ -744,6 +751,8 @@ export async function processJob(jobId: string) {
 
   const flushInterval = setInterval(() => flushLogs(jobId), 3000)
   const log = (msg: string, level = 'info') => pushLog(msg, level)
+  let isResearchJob = false
+  let persistedResult: Record<string, unknown> = {}
 
   try {
     const { data: job, error } = await supabase
@@ -752,6 +761,10 @@ export async function processJob(jobId: string) {
 
     let parents   = job.parents as ParentProblem[]
     const mode    = String(job.mode ?? 'auto')
+    isResearchJob = mode === 'mathos_discovery'
+    persistedResult = job.result && typeof job.result === 'object'
+      ? job.result as Record<string, unknown>
+      : {}
     const count   = Number(job.count) || 3
     const userId  = job.user_id as string | null
     parents = await validateAndRepairParents(parents, log)
@@ -1204,6 +1217,32 @@ export async function processJob(jobId: string) {
     }).eq('id', jobId)
 
   } catch(e) {
+    if (isResearchJob && e instanceof TransientInferenceError) {
+      const previousState = persistedResult.searchState && typeof persistedResult.searchState === 'object'
+        ? persistedResult.searchState as Record<string, unknown>
+        : {}
+      const nextAttemptAt = new Date(Date.now() + 15 * 60 * 1000).toISOString()
+      log(`⏸️ [外部検証器待ち] 全推論providerが一時利用不能です。探索状態を保存し、${nextAttemptAt} に自動再開します。`, 'warn')
+      clearInterval(flushInterval)
+      await flushLogs(jobId)
+      await supabase.from('generation_jobs').update({
+        status: 'processing',
+        model: 'mathos-provider-failover-wait',
+        result: {
+          ...persistedResult,
+          provider_waiting: true,
+          provider_error: e.message.slice(0, 500),
+          searchState: {
+            ...previousState,
+            continuing: true,
+            next_attempt_at: nextAttemptAt,
+          },
+        },
+        error: null,
+        updated_at: new Date().toISOString(),
+      }).eq('id', jobId)
+      return
+    }
     log(`❌ [致命的エラー] ${e}`, 'error')
     clearInterval(flushInterval)
     await flushLogs(jobId)
