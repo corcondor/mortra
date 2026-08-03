@@ -165,6 +165,28 @@ type StreamEvent = {
   result?: GenerationResult
 }
 
+type JobTelemetry = {
+  server_time: string
+  elapsed_seconds: number | null
+  seconds_since_update: number | null
+  seconds_until_next_round: number
+  worker_active: boolean
+  waiting_for_next_round: boolean
+  due_for_resume: boolean
+  stalled: boolean
+  runtime_phase: string | null
+  runtime_message: string | null
+  runtime_started_at: string | null
+  round: number
+  depth: number
+  terms_enumerated: number
+  executable_goals: number
+  frontier_count: number
+  stagnant_rounds: number
+  last_progress_at: string | null
+  synthesized_programs: number
+}
+
 const PHASE_INFO: Record<string, { label: string; note: string; color: string }> = {
   start: { label: 'MathOS 起動中', note: '生成セッションを準備しています', color: 'text-blue-300' },
   searching: { label: 'MathOS 試行中', note: '構成可能な経路を探索しています', color: 'text-blue-300' },
@@ -206,6 +228,15 @@ const PHASE_RANK: Record<string, number> = {
 }
 
 const ACTIVE_RESEARCH_JOB_KEY = 'mathos.activeResearchJob'
+
+function formatDuration(totalSeconds: number | null | undefined): string {
+  if (totalSeconds === null || totalSeconds === undefined || !Number.isFinite(totalSeconds)) return '-'
+  const seconds = Math.max(0, Math.floor(totalSeconds))
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.floor((seconds % 3600) / 60)
+  const rest = seconds % 60
+  return hours > 0 ? `${hours}時間${minutes}分` : minutes > 0 ? `${minutes}分${rest}秒` : `${rest}秒`
+}
 
 function logLineColor(line: string): string {
   if (line.includes('失敗') || line.includes('停止') || line.includes('エラー')) return 'text-rose-300'
@@ -250,6 +281,7 @@ export function GenerationPanel({
   const [languageAnalysis, setLanguageAnalysis] = useState<NonNullable<GenerationResult['generalization']>['language_analysis']>([])
   const [searchEvidence, setSearchEvidence] = useState<NonNullable<GenerationResult['generalization']>['search_evidence']>(undefined)
   const [activeParents, setActiveParents] = useState<Array<{ id: string; statement: string }>>([])
+  const [jobTelemetry, setJobTelemetry] = useState<JobTelemetry | null>(null)
   const logEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -357,7 +389,9 @@ export function GenerationPanel({
         error?: string | null
         resume_requested?: boolean
         replacement_job_id?: string | null
+        telemetry?: JobTelemetry
       }
+      if (job.telemetry) setJobTelemetry(job.telemetry)
       if (job.replacement_job_id) {
         activeJobId = job.replacement_job_id
         window.localStorage.setItem(ACTIVE_RESEARCH_JOB_KEY, activeJobId)
@@ -463,6 +497,7 @@ export function GenerationPanel({
     setRoadmapTarget(null)
     setLanguageAnalysis([])
     setSearchEvidence(undefined)
+    setJobTelemetry(null)
     setActiveParents(parents.map(parent => ({ id: parent.id, statement: parent.statement })))
     setWindowOpen(true)
 
@@ -569,6 +604,15 @@ export function GenerationPanel({
 
   const phaseInfo = PHASE_INFO[uiPhase] ?? PHASE_INFO.start
   const phaseRank = PHASE_RANK[uiPhase] ?? -1
+  const researchStatus = jobTelemetry?.worker_active
+    ? 'worker実行中'
+    : jobTelemetry?.stalled
+      ? jobTelemetry.waiting_for_next_round ? '探索停滞・次ラウンド待機' : '探索停滞'
+      : jobTelemetry?.waiting_for_next_round
+        ? '次ラウンド待機中'
+      : jobTelemetry?.due_for_resume
+        ? 'worker起動待ち'
+        : '状態確認中'
   const withinProblem = Math.max(0, Math.min(1, (phaseRank + 1) / STAGES.length))
   const progressPct = Math.round(Math.min(1, (completed + (generating ? withinProblem : 0)) / Math.max(total, 1)) * 100)
   const FREE_LIMIT = 10
@@ -874,6 +918,33 @@ export function GenerationPanel({
                 )
               })}
             </div>
+
+            {jobTelemetry && generating && (
+              <section className={`rounded border p-2.5 ${jobTelemetry.stalled ? 'border-amber-500/30 bg-amber-500/[0.04]' : 'border-blue-500/20 bg-blue-500/[0.03]'}`}>
+                <div className="mb-2 flex items-center justify-between gap-3 text-[10px]">
+                  <span className={jobTelemetry.stalled ? 'font-semibold text-amber-300' : 'font-semibold text-blue-300'}>{researchStatus}</span>
+                  <span className="tabular-nums text-zinc-500">総経過 {formatDuration(jobTelemetry.elapsed_seconds)}</span>
+                </div>
+                <div className="grid grid-cols-4 gap-x-3 gap-y-2 text-[9px]">
+                  <div><div className="text-zinc-600">ROUND</div><div className="tabular-nums text-zinc-200">{jobTelemetry.round}</div></div>
+                  <div><div className="text-zinc-600">DEPTH</div><div className="tabular-nums text-zinc-200">{jobTelemetry.depth}</div></div>
+                  <div><div className="text-zinc-600">型付き項</div><div className="tabular-nums text-zinc-200">{jobTelemetry.terms_enumerated.toLocaleString()}</div></div>
+                  <div><div className="text-zinc-600">実行候補</div><div className="tabular-nums text-zinc-200">{jobTelemetry.executable_goals.toLocaleString()}</div></div>
+                  <div><div className="text-zinc-600">FRONTIER</div><div className="tabular-nums text-zinc-200">{jobTelemetry.frontier_count}</div></div>
+                  <div><div className="text-zinc-600">停滞</div><div className="tabular-nums text-zinc-200">{jobTelemetry.stagnant_rounds} round</div></div>
+                  <div><div className="text-zinc-600">複合射</div><div className="tabular-nums text-zinc-200">{jobTelemetry.synthesized_programs}</div></div>
+                  <div><div className="text-zinc-600">最終更新</div><div className="tabular-nums text-zinc-200">{formatDuration(jobTelemetry.seconds_since_update)}前</div></div>
+                </div>
+                <div className="mt-2 border-t border-zinc-800 pt-2 text-[9px] leading-4 text-zinc-400">
+                  {jobTelemetry.runtime_message ?? (jobTelemetry.waiting_for_next_round
+                    ? `frontierを保存済み。次回まで ${formatDuration(jobTelemetry.seconds_until_next_round)}`
+                    : 'workerの状態を確認しています')}
+                  {jobTelemetry.waiting_for_next_round && (
+                    <span className="ml-1 text-cyan-300">次回まで {formatDuration(jobTelemetry.seconds_until_next_round)}</span>
+                  )}
+                </div>
+              </section>
+            )}
 
             {languageAnalysis && languageAnalysis.length > 0 && (
               <details className="rounded border border-zinc-800 bg-[#0a0a0b]">

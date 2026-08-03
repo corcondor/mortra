@@ -535,7 +535,21 @@ export async function processJob(jobId: string) {
     const count   = Number(job.count) || 3
     const userId  = job.user_id as string | null
     if (mode === 'mathos_discovery') {
-      const previousResult = job.result as { searchState?: AutonomousSearchState } | null
+      const previousResult = job.result as ({ searchState?: AutonomousSearchState } & Record<string, unknown>) | null
+      const runtimeStartedAt = new Date().toISOString()
+      await supabase.from('generation_jobs').update({
+        model: 'mathos-autonomous-structural-search-no-llm',
+        result: {
+          ...(previousResult ?? {}),
+          searchRuntime: {
+            phase: 'executing_round',
+            message: '親問題を再liftし、型付き項と複合実行プログラムを列挙しています',
+            started_at: runtimeStartedAt,
+          },
+        },
+        updated_at: runtimeStartedAt,
+      }).eq('id', jobId)
+      await flushLogs(jobId)
       log(`🔎 [未知構造探索] ${parents.length} 個の親問題を演算子・対象・制約へlift`)
       const autonomous = runAutonomousSynthesis(parents, count, previousResult?.searchState)
       const { discovery, cards, state: searchState } = autonomous
@@ -585,6 +599,12 @@ export async function processJob(jobId: string) {
           requested: count,
           cards,
           searchState,
+          searchRuntime: {
+            phase: 'completed',
+            message: '検証済みの複合実行プログラムを保存しました',
+            started_at: runtimeStartedAt,
+            finished_at: new Date().toISOString(),
+          },
           strategyAttempts: autonomous.attempts,
           generalization: autonomous.generalization,
           typedEnumeration: autonomous.enumeration,
@@ -609,6 +629,14 @@ export async function processJob(jobId: string) {
       const result = {
         ...discovery,
         searchState,
+        searchRuntime: {
+          phase: (searchState.stagnant_rounds ?? 0) >= 3 ? 'stalled_waiting' : 'waiting_next_round',
+          message: (searchState.stagnant_rounds ?? 0) >= 3
+            ? '同じfrontierで停滞中。次ラウンドでは探索深さと状態予算を増やして再開します'
+            : '現在のfrontierを保存し、次の自動探索ラウンドを待っています',
+          started_at: runtimeStartedAt,
+          finished_at: new Date().toISOString(),
+        },
         strategyAttempts: autonomous.attempts,
         generalization: autonomous.generalization,
         typedEnumeration: autonomous.enumeration,

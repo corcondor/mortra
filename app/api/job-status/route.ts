@@ -25,23 +25,49 @@ export async function GET(req: NextRequest) {
     const supabase = getAdmin()
     const { data, error } = await supabase
       .from('generation_jobs')
-      .select('id, status, mode, count, parents, logs, result, error, updated_at')
+      .select('id, status, mode, count, parents, logs, result, error, created_at, updated_at')
       .eq('id', jobId)
       .single()
 
     if (error || !data) {
       return NextResponse.json({ error: 'not found' }, { status: 404 })
     }
-    const state = (data.result as {
-      searchState?: { continuing?: boolean; next_attempt_at?: string | null }
-    } | null)?.searchState
+    const resultEnvelope = data.result as ({
+      searchState?: {
+        continuing?: boolean
+        next_attempt_at?: string | null
+        round?: number
+        depth?: number
+        terms_enumerated?: number
+        executable_goals?: number
+        frontier?: unknown[]
+        stagnant_rounds?: number
+        last_progress_at?: string
+        synthesized_programs?: unknown[]
+      }
+      searchRuntime?: {
+        phase?: string
+        message?: string
+        started_at?: string
+      }
+      superseded_by?: string
+    } | null)
+    const state = resultEnvelope?.searchState
+    const runtime = resultEnvelope?.searchRuntime
+    const now = Date.now()
     const updatedAt = Date.parse(data.updated_at ?? '')
+    const createdAt = Date.parse(data.created_at ?? '')
+    const nextAttemptAt = state?.next_attempt_at ? Date.parse(state.next_attempt_at) : Number.NaN
     const due = data.status === 'processing' && state?.continuing === true &&
-      (!state.next_attempt_at || Date.parse(state.next_attempt_at) <= Date.now())
-    const stale = !Number.isFinite(updatedAt) || Date.now() - updatedAt >= 90_000
+      (!Number.isFinite(nextAttemptAt) || nextAttemptAt <= now)
+    const waitingForNextRound = data.status === 'processing' && state?.continuing === true &&
+      Number.isFinite(nextAttemptAt) && nextAttemptAt > now
+    const secondsSinceUpdate = Number.isFinite(updatedAt) ? Math.max(0, Math.floor((now - updatedAt) / 1000)) : null
+    const secondsUntilNextRound = waitingForNextRound ? Math.max(0, Math.ceil((nextAttemptAt - now) / 1000)) : 0
+    const stale = secondsSinceUpdate === null || secondsSinceUpdate >= 90
     let resumeRequested = false
-    let replacementJobId: string | null = null
-    if (due && stale) {
+    let replacementJobId: string | null = resultEnvelope?.superseded_by ?? null
+    if (due && stale && !replacementJobId) {
       const { data: resumeData, error: resumeError } = await supabase.functions.invoke('enqueue-generation', {
         body: { resume_job_id: jobId },
       })
@@ -83,6 +109,27 @@ export async function GET(req: NextRequest) {
     const { parents: _parents, mode: _mode, count: _count, ...publicData } = data
     return NextResponse.json({
       ...publicData,
+      telemetry: {
+        server_time: new Date(now).toISOString(),
+        elapsed_seconds: Number.isFinite(createdAt) ? Math.max(0, Math.floor((now - createdAt) / 1000)) : null,
+        seconds_since_update: secondsSinceUpdate,
+        seconds_until_next_round: secondsUntilNextRound,
+        worker_active: data.status === 'processing' && !waitingForNextRound && !stale,
+        waiting_for_next_round: waitingForNextRound,
+        due_for_resume: due,
+        stalled: (state?.stagnant_rounds ?? 0) >= 3 && (state?.executable_goals ?? 0) === 0,
+        runtime_phase: runtime?.phase ?? null,
+        runtime_message: runtime?.message ?? null,
+        runtime_started_at: runtime?.started_at ?? null,
+        round: state?.round ?? 0,
+        depth: state?.depth ?? 0,
+        terms_enumerated: state?.terms_enumerated ?? 0,
+        executable_goals: state?.executable_goals ?? 0,
+        frontier_count: state?.frontier?.length ?? 0,
+        stagnant_rounds: state?.stagnant_rounds ?? 0,
+        last_progress_at: state?.last_progress_at ?? null,
+        synthesized_programs: state?.synthesized_programs?.length ?? 0,
+      },
       resume_requested: resumeRequested,
       replacement_job_id: replacementJobId,
     })
