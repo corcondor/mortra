@@ -7,7 +7,7 @@ import {
 } from './autonomous-synthesis'
 
 const parents = [
-  { id: 'map', solution: 'T(z)=\\frac{3z+2}{z+2}' },
+  { id: 'map', statement: '一次分数変換 T(z)=\\frac{3z+2}{z+2} を反復する。' },
   { id: 'orbit', statement: 'z_1,\\ldots,z_n を z^n=1 の全ての解とする。' },
 ]
 
@@ -17,6 +17,20 @@ test('runs a typed strategy registry and returns verified cards', () => {
   assert.equal(result.state.continuing, false)
   assert.equal(result.attempts[0].strategy, 'rational-map-finite-algebraic-orbit')
   assert.equal(result.attempts[0].generated, 3)
+})
+
+test('routes unseen polynomial parents to the generic elimination backend', () => {
+  const polynomialParents = [
+    { id: 'p', statement: '方程式 $x^2-2=0$ の根を考える。' },
+    { id: 'q', statement: '方程式 $y^2-3=0$ の根を考える。' },
+  ]
+  const result = runAutonomousSynthesis(polynomialParents, 1)
+  assert.equal(result.cards.length, 1)
+  assert.equal(result.cards[0].family_id, 'discovered.polynomial_root_sum')
+  assert.deepEqual(result.attempts.map(attempt => [attempt.strategy, attempt.applicable]), [
+    ['rational-map-finite-algebraic-orbit', false],
+    ['polynomial-root-set-composition', true],
+  ])
 })
 
 test('continuation becomes due only after its persisted wake time', () => {

@@ -537,7 +537,8 @@ export async function processJob(jobId: string) {
       const autonomous = runAutonomousSynthesis(parents, count, previousResult?.searchState)
       const { discovery, cards, state: searchState } = autonomous
       log(`🧭 [中間命題] ${discovery.hypotheses.length} 個の普遍構成候補を比較`)
-      log(`⚙️ [自律探索] round=${searchState.round}, depth=${searchState.depth}, 戦略=${autonomous.attempts.length}`)
+      log(`⚙️ [型付き項列挙] round=${searchState.round}, depth=${searchState.depth}, terms=${searchState.terms_enumerated ?? 0}, full-goals=${searchState.executable_goals ?? 0}`)
+      log(`🔌 [backend契約] ${autonomous.attempts.length} 戦略を入力型から判定`)
       for (const attempt of autonomous.attempts) {
         log(`${attempt.applicable ? '🔧' : '↪'} [${attempt.strategy}@${attempt.version}] ${attempt.reason}`)
       }
@@ -582,11 +583,12 @@ export async function processJob(jobId: string) {
           searchState,
           strategyAttempts: autonomous.attempts,
           generalization: autonomous.generalization,
+          typedEnumeration: autonomous.enumeration,
           structures: cards.map(card => ({ blueprint: card.structure_blueprint, status: 'new', parentIds: card.parent_ids, registeredAt: new Date().toISOString() })),
           errors: [],
           rejectionCounts: {},
         }
-        log(`✅ [厳密検証] ${cards.length} 問が体のトレース/ノルム計算と独立数値検査を通過`)
+        log(`✅ [厳密検証] ${cards.length} 問が厳密backend・独立反例検査・親アブレーションを通過`)
         log(`💾 [保存] ${cards.length} 問を問題DBへ追加`)
         clearInterval(flushInterval)
         await flushLogs(jobId)
@@ -605,6 +607,7 @@ export async function processJob(jobId: string) {
         searchState,
         strategyAttempts: autonomous.attempts,
         generalization: autonomous.generalization,
+        typedEnumeration: autonomous.enumeration,
         backgroundResearch: true,
       }
       log(`⏳ [探索継続] 実行証明は未完成。frontier=${searchState.frontier.length} を保存し、${searchState.next_attempt_at} に自動再開`)

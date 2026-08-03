@@ -5,8 +5,8 @@ import { extractMobiusMap, synthesizeExecutableFusions } from './executable-fusi
 const parents = [
   {
     id: 'graph-parent',
-    statement: '有向グラフの隣接行列を考える。',
-    solution: 'Möbius変換 T(z) = \\frac{3z+2}{z+2} を反復する。',
+    statement: 'Möbius変換 T(z) = \\frac{3z+2}{z+2} を反復する。',
+    solution: '有向グラフの隣接行列を考える。',
   },
   {
     id: 'root-parent',
@@ -15,7 +15,7 @@ const parents = [
   },
 ]
 
-test('extracts an unseen Mobius map from the selected parent solution', () => {
+test('extracts an unseen Mobius map from the selected parent statement', () => {
   assert.deepEqual(extractMobiusMap(parents), { matrix: [3n, 2n, 1n, 2n], parentId: 'graph-parent' })
 })
 
@@ -40,7 +40,7 @@ test('does not invent a bridge when either structural input is absent', () => {
 
 test('rejects an iterate with a pole on the unit root orbit', () => {
   const singularParents = [
-    { id: 'map', solution: 'T(z) = \\frac{z+2}{z-1}' },
+    { id: 'map', statement: 'T(z) = \\frac{z+2}{z-1}' },
     parents[1],
   ]
   assert.deepEqual(synthesizeExecutableFusions(singularParents, 3), [])

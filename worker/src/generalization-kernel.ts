@@ -111,7 +111,7 @@ const OPERATOR_SCHEMAS: readonly OperatorSchema[] = [
   { canonical: 'Proof', patterns: [/示せ|証明|prove/i], input: 'Proposition', output: 'Proof', role: 'query', preserves: ['truth'], backend: ['lean', 'smt', 'symbolic-identity'] },
 ]
 
-type MorphismSchema = {
+export type MorphismSchema = {
   name: string
   source: string
   target: string
@@ -139,7 +139,7 @@ const MORPHISM_ATLAS: readonly MorphismSchema[] = [
   { name: 'Counting', source: 'FiniteSet', target: 'Integer', preserves: ['bijection-class'], backend: ['enumeration'] },
 ]
 
-type HyperMorphismSchema = {
+export type HyperMorphismSchema = {
   name: string
   sources: string[]
   target: string
@@ -163,7 +163,25 @@ const HYPER_MORPHISM_ATLAS: readonly HyperMorphismSchema[] = [
     preserves: ['joint-solution-set', 'projection'],
     backend: ['groebner-basis', 'quantifier-elimination'],
   },
+  {
+    name: 'RootMinkowskiSum',
+    sources: ['FiniteAlgebraicOrbit', 'FiniteAlgebraicOrbit'],
+    target: 'FiniteAlgebraicOrbit',
+    preserves: ['both-parent-provenance', 'algebraicity', 'finite-support'],
+    backend: ['resultant', 'square-free-reduction'],
+  },
+  {
+    name: 'RootPointwiseProduct',
+    sources: ['FiniteAlgebraicOrbit', 'FiniteAlgebraicOrbit'],
+    target: 'FiniteAlgebraicOrbit',
+    preserves: ['both-parent-provenance', 'algebraicity', 'finite-support'],
+    backend: ['resultant', 'square-free-reduction'],
+  },
 ]
+
+export function executableMorphismAtlas(): readonly HyperMorphismSchema[] {
+  return HYPER_MORPHISM_ATLAS
+}
 
 function hash(value: unknown, length = 12): string {
   return createHash('sha256').update(JSON.stringify(value)).digest('hex').slice(0, length)

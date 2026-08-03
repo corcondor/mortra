@@ -10,6 +10,11 @@ import {
   type ExecutableFusionCard,
 } from './executable-fusion'
 import { generalizeParents, type GeneralizationCertificate } from './generalization-kernel'
+import { enumerateTypedTerms, type TypedEnumerationResult } from './typed-term-enumerator'
+import {
+  supportsPolynomialRootFusion,
+  synthesizePolynomialRootFusions,
+} from './polynomial-root-fusion'
 
 export type StrategyAttempt = {
   strategy: string
@@ -37,6 +42,8 @@ export type AutonomousSearchState = {
   frontier_fingerprint?: string
   stagnant_rounds?: number
   last_progress_at?: string
+  terms_enumerated?: number
+  executable_goals?: number
 }
 
 export type SynthesisContext = {
@@ -45,6 +52,7 @@ export type SynthesisContext = {
   round: number
   depth: number
   generalization: GeneralizationCertificate
+  enumeration: TypedEnumerationResult
 }
 
 export type SynthesisStrategy = {
@@ -60,6 +68,7 @@ export type AutonomousSynthesisResult = {
   state: AutonomousSearchState
   attempts: StrategyAttempt[]
   generalization: GeneralizationCertificate
+  enumeration: TypedEnumerationResult
 }
 
 function fingerprint(parents: DiscoveryParent[]): string {
@@ -98,8 +107,21 @@ const RATIONAL_MAP_FINITE_ORBIT: SynthesisStrategy = {
   },
 }
 
+const POLYNOMIAL_ROOT_COMPOSITION: SynthesisStrategy = {
+  id: 'polynomial-root-set-composition',
+  version: 1,
+  supports(context) {
+    const support = supportsPolynomialRootFusion(context.parents)
+    return { applicable: support.applicable, reason: support.reason }
+  },
+  execute(context) {
+    return synthesizePolynomialRootFusions(context.parents, context.requested, context.round)
+  },
+}
+
 export const DEFAULT_SYNTHESIS_STRATEGIES: readonly SynthesisStrategy[] = [
   RATIONAL_MAP_FINITE_ORBIT,
+  POLYNOMIAL_ROOT_COMPOSITION,
 ]
 
 function initialState(parents: DiscoveryParent[]): AutonomousSearchState {
@@ -146,8 +168,20 @@ export function runAutonomousSynthesis(
   state.state_budget = Math.max(10_000, 10_000 * state.round)
   const discovery = discoverParentStructures(parents, requested)
   const generalized = generalizeParents(parents, state.depth, state.state_budget)
+  const enumeration = enumerateTypedTerms(generalized.graphs, {
+    maxDepth: state.depth,
+    maxStates: state.state_budget,
+  })
+  state.terms_enumerated = enumeration.terms.length
+  state.executable_goals = enumeration.goals.length
   state.hypotheses_evaluated += discovery.hypotheses.length
-  state.frontier = generalized.certificate.roadmap.length
+  state.frontier = enumeration.frontier.length
+    ? enumeration.frontier.slice(0, 48).map(item => ({
+        source: item.sources.join(' × '),
+        target: item.target,
+        obligation: `${item.morphism} requires ${item.missing.join(', ')}`,
+      }))
+    : generalized.certificate.roadmap.length
     ? generalized.certificate.roadmap.slice(0, 48).map(step => ({
         source: step.source,
         target: step.target,
@@ -181,6 +215,7 @@ export function runAutonomousSynthesis(
     round: state.round,
     depth: state.depth,
     generalization: generalized.certificate,
+    enumeration,
   }
   const roundAttempts: StrategyAttempt[] = []
   const cards: ExecutableFusionCard[] = []
@@ -221,7 +256,7 @@ export function runAutonomousSynthesis(
   state.next_attempt_at = state.continuing
     ? new Date(now.getTime() + 15 * 60 * 1000).toISOString()
     : null
-  return { cards, discovery, state, attempts: roundAttempts, generalization: generalized.certificate }
+  return { cards, discovery, state, attempts: roundAttempts, generalization: generalized.certificate, enumeration }
 }
 
 export function summarizeLift(parents: DiscoveryParent[]) {

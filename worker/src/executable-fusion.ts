@@ -56,7 +56,7 @@ function parseLinear(expression: string): [bigint, bigint] | null {
 
 export function extractMobiusMap(parents: DiscoveryParent[]): { matrix: Matrix2; parentId: string } | null {
   for (const parent of parents) {
-    const source = [parent.statement, parent.solution, parent.inspiration].filter(Boolean).join('\n')
+    const source = parent.statement ?? ''
     const match = source.match(/T\s*\(\s*z\s*\)\s*=\s*\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}/i)
     if (!match) continue
     const numerator = parseLinear(match[1])
@@ -71,7 +71,7 @@ export function extractMobiusMap(parents: DiscoveryParent[]): { matrix: Matrix2;
 
 function findRootOrbitParent(parents: DiscoveryParent[]): string | null {
   for (const parent of parents) {
-    const source = [parent.statement, parent.solution, parent.inspiration].filter(Boolean).join('\n')
+    const source = parent.statement ?? ''
     if (/z\s*\^\s*\{?n\}?\s*=\s*1|1\s*の\s*n\s*乗根|1の冪根|roots? of unity/i.test(source)) {
       return String(parent.id || 'root-orbit-parent')
     }

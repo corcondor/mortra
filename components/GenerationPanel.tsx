@@ -108,6 +108,8 @@ type GenerationResult = {
     frontier?: Array<{ source: string; target: string; obligation: string }>
     stagnant_rounds?: number
     last_progress_at?: string
+    terms_enumerated?: number
+    executable_goals?: number
   }
   generalization?: {
     id: string
@@ -405,7 +407,7 @@ export function GenerationPanel({
         observedRound = state.round
         setLogs(previous => [
           ...previous,
-          `自律探索 round ${state.round} / 深さ ${state.depth ?? '?'} / 累積仮説 ${state.hypotheses_evaluated ?? '?'}`,
+          `自律探索 round ${state.round} / 深さ ${state.depth ?? '?'} / 型付き項 ${state.terms_enumerated ?? '?'} / 全親goal ${state.executable_goals ?? 0}`,
           state.stagnant_rounds
             ? `同一frontierが ${state.stagnant_rounds} 回続いています。型付き列挙と実行backendだけで次候補を探索します。`
             : `未解決frontier ${state.frontier?.length ?? 0} 件を保持。次回も自動再開します。`,

@@ -20,6 +20,14 @@ jobs:
           node-version: '22'
           cache: npm
           cache-dependency-path: worker/package.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: worker/requirements.txt
+      - name: Install exact symbolic backend
+        working-directory: worker
+        run: pip install -r requirements.txt
       - name: Install worker dependencies
         working-directory: worker
         run: npm install
@@ -31,7 +39,4 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
-          DEEPSEEK_MODEL: ${{ secrets.DEEPSEEK_MODEL }}
-          DEEPSEEK_MAX_TOKENS: ${{ secrets.DEEPSEEK_MAX_TOKENS }}
         run: npx tsx src/research-sweep.ts
