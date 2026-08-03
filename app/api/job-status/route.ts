@@ -32,16 +32,18 @@ export async function GET(req: NextRequest) {
     if (error || !data) {
       return NextResponse.json({ error: 'not found' }, { status: 404 })
     }
-    const state = (data.result as {
+    const result = data.result as {
       searchState?: { continuing?: boolean; next_attempt_at?: string | null }
-    } | null)?.searchState
+      provider_waiting?: boolean
+    } | null
+    const state = result?.searchState
     const updatedAt = Date.parse(data.updated_at ?? '')
     const due = data.status === 'processing' && state?.continuing === true &&
       (!state.next_attempt_at || Date.parse(state.next_attempt_at) <= Date.now())
     const stale = !Number.isFinite(updatedAt) || Date.now() - updatedAt >= 90_000
     let resumeRequested = false
     let replacementJobId: string | null = null
-    if (due && stale) {
+    if (due && stale && result?.provider_waiting !== true) {
       const { data: resumeData, error: resumeError } = await supabase.functions.invoke('enqueue-generation', {
         body: { resume_job_id: jobId },
       })
