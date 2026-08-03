@@ -19,6 +19,8 @@ const MODEL      = process.env.DEEPSEEK_MODEL      ?? 'deepseek-chat'
 const FAST_MODEL = process.env.DEEPSEEK_FAST_MODEL ?? 'deepseek-chat'
 const MAX_TOKENS = Number(process.env.DEEPSEEK_MAX_TOKENS ?? '8000')
 const FAST_MAX   = 5000
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN ?? ''
+const GITHUB_MODELS_MODEL = process.env.GITHUB_MODELS_MODEL ?? 'openai/gpt-4.1'
 
 if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY || !DEEPSEEK_API_KEY) {
   console.error('必須環境変数が未設定')
@@ -79,7 +81,32 @@ async function callDeepSeek(
       stream: true, max_tokens: maxTokens,
     }),
   })
-  if (!res.ok) throw new Error(`DeepSeek ${res.status}: ${(await res.text()).slice(0, 200)}`)
+  if (!res.ok) {
+    const deepSeekError = `DeepSeek ${res.status}: ${(await res.text()).slice(0, 200)}`
+    if (!GITHUB_TOKEN) throw new Error(deepSeekError)
+    onProgress?.(`DeepSeekを利用できないため GitHub Models (${GITHUB_MODELS_MODEL}) に切替`)
+    const fallback = await fetch('https://models.github.ai/inference/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/vnd.github+json',
+        Authorization: `Bearer ${GITHUB_TOKEN}`,
+        'X-GitHub-Api-Version': '2026-03-10',
+      },
+      body: JSON.stringify({
+        model: GITHUB_MODELS_MODEL,
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: Math.min(maxTokens, 16_000),
+      }),
+    })
+    if (!fallback.ok) {
+      throw new Error(`${deepSeekError}; GitHub Models ${fallback.status}: ${(await fallback.text()).slice(0, 200)}`)
+    }
+    const payload = await fallback.json() as { choices?: Array<{ message?: { content?: string } }> }
+    const content = payload.choices?.[0]?.message?.content
+    if (!content) throw new Error(`${deepSeekError}; GitHub Models returned no content`)
+    return content
+  }
   if (!res.body) throw new Error('no body')
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
