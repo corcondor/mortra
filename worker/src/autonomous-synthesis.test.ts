@@ -39,6 +39,21 @@ test('persists and expands the search frontier without claiming success', () => 
   assert.ok(second.state.depth > first.state.depth)
   assert.ok(second.state.hypotheses_evaluated > first.state.hypotheses_evaluated)
   assert.ok(second.state.frontier.length > 0)
+  assert.equal(first.state.stagnant_rounds, 0)
+  assert.equal(second.state.stagnant_rounds, 1)
+})
+
+test('a proposed solution cannot redefine the statement semantics', () => {
+  const poisoned = [
+    { id: 'a', statement: '素数 p について和を考える。', solution: '三角形の重心と面積の最小値を求める。' },
+    { id: 'b', statement: '数列 a_n を考える。', solution: '一次分数変換 T(z) を反復する。' },
+  ]
+  const result = runAutonomousSynthesis(poisoned, 1)
+  const operators = new Set(result.generalization.bindings.map(binding => binding.canonical))
+  assert.equal(operators.has('Centroid'), false)
+  assert.equal(operators.has('Measure'), false)
+  assert.equal(operators.has('MobiusMap'), false)
+  assert.equal(operators.has('PrimeRestriction'), true)
 })
 
 test('strategies are selected by their typed support contract, not problem ids', () => {

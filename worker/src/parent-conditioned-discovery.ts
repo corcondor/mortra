@@ -72,7 +72,7 @@ function queryKind(text: string): string {
 
 export function liftParent(parent: DiscoveryParent) {
   const parentId = String(parent.id || `parent-${hash(parent, 8)}`)
-  const source = [parent.statement, parent.solution, parent.inspiration].filter(Boolean).join('\n')
+  const source = parent.statement ?? ''
   const roots: string[] = []
   const morphisms: Array<{ name: string; source: string; target: string; law: string; origin: string }> = []
   for (const signature of OPERATOR_SIGNATURES) {

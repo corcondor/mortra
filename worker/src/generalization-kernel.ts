@@ -91,8 +91,9 @@ const OPERATOR_SCHEMAS: readonly OperatorSchema[] = [
   { canonical: 'Integral', patterns: [/\\int(?![A-Za-z])/i, /積分/], input: 'Function', output: 'Scalar', preserves: ['linearity'], backend: ['symbolic-integration', 'numeric-quadrature'] },
   { canonical: 'Derivative', patterns: [/\\frac\s*\{d|f\s*['′]|微分|導関数/], input: 'DifferentiableFunction', output: 'Function', preserves: ['local-contact'], backend: ['symbolic-differentiation'] },
   { canonical: 'Limit', patterns: [/\\lim\b/i, /極限/], input: 'FilteredObject', output: 'Scalar', preserves: ['asymptotic-class'], backend: ['limit-engine', 'interval-bound'] },
-  { canonical: 'Sum', patterns: [/\\sum\b/i, /総和|和を求め/], input: 'FiniteFamily', output: 'Scalar', preserves: ['index-set', 'multiplicity'], backend: ['exact-summation'] },
-  { canonical: 'Product', patterns: [/\\prod\b/i, /総積|積を求め/], input: 'FiniteFamily', output: 'Scalar', preserves: ['index-set', 'multiplicity'], backend: ['resultant', 'exact-product'] },
+  { canonical: 'Sum', patterns: [/\\sum(?![A-Za-z])/i, /総和|和を求め/], input: 'FiniteFamily', output: 'Scalar', preserves: ['index-set', 'multiplicity'], backend: ['exact-summation'] },
+  { canonical: 'Product', patterns: [/\\prod(?![A-Za-z])/i, /総積|積を求め/], input: 'FiniteFamily', output: 'Scalar', preserves: ['index-set', 'multiplicity'], backend: ['resultant', 'exact-product'] },
+  { canonical: 'PrimeRestriction', patterns: [/素数|prime/i], input: 'Integer', output: 'PrimeSpectrum', preserves: ['primality'], backend: ['primality-test', 'modular-arithmetic'] },
   { canonical: 'ZeroLocus', patterns: [/方程式|解とする|根とする|=\s*0/], input: 'Function', output: 'AlgebraicSet', preserves: ['solution-set', 'multiplicity'], backend: ['polynomial-solver', 'groebner-basis'] },
   { canonical: 'RootsOfUnity', patterns: [/z\s*\^\s*\{?n\}?\s*=\s*1|1\s*の\s*n\s*乗根|1の冪根|roots? of unity/i], input: 'CyclicGroup', output: 'FiniteAlgebraicOrbit', preserves: ['cyclic-order', 'multiplicity'], backend: ['cyclotomic-polynomial'] },
   { canonical: 'MobiusMap', patterns: [/一次分数変換|m[oö]bius|T\s*\(\s*z\s*\)\s*=\s*\\frac/i], input: 'Matrix2', output: 'RationalSelfMap', preserves: ['cross-ratio', 'projective-orbit'], backend: ['matrix-power', 'rational-normal-form'] },
@@ -169,7 +170,9 @@ function hash(value: unknown, length = 12): string {
 }
 
 function textOf(parent: DiscoveryParent): string {
-  return [parent.statement, parent.solution, parent.inspiration].filter(Boolean).join('\n')
+  // The statement defines the mathematical objects and constraints. A proposed
+  // solution is tactic evidence and must not be allowed to redefine the input.
+  return parent.statement ?? ''
 }
 
 function parentId(parent: DiscoveryParent): string {

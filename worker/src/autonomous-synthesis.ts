@@ -5,6 +5,7 @@ import {
   type DiscoveryParent,
 } from './parent-conditioned-discovery'
 import {
+  extractMobiusMap,
   synthesizeExecutableFusions,
   type ExecutableFusionCard,
 } from './executable-fusion'
@@ -33,6 +34,9 @@ export type AutonomousSearchState = {
   continuing: boolean
   next_attempt_at: string | null
   state_budget?: number
+  frontier_fingerprint?: string
+  stagnant_rounds?: number
+  last_progress_at?: string
 }
 
 export type SynthesisContext = {
@@ -67,17 +71,17 @@ function fingerprint(parents: DiscoveryParent[]): string {
   })))).digest('hex').slice(0, 20)
 }
 
-function sourceText(parent: DiscoveryParent): string {
-  return [parent.statement, parent.solution, parent.inspiration].filter(Boolean).join('\n')
-}
-
 const RATIONAL_MAP_FINITE_ORBIT: SynthesisStrategy = {
   id: 'rational-map-finite-algebraic-orbit',
   version: 1,
   supports(context) {
     const operators = new Set(context.generalization.bindings.map(binding => binding.canonical))
-    const hasRationalMap = operators.has('MobiusMap')
-    const hasFiniteOrbit = operators.has('RootsOfUnity')
+    const hasRationalMap = operators.has('MobiusMap') || extractMobiusMap(context.parents) !== null
+    const hasFiniteOrbit = operators.has('RootsOfUnity') || context.parents.some(parent =>
+      /z\s*\^\s*\{?n\}?\s*=\s*1|1\s*の\s*n\s*乗根|1の冪根|roots? of unity/i.test(
+        [parent.statement, parent.solution, parent.inspiration].filter(Boolean).join('\n'),
+      ),
+    )
     return {
       applicable: hasRationalMap && hasFiniteOrbit,
       reason: hasRationalMap && hasFiniteOrbit
@@ -110,6 +114,7 @@ function initialState(parents: DiscoveryParent[]): AutonomousSearchState {
     frontier: [],
     continuing: true,
     next_attempt_at: null,
+    stagnant_rounds: 0,
   }
 }
 
@@ -155,6 +160,20 @@ export function runAutonomousSynthesis(
           obligation: hypothesis.proof_obligations[1],
         })),
       )
+
+  const frontierFingerprint = createHash('sha256').update(JSON.stringify({
+    frontier: state.frontier,
+    target: generalized.certificate.target_sort,
+    bindings: generalized.certificate.bindings,
+    exhausted: generalized.certificate.search_evidence.exhausted,
+  })).digest('hex').slice(0, 16)
+  if (state.frontier_fingerprint === frontierFingerprint) {
+    state.stagnant_rounds = (state.stagnant_rounds ?? 0) + 1
+  } else {
+    state.stagnant_rounds = 0
+    state.last_progress_at = now.toISOString()
+  }
+  state.frontier_fingerprint = frontierFingerprint
 
   const context: SynthesisContext = {
     parents,

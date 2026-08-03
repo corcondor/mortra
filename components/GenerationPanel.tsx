@@ -37,6 +37,12 @@ type GenerationCard = {
   parent_ids?: string[]
   unresolved?: boolean
   discovery_status?: 'research_pending' | 'backend_candidate' | 'verified'
+  verification?: {
+    method?: string
+    exact_backend?: boolean
+    independent_check?: boolean
+    confidence?: number
+  }
   parent_coverage?: Array<{
     parentId: string
     anchors: string[]
@@ -100,6 +106,8 @@ type GenerationResult = {
     continuing?: boolean
     next_attempt_at?: string | null
     frontier?: Array<{ source: string; target: string; obligation: string }>
+    stagnant_rounds?: number
+    last_progress_at?: string
   }
   generalization?: {
     id: string
@@ -319,7 +327,8 @@ export function GenerationPanel({
   }
 
   const pollDiscoveryJob = async (jobId: string) => {
-    window.localStorage.setItem(ACTIVE_RESEARCH_JOB_KEY, jobId)
+    let activeJobId = jobId
+    window.localStorage.setItem(ACTIVE_RESEARCH_JOB_KEY, activeJobId)
     setUiPhase('inducing')
     setCompleted(0)
     setStructureId(null)
@@ -330,24 +339,39 @@ export function GenerationPanel({
     setLogs(previous => [
       ...previous,
       '既存Atlas外の構造です。選択した問題本文から対象・射・制約を再構成します。',
-      `探索ジョブ ${jobId.slice(0, 8)} をMathOS本体へ渡しました。`,
+      `探索ジョブ ${activeJobId.slice(0, 8)} をMathOS本体へ渡しました。`,
     ].slice(-30))
     let deliveredLogs = 0
     let observedRound = 0
     for (let attempt = 0; attempt < 5_760; attempt++) {
       if (attempt > 0) await new Promise(resolve => window.setTimeout(resolve, 5_000))
-      const response = await fetch(`/api/job-status?job_id=${encodeURIComponent(jobId)}`, { cache: 'no-store' })
+      const response = await fetch(`/api/job-status?job_id=${encodeURIComponent(activeJobId)}`, { cache: 'no-store' })
       if (!response.ok) throw new Error(`未知構造探索の状態取得に失敗しました: ${response.status}`)
       const job = await response.json() as {
         status: 'pending' | 'processing' | 'done' | 'failed'
         logs?: Array<{ message?: string }> | string[]
         result?: GenerationResult
         error?: string | null
+        resume_requested?: boolean
+        replacement_job_id?: string | null
+      }
+      if (job.replacement_job_id) {
+        activeJobId = job.replacement_job_id
+        window.localStorage.setItem(ACTIVE_RESEARCH_JOB_KEY, activeJobId)
+        deliveredLogs = 0
+        setLogs(previous => [
+          ...previous,
+          `期限切れジョブの探索状態を ${activeJobId.slice(0, 8)} へ引き継ぎ、直ちに再開しました。`,
+        ].slice(-30))
+        continue
       }
       const allJobLines = (job.logs ?? []).map(item => typeof item === 'string' ? item : item.message ?? '').filter(Boolean)
       const jobLines = allJobLines.slice(deliveredLogs)
       deliveredLogs = allJobLines.length
       if (jobLines.length) setLogs(previous => [...previous, ...jobLines].slice(-30))
+      if (job.resume_requested) {
+        setLogs(previous => [...previous, '期限切れを検出し、この探索ジョブを直ちに再開しました。'].slice(-30))
+      }
       if (job.status === 'done' && job.result) {
         finish(job.result)
         return
@@ -382,12 +406,14 @@ export function GenerationPanel({
         setLogs(previous => [
           ...previous,
           `自律探索 round ${state.round} / 深さ ${state.depth ?? '?'} / 累積仮説 ${state.hypotheses_evaluated ?? '?'}`,
-          `未解決frontier ${state.frontier?.length ?? 0} 件を保持。次回も自動再開します。`,
+          state.stagnant_rounds
+            ? `同一frontierが ${state.stagnant_rounds} 回続いたため、深さ延長を止めて未知射の合成へ切り替えます。`
+            : `未解決frontier ${state.frontier?.length ?? 0} 件を保持。次回も自動再開します。`,
         ].slice(-30))
       }
       setUiPhase(state?.continuing ? 'researching' : job.status === 'processing' ? 'inducing' : 'searching')
     }
-    const message = `探索ジョブ ${jobId.slice(0, 8)} は8時間を超えてバックグラウンド研究を継続しています。次回アクセス時に自動再接続します。`
+    const message = `探索ジョブ ${activeJobId.slice(0, 8)} は8時間を超えてバックグラウンド研究を継続しています。次回アクセス時に自動再接続します。`
     setUiPhase('researching')
     setLogs(previous => [...previous, message].slice(-30))
     setGenDone({ ok: true, partial: true, message })
@@ -651,6 +677,11 @@ export function GenerationPanel({
                 <span>{card.family_id ?? 'unknown family'}</span>
                 {card.morphism_chain?.length ? <span>{card.morphism_chain.length} 検証段</span> : null}
                 {card.parent_ids?.length ? <span>親: {card.parent_ids.join(', ')}</span> : null}
+                {card.verification?.exact_backend ? (
+                  <span className="text-emerald-300">形式計算済み</span>
+                ) : card.verification?.independent_check ? (
+                  <span className="text-amber-300">独立監査済み・形式検証待ち</span>
+                ) : null}
                 {card.search_evidence?.hypotheses_evaluated ? (
                   <span>
                     仮説 {card.search_evidence.hypotheses_evaluated.toLocaleString()} 件 / {Math.round((card.search_evidence.elapsed_ms ?? 0) / 1000)} 秒
@@ -718,7 +749,7 @@ export function GenerationPanel({
               ) : null}
               {card.structure_blueprint?.id ? (
                 <div className="mb-2 text-[10px] text-zinc-500">
-                  {card.unresolved ? '保留構造' : '実行構造'}: {card.structure_blueprint.id}
+                  {card.unresolved ? '保留構造' : card.structure_blueprint.executable ? '実行構造' : '誘導構造'}: {card.structure_blueprint.id}
                 </div>
               ) : null}
               {card.structure_blueprint?.proofCertificate?.length ? (

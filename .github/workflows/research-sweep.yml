@@ -26,7 +26,7 @@ jobs:
       - name: Verify structural search
         working-directory: worker
         run: npm test && npm run build
-      - name: Resume one due research frontier
+      - name: Resume up to five due research frontiers
         working-directory: worker
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}

@@ -64,9 +64,52 @@ Deno.serve(async (req: Request) => {
   }
 
   // ── リクエスト解析 ─────────────────────────────────────────────────────────
-  let body: { parents: unknown[]; mode?: string; count?: number }
+  let body: { parents?: unknown[]; mode?: string; count?: number; resume_job_id?: string }
   try { body = await req.json() }
   catch { return json({ error: 'invalid json' }, 400) }
+
+  const githubToken = Deno.env.get('GITHUB_TOKEN')
+  const githubRepo = Deno.env.get('GITHUB_REPO')
+  const dispatch = async (jobId: string, mode: string) => {
+    if (!githubToken || !githubRepo) return { dispatched: false, reason: 'github dispatch env missing' }
+    const ghRes = await fetch(`https://api.github.com/repos/${githubRepo}/dispatches`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${githubToken}`,
+        'Content-Type': 'application/json',
+        Accept: 'application/vnd.github.v3+json',
+      },
+      body: JSON.stringify({
+        event_type: 'generate-problem',
+        client_payload: { job_id: jobId, mode },
+      }),
+    })
+    if (!ghRes.ok) return { dispatched: false, reason: `${ghRes.status} ${await ghRes.text()}` }
+    return { dispatched: true, reason: null }
+  }
+
+  if (body.resume_job_id) {
+    const { data: existing, error: findError } = await supabase
+      .from('generation_jobs')
+      .select('id,status,mode,result,updated_at')
+      .eq('id', body.resume_job_id)
+      .single()
+    if (findError || !existing) return json({ error: 'job not found' }, 404)
+    if (existing.status !== 'processing' || existing.mode !== 'mathos_discovery') {
+      return json({ resumed: false, reason: 'job is not an active research job' })
+    }
+    const state = (existing.result as { searchState?: { continuing?: boolean; next_attempt_at?: string | null } } | null)?.searchState
+    const due = state?.continuing === true && (!state.next_attempt_at || Date.parse(state.next_attempt_at) <= Date.now())
+    if (!due) return json({ resumed: false, reason: 'job is not due' })
+    const updatedAt = Date.parse(existing.updated_at ?? '')
+    if (Number.isFinite(updatedAt) && Date.now() - updatedAt < 90_000) {
+      return json({ resumed: false, reason: 'resume request already sent recently' })
+    }
+    await supabase.from('generation_jobs').update({ updated_at: new Date().toISOString() }).eq('id', existing.id)
+    const dispatched = await dispatch(existing.id, existing.mode)
+    if (!dispatched.dispatched) return json({ resumed: false, reason: dispatched.reason }, 503)
+    return json({ resumed: true, job_id: existing.id })
+  }
 
   const { parents, mode = 'auto', count = 3 } = body
 
@@ -90,34 +133,10 @@ Deno.serve(async (req: Request) => {
   }
 
   // ── GitHub Actions を起動（GITHUB_TOKEN が設定されている場合） ──────────
-  const githubToken = Deno.env.get('GITHUB_TOKEN')
-  const githubRepo = Deno.env.get('GITHUB_REPO')   // "owner/repo" 形式
-
-  if (githubToken && githubRepo) {
-    // repository_dispatch で generate.yml をトリガー
-    const ghRes = await fetch(
-      `https://api.github.com/repos/${githubRepo}/dispatches`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${githubToken}`,
-          'Content-Type': 'application/json',
-          Accept: 'application/vnd.github.v3+json',
-        },
-        body: JSON.stringify({
-          event_type: 'generate-problem',
-          client_payload: { job_id: job.id, mode },
-        }),
-      },
-    )
-    if (!ghRes.ok) {
-      const msg = await ghRes.text()
-      console.error(`GitHub dispatch failed: ${ghRes.status} ${msg}`)
-      // Worker が常駐していれば自動ピックアップされるのでエラーにはしない
-    }
-  }
+  const dispatched = await dispatch(job.id, mode)
+  if (!dispatched.dispatched) console.error(`GitHub dispatch failed: ${dispatched.reason}`)
   // GITHUB_TOKEN 未設定 → 常駐 Worker（Render.com など）が自動ピックアップ
 
   // ── 即座に job_id を返す ──────────────────────────────────────────────────
-  return json({ job_id: job.id, status: 'pending' })
+  return json({ job_id: job.id, status: 'pending', dispatched: dispatched.dispatched })
 })
