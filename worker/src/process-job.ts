@@ -19,7 +19,7 @@ const FAST_MODEL = process.env.DEEPSEEK_FAST_MODEL ?? 'deepseek-chat'
 const MAX_TOKENS = Number(process.env.DEEPSEEK_MAX_TOKENS ?? '8000')
 const FAST_MAX   = 5000
 
-if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY || !DEEPSEEK_API_KEY) {
+if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
   console.error('必須環境変数が未設定')
   process.exit(1)
 }
@@ -52,6 +52,9 @@ async function callDeepSeek(
   prompt: string, model = MODEL, maxTokens = MAX_TOKENS,
   onProgress?: (msg: string) => void,
 ): Promise<string> {
+  if (!DEEPSEEK_API_KEY) {
+    throw new Error('DeepSeek key is required only for legacy LLM generation modes')
+  }
   const res = await fetch('https://api.deepseek.com/chat/completions', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${DEEPSEEK_API_KEY}` },
