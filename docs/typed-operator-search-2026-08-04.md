@@ -77,3 +77,17 @@ metamorphic test、回答precision、構造誤混同率である。
 UI/APIは `induction_enumerated`, `induction_tested`, `induction_rejected`, `induced_laws` を公開する。
 現段階は代数的制約用の第一backendであり、積分・整数・幾何の候補文法と検証器は同じインターフェースへ
 追加する。対応外の型に証明なしの射を登録することはしない。
+
+### 本番E2E
+
+`sakumon-web.vercel.app/api/mathos-generate` へ答えなしの親 `u^2-5=0`, `v^2-7=0` を送信した。
+job `1ff31399-81c9-45bb-b334-8c084e65cbf3` は次を完了した。
+
+- 型付き式候補39件を生成、1件を実検証、反例棄却0件、新規射1件を認証。
+- 動的射 `InducedAlgebraicLaw_b109c8c537` を現在の項列挙器へ登録。
+- 型付き項332件、全親provenanceを持つ実行候補112件を列挙。
+- `2 alpha beta` の値全体を根にもつ問題を生成。
+- 厳密答え `P(z)=z^2-140` を計算し、数値反例検査・左右親摂動を通過。
+- 検証済み問題1問を本番問題DBへ保存。
+
+このE2EはLLM、Web検索、保存済み解答、問題ID分岐を使用していない。
