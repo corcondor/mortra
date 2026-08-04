@@ -6,7 +6,7 @@ import type { ExecutableFusionCard } from './executable-fusion'
 
 type Operation = 'sum' | 'difference' | 'product'
 
-type PolynomialInput = {
+export type PolynomialInput = {
   parentId: string
   source: string
   normalized: string
@@ -72,7 +72,7 @@ function normalizeLatexExpression(source: string): string | null {
   return value
 }
 
-function extractPolynomial(parent: DiscoveryParent, index: number): PolynomialInput | null {
+export function extractPolynomial(parent: DiscoveryParent, index: number): PolynomialInput | null {
   const parentId = String(parent.id || `parent-${index + 1}`)
   for (const segment of mathSegments(parent.statement ?? '')) {
     const relation = segment.match(/([^=<>]+)=([^=<>]+)/)

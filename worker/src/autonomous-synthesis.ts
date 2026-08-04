@@ -9,7 +9,11 @@ import {
   synthesizeExecutableFusions,
   type ExecutableFusionCard,
 } from './executable-fusion'
-import { generalizeParents, type GeneralizationCertificate } from './generalization-kernel'
+import { executableMorphismAtlas, generalizeParents, type GeneralizationCertificate } from './generalization-kernel'
+import {
+  inducePrimitiveLaws,
+  type PrimitiveLawInductionResult,
+} from './primitive-law-inducer'
 import { enumerateTypedTerms, type TypedEnumerationResult } from './typed-term-enumerator'
 import {
   supportsPolynomialRootFusion,
@@ -47,6 +51,10 @@ export type AutonomousSearchState = {
   local_expansions?: number
   states_explored?: number
   progress_delta?: number
+  induction_enumerated?: number
+  induction_tested?: number
+  induction_rejected?: number
+  induced_laws?: number
   synthesized_programs?: SynthesizedProgram[]
 }
 
@@ -66,6 +74,21 @@ export type SynthesisContext = {
   depth: number
   generalization: GeneralizationCertificate
   enumeration: TypedEnumerationResult
+  induction: PrimitiveLawInductionResult
+}
+
+const PRIMITIVE_LAW_CEGIS: SynthesisStrategy = {
+  id: 'primitive-law-cegis',
+  version: 1,
+  supports(context) {
+    return {
+      applicable: context.induction.applicable,
+      reason: context.induction.reason,
+    }
+  },
+  execute(context) {
+    return context.induction.cards.slice(0, context.requested)
+  },
 }
 
 export type SynthesisStrategy = {
@@ -128,6 +151,7 @@ const TYPED_COMPOSITE_PROGRAM_SYNTHESIS: SynthesisStrategy = {
 }
 
 export const DEFAULT_SYNTHESIS_STRATEGIES: readonly SynthesisStrategy[] = [
+  PRIMITIVE_LAW_CEGIS,
   TYPED_COMPOSITE_PROGRAM_SYNTHESIS,
 ]
 
@@ -178,9 +202,20 @@ export function runAutonomousSynthesis(
   const priorGoals = state.executable_goals ?? 0
   const expansionStarted = Date.now()
   let generalized = generalizeParents(parents, state.depth, state.state_budget)
+  const induction = inducePrimitiveLaws(parents, requested, state.round, state.depth)
+  state.induction_enumerated = induction.telemetry.enumerated
+  state.induction_tested = induction.telemetry.tested
+  state.induction_rejected = induction.telemetry.rejected_elimination +
+    induction.telemetry.rejected_numeric + induction.telemetry.rejected_ablation +
+    induction.telemetry.rejected_duplicate
+  state.induced_laws = induction.rules.length
+  const executableRules = induction.rules.length
+    ? [...executableMorphismAtlas(), ...induction.rules]
+    : undefined
   let enumeration = enumerateTypedTerms(generalized.graphs, {
     maxDepth: Math.max(6, state.depth),
     maxStates: state.state_budget,
+    rules: executableRules,
   })
   let selectedScore = enumeration.goals.length * 1_000_000 + enumeration.terms.length
   let localExpansions = 1
@@ -194,6 +229,7 @@ export function runAutonomousSynthesis(
     const candidateEnumeration = enumerateTypedTerms(candidateGeneralization.graphs, {
       maxDepth: Math.max(6, candidateDepth),
       maxStates: candidateBudget,
+      rules: executableRules,
     })
     localExpansions++
     deepestExplored = candidateDepth
@@ -254,6 +290,7 @@ export function runAutonomousSynthesis(
     depth: state.depth,
     generalization: generalized.certificate,
     enumeration,
+    induction,
   }
   const roundAttempts: StrategyAttempt[] = []
   const cards: ExecutableFusionCard[] = []

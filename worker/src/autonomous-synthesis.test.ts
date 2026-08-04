@@ -15,8 +15,10 @@ test('runs a typed strategy registry and returns verified cards', () => {
   const result = runAutonomousSynthesis(parents, 3)
   assert.equal(result.cards.length, 3)
   assert.equal(result.state.continuing, false)
-  assert.equal(result.attempts[0].strategy, 'typed-composite-program-synthesis')
-  assert.equal(result.attempts[0].generated, 3)
+  assert.equal(result.attempts[0].strategy, 'primitive-law-cegis')
+  assert.equal(result.attempts[0].applicable, false)
+  assert.equal(result.attempts[1].strategy, 'typed-composite-program-synthesis')
+  assert.equal(result.attempts[1].generated, 3)
   assert.equal(result.state.synthesized_programs?.length, 3)
 })
 
@@ -27,9 +29,9 @@ test('routes unseen polynomial parents to the generic elimination backend', () =
   ]
   const result = runAutonomousSynthesis(polynomialParents, 1)
   assert.equal(result.cards.length, 1)
-  assert.equal(result.cards[0].family_id, 'discovered.polynomial_root_sum')
+  assert.match(result.cards[0].family_id, /^discovered\.induced_algebraic_law\./)
   assert.deepEqual(result.attempts.map(attempt => [attempt.strategy, attempt.applicable]), [
-    ['typed-composite-program-synthesis', true],
+    ['primitive-law-cegis', true],
   ])
 })
 

@@ -43,6 +43,10 @@ export async function GET(req: NextRequest) {
         local_expansions?: number
         states_explored?: number
         progress_delta?: number
+        induction_enumerated?: number
+        induction_tested?: number
+        induction_rejected?: number
+        induced_laws?: number
         frontier?: unknown[]
         stagnant_rounds?: number
         last_progress_at?: string
@@ -131,6 +135,10 @@ export async function GET(req: NextRequest) {
         local_expansions: state?.local_expansions ?? 0,
         states_explored: state?.states_explored ?? 0,
         progress_delta: state?.progress_delta ?? 0,
+        induction_enumerated: state?.induction_enumerated ?? 0,
+        induction_tested: state?.induction_tested ?? 0,
+        induction_rejected: state?.induction_rejected ?? 0,
+        induced_laws: state?.induced_laws ?? 0,
         frontier_count: state?.frontier?.length ?? 0,
         stagnant_rounds: state?.stagnant_rounds ?? 0,
         last_progress_at: state?.last_progress_at ?? null,
