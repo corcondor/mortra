@@ -9,6 +9,7 @@ import {
   runAutonomousSynthesis,
   type AutonomousSearchState,
 } from './autonomous-synthesis'
+import type { CertifiedLawRecord } from './primitive-law-inducer'
 
 // ── 環境変数 ─────────────────────────────────────────────────────────────────
 const SUPABASE_URL              = process.env.SUPABASE_URL!
@@ -33,6 +34,18 @@ interface ParentProblem {
   topic_a: string; topic_b?: string | null
 }
 interface LogEntry { level: string; message: string; ts: string }
+
+function certifiedLawFromMeta(meta: unknown): CertifiedLawRecord | null {
+  try {
+    const value = typeof meta === 'string' ? JSON.parse(meta) : meta
+    const law = value?.structureBlueprint?.synthesizedLaw
+    if (!law || typeof law.name !== 'string' || typeof law.expression !== 'string' || !Number.isInteger(law.arity)) return null
+    if (!Array.isArray(law.sources) || !Array.isArray(law.preserves) || !Array.isArray(law.backend)) return null
+    return law as CertifiedLawRecord
+  } catch {
+    return null
+  }
+}
 
 // ── ログ ─────────────────────────────────────────────────────────────────────
 let logBuf: LogEntry[] = []
@@ -551,11 +564,21 @@ export async function processJob(jobId: string) {
       }).eq('id', jobId)
       await flushLogs(jobId)
       log(`🔎 [未知構造探索] ${parents.length} 個の親問題を演算子・対象・制約へlift`)
-      const autonomous = runAutonomousSynthesis(parents, count, previousResult?.searchState)
+      const { data: learnedRows } = await supabase.from('problems')
+        .select('meta')
+        .eq('source_file', 'mathos_parent_conditioned_discovery')
+        .limit(1000)
+      const certifiedLaws = [...new Map((learnedRows ?? [])
+        .map(row => certifiedLawFromMeta(row.meta))
+        .filter((law): law is CertifiedLawRecord => law !== null)
+        .map(law => [`${law.arity}:${law.expression}`, law])).values()]
+      log(`📚 [認証Atlas] 過去に認証済みの動的射 ${certifiedLaws.length} 件を読込`)
+      const autonomous = runAutonomousSynthesis(parents, count, previousResult?.searchState, undefined, new Date(), certifiedLaws)
       const { discovery, cards, state: searchState } = autonomous
       log(`🧭 [中間命題] ${discovery.hypotheses.length} 個の普遍構成候補を比較`)
       log(`⚙️ [型付き項列挙] round=${searchState.round}, depth=${searchState.depth}, terms=${searchState.terms_enumerated ?? 0}, full-goals=${searchState.executable_goals ?? 0}`)
       log(`🧪 [原始法則帰納] enumerated=${searchState.induction_enumerated ?? 0}, tested=${searchState.induction_tested ?? 0}, rejected=${searchState.induction_rejected ?? 0}, certified=${searchState.induced_laws ?? 0}`)
+      log(`🧰 [OSS実行基盤] synthesis=${searchState.induction_engine ?? 'unavailable'}, cvc5=${searchState.cvc5_available ? 'active' : 'fallback'}, egglog=${searchState.egglog_available ? 'active' : 'fallback'}, sygus-terms=${searchState.synthesis_terms_examined ?? 0}, eclasses=${searchState.equivalence_classes ?? 0}`)
       log(`🔌 [backend契約] ${autonomous.attempts.length} 戦略を入力型から判定`)
       for (const attempt of autonomous.attempts) {
         log(`${attempt.applicable ? '🔧' : '↪'} [${attempt.strategy}@${attempt.version}] ${attempt.reason}`)

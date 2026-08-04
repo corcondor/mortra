@@ -13,6 +13,7 @@ import { executableMorphismAtlas, generalizeParents, type GeneralizationCertific
 import {
   inducePrimitiveLaws,
   type PrimitiveLawInductionResult,
+  type CertifiedLawRecord,
 } from './primitive-law-inducer'
 import { enumerateTypedTerms, type TypedEnumerationResult } from './typed-term-enumerator'
 import {
@@ -55,6 +56,12 @@ export type AutonomousSearchState = {
   induction_tested?: number
   induction_rejected?: number
   induced_laws?: number
+  induction_engine?: string
+  synthesis_terms_examined?: number
+  equivalence_classes?: number
+  cvc5_checked?: number
+  cvc5_available?: boolean
+  egglog_available?: boolean
   synthesized_programs?: SynthesizedProgram[]
 }
 
@@ -192,6 +199,7 @@ export function runAutonomousSynthesis(
   previous?: AutonomousSearchState | null,
   strategies: readonly SynthesisStrategy[] = DEFAULT_SYNTHESIS_STRATEGIES,
   now = new Date(),
+  certifiedLaws: CertifiedLawRecord[] = [],
 ): AutonomousSynthesisResult {
   const state = compatibleState(parents, previous)
   state.round += 1
@@ -202,15 +210,28 @@ export function runAutonomousSynthesis(
   const priorGoals = state.executable_goals ?? 0
   const expansionStarted = Date.now()
   let generalized = generalizeParents(parents, state.depth, state.state_budget)
-  const induction = inducePrimitiveLaws(parents, requested, state.round, state.depth)
+  const induction = inducePrimitiveLaws(parents, requested, state.round, state.depth, certifiedLaws)
   state.induction_enumerated = induction.telemetry.enumerated
   state.induction_tested = induction.telemetry.tested
   state.induction_rejected = induction.telemetry.rejected_elimination +
     induction.telemetry.rejected_numeric + induction.telemetry.rejected_ablation +
     induction.telemetry.rejected_duplicate
   state.induced_laws = induction.rules.length
-  const executableRules = induction.rules.length
-    ? [...executableMorphismAtlas(), ...induction.rules]
+  state.induction_engine = induction.telemetry.synthesis_engine
+  state.synthesis_terms_examined = induction.telemetry.synthesis_terms_examined
+  state.equivalence_classes = induction.telemetry.equivalence_classes
+  state.cvc5_checked = induction.telemetry.cvc5_checked
+  state.cvc5_available = induction.telemetry.cvc5_available
+  state.egglog_available = induction.telemetry.egglog_available
+  const learnedRules = certifiedLaws.map(law => ({
+    name: law.name,
+    sources: law.sources,
+    target: law.target,
+    preserves: law.preserves,
+    backend: law.backend,
+  }))
+  const executableRules = induction.rules.length || learnedRules.length
+    ? [...executableMorphismAtlas(), ...learnedRules, ...induction.rules]
     : undefined
   let enumeration = enumerateTypedTerms(generalized.graphs, {
     maxDepth: Math.max(6, state.depth),

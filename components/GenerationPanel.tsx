@@ -117,6 +117,12 @@ type GenerationResult = {
     induction_tested?: number
     induction_rejected?: number
     induced_laws?: number
+    induction_engine?: string
+    synthesis_terms_examined?: number
+    equivalence_classes?: number
+    cvc5_checked?: number
+    cvc5_available?: boolean
+    egglog_available?: boolean
     synthesized_programs?: Array<{ id: string; morphism_chain: string[]; verified: true }>
   }
   generalization?: {
@@ -195,6 +201,12 @@ type JobTelemetry = {
   induction_tested: number
   induction_rejected: number
   induced_laws: number
+  induction_engine: string
+  synthesis_terms_examined: number
+  equivalence_classes: number
+  cvc5_checked: number
+  cvc5_available: boolean
+  egglog_available: boolean
   frontier_count: number
   stagnant_rounds: number
   last_progress_at: string | null
@@ -459,6 +471,7 @@ export function GenerationPanel({
           `自律探索 round ${state.round} / 深さ ${state.depth ?? '?'} / 型付き項 ${state.terms_enumerated ?? '?'} / 全選択問題を使う実行候補 ${state.executable_goals ?? 0}`,
           `今回 ${state.local_expansions ?? 1} 段階を局所展開 / 探索状態 ${state.states_explored ?? '?'} / 進展量 ${state.progress_delta ?? 0}`,
           `原始法則候補 ${state.induction_enumerated ?? 0} / 検証 ${state.induction_tested ?? 0} / 反例棄却 ${state.induction_rejected ?? 0} / 新規認証 ${state.induced_laws ?? 0}`,
+          `合成器 ${state.induction_engine ?? 'unavailable'} / SyGuS列挙 ${state.synthesis_terms_examined ?? 0} / e-class ${state.equivalence_classes ?? 0} / cvc5検査 ${state.cvc5_checked ?? 0}`,
           `自動登録済み複合射 ${state.synthesized_programs?.length ?? 0} 件`,
           state.stagnant_rounds
             ? `同一frontierが ${state.stagnant_rounds} 回続いています。型付き列挙と実行backendだけで次候補を探索します。`
@@ -956,6 +969,14 @@ export function GenerationPanel({
                   <div><div className="text-zinc-600">法則候補</div><div className="tabular-nums text-zinc-200">{jobTelemetry.induction_enumerated.toLocaleString()}</div></div>
                   <div><div className="text-zinc-600">反例棄却</div><div className="tabular-nums text-zinc-200">{jobTelemetry.induction_rejected.toLocaleString()}</div></div>
                   <div><div className="text-zinc-600">新規認証射</div><div className="tabular-nums text-emerald-300">{jobTelemetry.induced_laws.toLocaleString()}</div></div>
+                  <div><div className="text-zinc-600">SyGuS列挙</div><div className="tabular-nums text-zinc-200">{jobTelemetry.synthesis_terms_examined.toLocaleString()}</div></div>
+                  <div><div className="text-zinc-600">e-class</div><div className="tabular-nums text-zinc-200">{jobTelemetry.equivalence_classes.toLocaleString()}</div></div>
+                  <div><div className="text-zinc-600">cvc5検査</div><div className="tabular-nums text-zinc-200">{jobTelemetry.cvc5_checked.toLocaleString()}</div></div>
+                </div>
+                <div className="mt-2 flex flex-wrap gap-1 text-[9px]">
+                  <span className={`border px-1.5 py-0.5 ${jobTelemetry.cvc5_available ? 'border-emerald-500/30 text-emerald-300' : 'border-amber-500/30 text-amber-300'}`}>cvc5 {jobTelemetry.cvc5_available ? 'ACTIVE' : 'FALLBACK'}</span>
+                  <span className={`border px-1.5 py-0.5 ${jobTelemetry.egglog_available ? 'border-emerald-500/30 text-emerald-300' : 'border-amber-500/30 text-amber-300'}`}>egglog {jobTelemetry.egglog_available ? 'ACTIVE' : 'FALLBACK'}</span>
+                  <span className="border border-zinc-700 px-1.5 py-0.5 text-zinc-400">{jobTelemetry.induction_engine}</span>
                 </div>
                 <div className="mt-2 border-t border-zinc-800 pt-2 text-[9px] leading-4 text-zinc-400">
                   {jobTelemetry.runtime_message ?? (jobTelemetry.waiting_for_next_round

@@ -16,7 +16,23 @@ test('induces previously unregistered executable laws from a typed expression gr
   assert.ok(result.rules.every(rule => rule.name.startsWith('InducedAlgebraicLaw_')))
   assert.ok(result.cards.every(card => card.verification.exact_backend && card.fusion_derivation.ablationPassed))
   assert.ok(result.cards.every(card => card.parent_ids.includes('left') && card.parent_ids.includes('right')))
-  assert.match(result.cards[0].statement_tex, /g\(y\)=y\^\{2\}/)
+  assert.equal(result.telemetry.synthesis_engine, 'cvc5-sygus-enum')
+  assert.equal(result.telemetry.cvc5_available, true)
+  assert.equal(result.telemetry.egglog_available, true)
+  assert.match(result.cards[0].statement_tex, /f_\{2\}/)
+})
+
+test('uses every selected polynomial parent in one synthesized observable', () => {
+  const result = inducePrimitiveLaws([
+    ...parents,
+    { id: 'third', statement: '方程式 $w^2-5=0$ の根を考える。' },
+  ], 1, 1, 8)
+  assert.equal(result.cards.length, 1)
+  assert.deepEqual(result.cards[0].parent_ids, ['left', 'right', 'third'])
+  assert.equal(result.rules[0].sources.length, 3)
+  assert.equal(result.cards[0].fusion_derivation.assignments.length, 3)
+  assert.equal(result.cards[0].fusion_derivation.bridges[0].consumes.length, 3)
+  assert.match(result.cards[0].statement_tex, /f_\{3\}/)
 })
 
 test('coefficient perturbation recomputes answers while preserving induced law identity', () => {
@@ -37,6 +53,17 @@ test('later rounds explore different certified expression programs', () => {
   assert.ok(later.cards.length > 0)
   assert.ok(later.cards.some(card => !firstExpressions.has(card.fusion_derivation.bridges[0].witnessStep)))
   assert.ok(first.cards.some(card => !laterExpressions.has(card.fusion_derivation.bridges[0].witnessStep)))
+})
+
+test('loads certified Atlas laws and explores a different program', () => {
+  const first = inducePrimitiveLaws(parents, 1, 1, 8)
+  const firstLaw = first.cards[0].structure_blueprint.synthesizedLaw!
+  const next = inducePrimitiveLaws(parents, 1, 1, 8, [firstLaw])
+  assert.equal(next.cards.length, 1)
+  assert.notEqual(
+    next.cards[0].fusion_derivation.bridges[0].witnessStep,
+    first.cards[0].fusion_derivation.bridges[0].witnessStep,
+  )
 })
 
 test('does not fabricate a law when parent constraints cannot be executed', () => {

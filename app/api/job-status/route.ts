@@ -47,6 +47,12 @@ export async function GET(req: NextRequest) {
         induction_tested?: number
         induction_rejected?: number
         induced_laws?: number
+        induction_engine?: string
+        synthesis_terms_examined?: number
+        equivalence_classes?: number
+        cvc5_checked?: number
+        cvc5_available?: boolean
+        egglog_available?: boolean
         frontier?: unknown[]
         stagnant_rounds?: number
         last_progress_at?: string
@@ -139,6 +145,12 @@ export async function GET(req: NextRequest) {
         induction_tested: state?.induction_tested ?? 0,
         induction_rejected: state?.induction_rejected ?? 0,
         induced_laws: state?.induced_laws ?? 0,
+        induction_engine: state?.induction_engine ?? 'unavailable',
+        synthesis_terms_examined: state?.synthesis_terms_examined ?? 0,
+        equivalence_classes: state?.equivalence_classes ?? 0,
+        cvc5_checked: state?.cvc5_checked ?? 0,
+        cvc5_available: state?.cvc5_available ?? false,
+        egglog_available: state?.egglog_available ?? false,
         frontier_count: state?.frontier?.length ?? 0,
         stagnant_rounds: state?.stagnant_rounds ?? 0,
         last_progress_at: state?.last_progress_at ?? null,

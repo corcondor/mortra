@@ -35,6 +35,15 @@ export type ExecutableFusionCard = {
     morphismChain: string[]
     executable: true
     proofCertificate: Array<{ id: string; claim: string; verifier: string }>
+    synthesizedLaw?: {
+      name: string
+      expression: string
+      arity: number
+      sources: string[]
+      target: string
+      preserves: string[]
+      backend: string[]
+    }
   }
   search_evidence: { hypotheses_evaluated: number; valid_hypotheses: number; elapsed_ms: number }
 }

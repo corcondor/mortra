@@ -3,6 +3,11 @@ import { createHash } from 'node:crypto'
 import path from 'node:path'
 import type { DiscoveryParent } from './parent-conditioned-discovery'
 import type { ExecutableFusionCard } from './executable-fusion'
+import {
+  extractMathRelations,
+  mathExpressionToSympy,
+  renameMathSymbol,
+} from './math-expression-ir'
 
 type Operation = 'sum' | 'difference' | 'product'
 
@@ -10,6 +15,7 @@ export type PolynomialInput = {
   parentId: string
   source: string
   normalized: string
+  elaborator: 'mathjson-ir' | 'legacy-normalizer'
 }
 
 type BackendResult = {
@@ -74,6 +80,18 @@ function normalizeLatexExpression(source: string): string | null {
 
 export function extractPolynomial(parent: DiscoveryParent, index: number): PolynomialInput | null {
   const parentId = String(parent.id || `parent-${index + 1}`)
+  for (const relation of extractMathRelations(parent.statement ?? '')) {
+    if (relation.operator !== 'Equal' || relation.variables.length !== 1) continue
+    const variable = relation.variables[0]
+    const lhs = renameMathSymbol(relation.lhs, variable, 'x')
+    const rhs = renameMathSymbol(relation.rhs, variable, 'x')
+    return {
+      parentId,
+      source: relation.latex,
+      normalized: `((${mathExpressionToSympy(lhs)})-(${mathExpressionToSympy(rhs)}))`,
+      elaborator: 'mathjson-ir',
+    }
+  }
   for (const segment of mathSegments(parent.statement ?? '')) {
     const relation = segment.match(/([^=<>]+)=([^=<>]+)/)
     if (!relation) continue
@@ -85,7 +103,7 @@ export function extractPolynomial(parent: DiscoveryParent, index: number): Polyn
     if (variables.size !== 1) continue
     const variable = [...variables][0]
     const alphaNormalized = normalized.replace(new RegExp(`(?<![A-Za-z])${variable}(?![A-Za-z])`, 'g'), 'x')
-    return { parentId, source: relation[0].trim(), normalized: alphaNormalized }
+    return { parentId, source: relation[0].trim(), normalized: alphaNormalized, elaborator: 'legacy-normalizer' }
   }
   return null
 }

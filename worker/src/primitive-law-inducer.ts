@@ -16,6 +16,11 @@ type BackendCandidate = {
   numeric_check: true
   left_ablation: true
   right_ablation: true
+  all_parent_ablation: true
+  parent_arity: number
+  synthesis_engine: string
+  equivalence_engine: string
+  dependency_verifier: string
 }
 
 export type LawInductionTelemetry = {
@@ -25,12 +30,20 @@ export type LawInductionTelemetry = {
   rejected_numeric: number
   rejected_ablation: number
   rejected_duplicate: number
+  cvc5_checked: number
+  cvc5_rejected: number
+  cvc5_available: boolean
+  egglog_available: boolean
+  equivalence_classes: number
+  synthesis_terms_examined: number
+  synthesis_engine: string
   certified: number
 }
 
 type BackendResult = {
   left: string
   right: string
+  polynomials: string[]
   candidates: BackendCandidate[]
   telemetry: LawInductionTelemetry
   error?: never
@@ -44,6 +57,16 @@ export type PrimitiveLawInductionResult = {
   telemetry: LawInductionTelemetry
 }
 
+export type CertifiedLawRecord = {
+  name: string
+  expression: string
+  arity: number
+  sources: string[]
+  target: string
+  preserves: string[]
+  backend: string[]
+}
+
 const EMPTY_TELEMETRY: LawInductionTelemetry = {
   enumerated: 0,
   tested: 0,
@@ -51,6 +74,13 @@ const EMPTY_TELEMETRY: LawInductionTelemetry = {
   rejected_numeric: 0,
   rejected_ablation: 0,
   rejected_duplicate: 0,
+  cvc5_checked: 0,
+  cvc5_rejected: 0,
+  cvc5_available: false,
+  egglog_available: false,
+  equivalence_classes: 0,
+  synthesis_terms_examined: 0,
+  synthesis_engine: 'unavailable',
   certified: 0,
 }
 
@@ -100,6 +130,7 @@ export function inducePrimitiveLaws(
   requested: number,
   round: number,
   searchDepth: number,
+  registeredLaws: CertifiedLawRecord[] = [],
 ): PrimitiveLawInductionResult {
   const inputs = parents.map(extractPolynomial).filter((value): value is NonNullable<typeof value> => value !== null)
   if (inputs.length < 2 || new Set(inputs.map(input => input.parentId)).size < 2) {
@@ -111,14 +142,15 @@ export function inducePrimitiveLaws(
       telemetry: { ...EMPTY_TELEMETRY },
     }
   }
-  const left = inputs[0]
-  const right = inputs.find(input => input.parentId !== left.parentId)!
+  const selectedInputs = [...new Map(inputs.map(input => [input.parentId, input])).values()]
   const result = runBackend({
-    left: left.normalized,
-    right: right.normalized,
+    polynomials: selectedInputs.map(input => input.normalized),
     max_depth: Math.max(2, Math.min(4, Math.ceil(searchDepth / 4))),
     max_candidates: Math.max(1, requested),
     offset: Math.max(0, round - 1) * Math.max(1, requested),
+    registered_expressions: registeredLaws
+      .filter(law => law.arity === selectedInputs.length)
+      .map(law => law.expression),
   })
   if (!result) {
     return {
@@ -129,20 +161,29 @@ export function inducePrimitiveLaws(
       telemetry: { ...EMPTY_TELEMETRY },
     }
   }
-  const parentIds = [left.parentId, right.parentId]
+  const parentIds = selectedInputs.map(input => input.parentId)
   const rules = result.candidates.map(candidate => ({
     name: `InducedAlgebraicLaw_${hash(candidate.expression, 10)}`,
-    sources: ['FiniteAlgebraicOrbit', 'FiniteAlgebraicOrbit'],
+    sources: selectedInputs.map(() => 'FiniteAlgebraicOrbit'),
     target: 'FiniteAlgebraicOrbit',
     preserves: ['both-parent-provenance', 'algebraicity', 'finite-support', 'exact-elimination'],
-    backend: ['sympy-resultant', 'numeric-counterexample-check', 'two-sided-parent-ablation'],
+    backend: ['sympy-resultant', 'numeric-counterexample-check', 'all-parent-ablation'],
   }))
   const cards = result.candidates.map((candidate, index): ExecutableFusionCard => {
     const rule = rules[index]
-    const rightPolynomialTex = result.right.replace(/\bx\b/g, 'y')
-    const observableTex = candidate.expression_tex
-      .replace(/\bx\b/g, '\\alpha')
-      .replace(/\by\b/g, '\\beta')
+    const alpha = (index: number) => `\\alpha_{${index + 1}}`
+    let observableTex = candidate.expression_tex
+    for (let inputIndex = selectedInputs.length - 1; inputIndex >= 0; inputIndex--) {
+      observableTex = observableTex
+        .replace(new RegExp(`x_\\{${inputIndex}\\}`, 'g'), alpha(inputIndex))
+        .replace(new RegExp(`\\bx${inputIndex}\\b`, 'g'), alpha(inputIndex))
+    }
+    const polynomialDefinitions = result.polynomials.map((polynomial, inputIndex) => {
+      const variable = `x_{${inputIndex + 1}}`
+      return `f_{${inputIndex + 1}}(${variable})=${polynomial.replace(/\bx\b/g, variable)}`
+    }).join(',\\quad ')
+    const rootConstraints = result.polynomials.map((_, inputIndex) =>
+      `f_{${inputIndex + 1}}(${alpha(inputIndex)})=0`).join(', ')
     const structureId = `induced-law.${hash([parentIds, candidate.expression, candidate.result])}`
     const morphisms = [
       'PolynomialConstraintExtraction',
@@ -151,27 +192,29 @@ export function inducePrimitiveLaws(
       'IteratedResultantElimination',
       'SquareFreeReduction',
       'NumericCounterexampleCheck',
-      'TwoSidedParentAblation',
+      'AllParentAblation',
     ]
     const proofCertificate = [
-      { id: 'grammar', claim: `typed candidate ${candidate.expression} uses both parent variables`, verifier: 'typed polynomial grammar' },
+      { id: 'grammar', claim: `typed candidate ${candidate.expression} was synthesized from the endpoint grammar`, verifier: candidate.synthesis_engine },
+      { id: 'equivalence', claim: 'equivalent candidate programs were collapsed before verification', verifier: candidate.equivalence_engine },
+      { id: 'dependency', claim: 'the observable changes under independent variation of every endpoint variable', verifier: candidate.dependency_verifier },
       { id: 'elimination', claim: 'the output polynomial is the exact image of the joint root set', verifier: 'iterated SymPy resultants over QQ' },
-      { id: 'counterexample', claim: 'all numerical root pairs satisfy the induced polynomial', verifier: 'independent nroots substitution' },
-      { id: 'ablation', claim: 'changing either parent changes the induced observable', verifier: 'two-sided exact parent perturbation' },
+      { id: 'counterexample', claim: 'all numerical root tuples satisfy the induced polynomial', verifier: 'independent nroots substitution' },
+      { id: 'ablation', claim: 'changing every parent independently changes the induced observable', verifier: 'all-parent exact perturbation' },
     ]
     return {
       id: `mathos-${structureId}`,
       family_id: `discovered.induced_algebraic_law.${hash(candidate.expression, 8)}`,
-      statement_tex: `\\(f(x)=${result.left}\\), \\(g(y)=${rightPolynomialTex}\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かすとき、\\(${observableTex}\\) の異なる値全体を根にもつモニック多項式を求めよ。`,
+      statement_tex: `\\(${polynomialDefinitions}\\) とする。\\(${rootConstraints}\\) を満たす複素数 \\(${selectedInputs.map((_, inputIndex) => alpha(inputIndex)).join(',')}\\) をすべて動かすとき、\\(${observableTex}\\) の異なる値全体を根にもつモニック多項式を求めよ。`,
       answer_tex: `P(z)=${candidate.result}`,
-      solution_tex: `型付き式文法から観測 \\(${observableTex}\\) を合成した。\\(f(x)=0\\), \\(g(y)=0\\), \\(z=${candidate.expression_tex}\\) を反復終結式で消去し、平方因子を除いてモニック化すると \\(P(z)=${candidate.result}\\) を得る。全根対の独立数値代入と、左右それぞれの親制約を変えるアブレーション検査を通過した。`,
+      solution_tex: `型付き式文法から観測 \\(${observableTex}\\) を合成した。\\(${rootConstraints}\\) と \\(z=${candidate.expression_tex}\\) から各変数を反復終結式で消去し、平方因子を除いてモニック化すると \\(P(z)=${candidate.result}\\) を得る。全根組の独立数値代入と、${selectedInputs.length}個の親制約を一つずつ変えるアブレーション検査を通過した。`,
       domain: 'algebraic_geometry',
       morphism_chain: morphisms,
       parent_ids: parentIds,
       unresolved: false,
       discovery_status: 'verified',
       verification: {
-        method: 'typed candidate enumeration + exact elimination + counterexample and ablation checks',
+        method: `${candidate.synthesis_engine} + ${candidate.equivalence_engine} + exact elimination + counterexample and ablation checks`,
         exact_backend: true,
         independent_check: true,
         samples: [candidate.degree_result, candidate.operations, result.telemetry.tested],
@@ -179,29 +222,50 @@ export function inducePrimitiveLaws(
       difficulty: { band: 'A_induced_algebraic_law', score: 7 + candidate.degree_result + candidate.operations * 0.75 },
       fusion_derivation: {
         passed: true,
-        reason: 'the induced observable is synthesized from both typed parent root configurations and certified independently',
+        reason: 'the induced observable is synthesized from every typed parent root configuration and certified independently',
         ablationPassed: true,
-        assignments: [
-          { parentId: left.parentId, portId: 'left_variable', role: 'object', matchedAnchors: [left.source], witnessSteps: ['PolynomialConstraintExtraction', 'RootConfiguration'] },
-          { parentId: right.parentId, portId: 'right_variable', role: 'object', matchedAnchors: [right.source], witnessSteps: ['PolynomialConstraintExtraction', 'RootConfiguration'] },
-        ],
-        bridges: [{ id: rule.name, witnessStep: candidate.expression, consumes: ['left_variable', 'right_variable'], produces: 'induced_observable' }],
-        intermediatePropositions: [
-          { parentId: left.parentId, morphism: 'RootConfiguration', source: 'Polynomial', target: 'FiniteAlgebraicOrbit', proposition: 'the left constraint defines a finite algebraic orbit', proved: true },
-          { parentId: right.parentId, morphism: 'RootConfiguration', source: 'Polynomial', target: 'FiniteAlgebraicOrbit', proposition: 'the right constraint defines a finite algebraic orbit', proved: true },
-        ],
+        assignments: selectedInputs.map((input, inputIndex) => ({
+          parentId: input.parentId,
+          portId: `parent_variable_${inputIndex + 1}`,
+          role: 'object',
+          matchedAnchors: [input.source],
+          witnessSteps: ['PolynomialConstraintExtraction', 'RootConfiguration'],
+        })),
+        bridges: [{
+          id: rule.name,
+          witnessStep: candidate.expression,
+          consumes: selectedInputs.map((_, inputIndex) => `parent_variable_${inputIndex + 1}`),
+          produces: 'induced_observable',
+        }],
+        intermediatePropositions: selectedInputs.map(input => ({
+          parentId: input.parentId,
+          morphism: 'RootConfiguration',
+          source: 'Polynomial',
+          target: 'FiniteAlgebraicOrbit',
+          proposition: 'the parent constraint defines a finite algebraic orbit',
+          proved: true,
+        })),
       },
       structure_blueprint: {
         id: structureId,
         version: 1,
         kernel: 'PrimitiveLawInductionIR',
         observable: 'FiniteAlgebraicOrbit',
-        operators: ['typed-term-enumeration', 'resultant-elimination', 'counterexample-guided-filtering'],
+        operators: [candidate.synthesis_engine, candidate.equivalence_engine, 'resultant-elimination', 'counterexample-guided-filtering'],
         domain: 'algebraic_geometry',
         tags: ['induced-law', 'cegis', 'exact', `grammar-depth-${Math.max(2, Math.min(4, Math.ceil(searchDepth / 4)))}`],
         morphismChain: morphisms,
         executable: true,
         proofCertificate,
+        synthesizedLaw: {
+          name: rule.name,
+          expression: candidate.expression,
+          arity: selectedInputs.length,
+          sources: [...rule.sources],
+          target: rule.target,
+          preserves: [...rule.preserves],
+          backend: [...rule.backend],
+        },
       },
       search_evidence: {
         hypotheses_evaluated: result.telemetry.tested,
