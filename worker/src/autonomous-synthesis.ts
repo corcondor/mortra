@@ -20,6 +20,10 @@ import {
   supportsPolynomialRootFusion,
   synthesizePolynomialRootFusions,
 } from './polynomial-root-fusion'
+import {
+  induceArithmeticGeometryLemmas,
+  type ArithmeticGeometryInductionResult,
+} from './arithmetic-geometry-inducer'
 
 export type StrategyAttempt = {
   strategy: string
@@ -82,6 +86,21 @@ export type SynthesisContext = {
   generalization: GeneralizationCertificate
   enumeration: TypedEnumerationResult
   induction: PrimitiveLawInductionResult
+  arithmeticGeometry: ArithmeticGeometryInductionResult
+}
+
+const ARITHMETIC_GEOMETRY_CEGIS: SynthesisStrategy = {
+  id: 'arithmetic-geometry-relational-synthesis',
+  version: 1,
+  supports(context) {
+    return {
+      applicable: context.arithmeticGeometry.applicable,
+      reason: context.arithmeticGeometry.reason,
+    }
+  },
+  execute(context) {
+    return context.arithmeticGeometry.cards.slice(0, context.requested)
+  },
 }
 
 const PRIMITIVE_LAW_CEGIS: SynthesisStrategy = {
@@ -158,6 +177,7 @@ const TYPED_COMPOSITE_PROGRAM_SYNTHESIS: SynthesisStrategy = {
 }
 
 export const DEFAULT_SYNTHESIS_STRATEGIES: readonly SynthesisStrategy[] = [
+  ARITHMETIC_GEOMETRY_CEGIS,
   PRIMITIVE_LAW_CEGIS,
   TYPED_COMPOSITE_PROGRAM_SYNTHESIS,
 ]
@@ -211,15 +231,18 @@ export function runAutonomousSynthesis(
   const expansionStarted = Date.now()
   let generalized = generalizeParents(parents, state.depth, state.state_budget)
   const induction = inducePrimitiveLaws(parents, requested, state.round, state.depth, certifiedLaws)
-  state.induction_enumerated = induction.telemetry.enumerated
-  state.induction_tested = induction.telemetry.tested
+  const arithmeticGeometry = induceArithmeticGeometryLemmas(parents, requested, state.round, certifiedLaws)
+  state.induction_enumerated = induction.telemetry.enumerated + arithmeticGeometry.telemetry.enumerated
+  state.induction_tested = induction.telemetry.tested + arithmeticGeometry.telemetry.tested
   state.induction_rejected = induction.telemetry.rejected_elimination +
     induction.telemetry.rejected_numeric + induction.telemetry.rejected_ablation +
-    induction.telemetry.rejected_duplicate
-  state.induced_laws = induction.rules.length
-  state.induction_engine = induction.telemetry.synthesis_engine
-  state.synthesis_terms_examined = induction.telemetry.synthesis_terms_examined
-  state.equivalence_classes = induction.telemetry.equivalence_classes
+    induction.telemetry.rejected_duplicate + arithmeticGeometry.telemetry.rejected
+  state.induced_laws = induction.rules.length + arithmeticGeometry.rules.length
+  state.induction_engine = [induction.telemetry.synthesis_engine, arithmeticGeometry.telemetry.synthesis_engine]
+    .filter(engine => engine !== 'unavailable')
+    .join(' + ') || 'unavailable'
+  state.synthesis_terms_examined = induction.telemetry.synthesis_terms_examined + arithmeticGeometry.telemetry.enumerated
+  state.equivalence_classes = induction.telemetry.equivalence_classes + arithmeticGeometry.telemetry.equivalence_classes
   state.cvc5_checked = induction.telemetry.cvc5_checked
   state.cvc5_available = induction.telemetry.cvc5_available
   state.egglog_available = induction.telemetry.egglog_available
@@ -230,8 +253,8 @@ export function runAutonomousSynthesis(
     preserves: law.preserves,
     backend: law.backend,
   }))
-  const executableRules = induction.rules.length || learnedRules.length
-    ? [...executableMorphismAtlas(), ...learnedRules, ...induction.rules]
+  const executableRules = induction.rules.length || arithmeticGeometry.rules.length || learnedRules.length
+    ? [...executableMorphismAtlas(), ...learnedRules, ...induction.rules, ...arithmeticGeometry.rules]
     : undefined
   let enumeration = enumerateTypedTerms(generalized.graphs, {
     maxDepth: Math.max(6, state.depth),
@@ -312,6 +335,7 @@ export function runAutonomousSynthesis(
     generalization: generalized.certificate,
     enumeration,
     induction,
+    arithmeticGeometry,
   }
   const roundAttempts: StrategyAttempt[] = []
   const cards: ExecutableFusionCard[] = []

@@ -93,6 +93,13 @@ const OPERATOR_SCHEMAS: readonly OperatorSchema[] = [
   { canonical: 'Limit', patterns: [/\\lim\b/i, /極限/], input: 'FilteredObject', output: 'Scalar', preserves: ['asymptotic-class'], backend: ['limit-engine', 'interval-bound'] },
   { canonical: 'Sum', patterns: [/\\sum(?![A-Za-z])/i, /総和|和を求め/], input: 'FiniteFamily', output: 'Scalar', preserves: ['index-set', 'multiplicity'], backend: ['exact-summation'] },
   { canonical: 'Product', patterns: [/\\prod(?![A-Za-z])/i, /総積|積を求め/], input: 'FiniteFamily', output: 'Scalar', preserves: ['index-set', 'multiplicity'], backend: ['resultant', 'exact-product'] },
+  { canonical: 'TriangleMetricStructure', patterns: [/三角形|triangle/i], input: 'Triangle', output: 'TriangleMetricData', preserves: ['side-lengths', 'incidence', 'metric'], backend: ['heron-identity', 'triangle-radius-identities'] },
+  { canonical: 'IntegralSideRestriction', patterns: [/整数三角形|三辺.{0,12}整数|integer-sided triangle/i], input: 'TriangleMetricData', output: 'IntegralTriangle', preserves: ['side-lengths', 'integrality'], backend: ['integer-arithmetic', 'triangle-inequality'] },
+  { canonical: 'CircumradiusObservable', patterns: [/外接円半径|circumradius/i], input: 'TriangleMetricData', output: 'RadiusObservable', preserves: ['metric', 'similarity-weight'], backend: ['triangle-radius-identities'] },
+  { canonical: 'InradiusObservable', patterns: [/内接円半径|inradius/i], input: 'TriangleMetricData', output: 'RadiusObservable', preserves: ['metric', 'similarity-weight'], backend: ['heron-identity'] },
+  { canonical: 'TriangulationStructure', patterns: [/三角形分割|単体分割|triangulation|simplicial complex/i], input: 'TopologicalSpace', output: 'FiniteTriangulation', preserves: ['homeomorphism-type', 'incidence'], backend: ['simplicial-incidence'] },
+  { canonical: 'EulerCharacteristic', patterns: [/Euler標数|オイラー標数|Euler characteristic/i], input: 'FiniteTriangulation', output: 'IntegerInvariant', preserves: ['homeomorphism-type'], backend: ['euler-incidence-elimination'] },
+  { canonical: 'IntegerRestriction', patterns: [/整数|自然数|integer/i], input: 'ArithmeticObject', output: 'IntegerPredicate', preserves: ['integrality'], backend: ['integer-arithmetic'] },
   { canonical: 'PrimeRestriction', patterns: [/素数|prime/i], input: 'Integer', output: 'PrimeSpectrum', preserves: ['primality'], backend: ['primality-test', 'modular-arithmetic'] },
   { canonical: 'ZeroLocus', patterns: [/方程式|解とする|根とする|=\s*0/], input: 'Function', output: 'AlgebraicSet', preserves: ['solution-set', 'multiplicity'], backend: ['polynomial-solver', 'groebner-basis'] },
   { canonical: 'RootsOfUnity', patterns: [/z\s*\^\s*\{?n\}?\s*=\s*1|1\s*の\s*n\s*乗根|1の冪根|roots? of unity/i], input: 'CyclicGroup', output: 'FiniteAlgebraicOrbit', preserves: ['cyclic-order', 'multiplicity'], backend: ['cyclotomic-polynomial'] },
@@ -147,6 +154,11 @@ const MORPHISM_ATLAS: readonly MorphismSchema[] = [
   { name: 'CeilingAdjunction', source: 'Real', target: 'Integer', preserves: ['least-integer-upper-bound', 'order'], backend: ['exact-rounding', 'presburger-arithmetic'] },
   { name: 'FloorAdjunction', source: 'Real', target: 'Integer', preserves: ['greatest-integer-lower-bound', 'order'], backend: ['exact-rounding', 'presburger-arithmetic'] },
   { name: 'RationalScaleAction', source: 'RateQuantityPair', target: 'Quantity', preserves: ['unit', 'rational-scaling'], backend: ['rational-arithmetic', 'unit-checker'] },
+  { name: 'TriangleMetricElaboration', source: 'Triangle', target: 'TriangleMetricData', preserves: ['side-lengths', 'incidence', 'metric'], backend: ['heron-identity', 'triangle-radius-identities'] },
+  { name: 'IntegralSideRestriction', source: 'TriangleMetricData', target: 'IntegralTriangle', preserves: ['side-lengths', 'integrality'], backend: ['integer-arithmetic', 'triangle-inequality'] },
+  { name: 'TriangulationElaboration', source: 'TopologicalSpace', target: 'FiniteTriangulation', preserves: ['homeomorphism-type', 'incidence'], backend: ['simplicial-incidence'] },
+  { name: 'EulerCharacteristic', source: 'FiniteTriangulation', target: 'IntegerInvariant', preserves: ['homeomorphism-type'], backend: ['euler-incidence-elimination'] },
+  { name: 'IntegerPredicateIntroduction', source: 'ArithmeticObject', target: 'IntegerPredicate', preserves: ['integrality'], backend: ['integer-arithmetic'] },
 ]
 
 export type HyperMorphismSchema = {
@@ -200,6 +212,34 @@ const HYPER_MORPHISM_ATLAS: readonly HyperMorphismSchema[] = [
     target: 'Integer',
     preserves: ['both-parent-provenance', 'prime-valuations', 'gcd-times-lcm-equals-product'],
     backend: ['integer-arithmetic', 'prime-valuation'],
+  },
+  {
+    name: 'ArithmeticGeometryPredicateLift',
+    sources: ['TriangleMetricData', 'IntegerPredicate'],
+    target: 'Proposition',
+    preserves: ['both-parent-provenance', 'metric-identity', 'integrality'],
+    backend: ['arithmetic-geometry-induction', 'sympy-symbolic-identity'],
+  },
+  {
+    name: 'PrimeGeometryPredicateLift',
+    sources: ['TriangleMetricData', 'PrimeSpectrum'],
+    target: 'Proposition',
+    preserves: ['both-parent-provenance', 'metric-identity', 'primality'],
+    backend: ['arithmetic-geometry-induction', 'primality-test'],
+  },
+  {
+    name: 'ArithmeticTopologyPredicateLift',
+    sources: ['FiniteTriangulation', 'IntegerPredicate'],
+    target: 'Proposition',
+    preserves: ['both-parent-provenance', 'homeomorphism-type', 'integrality'],
+    backend: ['arithmetic-geometry-induction', 'euler-incidence-elimination'],
+  },
+  {
+    name: 'PrimeTopologyPredicateLift',
+    sources: ['FiniteTriangulation', 'PrimeSpectrum'],
+    target: 'Proposition',
+    preserves: ['both-parent-provenance', 'homeomorphism-type', 'primality'],
+    backend: ['arithmetic-geometry-induction', 'primality-test'],
   },
 ]
 

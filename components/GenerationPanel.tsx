@@ -86,6 +86,18 @@ type GenerationCard = {
       claim: string
       verifier: string
     }>
+    structuralUniqueness?: {
+      schema: 1
+      conditionSkeleton: string[]
+      querySignature: string
+      normalForm: string
+      quotientAction: string
+      freeParameters: string[]
+      uniqueNormalForm: boolean
+      finiteSolutionSet: boolean
+      numericInstanceConstants: number[]
+      conditionAblationPassed: boolean
+    }
   }
 }
 
@@ -471,7 +483,7 @@ export function GenerationPanel({
           `自律探索 round ${state.round} / 深さ ${state.depth ?? '?'} / 型付き項 ${state.terms_enumerated ?? '?'} / 全選択問題を使う実行候補 ${state.executable_goals ?? 0}`,
           `今回 ${state.local_expansions ?? 1} 段階を局所展開 / 探索状態 ${state.states_explored ?? '?'} / 進展量 ${state.progress_delta ?? 0}`,
           `原始法則候補 ${state.induction_enumerated ?? 0} / 検証 ${state.induction_tested ?? 0} / 反例棄却 ${state.induction_rejected ?? 0} / 新規認証 ${state.induced_laws ?? 0}`,
-          `合成器 ${state.induction_engine ?? 'unavailable'} / SyGuS列挙 ${state.synthesis_terms_examined ?? 0} / e-class ${state.equivalence_classes ?? 0} / cvc5検査 ${state.cvc5_checked ?? 0}`,
+          `合成器 ${state.induction_engine ?? 'unavailable'} / 候補式列挙 ${state.synthesis_terms_examined ?? 0} / 同値類 ${state.equivalence_classes ?? 0} / cvc5検査 ${state.cvc5_checked ?? 0}`,
           `自動登録済み複合射 ${state.synthesized_programs?.length ?? 0} 件`,
           state.stagnant_rounds
             ? `同一frontierが ${state.stagnant_rounds} 回続いています。型付き列挙と実行backendだけで次候補を探索します。`
@@ -764,6 +776,14 @@ export function GenerationPanel({
                     仮説 {card.search_evidence.hypotheses_evaluated.toLocaleString()} 件 / {Math.round((card.search_evidence.elapsed_ms ?? 0) / 1000)} 秒
                   </span>
                 ) : null}
+                {card.structure_blueprint?.structuralUniqueness?.uniqueNormalForm ? (
+                  <span className="text-cyan-300">構造正規形一意</span>
+                ) : null}
+                {card.structure_blueprint?.structuralUniqueness ? (
+                  <span className={card.structure_blueprint.structuralUniqueness.finiteSolutionSet ? 'text-emerald-300' : 'text-amber-300'}>
+                    {card.structure_blueprint.structuralUniqueness.finiteSolutionSet ? '有限解証明済み' : '抽象パラメータ補題'}
+                  </span>
+                ) : null}
               </div>
               {card.parent_coverage?.length ? (
                 <details className="mb-2 text-[10px] text-zinc-500">
@@ -843,6 +863,17 @@ export function GenerationPanel({
                       </li>
                     ))}
                   </ol>
+                </details>
+              ) : null}
+              {card.structure_blueprint?.structuralUniqueness ? (
+                <details className="mb-3 border-y border-zinc-800 py-2 text-[9px] leading-4 text-zinc-500">
+                  <summary className="cursor-pointer text-[10px] text-cyan-300">構造的一意性証明書</summary>
+                  <div className="mt-2 grid gap-1 sm:grid-cols-2">
+                    <div><span className="text-zinc-700">条件骨格</span><div className="text-zinc-300">{card.structure_blueprint.structuralUniqueness.conditionSkeleton.join(' → ')}</div></div>
+                    <div><span className="text-zinc-700">同型商</span><div className="text-zinc-300">{card.structure_blueprint.structuralUniqueness.quotientAction}</div></div>
+                    <div><span className="text-zinc-700">自由パラメータ</span><div className="text-zinc-300">{card.structure_blueprint.structuralUniqueness.freeParameters.join(', ') || 'なし'}</div></div>
+                    <div><span className="text-zinc-700">問題固有数値</span><div className="text-zinc-300">{card.structure_blueprint.structuralUniqueness.numericInstanceConstants.join(', ') || 'なし'}</div></div>
+                  </div>
                 </details>
               ) : null}
               {card.atlas_expansion && card.unmapped_tags?.length ? (
@@ -969,13 +1000,14 @@ export function GenerationPanel({
                   <div><div className="text-zinc-600">法則候補</div><div className="tabular-nums text-zinc-200">{jobTelemetry.induction_enumerated.toLocaleString()}</div></div>
                   <div><div className="text-zinc-600">反例棄却</div><div className="tabular-nums text-zinc-200">{jobTelemetry.induction_rejected.toLocaleString()}</div></div>
                   <div><div className="text-zinc-600">新規認証射</div><div className="tabular-nums text-emerald-300">{jobTelemetry.induced_laws.toLocaleString()}</div></div>
-                  <div><div className="text-zinc-600">SyGuS列挙</div><div className="tabular-nums text-zinc-200">{jobTelemetry.synthesis_terms_examined.toLocaleString()}</div></div>
-                  <div><div className="text-zinc-600">e-class</div><div className="tabular-nums text-zinc-200">{jobTelemetry.equivalence_classes.toLocaleString()}</div></div>
+                  <div><div className="text-zinc-600">候補式列挙</div><div className="tabular-nums text-zinc-200">{jobTelemetry.synthesis_terms_examined.toLocaleString()}</div></div>
+                  <div><div className="text-zinc-600">同値類</div><div className="tabular-nums text-zinc-200">{jobTelemetry.equivalence_classes.toLocaleString()}</div></div>
                   <div><div className="text-zinc-600">cvc5検査</div><div className="tabular-nums text-zinc-200">{jobTelemetry.cvc5_checked.toLocaleString()}</div></div>
                 </div>
                 <div className="mt-2 flex flex-wrap gap-1 text-[9px]">
-                  <span className={`border px-1.5 py-0.5 ${jobTelemetry.cvc5_available ? 'border-emerald-500/30 text-emerald-300' : 'border-amber-500/30 text-amber-300'}`}>cvc5 {jobTelemetry.cvc5_available ? 'ACTIVE' : 'FALLBACK'}</span>
-                  <span className={`border px-1.5 py-0.5 ${jobTelemetry.egglog_available ? 'border-emerald-500/30 text-emerald-300' : 'border-amber-500/30 text-amber-300'}`}>egglog {jobTelemetry.egglog_available ? 'ACTIVE' : 'FALLBACK'}</span>
+                  {jobTelemetry.induction_engine.includes('cvc5') && <span className={`border px-1.5 py-0.5 ${jobTelemetry.cvc5_available ? 'border-emerald-500/30 text-emerald-300' : 'border-amber-500/30 text-amber-300'}`}>cvc5 {jobTelemetry.cvc5_available ? 'ACTIVE' : 'FALLBACK'}</span>}
+                  {jobTelemetry.induction_engine.includes('cvc5') && <span className={`border px-1.5 py-0.5 ${jobTelemetry.egglog_available ? 'border-emerald-500/30 text-emerald-300' : 'border-amber-500/30 text-amber-300'}`}>egglog {jobTelemetry.egglog_available ? 'ACTIVE' : 'FALLBACK'}</span>}
+                  {jobTelemetry.induction_engine.includes('sympy-relational') && <span className="border border-emerald-500/30 px-1.5 py-0.5 text-emerald-300">SymPy relational ACTIVE</span>}
                   <span className="border border-zinc-700 px-1.5 py-0.5 text-zinc-400">{jobTelemetry.induction_engine}</span>
                 </div>
                 <div className="mt-2 border-t border-zinc-800 pt-2 text-[9px] leading-4 text-zinc-400">

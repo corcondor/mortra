@@ -44,6 +44,18 @@ export type ExecutableFusionCard = {
       preserves: string[]
       backend: string[]
     }
+    structuralUniqueness?: {
+      schema: 1
+      conditionSkeleton: string[]
+      querySignature: string
+      normalForm: string
+      quotientAction: string
+      freeParameters: string[]
+      uniqueNormalForm: boolean
+      finiteSolutionSet: boolean
+      numericInstanceConstants: number[]
+      conditionAblationPassed: boolean
+    }
   }
   search_evidence: { hypotheses_evaluated: number; valid_hypotheses: number; elapsed_ms: number }
 }

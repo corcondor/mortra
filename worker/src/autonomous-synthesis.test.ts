@@ -15,10 +15,12 @@ test('runs a typed strategy registry and returns verified cards', () => {
   const result = runAutonomousSynthesis(parents, 3)
   assert.equal(result.cards.length, 3)
   assert.equal(result.state.continuing, false)
-  assert.equal(result.attempts[0].strategy, 'primitive-law-cegis')
+  assert.equal(result.attempts[0].strategy, 'arithmetic-geometry-relational-synthesis')
   assert.equal(result.attempts[0].applicable, false)
-  assert.equal(result.attempts[1].strategy, 'typed-composite-program-synthesis')
-  assert.equal(result.attempts[1].generated, 3)
+  assert.equal(result.attempts[1].strategy, 'primitive-law-cegis')
+  assert.equal(result.attempts[1].applicable, false)
+  assert.equal(result.attempts[2].strategy, 'typed-composite-program-synthesis')
+  assert.equal(result.attempts[2].generated, 3)
   assert.equal(result.state.synthesized_programs?.length, 3)
 })
 
@@ -31,8 +33,22 @@ test('routes unseen polynomial parents to the generic elimination backend', () =
   assert.equal(result.cards.length, 1)
   assert.match(result.cards[0].family_id, /^discovered\.induced_algebraic_law\./)
   assert.deepEqual(result.attempts.map(attempt => [attempt.strategy, attempt.applicable]), [
+    ['arithmetic-geometry-relational-synthesis', false],
     ['primitive-law-cegis', true],
   ])
+})
+
+test('routes geometry and integer endpoints to abstract relational synthesis', () => {
+  const result = runAutonomousSynthesis([
+    { id: 'geometry', statement: '三角形の外接円半径と内接円半径の関係を考える。' },
+    { id: 'arithmetic', statement: '整数の整除性と素数性を考える。' },
+  ], 3)
+  assert.equal(result.cards.length, 3)
+  assert.equal(result.attempts[0].strategy, 'arithmetic-geometry-relational-synthesis')
+  assert.equal(result.attempts[0].generated, 3)
+  assert.match(result.cards[2].family_id, /two-prime-sides/)
+  assert.equal(result.state.induction_engine?.includes('sympy-relational-grammar'), true)
+  assert.ok((result.state.synthesized_programs?.length ?? 0) > 0)
 })
 
 test('continuation becomes due only after its persisted wake time', () => {

@@ -112,6 +112,7 @@ const SORT_WORDS: Record<string, string> = {
   関数: 'Function', 数列: 'Sequence', 整数: 'Integer', 自然数: 'Natural', 実数: 'Real',
   複素数: 'Complex', 素数: 'Prime', 点: 'Point', 直線: 'Line', 曲線: 'Curve', 円: 'Circle',
   三角形: 'Triangle', 集合: 'Set', 多項式: 'Polynomial', 行列: 'Matrix', 確率変数: 'RandomVariable',
+  位相空間: 'TopologicalSpace', 曲面: 'Surface', 三角形分割: 'FiniteTriangulation',
 }
 
 function hash(value: unknown, length = 12): string {
