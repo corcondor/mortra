@@ -60,6 +60,9 @@ type GenerationCard = {
       role: string
       matchedAnchors: string[]
       witnessSteps: string[]
+      requiredObligations?: string[]
+      consumedObligations?: string[]
+      coverage?: number
     }>
     bridges: Array<{ id: string; witnessStep: string; consumes: string[]; produces: string }>
     intermediatePropositions?: Array<{
@@ -808,6 +811,16 @@ export function GenerationPanel({
                       <li key={`${assignment.parentId}-${assignment.portId}`}>
                         {assignment.parentId} → <span className="text-zinc-300">{assignment.portId}</span>
                         <span className="ml-2">({assignment.role}: {assignment.matchedAnchors.join(' / ')})</span>
+                        {typeof assignment.coverage === 'number' ? (
+                          <span className={assignment.coverage === 1 ? 'ml-2 text-emerald-300' : 'ml-2 text-rose-300'}>
+                            条件被覆 {Math.round(assignment.coverage * 100)}%
+                          </span>
+                        ) : null}
+                        {assignment.requiredObligations?.length ? (
+                          <span className="mt-0.5 block text-zinc-600">
+                            {assignment.consumedObligations?.length ?? 0}/{assignment.requiredObligations.length} 条件を証明経路で使用
+                          </span>
+                        ) : null}
                       </li>
                     ))}
                     {card.fusion_derivation.bridges.map(bridge => (

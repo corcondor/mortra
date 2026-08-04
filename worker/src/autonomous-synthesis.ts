@@ -78,6 +78,39 @@ export type SynthesizedProgram = {
   verified: true
 }
 
+export function hasCompleteParentProof(
+  card: ExecutableFusionCard,
+  parents: readonly DiscoveryParent[],
+): boolean {
+  const expectedParents = new Set(parents.map(parent => String(parent.id)))
+  const cardParents = new Set(card.parent_ids.map(String))
+  if (cardParents.size !== expectedParents.size || [...expectedParents].some(id => !cardParents.has(id))) {
+    return false
+  }
+
+  const assignments = card.fusion_derivation.assignments
+  const assignedParents = new Set(assignments.map(assignment => String(assignment.parentId)))
+  if (assignedParents.size !== expectedParents.size || [...expectedParents].some(id => !assignedParents.has(id))) {
+    return false
+  }
+
+  for (const assignment of assignments) {
+    if (!assignment.portId || assignment.witnessSteps.length === 0 || assignment.matchedAnchors.length === 0) {
+      return false
+    }
+    const required = assignment.requiredObligations ?? []
+    const consumed = new Set(assignment.consumedObligations ?? [])
+    if (required.some(obligation => !consumed.has(obligation))) return false
+    if (typeof assignment.coverage === 'number' && assignment.coverage !== 1) return false
+  }
+
+  const consumedPorts = new Set(card.fusion_derivation.bridges.flatMap(bridge => bridge.consumes))
+  if (assignments.some(assignment => !consumedPorts.has(assignment.portId))) return false
+  if (card.morphism_chain.length === 0 || card.structure_blueprint.proofCertificate.length === 0) return false
+  if (card.morphism_chain.join('\u0000') !== card.structure_blueprint.morphismChain.join('\u0000')) return false
+  return card.verification.exact_backend && card.verification.independent_check
+}
+
 export type SynthesisContext = {
   parents: DiscoveryParent[]
   requested: number
@@ -347,7 +380,7 @@ export function runAutonomousSynthesis(
     let reason = support.reason
     if (support.applicable) {
       try {
-        generated = strategy.execute(context)
+        generated = strategy.execute(context).filter(card => hasCompleteParentProof(card, parents))
         reason = generated.length
           ? 'typed construction, exact backend, and independent verification succeeded'
           : 'applicable types found but verification produced no surviving construction'

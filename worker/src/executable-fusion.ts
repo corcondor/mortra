@@ -20,7 +20,16 @@ export type ExecutableFusionCard = {
     passed: true
     reason: string
     ablationPassed: true
-    assignments: Array<{ parentId: string; portId: string; role: string; matchedAnchors: string[]; witnessSteps: string[] }>
+    assignments: Array<{
+      parentId: string
+      portId: string
+      role: string
+      matchedAnchors: string[]
+      witnessSteps: string[]
+      requiredObligations?: string[]
+      consumedObligations?: string[]
+      coverage?: number
+    }>
     bridges: Array<{ id: string; witnessStep: string; consumes: string[]; produces: string }>
     intermediatePropositions: Array<{ parentId: string; morphism: string; source: string; target: string; proposition: string; proved: true }>
   }

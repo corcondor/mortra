@@ -5,6 +5,7 @@ import type { ExecutableFusionCard } from './executable-fusion'
 import type { HyperMorphismSchema } from './generalization-kernel'
 import type { DiscoveryParent } from './parent-conditioned-discovery'
 import type { CertifiedLawRecord } from './primitive-law-inducer'
+import { extractDistinctiveParentObligations } from './parent-obligation-coverage'
 
 type DomainMode = 'triangle' | 'topology'
 
@@ -16,6 +17,9 @@ type ParentFeatures = {
   arithmetic: boolean
   prime: boolean
   anchors: string[]
+  requiredObligations: string[]
+  consumedObligations: string[]
+  uncoveredObligations: string[]
 }
 
 type BackendCandidate = {
@@ -123,6 +127,12 @@ function analyzeParent(parent: DiscoveryParent, index: number): ParentFeatures {
     arithmetic ? 'IntegerPredicate' : '',
     prime ? 'PrimePredicate' : '',
   ].filter(Boolean)
+  const distinctiveObligations = extractDistinctiveParentObligations(text).map(item => item.id)
+  const requiredObligations = [...new Set([...anchors, ...distinctiveObligations])]
+  // This backend implements only the listed endpoint contracts. A broad
+  // domain tag cannot discharge a parent's more specific construction.
+  const consumedObligations = [...anchors]
+  const uncoveredObligations = requiredObligations.filter(item => !consumedObligations.includes(item))
   return {
     id: String(parent.id || `parent-${index + 1}`),
     text,
@@ -131,6 +141,9 @@ function analyzeParent(parent: DiscoveryParent, index: number): ParentFeatures {
     arithmetic,
     prime,
     anchors,
+    requiredObligations,
+    consumedObligations,
+    uncoveredObligations,
   }
 }
 
@@ -140,6 +153,7 @@ function supportsMode(features: ParentFeatures[], mode: DomainMode): boolean {
     : features.some(feature => feature.topology)
   const hasArithmetic = features.some(feature => feature.arithmetic)
   if (!hasGeometry || !hasArithmetic) return false
+  if (features.some(feature => feature.uncoveredObligations.length > 0)) return false
   // Every selected endpoint must be indispensable. If deleting one endpoint
   // leaves the same two capabilities, the proposed fusion is rejected.
   return features.every((_, removed) => {
@@ -272,6 +286,11 @@ export function induceArithmeticGeometryLemmas(
           portId: `endpoint_${featureIndex + 1}`,
           role: feature.triangle || feature.topology ? 'object' : 'constraint',
           matchedAnchors: feature.anchors,
+          requiredObligations: feature.requiredObligations,
+          consumedObligations: feature.consumedObligations,
+          coverage: feature.requiredObligations.length === 0
+            ? 1
+            : feature.consumedObligations.length / feature.requiredObligations.length,
           witnessSteps: mode === 'triangle' && feature.triangle
             ? ['TriangleMetricElaboration', 'HeronFactorization']
             : mode === 'topology' && feature.topology

@@ -75,3 +75,12 @@ test('does not fabricate a law when parent constraints cannot be executed', () =
   assert.equal(result.rules.length, 0)
   assert.equal(result.cards.length, 0)
 })
+
+test('does not discard non-polynomial obligations from a rich parent', () => {
+  const result = inducePrimitiveLaws([
+    { id: 'root', statement: '方程式 $u^2-2=0$ の根を考える。' },
+    { id: 'rich', statement: '行列 $A$ の n 乗から得る漸化式が素数で割り切れることを示せ。' },
+  ], 2, 1, 8)
+  assert.equal(result.applicable, false)
+  assert.equal(result.cards.length, 0)
+})

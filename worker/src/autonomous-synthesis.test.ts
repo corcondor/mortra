@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
+  hasCompleteParentProof,
   isAutonomousResearchDue,
   runAutonomousSynthesis,
   type SynthesisStrategy,
@@ -112,4 +113,64 @@ test('strategies are selected by their typed support contract, not problem ids',
   const result = runAutonomousSynthesis(opaqueParents, 1, null, strategies)
   assert.deepEqual(seen, ['left', 'right'])
   assert.deepEqual(result.attempts.map(attempt => attempt.applicable), [false, true])
+})
+
+test('rejects a verified-looking card that drops one selected parent', () => {
+  const seed = runAutonomousSynthesis(parents, 1)
+  assert.equal(seed.cards.length, 1)
+  const incomplete = {
+    ...seed.cards[0],
+    parent_ids: [parents[0].id],
+    fusion_derivation: {
+      ...seed.cards[0].fusion_derivation,
+      assignments: seed.cards[0].fusion_derivation.assignments.slice(0, 1),
+    },
+  }
+  assert.equal(hasCompleteParentProof(incomplete, parents), false)
+
+  const strategy: SynthesisStrategy = {
+    id: 'drops-parent',
+    version: 1,
+    supports: () => ({ applicable: true, reason: 'test candidate' }),
+    execute: () => [incomplete],
+  }
+  const result = runAutonomousSynthesis(parents, 1, null, [strategy])
+  assert.equal(result.cards.length, 0)
+  assert.equal(result.attempts[0].generated, 0)
+})
+
+test('does not collapse two hard Sakumon endpoints to broad geometry and integer tags', () => {
+  const hardParents = [
+    {
+      id: '5a8bd9fafc05',
+      statement: '$xy$ 平面上の放物線 $C:y=x^2$ を考える。直線 $l:x-2y+57=0$ 上の点から3本の異なる法線を引き、その足が作る三角形の外接円半径 $R$ について $R^2$ の最小値を求めよ。',
+    },
+    {
+      id: 'legacy_exam:02_kyoto:227b304d736fe9ec',
+      statement: '整数行列 $A$ に対し $A^n=(a_n,b_n;c_n,d_n)$ とする。$c_n$ の漸化式を示し、素数 $p$ に関する整除性を証明せよ。',
+    },
+  ]
+  const result = runAutonomousSynthesis(hardParents, 1)
+  assert.equal(result.cards.length, 0)
+  assert.equal(result.state.continuing, true)
+  assert.equal(result.attempts.every(attempt => attempt.generated === 0), true)
+})
+
+test('synthesizes from two Sakumon polynomial endpoints without stored solutions', () => {
+  const polynomialParents = [
+    {
+      id: 'mathos-5115e5e462',
+      statement: '方程式 $x^3-2x^2-5x+1=0$ の3根を考える。',
+    },
+    {
+      id: 'legacy_exam:01_tokyo:ad7a21d562abc25c',
+      statement: '3次方程式 $y^3+3y^2-1=0$ の3根を考える。',
+    },
+  ]
+  const result = runAutonomousSynthesis(polynomialParents, 1)
+  assert.equal(result.cards.length, 1)
+  assert.equal(hasCompleteParentProof(result.cards[0], polynomialParents), true)
+  assert.deepEqual(new Set(result.cards[0].parent_ids), new Set(polynomialParents.map(parent => parent.id)))
+  assert.equal(result.cards[0].verification.exact_backend, true)
+  assert.equal(result.cards[0].verification.independent_check, true)
 })

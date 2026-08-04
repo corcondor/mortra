@@ -44,6 +44,21 @@ test('rejects redundant or unrelated parent selections', () => {
   assert.equal(unrelated.applicable, false)
 })
 
+test('rejects broad-tag fusion when distinctive parent conditions are not consumed', () => {
+  const result = induceArithmeticGeometryLemmas([
+    {
+      id: 'normal-triangle',
+      statement: '放物線上への3本の法線の足を頂点とする三角形について、外接円半径の最小値を求めよ。',
+    },
+    {
+      id: 'matrix-prime',
+      statement: '整数行列 A の n 乗から漸化式を導き、ある素数が項を割り切ることを示せ。',
+    },
+  ], 3, 1)
+  assert.equal(result.applicable, false)
+  assert.equal(result.cards.length, 0)
+})
+
 test('registered abstract laws are excluded on the next round', () => {
   const parents = [
     { id: 'geometry', statement: '三角形の外接円半径と内接円半径を考える。' },

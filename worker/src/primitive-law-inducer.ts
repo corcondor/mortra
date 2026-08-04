@@ -4,6 +4,7 @@ import path from 'node:path'
 import type { ExecutableFusionCard } from './executable-fusion'
 import type { HyperMorphismSchema } from './generalization-kernel'
 import type { DiscoveryParent } from './parent-conditioned-discovery'
+import { extractDistinctiveParentObligations } from './parent-obligation-coverage'
 import { extractPolynomial } from './polynomial-root-fusion'
 
 type BackendCandidate = {
@@ -133,10 +134,13 @@ export function inducePrimitiveLaws(
   registeredLaws: CertifiedLawRecord[] = [],
 ): PrimitiveLawInductionResult {
   const inputs = parents.map(extractPolynomial).filter((value): value is NonNullable<typeof value> => value !== null)
-  if (inputs.length < 2 || new Set(inputs.map(input => input.parentId)).size < 2) {
+  const unsupportedParents = parents.filter(parent => extractDistinctiveParentObligations(parent.statement ?? '').length > 0)
+  if (inputs.length !== parents.length || inputs.length < 2 || new Set(inputs.map(input => input.parentId)).size < 2 || unsupportedParents.length > 0) {
     return {
       applicable: false,
-      reason: 'fewer than two parents elaborate to executable algebraic constraints',
+      reason: unsupportedParents.length
+        ? 'a parent has distinctive conditions not consumed by the polynomial-root backend'
+        : 'not every selected parent elaborates to an executable algebraic constraint',
       rules: [],
       cards: [],
       telemetry: { ...EMPTY_TELEMETRY },
