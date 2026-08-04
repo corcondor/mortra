@@ -40,6 +40,9 @@ export async function GET(req: NextRequest) {
         depth?: number
         terms_enumerated?: number
         executable_goals?: number
+        local_expansions?: number
+        states_explored?: number
+        progress_delta?: number
         frontier?: unknown[]
         stagnant_rounds?: number
         last_progress_at?: string
@@ -125,6 +128,9 @@ export async function GET(req: NextRequest) {
         depth: state?.depth ?? 0,
         terms_enumerated: state?.terms_enumerated ?? 0,
         executable_goals: state?.executable_goals ?? 0,
+        local_expansions: state?.local_expansions ?? 0,
+        states_explored: state?.states_explored ?? 0,
+        progress_delta: state?.progress_delta ?? 0,
         frontier_count: state?.frontier?.length ?? 0,
         stagnant_rounds: state?.stagnant_rounds ?? 0,
         last_progress_at: state?.last_progress_at ?? null,

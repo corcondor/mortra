@@ -44,6 +44,9 @@ export type AutonomousSearchState = {
   last_progress_at?: string
   terms_enumerated?: number
   executable_goals?: number
+  local_expansions?: number
+  states_explored?: number
+  progress_delta?: number
   synthesized_programs?: SynthesizedProgram[]
 }
 
@@ -171,13 +174,44 @@ export function runAutonomousSynthesis(
   state.depth = Math.max(2, state.depth + (state.round > 1 ? 1 : 0))
   state.state_budget = Math.max(10_000, 10_000 * state.round)
   const discovery = discoverParentStructures(parents, requested)
-  const generalized = generalizeParents(parents, state.depth, state.state_budget)
-  const enumeration = enumerateTypedTerms(generalized.graphs, {
+  const priorTerms = state.terms_enumerated ?? 0
+  const priorGoals = state.executable_goals ?? 0
+  const expansionStarted = Date.now()
+  let generalized = generalizeParents(parents, state.depth, state.state_budget)
+  let enumeration = enumerateTypedTerms(generalized.graphs, {
     maxDepth: Math.max(6, state.depth),
     maxStates: state.state_budget,
   })
+  let selectedScore = enumeration.goals.length * 1_000_000 + enumeration.terms.length
+  let localExpansions = 1
+  let deepestExplored = state.depth
+  // A worker invocation should perform meaningful search, not merely add one
+  // depth and sleep. Widen locally while bounded by wall time and state budget.
+  for (let expansion = 1; expansion < 3 && Date.now() - expansionStarted < 20_000; expansion++) {
+    const candidateDepth = state.depth + expansion * 2
+    const candidateBudget = Math.min(250_000, state.state_budget * (expansion + 1))
+    const candidateGeneralization = generalizeParents(parents, candidateDepth, candidateBudget)
+    const candidateEnumeration = enumerateTypedTerms(candidateGeneralization.graphs, {
+      maxDepth: Math.max(6, candidateDepth),
+      maxStates: candidateBudget,
+    })
+    localExpansions++
+    deepestExplored = candidateDepth
+    const candidateScore = candidateEnumeration.goals.length * 1_000_000 + candidateEnumeration.terms.length
+    if (candidateScore >= selectedScore) {
+      generalized = candidateGeneralization
+      enumeration = candidateEnumeration
+      selectedScore = candidateScore
+    }
+    if (candidateEnumeration.goals.length >= requested) break
+  }
+  state.depth = deepestExplored
   state.terms_enumerated = enumeration.terms.length
   state.executable_goals = enumeration.goals.length
+  state.local_expansions = localExpansions
+  state.states_explored = enumeration.statesExplored
+  state.progress_delta = Math.max(0, enumeration.terms.length - priorTerms) +
+    Math.max(0, enumeration.goals.length - priorGoals) * 1000
   state.hypotheses_evaluated += discovery.hypotheses.length
   state.frontier = enumeration.frontier.length
     ? enumeration.frontier.slice(0, 48).map(item => ({
@@ -269,9 +303,12 @@ export function runAutonomousSynthesis(
     verified: true,
   }))
   state.continuing = cards.length < requested
-  state.next_attempt_at = state.continuing
-    ? new Date(now.getTime() + 15 * 60 * 1000).toISOString()
-    : null
+  const retryDelayMs = state.progress_delta > 0
+    ? 60_000
+    : (state.stagnant_rounds ?? 0) < 3
+    ? 2 * 60_000
+    : 5 * 60_000
+  state.next_attempt_at = state.continuing ? new Date(now.getTime() + retryDelayMs).toISOString() : null
   return { cards, discovery, state, attempts: roundAttempts, generalization: generalized.certificate, enumeration }
 }
 

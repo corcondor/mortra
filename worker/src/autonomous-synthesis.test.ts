@@ -55,6 +55,9 @@ test('persists and expands the search frontier without claiming success', () => 
   assert.ok(second.state.frontier.length > 0)
   assert.equal(first.state.stagnant_rounds, 0)
   assert.equal(second.state.stagnant_rounds, 1)
+  assert.equal(first.state.local_expansions, 3)
+  assert.ok((first.state.states_explored ?? 0) > 0)
+  assert.equal(first.state.next_attempt_at, '2026-08-03T00:01:00.000Z')
 })
 
 test('a proposed solution cannot redefine the statement semantics', () => {

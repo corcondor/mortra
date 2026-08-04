@@ -110,6 +110,9 @@ type GenerationResult = {
     last_progress_at?: string
     terms_enumerated?: number
     executable_goals?: number
+    local_expansions?: number
+    states_explored?: number
+    progress_delta?: number
     synthesized_programs?: Array<{ id: string; morphism_chain: string[]; verified: true }>
   }
   generalization?: {
@@ -181,6 +184,9 @@ type JobTelemetry = {
   depth: number
   terms_enumerated: number
   executable_goals: number
+  local_expansions: number
+  states_explored: number
+  progress_delta: number
   frontier_count: number
   stagnant_rounds: number
   last_progress_at: string | null
@@ -443,6 +449,7 @@ export function GenerationPanel({
         setLogs(previous => [
           ...previous,
           `自律探索 round ${state.round} / 深さ ${state.depth ?? '?'} / 型付き項 ${state.terms_enumerated ?? '?'} / 全選択問題を使う実行候補 ${state.executable_goals ?? 0}`,
+          `今回 ${state.local_expansions ?? 1} 段階を局所展開 / 探索状態 ${state.states_explored ?? '?'} / 進展量 ${state.progress_delta ?? 0}`,
           `自動登録済み複合射 ${state.synthesized_programs?.length ?? 0} 件`,
           state.stagnant_rounds
             ? `同一frontierが ${state.stagnant_rounds} 回続いています。型付き列挙と実行backendだけで次候補を探索します。`
@@ -934,6 +941,9 @@ export function GenerationPanel({
                   <div><div className="text-zinc-600">停滞</div><div className="tabular-nums text-zinc-200">{jobTelemetry.stagnant_rounds} round</div></div>
                   <div><div className="text-zinc-600">複合射</div><div className="tabular-nums text-zinc-200">{jobTelemetry.synthesized_programs}</div></div>
                   <div><div className="text-zinc-600">最終更新</div><div className="tabular-nums text-zinc-200">{formatDuration(jobTelemetry.seconds_since_update)}前</div></div>
+                  <div><div className="text-zinc-600">局所展開</div><div className="tabular-nums text-zinc-200">{jobTelemetry.local_expansions} 段階</div></div>
+                  <div><div className="text-zinc-600">探索状態</div><div className="tabular-nums text-zinc-200">{jobTelemetry.states_explored.toLocaleString()}</div></div>
+                  <div><div className="text-zinc-600">今回の進展</div><div className="tabular-nums text-zinc-200">+{jobTelemetry.progress_delta.toLocaleString()}</div></div>
                 </div>
                 <div className="mt-2 border-t border-zinc-800 pt-2 text-[9px] leading-4 text-zinc-400">
                   {jobTelemetry.runtime_message ?? (jobTelemetry.waiting_for_next_round

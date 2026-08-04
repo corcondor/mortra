@@ -108,6 +108,11 @@ const OPERATOR_SCHEMAS: readonly OperatorSchema[] = [
   { canonical: 'Measure', patterns: [/面積|体積|測度|area|volume/i], input: 'MeasurableSet', output: 'Scalar', role: 'query', preserves: ['measure-class'], backend: ['symbolic-integration', 'polytope-volume'] },
   { canonical: 'Extremum', patterns: [/最大|最小|極値|maximi|minimi/i], input: 'OrderedFamily', output: 'Scalar', role: 'query', preserves: ['feasible-set', 'order'], backend: ['optimization', 'quantifier-elimination'] },
   { canonical: 'Cardinality', patterns: [/個数|何通り|cardinality/i], input: 'FiniteSet', output: 'Integer', role: 'query', preserves: ['bijection-class'], backend: ['enumeration', 'generating-function'] },
+  { canonical: 'GreatestCommonDivisor', patterns: [/\\gcd\b|最大公約数|greatest common divisor|\bgcd\b/i], input: 'IntegerPair', output: 'GCDValue', preserves: ['common-divisor-order', 'bezout-ideal'], backend: ['integer-arithmetic', 'extended-euclidean-algorithm'] },
+  { canonical: 'LeastCommonMultiple', patterns: [/\\(?:operatorname|mathop)\s*\{?(?:\\text\s*\{)?lcm|最小公倍数|least common multiple|\blcm\b/i], input: 'IntegerPair', output: 'LCMValue', preserves: ['common-multiple-order', 'prime-valuations'], backend: ['integer-arithmetic', 'prime-valuation'] },
+  { canonical: 'CeilingProjection', patterns: [/\\lceil|天井関数|ceiling|\bceil\b/i], input: 'Real', output: 'Integer', preserves: ['least-integer-upper-bound', 'order'], backend: ['exact-rounding', 'presburger-arithmetic'] },
+  { canonical: 'FloorProjection', patterns: [/\\lfloor|床関数|floor function|\bfloor\b/i], input: 'Real', output: 'Integer', preserves: ['greatest-integer-lower-bound', 'order'], backend: ['exact-rounding', 'presburger-arithmetic'] },
+  { canonical: 'PercentScalarAction', patterns: [/\\%|百分率|パーセント|percent|\d\s*%/i], input: 'RateQuantityPair', output: 'Quantity', preserves: ['unit', 'rational-scaling'], backend: ['rational-arithmetic', 'unit-checker'] },
   { canonical: 'Proof', patterns: [/示せ|証明|prove/i], input: 'Proposition', output: 'Proof', role: 'query', preserves: ['truth'], backend: ['lean', 'smt', 'symbolic-identity'] },
 ]
 
@@ -137,6 +142,11 @@ const MORPHISM_ATLAS: readonly MorphismSchema[] = [
   { name: 'CompanionRepresentation', source: 'Sequence', target: 'Matrix2', preserves: ['orbit', 'initial-state'], backend: ['linear-recurrence'] },
   { name: 'ResidueProjection', source: 'Integer', target: 'FiniteSet', preserves: ['congruence-class'], backend: ['modular-arithmetic'] },
   { name: 'Counting', source: 'FiniteSet', target: 'Integer', preserves: ['bijection-class'], backend: ['enumeration'] },
+  { name: 'EuclideanMeet', source: 'IntegerPair', target: 'GCDValue', preserves: ['common-divisor-order', 'bezout-ideal'], backend: ['extended-euclidean-algorithm'] },
+  { name: 'DivisibilityJoin', source: 'IntegerPair', target: 'LCMValue', preserves: ['common-multiple-order', 'prime-valuations'], backend: ['prime-valuation'] },
+  { name: 'CeilingAdjunction', source: 'Real', target: 'Integer', preserves: ['least-integer-upper-bound', 'order'], backend: ['exact-rounding', 'presburger-arithmetic'] },
+  { name: 'FloorAdjunction', source: 'Real', target: 'Integer', preserves: ['greatest-integer-lower-bound', 'order'], backend: ['exact-rounding', 'presburger-arithmetic'] },
+  { name: 'RationalScaleAction', source: 'RateQuantityPair', target: 'Quantity', preserves: ['unit', 'rational-scaling'], backend: ['rational-arithmetic', 'unit-checker'] },
 ]
 
 export type HyperMorphismSchema = {
@@ -183,6 +193,13 @@ const HYPER_MORPHISM_ATLAS: readonly HyperMorphismSchema[] = [
     target: 'FiniteAlgebraicOrbit',
     preserves: ['both-parent-provenance', 'algebraicity', 'finite-support'],
     backend: ['resultant', 'square-free-reduction'],
+  },
+  {
+    name: 'GCDLCMProductLaw',
+    sources: ['GCDValue', 'LCMValue'],
+    target: 'Integer',
+    preserves: ['both-parent-provenance', 'prime-valuations', 'gcd-times-lcm-equals-product'],
+    backend: ['integer-arithmetic', 'prime-valuation'],
   },
 ]
 
