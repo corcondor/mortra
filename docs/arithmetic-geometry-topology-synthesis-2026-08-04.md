@@ -132,3 +132,20 @@ conditionAblationPassed 条件・親の不可欠性
 ホモロジー群のtorsionと素数条件までは未実装。次は生成した `npq=2l(n+p+q)` をZ3/cvc5の合同式探索、
 SymPyの因数分解、素数ふるいへ渡し、有限候補化または不存在証明へ進める。また位相側は境界付き曲面、
 多角形分割、鎖複体のSmith標準形を同じ整数関係IRへ追加する。
+
+## 本番E2E（2026-08-04）
+
+コミット `04d8886`、GitHub Actions run `30909694045`、production job
+`5fa181b4-5c40-4f17-bc76-8b73f7fef73a` で、図形親と整数・素数親から3補題を生成してDBへ保存した。
+
+- induction engine: `sympy-relational-grammar`
+- 候補積: 15、整数述語を含む検査候補: 17、S3同値類: 7
+- 認証した動的射: 3
+- 各カードの射列: 9本
+- 全カードで厳密backend、独立代入、全親semantic ablationが成功
+- 全カードで `numericInstanceConstants=[]`, `uniqueNormalForm=true`
+- 全解分類は未完なので `finiteSolutionSet=false`
+
+生成した3構造は `Rr` の整数性、`Rr` の素数性、二辺を任意素数とした素数性還元である。
+保存済み問題文・解答・固定数値は候補生成に使わず、半径恒等式、Heron消去、整数述語の有限文法から導出した。
+Actionsは成功し、production APIは `MathOS executable parent-conditioned synthesis (no LLM)` を返した。
