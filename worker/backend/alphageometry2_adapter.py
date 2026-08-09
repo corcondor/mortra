@@ -1,8 +1,9 @@
 """Adapter for the official AlphaGeometry2 DDAR symbolic engine.
 
-MathOS supplies only an AG2-formalized problem. The adapter does not use a
-worked solution or target answer: DDAR saturates its predicate database and
-checks whether the requested predicate is derivable.
+MathOS supplies an AG2-formalized problem.  The base path saturates its
+predicate database.  The optional LLM-free path searches a finite typed
+construction grammar and accepts a construction only when DDAR proves the
+original goal.  Neither path receives a worked solution or target answer.
 """
 
 from __future__ import annotations
@@ -59,6 +60,28 @@ def solve_formal_problem(problem_text: str, *, directory: Path) -> dict[str, Any
     }
 
 
+def solve_with_auxiliary_search(
+    problem_text: str,
+    *,
+    directory: Path,
+    max_depth: int = 2,
+    beam_width: int = 8,
+    max_attempts: int = 96,
+) -> dict[str, Any]:
+    AGProblem, DDAR = load_engine(directory)
+    from alphageometry2_auxiliary_search import search_auxiliary_constructions
+
+    problem = AGProblem.parse(problem_text)
+    return search_auxiliary_constructions(
+        problem,
+        AGProblem=AGProblem,
+        DDAR=DDAR,
+        max_depth=max_depth,
+        beam_width=beam_width,
+        max_attempts=max_attempts,
+    )
+
+
 def run_official_suite(*, directory: Path, limit: int | None = None) -> dict[str, Any]:
     source = str(directory)
     if source not in sys.path:
@@ -91,13 +114,26 @@ def main() -> int:
     parser.add_argument("--engine-dir")
     parser.add_argument("--official-suite", action="store_true")
     parser.add_argument("--limit", type=int)
+    parser.add_argument("--auto-aux", action="store_true")
+    parser.add_argument("--max-depth", type=int, default=2)
+    parser.add_argument("--beam-width", type=int, default=8)
+    parser.add_argument("--max-attempts", type=int, default=96)
     args = parser.parse_args()
     directory = engine_directory(args.engine_dir)
     if args.official_suite:
         result = run_official_suite(directory=directory, limit=args.limit)
     else:
         payload = json.load(sys.stdin)
-        result = solve_formal_problem(str(payload["problem"]), directory=directory)
+        if args.auto_aux:
+            result = solve_with_auxiliary_search(
+                str(payload["problem"]),
+                directory=directory,
+                max_depth=args.max_depth,
+                beam_width=args.beam_width,
+                max_attempts=args.max_attempts,
+            )
+        else:
+            result = solve_formal_problem(str(payload["problem"]), directory=directory)
     print(json.dumps(result, ensure_ascii=False))
     return 0
 
