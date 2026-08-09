@@ -1,0 +1,389 @@
+"""Deterministic natural-language/TeX to AlphaGeometry2 formalization.
+
+This is intentionally a finite mathematical grammar, not a general prose
+translator.  It produces a typed predicate IR, constructs a numerical witness
+by constrained optimization, and emits an AG2 statement only when every
+mathematical relation in the supported input has been consumed.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import itertools
+import re
+from dataclasses import asdict, dataclass
+from typing import Any, Iterable
+
+import numpy as np
+from scipy.optimize import least_squares
+
+
+RELATION_SYMBOLS = ("perp", "para", "cong", "coll", "cyclic", "eqangle")
+QUERY_MARKERS_JA = ("を示せ", "を証明せよ", "を証明しなさい", "ことを示せ", "ことを証明せよ")
+QUERY_MARKERS_EN = ("prove that", "show that", "prove", "show")
+
+
+@dataclass(frozen=True)
+class TypedPredicate:
+    name: str
+    points: tuple[str, ...]
+    source: str
+
+    def render(self) -> str:
+        return " ".join((self.name, *self.points))
+
+
+@dataclass
+class GeometryFormalization:
+    status: str
+    normalized_text: str
+    points: list[str]
+    predicates: list[TypedPredicate]
+    goal: TypedPredicate | None
+    triangles: list[tuple[str, str, str]]
+    unresolved_relations: list[str]
+    coordinates: dict[str, tuple[float, float]]
+    diagram_residual: float | None
+    restarts: int
+    formal_problem: str | None
+
+    def to_dict(self) -> dict[str, Any]:
+        value = asdict(self)
+        value["predicates"] = [asdict(item) for item in self.predicates]
+        value["goal"] = asdict(self.goal) if self.goal else None
+        return value
+
+
+def formalize_geometry_text(text: str, *, max_restarts: int = 20) -> GeometryFormalization:
+    normalized = normalize_text(text)
+    premise_text, goal_text = split_goal(normalized)
+    triangles = extract_triangles(normalized)
+    predicates, premise_spans = extract_predicates(premise_text)
+    goals, goal_spans = extract_predicates(goal_text)
+    goal = goals[0] if len(goals) == 1 else None
+    unresolved = unresolved_relation_fragments(premise_text, premise_spans)
+    unresolved.extend(unresolved_relation_fragments(goal_text, goal_spans))
+    unsupported = sorted({item.name for item in [*predicates, *goals] if item.name not in RELATION_SYMBOLS})
+    unresolved.extend(f"unsupported typed predicate: {name}" for name in unsupported)
+    if len(goals) != 1:
+        unresolved.append(f"expected exactly one goal predicate, found {len(goals)}")
+
+    points = sorted({point for item in [*predicates, *goals] for point in item.points} | {
+        point for triangle in triangles for point in triangle
+    })
+    if len(points) < 2:
+        unresolved.append("fewer than two geometric points were identified")
+
+    result = GeometryFormalization(
+        status="unresolved" if unresolved else "parsed",
+        normalized_text=normalized,
+        points=points,
+        predicates=deduplicate_predicates(predicates),
+        goal=goal,
+        triangles=triangles,
+        unresolved_relations=unresolved,
+        coordinates={},
+        diagram_residual=None,
+        restarts=0,
+        formal_problem=None,
+    )
+    if unresolved or goal is None:
+        return result
+
+    coordinates, residual, restarts = construct_diagram(
+        points,
+        [*result.predicates, goal],
+        triangles,
+        seed_text=normalized,
+        max_restarts=max_restarts,
+    )
+    result.coordinates = coordinates
+    result.diagram_residual = residual
+    result.restarts = restarts
+    if not coordinates:
+        result.status = "diagram_failed"
+        result.unresolved_relations.append("typed constraints did not yield a nondegenerate numerical diagram")
+        return result
+    result.formal_problem = render_formal_problem(points, coordinates, result.predicates, goal)
+    result.status = "formalized"
+    return result
+
+
+def normalize_text(text: str) -> str:
+    value = text.replace("\r", " ").replace("\n", " ")
+    value = re.sub(r"\\text\s*\{([^{}]*)\}", r"\1", value)
+    replacements = {
+        "\\perp": "⊥",
+        "\\parallel": "∥",
+        "\\angle": "∠",
+        "$": "",
+        "（": "(",
+        "）": ")",
+        "，": ",",
+        "；": ";",
+        "：": ":",
+        "＝": "=",
+        "−": "-",
+    }
+    for source, target in replacements.items():
+        value = value.replace(source, target)
+    value = re.sub(r"\s+", " ", value).strip()
+    return value
+
+
+def split_goal(text: str) -> tuple[str, str]:
+    if "?" in text:
+        return tuple(part.strip() for part in text.rsplit("?", 1))  # type: ignore[return-value]
+    lowered = text.lower()
+    for marker in QUERY_MARKERS_EN:
+        index = lowered.rfind(marker)
+        if index >= 0:
+            return text[:index].strip(" ,.;。"), text[index + len(marker):].strip(" ,.;。")
+    for marker in QUERY_MARKERS_JA:
+        index = text.rfind(marker)
+        if index < 0:
+            continue
+        before = text[:index].rstrip()
+        boundary = max(before.rfind("。"), before.rfind(";"), before.rfind("."))
+        if boundary >= 0:
+            return before[:boundary].strip(), before[boundary + 1:].strip(" ,、")
+        comma = max(before.rfind("、"), before.rfind(","))
+        if comma >= 0:
+            return before[:comma].strip(), before[comma + 1:].strip()
+        return "", before.strip()
+    return text, ""
+
+
+def extract_triangles(text: str) -> list[tuple[str, str, str]]:
+    patterns = (
+        r"(?:三角形|△)\s*([A-Z])([A-Z])([A-Z])",
+        r"triangle\s+([A-Z])([A-Z])([A-Z])",
+    )
+    found: list[tuple[str, str, str]] = []
+    for pattern in patterns:
+        found.extend(tuple(match.groups()) for match in re.finditer(pattern, text, re.IGNORECASE))
+    return list(dict.fromkeys(tuple(point.lower() for point in triangle) for triangle in found))
+
+
+def extract_predicates(text: str) -> tuple[list[TypedPredicate], list[tuple[int, int]]]:
+    predicates: list[TypedPredicate] = []
+    spans: list[tuple[int, int]] = []
+
+    def collect(pattern: str, builder) -> None:
+        for match in re.finditer(pattern, text, re.IGNORECASE):
+            value = builder(match)
+            if isinstance(value, list):
+                predicates.extend(value)
+            else:
+                predicates.append(value)
+            spans.append(match.span())
+
+    segment = r"([A-Z])\s*([A-Z])"
+    collect(segment + r"\s*(?:⊥|is\s+perpendicular\s+to)\s*" + segment,
+            lambda m: predicate("perp", m.groups(), m.group(0)))
+    collect(segment + r"\s*(?:∥|//|is\s+parallel\s+to)\s*" + segment,
+            lambda m: predicate("para", m.groups(), m.group(0)))
+    collect(segment + r"\s*=\s*" + segment,
+            lambda m: predicate("cong", m.groups(), m.group(0)))
+    collect(r"∠\s*([A-Z])([A-Z])([A-Z])\s*=\s*∠\s*([A-Z])([A-Z])([A-Z])",
+            lambda m: angle_predicate(m.groups(), m.group(0)))
+
+    collect(
+        r"([A-Z])\s*(?:は|is)\s*(?:線分\s*)?([A-Z])([A-Z])(?:\s*(?:の|the))?\s*(?:中点|midpoint)",
+        lambda m: midpoint_predicates(m.groups(), m.group(0)),
+    )
+    collect(
+        r"([A-Z])\s+is\s+the\s+midpoint\s+of\s+([A-Z])([A-Z])",
+        lambda m: midpoint_predicates(m.groups(), m.group(0)),
+    )
+    collect(
+        r"([A-Z])\s*(?:は|is)\s*(?:三角形\s*)?([A-Z])([A-Z])([A-Z])(?:\s*(?:の|the))?\s*(?:外心|circumcenter)",
+        lambda m: circumcenter_predicates(m.groups(), m.group(0)),
+    )
+    collect(
+        r"([A-Z])\s+is\s+the\s+circumcenter\s+of\s+(?:triangle\s+)?([A-Z])([A-Z])([A-Z])",
+        lambda m: circumcenter_predicates(m.groups(), m.group(0)),
+    )
+    collect(
+        r"([A-Z])\s*(?:は|is)\s*(?:三角形\s*)?([A-Z])([A-Z])([A-Z])(?:\s*(?:の|the))?\s*(?:重心|centroid)",
+        lambda m: centroid_predicates(m.groups(), m.group(0)),
+    )
+
+    for match in re.finditer(r"([A-Z](?:\s*[,、]\s*[A-Z]){2,})\s*(?:は|are)?\s*(?:一直線上|collinear)", text, re.IGNORECASE):
+        names = tuple(point.lower() for point in re.findall(r"[A-Z]", match.group(1), re.IGNORECASE))
+        for triple in itertools.combinations(names, 3):
+            predicates.append(TypedPredicate("coll", triple, match.group(0)))
+        spans.append(match.span())
+    for match in re.finditer(r"([A-Z](?:\s*[,、]\s*[A-Z]){3,})\s*(?:は|are)?\s*(?:同一円周上|concyclic|cyclic)", text, re.IGNORECASE):
+        names = tuple(point.lower() for point in re.findall(r"[A-Z]", match.group(1), re.IGNORECASE))
+        for quadruple in itertools.combinations(names, 4):
+            predicates.append(TypedPredicate("cyclic", quadruple, match.group(0)))
+        spans.append(match.span())
+    return predicates, merge_spans(spans)
+
+
+def predicate(name: str, groups: Iterable[str], source: str) -> TypedPredicate:
+    return TypedPredicate(name, tuple(value.lower() for value in groups), source)
+
+
+def angle_predicate(groups: Iterable[str], source: str) -> TypedPredicate:
+    a, b, c, d, e, f = (value.lower() for value in groups)
+    return TypedPredicate("eqangle", (b, a, b, c, e, d, e, f), source)
+
+
+def midpoint_predicates(groups: Iterable[str], source: str) -> list[TypedPredicate]:
+    midpoint, a, b = (value.lower() for value in groups)
+    return [
+        TypedPredicate("coll", (a, midpoint, b), source),
+        TypedPredicate("cong", (a, midpoint, midpoint, b), source),
+    ]
+
+
+def circumcenter_predicates(groups: Iterable[str], source: str) -> list[TypedPredicate]:
+    center, a, b, c = (value.lower() for value in groups)
+    return [
+        TypedPredicate("cong", (center, a, center, b), source),
+        TypedPredicate("cong", (center, b, center, c), source),
+    ]
+
+
+def centroid_predicates(groups: Iterable[str], source: str) -> list[TypedPredicate]:
+    center, a, b, c = (value.lower() for value in groups)
+    # Affine centroid is encoded as two additive vector equations during diagram
+    # construction. AG2 has no primitive centroid predicate, so do not emit an
+    # unsound DDAR premise here.
+    return [TypedPredicate("centroid", (center, a, b, c), source)]
+
+
+def unresolved_relation_fragments(text: str, consumed: list[tuple[int, int]]) -> list[str]:
+    remainder = list(text)
+    for start, end in consumed:
+        remainder[start:end] = " " * (end - start)
+    value = "".join(remainder)
+    markers = ("⊥", "∥", "//", "∠", "=", "中点", "外心", "重心", "一直線", "同一円周", "perpendicular", "parallel", "midpoint", "circumcenter", "centroid", "collinear", "cyclic")
+    return [marker for marker in markers if marker.lower() in value.lower()]
+
+
+def deduplicate_predicates(predicates: list[TypedPredicate]) -> list[TypedPredicate]:
+    result: list[TypedPredicate] = []
+    seen: set[tuple[str, tuple[str, ...]]] = set()
+    for item in predicates:
+        key = (item.name, item.points)
+        if key not in seen:
+            seen.add(key)
+            result.append(item)
+    return result
+
+
+def merge_spans(spans: list[tuple[int, int]]) -> list[tuple[int, int]]:
+    result: list[tuple[int, int]] = []
+    for start, end in sorted(spans):
+        if result and start <= result[-1][1]:
+            result[-1] = (result[-1][0], max(result[-1][1], end))
+        else:
+            result.append((start, end))
+    return result
+
+
+def construct_diagram(
+    points: list[str],
+    constraints: list[TypedPredicate],
+    triangles: list[tuple[str, str, str]],
+    *,
+    seed_text: str,
+    max_restarts: int,
+) -> tuple[dict[str, tuple[float, float]], float | None, int]:
+    if len(points) < 2:
+        return {}, None, 0
+    seed = int(hashlib.sha256(seed_text.encode("utf-8")).hexdigest()[:16], 16)
+    rng = np.random.default_rng(seed)
+    best: tuple[float, np.ndarray] | None = None
+
+    def unpack(vector: np.ndarray) -> dict[str, np.ndarray]:
+        coordinates = {points[0]: np.asarray([0.0, 0.0]), points[1]: np.asarray([4.0, 0.0])}
+        for offset, name in enumerate(points[2:]):
+            coordinates[name] = vector[2 * offset:2 * offset + 2]
+        return coordinates
+
+    def residuals(vector: np.ndarray) -> np.ndarray:
+        coordinates = unpack(vector)
+        values = [predicate_residual(item, coordinates) for item in constraints]
+        for a, b, c in triangles:
+            if all(name in coordinates for name in (a, b, c)):
+                area = abs(cross2d(coordinates[b] - coordinates[a], coordinates[c] - coordinates[a]))
+                values.append(max(0.0, 0.8 - area))
+        for left, right in itertools.combinations(points, 2):
+            if any(item.name == "overlap" and {left, right} == set(item.points) for item in constraints):
+                continue
+            distance = float(np.linalg.norm(coordinates[left] - coordinates[right]))
+            values.append(max(0.0, 0.12 - distance))
+        return np.asarray(values, dtype=float)
+
+    variable_count = max(0, 2 * (len(points) - 2))
+    for restart in range(1, max_restarts + 1):
+        initial = rng.normal(0.0, 2.5, size=variable_count)
+        solved = least_squares(residuals, initial, max_nfev=3000, ftol=1e-12, xtol=1e-12, gtol=1e-12)
+        error = float(np.max(np.abs(residuals(solved.x)))) if residuals(solved.x).size else 0.0
+        if best is None or error < best[0]:
+            best = (error, solved.x.copy())
+        if error <= 1e-6:
+            coordinates = unpack(solved.x)
+            return {name: (float(value[0]), float(value[1])) for name, value in coordinates.items()}, error, restart
+    if best is None or best[0] > 1e-5:
+        return {}, best[0] if best else None, max_restarts
+    coordinates = unpack(best[1])
+    return {name: (float(value[0]), float(value[1])) for name, value in coordinates.items()}, best[0], max_restarts
+
+
+def predicate_residual(item: TypedPredicate, coordinates: dict[str, np.ndarray]) -> float:
+    p = [coordinates[name] for name in item.points]
+    if item.name == "coll":
+        return cross2d(p[1] - p[0], p[2] - p[0]) / 16.0
+    if item.name == "para":
+        return cross2d(p[1] - p[0], p[3] - p[2]) / 16.0
+    if item.name == "perp":
+        return float((p[1] - p[0]) @ (p[3] - p[2])) / 16.0
+    if item.name == "cong":
+        return (squared_distance(p[0], p[1]) - squared_distance(p[2], p[3])) / 16.0
+    if item.name == "eqangle":
+        u, v = p[1] - p[0], p[3] - p[2]
+        w, z = p[5] - p[4], p[7] - p[6]
+        return (cross2d(u, v) * float(w @ z) - float(u @ v) * cross2d(w, z)) / 256.0
+    if item.name == "cyclic":
+        matrix = np.asarray([[point[0], point[1], point @ point, 1.0] for point in p])
+        return float(np.linalg.det(matrix)) / 256.0
+    if item.name == "centroid":
+        center, a, b, c = p
+        delta = center - (a + b + c) / 3
+        return float(np.linalg.norm(delta))
+    raise ValueError(f"unsupported numerical predicate: {item.name}")
+
+
+def squared_distance(a: np.ndarray, b: np.ndarray) -> float:
+    delta = a - b
+    return float(delta @ delta)
+
+
+def cross2d(a: np.ndarray, b: np.ndarray) -> float:
+    return float(a[0] * b[1] - a[1] * b[0])
+
+
+def render_formal_problem(
+    points: list[str],
+    coordinates: dict[str, tuple[float, float]],
+    predicates: list[TypedPredicate],
+    goal: TypedPredicate,
+) -> str:
+    declarations = []
+    executable = [item for item in predicates if item.name in RELATION_SYMBOLS]
+    for index, name in enumerate(points):
+        x, y = coordinates[name]
+        suffix = ", ".join(item.render() for item in executable) if index == len(points) - 1 else ""
+        declarations.append(f"{name}@{format_number(x)}_{format_number(y)} = {suffix}")
+    return "; ".join(declarations) + " ? " + goal.render()
+
+
+def format_number(value: float) -> str:
+    if abs(value) < 1e-12:
+        value = 0.0
+    return f"{value:.12g}"

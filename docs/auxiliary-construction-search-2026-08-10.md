@@ -92,3 +92,55 @@ MATH 700問中、geometry分類は32問だけで、3正解、2誤答、27問が
 - Google DeepMind, AlphaGeometry: https://github.com/google-deepmind/alphageometry
 - Google DeepMind, AlphaGeometry 2: https://github.com/google-deepmind/alphageometry2
 - AlphaGeometry 2 paper: https://arxiv.org/abs/2502.03544
+
+## 2026-08-10 追加実装: AG2型パイプライン
+
+前節で未接続だった自然文/TeX loweringを、次の一本の実行経路として追加した。
+
+```text
+日本語/英語/TeX
+  -> 有限の幾何字句・関係構文解析
+  -> TypedPredicate IR
+  -> 非線形最小二乗による非退化な数値図構成
+  -> AG2 formal problem
+  -> S1/S2/S3 analysis
+  -> 6種類の有限探索木
+  -> 9種類の型付き補助構成
+  -> DDAR exact verification
+```
+
+### S1/S2/S3の音性境界
+
+- `S1`: 元の前提だけからDDARが導出した事実。
+- `S2`: 目標も一時的に仮定したときに増える事実。
+- `S3`: 数値図では成立するが未証明の事実。
+
+`S2/S3` は候補点と構成射の順位付けにしか使わない。DDARへ渡す前提は、元の前提と
+明示的に構成した補助点の定義だけである。数値図が目標を満たしても証明済みとは扱わない。
+
+探索木は `classic / incidence / metric / circle / deep_narrow / shallow_wide` の6分布である。
+これはAG2のSKESTと同じ「異なる探索分布を併用する」という契約を有限文法で再構成した
+もので、Google内部のGemini proposerをコピーしたものではない。
+
+### 実測
+
+| 検査 | 結果 |
+|---|---:|
+| 公式AG2 DDAR回帰 | 26/26 |
+| Worker全回帰 | 85/85 |
+| 自然文/TeX・補助構成・漏洩防止の対象検査 | 9/9 |
+| 和文TeXと英文の表層変換 | 同一goal・同一`line_intersection` |
+| 根拠なしの数値的に実現可能な目標 | 未証明を維持 |
+| 未対応の重心述語 | 黙って削除せず`unformalized` |
+
+公式26問は形式化済みで、うち11問は補助点が手動供給済みである。したがって26/26を
+AG2論文のIMO-AG-50 42/50と比較してはいけない。現状は、自然文を含む独自の小さい
+metamorphic検査を通した段階であり、IMO-AG-50自然文44問の再現値ではない。
+
+### 現在の不足
+
+形式化語彙は `coll/perp/para/cong/cyclic/eqangle` と中点・外心の展開までである。
+重心、接線、円と直線上の所属、比、角定数、画像OCRからの図形対応はまだ同じIRへ
+完全loweringできない。未対応語を捨てる代わりに棄却するため音性は保つが、coverageは低い。
+次の評価単位は、未見の自然文幾何問題について `formalization rate / proved rate / false-proof rate`
+を別々に測ることである。

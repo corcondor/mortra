@@ -99,10 +99,14 @@ def search_auxiliary_constructions(
     max_depth: int = 2,
     beam_width: int = 8,
     max_attempts: int = 96,
+    allowed_kinds: set[str] | None = None,
+    preferred_points: set[str] | None = None,
+    tree_name: str = "classic",
 ) -> dict[str, Any]:
     proved, gap, derived, rounds = evaluate_problem(problem, DDAR)
     if proved:
         return search_result(
+            tree_name=tree_name,
             status="proved",
             proved=True,
             baseline_proved=True,
@@ -123,7 +127,11 @@ def search_auxiliary_constructions(
     for depth in range(1, max_depth + 1):
         next_states: list[SearchState] = []
         for state in frontier:
-            candidates = generate_candidates(state.problem)
+            candidates = generate_candidates(
+                state.problem,
+                allowed_kinds=allowed_kinds,
+                preferred_points=preferred_points,
+            )
             for candidate in candidates:
                 if attempts >= max_attempts:
                     break
@@ -163,6 +171,7 @@ def search_auxiliary_constructions(
                     best = candidate_state
                 if solved:
                     return search_result(
+                        tree_name=tree_name,
                         status="proved",
                         proved=True,
                         baseline_proved=False,
@@ -183,6 +192,7 @@ def search_auxiliary_constructions(
         frontier = next_states[:beam_width]
 
     return search_result(
+        tree_name=tree_name,
         status="unproved",
         proved=False,
         baseline_proved=False,
@@ -200,7 +210,12 @@ def rank_state(state: SearchState) -> tuple[int, int, int]:
     return (state.goal_gap, -state.derived_size, len(state.constructions))
 
 
-def generate_candidates(problem: Any) -> list[ConstructionCandidate]:
+def generate_candidates(
+    problem: Any,
+    *,
+    allowed_kinds: set[str] | None = None,
+    preferred_points: set[str] | None = None,
+) -> list[ConstructionCandidate]:
     all_points = list(problem.points)
     point_names = {point.name for point in all_points}
     goal_names = {point.name for point in problem.goal.points}
@@ -344,7 +359,19 @@ def generate_candidates(problem: Any) -> list[ConstructionCandidate]:
     unique: dict[tuple[Any, ...], ConstructionCandidate] = {}
     for item in candidates:
         unique.setdefault(item.signature, item)
-    return sorted(unique.values(), key=lambda item: (-item.score_hint, item.kind, item.signature))
+    values = unique.values()
+    if allowed_kinds is not None:
+        values = (item for item in values if item.kind in allowed_kinds)
+    preferred_points = preferred_points or set()
+    return sorted(
+        values,
+        key=lambda item: (
+            -len(set(item.source_points) & preferred_points),
+            -item.score_hint,
+            item.kind,
+            item.signature,
+        ),
+    )
 
 
 def select_active_points(

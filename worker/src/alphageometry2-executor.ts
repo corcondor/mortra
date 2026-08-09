@@ -2,7 +2,7 @@ import { spawnSync } from 'node:child_process'
 import { resolve } from 'node:path'
 
 export type AlphaGeometry2Result = {
-  status: 'proved' | 'unproved' | 'unavailable' | 'error'
+  status: 'proved' | 'unproved' | 'unformalized' | 'unavailable' | 'error'
   proved: boolean
   goal?: string
   point_count?: number
@@ -25,6 +25,25 @@ export type AlphaGeometry2Result = {
   proposal_engine?: string
   construction_grammar?: string[]
   uses_language_model?: boolean
+  input_mode?: 'natural_or_tex'
+  formalization?: {
+    status: string
+    normalized_text: string
+    points: string[]
+    unresolved_relations: string[]
+    diagram_residual: number | null
+    restarts: number
+    formal_problem: string | null
+  }
+  analysis?: {
+    S1: string[]
+    S2: string[]
+    S3: string[]
+    preferred_points: string[]
+    analysis_text: string
+    soundness_boundary: string
+  }
+  trees?: Array<{ name: string; proved: boolean; attempts: number; depth: number; goal_gap?: number }>
   attempt_trace?: Array<{
     attempt: number
     depth: number
@@ -45,6 +64,9 @@ export type AlphaGeometry2Options = {
   maxDepth?: number
   beamWidth?: number
   maxAttempts?: number
+  inputFormat?: 'auto' | 'formal' | 'natural'
+  ensemble?: boolean
+  maxRestarts?: number
 }
 
 function pythonCommands(): string[] {
@@ -59,6 +81,7 @@ export function executeAlphaGeometry2(formalProblem: string, options: AlphaGeome
   const adapter = resolve(__dirname, '..', 'backend', 'alphageometry2_adapter.py')
   for (const command of pythonCommands()) {
     const args = [adapter, '--engine-dir', engineDirectory]
+    args.push('--input-format', options.inputFormat ?? 'auto')
     if (options.searchAuxiliary ?? true) {
       args.push(
         '--auto-aux',
@@ -66,10 +89,17 @@ export function executeAlphaGeometry2(formalProblem: string, options: AlphaGeome
         '--beam-width', String(options.beamWidth ?? 8),
         '--max-attempts', String(options.maxAttempts ?? 96),
       )
+      if (options.ensemble ?? true) args.push('--ensemble')
     }
+    args.push('--max-restarts', String(options.maxRestarts ?? 20))
     const result = spawnSync(command, args, {
       input: JSON.stringify({ problem: formalProblem }),
       encoding: 'utf8',
+      env: {
+        ...process.env,
+        PYTHONUTF8: '1',
+        PYTHONIOENCODING: 'utf-8',
+      },
       timeout: 120_000,
       maxBuffer: 4 * 1024 * 1024,
     })

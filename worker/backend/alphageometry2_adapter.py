@@ -67,11 +67,23 @@ def solve_with_auxiliary_search(
     max_depth: int = 2,
     beam_width: int = 8,
     max_attempts: int = 96,
+    ensemble: bool = False,
 ) -> dict[str, Any]:
     AGProblem, DDAR = load_engine(directory)
+    problem = AGProblem.parse(problem_text)
+    if ensemble:
+        from alphageometry2_ensemble_search import ensemble_search
+
+        return ensemble_search(
+            problem,
+            AGProblem=AGProblem,
+            DDAR=DDAR,
+            max_depth=max_depth,
+            beam_width=beam_width,
+            max_attempts=max_attempts,
+        )
     from alphageometry2_auxiliary_search import search_auxiliary_constructions
 
-    problem = AGProblem.parse(problem_text)
     return search_auxiliary_constructions(
         problem,
         AGProblem=AGProblem,
@@ -80,6 +92,39 @@ def solve_with_auxiliary_search(
         beam_width=beam_width,
         max_attempts=max_attempts,
     )
+
+
+def solve_natural_problem(
+    problem_text: str,
+    *,
+    directory: Path,
+    max_depth: int = 4,
+    beam_width: int = 16,
+    max_attempts: int = 384,
+    max_restarts: int = 20,
+) -> dict[str, Any]:
+    from geometry_natural_formalizer import formalize_geometry_text
+
+    formalization = formalize_geometry_text(problem_text, max_restarts=max_restarts)
+    if formalization.status != "formalized" or formalization.formal_problem is None:
+        return {
+            "status": "unformalized",
+            "proved": False,
+            "backend": "MathOS typed geometry formalizer",
+            "formalization": formalization.to_dict(),
+            "uses_language_model": False,
+        }
+    result = solve_with_auxiliary_search(
+        formalization.formal_problem,
+        directory=directory,
+        max_depth=max_depth,
+        beam_width=beam_width,
+        max_attempts=max_attempts,
+        ensemble=True,
+    )
+    result["formalization"] = formalization.to_dict()
+    result["input_mode"] = "natural_or_tex"
+    return result
 
 
 def run_official_suite(*, directory: Path, limit: int | None = None) -> dict[str, Any]:
@@ -115,25 +160,42 @@ def main() -> int:
     parser.add_argument("--official-suite", action="store_true")
     parser.add_argument("--limit", type=int)
     parser.add_argument("--auto-aux", action="store_true")
+    parser.add_argument("--ensemble", action="store_true")
+    parser.add_argument("--input-format", choices=("auto", "formal", "natural"), default="auto")
     parser.add_argument("--max-depth", type=int, default=2)
     parser.add_argument("--beam-width", type=int, default=8)
     parser.add_argument("--max-attempts", type=int, default=96)
+    parser.add_argument("--max-restarts", type=int, default=20)
     args = parser.parse_args()
     directory = engine_directory(args.engine_dir)
     if args.official_suite:
         result = run_official_suite(directory=directory, limit=args.limit)
     else:
         payload = json.load(sys.stdin)
-        if args.auto_aux:
-            result = solve_with_auxiliary_search(
-                str(payload["problem"]),
+        problem_text = str(payload["problem"])
+        input_format = args.input_format
+        if input_format == "auto":
+            input_format = "formal" if "@" in problem_text and "?" in problem_text else "natural"
+        if input_format == "natural":
+            result = solve_natural_problem(
+                problem_text,
                 directory=directory,
                 max_depth=args.max_depth,
                 beam_width=args.beam_width,
                 max_attempts=args.max_attempts,
+                max_restarts=args.max_restarts,
+            )
+        elif args.auto_aux:
+            result = solve_with_auxiliary_search(
+                problem_text,
+                directory=directory,
+                max_depth=args.max_depth,
+                beam_width=args.beam_width,
+                max_attempts=args.max_attempts,
+                ensemble=args.ensemble,
             )
         else:
-            result = solve_formal_problem(str(payload["problem"]), directory=directory)
+            result = solve_formal_problem(problem_text, directory=directory)
     print(json.dumps(result, ensure_ascii=False))
     return 0
 
