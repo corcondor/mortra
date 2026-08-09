@@ -5,6 +5,8 @@ import {
   executableMorphismAtlas,
 } from './generalization-kernel'
 import { enumerateTypedTerms } from './typed-term-enumerator'
+import { lowerLinearPredicateStatement } from './linear-predicate-lowerer'
+import type { LinearCoordinate } from './exact-linear-invariant'
 
 type Request = {
   id?: string
@@ -13,11 +15,13 @@ type Request = {
   max_states?: number
   atlas?: 'core' | 'unified'
   compact?: boolean
+  coordinate?: LinearCoordinate
 }
 
-function evaluate(request: Request) {
+export function evaluateBenchmarkRequest(request: Request) {
   const graph = buildSemanticHypergraph({ id: request.id, statement: request.statement })
   const rules = request.atlas === 'core' ? coreExecutableMorphismAtlas() : executableMorphismAtlas()
+  const linearExecution = lowerLinearPredicateStatement(request.statement, request.coordinate ?? 'additive')
   const goalSorts = graph.query_sorts
   if (!goalSorts.length) {
     const unresolved = {
@@ -31,6 +35,7 @@ function evaluate(request: Request) {
       morphisms: graph.edges.map(edge => edge.morphism),
       language_analysis: graph.language_analysis,
       goal_count: 0,
+      execution: linearExecution,
     }
     return request.compact ? unresolved : { ...unresolved, graph, goals: [], frontier: [] }
   }
@@ -53,12 +58,17 @@ function evaluate(request: Request) {
     language_analysis: graph.language_analysis,
     goal_count: enumeration.goals.length,
     first_goal: enumeration.goals[0] ?? null,
+    execution: linearExecution,
   }
   return request.compact
     ? result
     : { ...result, graph, goals: enumeration.goals.slice(0, 8), frontier: enumeration.frontier.slice(0, 30) }
 }
 
-const input = JSON.parse(readFileSync(0, 'utf8')) as Request | Request[]
-const output = Array.isArray(input) ? input.map(evaluate) : evaluate(input)
-process.stdout.write(JSON.stringify(output))
+if (require.main === module) {
+  const input = JSON.parse(readFileSync(0, 'utf8')) as Request | Request[]
+  const output = Array.isArray(input)
+    ? input.map(evaluateBenchmarkRequest)
+    : evaluateBenchmarkRequest(input)
+  process.stdout.write(JSON.stringify(output))
+}

@@ -26,7 +26,7 @@ export type LinearPredicateDocument = {
 
 export type LinearPredicateLowering =
   | { status: 'lowered'; program: LinearInvariantProgram; certificate: LinearInvariantCertificate }
-  | { status: 'parse_error' | 'non_equality' | 'nonlinear' | 'missing_goal'; detail: string }
+  | { status: 'parse_error' | 'non_equality' | 'nonlinear' | 'missing_goal' | 'missing_constraints'; detail: string }
 
 const ZERO: Q = { n: 0n, d: 1n }
 const ONE: Q = { n: 1n, d: 1n }
@@ -166,6 +166,9 @@ function equation(relation: MathRelationIR, index: number): LinearInvariantProgr
 
 export function lowerLinearPredicateDocument(document: LinearPredicateDocument): LinearPredicateLowering {
   if (!document.goal.trim()) return { status: 'missing_goal', detail: 'goal expression is empty' }
+  if (!document.relations.length) {
+    return { status: 'missing_constraints', detail: 'no relation was supplied to the backend' }
+  }
   const parsedRelations = document.relations.map(parseLatexRelation)
   if (parsedRelations.some(relation => relation === null)) {
     return { status: 'parse_error', detail: 'at least one relation could not be parsed' }
@@ -181,6 +184,9 @@ export function lowerLinearPredicateDocument(document: LinearPredicateDocument):
   if (parsedGoal === null) return { status: 'parse_error', detail: 'goal expression could not be parsed' }
   const goal = affine(parsedGoal)
   if (goal === null) return { status: 'nonlinear', detail: 'goal is not affine in the selected coordinate system' }
+  if (!goal.terms.size) {
+    return { status: 'missing_goal', detail: 'a constant TeX fragment is not a mathematical query' }
+  }
   const program: LinearInvariantProgram = {
     coordinate: document.coordinate,
     equations: equations as LinearInvariantProgram['equations'],
