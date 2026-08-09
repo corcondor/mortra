@@ -1,0 +1,38 @@
+name: Verify MathOS Worker Kernel
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "worker/**"
+      - ".github/workflows/worker-ci.yml"
+  pull_request:
+    paths:
+      - "worker/**"
+      - ".github/workflows/worker-ci.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: mathos-worker-kernel-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: worker/package-lock.json
+      - name: Install Worker dependencies
+        working-directory: worker
+        run: npm ci
+      - name: Test the authoritative semantic and execution kernel
+        working-directory: worker
+        run: npm test
+      - name: Type-check the production Worker
+        working-directory: worker
+        run: npm run build
