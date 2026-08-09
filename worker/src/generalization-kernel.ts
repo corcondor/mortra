@@ -225,7 +225,7 @@ const HYPER_MORPHISM_ATLAS: readonly HyperMorphismSchema[] = [
     sources: ['Real', 'Real'],
     target: 'Real',
     preserves: ['exactness'],
-    backend: ['field-arithmetic'],
+    backend: ['field-arithmetic', 'exact-linear-invariant'],
     allows_cross_parent_fusion: false,
   },
   {
