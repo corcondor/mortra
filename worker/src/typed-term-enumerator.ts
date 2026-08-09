@@ -84,6 +84,7 @@ function graphRules(graphs: SemanticHypergraph[]): HyperMorphismSchema[] {
       target: edge.target,
       preserves: edge.preserves,
       backend: edge.backend,
+      allows_cross_parent_fusion: edge.proved,
     })))
 }
 

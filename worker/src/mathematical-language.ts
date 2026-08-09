@@ -106,6 +106,7 @@ const PARTICLES = ['に対して', 'について', 'によって', 'において
 const KEYWORDS = [
   'すべて', '全て', '任意', '存在する', '存在し', '満たす', '定める', '定義する',
   'とする', '求めよ', '示せ', '証明せよ', '分類せよ', '最大値', '最小値',
+  'find', 'determine', 'compute', 'calculate', 'prove', 'show', 'classify',
 ]
 const MULTI_RELATIONS = ['<=>', '=>', '<=', '>=', '!=', '==', '≦', '≧', '≠', '∈', '⊂', '⊆', '→', '↦']
 const SORT_WORDS: Record<string, string> = {
@@ -216,11 +217,11 @@ export function lexMathematicalText(text: string): MathToken[] {
 }
 
 function queryOf(raw: string, clause: number): QuerySyntax | null {
-  if (/示せ|証明せよ/.test(raw)) return { kind: 'prove', clause }
-  if (/分類せよ|すべて求めよ|全て求めよ/.test(raw)) return { kind: 'classify', clause }
-  if (/最大|最小|極値/.test(raw)) return { kind: 'optimize', clause }
-  if (/面積|体積|測度/.test(raw) && /求めよ/.test(raw)) return { kind: 'measure', clause }
-  if (/求めよ/.test(raw)) return { kind: 'compute', clause }
+  if (/示せ|証明せよ|\b(?:prove|show)\b/i.test(raw)) return { kind: 'prove', clause }
+  if (/分類せよ|すべて求めよ|全て求めよ|\b(?:classify|find all|determine all)\b/i.test(raw)) return { kind: 'classify', clause }
+  if (/最大|最小|極値|\b(?:maximum|minimum|maximize|minimize|largest|smallest)\b/i.test(raw)) return { kind: 'optimize', clause }
+  if (/(?:面積|体積|測度|\barea\b|\bvolume\b)/i.test(raw) && /求めよ|\b(?:find|determine|compute|calculate)\b/i.test(raw)) return { kind: 'measure', clause }
+  if (/求めよ|\b(?:find|determine|compute|calculate|evaluate)\b/i.test(raw)) return { kind: 'compute', clause }
   return null
 }
 

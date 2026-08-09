@@ -62,3 +62,10 @@ test('equation-style definitions and relations are elaborated structurally', () 
   assert.ok(!result.ir.unresolved_references.includes('x'))
   assert.ok(!result.ir.unresolved_references.includes('dx'))
 })
+
+test('English olympiad imperatives elaborate to the same finite query kinds', () => {
+  assert.equal(elaborateMathematicalText('Find all integers n satisfying the condition.').ir.query?.kind, 'classify')
+  assert.equal(elaborateMathematicalText('Prove that the expression is positive.').ir.query?.kind, 'prove')
+  assert.equal(elaborateMathematicalText('Determine the maximum possible value.').ir.query?.kind, 'optimize')
+  assert.equal(elaborateMathematicalText('Calculate the area of the triangle.').ir.query?.kind, 'measure')
+})

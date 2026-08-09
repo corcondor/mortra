@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto'
 import type { DiscoveryParent } from './parent-conditioned-discovery'
 import { elaborateMathematicalText } from './mathematical-language'
+import { VERIFIED_DOMAIN_EXTENSIONS } from './verified-domain-extensions'
 
 export type SemanticRole = 'object' | 'operator' | 'relation' | 'query'
 
@@ -212,7 +213,7 @@ export type HyperMorphismSchema = {
   allows_cross_parent_fusion?: boolean
 }
 
-const HYPER_MORPHISM_ATLAS: readonly HyperMorphismSchema[] = [
+const CORE_HYPER_MORPHISM_ATLAS: readonly HyperMorphismSchema[] = [
   ...MORPHISM_ATLAS.map(edge => ({ ...edge, sources: [edge.source] })),
 
   /*
@@ -334,8 +335,22 @@ const HYPER_MORPHISM_ATLAS: readonly HyperMorphismSchema[] = [
   },
 ]
 
+const HYPER_MORPHISM_ATLAS: readonly HyperMorphismSchema[] = [
+  ...CORE_HYPER_MORPHISM_ATLAS,
+  ...VERIFIED_DOMAIN_EXTENSIONS.map(edge => ({
+    ...edge,
+    // Probe experiments established within-problem reachability.  They did
+    // not establish that an edge may fuse independent selected parents.
+    allows_cross_parent_fusion: edge.allows_cross_parent_fusion ?? false,
+  })),
+]
+
 export function executableMorphismAtlas(): readonly HyperMorphismSchema[] {
   return HYPER_MORPHISM_ATLAS
+}
+
+export function coreExecutableMorphismAtlas(): readonly HyperMorphismSchema[] {
+  return CORE_HYPER_MORPHISM_ATLAS
 }
 
 function hash(value: unknown, length = 12): string {
@@ -379,6 +394,11 @@ export function buildSemanticHypergraph(parent: DiscoveryParent): SemanticHyperg
   const edges: SemanticEdge[] = []
   const rootSorts = new Set<string>()
   const querySorts = new Set<string>()
+  const groundedSorts = new Set<string>([
+    ...language.ir.definitions.map(definition => definition.inferred_sort),
+    ...language.ir.declarations.map(declaration => declaration.sort),
+    ...(language.ir.constraints.length || language.ir.quantifiers.length ? ['Proposition'] : []),
+  ])
 
   const clauses = language.forest.analyses[language.ir.selected_analysis]?.clauses ?? []
   for (const schema of OPERATOR_SCHEMAS) {
@@ -395,7 +415,10 @@ export function buildSemanticHypergraph(parent: DiscoveryParent): SemanticHyperg
     })
     // The input object exists in the parent. The output is only available after
     // the detected operator has actually been applied by the planner.
-    rootSorts.add(schema.input)
+    // A query names a demanded output, not an already available input object.
+    // Treating "prove" as evidence that a Proposition already exists makes
+    // every proof goal succeed vacuously.
+    if (schema.role !== 'query') rootSorts.add(schema.input)
     if (schema.role === 'query') querySorts.add(schema.output)
     edges.push({
       source: schema.input,
@@ -403,8 +426,31 @@ export function buildSemanticHypergraph(parent: DiscoveryParent): SemanticHyperg
       morphism: schema.canonical,
       preserves: schema.preserves,
       backend: schema.backend,
-      proved: false,
+      // A surface operator may cross parent boundaries only when its own
+      // parent supplies an object of the required input sort. This prevents a
+      // keyword from borrowing an unrelated object and fabricating fusion.
+      proved: groundedSorts.has(schema.input),
       contributes_provenance: schema.role !== 'query',
+    })
+  }
+  if (language.ir.query) {
+    const queryTarget: Record<typeof language.ir.query.kind, string> = {
+      compute: 'Scalar',
+      prove: 'Proof',
+      classify: 'FiniteSet',
+      optimize: 'Scalar',
+      measure: 'Scalar',
+      observe: 'Scalar',
+    }
+    const sort = queryTarget[language.ir.query.kind]
+    querySorts.add(sort)
+    nodes.push({
+      id: `${id}:query:${language.ir.query.kind}`,
+      role: 'query',
+      canonical: `Query[${language.ir.query.kind}]`,
+      sort,
+      surface: language.ir.query.kind,
+      parent_id: id,
     })
   }
   for (const definition of language.ir.definitions) {
@@ -565,7 +611,7 @@ function planJointHypergraph(graphs: SemanticHypergraph[], maxDepth: number, max
       target: edge.target,
       preserves: edge.preserves,
       backend: edge.backend,
-      allows_cross_parent_fusion: true,
+      allows_cross_parent_fusion: edge.proved,
       originMask: edge.contributes_provenance ? 1 << graphIndex : 0,
     }))),
   ]

@@ -108,3 +108,10 @@ test('rounding and percent syntax lift to typed backend contracts', () => {
     edge.backend.includes('rational-arithmetic'),
   ))
 })
+
+test('the language query is wired into a typed Worker goal', () => {
+  const algebra = buildSemanticHypergraph({ statement: '実数 x,y が x+y=5 を満たすとき x^2+y^2 を求めよ。' })
+  const proof = buildSemanticHypergraph({ statement: 'For every integer n, prove that n(n+1) is even.' })
+  assert.deepEqual(algebra.query_sorts, ['Scalar'])
+  assert.deepEqual(proof.query_sorts, ['Proof'])
+})
