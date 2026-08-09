@@ -1,5 +1,9 @@
 # MathOS実行核の統一（2026-08-10）
 
+> **訂正:** 「112射Atlas」は112個の型付き射契約を意味し、112個の実行器を意味しない。
+> 型到達36.4%も正答率ではない。実行可能loweringと再測定値は
+> `executable-lowering-and-benchmark-correction-2026-08-10.md` を正本とする。
+
 ## 結論
 
 Web本番と公開ベンチの意味解析・射探索は、`worker/src/` の型付きWorker核を正本とする。
@@ -64,4 +68,3 @@ MathNet development分割、先頭50行から該当44問、深さ6、最大1000�
 - Worker: 64 tests passed
 - Worker TypeScript build: passed
 - Python benchmark/core regression: 145 tests passed
-

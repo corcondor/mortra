@@ -103,6 +103,11 @@ class Parser {
     }
   }
 
+  parseExpression(): MathExpression | null {
+    const expression = this.parseAdditive()
+    return expression !== null && this.index === this.tokens.length ? expression : null
+  }
+
   private peek(offset = 0): Token | undefined {
     return this.tokens[this.index + offset]
   }
@@ -218,6 +223,10 @@ export function extractLatexSegments(statement: string): string[] {
 
 export function parseLatexRelation(latex: string): MathRelationIR | null {
   return new Parser(tokenize(latex)).parseRelation(latex)
+}
+
+export function parseLatexExpression(latex: string): MathExpression | null {
+  return new Parser(tokenize(latex)).parseExpression()
 }
 
 export function extractMathRelations(statement: string): MathRelationIR[] {

@@ -30,6 +30,7 @@ export type LinearInvariantProgram = {
   sideConditions?: LinearSideCondition[]
   goal: {
     terms: Record<string, RationalInput>
+    constant?: RationalInput
     expected?: RationalInput
   }
 }
@@ -150,7 +151,11 @@ export function executeLinearInvariant(program: LinearInvariantProgram): LinearI
   }
 
   let goal: Row = {
-    values: [...variables.map(variable => parse(program.goal.terms[variable] ?? 0)), ZERO],
+    // For g(x) = sum(a_i x_i) + c, store sum(a_i x_i) - value = -c.
+    values: [
+      ...variables.map(variable => parse(program.goal.terms[variable] ?? 0)),
+      neg(parse(program.goal.constant ?? 0)),
+    ],
     provenance: new Set(),
   }
   reduced.pivots.forEach((column, rowIndex) => {
@@ -178,4 +183,3 @@ export function executeLinearInvariant(program: LinearInvariantProgram): LinearI
     variables, residual: {}, blockedSideConditions: [],
   }
 }
-
