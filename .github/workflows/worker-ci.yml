@@ -40,6 +40,8 @@ jobs:
         run: npm ci
       - name: Fetch official AlphaGeometry2 symbolic backend
         run: git clone --depth 1 https://github.com/google-deepmind/alphageometry2.git "$RUNNER_TEMP/alphageometry2"
+      - name: Install official AlphaGeometry2 runtime dependency
+        run: python -m pip install numpy
       - name: Test the authoritative semantic and execution kernel
         working-directory: worker
         env:
