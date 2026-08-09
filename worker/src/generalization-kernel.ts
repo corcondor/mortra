@@ -159,6 +159,46 @@ const MORPHISM_ATLAS: readonly MorphismSchema[] = [
   { name: 'TriangulationElaboration', source: 'TopologicalSpace', target: 'FiniteTriangulation', preserves: ['homeomorphism-type', 'incidence'], backend: ['simplicial-incidence'] },
   { name: 'EulerCharacteristic', source: 'FiniteTriangulation', target: 'IntegerInvariant', preserves: ['homeomorphism-type'], backend: ['euler-incidence-elimination'] },
   { name: 'IntegerPredicateIntroduction', source: 'ArithmeticObject', target: 'IntegerPredicate', preserves: ['integrality'], backend: ['integer-arithmetic'] },
+
+  /*
+   * 構造修復。
+   *
+   * アトラスの次数を数えたところ、32ソート中18個が壊れていた。
+   * 入次数0（誰も作れない）が12個、出次数0（行き止まり）が6個。
+   * Scalar は入次数6・出次数0で、6本の射が作るのに誰も消費しない。
+   * グラフではなく漏斗の形をしていた。
+   *
+   * 欠けていたのは新しい数学ではなく、次の2種類の書き忘れだった。
+   *
+   * (1) 包含。数学的に一方が他方の部分集合なのにソートが分断されていた。
+   *     1本引くと入次数0と出次数0が同時に埋まるので効率が良い。
+   * (2) 標準的な構成。特性多項式や素因数分解のような、誰でも知っているもの。
+   *
+   * これで欠陥は 0 になり、型の上の到達は 2/16 → 16/16 になった。
+   * ただし到達は必要条件にすぎず、導出が出るかは別に測る必要がある。
+   */
+
+  // (1) 包含
+  { name: 'ScalarAsReal', source: 'Scalar', target: 'Real', preserves: ['value'], backend: ['inclusion'] },
+  { name: 'QuantityAsReal', source: 'Quantity', target: 'Real', preserves: ['value'], backend: ['inclusion'] },
+  { name: 'IntegerAsReal', source: 'Integer', target: 'Real', preserves: ['value'], backend: ['inclusion'] },
+  { name: 'IntegerInvariantAsInteger', source: 'IntegerInvariant', target: 'Integer', preserves: ['value'], backend: ['inclusion'] },
+  { name: 'IntegerAsArithmeticObject', source: 'Integer', target: 'ArithmeticObject', preserves: ['value'], backend: ['inclusion'] },
+  { name: 'IntegralTriangleAsTriangle', source: 'IntegralTriangle', target: 'Triangle', preserves: ['side-lengths', 'incidence'], backend: ['inclusion'] },
+  { name: 'TriangleAsConfiguration', source: 'Triangle', target: 'GeometricConfiguration', preserves: ['incidence'], backend: ['inclusion'] },
+  // 多項式は微分可能。これが無いせいで Polynomial から微分に入れなかった
+  { name: 'PolynomialAsSmooth', source: 'Polynomial', target: 'DifferentiableFunction', preserves: ['value', 'derivative'], backend: ['inclusion'] },
+  { name: 'SemialgebraicUnderlyingSpace', source: 'SemialgebraicSet', target: 'TopologicalSpace', preserves: ['topology'], backend: ['subspace-topology'] },
+
+  // (2) 標準的な構成
+  { name: 'CharacteristicPolynomial', source: 'Matrix2', target: 'Polynomial', preserves: ['spectrum'], backend: ['charpoly'] },
+  { name: 'MobiusRealization', source: 'Matrix2', target: 'RationalSelfMap', preserves: ['projective-action'], backend: ['rational-normal-form'] },
+  { name: 'CoefficientSequence', source: 'Polynomial', target: 'Sequence', preserves: ['coefficients'], backend: ['polynomial-coefficients'] },
+  { name: 'PrimeFactorization', source: 'Integer', target: 'PrimeSpectrum', preserves: ['valuation'], backend: ['integer-factorization'] },
+  // 三角形の計量量が満たす関係式のイデアル。余弦定理はここから落ちる帰結であって、
+  // 余弦定理そのものを射にすると1問専用になる（暗記）
+  { name: 'MetricRelationIdeal', source: 'TriangleMetricData', target: 'PolynomialSystem', preserves: ['metric'], backend: ['groebner-basis', 'coordinate-algebra'] },
+  { name: 'DesignatedRootEvaluation', source: 'AlgebraicSet', target: 'Real', preserves: ['exactness'], backend: ['polynomial-solver'] },
 ]
 
 export type HyperMorphismSchema = {
@@ -167,10 +207,61 @@ export type HyperMorphismSchema = {
   target: string
   preserves: string[]
   backend: string[]
+  // Some operations are valid inside an existing proof but are too weak to
+  // establish that independent parent problems share one mathematical object.
+  allows_cross_parent_fusion?: boolean
 }
 
 const HYPER_MORPHISM_ATLAS: readonly HyperMorphismSchema[] = [
   ...MORPHISM_ATLAS.map(edge => ({ ...edge, sources: [edge.source] })),
+
+  /*
+   * 複数の親が1本の射で出会う手段が、数値層に一つも無かった。
+   * 融合は「全親が別々の入力ポートを占める」ことを要求するので、
+   * これが無いと数値を扱う問題どうしは融合できない。
+   */
+  {
+    name: 'RealFieldCombination',
+    sources: ['Real', 'Real'],
+    target: 'Real',
+    preserves: ['exactness'],
+    backend: ['field-arithmetic'],
+    allows_cross_parent_fusion: false,
+  },
+  {
+    // 不等式。sympy の ask は判定できず None を返す。SMT に投げる
+    name: 'OrderComparison',
+    sources: ['Real', 'Real'],
+    target: 'Proposition',
+    preserves: ['order'],
+    backend: ['smt-nonlinear-real'],
+    allows_cross_parent_fusion: false,
+  },
+  {
+    // Proposition が出次数0だったので、証明を連鎖できなかった
+    name: 'PropositionConjunction',
+    sources: ['Proposition', 'Proposition'],
+    target: 'Proposition',
+    preserves: ['truth'],
+    backend: ['smt-nonlinear-real'],
+    allows_cross_parent_fusion: false,
+  },
+  {
+    name: 'IntegerPairing',
+    sources: ['Integer', 'Integer'],
+    target: 'IntegerPair',
+    preserves: ['components'],
+    backend: ['integer-arithmetic'],
+    allows_cross_parent_fusion: false,
+  },
+  {
+    name: 'RatePairing',
+    sources: ['Quantity', 'Quantity'],
+    target: 'RateQuantityPair',
+    preserves: ['unit', 'ratio'],
+    backend: ['unit-checker'],
+    allows_cross_parent_fusion: false,
+  },
   {
     name: 'MapOrbitEvaluation',
     sources: ['RationalSelfMap', 'FiniteAlgebraicOrbit'],
@@ -474,6 +565,7 @@ function planJointHypergraph(graphs: SemanticHypergraph[], maxDepth: number, max
       target: edge.target,
       preserves: edge.preserves,
       backend: edge.backend,
+      allows_cross_parent_fusion: true,
       originMask: edge.contributes_provenance ? 1 << graphIndex : 0,
     }))),
   ]
@@ -509,8 +601,9 @@ function planJointHypergraph(graphs: SemanticHypergraph[], maxDepth: number, max
         const combinedMask = inputMask | edge.originMask
         const contributorMasks = [...provenances.map(input => input.mask), edge.originMask].filter(Boolean)
         const hasDistinctContributors = new Set(contributorMasks).size > 1
+        const mayIntroduceFusion = edge.allows_cross_parent_fusion !== false
         const combinedFused = provenances.some(input => input.fused) ||
-          (hasDistinctContributors && combinedMask === fullMask)
+          (mayIntroduceFusion && hasDistinctContributors && combinedMask === fullMask)
         const previous = state.known.get(edge.target) ?? []
         const dominated = previous.some(item =>
           item.mask === combinedMask && (item.fused || !combinedFused),

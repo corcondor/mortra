@@ -133,6 +133,9 @@ export function enumerateTypedTerms(
         const depth = Math.max(...args.map(arg => arg.depth)) + 1
         if (depth > maxDepth) continue
         const parentMask = args.reduce((mask, arg) => mask | arg.parentMask, 0)
+        const introducesCrossParentFusion = args.length > 1 &&
+          args.every(arg => arg.parentMask !== parentMask)
+        if (rule.allows_cross_parent_fusion === false && introducesCrossParentFusion) continue
         const expression = `${rule.name}(${args.map(arg => arg.expression).join(',')})`
         if (expression.length > 4096) continue
         const parentIds = [...new Set(args.flatMap(arg => arg.parentIds))].sort()

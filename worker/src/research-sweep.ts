@@ -17,22 +17,40 @@ type SearchState = {
   next_attempt_at?: string | null
 }
 
-async function main() {
-  const { data, error } = await supabase
-    .from('generation_jobs')
-    .select('id,result,updated_at')
-    .eq('mode', 'mathos_discovery')
-    .eq('status', 'processing')
-    .order('updated_at', { ascending: true })
-    .limit(100)
-  if (error) throw error
+type ResearchJobRow = {
+  id: string
+  search_state?: SearchState | null
+}
 
+const PAGE_SIZE = 20
+const MAX_PAGES = 5
+const MAX_DUE_JOBS = 5
+
+async function main() {
   const now = Date.now()
-  const due = (data ?? []).filter(row => {
-    const result = row.result as { searchState?: SearchState } | null
-    const state = result?.searchState
-    return isAutonomousResearchDue(state, new Date(now))
-  }).slice(0, 5)
+  const due: ResearchJobRow[] = []
+
+  // `result` contains the complete search trace and can be very large. Fetching
+  // 100 full envelopes caused Postgres statement timeouts once the research
+  // queue grew. Project only searchState and scan in bounded pages instead.
+  for (let page = 0; page < MAX_PAGES && due.length < MAX_DUE_JOBS; page++) {
+    const from = page * PAGE_SIZE
+    const { data, error } = await supabase
+      .from('generation_jobs')
+      .select('id,search_state:result->searchState,updated_at')
+      .eq('mode', 'mathos_discovery')
+      .eq('status', 'processing')
+      .order('updated_at', { ascending: true })
+      .range(from, from + PAGE_SIZE - 1)
+    if (error) throw error
+
+    const rows = (data ?? []) as ResearchJobRow[]
+    for (const row of rows) {
+      if (isAutonomousResearchDue(row.search_state, new Date(now))) due.push(row)
+      if (due.length >= MAX_DUE_JOBS) break
+    }
+    if (rows.length < PAGE_SIZE) break
+  }
   if (!due.length) {
     console.log('No autonomous research job is due.')
     return
