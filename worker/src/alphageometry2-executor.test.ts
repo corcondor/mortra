@@ -70,3 +70,23 @@ test('auxiliary search is invariant under a similarity coordinate change', {
     assert.equal(result.attempt_trace?.at(-1)?.status, 'proved')
   }
 })
+
+test('auxiliary search does not turn a false goal into a proof', {
+  skip: !process.env.MATHOS_AG2_DIR,
+}, () => {
+  const problem = [
+    'a@0_0 = ',
+    'b@4_0 = ',
+    'c@1_3 = ',
+    'd@1_1 = perp b d a c, perp c d a b ? para a d b c',
+  ].join('; ')
+  const result = executeAlphaGeometry2(problem, {
+    searchAuxiliary: true,
+    maxDepth: 1,
+    beamWidth: 8,
+    maxAttempts: 32,
+  })
+  assert.equal(result.proved, false)
+  assert.equal(result.status, 'unproved')
+  assert.equal(result.baseline_proved, false)
+})
