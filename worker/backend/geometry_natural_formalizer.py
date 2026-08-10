@@ -51,6 +51,7 @@ class GeometryFormalization:
     diagram_residual: float | None
     restarts: int
     formal_problem: str | None
+    discourse_objects: list[dict[str, Any]]
 
     def to_dict(self) -> dict[str, Any]:
         value = asdict(self)
@@ -62,13 +63,26 @@ class GeometryFormalization:
 def formalize_geometry_text(text: str, *, max_restarts: int = 20) -> GeometryFormalization:
     normalized = normalize_text(text)
     premise_text, goal_text = split_goal(normalized)
+    from geometry_discourse import elaborate_circle_discourse
+
+    discourse = elaborate_circle_discourse(premise_text, goal_text)
+    premise_text, goal_text = discourse.premise_text, discourse.goal_text
     triangles = extract_triangles(normalized)
     predicates, premise_spans = extract_predicates(premise_text)
     goals, goal_spans = extract_predicates(goal_text)
+    predicates.extend(
+        TypedPredicate(item.name, item.points, item.source)
+        for item in discourse.premise_relations
+    )
+    goals.extend(
+        TypedPredicate(item.name, item.points, item.source)
+        for item in discourse.goal_relations
+    )
     predicates = expand_derived_predicates(predicates, triangles)
     goal = goals[0] if len(goals) == 1 else None
     unresolved = unresolved_relation_fragments(premise_text, premise_spans)
     unresolved.extend(unresolved_relation_fragments(goal_text, goal_spans))
+    unresolved.extend(discourse.unresolved)
     unsupported = sorted({item.name for item in [*predicates, *goals] if item.name not in RELATION_SYMBOLS})
     unresolved.extend(f"unsupported typed predicate: {name}" for name in unsupported)
     for item in [*predicates, *goals]:
@@ -96,6 +110,7 @@ def formalize_geometry_text(text: str, *, max_restarts: int = 20) -> GeometryFor
         diagram_residual=None,
         restarts=0,
         formal_problem=None,
+        discourse_objects=[item.to_dict() for item in discourse.circles],
     )
     if unresolved or goal is None:
         return result
@@ -129,6 +144,10 @@ def normalize_text(text: str) -> str:
         "\\angle": "∠",
         "^\\circ": "°",
         "\\circ": "°",
+        "\\Gamma": "Γ",
+        "\\Omega": "Ω",
+        "\\gamma": "γ",
+        "\\omega": "ω",
         "$": "",
         "（": "(",
         "）": ")",

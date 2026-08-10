@@ -102,10 +102,26 @@ def solve_natural_problem(
     beam_width: int = 16,
     max_attempts: int = 384,
     max_restarts: int = 20,
+    diagram: str | None = None,
 ) -> dict[str, Any]:
     from geometry_natural_formalizer import formalize_geometry_text
 
     formalization = formalize_geometry_text(problem_text, max_restarts=max_restarts)
+    diagram_grounding = None
+    if diagram:
+        from geometry_diagram_grounder import ground_diagram
+
+        try:
+            diagram_grounding = ground_diagram(
+                diagram,
+                [point.upper() for point in formalization.points if len(point) == 1],
+            ).to_dict()
+        except (OSError, ValueError) as error:
+            diagram_grounding = {
+                "status": "unresolved",
+                "uses_language_model": False,
+                "unresolved_labels": [str(error)],
+            }
     if formalization.status != "formalized" or formalization.formal_problem is None:
         return {
             "status": "unformalized",
@@ -113,6 +129,7 @@ def solve_natural_problem(
             "backend": "MathOS typed geometry formalizer",
             "formalization": formalization.to_dict(),
             "uses_language_model": False,
+            "diagram_grounding": diagram_grounding,
         }
     try:
         result = solve_with_auxiliary_search(
@@ -137,6 +154,7 @@ def solve_natural_problem(
         }
     result["formalization"] = formalization.to_dict()
     result["input_mode"] = "natural_or_tex"
+    result["diagram_grounding"] = diagram_grounding
     return result
 
 
@@ -197,6 +215,7 @@ def main() -> int:
                 beam_width=args.beam_width,
                 max_attempts=args.max_attempts,
                 max_restarts=args.max_restarts,
+                diagram=str(payload["diagram"]) if payload.get("diagram") else None,
             )
         elif args.auto_aux:
             result = solve_with_auxiliary_search(

@@ -171,6 +171,78 @@ test('English center and incidence charts lower to the same predicate skeleton',
   assert.match(results[1].formalization?.formal_problem ?? '', /cyclic a b c p/)
 })
 
+test('named circles and anaphoric tangent references elaborate to one typed object', {
+  skip: !process.env.MATHOS_AG2_DIR,
+}, () => {
+  const variants = [
+    String.raw`Oを中心としAを通る円\Gammaを考える。直線BTはその円に点Tで接する。BT\perp OTを示せ。`,
+    'Let Gamma be the circle centered at O through A. Line BT is tangent to Gamma at T. Show that BT is perpendicular to OT.',
+  ]
+  const results = variants.map(problem => executeAlphaGeometry2(problem, {
+    inputFormat: 'natural', maxDepth: 1, beamWidth: 4, maxAttempts: 16,
+  }))
+  assert.ok(results.every(result => result.proved), results.map(result => result.error).join('\n'))
+  assert.ok(results.every(result => result.formalization?.discourse_objects?.length === 1))
+  assert.ok(results.every(result => result.formalization?.formal_problem?.includes('cong o t o a')))
+  assert.ok(results.every(result => result.formalization?.formal_problem?.endsWith('? perp b t o t')))
+  assert.ok(results.every(result => result.uses_language_model === false))
+})
+
+test('named-circle membership has the same cyclic skeleton in Japanese and English', {
+  skip: !process.env.MATHOS_AG2_DIR,
+}, () => {
+  const variants = [
+    String.raw`三角形ABCの外接円を\Gammaとする。Pは\Gamma上にある。A,B,C,Pは同一円周上にあることを示せ。`,
+    'Let Gamma be the circle through A, B and C. P lies on Gamma. Show that A, B, C, P are cyclic.',
+  ]
+  const results = variants.map(problem => executeAlphaGeometry2(problem, {
+    inputFormat: 'natural', maxDepth: 1, beamWidth: 4, maxAttempts: 16,
+  }))
+  assert.ok(results.every(result => result.proved), results.map(result => result.error).join('\n'))
+  assert.ok(results.every(result => result.formalization?.formal_problem?.includes('cyclic a b c p')))
+})
+
+test('a tangent with an omitted contact introduces an existential contact point', {
+  skip: !process.env.MATHOS_AG2_DIR,
+}, () => {
+  const result = executeAlphaGeometry2(
+    String.raw`Oを中心としAを通る円\Gammaを考える。直線BCは\Gammaに接する。OA=OAを示せ。`,
+    { inputFormat: 'natural', maxDepth: 1, beamWidth: 4, maxAttempts: 16 },
+  )
+  assert.equal(result.proved, true, result.error)
+  assert.match(result.formalization?.formal_problem ?? '', /gamma_contact_bc/)
+  assert.match(result.formalization?.formal_problem ?? '', /coll b gamma_contact_bc c/)
+  assert.match(result.formalization?.formal_problem ?? '', /perp b c o gamma_contact_bc/)
+})
+
+test('anaphora selects the most recently declared typed circle', {
+  skip: !process.env.MATHOS_AG2_DIR,
+}, () => {
+  const result = executeAlphaGeometry2(
+    String.raw`Oを中心としAを通る円\Gammaを考える。Iを中心としCを通る円\omegaを考える。直線BTはその円に点Tで接する。BT\perp ITを示せ。`,
+    { inputFormat: 'natural', maxDepth: 1, beamWidth: 4, maxAttempts: 16 },
+  )
+  assert.equal(result.proved, true, result.error)
+  assert.equal(result.formalization?.discourse_objects?.length, 2)
+  assert.match(result.formalization?.formal_problem ?? '', /cong i t i c/)
+  assert.doesNotMatch(result.formalization?.formal_problem ?? '', /cong o t o a/)
+  assert.match(result.formalization?.formal_problem ?? '', /perp b t i t/)
+})
+
+test('deterministic image grounding binds diagram labels without an LLM', () => {
+  const grounder = resolve(__dirname, '..', 'backend', 'geometry_diagram_grounder.py')
+  const result = spawnSync(process.platform === 'win32' ? 'python' : 'python3', [grounder, '--self-test'], {
+    encoding: 'utf8', timeout: 120_000,
+  })
+  assert.equal(result.status, 0, result.stderr)
+  const report = JSON.parse(result.stdout)
+  assert.equal(report.passed, true)
+  assert.equal(report.grounding.status, 'grounded')
+  assert.equal(report.grounding.uses_language_model, false)
+  assert.deepEqual(report.grounding.unresolved_labels, [])
+  assert.ok(Object.values(report.perturbations).every((item: any) => item.status === 'grounded'))
+})
+
 test('a ratio satisfied only by the generated diagram remains unproved', {
   skip: !process.env.MATHOS_AG2_DIR,
 }, () => {

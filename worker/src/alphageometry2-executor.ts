@@ -34,7 +34,25 @@ export type AlphaGeometry2Result = {
     diagram_residual: number | null
     restarts: number
     formal_problem: string | null
+    discourse_objects?: Array<{
+      name: string
+      center: string | null
+      through: string[]
+      source: string
+    }>
   }
+  diagram_grounding?: {
+    status: 'grounded' | 'partial' | 'unresolved'
+    labels?: Array<{
+      label: string
+      label_position: number[]
+      point_position: number[] | null
+      confidence: number
+      distance: number | null
+    }>
+    unresolved_labels: string[]
+    uses_language_model: false
+  } | null
   analysis?: {
     S1: string[]
     S2: string[]
@@ -67,6 +85,7 @@ export type AlphaGeometry2Options = {
   inputFormat?: 'auto' | 'formal' | 'natural'
   ensemble?: boolean
   maxRestarts?: number
+  diagram?: string
 }
 
 function pythonCommands(): string[] {
@@ -93,7 +112,7 @@ export function executeAlphaGeometry2(formalProblem: string, options: AlphaGeome
     }
     args.push('--max-restarts', String(options.maxRestarts ?? 20))
     const result = spawnSync(command, args, {
-      input: JSON.stringify({ problem: formalProblem }),
+      input: JSON.stringify({ problem: formalProblem, diagram: options.diagram }),
       encoding: 'utf8',
       env: {
         ...process.env,
