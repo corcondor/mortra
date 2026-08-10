@@ -51,7 +51,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           crossOrigin="anonymous"
         />
       </head>
-      <body className="min-h-screen overflow-hidden bg-[#09090b] text-zinc-100">
+      {/*
+        overflow-hidden を body に直接付けていたため、公開ページ（/mortra 以下）が
+        スクロールできなかった。業務画面だけ止めたいので、globals.css の
+        body:has([data-app-shell]) に任せ、ここでは止めない。
+      */}
+      <body className="min-h-[100dvh] bg-[#09090b] text-zinc-100">
         {children}
         <SpeedInsights />
         <Analytics />
