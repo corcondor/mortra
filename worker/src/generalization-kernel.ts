@@ -2,6 +2,13 @@ import { createHash } from 'node:crypto'
 import type { DiscoveryParent } from './parent-conditioned-discovery'
 import { elaborateMathematicalText } from './mathematical-language'
 import { VERIFIED_DOMAIN_EXTENSIONS } from './verified-domain-extensions'
+import {
+  dischargeProofObligations,
+  hasOpenProofObligations,
+  lowerMorphismToKnowledgeCore,
+  type ProofEvidence,
+  type TypedProofObligation,
+} from './kernel-calculus'
 
 export type SemanticRole = 'object' | 'operator' | 'relation' | 'query'
 
@@ -65,6 +72,7 @@ export type GeneralizationCertificate = {
   target_sort: string | null
   roadmap: RoadmapStep[]
   proof_obligations: string[]
+  typed_proof_obligations: Array<TypedProofObligation & { roadmap_step_id: string }>
   negative_transfer_checks: string[]
   executable_backends: string[]
   language_analysis: SemanticHypergraph['language_analysis'][]
@@ -347,6 +355,20 @@ const HYPER_MORPHISM_ATLAS: readonly HyperMorphismSchema[] = [
 
 export function executableMorphismAtlas(): readonly HyperMorphismSchema[] {
   return HYPER_MORPHISM_ATLAS
+}
+
+/**
+ * Returns only maps whose definedness, preservation and implementation
+ * obligations have explicit certificates. `backend` strings are hints and do
+ * not make a map executable by themselves.
+ */
+export function certifiedExecutableMorphismAtlas(
+  evidence: Readonly<Record<string, ProofEvidence>>,
+): readonly HyperMorphismSchema[] {
+  return HYPER_MORPHISM_ATLAS.filter(rule => {
+    const lowering = dischargeProofObligations(lowerMorphismToKnowledgeCore(rule), evidence)
+    return !hasOpenProofObligations(lowering)
+  })
 }
 
 export function coreExecutableMorphismAtlas(): readonly HyperMorphismSchema[] {
@@ -726,10 +748,22 @@ export function generalizeParents(
       sort: node.sort,
     })))
   const executableBackends = [...new Set(roadmap.flatMap(step => step.backend))]
-  const proofObligations = roadmap.flatMap(step => [
-    `${step.morphism}: ${step.source} -> ${step.target} is defined under the parent constraints`,
-    `${step.morphism} preserves ${step.preserves.join(', ') || 'the required observable'}`,
-  ])
+  const typedProofObligations = roadmap.flatMap(step => lowerMorphismToKnowledgeCore({
+    name: step.morphism,
+    sources: step.source.split(' × '),
+    target: step.target,
+    preserves: step.preserves,
+    backend: step.backend,
+  }).proof_obligations.map(obligation => ({ ...obligation, roadmap_step_id: step.id })))
+  const proofObligations = typedProofObligations.map(obligation => {
+    if (obligation.kind === 'definedness') {
+      return `${obligation.morphism}: definedness is an open proof obligation`
+    }
+    if (obligation.kind === 'implementation-realization') {
+      return `${obligation.morphism}: executable realization is an open proof obligation`
+    }
+    return `${obligation.morphism}: preservation of ${obligation.property} is an open proof obligation`
+  })
   if (!jointPlan && !join) proofObligations.push('No joint executable construction was found; synthesize typed intermediate morphisms without inventing a scalar bridge')
   return {
     graphs,
@@ -743,6 +777,7 @@ export function generalizeParents(
       target_sort: jointPlan?.target ?? join?.target ?? null,
       roadmap,
       proof_obligations: proofObligations,
+      typed_proof_obligations: typedProofObligations,
       negative_transfer_checks: [
         'remove each parent and require the resulting construction to change',
         'rename variables and perturb numeric parameters without changing the certificate',

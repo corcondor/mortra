@@ -10,6 +10,7 @@ test('benchmark bridge separates type reachability from exact execution', () => 
   })
   assert.ok(['goal_reached', 'goal_unreached'].includes(result.status))
   assert.equal(result.execution.status, 'lowered')
+  assert.equal(result.execution_proof_status, 'certified')
   if (result.execution.status !== 'lowered') return
   assert.equal(result.execution.certificate.status, 'proved')
   assert.equal(result.execution.certificate.value, '15')
@@ -22,6 +23,7 @@ test('benchmark bridge never calls mere type reach an executed solution', () => 
     compact: true,
   })
   assert.notEqual(result.execution.status, 'lowered')
+  assert.equal(result.execution_proof_status, 'unproved')
 })
 
 test('benchmark bridge does not mistake a standalone number for the requested answer', () => {

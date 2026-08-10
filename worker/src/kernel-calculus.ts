@@ -57,13 +57,36 @@ export type KernelJudgment =
   | { kind: 'definitionally-equal'; left: KernelObject; right: KernelObject; type?: KernelObject }
   | { kind: 'provable'; proposition: KernelObject; certificate?: KernelObject }
 
+export type ProofObligationKind =
+  | 'definedness'
+  | 'preservation'
+  | 'implementation-realization'
+
+export type ProofObligationStatus = 'open' | 'discharged'
+
+export type ProofEvidence = {
+  verifier: string
+  certificate: KernelObject
+}
+
+export type TypedProofObligation = {
+  id: string
+  kind: ProofObligationKind
+  morphism: string
+  property: string | null
+  proposition: KernelObject
+  judgment: Extract<KernelJudgment, { kind: 'provable' }>
+  status: ProofObligationStatus
+  evidence: ProofEvidence | null
+}
+
 export type KnowledgeCoreLowering = {
   theory_morphism: string
   declaration: ConstantDeclaration
   application: ApplicationObject
   judgments: KernelJudgment[]
-  /** Unproved semantic obligations inherited from the legacy declaration. */
-  preservation_obligations: string[]
+  /** Typed obligations. A backend label alone never discharges them. */
+  proof_obligations: TypedProofObligation[]
   /** Candidate implementations, not part of mathematical identity. */
   implementation_hints: string[]
 }
@@ -74,6 +97,71 @@ function symbol(uri: string): KernelObject {
 
 function variable(name: string): KernelObject {
   return { constructor: 'variable-reference', name }
+}
+
+function literal(value: string | number | boolean): KernelObject {
+  return { constructor: 'literal', value }
+}
+
+function application(uri: string, ...arguments_: KernelObject[]): KernelObject {
+  return { constructor: 'application', operator: symbol(uri), arguments: arguments_ }
+}
+
+function obligation(
+  rule: HyperMorphismSchema,
+  kind: ProofObligationKind,
+  property: string | null,
+  proposition: KernelObject,
+): TypedProofObligation {
+  const suffix = property ? `${kind}/${property}` : kind
+  return {
+    id: `mathos://obligation/${encodeURIComponent(rule.name)}/${encodeURIComponent(suffix)}`,
+    kind,
+    morphism: rule.name,
+    property,
+    proposition,
+    judgment: { kind: 'provable', proposition },
+    status: 'open',
+    evidence: null,
+  }
+}
+
+function compileProofObligations(
+  rule: HyperMorphismSchema,
+  applicationTerm: ApplicationObject,
+): TypedProofObligation[] {
+  const morphism = symbol(`mathos://morphism/${rule.name}`)
+  const sourceTypes = rule.sources.map(source => symbol(`mathos://sort/${source}`))
+  const targetType = symbol(`mathos://sort/${rule.target}`)
+  const definedness = obligation(
+    rule,
+    'definedness',
+    null,
+    application('mathos://logic/defined-at', morphism, ...sourceTypes, targetType),
+  )
+  const preservation = [...new Set(rule.preserves)].sort().map(property => obligation(
+    rule,
+    'preservation',
+    property,
+    application(
+      'mathos://logic/preserves',
+      literal(property),
+      morphism,
+      ...sourceTypes,
+      targetType,
+    ),
+  ))
+  const implementation = obligation(
+    rule,
+    'implementation-realization',
+    null,
+    application(
+      'mathos://logic/has-executable-realizer',
+      morphism,
+      applicationTerm,
+    ),
+  )
+  return [definedness, ...preservation, implementation]
 }
 
 /**
@@ -102,9 +190,36 @@ export function lowerMorphismToKnowledgeCore(rule: HyperMorphismSchema): Knowled
     },
     application,
     judgments: [{ kind: 'has-type', term: application, type: result }],
-    preservation_obligations: [...new Set(rule.preserves)].sort(),
+    proof_obligations: compileProofObligations(rule, application),
     implementation_hints: [...new Set(rule.backend)].sort(),
   }
+}
+
+/**
+ * Discharges obligations only with explicit, obligation-addressed evidence.
+ * Merely naming SymPy, Lean, Wolfram or another backend is not evidence.
+ */
+export function dischargeProofObligations(
+  lowering: KnowledgeCoreLowering,
+  evidence: Readonly<Record<string, ProofEvidence>>,
+): KnowledgeCoreLowering {
+  return {
+    ...lowering,
+    proof_obligations: lowering.proof_obligations.map(item => {
+      const witness = evidence[item.id]
+      if (!witness) return item
+      return {
+        ...item,
+        judgment: { kind: 'provable', proposition: item.proposition, certificate: witness.certificate },
+        status: 'discharged',
+        evidence: witness,
+      }
+    }),
+  }
+}
+
+export function hasOpenProofObligations(lowering: KnowledgeCoreLowering): boolean {
+  return lowering.proof_obligations.some(item => item.status === 'open')
 }
 
 /** Declared contract for collision auditing only; never an equality proof. */

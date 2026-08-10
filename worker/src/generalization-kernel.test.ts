@@ -46,6 +46,8 @@ test('plans a genuine multi-input roadmap for a map acting on a finite orbit', (
     { id: 'orbit', statement: 'z_1,\\ldots,z_n を z^n=1 の全ての解とする。' },
   ], 4)
   assert.equal(result.certificate.target_sort, 'Scalar')
+  assert.ok(result.certificate.typed_proof_obligations.length > 0)
+  assert.ok(result.certificate.typed_proof_obligations.every(item => item.status === 'open'))
   assert.deepEqual(
     result.certificate.roadmap.map(step => step.morphism),
     ['MobiusRealization', 'RootsOfUnity', 'MapOrbitEvaluation', 'FiniteSummation'],

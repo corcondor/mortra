@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { executableMorphismAtlas } from './generalization-kernel'
+import { certifiedExecutableMorphismAtlas, executableMorphismAtlas } from './generalization-kernel'
 import { enumerateTypedTerms } from './typed-term-enumerator'
 import type { SemanticHypergraph } from './generalization-kernel'
 
@@ -26,7 +26,7 @@ function graph(id: string, roots: string[], goals: string[]): SemanticHypergraph
   }
 }
 
-test('promotes probe-verified morphisms into the one executable atlas', () => {
+test('promotes probe-reachable morphism declarations into the shared atlas', () => {
   const names = new Set(executableMorphismAtlas().map(rule => rule.name))
   for (const name of [
     'PrimeValuation',
@@ -36,6 +36,10 @@ test('promotes probe-verified morphisms into the one executable atlas', () => {
     'PropositionCertification',
   ]) assert.ok(names.has(name), name)
   assert.equal(names.size, executableMorphismAtlas().length)
+})
+
+test('reachability probes do not count as executable proof certificates', () => {
+  assert.equal(certifiedExecutableMorphismAtlas({}).length, 0)
 })
 
 test('the shared atlas reaches held-out goals in four domains without family ids', () => {

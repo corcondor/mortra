@@ -22,6 +22,10 @@ export function evaluateBenchmarkRequest(request: Request) {
   const graph = buildSemanticHypergraph({ id: request.id, statement: request.statement })
   const rules = request.atlas === 'core' ? coreExecutableMorphismAtlas() : executableMorphismAtlas()
   const linearExecution = lowerLinearPredicateStatement(request.statement, request.coordinate ?? 'additive')
+  const executionProofStatus = linearExecution.status === 'lowered' &&
+    linearExecution.certificate.status === 'proved'
+    ? 'certified'
+    : 'unproved'
   const goalSorts = graph.query_sorts
   if (!goalSorts.length) {
     const unresolved = {
@@ -36,6 +40,7 @@ export function evaluateBenchmarkRequest(request: Request) {
       language_analysis: graph.language_analysis,
       goal_count: 0,
       execution: linearExecution,
+      execution_proof_status: executionProofStatus,
     }
     return request.compact ? unresolved : { ...unresolved, graph, goals: [], frontier: [] }
   }
@@ -59,6 +64,7 @@ export function evaluateBenchmarkRequest(request: Request) {
     goal_count: enumeration.goals.length,
     first_goal: enumeration.goals[0] ?? null,
     execution: linearExecution,
+    execution_proof_status: executionProofStatus,
   }
   return request.compact
     ? result

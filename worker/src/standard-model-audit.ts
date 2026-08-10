@@ -1,6 +1,7 @@
 import { readFileSync, writeFileSync } from 'node:fs'
 import {
   buildSemanticHypergraph,
+  certifiedExecutableMorphismAtlas,
   executableMorphismAtlas,
   type HyperMorphismSchema,
 } from './generalization-kernel'
@@ -50,6 +51,9 @@ export type StandardModelAudit = {
     declaration_to_object_constructor_ratio: number
     law_signatures: number
     backend_signatures: number
+    proof_obligations: number
+    open_proof_obligations: number
+    certified_executable_morphisms: number
     object_constructor_use: Record<string, number>
     contract_collision_groups: string[][]
   }
@@ -89,16 +93,23 @@ export function auditStandardModel(problems: readonly AuditProblem[]): StandardM
   const sorts = new Set<string>()
   const lawSignatures = new Set<string>()
   const backendSignatures = new Set<string>()
+  let proofObligations = 0
+  let openProofObligations = 0
   for (const rule of contractRepresentatives) {
     rule.sources.forEach(sort => sorts.add(sort))
     sorts.add(rule.target)
     const lowering = lowerMorphismToKnowledgeCore(rule)
+    proofObligations += lowering.proof_obligations.length
+    openProofObligations += lowering.proof_obligations.filter(item => item.status === 'open').length
     increment(constructors, lowering.application.constructor)
     increment(constructors, lowering.application.operator.constructor)
     lowering.declaration.parameters.forEach(() => increment(constructors, 'variable-reference'))
     lowering.declaration.parameters.forEach(parameter => increment(constructors, parameter.type.constructor))
     increment(constructors, lowering.declaration.result.constructor)
-    lawSignatures.add(JSON.stringify(lowering.preservation_obligations))
+    lawSignatures.add(JSON.stringify(lowering.proof_obligations.map(obligation => ({
+      kind: obligation.kind,
+      property: obligation.property,
+    }))))
     backendSignatures.add(JSON.stringify(lowering.implementation_hints))
   }
 
@@ -175,6 +186,9 @@ export function auditStandardModel(problems: readonly AuditProblem[]): StandardM
       declaration_to_object_constructor_ratio: Number((rules.length / OBJECT_CONSTRUCTORS.length).toFixed(3)),
       law_signatures: lawSignatures.size,
       backend_signatures: backendSignatures.size,
+      proof_obligations: proofObligations,
+      open_proof_obligations: openProofObligations,
+      certified_executable_morphisms: certifiedExecutableMorphismAtlas({}).length,
       object_constructor_use: record(constructors),
       contract_collision_groups: duplicateGroups(rules),
     },
