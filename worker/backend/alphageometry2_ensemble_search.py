@@ -33,6 +33,7 @@ def ensemble_search(
     remaining = max_attempts
     trees: list[dict[str, Any]] = []
     best: dict[str, Any] | None = None
+    shared_facts: set[str] = set()
     for name, kinds, depth, width, attempts in TREE_CONFIGURATIONS:
         if remaining <= 0:
             break
@@ -46,6 +47,7 @@ def ensemble_search(
             allowed_kinds=kinds,
             preferred_points=preferred,
             tree_name=name,
+            shared_facts=shared_facts,
         )
         consumed = int(result.get("attempts", 0))
         remaining -= consumed
@@ -55,6 +57,7 @@ def ensemble_search(
             "attempts": consumed,
             "depth": result.get("depth", 0),
             "goal_gap": result.get("goal_gap"),
+            "shared_fact_count": len(shared_facts),
         })
         if best is None or rank(result) < rank(best):
             best = result
@@ -64,11 +67,16 @@ def ensemble_search(
     return {
         **best,
         "proposal_engine": "finite_SKEST_style_ensemble",
-        "search_algorithm": "multi-tree distributions with shared S1/S2/S3 analysis",
+        "search_algorithm": "multi-tree distributions with DDAR-certified shared facts over original points",
         "analysis": analysis,
         "trees": trees,
         "attempt_budget": max_attempts,
         "attempts_used": max_attempts - remaining,
+        "shared_workspace": {
+            "facts": sorted(shared_facts),
+            "fact_count": len(shared_facts),
+            "policy": "only DDAR-proved predicates over original problem points are shared",
+        },
         "uses_language_model": False,
     }
 

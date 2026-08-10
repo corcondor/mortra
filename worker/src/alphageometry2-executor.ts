@@ -61,7 +61,19 @@ export type AlphaGeometry2Result = {
     analysis_text: string
     soundness_boundary: string
   }
-  trees?: Array<{ name: string; proved: boolean; attempts: number; depth: number; goal_gap?: number }>
+  trees?: Array<{
+    name: string
+    proved: boolean
+    attempts: number
+    depth: number
+    goal_gap?: number
+    shared_fact_count?: number
+  }>
+  shared_workspace?: {
+    facts: string[]
+    fact_count: number
+    policy: string
+  }
   attempt_trace?: Array<{
     attempt: number
     depth: number
@@ -74,6 +86,7 @@ export type AlphaGeometry2Result = {
     derived_size_before?: number
     derived_size_after?: number
     closure_rounds?: number
+    shared_facts_added?: string[]
   }>
 }
 

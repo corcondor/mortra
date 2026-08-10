@@ -59,7 +59,12 @@ class SearchState:
     derived_size: int
 
 
-def evaluate_problem(problem: Any, DDAR: type) -> tuple[bool, int, int, int]:
+def evaluate_problem(
+    problem: Any,
+    DDAR: type,
+    *,
+    fact_candidates: list[Any] | None = None,
+) -> tuple[bool, int, int, int, set[str]]:
     engine = DDAR(problem.points)
     for predicate in problem.preds:
         engine.force_pred(predicate)
@@ -74,7 +79,14 @@ def evaluate_problem(problem: Any, DDAR: type) -> tuple[bool, int, int, int]:
         + len(engine.known_similar)
         + len(engine.pair_to_line)
     )
-    return proved, gap, derived_size, trace.getvalue().count(".")
+    facts: set[str] = set()
+    for predicate in fact_candidates or []:
+        try:
+            if engine.check_pred(predicate):
+                facts.add(render_predicate(predicate))
+        except Exception:
+            continue
+    return proved, gap, derived_size, trace.getvalue().count("."), facts
 
 
 def predicate_gap(engine: Any, predicate: Any) -> int:
@@ -105,8 +117,22 @@ def search_auxiliary_constructions(
     allowed_kinds: set[str] | None = None,
     preferred_points: set[str] | None = None,
     tree_name: str = "classic",
+    shared_facts: set[str] | None = None,
 ) -> dict[str, Any]:
-    proved, gap, derived, rounds = evaluate_problem(problem, DDAR)
+    from alphageometry2_analysis import candidate_predicates
+
+    original_fact_candidates = list(candidate_predicates(problem))
+    goal_rendered = render_predicate(problem.goal)
+    shareable_fact_candidates = [
+        predicate for predicate in original_fact_candidates
+        if render_predicate(predicate) != goal_rendered
+    ]
+    proved, gap, derived, rounds, baseline_facts = evaluate_problem(
+        problem,
+        DDAR,
+        fact_candidates=original_fact_candidates,
+    )
+    shared_facts = shared_facts if shared_facts is not None else set()
     if proved:
         return search_result(
             tree_name=tree_name,
@@ -120,6 +146,7 @@ def search_auxiliary_constructions(
             derived_size=derived,
             closure_rounds=rounds,
             attempt_trace=[],
+            shared_facts_added=[],
         )
 
     frontier = [SearchState(problem, [], gap, derived)]
@@ -133,7 +160,10 @@ def search_auxiliary_constructions(
             candidates = generate_candidates(
                 state.problem,
                 allowed_kinds=allowed_kinds,
-                preferred_points=preferred_points,
+                preferred_points={
+                    *(preferred_points or set()),
+                    *points_from_facts(shared_facts),
+                },
             )
             for candidate in candidates:
                 if attempts >= max_attempts:
@@ -145,7 +175,11 @@ def search_auxiliary_constructions(
                 attempts += 1
                 extended, record = apply_candidate(state.problem, candidate, AGProblem, len(state.constructions) + 1)
                 try:
-                    solved, candidate_gap, candidate_derived, candidate_rounds = evaluate_problem(extended, DDAR)
+                    solved, candidate_gap, candidate_derived, candidate_rounds, candidate_facts = evaluate_problem(
+                        extended,
+                        DDAR,
+                        fact_candidates=shareable_fact_candidates,
+                    )
                 except Exception as error:
                     attempt_trace.append({
                         "attempt": attempts,
@@ -158,6 +192,8 @@ def search_auxiliary_constructions(
                     continue
                 constructions = [*state.constructions, record]
                 candidate_state = SearchState(extended, constructions, candidate_gap, candidate_derived)
+                interesting_facts = sorted(candidate_facts - baseline_facts - shared_facts)
+                shared_facts.update(interesting_facts)
                 attempt_trace.append({
                     "attempt": attempts,
                     "depth": depth,
@@ -169,6 +205,7 @@ def search_auxiliary_constructions(
                     "derived_size_after": candidate_derived,
                     "closure_rounds": candidate_rounds,
                     "status": "proved" if solved else "retained_for_ranking",
+                    "shared_facts_added": interesting_facts,
                 })
                 if rank_state(candidate_state) < rank_state(best):
                     best = candidate_state
@@ -185,6 +222,7 @@ def search_auxiliary_constructions(
                         derived_size=candidate_derived,
                         closure_rounds=candidate_rounds,
                         attempt_trace=attempt_trace,
+                        shared_facts_added=sorted(shared_facts),
                     )
                 next_states.append(candidate_state)
             if attempts >= max_attempts:
@@ -206,7 +244,22 @@ def search_auxiliary_constructions(
         derived_size=best.derived_size,
         closure_rounds=0,
         attempt_trace=attempt_trace,
+        shared_facts_added=sorted(shared_facts),
     )
+
+
+def render_predicate(predicate: Any) -> str:
+    constants = [str(value) for value in getattr(predicate, "constants", [])]
+    return " ".join((predicate.name, *(point.name for point in predicate.points), *constants))
+
+
+def points_from_facts(facts: set[str]) -> set[str]:
+    points: set[str] = set()
+    for fact in facts:
+        for token in fact.split()[1:]:
+            if token and token[0].isalpha():
+                points.add(token)
+    return points
 
 
 def rank_state(state: SearchState) -> tuple[int, int, int]:
