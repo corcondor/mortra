@@ -11,7 +11,8 @@ from alphageometry2_auxiliary_search import GRAMMAR_INVENTORY, search_auxiliary_
 TREE_CONFIGURATIONS = (
     ("classic", None, 2, 12, 96),
     ("incidence", {"line_intersection", "parallel_line_intersection", "perpendicular_line_intersection"}, 3, 8, 96),
-    ("metric", {"midpoint", "perpendicular_foot", "reflection", "circumcenter"}, 3, 8, 96),
+    ("metric", {"midpoint", "perpendicular_foot", "reflection", "circumcenter", "internal_division"}, 3, 8, 96),
+    ("angle", {"angle_bisector_point", "equilateral_vertex", "perpendicular_foot"}, 3, 8, 96),
     ("circle", {"line_circle_intersection", "circumcenter", "equilateral_vertex"}, 3, 8, 96),
     ("deep_narrow", set(GRAMMAR_INVENTORY), 4, 4, 128),
     ("shallow_wide", set(GRAMMAR_INVENTORY), 1, 32, 128),

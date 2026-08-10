@@ -12,13 +12,17 @@ import hashlib
 import itertools
 import re
 from dataclasses import asdict, dataclass
+from fractions import Fraction
 from typing import Any, Iterable
 
 import numpy as np
 from scipy.optimize import least_squares
 
 
-RELATION_SYMBOLS = ("perp", "para", "cong", "coll", "cyclic", "eqangle")
+RELATION_SYMBOLS = (
+    "perp", "para", "cong", "coll", "cyclic", "eqangle",
+    "rconst", "eqratio", "s_angle", "distseq",
+)
 QUERY_MARKERS_JA = ("を示せ", "を証明せよ", "を証明しなさい", "ことを示せ", "ことを証明せよ")
 QUERY_MARKERS_EN = ("prove that", "show that", "prove", "show")
 
@@ -28,9 +32,10 @@ class TypedPredicate:
     name: str
     points: tuple[str, ...]
     source: str
+    constants: tuple[str, ...] = ()
 
     def render(self) -> str:
-        return " ".join((self.name, *self.points))
+        return " ".join((self.name, *self.points, *self.constants))
 
 
 @dataclass
@@ -60,11 +65,16 @@ def formalize_geometry_text(text: str, *, max_restarts: int = 20) -> GeometryFor
     triangles = extract_triangles(normalized)
     predicates, premise_spans = extract_predicates(premise_text)
     goals, goal_spans = extract_predicates(goal_text)
+    predicates = expand_derived_predicates(predicates, triangles)
     goal = goals[0] if len(goals) == 1 else None
     unresolved = unresolved_relation_fragments(premise_text, premise_spans)
     unresolved.extend(unresolved_relation_fragments(goal_text, goal_spans))
     unsupported = sorted({item.name for item in [*predicates, *goals] if item.name not in RELATION_SYMBOLS})
     unresolved.extend(f"unsupported typed predicate: {name}" for name in unsupported)
+    for item in [*predicates, *goals]:
+        issue = predicate_type_issue(item)
+        if issue:
+            unresolved.append(f"ill-typed predicate {item.render()}: {issue}")
     if len(goals) != 1:
         unresolved.append(f"expected exactly one goal predicate, found {len(goals)}")
 
@@ -112,10 +122,13 @@ def formalize_geometry_text(text: str, *, max_restarts: int = 20) -> GeometryFor
 def normalize_text(text: str) -> str:
     value = text.replace("\r", " ").replace("\n", " ")
     value = re.sub(r"\\text\s*\{([^{}]*)\}", r"\1", value)
+    value = re.sub(r"\\frac\s*\{\s*(-?\d+)\s*\}\s*\{\s*(\d+)\s*\}", r"\1/\2", value)
     replacements = {
         "\\perp": "⊥",
         "\\parallel": "∥",
         "\\angle": "∠",
+        "^\\circ": "°",
+        "\\circ": "°",
         "$": "",
         "（": "(",
         "）": ")",
@@ -170,7 +183,9 @@ def extract_predicates(text: str) -> tuple[list[TypedPredicate], list[tuple[int,
     spans: list[tuple[int, int]] = []
 
     def collect(pattern: str, builder) -> None:
-        for match in re.finditer(pattern, text, re.IGNORECASE):
+        for match in re.finditer(pattern, text):
+            if any(match.start() < end and start < match.end() for start, end in spans):
+                continue
             value = builder(match)
             if isinstance(value, list):
                 predicates.extend(value)
@@ -179,14 +194,81 @@ def extract_predicates(text: str) -> tuple[list[TypedPredicate], list[tuple[int,
             spans.append(match.span())
 
     segment = r"([A-Z])\s*([A-Z])"
+    scalar = r"(-?\d+(?:/\d+|\.\d+)?)"
+    collect(
+        segment + r"\s*:\s*" + segment + r"\s*=\s*" + segment + r"\s*:\s*" + segment,
+        lambda m: TypedPredicate("eqratio", tuple(value.lower() for value in m.groups()), m.group(0)),
+    )
+    collect(
+        segment + r"\s*/\s*" + segment + r"\s*=\s*" + scalar,
+        lambda m: TypedPredicate(
+            "rconst",
+            tuple(value.lower() for value in m.groups()[:4]),
+            m.group(0),
+            (normalize_constant(m.group(5)),),
+        ),
+    )
+    collect(
+        r"∠\s*([A-Z])([A-Z])([A-Z])\s*=\s*" + scalar + r"\s*°?",
+        lambda m: constant_angle_predicate(m.groups(), m.group(0)),
+    )
+    collect(r"∠\s*([A-Z])([A-Z])([A-Z])\s*=\s*∠\s*([A-Z])([A-Z])([A-Z])",
+            lambda m: angle_predicate(m.groups(), m.group(0)))
     collect(segment + r"\s*(?:⊥|is\s+perpendicular\s+to)\s*" + segment,
             lambda m: predicate("perp", m.groups(), m.group(0)))
     collect(segment + r"\s*(?:∥|//|is\s+parallel\s+to)\s*" + segment,
             lambda m: predicate("para", m.groups(), m.group(0)))
     collect(segment + r"\s*=\s*" + segment,
             lambda m: predicate("cong", m.groups(), m.group(0)))
-    collect(r"∠\s*([A-Z])([A-Z])([A-Z])\s*=\s*∠\s*([A-Z])([A-Z])([A-Z])",
-            lambda m: angle_predicate(m.groups(), m.group(0)))
+
+    collect(
+        r"([A-Z])\s*(?:は|is)\s*(?:直線|line)\s*([A-Z])([A-Z])(?:\s*(?:上にある|上|on))",
+        lambda m: TypedPredicate("coll", (m.group(2).lower(), m.group(1).lower(), m.group(3).lower()), m.group(0)),
+    )
+    collect(
+        r"([A-Z])\s+(?:lies|is)\s+on\s+(?:the\s+)?line\s+([A-Z])([A-Z])",
+        lambda m: TypedPredicate("coll", (m.group(2).lower(), m.group(1).lower(), m.group(3).lower()), m.group(0)),
+    )
+    collect(
+        r"([A-Z])\s*(?:は|is)\s*(?:線分|segment)\s*([A-Z])([A-Z])(?:\s*(?:上|上にある|on))",
+        lambda m: TypedPredicate("coll", (m.group(2).lower(), m.group(1).lower(), m.group(3).lower()), m.group(0)),
+    )
+    collect(
+        r"([A-Z])\s*(?:は|is)\s*(?:円|circle)\s*([A-Z])([A-Z])([A-Z])(?:\s*(?:上にある|上|on))",
+        lambda m: TypedPredicate(
+            "cyclic",
+            (m.group(2).lower(), m.group(3).lower(), m.group(4).lower(), m.group(1).lower()),
+            m.group(0),
+        ),
+    )
+    collect(
+        r"([A-Z])\s+(?:lies|is)\s+on\s+(?:the\s+)?circle\s+through\s+([A-Z])\s*[, ]\s*([A-Z])\s*(?:and|[, ])\s*([A-Z])",
+        lambda m: TypedPredicate(
+            "cyclic",
+            (m.group(2).lower(), m.group(3).lower(), m.group(4).lower(), m.group(1).lower()),
+            m.group(0),
+        ),
+    )
+    collect(
+        r"([A-Z])\s*(?:は)?\s*([A-Z])\s*[,、]\s*([A-Z])\s*[,、]\s*([A-Z])\s*(?:を通る円|の定める円)(?:周)?上にある",
+        lambda m: TypedPredicate(
+            "cyclic",
+            (m.group(2).lower(), m.group(3).lower(), m.group(4).lower(), m.group(1).lower()),
+            m.group(0),
+        ),
+    )
+    collect(
+        r"([A-Z])\s*(?:は|is)\s*(?:直線\s*)?([A-Z])([A-Z])\s*(?:と|and)\s*(?:直線\s*)?([A-Z])([A-Z])(?:\s*(?:の|the))?\s*(?:交点|intersection)",
+        lambda m: intersection_predicates(m.groups(), m.group(0)),
+    )
+    collect(
+        r"([A-Z])\s+is\s+the\s+intersection\s+of\s+(?:lines?\s+)?([A-Z])([A-Z])\s+and\s+([A-Z])([A-Z])",
+        lambda m: intersection_predicates(m.groups(), m.group(0)),
+    )
+    collect(
+        r"(?:直線|line)\s*([A-Z])([A-Z])\s*(?:は|is)?\s*(?:点\s*)?([A-Z])(?:\s*で|\s+at)\s*(?:中心\s*)?([A-Z])(?:\s*の|[- ]centered)?\s*(?:円|circle)(?:\s*に|\s+is)?\s*(?:接する|tangent)",
+        lambda m: tangent_predicate(m.groups(), m.group(0)),
+    )
 
     collect(
         r"([A-Z])\s*(?:は|is)\s*(?:線分\s*)?([A-Z])([A-Z])(?:\s*(?:の|the))?\s*(?:中点|midpoint)",
@@ -208,14 +290,34 @@ def extract_predicates(text: str) -> tuple[list[TypedPredicate], list[tuple[int,
         r"([A-Z])\s*(?:は|is)\s*(?:三角形\s*)?([A-Z])([A-Z])([A-Z])(?:\s*(?:の|the))?\s*(?:重心|centroid)",
         lambda m: centroid_predicates(m.groups(), m.group(0)),
     )
+    collect(
+        r"([A-Z])\s+is\s+the\s+centroid\s+of\s+(?:triangle\s+)?([A-Z])([A-Z])([A-Z])",
+        lambda m: centroid_predicates(m.groups(), m.group(0)),
+    )
+    collect(
+        r"([A-Z])\s*(?:は|is)\s*(?:三角形\s*)?([A-Z])([A-Z])([A-Z])(?:\s*(?:の|the))?\s*(?:垂心|orthocenter)",
+        lambda m: orthocenter_predicates(m.groups(), m.group(0)),
+    )
+    collect(
+        r"([A-Z])\s+is\s+the\s+orthocenter\s+of\s+(?:triangle\s+)?([A-Z])([A-Z])([A-Z])",
+        lambda m: orthocenter_predicates(m.groups(), m.group(0)),
+    )
+    collect(
+        r"([A-Z])\s*(?:は|is)\s*(?:三角形\s*)?([A-Z])([A-Z])([A-Z])(?:\s*(?:の|the))?\s*(?:内心|incenter)",
+        lambda m: incenter_predicates(m.groups(), m.group(0)),
+    )
+    collect(
+        r"([A-Z])\s+is\s+the\s+incenter\s+of\s+(?:triangle\s+)?([A-Z])([A-Z])([A-Z])",
+        lambda m: incenter_predicates(m.groups(), m.group(0)),
+    )
 
-    for match in re.finditer(r"([A-Z](?:\s*[,、]\s*[A-Z]){2,})\s*(?:は|are)?\s*(?:一直線上|collinear)", text, re.IGNORECASE):
-        names = tuple(point.lower() for point in re.findall(r"[A-Z]", match.group(1), re.IGNORECASE))
+    for match in re.finditer(r"([A-Z](?:\s*[,、]\s*[A-Z]){2,})\s*(?:は|are)?\s*(?:一直線上|collinear)", text):
+        names = tuple(point.lower() for point in re.findall(r"[A-Z]", match.group(1)))
         for triple in itertools.combinations(names, 3):
             predicates.append(TypedPredicate("coll", triple, match.group(0)))
         spans.append(match.span())
-    for match in re.finditer(r"([A-Z](?:\s*[,、]\s*[A-Z]){3,})\s*(?:は|are)?\s*(?:同一円周上|concyclic|cyclic)", text, re.IGNORECASE):
-        names = tuple(point.lower() for point in re.findall(r"[A-Z]", match.group(1), re.IGNORECASE))
+    for match in re.finditer(r"([A-Z](?:\s*[,、]\s*[A-Z]){3,})\s*(?:は|are)?\s*(?:同一円周上|concyclic|cyclic)", text):
+        names = tuple(point.lower() for point in re.findall(r"[A-Z]", match.group(1)))
         for quadruple in itertools.combinations(names, 4):
             predicates.append(TypedPredicate("cyclic", quadruple, match.group(0)))
         spans.append(match.span())
@@ -229,6 +331,16 @@ def predicate(name: str, groups: Iterable[str], source: str) -> TypedPredicate:
 def angle_predicate(groups: Iterable[str], source: str) -> TypedPredicate:
     a, b, c, d, e, f = (value.lower() for value in groups)
     return TypedPredicate("eqangle", (b, a, b, c, e, d, e, f), source)
+
+
+def constant_angle_predicate(groups: Iterable[str], source: str) -> TypedPredicate:
+    a, b, c, value = groups
+    return TypedPredicate(
+        "s_angle",
+        (b.lower(), a.lower(), b.lower(), c.lower()),
+        source,
+        (normalize_constant(value),),
+    )
 
 
 def midpoint_predicates(groups: Iterable[str], source: str) -> list[TypedPredicate]:
@@ -255,20 +367,114 @@ def centroid_predicates(groups: Iterable[str], source: str) -> list[TypedPredica
     return [TypedPredicate("centroid", (center, a, b, c), source)]
 
 
+def intersection_predicates(groups: Iterable[str], source: str) -> list[TypedPredicate]:
+    point, a, b, c, d = (value.lower() for value in groups)
+    return [
+        TypedPredicate("coll", (a, point, b), source),
+        TypedPredicate("coll", (c, point, d), source),
+    ]
+
+
+def tangent_predicate(groups: Iterable[str], source: str) -> TypedPredicate:
+    a, b, contact, center = (value.lower() for value in groups)
+    return TypedPredicate("perp", (a, b, center, contact), source)
+
+
+def orthocenter_predicates(groups: Iterable[str], source: str) -> list[TypedPredicate]:
+    center, a, b, c = (value.lower() for value in groups)
+    return [
+        TypedPredicate("perp", (a, center, b, c), source),
+        TypedPredicate("perp", (b, center, a, c), source),
+    ]
+
+
+def incenter_predicates(groups: Iterable[str], source: str) -> list[TypedPredicate]:
+    center, a, b, c = (value.lower() for value in groups)
+    return [
+        TypedPredicate("eqangle", (a, b, a, center, a, center, a, c), source),
+        TypedPredicate("eqangle", (b, c, b, center, b, center, b, a), source),
+    ]
+
+
+def expand_derived_predicates(
+    predicates: list[TypedPredicate],
+    triangles: list[tuple[str, str, str]],
+) -> list[TypedPredicate]:
+    existing = {point for predicate_item in predicates for point in predicate_item.points}
+    existing.update(point for triangle in triangles for point in triangle)
+    expanded: list[TypedPredicate] = []
+    for item in predicates:
+        if item.name != "centroid":
+            expanded.append(item)
+            continue
+        center, a, b, c = item.points
+        midpoint = unused_point_name(existing, f"{center}_mid_{b}{c}")
+        existing.add(midpoint)
+        expanded.extend((
+            TypedPredicate("coll", (b, midpoint, c), item.source),
+            TypedPredicate("cong", (b, midpoint, midpoint, c), item.source),
+            TypedPredicate("coll", (a, center, midpoint), item.source),
+            TypedPredicate("rconst", (a, center, center, midpoint), item.source, ("2",)),
+            TypedPredicate("distseq", (a, center, center, midpoint, a, midpoint), item.source, ("1", "1", "-1")),
+        ))
+    return expanded
+
+
+def unused_point_name(existing: set[str], seed: str) -> str:
+    if seed not in existing:
+        return seed
+    ordinal = 2
+    while f"{seed}_{ordinal}" in existing:
+        ordinal += 1
+    return f"{seed}_{ordinal}"
+
+
+def normalize_constant(value: str) -> str:
+    fraction = Fraction(value)
+    return str(fraction.numerator) if fraction.denominator == 1 else f"{fraction.numerator}/{fraction.denominator}"
+
+
+def predicate_type_issue(item: TypedPredicate) -> str | None:
+    arities = {
+        "coll": (3, 0), "cyclic": (4, 0), "perp": (4, 0), "para": (4, 0),
+        "cong": (4, 0), "eqangle": (8, 0), "rconst": (4, 1),
+        "eqratio": (8, 0), "s_angle": (4, 1), "distseq": (6, 3),
+    }
+    expected = arities.get(item.name)
+    if expected is None:
+        return None
+    if (len(item.points), len(item.constants)) != expected:
+        return f"expected {expected[0]} points and {expected[1]} constants"
+    if item.name == "coll" and len(set(item.points)) < 3:
+        return "collinearity requires three distinct points"
+    if item.name == "cyclic" and len(set(item.points)) < 4:
+        return "cyclicity requires four distinct points"
+    if item.name in {"perp", "para", "cong", "eqangle", "rconst", "eqratio", "s_angle", "distseq"}:
+        for index in range(0, len(item.points), 2):
+            if item.points[index] == item.points[index + 1]:
+                return "a directed segment has identical endpoints"
+    return None
+
+
 def unresolved_relation_fragments(text: str, consumed: list[tuple[int, int]]) -> list[str]:
     remainder = list(text)
     for start, end in consumed:
         remainder[start:end] = " " * (end - start)
     value = "".join(remainder)
-    markers = ("⊥", "∥", "//", "∠", "=", "中点", "外心", "重心", "一直線", "同一円周", "perpendicular", "parallel", "midpoint", "circumcenter", "centroid", "collinear", "cyclic")
+    markers = (
+        "⊥", "∥", "//", "∠", "=", "比", "円", "中点", "外心", "重心", "垂心", "内心", "傍心",
+        "一直線", "同一円周", "交点", "接する", "上にある", "perpendicular", "parallel",
+        "midpoint", "circumcenter", "centroid", "orthocenter", "incenter", "excenter", "intersection",
+        "tangent", "collinear", "cyclic",
+    )
     return [marker for marker in markers if marker.lower() in value.lower()]
 
 
 def deduplicate_predicates(predicates: list[TypedPredicate]) -> list[TypedPredicate]:
     result: list[TypedPredicate] = []
-    seen: set[tuple[str, tuple[str, ...]]] = set()
+    seen: set[tuple[str, tuple[str, ...], tuple[str, ...]]] = set()
     for item in predicates:
-        key = (item.name, item.points)
+        key = (item.name, item.points, item.constants)
         if key not in seen:
             seen.add(key)
             result.append(item)
@@ -322,14 +528,24 @@ def construct_diagram(
     variable_count = max(0, 2 * (len(points) - 2))
     for restart in range(1, max_restarts + 1):
         initial = rng.normal(0.0, 2.5, size=variable_count)
-        solved = least_squares(residuals, initial, max_nfev=3000, ftol=1e-12, xtol=1e-12, gtol=1e-12)
+        solved = least_squares(residuals, initial, max_nfev=3000, ftol=1e-13, xtol=1e-13, gtol=1e-13)
+        if residuals(solved.x).size >= variable_count and variable_count:
+            solved = least_squares(
+                residuals,
+                solved.x,
+                method="lm",
+                max_nfev=10000,
+                ftol=1e-15,
+                xtol=1e-15,
+                gtol=1e-15,
+            )
         error = float(np.max(np.abs(residuals(solved.x)))) if residuals(solved.x).size else 0.0
         if best is None or error < best[0]:
             best = (error, solved.x.copy())
-        if error <= 1e-6:
+        if error <= 1e-14:
             coordinates = unpack(solved.x)
             return {name: (float(value[0]), float(value[1])) for name, value in coordinates.items()}, error, restart
-    if best is None or best[0] > 1e-5:
+    if best is None or best[0] > 5e-14:
         return {}, best[0] if best else None, max_restarts
     coordinates = unpack(best[1])
     return {name: (float(value[0]), float(value[1])) for name, value in coordinates.items()}, best[0], max_restarts
@@ -352,6 +568,25 @@ def predicate_residual(item: TypedPredicate, coordinates: dict[str, np.ndarray])
     if item.name == "cyclic":
         matrix = np.asarray([[point[0], point[1], point @ point, 1.0] for point in p])
         return float(np.linalg.det(matrix)) / 256.0
+    if item.name == "rconst":
+        ratio = float(Fraction(item.constants[0]))
+        return (squared_distance(p[0], p[1]) - ratio * ratio * squared_distance(p[2], p[3])) / 16.0
+    if item.name == "eqratio":
+        left_num = squared_distance(p[0], p[1])
+        left_den = squared_distance(p[2], p[3])
+        right_num = squared_distance(p[4], p[5])
+        right_den = squared_distance(p[6], p[7])
+        return (left_num * right_den - right_num * left_den) / 256.0
+    if item.name == "s_angle":
+        angle = np.deg2rad(float(Fraction(item.constants[0])))
+        u, v = p[1] - p[0], p[3] - p[2]
+        # DDAR encodes dir(u) - dir(v) = angle, modulo 180 degrees.
+        return (cross2d(u, v) * np.cos(angle) + float(u @ v) * np.sin(angle)) / 16.0
+    if item.name == "distseq":
+        return sum(
+            float(Fraction(coef)) * float(np.linalg.norm(p[2 * index] - p[2 * index + 1]))
+            for index, coef in enumerate(item.constants)
+        ) / 4.0
     if item.name == "centroid":
         center, a, b, c = p
         delta = center - (a + b + c) / 3
@@ -386,4 +621,4 @@ def render_formal_problem(
 def format_number(value: float) -> str:
     if abs(value) < 1e-12:
         value = 0.0
-    return f"{value:.12g}"
+    return f"{value:.17g}"

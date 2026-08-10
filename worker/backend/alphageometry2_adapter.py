@@ -114,14 +114,27 @@ def solve_natural_problem(
             "formalization": formalization.to_dict(),
             "uses_language_model": False,
         }
-    result = solve_with_auxiliary_search(
-        formalization.formal_problem,
-        directory=directory,
-        max_depth=max_depth,
-        beam_width=beam_width,
-        max_attempts=max_attempts,
-        ensemble=True,
-    )
+    try:
+        result = solve_with_auxiliary_search(
+            formalization.formal_problem,
+            directory=directory,
+            max_depth=max_depth,
+            beam_width=beam_width,
+            max_attempts=max_attempts,
+            ensemble=True,
+        )
+    except (AssertionError, KeyError, ValueError, ZeroDivisionError) as error:
+        formalization.status = "backend_rejected"
+        formalization.unresolved_relations.append(
+            f"DDAR rejected the numerical realization: {type(error).__name__}: {error}"
+        )
+        return {
+            "status": "unformalized",
+            "proved": False,
+            "backend": "MathOS typed geometry formalizer",
+            "formalization": formalization.to_dict(),
+            "uses_language_model": False,
+        }
     result["formalization"] = formalization.to_dict()
     result["input_mode"] = "natural_or_tex"
     return result

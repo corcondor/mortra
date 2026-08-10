@@ -11,6 +11,7 @@ import contextlib
 import io
 import itertools
 from dataclasses import dataclass
+from fractions import Fraction
 from typing import Any
 
 import numpy as np
@@ -27,6 +28,8 @@ GRAMMAR_INVENTORY = (
     "reflection",
     "equilateral_vertex",
     "circumcenter",
+    "internal_division",
+    "angle_bisector_point",
 )
 
 
@@ -227,6 +230,7 @@ def generate_candidates(
 
     candidates: list[ConstructionCandidate] = []
     lines = list(itertools.combinations(points, 2))
+    ratios = construction_ratios(problem)
     for (a, b), (c, d) in itertools.combinations(lines, 2):
         value = line_intersection(a.value, b.value, c.value, d.value)
         if value is None or near_existing(value, all_points):
@@ -284,6 +288,42 @@ def generate_candidates(
                 goal_names,
                 premise_frequency,
             ))
+
+        for ratio in ratios:
+            for left, right in ((a, b), (b, a)):
+                value = internal_division(left.value, right.value, ratio)
+                if near_existing(value, all_points):
+                    continue
+                candidates.append(candidate(
+                    "internal_division",
+                    value,
+                    (
+                        ("coll", (left.name, "$", right.name), ()),
+                        ("rconst", (left.name, "$", "$", right.name), (ratio,)),
+                        ("distseq", (left.name, "$", "$", right.name, left.name, right.name), (1, 1, -1)),
+                    ),
+                    (left.name, right.name),
+                    goal_names,
+                    premise_frequency,
+                ))
+
+    for vertex, first, second in itertools.permutations(points, 3):
+        if first.name > second.name:
+            continue
+        value = angle_bisector_point(vertex.value, first.value, second.value)
+        if value is None or near_existing(value, all_points):
+            continue
+        candidates.append(candidate(
+            "angle_bisector_point",
+            value,
+            (("eqangle", (
+                vertex.name, first.name, vertex.name, "$",
+                vertex.name, "$", vertex.name, second.name,
+            ), ()),),
+            (vertex.name, first.name, second.name),
+            goal_names,
+            premise_frequency,
+        ))
 
     for p in points:
         for a, b in lines:
@@ -490,6 +530,38 @@ def equilateral_vertices(a: np.ndarray, b: np.ndarray) -> tuple[np.ndarray, np.n
     direction = b - a
     offset = np.asarray([-direction[1], direction[0]]) * (3 ** 0.5 / 2)
     return midpoint + offset, midpoint - offset
+
+
+def construction_ratios(problem: Any) -> tuple[int, ...]:
+    values = {2}
+    for predicate_item in [*problem.preds, problem.goal]:
+        if predicate_item.name != "rconst" or not predicate_item.constants:
+            continue
+        value = Fraction(predicate_item.constants[0])
+        if value.denominator == 1 and 1 < value.numerator <= 8:
+            values.add(value.numerator)
+    return tuple(sorted(values))
+
+
+def internal_division(a: np.ndarray, b: np.ndarray, ratio: int) -> np.ndarray:
+    """Return P on AB with AP/PB = ratio."""
+    a = np.asarray(a, dtype=float)
+    b = np.asarray(b, dtype=float)
+    return (a + ratio * b) / (ratio + 1)
+
+
+def angle_bisector_point(vertex: np.ndarray, first: np.ndarray, second: np.ndarray) -> np.ndarray | None:
+    vertex = np.asarray(vertex, dtype=float)
+    left = np.asarray(first, dtype=float) - vertex
+    right = np.asarray(second, dtype=float) - vertex
+    left_norm = float(np.linalg.norm(left))
+    right_norm = float(np.linalg.norm(right))
+    if left_norm <= EPS or right_norm <= EPS:
+        return None
+    direction = left / left_norm + right / right_norm
+    if float(direction @ direction) <= EPS:
+        return None
+    return vertex + direction
 
 
 def line_circle_intersections(

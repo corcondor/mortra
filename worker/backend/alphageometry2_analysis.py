@@ -14,6 +14,7 @@ import itertools
 from typing import Any, Iterable
 
 import numpy as np
+from fractions import Fraction
 
 
 def analyze_problem(problem: Any, DDAR: type, *, max_facts: int = 256) -> dict[str, Any]:
@@ -49,7 +50,7 @@ def symbolic_facts(problem: Any, DDAR: type, candidates: list[Any]) -> set[str]:
             engine.force_pred(predicate)
         with contextlib.redirect_stdout(io.StringIO()):
             engine.deduction_closure(progress_dot=False)
-    except (AssertionError, ValueError, ZeroDivisionError):
+    except (AssertionError, KeyError, ValueError, ZeroDivisionError):
         return set()
     result: set[str] = set()
     for predicate in candidates:
@@ -64,6 +65,7 @@ def symbolic_facts(problem: Any, DDAR: type, candidates: list[Any]) -> set[str]:
 def candidate_predicates(problem: Any) -> Iterable[Any]:
     predicate_type = type(problem.goal)
     points = list(problem.points)
+    yield problem.goal
     for triple in itertools.combinations(points, 3):
         yield predicate_type(name="coll", points=list(triple), constants=[])
     for quadruple in itertools.combinations(points, 4):
@@ -91,6 +93,25 @@ def numerically_true(predicate: Any, *, tolerance: float = 1e-6) -> bool:
         if predicate.name == "cyclic":
             matrix = np.asarray([[p[0], p[1], p @ p, 1.0] for p in values])
             return abs(float(np.linalg.det(matrix))) <= tolerance
+        if predicate.name == "rconst":
+            ratio = float(Fraction(predicate.constants[0]))
+            return abs(distance2(values[0], values[1]) - ratio * ratio * distance2(values[2], values[3])) <= tolerance
+        if predicate.name == "eqratio":
+            return abs(
+                distance2(values[0], values[1]) * distance2(values[6], values[7])
+                - distance2(values[4], values[5]) * distance2(values[2], values[3])
+            ) <= tolerance
+        if predicate.name in ("s_angle", "aconst"):
+            angle = np.deg2rad(float(Fraction(predicate.constants[0])))
+            left = values[1] - values[0]
+            right = values[3] - values[2]
+            return abs(cross(left, right) * np.cos(angle) + float(left @ right) * np.sin(angle)) <= tolerance
+        if predicate.name == "distseq":
+            residual = sum(
+                float(Fraction(coef)) * float(np.linalg.norm(values[2 * index] - values[2 * index + 1]))
+                for index, coef in enumerate(predicate.constants)
+            )
+            return abs(residual) <= tolerance
     except (ValueError, np.linalg.LinAlgError):
         return False
     return False

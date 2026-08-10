@@ -81,12 +81,12 @@ test('unsupported natural-language relations abstain instead of being dropped', 
   skip: !process.env.MATHOS_AG2_DIR,
 }, () => {
   const result = executeAlphaGeometry2(
-    String.raw`三角形ABCにおいて、Gは三角形ABCの重心である。AG\perp BCを示せ。`,
+    String.raw`三角形ABCにおいて、Jは三角形ABCの傍心である。AJ\perp BCを示せ。`,
     { inputFormat: 'natural' },
   )
   assert.equal(result.status, 'unformalized')
   assert.equal(result.proved, false)
-  assert.ok(result.formalization?.unresolved_relations.includes('unsupported typed predicate: centroid'))
+  assert.ok(result.formalization?.unresolved_relations.includes('傍心'))
 })
 
 test('a numerically realizable goal is not leaked into the symbolic premises', {
@@ -111,6 +111,87 @@ test('a metric premise and angle query are lowered to DDAR predicates', {
   assert.equal(result.proved, true, result.error)
   assert.equal(result.baseline_proved, true)
   assert.equal(result.formalization?.formal_problem?.split(' ? ')[1], 'eqangle b a b c c b c a')
+})
+
+test('centers are elaborated into executable primitive predicates', {
+  skip: !process.env.MATHOS_AG2_DIR,
+}, () => {
+  const orthocenter = executeAlphaGeometry2(
+    String.raw`三角形ABCにおいて、Hは三角形ABCの垂心である。AH\perp BCを示せ。`,
+    { inputFormat: 'natural', maxDepth: 1, maxAttempts: 16 },
+  )
+  const incenter = executeAlphaGeometry2(
+    String.raw`三角形ABCにおいて、Iは三角形ABCの内心である。\angle BAI=\angle IACを示せ。`,
+    { inputFormat: 'natural', maxDepth: 1, maxAttempts: 16 },
+  )
+  const centroid = executeAlphaGeometry2(
+    '三角形ABCにおいて、Gは三角形ABCの重心である。AG/AG=1を示せ。',
+    { inputFormat: 'natural', maxDepth: 1, maxAttempts: 16 },
+  )
+  assert.equal(orthocenter.proved, true, orthocenter.error)
+  assert.equal(incenter.proved, true, incenter.error)
+  assert.equal(centroid.proved, true, centroid.error)
+  assert.match(centroid.formalization?.formal_problem ?? '', /g_mid_bc/)
+  assert.match(centroid.formalization?.formal_problem ?? '', /distseq a g g g_mid_bc a g_mid_bc 1 1 -1/)
+})
+
+test('incidence, tangency, ratio, and angle constants reach executable DDAR predicates', {
+  skip: !process.env.MATHOS_AG2_DIR,
+}, () => {
+  const problems = [
+    String.raw`三角形ABCにおいて、Pは直線ABと直線CDの交点である。A,P,Bは一直線上にあることを示せ。`,
+    String.raw`直線ABは点Aで中心Oの円に接する。AB\perp OAを示せ。`,
+    'AB:CD=EF:GHである。AB:CD=EF:GHを示せ。',
+    String.raw`三角形ABCにおいて、\angle ABC=60^\circである。\angle ABC=60^\circを示せ。`,
+    'Pは円ABC上にある。A,B,C,Pは同一円周上にあることを示せ。',
+  ]
+  const results = problems.map(problem => executeAlphaGeometry2(problem, {
+    inputFormat: 'natural', maxDepth: 1, beamWidth: 4, maxAttempts: 16,
+  }))
+  assert.ok(results.every(result => result.proved), results.map(result => result.error).join('\n'))
+  const formal = results.map(result => result.formalization?.formal_problem ?? '')
+  assert.match(formal[0], /coll a p b/)
+  assert.match(formal[1], /perp a b o a/)
+  assert.match(formal[2], /eqratio a b c d e f g h/)
+  assert.match(formal[3], /s_angle b a b c 60/)
+  assert.match(formal[4], /cyclic a b c p/)
+})
+
+test('English center and incidence charts lower to the same predicate skeleton', {
+  skip: !process.env.MATHOS_AG2_DIR,
+}, () => {
+  const results = [
+    'H is the orthocenter of triangle ABC. Show that AH is perpendicular to BC.',
+    'P lies on the circle through A, B and C. Show that A, B, C, P are cyclic.',
+  ].map(problem => executeAlphaGeometry2(problem, {
+    inputFormat: 'natural', maxDepth: 1, beamWidth: 4, maxAttempts: 16,
+  }))
+  assert.ok(results.every(result => result.proved), results.map(result => result.error).join('\n'))
+  assert.match(results[0].formalization?.formal_problem ?? '', /perp a h b c/)
+  assert.match(results[1].formalization?.formal_problem ?? '', /cyclic a b c p/)
+})
+
+test('a ratio satisfied only by the generated diagram remains unproved', {
+  skip: !process.env.MATHOS_AG2_DIR,
+}, () => {
+  const result = executeAlphaGeometry2(
+    '4点A,B,C,Dについて、AB/CD=2を示せ。',
+    { inputFormat: 'natural', maxDepth: 1, beamWidth: 4, maxAttempts: 16 },
+  )
+  assert.equal(result.formalization?.status, 'formalized')
+  assert.equal(result.proved, false)
+  assert.equal(result.status, 'unproved')
+})
+
+test('degenerate directed segments are rejected by typed elaboration', {
+  skip: !process.env.MATHOS_AG2_DIR,
+}, () => {
+  const result = executeAlphaGeometry2(
+    String.raw`3点A,B,Cについて、AA\perp BCを示せ。`,
+    { inputFormat: 'natural' },
+  )
+  assert.equal(result.status, 'unformalized')
+  assert.ok(result.formalization?.unresolved_relations.some(issue => issue.includes('identical endpoints')))
 })
 
 test('auxiliary search is invariant under a similarity coordinate change', {
