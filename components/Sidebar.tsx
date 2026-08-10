@@ -53,9 +53,9 @@ export function Sidebar({ filters, stats, onChange, onReload, onClose }: Props) 
         <div className="min-w-0">
           <div className="flex items-center gap-2 text-[15px] font-bold text-zinc-100">
             <span className="flex h-7 w-7 items-center justify-center rounded bg-blue-600 text-sm text-white">Σ</span>
-            <span>作問ステーション</span>
+            <span>Sakumon</span>
           </div>
-          <div className="ml-9 mt-0.5 text-[10px] text-zinc-500">MathOS 作問・検証</div>
+          <div className="ml-9 mt-0.5 text-[10px] tracking-[0.12em] text-zinc-500">by MORTRA</div>
         </div>
         {onClose ? (
           <button

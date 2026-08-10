@@ -12,6 +12,10 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
+import { Line2 } from 'three/examples/jsm/lines/Line2.js'
+import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js'
+import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js'
 import { ARM, forwardAll, positionOf } from '@/lib/kinematics'
 import { FIGURES, figureComplexity } from '@/lib/figures'
 import { sampleAt } from '@/lib/trajectory'
@@ -72,8 +76,37 @@ export default function RobotPage() {
       peak: plan.peak,
     })
 
+    /*
+     * 配色。
+     *
+     * 以前は板が暗い青緑、枠が茶、関節がオレンジ、床が灰、インクが5色だった。
+     * 色数が多いと 3D ソフトの既定マテリアルをそのまま出したように見える。
+     * 実際そう見えていた。白と黒だけに畳む。
+     *
+     *   board … 黒板。背景が黒、線が白
+     *   paper … iPad のノート。背景が白、線が黒
+     *
+     * ?theme=board で切り替える。既定は paper。
+     */
+    const theme =
+      typeof window !== 'undefined' &&
+      new URLSearchParams(window.location.search).get('theme') === 'board'
+        ? 'board' : 'paper'
+    const P = theme === 'board'
+      ? {
+          bg: 0x000000, surface: 0x080808, ground: 0x000000,
+          body: 0xf2f2f2, accent: 0x141414, ink: 0xffffff,
+          surfaceRough: 0.92, exposure: 1.0,
+        }
+      : {
+          // 白い紙の上では、腕は暗くないと消える。黒板とは明暗を入れ替える。
+          bg: 0xffffff, surface: 0xffffff, ground: 0xffffff,
+          body: 0x1c1c1c, accent: 0xf2f2f2, ink: 0x111111,
+          surfaceRough: 1.0, exposure: 1.55,
+        }
+
     const scene = new THREE.Scene()
-    scene.background = new THREE.Color(0x0a0c0b)
+    scene.background = new THREE.Color(P.bg)
     const camera = new THREE.PerspectiveCamera(
       42, mount.clientWidth / mount.clientHeight, 0.1, 1200,
     )
@@ -88,126 +121,281 @@ export default function RobotPage() {
       antialias: true,
       preserveDrawingBuffer: exporting,
     })
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-    renderer.setSize(mount.clientWidth, mount.clientHeight)
+    // 書き出しは画面の大きさに依存させない。リールは 1080×1920 固定。
+    // 以前はウィンドウの形をそのまま使っていたので、横長の窓で書き出すと
+    // 横長の動画が出てしまった。
+    const OUT_W = 1080
+    const OUT_H = 1920
+    const viewW = exporting ? OUT_W : mount.clientWidth
+    const viewH = exporting ? OUT_H : mount.clientHeight
+    camera.aspect = viewW / viewH
+    camera.updateProjectionMatrix()
+    renderer.setPixelRatio(exporting ? 1 : Math.min(window.devicePixelRatio, 2))
+    renderer.setSize(viewW, viewH, !exporting)
+    // 金属を金属に見せるには映り込みが要る。露出とトーンマッピングを
+    // 決めないとハイライトが白飛びして、樹脂のような平坦な面になる。
+    renderer.toneMapping = THREE.ACESFilmicToneMapping
+    renderer.toneMappingExposure = P.exposure
+    renderer.shadowMap.enabled = true
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap
     mount.appendChild(renderer.domElement)
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.55))
-    const key = new THREE.DirectionalLight(0xffffff, 1.15)
+    // 環境マップ。metalness の高い材質は周囲を映すことでしか金属に見えない。
+    // これが無いと roughness をいくら下げても暗い灰色の塊にしかならない。
+    const pmrem = new THREE.PMREMGenerator(renderer)
+    const environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
+    scene.environment = environment
+
+    // 環境光は落とす。環境マップが回り込みを担うので、
+    // AmbientLight を強くすると陰影が消えて平坦になる。
+    scene.add(new THREE.AmbientLight(0xffffff, theme === 'paper' ? 0.55 : 0.12))
+    const key = new THREE.DirectionalLight(0xffffff, theme === 'paper' ? 1.5 : 2.1)
     key.position.set(70, -90, 130)
+    key.castShadow = true
+    key.shadow.mapSize.set(2048, 2048)
+    key.shadow.camera.near = 20
+    key.shadow.camera.far = 400
+    key.shadow.camera.left = -120
+    key.shadow.camera.right = 120
+    key.shadow.camera.top = 120
+    key.shadow.camera.bottom = -120
+    key.shadow.bias = -0.0009
+    key.shadow.normalBias = 0.4
     scene.add(key)
-    const rim = new THREE.DirectionalLight(0x88bbff, 0.45)
+    // リムも返しも白にする。青いリムと橙の返しを入れていたが、
+    // 白黒の画面に色付きの光を足すと、そこだけ色が乗って濁る。
+    const rim = new THREE.DirectionalLight(0xffffff, theme === 'paper' ? 0.5 : 1.1)
     rim.position.set(-80, -50, 40)
     scene.add(rim)
+    const bounce = new THREE.DirectionalLight(0xffffff, 0.35)
+    bounce.position.set(10, 60, -40)
+    scene.add(bounce)
 
+    // 黒板は完全なマットにしない。わずかな光沢があると面の向きが読めて、
+    // 板が「空間に置かれた物」に見える。
     const board = new THREE.Mesh(
       new THREE.PlaneGeometry(124, 88),
-      new THREE.MeshStandardMaterial({ color: 0x1f2d27, roughness: 0.96 }),
+      new THREE.MeshStandardMaterial({
+        color: P.surface, roughness: P.surfaceRough, metalness: 0.0,
+        envMapIntensity: 0.2,
+      }),
     )
     board.position.set(0, 55.8, 46)
     board.rotation.x = Math.PI / 2
+    board.receiveShadow = true
     scene.add(board)
-    const frame = new THREE.Mesh(
-      new THREE.BoxGeometry(130, 2.2, 94),
-      new THREE.MeshStandardMaterial({ color: 0x6b4a2c, roughness: 0.8 }),
-    )
-    frame.position.set(0, 57.4, 46)
-    scene.add(frame)
-    const base = new THREE.Mesh(
-      new THREE.CylinderGeometry(11, 13, 6, 40),
-      new THREE.MeshStandardMaterial({ color: 0x2a2f33, roughness: 0.5, metalness: 0.65 }),
-    )
-    base.position.set(0, 0, 3)
-    base.rotation.x = Math.PI / 2
-    scene.add(base)
-    scene.add(new THREE.Mesh(
-      new THREE.PlaneGeometry(500, 500),
-      new THREE.MeshStandardMaterial({ color: 0x101312, roughness: 1 }),
-    ))
 
+    // 紙の見え方には枠が要らない。黒板のときだけ細い縁を出す。
+    if (theme === 'board') {
+      const frame = new THREE.Mesh(
+        new THREE.BoxGeometry(130, 2.2, 94),
+        new THREE.MeshStandardMaterial({
+          color: P.accent, roughness: 0.7, metalness: 0.0, envMapIntensity: 0.3,
+        }),
+      )
+      frame.position.set(0, 57.4, 46)
+      frame.castShadow = true
+      frame.receiveShadow = true
+      scene.add(frame)
+    }
+
+    // 金属らしさを metalness で出すのをやめた。metalness を上げると
+    // 環境マップの色が乗って、白黒の画面に灰色と色被りが出る。
+    // 艶消しの単色にして、形と影で立体を見せる。
+    const darkMetal = new THREE.MeshStandardMaterial({
+      color: P.accent, roughness: 0.5, metalness: 0.1, envMapIntensity: 0.5,
+    })
+    // 台座は円柱の素置きではなく、段を付けて機械らしい輪郭にする
+    const pedestal = new THREE.Group()
+    const plinth = new THREE.Mesh(new THREE.CylinderGeometry(13, 14.5, 2.6, 64), darkMetal)
+    plinth.position.y = 1.3
+    const column = new THREE.Mesh(new THREE.CylinderGeometry(10.4, 11.6, 4.6, 64), darkMetal)
+    column.position.y = 4.9
+    const collar = new THREE.Mesh(new THREE.TorusGeometry(10.4, 0.55, 16, 64), darkMetal)
+    collar.rotation.x = Math.PI / 2
+    collar.position.y = 7.2
+    for (const m of [plinth, column, collar]) {
+      m.castShadow = true; m.receiveShadow = true; pedestal.add(m)
+    }
+    pedestal.rotation.x = Math.PI / 2
+    scene.add(pedestal)
+
+    const ground = new THREE.Mesh(
+      new THREE.PlaneGeometry(500, 500),
+      new THREE.MeshStandardMaterial({
+        color: P.ground, roughness: 0.95, metalness: 0.0, envMapIntensity: 0.15,
+      }),
+    )
+    ground.receiveShadow = true
+    scene.add(ground)
+
+    // 関節のオレンジをやめる。白い本体に黒い関節、それだけ。
     const linkMaterial = new THREE.MeshStandardMaterial({
-      color: 0xd8dde0, roughness: 0.35, metalness: 0.78,
+      color: P.body, roughness: 0.42, metalness: 0.08, envMapIntensity: 0.55,
     })
     const jointMaterial = new THREE.MeshStandardMaterial({
-      color: 0xffb454, roughness: 0.4, metalness: 0.45,
+      color: P.accent, roughness: 0.44, metalness: 0.08, envMapIntensity: 0.5,
     })
     const links: THREE.Mesh[] = []
-    const joints: THREE.Mesh[] = []
+    const joints: THREE.Object3D[] = []
     for (let i = 0; i < ARM.length; i++) {
+      const radius = 2.6 - i * 0.22
       const link = new THREE.Mesh(
-        new THREE.CylinderGeometry(2.6 - i * 0.22, 2.6 - i * 0.22, 1, 20), linkMaterial,
+        new THREE.CylinderGeometry(radius, radius, 1, 32), linkMaterial,
       )
+      link.castShadow = true
       scene.add(link); links.push(link)
-      const joint = new THREE.Mesh(
-        new THREE.CylinderGeometry(3.4 - i * 0.28, 3.4 - i * 0.28, 3.2, 24), jointMaterial,
+
+      // 関節は伸縮しないので、ここに機械らしいディテールを持たせる。
+      // 面取りのリングがあるだけで、輪郭に沿ってハイライトが走り、
+      // 「円柱を並べただけ」に見えなくなる。
+      const jointRadius = 3.4 - i * 0.28
+      const housing = new THREE.Group()
+      const barrel = new THREE.Mesh(
+        new THREE.CylinderGeometry(jointRadius, jointRadius, 3.2, 40), jointMaterial,
       )
-      scene.add(joint); joints.push(joint)
+      housing.add(barrel)
+      for (const sign of [1, -1]) {
+        const rim = new THREE.Mesh(
+          new THREE.TorusGeometry(jointRadius * 0.98, 0.3, 12, 40), linkMaterial,
+        )
+        rim.rotation.x = Math.PI / 2
+        rim.position.y = sign * 1.6
+        housing.add(rim)
+        const cap = new THREE.Mesh(
+          new THREE.CylinderGeometry(jointRadius * 0.62, jointRadius * 0.62, 3.5, 32),
+          linkMaterial,
+        )
+        housing.add(cap)
+      }
+      housing.traverse((o) => {
+        if ((o as THREE.Mesh).isMesh) { o.castShadow = true; o.receiveShadow = true }
+      })
+      scene.add(housing); joints.push(housing)
     }
-    const pen = new THREE.Mesh(
-      new THREE.ConeGeometry(1.1, 5, 16),
-      new THREE.MeshStandardMaterial({ color: 0xfff3d0, emissive: 0x554422 }),
+
+    // ペンは円錐の素置きをやめる。軸・金具・芯の3段にすると
+    // 「筆記具」として読めるようになる。
+    // 芯の先端をローカル原点に置く。こうすると pen.position が
+    // そのまま筆跡の点になり、位置合わせの補正値が要らない。
+    const pen = new THREE.Group()
+    const penBarrel = new THREE.Mesh(
+      new THREE.CylinderGeometry(1.05, 1.15, 6.2, 24),
+      new THREE.MeshStandardMaterial({
+        color: P.body, roughness: 0.45, metalness: 0.08, envMapIntensity: 0.5,
+      }),
     )
+    penBarrel.position.y = -6.5
+    // 金の口金をやめる。白黒の中で金属色はそこだけ浮く。
+    const ferrule = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.72, 1.05, 1.4, 24),
+      new THREE.MeshStandardMaterial({
+        color: P.accent, roughness: 0.4, metalness: 0.1, envMapIntensity: 0.5,
+      }),
+    )
+    ferrule.position.y = -2.7
+    // 芯はインクと同じ色。何で書いているかが一目で繋がる。
+    const nib = new THREE.Mesh(
+      new THREE.ConeGeometry(0.72, 2.0, 20),
+      new THREE.MeshStandardMaterial({ color: P.ink, roughness: 0.6 }),
+    )
+    nib.position.y = -1.0
+    for (const m of [penBarrel, ferrule, nib]) { m.castShadow = true; pen.add(m) }
     scene.add(pen)
 
     const inkGroup = new THREE.Group()
     scene.add(inkGroup)
-    const inkColors = [0xf6f2e7, 0x9fe0b0, 0xffd79a, 0x8fd0ff, 0xffa8c0]
-    let currentLine: THREE.Line | null = null
+    // 5色で描き分けていたが、色が増えるほど図が散らかって見えた。
+    // 1色に固定し、区別は太さと発光で付ける。
+    const inkColors = [P.ink]
     let currentCount = 0
     let lastStroke = -1
 
-    // WebGL では線幅が 1px 固定で linewidth が効かない。少しずつずらした
-    // 複製を重ねて太さを作り、外側を加算合成にして発光させる。
-    // ずらし幅は小さくする。大きいと立体では平行な別々の線に見えてしまう
-    // （実際に立方体でそうなった）。細かく重ねて 1 本の太い線に見せる。
-    const t = 0.075
-    const g = 0.19
-    const INK_LAYERS = [
-      { dx: 0, dz: 0, opacity: 1, add: false },
-      { dx: t, dz: 0, opacity: 1, add: false },
-      { dx: -t, dz: 0, opacity: 1, add: false },
-      { dx: 0, dz: t, opacity: 1, add: false },
-      { dx: 0, dz: -t, opacity: 1, add: false },
-      { dx: t, dz: t, opacity: 1, add: false },
-      { dx: -t, dz: -t, opacity: 1, add: false },
-      { dx: g, dz: g, opacity: 0.22, add: true },
-      { dx: -g, dz: g, opacity: 0.22, add: true },
-      { dx: g, dz: -g, opacity: 0.22, add: true },
-      { dx: -g, dz: -g, opacity: 0.22, add: true },
-    ]
-    let currentLayers: THREE.Line[] = []
+    /*
+     * 線の太さについて。
+     *
+     * THREE.Line は WebGL の制約で 1px 固定になるため、以前は同じ線を
+     * 11 本わずかにずらして重ね、太さを偽装していた。これが失敗だった。
+     * ずらした複製どうしが視点によって重ならず、輪郭が二重三重にぶれて、
+     * 手が震えているように見えていた（「ふなふな」の正体）。
+     *
+     * Line2 は線を実際の板ポリゴンとして押し出すので、太さが本物になり、
+     * 継ぎ目も正しく繋がる。1 本の線につきコア 1 本と発光 1 本で足りる。
+     */
+    const MAX_POINTS = 2900
+    const inkMaterials: LineMaterial[] = []
+
+    const makeInkMaterial = (color: number, width: number, glow: boolean) => {
+      const material = new LineMaterial({
+        color,
+        linewidth: width,
+        worldUnits: true,          // 太さを世界座標で持つ。寄っても破綻しない
+        alphaToCoverage: true,
+        transparent: glow,
+        // 黒板では加算で発光させる（チョークの滲み）。
+        // 紙では加算すると黒インクが明るくなって消えるので、
+        // 同じ色を薄く重ねて滲みだけ作る。
+        opacity: glow ? (theme === 'board' ? 0.16 : 0.10) : 1,
+        blending: glow && theme === 'board'
+          ? THREE.AdditiveBlending : THREE.NormalBlending,
+        depthWrite: !glow,
+      })
+      material.resolution.set(viewW, viewH)
+      inkMaterials.push(material)
+      return material
+    }
+
+    type InkStroke = { core: Line2; glow: Line2 }
+    let currentInk: InkStroke | null = null
+    const previousInk = new THREE.Vector3()
 
     const startLine = (strokeIndex: number) => {
-      currentLayers = INK_LAYERS.map((layer) => {
-        const geometry = new THREE.BufferGeometry()
-        geometry.setAttribute('position',
-          new THREE.BufferAttribute(new Float32Array(9000), 3))
-        geometry.setDrawRange(0, 0)
-        const line = new THREE.Line(geometry, new THREE.LineBasicMaterial({
-          color: inkColors[strokeIndex % inkColors.length],
-          transparent: layer.opacity < 1,
-          opacity: layer.opacity,
-          blending: layer.add ? THREE.AdditiveBlending : THREE.NormalBlending,
-          depthWrite: !layer.add,
-        }))
+      const color = inkColors[strokeIndex % inkColors.length]
+      const build = (width: number, glow: boolean) => {
+        const geometry = new LineGeometry()
+        // 実際の点が入る前に器だけ確保する。setPositions は
+        // 内部で (点数-1) 本ぶんの区間バッファを作る。
+        geometry.setPositions(new Float32Array(MAX_POINTS * 3))
+        geometry.instanceCount = 0
+        const line = new Line2(geometry, makeInkMaterial(color, width, glow))
+        line.frustumCulled = false   // 器が原点に潰れているので切られないようにする
         inkGroup.add(line)
         return line
-      })
-      currentLine = currentLayers[0]
+      }
+      // 太さは世界座標。図だけなら 0.20 でよいが、字を書くと潰れる。
+      // 「題」は 18 画。1 字 5 単位なら画の間隔は 0.28 しかない。
+      currentInk = { core: build(0.075, false), glow: build(0.22, true) }
       currentCount = 0
     }
+
     /** ペン先の実位置を筆跡に足す（図をなぞるのではなく腕の跡を残す） */
     const pushInk = (v: THREE.Vector3) => {
-      if (!currentLayers.length || currentCount >= 2900) return
-      currentLayers.forEach((line, i) => {
-        const layer = INK_LAYERS[i]
-        const attribute = line.geometry.getAttribute('position') as THREE.BufferAttribute
-        attribute.array[currentCount * 3] = v.x + layer.dx
-        attribute.array[currentCount * 3 + 1] = v.y
-        attribute.array[currentCount * 3 + 2] = v.z + layer.dz
-        attribute.needsUpdate = true
-        line.geometry.setDrawRange(0, currentCount + 1)
-      })
+      if (!currentInk || currentCount >= MAX_POINTS) return
+      if (currentCount > 0) {
+        // 区間 i は 点[i] と 点[i+1] を結ぶ。バッファは stride 6 の
+        // インターリーブで、前半 3 が始点、後半 3 が終点。
+        const segment = currentCount - 1
+        for (const line of [currentInk.core, currentInk.glow]) {
+          const attribute = line.geometry.getAttribute('instanceStart') as THREE.InterleavedBufferAttribute
+          const array = attribute.data.array as Float32Array
+          const base = segment * 6
+          if (segment === 0) {
+            array[base] = previousInk.x
+            array[base + 1] = previousInk.y
+            array[base + 2] = previousInk.z
+          } else {
+            array[base] = array[base - 3]
+            array[base + 1] = array[base - 2]
+            array[base + 2] = array[base - 1]
+          }
+          array[base + 3] = v.x
+          array[base + 4] = v.y
+          array[base + 5] = v.z
+          attribute.data.needsUpdate = true
+          line.geometry.instanceCount = currentCount
+        }
+      }
+      previousInk.copy(v)
       currentCount++
     }
 
@@ -230,7 +418,8 @@ export default function RobotPage() {
       })
       const last = frames[frames.length - 1]
       const dir = new THREE.Vector3(last[2], last[6], last[10]).normalize()
-      pen.position.copy(previous).addScaledVector(dir, -2.5)
+      // 芯の先端がローカル原点なので、ペン先の位置をそのまま入れる
+      pen.position.copy(previous)
       pen.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir)
       return previous
     }
@@ -246,7 +435,7 @@ export default function RobotPage() {
         resetRef.current = false
         elapsed = 0
         lastStroke = -1
-        currentLine = null
+        currentInk = null
         inkGroup.clear()
       }
       if (runningRef.current && elapsed < plan.total) {
@@ -311,15 +500,28 @@ export default function RobotPage() {
 
       // 図の中心を実際に計算して、そこを見る。
       // 原点を見ていると被写体が画面の端に寄って小さくなる。
-      const centre = new THREE.Vector3()
-      let count = 0
+      // 距離を数値で決め打ちしていたので、図ごとに画面からはみ出していた。
+      // 外接箱を測り、縦横の画角から「収まる距離」を計算する。
+      const box = new THREE.Box3()
       for (const stroke of figure.strokes) {
-        for (const p of stroke.points) {
-          centre.add(new THREE.Vector3(p.x, p.y, p.z))
-          count++
-        }
+        for (const p of stroke.points) box.expandByPoint(new THREE.Vector3(p.x, p.y, p.z))
       }
-      if (count) centre.multiplyScalar(1 / count)
+      const centre = box.getCenter(new THREE.Vector3())
+      const size = box.getSize(new THREE.Vector3())
+
+      const vFov = (camera.fov * Math.PI) / 180
+      const hFov = 2 * Math.atan(Math.tan(vFov / 2) * camera.aspect)
+      /** 図が収まる距離。margin は余白の倍率 */
+      const fitDistance = (margin: number) => {
+        const halfH = Math.max(size.z, size.y) / 2
+        const halfW = Math.max(size.x, size.y) / 2
+        return margin * Math.max(
+          halfH / Math.tan(vFov / 2),
+          halfW / Math.tan(hFov / 2),
+        )
+      }
+      const far = fitDistance(1.55)
+      const near = fitDistance(1.15)
 
       /** 進行度 0→1 に対するカメラ */
       const choreograph = (u: number, dist: number, az: number, el: number) => {
@@ -331,10 +533,18 @@ export default function RobotPage() {
         camera.lookAt(centre)
       }
 
+      // 平面図はノートを覗き込む角度に寄せる。斜め45度から見ると
+      // 板が台形に潰れて、何が描かれているか読めなくなる。
+      const flat = figure.dimension === 2
+      const azFrom = flat ? 0.10 : 0.28
+      const azTo = flat ? 0.30 : 0.72
+      const elFrom = flat ? 0.12 : 0.30
+      const elTo = flat ? 0.06 : 0.18
+
       const shot = (u: number) => {
         const e = easeInOut(Math.min(1, Math.max(0, u)))
-        // 引き 120 → 寄り 62
-        choreograph(u, 120 - 58 * e, 0.28 + 0.50 * e, 0.30 - 0.14 * e)
+        choreograph(u, far + (near - far) * e,
+          azFrom + (azTo - azFrom) * e, elFrom + (elTo - elFrom) * e)
       }
 
       const shoot = async () => {
@@ -406,9 +616,14 @@ export default function RobotPage() {
     }
 
     const onResize = () => {
+      if (exporting) return   // 書き出し中は 1080×1920 のまま動かさない
       camera.aspect = mount.clientWidth / mount.clientHeight
       camera.updateProjectionMatrix()
       renderer.setSize(mount.clientWidth, mount.clientHeight)
+      // Line2 は太さを画面解像度から逆算するので、伝え忘れると線が消える
+      for (const material of inkMaterials) {
+        material.resolution.set(mount.clientWidth, mount.clientHeight)
+      }
     }
     window.addEventListener('resize', onResize)
     let dragging = false

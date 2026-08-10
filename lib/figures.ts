@@ -13,6 +13,8 @@
  * 解くのに必要な段数も多い。figure.operations がその数である。
  */
 
+import { write } from './handwriting'
+
 export type P3 = { x: number; y: number; z: number }
 
 export type Stroke3 = {
@@ -531,7 +533,61 @@ function passageRegionFigure(): Figure {
   }
 }
 
+/**
+ * 図だけでなく解説を書く。予備校の板書と同じ構成にする。
+ *
+ *   見出し → 図 → 「余弦定理より」→ 式 → 答
+ *
+ * 図と文章が同じ面に並び、文章が図を指す。LLM が書けないのはここ。
+ */
+function cosineSolutionFigure(): Figure {
+  const strokes: Stroke3[] = []
+
+  // 見出し
+  strokes.push(...write('問題', { u: -46, v: 30, size: 6.5 }))
+
+  // 三角形 AB=7, BC=5, CA=3 を実際の比で置く
+  const A = onBoard(-40, 2)
+  const B = onBoard(-12, 2)
+  // AB=7 を 28 単位に取る。CA=3→12, BC=5→20
+  const scale = 4
+  const cosA = (49 + 9 - 25) / (2 * 7 * 3)      // 11/14
+  const sinA = Math.sqrt(1 - cosA * cosA)
+  const C = onBoard(-40 + 3 * scale * cosA, 2 + 3 * scale * sinA)
+
+  strokes.push({ points: [A, B], label: '辺 AB', kind: 'edge' })
+  strokes.push({ points: [B, C], label: '辺 BC', kind: 'edge' })
+  strokes.push({ points: [C, A], label: '辺 CA', kind: 'edge' })
+
+  // 頂点の名前と辺の長さ
+  strokes.push(...write('A', { u: A.x - 3.4, v: A.z - BOARD_Z - 3.6, size: 3 }))
+  strokes.push(...write('B', { u: B.x + 1.2, v: B.z - BOARD_Z - 3.6, size: 3 }))
+  strokes.push(...write('C', { u: C.x - 1.0, v: C.z - BOARD_Z + 1.4, size: 3 }))
+  strokes.push(...write('7', { u: (A.x + B.x) / 2 - 1, v: -3.2, size: 2.8 }))
+  strokes.push(...write('3', { u: (A.x + C.x) / 2 - 4.2, v: (A.z + C.z) / 2 - BOARD_Z, size: 2.8 }))
+  strokes.push(...write('5', { u: (B.x + C.x) / 2 + 1.4, v: (B.z + C.z) / 2 - BOARD_Z, size: 2.8 }))
+
+  // 解説。右側に縦に流す
+  strokes.push(...write('解答', { u: 4, v: 30, size: 6.5 }))
+  strokes.push(...write('余弦定理より', { u: 4, v: 19, size: 5.2 }))
+  strokes.push(...write('cosA=(49+9-25)/(2·7·3)', { u: 4, v: 9, size: 4.4 }))
+  strokes.push(...write('=11/14', { u: 12, v: -1, size: 4.4 }))
+
+  return {
+    id: 'solution_cosine',
+    title: '解説板書：余弦定理',
+    families: ['traceback.triangle_centers'],
+    dimension: 2,
+    strokes,
+    facts: [
+      { label: '答', value: '11/14' },
+      { label: '書いた画数', value: String(strokes.length) },
+    ],
+  }
+}
+
 export const FIGURES: Figure[] = [
+  cosineSolutionFigure(),
   ninePointFigure(),
   hyperbolaFigure(),
   parabolaFigure(),

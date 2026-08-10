@@ -1,0 +1,813 @@
+{
+ "morphisms": [
+  {
+   "name": "CoordinateRealization",
+   "sources": [
+    "GeometricConfiguration"
+   ],
+   "target": "PolynomialSystem",
+   "preserves": [
+    "incidence",
+    "metric"
+   ],
+   "backend": [
+    "coordinate-algebra"
+   ]
+  },
+  {
+   "name": "EquationEncoding",
+   "sources": [
+    "PolynomialSystem"
+   ],
+   "target": "AlgebraicSet",
+   "preserves": [
+    "solution-set"
+   ],
+   "backend": [
+    "groebner-basis"
+   ]
+  },
+  {
+   "name": "ParameterElimination",
+   "sources": [
+    "AlgebraicSet"
+   ],
+   "target": "SemialgebraicSet",
+   "preserves": [
+    "projection"
+   ],
+   "backend": [
+    "resultant",
+    "quantifier-elimination"
+   ]
+  },
+  {
+   "name": "MeasureObservation",
+   "sources": [
+    "SemialgebraicSet"
+   ],
+   "target": "Scalar",
+   "preserves": [
+    "measure-class"
+   ],
+   "backend": [
+    "symbolic-integration"
+   ]
+  },
+  {
+   "name": "ExtremalObservation",
+   "sources": [
+    "SemialgebraicSet"
+   ],
+   "target": "Scalar",
+   "preserves": [
+    "feasible-set",
+    "order"
+   ],
+   "backend": [
+    "optimization"
+   ]
+  },
+  {
+   "name": "RootExtraction",
+   "sources": [
+    "Polynomial"
+   ],
+   "target": "FiniteAlgebraicOrbit",
+   "preserves": [
+    "multiplicity"
+   ],
+   "backend": [
+    "polynomial-solver"
+   ]
+  },
+  {
+   "name": "FieldTrace",
+   "sources": [
+    "FiniteAlgebraicOrbit"
+   ],
+   "target": "Scalar",
+   "preserves": [
+    "Galois-orbit"
+   ],
+   "backend": [
+    "vieta",
+    "log-derivative"
+   ]
+  },
+  {
+   "name": "FieldNorm",
+   "sources": [
+    "FiniteAlgebraicOrbit"
+   ],
+   "target": "Scalar",
+   "preserves": [
+    "Galois-orbit"
+   ],
+   "backend": [
+    "resultant"
+   ]
+  },
+  {
+   "name": "OrbitConstruction",
+   "sources": [
+    "RationalSelfMap"
+   ],
+   "target": "Orbit",
+   "preserves": [
+    "iteration"
+   ],
+   "backend": [
+    "matrix-power"
+   ]
+  },
+  {
+   "name": "OrbitEvaluation",
+   "sources": [
+    "Orbit"
+   ],
+   "target": "FiniteFamily",
+   "preserves": [
+    "index-set"
+   ],
+   "backend": [
+    "recurrence-engine"
+   ]
+  },
+  {
+   "name": "FiniteSummation",
+   "sources": [
+    "FiniteFamily"
+   ],
+   "target": "Scalar",
+   "preserves": [
+    "multiplicity"
+   ],
+   "backend": [
+    "exact-summation"
+   ]
+  },
+  {
+   "name": "ZeroSet",
+   "sources": [
+    "Function"
+   ],
+   "target": "AlgebraicSet",
+   "preserves": [
+    "solution-set"
+   ],
+   "backend": [
+    "symbolic-solver"
+   ]
+  },
+  {
+   "name": "Differentiation",
+   "sources": [
+    "DifferentiableFunction"
+   ],
+   "target": "Function",
+   "preserves": [
+    "local-contact"
+   ],
+   "backend": [
+    "symbolic-differentiation"
+   ]
+  },
+  {
+   "name": "Integration",
+   "sources": [
+    "Function"
+   ],
+   "target": "Scalar",
+   "preserves": [
+    "linearity"
+   ],
+   "backend": [
+    "symbolic-integration"
+   ]
+  },
+  {
+   "name": "CompanionRepresentation",
+   "sources": [
+    "Sequence"
+   ],
+   "target": "Matrix2",
+   "preserves": [
+    "orbit",
+    "initial-state"
+   ],
+   "backend": [
+    "linear-recurrence"
+   ]
+  },
+  {
+   "name": "ResidueProjection",
+   "sources": [
+    "Integer"
+   ],
+   "target": "FiniteSet",
+   "preserves": [
+    "congruence-class"
+   ],
+   "backend": [
+    "modular-arithmetic"
+   ]
+  },
+  {
+   "name": "Counting",
+   "sources": [
+    "FiniteSet"
+   ],
+   "target": "Integer",
+   "preserves": [
+    "bijection-class"
+   ],
+   "backend": [
+    "enumeration"
+   ]
+  },
+  {
+   "name": "EuclideanMeet",
+   "sources": [
+    "IntegerPair"
+   ],
+   "target": "GCDValue",
+   "preserves": [
+    "common-divisor-order",
+    "bezout-ideal"
+   ],
+   "backend": [
+    "extended-euclidean-algorithm"
+   ]
+  },
+  {
+   "name": "DivisibilityJoin",
+   "sources": [
+    "IntegerPair"
+   ],
+   "target": "LCMValue",
+   "preserves": [
+    "common-multiple-order",
+    "prime-valuations"
+   ],
+   "backend": [
+    "prime-valuation"
+   ]
+  },
+  {
+   "name": "CeilingAdjunction",
+   "sources": [
+    "Real"
+   ],
+   "target": "Integer",
+   "preserves": [
+    "least-integer-upper-bound",
+    "order"
+   ],
+   "backend": [
+    "exact-rounding",
+    "presburger-arithmetic"
+   ]
+  },
+  {
+   "name": "FloorAdjunction",
+   "sources": [
+    "Real"
+   ],
+   "target": "Integer",
+   "preserves": [
+    "greatest-integer-lower-bound",
+    "order"
+   ],
+   "backend": [
+    "exact-rounding",
+    "presburger-arithmetic"
+   ]
+  },
+  {
+   "name": "RationalScaleAction",
+   "sources": [
+    "RateQuantityPair"
+   ],
+   "target": "Quantity",
+   "preserves": [
+    "unit",
+    "rational-scaling"
+   ],
+   "backend": [
+    "rational-arithmetic",
+    "unit-checker"
+   ]
+  },
+  {
+   "name": "TriangleMetricElaboration",
+   "sources": [
+    "Triangle"
+   ],
+   "target": "TriangleMetricData",
+   "preserves": [
+    "side-lengths",
+    "incidence",
+    "metric"
+   ],
+   "backend": [
+    "heron-identity",
+    "triangle-radius-identities"
+   ]
+  },
+  {
+   "name": "IntegralSideRestriction",
+   "sources": [
+    "TriangleMetricData"
+   ],
+   "target": "IntegralTriangle",
+   "preserves": [
+    "side-lengths",
+    "integrality"
+   ],
+   "backend": [
+    "integer-arithmetic",
+    "triangle-inequality"
+   ]
+  },
+  {
+   "name": "TriangulationElaboration",
+   "sources": [
+    "TopologicalSpace"
+   ],
+   "target": "FiniteTriangulation",
+   "preserves": [
+    "homeomorphism-type",
+    "incidence"
+   ],
+   "backend": [
+    "simplicial-incidence"
+   ]
+  },
+  {
+   "name": "EulerCharacteristic",
+   "sources": [
+    "FiniteTriangulation"
+   ],
+   "target": "IntegerInvariant",
+   "preserves": [
+    "homeomorphism-type"
+   ],
+   "backend": [
+    "euler-incidence-elimination"
+   ]
+  },
+  {
+   "name": "IntegerPredicateIntroduction",
+   "sources": [
+    "ArithmeticObject"
+   ],
+   "target": "IntegerPredicate",
+   "preserves": [
+    "integrality"
+   ],
+   "backend": [
+    "integer-arithmetic"
+   ]
+  },
+  {
+   "name": "ScalarAsReal",
+   "sources": [
+    "Scalar"
+   ],
+   "target": "Real",
+   "preserves": [
+    "value"
+   ],
+   "backend": [
+    "inclusion"
+   ]
+  },
+  {
+   "name": "QuantityAsReal",
+   "sources": [
+    "Quantity"
+   ],
+   "target": "Real",
+   "preserves": [
+    "value"
+   ],
+   "backend": [
+    "inclusion"
+   ]
+  },
+  {
+   "name": "IntegerAsReal",
+   "sources": [
+    "Integer"
+   ],
+   "target": "Real",
+   "preserves": [
+    "value"
+   ],
+   "backend": [
+    "inclusion"
+   ]
+  },
+  {
+   "name": "IntegerInvariantAsInteger",
+   "sources": [
+    "IntegerInvariant"
+   ],
+   "target": "Integer",
+   "preserves": [
+    "value"
+   ],
+   "backend": [
+    "inclusion"
+   ]
+  },
+  {
+   "name": "IntegerAsArithmeticObject",
+   "sources": [
+    "Integer"
+   ],
+   "target": "ArithmeticObject",
+   "preserves": [
+    "value"
+   ],
+   "backend": [
+    "inclusion"
+   ]
+  },
+  {
+   "name": "IntegralTriangleAsTriangle",
+   "sources": [
+    "IntegralTriangle"
+   ],
+   "target": "Triangle",
+   "preserves": [
+    "side-lengths",
+    "incidence"
+   ],
+   "backend": [
+    "inclusion"
+   ]
+  },
+  {
+   "name": "TriangleAsConfiguration",
+   "sources": [
+    "Triangle"
+   ],
+   "target": "GeometricConfiguration",
+   "preserves": [
+    "incidence"
+   ],
+   "backend": [
+    "inclusion"
+   ]
+  },
+  {
+   "name": "PolynomialAsSmooth",
+   "sources": [
+    "Polynomial"
+   ],
+   "target": "DifferentiableFunction",
+   "preserves": [
+    "value",
+    "derivative"
+   ],
+   "backend": [
+    "inclusion"
+   ]
+  },
+  {
+   "name": "SemialgebraicUnderlyingSpace",
+   "sources": [
+    "SemialgebraicSet"
+   ],
+   "target": "TopologicalSpace",
+   "preserves": [
+    "topology"
+   ],
+   "backend": [
+    "subspace-topology"
+   ]
+  },
+  {
+   "name": "CharacteristicPolynomial",
+   "sources": [
+    "Matrix2"
+   ],
+   "target": "Polynomial",
+   "preserves": [
+    "spectrum"
+   ],
+   "backend": [
+    "charpoly"
+   ]
+  },
+  {
+   "name": "MobiusRealization",
+   "sources": [
+    "Matrix2"
+   ],
+   "target": "RationalSelfMap",
+   "preserves": [
+    "projective-action"
+   ],
+   "backend": [
+    "rational-normal-form"
+   ]
+  },
+  {
+   "name": "CoefficientSequence",
+   "sources": [
+    "Polynomial"
+   ],
+   "target": "Sequence",
+   "preserves": [
+    "coefficients"
+   ],
+   "backend": [
+    "polynomial-coefficients"
+   ]
+  },
+  {
+   "name": "PrimeFactorization",
+   "sources": [
+    "Integer"
+   ],
+   "target": "PrimeSpectrum",
+   "preserves": [
+    "valuation"
+   ],
+   "backend": [
+    "integer-factorization"
+   ]
+  },
+  {
+   "name": "MetricRelationIdeal",
+   "sources": [
+    "TriangleMetricData"
+   ],
+   "target": "PolynomialSystem",
+   "preserves": [
+    "metric"
+   ],
+   "backend": [
+    "groebner-basis",
+    "coordinate-algebra"
+   ]
+  },
+  {
+   "name": "DesignatedRootEvaluation",
+   "sources": [
+    "AlgebraicSet"
+   ],
+   "target": "Real",
+   "preserves": [
+    "exactness"
+   ],
+   "backend": [
+    "polynomial-solver"
+   ]
+  },
+  {
+   "name": "RealFieldCombination",
+   "sources": [
+    "Real",
+    "Real"
+   ],
+   "target": "Real",
+   "preserves": [
+    "exactness"
+   ],
+   "backend": [
+    "field-arithmetic",
+    "exact-linear-invariant"
+   ]
+  },
+  {
+   "name": "OrderComparison",
+   "sources": [
+    "Real",
+    "Real"
+   ],
+   "target": "Proposition",
+   "preserves": [
+    "order"
+   ],
+   "backend": [
+    "smt-nonlinear-real"
+   ]
+  },
+  {
+   "name": "PropositionConjunction",
+   "sources": [
+    "Proposition",
+    "Proposition"
+   ],
+   "target": "Proposition",
+   "preserves": [
+    "truth"
+   ],
+   "backend": [
+    "smt-nonlinear-real"
+   ]
+  },
+  {
+   "name": "IntegerPairing",
+   "sources": [
+    "Integer",
+    "Integer"
+   ],
+   "target": "IntegerPair",
+   "preserves": [
+    "components"
+   ],
+   "backend": [
+    "integer-arithmetic"
+   ]
+  },
+  {
+   "name": "RatePairing",
+   "sources": [
+    "Quantity",
+    "Quantity"
+   ],
+   "target": "RateQuantityPair",
+   "preserves": [
+    "unit",
+    "ratio"
+   ],
+   "backend": [
+    "unit-checker"
+   ]
+  },
+  {
+   "name": "MapOrbitEvaluation",
+   "sources": [
+    "RationalSelfMap",
+    "FiniteAlgebraicOrbit"
+   ],
+   "target": "FiniteFamily",
+   "preserves": [
+    "map-action",
+    "orbit-index",
+    "multiplicity"
+   ],
+   "backend": [
+    "rational-normal-form",
+    "cyclotomic-polynomial"
+   ]
+  },
+  {
+   "name": "ConstraintPullback",
+   "sources": [
+    "PolynomialSystem",
+    "AlgebraicSet"
+   ],
+   "target": "SemialgebraicSet",
+   "preserves": [
+    "joint-solution-set",
+    "projection"
+   ],
+   "backend": [
+    "groebner-basis",
+    "quantifier-elimination"
+   ]
+  },
+  {
+   "name": "RootMinkowskiSum",
+   "sources": [
+    "FiniteAlgebraicOrbit",
+    "FiniteAlgebraicOrbit"
+   ],
+   "target": "FiniteAlgebraicOrbit",
+   "preserves": [
+    "both-parent-provenance",
+    "algebraicity",
+    "finite-support"
+   ],
+   "backend": [
+    "resultant",
+    "square-free-reduction"
+   ]
+  },
+  {
+   "name": "RootMinkowskiDifference",
+   "sources": [
+    "FiniteAlgebraicOrbit",
+    "FiniteAlgebraicOrbit"
+   ],
+   "target": "FiniteAlgebraicOrbit",
+   "preserves": [
+    "both-parent-provenance",
+    "algebraicity",
+    "finite-support"
+   ],
+   "backend": [
+    "resultant",
+    "square-free-reduction"
+   ]
+  },
+  {
+   "name": "RootPointwiseProduct",
+   "sources": [
+    "FiniteAlgebraicOrbit",
+    "FiniteAlgebraicOrbit"
+   ],
+   "target": "FiniteAlgebraicOrbit",
+   "preserves": [
+    "both-parent-provenance",
+    "algebraicity",
+    "finite-support"
+   ],
+   "backend": [
+    "resultant",
+    "square-free-reduction"
+   ]
+  },
+  {
+   "name": "GCDLCMProductLaw",
+   "sources": [
+    "GCDValue",
+    "LCMValue"
+   ],
+   "target": "Integer",
+   "preserves": [
+    "both-parent-provenance",
+    "prime-valuations",
+    "gcd-times-lcm-equals-product"
+   ],
+   "backend": [
+    "integer-arithmetic",
+    "prime-valuation"
+   ]
+  },
+  {
+   "name": "ArithmeticGeometryPredicateLift",
+   "sources": [
+    "TriangleMetricData",
+    "IntegerPredicate"
+   ],
+   "target": "Proposition",
+   "preserves": [
+    "both-parent-provenance",
+    "metric-identity",
+    "integrality"
+   ],
+   "backend": [
+    "arithmetic-geometry-induction",
+    "sympy-symbolic-identity"
+   ]
+  },
+  {
+   "name": "PrimeGeometryPredicateLift",
+   "sources": [
+    "TriangleMetricData",
+    "PrimeSpectrum"
+   ],
+   "target": "Proposition",
+   "preserves": [
+    "both-parent-provenance",
+    "metric-identity",
+    "primality"
+   ],
+   "backend": [
+    "arithmetic-geometry-induction",
+    "primality-test"
+   ]
+  },
+  {
+   "name": "ArithmeticTopologyPredicateLift",
+   "sources": [
+    "FiniteTriangulation",
+    "IntegerPredicate"
+   ],
+   "target": "Proposition",
+   "preserves": [
+    "both-parent-provenance",
+    "homeomorphism-type",
+    "integrality"
+   ],
+   "backend": [
+    "arithmetic-geometry-induction",
+    "euler-incidence-elimination"
+   ]
+  },
+  {
+   "name": "PrimeTopologyPredicateLift",
+   "sources": [
+    "FiniteTriangulation",
+    "PrimeSpectrum"
+   ],
+   "target": "Proposition",
+   "preserves": [
+    "both-parent-provenance",
+    "homeomorphism-type",
+    "primality"
+   ],
+   "backend": [
+    "arithmetic-geometry-induction",
+    "primality-test"
+   ]
+  }
+ ]
+}

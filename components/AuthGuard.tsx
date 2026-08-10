@@ -85,15 +85,19 @@ function AuthGuardInner({ children }: Props) {
             <div className="mb-8 flex items-center gap-3">
               <span className="flex h-10 w-10 items-center justify-center rounded bg-blue-600 text-lg font-bold text-white">Σ</span>
               <div>
-                <h1 className="text-[20px] font-bold text-zinc-100">作問ステーション</h1>
-                <p className="text-[11px] text-zinc-500">Sakumon Station powered by MathOS</p>
+                <h1 className="text-[20px] font-bold text-zinc-100">Sakumon</h1>
+                <p className="text-[11px] tracking-[0.14em] text-zinc-500">by MORTRA</p>
               </div>
             </div>
             <h2 className="max-w-lg text-[24px] font-bold leading-snug text-zinc-100">
-              数学問題を生成し、検証し、選び抜く。
+              数学問題を作る人のための作業場。
             </h2>
             <p className="mt-3 max-w-lg text-[13px] leading-7 text-zinc-400">
-              問題ライブラリの比較、過去問からの構造抽出、候補の融合生成、解答検証を一つの作業画面で管理します。
+              種を選び、生成し、検証し、比べ、直し、図にし、書き出す。
+              作問の全工程を一つの画面で扱います。
+            </p>
+            <p className="mt-4 max-w-lg text-[12px] leading-6 text-zinc-500">
+              表現の間を移動する研究基盤 MORTRA の、最初の応用です。
             </p>
             <ol className="mt-7 grid gap-3 text-[12px] text-zinc-300 sm:grid-cols-3 md:grid-cols-1 lg:grid-cols-3">
               {['問題を比較', '構造を合成', '検証して公開'].map((label, index) => (
