@@ -250,7 +250,7 @@ function HomeInner() {
   }, [])
 
   return (
-    <div className="dark-shell relative flex h-screen flex-col overflow-hidden bg-[#09090b] text-zinc-100 md:flex-row">
+    <div className="dark-shell relative flex h-screen flex-col overflow-hidden bg-[#09090b] text-zinc-100 md:flex-row" data-app-shell>
       <Background />
 
       {/* Mobile sidebar backdrop */}

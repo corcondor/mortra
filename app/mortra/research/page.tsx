@@ -150,7 +150,7 @@ export default function ResearchIndex() {
   return (
     <>
       <ScrollSolid />
-      <main className="relative min-h-screen text-zinc-100">
+      <main className="relative min-h-[100dvh] text-zinc-100">
         {/* 使命を一段落。分野の見出しはその下 */}
         <section className="mx-auto max-w-3xl px-6 pb-16 pt-28">
           <Link

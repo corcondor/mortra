@@ -24,17 +24,6 @@ export const metadata = {
 }
 
 /** 一つの構造が取りうる姿。ここが MORTRA の主張そのもの */
-const REPRESENTATIONS = [
-  { label: '式', note: 'symbolic' },
-  { label: '座標', note: 'coordinate' },
-  { label: '行列', note: 'matrix' },
-  { label: '複素数', note: 'complex' },
-  { label: '漸化式', note: 'recurrence' },
-  { label: '領域', note: 'region' },
-  { label: '図', note: 'diagram' },
-  { label: '運動', note: 'trajectory' },
-]
-
 const SECTIONS = [
   {
     href: '/mortra/research',
@@ -68,9 +57,9 @@ const SECTIONS = [
 
 export default function MortraPage() {
   return (
-    <main className="min-h-screen bg-black text-zinc-100">
+    <main className="min-h-[100dvh] bg-black text-zinc-100">
       {/* 主張は一画面に一つ。上半分で「使える物だ」と伝える */}
-      <section className="mx-auto flex min-h-[86vh] max-w-5xl flex-col justify-center px-6 py-24">
+      <section className="mx-auto flex min-h-[78dvh] max-w-5xl flex-col justify-center px-6 py-24">
         <p className="text-[11px] tracking-[0.34em] text-zinc-600">MORTRA</p>
         <h1 className="mt-8 text-[clamp(2.2rem,7vw,4.6rem)] font-semibold leading-[1.06] tracking-tight">
           One structure.
@@ -82,17 +71,6 @@ export default function MortraPage() {
           そして物理的な運動にもなります。MORTRA はその構造を見つけ、
           意味を保ったまま、有用な表現へ移します。
         </p>
-
-        {/* 装飾ではなく、主張の列挙。ここに粒子やグラデーションは置かない */}
-        <ul className="mt-14 flex flex-wrap gap-x-7 gap-y-4">
-          {REPRESENTATIONS.map((r, i) => (
-            <li key={r.note} className="flex items-baseline gap-2">
-              {i > 0 && <span className="mr-5 text-zinc-700">/</span>}
-              <span className="text-[15px] text-zinc-300">{r.label}</span>
-              <span className="text-[10px] tracking-widest text-zinc-600">{r.note}</span>
-            </li>
-          ))}
-        </ul>
 
         <div className="mt-16 flex flex-wrap items-center gap-4">
           <Link

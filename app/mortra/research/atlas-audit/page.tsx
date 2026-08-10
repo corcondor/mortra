@@ -17,7 +17,7 @@ export default function Article() {
   return (
     <>
       <ScrollSolid />
-      <main className="relative min-h-screen text-zinc-100">
+      <main className="relative min-h-[100dvh] text-zinc-100">
         <div className="mx-auto max-w-3xl px-6 py-28">
           <Link
             href="/mortra/research"

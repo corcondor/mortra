@@ -31,6 +31,15 @@ body {
   font-family: Inter, "Noto Sans JP", "Yu Gothic UI", "Hiragino Sans",
     -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+/*
+ * Sakumon の業務画面は、サイドバーと一覧を各自でスクロールさせるため
+ * ページ全体のスクロールを止めている。だが同じ指定が公開ページにも効いて
+ * MORTRA 側がスクロールできなくなっていた。
+ * 業務画面だけに限定する。
+ */
+body:has([data-app-shell]) {
   overflow: hidden;
 }
 
