@@ -1,0 +1,743 @@
+[
+  {
+    "id": "orthocenter-foot",
+    "title": "垂心から下ろした足",
+    "text": "三角形ABCの垂心をHとする。AHとBCの交点をDとするとき、ADとBCは垂直であることを示せ。",
+    "status": "formalized",
+    "points": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "h"
+    ],
+    "predicates": [
+      {
+        "name": "perp",
+        "args": [
+          "a",
+          "h",
+          "b",
+          "c"
+        ],
+        "constants": []
+      },
+      {
+        "name": "perp",
+        "args": [
+          "b",
+          "h",
+          "a",
+          "c"
+        ],
+        "constants": []
+      },
+      {
+        "name": "coll",
+        "args": [
+          "a",
+          "d",
+          "h"
+        ],
+        "constants": []
+      },
+      {
+        "name": "coll",
+        "args": [
+          "b",
+          "d",
+          "c"
+        ],
+        "constants": []
+      }
+    ],
+    "goal": {
+      "name": "perp",
+      "args": [
+        "a",
+        "d",
+        "b",
+        "c"
+      ]
+    },
+    "coordinates": {
+      "a": [
+        0.0,
+        0.0
+      ],
+      "b": [
+        4.0,
+        0.0
+      ],
+      "c": [
+        1.8967310241914217,
+        2.2214970892175243
+      ],
+      "d": [
+        2.1092681744293826,
+        1.9970128858014085
+      ],
+      "h": [
+        1.8967310241914217,
+        1.7957869663653743
+      ]
+    },
+    "residual": 0.0,
+    "unresolved": []
+  },
+  {
+    "id": "circumcenter-midpoint",
+    "title": "外心と辺の中点",
+    "text": "三角形ABCの外心をOとする。BCの中点をMとするとき、OMとBCは垂直であることを示せ。",
+    "status": "formalized",
+    "points": [
+      "a",
+      "b",
+      "c",
+      "m",
+      "o"
+    ],
+    "predicates": [
+      {
+        "name": "cong",
+        "args": [
+          "o",
+          "a",
+          "o",
+          "b"
+        ],
+        "constants": []
+      },
+      {
+        "name": "cong",
+        "args": [
+          "o",
+          "b",
+          "o",
+          "c"
+        ],
+        "constants": []
+      },
+      {
+        "name": "coll",
+        "args": [
+          "b",
+          "m",
+          "c"
+        ],
+        "constants": []
+      },
+      {
+        "name": "cong",
+        "args": [
+          "b",
+          "m",
+          "m",
+          "c"
+        ],
+        "constants": []
+      }
+    ],
+    "goal": {
+      "name": "perp",
+      "args": [
+        "o",
+        "m",
+        "b",
+        "c"
+      ]
+    },
+    "coordinates": {
+      "a": [
+        0.0,
+        0.0
+      ],
+      "b": [
+        4.0,
+        0.0
+      ],
+      "c": [
+        0.8425607574354761,
+        2.1683367793933237
+      ],
+      "m": [
+        2.421280378717738,
+        1.0841683896966618
+      ],
+      "o": [
+        2.0,
+        0.4707179273298349
+      ]
+    },
+    "residual": 5.551115123125783e-17,
+    "unresolved": []
+  },
+  {
+    "id": "midline",
+    "title": "中点連結",
+    "text": "三角形ABCにおいて、ABの中点をM、ACの中点をNとする。MNとBCは平行であることを示せ。",
+    "status": "formalized",
+    "points": [
+      "a",
+      "b",
+      "c",
+      "m",
+      "n"
+    ],
+    "predicates": [
+      {
+        "name": "coll",
+        "args": [
+          "a",
+          "m",
+          "b"
+        ],
+        "constants": []
+      },
+      {
+        "name": "cong",
+        "args": [
+          "a",
+          "m",
+          "m",
+          "b"
+        ],
+        "constants": []
+      },
+      {
+        "name": "coll",
+        "args": [
+          "a",
+          "n",
+          "c"
+        ],
+        "constants": []
+      },
+      {
+        "name": "cong",
+        "args": [
+          "a",
+          "n",
+          "n",
+          "c"
+        ],
+        "constants": []
+      }
+    ],
+    "goal": {
+      "name": "para",
+      "args": [
+        "m",
+        "n",
+        "b",
+        "c"
+      ]
+    },
+    "coordinates": {
+      "a": [
+        0.0,
+        0.0
+      ],
+      "b": [
+        4.0,
+        0.0
+      ],
+      "c": [
+        2.5382148094012873,
+        4.410045707476195
+      ],
+      "m": [
+        2.0,
+        -5.47012530899809e-34
+      ],
+      "n": [
+        1.2691074047006436,
+        2.2050228537380976
+      ]
+    },
+    "residual": 1.3675313272495225e-34,
+    "unresolved": []
+  },
+  {
+    "id": "midline-triple",
+    "title": "中点三角形",
+    "text": "三角形ABCにおいて、ABの中点をM、ACの中点をN、BCの中点をLとする。MNとBCは平行であることを示せ。",
+    "status": "formalized",
+    "points": [
+      "a",
+      "b",
+      "c",
+      "l",
+      "m",
+      "n"
+    ],
+    "predicates": [
+      {
+        "name": "coll",
+        "args": [
+          "a",
+          "m",
+          "b"
+        ],
+        "constants": []
+      },
+      {
+        "name": "cong",
+        "args": [
+          "a",
+          "m",
+          "m",
+          "b"
+        ],
+        "constants": []
+      },
+      {
+        "name": "coll",
+        "args": [
+          "a",
+          "n",
+          "c"
+        ],
+        "constants": []
+      },
+      {
+        "name": "cong",
+        "args": [
+          "a",
+          "n",
+          "n",
+          "c"
+        ],
+        "constants": []
+      },
+      {
+        "name": "coll",
+        "args": [
+          "b",
+          "l",
+          "c"
+        ],
+        "constants": []
+      },
+      {
+        "name": "cong",
+        "args": [
+          "b",
+          "l",
+          "l",
+          "c"
+        ],
+        "constants": []
+      }
+    ],
+    "goal": {
+      "name": "para",
+      "args": [
+        "m",
+        "n",
+        "b",
+        "c"
+      ]
+    },
+    "coordinates": {
+      "a": [
+        0.0,
+        0.0
+      ],
+      "b": [
+        4.0,
+        0.0
+      ],
+      "c": [
+        0.3796663369366751,
+        -3.51538795639274
+      ],
+      "l": [
+        2.1898331684683376,
+        -1.75769397819637
+      ],
+      "m": [
+        2.0,
+        -2.327464671961721e-33
+      ],
+      "n": [
+        0.18983316846833756,
+        -1.75769397819637
+      ]
+    },
+    "residual": 5.818661679904302e-34,
+    "unresolved": []
+  },
+  {
+    "id": "centroid-median",
+    "title": "重心は中線上",
+    "text": "三角形ABCの重心をGとし、BCの中点をMとする。A、G、Mは同一直線上にあることを示せ。",
+    "status": "formalized",
+    "points": [
+      "a",
+      "b",
+      "c",
+      "g",
+      "m"
+    ],
+    "predicates": [
+      {
+        "name": "coll",
+        "args": [
+          "b",
+          "m",
+          "c"
+        ],
+        "constants": []
+      },
+      {
+        "name": "cong",
+        "args": [
+          "b",
+          "m",
+          "m",
+          "c"
+        ],
+        "constants": []
+      },
+      {
+        "name": "coll",
+        "args": [
+          "a",
+          "g",
+          "m"
+        ],
+        "constants": []
+      },
+      {
+        "name": "rconst",
+        "args": [
+          "a",
+          "g",
+          "g",
+          "m"
+        ],
+        "constants": [
+          "2"
+        ]
+      },
+      {
+        "name": "distseq",
+        "args": [
+          "a",
+          "g",
+          "g",
+          "m",
+          "a",
+          "m"
+        ],
+        "constants": [
+          "1",
+          "1",
+          "-1"
+        ]
+      }
+    ],
+    "goal": {
+      "name": "coll",
+      "args": [
+        "a",
+        "g",
+        "m"
+      ]
+    },
+    "coordinates": {
+      "a": [
+        0.0,
+        0.0
+      ],
+      "b": [
+        4.0,
+        0.0
+      ],
+      "c": [
+        1.8843119581584353,
+        -1.5360649922450893
+      ],
+      "g": [
+        1.9614373193861452,
+        -0.5120216640816965
+      ],
+      "m": [
+        2.9421559790792178,
+        -0.7680324961225447
+      ]
+    },
+    "residual": 5.551115123125783e-17,
+    "unresolved": []
+  },
+  {
+    "id": "midline-perp-circumcenter",
+    "title": "中点連結と外心",
+    "text": "三角形ABCの外心をOとする。ABの中点をM、ACの中点をN、BCの中点をLとするとき、MNとOLは垂直であることを示せ。",
+    "status": "formalized",
+    "points": [
+      "a",
+      "b",
+      "c",
+      "l",
+      "m",
+      "n",
+      "o"
+    ],
+    "predicates": [
+      {
+        "name": "cong",
+        "args": [
+          "o",
+          "a",
+          "o",
+          "b"
+        ],
+        "constants": []
+      },
+      {
+        "name": "cong",
+        "args": [
+          "o",
+          "b",
+          "o",
+          "c"
+        ],
+        "constants": []
+      },
+      {
+        "name": "coll",
+        "args": [
+          "a",
+          "m",
+          "b"
+        ],
+        "constants": []
+      },
+      {
+        "name": "cong",
+        "args": [
+          "a",
+          "m",
+          "m",
+          "b"
+        ],
+        "constants": []
+      },
+      {
+        "name": "coll",
+        "args": [
+          "a",
+          "n",
+          "c"
+        ],
+        "constants": []
+      },
+      {
+        "name": "cong",
+        "args": [
+          "a",
+          "n",
+          "n",
+          "c"
+        ],
+        "constants": []
+      },
+      {
+        "name": "coll",
+        "args": [
+          "b",
+          "l",
+          "c"
+        ],
+        "constants": []
+      },
+      {
+        "name": "cong",
+        "args": [
+          "b",
+          "l",
+          "l",
+          "c"
+        ],
+        "constants": []
+      }
+    ],
+    "goal": {
+      "name": "perp",
+      "args": [
+        "m",
+        "n",
+        "o",
+        "l"
+      ]
+    },
+    "coordinates": {
+      "a": [
+        0.0,
+        0.0
+      ],
+      "b": [
+        4.0,
+        0.0
+      ],
+      "c": [
+        0.45597995124122637,
+        1.7421473848791182
+      ],
+      "l": [
+        2.227989975620613,
+        0.8710736924395591
+      ],
+      "m": [
+        2.0,
+        -1.0442476518494064e-25
+      ],
+      "n": [
+        0.22798997562061318,
+        0.8710736924395591
+      ],
+      "o": [
+        2.0,
+        0.40727766029642243
+      ]
+    },
+    "residual": 3.469446951953614e-18,
+    "unresolved": []
+  },
+  {
+    "id": "midline-perp-orthocenter",
+    "title": "中点連結と垂心",
+    "text": "三角形ABCの垂心をHとする。ABの中点をM、ACの中点をNとする。AHとBCの交点をDとするとき、MNとADは垂直であることを示せ。",
+    "status": "formalized",
+    "points": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "h",
+      "m",
+      "n"
+    ],
+    "predicates": [
+      {
+        "name": "perp",
+        "args": [
+          "a",
+          "h",
+          "b",
+          "c"
+        ],
+        "constants": []
+      },
+      {
+        "name": "perp",
+        "args": [
+          "b",
+          "h",
+          "a",
+          "c"
+        ],
+        "constants": []
+      },
+      {
+        "name": "coll",
+        "args": [
+          "a",
+          "m",
+          "b"
+        ],
+        "constants": []
+      },
+      {
+        "name": "cong",
+        "args": [
+          "a",
+          "m",
+          "m",
+          "b"
+        ],
+        "constants": []
+      },
+      {
+        "name": "coll",
+        "args": [
+          "a",
+          "n",
+          "c"
+        ],
+        "constants": []
+      },
+      {
+        "name": "cong",
+        "args": [
+          "a",
+          "n",
+          "n",
+          "c"
+        ],
+        "constants": []
+      },
+      {
+        "name": "coll",
+        "args": [
+          "a",
+          "d",
+          "h"
+        ],
+        "constants": []
+      },
+      {
+        "name": "coll",
+        "args": [
+          "b",
+          "d",
+          "c"
+        ],
+        "constants": []
+      }
+    ],
+    "goal": {
+      "name": "perp",
+      "args": [
+        "m",
+        "n",
+        "a",
+        "d"
+      ]
+    },
+    "coordinates": {
+      "a": [
+        0.0,
+        0.0
+      ],
+      "b": [
+        4.0,
+        0.0
+      ],
+      "c": [
+        0.17668271576833358,
+        -1.769422242162671
+      ],
+      "d": [
+        0.7056000551397366,
+        -1.524640542142884
+      ],
+      "h": [
+        0.17668271576833358,
+        -0.3817709899455177
+      ],
+      "m": [
+        2.0,
+        6.606112433219029e-19
+      ],
+      "n": [
+        0.08834135788416679,
+        -0.8847111210813355
+      ]
+    },
+    "residual": 3.469446951953614e-18,
+    "unresolved": []
+  }
+]

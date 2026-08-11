@@ -63,6 +63,7 @@ class GeometryFormalization:
 def formalize_geometry_text(text: str, *, max_restarts: int = 20) -> GeometryFormalization:
     normalized = normalize_text(text)
     premise_text, goal_text = split_goal(normalized)
+    premise_text, goal_text = peel_subordinate(premise_text, goal_text)
     from geometry_discourse import elaborate_circle_discourse
 
     discourse = elaborate_circle_discourse(premise_text, goal_text)
@@ -184,6 +185,28 @@ def split_goal(text: str) -> tuple[str, str]:
             return before[:comma].strip(), before[comma + 1:].strip()
         return "", before.strip()
     return text, ""
+
+
+# 「…とするとき、」「…ならば、」は前提と結論の境目。
+# 「。」だけで切ると、この従属節が結論側に残り、結論の述語が複数個になって落ちる。
+SUBORDINATE_JA = ("とするとき、", "とおくとき、", "であるとき、", "のとき、", "とき、", "ならば、", "ならば")
+
+
+def peel_subordinate(premise: str, goal: str) -> tuple[str, str]:
+    """結論側に紛れ込んだ従属節を前提側へ移す。
+
+    「三角形ABCの垂心をHとする。AHとBCの交点をDとするとき、ADとBCは垂直である」
+    を「。」だけで切ると、結論側に交点の定義が残って述語が3本になる。
+    最後の従属節境界までを前提へ送り、結論を一本にする。
+    """
+    ends = [goal.rfind(marker) + len(marker) for marker in SUBORDINATE_JA if marker in goal]
+    if not ends:
+        return premise, goal
+    cut = max(ends)
+    moved, rest = goal[:cut], goal[cut:].strip(" 、,")
+    if not rest:
+        return premise, goal
+    return ((premise + "。" + moved).strip("。 ") if premise else moved), rest
 
 
 def extract_triangles(text: str) -> list[tuple[str, str, str]]:
@@ -330,7 +353,65 @@ def extract_predicates(text: str) -> tuple[list[TypedPredicate], list[tuple[int,
         lambda m: incenter_predicates(m.groups(), m.group(0)),
     )
 
-    for match in re.finditer(r"([A-Z](?:\s*[,、]\s*[A-Z]){2,})\s*(?:は|are)?\s*(?:一直線上|collinear)", text):
+    # ------------------------------------------------------------------
+    # 「〜を X とする」構文。
+    #
+    # 入試の日本語は主題化形（「M は BC の中点」）ではなく、ほぼ必ず
+    # 措定形（「BC の中点を M とする」）で書かれる。上の は 形だけを
+    # 持っていた間、実際の入試文は一つも形式化できなかった。
+    # 述語の構成関数は共有し、正規表現の群の並びだけ入れ替える。
+    # ------------------------------------------------------------------
+    TRI = r"(?:三角形|△)?\s*([A-Z])\s*([A-Z])\s*([A-Z])"
+    # 「…をMとする」に加えて、列挙の「…をM、…をNとする」も受ける。
+    # 前者だけだと、最初の中点が読まれずに落ちる。
+    LET = r"を\s*([A-Z])\s*(?:と(?:する|し|おく|置く|よぶ|呼ぶ)|とすると|(?=[、,]))"
+
+    def center(pattern_word: str, builder):
+        """「三角形ABCの◯心をPとする」→ builder(P, A, B, C)"""
+        collect(
+            TRI + r"\s*の\s*" + pattern_word + LET,
+            lambda m: builder((m.group(4), m.group(1), m.group(2), m.group(3)), m.group(0)),
+        )
+
+    center("外心", circumcenter_predicates)
+    center("重心", centroid_predicates)
+    center("垂心", orthocenter_predicates)
+    center("内心", incenter_predicates)
+
+    collect(
+        r"(?:線分|辺)?\s*([A-Z])\s*([A-Z])\s*の\s*中点" + LET,
+        lambda m: midpoint_predicates((m.group(3), m.group(1), m.group(2)), m.group(0)),
+    )
+    collect(
+        r"(?:直線|線分)?\s*([A-Z])\s*([A-Z])\s*と\s*(?:直線|線分)?\s*([A-Z])\s*([A-Z])\s*の\s*交点" + LET,
+        lambda m: intersection_predicates(
+            (m.group(5), m.group(1), m.group(2), m.group(3), m.group(4)), m.group(0)
+        ),
+    )
+
+    # 語で書かれた関係。記号（⊥ ∥）しか読めないと、結論部が落ちる。
+    collect(
+        segment + r"\s*と\s*" + segment + r"\s*(?:は|が)?\s*(?:垂直|直交)",
+        lambda m: predicate("perp", m.groups(), m.group(0)),
+    )
+    collect(
+        segment + r"\s*と\s*" + segment + r"\s*(?:は|が)?\s*平行",
+        lambda m: predicate("para", m.groups(), m.group(0)),
+    )
+    collect(
+        segment + r"\s*と\s*" + segment + r"\s*(?:の長さ)?\s*(?:は|が)?\s*等しい",
+        lambda m: predicate("cong", m.groups(), m.group(0)),
+    )
+    collect(
+        r"∠\s*([A-Z])([A-Z])([A-Z])\s*と\s*∠\s*([A-Z])([A-Z])([A-Z])\s*(?:は|が)?\s*等しい",
+        lambda m: angle_predicate(m.groups(), m.group(0)),
+    )
+    collect(
+        r"(?:角|∠)\s*([A-Z])([A-Z])([A-Z])\s*と\s*(?:角|∠)\s*([A-Z])([A-Z])([A-Z])\s*(?:は|が)?\s*等しい",
+        lambda m: angle_predicate(m.groups(), m.group(0)),
+    )
+
+    for match in re.finditer(r"([A-Z](?:\s*[,、]\s*[A-Z]){2,})\s*(?:は|are)?\s*(?:同一)?(?:一直線上|直線上|collinear)", text):
         names = tuple(point.lower() for point in re.findall(r"[A-Z]", match.group(1)))
         for triple in itertools.combinations(names, 3):
             predicates.append(TypedPredicate("coll", triple, match.group(0)))
@@ -421,13 +502,30 @@ def expand_derived_predicates(
 ) -> list[TypedPredicate]:
     existing = {point for predicate_item in predicates for point in predicate_item.points}
     existing.update(point for triangle in triangles for point in triangle)
+
+    # 既に「BC の中点」として名前が付いている点があるなら、それを使う。
+    # 重心の展開で別名を作ると、同じ点が二つの名前を持ち、
+    # 数値作図が退化して解けなくなる（「重心をG、BCの中点をM」で実際に落ちた）。
+    named_midpoints: dict[frozenset[str], str] = {}
+    for item in predicates:
+        if item.name != "cong":
+            continue
+        p, m1, m2, q = item.points
+        if m1 == m2 and p != q and any(
+            other.name == "coll" and set(other.points) == {p, m1, q} for other in predicates
+        ):
+            named_midpoints[frozenset((p, q))] = m1
+
     expanded: list[TypedPredicate] = []
     for item in predicates:
         if item.name != "centroid":
             expanded.append(item)
             continue
         center, a, b, c = item.points
-        midpoint = unused_point_name(existing, f"{center}_mid_{b}{c}")
+        midpoint = named_midpoints.get(frozenset((b, c)))
+        if midpoint is None:
+            midpoint = unused_point_name(existing, f"{center}_mid_{b}{c}")
+            named_midpoints[frozenset((b, c))] = midpoint
         existing.add(midpoint)
         expanded.extend((
             TypedPredicate("coll", (b, midpoint, c), item.source),
@@ -537,6 +635,19 @@ def construct_diagram(
             if all(name in coordinates for name in (a, b, c)):
                 area = abs(cross2d(coordinates[b] - coordinates[a], coordinates[c] - coordinates[a]))
                 values.append(max(0.0, 0.8 - area))
+                # 面積の下限だけでは、長く細い三角形が通ってしまう。
+                # 各頂点で sin(角) に下限を置くと、形そのものが縛られる。
+                # 0.42 ≈ sin 25°。これ未満の角を持つ図は、そもそも解として出さない。
+                for u, v, w in ((a, b, c), (b, c, a), (c, a, b)):
+                    e1 = coordinates[v] - coordinates[u]
+                    e2 = coordinates[w] - coordinates[u]
+                    n1 = float(np.linalg.norm(e1))
+                    n2 = float(np.linalg.norm(e2))
+                    if n1 < 1e-9 or n2 < 1e-9:
+                        values.append(1.0)
+                        continue
+                    sine = abs(cross2d(e1, e2)) / (n1 * n2)
+                    values.append(max(0.0, 0.42 - sine))
         for left, right in itertools.combinations(points, 2):
             if any(item.name == "overlap" and {left, right} == set(item.points) for item in constraints):
                 continue
@@ -545,6 +656,10 @@ def construct_diagram(
         return np.asarray(values, dtype=float)
 
     variable_count = max(0, 2 * (len(points) - 2))
+    # 制約を満たす解は一つではない。最初に見つかった解を返すと、
+    # 条件は満たすが人には読めない図（つぶれた三角形、重なったラベル）が出る。
+    # 厳密解を集めてから、読みやすさで選ぶ。
+    exact: list[tuple[float, np.ndarray, int]] = []
     for restart in range(1, max_restarts + 1):
         initial = rng.normal(0.0, 2.5, size=variable_count)
         solved = least_squares(residuals, initial, max_nfev=3000, ftol=1e-13, xtol=1e-13, gtol=1e-13)
@@ -562,12 +677,88 @@ def construct_diagram(
         if best is None or error < best[0]:
             best = (error, solved.x.copy())
         if error <= 1e-14:
-            coordinates = unpack(solved.x)
-            return {name: (float(value[0]), float(value[1])) for name, value in coordinates.items()}, error, restart
+            exact.append((error, solved.x.copy(), restart))
+            if len(exact) >= 24:
+                break
+
+    if exact:
+        scored = max(exact, key=lambda item: diagram_legibility(unpack(item[1]), points, triangles))
+        coordinates = unpack(scored[1])
+        return (
+            {name: (float(value[0]), float(value[1])) for name, value in coordinates.items()},
+            scored[0],
+            scored[2],
+        )
     if best is None or best[0] > 5e-14:
         return {}, best[0] if best else None, max_restarts
     coordinates = unpack(best[1])
     return {name: (float(value[0]), float(value[1])) for name, value in coordinates.items()}, best[0], max_restarts
+
+
+def diagram_legibility(
+    coordinates: dict[str, np.ndarray],
+    points: list[str],
+    triangles: list[tuple[str, str, str]],
+) -> float:
+    """図の読みやすさ。大きいほど良い。
+
+    美しさを学習する前に、決定的に測れるものを測る。
+      - 三角形の最小角     つぶれた三角形を避ける
+      - 点どうしの最小距離   ラベルの重なりを避ける
+      - 外接箱の縦横比      細長い図は縦動画で小さくなる
+    どれも図の大きさに依らないよう、正規化してある。
+    """
+    names = [name for name in points if name in coordinates]
+    if len(names) < 3:
+        return 0.0
+    xy = np.asarray([coordinates[name] for name in names], dtype=float)
+
+    span_x = float(xy[:, 0].max() - xy[:, 0].min())
+    span_y = float(xy[:, 1].max() - xy[:, 1].min())
+    diagonal = float(np.hypot(span_x, span_y))
+    if diagonal < 1e-9:
+        return 0.0
+
+    # 縦横比。1 に近いほど紙面を使い切れる
+    aspect = min(span_x, span_y) / max(span_x, span_y) if max(span_x, span_y) > 1e-9 else 0.0
+
+    # 点どうしが近すぎるとラベルが重なる
+    gaps = [
+        float(np.linalg.norm(xy[i] - xy[j])) / diagonal
+        for i in range(len(names))
+        for j in range(i + 1, len(names))
+    ]
+    separation = min(gaps) if gaps else 0.0
+
+    # 三角形がつぶれていないか。最小角をラジアンで
+    smallest_angle = np.pi
+    for a, b, c in triangles:
+        if not all(name in coordinates for name in (a, b, c)):
+            continue
+        pa, pb, pc = (coordinates[a], coordinates[b], coordinates[c])
+        for u, v, w in ((pa, pb, pc), (pb, pc, pa), (pc, pa, pb)):
+            e1, e2 = v - u, w - u
+            n1, n2 = float(np.linalg.norm(e1)), float(np.linalg.norm(e2))
+            if n1 < 1e-9 or n2 < 1e-9:
+                return 0.0
+            cosine = float(np.clip(np.dot(e1, e2) / (n1 * n2), -1.0, 1.0))
+            smallest_angle = min(smallest_angle, float(np.arccos(cosine)))
+    # 正三角形（60°）で 1、つぶれると 0
+    angle_score = min(1.0, smallest_angle / (np.pi / 3)) if triangles else 1.0
+
+    # 鈍角三角形は垂心や外心が外に出る。数学は正しくても図は読みにくいので、
+    # 同じ制約を満たす解が複数あるなら鋭角の方を採る。
+    acute = 1.0
+    for a, b, c in triangles:
+        if not all(name in coordinates for name in (a, b, c)):
+            continue
+        pa, pb, pc = (coordinates[a], coordinates[b], coordinates[c])
+        for u, v, w in ((pa, pb, pc), (pb, pc, pa), (pc, pa, pb)):
+            e1, e2 = v - u, w - u
+            if float(np.dot(e1, e2)) < 0.0:
+                acute = 0.0
+
+    return 3.0 * angle_score + 2.0 * separation + 1.0 * aspect + 1.5 * acute
 
 
 def predicate_residual(item: TypedPredicate, coordinates: dict[str, np.ndarray]) -> float:
