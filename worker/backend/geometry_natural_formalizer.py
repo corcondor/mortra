@@ -389,6 +389,201 @@ def extract_predicates(text: str) -> tuple[list[TypedPredicate], list[tuple[int,
         ),
     )
 
+    # ── 垂線の足 ──────────────────────────────────────────────
+    # 入試の幾何で最も多い構成。足が無いと垂心・外心の問題がほぼ全部落ちる。
+    collect(
+        r"([A-Z])\s*(?:から|より)\s*(?:直線|辺)?\s*([A-Z])\s*([A-Z])\s*(?:に|へ)\s*(?:下ろした|おろした|引いた)?\s*"
+        r"垂線\s*の\s*足" + LET,
+        lambda m: [
+            TypedPredicate("coll", (m.group(2).lower(), m.group(4).lower(), m.group(3).lower()), m.group(0)),
+            TypedPredicate("perp", (m.group(1).lower(), m.group(4).lower(),
+                                    m.group(2).lower(), m.group(3).lower()), m.group(0)),
+        ],
+    )
+    collect(
+        r"([A-Z])\s*(?:から|より)\s*(?:直線|辺)?\s*([A-Z])\s*([A-Z])\s*(?:に|へ)\s*垂線\s*([A-Z])\s*([A-Z])\s*を\s*"
+        r"(?:下ろす|おろす|引く|下ろし|引き)",
+        lambda m: [
+            TypedPredicate("coll", (m.group(2).lower(), m.group(5).lower(), m.group(3).lower()), m.group(0)),
+            TypedPredicate("perp", (m.group(4).lower(), m.group(5).lower(),
+                                    m.group(2).lower(), m.group(3).lower()), m.group(0)),
+        ],
+    )
+
+    # ── 円 ────────────────────────────────────────────────────
+    # 円は中心を実体として持つ。持たないと接線も垂直二等分線も書けない。
+    collect(
+        TRI + r"\s*の\s*外接円\s*の\s*中心" + LET,
+        lambda m: circumcenter_predicates(
+            (m.group(4), m.group(1), m.group(2), m.group(3)), m.group(0)),
+    )
+    collect(
+        r"(?:点\s*)?([A-Z])\s*を\s*中心\s*と\s*(?:し|する)[^。]{0,12}?半径\s*([A-Z])\s*([A-Z])\s*の\s*円"
+        r"(?:周)?\s*上\s*の\s*点" + LET,
+        lambda m: TypedPredicate(
+            "cong", (m.group(1).lower(), m.group(4).lower(),
+                     m.group(2).lower(), m.group(3).lower()), m.group(0)),
+    )
+    collect(
+        r"(?:点\s*)?([A-Z])\s*を\s*中心\s*と\s*(?:し|する)\s*(?:点\s*)?([A-Z])\s*を\s*通る\s*円",
+        lambda m: TypedPredicate(
+            "cong", (m.group(1).lower(), m.group(2).lower(),
+                     m.group(1).lower(), m.group(2).lower()), m.group(0)),
+    )
+    # 「ABを直径とする円周上の点P」→ タレスの直角。角度定数ではなく perp で持つ
+    collect(
+        r"([A-Z])\s*([A-Z])\s*を\s*直径\s*と\s*する\s*円(?:周)?\s*上\s*の\s*点" + LET,
+        lambda m: TypedPredicate(
+            "perp", (m.group(1).lower(), m.group(3).lower(),
+                     m.group(2).lower(), m.group(3).lower()), m.group(0)),
+    )
+
+    # ── 接線 ──────────────────────────────────────────────────
+    # 接線の数学的な中身は一つだけ ―― 中心から接点への線と接線が直交する。
+    # だから接線そのものを対象にせず、接線上の点との垂直関係に落とす。
+    # 中心が文中に無ければ、外接円の中心として存在点を作る（expand で処理）。
+    collect(
+        r"(?:点\s*)?([A-Z])\s*における\s*(?:円|外接円)\s*(?:の)?\s*接線\s*上\s*の\s*点" + LET,
+        lambda m: TypedPredicate("tangent_at", (m.group(1).lower(), m.group(2).lower()), m.group(0)),
+    )
+    collect(
+        r"(?:点\s*)?([A-Z])\s*における\s*(?:円|外接円)\s*(?:の)?\s*接線\s*と\s*(?:直線|線分)?\s*"
+        r"([A-Z])\s*([A-Z])\s*の\s*交点" + LET,
+        lambda m: [
+            TypedPredicate("tangent_at", (m.group(1).lower(), m.group(4).lower()), m.group(0)),
+            TypedPredicate("coll", (m.group(2).lower(), m.group(4).lower(), m.group(3).lower()), m.group(0)),
+        ],
+    )
+    # 中心が名指しされている場合は、その場で垂直にできる
+    collect(
+        r"(?:直線|線分)?\s*([A-Z])\s*([A-Z])\s*(?:は|が)\s*(?:中心\s*)?([A-Z])\s*(?:の|を中心とする)\s*円\s*に\s*"
+        r"(?:点\s*)?([A-Z])\s*で\s*接する",
+        lambda m: [
+            TypedPredicate("coll", (m.group(1).lower(), m.group(4).lower(), m.group(2).lower()), m.group(0)),
+            TypedPredicate("perp", (m.group(1).lower(), m.group(2).lower(),
+                                    m.group(3).lower(), m.group(4).lower()), m.group(0)),
+        ],
+    )
+
+    # ── 角の二等分線 ──────────────────────────────────────────
+    collect(
+        r"(?:∠|角)\s*([A-Z])([A-Z])([A-Z])\s*の\s*(?:二等分線|2等分線)\s*と\s*(?:直線|辺|線分)?\s*"
+        r"([A-Z])\s*([A-Z])\s*の\s*交点" + LET,
+        lambda m: [
+            TypedPredicate("eqangle", (
+                m.group(2).lower(), m.group(1).lower(), m.group(2).lower(), m.group(6).lower(),
+                m.group(2).lower(), m.group(6).lower(), m.group(2).lower(), m.group(3).lower()), m.group(0)),
+            TypedPredicate("coll", (m.group(4).lower(), m.group(6).lower(), m.group(5).lower()), m.group(0)),
+        ],
+    )
+    collect(
+        r"(?:∠|角)\s*([A-Z])([A-Z])([A-Z])\s*の\s*(?:二等分線|2等分線)\s*上\s*の\s*点" + LET,
+        lambda m: TypedPredicate("eqangle", (
+            m.group(2).lower(), m.group(1).lower(), m.group(2).lower(), m.group(4).lower(),
+            m.group(2).lower(), m.group(4).lower(), m.group(2).lower(), m.group(3).lower()), m.group(0)),
+    )
+
+    # ── 内分・外分・延長 ──────────────────────────────────────
+    collect(
+        r"(?:線分|辺)?\s*([A-Z])\s*([A-Z])\s*を\s*(\d+)\s*:\s*(\d+)\s*に\s*内分\s*する\s*点" + LET,
+        lambda m: [
+            TypedPredicate("coll", (m.group(1).lower(), m.group(5).lower(), m.group(2).lower()), m.group(0)),
+            TypedPredicate("rconst", (m.group(1).lower(), m.group(5).lower(),
+                                      m.group(5).lower(), m.group(2).lower()), m.group(0),
+                           (normalize_constant(f"{m.group(3)}/{m.group(4)}"),)),
+        ],
+    )
+    collect(
+        r"(?:直線|線分|辺)?\s*([A-Z])\s*([A-Z])\s*の\s*([A-Z])\s*を?\s*越えた?\s*延長\s*(?:線)?\s*上\s*の\s*点" + LET,
+        lambda m: TypedPredicate(
+            "coll", (m.group(1).lower(), m.group(2).lower(), m.group(4).lower()), m.group(0)),
+    )
+    collect(
+        r"(?:直線|線分|辺)?\s*([A-Z])\s*([A-Z])\s*の\s*延長\s*(?:線)?\s*上\s*の\s*点" + LET,
+        lambda m: TypedPredicate(
+            "coll", (m.group(1).lower(), m.group(2).lower(), m.group(3).lower()), m.group(0)),
+    )
+    collect(
+        r"(?:直線|線分|辺)?\s*([A-Z])\s*([A-Z])\s*上\s*の\s*点" + LET,
+        lambda m: TypedPredicate(
+            "coll", (m.group(1).lower(), m.group(3).lower(), m.group(2).lower()), m.group(0)),
+    )
+
+    # ── 特別な三角形・四角形 ──────────────────────────────────
+    collect(
+        r"(?:AB\s*=\s*AC\s*(?:である|の)?\s*)?二等辺三角形\s*([A-Z])\s*([A-Z])\s*([A-Z])",
+        lambda m: TypedPredicate(
+            "cong", (m.group(1).lower(), m.group(2).lower(),
+                     m.group(1).lower(), m.group(3).lower()), m.group(0)),
+    )
+    collect(
+        r"正三角形\s*([A-Z])\s*([A-Z])\s*([A-Z])",
+        lambda m: [
+            TypedPredicate("cong", (m.group(1).lower(), m.group(2).lower(),
+                                    m.group(2).lower(), m.group(3).lower()), m.group(0)),
+            TypedPredicate("cong", (m.group(2).lower(), m.group(3).lower(),
+                                    m.group(3).lower(), m.group(1).lower()), m.group(0)),
+        ],
+    )
+    collect(
+        r"平行四辺形\s*([A-Z])\s*([A-Z])\s*([A-Z])\s*([A-Z])",
+        lambda m: [
+            TypedPredicate("para", (m.group(1).lower(), m.group(2).lower(),
+                                    m.group(4).lower(), m.group(3).lower()), m.group(0)),
+            TypedPredicate("para", (m.group(1).lower(), m.group(4).lower(),
+                                    m.group(2).lower(), m.group(3).lower()), m.group(0)),
+            TypedPredicate("cong", (m.group(1).lower(), m.group(2).lower(),
+                                    m.group(4).lower(), m.group(3).lower()), m.group(0)),
+        ],
+    )
+    collect(
+        r"(?:長方形|矩形)\s*([A-Z])\s*([A-Z])\s*([A-Z])\s*([A-Z])",
+        lambda m: [
+            TypedPredicate("para", (m.group(1).lower(), m.group(2).lower(),
+                                    m.group(4).lower(), m.group(3).lower()), m.group(0)),
+            TypedPredicate("perp", (m.group(1).lower(), m.group(2).lower(),
+                                    m.group(2).lower(), m.group(3).lower()), m.group(0)),
+            TypedPredicate("perp", (m.group(2).lower(), m.group(3).lower(),
+                                    m.group(3).lower(), m.group(4).lower()), m.group(0)),
+        ],
+    )
+    collect(
+        r"正方形\s*([A-Z])\s*([A-Z])\s*([A-Z])\s*([A-Z])",
+        lambda m: [
+            TypedPredicate("perp", (m.group(1).lower(), m.group(2).lower(),
+                                    m.group(2).lower(), m.group(3).lower()), m.group(0)),
+            TypedPredicate("perp", (m.group(2).lower(), m.group(3).lower(),
+                                    m.group(3).lower(), m.group(4).lower()), m.group(0)),
+            TypedPredicate("cong", (m.group(1).lower(), m.group(2).lower(),
+                                    m.group(2).lower(), m.group(3).lower()), m.group(0)),
+            TypedPredicate("cong", (m.group(2).lower(), m.group(3).lower(),
+                                    m.group(3).lower(), m.group(4).lower()), m.group(0)),
+        ],
+    )
+    collect(
+        r"(?:ひし形|菱形)\s*([A-Z])\s*([A-Z])\s*([A-Z])\s*([A-Z])",
+        lambda m: [
+            TypedPredicate("cong", (m.group(1).lower(), m.group(2).lower(),
+                                    m.group(2).lower(), m.group(3).lower()), m.group(0)),
+            TypedPredicate("cong", (m.group(2).lower(), m.group(3).lower(),
+                                    m.group(3).lower(), m.group(4).lower()), m.group(0)),
+            TypedPredicate("para", (m.group(1).lower(), m.group(2).lower(),
+                                    m.group(4).lower(), m.group(3).lower()), m.group(0)),
+        ],
+    )
+
+    # ── 比と角度を語で ────────────────────────────────────────
+    collect(
+        segment + r"\s*(?::|：)\s*" + segment + r"\s*=\s*(\d+)\s*(?::|：)\s*(\d+)",
+        lambda m: TypedPredicate(
+            "rconst", tuple(v.lower() for v in m.groups()[:4]), m.group(0),
+            (normalize_constant(f"{m.group(5)}/{m.group(6)}"),)),
+    )
+    collect(
+        r"(?:∠|角)\s*([A-Z])([A-Z])([A-Z])\s*(?:は|が|=)\s*" + scalar + r"\s*(?:°|度)",
+        lambda m: constant_angle_predicate(m.groups(), m.group(0)),
+    )
+
     # 語で書かれた関係。記号（⊥ ∥）しか読めないと、結論部が落ちる。
     collect(
         segment + r"\s*と\s*" + segment + r"\s*(?:は|が)?\s*(?:垂直|直交)",
@@ -516,8 +711,49 @@ def expand_derived_predicates(
         ):
             named_midpoints[frozenset((p, q))] = m1
 
+    # 外接円の中心。文中に名前が無くても、接線を書くには中心が要る。
+    # 一度だけ作って使い回す（二つ作ると同じ点が二名になり作図が退化する）。
+    circumcenter_of: dict[tuple[str, ...], str] = {}
+    for item in predicates:
+        if item.name != "cong":
+            continue
+        o, p, o2, q = item.points
+        if o == o2 and p != q:
+            circumcenter_of.setdefault(tuple(sorted((p, q))), o)
+
+    def circle_center(triangle: tuple[str, str, str]) -> str | None:
+        """三角形の外接円の中心。既にあればそれ、無ければ作る"""
+        a, b, c = triangle
+        for pair in (tuple(sorted((a, b))), tuple(sorted((b, c))), tuple(sorted((a, c)))):
+            if pair in circumcenter_of:
+                return circumcenter_of[pair]
+        name = unused_point_name(existing, "o_circ")
+        existing.add(name)
+        for pair in (tuple(sorted((a, b))), tuple(sorted((b, c))), tuple(sorted((a, c)))):
+            circumcenter_of[pair] = name
+        return name
+
     expanded: list[TypedPredicate] = []
     for item in predicates:
+        if item.name == "tangent_at":
+            # 「A における接線上の点 T」→ 中心 O について OA ⊥ AT。
+            # 接線という対象を持たずに、接線であることの内容だけを持つ。
+            contact, outer = item.points
+            triangle = next((t for t in triangles if contact in t), None)
+            if triangle is None:
+                expanded.append(item)  # 円が特定できない。未対応として残す
+                continue
+            center = circle_center(triangle)
+            if center is None:
+                expanded.append(item)
+                continue
+            a, b, c = triangle
+            expanded.extend((
+                TypedPredicate("cong", (center, a, center, b), item.source),
+                TypedPredicate("cong", (center, b, center, c), item.source),
+                TypedPredicate("perp", (center, contact, contact, outer), item.source),
+            ))
+            continue
         if item.name != "centroid":
             expanded.append(item)
             continue

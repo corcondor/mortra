@@ -129,6 +129,35 @@ export const RULES: Rule[] = [
     premises: [{ pred: 'midp', args: ['M', 'A', 'B'] }],
     conclusion: { pred: 'coll', args: ['A', 'M', 'B'] },
   },
+  {
+    // 正三角形は AB=BC と BC=CA として入る。AB=CA は書かれていない。
+    // 推移律が無いと、そこで止まる。
+    id: 'cong-transitive',
+    says: b => `${b.A}${b.B} = ${b.C}${b.D}、${b.C}${b.D} = ${b.E}${b.F}。よって ${b.A}${b.B} = ${b.E}${b.F}`,
+    premises: [
+      { pred: 'cong', args: ['A', 'B', 'C', 'D'] },
+      { pred: 'cong', args: ['C', 'D', 'E', 'F'] },
+    ],
+    conclusion: { pred: 'cong', args: ['A', 'B', 'E', 'F'] },
+    distinct: [['A', 'E'], ['A', 'B'], ['E', 'F']],
+  },
+  {
+    id: 'isosceles-base-angles',
+    says: b => `${b.A}${b.B} = ${b.A}${b.C} なので、△${b.A}${b.B}${b.C} は二等辺三角形。底角は等しい`,
+    premises: [{ pred: 'cong', args: ['A', 'B', 'A', 'C'] }],
+    conclusion: { pred: 'eqangle', args: ['B', 'A', 'B', 'C', 'C', 'B', 'C', 'A'] },
+    distinct: [['B', 'C'], ['A', 'B'], ['A', 'C']],
+  },
+  {
+    id: 'perp-both-to-eq',
+    says: b => `${b.A}${b.B} ⊥ ${b.E}${b.F} と ${b.C}${b.D} ⊥ ${b.E}${b.F} から、${b.A}${b.B} と ${b.C}${b.D} は同じ向き`,
+    premises: [
+      { pred: 'perp', args: ['A', 'B', 'E', 'F'] },
+      { pred: 'para', args: ['C', 'D', 'A', 'B'] },
+    ],
+    conclusion: { pred: 'perp', args: ['C', 'D', 'E', 'F'] },
+    distinct: [['C', 'D']],
+  },
 ]
 
 // ---------------------------------------------------------------------------
@@ -204,6 +233,17 @@ export function holdsNumerically(f: Fact, xy: Record<string, Pt>): boolean {
     case 'midp': {
       const m = P(a[0]), p = P(a[1]), q = P(a[2])
       return Math.abs(m.x - (p.x + q.x) / 2) < 1e-6 && Math.abs(m.y - (p.y + q.y) / 2) < 1e-6
+    }
+    case 'eqangle': {
+      // eqangle(a,b,c,d,e,f,g,h) は「直線 ab から cd への角」と
+      // 「ef から gh への角」が等しいということ。向きつき角なので π を法にする。
+      // 絶対値で測ると、鏡像の当てはめまで通ってしまう。
+      const dir = (p: string, q: string) => Math.atan2(P(q).y - P(p).y, P(q).x - P(p).x)
+      const len = (p: string, q: string) => Math.hypot(P(q).x - P(p).x, P(q).y - P(p).y)
+      for (let i = 0; i < 8; i += 2) if (len(a[i], a[i + 1]) < EPS) return false
+      const t1 = dir(a[2], a[3]) - dir(a[0], a[1])
+      const t2 = dir(a[6], a[7]) - dir(a[4], a[5])
+      return Math.abs(Math.sin(t1 - t2)) < 1e-6
     }
     default:
       return true

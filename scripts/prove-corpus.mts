@@ -36,12 +36,12 @@ function toFacts(raw: Raw): { premises: Fact[]; goal: Fact | null } {
   })
   P.forEach((c, i) => {
     if (used.has(i)) return
-    if (['perp', 'para', 'coll', 'cong'].includes(c.name)) {
+    if (['perp', 'para', 'coll', 'cong', 'eqangle'].includes(c.name)) {
       premises.push({ pred: c.name as Fact['pred'], args: c.args })
     }
   })
 
-  const goal = raw.goal && ['perp', 'para', 'coll', 'cong'].includes(raw.goal.name)
+  const goal = raw.goal && ['perp', 'para', 'coll', 'cong', 'eqangle'].includes(raw.goal.name)
     ? { pred: raw.goal.name as Fact['pred'], args: raw.goal.args }
     : null
   return { premises, goal }
