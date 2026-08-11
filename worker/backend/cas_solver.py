@@ -105,8 +105,34 @@ def tex_to_sympy(text: str) -> str:
     return re.sub(r'\s+', ' ', s).strip()
 
 
+# sympy が先に意味を持っている名前。問題側の記号と衝突する。
+#   I = 虚数単位、E = 自然対数の底、N/S/O/Q/C = sympy の関数やクラス
+# 入試の問題文は I(a,n) や C(n,k) を平気で使うので、
+# 問題に出てきた名前は問題側の意味を優先する。しないと I*(a,n) と読まれる。
+SYMPY_RESERVED = {'I', 'E', 'N', 'S', 'O', 'Q', 'C', 'beta', 'gamma', 'zeta', 'lambda', 'll'}
+
+
+def local_table(text: str) -> dict:
+    """式に出てくる名前から局所辞書を作る。
+
+    直後に括弧が来るものは未定義関数、それ以外は記号として登録する。
+    """
+    table: dict = {}
+    for name in set(re.findall(r'[A-Za-z][A-Za-z0-9_]*', text)):
+        if name in ('sqrt', 'Integral', 'Sum', 'Product', 'Limit', 'oo', 'pi',
+                    'sin', 'cos', 'tan', 'log', 'exp', 'sinh', 'cosh', 'tanh',
+                    'Abs', 'Rational', 'Symbol'):
+            continue
+        called = re.search(rf'{re.escape(name)}\s*\(', text)
+        if name in SYMPY_RESERVED or called:
+            table[name] = sp.Function(name) if called else sp.Symbol(name)
+    return table
+
+
 def to_expr(text: str):
-    return parse_expr(fold_names(tex_to_sympy(text)), transformations=TRANSFORMS, evaluate=True)
+    prepared = fold_names(tex_to_sympy(text))
+    return parse_expr(prepared, local_dict=local_table(prepared),
+                      transformations=TRANSFORMS, evaluate=True)
 
 
 # 数学の記号だが Python の識別子として使えないもの。名前に畳む。
@@ -147,12 +173,13 @@ def split_chain(s: str) -> list[str]:
 def to_relation(text: str):
     """等式・不等式のどちらでも受ける。連鎖は呼び出し側で割ってから渡す"""
     s = fold_names(tex_to_sympy(text))
+    table = local_table(s)
     for op, ctor in RELOPS:
         if op in s:
             left, right = s.split(op, 1)
-            return ctor(parse_expr(left, transformations=TRANSFORMS),
-                        parse_expr(right, transformations=TRANSFORMS))
-    return sp.Eq(parse_expr(s, transformations=TRANSFORMS), 0)
+            return ctor(parse_expr(left, local_dict=table, transformations=TRANSFORMS),
+                        parse_expr(right, local_dict=table, transformations=TRANSFORMS))
+    return sp.Eq(parse_expr(s, local_dict=table, transformations=TRANSFORMS), 0)
 
 
 def numeric_agrees(relations, goal_expr, answer, tol=1e-7, trials=6) -> bool:
@@ -256,7 +283,13 @@ def solve_request(req: dict) -> dict:
     if not goal_text:
         return {'status': 'missing_goal'}
 
-    goal = to_expr(goal_text)
+    try:
+        goal = to_expr(goal_text)
+    except Exception as exc:
+        return {'status': 'goal_unparsed', 'detail': repr(exc)[:120]}
+    # 座標の組 (a,b) や集合は、いまの求解の対象ではない。落ちずに棄権する
+    if not hasattr(goal, 'free_symbols'):
+        return {'status': 'goal_not_expression'}
     unknowns = sorted(
         {s for r in relations for s in r.free_symbols} | set(goal.free_symbols),
         key=str,

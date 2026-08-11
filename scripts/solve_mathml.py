@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-"""MathML 経路で解く。平文経路との差を直接測る。
+"""MathML 経路で解き、タグを剥いた平文経路と直接比べる。
 
-前の経路はタグを剥いた平文を CAS に食わせていた。
-不等号も積分区間も消えた文字列を解いても、出るのはゴミだった。
-
-ここでは MathML の木から式を取り、前提と結論を分けて CAS に渡す。
-同じ問題集合で両方を走らせ、数字がどれだけ動いたかを出す。
+束ごとに別プロセスで走らせる。Windows でプールを作り直すと壊れるため。
+束が時間切れになったら、その束だけ半分に割って再試行する。
+一問ずつ諦めるのではなく、まず束で試す。
 
     python scripts/solve_mathml.py
 """
@@ -14,85 +12,86 @@ import io
 import json
 import os
 import re
+import subprocess
 import sys
 from collections import Counter
-from concurrent.futures import ProcessPoolExecutor, TimeoutError as FuturesTimeout
-from concurrent.futures.process import BrokenProcessPool
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, os.path.join(ROOT, 'worker', 'backend'))
+BACKEND = os.path.join(ROOT, 'worker', 'backend')
+sys.path.insert(0, BACKEND)
 
-import cas_solver as C  # noqa: E402
 from mathml_to_sympy import parse_math_elements  # noqa: E402
 
-PER_PROBLEM_SECONDS = 8.0
 REL = re.compile(r'(?<![<>!=])=(?!=)|<=|>=|!=|<|>')
-ASK = re.compile(r'求めよ|求めなさい|答えよ|示せ|証明せよ')
+BATCH = 12
+BATCH_SECONDS = 90
 
 
-def split_problem(exprs, body):
-    """式の列を、前提と結論に分ける。
+def solve_batch(items):
+    """束を別プロセスで解く。時間切れなら半分に割る。割れなくなったら諦める"""
+    if not items:
+        return []
+    env = dict(os.environ, PYTHONIOENCODING='utf-8')
+    try:
+        res = subprocess.run(
+            [sys.executable, os.path.join(BACKEND, 'solve_batch.py')],
+            input=json.dumps(items, ensure_ascii=False), capture_output=True,
+            text=True, encoding='utf-8', timeout=BATCH_SECONDS, cwd=BACKEND, env=env)
+        if res.returncode == 0 and res.stdout.strip():
+            return json.loads(res.stdout)
+    except subprocess.TimeoutExpired:
+        pass
+    except Exception:
+        pass
+    if len(items) == 1:
+        return [{'id': items[0].get('id'), 'status': '打ち切り'}]
+    mid = len(items) // 2
+    return solve_batch(items[:mid]) + solve_batch(items[mid:])
 
-    「求めよ」の直前にある関係でない式が結論。
-    関係（等号・不等号を含むもの）は前提。
-    """
+
+def extract_mathml(p):
+    exprs = parse_math_elements(' '.join(p['mathml']))
     relations = [e for e in exprs if REL.search(e)]
     candidates = [e for e in exprs if not REL.search(e) and len(e) > 1]
-    goal = None
-    # 構造を持つもの（積分・総和・極限）は結論になりやすい
     structured = [e for e in candidates if any(k in e for k in ('Integral', 'Sum', 'Limit'))]
-    if structured:
-        goal = structured[-1]
-    elif candidates:
-        goal = candidates[-1]
-    return relations, goal
+    goal = structured[-1] if structured else (candidates[-1] if candidates else None)
+    return relations[:6], goal
 
 
-def solve_one(payload):
-    relations, goal = payload
-    return C.solve_request({'relations': relations, 'goal': goal})
+def extract_plain(p):
+    """タグを剥いた平文。以前やっていたこと"""
+    text = ' '.join(re.sub(r'<[^>]*>', ' ', m) for m in p['mathml'])
+    text = re.sub(r'&[a-zA-Z]+;', ' ', text)
+    segs = [s.strip() for s in re.split(r'[，、。\s]{2,}', text) if s.strip()]
+    rel = [s for s in segs if REL.search(s)]
+    cand = [s for s in segs if not REL.search(s) and len(s) > 1]
+    return rel[:6], (cand[-1] if cand else None)
 
 
 def run(problems, extract, label):
     stats = Counter()
-    solved = []
-    pool = ProcessPoolExecutor(max_workers=1)
-    for i, p in enumerate(problems, 1):
-        if i % 25 == 0:
-            sys.stderr.write(f'\r{label} {i}/{len(problems)}  solved {stats["solved"]}')
-            sys.stderr.flush()
+    items = []
+    for p in problems:
         relations, goal = extract(p)
-        if not goal:
+        if not goal or len(goal) > 240:
             stats['結論の式が取れない'] += 1
             continue
-        if len(relations) > 8 or len(goal) > 300:
-            stats['大きすぎる'] += 1
-            continue
-        try:
-            future = pool.submit(solve_one, (relations[:8], goal))
-            r = future.result(timeout=PER_PROBLEM_SECONDS)
-        except FuturesTimeout:
-            stats['打ち切り'] += 1
-            pool.shutdown(wait=False, cancel_futures=True)
-            pool = ProcessPoolExecutor(max_workers=1)
-            continue
-        except BrokenProcessPool:
-            # 子プロセスが落ちた（再帰の深さ・メモリ）。壊れたプールは使えないので作り直す
-            stats['子プロセス異常終了'] += 1
-            pool = ProcessPoolExecutor(max_workers=1)
-            continue
-        except Exception:
-            stats['例外'] += 1
-            continue
-        stats[r.get('status', '?')] += 1
-        if r.get('status') == 'solved':
-            stats[f"  └ {r.get('verdict', 'unknown')}"] += 1
-            solved.append({'id': p['id'], 'goal': goal, 'relations': relations[:3],
-                           'answer': r.get('answer_latex'), 'verdict': r.get('verdict'),
-                           'method': r.get('method')})
-    pool.shutdown(wait=False, cancel_futures=True)
-    sys.stderr.write('\r' + ' ' * 60 + '\r')
+        items.append({'id': p['id'], 'relations': relations, 'goal': goal})
+
+    solved = []
+    for i in range(0, len(items), BATCH):
+        chunk = items[i:i + BATCH]
+        sys.stderr.write(f'\r{label} {i}/{len(items)}  solved {stats["solved"]}   ')
+        sys.stderr.flush()
+        for r in solve_batch(chunk):
+            st = r.get('status', '?')
+            stats[st] += 1
+            if st == 'solved':
+                stats[f"  └ {r.get('verdict', '-')}"] += 1
+                src = next((c for c in chunk if c['id'] == r.get('id')), {})
+                solved.append({**r, 'goal': src.get('goal'), 'relations': src.get('relations')})
+    sys.stderr.write('\r' + ' ' * 70 + '\r')
     return stats, solved
 
 
@@ -103,37 +102,22 @@ def main() -> int:
     problems = [p for p in problems if p.get('mathml')]
     print(f'MathML つきの問題 {len(problems)} 問\n')
 
-    # 旧経路：MathML のタグを剥いた平文から $ 区切りを探す（区切りが無いので何も取れない）
-    def old_extract(p):
-        text = ' '.join(re.sub(r'<[^>]*>', ' ', m) for m in p['mathml'])
-        text = re.sub(r'&[a-zA-Z]+;', ' ', text)
-        segs = [s.strip() for s in re.split(r'[，、。]', text) if s.strip()]
-        rel = [s for s in segs if REL.search(s)]
-        cand = [s for s in segs if not REL.search(s)]
-        return rel, (cand[-1] if cand else None)
-
-    # 新経路：MathML の木から式を取る
-    def new_extract(p):
-        return split_problem(parse_math_elements(' '.join(p['mathml'])), p.get('body', ''))
-
-    old_stats, _ = run(problems, old_extract, '旧')
-    new_stats, new_solved = run(problems, new_extract, '新')
+    old_stats, _ = run(problems, extract_plain, '平文')
+    new_stats, new_solved = run(problems, extract_mathml, 'MathML')
 
     n = len(problems)
-    print(f"{'':26s} {'タグを剥いた平文':>16s} {'MathML':>10s}")
-    keys = sorted(set(old_stats) | set(new_stats), key=lambda k: -(new_stats[k] + old_stats[k]))
-    for k in keys:
-        print(f'  {k:24s} {old_stats[k]:>16d} {new_stats[k]:>10d}')
-    print()
-    print(f'  解けた                   {old_stats["solved"]:>16d} {new_stats["solved"]:>10d}'
+    print(f"{'':26s} {'タグを剥いた平文':>14s} {'MathML':>10s}")
+    for k in sorted(set(old_stats) | set(new_stats), key=lambda k: -(new_stats[k] + old_stats[k])):
+        print(f'  {k:24s} {old_stats[k]:>14d} {new_stats[k]:>10d}')
+    print(f'\n  解けた                   {old_stats["solved"]:>14d} {new_stats["solved"]:>10d}'
           f'   ({100*old_stats["solved"]/n:.1f}% → {100*new_stats["solved"]/n:.1f}%)')
 
     with open(os.path.join(ROOT, 'data', 'mathml-solved.json'), 'w', encoding='utf-8') as h:
         json.dump(new_solved, h, ensure_ascii=False, indent=2)
 
     print('\n解けた例:')
-    for s in new_solved[:12]:
-        print(f"  [{s['verdict']:20s}] {s['goal'][:44]:44s} = {str(s['answer'])[:34]}")
+    for s in new_solved[:14]:
+        print(f"  [{str(s.get('verdict')):20s}] {str(s.get('goal'))[:40]:40s} = {str(s.get('answer_latex'))[:32]}")
     return 0
 
 

@@ -130,6 +130,11 @@ def finish(expr: str) -> str:
     # 極限：Limit@(x)@(a) body
     s = re.sub(r'Limit@\(([^()]*)\)@\(([^()]*)\)\s*(.+)', r'Limit(\3, \1, \2)', s)
 
+    # 見えない乗算（&it;）が式の末尾や括弧の前後に残ると構文が壊れる。
+    # sin(n*x)* のような形で実際に落ちていた。
+    s = re.sub(r'\*\s*(?=[),\]]|$)', '', s)
+    s = re.sub(r'(?<=[(,\[])\s*\*', '', s)
+    s = re.sub(r'\*{3,}', '**', s)
     s = re.sub(r'\s+', ' ', s).strip()
     return s
 
