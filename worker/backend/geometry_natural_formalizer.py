@@ -45,6 +45,10 @@ class GeometryFormalization:
     points: list[str]
     predicates: list[TypedPredicate]
     goal: TypedPredicate | None
+    # 結論は一本とは限らない。「四辺形ABCDは平行四辺形」は平行2本、
+    # 「4点は同一直線上」は3点組4本、「AとBは平行で、CとDは直交」は2本。
+    # 一本に落ちないものを落としていたのは、こちらの誤りだった。
+    goals: list[TypedPredicate]
     triangles: list[tuple[str, str, str]]
     unresolved_relations: list[str]
     coordinates: dict[str, tuple[float, float]]
@@ -57,13 +61,76 @@ class GeometryFormalization:
         value = asdict(self)
         value["predicates"] = [asdict(item) for item in self.predicates]
         value["goal"] = asdict(self.goal) if self.goal else None
+        value["goals"] = [asdict(g) for g in self.goals]
         return value
 
 
+def candidate_splits(normalized: str) -> list[tuple[str, str]]:
+    """前提と結論の切り方の候補を並べる。
+
+    入試の問題文は (1)(2)(3) が連結していたり、設定と結論が
+    「…とすれば、…であること」のように一文に同居していたりする。
+    切り方を一つに決め打ちすると、そこで外したら全部落ちる。
+    候補を作って、実際に述語が取れたものを採る。
+    """
+    out: list[tuple[str, str]] = []
+
+    def push(p: str, g: str) -> None:
+        p, g = p.strip("。 、"), g.strip("。 、")
+        if g and (p, g) not in out:
+            out.append((p, g))
+
+    base_p, base_g = split_goal(normalized)
+    push(*peel_subordinate(base_p, base_g))
+    push(base_p, base_g)
+
+    # 小問が連結している場合、最後の問いだけを見る。
+    # 直前の「示せ/求めよ」より後ろが、最後の小問の設定と結論。
+    for marker in ("を示せ", "を証明せよ", "を求めよ", "求めよ", "答えよ"):
+        cut = normalized.rfind(marker)
+        if cut <= 0:
+            continue
+        head = normalized[:cut]
+        prev = max(head.rfind(m) for m in ("示せ", "証明せよ", "求めよ", "答えよ"))
+        if prev > 0:
+            tail = head[prev:].lstrip("示せ証明求よ答。 、")
+            p, g = split_goal(tail + marker)
+            push(*peel_subordinate(p, g))
+        break
+
+    # 「…こと」で終わる結論節を、単独で結論として試す
+    for m in re.finditer(r"[。、]([^。]{4,120}?)(?:である)?こと(?:を示せ|を証明せよ|$)", normalized):
+        push(normalized[:m.start()], m.group(1))
+
+    # 最後の一文だけを結論にする
+    sentences = [s for s in normalized.split("。") if s.strip()]
+    if len(sentences) >= 2:
+        push("。".join(sentences[:-1]), sentences[-1])
+    return out
+
+
 def formalize_geometry_text(text: str, *, max_restarts: int = 20) -> GeometryFormalization:
+    """候補の切り方を順に試し、最も多くの関係を消費できたものを返す。
+
+    一回試して落ちたら終わり、では問題文との相性で結果が決まってしまう。
+    """
     normalized = normalize_text(text)
-    premise_text, goal_text = split_goal(normalized)
-    premise_text, goal_text = peel_subordinate(premise_text, goal_text)
+    best: GeometryFormalization | None = None
+    for premise_text, goal_text in candidate_splits(normalized):
+        attempt = _formalize_split(normalized, premise_text, goal_text, max_restarts=max_restarts)
+        if attempt.status == "formalized":
+            return attempt
+        # 落ちたものの中では、結論が一本に決まっていて前提を多く読めたものを残す
+        def score(r: GeometryFormalization) -> tuple[int, int, int]:
+            return (r.goal is not None, len(r.predicates), -len(r.unresolved_relations))
+        if best is None or score(attempt) > score(best):
+            best = attempt
+    return best if best is not None else _formalize_split(normalized, normalized, "", max_restarts=max_restarts)
+
+
+def _formalize_split(
+    normalized: str, premise_text: str, goal_text: str, *, max_restarts: int = 20,
+) -> GeometryFormalization:
     from geometry_discourse import elaborate_circle_discourse
 
     discourse = elaborate_circle_discourse(premise_text, goal_text)
@@ -80,7 +147,8 @@ def formalize_geometry_text(text: str, *, max_restarts: int = 20) -> GeometryFor
         for item in discourse.goal_relations
     )
     predicates = expand_derived_predicates(predicates, triangles)
-    goal = goals[0] if len(goals) == 1 else None
+    goals = deduplicate_predicates(goals)
+    goal = goals[0] if goals else None
     unresolved = unresolved_relation_fragments(premise_text, premise_spans)
     unresolved.extend(unresolved_relation_fragments(goal_text, goal_spans))
     unresolved.extend(discourse.unresolved)
@@ -90,8 +158,8 @@ def formalize_geometry_text(text: str, *, max_restarts: int = 20) -> GeometryFor
         issue = predicate_type_issue(item)
         if issue:
             unresolved.append(f"ill-typed predicate {item.render()}: {issue}")
-    if len(goals) != 1:
-        unresolved.append(f"expected exactly one goal predicate, found {len(goals)}")
+    if not goals:
+        unresolved.append("no goal predicate was identified")
 
     points = sorted({point for item in [*predicates, *goals] for point in item.points} | {
         point for triangle in triangles for point in triangle
@@ -105,6 +173,7 @@ def formalize_geometry_text(text: str, *, max_restarts: int = 20) -> GeometryFor
         points=points,
         predicates=deduplicate_predicates(predicates),
         goal=goal,
+        goals=goals,
         triangles=triangles,
         unresolved_relations=unresolved,
         coordinates={},
@@ -118,7 +187,7 @@ def formalize_geometry_text(text: str, *, max_restarts: int = 20) -> GeometryFor
 
     coordinates, residual, restarts = construct_diagram(
         points,
-        [*result.predicates, goal],
+        [*result.predicates, *goals],
         triangles,
         seed_text=normalized,
         max_restarts=max_restarts,
@@ -189,7 +258,17 @@ def split_goal(text: str) -> tuple[str, str]:
 
 # 「…とするとき、」「…ならば、」は前提と結論の境目。
 # 「。」だけで切ると、この従属節が結論側に残り、結論の述語が複数個になって落ちる。
-SUBORDINATE_JA = ("とするとき、", "とおくとき、", "であるとき、", "のとき、", "とき、", "ならば、", "ならば")
+#
+# 「とすれば」「とすると」は入試で最も多い形。これが無いと、
+# 「線分AB、EG…の中点をそれぞれM、P…とすれば、4点は一直線上」で
+# 中点の定義が結論側に残り、結論の述語が4本になって落ちる。
+SUBORDINATE_JA = (
+    "とするとき、", "とおくとき、", "であるとき、", "のとき、", "とき、",
+    "とすれば、", "とすれば", "とおけば、", "とおけば",
+    "とすると、", "とすると", "とおくと、", "とおくと",
+    "をとれば、", "をとれば", "ひけば、", "引けば、",
+    "ならば、", "ならば",
+)
 
 
 def peel_subordinate(premise: str, goal: str) -> tuple[str, str]:
@@ -237,6 +316,9 @@ def extract_predicates(text: str) -> tuple[list[TypedPredicate], list[tuple[int,
 
     segment = r"([A-Z])\s*([A-Z])"
     scalar = r"(-?\d+(?:/\d+|\.\d+)?)"
+    # 「直線ABと直線PQは直交する」のように、線分名の前に語が挟まる。
+    # これを許さないと、結論が一つも読めない問題が大量に出る。
+    LINE = r"(?:直線|線分|辺|半直線)?\s*"
     collect(
         segment + r"\s*:\s*" + segment + r"\s*=\s*" + segment + r"\s*:\s*" + segment,
         lambda m: TypedPredicate("eqratio", tuple(value.lower() for value in m.groups()), m.group(0)),
@@ -584,17 +666,85 @@ def extract_predicates(text: str) -> tuple[list[TypedPredicate], list[tuple[int,
         lambda m: constant_angle_predicate(m.groups(), m.group(0)),
     )
 
-    # 語で書かれた関係。記号（⊥ ∥）しか読めないと、結論部が落ちる。
+    # ── 直角三角形・対称点 ────────────────────────────────────
+    # 「∠A=90°である直角三角形ABC」。直角の位置は明示されなければ最初の頂点。
     collect(
-        segment + r"\s*と\s*" + segment + r"\s*(?:は|が)?\s*(?:垂直|直交)",
+        r"(?:∠|角)\s*([A-Z])\s*=?\s*(?:90|\{90\})\s*°?\s*(?:である|の)?\s*直角三角形\s*"
+        r"([A-Z])\s*([A-Z])\s*([A-Z])",
+        lambda m: right_angle_at(m.group(1), (m.group(2), m.group(3), m.group(4)), m.group(0)),
+    )
+    collect(
+        r"直角三角形\s*([A-Z])\s*([A-Z])\s*([A-Z])",
+        lambda m: right_angle_at(m.group(1), (m.group(1), m.group(2), m.group(3)), m.group(0)),
+    )
+    # 「BC に関する D の対称点を F」。折り返しは垂直二等分線の言い換え。
+    collect(
+        r"(?:直線|線分|辺)?\s*([A-Z])\s*([A-Z])\s*に関(?:する|し(?:て)?)\s*(?:点\s*)?([A-Z])\s*"
+        r"(?:と|の)\s*対称(?:な)?(?:点|な点)" + LET,
+        lambda m: [
+            # 対称点は、軸からの距離が等しく、結ぶ線が軸に垂直
+            TypedPredicate("cong", (m.group(1).lower(), m.group(3).lower(),
+                                    m.group(1).lower(), m.group(4).lower()), m.group(0)),
+            TypedPredicate("cong", (m.group(2).lower(), m.group(3).lower(),
+                                    m.group(2).lower(), m.group(4).lower()), m.group(0)),
+            TypedPredicate("perp", (m.group(3).lower(), m.group(4).lower(),
+                                    m.group(1).lower(), m.group(2).lower()), m.group(0)),
+        ],
+    )
+
+    # ── 四角形の種類を結論として言う ──────────────────────────
+    # 「四辺形ABCDは平行四辺形であること」。前提としては読めていたが結論として読めず、
+    # 結論の述語が0本になって落ちていた。
+    collect(
+        r"(?:四辺形|四角形)\s*([A-Z])\s*([A-Z])\s*([A-Z])\s*([A-Z])\s*(?:は|が)\s*平行四辺形",
+        lambda m: [
+            TypedPredicate("para", (m.group(1).lower(), m.group(2).lower(),
+                                    m.group(4).lower(), m.group(3).lower()), m.group(0)),
+            TypedPredicate("para", (m.group(1).lower(), m.group(4).lower(),
+                                    m.group(2).lower(), m.group(3).lower()), m.group(0)),
+        ],
+    )
+    collect(
+        r"(?:四辺形|四角形)\s*([A-Z])\s*([A-Z])\s*([A-Z])\s*([A-Z])\s*(?:は|が)\s*(?:ひし形|菱形)",
+        lambda m: [
+            TypedPredicate("cong", (m.group(1).lower(), m.group(2).lower(),
+                                    m.group(2).lower(), m.group(3).lower()), m.group(0)),
+            TypedPredicate("cong", (m.group(2).lower(), m.group(3).lower(),
+                                    m.group(3).lower(), m.group(4).lower()), m.group(0)),
+        ],
+    )
+    collect(
+        r"(?:四辺形|四角形)\s*([A-Z])\s*([A-Z])\s*([A-Z])\s*([A-Z])\s*(?:は|が)\s*(?:長方形|矩形)",
+        lambda m: [
+            TypedPredicate("perp", (m.group(1).lower(), m.group(2).lower(),
+                                    m.group(2).lower(), m.group(3).lower()), m.group(0)),
+            TypedPredicate("perp", (m.group(2).lower(), m.group(3).lower(),
+                                    m.group(3).lower(), m.group(4).lower()), m.group(0)),
+        ],
+    )
+
+    # 「EF は DC に平行」の形。「EF と DC は平行」しか読めないと半分落ちる。
+    collect(
+        LINE + segment + r"\s*(?:は|が)\s*" + LINE + segment + r"\s*に\s*(?:垂直|直交)",
         lambda m: predicate("perp", m.groups(), m.group(0)),
     )
     collect(
-        segment + r"\s*と\s*" + segment + r"\s*(?:は|が)?\s*平行",
+        LINE + segment + r"\s*(?:は|が)\s*" + LINE + segment + r"\s*に\s*平行",
+        lambda m: predicate("para", m.groups(), m.group(0)),
+    )
+
+    # 語で書かれた関係。記号（⊥ ∥）しか読めないと、結論部が落ちる。
+    # 線分名の前の「直線」「線分」を許す。ここが無いだけで結論が読めない問題が多い。
+    collect(
+        LINE + segment + r"\s*と\s*" + LINE + segment + r"\s*(?:は|が)?\s*(?:互いに)?\s*(?:垂直|直交)",
+        lambda m: predicate("perp", m.groups(), m.group(0)),
+    )
+    collect(
+        LINE + segment + r"\s*と\s*" + LINE + segment + r"\s*(?:は|が)?\s*平行",
         lambda m: predicate("para", m.groups(), m.group(0)),
     )
     collect(
-        segment + r"\s*と\s*" + segment + r"\s*(?:の長さ)?\s*(?:は|が)?\s*等しい",
+        LINE + segment + r"\s*と\s*" + LINE + segment + r"\s*(?:の長さ)?\s*(?:は|が)?\s*等しい",
         lambda m: predicate("cong", m.groups(), m.group(0)),
     )
     collect(
@@ -621,6 +771,16 @@ def extract_predicates(text: str) -> tuple[list[TypedPredicate], list[tuple[int,
 
 def predicate(name: str, groups: Iterable[str], source: str) -> TypedPredicate:
     return TypedPredicate(name, tuple(value.lower() for value in groups), source)
+
+
+def right_angle_at(vertex: str, triangle: tuple[str, str, str], source: str) -> TypedPredicate:
+    """直角三角形。直角の頂点から出る二辺が直交する"""
+    v = vertex.lower()
+    others = [p.lower() for p in triangle if p.lower() != v]
+    if len(others) != 2:
+        others = [p.lower() for p in triangle[1:]]
+        v = triangle[0].lower()
+    return TypedPredicate("perp", (v, others[0], v, others[1]), source)
 
 
 def angle_predicate(groups: Iterable[str], source: str) -> TypedPredicate:

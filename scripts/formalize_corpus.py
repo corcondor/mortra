@@ -112,6 +112,7 @@ def main() -> int:
                     for p in r.predicates
                 ],
                 'goal': ({'name': r.goal.name, 'args': list(r.goal.points)} if r.goal else None),
+                'goals': [{'name': g.name, 'args': list(g.points)} for g in r.goals],
                 'coordinates': {k: [v[0], v[1]] for k, v in r.coordinates.items()},
                 'residual': r.diagram_residual,
                 'unresolved': r.unresolved_relations,
