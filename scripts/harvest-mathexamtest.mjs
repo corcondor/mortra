@@ -105,14 +105,18 @@ for (const u of targets) {
         .filter(l => /解答/.test(l.text) && /^https?:/.test(l.href))
         .map(l => ({ site: l.text, url: l.href }))
       if (!answers.length) continue
+      // MathML をそのまま残す。タグを剥くと不等号も積分区間も消える。
+      // 意味を運んでいるのはタグの方だった。
+      const mathml = [...part.matchAll(/<math\b[\s\S]*?<\/math>/g)].map(m => m[0])
       const body = part
         .replace(/<script[\s\S]*?<\/script>/gi, ' ')
         .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+        .replace(/<math\b[\s\S]*?<\/math>/g, ' ⟦式⟧ ')
         .replace(/<[^>]*>/g, ' ')
         .replace(/&[a-z]+;/gi, ' ')
         .replace(/\s+/g, ' ')
         .trim()
-      problems.push({ id: idm[0], year: idm[1], univ: idm[2], no: idm[3], page, answers, body })
+      problems.push({ id: idm[0], year: idm[1], univ: idm[2], no: idm[3], page, answers, body, mathml })
     }
     process.stderr.write(`\r${u.name} … ${problems.length} 問 / ${pageCount} ページ`)
   }
