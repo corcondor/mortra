@@ -228,6 +228,69 @@ def numeric_agrees(relations, goal_expr, answer, tol=1e-7, trials=6) -> bool:
     return agreed >= 1
 
 
+def is_trivial(goal, answer) -> bool:
+    """何も計算していない答えを弾く。
+
+    消去の経路は goal.subs(sol) を返すので、解が goal に触れないと
+    goal がそのまま返る。goal - goal = 0 は恒等式なので proved になり、
+    p_n = p_n や f(x) = f(x) が「証明済み」として数えられていた。
+
+    答えと呼べるのは、
+      ・数になっている、または
+      ・goal 自身の記号を含まない別の式になっている
+    ときだけ。
+    """
+    UNEVALUATED = (sp.Limit, sp.Integral, sp.Sum, sp.Product, sp.Derivative)
+    try:
+        if answer is None:
+            return True
+        if goal == answer:
+            return True
+        # 目標が未評価の演算（極限・積分・総和・微分）を含み、答えが含まないなら、
+        # 評価そのものが計算。これを「何もしていない」と呼んではいけない
+        goal_pending = goal.has(*UNEVALUATED)
+        answer_pending = getattr(answer, 'has', lambda *_: False)(*UNEVALUATED)
+        if goal_pending and not answer_pending:
+            # ただし、演算子を外しただけで中身が変わっていないなら何もしていない。
+            # Limit(d_n, n, oo) → d_n は、d_n が n に依存しないので式が動いていない
+            # Sum(a_k, (k,1,n)) → a_k*n のように、束縛変数がそのまま残る答えは
+            # 「和を取った」ことになっていない。中身の自由記号が答えに残るなら偽
+            for op in goal.atoms(*UNEVALUATED):
+                if not op.args:
+                    continue
+                body = op.args[0]
+                if sp.simplify(answer - body) == 0:
+                    return True
+                # sympy の束縛変数は sp.Tuple で来る。Python の tuple で判定すると素通りする
+                bound = {v[0] for v in op.args[1:]
+                         if isinstance(v, (tuple, sp.Tuple)) and len(v) > 0}
+                free = getattr(answer, 'free_symbols', set())
+                if bound & free:
+                    return True   # 束縛変数が答えに漏れている
+                # MathML の msub は添字を名前に畳むので、a_k は「数列の第k項」なのに
+                # 一個の記号に見える。sympy は k に依らない定数として和を取り a_k*n を返す。
+                # 束縛変数が添字として残っている答えは、和を取れていない
+                suffixes = {f'_{v}' for v in bound}
+                if any(str(sym).endswith(tuple(suffixes)) for sym in free) and suffixes:
+                    return True
+            return False
+        if sp.simplify(goal - answer) == 0 and goal.free_symbols == getattr(answer, 'free_symbols', set()):
+            # 見た目が違っても同じ式なら、何も進んでいない
+            if sp.srepr(sp.simplify(goal)) == sp.srepr(sp.simplify(answer)):
+                return True
+        gs = goal.free_symbols
+        as_ = getattr(answer, 'free_symbols', set())
+        # 目標が単独の記号で、答えがその記号を含むなら解けていない
+        if goal.is_Symbol and goal in as_:
+            return True
+        # 目標の記号が答えにそのまま残り、かつ構造が変わっていない
+        if gs and gs == as_ and sp.count_ops(answer) <= sp.count_ops(goal):
+            return True
+        return False
+    except Exception:
+        return False
+
+
 def classify(symbolic_ok: bool, numeric_ok: bool, has_free_params: bool) -> str:
     """出した答えをどう呼ぶか。強い言葉を安売りしない。
 
@@ -307,6 +370,9 @@ def solve_request(req: dict) -> dict:
                 values = [v for v in values if all(
                     sp.simplify(ineq.subs(goal, v)) is not sp.false for ineq in inequalities)]
             # 方程式の解は元の式へ代入して確かめられる。通ったものだけ返す
+            values = [v for v in values if not is_trivial(goal, v)]
+            if not values:
+                return {'status': 'not_reduced', 'detail': '解が目標そのもの'}
             confirmed = [v for v in values
                          if all(sp.simplify(e.lhs.subs(goal, v) - e.rhs.subs(goal, v)) == 0
                                 for e in equalities)]
@@ -327,6 +393,8 @@ def solve_request(req: dict) -> dict:
             sols = sp.solve(equalities, dict=True)
             for sol in sols[:6]:
                 value = sp.simplify(goal.subs(sol))
+                if is_trivial(goal, value):
+                    continue   # 何も計算していない。次の解を見る
                 if not value.free_symbols or value.free_symbols < set(unknowns):
                     numeric_ok = numeric_agrees(relations, goal, value)
                     symbolic_ok = symbolic_identity(relations, goal, value)
@@ -358,7 +426,7 @@ def solve_request(req: dict) -> dict:
     # 4) 関係式が無ければ、目標そのものを簡約する（定積分・極限など）
     try:
         value = sp.simplify(sp.doit(goal) if hasattr(sp, 'doit') else goal.doit())
-        if value.free_symbols != goal.free_symbols or value != goal:
+        if not is_trivial(goal, value) and (value.free_symbols != goal.free_symbols or value != goal):
             return {
                 'status': 'solved', 'method': 'evaluate',
                 'answer': sp.srepr(value), 'answer_latex': sp.latex(value),
