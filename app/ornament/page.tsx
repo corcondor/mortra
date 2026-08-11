@@ -14,7 +14,7 @@
  */
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
-  WALLPAPER, tile, verifySymmetry, groupOrder, closeGroup,
+  WALLPAPER, windowOrbit, verifySymmetry, pointGroupOrder,
   polygon, circle, motifFromVectors,
   type Stroke, type WallpaperGroup,
 } from '@/lib/mortra/vision/ornament'
@@ -55,10 +55,10 @@ export default function OrnamentPage() {
   const built = useMemo(() => {
     const group: WallpaperGroup = WALLPAPER[groupKey] ?? WALLPAPER.p6m
     const motif = motifOf(motifKind)
-    const strokes = tile(motif, group, { repeat: 5, scale: 1 })
+    const orbit = windowOrbit(motif, group, { repeat: 5, scale: 1 })
     // 名乗る前に確かめる。落ちたら群名を出さない
-    const verdict = verifySymmetry(strokes, group)
-    return { group, strokes, verdict, order: groupOrder(group) }
+    const verdict = verifySymmetry(orbit.strokes, group, { scale: 1 })
+    return { group, strokes: orbit.strokes, verdict, order: pointGroupOrder(group) }
   }, [groupKey, motifKind])
 
   useEffect(() => {
@@ -109,16 +109,17 @@ export default function OrnamentPage() {
     c.fillStyle = '#6a6a6a'
     c.font = `${Math.round(W * 0.021)}px "Hiragino Kaku Gothic ProN", sans-serif`
     c.fillText(group.character, pad, textY + W * 0.036)
-    c.fillText(`点群の位数 ${order}（生成元 ${group.generators.length} 本の閉包を数えた）`,
+    c.fillText(`点群 G/T の位数 ${order}（生成元 ${group.pointGroupGenerators.length} 本の閉包を数えた。壁紙群 G 自体は無限）`,
       pad, textY + W * 0.066)
-    c.fillText(`格子 ${group.lattice} ／ 線 ${strokes.length} 本`, pad, textY + W * 0.096)
+    c.fillText(`並進部分群 T ${group.latticeType} ／ 窓の中の線 ${strokes.length} 本`, pad, textY + W * 0.096)
 
     c.fillStyle = verdict.holds ? '#111111' : '#b00020'
     c.font = `${Math.round(W * 0.019)}px "SF Mono", ui-monospace, monospace`
     c.fillText(
       verdict.holds
-        ? `symmetry verified  ${order}/${order} generators`
-        : `NOT VERIFIED  ${verdict.failed.length} generators failed`,
+        ? `symmetry verified  point group ${order}/${order} + 2 translations`
+        : `NOT VERIFIED  point group ${verdict.failedPointGroupElements.length}`
+          + ` / translations ${verdict.failedTranslations.length}`,
       pad, textY + W * 0.128)
     c.fillStyle = '#9a9a9a'
     c.fillText('generated from a symmetry group  ·  no LLM', pad, H - pad * 0.6)
@@ -163,5 +164,4 @@ export default function OrnamentPage() {
   )
 }
 
-/** 未使用の import を型検査に通すため（closeGroup は将来の別解表示で使う） */
-void closeGroup
+

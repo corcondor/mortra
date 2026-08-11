@@ -1,98 +1,104 @@
 /**
- * 対称群から模様を作る。
+ * 平面結晶群から模様を作る。
  *
- * これまで格子核を「数学の可視化」としてしか見ていなかったのが誤りだった。
  * 幾何学は数学の中だけの物ではない。美しいから、模様・ロゴ・装飾・UI に使える。
+ * ここは「数学を絵にする」層ではなく、**対称性から意味を持った模様を生成する層**。
  *
- * Rikyū が幾何学からロゴを作って 96 万再生を取ったのは、
- * デザインの問題を幾何の問題として解いたから。
- * MORTRA は既にその幾何を厳密に持っている。
+ * ── 用語について（前の実装は間違えていた）─────────────────────────
  *
- *   Aut(Λ) 位数 48        →  対称性の生成元
- *   A₃ ルート系 12本       →  12方向の反復
- *   Miller 面             →  面群と縞
- *   最密充填 π/(3√2)      →  円の詰め方
- *   テータ級数の殻         →  同心の環
+ * 壁紙群 G は**無限群**である。並進部分群 T ≅ ℤ² を含むので、要素は無限個ある。
+ * 「p4m は位数 8」と書いていたのは誤り。8 は点群 G/T の位数。
  *
- * ここは「数学を絵にする」層ではない。
- * **対称性から、意味を持った模様を生成する層**である。
- * 出てくる模様の対称群は宣言でき、検証できる。
+ *   G          壁紙群。無限。並進を含む
+ *   T ⊴ G      並進部分群。ℤ² と同型
+ *   G/T        点群。有限。ここが 8 や 12 になる
+ *   window     有限の窓に落ちた軌道。描画に使うのはこれ
  *
- * 17 種類の壁紙群（平面結晶群）は、平面の周期模様の完全な分類。
- * 装飾の歴史がこの 17 種類に尽きることは Fedorov が示している。
- * つまり「模様を作る」は、有限の語彙で書ける問題である。
+ * 型名も変数名も表示も、この三つを区別する。混ぜると「無限群の位数」を
+ * 数えたことになって嘘になる。
+ *
+ * 17 種類の壁紙群は平面の周期模様の完全な分類（Fedorov 1891）。
+ * つまり「模様を作る」は有限の語彙で書ける問題である。
+ *
+ * ── 主張の強さ ────────────────────────────────────────────────
+ *
+ * 群作用から出た模様は certified（数学的に検証できる）。
+ * 「充填率 0.74 だから余白を 26% にする」は design_heuristic（解釈であって定理ではない）。
+ * 二つを同じ status で扱わない。
  */
 
 export type Pt = { x: number; y: number }
 
-/** 平面の合同変換。模様はこの群の作用でできる */
+/** 制御文字が入力に混ざっていないか。正規表現に \b を書いて 0x08 を埋めた事故が3回あった */
+export function assertNoControlChars(value: string, where: string): void {
+  const bad = [...value].findIndex(ch => ch.charCodeAt(0) < 32 && !'\n\r\t'.includes(ch))
+  if (bad >= 0) {
+    throw new Error(
+      `${where}: 制御文字 0x${value.charCodeAt(bad).toString(16)} が位置 ${bad} にある`)
+  }
+}
+
+/** 平面の合同変換。線型部分と並進 */
 export type Isometry = {
-  /** [[a,b],[c,d]] の線型部分。回転・鏡映 */
   linear: [[number, number], [number, number]]
   translate: Pt
 }
 
-const compose = (f: Isometry, g: Isometry): Isometry => {
-  const [[a, b], [c, d]] = f.linear
-  const [[p, q], [r, s]] = g.linear
-  return {
-    linear: [[a * p + b * r, a * q + b * s], [c * p + d * r, c * q + d * s]],
-    translate: {
-      x: a * g.translate.x + b * g.translate.y + f.translate.x,
-      y: c * g.translate.x + d * g.translate.y + f.translate.y,
-    },
-  }
-}
+/** 点群の要素。並進を持たない線型部分だけ */
+export type PointGroupElement = Isometry['linear']
 
 export const apply = (t: Isometry, p: Pt): Pt => ({
   x: t.linear[0][0] * p.x + t.linear[0][1] * p.y + t.translate.x,
   y: t.linear[1][0] * p.x + t.linear[1][1] * p.y + t.translate.y,
 })
 
-const rotation = (turns: number): Isometry['linear'] => {
+const rotation = (turns: number): PointGroupElement => {
   const a = turns * 2 * Math.PI
   const c = Math.cos(a), s = Math.sin(a)
   return [[c, -s], [s, c]]
 }
-const mirrorX: Isometry['linear'] = [[1, 0], [0, -1]]
-const identity: Isometry['linear'] = [[1, 0], [0, 1]]
+const mirrorX: PointGroupElement = [[1, 0], [0, -1]]
+const identity: PointGroupElement = [[1, 0], [0, 1]]
 
-// ---------------------------------------------------------------------------
-// 壁紙群。平面の周期模様はこの 17 種類しかない（Fedorov 1891）
-// ---------------------------------------------------------------------------
-
-export type WallpaperGroup = {
-  name: string
-  /** 格子の型。模様の周期構造を決める */
-  lattice: 'oblique' | 'rectangular' | 'rhombic' | 'square' | 'hexagonal'
-  /** 最小の生成元。ここから群を閉包で作る。
-   *  手で全要素を並べると閉じていない集合を「群」と呼んでしまう。実際そうなった。 */
-  generators: Isometry['linear'][]
-  /** 図形的な特徴。デザインの意図で選べるように言葉で持つ */
-  character: string
-}
-
-const matKey = (m: Isometry['linear']) =>
+const matKey = (m: PointGroupElement) =>
   m.flat().map(x => (Math.abs(x) < 1e-9 ? 0 : x).toFixed(6)).join(',')
 
-const matMul = (a: Isometry['linear'], b: Isometry['linear']): Isometry['linear'] => [
+const matMul = (a: PointGroupElement, b: PointGroupElement): PointGroupElement => [
   [a[0][0] * b[0][0] + a[0][1] * b[1][0], a[0][0] * b[0][1] + a[0][1] * b[1][1]],
   [a[1][0] * b[0][0] + a[1][1] * b[1][0], a[1][0] * b[0][1] + a[1][1] * b[1][1]],
 ]
 
+// ---------------------------------------------------------------------------
+// 壁紙群 G = T ⋊ (G/T)
+// ---------------------------------------------------------------------------
+
+export type WallpaperGroup = {
+  /** 国際記号 */
+  name: string
+  /** 並進部分群 T の型。周期構造を決める */
+  latticeType: 'oblique' | 'rectangular' | 'rhombic' | 'square' | 'hexagonal'
+  /** 点群 G/T の生成元。ここから閉包で点群を作る。
+   *  手で全要素を並べると閉じていない集合を「群」と呼んでしまう。実際そうなった */
+  pointGroupGenerators: PointGroupElement[]
+  /** 図形的な特徴。デザインの意図で選べるように言葉で持つ */
+  character: string
+}
+
 /**
- * 生成元から点群を作る。位数は宣言ではなく、この閉包の大きさで決まる。
+ * 点群 G/T を生成元から閉包で作る。
  *
- * 手で 8 個並べて「位数 8」と書いたら閉じていなかった。
- * 閉包を取れば、位数は数えるものになる。
+ * 返るのは**有限**の集合。壁紙群 G 自体は無限なので、これを G の位数とは呼べない。
  */
-export function closeGroup(generators: Isometry['linear'][], limit = 64): Isometry['linear'][] {
-  const seen = new Map<string, Isometry['linear']>()
+export function closePointGroup(
+  generators: PointGroupElement[],
+  limit = 64,
+): PointGroupElement[] {
+  const seen = new Map<string, PointGroupElement>()
   seen.set(matKey(identity), identity)
-  let frontier = [identity, ...generators]
   for (const g of generators) seen.set(matKey(g), g)
+  let frontier = [identity, ...generators]
   while (frontier.length && seen.size <= limit) {
-    const next: Isometry['linear'][] = []
+    const next: PointGroupElement[] = []
     for (const a of frontier) {
       for (const g of generators) {
         const m = matMul(a, g)
@@ -105,34 +111,36 @@ export function closeGroup(generators: Isometry['linear'][], limit = 64): Isomet
   return [...seen.values()]
 }
 
-/** 群の位数。数えて出す */
-export const groupOrder = (group: WallpaperGroup) => closeGroup(group.generators).length
-
-const G = (linear: Isometry['linear'][]): Isometry['linear'][] => linear
+/** 点群 G/T の位数。壁紙群 G の位数ではない（G は無限） */
+export const pointGroupOrder = (group: WallpaperGroup) =>
+  closePointGroup(group.pointGroupGenerators).length
 
 export const WALLPAPER: Record<string, WallpaperGroup> = {
-  p1:  { name: 'p1',  lattice: 'oblique',     generators: G([identity]),
+  p1:  { name: 'p1',  latticeType: 'oblique',     pointGroupGenerators: [identity],
          character: '並進だけ。斜めに流れる' },
-  p2:  { name: 'p2',  lattice: 'oblique',     generators: G([rotation(0.5)]),
+  p2:  { name: 'p2',  latticeType: 'oblique',     pointGroupGenerators: [rotation(0.5)],
          character: '180°の回転。点対称' },
-  pm:  { name: 'pm',  lattice: 'rectangular', generators: G([mirrorX]),
+  pm:  { name: 'pm',  latticeType: 'rectangular', pointGroupGenerators: [mirrorX],
          character: '鏡映。左右対称の帯' },
-  pmm: { name: 'pmm', lattice: 'rectangular', generators: G([mirrorX, [[-1, 0], [0, 1]]]),
+  pmm: { name: 'pmm', latticeType: 'rectangular', pointGroupGenerators: [mirrorX, [[-1, 0], [0, 1]]],
          character: '直交する二つの鏡。格子縞' },
-  p4:  { name: 'p4',  lattice: 'square',      generators: G([rotation(0.25)]),
+  p4:  { name: 'p4',  latticeType: 'square',      pointGroupGenerators: [rotation(0.25)],
          character: '4回回転。風車' },
-  p4m: { name: 'p4m', lattice: 'square',      generators: G([rotation(0.25), mirrorX]),
+  p4m: { name: 'p4m', latticeType: 'square',      pointGroupGenerators: [rotation(0.25), mirrorX],
          character: '正方形の完全な対称性。市松と八方' },
-  p3:  { name: 'p3',  lattice: 'hexagonal',   generators: G([rotation(1 / 3)]),
+  p3:  { name: 'p3',  latticeType: 'hexagonal',   pointGroupGenerators: [rotation(1 / 3)],
          character: '3回回転。三つ巴' },
-  p6:  { name: 'p6',  lattice: 'hexagonal',   generators: G([rotation(1 / 6)]),
+  p6:  { name: 'p6',  latticeType: 'hexagonal',   pointGroupGenerators: [rotation(1 / 6)],
          character: '6回回転。雪の結晶・蜂の巣' },
-  p6m: { name: 'p6m', lattice: 'hexagonal',   generators: G([rotation(1 / 6), mirrorX]),
+  p6m: { name: 'p6m', latticeType: 'hexagonal',   pointGroupGenerators: [rotation(1 / 6), mirrorX],
          character: '六方の完全な対称性。麻の葉・籠目' },
 }
 
-/** 格子の型から並進ベクトルを作る */
-export function latticeVectors(kind: WallpaperGroup['lattice'], scale = 1): [Pt, Pt] {
+/** 並進部分群 T の基底 */
+export function translationBasis(
+  kind: WallpaperGroup['latticeType'],
+  scale = 1,
+): [Pt, Pt] {
   switch (kind) {
     case 'square': return [{ x: scale, y: 0 }, { x: 0, y: scale }]
     case 'hexagonal': return [{ x: scale, y: 0 }, { x: scale / 2, y: scale * Math.sqrt(3) / 2 }]
@@ -143,67 +151,90 @@ export function latticeVectors(kind: WallpaperGroup['lattice'], scale = 1): [Pt,
 }
 
 // ---------------------------------------------------------------------------
-// 母型（motif）。これを群で写して模様にする
+// 有限の窓に落とした軌道
 // ---------------------------------------------------------------------------
 
 export type Stroke = Pt[]
 
+/** 描画に使うのは、無限群の軌道を有限の窓で切ったもの。名前でそう言う */
+export type WindowOrbit = {
+  strokes: Stroke[]
+  /** 使った点群の要素数 */
+  pointGroupSize: number
+  /** 使った並進の個数。窓の大きさで決まる */
+  translationCount: number
+  group: WallpaperGroup
+}
+
 /**
- * 母型を群の全要素で写し、格子で並べる。
+ * 母型に G を作用させ、有限の窓に落とす。
  *
- * 模様を「それらしく描く」のではなく、群の作用として作る。
- * だから出てきた模様の対称群を宣言でき、後から検証できる。
+ * G は無限なので全軌道は書けない。窓を決めて、その中の像だけを取る。
  */
-export function tile(
+export function windowOrbit(
   motif: Stroke[],
   group: WallpaperGroup,
   options: { repeat?: number; scale?: number } = {},
-): Stroke[] {
+): WindowOrbit {
   const repeat = options.repeat ?? 3
   const scale = options.scale ?? 1
-  const [u, v] = latticeVectors(group.lattice, scale)
-  const out: Stroke[] = []
+  const [u, v] = translationBasis(group.latticeType, scale)
+  const pointGroup = closePointGroup(group.pointGroupGenerators)
+  const strokes: Stroke[] = []
 
-  for (const linear of closeGroup(group.generators)) {
+  for (const linear of pointGroup) {
     for (let i = -repeat; i <= repeat; i++) {
       for (let j = -repeat; j <= repeat; j++) {
-        const t: Isometry = {
-          linear,
-          translate: { x: u.x * i + v.x * j, y: u.y * i + v.y * j },
-        }
-        for (const stroke of motif) out.push(stroke.map(p => apply(t, p)))
+        const t: Isometry = { linear, translate: { x: u.x * i + v.x * j, y: u.y * i + v.y * j } }
+        for (const stroke of motif) strokes.push(stroke.map(p => apply(t, p)))
       }
     }
   }
-  return out
+  return {
+    strokes,
+    pointGroupSize: pointGroup.length,
+    translationCount: (2 * repeat + 1) ** 2,
+    group,
+  }
 }
 
 // ---------------------------------------------------------------------------
-// 検証。出てきた模様が本当にその対称性を持つか
+// 検証
 // ---------------------------------------------------------------------------
+
+export type SymmetryVerdict = {
+  holds: boolean
+  /** 点群のどの要素で重ならなかったか */
+  failedPointGroupElements: number[]
+  /** 並進で重ならなかったか */
+  failedTranslations: number[]
+  checkedPoints: number
+}
 
 /**
  * 模様が宣言どおりの対称性を持つか確かめる。
  *
- * 「対称に見える」で済ませない。各生成元で写して、点集合が自分に重なるかを見る。
- * 重ならないなら、その群だと名乗ってはいけない。
+ * 点群の各要素と、並進の基底の両方で写して、点集合が自分に重なるかを見る。
+ * 端で切れているので、窓の内側の点だけで判定する。
  */
 export function verifySymmetry(
   strokes: Stroke[],
   group: WallpaperGroup,
-  tolerance = 1e-6,
-): { holds: boolean; failed: number[] } {
+  options: { tolerance?: number; innerRadius?: number; scale?: number } = {},
+): SymmetryVerdict {
+  const tolerance = options.tolerance ?? 1e-6
+  const innerRadius = options.innerRadius ?? 1.2
+  const scale = options.scale ?? 1
   const points = strokes.flat()
-  const grid = new Map<string, Pt[]>()
   const cell = Math.max(tolerance * 100, 1e-3)
-  const key = (p: Pt) => `${Math.round(p.x / cell)}:${Math.round(p.y / cell)}`
+  const grid = new Map<string, Pt[]>()
   for (const p of points) {
-    const k = key(p)
+    const k = `${Math.round(p.x / cell)}:${Math.round(p.y / cell)}`
     if (!grid.has(k)) grid.set(k, [])
     grid.get(k)!.push(p)
   }
   const has = (p: Pt) => {
-    const [gx, gy] = [Math.round(p.x / cell), Math.round(p.y / cell)]
+    const gx = Math.round(p.x / cell), gy = Math.round(p.y / cell)
     for (let dx = -1; dx <= 1; dx++) {
       for (let dy = -1; dy <= 1; dy++) {
         for (const q of grid.get(`${gx + dx}:${gy + dy}`) ?? []) {
@@ -214,26 +245,59 @@ export function verifySymmetry(
     return false
   }
 
-  const failed: number[] = []
-  closeGroup(group.generators).forEach((linear, index) => {
-    // 端で切れているので、中心付近の点だけで判定する
-    const inner = points.filter(p => Math.hypot(p.x, p.y) < 1.2)
-    const ok = inner.every(p => has(apply({ linear, translate: { x: 0, y: 0 } }, p)))
-    if (!ok) failed.push(index)
+  const inner = points.filter(p => Math.hypot(p.x, p.y) < innerRadius)
+  const failedPointGroupElements: number[] = []
+  closePointGroup(group.pointGroupGenerators).forEach((linear, index) => {
+    if (!inner.every(p => has(apply({ linear, translate: { x: 0, y: 0 } }, p)))) {
+      failedPointGroupElements.push(index)
+    }
   })
-  return { holds: failed.length === 0, failed }
+
+  // 並進でも重なるか。点群だけ見ていると周期性を確かめていない
+  const [u, v] = translationBasis(group.latticeType, scale)
+  const failedTranslations: number[] = []
+  ;[u, v].forEach((t, index) => {
+    const shifted = points.filter(p => Math.hypot(p.x + t.x, p.y + t.y) < innerRadius)
+    if (!shifted.every(p => has({ x: p.x + t.x, y: p.y + t.y }))) failedTranslations.push(index)
+  })
+
+  return {
+    holds: failedPointGroupElements.length === 0 && failedTranslations.length === 0,
+    failedPointGroupElements,
+    failedTranslations,
+    checkedPoints: inner.length,
+  }
 }
 
 // ---------------------------------------------------------------------------
-// 格子から母型を作る。数学の対象がそのまま意匠になる
+// 主張の強さ。数学的に検証したものと、デザイン上の解釈を分ける
 // ---------------------------------------------------------------------------
 
-/** ルート系の各ルートを線分にする。A₃ なら 12 本の放射 */
-export function motifFromVectors(vectors: { x: number; y: number }[]): Stroke[] {
+export type DesignClaimStatus =
+  /** 数学的に検証した。群作用・不変量・閉包など */
+  | 'certified'
+  /** デザイン上の解釈。定理ではない。充填率から余白を決める等 */
+  | 'design_heuristic'
+  /** 検証に落ちた */
+  | 'rejected'
+
+export type DesignClaim = {
+  status: DesignClaimStatus
+  statement: string
+  /** certified のときだけ、何で確かめたかを書く */
+  evidence?: string
+  /** design_heuristic のときだけ、どの数学量から来た解釈かを書く */
+  derivedFrom?: string
+}
+
+// ---------------------------------------------------------------------------
+// 母型
+// ---------------------------------------------------------------------------
+
+export function motifFromVectors(vectors: Pt[]): Stroke[] {
   return vectors.map(v => [{ x: 0, y: 0 }, { x: v.x, y: v.y }])
 }
 
-/** 円をなぞる。最密充填の球、テータ級数の殻 */
 export function circle(center: Pt, radius: number, segments = 48): Stroke {
   return Array.from({ length: segments + 1 }, (_, i) => {
     const a = (i / segments) * Math.PI * 2
@@ -241,7 +305,6 @@ export function circle(center: Pt, radius: number, segments = 48): Stroke {
   })
 }
 
-/** 正多角形。単位胞の骨格 */
 export function polygon(center: Pt, radius: number, sides: number, phase = 0): Stroke {
   return Array.from({ length: sides + 1 }, (_, i) => {
     const a = phase + (i / sides) * Math.PI * 2
@@ -249,11 +312,12 @@ export function polygon(center: Pt, radius: number, sides: number, phase = 0): S
   })
 }
 
-/** 折れ線を SVG のパスにする。描画層はここから先 */
 export function toPath(strokes: Stroke[], decimals = 3): string {
   const n = (v: number) => v.toFixed(decimals)
-  return strokes
+  const path = strokes
     .filter(s => s.length > 1)
     .map(s => `M ${n(s[0].x)} ${n(s[0].y)} ` + s.slice(1).map(p => `L ${n(p.x)} ${n(p.y)}`).join(' '))
     .join(' ')
+  assertNoControlChars(path, 'toPath')
+  return path
 }

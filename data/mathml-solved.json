@@ -1,0 +1,1062 @@
+[
+  {
+    "id": "2025-10001-0101",
+    "status": "solved",
+    "verdict": "unverified",
+    "method": "solve",
+    "answer": [
+      "Symbol('a_1')"
+    ],
+    "answer_latex": [
+      "a_{1}"
+    ],
+    "symbolic_check": false,
+    "numeric_check": true,
+    "goal": "alpha",
+    "relations": [
+      "alpha>1",
+      "r>1",
+      "a_1=alpha",
+      "b_n=log_a_n (a_n1)",
+      "n=1 2 3 ⋯",
+      "b_n=((n+2)/(n+1))"
+    ]
+  },
+  {
+    "id": "2024-10001-0104",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "solve",
+    "answer": [
+      "Mul(Integer(10), Pow(Symbol('seg_OA'), Integer(-1)))"
+    ],
+    "answer_latex": [
+      "\\frac{10}{seg_{OA}}"
+    ],
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "OB",
+    "relations": [
+      "|OA|=3",
+      "|AB|=5",
+      "OA*OB=10"
+    ]
+  },
+  {
+    "id": "2024-10001-0107",
+    "status": "solved",
+    "verdict": "verified_instance",
+    "method": "eliminate",
+    "answer": "Mul(Pow(Integer(729), Symbol('⋯')), Symbol('b_n'))",
+    "answer_latex": "729^{⋯} b_{n}",
+    "symbolic_check": false,
+    "numeric_check": true,
+    "goal": "{a_n}",
+    "relations": [
+      "a_1=3",
+      "a_n1=3*a_n-((((3)**(n+1)))/(n*(n+1)))",
+      "n=1 2 3 ⋯",
+      "b_n=((a_n)/(((3)**(n))))"
+    ]
+  },
+  {
+    "id": "2024-10001-0202",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Mul(Add(Pow(Symbol('x'), Integer(2)), Mul(Integer(-1), Symbol('x')), Integer(1)), Pow(Add(Pow(Symbol('x'), Integer(2)), Symbol('x'), Integer(1)), Integer(-1)))",
+    "answer_latex": "\\frac{x^{2} - x + 1}{x^{2} + x + 1}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "((((x)**(2))-x+1)/(((x)**(2))+x+1))",
+    "relations": [
+      "(k-1)*((x)**(2))+(k+1)*x+k-1=0"
+    ]
+  },
+  {
+    "id": "2023-10001-0101",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Symbol('d_n')",
+    "answer_latex": "d_{n}",
+    "symbolic_check": true,
+    "numeric_check": false,
+    "goal": "Limit(d_n , n, oo)",
+    "relations": [
+      "2*w=z+1+i"
+    ]
+  },
+  {
+    "id": "2023-10001-0104",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Symbol('p_n')",
+    "answer_latex": "p_{n}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "p_n",
+    "relations": [
+      "K_n=|1-a_1|+|a_1-a_2|",
+      "K_3=5",
+      "K_n=q_n",
+      "L_n=K_n+|a_4-4|",
+      "L_n=r_n"
+    ]
+  },
+  {
+    "id": "2023-10001-0108",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Symbol('a_n')",
+    "answer_latex": "a_{n}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "a_n",
+    "relations": [
+      "K_n=|1-a_1|+|a_1-a_2|",
+      "K_2=5",
+      "K_3=5",
+      "K_n=q_n"
+    ]
+  },
+  {
+    "id": "2023-10001-0109",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Symbol('y_1')",
+    "answer_latex": "y_{1}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "y_1",
+    "relations": [
+      "C ((x)**(2))+((y)**(2))=1",
+      "P y=((x)**(2))+q",
+      "{((x)**(2))+((y)**(2))>=1y>=((x)**(2))+q_1y<=y_1"
+    ]
+  },
+  {
+    "id": "2023-10001-0201",
+    "status": "solved",
+    "method": "inequality",
+    "answer": "And(StrictLessThan(Integer(0), Symbol('t')), StrictLessThan(Symbol('t'), oo))",
+    "answer_latex": "0 < t \\wedge t < \\infty",
+    "numeric_check": true,
+    "goal": "(((1+((1)/(t))))**(t))",
+    "relations": [
+      "Limit((((1+((1)/(x))))**(x))=e , x, oo)",
+      "t>0",
+      "t>0"
+    ]
+  },
+  {
+    "id": "2023-10001-0202",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Symbol('beta')",
+    "answer_latex": "\\beta",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "beta",
+    "relations": [
+      "y=((x)**(2))",
+      "s=0"
+    ]
+  },
+  {
+    "id": "2022-10001-0102",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Mul(Symbol('a_k'), Sum(Integer(1), Tuple(Symbol('k'), Integer(1), Mul(Integer(6), Symbol('⋯')))))",
+    "answer_latex": "a_{k} \\sum_{k=1}^{6 ⋯} 1",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "Sum(a_k , (k, 1, n))",
+    "relations": [
+      "a_1=-15",
+      "a_n1=a_n+((n)/(5))-2",
+      "n=1 2 3 ⋯"
+    ]
+  },
+  {
+    "id": "2022-10001-0103",
+    "status": "solved",
+    "verdict": "verified_instance",
+    "method": "eliminate",
+    "answer": "Mul(Integer(5400), Symbol('C'), Pow(Symbol('°'), Integer(2)), Pow(Symbol('∠'), Integer(-2)))",
+    "answer_latex": "\\frac{5400 C °^{2}}{∠^{2}}",
+    "symbolic_check": false,
+    "numeric_check": true,
+    "goal": "ABC",
+    "relations": [
+      "∠A=90*°",
+      "∠B=60*°",
+      "a=BC",
+      "OA:OB=1:k+sqrt(l)",
+      "OA:OC=1:m+sqrt(n)"
+    ]
+  },
+  {
+    "id": "2022-10001-0105",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Function('f')(Symbol('x'))",
+    "answer_latex": "f{\\left(x \\right)}",
+    "symbolic_check": true,
+    "numeric_check": false,
+    "goal": "f (x)",
+    "relations": [
+      "0<=a<=b<=1",
+      "f (x)=|x*(x-1)|+|(x-a)*(x-b)|",
+      "x>1",
+      "f (x)>m",
+      "m=f (0)",
+      "m=f (1)"
+    ]
+  },
+  {
+    "id": "2022-10001-0109",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Pow(Symbol('w'), Symbol('n'))",
+    "answer_latex": "w^{n}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "((w)**(n))",
+    "relations": [
+      "z*z=4",
+      "|z|=|z-sqrt(3)+i|"
+    ]
+  },
+  {
+    "id": "2022-10001-0204",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Function('P')(Symbol('z'))",
+    "answer_latex": "P{\\left(z \\right)}",
+    "symbolic_check": true,
+    "numeric_check": false,
+    "goal": "P (z)",
+    "relations": [
+      "BP=t",
+      "|a-(2+((i)/(2)))|=((1)/(2))"
+    ]
+  },
+  {
+    "id": "2021-10001-0101",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Mul(Pow(Symbol('a_k'), Integer(-1)), Sum(Integer(1), Tuple(Symbol('k'), Integer(1), Mul(Integer(6), Symbol('⋯')))))",
+    "answer_latex": "\\frac{\\sum_{k=1}^{6 ⋯} 1}{a_{k}}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "Sum(((1)/(a_k)) , (k, 1, n))",
+    "relations": [
+      "S_n=((1)/(6))*n*(n+1)*(2*n+7)",
+      "n=1 2 3 ⋯"
+    ]
+  },
+  {
+    "id": "2021-10001-0104",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Add(Mul(Integer(-1), Symbol('S_1')), Symbol('S_2'))",
+    "answer_latex": "- S_{1} + S_{2}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "S_2-S_1",
+    "relations": [
+      "l y=(1-k)*x+k",
+      "C y=((x)**(2))",
+      "x=2",
+      "k>-1"
+    ]
+  },
+  {
+    "id": "2021-10001-0106",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Symbol('seg_BC')",
+    "answer_latex": "seg_{BC}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "BC",
+    "relations": [
+      "a!=-3",
+      "y=((1)/(2))*((x)**(2))",
+      "a>0"
+    ]
+  },
+  {
+    "id": "2021-10001-0107",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Mul(Rational(1, 2), Pow(Symbol('log_1xy'), Integer(-1)))",
+    "answer_latex": "\\frac{1}{2 log_{1xy}}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "((1)/(log_1xy 4))+((1)/(log_1xy 4))",
+    "relations": [
+      "((((9)**(4*x))+((9)**(((y)**(2))+1)))/(6))=((3)**(4*x+((y)**(2))))",
+      "1-((x)/(y))>0"
+    ]
+  },
+  {
+    "id": "2021-10001-0108",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Integer(28)",
+    "answer_latex": "28",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "28",
+    "relations": [
+      "a_1=2",
+      "b_1=1",
+      "a_n1=2*a_n+3*b_n",
+      "b_n1=a_n+2*b_n",
+      "n=1 2 3 ⋯",
+      "c_n=a_n*b_n"
+    ]
+  },
+  {
+    "id": "2021-10001-0109",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Symbol('seg_OB')",
+    "answer_latex": "seg_{OB}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "OB",
+    "relations": [
+      "x=(1+cos theta)*cos theta",
+      "y=sin theta",
+      "0<=theta<=pi"
+    ]
+  },
+  {
+    "id": "2020-10001-0101",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Symbol('seg_RS')",
+    "answer_latex": "seg_{RS}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "RS",
+    "relations": [
+      "l y=k*x+1",
+      "C y=((x)**(2))"
+    ]
+  },
+  {
+    "id": "2020-10001-0104",
+    "status": "solved",
+    "verdict": "unverified",
+    "method": "solve",
+    "answer": [
+      "Mul(Integer(2), Pow(Symbol('x'), Integer(2)), Pow(Symbol('y'), Integer(-1)))"
+    ],
+    "answer_latex": [
+      "\\frac{2 x^{2}}{y}"
+    ],
+    "symbolic_check": false,
+    "numeric_check": true,
+    "goal": "C_1",
+    "relations": [
+      "C_1 y=2*((x)**(2))",
+      "C_2 y=-((x)**(2))+2*x-((19)/(8))"
+    ]
+  },
+  {
+    "id": "2020-10001-0105",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Symbol('seg_AD')",
+    "answer_latex": "seg_{AD}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "AD",
+    "relations": [
+      "|AB|=1",
+      "|AC|=2",
+      "|BC|=sqrt(6)",
+      "AP=s*AB+t*AC"
+    ]
+  },
+  {
+    "id": "2019-10001-0103",
+    "status": "solved",
+    "verdict": "unverified",
+    "method": "solve",
+    "answer": [
+      "Add(Mul(Integer(-1), Symbol('alpha'), Symbol('beta'), Symbol('s_n2')), Mul(Symbol('alpha'), Symbol('s_n1')), Mul(Symbol('beta'), Symbol('s_n1')))"
+    ],
+    "answer_latex": [
+      "- \\alpha \\beta s_{n2} + \\alpha s_{n1} + \\beta s_{n1}"
+    ],
+    "symbolic_check": false,
+    "numeric_check": true,
+    "goal": "s_n",
+    "relations": [
+      "n=1",
+      "s_1=1",
+      "n=2",
+      "s_2=2",
+      "n>=3",
+      "s_n-alpha*s_n1=beta*(s_n1-alpha*s_n2)"
+    ]
+  },
+  {
+    "id": "2019-10001-0106",
+    "status": "solved",
+    "verdict": "unverified",
+    "method": "solve",
+    "answer": [
+      "Integer(12)"
+    ],
+    "answer_latex": [
+      "12"
+    ],
+    "symbolic_check": false,
+    "numeric_check": true,
+    "goal": "d_n",
+    "relations": [
+      "a_n=n*(n+1)",
+      "d_n<=12",
+      "d_n=12"
+    ]
+  },
+  {
+    "id": "2019-10001-0107",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Symbol('seg_PQ')",
+    "answer_latex": "seg_{PQ}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "PQ",
+    "relations": [
+      "f (x)=((x+t)/(x*(1-t*x)))"
+    ]
+  },
+  {
+    "id": "2019-10001-0203",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Symbol('alpha')",
+    "answer_latex": "\\alpha",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "alpha",
+    "relations": [
+      "w=((1)/(z))"
+    ]
+  },
+  {
+    "id": "2018-10001-0103",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Integer(500)",
+    "answer_latex": "500",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "500",
+    "relations": [
+      "s=100*R+10*B+Y t=100*B+10*Y+R u=100*Y+10*R+B",
+      "s>t>u"
+    ]
+  },
+  {
+    "id": "2018-10001-0104",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Symbol('S_1')",
+    "answer_latex": "S_{1}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "S_1",
+    "relations": [
+      "y=((x)**(3))+p*((x)**(2))+x",
+      "y=((x)**(2))",
+      "x>0",
+      "x>0",
+      "0<=x<=alpha",
+      "alpha<=x<=beta"
+    ]
+  },
+  {
+    "id": "2018-10001-0106",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Add(Symbol('z'), Mul(Integer(4), Pow(Symbol('z'), Integer(-1))))",
+    "answer_latex": "z + \\frac{4}{z}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "z+((4)/(z))",
+    "relations": [
+      "k*(z+((4)/(z))+8)=i*(z-((4)/(z)))"
+    ]
+  },
+  {
+    "id": "2018-10001-0201",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Pow(Integer(10), Symbol('n'))",
+    "answer_latex": "10^{n}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "((10)**(n))",
+    "relations": [
+      "(a-b)*(((a)**(n))+((a)**(n-1))*b+((a)**(n-2))*((b)**(2))+⋯+a*((b)**(n-1))+((b)**(n)))=((a)**(n+1))-((b)**(n+1))",
+      "w=((((10)**(n*(n+1)))-((2)**(n+1)))/(((10)**(n))-2))"
+    ]
+  },
+  {
+    "id": "2018-10001-0203",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Integer(0)",
+    "answer_latex": "0",
+    "symbolic_check": true,
+    "numeric_check": false,
+    "goal": "Limit(((M_n)/(n)) , n, oo)",
+    "relations": [
+      "M_n=Sum(k*p_n (k), (k, 0, a+n))",
+      "p_n1 (k+1)=B*p_n (k)+C*p_n (k+1)",
+      "M_1=a M_n1=((a+n-1)/(a+n))* M_n+1"
+    ]
+  },
+  {
+    "id": "2018-10001-0204",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Function('R')(Add(Mul(Integer(-1), Symbol('v')), log(Symbol('s'))), Symbol('w'))",
+    "answer_latex": "R{\\left(- v + \\log{\\left(s \\right)},w \\right)}",
+    "symbolic_check": true,
+    "numeric_check": false,
+    "goal": "R(-v+log s,w)",
+    "relations": [
+      "f (x)=((1)/(2))*(((e)**(x))+((e)**(-x)))",
+      "y=f (x)",
+      "s>1",
+      "0<=x<=log s",
+      "PQ=L (s)"
+    ]
+  },
+  {
+    "id": "2017-10001-0101",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Add(Mul(Symbol('n'), Add(Symbol('n'), Integer(1))), Integer(7))",
+    "answer_latex": "n \\left(n + 1\\right) + 7",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "n*(n+1)+7",
+    "relations": [
+      "n*(n+1)+a=(((n+k))**(2))",
+      "a>=((k)**(2))+2*k-1"
+    ]
+  },
+  {
+    "id": "2017-10001-0105",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Add(Mul(Symbol('n'), Add(Symbol('n'), Integer(1))), Integer(14))",
+    "answer_latex": "n \\left(n + 1\\right) + 14",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "n*(n+1)+14",
+    "relations": [
+      "n*(n+1)+a=(((n+k))**(2))",
+      "a>=((k)**(2))+2*k-1"
+    ]
+  },
+  {
+    "id": "2017-10001-0107",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Function('P')(Symbol('z'))",
+    "answer_latex": "P{\\left(z \\right)}",
+    "symbolic_check": true,
+    "numeric_check": false,
+    "goal": "P (z)",
+    "relations": [
+      "alpha*beta=z"
+    ]
+  },
+  {
+    "id": "2017-10001-0108",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Symbol('p_3')",
+    "answer_latex": "p_{3}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "p_3",
+    "relations": [
+      "p_10=(((((1)/(6))))**(9))"
+    ]
+  },
+  {
+    "id": "2017-10001-0203",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Symbol('a_n')",
+    "answer_latex": "a_{n}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "{a_n}",
+    "relations": [
+      "a_1=c a_n1=a_n-((1)/(2))*|a_n|+1 n=1 2 3 ⋯",
+      "c>=0",
+      "a_n>=0"
+    ]
+  },
+  {
+    "id": "2017-10001-0204",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Mul(Symbol('A'), Symbol('B'), Symbol('C'), Symbol('▵'))",
+    "answer_latex": "A B C ▵",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "▵ABC",
+    "relations": [
+      "y=(((x-a))**(2))+b",
+      "y=x-1",
+      "a>=0 b<=2 b<=2*a+1"
+    ]
+  },
+  {
+    "id": "2016-10001-0101",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Symbol('seg_PQ')",
+    "answer_latex": "seg_{PQ}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "PQ",
+    "relations": [
+      "f (x)=((x)**(3))+a*((x)**(2))+b*x+c",
+      "C y=f (x)"
+    ]
+  },
+  {
+    "id": "2016-10001-0102",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Integral(Function('f')(Symbol('x')), Tuple(Symbol('x'), Symbol('alpha'), Symbol('beta')))",
+    "answer_latex": "\\int\\limits_{\\alpha}^{\\beta} f{\\left(x \\right)}\\, dx",
+    "symbolic_check": true,
+    "numeric_check": false,
+    "goal": "Integral(f (x), (x, alpha, beta))",
+    "relations": [
+      "f (x)=|x*(x-2)|+|(x-1)*(x-4)|+3*x-10 -2<=x<=4",
+      "y=f (x)"
+    ]
+  },
+  {
+    "id": "2016-10001-0103",
+    "status": "solved",
+    "verdict": "verified_instance",
+    "method": "eliminate",
+    "answer": "Mul(Pow(Symbol('seg_OA'), Integer(-1)), Symbol('t'), Add(Mul(Integer(-1), Symbol('seg_OB'), Symbol('t')), Symbol('seg_OC')))",
+    "answer_latex": "\\frac{t \\left(- seg_{OB} t + seg_{OC}\\right)}{seg_{OA}}",
+    "symbolic_check": false,
+    "numeric_check": true,
+    "goal": "s t",
+    "relations": [
+      "AB=2 AC=1+sqrt(3) ∠ACB=45*°",
+      "beta=∠ABC",
+      "OC=s*OA+t*OB"
+    ]
+  },
+  {
+    "id": "2015-10001-0101",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Symbol('seg_RS')",
+    "answer_latex": "seg_{RS}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "RS",
+    "relations": [
+      "C_1 y=((x)**(2)) C_2 y=-(((x-1))**(2))"
+    ]
+  },
+  {
+    "id": "2015-10001-0102",
+    "status": "solved",
+    "verdict": "verified_instance",
+    "method": "eliminate",
+    "answer": "Mul(Symbol('p'), Add(Mul(Integer(-1), Pow(Integer(-1), Symbol('n')), Symbol('n')), Mul(Integer(6), Symbol('⋯'))))",
+    "answer_latex": "p \\left(- \\left(-1\\right)^{n} n + 6 ⋯\\right)",
+    "symbolic_check": false,
+    "numeric_check": true,
+    "goal": "a_n",
+    "relations": [
+      "a_1=1 a_n1=((1)/(p))* a_n-(((-1))**(n+1)) n=1 2 3 ⋯",
+      "b_n=((p)**(n))*a_n"
+    ]
+  },
+  {
+    "id": "2015-10001-0103",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Add(pi, Mul(Integer(-1), Symbol('alpha')))",
+    "answer_latex": "\\pi - \\alpha",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "pi-alpha",
+    "relations": [
+      "OP*OB=OQ*OA",
+      "((|OP|)/(|OA|))=((|OQ|)/(|OB|))"
+    ]
+  },
+  {
+    "id": "2015-10001-0105",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Symbol('C_2')",
+    "answer_latex": "C_{2}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "C_2",
+    "relations": [
+      "C_1 y=(x-1)*((e)**(x)) C_2 y=((1)/(2*e))* ((x)**(2))+a"
+    ]
+  },
+  {
+    "id": "2015-10001-0106",
+    "status": "solved",
+    "verdict": "verified_instance",
+    "method": "eliminate",
+    "answer": "Mul(Integer(6), Symbol('p'), Symbol('⋯'))",
+    "answer_latex": "6 p ⋯",
+    "symbolic_check": false,
+    "numeric_check": true,
+    "goal": "p q n",
+    "relations": [
+      "a_1=0",
+      "a_n1=p*a_n+(((-q))**(n+1))",
+      "n=1 2 3 ⋯",
+      "b_n=((a_n)/(((p)**(n))))",
+      "q=1",
+      "a_n1>=a_n"
+    ]
+  },
+  {
+    "id": "2015-10001-0108",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Symbol('X_n')",
+    "answer_latex": "X_{n}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "X_n",
+    "relations": [
+      "X_1=3",
+      "X_2=3",
+      "X_2=3",
+      "X_1=3"
+    ]
+  },
+  {
+    "id": "2015-10001-0109",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Function('f')(Mul(Rational(1, 2), pi))",
+    "answer_latex": "f{\\left(\\frac{\\pi}{2} \\right)}",
+    "symbolic_check": true,
+    "numeric_check": false,
+    "goal": "f (((pi)/(2)))",
+    "relations": [
+      "a>((3)/(2))",
+      "f (x)=Integral((x-theta)*(a*((sin)**(n+1)) theta-((sin)**(n-1)) theta), (theta, 0, x))",
+      "n=1",
+      "((sin)**(n-1))theta=1",
+      "Integral@(0)@(((pi)/(2)))((sin)**(n+1)) theta*dtheta=((n)/(n+1))* Integral@(0)@(((pi)/(2)))((sin)**(n-1)) theta*dtheta",
+      "((f)**(')) (((pi)/(2)))=0"
+    ]
+  },
+  {
+    "id": "2013-10001-0101",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Function('f')(Symbol('x'))",
+    "answer_latex": "f{\\left(x \\right)}",
+    "symbolic_check": true,
+    "numeric_check": false,
+    "goal": "f (x)",
+    "relations": [
+      "f (x)=sqrt(2)*sin x*cos x+sin x+cos x 0<=x<=2*pi",
+      "t=sin x+cos x"
+    ]
+  },
+  {
+    "id": "2013-10001-0105",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Mul(Symbol('C_1'), Symbol('C_2'))",
+    "answer_latex": "C_{1} C_{2}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "C_1 C_2",
+    "relations": [
+      "y=a*cos x(0<=x<=((pi)/(2)))",
+      "C_1 y=b*sin x(0<=x<=((pi)/(2)))",
+      "x=((pi)/(2))",
+      "T=2*S"
+    ]
+  },
+  {
+    "id": "2010-10001-0203",
+    "status": "solved",
+    "method": "evaluate",
+    "answer": "Symbol('S_n')",
+    "answer_latex": "S_{n}",
+    "numeric_check": true,
+    "goal": "Limit(S_n , n, oo)",
+    "relations": []
+  },
+  {
+    "id": "2009-10001-0106",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Symbol('seg_PQ')",
+    "answer_latex": "seg_{PQ}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "PQ",
+    "relations": [
+      "t>0",
+      "x=t",
+      "y=((((x)**(2)))/(4))",
+      "0<=theta<=((pi)/(2))"
+    ]
+  },
+  {
+    "id": "2025-10261-0103",
+    "status": "solved",
+    "verdict": "unverified",
+    "method": "solve",
+    "answer": [
+      "Symbol('angle_BCG')"
+    ],
+    "answer_latex": [
+      "angle_{BCG}"
+    ],
+    "symbolic_check": false,
+    "numeric_check": true,
+    "goal": "theta",
+    "relations": [
+      "∠ABC=((pi)/(6))",
+      "AB=a",
+      "BC=b",
+      "a<=b",
+      "∠BCG=theta"
+    ]
+  },
+  {
+    "id": "2025-10261-0104",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Add(Mul(Integer(4), Symbol('a')), Integer(1))",
+    "answer_latex": "4 a + 1",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "4*a+1",
+    "relations": [
+      "f_a (x)=((x)**(2))+x-a",
+      "n<=a",
+      "N_a=1"
+    ]
+  },
+  {
+    "id": "2025-10261-0107",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Function('P')(Symbol('a'), Pow(Symbol('a'), Integer(2)))",
+    "answer_latex": "P{\\left(a,a^{2} \\right)}",
+    "symbolic_check": true,
+    "numeric_check": false,
+    "goal": "P (a,((a)**(2)))",
+    "relations": [
+      "C y=((x)**(2))"
+    ]
+  },
+  {
+    "id": "2025-10261-0108",
+    "status": "solved",
+    "verdict": "unverified",
+    "method": "solve",
+    "answer": [
+      "Symbol('angle_BAC')"
+    ],
+    "answer_latex": [
+      "angle_{BAC}"
+    ],
+    "symbolic_check": false,
+    "numeric_check": true,
+    "goal": "theta",
+    "relations": [
+      "AB=AC=1",
+      "∠BAC=((pi)/(3))",
+      "∠BAC=((2*pi)/(3))",
+      "∠BAC=theta"
+    ]
+  },
+  {
+    "id": "2025-10261-0109",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Integer(5)",
+    "answer_latex": "5",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "(n+2)",
+    "relations": [
+      "n=3"
+    ]
+  },
+  {
+    "id": "2024-10261-0102",
+    "status": "solved",
+    "method": "inequality",
+    "answer": "And(LessThan(Integer(0), Symbol('x')), LessThan(Symbol('x'), Integer(1)))",
+    "answer_latex": "0 \\leq x \\wedge x \\leq 1",
+    "numeric_check": true,
+    "goal": "f (x)",
+    "relations": [
+      "f (x)=Integral(((|t-x|)/(1+((t)**(2)))), (t, 0, 1))",
+      "0<=x<=1",
+      "((f)**(')) (tan alpha)=0",
+      "0<=x<=1"
+    ]
+  },
+  {
+    "id": "2023-10261-0101",
+    "status": "solved",
+    "method": "evaluate",
+    "answer": "Symbol('B_n')",
+    "answer_latex": "B_{n}",
+    "numeric_check": true,
+    "goal": "Limit(B_n , n, oo)",
+    "relations": [
+      "A_k=Integral@(sqrt(k*pi))@(sqrt((k+1)*pi))|sin (((x)**(2)))|*dx",
+      "((1)/(sqrt((k+1)*pi)))<=A_k<=((1)/(sqrt(k*pi)))",
+      "B_n=((1)/(sqrt(n)))*Integral@(sqrt(n*pi))@(sqrt(2*n*pi))|sin (((x)**(2)))|*dx"
+    ]
+  },
+  {
+    "id": "2023-10261-0103",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Symbol('L_P')",
+    "answer_latex": "L_{P}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "L_P",
+    "relations": [
+      "y>((x)**(2))",
+      "x>=0",
+      "y=((x)**(2))",
+      "L_Q=L_R"
+    ]
+  },
+  {
+    "id": "2023-10261-0106",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Symbol('seg_NP')",
+    "answer_latex": "seg_{NP}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "NP",
+    "relations": [
+      "|x|<=1",
+      "|y|<=1",
+      "|z|<=1",
+      "OP<=sqrt(3)",
+      "sin alpha=((1)/(sqrt(3)))",
+      "ON+NP<=sqrt(3)"
+    ]
+  },
+  {
+    "id": "2023-10261-0107",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Mul(Pow(Add(Symbol('alpha'), Integer(-1)), Integer(-1)), Pow(Add(Symbol('beta'), Integer(-1)), Integer(-1)), Add(Mul(Pow(Symbol('alpha'), Integer(3)), Add(Integer(1), Mul(Integer(-1), Symbol('alpha')))), Mul(Pow(Symbol('beta'), Integer(3)), Add(Integer(1), Mul(Integer(-1), Symbol('beta'))))))",
+    "answer_latex": "\\frac{\\alpha^{3} \\left(1 - \\alpha\\right) + \\beta^{3} \\left(1 - \\beta\\right)}{\\left(\\alpha - 1\\right) \\left(\\beta - 1\\right)}",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "((((alpha)**(3)))/(1-beta))+((((beta)**(3)))/(1-alpha))",
+    "relations": [
+      "((x)**(2))+x-k=0",
+      "k>2"
+    ]
+  },
+  {
+    "id": "2023-10261-0109",
+    "status": "solved",
+    "verdict": "proved",
+    "method": "eliminate",
+    "answer": "Mul(Symbol('A'), Symbol('B'), Symbol('C'), Symbol('D'))",
+    "answer_latex": "A B C D",
+    "symbolic_check": true,
+    "numeric_check": true,
+    "goal": "ABCD",
+    "relations": [
+      "AB=1",
+      "AC=BC",
+      "AD=BD",
+      "cos ∠ACB=cos ∠ADB=((4)/(5))"
+    ]
+  }
+]

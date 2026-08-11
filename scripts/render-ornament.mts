@@ -8,7 +8,7 @@
  */
 import { writeFile, mkdir } from 'node:fs/promises'
 import {
-  WALLPAPER, tile, verifySymmetry, groupOrder,
+  WALLPAPER, windowOrbit, verifySymmetry, pointGroupOrder,
   polygon, circle, motifFromVectors, toPath, type Stroke,
 } from '../lib/mortra/vision/ornament.js'
 import { LATTICES, minimalVectors } from '../lib/vision/lattice.js'
@@ -36,18 +36,18 @@ const rows: string[] = []
 
 for (const [gk, group] of Object.entries(WALLPAPER)) {
   for (const [mk, motif] of Object.entries(MOTIFS)) {
-    const strokes = tile(motif, group, { repeat: 5, scale: 1 })
-    const verdict = verifySymmetry(strokes, group)
+    const strokes = windowOrbit(motif, group, { repeat: 5, scale: 1 }).strokes
+    const verdict = verifySymmetry(strokes, group, { scale: 1 })
     if (!verdict.holds) {
       refused++
-      rows.push(`  拒否  ${gk}/${mk}  生成元 ${verdict.failed.length} 個で重ならない`)
+      rows.push(`  拒否  ${gk}/${mk}  点群 ${verdict.failedPointGroupElements.length} / 並進 ${verdict.failedTranslations.length} で重ならない`)
       continue
     }
     const placed = strokes.map(s =>
       s.map(p => ({ x: SIZE / 2 + p.x * K, y: SIZE / 2 - p.y * K })))
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${SIZE} ${SIZE}" width="${SIZE}" height="${SIZE}">
 <title>${group.name} — ${group.character}</title>
-<desc>点群の位数 ${groupOrder(group)}。生成元 ${group.generators.length} 本の閉包。対称性を検証済み。</desc>
+<desc>点群 G/T の位数 ${pointGroupOrder(group)}。壁紙群 G は無限。生成元 ${group.pointGroupGenerators.length} 本の閉包。対称性を検証済み。</desc>
 <rect width="${SIZE}" height="${SIZE}" fill="#ffffff"/>
 <g fill="none" stroke="#111111" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"
    clip-path="url(#c)">
@@ -57,7 +57,7 @@ for (const [gk, group] of Object.entries(WALLPAPER)) {
 </svg>`
     await writeFile(`${OUT}/${gk}-${mk}.svg`, svg, 'utf8')
     made++
-    rows.push(`  ok    ${gk.padEnd(4)}/${mk.padEnd(7)} 位数${String(groupOrder(group)).padStart(2)}  線 ${String(strokes.length).padStart(5)} 本  ${group.character}`)
+    rows.push(`  ok    ${gk.padEnd(4)}/${mk.padEnd(7)} |G/T|=${String(pointGroupOrder(group)).padStart(2)}  線 ${String(strokes.length).padStart(5)} 本  ${group.character}`)
   }
 }
 

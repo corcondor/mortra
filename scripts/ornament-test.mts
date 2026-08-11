@@ -1,4 +1,4 @@
-import { WALLPAPER, tile, verifySymmetry, polygon, motifFromVectors, toPath, groupOrder, closeGroup } from '../lib/mortra/vision/ornament.js'
+import { WALLPAPER, windowOrbit, verifySymmetry, polygon, motifFromVectors, toPath, pointGroupOrder, closePointGroup } from '../lib/mortra/vision/ornament.js'
 import { LATTICES, minimalVectors } from '../lib/vision/lattice.js'
 
 let pass = 0, fail = 0
@@ -13,10 +13,10 @@ const motif = [
   [{ x: 0.05, y: 0.05 }, { x: 0.34, y: 0.18 }],
 ]
 for (const [key, g] of Object.entries(WALLPAPER)) {
-  const strokes = tile(motif, g, { repeat: 4, scale: 1 })
-  const v = verifySymmetry(strokes, g)
-  check(`${key.padEnd(4)} 位数${String(groupOrder(g)).padStart(2)}  ${g.character}`, v.holds,
-    v.holds ? '' : `生成元 ${v.failed.join(',')} で重ならない`)
+  const strokes = windowOrbit(motif, g, { repeat: 4, scale: 1 }).strokes
+  const v = verifySymmetry(strokes, g, { scale: 1 })
+  check(`${key.padEnd(4)} |G/T|=${String(pointGroupOrder(g)).padStart(2)}  ${g.character}`, v.holds,
+    v.holds ? '' : `点群 ${v.failedPointGroupElements.join(',')} で重ならない`)
 }
 
 console.log('\n■ 格子の実データが意匠になるか')
@@ -26,8 +26,8 @@ console.log('\n■ 格子の実データが意匠になるか')
   const projected = min.vectors.map(v => ({ x: v[0], y: v[1] }))
   const m = motifFromVectors(projected)
   check('A₃ の12本から母型ができる', m.length === 12, `${m.length} 本`)
-  const strokes = tile(m, WALLPAPER.p6, { repeat: 2, scale: 1.2 })
-  check('p6 で展開できる', strokes.length === 12 * groupOrder(WALLPAPER.p6) * 25, `${strokes.length} 本`)
+  const strokes = windowOrbit(m, WALLPAPER.p6, { repeat: 2, scale: 1.2 }).strokes
+  check('p6 で展開できる', strokes.length === 12 * pointGroupOrder(WALLPAPER.p6) * 25, `${strokes.length} 本`)
   const path = toPath(strokes.slice(0, 3))
   check('SVG パスになる', path.startsWith('M ') && path.includes('L '), path.slice(0, 46))
 }
@@ -36,9 +36,9 @@ console.log('\n■ 偽の主張を拒む')
 {
   // 対称でない母型を p1（並進のみ）で展開し、p6 を名乗れないことを確認
   const skew = [[{ x: 0.11, y: 0.03 }, { x: 0.37, y: 0.09 }]]
-  const strokes = tile(skew, WALLPAPER.p1, { repeat: 4, scale: 1 })
-  const v = verifySymmetry(strokes, WALLPAPER.p6)
-  check('並進だけの模様は p6 を名乗れない', !v.holds, `失敗した生成元 ${v.failed.length} 個`)
+  const strokes = windowOrbit(skew, WALLPAPER.p1, { repeat: 4, scale: 1 }).strokes
+  const v = verifySymmetry(strokes, WALLPAPER.p6, { scale: 1 })
+  check('並進だけの模様は p6 を名乗れない', !v.holds, `失敗した点群要素 ${v.failedPointGroupElements.length} 個`)
 }
 
 console.log(`\n${'─'.repeat(60)}`)
