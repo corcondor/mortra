@@ -446,7 +446,7 @@ def extract_predicates(text: str) -> tuple[list[TypedPredicate], list[tuple[int,
     TRI = r"(?:三角形|△)?\s*([A-Z])\s*([A-Z])\s*([A-Z])"
     # 「…をMとする」に加えて、列挙の「…をM、…をNとする」も受ける。
     # 前者だけだと、最初の中点が読まれずに落ちる。
-    LET = r"を\s*([A-Z])\s*(?:と(?:する|し|おく|置く|よぶ|呼ぶ)|とすると|(?=[、,]))"
+    LET = r"を\s*([A-Z])\s*(?:と(?:する|し|おく|おき|置く|置き|よぶ|呼ぶ|よび|呼び)|とすると|(?=[、,]))"
 
     def center(pattern_word: str, builder):
         """「三角形ABCの◯心をPとする」→ builder(P, A, B, C)"""

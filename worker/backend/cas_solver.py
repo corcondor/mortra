@@ -1,6 +1,16 @@
 # -*- coding: utf-8 -*-
 """型付き関係 → CAS → 答え。
 
+status は五段階に分ける（MORTRA 仕様 §8）。
+「具体例で数値が合った」と「一般式として証明した」を同じ言葉で呼ばない。
+
+  proved                 記号的に導出し、恒等式として確かめた
+  verified_instance      具体値を入れた場合に一致した（一般には未証明）
+  numerically_supported  数値では合うが、記号的な確認が取れていない
+  unverified             答えは出たが、独立な確認が取れていない
+  rejected               確認して、合わないと分かった
+
+
 このリポジトリには、非LLMで最終解答を出す経路が無かった。
 唯一の解答生成が LLM プロンプトで、derived_answer も answer_matches も
 モデルの自己申告だった。だから何問解けたかを自分で言えなかった。
@@ -191,6 +201,48 @@ def numeric_agrees(relations, goal_expr, answer, tol=1e-7, trials=6) -> bool:
     return agreed >= 1
 
 
+def classify(symbolic_ok: bool, numeric_ok: bool, has_free_params: bool) -> str:
+    """出した答えをどう呼ぶか。強い言葉を安売りしない。
+
+    記号的に恒等式として閉じたときだけ proved。
+    パラメータを具体値に落として合っただけなら verified_instance。
+    数値しか根拠が無ければ numerically_supported。
+    """
+    if symbolic_ok:
+        return 'proved'
+    if numeric_ok:
+        return 'verified_instance' if has_free_params else 'numerically_supported'
+    return 'unverified'
+
+
+def symbolic_identity(relations, goal_expr, answer) -> bool:
+    """関係式のもとで goal − answer が恒等的に 0 か。
+
+    数値一致は反例が無かったことしか言わない。ここを通ったものだけ proved と呼ぶ。
+    """
+    eqs = [r for r in relations if isinstance(r, sp.Equality)]
+    try:
+        diff = sp.simplify(goal_expr - answer)
+        if diff == 0:
+            return True
+        if not eqs:
+            return False
+        # 関係式のイデアルで割った余りが 0 なら恒等式
+        polys = []
+        for e in eqs:
+            d = sp.together(e.lhs - e.rhs)
+            polys.append(sp.numer(d))
+        syms = sorted({s for p in polys for s in p.free_symbols} | set(diff.free_symbols), key=str)
+        if not polys or len(syms) > 6:
+            return False
+        basis = sp.groebner([sp.expand(p) for p in polys], *syms, order='grevlex')
+        rem = sp.reduced(sp.expand(sp.numer(sp.together(diff))), list(basis.exprs), *syms,
+                         order='grevlex')[1]
+        return sp.simplify(rem) == 0
+    except Exception:
+        return False
+
+
 def solve_request(req: dict) -> dict:
     raw = [piece for r in req.get('relations', []) if str(r).strip()
            for piece in split_chain(fold_names(tex_to_sympy(str(r))))]
@@ -221,11 +273,18 @@ def solve_request(req: dict) -> dict:
             if inequalities:
                 values = [v for v in values if all(
                     sp.simplify(ineq.subs(goal, v)) is not sp.false for ineq in inequalities)]
+            # 方程式の解は元の式へ代入して確かめられる。通ったものだけ返す
+            confirmed = [v for v in values
+                         if all(sp.simplify(e.lhs.subs(goal, v) - e.rhs.subs(goal, v)) == 0
+                                for e in equalities)]
+            use = confirmed or values
             return {
                 'status': 'solved',
+                'verdict': 'proved' if confirmed else 'unverified',
                 'method': 'solve',
-                'answer': [sp.srepr(v) for v in values],
-                'answer_latex': [sp.latex(v) for v in values],
+                'answer': [sp.srepr(v) for v in use],
+                'answer_latex': [sp.latex(v) for v in use],
+                'symbolic_check': bool(confirmed),
                 'numeric_check': True,
             }
 
@@ -236,13 +295,17 @@ def solve_request(req: dict) -> dict:
             for sol in sols[:6]:
                 value = sp.simplify(goal.subs(sol))
                 if not value.free_symbols or value.free_symbols < set(unknowns):
-                    ok = numeric_agrees(relations, goal, value)
+                    numeric_ok = numeric_agrees(relations, goal, value)
+                    symbolic_ok = symbolic_identity(relations, goal, value)
+                    verdict = classify(symbolic_ok, numeric_ok, bool(value.free_symbols))
                     return {
-                        'status': 'solved' if ok else 'unverified',
+                        'status': 'solved' if verdict != 'unverified' else 'unverified',
+                        'verdict': verdict,
                         'method': 'eliminate',
                         'answer': sp.srepr(value),
                         'answer_latex': sp.latex(value),
-                        'numeric_check': ok,
+                        'symbolic_check': symbolic_ok,
+                        'numeric_check': numeric_ok,
                     }
         except Exception as exc:
             return {'status': 'solver_error', 'detail': repr(exc)[:160]}
