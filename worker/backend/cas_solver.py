@@ -96,21 +96,52 @@ def tex_to_sympy(text: str) -> str:
 
 
 def to_expr(text: str):
-    return parse_expr(tex_to_sympy(text), transformations=TRANSFORMS, evaluate=True)
+    return parse_expr(fold_names(tex_to_sympy(text)), transformations=TRANSFORMS, evaluate=True)
+
+
+# 数学の記号だが Python の識別子として使えないもの。名前に畳む。
+#   ∠ABC → angle_ABC     線分の長さ AB → seg_AB
+# 畳まないと A*B*C と読まれ、角度が三つの積になる。
+SYMBOLIC_NAMES = [
+    (re.compile(r'∠\s*([A-Za-z](?:_\w+)?)\s*([A-Za-z](?:_\w+)?)\s*([A-Za-z](?:_\w+)?)'),
+     lambda m: f'angle_{m.group(1)}{m.group(2)}{m.group(3)}'),
+    (re.compile(r'△\s*([A-Za-z])\s*([A-Za-z])\s*([A-Za-z])'),
+     lambda m: f'tri_{m.group(1)}{m.group(2)}{m.group(3)}'),
+    (re.compile(r'(?<![A-Za-z_])([A-Z])([A-Z])(?![A-Za-z_(])'),
+     lambda m: f'seg_{m.group(1)}{m.group(2)}'),
+]
+
+RELOPS = [('<=', sp.Le), ('>=', sp.Ge), ('!=', sp.Ne), ('<', sp.Lt), ('>', sp.Gt), ('=', sp.Eq)]
+
+
+def fold_names(s: str) -> str:
+    for pattern, build in SYMBOLIC_NAMES:
+        s = pattern.sub(build, s)
+    return s
+
+
+def split_chain(s: str) -> list[str]:
+    """0<=t<=1 や AB=AC=1 のような連鎖を、二項の関係へ割る。
+
+    割らないと片方しか読めず、条件が落ちる。
+    """
+    tokens = re.split(r'(<=|>=|!=|<|>|=)', s)
+    if len(tokens) <= 3:
+        return [s]
+    out = []
+    for i in range(1, len(tokens) - 1, 2):
+        out.append(f'{tokens[i - 1].strip()}{tokens[i]}{tokens[i + 1].strip()}')
+    return out
 
 
 def to_relation(text: str):
-    """等式・不等式のどちらでも受ける"""
-    s = tex_to_sympy(text)
-    for op, ctor in (('<=', sp.Le), ('>=', sp.Ge), ('!=', sp.Ne), ('<', sp.Lt), ('>', sp.Gt)):
+    """等式・不等式のどちらでも受ける。連鎖は呼び出し側で割ってから渡す"""
+    s = fold_names(tex_to_sympy(text))
+    for op, ctor in RELOPS:
         if op in s:
             left, right = s.split(op, 1)
             return ctor(parse_expr(left, transformations=TRANSFORMS),
                         parse_expr(right, transformations=TRANSFORMS))
-    if '=' in s:
-        left, right = s.split('=', 1)
-        return sp.Eq(parse_expr(left, transformations=TRANSFORMS),
-                     parse_expr(right, transformations=TRANSFORMS))
     return sp.Eq(parse_expr(s, transformations=TRANSFORMS), 0)
 
 
@@ -161,7 +192,14 @@ def numeric_agrees(relations, goal_expr, answer, tol=1e-7, trials=6) -> bool:
 
 
 def solve_request(req: dict) -> dict:
-    relations = [to_relation(r) for r in req.get('relations', []) if str(r).strip()]
+    raw = [piece for r in req.get('relations', []) if str(r).strip()
+           for piece in split_chain(fold_names(tex_to_sympy(str(r))))]
+    relations = []
+    for piece in raw:
+        try:
+            relations.append(to_relation(piece))
+        except Exception:
+            continue   # 読めない関係式は捨てる。全体を落とさない
     goal_text = req.get('goal', '')
     if not goal_text:
         return {'status': 'missing_goal'}
