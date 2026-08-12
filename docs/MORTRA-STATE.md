@@ -10,7 +10,7 @@
 ### Source snapshot
 
 - `sakumon-station` 監査開始時local HEAD: `57ae962`、remote: `a630fae`。
-  本文談話IR、proof backend、判定集計修正と本監査を統合し、現在は `7c91e32`。
+  本文談話IR、proof backend、判定集計修正とsplit監査を統合した実装基線は `7c91e32`。
 - `mathos` 監査開始時HEAD: `92d7eb6`。CI依存契約修正 `3b06841`を経て、
   自律研究commitを含む現在のHEADは `476fcb0`。frozen 3,574問artifactは
   `artifacts/public_benchmark_3574_typed_cas_lowering_v3_20260811.json`。
