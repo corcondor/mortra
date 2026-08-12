@@ -9,9 +9,10 @@
 
 ### Source snapshot
 
-- `sakumon-station` local HEAD: `57ae962`。監査開始時点で `origin/master`
-  (`a630fae`) より3 commit先行。本文談話IR、proof backend、判定集計修正を含む。
-- `mathos` HEAD: `92d7eb6`。frozen 3,574問artifactは
+- `sakumon-station` 監査開始時local HEAD: `57ae962`、remote: `a630fae`。
+  本文談話IR、proof backend、判定集計修正と本監査を統合し、現在は `7c91e32`。
+- `mathos` 監査開始時HEAD: `92d7eb6`。CI依存契約修正 `3b06841`を経て、
+  自律研究commitを含む現在のHEADは `476fcb0`。frozen 3,574問artifactは
   `artifacts/public_benchmark_3574_typed_cas_lowering_v3_20260811.json`。
 - Obsidianはmirror。正本はこのファイルであり、Obsidianの古い数値を優先しない。
 
@@ -29,6 +30,9 @@
   holdout-source `52`件は未割当であり、固定holdoutへ混ぜない。
 - dev A5: `46/167` solved。ただし内訳は `proved 40`、`verified_instance 2`、
   `numerically_supported 4`。certifiedとして数えるのは `42/167`。
+- GitHub Actions: MathOS全8 test shard + aggregate (`31624676721`) 成功。
+  自律研究 (`31624693493`) は13 tests成功後、型付き候補を1件追加して研究キューを
+  `116`構造へ更新。MORTRA Worker (`31624677996`) もAG2取得・kernel・DDAR・型検査成功。
 
 ### REPORTED_NOT_REPRODUCED / STALE
 
