@@ -55,12 +55,21 @@ BACKEND_FOR_GOAL = {
     GoalOperator.UNKNOWN: 'unsupported',
 }
 
-IMPLEMENTED_BACKENDS = {'cas', 'inequality', 'proof'}
+_ALL_IMPLEMENTED = {'cas', 'inequality', 'proof'}
+
+# ablation を「ソースを書き換えて測る」でやると、測定の途中でコードが
+# 入れ替わる事故が起きる。実際に一度起こした。
+# 環境変数で切る。コードは同じままなので、指紋も同じで比較になる。
+#   MORTRA_DISABLE_BACKENDS=proof python scripts/run_holdout.py
+IMPLEMENTED_BACKENDS = _ALL_IMPLEMENTED - {
+    b.strip() for b in os.environ.get('MORTRA_DISABLE_BACKENDS', '').split(',') if b.strip()
+}
 
 
 @dataclass
 class TypedProblemIR:
     expressions: list
+    expression_slots: list = field(default_factory=list)
     assumptions: list = field(default_factory=list)
     constraints: list = field(default_factory=list)
     goal: GoalNode | None = None
@@ -70,10 +79,12 @@ class TypedProblemIR:
     notes: list[str] = field(default_factory=list)
 
 
-def build_problem_ir(body: str, expressions: list) -> TypedProblemIR:
+def build_problem_ir(
+        body: str, expressions: list, expression_slots: list | None = None) -> TypedProblemIR:
     """談話 IR と式の列から、実行できる形を作る"""
     ir = parse_discourse(body)
     notes: list[str] = list(ir.unresolved)
+    slots = expressions if expression_slots is None else expression_slots
 
     # 前提。印字された関係式
     constraints = [e for e in expressions if isinstance(e, (sp.Equality, sp.Rel))]
@@ -81,9 +92,9 @@ def build_problem_ir(body: str, expressions: list) -> TypedProblemIR:
     # 本文が言っている型を仮定にする
     assumptions = []
     for d in ir.domains:
-        if d.formula_index is None or not (0 <= d.formula_index < len(expressions)):
+        if d.formula_index is None or not (0 <= d.formula_index < len(slots)):
             continue
-        target = expressions[d.formula_index]
+        target = slots[d.formula_index]
         if not getattr(target, 'is_Symbol', False):
             continue
         for a in SORT_ASSUMPTION.get(d.sort, lambda s: [])(target):
@@ -91,9 +102,9 @@ def build_problem_ir(body: str, expressions: list) -> TypedProblemIR:
 
     # 本文が言っている範囲を制約にする
     for iv in ir.intervals:
-        if iv.formula_index is None or not (0 <= iv.formula_index < len(expressions)):
+        if iv.formula_index is None or not (0 <= iv.formula_index < len(slots)):
             continue
-        target = expressions[iv.formula_index]
+        target = slots[iv.formula_index]
         if not getattr(target, 'free_symbols', None):
             continue
         try:
@@ -114,8 +125,12 @@ def build_problem_ir(body: str, expressions: list) -> TypedProblemIR:
     goal = None
     goal_expr = None
     for candidate in sorted(ir.goals, key=lambda g: -g.confidence):
-        if candidate.formula_index is not None and 0 <= candidate.formula_index < len(expressions):
-            expr = expressions[candidate.formula_index]
+        if candidate.formula_index is not None and 0 <= candidate.formula_index < len(slots):
+            expr = slots[candidate.formula_index]
+            if expr is None:
+                goal = candidate
+                notes.append(f'unparsed_goal_slot:{candidate.formula_index}')
+                break
             wants_relation = candidate.operator in (
                 GoalOperator.PROVE, GoalOperator.SHOW_INEQUALITY)
             is_relation = isinstance(expr, (sp.Equality, sp.Rel))
@@ -135,7 +150,8 @@ def build_problem_ir(body: str, expressions: list) -> TypedProblemIR:
         notes.append(f'unsupported_backend:{backend}')
 
     return TypedProblemIR(
-        expressions=expressions, assumptions=assumptions, constraints=constraints,
+        expressions=expressions, expression_slots=list(slots),
+        assumptions=assumptions, constraints=constraints,
         goal=goal, goal_expression=goal_expr, backend=backend,
         discourse=ir, notes=notes)
 
@@ -155,7 +171,8 @@ def _bound_value(token: str, expressions: list):
 # A5 — routing で決まらないときに候補探索へ落とす
 # ---------------------------------------------------------------------------
 
-def solve_with_routing(body: str, expressions: list) -> dict:
+def solve_with_routing(
+        body: str, expressions: list, expression_slots: list | None = None) -> dict:
     """Discourse IR で目標と backend を決め、決まらなければ候補探索へ後退する。
 
     A4（routing だけ）は A3b（候補探索だけ）より悪かった。
@@ -168,7 +185,7 @@ def solve_with_routing(body: str, expressions: list) -> dict:
     """
     from solve_from_ast import solve_with_text, solve_expressions
 
-    ir = build_problem_ir(body, expressions)
+    ir = build_problem_ir(body, expressions, expression_slots)
     relations = list(ir.constraints)[:6] + list(ir.assumptions)[:4]
     held = None  # 証明側が「反例なし」まで来た結果。certified には数えない
 
@@ -194,7 +211,8 @@ def solve_with_routing(body: str, expressions: list) -> dict:
 
     # 2. 後退。本文から得た仮定は捨てずに渡す
     try:
-        out = solve_with_text(relations, expressions, body)
+        out = solve_with_text(
+            relations, expressions, body, expression_slots=expression_slots)
     except Exception as exc:
         out = {'status': 'solver_error', 'detail': repr(exc)[:100]}
     out['route'] = 'fallback'

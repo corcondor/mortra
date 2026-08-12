@@ -39,7 +39,7 @@ WORKER = r'''
 import json, sys, re
 sys.path.insert(0, r"{backend}")
 import sympy as sp
-from mathml_ast import parse_math
+from mathml_ast import parse_math, parse_math_document
 from solve_from_ast import solve_expressions, solve_full, solve_with_text
 import cas_solver as C
 sys.path.insert(0, r"{backend}".replace("backend", "semantics"))
@@ -63,19 +63,22 @@ def run_ast(p):
     return out
 
 def run_full(p):
-    exprs = parse_math(" ".join(p["mathml"]))
+    parsed = parse_math_document(p["mathml"])
+    exprs = parsed.expressions
     if not exprs:
         return {{"status": "parse_failed"}}
     relations = [e for e in exprs if isinstance(e, (sp.Equality, sp.Rel))][:6]
-    out = solve_full(relations, exprs, p.get("body", ""))
+    out = solve_full(relations, exprs, p.get("body", ""),
+                     expression_slots=parsed.slots)
     out["parsed"] = True
     return out
 
 def run_discourse(p):
-    exprs = parse_math(" ".join(p["mathml"]))
+    parsed = parse_math_document(p["mathml"])
+    exprs = parsed.expressions
     if not exprs:
         return {{"status": "parse_failed"}}
-    ir = build_problem_ir(p.get("body", ""), exprs)
+    ir = build_problem_ir(p.get("body", ""), exprs, parsed.slots)
     if ir.goal is None:
         return {{"status": "no_goal", "parsed": True}}
     if ir.backend not in ("cas", "inequality"):
@@ -90,10 +93,11 @@ def run_discourse(p):
     return out
 
 def run_routed(p):
-    exprs = parse_math(" ".join(p["mathml"]))
+    parsed = parse_math_document(p["mathml"])
+    exprs = parsed.expressions
     if not exprs:
         return {{"status": "parse_failed"}}
-    out = solve_with_routing(p.get("body", ""), exprs)
+    out = solve_with_routing(p.get("body", ""), exprs, parsed.slots)
     out["parsed"] = True
     return out
 

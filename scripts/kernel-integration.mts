@@ -8,7 +8,7 @@
  */
 import {
   buildIntegratedKernel, fromCasVerdict, fromLinearStatus,
-  fromGeometryStatus, fromProofScene,
+  fromProofScene,
 } from '../lib/mortra/kernel/adapters.js'
 import {
   auditKernel, statusCounts, transportPath, conventionsAgree, resolveBinding,
@@ -95,7 +95,6 @@ console.log('\n■ 既存の状態語彙が核へ写る（7箇所の proved が�
     ['cas not_reduced', fromCasVerdict(undefined, 'not_reduced'), 'unformalized'],
     ['linear proved', fromLinearStatus('proved'), 'proved'],
     ['linear inconsistent', fromLinearStatus('inconsistent'), 'disproved'],
-    ['geometry unproved', fromGeometryStatus('unproved'), 'unverified'],
     ['proof-scene 数値のみ', fromProofScene(true, true), 'verified_instance'],
   ]
   for (const [name, got, want] of cases) {

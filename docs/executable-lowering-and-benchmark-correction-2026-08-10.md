@@ -1,5 +1,8 @@
 # 実行可能loweringとベンチ指標の訂正（2026-08-10）
 
+> Historical benchmark note. 外部システムの値は比較可能性を戒めるための記録であり、
+> 現在のMORTRA runtime依存や性能主張ではない。
+
 ## 結論
 
 MathOSの評価単位を次の5段階に固定する。

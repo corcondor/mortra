@@ -1,5 +1,8 @@
 # 数学を共通表現へ縮約する一次資料調査（2026-08-10）
 
+> External inspiration / primary-source survey. 記載された外部システムは研究上の参考であり、
+> 現在のMORTRA runtime backendではない。
+
 ## 調査目的
 
 MathOS の「数学の標準模型」を、独自用語だけで設計しない。既存の形式数学、

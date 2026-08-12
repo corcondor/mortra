@@ -1,20 +1,25 @@
-name: Verify MathOS Worker Kernel
+name: Verify MORTRA Worker Kernel
 
 on:
   push:
     branches: [master]
     paths:
       - "worker/**"
+      - "scripts/external_backend_invariant.py"
       - ".github/workflows/worker-ci.yml"
   pull_request:
     paths:
       - "worker/**"
+      - "scripts/external_backend_invariant.py"
       - ".github/workflows/worker-ci.yml"
   workflow_dispatch:
 
 concurrency:
-  group: mathos-worker-kernel-${{ github.ref }}
+  group: mortra-worker-kernel-${{ github.ref }}
   cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   verify:
@@ -38,20 +43,11 @@ jobs:
       - name: Install Worker dependencies
         working-directory: worker
         run: npm ci
-      - name: Fetch official AlphaGeometry2 symbolic backend
-        run: git clone --depth 1 https://github.com/google-deepmind/alphageometry2.git "$RUNNER_TEMP/alphageometry2"
-      - name: Install official AlphaGeometry2 runtime dependency
-        run: python -m pip install numpy
+      - name: Reject removed external backends
+        run: python scripts/external_backend_invariant.py
       - name: Test the authoritative semantic and execution kernel
         working-directory: worker
-        env:
-          MATHOS_AG2_DIR: ${{ runner.temp }}/alphageometry2
         run: npm test
-      - name: Reproduce official DDAR formalized benchmark
-        working-directory: worker
-        env:
-          MATHOS_AG2_DIR: ${{ runner.temp }}/alphageometry2
-        run: python backend/alphageometry2_adapter.py --official-suite
       - name: Type-check the production Worker
         working-directory: worker
         run: npm run build

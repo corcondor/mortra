@@ -1,5 +1,8 @@
 # 補助構成探索と正答率停滞の根本原因（2026-08-10）
 
+> Historical experiment. DDAR/AlphaGeometry2接続は現在のMORTRA runtimeから削除済み。
+> 有限語彙・補助構成探索・反例検査という設計上の知見だけを参考として残す。
+
 ## 結論
 
 従来のMathOSが接続していたのは、AlphaGeometry 2のうち**形式化済み前提を閉包して

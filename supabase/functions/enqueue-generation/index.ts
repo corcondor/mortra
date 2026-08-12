@@ -1,6 +1,5 @@
 // Supabase Edge Function: enqueue-generation
-// 仕事: 認証・制限チェックして generation_jobs に INSERT し job_id を即返す
-// 重い処理は Railway Worker が担当（タイムアウトなし）
+// MORTRA structural-discovery jobs only.
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
@@ -11,7 +10,8 @@ const corsHeaders = {
 }
 
 const FREE_GENERATIONS_PER_MONTH = 10
-const ADMIN_EMAIL = Deno.env.get('ADMIN_EMAIL') ?? 'imtceed@gmail.com'
+const ADMIN_EMAIL = Deno.env.get('ADMIN_EMAIL') ?? ''
+const MODE = 'mathos_discovery'
 
 function currentYearMonth(): string {
   const d = new Date()
@@ -41,7 +41,7 @@ Deno.serve(async (req: Request) => {
     const { data } = await supabase.auth.getUser(token)
     userId    = data.user?.id    ?? null
     userEmail = data.user?.email ?? null
-    isAdmin   = userEmail === ADMIN_EMAIL
+    isAdmin   = Boolean(ADMIN_EMAIL) && userEmail === ADMIN_EMAIL
   }
 
   // ── 利用制限チェック ──────────────────────────────────────────────────────
@@ -70,7 +70,11 @@ Deno.serve(async (req: Request) => {
 
   const githubToken = Deno.env.get('GITHUB_TOKEN')
   const githubRepo = Deno.env.get('GITHUB_REPO')
-  const dispatch = async (jobId: string, mode: string) => {
+  if (body.mode && body.mode !== MODE) {
+    return json({ error: `legacy generation mode removed; supported mode is ${MODE}` }, 410)
+  }
+
+  const dispatch = async (jobId: string) => {
     if (!githubToken || !githubRepo) return { dispatched: false, reason: 'github dispatch env missing' }
     const ghRes = await fetch(`https://api.github.com/repos/${githubRepo}/dispatches`, {
       method: 'POST',
@@ -81,7 +85,7 @@ Deno.serve(async (req: Request) => {
       },
       body: JSON.stringify({
         event_type: 'generate-problem',
-        client_payload: { job_id: jobId, mode },
+        client_payload: { job_id: jobId, mode: MODE },
       }),
     })
     if (!ghRes.ok) return { dispatched: false, reason: `${ghRes.status} ${await ghRes.text()}` }
@@ -95,7 +99,7 @@ Deno.serve(async (req: Request) => {
       .eq('id', body.resume_job_id)
       .single()
     if (findError || !existing) return json({ error: 'job not found' }, 404)
-    if (existing.status !== 'processing' || existing.mode !== 'mathos_discovery') {
+    if (existing.status !== 'processing' || existing.mode !== MODE) {
       return json({ resumed: false, reason: 'job is not an active research job' })
     }
     const state = (existing.result as { searchState?: { continuing?: boolean; next_attempt_at?: string | null } } | null)?.searchState
@@ -106,12 +110,12 @@ Deno.serve(async (req: Request) => {
       return json({ resumed: false, reason: 'resume request already sent recently' })
     }
     await supabase.from('generation_jobs').update({ updated_at: new Date().toISOString() }).eq('id', existing.id)
-    const dispatched = await dispatch(existing.id, existing.mode)
+    const dispatched = await dispatch(existing.id)
     if (!dispatched.dispatched) return json({ resumed: false, reason: dispatched.reason }, 503)
     return json({ resumed: true, job_id: existing.id })
   }
 
-  const { parents, mode = 'auto', count = 3 } = body
+  const { parents, count = 3 } = body
 
   if (!parents?.length) return json({ error: 'parents required' }, 400)
 
@@ -121,7 +125,7 @@ Deno.serve(async (req: Request) => {
     .insert({
       user_id: userId,
       parents,
-      mode,
+      mode: MODE,
       count: Math.max(1, Math.min(Number(count) || 1, 10)),
       status: 'pending',
     })
@@ -133,10 +137,10 @@ Deno.serve(async (req: Request) => {
   }
 
   // ── GitHub Actions を起動（GITHUB_TOKEN が設定されている場合） ──────────
-  const dispatched = await dispatch(job.id, mode)
+  const dispatched = await dispatch(job.id)
   if (!dispatched.dispatched) console.error(`GitHub dispatch failed: ${dispatched.reason}`)
   // GITHUB_TOKEN 未設定 → 常駐 Worker（Render.com など）が自動ピックアップ
 
   // ── 即座に job_id を返す ──────────────────────────────────────────────────
-  return json({ job_id: job.id, status: 'pending', dispatched: dispatched.dispatched })
+  return json({ job_id: job.id, status: 'pending', mode: MODE, dispatched: dispatched.dispatched })
 })

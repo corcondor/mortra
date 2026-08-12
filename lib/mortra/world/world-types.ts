@@ -68,7 +68,7 @@ export type Certificate = {
   /** 検証に使った独立な手段。LLM の自己申告は認めない（仕様 §6.6） */
   method:
     | 'symbolic_identity' | 'exact_substitution' | 'groebner_reduction'
-    | 'interval_arithmetic' | 'ddar' | 'forward_chaining'
+    | 'interval_arithmetic' | 'forward_chaining'
     | 'numeric_sampling' | 'property_test'
   /** 検証が消費した前提。書かれていない前提を使っていないかを見る */
   consumedPremises: SemanticId[]

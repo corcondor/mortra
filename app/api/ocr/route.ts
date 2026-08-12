@@ -4,7 +4,7 @@
  * → { title, statement, solution, provider }
  *
  * Vision プロバイダ自動検出: ANTHROPIC_API_KEY > GEMINI_API_KEY > OPENAI_API_KEY
- * （DeepSeek は画像入力非対応のため使用不可）
+ * OCR providers are isolated from MORTRA's mathematical reasoning backend.
  */
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -142,7 +142,7 @@ export async function POST(req: NextRequest) {
       provider = 'openai'
     } else {
       return NextResponse.json({
-        error: '画像認識用のAPIキーが未設定です。Vercel の環境変数に ANTHROPIC_API_KEY / GEMINI_API_KEY / OPENAI_API_KEY のいずれかを追加してください（DeepSeekは画像入力非対応）。',
+        error: '画像認識用のAPIキーが未設定です。Vercel の環境変数に ANTHROPIC_API_KEY / GEMINI_API_KEY / OPENAI_API_KEY のいずれかを追加してください。',
       }, { status: 501 })
     }
 

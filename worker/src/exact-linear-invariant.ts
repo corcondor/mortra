@@ -1,7 +1,7 @@
 /**
  * Exact provenance-carrying linear elimination.
  *
- * AlphaGeometry's AR and AlphaGeometry2's elimination tables succeed because
+ * Finite symbolic elimination succeeds because
  * predicates are lowered to a small number of linear coordinate systems. This
  * module provides the same reusable kernel for MathOS. Geometry, affine state
  * equations, prime valuations, and directed angles differ only by coordinate

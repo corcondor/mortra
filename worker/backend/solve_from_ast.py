@@ -243,7 +243,9 @@ ASK_MARKERS = [
 PLACEHOLDER = '⟦式⟧'
 
 
-def goals_from_text(body: str, expressions: list, window: int = 4):
+def goals_from_text(
+        body: str, expressions: list, window: int = 4,
+        expression_slots: list | None = None):
     """本文の「求めよ」の直前にある式を、目標の候補として順に返す。
 
     収集器が <math> を ⟦式⟧ に置き換えているので、
@@ -254,6 +256,7 @@ def goals_from_text(body: str, expressions: list, window: int = 4):
     """
     if not body or PLACEHOLDER not in body:
         return []
+    slots = expressions if expression_slots is None else expression_slots
     picks: list[int] = []
     for pattern, _kind in ASK_MARKERS:
         for m in _re.finditer(pattern, body):
@@ -261,12 +264,14 @@ def goals_from_text(body: str, expressions: list, window: int = 4):
             index = before.count(PLACEHOLDER) - 1
             # 「求めよ」の直前から遡って数個を候補にする
             for k in range(index, max(-1, index - window), -1):
-                if 0 <= k < len(expressions) and k not in picks:
+                if 0 <= k < len(slots) and slots[k] is not None and k not in picks:
                     picks.append(k)
-    return [expressions[i] for i in picks]
+    return [slots[i] for i in picks]
 
 
-def solve_with_text(relations, expressions, body: str, limit: int = 14) -> dict:
+def solve_with_text(
+        relations, expressions, body: str, limit: int = 14,
+        expression_slots: list | None = None) -> dict:
     """本文の指示を先に使い、駄目なら式の形だけで選ぶ。
 
     本文が言っていることを無視して式の形だけで当てにいくのは、
@@ -278,7 +283,9 @@ def solve_with_text(relations, expressions, body: str, limit: int = 14) -> dict:
     tried = 0
     seen: set[str] = set()
 
-    ordered = goals_from_text(body, expressions) + goal_candidates(expressions, limit)
+    text_goals = goals_from_text(
+        body, expressions, expression_slots=expression_slots)
+    ordered = text_goals + goal_candidates(expressions, limit)
     for goal in ordered:
         key = sp.srepr(goal) if hasattr(goal, 'free_symbols') else str(goal)
         if key in seen:
@@ -300,7 +307,7 @@ def solve_with_text(relations, expressions, body: str, limit: int = 14) -> dict:
         score = rank.get(r.get('verdict', ''), 0)
         if score > best_rank:
             best_rank = score
-            best = {**r, 'goal_latex': sp.latex(goal), 'from_text': goal in goals_from_text(body, expressions)}
+            best = {**r, 'goal_latex': sp.latex(goal), 'from_text': goal in text_goals}
             if score == 3:
                 break
     best['candidates_tried'] = tried
@@ -311,7 +318,8 @@ def solve_with_text(relations, expressions, body: str, limit: int = 14) -> dict:
 # 本文の日本語から条件を取る
 # ---------------------------------------------------------------------------
 
-def constraints_from_text(body: str, expressions: list) -> list:
+def constraints_from_text(
+        body: str, expressions: list, expression_slots: list | None = None) -> list:
     """本文に日本語で書かれた条件を、sympy の仮定へ落とす。
 
     167問中78問には印字された等式が一本も無い。条件は日本語で書かれている。
@@ -323,6 +331,7 @@ def constraints_from_text(body: str, expressions: list) -> list:
     """
     if not body:
         return []
+    slots = expressions if expression_slots is None else expression_slots
     out = []
     # 変数名は本文には出ない。⟦式⟧ の中にある。
     # 「⟦式⟧ を自然数とする」の ⟦式⟧ が何番目かを数えて、その式を見る。
@@ -330,9 +339,9 @@ def constraints_from_text(body: str, expressions: list) -> list:
             r'⟦式⟧\s*(?:を|は|が)\s*[^。⟦]{0,12}?(自然数|正の整数|整数|正の実数|正の数|実数)',
             body):
         index = body[:m.start()].count(PLACEHOLDER)
-        if not (0 <= index < len(expressions)):
+        if not (0 <= index < len(slots)):
             continue
-        target = expressions[index]
+        target = slots[index]
         if not (hasattr(target, 'is_Symbol') and target.is_Symbol):
             continue
         kind = m.group(1)
@@ -344,10 +353,14 @@ def constraints_from_text(body: str, expressions: list) -> list:
     return out
 
 
-def solve_full(relations, expressions, body: str, limit: int = 14) -> dict:
+def solve_full(
+        relations, expressions, body: str, limit: int = 14,
+        expression_slots: list | None = None) -> dict:
     """本文の条件と指示を両方使って解く。現在の入口"""
-    extra = constraints_from_text(body, expressions)
+    extra = constraints_from_text(body, expressions, expression_slots)
     merged = list(relations) + [c for c in extra if c not in relations]
-    r = solve_with_text(merged[:8], expressions, body, limit)
+    r = solve_with_text(
+        merged[:8], expressions, body, limit,
+        expression_slots=expression_slots)
     r['text_constraints'] = len(extra)
     return r

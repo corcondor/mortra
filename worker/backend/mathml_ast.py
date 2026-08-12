@@ -432,6 +432,47 @@ def parse_math(raw_html: str) -> list:
     return out
 
 
+@dataclass
+class ParsedMathDocument:
+    """A document parse that preserves the source formula positions.
+
+    ``expressions`` contains only executable SymPy objects. ``slots`` has one
+    entry per source MathML fragment and keeps ``None`` for fragments that did
+    not elaborate.  Discourse references must use slots; CAS enumeration may
+    use expressions.
+    """
+
+    expressions: list
+    slots: list
+    unresolved_slots: list[int] = field(default_factory=list)
+
+
+def parse_math_document(raw_fragments: list[str]) -> ParsedMathDocument:
+    """Parse ordered MathML without shifting later formula references.
+
+    A problem body contains one placeholder per source fragment.  Dropping an
+    unparsed fragment used to move every later expression one position left,
+    binding goals and type declarations to unrelated formulas.
+    """
+
+    expressions = []
+    slots = []
+    unresolved = []
+    for index, fragment in enumerate(raw_fragments):
+        parsed = parse_math(fragment)
+        if len(parsed) == 1:
+            expression = parsed[0]
+            slots.append(expression)
+            expressions.append(expression)
+            continue
+        # A source placeholder denotes one formula.  Zero or multiple parsed
+        # roots are ambiguous, so preserve the position but do not guess.
+        slots.append(None)
+        unresolved.append(index)
+        expressions.extend(parsed)
+    return ParsedMathDocument(expressions, slots, unresolved)
+
+
 def is_sequence_symbol(symbol: sp.Symbol, bound: str) -> bool:
     """a_k のような添字つき記号が、束縛変数 k の数列かどうか。
 

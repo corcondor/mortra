@@ -16,57 +16,79 @@
   `artifacts/public_benchmark_3574_typed_cas_lowering_v3_20260811.json`。
 - Obsidianはmirror。正本はこのファイルであり、Obsidianの古い数値を優先しない。
 
+### Current runtime boundary
+
+- **DeepSeek:** 現在のMORTRAでは使用しない。runtime依存、必須環境変数、生成route、
+  worker経路はすべて除去した。
+- **AlphaGeometry / AlphaGeometry2:** finite vocabulary、symbolic deduction、補助構成、
+  tracebackを考えるための研究・設計上の参考に限る。公式runtime、DDAR、adapter、
+  executor、CI checkout、`MATHOS_AG2_DIR`への依存はMORTRA coreに存在しない。
+- **MORTRA reasoning:** MORTRA独自のtyped IR、semantic kernel、CAS/proof/inequality/
+  geometry backends、certificate・verification infrastructureで実装する。
+
 ### REPRODUCED
 
 - regression `19/19`、generalization `20/20`、discourse `42/42`、proof backend
-  `19/19`、kernel integration `18/18`、identity `12/12`、lattice `93/93`、
+  `19/19`、kernel integration `17/17`、identity `12/12`、lattice `93/93`、
   ornament mutation `71/71`、control character `237 files / 0`。
-- Worker: `101` tests中 `83 pass / 18 skip / 0 fail`、production build成功。
-  skipはローカルで `MATHOS_AG2_DIR` が未設定のため。
-- GitHub Worker CI (`31566423471`) は公式AlphaGeometry2をcheckoutし、worker tests
-  `101/101 pass`、adapterのDDAR suite `26/26`。これはIMO全問題ベンチではなく、
-  26個の形式化fixtureであり、11件は補助点を明示している。
+- Worker: 外部数学AIなしで `82/82 pass / 0 skip / 0 fail`。worker production build成功。
+- MathML/discourse位置保存 `11/11`。Web production build成功（40 routes）。
 - frozen split: dev `167`、holdout `522`はmanifest digest一致。後から追加された
   holdout-source `52`件は未割当であり、固定holdoutへ混ぜない。
 
 ### OBSERVED
 
-- dev A5: `46/167` solved。ただし内訳は `proved 40`、`verified_instance 2`、
-  `numerically_supported 4`。certifiedとして数えるのは `42/167`。今回の監査では
-  artifactとfailure breakdownを読んだ値であり、167問全体は再実行していない。
+- dev A5を167問全件再実行。`proved 37`、`verified_instance 3`、
+  `numerically_supported 8`。certifiedは `40/167 = 24.0%`、certified wrong `0`。
+- 同一コード・同一12秒上限・同一4並列で、旧flat MathML alignmentは
+  `33/167 = 19.8%`。位置保存後は `40/167 = 24.0%`で、`+7問 / +4.2pt`。
+  `goal_not_meaningful`は `29 -> 21`、timeoutは `20 -> 18`。
+- dev 167問中136問で、従来は本文placeholder数と解析後expression数が不一致だった。
+  2,817数式枠中511枠が未解析時に削除され、後続参照がずれていた。現在は未解析枠を
+  `None`として保持し、談話照合用slotsとCAS用expressionsを分離する。
+- このcorpusは解答本文を収録せず解答URLだけを持つ。ここでの`certified_correct`は
+  「MORTRAが選択した目標に対する内部証明書」を意味し、公式解答との外部一致ではない。
+  目標同定の誤りを測るには解答本文付き評価集合が別途必要。
+- frozen holdout A5を、問題本文を検査せず522問全件で一度だけ実行した。
+  `certified 112/522 = 21.5%`、`certified_wrong 1`、`numerically_supported 5`、
+  `abstained 332`、`solver_failure 11`、`parse_failure 2`、`timeout 59`。
+  abstained内訳は `not_reduced 135 / goal_not_meaningful 102 /
+  unsupported_backend 79 / goal_is_relation 16`。実行前後のsource digestは
+  `e9fc9963d8d8ee12`で一致した。上記の測定上の制約により、21.5%を公式正答率とは呼ばない。
 - GitHub Actions: MathOS全8 test shard + aggregate (`31624676721`) 成功。
   自律研究 (`31624693493`) は13 tests成功後、型付き候補を1件追加して研究キューを
-  `116`構造へ更新。MORTRA Worker (`31624677996`) もAG2取得・kernel・DDAR・型検査成功。
+  `116`構造へ更新。旧MORTRA Worker runの外部runtime結果は現行architectureの根拠にしない。
 
 ### REPORTED_NOT_REPRODUCED / STALE
 
 - `data/holdout-results.json` の旧A5 `139 correct / 11 wrong / 354 abstain` は、
-  判定bucket修正前のartifactで再実行未完了。現在別プロセスが再測定中で、公開値にしない。
+  判定bucket修正前のartifactであり公開値にしない。
 - 2026-08-11節の幾何 `7/7` は当時の限定corpusでは有効だが、一般入試性能ではない。
 - GitHub `Resume MathOS Research` の成功runはテスト後に `No autonomous research job is due`
   で終了しており、研究が進行した証拠ではない。
 
 ### Current failure distribution (dev 167)
 
-`solved 46 / not_reduced 45 / unsupported_backend 32 / goal_not_meaningful 31 /
-solver_error 8 / goal_is_relation 5`。unsupportedは `probability 14`、
-`geometry_region 7`、`solution_set 5`、`optimization 5`、`counting 1`。
-not_reducedは `cas 36`、`proof 7`、`inequality 2`。
+`certified 40 / numerically_supported 8 / abstained 97 / solver_error 4 / timeout 18`。
+abstainedの内訳は `not_reduced 43 / unsupported_backend 31 /
+goal_not_meaningful 21 / goal_is_relation 2`。not_reducedは `cas 36 / proof 5 /
+inequality 2`。unsupportedは `probability 13 / solution_set 8 /
+geometry_region 7 / optimization 2 / counting 1`。
 
 ### Current top 3 experiments
 
-1. `not_reduced` 45件を、問題IDや表層文型ではなくgoal operator・束縛変数・型付き制約の
-   共通loweringで閉じる。devで修正し、固定holdoutは最後に一度だけ測る。
-2. probability / geometry region / solution set / optimization / countingを、既存の
+1. `not_reduced` 43件を小問scope・goal operator・束縛変数・型付き制約の共通loweringで
+   閉じる。特にCAS 36件を、問題IDや表層文型なしで分類する。
+2. 511個の未解析MathML slotのうち、括弧depth、vector/angle、集合・数列groupingを
+   typed objectへelaborateし、位置保存を維持したまま実行可能式を増やす。
+3. probability / geometry region / solution set / optimization / countingを、既存の
    `ProblemIR -> backend contract`へ個別solverではなく型付き観測として接続する。
-3. Proof Sceneを一般proof DAGからcompileし、同じsemantic IDを式・図・説明・時間軸で
-   共有するnegative controlを追加する。
 
 ### Claims not ready for publication
 
-- MORTRA全体がLLM不使用、東大・京大数学が解ける、AlphaGeometry2相当、一般proofから
-  3D/robot trajectoryまで自動compileできる、という主張。非LLM経路は存在するが、
-  legacy APIにはDeepSeek等を使う経路が残る。
+- 東大・京大数学が解ける、AlphaGeometry2相当、一般proofから3D/robot trajectoryまで
+  自動compileできる、という主張。現行の中核推論・作問経路は外部LLMを使用しないが、
+  その事実だけで一般数学性能を主張してはならない。
 
 ---
 
@@ -148,9 +170,9 @@ para-perp         2問
 
 ### 動かない条件
 
-- **AlphaGeometry2 のエンジンはこの PC に無い**（`MATHOS_AG2_DIR` 未設定）。
-  DDAR の公式スイートはここでは走らない。上の 7/7 は自前の前向き推論器の結果。
 - 円と接線（`外接円`, `接する`）は未対応。6問中これだけが形式化できなかった。
+- 外部AlphaGeometry runtimeは実行対象に含めない。上の7/7はMORTRA独自の
+  前向き推論器の限定corpus結果である。
 
 ---
 

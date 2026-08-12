@@ -141,7 +141,6 @@ function ScanInner() {
           </div>
           <nav className="flex flex-col gap-1">
             <a href="/" className="text-[12px] px-3 py-1.5 rounded-lg text-white/40 hover:text-white/70 hover:bg-white/5">✦ キュレーション</a>
-            <a href="/ideas" className="text-[12px] px-3 py-1.5 rounded-lg text-white/40 hover:text-white/70 hover:bg-white/5">🌳 アイデアツリー</a>
           </nav>
           <div className="border-t border-white/8" />
           <div className="text-[10px] font-semibold text-white/30 uppercase tracking-widest">履歴</div>

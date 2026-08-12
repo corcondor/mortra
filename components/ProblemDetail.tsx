@@ -88,23 +88,6 @@ export function ProblemDetail({ problem, onClose }: Props) {
     return () => window.removeEventListener('keydown', handler)
   }, [onClose])
 
-  async function generateTikz() {
-    if (!problem) return
-    setTikz({ status: 'loading' })
-    try {
-      const res = await fetch('/api/tikz', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ problem_id: problem.id, statement: problem.statement }),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error ?? 'Unknown error')
-      setTikz({ status: 'done', code: data.tikz, type: data.type, verified: data.verified })
-    } catch (e: any) {
-      setTikz({ status: 'error', message: e.message })
-    }
-  }
-
   async function verifyAnswer() {
     if (!problem) return
     setVerify({ status: 'loading' })
@@ -277,25 +260,6 @@ export function ProblemDetail({ problem, onClose }: Props) {
 
                 {/* Action buttons */}
                 <div className="flex gap-2 flex-wrap">
-                  {/* TikZ button */}
-                  <button
-                    onClick={generateTikz}
-                    disabled={tikz.status === 'loading'}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl glass glass-hover text-[12px] text-white/70 hover:text-white transition-colors disabled:opacity-50"
-                  >
-                    {tikz.status === 'loading' ? (
-                      <>
-                        <span className="inline-block w-3 h-3 border border-white/40 border-t-white/80 rounded-full animate-spin" />
-                        生成+検証中…
-                      </>
-                    ) : (
-                      <>
-                        <span className="text-base leading-none">📐</span>
-                        {tikz.status === 'done' ? 'TikZ 再生成' : 'TikZ 図示'}
-                      </>
-                    )}
-                  </button>
-
                   {/* TikZ figure preview */}
                   {tikz.status === 'done' && (
                     <button
@@ -424,7 +388,7 @@ export function ProblemDetail({ problem, onClose }: Props) {
                   </section>
                 )}
                 {tikz.status === 'error' && (
-                  <p className="text-[12px] text-red-400/80">TikZ生成エラー: {tikz.message}</p>
+                  <p className="text-[12px] text-red-400/80">TikZ表示エラー: {tikz.message}</p>
                 )}
 
                 {/* Answer */}

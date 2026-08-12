@@ -1,5 +1,8 @@
 # 証明義務と条件依存グラフの検証（2026-08-10）
 
+> Historical experiment. AlphaGeometry2に関する測定は当時の比較記録であり、
+> 現在のMORTRA core architectureまたはruntime依存を表さない。
+
 ## 結論
 
 `preserves: string[]` と `backend: string[]` は、数学的証明でも実行器でもなかった。

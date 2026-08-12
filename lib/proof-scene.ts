@@ -13,14 +13,14 @@
  * 幾何に必要な二つを足している:
  *   - 相異条件（A≠B）。これが無いと perp(a,a,b,c) のような退化事実が量産される。
  *   - 数値検証。形式化が作った座標に対して、導けた事実が実際に成り立つか毎回確かめる。
- *     規則が健全でも、退化した当てはめは座標が弾く。AG2 の DD + numerical check と同じ考え方。
+ *     規則が健全でも、退化した当てはめは独立な座標検査が弾く。
  *
  * LLM も外部 API も使わない。
  */
 
 export type Pt = { x: number; y: number }
 
-/** 幾何述語。AlphaGeometry の基本述語に合わせてある */
+/** MORTRAの有限幾何述語。証明状態と図の同期に共用する。 */
 export type Fact = {
   pred: 'perp' | 'para' | 'coll' | 'cong' | 'midp' | 'eqangle'
   args: string[]

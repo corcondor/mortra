@@ -1,8 +1,8 @@
-"""Deterministic natural-language/TeX to AlphaGeometry2 formalization.
+"""Deterministic natural-language/TeX to MORTRA finite geometry IR.
 
 This is intentionally a finite mathematical grammar, not a general prose
 translator.  It produces a typed predicate IR, constructs a numerical witness
-by constrained optimization, and emits an AG2 statement only when every
+by constrained optimization, and emits a finite geometry statement only when every
 mathematical relation in the supported input has been consumed.
 """
 
@@ -818,7 +818,7 @@ def centroid_predicates(groups: Iterable[str], source: str) -> list[TypedPredica
     center, a, b, c = (value.lower() for value in groups)
     # Affine centroid is encoded as two additive vector equations during diagram
     # construction. AG2 has no primitive centroid predicate, so do not emit an
-    # unsound DDAR premise here.
+    # unsound symbolic-deduction premise here.
     return [TypedPredicate("centroid", (center, a, b, c), source)]
 
 
@@ -1186,7 +1186,7 @@ def predicate_residual(item: TypedPredicate, coordinates: dict[str, np.ndarray])
     if item.name == "s_angle":
         angle = np.deg2rad(float(Fraction(item.constants[0])))
         u, v = p[1] - p[0], p[3] - p[2]
-        # DDAR encodes dir(u) - dir(v) = angle, modulo 180 degrees.
+        # Direction algebra encodes dir(u) - dir(v) = angle, modulo 180 degrees.
         return (cross2d(u, v) * np.cos(angle) + float(u @ v) * np.sin(angle)) / 16.0
     if item.name == "distseq":
         return sum(

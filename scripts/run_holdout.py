@@ -11,35 +11,39 @@ import os
 import subprocess
 import sys
 from collections import Counter
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BACKEND = os.path.join(ROOT, 'worker', 'backend')
 SEMANTICS = os.path.join(ROOT, 'worker', 'semantics')
 
-BATCH = 10
-BATCH_SECONDS = 75
+BATCH = 1
+BATCH_SECONDS = int(os.environ.get('MORTRA_PROBLEM_TIMEOUT', '12'))
+MAX_WORKERS = max(1, int(os.environ.get('MORTRA_BENCH_WORKERS', '4')))
 
 WORKER = r'''
 import json, sys
 sys.path.insert(0, r"{backend}")
 sys.path.insert(0, r"{semantics}")
 import sympy as sp
-from mathml_ast import parse_math
+from mathml_ast import parse_math_document
 from solve_from_ast import solve_expressions, solve_full
 from problem_ir import build_problem_ir, solve_with_routing
 
 def run(p, mode):
-    exprs = parse_math(" ".join(p["mathml"]))
+    parsed = parse_math_document(p["mathml"])
+    exprs = parsed.expressions
     if not exprs:
         return {{"status": "parse_failed"}}
     if mode == "a3b":
         rel = [e for e in exprs if isinstance(e, (sp.Equality, sp.Rel))][:6]
-        out = solve_full(rel, exprs, p.get("body", ""))
+        out = solve_full(rel, exprs, p.get("body", ""),
+                         expression_slots=parsed.slots)
     elif mode == "a5":
-        out = solve_with_routing(p.get("body", ""), exprs)
+        out = solve_with_routing(p.get("body", ""), exprs, parsed.slots)
     else:
-        ir = build_problem_ir(p.get("body", ""), exprs)
+        ir = build_problem_ir(p.get("body", ""), exprs, parsed.slots)
         if ir.goal is None:
             return {{"status": "no_goal", "stage": "goal"}}
         if ir.backend not in ("cas", "inequality"):
@@ -121,15 +125,23 @@ def bucket(r):
 
 def evaluate(problems, mode, label):
     stats, residual, ops = Counter(), Counter(), Counter()
-    for i in range(0, len(problems), BATCH):
-        sys.stderr.write(f'\r{label} {i}/{len(problems)}   ')
-        sys.stderr.flush()
-        for r in run_batch(problems[i:i + BATCH], mode):
-            stats[bucket(r)] += 1
-            if bucket(r) == 'abstained':
-                residual[r.get('status', '?')] += 1
-            if r.get('goal_operator'):
-                ops[r['goal_operator']] += 1
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as pool:
+        jobs = {pool.submit(run_batch, [problem], mode): problem['id']
+                for problem in problems}
+        for done, future in enumerate(as_completed(jobs), 1):
+            try:
+                rows = future.result()
+            except Exception as exc:
+                rows = [{'id': jobs[future], 'status': 'exception',
+                         'detail': repr(exc)[:80]}]
+            for r in rows:
+                stats[bucket(r)] += 1
+                if bucket(r) == 'abstained':
+                    residual[r.get('status', '?')] += 1
+                if r.get('goal_operator'):
+                    ops[r['goal_operator']] += 1
+            sys.stderr.write(f'\r{label} {done}/{len(problems)}   ')
+            sys.stderr.flush()
     sys.stderr.write('\r' + ' ' * 60 + '\r')
     return stats, residual, ops
 
@@ -170,12 +182,33 @@ def main() -> int:
     dev = [all_problems[i] for i in sorted(dev_ids) if i in all_problems]
     hold = [all_problems[i] for i in sorted(hold_ids) if i in all_problems]
 
+    selected_set = 'all'
+    if '--set' in sys.argv:
+        selected_set = sys.argv[sys.argv.index('--set') + 1]
+    selected_mode = 'all'
+    if '--mode' in sys.argv:
+        selected_mode = sys.argv[sys.argv.index('--mode') + 1]
+
+    datasets = [('dev/regression', dev), ('holdout', hold)]
+    if selected_set == 'dev':
+        datasets = [('dev/regression', dev)]
+    elif selected_set == 'holdout':
+        datasets = [('holdout', hold)]
+    elif selected_set != 'all':
+        raise SystemExit('--set must be all, dev, or holdout')
+
+    modes = [('a3b', 'A3b 本文の指示と条件'),
+             ('a4', 'A4 Discourse IR（routing のみ）'),
+             ('a5', 'A5 routing + 後退')]
+    if selected_mode != 'all':
+        modes = [item for item in modes if item[0] == selected_mode]
+        if not modes:
+            raise SystemExit('--mode must be all, a3b, a4, or a5')
+
     out = {}
-    for name, problems in (('dev/regression', dev), ('holdout', hold)):
+    for name, problems in datasets:
         print(f'\n{"=" * 62}\n{name}  {len(problems)} 問\n')
-        for mode, label in (('a3b', 'A3b 本文の指示と条件'),
-                            ('a4', 'A4 Discourse IR（routing のみ）'),
-                            ('a5', 'A5 routing + 後退')):
+        for mode, label in modes:
             stats, residual, ops = evaluate(problems, mode, f'{name[:3]}/{mode}')
             n = len(problems)
             correct = stats['certified_correct']
@@ -205,9 +238,12 @@ def main() -> int:
 
     out['_source_digest'] = {'before': digest_before, 'after': digest_after,
                              'valid': valid}
-    with open(os.path.join(ROOT, 'data', 'holdout-results.json'), 'w', encoding='utf-8') as h:
+    result_name = (f'holdout-results-{selected_set}-{selected_mode}.json'
+                   if selected_set != 'all' or selected_mode != 'all'
+                   else 'holdout-results.json')
+    with open(os.path.join(ROOT, 'data', result_name), 'w', encoding='utf-8') as h:
         json.dump(out, h, ensure_ascii=False, indent=2)
-    print('→ data/holdout-results.json')
+    print(f'→ data/{result_name}')
     return 0 if valid else 2
 
 

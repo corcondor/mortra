@@ -9,7 +9,6 @@
 | 場所 | 列挙 |
 |---|---|
 | `lib/mortra/world/world-types.ts` | proved / verified_instance / numerically_supported / … |
-| `worker/src/alphageometry2-executor.ts` | proved / unproved / unformalized / unavailable / error |
 | `worker/src/exact-linear-invariant.ts` | proved / underdetermined / inconsistent / blocked |
 | `worker/src/generalization-kernel.ts` | proved / open |
 | `worker/backend/cas_solver.py` | proved / verified_instance / numerically_supported / unverified |
@@ -32,7 +31,7 @@ KnowledgeStatus
 
 VerificationMethod
   symbolic_identity / exact_substitution / groebner_reduction
-  interval_arithmetic / smt / ddar / forward_chaining
+  interval_arithmetic / smt / forward_chaining
   numeric_sampling / property_test / group_closure
   orbit_membership / symmetry_verification
 ```

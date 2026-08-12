@@ -13,7 +13,7 @@ export const maxDuration = 300
  *
  * その場で対象を構築し（ライブ生成）、答えをツールで計算・独立検証し、
  * 既存問題との類似度を実際に計算して問題カードとして保存する。
- * DeepSeek 等の外部 LLM API は一切使わないので残高切れで止まらない。
+ * External language-model APIs are not used by this route.
  */
 
 type PoolProblem = {

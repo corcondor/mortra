@@ -5,7 +5,6 @@
  *
  *   'proved' の定義が 7 箇所にあった
  *     lib/mortra/world/world-types.ts
- *     worker/src/alphageometry2-executor.ts   （proved | unproved | unformalized | unavailable | error）
  *     worker/src/exact-linear-invariant.ts    （proved | underdetermined | inconsistent | blocked）
  *     worker/src/generalization-kernel.ts     （proved | open）
  *     worker/backend/cas_solver.py            （proved | verified_instance | ... ）
@@ -67,7 +66,7 @@ export type KnowledgeStatus =
 /** 検証に使った独立な手段。LLM の自己申告は列挙に入れない */
 export type VerificationMethod =
   | 'symbolic_identity' | 'exact_substitution' | 'groebner_reduction'
-  | 'interval_arithmetic' | 'smt' | 'ddar' | 'forward_chaining'
+  | 'interval_arithmetic' | 'smt' | 'forward_chaining'
   | 'numeric_sampling' | 'property_test' | 'group_closure'
   | 'orbit_membership' | 'symmetry_verification'
 

@@ -265,16 +265,6 @@ export function fromLinearStatus(status: string): KnowledgeStatus {
   }
 }
 
-/** alphageometry2-executor.ts の status を核の語へ */
-export function fromGeometryStatus(status: string): KnowledgeStatus {
-  switch (status) {
-    case 'proved': return 'proved'
-    case 'unproved': return 'unverified'
-    case 'unformalized': return 'unformalized'
-    default: return 'unsupported'
-  }
-}
-
 /** lib/proof-scene.ts の推論結果を核の語へ。数値検証しかしていないので proved とは呼ばない */
 export function fromProofScene(proved: boolean, numericallyChecked: boolean): KnowledgeStatus {
   if (!proved) return 'unverified'

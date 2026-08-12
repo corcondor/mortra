@@ -1,5 +1,8 @@
 # AlphaGeometry型の厳密消去核をMathOS Workerへ移植
 
+> Historical design reference only. 現在のMORTRAは外部AlphaGeometry runtimeへ依存せず、
+> 本文中の実装はMORTRA独自の消去核として保守する。
+
 ## 実装
 
 `worker/src/exact-linear-invariant.ts` に、有理数係数の厳密Gauss消去を追加した。
