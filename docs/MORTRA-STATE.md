@@ -65,6 +65,8 @@
   `116`構造へ更新。cleanup後のMORTRA Worker (`31637500154`) も、外部runtime
   再混入検査、82 tests、TypeScript buildを含め成功。旧MORTRA Worker runの
   外部runtime結果は現行architectureの根拠にしない。
+- semantic geometry feedback loopのCI (`31642888799`) は、worker 82 tests、visual loop 6 tests、
+  実験artifact完全一致、外部backend不変条件、Worker buildをLinux上で完走した。
 
 ### REPORTED_NOT_REPRODUCED / STALE
 
