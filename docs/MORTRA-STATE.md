@@ -49,12 +49,29 @@
 - このcorpusは解答本文を収録せず解答URLだけを持つ。ここでの`certified_correct`は
   「MORTRAが選択した目標に対する内部証明書」を意味し、公式解答との外部一致ではない。
   目標同定の誤りを測るには解答本文付き評価集合が別途必要。
-- frozen holdout A5を、問題本文を検査せず522問全件で一度だけ実行した。
-  `certified 112/522 = 21.5%`、`certified_wrong 1`、`numerically_supported 5`、
-  `abstained 332`、`solver_failure 11`、`parse_failure 2`、`timeout 59`。
-  abstained内訳は `not_reduced 135 / goal_not_meaningful 102 /
-  unsupported_backend 79 / goal_is_relation 16`。実行前後のsource digestは
-  `e9fc9963d8d8ee12`で一致した。上記の測定上の制約により、21.5%を公式正答率とは呼ばない。
+- frozen holdout A5を、問題本文を検査せず522問全件で実行した。
+  同じdigest `e9fc9963d8d8ee12` で、1問の制限時間だけを変えて2回測った。
+
+  ```
+  制限時間 12s   certified 112/522 = 21.5%   timeout 59
+  制限時間 60s   certified 138/522 = 26.4%   timeout  7
+  ```
+
+  差の26問は計算の中身ではなく制限時間である。12秒には Python 起動と
+  sympy の import が含まれ、4並列だとさらに削られる。timeoutは
+  「解けなかった」ではなく「測っていない」ので、分母に入れると
+  数学ではなくCPUの混雑を測ることになる。**採用する値は 60s 側の
+  `138/522 = 26.4%`**。誤答1、numerically_supported 9、abstained 351、
+  solver_failure 14、parse_failure 2。abstained内訳は
+  `not_reduced 142 / goal_not_meaningful 106 / unsupported_backend 86 /
+  goal_is_relation 17`。
+  同条件のdev A5は `46/167 = 27.5%`、誤答0、timeout 1。
+  holdoutがdevを下回らない（26.4% vs 27.5%）ので、devへの過適合は無い。
+  これは「MORTRAが選択した目標に対する内部証明書」であり、
+  公式解答との外部一致ではない。
+- `scripts/run_holdout.py` は制限時間・並列数・無効backendを実行時に出力し、
+  timeoutが2%を超えたらその場で警告する。設定を書かずに記録された率は
+  比較に使えない。
 - semantic geometry feedback loop v1を8ケースで実行した。厳密座標を与えた正例6件は
   baseline `0/6`からvisual candidate + exact verifierで`6/6`へ改善。期待した中間命題の
   recall `6/6`、候補の厳密検証後precision `92.6%`、証明を開く候補8件から6件を選択し、
@@ -86,7 +103,8 @@ geometry_region 7 / optimization 2 / counting 1`。
 
 ### Current four-axis status
 
-- **Reasoning / REPRODUCED:** dev `40/167`、frozen holdout内部認証`112/522`。
+- **Reasoning / REPRODUCED:** dev `46/167 = 27.5%`、frozen holdout内部認証
+  `138/522 = 26.4%`（1問60s・4並列、digest `e9fc9963d8d8ee12`、誤答1）。
   visual feedback限定実験は正例`0/6 -> 6/6`、負例誤受理`0/2`。
 - **Discovery / PROTOTYPE:** semantic geometryから関係候補を観測し、厳密有理座標の
   多項式恒等式、証明寄与アブレーションを通した候補だけReasonerへ戻せる。

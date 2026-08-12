@@ -19,8 +19,18 @@ BACKEND = os.path.join(ROOT, 'worker', 'backend')
 SEMANTICS = os.path.join(ROOT, 'worker', 'semantics')
 
 BATCH = 1
-BATCH_SECONDS = int(os.environ.get('MORTRA_PROBLEM_TIMEOUT', '12'))
+
+# 1問あたりの制限時間。既定を 12 秒にしていたとき holdout A5 で timeout が
+# 59件出た。12秒には Python 起動と sympy の import が含まれ、4並列だと
+# さらに削られる。timeout は「解けなかった」ではなく「測っていない」なので、
+# 分母に入ると数学ではなくCPUの混雑を測ることになる。
+# 同じコード・同じ問題で 60 秒にしたら timeout は 7件、certified は
+# 112 → 138 に戻った。差の 26 問は計算の中身ではなく制限時間だった。
+BATCH_SECONDS = int(os.environ.get('MORTRA_PROBLEM_TIMEOUT', '60'))
 MAX_WORKERS = max(1, int(os.environ.get('MORTRA_BENCH_WORKERS', '4')))
+
+# timeout がこの割合を超えたら、その run の数字は性能ではなく混雑を測っている
+TIMEOUT_WARN_RATIO = 0.02
 
 WORKER = r'''
 import json, sys
@@ -169,6 +179,8 @@ def source_digest() -> str:
 def main() -> int:
     digest_before = source_digest()
     print(f'測定対象のコード sha256[:16] = {digest_before}')
+    print(f'1問の制限時間 {BATCH_SECONDS}s / 並列 {MAX_WORKERS} / '
+          f'無効backend {os.environ.get("MORTRA_DISABLE_BACKENDS", "なし")}')
     manifest = json.load(open(os.path.join(ROOT, 'data', 'holdout-manifest.json'), encoding='utf-8'))
     hold_ids = set(manifest['holdout']['ids'])
     dev_ids = set(manifest['dev']['ids'])
@@ -220,6 +232,10 @@ def main() -> int:
             print(f'    solver failure     {stats["solver_failure"]:4d}')
             print(f'    parse failure      {stats["parse_failed"]:4d}')
             print(f'    timeout            {stats["timeout"]:4d}')
+            if stats['timeout'] > n * TIMEOUT_WARN_RATIO:
+                print(f'    !! timeout {stats["timeout"]}/{n} が多い。'
+                      f'この数字は性能ではなく制限時間を測っている。'
+                      f'MORTRA_PROBLEM_TIMEOUT を上げて測り直すこと')
             if residual:
                 print(f'    残差: ' + ', '.join(f'{k} {v}' for k, v in residual.most_common(5)))
             if ops:
