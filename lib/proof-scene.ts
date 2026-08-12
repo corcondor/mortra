@@ -18,6 +18,13 @@
  * LLM も外部 API も使わない。
  */
 
+import {
+  inspectSemanticGeometry,
+  type CoordinateProvenance,
+  type GeometryCandidate,
+  type GeometryCandidateCertificate,
+} from './mortra/vision/geometry-candidate-loop'
+
 export type Pt = { x: number; y: number }
 
 /** MORTRAの有限幾何述語。証明状態と図の同期に共用する。 */
@@ -31,6 +38,8 @@ export type Derivation = {
   /** null なら前提（問題文に書いてあったもの） */
   rule: string | null
   premises: Fact[]
+  origin: 'given' | 'deduced' | 'visual-certified'
+  certificate?: GeometryCandidateCertificate
 }
 
 // ---------------------------------------------------------------------------
@@ -295,11 +304,27 @@ export function forwardChain(
   premises: Fact[],
   goal: Fact,
   xy: Record<string, Pt>,
-  opts: { maxRounds?: number } = {},
+  opts: {
+    maxRounds?: number
+    certifiedSeeds?: { fact: Fact; certificate: GeometryCandidateCertificate }[]
+  } = {},
 ): ClosureResult {
   const derivations = new Map<string, Derivation>()
   for (const f of premises) {
-    derivations.set(factKey(f), { fact: f, rule: null, premises: [] })
+    derivations.set(factKey(f), { fact: f, rule: null, premises: [], origin: 'given' })
+  }
+  for (const seed of opts.certifiedSeeds ?? []) {
+    if (seed.certificate.status !== 'certified') continue
+    const key = factKey(seed.fact)
+    if (!derivations.has(key)) {
+      derivations.set(key, {
+        fact: seed.fact,
+        rule: 'visual-exact-coordinate',
+        premises: [],
+        origin: 'visual-certified',
+        certificate: seed.certificate,
+      })
+    }
   }
   const goalKey = factKey(goal)
   const maxRounds = opts.maxRounds ?? 12
@@ -326,7 +351,12 @@ export function forwardChain(
           if (derivations.has(key)) return
           // 図の上で成り立たないなら、当てはめが退化している。捨てる
           if (!holdsNumerically(concl, xy)) return
-          derivations.set(key, { fact: concl, rule: rule.id, premises: used.slice() })
+          derivations.set(key, {
+            fact: concl,
+            rule: rule.id,
+            premises: used.slice(),
+            origin: 'deduced',
+          })
           added = true
           return
         }
@@ -370,6 +400,23 @@ export type Beat = {
   highlight: Mark[]
   /** 前提か、導出か、結論か */
   role: 'given' | 'step' | 'goal'
+  origin: Derivation['origin']
+  certificate?: GeometryCandidateCertificate
+}
+
+export type VisualReasoningAudit = {
+  coordinateProvenance: CoordinateProvenance
+  baselineProved: boolean
+  augmentedProved: boolean
+  consideredPoints: number
+  consideredSegments: number
+  candidates: GeometryCandidate[]
+  certified: number
+  proofOpening: number
+  selectedCandidateIds: string[]
+  rejected: number
+  conjectureOnly: number
+  unverifiable: number
 }
 
 export type ProofScene = {
@@ -382,6 +429,8 @@ export type ProofScene = {
   proved: boolean
   /** 使った規則の一覧。「定理を暗記していない」ことの根拠になる */
   rulesUsed: string[]
+  /** 図からReasonerへ戻した候補と、その独立検証結果。 */
+  visualReasoning?: VisualReasoningAudit
 }
 
 const SYM: Record<Fact['pred'], (a: string[]) => string> = {
@@ -449,6 +498,75 @@ function rightAngleMark(f: Fact, xy: Record<string, Pt>): Mark | null {
   return { kind: 'rightangle', at: shared, from: other1, to: other2 }
 }
 
+export type VisualReasoningOptions = {
+  coordinateProvenance: CoordinateProvenance
+  visualTolerance?: number
+  maxCandidates?: number
+  maxReasoningSeeds?: number
+  /** 実験で「中間命題が証明を開くか」を分離して測るための設定。 */
+  allowDirectGoal?: boolean
+}
+
+export function closeWithVisualReasoning(input: {
+  premises: Fact[]
+  goal: Fact
+  points: Record<string, Pt>
+  options: VisualReasoningOptions
+}): { closure: ClosureResult; audit: VisualReasoningAudit } {
+  const baseline = forwardChain(input.premises, input.goal, input.points)
+  const inspection = inspectSemanticGeometry({
+    points: input.points,
+    facts: [...input.premises, input.goal],
+    coordinateProvenance: input.options.coordinateProvenance,
+    visualTolerance: input.options.visualTolerance,
+    maxCandidates: input.options.maxCandidates,
+  })
+  const known = new Set(baseline.derivations.keys())
+  const goalKey = factKey(input.goal)
+  const candidates = inspection.candidates.filter(candidate =>
+    !known.has(factKey(candidate.fact))
+    && (input.options.allowDirectGoal !== false || factKey(candidate.fact) !== goalKey),
+  )
+  const certifiedCandidates = candidates
+    .filter(candidate => candidate.certificate.status === 'certified')
+  // A visual fact is useful only if it changes the proof state. Test each fact
+  // independently, then inject the smallest ranked set instead of flooding the
+  // closure with every relation visible in the coordinate model.
+  const proofOpening = baseline.proved ? [] : certifiedCandidates.filter(candidate =>
+    forwardChain(input.premises, input.goal, input.points, {
+      certifiedSeeds: [{ fact: candidate.fact, certificate: candidate.certificate }],
+    }).proved,
+  )
+  const selected = proofOpening
+    .sort((a, b) => b.score - a.score || factKey(a.fact).localeCompare(factKey(b.fact)))
+    .slice(0, input.options.maxReasoningSeeds ?? 1)
+  const certifiedSeeds = selected.map(candidate => ({
+    fact: candidate.fact,
+    certificate: candidate.certificate,
+  }))
+  const closure = forwardChain(input.premises, input.goal, input.points, { certifiedSeeds })
+  const count = (status: GeometryCandidateCertificate['status']) =>
+    candidates.filter(candidate => candidate.certificate.status === status).length
+
+  return {
+    closure,
+    audit: {
+      coordinateProvenance: input.options.coordinateProvenance,
+      baselineProved: baseline.proved,
+      augmentedProved: closure.proved,
+      consideredPoints: inspection.consideredPoints,
+      consideredSegments: inspection.consideredSegments,
+      candidates,
+      certified: count('certified'),
+      proofOpening: proofOpening.length,
+      selectedCandidateIds: selected.map(candidate => candidate.id),
+      rejected: count('rejected'),
+      conjectureOnly: count('conjecture_only'),
+      unverifiable: count('unverifiable'),
+    },
+  }
+}
+
 /**
  * 証明 DAG を、目標から遡って一本の時間軸へ潰す。
  * 出てくる順が、図に描かれる順であり、文が書かれる順でもある。
@@ -461,8 +579,19 @@ export function compileScene(input: {
   points: Record<string, Pt>
   /** 骨組みにする三角形（問題文から取れた物）。無ければ図は証明の線だけになる */
   triangles?: [string, string, string][]
+  /** 指定時だけ、semantic geometryから検証済み候補をReasonerへ戻す。 */
+  visualReasoning?: VisualReasoningOptions
 }): ProofScene {
-  const { derivations, proved, goalKey } = forwardChain(input.premises, input.goal, input.points)
+  const visual = input.visualReasoning
+    ? closeWithVisualReasoning({
+        premises: input.premises,
+        goal: input.goal,
+        points: input.points,
+        options: input.visualReasoning,
+      })
+    : null
+  const { derivations, proved, goalKey } = visual?.closure
+    ?? forwardChain(input.premises, input.goal, input.points)
 
   // 目標に本当に効いた事実だけを残す。使わなかった前提は図に描かない
   const needed: string[] = []
@@ -489,7 +618,7 @@ export function compileScene(input: {
 
   for (const key of needed) {
     const d = derivations.get(key)!
-    const role: Beat['role'] = key === goalKey ? 'goal' : d.rule === null ? 'given' : 'step'
+    const role: Beat['role'] = key === goalKey ? 'goal' : d.origin === 'given' ? 'given' : 'step'
 
     const marks = marksFor(d.fact)
     const ra = rightAngleMark(d.fact, input.points)
@@ -505,7 +634,9 @@ export function compileScene(input: {
 
     const rule = d.rule ? RULES.find(r => r.id === d.rule) : null
     let says: string
-    if (rule) {
+    if (d.origin === 'visual-certified' && d.certificate) {
+      says = `${formulaOf(d.fact)}（入力された厳密座標から ${d.certificate.identities.join(', ')} を検証）`
+    } else if (rule) {
       // 規則の変数を、実際に束縛された点名へ戻す
       const binding: Record<string, string> = {}
       rule.conclusion.args.forEach((v, i) => { binding[v] = label(d.fact.args[i]) })
@@ -528,6 +659,8 @@ export function compileScene(input: {
       draw: fresh,
       highlight: d.premises.flatMap(marksFor),
       role,
+      origin: d.origin,
+      certificate: d.certificate,
     })
   }
 
@@ -539,5 +672,6 @@ export function compileScene(input: {
     beats,
     proved,
     rulesUsed: [...new Set(beats.map(b => b.rule).filter((r): r is string => !!r))],
+    visualReasoning: visual?.audit,
   }
 }

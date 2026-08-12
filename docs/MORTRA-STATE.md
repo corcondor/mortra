@@ -55,6 +55,11 @@
   abstained内訳は `not_reduced 135 / goal_not_meaningful 102 /
   unsupported_backend 79 / goal_is_relation 16`。実行前後のsource digestは
   `e9fc9963d8d8ee12`で一致した。上記の測定上の制約により、21.5%を公式正答率とは呼ばない。
+- semantic geometry feedback loop v1を8ケースで実行した。厳密座標を与えた正例6件は
+  baseline `0/6`からvisual candidate + exact verifierで`6/6`へ改善。期待した中間命題の
+  recall `6/6`、候補の厳密検証後precision `92.6%`、証明を開く候補8件から6件を選択し、
+  selected seed precision `100%`。constructed witnessと近似関係の負例2件はfalse acceptance `0`。
+  これは座標が数学的入力として厳密に与えられた限定実験であり、一般幾何証明率ではない。
 - GitHub Actions: MathOS全8 test shard + aggregate (`31624676721`) 成功。
   自律研究 (`31624693493`) は13 tests成功後、型付き候補を1件追加して研究キューを
   `116`構造へ更新。cleanup後のMORTRA Worker (`31637500154`) も、外部runtime
@@ -77,14 +82,28 @@ goal_not_meaningful 21 / goal_is_relation 2`。not_reducedは `cas 36 / proof 5 
 inequality 2`。unsupportedは `probability 13 / solution_set 8 /
 geometry_region 7 / optimization 2 / counting 1`。
 
+### Current four-axis status
+
+- **Reasoning / REPRODUCED:** dev `40/167`、frozen holdout内部認証`112/522`。
+  visual feedback限定実験は正例`0/6 -> 6/6`、負例誤受理`0/2`。
+- **Discovery / PROTOTYPE:** semantic geometryから関係候補を観測し、厳密有理座標の
+  多項式恒等式、証明寄与アブレーションを通した候補だけReasonerへ戻せる。
+  witness図からの一般定理発見、円・接線・補助構成の探索は未実装。
+- **Generation / PROTOTYPE:** 型付き自律合成と親条件付き探索は存在する。今回の
+  visual candidateを定理化し、条件tracebackから作問へ戻す経路は未接続。
+- **Experience / PROTOTYPE:** proof DAGから図・式・説明を同一Beatとして再生でき、
+  今回のvisual certificateもBeatへ記録される。一般scrubber、分岐、理解度実験は未実装。
+- **Business / VISION:** advanced learning、作問、interactive textbook、research visualization
+  は仮説。利用、理解、継続、支払意思の実測はまだない。
+
 ### Current top 3 experiments
 
-1. `not_reduced` 43件を小問scope・goal operator・束縛変数・型付き制約の共通loweringで
-   閉じる。特にCAS 36件を、問題IDや表層文型なしで分類する。
-2. 511個の未解析MathML slotのうち、括弧depth、vector/angle、集合・数列groupingを
-   typed objectへelaborateし、位置保存を維持したまま実行可能式を増やす。
-3. probability / geometry region / solution set / optimization / countingを、既存の
-   `ProblemIR -> backend contract`へ個別solverではなく型付き観測として接続する。
+1. visual feedbackを厳密座標から、記号的な構成証明書、円・接線・共円、補助点へ拡張し、
+   未見幾何でbaselineとのproof-rate差を測る。witness図は引き続き証明へ昇格させない。
+2. `not_reduced` 43件を小問scope・goal operator・束縛変数・型付き制約の共通loweringで
+   閉じ、ReasoningだけでなくGeneration/Visualが共有できるsemantic stateを増やす。
+3. visual candidateから条件traceback→問題→独立解法へ一本通し、作問validity、条件必要性、
+   solution depth、人間選好を測る。同時にProof Scene scrubberで理解度比較を準備する。
 
 ### Claims not ready for publication
 
@@ -96,19 +115,31 @@ geometry_region 7 / optimization 2 / counting 1`。
 
 ## 1. North Star
 
-MORTRA は解答器ではない。**一つの数学的構造を、意味を失わずに別の姿へ移す装置**である。
+### VISION
+
+MORTRA は解答器ではない。**一つの数学的構造を、意味を失わずに別の姿へ移し、
+各表現から得た候補を検証して数学状態へ戻す装置**である。目的関数はcertified solve rate
+単独ではなく、Reasoning・Discovery・Generation・Mathematical Experienceを同一semantic
+state上で相互強化し、その統合能力をproductへ接続すること。
 
 ```
-問題文 → 型付き構造 → 表現の選択 → 厳密な証明 or 計算
-                                → 図 / 3D
-                                → 人が読む説明
-                                → 物理的な運動
+                         Reasoning
+                             ↕
+                  Semantic Mathematical State
+                    ↙          ↓          ↘
+              Discovery   Generation   Experience
+                    ↘          ↑          ↙
+                         Verification
+                             ↓
+                          Reasoning
 ```
 
 公開時の一文は `One structure. Many representations.`
 
 **UX の中心原理**：文章・式・図・3D・運動は別々の出力ではない。
 **同じ証明状態の、同期した眺め**である。図は説明の挿絵ではない。
+Visual/Geometry/Designはpresentation layerではなく、候補命題生成、数学的発見、作問、
+人間理解、product experienceの一部である。ただし候補はcertificateなしにReasonerへ入れない。
 
 ---
 

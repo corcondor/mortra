@@ -5,11 +5,23 @@ on:
     branches: [master]
     paths:
       - "worker/**"
+      - "lib/proof-scene.ts"
+      - "lib/mortra/vision/**"
+      - "tests/visual-candidate-loop.test.ts"
+      - "scripts/visual-reasoning-loop-experiment.mts"
+      - "data/visual-reasoning-*.json"
+      - "package.json"
       - "scripts/external_backend_invariant.py"
       - ".github/workflows/worker-ci.yml"
   pull_request:
     paths:
       - "worker/**"
+      - "lib/proof-scene.ts"
+      - "lib/mortra/vision/**"
+      - "tests/visual-candidate-loop.test.ts"
+      - "scripts/visual-reasoning-loop-experiment.mts"
+      - "data/visual-reasoning-*.json"
+      - "package.json"
       - "scripts/external_backend_invariant.py"
       - ".github/workflows/worker-ci.yml"
   workflow_dispatch:
@@ -48,6 +60,12 @@ jobs:
       - name: Test the authoritative semantic and execution kernel
         working-directory: worker
         run: npm test
+      - name: Test semantic geometry feedback loop
+        run: npm run test:visual-loop
+      - name: Reproduce semantic geometry experiment artifact
+        run: |
+          npm run experiment:visual-loop
+          git diff --exit-code -- data/visual-reasoning-loop-experiment.json data/visual-reasoning-demo.json
       - name: Type-check the production Worker
         working-directory: worker
         run: npm run build

@@ -13,6 +13,7 @@
  */
 import { useEffect, useMemo, useRef, useState } from 'react'
 import corpus from '@/data/formalized-geometry.json'
+import visualReasoningDemo from '@/data/visual-reasoning-demo.json'
 import { write2d, strokeLength } from '@/lib/handwriting2d'
 import {
   compileScene, formulaOf,
@@ -210,6 +211,7 @@ export default function ProofPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [params, setParams] = useState<URLSearchParams | null>(null)
   const [frame, setFrame] = useState(0)
+  const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 })
 
   useEffect(() => { setParams(new URLSearchParams(location.search)) }, [])
 
@@ -218,12 +220,38 @@ export default function ProofPage() {
   const exporting = params?.get('export') === '1'
 
   const scene = useMemo(() => {
+    if (id === 'visual-loop') return visualReasoningDemo as unknown as ProofScene
     const raw = (corpus as unknown as Raw[]).find(r => r.id === id) ?? (corpus as unknown as Raw[])[0]
     if (!raw || raw.status !== 'formalized') return null
     try { return buildScene(raw) } catch { return null }
   }, [id])
 
   const totalFrames = scene ? scene.beats.length * BEAT_FRAMES + 50 : 0
+
+  // Background tabs can pause requestAnimationFrame. Measure independently so a
+  // responsive resize still causes one deterministic draw.
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas || exporting) return
+    const measure = () => {
+      const rect = canvas.getBoundingClientRect()
+      const next = {
+        width: Math.max(1, Math.round(rect.width)),
+        height: Math.max(1, Math.round(rect.height)),
+      }
+      setCanvasSize(current =>
+        current.width === next.width && current.height === next.height ? current : next,
+      )
+    }
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(canvas)
+    window.addEventListener('resize', measure)
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('resize', measure)
+    }
+  }, [exporting])
 
   // 再生
   useEffect(() => {
@@ -287,15 +315,16 @@ export default function ProofPage() {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    const W = exporting ? OUT_W : canvas.clientWidth
-    const H = exporting ? OUT_H : canvas.clientHeight
+    const W = exporting ? OUT_W : canvasSize.width || canvas.clientWidth
+    const H = exporting ? OUT_H : canvasSize.height || canvas.clientHeight
+    if (W <= 0 || H <= 0) return
     const dpr = exporting ? 1 : Math.min(2, window.devicePixelRatio || 1)
     if (canvas.width !== W * dpr || canvas.height !== H * dpr) {
       canvas.width = W * dpr
       canvas.height = H * dpr
     }
     renderFrame(ctx, scene, frame, { W, H, dpr, theme })
-  }, [scene, frame, theme, exporting])
+  }, [scene, frame, theme, exporting, canvasSize])
 
   if (!scene) {
     return (

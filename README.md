@@ -3,7 +3,8 @@
 **One structure. Many representations.**
 
 MORTRAは、自然言語・TeX・MathMLを型付き数学構造へ変換し、独自のCAS、記号証明、
-不等式、幾何、構造探索backendで検証して、証明・説明・図・Web表現へ移す数学システムです。
+不等式、幾何、構造探索backendで検証する数学システムです。証明・発見・作問・図・Web表現は
+別々の出力ではなく、同じsemantic stateのprojectionであり、検証済み候補を推論へ戻します。
 
 現在の中心経路は外部の数学AIや外部LLMを必要としません。
 AlphaGeometry / AlphaGeometry2は設計研究上の歴史的参考であり、runtime依存ではありません。
@@ -11,14 +12,14 @@ AlphaGeometry / AlphaGeometry2は設計研究上の歴史的参考であり、ru
 ## Architecture
 
 ```text
-Natural language / TeX / MathML
-  -> Discourse IR / Problem IR
-  -> Semantic Kernel
-  -> typed representation routing
-  -> MORTRA-owned CAS / proof / inequality / geometry / discovery backends
-  -> certificate and verification status
-  -> Proof Scene / Visual IR
-  -> explanation / diagram / Web / 3D
+                           Reasoning
+                               <->
+Natural language / TeX -> Typed Semantic State <- Diagram / Data
+                         /        |        \
+                Discovery    Generation    Experience
+                         \        |        /
+                          Verification
+                               -> Reasoning
 ```
 
 ## Setup
@@ -50,6 +51,13 @@ cd worker
 npm ci
 npm test
 npm run build
+```
+
+semantic geometry feedback loop:
+
+```powershell
+npm run test:visual-loop
+npm run experiment:visual-loop
 ```
 
 benchmarkの正本、測定の分類、現在の未達は`docs/MORTRA-STATE.md`を参照してください。

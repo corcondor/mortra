@@ -1,0 +1,174 @@
+{
+  "experiment": "semantic-geometry-visual-candidate-verifier-loop-v1",
+  "recorded_on": "2026-08-13",
+  "semantics": {
+    "candidate_source": "bounded spatial inspection over salient typed points and segments",
+    "acceptance": "safe exact-rational polynomial identities only",
+    "witness_policy": "constructed witnesses may propose conjectures but cannot certify facts",
+    "direct_goal_policy": "disabled to measure whether an intermediate proposition opens a proof"
+  },
+  "summary": {
+    "positive_cases": 6,
+    "negative_cases": 2,
+    "baseline_proof_rate": 0,
+    "visual_loop_proof_rate": 1,
+    "auxiliary_candidate_recall": 1,
+    "proposal_precision_after_exact_verification": 0.9261363636363636,
+    "proof_opening_candidates": 8,
+    "selected_reasoning_seeds": 6,
+    "selected_seed_precision": 1,
+    "verifier_false_acceptance_rate": 0,
+    "mean_augmented_proof_steps": 2,
+    "candidates_proposed": 209,
+    "candidates_certified": 163,
+    "candidates_rejected": 13
+  },
+  "rows": [
+    {
+      "id": "parallel-plus-hidden-perpendicular",
+      "expected": true,
+      "baseline_proved": false,
+      "visual_loop_proved": true,
+      "expected_intermediate": "perp(c|d,e|f)",
+      "intermediate_status": "certified",
+      "proposed": 33,
+      "certified": 33,
+      "proof_opening": 1,
+      "selected": 1,
+      "rejected": 0,
+      "conjecture_only": 0,
+      "proof_steps": 2,
+      "rules_used": [
+        "visual-exact-coordinate",
+        "para-perp"
+      ]
+    },
+    {
+      "id": "common-hidden-perpendicular",
+      "expected": true,
+      "baseline_proved": false,
+      "visual_loop_proved": true,
+      "expected_intermediate": "perp(c|d,e|f)",
+      "intermediate_status": "certified",
+      "proposed": 33,
+      "certified": 33,
+      "proof_opening": 1,
+      "selected": 1,
+      "rejected": 0,
+      "conjecture_only": 0,
+      "proof_steps": 2,
+      "rules_used": [
+        "visual-exact-coordinate",
+        "perp-perp-para"
+      ]
+    },
+    {
+      "id": "hidden-isosceles",
+      "expected": true,
+      "baseline_proved": false,
+      "visual_loop_proved": true,
+      "expected_intermediate": "cong(a|b,a|c)",
+      "intermediate_status": "certified",
+      "proposed": 1,
+      "certified": 1,
+      "proof_opening": 1,
+      "selected": 1,
+      "rejected": 0,
+      "conjecture_only": 0,
+      "proof_steps": 2,
+      "rules_used": [
+        "visual-exact-coordinate",
+        "isosceles-base-angles"
+      ]
+    },
+    {
+      "id": "hidden-equidistance",
+      "expected": true,
+      "baseline_proved": false,
+      "visual_loop_proved": true,
+      "expected_intermediate": "cong(b|o,c|o)",
+      "intermediate_status": "certified",
+      "proposed": 7,
+      "certified": 7,
+      "proof_opening": 3,
+      "selected": 1,
+      "rejected": 0,
+      "conjecture_only": 0,
+      "proof_steps": 2,
+      "rules_used": [
+        "visual-exact-coordinate",
+        "perp-bisector"
+      ]
+    },
+    {
+      "id": "hidden-parallel-chain",
+      "expected": true,
+      "baseline_proved": false,
+      "visual_loop_proved": true,
+      "expected_intermediate": "para(c|d,e|f)",
+      "intermediate_status": "certified",
+      "proposed": 64,
+      "certified": 64,
+      "proof_opening": 1,
+      "selected": 1,
+      "rejected": 0,
+      "conjecture_only": 0,
+      "proof_steps": 2,
+      "rules_used": [
+        "visual-exact-coordinate",
+        "para-transitive"
+      ]
+    },
+    {
+      "id": "hidden-midpoint",
+      "expected": true,
+      "baseline_proved": false,
+      "visual_loop_proved": true,
+      "expected_intermediate": "midp(m;a|b)",
+      "intermediate_status": "certified",
+      "proposed": 5,
+      "certified": 5,
+      "proof_opening": 1,
+      "selected": 1,
+      "rejected": 0,
+      "conjecture_only": 0,
+      "proof_steps": 2,
+      "rules_used": [
+        "visual-exact-coordinate",
+        "midp-to-coll"
+      ]
+    },
+    {
+      "id": "constructed-witness-is-not-proof",
+      "expected": false,
+      "baseline_proved": false,
+      "visual_loop_proved": false,
+      "expected_intermediate": "perp(c|d,e|f)",
+      "intermediate_status": "conjecture_only",
+      "proposed": 33,
+      "certified": 0,
+      "proof_opening": 0,
+      "selected": 0,
+      "rejected": 0,
+      "conjecture_only": 33,
+      "proof_steps": 0,
+      "rules_used": []
+    },
+    {
+      "id": "near-perpendicular-is-not-exact",
+      "expected": false,
+      "baseline_proved": false,
+      "visual_loop_proved": false,
+      "expected_intermediate": "perp(c|d,e|f)",
+      "intermediate_status": "rejected",
+      "proposed": 33,
+      "certified": 20,
+      "proof_opening": 0,
+      "selected": 0,
+      "rejected": 13,
+      "conjecture_only": 0,
+      "proof_steps": 0,
+      "rules_used": []
+    }
+  ]
+}

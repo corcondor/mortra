@@ -1,0 +1,205 @@
+{
+  "title": "Visual feedback loop",
+  "statement": "厳密座標で定義された点から中間命題を観測し、検証後に証明へ戻す。",
+  "points": {
+    "a": {
+      "x": 0,
+      "y": 0
+    },
+    "b": {
+      "x": 2,
+      "y": 0
+    },
+    "c": {
+      "x": 0,
+      "y": 1
+    },
+    "d": {
+      "x": 2,
+      "y": 1
+    },
+    "e": {
+      "x": 3,
+      "y": 0
+    },
+    "f": {
+      "x": 3,
+      "y": 2
+    }
+  },
+  "frame": [],
+  "beats": [
+    {
+      "claim": {
+        "pred": "para",
+        "args": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ]
+      },
+      "rule": null,
+      "says": "AB ∥ CD（問題文より）",
+      "formula": "AB ∥ CD",
+      "draw": [
+        {
+          "kind": "parallel",
+          "from": "a",
+          "to": "b",
+          "count": 1
+        },
+        {
+          "kind": "parallel",
+          "from": "c",
+          "to": "d",
+          "count": 1
+        }
+      ],
+      "highlight": [],
+      "role": "given",
+      "origin": "given"
+    },
+    {
+      "claim": {
+        "pred": "perp",
+        "args": [
+          "c",
+          "d",
+          "e",
+          "f"
+        ]
+      },
+      "rule": "visual-exact-coordinate",
+      "says": "CD ⊥ EF（入力された厳密座標から 0 = 0 を検証）",
+      "formula": "CD ⊥ EF",
+      "draw": [
+        {
+          "kind": "segment",
+          "from": "c",
+          "to": "d"
+        },
+        {
+          "kind": "segment",
+          "from": "e",
+          "to": "f"
+        }
+      ],
+      "highlight": [],
+      "role": "step",
+      "origin": "visual-certified",
+      "certificate": {
+        "status": "certified",
+        "method": "exact-rational-coordinate-identity",
+        "identities": [
+          "0 = 0"
+        ],
+        "dependencies": [
+          "c",
+          "d",
+          "e",
+          "f"
+        ],
+        "reason": "the relation follows from exact coordinates supplied as mathematical givens"
+      }
+    },
+    {
+      "claim": {
+        "pred": "perp",
+        "args": [
+          "a",
+          "b",
+          "e",
+          "f"
+        ]
+      },
+      "rule": "para-perp",
+      "says": "AB ∥ CD で CD ⊥ EF。よって AB ⊥ EF",
+      "formula": "AB ⊥ EF",
+      "draw": [
+        {
+          "kind": "segment",
+          "from": "a",
+          "to": "b"
+        }
+      ],
+      "highlight": [
+        {
+          "kind": "parallel",
+          "from": "a",
+          "to": "b",
+          "count": 1
+        },
+        {
+          "kind": "parallel",
+          "from": "c",
+          "to": "d",
+          "count": 1
+        },
+        {
+          "kind": "segment",
+          "from": "c",
+          "to": "d"
+        },
+        {
+          "kind": "segment",
+          "from": "e",
+          "to": "f"
+        }
+      ],
+      "role": "goal",
+      "origin": "deduced"
+    }
+  ],
+  "proved": true,
+  "rulesUsed": [
+    "visual-exact-coordinate",
+    "para-perp"
+  ],
+  "visualReasoning": {
+    "coordinateProvenance": "given_exact",
+    "baselineProved": false,
+    "augmentedProved": true,
+    "consideredPoints": 6,
+    "consideredSegments": 15,
+    "candidates": [
+      {
+        "id": "visual.perp(c|d,e|f)",
+        "fact": {
+          "pred": "perp",
+          "args": [
+            "c",
+            "d",
+            "e",
+            "f"
+          ]
+        },
+        "score": 1,
+        "normalizedResidual": 0,
+        "observedBy": "semantic-spatial-inspection",
+        "certificate": {
+          "status": "certified",
+          "method": "exact-rational-coordinate-identity",
+          "identities": [
+            "0 = 0"
+          ],
+          "dependencies": [
+            "c",
+            "d",
+            "e",
+            "f"
+          ],
+          "reason": "the relation follows from exact coordinates supplied as mathematical givens"
+        }
+      }
+    ],
+    "certified": 33,
+    "proofOpening": 1,
+    "selectedCandidateIds": [
+      "visual.perp(c|d,e|f)"
+    ],
+    "rejected": 0,
+    "conjectureOnly": 0,
+    "unverifiable": 0
+  }
+}
