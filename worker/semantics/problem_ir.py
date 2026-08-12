@@ -170,6 +170,7 @@ def solve_with_routing(body: str, expressions: list) -> dict:
 
     ir = build_problem_ir(body, expressions)
     relations = list(ir.constraints)[:6] + list(ir.assumptions)[:4]
+    held = None  # 証明側が「反例なし」まで来た結果。certified には数えない
 
     # 1. routing で決まった場合
     if ir.goal is not None and ir.backend in IMPLEMENTED_BACKENDS             and ir.goal_expression is not None:
@@ -186,6 +187,10 @@ def solve_with_routing(body: str, expressions: list) -> dict:
             out['goal_operator'] = ir.goal.operator.value
             out['backend'] = ir.backend
             return out
+        # 「反例が無い」で打ち切らない。候補探索がまだ解けるかもしれない。
+        # ただし後退も解けなかったときのために、保留の事実は持っておく。
+        if out.get('status') == 'numerically_supported':
+            held = out
 
     # 2. 後退。本文から得た仮定は捨てずに渡す
     try:
@@ -201,4 +206,12 @@ def solve_with_routing(body: str, expressions: list) -> dict:
         if out.get('status') != 'solved' and ir.backend not in IMPLEMENTED_BACKENDS:
             out['status'] = 'unsupported_backend'
             out['detail'] = ir.backend
+    # 後退が解けず、証明側が「反例なし」まで来ていたなら、そちらを残す。
+    # 何も言えないより「反例は見つからなかった」の方が情報がある。
+    # certified には数えない。
+    if held is not None and out.get('status') != 'solved':
+        held['route'] = 'discourse'
+        held['goal_operator'] = ir.goal.operator.value
+        held['backend'] = ir.backend
+        return held
     return out

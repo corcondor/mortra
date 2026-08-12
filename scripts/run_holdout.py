@@ -4,6 +4,7 @@
     python scripts/run_holdout.py
 """
 import glob
+import hashlib
 import io
 import json
 import os
@@ -88,6 +89,15 @@ def run_batch(problems, mode):
 
 
 def bucket(r):
+    """段に落とす。強い言葉と弱い言葉を混ぜない。
+
+    以前ここは「proved と verified_instance 以外は全部 certified_wrong」だった。
+    proof backend が numerically_supported を返し始めた途端、
+    保留が誤答として数えられた（dev A5 で 4件）。保留は誤答ではない。
+
+    disproved は誤答に数える。過去問の「示せ」は真なので、
+    偽と判定したなら読み間違えている。数学的発見ではない。
+    """
     st = r.get('status')
     if st == 'timeout':
         return 'timeout'
@@ -97,9 +107,15 @@ def bucket(r):
         return 'solver_failure'
     if st == 'unverified':
         return 'certified_wrong'
+    if st == 'numerically_supported':
+        return 'numerically_supported'
     if st == 'solved':
-        return ('certified_correct' if r.get('verdict') in ('proved', 'verified_instance')
-                else 'certified_wrong')
+        v = r.get('verdict')
+        if v in ('proved', 'verified_instance'):
+            return 'certified_correct'
+        if v == 'numerically_supported':
+            return 'numerically_supported'
+        return 'certified_wrong'
     return 'abstained'
 
 
@@ -118,7 +134,29 @@ def evaluate(problems, mode, label):
     return stats, residual, ops
 
 
+def source_digest() -> str:
+    """測定対象のコードの指紋。
+
+    この script はバッチごとに新しい Python を起動する。つまり走行中に
+    ソースを編集すると、測定の途中でコードが入れ替わる。
+    実際に一度やってしまった。ある run は dev 区間が proof backend 前、
+    holdout 区間が proof backend 後のコードで走っていた。
+    一つの表に見えて、二つのバージョンの数字が混ざっていた。
+
+    走る前と後で指紋を取り、変わっていたらその run を無効と書く。
+    """
+    h = hashlib.sha256()
+    for d in (BACKEND, SEMANTICS):
+        for name in sorted(os.listdir(d)):
+            if name.endswith('.py'):
+                h.update(name.encode())
+                h.update(open(os.path.join(d, name), 'rb').read())
+    return h.hexdigest()[:16]
+
+
 def main() -> int:
+    digest_before = source_digest()
+    print(f'測定対象のコード sha256[:16] = {digest_before}')
     manifest = json.load(open(os.path.join(ROOT, 'data', 'holdout-manifest.json'), encoding='utf-8'))
     hold_ids = set(manifest['holdout']['ids'])
     dev_ids = set(manifest['dev']['ids'])
@@ -144,6 +182,7 @@ def main() -> int:
             print(f'  {label}')
             print(f'    certified correct  {correct:4d}/{n} = {100 * correct / n:5.1f}%')
             print(f'    certified wrong    {stats["certified_wrong"]:4d}')
+            print(f'    反例なし（未証明）  {stats["numerically_supported"]:4d}')
             print(f'    abstained          {stats["abstained"]:4d}')
             print(f'    solver failure     {stats["solver_failure"]:4d}')
             print(f'    parse failure      {stats["parse_failed"]:4d}')
@@ -155,10 +194,21 @@ def main() -> int:
             out[f'{name}:{mode}'] = dict(stats)
             print()
 
+    digest_after = source_digest()
+    valid = digest_before == digest_after
+    if valid:
+        print(f'コードは走行中に変わっていない  {digest_before}')
+    else:
+        print(f'!! この run は無効。走行中にコードが変わった '
+              f'{digest_before} → {digest_after}')
+        print('!! 前半と後半で別のコードを測っている。数字を採用しないこと')
+
+    out['_source_digest'] = {'before': digest_before, 'after': digest_after,
+                             'valid': valid}
     with open(os.path.join(ROOT, 'data', 'holdout-results.json'), 'w', encoding='utf-8') as h:
         json.dump(out, h, ensure_ascii=False, indent=2)
     print('→ data/holdout-results.json')
-    return 0
+    return 0 if valid else 2
 
 
 if __name__ == '__main__':

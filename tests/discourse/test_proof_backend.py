@@ -82,6 +82,20 @@ print('\n■ 関係式でないものは扱わない')
 check('式を渡したら goal_not_relation',
       prove_relation(a + b, []).get('status') == 'goal_not_relation')
 
+print('\n■ 保留を「答えを出した」と数えさせない')
+# dev A5 で「誤答 4」と出たものは全部これだった。
+# status が 'solved' だと採点側が答えとして読み、verdict が proved でないので
+# 誤答に落ちる。保留は誤答ではない。status を分ける。
+r = prove_relation(sp.Le(sp.log(x), x - 1), [sp.Gt(x, 0)])
+check('反例なしの status は solved ではない',
+      r.get('status') != 'solved', str(r.get('status')))
+check('反例なしの status は numerically_supported',
+      r.get('status') == 'numerically_supported', str(r.get('status')))
+check('proved の status は solved のまま',
+      prove_relation(sp.Eq(a + b, b + a), []).get('status') == 'solved')
+check('disproved の status は solved のまま',
+      prove_relation(sp.false, []).get('status') == 'solved')
+
 print(f"\n{'─' * 60}")
 print(f'証明backend {passed}/{passed + failed}' + (f'   失敗 {failed}' if failed else ''))
 for n in notes:

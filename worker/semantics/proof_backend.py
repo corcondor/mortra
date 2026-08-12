@@ -144,8 +144,14 @@ def prove_relation(goal, constraints) -> dict:
         except Exception as exc:
             return {'status': 'solver_error', 'detail': repr(exc)[:100]}
 
-    # 反例が無く、記号的にも決まらない。証明したとは呼ばない
-    return {'status': 'solved', 'verdict': 'numerically_supported',
+    # 反例が無く、記号的にも決まらない。証明したとは呼ばない。
+    #
+    # status を 'solved' にしない。二つ理由がある。
+    #   1. 採点側が status=='solved' を「答えを出した」と読む。
+    #      「反例が無い」を答えとして数えさせない。
+    #   2. routing が status=='solved' で打ち切る。
+    #      未証明で打ち切ると、候補探索が解けたかもしれない問題を潰す。
+    return {'status': 'numerically_supported', 'verdict': 'numerically_supported',
             'method': 'no_counterexample',
             'answer_latex': '反例なし（未証明）',
             'symbolic_check': False, 'numeric_check': True}
