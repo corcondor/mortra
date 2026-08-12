@@ -55,7 +55,7 @@ BACKEND_FOR_GOAL = {
     GoalOperator.UNKNOWN: 'unsupported',
 }
 
-IMPLEMENTED_BACKENDS = {'cas', 'inequality'}
+IMPLEMENTED_BACKENDS = {'cas', 'inequality', 'proof'}
 
 
 @dataclass
@@ -116,7 +116,11 @@ def build_problem_ir(body: str, expressions: list) -> TypedProblemIR:
     for candidate in sorted(ir.goals, key=lambda g: -g.confidence):
         if candidate.formula_index is not None and 0 <= candidate.formula_index < len(expressions):
             expr = expressions[candidate.formula_index]
-            if isinstance(expr, (sp.Equality, sp.Rel)):
+            wants_relation = candidate.operator in (
+                GoalOperator.PROVE, GoalOperator.SHOW_INEQUALITY)
+            is_relation = isinstance(expr, (sp.Equality, sp.Rel))
+            # 「示せ」の目標は関係式そのもの。式を探しに行くのが誤りだった
+            if wants_relation != is_relation:
                 continue
             goal, goal_expr = candidate, expr
             break
@@ -170,7 +174,11 @@ def solve_with_routing(body: str, expressions: list) -> dict:
     # 1. routing で決まった場合
     if ir.goal is not None and ir.backend in IMPLEMENTED_BACKENDS             and ir.goal_expression is not None:
         try:
-            out = solve_expressions(relations, ir.goal_expression)
+            if ir.backend == 'proof':
+                from proof_backend import prove_relation
+                out = prove_relation(ir.goal_expression, relations)
+            else:
+                out = solve_expressions(relations, ir.goal_expression)
         except Exception as exc:
             out = {'status': 'solver_error', 'detail': repr(exc)[:100]}
         if out.get('status') == 'solved':
