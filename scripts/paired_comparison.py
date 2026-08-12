@@ -40,8 +40,10 @@ import json, sys, re
 sys.path.insert(0, r"{backend}")
 import sympy as sp
 from mathml_ast import parse_math
-from solve_from_ast import solve_expressions, solve_full
+from solve_from_ast import solve_expressions, solve_full, solve_with_text
 import cas_solver as C
+sys.path.insert(0, r"{backend}".replace("backend", "semantics"))
+from problem_ir import build_problem_ir, solve_with_routing
 
 REL = re.compile(r"(?<![<>!=])=(?!=)|<=|>=|!=|<|>")
 
@@ -66,6 +68,32 @@ def run_full(p):
         return {{"status": "parse_failed"}}
     relations = [e for e in exprs if isinstance(e, (sp.Equality, sp.Rel))][:6]
     out = solve_full(relations, exprs, p.get("body", ""))
+    out["parsed"] = True
+    return out
+
+def run_discourse(p):
+    exprs = parse_math(" ".join(p["mathml"]))
+    if not exprs:
+        return {{"status": "parse_failed"}}
+    ir = build_problem_ir(p.get("body", ""), exprs)
+    if ir.goal is None:
+        return {{"status": "no_goal", "parsed": True}}
+    if ir.backend not in ("cas", "inequality"):
+        return {{"status": "unsupported_backend", "detail": ir.backend, "parsed": True}}
+    if ir.goal_expression is None:
+        return {{"status": "goal_not_expression", "parsed": True}}
+    relations = list(ir.constraints)[:6] + list(ir.assumptions)[:4]
+    out = solve_expressions(relations, ir.goal_expression)
+    out["parsed"] = True
+    out["backend"] = ir.backend
+    out["goal_operator"] = ir.goal.operator.value
+    return out
+
+def run_routed(p):
+    exprs = parse_math(" ".join(p["mathml"]))
+    if not exprs:
+        return {{"status": "parse_failed"}}
+    out = solve_with_routing(p.get("body", ""), exprs)
     out["parsed"] = True
     return out
 
@@ -94,7 +122,11 @@ mode = payload["mode"]
 out = []
 for p in payload["problems"]:
     try:
-        if mode == "full":
+        if mode == "routed":
+            r = run_routed(p)
+        elif mode == "discourse":
+            r = run_discourse(p)
+        elif mode == "full":
             r = run_full(p)
         elif mode == "ast":
             r = run_ast(p)
@@ -139,7 +171,8 @@ def bucket(r) -> str:
     if st in ('parse_failed', 'exception'):
         return 'parse_failed'
     if st in ('no_goal', 'goal_not_expression', 'goal_is_relation',
-              'goal_unparsed', 'missing_goal', 'not_reduced'):
+              'goal_unparsed', 'missing_goal', 'not_reduced',
+              'goal_not_meaningful', 'unsupported_backend'):
         return 'abstained'
     if st == 'solver_error':
         return 'executed_failed'
@@ -176,11 +209,17 @@ def evaluate(problems, mode, label):
 
 
 def main() -> int:
+    # dev/regression だけを使う。holdout を混ぜない
+    manifest_path = os.path.join(ROOT, 'data', 'holdout-manifest.json')
+    dev_ids = None
+    if os.path.exists(manifest_path):
+        dev_ids = set(json.load(open(manifest_path, encoding='utf-8'))['dev']['ids'])
     problems = []
     for f in glob.glob(os.path.join(ROOT, 'data', 'mathexamtest', '*.json')):
         problems.extend(json.load(open(f, encoding='utf-8'))['problems'])
     problems = [{'id': p['id'], 'mathml': p['mathml'], 'body': p.get('body', '')}
-                for p in problems if p.get('mathml')]
+                for p in problems if p.get('mathml')
+                and (dev_ids is None or p['id'] in dev_ids)]
     n = len(problems)
     print(f'同一問題集合 {n} 問。三経路を全件で比べる\n')
 
@@ -189,6 +228,8 @@ def main() -> int:
         '文字列AST（正規表現）': evaluate(problems, 'string', '文字列'),
         'AST（木から直接）': evaluate(problems, 'ast', 'AST'),
         '+本文の指示と条件': evaluate(problems, 'full', '本文'),
+        'A4 Discourse IR': evaluate(problems, 'discourse', 'A4'),
+        'A5 routing+後退': evaluate(problems, 'routed', 'A5'),
     }
 
     width = max(len(k) for k in results)
