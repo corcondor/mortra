@@ -57,7 +57,9 @@
   `e9fc9963d8d8ee12`で一致した。上記の測定上の制約により、21.5%を公式正答率とは呼ばない。
 - GitHub Actions: MathOS全8 test shard + aggregate (`31624676721`) 成功。
   自律研究 (`31624693493`) は13 tests成功後、型付き候補を1件追加して研究キューを
-  `116`構造へ更新。旧MORTRA Worker runの外部runtime結果は現行architectureの根拠にしない。
+  `116`構造へ更新。cleanup後のMORTRA Worker (`31637500154`) も、外部runtime
+  再混入検査、82 tests、TypeScript buildを含め成功。旧MORTRA Worker runの
+  外部runtime結果は現行architectureの根拠にしない。
 
 ### REPORTED_NOT_REPRODUCED / STALE
 
