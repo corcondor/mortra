@@ -40,7 +40,7 @@ import json, sys, re
 sys.path.insert(0, r"{backend}")
 import sympy as sp
 from mathml_ast import parse_math
-from solve_from_ast import solve_expressions
+from solve_from_ast import solve_expressions, solve_full
 import cas_solver as C
 
 REL = re.compile(r"(?<![<>!=])=(?!=)|<=|>=|!=|<|>")
@@ -57,6 +57,15 @@ def run_ast(p):
     if goal is None:
         return {{"status": "no_goal"}}
     out = solve_expressions(relations[:6], goal)
+    out["parsed"] = True
+    return out
+
+def run_full(p):
+    exprs = parse_math(" ".join(p["mathml"]))
+    if not exprs:
+        return {{"status": "parse_failed"}}
+    relations = [e for e in exprs if isinstance(e, (sp.Equality, sp.Rel))][:6]
+    out = solve_full(relations, exprs, p.get("body", ""))
     out["parsed"] = True
     return out
 
@@ -85,7 +94,9 @@ mode = payload["mode"]
 out = []
 for p in payload["problems"]:
     try:
-        if mode == "ast":
+        if mode == "full":
+            r = run_full(p)
+        elif mode == "ast":
             r = run_ast(p)
         elif mode == "string":
             r = run_string(p, strip_tags=False)
@@ -168,7 +179,8 @@ def main() -> int:
     problems = []
     for f in glob.glob(os.path.join(ROOT, 'data', 'mathexamtest', '*.json')):
         problems.extend(json.load(open(f, encoding='utf-8'))['problems'])
-    problems = [{'id': p['id'], 'mathml': p['mathml']} for p in problems if p.get('mathml')]
+    problems = [{'id': p['id'], 'mathml': p['mathml'], 'body': p.get('body', '')}
+                for p in problems if p.get('mathml')]
     n = len(problems)
     print(f'同一問題集合 {n} 問。三経路を全件で比べる\n')
 
@@ -176,6 +188,7 @@ def main() -> int:
         '平文（タグを剥ぐ）': evaluate(problems, 'plain', '平文'),
         '文字列AST（正規表現）': evaluate(problems, 'string', '文字列'),
         'AST（木から直接）': evaluate(problems, 'ast', 'AST'),
+        '+本文の指示と条件': evaluate(problems, 'full', '本文'),
     }
 
     width = max(len(k) for k in results)

@@ -33,7 +33,8 @@ LEVELS = [
     ('A0', '平文のみ', 'plain', True),
     ('A1', '+ MathML（文字列で復元）', 'string', True),
     ('A2', '+ scoped symbol env（AST）', 'ast', True),
-    ('A3', '+ semantic kernel（証明書を要求）', 'ast_certified', True),
+    ('A3', '+ forbidden identification（番人）', 'ast_certified', True),
+    ('A3b', '+ 本文の指示と条件', 'full', True),
     ('A4', '+ shared domain kernels', None, False),
     ('A5', '+ representation routing', None, False),
     ('A6', '+ Vision-derived invariants', None, False),
@@ -71,6 +72,8 @@ def main() -> int:
     n = paired['total']
     keys = list(paired['results'].keys())
     mapping = {'plain': keys[0], 'string': keys[1], 'ast': keys[2]}
+    if len(keys) > 3:
+        mapping['full'] = keys[3]
 
     print(f'\nA0〜A8 ablation。locked test = MathML 収集 {n} 問（同一集合）\n')
     print(f"  {'':4s} {'内容':32s} {'certified':>10s} {'wrong':>7s} {'abstained':>10s} {'timeout':>8s}")
@@ -85,6 +88,13 @@ def main() -> int:
         if mode == 'ast_certified':
             r = certified_only(mapping['ast'], paired)
             correct = r['certified']
+        elif mode == 'full' and 'full' in mapping:
+            r = paired['results'][mapping['full']]
+            correct = r.get('verified_correct', 0)
+        elif mode == 'full':
+            print(f'  {code:4s} {label:32s} {"NOT_MEASURED":>10s}')
+            rows.append({'level': code, 'label': label, 'status': 'NOT_MEASURED'})
+            continue
         else:
             r = paired['results'][mapping[mode]]
             correct = r.get('verified_correct', 0)
