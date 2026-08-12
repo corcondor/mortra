@@ -1,13 +1,16 @@
-name: Generate Math Problem
+name: Run MORTRA Discovery Job
 
 on:
   repository_dispatch:
     types: [generate-problem]
 
+permissions:
+  contents: read
+
 jobs:
-  generate:
+  discovery:
     runs-on: ubuntu-latest
-    timeout-minutes: 30   # R1が何分かかっても大丈夫
+    timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v4
@@ -15,8 +18,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
-          cache-dependency-path: worker/package.json
+          cache: npm
+          cache-dependency-path: worker/package-lock.json
 
       - uses: actions/setup-python@v5
         with:
@@ -24,25 +27,25 @@ jobs:
           cache: pip
           cache-dependency-path: worker/requirements.txt
 
-      - name: Install exact symbolic backend
+      - name: Install symbolic backends
         working-directory: worker
         run: pip install -r requirements.txt
 
-      - name: Install dependencies
+      - name: Install worker dependencies
         working-directory: worker
-        run: npm install
+        run: npm ci
+
+      - name: Reject removed external backends
+        run: python scripts/external_backend_invariant.py
 
       - name: Verify structural discovery
         working-directory: worker
         run: npm test && npm run build
 
-      - name: Process job
+      - name: Process structural discovery job
         working-directory: worker
         env:
-          SUPABASE_URL:              ${{ secrets.SUPABASE_URL }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          DEEPSEEK_API_KEY:          ${{ secrets.DEEPSEEK_API_KEY }}
-          DEEPSEEK_MODEL:            ${{ secrets.DEEPSEEK_MODEL }}
-          DEEPSEEK_MAX_TOKENS:       ${{ secrets.DEEPSEEK_MAX_TOKENS }}
-          JOB_ID:                    ${{ github.event.client_payload.job_id }}
+          JOB_ID: ${{ github.event.client_payload.job_id }}
         run: npx tsx src/process-job.ts
