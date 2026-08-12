@@ -1,7 +1,64 @@
 # MORTRA 現在地
 
-最終更新 2026-08-11。この文書が唯一の正本。Codex の作業のあと、必ずここを直す。
+最終更新 2026-08-13。この文書が唯一の正本。Codex の作業のあと、必ずここを直す。
 書いてよいのは実行して得た数字だけ。見込みは書かない。
+
+---
+
+## 0. 2026-08-13 引き継ぎ監査スナップショット
+
+### Source snapshot
+
+- `sakumon-station` local HEAD: `57ae962`。監査開始時点で `origin/master`
+  (`a630fae`) より3 commit先行。本文談話IR、proof backend、判定集計修正を含む。
+- `mathos` HEAD: `92d7eb6`。frozen 3,574問artifactは
+  `artifacts/public_benchmark_3574_typed_cas_lowering_v3_20260811.json`。
+- Obsidianはmirror。正本はこのファイルであり、Obsidianの古い数値を優先しない。
+
+### REPRODUCED
+
+- regression `19/19`、generalization `20/20`、discourse `42/42`、proof backend
+  `19/19`、kernel integration `18/18`、identity `12/12`、lattice `93/93`、
+  ornament mutation `71/71`、control character `237 files / 0`。
+- Worker: `101` tests中 `83 pass / 18 skip / 0 fail`、production build成功。
+  skipはローカルで `MATHOS_AG2_DIR` が未設定のため。
+- GitHub Worker CI (`31566423471`) は公式AlphaGeometry2をcheckoutし、worker tests
+  `101/101 pass`、adapterのDDAR suite `26/26`。これはIMO全問題ベンチではなく、
+  26個の形式化fixtureであり、11件は補助点を明示している。
+- frozen split: dev `167`、holdout `522`はmanifest digest一致。後から追加された
+  holdout-source `52`件は未割当であり、固定holdoutへ混ぜない。
+- dev A5: `46/167` solved。ただし内訳は `proved 40`、`verified_instance 2`、
+  `numerically_supported 4`。certifiedとして数えるのは `42/167`。
+
+### REPORTED_NOT_REPRODUCED / STALE
+
+- `data/holdout-results.json` の旧A5 `139 correct / 11 wrong / 354 abstain` は、
+  判定bucket修正前のartifactで再実行未完了。現在別プロセスが再測定中で、公開値にしない。
+- 2026-08-11節の幾何 `7/7` は当時の限定corpusでは有効だが、一般入試性能ではない。
+- GitHub `Resume MathOS Research` の成功runはテスト後に `No autonomous research job is due`
+  で終了しており、研究が進行した証拠ではない。
+
+### Current failure distribution (dev 167)
+
+`solved 46 / not_reduced 45 / unsupported_backend 32 / goal_not_meaningful 31 /
+solver_error 8 / goal_is_relation 5`。unsupportedは `probability 14`、
+`geometry_region 7`、`solution_set 5`、`optimization 5`、`counting 1`。
+not_reducedは `cas 36`、`proof 7`、`inequality 2`。
+
+### Current top 3 experiments
+
+1. `not_reduced` 45件を、問題IDや表層文型ではなくgoal operator・束縛変数・型付き制約の
+   共通loweringで閉じる。devで修正し、固定holdoutは最後に一度だけ測る。
+2. probability / geometry region / solution set / optimization / countingを、既存の
+   `ProblemIR -> backend contract`へ個別solverではなく型付き観測として接続する。
+3. Proof Sceneを一般proof DAGからcompileし、同じsemantic IDを式・図・説明・時間軸で
+   共有するnegative controlを追加する。
+
+### Claims not ready for publication
+
+- MORTRA全体がLLM不使用、東大・京大数学が解ける、AlphaGeometry2相当、一般proofから
+  3D/robot trajectoryまで自動compileできる、という主張。非LLM経路は存在するが、
+  legacy APIにはDeepSeek等を使う経路が残る。
 
 ---
 

@@ -44,6 +44,27 @@ def digest(entries) -> str:
     return hashlib.sha256(payload.encode('utf-8')).hexdigest()[:16]
 
 
+def verify_frozen_partition(current, frozen):
+    """Verify only the IDs frozen in the manifest.
+
+    Corpus ingestion may add records after a split is frozen.  Those records are
+    deliberately left unassigned; they must not silently enlarge the holdout or
+    make the original split unverifiable.
+    """
+    current_by_id = {entry['id']: entry for entry in current}
+    frozen_ids = set(frozen['ids'])
+    missing = sorted(frozen_ids - set(current_by_id))
+    selected = [current_by_id[problem_id] for problem_id in frozen_ids if problem_id in current_by_id]
+    valid = not missing and len(selected) == frozen['count'] and digest(selected) == frozen['digest']
+    extra = sorted(set(current_by_id) - frozen_ids)
+    return {
+        'valid': valid,
+        'missing': missing,
+        'extra': extra,
+        'selected_count': len(selected),
+    }
+
+
 def main() -> int:
     dev, holdout = collect()
     if '--verify' in sys.argv:
@@ -51,14 +72,25 @@ def main() -> int:
             print('manifest が無い。--freeze を先に走らせる')
             return 1
         m = json.load(open(MANIFEST, encoding='utf-8'))
-        ok_dev = digest(dev) == m['dev']['digest']
-        ok_hold = digest(holdout) == m['holdout']['digest']
-        print(f"dev      {len(dev):4d} 問  digest {'一致' if ok_dev else '不一致'}")
-        print(f"holdout  {len(holdout):4d} 問  digest {'一致' if ok_hold else '不一致'}")
-        if not ok_hold:
-            print('\n※ holdout の中身が変わった。収集を足したなら manifest を作り直す。')
-            print('  ただし、一度でも中身を見た問題を holdout に戻さない。')
-        return 0 if (ok_dev and ok_hold) else 1
+        dev_check = verify_frozen_partition(dev, m['dev'])
+        hold_check = verify_frozen_partition(holdout, m['holdout'])
+        print(
+            f"dev      {dev_check['selected_count']:4d} 問  "
+            f"frozen digest {'一致' if dev_check['valid'] else '不一致'}"
+        )
+        print(
+            f"holdout  {hold_check['selected_count']:4d} 問  "
+            f"frozen digest {'一致' if hold_check['valid'] else '不一致'}"
+        )
+        if dev_check['extra'] or hold_check['extra']:
+            print(
+                f"unassigned additions  dev={len(dev_check['extra'])} "
+                f"holdout-source={len(hold_check['extra'])}（固定splitには含めない）"
+            )
+        missing = dev_check['missing'] + hold_check['missing']
+        if missing:
+            print(f"\n※ 固定IDが {len(missing)} 問欠落している。manifestまたはsourceを確認する。")
+        return 0 if (dev_check['valid'] and hold_check['valid']) else 1
 
     by_univ = {}
     for e in holdout:
