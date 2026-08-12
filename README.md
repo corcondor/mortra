@@ -1,85 +1,70 @@
-# Math Web
+# MORTRA
 
-macOS Spotlight × Apple glassmorphism の数学問題ビューア。
+MORTRA is a mathematics research and product system built around one principle:
 
-## セットアップ
+> One structure. Many representations.
 
-### 1. Supabase プロジェクト作成
+The current engineering goal is concrete: improve the certified solve rate on fixed benchmarks without increasing false positives.
 
-1. https://supabase.com → 新規プロジェクト作成
-2. SQL Editor で `supabase/schema.sql` を実行
-3. Settings → API から URL と anon key をコピー
+## Core path
 
-### 2. 環境変数
+```text
+Natural language / TeX / MathML
+  -> Discourse IR / Problem IR
+  -> Semantic Kernel
+  -> MORTRA-owned CAS, proof, and geometry backends
+  -> certificates
+  -> Proof Scene / Visual IR
+```
+
+The active problem-generation path is `/api/mathos-generate`. When a structure is not yet executable, it may enqueue a `mathos_discovery` job for the external-LLM-free worker.
+
+## Explicit non-dependencies
+
+- DeepSeek is not used by the current system.
+- AlphaGeometry or AlphaGeometry2 is not used as a runtime or proof backend.
+- AlphaGeometry papers influenced some design ideas, such as finite vocabularies and auxiliary-construction search, but no AlphaGeometry code or DDAR engine is part of MORTRA.
+
+Do not infer production usage from historical commits, deleted experiments, or research notes. The current runtime graph and reproducible tests are authoritative.
+
+## Local setup
 
 ```bash
 cp .env.local.example .env.local
-# .env.local を編集して Supabase / DeepSeek / X API の値を貼り付け
-```
-
-### 3. SQLite → Supabase 移行
-
-```bash
-pip install supabase python-dotenv
-$env:SUPABASE_URL="https://xxx.supabase.co"
-$env:SUPABASE_SERVICE_KEY="eyJ..."   # service_role key
-python scripts/migrate.py
-```
-
-### 4. フロント起動
-
-```bash
-cd sakumon-station
 npm install
 npm run dev
-# → http://localhost:3002
 ```
 
-## 使い方
-
-| 操作 | アクション |
-|------|-----------|
-| ⌘K / Ctrl+K | 検索バーにフォーカス |
-| ↑↓ | カード選択移動 |
-| Enter | 詳細シートを開く |
-| Esc / 下スワイプ | シートを閉じる |
-| チップ | トピック絞り込み |
-
-## デプロイ
-
-```bash
-# Vercel に push するだけ
-# 環境変数を Vercel Dashboard で設定
-vercel --prod
-```
-
-必須環境変数:
+Required application variables:
 
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_KEY`
-- `DEEPSEEK_API_KEY`
+- `SUPABASE_SERVICE_KEY` for server-side migration or administration only
+
+Optional publishing variables:
+
 - `X_API_KEY`
 - `X_API_SECRET`
 - `X_ACCESS_TOKEN`
 - `X_ACCESS_TOKEN_SECRET`
 
-ローカル任意:
+## Worker
 
-- X投稿ENVは `TWITTER_CONSUMER_KEY`, `TWITTER_CONSUMER_SECRET`, `TWITTER_ACCESS_TOKEN`, `TWITTER_ACCESS_TOKEN_SECRET` という名前でも読み取れます。
-- `DEEPSEEK_MODEL`（未設定時は `deepseek-v4-pro`）
-- `DEEPSEEK_HEALTH_MODEL`（未設定時は軽量確認用の `deepseek-v4-flash`）
-- `DEEPSEEK_MAX_TOKENS`（未設定時は `4000`）
-- `X_CONFIG_PATH`（既存のX投稿JSON設定をローカルだけで使う場合）
-- `PYTHON_BIN`（SQLite同期などPythonスクリプトをローカルで使う場合。未設定時は `python`）
-- `ENABLE_VERCEL_PYTHON_ACTIONS=1`（Vercel で Python と `scripts/*.py` を明示的に使う場合のみ）
+```bash
+cd worker
+npm ci
+pip install -r requirements.txt
+npm test
+npm run build
+```
 
-画像プレビューは Next.js の `next/og` でPNG生成します。X投稿もNode実装なので、本番ではPythonは不要です。Vercel では `.vercelignore` により `scripts/` と `*.py` を除外しているため、Pythonを使うSQLite同期だけがデフォルトでローカル専用です。
+Runtime variables:
 
-## 今後の拡張 (MVP後)
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `JOB_ID` for one-shot GitHub Actions execution
+- `POLL_INTERVAL_MS` for a persistent worker
 
-- [ ] Three.js / React Three Fiber で 3D カードフリップ
-- [ ] Supabase Realtime でリアルタイム更新
-- [ ] 問題追加/編集画面 (管理者用)
-- [ ] X投稿ボタン
-- [ ] 全文検索 (Supabase FTS)
+## Engineering rule
+
+A result may be called certified only when its declared verifier has run successfully. Numerical support, a concrete verified instance, and a general proof are recorded as different statuses.
