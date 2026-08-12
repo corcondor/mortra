@@ -28,8 +28,12 @@
   26個の形式化fixtureであり、11件は補助点を明示している。
 - frozen split: dev `167`、holdout `522`はmanifest digest一致。後から追加された
   holdout-source `52`件は未割当であり、固定holdoutへ混ぜない。
+
+### OBSERVED
+
 - dev A5: `46/167` solved。ただし内訳は `proved 40`、`verified_instance 2`、
-  `numerically_supported 4`。certifiedとして数えるのは `42/167`。
+  `numerically_supported 4`。certifiedとして数えるのは `42/167`。今回の監査では
+  artifactとfailure breakdownを読んだ値であり、167問全体は再実行していない。
 - GitHub Actions: MathOS全8 test shard + aggregate (`31624676721`) 成功。
   自律研究 (`31624693493`) は13 tests成功後、型付き候補を1件追加して研究キューを
   `116`構造へ更新。MORTRA Worker (`31624677996`) もAG2取得・kernel・DDAR・型検査成功。
