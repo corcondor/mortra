@@ -10,8 +10,10 @@
     "test:discord": "node --test tests/discord-interactions.test.mjs",
     "test:visual-loop": "node worker/node_modules/tsx/dist/cli.mjs --test tests/visual-candidate-loop.test.ts",
     "test:diagram-loop": "node worker/node_modules/tsx/dist/cli.mjs --test tests/finite-state-diagram.test.ts",
+    "test:construction-loop": "node worker/node_modules/tsx/dist/cli.mjs --test tests/euclidean-construction.test.ts tests/spatial-circle-family.test.ts tests/diagrammatic-complex.test.ts",
     "experiment:visual-loop": "node worker/node_modules/tsx/dist/cli.mjs scripts/visual-reasoning-loop-experiment.mts",
     "experiment:diagram-loop": "node worker/node_modules/tsx/dist/cli.mjs scripts/finite-state-diagram-experiment.mts",
+    "experiment:construction-loop": "node worker/node_modules/tsx/dist/cli.mjs scripts/euclidean-construction-experiment.mts",
     "mathos:sync-discord": "node scripts/sync-mathos-discord.mjs",
     "mathos:selection-feedback": "node --env-file=.env.local scripts/export-selection-feedback.mjs",
     "discord:register": "node scripts/register-discord-commands.mjs"

@@ -1,0 +1,1527 @@
+{
+  "id": "hexagonal-circle-orbit-two-rings",
+  "label": "交点の反復から19円の六方軌道を構成",
+  "unknown": "hexagonal-orbit",
+  "constraints": [],
+  "steps": [
+    {
+      "id": "step_1",
+      "operation": "given-point",
+      "label": "O を与える",
+      "reason": "問題の初期条件",
+      "inputs": [],
+      "produced": [
+        {
+          "kind": "point",
+          "id": "o",
+          "label": "O",
+          "x": 0,
+          "y": 0
+        }
+      ],
+      "depth": 0,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_2",
+      "operation": "given-point",
+      "label": "A を与える",
+      "reason": "問題の初期条件",
+      "inputs": [],
+      "produced": [
+        {
+          "kind": "point",
+          "id": "a",
+          "label": "A",
+          "x": 2.15,
+          "y": 0
+        }
+      ],
+      "depth": 0,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_3",
+      "operation": "circle-center-through",
+      "label": "基準円 C₀",
+      "reason": "中心と円周上の1点が円を定める",
+      "inputs": [
+        "o",
+        "a"
+      ],
+      "produced": [
+        {
+          "kind": "circle",
+          "id": "circle_1",
+          "label": "基準円 C₀",
+          "cx": 0,
+          "cy": 0,
+          "radius": 2.15
+        }
+      ],
+      "depth": 2,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_4",
+      "operation": "circle-center-through",
+      "label": "第1環コンパス円 1",
+      "reason": "中心と円周上の1点が円を定める",
+      "inputs": [
+        "a",
+        "o"
+      ],
+      "produced": [
+        {
+          "kind": "circle",
+          "id": "circle_2",
+          "label": "第1環コンパス円 1",
+          "cx": 2.15,
+          "cy": 0,
+          "radius": 2.15
+        }
+      ],
+      "depth": 3,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_5",
+      "operation": "intersect-circle-circle",
+      "label": "第1環交点 1-",
+      "reason": "2つの軌跡を同時に満たす点を作る",
+      "inputs": [
+        "circle_1",
+        "circle_2"
+      ],
+      "produced": [
+        {
+          "kind": "point",
+          "id": "point_3",
+          "label": "第1環交点 1-1",
+          "x": 1.075,
+          "y": 1.8619546181365432
+        },
+        {
+          "kind": "point",
+          "id": "point_4",
+          "label": "第1環交点 1-2",
+          "x": 1.075,
+          "y": -1.8619546181365432
+        }
+      ],
+      "depth": 4,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_6",
+      "operation": "circle-center-through",
+      "label": "第1環コンパス円 2",
+      "reason": "中心と円周上の1点が円を定める",
+      "inputs": [
+        "point_3",
+        "o"
+      ],
+      "produced": [
+        {
+          "kind": "circle",
+          "id": "circle_5",
+          "label": "第1環コンパス円 2",
+          "cx": 1.075,
+          "cy": 1.8619546181365432,
+          "radius": 2.15
+        }
+      ],
+      "depth": 5,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_7",
+      "operation": "intersect-circle-circle",
+      "label": "第1環交点 2-",
+      "reason": "2つの軌跡を同時に満たす点を作る",
+      "inputs": [
+        "circle_1",
+        "circle_5"
+      ],
+      "produced": [
+        {
+          "kind": "point",
+          "id": "point_6",
+          "label": "第1環交点 2-1",
+          "x": -1.0750000000000002,
+          "y": 1.8619546181365432
+        },
+        {
+          "kind": "point",
+          "id": "point_7",
+          "label": "第1環交点 2-2",
+          "x": 2.1500000000000004,
+          "y": 0
+        }
+      ],
+      "depth": 6,
+      "residual": 1.7763568394002505e-15,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_8",
+      "operation": "circle-center-through",
+      "label": "第1環コンパス円 3",
+      "reason": "中心と円周上の1点が円を定める",
+      "inputs": [
+        "point_6",
+        "o"
+      ],
+      "produced": [
+        {
+          "kind": "circle",
+          "id": "circle_8",
+          "label": "第1環コンパス円 3",
+          "cx": -1.0750000000000002,
+          "cy": 1.8619546181365432,
+          "radius": 2.1500000000000004
+        }
+      ],
+      "depth": 7,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_9",
+      "operation": "intersect-circle-circle",
+      "label": "第1環交点 3-",
+      "reason": "2つの軌跡を同時に満たす点を作る",
+      "inputs": [
+        "circle_1",
+        "circle_8"
+      ],
+      "produced": [
+        {
+          "kind": "point",
+          "id": "point_9",
+          "label": "第1環交点 3-1",
+          "x": -2.1499999999999995,
+          "y": -3.3306690738754696e-16
+        },
+        {
+          "kind": "point",
+          "id": "point_10",
+          "label": "第1環交点 3-2",
+          "x": 1.075,
+          "y": 1.8619546181365427
+        }
+      ],
+      "depth": 8,
+      "residual": 1.7763568394002505e-15,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_10",
+      "operation": "circle-center-through",
+      "label": "第1環コンパス円 4",
+      "reason": "中心と円周上の1点が円を定める",
+      "inputs": [
+        "point_9",
+        "o"
+      ],
+      "produced": [
+        {
+          "kind": "circle",
+          "id": "circle_11",
+          "label": "第1環コンパス円 4",
+          "cx": -2.1499999999999995,
+          "cy": -3.3306690738754696e-16,
+          "radius": 2.1499999999999995
+        }
+      ],
+      "depth": 9,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_11",
+      "operation": "intersect-circle-circle",
+      "label": "第1環交点 4-",
+      "reason": "2つの軌跡を同時に満たす点を作る",
+      "inputs": [
+        "circle_1",
+        "circle_11"
+      ],
+      "produced": [
+        {
+          "kind": "point",
+          "id": "point_12",
+          "label": "第1環交点 4-1",
+          "x": -1.075,
+          "y": -1.861954618136543
+        },
+        {
+          "kind": "point",
+          "id": "point_13",
+          "label": "第1環交点 4-2",
+          "x": -1.0750000000000004,
+          "y": 1.8619546181365425
+        }
+      ],
+      "depth": 10,
+      "residual": 1.7763568394002505e-15,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_12",
+      "operation": "circle-center-through",
+      "label": "第1環コンパス円 5",
+      "reason": "中心と円周上の1点が円を定める",
+      "inputs": [
+        "point_12",
+        "o"
+      ],
+      "produced": [
+        {
+          "kind": "circle",
+          "id": "circle_14",
+          "label": "第1環コンパス円 5",
+          "cx": -1.075,
+          "cy": -1.861954618136543,
+          "radius": 2.15
+        }
+      ],
+      "depth": 11,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_13",
+      "operation": "intersect-circle-circle",
+      "label": "第1環交点 5-",
+      "reason": "2つの軌跡を同時に満たす点を作る",
+      "inputs": [
+        "circle_1",
+        "circle_14"
+      ],
+      "produced": [
+        {
+          "kind": "point",
+          "id": "point_15",
+          "label": "第1環交点 5-1",
+          "x": 1.0750000000000002,
+          "y": -1.861954618136543
+        },
+        {
+          "kind": "point",
+          "id": "point_16",
+          "label": "第1環交点 5-2",
+          "x": -2.15,
+          "y": 2.220446049250313e-16
+        }
+      ],
+      "depth": 12,
+      "residual": 1.7763568394002505e-15,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_14",
+      "operation": "circle-center-through",
+      "label": "第1環 6/6",
+      "reason": "中心と円周上の1点が円を定める",
+      "inputs": [
+        "point_15",
+        "o"
+      ],
+      "produced": [
+        {
+          "kind": "circle",
+          "id": "circle_17",
+          "label": "第1環 6/6",
+          "cx": 1.0750000000000002,
+          "cy": -1.861954618136543,
+          "radius": 2.15
+        }
+      ],
+      "depth": 13,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_15",
+      "operation": "line-through",
+      "label": "第2環への半径線 1",
+      "reason": "2点を通る直線は一意に定まる",
+      "inputs": [
+        "o",
+        "a"
+      ],
+      "produced": [
+        {
+          "kind": "line",
+          "id": "line_18",
+          "label": "第2環への半径線 1",
+          "a": 0,
+          "b": 1,
+          "c": 0
+        }
+      ],
+      "depth": 14,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_16",
+      "operation": "intersect-line-circle",
+      "label": "第2環軸交点 1-",
+      "reason": "2つの軌跡を同時に満たす点を作る",
+      "inputs": [
+        "line_18",
+        "circle_2"
+      ],
+      "produced": [
+        {
+          "kind": "point",
+          "id": "point_19",
+          "label": "第2環軸交点 1-1",
+          "x": 0,
+          "y": 0
+        },
+        {
+          "kind": "point",
+          "id": "point_20",
+          "label": "第2環軸交点 1-2",
+          "x": 4.3,
+          "y": 0
+        }
+      ],
+      "depth": 15,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_17",
+      "operation": "circle-center-through",
+      "label": "第2環 軸 1/6",
+      "reason": "中心と円周上の1点が円を定める",
+      "inputs": [
+        "point_20",
+        "a"
+      ],
+      "produced": [
+        {
+          "kind": "circle",
+          "id": "circle_21",
+          "label": "第2環 軸 1/6",
+          "cx": 4.3,
+          "cy": 0,
+          "radius": 2.15
+        }
+      ],
+      "depth": 16,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_18",
+      "operation": "line-through",
+      "label": "第2環への半径線 2",
+      "reason": "2点を通る直線は一意に定まる",
+      "inputs": [
+        "o",
+        "point_3"
+      ],
+      "produced": [
+        {
+          "kind": "line",
+          "id": "line_22",
+          "label": "第2環への半径線 2",
+          "a": 0.8660254037844387,
+          "b": -0.5,
+          "c": 0
+        }
+      ],
+      "depth": 17,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_19",
+      "operation": "intersect-line-circle",
+      "label": "第2環軸交点 2-",
+      "reason": "2つの軌跡を同時に満たす点を作る",
+      "inputs": [
+        "line_22",
+        "circle_5"
+      ],
+      "produced": [
+        {
+          "kind": "point",
+          "id": "point_23",
+          "label": "第2環軸交点 2-1",
+          "x": 2.15,
+          "y": 3.7239092362730863
+        },
+        {
+          "kind": "point",
+          "id": "point_24",
+          "label": "第2環軸交点 2-2",
+          "x": 0,
+          "y": 0
+        }
+      ],
+      "depth": 18,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_20",
+      "operation": "circle-center-through",
+      "label": "第2環 軸 2/6",
+      "reason": "中心と円周上の1点が円を定める",
+      "inputs": [
+        "point_23",
+        "point_3"
+      ],
+      "produced": [
+        {
+          "kind": "circle",
+          "id": "circle_25",
+          "label": "第2環 軸 2/6",
+          "cx": 2.15,
+          "cy": 3.7239092362730863,
+          "radius": 2.15
+        }
+      ],
+      "depth": 19,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_21",
+      "operation": "line-through",
+      "label": "第2環への半径線 3",
+      "reason": "2点を通る直線は一意に定まる",
+      "inputs": [
+        "o",
+        "point_6"
+      ],
+      "produced": [
+        {
+          "kind": "line",
+          "id": "line_26",
+          "label": "第2環への半径線 3",
+          "a": 0.8660254037844386,
+          "b": 0.5,
+          "c": 0
+        }
+      ],
+      "depth": 20,
+      "residual": 1.1102230246251565e-16,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_22",
+      "operation": "intersect-line-circle",
+      "label": "第2環軸交点 3-",
+      "reason": "2つの軌跡を同時に満たす点を作る",
+      "inputs": [
+        "line_26",
+        "circle_8"
+      ],
+      "produced": [
+        {
+          "kind": "point",
+          "id": "point_27",
+          "label": "第2環軸交点 3-1",
+          "x": -2.1500000000000004,
+          "y": 3.7239092362730863
+        },
+        {
+          "kind": "point",
+          "id": "point_28",
+          "label": "第2環軸交点 3-2",
+          "x": 0,
+          "y": -2.220446049250313e-16
+        }
+      ],
+      "depth": 21,
+      "residual": 2.220446049250313e-16,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_23",
+      "operation": "circle-center-through",
+      "label": "第2環 軸 3/6",
+      "reason": "中心と円周上の1点が円を定める",
+      "inputs": [
+        "point_27",
+        "point_6"
+      ],
+      "produced": [
+        {
+          "kind": "circle",
+          "id": "circle_29",
+          "label": "第2環 軸 3/6",
+          "cx": -2.1500000000000004,
+          "cy": 3.7239092362730863,
+          "radius": 2.1500000000000004
+        }
+      ],
+      "depth": 22,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_24",
+      "operation": "intersect-line-circle",
+      "label": "第2環軸交点 4-",
+      "reason": "2つの軌跡を同時に満たす点を作る",
+      "inputs": [
+        "line_18",
+        "circle_11"
+      ],
+      "produced": [
+        {
+          "kind": "point",
+          "id": "point_30",
+          "label": "第2環軸交点 4-1",
+          "x": -4.299999999999999,
+          "y": 0
+        },
+        {
+          "kind": "point",
+          "id": "point_31",
+          "label": "第2環軸交点 4-2",
+          "x": 0,
+          "y": 0
+        }
+      ],
+      "depth": 23,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_25",
+      "operation": "circle-center-through",
+      "label": "第2環 軸 4/6",
+      "reason": "中心と円周上の1点が円を定める",
+      "inputs": [
+        "point_30",
+        "point_9"
+      ],
+      "produced": [
+        {
+          "kind": "circle",
+          "id": "circle_32",
+          "label": "第2環 軸 4/6",
+          "cx": -4.299999999999999,
+          "cy": 0,
+          "radius": 2.1499999999999995
+        }
+      ],
+      "depth": 24,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_26",
+      "operation": "intersect-line-circle",
+      "label": "第2環軸交点 5-",
+      "reason": "2つの軌跡を同時に満たす点を作る",
+      "inputs": [
+        "line_22",
+        "circle_14"
+      ],
+      "produced": [
+        {
+          "kind": "point",
+          "id": "point_33",
+          "label": "第2環軸交点 5-1",
+          "x": 0,
+          "y": 2.220446049250313e-16
+        },
+        {
+          "kind": "point",
+          "id": "point_34",
+          "label": "第2環軸交点 5-2",
+          "x": -2.15,
+          "y": -3.7239092362730863
+        }
+      ],
+      "depth": 25,
+      "residual": 1.7763568394002505e-15,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_27",
+      "operation": "circle-center-through",
+      "label": "第2環 軸 5/6",
+      "reason": "中心と円周上の1点が円を定める",
+      "inputs": [
+        "point_34",
+        "point_12"
+      ],
+      "produced": [
+        {
+          "kind": "circle",
+          "id": "circle_35",
+          "label": "第2環 軸 5/6",
+          "cx": -2.15,
+          "cy": -3.7239092362730863,
+          "radius": 2.1500000000000004
+        }
+      ],
+      "depth": 26,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_28",
+      "operation": "intersect-line-circle",
+      "label": "第2環軸交点 6-",
+      "reason": "2つの軌跡を同時に満たす点を作る",
+      "inputs": [
+        "line_26",
+        "circle_17"
+      ],
+      "produced": [
+        {
+          "kind": "point",
+          "id": "point_36",
+          "label": "第2環軸交点 6-1",
+          "x": 0,
+          "y": -2.220446049250313e-16
+        },
+        {
+          "kind": "point",
+          "id": "point_37",
+          "label": "第2環軸交点 6-2",
+          "x": 2.15,
+          "y": -3.7239092362730863
+        }
+      ],
+      "depth": 27,
+      "residual": 1.7763568394002505e-15,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_29",
+      "operation": "circle-center-through",
+      "label": "第2環 軸 6/6",
+      "reason": "中心と円周上の1点が円を定める",
+      "inputs": [
+        "point_37",
+        "point_15"
+      ],
+      "produced": [
+        {
+          "kind": "circle",
+          "id": "circle_38",
+          "label": "第2環 軸 6/6",
+          "cx": 2.15,
+          "cy": -3.7239092362730863,
+          "radius": 2.1500000000000004
+        }
+      ],
+      "depth": 28,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_30",
+      "operation": "intersect-circle-circle",
+      "label": "第2環斜交点 1-",
+      "reason": "2つの軌跡を同時に満たす点を作る",
+      "inputs": [
+        "circle_2",
+        "circle_5"
+      ],
+      "produced": [
+        {
+          "kind": "point",
+          "id": "point_39",
+          "label": "第2環斜交点 1-1",
+          "x": -4.440892098500626e-16,
+          "y": 0
+        },
+        {
+          "kind": "point",
+          "id": "point_40",
+          "label": "第2環斜交点 1-2",
+          "x": 3.225,
+          "y": 1.8619546181365432
+        }
+      ],
+      "depth": 29,
+      "residual": 1.7763568394002505e-15,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_31",
+      "operation": "circle-center-through",
+      "label": "第2環 斜 1/6",
+      "reason": "中心と円周上の1点が円を定める",
+      "inputs": [
+        "point_40",
+        "a"
+      ],
+      "produced": [
+        {
+          "kind": "circle",
+          "id": "circle_41",
+          "label": "第2環 斜 1/6",
+          "cx": 3.225,
+          "cy": 1.8619546181365432,
+          "radius": 2.1500000000000004
+        }
+      ],
+      "depth": 30,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_32",
+      "operation": "intersect-circle-circle",
+      "label": "第2環斜交点 2-",
+      "reason": "2つの軌跡を同時に満たす点を作る",
+      "inputs": [
+        "circle_5",
+        "circle_8"
+      ],
+      "produced": [
+        {
+          "kind": "point",
+          "id": "point_42",
+          "label": "第2環斜交点 2-1",
+          "x": 2.220446049250313e-16,
+          "y": 0
+        },
+        {
+          "kind": "point",
+          "id": "point_43",
+          "label": "第2環斜交点 2-2",
+          "x": 2.220446049250313e-16,
+          "y": 3.7239092362730863
+        }
+      ],
+      "depth": 31,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_33",
+      "operation": "circle-center-through",
+      "label": "第2環 斜 2/6",
+      "reason": "中心と円周上の1点が円を定める",
+      "inputs": [
+        "point_43",
+        "point_3"
+      ],
+      "produced": [
+        {
+          "kind": "circle",
+          "id": "circle_44",
+          "label": "第2環 斜 2/6",
+          "cx": 2.220446049250313e-16,
+          "cy": 3.7239092362730863,
+          "radius": 2.15
+        }
+      ],
+      "depth": 32,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_34",
+      "operation": "intersect-circle-circle",
+      "label": "第2環斜交点 3-",
+      "reason": "2つの軌跡を同時に満たす点を作る",
+      "inputs": [
+        "circle_8",
+        "circle_11"
+      ],
+      "produced": [
+        {
+          "kind": "point",
+          "id": "point_45",
+          "label": "第2環斜交点 3-1",
+          "x": 2.220446049250313e-16,
+          "y": -4.440892098500626e-16
+        },
+        {
+          "kind": "point",
+          "id": "point_46",
+          "label": "第2環斜交点 3-2",
+          "x": -3.2250000000000005,
+          "y": 1.8619546181365416
+        }
+      ],
+      "depth": 33,
+      "residual": 1.7763568394002505e-15,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_35",
+      "operation": "circle-center-through",
+      "label": "第2環 斜 3/6",
+      "reason": "中心と円周上の1点が円を定める",
+      "inputs": [
+        "point_46",
+        "point_6"
+      ],
+      "produced": [
+        {
+          "kind": "circle",
+          "id": "circle_47",
+          "label": "第2環 斜 3/6",
+          "cx": -3.2250000000000005,
+          "cy": 1.8619546181365416,
+          "radius": 2.1500000000000004
+        }
+      ],
+      "depth": 34,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_36",
+      "operation": "intersect-circle-circle",
+      "label": "第2環斜交点 4-",
+      "reason": "2つの軌跡を同時に満たす点を作る",
+      "inputs": [
+        "circle_11",
+        "circle_14"
+      ],
+      "produced": [
+        {
+          "kind": "point",
+          "id": "point_48",
+          "label": "第2環斜交点 4-1",
+          "x": 0,
+          "y": -1.1102230246251565e-16
+        },
+        {
+          "kind": "point",
+          "id": "point_49",
+          "label": "第2環斜交点 4-2",
+          "x": -3.2249999999999996,
+          "y": -1.8619546181365423
+        }
+      ],
+      "depth": 35,
+      "residual": 1.7763568394002505e-15,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_37",
+      "operation": "circle-center-through",
+      "label": "第2環 斜 4/6",
+      "reason": "中心と円周上の1点が円を定める",
+      "inputs": [
+        "point_49",
+        "point_9"
+      ],
+      "produced": [
+        {
+          "kind": "circle",
+          "id": "circle_50",
+          "label": "第2環 斜 4/6",
+          "cx": -3.2249999999999996,
+          "cy": -1.8619546181365423,
+          "radius": 2.149999999999999
+        }
+      ],
+      "depth": 36,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_38",
+      "operation": "intersect-circle-circle",
+      "label": "第2環斜交点 5-",
+      "reason": "2つの軌跡を同時に満たす点を作る",
+      "inputs": [
+        "circle_14",
+        "circle_17"
+      ],
+      "produced": [
+        {
+          "kind": "point",
+          "id": "point_51",
+          "label": "第2環斜交点 5-1",
+          "x": 2.220446049250313e-16,
+          "y": -2.220446049250313e-16
+        },
+        {
+          "kind": "point",
+          "id": "point_52",
+          "label": "第2環斜交点 5-2",
+          "x": 2.220446049250313e-16,
+          "y": -3.7239092362730855
+        }
+      ],
+      "depth": 37,
+      "residual": 1.7763568394002505e-15,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_39",
+      "operation": "circle-center-through",
+      "label": "第2環 斜 5/6",
+      "reason": "中心と円周上の1点が円を定める",
+      "inputs": [
+        "point_52",
+        "point_12"
+      ],
+      "produced": [
+        {
+          "kind": "circle",
+          "id": "circle_53",
+          "label": "第2環 斜 5/6",
+          "cx": 2.220446049250313e-16,
+          "cy": -3.7239092362730855,
+          "radius": 2.1499999999999995
+        }
+      ],
+      "depth": 38,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_40",
+      "operation": "intersect-circle-circle",
+      "label": "第2環斜交点 6-",
+      "reason": "2つの軌跡を同時に満たす点を作る",
+      "inputs": [
+        "circle_17",
+        "circle_2"
+      ],
+      "produced": [
+        {
+          "kind": "point",
+          "id": "point_54",
+          "label": "第2環斜交点 6-1",
+          "x": 0,
+          "y": -2.220446049250313e-16
+        },
+        {
+          "kind": "point",
+          "id": "point_55",
+          "label": "第2環斜交点 6-2",
+          "x": 3.225,
+          "y": -1.861954618136543
+        }
+      ],
+      "depth": 39,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_41",
+      "operation": "circle-center-through",
+      "label": "第2環 斜 6/6",
+      "reason": "中心と円周上の1点が円を定める",
+      "inputs": [
+        "point_55",
+        "point_15"
+      ],
+      "produced": [
+        {
+          "kind": "circle",
+          "id": "circle_56",
+          "label": "第2環 斜 6/6",
+          "cx": 3.225,
+          "cy": -1.861954618136543,
+          "radius": 2.15
+        }
+      ],
+      "depth": 40,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    },
+    {
+      "id": "step_42",
+      "operation": "select-witness",
+      "label": "hexagonal-orbit を確定",
+      "reason": "すべての型付き制約を同時に満たす候補だけを残す",
+      "inputs": [
+        "a",
+        "point_3",
+        "point_6",
+        "point_9",
+        "point_12",
+        "point_15",
+        "point_20",
+        "point_23",
+        "point_27",
+        "point_30",
+        "point_34",
+        "point_37",
+        "point_40",
+        "point_43",
+        "point_46",
+        "point_49",
+        "point_52",
+        "point_55"
+      ],
+      "produced": [],
+      "depth": 41,
+      "residual": 0,
+      "verification": "replayed-numeric"
+    }
+  ],
+  "objects": {
+    "o": {
+      "kind": "point",
+      "id": "o",
+      "label": "O",
+      "x": 0,
+      "y": 0
+    },
+    "a": {
+      "kind": "point",
+      "id": "a",
+      "label": "A",
+      "x": 2.15,
+      "y": 0
+    },
+    "circle_1": {
+      "kind": "circle",
+      "id": "circle_1",
+      "label": "基準円 C₀",
+      "cx": 0,
+      "cy": 0,
+      "radius": 2.15
+    },
+    "circle_2": {
+      "kind": "circle",
+      "id": "circle_2",
+      "label": "第1環コンパス円 1",
+      "cx": 2.15,
+      "cy": 0,
+      "radius": 2.15
+    },
+    "point_3": {
+      "kind": "point",
+      "id": "point_3",
+      "label": "第1環交点 1-1",
+      "x": 1.075,
+      "y": 1.8619546181365432
+    },
+    "point_4": {
+      "kind": "point",
+      "id": "point_4",
+      "label": "第1環交点 1-2",
+      "x": 1.075,
+      "y": -1.8619546181365432
+    },
+    "circle_5": {
+      "kind": "circle",
+      "id": "circle_5",
+      "label": "第1環コンパス円 2",
+      "cx": 1.075,
+      "cy": 1.8619546181365432,
+      "radius": 2.15
+    },
+    "point_6": {
+      "kind": "point",
+      "id": "point_6",
+      "label": "第1環交点 2-1",
+      "x": -1.0750000000000002,
+      "y": 1.8619546181365432
+    },
+    "point_7": {
+      "kind": "point",
+      "id": "point_7",
+      "label": "第1環交点 2-2",
+      "x": 2.1500000000000004,
+      "y": 0
+    },
+    "circle_8": {
+      "kind": "circle",
+      "id": "circle_8",
+      "label": "第1環コンパス円 3",
+      "cx": -1.0750000000000002,
+      "cy": 1.8619546181365432,
+      "radius": 2.1500000000000004
+    },
+    "point_9": {
+      "kind": "point",
+      "id": "point_9",
+      "label": "第1環交点 3-1",
+      "x": -2.1499999999999995,
+      "y": -3.3306690738754696e-16
+    },
+    "point_10": {
+      "kind": "point",
+      "id": "point_10",
+      "label": "第1環交点 3-2",
+      "x": 1.075,
+      "y": 1.8619546181365427
+    },
+    "circle_11": {
+      "kind": "circle",
+      "id": "circle_11",
+      "label": "第1環コンパス円 4",
+      "cx": -2.1499999999999995,
+      "cy": -3.3306690738754696e-16,
+      "radius": 2.1499999999999995
+    },
+    "point_12": {
+      "kind": "point",
+      "id": "point_12",
+      "label": "第1環交点 4-1",
+      "x": -1.075,
+      "y": -1.861954618136543
+    },
+    "point_13": {
+      "kind": "point",
+      "id": "point_13",
+      "label": "第1環交点 4-2",
+      "x": -1.0750000000000004,
+      "y": 1.8619546181365425
+    },
+    "circle_14": {
+      "kind": "circle",
+      "id": "circle_14",
+      "label": "第1環コンパス円 5",
+      "cx": -1.075,
+      "cy": -1.861954618136543,
+      "radius": 2.15
+    },
+    "point_15": {
+      "kind": "point",
+      "id": "point_15",
+      "label": "第1環交点 5-1",
+      "x": 1.0750000000000002,
+      "y": -1.861954618136543
+    },
+    "point_16": {
+      "kind": "point",
+      "id": "point_16",
+      "label": "第1環交点 5-2",
+      "x": -2.15,
+      "y": 2.220446049250313e-16
+    },
+    "circle_17": {
+      "kind": "circle",
+      "id": "circle_17",
+      "label": "第1環 6/6",
+      "cx": 1.0750000000000002,
+      "cy": -1.861954618136543,
+      "radius": 2.15
+    },
+    "line_18": {
+      "kind": "line",
+      "id": "line_18",
+      "label": "第2環への半径線 1",
+      "a": 0,
+      "b": 1,
+      "c": 0
+    },
+    "point_19": {
+      "kind": "point",
+      "id": "point_19",
+      "label": "第2環軸交点 1-1",
+      "x": 0,
+      "y": 0
+    },
+    "point_20": {
+      "kind": "point",
+      "id": "point_20",
+      "label": "第2環軸交点 1-2",
+      "x": 4.3,
+      "y": 0
+    },
+    "circle_21": {
+      "kind": "circle",
+      "id": "circle_21",
+      "label": "第2環 軸 1/6",
+      "cx": 4.3,
+      "cy": 0,
+      "radius": 2.15
+    },
+    "line_22": {
+      "kind": "line",
+      "id": "line_22",
+      "label": "第2環への半径線 2",
+      "a": 0.8660254037844387,
+      "b": -0.5,
+      "c": 0
+    },
+    "point_23": {
+      "kind": "point",
+      "id": "point_23",
+      "label": "第2環軸交点 2-1",
+      "x": 2.15,
+      "y": 3.7239092362730863
+    },
+    "point_24": {
+      "kind": "point",
+      "id": "point_24",
+      "label": "第2環軸交点 2-2",
+      "x": 0,
+      "y": 0
+    },
+    "circle_25": {
+      "kind": "circle",
+      "id": "circle_25",
+      "label": "第2環 軸 2/6",
+      "cx": 2.15,
+      "cy": 3.7239092362730863,
+      "radius": 2.15
+    },
+    "line_26": {
+      "kind": "line",
+      "id": "line_26",
+      "label": "第2環への半径線 3",
+      "a": 0.8660254037844386,
+      "b": 0.5,
+      "c": 0
+    },
+    "point_27": {
+      "kind": "point",
+      "id": "point_27",
+      "label": "第2環軸交点 3-1",
+      "x": -2.1500000000000004,
+      "y": 3.7239092362730863
+    },
+    "point_28": {
+      "kind": "point",
+      "id": "point_28",
+      "label": "第2環軸交点 3-2",
+      "x": 0,
+      "y": -2.220446049250313e-16
+    },
+    "circle_29": {
+      "kind": "circle",
+      "id": "circle_29",
+      "label": "第2環 軸 3/6",
+      "cx": -2.1500000000000004,
+      "cy": 3.7239092362730863,
+      "radius": 2.1500000000000004
+    },
+    "point_30": {
+      "kind": "point",
+      "id": "point_30",
+      "label": "第2環軸交点 4-1",
+      "x": -4.299999999999999,
+      "y": 0
+    },
+    "point_31": {
+      "kind": "point",
+      "id": "point_31",
+      "label": "第2環軸交点 4-2",
+      "x": 0,
+      "y": 0
+    },
+    "circle_32": {
+      "kind": "circle",
+      "id": "circle_32",
+      "label": "第2環 軸 4/6",
+      "cx": -4.299999999999999,
+      "cy": 0,
+      "radius": 2.1499999999999995
+    },
+    "point_33": {
+      "kind": "point",
+      "id": "point_33",
+      "label": "第2環軸交点 5-1",
+      "x": 0,
+      "y": 2.220446049250313e-16
+    },
+    "point_34": {
+      "kind": "point",
+      "id": "point_34",
+      "label": "第2環軸交点 5-2",
+      "x": -2.15,
+      "y": -3.7239092362730863
+    },
+    "circle_35": {
+      "kind": "circle",
+      "id": "circle_35",
+      "label": "第2環 軸 5/6",
+      "cx": -2.15,
+      "cy": -3.7239092362730863,
+      "radius": 2.1500000000000004
+    },
+    "point_36": {
+      "kind": "point",
+      "id": "point_36",
+      "label": "第2環軸交点 6-1",
+      "x": 0,
+      "y": -2.220446049250313e-16
+    },
+    "point_37": {
+      "kind": "point",
+      "id": "point_37",
+      "label": "第2環軸交点 6-2",
+      "x": 2.15,
+      "y": -3.7239092362730863
+    },
+    "circle_38": {
+      "kind": "circle",
+      "id": "circle_38",
+      "label": "第2環 軸 6/6",
+      "cx": 2.15,
+      "cy": -3.7239092362730863,
+      "radius": 2.1500000000000004
+    },
+    "point_39": {
+      "kind": "point",
+      "id": "point_39",
+      "label": "第2環斜交点 1-1",
+      "x": -4.440892098500626e-16,
+      "y": 0
+    },
+    "point_40": {
+      "kind": "point",
+      "id": "point_40",
+      "label": "第2環斜交点 1-2",
+      "x": 3.225,
+      "y": 1.8619546181365432
+    },
+    "circle_41": {
+      "kind": "circle",
+      "id": "circle_41",
+      "label": "第2環 斜 1/6",
+      "cx": 3.225,
+      "cy": 1.8619546181365432,
+      "radius": 2.1500000000000004
+    },
+    "point_42": {
+      "kind": "point",
+      "id": "point_42",
+      "label": "第2環斜交点 2-1",
+      "x": 2.220446049250313e-16,
+      "y": 0
+    },
+    "point_43": {
+      "kind": "point",
+      "id": "point_43",
+      "label": "第2環斜交点 2-2",
+      "x": 2.220446049250313e-16,
+      "y": 3.7239092362730863
+    },
+    "circle_44": {
+      "kind": "circle",
+      "id": "circle_44",
+      "label": "第2環 斜 2/6",
+      "cx": 2.220446049250313e-16,
+      "cy": 3.7239092362730863,
+      "radius": 2.15
+    },
+    "point_45": {
+      "kind": "point",
+      "id": "point_45",
+      "label": "第2環斜交点 3-1",
+      "x": 2.220446049250313e-16,
+      "y": -4.440892098500626e-16
+    },
+    "point_46": {
+      "kind": "point",
+      "id": "point_46",
+      "label": "第2環斜交点 3-2",
+      "x": -3.2250000000000005,
+      "y": 1.8619546181365416
+    },
+    "circle_47": {
+      "kind": "circle",
+      "id": "circle_47",
+      "label": "第2環 斜 3/6",
+      "cx": -3.2250000000000005,
+      "cy": 1.8619546181365416,
+      "radius": 2.1500000000000004
+    },
+    "point_48": {
+      "kind": "point",
+      "id": "point_48",
+      "label": "第2環斜交点 4-1",
+      "x": 0,
+      "y": -1.1102230246251565e-16
+    },
+    "point_49": {
+      "kind": "point",
+      "id": "point_49",
+      "label": "第2環斜交点 4-2",
+      "x": -3.2249999999999996,
+      "y": -1.8619546181365423
+    },
+    "circle_50": {
+      "kind": "circle",
+      "id": "circle_50",
+      "label": "第2環 斜 4/6",
+      "cx": -3.2249999999999996,
+      "cy": -1.8619546181365423,
+      "radius": 2.149999999999999
+    },
+    "point_51": {
+      "kind": "point",
+      "id": "point_51",
+      "label": "第2環斜交点 5-1",
+      "x": 2.220446049250313e-16,
+      "y": -2.220446049250313e-16
+    },
+    "point_52": {
+      "kind": "point",
+      "id": "point_52",
+      "label": "第2環斜交点 5-2",
+      "x": 2.220446049250313e-16,
+      "y": -3.7239092362730855
+    },
+    "circle_53": {
+      "kind": "circle",
+      "id": "circle_53",
+      "label": "第2環 斜 5/6",
+      "cx": 2.220446049250313e-16,
+      "cy": -3.7239092362730855,
+      "radius": 2.1499999999999995
+    },
+    "point_54": {
+      "kind": "point",
+      "id": "point_54",
+      "label": "第2環斜交点 6-1",
+      "x": 0,
+      "y": -2.220446049250313e-16
+    },
+    "point_55": {
+      "kind": "point",
+      "id": "point_55",
+      "label": "第2環斜交点 6-2",
+      "x": 3.225,
+      "y": -1.861954618136543
+    },
+    "circle_56": {
+      "kind": "circle",
+      "id": "circle_56",
+      "label": "第2環 斜 6/6",
+      "cx": 3.225,
+      "cy": -1.861954618136543,
+      "radius": 2.15
+    }
+  },
+  "witnessIds": [
+    "a",
+    "point_3",
+    "point_6",
+    "point_9",
+    "point_12",
+    "point_15",
+    "point_20",
+    "point_23",
+    "point_27",
+    "point_30",
+    "point_34",
+    "point_37",
+    "point_40",
+    "point_43",
+    "point_46",
+    "point_49",
+    "point_52",
+    "point_55"
+  ],
+  "status": "verified",
+  "verification": "independent-numeric-replay"
+}

@@ -8,12 +8,17 @@ on:
       - "lib/proof-scene.ts"
       - "lib/mortra/vision/**"
       - "lib/mortra/diagram/**"
+      - "lib/mortra/construction/**"
       - "tests/visual-candidate-loop.test.ts"
       - "tests/finite-state-diagram.test.ts"
+      - "tests/euclidean-construction.test.ts"
+      - "tests/spatial-circle-family.test.ts"
       - "scripts/visual-reasoning-loop-experiment.mts"
       - "scripts/finite-state-diagram-experiment.mts"
+      - "scripts/euclidean-construction-experiment.mts"
       - "data/visual-reasoning-*.json"
       - "data/finite-state-diagram-*.json"
+      - "data/euclidean-construction-*.json"
       - "package.json"
       - "scripts/external_backend_invariant.py"
       - ".github/workflows/worker-ci.yml"
@@ -23,12 +28,17 @@ on:
       - "lib/proof-scene.ts"
       - "lib/mortra/vision/**"
       - "lib/mortra/diagram/**"
+      - "lib/mortra/construction/**"
       - "tests/visual-candidate-loop.test.ts"
       - "tests/finite-state-diagram.test.ts"
+      - "tests/euclidean-construction.test.ts"
+      - "tests/spatial-circle-family.test.ts"
       - "scripts/visual-reasoning-loop-experiment.mts"
       - "scripts/finite-state-diagram-experiment.mts"
+      - "scripts/euclidean-construction-experiment.mts"
       - "data/visual-reasoning-*.json"
       - "data/finite-state-diagram-*.json"
+      - "data/euclidean-construction-*.json"
       - "package.json"
       - "scripts/external_backend_invariant.py"
       - ".github/workflows/worker-ci.yml"
@@ -72,12 +82,18 @@ jobs:
         run: npm run test:visual-loop
       - name: Test executable finite-state diagram loop
         run: npm run test:diagram-loop
+      - name: Test dynamic Euclidean construction loop
+        run: npm run test:construction-loop
       - name: Reproduce semantic geometry experiment artifact
         run: |
           npm run experiment:visual-loop
           git diff --exit-code -- data/visual-reasoning-loop-experiment.json data/visual-reasoning-demo.json
       - name: Execute finite-state diagram A/B experiment
         run: npm run experiment:diagram-loop
+      - name: Reproduce dynamic Euclidean construction experiment
+        run: |
+          npm run experiment:construction-loop
+          git diff --exit-code -- data/euclidean-construction-experiment.json data/euclidean-construction-demo.json
       - name: Type-check the production Worker
         working-directory: worker
         run: npm run build

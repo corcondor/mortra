@@ -1,0 +1,330 @@
+{
+  "experiment": "typed-locus-to-dynamic-euclidean-construction-v1",
+  "recorded_on": "2026-08-13",
+  "scope": "typed point constraints with straightedge-and-compass locus compilation",
+  "claim_boundary": [
+    "This is a bounded auxiliary-construction benchmark, not the frozen 522-problem benchmark.",
+    "Certificates are deterministic independent numeric replay, not Lean proofs.",
+    "Natural-language parsing is held outside this experiment."
+  ],
+  "summary": {
+    "cases": 12,
+    "negative_cases": 4,
+    "baseline_without_auxiliary_construction": 1,
+    "construction_search_solved": 12,
+    "independently_replayed": 12,
+    "false_acceptance": 0,
+    "mean_steps": 9.416666666666666,
+    "operation_vocabulary": [
+      "circle-center-through",
+      "given-point",
+      "intersect-circle-circle",
+      "intersect-line-circle",
+      "intersect-line-line",
+      "line-through",
+      "select-witness"
+    ]
+  },
+  "design_benchmark": {
+    "target": "two-ring hexagonal orbit generated from one centre and one radius point",
+    "circles": 19,
+    "derived_centres": 18,
+    "construction_steps": 42,
+    "intersection_steps": 17,
+    "independent_replay": true,
+    "max_residual": 1.7763568394002505e-15
+  },
+  "spatial_benchmark": {
+    "target": "torus represented by two planar circle foliations",
+    "planar_circles": 96,
+    "meridians": 48,
+    "parallels": 48,
+    "sampled_points": 4608,
+    "invariant_verified": true,
+    "max_surface_residual": 4.440892098500626e-15
+  },
+  "diagrammatic_benchmark": {
+    "target": "sparse typed cell complexes independent of geometric embedding",
+    "dynkin_A8_verified": true,
+    "torus_cellulation_verified": true,
+    "torus_cells": 4800,
+    "torus_counts": {
+      "0": 1200,
+      "1": 2400,
+      "2": 1200,
+      "3": 0
+    },
+    "torus_euler_characteristic": 0,
+    "boundary_squared_residuals": 0
+  },
+  "rows": [
+    {
+      "id": "circumcenter-acute",
+      "expected": true,
+      "baseline_visible_witness": false,
+      "construction_status": "verified",
+      "replay_verified": true,
+      "witnesses": 1,
+      "steps": 13,
+      "operations": [
+        "given-point",
+        "circle-center-through",
+        "intersect-circle-circle",
+        "line-through",
+        "intersect-line-line",
+        "select-witness"
+      ],
+      "max_residual": 3.552713678800501e-15
+    },
+    {
+      "id": "circumcenter-rotated",
+      "expected": true,
+      "baseline_visible_witness": false,
+      "construction_status": "verified",
+      "replay_verified": true,
+      "witnesses": 1,
+      "steps": 13,
+      "operations": [
+        "given-point",
+        "circle-center-through",
+        "intersect-circle-circle",
+        "line-through",
+        "intersect-line-line",
+        "select-witness"
+      ],
+      "max_residual": 1.0658141036401503e-14
+    },
+    {
+      "id": "circumcenter-scaled",
+      "expected": true,
+      "baseline_visible_witness": false,
+      "construction_status": "verified",
+      "replay_verified": true,
+      "witnesses": 1,
+      "steps": 13,
+      "operations": [
+        "given-point",
+        "circle-center-through",
+        "intersect-circle-circle",
+        "line-through",
+        "intersect-line-line",
+        "select-witness"
+      ],
+      "max_residual": 2.842170943040401e-14
+    },
+    {
+      "id": "circumcenter-obtuse",
+      "expected": true,
+      "baseline_visible_witness": false,
+      "construction_status": "verified",
+      "replay_verified": true,
+      "witnesses": 1,
+      "steps": 13,
+      "operations": [
+        "given-point",
+        "circle-center-through",
+        "intersect-circle-circle",
+        "line-through",
+        "intersect-line-line",
+        "select-witness"
+      ],
+      "max_residual": 1.0658141036401503e-14
+    },
+    {
+      "id": "midpoint-horizontal",
+      "expected": true,
+      "baseline_visible_witness": false,
+      "construction_status": "verified",
+      "replay_verified": true,
+      "witnesses": 1,
+      "steps": 9,
+      "operations": [
+        "given-point",
+        "line-through",
+        "circle-center-through",
+        "intersect-circle-circle",
+        "intersect-line-line",
+        "select-witness"
+      ],
+      "max_residual": 0
+    },
+    {
+      "id": "midpoint-slanted",
+      "expected": true,
+      "baseline_visible_witness": false,
+      "construction_status": "verified",
+      "replay_verified": true,
+      "witnesses": 1,
+      "steps": 9,
+      "operations": [
+        "given-point",
+        "line-through",
+        "circle-center-through",
+        "intersect-circle-circle",
+        "intersect-line-line",
+        "select-witness"
+      ],
+      "max_residual": 4.263256414560601e-14
+    },
+    {
+      "id": "midpoint-vertical",
+      "expected": true,
+      "baseline_visible_witness": false,
+      "construction_status": "verified",
+      "replay_verified": true,
+      "witnesses": 1,
+      "steps": 9,
+      "operations": [
+        "given-point",
+        "line-through",
+        "circle-center-through",
+        "intersect-circle-circle",
+        "intersect-line-line",
+        "select-witness"
+      ],
+      "max_residual": 0
+    },
+    {
+      "id": "equilateral-horizontal",
+      "expected": true,
+      "baseline_visible_witness": false,
+      "construction_status": "verified",
+      "replay_verified": true,
+      "witnesses": 2,
+      "steps": 6,
+      "operations": [
+        "given-point",
+        "circle-center-through",
+        "intersect-circle-circle",
+        "select-witness"
+      ],
+      "max_residual": 0
+    },
+    {
+      "id": "equilateral-slanted",
+      "expected": true,
+      "baseline_visible_witness": false,
+      "construction_status": "verified",
+      "replay_verified": true,
+      "witnesses": 2,
+      "steps": 6,
+      "operations": [
+        "given-point",
+        "circle-center-through",
+        "intersect-circle-circle",
+        "select-witness"
+      ],
+      "max_residual": 2.842170943040401e-14
+    },
+    {
+      "id": "equilateral-short",
+      "expected": true,
+      "baseline_visible_witness": false,
+      "construction_status": "verified",
+      "replay_verified": true,
+      "witnesses": 2,
+      "steps": 6,
+      "operations": [
+        "given-point",
+        "circle-center-through",
+        "intersect-circle-circle",
+        "select-witness"
+      ],
+      "max_residual": 1.7763568394002505e-15
+    },
+    {
+      "id": "line-circle",
+      "expected": true,
+      "baseline_visible_witness": true,
+      "construction_status": "verified",
+      "replay_verified": true,
+      "witnesses": 2,
+      "steps": 8,
+      "operations": [
+        "given-point",
+        "line-through",
+        "circle-center-through",
+        "intersect-line-circle",
+        "select-witness"
+      ],
+      "max_residual": 0
+    },
+    {
+      "id": "line-line",
+      "expected": true,
+      "baseline_visible_witness": false,
+      "construction_status": "verified",
+      "replay_verified": true,
+      "witnesses": 1,
+      "steps": 8,
+      "operations": [
+        "given-point",
+        "line-through",
+        "intersect-line-line",
+        "select-witness"
+      ],
+      "max_residual": 4.440892098500626e-16
+    },
+    {
+      "id": "parallel-lines",
+      "expected": false,
+      "baseline_visible_witness": false,
+      "construction_status": "unsatisfied",
+      "replay_verified": true,
+      "witnesses": 0,
+      "steps": 7,
+      "operations": [
+        "given-point",
+        "line-through",
+        "intersect-line-line"
+      ],
+      "max_residual": 0
+    },
+    {
+      "id": "disjoint-circles",
+      "expected": false,
+      "baseline_visible_witness": false,
+      "construction_status": "unsatisfied",
+      "replay_verified": true,
+      "witnesses": 0,
+      "steps": 7,
+      "operations": [
+        "given-point",
+        "circle-center-through",
+        "intersect-circle-circle"
+      ],
+      "max_residual": 0
+    },
+    {
+      "id": "concentric-circles",
+      "expected": false,
+      "baseline_visible_witness": false,
+      "construction_status": "unsatisfied",
+      "replay_verified": true,
+      "witnesses": 0,
+      "steps": 6,
+      "operations": [
+        "given-point",
+        "circle-center-through",
+        "intersect-circle-circle"
+      ],
+      "max_residual": 0
+    },
+    {
+      "id": "line-misses-circle",
+      "expected": false,
+      "baseline_visible_witness": false,
+      "construction_status": "unsatisfied",
+      "replay_verified": true,
+      "witnesses": 0,
+      "steps": 7,
+      "operations": [
+        "given-point",
+        "line-through",
+        "circle-center-through",
+        "intersect-line-circle"
+      ],
+      "max_residual": 0
+    }
+  ]
+}
