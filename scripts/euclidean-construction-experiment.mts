@@ -20,6 +20,7 @@ import {
   buildTorusCellulation,
   verifyCellComplex,
 } from '../lib/mortra/construction/diagrammatic-complex.js'
+import { evaluateDiagramSemantics } from '../lib/mortra/construction/diagram-semantic-evaluation.js'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const sq = (value: number) => value * value
@@ -213,6 +214,26 @@ const dynkinComplex = buildDynkinA(8)
 const torusComplex = buildTorusCellulation(40, 30)
 const dynkinVerification = verifyCellComplex(dynkinComplex)
 const torusComplexVerification = verifyCellComplex(torusComplex)
+const semanticReference = buildTorusCellulation(12, 9)
+const semanticIdMap = new Map(
+  semanticReference.cells.map((cell, index) => [cell.id, `candidate_${index}`]),
+)
+const semanticIsomorph = {
+  ...semanticReference,
+  cells: semanticReference.cells.map(cell => ({
+    ...cell,
+    id: semanticIdMap.get(cell.id)!,
+    boundary: cell.boundary.map(term => ({
+      ...term,
+      cellId: semanticIdMap.get(term.cellId)!,
+    })),
+  })),
+}
+const semanticBroken = structuredClone(semanticReference)
+const brokenFace = semanticBroken.cells.find(cell => cell.dimension === 2)!
+brokenFace.boundary[0] = brokenFace.boundary[1]
+const isomorphScore = evaluateDiagramSemantics(semanticReference, semanticIsomorph)
+const brokenScore = evaluateDiagramSemantics(semanticReference, semanticBroken)
 const diagrammaticBenchmark = {
   target: 'sparse typed cell complexes independent of geometric embedding',
   dynkin_A8_verified: dynkinVerification.passed,
@@ -220,7 +241,11 @@ const diagrammaticBenchmark = {
   torus_cells: torusComplex.cells.length,
   torus_counts: torusComplexVerification.counts,
   torus_euler_characteristic: torusComplexVerification.eulerCharacteristic,
+  torus_betti_numbers: torusComplexVerification.bettiNumbers,
   boundary_squared_residuals: torusComplexVerification.boundarySquaredResiduals,
+  semantic_id_invariance: isomorphScore.strictPass,
+  topology_error_rejected: !brokenScore.strictPass,
+  topology_error_primitive_f1: brokenScore.cellTypeF1,
 }
 
 const artifact = {
@@ -259,4 +284,6 @@ if (
   || !spatialVerification.passed
   || !dynkinVerification.passed
   || !torusComplexVerification.passed
+  || !isomorphScore.strictPass
+  || brokenScore.strictPass
 ) process.exit(1)

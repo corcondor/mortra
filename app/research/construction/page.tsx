@@ -497,6 +497,9 @@ export default function DynamicConstructionPage() {
                   {experiment.diagrammatic_benchmark.torus_cells.toLocaleString()} cells
                   {' · '}χ={experiment.diagrammatic_benchmark.torus_euler_characteristic}
                 </p>
+                <p className="mt-1 font-mono text-[10px] text-zinc-600">
+                  Betti {Object.values(experiment.diagrammatic_benchmark.torus_betti_numbers).join(' / ')}
+                </p>
               </div>
             </div>
           </div>

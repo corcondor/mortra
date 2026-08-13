@@ -37,10 +37,50 @@ export type ComplexVerification = {
   errors: string[]
   counts: Record<CellDimension, number>
   eulerCharacteristic: number
+  bettiNumbers: Record<CellDimension, number>
+  boundaryRanks: Record<CellDimension, number>
   boundarySquaredResiduals: number
 }
 
 const dimensions: CellDimension[] = [0, 1, 2, 3]
+
+function symmetricDifference(left: Set<number>, right: Set<number>) {
+  const result = new Set(left)
+  for (const value of right) {
+    if (result.has(value)) result.delete(value)
+    else result.add(value)
+  }
+  return result
+}
+
+/** Rank over GF(2), sufficient for embedding-independent Betti diagnostics. */
+function boundaryRank(
+  cells: DiagramCell[],
+  dimension: CellDimension,
+): number {
+  if (dimension === 0) return 0
+  const rows = cells.filter(cell => cell.dimension === dimension - 1)
+  const rowIndex = new Map(rows.map((cell, index) => [cell.id, index]))
+  const pivots = new Map<number, Set<number>>()
+  for (const cell of cells) {
+    if (cell.dimension !== dimension) continue
+    let column = new Set(
+      cell.boundary
+        .map(term => rowIndex.get(term.cellId))
+        .filter((index): index is number => index !== undefined),
+    )
+    while (column.size > 0) {
+      const pivot = Math.max(...column)
+      const basis = pivots.get(pivot)
+      if (!basis) {
+        pivots.set(pivot, column)
+        break
+      }
+      column = symmetricDifference(column, basis)
+    }
+  }
+  return pivots.size
+}
 
 export function verifyCellComplex(complex: TypedCellComplex): ComplexVerification {
   const errors: string[] = []
@@ -96,11 +136,23 @@ export function verifyCellComplex(complex: TypedCellComplex): ComplexVerificatio
     (sum, dimension) => sum + (dimension % 2 === 0 ? 1 : -1) * counts[dimension],
     0,
   )
+  const boundaryRanks: Record<CellDimension, number> = { 0: 0, 1: 0, 2: 0, 3: 0 }
+  for (const dimension of dimensions.slice(1) as CellDimension[]) {
+    boundaryRanks[dimension] = boundaryRank(complex.cells, dimension)
+  }
+  const bettiNumbers: Record<CellDimension, number> = { 0: 0, 1: 0, 2: 0, 3: 0 }
+  for (const dimension of dimensions) {
+    const next = (dimension + 1) as CellDimension
+    const nextRank = dimension === 3 ? 0 : boundaryRanks[next]
+    bettiNumbers[dimension] = counts[dimension] - boundaryRanks[dimension] - nextRank
+  }
   return {
     passed: errors.length === 0,
     errors,
     counts,
     eulerCharacteristic,
+    bettiNumbers,
+    boundaryRanks,
     boundarySquaredResiduals,
   }
 }
