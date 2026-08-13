@@ -1,0 +1,168 @@
+{
+  "name": "finite-state-recurrence-diagram-v1",
+  "description": "Typed recurrence specifications for a diagram/no-diagram A/B test. Surface parsing is intentionally held constant.",
+  "cases": [
+    {
+      "id": "small-fibonacci-mod-10",
+      "sourceSemanticIds": ["benchmark:small-fibonacci-mod-10"],
+      "modulus": 10,
+      "initial": [0, 1],
+      "update": { "terms": [{ "coefficient": 1, "powers": [1, 0] }, { "coefficient": 1, "powers": [0, 1] }] },
+      "targetIndex": "20",
+      "source": "controlled baseline"
+    },
+    {
+      "id": "small-affine-mod-11",
+      "sourceSemanticIds": ["benchmark:small-affine-mod-11"],
+      "modulus": 11,
+      "initial": [4],
+      "update": { "terms": [{ "coefficient": 2, "powers": [1] }, { "coefficient": 5, "powers": [0] }] },
+      "targetIndex": "120",
+      "source": "controlled baseline"
+    },
+    {
+      "id": "tokyo-nonlinear-mod-17-small",
+      "sourceSemanticIds": ["legacy_exam:01_tokyo:41b133c80d544199"],
+      "modulus": 17,
+      "initial": [2, 3],
+      "update": { "terms": [{ "coefficient": 1, "powers": [1, 1] }, { "coefficient": 1, "powers": [0, 1] }] },
+      "targetIndex": "9",
+      "source": "Tokyo entrance-exam recurrence, typed semantic lift"
+    },
+    {
+      "id": "huge-fibonacci-mod-10",
+      "sourceSemanticIds": ["benchmark:huge-fibonacci-mod-10"],
+      "modulus": 10,
+      "initial": [0, 1],
+      "update": { "terms": [{ "coefficient": 1, "powers": [1, 0] }, { "coefficient": 1, "powers": [0, 1] }] },
+      "targetIndex": "1000000000000",
+      "source": "metamorphic large-index case"
+    },
+    {
+      "id": "huge-fibonacci-mod-17",
+      "sourceSemanticIds": ["benchmark:huge-fibonacci-mod-17"],
+      "modulus": 17,
+      "initial": [0, 1],
+      "update": { "terms": [{ "coefficient": 1, "powers": [1, 0] }, { "coefficient": 1, "powers": [0, 1] }] },
+      "targetIndex": "1000000000000000000",
+      "source": "metamorphic large-index case"
+    },
+    {
+      "id": "lucas-mod-29",
+      "sourceSemanticIds": ["benchmark:lucas-mod-29"],
+      "modulus": 29,
+      "initial": [2, 1],
+      "update": { "terms": [{ "coefficient": 1, "powers": [1, 0] }, { "coefficient": 1, "powers": [0, 1] }] },
+      "targetIndex": "1000000000000000123",
+      "source": "metamorphic large-index case"
+    },
+    {
+      "id": "tokyo-parity-recurrence",
+      "sourceSemanticIds": ["legacy_exam:01_tokyo:a325df9a0c1f94c7"],
+      "modulus": 2,
+      "initial": [1, 3],
+      "update": { "terms": [{ "coefficient": -7, "powers": [1, 0] }, { "coefficient": 3, "powers": [0, 1] }] },
+      "targetIndex": "1000001",
+      "source": "Tokyo entrance-exam recurrence, typed semantic lift"
+    },
+    {
+      "id": "affine-mod-8",
+      "sourceSemanticIds": ["benchmark:affine-mod-8"],
+      "modulus": 8,
+      "initial": [6],
+      "update": { "terms": [{ "coefficient": 3, "powers": [1] }, { "coefficient": 1, "powers": [0] }] },
+      "targetIndex": "999999999999999999",
+      "source": "metamorphic large-index case"
+    },
+    {
+      "id": "affine-mod-31",
+      "sourceSemanticIds": ["benchmark:affine-mod-31"],
+      "modulus": 31,
+      "initial": [8],
+      "update": { "terms": [{ "coefficient": 1, "powers": [1] }, { "coefficient": 7, "powers": [0] }] },
+      "targetIndex": "12345678901234567890",
+      "source": "metamorphic large-index case"
+    },
+    {
+      "id": "inhomogeneous-order-2-mod-19",
+      "sourceSemanticIds": ["benchmark:inhomogeneous-order-2-mod-19"],
+      "modulus": 19,
+      "initial": [4, 7],
+      "update": { "terms": [{ "coefficient": 2, "powers": [1, 0] }, { "coefficient": 3, "powers": [0, 1] }, { "coefficient": 4, "powers": [0, 0] }] },
+      "targetIndex": "1000000000000000007",
+      "source": "metamorphic large-index case"
+    },
+    {
+      "id": "order-3-mod-23",
+      "sourceSemanticIds": ["benchmark:order-3-mod-23"],
+      "modulus": 23,
+      "initial": [1, 2, 5],
+      "update": { "terms": [{ "coefficient": -1, "powers": [1, 0, 0] }, { "coefficient": 1, "powers": [0, 0, 1] }, { "coefficient": 2, "powers": [0, 0, 0] }] },
+      "targetIndex": "9876543210987654321",
+      "source": "metamorphic large-index case"
+    },
+    {
+      "id": "order-3-mixed-mod-13",
+      "sourceSemanticIds": ["benchmark:order-3-mixed-mod-13"],
+      "modulus": 13,
+      "initial": [3, 1, 4],
+      "update": { "terms": [{ "coefficient": 2, "powers": [1, 0, 0] }, { "coefficient": -3, "powers": [0, 1, 0] }, { "coefficient": 5, "powers": [0, 0, 1] }] },
+      "targetIndex": "3141592653589793238",
+      "source": "metamorphic large-index case"
+    },
+    {
+      "id": "tokyo-nonlinear-mod-17-huge",
+      "sourceSemanticIds": ["legacy_exam:01_tokyo:41b133c80d544199"],
+      "modulus": 17,
+      "initial": [2, 3],
+      "update": { "terms": [{ "coefficient": 1, "powers": [1, 1] }, { "coefficient": 1, "powers": [0, 1] }] },
+      "targetIndex": "1000000000000000033",
+      "source": "Tokyo entrance-exam recurrence, large-index intervention"
+    },
+    {
+      "id": "quadratic-map-mod-29",
+      "sourceSemanticIds": ["benchmark:quadratic-map-mod-29"],
+      "modulus": 29,
+      "initial": [3],
+      "update": { "terms": [{ "coefficient": 1, "powers": [2] }, { "coefficient": 1, "powers": [1] }, { "coefficient": 1, "powers": [0] }] },
+      "targetIndex": "2718281828459045235",
+      "source": "nonlinear finite-ring control"
+    },
+    {
+      "id": "quadratic-map-mod-37",
+      "sourceSemanticIds": ["benchmark:quadratic-map-mod-37"],
+      "modulus": 37,
+      "initial": [11],
+      "update": { "terms": [{ "coefficient": 2, "powers": [2] }, { "coefficient": -3, "powers": [1] }, { "coefficient": 7, "powers": [0] }] },
+      "targetIndex": "10000000000000000019",
+      "source": "nonlinear finite-ring control"
+    },
+    {
+      "id": "coupled-product-mod-11",
+      "sourceSemanticIds": ["benchmark:coupled-product-mod-11"],
+      "modulus": 11,
+      "initial": [1, 4],
+      "update": { "terms": [{ "coefficient": 1, "powers": [1, 1] }, { "coefficient": 2, "powers": [1, 0] }, { "coefficient": 3, "powers": [0, 0] }] },
+      "targetIndex": "999999999999999993",
+      "source": "nonlinear finite-ring control"
+    },
+    {
+      "id": "power-map-mod-41",
+      "sourceSemanticIds": ["benchmark:power-map-mod-41"],
+      "modulus": 41,
+      "initial": [7],
+      "update": { "terms": [{ "coefficient": 1, "powers": [3] }, { "coefficient": 4, "powers": [1] }, { "coefficient": 9, "powers": [0] }] },
+      "targetIndex": "100000000000000000000",
+      "source": "nonlinear finite-ring control"
+    },
+    {
+      "id": "four-term-mod-7",
+      "sourceSemanticIds": ["benchmark:four-term-mod-7"],
+      "modulus": 7,
+      "initial": [1, 0, 2, 3],
+      "update": { "terms": [{ "coefficient": 1, "powers": [1, 0, 0, 0] }, { "coefficient": 1, "powers": [0, 1, 0, 0] }, { "coefficient": 1, "powers": [0, 0, 1, 0] }, { "coefficient": 1, "powers": [0, 0, 0, 1] }] },
+      "targetIndex": "1000000000000000042",
+      "source": "higher-order finite-state control"
+    }
+  ]
+}

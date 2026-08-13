@@ -1,0 +1,130 @@
+{
+  "id": "tokyo-nonlinear-mod-17-huge:finite-state-diagram:artifact",
+  "kind": "interactive-finite-state-diagram",
+  "references": [
+    "legacy_exam:01_tokyo:41b133c80d544199",
+    "tokyo-nonlinear-mod-17-huge:state:2,3",
+    "tokyo-nonlinear-mod-17-huge:state:3,9",
+    "tokyo-nonlinear-mod-17-huge:state:9,2"
+  ],
+  "semanticTransport": {
+    "status": "certified",
+    "encoded": [
+      "residue state of the last k sequence terms",
+      "deterministic polynomial transition over Z/mZ",
+      "reachable orbit and first repeated state"
+    ],
+    "forgotten": [
+      "integer magnitude before reduction modulo m",
+      "closed form over the original coefficient domain",
+      "states outside the orbit reachable from the given initial state"
+    ],
+    "legalRewrites": [
+      {
+        "kind": "reachable-subgraph",
+        "input": "(Z/17Z)^2",
+        "output": "3 reachable states",
+        "precondition": "the initial state and deterministic transition are fixed"
+      },
+      {
+        "kind": "cycle-quotient",
+        "input": "orbit states 0,...,2",
+        "output": "Z/3Z action after the preperiod",
+        "precondition": "two complete typed states are equal"
+      },
+      {
+        "kind": "index-reduction",
+        "input": "n >= preperiod",
+        "output": "preperiod + ((n-preperiod) mod 3)",
+        "precondition": "cycle certificate has been independently checked"
+      }
+    ],
+    "invariants": [
+      {
+        "kind": "recurrence-transition",
+        "statement": "every edge is exactly one recurrence evaluation"
+      },
+      {
+        "kind": "residue-class",
+        "statement": "all coordinates are canonical residues modulo 17"
+      },
+      {
+        "kind": "determinism",
+        "statement": "every reachable state has exactly one outgoing transition"
+      },
+      {
+        "kind": "periodicity",
+        "statement": "reachable orbit enters a cycle after 0 steps with period 3"
+      }
+    ]
+  },
+  "designHeuristic": {
+    "status": "heuristic",
+    "layout": "tail-then-cycle",
+    "note": "座標は可読性のための配置であり、数学的証明には使わない。"
+  },
+  "states": [
+    {
+      "id": "tokyo-nonlinear-mod-17-huge:state:2,3",
+      "index": 0,
+      "values": [
+        2,
+        3
+      ],
+      "x": 520,
+      "y": 52,
+      "phase": "cycle"
+    },
+    {
+      "id": "tokyo-nonlinear-mod-17-huge:state:3,9",
+      "index": 1,
+      "values": [
+        3,
+        9
+      ],
+      "x": 649.9038105676658,
+      "y": 228.99999999999997,
+      "phase": "cycle"
+    },
+    {
+      "id": "tokyo-nonlinear-mod-17-huge:state:9,2",
+      "index": 2,
+      "values": [
+        9,
+        2
+      ],
+      "x": 390.0961894323342,
+      "y": 229.00000000000006,
+      "phase": "cycle"
+    }
+  ],
+  "transitions": [
+    {
+      "id": "tokyo-nonlinear-mod-17-huge:edge:2,3->3,9",
+      "from": "tokyo-nonlinear-mod-17-huge:state:2,3",
+      "to": "tokyo-nonlinear-mod-17-huge:state:3,9",
+      "emitted": 9
+    },
+    {
+      "id": "tokyo-nonlinear-mod-17-huge:edge:3,9->9,2",
+      "from": "tokyo-nonlinear-mod-17-huge:state:3,9",
+      "to": "tokyo-nonlinear-mod-17-huge:state:9,2",
+      "emitted": 2
+    },
+    {
+      "id": "tokyo-nonlinear-mod-17-huge:edge:9,2->2,3",
+      "from": "tokyo-nonlinear-mod-17-huge:state:9,2",
+      "to": "tokyo-nonlinear-mod-17-huge:state:2,3",
+      "emitted": 3
+    }
+  ],
+  "query": {
+    "requestedIndex": "1000000000000000033",
+    "reducedIndex": 1,
+    "answer": 3
+  },
+  "period": {
+    "preperiod": 0,
+    "length": 3
+  }
+}

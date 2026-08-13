@@ -77,6 +77,14 @@
   recall `6/6`、候補の厳密検証後precision `92.6%`、証明を開く候補8件から6件を選択し、
   selected seed precision `100%`。constructed witnessと近似関係の負例2件はfalse acceptance `0`。
   これは座標が数学的入力として厳密に与えられた限定実験であり、一般幾何証明率ではない。
+- executable finite-state diagram実験を、commit `1926596`を基線、dataset digest
+  `3f5f5dd2dedef69a`、1並列、直接反復上限10,000、到達状態上限200,000で18ケース実行した。
+  parserを固定したA/Bで、baselineは`3/18 = 16.7%`、有限状態遷移図は
+  `18/18 = 100%`を内部認証し、両者とも誤答0。15件を新たに閉じた。
+  cycle候補precision `18/18`、改ざん辺false acceptance `0/5`、法の倍数を加える
+  metamorphic test `8/8`、操作数はbaseline `150,147`、diagram `707`。
+  これは型付き剰余漸化式に限定した機構実験であり、自然言語parseや一般数学ベンチの改善ではない。
+  同じ認証済み状態を`/research/diagram`へcompileし、意味輸送と表示layoutを分離した。
 - GitHub Actions: MathOS全8 test shard + aggregate (`31624676721`) 成功。
   自律研究 (`31624693493`) は13 tests成功後、型付き候補を1件追加して研究キューを
   `116`構造へ更新。cleanup後のMORTRA Worker (`31637500154`) も、外部runtime
@@ -106,6 +114,7 @@ geometry_region 7 / optimization 2 / counting 1`。
 - **Reasoning / REPRODUCED:** dev `46/167 = 27.5%`、frozen holdout内部認証
   `138/522 = 26.4%`（1問60s・4並列、digest `e9fc9963d8d8ee12`、誤答1）。
   visual feedback限定実験は正例`0/6 -> 6/6`、負例誤受理`0/2`。
+  finite-state diagram限定実験は`3/18 -> 18/18`、誤答0、改ざん誤受理`0/5`。
 - **Discovery / PROTOTYPE:** semantic geometryから関係候補を観測し、厳密有理座標の
   多項式恒等式、証明寄与アブレーションを通した候補だけReasonerへ戻せる。
   witness図からの一般定理発見、円・接線・補助構成の探索は未実装。

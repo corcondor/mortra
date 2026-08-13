@@ -7,9 +7,13 @@ on:
       - "worker/**"
       - "lib/proof-scene.ts"
       - "lib/mortra/vision/**"
+      - "lib/mortra/diagram/**"
       - "tests/visual-candidate-loop.test.ts"
+      - "tests/finite-state-diagram.test.ts"
       - "scripts/visual-reasoning-loop-experiment.mts"
+      - "scripts/finite-state-diagram-experiment.mts"
       - "data/visual-reasoning-*.json"
+      - "data/finite-state-diagram-*.json"
       - "package.json"
       - "scripts/external_backend_invariant.py"
       - ".github/workflows/worker-ci.yml"
@@ -18,9 +22,13 @@ on:
       - "worker/**"
       - "lib/proof-scene.ts"
       - "lib/mortra/vision/**"
+      - "lib/mortra/diagram/**"
       - "tests/visual-candidate-loop.test.ts"
+      - "tests/finite-state-diagram.test.ts"
       - "scripts/visual-reasoning-loop-experiment.mts"
+      - "scripts/finite-state-diagram-experiment.mts"
       - "data/visual-reasoning-*.json"
+      - "data/finite-state-diagram-*.json"
       - "package.json"
       - "scripts/external_backend_invariant.py"
       - ".github/workflows/worker-ci.yml"
@@ -62,10 +70,14 @@ jobs:
         run: npm test
       - name: Test semantic geometry feedback loop
         run: npm run test:visual-loop
+      - name: Test executable finite-state diagram loop
+        run: npm run test:diagram-loop
       - name: Reproduce semantic geometry experiment artifact
         run: |
           npm run experiment:visual-loop
           git diff --exit-code -- data/visual-reasoning-loop-experiment.json data/visual-reasoning-demo.json
+      - name: Execute finite-state diagram A/B experiment
+        run: npm run experiment:diagram-loop
       - name: Type-check the production Worker
         working-directory: worker
         run: npm run build
