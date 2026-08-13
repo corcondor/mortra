@@ -92,6 +92,9 @@
   外部runtime結果は現行architectureの根拠にしない。
 - semantic geometry feedback loopのCI (`31642888799`) は、worker 82 tests、visual loop 6 tests、
   実験artifact完全一致、外部backend不変条件、Worker buildをLinux上で完走した。
+- executable finite-state diagramを含むCI (`31653446937`) は、既存Worker `82/82`、
+  semantic geometry `6/6`、finite-state diagram `7/7`、A/B実験、外部backend不変条件、
+  Worker buildをLinux上で完走した。
 
 ### REPORTED_NOT_REPRODUCED / STALE
 
