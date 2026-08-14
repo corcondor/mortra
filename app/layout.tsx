@@ -50,6 +50,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
           crossOrigin="anonymous"
         />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap"
+          rel="stylesheet"
+        />
       </head>
       {/*
         overflow-hidden を body に直接付けていたため、公開ページ（/mortra 以下）が
