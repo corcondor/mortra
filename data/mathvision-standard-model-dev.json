@@ -1,0 +1,3864 @@
+{
+  "experiment": "mathvision-ddar-standard-model-v1",
+  "recorded_on": "2026-08-14",
+  "split": "dev",
+  "uses_language_model": false,
+  "input_modality": "text-only",
+  "anti_memorization": {
+    "solver_interface_audit": {
+      "solver_accepts_problem_id": false,
+      "solver_accepts_reference_answer": false,
+      "passed": true
+    },
+    "answer_hidden_until_evaluation": true,
+    "development_source": "official testmini plus versioned calibration partition"
+  },
+  "manifest": {
+    "dataset": "MathLLMs/MathVision",
+    "license": "MIT",
+    "source_revision_policy": "pinned parquet SHA-256",
+    "development": {
+      "count": 304,
+      "id_digest": "f2327abdd3be3489887695067487b18b5c7a8d1503b472e554543e86c6ff0691"
+    },
+    "calibration": {
+      "count": 730,
+      "id_digest": "4e13ac6789e7f3b21523d1d3415edd3e1c28b4032997b013d561411488ab97db"
+    },
+    "frozen_final": {
+      "count": 2004,
+      "id_digest": "ed5440cf380ddeacf2c7957931b14ad93dae5b179b7929679080792a58cac9dd"
+    },
+    "partition": {
+      "method": "sha256-id-mod-4",
+      "salt": "mortra-mathvision-v2-2026-08-13",
+      "calibration_buckets": [
+        0
+      ]
+    }
+  },
+  "result": {
+    "summary": {
+      "total": 304,
+      "correct": 1,
+      "wrong": 0,
+      "abstained": 303,
+      "exact_rate": 0.003289473684210526,
+      "answer_precision": 1.0,
+      "coverage": 0.003289473684210526
+    },
+    "by_subject": {
+      "algebra": {
+        "total": 19,
+        "correct": 0,
+        "wrong": 0,
+        "abstained": 19,
+        "exact_rate": 0.0,
+        "answer_precision": 0.0,
+        "coverage": 0.0
+      },
+      "analytic geometry": {
+        "total": 19,
+        "correct": 0,
+        "wrong": 0,
+        "abstained": 19,
+        "exact_rate": 0.0,
+        "answer_precision": 0.0,
+        "coverage": 0.0
+      },
+      "arithmetic": {
+        "total": 19,
+        "correct": 0,
+        "wrong": 0,
+        "abstained": 19,
+        "exact_rate": 0.0,
+        "answer_precision": 0.0,
+        "coverage": 0.0
+      },
+      "combinatorial geometry": {
+        "total": 19,
+        "correct": 0,
+        "wrong": 0,
+        "abstained": 19,
+        "exact_rate": 0.0,
+        "answer_precision": 0.0,
+        "coverage": 0.0
+      },
+      "combinatorics": {
+        "total": 19,
+        "correct": 0,
+        "wrong": 0,
+        "abstained": 19,
+        "exact_rate": 0.0,
+        "answer_precision": 0.0,
+        "coverage": 0.0
+      },
+      "counting": {
+        "total": 19,
+        "correct": 0,
+        "wrong": 0,
+        "abstained": 19,
+        "exact_rate": 0.0,
+        "answer_precision": 0.0,
+        "coverage": 0.0
+      },
+      "descriptive geometry": {
+        "total": 19,
+        "correct": 0,
+        "wrong": 0,
+        "abstained": 19,
+        "exact_rate": 0.0,
+        "answer_precision": 0.0,
+        "coverage": 0.0
+      },
+      "graph theory": {
+        "total": 19,
+        "correct": 0,
+        "wrong": 0,
+        "abstained": 19,
+        "exact_rate": 0.0,
+        "answer_precision": 0.0,
+        "coverage": 0.0
+      },
+      "logic": {
+        "total": 19,
+        "correct": 0,
+        "wrong": 0,
+        "abstained": 19,
+        "exact_rate": 0.0,
+        "answer_precision": 0.0,
+        "coverage": 0.0
+      },
+      "metric geometry - angle": {
+        "total": 19,
+        "correct": 1,
+        "wrong": 0,
+        "abstained": 18,
+        "exact_rate": 0.05263157894736842,
+        "answer_precision": 1.0,
+        "coverage": 0.05263157894736842
+      },
+      "metric geometry - area": {
+        "total": 19,
+        "correct": 0,
+        "wrong": 0,
+        "abstained": 19,
+        "exact_rate": 0.0,
+        "answer_precision": 0.0,
+        "coverage": 0.0
+      },
+      "metric geometry - length": {
+        "total": 19,
+        "correct": 0,
+        "wrong": 0,
+        "abstained": 19,
+        "exact_rate": 0.0,
+        "answer_precision": 0.0,
+        "coverage": 0.0
+      },
+      "solid geometry": {
+        "total": 19,
+        "correct": 0,
+        "wrong": 0,
+        "abstained": 19,
+        "exact_rate": 0.0,
+        "answer_precision": 0.0,
+        "coverage": 0.0
+      },
+      "statistics": {
+        "total": 19,
+        "correct": 0,
+        "wrong": 0,
+        "abstained": 19,
+        "exact_rate": 0.0,
+        "answer_precision": 0.0,
+        "coverage": 0.0
+      },
+      "topology": {
+        "total": 19,
+        "correct": 0,
+        "wrong": 0,
+        "abstained": 19,
+        "exact_rate": 0.0,
+        "answer_precision": 0.0,
+        "coverage": 0.0
+      },
+      "transformation geometry": {
+        "total": 19,
+        "correct": 0,
+        "wrong": 0,
+        "abstained": 19,
+        "exact_rate": 0.0,
+        "answer_precision": 0.0,
+        "coverage": 0.0
+      }
+    },
+    "provenance": {
+      "text:abstain": 303,
+      "text:StandardModelFixpointClosureFullAngleGroup": 1
+    },
+    "provenance_verdict": {
+      "text:StandardModelFixpointClosureFullAngleGroup": {
+        "correct": 1
+      },
+      "text:abstain": {
+        "abstained": 303
+      }
+    },
+    "rows": [
+      {
+        "id": "4",
+        "subject": "counting",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "6",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "5",
+        "subject": "arithmetic",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "61",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "6",
+        "subject": "logic",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "7",
+        "subject": "counting",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "6",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "8",
+        "subject": "arithmetic",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "2",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "10",
+        "subject": "arithmetic",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "10",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "11",
+        "subject": "solid geometry",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "7",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "16",
+        "subject": "arithmetic",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "11",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "20",
+        "subject": "arithmetic",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "3",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "23",
+        "subject": "combinatorial geometry",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "140",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "26",
+        "subject": "counting",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "27",
+        "subject": "topology",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "28",
+        "subject": "counting",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "9",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "29",
+        "subject": "counting",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "10",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "32",
+        "subject": "counting",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "3",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "33",
+        "subject": "analytic geometry",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "34",
+        "subject": "combinatorial geometry",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "35",
+        "subject": "descriptive geometry",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "3",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "38",
+        "subject": "arithmetic",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "95",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "39",
+        "subject": "logic",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "41",
+        "subject": "counting",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "5",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "43",
+        "subject": "counting",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "19",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "44",
+        "subject": "counting",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "45",
+        "subject": "transformation geometry",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "46",
+        "subject": "descriptive geometry",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "49",
+        "subject": "solid geometry",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "12",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "50",
+        "subject": "transformation geometry",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "52",
+        "subject": "graph theory",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "53",
+        "subject": "combinatorial geometry",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "55",
+        "subject": "combinatorics",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "58",
+        "subject": "logic",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "59",
+        "subject": "solid geometry",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "60",
+        "subject": "combinatorial geometry",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "61",
+        "subject": "counting",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "9",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "62",
+        "subject": "counting",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "10",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "63",
+        "subject": "topology",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "64",
+        "subject": "arithmetic",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "4",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "65",
+        "subject": "transformation geometry",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "66",
+        "subject": "transformation geometry",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "71",
+        "subject": "logic",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "75",
+        "subject": "combinatorial geometry",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "78",
+        "subject": "counting",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "79",
+        "subject": "combinatorial geometry",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "80",
+        "subject": "metric geometry - length",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "86",
+        "subject": "combinatorial geometry",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "89",
+        "subject": "counting",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "5",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "90",
+        "subject": "descriptive geometry",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "91",
+        "subject": "combinatorial geometry",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "92",
+        "subject": "combinatorics",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "6",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "93",
+        "subject": "combinatorial geometry",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "95",
+        "subject": "combinatorial geometry",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "99",
+        "subject": "descriptive geometry",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "100",
+        "subject": "descriptive geometry",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "104",
+        "subject": "solid geometry",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "2",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "105",
+        "subject": "counting",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "107",
+        "subject": "logic",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "110",
+        "subject": "descriptive geometry",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "114",
+        "subject": "algebra",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "8",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "115",
+        "subject": "logic",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "3",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "117",
+        "subject": "logic",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "118",
+        "subject": "combinatorics",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "16",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "120",
+        "subject": "arithmetic",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "5",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "123",
+        "subject": "descriptive geometry",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "124",
+        "subject": "counting",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "6",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "125",
+        "subject": "arithmetic",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "126",
+        "subject": "topology",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "12",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "130",
+        "subject": "combinatorial geometry",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "131",
+        "subject": "logic",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "133",
+        "subject": "algebra",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "149",
+        "subject": "algebra",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "9",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "152",
+        "subject": "descriptive geometry",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "157",
+        "subject": "transformation geometry",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "159",
+        "subject": "algebra",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "3",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "162",
+        "subject": "logic",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "164",
+        "subject": "algebra",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "167",
+        "subject": "algebra",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "248",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "168",
+        "subject": "metric geometry - area",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "75",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "173",
+        "subject": "metric geometry - length",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "175",
+        "subject": "analytic geometry",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "176",
+        "subject": "combinatorics",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "711",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "180",
+        "subject": "solid geometry",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "181",
+        "subject": "metric geometry - area",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "8",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "183",
+        "subject": "metric geometry - angle",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "187",
+        "subject": "metric geometry - length",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "190",
+        "subject": "graph theory",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "4",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "193",
+        "subject": "metric geometry - area",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "25",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "195",
+        "subject": "solid geometry",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "3",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "201",
+        "subject": "metric geometry - area",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "203",
+        "subject": "analytic geometry",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "-2",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "206",
+        "subject": "graph theory",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "210",
+        "subject": "combinatorics",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "20",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "211",
+        "subject": "algebra",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "16",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "213",
+        "subject": "metric geometry - area",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "214",
+        "subject": "algebra",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "446",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "215",
+        "subject": "metric geometry - length",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "216",
+        "subject": "metric geometry - area",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "13",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "217",
+        "subject": "graph theory",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "218",
+        "subject": "metric geometry - length",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "219",
+        "subject": "solid geometry",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "9",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "222",
+        "subject": "descriptive geometry",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "223",
+        "subject": "logic",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "224",
+        "subject": "metric geometry - length",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "230",
+        "subject": "analytic geometry",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "231",
+        "subject": "transformation geometry",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "233",
+        "subject": "metric geometry - angle",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "234",
+        "subject": "algebra",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "1",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "242",
+        "subject": "analytic geometry",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "246",
+        "subject": "algebra",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "5",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "250",
+        "subject": "metric geometry - length",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "4.8",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "253",
+        "subject": "solid geometry",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "254",
+        "subject": "transformation geometry",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "255",
+        "subject": "metric geometry - length",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "5",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "259",
+        "subject": "analytic geometry",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "261",
+        "subject": "metric geometry - angle",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "263",
+        "subject": "solid geometry",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "64",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "269",
+        "subject": "metric geometry - length",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "270",
+        "subject": "solid geometry",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "272",
+        "subject": "graph theory",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "3",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "273",
+        "subject": "descriptive geometry",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "277",
+        "subject": "metric geometry - length",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "279",
+        "subject": "analytic geometry",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "284",
+        "subject": "combinatorics",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "3",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "285",
+        "subject": "analytic geometry",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "286",
+        "subject": "metric geometry - angle",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "290",
+        "subject": "metric geometry - angle",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "291",
+        "subject": "analytic geometry",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "22",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "292",
+        "subject": "transformation geometry",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "293",
+        "subject": "graph theory",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "295",
+        "subject": "graph theory",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "3",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "296",
+        "subject": "analytic geometry",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "297",
+        "subject": "metric geometry - area",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "300",
+        "subject": "metric geometry - area",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "6",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "307",
+        "subject": "graph theory",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "2",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "318",
+        "subject": "algebra",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "2",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "319",
+        "subject": "metric geometry - length",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "325",
+        "subject": "topology",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "330",
+        "subject": "metric geometry - area",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "333",
+        "subject": "metric geometry - area",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "336",
+        "subject": "statistics",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "351",
+        "subject": "statistics",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "354",
+        "subject": "analytic geometry",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "357",
+        "subject": "topology",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "364",
+        "subject": "metric geometry - area",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "12",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "366",
+        "subject": "statistics",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "373",
+        "subject": "solid geometry",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "386",
+        "subject": "metric geometry - length",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "70",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "390",
+        "subject": "algebra",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "403",
+        "subject": "descriptive geometry",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "414",
+        "subject": "algebra",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "415",
+        "subject": "arithmetic",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "500",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "416",
+        "subject": "arithmetic",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "417",
+        "subject": "counting",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "1",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "418",
+        "subject": "metric geometry - area",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "60",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "423",
+        "subject": "metric geometry - length",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "24",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "427",
+        "subject": "solid geometry",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "7",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "437",
+        "subject": "combinatorics",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "4",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "439",
+        "subject": "graph theory",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "441",
+        "subject": "combinatorial geometry",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "442",
+        "subject": "arithmetic",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "5",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "455",
+        "subject": "combinatorics",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "6",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "463",
+        "subject": "counting",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "32",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "467",
+        "subject": "graph theory",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "472",
+        "subject": "counting",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "4",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "473",
+        "subject": "algebra",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "474",
+        "subject": "descriptive geometry",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "20",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "514",
+        "subject": "combinatorial geometry",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "521",
+        "subject": "logic",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "522",
+        "subject": "graph theory",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "3",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "524",
+        "subject": "algebra",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "525",
+        "subject": "algebra",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "5",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "526",
+        "subject": "graph theory",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "21",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "534",
+        "subject": "topology",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "6",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "537",
+        "subject": "graph theory",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "544",
+        "subject": "topology",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "545",
+        "subject": "counting",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "3",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "549",
+        "subject": "descriptive geometry",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "550",
+        "subject": "arithmetic",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "556",
+        "subject": "logic",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "4",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "559",
+        "subject": "algebra",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "568",
+        "subject": "topology",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "589",
+        "subject": "transformation geometry",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "608",
+        "subject": "arithmetic",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "16",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "621",
+        "subject": "arithmetic",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "628",
+        "subject": "graph theory",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "6",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "641",
+        "subject": "topology",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "6",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "648",
+        "subject": "logic",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "654",
+        "subject": "arithmetic",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "662",
+        "subject": "transformation geometry",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "675",
+        "subject": "graph theory",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "701",
+        "subject": "algebra",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "10",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "706",
+        "subject": "combinatorics",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "4",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "730",
+        "subject": "metric geometry - angle",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "739",
+        "subject": "combinatorial geometry",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "742",
+        "subject": "descriptive geometry",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "748",
+        "subject": "metric geometry - area",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "761",
+        "subject": "logic",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "764",
+        "subject": "combinatorics",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "9",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "766",
+        "subject": "graph theory",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "767",
+        "subject": "metric geometry - length",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "771",
+        "subject": "combinatorial geometry",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "773",
+        "subject": "topology",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "785",
+        "subject": "topology",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "811",
+        "subject": "logic",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "4",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "812",
+        "subject": "transformation geometry",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "3",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "813",
+        "subject": "transformation geometry",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "819",
+        "subject": "graph theory",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "4",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "823",
+        "subject": "descriptive geometry",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "850",
+        "subject": "graph theory",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "3",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "855",
+        "subject": "transformation geometry",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "861",
+        "subject": "combinatorial geometry",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "870",
+        "subject": "combinatorics",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "873",
+        "subject": "solid geometry",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "893",
+        "subject": "descriptive geometry",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "913",
+        "subject": "arithmetic",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "2",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "923",
+        "subject": "arithmetic",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "934",
+        "subject": "logic",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "946",
+        "subject": "combinatorial geometry",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "951",
+        "subject": "descriptive geometry",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "961",
+        "subject": "topology",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "965",
+        "subject": "arithmetic",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1008",
+        "subject": "metric geometry - angle",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1011",
+        "subject": "descriptive geometry",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1039",
+        "subject": "topology",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "4",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1050",
+        "subject": "topology",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1060",
+        "subject": "transformation geometry",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "2",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1064",
+        "subject": "metric geometry - angle",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1101",
+        "subject": "analytic geometry",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1113",
+        "subject": "metric geometry - angle",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1137",
+        "subject": "solid geometry",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1167",
+        "subject": "metric geometry - angle",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1168",
+        "subject": "metric geometry - area",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1174",
+        "subject": "metric geometry - area",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1203",
+        "subject": "topology",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1211",
+        "subject": "transformation geometry",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1215",
+        "subject": "metric geometry - length",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1222",
+        "subject": "topology",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1226",
+        "subject": "topology",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1246",
+        "subject": "combinatorics",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "10",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1250",
+        "subject": "combinatorics",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "6",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1255",
+        "subject": "algebra",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1284",
+        "subject": "metric geometry - angle",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1301",
+        "subject": "combinatorics",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "4",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1335",
+        "subject": "combinatorics",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "2",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1336",
+        "subject": "metric geometry - length",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1343",
+        "subject": "metric geometry - area",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1355",
+        "subject": "combinatorial geometry",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1388",
+        "subject": "metric geometry - area",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1389",
+        "subject": "solid geometry",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1394",
+        "subject": "metric geometry - length",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1399",
+        "subject": "combinatorics",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "5",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1414",
+        "subject": "topology",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "5",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1426",
+        "subject": "statistics",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1451",
+        "subject": "statistics",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1512",
+        "subject": "metric geometry - angle",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1546",
+        "subject": "metric geometry - angle",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1547",
+        "subject": "descriptive geometry",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1559",
+        "subject": "metric geometry - angle",
+        "level": 5,
+        "standard": {
+          "verdict": "correct",
+          "answer": "C",
+          "expected": "C",
+          "provenance": "text:StandardModelFixpointClosureFullAngleGroup",
+          "semantic_ir": {
+            "goal": "QPR",
+            "method": "ddar-standard-model-full-angle-group",
+            "closure_rounds": 11,
+            "atoms": 16
+          }
+        }
+      },
+      {
+        "id": "1564",
+        "subject": "logic",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1634",
+        "subject": "metric geometry - length",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1668",
+        "subject": "transformation geometry",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "5",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1680",
+        "subject": "topology",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1696",
+        "subject": "logic",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1709",
+        "subject": "combinatorics",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "7",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1727",
+        "subject": "solid geometry",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1781",
+        "subject": "graph theory",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "3",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1787",
+        "subject": "logic",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1813",
+        "subject": "combinatorics",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "4",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1814",
+        "subject": "statistics",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "3",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1831",
+        "subject": "transformation geometry",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1861",
+        "subject": "metric geometry - angle",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1864",
+        "subject": "transformation geometry",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "3",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1889",
+        "subject": "analytic geometry",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1893",
+        "subject": "analytic geometry",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1915",
+        "subject": "combinatorics",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "4",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1920",
+        "subject": "transformation geometry",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "1969",
+        "subject": "statistics",
+        "level": 1,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2280",
+        "subject": "metric geometry - length",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2288",
+        "subject": "metric geometry - area",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2293",
+        "subject": "metric geometry - angle",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2316",
+        "subject": "metric geometry - angle",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2398",
+        "subject": "metric geometry - angle",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "36",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2443",
+        "subject": "solid geometry",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "1680",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2474",
+        "subject": "solid geometry",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2513",
+        "subject": "statistics",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "2.5",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2555",
+        "subject": "statistics",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "160",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2565",
+        "subject": "statistics",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2588",
+        "subject": "statistics",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "C",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2589",
+        "subject": "combinatorial geometry",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2634",
+        "subject": "statistics",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "20",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2636",
+        "subject": "statistics",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2648",
+        "subject": "solid geometry",
+        "level": 4,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "6",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2659",
+        "subject": "statistics",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2665",
+        "subject": "analytic geometry",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2673",
+        "subject": "analytic geometry",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "A",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2688",
+        "subject": "statistics",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "80",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2741",
+        "subject": "statistics",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "120",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2743",
+        "subject": "metric geometry - area",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "D",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2757",
+        "subject": "statistics",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "B",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2773",
+        "subject": "analytic geometry",
+        "level": 3,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2774",
+        "subject": "statistics",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "E",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2786",
+        "subject": "statistics",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "8",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2955",
+        "subject": "analytic geometry",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "(3,-4)",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "2984",
+        "subject": "analytic geometry",
+        "level": 5,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "45",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      },
+      {
+        "id": "3033",
+        "subject": "metric geometry - angle",
+        "level": 2,
+        "standard": {
+          "verdict": "abstained",
+          "answer": null,
+          "expected": "54",
+          "provenance": "text:abstain",
+          "semantic_ir": {}
+        }
+      }
+    ]
+  }
+}

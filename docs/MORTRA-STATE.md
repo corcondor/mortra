@@ -5,6 +5,38 @@
 
 ---
 
+## 0.8 2026-08-14 標準模型の論文実装完了パス（規則 48・接弦定理・中心角規則の向き修正）
+
+### OBSERVED
+
+- 定理 bank を 45 → 48 規則へ拡張し、~50 規則目標を充足
+  （+four-points-on-circle-cyclic / +equal-chords-equal-angles /
+  +midline-parallel（中点連結定理）/ +right-triangle-hypotenuse-midpoint /
+  +rhombus-diagonals-perpendicular、接弦定理は合成点を含むため閉包の手動ブロック）。
+- **中心角規則の向きバグを修正**: `central-angle-double-inscribed` が
+  `2·∠AOB − ∠ACB = m·180`（k を中心角側にかける）と導出していたため、
+  中心角が劣角でない問題（例: タレス、直径）で全枝が EmptySet になり
+  棄権していた。正しい全角群の等式は `2·∠ACB − ∠AOB = m·180`（k は円周角側）。
+  修正後、合成ケース「Circle with center O and diameter AB…∠BAC=30, find ∠ACB」
+  が goal_value 90 で正答（それまで None）。
+- 接線の全角系を実装: `tangent_at(T,O)` は合成点 `tgt_T` の接線パラメータを
+  線形系に追加し、`2·(t_tgt − t_OT) − 180 = 0`（無分岐、±90 両枝が同式）を
+  与える。接弦定理は閉包で `eqangle(A,T,tgt_T, A,B,T)` を導出
+  （有向角 mod 180 で ∠(接線,弦) = ∠ABT。符号は座標検証済み）。
+  退化していた旧 `tangent-perpendicular-radius` 2 規則
+  （perp(T,O,O,T) は同一線分で常に退化）を削除。
+- `extract_formal_propositions(question)` を公開 API として追加:
+  パーサー段（与件・ゴール・goal_symbol）と閉包（導出記録付き）を返す。
+  証明 DAG の葉は既存 certificate（atoms/derived/equations/goal_value）と同一。
+- 合成回帰 `std_synth_test.py`: `solved 14 / abstain 1 / wrong 0`
+  （前回 11/4/2。タレス 90° と 30/40/110 は正答、残り abstain は長方形対角線のみ）。
+- dev 304 問 `benchmark_mathvision_standard_model.py --split dev`:
+  `correct 1 / wrong 0 / abstained 303` を維持（正答 id 1559 → C、54°）。
+- 既知の残骸: 無名円（中心が本文にない "the circle"）は oncircle が発行されず
+  接弦定理は中心名義の円でのみ発火。calibration 730 問は誤答 0 を維持。
+
+---
+
 ## 0.7 2026-08-14 標準模型のパーサー修復と dev 初正答
 
 ### OBSERVED
