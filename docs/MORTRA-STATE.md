@@ -1,7 +1,92 @@
 # MORTRA 現在地
 
-最終更新 2026-08-13。この文書が唯一の正本。Codex の作業のあと、必ずここを直す。
+最終更新 2026-08-14。この文書が唯一の正本。Codex の作業のあと、必ずここを直す。
 書いてよいのは実行して得た数字だけ。見込みは書かない。
+
+---
+
+## 0.6 2026-08-14 LLMハイブリッド層の撤去と問題の所在
+
+### OBSERVED
+
+- LLM を提案器に使う `llm_proposer.py` / `hybrid_prover.py` / `angle_chase_text_kernel.py` /
+  `ab_hybrid.py` と関連データを削除した。これは `AGENTS.md`（推論経路にLLMを置かない）と
+  文献統合文書（外部LLM不使用という実験条件）に反する実装だった。
+- 撤去前に計測した dev 304問の結果: `1 correct / 0 wrong / 303 abstained`
+  （問題1113のみ正答）。既存 wu v2（52/0/252）と比べて見返りが極端に小さく、
+  問題の所在は backend の数ではないことの傍証にもなる。
+- 問題の所在（既存監査の再確認）:
+  1. elaboration 失敗が最大のボトルネック。公開3,574問中 81.3% が `OpaqueSort` に落下
+  2. 統一核の寄与は 850正解中48のみ。残り802は Python 個別 solver 群が回答
+  3. 206正答に provenance 139種、うち120種は一度しか発火せず共通核へ未統合
+  4. 棄却2,834件の共起上位「角度+面積 753」は、角度・長さ・面積を測度付きセル複体
+     （C2→C1→C0）として扱っていないことの証拠
+  5. 角度系棄却300件中172件は角度問題ではない。chart の分離が未実装
+- 詳細: `docs/research/problem-analysis-and-misalignment-2026-08-14.md`
+
+### 次に実装するもの（文献統合文書の実装順に従う）
+
+方針: **最小限のLLM構成**（Gelernter 1959 の syntax/semantic 分離の現代版、
+AG2 の 16/50→42/50 が実証）。LLM の役割は**型付き補助構成の提案のみ**。
+検証は常にシンボリックエンジン。詳細は文献統合文書と問題分析文書。
+
+1. 標準模型の固定点閉包（Chou/Gao/Zhang 2000 の演繹DB方式）
+2. アーベル幾何（全角法、有向角の加法群、Chou/Gao/Zhang 1996）
+3. 測度付きセル複体への統合（角度・長さ・面積を同一対象IDで）
+4. chart の分離（計量セル複体 / 半順序・層 / 群作用 / 有限関係 / 状態作用）
+5. elaboration の改善（`OpaqueSort` 削減、三経路の同一対象 ground）
+6. 定理bank の拡張（FormalGeo 196定理規模、型検査・反例検査）
+7. 最小LLMの接続（固定点が閉じない問題にのみ、補助構成を提案→検証）
+
+---
+
+## 0.5 2026-08-14 MathVision typed visual-symbolic A/B（dev 304問）
+
+### OBSERVED
+
+- `scripts/benchmark_mathvision.py --split dev --workers 2` で全304問を再実行（2026-08-14 11:31記録）。
+  artifact `data/mathvision-symbolic-benchmark-dev.json`（`experiment: mathvision-typed-visual-symbolic-ab-v1`）。
+- baseline（visual-symbolic層なし）: `correct 41 / wrong 0 / abstained 263`、exact rate `13.49%`。
+- visual_symbolic（wu_geometry_kernel v2 を含む）: `correct 52 / wrong 0 / abstained 252`、
+  exact rate `17.11%`。answer precision `1.0`（誤答0）を維持。
+- 2026-08-13時点の同A/Bは baseline `33/0/271`、visual `42/0/262`。本日は
+  baseline +8、visual +10。10問を個別検証した結果、7問を正解・3問を設計どおりabstain。
+- 既存回帰テスト `test_mathvision_symbolic.py` 全121件を実行し `OK`（10分強）。
+  wuカーネルの基本ケース（直角三角形3-4-5、正方形の対角線等4問）は
+  `test_polynomial_geometry_elimination_generalizes_across_labels_and_values` で検証済み。
+
+### wu_geometry_kernel.py v2（本日完成・検証済み）
+
+- 構成: 角度代数系（三角形角分解の3分岐×分岐選択＋目標ピン留め＋linsolve）、
+  Wu型座標多項式系（anchor固定＋linear逐次消去＋lex Groebner消去イデアル）、
+  パターンカーネル6種（座標反射／半円ロゼット／同心円／直径扇形比／正方形重なり／内接半円）。
+- 個別検証（test.parquetの10問、選択肢ラベルは一致する場合のみ）:
+  `187→E / 261→E / 277→A / 297→B / 1336→C / 1831→A / 2955→(3,-4)` を正解、
+  `183 / 250 / 1546` はabstain（正答率を下げない）。
+- 性能: 187はlex Groebner単体で40sかかったが、座標の線形逐次消去（1座標に線形な
+  多項式をsolve→代入）をGroebner前に挿入して `2.3s` へ。dev全体でwrong=0を維持。
+- 数値のみの候補は `sp.nsimplify` で有理数化し、記号候補（例: `q = 1 + tan²θ`）は
+  `t² ∈ {1/3, 1, 3}` のサンプリングで選択肢の関数形と照合する。
+- 基本ケース回帰の修復: `right-angled at X` の頂点文字クラスを `[ABC]` 固定から
+  三角形の頂点へ一般化、`side length` 検索に IGNORECASE を追加、
+  metric certificate に `method: lexicographic-groebner-elimination` を復元
+  （既存テストの契約）。いずれもdev数値を変えず（41/0/263、52/0/252）。
+
+### 直近で閉じたバグ（再発防止メモ）
+
+- `ANG A C D=90` が線分 `C D=90` として誤解析される問題は、角度文を先に除去した
+  `segment_text` で線分regexを走らせて解決（lookbehindでは `A C D` の空白で回避不能）。
+- 角度系の分岐組合せがスプリアス値 `266` を出した問題は、目標が既知三角形の内角の
+  とき上限を `180` に制限して `94` に一意化。
+- 選択肢の `\beta` 等は英単語ではなく実Greek文字へ変換（`cos β`→`cos(β)`、
+  `cos ^{2} β`→`cos(β)**2`、`\frac{1}{\cos ^{2} \beta}`→`cos(β)**-2` が通る）。
+- `wu_geometry_candidate` のトークンに `ang`（`_plain`後は `ANG`）等を追加。
+- solve()のオプション照合で `numeric`（ラベル列）をタプル展開していたValueErrorを修正。
+
+### REPORTED_NOT_REPRODUCED / STALE
+
+- 旧 `mathvision-symbolic-benchmark-dev.json`（2026-08-13 20:31時点の
+  `33/0/271` と `42/0/262`）は本日付けで上書き済み。旧値は比較基数としてのみ使う。
 
 ---
 
