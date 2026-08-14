@@ -34,9 +34,26 @@
 - dev 304問 `benchmark_mathvision_standard_model.py --split dev`:
   `correct 1 / wrong 0 / abstained 303`。初正答は id 1559
   （"QSR is a straight line" + PQ=PS=RS + ∠QPS=12 → ∠QPR=54°, 解答 C）。
+- calibration 730問: `correct 0 / wrong 0 / abstained 730`。誤答0を維持。
+- id 1559 の解法が示す構造: 二等辺三角形の底角 eqangle（∠PQS=∠QSP）は
+  有向角 mod 180 で鏡像の2枝（θ(QS)=t+6 と t+96）を持つ。線形系は枝1
+  （∠QPR=9）しか見ないが、内角CSP（三角形内角和 + 折り返し点の隣接角和
+  + 角の分割）が枝2（∠QPR=54）に一意に確定する。36枝の列挙で正答。
+- 再帰的バグの根絶: `re.IGNORECASE` をパターン全体に付けると `[A-Z]` が
+  小文字英単語にマッチする（"at P is 330" から angval('a','t','P','330')）。
+  全てのパターンを `(?i:キーワード)` のスコープ化に置換し、点文字の捕捉は
+  大文字限定にした。
 - 検証済みプローブ（std_dev_probe.py）: id 8（汚染なし）、286/290/1113 は
   目標角・二等分線・垂線を正しくパース（図依存のため abstain は意図どおり）、
   261 はパース良好も定理不足で abstain（既知の限界）。
+- 残り候補の分析（全て図依存 → abstain が正しい判断）:
+  - 183: 四角形の対角線の配置が図依存
+  - 1008/1512: D,E の位置（BC上/AC上）が本文に無い
+  - 1546: "VWX and XYZ are congruent equilateral" はパース成功も
+    角度分割（∠WXY=∠WXV+∠VXY）が図依存
+  - 1861: reflex angle at P の向き（QT⟂SU との位置関係）が図依存
+  - 3033: 内接円の接点三角形 ∠EDF=90−∠A/2 は定理bank不足
+  - 261: 点M,Nの順序と C-M-N 三角形が図依存
 
 ### 次に実装するもの（文献統合文書の実装順に従う）
 
