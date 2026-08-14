@@ -5,24 +5,38 @@
 
 ---
 
-## 0.6 2026-08-14 LLMハイブリッド層の撤去と問題の所在
+## 0.7 2026-08-14 標準模型のパーサー修復と dev 初正答
 
 ### OBSERVED
 
-- LLM を提案器に使う `llm_proposer.py` / `hybrid_prover.py` / `angle_chase_text_kernel.py` /
-  `ab_hybrid.py` と関連データを削除した。これは `AGENTS.md`（推論経路にLLMを置かない）と
-  文献統合文書（外部LLM不使用という実験条件）に反する実装だった。
-- 撤去前に計測した dev 304問の結果: `1 correct / 0 wrong / 303 abstained`
-  （問題1113のみ正答）。既存 wu v2（52/0/252）と比べて見返りが極端に小さく、
-  問題の所在は backend の数ではないことの傍証にもなる。
-- 問題の所在（既存監査の再確認）:
-  1. elaboration 失敗が最大のボトルネック。公開3,574問中 81.3% が `OpaqueSort` に落下
-  2. 統一核の寄与は 850正解中48のみ。残り802は Python 個別 solver 群が回答
-  3. 206正答に provenance 139種、うち120種は一度しか発火せず共通核へ未統合
-  4. 棄却2,834件の共起上位「角度+面積 753」は、角度・長さ・面積を測度付きセル複体
-     （C2→C1→C0）として扱っていないことの証拠
-  5. 角度系棄却300件中172件は角度問題ではない。chart の分離が未実装
-- 詳細: `docs/research/problem-analysis-and-misalignment-2026-08-14.md`
+- `geometry_standard_model.py` のパーサーを一括修復。再帰的バグの正体は
+  `re.IGNORECASE` 下の `[A-Z]` が小文字にマッチすることだった
+  （"are" → tri('a','r','e')、"AND" を角の 3 点と誤読）。
+- 修正内容:
+  1. 三角形・四角形・角度・目標角の点文字を大文字限定にし、
+     隣接大文字 "ABC" と英単語を区別するため `(?<![A-Za-z])`（先頭）と
+     `(?![A-Za-z])`（末尾）の境界のみ使う
+     （各文字ごとの境界は "ABC" 自体を壊すため使わない）
+  2. 目標角: "ANG" キーワード繰り返し（`\angle`→ANG と "angle"→ANG の二重変換）
+     を許容し、疑問文（what is / how big is / find）を最優先、size/measure of は
+     文末（`?` か文末）の時のみ
+  3. 二等分線: "BD is the bisector of ANG ABC"（頂点が先頭）と
+     "AD is the angle bisector of the angle at A"（既知三角形の他の2頂点を両端に）
+  4. 英国綴り "centre"、接線の点は oncircle も付与、"is a straight line" → coll
+  5. 線分の等長連鎖 "AB=CD=EF" は全ペアで cong 化（PQ=PS=RS → 3組）
+- 閉包の拡張: cong の共有端点から三角形を導出（既知の coll と一致する組は除外）、
+  底角 eqangle を手動導出（既存規則と同一の向き）。既存の 4 文字 cong 正規化では
+  "PS=RS"（共有頂点が後半）で底角規則が発火しない問題があった。
+- 内角 CSP に共線関係を追加: 折り返し点の隣接角の和 = 180（直線の内角）と
+  角の分割 ∠apx + ∠xpb = ∠apb。
+- 合成スイート `std_synth_test.py` 15件: `solved 14 / abstain 1 / wrong 0`
+  （abstain は既知の長方形対角線のみ。垂線の足 40° は規則追加で解決済み）。
+- dev 304問 `benchmark_mathvision_standard_model.py --split dev`:
+  `correct 1 / wrong 0 / abstained 303`。初正答は id 1559
+  （"QSR is a straight line" + PQ=PS=RS + ∠QPS=12 → ∠QPR=54°, 解答 C）。
+- 検証済みプローブ（std_dev_probe.py）: id 8（汚染なし）、286/290/1113 は
+  目標角・二等分線・垂線を正しくパース（図依存のため abstain は意図どおり）、
+  261 はパース良好も定理不足で abstain（既知の限界）。
 
 ### 次に実装するもの（文献統合文書の実装順に従う）
 
