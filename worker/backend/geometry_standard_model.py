@@ -685,6 +685,16 @@ class ProblemParser:
         ):
             a, b, c = match.group(1), match.group(2), match.group(3)
             self._parse_triangle(a, b, c)
+        # "V W X and X Y Z are congruent equilateral triangles" — 2 つの三角形
+        for match in re.finditer(
+            r"(?<![A-Za-z])([A-Z])\s*([A-Z])\s*([A-Z])\s+(?i:and)\s+"
+            r"(?<![A-Za-z])([A-Z])\s*([A-Z])\s*([A-Z])(?![A-Za-z])"
+            r"\s+(?i:are)\s+(?i:an?)?\s*(?i:congruent)\s+"
+            r"(?:(?i:equilateral|isosceles|right-?angled)\s+)?(?:TRIANGLE|[Tt]riangle)s?",
+            text,
+        ):
+            self._parse_triangle(match.group(1), match.group(2), match.group(3))
+            self._parse_triangle(match.group(4), match.group(5), match.group(6))
         self._parse_segments()
         self._parse_angles()
         self._parse_perp_para()
@@ -716,11 +726,11 @@ class ProblemParser:
         text = self.text
         self.atoms.append(Atom("tri", (a, b, c)))
         right = re.search(
-            rf"right-?angled\s+(?:TRIANGLE|triangle)s?\s*{a}\s*{b}\s*{c}\s+at\s+([{a}{b}{c}])",
-            text, re.IGNORECASE,
+            rf"(?i:right-?angled)\s+(?i:triangle)s?\s*{a}\s*{b}\s*{c}\s+(?i:at)\s+([{a}{b}{c}])",
+            text,
         ) or re.search(
-            rf"(?:TRIANGLE|triangle)s?\s*{a}\s*{b}\s*{c}\s+(?:is\s+)?right-?angled\s+at\s+([{a}{b}{c}])",
-            text, re.IGNORECASE,
+            rf"(?i:triangle)s?\s*{a}\s*{b}\s*{c}\s+(?i:is)?\s*(?i:right-?angled)\s+(?i:at)\s+([{a}{b}{c}])",
+            text,
         )
         if right:
             vertex = right.group(1).upper()
@@ -728,10 +738,10 @@ class ProblemParser:
             if len(others) == 2:
                 self.atoms.append(Atom("angval", (others[0], vertex, others[1], "90")))
         if re.search(
-            r"equilateral\s+(?:TRIANGLE|triangle)s?\s*" + f"{a}\\s*{b}\\s*{c}"
-            + r"|" + f"(?:TRIANGLE|triangle)s?\\s*{a}\\s*{b}\\s*{c}\\s+(?:is\\s+(?:an\\s+)?)?equilateral"
-            + r"|" + f"{a}\\s*{b}\\s*{c}\\s+(?:is|are)\\s+(?:an\\s+)?equilateral\\s+(?:TRIANGLE|triangle)s?",
-            text, re.IGNORECASE,
+            r"(?i:equilateral)\s+(?i:triangle)s?\s*" + f"{a}\\s*{b}\\s*{c}"
+            + r"|" + f"(?i:triangle)s?\\s*{a}\\s*{b}\\s*{c}\\s+(?i:is\\s+(?i:an)?\\s*)?(?i:equilateral)"
+            + r"|" + f"{a}\\s*{b}\\s*{c}\\s+(?i:is|are)\\s+(?i:an)?\\s*(?i:equilateral)\\s+(?i:triangle)s?",
+            text,
         ):
             # 3 つの 60° を angval で与えると有向角の縮約（和 ≡ 0 mod 180）
             # と線形式が衝突して EmptySet になる。1 つの 60° の pin と
@@ -744,10 +754,10 @@ class ProblemParser:
                 Atom("eqangle", (b, c, a, c, a, b)),
             ))
         if re.search(
-            r"isosceles\s+(?:TRIANGLE|triangle)s?\s*" + f"{a}\\s*{b}\\s*{c}"
-            + r"|" + f"(?:TRIANGLE|triangle)s?\\s*{a}\\s*{b}\\s*{c}\\s+(?:is|are)\\s+(?:an\\s+)?isosceles"
-            + r"|" + f"{a}\\s*{b}\\s*{c}\\s+(?:is|are)\\s+(?:an\\s+)?isosceles",
-            text, re.IGNORECASE,
+            r"(?i:isosceles)\s+(?i:triangle)s?\s*" + f"{a}\\s*{b}\\s*{c}"
+            + r"|" + f"(?i:triangle)s?\\s*{a}\\s*{b}\\s*{c}\\s+(?i:is|are)\\s+(?i:an)?\\s*(?i:isosceles)"
+            + r"|" + f"{a}\\s*{b}\\s*{c}\\s+(?i:is|are)\\s+(?i:an)?\\s*(?i:isosceles)",
+            text,
         ):
             self.atoms.append(Atom("cong", (a, b, a, c)))
 
@@ -762,9 +772,9 @@ class ProblemParser:
         # 連鎖 "AB=CD=EF" を分解して等長の組を作る
         for match in re.finditer(
             r"(?<![A-Za-z])([A-Z])\s*([A-Z])\s*(?:=\s*([A-Z])\s*([A-Z]))+",
-            segment_text, re.IGNORECASE,
+            segment_text,
         ):
-            letters = re.findall(r"[A-Z]", match.group(0), flags=re.IGNORECASE)
+            letters = re.findall(r"[A-Z]", match.group(0))
             letters = [x.upper() for x in letters]
             pairs = [(letters[i], letters[i + 1]) for i in range(0, len(letters), 2)]
             for i, first in enumerate(pairs):
@@ -777,8 +787,8 @@ class ProblemParser:
         text = self.text
         for match in re.finditer(
             r"(?:m\s*)?(?:ANG(?![A-Za-z])\s*)+(?<![A-Za-z])([A-Z])\s*([A-Z])\s*([A-Z])(?![A-Za-z])"
-            r"\s*(?:is|equals?|=\s*)\s*(\d+(?:\.\d+)?)(?:\s*deg|\s*degrees?|[oO°])?",
-            text, re.IGNORECASE,
+            r"\s*(?i:is|equals?|=\s*)\s*(\d+(?:\.\d+)?)(?:\s*deg|\s*degrees?|[oO°])?",
+            text,
         ):
             a, b, c, value = match.group(1), match.group(2), match.group(3), match.group(4)
             if a.isalpha() and b.isalpha() and c.isalpha():
@@ -809,9 +819,9 @@ class ProblemParser:
             self.atoms.append(Atom("eqangle", sym.group(1, 2, 3, 4, 5, 6)))
             self.goal_symbol = sym.group(7)
         for match in re.finditer(
-            r"([A-Z])\s*([A-Z])\s+is\s+(?:the\s+)?(?:ANG(?![A-Za-z])\s*)?bisector\s+of\s+"
-            r"(?:the\s+)?ANG(?![A-Za-z])\s*(?<![A-Za-z])([A-Z])\s*([A-Z])\s*([A-Z])(?![A-Za-z])",
-            text, re.IGNORECASE,
+            r"([A-Z])\s*([A-Z])\s+(?i:is)\s+(?i:the)?\s*(?:ANG(?![A-Za-z])\s*)?(?i:bisector)\s+(?i:of)\s+"
+            r"(?i:the)?\s*ANG(?![A-Za-z])\s*(?<![A-Za-z])([A-Z])\s*([A-Z])\s*([A-Z])(?![A-Za-z])",
+            text,
         ):
             x, y = match.group(1), match.group(2)
             a, middle, b = match.group(3), match.group(4), match.group(5)
@@ -822,9 +832,9 @@ class ProblemParser:
         # "AD is the angle bisector of the angle at A" — 頂点 A の角は
         # 既知の三角形から両端を取る
         for match in re.finditer(
-            r"([A-Z])\s*([A-Z])\s+(?:is\s+)?(?:the\s+)?(?:ANG(?![A-Za-z])\s*)?bisector\s+of\s+"
-            r"(?:the\s+)?(?:ANG(?![A-Za-z])\s*)?at\s+([A-Z])",
-            text, re.IGNORECASE,
+            r"([A-Z])\s*([A-Z])\s+(?i:is)?\s*(?i:the)?\s*(?:ANG(?![A-Za-z])\s*)?(?i:bisector)\s+(?i:of)\s+"
+            r"(?i:the)?\s*(?:ANG(?![A-Za-z])\s*)?(?i:at)\s+([A-Z])",
+            text,
         ):
             vertex = match.group(3).upper()
             along = match.group(2).upper()
@@ -841,12 +851,12 @@ class ProblemParser:
     def _parse_perp_para(self) -> None:
         text = self.text
         for match in re.finditer(
-            r"([A-Z])\s*([A-Z])\s+(?:is\s+)?perpendicular\s+to\s+([A-Z])\s*([A-Z])", text, re.IGNORECASE,
+            r"([A-Z])\s*([A-Z])\s+(?i:is)?\s*(?i:perpendicular\s+to)\s+([A-Z])\s*([A-Z])", text,
         ):
             self.atoms.append(Atom("perp", match.groups()))
         for match in re.finditer(
-            r"([A-Z])\s*([A-Z])\s+(?:is\s+)?(?:the\s+)?height\s+(?:from\s+(?:side\s+)?)?"
-            r"([A-Z])\s*([A-Z])", text, re.IGNORECASE,
+            r"([A-Z])\s*([A-Z])\s+(?i:is)?\s*(?i:the)?\s*(?i:height)\s+(?i:from\s+(?:side\s+)?)?"
+            r"([A-Z])\s*([A-Z])", text,
         ):
             x, y, p, q = (match.group(1).upper(), match.group(2).upper(),
                           match.group(3).upper(), match.group(4).upper())
@@ -858,7 +868,7 @@ class ProblemParser:
         for match in re.finditer(r"([A-Z])\s*([A-Z])\s*PERP\s*([A-Z])\s*([A-Z])", text):
             self.atoms.append(Atom("perp", match.groups()))
         for match in re.finditer(
-            r"([A-Z])\s*([A-Z])\s+(?:is\s+)?parallel\s+to\s+([A-Z])\s*([A-Z])", text, re.IGNORECASE,
+            r"([A-Z])\s*([A-Z])\s+(?i:is)?\s*(?i:parallel\s+to)\s+([A-Z])\s*([A-Z])", text,
         ):
             self.atoms.append(Atom("para", match.groups()))
         for match in re.finditer(r"([A-Z])\s*([A-Z])\s*PARA\s*([A-Z])\s*([A-Z])", text):
@@ -868,8 +878,9 @@ class ProblemParser:
     def _parse_midpoints(self) -> None:
         text = self.text
         for match in re.finditer(
-            r"([A-Z])\s+is\s+(?:the\s+)?midpoint\s+of\s+(?<![A-Za-z])([A-Z])\s*([A-Z])(?![A-Za-z])",
-            text, re.IGNORECASE,
+            r"([A-Z])\s+(?i:is)\s+(?i:the)?\s*(?i:midpoint)\s+(?i:of)\s+"
+            r"(?<![A-Za-z])([A-Z])\s*([A-Z])(?![A-Za-z])",
+            text,
         ):
             m, a, b = match.group(1).upper(), match.group(2).upper(), match.group(3).upper()
             if m not in (a, b) and len(a) == 1 and len(b) == 1:
@@ -879,17 +890,18 @@ class ProblemParser:
     def _parse_collinear(self) -> None:
         text = self.text
         for match in re.finditer(
-            r"([A-Z])\s+lies?\s+on\s+(?:the\s+)?segment\s*(?<![A-Za-z])([A-Z])\s*([A-Z])(?![A-Za-z])",
-            text, re.IGNORECASE,
+            r"([A-Z])\s+(?i:lies?)\s+(?i:on)\s+(?i:the)?\s*(?i:segment)\s*"
+            r"(?<![A-Za-z])([A-Z])\s*([A-Z])(?![A-Za-z])",
+            text,
         ):
             x, p, q = match.group(1).upper(), match.group(2).upper(), match.group(3).upper()
             if x not in (p, q) and len(p) == 1 and len(q) == 1:
                 self.atoms.append(Atom("coll", (p, x, q)))
         for match in re.finditer(
-            r"points?\s+([A-Z])(?:\s+and\s+([A-Z]))?\s+(?:are|is)\s+"
-            r"(?:placed|marked|taken|chosen|located|lying)\s+on\s+(?:the\s+)?(?:side|segment)"
+            r"points?\s+([A-Z])(?:\s+(?i:and)\s+([A-Z]))?\s+(?i:are|is)\s+"
+            r"(?i:placed|marked|taken|chosen|located|lying)\s+(?i:on)\s+(?i:the)?\s*(?i:side|segment)"
             r"\s*(?<![A-Za-z])([A-Z])\s*([A-Z])(?![A-Za-z])",
-            text, re.IGNORECASE,
+            text,
         ):
             groups = [g.upper() for g in match.groups() if g and g.isalpha() and len(g) == 1]
             if len(groups) >= 3:
@@ -898,16 +910,16 @@ class ProblemParser:
                     self.atoms.append(Atom("coll", (endpoints[0], point, endpoints[1])))
         # "D is on AC" / "E lies on BC" 形式
         for match in re.finditer(
-            r"([A-Z])\s+(?:is|lies?)\s+on\s+([A-Z])\s*([A-Z])(?![A-Za-z])", text, re.IGNORECASE,
+            r"([A-Z])\s+(?i:is|lies?)\s+(?i:on)\s+([A-Z])\s*([A-Z])(?![A-Za-z])", text,
         ):
             x, p, q = match.group(1).upper(), match.group(2).upper(), match.group(3).upper()
             if len(p) == 1 and len(q) == 1 and x not in (p, q):
                 self.atoms.append(Atom("coll", (p, x, q)))
         # "QSR is a straight line" 形式（本文中の点の並び順を保つ）
         for match in re.finditer(
-            r"(?<![A-Za-z])([A-Z])\s*([A-Z])\s*([A-Z])(?![A-Za-z])\s+(?:is|are)\s+"
-            r"(?:a\s+)?straight\s+line",
-            text, re.IGNORECASE,
+            r"(?<![A-Za-z])([A-Z])\s*([A-Z])\s*([A-Z])(?![A-Za-z])\s+(?i:is|are)\s+"
+            r"(?i:a)?\s*(?i:straight)\s+(?i:line)",
+            text,
         ):
             a, b, c = (match.group(1).upper(), match.group(2).upper(), match.group(3).upper())
             if len({a, b, c}) == 3:
@@ -918,13 +930,13 @@ class ProblemParser:
         text = self.text
         center = None
         for match in re.finditer(
-            r"circle\s*(?:with\s+(?:center|centre)\s*([A-Z])|\(([A-Z])\))?", text, re.IGNORECASE,
+            r"(?i:circle)\s*(?:(?i:with)\s+(?i:center|centre)\s*([A-Z])|\(([A-Z])\))?", text,
         ):
             center = (match.group(1) or match.group(2) or "").upper() or None
             break
         for match in re.finditer(
-            r"passing\s+through\s+([A-Z])(?:\s*,\s*([A-Z]))?(?:\s*,\s*([A-Z]))?",
-            text, re.IGNORECASE,
+            r"(?i:passing\s+through)\s+([A-Z])(?:\s*,\s*([A-Z]))?(?:\s*,\s*([A-Z]))?",
+            text,
         ):
             if not center:
                 continue
@@ -932,7 +944,7 @@ class ProblemParser:
                 if point and point.upper() != center:
                     self.atoms.append(Atom("oncircle", (point.upper(), center)))
         for match in re.finditer(
-            r"([A-Z])\s+(?:is|lies?)\s+on\s+(?:the\s+)?circle", text, re.IGNORECASE,
+            r"([A-Z])\s+(?i:is|lies?)\s+(?i:on)\s+(?i:the)?\s*(?i:circle)", text,
         ):
             if center:
                 point = match.group(1).upper()
@@ -941,9 +953,9 @@ class ProblemParser:
         # 直径: "diameter AB" / "AB is a diameter" → 中心が分かれば coll(A,O,B)。
         # 両端も円周上の点なので oncircle も付ける（タレスの定理の前提）。
         for match in re.finditer(
-            r"(?:diameter\s*(?<![A-Za-z])([A-Z])\s*([A-Z])(?![A-Za-z])"
-            r"|(?<![A-Za-z])([A-Z])\s*([A-Z])(?![A-Za-z])\s+(?:is|are)\s+(?:a\s+)?diameter)",
-            text, re.IGNORECASE,
+            r"(?:(?i:diameter)\s*(?<![A-Za-z])([A-Z])\s*([A-Z])(?![A-Za-z])"
+            r"|(?<![A-Za-z])([A-Z])\s*([A-Z])(?![A-Za-z])\s+(?i:is|are)\s+(?i:a)?\s*(?i:diameter))",
+            text,
         ):
             letters = [g.upper() for g in match.groups() if g and g.isalpha() and len(g) == 1]
             if len(letters) == 2 and center:
@@ -952,18 +964,18 @@ class ProblemParser:
                 self.atoms.append(Atom("oncircle", (p, center)))
                 self.atoms.append(Atom("oncircle", (q, center)))
         for match in re.finditer(
-            r"(?:cyclic\s+quadrilateral\s*(?<![A-Za-z])([A-Z])\s*([A-Z])\s*([A-Z])\s*([A-Z])(?![A-Za-z])"
+            r"(?:(?i:cyclic\s+quadrilateral)\s*(?<![A-Za-z])([A-Z])\s*([A-Z])\s*([A-Z])\s*([A-Z])(?![A-Za-z])"
             r"|(?<![A-Za-z])([A-Z])\s*([A-Z])\s*([A-Z])\s*([A-Z])(?![A-Za-z])"
-            r"\s+(?:is|are)\s+(?:a\s+)?cyclic\s+quadrilateral)",
-            text, re.IGNORECASE,
+            r"\s+(?i:is|are)\s+(?i:a)?\s*(?i:cyclic\s+quadrilateral))",
+            text,
         ):
             groups = [g.upper() for g in match.groups() if g and g.isalpha() and len(g) == 1]
             if len(groups) == 4:
                 self.atoms.append(Atom("cyclic", tuple(groups)))
         for match in re.finditer(
-            r"tangent\s+(?:to\s+(?:the\s+)?circle\s+at\s+([A-Z])|that\s+touches\s+(?:the\s+)?circle\s+"
-            r"in\s+(?:the\s+)?point\s+([A-Z]))",
-            text, re.IGNORECASE,
+            r"(?i:tangent)\s+(?:(?i:to\s+(?:the\s+)?circle\s+at)\s+([A-Z])"
+            r"|(?i:that\s+touches\s+(?:the\s+)?circle\s+in\s+(?:the\s+)?point)\s+([A-Z]))",
+            text,
         ):
             point = match.group(1) or match.group(2)
             if center:
@@ -975,23 +987,20 @@ class ProblemParser:
         text = self.text
         patterns = [
             re.compile(
-                r"(?:what is|how big is|find|determine|calculate)(?: the)?"
-                r"(?: (?:measure|size|value) of)?"
-                r"\s*(?:the\s+)?(?:ANG(?![A-Za-z])\s*)+"
+                r"(?i:what is|how big is|find|determine|calculate)(?i: the)?"
+                r"(?i: (?:measure|size|value) of)?"
+                r"\s*(?i:the)?\s*(?:ANG(?![A-Za-z])\s*)+"
                 r"(?<![A-Za-z])([A-Z])\s*([A-Z])\s*([A-Z])(?![A-Za-z])",
-                re.IGNORECASE,
             ),
             re.compile(
-                r"(?:the )?(?:measure|size|value) of"
-                r"\s*(?:the\s+)?(?:ANG(?![A-Za-z])\s*)+"
+                r"(?i:the )?(?i:measure|size|value) of"
+                r"\s*(?i:the)?\s*(?:ANG(?![A-Za-z])\s*)+"
                 r"(?<![A-Za-z])([A-Z])\s*([A-Z])\s*([A-Z])(?![A-Za-z])"
                 r"(?=\s*[?。]|\s*$)",
-                re.IGNORECASE,
             ),
             re.compile(
                 r"(?:ANG(?![A-Za-z])\s*)+(?<![A-Za-z])([A-Z])\s*([A-Z])\s*([A-Z])(?![A-Za-z])"
-                r"\s+is\s+equal\s+to",
-                re.IGNORECASE,
+                r"\s+(?i:is\s+equal\s+to)",
             ),
         ]
         for pattern in patterns:
