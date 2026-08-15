@@ -19,6 +19,7 @@ on:
       - "scripts/verify_jgex_exact_reproduction.py"
       - "scripts/verify_mortra_research_manifest.py"
       - "worker/backend/gclc_newclid_bridge.py"
+      - "worker/backend/geometry_relation_channels.py"
       - "worker/backend/jgex_*.py"
   pull_request:
     paths:
@@ -36,6 +37,7 @@ on:
       - "scripts/verify_jgex_exact_reproduction.py"
       - "scripts/verify_mortra_research_manifest.py"
       - "worker/backend/gclc_newclid_bridge.py"
+      - "worker/backend/geometry_relation_channels.py"
       - "worker/backend/jgex_*.py"
   workflow_dispatch:
 
@@ -73,12 +75,14 @@ jobs:
             scripts/verify_jgex_exact_reproduction.py \
             scripts/verify_mortra_research_manifest.py \
             worker/backend/gclc_newclid_bridge.py \
+            worker/backend/geometry_relation_channels.py \
             worker/backend/jgex_exact_constraint_bridge.py \
             worker/backend/jgex_legacy_normalizer.py
       - name: Run symbolic bridge tests
         run: |
           python -m pytest \
             worker/backend/test_gclc_newclid_bridge.py \
+            worker/backend/test_geometry_relation_channels.py \
             worker/backend/test_jgex_legacy_normalizer.py \
             worker/backend/test_jgex_exact_constraint_bridge.py \
             -q
