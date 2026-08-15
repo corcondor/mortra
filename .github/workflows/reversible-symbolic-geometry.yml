@@ -1,0 +1,81 @@
+name: Reversible Symbolic Geometry
+
+on:
+  push:
+    branches:
+      - research/reversible-synthesis
+    paths:
+      - ".github/workflows/reversible-symbolic-geometry.yml"
+      - "data/gclc-newclid-concrete-certificate-bridge-*.json"
+      - "data/jgex-exact-*.json"
+      - "data/mortra-reversible-synthesis-reproduction-manifest-*.json"
+      - "data/yuclid-imo-ag-30-all-ar-*.json"
+      - "docs/research/**"
+      - "scripts/experiment_gclc_newclid_certificate_bridge.py"
+      - "scripts/experiment_jgex_exact_*.py"
+      - "scripts/merge_jgex_exact_portfolio.py"
+      - "scripts/reproduce_gclc_methods.py"
+      - "scripts/reproduce_yuclid_imo_ag_30.py"
+      - "scripts/verify_jgex_exact_reproduction.py"
+      - "scripts/verify_mortra_research_manifest.py"
+      - "worker/backend/gclc_newclid_bridge.py"
+      - "worker/backend/jgex_*.py"
+  pull_request:
+    paths:
+      - ".github/workflows/reversible-symbolic-geometry.yml"
+      - "data/gclc-newclid-concrete-certificate-bridge-*.json"
+      - "data/jgex-exact-*.json"
+      - "data/mortra-reversible-synthesis-reproduction-manifest-*.json"
+      - "data/yuclid-imo-ag-30-all-ar-*.json"
+      - "docs/research/**"
+      - "scripts/experiment_gclc_newclid_certificate_bridge.py"
+      - "scripts/experiment_jgex_exact_*.py"
+      - "scripts/merge_jgex_exact_portfolio.py"
+      - "scripts/reproduce_gclc_methods.py"
+      - "scripts/reproduce_yuclid_imo_ag_30.py"
+      - "scripts/verify_jgex_exact_reproduction.py"
+      - "scripts/verify_mortra_research_manifest.py"
+      - "worker/backend/gclc_newclid_bridge.py"
+      - "worker/backend/jgex_*.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install verification dependencies
+        run: python -m pip install pytest==8.4.1 sympy==1.14.0
+      - name: Compile research modules
+        run: |
+          python -m py_compile \
+            scripts/experiment_gclc_newclid_certificate_bridge.py \
+            scripts/experiment_jgex_exact_portfolio.py \
+            scripts/experiment_jgex_exact_unsolved_set.py \
+            scripts/merge_jgex_exact_portfolio.py \
+            scripts/reproduce_gclc_methods.py \
+            scripts/reproduce_yuclid_imo_ag_30.py \
+            scripts/verify_jgex_exact_reproduction.py \
+            scripts/verify_mortra_research_manifest.py \
+            worker/backend/gclc_newclid_bridge.py \
+            worker/backend/jgex_exact_constraint_bridge.py \
+            worker/backend/jgex_legacy_normalizer.py
+      - name: Run symbolic bridge tests
+        run: |
+          python -m pytest \
+            worker/backend/test_gclc_newclid_bridge.py \
+            worker/backend/test_jgex_legacy_normalizer.py \
+            worker/backend/test_jgex_exact_constraint_bridge.py \
+            -q
+      - name: Verify published artifacts and acceptance claims
+        run: |
+          python scripts/verify_mortra_research_manifest.py \
+            --manifest data/mortra-reversible-synthesis-reproduction-manifest-2026-08-16.json
