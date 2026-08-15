@@ -47,13 +47,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
+      - name: Check out pinned Newclid source
+        run: |
+          git clone --filter=blob:none https://github.com/Newclid/Newclid.git "$RUNNER_TEMP/Newclid"
+          git -C "$RUNNER_TEMP/Newclid" checkout ac6550732a950564cf7614d605b5bf1eadd29701
+          echo "NEWCLID_ROOT=$RUNNER_TEMP/Newclid" >> "$GITHUB_ENV"
       - name: Install verification dependencies
-        run: python -m pip install pytest==8.4.1 sympy==1.14.0
+        run: |
+          python -m pip install pytest==8.4.1 sympy==1.14.0
+          python -m pip install -e "$NEWCLID_ROOT/newclid"
       - name: Compile research modules
         run: |
           python -m py_compile \
