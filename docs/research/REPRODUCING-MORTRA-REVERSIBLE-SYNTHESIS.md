@@ -93,3 +93,6 @@ Semantic acceptance requires all four checks to pass:
 
 Generated timestamps, elapsed seconds, and absolute paths are intentionally
 excluded from semantic equality.
+
+The manifest hashes normalized UTF-8 JSON bytes after converting CRLF to LF,
+so the same artifacts verify on Windows and Linux checkouts.
