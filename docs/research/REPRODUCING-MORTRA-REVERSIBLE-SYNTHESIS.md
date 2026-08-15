@@ -36,11 +36,13 @@ On Linux or macOS, use `../Newclid/.venv/bin/python` instead.
 
 ```powershell
 & $python -m pytest `
+  worker/backend/test_gclc_newclid_bridge.py `
+  worker/backend/test_geometry_relation_channels.py `
   worker/backend/test_jgex_legacy_normalizer.py `
   worker/backend/test_jgex_exact_constraint_bridge.py -q
 ```
 
-Expected: `20 passed`.
+Expected: `31 passed`.
 
 ## Frozen 60-second run
 
