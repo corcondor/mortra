@@ -1,0 +1,177 @@
+{
+  "experiment": "jgex_exact_frozen_unsolved_set",
+  "generated_at": "2026-08-15T15:11:32.206207+00:00",
+  "uses_llm": false,
+  "uses_problem_specific_solver_logic": false,
+  "dataset_auxiliary_clauses_hidden": true,
+  "per_problem_timeout_seconds": 60.0,
+  "frozen_vocabulary": [
+    "angle_bisector",
+    "circle",
+    "eqangle3",
+    "foot",
+    "incenter",
+    "incenter2",
+    "midpoint",
+    "mirror",
+    "on_aline",
+    "on_bline",
+    "on_circle",
+    "on_dia",
+    "on_line",
+    "on_pline",
+    "on_tline",
+    "orthocenter",
+    "r_triangle",
+    "reflect",
+    "triangle"
+  ],
+  "summary": {
+    "unresolved_total": 13,
+    "proved": 2,
+    "unproved": 0,
+    "unsupported": 1,
+    "timeout": 10,
+    "execution_error": 0,
+    "baseline_solved": 17,
+    "portfolio_solved": 19,
+    "total": 30,
+    "portfolio_score": 0.6333333333333333
+  },
+  "results": {
+    "2000_p6": {
+      "status": "timeout",
+      "elapsed_seconds": 60.29721369998879
+    },
+    "2008_p1a": {
+      "status": "timeout",
+      "elapsed_seconds": 60.208147100012866
+    },
+    "2008_p1b": {
+      "status": "timeout",
+      "elapsed_seconds": 60.22795360001328
+    },
+    "2008_p6": {
+      "status": "unsupported",
+      "reason": "unsupported JGEX constructions: cc_tangent",
+      "elapsed_seconds": 30.035905800003093
+    },
+    "2009_p2": {
+      "status": "proved",
+      "certificate": {
+        "channel": "cong",
+        "points": [
+          "o",
+          "p",
+          "o",
+          "q"
+        ],
+        "construction_vocabulary": [
+          "circle",
+          "mirror",
+          "on_line",
+          "on_tline",
+          "triangle"
+        ],
+        "normalization_assumptions": [
+          "euclidean_gauge m=(0,0) l=(_base_0,0) k=(_apex_x_1,_apex_y_2)",
+          "_base_0 != 0",
+          "_apex_y_2 != 0"
+        ],
+        "construction_equations": [],
+        "nondegeneracy_conditions": [
+          "(2*_apex_y_2 - _base_0*_tline_3)*(_apex_x_1**2*_tline_3 + _apex_y_2**2*_tline_3 - 2*_apex_y_2*_base_0)/_apex_y_2 != 0",
+          "(_apex_x_1**2 + _apex_y_2**2)*(_apex_x_1**2 - 2*_apex_x_1*_base_0 + _apex_y_2**2 + _base_0**2)/(4*_apex_y_2**2) != 0",
+          "-4*_apex_y_2*_base_0 != 0",
+          "_apex_y_2*_base_0 != 0"
+        ],
+        "goal_polynomial": "0",
+        "groebner_basis": [],
+        "quotient_certificate": [],
+        "remainder": "0",
+        "exact_replay": true,
+        "certificate_sha256": "d4ea66f599efc7b948eb32ff06ba734a2df1525f21622266f57358ca441fa8e9"
+      },
+      "elapsed_seconds": 10.010429100002511
+    },
+    "2010_p2": {
+      "status": "timeout",
+      "elapsed_seconds": 60.18770409999706
+    },
+    "2011_p6": {
+      "status": "timeout",
+      "elapsed_seconds": 60.32371559999592
+    },
+    "2012_p5": {
+      "status": "proved",
+      "certificate": {
+        "channel": "cong",
+        "points": [
+          "l",
+          "m",
+          "k",
+          "m"
+        ],
+        "construction_vocabulary": [
+          "foot",
+          "on_circle",
+          "on_line",
+          "r_triangle"
+        ],
+        "normalization_assumptions": [
+          "euclidean_gauge c=(0,0) a=(_leg_0,0) b=(0,_leg_1)",
+          "_leg_0 != 0",
+          "_leg_1 != 0"
+        ],
+        "construction_equations": [
+          "_leg_0**8*_line_3**2 - 2*_leg_0**8*_line_3 + _leg_0**8 + _leg_0**6*_leg_1**2*_line_2**2*_line_3**2 - 2*_leg_0**6*_leg_1**2*_line_2*_line_3**2 + 3*_leg_0**6*_leg_1**2*_line_3**2 - 6*_leg_0**6*_leg_1**2*_line_3 + 3*_leg_0**6*_leg_1**2 + 2*_leg_0**4*_leg_1**4*_line_2**2*_line_3**2 - 4*_leg_0**4*_leg_1**4*_line_2*_line_3**2 + 3*_leg_0**4*_leg_1**4*_line_3**2 - 6*_leg_0**4*_leg_1**4*_line_3 + 3*_leg_0**4*_leg_1**4 + _leg_0**2*_leg_1**6*_line_2**2*_line_3**2 - 2*_leg_0**2*_leg_1**6*_line_2*_line_3**2 + _leg_0**2*_leg_1**6*_line_3**2 - 2*_leg_0**2*_leg_1**6*_line_3 + _leg_0**2*_leg_1**6",
+          "_leg_0**6*_leg_1**2*_line_2**2*_line_4**2 - 2*_leg_0**6*_leg_1**2*_line_2*_line_4**2 + _leg_0**6*_leg_1**2*_line_4**2 - 2*_leg_0**6*_leg_1**2*_line_4 + _leg_0**6*_leg_1**2 + 2*_leg_0**4*_leg_1**4*_line_2**2*_line_4**2 - 4*_leg_0**4*_leg_1**4*_line_2*_line_4**2 + 3*_leg_0**4*_leg_1**4*_line_4**2 - 6*_leg_0**4*_leg_1**4*_line_4 + 3*_leg_0**4*_leg_1**4 + _leg_0**2*_leg_1**6*_line_2**2*_line_4**2 - 2*_leg_0**2*_leg_1**6*_line_2*_line_4**2 + 3*_leg_0**2*_leg_1**6*_line_4**2 - 6*_leg_0**2*_leg_1**6*_line_4 + 3*_leg_0**2*_leg_1**6 + _leg_1**8*_line_4**2 - 2*_leg_1**8*_line_4 + _leg_1**8"
+        ],
+        "nondegeneracy_conditions": [
+          "(_leg_0**2 + _leg_1**2)**3 != 0",
+          "(_leg_0**2 + _leg_1**2)**6*(_line_3*_line_4 - _line_3 - _line_4)**2 != 0",
+          "_leg_0**2 + _leg_1**2 != 0",
+          "_leg_0*_leg_1*(_line_2 - 1)*(_line_3*_line_4 - _line_3 - _line_4) != 0"
+        ],
+        "goal_polynomial": "-(_leg_0**2 + _leg_1**2)**5*(_line_3*_line_4 - _line_3 - _line_4)*(_leg_0**4*_line_3**3*_line_4 - _leg_0**4*_line_3**3 - _leg_0**4*_line_3**2*_line_4 + 2*_leg_0**4*_line_3**2 - _leg_0**4*_line_3*_line_4 - _leg_0**4*_line_3 + _leg_0**4*_line_4 + _leg_0**2*_leg_1**2*_line_2**2*_line_3**3*_line_4 - _leg_0**2*_leg_1**2*_line_2**2*_line_3**3 + _leg_0**2*_leg_1**2*_line_2**2*_line_3**2*_line_4 - _leg_0**2*_leg_1**2*_line_2**2*_line_3*_line_4**3 - _leg_0**2*_leg_1**2*_line_2**2*_line_3*_line_4**2 + _leg_0**2*_leg_1**2*_line_2**2*_line_4**3 - 2*_leg_0**2*_leg_1**2*_line_2*_line_3**3*_line_4 + 2*_leg_0**2*_leg_1**2*_line_2*_line_3**3 - 2*_leg_0**2*_leg_1**2*_line_2*_line_3**2*_line_4 + 2*_leg_0**2*_leg_1**2*_line_2*_line_3*_line_4**3 + 2*_leg_0**2*_leg_1**2*_line_2*_line_3*_line_4**2 - 2*_leg_0**2*_leg_1**2*_line_2*_line_4**3 + _leg_0**2*_leg_1**2*_line_3**3*_line_4 - _leg_0**2*_leg_1**2*_line_3**3 - _leg_0**2*_leg_1**2*_line_3**2*_line_4 + 2*_leg_0**2*_leg_1**2*_line_3**2 - _leg_0**2*_leg_1**2*_line_3*_line_4**3 + _leg_0**2*_leg_1**2*_line_3*_line_4**2 - 2*_leg_0**2*_leg_1**2*_line_3 + _leg_0**2*_leg_1**2*_line_4**3 - 2*_leg_0**2*_leg_1**2*_line_4**2 + 2*_leg_0**2*_leg_1**2*_line_4 - _leg_1**4*_line_3*_line_4**3 + _leg_1**4*_line_3*_line_4**2 + _leg_1**4*_line_3*_line_4 - _leg_1**4*_line_3 + _leg_1**4*_line_4**3 - 2*_leg_1**4*_line_4**2 + _leg_1**4*_line_4)",
+        "groebner_basis": [
+          "_leg_0**10*_line_2**2*_line_3**2*_line_4**2 - 2*_leg_0**10*_line_2**2*_line_3*_line_4**2 + _leg_0**10*_line_2**2*_line_4**2 - 2*_leg_0**10*_line_2*_line_3**2*_line_4**2 + 4*_leg_0**10*_line_2*_line_3*_line_4**2 - 2*_leg_0**10*_line_2*_line_4**2 + _leg_0**10*_line_3**2*_line_4**2 - 2*_leg_0**10*_line_3**2*_line_4 + _leg_0**10*_line_3**2 - 2*_leg_0**10*_line_3*_line_4**2 + 4*_leg_0**10*_line_3*_line_4 - 2*_leg_0**10*_line_3 + _leg_0**10*_line_4**2 - 2*_leg_0**10*_line_4 + _leg_0**10 + 2*_leg_0**8*_leg_1**2*_line_2**2*_line_3**2*_line_4**2 - 4*_leg_0**8*_leg_1**2*_line_2**2*_line_3*_line_4**2 + 2*_leg_0**8*_leg_1**2*_line_2**2*_line_4**2 - 4*_leg_0**8*_leg_1**2*_line_2*_line_3**2*_line_4**2 + 8*_leg_0**8*_leg_1**2*_line_2*_line_3*_line_4**2 - 4*_leg_0**8*_leg_1**2*_line_2*_line_4**2 + 3*_leg_0**8*_leg_1**2*_line_3**2*_line_4**2 - 6*_leg_0**8*_leg_1**2*_line_3**2*_line_4 + 3*_leg_0**8*_leg_1**2*_line_3**2 - 6*_leg_0**8*_leg_1**2*_line_3*_line_4**2 + 12*_leg_0**8*_leg_1**2*_line_3*_line_4 - 6*_leg_0**8*_leg_1**2*_line_3 + 3*_leg_0**8*_leg_1**2*_line_4**2 - 6*_leg_0**8*_leg_1**2*_line_4 + 3*_leg_0**8*_leg_1**2 + _leg_0**6*_leg_1**4*_line_2**2*_line_3**2*_line_4**2 - 2*_leg_0**6*_leg_1**4*_line_2**2*_line_3*_line_4**2 + _leg_0**6*_leg_1**4*_line_2**2*_line_4**2 - 2*_leg_0**6*_leg_1**4*_line_2*_line_3**2*_line_4**2 + 4*_leg_0**6*_leg_1**4*_line_2*_line_3*_line_4**2 - 2*_leg_0**6*_leg_1**4*_line_2*_line_4**2 + 3*_leg_0**6*_leg_1**4*_line_3**2*_line_4**2 - 6*_leg_0**6*_leg_1**4*_line_3**2*_line_4 + 3*_leg_0**6*_leg_1**4*_line_3**2 - 6*_leg_0**6*_leg_1**4*_line_3*_line_4**2 + 12*_leg_0**6*_leg_1**4*_line_3*_line_4 - 6*_leg_0**6*_leg_1**4*_line_3 + 3*_leg_0**6*_leg_1**4*_line_4**2 - 6*_leg_0**6*_leg_1**4*_line_4 + 3*_leg_0**6*_leg_1**4 + _leg_0**4*_leg_1**6*_line_3**2*_line_4**2 - 2*_leg_0**4*_leg_1**6*_line_3**2*_line_4 + _leg_0**4*_leg_1**6*_line_3**2 - 2*_leg_0**4*_leg_1**6*_line_3*_line_4**2 + 4*_leg_0**4*_leg_1**6*_line_3*_line_4 - 2*_leg_0**4*_leg_1**6*_line_3 + _leg_0**4*_leg_1**6*_line_4**2 - 2*_leg_0**4*_leg_1**6*_line_4 + _leg_0**4*_leg_1**6",
+          "-_leg_0**8*_line_3**2*_line_4**2 + 2*_leg_0**8*_line_3*_line_4**2 - _leg_0**8*_line_4**2 - 2*_leg_0**6*_leg_1**2*_line_3**2*_line_4**2 - 2*_leg_0**6*_leg_1**2*_line_3**2*_line_4 + _leg_0**6*_leg_1**2*_line_3**2 + 6*_leg_0**6*_leg_1**2*_line_3*_line_4**2 - 3*_leg_0**6*_leg_1**2*_line_4**2 - 6*_leg_0**4*_leg_1**4*_line_3**2*_line_4 + 3*_leg_0**4*_leg_1**4*_line_3**2 + 6*_leg_0**4*_leg_1**4*_line_3*_line_4**2 - 3*_leg_0**4*_leg_1**4*_line_4**2 + 2*_leg_0**2*_leg_1**6*_line_3**2*_line_4**2 - 6*_leg_0**2*_leg_1**6*_line_3**2*_line_4 + 3*_leg_0**2*_leg_1**6*_line_3**2 + 2*_leg_0**2*_leg_1**6*_line_3*_line_4**2 - _leg_0**2*_leg_1**6*_line_4**2 + _leg_1**8*_line_3**2*_line_4**2 - 2*_leg_1**8*_line_3**2*_line_4 + _leg_1**8*_line_3**2",
+          "_leg_0**6*_leg_1**2*_line_2**2*_line_4**2 - 2*_leg_0**6*_leg_1**2*_line_2*_line_4**2 + _leg_0**6*_leg_1**2*_line_4**2 - 2*_leg_0**6*_leg_1**2*_line_4 + _leg_0**6*_leg_1**2 + 2*_leg_0**4*_leg_1**4*_line_2**2*_line_4**2 - 4*_leg_0**4*_leg_1**4*_line_2*_line_4**2 + 3*_leg_0**4*_leg_1**4*_line_4**2 - 6*_leg_0**4*_leg_1**4*_line_4 + 3*_leg_0**4*_leg_1**4 + _leg_0**2*_leg_1**6*_line_2**2*_line_4**2 - 2*_leg_0**2*_leg_1**6*_line_2*_line_4**2 + 3*_leg_0**2*_leg_1**6*_line_4**2 - 6*_leg_0**2*_leg_1**6*_line_4 + 3*_leg_0**2*_leg_1**6 + _leg_1**8*_line_4**2 - 2*_leg_1**8*_line_4 + _leg_1**8",
+          "_leg_0**8*_line_3**2 - 2*_leg_0**8*_line_3 + _leg_0**8 + _leg_0**6*_leg_1**2*_line_2**2*_line_3**2 - 2*_leg_0**6*_leg_1**2*_line_2*_line_3**2 + 3*_leg_0**6*_leg_1**2*_line_3**2 - 6*_leg_0**6*_leg_1**2*_line_3 + 3*_leg_0**6*_leg_1**2 + 2*_leg_0**4*_leg_1**4*_line_2**2*_line_3**2 - 4*_leg_0**4*_leg_1**4*_line_2*_line_3**2 + 3*_leg_0**4*_leg_1**4*_line_3**2 - 6*_leg_0**4*_leg_1**4*_line_3 + 3*_leg_0**4*_leg_1**4 + _leg_0**2*_leg_1**6*_line_2**2*_line_3**2 - 2*_leg_0**2*_leg_1**6*_line_2*_line_3**2 + _leg_0**2*_leg_1**6*_line_3**2 - 2*_leg_0**2*_leg_1**6*_line_3 + _leg_0**2*_leg_1**6"
+        ],
+        "quotient_certificate": [
+          "-4*_leg_0**2*_leg_1**2*_line_3**2 + 4*_leg_0**2*_leg_1**2*_line_4**2 + 8*_leg_0**2*_leg_1**2*_line_4 + 12*_leg_0**2*_leg_1**2 - 4*_leg_1**4*_line_3**2 + 4*_leg_1**4*_line_4**2 + 8*_leg_1**4*_line_4 + 12*_leg_1**4",
+          "_leg_0**6*_line_3**2 - _leg_0**6 - 3*_leg_0**4*_leg_1**2*_line_2**2*_line_3**2 + 2*_leg_0**4*_leg_1**2*_line_2**2*_line_3 + 3*_leg_0**4*_leg_1**2*_line_2**2*_line_4**2 + 8*_leg_0**4*_leg_1**2*_line_2**2*_line_4 + 15*_leg_0**4*_leg_1**2*_line_2**2 + 6*_leg_0**4*_leg_1**2*_line_2*_line_3**2 - 4*_leg_0**4*_leg_1**2*_line_2*_line_3 - 6*_leg_0**4*_leg_1**2*_line_2*_line_4**2 - 16*_leg_0**4*_leg_1**2*_line_2*_line_4 - 30*_leg_0**4*_leg_1**2*_line_2 + 2*_leg_0**4*_leg_1**2*_line_3 + 3*_leg_0**4*_leg_1**2*_line_4**2 + 2*_leg_0**4*_leg_1**2*_line_4 - _leg_0**4*_leg_1**2 - _leg_0**2*_leg_1**4*_line_2**2*_line_3**2 + _leg_0**2*_leg_1**4*_line_2**2*_line_4**2 + 2*_leg_0**2*_leg_1**4*_line_2**2*_line_4 + 3*_leg_0**2*_leg_1**4*_line_2**2 + 2*_leg_0**2*_leg_1**4*_line_2*_line_3**2 - 2*_leg_0**2*_leg_1**4*_line_2*_line_4**2 - 4*_leg_0**2*_leg_1**4*_line_2*_line_4 - 6*_leg_0**2*_leg_1**4*_line_2 - _leg_0**2*_leg_1**4*_line_3**2 + 2*_leg_0**2*_leg_1**4*_line_3 + 4*_leg_0**2*_leg_1**4*_line_4**2 + 2*_leg_0**2*_leg_1**4*_line_4 - _leg_0**2*_leg_1**4 + _leg_1**6*_line_4**2 - _leg_1**6",
+          "-4*_leg_0**6*_line_3 + 3*_leg_0**6 - 6*_leg_0**4*_leg_1**2*_line_3*_line_4**2 - 4*_leg_0**4*_leg_1**2*_line_3*_line_4 - 10*_leg_0**4*_leg_1**2*_line_3 + 3*_leg_0**4*_leg_1**2*_line_4**2 + 2*_leg_0**4*_leg_1**2*_line_4 + 6*_leg_0**4*_leg_1**2 - 8*_leg_0**2*_leg_1**4*_line_3*_line_4**2 - 4*_leg_0**2*_leg_1**4*_line_3*_line_4 - 6*_leg_0**2*_leg_1**4*_line_3 + 4*_leg_0**2*_leg_1**4*_line_4**2 + 2*_leg_0**2*_leg_1**4*_line_4 + 3*_leg_0**2*_leg_1**4 - 2*_leg_1**6*_line_3*_line_4**2 + _leg_1**6*_line_4**2",
+          "2*_leg_0**6*_line_3**2*_line_4 - _leg_0**6*_line_3**2 + 4*_leg_0**4*_leg_1**2*_line_3*_line_4 - 2*_leg_0**4*_leg_1**2*_line_3 + 22*_leg_0**4*_leg_1**2*_line_4 - 15*_leg_0**4*_leg_1**2 - 2*_leg_0**2*_leg_1**4*_line_3**2*_line_4 + _leg_0**2*_leg_1**4*_line_3**2 + 4*_leg_0**2*_leg_1**4*_line_3*_line_4 - 2*_leg_0**2*_leg_1**4*_line_3 + 26*_leg_0**2*_leg_1**4*_line_4 - 18*_leg_0**2*_leg_1**4 + 4*_leg_1**6*_line_4 - 3*_leg_1**6"
+        ],
+        "remainder": "0",
+        "exact_replay": true,
+        "certificate_sha256": "97a481b9d55ac8ae6c4c33c9dbd7de244c2c579eed02f399ddc0e76462482339"
+      },
+      "elapsed_seconds": 17.166650500003016
+    },
+    "2015_p3": {
+      "status": "timeout",
+      "elapsed_seconds": 60.2340234000003
+    },
+    "2019_p2": {
+      "status": "timeout",
+      "elapsed_seconds": 60.282235400009085
+    },
+    "2019_p6": {
+      "status": "timeout",
+      "elapsed_seconds": 60.29120960000728
+    },
+    "2020_p1": {
+      "status": "timeout",
+      "elapsed_seconds": 60.31948510000075
+    },
+    "2021_p3": {
+      "status": "timeout",
+      "elapsed_seconds": 60.08287630000268
+    }
+  },
+  "claim_scope": "The lowering vocabulary is frozen before this run. Unsupported is reported as unsupported, not as an incorrect answer or a solved proof."
+}

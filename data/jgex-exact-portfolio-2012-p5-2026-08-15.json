@@ -1,0 +1,71 @@
+{
+  "experiment": "jgex_exact_constraint_portfolio",
+  "generated_at": "2026-08-15T12:17:55.352288+00:00",
+  "uses_llm": false,
+  "uses_problem_specific_solver_logic": false,
+  "problem_selection_is_benchmark_only": true,
+  "dataset_auxiliary_clauses_hidden": true,
+  "problem_name": "2012_p5",
+  "native_yuclid": {
+    "status": "saturated_unsolved",
+    "baseline_solved": 17,
+    "baseline_total": 30
+  },
+  "exact_backend": {
+    "canonical_goal": "cong l m k m",
+    "certificate": {
+      "channel": "cong",
+      "points": [
+        "l",
+        "m",
+        "k",
+        "m"
+      ],
+      "construction_vocabulary": [
+        "foot",
+        "on_circle",
+        "on_line",
+        "r_triangle"
+      ],
+      "normalization_assumptions": [
+        "euclidean_gauge c=(0,0) a=(_leg_0,0) b=(0,_leg_1)",
+        "_leg_0 != 0",
+        "_leg_1 != 0"
+      ],
+      "construction_equations": [
+        "_leg_0**8*_line_3**2 - 2*_leg_0**8*_line_3 + _leg_0**8 + _leg_0**6*_leg_1**2*_line_2**2*_line_3**2 - 2*_leg_0**6*_leg_1**2*_line_2*_line_3**2 + 3*_leg_0**6*_leg_1**2*_line_3**2 - 6*_leg_0**6*_leg_1**2*_line_3 + 3*_leg_0**6*_leg_1**2 + 2*_leg_0**4*_leg_1**4*_line_2**2*_line_3**2 - 4*_leg_0**4*_leg_1**4*_line_2*_line_3**2 + 3*_leg_0**4*_leg_1**4*_line_3**2 - 6*_leg_0**4*_leg_1**4*_line_3 + 3*_leg_0**4*_leg_1**4 + _leg_0**2*_leg_1**6*_line_2**2*_line_3**2 - 2*_leg_0**2*_leg_1**6*_line_2*_line_3**2 + _leg_0**2*_leg_1**6*_line_3**2 - 2*_leg_0**2*_leg_1**6*_line_3 + _leg_0**2*_leg_1**6",
+        "_leg_0**6*_leg_1**2*_line_2**2*_line_4**2 - 2*_leg_0**6*_leg_1**2*_line_2*_line_4**2 + _leg_0**6*_leg_1**2*_line_4**2 - 2*_leg_0**6*_leg_1**2*_line_4 + _leg_0**6*_leg_1**2 + 2*_leg_0**4*_leg_1**4*_line_2**2*_line_4**2 - 4*_leg_0**4*_leg_1**4*_line_2*_line_4**2 + 3*_leg_0**4*_leg_1**4*_line_4**2 - 6*_leg_0**4*_leg_1**4*_line_4 + 3*_leg_0**4*_leg_1**4 + _leg_0**2*_leg_1**6*_line_2**2*_line_4**2 - 2*_leg_0**2*_leg_1**6*_line_2*_line_4**2 + 3*_leg_0**2*_leg_1**6*_line_4**2 - 6*_leg_0**2*_leg_1**6*_line_4 + 3*_leg_0**2*_leg_1**6 + _leg_1**8*_line_4**2 - 2*_leg_1**8*_line_4 + _leg_1**8"
+      ],
+      "nondegeneracy_conditions": [
+        "(_leg_0**2 + _leg_1**2)**3 != 0",
+        "(_leg_0**2 + _leg_1**2)**6*(_line_3*_line_4 - _line_3 - _line_4)**2 != 0",
+        "_leg_0**2 + _leg_1**2 != 0",
+        "_leg_0*_leg_1*(_line_2 - 1)*(_line_3*_line_4 - _line_3 - _line_4) != 0"
+      ],
+      "goal_polynomial": "-(_leg_0**2 + _leg_1**2)**5*(_line_3*_line_4 - _line_3 - _line_4)*(_leg_0**4*_line_3**3*_line_4 - _leg_0**4*_line_3**3 - _leg_0**4*_line_3**2*_line_4 + 2*_leg_0**4*_line_3**2 - _leg_0**4*_line_3*_line_4 - _leg_0**4*_line_3 + _leg_0**4*_line_4 + _leg_0**2*_leg_1**2*_line_2**2*_line_3**3*_line_4 - _leg_0**2*_leg_1**2*_line_2**2*_line_3**3 + _leg_0**2*_leg_1**2*_line_2**2*_line_3**2*_line_4 - _leg_0**2*_leg_1**2*_line_2**2*_line_3*_line_4**3 - _leg_0**2*_leg_1**2*_line_2**2*_line_3*_line_4**2 + _leg_0**2*_leg_1**2*_line_2**2*_line_4**3 - 2*_leg_0**2*_leg_1**2*_line_2*_line_3**3*_line_4 + 2*_leg_0**2*_leg_1**2*_line_2*_line_3**3 - 2*_leg_0**2*_leg_1**2*_line_2*_line_3**2*_line_4 + 2*_leg_0**2*_leg_1**2*_line_2*_line_3*_line_4**3 + 2*_leg_0**2*_leg_1**2*_line_2*_line_3*_line_4**2 - 2*_leg_0**2*_leg_1**2*_line_2*_line_4**3 + _leg_0**2*_leg_1**2*_line_3**3*_line_4 - _leg_0**2*_leg_1**2*_line_3**3 - _leg_0**2*_leg_1**2*_line_3**2*_line_4 + 2*_leg_0**2*_leg_1**2*_line_3**2 - _leg_0**2*_leg_1**2*_line_3*_line_4**3 + _leg_0**2*_leg_1**2*_line_3*_line_4**2 - 2*_leg_0**2*_leg_1**2*_line_3 + _leg_0**2*_leg_1**2*_line_4**3 - 2*_leg_0**2*_leg_1**2*_line_4**2 + 2*_leg_0**2*_leg_1**2*_line_4 - _leg_1**4*_line_3*_line_4**3 + _leg_1**4*_line_3*_line_4**2 + _leg_1**4*_line_3*_line_4 - _leg_1**4*_line_3 + _leg_1**4*_line_4**3 - 2*_leg_1**4*_line_4**2 + _leg_1**4*_line_4)",
+      "groebner_basis": [
+        "_leg_0**10*_line_2**2*_line_3**2*_line_4**2 - 2*_leg_0**10*_line_2**2*_line_3*_line_4**2 + _leg_0**10*_line_2**2*_line_4**2 - 2*_leg_0**10*_line_2*_line_3**2*_line_4**2 + 4*_leg_0**10*_line_2*_line_3*_line_4**2 - 2*_leg_0**10*_line_2*_line_4**2 + _leg_0**10*_line_3**2*_line_4**2 - 2*_leg_0**10*_line_3**2*_line_4 + _leg_0**10*_line_3**2 - 2*_leg_0**10*_line_3*_line_4**2 + 4*_leg_0**10*_line_3*_line_4 - 2*_leg_0**10*_line_3 + _leg_0**10*_line_4**2 - 2*_leg_0**10*_line_4 + _leg_0**10 + 2*_leg_0**8*_leg_1**2*_line_2**2*_line_3**2*_line_4**2 - 4*_leg_0**8*_leg_1**2*_line_2**2*_line_3*_line_4**2 + 2*_leg_0**8*_leg_1**2*_line_2**2*_line_4**2 - 4*_leg_0**8*_leg_1**2*_line_2*_line_3**2*_line_4**2 + 8*_leg_0**8*_leg_1**2*_line_2*_line_3*_line_4**2 - 4*_leg_0**8*_leg_1**2*_line_2*_line_4**2 + 3*_leg_0**8*_leg_1**2*_line_3**2*_line_4**2 - 6*_leg_0**8*_leg_1**2*_line_3**2*_line_4 + 3*_leg_0**8*_leg_1**2*_line_3**2 - 6*_leg_0**8*_leg_1**2*_line_3*_line_4**2 + 12*_leg_0**8*_leg_1**2*_line_3*_line_4 - 6*_leg_0**8*_leg_1**2*_line_3 + 3*_leg_0**8*_leg_1**2*_line_4**2 - 6*_leg_0**8*_leg_1**2*_line_4 + 3*_leg_0**8*_leg_1**2 + _leg_0**6*_leg_1**4*_line_2**2*_line_3**2*_line_4**2 - 2*_leg_0**6*_leg_1**4*_line_2**2*_line_3*_line_4**2 + _leg_0**6*_leg_1**4*_line_2**2*_line_4**2 - 2*_leg_0**6*_leg_1**4*_line_2*_line_3**2*_line_4**2 + 4*_leg_0**6*_leg_1**4*_line_2*_line_3*_line_4**2 - 2*_leg_0**6*_leg_1**4*_line_2*_line_4**2 + 3*_leg_0**6*_leg_1**4*_line_3**2*_line_4**2 - 6*_leg_0**6*_leg_1**4*_line_3**2*_line_4 + 3*_leg_0**6*_leg_1**4*_line_3**2 - 6*_leg_0**6*_leg_1**4*_line_3*_line_4**2 + 12*_leg_0**6*_leg_1**4*_line_3*_line_4 - 6*_leg_0**6*_leg_1**4*_line_3 + 3*_leg_0**6*_leg_1**4*_line_4**2 - 6*_leg_0**6*_leg_1**4*_line_4 + 3*_leg_0**6*_leg_1**4 + _leg_0**4*_leg_1**6*_line_3**2*_line_4**2 - 2*_leg_0**4*_leg_1**6*_line_3**2*_line_4 + _leg_0**4*_leg_1**6*_line_3**2 - 2*_leg_0**4*_leg_1**6*_line_3*_line_4**2 + 4*_leg_0**4*_leg_1**6*_line_3*_line_4 - 2*_leg_0**4*_leg_1**6*_line_3 + _leg_0**4*_leg_1**6*_line_4**2 - 2*_leg_0**4*_leg_1**6*_line_4 + _leg_0**4*_leg_1**6",
+        "-_leg_0**8*_line_3**2*_line_4**2 + 2*_leg_0**8*_line_3*_line_4**2 - _leg_0**8*_line_4**2 - 2*_leg_0**6*_leg_1**2*_line_3**2*_line_4**2 - 2*_leg_0**6*_leg_1**2*_line_3**2*_line_4 + _leg_0**6*_leg_1**2*_line_3**2 + 6*_leg_0**6*_leg_1**2*_line_3*_line_4**2 - 3*_leg_0**6*_leg_1**2*_line_4**2 - 6*_leg_0**4*_leg_1**4*_line_3**2*_line_4 + 3*_leg_0**4*_leg_1**4*_line_3**2 + 6*_leg_0**4*_leg_1**4*_line_3*_line_4**2 - 3*_leg_0**4*_leg_1**4*_line_4**2 + 2*_leg_0**2*_leg_1**6*_line_3**2*_line_4**2 - 6*_leg_0**2*_leg_1**6*_line_3**2*_line_4 + 3*_leg_0**2*_leg_1**6*_line_3**2 + 2*_leg_0**2*_leg_1**6*_line_3*_line_4**2 - _leg_0**2*_leg_1**6*_line_4**2 + _leg_1**8*_line_3**2*_line_4**2 - 2*_leg_1**8*_line_3**2*_line_4 + _leg_1**8*_line_3**2",
+        "_leg_0**6*_leg_1**2*_line_2**2*_line_4**2 - 2*_leg_0**6*_leg_1**2*_line_2*_line_4**2 + _leg_0**6*_leg_1**2*_line_4**2 - 2*_leg_0**6*_leg_1**2*_line_4 + _leg_0**6*_leg_1**2 + 2*_leg_0**4*_leg_1**4*_line_2**2*_line_4**2 - 4*_leg_0**4*_leg_1**4*_line_2*_line_4**2 + 3*_leg_0**4*_leg_1**4*_line_4**2 - 6*_leg_0**4*_leg_1**4*_line_4 + 3*_leg_0**4*_leg_1**4 + _leg_0**2*_leg_1**6*_line_2**2*_line_4**2 - 2*_leg_0**2*_leg_1**6*_line_2*_line_4**2 + 3*_leg_0**2*_leg_1**6*_line_4**2 - 6*_leg_0**2*_leg_1**6*_line_4 + 3*_leg_0**2*_leg_1**6 + _leg_1**8*_line_4**2 - 2*_leg_1**8*_line_4 + _leg_1**8",
+        "_leg_0**8*_line_3**2 - 2*_leg_0**8*_line_3 + _leg_0**8 + _leg_0**6*_leg_1**2*_line_2**2*_line_3**2 - 2*_leg_0**6*_leg_1**2*_line_2*_line_3**2 + 3*_leg_0**6*_leg_1**2*_line_3**2 - 6*_leg_0**6*_leg_1**2*_line_3 + 3*_leg_0**6*_leg_1**2 + 2*_leg_0**4*_leg_1**4*_line_2**2*_line_3**2 - 4*_leg_0**4*_leg_1**4*_line_2*_line_3**2 + 3*_leg_0**4*_leg_1**4*_line_3**2 - 6*_leg_0**4*_leg_1**4*_line_3 + 3*_leg_0**4*_leg_1**4 + _leg_0**2*_leg_1**6*_line_2**2*_line_3**2 - 2*_leg_0**2*_leg_1**6*_line_2*_line_3**2 + _leg_0**2*_leg_1**6*_line_3**2 - 2*_leg_0**2*_leg_1**6*_line_3 + _leg_0**2*_leg_1**6"
+      ],
+      "quotient_certificate": [
+        "-4*_leg_0**2*_leg_1**2*_line_3**2 + 4*_leg_0**2*_leg_1**2*_line_4**2 + 8*_leg_0**2*_leg_1**2*_line_4 + 12*_leg_0**2*_leg_1**2 - 4*_leg_1**4*_line_3**2 + 4*_leg_1**4*_line_4**2 + 8*_leg_1**4*_line_4 + 12*_leg_1**4",
+        "_leg_0**6*_line_3**2 - _leg_0**6 - 3*_leg_0**4*_leg_1**2*_line_2**2*_line_3**2 + 2*_leg_0**4*_leg_1**2*_line_2**2*_line_3 + 3*_leg_0**4*_leg_1**2*_line_2**2*_line_4**2 + 8*_leg_0**4*_leg_1**2*_line_2**2*_line_4 + 15*_leg_0**4*_leg_1**2*_line_2**2 + 6*_leg_0**4*_leg_1**2*_line_2*_line_3**2 - 4*_leg_0**4*_leg_1**2*_line_2*_line_3 - 6*_leg_0**4*_leg_1**2*_line_2*_line_4**2 - 16*_leg_0**4*_leg_1**2*_line_2*_line_4 - 30*_leg_0**4*_leg_1**2*_line_2 + 2*_leg_0**4*_leg_1**2*_line_3 + 3*_leg_0**4*_leg_1**2*_line_4**2 + 2*_leg_0**4*_leg_1**2*_line_4 - _leg_0**4*_leg_1**2 - _leg_0**2*_leg_1**4*_line_2**2*_line_3**2 + _leg_0**2*_leg_1**4*_line_2**2*_line_4**2 + 2*_leg_0**2*_leg_1**4*_line_2**2*_line_4 + 3*_leg_0**2*_leg_1**4*_line_2**2 + 2*_leg_0**2*_leg_1**4*_line_2*_line_3**2 - 2*_leg_0**2*_leg_1**4*_line_2*_line_4**2 - 4*_leg_0**2*_leg_1**4*_line_2*_line_4 - 6*_leg_0**2*_leg_1**4*_line_2 - _leg_0**2*_leg_1**4*_line_3**2 + 2*_leg_0**2*_leg_1**4*_line_3 + 4*_leg_0**2*_leg_1**4*_line_4**2 + 2*_leg_0**2*_leg_1**4*_line_4 - _leg_0**2*_leg_1**4 + _leg_1**6*_line_4**2 - _leg_1**6",
+        "-4*_leg_0**6*_line_3 + 3*_leg_0**6 - 6*_leg_0**4*_leg_1**2*_line_3*_line_4**2 - 4*_leg_0**4*_leg_1**2*_line_3*_line_4 - 10*_leg_0**4*_leg_1**2*_line_3 + 3*_leg_0**4*_leg_1**2*_line_4**2 + 2*_leg_0**4*_leg_1**2*_line_4 + 6*_leg_0**4*_leg_1**2 - 8*_leg_0**2*_leg_1**4*_line_3*_line_4**2 - 4*_leg_0**2*_leg_1**4*_line_3*_line_4 - 6*_leg_0**2*_leg_1**4*_line_3 + 4*_leg_0**2*_leg_1**4*_line_4**2 + 2*_leg_0**2*_leg_1**4*_line_4 + 3*_leg_0**2*_leg_1**4 - 2*_leg_1**6*_line_3*_line_4**2 + _leg_1**6*_line_4**2",
+        "2*_leg_0**6*_line_3**2*_line_4 - _leg_0**6*_line_3**2 + 4*_leg_0**4*_leg_1**2*_line_3*_line_4 - 2*_leg_0**4*_leg_1**2*_line_3 + 22*_leg_0**4*_leg_1**2*_line_4 - 15*_leg_0**4*_leg_1**2 - 2*_leg_0**2*_leg_1**4*_line_3**2*_line_4 + _leg_0**2*_leg_1**4*_line_3**2 + 4*_leg_0**2*_leg_1**4*_line_3*_line_4 - 2*_leg_0**2*_leg_1**4*_line_3 + 26*_leg_0**2*_leg_1**4*_line_4 - 18*_leg_0**2*_leg_1**4 + 4*_leg_1**6*_line_4 - 3*_leg_1**6"
+      ],
+      "remainder": "0",
+      "exact_replay": true,
+      "certificate_sha256": "97a481b9d55ac8ae6c4c33c9dbd7de244c2c579eed02f399ddc0e76462482339"
+    }
+  },
+  "portfolio": {
+    "newly_solved": true,
+    "solved": 18,
+    "total": 30,
+    "score": 0.6,
+    "delta_solved": 1
+  },
+  "claim_scope": "One frozen IMO-AG-30 obligation is solved by a generic four-construction JGEX lowering. This is a symbolic portfolio result, not a Newclid-native proof and not yet evidence for broad held-out generalization."
+}

@@ -1,0 +1,38 @@
+{
+  "experiment": "mortra_reversible_synthesis_exact_geometry",
+  "recorded_at": "2026-08-16T00:00:00+09:00",
+  "uses_llm": false,
+  "platform": "Windows 11",
+  "python": "3.12.10",
+  "sympy": "1.14.0",
+  "upstreams": {
+    "newclid": {
+      "repository": "https://github.com/Newclid/Newclid.git",
+      "commit": "ac6550732a950564cf7614d605b5bf1eadd29701",
+      "dataset": "newclid/problems_datasets/imo.txt"
+    },
+    "gclc": {
+      "repository": "https://github.com/janicicpredrag/gclc.git",
+      "commit": "8f73a5d7e6c373f6210c4b293231dcc0dcc07a28"
+    }
+  },
+  "reference_artifacts": {
+    "data/yuclid-imo-ag-30-all-ar-2026-08-15.json": "226ada23a836681646cfd9bfab6e8c45570557df3fcc4b772551c5cb4b1ed035",
+    "data/jgex-exact-frozen-unsolved13-expanded19-60s-2026-08-16.json": "5a0fdd3a10ea22e3ea51147800a0437b38acb469e22a498e4cc72f8a2396898b",
+    "data/jgex-exact-2008-p1a-expanded19-120s-2026-08-16.json": "b2c54d8751a5935db37f312a767ebc02a9446cdf42ff89e9db1a3270e62af38f",
+    "data/jgex-exact-portfolio-expanded19-2026-08-16.json": "8c1b2783ccfcdec2decec881c54bb6a26b93fd68104f8d53cfb9ca105d8e9b47"
+  },
+  "semantic_acceptance": {
+    "portfolio": "20/30",
+    "proved_names": [
+      "2008_p1a",
+      "2009_p2",
+      "2012_p5"
+    ],
+    "certificate_sha256": {
+      "2008_p1a": "043190e5e9777d23b65e40c5388e6393899201fab1acd4169920720874c7b82a",
+      "2009_p2": "d4ea66f599efc7b948eb32ff06ba734a2df1525f21622266f57358ca441fa8e9",
+      "2012_p5": "97a481b9d55ac8ae6c4c33c9dbd7de244c2c579eed02f399ddc0e76462482339"
+    }
+  }
+}

@@ -1,0 +1,436 @@
+{
+  "experiment": "gclc_to_newclid_concrete_certificate_bridge",
+  "generated_at": "2026-08-15T12:28:12.839259+00:00",
+  "uses_llm": false,
+  "protocol": {
+    "native_methods": [
+      "wu",
+      "groebner"
+    ],
+    "native_prover_timeout_seconds": 120,
+    "independent_replay": "exact Groebner ideal-membership or typed rational construction elimination with explicit nonzero denominators",
+    "accepted_channels": [
+      "coll",
+      "para",
+      "perp",
+      "cong"
+    ],
+    "strict_acceptance": "both native GCLC methods + exact replay + Newclid syntax",
+    "portfolio_acceptance": "at least one native GCLC method + independent exact replay + Newclid syntax"
+  },
+  "summary": {
+    "case_count": 5,
+    "gclc_native_proved": 3,
+    "exact_polynomial_replayed": 5,
+    "newclid_lowered": 5,
+    "roundtrip_accepted": 3,
+    "portfolio_roundtrip_accepted": 5,
+    "native_method_proved": {
+      "wu": 5,
+      "groebner": 3
+    },
+    "verification_methods": {
+      "groebner_ideal_membership": 2,
+      "rational_construction_elimination": 3
+    }
+  },
+  "cases": [
+    {
+      "name": "thm_midpoint",
+      "native_runs": [
+        {
+          "method": "wu",
+          "flag": "-w",
+          "return_code": 0,
+          "proved": true,
+          "external_timeout_reached": false,
+          "external_timeout_seconds": 135,
+          "elapsed_seconds": 0.19059399999969173,
+          "proof_sha256": "e5a1fd5d974b4171b7d2a76b14aa8949bf29439cd98ca0692c80162a2383afec",
+          "proof_bytes": 3643,
+          "prover_timeout_seconds": 120,
+          "transcript": "Input file: <TEMP>\\thm_midpoint.gcl\nOutput file: <TEMP>\\thm_midpoint.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Wu's method used.\nThe largest polynomial obtained during the proof process contains 2 terms.\n\n\nTime spent by the prover: 0.000 seconds.\nThe conjecture successfully proved.\nThe prover output is written in the file <TEMP>\\thm_midpoint_proof.tex.\n\nFile '<TEMP>\\thm_midpoint.gcl' successfully processed.\nEnding point number: 103\n\nTranscript written on gclc.log."
+        },
+        {
+          "method": "groebner",
+          "flag": "-g",
+          "return_code": 0,
+          "proved": true,
+          "external_timeout_reached": false,
+          "external_timeout_seconds": 135,
+          "elapsed_seconds": 0.08024859998840839,
+          "proof_sha256": "d62431f10940d7138a3107f0df13cb2c10b872d6bb406e51b6095d7023c28506",
+          "proof_bytes": 4739,
+          "prover_timeout_seconds": 120,
+          "transcript": "Input file: <TEMP>\\thm_midpoint.gcl\nOutput file: <TEMP>\\thm_midpoint.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Groebner bases method used.\nThe largest polynomial obtained during the proof process contains 2 terms.\n\n\nTime spent by the prover: 0.000 seconds.\nThe conjecture successfully proved.\nThe prover output is written in the file <TEMP>\\thm_midpoint_proof.tex.\n\nFile '<TEMP>\\thm_midpoint.gcl' successfully processed.\nEnding point number: 103\n\nTranscript written on gclc.log."
+        }
+      ],
+      "obligation": {
+        "channel": "para",
+        "points": [
+          "a_1",
+          "b_1",
+          "a",
+          "b"
+        ],
+        "newclid_predicate": "para a_1 b_1 a b",
+        "construction_equations": [
+          "2*x_3 - 1",
+          "2*y_3 - 1",
+          "2*x_1",
+          "2*y_1 - 1"
+        ],
+        "normalization_assumptions": [
+          "ncoll A B C",
+          "affine_gauge A=(0,0) B=(1,0) C=(0,1)"
+        ],
+        "nondegeneracy_conditions": [],
+        "goal_polynomial": "y_1 - y_3",
+        "groebner_basis": [
+          "x_1",
+          "2*y_1 - 1",
+          "2*x_3 - 1",
+          "2*y_3 - 1"
+        ],
+        "quotient_certificate": [
+          "0",
+          "1/2",
+          "0",
+          "-1/2"
+        ],
+        "rational_denominators": [],
+        "verification_method": "groebner_ideal_membership",
+        "remainder": "0",
+        "exact_replay": true,
+        "certificate_sha256": "42ae4dd92e2307fed144f09d555d02b131bffaa96cb01ed53501bf1f264233bf"
+      },
+      "newclid_canonical_predicate": "para a b a_1 b_1",
+      "roundtrip_accepted": true,
+      "portfolio_roundtrip_accepted": true
+    },
+    {
+      "name": "thm_orthocenter",
+      "native_runs": [
+        {
+          "method": "wu",
+          "flag": "-w",
+          "return_code": 0,
+          "proved": true,
+          "external_timeout_reached": false,
+          "external_timeout_seconds": 135,
+          "elapsed_seconds": 0.049332799986586906,
+          "proof_sha256": "cb50007b95fcde7266331b674f1b185bbaa77e88371ef5851391f08e578029a3",
+          "proof_bytes": 5378,
+          "prover_timeout_seconds": 120,
+          "transcript": "Input file: <TEMP>\\thm_orthocenter.gcl\nOutput file: <TEMP>\\thm_orthocenter.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Wu's method used.\nThe largest polynomial obtained during the proof process contains 3 terms.\n\n\nTime spent by the prover: 0.000 seconds.\nThe conjecture successfully proved.\nThe prover output is written in the file <TEMP>\\thm_orthocenter_proof.tex.\n\nFile '<TEMP>\\thm_orthocenter.gcl' successfully processed.\nEnding point number: 181\n\nTranscript written on gclc.log."
+        },
+        {
+          "method": "groebner",
+          "flag": "-g",
+          "return_code": 0,
+          "proved": true,
+          "external_timeout_reached": false,
+          "external_timeout_seconds": 135,
+          "elapsed_seconds": 0.1460298000019975,
+          "proof_sha256": "29f33a9483e5905ebcd118f578a57a56d36552844c700297b157360a55301511",
+          "proof_bytes": 5172,
+          "prover_timeout_seconds": 120,
+          "transcript": "Input file: <TEMP>\\thm_orthocenter.gcl\nOutput file: <TEMP>\\thm_orthocenter.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Groebner bases method used.\nThe largest polynomial obtained during the proof process contains 0 terms.\n\n\nTime spent by the prover: 0.000 seconds.\nThe conjecture successfully proved.\nThe prover output is written in the file <TEMP>\\thm_orthocenter_proof.tex.\n\nFile '<TEMP>\\thm_orthocenter.gcl' successfully processed.\nEnding point number: 181\n\nTranscript written on gclc.log."
+        }
+      ],
+      "obligation": {
+        "channel": "perp",
+        "points": [
+          "a",
+          "b",
+          "c",
+          "h"
+        ],
+        "newclid_predicate": "perp a b c h",
+        "construction_equations": [
+          "x_0*x_1 - x_0*x_2 - x_1*x_3 + x_2*x_3 + y_0*y_1 - y_0*y_2 - y_1*y_3 + y_2*y_3",
+          "x_0*x_1 - x_0*x_3 - x_1*x_2 + x_2*x_3 + y_0*y_1 - y_0*y_3 - y_1*y_2 + y_2*y_3"
+        ],
+        "normalization_assumptions": [],
+        "nondegeneracy_conditions": [
+          "-x_0*y_1 + x_0*y_2 + x_1*y_0 - x_1*y_2 - x_2*y_0 + x_2*y_1 != 0",
+          "x_0**2 - 2*x_0*x_1 + x_1**2 + y_0**2 - 2*y_0*y_1 + y_1**2 != 0",
+          "x_0**2 - 2*x_0*x_2 + x_2**2 + y_0**2 - 2*y_0*y_2 + y_2**2 != 0",
+          "x_1**2 - 2*x_1*x_2 + x_2**2 + y_1**2 - 2*y_1*y_2 + y_2**2 != 0"
+        ],
+        "goal_polynomial": "x_0*x_2 - x_0*x_3 - x_1*x_2 + x_1*x_3 + y_0*y_2 - y_0*y_3 - y_1*y_2 + y_1*y_3",
+        "groebner_basis": [
+          "x_1**2*x_2 - x_1**2*x_3 - x_1*x_2**2 + x_1*x_3**2 - x_1*y_0*y_2 + x_1*y_0*y_3 + x_1*y_1*y_2 - x_1*y_1*y_3 + x_2**2*x_3 - x_2*x_3**2 + x_2*y_0*y_1 - x_2*y_0*y_3 - x_2*y_1*y_2 + x_2*y_2*y_3 - x_3*y_0*y_1 + x_3*y_0*y_2 + x_3*y_1*y_3 - x_3*y_2*y_3",
+          "x_0*x_1 - x_0*x_3 - x_1*x_2 + x_2*x_3 + y_0*y_1 - y_0*y_3 - y_1*y_2 + y_2*y_3",
+          "x_0*x_2 - x_0*x_3 - x_1*x_2 + x_1*x_3 + y_0*y_2 - y_0*y_3 - y_1*y_2 + y_1*y_3"
+        ],
+        "quotient_certificate": [
+          "0",
+          "0",
+          "1"
+        ],
+        "rational_denominators": [
+          "-x_0*y_1 + x_0*y_2 + x_1*y_0 - x_1*y_2 - x_2*y_0 + x_2*y_1"
+        ],
+        "verification_method": "groebner_ideal_membership",
+        "remainder": "0",
+        "exact_replay": true,
+        "certificate_sha256": "c3a7065b978f42f1548dfdecc394d4c2cae5ec3dbb36db62194a84bb849b54ac"
+      },
+      "newclid_canonical_predicate": "perp a b c h",
+      "roundtrip_accepted": true,
+      "portfolio_roundtrip_accepted": true
+    },
+    {
+      "name": "thm_Gauss",
+      "native_runs": [
+        {
+          "method": "wu",
+          "flag": "-w",
+          "return_code": 0,
+          "proved": true,
+          "external_timeout_reached": false,
+          "external_timeout_seconds": 135,
+          "elapsed_seconds": 0.06087879999540746,
+          "proof_sha256": "810415066d40850aa691c1a9614f5d03060cc0fe57fda7036cf7baf545e0c3a7",
+          "proof_bytes": 12016,
+          "prover_timeout_seconds": 120,
+          "transcript": "Input file: <TEMP>\\thm_Gauss.gcl\nOutput file: <TEMP>\\thm_Gauss.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Wu's method used.\nThe largest polynomial obtained during the proof process contains 11 terms.\n\n\nTime spent by the prover: 0.000 seconds.\nThe conjecture successfully proved.\nThe prover output is written in the file <TEMP>\\thm_Gauss_proof.tex.\n\nFile '<TEMP>\\thm_Gauss.gcl' successfully processed.\nEnding point number: 319\n\nTranscript written on gclc.log."
+        },
+        {
+          "method": "groebner",
+          "flag": "-g",
+          "return_code": 0,
+          "proved": true,
+          "external_timeout_reached": false,
+          "external_timeout_seconds": 135,
+          "elapsed_seconds": 0.15823790000285953,
+          "proof_sha256": "28ef3cd3a839a3925062e658a61cf46da751d24e10743c24253b840e311055b5",
+          "proof_bytes": 16084,
+          "prover_timeout_seconds": 120,
+          "transcript": "Input file: <TEMP>\\thm_Gauss.gcl\nOutput file: <TEMP>\\thm_Gauss.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Groebner bases method used.\nThe largest polynomial obtained during the proof process contains 11 terms.\n\n\nTime spent by the prover: 0.000 seconds.\nThe conjecture successfully proved.\nThe prover output is written in the file <TEMP>\\thm_Gauss_proof.tex.\n\nFile '<TEMP>\\thm_Gauss.gcl' successfully processed.\nEnding point number: 319\n\nTranscript written on gclc.log."
+        }
+      ],
+      "obligation": {
+        "channel": "coll",
+        "points": [
+          "m_1",
+          "m_2",
+          "m_3"
+        ],
+        "newclid_predicate": "coll m_1 m_2 m_3",
+        "construction_equations": [
+          "-x_3 + 2*x_4 - 1",
+          "-y_3 + 2*y_4",
+          "2*x_5",
+          "2*y_5 - 1",
+          "2*x_6 - x_7 - x_8",
+          "2*y_6 - y_7 - y_8",
+          "x_7 + y_7 - 1",
+          "-x_3*y_7 + x_7*y_3",
+          "-y_8",
+          "-x_3*y_8 + x_3 + x_8*y_3 - x_8"
+        ],
+        "normalization_assumptions": [
+          "ncoll A_0 A_1 A_2",
+          "affine_gauge A_0=(0,0) A_1=(1,0) A_2=(0,1)"
+        ],
+        "nondegeneracy_conditions": [
+          "-x_3 - y_3 != 0",
+          "1 != 0",
+          "2 != 0",
+          "x_3**2 + y_3**2 != 0",
+          "x_3**2 + y_3**2 - 2*y_3 + 1 != 0",
+          "y_3 - 1 != 0"
+        ],
+        "goal_polynomial": "x_4*y_5 - x_4*y_6 - x_5*y_4 + x_5*y_6 + x_6*y_4 - x_6*y_5",
+        "groebner_basis": [],
+        "quotient_certificate": [],
+        "rational_denominators": [
+          "-x_3 - y_3",
+          "y_3 - 1"
+        ],
+        "verification_method": "rational_construction_elimination",
+        "remainder": "0",
+        "exact_replay": true,
+        "certificate_sha256": "3ff170ff7e6719f67ecfcaa5ff8956aa9277414597832e76339e5c35d866971f"
+      },
+      "newclid_canonical_predicate": "coll m_1 m_2 m_3",
+      "roundtrip_accepted": true,
+      "portfolio_roundtrip_accepted": true
+    },
+    {
+      "name": "thm_Pappus",
+      "native_runs": [
+        {
+          "method": "wu",
+          "flag": "-w",
+          "return_code": 0,
+          "proved": true,
+          "external_timeout_reached": false,
+          "external_timeout_seconds": 135,
+          "elapsed_seconds": 0.1524352000124054,
+          "proof_sha256": "7c55dce5160542b9369ead6decb78d84f4da8c82874b11d82cdca6637d46b438",
+          "proof_bytes": 9520,
+          "prover_timeout_seconds": 120,
+          "transcript": "Input file: <TEMP>\\thm_Pappus.gcl\nOutput file: <TEMP>\\thm_Pappus.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Wu's method used.\nThe largest polynomial obtained during the proof process contains 48 terms.\n\n\nTime spent by the prover: 0.016 seconds.\nThe conjecture successfully proved.\nThe prover output is written in the file <TEMP>\\thm_Pappus_proof.tex.\n\nFile '<TEMP>\\thm_Pappus.gcl' successfully processed.\nEnding point number: 137\n\nTranscript written on gclc.log."
+        },
+        {
+          "method": "groebner",
+          "flag": "-g",
+          "return_code": 0,
+          "proved": false,
+          "external_timeout_reached": false,
+          "external_timeout_seconds": 135,
+          "elapsed_seconds": 126.97941249998985,
+          "proof_sha256": "0f9fd2d0bb2f31e094d3a365f8f448e572786bdedc82d5b4acd42abb881e1495",
+          "proof_bytes": 11835,
+          "prover_timeout_seconds": 120,
+          "transcript": "Input file: <TEMP>\\thm_Pappus.gcl\nOutput file: <TEMP>\\thm_Pappus.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Groebner bases method used.\nThe largest polynomial obtained during the proof process contains 24888 terms.\n\n\nTime spent by the prover: 123.094 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\thm_Pappus_proof.tex.\n\nFile '<TEMP>\\thm_Pappus.gcl' successfully processed.\nEnding point number: 137\n\nTranscript written on gclc.log."
+        }
+      ],
+      "obligation": {
+        "channel": "para",
+        "points": [
+          "a_1",
+          "c",
+          "a",
+          "c_1"
+        ],
+        "newclid_predicate": "para a_1 c a c_1",
+        "construction_equations": [
+          "-y_5",
+          "-x_2*y_4 + x_2 + x_4*y_2 - x_4",
+          "-x_4 - y_4",
+          "-x_2*y_6 + x_2 + x_6*y_2 - x_6",
+          "-x_4*y_6 + x_5*y_6 + x_6*y_4 - x_6*y_5 - y_4 + y_5"
+        ],
+        "normalization_assumptions": [
+          "ncoll A B A_1",
+          "affine_gauge A=(0,0) B=(1,0) A_1=(0,1)"
+        ],
+        "nondegeneracy_conditions": [
+          "-x_2 - y_2 + 1 != 0",
+          "1 != 0",
+          "2 != 0",
+          "x_2**2 + y_2**2 - 2*y_2 + 1 != 0",
+          "x_2*y_4 - x_2*y_5 - x_4*y_2 + x_4 + x_5*y_2 - x_5 != 0",
+          "x_4**2 - 2*x_4*x_5 + x_5**2 + y_4**2 - 2*y_4*y_5 + y_5**2 != 0"
+        ],
+        "goal_polynomial": "x_5*y_6 - x_6*y_5 + x_6",
+        "groebner_basis": [
+          "x_2*x_5*y_6 + x_2*x_6",
+          "x_2*y_6 - x_2 + x_5*y_2*y_6 - x_5*y_6",
+          "x_2*y_4 - x_2 + y_2*y_4 - y_4",
+          "-x_2*y_6 + x_2 + x_6*y_2 - x_6",
+          "x_5*y_6 + x_6*y_4 + y_4*y_6 - y_4",
+          "x_4 + y_4",
+          "y_5"
+        ],
+        "quotient_certificate": [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "-x_6"
+        ],
+        "rational_denominators": [
+          "-x_2 - y_2 + 1",
+          "_online_0*y_2 - _online_0 + x_2"
+        ],
+        "verification_method": "rational_construction_elimination",
+        "remainder": "0",
+        "exact_replay": true,
+        "certificate_sha256": "b7c65fa0ee558e52bc0e3c3d3763b21cfc9dd76f7c46f7f511d2a9c370d6ead8"
+      },
+      "newclid_canonical_predicate": "para a c_1 a_1 c",
+      "roundtrip_accepted": false,
+      "portfolio_roundtrip_accepted": true
+    },
+    {
+      "name": "thm_PappusHexagon",
+      "native_runs": [
+        {
+          "method": "wu",
+          "flag": "-w",
+          "return_code": 0,
+          "proved": true,
+          "external_timeout_reached": false,
+          "external_timeout_seconds": 135,
+          "elapsed_seconds": 0.1424109000072349,
+          "proof_sha256": "8720b08cc8ab671a9d0e36df2533a7c09584a9759d529014eaf76f10165dff30",
+          "proof_bytes": 14137,
+          "prover_timeout_seconds": 120,
+          "transcript": "Input file: <TEMP>\\thm_PappusHexagon.gcl\nOutput file: <TEMP>\\thm_PappusHexagon.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Wu's method used.\nThe largest polynomial obtained during the proof process contains 106 terms.\n\n\nTime spent by the prover: 0.031 seconds.\nThe conjecture successfully proved.\nThe prover output is written in the file <TEMP>\\thm_PappusHexagon_proof.tex.\n\nFile '<TEMP>\\thm_PappusHexagon.gcl' successfully processed.\nEnding point number: 189\n\nTranscript written on gclc.log."
+        },
+        {
+          "method": "groebner",
+          "flag": "-g",
+          "return_code": 0,
+          "proved": false,
+          "external_timeout_reached": false,
+          "external_timeout_seconds": 135,
+          "elapsed_seconds": 131.04219710000325,
+          "proof_sha256": "d3d9e96c7e9be8a30e74e1f1fe46c683628f977b403a96ef7c385085fbf1a72d",
+          "proof_bytes": 36098,
+          "prover_timeout_seconds": 120,
+          "transcript": "Input file: <TEMP>\\thm_PappusHexagon.gcl\nOutput file: <TEMP>\\thm_PappusHexagon.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Groebner bases method used.\nThe largest polynomial obtained during the proof process contains 43806 terms.\n\n\nTime spent by the prover: 125.172 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\thm_PappusHexagon_proof.tex.\n\nFile '<TEMP>\\thm_PappusHexagon.gcl' successfully processed.\nEnding point number: 189\n\nTranscript written on gclc.log."
+        }
+      ],
+      "obligation": {
+        "channel": "coll",
+        "points": [
+          "p",
+          "q",
+          "s"
+        ],
+        "newclid_predicate": "coll p q s",
+        "construction_equations": [
+          "-y_4",
+          "-x_3*y_5 + x_3 + x_5*y_3 - x_5",
+          "-x_3*y_6 + x_6*y_3",
+          "x_6 + y_6 - 1",
+          "-x_5*y_7 + x_7*y_5",
+          "x_4*y_7 - x_4 - x_7*y_4 + x_7",
+          "-x_5*y_8 + x_8*y_5 - y_5 + y_8",
+          "x_3*y_4 - x_3*y_8 - x_4*y_3 + x_4*y_8 + x_8*y_3 - x_8*y_4"
+        ],
+        "normalization_assumptions": [
+          "ncoll A B A_1",
+          "affine_gauge A=(0,0) B=(1,0) A_1=(0,1)"
+        ],
+        "nondegeneracy_conditions": [
+          "-x_3*y_5 + x_4*y_5 + x_5*y_3 - x_5*y_4 - y_3 + y_4 != 0",
+          "1 != 0",
+          "2 != 0",
+          "x_3 + y_3 != 0",
+          "x_3**2 + y_3**2 != 0",
+          "x_3**2 + y_3**2 - 2*y_3 + 1 != 0",
+          "x_3**2 - 2*x_3*x_4 + x_4**2 + y_3**2 - 2*y_3*y_4 + y_4**2 != 0",
+          "x_4**2 + y_4**2 - 2*y_4 + 1 != 0",
+          "x_4*y_5 - x_5*y_4 + x_5 != 0",
+          "x_5**2 + y_5**2 != 0",
+          "x_5**2 - 2*x_5 + y_5**2 + 1 != 0"
+        ],
+        "goal_polynomial": "x_6*y_7 - x_6*y_8 - x_7*y_6 + x_7*y_8 + x_8*y_6 - x_8*y_7",
+        "groebner_basis": [],
+        "quotient_certificate": [],
+        "rational_denominators": [
+          "_online_0*_online_1*y_3 - _online_0*_online_1 + _online_0 + _online_1*x_3",
+          "_online_0*_online_1*y_3 - _online_0*_online_1 + _online_0 + _online_1*x_3 - x_3 - y_3",
+          "x_3 + y_3"
+        ],
+        "verification_method": "rational_construction_elimination",
+        "remainder": "0",
+        "exact_replay": true,
+        "certificate_sha256": "5c0cb3cdf02826701377e09eaa8b17bd246820b5cddba11dd6dd9980c8d87a80"
+      },
+      "newclid_canonical_predicate": "coll p q s",
+      "roundtrip_accepted": false,
+      "portfolio_roundtrip_accepted": true
+    }
+  ],
+  "claim_scope": "Concrete certificate roundtrip on supported GCLC constructions. The certificate is not yet injected into a previously unsolved IMO problem."
+}
