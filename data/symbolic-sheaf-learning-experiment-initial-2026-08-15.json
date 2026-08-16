@@ -1,0 +1,503 @@
+{
+  "experiment": "llm-free-symbolic-sheaf-admm-v2",
+  "generated_at": "2026-08-15T07:37:38.062288+00:00",
+  "uses_llm": false,
+  "source_basis": {
+    "paper": "arXiv:2605.31005",
+    "repository": "https://github.com/SakanaAI/sheaf-admm",
+    "commit": "1e2b5d648361802234348b0b1a7fb3a222128e7d",
+    "ported_mechanisms": [
+      "private x / consensus z / scaled dual y",
+      "typed pairwise restriction maps",
+      "sheaf Laplacian z solve",
+      "primal / dual / sheaf residual diagnostics"
+    ],
+    "deliberate_difference": "Neural encoders/decoders and end-to-end gradients are replaced by exact certificate replay plus Beta-Bernoulli learning of structural proof flows."
+  },
+  "protocol": {
+    "train": 90,
+    "dev": 60,
+    "frozen_test": 300,
+    "domains": [
+      "geometry",
+      "integer",
+      "set"
+    ],
+    "test_only_once": true,
+    "entity_and_numeric_overlap_across_splits": false,
+    "learner_inputs": [
+      "agent role",
+      "premise-predicate multiset",
+      "conclusion predicate",
+      "replayed certificate dataflow"
+    ],
+    "forbidden_inputs": [
+      "problem text",
+      "problem ID",
+      "entity label",
+      "numeric answer"
+    ],
+    "selected_budget": 1
+  },
+  "learner": {
+    "training_episodes": 90,
+    "replayed_episodes": 90,
+    "rule_weights": {
+      "closure:difference+divides+divides->divides": 0.03125,
+      "closure:divides+divides+sum->divides": 0.96875,
+      "incidence:g_para->g_parallel_view": 0.03125,
+      "incidence:g_perp+g_perp->g_para": 0.96875,
+      "order:subset+subset->subset_span": 0.96875,
+      "order:subset+subset_span->subset_span": 0.03125,
+      "projection:divides+product->divides": 0.03125,
+      "projection:gcd->divides": 0.96875,
+      "restriction:disjoint+subset_span->disjoint": 0.96875,
+      "restriction:disjoint->empty_intersection": 0.03125,
+      "transport:g_para+g_para->g_para": 0.03125,
+      "transport:g_para+g_perp->g_perp": 0.96875
+    },
+    "edge_weights": {
+      "closure->projection:divides": 0.03125,
+      "incidence->transport:g_para": 0.03125,
+      "order->restriction:subset_span": 0.96875,
+      "projection->closure:divides": 0.96875,
+      "transport->incidence:g_para": 0.03125,
+      "transport->incidence:g_perp": 0.96875
+    }
+  },
+  "dev_budget_trials": [
+    {
+      "episodes": 60,
+      "budget_per_round": 1,
+      "solved": {
+        "independent": 0,
+        "strict": 60,
+        "blackboard": 11,
+        "sheaf_static": 40,
+        "sheaf_learned": 60
+      },
+      "solve_rate": {
+        "independent": 0.0,
+        "strict": 1.0,
+        "blackboard": 0.18333333333333332,
+        "sheaf_static": 0.6666666666666666,
+        "sheaf_learned": 1.0
+      },
+      "replayed": {
+        "independent": 0,
+        "strict": 60,
+        "blackboard": 11,
+        "sheaf_static": 40,
+        "sheaf_learned": 60
+      },
+      "proposed": {
+        "independent": 0,
+        "strict": 2934,
+        "blackboard": 10979,
+        "sheaf_static": 7809,
+        "sheaf_learned": 7433
+      },
+      "transmitted": {
+        "independent": 0,
+        "strict": 2934,
+        "blackboard": 587,
+        "sheaf_static": 338,
+        "sheaf_learned": 292
+      },
+      "communication_reduction_vs_strict": {
+        "blackboard": 0.799931833674165,
+        "sheaf_static": 0.8847989093387867,
+        "sheaf_learned": 0.9004771642808452
+      },
+      "by_domain": {
+        "geometry": {
+          "independent": 0,
+          "strict": 20,
+          "blackboard": 0,
+          "sheaf_static": 0,
+          "sheaf_learned": 20
+        },
+        "integer": {
+          "independent": 0,
+          "strict": 20,
+          "blackboard": 1,
+          "sheaf_static": 20,
+          "sheaf_learned": 20
+        },
+        "set": {
+          "independent": 0,
+          "strict": 20,
+          "blackboard": 10,
+          "sheaf_static": 20,
+          "sheaf_learned": 20
+        }
+      },
+      "fault_control": {
+        "enabled": false,
+        "false_accepts": 0,
+        "invalid_certificates_rejected": 0
+      }
+    },
+    {
+      "episodes": 60,
+      "budget_per_round": 2,
+      "solved": {
+        "independent": 0,
+        "strict": 60,
+        "blackboard": 32,
+        "sheaf_static": 40,
+        "sheaf_learned": 60
+      },
+      "solve_rate": {
+        "independent": 0.0,
+        "strict": 1.0,
+        "blackboard": 0.5333333333333333,
+        "sheaf_static": 0.6666666666666666,
+        "sheaf_learned": 1.0
+      },
+      "replayed": {
+        "independent": 0,
+        "strict": 60,
+        "blackboard": 32,
+        "sheaf_static": 40,
+        "sheaf_learned": 60
+      },
+      "proposed": {
+        "independent": 0,
+        "strict": 2934,
+        "blackboard": 9320,
+        "sheaf_static": 6691,
+        "sheaf_learned": 5124
+      },
+      "transmitted": {
+        "independent": 0,
+        "strict": 2934,
+        "blackboard": 970,
+        "sheaf_static": 578,
+        "sheaf_learned": 412
+      },
+      "communication_reduction_vs_strict": {
+        "blackboard": 0.6693933197000681,
+        "sheaf_static": 0.8029993183367417,
+        "sheaf_learned": 0.8595773687798227
+      },
+      "by_domain": {
+        "geometry": {
+          "independent": 0,
+          "strict": 20,
+          "blackboard": 0,
+          "sheaf_static": 0,
+          "sheaf_learned": 20
+        },
+        "integer": {
+          "independent": 0,
+          "strict": 20,
+          "blackboard": 12,
+          "sheaf_static": 20,
+          "sheaf_learned": 20
+        },
+        "set": {
+          "independent": 0,
+          "strict": 20,
+          "blackboard": 20,
+          "sheaf_static": 20,
+          "sheaf_learned": 20
+        }
+      },
+      "fault_control": {
+        "enabled": false,
+        "false_accepts": 0,
+        "invalid_certificates_rejected": 0
+      }
+    },
+    {
+      "episodes": 60,
+      "budget_per_round": 3,
+      "solved": {
+        "independent": 0,
+        "strict": 60,
+        "blackboard": 40,
+        "sheaf_static": 60,
+        "sheaf_learned": 60
+      },
+      "solve_rate": {
+        "independent": 0.0,
+        "strict": 1.0,
+        "blackboard": 0.6666666666666666,
+        "sheaf_static": 1.0,
+        "sheaf_learned": 1.0
+      },
+      "replayed": {
+        "independent": 0,
+        "strict": 60,
+        "blackboard": 40,
+        "sheaf_static": 60,
+        "sheaf_learned": 60
+      },
+      "proposed": {
+        "independent": 0,
+        "strict": 2934,
+        "blackboard": 7904,
+        "sheaf_static": 4953,
+        "sheaf_learned": 4454
+      },
+      "transmitted": {
+        "independent": 0,
+        "strict": 2934,
+        "blackboard": 1232,
+        "sheaf_static": 678,
+        "sheaf_learned": 555
+      },
+      "communication_reduction_vs_strict": {
+        "blackboard": 0.580095432856169,
+        "sheaf_static": 0.7689161554192229,
+        "sheaf_learned": 0.810838445807771
+      },
+      "by_domain": {
+        "geometry": {
+          "independent": 0,
+          "strict": 20,
+          "blackboard": 0,
+          "sheaf_static": 20,
+          "sheaf_learned": 20
+        },
+        "integer": {
+          "independent": 0,
+          "strict": 20,
+          "blackboard": 20,
+          "sheaf_static": 20,
+          "sheaf_learned": 20
+        },
+        "set": {
+          "independent": 0,
+          "strict": 20,
+          "blackboard": 20,
+          "sheaf_static": 20,
+          "sheaf_learned": 20
+        }
+      },
+      "fault_control": {
+        "enabled": false,
+        "false_accepts": 0,
+        "invalid_certificates_rejected": 0
+      }
+    },
+    {
+      "episodes": 60,
+      "budget_per_round": 4,
+      "solved": {
+        "independent": 0,
+        "strict": 60,
+        "blackboard": 40,
+        "sheaf_static": 60,
+        "sheaf_learned": 60
+      },
+      "solve_rate": {
+        "independent": 0.0,
+        "strict": 1.0,
+        "blackboard": 0.6666666666666666,
+        "sheaf_static": 1.0,
+        "sheaf_learned": 1.0
+      },
+      "replayed": {
+        "independent": 0,
+        "strict": 60,
+        "blackboard": 40,
+        "sheaf_static": 60,
+        "sheaf_learned": 60
+      },
+      "proposed": {
+        "independent": 0,
+        "strict": 2934,
+        "blackboard": 6717,
+        "sheaf_static": 4639,
+        "sheaf_learned": 3762
+      },
+      "transmitted": {
+        "independent": 0,
+        "strict": 2934,
+        "blackboard": 1438,
+        "sheaf_static": 884,
+        "sheaf_learned": 644
+      },
+      "communication_reduction_vs_strict": {
+        "blackboard": 0.5098841172460804,
+        "sheaf_static": 0.6987048398091342,
+        "sheaf_learned": 0.7805044308111793
+      },
+      "by_domain": {
+        "geometry": {
+          "independent": 0,
+          "strict": 20,
+          "blackboard": 0,
+          "sheaf_static": 20,
+          "sheaf_learned": 20
+        },
+        "integer": {
+          "independent": 0,
+          "strict": 20,
+          "blackboard": 20,
+          "sheaf_static": 20,
+          "sheaf_learned": 20
+        },
+        "set": {
+          "independent": 0,
+          "strict": 20,
+          "blackboard": 20,
+          "sheaf_static": 20,
+          "sheaf_learned": 20
+        }
+      },
+      "fault_control": {
+        "enabled": false,
+        "false_accepts": 0,
+        "invalid_certificates_rejected": 0
+      }
+    },
+    {
+      "episodes": 60,
+      "budget_per_round": 6,
+      "solved": {
+        "independent": 0,
+        "strict": 60,
+        "blackboard": 50,
+        "sheaf_static": 60,
+        "sheaf_learned": 60
+      },
+      "solve_rate": {
+        "independent": 0.0,
+        "strict": 1.0,
+        "blackboard": 0.8333333333333334,
+        "sheaf_static": 1.0,
+        "sheaf_learned": 1.0
+      },
+      "replayed": {
+        "independent": 0,
+        "strict": 60,
+        "blackboard": 50,
+        "sheaf_static": 60,
+        "sheaf_learned": 60
+      },
+      "proposed": {
+        "independent": 0,
+        "strict": 2934,
+        "blackboard": 5339,
+        "sheaf_static": 3841,
+        "sheaf_learned": 3801
+      },
+      "transmitted": {
+        "independent": 0,
+        "strict": 2934,
+        "blackboard": 1878,
+        "sheaf_static": 1200,
+        "sheaf_learned": 960
+      },
+      "communication_reduction_vs_strict": {
+        "blackboard": 0.3599182004089979,
+        "sheaf_static": 0.591002044989775,
+        "sheaf_learned": 0.6728016359918201
+      },
+      "by_domain": {
+        "geometry": {
+          "independent": 0,
+          "strict": 20,
+          "blackboard": 10,
+          "sheaf_static": 20,
+          "sheaf_learned": 20
+        },
+        "integer": {
+          "independent": 0,
+          "strict": 20,
+          "blackboard": 20,
+          "sheaf_static": 20,
+          "sheaf_learned": 20
+        },
+        "set": {
+          "independent": 0,
+          "strict": 20,
+          "blackboard": 20,
+          "sheaf_static": 20,
+          "sheaf_learned": 20
+        }
+      },
+      "fault_control": {
+        "enabled": false,
+        "false_accepts": 0,
+        "invalid_certificates_rejected": 0
+      }
+    }
+  ],
+  "frozen_test": {
+    "episodes": 300,
+    "budget_per_round": 1,
+    "solved": {
+      "independent": 2,
+      "strict": 300,
+      "blackboard": 25,
+      "sheaf_static": 200,
+      "sheaf_learned": 200
+    },
+    "solve_rate": {
+      "independent": 0.006666666666666667,
+      "strict": 1.0,
+      "blackboard": 0.08333333333333333,
+      "sheaf_static": 0.6666666666666666,
+      "sheaf_learned": 0.6666666666666666
+    },
+    "replayed": {
+      "independent": 2,
+      "strict": 300,
+      "blackboard": 25,
+      "sheaf_static": 200,
+      "sheaf_learned": 200
+    },
+    "proposed": {
+      "independent": 0,
+      "strict": 19862,
+      "blackboard": 75292,
+      "sheaf_static": 53725,
+      "sheaf_learned": 58129
+    },
+    "transmitted": {
+      "independent": 0,
+      "strict": 19862,
+      "blackboard": 2983,
+      "sheaf_static": 1699,
+      "sheaf_learned": 1765
+    },
+    "communication_reduction_vs_strict": {
+      "blackboard": 0.8498137146309536,
+      "sheaf_static": 0.9144597724297654,
+      "sheaf_learned": 0.9111368442251535
+    },
+    "by_domain": {
+      "geometry": {
+        "independent": 0,
+        "strict": 100,
+        "blackboard": 0,
+        "sheaf_static": 0,
+        "sheaf_learned": 0
+      },
+      "integer": {
+        "independent": 2,
+        "strict": 100,
+        "blackboard": 4,
+        "sheaf_static": 100,
+        "sheaf_learned": 100
+      },
+      "set": {
+        "independent": 0,
+        "strict": 100,
+        "blackboard": 21,
+        "sheaf_static": 100,
+        "sheaf_learned": 100
+      }
+    },
+    "fault_control": {
+      "enabled": true,
+      "false_accepts": 0,
+      "invalid_certificates_rejected": 298
+    }
+  },
+  "claim_scope": "This tests self-organized search allocation on held-out typed proof tasks. It is not a reproduction of the paper's neural Sudoku/maze scores and not an external olympiad benchmark improvement."
+}

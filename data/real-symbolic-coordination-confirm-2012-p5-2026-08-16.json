@@ -1,0 +1,189 @@
+{
+  "experiment": "real-symbolic-coordination-imo-ag-30",
+  "generated_at": "2026-08-16T00:40:36.469876+00:00",
+  "uses_llm": false,
+  "uses_problem_specific_solver_logic": false,
+  "dataset_auxiliary_clauses_hidden": true,
+  "coordination_protocol": [
+    "Yuclid saturation exposes an unresolved typed goal",
+    "JGEX structure is mechanically translated to GCLC",
+    "GCLC Wu and Groebner agents attempt the same goal",
+    "the independent JGEX polynomial backend replays the original goal",
+    "strict acceptance requires native proof, exact replay, and typed-goal agreement"
+  ],
+  "environment": {
+    "gclc_repository": "https://github.com/janicicpredrag/gclc",
+    "gclc_commit": "8f73a5d7e6c373f6210c4b293231dcc0dcc07a28",
+    "gclc_executable": "C:\\Users\\81808\\.cache\\mortra-research-sources\\gclc\\build\\Release\\gclc.exe"
+  },
+  "budget": {
+    "gclc_methods": [
+      "wu",
+      "groebner"
+    ],
+    "gclc_timeout_seconds_per_method": 60,
+    "maximum_numeric_sketch_attempts": 8,
+    "exact_timeout_seconds_per_problem": 90.0
+  },
+  "summary": {
+    "baseline_unresolved_selected": 1,
+    "translated": 1,
+    "translation_unsupported": 0,
+    "gclc_proved": 1,
+    "exact_proved": 1,
+    "strict_exchange_proved": 1,
+    "gclc_proved_names": [
+      "2012_p5"
+    ],
+    "exact_proved_names": [
+      "2012_p5"
+    ],
+    "strict_exchange_proved_names": [
+      "2012_p5"
+    ],
+    "baseline_solved": 17,
+    "strict_portfolio_solved": 18,
+    "total": 30,
+    "strict_portfolio_score": 0.6
+  },
+  "results": {
+    "2012_p5": {
+      "status": "strict_exchange_proved",
+      "translation": {
+        "construction_vocabulary": [
+          "foot",
+          "on_circle",
+          "on_line",
+          "r_triangle"
+        ],
+        "goal_channel": "cong",
+        "goal_points": [
+          "l",
+          "m",
+          "k",
+          "m"
+        ],
+        "source_sha256": "bf47ece96b8de4036937a2fe10fa0707dd91dff44fcb0e696b94392087051012",
+        "source": "point c 37 36\npoint a 41 72\npoint mortra_right_probe_0 72 82\nline mortra_right_base_1 c a\nperp mortra_perp_2 c mortra_right_base_1\nparallel mortra_para_3 mortra_right_probe_0 mortra_right_base_1\nintersec b mortra_perp_2 mortra_para_3\nline mortra_foot_side_4 a b\nfoot d c mortra_foot_side_4\nline mortra_on_line_5 c d\npoint mortra_probe_6 39 82\nperp mortra_perp_7 mortra_probe_6 mortra_on_line_5\nintersec x mortra_on_line_5 mortra_perp_7\nline mortra_on_line_8 a x\ncircle mortra_circle_9 b c\nintersec2 k mortra_other_root_10 mortra_circle_9 mortra_on_line_8\nline mortra_on_line_11 b x\ncircle mortra_circle_12 a c\nintersec2 l mortra_other_root_13 mortra_circle_12 mortra_on_line_11\nline mortra_on_line_14 a l\nline mortra_on_line_15 b k\nintersec m mortra_on_line_14 mortra_on_line_15\nprove { equal { segment l m } { segment k m } }\n"
+      },
+      "gclc": {
+        "proved": true,
+        "runs": [
+          {
+            "method": "wu",
+            "flag": "-w",
+            "return_code": 0,
+            "proved": true,
+            "external_timeout_reached": false,
+            "external_timeout_seconds": 75,
+            "elapsed_seconds": 50.49149949999992,
+            "proof_sha256": "e4af55914b2a5ec3bef23be49c6a411f46096940a85d8b53474489f8fd2e2f86",
+            "proof_bytes": 21689,
+            "prover_timeout_seconds": 60,
+            "transcript": "Input file: <TEMP>\\2012_p5.gcl\nOutput file: <TEMP>\\2012_p5.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Wu's method used.\nThe largest polynomial obtained during the proof process contains 16013 terms.\n\n\nTime spent by the prover: 48.281 seconds.\nThe conjecture successfully proved.\nThe prover output is written in the file <TEMP>\\2012_p5_proof.tex.\n\nFile '<TEMP>\\2012_p5.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+          },
+          {
+            "method": "groebner",
+            "flag": "-g",
+            "return_code": 0,
+            "proved": false,
+            "external_timeout_reached": false,
+            "external_timeout_seconds": 75,
+            "elapsed_seconds": 63.67055949999485,
+            "proof_sha256": "30b431fae663b9aa73d2c263c179ef9099ceb2529c6b3a2bbea3f65b7ecf43e8",
+            "proof_bytes": 64872,
+            "prover_timeout_seconds": 60,
+            "transcript": "Input file: <TEMP>\\2012_p5.gcl\nOutput file: <TEMP>\\2012_p5.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Groebner bases method used.\nThe largest polynomial obtained during the proof process contains 27070 terms.\n\n\nTime spent by the prover: 60.422 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2012_p5_proof.tex.\n\nFile '<TEMP>\\2012_p5.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+          }
+        ],
+        "sketch_attempts": [
+          {
+            "sketch_seed": 0,
+            "source_sha256": "bf47ece96b8de4036937a2fe10fa0707dd91dff44fcb0e696b94392087051012",
+            "runs": [
+              {
+                "method": "wu",
+                "flag": "-w",
+                "return_code": 0,
+                "proved": true,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 50.49149949999992,
+                "proof_sha256": "e4af55914b2a5ec3bef23be49c6a411f46096940a85d8b53474489f8fd2e2f86",
+                "proof_bytes": 21689,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2012_p5.gcl\nOutput file: <TEMP>\\2012_p5.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Wu's method used.\nThe largest polynomial obtained during the proof process contains 16013 terms.\n\n\nTime spent by the prover: 48.281 seconds.\nThe conjecture successfully proved.\nThe prover output is written in the file <TEMP>\\2012_p5_proof.tex.\n\nFile '<TEMP>\\2012_p5.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+              },
+              {
+                "method": "groebner",
+                "flag": "-g",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 63.67055949999485,
+                "proof_sha256": "30b431fae663b9aa73d2c263c179ef9099ceb2529c6b3a2bbea3f65b7ecf43e8",
+                "proof_bytes": 64872,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2012_p5.gcl\nOutput file: <TEMP>\\2012_p5.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Groebner bases method used.\nThe largest polynomial obtained during the proof process contains 27070 terms.\n\n\nTime spent by the prover: 60.422 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2012_p5_proof.tex.\n\nFile '<TEMP>\\2012_p5.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+              }
+            ]
+          }
+        ]
+      },
+      "exact": {
+        "status": "proved",
+        "certificate": {
+          "channel": "cong",
+          "points": [
+            "k",
+            "m",
+            "l",
+            "m"
+          ],
+          "construction_vocabulary": [
+            "foot",
+            "on_circle",
+            "on_line",
+            "r_triangle"
+          ],
+          "normalization_assumptions": [
+            "euclidean_gauge c=(0,0) a=(_leg_0,0) b=(0,_leg_1)",
+            "_leg_0 != 0",
+            "_leg_1 != 0"
+          ],
+          "construction_equations": [
+            "_leg_0**8*_line_3**2 - 2*_leg_0**8*_line_3 + _leg_0**8 + _leg_0**6*_leg_1**2*_line_2**2*_line_3**2 - 2*_leg_0**6*_leg_1**2*_line_2*_line_3**2 + 3*_leg_0**6*_leg_1**2*_line_3**2 - 6*_leg_0**6*_leg_1**2*_line_3 + 3*_leg_0**6*_leg_1**2 + 2*_leg_0**4*_leg_1**4*_line_2**2*_line_3**2 - 4*_leg_0**4*_leg_1**4*_line_2*_line_3**2 + 3*_leg_0**4*_leg_1**4*_line_3**2 - 6*_leg_0**4*_leg_1**4*_line_3 + 3*_leg_0**4*_leg_1**4 + _leg_0**2*_leg_1**6*_line_2**2*_line_3**2 - 2*_leg_0**2*_leg_1**6*_line_2*_line_3**2 + _leg_0**2*_leg_1**6*_line_3**2 - 2*_leg_0**2*_leg_1**6*_line_3 + _leg_0**2*_leg_1**6",
+            "_leg_0**6*_leg_1**2*_line_2**2*_line_4**2 - 2*_leg_0**6*_leg_1**2*_line_2*_line_4**2 + _leg_0**6*_leg_1**2*_line_4**2 - 2*_leg_0**6*_leg_1**2*_line_4 + _leg_0**6*_leg_1**2 + 2*_leg_0**4*_leg_1**4*_line_2**2*_line_4**2 - 4*_leg_0**4*_leg_1**4*_line_2*_line_4**2 + 3*_leg_0**4*_leg_1**4*_line_4**2 - 6*_leg_0**4*_leg_1**4*_line_4 + 3*_leg_0**4*_leg_1**4 + _leg_0**2*_leg_1**6*_line_2**2*_line_4**2 - 2*_leg_0**2*_leg_1**6*_line_2*_line_4**2 + 3*_leg_0**2*_leg_1**6*_line_4**2 - 6*_leg_0**2*_leg_1**6*_line_4 + 3*_leg_0**2*_leg_1**6 + _leg_1**8*_line_4**2 - 2*_leg_1**8*_line_4 + _leg_1**8"
+          ],
+          "nondegeneracy_conditions": [
+            "(_leg_0**2 + _leg_1**2)**3 != 0",
+            "(_leg_0**2 + _leg_1**2)**6*(_line_3*_line_4 - _line_3 - _line_4)**2 != 0",
+            "_leg_0**2 + _leg_1**2 != 0",
+            "_leg_0*_leg_1*(_line_2 - 1)*(_line_3*_line_4 - _line_3 - _line_4) != 0"
+          ],
+          "goal_polynomial": "(_leg_0**2 + _leg_1**2)**5*(_line_3*_line_4 - _line_3 - _line_4)*(_leg_0**4*_line_3**3*_line_4 - _leg_0**4*_line_3**3 - _leg_0**4*_line_3**2*_line_4 + 2*_leg_0**4*_line_3**2 - _leg_0**4*_line_3*_line_4 - _leg_0**4*_line_3 + _leg_0**4*_line_4 + _leg_0**2*_leg_1**2*_line_2**2*_line_3**3*_line_4 - _leg_0**2*_leg_1**2*_line_2**2*_line_3**3 + _leg_0**2*_leg_1**2*_line_2**2*_line_3**2*_line_4 - _leg_0**2*_leg_1**2*_line_2**2*_line_3*_line_4**3 - _leg_0**2*_leg_1**2*_line_2**2*_line_3*_line_4**2 + _leg_0**2*_leg_1**2*_line_2**2*_line_4**3 - 2*_leg_0**2*_leg_1**2*_line_2*_line_3**3*_line_4 + 2*_leg_0**2*_leg_1**2*_line_2*_line_3**3 - 2*_leg_0**2*_leg_1**2*_line_2*_line_3**2*_line_4 + 2*_leg_0**2*_leg_1**2*_line_2*_line_3*_line_4**3 + 2*_leg_0**2*_leg_1**2*_line_2*_line_3*_line_4**2 - 2*_leg_0**2*_leg_1**2*_line_2*_line_4**3 + _leg_0**2*_leg_1**2*_line_3**3*_line_4 - _leg_0**2*_leg_1**2*_line_3**3 - _leg_0**2*_leg_1**2*_line_3**2*_line_4 + 2*_leg_0**2*_leg_1**2*_line_3**2 - _leg_0**2*_leg_1**2*_line_3*_line_4**3 + _leg_0**2*_leg_1**2*_line_3*_line_4**2 - 2*_leg_0**2*_leg_1**2*_line_3 + _leg_0**2*_leg_1**2*_line_4**3 - 2*_leg_0**2*_leg_1**2*_line_4**2 + 2*_leg_0**2*_leg_1**2*_line_4 - _leg_1**4*_line_3*_line_4**3 + _leg_1**4*_line_3*_line_4**2 + _leg_1**4*_line_3*_line_4 - _leg_1**4*_line_3 + _leg_1**4*_line_4**3 - 2*_leg_1**4*_line_4**2 + _leg_1**4*_line_4)",
+          "groebner_basis": [
+            "_leg_0**10*_line_2**2*_line_3**2*_line_4**2 - 2*_leg_0**10*_line_2**2*_line_3*_line_4**2 + _leg_0**10*_line_2**2*_line_4**2 - 2*_leg_0**10*_line_2*_line_3**2*_line_4**2 + 4*_leg_0**10*_line_2*_line_3*_line_4**2 - 2*_leg_0**10*_line_2*_line_4**2 + _leg_0**10*_line_3**2*_line_4**2 - 2*_leg_0**10*_line_3**2*_line_4 + _leg_0**10*_line_3**2 - 2*_leg_0**10*_line_3*_line_4**2 + 4*_leg_0**10*_line_3*_line_4 - 2*_leg_0**10*_line_3 + _leg_0**10*_line_4**2 - 2*_leg_0**10*_line_4 + _leg_0**10 + 2*_leg_0**8*_leg_1**2*_line_2**2*_line_3**2*_line_4**2 - 4*_leg_0**8*_leg_1**2*_line_2**2*_line_3*_line_4**2 + 2*_leg_0**8*_leg_1**2*_line_2**2*_line_4**2 - 4*_leg_0**8*_leg_1**2*_line_2*_line_3**2*_line_4**2 + 8*_leg_0**8*_leg_1**2*_line_2*_line_3*_line_4**2 - 4*_leg_0**8*_leg_1**2*_line_2*_line_4**2 + 3*_leg_0**8*_leg_1**2*_line_3**2*_line_4**2 - 6*_leg_0**8*_leg_1**2*_line_3**2*_line_4 + 3*_leg_0**8*_leg_1**2*_line_3**2 - 6*_leg_0**8*_leg_1**2*_line_3*_line_4**2 + 12*_leg_0**8*_leg_1**2*_line_3*_line_4 - 6*_leg_0**8*_leg_1**2*_line_3 + 3*_leg_0**8*_leg_1**2*_line_4**2 - 6*_leg_0**8*_leg_1**2*_line_4 + 3*_leg_0**8*_leg_1**2 + _leg_0**6*_leg_1**4*_line_2**2*_line_3**2*_line_4**2 - 2*_leg_0**6*_leg_1**4*_line_2**2*_line_3*_line_4**2 + _leg_0**6*_leg_1**4*_line_2**2*_line_4**2 - 2*_leg_0**6*_leg_1**4*_line_2*_line_3**2*_line_4**2 + 4*_leg_0**6*_leg_1**4*_line_2*_line_3*_line_4**2 - 2*_leg_0**6*_leg_1**4*_line_2*_line_4**2 + 3*_leg_0**6*_leg_1**4*_line_3**2*_line_4**2 - 6*_leg_0**6*_leg_1**4*_line_3**2*_line_4 + 3*_leg_0**6*_leg_1**4*_line_3**2 - 6*_leg_0**6*_leg_1**4*_line_3*_line_4**2 + 12*_leg_0**6*_leg_1**4*_line_3*_line_4 - 6*_leg_0**6*_leg_1**4*_line_3 + 3*_leg_0**6*_leg_1**4*_line_4**2 - 6*_leg_0**6*_leg_1**4*_line_4 + 3*_leg_0**6*_leg_1**4 + _leg_0**4*_leg_1**6*_line_3**2*_line_4**2 - 2*_leg_0**4*_leg_1**6*_line_3**2*_line_4 + _leg_0**4*_leg_1**6*_line_3**2 - 2*_leg_0**4*_leg_1**6*_line_3*_line_4**2 + 4*_leg_0**4*_leg_1**6*_line_3*_line_4 - 2*_leg_0**4*_leg_1**6*_line_3 + _leg_0**4*_leg_1**6*_line_4**2 - 2*_leg_0**4*_leg_1**6*_line_4 + _leg_0**4*_leg_1**6",
+            "-_leg_0**8*_line_3**2*_line_4**2 + 2*_leg_0**8*_line_3*_line_4**2 - _leg_0**8*_line_4**2 - 2*_leg_0**6*_leg_1**2*_line_3**2*_line_4**2 - 2*_leg_0**6*_leg_1**2*_line_3**2*_line_4 + _leg_0**6*_leg_1**2*_line_3**2 + 6*_leg_0**6*_leg_1**2*_line_3*_line_4**2 - 3*_leg_0**6*_leg_1**2*_line_4**2 - 6*_leg_0**4*_leg_1**4*_line_3**2*_line_4 + 3*_leg_0**4*_leg_1**4*_line_3**2 + 6*_leg_0**4*_leg_1**4*_line_3*_line_4**2 - 3*_leg_0**4*_leg_1**4*_line_4**2 + 2*_leg_0**2*_leg_1**6*_line_3**2*_line_4**2 - 6*_leg_0**2*_leg_1**6*_line_3**2*_line_4 + 3*_leg_0**2*_leg_1**6*_line_3**2 + 2*_leg_0**2*_leg_1**6*_line_3*_line_4**2 - _leg_0**2*_leg_1**6*_line_4**2 + _leg_1**8*_line_3**2*_line_4**2 - 2*_leg_1**8*_line_3**2*_line_4 + _leg_1**8*_line_3**2",
+            "_leg_0**6*_leg_1**2*_line_2**2*_line_4**2 - 2*_leg_0**6*_leg_1**2*_line_2*_line_4**2 + _leg_0**6*_leg_1**2*_line_4**2 - 2*_leg_0**6*_leg_1**2*_line_4 + _leg_0**6*_leg_1**2 + 2*_leg_0**4*_leg_1**4*_line_2**2*_line_4**2 - 4*_leg_0**4*_leg_1**4*_line_2*_line_4**2 + 3*_leg_0**4*_leg_1**4*_line_4**2 - 6*_leg_0**4*_leg_1**4*_line_4 + 3*_leg_0**4*_leg_1**4 + _leg_0**2*_leg_1**6*_line_2**2*_line_4**2 - 2*_leg_0**2*_leg_1**6*_line_2*_line_4**2 + 3*_leg_0**2*_leg_1**6*_line_4**2 - 6*_leg_0**2*_leg_1**6*_line_4 + 3*_leg_0**2*_leg_1**6 + _leg_1**8*_line_4**2 - 2*_leg_1**8*_line_4 + _leg_1**8",
+            "_leg_0**8*_line_3**2 - 2*_leg_0**8*_line_3 + _leg_0**8 + _leg_0**6*_leg_1**2*_line_2**2*_line_3**2 - 2*_leg_0**6*_leg_1**2*_line_2*_line_3**2 + 3*_leg_0**6*_leg_1**2*_line_3**2 - 6*_leg_0**6*_leg_1**2*_line_3 + 3*_leg_0**6*_leg_1**2 + 2*_leg_0**4*_leg_1**4*_line_2**2*_line_3**2 - 4*_leg_0**4*_leg_1**4*_line_2*_line_3**2 + 3*_leg_0**4*_leg_1**4*_line_3**2 - 6*_leg_0**4*_leg_1**4*_line_3 + 3*_leg_0**4*_leg_1**4 + _leg_0**2*_leg_1**6*_line_2**2*_line_3**2 - 2*_leg_0**2*_leg_1**6*_line_2*_line_3**2 + _leg_0**2*_leg_1**6*_line_3**2 - 2*_leg_0**2*_leg_1**6*_line_3 + _leg_0**2*_leg_1**6"
+          ],
+          "quotient_certificate": [
+            "4*_leg_0**2*_leg_1**2*_line_3**2 - 4*_leg_0**2*_leg_1**2*_line_4**2 - 8*_leg_0**2*_leg_1**2*_line_4 - 12*_leg_0**2*_leg_1**2 + 4*_leg_1**4*_line_3**2 - 4*_leg_1**4*_line_4**2 - 8*_leg_1**4*_line_4 - 12*_leg_1**4",
+            "-_leg_0**6*_line_3**2 + _leg_0**6 + 3*_leg_0**4*_leg_1**2*_line_2**2*_line_3**2 - 2*_leg_0**4*_leg_1**2*_line_2**2*_line_3 - 3*_leg_0**4*_leg_1**2*_line_2**2*_line_4**2 - 8*_leg_0**4*_leg_1**2*_line_2**2*_line_4 - 15*_leg_0**4*_leg_1**2*_line_2**2 - 6*_leg_0**4*_leg_1**2*_line_2*_line_3**2 + 4*_leg_0**4*_leg_1**2*_line_2*_line_3 + 6*_leg_0**4*_leg_1**2*_line_2*_line_4**2 + 16*_leg_0**4*_leg_1**2*_line_2*_line_4 + 30*_leg_0**4*_leg_1**2*_line_2 - 2*_leg_0**4*_leg_1**2*_line_3 - 3*_leg_0**4*_leg_1**2*_line_4**2 - 2*_leg_0**4*_leg_1**2*_line_4 + _leg_0**4*_leg_1**2 + _leg_0**2*_leg_1**4*_line_2**2*_line_3**2 - _leg_0**2*_leg_1**4*_line_2**2*_line_4**2 - 2*_leg_0**2*_leg_1**4*_line_2**2*_line_4 - 3*_leg_0**2*_leg_1**4*_line_2**2 - 2*_leg_0**2*_leg_1**4*_line_2*_line_3**2 + 2*_leg_0**2*_leg_1**4*_line_2*_line_4**2 + 4*_leg_0**2*_leg_1**4*_line_2*_line_4 + 6*_leg_0**2*_leg_1**4*_line_2 + _leg_0**2*_leg_1**4*_line_3**2 - 2*_leg_0**2*_leg_1**4*_line_3 - 4*_leg_0**2*_leg_1**4*_line_4**2 - 2*_leg_0**2*_leg_1**4*_line_4 + _leg_0**2*_leg_1**4 - _leg_1**6*_line_4**2 + _leg_1**6",
+            "4*_leg_0**6*_line_3 - 3*_leg_0**6 + 6*_leg_0**4*_leg_1**2*_line_3*_line_4**2 + 4*_leg_0**4*_leg_1**2*_line_3*_line_4 + 10*_leg_0**4*_leg_1**2*_line_3 - 3*_leg_0**4*_leg_1**2*_line_4**2 - 2*_leg_0**4*_leg_1**2*_line_4 - 6*_leg_0**4*_leg_1**2 + 8*_leg_0**2*_leg_1**4*_line_3*_line_4**2 + 4*_leg_0**2*_leg_1**4*_line_3*_line_4 + 6*_leg_0**2*_leg_1**4*_line_3 - 4*_leg_0**2*_leg_1**4*_line_4**2 - 2*_leg_0**2*_leg_1**4*_line_4 - 3*_leg_0**2*_leg_1**4 + 2*_leg_1**6*_line_3*_line_4**2 - _leg_1**6*_line_4**2",
+            "-2*_leg_0**6*_line_3**2*_line_4 + _leg_0**6*_line_3**2 - 4*_leg_0**4*_leg_1**2*_line_3*_line_4 + 2*_leg_0**4*_leg_1**2*_line_3 - 22*_leg_0**4*_leg_1**2*_line_4 + 15*_leg_0**4*_leg_1**2 + 2*_leg_0**2*_leg_1**4*_line_3**2*_line_4 - _leg_0**2*_leg_1**4*_line_3**2 - 4*_leg_0**2*_leg_1**4*_line_3*_line_4 + 2*_leg_0**2*_leg_1**4*_line_3 - 26*_leg_0**2*_leg_1**4*_line_4 + 18*_leg_0**2*_leg_1**4 - 4*_leg_1**6*_line_4 + 3*_leg_1**6"
+          ],
+          "remainder": "0",
+          "exact_replay": true,
+          "certificate_sha256": "5d233687facbbf50a9e7d9af82772f855919f02f01110c047df30312b6903534"
+        }
+      },
+      "typed_goal_agreement": true,
+      "strict_exchange_proved": true,
+      "elapsed_seconds": 126.77800419999403
+    }
+  },
+  "claim_scope": "This is real certificate exchange between external symbolic engines, not yet a reproduction of end-to-end learned Sheaf-ADMM. The strict score counts only goals proved by GCLC and replayed independently."
+}

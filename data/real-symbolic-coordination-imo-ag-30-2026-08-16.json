@@ -1,0 +1,973 @@
+{
+  "experiment": "real-symbolic-coordination-imo-ag-30",
+  "generated_at": "2026-08-16T00:37:51.598475+00:00",
+  "uses_llm": false,
+  "uses_problem_specific_solver_logic": false,
+  "dataset_auxiliary_clauses_hidden": true,
+  "coordination_protocol": [
+    "Yuclid saturation exposes an unresolved typed goal",
+    "JGEX structure is mechanically translated to GCLC",
+    "GCLC Wu and Groebner agents attempt the same goal",
+    "the independent JGEX polynomial backend replays the original goal",
+    "strict acceptance requires native proof, exact replay, and typed-goal agreement"
+  ],
+  "environment": {
+    "gclc_repository": "https://github.com/janicicpredrag/gclc",
+    "gclc_commit": "8f73a5d7e6c373f6210c4b293231dcc0dcc07a28",
+    "gclc_executable": "C:\\Users\\81808\\.cache\\mortra-research-sources\\gclc\\build\\Release\\gclc.exe"
+  },
+  "budget": {
+    "gclc_methods": [
+      "wu",
+      "groebner"
+    ],
+    "gclc_timeout_seconds_per_method": 60,
+    "maximum_numeric_sketch_attempts": 8,
+    "exact_timeout_seconds_per_problem": 90.0
+  },
+  "summary": {
+    "baseline_unresolved_selected": 6,
+    "translated": 6,
+    "translation_unsupported": 0,
+    "gclc_proved": 1,
+    "exact_proved": 2,
+    "strict_exchange_proved": 0,
+    "gclc_proved_names": [
+      "2012_p5"
+    ],
+    "exact_proved_names": [
+      "2009_p2",
+      "2012_p5"
+    ],
+    "strict_exchange_proved_names": [],
+    "baseline_solved": 17,
+    "strict_portfolio_solved": 17,
+    "total": 30,
+    "strict_portfolio_score": 0.5666666666666667
+  },
+  "results": {
+    "2000_p6": {
+      "status": "unproved",
+      "translation": {
+        "construction_vocabulary": [
+          "foot",
+          "incenter2",
+          "on_line",
+          "orthocenter",
+          "reflect",
+          "triangle"
+        ],
+        "goal_channel": "cong",
+        "goal_points": [
+          "i",
+          "t1",
+          "i",
+          "z"
+        ],
+        "source_sha256": "7043e01eb0b69d5bb7d3539b482135f36a2871ccc0bc672afd8d669a6d8cec1d",
+        "source": "point a 37 36\npoint b 41 72\npoint c 72 82\nline mortra_orth_side_0 b c\nline mortra_orth_side_1 a c\nperp mortra_perp_2 a mortra_orth_side_0\nperp mortra_perp_3 b mortra_orth_side_1\nintersec h mortra_perp_2 mortra_perp_3\nbis mortra_bis_4 b a c\nbis mortra_bis_5 c b a\nintersec i mortra_bis_4 mortra_bis_5\nline mortra_incenter_side_6 b c\nfoot t1 i mortra_incenter_side_6\nline mortra_incenter_side_7 c a\nfoot t2 i mortra_incenter_side_7\nline mortra_incenter_side_8 a b\nfoot t3 i mortra_incenter_side_8\nline mortra_foot_side_9 b c\nfoot h1 a mortra_foot_side_9\nline mortra_foot_side_10 c a\nfoot h2 b mortra_foot_side_10\nline mortra_foot_side_11 a b\nfoot h3 c mortra_foot_side_11\nline mortra_reflect_axis_12 t1 t2\nfoot mortra_projection_13 h1 mortra_reflect_axis_12\ntowards x1 h1 mortra_projection_13 2\nline mortra_reflect_axis_14 t1 t2\nfoot mortra_projection_15 h2 mortra_reflect_axis_14\ntowards x2 h2 mortra_projection_15 2\nline mortra_reflect_axis_16 t2 t3\nfoot mortra_projection_17 h2 mortra_reflect_axis_16\ntowards y2 h2 mortra_projection_17 2\nline mortra_reflect_axis_18 t2 t3\nfoot mortra_projection_19 h3 mortra_reflect_axis_18\ntowards y3 h3 mortra_projection_19 2\nline mortra_on_line_20 x1 x2\nline mortra_on_line_21 y2 y3\nintersec z mortra_on_line_20 mortra_on_line_21\nprove { equal { segment i t1 } { segment i z } }\n"
+      },
+      "gclc": {
+        "proved": false,
+        "runs": [
+          {
+            "method": "wu",
+            "flag": "-w",
+            "return_code": null,
+            "proved": false,
+            "external_timeout_reached": true,
+            "external_timeout_seconds": 75,
+            "elapsed_seconds": 75.5362970999995,
+            "proof_sha256": "2e12383ff67169089f99e843984e9b48b7820ffb7b5073fc951b48a0826b0c35",
+            "proof_bytes": 63438,
+            "prover_timeout_seconds": 60,
+            "transcript": ""
+          },
+          {
+            "method": "groebner",
+            "flag": "-g",
+            "return_code": 0,
+            "proved": false,
+            "external_timeout_reached": false,
+            "external_timeout_seconds": 75,
+            "elapsed_seconds": 63.538380300000426,
+            "proof_sha256": "b6a16539ec44bfe2b70738df442f6ac09f929a39026e45aa76fff3dc52186e02",
+            "proof_bytes": 153764,
+            "prover_timeout_seconds": 60,
+            "transcript": "Input file: <TEMP>\\2000_p6.gcl\nOutput file: <TEMP>\\2000_p6.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Groebner bases method used.\nThe largest polynomial obtained during the proof process contains 21449 terms.\n\n\nTime spent by the prover: 60.156 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2000_p6_proof.tex.\n\nFile '<TEMP>\\2000_p6.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+          }
+        ],
+        "sketch_attempts": [
+          {
+            "sketch_seed": 0,
+            "source_sha256": "7043e01eb0b69d5bb7d3539b482135f36a2871ccc0bc672afd8d669a6d8cec1d",
+            "runs": [
+              {
+                "method": "wu",
+                "flag": "-w",
+                "return_code": null,
+                "proved": false,
+                "external_timeout_reached": true,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 75.5362970999995,
+                "proof_sha256": "2e12383ff67169089f99e843984e9b48b7820ffb7b5073fc951b48a0826b0c35",
+                "proof_bytes": 63438,
+                "prover_timeout_seconds": 60,
+                "transcript": ""
+              },
+              {
+                "method": "groebner",
+                "flag": "-g",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 63.538380300000426,
+                "proof_sha256": "b6a16539ec44bfe2b70738df442f6ac09f929a39026e45aa76fff3dc52186e02",
+                "proof_bytes": 153764,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2000_p6.gcl\nOutput file: <TEMP>\\2000_p6.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Groebner bases method used.\nThe largest polynomial obtained during the proof process contains 21449 terms.\n\n\nTime spent by the prover: 60.156 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2000_p6_proof.tex.\n\nFile '<TEMP>\\2000_p6.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+              }
+            ]
+          }
+        ]
+      },
+      "exact": {
+        "status": "timeout"
+      },
+      "typed_goal_agreement": false,
+      "strict_exchange_proved": false,
+      "elapsed_seconds": 230.4008366999915
+    },
+    "2009_p2": {
+      "status": "unproved",
+      "translation": {
+        "construction_vocabulary": [
+          "circle",
+          "mirror",
+          "on_line",
+          "on_tline",
+          "triangle"
+        ],
+        "goal_channel": "cong",
+        "goal_points": [
+          "o",
+          "p",
+          "o",
+          "q"
+        ],
+        "source_sha256": "5314b8e51d013cd6a8b89eac8f16ff86ca289f26dbd07378c8718ec7a4b0835b",
+        "source": "point m 37 36\npoint l 41 72\npoint k 72 82\nmed mortra_med_0 m l\nmed mortra_med_1 m k\nintersec w mortra_med_0 mortra_med_1\nline mortra_tline_ref_2 w m\nperp mortra_perp_3 m mortra_tline_ref_2\npoint mortra_probe_4 39 82\nperp mortra_perp_5 mortra_probe_4 mortra_perp_3\nintersec q mortra_perp_3 mortra_perp_5\ntowards p q m 2\ntowards b p k 2\ntowards c q l 2\nline mortra_on_line_6 b q\nline mortra_on_line_7 c p\nintersec a mortra_on_line_6 mortra_on_line_7\nmed mortra_med_8 a b\nmed mortra_med_9 a c\nintersec o mortra_med_8 mortra_med_9\nprove { equal { segment o p } { segment o q } }\n"
+      },
+      "gclc": {
+        "proved": false,
+        "runs": [
+          {
+            "method": "wu",
+            "flag": "-w",
+            "return_code": 0,
+            "proved": false,
+            "external_timeout_reached": false,
+            "external_timeout_seconds": 75,
+            "elapsed_seconds": 65.69439620000776,
+            "proof_sha256": "8e66fe06ccad813bd327ba1cf1e1c46465a7199e49e3cb0190c851cdaa4416a4",
+            "proof_bytes": 20866,
+            "prover_timeout_seconds": 60,
+            "transcript": "Input file: <TEMP>\\2009_p2.gcl\nOutput file: <TEMP>\\2009_p2.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Wu's method used.\nThe largest polynomial obtained during the proof process contains 8861 terms.\n\n\nTime spent by the prover: 62.344 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2009_p2_proof.tex.\n\nFile '<TEMP>\\2009_p2.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+          },
+          {
+            "method": "groebner",
+            "flag": "-g",
+            "return_code": 0,
+            "proved": false,
+            "external_timeout_reached": false,
+            "external_timeout_seconds": 75,
+            "elapsed_seconds": 63.14817439999024,
+            "proof_sha256": "edbe420eb23909f7cc32d775b06f88cc0d6373a7008ed3292e4a2f4aa3fc053c",
+            "proof_bytes": 55084,
+            "prover_timeout_seconds": 60,
+            "transcript": "Input file: <TEMP>\\2009_p2.gcl\nOutput file: <TEMP>\\2009_p2.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Groebner bases method used.\nThe largest polynomial obtained during the proof process contains 30666 terms.\n\n\nTime spent by the prover: 60.156 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2009_p2_proof.tex.\n\nFile '<TEMP>\\2009_p2.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+          }
+        ],
+        "sketch_attempts": [
+          {
+            "sketch_seed": 0,
+            "source_sha256": "5314b8e51d013cd6a8b89eac8f16ff86ca289f26dbd07378c8718ec7a4b0835b",
+            "runs": [
+              {
+                "method": "wu",
+                "flag": "-w",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 65.69439620000776,
+                "proof_sha256": "8e66fe06ccad813bd327ba1cf1e1c46465a7199e49e3cb0190c851cdaa4416a4",
+                "proof_bytes": 20866,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2009_p2.gcl\nOutput file: <TEMP>\\2009_p2.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Wu's method used.\nThe largest polynomial obtained during the proof process contains 8861 terms.\n\n\nTime spent by the prover: 62.344 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2009_p2_proof.tex.\n\nFile '<TEMP>\\2009_p2.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+              },
+              {
+                "method": "groebner",
+                "flag": "-g",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 63.14817439999024,
+                "proof_sha256": "edbe420eb23909f7cc32d775b06f88cc0d6373a7008ed3292e4a2f4aa3fc053c",
+                "proof_bytes": 55084,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2009_p2.gcl\nOutput file: <TEMP>\\2009_p2.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Groebner bases method used.\nThe largest polynomial obtained during the proof process contains 30666 terms.\n\n\nTime spent by the prover: 60.156 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2009_p2_proof.tex.\n\nFile '<TEMP>\\2009_p2.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+              }
+            ]
+          }
+        ]
+      },
+      "exact": {
+        "status": "proved",
+        "certificate": {
+          "channel": "cong",
+          "points": [
+            "o",
+            "q",
+            "o",
+            "p"
+          ],
+          "construction_vocabulary": [
+            "circle",
+            "mirror",
+            "on_line",
+            "on_tline",
+            "triangle"
+          ],
+          "normalization_assumptions": [
+            "euclidean_gauge m=(0,0) l=(_base_0,0) k=(_apex_x_1,_apex_y_2)",
+            "_base_0 != 0",
+            "_apex_y_2 != 0"
+          ],
+          "construction_equations": [],
+          "nondegeneracy_conditions": [
+            "(2*_apex_y_2 - _base_0*_tline_3)*(_apex_x_1**2*_tline_3 + _apex_y_2**2*_tline_3 - 2*_apex_y_2*_base_0)/_apex_y_2 != 0",
+            "(_apex_x_1**2 + _apex_y_2**2)*(_apex_x_1**2 - 2*_apex_x_1*_base_0 + _apex_y_2**2 + _base_0**2)/(4*_apex_y_2**2) != 0",
+            "-4*_apex_y_2*_base_0 != 0",
+            "_apex_y_2*_base_0 != 0"
+          ],
+          "goal_polynomial": "0",
+          "groebner_basis": [],
+          "quotient_certificate": [],
+          "remainder": "0",
+          "exact_replay": true,
+          "certificate_sha256": "c8e23fe27aaaf5308031e424738f9c76b4667aff5bd6bba1350bfe7b0f1f0333"
+        }
+      },
+      "typed_goal_agreement": false,
+      "strict_exchange_proved": false,
+      "elapsed_seconds": 136.1863910999964
+    },
+    "2011_p6": {
+      "status": "unproved",
+      "translation": {
+        "construction_vocabulary": [
+          "circle",
+          "on_circle",
+          "on_line",
+          "on_tline",
+          "reflect",
+          "triangle"
+        ],
+        "goal_channel": "coll",
+        "goal_points": [
+          "o",
+          "o1",
+          "x"
+        ],
+        "source_sha256": "583c45bb8bacbc6216cd11836aebe08a22645e2bde9aa13cd38df0d84db38be5",
+        "source": "point a 37 36\npoint b 41 72\npoint c 72 82\nmed mortra_med_0 a b\nmed mortra_med_1 a c\nintersec o mortra_med_0 mortra_med_1\ncircle mortra_circle_2 o a\noncircle p o a\nline mortra_tline_ref_3 o p\nperp mortra_perp_4 p mortra_tline_ref_3\npoint mortra_probe_5 39 82\nperp mortra_perp_6 mortra_probe_5 mortra_perp_4\nintersec q mortra_perp_4 mortra_perp_6\nline mortra_reflect_axis_7 b c\nfoot mortra_projection_8 p mortra_reflect_axis_7\ntowards pa p mortra_projection_8 2\nline mortra_reflect_axis_9 c a\nfoot mortra_projection_10 p mortra_reflect_axis_9\ntowards pb p mortra_projection_10 2\nline mortra_reflect_axis_11 a b\nfoot mortra_projection_12 p mortra_reflect_axis_11\ntowards pc p mortra_projection_12 2\nline mortra_reflect_axis_13 b c\nfoot mortra_projection_14 q mortra_reflect_axis_13\ntowards qa q mortra_projection_14 2\nline mortra_reflect_axis_15 c a\nfoot mortra_projection_16 q mortra_reflect_axis_15\ntowards qb q mortra_projection_16 2\nline mortra_reflect_axis_17 a b\nfoot mortra_projection_18 q mortra_reflect_axis_17\ntowards qc q mortra_projection_18 2\nline mortra_on_line_19 pb qb\nline mortra_on_line_20 pc qc\nintersec a1 mortra_on_line_19 mortra_on_line_20\nline mortra_on_line_21 pa qa\nline mortra_on_line_22 pc qc\nintersec b1 mortra_on_line_21 mortra_on_line_22\nline mortra_on_line_23 pa qa\nline mortra_on_line_24 pb qb\nintersec c1 mortra_on_line_23 mortra_on_line_24\nmed mortra_med_25 a1 b1\nmed mortra_med_26 a1 c1\nintersec o1 mortra_med_25 mortra_med_26\ncircle mortra_circle_27 o a\ncircle mortra_circle_28 o1 a1\nintersec2 x mortra_other_root_29 mortra_circle_27 mortra_circle_28\nprove { collinear o o1 x }\n"
+      },
+      "gclc": {
+        "proved": false,
+        "runs": [
+          {
+            "method": "wu",
+            "flag": "-w",
+            "return_code": 0,
+            "proved": false,
+            "external_timeout_reached": false,
+            "external_timeout_seconds": 75,
+            "elapsed_seconds": 0.21496870000555646,
+            "proof_sha256": null,
+            "proof_bytes": 0,
+            "prover_timeout_seconds": 60,
+            "transcript": "Input file: <TEMP>\\2011_p6.gcl\nOutput file: <TEMP>\\2011_p6.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe conjecture given to prove is ill-formed or includes a point that is not constructed by commands supported by the prover. (Line: 48, position: 7)"
+          },
+          {
+            "method": "groebner",
+            "flag": "-g",
+            "return_code": 0,
+            "proved": false,
+            "external_timeout_reached": false,
+            "external_timeout_seconds": 75,
+            "elapsed_seconds": 0.04110049999144394,
+            "proof_sha256": null,
+            "proof_bytes": 0,
+            "prover_timeout_seconds": 60,
+            "transcript": "Input file: <TEMP>\\2011_p6.gcl\nOutput file: <TEMP>\\2011_p6.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe conjecture given to prove is ill-formed or includes a point that is not constructed by commands supported by the prover. (Line: 48, position: 7)"
+          }
+        ],
+        "sketch_attempts": [
+          {
+            "sketch_seed": 0,
+            "source_sha256": "583c45bb8bacbc6216cd11836aebe08a22645e2bde9aa13cd38df0d84db38be5",
+            "runs": [
+              {
+                "method": "wu",
+                "flag": "-w",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 0.21496870000555646,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2011_p6.gcl\nOutput file: <TEMP>\\2011_p6.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe conjecture given to prove is ill-formed or includes a point that is not constructed by commands supported by the prover. (Line: 48, position: 7)"
+              },
+              {
+                "method": "groebner",
+                "flag": "-g",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 0.04110049999144394,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2011_p6.gcl\nOutput file: <TEMP>\\2011_p6.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe conjecture given to prove is ill-formed or includes a point that is not constructed by commands supported by the prover. (Line: 48, position: 7)"
+              }
+            ]
+          }
+        ]
+      },
+      "exact": {
+        "status": "timeout"
+      },
+      "typed_goal_agreement": false,
+      "strict_exchange_proved": false,
+      "elapsed_seconds": 90.46816420000687
+    },
+    "2012_p5": {
+      "status": "unproved",
+      "translation": {
+        "construction_vocabulary": [
+          "foot",
+          "on_circle",
+          "on_line",
+          "r_triangle"
+        ],
+        "goal_channel": "cong",
+        "goal_points": [
+          "l",
+          "m",
+          "k",
+          "m"
+        ],
+        "source_sha256": "bf47ece96b8de4036937a2fe10fa0707dd91dff44fcb0e696b94392087051012",
+        "source": "point c 37 36\npoint a 41 72\npoint mortra_right_probe_0 72 82\nline mortra_right_base_1 c a\nperp mortra_perp_2 c mortra_right_base_1\nparallel mortra_para_3 mortra_right_probe_0 mortra_right_base_1\nintersec b mortra_perp_2 mortra_para_3\nline mortra_foot_side_4 a b\nfoot d c mortra_foot_side_4\nline mortra_on_line_5 c d\npoint mortra_probe_6 39 82\nperp mortra_perp_7 mortra_probe_6 mortra_on_line_5\nintersec x mortra_on_line_5 mortra_perp_7\nline mortra_on_line_8 a x\ncircle mortra_circle_9 b c\nintersec2 k mortra_other_root_10 mortra_circle_9 mortra_on_line_8\nline mortra_on_line_11 b x\ncircle mortra_circle_12 a c\nintersec2 l mortra_other_root_13 mortra_circle_12 mortra_on_line_11\nline mortra_on_line_14 a l\nline mortra_on_line_15 b k\nintersec m mortra_on_line_14 mortra_on_line_15\nprove { equal { segment l m } { segment k m } }\n"
+      },
+      "gclc": {
+        "proved": true,
+        "runs": [
+          {
+            "method": "wu",
+            "flag": "-w",
+            "return_code": 0,
+            "proved": true,
+            "external_timeout_reached": false,
+            "external_timeout_seconds": 75,
+            "elapsed_seconds": 39.00183280000056,
+            "proof_sha256": "9c6ac592bb8af6d7a37291e387aca284526269f0fd02408ead084751b718b988",
+            "proof_bytes": 21689,
+            "prover_timeout_seconds": 60,
+            "transcript": "Input file: <TEMP>\\2012_p5.gcl\nOutput file: <TEMP>\\2012_p5.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Wu's method used.\nThe largest polynomial obtained during the proof process contains 16013 terms.\n\n\nTime spent by the prover: 36.500 seconds.\nThe conjecture successfully proved.\nThe prover output is written in the file <TEMP>\\2012_p5_proof.tex.\n\nFile '<TEMP>\\2012_p5.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+          },
+          {
+            "method": "groebner",
+            "flag": "-g",
+            "return_code": 0,
+            "proved": false,
+            "external_timeout_reached": false,
+            "external_timeout_seconds": 75,
+            "elapsed_seconds": 63.15237559999514,
+            "proof_sha256": "1502eec809bd9e2e0b494b639672aaa0a90e5ea20806bde9ee980b5a74d561fb",
+            "proof_bytes": 64872,
+            "prover_timeout_seconds": 60,
+            "transcript": "Input file: <TEMP>\\2012_p5.gcl\nOutput file: <TEMP>\\2012_p5.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Groebner bases method used.\nThe largest polynomial obtained during the proof process contains 27070 terms.\n\n\nTime spent by the prover: 60.062 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2012_p5_proof.tex.\n\nFile '<TEMP>\\2012_p5.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+          }
+        ],
+        "sketch_attempts": [
+          {
+            "sketch_seed": 0,
+            "source_sha256": "bf47ece96b8de4036937a2fe10fa0707dd91dff44fcb0e696b94392087051012",
+            "runs": [
+              {
+                "method": "wu",
+                "flag": "-w",
+                "return_code": 0,
+                "proved": true,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 39.00183280000056,
+                "proof_sha256": "9c6ac592bb8af6d7a37291e387aca284526269f0fd02408ead084751b718b988",
+                "proof_bytes": 21689,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2012_p5.gcl\nOutput file: <TEMP>\\2012_p5.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Wu's method used.\nThe largest polynomial obtained during the proof process contains 16013 terms.\n\n\nTime spent by the prover: 36.500 seconds.\nThe conjecture successfully proved.\nThe prover output is written in the file <TEMP>\\2012_p5_proof.tex.\n\nFile '<TEMP>\\2012_p5.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+              },
+              {
+                "method": "groebner",
+                "flag": "-g",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 63.15237559999514,
+                "proof_sha256": "1502eec809bd9e2e0b494b639672aaa0a90e5ea20806bde9ee980b5a74d561fb",
+                "proof_bytes": 64872,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2012_p5.gcl\nOutput file: <TEMP>\\2012_p5.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Groebner bases method used.\nThe largest polynomial obtained during the proof process contains 27070 terms.\n\n\nTime spent by the prover: 60.062 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2012_p5_proof.tex.\n\nFile '<TEMP>\\2012_p5.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+              }
+            ]
+          }
+        ]
+      },
+      "exact": {
+        "status": "proved",
+        "certificate": {
+          "channel": "cong",
+          "points": [
+            "k",
+            "m",
+            "l",
+            "m"
+          ],
+          "construction_vocabulary": [
+            "foot",
+            "on_circle",
+            "on_line",
+            "r_triangle"
+          ],
+          "normalization_assumptions": [
+            "euclidean_gauge c=(0,0) a=(_leg_0,0) b=(0,_leg_1)",
+            "_leg_0 != 0",
+            "_leg_1 != 0"
+          ],
+          "construction_equations": [
+            "_leg_0**8*_line_3**2 - 2*_leg_0**8*_line_3 + _leg_0**8 + _leg_0**6*_leg_1**2*_line_2**2*_line_3**2 - 2*_leg_0**6*_leg_1**2*_line_2*_line_3**2 + 3*_leg_0**6*_leg_1**2*_line_3**2 - 6*_leg_0**6*_leg_1**2*_line_3 + 3*_leg_0**6*_leg_1**2 + 2*_leg_0**4*_leg_1**4*_line_2**2*_line_3**2 - 4*_leg_0**4*_leg_1**4*_line_2*_line_3**2 + 3*_leg_0**4*_leg_1**4*_line_3**2 - 6*_leg_0**4*_leg_1**4*_line_3 + 3*_leg_0**4*_leg_1**4 + _leg_0**2*_leg_1**6*_line_2**2*_line_3**2 - 2*_leg_0**2*_leg_1**6*_line_2*_line_3**2 + _leg_0**2*_leg_1**6*_line_3**2 - 2*_leg_0**2*_leg_1**6*_line_3 + _leg_0**2*_leg_1**6",
+            "_leg_0**6*_leg_1**2*_line_2**2*_line_4**2 - 2*_leg_0**6*_leg_1**2*_line_2*_line_4**2 + _leg_0**6*_leg_1**2*_line_4**2 - 2*_leg_0**6*_leg_1**2*_line_4 + _leg_0**6*_leg_1**2 + 2*_leg_0**4*_leg_1**4*_line_2**2*_line_4**2 - 4*_leg_0**4*_leg_1**4*_line_2*_line_4**2 + 3*_leg_0**4*_leg_1**4*_line_4**2 - 6*_leg_0**4*_leg_1**4*_line_4 + 3*_leg_0**4*_leg_1**4 + _leg_0**2*_leg_1**6*_line_2**2*_line_4**2 - 2*_leg_0**2*_leg_1**6*_line_2*_line_4**2 + 3*_leg_0**2*_leg_1**6*_line_4**2 - 6*_leg_0**2*_leg_1**6*_line_4 + 3*_leg_0**2*_leg_1**6 + _leg_1**8*_line_4**2 - 2*_leg_1**8*_line_4 + _leg_1**8"
+          ],
+          "nondegeneracy_conditions": [
+            "(_leg_0**2 + _leg_1**2)**3 != 0",
+            "(_leg_0**2 + _leg_1**2)**6*(_line_3*_line_4 - _line_3 - _line_4)**2 != 0",
+            "_leg_0**2 + _leg_1**2 != 0",
+            "_leg_0*_leg_1*(_line_2 - 1)*(_line_3*_line_4 - _line_3 - _line_4) != 0"
+          ],
+          "goal_polynomial": "(_leg_0**2 + _leg_1**2)**5*(_line_3*_line_4 - _line_3 - _line_4)*(_leg_0**4*_line_3**3*_line_4 - _leg_0**4*_line_3**3 - _leg_0**4*_line_3**2*_line_4 + 2*_leg_0**4*_line_3**2 - _leg_0**4*_line_3*_line_4 - _leg_0**4*_line_3 + _leg_0**4*_line_4 + _leg_0**2*_leg_1**2*_line_2**2*_line_3**3*_line_4 - _leg_0**2*_leg_1**2*_line_2**2*_line_3**3 + _leg_0**2*_leg_1**2*_line_2**2*_line_3**2*_line_4 - _leg_0**2*_leg_1**2*_line_2**2*_line_3*_line_4**3 - _leg_0**2*_leg_1**2*_line_2**2*_line_3*_line_4**2 + _leg_0**2*_leg_1**2*_line_2**2*_line_4**3 - 2*_leg_0**2*_leg_1**2*_line_2*_line_3**3*_line_4 + 2*_leg_0**2*_leg_1**2*_line_2*_line_3**3 - 2*_leg_0**2*_leg_1**2*_line_2*_line_3**2*_line_4 + 2*_leg_0**2*_leg_1**2*_line_2*_line_3*_line_4**3 + 2*_leg_0**2*_leg_1**2*_line_2*_line_3*_line_4**2 - 2*_leg_0**2*_leg_1**2*_line_2*_line_4**3 + _leg_0**2*_leg_1**2*_line_3**3*_line_4 - _leg_0**2*_leg_1**2*_line_3**3 - _leg_0**2*_leg_1**2*_line_3**2*_line_4 + 2*_leg_0**2*_leg_1**2*_line_3**2 - _leg_0**2*_leg_1**2*_line_3*_line_4**3 + _leg_0**2*_leg_1**2*_line_3*_line_4**2 - 2*_leg_0**2*_leg_1**2*_line_3 + _leg_0**2*_leg_1**2*_line_4**3 - 2*_leg_0**2*_leg_1**2*_line_4**2 + 2*_leg_0**2*_leg_1**2*_line_4 - _leg_1**4*_line_3*_line_4**3 + _leg_1**4*_line_3*_line_4**2 + _leg_1**4*_line_3*_line_4 - _leg_1**4*_line_3 + _leg_1**4*_line_4**3 - 2*_leg_1**4*_line_4**2 + _leg_1**4*_line_4)",
+          "groebner_basis": [
+            "_leg_0**10*_line_2**2*_line_3**2*_line_4**2 - 2*_leg_0**10*_line_2**2*_line_3*_line_4**2 + _leg_0**10*_line_2**2*_line_4**2 - 2*_leg_0**10*_line_2*_line_3**2*_line_4**2 + 4*_leg_0**10*_line_2*_line_3*_line_4**2 - 2*_leg_0**10*_line_2*_line_4**2 + _leg_0**10*_line_3**2*_line_4**2 - 2*_leg_0**10*_line_3**2*_line_4 + _leg_0**10*_line_3**2 - 2*_leg_0**10*_line_3*_line_4**2 + 4*_leg_0**10*_line_3*_line_4 - 2*_leg_0**10*_line_3 + _leg_0**10*_line_4**2 - 2*_leg_0**10*_line_4 + _leg_0**10 + 2*_leg_0**8*_leg_1**2*_line_2**2*_line_3**2*_line_4**2 - 4*_leg_0**8*_leg_1**2*_line_2**2*_line_3*_line_4**2 + 2*_leg_0**8*_leg_1**2*_line_2**2*_line_4**2 - 4*_leg_0**8*_leg_1**2*_line_2*_line_3**2*_line_4**2 + 8*_leg_0**8*_leg_1**2*_line_2*_line_3*_line_4**2 - 4*_leg_0**8*_leg_1**2*_line_2*_line_4**2 + 3*_leg_0**8*_leg_1**2*_line_3**2*_line_4**2 - 6*_leg_0**8*_leg_1**2*_line_3**2*_line_4 + 3*_leg_0**8*_leg_1**2*_line_3**2 - 6*_leg_0**8*_leg_1**2*_line_3*_line_4**2 + 12*_leg_0**8*_leg_1**2*_line_3*_line_4 - 6*_leg_0**8*_leg_1**2*_line_3 + 3*_leg_0**8*_leg_1**2*_line_4**2 - 6*_leg_0**8*_leg_1**2*_line_4 + 3*_leg_0**8*_leg_1**2 + _leg_0**6*_leg_1**4*_line_2**2*_line_3**2*_line_4**2 - 2*_leg_0**6*_leg_1**4*_line_2**2*_line_3*_line_4**2 + _leg_0**6*_leg_1**4*_line_2**2*_line_4**2 - 2*_leg_0**6*_leg_1**4*_line_2*_line_3**2*_line_4**2 + 4*_leg_0**6*_leg_1**4*_line_2*_line_3*_line_4**2 - 2*_leg_0**6*_leg_1**4*_line_2*_line_4**2 + 3*_leg_0**6*_leg_1**4*_line_3**2*_line_4**2 - 6*_leg_0**6*_leg_1**4*_line_3**2*_line_4 + 3*_leg_0**6*_leg_1**4*_line_3**2 - 6*_leg_0**6*_leg_1**4*_line_3*_line_4**2 + 12*_leg_0**6*_leg_1**4*_line_3*_line_4 - 6*_leg_0**6*_leg_1**4*_line_3 + 3*_leg_0**6*_leg_1**4*_line_4**2 - 6*_leg_0**6*_leg_1**4*_line_4 + 3*_leg_0**6*_leg_1**4 + _leg_0**4*_leg_1**6*_line_3**2*_line_4**2 - 2*_leg_0**4*_leg_1**6*_line_3**2*_line_4 + _leg_0**4*_leg_1**6*_line_3**2 - 2*_leg_0**4*_leg_1**6*_line_3*_line_4**2 + 4*_leg_0**4*_leg_1**6*_line_3*_line_4 - 2*_leg_0**4*_leg_1**6*_line_3 + _leg_0**4*_leg_1**6*_line_4**2 - 2*_leg_0**4*_leg_1**6*_line_4 + _leg_0**4*_leg_1**6",
+            "-_leg_0**8*_line_3**2*_line_4**2 + 2*_leg_0**8*_line_3*_line_4**2 - _leg_0**8*_line_4**2 - 2*_leg_0**6*_leg_1**2*_line_3**2*_line_4**2 - 2*_leg_0**6*_leg_1**2*_line_3**2*_line_4 + _leg_0**6*_leg_1**2*_line_3**2 + 6*_leg_0**6*_leg_1**2*_line_3*_line_4**2 - 3*_leg_0**6*_leg_1**2*_line_4**2 - 6*_leg_0**4*_leg_1**4*_line_3**2*_line_4 + 3*_leg_0**4*_leg_1**4*_line_3**2 + 6*_leg_0**4*_leg_1**4*_line_3*_line_4**2 - 3*_leg_0**4*_leg_1**4*_line_4**2 + 2*_leg_0**2*_leg_1**6*_line_3**2*_line_4**2 - 6*_leg_0**2*_leg_1**6*_line_3**2*_line_4 + 3*_leg_0**2*_leg_1**6*_line_3**2 + 2*_leg_0**2*_leg_1**6*_line_3*_line_4**2 - _leg_0**2*_leg_1**6*_line_4**2 + _leg_1**8*_line_3**2*_line_4**2 - 2*_leg_1**8*_line_3**2*_line_4 + _leg_1**8*_line_3**2",
+            "_leg_0**6*_leg_1**2*_line_2**2*_line_4**2 - 2*_leg_0**6*_leg_1**2*_line_2*_line_4**2 + _leg_0**6*_leg_1**2*_line_4**2 - 2*_leg_0**6*_leg_1**2*_line_4 + _leg_0**6*_leg_1**2 + 2*_leg_0**4*_leg_1**4*_line_2**2*_line_4**2 - 4*_leg_0**4*_leg_1**4*_line_2*_line_4**2 + 3*_leg_0**4*_leg_1**4*_line_4**2 - 6*_leg_0**4*_leg_1**4*_line_4 + 3*_leg_0**4*_leg_1**4 + _leg_0**2*_leg_1**6*_line_2**2*_line_4**2 - 2*_leg_0**2*_leg_1**6*_line_2*_line_4**2 + 3*_leg_0**2*_leg_1**6*_line_4**2 - 6*_leg_0**2*_leg_1**6*_line_4 + 3*_leg_0**2*_leg_1**6 + _leg_1**8*_line_4**2 - 2*_leg_1**8*_line_4 + _leg_1**8",
+            "_leg_0**8*_line_3**2 - 2*_leg_0**8*_line_3 + _leg_0**8 + _leg_0**6*_leg_1**2*_line_2**2*_line_3**2 - 2*_leg_0**6*_leg_1**2*_line_2*_line_3**2 + 3*_leg_0**6*_leg_1**2*_line_3**2 - 6*_leg_0**6*_leg_1**2*_line_3 + 3*_leg_0**6*_leg_1**2 + 2*_leg_0**4*_leg_1**4*_line_2**2*_line_3**2 - 4*_leg_0**4*_leg_1**4*_line_2*_line_3**2 + 3*_leg_0**4*_leg_1**4*_line_3**2 - 6*_leg_0**4*_leg_1**4*_line_3 + 3*_leg_0**4*_leg_1**4 + _leg_0**2*_leg_1**6*_line_2**2*_line_3**2 - 2*_leg_0**2*_leg_1**6*_line_2*_line_3**2 + _leg_0**2*_leg_1**6*_line_3**2 - 2*_leg_0**2*_leg_1**6*_line_3 + _leg_0**2*_leg_1**6"
+          ],
+          "quotient_certificate": [
+            "4*_leg_0**2*_leg_1**2*_line_3**2 - 4*_leg_0**2*_leg_1**2*_line_4**2 - 8*_leg_0**2*_leg_1**2*_line_4 - 12*_leg_0**2*_leg_1**2 + 4*_leg_1**4*_line_3**2 - 4*_leg_1**4*_line_4**2 - 8*_leg_1**4*_line_4 - 12*_leg_1**4",
+            "-_leg_0**6*_line_3**2 + _leg_0**6 + 3*_leg_0**4*_leg_1**2*_line_2**2*_line_3**2 - 2*_leg_0**4*_leg_1**2*_line_2**2*_line_3 - 3*_leg_0**4*_leg_1**2*_line_2**2*_line_4**2 - 8*_leg_0**4*_leg_1**2*_line_2**2*_line_4 - 15*_leg_0**4*_leg_1**2*_line_2**2 - 6*_leg_0**4*_leg_1**2*_line_2*_line_3**2 + 4*_leg_0**4*_leg_1**2*_line_2*_line_3 + 6*_leg_0**4*_leg_1**2*_line_2*_line_4**2 + 16*_leg_0**4*_leg_1**2*_line_2*_line_4 + 30*_leg_0**4*_leg_1**2*_line_2 - 2*_leg_0**4*_leg_1**2*_line_3 - 3*_leg_0**4*_leg_1**2*_line_4**2 - 2*_leg_0**4*_leg_1**2*_line_4 + _leg_0**4*_leg_1**2 + _leg_0**2*_leg_1**4*_line_2**2*_line_3**2 - _leg_0**2*_leg_1**4*_line_2**2*_line_4**2 - 2*_leg_0**2*_leg_1**4*_line_2**2*_line_4 - 3*_leg_0**2*_leg_1**4*_line_2**2 - 2*_leg_0**2*_leg_1**4*_line_2*_line_3**2 + 2*_leg_0**2*_leg_1**4*_line_2*_line_4**2 + 4*_leg_0**2*_leg_1**4*_line_2*_line_4 + 6*_leg_0**2*_leg_1**4*_line_2 + _leg_0**2*_leg_1**4*_line_3**2 - 2*_leg_0**2*_leg_1**4*_line_3 - 4*_leg_0**2*_leg_1**4*_line_4**2 - 2*_leg_0**2*_leg_1**4*_line_4 + _leg_0**2*_leg_1**4 - _leg_1**6*_line_4**2 + _leg_1**6",
+            "4*_leg_0**6*_line_3 - 3*_leg_0**6 + 6*_leg_0**4*_leg_1**2*_line_3*_line_4**2 + 4*_leg_0**4*_leg_1**2*_line_3*_line_4 + 10*_leg_0**4*_leg_1**2*_line_3 - 3*_leg_0**4*_leg_1**2*_line_4**2 - 2*_leg_0**4*_leg_1**2*_line_4 - 6*_leg_0**4*_leg_1**2 + 8*_leg_0**2*_leg_1**4*_line_3*_line_4**2 + 4*_leg_0**2*_leg_1**4*_line_3*_line_4 + 6*_leg_0**2*_leg_1**4*_line_3 - 4*_leg_0**2*_leg_1**4*_line_4**2 - 2*_leg_0**2*_leg_1**4*_line_4 - 3*_leg_0**2*_leg_1**4 + 2*_leg_1**6*_line_3*_line_4**2 - _leg_1**6*_line_4**2",
+            "-2*_leg_0**6*_line_3**2*_line_4 + _leg_0**6*_line_3**2 - 4*_leg_0**4*_leg_1**2*_line_3*_line_4 + 2*_leg_0**4*_leg_1**2*_line_3 - 22*_leg_0**4*_leg_1**2*_line_4 + 15*_leg_0**4*_leg_1**2 + 2*_leg_0**2*_leg_1**4*_line_3**2*_line_4 - _leg_0**2*_leg_1**4*_line_3**2 - 4*_leg_0**2*_leg_1**4*_line_3*_line_4 + 2*_leg_0**2*_leg_1**4*_line_3 - 26*_leg_0**2*_leg_1**4*_line_4 + 18*_leg_0**2*_leg_1**4 - 4*_leg_1**6*_line_4 + 3*_leg_1**6"
+          ],
+          "remainder": "0",
+          "exact_replay": true,
+          "certificate_sha256": "5d233687facbbf50a9e7d9af82772f855919f02f01110c047df30312b6903534"
+        }
+      },
+      "typed_goal_agreement": false,
+      "strict_exchange_proved": false,
+      "elapsed_seconds": 116.16837230000237
+    },
+    "2015_p3": {
+      "status": "unproved",
+      "translation": {
+        "construction_vocabulary": [
+          "circle",
+          "midpoint",
+          "on_circle",
+          "on_dia",
+          "on_line",
+          "orthocenter",
+          "triangle"
+        ],
+        "goal_channel": "coll",
+        "goal_points": [
+          "k",
+          "o1",
+          "o2"
+        ],
+        "source_sha256": "843d1d2736d9ed192cc72d2ae0c95df9589f49cb6eebdb5a5c5240556dbdad32",
+        "source": "point a 106 67\npoint b 17 78\npoint c 34 42\nline mortra_orth_side_0 b c\nline mortra_orth_side_1 a c\nperp mortra_perp_2 a mortra_orth_side_0\nperp mortra_perp_3 b mortra_orth_side_1\nintersec h mortra_perp_2 mortra_perp_3\nline mortra_on_line_4 h a\nline mortra_on_line_5 b c\nintersec f mortra_on_line_4 mortra_on_line_5\nmidpoint m b c\nmed mortra_med_6 a b\nmed mortra_med_7 a c\nintersec o mortra_med_6 mortra_med_7\nmidpoint mortra_dia_mid_8 a h\ncircle mortra_circle_9 mortra_dia_mid_8 a\ncircle mortra_circle_10 o a\nintersec2 q mortra_other_root_11 mortra_circle_9 mortra_circle_10\nmidpoint mortra_dia_mid_12 h q\ncircle mortra_circle_13 mortra_dia_mid_12 h\ncircle mortra_circle_14 o a\nintersec2 k mortra_other_root_15 mortra_circle_13 mortra_circle_14\nmed mortra_med_16 k q\nmed mortra_med_17 k h\nintersec o1 mortra_med_16 mortra_med_17\nmed mortra_med_18 f k\nmed mortra_med_19 f m\nintersec o2 mortra_med_18 mortra_med_19\nprove { collinear k o1 o2 }\n"
+      },
+      "gclc": {
+        "proved": false,
+        "runs": [
+          {
+            "method": "wu",
+            "flag": "-w",
+            "return_code": 0,
+            "proved": false,
+            "external_timeout_reached": false,
+            "external_timeout_seconds": 75,
+            "elapsed_seconds": 0.11116529999708291,
+            "proof_sha256": null,
+            "proof_bytes": 0,
+            "prover_timeout_seconds": 60,
+            "transcript": "Input file: <TEMP>\\2015_p3.gcl\nOutput file: <TEMP>\\2015_p3.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe conjecture given to prove is ill-formed or includes a point that is not constructed by commands supported by the prover. (Line: 31, position: 7)"
+          },
+          {
+            "method": "groebner",
+            "flag": "-g",
+            "return_code": 0,
+            "proved": false,
+            "external_timeout_reached": false,
+            "external_timeout_seconds": 75,
+            "elapsed_seconds": 0.04225939999741968,
+            "proof_sha256": null,
+            "proof_bytes": 0,
+            "prover_timeout_seconds": 60,
+            "transcript": "Input file: <TEMP>\\2015_p3.gcl\nOutput file: <TEMP>\\2015_p3.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe conjecture given to prove is ill-formed or includes a point that is not constructed by commands supported by the prover. (Line: 31, position: 7)"
+          }
+        ],
+        "sketch_attempts": [
+          {
+            "sketch_seed": 0,
+            "source_sha256": "5d7d608d12926396a06e12598015180796526271ce12315296dd302c3334b445",
+            "runs": [
+              {
+                "method": "wu",
+                "flag": "-w",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 0.058225800006766804,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2015_p3.gcl\nOutput file: <TEMP>\\2015_p3.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nRun-time error: Bad definition. Cannot determine line. (Line: 25, position: 21)"
+              },
+              {
+                "method": "groebner",
+                "flag": "-g",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 0.055242200003704056,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2015_p3.gcl\nOutput file: <TEMP>\\2015_p3.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nRun-time error: Bad definition. Cannot determine line. (Line: 25, position: 21)"
+              }
+            ]
+          },
+          {
+            "sketch_seed": 1,
+            "source_sha256": "8da70ff25d2b27fda1caf80904a05086c35db2b750552a1bdff0719f784ac271",
+            "runs": [
+              {
+                "method": "wu",
+                "flag": "-w",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 0.07103279999864753,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2015_p3.gcl\nOutput file: <TEMP>\\2015_p3.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nRun-time error: Bad definition. Cannot determine line. (Line: 25, position: 21)"
+              },
+              {
+                "method": "groebner",
+                "flag": "-g",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 0.045037799995043315,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2015_p3.gcl\nOutput file: <TEMP>\\2015_p3.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nRun-time error: Bad definition. Cannot determine line. (Line: 25, position: 21)"
+              }
+            ]
+          },
+          {
+            "sketch_seed": 2,
+            "source_sha256": "40525de277fe78008a73310eae8cdafbff6e21b1bff960c19ea26a4d995e81ae",
+            "runs": [
+              {
+                "method": "wu",
+                "flag": "-w",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 0.060265899999649264,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2015_p3.gcl\nOutput file: <TEMP>\\2015_p3.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nRun-time error: Bad definition. Cannot determine line. (Line: 25, position: 21)"
+              },
+              {
+                "method": "groebner",
+                "flag": "-g",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 0.046409000002313405,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2015_p3.gcl\nOutput file: <TEMP>\\2015_p3.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nRun-time error: Bad definition. Cannot determine line. (Line: 25, position: 21)"
+              }
+            ]
+          },
+          {
+            "sketch_seed": 3,
+            "source_sha256": "04f762918f38d02e4a716d4f968b70b524fada34d20e01f956828363896d420b",
+            "runs": [
+              {
+                "method": "wu",
+                "flag": "-w",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 0.060410000005504116,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2015_p3.gcl\nOutput file: <TEMP>\\2015_p3.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nRun-time error: Bad definition. Cannot determine line. (Line: 25, position: 21)"
+              },
+              {
+                "method": "groebner",
+                "flag": "-g",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 0.03749279999465216,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2015_p3.gcl\nOutput file: <TEMP>\\2015_p3.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nRun-time error: Bad definition. Cannot determine line. (Line: 25, position: 21)"
+              }
+            ]
+          },
+          {
+            "sketch_seed": 4,
+            "source_sha256": "988e10fd32770723df42974c58c9f9cb3272263e581480f1ab0f341b19999ee3",
+            "runs": [
+              {
+                "method": "wu",
+                "flag": "-w",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 0.07300649999524467,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2015_p3.gcl\nOutput file: <TEMP>\\2015_p3.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nRun-time error: Bad definition. Cannot determine line. (Line: 25, position: 21)"
+              },
+              {
+                "method": "groebner",
+                "flag": "-g",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 0.04672759999812115,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2015_p3.gcl\nOutput file: <TEMP>\\2015_p3.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nRun-time error: Bad definition. Cannot determine line. (Line: 25, position: 21)"
+              }
+            ]
+          },
+          {
+            "sketch_seed": 5,
+            "source_sha256": "b27ee0ee7f50456d3b92c557e959441e408d79746e99318f1626c1d11930aced",
+            "runs": [
+              {
+                "method": "wu",
+                "flag": "-w",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 0.055593500001123175,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2015_p3.gcl\nOutput file: <TEMP>\\2015_p3.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nRun-time error: Bad definition. Cannot determine line. (Line: 25, position: 21)"
+              },
+              {
+                "method": "groebner",
+                "flag": "-g",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 0.05106490000616759,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2015_p3.gcl\nOutput file: <TEMP>\\2015_p3.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nRun-time error: Bad definition. Cannot determine line. (Line: 25, position: 21)"
+              }
+            ]
+          },
+          {
+            "sketch_seed": 6,
+            "source_sha256": "843d1d2736d9ed192cc72d2ae0c95df9589f49cb6eebdb5a5c5240556dbdad32",
+            "runs": [
+              {
+                "method": "wu",
+                "flag": "-w",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 0.11116529999708291,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2015_p3.gcl\nOutput file: <TEMP>\\2015_p3.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe conjecture given to prove is ill-formed or includes a point that is not constructed by commands supported by the prover. (Line: 31, position: 7)"
+              },
+              {
+                "method": "groebner",
+                "flag": "-g",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 0.04225939999741968,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2015_p3.gcl\nOutput file: <TEMP>\\2015_p3.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe conjecture given to prove is ill-formed or includes a point that is not constructed by commands supported by the prover. (Line: 31, position: 7)"
+              }
+            ]
+          }
+        ]
+      },
+      "exact": {
+        "status": "timeout"
+      },
+      "typed_goal_agreement": false,
+      "strict_exchange_proved": false,
+      "elapsed_seconds": 91.59886119999283
+    },
+    "2019_p6": {
+      "status": "unproved",
+      "translation": {
+        "construction_vocabulary": [
+          "circle",
+          "incenter2",
+          "on_circle",
+          "on_line",
+          "on_tline",
+          "triangle"
+        ],
+        "goal_channel": "perp",
+        "goal_points": [
+          "a",
+          "i",
+          "a",
+          "t"
+        ],
+        "source_sha256": "961d9a5d103ea2b49ac0bec7376dd8827ee04e1f9df34b3d4e23e6e94e253204",
+        "source": "point a 86 42\npoint b 57 10\npoint c 52 68\nbis mortra_bis_0 b a c\nbis mortra_bis_1 c b a\nintersec i mortra_bis_0 mortra_bis_1\nline mortra_incenter_side_2 b c\nfoot d i mortra_incenter_side_2\nline mortra_incenter_side_3 c a\nfoot e i mortra_incenter_side_3\nline mortra_incenter_side_4 a b\nfoot f i mortra_incenter_side_4\nline mortra_tline_ref_5 e f\nperp mortra_perp_6 d mortra_tline_ref_5\ncircle mortra_circle_7 i d\nintersec2 r mortra_other_root_8 mortra_circle_7 mortra_perp_6\nline mortra_on_line_9 r a\ncircle mortra_circle_10 i d\nintersec2 p mortra_other_root_11 mortra_circle_10 mortra_on_line_9\nmed mortra_med_12 p c\nmed mortra_med_13 p e\nintersec o1 mortra_med_12 mortra_med_13\nmed mortra_med_14 p b\nmed mortra_med_15 p f\nintersec o2 mortra_med_14 mortra_med_15\ncircle mortra_circle_16 o1 p\ncircle mortra_circle_17 o2 p\nintersec2 q mortra_other_root_18 mortra_circle_16 mortra_circle_17\nline mortra_on_line_19 p q\nline mortra_on_line_20 i d\nintersec t mortra_on_line_19 mortra_on_line_20\nprove { perpendicular a i a t }\n"
+      },
+      "gclc": {
+        "proved": false,
+        "runs": [
+          {
+            "method": "wu",
+            "flag": "-w",
+            "return_code": 0,
+            "proved": false,
+            "external_timeout_reached": false,
+            "external_timeout_seconds": 75,
+            "elapsed_seconds": 0.06225519999861717,
+            "proof_sha256": null,
+            "proof_bytes": 0,
+            "prover_timeout_seconds": 60,
+            "transcript": "Input file: <TEMP>\\2019_p6.gcl\nOutput file: <TEMP>\\2019_p6.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe conjecture given to prove is ill-formed or includes a point that is not constructed by commands supported by the prover. (Line: 33, position: 7)"
+          },
+          {
+            "method": "groebner",
+            "flag": "-g",
+            "return_code": 0,
+            "proved": false,
+            "external_timeout_reached": false,
+            "external_timeout_seconds": 75,
+            "elapsed_seconds": 0.04470110000693239,
+            "proof_sha256": null,
+            "proof_bytes": 0,
+            "prover_timeout_seconds": 60,
+            "transcript": "Input file: <TEMP>\\2019_p6.gcl\nOutput file: <TEMP>\\2019_p6.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe conjecture given to prove is ill-formed or includes a point that is not constructed by commands supported by the prover. (Line: 33, position: 7)"
+          }
+        ],
+        "sketch_attempts": [
+          {
+            "sketch_seed": 0,
+            "source_sha256": "be31951c02f475499fcc3a41efbe0ceffe2db44e35550e48687e2c68bbf66121",
+            "runs": [
+              {
+                "method": "wu",
+                "flag": "-w",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 0.3375522999995155,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2019_p6.gcl\nOutput file: <TEMP>\\2019_p6.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nRun-time error: Bad definition. Can not determine intersection. (Line: 32, position: 30)"
+              },
+              {
+                "method": "groebner",
+                "flag": "-g",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 0.03875930000504013,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2019_p6.gcl\nOutput file: <TEMP>\\2019_p6.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nRun-time error: Bad definition. Can not determine intersection. (Line: 32, position: 30)"
+              }
+            ]
+          },
+          {
+            "sketch_seed": 1,
+            "source_sha256": "af884bd3a35d7316e6ee92586974bef7c63cad3d3eeaa2b6593a7b767f316f61",
+            "runs": [
+              {
+                "method": "wu",
+                "flag": "-w",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 0.06849879999936093,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2019_p6.gcl\nOutput file: <TEMP>\\2019_p6.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nRun-time error: Bad definition. Can not determine intersection. (Line: 32, position: 30)"
+              },
+              {
+                "method": "groebner",
+                "flag": "-g",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 0.05055099999299273,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2019_p6.gcl\nOutput file: <TEMP>\\2019_p6.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nRun-time error: Bad definition. Can not determine intersection. (Line: 32, position: 30)"
+              }
+            ]
+          },
+          {
+            "sketch_seed": 2,
+            "source_sha256": "993ef753060d8627488f9b3aed21d919c5b32705eda4c5ffb95c791909511cc0",
+            "runs": [
+              {
+                "method": "wu",
+                "flag": "-w",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 0.05807020000065677,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2019_p6.gcl\nOutput file: <TEMP>\\2019_p6.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nRun-time error: Bad definition. Cannot determine line. (Line: 30, position: 26)"
+              },
+              {
+                "method": "groebner",
+                "flag": "-g",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 0.04271889998926781,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2019_p6.gcl\nOutput file: <TEMP>\\2019_p6.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nRun-time error: Bad definition. Cannot determine line. (Line: 30, position: 26)"
+              }
+            ]
+          },
+          {
+            "sketch_seed": 3,
+            "source_sha256": "961d9a5d103ea2b49ac0bec7376dd8827ee04e1f9df34b3d4e23e6e94e253204",
+            "runs": [
+              {
+                "method": "wu",
+                "flag": "-w",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 0.06225519999861717,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2019_p6.gcl\nOutput file: <TEMP>\\2019_p6.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe conjecture given to prove is ill-formed or includes a point that is not constructed by commands supported by the prover. (Line: 33, position: 7)"
+              },
+              {
+                "method": "groebner",
+                "flag": "-g",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 75,
+                "elapsed_seconds": 0.04470110000693239,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 60,
+                "transcript": "Input file: <TEMP>\\2019_p6.gcl\nOutput file: <TEMP>\\2019_p6.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe conjecture given to prove is ill-formed or includes a point that is not constructed by commands supported by the prover. (Line: 33, position: 7)"
+              }
+            ]
+          }
+        ]
+      },
+      "exact": {
+        "status": "timeout"
+      },
+      "typed_goal_agreement": false,
+      "strict_exchange_proved": false,
+      "elapsed_seconds": 91.83131579999463
+    }
+  },
+  "claim_scope": "This is real certificate exchange between external symbolic engines, not yet a reproduction of end-to-end learned Sheaf-ADMM. The strict score counts only goals proved by GCLC and replayed independently."
+}

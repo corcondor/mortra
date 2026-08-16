@@ -1,0 +1,50 @@
+{
+  "experiment": "real-symbolic-coordination-equal-dispatch-control",
+  "generated_at": "2026-08-16T00:42:53.468105+00:00",
+  "uses_llm": false,
+  "uses_problem_specific_solver_logic": false,
+  "input": "data\\real-symbolic-coordination-imo-ag-30-consolidated-2026-08-16.json",
+  "protocol": {
+    "task_count": 13,
+    "typed_eligible_task_count": 6,
+    "strict_success_names": [
+      "2012_p5"
+    ],
+    "agents_per_strict_bundle": 3,
+    "agent_call_budget": 18,
+    "task_bundles": 6,
+    "random_order_trials": 10000,
+    "scheduler_cannot_observe_solver_outcomes": true
+  },
+  "equal_budget": {
+    "global_blackboard": {
+      "trials": 10000,
+      "mean_additional_strict_proofs": 0.4546,
+      "success_probability": 0.4546,
+      "p025": 0,
+      "median": 0,
+      "p975": 1
+    },
+    "typed_local_sheaf": {
+      "trials": 10000,
+      "mean_additional_strict_proofs": 1.0,
+      "success_probability": 1.0,
+      "p025": 1,
+      "median": 1,
+      "p975": 1
+    },
+    "baseline_solved": 17,
+    "global_expected_score": 0.58182,
+    "typed_local_expected_score": 0.6
+  },
+  "full_coverage": {
+    "global_blackboard_agent_calls": 39,
+    "typed_local_sheaf_agent_calls": 18,
+    "agent_call_reduction": 21,
+    "agent_call_reduction_rate": 0.5384615384615384,
+    "same_strict_proofs": [
+      "2012_p5"
+    ]
+  },
+  "claim_scope": "This control tests typed local routing with measured real solver outcomes. It does not claim learned decentralized consensus or end-to-end gradients."
+}

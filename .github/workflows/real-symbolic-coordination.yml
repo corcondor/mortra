@@ -1,0 +1,102 @@
+name: Reproduce real symbolic coordination
+
+on:
+  push:
+    paths:
+      - "worker/backend/jgex_gclc_translator.py"
+      - "worker/backend/symbolic_sheaf_*.py"
+      - "worker/backend/test_jgex_gclc_translator.py"
+      - "worker/backend/test_symbolic_sheaf_*.py"
+      - "scripts/experiment_real_geometry_coordination.py"
+      - "scripts/finalize_real_geometry_coordination_report.py"
+      - "scripts/compare_real_coordination_modes.py"
+      - "tests/test_real_symbolic_coordination.py"
+      - "data/real-symbolic-coordination-*.json"
+      - "docs/research/MORTRA-REAL-SYMBOLIC-COORDINATION-EXPERIMENT-JA-2026-08-16.md"
+      - ".github/workflows/real-symbolic-coordination.yml"
+  pull_request:
+    paths:
+      - "worker/backend/jgex_gclc_translator.py"
+      - "worker/backend/symbolic_sheaf_*.py"
+      - "worker/backend/test_jgex_gclc_translator.py"
+      - "worker/backend/test_symbolic_sheaf_*.py"
+      - "tests/test_real_symbolic_coordination.py"
+      - "data/real-symbolic-coordination-*.json"
+      - ".github/workflows/real-symbolic-coordination.yml"
+  workflow_dispatch:
+    inputs:
+      run_external_reproduction:
+        description: Build GCLC and replay the real 2012_p5 exchange
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  contract-and-artifact-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pinned Newclid and exact dependencies
+        shell: bash
+        run: |
+          git clone https://github.com/Newclid/Newclid.git external/Newclid
+          git -C external/Newclid checkout ac6550732a950564cf7614d605b5bf1eadd29701
+          python -m pip install -r worker/requirements.txt
+          python -m pip install -e external/Newclid/newclid
+      - name: Verify typed translation, sheaf contracts, and artifacts
+        run: >-
+          python -B -m unittest
+          worker.backend.test_jgex_gclc_translator
+          worker.backend.test_symbolic_sheaf_coordination
+          worker.backend.test_symbolic_sheaf_learning
+          tests.test_real_symbolic_coordination
+
+  external-reproduction:
+    if: github.event_name == 'workflow_dispatch' && inputs.run_external_reproduction
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pinned Newclid
+        shell: pwsh
+        run: |
+          git clone https://github.com/Newclid/Newclid.git external/Newclid
+          git -C external/Newclid checkout ac6550732a950564cf7614d605b5bf1eadd29701
+          python -m pip install -r worker/requirements.txt
+          python -m pip install -e external/Newclid/newclid
+      - name: Build pinned GCLC
+        shell: pwsh
+        run: |
+          git clone https://github.com/janicicpredrag/gclc.git external/gclc
+          git -C external/gclc checkout 8f73a5d7e6c373f6210c4b293231dcc0dcc07a28
+          cmake -S external/gclc -B external/gclc/build -DCMAKE_CXX_STANDARD=20 -DCMAKE_CXX_FLAGS=/DNOMINMAX
+          cmake --build external/gclc/build --config Release
+      - name: Replay the cross-engine proof
+        shell: pwsh
+        run: |
+          python -B scripts/experiment_real_geometry_coordination.py `
+            --dataset external/Newclid/newclid/problems_datasets/imo.txt `
+            --baseline data/yuclid-imo-ag-30-native-proofs-2026-08-15.json `
+            --gclc-root external/gclc `
+            --problems 2012_p5 `
+            --gclc-timeout-seconds 90 `
+            --exact-timeout-seconds 120 `
+            --output external-reproduction.json
+          $result = Get-Content external-reproduction.json -Raw | ConvertFrom-Json
+          if ($result.summary.strict_exchange_proved -ne 1) {
+            throw "Strict cross-engine replay did not reproduce"
+          }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: real-symbolic-coordination-reproduction
+          path: external-reproduction.json

@@ -1,0 +1,229 @@
+{
+  "experiment": "symbolic-sheaf-coordination-pilot-v1",
+  "generated_at": "2026-08-15T04:12:44.202056+00:00",
+  "uses_llm": false,
+  "external_benchmark": false,
+  "claim_scope": "機構検証のみ。GCLC/Newclid/TongGeometry/Eucleanの実エンジン統合やIMO-AG-30の正答率改善を示す結果ではない。",
+  "tasks": [
+    {
+      "task": "euclidean-relations",
+      "goal": "para(A,B,G,H)",
+      "independent_solved": false,
+      "independent_agent_results": {
+        "relation-transport": false,
+        "incidence-closure": false
+      },
+      "coordinated_solved": true,
+      "coordinated_replayed": true,
+      "native_certificates": 1,
+      "native_certificates_preserved": 1,
+      "capability_preserved": true,
+      "coordination_rounds": 3,
+      "proof_agents": [
+        "incidence-closure",
+        "relation-transport"
+      ],
+      "proof_rules": [
+        "perpendicular-transport-over-parallel",
+        "common-perpendicular-implies-parallel"
+      ],
+      "dropout_solved": {
+        "relation-transport": false,
+        "incidence-closure": false
+      },
+      "fault_tolerant_solved": true,
+      "invalid_certificates_rejected": 2,
+      "invalid_only_solved": false,
+      "naive_blackboard_false_positive": true,
+      "generated_problem": {
+        "formal_statement": "para(C,D,E,F), perp(A,B,C,D), perp(E,F,G,H) |- para(A,B,G,H)",
+        "participating_agents": [
+          "incidence-closure",
+          "relation-transport"
+        ],
+        "proof_depth": 2,
+        "proof_steps": 2
+      },
+      "trace": [
+        {
+          "index": 1,
+          "proposed": 1,
+          "accepted": 1,
+          "rejected": 0,
+          "primal_residual": 1.0,
+          "dual_residual": 1.0
+        },
+        {
+          "index": 2,
+          "proposed": 1,
+          "accepted": 1,
+          "rejected": 0,
+          "primal_residual": 0.0,
+          "dual_residual": 1.0
+        },
+        {
+          "index": 3,
+          "proposed": 0,
+          "accepted": 0,
+          "rejected": 0,
+          "primal_residual": 0.0,
+          "dual_residual": 0.0
+        }
+      ]
+    },
+    {
+      "task": "integer-relations",
+      "goal": "divides(6,72)",
+      "independent_solved": false,
+      "independent_agent_results": {
+        "gcd-projection": false,
+        "additive-divisibility": false
+      },
+      "coordinated_solved": true,
+      "coordinated_replayed": true,
+      "native_certificates": 2,
+      "native_certificates_preserved": 2,
+      "capability_preserved": true,
+      "coordination_rounds": 3,
+      "proof_agents": [
+        "additive-divisibility",
+        "gcd-projection"
+      ],
+      "proof_rules": [
+        "gcd-divides-left",
+        "gcd-divides-right",
+        "common-divisor-closed-under-sum"
+      ],
+      "dropout_solved": {
+        "gcd-projection": false,
+        "additive-divisibility": false
+      },
+      "fault_tolerant_solved": true,
+      "invalid_certificates_rejected": 2,
+      "invalid_only_solved": false,
+      "naive_blackboard_false_positive": true,
+      "generated_problem": {
+        "formal_statement": "gcd(30,42,6), sum(30,42,72) |- divides(6,72)",
+        "participating_agents": [
+          "additive-divisibility",
+          "gcd-projection"
+        ],
+        "proof_depth": 2,
+        "proof_steps": 3
+      },
+      "trace": [
+        {
+          "index": 1,
+          "proposed": 2,
+          "accepted": 2,
+          "rejected": 0,
+          "primal_residual": 1.0,
+          "dual_residual": 2.0
+        },
+        {
+          "index": 2,
+          "proposed": 1,
+          "accepted": 1,
+          "rejected": 0,
+          "primal_residual": 0.0,
+          "dual_residual": 1.0
+        },
+        {
+          "index": 3,
+          "proposed": 0,
+          "accepted": 0,
+          "rejected": 0,
+          "primal_residual": 0.0,
+          "dual_residual": 0.0
+        }
+      ]
+    },
+    {
+      "task": "set-relations",
+      "goal": "disjoint(A,D)",
+      "independent_solved": false,
+      "independent_agent_results": {
+        "order-closure": false,
+        "disjointness-transport": false
+      },
+      "coordinated_solved": true,
+      "coordinated_replayed": true,
+      "native_certificates": 1,
+      "native_certificates_preserved": 1,
+      "capability_preserved": true,
+      "coordination_rounds": 3,
+      "proof_agents": [
+        "disjointness-transport",
+        "order-closure"
+      ],
+      "proof_rules": [
+        "subset-transitivity",
+        "disjointness-restriction"
+      ],
+      "dropout_solved": {
+        "order-closure": false,
+        "disjointness-transport": false
+      },
+      "fault_tolerant_solved": true,
+      "invalid_certificates_rejected": 2,
+      "invalid_only_solved": false,
+      "naive_blackboard_false_positive": true,
+      "generated_problem": {
+        "formal_statement": "disjoint(C,D), subset(A,B), subset(B,C) |- disjoint(A,D)",
+        "participating_agents": [
+          "disjointness-transport",
+          "order-closure"
+        ],
+        "proof_depth": 2,
+        "proof_steps": 2
+      },
+      "trace": [
+        {
+          "index": 1,
+          "proposed": 1,
+          "accepted": 1,
+          "rejected": 0,
+          "primal_residual": 1.0,
+          "dual_residual": 1.0
+        },
+        {
+          "index": 2,
+          "proposed": 1,
+          "accepted": 1,
+          "rejected": 0,
+          "primal_residual": 0.0,
+          "dual_residual": 1.0
+        },
+        {
+          "index": 3,
+          "proposed": 0,
+          "accepted": 0,
+          "rejected": 0,
+          "primal_residual": 0.0,
+          "dual_residual": 0.0
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "task_count": 3,
+    "independent_solved": 0,
+    "coordinated_solved": 3,
+    "replayed": 3,
+    "capability_preserved": 3,
+    "generated_formal_problems": 3,
+    "fault_controls_rejected": 3,
+    "naive_blackboard_false_positives": 3
+  },
+  "admm_budget_consensus": {
+    "consensus": {
+      "construct": 0.33333333333333337,
+      "eliminate": 0.33333333333333337,
+      "formalize": 0.33333333333333337
+    },
+    "iterations": 30,
+    "primal_residual": 9.219622954748841e-10,
+    "dual_residual": 1.6653345369377346e-16,
+    "truth_decision": false
+  }
+}
