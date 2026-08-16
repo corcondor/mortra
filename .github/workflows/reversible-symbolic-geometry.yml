@@ -10,12 +10,20 @@ on:
       - "data/jgex-exact-*.json"
       - "data/polynomial-stalk-*.json"
       - "data/local-polynomial-stalk-*.json"
+      - "data/chordal-buchberger-*.json"
+      - "data/hybrid-polynomial-stalk-*.json"
+      - "data/singular-lift-*.json"
+      - "data/chordal-lift-reproduction-manifest-*.json"
       - "data/mortra-reversible-synthesis-reproduction-manifest-*.json"
       - "data/yuclid-imo-ag-30-all-ar-*.json"
       - "docs/research/**"
       - "scripts/experiment_gclc_newclid_certificate_bridge.py"
       - "scripts/experiment_jgex_exact_*.py"
       - "scripts/experiment_local_polynomial_stalk_fixed4.py"
+      - "scripts/experiment_chordal_buchberger_fixed4.py"
+      - "scripts/experiment_hybrid_polynomial_stalk_fixed4.py"
+      - "scripts/experiment_singular_lift_fixed4.py"
+      - "scripts/verify_chordal_lift_artifacts.py"
       - "scripts/merge_jgex_exact_portfolio.py"
       - "scripts/reproduce_gclc_methods.py"
       - "scripts/reproduce_yuclid_imo_ag_30.py"
@@ -29,6 +37,10 @@ on:
       - "worker/backend/test_geometry_local_lemma_certificate.py"
       - "worker/backend/local_polynomial_elimination.py"
       - "worker/backend/polynomial_stalk_adapter.py"
+      - "worker/backend/certified_buchberger.py"
+      - "worker/backend/chordal_buchberger_elimination.py"
+      - "worker/backend/chordal_polynomial_stalk.py"
+      - "worker/backend/singular_lift_backend.py"
   pull_request:
     paths:
       - ".github/workflows/reversible-symbolic-geometry.yml"
@@ -36,12 +48,20 @@ on:
       - "data/jgex-exact-*.json"
       - "data/polynomial-stalk-*.json"
       - "data/local-polynomial-stalk-*.json"
+      - "data/chordal-buchberger-*.json"
+      - "data/hybrid-polynomial-stalk-*.json"
+      - "data/singular-lift-*.json"
+      - "data/chordal-lift-reproduction-manifest-*.json"
       - "data/mortra-reversible-synthesis-reproduction-manifest-*.json"
       - "data/yuclid-imo-ag-30-all-ar-*.json"
       - "docs/research/**"
       - "scripts/experiment_gclc_newclid_certificate_bridge.py"
       - "scripts/experiment_jgex_exact_*.py"
       - "scripts/experiment_local_polynomial_stalk_fixed4.py"
+      - "scripts/experiment_chordal_buchberger_fixed4.py"
+      - "scripts/experiment_hybrid_polynomial_stalk_fixed4.py"
+      - "scripts/experiment_singular_lift_fixed4.py"
+      - "scripts/verify_chordal_lift_artifacts.py"
       - "scripts/merge_jgex_exact_portfolio.py"
       - "scripts/reproduce_gclc_methods.py"
       - "scripts/reproduce_yuclid_imo_ag_30.py"
@@ -55,6 +75,10 @@ on:
       - "worker/backend/test_geometry_local_lemma_certificate.py"
       - "worker/backend/local_polynomial_elimination.py"
       - "worker/backend/polynomial_stalk_adapter.py"
+      - "worker/backend/certified_buchberger.py"
+      - "worker/backend/chordal_buchberger_elimination.py"
+      - "worker/backend/chordal_polynomial_stalk.py"
+      - "worker/backend/singular_lift_backend.py"
   workflow_dispatch:
 
 permissions:
@@ -86,6 +110,10 @@ jobs:
             scripts/experiment_jgex_exact_portfolio.py \
             scripts/experiment_jgex_exact_unsolved_set.py \
             scripts/experiment_local_polynomial_stalk_fixed4.py \
+            scripts/experiment_chordal_buchberger_fixed4.py \
+            scripts/experiment_hybrid_polynomial_stalk_fixed4.py \
+            scripts/experiment_singular_lift_fixed4.py \
+            scripts/verify_chordal_lift_artifacts.py \
             scripts/merge_jgex_exact_portfolio.py \
             scripts/reproduce_gclc_methods.py \
             scripts/reproduce_yuclid_imo_ag_30.py \
@@ -99,7 +127,11 @@ jobs:
             worker/backend/jgex_local_relation_stalk.py \
             worker/backend/jgex_legacy_normalizer.py \
             worker/backend/local_polynomial_elimination.py \
-            worker/backend/polynomial_stalk_adapter.py
+            worker/backend/polynomial_stalk_adapter.py \
+            worker/backend/certified_buchberger.py \
+            worker/backend/chordal_buchberger_elimination.py \
+            worker/backend/chordal_polynomial_stalk.py \
+            worker/backend/singular_lift_backend.py
       - name: Run symbolic bridge tests
         run: |
           python -m pytest \
@@ -111,6 +143,10 @@ jobs:
             worker/backend/test_jgex_local_relation_stalk.py \
             worker/backend/test_local_polynomial_elimination.py \
             worker/backend/test_polynomial_stalk_adapter.py \
+            worker/backend/test_certified_buchberger.py \
+            worker/backend/test_chordal_buchberger_elimination.py \
+            worker/backend/test_chordal_polynomial_stalk.py \
+            worker/backend/test_singular_lift_backend.py \
             -q
       - name: Verify published artifacts and acceptance claims
         run: |
@@ -118,3 +154,5 @@ jobs:
             --manifest data/mortra-reversible-synthesis-reproduction-manifest-2026-08-16.json
           python scripts/verify_local_polynomial_stalk_artifacts.py \
             --manifest data/local-polynomial-stalk-reproduction-manifest-2026-08-16.json
+          python scripts/verify_chordal_lift_artifacts.py \
+            --manifest data/chordal-lift-reproduction-manifest-2026-08-16.json

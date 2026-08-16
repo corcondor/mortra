@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import hashlib
 from dataclasses import dataclass
+from typing import Callable
 
 import sympy as sp
 from newclid.jgex.constructions import ALL_JGEX_CONSTRUCTIONS
@@ -22,6 +23,10 @@ from worker.backend.jgex_gclc_translator import (
 )
 from worker.backend.geometry_local_lemma_certificate import (
     external_homothety_tangent_certificate,
+)
+from worker.backend.chordal_buchberger_elimination import (
+    ChordalBuchbergerEliminationResult,
+    eliminate_with_certified_chordal_buchberger,
 )
 from worker.backend.local_polynomial_elimination import (
     LocalEliminationResult,
@@ -132,6 +137,19 @@ class JGEXLocalEliminationAnalysis:
     local_elimination: LocalEliminationResult
     structural_lemma_certificates: tuple[StructuralLocalLemmaCertificate, ...]
     all_local_certificates_replayed: bool
+
+
+@dataclass(frozen=True)
+class JGEXChordalBuchbergerAnalysis:
+    channel: str
+    points: tuple[str, ...]
+    goal_polynomial: str
+    initial_variable_count: int
+    initial_equation_count: int
+    protected_variables: tuple[str, ...]
+    chordal_elimination: ChordalBuchbergerEliminationResult
+    structural_lemma_certificates: tuple[StructuralLocalLemmaCertificate, ...]
+    all_certificates_replayed: bool
 
 
 Point = tuple[sp.Expr, sp.Expr]
@@ -1512,6 +1530,71 @@ def inspect_jgex_local_elimination(
         all_local_certificates_replayed=(
             elimination.exact_replay and structural_replayed
         ),
+    )
+
+
+def inspect_jgex_chordal_buchberger(
+    text: str,
+    *,
+    enable_structural_lemmas: bool = True,
+    max_steps: int | None = None,
+    max_separator_variables: int | None = 12,
+    max_clique_polynomials: int = 32,
+    max_pairs_per_clique: int = 256,
+    max_basis_size_per_clique: int = 64,
+    max_polynomial_terms: int = 2_000,
+    max_witness_terms: int = 20_000,
+    terminal_max_pairs: int = 1_000,
+    terminal_max_basis_size: int = 128,
+    progress_callback: Callable[[dict[str, object]], None] | None = None,
+) -> JGEXChordalBuchbergerAnalysis:
+    """JGEXを局所lex基底と証明書付きseparator輸送へ落とす。"""
+
+    (
+        elaborator,
+        _,
+        channel,
+        points,
+        goal_polynomial,
+        equations,
+        variables,
+    ) = _prepare_exact_system(
+        text,
+        enable_affine_local_lemmas=False,
+        enable_structural_lemmas=enable_structural_lemmas,
+        representation="relational",
+    )
+    protected = frozenset(goal_polynomial.free_symbols)
+    elimination = eliminate_with_certified_chordal_buchberger(
+        equations,
+        variables,
+        protected_variables=protected,
+        goal_polynomial=goal_polynomial,
+        max_steps=max_steps,
+        max_separator_variables=max_separator_variables,
+        max_clique_polynomials=max_clique_polynomials,
+        max_pairs_per_clique=max_pairs_per_clique,
+        max_basis_size_per_clique=max_basis_size_per_clique,
+        max_polynomial_terms=max_polynomial_terms,
+        max_witness_terms=max_witness_terms,
+        terminal_max_pairs=terminal_max_pairs,
+        terminal_max_basis_size=terminal_max_basis_size,
+        progress_callback=progress_callback,
+    )
+    structural_replayed = all(
+        item.replayed and item.composition_replayed
+        for item in elaborator.structural_lemma_certificates
+    )
+    return JGEXChordalBuchbergerAnalysis(
+        channel=channel,
+        points=points,
+        goal_polynomial=_safe(goal_polynomial),
+        initial_variable_count=len(variables),
+        initial_equation_count=len(equations),
+        protected_variables=tuple(sorted(_safe(item) for item in protected)),
+        chordal_elimination=elimination,
+        structural_lemma_certificates=tuple(elaborator.structural_lemma_certificates),
+        all_certificates_replayed=elimination.exact_replay and structural_replayed,
     )
 
 

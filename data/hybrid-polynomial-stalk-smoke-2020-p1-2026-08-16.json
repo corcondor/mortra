@@ -1,0 +1,47 @@
+{
+  "experiment": "hybrid-resultant-chordal-buchberger-fixed4",
+  "generated_at": "2026-08-16T11:11:18.120839+00:00",
+  "uses_llm": false,
+  "uses_problem_specific_solver_logic": false,
+  "dataset_auxiliary_clauses_hidden": true,
+  "fixed_problem_names": [
+    "2020_p1"
+  ],
+  "hypothesis": "Cheap exact local projections reduce the factor graph enough for a certificate-DAG chordal Groebner stage to close original goals.",
+  "budgets": {
+    "resultant_max_terms": 32,
+    "max_separator_variables": 12,
+    "max_clique_polynomials": 32,
+    "max_pairs_per_clique": 16,
+    "max_basis_size_per_clique": 48,
+    "max_polynomial_terms": 1000,
+    "max_certificate_terms": 8000,
+    "terminal_max_pairs": 128,
+    "terminal_max_basis_size": 96,
+    "timeout_seconds": 300.0
+  },
+  "summary": {
+    "completed": 0,
+    "timeouts": 1,
+    "execution_errors": 0,
+    "first_stage_replayed": 0,
+    "chordal_goal_certificates": 0,
+    "end_to_end_goals_replayed": 0,
+    "rejected_certificates": 0,
+    "elapsed_seconds": 0
+  },
+  "results": {
+    "2020_p1": {
+      "status": "timeout",
+      "elapsed_seconds": 300.03102690001833,
+      "last_progress": {
+        "stage": "clique_started",
+        "variable": "_free_y_21",
+        "separator_width": 7,
+        "input_polynomial_count": 15,
+        "eliminated_variable_count": 3
+      }
+    }
+  },
+  "claim_scope": "The stages are composed only when every intermediate polynomial is replayed. Incomplete nonzero remainders remain abstentions."
+}
