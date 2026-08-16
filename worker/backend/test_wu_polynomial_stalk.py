@@ -8,7 +8,9 @@ from worker.backend.wu_polynomial_stalk import (
     _micro_identities_from_step,
     _replay_micro_identity,
     _replay_identity_in_sparse_ring,
+    condition_factor_keys,
     coordinate_wu_polynomial_stalk,
+    regularity_factor_expressions,
 )
 from worker.backend.wu_polynomial_stalk import classify_regularity_obligations
 
@@ -210,3 +212,11 @@ def test_oversized_conditional_micro_chain_uses_input_regularity() -> None:
     assert report.discharged_regularity_count == 1
     assert report.open_regularity_count == 0
     assert report.input_conditioned_goal_solved
+
+
+def test_regularity_factors_remove_constant_powers_and_duplicates() -> None:
+    factors = regularity_factor_expressions(
+        ("Ne(4*a**4*b**2, 0)", "Ne(-2*a**3, 0)")
+    )
+    assert tuple(map(str, factors)) == ("a", "b")
+    assert condition_factor_keys(("-8*a**5 != 0",)) == frozenset({"a"})

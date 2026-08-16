@@ -8,9 +8,20 @@ from worker.backend.certified_wu_characteristic import (
     certified_pseudo_division,
     certified_sparse_wu_characteristic_proof,
     certified_wu_characteristic_proof,
+    structural_goal_cone,
     structural_min_fill_elimination_order,
     structural_variable_matching,
 )
+
+
+def test_structural_goal_cone_keeps_only_backward_construction_dependencies() -> None:
+    a, b, x, y, z = sp.symbols("a b x y z")
+    equations = (x - a, y - x, z - b)
+    cone = structural_goal_cone(equations, (a, b, x, y, z), y - a)
+
+    assert cone.equation_indices == (0, 1)
+    assert cone.dropped_equation_indices == (2,)
+    assert set(cone.variable_names) == {"a", "x", "y"}
 
 
 def test_pseudo_division_replays_the_exact_identity() -> None:
@@ -186,3 +197,27 @@ def test_redundant_dependent_variable_may_vanish_without_aborting_chain() -> Non
     assert result.triangularization_complete
     assert result.stopped_reason is None
     assert result.conditional_goal_proved
+
+
+def test_sparse_wu_can_process_overdetermined_zero_decomposition_branch() -> None:
+    a, x = sp.symbols("a x")
+    equations = (a * x, (1 - a) * x, a)
+
+    guarded = certified_sparse_wu_characteristic_proof(
+        equations,
+        (a, x),
+        x,
+        timeout_seconds=10,
+    )
+    branch = certified_sparse_wu_characteristic_proof(
+        equations,
+        (a, x),
+        x,
+        timeout_seconds=10,
+        require_complete_matching=False,
+    )
+
+    assert not guarded.matching.complete
+    assert guarded.stopped_reason == "structural_matching_incomplete"
+    assert branch.conditional_goal_proved
+    assert branch.final_remainder == "0"

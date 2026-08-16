@@ -451,21 +451,49 @@ def _condition_expression(condition: str) -> sp.Expr:
     return sp.expand(numerator)
 
 
-def _factor_keys(expression: sp.Expr) -> frozenset[str]:
-    """Canonical irreducible factors over QQ, modulo nonzero constants/powers."""
+def canonical_irreducible_factors(expression: sp.Expr) -> tuple[sp.Expr, ...]:
+    """Return monic QQ-irreducible factors, modulo constants and powers."""
 
     expression = sp.expand(expression)
     if expression == 0:
-        return frozenset()
+        return ()
     symbols = tuple(sorted(expression.free_symbols, key=str))
     if not symbols:
-        return frozenset()
+        return ()
     _, factors = sp.factor_list(expression, *symbols)
-    keys: set[str] = set()
+    canonical: dict[str, sp.Expr] = {}
     for factor, _multiplicity in factors:
         polynomial = sp.Poly(factor, *symbols, domain=sp.QQ).monic()
-        keys.add(sp.sstr(polynomial.as_expr()))
-    return frozenset(keys)
+        item = sp.expand(polynomial.as_expr())
+        canonical.setdefault(sp.sstr(item), item)
+    return tuple(canonical[key] for key in sorted(canonical))
+
+
+def regularity_factor_expressions(obligations: tuple[str, ...]) -> tuple[sp.Expr, ...]:
+    """Factor generated ``Ne(p, 0)`` obligations into canonical branch guards."""
+
+    factors: dict[str, sp.Expr] = {}
+    for obligation in obligations:
+        expression = _obligation_expression(obligation)
+        if expression is None:
+            continue
+        for factor in canonical_irreducible_factors(sp.sympify(expression)):
+            factors.setdefault(sp.sstr(factor), factor)
+    return tuple(factors[key] for key in sorted(factors))
+
+
+def condition_factor_keys(conditions: tuple[str, ...]) -> frozenset[str]:
+    """Canonical factor keys implied nonzero by executable input conditions."""
+
+    return frozenset(
+        sp.sstr(factor)
+        for condition in conditions
+        for factor in canonical_irreducible_factors(_condition_expression(condition))
+    )
+
+
+def _factor_keys(expression: sp.Expr) -> frozenset[str]:
+    return frozenset(sp.sstr(item) for item in canonical_irreducible_factors(expression))
 
 
 def classify_regularity_obligations(
@@ -479,9 +507,7 @@ def classify_regularity_obligations(
     constant multiples and powers without textual heuristics.
     """
 
-    known_factors: set[str] = set()
-    for condition in known_nonzero_conditions:
-        known_factors.update(_factor_keys(_condition_expression(condition)))
+    known_factors = condition_factor_keys(known_nonzero_conditions)
     discharged: list[str] = []
     open_items: list[str] = []
     for obligation in obligations:

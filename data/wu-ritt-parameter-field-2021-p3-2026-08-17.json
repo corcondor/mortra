@@ -1,0 +1,39 @@
+{
+  "experiment": "wu-ritt-independent-parameter-field-ablation",
+  "generated_at": "2026-08-16T16:31:25.165258+00:00",
+  "uses_llm": false,
+  "uses_problem_specific_solver_logic": false,
+  "dataset_auxiliary_clauses_hidden": true,
+  "theoretical_basis": [
+    "https://arxiv.org/abs/2604.14912",
+    "https://github.com/WuProver/lean_characteristic_set",
+    "https://www.cs.unm.edu/~kapur/mypapers/refutationalapproachgeometrytheoremproving.pdf"
+  ],
+  "hypothesis": "Choosing incidence-unmatched construction parameters as the coefficient field QQ(u) reduces coefficient swell while preserving exact set pseudo-division on the generic nondegenerate locus.",
+  "parameter_selection": "Structural bipartite matching only; no problem name, theorem answer, or auxiliary construction is visible.",
+  "settings": {
+    "max_rounds": 12,
+    "timeout_seconds": 70.0,
+    "max_reductions": 20000,
+    "max_terms": 20000
+  },
+  "results": {
+    "2021_p3": {
+      "status": "timeout",
+      "elapsed_seconds": 240.03810999999405
+    }
+  },
+  "summary": {
+    "completed": 0,
+    "timeouts": 1,
+    "execution_errors": 0,
+    "characteristic_sets_verified": 0,
+    "conditional_goals_proved": 0,
+    "completion_rounds": 0,
+    "pseudo_division_steps": 0,
+    "maximum_term_count": 0,
+    "all_identities_replayed": true,
+    "elapsed_seconds": 240.03810999999405
+  },
+  "claim_scope": "A coefficient-field proof is conditional on every rational-function coefficient used as an initial being defined and nonzero. This experiment tests computational feasibility; full polynomial-space zero decomposition requires those numerator/denominator exceptional loci to be branched."
+}

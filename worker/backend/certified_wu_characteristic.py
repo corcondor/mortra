@@ -30,6 +30,14 @@ class StructuralVariableMatching:
 
 
 @dataclass(frozen=True)
+class StructuralGoalCone:
+    equation_indices: tuple[int, ...]
+    variable_names: tuple[str, ...]
+    dropped_equation_indices: tuple[int, ...]
+    matching_complete: bool
+
+
+@dataclass(frozen=True)
 class CertifiedPseudoDivision:
     phase: str
     variable: str
@@ -160,6 +168,59 @@ def structural_variable_matching(
         parameter_variables=tuple(str(item) for item in parameters),
         unmatched_equations=unmatched,
         complete=not unmatched,
+    )
+
+
+def structural_goal_cone(
+    polynomials: Iterable[sp.Expr],
+    variables: Iterable[sp.Symbol],
+    goal_polynomial: sp.Expr,
+) -> StructuralGoalCone:
+    """Trace the construction equations needed by goal variables.
+
+    The relation is induced only by the equation-to-variable matching.  The
+    returned equations form a subset of the hypotheses, so a certificate built
+    from the cone remains valid for the full system.  No omitted equation is
+    ever inferred or treated as proved.
+    """
+
+    equations = tuple(sp.expand(item) for item in polynomials)
+    ordered_variables = tuple(variables)
+    matching = structural_variable_matching(equations, ordered_variables)
+    defining_equation = {
+        variable_name: equation_index
+        for equation_index, variable_name in matching.equation_to_variable
+    }
+    pending = [
+        str(item)
+        for item in sorted(
+            sp.expand(goal_polynomial).free_symbols & set(ordered_variables),
+            key=lambda item: ordered_variables.index(item),
+        )
+    ]
+    seen_variables = set(pending)
+    selected_equations: set[int] = set()
+    while pending:
+        variable_name = pending.pop()
+        equation_index = defining_equation.get(variable_name)
+        if equation_index is None or equation_index in selected_equations:
+            continue
+        selected_equations.add(equation_index)
+        for dependency in equations[equation_index].free_symbols:
+            name = str(dependency)
+            if dependency in ordered_variables and name not in seen_variables:
+                seen_variables.add(name)
+                pending.append(name)
+    selected = tuple(sorted(selected_equations))
+    return StructuralGoalCone(
+        equation_indices=selected,
+        variable_names=tuple(
+            str(item) for item in ordered_variables if str(item) in seen_variables
+        ),
+        dropped_equation_indices=tuple(
+            index for index in range(len(equations)) if index not in selected_equations
+        ),
+        matching_complete=matching.complete,
     )
 
 
@@ -748,9 +809,17 @@ def certified_sparse_wu_characteristic_proof(
     normalize_remainders: bool = True,
     max_content_terms: int = 5_000,
     elimination_order: Iterable[sp.Symbol] | None = None,
+    require_complete_matching: bool = True,
     progress_callback: Callable[[dict[str, object]], None] | None = None,
 ) -> CertifiedWuResult:
-    """Sparse-ring implementation of the same certified Wu experiment."""
+    """Sparse-ring implementation of the same certified Wu experiment.
+
+    Construction elaboration normally requires every source equation to have a
+    distinct dependent variable. Zero decomposition intentionally adds
+    degeneracy equations and can therefore create overdetermined systems;
+    callers may disable only that structural guard while retaining every exact
+    pseudo-division and certificate check.
+    """
 
     started = time.perf_counter()
     initial_expressions = _deduplicate(polynomials)
@@ -795,7 +864,7 @@ def certified_sparse_wu_characteristic_proof(
             return "reduction_budget"
         return None
 
-    if not matching.complete:
+    if require_complete_matching and not matching.complete:
         stopped_reason = "structural_matching_incomplete"
 
     for variable_name in selected_elimination_order:
