@@ -59,7 +59,7 @@ def main() -> int:
     parser.add_argument(
         "--baseline",
         type=Path,
-        default=ROOT / "data" / "yuclid-imo-ag-30-native-proofs-2026-08-15.json",
+        default=ROOT / "data" / "yuclid-imo-ag-30-all-ar-2026-08-15.json",
     )
     parser.add_argument("--gclc-root", type=Path, default=DEFAULT_GCLC)
     parser.add_argument("--gclc-executable", type=Path)
