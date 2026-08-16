@@ -13,6 +13,8 @@ on:
       - "data/chordal-buchberger-*.json"
       - "data/hybrid-polynomial-stalk-*.json"
       - "data/singular-lift-*.json"
+      - "data/certified-wu-*.json"
+      - "data/newclid-proof-hypergraph-*.json"
       - "data/chordal-lift-reproduction-manifest-*.json"
       - "data/mortra-reversible-synthesis-reproduction-manifest-*.json"
       - "data/yuclid-imo-ag-30-all-ar-*.json"
@@ -23,6 +25,10 @@ on:
       - "scripts/experiment_chordal_buchberger_fixed4.py"
       - "scripts/experiment_hybrid_polynomial_stalk_fixed4.py"
       - "scripts/experiment_singular_lift_fixed4.py"
+      - "scripts/experiment_certified_wu_fixed4.py"
+      - "scripts/experiment_newclid_construction_stalk.py"
+      - "scripts/verify_newclid_construction_stalk_artifact.py"
+      - "scripts/verify_certified_wu_artifact.py"
       - "scripts/verify_chordal_lift_artifacts.py"
       - "scripts/merge_jgex_exact_portfolio.py"
       - "scripts/reproduce_gclc_methods.py"
@@ -41,6 +47,9 @@ on:
       - "worker/backend/chordal_buchberger_elimination.py"
       - "worker/backend/chordal_polynomial_stalk.py"
       - "worker/backend/singular_lift_backend.py"
+      - "worker/backend/certified_wu_characteristic.py"
+      - "worker/backend/wu_polynomial_stalk.py"
+      - "worker/backend/typed_geometry_stalk.py"
   pull_request:
     paths:
       - ".github/workflows/reversible-symbolic-geometry.yml"
@@ -51,6 +60,8 @@ on:
       - "data/chordal-buchberger-*.json"
       - "data/hybrid-polynomial-stalk-*.json"
       - "data/singular-lift-*.json"
+      - "data/certified-wu-*.json"
+      - "data/newclid-proof-hypergraph-*.json"
       - "data/chordal-lift-reproduction-manifest-*.json"
       - "data/mortra-reversible-synthesis-reproduction-manifest-*.json"
       - "data/yuclid-imo-ag-30-all-ar-*.json"
@@ -61,6 +72,10 @@ on:
       - "scripts/experiment_chordal_buchberger_fixed4.py"
       - "scripts/experiment_hybrid_polynomial_stalk_fixed4.py"
       - "scripts/experiment_singular_lift_fixed4.py"
+      - "scripts/experiment_certified_wu_fixed4.py"
+      - "scripts/experiment_newclid_construction_stalk.py"
+      - "scripts/verify_newclid_construction_stalk_artifact.py"
+      - "scripts/verify_certified_wu_artifact.py"
       - "scripts/verify_chordal_lift_artifacts.py"
       - "scripts/merge_jgex_exact_portfolio.py"
       - "scripts/reproduce_gclc_methods.py"
@@ -79,6 +94,9 @@ on:
       - "worker/backend/chordal_buchberger_elimination.py"
       - "worker/backend/chordal_polynomial_stalk.py"
       - "worker/backend/singular_lift_backend.py"
+      - "worker/backend/certified_wu_characteristic.py"
+      - "worker/backend/wu_polynomial_stalk.py"
+      - "worker/backend/typed_geometry_stalk.py"
   workflow_dispatch:
 
 permissions:
@@ -113,6 +131,10 @@ jobs:
             scripts/experiment_chordal_buchberger_fixed4.py \
             scripts/experiment_hybrid_polynomial_stalk_fixed4.py \
             scripts/experiment_singular_lift_fixed4.py \
+            scripts/experiment_certified_wu_fixed4.py \
+            scripts/experiment_newclid_construction_stalk.py \
+            scripts/verify_newclid_construction_stalk_artifact.py \
+            scripts/verify_certified_wu_artifact.py \
             scripts/verify_chordal_lift_artifacts.py \
             scripts/merge_jgex_exact_portfolio.py \
             scripts/reproduce_gclc_methods.py \
@@ -131,7 +153,10 @@ jobs:
             worker/backend/certified_buchberger.py \
             worker/backend/chordal_buchberger_elimination.py \
             worker/backend/chordal_polynomial_stalk.py \
-            worker/backend/singular_lift_backend.py
+            worker/backend/singular_lift_backend.py \
+            worker/backend/certified_wu_characteristic.py \
+            worker/backend/wu_polynomial_stalk.py \
+            worker/backend/typed_geometry_stalk.py
       - name: Run symbolic bridge tests
         run: |
           python -m pytest \
@@ -147,6 +172,9 @@ jobs:
             worker/backend/test_chordal_buchberger_elimination.py \
             worker/backend/test_chordal_polynomial_stalk.py \
             worker/backend/test_singular_lift_backend.py \
+            worker/backend/test_certified_wu_characteristic.py \
+            worker/backend/test_wu_polynomial_stalk.py \
+            worker/backend/test_typed_geometry_stalk.py \
             -q
       - name: Verify published artifacts and acceptance claims
         run: |
@@ -156,3 +184,7 @@ jobs:
             --manifest data/local-polynomial-stalk-reproduction-manifest-2026-08-16.json
           python scripts/verify_chordal_lift_artifacts.py \
             --manifest data/chordal-lift-reproduction-manifest-2026-08-16.json
+          python scripts/verify_certified_wu_artifact.py \
+            --artifact data/certified-wu-relational-construction-fixed4-micro-2026-08-16.json
+          python scripts/verify_newclid_construction_stalk_artifact.py \
+            --artifact data/newclid-proof-hypergraph-balanced-aux-search-2010-p2-2026-08-16.json

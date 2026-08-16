@@ -1,0 +1,140 @@
+{
+  "experiment": "real-symbolic-coordination-imo-ag-30",
+  "generated_at": "2026-08-16T13:34:13.634643+00:00",
+  "uses_llm": false,
+  "uses_problem_specific_solver_logic": false,
+  "dataset_auxiliary_clauses_hidden": true,
+  "coordination_protocol": [
+    "Yuclid saturation exposes an unresolved typed goal",
+    "JGEX structure is mechanically translated to GCLC",
+    "GCLC Wu and Groebner agents attempt the same goal",
+    "the independent JGEX polynomial backend replays the original goal",
+    "strict acceptance requires native proof, exact replay, and typed-goal agreement"
+  ],
+  "environment": {
+    "gclc_repository": "https://github.com/janicicpredrag/gclc",
+    "gclc_commit": "8f73a5d7e6c373f6210c4b293231dcc0dcc07a28",
+    "gclc_executable": "gclc"
+  },
+  "budget": {
+    "gclc_methods": [
+      "wu",
+      "groebner"
+    ],
+    "gclc_timeout_seconds_per_method": 120,
+    "maximum_numeric_sketch_attempts": 1,
+    "exact_timeout_seconds_per_problem": 1.0
+  },
+  "summary": {
+    "baseline_unresolved_selected": 1,
+    "translated": 1,
+    "translation_unsupported": 0,
+    "gclc_proved": 0,
+    "exact_proved": 0,
+    "strict_exchange_proved": 0,
+    "gclc_proved_names": [],
+    "exact_proved_names": [],
+    "strict_exchange_proved_names": [],
+    "baseline_solved": 17,
+    "strict_portfolio_solved": 17,
+    "total": 30,
+    "strict_portfolio_score": 0.5666666666666667
+  },
+  "results": {
+    "2010_p2": {
+      "status": "unproved",
+      "translation": {
+        "construction_vocabulary": [
+          "circle",
+          "incenter",
+          "midpoint",
+          "on_aline",
+          "on_circle",
+          "on_line",
+          "triangle"
+        ],
+        "goal_channel": "cong",
+        "goal_points": [
+          "a",
+          "o",
+          "k",
+          "o"
+        ],
+        "source_sha256": "cbe5b7b9bb091c8758807ad3d578d687979c95225c62e2b70f9f0a896e1f1835",
+        "source": "point a 37 36\npoint b 41 72\npoint c 72 82\nmed mortra_med_0 a b\nmed mortra_med_1 a c\nintersec o mortra_med_0 mortra_med_1\nbis mortra_bis_2 b a c\nbis mortra_bis_3 c b a\nintersec i mortra_bis_2 mortra_bis_3\nline mortra_on_line_4 a i\ncircle mortra_circle_5 o a\nintersec2 d mortra_other_root_6 mortra_circle_5 mortra_on_line_4\nline mortra_on_line_7 b c\npoint mortra_probe_8 39 82\nperp mortra_perp_9 mortra_probe_8 mortra_on_line_7\nintersec f mortra_on_line_7 mortra_perp_9\nline mortra_similarity_source_10 a f\nfoot mortra_similarity_projection_11 b mortra_similarity_source_10\nline mortra_similarity_source_perp_axis_12 a f\nperp mortra_perp_13 a mortra_similarity_source_perp_axis_12\ncircle mortra_circle_14 a f\nintersec2 mortra_similarity_source_perp_15 mortra_similarity_source_perp_opposite_16 mortra_circle_14 mortra_perp_13\ntranslate mortra_similarity_source_component_17 mortra_similarity_projection_11 b a\ntranslate mortra_similarity_target_unit_18 a c a\nline mortra_similarity_target_perp_axis_19 a mortra_similarity_target_unit_18\nperp mortra_perp_20 a mortra_similarity_target_perp_axis_19\ncircle mortra_circle_21 a mortra_similarity_target_unit_18\nintersec2 mortra_similarity_target_perp_22 mortra_similarity_target_perp_opposite_23 mortra_circle_21 mortra_perp_20\nline mortra_similarity_parallel_component_bridge_24 f mortra_similarity_target_unit_18\nparallel mortra_para_25 mortra_similarity_projection_11 mortra_similarity_parallel_component_bridge_24\nline mortra_similarity_parallel_component_axis_26 a mortra_similarity_target_unit_18\nintersec mortra_similarity_parallel_component_27 mortra_para_25 mortra_similarity_parallel_component_axis_26\nline mortra_similarity_perp_component_bridge_28 mortra_similarity_source_perp_15 mortra_similarity_target_perp_22\nparallel mortra_para_29 mortra_similarity_source_component_17 mortra_similarity_perp_component_bridge_28\nline mortra_similarity_perp_component_axis_30 a mortra_similarity_target_perp_22\nintersec mortra_similarity_perp_component_31 mortra_para_29 mortra_similarity_perp_component_axis_30\ntranslate mortra_similarity_parallel_at_target_32 a mortra_similarity_parallel_component_27 a\ntranslate mortra_similarity_perp_at_target_33 a mortra_similarity_perp_component_31 a\ntranslate mortra_similarity_image_34 a mortra_similarity_perp_at_target_33 mortra_similarity_parallel_at_target_32\nline mortra_angle_line_35 a mortra_similarity_image_34\ncircle mortra_circle_36 o a\nintersec2 e mortra_other_root_37 mortra_circle_36 mortra_angle_line_35\nmidpoint g i f\nline mortra_on_line_38 d g\nline mortra_on_line_39 e i\nintersec k mortra_on_line_38 mortra_on_line_39\nprove { equal { segment a o } { segment k o } }\n"
+      },
+      "gclc": {
+        "proved": false,
+        "runs": [
+          {
+            "method": "wu",
+            "flag": "-w",
+            "return_code": 0,
+            "proved": false,
+            "external_timeout_reached": false,
+            "external_timeout_seconds": 135,
+            "elapsed_seconds": 133.22674220000044,
+            "proof_sha256": "130327ca1bce72cdd56f39471073bffe143ec512be9c33127ba20796362fc06c",
+            "proof_bytes": 66735,
+            "prover_timeout_seconds": 120,
+            "transcript": "Input file: <TEMP>\\2010_p2.gcl\nOutput file: <TEMP>\\2010_p2.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Wu's method used.\nThe largest polynomial obtained during the proof process contains 9676 terms.\n\n\nTime spent by the prover: 124.766 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2010_p2_proof.tex.\n\nFile '<TEMP>\\2010_p2.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+          },
+          {
+            "method": "groebner",
+            "flag": "-g",
+            "return_code": 0,
+            "proved": false,
+            "external_timeout_reached": false,
+            "external_timeout_seconds": 135,
+            "elapsed_seconds": 127.26051279998501,
+            "proof_sha256": "835d40de9e3714a0553f07ccb59d4827fc401d0a07e1ca66f0adfd44bd900a35",
+            "proof_bytes": 146393,
+            "prover_timeout_seconds": 120,
+            "transcript": "Input file: <TEMP>\\2010_p2.gcl\nOutput file: <TEMP>\\2010_p2.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Groebner bases method used.\nThe largest polynomial obtained during the proof process contains 179346 terms.\n\n\nTime spent by the prover: 121.188 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2010_p2_proof.tex.\n\nFile '<TEMP>\\2010_p2.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+          }
+        ],
+        "sketch_attempts": [
+          {
+            "sketch_seed": 0,
+            "source_sha256": "cbe5b7b9bb091c8758807ad3d578d687979c95225c62e2b70f9f0a896e1f1835",
+            "runs": [
+              {
+                "method": "wu",
+                "flag": "-w",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 135,
+                "elapsed_seconds": 133.22674220000044,
+                "proof_sha256": "130327ca1bce72cdd56f39471073bffe143ec512be9c33127ba20796362fc06c",
+                "proof_bytes": 66735,
+                "prover_timeout_seconds": 120,
+                "transcript": "Input file: <TEMP>\\2010_p2.gcl\nOutput file: <TEMP>\\2010_p2.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Wu's method used.\nThe largest polynomial obtained during the proof process contains 9676 terms.\n\n\nTime spent by the prover: 124.766 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2010_p2_proof.tex.\n\nFile '<TEMP>\\2010_p2.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+              },
+              {
+                "method": "groebner",
+                "flag": "-g",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 135,
+                "elapsed_seconds": 127.26051279998501,
+                "proof_sha256": "835d40de9e3714a0553f07ccb59d4827fc401d0a07e1ca66f0adfd44bd900a35",
+                "proof_bytes": 146393,
+                "prover_timeout_seconds": 120,
+                "transcript": "Input file: <TEMP>\\2010_p2.gcl\nOutput file: <TEMP>\\2010_p2.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Groebner bases method used.\nThe largest polynomial obtained during the proof process contains 179346 terms.\n\n\nTime spent by the prover: 121.188 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2010_p2_proof.tex.\n\nFile '<TEMP>\\2010_p2.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+              }
+            ]
+          }
+        ]
+      },
+      "exact": {
+        "status": "timeout"
+      },
+      "typed_goal_agreement": false,
+      "strict_exchange_proved": false,
+      "elapsed_seconds": 261.9289414000232
+    }
+  },
+  "claim_scope": "This is real certificate exchange between external symbolic engines, not yet a reproduction of end-to-end learned Sheaf-ADMM. The strict score counts only goals proved by GCLC and replayed independently."
+}

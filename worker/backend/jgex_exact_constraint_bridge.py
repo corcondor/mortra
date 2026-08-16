@@ -108,6 +108,9 @@ class JGEXExactSystemAnalysis:
     channel: str
     points: tuple[str, ...]
     construction_vocabulary: tuple[str, ...]
+    normalization_assumptions: tuple[str, ...]
+    nondegeneracy_conditions: tuple[str, ...]
+    executable_regularity_conditions: tuple[str, ...]
     variables: tuple[str, ...]
     construction_equations: tuple[str, ...]
     goal_polynomial: str
@@ -1448,10 +1451,28 @@ def inspect_jgex_exact_system(
     )
     expanded_items = (*equations, sp.expand(goal_polynomial))
     term_counts = tuple(len(sp.Add.make_args(item)) for item in expanded_items)
+    denominators = {
+        _safe(item)
+        for item in elaborator.denominators
+        if item != 0 and item.free_symbols
+    }
+    nondegeneracy_conditions = tuple(
+        f"{item} != 0" for item in sorted(denominators)
+    )
+    executable_normalizations = tuple(
+        item
+        for item in elaborator.normalization_assumptions
+        if item.strip().endswith("!= 0")
+    )
     return JGEXExactSystemAnalysis(
         channel=channel,
         points=points,
         construction_vocabulary=tuple(sorted(set(vocabulary))),
+        normalization_assumptions=tuple(elaborator.normalization_assumptions),
+        nondegeneracy_conditions=nondegeneracy_conditions,
+        executable_regularity_conditions=tuple(
+            dict.fromkeys((*executable_normalizations, *nondegeneracy_conditions))
+        ),
         variables=tuple(_safe(item) for item in variables),
         construction_equations=tuple(_safe(item) for item in equations),
         goal_polynomial=_safe(goal_polynomial),

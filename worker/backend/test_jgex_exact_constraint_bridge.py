@@ -104,6 +104,21 @@ def test_angle_bisector_points_use_one_typed_bisector_line() -> None:
     )
 
 
+def test_system_analysis_preserves_input_nondegeneracy_conditions() -> None:
+    analysis = inspect_jgex_exact_system(
+        "a b c = triangle a b c; x = on_tline x a b c ? perp x a b c",
+        representation="relational",
+    )
+    assert analysis.normalization_assumptions
+    assert analysis.nondegeneracy_conditions
+    assert analysis.executable_regularity_conditions
+    assert any(
+        item.startswith("_base_0")
+        for item in analysis.executable_regularity_conditions
+    )
+    assert all(item.endswith("!= 0") for item in analysis.nondegeneracy_conditions)
+
+
 def test_incenter2_constructs_the_three_typed_perpendicular_feet() -> None:
     obligation = lower_jgex_to_exact_obligation(
         "a b c = triangle a b c; d e f i = incenter2 d e f i a b c ? perp i d b c"
