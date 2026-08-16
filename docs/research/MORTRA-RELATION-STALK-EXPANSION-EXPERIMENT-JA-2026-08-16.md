@@ -68,3 +68,12 @@ GCLCの消去義務を小さく交換する前処理である。
 - cyclic長時間確認: `data/real-symbolic-coordination-cyclic-confirm-2026-08-16.json`
 - on_aline短時間実験: `data/real-symbolic-coordination-on-aline-smoke-2026-08-16.json`
 - cc_tangent二枝実験: `data/real-symbolic-coordination-cc-tangent-branches-smoke-2026-08-16.json`
+
+## 外部再現
+
+コミット `e3b92a1` をGitHub ActionsのクリーンなWindows環境で再実行した。
+NewclidとGCLCを固定コミットから取得・ビルドし、`2008_p1a` と `2012_p5` の
+両方でGCLC証明、独立多項式証明、型一致が成立した。
+
+- 実行: https://github.com/corcondor/sakumon-station/actions/runs/31924376085
+- 外部再現結果: 厳格成功 2/2、portfolio 19/30 = 63.3%
