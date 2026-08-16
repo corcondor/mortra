@@ -57,6 +57,7 @@ SUPPORTED_CONSTRUCTION_VOCABULARY = frozenset(
         "on_bline",
         "on_aline",
         "eqangle3",
+        "cc_tangent",
     }
 )
 
@@ -424,6 +425,39 @@ class _JGEXElaborator:
             )
         )  # type: ignore[assignment]
 
+    def _circle_circle_tangent(self, args: tuple[str, ...]) -> None:
+        first, second, third, fourth, center_a, radius_a, center_b, radius_b = args
+        for point in (first, second, third, fourth):
+            self._free_point(point)
+        for point_a, point_b in ((first, second), (third, fourth)):
+            self._append_equation(
+                self._distance_squared(center_a, point_a)
+                - self._distance_squared(center_a, radius_a)
+            )
+            self._append_equation(
+                self._distance_squared(center_b, point_b)
+                - self._distance_squared(center_b, radius_b)
+            )
+            tangent = self._sub(
+                self.coordinates[point_b], self.coordinates[point_a]
+            )
+            self._append_equation(
+                self._dot(
+                    self._sub(
+                        self.coordinates[center_a], self.coordinates[point_a]
+                    ),
+                    tangent,
+                )
+            )
+            self._append_equation(
+                self._dot(
+                    self._sub(
+                        self.coordinates[center_b], self.coordinates[point_b]
+                    ),
+                    tangent,
+                )
+            )
+
     def _on_diameter_circle(self, args: tuple[str, ...]) -> None:
         point, left, right = args
         if point not in self.coordinates:
@@ -625,6 +659,8 @@ class _JGEXElaborator:
             self._on_angle_line(args)
         elif name == "eqangle3":
             self._equal_angle_locus(args)
+        elif name == "cc_tangent":
+            self._circle_circle_tangent(args)
         elif name == "mirror":
             self._mirror(args)
         elif name == "reflect":
@@ -702,10 +738,23 @@ def lower_jgex_to_exact_obligation(text: str) -> JGEXExactObligation:
     goal_polynomial = elaborator.goal(channel, points)
     equations = tuple(sp.expand(equation) for equation in elaborator.equations)
     variables = tuple(reversed(elaborator.variables))
+    direct_constraint: tuple[sp.Expr, sp.Expr] | None = None
+    for equation in equations:
+        if sp.expand(goal_polynomial - equation) == 0:
+            direct_constraint = (equation, sp.Integer(1))
+            break
+        if sp.expand(goal_polynomial + equation) == 0:
+            direct_constraint = (equation, sp.Integer(-1))
+            break
     if sp.expand(goal_polynomial) == 0:
         quotients: list[sp.Expr] = []
         remainder = sp.Integer(0)
         basis_expressions: tuple[sp.Expr, ...] = tuple()
+    elif direct_constraint is not None:
+        basis_expression, quotient = direct_constraint
+        quotients = [quotient]
+        remainder = sp.Integer(0)
+        basis_expressions = (basis_expression,)
     elif not equations:
         quotients = []
         remainder = sp.expand(goal_polynomial)

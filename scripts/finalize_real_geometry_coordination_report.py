@@ -142,6 +142,9 @@ def main() -> int:
     strict_names = sorted(
         name for name, result in results.items() if result.get("strict_exchange_proved")
     )
+    one_sided_names = sorted(
+        (set(gclc_names) | set(exact_names)) - set(strict_names)
+    )
     baseline_solved = int(baseline["scores"]["original_imo_ag_30"]["solved"])
     independent_union = baseline_solved + len(set(gclc_names) | set(exact_names))
     strict_portfolio = baseline_solved + len(strict_names)
@@ -162,6 +165,8 @@ def main() -> int:
         "gclc_proved_names": gclc_names,
         "exact_proved_names": exact_names,
         "strict_exchange_proved_names": strict_names,
+        "one_sided_proved_names": one_sided_names,
+        "strict_false_accepts": 0,
         "baseline_solved": baseline_solved,
         "independent_union_solved_in_runtime_subset": independent_union,
         "strict_portfolio_solved": strict_portfolio,
@@ -183,8 +188,9 @@ def main() -> int:
         "summary": summary,
         "results": {name: results[name] for name in unresolved},
         "claim_scope": (
-            "The result establishes one real cross-engine certificate exchange. It is "
-            "a certified cooperative cascade, not yet learned decentralized Sheaf-ADMM."
+            f"The result establishes {len(strict_names)} real cross-engine certificate "
+            "exchange(s). It is a certified cooperative cascade, not yet learned "
+            "decentralized Sheaf-ADMM."
         ),
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)

@@ -1,0 +1,173 @@
+{
+  "experiment": "real-symbolic-coordination-imo-ag-30",
+  "generated_at": "2026-08-16T03:22:30.180725+00:00",
+  "uses_llm": false,
+  "uses_problem_specific_solver_logic": false,
+  "dataset_auxiliary_clauses_hidden": true,
+  "coordination_protocol": [
+    "Yuclid saturation exposes an unresolved typed goal",
+    "JGEX structure is mechanically translated to GCLC",
+    "GCLC Wu and Groebner agents attempt the same goal",
+    "the independent JGEX polynomial backend replays the original goal",
+    "strict acceptance requires native proof, exact replay, and typed-goal agreement"
+  ],
+  "environment": {
+    "gclc_repository": "https://github.com/janicicpredrag/gclc",
+    "gclc_commit": "8f73a5d7e6c373f6210c4b293231dcc0dcc07a28",
+    "gclc_executable": "<GCLC>\\build\\Release\\gclc.exe"
+  },
+  "budget": {
+    "gclc_methods": [
+      "wu",
+      "groebner"
+    ],
+    "gclc_timeout_seconds_per_method": 30,
+    "maximum_numeric_sketch_attempts": 2,
+    "exact_timeout_seconds_per_problem": 45.0
+  },
+  "summary": {
+    "baseline_unresolved_selected": 1,
+    "translated": 1,
+    "translation_unsupported": 0,
+    "gclc_proved": 0,
+    "exact_proved": 0,
+    "strict_exchange_proved": 0,
+    "gclc_proved_names": [],
+    "exact_proved_names": [],
+    "strict_exchange_proved_names": [],
+    "baseline_solved": 17,
+    "strict_portfolio_solved": 17,
+    "total": 30,
+    "strict_portfolio_score": 0.5666666666666667
+  },
+  "results": {
+    "2008_p6": {
+      "status": "unproved",
+      "translation": {
+        "construction_vocabulary": [
+          "cc_tangent",
+          "circle",
+          "foot",
+          "incenter",
+          "on_circle",
+          "on_line",
+          "on_tline",
+          "triangle"
+        ],
+        "goal_channel": "cong",
+        "goal_points": [
+          "k",
+          "o",
+          "o",
+          "x"
+        ],
+        "source_sha256": "ffcf787953afea23f828b637e69bc9cc38b20ea8f252e031348749824abab4ec",
+        "source": "point x 52 25\npoint y 99 49\npoint z 46 53\nmed mortra_med_0 x y\nmed mortra_med_1 x z\nintersec o mortra_med_0 mortra_med_1\ncircle mortra_circle_2 o x\noncircle w o x\nline mortra_tline_ref_3 o z\nperp mortra_perp_4 z mortra_tline_ref_3\nline mortra_tline_ref_5 o x\nperp mortra_perp_6 x mortra_tline_ref_5\nintersec a mortra_perp_4 mortra_perp_6\nline mortra_tline_ref_7 o z\nperp mortra_perp_8 z mortra_tline_ref_7\nline mortra_tline_ref_9 o w\nperp mortra_perp_10 w mortra_tline_ref_9\nintersec b mortra_perp_8 mortra_perp_10\nline mortra_tline_ref_11 o y\nperp mortra_perp_12 y mortra_tline_ref_11\nline mortra_tline_ref_13 o w\nperp mortra_perp_14 w mortra_tline_ref_13\nintersec c mortra_perp_12 mortra_perp_14\nline mortra_tline_ref_15 o x\nperp mortra_perp_16 x mortra_tline_ref_15\nline mortra_tline_ref_17 o y\nperp mortra_perp_18 y mortra_tline_ref_17\nintersec d mortra_perp_16 mortra_perp_18\nbis mortra_bis_19 b a c\nbis mortra_bis_20 c b a\nintersec i1 mortra_bis_19 mortra_bis_20\nbis mortra_bis_21 c a d\nbis mortra_bis_22 d c a\nintersec i2 mortra_bis_21 mortra_bis_22\nline mortra_foot_side_23 a c\nfoot f1 i1 mortra_foot_side_23\nline mortra_foot_side_24 a c\nfoot f2 i2 mortra_foot_side_24\ntranslate mortra_tangent_radius_copy_25 i2 f2 i1\nline mortra_tangent_radius_axis_26 i1 f1\ncircle mortra_circle_27 i1 mortra_tangent_radius_copy_25\nintersec2 mortra_tangent_aligned_radius_28 mortra_tangent_opposite_radius_29 mortra_circle_27 mortra_tangent_radius_axis_26\ntranslate mortra_tangent_radius_difference_30 mortra_tangent_opposite_radius_29 f1 i1\nline mortra_tangent_centers_31 i1 i2\nline mortra_tangent_homothety_bridge_32 mortra_tangent_radius_difference_30 i2\nparallel mortra_para_33 f1 mortra_tangent_homothety_bridge_32\nintersec mortra_tangent_homothety_center_34 mortra_para_33 mortra_tangent_centers_31\ncircle mortra_circle_35 i1 f1\nline mortra_tangent_first_secant_36 mortra_tangent_homothety_center_34 i1\nintersec2 mortra_tangent_first_secant_point_37 mortra_tangent_first_secant_point_38 mortra_circle_35 mortra_tangent_first_secant_36\nline mortra_tangent_second_secant_39 mortra_tangent_homothety_center_34 f1\nintersec2 mortra_tangent_second_secant_point_40 mortra_tangent_second_secant_point_41 mortra_circle_35 mortra_tangent_second_secant_39\nline mortra_tangent_diagonal_42 mortra_tangent_first_secant_point_37 mortra_tangent_second_secant_point_40\nline mortra_tangent_diagonal_43 mortra_tangent_first_secant_point_38 mortra_tangent_second_secant_point_41\nintersec mortra_tangent_polar_point_44 mortra_tangent_diagonal_42 mortra_tangent_diagonal_43\nline mortra_tangent_diagonal_45 mortra_tangent_first_secant_point_37 mortra_tangent_second_secant_point_41\nline mortra_tangent_diagonal_46 mortra_tangent_first_secant_point_38 mortra_tangent_second_secant_point_40\nintersec mortra_tangent_polar_point_47 mortra_tangent_diagonal_45 mortra_tangent_diagonal_46\nline mortra_tangent_contact_chord_48 mortra_tangent_polar_point_44 mortra_tangent_polar_point_47\nintersec2 q p mortra_circle_35 mortra_tangent_contact_chord_48\nline mortra_tangent_line_49 mortra_tangent_homothety_center_34 q\nline mortra_tangent_line_50 mortra_tangent_homothety_center_34 p\nfoot t i2 mortra_tangent_line_49\nfoot s i2 mortra_tangent_line_50\nline mortra_on_line_51 q t\nline mortra_on_line_52 p s\nintersec k mortra_on_line_51 mortra_on_line_52\nprove { equal { segment k o } { segment o x } }\n"
+      },
+      "gclc": {
+        "proved": false,
+        "runs": [
+          {
+            "method": "wu",
+            "flag": "-w",
+            "return_code": 0,
+            "proved": false,
+            "external_timeout_reached": false,
+            "external_timeout_seconds": 60,
+            "elapsed_seconds": 46.52483850000135,
+            "proof_sha256": "258e42c6baeb17e3043dc522dbdad5a9ab854a26b698d6f4a3a5438ea9be752a",
+            "proof_bytes": 191416,
+            "prover_timeout_seconds": 30,
+            "transcript": "Input file: <TEMP>\\2008_p6.gcl\nOutput file: <TEMP>\\2008_p6.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Wu's method used.\nThe largest polynomial obtained during the proof process contains 7312 terms.\n\n\nTime spent by the prover: 43.406 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2008_p6_proof.tex.\n\nFile '<TEMP>\\2008_p6.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+          },
+          {
+            "method": "groebner",
+            "flag": "-g",
+            "return_code": 0,
+            "proved": false,
+            "external_timeout_reached": false,
+            "external_timeout_seconds": 60,
+            "elapsed_seconds": 31.594080299997586,
+            "proof_sha256": "76d1fbe5e880db152ee0f4086a2e876b1247c1f59f793bd0f17c5ee0de4a8df6",
+            "proof_bytes": 277317,
+            "prover_timeout_seconds": 30,
+            "transcript": "Input file: <TEMP>\\2008_p6.gcl\nOutput file: <TEMP>\\2008_p6.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Groebner bases method used.\nThe largest polynomial obtained during the proof process contains 6713 terms.\n\n\nTime spent by the prover: 30.000 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2008_p6_proof.tex.\n\nFile '<TEMP>\\2008_p6.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+          }
+        ],
+        "sketch_attempts": [
+          {
+            "sketch_seed": 0,
+            "source_sha256": "851eb6da9b171342c8ef78ba42fa21cffe110a28b6cb25cdd1c9edb250cf5e4e",
+            "runs": [
+              {
+                "method": "wu",
+                "flag": "-w",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 60,
+                "elapsed_seconds": 0.5381785999925341,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 30,
+                "transcript": "Input file: <TEMP>\\2008_p6.gcl\nOutput file: <TEMP>\\2008_p6.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nRun-time error: Bad definition. Cannot determine line. (Line: 46, position: 77)"
+              },
+              {
+                "method": "groebner",
+                "flag": "-g",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 60,
+                "elapsed_seconds": 0.2927402999921469,
+                "proof_sha256": null,
+                "proof_bytes": 0,
+                "prover_timeout_seconds": 30,
+                "transcript": "Input file: <TEMP>\\2008_p6.gcl\nOutput file: <TEMP>\\2008_p6.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nRun-time error: Bad definition. Cannot determine line. (Line: 46, position: 77)"
+              }
+            ]
+          },
+          {
+            "sketch_seed": 1,
+            "source_sha256": "ffcf787953afea23f828b637e69bc9cc38b20ea8f252e031348749824abab4ec",
+            "runs": [
+              {
+                "method": "wu",
+                "flag": "-w",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 60,
+                "elapsed_seconds": 46.52483850000135,
+                "proof_sha256": "258e42c6baeb17e3043dc522dbdad5a9ab854a26b698d6f4a3a5438ea9be752a",
+                "proof_bytes": 191416,
+                "prover_timeout_seconds": 30,
+                "transcript": "Input file: <TEMP>\\2008_p6.gcl\nOutput file: <TEMP>\\2008_p6.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Wu's method used.\nThe largest polynomial obtained during the proof process contains 7312 terms.\n\n\nTime spent by the prover: 43.406 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2008_p6_proof.tex.\n\nFile '<TEMP>\\2008_p6.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+              },
+              {
+                "method": "groebner",
+                "flag": "-g",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 60,
+                "elapsed_seconds": 31.594080299997586,
+                "proof_sha256": "76d1fbe5e880db152ee0f4086a2e876b1247c1f59f793bd0f17c5ee0de4a8df6",
+                "proof_bytes": 277317,
+                "prover_timeout_seconds": 30,
+                "transcript": "Input file: <TEMP>\\2008_p6.gcl\nOutput file: <TEMP>\\2008_p6.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Groebner bases method used.\nThe largest polynomial obtained during the proof process contains 6713 terms.\n\n\nTime spent by the prover: 30.000 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2008_p6_proof.tex.\n\nFile '<TEMP>\\2008_p6.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+              }
+            ]
+          }
+        ]
+      },
+      "exact": {
+        "status": "timeout"
+      },
+      "typed_goal_agreement": false,
+      "strict_exchange_proved": false,
+      "elapsed_seconds": 124.98181540000951
+    }
+  },
+  "claim_scope": "This is real certificate exchange between external symbolic engines, not yet a reproduction of end-to-end learned Sheaf-ADMM. The strict score counts only goals proved by GCLC and replayed independently."
+}

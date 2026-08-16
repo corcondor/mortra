@@ -1,0 +1,323 @@
+{
+  "experiment": "real-symbolic-coordination-imo-ag-30",
+  "generated_at": "2026-08-16T03:14:15.789209+00:00",
+  "uses_llm": false,
+  "uses_problem_specific_solver_logic": false,
+  "dataset_auxiliary_clauses_hidden": true,
+  "coordination_protocol": [
+    "Yuclid saturation exposes an unresolved typed goal",
+    "JGEX structure is mechanically translated to GCLC",
+    "GCLC Wu and Groebner agents attempt the same goal",
+    "the independent JGEX polynomial backend replays the original goal",
+    "strict acceptance requires native proof, exact replay, and typed-goal agreement"
+  ],
+  "environment": {
+    "gclc_repository": "https://github.com/janicicpredrag/gclc",
+    "gclc_commit": "8f73a5d7e6c373f6210c4b293231dcc0dcc07a28",
+    "gclc_executable": "<GCLC>\\build\\Release\\gclc.exe"
+  },
+  "budget": {
+    "gclc_methods": [
+      "wu",
+      "groebner"
+    ],
+    "gclc_timeout_seconds_per_method": 30,
+    "maximum_numeric_sketch_attempts": 2,
+    "exact_timeout_seconds_per_problem": 25.0
+  },
+  "summary": {
+    "baseline_unresolved_selected": 3,
+    "translated": 3,
+    "translation_unsupported": 0,
+    "gclc_proved": 0,
+    "exact_proved": 0,
+    "strict_exchange_proved": 0,
+    "gclc_proved_names": [],
+    "exact_proved_names": [],
+    "strict_exchange_proved_names": [],
+    "baseline_solved": 17,
+    "strict_portfolio_solved": 17,
+    "total": 30,
+    "strict_portfolio_score": 0.5666666666666667
+  },
+  "results": {
+    "2010_p2": {
+      "status": "unproved",
+      "translation": {
+        "construction_vocabulary": [
+          "circle",
+          "incenter",
+          "midpoint",
+          "on_aline",
+          "on_circle",
+          "on_line",
+          "triangle"
+        ],
+        "goal_channel": "cong",
+        "goal_points": [
+          "k",
+          "o",
+          "a",
+          "o"
+        ],
+        "source_sha256": "74dac5e359567527c3b7ba20d5234b8b3456debbb12fe59c0917500758c398c7",
+        "source": "point a 37 36\npoint b 41 72\npoint c 72 82\nmed mortra_med_0 a b\nmed mortra_med_1 a c\nintersec o mortra_med_0 mortra_med_1\nbis mortra_bis_2 b a c\nbis mortra_bis_3 c b a\nintersec i mortra_bis_2 mortra_bis_3\nline mortra_on_line_4 a i\ncircle mortra_circle_5 o a\nintersec2 d mortra_other_root_6 mortra_circle_5 mortra_on_line_4\nline mortra_on_line_7 b c\npoint mortra_probe_8 39 82\nperp mortra_perp_9 mortra_probe_8 mortra_on_line_7\nintersec f mortra_on_line_7 mortra_perp_9\nline mortra_similarity_source_10 a f\nfoot mortra_similarity_projection_11 b mortra_similarity_source_10\nline mortra_similarity_source_perp_axis_12 a f\nperp mortra_perp_13 a mortra_similarity_source_perp_axis_12\ncircle mortra_circle_14 a f\nintersec2 mortra_similarity_source_perp_15 mortra_similarity_source_perp_opposite_16 mortra_circle_14 mortra_perp_13\ntranslate mortra_similarity_source_component_17 mortra_similarity_projection_11 b a\ntranslate mortra_similarity_target_unit_18 a c a\nline mortra_similarity_target_perp_axis_19 a mortra_similarity_target_unit_18\nperp mortra_perp_20 a mortra_similarity_target_perp_axis_19\ncircle mortra_circle_21 a mortra_similarity_target_unit_18\nintersec2 mortra_similarity_target_perp_22 mortra_similarity_target_perp_opposite_23 mortra_circle_21 mortra_perp_20\nline mortra_similarity_parallel_component_bridge_24 f mortra_similarity_target_unit_18\nparallel mortra_para_25 mortra_similarity_projection_11 mortra_similarity_parallel_component_bridge_24\nline mortra_similarity_parallel_component_axis_26 a mortra_similarity_target_unit_18\nintersec mortra_similarity_parallel_component_27 mortra_para_25 mortra_similarity_parallel_component_axis_26\nline mortra_similarity_perp_component_bridge_28 mortra_similarity_source_perp_15 mortra_similarity_target_perp_22\nparallel mortra_para_29 mortra_similarity_source_component_17 mortra_similarity_perp_component_bridge_28\nline mortra_similarity_perp_component_axis_30 a mortra_similarity_target_perp_22\nintersec mortra_similarity_perp_component_31 mortra_para_29 mortra_similarity_perp_component_axis_30\ntranslate mortra_similarity_parallel_at_target_32 a mortra_similarity_parallel_component_27 a\ntranslate mortra_similarity_perp_at_target_33 a mortra_similarity_perp_component_31 a\ntranslate mortra_similarity_image_34 a mortra_similarity_perp_at_target_33 mortra_similarity_parallel_at_target_32\nline mortra_angle_line_35 a mortra_similarity_image_34\ncircle mortra_circle_36 o a\nintersec2 e mortra_other_root_37 mortra_circle_36 mortra_angle_line_35\nmidpoint g i f\nline mortra_on_line_38 d g\nline mortra_on_line_39 e i\nintersec k mortra_on_line_38 mortra_on_line_39\nprove { equal { segment k o } { segment a o } }\n"
+      },
+      "gclc": {
+        "proved": false,
+        "runs": [
+          {
+            "method": "wu",
+            "flag": "-w",
+            "return_code": 0,
+            "proved": false,
+            "external_timeout_reached": false,
+            "external_timeout_seconds": 60,
+            "elapsed_seconds": 37.39780149998842,
+            "proof_sha256": "72529b4a4a35196c24f1829f1310120ebe622c098884d695970c566567162c31",
+            "proof_bytes": 66611,
+            "prover_timeout_seconds": 30,
+            "transcript": "Input file: <TEMP>\\2010_p2.gcl\nOutput file: <TEMP>\\2010_p2.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Wu's method used.\nThe largest polynomial obtained during the proof process contains 2402 terms.\n\n\nTime spent by the prover: 34.328 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2010_p2_proof.tex.\n\nFile '<TEMP>\\2010_p2.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+          },
+          {
+            "method": "groebner",
+            "flag": "-g",
+            "return_code": 0,
+            "proved": false,
+            "external_timeout_reached": false,
+            "external_timeout_seconds": 60,
+            "elapsed_seconds": 31.126140899999882,
+            "proof_sha256": "0d691eb7884c10ea16635b1091f4590d7ee08dfa761a447affebfd2d4ba3936d",
+            "proof_bytes": 146390,
+            "prover_timeout_seconds": 30,
+            "transcript": "Input file: <TEMP>\\2010_p2.gcl\nOutput file: <TEMP>\\2010_p2.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Groebner bases method used.\nThe largest polynomial obtained during the proof process contains 41300 terms.\n\n\nTime spent by the prover: 30.031 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2010_p2_proof.tex.\n\nFile '<TEMP>\\2010_p2.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+          }
+        ],
+        "sketch_attempts": [
+          {
+            "sketch_seed": 0,
+            "source_sha256": "74dac5e359567527c3b7ba20d5234b8b3456debbb12fe59c0917500758c398c7",
+            "runs": [
+              {
+                "method": "wu",
+                "flag": "-w",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 60,
+                "elapsed_seconds": 37.39780149998842,
+                "proof_sha256": "72529b4a4a35196c24f1829f1310120ebe622c098884d695970c566567162c31",
+                "proof_bytes": 66611,
+                "prover_timeout_seconds": 30,
+                "transcript": "Input file: <TEMP>\\2010_p2.gcl\nOutput file: <TEMP>\\2010_p2.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Wu's method used.\nThe largest polynomial obtained during the proof process contains 2402 terms.\n\n\nTime spent by the prover: 34.328 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2010_p2_proof.tex.\n\nFile '<TEMP>\\2010_p2.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+              },
+              {
+                "method": "groebner",
+                "flag": "-g",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 60,
+                "elapsed_seconds": 31.126140899999882,
+                "proof_sha256": "0d691eb7884c10ea16635b1091f4590d7ee08dfa761a447affebfd2d4ba3936d",
+                "proof_bytes": 146390,
+                "prover_timeout_seconds": 30,
+                "transcript": "Input file: <TEMP>\\2010_p2.gcl\nOutput file: <TEMP>\\2010_p2.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Groebner bases method used.\nThe largest polynomial obtained during the proof process contains 41300 terms.\n\n\nTime spent by the prover: 30.031 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2010_p2_proof.tex.\n\nFile '<TEMP>\\2010_p2.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+              }
+            ]
+          }
+        ]
+      },
+      "exact": {
+        "status": "timeout"
+      },
+      "typed_goal_agreement": false,
+      "strict_exchange_proved": false,
+      "elapsed_seconds": 93.91226119999192
+    },
+    "2020_p1": {
+      "status": "unproved",
+      "translation": {
+        "construction_vocabulary": [
+          "angle_bisector",
+          "on_aline",
+          "on_line",
+          "triangle"
+        ],
+        "goal_channel": "cong",
+        "goal_points": [
+          "b",
+          "o",
+          "a",
+          "o"
+        ],
+        "source_sha256": "cd32c2cdf0c6c274a15ab8a65173a83d376cd747f1031613fd6176875865a5b7",
+        "source": "point p 37 36\npoint a 41 72\npoint b 72 82\nbis mortra_bis_0 p b a\npoint mortra_probe_1 39 82\nperp mortra_perp_2 mortra_probe_1 mortra_bis_0\nintersec x mortra_bis_0 mortra_perp_2\nbis mortra_bis_3 p a b\npoint mortra_probe_4 46 40\nperp mortra_perp_5 mortra_probe_4 mortra_bis_3\nintersec y mortra_bis_3 mortra_perp_5\nline mortra_similarity_source_6 b x\nfoot mortra_similarity_projection_7 a mortra_similarity_source_6\nline mortra_similarity_source_perp_axis_8 b x\nperp mortra_perp_9 b mortra_similarity_source_perp_axis_8\ncircle mortra_circle_10 b x\nintersec2 mortra_similarity_source_perp_11 mortra_similarity_source_perp_opposite_12 mortra_circle_10 mortra_perp_9\ntranslate mortra_similarity_source_component_13 mortra_similarity_projection_7 a b\ntranslate mortra_similarity_target_unit_14 a p b\nline mortra_similarity_target_perp_axis_15 b mortra_similarity_target_unit_14\nperp mortra_perp_16 b mortra_similarity_target_perp_axis_15\ncircle mortra_circle_17 b mortra_similarity_target_unit_14\nintersec2 mortra_similarity_target_perp_18 mortra_similarity_target_perp_opposite_19 mortra_circle_17 mortra_perp_16\nline mortra_similarity_parallel_component_bridge_20 x mortra_similarity_target_unit_14\nparallel mortra_para_21 mortra_similarity_projection_7 mortra_similarity_parallel_component_bridge_20\nline mortra_similarity_parallel_component_axis_22 b mortra_similarity_target_unit_14\nintersec mortra_similarity_parallel_component_23 mortra_para_21 mortra_similarity_parallel_component_axis_22\nline mortra_similarity_perp_component_bridge_24 mortra_similarity_source_perp_11 mortra_similarity_target_perp_18\nparallel mortra_para_25 mortra_similarity_source_component_13 mortra_similarity_perp_component_bridge_24\nline mortra_similarity_perp_component_axis_26 b mortra_similarity_target_perp_18\nintersec mortra_similarity_perp_component_27 mortra_para_25 mortra_similarity_perp_component_axis_26\ntranslate mortra_similarity_parallel_at_target_28 b mortra_similarity_parallel_component_23 a\ntranslate mortra_similarity_perp_at_target_29 b mortra_similarity_perp_component_27 a\ntranslate mortra_similarity_image_30 a mortra_similarity_perp_at_target_29 mortra_similarity_parallel_at_target_28\nline mortra_angle_line_31 a mortra_similarity_image_30\npoint mortra_probe_32 30 85\nperp mortra_perp_33 mortra_probe_32 mortra_angle_line_31\nintersec z mortra_angle_line_31 mortra_perp_33\nline mortra_similarity_source_34 a z\nfoot mortra_similarity_projection_35 p mortra_similarity_source_34\nline mortra_similarity_source_perp_axis_36 a z\nperp mortra_perp_37 a mortra_similarity_source_perp_axis_36\ncircle mortra_circle_38 a z\nintersec2 mortra_similarity_source_perp_39 mortra_similarity_source_perp_opposite_40 mortra_circle_38 mortra_perp_37\ntranslate mortra_similarity_source_component_41 mortra_similarity_projection_35 p a\ntranslate mortra_similarity_target_unit_42 p a a\nline mortra_similarity_target_perp_axis_43 a mortra_similarity_target_unit_42\nperp mortra_perp_44 a mortra_similarity_target_perp_axis_43\ncircle mortra_circle_45 a mortra_similarity_target_unit_42\nintersec2 mortra_similarity_target_perp_46 mortra_similarity_target_perp_opposite_47 mortra_circle_45 mortra_perp_44\nline mortra_similarity_parallel_component_bridge_48 z mortra_similarity_target_unit_42\nparallel mortra_para_49 mortra_similarity_projection_35 mortra_similarity_parallel_component_bridge_48\nline mortra_similarity_parallel_component_axis_50 a mortra_similarity_target_unit_42\nintersec mortra_similarity_parallel_component_51 mortra_para_49 mortra_similarity_parallel_component_axis_50\nline mortra_similarity_perp_component_bridge_52 mortra_similarity_source_perp_39 mortra_similarity_target_perp_46\nparallel mortra_para_53 mortra_similarity_source_component_41 mortra_similarity_perp_component_bridge_52\nline mortra_similarity_perp_component_axis_54 a mortra_similarity_target_perp_46\nintersec mortra_similarity_perp_component_55 mortra_para_53 mortra_similarity_perp_component_axis_54\ntranslate mortra_similarity_parallel_at_target_56 a mortra_similarity_parallel_component_51 p\ntranslate mortra_similarity_perp_at_target_57 a mortra_similarity_perp_component_55 p\ntranslate mortra_similarity_image_58 p mortra_similarity_perp_at_target_57 mortra_similarity_parallel_at_target_56\nline mortra_angle_line_59 p mortra_similarity_image_58\npoint mortra_probe_60 40 61\nperp mortra_perp_61 mortra_probe_60 mortra_angle_line_59\nintersec t mortra_angle_line_59 mortra_perp_61\nline mortra_similarity_source_62 b a\nfoot mortra_similarity_projection_63 p mortra_similarity_source_62\nline mortra_similarity_source_perp_axis_64 b a\nperp mortra_perp_65 b mortra_similarity_source_perp_axis_64\ncircle mortra_circle_66 b a\nintersec2 mortra_similarity_source_perp_67 mortra_similarity_source_perp_opposite_68 mortra_circle_66 mortra_perp_65\ntranslate mortra_similarity_source_component_69 mortra_similarity_projection_63 p b\ntranslate mortra_similarity_target_unit_70 p t b\nline mortra_similarity_target_perp_axis_71 b mortra_similarity_target_unit_70\nperp mortra_perp_72 b mortra_similarity_target_perp_axis_71\ncircle mortra_circle_73 b mortra_similarity_target_unit_70\nintersec2 mortra_similarity_target_perp_74 mortra_similarity_target_perp_opposite_75 mortra_circle_73 mortra_perp_72\nline mortra_similarity_parallel_component_bridge_76 a mortra_similarity_target_unit_70\nparallel mortra_para_77 mortra_similarity_projection_63 mortra_similarity_parallel_component_bridge_76\nline mortra_similarity_parallel_component_axis_78 b mortra_similarity_target_unit_70\nintersec mortra_similarity_parallel_component_79 mortra_para_77 mortra_similarity_parallel_component_axis_78\nline mortra_similarity_perp_component_bridge_80 mortra_similarity_source_perp_67 mortra_similarity_target_perp_74\nparallel mortra_para_81 mortra_similarity_source_component_69 mortra_similarity_perp_component_bridge_80\nline mortra_similarity_perp_component_axis_82 b mortra_similarity_target_perp_74\nintersec mortra_similarity_perp_component_83 mortra_para_81 mortra_similarity_perp_component_axis_82\ntranslate mortra_similarity_parallel_at_target_84 b mortra_similarity_parallel_component_79 p\ntranslate mortra_similarity_perp_at_target_85 b mortra_similarity_perp_component_83 p\ntranslate mortra_similarity_image_86 p mortra_similarity_perp_at_target_85 mortra_similarity_parallel_at_target_84\nline mortra_angle_line_87 p mortra_similarity_image_86\nline mortra_on_line_88 a z\nintersec d mortra_angle_line_87 mortra_on_line_88\nline mortra_similarity_source_89 a y\nfoot mortra_similarity_projection_90 b mortra_similarity_source_89\nline mortra_similarity_source_perp_axis_91 a y\nperp mortra_perp_92 a mortra_similarity_source_perp_axis_91\ncircle mortra_circle_93 a y\nintersec2 mortra_similarity_source_perp_94 mortra_similarity_source_perp_opposite_95 mortra_circle_93 mortra_perp_92\ntranslate mortra_similarity_source_component_96 mortra_similarity_projection_90 b a\ntranslate mortra_similarity_target_unit_97 b p a\nline mortra_similarity_target_perp_axis_98 a mortra_similarity_target_unit_97\nperp mortra_perp_99 a mortra_similarity_target_perp_axis_98\ncircle mortra_circle_100 a mortra_similarity_target_unit_97\nintersec2 mortra_similarity_target_perp_101 mortra_similarity_target_perp_opposite_102 mortra_circle_100 mortra_perp_99\nline mortra_similarity_parallel_component_bridge_103 y mortra_similarity_target_unit_97\nparallel mortra_para_104 mortra_similarity_projection_90 mortra_similarity_parallel_component_bridge_103\nline mortra_similarity_parallel_component_axis_105 a mortra_similarity_target_unit_97\nintersec mortra_similarity_parallel_component_106 mortra_para_104 mortra_similarity_parallel_component_axis_105\nline mortra_similarity_perp_component_bridge_107 mortra_similarity_source_perp_94 mortra_similarity_target_perp_101\nparallel mortra_para_108 mortra_similarity_source_component_96 mortra_similarity_perp_component_bridge_107\nline mortra_similarity_perp_component_axis_109 a mortra_similarity_target_perp_101\nintersec mortra_similarity_perp_component_110 mortra_para_108 mortra_similarity_perp_component_axis_109\ntranslate mortra_similarity_parallel_at_target_111 a mortra_similarity_parallel_component_106 b\ntranslate mortra_similarity_perp_at_target_112 a mortra_similarity_perp_component_110 b\ntranslate mortra_similarity_image_113 b mortra_similarity_perp_at_target_112 mortra_similarity_parallel_at_target_111\nline mortra_angle_line_114 b mortra_similarity_image_113\npoint mortra_probe_115 62 69\nperp mortra_perp_116 mortra_probe_115 mortra_angle_line_114\nintersec u mortra_angle_line_114 mortra_perp_116\nline mortra_similarity_source_117 b u\nfoot mortra_similarity_projection_118 p mortra_similarity_source_117\nline mortra_similarity_source_perp_axis_119 b u\nperp mortra_perp_120 b mortra_similarity_source_perp_axis_119\ncircle mortra_circle_121 b u\nintersec2 mortra_similarity_source_perp_122 mortra_similarity_source_perp_opposite_123 mortra_circle_121 mortra_perp_120\ntranslate mortra_similarity_source_component_124 mortra_similarity_projection_118 p b\ntranslate mortra_similarity_target_unit_125 p b b\nline mortra_similarity_target_perp_axis_126 b mortra_similarity_target_unit_125\nperp mortra_perp_127 b mortra_similarity_target_perp_axis_126\ncircle mortra_circle_128 b mortra_similarity_target_unit_125\nintersec2 mortra_similarity_target_perp_129 mortra_similarity_target_perp_opposite_130 mortra_circle_128 mortra_perp_127\nline mortra_similarity_parallel_component_bridge_131 u mortra_similarity_target_unit_125\nparallel mortra_para_132 mortra_similarity_projection_118 mortra_similarity_parallel_component_bridge_131\nline mortra_similarity_parallel_component_axis_133 b mortra_similarity_target_unit_125\nintersec mortra_similarity_parallel_component_134 mortra_para_132 mortra_similarity_parallel_component_axis_133\nline mortra_similarity_perp_component_bridge_135 mortra_similarity_source_perp_122 mortra_similarity_target_perp_129\nparallel mortra_para_136 mortra_similarity_source_component_124 mortra_similarity_perp_component_bridge_135\nline mortra_similarity_perp_component_axis_137 b mortra_similarity_target_perp_129\nintersec mortra_similarity_perp_component_138 mortra_para_136 mortra_similarity_perp_component_axis_137\ntranslate mortra_similarity_parallel_at_target_139 b mortra_similarity_parallel_component_134 p\ntranslate mortra_similarity_perp_at_target_140 b mortra_similarity_perp_component_138 p\ntranslate mortra_similarity_image_141 p mortra_similarity_perp_at_target_140 mortra_similarity_parallel_at_target_139\nline mortra_angle_line_142 p mortra_similarity_image_141\npoint mortra_probe_143 10 26\nperp mortra_perp_144 mortra_probe_143 mortra_angle_line_142\nintersec v mortra_angle_line_142 mortra_perp_144\nline mortra_similarity_source_145 a b\nfoot mortra_similarity_projection_146 p mortra_similarity_source_145\nline mortra_similarity_source_perp_axis_147 a b\nperp mortra_perp_148 a mortra_similarity_source_perp_axis_147\ncircle mortra_circle_149 a b\nintersec2 mortra_similarity_source_perp_150 mortra_similarity_source_perp_opposite_151 mortra_circle_149 mortra_perp_148\ntranslate mortra_similarity_source_component_152 mortra_similarity_projection_146 p a\ntranslate mortra_similarity_target_unit_153 p v a\nline mortra_similarity_target_perp_axis_154 a mortra_similarity_target_unit_153\nperp mortra_perp_155 a mortra_similarity_target_perp_axis_154\ncircle mortra_circle_156 a mortra_similarity_target_unit_153\nintersec2 mortra_similarity_target_perp_157 mortra_similarity_target_perp_opposite_158 mortra_circle_156 mortra_perp_155\nline mortra_similarity_parallel_component_bridge_159 b mortra_similarity_target_unit_153\nparallel mortra_para_160 mortra_similarity_projection_146 mortra_similarity_parallel_component_bridge_159\nline mortra_similarity_parallel_component_axis_161 a mortra_similarity_target_unit_153\nintersec mortra_similarity_parallel_component_162 mortra_para_160 mortra_similarity_parallel_component_axis_161\nline mortra_similarity_perp_component_bridge_163 mortra_similarity_source_perp_150 mortra_similarity_target_perp_157\nparallel mortra_para_164 mortra_similarity_source_component_152 mortra_similarity_perp_component_bridge_163\nline mortra_similarity_perp_component_axis_165 a mortra_similarity_target_perp_157\nintersec mortra_similarity_perp_component_166 mortra_para_164 mortra_similarity_perp_component_axis_165\ntranslate mortra_similarity_parallel_at_target_167 a mortra_similarity_parallel_component_162 p\ntranslate mortra_similarity_perp_at_target_168 a mortra_similarity_perp_component_166 p\ntranslate mortra_similarity_image_169 p mortra_similarity_perp_at_target_168 mortra_similarity_parallel_at_target_167\nline mortra_angle_line_170 p mortra_similarity_image_169\nline mortra_on_line_171 b u\nintersec c mortra_angle_line_170 mortra_on_line_171\nbis mortra_bis_172 a d p\nbis mortra_bis_173 p c b\nintersec o mortra_bis_172 mortra_bis_173\nprove { equal { segment b o } { segment a o } }\n"
+      },
+      "gclc": {
+        "proved": false,
+        "runs": [
+          {
+            "method": "wu",
+            "flag": "-w",
+            "return_code": 0,
+            "proved": false,
+            "external_timeout_reached": false,
+            "external_timeout_seconds": 60,
+            "elapsed_seconds": 32.42494440000155,
+            "proof_sha256": "5c9498de46bf93474731d0094f09319c0b132d5cad5cb2e76fa349e1adf35fdb",
+            "proof_bytes": 688268,
+            "prover_timeout_seconds": 30,
+            "transcript": "Input file: <TEMP>\\2020_p1.gcl\nOutput file: <TEMP>\\2020_p1.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Wu's method used.\nThe largest polynomial obtained during the proof process contains 18584 terms.\n\n\nTime spent by the prover: 30.359 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2020_p1_proof.tex.\n\nFile '<TEMP>\\2020_p1.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+          },
+          {
+            "method": "groebner",
+            "flag": "-g",
+            "return_code": 0,
+            "proved": false,
+            "external_timeout_reached": false,
+            "external_timeout_seconds": 60,
+            "elapsed_seconds": 31.801880600003642,
+            "proof_sha256": "9eb182514a672f06f91ab83d24cd3e982a9f786ec21e2c9288c5a8d0230cd2c7",
+            "proof_bytes": 1907647,
+            "prover_timeout_seconds": 30,
+            "transcript": "Input file: <TEMP>\\2020_p1.gcl\nOutput file: <TEMP>\\2020_p1.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Groebner bases method used.\nThe largest polynomial obtained during the proof process contains 5732 terms.\n\n\nTime spent by the prover: 30.094 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2020_p1_proof.tex.\n\nFile '<TEMP>\\2020_p1.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+          }
+        ],
+        "sketch_attempts": [
+          {
+            "sketch_seed": 0,
+            "source_sha256": "cd32c2cdf0c6c274a15ab8a65173a83d376cd747f1031613fd6176875865a5b7",
+            "runs": [
+              {
+                "method": "wu",
+                "flag": "-w",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 60,
+                "elapsed_seconds": 32.42494440000155,
+                "proof_sha256": "5c9498de46bf93474731d0094f09319c0b132d5cad5cb2e76fa349e1adf35fdb",
+                "proof_bytes": 688268,
+                "prover_timeout_seconds": 30,
+                "transcript": "Input file: <TEMP>\\2020_p1.gcl\nOutput file: <TEMP>\\2020_p1.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Wu's method used.\nThe largest polynomial obtained during the proof process contains 18584 terms.\n\n\nTime spent by the prover: 30.359 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2020_p1_proof.tex.\n\nFile '<TEMP>\\2020_p1.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+              },
+              {
+                "method": "groebner",
+                "flag": "-g",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 60,
+                "elapsed_seconds": 31.801880600003642,
+                "proof_sha256": "9eb182514a672f06f91ab83d24cd3e982a9f786ec21e2c9288c5a8d0230cd2c7",
+                "proof_bytes": 1907647,
+                "prover_timeout_seconds": 30,
+                "transcript": "Input file: <TEMP>\\2020_p1.gcl\nOutput file: <TEMP>\\2020_p1.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Groebner bases method used.\nThe largest polynomial obtained during the proof process contains 5732 terms.\n\n\nTime spent by the prover: 30.094 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2020_p1_proof.tex.\n\nFile '<TEMP>\\2020_p1.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+              }
+            ]
+          }
+        ]
+      },
+      "exact": {
+        "status": "timeout"
+      },
+      "typed_goal_agreement": false,
+      "strict_exchange_proved": false,
+      "elapsed_seconds": 89.98584069999924
+    },
+    "2021_p3": {
+      "status": "unproved",
+      "translation": {
+        "construction_vocabulary": [
+          "angle_bisector",
+          "circle",
+          "on_aline",
+          "on_bline",
+          "on_line",
+          "triangle"
+        ],
+        "goal_channel": "coll",
+        "goal_points": [
+          "o1",
+          "o2",
+          "y"
+        ],
+        "source_sha256": "c8d274c581575de61f48ac15eeb187bd8d8e6267ab41eaaf48cbb9edf9846019",
+        "source": "point a 37 36\npoint b 41 72\npoint c 72 82\nbis mortra_bis_0 b a c\npoint mortra_probe_1 39 82\nperp mortra_perp_2 mortra_probe_1 mortra_bis_0\nintersec d mortra_bis_0 mortra_perp_2\nline mortra_similarity_source_3 c b\nfoot mortra_similarity_projection_4 d mortra_similarity_source_3\nline mortra_similarity_source_perp_axis_5 c b\nperp mortra_perp_6 c mortra_similarity_source_perp_axis_5\ncircle mortra_circle_7 c b\nintersec2 mortra_similarity_source_perp_8 mortra_similarity_source_perp_opposite_9 mortra_circle_7 mortra_perp_6\ntranslate mortra_similarity_source_component_10 mortra_similarity_projection_4 d c\ntranslate mortra_similarity_target_unit_11 d a c\nline mortra_similarity_target_perp_axis_12 c mortra_similarity_target_unit_11\nperp mortra_perp_13 c mortra_similarity_target_perp_axis_12\ncircle mortra_circle_14 c mortra_similarity_target_unit_11\nintersec2 mortra_similarity_target_perp_15 mortra_similarity_target_perp_opposite_16 mortra_circle_14 mortra_perp_13\nline mortra_similarity_parallel_component_bridge_17 b mortra_similarity_target_unit_11\nparallel mortra_para_18 mortra_similarity_projection_4 mortra_similarity_parallel_component_bridge_17\nline mortra_similarity_parallel_component_axis_19 c mortra_similarity_target_unit_11\nintersec mortra_similarity_parallel_component_20 mortra_para_18 mortra_similarity_parallel_component_axis_19\nline mortra_similarity_perp_component_bridge_21 mortra_similarity_source_perp_8 mortra_similarity_target_perp_15\nparallel mortra_para_22 mortra_similarity_source_component_10 mortra_similarity_perp_component_bridge_21\nline mortra_similarity_perp_component_axis_23 c mortra_similarity_target_perp_15\nintersec mortra_similarity_perp_component_24 mortra_para_22 mortra_similarity_perp_component_axis_23\ntranslate mortra_similarity_parallel_at_target_25 c mortra_similarity_parallel_component_20 d\ntranslate mortra_similarity_perp_at_target_26 c mortra_similarity_perp_component_24 d\ntranslate mortra_similarity_image_27 d mortra_similarity_perp_at_target_26 mortra_similarity_parallel_at_target_25\nline mortra_angle_line_28 d mortra_similarity_image_27\nline mortra_on_line_29 a c\nintersec e mortra_angle_line_28 mortra_on_line_29\nline mortra_similarity_source_30 b c\nfoot mortra_similarity_projection_31 d mortra_similarity_source_30\nline mortra_similarity_source_perp_axis_32 b c\nperp mortra_perp_33 b mortra_similarity_source_perp_axis_32\ncircle mortra_circle_34 b c\nintersec2 mortra_similarity_source_perp_35 mortra_similarity_source_perp_opposite_36 mortra_circle_34 mortra_perp_33\ntranslate mortra_similarity_source_component_37 mortra_similarity_projection_31 d b\ntranslate mortra_similarity_target_unit_38 d a b\nline mortra_similarity_target_perp_axis_39 b mortra_similarity_target_unit_38\nperp mortra_perp_40 b mortra_similarity_target_perp_axis_39\ncircle mortra_circle_41 b mortra_similarity_target_unit_38\nintersec2 mortra_similarity_target_perp_42 mortra_similarity_target_perp_opposite_43 mortra_circle_41 mortra_perp_40\nline mortra_similarity_parallel_component_bridge_44 c mortra_similarity_target_unit_38\nparallel mortra_para_45 mortra_similarity_projection_31 mortra_similarity_parallel_component_bridge_44\nline mortra_similarity_parallel_component_axis_46 b mortra_similarity_target_unit_38\nintersec mortra_similarity_parallel_component_47 mortra_para_45 mortra_similarity_parallel_component_axis_46\nline mortra_similarity_perp_component_bridge_48 mortra_similarity_source_perp_35 mortra_similarity_target_perp_42\nparallel mortra_para_49 mortra_similarity_source_component_37 mortra_similarity_perp_component_bridge_48\nline mortra_similarity_perp_component_axis_50 b mortra_similarity_target_perp_42\nintersec mortra_similarity_perp_component_51 mortra_para_49 mortra_similarity_perp_component_axis_50\ntranslate mortra_similarity_parallel_at_target_52 b mortra_similarity_parallel_component_47 d\ntranslate mortra_similarity_perp_at_target_53 b mortra_similarity_perp_component_51 d\ntranslate mortra_similarity_image_54 d mortra_similarity_perp_at_target_53 mortra_similarity_parallel_at_target_52\nline mortra_angle_line_55 d mortra_similarity_image_54\nline mortra_on_line_56 a b\nintersec f mortra_angle_line_55 mortra_on_line_56\nmed mortra_med_57 b c\nline mortra_on_line_58 a c\nintersec x mortra_med_57 mortra_on_line_58\nmed mortra_med_59 a d\nmed mortra_med_60 a c\nintersec o1 mortra_med_59 mortra_med_60\nmed mortra_med_61 e x\nmed mortra_med_62 e d\nintersec o2 mortra_med_61 mortra_med_62\nline mortra_on_line_63 e f\nline mortra_on_line_64 b c\nintersec y mortra_on_line_63 mortra_on_line_64\nprove { collinear o1 o2 y }\n"
+      },
+      "gclc": {
+        "proved": false,
+        "runs": [
+          {
+            "method": "wu",
+            "flag": "-w",
+            "return_code": 0,
+            "proved": false,
+            "external_timeout_reached": false,
+            "external_timeout_seconds": 60,
+            "elapsed_seconds": 34.25761020000209,
+            "proof_sha256": "13a3f448b424b347c140a8f4d5570b50ff5068f86fa1d4ec4bd3a1f68ee40620",
+            "proof_bytes": 147741,
+            "prover_timeout_seconds": 30,
+            "transcript": "Input file: <TEMP>\\2021_p3.gcl\nOutput file: <TEMP>\\2021_p3.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Wu's method used.\nThe largest polynomial obtained during the proof process contains 170936 terms.\n\n\nTime spent by the prover: 32.328 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2021_p3_proof.tex.\n\nFile '<TEMP>\\2021_p3.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+          },
+          {
+            "method": "groebner",
+            "flag": "-g",
+            "return_code": 0,
+            "proved": false,
+            "external_timeout_reached": false,
+            "external_timeout_seconds": 60,
+            "elapsed_seconds": 31.772251299989875,
+            "proof_sha256": "b6572a7b845d99add2e4387c63bd4633a554489496f47202b538642da13bebd9",
+            "proof_bytes": 329374,
+            "prover_timeout_seconds": 30,
+            "transcript": "Input file: <TEMP>\\2021_p3.gcl\nOutput file: <TEMP>\\2021_p3.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Groebner bases method used.\nThe largest polynomial obtained during the proof process contains 30210 terms.\n\n\nTime spent by the prover: 30.031 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2021_p3_proof.tex.\n\nFile '<TEMP>\\2021_p3.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+          }
+        ],
+        "sketch_attempts": [
+          {
+            "sketch_seed": 0,
+            "source_sha256": "c8d274c581575de61f48ac15eeb187bd8d8e6267ab41eaaf48cbb9edf9846019",
+            "runs": [
+              {
+                "method": "wu",
+                "flag": "-w",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 60,
+                "elapsed_seconds": 34.25761020000209,
+                "proof_sha256": "13a3f448b424b347c140a8f4d5570b50ff5068f86fa1d4ec4bd3a1f68ee40620",
+                "proof_bytes": 147741,
+                "prover_timeout_seconds": 30,
+                "transcript": "Input file: <TEMP>\\2021_p3.gcl\nOutput file: <TEMP>\\2021_p3.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Wu's method used.\nThe largest polynomial obtained during the proof process contains 170936 terms.\n\n\nTime spent by the prover: 32.328 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2021_p3_proof.tex.\n\nFile '<TEMP>\\2021_p3.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+              },
+              {
+                "method": "groebner",
+                "flag": "-g",
+                "return_code": 0,
+                "proved": false,
+                "external_timeout_reached": false,
+                "external_timeout_seconds": 60,
+                "elapsed_seconds": 31.772251299989875,
+                "proof_sha256": "b6572a7b845d99add2e4387c63bd4633a554489496f47202b538642da13bebd9",
+                "proof_bytes": 329374,
+                "prover_timeout_seconds": 30,
+                "transcript": "Input file: <TEMP>\\2021_p3.gcl\nOutput file: <TEMP>\\2021_p3.pic\nLog file: gclc.log\n\nStarting point number: 1\n\nThe theorem prover based on the Groebner bases method used.\nThe largest polynomial obtained during the proof process contains 30210 terms.\n\n\nTime spent by the prover: 30.031 seconds.\nThe conjecture not proved - timeout.\nThe prover output is written in the file <TEMP>\\2021_p3_proof.tex.\n\nFile '<TEMP>\\2021_p3.gcl' successfully processed.\nEnding point number: 1\n\nTranscript written on gclc.log."
+              }
+            ]
+          }
+        ]
+      },
+      "exact": {
+        "status": "timeout"
+      },
+      "typed_goal_agreement": false,
+      "strict_exchange_proved": false,
+      "elapsed_seconds": 91.32803190000413
+    }
+  },
+  "claim_scope": "This is real certificate exchange between external symbolic engines, not yet a reproduction of end-to-end learned Sheaf-ADMM. The strict score counts only goals proved by GCLC and replayed independently."
+}

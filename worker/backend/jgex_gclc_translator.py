@@ -27,9 +27,10 @@ LINE_LOCI = frozenset(
         "on_tline",
         "on_bline",
         "angle_bisector",
+        "on_aline",
     }
 )
-CIRCLE_LOCI = frozenset({"on_circle", "on_dia"})
+CIRCLE_LOCI = frozenset({"on_circle", "on_dia", "eqangle3"})
 DIRECT_CONSTRUCTIONS = frozenset(
     {
         "triangle",
@@ -42,9 +43,10 @@ DIRECT_CONSTRUCTIONS = frozenset(
         "incenter2",
         "mirror",
         "reflect",
+        "cc_tangent",
     }
 )
-SUPPORTED_GOALS = frozenset({"coll", "para", "perp", "cong"})
+SUPPORTED_GOALS = frozenset({"coll", "para", "perp", "cong", "cyclic"})
 
 
 @dataclass(frozen=True)
@@ -64,6 +66,8 @@ def canonical_typed_goal_key(
 
     normalized = tuple(_identifier(point).lower() for point in points)
     if channel == "coll" and len(normalized) == 3:
+        return channel, tuple(sorted(normalized))
+    if channel == "cyclic" and len(normalized) >= 4:
         return channel, tuple(sorted(normalized))
     if channel in {"para", "perp", "cong"} and len(normalized) == 4:
         left = tuple(sorted(normalized[:2]))
@@ -150,6 +154,42 @@ class _Emitter:
         self.emit(f"circle {name} {_identifier(center)} {_identifier(radius_point)}")
         return name
 
+    def translate(
+        self,
+        vector_start: str,
+        vector_end: str,
+        source: str,
+        prefix: str = "translate",
+    ) -> str:
+        output = self.fresh(prefix)
+        self.emit(
+            f"translate {output} {_identifier(vector_start)} "
+            f"{_identifier(vector_end)} {_identifier(source)}"
+        )
+        self.points.add(output)
+        return output
+
+    def quarter_turn(
+        self,
+        center: str,
+        source: str,
+        prefix: str = "quarter_turn",
+    ) -> str:
+        axis = self.line(center, source, f"{prefix}_axis")
+        perpendicular = self.perpendicular(center, axis)
+        radius = self.circle(center, source)
+        output = self.fresh(prefix)
+        opposite = self.fresh(f"{prefix}_opposite")
+        self.emit(f"intersec2 {output} {opposite} {radius} {perpendicular}")
+        self.points.update((output, opposite))
+        return output
+
+    def line_intersection(self, first: str, second: str, prefix: str) -> str:
+        output = self.fresh(prefix)
+        self.emit(f"intersec {output} {first} {second}")
+        self.points.add(output)
+        return output
+
     def arbitrary_point_on_line(self, point: str, line: str) -> None:
         point = _identifier(point)
         probe = self.fresh("probe")
@@ -175,6 +215,114 @@ def _construction_args(construction) -> tuple[str, ...]:
     return tuple(_identifier(str(value)) for value in construction.args)
 
 
+def _transfer_direct_similarity(
+    emitter: _Emitter,
+    *,
+    target_origin: str,
+    target_unit: str,
+    source_origin: str,
+    source_unit: str,
+    source_point: str,
+) -> str:
+    """Map one point through the direct similarity source_unit -> target_unit.
+
+    The source vector is decomposed into its parallel and perpendicular
+    components.  Parallel constructions transfer the two directed scalar
+    coefficients to the target basis, so no measured angle or fitted numeric
+    constant enters the proof graph.
+    """
+
+    source_axis = emitter.line(source_origin, source_unit, "similarity_source")
+    projection = emitter.fresh("similarity_projection")
+    emitter.emit(f"foot {projection} {source_point} {source_axis}")
+    emitter.points.add(projection)
+
+    source_perp_unit = emitter.quarter_turn(
+        source_origin,
+        source_unit,
+        "similarity_source_perp",
+    )
+    source_perp_component = emitter.translate(
+        projection,
+        source_point,
+        source_origin,
+        "similarity_source_component",
+    )
+    target_unit_at_source = emitter.translate(
+        target_origin,
+        target_unit,
+        source_origin,
+        "similarity_target_unit",
+    )
+    target_perp_at_source = emitter.quarter_turn(
+        source_origin,
+        target_unit_at_source,
+        "similarity_target_perp",
+    )
+
+    def transfer_scalar(
+        source_basis: str,
+        scaled_source: str,
+        target_basis: str,
+        prefix: str,
+    ) -> str:
+        bridge = emitter.line(source_basis, target_basis, f"{prefix}_bridge")
+        transferred = emitter.parallel(scaled_source, bridge)
+        target_axis = emitter.line(source_origin, target_basis, f"{prefix}_axis")
+        return emitter.line_intersection(transferred, target_axis, prefix)
+
+    target_parallel_component = transfer_scalar(
+        source_unit,
+        projection,
+        target_unit_at_source,
+        "similarity_parallel_component",
+    )
+    target_perp_component = transfer_scalar(
+        source_perp_unit,
+        source_perp_component,
+        target_perp_at_source,
+        "similarity_perp_component",
+    )
+    parallel_at_target = emitter.translate(
+        source_origin,
+        target_parallel_component,
+        target_origin,
+        "similarity_parallel_at_target",
+    )
+    perpendicular_at_target = emitter.translate(
+        source_origin,
+        target_perp_component,
+        target_origin,
+        "similarity_perp_at_target",
+    )
+    return emitter.translate(
+        target_origin,
+        perpendicular_at_target,
+        parallel_at_target,
+        "similarity_image",
+    )
+
+
+def _angle_line(
+    emitter: _Emitter,
+    *,
+    target_origin: str,
+    target_unit: str,
+    source_point: str,
+    source_origin: str,
+    source_unit: str,
+) -> str:
+    image = _transfer_direct_similarity(
+        emitter,
+        target_origin=target_origin,
+        target_unit=target_unit,
+        source_origin=source_origin,
+        source_unit=source_unit,
+        source_point=source_point,
+    )
+    return emitter.line(target_origin, image, "angle_line")
+
+
 def _line_locus(emitter: _Emitter, name: str, args: tuple[str, ...]) -> str:
     point = args[0]
     if name == "on_line":
@@ -189,6 +337,15 @@ def _line_locus(emitter: _Emitter, name: str, args: tuple[str, ...]) -> str:
         return emitter.perpendicular_bisector(args[1], args[2])
     if name == "angle_bisector":
         return emitter.bisector(args[1], args[2], args[3])
+    if name == "on_aline":
+        return _angle_line(
+            emitter,
+            target_origin=args[1],
+            target_unit=args[2],
+            source_point=args[3],
+            source_origin=args[4],
+            source_unit=args[5],
+        )
     raise ValueError(f"unsupported line locus: {name} for {point}")
 
 
@@ -206,6 +363,24 @@ def _circle_locus(
         emitter.points.add(midpoint)
         circle = emitter.circle(midpoint, args[1])
         return circle, midpoint, args[1]
+    if name == "eqangle3":
+        tangent = _angle_line(
+            emitter,
+            target_origin=args[1],
+            target_unit=args[2],
+            source_point=args[4],
+            source_origin=args[3],
+            source_unit=args[5],
+        )
+        radius_at_first = emitter.perpendicular(args[1], tangent)
+        chord_bisector = emitter.perpendicular_bisector(args[1], args[2])
+        center = emitter.line_intersection(
+            radius_at_first,
+            chord_bisector,
+            "eqangle_center",
+        )
+        circle = emitter.circle(center, args[1])
+        return circle, center, args[1]
     raise ValueError(f"unsupported circle locus: {name}")
 
 
@@ -336,10 +511,138 @@ def _emit_direct(emitter: _Emitter, name: str, args: tuple[str, ...]) -> None:
         emitter.emit(f"towards {output} {source} {projection} 2")
         emitter.points.add(output)
         return
+    if name == "cc_tangent":
+        first, second, third, fourth, center_a, radius_a, center_b, radius_b = args
+
+        copied_radius_b = emitter.translate(
+            center_b,
+            radius_b,
+            center_a,
+            "tangent_radius_copy",
+        )
+        radius_axis = emitter.line(center_a, radius_a, "tangent_radius_axis")
+        radius_b_circle = emitter.circle(center_a, copied_radius_b)
+        aligned_radius_b = emitter.fresh("tangent_aligned_radius")
+        opposite_radius_b = emitter.fresh("tangent_opposite_radius")
+        emitter.emit(
+            f"intersec2 {aligned_radius_b} {opposite_radius_b} "
+            f"{radius_b_circle} {radius_axis}"
+        )
+        emitter.points.update((aligned_radius_b, opposite_radius_b))
+
+        # The two collinear radius copies encode the external and internal
+        # homothety branches.  Geometry search must retain both: the external
+        # center is at infinity when the radii are equal, while the internal
+        # center remains finite.  Sketch attempts alternate the branch without
+        # inspecting a problem identifier or expected result.
+        homothety_radius = (
+            aligned_radius_b
+            if emitter.sketch_seed % 2 == 0
+            else opposite_radius_b
+        )
+        radius_difference = emitter.translate(
+            homothety_radius,
+            radius_a,
+            center_a,
+            "tangent_radius_difference",
+        )
+        centers_axis = emitter.line(center_a, center_b, "tangent_centers")
+        homothety_bridge = emitter.line(
+            radius_difference,
+            center_b,
+            "tangent_homothety_bridge",
+        )
+        through_radius_a = emitter.parallel(radius_a, homothety_bridge)
+        homothety_center = emitter.line_intersection(
+            through_radius_a,
+            centers_axis,
+            "tangent_homothety_center",
+        )
+
+        first_circle = emitter.circle(center_a, radius_a)
+
+        # Obtain the contact chord as the polar of the homothety center.
+        # A complete quadrilateral uses only line-circle and line-line
+        # intersections, both supported by GCLC's algebraic provers.
+        first_secant = emitter.line(
+            homothety_center,
+            center_a,
+            "tangent_first_secant",
+        )
+        first_secant_a = emitter.fresh("tangent_first_secant_point")
+        first_secant_b = emitter.fresh("tangent_first_secant_point")
+        emitter.emit(
+            f"intersec2 {first_secant_a} {first_secant_b} "
+            f"{first_circle} {first_secant}"
+        )
+        emitter.points.update((first_secant_a, first_secant_b))
+
+        second_secant = emitter.line(
+            homothety_center,
+            radius_a,
+            "tangent_second_secant",
+        )
+        second_secant_a = emitter.fresh("tangent_second_secant_point")
+        second_secant_b = emitter.fresh("tangent_second_secant_point")
+        emitter.emit(
+            f"intersec2 {second_secant_a} {second_secant_b} "
+            f"{first_circle} {second_secant}"
+        )
+        emitter.points.update((second_secant_a, second_secant_b))
+
+        first_diagonal_a = emitter.line(
+            first_secant_a,
+            second_secant_a,
+            "tangent_diagonal",
+        )
+        first_diagonal_b = emitter.line(
+            first_secant_b,
+            second_secant_b,
+            "tangent_diagonal",
+        )
+        first_polar_point = emitter.line_intersection(
+            first_diagonal_a,
+            first_diagonal_b,
+            "tangent_polar_point",
+        )
+        second_diagonal_a = emitter.line(
+            first_secant_a,
+            second_secant_b,
+            "tangent_diagonal",
+        )
+        second_diagonal_b = emitter.line(
+            first_secant_b,
+            second_secant_a,
+            "tangent_diagonal",
+        )
+        second_polar_point = emitter.line_intersection(
+            second_diagonal_a,
+            second_diagonal_b,
+            "tangent_polar_point",
+        )
+        contact_chord = emitter.line(
+            first_polar_point,
+            second_polar_point,
+            "tangent_contact_chord",
+        )
+        emitter.emit(
+            f"intersec2 {first} {third} {first_circle} {contact_chord}"
+        )
+        emitter.points.update((first, third))
+
+        first_tangent = emitter.line(homothety_center, first, "tangent_line")
+        third_tangent = emitter.line(homothety_center, third, "tangent_line")
+        emitter.emit(f"foot {second} {center_b} {first_tangent}")
+        emitter.emit(f"foot {fourth} {center_b} {third_tangent}")
+        emitter.points.update((second, fourth))
+        return
     raise ValueError(f"unsupported direct construction: {name}")
 
 
-def _goal_line(channel: str, points: tuple[str, ...]) -> str:
+def _goal_line(
+    channel: str,
+    points: tuple[str, ...],
+) -> str:
     if channel == "coll" and len(points) == 3:
         return f"prove {{ collinear {' '.join(points)} }}"
     if channel == "para" and len(points) == 4:
@@ -350,6 +653,22 @@ def _goal_line(channel: str, points: tuple[str, ...]) -> str:
         return (
             f"prove {{ equal {{ segment {points[0]} {points[1]} }} "
             f"{{ segment {points[2]} {points[3]} }} }}"
+        )
+    if channel == "cyclic" and len(points) == 4:
+        first, second, third, fourth = points[:4]
+        first_cross = f"{{ signed_area3 {first} {second} {third} }}"
+        first_dot = (
+            f"{{ pythagoras_difference3 {first} {second} {third} }}"
+        )
+        second_cross = f"{{ signed_area3 {first} {fourth} {third} }}"
+        second_dot = (
+            f"{{ pythagoras_difference3 {first} {fourth} {third} }}"
+        )
+        # Equal (possibly supplementary) directed angles ABC and ADC.
+        # This tangent identity avoids a branch-sensitive circumcenter.
+        return (
+            f"prove {{ equal {{ mult {first_cross} {second_dot} }} "
+            f"{{ mult {first_dot} {second_cross} }} }}"
         )
     raise ValueError(f"unsupported GCLC goal: {channel} {points}")
 

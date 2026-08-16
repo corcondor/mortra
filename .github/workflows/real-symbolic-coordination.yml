@@ -4,8 +4,10 @@ on:
   push:
     paths:
       - "worker/backend/jgex_gclc_translator.py"
+      - "worker/backend/jgex_exact_constraint_bridge.py"
       - "worker/backend/symbolic_sheaf_*.py"
       - "worker/backend/test_jgex_gclc_translator.py"
+      - "worker/backend/test_jgex_exact_constraint_bridge.py"
       - "worker/backend/test_symbolic_sheaf_*.py"
       - "scripts/experiment_real_geometry_coordination.py"
       - "scripts/finalize_real_geometry_coordination_report.py"
@@ -13,12 +15,15 @@ on:
       - "tests/test_real_symbolic_coordination.py"
       - "data/real-symbolic-coordination-*.json"
       - "docs/research/MORTRA-REAL-SYMBOLIC-COORDINATION-EXPERIMENT-JA-2026-08-16.md"
+      - "docs/research/MORTRA-RELATION-STALK-EXPANSION-EXPERIMENT-JA-2026-08-16.md"
       - ".github/workflows/real-symbolic-coordination.yml"
   pull_request:
     paths:
       - "worker/backend/jgex_gclc_translator.py"
+      - "worker/backend/jgex_exact_constraint_bridge.py"
       - "worker/backend/symbolic_sheaf_*.py"
       - "worker/backend/test_jgex_gclc_translator.py"
+      - "worker/backend/test_jgex_exact_constraint_bridge.py"
       - "worker/backend/test_symbolic_sheaf_*.py"
       - "tests/test_real_symbolic_coordination.py"
       - "data/real-symbolic-coordination-*.json"
@@ -26,7 +31,7 @@ on:
   workflow_dispatch:
     inputs:
       run_external_reproduction:
-        description: Build GCLC and replay the real 2012_p5 exchange
+        description: Build GCLC and replay the two strict real exchanges
         required: true
         default: false
         type: boolean
@@ -50,6 +55,7 @@ jobs:
           git -C external/Newclid checkout ac6550732a950564cf7614d605b5bf1eadd29701
           python -m pip install -r worker/requirements.txt
           python -m pip install -e external/Newclid/newclid
+          python -m pip install pytest==8.4.1
       - name: Verify typed translation, sheaf contracts, and artifacts
         run: >-
           python -B -m unittest
@@ -57,6 +63,8 @@ jobs:
           worker.backend.test_symbolic_sheaf_coordination
           worker.backend.test_symbolic_sheaf_learning
           tests.test_real_symbolic_coordination
+      - name: Verify exact relation lowering
+        run: python -B -m pytest worker/backend/test_jgex_exact_constraint_bridge.py -q
 
   external-reproduction:
     if: github.event_name == 'workflow_dispatch' && inputs.run_external_reproduction
@@ -88,12 +96,12 @@ jobs:
             --dataset external/Newclid/newclid/problems_datasets/imo.txt `
             --baseline data/yuclid-imo-ag-30-all-ar-2026-08-15.json `
             --gclc-root external/gclc `
-            --problems 2012_p5 `
+            --problems 2008_p1a 2012_p5 `
             --gclc-timeout-seconds 90 `
             --exact-timeout-seconds 120 `
             --output external-reproduction.json
           $result = Get-Content external-reproduction.json -Raw | ConvertFrom-Json
-          if ($result.summary.strict_exchange_proved -ne 1) {
+          if ($result.summary.strict_exchange_proved -ne 2) {
             throw "Strict cross-engine replay did not reproduce"
           }
       - uses: actions/upload-artifact@v4

@@ -158,3 +158,13 @@ def test_angle_loci_emit_executable_polynomial_constraints() -> None:
     assert eqangle3.exact_replay
     assert on_aline.construction_equations
     assert eqangle3.construction_equations
+
+
+def test_circle_circle_tangent_is_a_typed_polynomial_relation() -> None:
+    obligation = lower_jgex_to_exact_obligation(
+        "o a u = triangle o a u; w b v = triangle w b v; "
+        "x y z i = cc_tangent x y z i o a w b ? perp x o x y"
+    )
+    assert obligation.exact_replay
+    assert obligation.construction_vocabulary == ("cc_tangent", "triangle")
+    assert len(obligation.construction_equations) >= 8
