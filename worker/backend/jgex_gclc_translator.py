@@ -56,6 +56,7 @@ class GCLCTranslation:
     goal_channel: str
     goal_points: tuple[str, ...]
     source_sha256: str
+    local_lemma_certificates: tuple[str, ...] = ()
 
 
 def canonical_typed_goal_key(
@@ -205,14 +206,148 @@ class _Emitter:
         radius_point: str,
     ) -> None:
         point = _identifier(point)
-        self.emit(
-            f"oncircle {point} {_identifier(center)} {_identifier(radius_point)}"
-        )
+        self.emit(f"oncircle {point} {_identifier(center)} {_identifier(radius_point)}")
         self.points.add(point)
 
 
 def _construction_args(construction) -> tuple[str, ...]:
     return tuple(_identifier(str(value)) for value in construction.args)
+
+
+@dataclass(frozen=True)
+class ExternalHomothetyMacro:
+    tangent_clause_index: int
+    intersection_clause_index: int
+    output: str
+    hidden_tangent_points: tuple[str, str, str, str]
+    center_a: str
+    radius_a: str
+    center_b: str
+    radius_b: str
+
+    @property
+    def certificate(self) -> str:
+        return (
+            "external_common_tangents_intersect_at_external_homothety_center:"
+            f"{self.center_a},{self.radius_a},{self.center_b},{self.radius_b}"
+            f"->{self.output}"
+        )
+
+
+def external_homothety_macros(
+    formulation: JGEXFormulation,
+) -> tuple[ExternalHomothetyMacro, ...]:
+    """Find a typed cc_tangent -> line intersection composition.
+
+    This is a graph rewrite, not a text pattern: all four tangent outputs must
+    be consumed exactly once by the two-line intersection and nowhere else.
+    """
+
+    uses: dict[str, list[int]] = {}
+    for clause_index, clause in enumerate(formulation.setup_clauses):
+        for construction in clause.constructions:
+            for argument in _construction_args(construction):
+                uses.setdefault(argument, []).append(clause_index)
+    goal_points = {
+        _identifier(str(argument))
+        for goal in formulation.goals
+        for argument in goal.args
+    }
+    macros: list[ExternalHomothetyMacro] = []
+    for clause_index, clause in enumerate(formulation.setup_clauses):
+        constructions = tuple(clause.constructions)
+        if len(constructions) != 1 or constructions[0].name != "cc_tangent":
+            continue
+        args = _construction_args(constructions[0])
+        first, second, third, fourth, center_a, radius_a, center_b, radius_b = args
+        tangent_points = (first, second, third, fourth)
+        if goal_points.intersection(tangent_points):
+            continue
+        for consumer_index in range(clause_index + 1, len(formulation.setup_clauses)):
+            consumer = formulation.setup_clauses[consumer_index]
+            line_constructions = tuple(
+                item for item in consumer.constructions if item.name == "on_line"
+            )
+            if len(line_constructions) != 2 or len(consumer.constructions) != 2:
+                continue
+            line_args = tuple(_construction_args(item) for item in line_constructions)
+            if line_args[0][0] != line_args[1][0]:
+                continue
+            endpoint_pairs = {
+                frozenset(line_args[0][1:3]),
+                frozenset(line_args[1][1:3]),
+            }
+            expected_pairs = {
+                frozenset((first, second)),
+                frozenset((third, fourth)),
+            }
+            if endpoint_pairs != expected_pairs:
+                continue
+            if any(
+                uses.get(point, []) != [clause_index, consumer_index]
+                for point in tangent_points
+            ):
+                continue
+            macros.append(
+                ExternalHomothetyMacro(
+                    tangent_clause_index=clause_index,
+                    intersection_clause_index=consumer_index,
+                    output=line_args[0][0],
+                    hidden_tangent_points=tangent_points,
+                    center_a=center_a,
+                    radius_a=radius_a,
+                    center_b=center_b,
+                    radius_b=radius_b,
+                )
+            )
+            break
+    return tuple(macros)
+
+
+def _emit_external_homothety_center(
+    emitter: _Emitter,
+    macro: ExternalHomothetyMacro,
+) -> None:
+    copied_radius_b = emitter.translate(
+        macro.center_b,
+        macro.radius_b,
+        macro.center_a,
+        "homothety_radius_copy",
+    )
+    radius_axis = emitter.line(
+        macro.center_a,
+        macro.radius_a,
+        "homothety_radius_axis",
+    )
+    radius_b_circle = emitter.circle(macro.center_a, copied_radius_b)
+    aligned_radius_b = emitter.fresh("homothety_aligned_radius")
+    opposite_radius_b = emitter.fresh("homothety_opposite_radius")
+    emitter.emit(
+        f"intersec2 {aligned_radius_b} {opposite_radius_b} "
+        f"{radius_b_circle} {radius_axis}"
+    )
+    emitter.points.update((aligned_radius_b, opposite_radius_b))
+    radius_difference = emitter.translate(
+        aligned_radius_b,
+        macro.radius_a,
+        macro.center_a,
+        "homothety_radius_difference",
+    )
+    centers_axis = emitter.line(
+        macro.center_a,
+        macro.center_b,
+        "homothety_centers",
+    )
+    homothety_bridge = emitter.line(
+        radius_difference,
+        macro.center_b,
+        "homothety_bridge",
+    )
+    through_radius_a = emitter.parallel(macro.radius_a, homothety_bridge)
+    emitter.emit(
+        f"intersec {_identifier(macro.output)} {through_radius_a} {centers_axis}"
+    )
+    emitter.points.add(_identifier(macro.output))
 
 
 def _transfer_direct_similarity(
@@ -400,8 +535,7 @@ def _emit_locus_clause(emitter: _Emitter, constructions: tuple) -> None:
         raise ValueError("unsupported compound loci: " + ", ".join(unsupported))
 
     lines = [
-        _line_locus(emitter, item.name, _construction_args(item))
-        for item in line_loci
+        _line_locus(emitter, item.name, _construction_args(item)) for item in line_loci
     ]
     circles = [
         _circle_locus(emitter, item.name, _construction_args(item))
@@ -418,9 +552,7 @@ def _emit_locus_clause(emitter: _Emitter, constructions: tuple) -> None:
         return
     if len(circles) >= 2:
         other = emitter.fresh("other_root")
-        emitter.emit(
-            f"intersec2 {output} {other} {circles[0][0]} {circles[1][0]}"
-        )
+        emitter.emit(f"intersec2 {output} {other} {circles[0][0]} {circles[1][0]}")
         emitter.points.update((output, other))
         return
     if len(lines) == 1:
@@ -536,9 +668,7 @@ def _emit_direct(emitter: _Emitter, name: str, args: tuple[str, ...]) -> None:
         # center remains finite.  Sketch attempts alternate the branch without
         # inspecting a problem identifier or expected result.
         homothety_radius = (
-            aligned_radius_b
-            if emitter.sketch_seed % 2 == 0
-            else opposite_radius_b
+            aligned_radius_b if emitter.sketch_seed % 2 == 0 else opposite_radius_b
         )
         radius_difference = emitter.translate(
             homothety_radius,
@@ -572,8 +702,7 @@ def _emit_direct(emitter: _Emitter, name: str, args: tuple[str, ...]) -> None:
         first_secant_a = emitter.fresh("tangent_first_secant_point")
         first_secant_b = emitter.fresh("tangent_first_secant_point")
         emitter.emit(
-            f"intersec2 {first_secant_a} {first_secant_b} "
-            f"{first_circle} {first_secant}"
+            f"intersec2 {first_secant_a} {first_secant_b} {first_circle} {first_secant}"
         )
         emitter.points.update((first_secant_a, first_secant_b))
 
@@ -625,9 +754,7 @@ def _emit_direct(emitter: _Emitter, name: str, args: tuple[str, ...]) -> None:
             second_polar_point,
             "tangent_contact_chord",
         )
-        emitter.emit(
-            f"intersec2 {first} {third} {first_circle} {contact_chord}"
-        )
+        emitter.emit(f"intersec2 {first} {third} {first_circle} {contact_chord}")
         emitter.points.update((first, third))
 
         first_tangent = emitter.line(homothety_center, first, "tangent_line")
@@ -657,13 +784,9 @@ def _goal_line(
     if channel == "cyclic" and len(points) == 4:
         first, second, third, fourth = points[:4]
         first_cross = f"{{ signed_area3 {first} {second} {third} }}"
-        first_dot = (
-            f"{{ pythagoras_difference3 {first} {second} {third} }}"
-        )
+        first_dot = f"{{ pythagoras_difference3 {first} {second} {third} }}"
         second_cross = f"{{ signed_area3 {first} {fourth} {third} }}"
-        second_dot = (
-            f"{{ pythagoras_difference3 {first} {fourth} {third} }}"
-        )
+        second_dot = f"{{ pythagoras_difference3 {first} {fourth} {third} }}"
         # Equal (possibly supplementary) directed angles ABC and ADC.
         # This tangent identity avoids a branch-sensitive circumcenter.
         return (
@@ -673,7 +796,12 @@ def _goal_line(
     raise ValueError(f"unsupported GCLC goal: {channel} {points}")
 
 
-def translate_jgex_to_gclc(text: str, *, sketch_seed: int = 0) -> GCLCTranslation:
+def translate_jgex_to_gclc(
+    text: str,
+    *,
+    sketch_seed: int = 0,
+    enable_structural_lemmas: bool = True,
+) -> GCLCTranslation:
     definitions = JGEXDefinition.to_dict(list(ALL_JGEX_CONSTRUCTIONS))
     formulation, report = normalize_legacy_formulation(
         JGEXFormulation.from_text(text), definitions
@@ -690,9 +818,21 @@ def translate_jgex_to_gclc(text: str, *, sketch_seed: int = 0) -> GCLCTranslatio
 
     emitter = _Emitter(sketch_seed=sketch_seed)
     vocabulary: list[str] = []
-    for clause in formulation.setup_clauses:
+    homothety_macros = (
+        external_homothety_macros(formulation) if enable_structural_lemmas else ()
+    )
+    macros_by_start = {item.tangent_clause_index: item for item in homothety_macros}
+    skipped_clause_indices = {
+        item.intersection_clause_index for item in homothety_macros
+    }
+    for clause_index, clause in enumerate(formulation.setup_clauses):
         constructions = tuple(clause.constructions)
         vocabulary.extend(item.name for item in constructions)
+        if clause_index in macros_by_start:
+            _emit_external_homothety_center(emitter, macros_by_start[clause_index])
+            continue
+        if clause_index in skipped_clause_indices:
+            continue
         if len(constructions) == 1 and constructions[0].name in DIRECT_CONSTRUCTIONS:
             _emit_direct(
                 emitter,
@@ -710,4 +850,5 @@ def translate_jgex_to_gclc(text: str, *, sketch_seed: int = 0) -> GCLCTranslatio
         goal_channel=channel,
         goal_points=points,
         source_sha256=hashlib.sha256(source.encode("utf-8")).hexdigest(),
+        local_lemma_certificates=tuple(item.certificate for item in homothety_macros),
     )

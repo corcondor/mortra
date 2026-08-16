@@ -1,0 +1,44 @@
+{
+  "experiment": "mortra_local_polynomial_stalk",
+  "recorded_at": "2026-08-16T00:00:00+09:00",
+  "uses_llm": false,
+  "python": "3.12.10",
+  "sympy": "1.14.0",
+  "reference_hash_algorithm": "sha256(normalize_crlf_to_lf)",
+  "newclid_commit": "ac6550732a950564cf7614d605b5bf1eadd29701",
+  "reference_artifacts": {
+    "data/polynomial-stalk-width-ablation-fixed4-2026-08-16.json": "9b1b2316f45c67415ffbe93497044a100dce2887d1996cf06738bda670670267",
+    "data/polynomial-stalk-separator4-fixed4-2026-08-16.json": "4cf7ca07ef5c3a3dc5879685bead36a75715e23da9f7bb2cc37d1d9a1c8a18ca",
+    "data/polynomial-stalk-separator8-fixed4-2026-08-16.json": "6056f9368a81cc20e7eec1e64ce10a6e4ff73b8bcf42dde47db3df58b7eb4e19",
+    "data/polynomial-stalk-separator12-fixed4-2026-08-16.json": "fca93c455d6f780210dc16d168f017318d9c052f99e22c92fdf1cb5d185d7456",
+    "data/polynomial-stalk-min-fill-separator12-fixed4-2026-08-16.json": "0e802ecd82bd8cc86eb0f4a702d45ce1ec80037e9deb9707063137ec6195778c"
+  },
+  "semantic_acceptance": {
+    "fixed_problem_names": ["2008_p6", "2010_p2", "2020_p1", "2021_p3"],
+    "explicit_inspection_completed": 2,
+    "relational_inspection_completed": 4,
+    "term_width_32": {
+      "completed": 4,
+      "eliminated_variables": 32,
+      "derived_goals": 44,
+      "local_agents": 21,
+      "active_agents": 21,
+      "coordinator_replayed_goals": 44,
+      "maximum_proof_depth": 7,
+      "global_goals_replayed": 0
+    },
+    "separator_caps": {
+      "4": {"eliminated_variables": 0, "derived_goals": 0},
+      "8": {"eliminated_variables": 23, "derived_goals": 15},
+      "12": {"eliminated_variables": 31, "derived_goals": 34}
+    },
+    "min_fill_separator_12": {
+      "ordering_strategy": "min_fill",
+      "completed": 4,
+      "eliminated_variables": 31,
+      "derived_goals": 34,
+      "maximum_proof_depth": 7,
+      "global_goals_replayed": 0
+    }
+  }
+}

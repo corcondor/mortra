@@ -1,0 +1,137 @@
+{
+  "experiment": "newclid-certified-homothety-boundary-exchange",
+  "generated_at": "2026-08-16T05:18:31.654088+00:00",
+  "uses_llm": false,
+  "uses_problem_specific_solver_logic": false,
+  "dataset_auxiliary_clauses_hidden": true,
+  "problem_name_is_evaluation_selection_only": "2008_p6",
+  "normalization": {
+    "rewritten_constructions": 0,
+    "unchanged_constructions": 18,
+    "unresolved_constructions": 0
+  },
+  "certificates": {
+    "coll": {
+      "rule_name": "external_homothety_to_center_collinearity",
+      "premises": [
+        {
+          "predicate": "external_homothety",
+          "arguments": [
+            "k",
+            "i1",
+            "f1",
+            "i2",
+            "f2"
+          ]
+        }
+      ],
+      "conclusions": [
+        {
+          "predicate": "coll",
+          "arguments": [
+            "i1",
+            "i2",
+            "k"
+          ]
+        }
+      ],
+      "hidden_points": [],
+      "native_kind": "polynomial_ideal_identity",
+      "native_reference": "0f5cdc6c6e24b8dbdf5fe617d0e52abf6a4b1ff104c28dbb2db3538d481e5de8",
+      "replayed": true,
+      "certificate_sha256": "de76753693d772c9b105ffe7a47f4faad969fefa8a65abb39f0764c8be65c3a2"
+    },
+    "eqratio": {
+      "rule_name": "external_homothety_to_radius_ratio",
+      "premises": [
+        {
+          "predicate": "external_homothety",
+          "arguments": [
+            "k",
+            "i1",
+            "f1",
+            "i2",
+            "f2"
+          ]
+        }
+      ],
+      "conclusions": [
+        {
+          "predicate": "eqratio",
+          "arguments": [
+            "k",
+            "i1",
+            "k",
+            "i2",
+            "i1",
+            "f1",
+            "i2",
+            "f2"
+          ]
+        }
+      ],
+      "hidden_points": [],
+      "native_kind": "polynomial_ideal_identity",
+      "native_reference": "343348e7ce3bfa86ef3e2432146413f5b1394f51736be12685393fc9da85d101",
+      "replayed": true,
+      "certificate_sha256": "02ef9217cd0f82fa93482efc434e26d68c305e325b005d826dd13507d3075a67"
+    }
+  },
+  "results": {
+    "baseline": {
+      "injected_relations": [],
+      "injected_facts": [],
+      "solved": false,
+      "status": "saturated",
+      "elapsed_seconds": 1.2043563000042923,
+      "all_deduction_count": 6314,
+      "goal_deduction_count": 0,
+      "proof_sha256": "a3672fa95beaa51281c3c8cfbc148a1ce585d62e8d57911c15b4ae50c25a4a56"
+    },
+    "collinearity_only": {
+      "injected_relations": [
+        "coll"
+      ],
+      "injected_facts": [
+        "coll i1 i2 k"
+      ],
+      "solved": false,
+      "status": "saturated",
+      "elapsed_seconds": 0.9116943999833893,
+      "all_deduction_count": 6314,
+      "goal_deduction_count": 0,
+      "proof_sha256": "3531ba123c35a4b0716a53933e6f94881e7462b3598f3cd2c3d602641bac545b"
+    },
+    "ratio_only": {
+      "injected_relations": [
+        "eqratio"
+      ],
+      "injected_facts": [
+        "eqratio k i1 k i2 i1 f1 i2 f2"
+      ],
+      "solved": false,
+      "status": "saturated",
+      "elapsed_seconds": 1.135822600015672,
+      "all_deduction_count": 6315,
+      "goal_deduction_count": 0,
+      "proof_sha256": "959c39cb6aebc4c5d7a18d6fc96283d79d5e4f1f95c3f2663aa749945f2f8f4c"
+    },
+    "collinearity_and_ratio": {
+      "injected_relations": [
+        "coll",
+        "eqratio"
+      ],
+      "injected_facts": [
+        "coll i1 i2 k",
+        "eqratio k i1 k i2 i1 f1 i2 f2"
+      ],
+      "solved": false,
+      "status": "saturated",
+      "elapsed_seconds": 0.9118640999950003,
+      "all_deduction_count": 6315,
+      "goal_deduction_count": 0,
+      "proof_sha256": "6ac4ca54f419eef09e85ead728a0647e215ab1ac9f13e2ace3556970940cec9b"
+    }
+  },
+  "claim_scope": "Only independently replayed homothety boundary relations are injected. The experiment measures whether they help the unchanged native prover."
+}

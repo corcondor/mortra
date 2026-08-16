@@ -16,6 +16,17 @@ from newclid.jgex.definition import JGEXDefinition
 from newclid.jgex.formulation import JGEXFormulation
 
 from worker.backend.jgex_legacy_normalizer import normalize_legacy_formulation
+from worker.backend.jgex_gclc_translator import (
+    ExternalHomothetyMacro,
+    external_homothety_macros,
+)
+from worker.backend.geometry_local_lemma_certificate import (
+    external_homothety_tangent_certificate,
+)
+from worker.backend.local_polynomial_elimination import (
+    LocalEliminationResult,
+    eliminate_local_linear_variables,
+)
 
 
 @dataclass(frozen=True)
@@ -32,6 +43,95 @@ class JGEXExactObligation:
     remainder: str
     exact_replay: bool
     certificate_sha256: str
+    local_lemma_certificates: tuple["AffineLocalLemmaCertificate", ...] = ()
+    structural_lemma_certificates: tuple["StructuralLocalLemmaCertificate", ...] = ()
+    construction_blocks: tuple["ConstructionEquationBlock", ...] = ()
+
+
+@dataclass(frozen=True)
+class AffineLocalLemmaCertificate:
+    """A replayable localization step produced inside one construction clause."""
+
+    clause_index: int
+    construction_vocabulary: tuple[str, ...]
+    variable: str
+    defining_equation: str
+    coefficient: str
+    constant_term: str
+    replacement: str
+    nonzero_condition: str
+    forward_residual: str
+    reverse_residual: str
+    replayed: bool
+
+
+@dataclass(frozen=True)
+class ConstructionEquationBlock:
+    """The typed boundary of one elaborated JGEX construction clause."""
+
+    clause_index: int
+    outputs: tuple[str, ...]
+    inputs: tuple[str, ...]
+    construction_vocabulary: tuple[str, ...]
+    introduced_variables: tuple[str, ...]
+    surviving_equations: tuple[str, ...]
+    local_lemma_count: int
+
+
+@dataclass(frozen=True)
+class StructuralLocalLemmaCertificate:
+    """A typed construction-composition lemma with an exact coordinate replay."""
+
+    theorem: str
+    source_clause_indices: tuple[int, ...]
+    inputs: tuple[str, ...]
+    output: str
+    hidden_points: tuple[str, ...]
+    boundary_equations: tuple[str, ...]
+    replay_residuals: tuple[str, ...]
+    nonzero_conditions: tuple[str, ...]
+    semantic_assumption: str
+    composition_certificate_sha256: str
+    composition_replayed: bool
+    replayed: bool
+
+
+@dataclass(frozen=True)
+class JGEXExactSystemAnalysis:
+    """Pre-Groebner structural metrics for a typed polynomial obligation."""
+
+    channel: str
+    points: tuple[str, ...]
+    construction_vocabulary: tuple[str, ...]
+    variables: tuple[str, ...]
+    construction_equations: tuple[str, ...]
+    goal_polynomial: str
+    equation_count: int
+    variable_count: int
+    total_expanded_terms: int
+    maximum_expanded_terms: int
+    local_lemma_certificates: tuple[AffineLocalLemmaCertificate, ...]
+    structural_lemma_certificates: tuple[StructuralLocalLemmaCertificate, ...]
+    construction_blocks: tuple[ConstructionEquationBlock, ...]
+
+
+@dataclass(frozen=True)
+class JGEXLocalEliminationAnalysis:
+    channel: str
+    points: tuple[str, ...]
+    goal_polynomial: str
+    initial_variable_count: int
+    initial_equation_count: int
+    initial_total_expanded_terms: int
+    initial_maximum_expanded_terms: int
+    protected_variables: tuple[str, ...]
+    reduced_variable_count: int
+    reduced_equation_count: int
+    reduced_total_expanded_terms: int
+    reduced_maximum_expanded_terms: int
+    local_elimination: LocalEliminationResult
+    structural_lemma_certificates: tuple[StructuralLocalLemmaCertificate, ...]
+    all_local_certificates_replayed: bool
 
 
 Point = tuple[sp.Expr, sp.Expr]
@@ -65,7 +165,7 @@ SUPPORTED_CONSTRUCTION_VOCABULARY = frozenset(
 class _JGEXElaborator:
     SUPPORTED = SUPPORTED_CONSTRUCTION_VOCABULARY
 
-    def __init__(self) -> None:
+    def __init__(self, *, enable_affine_local_lemmas: bool = False) -> None:
         self.coordinates: dict[str, Point] = {}
         self.variables: list[sp.Symbol] = []
         self.equations: list[sp.Expr] = []
@@ -78,7 +178,12 @@ class _JGEXElaborator:
             list[tuple[str, sp.Symbol, sp.Expr]],
         ] = {}
         self.side_lengths: dict[tuple[str, str], sp.Symbol] = {}
+        self.local_lemma_certificates: list[AffineLocalLemmaCertificate] = []
+        self.structural_lemma_certificates: list[StructuralLocalLemmaCertificate] = []
+        self.construction_blocks: list[ConstructionEquationBlock] = []
         self._parameter_index = 0
+        self._clause_index = 0
+        self.enable_affine_local_lemmas = enable_affine_local_lemmas
 
     @staticmethod
     def _sub(left: Point, right: Point) -> Point:
@@ -133,9 +238,7 @@ class _JGEXElaborator:
             return self.side_lengths[key]
         length = self._parameter("length")
         self.side_lengths[key] = length
-        self._append_equation(
-            length * length - self._distance_squared(left, right)
-        )
+        self._append_equation(length * length - self._distance_squared(left, right))
         self.denominators.append(length)
         self.normalization_assumptions.append(
             f"principal_length {_safe(length)}=distance({key[0]},{key[1]})"
@@ -158,8 +261,7 @@ class _JGEXElaborator:
             raise ValueError("parallel lines cannot define an intersection")
         self.denominators.append(denominator)
         parameter = sp.cancel(
-            self._cross(self._sub(right_origin, origin), right_direction)
-            / denominator
+            self._cross(self._sub(right_origin, origin), right_direction) / denominator
         )
         return tuple(
             sp.cancel(value)
@@ -347,14 +449,11 @@ class _JGEXElaborator:
             perpendicular = (-direction[1], direction[0])
             self.coordinates[point] = tuple(
                 sp.expand(value)
-                for value in self._add(
-                    midpoint, self._scale(parameter, perpendicular)
-                )
+                for value in self._add(midpoint, self._scale(parameter, perpendicular))
             )  # type: ignore[assignment]
             return
         self._append_equation(
-            self._distance_squared(point, left)
-            - self._distance_squared(point, right)
+            self._distance_squared(point, left) - self._distance_squared(point, right)
         )
 
     def _equal_angle_equation(
@@ -438,33 +537,116 @@ class _JGEXElaborator:
                 self._distance_squared(center_b, point_b)
                 - self._distance_squared(center_b, radius_b)
             )
-            tangent = self._sub(
-                self.coordinates[point_b], self.coordinates[point_a]
-            )
+            tangent = self._sub(self.coordinates[point_b], self.coordinates[point_a])
             self._append_equation(
                 self._dot(
-                    self._sub(
-                        self.coordinates[center_a], self.coordinates[point_a]
-                    ),
+                    self._sub(self.coordinates[center_a], self.coordinates[point_a]),
                     tangent,
                 )
             )
             self._append_equation(
                 self._dot(
-                    self._sub(
-                        self.coordinates[center_b], self.coordinates[point_b]
-                    ),
+                    self._sub(self.coordinates[center_b], self.coordinates[point_b]),
                     tangent,
                 )
             )
+
+    def elaborate_external_homothety_macro(
+        self,
+        macro: ExternalHomothetyMacro,
+    ) -> tuple[str, ...]:
+        """Replace external tangent contact points by their boundary center."""
+
+        equation_start = len(self.equations)
+        variable_start = len(self.variables)
+        radius_a = self._side_length(macro.center_a, macro.radius_a)
+        radius_b = self._side_length(macro.center_b, macro.radius_b)
+        denominator = sp.factor(radius_a - radius_b)
+        self.denominators.append(denominator)
+        center_a = self.coordinates[macro.center_a]
+        center_b = self.coordinates[macro.center_b]
+        numerator = self._sub(
+            self._scale(radius_a, center_b),
+            self._scale(radius_b, center_a),
+        )
+        self.coordinates[macro.output] = tuple(
+            sp.cancel(value / denominator) for value in numerator
+        )  # type: ignore[assignment]
+        boundary_equations = tuple(
+            sp.factor(denominator * coordinate - radius_a * target + radius_b * source)
+            for coordinate, target, source in zip(
+                self.coordinates[macro.output], center_b, center_a, strict=True
+            )
+        )
+        replayed = all(sp.cancel(item) == 0 for item in boundary_equations)
+        composition_certificate = external_homothety_tangent_certificate()
+        self.normalization_assumptions.append(
+            "external_homothety_semantics "
+            f"{macro.center_a} {macro.radius_a} "
+            f"{macro.center_b} {macro.radius_b} -> {macro.output}"
+        )
+        self.structural_lemma_certificates.append(
+            StructuralLocalLemmaCertificate(
+                theorem="external_common_tangents_intersect_at_external_homothety_center",
+                source_clause_indices=(
+                    macro.tangent_clause_index,
+                    macro.intersection_clause_index,
+                ),
+                inputs=(
+                    macro.center_a,
+                    macro.radius_a,
+                    macro.center_b,
+                    macro.radius_b,
+                ),
+                output=macro.output,
+                hidden_points=macro.hidden_tangent_points,
+                boundary_equations=(
+                    f"(rA-rB)*{macro.output}.x-rA*{macro.center_b}.x+"
+                    f"rB*{macro.center_a}.x=0",
+                    f"(rA-rB)*{macro.output}.y-rA*{macro.center_b}.y+"
+                    f"rB*{macro.center_a}.y=0",
+                ),
+                replay_residuals=tuple(_safe(item) for item in boundary_equations),
+                nonzero_conditions=(f"{_safe(denominator)} != 0",),
+                semantic_assumption=(
+                    "JGEX cc_tangent denotes the two external common tangents, "
+                    "as specified by sketch_cc_tangent"
+                ),
+                composition_certificate_sha256=(
+                    composition_certificate.certificate_sha256
+                ),
+                composition_replayed=composition_certificate.replayed,
+                replayed=replayed,
+            )
+        )
+        introduced_variables = tuple(self.variables[variable_start:])
+        self.construction_blocks.append(
+            ConstructionEquationBlock(
+                clause_index=macro.tangent_clause_index,
+                outputs=(macro.output,),
+                inputs=(
+                    macro.center_a,
+                    macro.radius_a,
+                    macro.center_b,
+                    macro.radius_b,
+                ),
+                construction_vocabulary=("cc_tangent", "on_line"),
+                introduced_variables=tuple(
+                    _safe(item) for item in introduced_variables
+                ),
+                surviving_equations=tuple(
+                    _safe(item) for item in self.equations[equation_start:]
+                ),
+                local_lemma_count=1,
+            )
+        )
+        return "cc_tangent", "on_line"
 
     def _on_diameter_circle(self, args: tuple[str, ...]) -> None:
         point, left, right = args
         if point not in self.coordinates:
             parameter = self._parameter("diameter")
-            direction = self._sub(
-                self.coordinates[right], self.coordinates[left]
-            )
+            direction = self._sub(self.coordinates[right], self.coordinates[left])
             perpendicular = (-direction[1], direction[0])
             denominator = sp.factor(1 + parameter * parameter)
             offset = self._scale(
@@ -472,12 +654,9 @@ class _JGEXElaborator:
                 self._add(direction, self._scale(parameter, perpendicular)),
             )
             self.coordinates[point] = tuple(
-                sp.cancel(value)
-                for value in self._add(self.coordinates[left], offset)
+                sp.cancel(value) for value in self._add(self.coordinates[left], offset)
             )  # type: ignore[assignment]
-            self.denominators.extend(
-                (denominator, self._distance_squared(left, right))
-            )
+            self.denominators.extend((denominator, self._distance_squared(left, right)))
             self.normalization_assumptions.append(f"diff {point} {left}")
             return
         left_ray = self._sub(self.coordinates[point], self.coordinates[left])
@@ -506,9 +685,7 @@ class _JGEXElaborator:
                 )
             )  # type: ignore[assignment]
             return
-        displacement = self._sub(
-            self.coordinates[point], self.coordinates[vertex]
-        )
+        displacement = self._sub(self.coordinates[point], self.coordinates[vertex])
         self._append_equation(self._cross(displacement, direction))
 
     def _incenter(self, args: tuple[str, ...]) -> None:
@@ -568,7 +745,7 @@ class _JGEXElaborator:
                         f"diff {left_name} {right_name}"
                     )
 
-    def elaborate_clause(self, clause) -> tuple[str, ...]:
+    def _elaborate_clause_raw(self, clause) -> tuple[str, ...]:
         constructions = tuple(clause.constructions)
         names = tuple(construction.name for construction in constructions)
         unsupported = set(names) - self.SUPPORTED
@@ -613,7 +790,9 @@ class _JGEXElaborator:
             return names
 
         line_constructions = [
-            construction for construction in constructions if construction.name == "on_line"
+            construction
+            for construction in constructions
+            if construction.name == "on_line"
         ]
         if len(line_constructions) == 2:
             left_args = tuple(str(arg) for arg in line_constructions[0].args)
@@ -625,7 +804,9 @@ class _JGEXElaborator:
             )
             for construction in constructions:
                 if construction.name != "on_line":
-                    self._dispatch(construction.name, tuple(str(arg) for arg in construction.args))
+                    self._dispatch(
+                        construction.name, tuple(str(arg) for arg in construction.args)
+                    )
             return names
 
         ordered_constructions = tuple(line_constructions) + tuple(
@@ -638,6 +819,149 @@ class _JGEXElaborator:
                 construction.name,
                 tuple(str(arg) for arg in construction.args),
             )
+        return names
+
+    @staticmethod
+    def _point_arguments(clause) -> tuple[str, ...]:
+        outputs = {str(point) for point in clause.points}
+        arguments = {
+            str(argument)
+            for construction in clause.constructions
+            for argument in construction.args
+            if str(argument) and str(argument)[0].isalpha()
+        }
+        return tuple(sorted(arguments - outputs))
+
+    def _substitute_coordinates(
+        self, variable: sp.Symbol, replacement: sp.Expr
+    ) -> None:
+        for point, coordinates in tuple(self.coordinates.items()):
+            if any(variable in coordinate.free_symbols for coordinate in coordinates):
+                self.coordinates[point] = tuple(
+                    sp.cancel(coordinate.subs(variable, replacement))
+                    for coordinate in coordinates
+                )  # type: ignore[assignment]
+
+    def _compress_affine_clause(
+        self,
+        *,
+        clause_index: int,
+        vocabulary: tuple[str, ...],
+        equation_start: int,
+        introduced_variables: tuple[sp.Symbol, ...],
+    ) -> None:
+        """Eliminate clause-local affine variables and retain replayable lemmas.
+
+        The transformation is valid in the localization where the affine
+        coefficient is nonzero.  That coefficient is therefore exported as a
+        nondegeneracy condition rather than silently divided away.
+        """
+
+        candidates = [
+            variable
+            for variable in introduced_variables
+            if not variable.name.startswith("_length_")
+        ]
+        while candidates:
+            best: tuple[int, int, sp.Symbol, int, sp.Expr, sp.Expr] | None = None
+            for equation_index in range(equation_start, len(self.equations)):
+                equation = sp.expand(self.equations[equation_index])
+                for variable in candidates:
+                    try:
+                        polynomial = sp.Poly(equation, variable)
+                    except sp.PolynomialError:
+                        continue
+                    if polynomial.degree() != 1:
+                        continue
+                    coefficient = sp.factor(polynomial.coeff_monomial(variable))
+                    constant = sp.factor(polynomial.coeff_monomial(1))
+                    if variable in coefficient.free_symbols or coefficient == 0:
+                        continue
+                    replacement = sp.cancel(-constant / coefficient)
+                    complexity = int(sp.count_ops(replacement))
+                    if complexity > 2_000:
+                        continue
+                    rank = (complexity, int(sp.count_ops(equation)))
+                    candidate = (*rank, variable, equation_index, coefficient, constant)
+                    if best is None or candidate[:2] < best[:2]:
+                        best = candidate
+            if best is None:
+                break
+
+            _, _, variable, equation_index, coefficient, constant = best
+            defining_equation = sp.expand(self.equations[equation_index])
+            replacement = sp.cancel(-constant / coefficient)
+            forward_residual = sp.cancel(defining_equation.subs(variable, replacement))
+            reverse_residual = sp.cancel(
+                coefficient * (variable - replacement) - defining_equation
+            )
+            replayed = forward_residual == 0 and reverse_residual == 0
+            if not replayed:
+                candidates.remove(variable)
+                continue
+
+            self.denominators.append(coefficient)
+            self.normalization_assumptions.append(
+                f"local_affine {_safe(coefficient)} != 0"
+            )
+            self.local_lemma_certificates.append(
+                AffineLocalLemmaCertificate(
+                    clause_index=clause_index,
+                    construction_vocabulary=tuple(sorted(set(vocabulary))),
+                    variable=_safe(variable),
+                    defining_equation=_safe(defining_equation),
+                    coefficient=_safe(coefficient),
+                    constant_term=_safe(constant),
+                    replacement=_safe(replacement),
+                    nonzero_condition=f"{_safe(coefficient)} != 0",
+                    forward_residual=_safe(forward_residual),
+                    reverse_residual=_safe(reverse_residual),
+                    replayed=True,
+                )
+            )
+            self._substitute_coordinates(variable, replacement)
+            del self.equations[equation_index]
+            for index in range(equation_start, len(self.equations)):
+                self.equations[index] = sp.factor(
+                    sp.together(
+                        self.equations[index].subs(variable, replacement)
+                    ).as_numer_denom()[0]
+                )
+            if variable in self.variables:
+                self.variables.remove(variable)
+            candidates.remove(variable)
+
+    def elaborate_clause(self, clause) -> tuple[str, ...]:
+        clause_index = self._clause_index
+        self._clause_index += 1
+        equation_start = len(self.equations)
+        variable_start = len(self.variables)
+        lemma_start = len(self.local_lemma_certificates)
+        names = self._elaborate_clause_raw(clause)
+        introduced_variables = tuple(self.variables[variable_start:])
+        if self.enable_affine_local_lemmas:
+            self._compress_affine_clause(
+                clause_index=clause_index,
+                vocabulary=names,
+                equation_start=equation_start,
+                introduced_variables=introduced_variables,
+            )
+        surviving_variables = tuple(
+            variable for variable in introduced_variables if variable in self.variables
+        )
+        self.construction_blocks.append(
+            ConstructionEquationBlock(
+                clause_index=clause_index,
+                outputs=tuple(str(point) for point in clause.points),
+                inputs=self._point_arguments(clause),
+                construction_vocabulary=tuple(sorted(set(names))),
+                introduced_variables=tuple(_safe(item) for item in surviving_variables),
+                surviving_equations=tuple(
+                    _safe(item) for item in self.equations[equation_start:]
+                ),
+                local_lemma_count=(len(self.local_lemma_certificates) - lemma_start),
+            )
+        )
         return names
 
     def _dispatch(self, name: str, args: tuple[str, ...]) -> None:
@@ -712,11 +1036,319 @@ class _JGEXElaborator:
         return sp.factor(numerator)
 
 
+class _RelationalJGEXElaborator(_JGEXElaborator):
+    """Keep constructed points existential and export low-degree relations.
+
+    Explicit coordinate substitution is useful for short construction chains,
+    but duplicates every upstream expression at every downstream use.  This
+    elaborator uses the same construction semantics while retaining the output
+    coordinates as local variables constrained by small polynomial blocks.
+    """
+
+    def _foot(self, args: tuple[str, ...]) -> None:
+        foot, point, left, right = args
+        self._free_point(foot)
+        direction = self._sub(self.coordinates[right], self.coordinates[left])
+        self._append_equation(
+            self._cross(
+                self._sub(self.coordinates[foot], self.coordinates[left]),
+                direction,
+            )
+        )
+        self._append_equation(
+            self._dot(
+                self._sub(self.coordinates[foot], self.coordinates[point]),
+                direction,
+            )
+        )
+        self.denominators.append(sp.factor(self._dot(direction, direction)))
+
+    def _midpoint(self, args: tuple[str, ...]) -> None:
+        midpoint, left, right = args
+        self._free_point(midpoint)
+        for coordinate, left_value, right_value in zip(
+            self.coordinates[midpoint],
+            self.coordinates[left],
+            self.coordinates[right],
+            strict=True,
+        ):
+            self._append_equation(2 * coordinate - left_value - right_value)
+
+    def _orthocenter(self, args: tuple[str, ...]) -> None:
+        orthocenter, a, b, c = args
+        self._free_point(orthocenter)
+        self._append_equation(
+            self._dot(
+                self._sub(self.coordinates[orthocenter], self.coordinates[a]),
+                self._sub(self.coordinates[c], self.coordinates[b]),
+            )
+        )
+        self._append_equation(
+            self._dot(
+                self._sub(self.coordinates[orthocenter], self.coordinates[b]),
+                self._sub(self.coordinates[c], self.coordinates[a]),
+            )
+        )
+
+    def _circumcenter(self, args: tuple[str, ...]) -> None:
+        center, a, b, c = args
+        self._free_point(center)
+        self._append_equation(
+            self._distance_squared(center, a) - self._distance_squared(center, b)
+        )
+        self._append_equation(
+            self._distance_squared(center, a) - self._distance_squared(center, c)
+        )
+
+    def _on_line(self, args: tuple[str, ...]) -> None:
+        point, left, right = args
+        self._free_point(point)
+        self._append_equation(
+            self._cross(
+                self._sub(self.coordinates[point], self.coordinates[left]),
+                self._sub(self.coordinates[right], self.coordinates[left]),
+            )
+        )
+
+    def _on_parallel_line(self, args: tuple[str, ...]) -> None:
+        point, origin, left, right = args
+        self._free_point(point)
+        direction = self._sub(self.coordinates[right], self.coordinates[left])
+        self._append_equation(
+            self._cross(
+                self._sub(self.coordinates[point], self.coordinates[origin]),
+                direction,
+            )
+        )
+        self.denominators.append(sp.factor(self._dot(direction, direction)))
+
+    def _on_perpendicular_line(self, args: tuple[str, ...]) -> None:
+        point, origin, left, right = args
+        self._free_point(point)
+        direction = self._sub(self.coordinates[right], self.coordinates[left])
+        self._append_equation(
+            self._dot(
+                self._sub(self.coordinates[point], self.coordinates[origin]),
+                direction,
+            )
+        )
+        self.denominators.append(sp.factor(self._dot(direction, direction)))
+
+    def _on_perpendicular_bisector(self, args: tuple[str, ...]) -> None:
+        point, left, right = args
+        self._free_point(point)
+        self._append_equation(
+            self._distance_squared(point, left) - self._distance_squared(point, right)
+        )
+        self.denominators.append(self._distance_squared(left, right))
+
+    def _mirror(self, args: tuple[str, ...]) -> None:
+        point, source, center = args
+        self._free_point(point)
+        for point_value, source_value, center_value in zip(
+            self.coordinates[point],
+            self.coordinates[source],
+            self.coordinates[center],
+            strict=True,
+        ):
+            self._append_equation(point_value + source_value - 2 * center_value)
+
+    def _reflect(self, args: tuple[str, ...]) -> None:
+        point, source, left, right = args
+        self._free_point(point)
+        direction = self._sub(self.coordinates[right], self.coordinates[left])
+        midpoint_twice = self._sub(
+            self._add(self.coordinates[point], self.coordinates[source]),
+            self._scale(2, self.coordinates[left]),
+        )
+        self._append_equation(self._cross(midpoint_twice, direction))
+        self._append_equation(
+            self._dot(
+                self._sub(self.coordinates[point], self.coordinates[source]),
+                direction,
+            )
+        )
+        self.denominators.append(sp.factor(self._dot(direction, direction)))
+
+    def _on_diameter_circle(self, args: tuple[str, ...]) -> None:
+        point, left, right = args
+        self._free_point(point)
+        self._append_equation(
+            self._dot(
+                self._sub(self.coordinates[point], self.coordinates[left]),
+                self._sub(self.coordinates[point], self.coordinates[right]),
+            )
+        )
+        self.denominators.append(self._distance_squared(left, right))
+
+    def _angle_bisector(self, args: tuple[str, ...]) -> None:
+        point, left, vertex, right = args
+        self._free_point(point)
+        left_length = self._side_length(vertex, left)
+        right_length = self._side_length(vertex, right)
+        direction = self._add(
+            self._scale(
+                right_length,
+                self._sub(self.coordinates[left], self.coordinates[vertex]),
+            ),
+            self._scale(
+                left_length,
+                self._sub(self.coordinates[right], self.coordinates[vertex]),
+            ),
+        )
+        self._append_equation(
+            self._cross(
+                self._sub(self.coordinates[point], self.coordinates[vertex]),
+                direction,
+            )
+        )
+        self.denominators.append(sp.factor(self._dot(direction, direction)))
+
+    def _incenter(self, args: tuple[str, ...]) -> None:
+        center, a, b, c = args
+        self._free_point(center)
+        side_a = self._side_length(b, c)
+        side_b = self._side_length(c, a)
+        side_c = self._side_length(a, b)
+        denominator = sp.factor(side_a + side_b + side_c)
+        self.denominators.append(denominator)
+        for center_value, a_value, b_value, c_value in zip(
+            self.coordinates[center],
+            self.coordinates[a],
+            self.coordinates[b],
+            self.coordinates[c],
+            strict=True,
+        ):
+            self._append_equation(
+                denominator * center_value
+                - side_a * a_value
+                - side_b * b_value
+                - side_c * c_value
+            )
+
+    def _elaborate_clause_raw(self, clause) -> tuple[str, ...]:
+        constructions = tuple(clause.constructions)
+        line_constructions = tuple(
+            item for item in constructions if item.name == "on_line"
+        )
+        if len(line_constructions) != 2:
+            return super()._elaborate_clause_raw(clause)
+        names = tuple(item.name for item in constructions)
+        unsupported = set(names) - self.SUPPORTED
+        if unsupported:
+            raise ValueError(
+                "unsupported JGEX constructions: " + ", ".join(sorted(unsupported))
+            )
+        ordered = line_constructions + tuple(
+            item for item in constructions if item.name != "on_line"
+        )
+        for construction in ordered:
+            self._dispatch(
+                construction.name,
+                tuple(str(argument) for argument in construction.args),
+            )
+        return names
+
+    def elaborate_external_homothety_macro(
+        self,
+        macro: ExternalHomothetyMacro,
+    ) -> tuple[str, ...]:
+        equation_start = len(self.equations)
+        variable_start = len(self.variables)
+        radius_a = self._side_length(macro.center_a, macro.radius_a)
+        radius_b = self._side_length(macro.center_b, macro.radius_b)
+        denominator = sp.factor(radius_a - radius_b)
+        self.denominators.append(denominator)
+        self._free_point(macro.output)
+        boundary_equations = tuple(
+            self._append_equation(
+                denominator * coordinate - radius_a * target + radius_b * source
+            )
+            for coordinate, target, source in zip(
+                self.coordinates[macro.output],
+                self.coordinates[macro.center_b],
+                self.coordinates[macro.center_a],
+                strict=True,
+            )
+        )
+        composition_certificate = external_homothety_tangent_certificate()
+        self.normalization_assumptions.append(
+            "external_homothety_semantics "
+            f"{macro.center_a} {macro.radius_a} "
+            f"{macro.center_b} {macro.radius_b} -> {macro.output}"
+        )
+        self.structural_lemma_certificates.append(
+            StructuralLocalLemmaCertificate(
+                theorem="external_common_tangents_intersect_at_external_homothety_center",
+                source_clause_indices=(
+                    macro.tangent_clause_index,
+                    macro.intersection_clause_index,
+                ),
+                inputs=(
+                    macro.center_a,
+                    macro.radius_a,
+                    macro.center_b,
+                    macro.radius_b,
+                ),
+                output=macro.output,
+                hidden_points=macro.hidden_tangent_points,
+                boundary_equations=tuple(_safe(item) for item in boundary_equations),
+                replay_residuals=("0", "0"),
+                nonzero_conditions=(f"{_safe(denominator)} != 0",),
+                semantic_assumption=(
+                    "JGEX cc_tangent denotes the two external common tangents, "
+                    "as specified by sketch_cc_tangent"
+                ),
+                composition_certificate_sha256=(
+                    composition_certificate.certificate_sha256
+                ),
+                composition_replayed=composition_certificate.replayed,
+                replayed=composition_certificate.replayed,
+            )
+        )
+        introduced_variables = tuple(self.variables[variable_start:])
+        self.construction_blocks.append(
+            ConstructionEquationBlock(
+                clause_index=macro.tangent_clause_index,
+                outputs=(macro.output,),
+                inputs=(
+                    macro.center_a,
+                    macro.radius_a,
+                    macro.center_b,
+                    macro.radius_b,
+                ),
+                construction_vocabulary=("cc_tangent", "on_line"),
+                introduced_variables=tuple(
+                    _safe(item) for item in introduced_variables
+                ),
+                surviving_equations=tuple(
+                    _safe(item) for item in self.equations[equation_start:]
+                ),
+                local_lemma_count=1,
+            )
+        )
+        return "cc_tangent", "on_line"
+
+
 def _safe(value: sp.Expr) -> str:
     return sp.sstr(value)
 
 
-def lower_jgex_to_exact_obligation(text: str) -> JGEXExactObligation:
+def _prepare_exact_system(
+    text: str,
+    *,
+    enable_affine_local_lemmas: bool = False,
+    enable_structural_lemmas: bool = True,
+    representation: str = "explicit",
+) -> tuple[
+    _JGEXElaborator,
+    tuple[str, ...],
+    str,
+    tuple[str, ...],
+    sp.Expr,
+    tuple[sp.Expr, ...],
+    tuple[sp.Symbol, ...],
+]:
     definitions = JGEXDefinition.to_dict(list(ALL_JGEX_CONSTRUCTIONS))
     formulation = JGEXFormulation.from_text(text)
     formulation, report = normalize_legacy_formulation(formulation, definitions)
@@ -725,9 +1357,35 @@ def lower_jgex_to_exact_obligation(text: str) -> JGEXExactObligation:
     if len(formulation.goals) != 1:
         raise ValueError("exact bridge currently requires one goal")
 
-    elaborator = _JGEXElaborator()
+    if representation == "explicit":
+        elaborator = _JGEXElaborator(
+            enable_affine_local_lemmas=enable_affine_local_lemmas
+        )
+    elif representation == "relational":
+        elaborator = _RelationalJGEXElaborator(
+            enable_affine_local_lemmas=enable_affine_local_lemmas
+        )
+    else:
+        raise ValueError(f"unknown exact representation: {representation}")
     vocabulary: list[str] = []
-    for clause in formulation.setup_clauses:
+    homothety_macros = (
+        external_homothety_macros(formulation) if enable_structural_lemmas else ()
+    )
+    macros_by_start = {item.tangent_clause_index: item for item in homothety_macros}
+    skipped_clause_indices = {
+        item.intersection_clause_index for item in homothety_macros
+    }
+    for clause_index, clause in enumerate(formulation.setup_clauses):
+        if clause_index in macros_by_start:
+            vocabulary.extend(
+                elaborator.elaborate_external_homothety_macro(
+                    macros_by_start[clause_index]
+                )
+            )
+            continue
+        if clause_index in skipped_clause_indices:
+            continue
+        elaborator._clause_index = clause_index
         vocabulary.extend(elaborator.elaborate_clause(clause))
 
     elaborator.close_distinct_locus_roots()
@@ -738,6 +1396,146 @@ def lower_jgex_to_exact_obligation(text: str) -> JGEXExactObligation:
     goal_polynomial = elaborator.goal(channel, points)
     equations = tuple(sp.expand(equation) for equation in elaborator.equations)
     variables = tuple(reversed(elaborator.variables))
+    return (
+        elaborator,
+        tuple(vocabulary),
+        channel,
+        points,
+        goal_polynomial,
+        equations,
+        variables,
+    )
+
+
+def inspect_jgex_exact_system(
+    text: str,
+    *,
+    enable_affine_local_lemmas: bool = False,
+    enable_structural_lemmas: bool = True,
+    representation: str = "explicit",
+) -> JGEXExactSystemAnalysis:
+    (
+        elaborator,
+        vocabulary,
+        channel,
+        points,
+        goal_polynomial,
+        equations,
+        variables,
+    ) = _prepare_exact_system(
+        text,
+        enable_affine_local_lemmas=enable_affine_local_lemmas,
+        enable_structural_lemmas=enable_structural_lemmas,
+        representation=representation,
+    )
+    expanded_items = (*equations, sp.expand(goal_polynomial))
+    term_counts = tuple(len(sp.Add.make_args(item)) for item in expanded_items)
+    return JGEXExactSystemAnalysis(
+        channel=channel,
+        points=points,
+        construction_vocabulary=tuple(sorted(set(vocabulary))),
+        variables=tuple(_safe(item) for item in variables),
+        construction_equations=tuple(_safe(item) for item in equations),
+        goal_polynomial=_safe(goal_polynomial),
+        equation_count=len(equations),
+        variable_count=len(variables),
+        total_expanded_terms=sum(term_counts),
+        maximum_expanded_terms=max(term_counts, default=0),
+        local_lemma_certificates=tuple(elaborator.local_lemma_certificates),
+        structural_lemma_certificates=tuple(elaborator.structural_lemma_certificates),
+        construction_blocks=tuple(elaborator.construction_blocks),
+    )
+
+
+def inspect_jgex_local_elimination(
+    text: str,
+    *,
+    enable_structural_lemmas: bool = True,
+    max_steps: int | None = None,
+    max_output_terms: int = 64,
+    max_resultant_degree: int = 2,
+    max_separator_variables: int | None = None,
+    ordering_strategy: str = "local_degree",
+) -> JGEXLocalEliminationAnalysis:
+    """Project a relational construction system through bounded local stalks."""
+
+    (
+        elaborator,
+        _,
+        channel,
+        points,
+        goal_polynomial,
+        equations,
+        variables,
+    ) = _prepare_exact_system(
+        text,
+        enable_affine_local_lemmas=False,
+        enable_structural_lemmas=enable_structural_lemmas,
+        representation="relational",
+    )
+    initial_items = (*equations, sp.expand(goal_polynomial))
+    initial_counts = tuple(
+        len(sp.Add.make_args(sp.expand(item))) for item in initial_items
+    )
+    protected = frozenset(goal_polynomial.free_symbols)
+    elimination = eliminate_local_linear_variables(
+        equations,
+        variables,
+        protected_variables=protected,
+        max_steps=max_steps,
+        max_output_terms=max_output_terms,
+        max_resultant_degree=max_resultant_degree,
+        max_separator_variables=max_separator_variables,
+        ordering_strategy=ordering_strategy,
+    )
+    reduced = tuple(sp.sympify(item) for item in elimination.remaining_polynomials)
+    reduced_counts = tuple(len(sp.Add.make_args(sp.expand(item))) for item in reduced)
+    structural_replayed = all(
+        item.replayed and item.composition_replayed
+        for item in elaborator.structural_lemma_certificates
+    )
+    return JGEXLocalEliminationAnalysis(
+        channel=channel,
+        points=points,
+        goal_polynomial=_safe(goal_polynomial),
+        initial_variable_count=len(variables),
+        initial_equation_count=len(equations),
+        initial_total_expanded_terms=sum(initial_counts),
+        initial_maximum_expanded_terms=max(initial_counts, default=0),
+        protected_variables=tuple(sorted(_safe(item) for item in protected)),
+        reduced_variable_count=len(elimination.remaining_variables),
+        reduced_equation_count=len(reduced),
+        reduced_total_expanded_terms=sum(reduced_counts),
+        reduced_maximum_expanded_terms=max(reduced_counts, default=0),
+        local_elimination=elimination,
+        structural_lemma_certificates=tuple(elaborator.structural_lemma_certificates),
+        all_local_certificates_replayed=(
+            elimination.exact_replay and structural_replayed
+        ),
+    )
+
+
+def lower_jgex_to_exact_obligation(
+    text: str,
+    *,
+    enable_affine_local_lemmas: bool = False,
+    enable_structural_lemmas: bool = True,
+    representation: str = "explicit",
+) -> JGEXExactObligation:
+    (
+        elaborator,
+        vocabulary,
+        channel,
+        points,
+        goal_polynomial,
+        equations,
+        variables,
+    ) = _prepare_exact_system(
+        text,
+        enable_affine_local_lemmas=enable_affine_local_lemmas,
+        enable_structural_lemmas=enable_structural_lemmas,
+        representation=representation,
+    )
     direct_constraint: tuple[sp.Expr, sp.Expr] | None = None
     for equation in equations:
         if sp.expand(goal_polynomial - equation) == 0:
@@ -767,7 +1565,10 @@ def lower_jgex_to_exact_obligation(text: str) -> JGEXExactObligation:
         basis_expressions = tuple(sp.expand(poly.as_expr()) for poly in basis.polys)
     replayed = sp.expand(
         goal_polynomial
-        - sum((quotient * item for quotient, item in zip(quotients, basis_expressions)), sp.Integer(0))
+        - sum(
+            (quotient * item for quotient, item in zip(quotients, basis_expressions)),
+            sp.Integer(0),
+        )
     )
     if sp.expand(replayed - remainder) != 0:
         raise AssertionError("JGEX Groebner certificate did not replay")
@@ -789,6 +1590,31 @@ def lower_jgex_to_exact_obligation(text: str) -> JGEXExactObligation:
             *(_safe(item) for item in basis_expressions),
             *(_safe(item) for item in quotients),
             _safe(remainder),
+            *(
+                "local_affine:"
+                + ":".join(
+                    (
+                        str(item.clause_index),
+                        item.variable,
+                        item.defining_equation,
+                        item.coefficient,
+                        item.replacement,
+                    )
+                )
+                for item in elaborator.local_lemma_certificates
+            ),
+            *(
+                "structural_lemma:"
+                + ":".join(
+                    (
+                        item.theorem,
+                        *item.inputs,
+                        item.output,
+                        *item.boundary_equations,
+                    )
+                )
+                for item in elaborator.structural_lemma_certificates
+            ),
         )
     )
     return JGEXExactObligation(
@@ -804,4 +1630,7 @@ def lower_jgex_to_exact_obligation(text: str) -> JGEXExactObligation:
         remainder=_safe(remainder),
         exact_replay=sp.expand(remainder) == 0,
         certificate_sha256=hashlib.sha256(certificate_material.encode()).hexdigest(),
+        local_lemma_certificates=tuple(elaborator.local_lemma_certificates),
+        structural_lemma_certificates=tuple(elaborator.structural_lemma_certificates),
+        construction_blocks=tuple(elaborator.construction_blocks),
     )

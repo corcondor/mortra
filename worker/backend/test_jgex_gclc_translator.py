@@ -131,6 +131,36 @@ class JGEXGCLCTranslatorTest(unittest.TestCase):
         self.assertIn("foot y w", result.source)
         self.assertIn("foot i w", result.source)
 
+    def test_tangent_intersection_exchanges_a_local_homothety_lemma(self) -> None:
+        problem = (
+            "o a u = triangle o a u; w b v = triangle w b v; "
+            "x y z i = cc_tangent x y z i o a w b; "
+            "k = on_line k x y, on_line k z i ? coll o w k"
+        )
+        result = translate_jgex_to_gclc(problem)
+        monolithic = translate_jgex_to_gclc(
+            problem,
+            enable_structural_lemmas=False,
+        )
+        self.assertEqual(len(result.local_lemma_certificates), 1)
+        self.assertIn("external_common_tangents", result.local_lemma_certificates[0])
+        self.assertIn("intersec k", result.source)
+        self.assertNotIn("tangent_contact_chord", result.source)
+        self.assertNotIn("foot y w", result.source)
+        self.assertLess(
+            len(result.source.splitlines()),
+            len(monolithic.source.splitlines()),
+        )
+
+    def test_homothety_exchange_requires_exclusive_tangent_outputs(self) -> None:
+        result = translate_jgex_to_gclc(
+            "o a u = triangle o a u; w b v = triangle w b v; "
+            "x y z i = cc_tangent x y z i o a w b; "
+            "k = on_line k x y, on_line k z i ? perp x o x y"
+        )
+        self.assertFalse(result.local_lemma_certificates)
+        self.assertIn("tangent_contact_chord", result.source)
+
 
 if __name__ == "__main__":
     unittest.main()

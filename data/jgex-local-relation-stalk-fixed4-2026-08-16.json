@@ -1,0 +1,978 @@
+{
+  "experiment": "jgex-typed-local-relation-stalk-fixed4",
+  "generated_at": "2026-08-16T05:16:49.320807+00:00",
+  "uses_llm": false,
+  "uses_problem_specific_solver_logic": false,
+  "dataset_auxiliary_clauses_hidden": true,
+  "fixed_problem_names": [
+    "2008_p6",
+    "2010_p2",
+    "2020_p1",
+    "2021_p3"
+  ],
+  "summary": {
+    "local_goals_replayed": 20,
+    "local_goals_total": 20,
+    "local_replay_rate": 1.0,
+    "hidden_internal_points": 4
+  },
+  "results": {
+    "2008_p6": {
+      "source_atom_count": 19,
+      "certificate_count": 4,
+      "relation_counts": {
+        "cong": 4,
+        "perp": 4,
+        "external_homothety": 1,
+        "coll": 1,
+        "eqratio": 1
+      },
+      "hidden_internal_point_count": 4,
+      "certificates": [
+        {
+          "rule_name": "cc_tangent_definition_to_metric_relations",
+          "premises": [
+            {
+              "predicate": "cc_tangent",
+              "arguments": [
+                "q",
+                "t",
+                "p",
+                "s",
+                "i1",
+                "f1",
+                "i2",
+                "f2"
+              ]
+            }
+          ],
+          "conclusions": [
+            {
+              "predicate": "cong",
+              "arguments": [
+                "f1",
+                "i1",
+                "i1",
+                "q"
+              ]
+            },
+            {
+              "predicate": "cong",
+              "arguments": [
+                "f2",
+                "i2",
+                "i2",
+                "t"
+              ]
+            },
+            {
+              "predicate": "perp",
+              "arguments": [
+                "i1",
+                "q",
+                "q",
+                "t"
+              ]
+            },
+            {
+              "predicate": "perp",
+              "arguments": [
+                "i2",
+                "t",
+                "q",
+                "t"
+              ]
+            },
+            {
+              "predicate": "cong",
+              "arguments": [
+                "f1",
+                "i1",
+                "i1",
+                "p"
+              ]
+            },
+            {
+              "predicate": "cong",
+              "arguments": [
+                "f2",
+                "i2",
+                "i2",
+                "s"
+              ]
+            },
+            {
+              "predicate": "perp",
+              "arguments": [
+                "i1",
+                "p",
+                "p",
+                "s"
+              ]
+            },
+            {
+              "predicate": "perp",
+              "arguments": [
+                "i2",
+                "s",
+                "p",
+                "s"
+              ]
+            }
+          ],
+          "hidden_points": [],
+          "native_kind": "jgex_definition",
+          "native_reference": "cc_tangent:2*(cong,cong,perp,perp)",
+          "replayed": true,
+          "certificate_sha256": "ed990ea81621213f27bd3e1fd00261d96418523baf7e28f91649e6cf14de2567"
+        },
+        {
+          "rule_name": "external_tangent_intersection_to_homothety",
+          "premises": [
+            {
+              "predicate": "cc_tangent",
+              "arguments": [
+                "q",
+                "t",
+                "p",
+                "s",
+                "i1",
+                "f1",
+                "i2",
+                "f2"
+              ]
+            },
+            {
+              "predicate": "line_intersection",
+              "arguments": [
+                "k",
+                "q",
+                "t",
+                "p",
+                "s"
+              ]
+            }
+          ],
+          "conclusions": [
+            {
+              "predicate": "external_homothety",
+              "arguments": [
+                "k",
+                "i1",
+                "f1",
+                "i2",
+                "f2"
+              ]
+            }
+          ],
+          "hidden_points": [
+            "q",
+            "t",
+            "p",
+            "s"
+          ],
+          "native_kind": "polynomial_ideal_identity",
+          "native_reference": "318f9e4471a83f20668402bf61df8d59b85f7d8cce73c655d69d53f1b285709a",
+          "replayed": true,
+          "certificate_sha256": "381722d50f020ea50c462d8de99dcc7e1c1240b453420f49c6cfae08b132e2d5"
+        },
+        {
+          "rule_name": "external_homothety_to_center_collinearity",
+          "premises": [
+            {
+              "predicate": "external_homothety",
+              "arguments": [
+                "k",
+                "i1",
+                "f1",
+                "i2",
+                "f2"
+              ]
+            }
+          ],
+          "conclusions": [
+            {
+              "predicate": "coll",
+              "arguments": [
+                "i1",
+                "i2",
+                "k"
+              ]
+            }
+          ],
+          "hidden_points": [],
+          "native_kind": "polynomial_ideal_identity",
+          "native_reference": "0f5cdc6c6e24b8dbdf5fe617d0e52abf6a4b1ff104c28dbb2db3538d481e5de8",
+          "replayed": true,
+          "certificate_sha256": "de76753693d772c9b105ffe7a47f4faad969fefa8a65abb39f0764c8be65c3a2"
+        },
+        {
+          "rule_name": "external_homothety_to_radius_ratio",
+          "premises": [
+            {
+              "predicate": "external_homothety",
+              "arguments": [
+                "k",
+                "i1",
+                "f1",
+                "i2",
+                "f2"
+              ]
+            }
+          ],
+          "conclusions": [
+            {
+              "predicate": "eqratio",
+              "arguments": [
+                "k",
+                "i1",
+                "k",
+                "i2",
+                "i1",
+                "f1",
+                "i2",
+                "f2"
+              ]
+            }
+          ],
+          "hidden_points": [],
+          "native_kind": "polynomial_ideal_identity",
+          "native_reference": "343348e7ce3bfa86ef3e2432146413f5b1394f51736be12685393fc9da85d101",
+          "replayed": true,
+          "certificate_sha256": "02ef9217cd0f82fa93482efc434e26d68c305e325b005d826dd13507d3075a67"
+        }
+      ],
+      "local_goals": [
+        {
+          "goal": "cong(f1,i1,i1,q)",
+          "solved": true,
+          "replayed": true,
+          "proof": [
+            {
+              "rule": "cc_tangent_definition_to_metric_relations",
+              "native_payload": {
+                "round": 1,
+                "kind": "jgex_definition",
+                "reference": "cc_tangent:2*(cong,cong,perp,perp)",
+                "certificate_sha256": "ed990ea81621213f27bd3e1fd00261d96418523baf7e28f91649e6cf14de2567",
+                "replayed": true
+              }
+            }
+          ]
+        },
+        {
+          "goal": "cong(f2,i2,i2,t)",
+          "solved": true,
+          "replayed": true,
+          "proof": [
+            {
+              "rule": "cc_tangent_definition_to_metric_relations",
+              "native_payload": {
+                "round": 1,
+                "kind": "jgex_definition",
+                "reference": "cc_tangent:2*(cong,cong,perp,perp)",
+                "certificate_sha256": "ed990ea81621213f27bd3e1fd00261d96418523baf7e28f91649e6cf14de2567",
+                "replayed": true
+              }
+            }
+          ]
+        },
+        {
+          "goal": "perp(i1,q,q,t)",
+          "solved": true,
+          "replayed": true,
+          "proof": [
+            {
+              "rule": "cc_tangent_definition_to_metric_relations",
+              "native_payload": {
+                "round": 1,
+                "kind": "jgex_definition",
+                "reference": "cc_tangent:2*(cong,cong,perp,perp)",
+                "certificate_sha256": "ed990ea81621213f27bd3e1fd00261d96418523baf7e28f91649e6cf14de2567",
+                "replayed": true
+              }
+            }
+          ]
+        },
+        {
+          "goal": "perp(i2,t,q,t)",
+          "solved": true,
+          "replayed": true,
+          "proof": [
+            {
+              "rule": "cc_tangent_definition_to_metric_relations",
+              "native_payload": {
+                "round": 1,
+                "kind": "jgex_definition",
+                "reference": "cc_tangent:2*(cong,cong,perp,perp)",
+                "certificate_sha256": "ed990ea81621213f27bd3e1fd00261d96418523baf7e28f91649e6cf14de2567",
+                "replayed": true
+              }
+            }
+          ]
+        },
+        {
+          "goal": "cong(f1,i1,i1,p)",
+          "solved": true,
+          "replayed": true,
+          "proof": [
+            {
+              "rule": "cc_tangent_definition_to_metric_relations",
+              "native_payload": {
+                "round": 1,
+                "kind": "jgex_definition",
+                "reference": "cc_tangent:2*(cong,cong,perp,perp)",
+                "certificate_sha256": "ed990ea81621213f27bd3e1fd00261d96418523baf7e28f91649e6cf14de2567",
+                "replayed": true
+              }
+            }
+          ]
+        },
+        {
+          "goal": "cong(f2,i2,i2,s)",
+          "solved": true,
+          "replayed": true,
+          "proof": [
+            {
+              "rule": "cc_tangent_definition_to_metric_relations",
+              "native_payload": {
+                "round": 1,
+                "kind": "jgex_definition",
+                "reference": "cc_tangent:2*(cong,cong,perp,perp)",
+                "certificate_sha256": "ed990ea81621213f27bd3e1fd00261d96418523baf7e28f91649e6cf14de2567",
+                "replayed": true
+              }
+            }
+          ]
+        },
+        {
+          "goal": "perp(i1,p,p,s)",
+          "solved": true,
+          "replayed": true,
+          "proof": [
+            {
+              "rule": "cc_tangent_definition_to_metric_relations",
+              "native_payload": {
+                "round": 1,
+                "kind": "jgex_definition",
+                "reference": "cc_tangent:2*(cong,cong,perp,perp)",
+                "certificate_sha256": "ed990ea81621213f27bd3e1fd00261d96418523baf7e28f91649e6cf14de2567",
+                "replayed": true
+              }
+            }
+          ]
+        },
+        {
+          "goal": "perp(i2,s,p,s)",
+          "solved": true,
+          "replayed": true,
+          "proof": [
+            {
+              "rule": "cc_tangent_definition_to_metric_relations",
+              "native_payload": {
+                "round": 1,
+                "kind": "jgex_definition",
+                "reference": "cc_tangent:2*(cong,cong,perp,perp)",
+                "certificate_sha256": "ed990ea81621213f27bd3e1fd00261d96418523baf7e28f91649e6cf14de2567",
+                "replayed": true
+              }
+            }
+          ]
+        },
+        {
+          "goal": "external_homothety(k,i1,f1,i2,f2)",
+          "solved": true,
+          "replayed": true,
+          "proof": [
+            {
+              "rule": "external_tangent_intersection_to_homothety",
+              "native_payload": {
+                "round": 1,
+                "kind": "polynomial_ideal_identity",
+                "reference": "318f9e4471a83f20668402bf61df8d59b85f7d8cce73c655d69d53f1b285709a",
+                "certificate_sha256": "381722d50f020ea50c462d8de99dcc7e1c1240b453420f49c6cfae08b132e2d5",
+                "replayed": true
+              }
+            }
+          ]
+        },
+        {
+          "goal": "coll(i1,i2,k)",
+          "solved": true,
+          "replayed": true,
+          "proof": [
+            {
+              "rule": "external_tangent_intersection_to_homothety",
+              "native_payload": {
+                "round": 1,
+                "kind": "polynomial_ideal_identity",
+                "reference": "318f9e4471a83f20668402bf61df8d59b85f7d8cce73c655d69d53f1b285709a",
+                "certificate_sha256": "381722d50f020ea50c462d8de99dcc7e1c1240b453420f49c6cfae08b132e2d5",
+                "replayed": true
+              }
+            },
+            {
+              "rule": "external_homothety_to_center_collinearity",
+              "native_payload": {
+                "round": 2,
+                "kind": "polynomial_ideal_identity",
+                "reference": "0f5cdc6c6e24b8dbdf5fe617d0e52abf6a4b1ff104c28dbb2db3538d481e5de8",
+                "certificate_sha256": "de76753693d772c9b105ffe7a47f4faad969fefa8a65abb39f0764c8be65c3a2",
+                "replayed": true
+              }
+            }
+          ]
+        },
+        {
+          "goal": "eqratio(k,i1,k,i2,i1,f1,i2,f2)",
+          "solved": true,
+          "replayed": true,
+          "proof": [
+            {
+              "rule": "external_tangent_intersection_to_homothety",
+              "native_payload": {
+                "round": 1,
+                "kind": "polynomial_ideal_identity",
+                "reference": "318f9e4471a83f20668402bf61df8d59b85f7d8cce73c655d69d53f1b285709a",
+                "certificate_sha256": "381722d50f020ea50c462d8de99dcc7e1c1240b453420f49c6cfae08b132e2d5",
+                "replayed": true
+              }
+            },
+            {
+              "rule": "external_homothety_to_radius_ratio",
+              "native_payload": {
+                "round": 2,
+                "kind": "polynomial_ideal_identity",
+                "reference": "343348e7ce3bfa86ef3e2432146413f5b1394f51736be12685393fc9da85d101",
+                "certificate_sha256": "02ef9217cd0f82fa93482efc434e26d68c305e325b005d826dd13507d3075a67",
+                "replayed": true
+              }
+            }
+          ]
+        }
+      ],
+      "local_goals_replayed": 11,
+      "local_goals_total": 11
+    },
+    "2010_p2": {
+      "source_atom_count": 11,
+      "certificate_count": 1,
+      "relation_counts": {
+        "eqangle": 1
+      },
+      "hidden_internal_point_count": 0,
+      "certificates": [
+        {
+          "rule_name": "on_aline_definition_to_equal_angle",
+          "premises": [
+            {
+              "predicate": "on_aline",
+              "arguments": [
+                "e",
+                "a",
+                "c",
+                "b",
+                "a",
+                "f"
+              ]
+            }
+          ],
+          "conclusions": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "e",
+                "a",
+                "c",
+                "a",
+                "b",
+                "a",
+                "f"
+              ]
+            }
+          ],
+          "hidden_points": [],
+          "native_kind": "jgex_definition",
+          "native_reference": "on_aline:eqangle(a,p,a,b,d,c,d,e)",
+          "replayed": true,
+          "certificate_sha256": "cee9bb7ace9a088f0fd43ae8319e89a93eb4ac1d8c9f515f04a65e45a3b5743f"
+        }
+      ],
+      "local_goals": [
+        {
+          "goal": "eqangle(a,e,a,c,a,b,a,f)",
+          "solved": true,
+          "replayed": true,
+          "proof": [
+            {
+              "rule": "on_aline_definition_to_equal_angle",
+              "native_payload": {
+                "round": 1,
+                "kind": "jgex_definition",
+                "reference": "on_aline:eqangle(a,p,a,b,d,c,d,e)",
+                "certificate_sha256": "cee9bb7ace9a088f0fd43ae8319e89a93eb4ac1d8c9f515f04a65e45a3b5743f",
+                "replayed": true
+              }
+            }
+          ]
+        }
+      ],
+      "local_goals_replayed": 1,
+      "local_goals_total": 1
+    },
+    "2020_p1": {
+      "source_atom_count": 13,
+      "certificate_count": 6,
+      "relation_counts": {
+        "eqangle": 6
+      },
+      "hidden_internal_point_count": 0,
+      "certificates": [
+        {
+          "rule_name": "on_aline_definition_to_equal_angle",
+          "premises": [
+            {
+              "predicate": "on_aline",
+              "arguments": [
+                "z",
+                "a",
+                "p",
+                "a",
+                "b",
+                "x"
+              ]
+            }
+          ],
+          "conclusions": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "z",
+                "a",
+                "p",
+                "b",
+                "a",
+                "b",
+                "x"
+              ]
+            }
+          ],
+          "hidden_points": [],
+          "native_kind": "jgex_definition",
+          "native_reference": "on_aline:eqangle(a,p,a,b,d,c,d,e)",
+          "replayed": true,
+          "certificate_sha256": "b1bd551a3c6d1a7e3191024137a78a52c574c42baccc26963802542374f3d3e7"
+        },
+        {
+          "rule_name": "on_aline_definition_to_equal_angle",
+          "premises": [
+            {
+              "predicate": "on_aline",
+              "arguments": [
+                "t",
+                "p",
+                "a",
+                "p",
+                "a",
+                "z"
+              ]
+            }
+          ],
+          "conclusions": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "p",
+                "t",
+                "p",
+                "a",
+                "a",
+                "p",
+                "a",
+                "z"
+              ]
+            }
+          ],
+          "hidden_points": [],
+          "native_kind": "jgex_definition",
+          "native_reference": "on_aline:eqangle(a,p,a,b,d,c,d,e)",
+          "replayed": true,
+          "certificate_sha256": "07f020933cdd0174eb9153db7998332d4452e01a3a15d4b8fdd4ffc73d276858"
+        },
+        {
+          "rule_name": "on_aline_definition_to_equal_angle",
+          "premises": [
+            {
+              "predicate": "on_aline",
+              "arguments": [
+                "d",
+                "p",
+                "t",
+                "p",
+                "b",
+                "a"
+              ]
+            }
+          ],
+          "conclusions": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "p",
+                "d",
+                "p",
+                "t",
+                "b",
+                "p",
+                "b",
+                "a"
+              ]
+            }
+          ],
+          "hidden_points": [],
+          "native_kind": "jgex_definition",
+          "native_reference": "on_aline:eqangle(a,p,a,b,d,c,d,e)",
+          "replayed": true,
+          "certificate_sha256": "583ca7ac9d43a5df32cfa0600ccae23d11c0386d140f9e527f037622cae249c6"
+        },
+        {
+          "rule_name": "on_aline_definition_to_equal_angle",
+          "premises": [
+            {
+              "predicate": "on_aline",
+              "arguments": [
+                "u",
+                "b",
+                "p",
+                "b",
+                "a",
+                "y"
+              ]
+            }
+          ],
+          "conclusions": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "b",
+                "u",
+                "b",
+                "p",
+                "a",
+                "b",
+                "a",
+                "y"
+              ]
+            }
+          ],
+          "hidden_points": [],
+          "native_kind": "jgex_definition",
+          "native_reference": "on_aline:eqangle(a,p,a,b,d,c,d,e)",
+          "replayed": true,
+          "certificate_sha256": "a75f6949b41f6af8aed867b1c20e50a8ea329ae247cc1cf279dd532d8479c8b4"
+        },
+        {
+          "rule_name": "on_aline_definition_to_equal_angle",
+          "premises": [
+            {
+              "predicate": "on_aline",
+              "arguments": [
+                "v",
+                "p",
+                "b",
+                "p",
+                "b",
+                "u"
+              ]
+            }
+          ],
+          "conclusions": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "p",
+                "v",
+                "p",
+                "b",
+                "b",
+                "p",
+                "b",
+                "u"
+              ]
+            }
+          ],
+          "hidden_points": [],
+          "native_kind": "jgex_definition",
+          "native_reference": "on_aline:eqangle(a,p,a,b,d,c,d,e)",
+          "replayed": true,
+          "certificate_sha256": "93c6f913895ea7aaf928eeb5055f6940dc30b5d84523a1a352e9ed95e3657f78"
+        },
+        {
+          "rule_name": "on_aline_definition_to_equal_angle",
+          "premises": [
+            {
+              "predicate": "on_aline",
+              "arguments": [
+                "c",
+                "p",
+                "v",
+                "p",
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "conclusions": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "p",
+                "c",
+                "p",
+                "v",
+                "a",
+                "p",
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "hidden_points": [],
+          "native_kind": "jgex_definition",
+          "native_reference": "on_aline:eqangle(a,p,a,b,d,c,d,e)",
+          "replayed": true,
+          "certificate_sha256": "04734aba89a2209ccba446a9be76f79d08db4c74b29b7ba1f3be54c78393a154"
+        }
+      ],
+      "local_goals": [
+        {
+          "goal": "eqangle(a,z,a,p,b,a,b,x)",
+          "solved": true,
+          "replayed": true,
+          "proof": [
+            {
+              "rule": "on_aline_definition_to_equal_angle",
+              "native_payload": {
+                "round": 1,
+                "kind": "jgex_definition",
+                "reference": "on_aline:eqangle(a,p,a,b,d,c,d,e)",
+                "certificate_sha256": "b1bd551a3c6d1a7e3191024137a78a52c574c42baccc26963802542374f3d3e7",
+                "replayed": true
+              }
+            }
+          ]
+        },
+        {
+          "goal": "eqangle(p,t,p,a,a,p,a,z)",
+          "solved": true,
+          "replayed": true,
+          "proof": [
+            {
+              "rule": "on_aline_definition_to_equal_angle",
+              "native_payload": {
+                "round": 1,
+                "kind": "jgex_definition",
+                "reference": "on_aline:eqangle(a,p,a,b,d,c,d,e)",
+                "certificate_sha256": "07f020933cdd0174eb9153db7998332d4452e01a3a15d4b8fdd4ffc73d276858",
+                "replayed": true
+              }
+            }
+          ]
+        },
+        {
+          "goal": "eqangle(p,d,p,t,b,p,b,a)",
+          "solved": true,
+          "replayed": true,
+          "proof": [
+            {
+              "rule": "on_aline_definition_to_equal_angle",
+              "native_payload": {
+                "round": 1,
+                "kind": "jgex_definition",
+                "reference": "on_aline:eqangle(a,p,a,b,d,c,d,e)",
+                "certificate_sha256": "583ca7ac9d43a5df32cfa0600ccae23d11c0386d140f9e527f037622cae249c6",
+                "replayed": true
+              }
+            }
+          ]
+        },
+        {
+          "goal": "eqangle(b,u,b,p,a,b,a,y)",
+          "solved": true,
+          "replayed": true,
+          "proof": [
+            {
+              "rule": "on_aline_definition_to_equal_angle",
+              "native_payload": {
+                "round": 1,
+                "kind": "jgex_definition",
+                "reference": "on_aline:eqangle(a,p,a,b,d,c,d,e)",
+                "certificate_sha256": "a75f6949b41f6af8aed867b1c20e50a8ea329ae247cc1cf279dd532d8479c8b4",
+                "replayed": true
+              }
+            }
+          ]
+        },
+        {
+          "goal": "eqangle(p,v,p,b,b,p,b,u)",
+          "solved": true,
+          "replayed": true,
+          "proof": [
+            {
+              "rule": "on_aline_definition_to_equal_angle",
+              "native_payload": {
+                "round": 1,
+                "kind": "jgex_definition",
+                "reference": "on_aline:eqangle(a,p,a,b,d,c,d,e)",
+                "certificate_sha256": "93c6f913895ea7aaf928eeb5055f6940dc30b5d84523a1a352e9ed95e3657f78",
+                "replayed": true
+              }
+            }
+          ]
+        },
+        {
+          "goal": "eqangle(p,c,p,v,a,p,a,b)",
+          "solved": true,
+          "replayed": true,
+          "proof": [
+            {
+              "rule": "on_aline_definition_to_equal_angle",
+              "native_payload": {
+                "round": 1,
+                "kind": "jgex_definition",
+                "reference": "on_aline:eqangle(a,p,a,b,d,c,d,e)",
+                "certificate_sha256": "04734aba89a2209ccba446a9be76f79d08db4c74b29b7ba1f3be54c78393a154",
+                "replayed": true
+              }
+            }
+          ]
+        }
+      ],
+      "local_goals_replayed": 6,
+      "local_goals_total": 6
+    },
+    "2021_p3": {
+      "source_atom_count": 12,
+      "certificate_count": 2,
+      "relation_counts": {
+        "eqangle": 2
+      },
+      "hidden_internal_point_count": 0,
+      "certificates": [
+        {
+          "rule_name": "on_aline_definition_to_equal_angle",
+          "premises": [
+            {
+              "predicate": "on_aline",
+              "arguments": [
+                "e",
+                "d",
+                "a",
+                "d",
+                "c",
+                "b"
+              ]
+            }
+          ],
+          "conclusions": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "d",
+                "e",
+                "d",
+                "a",
+                "c",
+                "d",
+                "c",
+                "b"
+              ]
+            }
+          ],
+          "hidden_points": [],
+          "native_kind": "jgex_definition",
+          "native_reference": "on_aline:eqangle(a,p,a,b,d,c,d,e)",
+          "replayed": true,
+          "certificate_sha256": "33571d8a2d39c3ad0f0128863152a8636e37825975462e41130b767c0b3d5ff9"
+        },
+        {
+          "rule_name": "on_aline_definition_to_equal_angle",
+          "premises": [
+            {
+              "predicate": "on_aline",
+              "arguments": [
+                "f",
+                "d",
+                "a",
+                "d",
+                "b",
+                "c"
+              ]
+            }
+          ],
+          "conclusions": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "d",
+                "f",
+                "d",
+                "a",
+                "b",
+                "d",
+                "b",
+                "c"
+              ]
+            }
+          ],
+          "hidden_points": [],
+          "native_kind": "jgex_definition",
+          "native_reference": "on_aline:eqangle(a,p,a,b,d,c,d,e)",
+          "replayed": true,
+          "certificate_sha256": "e4cf8e6df6b7fe52f8128cd817109499a42826d599bd2c482a63f70a40a71147"
+        }
+      ],
+      "local_goals": [
+        {
+          "goal": "eqangle(d,e,d,a,c,d,c,b)",
+          "solved": true,
+          "replayed": true,
+          "proof": [
+            {
+              "rule": "on_aline_definition_to_equal_angle",
+              "native_payload": {
+                "round": 1,
+                "kind": "jgex_definition",
+                "reference": "on_aline:eqangle(a,p,a,b,d,c,d,e)",
+                "certificate_sha256": "33571d8a2d39c3ad0f0128863152a8636e37825975462e41130b767c0b3d5ff9",
+                "replayed": true
+              }
+            }
+          ]
+        },
+        {
+          "goal": "eqangle(d,f,d,a,b,d,b,c)",
+          "solved": true,
+          "replayed": true,
+          "proof": [
+            {
+              "rule": "on_aline_definition_to_equal_angle",
+              "native_payload": {
+                "round": 1,
+                "kind": "jgex_definition",
+                "reference": "on_aline:eqangle(a,p,a,b,d,c,d,e)",
+                "certificate_sha256": "e4cf8e6df6b7fe52f8128cd817109499a42826d599bd2c482a63f70a40a71147",
+                "replayed": true
+              }
+            }
+          ]
+        }
+      ],
+      "local_goals_replayed": 2,
+      "local_goals_total": 2
+    }
+  },
+  "claim_scope": "This proves finite typed local relation exchange and certificate replay. It does not claim that the four global IMO goals are solved."
+}

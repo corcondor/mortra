@@ -1,0 +1,616 @@
+{
+  "experiment": "bounded-local-polynomial-stalk-fixed4",
+  "generated_at": "2026-08-16T06:44:06.753484+00:00",
+  "uses_llm": false,
+  "uses_problem_specific_solver_logic": false,
+  "dataset_auxiliary_clauses_hidden": true,
+  "fixed_problem_names": [
+    "2008_p6",
+    "2010_p2",
+    "2020_p1",
+    "2021_p3"
+  ],
+  "hypothesis": "Relational construction blocks plus width-bounded local resultants can replace monolithic substitution with replayable separator lemmas.",
+  "budgets": {
+    "inspection_timeout_seconds": 30.0,
+    "local_timeout_seconds": 180.0,
+    "separator_term_widths": [
+      32
+    ],
+    "max_separator_variables": 4
+  },
+  "summary": {
+    "explicit_inspection_completed": 0,
+    "relational_inspection_completed": 0,
+    "widths": {
+      "32": {
+        "completed": 4,
+        "timeouts": 0,
+        "eliminated_variables": 0,
+        "local_certificates_replayed": 4,
+        "derived_goals": 0,
+        "local_agents": 0,
+        "active_agents": 0,
+        "maximum_separator_variable_width": 0,
+        "coordinator_solved_goals": 0,
+        "coordinator_replayed_goals": 0,
+        "coordinator_rejected_certificates": 0,
+        "maximum_proof_depth": 0,
+        "global_goals_matched": 0,
+        "global_goals_replayed": 0
+      }
+    }
+  },
+  "results": {
+    "2008_p6": {
+      "explicit_inspection": {
+        "status": "skipped"
+      },
+      "relational_inspection": {
+        "status": "skipped"
+      },
+      "local_widths": {
+        "32": {
+          "status": "completed",
+          "result": {
+            "channel": "cong",
+            "points": [
+              "o",
+              "x",
+              "k",
+              "o"
+            ],
+            "goal_polynomial": "2*_free_x_3*_free_x_30 - _free_x_30**2 - _free_y_31**2 + 2*_free_y_31*_free_y_4",
+            "initial_variable_count": 32,
+            "initial_equation_count": 28,
+            "initial_total_expanded_terms": 169,
+            "initial_maximum_expanded_terms": 8,
+            "protected_variables": [
+              "_free_x_3",
+              "_free_x_30",
+              "_free_y_31",
+              "_free_y_4"
+            ],
+            "reduced_variable_count": 32,
+            "reduced_equation_count": 28,
+            "reduced_total_expanded_terms": 165,
+            "reduced_maximum_expanded_terms": 8,
+            "local_elimination": {
+              "initial_polynomials": [
+                "-2*_free_x_3*_free_x_5 + _free_x_5**2 - 2*_free_y_4*_free_y_6 + _free_y_6**2",
+                "-_apex_x_1**2 + 2*_apex_x_1*_free_x_3 - _apex_y_2**2 + 2*_apex_y_2*_free_y_4",
+                "-_apex_x_1**2 + _apex_x_1*_free_x_3 + _apex_x_1*_free_x_7 - _apex_y_2**2 + _apex_y_2*_free_y_4 + _apex_y_2*_free_y_8 - _free_x_3*_free_x_7 - _free_y_4*_free_y_8",
+                "-_apex_x_1**2 + _apex_x_1*_free_x_3 + _apex_x_1*_free_x_9 - _apex_y_2**2 + _apex_y_2*_free_y_10 + _apex_y_2*_free_y_4 - _free_x_3*_free_x_9 - _free_y_10*_free_y_4",
+                "-_base_0*(_base_0 - 2*_free_x_3)",
+                "-_base_0**2 + _base_0*_free_x_11 + _base_0*_free_x_3 - _free_x_11*_free_x_3 - _free_y_12*_free_y_4",
+                "-_base_0**2 + _base_0*_free_x_13 + _base_0*_free_x_3 - _free_x_13*_free_x_3 - _free_y_14*_free_y_4",
+                "-_free_x_11**2 + 2*_free_x_11*_free_x_13 - _free_x_13**2 - _free_y_12**2 + 2*_free_y_12*_free_y_14 - _free_y_14**2 + _length_22**2",
+                "-_free_x_11**2 + 2*_free_x_11*_free_x_7 - _free_x_7**2 - _free_y_12**2 + 2*_free_y_12*_free_y_8 - _free_y_8**2 + _length_18**2",
+                "-_free_x_11**2 + 2*_free_x_11*_free_x_9 - _free_x_9**2 - _free_y_10**2 + 2*_free_y_10*_free_y_12 - _free_y_12**2 + _length_17**2",
+                "-_free_x_11*_free_x_15 + _free_x_11*_free_x_24 + _free_x_15*_free_x_7 - _free_x_24*_free_x_7 - _free_y_12*_free_y_16 + _free_y_12*_free_y_25 + _free_y_16*_free_y_8 - _free_y_25*_free_y_8",
+                "-_free_x_11*_free_x_20 + _free_x_11*_free_x_26 + _free_x_20*_free_x_7 - _free_x_26*_free_x_7 - _free_y_12*_free_y_21 + _free_y_12*_free_y_27 + _free_y_21*_free_y_8 - _free_y_27*_free_y_8",
+                "-_free_x_11*_free_x_3 + _free_x_11*_free_x_5 + _free_x_3*_free_x_5 - _free_x_5**2 - _free_y_12*_free_y_4 + _free_y_12*_free_y_6 + _free_y_4*_free_y_6 - _free_y_6**2",
+                "-_free_x_11*_free_y_25 + _free_x_11*_free_y_8 + _free_x_24*_free_y_12 - _free_x_24*_free_y_8 - _free_x_7*_free_y_12 + _free_x_7*_free_y_25",
+                "-_free_x_11*_free_y_27 + _free_x_11*_free_y_8 + _free_x_26*_free_y_12 - _free_x_26*_free_y_8 - _free_x_7*_free_y_12 + _free_x_7*_free_y_27",
+                "-_free_x_11*_length_19 + _free_x_15*_length_17 + _free_x_15*_length_18 + _free_x_15*_length_19 - _free_x_7*_length_17 - _free_x_9*_length_18",
+                "-_free_x_11*_length_23 - _free_x_13*_length_18 + _free_x_20*_length_18 + _free_x_20*_length_22 + _free_x_20*_length_23 - _free_x_7*_length_22",
+                "-_free_x_13**2 + 2*_free_x_13*_free_x_7 - _free_x_7**2 - _free_y_14**2 + 2*_free_y_14*_free_y_8 - _free_y_8**2 + _length_23**2",
+                "-_free_x_13*_free_x_3 - _free_y_14*_free_y_4",
+                "-_free_x_15**2 + 2*_free_x_15*_free_x_24 - _free_x_24**2 - _free_y_16**2 + 2*_free_y_16*_free_y_25 - _free_y_25**2 + _length_28**2",
+                "-_free_x_20**2 + 2*_free_x_20*_free_x_26 - _free_x_26**2 - _free_y_21**2 + 2*_free_y_21*_free_y_27 - _free_y_27**2 + _length_29**2",
+                "-_free_x_3*_free_x_7 - _free_y_4*_free_y_8",
+                "-_free_x_7**2 + 2*_free_x_7*_free_x_9 - _free_x_9**2 - _free_y_10**2 + 2*_free_y_10*_free_y_8 - _free_y_8**2 + _length_19**2",
+                "-_free_y_10*_length_18 - _free_y_12*_length_19 + _free_y_16*_length_17 + _free_y_16*_length_18 + _free_y_16*_length_19 - _free_y_8*_length_17",
+                "-_free_y_12*_length_23 - _free_y_14*_length_18 + _free_y_21*_length_18 + _free_y_21*_length_22 + _free_y_21*_length_23 - _free_y_8*_length_22",
+                "_free_x_15*_length_29 - _free_x_20*_length_28 + _free_x_30*_length_28 - _free_x_30*_length_29",
+                "_free_x_3*_free_x_5 - _free_x_3*_free_x_9 - _free_x_5**2 + _free_x_5*_free_x_9 - _free_y_10*_free_y_4 + _free_y_10*_free_y_6 + _free_y_4*_free_y_6 - _free_y_6**2",
+                "_free_y_16*_length_29 - _free_y_21*_length_28 + _free_y_31*_length_28 - _free_y_31*_length_29"
+              ],
+              "remaining_polynomials": [
+                "-2*_free_x_3*_free_x_5 + _free_x_5**2 - 2*_free_y_4*_free_y_6 + _free_y_6**2",
+                "-_apex_x_1**2 + 2*_apex_x_1*_free_x_3 - _apex_y_2**2 + 2*_apex_y_2*_free_y_4",
+                "-_apex_x_1**2 + _apex_x_1*_free_x_3 + _apex_x_1*_free_x_7 - _apex_y_2**2 + _apex_y_2*_free_y_4 + _apex_y_2*_free_y_8 - _free_x_3*_free_x_7 - _free_y_4*_free_y_8",
+                "-_apex_x_1**2 + _apex_x_1*_free_x_3 + _apex_x_1*_free_x_9 - _apex_y_2**2 + _apex_y_2*_free_y_10 + _apex_y_2*_free_y_4 - _free_x_3*_free_x_9 - _free_y_10*_free_y_4",
+                "-_base_0*(_base_0 - 2*_free_x_3)",
+                "-_base_0**2 + _base_0*_free_x_11 + _base_0*_free_x_3 - _free_x_11*_free_x_3 - _free_y_12*_free_y_4",
+                "-_base_0**2 + _base_0*_free_x_13 + _base_0*_free_x_3 - _free_x_13*_free_x_3 - _free_y_14*_free_y_4",
+                "-_free_x_11**2 + 2*_free_x_11*_free_x_13 - _free_x_13**2 - _free_y_12**2 + 2*_free_y_12*_free_y_14 - _free_y_14**2 + _length_22**2",
+                "-_free_x_11**2 + 2*_free_x_11*_free_x_7 - _free_x_7**2 - _free_y_12**2 + 2*_free_y_12*_free_y_8 - _free_y_8**2 + _length_18**2",
+                "-_free_x_11**2 + 2*_free_x_11*_free_x_9 - _free_x_9**2 - _free_y_10**2 + 2*_free_y_10*_free_y_12 - _free_y_12**2 + _length_17**2",
+                "-_free_x_11*_free_x_15 + _free_x_11*_free_x_24 + _free_x_15*_free_x_7 - _free_x_24*_free_x_7 - _free_y_12*_free_y_16 + _free_y_12*_free_y_25 + _free_y_16*_free_y_8 - _free_y_25*_free_y_8",
+                "-_free_x_11*_free_x_20 + _free_x_11*_free_x_26 + _free_x_20*_free_x_7 - _free_x_26*_free_x_7 - _free_y_12*_free_y_21 + _free_y_12*_free_y_27 + _free_y_21*_free_y_8 - _free_y_27*_free_y_8",
+                "-_free_x_11*_free_x_3 + _free_x_11*_free_x_5 + _free_x_3*_free_x_5 - _free_x_5**2 - _free_y_12*_free_y_4 + _free_y_12*_free_y_6 + _free_y_4*_free_y_6 - _free_y_6**2",
+                "-_free_x_11*_free_y_25 + _free_x_11*_free_y_8 + _free_x_24*_free_y_12 - _free_x_24*_free_y_8 - _free_x_7*_free_y_12 + _free_x_7*_free_y_25",
+                "-_free_x_11*_free_y_27 + _free_x_11*_free_y_8 + _free_x_26*_free_y_12 - _free_x_26*_free_y_8 - _free_x_7*_free_y_12 + _free_x_7*_free_y_27",
+                "-_free_x_11*_length_19 + _free_x_15*_length_17 + _free_x_15*_length_18 + _free_x_15*_length_19 - _free_x_7*_length_17 - _free_x_9*_length_18",
+                "-_free_x_11*_length_23 - _free_x_13*_length_18 + _free_x_20*_length_18 + _free_x_20*_length_22 + _free_x_20*_length_23 - _free_x_7*_length_22",
+                "-_free_x_13**2 + 2*_free_x_13*_free_x_7 - _free_x_7**2 - _free_y_14**2 + 2*_free_y_14*_free_y_8 - _free_y_8**2 + _length_23**2",
+                "-_free_x_13*_free_x_3 - _free_y_14*_free_y_4",
+                "-_free_x_15**2 + 2*_free_x_15*_free_x_24 - _free_x_24**2 - _free_y_16**2 + 2*_free_y_16*_free_y_25 - _free_y_25**2 + _length_28**2",
+                "-_free_x_20**2 + 2*_free_x_20*_free_x_26 - _free_x_26**2 - _free_y_21**2 + 2*_free_y_21*_free_y_27 - _free_y_27**2 + _length_29**2",
+                "-_free_x_3*_free_x_7 - _free_y_4*_free_y_8",
+                "-_free_x_7**2 + 2*_free_x_7*_free_x_9 - _free_x_9**2 - _free_y_10**2 + 2*_free_y_10*_free_y_8 - _free_y_8**2 + _length_19**2",
+                "-_free_y_10*_length_18 - _free_y_12*_length_19 + _free_y_16*_length_17 + _free_y_16*_length_18 + _free_y_16*_length_19 - _free_y_8*_length_17",
+                "-_free_y_12*_length_23 - _free_y_14*_length_18 + _free_y_21*_length_18 + _free_y_21*_length_22 + _free_y_21*_length_23 - _free_y_8*_length_22",
+                "_free_x_15*_length_29 - _free_x_20*_length_28 + _free_x_30*_length_28 - _free_x_30*_length_29",
+                "_free_x_3*_free_x_5 - _free_x_3*_free_x_9 - _free_x_5**2 + _free_x_5*_free_x_9 - _free_y_10*_free_y_4 + _free_y_10*_free_y_6 + _free_y_4*_free_y_6 - _free_y_6**2",
+                "_free_y_16*_length_29 - _free_y_21*_length_28 + _free_y_31*_length_28 - _free_y_31*_length_29"
+              ],
+              "remaining_variables": [
+                "_apex_x_1",
+                "_apex_y_2",
+                "_base_0",
+                "_free_x_11",
+                "_free_x_13",
+                "_free_x_15",
+                "_free_x_20",
+                "_free_x_24",
+                "_free_x_26",
+                "_free_x_3",
+                "_free_x_30",
+                "_free_x_5",
+                "_free_x_7",
+                "_free_x_9",
+                "_free_y_10",
+                "_free_y_12",
+                "_free_y_14",
+                "_free_y_16",
+                "_free_y_21",
+                "_free_y_25",
+                "_free_y_27",
+                "_free_y_31",
+                "_free_y_4",
+                "_free_y_6",
+                "_free_y_8",
+                "_length_17",
+                "_length_18",
+                "_length_19",
+                "_length_22",
+                "_length_23",
+                "_length_28",
+                "_length_29"
+              ],
+              "steps": [],
+              "eliminated_variables": [],
+              "stopped_reason": "separator_budget",
+              "exact_replay": true
+            },
+            "structural_lemma_certificates": [
+              {
+                "theorem": "external_common_tangents_intersect_at_external_homothety_center",
+                "source_clause_indices": [
+                  11,
+                  12
+                ],
+                "inputs": [
+                  "i1",
+                  "f1",
+                  "i2",
+                  "f2"
+                ],
+                "output": "k",
+                "hidden_points": [
+                  "q",
+                  "t",
+                  "p",
+                  "s"
+                ],
+                "boundary_equations": [
+                  "_free_x_15*_length_29 - _free_x_20*_length_28 + _free_x_30*_length_28 - _free_x_30*_length_29",
+                  "_free_y_16*_length_29 - _free_y_21*_length_28 + _free_y_31*_length_28 - _free_y_31*_length_29"
+                ],
+                "replay_residuals": [
+                  "0",
+                  "0"
+                ],
+                "nonzero_conditions": [
+                  "_length_28 - _length_29 != 0"
+                ],
+                "semantic_assumption": "JGEX cc_tangent denotes the two external common tangents, as specified by sketch_cc_tangent",
+                "composition_certificate_sha256": "318f9e4471a83f20668402bf61df8d59b85f7d8cce73c655d69d53f1b285709a",
+                "composition_replayed": true,
+                "replayed": true
+              }
+            ],
+            "all_local_certificates_replayed": true
+          },
+          "coordination": {
+            "local_agent_count": 0,
+            "active_agent_count": 0,
+            "maximum_separator_variable_width": 0,
+            "initial_fact_count": 28,
+            "derived_goal_count": 0,
+            "solved_goal_count": 0,
+            "replayed_goal_count": 0,
+            "accepted_certificate_count": 0,
+            "rejected_certificate_count": 0,
+            "maximum_proof_depth": 0,
+            "mean_proof_depth": 0.0,
+            "external_goal_matched": false,
+            "external_goal_solved": false,
+            "external_goal_replayed": false,
+            "external_goal_proof_depth": 0
+          },
+          "elapsed_seconds": 12.193843200017
+        }
+      }
+    },
+    "2010_p2": {
+      "explicit_inspection": {
+        "status": "skipped"
+      },
+      "relational_inspection": {
+        "status": "skipped"
+      },
+      "local_widths": {
+        "32": {
+          "status": "completed",
+          "result": {
+            "channel": "cong",
+            "points": [
+              "k",
+              "o",
+              "a",
+              "o"
+            ],
+            "goal_polynomial": "_free_x_18**2 - 2*_free_x_18*_free_x_3 + _free_y_19**2 - 2*_free_y_19*_free_y_4",
+            "initial_variable_count": 20,
+            "initial_equation_count": 16,
+            "initial_total_expanded_terms": 65,
+            "initial_maximum_expanded_terms": 6,
+            "protected_variables": [
+              "_free_x_18",
+              "_free_x_3",
+              "_free_y_19",
+              "_free_y_4"
+            ],
+            "reduced_variable_count": 20,
+            "reduced_equation_count": 16,
+            "reduced_total_expanded_terms": 61,
+            "reduced_maximum_expanded_terms": 6,
+            "local_elimination": {
+              "initial_polynomials": [
+                "-(_base_0 - _length_9)*(_base_0 + _length_9)",
+                "-_apex_x_1**2 + 2*_apex_x_1*_base_0 - _apex_y_2**2 - _base_0**2 + _length_7**2",
+                "-_apex_x_1**2 + 2*_apex_x_1*_free_x_3 - _apex_y_2**2 + 2*_apex_y_2*_free_y_4",
+                "-_apex_x_1**2 - _apex_y_2**2 + _length_8**2",
+                "-_apex_x_1*_free_y_13 - _apex_y_2*_base_0 + _apex_y_2*_free_x_12 + _base_0*_free_y_13",
+                "-_apex_x_1*_length_9 - _base_0*_length_8 + _free_x_5*_length_7 + _free_x_5*_length_8 + _free_x_5*_length_9",
+                "-_apex_y_2*_length_9 + _free_y_6*_length_7 + _free_y_6*_length_8 + _free_y_6*_length_9",
+                "-_base_0*(_apex_x_1*_free_x_12*_free_y_15 + _apex_x_1*_free_x_14*_free_y_13 - _apex_y_2*_free_x_12*_free_x_14 + _apex_y_2*_free_y_13*_free_y_15)",
+                "-_base_0*(_base_0 - 2*_free_x_3)",
+                "-_free_x_10*_free_y_17 + _free_x_10*_free_y_19 + _free_x_16*_free_y_11 - _free_x_16*_free_y_19 - _free_x_18*_free_y_11 + _free_x_18*_free_y_17",
+                "-_free_x_12 + 2*_free_x_16 - _free_x_5",
+                "-_free_y_13 + 2*_free_y_17 - _free_y_6",
+                "_free_x_10**2 - 2*_free_x_10*_free_x_3 + _free_y_11**2 - 2*_free_y_11*_free_y_4",
+                "_free_x_10*_free_y_6 - _free_x_5*_free_y_11",
+                "_free_x_14**2 - 2*_free_x_14*_free_x_3 + _free_y_15**2 - 2*_free_y_15*_free_y_4",
+                "_free_x_14*_free_y_19 - _free_x_14*_free_y_6 - _free_x_18*_free_y_15 + _free_x_18*_free_y_6 + _free_x_5*_free_y_15 - _free_x_5*_free_y_19"
+              ],
+              "remaining_polynomials": [
+                "-(_base_0 - _length_9)*(_base_0 + _length_9)",
+                "-_apex_x_1**2 + 2*_apex_x_1*_base_0 - _apex_y_2**2 - _base_0**2 + _length_7**2",
+                "-_apex_x_1**2 + 2*_apex_x_1*_free_x_3 - _apex_y_2**2 + 2*_apex_y_2*_free_y_4",
+                "-_apex_x_1**2 - _apex_y_2**2 + _length_8**2",
+                "-_apex_x_1*_free_y_13 - _apex_y_2*_base_0 + _apex_y_2*_free_x_12 + _base_0*_free_y_13",
+                "-_apex_x_1*_length_9 - _base_0*_length_8 + _free_x_5*_length_7 + _free_x_5*_length_8 + _free_x_5*_length_9",
+                "-_apex_y_2*_length_9 + _free_y_6*_length_7 + _free_y_6*_length_8 + _free_y_6*_length_9",
+                "-_base_0*(_apex_x_1*_free_x_12*_free_y_15 + _apex_x_1*_free_x_14*_free_y_13 - _apex_y_2*_free_x_12*_free_x_14 + _apex_y_2*_free_y_13*_free_y_15)",
+                "-_base_0*(_base_0 - 2*_free_x_3)",
+                "-_free_x_10*_free_y_17 + _free_x_10*_free_y_19 + _free_x_16*_free_y_11 - _free_x_16*_free_y_19 - _free_x_18*_free_y_11 + _free_x_18*_free_y_17",
+                "-_free_x_12 + 2*_free_x_16 - _free_x_5",
+                "-_free_y_13 + 2*_free_y_17 - _free_y_6",
+                "_free_x_10**2 - 2*_free_x_10*_free_x_3 + _free_y_11**2 - 2*_free_y_11*_free_y_4",
+                "_free_x_10*_free_y_6 - _free_x_5*_free_y_11",
+                "_free_x_14**2 - 2*_free_x_14*_free_x_3 + _free_y_15**2 - 2*_free_y_15*_free_y_4",
+                "_free_x_14*_free_y_19 - _free_x_14*_free_y_6 - _free_x_18*_free_y_15 + _free_x_18*_free_y_6 + _free_x_5*_free_y_15 - _free_x_5*_free_y_19"
+              ],
+              "remaining_variables": [
+                "_apex_x_1",
+                "_apex_y_2",
+                "_base_0",
+                "_free_x_10",
+                "_free_x_12",
+                "_free_x_14",
+                "_free_x_16",
+                "_free_x_18",
+                "_free_x_3",
+                "_free_x_5",
+                "_free_y_11",
+                "_free_y_13",
+                "_free_y_15",
+                "_free_y_17",
+                "_free_y_19",
+                "_free_y_4",
+                "_free_y_6",
+                "_length_7",
+                "_length_8",
+                "_length_9"
+              ],
+              "steps": [],
+              "eliminated_variables": [],
+              "stopped_reason": "separator_budget",
+              "exact_replay": true
+            },
+            "structural_lemma_certificates": [],
+            "all_local_certificates_replayed": true
+          },
+          "coordination": {
+            "local_agent_count": 0,
+            "active_agent_count": 0,
+            "maximum_separator_variable_width": 0,
+            "initial_fact_count": 16,
+            "derived_goal_count": 0,
+            "solved_goal_count": 0,
+            "replayed_goal_count": 0,
+            "accepted_certificate_count": 0,
+            "rejected_certificate_count": 0,
+            "maximum_proof_depth": 0,
+            "mean_proof_depth": 0.0,
+            "external_goal_matched": false,
+            "external_goal_solved": false,
+            "external_goal_replayed": false,
+            "external_goal_proof_depth": 0
+          },
+          "elapsed_seconds": 15.044230700004846
+        }
+      }
+    },
+    "2020_p1": {
+      "explicit_inspection": {
+        "status": "skipped"
+      },
+      "relational_inspection": {
+        "status": "skipped"
+      },
+      "local_widths": {
+        "32": {
+          "status": "completed",
+          "result": {
+            "channel": "cong",
+            "points": [
+              "a",
+              "o",
+              "b",
+              "o"
+            ],
+            "goal_polynomial": "-_apex_x_1**2 + 2*_apex_x_1*_free_x_22 - _apex_y_2**2 + 2*_apex_y_2*_free_y_23 + _base_0**2 - 2*_base_0*_free_x_22",
+            "initial_variable_count": 28,
+            "initial_equation_count": 19,
+            "initial_total_expanded_terms": 133,
+            "initial_maximum_expanded_terms": 23,
+            "protected_variables": [
+              "_apex_x_1",
+              "_apex_y_2",
+              "_base_0",
+              "_free_x_22",
+              "_free_y_23"
+            ],
+            "reduced_variable_count": 28,
+            "reduced_equation_count": 19,
+            "reduced_total_expanded_terms": 127,
+            "reduced_maximum_expanded_terms": 23,
+            "local_elimination": {
+              "initial_polynomials": [
+                "-(_base_0 - _length_9)*(_base_0 + _length_9)",
+                "-_apex_x_1**2 + 2*_apex_x_1*_base_0 - _apex_y_2**2 - _base_0**2 + _length_6**2",
+                "-_apex_x_1**2 + 2*_apex_x_1*_free_x_20 - _apex_y_2**2 + 2*_apex_y_2*_free_y_21 - _free_x_20**2 - _free_y_21**2 + _length_27**2",
+                "-_apex_x_1**2 - _apex_y_2**2 + _length_5**2",
+                "-_apex_x_1**2*_free_x_12*_free_y_15 + _apex_x_1**2*_free_x_14*_free_y_13 + _apex_x_1*_base_0*_free_x_12*_free_y_15 - _apex_x_1*_base_0*_free_x_14*_free_y_13 - _apex_y_2**2*_free_x_12*_free_y_15 + _apex_y_2**2*_free_x_14*_free_y_13 - _apex_y_2*_base_0*_free_x_12*_free_x_14 - _apex_y_2*_base_0*_free_y_13*_free_y_15",
+                "-_apex_x_1**3*_free_y_19 + _apex_x_1**2*_apex_y_2*_free_x_18 + _apex_x_1**2*_free_x_16*_free_y_19 + _apex_x_1**2*_free_x_18*_free_y_17 - _apex_x_1*_apex_y_2**2*_free_y_19 - 2*_apex_x_1*_apex_y_2*_free_x_16*_free_x_18 + 2*_apex_x_1*_apex_y_2*_free_y_17*_free_y_19 + _apex_y_2**3*_free_x_18 - _apex_y_2**2*_free_x_16*_free_y_19 - _apex_y_2**2*_free_x_18*_free_y_17",
+                "-_apex_x_1**3*_free_y_8 - _apex_x_1**2*_apex_y_2*_base_0 + _apex_x_1**2*_apex_y_2*_free_x_7 - _apex_x_1**2*_base_0*_free_y_17 + _apex_x_1**2*_base_0*_free_y_8 + _apex_x_1**2*_free_x_16*_free_y_8 + _apex_x_1**2*_free_x_7*_free_y_17 - _apex_x_1*_apex_y_2**2*_free_y_8 + 2*_apex_x_1*_apex_y_2*_base_0*_free_x_16 - 2*_apex_x_1*_apex_y_2*_free_x_16*_free_x_7 + 2*_apex_x_1*_apex_y_2*_free_y_17*_free_y_8 + _apex_x_1*_base_0**2*_free_y_17 - _apex_x_1*_base_0*_free_x_16*_free_y_8 - _apex_x_1*_base_0*_free_x_7*_free_y_17 - _apex_y_2**3*_base_0 + _apex_y_2**3*_free_x_7 + _apex_y_2**2*_base_0*_free_y_17 + _apex_y_2**2*_base_0*_free_y_8 - _apex_y_2**2*_free_x_16*_free_y_8 - _apex_y_2**2*_free_x_7*_free_y_17 - _apex_y_2*_base_0**2*_free_x_16 + _apex_y_2*_base_0*_free_x_16*_free_x_7 - _apex_y_2*_base_0*_free_y_17*_free_y_8",
+                "-_apex_x_1*_free_y_17 + _apex_x_1*_free_y_21 + _apex_y_2*_free_x_16 - _apex_y_2*_free_x_20 - _free_x_16*_free_y_21 + _free_x_20*_free_y_17",
+                "-_apex_x_1*_free_y_8*_length_9 - _apex_y_2*_base_0*_length_9 + _apex_y_2*_free_x_7*_length_9 + _base_0*_free_y_8*_length_6 + _base_0*_free_y_8*_length_9",
+                "-_base_0**2 + 2*_base_0*_free_x_14 - _free_x_14**2 - _free_y_15**2 + _length_24**2",
+                "-_base_0**2*(_base_0*_free_y_13 - _free_x_10*_free_y_13 - _free_x_12*_free_y_11)",
+                "-_base_0*_free_y_11 + _base_0*_free_y_15 - _free_x_10*_free_y_15 + _free_x_14*_free_y_11",
+                "-_free_x_14**2 - _free_y_15**2 + _length_25**2",
+                "-_free_x_20**2 - _free_y_21**2 + _length_26**2",
+                "_apex_x_1*_free_y_21*_length_26 - _apex_x_1*_free_y_23*_length_26 - _apex_y_2*_free_x_20*_length_26 + _apex_y_2*_free_x_22*_length_26 + _free_x_20*_free_y_23*_length_26 + _free_x_20*_free_y_23*_length_27 - _free_x_22*_free_y_21*_length_26 - _free_x_22*_free_y_21*_length_27",
+                "_apex_x_1*_free_y_4*_length_5 + _apex_x_1*_free_y_4*_length_6 + _apex_y_2*_base_0*_length_5 - _apex_y_2*_free_x_3*_length_5 - _apex_y_2*_free_x_3*_length_6 - _base_0*_free_y_4*_length_5",
+                "_base_0*(_apex_x_1**2*_free_y_11 - _apex_x_1*_base_0*_free_y_11 + _apex_x_1*_base_0*_free_y_4 - _apex_x_1*_free_x_10*_free_y_4 - _apex_x_1*_free_x_3*_free_y_11 + _apex_y_2**2*_free_y_11 + _apex_y_2*_base_0**2 - _apex_y_2*_base_0*_free_x_10 - _apex_y_2*_base_0*_free_x_3 + _apex_y_2*_free_x_10*_free_x_3 - _apex_y_2*_free_y_11*_free_y_4 - _base_0**2*_free_y_4 + _base_0*_free_x_10*_free_y_4 + _base_0*_free_x_3*_free_y_11)",
+                "_base_0*(_apex_x_1*_free_x_18*_free_y_21 - _apex_x_1*_free_x_20*_free_y_19 + _apex_y_2*_free_x_18*_free_x_20 + _apex_y_2*_free_y_19*_free_y_21 - _base_0*_free_x_18*_free_y_21 + _base_0*_free_x_20*_free_y_19)",
+                "_base_0*_free_y_15*_length_25 - _base_0*_free_y_23*_length_25 + _free_x_14*_free_y_23*_length_24 + _free_x_14*_free_y_23*_length_25 - _free_x_22*_free_y_15*_length_24 - _free_x_22*_free_y_15*_length_25"
+              ],
+              "remaining_polynomials": [
+                "-(_base_0 - _length_9)*(_base_0 + _length_9)",
+                "-_apex_x_1**2 + 2*_apex_x_1*_base_0 - _apex_y_2**2 - _base_0**2 + _length_6**2",
+                "-_apex_x_1**2 + 2*_apex_x_1*_free_x_20 - _apex_y_2**2 + 2*_apex_y_2*_free_y_21 - _free_x_20**2 - _free_y_21**2 + _length_27**2",
+                "-_apex_x_1**2 - _apex_y_2**2 + _length_5**2",
+                "-_apex_x_1**2*_free_x_12*_free_y_15 + _apex_x_1**2*_free_x_14*_free_y_13 + _apex_x_1*_base_0*_free_x_12*_free_y_15 - _apex_x_1*_base_0*_free_x_14*_free_y_13 - _apex_y_2**2*_free_x_12*_free_y_15 + _apex_y_2**2*_free_x_14*_free_y_13 - _apex_y_2*_base_0*_free_x_12*_free_x_14 - _apex_y_2*_base_0*_free_y_13*_free_y_15",
+                "-_apex_x_1**3*_free_y_19 + _apex_x_1**2*_apex_y_2*_free_x_18 + _apex_x_1**2*_free_x_16*_free_y_19 + _apex_x_1**2*_free_x_18*_free_y_17 - _apex_x_1*_apex_y_2**2*_free_y_19 - 2*_apex_x_1*_apex_y_2*_free_x_16*_free_x_18 + 2*_apex_x_1*_apex_y_2*_free_y_17*_free_y_19 + _apex_y_2**3*_free_x_18 - _apex_y_2**2*_free_x_16*_free_y_19 - _apex_y_2**2*_free_x_18*_free_y_17",
+                "-_apex_x_1**3*_free_y_8 - _apex_x_1**2*_apex_y_2*_base_0 + _apex_x_1**2*_apex_y_2*_free_x_7 - _apex_x_1**2*_base_0*_free_y_17 + _apex_x_1**2*_base_0*_free_y_8 + _apex_x_1**2*_free_x_16*_free_y_8 + _apex_x_1**2*_free_x_7*_free_y_17 - _apex_x_1*_apex_y_2**2*_free_y_8 + 2*_apex_x_1*_apex_y_2*_base_0*_free_x_16 - 2*_apex_x_1*_apex_y_2*_free_x_16*_free_x_7 + 2*_apex_x_1*_apex_y_2*_free_y_17*_free_y_8 + _apex_x_1*_base_0**2*_free_y_17 - _apex_x_1*_base_0*_free_x_16*_free_y_8 - _apex_x_1*_base_0*_free_x_7*_free_y_17 - _apex_y_2**3*_base_0 + _apex_y_2**3*_free_x_7 + _apex_y_2**2*_base_0*_free_y_17 + _apex_y_2**2*_base_0*_free_y_8 - _apex_y_2**2*_free_x_16*_free_y_8 - _apex_y_2**2*_free_x_7*_free_y_17 - _apex_y_2*_base_0**2*_free_x_16 + _apex_y_2*_base_0*_free_x_16*_free_x_7 - _apex_y_2*_base_0*_free_y_17*_free_y_8",
+                "-_apex_x_1*_free_y_17 + _apex_x_1*_free_y_21 + _apex_y_2*_free_x_16 - _apex_y_2*_free_x_20 - _free_x_16*_free_y_21 + _free_x_20*_free_y_17",
+                "-_apex_x_1*_free_y_8*_length_9 - _apex_y_2*_base_0*_length_9 + _apex_y_2*_free_x_7*_length_9 + _base_0*_free_y_8*_length_6 + _base_0*_free_y_8*_length_9",
+                "-_base_0**2 + 2*_base_0*_free_x_14 - _free_x_14**2 - _free_y_15**2 + _length_24**2",
+                "-_base_0**2*(_base_0*_free_y_13 - _free_x_10*_free_y_13 - _free_x_12*_free_y_11)",
+                "-_base_0*_free_y_11 + _base_0*_free_y_15 - _free_x_10*_free_y_15 + _free_x_14*_free_y_11",
+                "-_free_x_14**2 - _free_y_15**2 + _length_25**2",
+                "-_free_x_20**2 - _free_y_21**2 + _length_26**2",
+                "_apex_x_1*_free_y_21*_length_26 - _apex_x_1*_free_y_23*_length_26 - _apex_y_2*_free_x_20*_length_26 + _apex_y_2*_free_x_22*_length_26 + _free_x_20*_free_y_23*_length_26 + _free_x_20*_free_y_23*_length_27 - _free_x_22*_free_y_21*_length_26 - _free_x_22*_free_y_21*_length_27",
+                "_apex_x_1*_free_y_4*_length_5 + _apex_x_1*_free_y_4*_length_6 + _apex_y_2*_base_0*_length_5 - _apex_y_2*_free_x_3*_length_5 - _apex_y_2*_free_x_3*_length_6 - _base_0*_free_y_4*_length_5",
+                "_base_0*(_apex_x_1**2*_free_y_11 - _apex_x_1*_base_0*_free_y_11 + _apex_x_1*_base_0*_free_y_4 - _apex_x_1*_free_x_10*_free_y_4 - _apex_x_1*_free_x_3*_free_y_11 + _apex_y_2**2*_free_y_11 + _apex_y_2*_base_0**2 - _apex_y_2*_base_0*_free_x_10 - _apex_y_2*_base_0*_free_x_3 + _apex_y_2*_free_x_10*_free_x_3 - _apex_y_2*_free_y_11*_free_y_4 - _base_0**2*_free_y_4 + _base_0*_free_x_10*_free_y_4 + _base_0*_free_x_3*_free_y_11)",
+                "_base_0*(_apex_x_1*_free_x_18*_free_y_21 - _apex_x_1*_free_x_20*_free_y_19 + _apex_y_2*_free_x_18*_free_x_20 + _apex_y_2*_free_y_19*_free_y_21 - _base_0*_free_x_18*_free_y_21 + _base_0*_free_x_20*_free_y_19)",
+                "_base_0*_free_y_15*_length_25 - _base_0*_free_y_23*_length_25 + _free_x_14*_free_y_23*_length_24 + _free_x_14*_free_y_23*_length_25 - _free_x_22*_free_y_15*_length_24 - _free_x_22*_free_y_15*_length_25"
+              ],
+              "remaining_variables": [
+                "_apex_x_1",
+                "_apex_y_2",
+                "_base_0",
+                "_free_x_10",
+                "_free_x_12",
+                "_free_x_14",
+                "_free_x_16",
+                "_free_x_18",
+                "_free_x_20",
+                "_free_x_22",
+                "_free_x_3",
+                "_free_x_7",
+                "_free_y_11",
+                "_free_y_13",
+                "_free_y_15",
+                "_free_y_17",
+                "_free_y_19",
+                "_free_y_21",
+                "_free_y_23",
+                "_free_y_4",
+                "_free_y_8",
+                "_length_24",
+                "_length_25",
+                "_length_26",
+                "_length_27",
+                "_length_5",
+                "_length_6",
+                "_length_9"
+              ],
+              "steps": [],
+              "eliminated_variables": [],
+              "stopped_reason": "separator_budget",
+              "exact_replay": true
+            },
+            "structural_lemma_certificates": [],
+            "all_local_certificates_replayed": true
+          },
+          "coordination": {
+            "local_agent_count": 0,
+            "active_agent_count": 0,
+            "maximum_separator_variable_width": 0,
+            "initial_fact_count": 19,
+            "derived_goal_count": 0,
+            "solved_goal_count": 0,
+            "replayed_goal_count": 0,
+            "accepted_certificate_count": 0,
+            "rejected_certificate_count": 0,
+            "maximum_proof_depth": 0,
+            "mean_proof_depth": 0.0,
+            "external_goal_matched": false,
+            "external_goal_solved": false,
+            "external_goal_replayed": false,
+            "external_goal_proof_depth": 0
+          },
+          "elapsed_seconds": 8.116424200008623
+        }
+      }
+    },
+    "2021_p3": {
+      "explicit_inspection": {
+        "status": "skipped"
+      },
+      "relational_inspection": {
+        "status": "skipped"
+      },
+      "local_widths": {
+        "32": {
+          "status": "completed",
+          "result": {
+            "channel": "coll",
+            "points": [
+              "o1",
+              "o2",
+              "y"
+            ],
+            "goal_polynomial": "_free_x_13*_free_y_16 - _free_x_13*_free_y_18 - _free_x_15*_free_y_14 + _free_x_15*_free_y_18 + _free_x_17*_free_y_14 - _free_x_17*_free_y_16",
+            "initial_variable_count": 19,
+            "initial_equation_count": 15,
+            "initial_total_expanded_terms": 107,
+            "initial_maximum_expanded_terms": 25,
+            "protected_variables": [
+              "_free_x_13",
+              "_free_x_15",
+              "_free_x_17",
+              "_free_y_14",
+              "_free_y_16",
+              "_free_y_18"
+            ],
+            "reduced_variable_count": 19,
+            "reduced_equation_count": 15,
+            "reduced_total_expanded_terms": 101,
+            "reduced_maximum_expanded_terms": 25,
+            "local_elimination": {
+              "initial_polynomials": [
+                "-(_base_0 - _length_5)*(_base_0 + _length_5)",
+                "-_apex_x_1**2 + 2*_apex_x_1*_free_x_11 - _apex_y_2**2 + 2*_apex_y_2*_free_y_12 + _base_0**2 - 2*_base_0*_free_x_11",
+                "-_apex_x_1**2 + 2*_apex_x_1*_free_x_13 - _apex_y_2**2 + 2*_apex_y_2*_free_y_14",
+                "-_apex_x_1**2 - _apex_y_2**2 + _length_6**2",
+                "-_apex_x_1*_base_0*_free_x_3*_free_y_10 + _apex_x_1*_base_0*_free_x_9*_free_y_4 + _apex_x_1*_free_x_3**2*_free_y_10 + _apex_x_1*_free_x_3**2*_free_y_4 - 2*_apex_x_1*_free_x_3*_free_x_9*_free_y_4 - _apex_x_1*_free_y_10*_free_y_4**2 + _apex_x_1*_free_y_4**3 + _apex_y_2*_base_0*_free_x_3**2 - _apex_y_2*_base_0*_free_x_3*_free_x_9 - _apex_y_2*_base_0*_free_y_10*_free_y_4 + _apex_y_2*_base_0*_free_y_4**2 - _apex_y_2*_free_x_3**3 + _apex_y_2*_free_x_3**2*_free_x_9 + 2*_apex_y_2*_free_x_3*_free_y_10*_free_y_4 - _apex_y_2*_free_x_3*_free_y_4**2 - _apex_y_2*_free_x_9*_free_y_4**2 + _base_0**2*_free_x_3*_free_y_10 - _base_0**2*_free_x_9*_free_y_4 - _base_0*_free_x_3**2*_free_y_10 - _base_0*_free_x_3**2*_free_y_4 + 2*_base_0*_free_x_3*_free_x_9*_free_y_4 + _base_0*_free_y_10*_free_y_4**2 - _base_0*_free_y_4**3",
+                "-_apex_x_1*_free_y_12 + _apex_y_2*_free_x_11",
+                "-_apex_x_1*_free_y_18 - _apex_y_2*_base_0 + _apex_y_2*_free_x_17 + _base_0*_free_y_18",
+                "-_apex_x_1*_free_y_4*_length_5 + _apex_y_2*_free_x_3*_length_5 - _base_0*_free_y_4*_length_6",
+                "-_apex_x_1*_free_y_8 + _apex_y_2*_free_x_7",
+                "-_base_0*_free_y_10",
+                "-_free_x_11**2 + 2*_free_x_11*_free_x_15 - 2*_free_x_15*_free_x_7 + _free_x_7**2 - _free_y_12**2 + 2*_free_y_12*_free_y_16 - 2*_free_y_16*_free_y_8 + _free_y_8**2",
+                "2*_free_x_13*_free_x_3 - _free_x_3**2 + 2*_free_y_14*_free_y_4 - _free_y_4**2",
+                "2*_free_x_15*_free_x_3 - 2*_free_x_15*_free_x_7 - _free_x_3**2 + _free_x_7**2 + 2*_free_y_16*_free_y_4 - 2*_free_y_16*_free_y_8 - _free_y_4**2 + _free_y_8**2",
+                "_apex_x_1**2*_free_x_3*_free_y_8 - _apex_x_1**2*_free_x_7*_free_y_4 - _apex_x_1*_base_0*_free_x_3*_free_y_8 + _apex_x_1*_base_0*_free_x_7*_free_y_4 - _apex_x_1*_free_x_3**2*_free_y_4 - _apex_x_1*_free_x_3**2*_free_y_8 + 2*_apex_x_1*_free_x_3*_free_x_7*_free_y_4 - _apex_x_1*_free_y_4**3 + _apex_x_1*_free_y_4**2*_free_y_8 + _apex_y_2**2*_free_x_3*_free_y_8 - _apex_y_2**2*_free_x_7*_free_y_4 - _apex_y_2*_base_0*_free_x_3**2 + _apex_y_2*_base_0*_free_x_3*_free_x_7 - _apex_y_2*_base_0*_free_y_4**2 + _apex_y_2*_base_0*_free_y_4*_free_y_8 + _apex_y_2*_free_x_3**3 - _apex_y_2*_free_x_3**2*_free_x_7 + _apex_y_2*_free_x_3*_free_y_4**2 - 2*_apex_y_2*_free_x_3*_free_y_4*_free_y_8 + _apex_y_2*_free_x_7*_free_y_4**2 + _base_0*_free_x_3**2*_free_y_4 + _base_0*_free_x_3**2*_free_y_8 - 2*_base_0*_free_x_3*_free_x_7*_free_y_4 + _base_0*_free_y_4**3 - _base_0*_free_y_4**2*_free_y_8",
+                "_free_x_17*_free_y_10 - _free_x_17*_free_y_8 - _free_x_7*_free_y_10 + _free_x_7*_free_y_18 - _free_x_9*_free_y_18 + _free_x_9*_free_y_8"
+              ],
+              "remaining_polynomials": [
+                "-(_base_0 - _length_5)*(_base_0 + _length_5)",
+                "-_apex_x_1**2 + 2*_apex_x_1*_free_x_11 - _apex_y_2**2 + 2*_apex_y_2*_free_y_12 + _base_0**2 - 2*_base_0*_free_x_11",
+                "-_apex_x_1**2 + 2*_apex_x_1*_free_x_13 - _apex_y_2**2 + 2*_apex_y_2*_free_y_14",
+                "-_apex_x_1**2 - _apex_y_2**2 + _length_6**2",
+                "-_apex_x_1*_base_0*_free_x_3*_free_y_10 + _apex_x_1*_base_0*_free_x_9*_free_y_4 + _apex_x_1*_free_x_3**2*_free_y_10 + _apex_x_1*_free_x_3**2*_free_y_4 - 2*_apex_x_1*_free_x_3*_free_x_9*_free_y_4 - _apex_x_1*_free_y_10*_free_y_4**2 + _apex_x_1*_free_y_4**3 + _apex_y_2*_base_0*_free_x_3**2 - _apex_y_2*_base_0*_free_x_3*_free_x_9 - _apex_y_2*_base_0*_free_y_10*_free_y_4 + _apex_y_2*_base_0*_free_y_4**2 - _apex_y_2*_free_x_3**3 + _apex_y_2*_free_x_3**2*_free_x_9 + 2*_apex_y_2*_free_x_3*_free_y_10*_free_y_4 - _apex_y_2*_free_x_3*_free_y_4**2 - _apex_y_2*_free_x_9*_free_y_4**2 + _base_0**2*_free_x_3*_free_y_10 - _base_0**2*_free_x_9*_free_y_4 - _base_0*_free_x_3**2*_free_y_10 - _base_0*_free_x_3**2*_free_y_4 + 2*_base_0*_free_x_3*_free_x_9*_free_y_4 + _base_0*_free_y_10*_free_y_4**2 - _base_0*_free_y_4**3",
+                "-_apex_x_1*_free_y_12 + _apex_y_2*_free_x_11",
+                "-_apex_x_1*_free_y_18 - _apex_y_2*_base_0 + _apex_y_2*_free_x_17 + _base_0*_free_y_18",
+                "-_apex_x_1*_free_y_4*_length_5 + _apex_y_2*_free_x_3*_length_5 - _base_0*_free_y_4*_length_6",
+                "-_apex_x_1*_free_y_8 + _apex_y_2*_free_x_7",
+                "-_base_0*_free_y_10",
+                "-_free_x_11**2 + 2*_free_x_11*_free_x_15 - 2*_free_x_15*_free_x_7 + _free_x_7**2 - _free_y_12**2 + 2*_free_y_12*_free_y_16 - 2*_free_y_16*_free_y_8 + _free_y_8**2",
+                "2*_free_x_13*_free_x_3 - _free_x_3**2 + 2*_free_y_14*_free_y_4 - _free_y_4**2",
+                "2*_free_x_15*_free_x_3 - 2*_free_x_15*_free_x_7 - _free_x_3**2 + _free_x_7**2 + 2*_free_y_16*_free_y_4 - 2*_free_y_16*_free_y_8 - _free_y_4**2 + _free_y_8**2",
+                "_apex_x_1**2*_free_x_3*_free_y_8 - _apex_x_1**2*_free_x_7*_free_y_4 - _apex_x_1*_base_0*_free_x_3*_free_y_8 + _apex_x_1*_base_0*_free_x_7*_free_y_4 - _apex_x_1*_free_x_3**2*_free_y_4 - _apex_x_1*_free_x_3**2*_free_y_8 + 2*_apex_x_1*_free_x_3*_free_x_7*_free_y_4 - _apex_x_1*_free_y_4**3 + _apex_x_1*_free_y_4**2*_free_y_8 + _apex_y_2**2*_free_x_3*_free_y_8 - _apex_y_2**2*_free_x_7*_free_y_4 - _apex_y_2*_base_0*_free_x_3**2 + _apex_y_2*_base_0*_free_x_3*_free_x_7 - _apex_y_2*_base_0*_free_y_4**2 + _apex_y_2*_base_0*_free_y_4*_free_y_8 + _apex_y_2*_free_x_3**3 - _apex_y_2*_free_x_3**2*_free_x_7 + _apex_y_2*_free_x_3*_free_y_4**2 - 2*_apex_y_2*_free_x_3*_free_y_4*_free_y_8 + _apex_y_2*_free_x_7*_free_y_4**2 + _base_0*_free_x_3**2*_free_y_4 + _base_0*_free_x_3**2*_free_y_8 - 2*_base_0*_free_x_3*_free_x_7*_free_y_4 + _base_0*_free_y_4**3 - _base_0*_free_y_4**2*_free_y_8",
+                "_free_x_17*_free_y_10 - _free_x_17*_free_y_8 - _free_x_7*_free_y_10 + _free_x_7*_free_y_18 - _free_x_9*_free_y_18 + _free_x_9*_free_y_8"
+              ],
+              "remaining_variables": [
+                "_apex_x_1",
+                "_apex_y_2",
+                "_base_0",
+                "_free_x_11",
+                "_free_x_13",
+                "_free_x_15",
+                "_free_x_17",
+                "_free_x_3",
+                "_free_x_7",
+                "_free_x_9",
+                "_free_y_10",
+                "_free_y_12",
+                "_free_y_14",
+                "_free_y_16",
+                "_free_y_18",
+                "_free_y_4",
+                "_free_y_8",
+                "_length_5",
+                "_length_6"
+              ],
+              "steps": [],
+              "eliminated_variables": [],
+              "stopped_reason": "separator_budget",
+              "exact_replay": true
+            },
+            "structural_lemma_certificates": [],
+            "all_local_certificates_replayed": true
+          },
+          "coordination": {
+            "local_agent_count": 0,
+            "active_agent_count": 0,
+            "maximum_separator_variable_width": 0,
+            "initial_fact_count": 15,
+            "derived_goal_count": 0,
+            "solved_goal_count": 0,
+            "replayed_goal_count": 0,
+            "accepted_certificate_count": 0,
+            "rejected_certificate_count": 0,
+            "maximum_proof_depth": 0,
+            "mean_proof_depth": 0.0,
+            "external_goal_matched": false,
+            "external_goal_solved": false,
+            "external_goal_replayed": false,
+            "external_goal_proof_depth": 0
+          },
+          "elapsed_seconds": 12.448355500004254
+        }
+      }
+    }
+  },
+  "claim_scope": "This measures exact local certificate exchange and expression width. It does not count a local projection as a solved global theorem."
+}
