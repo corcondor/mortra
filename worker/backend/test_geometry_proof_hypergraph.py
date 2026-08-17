@@ -1,15 +1,16 @@
 from __future__ import annotations
 
 import unittest
+from types import SimpleNamespace
 
 from geometry_proof_hypergraph import (
     Atom,
     BidirectionalHypergraphProver,
     Theorem,
     euclidean_relation_theorems,
+    prove_typed_predicates,
     synthesize_backward_obligations,
 )
-from geometry_natural_formalizer import GeometryFormalization, TypedPredicate, prove_formalization
 
 
 class GeometryProofHypergraphTest(unittest.TestCase):
@@ -94,28 +95,17 @@ class GeometryProofHypergraphTest(unittest.TestCase):
         assert proof is not None
         self.assertEqual(proof.rounds, 2)
 
-    def test_formalizer_bridge_returns_replayable_proof_dag(self) -> None:
-        result = GeometryFormalization(
-            status="parsed",
-            normalized_text="",
-            points=list("ABCDEFGH"),
-            predicates=[
-                TypedPredicate("perp", ("A", "B", "C", "D"), "given"),
-                TypedPredicate("para", ("C", "D", "E", "F"), "given"),
-                TypedPredicate("para", ("E", "F", "G", "H"), "given"),
-            ],
-            goal=TypedPredicate("perp", ("A", "B", "G", "H"), "goal"),
-            goals=[TypedPredicate("perp", ("A", "B", "G", "H"), "goal")],
-            triangles=[],
-            unresolved_relations=[],
-            coordinates={},
-            diagram_residual=None,
-            restarts=0,
-            formal_problem=None,
-            discourse_objects=[],
-        )
-        proof = prove_formalization(result)
+    def test_typed_predicate_protocol_returns_replayable_proof_dag(self) -> None:
+        predicates = [
+            SimpleNamespace(name="perp", points=("A", "B", "C", "D")),
+            SimpleNamespace(name="para", points=("C", "D", "E", "F")),
+            SimpleNamespace(name="para", points=("E", "F", "G", "H")),
+        ]
+        goal = SimpleNamespace(name="perp", points=("A", "B", "G", "H"))
+        result = prove_typed_predicates(predicates, goal)
+        proof = result.to_dict() if result is not None else None
         self.assertIsNotNone(proof)
+        assert proof is not None
         self.assertEqual(proof["goal"], "perp(A,B,G,H)")
         self.assertEqual(proof["steps"][-1]["depth"], 2)
 
