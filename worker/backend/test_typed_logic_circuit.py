@@ -4,11 +4,13 @@ import unittest
 
 from worker.backend.geometry_proof_hypergraph import Atom, Theorem
 from worker.backend.symbolic_sheaf_coordination import (
+    LocalCertificate,
     PredicateSignature,
     RuleClosureAdapter,
     TypedVocabulary,
 )
 from worker.backend.typed_logic_circuit import (
+    compile_goal_directed_proof_circuit,
     compile_typed_proof_circuit,
     schedule_circuit,
 )
@@ -172,6 +174,135 @@ class TypedLogicCircuitTest(unittest.TestCase):
             max_rounds=3,
         )
         self.assertFalse(soft_result.solved)
+
+    def test_lazy_compiler_replays_chain_without_exhaustive_grounding(self) -> None:
+        vocabulary, agents, givens, goal, _ = reachability_case(
+            "lazy",
+            distractors=40,
+        )
+        exhaustive = compile_typed_proof_circuit(givens, goal, agents, max_rounds=8)
+        lazy = compile_goal_directed_proof_circuit(
+            givens,
+            goal,
+            agents,
+            max_rule_applications=8,
+        )
+        result = schedule_circuit(
+            lazy,
+            vocabulary,
+            agents,
+            mode="circuit",
+            budget_per_round=1,
+            max_rounds=4,
+        )
+
+        self.assertTrue(lazy.provable)
+        self.assertTrue(result.replayed)
+        self.assertEqual(len(lazy.proof_slice()), 4)
+        self.assertLess(lazy.compile_matches, exhaustive.compile_matches)
+        self.assertLess(len(lazy.gates), len(exhaustive.gates))
+
+    def test_lazy_compiler_abstains_on_matched_negative(self) -> None:
+        _vocabulary, agents, givens, _goal, negative_goal = reachability_case(
+            "lazy_negative",
+            distractors=16,
+        )
+        lazy = compile_goal_directed_proof_circuit(
+            givens,
+            negative_goal,
+            agents,
+            max_rule_applications=8,
+        )
+
+        self.assertFalse(lazy.provable)
+        self.assertEqual(lazy.gates, ())
+
+    def test_lazy_compiler_shares_duplicate_and_premises(self) -> None:
+        rules = (
+            Theorem("derive", (atom("seed", "a"),), atom("property", "a")),
+            Theorem(
+                "idempotent-and",
+                (atom("property", "a"), atom("property", "a")),
+                atom("goal", "a"),
+            ),
+        )
+        agent = RuleClosureAdapter(
+            "duplicate-and",
+            rules,
+            imports={"seed", "property"},
+            exports={"property", "goal"},
+        )
+        vocabulary = TypedVocabulary(
+            signatures={
+                name: PredicateSignature(name, ("Node",))
+                for name in ("seed", "property", "goal")
+            },
+            entity_sorts={"a": "Node"},
+        )
+        circuit = compile_goal_directed_proof_circuit(
+            (atom("seed", "a"),),
+            atom("goal", "a"),
+            (agent,),
+            max_rule_applications=2,
+        )
+        result = schedule_circuit(
+            circuit,
+            vocabulary,
+            (agent,),
+            mode="circuit",
+            budget_per_round=1,
+            max_rounds=2,
+        )
+
+        self.assertEqual(len(circuit.proof_slice()), 2)
+        self.assertTrue(result.replayed)
+
+    def test_scheduler_preserves_agent_native_certificate_payload(self) -> None:
+        class NativeAdapter(RuleClosureAdapter):
+            def certificate_for_gate(self, gate, *, round_index):
+                return LocalCertificate(
+                    agent_id=self.agent_id,
+                    rule_name=gate.theorem,
+                    conclusion=gate.conclusion,
+                    premises=gate.premises,
+                    native_payload={"native": "verified", "round": round_index},
+                )
+
+            def verify(self, certificate, facts):
+                return (
+                    certificate.native_payload.get("native") == "verified"
+                    and super().verify(certificate, facts)
+                )
+
+        agent = NativeAdapter(
+            "native",
+            (Theorem("advance", (atom("seed", "a"),), atom("goal", "a")),),
+            imports={"seed"},
+            exports={"goal"},
+        )
+        vocabulary = TypedVocabulary(
+            signatures={
+                "seed": PredicateSignature("seed", ("Node",)),
+                "goal": PredicateSignature("goal", ("Node",)),
+            },
+            entity_sorts={"a": "Node"},
+        )
+        circuit = compile_goal_directed_proof_circuit(
+            (atom("seed", "a"),),
+            atom("goal", "a"),
+            (agent,),
+            max_rule_applications=1,
+        )
+        result = schedule_circuit(
+            circuit,
+            vocabulary,
+            (agent,),
+            mode="circuit",
+            max_rounds=1,
+        )
+
+        self.assertTrue(result.replayed)
+        self.assertEqual(result.certificates[0].native_payload["native"], "verified")
 
 
 if __name__ == "__main__":

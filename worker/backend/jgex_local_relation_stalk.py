@@ -18,7 +18,7 @@ from worker.backend.geometry_local_lemma_certificate import (
     external_homothety_boundary_certificates,
     external_homothety_tangent_certificate,
 )
-from worker.backend.geometry_proof_hypergraph import Atom
+from worker.backend.geometry_proof_hypergraph import Atom, Theorem
 from worker.backend.jgex_gclc_translator import external_homothety_macros
 from worker.backend.jgex_legacy_normalizer import normalize_legacy_formulation
 from worker.backend.symbolic_sheaf_coordination import (
@@ -253,6 +253,38 @@ class JGEXRelationStalkAdapter:
             for certificate in stalk.certificates
             for conclusion in certificate.conclusions
         }
+        self.theorems = tuple(
+            Theorem(
+                certificate.rule_name,
+                certificate.premises,
+                conclusion,
+            )
+            for certificate in stalk.certificates
+            for conclusion in certificate.conclusions
+        )
+
+    def certificate_for_gate(
+        self,
+        gate: object,
+        *,
+        round_index: int,
+    ) -> LocalCertificate:
+        conclusion = getattr(gate, "conclusion").canonical()
+        rule_name = str(getattr(gate, "theorem"))
+        expected = self._certificates[(rule_name, conclusion)]
+        return LocalCertificate(
+            agent_id=self.agent_id,
+            rule_name=rule_name,
+            conclusion=conclusion,
+            premises=expected.premises,
+            native_payload={
+                "round": round_index,
+                "kind": expected.native_kind,
+                "reference": expected.native_reference,
+                "certificate_sha256": expected.certificate_sha256,
+                "replayed": expected.replayed,
+            },
+        )
 
     def propose(
         self,
