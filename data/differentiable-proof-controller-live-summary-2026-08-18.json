@@ -1,0 +1,91 @@
+{
+  "experiment": "mortra_differentiable_controller_live_newclid_summary",
+  "date": "2026-08-18",
+  "uses_external_llm": false,
+  "controllers": {
+    "full": {
+      "trainable_parameter_count": 51,
+      "model_artifact": "data/differentiable-proof-controller-bounded-risk-experiment-2026-08-18.json",
+      "model_artifact_sha256": "c9d3a39be8ce9c6bc4289e9e190e6bed253990b794856d42bd79378944c55be8"
+    },
+    "trust_only": {
+      "trainable_parameter_count": 8,
+      "fixed_local_mathematical_circuits": true,
+      "learned_values": "six_stalk_trusts_plus_rho_plus_risk",
+      "model_artifact": "data/differentiable-proof-controller-trust-only-experiment-2026-08-18.json",
+      "model_artifact_sha256": "aaadeb76dfa1dabb95bc88a630f8bc281b54ef415b1cc3d863d387c9f3f60032"
+    },
+    "shared": {
+      "schema": "mortra-differentiable-proof-controller-v2",
+      "serialized_parameter_count": 51,
+      "unused_serialized_local_values_are_fixed": true,
+      "admm_iterations": 12,
+      "training_problems": ["2009_p2", "2010_p2", "2015_p3"],
+      "heldout_problem": "2020_p1"
+    }
+  },
+  "offline_nonterminal_leave_one_problem_out": {
+    "group_count": 4,
+    "structural": {"mean_rank": 16.75, "mrr": 0.10181451612903225, "hit_at_8": 0.25},
+    "closure": {"mean_rank": 6.75, "mrr": 0.2232142857142857, "hit_at_8": 0.75},
+    "legacy_pareto": {"mean_rank": 8.0, "mrr": 0.16856060606060605, "hit_at_8": 0.5},
+    "full_differentiable_consensus": {"mean_rank": 16.0, "mrr": 0.07518796992481203, "hit_at_8": 0.25},
+    "trust_only_consensus": {"mean_rank": 11.75, "mrr": 0.11449718045112782, "hit_at_8": 0.5},
+    "random_mean": {"mean_rank": 24.7015, "mrr": 0.05180449292439144, "hit_at_8": 0.0}
+  },
+  "frozen_2020_p1_nonterminal_rank": {
+    "candidate_count": 104,
+    "structural": 16,
+    "closure": 2,
+    "legacy_pareto": 3,
+    "full_differentiable_consensus": 18,
+    "trust_only_consensus": 18,
+    "random_mean": 49.465
+  },
+  "live_search": {
+    "problem": "2020_p1",
+    "beam_width": 24,
+    "branch_limit": 128,
+    "exact_existing": {"solved": true, "evaluated_paths": 288},
+    "half_exact_half_differentiable": {
+      "solved": true,
+      "evaluated_paths": 288,
+      "artifact_sha256": "7d2729b32efcad8fef4ad65086cb884002d3ff714716c4ed660cb4696f6ece54",
+      "native_artifact_verified": true
+    },
+    "differentiable_only": {
+      "solved": true,
+      "evaluated_paths": 1184,
+      "artifact_sha256": "43db6d14fa4521011fbfbdda4eb1f259bdf8737c677d6655dc82a6611a84b910",
+      "native_artifact_verified": true
+    },
+    "differentiable_only_path_ratio_vs_exact": 4.111111111111111,
+    "trust_only": {
+      "solved": false,
+      "evaluated_paths": 3200,
+      "error_count": 49,
+      "artifact_sha256": "076a85d784ca64ca4375568a29fc51388812f91fd667b6e8207c8b1eb729e703",
+      "native_artifact_verified": true
+    },
+    "half_exact_half_trust_only": {
+      "solved": true,
+      "evaluated_paths": 288,
+      "error_count": 25,
+      "artifact_sha256": "b8ba1e8d2a6f660c38aae05119f27c546268dea4de39c3fd4ff154e2ac94846b",
+      "native_artifact_verified": true
+    }
+  },
+  "published_compressed_artifacts": {
+    "full_only": "22addc1784fece87bd2009113b600bfb5dabb9c8de21e24327414a6501de56e7",
+    "full_portfolio": "d60cb4b69ad0949920eb1d049bfcc7598b91a2cfb4e40448ecd35581c24fda6e",
+    "trust_only": "5a8ccde04808aed1767ee1e5c8b8f65fb0337e91fd1624bcbfe47e6dab771422",
+    "trust_only_portfolio": "b25cd9902deaf8e761eb31c5780bbefcef868cc83c72e1aa6d506faf6e91ba9a",
+    "shared_native_proof": "e795bc886079859fa81174d695a5a361836e8368aaa3ad5a6cc698d44fde3a6a"
+  },
+  "decision": {
+    "make_differentiable_only_default": false,
+    "retain_capability_preserving_portfolio": true,
+    "preferred_learned_architecture": "trust-only",
+    "reason": "Trust-only is the scientifically cleaner controller and improves offline LOPO rank over the 51-parameter model, but it failed in live search. Only the exact-preserving portfolio retained the 288-path native proof result."
+  }
+}

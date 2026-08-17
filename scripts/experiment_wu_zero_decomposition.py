@@ -29,6 +29,9 @@ from worker.backend.wu_zero_decomposition import (  # noqa: E402
     decompose_wu_zero_set,
     verify_zero_decomposition_cover,
 )
+from worker.backend.wu_experiment_selection import (  # noqa: E402
+    eligible_conditional_names,
+)
 
 
 DEFAULT_NEWCLID = Path.home() / ".cache" / "mortra-research-sources" / "Newclid"
@@ -125,20 +128,6 @@ def _isolated(
         return payload
 
 
-def _eligible_names(
-    baseline: dict[str, object],
-    requested: tuple[str, ...],
-) -> tuple[str, ...]:
-    results = baseline["results"]
-    return tuple(
-        name
-        for name in requested
-        if results[name]["status"] == "completed"
-        and results[name]["coordination"]["conditional_goal_solved"]
-        and results[name]["coordination"]["open_regularity_count"] > 0
-    )
-
-
 def _summary(results: dict[str, dict[str, object]]) -> dict[str, object]:
     completed = [item for item in results.values() if item["status"] == "completed"]
     decompositions = [item["decomposition"] for item in completed]
@@ -213,7 +202,7 @@ def main() -> int:
     args = parser.parse_args()
     baseline = json.loads(args.baseline_artifact.read_text(encoding="utf-8"))
     requested = tuple(args.problems or baseline["fixed_problem_names"])
-    eligible = _eligible_names(baseline, requested)
+    eligible = eligible_conditional_names(baseline, requested)
     formulations = jgex_formulation_from_txt_file(args.dataset.resolve())
     settings: dict[str, object] = {
         "max_depth": args.max_depth,

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import gzip
 import json
 from pathlib import Path
 
@@ -16,11 +17,25 @@ def _path_key(record: dict[str, object]) -> list[str]:
     return rows
 
 
+def _read_json(path: Path) -> dict[str, object]:
+    if path.suffix == ".gz":
+        with gzip.open(path, "rt", encoding="utf-8") as handle:
+            return json.load(handle)
+    with path.open("r", encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+def _proof_path(artifact: Path) -> Path:
+    if artifact.name.endswith(".json.gz"):
+        return artifact.with_name(artifact.name[: -len(".json.gz")] + ".proof.json.gz")
+    return artifact.with_suffix(".proof.json")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--artifact", type=Path, required=True)
     args = parser.parse_args()
-    report = json.loads(args.artifact.read_text(encoding="utf-8"))
+    report = _read_json(args.artifact)
     protocol = report["protocol"]
     records = report["records"]
     checks: dict[str, bool] = {
@@ -47,8 +62,7 @@ def main() -> int:
             and confirmation.get("status") == "solved"
             and confirmation.get("goal_deduction_count", 0) > 0
         )
-        proof_path = args.artifact.with_suffix(".proof.json")
-        proof = json.loads(proof_path.read_text(encoding="utf-8"))
+        proof = _read_json(_proof_path(args.artifact))
         checks["proof_json_solved"] = (
             proof.get("status") == "solved"
             and len(proof.get("deductions_for_goal", []))

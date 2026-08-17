@@ -18,6 +18,7 @@ on:
       - "data/wu-*.json.gz"
       - "data/newclid-proof-hypergraph-*.json"
       - "data/open-goal-feedback-*.json"
+      - "data/differentiable-*.json"
       - "data/chordal-lift-reproduction-manifest-*.json"
       - "data/mortra-reversible-synthesis-reproduction-manifest-*.json"
       - "data/yuclid-imo-ag-30-all-ar-*.json"
@@ -30,6 +31,7 @@ on:
       - "scripts/experiment_singular_lift_fixed4.py"
       - "scripts/experiment_certified_wu_fixed4.py"
       - "scripts/experiment_newclid_construction_stalk.py"
+      - "scripts/experiment_differentiable_proof_controller.py"
       - "scripts/experiment_open_goal_feedback_imo_ag_30.py"
       - "scripts/compare_open_goal_feedback_ablation.py"
       - "scripts/verify_open_goal_independent_exchange.py"
@@ -60,6 +62,10 @@ on:
       - "worker/backend/wu_polynomial_stalk.py"
       - "worker/backend/wu_*.py"
       - "worker/backend/typed_geometry_stalk.py"
+      - "worker/backend/geometry_proof_hypergraph.py"
+      - "worker/backend/geometry_ar_residual.py"
+      - "worker/backend/differentiable_proof_controller.py"
+      - "worker/backend/test_differentiable_proof_controller.py"
   pull_request:
     paths:
       - ".github/workflows/reversible-symbolic-geometry.yml"
@@ -75,6 +81,7 @@ on:
       - "data/wu-*.json.gz"
       - "data/newclid-proof-hypergraph-*.json"
       - "data/open-goal-feedback-*.json"
+      - "data/differentiable-*.json"
       - "data/chordal-lift-reproduction-manifest-*.json"
       - "data/mortra-reversible-synthesis-reproduction-manifest-*.json"
       - "data/yuclid-imo-ag-30-all-ar-*.json"
@@ -87,6 +94,7 @@ on:
       - "scripts/experiment_singular_lift_fixed4.py"
       - "scripts/experiment_certified_wu_fixed4.py"
       - "scripts/experiment_newclid_construction_stalk.py"
+      - "scripts/experiment_differentiable_proof_controller.py"
       - "scripts/experiment_open_goal_feedback_imo_ag_30.py"
       - "scripts/compare_open_goal_feedback_ablation.py"
       - "scripts/verify_open_goal_independent_exchange.py"
@@ -117,6 +125,10 @@ on:
       - "worker/backend/wu_polynomial_stalk.py"
       - "worker/backend/wu_*.py"
       - "worker/backend/typed_geometry_stalk.py"
+      - "worker/backend/geometry_proof_hypergraph.py"
+      - "worker/backend/geometry_ar_residual.py"
+      - "worker/backend/differentiable_proof_controller.py"
+      - "worker/backend/test_differentiable_proof_controller.py"
   workflow_dispatch:
 
 permissions:
@@ -153,6 +165,7 @@ jobs:
             scripts/experiment_singular_lift_fixed4.py \
             scripts/experiment_certified_wu_fixed4.py \
             scripts/experiment_newclid_construction_stalk.py \
+            scripts/experiment_differentiable_proof_controller.py \
             scripts/experiment_open_goal_feedback_imo_ag_30.py \
             scripts/compare_open_goal_feedback_ablation.py \
             scripts/verify_open_goal_independent_exchange.py \
@@ -186,7 +199,11 @@ jobs:
             worker/backend/wu_ritt_characteristic.py \
             worker/backend/wu_ritt_zero_decomposition.py \
             worker/backend/wu_rtm_support.py \
-            worker/backend/typed_geometry_stalk.py
+            worker/backend/wu_experiment_selection.py \
+            worker/backend/typed_geometry_stalk.py \
+            worker/backend/geometry_proof_hypergraph.py \
+            worker/backend/geometry_ar_residual.py \
+            worker/backend/differentiable_proof_controller.py
       - name: Run symbolic bridge tests
         run: |
           python -m pytest \
@@ -207,7 +224,11 @@ jobs:
             worker/backend/test_wu_ritt_characteristic.py \
             worker/backend/test_wu_ritt_zero_decomposition.py \
             worker/backend/test_wu_rtm_support.py \
+            worker/backend/test_wu_experiment_selection.py \
             worker/backend/test_typed_geometry_stalk.py \
+            worker/backend/test_geometry_proof_hypergraph.py \
+            worker/backend/test_geometry_ar_residual.py \
+            worker/backend/test_differentiable_proof_controller.py \
             worker/backend/test_open_goal_feedback_portfolio.py \
             worker/backend/test_open_goal_feedback_ablation.py \
             -q
@@ -223,6 +244,10 @@ jobs:
             --artifact data/certified-wu-relational-construction-fixed4-micro-2026-08-16.json
           python scripts/verify_newclid_construction_stalk_artifact.py \
             --artifact data/newclid-proof-hypergraph-balanced-aux-search-2010-p2-2026-08-16.json
+          python scripts/verify_newclid_construction_stalk_artifact.py \
+            --artifact data/differentiable-trust-only-live-2020-p1-2026-08-18.json.gz
+          python scripts/verify_newclid_construction_stalk_artifact.py \
+            --artifact data/differentiable-trust-only-portfolio-live-2020-p1-2026-08-18.json.gz
           python scripts/verify_wu_ritt_artifacts.py \
             --standard-artifact data/wu-ritt-standard-strict180-2021-p3-2026-08-17.json.gz \
             --proof-artifact data/wu-ritt-weak-strict180-2021-p3-2026-08-17.json.gz \

@@ -59,17 +59,32 @@ from worker.backend.geometry_relation_channels import (
     yuclid_relation_frontier,
     yuclid_relation_metrics,
 )
+from worker.backend.geometry_proof_hypergraph import (
+    Atom,
+    BackwardObligation,
+    Theorem,
+    synthesize_backward_obligations,
+)
+from worker.backend.geometry_ar_residual import yuclid_ar_residual
+from worker.backend.differentiable_proof_controller import (
+    DifferentiableProofController,
+)
 from worker.backend.typed_geometry_stalk import (
     DEFAULT_POINT_FAMILIES,
     EXTENDED_POINT_FAMILIES,
     ConstructionFamily,
     TypedConstructionCandidate,
     augment_incidence_graph,
+    augment_semantic_role_graph,
+    augment_semantic_role_weights,
     balanced_stratified_beam,
+    construction_semantic_edges,
+    construction_semantic_weighted_edges,
     enumerate_typed_candidates,
     goal_relevant_families,
     prioritize_morphism_orbit,
     proof_hypergraph_point_relevance,
+    schema_first_score_fill,
 )
 
 
@@ -101,23 +116,50 @@ class SearchRecord:
     relation_transition_channel_coverage: int
     relation_channel_counts: tuple[tuple[str, int], ...]
     frontier_witnesses: tuple[RelationFrontierWitness, ...]
+    backward_obligations: tuple[BackwardObligation, ...]
+    open_relation_demands: tuple[Atom, ...]
+    ar_supported_goal_count: int
+    ar_closed_goal_count: int
+    ar_residual_support_size: int
+    ar_residual_l1_weight: float
+    ar_known_rank: int
     elapsed_seconds: float
     error: str | None = None
 
 
 def formulation_structure(
     formulation: JGEXFormulation,
-) -> tuple[set[str], dict[str, set[str]], dict[str, int]]:
+) -> tuple[
+    set[str],
+    dict[str, set[str]],
+    dict[str, set[str]],
+    dict[tuple[str, str], int],
+    dict[str, int],
+]:
     points = {str(point) for point in formulation.points}
     graph: dict[str, set[str]] = defaultdict(set)
+    role_graph: dict[str, set[str]] = defaultdict(set)
+    role_weights: dict[tuple[str, str], int] = {}
     for clause in formulation.setup_clauses:
         clause_points = {str(point) for point in clause.points}
         for construction in clause.constructions:
-            clause_points.update(
+            arguments = tuple(
                 str(argument)
                 for argument in construction.args
                 if str(argument) and str(argument)[0].isalpha()
             )
+            clause_points.update(arguments)
+            raw_name = getattr(construction, "name", "")
+            if hasattr(raw_name, "value"):
+                raw_name = raw_name.value
+            for left, right in construction_semantic_edges(str(raw_name), arguments):
+                role_graph[left].add(right)
+                role_graph[right].add(left)
+            for left, right, weight in construction_semantic_weighted_edges(
+                str(raw_name), arguments
+            ):
+                key = tuple(sorted((left, right)))
+                role_weights[key] = max(role_weights.get(key, 0), weight)
         for left in clause_points:
             for right in clause_points:
                 if left != right:
@@ -126,7 +168,78 @@ def formulation_structure(
     for goal in formulation.goals:
         for argument in goal.args:
             goal_multiplicity[str(argument)] += 1
-    return points, graph, goal_multiplicity
+    for point in points:
+        graph.setdefault(point, set())
+        role_graph.setdefault(point, set())
+    return points, graph, role_graph, role_weights, goal_multiplicity
+
+
+def _rule_atom(construction: Any) -> Atom:
+    arguments = tuple(
+        f"?{value}" if value and value[0].isalpha() else value
+        for value in map(str, construction.variables)
+    )
+    return Atom(str(construction.name), arguments)
+
+
+def native_rule_theorems() -> tuple[Theorem, ...]:
+    """Expose Newclid's published rule bank as typed Horn hyperedges."""
+
+    theorems: list[Theorem] = []
+    for rule in sorted(DEFAULT_RULES, key=lambda item: item.id):
+        premises = tuple(_rule_atom(item) for item in rule.premises)
+        for index, conclusion in enumerate(rule.conclusions):
+            theorems.append(
+                Theorem(
+                    f"{rule.id}:{index}",
+                    premises,
+                    _rule_atom(conclusion),
+                )
+            )
+    return tuple(theorems)
+
+
+def formulation_goal_atoms(formulation: JGEXFormulation) -> tuple[Atom, ...]:
+    goals: list[Atom] = []
+    for goal in formulation.goals:
+        raw_name = getattr(goal, "name", None)
+        if hasattr(raw_name, "value"):
+            raw_name = raw_name.value
+        if not raw_name:
+            raw_name = str(goal).split()[0]
+        goals.append(Atom(str(raw_name), tuple(map(str, goal.args))).canonical())
+    return tuple(goals)
+
+
+def proof_state_obligations(
+    payload: dict[str, Any],
+    goals: tuple[Atom, ...],
+    theorems: tuple[Theorem, ...],
+    *,
+    max_results: int = 24,
+) -> tuple[tuple[BackwardObligation, ...], tuple[Atom, ...]]:
+    facts = tuple(Atom(predicate, points) for predicate, points in yuclid_assertion_keys(payload))
+    obligations: list[BackwardObligation] = []
+    for goal in goals:
+        obligations.extend(
+            synthesize_backward_obligations(
+                facts,
+                goal,
+                theorems,
+                max_open_premises=4,
+                max_states_per_rule=192,
+                max_results=max_results,
+            )
+        )
+    ranked = tuple(obligations[:max_results])
+    demands: list[Atom] = []
+    seen: set[Atom] = set()
+    for obligation in ranked:
+        for premise in obligation.open_premises:
+            if premise not in seen:
+                seen.add(premise)
+                demands.append(premise)
+    return ranked, tuple(demands[:max_results])
 
 
 def proof_hypergraph_relevance(
@@ -207,6 +320,9 @@ def evaluate_steps(
     goal_support: set[str],
     baseline_assertion_keys: set[AssertionKey],
     transition_distances: dict[str, int],
+    goal_atoms: tuple[Atom, ...],
+    rule_theorems: tuple[Theorem, ...],
+    obligation_guided: bool,
 ) -> SearchRecord:
     from worker.backend.yuclid_native_verifier import verify_problem
 
@@ -230,6 +346,15 @@ def evaluate_steps(
             transition_distances=transition_distances,
             excluded_assertion_keys=baseline_assertion_keys,
         )
+        obligations, demands = (
+            proof_state_obligations(verification.payload, goal_atoms, rule_theorems)
+            if obligation_guided
+            else ((), ())
+        )
+        ar_residual = yuclid_ar_residual(
+            verification.payload,
+            ((atom.predicate, atom.arguments) for atom in goal_atoms),
+        )
         return SearchRecord(
             steps,
             verification.solved,
@@ -242,6 +367,13 @@ def evaluate_steps(
             relation_metrics.transition_channel_coverage,
             relation_metrics.channel_counts,
             frontier,
+            obligations,
+            demands,
+            ar_residual.supported_goal_count,
+            ar_residual.closed_goal_count,
+            ar_residual.residual_support_size,
+            ar_residual.residual_l1_weight,
+            ar_residual.known_rank,
             time.perf_counter() - started,
         )
     except Exception as exc:
@@ -257,6 +389,13 @@ def evaluate_steps(
             0,
             tuple(),
             tuple(),
+            tuple(),
+            tuple(),
+            0,
+            0,
+            0,
+            0.0,
+            0,
             time.perf_counter() - started,
             str(exc),
         )
@@ -267,6 +406,8 @@ def candidate_extensions(
     base_problem: Any,
     base_points: set[str],
     base_graph: dict[str, set[str]],
+    base_role_graph: dict[str, set[str]],
+    base_role_weights: dict[tuple[str, str], int],
     goal_multiplicity: dict[str, int],
     proof_relevance: dict[str, float],
     steps: tuple[ConstructionStep, ...],
@@ -275,11 +416,21 @@ def candidate_extensions(
     branch_limit: int,
     ranking: str,
     seed: int,
+    relation_demands: tuple[Atom, ...] = (),
+    require_generated_input: bool = False,
 ) -> list[ConstructionStep]:
     generated = {step.output for step in steps}
     points = base_points | generated
     graph = augment_incidence_graph(
         base_graph, tuple((step.output, step.inputs) for step in steps)
+    )
+    role_graph = augment_semantic_role_graph(
+        base_role_graph,
+        tuple((step.family, step.output, step.inputs) for step in steps),
+    )
+    role_weights = augment_semantic_role_weights(
+        base_role_weights,
+        tuple((step.family, step.output, step.inputs) for step in steps),
     )
     used = {f"{step.family}({','.join(step.inputs)})" for step in steps}
     current_problem = build_branch(base_problem, steps, seed=seed)
@@ -301,30 +452,30 @@ def candidate_extensions(
         coordinates=coordinates,
         orbit_family=steps[-1].family if steps else None,
         orbit_inputs=steps[-1].inputs if steps else (),
+        relation_demands=relation_demands,
+        role_graph=role_graph,
+        role_weights=role_weights,
+        required_input_points=(generated if require_generated_input else set()),
     )
     candidates = prioritize_morphism_orbit(
         candidates,
         previous_family=steps[-1].family if steps else None,
         previous_inputs=steps[-1].inputs if steps else (),
     )
+    if require_generated_input and generated:
+        candidates = [
+            candidate
+            for candidate in candidates
+            if generated.intersection(candidate.inputs)
+        ]
     if branch_limit > 0:
-        by_family: dict[str, list[TypedConstructionCandidate]] = defaultdict(list)
-        for candidate in candidates:
-            by_family[candidate.family].append(candidate)
-        balanced: list[TypedConstructionCandidate] = []
         family_order = [family.name for family in families]
-        while len(balanced) < branch_limit:
-            added = False
-            for family_name in family_order:
-                bucket = by_family[family_name]
-                if bucket:
-                    balanced.append(bucket.pop(0))
-                    added = True
-                    if len(balanced) == branch_limit:
-                        break
-            if not added:
-                break
-        candidates = balanced
+        candidates = schema_first_score_fill(
+            candidates,
+            category=lambda candidate: candidate.family,
+            category_order=family_order,
+            limit=branch_limit,
+        )
     output = next_point_name(points)
     return [
         ConstructionStep(
@@ -338,8 +489,121 @@ def candidate_extensions(
 
 
 def select_diverse_beam(
-    records: list[SearchRecord], beam_width: int, *, ranking: str
+    records: list[SearchRecord],
+    beam_width: int,
+    *,
+    ranking: str,
+    controller: DifferentiableProofController | None = None,
 ) -> list[SearchRecord]:
+    if ranking in {"differentiable-consensus", "consensus-portfolio"}:
+        if controller is None:
+            raise ValueError(f"{ranking} requires a differentiable controller")
+        valid = [record for record in records if record.error is None]
+        common = {
+            "category": lambda record: record.steps[-1].family,
+            "stratum": lambda record: (
+                tuple(step.key for step in record.steps[:-1]),
+                record.steps[-1].family,
+            ),
+        }
+        learned_score = lambda record: (
+            record.solved,
+            controller.score_record(record).score,
+        )
+        if ranking == "differentiable-consensus":
+            return balanced_stratified_beam(
+                valid,
+                score=learned_score,
+                limit=beam_width,
+                **common,
+            )
+
+        # Capability-preserving portfolio: retain half of the exact residual
+        # policy and let the differentiable circuit control the other half.
+        exact_budget = (beam_width + 1) // 2
+        learned_budget = beam_width - exact_budget
+        selected = select_diverse_beam(
+            records,
+            exact_budget,
+            ranking="ar-residual-pareto",
+        )
+        for record in balanced_stratified_beam(
+            valid,
+            score=learned_score,
+            limit=max(learned_budget, 1),
+            **common,
+        ):
+            if record not in selected:
+                selected.append(record)
+                if len(selected) == beam_width:
+                    break
+        if len(selected) < beam_width:
+            for record in select_diverse_beam(
+                records,
+                beam_width,
+                ranking="ar-residual-pareto",
+            ):
+                if record not in selected:
+                    selected.append(record)
+                    if len(selected) == beam_width:
+                        break
+        return selected[:beam_width]
+    if ranking == "ar-residual-pareto":
+        ar_score = lambda record: (
+            record.solved,
+            record.ar_closed_goal_count,
+            -record.ar_residual_support_size,
+            -record.ar_residual_l1_weight,
+            record.relation_transition_potential,
+        )
+        frontier_score = lambda record: (
+            record.solved,
+            -min(
+                (item.distance_to_goal for item in record.frontier_witnesses),
+                default=10**6,
+            ),
+            max(
+                (item.goal_support_overlap for item in record.frontier_witnesses),
+                default=0,
+            ),
+            len(record.frontier_witnesses),
+        )
+        structural_score = lambda record: tuple(
+            -float(value) for value in record.steps[-1].structural_rank[:7]
+        )
+        valid = [record for record in records if record.error is None]
+        common = {
+            "category": lambda record: record.steps[-1].family,
+            "stratum": lambda record: (
+                tuple(step.key for step in record.steps[:-1]),
+                record.steps[-1].family,
+            ),
+        }
+        structural_budget = (beam_width + 1) // 2
+        remaining_budget = beam_width - structural_budget
+        selected: list[SearchRecord] = []
+        for record in sorted(valid, key=structural_score, reverse=True)[
+            :structural_budget
+        ]:
+            selected.append(record)
+        for score, budget in (
+            (ar_score, (remaining_budget + 1) // 2),
+            (frontier_score, remaining_budget // 2),
+        ):
+            for record in balanced_stratified_beam(
+                valid, score=score, limit=budget, **common
+            ):
+                if record not in selected:
+                    selected.append(record)
+        if len(selected) < beam_width:
+            for record in balanced_stratified_beam(
+                valid, score=ar_score, limit=beam_width, **common
+            ):
+                if record not in selected:
+                    selected.append(record)
+                    if len(selected) == beam_width:
+                        break
+        return selected[:beam_width]
     if ranking == "frontier-pareto":
         frontier_score = lambda record: (
             record.solved,
@@ -480,6 +744,16 @@ def main() -> None:
     parser.add_argument("--max-depth", type=int, default=2)
     parser.add_argument("--max-workers", type=int, default=4)
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument(
+        "--obligation-guided",
+        action="store_true",
+        help="Recompute point-level missing theorem premises after every branch.",
+    )
+    parser.add_argument(
+        "--require-generated-input-after-first",
+        action="store_true",
+        help="Require every later morphism to consume at least one synthesized point.",
+    )
     parser.add_argument("--ranking", choices=("structural", "random"), default="structural")
     parser.add_argument(
         "--beam-ranking",
@@ -489,11 +763,29 @@ def main() -> None:
             "relation-transition",
             "frontier",
             "frontier-pareto",
+            "ar-residual-pareto",
+            "differentiable-consensus",
+            "consensus-portfolio",
         ),
         default="closure",
     )
+    parser.add_argument(
+        "--controller",
+        type=Path,
+        help="Frozen differentiable controller artifact for learned beam policies.",
+    )
     parser.add_argument("--ar-profile", choices=("ratio-only", "standard", "all"), default="all")
     args = parser.parse_args()
+    controller = (
+        DifferentiableProofController.load(args.controller.resolve())
+        if args.controller is not None
+        else None
+    )
+    if args.beam_ranking in {
+        "differentiable-consensus",
+        "consensus-portfolio",
+    } and controller is None:
+        parser.error(f"--beam-ranking {args.beam_ranking} requires --controller")
 
     available_families = (
         EXTENDED_POINT_FAMILIES if args.family_set == "extended" else DEFAULT_POINT_FAMILIES
@@ -524,7 +816,13 @@ def main() -> None:
         base_problem, yuclid_exe=args.yuclid_exe.resolve(), ar_profile=args.ar_profile
     )
     baseline_assertion_keys = yuclid_assertion_keys(baseline.payload)
-    base_points, base_graph, goal_multiplicity = formulation_structure(formulation)
+    (
+        base_points,
+        base_graph,
+        base_role_graph,
+        base_role_weights,
+        goal_multiplicity,
+    ) = formulation_structure(formulation)
     goal_channels = set()
     for goal in formulation.goals:
         raw_name = getattr(goal, "name", None)
@@ -537,6 +835,17 @@ def main() -> None:
     proof_relevance = proof_hypergraph_relevance(
         baseline.payload,
         goal_support,
+    )
+    goal_atoms = formulation_goal_atoms(formulation)
+    baseline_ar_residual = yuclid_ar_residual(
+        baseline.payload,
+        ((atom.predicate, atom.arguments) for atom in goal_atoms),
+    )
+    rule_theorems = native_rule_theorems()
+    baseline_obligations, baseline_demands = (
+        proof_state_obligations(baseline.payload, goal_atoms, rule_theorems)
+        if args.obligation_guided
+        else ((), ())
     )
     rule_channels = [
         (
@@ -552,18 +861,22 @@ def main() -> None:
     if args.goal_directed_families:
         families = goal_relevant_families(families, transition_distances)
 
-    frontier: list[tuple[ConstructionStep, ...]] = [tuple()]
+    frontier: list[tuple[tuple[ConstructionStep, ...], tuple[Atom, ...]]] = [
+        (tuple(), baseline_demands)
+    ]
     all_records: list[SearchRecord] = []
     solved_steps: tuple[ConstructionStep, ...] | None = None
     for depth in range(1, args.max_depth + 1):
         layer: list[SearchRecord] = []
         seen_paths: set[tuple[str, ...]] = set()
         candidate_paths: list[tuple[ConstructionStep, ...]] = []
-        for parent in frontier:
+        for parent, parent_demands in frontier:
             extensions = candidate_extensions(
                 base_problem=base_problem,
                 base_points=base_points,
                 base_graph=base_graph,
+                base_role_graph=base_role_graph,
+                base_role_weights=base_role_weights,
                 goal_multiplicity=goal_multiplicity,
                 proof_relevance=proof_relevance,
                 steps=parent,
@@ -572,6 +885,8 @@ def main() -> None:
                 branch_limit=args.branch_limit,
                 ranking=args.ranking,
                 seed=branch_seed(args.seed, parent),
+                relation_demands=parent_demands,
+                require_generated_input=args.require_generated_input_after_first,
             )
             for extension in extensions:
                 steps = (*parent, extension)
@@ -597,6 +912,9 @@ def main() -> None:
                         goal_support=goal_support,
                         baseline_assertion_keys=baseline_assertion_keys,
                         transition_distances=transition_distances,
+                        goal_atoms=goal_atoms,
+                        rule_theorems=rule_theorems,
+                        obligation_guided=args.obligation_guided,
                     ): steps
                     for steps in batch
                 }
@@ -625,12 +943,25 @@ def main() -> None:
         if solved_steps is not None or depth == args.max_depth:
             break
         frontier = [
-            record.steps
+            (record.steps, record.open_relation_demands)
             for record in select_diverse_beam(
-                layer, args.beam_width, ranking=args.beam_ranking
+                layer,
+                args.beam_width,
+                ranking=args.beam_ranking,
+                controller=controller,
             )
         ]
 
+    second_stage_descriptions = {
+        "relation": "yuclid_novel_nonconstruction_target_relation_diverse_beam",
+        "relation-transition": "yuclid_native_rule_transition_potential_diverse_beam",
+        "ar-residual-pareto": "exact_ar_residual_frontier_structural_pareto_beam",
+        "frontier-pareto": "yuclid_native_frontier_and_structural_pareto_beam",
+        "frontier": "yuclid_native_frontier_witness_diverse_beam",
+        "closure": "yuclid_closure_growth_diverse_beam",
+        "differentiable-consensus": "frozen_differentiable_consensus_diverse_beam",
+        "consensus-portfolio": "half_exact_residual_half_differentiable_consensus_beam",
+    }
     artifact: dict[str, Any] = {
         "experiment": "newclid_dynamic_typed_construction_stalk_no_llm",
         "protocol": {
@@ -644,27 +975,31 @@ def main() -> None:
                 else "seeded_random"
             ),
             "ranking": args.ranking,
-            "second_stage_ranking": (
-                "yuclid_novel_nonconstruction_target_relation_diverse_beam"
-                if args.beam_ranking == "relation"
-                else (
-                    "yuclid_native_rule_transition_potential_diverse_beam"
-                    if args.beam_ranking == "relation-transition"
-                    else (
-                        "yuclid_native_frontier_and_structural_pareto_beam"
-                        if args.beam_ranking == "frontier-pareto"
-                        else (
-                            "yuclid_native_frontier_witness_diverse_beam"
-                            if args.beam_ranking == "frontier"
-                            else "yuclid_closure_growth_diverse_beam"
-                        )
-                    )
-                )
-            ),
+            "second_stage_ranking": second_stage_descriptions[args.beam_ranking],
             "beam_ranking": args.beam_ranking,
+            "differentiable_controller": (
+                {
+                    "path": str(args.controller.resolve()),
+                    "parameter_count": controller.parameters.parameter_count,
+                    "truth_plane": "native_certificate_replay_only",
+                }
+                if controller is not None and args.controller is not None
+                else None
+            ),
             "goal_channels": sorted(goal_channels),
             "proof_hypergraph_relevance": proof_relevance,
             "same_morphism_input_orbit_priority": True,
+            "obligation_guided": args.obligation_guided,
+            "require_generated_input_after_first": (
+                args.require_generated_input_after_first
+            ),
+            "baseline_backward_obligations": [
+                item.to_dict() for item in baseline_obligations
+            ],
+            "baseline_open_relation_demands": [
+                {"predicate": item.predicate, "arguments": list(item.arguments)}
+                for item in baseline_demands
+            ],
             "backward_relation_distances": transition_distances,
             "per_family_limit": args.per_family_limit,
             "branch_limit": args.branch_limit,
@@ -680,6 +1015,7 @@ def main() -> None:
             "solved": baseline.solved,
             "all_deduction_count": baseline.all_deduction_count,
             "goal_deduction_count": baseline.goal_deduction_count,
+            "ar_residual": asdict(baseline_ar_residual),
         },
         "visible_formulation": str(formulation),
         "constructed_formulation": (

@@ -23,6 +23,7 @@ class ConstructionFamily:
     input_arity: int
     symmetry: str
     output_channels: tuple[str, ...] = ()
+    allow_repeated_inputs: bool = False
 
 
 @dataclass(frozen=True)
@@ -59,6 +60,25 @@ EXTENDED_POINT_FAMILIES: tuple[ConstructionFamily, ...] = (
     ConstructionFamily("circumcenter", 3, "all", ("cong",)),
     ConstructionFamily("intersection_lc", 3, "ordered", ("coll", "cong")),
     ConstructionFamily("intersection_cc", 3, "ordered", ("cong",)),
+    ConstructionFamily("on_line", 2, "all", ("coll",)),
+    ConstructionFamily("on_pline", 3, "ordered", ("para",)),
+    ConstructionFamily("on_tline", 3, "ordered", ("perp",)),
+    ConstructionFamily("on_bline", 2, "all", ("cong", "eqangle")),
+    ConstructionFamily("on_circle", 2, "ordered", ("cong",)),
+    ConstructionFamily("on_circum", 3, "all", ("cyclic",)),
+    ConstructionFamily("on_dia", 2, "all", ("perp",)),
+    ConstructionFamily(
+        "intersection_lp", 5, "line_relation", ("coll", "para"), True
+    ),
+    ConstructionFamily(
+        "intersection_pp", 6, "relation_pair", ("para",), True
+    ),
+    ConstructionFamily(
+        "intersection_lt", 5, "line_relation", ("coll", "perp"), True
+    ),
+    ConstructionFamily(
+        "intersection_tt", 6, "relation_pair", ("perp",), True
+    ),
     ConstructionFamily("eq_triangle", 2, "all", ("cong", "eqangle")),
     ConstructionFamily("psquare", 2, "ordered", ("cong", "perp")),
     ConstructionFamily("nsquare", 2, "ordered", ("cong", "perp")),
@@ -130,6 +150,25 @@ def _family_inputs(
             yield (a, b, c, d)
             yield (a, c, b, d)
             yield (a, d, b, c)
+        return
+    if family.symmetry == "line_relation":
+        lines = tuple(combinations(points, 2))
+        for line in lines:
+            for anchor in points:
+                for relation_line in lines:
+                    if anchor not in relation_line:
+                        yield (*line, anchor, *relation_line)
+        return
+    if family.symmetry == "relation_pair":
+        lines = tuple(combinations(points, 2))
+        relations = tuple(
+            (anchor, *line)
+            for anchor in points
+            for line in lines
+            if anchor not in line
+        )
+        for left, right in combinations(relations, 2):
+            yield (*left, *right)
         return
     raise ValueError(f"unknown construction symmetry: {family.symmetry}")
 
@@ -255,6 +294,34 @@ def balanced_stratified_beam(
     return selected
 
 
+def schema_first_score_fill(
+    candidates: Sequence[T],
+    *,
+    category: Callable[[T], Hashable],
+    category_order: Sequence[Hashable],
+    limit: int,
+) -> list[T]:
+    """Reserve one item per schema, then spend remaining budget by score order."""
+
+    if limit <= 0:
+        return []
+    buckets: dict[Hashable, list[T]] = {key: [] for key in category_order}
+    for candidate in candidates:
+        buckets.setdefault(category(candidate), []).append(candidate)
+    selected: list[T] = []
+    for key in category_order:
+        if buckets.get(key):
+            selected.append(buckets[key].pop(0))
+            if len(selected) == limit:
+                return selected
+    for candidate in candidates:
+        if candidate not in selected:
+            selected.append(candidate)
+            if len(selected) == limit:
+                break
+    return selected
+
+
 def numerical_precondition_holds(
     candidate: TypedConstructionCandidate,
     coordinates: Mapping[str, tuple[float, float]] | None,
@@ -305,6 +372,207 @@ def augment_incidence_graph(
     return graph
 
 
+def construction_semantic_edges(
+    name: str,
+    arguments: Sequence[str],
+) -> tuple[tuple[str, str], ...]:
+    """Return typed point-pairs that denote an actual geometric object role."""
+
+    return tuple(
+        (left, right)
+        for left, right, _ in construction_semantic_weighted_edges(name, arguments)
+    )
+
+
+def construction_semantic_weighted_edges(
+    name: str,
+    arguments: Sequence[str],
+) -> tuple[tuple[str, str, int], ...]:
+    """Return semantic role edges with a finite type-derived specificity."""
+
+    args = tuple(arguments)
+    index_pairs: tuple[tuple[int, int], ...]
+    if name == "angle_bisector" and len(args) >= 4:
+        index_pairs = ((0, 2), (1, 2), (2, 3))
+    elif name == "on_aline" and len(args) >= 6:
+        index_pairs = ((0, 1), (1, 2), (3, 4), (4, 5))
+    elif name in {"on_pline", "on_tline"} and len(args) >= 4:
+        index_pairs = ((0, 1), (2, 3))
+    elif name == "intersection_ll" and len(args) >= 5:
+        index_pairs = (
+            (0, 1),
+            (0, 2),
+            (1, 2),
+            (0, 3),
+            (0, 4),
+            (3, 4),
+        )
+    elif name in {"midpoint", "mirror", "on_line", "between_bound"}:
+        index_pairs = tuple(combinations(range(len(args)), 2))
+    elif name == "foot" and len(args) >= 4:
+        index_pairs = ((0, 1), (0, 2), (0, 3), (2, 3))
+    elif name in {"reflect", "on_dia"} and len(args) >= 3:
+        index_pairs = ((0, 1), (1, 2))
+    elif name in {
+        "triangle",
+        "orthocenter",
+        "incenter",
+        "excenter",
+        "circumcenter",
+        "circle",
+        "on_circum",
+    }:
+        index_pairs = tuple(combinations(range(len(args)), 2))
+    elif args:
+        index_pairs = tuple((0, index) for index in range(1, len(args)))
+    else:
+        index_pairs = ()
+    weighted: list[tuple[str, str, int]] = []
+    for left, right in index_pairs:
+        if left >= len(args) or right >= len(args) or args[left] == args[right]:
+            continue
+        weight = 2
+        if name == "angle_bisector":
+            weight = 4 if (left, right) == (0, 2) else 2
+        elif name == "on_aline":
+            weight = 3 if (left, right) == (0, 1) else 2
+        elif name in {"on_line", "midpoint", "mirror"}:
+            weight = 3
+        elif name == "intersection_ll":
+            weight = 4 if left == 0 else 3
+        elif name == "triangle":
+            weight = 1
+        elif name in {"circle", "circumcenter", "incenter", "excenter"}:
+            weight = 3 if left == 0 else 1
+        weighted.append((args[left], args[right], weight))
+    return tuple(weighted)
+
+
+def augment_semantic_role_graph(
+    base_graph: Mapping[str, set[str]],
+    steps: Sequence[tuple[str, str, tuple[str, ...]]],
+) -> dict[str, set[str]]:
+    graph = {point: set(neighbors) for point, neighbors in base_graph.items()}
+    for family, output, inputs in steps:
+        graph.setdefault(output, set())
+        for left, right in construction_semantic_edges(family, (output, *inputs)):
+            graph.setdefault(left, set()).add(right)
+            graph.setdefault(right, set()).add(left)
+    return graph
+
+
+def augment_semantic_role_weights(
+    base_weights: Mapping[tuple[str, str], int],
+    steps: Sequence[tuple[str, str, tuple[str, ...]]],
+) -> dict[tuple[str, str], int]:
+    weights = dict(base_weights)
+    for family, output, inputs in steps:
+        for left, right, weight in construction_semantic_weighted_edges(
+            family, (output, *inputs)
+        ):
+            key = tuple(sorted((left, right)))
+            weights[key] = max(weights.get(key, 0), weight)
+    return weights
+
+
+def _construction_role_pairs(
+    family: ConstructionFamily,
+    input_count: int,
+) -> tuple[tuple[int, int], ...]:
+    if family.name == "intersection_ll":
+        return ((0, 1), (2, 3))
+    if family.name in {"foot", "reflect"}:
+        return ((1, 2),)
+    if family.symmetry == "line_relation":
+        return ((0, 1), (3, 4))
+    if family.symmetry == "relation_pair":
+        return ((1, 2), (4, 5))
+    if family.name in {"on_pline", "on_tline"}:
+        return ((1, 2),)
+    if family.name in {"on_line", "on_bline", "on_circle", "on_dia"}:
+        return ((0, 1),)
+    return tuple(combinations(range(input_count), 2))
+
+
+def _generated_role_signature(
+    family: ConstructionFamily,
+    inputs: Sequence[str],
+    generated_points: set[str],
+) -> tuple[str, ...]:
+    positions = {index for index, point in enumerate(inputs) if point in generated_points}
+    if not positions:
+        return ("none",)
+    if family.symmetry == "head_pair":
+        roles = []
+        if 0 in positions:
+            roles.append("head")
+        if positions.intersection({1, 2}):
+            roles.append("pair")
+        return tuple(roles)
+    if family.symmetry == "line_pair":
+        roles = []
+        if positions.intersection({0, 1}):
+            roles.append("line1")
+        if positions.intersection({2, 3}):
+            roles.append("line2")
+        return tuple(roles)
+    return tuple(f"arg{index}" for index in sorted(positions))
+
+
+def _role_balanced_prefix(
+    candidates: Sequence[TypedConstructionCandidate],
+    family: ConstructionFamily,
+    generated_points: set[str],
+    limit: int,
+) -> list[TypedConstructionCandidate]:
+    if limit <= 0 or not generated_points:
+        return list(candidates[:limit])
+    buckets: dict[tuple[str, ...], list[TypedConstructionCandidate]] = {}
+    order: list[tuple[str, ...]] = []
+    for candidate in candidates:
+        signature = _generated_role_signature(
+            family, candidate.inputs, generated_points
+        )
+        if signature not in buckets:
+            buckets[signature] = []
+            order.append(signature)
+        buckets[signature].append(candidate)
+    selected: list[TypedConstructionCandidate] = []
+    while len(selected) < limit:
+        progressed = False
+        for signature in order:
+            if buckets[signature]:
+                selected.append(buckets[signature].pop(0))
+                progressed = True
+                if len(selected) == limit:
+                    return selected
+        if not progressed:
+            break
+    return selected
+
+
+def construction_role_adjacency_count(
+    family: ConstructionFamily,
+    inputs: Sequence[str],
+    graph: Mapping[str, set[str]],
+) -> int:
+    """Count only adjacencies that occupy an input line/object role."""
+
+    pairs = _construction_role_pairs(family, len(inputs))
+    return sum(inputs[right] in graph.get(inputs[left], set()) for left, right in pairs)
+
+
+def construction_role_adjacency_weight(
+    family: ConstructionFamily,
+    inputs: Sequence[str],
+    weights: Mapping[tuple[str, str], int],
+) -> int:
+    return sum(
+        weights.get(tuple(sorted((inputs[left], inputs[right]))), 0)
+        for left, right in _construction_role_pairs(family, len(inputs))
+    )
+
+
 def enumerate_typed_candidates(
     *,
     points: Sequence[str],
@@ -320,19 +588,50 @@ def enumerate_typed_candidates(
     coordinates: Mapping[str, tuple[float, float]] | None = None,
     orbit_family: str | None = None,
     orbit_inputs: Sequence[str] = (),
+    relation_demands: Sequence[object] = (),
+    role_graph: Mapping[str, set[str]] | None = None,
+    role_weights: Mapping[tuple[str, str], int] | None = None,
+    required_input_points: set[str] | None = None,
 ) -> list[TypedConstructionCandidate]:
     """Enumerate a balanced finite candidate set from typed structure only."""
 
     generated_points = generated_points or set()
     used_keys = used_keys or set()
     proof_relevance = proof_relevance or {}
-    ordered_points = tuple(sorted(set(points)))
     distances = goal_distances(graph, goal_multiplicity)
+    ordered_points = tuple(
+        sorted(
+            set(points),
+            key=lambda point: (
+                -goal_multiplicity.get(point, 0),
+                -proof_relevance.get(point, 0.0),
+                0 if point in generated_points else 1,
+                distances.get(point, 10_000),
+                point,
+            ),
+        )
+    )
+    normalized_demands = tuple(
+        (
+            str(getattr(demand, "predicate", "")).lower(),
+            tuple(str(item) for item in getattr(demand, "arguments", ())),
+        )
+        for demand in relation_demands
+    )
+    role_graph = role_graph or graph
+    role_weights = role_weights or {}
+    required_input_points = required_input_points or set()
+    orbit = set(orbit_inputs)
     selected: list[TypedConstructionCandidate] = []
     for family in families:
         family_candidates: list[TypedConstructionCandidate] = []
-        for inputs in _family_inputs(ordered_points, family):
-            if len(set(inputs)) != len(inputs):
+        family_points = (
+            ordered_points[:10] if family.input_arity >= 5 else ordered_points
+        )
+        for inputs in _family_inputs(family_points, family):
+            if not family.allow_repeated_inputs and len(set(inputs)) != len(inputs):
+                continue
+            if required_input_points and not required_input_points.intersection(inputs):
                 continue
             key = f"{family.name}({','.join(inputs)})"
             if key in used_keys:
@@ -341,14 +640,78 @@ def enumerate_typed_candidates(
             for left, right in combinations(inputs, 2):
                 if right in graph.get(left, set()):
                     pair_count += 1
+            role_pair_count = construction_role_adjacency_count(
+                family, inputs, role_graph
+            )
+            role_pair_weight = construction_role_adjacency_weight(
+                family, inputs, role_weights
+            )
+            role_pair_density = role_pair_weight / max(
+                1, len(_construction_role_pairs(family, len(inputs)))
+            )
+            novel_input_count = (
+                len(set(inputs) - orbit - generated_points) if orbit else 0
+            )
+            generated_roles = _generated_role_signature(
+                family, inputs, generated_points
+            )
+            generated_role_priority = (
+                0
+                if family.symmetry != "head_pair" or "pair" in generated_roles
+                else 1
+            )
+            goal_point_count = sum(
+                goal_multiplicity.get(point, 0) for point in inputs
+            )
+            initial_goal_rank = (
+                0
+                if generated_points or goal_point_count
+                else 1
+            )
             input_distances = tuple(distances.get(point, 10_000) for point in inputs)
+            demand_rank = (
+                min(
+                    (
+                        0 if predicate in family.output_channels else 1,
+                        -len(
+                            set(inputs)
+                            & {
+                                point
+                                for point in arguments
+                                if point and not point.startswith("?")
+                            }
+                        ),
+                        len(
+                            {
+                                point
+                                for point in arguments
+                                if point and not point.startswith("?")
+                            }
+                            - set(inputs)
+                        ),
+                    )
+                    for predicate, arguments in normalized_demands
+                )
+                if normalized_demands
+                else (1, 0, 0)
+            )
             rank: tuple[object, ...] = (
-                -sum(goal_multiplicity.get(point, 0) for point in inputs),
+                0 if generated_points.intersection(inputs) else 1,
+                generated_role_priority,
+                0 if not orbit or novel_input_count else 1,
+                -role_pair_density,
+                -role_pair_weight,
+                -role_pair_count,
+                initial_goal_rank,
                 -sum(proof_relevance.get(point, 0.0) for point in inputs),
+                0 if goal_point_count else 1,
+                demand_rank[0],
+                -pair_count,
+                -goal_point_count,
+                demand_rank[1],
+                demand_rank[2],
                 sum(input_distances),
                 max(input_distances),
-                0 if generated_points.intersection(inputs) else 1,
-                -pair_count,
                 family.input_arity,
                 family.name,
                 inputs,
@@ -357,22 +720,28 @@ def enumerate_typed_candidates(
             if numerical_precondition_holds(candidate, coordinates):
                 family_candidates.append(candidate)
         if ranking == "structural":
-            orbit = set(orbit_inputs)
             family_candidates.sort(
                 key=lambda candidate: (
                     0
                     if candidate.family == orbit_family
                     and bool(orbit.intersection(candidate.inputs))
                     else 1,
-                    -len(orbit.intersection(candidate.inputs)),
                     candidate.structural_rank,
+                    -len(orbit.intersection(candidate.inputs)),
                 )
             )
         elif ranking == "random":
             random.Random(f"{seed}|{family.name}").shuffle(family_candidates)
         else:
             raise ValueError(f"unknown ranking: {ranking}")
-        selected.extend(family_candidates[:per_family_limit])
+        selected.extend(
+            _role_balanced_prefix(
+                family_candidates,
+                family,
+                generated_points,
+                per_family_limit,
+            )
+        )
     if ranking == "random":
         random.Random(f"{seed}|all-families").shuffle(selected)
         return selected

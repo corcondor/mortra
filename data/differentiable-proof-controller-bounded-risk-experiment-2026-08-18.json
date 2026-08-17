@@ -1,0 +1,2067 @@
+{
+  "experiment": "mortra_differentiable_exact_proof_controller",
+  "created_at": "2026-08-17T19:50:16.355080+00:00",
+  "protocol": {
+    "uses_external_llm": false,
+    "truth_plane": "native_certificate_replay_only",
+    "control_plane": "monotone_local_circuits_plus_unrolled_consensus_admm",
+    "problem_id_is_model_input": false,
+    "entity_labels_are_model_inputs": false,
+    "numeric_problem_values_are_model_inputs": false,
+    "known_auxiliary_points_are_model_inputs": false,
+    "theorem_or_construction_names_are_model_inputs": false,
+    "schema": "mortra-differentiable-proof-controller-v2",
+    "seed": 20260818
+  },
+  "split": {
+    "train_problems": [
+      "2009_p2",
+      "2010_p2",
+      "2015_p3"
+    ],
+    "calibration_problems": [
+      "2008_p6"
+    ],
+    "heldout_problems": [
+      "2020_p1"
+    ],
+    "train_groups": 3,
+    "calibration_groups": 0,
+    "heldout_groups": 2,
+    "training_objective": "nonterminal_proof_prefix_ranking_only"
+  },
+  "sources": [
+    {
+      "path": "C:\\Users\\81808\\.openclaw\\workspace\\math-web\\data\\open-goal-feedback-imo-ag-30-2026-08-17\\2000_p6-core_frontier_depth2.json",
+      "sha256": "63d8dd11cb6c4bdbd88adc340dd24cce15499676ea0ac079808edea74535e4cd"
+    },
+    {
+      "path": "C:\\Users\\81808\\.openclaw\\workspace\\math-web\\data\\open-goal-feedback-imo-ag-30-2026-08-17\\2008_p1a-extended_frontier_depth1.json",
+      "sha256": "c9a65d55ad5f917f8dbcbda4d30a3a288322649c315b869d35e30c838f7bcbd8"
+    },
+    {
+      "path": "C:\\Users\\81808\\.openclaw\\workspace\\math-web\\data\\open-goal-feedback-imo-ag-30-2026-08-17\\2008_p1b-extended_frontier_depth1.json",
+      "sha256": "da078976bae5a31fbafe7d18034e8200c7461e6e607108a6b25c2a05180d1028"
+    },
+    {
+      "path": "C:\\Users\\81808\\.openclaw\\workspace\\math-web\\data\\open-goal-feedback-imo-ag-30-2026-08-17\\2009_p2-core_frontier_depth2.json",
+      "sha256": "6ccfbbc2503623d4aed7fa943273fcb18a0b98438c8c454efda14ad220da09bd"
+    },
+    {
+      "path": "C:\\Users\\81808\\.openclaw\\workspace\\math-web\\data\\open-goal-feedback-imo-ag-30-2026-08-17\\2010_p2-core_frontier_depth2.json",
+      "sha256": "638dff91ab2be0076be4c04d88d457682108bb0896584713ed7ace44991188d6"
+    },
+    {
+      "path": "C:\\Users\\81808\\.openclaw\\workspace\\math-web\\data\\open-goal-feedback-imo-ag-30-2026-08-17\\2015_p3-core_frontier_depth2.json",
+      "sha256": "81e11dca786d33d4d0e0c4ad85ec6206defc5c29f23d2b03c40509d1722fa0f5"
+    },
+    {
+      "path": "C:\\Users\\81808\\.openclaw\\workspace\\math-web\\data\\typed-semantic-two-phase-2008-p6-2026-08-17.json",
+      "sha256": "c71a57c692e86a3b4e56c0275127afaa3a7348f6097f21a93a20475e319bc26c"
+    },
+    {
+      "path": "C:\\Users\\81808\\.openclaw\\workspace\\math-web\\data\\typed-semantic-two-phase-pilot-2020-p1-2026-08-17.json",
+      "sha256": "459d5f90283b3676eee327ea98ebf72bd78e4f54260c8d95b2201b5b851b52ea"
+    }
+  ],
+  "training": {
+    "epochs": 500,
+    "learning_rate": 0.025,
+    "pair_count": 90,
+    "group_count": 3,
+    "best_validation_pairwise_accuracy": 0.9444444444444444,
+    "best_train_pairwise_accuracy": 0.9444444444444444,
+    "history": [
+      {
+        "epoch": 1.0,
+        "loss": 0.6851911644467269,
+        "train_pairwise_accuracy": 0.5777777777777777,
+        "validation_pairwise_accuracy": 0.5777777777777777
+      },
+      {
+        "epoch": 25.0,
+        "loss": 0.6688709577624753,
+        "train_pairwise_accuracy": 0.6333333333333333,
+        "validation_pairwise_accuracy": 0.6333333333333333
+      },
+      {
+        "epoch": 50.0,
+        "loss": 0.647487856468463,
+        "train_pairwise_accuracy": 0.6777777777777778,
+        "validation_pairwise_accuracy": 0.6777777777777778
+      },
+      {
+        "epoch": 75.0,
+        "loss": 0.6294919378505207,
+        "train_pairwise_accuracy": 0.6888888888888889,
+        "validation_pairwise_accuracy": 0.6888888888888889
+      },
+      {
+        "epoch": 100.0,
+        "loss": 0.618471239823115,
+        "train_pairwise_accuracy": 0.6888888888888889,
+        "validation_pairwise_accuracy": 0.6888888888888889
+      },
+      {
+        "epoch": 125.0,
+        "loss": 0.6111557071666679,
+        "train_pairwise_accuracy": 0.6888888888888889,
+        "validation_pairwise_accuracy": 0.6888888888888889
+      },
+      {
+        "epoch": 150.0,
+        "loss": 0.6067440107753067,
+        "train_pairwise_accuracy": 0.6888888888888889,
+        "validation_pairwise_accuracy": 0.6888888888888889
+      },
+      {
+        "epoch": 175.0,
+        "loss": 0.6035849038528899,
+        "train_pairwise_accuracy": 0.7111111111111111,
+        "validation_pairwise_accuracy": 0.7111111111111111
+      },
+      {
+        "epoch": 200.0,
+        "loss": 0.6010477138238751,
+        "train_pairwise_accuracy": 0.7111111111111111,
+        "validation_pairwise_accuracy": 0.7111111111111111
+      },
+      {
+        "epoch": 225.0,
+        "loss": 0.5991365743197613,
+        "train_pairwise_accuracy": 0.7555555555555555,
+        "validation_pairwise_accuracy": 0.7555555555555555
+      },
+      {
+        "epoch": 250.0,
+        "loss": 0.5978089194876944,
+        "train_pairwise_accuracy": 0.9111111111111111,
+        "validation_pairwise_accuracy": 0.9111111111111111
+      },
+      {
+        "epoch": 275.0,
+        "loss": 0.5969929521524103,
+        "train_pairwise_accuracy": 0.9444444444444444,
+        "validation_pairwise_accuracy": 0.9444444444444444
+      },
+      {
+        "epoch": 300.0,
+        "loss": 0.5963582546447986,
+        "train_pairwise_accuracy": 0.8777777777777778,
+        "validation_pairwise_accuracy": 0.8777777777777778
+      },
+      {
+        "epoch": 325.0,
+        "loss": 0.5959636452437744,
+        "train_pairwise_accuracy": 0.8888888888888888,
+        "validation_pairwise_accuracy": 0.8888888888888888
+      },
+      {
+        "epoch": 350.0,
+        "loss": 0.5957092256825791,
+        "train_pairwise_accuracy": 0.8888888888888888,
+        "validation_pairwise_accuracy": 0.8888888888888888
+      },
+      {
+        "epoch": 375.0,
+        "loss": 0.5954881016882705,
+        "train_pairwise_accuracy": 0.9,
+        "validation_pairwise_accuracy": 0.9
+      },
+      {
+        "epoch": 400.0,
+        "loss": 0.5953884177480661,
+        "train_pairwise_accuracy": 0.9,
+        "validation_pairwise_accuracy": 0.9
+      },
+      {
+        "epoch": 425.0,
+        "loss": 0.5952857283612336,
+        "train_pairwise_accuracy": 0.9,
+        "validation_pairwise_accuracy": 0.9
+      },
+      {
+        "epoch": 450.0,
+        "loss": 0.5952013753566975,
+        "train_pairwise_accuracy": 0.9,
+        "validation_pairwise_accuracy": 0.9
+      },
+      {
+        "epoch": 475.0,
+        "loss": 0.5951333294798947,
+        "train_pairwise_accuracy": 0.9,
+        "validation_pairwise_accuracy": 0.9
+      },
+      {
+        "epoch": 500.0,
+        "loss": 0.5950288904080148,
+        "train_pairwise_accuracy": 0.9,
+        "validation_pairwise_accuracy": 0.9
+      }
+    ]
+  },
+  "controller": {
+    "schema": "mortra-differentiable-proof-controller-v2",
+    "truth_plane": "native_certificate_replay_only",
+    "feature_names": [
+      "rank_quality_0",
+      "rank_quality_1",
+      "rank_quality_2",
+      "rank_quality_3",
+      "rank_quality_4",
+      "rank_quality_5",
+      "rank_quality_6",
+      "rank_quality_7",
+      "rank_quality_8",
+      "rank_quality_9",
+      "rank_quality_10",
+      "rank_quality_11",
+      "rank_quality_12",
+      "rank_quality_13",
+      "rank_quality_14",
+      "rank_quality_15",
+      "rank_quality_16",
+      "goal_deductions",
+      "target_assertions",
+      "relation_support",
+      "near_goal_relations",
+      "all_deductions",
+      "transition_potential",
+      "transition_channel_coverage",
+      "frontier_distance_quality",
+      "frontier_goal_overlap",
+      "frontier_witness_count",
+      "backward_obligation_count",
+      "open_demand_quality",
+      "ar_supported_goals",
+      "ar_closed_goals",
+      "ar_support_quality",
+      "ar_l1_quality",
+      "ar_known_rank",
+      "elapsed_quality",
+      "deduction_cost_quality",
+      "valid_state"
+    ],
+    "forbidden_inputs": [
+      "answer",
+      "entity_label",
+      "family_name",
+      "known_auxiliary",
+      "numeric_value",
+      "point_name",
+      "problem_id",
+      "problem_name",
+      "theorem_name"
+    ],
+    "feature_groups": {
+      "structure": [
+        "rank_quality_0",
+        "rank_quality_1",
+        "rank_quality_2",
+        "rank_quality_3",
+        "rank_quality_4",
+        "rank_quality_5",
+        "rank_quality_6",
+        "rank_quality_7",
+        "rank_quality_8",
+        "rank_quality_9",
+        "rank_quality_10",
+        "rank_quality_11",
+        "rank_quality_12",
+        "rank_quality_13",
+        "rank_quality_14",
+        "rank_quality_15",
+        "rank_quality_16"
+      ],
+      "closure": [
+        "goal_deductions",
+        "target_assertions",
+        "relation_support",
+        "near_goal_relations",
+        "all_deductions"
+      ],
+      "transition": [
+        "transition_potential",
+        "transition_channel_coverage",
+        "frontier_distance_quality",
+        "frontier_goal_overlap",
+        "frontier_witness_count"
+      ],
+      "obligation": [
+        "backward_obligation_count",
+        "open_demand_quality"
+      ],
+      "algebra": [
+        "ar_supported_goals",
+        "ar_closed_goals",
+        "ar_support_quality",
+        "ar_l1_quality",
+        "ar_known_rank"
+      ],
+      "cost": [
+        "elapsed_quality",
+        "deduction_cost_quality",
+        "valid_state"
+      ]
+    },
+    "raw_weights": {
+      "structure": [
+        -1.469235818905013,
+        -0.00011730318127994681,
+        2.4573746604608298,
+        2.4573746604608298,
+        -1.1746063922548804,
+        1.5067652746580014,
+        -1.1460474002895744,
+        -1.0620066717549639,
+        -1.0620066717549639,
+        -1.1860158229525157,
+        -1.1860158229525157,
+        -1.1860158229525157,
+        -1.1860158229525157,
+        -1.1860158229525157,
+        -1.1860158229525157,
+        -1.1860158229525157,
+        -1.1860158229525155
+      ],
+      "closure": [
+        -2.649734729847173,
+        -0.6224184427449022,
+        3.5180454704724906,
+        -2.704478389997131,
+        -2.6407805953565515
+      ],
+      "transition": [
+        -4.008887897199778,
+        -4.013351110916308,
+        4.019244464876061,
+        -4.029422960792599,
+        -4.004922585367786
+      ],
+      "obligation": [
+        -3.155767093827688e-07,
+        -3.155767093827688e-07
+      ],
+      "algebra": [
+        -3.1883431619503515e-07,
+        -3.1883431619503515e-07,
+        -3.1883431619503515e-07,
+        -3.1883431619503515e-07,
+        -3.1883431619503515e-07
+      ],
+      "cost": [
+        1.9934733351522298,
+        -0.6013800797929134,
+        -0.5782863954238829
+      ]
+    },
+    "biases": {
+      "structure": -0.17477660137343087,
+      "closure": -0.17391686901824477,
+      "transition": -0.757925026096138,
+      "obligation": 0.23565912149728993,
+      "algebra": -0.26423298727762884,
+      "cost": -0.1874663272906546
+    },
+    "trust_logits": {
+      "structure": -3.5907598630180404,
+      "closure": -1.2537337241091255,
+      "transition": 5.94550858092055,
+      "obligation": -3.60980691267839,
+      "algebra": -3.6098069126783927,
+      "cost": -3.5745172384303134
+    },
+    "log_rho": 1.011906766024147,
+    "risk_logit": 2.731803348635851,
+    "iterations": 12,
+    "parameter_count": 51
+  },
+  "train_evaluation": {
+    "all_prefixes": {
+      "structural": {
+        "groups": 3,
+        "mrr": 0.11491935483870967,
+        "mean_rank": 17.0,
+        "hit_at_8": 0.3333333333333333
+      },
+      "closure": {
+        "groups": 3,
+        "mrr": 0.13095238095238096,
+        "mean_rank": 8.333333333333334,
+        "hit_at_8": 0.6666666666666666
+      },
+      "legacy_pareto": {
+        "groups": 3,
+        "mrr": 0.11363636363636363,
+        "mean_rank": 9.666666666666666,
+        "hit_at_8": 0.3333333333333333
+      },
+      "differentiable_consensus": {
+        "groups": 3,
+        "mrr": 0.5277777777777778,
+        "mean_rank": 2.6666666666666665,
+        "hit_at_8": 1.0
+      },
+      "random_mean": {
+        "groups": 3,
+        "mrr": 0.06330790493002701,
+        "mean_rank": 15.885,
+        "hit_at_8": 0.0
+      }
+    },
+    "nonterminal_prefixes": {
+      "structural": {
+        "groups": 3,
+        "mrr": 0.11491935483870967,
+        "mean_rank": 17.0,
+        "hit_at_8": 0.3333333333333333
+      },
+      "closure": {
+        "groups": 3,
+        "mrr": 0.13095238095238096,
+        "mean_rank": 8.333333333333334,
+        "hit_at_8": 0.6666666666666666
+      },
+      "legacy_pareto": {
+        "groups": 3,
+        "mrr": 0.11363636363636363,
+        "mean_rank": 9.666666666666666,
+        "hit_at_8": 0.3333333333333333
+      },
+      "differentiable_consensus": {
+        "groups": 3,
+        "mrr": 0.5277777777777778,
+        "mean_rank": 2.6666666666666665,
+        "hit_at_8": 1.0
+      },
+      "random_mean": {
+        "groups": 3,
+        "mrr": 0.06330790493002701,
+        "mean_rank": 15.885,
+        "hit_at_8": 0.0
+      }
+    },
+    "groups": [
+      {
+        "problem": "2009_p2",
+        "depth": 1,
+        "solved_depth": 2,
+        "candidate_count": 29,
+        "nonterminal": true,
+        "ranks": {
+          "structural": 4,
+          "closure": 12,
+          "legacy_pareto": 11,
+          "differentiable_consensus": 3,
+          "random_mean": 14.255
+        }
+      },
+      {
+        "problem": "2010_p2",
+        "depth": 1,
+        "solved_depth": 2,
+        "candidate_count": 32,
+        "nonterminal": true,
+        "ranks": {
+          "structural": 31,
+          "closure": 6,
+          "legacy_pareto": 6,
+          "differentiable_consensus": 4,
+          "random_mean": 16.87
+        }
+      },
+      {
+        "problem": "2015_p3",
+        "depth": 1,
+        "solved_depth": 2,
+        "candidate_count": 32,
+        "nonterminal": true,
+        "ranks": {
+          "structural": 16,
+          "closure": 7,
+          "legacy_pareto": 12,
+          "differentiable_consensus": 1,
+          "random_mean": 16.53
+        }
+      }
+    ]
+  },
+  "calibration_evaluation": {
+    "all_prefixes": {
+      "structural": {
+        "groups": 0,
+        "mrr": 0.0,
+        "mean_rank": 0.0,
+        "hit_at_8": 0.0
+      },
+      "closure": {
+        "groups": 0,
+        "mrr": 0.0,
+        "mean_rank": 0.0,
+        "hit_at_8": 0.0
+      },
+      "legacy_pareto": {
+        "groups": 0,
+        "mrr": 0.0,
+        "mean_rank": 0.0,
+        "hit_at_8": 0.0
+      },
+      "differentiable_consensus": {
+        "groups": 0,
+        "mrr": 0.0,
+        "mean_rank": 0.0,
+        "hit_at_8": 0.0
+      },
+      "random_mean": {
+        "groups": 0,
+        "mrr": 0.0,
+        "mean_rank": 0.0,
+        "hit_at_8": 0.0
+      }
+    },
+    "nonterminal_prefixes": {
+      "structural": {
+        "groups": 0,
+        "mrr": 0.0,
+        "mean_rank": 0.0,
+        "hit_at_8": 0.0
+      },
+      "closure": {
+        "groups": 0,
+        "mrr": 0.0,
+        "mean_rank": 0.0,
+        "hit_at_8": 0.0
+      },
+      "legacy_pareto": {
+        "groups": 0,
+        "mrr": 0.0,
+        "mean_rank": 0.0,
+        "hit_at_8": 0.0
+      },
+      "differentiable_consensus": {
+        "groups": 0,
+        "mrr": 0.0,
+        "mean_rank": 0.0,
+        "hit_at_8": 0.0
+      },
+      "random_mean": {
+        "groups": 0,
+        "mrr": 0.0,
+        "mean_rank": 0.0,
+        "hit_at_8": 0.0
+      }
+    },
+    "groups": []
+  },
+  "heldout_evaluation": {
+    "all_prefixes": {
+      "structural": {
+        "groups": 2,
+        "mrr": 0.04595588235294118,
+        "mean_rank": 25.0,
+        "hit_at_8": 0.0
+      },
+      "closure": {
+        "groups": 2,
+        "mrr": 0.75,
+        "mean_rank": 1.5,
+        "hit_at_8": 1.0
+      },
+      "legacy_pareto": {
+        "groups": 2,
+        "mrr": 0.6666666666666666,
+        "mean_rank": 2.0,
+        "hit_at_8": 1.0
+      },
+      "differentiable_consensus": {
+        "groups": 2,
+        "mrr": 0.5277777777777778,
+        "mean_rank": 9.5,
+        "hit_at_8": 0.5
+      },
+      "random_mean": {
+        "groups": 2,
+        "mrr": 0.01612102481945549,
+        "mean_rank": 66.31,
+        "hit_at_8": 0.0
+      }
+    },
+    "nonterminal_prefixes": {
+      "structural": {
+        "groups": 1,
+        "mrr": 0.0625,
+        "mean_rank": 16.0,
+        "hit_at_8": 0.0
+      },
+      "closure": {
+        "groups": 1,
+        "mrr": 0.5,
+        "mean_rank": 2.0,
+        "hit_at_8": 1.0
+      },
+      "legacy_pareto": {
+        "groups": 1,
+        "mrr": 0.3333333333333333,
+        "mean_rank": 3.0,
+        "hit_at_8": 1.0
+      },
+      "differentiable_consensus": {
+        "groups": 1,
+        "mrr": 0.05555555555555555,
+        "mean_rank": 18.0,
+        "hit_at_8": 0.0
+      },
+      "random_mean": {
+        "groups": 1,
+        "mrr": 0.020216314565854644,
+        "mean_rank": 49.465,
+        "hit_at_8": 0.0
+      }
+    },
+    "groups": [
+      {
+        "problem": "2020_p1",
+        "depth": 1,
+        "solved_depth": 2,
+        "candidate_count": 104,
+        "nonterminal": true,
+        "ranks": {
+          "structural": 16,
+          "closure": 2,
+          "legacy_pareto": 3,
+          "differentiable_consensus": 18,
+          "random_mean": 49.465
+        }
+      },
+      {
+        "problem": "2020_p1",
+        "depth": 2,
+        "solved_depth": 2,
+        "candidate_count": 159,
+        "nonterminal": false,
+        "ranks": {
+          "structural": 34,
+          "closure": 1,
+          "legacy_pareto": 1,
+          "differentiable_consensus": 1,
+          "random_mean": 83.155
+        }
+      }
+    ]
+  },
+  "leave_one_problem_out": {
+    "fold_count": 8,
+    "aggregate": {
+      "all_prefixes": {
+        "structural": {
+          "groups": 12,
+          "mrr": 0.1858620440014327,
+          "mean_rank": 52.083333333333336,
+          "hit_at_8": 0.5833333333333334
+        },
+        "closure": {
+          "groups": 12,
+          "mrr": 0.7410714285714285,
+          "mean_rank": 2.9166666666666665,
+          "hit_at_8": 0.9166666666666666
+        },
+        "legacy_pareto": {
+          "groups": 12,
+          "mrr": 0.5998860556787385,
+          "mean_rank": 6.75,
+          "hit_at_8": 0.75
+        },
+        "differentiable_consensus": {
+          "groups": 12,
+          "mrr": 0.33469185105340715,
+          "mean_rank": 23.833333333333332,
+          "hit_at_8": 0.5833333333333334
+        },
+        "random_mean": {
+          "groups": 12,
+          "mrr": 0.1379716409365098,
+          "mean_rank": 45.6825,
+          "hit_at_8": 0.4166666666666667
+        }
+      },
+      "nonterminal_prefixes": {
+        "structural": {
+          "groups": 4,
+          "mrr": 0.10181451612903225,
+          "mean_rank": 16.75,
+          "hit_at_8": 0.25
+        },
+        "closure": {
+          "groups": 4,
+          "mrr": 0.2232142857142857,
+          "mean_rank": 6.75,
+          "hit_at_8": 0.75
+        },
+        "legacy_pareto": {
+          "groups": 4,
+          "mrr": 0.16856060606060605,
+          "mean_rank": 8.0,
+          "hit_at_8": 0.5
+        },
+        "differentiable_consensus": {
+          "groups": 4,
+          "mrr": 0.07518796992481203,
+          "mean_rank": 16.0,
+          "hit_at_8": 0.25
+        },
+        "random_mean": {
+          "groups": 4,
+          "mrr": 0.05180449292439144,
+          "mean_rank": 24.7015,
+          "hit_at_8": 0.0
+        }
+      }
+    },
+    "folds": [
+      {
+        "heldout_problem": "2000_p6",
+        "training": {
+          "epochs": 250,
+          "learning_rate": 0.025,
+          "pair_count": 193,
+          "group_count": 4,
+          "best_validation_pairwise_accuracy": 0.8652849740932642,
+          "best_train_pairwise_accuracy": 0.8652849740932642,
+          "history": [
+            {
+              "epoch": 1.0,
+              "loss": 0.6886538299269745,
+              "train_pairwise_accuracy": 0.5129533678756477,
+              "validation_pairwise_accuracy": 0.5129533678756477
+            },
+            {
+              "epoch": 25.0,
+              "loss": 0.6765775968138559,
+              "train_pairwise_accuracy": 0.7150259067357513,
+              "validation_pairwise_accuracy": 0.7150259067357513
+            },
+            {
+              "epoch": 50.0,
+              "loss": 0.6629619984049302,
+              "train_pairwise_accuracy": 0.7616580310880829,
+              "validation_pairwise_accuracy": 0.7616580310880829
+            },
+            {
+              "epoch": 75.0,
+              "loss": 0.6514393587183867,
+              "train_pairwise_accuracy": 0.772020725388601,
+              "validation_pairwise_accuracy": 0.772020725388601
+            },
+            {
+              "epoch": 100.0,
+              "loss": 0.6435837141560241,
+              "train_pairwise_accuracy": 0.7772020725388601,
+              "validation_pairwise_accuracy": 0.7772020725388601
+            },
+            {
+              "epoch": 125.0,
+              "loss": 0.6379738461199316,
+              "train_pairwise_accuracy": 0.7823834196891192,
+              "validation_pairwise_accuracy": 0.7823834196891192
+            },
+            {
+              "epoch": 150.0,
+              "loss": 0.6335423531246007,
+              "train_pairwise_accuracy": 0.7564766839378239,
+              "validation_pairwise_accuracy": 0.7564766839378239
+            },
+            {
+              "epoch": 175.0,
+              "loss": 0.6311369872613677,
+              "train_pairwise_accuracy": 0.844559585492228,
+              "validation_pairwise_accuracy": 0.844559585492228
+            },
+            {
+              "epoch": 200.0,
+              "loss": 0.629721430505774,
+              "train_pairwise_accuracy": 0.844559585492228,
+              "validation_pairwise_accuracy": 0.844559585492228
+            },
+            {
+              "epoch": 225.0,
+              "loss": 0.6287432285699198,
+              "train_pairwise_accuracy": 0.8497409326424871,
+              "validation_pairwise_accuracy": 0.8497409326424871
+            },
+            {
+              "epoch": 250.0,
+              "loss": 0.6278703881854691,
+              "train_pairwise_accuracy": 0.8652849740932642,
+              "validation_pairwise_accuracy": 0.8652849740932642
+            }
+          ]
+        },
+        "evaluation": {
+          "all_prefixes": {
+            "structural": {
+              "groups": 1,
+              "mrr": 0.125,
+              "mean_rank": 8.0,
+              "hit_at_8": 1.0
+            },
+            "closure": {
+              "groups": 1,
+              "mrr": 1.0,
+              "mean_rank": 1.0,
+              "hit_at_8": 1.0
+            },
+            "legacy_pareto": {
+              "groups": 1,
+              "mrr": 1.0,
+              "mean_rank": 1.0,
+              "hit_at_8": 1.0
+            },
+            "differentiable_consensus": {
+              "groups": 1,
+              "mrr": 0.16666666666666666,
+              "mean_rank": 6.0,
+              "hit_at_8": 1.0
+            },
+            "random_mean": {
+              "groups": 1,
+              "mrr": 0.2304147465437788,
+              "mean_rank": 4.34,
+              "hit_at_8": 1.0
+            }
+          },
+          "nonterminal_prefixes": {
+            "structural": {
+              "groups": 0,
+              "mrr": 0.0,
+              "mean_rank": 0.0,
+              "hit_at_8": 0.0
+            },
+            "closure": {
+              "groups": 0,
+              "mrr": 0.0,
+              "mean_rank": 0.0,
+              "hit_at_8": 0.0
+            },
+            "legacy_pareto": {
+              "groups": 0,
+              "mrr": 0.0,
+              "mean_rank": 0.0,
+              "hit_at_8": 0.0
+            },
+            "differentiable_consensus": {
+              "groups": 0,
+              "mrr": 0.0,
+              "mean_rank": 0.0,
+              "hit_at_8": 0.0
+            },
+            "random_mean": {
+              "groups": 0,
+              "mrr": 0.0,
+              "mean_rank": 0.0,
+              "hit_at_8": 0.0
+            }
+          },
+          "groups": [
+            {
+              "problem": "2000_p6",
+              "depth": 1,
+              "solved_depth": 1,
+              "candidate_count": 8,
+              "nonterminal": false,
+              "ranks": {
+                "structural": 8,
+                "closure": 1,
+                "legacy_pareto": 1,
+                "differentiable_consensus": 6,
+                "random_mean": 4.34
+              }
+            }
+          ]
+        }
+      },
+      {
+        "heldout_problem": "2008_p1a",
+        "training": {
+          "epochs": 250,
+          "learning_rate": 0.025,
+          "pair_count": 193,
+          "group_count": 4,
+          "best_validation_pairwise_accuracy": 0.8652849740932642,
+          "best_train_pairwise_accuracy": 0.8652849740932642,
+          "history": [
+            {
+              "epoch": 1.0,
+              "loss": 0.6886538299269745,
+              "train_pairwise_accuracy": 0.5129533678756477,
+              "validation_pairwise_accuracy": 0.5129533678756477
+            },
+            {
+              "epoch": 25.0,
+              "loss": 0.6765775968138559,
+              "train_pairwise_accuracy": 0.7150259067357513,
+              "validation_pairwise_accuracy": 0.7150259067357513
+            },
+            {
+              "epoch": 50.0,
+              "loss": 0.6629619984049302,
+              "train_pairwise_accuracy": 0.7616580310880829,
+              "validation_pairwise_accuracy": 0.7616580310880829
+            },
+            {
+              "epoch": 75.0,
+              "loss": 0.6514393587183867,
+              "train_pairwise_accuracy": 0.772020725388601,
+              "validation_pairwise_accuracy": 0.772020725388601
+            },
+            {
+              "epoch": 100.0,
+              "loss": 0.6435837141560241,
+              "train_pairwise_accuracy": 0.7772020725388601,
+              "validation_pairwise_accuracy": 0.7772020725388601
+            },
+            {
+              "epoch": 125.0,
+              "loss": 0.6379738461199316,
+              "train_pairwise_accuracy": 0.7823834196891192,
+              "validation_pairwise_accuracy": 0.7823834196891192
+            },
+            {
+              "epoch": 150.0,
+              "loss": 0.6335423531246007,
+              "train_pairwise_accuracy": 0.7564766839378239,
+              "validation_pairwise_accuracy": 0.7564766839378239
+            },
+            {
+              "epoch": 175.0,
+              "loss": 0.6311369872613677,
+              "train_pairwise_accuracy": 0.844559585492228,
+              "validation_pairwise_accuracy": 0.844559585492228
+            },
+            {
+              "epoch": 200.0,
+              "loss": 0.629721430505774,
+              "train_pairwise_accuracy": 0.844559585492228,
+              "validation_pairwise_accuracy": 0.844559585492228
+            },
+            {
+              "epoch": 225.0,
+              "loss": 0.6287432285699198,
+              "train_pairwise_accuracy": 0.8497409326424871,
+              "validation_pairwise_accuracy": 0.8497409326424871
+            },
+            {
+              "epoch": 250.0,
+              "loss": 0.6278703881854691,
+              "train_pairwise_accuracy": 0.8652849740932642,
+              "validation_pairwise_accuracy": 0.8652849740932642
+            }
+          ]
+        },
+        "evaluation": {
+          "all_prefixes": {
+            "structural": {
+              "groups": 1,
+              "mrr": 0.5,
+              "mean_rank": 2.0,
+              "hit_at_8": 1.0
+            },
+            "closure": {
+              "groups": 1,
+              "mrr": 1.0,
+              "mean_rank": 1.0,
+              "hit_at_8": 1.0
+            },
+            "legacy_pareto": {
+              "groups": 1,
+              "mrr": 1.0,
+              "mean_rank": 1.0,
+              "hit_at_8": 1.0
+            },
+            "differentiable_consensus": {
+              "groups": 1,
+              "mrr": 0.5,
+              "mean_rank": 2.0,
+              "hit_at_8": 1.0
+            },
+            "random_mean": {
+              "groups": 1,
+              "mrr": 0.2645502645502646,
+              "mean_rank": 3.78,
+              "hit_at_8": 1.0
+            }
+          },
+          "nonterminal_prefixes": {
+            "structural": {
+              "groups": 0,
+              "mrr": 0.0,
+              "mean_rank": 0.0,
+              "hit_at_8": 0.0
+            },
+            "closure": {
+              "groups": 0,
+              "mrr": 0.0,
+              "mean_rank": 0.0,
+              "hit_at_8": 0.0
+            },
+            "legacy_pareto": {
+              "groups": 0,
+              "mrr": 0.0,
+              "mean_rank": 0.0,
+              "hit_at_8": 0.0
+            },
+            "differentiable_consensus": {
+              "groups": 0,
+              "mrr": 0.0,
+              "mean_rank": 0.0,
+              "hit_at_8": 0.0
+            },
+            "random_mean": {
+              "groups": 0,
+              "mrr": 0.0,
+              "mean_rank": 0.0,
+              "hit_at_8": 0.0
+            }
+          },
+          "groups": [
+            {
+              "problem": "2008_p1a",
+              "depth": 1,
+              "solved_depth": 1,
+              "candidate_count": 6,
+              "nonterminal": false,
+              "ranks": {
+                "structural": 2,
+                "closure": 1,
+                "legacy_pareto": 1,
+                "differentiable_consensus": 2,
+                "random_mean": 3.78
+              }
+            }
+          ]
+        }
+      },
+      {
+        "heldout_problem": "2008_p1b",
+        "training": {
+          "epochs": 250,
+          "learning_rate": 0.025,
+          "pair_count": 193,
+          "group_count": 4,
+          "best_validation_pairwise_accuracy": 0.8652849740932642,
+          "best_train_pairwise_accuracy": 0.8652849740932642,
+          "history": [
+            {
+              "epoch": 1.0,
+              "loss": 0.6886538299269745,
+              "train_pairwise_accuracy": 0.5129533678756477,
+              "validation_pairwise_accuracy": 0.5129533678756477
+            },
+            {
+              "epoch": 25.0,
+              "loss": 0.6765775968138559,
+              "train_pairwise_accuracy": 0.7150259067357513,
+              "validation_pairwise_accuracy": 0.7150259067357513
+            },
+            {
+              "epoch": 50.0,
+              "loss": 0.6629619984049302,
+              "train_pairwise_accuracy": 0.7616580310880829,
+              "validation_pairwise_accuracy": 0.7616580310880829
+            },
+            {
+              "epoch": 75.0,
+              "loss": 0.6514393587183867,
+              "train_pairwise_accuracy": 0.772020725388601,
+              "validation_pairwise_accuracy": 0.772020725388601
+            },
+            {
+              "epoch": 100.0,
+              "loss": 0.6435837141560241,
+              "train_pairwise_accuracy": 0.7772020725388601,
+              "validation_pairwise_accuracy": 0.7772020725388601
+            },
+            {
+              "epoch": 125.0,
+              "loss": 0.6379738461199316,
+              "train_pairwise_accuracy": 0.7823834196891192,
+              "validation_pairwise_accuracy": 0.7823834196891192
+            },
+            {
+              "epoch": 150.0,
+              "loss": 0.6335423531246007,
+              "train_pairwise_accuracy": 0.7564766839378239,
+              "validation_pairwise_accuracy": 0.7564766839378239
+            },
+            {
+              "epoch": 175.0,
+              "loss": 0.6311369872613677,
+              "train_pairwise_accuracy": 0.844559585492228,
+              "validation_pairwise_accuracy": 0.844559585492228
+            },
+            {
+              "epoch": 200.0,
+              "loss": 0.629721430505774,
+              "train_pairwise_accuracy": 0.844559585492228,
+              "validation_pairwise_accuracy": 0.844559585492228
+            },
+            {
+              "epoch": 225.0,
+              "loss": 0.6287432285699198,
+              "train_pairwise_accuracy": 0.8497409326424871,
+              "validation_pairwise_accuracy": 0.8497409326424871
+            },
+            {
+              "epoch": 250.0,
+              "loss": 0.6278703881854691,
+              "train_pairwise_accuracy": 0.8652849740932642,
+              "validation_pairwise_accuracy": 0.8652849740932642
+            }
+          ]
+        },
+        "evaluation": {
+          "all_prefixes": {
+            "structural": {
+              "groups": 1,
+              "mrr": 0.5,
+              "mean_rank": 2.0,
+              "hit_at_8": 1.0
+            },
+            "closure": {
+              "groups": 1,
+              "mrr": 1.0,
+              "mean_rank": 1.0,
+              "hit_at_8": 1.0
+            },
+            "legacy_pareto": {
+              "groups": 1,
+              "mrr": 1.0,
+              "mean_rank": 1.0,
+              "hit_at_8": 1.0
+            },
+            "differentiable_consensus": {
+              "groups": 1,
+              "mrr": 0.5,
+              "mean_rank": 2.0,
+              "hit_at_8": 1.0
+            },
+            "random_mean": {
+              "groups": 1,
+              "mrr": 0.28169014084507044,
+              "mean_rank": 3.55,
+              "hit_at_8": 1.0
+            }
+          },
+          "nonterminal_prefixes": {
+            "structural": {
+              "groups": 0,
+              "mrr": 0.0,
+              "mean_rank": 0.0,
+              "hit_at_8": 0.0
+            },
+            "closure": {
+              "groups": 0,
+              "mrr": 0.0,
+              "mean_rank": 0.0,
+              "hit_at_8": 0.0
+            },
+            "legacy_pareto": {
+              "groups": 0,
+              "mrr": 0.0,
+              "mean_rank": 0.0,
+              "hit_at_8": 0.0
+            },
+            "differentiable_consensus": {
+              "groups": 0,
+              "mrr": 0.0,
+              "mean_rank": 0.0,
+              "hit_at_8": 0.0
+            },
+            "random_mean": {
+              "groups": 0,
+              "mrr": 0.0,
+              "mean_rank": 0.0,
+              "hit_at_8": 0.0
+            }
+          },
+          "groups": [
+            {
+              "problem": "2008_p1b",
+              "depth": 1,
+              "solved_depth": 1,
+              "candidate_count": 6,
+              "nonterminal": false,
+              "ranks": {
+                "structural": 2,
+                "closure": 1,
+                "legacy_pareto": 1,
+                "differentiable_consensus": 2,
+                "random_mean": 3.55
+              }
+            }
+          ]
+        }
+      },
+      {
+        "heldout_problem": "2008_p6",
+        "training": {
+          "epochs": 250,
+          "learning_rate": 0.025,
+          "pair_count": 193,
+          "group_count": 4,
+          "best_validation_pairwise_accuracy": 0.8652849740932642,
+          "best_train_pairwise_accuracy": 0.8652849740932642,
+          "history": [
+            {
+              "epoch": 1.0,
+              "loss": 0.6886538299269745,
+              "train_pairwise_accuracy": 0.5129533678756477,
+              "validation_pairwise_accuracy": 0.5129533678756477
+            },
+            {
+              "epoch": 25.0,
+              "loss": 0.6765775968138559,
+              "train_pairwise_accuracy": 0.7150259067357513,
+              "validation_pairwise_accuracy": 0.7150259067357513
+            },
+            {
+              "epoch": 50.0,
+              "loss": 0.6629619984049302,
+              "train_pairwise_accuracy": 0.7616580310880829,
+              "validation_pairwise_accuracy": 0.7616580310880829
+            },
+            {
+              "epoch": 75.0,
+              "loss": 0.6514393587183867,
+              "train_pairwise_accuracy": 0.772020725388601,
+              "validation_pairwise_accuracy": 0.772020725388601
+            },
+            {
+              "epoch": 100.0,
+              "loss": 0.6435837141560241,
+              "train_pairwise_accuracy": 0.7772020725388601,
+              "validation_pairwise_accuracy": 0.7772020725388601
+            },
+            {
+              "epoch": 125.0,
+              "loss": 0.6379738461199316,
+              "train_pairwise_accuracy": 0.7823834196891192,
+              "validation_pairwise_accuracy": 0.7823834196891192
+            },
+            {
+              "epoch": 150.0,
+              "loss": 0.6335423531246007,
+              "train_pairwise_accuracy": 0.7564766839378239,
+              "validation_pairwise_accuracy": 0.7564766839378239
+            },
+            {
+              "epoch": 175.0,
+              "loss": 0.6311369872613677,
+              "train_pairwise_accuracy": 0.844559585492228,
+              "validation_pairwise_accuracy": 0.844559585492228
+            },
+            {
+              "epoch": 200.0,
+              "loss": 0.629721430505774,
+              "train_pairwise_accuracy": 0.844559585492228,
+              "validation_pairwise_accuracy": 0.844559585492228
+            },
+            {
+              "epoch": 225.0,
+              "loss": 0.6287432285699198,
+              "train_pairwise_accuracy": 0.8497409326424871,
+              "validation_pairwise_accuracy": 0.8497409326424871
+            },
+            {
+              "epoch": 250.0,
+              "loss": 0.6278703881854691,
+              "train_pairwise_accuracy": 0.8652849740932642,
+              "validation_pairwise_accuracy": 0.8652849740932642
+            }
+          ]
+        },
+        "evaluation": {
+          "all_prefixes": {
+            "structural": {
+              "groups": 1,
+              "mrr": 0.25,
+              "mean_rank": 4.0,
+              "hit_at_8": 1.0
+            },
+            "closure": {
+              "groups": 1,
+              "mrr": 1.0,
+              "mean_rank": 1.0,
+              "hit_at_8": 1.0
+            },
+            "legacy_pareto": {
+              "groups": 1,
+              "mrr": 1.0,
+              "mean_rank": 1.0,
+              "hit_at_8": 1.0
+            },
+            "differentiable_consensus": {
+              "groups": 1,
+              "mrr": 1.0,
+              "mean_rank": 1.0,
+              "hit_at_8": 1.0
+            },
+            "random_mean": {
+              "groups": 1,
+              "mrr": 0.4166666666666667,
+              "mean_rank": 2.4,
+              "hit_at_8": 1.0
+            }
+          },
+          "nonterminal_prefixes": {
+            "structural": {
+              "groups": 0,
+              "mrr": 0.0,
+              "mean_rank": 0.0,
+              "hit_at_8": 0.0
+            },
+            "closure": {
+              "groups": 0,
+              "mrr": 0.0,
+              "mean_rank": 0.0,
+              "hit_at_8": 0.0
+            },
+            "legacy_pareto": {
+              "groups": 0,
+              "mrr": 0.0,
+              "mean_rank": 0.0,
+              "hit_at_8": 0.0
+            },
+            "differentiable_consensus": {
+              "groups": 0,
+              "mrr": 0.0,
+              "mean_rank": 0.0,
+              "hit_at_8": 0.0
+            },
+            "random_mean": {
+              "groups": 0,
+              "mrr": 0.0,
+              "mean_rank": 0.0,
+              "hit_at_8": 0.0
+            }
+          },
+          "groups": [
+            {
+              "problem": "2008_p6",
+              "depth": 1,
+              "solved_depth": 1,
+              "candidate_count": 4,
+              "nonterminal": false,
+              "ranks": {
+                "structural": 4,
+                "closure": 1,
+                "legacy_pareto": 1,
+                "differentiable_consensus": 1,
+                "random_mean": 2.4
+              }
+            }
+          ]
+        }
+      },
+      {
+        "heldout_problem": "2009_p2",
+        "training": {
+          "epochs": 250,
+          "learning_rate": 0.025,
+          "pair_count": 165,
+          "group_count": 3,
+          "best_validation_pairwise_accuracy": 0.9030303030303031,
+          "best_train_pairwise_accuracy": 0.9030303030303031,
+          "history": [
+            {
+              "epoch": 1.0,
+              "loss": 0.6941873623899033,
+              "train_pairwise_accuracy": 0.4484848484848485,
+              "validation_pairwise_accuracy": 0.4484848484848485
+            },
+            {
+              "epoch": 25.0,
+              "loss": 0.683261249081155,
+              "train_pairwise_accuracy": 0.6787878787878788,
+              "validation_pairwise_accuracy": 0.6787878787878788
+            },
+            {
+              "epoch": 50.0,
+              "loss": 0.668442564171427,
+              "train_pairwise_accuracy": 0.703030303030303,
+              "validation_pairwise_accuracy": 0.703030303030303
+            },
+            {
+              "epoch": 75.0,
+              "loss": 0.6515291679773817,
+              "train_pairwise_accuracy": 0.7515151515151515,
+              "validation_pairwise_accuracy": 0.7515151515151515
+            },
+            {
+              "epoch": 100.0,
+              "loss": 0.6414583749281353,
+              "train_pairwise_accuracy": 0.8,
+              "validation_pairwise_accuracy": 0.8
+            },
+            {
+              "epoch": 125.0,
+              "loss": 0.6372203836648843,
+              "train_pairwise_accuracy": 0.896969696969697,
+              "validation_pairwise_accuracy": 0.896969696969697
+            },
+            {
+              "epoch": 150.0,
+              "loss": 0.6351772799996984,
+              "train_pairwise_accuracy": 0.9030303030303031,
+              "validation_pairwise_accuracy": 0.9030303030303031
+            },
+            {
+              "epoch": 175.0,
+              "loss": 0.6327235104876097,
+              "train_pairwise_accuracy": 0.9030303030303031,
+              "validation_pairwise_accuracy": 0.9030303030303031
+            },
+            {
+              "epoch": 200.0,
+              "loss": 0.6313025276222166,
+              "train_pairwise_accuracy": 0.896969696969697,
+              "validation_pairwise_accuracy": 0.896969696969697
+            },
+            {
+              "epoch": 225.0,
+              "loss": 0.6307813432316443,
+              "train_pairwise_accuracy": 0.896969696969697,
+              "validation_pairwise_accuracy": 0.896969696969697
+            },
+            {
+              "epoch": 250.0,
+              "loss": 0.6305092948100945,
+              "train_pairwise_accuracy": 0.896969696969697,
+              "validation_pairwise_accuracy": 0.896969696969697
+            }
+          ]
+        },
+        "evaluation": {
+          "all_prefixes": {
+            "structural": {
+              "groups": 2,
+              "mrr": 0.25,
+              "mean_rank": 4.0,
+              "hit_at_8": 1.0
+            },
+            "closure": {
+              "groups": 2,
+              "mrr": 0.5416666666666666,
+              "mean_rank": 6.5,
+              "hit_at_8": 0.5
+            },
+            "legacy_pareto": {
+              "groups": 2,
+              "mrr": 0.29545454545454547,
+              "mean_rank": 6.5,
+              "hit_at_8": 0.5
+            },
+            "differentiable_consensus": {
+              "groups": 2,
+              "mrr": 0.029018492176386912,
+              "mean_rank": 102.0,
+              "hit_at_8": 0.0
+            },
+            "random_mean": {
+              "groups": 2,
+              "mrr": 0.040554841019878975,
+              "mean_rank": 56.3675,
+              "hit_at_8": 0.0
+            }
+          },
+          "nonterminal_prefixes": {
+            "structural": {
+              "groups": 1,
+              "mrr": 0.25,
+              "mean_rank": 4.0,
+              "hit_at_8": 1.0
+            },
+            "closure": {
+              "groups": 1,
+              "mrr": 0.08333333333333333,
+              "mean_rank": 12.0,
+              "hit_at_8": 0.0
+            },
+            "legacy_pareto": {
+              "groups": 1,
+              "mrr": 0.09090909090909091,
+              "mean_rank": 11.0,
+              "hit_at_8": 0.0
+            },
+            "differentiable_consensus": {
+              "groups": 1,
+              "mrr": 0.05263157894736842,
+              "mean_rank": 19.0,
+              "hit_at_8": 0.0
+            },
+            "random_mean": {
+              "groups": 1,
+              "mrr": 0.07097232079488999,
+              "mean_rank": 14.09,
+              "hit_at_8": 0.0
+            }
+          },
+          "groups": [
+            {
+              "problem": "2009_p2",
+              "depth": 1,
+              "solved_depth": 2,
+              "candidate_count": 29,
+              "nonterminal": true,
+              "ranks": {
+                "structural": 4,
+                "closure": 12,
+                "legacy_pareto": 11,
+                "differentiable_consensus": 19,
+                "random_mean": 14.09
+              }
+            },
+            {
+              "problem": "2009_p2",
+              "depth": 2,
+              "solved_depth": 2,
+              "candidate_count": 185,
+              "nonterminal": false,
+              "ranks": {
+                "structural": 4,
+                "closure": 1,
+                "legacy_pareto": 2,
+                "differentiable_consensus": 185,
+                "random_mean": 98.645
+              }
+            }
+          ]
+        }
+      },
+      {
+        "heldout_problem": "2010_p2",
+        "training": {
+          "epochs": 250,
+          "learning_rate": 0.025,
+          "pair_count": 162,
+          "group_count": 3,
+          "best_validation_pairwise_accuracy": 0.8580246913580247,
+          "best_train_pairwise_accuracy": 0.8580246913580247,
+          "history": [
+            {
+              "epoch": 1.0,
+              "loss": 0.6840663253581483,
+              "train_pairwise_accuracy": 0.5802469135802469,
+              "validation_pairwise_accuracy": 0.5802469135802469
+            },
+            {
+              "epoch": 25.0,
+              "loss": 0.667909958400248,
+              "train_pairwise_accuracy": 0.7962962962962963,
+              "validation_pairwise_accuracy": 0.7962962962962963
+            },
+            {
+              "epoch": 50.0,
+              "loss": 0.6503103920584761,
+              "train_pairwise_accuracy": 0.8395061728395061,
+              "validation_pairwise_accuracy": 0.8395061728395061
+            },
+            {
+              "epoch": 75.0,
+              "loss": 0.636176974776193,
+              "train_pairwise_accuracy": 0.845679012345679,
+              "validation_pairwise_accuracy": 0.845679012345679
+            },
+            {
+              "epoch": 100.0,
+              "loss": 0.6285872893594551,
+              "train_pairwise_accuracy": 0.8518518518518519,
+              "validation_pairwise_accuracy": 0.8518518518518519
+            },
+            {
+              "epoch": 125.0,
+              "loss": 0.6250475251488518,
+              "train_pairwise_accuracy": 0.845679012345679,
+              "validation_pairwise_accuracy": 0.845679012345679
+            },
+            {
+              "epoch": 150.0,
+              "loss": 0.6232625966829727,
+              "train_pairwise_accuracy": 0.845679012345679,
+              "validation_pairwise_accuracy": 0.845679012345679
+            },
+            {
+              "epoch": 175.0,
+              "loss": 0.6220651748942149,
+              "train_pairwise_accuracy": 0.8395061728395061,
+              "validation_pairwise_accuracy": 0.8395061728395061
+            },
+            {
+              "epoch": 200.0,
+              "loss": 0.6214384405315314,
+              "train_pairwise_accuracy": 0.8518518518518519,
+              "validation_pairwise_accuracy": 0.8518518518518519
+            },
+            {
+              "epoch": 225.0,
+              "loss": 0.6207807374292931,
+              "train_pairwise_accuracy": 0.8395061728395061,
+              "validation_pairwise_accuracy": 0.8395061728395061
+            },
+            {
+              "epoch": 250.0,
+              "loss": 0.6206044510069672,
+              "train_pairwise_accuracy": 0.8580246913580247,
+              "validation_pairwise_accuracy": 0.8580246913580247
+            }
+          ]
+        },
+        "evaluation": {
+          "all_prefixes": {
+            "structural": {
+              "groups": 2,
+              "mrr": 0.017133048322321542,
+              "mean_rank": 264.5,
+              "hit_at_8": 0.0
+            },
+            "closure": {
+              "groups": 2,
+              "mrr": 0.5833333333333334,
+              "mean_rank": 3.5,
+              "hit_at_8": 1.0
+            },
+            "legacy_pareto": {
+              "groups": 2,
+              "mrr": 0.09552845528455284,
+              "mean_rank": 23.5,
+              "hit_at_8": 0.5
+            },
+            "differentiable_consensus": {
+              "groups": 2,
+              "mrr": 0.04805491990846682,
+              "mean_rank": 21.0,
+              "hit_at_8": 0.0
+            },
+            "random_mean": {
+              "groups": 2,
+              "mrr": 0.029817325467385712,
+              "mean_rank": 142.17,
+              "hit_at_8": 0.0
+            }
+          },
+          "nonterminal_prefixes": {
+            "structural": {
+              "groups": 1,
+              "mrr": 0.03225806451612903,
+              "mean_rank": 31.0,
+              "hit_at_8": 0.0
+            },
+            "closure": {
+              "groups": 1,
+              "mrr": 0.16666666666666666,
+              "mean_rank": 6.0,
+              "hit_at_8": 1.0
+            },
+            "legacy_pareto": {
+              "groups": 1,
+              "mrr": 0.16666666666666666,
+              "mean_rank": 6.0,
+              "hit_at_8": 1.0
+            },
+            "differentiable_consensus": {
+              "groups": 1,
+              "mrr": 0.05263157894736842,
+              "mean_rank": 19.0,
+              "hit_at_8": 0.0
+            },
+            "random_mean": {
+              "groups": 1,
+              "mrr": 0.05588153115395362,
+              "mean_rank": 17.895,
+              "hit_at_8": 0.0
+            }
+          },
+          "groups": [
+            {
+              "problem": "2010_p2",
+              "depth": 1,
+              "solved_depth": 2,
+              "candidate_count": 32,
+              "nonterminal": true,
+              "ranks": {
+                "structural": 31,
+                "closure": 6,
+                "legacy_pareto": 6,
+                "differentiable_consensus": 19,
+                "random_mean": 17.895
+              }
+            },
+            {
+              "problem": "2010_p2",
+              "depth": 2,
+              "solved_depth": 2,
+              "candidate_count": 509,
+              "nonterminal": false,
+              "ranks": {
+                "structural": 498,
+                "closure": 1,
+                "legacy_pareto": 41,
+                "differentiable_consensus": 23,
+                "random_mean": 266.445
+              }
+            }
+          ]
+        }
+      },
+      {
+        "heldout_problem": "2015_p3",
+        "training": {
+          "epochs": 250,
+          "learning_rate": 0.025,
+          "pair_count": 162,
+          "group_count": 3,
+          "best_validation_pairwise_accuracy": 0.7962962962962963,
+          "best_train_pairwise_accuracy": 0.7962962962962963,
+          "history": [
+            {
+              "epoch": 1.0,
+              "loss": 0.6911704675131198,
+              "train_pairwise_accuracy": 0.4876543209876543,
+              "validation_pairwise_accuracy": 0.4876543209876543
+            },
+            {
+              "epoch": 25.0,
+              "loss": 0.6817228625058888,
+              "train_pairwise_accuracy": 0.7098765432098766,
+              "validation_pairwise_accuracy": 0.7098765432098766
+            },
+            {
+              "epoch": 50.0,
+              "loss": 0.6732776004593695,
+              "train_pairwise_accuracy": 0.7160493827160493,
+              "validation_pairwise_accuracy": 0.7160493827160493
+            },
+            {
+              "epoch": 75.0,
+              "loss": 0.666967110075438,
+              "train_pairwise_accuracy": 0.7345679012345679,
+              "validation_pairwise_accuracy": 0.7345679012345679
+            },
+            {
+              "epoch": 100.0,
+              "loss": 0.6629797316499879,
+              "train_pairwise_accuracy": 0.7345679012345679,
+              "validation_pairwise_accuracy": 0.7345679012345679
+            },
+            {
+              "epoch": 125.0,
+              "loss": 0.6604775139642506,
+              "train_pairwise_accuracy": 0.7222222222222222,
+              "validation_pairwise_accuracy": 0.7222222222222222
+            },
+            {
+              "epoch": 150.0,
+              "loss": 0.6587196873167123,
+              "train_pairwise_accuracy": 0.7222222222222222,
+              "validation_pairwise_accuracy": 0.7222222222222222
+            },
+            {
+              "epoch": 175.0,
+              "loss": 0.656964840591434,
+              "train_pairwise_accuracy": 0.7592592592592593,
+              "validation_pairwise_accuracy": 0.7592592592592593
+            },
+            {
+              "epoch": 200.0,
+              "loss": 0.6550683201636293,
+              "train_pairwise_accuracy": 0.7777777777777778,
+              "validation_pairwise_accuracy": 0.7777777777777778
+            },
+            {
+              "epoch": 225.0,
+              "loss": 0.6535781525542076,
+              "train_pairwise_accuracy": 0.7901234567901234,
+              "validation_pairwise_accuracy": 0.7901234567901234
+            },
+            {
+              "epoch": 250.0,
+              "loss": 0.6527181465144901,
+              "train_pairwise_accuracy": 0.7962962962962963,
+              "validation_pairwise_accuracy": 0.7962962962962963
+            }
+          ]
+        },
+        "evaluation": {
+          "all_prefixes": {
+            "structural": {
+              "groups": 2,
+              "mrr": 0.11458333333333333,
+              "mean_rank": 11.0,
+              "hit_at_8": 0.5
+            },
+            "closure": {
+              "groups": 2,
+              "mrr": 0.5714285714285714,
+              "mean_rank": 4.0,
+              "hit_at_8": 1.0
+            },
+            "legacy_pareto": {
+              "groups": 2,
+              "mrr": 0.5416666666666666,
+              "mean_rank": 6.5,
+              "hit_at_8": 0.5
+            },
+            "differentiable_consensus": {
+              "groups": 2,
+              "mrr": 0.3214285714285714,
+              "mean_rank": 4.5,
+              "hit_at_8": 1.0
+            },
+            "random_mean": {
+              "groups": 2,
+              "mrr": 0.1350531461840923,
+              "mean_rank": 10.4175,
+              "hit_at_8": 0.5
+            }
+          },
+          "nonterminal_prefixes": {
+            "structural": {
+              "groups": 1,
+              "mrr": 0.0625,
+              "mean_rank": 16.0,
+              "hit_at_8": 0.0
+            },
+            "closure": {
+              "groups": 1,
+              "mrr": 0.14285714285714285,
+              "mean_rank": 7.0,
+              "hit_at_8": 1.0
+            },
+            "legacy_pareto": {
+              "groups": 1,
+              "mrr": 0.08333333333333333,
+              "mean_rank": 12.0,
+              "hit_at_8": 0.0
+            },
+            "differentiable_consensus": {
+              "groups": 1,
+              "mrr": 0.14285714285714285,
+              "mean_rank": 7.0,
+              "hit_at_8": 1.0
+            },
+            "random_mean": {
+              "groups": 1,
+              "mrr": 0.062421972534332085,
+              "mean_rank": 16.02,
+              "hit_at_8": 0.0
+            }
+          },
+          "groups": [
+            {
+              "problem": "2015_p3",
+              "depth": 1,
+              "solved_depth": 2,
+              "candidate_count": 32,
+              "nonterminal": true,
+              "ranks": {
+                "structural": 16,
+                "closure": 7,
+                "legacy_pareto": 12,
+                "differentiable_consensus": 7,
+                "random_mean": 16.02
+              }
+            },
+            {
+              "problem": "2015_p3",
+              "depth": 2,
+              "solved_depth": 2,
+              "candidate_count": 8,
+              "nonterminal": false,
+              "ranks": {
+                "structural": 6,
+                "closure": 1,
+                "legacy_pareto": 1,
+                "differentiable_consensus": 2,
+                "random_mean": 4.815
+              }
+            }
+          ]
+        }
+      },
+      {
+        "heldout_problem": "2020_p1",
+        "training": {
+          "epochs": 250,
+          "learning_rate": 0.025,
+          "pair_count": 90,
+          "group_count": 3,
+          "best_validation_pairwise_accuracy": 0.9111111111111111,
+          "best_train_pairwise_accuracy": 0.9111111111111111,
+          "history": [
+            {
+              "epoch": 1.0,
+              "loss": 0.6851911644467269,
+              "train_pairwise_accuracy": 0.5777777777777777,
+              "validation_pairwise_accuracy": 0.5777777777777777
+            },
+            {
+              "epoch": 25.0,
+              "loss": 0.6688709577624753,
+              "train_pairwise_accuracy": 0.6333333333333333,
+              "validation_pairwise_accuracy": 0.6333333333333333
+            },
+            {
+              "epoch": 50.0,
+              "loss": 0.647487856468463,
+              "train_pairwise_accuracy": 0.6777777777777778,
+              "validation_pairwise_accuracy": 0.6777777777777778
+            },
+            {
+              "epoch": 75.0,
+              "loss": 0.6294919378505207,
+              "train_pairwise_accuracy": 0.6888888888888889,
+              "validation_pairwise_accuracy": 0.6888888888888889
+            },
+            {
+              "epoch": 100.0,
+              "loss": 0.618471239823115,
+              "train_pairwise_accuracy": 0.6888888888888889,
+              "validation_pairwise_accuracy": 0.6888888888888889
+            },
+            {
+              "epoch": 125.0,
+              "loss": 0.6111557071666679,
+              "train_pairwise_accuracy": 0.6888888888888889,
+              "validation_pairwise_accuracy": 0.6888888888888889
+            },
+            {
+              "epoch": 150.0,
+              "loss": 0.6067440107753067,
+              "train_pairwise_accuracy": 0.6888888888888889,
+              "validation_pairwise_accuracy": 0.6888888888888889
+            },
+            {
+              "epoch": 175.0,
+              "loss": 0.6035849038528899,
+              "train_pairwise_accuracy": 0.7111111111111111,
+              "validation_pairwise_accuracy": 0.7111111111111111
+            },
+            {
+              "epoch": 200.0,
+              "loss": 0.6010477138238751,
+              "train_pairwise_accuracy": 0.7111111111111111,
+              "validation_pairwise_accuracy": 0.7111111111111111
+            },
+            {
+              "epoch": 225.0,
+              "loss": 0.5991365743197613,
+              "train_pairwise_accuracy": 0.7555555555555555,
+              "validation_pairwise_accuracy": 0.7555555555555555
+            },
+            {
+              "epoch": 250.0,
+              "loss": 0.5978089194876944,
+              "train_pairwise_accuracy": 0.9111111111111111,
+              "validation_pairwise_accuracy": 0.9111111111111111
+            }
+          ]
+        },
+        "evaluation": {
+          "all_prefixes": {
+            "structural": {
+              "groups": 2,
+              "mrr": 0.04595588235294118,
+              "mean_rank": 25.0,
+              "hit_at_8": 0.0
+            },
+            "closure": {
+              "groups": 2,
+              "mrr": 0.75,
+              "mean_rank": 1.5,
+              "hit_at_8": 1.0
+            },
+            "legacy_pareto": {
+              "groups": 2,
+              "mrr": 0.6666666666666666,
+              "mean_rank": 2.0,
+              "hit_at_8": 1.0
+            },
+            "differentiable_consensus": {
+              "groups": 2,
+              "mrr": 0.5263157894736842,
+              "mean_rank": 10.0,
+              "hit_at_8": 0.5
+            },
+            "random_mean": {
+              "groups": 2,
+              "mrr": 0.015884374247128463,
+              "mean_rank": 66.3775,
+              "hit_at_8": 0.0
+            }
+          },
+          "nonterminal_prefixes": {
+            "structural": {
+              "groups": 1,
+              "mrr": 0.0625,
+              "mean_rank": 16.0,
+              "hit_at_8": 0.0
+            },
+            "closure": {
+              "groups": 1,
+              "mrr": 0.5,
+              "mean_rank": 2.0,
+              "hit_at_8": 1.0
+            },
+            "legacy_pareto": {
+              "groups": 1,
+              "mrr": 0.3333333333333333,
+              "mean_rank": 3.0,
+              "hit_at_8": 1.0
+            },
+            "differentiable_consensus": {
+              "groups": 1,
+              "mrr": 0.05263157894736842,
+              "mean_rank": 19.0,
+              "hit_at_8": 0.0
+            },
+            "random_mean": {
+              "groups": 1,
+              "mrr": 0.01949127765325017,
+              "mean_rank": 51.305,
+              "hit_at_8": 0.0
+            }
+          },
+          "groups": [
+            {
+              "problem": "2020_p1",
+              "depth": 1,
+              "solved_depth": 2,
+              "candidate_count": 104,
+              "nonterminal": true,
+              "ranks": {
+                "structural": 16,
+                "closure": 2,
+                "legacy_pareto": 3,
+                "differentiable_consensus": 19,
+                "random_mean": 51.305
+              }
+            },
+            {
+              "problem": "2020_p1",
+              "depth": 2,
+              "solved_depth": 2,
+              "candidate_count": 159,
+              "nonterminal": false,
+              "ranks": {
+                "structural": 34,
+                "closure": 1,
+                "legacy_pareto": 1,
+                "differentiable_consensus": 1,
+                "random_mean": 81.45
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

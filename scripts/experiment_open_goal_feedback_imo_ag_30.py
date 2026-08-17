@@ -73,6 +73,26 @@ DEFAULT_STAGES = (
             "--goal-directed-families",
         ),
     ),
+    SearchStage(
+        "typed_obligation_depth3",
+        (
+            "--family-set",
+            "extended",
+            "--per-family-limit",
+            "3",
+            "--branch-limit",
+            "36",
+            "--beam-width",
+            "12",
+            "--max-depth",
+            "3",
+            "--beam-ranking",
+            "frontier-pareto",
+            "--goal-directed-families",
+            "--obligation-guided",
+            "--require-generated-input-after-first",
+        ),
+    ),
 )
 
 
@@ -155,6 +175,10 @@ def stage_artifact_matches(
         artifact.get("experiment") == "newclid_dynamic_typed_construction_stalk_no_llm"
         and protocol.get("ranking") == candidate_ranking
         and protocol.get("beam_ranking") == expected_beam
+        and bool(protocol.get("obligation_guided", False))
+        == ("--obligation-guided" in stage.arguments)
+        and bool(protocol.get("require_generated_input_after_first", False))
+        == ("--require-generated-input-after-first" in stage.arguments)
         and all(
             expected is not None and int(protocol.get(key, -1)) == int(expected)
             for key, expected in expected_numbers.items()
@@ -448,7 +472,10 @@ def main() -> int:
             "uses_problem_id_in_search": False,
             "uses_known_answers_or_known_auxiliaries": False,
             "same_stage_schedule_for_every_open_goal": True,
-            "search_order": "breadth-first extended depth 1, then core depth 2",
+            "search_order": (
+                "breadth-first extended depth 1, core depth 2, then "
+                "point-instantiated backward obligations with extended depth 3"
+            ),
             "completed_stage_artifacts_are_resumable": True,
             "candidate_ranking": args.candidate_ranking,
             "beam_ranking_override": args.beam_ranking_override,

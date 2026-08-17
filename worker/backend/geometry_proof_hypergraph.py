@@ -76,6 +76,32 @@ class HypergraphProof:
         }
 
 
+@dataclass(frozen=True)
+class BackwardObligation:
+    """A theorem instance whose conclusion is the goal and premises stay open.
+
+    Variables not fixed by the goal or visible facts remain explicit typed
+    holes.  The object is a search proposal only: it never certifies a proof.
+    """
+
+    theorem: str
+    goal: Atom
+    matched_premises: tuple[Atom, ...]
+    open_premises: tuple[Atom, ...]
+    substitution: tuple[tuple[str, str], ...]
+    unbound_variables: tuple[str, ...]
+
+    def to_dict(self) -> dict:
+        return {
+            "theorem": self.theorem,
+            "goal": _render_atom(self.goal),
+            "matched_premises": [_render_atom(item) for item in self.matched_premises],
+            "open_premises": [_render_atom(item) for item in self.open_premises],
+            "substitution": dict(self.substitution),
+            "unbound_variables": list(self.unbound_variables),
+        }
+
+
 Substitution = dict[str, str]
 
 
@@ -156,6 +182,134 @@ def _instantiate(pattern: Atom, substitution: Mapping[str, str]) -> Atom | None:
         else:
             values.append(value)
     return Atom(pattern.predicate, tuple(values)).canonical()
+
+
+def _instantiate_partial(pattern: Atom, substitution: Mapping[str, str]) -> Atom:
+    return Atom(
+        pattern.predicate,
+        tuple(
+            substitution.get(value, value) if _is_variable(value) else value
+            for value in pattern.arguments
+        ),
+    ).canonical()
+
+
+def _obligation_rank(item: BackwardObligation) -> tuple[int, int, int, int, str]:
+    goal_points = set(item.goal.arguments)
+    open_points = {
+        point
+        for premise in item.open_premises
+        for point in premise.arguments
+        if not _is_variable(point)
+    }
+    return (
+        len(item.unbound_variables),
+        len(item.open_premises),
+        -len(item.matched_premises),
+        -len(goal_points & open_points),
+        item.theorem,
+    )
+
+
+def synthesize_backward_obligations(
+    facts: Iterable[Atom],
+    goal: Atom,
+    theorems: Iterable[Theorem],
+    *,
+    max_open_premises: int = 4,
+    max_states_per_rule: int = 256,
+    max_results: int = 64,
+) -> tuple[BackwardObligation, ...]:
+    """Instantiate missing theorem premises from a fixed typed rule bank.
+
+    The search is finite and label independent.  It unifies a requested goal
+    with every theorem conclusion, then joins any subset of premises against
+    visible facts.  Remaining premises become typed holes; no hidden
+    auxiliary construction or benchmark identifier is consulted.
+    """
+
+    known = {fact.canonical() for fact in facts}
+    by_predicate = {
+        predicate: tuple(
+            sorted(
+                (fact for fact in known if fact.predicate == predicate),
+                key=_render_atom,
+            )
+        )
+        for predicate in {fact.predicate for fact in known}
+    }
+    wanted = goal.canonical()
+    results: dict[
+        tuple[str, tuple[Atom, ...], tuple[tuple[str, str], ...]], BackwardObligation
+    ] = {}
+    for theorem in theorems:
+        for initial in _unify_all(theorem.conclusion, wanted):
+            states: list[tuple[Substitution, tuple[Atom, ...], tuple[Atom, ...]]] = [
+                (initial, (), ())
+            ]
+            for premise in theorem.premises:
+                next_states: list[
+                    tuple[Substitution, tuple[Atom, ...], tuple[Atom, ...]]
+                ] = []
+                for substitution, matched, opened in states:
+                    for fact in by_predicate.get(premise.predicate.lower(), ()):
+                        for merged in _unify_all(premise, fact, substitution):
+                            next_states.append((merged, (*matched, fact), opened))
+                    if len(opened) < max_open_premises:
+                        next_states.append((substitution, matched, (*opened, premise)))
+                deduplicated: dict[
+                    tuple[
+                        tuple[tuple[str, str], ...], tuple[Atom, ...], tuple[Atom, ...]
+                    ],
+                    tuple[Substitution, tuple[Atom, ...], tuple[Atom, ...]],
+                ] = {}
+                for state in next_states:
+                    substitution, matched, opened = state
+                    key = (
+                        tuple(sorted(substitution.items())),
+                        tuple(sorted(set(matched))),
+                        opened,
+                    )
+                    deduplicated.setdefault(key, state)
+                states = sorted(
+                    deduplicated.values(),
+                    key=lambda state: (
+                        len(state[2]),
+                        -len(state[1]),
+                        tuple(sorted(state[0].items())),
+                    ),
+                )[:max_states_per_rule]
+                if not states:
+                    break
+            for substitution, matched, opened in states:
+                open_premises = tuple(
+                    _instantiate_partial(premise, substitution) for premise in opened
+                )
+                if not open_premises or any(item in known for item in open_premises):
+                    continue
+                unbound = tuple(
+                    sorted(
+                        {
+                            argument
+                            for premise in open_premises
+                            for argument in premise.arguments
+                            if _is_variable(argument)
+                        }
+                    )
+                )
+                item = BackwardObligation(
+                    theorem=theorem.name,
+                    goal=wanted,
+                    matched_premises=tuple(sorted(set(matched))),
+                    open_premises=open_premises,
+                    substitution=tuple(sorted(substitution.items())),
+                    unbound_variables=unbound,
+                )
+                key = (item.theorem, item.open_premises, item.substitution)
+                previous = results.get(key)
+                if previous is None or _obligation_rank(item) < _obligation_rank(previous):
+                    results[key] = item
+    return tuple(sorted(results.values(), key=_obligation_rank)[:max_results])
 
 
 def _premise_matches(

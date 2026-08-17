@@ -3,13 +3,109 @@ from worker.backend.typed_geometry_stalk import (
     TypedConstructionCandidate,
     augment_incidence_graph,
     balanced_stratified_beam,
+    construction_semantic_edges,
+    construction_semantic_weighted_edges,
     enumerate_typed_candidates,
     goal_relevant_families,
     numerical_precondition_holds,
     prioritize_morphism_orbit,
     proof_hypergraph_point_relevance,
+    schema_first_score_fill,
     stratified_beam,
 )
+
+
+def test_schema_first_then_global_score_fills_remaining_budget() -> None:
+    items = (("a", 1), ("a", 2), ("a", 3), ("b", 1))
+
+    selected = schema_first_score_fill(
+        items,
+        category=lambda item: item[0],
+        category_order=("a", "b"),
+        limit=3,
+    )
+
+    assert selected == [("a", 1), ("b", 1), ("a", 2)]
+from worker.backend.geometry_proof_hypergraph import Atom
+
+
+def test_semantic_edges_preserve_angle_bisector_axis_without_clause_clique() -> None:
+    edges = set(construction_semantic_edges("angle_bisector", ("o", "p", "c", "b")))
+
+    assert ("o", "c") in edges
+    assert ("o", "p") not in edges
+
+
+def test_angle_bisector_axis_is_more_specific_than_triangle_edge() -> None:
+    bisector = construction_semantic_weighted_edges(
+        "angle_bisector", ("o", "p", "c", "b")
+    )
+    triangle = construction_semantic_weighted_edges("triangle", ("a", "b", "p"))
+
+    assert ("o", "c", 4) in bisector
+    assert all(weight == 1 for _, _, weight in triangle)
+
+
+def test_relation_demand_prioritizes_matching_family_and_points() -> None:
+    candidates = enumerate_typed_candidates(
+        points=("a", "b", "c", "d"),
+        graph={point: set() for point in "abcd"},
+        goal_multiplicity={"a": 1},
+        families=(
+            ConstructionFamily("on_line", 2, "all", ("coll",)),
+            ConstructionFamily("on_tline", 3, "ordered", ("perp",)),
+        ),
+        per_family_limit=20,
+        relation_demands=(Atom("perp", ("x", "a", "b", "c")),),
+    )
+    assert candidates[0].family == "on_tline"
+    assert set(candidates[0].inputs) == {"a", "b", "c"}
+
+
+def test_required_generated_input_is_filtered_before_family_limit() -> None:
+    candidates = enumerate_typed_candidates(
+        points=("a", "b", "c", "x"),
+        graph={point: set() for point in "abcx"},
+        goal_multiplicity={"a": 1, "b": 1},
+        families=(ConstructionFamily("reflect", 3, "head_pair"),),
+        per_family_limit=1,
+        required_input_points={"x"},
+    )
+
+    assert len(candidates) == 1
+    assert "x" in candidates[0].inputs
+
+
+def test_later_morphism_prefers_information_outside_parent_inputs() -> None:
+    candidates = enumerate_typed_candidates(
+        points=("a", "b", "c", "x"),
+        graph={point: set() for point in "abcx"},
+        goal_multiplicity={"a": 1},
+        generated_points={"x"},
+        families=(ConstructionFamily("reflect", 3, "head_pair"),),
+        per_family_limit=1,
+        orbit_inputs=("a", "b"),
+        required_input_points={"x"},
+        role_weights={("c", "x"): 4},
+    )
+
+    assert "c" in candidates[0].inputs
+
+
+def test_family_limit_preserves_generated_head_and_line_roles() -> None:
+    candidates = enumerate_typed_candidates(
+        points=("a", "b", "c", "x"),
+        graph={point: set() for point in "abcx"},
+        goal_multiplicity={"a": 1},
+        generated_points={"x"},
+        families=(ConstructionFamily("reflect", 3, "head_pair"),),
+        per_family_limit=2,
+        required_input_points={"x"},
+    )
+
+    positions = [{index for index, point in enumerate(item.inputs) if point == "x"} for item in candidates]
+    assert any(0 in item for item in positions)
+    assert any(item.intersection({1, 2}) for item in positions)
 
 
 def test_symmetric_families_do_not_duplicate_permutations() -> None:
@@ -90,6 +186,20 @@ def test_proof_hypergraph_relevance_ranks_within_goal_incident_candidates() -> N
         per_family_limit=10,
     )
     assert candidates[0].key == "midpoint(a,d)"
+
+
+def test_generated_frontier_uses_proof_relevance_before_goal_incidence() -> None:
+    candidates = enumerate_typed_candidates(
+        points=("a", "b", "c", "e"),
+        graph={},
+        goal_multiplicity={"a": 1},
+        proof_relevance={"c": 2.0, "e": 1.0},
+        generated_points={"e"},
+        required_input_points={"e"},
+        families=(ConstructionFamily("midpoint", 2, "all"),),
+        per_family_limit=10,
+    )
+    assert candidates[0].key == "midpoint(c,e)"
 
 
 def test_proof_hypergraph_point_relevance_reads_yuclid_json_lists() -> None:
