@@ -24,6 +24,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Install experiment dependency
+        run: python -m pip install numpy
       - name: Run typed proof-circuit tests
         run: python -B -m unittest worker.backend.test_typed_logic_circuit -v
       - name: Run cross-domain smoke experiment
