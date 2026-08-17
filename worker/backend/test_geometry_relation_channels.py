@@ -7,6 +7,7 @@ from worker.backend.geometry_relation_channels import (
     gclc_goal_channel,
     sections_compatible,
     yuclid_assertion_keys,
+    yuclid_relation_frontier,
     yuclid_relation_metrics,
 )
 
@@ -98,6 +99,42 @@ def test_backward_relation_distance_rewards_proof_reachable_channels() -> None:
     )
     assert metrics.transition_potential == 0.5
     assert metrics.transition_channel_coverage == 1
+
+
+def test_frontier_keeps_novel_native_relations_with_proof_references() -> None:
+    baseline = {
+        "all_deductions": [
+            {
+                "newclid_rule": "given",
+                "assertions": [{"name": "perp", "points": ["a", "x", "b", "c"]}],
+            }
+        ]
+    }
+    branch = {
+        "all_deductions": [
+            *baseline["all_deductions"],
+            {
+                "newclid_rule": "By construction",
+                "point_deps": ["a", "x"],
+                "assertions": [{"name": "coll", "points": ["a", "x", "m"]}],
+            },
+            {
+                "newclid_rule": "r00",
+                "point_deps": ["a", "x", "b", "c", "m"],
+                "assertions": [{"name": "para", "points": ["a", "x", "b", "c"]}],
+            },
+        ]
+    }
+    frontier = yuclid_relation_frontier(
+        branch,
+        goal_support={"a", "x", "b", "c"},
+        transition_distances={"para": 0, "perp": 1, "coll": 2},
+        excluded_assertion_keys=yuclid_assertion_keys(baseline),
+    )
+    assert len(frontier) == 1
+    assert frontier[0].channel == "para"
+    assert frontier[0].goal_support_overlap == 4
+    assert len(frontier[0].proof_reference) == 64
 
 
 def test_gclc_goal_is_lowered_to_shared_channel() -> None:

@@ -7,6 +7,8 @@ proof acceptance remains the responsibility of each native verifier.
 
 from __future__ import annotations
 
+import hashlib
+import json
 import re
 from collections import Counter
 from dataclasses import dataclass
@@ -46,6 +48,19 @@ class RelationStalkSection:
     agent: str
     channel: str
     support: tuple[str, ...]
+    proof_reference: str
+
+
+@dataclass(frozen=True)
+class RelationFrontierWitness:
+    """A novel native deduction that lies on a channel path to the goal."""
+
+    channel: str
+    points: tuple[str, ...]
+    support: tuple[str, ...]
+    distance_to_goal: int
+    goal_support_overlap: int
+    rule: str
     proof_reference: str
 
 
@@ -171,6 +186,84 @@ def yuclid_relation_metrics(
         len(transition_channels),
         tuple(sorted(counts.items())),
     )
+
+
+def yuclid_relation_frontier(
+    payload: Mapping[str, Any],
+    *,
+    goal_support: set[str],
+    transition_distances: Mapping[str, int],
+    excluded_assertion_keys: set[AssertionKey] | None = None,
+    exclude_direct_construction: bool = True,
+    limit: int = 8,
+) -> tuple[RelationFrontierWitness, ...]:
+    """Extract the closest replayable intermediate relations to an open goal.
+
+    This is a search-control boundary, not a proof rule.  Every witness comes
+    from Yuclid's native deduction payload and remains tied to a content hash.
+    """
+
+    excluded = excluded_assertion_keys or set()
+    normalized_goal_support = {point.lower() for point in goal_support}
+    witnesses: dict[AssertionKey, RelationFrontierWitness] = {}
+    for deduction, assertion in _deduction_assertions(payload):
+        key = assertion_key(assertion)
+        channel = key[0]
+        if key in excluded or channel not in transition_distances:
+            continue
+        rule = str(deduction.get("newclid_rule", "")).strip()
+        if exclude_direct_construction and rule.lower() == "by construction":
+            continue
+        raw_support = deduction.get("point_deps", ())
+        if isinstance(raw_support, str):
+            support = tuple(sorted({item.lower() for item in raw_support.split() if item}))
+        elif isinstance(raw_support, (list, tuple)):
+            support = tuple(sorted({str(item).lower() for item in raw_support if str(item)}))
+        else:
+            support = ()
+        points = key[1]
+        effective_support = set(points) | set(support)
+        overlap = len(effective_support & normalized_goal_support)
+        material = json.dumps(
+            {"deduction": deduction, "assertion": assertion},
+            ensure_ascii=False,
+            sort_keys=True,
+            default=str,
+        )
+        witness = RelationFrontierWitness(
+            channel=channel,
+            points=points,
+            support=support,
+            distance_to_goal=int(transition_distances[channel]),
+            goal_support_overlap=overlap,
+            rule=rule or "native",
+            proof_reference=hashlib.sha256(material.encode("utf-8")).hexdigest(),
+        )
+        previous = witnesses.get(key)
+        if previous is None or (
+            witness.distance_to_goal,
+            -witness.goal_support_overlap,
+            len(witness.support),
+            witness.rule,
+        ) < (
+            previous.distance_to_goal,
+            -previous.goal_support_overlap,
+            len(previous.support),
+            previous.rule,
+        ):
+            witnesses[key] = witness
+    ranked = sorted(
+        witnesses.values(),
+        key=lambda item: (
+            item.distance_to_goal,
+            -item.goal_support_overlap,
+            len(set(item.support) - normalized_goal_support),
+            item.channel,
+            item.points,
+            item.rule,
+        ),
+    )
+    return tuple(ranked[: max(0, limit)])
 
 
 def _gclc_prove_block(source: str) -> str:

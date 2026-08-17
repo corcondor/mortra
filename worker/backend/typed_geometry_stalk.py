@@ -22,6 +22,7 @@ class ConstructionFamily:
     name: str
     input_arity: int
     symmetry: str
+    output_channels: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -36,14 +37,76 @@ class TypedConstructionCandidate:
 
 
 DEFAULT_POINT_FAMILIES: tuple[ConstructionFamily, ...] = (
-    ConstructionFamily("midpoint", 2, "all"),
-    ConstructionFamily("mirror", 2, "ordered"),
-    ConstructionFamily("foot", 3, "head_pair"),
-    ConstructionFamily("circle", 3, "all"),
-    ConstructionFamily("orthocenter", 3, "all"),
-    ConstructionFamily("reflect", 3, "head_pair"),
-    ConstructionFamily("intersection_ll", 4, "line_pair"),
+    ConstructionFamily("midpoint", 2, "all", ("midp", "coll", "cong")),
+    ConstructionFamily("mirror", 2, "ordered", ("coll", "cong")),
+    ConstructionFamily("foot", 3, "head_pair", ("perp", "coll")),
+    ConstructionFamily("circle", 3, "all", ("circle",)),
+    ConstructionFamily("orthocenter", 3, "all", ("perp",)),
+    ConstructionFamily("reflect", 3, "head_pair", ("cong", "perp")),
+    ConstructionFamily("intersection_ll", 4, "line_pair", ("coll",)),
 )
+
+
+EXTENDED_POINT_FAMILIES: tuple[ConstructionFamily, ...] = (
+    *DEFAULT_POINT_FAMILIES,
+    ConstructionFamily("angle_bisector", 3, "ordered", ("eqangle",)),
+    ConstructionFamily("angle_mirror", 3, "ordered", ("eqangle",)),
+    ConstructionFamily("eqdistance", 3, "ordered", ("cong",)),
+    ConstructionFamily("incenter", 3, "all", ("eqangle",)),
+    ConstructionFamily("excenter", 3, "ordered", ("eqangle",)),
+    ConstructionFamily("shift", 3, "ordered", ("cong",)),
+    ConstructionFamily("parallelogram", 3, "ordered", ("para", "cong")),
+    ConstructionFamily("circumcenter", 3, "all", ("cong",)),
+    ConstructionFamily("intersection_lc", 3, "ordered", ("coll", "cong")),
+    ConstructionFamily("intersection_cc", 3, "ordered", ("cong",)),
+    ConstructionFamily("eq_triangle", 2, "all", ("cong", "eqangle")),
+    ConstructionFamily("psquare", 2, "ordered", ("cong", "perp")),
+    ConstructionFamily("nsquare", 2, "ordered", ("cong", "perp")),
+    ConstructionFamily("between_bound", 2, "ordered", ("coll", "obtuse_angle")),
+)
+
+
+def goal_relevant_families(
+    families: Sequence[ConstructionFamily],
+    transition_distances: Mapping[str, int],
+) -> tuple[ConstructionFamily, ...]:
+    """Keep construction schemas whose declared facts can feed the goal."""
+
+    reachable = {str(channel).lower() for channel in transition_distances}
+    selected = tuple(
+        family
+        for family in families
+        if not family.output_channels or reachable.intersection(family.output_channels)
+    )
+    return selected or tuple(families)
+
+
+def prioritize_morphism_orbit(
+    candidates: Sequence[TypedConstructionCandidate],
+    *,
+    previous_family: str | None,
+    previous_inputs: Sequence[str] = (),
+) -> list[TypedConstructionCandidate]:
+    """Prefer same-family substitutions that share a typed input role.
+
+    This is a finite orbit closure over point substitutions.  It does not name
+    a theorem, benchmark, or desired auxiliary point.
+    """
+
+    if previous_family is None or not previous_inputs:
+        return list(candidates)
+    previous = set(previous_inputs)
+    return sorted(
+        candidates,
+        key=lambda candidate: (
+            0
+            if candidate.family == previous_family
+            and bool(previous.intersection(candidate.inputs))
+            else 1,
+            -len(previous.intersection(candidate.inputs)),
+            candidate.structural_rank,
+        ),
+    )
 
 
 def _family_inputs(
@@ -255,6 +318,8 @@ def enumerate_typed_candidates(
     ranking: str = "structural",
     seed: int = 0,
     coordinates: Mapping[str, tuple[float, float]] | None = None,
+    orbit_family: str | None = None,
+    orbit_inputs: Sequence[str] = (),
 ) -> list[TypedConstructionCandidate]:
     """Enumerate a balanced finite candidate set from typed structure only."""
 
@@ -292,7 +357,17 @@ def enumerate_typed_candidates(
             if numerical_precondition_holds(candidate, coordinates):
                 family_candidates.append(candidate)
         if ranking == "structural":
-            family_candidates.sort(key=lambda candidate: candidate.structural_rank)
+            orbit = set(orbit_inputs)
+            family_candidates.sort(
+                key=lambda candidate: (
+                    0
+                    if candidate.family == orbit_family
+                    and bool(orbit.intersection(candidate.inputs))
+                    else 1,
+                    -len(orbit.intersection(candidate.inputs)),
+                    candidate.structural_rank,
+                )
+            )
         elif ranking == "random":
             random.Random(f"{seed}|{family.name}").shuffle(family_candidates)
         else:

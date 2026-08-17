@@ -53,17 +53,22 @@ from newclid.all_rules import DEFAULT_RULES
 from worker.backend.jgex_legacy_normalizer import normalize_legacy_formulation
 from worker.backend.geometry_relation_channels import (
     AssertionKey,
+    RelationFrontierWitness,
     backward_relation_distances,
     yuclid_assertion_keys,
+    yuclid_relation_frontier,
     yuclid_relation_metrics,
 )
 from worker.backend.typed_geometry_stalk import (
     DEFAULT_POINT_FAMILIES,
+    EXTENDED_POINT_FAMILIES,
     ConstructionFamily,
     TypedConstructionCandidate,
     augment_incidence_graph,
     balanced_stratified_beam,
     enumerate_typed_candidates,
+    goal_relevant_families,
+    prioritize_morphism_orbit,
     proof_hypergraph_point_relevance,
 )
 
@@ -76,6 +81,7 @@ class ConstructionStep:
     family: str
     output: str
     inputs: tuple[str, ...]
+    structural_rank: tuple[object, ...] = ()
 
     @property
     def key(self) -> str:
@@ -94,6 +100,7 @@ class SearchRecord:
     relation_transition_potential: float
     relation_transition_channel_coverage: int
     relation_channel_counts: tuple[tuple[str, int], ...]
+    frontier_witnesses: tuple[RelationFrontierWitness, ...]
     elapsed_seconds: float
     error: str | None = None
 
@@ -169,6 +176,26 @@ def build_branch(base_problem: Any, steps: tuple[ConstructionStep, ...], *, seed
     return problem
 
 
+def construction_clause(step: ConstructionStep) -> JGEXClause:
+    return JGEXClause.from_str(
+        f"{step.output} = {step.family} {step.output} " + " ".join(step.inputs)
+    )[0]
+
+
+def augment_formulation(
+    formulation: JGEXFormulation, steps: tuple[ConstructionStep, ...]
+) -> JGEXFormulation:
+    """Return the visible problem plus synthesized clauses, never dataset auxiliaries."""
+
+    return JGEXFormulation(
+        name=formulation.name,
+        setup_clauses=formulation.setup_clauses
+        + tuple(construction_clause(step) for step in steps),
+        auxiliary_clauses=(),
+        goals=formulation.goals,
+    )
+
+
 def evaluate_steps(
     base_problem: Any,
     steps: tuple[ConstructionStep, ...],
@@ -197,6 +224,12 @@ def evaluate_steps(
             exclude_direct_construction=True,
             transition_distances=transition_distances,
         )
+        frontier = yuclid_relation_frontier(
+            verification.payload,
+            goal_support=goal_support,
+            transition_distances=transition_distances,
+            excluded_assertion_keys=baseline_assertion_keys,
+        )
         return SearchRecord(
             steps,
             verification.solved,
@@ -208,6 +241,7 @@ def evaluate_steps(
             relation_metrics.transition_potential,
             relation_metrics.transition_channel_coverage,
             relation_metrics.channel_counts,
+            frontier,
             time.perf_counter() - started,
         )
     except Exception as exc:
@@ -221,6 +255,7 @@ def evaluate_steps(
             0,
             0.0,
             0,
+            tuple(),
             tuple(),
             time.perf_counter() - started,
             str(exc),
@@ -264,6 +299,13 @@ def candidate_extensions(
         ranking=ranking,
         seed=seed,
         coordinates=coordinates,
+        orbit_family=steps[-1].family if steps else None,
+        orbit_inputs=steps[-1].inputs if steps else (),
+    )
+    candidates = prioritize_morphism_orbit(
+        candidates,
+        previous_family=steps[-1].family if steps else None,
+        previous_inputs=steps[-1].inputs if steps else (),
     )
     if branch_limit > 0:
         by_family: dict[str, list[TypedConstructionCandidate]] = defaultdict(list)
@@ -285,7 +327,12 @@ def candidate_extensions(
         candidates = balanced
     output = next_point_name(points)
     return [
-        ConstructionStep(candidate.family, output, candidate.inputs)
+        ConstructionStep(
+            candidate.family,
+            output,
+            candidate.inputs,
+            candidate.structural_rank,
+        )
         for candidate in candidates
     ]
 
@@ -293,6 +340,60 @@ def candidate_extensions(
 def select_diverse_beam(
     records: list[SearchRecord], beam_width: int, *, ranking: str
 ) -> list[SearchRecord]:
+    if ranking == "frontier-pareto":
+        frontier_score = lambda record: (
+            record.solved,
+            -min(
+                (item.distance_to_goal for item in record.frontier_witnesses),
+                default=10**6,
+            ),
+            max(
+                (item.goal_support_overlap for item in record.frontier_witnesses),
+                default=0,
+            ),
+            len(record.frontier_witnesses),
+            record.relation_transition_potential,
+        )
+        structural_score = lambda record: tuple(
+            -float(value) for value in record.steps[-1].structural_rank[:7]
+        )
+        relation_budget = (beam_width + 1) // 2
+        structural_budget = beam_width - relation_budget
+        common = {
+            "category": lambda record: record.steps[-1].family,
+            "stratum": lambda record: (
+                tuple(step.key for step in record.steps[:-1]),
+                record.steps[-1].family,
+            ),
+        }
+        selected = balanced_stratified_beam(
+            [record for record in records if record.error is None],
+            score=frontier_score,
+            limit=relation_budget,
+            **common,
+        )
+        structural = balanced_stratified_beam(
+            [record for record in records if record.error is None],
+            score=structural_score,
+            limit=structural_budget,
+            **common,
+        )
+        for record in structural:
+            if record not in selected:
+                selected.append(record)
+        if len(selected) < beam_width:
+            remainder = balanced_stratified_beam(
+                [record for record in records if record.error is None],
+                score=frontier_score,
+                limit=beam_width,
+                **common,
+            )
+            for record in remainder:
+                if record not in selected:
+                    selected.append(record)
+                    if len(selected) == beam_width:
+                        break
+        return selected[:beam_width]
     if ranking == "relation":
         score = lambda record: (
             record.solved,
@@ -301,6 +402,21 @@ def select_diverse_beam(
             record.relation_target_assertion_count,
             record.goal_deduction_count,
             record.all_deduction_count,
+        )
+    elif ranking == "frontier":
+        score = lambda record: (
+            record.solved,
+            -min(
+                (item.distance_to_goal for item in record.frontier_witnesses),
+                default=10**6,
+            ),
+            max(
+                (item.goal_support_overlap for item in record.frontier_witnesses),
+                default=0,
+            ),
+            len(record.frontier_witnesses),
+            record.relation_transition_potential,
+            record.goal_deduction_count,
         )
     elif ranking == "relation-transition":
         score = lambda record: (
@@ -347,6 +463,17 @@ def main() -> None:
         "--families",
         default=",".join(family.name for family in DEFAULT_POINT_FAMILIES),
     )
+    parser.add_argument(
+        "--family-set",
+        choices=("core", "extended"),
+        default="core",
+        help="Named problem-independent construction grammar.",
+    )
+    parser.add_argument(
+        "--goal-directed-families",
+        action="store_true",
+        help="Discard schemas whose declared output channels cannot reach the goal.",
+    )
     parser.add_argument("--per-family-limit", type=int, default=8)
     parser.add_argument("--branch-limit", type=int, default=32)
     parser.add_argument("--beam-width", type=int, default=7)
@@ -356,14 +483,27 @@ def main() -> None:
     parser.add_argument("--ranking", choices=("structural", "random"), default="structural")
     parser.add_argument(
         "--beam-ranking",
-        choices=("closure", "relation", "relation-transition"),
+        choices=(
+            "closure",
+            "relation",
+            "relation-transition",
+            "frontier",
+            "frontier-pareto",
+        ),
         default="closure",
     )
     parser.add_argument("--ar-profile", choices=("ratio-only", "standard", "all"), default="all")
     args = parser.parse_args()
 
+    available_families = (
+        EXTENDED_POINT_FAMILIES if args.family_set == "extended" else DEFAULT_POINT_FAMILIES
+    )
     requested = tuple(name.strip() for name in args.families.split(",") if name.strip())
-    family_map = {family.name: family for family in DEFAULT_POINT_FAMILIES}
+    if args.family_set == "extended" and args.families == ",".join(
+        family.name for family in DEFAULT_POINT_FAMILIES
+    ):
+        requested = tuple(family.name for family in EXTENDED_POINT_FAMILIES)
+    family_map = {family.name: family for family in available_families}
     unknown = sorted(set(requested) - set(family_map))
     if unknown:
         raise ValueError(f"unknown families: {unknown}")
@@ -409,6 +549,8 @@ def main() -> None:
         rule_channels,
         goal_channels=goal_channels,
     )
+    if args.goal_directed_families:
+        families = goal_relevant_families(families, transition_distances)
 
     frontier: list[tuple[ConstructionStep, ...]] = [tuple()]
     all_records: list[SearchRecord] = []
@@ -438,31 +580,43 @@ def main() -> None:
                     continue
                 seen_paths.add(signature)
                 candidate_paths.append(steps)
-        with ThreadPoolExecutor(max_workers=max(1, args.max_workers)) as executor:
-            futures = {
-                executor.submit(
-                    evaluate_steps,
-                    base_problem,
-                    steps,
-                    seed=args.seed,
-                    yuclid_exe=args.yuclid_exe.resolve(),
-                    ar_profile=args.ar_profile,
-                    goal_channels=goal_channels,
-                    goal_support=goal_support,
-                    baseline_assertion_keys=baseline_assertion_keys,
-                    transition_distances=transition_distances,
-                ): steps
-                for steps in candidate_paths
-            }
-            for future in as_completed(futures):
-                record = future.result()
-                layer.append(record)
-                print(
-                    f"depth={depth} solved={record.solved} "
-                    f"closure={record.all_deduction_count} "
-                    f"path={[step.key for step in record.steps]}",
-                    flush=True,
+        batch_size = max(1, args.max_workers)
+        layer_solved = False
+        with ThreadPoolExecutor(max_workers=batch_size) as executor:
+            for batch_start in range(0, len(candidate_paths), batch_size):
+                batch = candidate_paths[batch_start : batch_start + batch_size]
+                futures = {
+                    executor.submit(
+                        evaluate_steps,
+                        base_problem,
+                        steps,
+                        seed=args.seed,
+                        yuclid_exe=args.yuclid_exe.resolve(),
+                        ar_profile=args.ar_profile,
+                        goal_channels=goal_channels,
+                        goal_support=goal_support,
+                        baseline_assertion_keys=baseline_assertion_keys,
+                        transition_distances=transition_distances,
+                    ): steps
+                    for steps in batch
+                }
+                batch_records = [future.result() for future in as_completed(futures)]
+                batch_records.sort(
+                    key=lambda record: tuple(step.key for step in record.steps)
                 )
+                for record in batch_records:
+                    layer.append(record)
+                    print(
+                        f"depth={depth} solved={record.solved} "
+                        f"closure={record.all_deduction_count} "
+                        f"path={[step.key for step in record.steps]}",
+                        flush=True,
+                    )
+                if any(record.solved for record in batch_records):
+                    layer_solved = True
+                    break
+        if layer_solved:
+            print(f"depth={depth} native proof found; stopping unused candidates", flush=True)
         layer.sort(key=lambda record: tuple(step.key for step in record.steps))
         all_records.extend(layer)
         solved_records = [record for record in layer if record.solved]
@@ -496,12 +650,21 @@ def main() -> None:
                 else (
                     "yuclid_native_rule_transition_potential_diverse_beam"
                     if args.beam_ranking == "relation-transition"
-                    else "yuclid_closure_growth_diverse_beam"
+                    else (
+                        "yuclid_native_frontier_and_structural_pareto_beam"
+                        if args.beam_ranking == "frontier-pareto"
+                        else (
+                            "yuclid_native_frontier_witness_diverse_beam"
+                            if args.beam_ranking == "frontier"
+                            else "yuclid_closure_growth_diverse_beam"
+                        )
+                    )
                 )
             ),
             "beam_ranking": args.beam_ranking,
             "goal_channels": sorted(goal_channels),
             "proof_hypergraph_relevance": proof_relevance,
+            "same_morphism_input_orbit_priority": True,
             "backward_relation_distances": transition_distances,
             "per_family_limit": args.per_family_limit,
             "branch_limit": args.branch_limit,
@@ -518,6 +681,12 @@ def main() -> None:
             "all_deduction_count": baseline.all_deduction_count,
             "goal_deduction_count": baseline.goal_deduction_count,
         },
+        "visible_formulation": str(formulation),
+        "constructed_formulation": (
+            str(augment_formulation(formulation, solved_steps))
+            if solved_steps is not None
+            else None
+        ),
         "solved": solved_steps is not None,
         "solved_path": [step.key for step in solved_steps] if solved_steps else None,
         "evaluated_paths": len(all_records),
@@ -541,7 +710,7 @@ def main() -> None:
             "all_deduction_count": confirmation.all_deduction_count,
             "goal_deduction_count": confirmation.goal_deduction_count,
             "proof_sha256": confirmation.proof_sha256,
-            "proof_path": proof_path.resolve().relative_to(REPO_ROOT).as_posix(),
+            "proof_path": proof_path.resolve().relative_to(ROOT).as_posix(),
         }
     args.output.write_text(json.dumps(artifact, indent=2) + "\n", encoding="utf-8")
     print(

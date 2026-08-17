@@ -4,7 +4,9 @@ from worker.backend.typed_geometry_stalk import (
     augment_incidence_graph,
     balanced_stratified_beam,
     enumerate_typed_candidates,
+    goal_relevant_families,
     numerical_precondition_holds,
+    prioritize_morphism_orbit,
     proof_hypergraph_point_relevance,
     stratified_beam,
 )
@@ -189,3 +191,48 @@ def test_numerical_filter_rejects_degenerate_constructions_only() -> None:
         TypedConstructionCandidate("intersection_ll", ("a", "b", "a", "d"), ()),
         coordinates,
     )
+
+
+def test_goal_channel_prunes_only_type_incompatible_construction_families() -> None:
+    families = (
+        ConstructionFamily("midpoint", 2, "all", ("midp",)),
+        ConstructionFamily("foot", 3, "head_pair", ("perp", "coll")),
+        ConstructionFamily("angle_bisector", 3, "ordered", ("eqangle",)),
+    )
+    selected = goal_relevant_families(
+        families,
+        {"cong": 0, "midp": 1, "coll": 2},
+    )
+    assert [family.name for family in selected] == ["midpoint", "foot"]
+
+
+def test_morphism_orbit_prioritizes_same_family_shared_role_without_labels() -> None:
+    candidates = (
+        TypedConstructionCandidate("mirror", ("a", "b"), (0,)),
+        TypedConstructionCandidate("midpoint", ("c", "d"), (1,)),
+        TypedConstructionCandidate("midpoint", ("b", "e"), (2,)),
+    )
+    ranked = prioritize_morphism_orbit(
+        candidates,
+        previous_family="midpoint",
+        previous_inputs=("a", "b"),
+    )
+    assert [candidate.key for candidate in ranked] == [
+        "midpoint(b,e)",
+        "mirror(a,b)",
+        "midpoint(c,d)",
+    ]
+
+
+def test_orbit_priority_is_applied_before_per_family_truncation() -> None:
+    candidates = enumerate_typed_candidates(
+        points=("a", "b", "c", "d"),
+        graph={"a": {"b"}, "b": {"a"}, "c": set(), "d": set()},
+        goal_multiplicity={"a": 1, "b": 1},
+        families=(ConstructionFamily("midpoint", 2, "all"),),
+        per_family_limit=1,
+        orbit_family="midpoint",
+        orbit_inputs=("c", "d"),
+    )
+    assert len(candidates) == 1
+    assert "c" in candidates[0].inputs or "d" in candidates[0].inputs

@@ -17,6 +17,7 @@ on:
       - "data/wu-*.json"
       - "data/wu-*.json.gz"
       - "data/newclid-proof-hypergraph-*.json"
+      - "data/open-goal-feedback-*.json"
       - "data/chordal-lift-reproduction-manifest-*.json"
       - "data/mortra-reversible-synthesis-reproduction-manifest-*.json"
       - "data/yuclid-imo-ag-30-all-ar-*.json"
@@ -29,6 +30,9 @@ on:
       - "scripts/experiment_singular_lift_fixed4.py"
       - "scripts/experiment_certified_wu_fixed4.py"
       - "scripts/experiment_newclid_construction_stalk.py"
+      - "scripts/experiment_open_goal_feedback_imo_ag_30.py"
+      - "scripts/compare_open_goal_feedback_ablation.py"
+      - "scripts/verify_open_goal_independent_exchange.py"
       - "scripts/verify_newclid_construction_stalk_artifact.py"
       - "scripts/verify_certified_wu_artifact.py"
       - "scripts/experiment_wu_*.py"
@@ -70,6 +74,7 @@ on:
       - "data/wu-*.json"
       - "data/wu-*.json.gz"
       - "data/newclid-proof-hypergraph-*.json"
+      - "data/open-goal-feedback-*.json"
       - "data/chordal-lift-reproduction-manifest-*.json"
       - "data/mortra-reversible-synthesis-reproduction-manifest-*.json"
       - "data/yuclid-imo-ag-30-all-ar-*.json"
@@ -82,6 +87,9 @@ on:
       - "scripts/experiment_singular_lift_fixed4.py"
       - "scripts/experiment_certified_wu_fixed4.py"
       - "scripts/experiment_newclid_construction_stalk.py"
+      - "scripts/experiment_open_goal_feedback_imo_ag_30.py"
+      - "scripts/compare_open_goal_feedback_ablation.py"
+      - "scripts/verify_open_goal_independent_exchange.py"
       - "scripts/verify_newclid_construction_stalk_artifact.py"
       - "scripts/verify_certified_wu_artifact.py"
       - "scripts/experiment_wu_*.py"
@@ -145,6 +153,9 @@ jobs:
             scripts/experiment_singular_lift_fixed4.py \
             scripts/experiment_certified_wu_fixed4.py \
             scripts/experiment_newclid_construction_stalk.py \
+            scripts/experiment_open_goal_feedback_imo_ag_30.py \
+            scripts/compare_open_goal_feedback_ablation.py \
+            scripts/verify_open_goal_independent_exchange.py \
             scripts/verify_newclid_construction_stalk_artifact.py \
             scripts/verify_certified_wu_artifact.py \
             scripts/experiment_wu_ritt_characteristic_decomposition.py \
@@ -197,6 +208,8 @@ jobs:
             worker/backend/test_wu_ritt_zero_decomposition.py \
             worker/backend/test_wu_rtm_support.py \
             worker/backend/test_typed_geometry_stalk.py \
+            worker/backend/test_open_goal_feedback_portfolio.py \
+            worker/backend/test_open_goal_feedback_ablation.py \
             -q
       - name: Verify published artifacts and acceptance claims
         run: |

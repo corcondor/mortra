@@ -1,0 +1,428 @@
+{
+  "experiment": "imo-ag-30-open-goal-construction-feedback-no-llm",
+  "generated_at": "2026-08-17T05:50:53.165169+00:00",
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_dataset_auxiliary_clauses": false,
+    "uses_problem_id_in_search": false,
+    "uses_known_answers_or_known_auxiliaries": false,
+    "same_stage_schedule_for_every_open_goal": true,
+    "search_order": "breadth-first extended depth 1, then core depth 2",
+    "completed_stage_artifacts_are_resumable": true,
+    "acceptance": "replayed native Yuclid proof only",
+    "stages": [
+      {
+        "name": "extended_frontier_depth1",
+        "arguments": [
+          "--family-set",
+          "extended",
+          "--per-family-limit",
+          "4",
+          "--branch-limit",
+          "42",
+          "--beam-width",
+          "8",
+          "--max-depth",
+          "1",
+          "--beam-ranking",
+          "frontier-pareto",
+          "--goal-directed-families"
+        ]
+      },
+      {
+        "name": "core_frontier_depth2",
+        "arguments": [
+          "--families",
+          "midpoint,mirror",
+          "--per-family-limit",
+          "20",
+          "--branch-limit",
+          "32",
+          "--beam-width",
+          "16",
+          "--max-depth",
+          "2",
+          "--beam-ranking",
+          "frontier-pareto",
+          "--goal-directed-families"
+        ]
+      }
+    ]
+  },
+  "selected_open_goals": [
+    "2000_p6",
+    "2008_p1a",
+    "2008_p1b",
+    "2008_p6",
+    "2009_p2",
+    "2010_p2",
+    "2011_p6",
+    "2012_p5",
+    "2015_p3",
+    "2019_p2",
+    "2019_p6",
+    "2020_p1",
+    "2021_p3"
+  ],
+  "summary": {
+    "baseline_solved": 17,
+    "strict_exchange_solved": 2,
+    "construction_feedback_solved": 6,
+    "new_strict_exchange_names": [
+      "2008_p1a",
+      "2012_p5"
+    ],
+    "new_construction_feedback_names": [
+      "2000_p6",
+      "2008_p1b",
+      "2009_p2",
+      "2010_p2",
+      "2015_p3"
+    ],
+    "portfolio_solved": 24,
+    "total": 30,
+    "portfolio_score": 0.8,
+    "portfolio_names": [
+      "2000_p1",
+      "2000_p6",
+      "2002_p2a",
+      "2002_p2b",
+      "2003_p4",
+      "2004_p1",
+      "2004_p5",
+      "2005_p5",
+      "2007_p4",
+      "2008_p1a",
+      "2008_p1b",
+      "2009_p2",
+      "2010_p2",
+      "2010_p4",
+      "2012_p1",
+      "2012_p5",
+      "2013_p4",
+      "2014_p4",
+      "2015_p3",
+      "2015_p4",
+      "2016_p1",
+      "2017_p4",
+      "2018_p1",
+      "2022_p4"
+    ]
+  },
+  "results": {
+    "2000_p6": {
+      "status": "proved",
+      "stages": [
+        {
+          "stage": "extended_frontier_depth1",
+          "status": "proved",
+          "artifact": "data/open-goal-feedback-imo-ag-30-2026-08-17/2000_p6-extended_frontier_depth1.json",
+          "evaluated_paths": 8,
+          "error_count": 0,
+          "solved_path": [
+            "intersection_ll(i,t1,t2,z)->d"
+          ],
+          "native_proof_valid": true,
+          "elapsed_seconds": 40.81739790001302
+        }
+      ]
+    },
+    "2008_p1a": {
+      "status": "proved",
+      "stages": [
+        {
+          "stage": "extended_frontier_depth1",
+          "status": "proved",
+          "artifact": "data/open-goal-feedback-imo-ag-30-2026-08-17/2008_p1a-extended_frontier_depth1.json",
+          "evaluated_paths": 8,
+          "error_count": 2,
+          "solved_path": [
+            "circle(b1,b2,c2)->g"
+          ],
+          "native_proof_valid": true,
+          "elapsed_seconds": 0.0,
+          "reused_completed_artifact": true
+        }
+      ]
+    },
+    "2008_p1b": {
+      "status": "proved",
+      "stages": [
+        {
+          "stage": "extended_frontier_depth1",
+          "status": "proved",
+          "artifact": "data/open-goal-feedback-imo-ag-30-2026-08-17/2008_p1b-extended_frontier_depth1.json",
+          "evaluated_paths": 8,
+          "error_count": 2,
+          "solved_path": [
+            "circle(a1,a2,b1)->g"
+          ],
+          "native_proof_valid": true,
+          "elapsed_seconds": 0.0,
+          "reused_completed_artifact": true
+        }
+      ]
+    },
+    "2008_p6": {
+      "status": "unproved",
+      "stages": [
+        {
+          "stage": "extended_frontier_depth1",
+          "status": "unproved",
+          "artifact": "data/open-goal-feedback-imo-ag-30-2026-08-17/2008_p6-extended_frontier_depth1.json",
+          "evaluated_paths": 42,
+          "error_count": 4,
+          "solved_path": null,
+          "native_proof_valid": false,
+          "elapsed_seconds": 26.68010779999895
+        },
+        {
+          "stage": "core_frontier_depth2",
+          "status": "unproved",
+          "artifact": "data/open-goal-feedback-imo-ag-30-2026-08-17/2008_p6-core_frontier_depth2.json",
+          "evaluated_paths": 544,
+          "error_count": 47,
+          "solved_path": null,
+          "native_proof_valid": false,
+          "elapsed_seconds": 356.40020209999057
+        }
+      ]
+    },
+    "2009_p2": {
+      "status": "proved",
+      "stages": [
+        {
+          "stage": "extended_frontier_depth1",
+          "status": "unproved",
+          "artifact": "data/open-goal-feedback-imo-ag-30-2026-08-17/2009_p2-extended_frontier_depth1.json",
+          "evaluated_paths": 42,
+          "error_count": 6,
+          "solved_path": null,
+          "native_proof_valid": false,
+          "elapsed_seconds": 9.868078600004083
+        },
+        {
+          "stage": "core_frontier_depth2",
+          "status": "proved",
+          "artifact": "data/open-goal-feedback-imo-ag-30-2026-08-17/2009_p2-core_frontier_depth2.json",
+          "evaluated_paths": 232,
+          "error_count": 18,
+          "solved_path": [
+            "midpoint(o,p)->d",
+            "midpoint(o,q)->e"
+          ],
+          "native_proof_valid": true,
+          "elapsed_seconds": 45.29225339999539
+        }
+      ]
+    },
+    "2010_p2": {
+      "status": "proved",
+      "stages": [
+        {
+          "stage": "extended_frontier_depth1",
+          "status": "unproved",
+          "artifact": "data/open-goal-feedback-imo-ag-30-2026-08-17/2010_p2-extended_frontier_depth1.json",
+          "evaluated_paths": 42,
+          "error_count": 1,
+          "solved_path": null,
+          "native_proof_valid": false,
+          "elapsed_seconds": 11.513127500016708
+        },
+        {
+          "stage": "core_frontier_depth2",
+          "status": "proved",
+          "artifact": "data/open-goal-feedback-imo-ag-30-2026-08-17/2010_p2-core_frontier_depth2.json",
+          "evaluated_paths": 544,
+          "error_count": 3,
+          "solved_path": [
+            "midpoint(a,i)->h",
+            "midpoint(b,i)->j"
+          ],
+          "native_proof_valid": true,
+          "elapsed_seconds": 124.89809020000394
+        }
+      ]
+    },
+    "2011_p6": {
+      "status": "unproved",
+      "stages": [
+        {
+          "stage": "extended_frontier_depth1",
+          "status": "unproved",
+          "artifact": "data/open-goal-feedback-imo-ag-30-2026-08-17/2011_p6-extended_frontier_depth1.json",
+          "evaluated_paths": 42,
+          "error_count": 10,
+          "solved_path": null,
+          "native_proof_valid": false,
+          "elapsed_seconds": 32.404719799989834
+        },
+        {
+          "stage": "core_frontier_depth2",
+          "status": "unproved",
+          "artifact": "data/open-goal-feedback-imo-ag-30-2026-08-17/2011_p6-core_frontier_depth2.json",
+          "evaluated_paths": 544,
+          "error_count": 0,
+          "solved_path": null,
+          "native_proof_valid": false,
+          "elapsed_seconds": 477.970533899992
+        }
+      ]
+    },
+    "2012_p5": {
+      "status": "unproved",
+      "stages": [
+        {
+          "stage": "extended_frontier_depth1",
+          "status": "unproved",
+          "artifact": "data/open-goal-feedback-imo-ag-30-2026-08-17/2012_p5-extended_frontier_depth1.json",
+          "evaluated_paths": 42,
+          "error_count": 5,
+          "solved_path": null,
+          "native_proof_valid": false,
+          "elapsed_seconds": 14.467551400011871
+        },
+        {
+          "stage": "core_frontier_depth2",
+          "status": "unproved",
+          "artifact": "data/open-goal-feedback-imo-ag-30-2026-08-17/2012_p5-core_frontier_depth2.json",
+          "evaluated_paths": 544,
+          "error_count": 10,
+          "solved_path": null,
+          "native_proof_valid": false,
+          "elapsed_seconds": 75.15009519999148
+        }
+      ]
+    },
+    "2015_p3": {
+      "status": "proved",
+      "stages": [
+        {
+          "stage": "extended_frontier_depth1",
+          "status": "unproved",
+          "artifact": "data/open-goal-feedback-imo-ag-30-2026-08-17/2015_p3-extended_frontier_depth1.json",
+          "evaluated_paths": 42,
+          "error_count": 11,
+          "solved_path": null,
+          "native_proof_valid": false,
+          "elapsed_seconds": 13.93971559999045
+        },
+        {
+          "stage": "core_frontier_depth2",
+          "status": "proved",
+          "artifact": "data/open-goal-feedback-imo-ag-30-2026-08-17/2015_p3-core_frontier_depth2.json",
+          "evaluated_paths": 40,
+          "error_count": 0,
+          "solved_path": [
+            "midpoint(h,k)->d",
+            "midpoint(a,k)->e"
+          ],
+          "native_proof_valid": true,
+          "elapsed_seconds": 21.39421840000432
+        }
+      ]
+    },
+    "2019_p2": {
+      "status": "unproved",
+      "stages": [
+        {
+          "stage": "extended_frontier_depth1",
+          "status": "unproved",
+          "artifact": "data/open-goal-feedback-imo-ag-30-2026-08-17/2019_p2-extended_frontier_depth1.json",
+          "evaluated_paths": 42,
+          "error_count": 0,
+          "solved_path": null,
+          "native_proof_valid": false,
+          "elapsed_seconds": 8.664111899997806
+        },
+        {
+          "stage": "core_frontier_depth2",
+          "status": "unproved",
+          "artifact": "data/open-goal-feedback-imo-ag-30-2026-08-17/2019_p2-core_frontier_depth2.json",
+          "evaluated_paths": 544,
+          "error_count": 4,
+          "solved_path": null,
+          "native_proof_valid": false,
+          "elapsed_seconds": 71.01651119999588
+        }
+      ]
+    },
+    "2019_p6": {
+      "status": "unproved",
+      "stages": [
+        {
+          "stage": "extended_frontier_depth1",
+          "status": "unproved",
+          "artifact": "data/open-goal-feedback-imo-ag-30-2026-08-17/2019_p6-extended_frontier_depth1.json",
+          "evaluated_paths": 42,
+          "error_count": 4,
+          "solved_path": null,
+          "native_proof_valid": false,
+          "elapsed_seconds": 19.17622950000805
+        },
+        {
+          "stage": "core_frontier_depth2",
+          "status": "unproved",
+          "artifact": "data/open-goal-feedback-imo-ag-30-2026-08-17/2019_p6-core_frontier_depth2.json",
+          "evaluated_paths": 544,
+          "error_count": 5,
+          "solved_path": null,
+          "native_proof_valid": false,
+          "elapsed_seconds": 259.3847276000015
+        }
+      ]
+    },
+    "2020_p1": {
+      "status": "unproved",
+      "stages": [
+        {
+          "stage": "extended_frontier_depth1",
+          "status": "unproved",
+          "artifact": "data/open-goal-feedback-imo-ag-30-2026-08-17/2020_p1-extended_frontier_depth1.json",
+          "evaluated_paths": 42,
+          "error_count": 1,
+          "solved_path": null,
+          "native_proof_valid": false,
+          "elapsed_seconds": 9.929299499985063
+        },
+        {
+          "stage": "core_frontier_depth2",
+          "status": "unproved",
+          "artifact": "data/open-goal-feedback-imo-ag-30-2026-08-17/2020_p1-core_frontier_depth2.json",
+          "evaluated_paths": 544,
+          "error_count": 2,
+          "solved_path": null,
+          "native_proof_valid": false,
+          "elapsed_seconds": 71.80697629999486
+        }
+      ]
+    },
+    "2021_p3": {
+      "status": "unproved",
+      "stages": [
+        {
+          "stage": "extended_frontier_depth1",
+          "status": "unproved",
+          "artifact": "data/open-goal-feedback-imo-ag-30-2026-08-17/2021_p3-extended_frontier_depth1.json",
+          "evaluated_paths": 42,
+          "error_count": 11,
+          "solved_path": null,
+          "native_proof_valid": false,
+          "elapsed_seconds": 9.9631746999803
+        },
+        {
+          "stage": "core_frontier_depth2",
+          "status": "unproved",
+          "artifact": "data/open-goal-feedback-imo-ag-30-2026-08-17/2021_p3-core_frontier_depth2.json",
+          "evaluated_paths": 544,
+          "error_count": 0,
+          "solved_path": null,
+          "native_proof_valid": false,
+          "elapsed_seconds": 77.58108720000018
+        }
+      ]
+    }
+  },
+  "wall_seconds": 1779.88418980001,
+  "claim_scope": "The score is a symbolic portfolio result. Candidate constructions are generated from a finite typed grammar and native deduction frontier; no learned auxiliary-point generator is claimed."
+}
