@@ -1,0 +1,2143 @@
+{
+  "protocol": {
+    "positive_episodes": 40,
+    "matched_negative_episodes": 40,
+    "transfer_budget": "one certificate per round",
+    "round_budget": "minimum exact proof length of the positive pair",
+    "training": "none",
+    "truth_plane": "native exact certificate replay",
+    "control_plane": "predicate collapse vs argument overlap vs typed AND-OR soft-all vs typed AND-OR top-1 provenance"
+  },
+  "overall": {
+    "predicate": {
+      "solved": 1,
+      "replayed": 1,
+      "false_accepts": 0,
+      "positive_transmissions": 123,
+      "negative_transmissions": 123
+    },
+    "current": {
+      "solved": 16,
+      "replayed": 16,
+      "false_accepts": 0,
+      "positive_transmissions": 123,
+      "negative_transmissions": 123
+    },
+    "circuit_soft": {
+      "solved": 40,
+      "replayed": 40,
+      "false_accepts": 0,
+      "positive_transmissions": 123,
+      "negative_transmissions": 0
+    },
+    "circuit": {
+      "solved": 40,
+      "replayed": 40,
+      "false_accepts": 0,
+      "positive_transmissions": 123,
+      "negative_transmissions": 0
+    }
+  },
+  "by_domain": {
+    "geometry": {
+      "predicate": {
+        "solved": 0,
+        "replayed": 0,
+        "false_accepts": 0,
+        "positive_transmissions": 20,
+        "negative_transmissions": 20
+      },
+      "current": {
+        "solved": 10,
+        "replayed": 10,
+        "false_accepts": 0,
+        "positive_transmissions": 20,
+        "negative_transmissions": 20
+      },
+      "circuit_soft": {
+        "solved": 10,
+        "replayed": 10,
+        "false_accepts": 0,
+        "positive_transmissions": 20,
+        "negative_transmissions": 0
+      },
+      "circuit": {
+        "solved": 10,
+        "replayed": 10,
+        "false_accepts": 0,
+        "positive_transmissions": 20,
+        "negative_transmissions": 0
+      }
+    },
+    "integer": {
+      "predicate": {
+        "solved": 1,
+        "replayed": 1,
+        "false_accepts": 0,
+        "positive_transmissions": 30,
+        "negative_transmissions": 30
+      },
+      "current": {
+        "solved": 6,
+        "replayed": 6,
+        "false_accepts": 0,
+        "positive_transmissions": 30,
+        "negative_transmissions": 30
+      },
+      "circuit_soft": {
+        "solved": 10,
+        "replayed": 10,
+        "false_accepts": 0,
+        "positive_transmissions": 30,
+        "negative_transmissions": 0
+      },
+      "circuit": {
+        "solved": 10,
+        "replayed": 10,
+        "false_accepts": 0,
+        "positive_transmissions": 30,
+        "negative_transmissions": 0
+      }
+    },
+    "reachability": {
+      "predicate": {
+        "solved": 0,
+        "replayed": 0,
+        "false_accepts": 0,
+        "positive_transmissions": 53,
+        "negative_transmissions": 53
+      },
+      "current": {
+        "solved": 0,
+        "replayed": 0,
+        "false_accepts": 0,
+        "positive_transmissions": 53,
+        "negative_transmissions": 53
+      },
+      "circuit_soft": {
+        "solved": 10,
+        "replayed": 10,
+        "false_accepts": 0,
+        "positive_transmissions": 53,
+        "negative_transmissions": 0
+      },
+      "circuit": {
+        "solved": 10,
+        "replayed": 10,
+        "false_accepts": 0,
+        "positive_transmissions": 53,
+        "negative_transmissions": 0
+      }
+    },
+    "set": {
+      "predicate": {
+        "solved": 0,
+        "replayed": 0,
+        "false_accepts": 0,
+        "positive_transmissions": 20,
+        "negative_transmissions": 20
+      },
+      "current": {
+        "solved": 0,
+        "replayed": 0,
+        "false_accepts": 0,
+        "positive_transmissions": 20,
+        "negative_transmissions": 20
+      },
+      "circuit_soft": {
+        "solved": 10,
+        "replayed": 10,
+        "false_accepts": 0,
+        "positive_transmissions": 20,
+        "negative_transmissions": 0
+      },
+      "circuit": {
+        "solved": 10,
+        "replayed": 10,
+        "false_accepts": 0,
+        "positive_transmissions": 20,
+        "negative_transmissions": 0
+      }
+    }
+  },
+  "circuit": {
+    "mean_gates": 29.725,
+    "max_gates": 46,
+    "mean_ground_rule_matches": 98.475,
+    "max_ground_rule_matches": 157,
+    "mean_minimum_proof_length": 3.075,
+    "max_minimum_proof_length": 7,
+    "predicate_collapsed_false_provability": 40,
+    "predicate_collapsed_negative_total": 40
+  },
+  "records": [
+    {
+      "id": "geometry-90000",
+      "domain": "geometry",
+      "gates": 46,
+      "compile_matches": 157,
+      "proof_length": 2,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "current": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "g_para(L90000_0,L90000_22)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "geometry-90001",
+      "domain": "geometry",
+      "gates": 46,
+      "compile_matches": 157,
+      "proof_length": 2,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "current": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "g_para(L90001_1,L90001_3)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "geometry-90002",
+      "domain": "geometry",
+      "gates": 46,
+      "compile_matches": 157,
+      "proof_length": 2,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "current": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "g_para(L90002_0,L90002_2)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "geometry-90003",
+      "domain": "geometry",
+      "gates": 46,
+      "compile_matches": 157,
+      "proof_length": 2,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "current": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "g_para(L90003_0,L90003_8)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "geometry-90004",
+      "domain": "geometry",
+      "gates": 46,
+      "compile_matches": 157,
+      "proof_length": 2,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "current": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "g_para(L90004_0,L90004_20)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "geometry-90005",
+      "domain": "geometry",
+      "gates": 46,
+      "compile_matches": 157,
+      "proof_length": 2,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "current": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "g_para(L90005_0,L90005_4)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "geometry-90006",
+      "domain": "geometry",
+      "gates": 46,
+      "compile_matches": 157,
+      "proof_length": 2,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "current": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "g_para(L90006_0,L90006_2)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "geometry-90007",
+      "domain": "geometry",
+      "gates": 46,
+      "compile_matches": 157,
+      "proof_length": 2,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "current": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "g_para(L90007_0,L90007_27)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "geometry-90008",
+      "domain": "geometry",
+      "gates": 46,
+      "compile_matches": 157,
+      "proof_length": 2,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "current": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "g_para(L90008_0,L90008_4)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "geometry-90009",
+      "domain": "geometry",
+      "gates": 46,
+      "compile_matches": 157,
+      "proof_length": 2,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "current": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "g_para(L90009_0,L90009_16)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "integer-190000",
+      "domain": "integer",
+      "gates": 36,
+      "compile_matches": 121,
+      "proof_length": 3,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 3
+        },
+        "current": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 3
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 3
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "divides(10,189)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "integer-190001",
+      "domain": "integer",
+      "gates": 36,
+      "compile_matches": 88,
+      "proof_length": 3,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 3
+        },
+        "current": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 3
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 3
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "divides(0,238)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "integer-190002",
+      "domain": "integer",
+      "gates": 31,
+      "compile_matches": 80,
+      "proof_length": 3,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 3
+        },
+        "current": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 3
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 3
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "divides(0,114)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "integer-190003",
+      "domain": "integer",
+      "gates": 34,
+      "compile_matches": 82,
+      "proof_length": 3,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 3
+        },
+        "current": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 3
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 3
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 3
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "divides(0,135)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "integer-190004",
+      "domain": "integer",
+      "gates": 33,
+      "compile_matches": 82,
+      "proof_length": 3,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 3
+        },
+        "current": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 3
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 3
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 3
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "divides(120,189)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "integer-190005",
+      "domain": "integer",
+      "gates": 34,
+      "compile_matches": 82,
+      "proof_length": 3,
+      "positive": {
+        "predicate": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        },
+        "current": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 3
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 3
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "divides(1134,90)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "integer-190006",
+      "domain": "integer",
+      "gates": 33,
+      "compile_matches": 80,
+      "proof_length": 3,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 3
+        },
+        "current": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 3
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 3
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "divides(10,32)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "integer-190007",
+      "domain": "integer",
+      "gates": 33,
+      "compile_matches": 80,
+      "proof_length": 3,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 3
+        },
+        "current": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 3
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 3
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "divides(100,33)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "integer-190008",
+      "domain": "integer",
+      "gates": 33,
+      "compile_matches": 80,
+      "proof_length": 3,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 3
+        },
+        "current": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 3
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 3
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 3
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "divides(0,150)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "integer-190009",
+      "domain": "integer",
+      "gates": 33,
+      "compile_matches": 80,
+      "proof_length": 3,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 3
+        },
+        "current": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 3
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 3
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 3
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 3
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "divides(0,72)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "set-290000",
+      "domain": "set",
+      "gates": 28,
+      "compile_matches": 91,
+      "proof_length": 2,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "current": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "disjoint(S290000_0,S290000_2)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "set-290001",
+      "domain": "set",
+      "gates": 28,
+      "compile_matches": 91,
+      "proof_length": 2,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "current": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "disjoint(S290001_0,S290001_19)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "set-290002",
+      "domain": "set",
+      "gates": 28,
+      "compile_matches": 91,
+      "proof_length": 2,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "current": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "disjoint(S290002_0,S290002_3)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "set-290003",
+      "domain": "set",
+      "gates": 28,
+      "compile_matches": 91,
+      "proof_length": 2,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "current": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "disjoint(S290003_0,S290003_0)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "set-290004",
+      "domain": "set",
+      "gates": 28,
+      "compile_matches": 91,
+      "proof_length": 2,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "current": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "disjoint(S290004_0,S290004_2)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "set-290005",
+      "domain": "set",
+      "gates": 28,
+      "compile_matches": 91,
+      "proof_length": 2,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "current": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "disjoint(S290005_0,S290005_8)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "set-290006",
+      "domain": "set",
+      "gates": 28,
+      "compile_matches": 91,
+      "proof_length": 2,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "current": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "disjoint(S290006_0,S290006_14)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "set-290007",
+      "domain": "set",
+      "gates": 28,
+      "compile_matches": 91,
+      "proof_length": 2,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "current": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "disjoint(S290007_0,S290007_24)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "set-290008",
+      "domain": "set",
+      "gates": 28,
+      "compile_matches": 91,
+      "proof_length": 2,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "current": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "disjoint(S290008_0,S290008_12)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "set-290009",
+      "domain": "set",
+      "gates": 28,
+      "compile_matches": 91,
+      "proof_length": 2,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "current": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 2
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 2
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "disjoint(S290009_0,S290009_10)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "reachability-100000",
+      "domain": "reachability",
+      "gates": 10,
+      "compile_matches": 44,
+      "proof_length": 4,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 4
+        },
+        "current": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 4
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 4
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 4
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 4
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 4
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "active(V100000_2)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "reachability-100001",
+      "domain": "reachability",
+      "gates": 11,
+      "compile_matches": 56,
+      "proof_length": 5,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 5
+        },
+        "current": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 5
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 5
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 5
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 5
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 5
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "active(V100001_8)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "reachability-100002",
+      "domain": "reachability",
+      "gates": 12,
+      "compile_matches": 69,
+      "proof_length": 6,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 6
+        },
+        "current": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 6
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 6
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 6
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 6
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 6
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "active(V100002_13)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "reachability-100003",
+      "domain": "reachability",
+      "gates": 13,
+      "compile_matches": 83,
+      "proof_length": 7,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 7
+        },
+        "current": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 7
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 7
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 7
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 7
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 7
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "active(V100003_11)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "reachability-100004",
+      "domain": "reachability",
+      "gates": 10,
+      "compile_matches": 44,
+      "proof_length": 4,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 4
+        },
+        "current": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 4
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 4
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 4
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 4
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 4
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "active(V100004_1)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "reachability-100005",
+      "domain": "reachability",
+      "gates": 11,
+      "compile_matches": 56,
+      "proof_length": 5,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 5
+        },
+        "current": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 5
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 5
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 5
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 5
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 5
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "active(V100005_11)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "reachability-100006",
+      "domain": "reachability",
+      "gates": 12,
+      "compile_matches": 69,
+      "proof_length": 6,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 6
+        },
+        "current": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 6
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 6
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 6
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 6
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 6
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "active(V100006_17)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "reachability-100007",
+      "domain": "reachability",
+      "gates": 13,
+      "compile_matches": 83,
+      "proof_length": 7,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 7
+        },
+        "current": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 7
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 7
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 7
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 7
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 7
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "active(V100007_3)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "reachability-100008",
+      "domain": "reachability",
+      "gates": 10,
+      "compile_matches": 44,
+      "proof_length": 4,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 4
+        },
+        "current": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 4
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 4
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 4
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 4
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 4
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "active(V100008_5)",
+      "predicate_abstraction_claims_provable": true
+    },
+    {
+      "id": "reachability-100009",
+      "domain": "reachability",
+      "gates": 11,
+      "compile_matches": 56,
+      "proof_length": 5,
+      "positive": {
+        "predicate": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 5
+        },
+        "current": {
+          "solved": false,
+          "replayed": false,
+          "transmitted": 5
+        },
+        "circuit_soft": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 5
+        },
+        "circuit": {
+          "solved": true,
+          "replayed": true,
+          "transmitted": 5
+        }
+      },
+      "negative": {
+        "predicate": {
+          "false_accept": false,
+          "transmitted": 5
+        },
+        "current": {
+          "false_accept": false,
+          "transmitted": 5
+        },
+        "circuit_soft": {
+          "false_accept": false,
+          "transmitted": 0
+        },
+        "circuit": {
+          "false_accept": false,
+          "transmitted": 0
+        }
+      },
+      "negative_goal": "active(V100009_17)",
+      "predicate_abstraction_claims_provable": true
+    }
+  ],
+  "sources": {
+    "logical_neural_networks": "arXiv:2006.13155",
+    "neural_logic_machines": "arXiv:1904.11694",
+    "tensorlog": "arXiv:1605.06523",
+    "scallop": "NeurIPS 2021 d367eef13f90793bd8121e2f675f0dc2",
+    "differentiable_logic_gates": "arXiv:2210.08277",
+    "sheaf_admm": "arXiv:2605.31005"
+  }
+}

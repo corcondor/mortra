@@ -1,0 +1,40 @@
+name: Typed Logic Circuit
+
+on:
+  push:
+    paths:
+      - "worker/backend/typed_logic_circuit.py"
+      - "worker/backend/test_typed_logic_circuit.py"
+      - "scripts/experiment_typed_logic_circuit.py"
+      - ".github/workflows/typed-logic-circuit.yml"
+  pull_request:
+    paths:
+      - "worker/backend/typed_logic_circuit.py"
+      - "worker/backend/test_typed_logic_circuit.py"
+      - "scripts/experiment_typed_logic_circuit.py"
+      - ".github/workflows/typed-logic-circuit.yml"
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run typed proof-circuit tests
+        run: python -B -m unittest worker.backend.test_typed_logic_circuit -v
+      - name: Run cross-domain smoke experiment
+        run: >-
+          python -B scripts/experiment_typed_logic_circuit.py
+          --episodes-per-domain 10
+          --reachability-episodes 10
+          --distractors 6
+          --seed-start 90000
+          --output typed-logic-circuit-ci.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: typed-logic-circuit-report
+          path: typed-logic-circuit-ci.json
