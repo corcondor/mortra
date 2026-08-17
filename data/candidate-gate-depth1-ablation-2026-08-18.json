@@ -1,0 +1,213 @@
+{
+  "experiment": "exact_pre_evaluation_candidate_gate_ablation",
+  "uses_external_llm": false,
+  "uses_problem_or_answer_memory": false,
+  "search_budget": {
+    "branch_limit": 64,
+    "beam_width": 8,
+    "max_depth": 1,
+    "max_workers": 8
+  },
+  "runs": [
+    {
+      "problem": "2008_p6",
+      "mode": "off",
+      "returncode": 0,
+      "wall_seconds": 18.140483799999856,
+      "solved": true,
+      "solved_path": [
+        "foot(o,a,i2)->e"
+      ],
+      "evaluated_paths": 8,
+      "error_count": 0,
+      "enumerated_candidates": 256,
+      "selected_candidates": 64,
+      "preflight_checked": 0,
+      "preflight_rejected": 0,
+      "artifact": "data/candidate-gate-depth1-ablation-2026-08-18/2008_p6-off.json"
+    },
+    {
+      "problem": "2008_p6",
+      "mode": "combined",
+      "returncode": 0,
+      "wall_seconds": 18.37807819999989,
+      "solved": true,
+      "solved_path": [
+        "foot(o,a,i2)->e"
+      ],
+      "evaluated_paths": 8,
+      "error_count": 0,
+      "enumerated_candidates": 256,
+      "selected_candidates": 64,
+      "preflight_checked": 8,
+      "preflight_rejected": 0,
+      "artifact": "data/candidate-gate-depth1-ablation-2026-08-18/2008_p6-combined.json"
+    },
+    {
+      "problem": "2009_p2",
+      "mode": "off",
+      "returncode": 0,
+      "wall_seconds": 13.09475670000029,
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 64,
+      "error_count": 28,
+      "enumerated_candidates": 256,
+      "selected_candidates": 64,
+      "preflight_checked": 0,
+      "preflight_rejected": 0,
+      "artifact": "data/candidate-gate-depth1-ablation-2026-08-18/2009_p2-off.json"
+    },
+    {
+      "problem": "2009_p2",
+      "mode": "combined",
+      "returncode": 0,
+      "wall_seconds": 13.242855899999995,
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 36,
+      "error_count": 0,
+      "enumerated_candidates": 256,
+      "selected_candidates": 64,
+      "preflight_checked": 64,
+      "preflight_rejected": 28,
+      "artifact": "data/candidate-gate-depth1-ablation-2026-08-18/2009_p2-combined.json"
+    },
+    {
+      "problem": "2010_p2",
+      "mode": "off",
+      "returncode": 0,
+      "wall_seconds": 15.217389599999933,
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 64,
+      "error_count": 4,
+      "enumerated_candidates": 256,
+      "selected_candidates": 64,
+      "preflight_checked": 0,
+      "preflight_rejected": 0,
+      "artifact": "data/candidate-gate-depth1-ablation-2026-08-18/2010_p2-off.json"
+    },
+    {
+      "problem": "2010_p2",
+      "mode": "combined",
+      "returncode": 0,
+      "wall_seconds": 15.178393899999719,
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 60,
+      "error_count": 0,
+      "enumerated_candidates": 256,
+      "selected_candidates": 64,
+      "preflight_checked": 64,
+      "preflight_rejected": 4,
+      "artifact": "data/candidate-gate-depth1-ablation-2026-08-18/2010_p2-combined.json"
+    },
+    {
+      "problem": "2015_p3",
+      "mode": "off",
+      "returncode": 0,
+      "wall_seconds": 21.281104799999866,
+      "solved": true,
+      "solved_path": [
+        "intersection_lc(a,f,h)->d"
+      ],
+      "evaluated_paths": 16,
+      "error_count": 4,
+      "enumerated_candidates": 256,
+      "selected_candidates": 64,
+      "preflight_checked": 0,
+      "preflight_rejected": 0,
+      "artifact": "data/candidate-gate-depth1-ablation-2026-08-18/2015_p3-off.json"
+    },
+    {
+      "problem": "2015_p3",
+      "mode": "combined",
+      "returncode": 0,
+      "wall_seconds": 21.67078530000026,
+      "solved": true,
+      "solved_path": [
+        "intersection_lc(a,f,h)->d"
+      ],
+      "evaluated_paths": 12,
+      "error_count": 0,
+      "enumerated_candidates": 256,
+      "selected_candidates": 64,
+      "preflight_checked": 16,
+      "preflight_rejected": 4,
+      "artifact": "data/candidate-gate-depth1-ablation-2026-08-18/2015_p3-combined.json"
+    },
+    {
+      "problem": "2011_p6",
+      "mode": "off",
+      "returncode": 0,
+      "wall_seconds": 85.73532980000027,
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 64,
+      "error_count": 26,
+      "enumerated_candidates": 256,
+      "selected_candidates": 64,
+      "preflight_checked": 0,
+      "preflight_rejected": 0,
+      "artifact": "data/candidate-gate-depth1-ablation-2026-08-18/2011_p6-off.json"
+    },
+    {
+      "problem": "2011_p6",
+      "mode": "combined",
+      "returncode": 0,
+      "wall_seconds": 84.28297729999986,
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 38,
+      "error_count": 0,
+      "enumerated_candidates": 256,
+      "selected_candidates": 64,
+      "preflight_checked": 64,
+      "preflight_rejected": 26,
+      "artifact": "data/candidate-gate-depth1-ablation-2026-08-18/2011_p6-combined.json"
+    }
+  ],
+  "pairs": [
+    {
+      "problem": "2008_p6",
+      "valid_pair": true,
+      "proof_preserved": true,
+      "evaluated_path_delta": 0,
+      "error_delta": 0,
+      "wall_seconds_delta": 0.2375944000000345
+    },
+    {
+      "problem": "2009_p2",
+      "valid_pair": true,
+      "proof_preserved": true,
+      "evaluated_path_delta": -28,
+      "error_delta": -28,
+      "wall_seconds_delta": 0.1480991999997059
+    },
+    {
+      "problem": "2010_p2",
+      "valid_pair": true,
+      "proof_preserved": true,
+      "evaluated_path_delta": -4,
+      "error_delta": -4,
+      "wall_seconds_delta": -0.03899570000021413
+    },
+    {
+      "problem": "2015_p3",
+      "valid_pair": true,
+      "proof_preserved": true,
+      "evaluated_path_delta": -4,
+      "error_delta": -4,
+      "wall_seconds_delta": 0.3896805000003951
+    },
+    {
+      "problem": "2011_p6",
+      "valid_pair": true,
+      "proof_preserved": true,
+      "evaluated_path_delta": -26,
+      "error_delta": -26,
+      "wall_seconds_delta": -1.4523525000004156
+    }
+  ]
+}

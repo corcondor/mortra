@@ -37,6 +37,25 @@ class TypedConstructionCandidate:
         return f"{self.family}({','.join(self.inputs)})"
 
 
+@dataclass(frozen=True)
+class CandidateGateAudit:
+    mode: str
+    input_count: int
+    retained_count: int
+    rejected_count: int
+    target_channels: tuple[str, ...]
+    reachable_channels: tuple[str, ...]
+    retained_by_family: tuple[tuple[str, int], ...]
+    rejected_by_family: tuple[tuple[str, int], ...]
+    fail_open_reason: str | None = None
+
+
+@dataclass(frozen=True)
+class CandidateGateResult:
+    candidates: tuple[TypedConstructionCandidate, ...]
+    audit: CandidateGateAudit
+
+
 DEFAULT_POINT_FAMILIES: tuple[ConstructionFamily, ...] = (
     ConstructionFamily("midpoint", 2, "all", ("midp", "coll", "cong")),
     ConstructionFamily("mirror", 2, "ordered", ("coll", "cong")),
@@ -99,6 +118,109 @@ def goal_relevant_families(
         if not family.output_channels or reachable.intersection(family.output_channels)
     )
     return selected or tuple(families)
+
+
+def gate_candidates_by_relation_reachability(
+    candidates: Sequence[TypedConstructionCandidate],
+    *,
+    families: Sequence[ConstructionFamily],
+    reachable_channels: Iterable[str],
+    target_channels: Iterable[str],
+    mode: str = "relation-reachability",
+) -> CandidateGateResult:
+    """Reject schemas that cannot feed any currently open relation type.
+
+    The gate reasons only over declared construction outputs and the native
+    theorem relation graph.  It does not inspect benchmark IDs, answers, or
+    numerical coordinates.  Missing declarations fail open because absence
+    of type evidence is not a proof of irrelevance.
+    """
+
+    if mode not in {"off", "relation-reachability"}:
+        raise ValueError(f"unknown candidate gate mode: {mode}")
+    family_map = {family.name: family for family in families}
+    reachable = {str(channel).lower() for channel in reachable_channels}
+    targets = tuple(sorted({str(channel).lower() for channel in target_channels}))
+
+    def counts(items: Sequence[TypedConstructionCandidate]) -> tuple[tuple[str, int], ...]:
+        values: dict[str, int] = {}
+        for item in items:
+            values[item.family] = values.get(item.family, 0) + 1
+        return tuple(sorted(values.items()))
+
+    original = tuple(candidates)
+    if mode == "off":
+        return CandidateGateResult(
+            original,
+            CandidateGateAudit(
+                mode,
+                len(original),
+                len(original),
+                0,
+                targets,
+                tuple(sorted(reachable)),
+                counts(original),
+                (),
+            ),
+        )
+    if not reachable:
+        return CandidateGateResult(
+            original,
+            CandidateGateAudit(
+                mode,
+                len(original),
+                len(original),
+                0,
+                targets,
+                (),
+                counts(original),
+                (),
+                "no_relation_reachability_evidence",
+            ),
+        )
+
+    retained: list[TypedConstructionCandidate] = []
+    rejected: list[TypedConstructionCandidate] = []
+    for candidate in original:
+        family = family_map.get(candidate.family)
+        outputs = (
+            {channel.lower() for channel in family.output_channels}
+            if family is not None
+            else set()
+        )
+        if not outputs or outputs.intersection(reachable):
+            retained.append(candidate)
+        else:
+            rejected.append(candidate)
+
+    if original and not retained:
+        return CandidateGateResult(
+            original,
+            CandidateGateAudit(
+                mode,
+                len(original),
+                len(original),
+                0,
+                targets,
+                tuple(sorted(reachable)),
+                counts(original),
+                (),
+                "all_candidates_lacked_reachability_evidence",
+            ),
+        )
+    return CandidateGateResult(
+        tuple(retained),
+        CandidateGateAudit(
+            mode,
+            len(original),
+            len(retained),
+            len(rejected),
+            targets,
+            tuple(sorted(reachable)),
+            counts(retained),
+            counts(rejected),
+        ),
+    )
 
 
 def prioritize_morphism_orbit(

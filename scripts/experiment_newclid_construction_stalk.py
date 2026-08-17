@@ -81,6 +81,7 @@ from worker.backend.typed_geometry_stalk import (
     construction_semantic_edges,
     construction_semantic_weighted_edges,
     enumerate_typed_candidates,
+    gate_candidates_by_relation_reachability,
     goal_relevant_families,
     prioritize_morphism_orbit,
     proof_hypergraph_point_relevance,
@@ -323,12 +324,17 @@ def evaluate_steps(
     goal_atoms: tuple[Atom, ...],
     rule_theorems: tuple[Theorem, ...],
     obligation_guided: bool,
+    prepared_problem: Any | None = None,
 ) -> SearchRecord:
     from worker.backend.yuclid_native_verifier import verify_problem
 
     started = time.perf_counter()
     try:
-        problem = build_branch(base_problem, steps, seed=seed)
+        problem = (
+            prepared_problem
+            if prepared_problem is not None
+            else build_branch(base_problem, steps, seed=seed)
+        )
         verification = verify_problem(
             problem, yuclid_exe=yuclid_exe, ar_profile=ar_profile
         )
@@ -418,7 +424,10 @@ def candidate_extensions(
     seed: int,
     relation_demands: tuple[Atom, ...] = (),
     require_generated_input: bool = False,
-) -> list[ConstructionStep]:
+    candidate_gate: str = "off",
+    candidate_reachable_channels: set[str] | None = None,
+    candidate_target_channels: set[str] | None = None,
+) -> tuple[list[ConstructionStep], dict[str, Any]]:
     generated = {step.output for step in steps}
     points = base_points | generated
     graph = augment_incidence_graph(
@@ -468,6 +477,18 @@ def candidate_extensions(
             for candidate in candidates
             if generated.intersection(candidate.inputs)
         ]
+    gate_result = gate_candidates_by_relation_reachability(
+        candidates,
+        families=families,
+        reachable_channels=candidate_reachable_channels or set(),
+        target_channels=candidate_target_channels or set(),
+        mode=(
+            "relation-reachability"
+            if candidate_gate in {"relation-reachability", "combined"}
+            else "off"
+        ),
+    )
+    candidates = list(gate_result.candidates)
     if branch_limit > 0:
         family_order = [family.name for family in families]
         candidates = schema_first_score_fill(
@@ -477,6 +498,11 @@ def candidate_extensions(
             limit=branch_limit,
         )
     output = next_point_name(points)
+    extension_audit = {
+        "mode": candidate_gate,
+        "relation_reachability": asdict(gate_result.audit),
+        "selected_after_branch_limit": len(candidates),
+    }
     return [
         ConstructionStep(
             candidate.family,
@@ -485,7 +511,7 @@ def candidate_extensions(
             candidate.structural_rank,
         )
         for candidate in candidates
-    ]
+    ], extension_audit
 
 
 def select_diverse_beam(
@@ -738,6 +764,17 @@ def main() -> None:
         action="store_true",
         help="Discard schemas whose declared output channels cannot reach the goal.",
     )
+    parser.add_argument(
+        "--candidate-gate",
+        choices=(
+            "off",
+            "relation-reachability",
+            "executable-precondition",
+            "combined",
+        ),
+        default="off",
+        help="Apply relation reachability and/or executable construction preflight.",
+    )
     parser.add_argument("--per-family-limit", type=int, default=8)
     parser.add_argument("--branch-limit", type=int, default=32)
     parser.add_argument("--beam-width", type=int, default=7)
@@ -775,6 +812,12 @@ def main() -> None:
         help="Frozen differentiable controller artifact for learned beam policies.",
     )
     parser.add_argument("--ar-profile", choices=("ratio-only", "standard", "all"), default="all")
+    parser.add_argument(
+        "--progress",
+        choices=("all", "summary", "none"),
+        default="all",
+        help="Control console output; artifacts always retain the complete trace.",
+    )
     args = parser.parse_args()
     controller = (
         DifferentiableProofController.load(args.controller.resolve())
@@ -865,13 +908,26 @@ def main() -> None:
         (tuple(), baseline_demands)
     ]
     all_records: list[SearchRecord] = []
+    candidate_gate_audits: list[dict[str, Any]] = []
+    preflight_checked_count = 0
+    preflight_retained_count = 0
+    preflight_rejected_by_error: dict[str, int] = defaultdict(int)
     solved_steps: tuple[ConstructionStep, ...] | None = None
     for depth in range(1, args.max_depth + 1):
         layer: list[SearchRecord] = []
         seen_paths: set[tuple[str, ...]] = set()
         candidate_paths: list[tuple[ConstructionStep, ...]] = []
         for parent, parent_demands in frontier:
-            extensions = candidate_extensions(
+            candidate_target_channels = {
+                demand.predicate.lower() for demand in parent_demands
+            } or {channel.lower() for channel in goal_channels}
+            candidate_reachable_channels = set(
+                backward_relation_distances(
+                    rule_channels,
+                    goal_channels=candidate_target_channels,
+                )
+            )
+            extensions, gate_audit = candidate_extensions(
                 base_problem=base_problem,
                 base_points=base_points,
                 base_graph=base_graph,
@@ -887,6 +943,16 @@ def main() -> None:
                 seed=branch_seed(args.seed, parent),
                 relation_demands=parent_demands,
                 require_generated_input=args.require_generated_input_after_first,
+                candidate_gate=args.candidate_gate,
+                candidate_reachable_channels=candidate_reachable_channels,
+                candidate_target_channels=candidate_target_channels,
+            )
+            candidate_gate_audits.append(
+                {
+                    "depth": depth,
+                    "parent_path": [step.key for step in parent],
+                    **gate_audit,
+                }
             )
             for extension in extensions:
                 steps = (*parent, extension)
@@ -900,6 +966,25 @@ def main() -> None:
         with ThreadPoolExecutor(max_workers=batch_size) as executor:
             for batch_start in range(0, len(candidate_paths), batch_size):
                 batch = candidate_paths[batch_start : batch_start + batch_size]
+                prepared_problems: dict[tuple[str, ...], Any] = {}
+                if args.candidate_gate in {"executable-precondition", "combined"}:
+                    executable_batch: list[tuple[ConstructionStep, ...]] = []
+                    for steps in batch:
+                        preflight_checked_count += 1
+                        try:
+                            prepared_problem = build_branch(
+                                base_problem, steps, seed=args.seed
+                            )
+                        except Exception as exc:
+                            preflight_rejected_by_error[type(exc).__name__] += 1
+                        else:
+                            signature = tuple(step.key for step in steps)
+                            prepared_problems[signature] = prepared_problem
+                            executable_batch.append(steps)
+                            preflight_retained_count += 1
+                    batch = executable_batch
+                if not batch:
+                    continue
                 futures = {
                     executor.submit(
                         evaluate_steps,
@@ -915,6 +1000,9 @@ def main() -> None:
                         goal_atoms=goal_atoms,
                         rule_theorems=rule_theorems,
                         obligation_guided=args.obligation_guided,
+                        prepared_problem=prepared_problems.get(
+                            tuple(step.key for step in steps)
+                        ),
                     ): steps
                     for steps in batch
                 }
@@ -924,16 +1012,17 @@ def main() -> None:
                 )
                 for record in batch_records:
                     layer.append(record)
-                    print(
-                        f"depth={depth} solved={record.solved} "
-                        f"closure={record.all_deduction_count} "
-                        f"path={[step.key for step in record.steps]}",
-                        flush=True,
-                    )
+                    if args.progress == "all":
+                        print(
+                            f"depth={depth} solved={record.solved} "
+                            f"closure={record.all_deduction_count} "
+                            f"path={[step.key for step in record.steps]}",
+                            flush=True,
+                        )
                 if any(record.solved for record in batch_records):
                     layer_solved = True
                     break
-        if layer_solved:
+        if layer_solved and args.progress != "none":
             print(f"depth={depth} native proof found; stopping unused candidates", flush=True)
         layer.sort(key=lambda record: tuple(step.key for step in record.steps))
         all_records.extend(layer)
@@ -987,6 +1076,7 @@ def main() -> None:
                 else None
             ),
             "goal_channels": sorted(goal_channels),
+            "candidate_gate": args.candidate_gate,
             "proof_hypergraph_relevance": proof_relevance,
             "same_morphism_input_orbit_priority": True,
             "obligation_guided": args.obligation_guided,
@@ -1027,6 +1117,42 @@ def main() -> None:
         "solved_path": [step.key for step in solved_steps] if solved_steps else None,
         "evaluated_paths": len(all_records),
         "error_count": sum(record.error is not None for record in all_records),
+        "candidate_gate": {
+            "mode": args.candidate_gate,
+            "enumerated_candidates": sum(
+                audit["relation_reachability"]["input_count"]
+                for audit in candidate_gate_audits
+            ),
+            "retained_candidates": sum(
+                audit["selected_after_branch_limit"]
+                for audit in candidate_gate_audits
+            ) - sum(preflight_rejected_by_error.values()),
+            "relation_retained_candidates": sum(
+                audit["relation_reachability"]["retained_count"]
+                for audit in candidate_gate_audits
+            ),
+            "rejected_candidates": sum(
+                audit["relation_reachability"]["rejected_count"]
+                for audit in candidate_gate_audits
+            ) + sum(preflight_rejected_by_error.values()),
+            "selected_after_branch_limit": sum(
+                audit["selected_after_branch_limit"]
+                for audit in candidate_gate_audits
+            ),
+            "preflight_checked_count": preflight_checked_count,
+            "preflight_retained_count": preflight_retained_count,
+            "preflight_rejected_count": sum(
+                preflight_rejected_by_error.values()
+            ),
+            "preflight_rejected_by_error": tuple(
+                sorted(preflight_rejected_by_error.items())
+            ),
+            "fail_open_count": sum(
+                audit["relation_reachability"]["fail_open_reason"] is not None
+                for audit in candidate_gate_audits
+            ),
+            "audits": candidate_gate_audits,
+        },
         "records": [asdict(record) for record in all_records],
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -1049,17 +1175,19 @@ def main() -> None:
             "proof_path": proof_path.resolve().relative_to(ROOT).as_posix(),
         }
     args.output.write_text(json.dumps(artifact, indent=2) + "\n", encoding="utf-8")
-    print(
-        json.dumps(
-            {
-                "solved": artifact["solved"],
-                "solved_path": artifact["solved_path"],
-                "evaluated_paths": artifact["evaluated_paths"],
-                "error_count": artifact["error_count"],
-            },
-            indent=2,
+    if args.progress != "none":
+        print(
+            json.dumps(
+                {
+                    "solved": artifact["solved"],
+                    "solved_path": artifact["solved_path"],
+                    "evaluated_paths": artifact["evaluated_paths"],
+                    "error_count": artifact["error_count"],
+                    "candidate_gate": artifact["candidate_gate"],
+                },
+                indent=2,
+            )
         )
-    )
 
 
 if __name__ == "__main__":

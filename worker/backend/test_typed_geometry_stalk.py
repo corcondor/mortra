@@ -6,6 +6,7 @@ from worker.backend.typed_geometry_stalk import (
     construction_semantic_edges,
     construction_semantic_weighted_edges,
     enumerate_typed_candidates,
+    gate_candidates_by_relation_reachability,
     goal_relevant_families,
     numerical_precondition_holds,
     prioritize_morphism_orbit,
@@ -13,6 +14,47 @@ from worker.backend.typed_geometry_stalk import (
     schema_first_score_fill,
     stratified_beam,
 )
+
+
+def test_relation_reachability_gate_rejects_only_unreachable_declared_outputs() -> None:
+    families = (
+        ConstructionFamily("line_point", 2, "all", ("coll",)),
+        ConstructionFamily("circle_point", 2, "all", ("cyclic",)),
+        ConstructionFamily("undeclared", 2, "all"),
+    )
+    candidates = tuple(
+        TypedConstructionCandidate(family.name, ("a", "b"), ())
+        for family in families
+    )
+
+    result = gate_candidates_by_relation_reachability(
+        candidates,
+        families=families,
+        reachable_channels={"perp", "coll"},
+        target_channels={"perp"},
+    )
+
+    assert [candidate.family for candidate in result.candidates] == [
+        "line_point",
+        "undeclared",
+    ]
+    assert result.audit.rejected_count == 1
+    assert result.audit.rejected_by_family == (("circle_point", 1),)
+
+
+def test_relation_reachability_gate_fails_open_without_type_evidence() -> None:
+    family = ConstructionFamily("circle_point", 2, "all", ("cyclic",))
+    candidate = TypedConstructionCandidate(family.name, ("a", "b"), ())
+
+    result = gate_candidates_by_relation_reachability(
+        (candidate,),
+        families=(family,),
+        reachable_channels=set(),
+        target_channels={"perp"},
+    )
+
+    assert result.candidates == (candidate,)
+    assert result.audit.fail_open_reason == "no_relation_reachability_evidence"
 
 
 def test_schema_first_then_global_score_fills_remaining_budget() -> None:
