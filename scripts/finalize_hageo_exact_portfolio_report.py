@@ -23,6 +23,13 @@ def main() -> int:
     parser.add_argument("--auxiliary", type=Path, required=True)
     parser.add_argument("--exact", type=Path, required=True)
     parser.add_argument("--calibration", type=Path)
+    parser.add_argument(
+        "--additional-certificate",
+        type=Path,
+        action="append",
+        default=[],
+        help="Accepted held-out replay certificate to add by problem_name.",
+    )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
 
@@ -45,8 +52,15 @@ def main() -> int:
         calibration = _load(args.calibration)
         if calibration.get("solved") and calibration.get("native_confirmed"):
             calibration_names.add(str(calibration["problem"]))
+    additional_names: set[str] = set()
+    for path in args.additional_certificate:
+        certificate = _load(path)
+        if certificate.get("accepted"):
+            additional_names.add(str(certificate["problem_name"]))
 
-    evaluated_without_calibration = baseline_names | auxiliary_names | exact_names
+    evaluated_without_calibration = (
+        baseline_names | auxiliary_names | exact_names | additional_names
+    )
     engineering_union = evaluated_without_calibration | calibration_names
     total = int(baseline["summary"]["total"])
     report = {
@@ -63,6 +77,9 @@ def main() -> int:
                 "auxiliary": _sha256(args.auxiliary),
                 "exact": _sha256(args.exact),
                 "calibration": _sha256(args.calibration) if args.calibration else None,
+                "additional_certificates": [
+                    _sha256(path) for path in args.additional_certificate
+                ],
             },
         },
         "summary": {
@@ -72,6 +89,9 @@ def main() -> int:
             "exact_solved": len(exact_names),
             "exact_unique_beyond_previous_portfolio": len(
                 exact_names - baseline_names - auxiliary_names
+            ),
+            "additional_certified_unique": len(
+                additional_names - baseline_names - auxiliary_names - exact_names
             ),
             "primary_certified_solved": len(evaluated_without_calibration),
             "primary_certified_score": len(evaluated_without_calibration) / total,
@@ -89,6 +109,7 @@ def main() -> int:
                 exact_names - baseline_names - auxiliary_names
             ),
             "calibration": sorted(calibration_names),
+            "additional_certificates": sorted(additional_names),
             "primary_union": sorted(evaluated_without_calibration),
             "engineering_union": sorted(engineering_union),
         },

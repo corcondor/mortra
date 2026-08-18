@@ -52,6 +52,8 @@ Microsoftの審査後に公開予定と記載されている。従って本実�
 
 プロセス分割は同じ48番軌道と同じ構成列を再発見し、壁時計を2.326倍高速化した。
 スレッド版で生じた9件の数値構築競合は、プロセス分離版では0件だった。
+この問題は既存の認証済み40問に含まれないため、HAGeo frozen held-outの認証済み下限は
+**40/89から41/89（46.07%）**へ上がった。校正問題を含むengineering unionは42/89である。
 
 ### 発見された構成列
 
@@ -144,3 +146,5 @@ Pass@K曲線と計算量を同時に報告する。
   - SHA-256 `1c763fbf7462f0933c2193451c07c859621d8b2a3c5d7bddd83b0064789471dc`
 - `data/hageo-passk-minimal-path-2002ctstp25-2026-08-19.json`
   - SHA-256 `0d8d3be93f1cf4a99a419bea8cf2823c47913fa588d4e91f01ea9b69c53facc0`
+- `data/hageo-certified-capability-union-2026-08-19.json`
+  - SHA-256 `2ce9eb576d394011ff57402313ad06d56645838577fc9010caf5e30ed8c86a2b`
