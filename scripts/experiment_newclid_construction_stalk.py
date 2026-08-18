@@ -861,6 +861,16 @@ def candidate_extensions(
                 for candidate in candidates[:12]
                 if candidate.key in incidence_by_key
             ],
+            "selected_candidates": [
+                {
+                    "candidate": candidate.key,
+                    "step_key": f"{candidate.key}->{output}",
+                    "family": candidate.family,
+                    **incidence_by_key[candidate.key].to_dict(),
+                }
+                for candidate in candidates
+                if candidate.key in incidence_by_key
+            ],
         },
         "candidate_alignment": {
             "mode": candidate_alignment,
