@@ -67,6 +67,7 @@ from worker.backend.geometry_proof_hypergraph import (
     Atom,
     BackwardObligation,
     Theorem,
+    euclidean_relation_theorems,
     synthesize_backward_obligations,
 )
 from worker.backend.geometry_ar_residual import yuclid_ar_residual
@@ -76,7 +77,13 @@ from worker.backend.differentiable_proof_controller import (
 from worker.backend.typed_candidate_alignment import (
     UNREACHABLE_DISTANCE,
     align_candidate_atoms,
+    align_candidate_cone_to_proof_branches,
     instantiate_relation_templates,
+)
+from worker.backend.typed_open_proof_dag import (
+    OpenProofBranch,
+    compile_candidate_forward_cone,
+    compile_open_proof_dag,
 )
 from worker.backend.typed_geometry_stalk import (
     DEFAULT_POINT_FAMILIES,
@@ -214,7 +221,7 @@ def _rule_atom(construction: Any) -> Atom:
 
 
 def native_rule_theorems() -> tuple[Theorem, ...]:
-    """Expose Newclid's published rule bank as typed Horn hyperedges."""
+    """Expose explicit Newclid rules plus universal Euclidean AR morphisms."""
 
     theorems: list[Theorem] = []
     for rule in sorted(DEFAULT_RULES, key=lambda item: item.id):
@@ -227,7 +234,7 @@ def native_rule_theorems() -> tuple[Theorem, ...]:
                     _rule_atom(conclusion),
                 )
             )
-    return tuple(theorems)
+    return (*theorems, *euclidean_relation_theorems())
 
 
 def formulation_goal_atoms(formulation: JGEXFormulation) -> tuple[Atom, ...]:
@@ -488,6 +495,12 @@ def candidate_extensions(
     candidate_target_channels: set[str] | None = None,
     candidate_alignment: str = "off",
     candidate_relation_distances: dict[str, dict[str, int]] | None = None,
+    proof_dag_branches: tuple[OpenProofBranch, ...] = (),
+    proof_dag_facts: tuple[Atom, ...] = (),
+    proof_dag_theorems: tuple[Theorem, ...] = (),
+    candidate_cone_depth: int = 2,
+    candidate_cone_fragments: int = 128,
+    candidate_cone_states: int = 5_000,
     current_problem: Any | None = None,
 ) -> tuple[list[ConstructionStep], dict[str, Any]]:
     generated = {step.output for step in steps}
@@ -573,8 +586,48 @@ def candidate_extensions(
                 candidate.structural_rank,
             )
         )
+        meet_cones = {}
+    elif candidate_alignment == "proof-dag-meet":
+        parent_atoms = tuple(
+            atom
+            for step in steps
+            for atom in construction_relation_atoms(
+                step.family, step.output, step.inputs
+            )
+        )
+        alignment_by_key = {}
+        meet_cones = {}
+        targets = tuple(
+            atom for branch in proof_dag_branches for atom in branch.frontier
+        )
+        for candidate in candidates:
+            extension_atoms = construction_relation_atoms(
+                candidate.family, output, candidate.inputs
+            )
+            cone = compile_candidate_forward_cone(
+                proof_dag_facts,
+                (*parent_atoms, *extension_atoms),
+                proof_dag_theorems,
+                targets=targets,
+                max_rule_depth=candidate_cone_depth,
+                max_fragments=candidate_cone_fragments,
+                max_search_states=candidate_cone_states,
+            )
+            meet_cones[candidate.key] = cone
+            alignment_by_key[candidate.key] = (
+                align_candidate_cone_to_proof_branches(
+                    cone, proof_dag_branches
+                )
+            )
+        candidates.sort(
+            key=lambda candidate: (
+                alignment_by_key[candidate.key].rank,
+                candidate.structural_rank,
+            )
+        )
     elif candidate_alignment == "off":
         alignment_by_key = {}
+        meet_cones = {}
     elif candidate_alignment != "off":
         raise ValueError(f"unknown candidate alignment: {candidate_alignment}")
     if branch_limit > 0:
@@ -585,7 +638,7 @@ def candidate_extensions(
                 for family in families
                 if family.name not in {candidate.family for candidate in candidates}
             ]
-            if candidate_alignment == "typed-atom"
+            if candidate_alignment in {"typed-atom", "proof-dag-meet"}
             else [family.name for family in families]
         )
         candidates = schema_first_score_fill(
@@ -595,23 +648,53 @@ def candidate_extensions(
             limit=branch_limit,
         )
     alignment_values = tuple(alignment_by_key.values())
+    if candidate_alignment == "typed-atom":
+        direct_match_candidates = sum(
+            item.direct_match_count > 0 for item in alignment_values
+        )
+        reachable_candidates = sum(
+            item.best_relation_distance < UNREACHABLE_DISTANCE
+            for item in alignment_values
+        )
+    elif candidate_alignment == "proof-dag-meet":
+        direct_match_candidates = sum(item.has_meet for item in alignment_values)
+        reachable_candidates = direct_match_candidates
+    else:
+        direct_match_candidates = 0
+        reachable_candidates = 0
     extension_audit = {
         "mode": candidate_gate,
         "relation_reachability": asdict(gate_result.audit),
         "selected_after_branch_limit": len(candidates),
         "candidate_alignment": {
             "mode": candidate_alignment,
-            "direct_match_candidates": sum(
-                item.direct_match_count > 0 for item in alignment_values
+            "direct_match_candidates": direct_match_candidates,
+            "reachable_candidates": reachable_candidates,
+            "cone_truncated_candidates": sum(
+                cone.truncated for cone in meet_cones.values()
             ),
-            "reachable_candidates": sum(
-                item.best_relation_distance < UNREACHABLE_DISTANCE
-                for item in alignment_values
+            "cone_search_states": sum(
+                cone.search_states for cone in meet_cones.values()
             ),
             "top_candidates": [
                 {
                     "candidate": candidate.key,
                     **alignment_by_key[candidate.key].to_dict(),
+                    **(
+                        {
+                            "cone_search_states": meet_cones[
+                                candidate.key
+                            ].search_states,
+                            "cone_fragment_count": len(
+                                meet_cones[candidate.key].fragments
+                            ),
+                            "cone_truncated": meet_cones[
+                                candidate.key
+                            ].truncated,
+                        }
+                        if candidate.key in meet_cones
+                        else {}
+                    ),
                 }
                 for candidate in candidates[:12]
                 if candidate.key in alignment_by_key
@@ -892,10 +975,16 @@ def main() -> None:
     )
     parser.add_argument(
         "--candidate-alignment",
-        choices=("off", "typed-atom"),
+        choices=("off", "typed-atom", "proof-dag-meet"),
         default="off",
-        help="Rank candidates by symmetry-aware unification with open typed atoms.",
+        help="Rank by flat atoms or an OR-preserving forward/backward proof-DAG meet.",
     )
+    parser.add_argument("--proof-dag-depth", type=int, default=2)
+    parser.add_argument("--proof-dag-branches", type=int, default=128)
+    parser.add_argument("--proof-dag-states", type=int, default=20_000)
+    parser.add_argument("--candidate-cone-depth", type=int, default=2)
+    parser.add_argument("--candidate-cone-fragments", type=int, default=128)
+    parser.add_argument("--candidate-cone-states", type=int, default=5_000)
     parser.add_argument(
         "--branch-build-mode",
         choices=("legacy", "prefix-replay", "incremental"),
@@ -1012,6 +1101,28 @@ def main() -> None:
         ((atom.predicate, atom.arguments) for atom in goal_atoms),
     )
     rule_theorems = native_rule_theorems()
+    baseline_facts = tuple(
+        Atom(predicate, points)
+        for predicate, points in yuclid_assertion_keys(baseline.payload)
+    )
+    proof_dags = (
+        tuple(
+            compile_open_proof_dag(
+                baseline_facts,
+                goal,
+                rule_theorems,
+                max_rule_depth=args.proof_dag_depth,
+                max_branches=args.proof_dag_branches,
+                max_search_states=args.proof_dag_states,
+            )
+            for goal in goal_atoms
+        )
+        if args.candidate_alignment == "proof-dag-meet"
+        else ()
+    )
+    proof_dag_branches = tuple(
+        branch for dag in proof_dags for branch in dag.open_branches
+    )
     baseline_obligations, baseline_demands = (
         proof_state_obligations(baseline.payload, goal_atoms, rule_theorems)
         if args.obligation_guided
@@ -1102,6 +1213,12 @@ def main() -> None:
                 candidate_target_channels=candidate_target_channels,
                 candidate_alignment=args.candidate_alignment,
                 candidate_relation_distances=candidate_relation_distances,
+                proof_dag_branches=proof_dag_branches,
+                proof_dag_facts=baseline_facts,
+                proof_dag_theorems=rule_theorems,
+                candidate_cone_depth=args.candidate_cone_depth,
+                candidate_cone_fragments=args.candidate_cone_fragments,
+                candidate_cone_states=args.candidate_cone_states,
                 current_problem=current_problem,
             )
             candidate_gate_audits.append(
@@ -1246,6 +1363,16 @@ def main() -> None:
             "goal_channels": sorted(goal_channels),
             "candidate_gate": args.candidate_gate,
             "candidate_alignment": args.candidate_alignment,
+            "proof_dag_budget": {
+                "depth": args.proof_dag_depth,
+                "branches_per_goal": args.proof_dag_branches,
+                "states_per_goal": args.proof_dag_states,
+            },
+            "candidate_forward_cone_budget": {
+                "depth": args.candidate_cone_depth,
+                "fragments": args.candidate_cone_fragments,
+                "states": args.candidate_cone_states,
+            },
             "branch_build_mode": args.branch_build_mode,
             "proof_hypergraph_relevance": proof_relevance,
             "same_morphism_input_orbit_priority": True,
@@ -1333,6 +1460,15 @@ def main() -> None:
                 audit["candidate_alignment"]["reachable_candidates"]
                 for audit in candidate_gate_audits
             ),
+            "cone_truncated_candidates": sum(
+                audit["candidate_alignment"]["cone_truncated_candidates"]
+                for audit in candidate_gate_audits
+            ),
+            "cone_search_states": sum(
+                audit["candidate_alignment"]["cone_search_states"]
+                for audit in candidate_gate_audits
+            ),
+            "proof_dags": [dag.to_dict() for dag in proof_dags],
         },
         "prefix_state_cache": asdict(prefix_cache.audit),
         "records": [asdict(record) for record in all_records],

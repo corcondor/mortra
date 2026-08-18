@@ -374,6 +374,31 @@ def _standardize_theorem(theorem: Theorem, serial: int) -> Theorem:
     )
 
 
+def symbolic_atom_unifications(
+    left: Atom,
+    right: Atom,
+    initial: Mapping[str, str] | None = None,
+) -> tuple[dict[str, str], ...]:
+    """Expose the circuit's finite symmetry-aware symbolic unifier."""
+
+    return tuple(_unify_symbolic_atoms(left, right, initial or {}))
+
+
+def substitute_symbolic_atom(
+    atom: Atom,
+    substitution: Mapping[str, str],
+) -> Atom:
+    """Apply a possibly chained symbolic substitution without grounding it."""
+
+    return _substitute_atom(atom, substitution)
+
+
+def standardize_theorem_variables(theorem: Theorem, serial: int) -> Theorem:
+    """Rename one theorem's variables apart for a bounded backward branch."""
+
+    return _standardize_theorem(theorem, serial)
+
+
 def _ground_atom(atom: Atom, substitution: Mapping[str, str]) -> Atom | None:
     resolved = _substitute_atom(atom, substitution)
     if any(_logic_variable(value) for value in resolved.arguments):
