@@ -31,6 +31,9 @@ from worker.backend.wu_polynomial_stalk import (
     coordinate_wu_polynomial_stalk,
     regularity_factor_expressions,
 )
+from worker.backend.constructible_groebner import (
+    certify_constructible_groebner_branch,
+)
 
 
 @dataclass(frozen=True)
@@ -142,7 +145,13 @@ def _branch_elimination_order(
 
 def _closed_branch(branch_id: str, records: dict[str, WuZeroBranch]) -> bool:
     branch = records[branch_id]
-    if branch.status in {"proved", "proved_regular_locus", "empty_by_input_ndg"}:
+    if branch.status in {
+        "proved",
+        "proved_regular_locus",
+        "proved_by_groebner",
+        "empty_by_input_ndg",
+        "empty_by_groebner",
+    }:
         return True
     if branch.status != "split" or not branch.child_ids:
         return False
@@ -164,6 +173,11 @@ def decompose_wu_zero_set(
     normalize_remainders: bool = True,
     max_content_terms: int = 5_000,
     zero_first_elimination: bool = True,
+    enable_groebner_fallback: bool = False,
+    groebner_max_pairs: int = 2_000,
+    groebner_max_basis_size: int = 128,
+    groebner_max_polynomial_terms: int = 2_000,
+    groebner_max_certificate_terms: int = 20_000,
 ) -> WuZeroDecompositionResult:
     """Recursively cover a polynomial zero set by regular and degenerate loci."""
 
@@ -277,11 +291,41 @@ def decompose_wu_zero_set(
         status = "unresolved"
         cover_factors: tuple[str, ...] = ()
         child_ids: tuple[str, ...] = ()
+        groebner_fallback = None
+        repeated_zero = zero_keys & set(open_factor_text)
+        can_split_before_groebner = bool(
+            coordination.conditional_goal_solved
+            and open_factor_text
+            and not repeated_zero
+            and state.depth < max_depth
+        )
 
         if coordination.input_conditioned_goal_solved:
             status = "proved"
-        elif coordination.conditional_goal_solved:
-            repeated_zero = zero_keys & set(open_factor_text)
+        elif enable_groebner_fallback and not can_split_before_groebner:
+            condition_expressions: list[sp.Expr] = []
+            for condition in branch_nonzero_conditions:
+                expression = condition.strip()
+                if expression.endswith("!= 0"):
+                    expression = expression[:-4].strip()
+                elif expression.endswith("!=0"):
+                    expression = expression[:-3].strip()
+                condition_expressions.append(sp.sympify(expression, locals=symbols))
+            groebner_fallback = certify_constructible_groebner_branch(
+                equations,
+                ordered_variables,
+                goal_polynomial,
+                nonzero_factors=condition_expressions,
+                max_pairs=groebner_max_pairs,
+                max_basis_size=groebner_max_basis_size,
+                max_polynomial_terms=groebner_max_polynomial_terms,
+                max_certificate_terms=groebner_max_certificate_terms,
+            )
+            if groebner_fallback.status == "empty":
+                status = "empty_by_groebner"
+            elif groebner_fallback.status == "goal_proved":
+                status = "proved_by_groebner"
+        if status == "unresolved" and coordination.conditional_goal_solved:
             if repeated_zero:
                 status = "regularity_cycle"
             elif state.depth >= max_depth:
@@ -360,13 +404,21 @@ def decompose_wu_zero_set(
             ),
             maximum_term_count=result.maximum_term_count,
             all_identities_replayed=(
-                result.all_identities_replayed
+                groebner_fallback.all_identities_replayed
+                if groebner_fallback is not None
+                and status in {"empty_by_groebner", "proved_by_groebner"}
+                else result.all_identities_replayed
                 and (
                     not result.conditional_goal_proved
                     or coordination.conditional_goal_replayed
                 )
             ),
-            exact_result_sha256=_result_sha256(result),
+            exact_result_sha256=(
+                groebner_fallback.certificate_sha256
+                if groebner_fallback is not None
+                and status in {"empty_by_groebner", "proved_by_groebner"}
+                else _result_sha256(result)
+            ),
             elapsed_seconds=time.perf_counter() - branch_started,
         )
 
@@ -385,12 +437,24 @@ def decompose_wu_zero_set(
         branches=ordered_records,
         solver_branch_count=solver_branch_count,
         regular_leaf_count=sum(item.locus == "regular" for item in leaves),
-        empty_leaf_count=sum(item.status == "empty_by_input_ndg" for item in leaves),
+        empty_leaf_count=sum(
+            item.status in {"empty_by_input_ndg", "empty_by_groebner"}
+            for item in leaves
+        ),
         proved_leaf_count=sum(
-            item.status in {"proved", "proved_regular_locus"} for item in leaves
+            item.status
+            in {"proved", "proved_regular_locus", "proved_by_groebner"}
+            for item in leaves
         ),
         unresolved_leaf_count=sum(
-            item.status not in {"proved", "proved_regular_locus", "empty_by_input_ndg"}
+            item.status
+            not in {
+                "proved",
+                "proved_regular_locus",
+                "proved_by_groebner",
+                "empty_by_input_ndg",
+                "empty_by_groebner",
+            }
             for item in leaves
         ),
         factorized_obligation_count=factorized_obligation_count,

@@ -75,6 +75,9 @@ def _worker(text: str, settings: dict[str, object], output_path: str) -> None:
             root_timeout_seconds=float(settings["root_timeout_seconds"]),
             max_content_terms=int(settings["max_content_terms"]),
             zero_first_elimination=bool(settings["zero_first_elimination"]),
+            enable_groebner_fallback=bool(settings["groebner_fallback"]),
+            groebner_max_pairs=int(settings["groebner_max_pairs"]),
+            groebner_max_basis_size=int(settings["groebner_max_basis_size"]),
         )
         payload = {
             "status": "completed",
@@ -194,6 +197,9 @@ def main() -> int:
     parser.add_argument("--max-terms", type=int, default=20_000)
     parser.add_argument("--max-content-terms", type=int, default=5_000)
     parser.add_argument("--no-zero-first", action="store_true")
+    parser.add_argument("--groebner-fallback", action="store_true")
+    parser.add_argument("--groebner-max-pairs", type=int, default=512)
+    parser.add_argument("--groebner-max-basis-size", type=int, default=96)
     parser.add_argument(
         "--output",
         type=Path,
@@ -213,6 +219,9 @@ def main() -> int:
         "max_terms": args.max_terms,
         "max_content_terms": args.max_content_terms,
         "zero_first_elimination": not args.no_zero_first,
+        "groebner_fallback": args.groebner_fallback,
+        "groebner_max_pairs": args.groebner_max_pairs,
+        "groebner_max_basis_size": args.groebner_max_basis_size,
     }
     results = {
         name: _isolated(

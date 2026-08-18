@@ -1,0 +1,745 @@
+{
+  "experiment": "hageo409_typed_auxiliary_heldout_pilot",
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_dataset_auxiliary_clauses": false,
+    "selection": "lexicographically first baseline-unsolved held_out IDs",
+    "selected_count": 61,
+    "truth_plane": "native_yuclid_certificate_replay",
+    "candidate_proposal": "typed HAGeo numerical incidence",
+    "scheduler": "unified bidirectional priority queue",
+    "search_budget": {
+      "auxiliary_depth": 1,
+      "candidate_paths": 16,
+      "candidate_beam": 6,
+      "incidence_oversample_per_family": 16,
+      "workers": 4,
+      "timeout_seconds_per_problem": 300.0
+    },
+    "paper_comparability": "bounded MORTRA ablation; not HAGeo N=6, K=2048/8192"
+  },
+  "summary": {
+    "baseline_total": 89,
+    "baseline_solved": 28,
+    "pilot_total": 61,
+    "newly_solved": 9,
+    "newly_solved_names": [
+      "2011CTSTp16",
+      "2012G4",
+      "2013USATSTp2",
+      "2017AsiaPacificMOp2",
+      "2017CHNSouthEastMOg10p2",
+      "2017G3",
+      "2020ELMOp4",
+      "2021SilkRoadp3",
+      "2022CzechAPSlovakp5"
+    ],
+    "heldout_portfolio_solved": 37,
+    "heldout_portfolio_score": 0.4157303370786517,
+    "time_censored": 16,
+    "score_is_lower_bound": true
+  },
+  "selected_problem_names": [
+    "2000USATSTp2",
+    "2002CTSTp25",
+    "2004CTSTp1",
+    "2005CTSTp11b",
+    "2006G4",
+    "2007CMOp4",
+    "2008CTSTp4",
+    "2011ARMOg11p8",
+    "2011CHNSouthEastMOp4",
+    "2011CTSTp16",
+    "2011G3",
+    "2011G5",
+    "2012G4",
+    "2013USATSTp2",
+    "2014BulgariaMOp6",
+    "2014CHNGaoLian",
+    "2015CTSTp9",
+    "2015IranTSTp18",
+    "2016CGMOp7",
+    "2016CTSTp5",
+    "2016G5",
+    "2016G6",
+    "2016USATSTSTp6",
+    "2017AsiaPacificMOp2",
+    "2017CHNSouthEastMOg10p2",
+    "2017G3",
+    "2017G4",
+    "2017USAMOp3",
+    "2018ARMOg11p4",
+    "2019IranTSTp15",
+    "2019USATSTSTp5",
+    "2020ELMOp4",
+    "2020IranGOAp2",
+    "2020IranTSTp9",
+    "2021ARMOg10p8",
+    "2021CGMOp2",
+    "2021CGMOp7",
+    "2021GOWACAp5",
+    "2021IranTSTp6",
+    "2021IsraelOlympicRev",
+    "2021SilkRoadp3",
+    "2022CHNSouthEastMOg11p6",
+    "2022CzechAPSlovakp5",
+    "2022G5",
+    "2022KoMaLA805",
+    "2023IMOp6",
+    "2023MOSTMockp2",
+    "2023RMMSLG3",
+    "2023SAGFp8",
+    "2023SerbiaMOp6",
+    "2023VietnamTSTp3",
+    "2024ARMOg9p4",
+    "2024ELMOSLp1",
+    "2024KoMaLA877",
+    "2024PlanetCupp10",
+    "2024VietnamTSTp5",
+    "2025KoeraFinalRoundp3",
+    "ShuZhiMiGeo128",
+    "ShuZhiMiGeo309",
+    "ShuZhiMiGeo489",
+    "ShuZhiMiGeo635"
+  ],
+  "runs": [
+    {
+      "problem": "2000USATSTp2",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 416,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 104.89012290000028,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2000USATSTp2.json",
+      "artifact_sha256": "57f06e2a24b6e95406fda93d3d527de9aeaee8c97fd9fb9912b2a515cc421838"
+    },
+    {
+      "problem": "2002CTSTp25",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 440,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 55.47531309999977,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2002CTSTp25.json",
+      "artifact_sha256": "6c90445870b9fbee601c2a167f9b4e0c140c957807d874436c32de9705f2aca6"
+    },
+    {
+      "problem": "2004CTSTp1",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 380,
+      "incidence_heuristic": 1,
+      "elapsed_seconds": 122.59017400000084,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2004CTSTp1.json",
+      "artifact_sha256": "d0b825e86aeed04ac769d81700652280fb1ee9218312efa7ad598fd5e7bbabbc"
+    },
+    {
+      "problem": "2005CTSTp11b",
+      "status": "timeout",
+      "elapsed_seconds": 300.0286866999995
+    },
+    {
+      "problem": "2006G4",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 418,
+      "incidence_heuristic": 1,
+      "elapsed_seconds": 89.4351530999993,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2006G4.json",
+      "artifact_sha256": "fff10c6fde5df5bb1816455f7bb5c0ce0e9d1f8a71ac9c457a2eb9e995b1a6a3"
+    },
+    {
+      "problem": "2007CMOp4",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 434,
+      "incidence_heuristic": 6,
+      "elapsed_seconds": 175.47344090000115,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2007CMOp4.json",
+      "artifact_sha256": "618d83388d0d1f3a6b424a232dc9037913ba608c5e96723967d67ab102b546e5"
+    },
+    {
+      "problem": "2008CTSTp4",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 401,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 137.29264019999755,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2008CTSTp4.json",
+      "artifact_sha256": "9c777b73a82366eb0be6cf6583b911cb18301e912a686ab08978f57573cdcd53"
+    },
+    {
+      "problem": "2011ARMOg11p8",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 474,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 88.09992200000124,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2011ARMOg11p8.json",
+      "artifact_sha256": "712485c311a23c8e0eb34d3f1626f77bdc5346766c8b31f4b98f65b883cbb284"
+    },
+    {
+      "problem": "2011CHNSouthEastMOp4",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 431,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 27.487242900002457,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2011CHNSouthEastMOp4.json",
+      "artifact_sha256": "5bfd9bb5878027a3c6ab3b38dbc32b6701b89af274f77dff041da6b94c2f6a41"
+    },
+    {
+      "problem": "2011CTSTp16",
+      "status": "solved",
+      "solved": true,
+      "solved_path": [
+        "reflect(k,b,c)->d"
+      ],
+      "evaluated_paths": 12,
+      "incidence_checked": 417,
+      "incidence_heuristic": 2,
+      "elapsed_seconds": 216.87316199999987,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2011CTSTp16.json",
+      "artifact_sha256": "095a8530c0bf81e3ab6a3efaef2ad0fd0e5a31bda616b3e39f944e0801304d1a"
+    },
+    {
+      "problem": "2011G3",
+      "status": "timeout",
+      "elapsed_seconds": 300.03422370000044
+    },
+    {
+      "problem": "2011G5",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 409,
+      "incidence_heuristic": 2,
+      "elapsed_seconds": 257.52988489999916,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2011G5.json",
+      "artifact_sha256": "beea511f682b504a74fedb5b5e31bf62d26d32f7ee141e62c47bc0e00cc99fd9"
+    },
+    {
+      "problem": "2012G4",
+      "status": "solved",
+      "solved": true,
+      "solved_path": [
+        "circle(y,d,e)->f"
+      ],
+      "evaluated_paths": 2,
+      "incidence_checked": 364,
+      "incidence_heuristic": 1,
+      "elapsed_seconds": 99.87797499999942,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2012G4.json",
+      "artifact_sha256": "6e864d2c1b5a6572ee88decc7baeccaf73754947625ffbdf11f760fd3b1101eb"
+    },
+    {
+      "problem": "2013USATSTp2",
+      "status": "solved",
+      "solved": true,
+      "solved_path": [
+        "intersection_tt(a,b,x,d,a,b)->e"
+      ],
+      "evaluated_paths": 6,
+      "incidence_checked": 374,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 26.111401499998465,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2013USATSTp2.json",
+      "artifact_sha256": "cdb4e120a0d3d0f3e0a7b5a09222f853c0ae5c0c95daf006c2dd7d1ae491450e"
+    },
+    {
+      "problem": "2014BulgariaMOp6",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 441,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 152.54405620000034,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2014BulgariaMOp6.json",
+      "artifact_sha256": "1464140a3eb99a678cd268d5e7627c5cf1fc4e67774c6ecde546584b3fee01d1"
+    },
+    {
+      "problem": "2014CHNGaoLian",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 451,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 160.16435450000063,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2014CHNGaoLian.json",
+      "artifact_sha256": "88c6e9095b825e528c5d3728aa15b312be39375c1ca609c026be4cb272d171c5"
+    },
+    {
+      "problem": "2015CTSTp9",
+      "status": "timeout",
+      "elapsed_seconds": 300.0460617000026
+    },
+    {
+      "problem": "2015IranTSTp18",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 391,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 62.072908400001324,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2015IranTSTp18.json",
+      "artifact_sha256": "6909a14dd478602457f4a6a07d1926ab11c8b4b24d2820a409c1931f876467b2"
+    },
+    {
+      "problem": "2016CGMOp7",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 364,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 165.59859099999812,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2016CGMOp7.json",
+      "artifact_sha256": "a91675d7c28b36f06119242f03637e31ea3217c72c841e28ecbc1969133e0641"
+    },
+    {
+      "problem": "2016CTSTp5",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 420,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 180.05488570000307,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2016CTSTp5.json",
+      "artifact_sha256": "68ca5776bf3116de04a96cebf37794cbd0c336c2156dab88257a950b2a0bdd41"
+    },
+    {
+      "problem": "2016G5",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 382,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 176.11273540000184,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2016G5.json",
+      "artifact_sha256": "65be60e5db2468d88169090e85919f52f88077287b900b71dea461ae38a121b5"
+    },
+    {
+      "problem": "2016G6",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 401,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 168.8636680999989,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2016G6.json",
+      "artifact_sha256": "6ebc1322393c97111dfa76ebad5f7e2e8470b48b0abce0515786563331d26121"
+    },
+    {
+      "problem": "2016USATSTSTp6",
+      "status": "timeout",
+      "elapsed_seconds": 300.0476168999994
+    },
+    {
+      "problem": "2017AsiaPacificMOp2",
+      "status": "solved",
+      "solved": true,
+      "solved_path": [
+        "parallelogram(a,d,b)->e"
+      ],
+      "evaluated_paths": 10,
+      "incidence_checked": 431,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 62.34601159999875,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2017AsiaPacificMOp2.json",
+      "artifact_sha256": "d8a41a403dafbd44933b745845cd63a7e85115dc8169b52b875fb39c91dd3db4"
+    },
+    {
+      "problem": "2017CHNSouthEastMOg10p2",
+      "status": "solved",
+      "solved": true,
+      "solved_path": [
+        "intersection_lt(c,b,a,c,b)->g"
+      ],
+      "evaluated_paths": 8,
+      "incidence_checked": 357,
+      "incidence_heuristic": 3,
+      "elapsed_seconds": 169.81094740000117,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2017CHNSouthEastMOg10p2.json",
+      "artifact_sha256": "db9a05bb9e778813f002fd8b5c89eafcdeba7ca639f5ff46443125ac25a6295b"
+    },
+    {
+      "problem": "2017G3",
+      "status": "solved",
+      "solved": true,
+      "solved_path": [
+        "intersection_lt(a,o,b,a,o)->d"
+      ],
+      "evaluated_paths": 10,
+      "incidence_checked": 389,
+      "incidence_heuristic": 1,
+      "elapsed_seconds": 154.0748741999996,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2017G3.json",
+      "artifact_sha256": "7dd16be4b8ee1934e1cb4ccca7bb77bc4a58f45e28b36c3a28874fb9498155d0"
+    },
+    {
+      "problem": "2017G4",
+      "status": "timeout",
+      "elapsed_seconds": 300.0403686999998
+    },
+    {
+      "problem": "2017USAMOp3",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 423,
+      "incidence_heuristic": 2,
+      "elapsed_seconds": 239.11577439999746,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2017USAMOp3.json",
+      "artifact_sha256": "b9dcd8bfd62e1046c9f1bc01664aa5f922e0fa2ed5d978851ffc11df0471ca79"
+    },
+    {
+      "problem": "2018ARMOg11p4",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 436,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 168.62905189999947,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2018ARMOg11p4.json",
+      "artifact_sha256": "140001d5d09defa37ab7fa98935e25e1ff85617eb57eb53f04c0c55f0899a059"
+    },
+    {
+      "problem": "2019IranTSTp15",
+      "status": "timeout",
+      "elapsed_seconds": 300.05091879999964
+    },
+    {
+      "problem": "2019USATSTSTp5",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 383,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 154.48517290000018,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2019USATSTSTp5.json",
+      "artifact_sha256": "40fb9e67df5c2fb304a707ac6cd2c40780b4d1772bdbb0e144af384952b244c4"
+    },
+    {
+      "problem": "2020ELMOp4",
+      "status": "solved",
+      "solved": true,
+      "solved_path": [
+        "midpoint(h,d1)->e"
+      ],
+      "evaluated_paths": 2,
+      "incidence_checked": 353,
+      "incidence_heuristic": 2,
+      "elapsed_seconds": 147.4406306000019,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2020ELMOp4.json",
+      "artifact_sha256": "63dbb0c67df21b995554c260723f9cb452b82dbbfd0ac38d7baac895f833481b"
+    },
+    {
+      "problem": "2020IranGOAp2",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 394,
+      "incidence_heuristic": 1,
+      "elapsed_seconds": 138.77621530000033,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2020IranGOAp2.json",
+      "artifact_sha256": "cdb8013ce2930ecdff6d360f53ede69a3e2a9c7e601680091cb1347a6583cfc9"
+    },
+    {
+      "problem": "2020IranTSTp9",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 462,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 270.0028846999994,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2020IranTSTp9.json",
+      "artifact_sha256": "a8bd98758d4a6c44a198069c1a69b7c0bd5498d23a8f0b0f32e297024cc3c882"
+    },
+    {
+      "problem": "2021ARMOg10p8",
+      "status": "timeout",
+      "elapsed_seconds": 300.03761029999805
+    },
+    {
+      "problem": "2021CGMOp2",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 387,
+      "incidence_heuristic": 2,
+      "elapsed_seconds": 263.82901480000146,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2021CGMOp2.json",
+      "artifact_sha256": "98ec99015e54a77724a35bb5b72bd0fd48b1194d17d0e4e69ed5db055dc233a1"
+    },
+    {
+      "problem": "2021CGMOp7",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 421,
+      "incidence_heuristic": 9,
+      "elapsed_seconds": 98.223195999999,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2021CGMOp7.json",
+      "artifact_sha256": "7d3b382ca3db3745e12f07e0513c52f908b498d82866eec55c502b3db9362b2d"
+    },
+    {
+      "problem": "2021GOWACAp5",
+      "status": "timeout",
+      "elapsed_seconds": 300.029905600004
+    },
+    {
+      "problem": "2021IranTSTp6",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 427,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 160.4591472999964,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2021IranTSTp6.json",
+      "artifact_sha256": "7a408801b625107f58bf3b40d3bb968b1415bc3a8ad4aa438fd7f1dc40ff8acc"
+    },
+    {
+      "problem": "2021IsraelOlympicRev",
+      "status": "timeout",
+      "elapsed_seconds": 300.05960649999906
+    },
+    {
+      "problem": "2021SilkRoadp3",
+      "status": "solved",
+      "solved": true,
+      "solved_path": [
+        "circle(b,a,b1)->d"
+      ],
+      "evaluated_paths": 2,
+      "incidence_checked": 440,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 143.0562372999957,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2021SilkRoadp3.json",
+      "artifact_sha256": "a055e283b0fae207f2e6d3182ca8892a4f08d280c5f75e721bdc14d214c3d7b1"
+    },
+    {
+      "problem": "2022CHNSouthEastMOg11p6",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 438,
+      "incidence_heuristic": 1,
+      "elapsed_seconds": 84.49554590000116,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2022CHNSouthEastMOg11p6.json",
+      "artifact_sha256": "fc69fb12776e7720bb0ea4f444312791bcc5a16e13929fe70d869e888fed5e28"
+    },
+    {
+      "problem": "2022CzechAPSlovakp5",
+      "status": "solved",
+      "solved": true,
+      "solved_path": [
+        "intersection_lt(b,c,x,d,a)->e"
+      ],
+      "evaluated_paths": 2,
+      "incidence_checked": 394,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 59.93769799999791,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2022CzechAPSlovakp5.json",
+      "artifact_sha256": "0bc5b440389e293ebdd104f23e2c1df844bf2d53d2e324a0b5324ef5e54fe5d2"
+    },
+    {
+      "problem": "2022G5",
+      "status": "timeout",
+      "elapsed_seconds": 300.03733289999946
+    },
+    {
+      "problem": "2022KoMaLA805",
+      "status": "timeout",
+      "elapsed_seconds": 300.0474052999998
+    },
+    {
+      "problem": "2023IMOp6",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 386,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 266.5125237999964,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2023IMOp6.json",
+      "artifact_sha256": "44590aeccb3624e3ca79d3ed31e1114417331e81e29124335ce34efa29083aea"
+    },
+    {
+      "problem": "2023MOSTMockp2",
+      "status": "timeout",
+      "elapsed_seconds": 300.0462153999979
+    },
+    {
+      "problem": "2023RMMSLG3",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 471,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 164.00944810000146,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2023RMMSLG3.json",
+      "artifact_sha256": "48b22a2532f7ff89100cd206d4d9e718f48b6301597cb6f6442156082bbff59d"
+    },
+    {
+      "problem": "2023SAGFp8",
+      "status": "timeout",
+      "elapsed_seconds": 300.05045999999857
+    },
+    {
+      "problem": "2023SerbiaMOp6",
+      "status": "timeout",
+      "elapsed_seconds": 300.0355564000056
+    },
+    {
+      "problem": "2023VietnamTSTp3",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 371,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 265.75927870000305,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2023VietnamTSTp3.json",
+      "artifact_sha256": "f33c8653ace4a79d89330eea7f47003c0bb6f76056edc5e23ad03d862fd43cc6"
+    },
+    {
+      "problem": "2024ARMOg9p4",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 386,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 165.8916590000008,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2024ARMOg9p4.json",
+      "artifact_sha256": "8b827b4b75d6ce78c2d45e3270143cb133dd45b9474177ac811198204345a6e8"
+    },
+    {
+      "problem": "2024ELMOSLp1",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 398,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 113.39105960000234,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2024ELMOSLp1.json",
+      "artifact_sha256": "8ea63b6201e0302436890c09232bbc40fec0848f21dcca7df02d486c4ef2bd75"
+    },
+    {
+      "problem": "2024KoMaLA877",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 438,
+      "incidence_heuristic": 1,
+      "elapsed_seconds": 193.8118797999996,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2024KoMaLA877.json",
+      "artifact_sha256": "fdadc619d71e178f67890170043bc92a3447fceaaf08acf13df62fe09588e163"
+    },
+    {
+      "problem": "2024PlanetCupp10",
+      "status": "timeout",
+      "elapsed_seconds": 300.0573966000011
+    },
+    {
+      "problem": "2024VietnamTSTp5",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 430,
+      "incidence_heuristic": 6,
+      "elapsed_seconds": 57.27256039999702,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2024VietnamTSTp5.json",
+      "artifact_sha256": "6356bbc91247a0fd750866d7af6a7082f8712c704f4d43a0f958daa05ef812fe"
+    },
+    {
+      "problem": "2025KoeraFinalRoundp3",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 425,
+      "incidence_heuristic": 1,
+      "elapsed_seconds": 176.73258859999987,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2025KoeraFinalRoundp3.json",
+      "artifact_sha256": "04e12f5e37b19b7141a32e65ae179115dd9972c851ce27e8bb2f0292083311c5"
+    },
+    {
+      "problem": "ShuZhiMiGeo128",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 450,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 269.9731533000013,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/ShuZhiMiGeo128.json",
+      "artifact_sha256": "d2dc7adf4ab1c2652b89b67ef9e7d22e61cc09e1106ba344b1f76deb5fa54d89"
+    },
+    {
+      "problem": "ShuZhiMiGeo309",
+      "status": "timeout",
+      "elapsed_seconds": 300.0401808000024
+    },
+    {
+      "problem": "ShuZhiMiGeo489",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 427,
+      "incidence_heuristic": 4,
+      "elapsed_seconds": 242.22184449999622,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/ShuZhiMiGeo489.json",
+      "artifact_sha256": "6a37f4e55d9f454f633508fb7e15e9f4378951785fb6c3492da35a0bfd3059d4"
+    },
+    {
+      "problem": "ShuZhiMiGeo635",
+      "status": "unsolved",
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 403,
+      "incidence_heuristic": 3,
+      "elapsed_seconds": 234.5551837000021,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/ShuZhiMiGeo635.json",
+      "artifact_sha256": "9e61ebb6bdde39a3d44ef006bd270b8dea032f01ce947ccaef8242b4f57a28fb"
+    }
+  ]
+}

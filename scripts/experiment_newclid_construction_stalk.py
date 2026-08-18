@@ -86,6 +86,11 @@ from worker.backend.typed_open_proof_dag import (
     compile_candidate_forward_cone,
     compile_open_proof_dag,
 )
+from worker.backend.typed_bidirectional_priority import search_bidirectionally
+from worker.backend.numerical_incidence_auxiliary import (
+    NumericalIncidenceAtlas,
+    NumericalIncidenceProfile,
+)
 from worker.backend.typed_geometry_stalk import (
     DEFAULT_POINT_FAMILIES,
     EXTENDED_POINT_FAMILIES,
@@ -497,6 +502,7 @@ def candidate_extensions(
     candidate_alignment: str = "off",
     candidate_relation_distances: dict[str, dict[str, int]] | None = None,
     proof_dag_branches: tuple[OpenProofBranch, ...] = (),
+    proof_dag_goals: tuple[Atom, ...] = (),
     proof_dag_facts: tuple[Atom, ...] = (),
     proof_dag_theorems: tuple[Theorem, ...] = (),
     candidate_cone_depth: int = 2,
@@ -504,7 +510,11 @@ def candidate_extensions(
     candidate_cone_states: int = 5_000,
     candidate_cone_initial_states: int = 64,
     candidate_promotion_limit: int = 8,
+    candidate_incidence: str = "off",
+    incidence_tolerance: float = 1e-7,
+    incidence_oversample_per_family: int = 16,
     current_problem: Any | None = None,
+    construction_seed: int = 0,
 ) -> tuple[list[ConstructionStep], dict[str, Any]]:
     generated = {step.output for step in steps}
     points = base_points | generated
@@ -523,7 +533,11 @@ def candidate_extensions(
     current_problem = (
         current_problem
         if current_problem is not None
-        else build_branch(base_problem, steps, seed=seed)
+        else build_branch(
+            base_problem,
+            steps,
+            seed=(construction_seed if candidate_incidence == "hageo" else seed),
+        )
     )
     coordinates = {
         str(point.name): (float(point.num.x), float(point.num.y))
@@ -537,7 +551,11 @@ def candidate_extensions(
         generated_points=generated,
         used_keys=used,
         families=families,
-        per_family_limit=per_family_limit,
+        per_family_limit=(
+            max(per_family_limit, incidence_oversample_per_family)
+            if candidate_incidence == "hageo"
+            else per_family_limit
+        ),
         ranking=ranking,
         seed=seed,
         coordinates=coordinates,
@@ -572,6 +590,56 @@ def candidate_extensions(
     )
     candidates = list(gate_result.candidates)
     output = next_point_name(points)
+    incidence_by_key: dict[str, NumericalIncidenceProfile] = {}
+    incidence_errors: dict[str, int] = defaultdict(int)
+    if candidate_incidence == "hageo":
+        incidence_atlas = NumericalIncidenceAtlas.build(
+            coordinates,
+            tolerance=incidence_tolerance,
+        )
+        for candidate in candidates:
+            step = ConstructionStep(
+                candidate.family,
+                output,
+                candidate.inputs,
+                candidate.structural_rank,
+            )
+            try:
+                candidate_problem = extend_prefix_branch(
+                    current_problem,
+                    step,
+                    (*steps, step),
+                    seed=construction_seed,
+                )
+                output_point = next(
+                    point for point in candidate_problem.points if str(point.name) == output
+                )
+                output_coordinates = (
+                    float(output_point.num.x),
+                    float(output_point.num.y),
+                )
+                incidence_by_key[candidate.key] = incidence_atlas.profile(
+                    output_coordinates,
+                    family=candidate.family,
+                    inputs=candidate.inputs,
+                )
+            except Exception as exc:
+                incidence_errors[type(exc).__name__] += 1
+        candidates.sort(
+            key=lambda candidate: (
+                incidence_by_key[candidate.key].rank
+                if candidate.key in incidence_by_key
+                else (2,),
+                candidate.structural_rank,
+            )
+        )
+    elif candidate_incidence != "off":
+        raise ValueError(f"unknown candidate incidence mode: {candidate_incidence}")
+
+    def incidence_rank(candidate: TypedConstructionCandidate) -> tuple[int, ...]:
+        profile = incidence_by_key.get(candidate.key)
+        return profile.rank if profile is not None else ((2,) if candidate_incidence == "hageo" else ())
+
     if candidate_alignment == "typed-atom":
         alignment_by_key = {
             candidate.key: align_candidate_atoms(
@@ -586,6 +654,7 @@ def candidate_extensions(
         candidates.sort(
             key=lambda candidate: (
                 alignment_by_key[candidate.key].rank,
+                incidence_rank(candidate),
                 candidate.structural_rank,
             )
         )
@@ -625,6 +694,7 @@ def candidate_extensions(
         candidates.sort(
             key=lambda candidate: (
                 alignment_by_key[candidate.key].rank,
+                incidence_rank(candidate),
                 candidate.structural_rank,
             )
         )
@@ -660,12 +730,59 @@ def candidate_extensions(
         candidates.sort(
             key=lambda candidate: (
                 alignment_by_key[candidate.key].rank,
+                incidence_rank(candidate),
+                candidate.structural_rank,
+            )
+        )
+        unified_search = None
+    elif candidate_alignment == "proof-dag-priority":
+        parent_atoms = tuple(
+            atom
+            for step in steps
+            for atom in construction_relation_atoms(
+                step.family, step.output, step.inputs
+            )
+        )
+        candidate_atoms_by_key = {
+            candidate.key: construction_relation_atoms(
+                candidate.family, output, candidate.inputs
+            )
+            for candidate in candidates
+        }
+        unified_search = search_bidirectionally(
+            (*proof_dag_facts, *parent_atoms),
+            proof_dag_goals,
+            candidate_atoms_by_key,
+            proof_dag_theorems,
+            max_backward_depth=candidate_cone_depth,
+            max_forward_depth=candidate_cone_depth,
+            max_backward_branches=candidate_cone_fragments,
+            max_forward_fragments=candidate_cone_fragments,
+            per_task_search_states=candidate_cone_states,
+            max_total_search_states=(
+                candidate_cone_initial_states * len(candidates)
+                + candidate_cone_states * candidate_promotion_limit
+                + candidate_cone_states
+            ),
+            max_tasks=max(
+                1,
+                (len(candidates) + len(proof_dag_goals))
+                * candidate_cone_depth,
+            ),
+        )
+        alignment_by_key = dict(unified_search.candidates)
+        meet_cones = dict(unified_search.forward_cones)
+        candidates.sort(
+            key=lambda candidate: (
+                alignment_by_key[candidate.key].rank,
+                incidence_rank(candidate),
                 candidate.structural_rank,
             )
         )
     elif candidate_alignment == "off":
         alignment_by_key = {}
         meet_cones = {}
+        unified_search = None
     elif candidate_alignment != "off":
         raise ValueError(f"unknown candidate alignment: {candidate_alignment}")
     if branch_limit > 0:
@@ -680,6 +797,7 @@ def candidate_extensions(
                 "typed-atom",
                 "proof-dag-meet",
                 "proof-dag-lazy",
+                "proof-dag-priority",
             }
             else [family.name for family in families]
         )
@@ -707,6 +825,13 @@ def candidate_extensions(
             item.predicate_distance < UNREACHABLE_DISTANCE
             for item in alignment_values
         )
+    elif candidate_alignment == "proof-dag-priority":
+        direct_match_candidates = sum(
+            item.alignment.has_meet for item in alignment_values
+        )
+        reachable_candidates = sum(
+            item.has_closed_structural_residual for item in alignment_values
+        )
     else:
         direct_match_candidates = 0
         reachable_candidates = 0
@@ -714,6 +839,29 @@ def candidate_extensions(
         "mode": candidate_gate,
         "relation_reachability": asdict(gate_result.audit),
         "selected_after_branch_limit": len(candidates),
+        "numerical_incidence": {
+            "mode": candidate_incidence,
+            "truth_plane": "candidate_proposal_only",
+            "oversample_per_family": (
+                incidence_oversample_per_family
+                if candidate_incidence == "hageo"
+                else per_family_limit
+            ),
+            "checked_candidates": len(incidence_by_key),
+            "heuristic_candidates": sum(
+                profile.is_heuristic_candidate
+                for profile in incidence_by_key.values()
+            ),
+            "build_errors": dict(sorted(incidence_errors.items())),
+            "top_candidates": [
+                {
+                    "candidate": candidate.key,
+                    **incidence_by_key[candidate.key].to_dict(),
+                }
+                for candidate in candidates[:12]
+                if candidate.key in incidence_by_key
+            ],
+        },
         "candidate_alignment": {
             "mode": candidate_alignment,
             "direct_match_candidates": direct_match_candidates,
@@ -726,8 +874,17 @@ def candidate_extensions(
             ),
             "cone_search_states": (
                 sum(item.search_states for item in alignment_values)
-                if candidate_alignment == "proof-dag-lazy"
+                if candidate_alignment in {
+                    "proof-dag-lazy",
+                    "proof-dag-priority",
+                }
                 else sum(cone.search_states for cone in meet_cones.values())
+            ),
+            "unified_queue": (
+                unified_search.audit.to_dict()
+                if candidate_alignment == "proof-dag-priority"
+                and unified_search is not None
+                else None
             ),
             "top_candidates": [
                 {
@@ -1028,11 +1185,17 @@ def main() -> None:
     )
     parser.add_argument(
         "--candidate-alignment",
-        choices=("off", "typed-atom", "proof-dag-meet", "proof-dag-lazy"),
+        choices=(
+            "off",
+            "typed-atom",
+            "proof-dag-meet",
+            "proof-dag-lazy",
+            "proof-dag-priority",
+        ),
         default="off",
         help=(
             "Rank by flat atoms, a fixed proof-DAG meet, or a residual-guided "
-            "lazy proof-DAG meet."
+            "lazy proof-DAG meet, or one bidirectional priority queue."
         ),
     )
     parser.add_argument("--proof-dag-depth", type=int, default=2)
@@ -1043,6 +1206,17 @@ def main() -> None:
     parser.add_argument("--candidate-cone-states", type=int, default=5_000)
     parser.add_argument("--candidate-cone-initial-states", type=int, default=64)
     parser.add_argument("--candidate-promotion-limit", type=int, default=8)
+    parser.add_argument(
+        "--candidate-incidence",
+        choices=("off", "hageo"),
+        default="off",
+        help=(
+            "Use numerical line/circle incidence only to prioritize auxiliary "
+            "construction proposals; proof acceptance remains symbolic."
+        ),
+    )
+    parser.add_argument("--incidence-tolerance", type=float, default=1e-7)
+    parser.add_argument("--incidence-oversample-per-family", type=int, default=16)
     parser.add_argument(
         "--branch-build-mode",
         choices=("legacy", "prefix-replay", "incremental"),
@@ -1272,6 +1446,7 @@ def main() -> None:
                 candidate_alignment=args.candidate_alignment,
                 candidate_relation_distances=candidate_relation_distances,
                 proof_dag_branches=proof_dag_branches,
+                proof_dag_goals=goal_atoms,
                 proof_dag_facts=baseline_facts,
                 proof_dag_theorems=rule_theorems,
                 candidate_cone_depth=args.candidate_cone_depth,
@@ -1279,7 +1454,13 @@ def main() -> None:
                 candidate_cone_states=args.candidate_cone_states,
                 candidate_cone_initial_states=args.candidate_cone_initial_states,
                 candidate_promotion_limit=args.candidate_promotion_limit,
+                candidate_incidence=args.candidate_incidence,
+                incidence_tolerance=args.incidence_tolerance,
+                incidence_oversample_per_family=(
+                    args.incidence_oversample_per_family
+                ),
                 current_problem=current_problem,
+                construction_seed=args.seed,
             )
             candidate_gate_audits.append(
                 {
@@ -1423,6 +1604,12 @@ def main() -> None:
             "goal_channels": sorted(goal_channels),
             "candidate_gate": args.candidate_gate,
             "candidate_alignment": args.candidate_alignment,
+            "candidate_incidence": {
+                "mode": args.candidate_incidence,
+                "tolerance": args.incidence_tolerance,
+                "oversample_per_family": args.incidence_oversample_per_family,
+                "truth_plane": "candidate_proposal_only",
+            },
             "proof_dag_budget": {
                 "depth": args.proof_dag_depth,
                 "branches_per_goal": args.proof_dag_branches,
@@ -1529,6 +1716,36 @@ def main() -> None:
                 for audit in candidate_gate_audits
             ),
             "proof_dags": [dag.to_dict() for dag in proof_dags],
+        },
+        "candidate_incidence": {
+            "mode": args.candidate_incidence,
+            "checked_candidates": sum(
+                audit["numerical_incidence"]["checked_candidates"]
+                for audit in candidate_gate_audits
+            ),
+            "heuristic_candidates": sum(
+                audit["numerical_incidence"]["heuristic_candidates"]
+                for audit in candidate_gate_audits
+            ),
+            "build_errors": dict(
+                sorted(
+                    (
+                        error,
+                        sum(
+                            audit["numerical_incidence"]["build_errors"].get(
+                                error, 0
+                            )
+                            for audit in candidate_gate_audits
+                        ),
+                    )
+                    for error in {
+                        key
+                        for audit in candidate_gate_audits
+                        for key in audit["numerical_incidence"]["build_errors"]
+                    }
+                )
+            ),
+            "truth_plane": "yuclid_native_certificate_replay_only",
         },
         "prefix_state_cache": asdict(prefix_cache.audit),
         "records": [asdict(record) for record in all_records],

@@ -1,0 +1,125 @@
+{
+  "experiment": "hageo_numerical_incidence_ablation",
+  "protocol": {
+    "uses_external_llm": false,
+    "numerical_layer": "proposal_ranking_only",
+    "truth_plane": "yuclid_native_certificate_replay",
+    "treatments": [
+      "hageo"
+    ],
+    "problems": [
+      "2019_p2",
+      "2019_p6",
+      "2020_p1",
+      "2021_p3"
+    ],
+    "candidate_alignment": "proof-dag-priority",
+    "incidence_oversample_per_family": 16
+  },
+  "runs": [
+    {
+      "problem": "2019_p2",
+      "treatment": "hageo",
+      "returncode": 0,
+      "wall_seconds": 35.720685099997354,
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 32,
+      "error_count": 0,
+      "incidence_checked": 414,
+      "incidence_heuristic": 0,
+      "cone_search_states": 37171,
+      "artifact": "data/hageo-incidence-imo-remaining4-priority-2026-08-18/2019_p2-hageo.json",
+      "artifact_sha256": "288b39dd8fc77cb4bcd135ce46dc333a9eacfe71f048e7b34b08132552c7e1de"
+    },
+    {
+      "problem": "2019_p6",
+      "treatment": "hageo",
+      "returncode": 0,
+      "wall_seconds": 89.93667789999745,
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 29,
+      "error_count": 0,
+      "incidence_checked": 399,
+      "incidence_heuristic": 1,
+      "cone_search_states": 37216,
+      "artifact": "data/hageo-incidence-imo-remaining4-priority-2026-08-18/2019_p6-hageo.json",
+      "artifact_sha256": "440039d266364e0b431a71ddd31f714aba002d9ffbc918681cc26568c48d1e43"
+    },
+    {
+      "problem": "2020_p1",
+      "treatment": "hageo",
+      "returncode": 0,
+      "wall_seconds": 42.789408799999364,
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 32,
+      "error_count": 0,
+      "incidence_checked": 431,
+      "incidence_heuristic": 4,
+      "cone_search_states": 37214,
+      "artifact": "data/hageo-incidence-imo-remaining4-priority-2026-08-18/2020_p1-hageo.json",
+      "artifact_sha256": "da652802aaadb309eed41fc450b048d6e7dd35b900cdfcb01665f9b80bb8848a"
+    },
+    {
+      "problem": "2021_p3",
+      "treatment": "hageo",
+      "returncode": 0,
+      "wall_seconds": 67.6489236999987,
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 30,
+      "error_count": 0,
+      "incidence_checked": 438,
+      "incidence_heuristic": 0,
+      "cone_search_states": 36768,
+      "artifact": "data/hageo-incidence-imo-remaining4-priority-2026-08-18/2021_p3-hageo.json",
+      "artifact_sha256": "268fe6faac42d6df341c674765e99ba059815a140c10536ece91346849db78d6"
+    }
+  ],
+  "pairs": [
+    {
+      "problem": "2019_p2",
+      "valid_pair": false,
+      "control_solved": null,
+      "hageo_solved": false,
+      "coverage_delta": null,
+      "evaluated_path_delta": null,
+      "wall_seconds_delta": null
+    },
+    {
+      "problem": "2019_p6",
+      "valid_pair": false,
+      "control_solved": null,
+      "hageo_solved": false,
+      "coverage_delta": null,
+      "evaluated_path_delta": null,
+      "wall_seconds_delta": null
+    },
+    {
+      "problem": "2020_p1",
+      "valid_pair": false,
+      "control_solved": null,
+      "hageo_solved": false,
+      "coverage_delta": null,
+      "evaluated_path_delta": null,
+      "wall_seconds_delta": null
+    },
+    {
+      "problem": "2021_p3",
+      "valid_pair": false,
+      "control_solved": null,
+      "hageo_solved": false,
+      "coverage_delta": null,
+      "evaluated_path_delta": null,
+      "wall_seconds_delta": null
+    }
+  ],
+  "aggregate": {
+    "valid_run_count": 4,
+    "control_solved": 0,
+    "hageo_solved": 0,
+    "coverage_delta": 0
+  }
+}

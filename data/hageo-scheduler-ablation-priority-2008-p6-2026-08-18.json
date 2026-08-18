@@ -1,0 +1,52 @@
+{
+  "experiment": "hageo_numerical_incidence_ablation",
+  "protocol": {
+    "uses_external_llm": false,
+    "numerical_layer": "proposal_ranking_only",
+    "truth_plane": "yuclid_native_certificate_replay",
+    "treatments": [
+      "hageo"
+    ],
+    "problems": [
+      "2008_p6"
+    ],
+    "candidate_alignment": "proof-dag-priority",
+    "incidence_oversample_per_family": 16
+  },
+  "runs": [
+    {
+      "problem": "2008_p6",
+      "treatment": "hageo",
+      "returncode": 0,
+      "wall_seconds": 102.2833501999994,
+      "solved": true,
+      "solved_path": [
+        "foot(o,a,i2)->e"
+      ],
+      "evaluated_paths": 8,
+      "error_count": 0,
+      "incidence_checked": 425,
+      "incidence_heuristic": 4,
+      "cone_search_states": 37197,
+      "artifact": "data/hageo-scheduler-ablation-priority-2008-p6-2026-08-18/2008_p6-hageo.json",
+      "artifact_sha256": "d21ebba765c820d497deb5fc75fe3b8df3660d91bdf9fa17f2aa2a065345451d"
+    }
+  ],
+  "pairs": [
+    {
+      "problem": "2008_p6",
+      "valid_pair": false,
+      "control_solved": null,
+      "hageo_solved": true,
+      "coverage_delta": null,
+      "evaluated_path_delta": null,
+      "wall_seconds_delta": null
+    }
+  ],
+  "aggregate": {
+    "valid_run_count": 1,
+    "control_solved": 0,
+    "hageo_solved": 1,
+    "coverage_delta": 0
+  }
+}

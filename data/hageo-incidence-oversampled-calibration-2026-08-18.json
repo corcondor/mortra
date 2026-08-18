@@ -1,0 +1,153 @@
+{
+  "experiment": "hageo_numerical_incidence_ablation",
+  "protocol": {
+    "uses_external_llm": false,
+    "numerical_layer": "proposal_ranking_only",
+    "truth_plane": "yuclid_native_certificate_replay",
+    "treatments": [
+      "control",
+      "hageo"
+    ],
+    "problems": [
+      "2008_p6",
+      "2009_p2",
+      "2010_p2",
+      "2015_p3",
+      "2011_p6"
+    ]
+  },
+  "runs": [
+    {
+      "problem": "2008_p6",
+      "treatment": "hageo",
+      "returncode": 0,
+      "wall_seconds": 183.0302976999992,
+      "solved": true,
+      "solved_path": [
+        "foot(o,a,i2)->e"
+      ],
+      "evaluated_paths": 8,
+      "error_count": 0,
+      "incidence_checked": 425,
+      "incidence_heuristic": 4,
+      "cone_search_states": 32383,
+      "artifact": "data/hageo-incidence-oversampled-calibration-2026-08-18/2008_p6-hageo.json",
+      "artifact_sha256": "097cd6a895b20183d9549aeeace20cc5b9aa1561d14e6cea32bea939c6c589fc"
+    },
+    {
+      "problem": "2009_p2",
+      "treatment": "hageo",
+      "returncode": 0,
+      "wall_seconds": 72.30525099999795,
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 30,
+      "error_count": 0,
+      "incidence_checked": 391,
+      "incidence_heuristic": 1,
+      "cone_search_states": 32252,
+      "artifact": "data/hageo-incidence-oversampled-calibration-2026-08-18/2009_p2-hageo.json",
+      "artifact_sha256": "7dd8813f59130f4239cec9197b0abf06ba219d855967330066dec7e25204c10c"
+    },
+    {
+      "problem": "2010_p2",
+      "treatment": "hageo",
+      "returncode": 0,
+      "wall_seconds": 73.89688210000168,
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 32,
+      "error_count": 0,
+      "incidence_checked": 439,
+      "incidence_heuristic": 1,
+      "cone_search_states": 32279,
+      "artifact": "data/hageo-incidence-oversampled-calibration-2026-08-18/2010_p2-hageo.json",
+      "artifact_sha256": "472277f4afe91e5b51ab9845e1b37c32b09f06f09814cfcc0f194c186ec786b4"
+    },
+    {
+      "problem": "2015_p3",
+      "treatment": "hageo",
+      "returncode": 0,
+      "wall_seconds": 137.50897330000225,
+      "solved": true,
+      "solved_path": [
+        "intersection_lc(a,f,h)->d"
+      ],
+      "evaluated_paths": 24,
+      "error_count": 0,
+      "incidence_checked": 411,
+      "incidence_heuristic": 3,
+      "cone_search_states": 32337,
+      "artifact": "data/hageo-incidence-oversampled-calibration-2026-08-18/2015_p3-hageo.json",
+      "artifact_sha256": "62ca24486d691399bc5e06606a1698e27fd93717605cda4c3a9b9a8a4c433164"
+    },
+    {
+      "problem": "2011_p6",
+      "treatment": "hageo",
+      "returncode": 0,
+      "wall_seconds": 514.2159909999973,
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 29,
+      "error_count": 0,
+      "incidence_checked": 414,
+      "incidence_heuristic": 3,
+      "cone_search_states": 32278,
+      "artifact": "data/hageo-incidence-oversampled-calibration-2026-08-18/2011_p6-hageo.json",
+      "artifact_sha256": "c877d88bbc55f003bc147f8a5f0dbda5e26bee118f03443fb4088e6dc4c2250c"
+    }
+  ],
+  "pairs": [
+    {
+      "problem": "2008_p6",
+      "valid_pair": false,
+      "control_solved": null,
+      "hageo_solved": true,
+      "coverage_delta": null,
+      "evaluated_path_delta": null,
+      "wall_seconds_delta": null
+    },
+    {
+      "problem": "2009_p2",
+      "valid_pair": false,
+      "control_solved": null,
+      "hageo_solved": false,
+      "coverage_delta": null,
+      "evaluated_path_delta": null,
+      "wall_seconds_delta": null
+    },
+    {
+      "problem": "2010_p2",
+      "valid_pair": false,
+      "control_solved": null,
+      "hageo_solved": false,
+      "coverage_delta": null,
+      "evaluated_path_delta": null,
+      "wall_seconds_delta": null
+    },
+    {
+      "problem": "2015_p3",
+      "valid_pair": false,
+      "control_solved": null,
+      "hageo_solved": true,
+      "coverage_delta": null,
+      "evaluated_path_delta": null,
+      "wall_seconds_delta": null
+    },
+    {
+      "problem": "2011_p6",
+      "valid_pair": false,
+      "control_solved": null,
+      "hageo_solved": false,
+      "coverage_delta": null,
+      "evaluated_path_delta": null,
+      "wall_seconds_delta": null
+    }
+  ],
+  "aggregate": {
+    "valid_run_count": 5,
+    "control_solved": 0,
+    "hageo_solved": 2,
+    "coverage_delta": 0
+  }
+}

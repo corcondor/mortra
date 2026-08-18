@@ -1,0 +1,63 @@
+name: Verify paper-guided geometry portfolio
+
+on:
+  push:
+    paths:
+      - "worker/backend/numerical_incidence_auxiliary.py"
+      - "worker/backend/typed_bidirectional_priority.py"
+      - "worker/backend/constructible_groebner.py"
+      - "worker/backend/wu_zero_decomposition.py"
+      - "worker/backend/test_numerical_incidence_auxiliary.py"
+      - "worker/backend/test_typed_bidirectional_priority.py"
+      - "worker/backend/test_constructible_groebner.py"
+      - "worker/backend/test_wu_zero_decomposition.py"
+      - "worker/backend/test_typed_candidate_alignment.py"
+      - "worker/backend/test_typed_open_proof_dag.py"
+      - "scripts/experiment_newclid_construction_stalk.py"
+      - "scripts/experiment_hageo_incidence_ablation.py"
+      - "scripts/export_hageo409_jgex.py"
+      - "scripts/audit_hageo409_compatibility.py"
+      - "scripts/benchmark_hageo409_native.py"
+      - "scripts/benchmark_hageo409_auxiliary.py"
+      - "scripts/experiment_wu_zero_decomposition.py"
+      - "scripts/finalize_geometry_proof_portfolio.py"
+      - "tests/test_export_hageo409_jgex.py"
+      - "tests/test_finalize_geometry_proof_portfolio.py"
+      - ".github/workflows/mortra-paper-guided-geometry-ci.yml"
+  pull_request:
+    paths:
+      - "worker/backend/**"
+      - "scripts/export_hageo409_jgex.py"
+      - "scripts/finalize_geometry_proof_portfolio.py"
+      - "tests/test_export_hageo409_jgex.py"
+      - "tests/test_finalize_geometry_proof_portfolio.py"
+      - ".github/workflows/mortra-paper-guided-geometry-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  exact-kernel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: worker/requirements.txt
+      - name: Install symbolic test dependencies
+        run: pip install -r worker/requirements.txt pytest pandas pyarrow
+      - name: Verify exact proposal, search, and proof gates
+        run: >-
+          python -B -m pytest -q
+          worker/backend/test_numerical_incidence_auxiliary.py
+          worker/backend/test_typed_bidirectional_priority.py
+          worker/backend/test_constructible_groebner.py
+          worker/backend/test_wu_zero_decomposition.py
+          worker/backend/test_typed_candidate_alignment.py
+          worker/backend/test_typed_open_proof_dag.py
+          tests/test_export_hageo409_jgex.py
+          tests/test_finalize_geometry_proof_portfolio.py
