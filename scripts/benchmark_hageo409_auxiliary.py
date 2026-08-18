@@ -25,6 +25,14 @@ def run_problem(
     problem: str,
     output: Path,
     timeout_seconds: float,
+    max_depth: int = 1,
+    branch_limit: int = 16,
+    beam_width: int = 6,
+    seed: int = 0,
+    beam_ranking: str = "ar-residual-pareto",
+    controller: Path | None = None,
+    per_family_limit: int = 1,
+    incidence_oversample_per_family: int = 16,
 ) -> dict[str, Any]:
     command = [
         str(python),
@@ -43,22 +51,22 @@ def run_problem(
         "--family-set",
         "extended",
         "--per-family-limit",
-        "1",
+        str(per_family_limit),
         "--branch-limit",
-        "16",
+        str(branch_limit),
         "--beam-width",
-        "6",
+        str(beam_width),
         "--max-depth",
-        "1",
+        str(max_depth),
         "--max-workers",
         "2",
         "--seed",
-        "0",
+        str(seed),
         "--obligation-guided",
         "--ranking",
         "structural",
         "--beam-ranking",
-        "ar-residual-pareto",
+        beam_ranking,
         "--ar-profile",
         "all",
         "--candidate-gate",
@@ -68,7 +76,7 @@ def run_problem(
         "--candidate-incidence",
         "hageo",
         "--incidence-oversample-per-family",
-        "16",
+        str(incidence_oversample_per_family),
         "--branch-build-mode",
         "incremental",
         "--proof-dag-depth",
@@ -90,6 +98,8 @@ def run_problem(
         "--progress",
         "none",
     ]
+    if controller is not None:
+        command.extend(("--controller", str(controller)))
     started = time.perf_counter()
     try:
         completed = subprocess.run(
@@ -104,7 +114,8 @@ def run_problem(
     except subprocess.TimeoutExpired:
         return {
             "problem": problem,
-            "status": "timeout",
+            "status": "right_censored_timeout",
+            "solved": None,
             "elapsed_seconds": time.perf_counter() - started,
         }
     if completed.returncode != 0 or not output.is_file():
@@ -116,10 +127,18 @@ def run_problem(
             "elapsed_seconds": time.perf_counter() - started,
         }
     artifact = json.loads(output.read_text(encoding="utf-8"))
+    confirmation = artifact.get("confirmation") or {}
+    native_confirmed = bool(
+        artifact.get("solved")
+        and confirmation.get("solved")
+        and confirmation.get("input_sha256")
+        and confirmation.get("proof_sha256")
+    )
     return {
         "problem": problem,
         "status": "solved" if artifact["solved"] else "unsolved",
         "solved": artifact["solved"],
+        "native_confirmed": native_confirmed,
         "solved_path": artifact["solved_path"],
         "evaluated_paths": artifact["evaluated_paths"],
         "incidence_checked": artifact["candidate_incidence"]["checked_candidates"],
@@ -144,6 +163,25 @@ def main() -> int:
     parser.add_argument("--limit", type=int, default=10)
     parser.add_argument("--workers", type=int, default=2)
     parser.add_argument("--timeout-seconds", type=float, default=300.0)
+    parser.add_argument("--max-depth", type=int, default=1)
+    parser.add_argument("--branch-limit", type=int, default=16)
+    parser.add_argument("--beam-width", type=int, default=6)
+    parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--per-family-limit", type=int, default=1)
+    parser.add_argument("--incidence-oversample-per-family", type=int, default=16)
+    parser.add_argument(
+        "--beam-ranking",
+        choices=(
+            "ar-residual-pareto",
+            "differentiable-consensus",
+            "consensus-portfolio",
+            "native-formal-sheaf",
+            "native-formal-sheaf-portfolio",
+            "unified-formal-sheaf-portfolio",
+        ),
+        default="ar-residual-pareto",
+    )
+    parser.add_argument("--controller", type=Path)
     parser.add_argument("--resume", action="store_true")
     parser.add_argument(
         "--report-only",
@@ -151,6 +189,13 @@ def main() -> int:
         help="Rebuild summary metadata from an existing complete report.",
     )
     args = parser.parse_args()
+    if args.beam_ranking in {
+        "differentiable-consensus",
+        "consensus-portfolio",
+        "unified-formal-sheaf-portfolio",
+    }:
+        if args.controller is None:
+            parser.error(f"--beam-ranking {args.beam_ranking} requires --controller")
 
     baseline = json.loads(args.baseline.read_text(encoding="utf-8"))
     unsolved = sorted(
@@ -186,6 +231,16 @@ def main() -> int:
                 problem=problem,
                 output=(args.run_dir / f"{problem}.json").resolve(),
                 timeout_seconds=args.timeout_seconds,
+                max_depth=args.max_depth,
+                branch_limit=args.branch_limit,
+                beam_width=args.beam_width,
+                seed=args.seed,
+                beam_ranking=args.beam_ranking,
+                controller=(args.controller.resolve() if args.controller else None),
+                per_family_limit=args.per_family_limit,
+                incidence_oversample_per_family=(
+                    args.incidence_oversample_per_family
+                ),
             ): problem
             for problem in pending
         }
@@ -197,6 +252,13 @@ def main() -> int:
     runs.sort(key=lambda item: item["problem"])
     newly_solved = [item["problem"] for item in runs if item.get("solved")]
     baseline_solved = int(baseline["summary"]["solved"])
+    right_censored = sum(
+        item.get("status") in {"timeout", "right_censored_timeout"}
+        for item in runs
+    )
+    completed_searches = len(runs) - right_censored
+    total = int(baseline["summary"]["total"])
+    certified_solved = baseline_solved + len(newly_solved)
     report = {
         "experiment": "hageo409_typed_auxiliary_heldout_pilot",
         "protocol": {
@@ -208,15 +270,28 @@ def main() -> int:
             "candidate_proposal": "typed HAGeo numerical incidence",
             "scheduler": "unified bidirectional priority queue",
             "search_budget": {
-                "auxiliary_depth": 1,
-                "candidate_paths": 16,
-                "candidate_beam": 6,
-                "incidence_oversample_per_family": 16,
+                "auxiliary_depth": args.max_depth,
+                "candidate_paths_per_prefix": args.branch_limit,
+                "candidate_beam": args.beam_width,
+                "beam_ranking": args.beam_ranking,
+                "controller": (
+                    args.controller.resolve().relative_to(ROOT).as_posix()
+                    if args.controller is not None
+                    else None
+                ),
+                "per_family_limit": args.per_family_limit,
+                "incidence_oversample_per_family": (
+                    args.incidence_oversample_per_family
+                ),
                 "workers": args.workers,
                 "timeout_seconds_per_problem": args.timeout_seconds,
             },
             "paper_comparability": (
-                "bounded MORTRA ablation; not HAGeo N=6, K=2048/8192"
+                "configurable MORTRA ablation; report max_depth and evaluated "
+                "paths rather than claiming HAGeo N=6, K=2048/8192"
+            ),
+            "timeout_semantics": (
+                "right-censored unknown; never counted as a wrong answer or a proof"
             ),
         },
         "summary": {
@@ -225,17 +300,16 @@ def main() -> int:
             "pilot_total": len(selected),
             "newly_solved": len(newly_solved),
             "newly_solved_names": newly_solved,
-            "heldout_portfolio_solved": baseline_solved + len(newly_solved),
-            "heldout_portfolio_score": (
-                (baseline_solved + len(newly_solved))
-                / int(baseline["summary"]["total"])
+            "heldout_portfolio_solved": certified_solved,
+            "heldout_portfolio_score": certified_solved / total,
+            "certified_score_lower_bound": certified_solved / total,
+            "optimistic_score_upper_bound": (certified_solved + right_censored) / total,
+            "completed_auxiliary_searches": completed_searches,
+            "conditional_new_solution_rate": (
+                len(newly_solved) / completed_searches if completed_searches else None
             ),
-            "time_censored": sum(
-                item.get("status") == "timeout" for item in runs
-            ),
-            "score_is_lower_bound": any(
-                item.get("status") == "timeout" for item in runs
-            ),
+            "time_censored": right_censored,
+            "score_is_lower_bound": right_censored > 0,
         },
         "selected_problem_names": selected,
         "runs": runs,

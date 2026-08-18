@@ -1,0 +1,101 @@
+{
+  "experiment": "hageo409_capability_preserving_agent_portfolio",
+  "protocol": {
+    "uses_external_llm": false,
+    "agents": {
+      "exact": "ar-residual-pareto"
+    },
+    "differentiable_control_plane": "heterogeneous formal-language stalks plus positive learned trusts and unrolled sheaf-consensus ADMM",
+    "truth_plane": "native Yuclid certificate replay only",
+    "acceptance": "union of replayed certificates; no voting",
+    "capability_preservation": "exact agent always receives equal budget",
+    "controller": "data/differentiable-formal-language-multiflow-controller-2026-08-18.json",
+    "controller_sha256": "f3b1e48bc621468c62bd50be3a34a8ac21039f4b5710dec0bd738412e9a67ee2",
+    "equal_agent_budget": {
+      "max_depth": 2,
+      "branch_limit": 32,
+      "beam_width": 12,
+      "timeout_seconds": 600.0,
+      "seed": 0
+    },
+    "scope": "search-policy agent portfolio; Wu/Groebner certificate exchange remains a separate exact agent path"
+  },
+  "summary": {
+    "total": 3,
+    "exact_solved": 0,
+    "portfolio_solved": 0,
+    "portfolio_additions": 0,
+    "capability_preserved": true,
+    "right_censored_unsolved": 1,
+    "certified_score_lower_bound": 0.0,
+    "optimistic_score_upper_bound": 0.3333333333333333,
+    "results": [
+      {
+        "problem": "2002CTSTp25",
+        "admitted": false,
+        "admitted_agents": [],
+        "exact_agent_admitted": false,
+        "rejected_claims": [],
+        "right_censored_agents": []
+      },
+      {
+        "problem": "2015IranTSTp18",
+        "admitted": false,
+        "admitted_agents": [],
+        "exact_agent_admitted": false,
+        "rejected_claims": [],
+        "right_censored_agents": [
+          "exact"
+        ]
+      },
+      {
+        "problem": "2024VietnamTSTp5",
+        "admitted": false,
+        "admitted_agents": [],
+        "exact_agent_admitted": false,
+        "rejected_claims": [],
+        "right_censored_agents": []
+      }
+    ]
+  },
+  "runs": [
+    {
+      "problem": "2002CTSTp25",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 409,
+      "incidence_checked": 5855,
+      "incidence_heuristic": 1,
+      "elapsed_seconds": 435.10218030000397,
+      "artifact": "data/hageo-depth2-exact-pilot3-runtime-fixed-runs-2026-08-18/2002CTSTp25-exact.json",
+      "artifact_sha256": "83705ed5a9095b2cb371711881073ca05b2caf0b00b5f9e497bfd3d6d37e04a5",
+      "agent": "exact",
+      "beam_ranking": "ar-residual-pareto"
+    },
+    {
+      "problem": "2015IranTSTp18",
+      "status": "right_censored_timeout",
+      "solved": null,
+      "elapsed_seconds": 600.0319990000062,
+      "agent": "exact",
+      "beam_ranking": "ar-residual-pareto"
+    },
+    {
+      "problem": "2024VietnamTSTp5",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 416,
+      "incidence_checked": 5861,
+      "incidence_heuristic": 52,
+      "elapsed_seconds": 555.2253128000011,
+      "artifact": "data/hageo-depth2-exact-pilot3-runtime-fixed-runs-2026-08-18/2024VietnamTSTp5-exact.json",
+      "artifact_sha256": "efbfb0155a68f6f9fd71dac8674ef14db359b6b5afc628aabe08f351546d6f33",
+      "agent": "exact",
+      "beam_ranking": "ar-residual-pareto"
+    }
+  ]
+}

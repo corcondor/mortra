@@ -1,0 +1,62 @@
+{
+  "experiment": "hageo409_capability_preserving_agent_portfolio",
+  "protocol": {
+    "uses_external_llm": false,
+    "agents": {
+      "exact": "ar-residual-pareto"
+    },
+    "differentiable_control_plane": "heterogeneous formal-language stalks plus positive learned trusts and unrolled sheaf-consensus ADMM",
+    "truth_plane": "native Yuclid certificate replay only",
+    "acceptance": "union of replayed certificates; no voting",
+    "capability_preservation": "exact agent always receives equal budget",
+    "controller": "data/differentiable-formal-language-multiflow-controller-2026-08-18.json",
+    "controller_sha256": "f3b1e48bc621468c62bd50be3a34a8ac21039f4b5710dec0bd738412e9a67ee2",
+    "equal_agent_budget": {
+      "max_depth": 1,
+      "branch_limit": 128,
+      "beam_width": 32,
+      "timeout_seconds": 600.0,
+      "seed": 0,
+      "per_family_limit": 4,
+      "incidence_oversample_per_family": 64
+    },
+    "scope": "search-policy agent portfolio; Wu/Groebner certificate exchange remains a separate exact agent path"
+  },
+  "summary": {
+    "total": 1,
+    "exact_solved": 0,
+    "portfolio_solved": 0,
+    "portfolio_additions": 0,
+    "capability_preserved": true,
+    "right_censored_unsolved": 0,
+    "certified_score_lower_bound": 0.0,
+    "optimistic_score_upper_bound": 0.0,
+    "results": [
+      {
+        "problem": "2024VietnamTSTp5",
+        "admitted": false,
+        "admitted_agents": [],
+        "exact_agent_admitted": false,
+        "rejected_claims": [],
+        "right_censored_agents": []
+      }
+    ]
+  },
+  "runs": [
+    {
+      "problem": "2024VietnamTSTp5",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 128,
+      "incidence_checked": 1829,
+      "incidence_heuristic": 10,
+      "elapsed_seconds": 87.93794200000411,
+      "artifact": "data/hageo-wide-depth1-exact-2024vietnam-runs-2026-08-18/2024VietnamTSTp5-exact.json",
+      "artifact_sha256": "b22f203c67fefcec9fc0dbe2a3e1e2b51cd0ca068961d56b853810d12b232265",
+      "agent": "exact",
+      "beam_ranking": "ar-residual-pareto"
+    }
+  ]
+}

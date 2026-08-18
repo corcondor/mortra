@@ -19,9 +19,18 @@ from worker.backend.jgex_exact_constraint_bridge import (
 )
 
 
-def _exact_worker(text: str, output_path: str) -> None:
+def _exact_worker(
+    text: str,
+    output_path: str,
+    representation: str,
+    max_saturation_rounds: int,
+) -> None:
     try:
-        obligation = lower_jgex_to_exact_obligation(text)
+        obligation = lower_jgex_to_exact_obligation(
+            text,
+            representation=representation,
+            max_saturation_rounds=max_saturation_rounds,
+        )
         payload = {"kind": "result", "certificate": asdict(obligation)}
     except ValueError as error:
         payload = {"kind": "unsupported", "reason": str(error)}
@@ -33,11 +42,25 @@ def _exact_worker(text: str, output_path: str) -> None:
     Path(output_path).write_text(json.dumps(payload), encoding="utf-8")
 
 
-def _run_isolated(text: str, timeout_seconds: float) -> dict:
+def _run_isolated(
+    text: str,
+    timeout_seconds: float,
+    *,
+    representation: str = "explicit",
+    max_saturation_rounds: int = 1,
+) -> dict:
     context = mp.get_context("spawn")
     with tempfile.TemporaryDirectory(prefix="mortra-jgex-exact-") as directory:
         output_path = Path(directory) / "result.json"
-        process = context.Process(target=_exact_worker, args=(text, str(output_path)))
+        process = context.Process(
+            target=_exact_worker,
+            args=(
+                text,
+                str(output_path),
+                representation,
+                max_saturation_rounds,
+            ),
+        )
         process.start()
         process.join(None if timeout_seconds <= 0 else timeout_seconds)
         if timeout_seconds > 0 and process.is_alive():

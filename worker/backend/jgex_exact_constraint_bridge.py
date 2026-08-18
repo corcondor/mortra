@@ -46,11 +46,18 @@ class JGEXExactObligation:
     groebner_basis: tuple[str, ...]
     quotient_certificate: tuple[str, ...]
     remainder: str
+    saturation_multiplier: str
+    saturation_assumptions_used: tuple[str, ...]
     exact_replay: bool
     certificate_sha256: str
     local_lemma_certificates: tuple["AffineLocalLemmaCertificate", ...] = ()
     structural_lemma_certificates: tuple["StructuralLocalLemmaCertificate", ...] = ()
     construction_blocks: tuple["ConstructionEquationBlock", ...] = ()
+    reduction_strategy: str = "global_groebner"
+    reduced_construction_equations: tuple[str, ...] = ()
+    local_elimination: LocalEliminationResult | None = None
+    goal_relevant_clause_indices: tuple[int, ...] = ()
+    excluded_clause_indices: tuple[int, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -81,6 +88,7 @@ class ConstructionEquationBlock:
     introduced_variables: tuple[str, ...]
     surviving_equations: tuple[str, ...]
     local_lemma_count: int
+    nonzero_conditions: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -160,13 +168,20 @@ Point = tuple[sp.Expr, sp.Expr]
 SUPPORTED_CONSTRUCTION_VOCABULARY = frozenset(
     {
         "triangle",
+        "ieq_triangle",
+        "quadrangle",
         "r_triangle",
+        "free",
         "midpoint",
         "foot",
         "orthocenter",
         "circle",
+        "circumcenter",
+        "centroid",
+        "excenter",
         "on_line",
         "on_circle",
+        "on_circum",
         "on_tline",
         "on_pline",
         "on_dia",
@@ -176,6 +191,7 @@ SUPPORTED_CONSTRUCTION_VOCABULARY = frozenset(
         "mirror",
         "reflect",
         "on_bline",
+        "eqdistance",
         "on_aline",
         "eqangle3",
         "cc_tangent",
@@ -346,6 +362,51 @@ class _JGEXElaborator:
             )
         )
 
+    def _equilateral_triangle(self, points: tuple[str, ...]) -> None:
+        if len(points) != 3:
+            raise ValueError("ieq_triangle expects three output points")
+        left, right, apex = points
+        base = self._parameter("base")
+        height = self._parameter("equilateral_height")
+        self.coordinates[left] = (sp.Integer(0), sp.Integer(0))
+        self.coordinates[right] = (base, sp.Integer(0))
+        self.coordinates[apex] = (base / 2, height)
+        self._append_equation(4 * height * height - 3 * base * base)
+        self.denominators.extend((base, height))
+        self.normalization_assumptions.extend(
+            (
+                f"euclidean_gauge {left}=(0,0) {right}=({_safe(base)},0) "
+                f"{apex}=({_safe(base / 2)},{_safe(height)})",
+                f"{_safe(base)} != 0",
+                f"{_safe(height)} != 0",
+            )
+        )
+
+    def _quadrangle(self, points: tuple[str, ...]) -> None:
+        """Fix only Euclidean gauge freedom for four otherwise free points."""
+
+        if len(points) != 4:
+            raise ValueError("quadrangle expects four output points")
+        left, right, third, fourth = points
+        base = self._parameter("base")
+        third_x = self._parameter("third_x")
+        third_y = self._parameter("third_y")
+        fourth_x = self._parameter("fourth_x")
+        fourth_y = self._parameter("fourth_y")
+        self.coordinates[left] = (sp.Integer(0), sp.Integer(0))
+        self.coordinates[right] = (base, sp.Integer(0))
+        self.coordinates[third] = (third_x, third_y)
+        self.coordinates[fourth] = (fourth_x, fourth_y)
+        self.normalization_assumptions.extend(
+            (
+                f"euclidean_gauge {left}=(0,0) {right}=({_safe(base)},0) "
+                f"{third}=({_safe(third_x)},{_safe(third_y)}) "
+                f"{fourth}=({_safe(fourth_x)},{_safe(fourth_y)})",
+                f"{_safe(base)} != 0",
+                f"{_safe(third_y)} != 0",
+            )
+        )
+
     def _foot(self, args: tuple[str, ...]) -> None:
         foot, point, left, right = args
         left_point = self.coordinates[left]
@@ -405,6 +466,41 @@ class _JGEXElaborator:
             midpoint_ac,  # type: ignore[arg-type]
             (-ac[1], ac[0]),
         )
+
+    def _centroid(self, args: tuple[str, ...]) -> None:
+        midpoint_a, midpoint_b, midpoint_c, centroid, a, b, c = args
+        self._midpoint((midpoint_a, b, c))
+        self._midpoint((midpoint_b, c, a))
+        self._midpoint((midpoint_c, a, b))
+        self.coordinates[centroid] = tuple(
+            sp.cancel((a_value + b_value + c_value) / 3)
+            for a_value, b_value, c_value in zip(
+                self.coordinates[a],
+                self.coordinates[b],
+                self.coordinates[c],
+                strict=True,
+            )
+        )  # type: ignore[assignment]
+
+    def _excenter(self, args: tuple[str, ...]) -> None:
+        center, a, b, c = args
+        side_a = self._side_length(b, c)
+        side_b = self._side_length(c, a)
+        side_c = self._side_length(a, b)
+        denominator = sp.factor(-side_a + side_b + side_c)
+        self.denominators.append(denominator)
+        self.coordinates[center] = tuple(
+            sp.cancel(
+                (-side_a * a_value + side_b * b_value + side_c * c_value)
+                / denominator
+            )
+            for a_value, b_value, c_value in zip(
+                self.coordinates[a],
+                self.coordinates[b],
+                self.coordinates[c],
+                strict=True,
+            )
+        )  # type: ignore[assignment]
 
     def _on_line(self, args: tuple[str, ...]) -> None:
         point, left, right = args
@@ -477,7 +573,31 @@ class _JGEXElaborator:
             self._distance_squared(point, left) - self._distance_squared(point, right)
         )
 
-    def _equal_angle_equation(
+    def _on_circumcircle(self, args: tuple[str, ...]) -> None:
+        point, a, b, c = args
+        self._free_point(point)
+        rows = []
+        for selected in (a, b, c, point):
+            x, y = self.coordinates[selected]
+            rows.append((x * x + y * y, x, y, sp.Integer(1)))
+        self._append_equation(sp.det(sp.Matrix(rows)))
+        self.denominators.append(
+            self._cross(
+                self._sub(self.coordinates[b], self.coordinates[a]),
+                self._sub(self.coordinates[c], self.coordinates[a]),
+            )
+        )
+
+    def _eqdistance(self, args: tuple[str, ...]) -> None:
+        point, center, left, right = args
+        self._free_point(point)
+        self._append_equation(
+            self._distance_squared(point, center)
+            - self._distance_squared(left, right)
+        )
+        self.denominators.append(self._distance_squared(left, right))
+
+    def _equal_angle_polynomial(
         self,
         ray_a: tuple[str, str],
         ray_b: tuple[str, str],
@@ -494,8 +614,17 @@ class _JGEXElaborator:
         left_dot = self._dot(vectors[0], vectors[1])
         right_cross = self._cross(vectors[2], vectors[3])
         right_dot = self._dot(vectors[2], vectors[3])
+        return sp.expand(left_cross * right_dot - left_dot * right_cross)
+
+    def _equal_angle_equation(
+        self,
+        ray_a: tuple[str, str],
+        ray_b: tuple[str, str],
+        ray_c: tuple[str, str],
+        ray_d: tuple[str, str],
+    ) -> sp.Expr:
         return self._append_equation(
-            sp.expand(left_cross * right_dot - left_dot * right_cross)
+            self._equal_angle_polynomial(ray_a, ray_b, ray_c, ray_d)
         )
 
     def _on_angle_line(self, args: tuple[str, ...]) -> None:
@@ -580,6 +709,7 @@ class _JGEXElaborator:
 
         equation_start = len(self.equations)
         variable_start = len(self.variables)
+        denominator_start = len(self.denominators)
         radius_a = self._side_length(macro.center_a, macro.radius_a)
         radius_b = self._side_length(macro.center_b, macro.radius_b)
         denominator = sp.factor(radius_a - radius_b)
@@ -659,6 +789,11 @@ class _JGEXElaborator:
                     _safe(item) for item in self.equations[equation_start:]
                 ),
                 local_lemma_count=1,
+                nonzero_conditions=tuple(
+                    f"{_safe(item)} != 0"
+                    for item in self.denominators[denominator_start:]
+                    if item != 0
+                ),
             )
         )
         return "cc_tangent", "on_line"
@@ -778,12 +913,24 @@ class _JGEXElaborator:
         if len(constructions) == 1 and constructions[0].name in {
             "triangle",
             "r_triangle",
+            "ieq_triangle",
         }:
             points = tuple(str(arg) for arg in constructions[0].args)
             if constructions[0].name == "triangle":
                 self._triangle(points)
-            else:
+            elif constructions[0].name == "r_triangle":
                 self._right_triangle(points)
+            else:
+                self._equilateral_triangle(points)
+            return names
+
+        if len(constructions) == 1 and constructions[0].name == "free":
+            for point in clause.points:
+                self._free_point(str(point))
+            return names
+
+        if len(constructions) == 1 and constructions[0].name == "quadrangle":
+            self._quadrangle(tuple(str(point) for point in clause.points))
             return names
 
         if len(constructions) == 1 and constructions[0].name == "foot":
@@ -794,6 +941,9 @@ class _JGEXElaborator:
             "midpoint",
             "orthocenter",
             "circle",
+            "circumcenter",
+            "centroid",
+            "excenter",
             "incenter",
             "incenter2",
         }:
@@ -802,8 +952,12 @@ class _JGEXElaborator:
                 self._midpoint(arguments)
             elif constructions[0].name == "orthocenter":
                 self._orthocenter(arguments)
-            elif constructions[0].name == "circle":
+            elif constructions[0].name in {"circle", "circumcenter"}:
                 self._circumcenter(arguments)
+            elif constructions[0].name == "centroid":
+                self._centroid(arguments)
+            elif constructions[0].name == "excenter":
+                self._excenter(arguments)
             elif constructions[0].name == "incenter":
                 self._incenter(arguments)
             else:
@@ -958,6 +1112,7 @@ class _JGEXElaborator:
         equation_start = len(self.equations)
         variable_start = len(self.variables)
         lemma_start = len(self.local_lemma_certificates)
+        denominator_start = len(self.denominators)
         names = self._elaborate_clause_raw(clause)
         introduced_variables = tuple(self.variables[variable_start:])
         if self.enable_affine_local_lemmas:
@@ -981,6 +1136,11 @@ class _JGEXElaborator:
                     _safe(item) for item in self.equations[equation_start:]
                 ),
                 local_lemma_count=(len(self.local_lemma_certificates) - lemma_start),
+                nonzero_conditions=tuple(
+                    f"{_safe(item)} != 0"
+                    for item in self.denominators[denominator_start:]
+                    if item != 0
+                ),
             )
         )
         return names
@@ -990,6 +1150,8 @@ class _JGEXElaborator:
             self._on_line(args)
         elif name == "on_circle":
             self._on_circle(args)
+        elif name == "on_circum":
+            self._on_circumcircle(args)
         elif name == "on_pline":
             self._on_parallel_line(args)
         elif name == "on_tline":
@@ -1000,6 +1162,8 @@ class _JGEXElaborator:
             self._angle_bisector(args)
         elif name == "on_bline":
             self._on_perpendicular_bisector(args)
+        elif name == "eqdistance":
+            self._eqdistance(args)
         elif name == "on_aline":
             self._on_angle_line(args)
         elif name == "eqangle3":
@@ -1049,6 +1213,35 @@ class _JGEXElaborator:
                 (determinant * determinant for determinant in determinants),
                 sp.Integer(0),
             )
+        elif channel == "eqangle" and len(points) == 8:
+            expression = self._equal_angle_polynomial(
+                (points[0], points[1]),
+                (points[2], points[3]),
+                (points[4], points[5]),
+                (points[6], points[7]),
+            )
+        elif channel == "eqratio" and len(points) == 8:
+            ab = self._distance_squared(points[0], points[1])
+            cd = self._distance_squared(points[2], points[3])
+            ef = self._distance_squared(points[4], points[5])
+            gh = self._distance_squared(points[6], points[7])
+            self.denominators.extend((cd, gh))
+            expression = ab * gh - cd * ef
+        elif channel == "midp" and len(points) == 3:
+            midpoint, left, right = points
+            residuals = tuple(
+                2 * value - left_value - right_value
+                for value, left_value, right_value in zip(
+                    self.coordinates[midpoint],
+                    self.coordinates[left],
+                    self.coordinates[right],
+                    strict=True,
+                )
+            )
+            expression = sum(
+                (residual * residual for residual in residuals),
+                sp.Integer(0),
+            )
         else:
             raise ValueError(f"unsupported JGEX goal: {channel} {points}")
         numerator, denominator = sp.together(expression).as_numer_denom()
@@ -1094,6 +1287,43 @@ class _RelationalJGEXElaborator(_JGEXElaborator):
             strict=True,
         ):
             self._append_equation(2 * coordinate - left_value - right_value)
+
+    def _centroid(self, args: tuple[str, ...]) -> None:
+        midpoint_a, midpoint_b, midpoint_c, centroid, a, b, c = args
+        self._midpoint((midpoint_a, b, c))
+        self._midpoint((midpoint_b, c, a))
+        self._midpoint((midpoint_c, a, b))
+        self._free_point(centroid)
+        for value, a_value, b_value, c_value in zip(
+            self.coordinates[centroid],
+            self.coordinates[a],
+            self.coordinates[b],
+            self.coordinates[c],
+            strict=True,
+        ):
+            self._append_equation(3 * value - a_value - b_value - c_value)
+
+    def _excenter(self, args: tuple[str, ...]) -> None:
+        center, a, b, c = args
+        self._free_point(center)
+        side_a = self._side_length(b, c)
+        side_b = self._side_length(c, a)
+        side_c = self._side_length(a, b)
+        denominator = sp.factor(-side_a + side_b + side_c)
+        self.denominators.append(denominator)
+        for value, a_value, b_value, c_value in zip(
+            self.coordinates[center],
+            self.coordinates[a],
+            self.coordinates[b],
+            self.coordinates[c],
+            strict=True,
+        ):
+            self._append_equation(
+                denominator * value
+                + side_a * a_value
+                - side_b * b_value
+                - side_c * c_value
+            )
 
     def _orthocenter(self, args: tuple[str, ...]) -> None:
         orthocenter, a, b, c = args
@@ -1276,6 +1506,7 @@ class _RelationalJGEXElaborator(_JGEXElaborator):
     ) -> tuple[str, ...]:
         equation_start = len(self.equations)
         variable_start = len(self.variables)
+        denominator_start = len(self.denominators)
         radius_a = self._side_length(macro.center_a, macro.radius_a)
         radius_b = self._side_length(macro.center_b, macro.radius_b)
         denominator = sp.factor(radius_a - radius_b)
@@ -1346,6 +1577,11 @@ class _RelationalJGEXElaborator(_JGEXElaborator):
                     _safe(item) for item in self.equations[equation_start:]
                 ),
                 local_lemma_count=1,
+                nonzero_conditions=tuple(
+                    f"{_safe(item)} != 0"
+                    for item in self.denominators[denominator_start:]
+                    if item != 0
+                ),
             )
         )
         return "cc_tangent", "on_line"
@@ -1353,6 +1589,95 @@ class _RelationalJGEXElaborator(_JGEXElaborator):
 
 def _safe(value: sp.Expr) -> str:
     return sp.sstr(value)
+
+
+def _goal_directed_construction_slice(
+    elaborator: _JGEXElaborator,
+    goal_points: tuple[str, ...],
+    equations: tuple[sp.Expr, ...],
+) -> tuple[
+    tuple[sp.Expr, ...],
+    tuple[sp.Expr, ...],
+    tuple[int, ...],
+    tuple[int, ...],
+]:
+    """Keep the typed backward dependency slice of a construction graph."""
+
+    blocks = tuple(elaborator.construction_blocks)
+    producers: dict[str, list[int]] = {}
+    for index, block in enumerate(blocks):
+        for output in block.outputs:
+            producers.setdefault(output, []).append(index)
+
+    frontier = list(goal_points)
+    visited_points: set[str] = set()
+    relevant: set[int] = set()
+    while frontier:
+        point = frontier.pop()
+        if point in visited_points:
+            continue
+        visited_points.add(point)
+        for index in producers.get(point, ()):
+            if index in relevant:
+                continue
+            relevant.add(index)
+            frontier.extend(blocks[index].inputs)
+
+    all_block_equations = {
+        equation for block in blocks for equation in block.surviving_equations
+    }
+    selected_block_equations = {
+        equation
+        for index in relevant
+        for equation in blocks[index].surviving_equations
+    }
+    global_equations = {
+        _safe(equation)
+        for equation in equations
+        if _safe(equation) not in all_block_equations
+    }
+    selected_equation_strings = selected_block_equations | global_equations
+    selected_equations = tuple(
+        equation for equation in equations if _safe(equation) in selected_equation_strings
+    )
+
+    all_block_denominators = {
+        condition.removesuffix(" != 0").strip()
+        for block in blocks
+        for condition in block.nonzero_conditions
+    }
+    selected_denominator_strings = {
+        condition.removesuffix(" != 0").strip()
+        for index in relevant
+        for condition in blocks[index].nonzero_conditions
+    }
+    denominator_by_string = {
+        _safe(item): item
+        for item in elaborator.denominators
+        if item != 0 and item.free_symbols
+    }
+    selected_denominator_strings.update(
+        key for key in denominator_by_string if key not in all_block_denominators
+    )
+    selected_denominators = tuple(
+        item
+        for key, item in denominator_by_string.items()
+        if key in selected_denominator_strings
+    )
+    relevant_indices = tuple(sorted(blocks[index].clause_index for index in relevant))
+    excluded_indices = tuple(
+        sorted(
+            block.clause_index
+            for index, block in enumerate(blocks)
+            if index not in relevant
+        )
+    )
+    return (
+        selected_equations,
+        selected_denominators,
+        relevant_indices,
+        excluded_indices,
+    )
 
 
 def _prepare_exact_system(
@@ -1619,13 +1944,48 @@ def inspect_jgex_chordal_buchberger(
     )
 
 
+def _reduce_with_nondegeneracy_saturation(
+    basis: sp.GroebnerBasis,
+    goal: sp.Expr,
+    denominators: tuple[tuple[str, sp.Expr], ...],
+    *,
+    max_rounds: int,
+) -> tuple[list[sp.Expr], sp.Expr, sp.Expr, tuple[str, ...]]:
+    """Reduce a goal in I:D^infinity while retaining an exact multiplier proof."""
+
+    quotients, remainder = basis.reduce(goal)
+    multiplier = sp.Integer(1)
+    assumptions_used: list[str] = []
+    if sp.expand(remainder) == 0 or not max_rounds:
+        return quotients, remainder, multiplier, tuple(assumptions_used)
+    for _ in range(max_rounds):
+        for key, denominator in denominators:
+            multiplier = sp.factor(multiplier * denominator)
+            assumptions_used.append(key)
+            quotients, remainder = basis.reduce(sp.expand(goal * multiplier))
+            if sp.expand(remainder) == 0:
+                return quotients, remainder, multiplier, tuple(assumptions_used)
+    return quotients, remainder, multiplier, tuple(assumptions_used)
+
+
 def lower_jgex_to_exact_obligation(
     text: str,
     *,
     enable_affine_local_lemmas: bool = False,
     enable_structural_lemmas: bool = True,
     representation: str = "explicit",
+    max_saturation_rounds: int = 1,
+    local_max_steps: int | None = None,
+    local_max_output_terms: int = 64,
+    local_max_resultant_degree: int = 1,
+    local_max_separator_variables: int | None = 12,
+    local_ordering_strategy: str = "min_fill",
 ) -> JGEXExactObligation:
+    base_representation = (
+        "relational"
+        if representation in {"local_relational", "goal_local_relational"}
+        else representation
+    )
     (
         elaborator,
         vocabulary,
@@ -1638,8 +1998,68 @@ def lower_jgex_to_exact_obligation(
         text,
         enable_affine_local_lemmas=enable_affine_local_lemmas,
         enable_structural_lemmas=enable_structural_lemmas,
-        representation=representation,
+        representation=base_representation,
     )
+    if max_saturation_rounds < 0:
+        raise ValueError("max_saturation_rounds must be non-negative")
+    original_equations = equations
+    goal_relevant_clause_indices: tuple[int, ...] = ()
+    excluded_clause_indices: tuple[int, ...] = ()
+    selected_denominators = tuple(elaborator.denominators)
+    if representation == "goal_local_relational":
+        (
+            equations,
+            selected_denominators,
+            goal_relevant_clause_indices,
+            excluded_clause_indices,
+        ) = _goal_directed_construction_slice(elaborator, points, equations)
+    denominators = {
+        _safe(item): item
+        for item in selected_denominators
+        if item != 0 and item.free_symbols
+    }
+    local_elimination: LocalEliminationResult | None = None
+    local_denominators: dict[str, sp.Expr] = {}
+    if representation in {"local_relational", "goal_local_relational"}:
+        protected = frozenset(goal_polynomial.free_symbols)
+        local_elimination = eliminate_local_linear_variables(
+            equations,
+            variables,
+            protected_variables=protected,
+            max_steps=local_max_steps,
+            max_output_terms=local_max_output_terms,
+            max_resultant_degree=local_max_resultant_degree,
+            max_separator_variables=local_max_separator_variables,
+            ordering_strategy=local_ordering_strategy,
+        )
+        if not local_elimination.exact_replay:
+            raise AssertionError("JGEX local elimination certificate did not replay")
+        equations = tuple(
+            sp.sympify(item) for item in local_elimination.remaining_polynomials
+        )
+        remaining_names = set(local_elimination.remaining_variables)
+        variables = tuple(item for item in variables if str(item) in remaining_names)
+        for step in local_elimination.steps:
+            for condition in step.nonzero_conditions:
+                expression = condition.removesuffix(" != 0").strip()
+                factor = sp.factor(sp.sympify(expression))
+                if factor != 0 and factor.free_symbols:
+                    local_denominators.setdefault(_safe(factor), factor)
+        for key, factor in local_denominators.items():
+            denominators.setdefault(key, factor)
+
+    canonical_denominators: dict[str, sp.Expr] = {}
+    ordered_denominators = (
+        *local_denominators.values(),
+        *(item for key, item in denominators.items() if key not in local_denominators),
+    )
+    for denominator in ordered_denominators:
+        numerator = sp.factor(sp.together(denominator).as_numer_denom()[0])
+        if numerator.could_extract_minus_sign():
+            numerator = -numerator
+        if numerator != 0 and numerator.free_symbols:
+            canonical_denominators.setdefault(_safe(numerator), numerator)
+
     direct_constraint: tuple[sp.Expr, sp.Expr] | None = None
     for equation in equations:
         if sp.expand(goal_polynomial - equation) == 0:
@@ -1648,6 +2068,8 @@ def lower_jgex_to_exact_obligation(
         if sp.expand(goal_polynomial + equation) == 0:
             direct_constraint = (equation, sp.Integer(-1))
             break
+    saturation_multiplier = sp.Integer(1)
+    saturation_assumptions_used: list[str] = []
     if sp.expand(goal_polynomial) == 0:
         quotients: list[sp.Expr] = []
         remainder = sp.Integer(0)
@@ -1664,11 +2086,31 @@ def lower_jgex_to_exact_obligation(
     else:
         if not variables:
             raise ValueError("exact bridge requires elimination variables")
-        basis = sp.groebner(equations, *variables, order="grevlex")
-        quotients, remainder = basis.reduce(goal_polynomial)
+        # Local projection can leave regularity factors that no longer occur in
+        # the terminal factor graph.  Treat those symbols as exact coefficient
+        # expressions so saturation can still replay without reintroducing all
+        # eliminated coordinates into the Groebner search ring.
+        basis = sp.groebner(
+            equations,
+            *variables,
+            order="grevlex",
+            **({"domain": sp.EX} if local_elimination is not None else {}),
+        )
         basis_expressions = tuple(sp.expand(poly.as_expr()) for poly in basis.polys)
+        (
+            quotients,
+            remainder,
+            saturation_multiplier,
+            used_assumptions,
+        ) = _reduce_with_nondegeneracy_saturation(
+            basis,
+            goal_polynomial,
+            tuple(canonical_denominators.items()),
+            max_rounds=max_saturation_rounds,
+        )
+        saturation_assumptions_used.extend(used_assumptions)
     replayed = sp.expand(
-        goal_polynomial
+        goal_polynomial * saturation_multiplier
         - sum(
             (quotient * item for quotient, item in zip(quotients, basis_expressions)),
             sp.Integer(0),
@@ -1677,23 +2119,28 @@ def lower_jgex_to_exact_obligation(
     if sp.expand(replayed - remainder) != 0:
         raise AssertionError("JGEX Groebner certificate did not replay")
 
-    denominators = {
-        _safe(item): item
-        for item in elaborator.denominators
-        if item != 0 and item.free_symbols
-    }
     certificate_material = "|".join(
         (
             channel,
             *points,
             *vocabulary,
             *elaborator.normalization_assumptions,
+            *(_safe(item) for item in original_equations),
             *(_safe(item) for item in equations),
             *denominators,
             _safe(goal_polynomial),
             *(_safe(item) for item in basis_expressions),
             *(_safe(item) for item in quotients),
             _safe(remainder),
+            _safe(saturation_multiplier),
+            *saturation_assumptions_used,
+            representation,
+            *(
+                "local_elimination:" + item.certificate_sha256
+                for item in (
+                    local_elimination.steps if local_elimination is not None else ()
+                )
+            ),
             *(
                 "local_affine:"
                 + ":".join(
@@ -1721,20 +2168,40 @@ def lower_jgex_to_exact_obligation(
             ),
         )
     )
+    local_replayed = bool(
+        local_elimination is None or local_elimination.exact_replay
+    )
+    structural_replayed = all(
+        item.replayed and item.composition_replayed
+        for item in elaborator.structural_lemma_certificates
+    )
     return JGEXExactObligation(
         channel=channel,
         points=points,
         construction_vocabulary=tuple(sorted(set(vocabulary))),
         normalization_assumptions=tuple(elaborator.normalization_assumptions),
-        construction_equations=tuple(_safe(item) for item in equations),
+        construction_equations=tuple(_safe(item) for item in original_equations),
         nondegeneracy_conditions=tuple(f"{key} != 0" for key in sorted(denominators)),
         goal_polynomial=_safe(goal_polynomial),
         groebner_basis=tuple(_safe(item) for item in basis_expressions),
         quotient_certificate=tuple(_safe(item) for item in quotients),
         remainder=_safe(remainder),
-        exact_replay=sp.expand(remainder) == 0,
+        saturation_multiplier=_safe(saturation_multiplier),
+        saturation_assumptions_used=tuple(saturation_assumptions_used),
+        exact_replay=(
+            sp.expand(remainder) == 0 and local_replayed and structural_replayed
+        ),
         certificate_sha256=hashlib.sha256(certificate_material.encode()).hexdigest(),
         local_lemma_certificates=tuple(elaborator.local_lemma_certificates),
         structural_lemma_certificates=tuple(elaborator.structural_lemma_certificates),
         construction_blocks=tuple(elaborator.construction_blocks),
+        reduction_strategy=(
+            "typed_local_elimination_then_groebner"
+            if local_elimination is not None
+            else "global_groebner"
+        ),
+        reduced_construction_equations=tuple(_safe(item) for item in equations),
+        local_elimination=local_elimination,
+        goal_relevant_clause_indices=goal_relevant_clause_indices,
+        excluded_clause_indices=excluded_clause_indices,
     )

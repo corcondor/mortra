@@ -54,6 +54,16 @@ def normalize_legacy_construction(
 
     output_variables = tuple(definition.output_points)
     if len(clause_points) != len(output_variables):
+        # Some legacy definitions expose only their primary output even though
+        # the clause binds all construction intermediates.  Recover the full
+        # output role from the declared input role instead of naming a macro.
+        declared_inputs = set(getattr(definition, "input_points", ()) or ())
+        inferred_outputs = tuple(
+            variable for variable in definition.args if variable not in declared_inputs
+        )
+        if len(clause_points) == len(inferred_outputs):
+            output_variables = inferred_outputs
+    if len(clause_points) != len(output_variables):
         return construction, JGEXNormalizationReport(unresolved_constructions=1)
 
     definition_args = tuple(definition.args)

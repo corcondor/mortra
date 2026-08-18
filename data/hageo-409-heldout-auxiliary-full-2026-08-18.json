@@ -10,13 +10,16 @@
     "scheduler": "unified bidirectional priority queue",
     "search_budget": {
       "auxiliary_depth": 1,
-      "candidate_paths": 16,
+      "candidate_paths_per_prefix": 16,
       "candidate_beam": 6,
+      "beam_ranking": "ar-residual-pareto",
+      "controller": null,
       "incidence_oversample_per_family": 16,
-      "workers": 4,
-      "timeout_seconds_per_problem": 300.0
+      "workers": 8,
+      "timeout_seconds_per_problem": 600.0
     },
-    "paper_comparability": "bounded MORTRA ablation; not HAGeo N=6, K=2048/8192"
+    "paper_comparability": "configurable MORTRA ablation; report max_depth and evaluated paths rather than claiming HAGeo N=6, K=2048/8192",
+    "timeout_semantics": "right-censored unknown; never counted as a wrong answer or a proof"
   },
   "summary": {
     "baseline_total": 89,
@@ -36,7 +39,11 @@
     ],
     "heldout_portfolio_solved": 37,
     "heldout_portfolio_score": 0.4157303370786517,
-    "time_censored": 16,
+    "certified_score_lower_bound": 0.4157303370786517,
+    "optimistic_score_upper_bound": 0.5056179775280899,
+    "completed_auxiliary_searches": 53,
+    "conditional_new_solution_rate": 0.16981132075471697,
+    "time_censored": 8,
     "score_is_lower_bound": true
   },
   "selected_problem_names": [
@@ -141,8 +148,9 @@
     },
     {
       "problem": "2005CTSTp11b",
-      "status": "timeout",
-      "elapsed_seconds": 300.0286866999995
+      "status": "right_censored_timeout",
+      "solved": null,
+      "elapsed_seconds": 600.0320004000023
     },
     {
       "problem": "2006G4",
@@ -220,8 +228,9 @@
     },
     {
       "problem": "2011G3",
-      "status": "timeout",
-      "elapsed_seconds": 300.03422370000044
+      "status": "right_censored_timeout",
+      "solved": null,
+      "elapsed_seconds": 600.0594872000001
     },
     {
       "problem": "2011G5",
@@ -289,8 +298,9 @@
     },
     {
       "problem": "2015CTSTp9",
-      "status": "timeout",
-      "elapsed_seconds": 300.0460617000026
+      "status": "right_censored_timeout",
+      "solved": null,
+      "elapsed_seconds": 600.0793661999996
     },
     {
       "problem": "2015IranTSTp18",
@@ -354,8 +364,9 @@
     },
     {
       "problem": "2016USATSTSTp6",
-      "status": "timeout",
-      "elapsed_seconds": 300.0476168999994
+      "status": "right_censored_timeout",
+      "solved": null,
+      "elapsed_seconds": 600.0768528999979
     },
     {
       "problem": "2017AsiaPacificMOp2",
@@ -401,8 +412,16 @@
     },
     {
       "problem": "2017G4",
-      "status": "timeout",
-      "elapsed_seconds": 300.0403686999998
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 421,
+      "incidence_heuristic": 7,
+      "elapsed_seconds": 395.1517937999961,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2017G4.json",
+      "artifact_sha256": "a0917c04cbae914cc576895c8518c9ab82dc429cf44f9b56ee0b17bb643817c1"
     },
     {
       "problem": "2017USAMOp3",
@@ -430,8 +449,9 @@
     },
     {
       "problem": "2019IranTSTp15",
-      "status": "timeout",
-      "elapsed_seconds": 300.05091879999964
+      "status": "right_censored_timeout",
+      "solved": null,
+      "elapsed_seconds": 600.0466732999994
     },
     {
       "problem": "2019USATSTSTp5",
@@ -485,8 +505,16 @@
     },
     {
       "problem": "2021ARMOg10p8",
-      "status": "timeout",
-      "elapsed_seconds": 300.03761029999805
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 377,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 475.7773098999969,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2021ARMOg10p8.json",
+      "artifact_sha256": "848f4b2ea677c94187869a4f0ac75fc66fc4c8c20ca8c74473cd085d80fe84dc"
     },
     {
       "problem": "2021CGMOp2",
@@ -514,8 +542,9 @@
     },
     {
       "problem": "2021GOWACAp5",
-      "status": "timeout",
-      "elapsed_seconds": 300.029905600004
+      "status": "right_censored_timeout",
+      "solved": null,
+      "elapsed_seconds": 600.0557458999974
     },
     {
       "problem": "2021IranTSTp6",
@@ -531,8 +560,16 @@
     },
     {
       "problem": "2021IsraelOlympicRev",
-      "status": "timeout",
-      "elapsed_seconds": 300.05960649999906
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 416,
+      "incidence_heuristic": 1,
+      "elapsed_seconds": 368.99365430000034,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2021IsraelOlympicRev.json",
+      "artifact_sha256": "10e5599bdc10d89dae024217e2c712626041f6686c912be2e72adb72f58a514f"
     },
     {
       "problem": "2021SilkRoadp3",
@@ -576,13 +613,29 @@
     },
     {
       "problem": "2022G5",
-      "status": "timeout",
-      "elapsed_seconds": 300.03733289999946
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 417,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 537.9103245000006,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2022G5.json",
+      "artifact_sha256": "b0af519a7142d0a3c1a60fdff8a44e8d2194028f765c4873abbcfab7695312a3"
     },
     {
       "problem": "2022KoMaLA805",
-      "status": "timeout",
-      "elapsed_seconds": 300.0474052999998
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 432,
+      "incidence_heuristic": 2,
+      "elapsed_seconds": 418.6512766999949,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2022KoMaLA805.json",
+      "artifact_sha256": "4b11c5e439c3347f9ed8e2306a06aa801a1456892d405f8784279ac46d90a237"
     },
     {
       "problem": "2023IMOp6",
@@ -598,8 +651,16 @@
     },
     {
       "problem": "2023MOSTMockp2",
-      "status": "timeout",
-      "elapsed_seconds": 300.0462153999979
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 404,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 437.76178020000225,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2023MOSTMockp2.json",
+      "artifact_sha256": "c32966c4cf1e7138cbc8cd1e143c51e24d5927d99df39f6d7dd1ad5792ad9a3b"
     },
     {
       "problem": "2023RMMSLG3",
@@ -615,13 +676,22 @@
     },
     {
       "problem": "2023SAGFp8",
-      "status": "timeout",
-      "elapsed_seconds": 300.05045999999857
+      "status": "right_censored_timeout",
+      "solved": null,
+      "elapsed_seconds": 600.0765268999967
     },
     {
       "problem": "2023SerbiaMOp6",
-      "status": "timeout",
-      "elapsed_seconds": 300.0355564000056
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 459,
+      "incidence_heuristic": 4,
+      "elapsed_seconds": 351.5186781999946,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2023SerbiaMOp6.json",
+      "artifact_sha256": "97d6d1dba9dfc1ba4be371994e5a5995029d03cd42726b473c17b9a8e7c0441e"
     },
     {
       "problem": "2023VietnamTSTp3",
@@ -673,8 +743,16 @@
     },
     {
       "problem": "2024PlanetCupp10",
-      "status": "timeout",
-      "elapsed_seconds": 300.0573966000011
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 16,
+      "incidence_checked": 351,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 380.2226210000008,
+      "artifact": "data/hageo-409-heldout-auxiliary-full-2026-08-18/2024PlanetCupp10.json",
+      "artifact_sha256": "98357a07dcfda2057dd6597e323bb66ea3fa8493da84eb7a3245fa167c807cbc"
     },
     {
       "problem": "2024VietnamTSTp5",
@@ -714,8 +792,9 @@
     },
     {
       "problem": "ShuZhiMiGeo309",
-      "status": "timeout",
-      "elapsed_seconds": 300.0401808000024
+      "status": "right_censored_timeout",
+      "solved": null,
+      "elapsed_seconds": 600.0546001999974
     },
     {
       "problem": "ShuZhiMiGeo489",
