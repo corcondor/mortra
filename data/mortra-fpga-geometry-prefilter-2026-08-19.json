@@ -1,0 +1,70 @@
+{
+  "experiment": "mortra_fpga_geometry_prefilter_post_synthesis",
+  "protocol": {
+    "uses_external_llm": false,
+    "truth_plane_changed": false,
+    "acceptance_requires_symbolic_replay": true,
+    "hardware_status": "rtl_simulation_and_xilinx_7series_post_synthesis_only",
+    "physical_fpga_board_measured": false,
+    "pipeline_initiation_interval_cycles": 1,
+    "pipeline_latency_cycles": 1,
+    "coordinate_width": 18,
+    "synthesis_target": "Xilinx 7-series primitive mapping"
+  },
+  "equivalence": {
+    "vectors": 10000,
+    "mismatches": 0,
+    "first_mismatch_indices": [],
+    "simulation_seconds": 2.599222599994391
+  },
+  "synthesis": {
+    "yosys_version": "Yosys 0.68 (git sha1 38e001a6f, Release, Clang /workspace/YoWASP/yosys/wasi-sdk-33.0-x86_64-linux/share/cmake/../..//bin/clang++ 22.1.0)",
+    "wires": 218,
+    "wire_bits": 2812,
+    "cells": 532,
+    "cell_types": {
+      "BUFG": 1,
+      "CARRY4": 70,
+      "DSP48E1": 12,
+      "FDRE": 2,
+      "IBUF": 149,
+      "LUT2": 227,
+      "LUT3": 7,
+      "LUT5": 1,
+      "LUT6": 60,
+      "MUXF7": 1,
+      "OBUF": 2
+    }
+  },
+  "measured_cpu": {
+    "candidate_count": 841964,
+    "before_attempt_seconds": 86.18636209999386,
+    "after_lazy_attempt_seconds": 20.62304610000865,
+    "observed_software_speedup": 4.179128615726544,
+    "before_enumeration_seconds_profiled": 69.82963720000001,
+    "after_enumeration_seconds_profiled": 7.0092039,
+    "enumeration_speedup_profiled": 9.962563252012115,
+    "old_generated_role_signature_calls": 1641027,
+    "new_ranked_candidate_calls": 3072
+  },
+  "fpga_throughput_model": {
+    "100.0": {
+      "candidates_per_second": 100000000.0,
+      "seconds_for_measured_trajectory": 0.00841964
+    },
+    "200.0": {
+      "candidates_per_second": 200000000.0,
+      "seconds_for_measured_trajectory": 0.00420982
+    }
+  },
+  "end_to_end_bound_after_lazy": {
+    "amdahl_max_if_enumeration_were_free": 1.5148586120673226,
+    "scope": "candidate tuple/precondition/rank kernel only; numerical construction, incidence profiling, PCIe transfer, and Yuclid remain on CPU"
+  },
+  "artifacts": {
+    "verilog": "research/fpga/generated/mortra_geometry_prefilter.v",
+    "verilog_sha256": "2fa8ae459f3ef6bc111607a4c444b70f4f04b6eb62db8d2915bfac0d87084f6f",
+    "yosys_stat": "research/fpga/generated/mortra_geometry_prefilter-xc7-stat.json",
+    "cpu_profile_summary": "data/hageo-passk-cpu-profile-summary-2026-08-19.json"
+  }
+}

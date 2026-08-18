@@ -750,14 +750,7 @@ def enumerate_typed_candidates(
         family_points = (
             ordered_points[:10] if family.input_arity >= 5 else ordered_points
         )
-        for inputs in _family_inputs(family_points, family):
-            if not family.allow_repeated_inputs and len(set(inputs)) != len(inputs):
-                continue
-            if required_input_points and not required_input_points.intersection(inputs):
-                continue
-            key = f"{family.name}({','.join(inputs)})"
-            if key in used_keys:
-                continue
+        def ranked_candidate(inputs: tuple[str, ...]) -> TypedConstructionCandidate:
             pair_count = 0
             for left, right in combinations(inputs, 2):
                 if right in graph.get(left, set()):
@@ -838,7 +831,26 @@ def enumerate_typed_candidates(
                 family.name,
                 inputs,
             )
-            candidate = TypedConstructionCandidate(family.name, inputs, rank)
+            return TypedConstructionCandidate(family.name, inputs, rank)
+
+        for inputs in _family_inputs(family_points, family):
+            if not family.allow_repeated_inputs and len(set(inputs)) != len(inputs):
+                continue
+            if required_input_points and not required_input_points.intersection(inputs):
+                continue
+            key = f"{family.name}({','.join(inputs)})"
+            if key in used_keys:
+                continue
+            # HAGeo Pass@K uses seeded random ranking.  Its shuffle and role
+            # balancing only inspect the family and input tuple, so computing
+            # the expensive 19-field structural rank for every rejected tuple
+            # is unnecessary.  The selected prefix is ranked below, preserving
+            # the exact candidate order and downstream tie-break semantics.
+            candidate = (
+                TypedConstructionCandidate(family.name, inputs, ())
+                if ranking == "random"
+                else ranked_candidate(inputs)
+            )
             if numerical_precondition_holds(candidate, coordinates):
                 family_candidates.append(candidate)
         if ranking == "structural":
@@ -856,13 +868,15 @@ def enumerate_typed_candidates(
             random.Random(f"{seed}|{family.name}").shuffle(family_candidates)
         else:
             raise ValueError(f"unknown ranking: {ranking}")
+        prefix = _role_balanced_prefix(
+            family_candidates,
+            family,
+            generated_points,
+            per_family_limit,
+        )
         selected.extend(
-            _role_balanced_prefix(
-                family_candidates,
-                family,
-                generated_points,
-                per_family_limit,
-            )
+            ranked_candidate(candidate.inputs) if ranking == "random" else candidate
+            for candidate in prefix
         )
     if ranking == "random":
         random.Random(f"{seed}|all-families").shuffle(selected)

@@ -321,6 +321,36 @@ def test_random_ranking_is_seeded_and_keeps_the_same_budget() -> None:
     ]
 
 
+def test_random_ranking_preserves_full_structural_rank_after_lazy_selection() -> None:
+    common = dict(
+        points=("a", "b", "c", "d", "e"),
+        graph={"a": {"b"}, "b": {"a", "c"}, "c": {"b"}, "d": set(), "e": set()},
+        goal_multiplicity={"a": 2, "d": 1},
+        proof_relevance={"c": 0.75},
+        generated_points={"e"},
+        families=(ConstructionFamily("reflect", 3, "head_pair"),),
+        role_weights={("a", "b"): 3, ("c", "e"): 4},
+    )
+    exhaustive = enumerate_typed_candidates(
+        **common,
+        per_family_limit=10_000,
+        ranking="structural",
+    )
+    random_candidates = enumerate_typed_candidates(
+        **common,
+        per_family_limit=7,
+        ranking="random",
+        seed=19,
+    )
+    exhaustive_ranks = {candidate.key: candidate.structural_rank for candidate in exhaustive}
+
+    assert random_candidates
+    assert all(
+        candidate.structural_rank == exhaustive_ranks[candidate.key]
+        for candidate in random_candidates
+    )
+
+
 def test_numerical_filter_rejects_degenerate_constructions_only() -> None:
     coordinates = {
         "a": (0.0, 0.0),
