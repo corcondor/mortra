@@ -1,0 +1,82 @@
+{
+  "experiment": "typed_atom_alignment_and_incremental_prefix_construction",
+  "date": "2026-08-18",
+  "uses_external_llm": false,
+  "uses_problem_or_answer_memory": false,
+  "typed_atom_alignment": {
+    "problem": "2015_p3",
+    "control": {
+      "mode": "alignment_off_candidate_gate_combined",
+      "solved": true,
+      "solved_path": [
+        "intersection_lc(a,f,h)->d"
+      ],
+      "evaluated_paths": 12,
+      "error_count": 0,
+      "wall_seconds": 21.6707853
+    },
+    "treatment": {
+      "mode": "symmetry_aware_typed_atom_alignment_candidate_gate_combined",
+      "solved": true,
+      "solved_path": [
+        "intersection_lc(a,f,h)->d"
+      ],
+      "evaluated_paths": 27,
+      "error_count": 0,
+      "direct_match_candidates": 0,
+      "relation_reachable_candidates": 256,
+      "wall_seconds": 28.3116062
+    },
+    "evaluated_path_delta": 15,
+    "wall_seconds_delta": 6.6408209,
+    "wall_seconds_increase_ratio": 0.3064411745,
+    "hypothesis_supported": false,
+    "diagnosis": "The 24 flattened one-step backward demands are alternative obligations. The successful construction contributes relations several deductions before the final goal, so no candidate directly unified with a demand. Treating alternatives as one bag promoted irrelevant local overlaps."
+  },
+  "incremental_prefix_construction": {
+    "problem": "2000_p6",
+    "search_budget": {
+      "branch_limit": 24,
+      "beam_width": 8,
+      "max_depth": 2,
+      "max_workers": 8
+    },
+    "prefix_replay": {
+      "solved": true,
+      "solved_path": [
+        "foot(i,z,x2)->d",
+        "reflect(t1,i,d)->e"
+      ],
+      "evaluated_paths": 142,
+      "error_count": 0,
+      "wall_seconds": 253.474479,
+      "raw_artifact_sha256": "33a82f66fb7d2a5cf9d753da1b2bc84630b5ef481b49e86b79aba88b8f3344cf"
+    },
+    "incremental": {
+      "solved": true,
+      "solved_path": [
+        "foot(i,z,x2)->d",
+        "reflect(t1,i,d)->e"
+      ],
+      "evaluated_paths": 142,
+      "error_count": 0,
+      "wall_seconds": 241.5736574,
+      "cached_state_count": 143,
+      "cache_hits": 161,
+      "cache_misses": 152,
+      "successful_transition_count": 142,
+      "transition_seconds": 0.4140777,
+      "raw_artifact_sha256": "e962fa5f560ba08fdfdf4ec7bfe27247b433ef3c17d9366615dd7a7209bceff9"
+    },
+    "exact_verifier_input_sha256": "f47ce96b7145fd4a46bf82c570b06f1c78f337e60bcab29a182e8caabc4b9172",
+    "exact_verifier_input_equal": true,
+    "replay_transitions_for_evaluated_paths": 267,
+    "unique_prefix_transitions_for_evaluated_paths": 142,
+    "transition_reduction": 125,
+    "transition_reduction_ratio": 0.468164794,
+    "wall_seconds_delta": -11.9008216,
+    "wall_seconds_reduction_ratio": 0.0469507686,
+    "hypothesis_supported": true,
+    "scope": "One calibrated depth-two problem; this does not establish a portfolio-wide speedup."
+  }
+}

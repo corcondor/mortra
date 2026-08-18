@@ -172,6 +172,19 @@ def _unify(pattern: Atom, ground: Atom, initial: Mapping[str, str] | None = None
     return next(_unify_all(pattern, ground, initial), None)
 
 
+def atom_pattern_unifications(
+    pattern: Atom,
+    ground: Atom,
+    initial: Mapping[str, str] | None = None,
+) -> tuple[tuple[tuple[str, str], ...], ...]:
+    """Return all finite symmetry-aware substitutions for a typed atom."""
+
+    return tuple(
+        tuple(sorted(substitution.items()))
+        for substitution in _unify_all(pattern, ground, initial)
+    )
+
+
 def _instantiate(pattern: Atom, substitution: Mapping[str, str]) -> Atom | None:
     values: list[str] = []
     for value in pattern.arguments:

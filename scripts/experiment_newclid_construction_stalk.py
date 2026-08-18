@@ -51,6 +51,10 @@ from newclid.jgex.to_newclid import add_clause_to_problem
 from newclid.all_rules import DEFAULT_RULES
 
 from worker.backend.jgex_legacy_normalizer import normalize_legacy_formulation
+from worker.backend.incremental_prefix_state import (
+    PrefixStateCache,
+    replay_prefix_state,
+)
 from worker.backend.geometry_relation_channels import (
     AssertionKey,
     RelationFrontierWitness,
@@ -68,6 +72,11 @@ from worker.backend.geometry_proof_hypergraph import (
 from worker.backend.geometry_ar_residual import yuclid_ar_residual
 from worker.backend.differentiable_proof_controller import (
     DifferentiableProofController,
+)
+from worker.backend.typed_candidate_alignment import (
+    UNREACHABLE_DISTANCE,
+    align_candidate_atoms,
+    instantiate_relation_templates,
 )
 from worker.backend.typed_geometry_stalk import (
     DEFAULT_POINT_FAMILIES,
@@ -90,6 +99,27 @@ from worker.backend.typed_geometry_stalk import (
 
 
 DEFINITIONS = JGEXDefinition.to_dict(ALL_JGEX_CONSTRUCTIONS)
+
+
+def construction_relation_atoms(
+    family: str,
+    output: str,
+    inputs: tuple[str, ...],
+) -> tuple[Atom, ...]:
+    """Instantiate the formal conclusion atoms declared by a JGEX construction."""
+
+    definition = DEFINITIONS[family]
+    templates: list[Atom] = []
+    for clause in definition.clauses:
+        for construction in clause.constructions:
+            tokens = tuple(str(construction.string).split())
+            if tokens:
+                templates.append(Atom(tokens[0], tokens[1:]))
+    return instantiate_relation_templates(
+        tuple(map(str, definition.args)),
+        templates,
+        (output, *inputs),
+    )
 
 
 @dataclass(frozen=True)
@@ -290,6 +320,35 @@ def build_branch(base_problem: Any, steps: tuple[ConstructionStep, ...], *, seed
     return problem
 
 
+def extend_prefix_branch(
+    parent_problem: Any,
+    step: ConstructionStep,
+    path: tuple[ConstructionStep, ...],
+    *,
+    seed: int,
+) -> Any:
+    problem = parent_problem.model_copy(deep=True)
+    rng = np.random.default_rng(branch_seed(seed, path))
+    clause = construction_clause(step)
+    problem, _ = add_clause_to_problem(problem, clause, DEFINITIONS, rng, 5)
+    return problem
+
+
+def build_prefix_stable_branch(
+    base_problem: Any,
+    steps: tuple[ConstructionStep, ...],
+    *,
+    seed: int,
+) -> Any:
+    return replay_prefix_state(
+        base_problem,
+        steps,
+        transition=lambda parent, step, path: extend_prefix_branch(
+            parent, step, path, seed=seed
+        ),
+    )
+
+
 def construction_clause(step: ConstructionStep) -> JGEXClause:
     return JGEXClause.from_str(
         f"{step.output} = {step.family} {step.output} " + " ".join(step.inputs)
@@ -427,6 +486,9 @@ def candidate_extensions(
     candidate_gate: str = "off",
     candidate_reachable_channels: set[str] | None = None,
     candidate_target_channels: set[str] | None = None,
+    candidate_alignment: str = "off",
+    candidate_relation_distances: dict[str, dict[str, int]] | None = None,
+    current_problem: Any | None = None,
 ) -> tuple[list[ConstructionStep], dict[str, Any]]:
     generated = {step.output for step in steps}
     points = base_points | generated
@@ -442,7 +504,11 @@ def candidate_extensions(
         tuple((step.family, step.output, step.inputs) for step in steps),
     )
     used = {f"{step.family}({','.join(step.inputs)})" for step in steps}
-    current_problem = build_branch(base_problem, steps, seed=seed)
+    current_problem = (
+        current_problem
+        if current_problem is not None
+        else build_branch(base_problem, steps, seed=seed)
+    )
     coordinates = {
         str(point.name): (float(point.num.x), float(point.num.y))
         for point in current_problem.points
@@ -489,19 +555,68 @@ def candidate_extensions(
         ),
     )
     candidates = list(gate_result.candidates)
+    output = next_point_name(points)
+    if candidate_alignment == "typed-atom":
+        alignment_by_key = {
+            candidate.key: align_candidate_atoms(
+                construction_relation_atoms(
+                    candidate.family, output, candidate.inputs
+                ),
+                relation_demands,
+                candidate_relation_distances or {},
+            )
+            for candidate in candidates
+        }
+        candidates.sort(
+            key=lambda candidate: (
+                alignment_by_key[candidate.key].rank,
+                candidate.structural_rank,
+            )
+        )
+    elif candidate_alignment == "off":
+        alignment_by_key = {}
+    elif candidate_alignment != "off":
+        raise ValueError(f"unknown candidate alignment: {candidate_alignment}")
     if branch_limit > 0:
-        family_order = [family.name for family in families]
+        family_order = (
+            list(dict.fromkeys(candidate.family for candidate in candidates))
+            + [
+                family.name
+                for family in families
+                if family.name not in {candidate.family for candidate in candidates}
+            ]
+            if candidate_alignment == "typed-atom"
+            else [family.name for family in families]
+        )
         candidates = schema_first_score_fill(
             candidates,
             category=lambda candidate: candidate.family,
             category_order=family_order,
             limit=branch_limit,
         )
-    output = next_point_name(points)
+    alignment_values = tuple(alignment_by_key.values())
     extension_audit = {
         "mode": candidate_gate,
         "relation_reachability": asdict(gate_result.audit),
         "selected_after_branch_limit": len(candidates),
+        "candidate_alignment": {
+            "mode": candidate_alignment,
+            "direct_match_candidates": sum(
+                item.direct_match_count > 0 for item in alignment_values
+            ),
+            "reachable_candidates": sum(
+                item.best_relation_distance < UNREACHABLE_DISTANCE
+                for item in alignment_values
+            ),
+            "top_candidates": [
+                {
+                    "candidate": candidate.key,
+                    **alignment_by_key[candidate.key].to_dict(),
+                }
+                for candidate in candidates[:12]
+                if candidate.key in alignment_by_key
+            ],
+        },
     }
     return [
         ConstructionStep(
@@ -775,6 +890,18 @@ def main() -> None:
         default="off",
         help="Apply relation reachability and/or executable construction preflight.",
     )
+    parser.add_argument(
+        "--candidate-alignment",
+        choices=("off", "typed-atom"),
+        default="off",
+        help="Rank candidates by symmetry-aware unification with open typed atoms.",
+    )
+    parser.add_argument(
+        "--branch-build-mode",
+        choices=("legacy", "prefix-replay", "incremental"),
+        default="legacy",
+        help="Choose whole-path replay or prefix-stable incremental state reuse.",
+    )
     parser.add_argument("--per-family-limit", type=int, default=8)
     parser.add_argument("--branch-limit", type=int, default=32)
     parser.add_argument("--beam-width", type=int, default=7)
@@ -904,6 +1031,14 @@ def main() -> None:
     if args.goal_directed_families:
         families = goal_relevant_families(families, transition_distances)
 
+    prefix_cache = PrefixStateCache(
+        base_problem,
+        key=lambda step: step.key,
+        transition=lambda parent, step, path: extend_prefix_branch(
+            parent, step, path, seed=args.seed
+        ),
+    )
+
     frontier: list[tuple[tuple[ConstructionStep, ...], tuple[Atom, ...]]] = [
         (tuple(), baseline_demands)
     ]
@@ -918,6 +1053,14 @@ def main() -> None:
         seen_paths: set[tuple[str, ...]] = set()
         candidate_paths: list[tuple[ConstructionStep, ...]] = []
         for parent, parent_demands in frontier:
+            if args.branch_build_mode == "incremental":
+                current_problem = prefix_cache.build(parent)
+            elif args.branch_build_mode == "prefix-replay":
+                current_problem = build_prefix_stable_branch(
+                    base_problem, parent, seed=args.seed
+                )
+            else:
+                current_problem = None
             candidate_target_channels = {
                 demand.predicate.lower() for demand in parent_demands
             } or {channel.lower() for channel in goal_channels}
@@ -926,6 +1069,17 @@ def main() -> None:
                     rule_channels,
                     goal_channels=candidate_target_channels,
                 )
+            )
+            candidate_relation_distances = (
+                {
+                    target: backward_relation_distances(
+                        rule_channels,
+                        goal_channels={target},
+                    )
+                    for target in candidate_target_channels
+                }
+                if args.candidate_alignment == "typed-atom"
+                else {}
             )
             extensions, gate_audit = candidate_extensions(
                 base_problem=base_problem,
@@ -946,6 +1100,9 @@ def main() -> None:
                 candidate_gate=args.candidate_gate,
                 candidate_reachable_channels=candidate_reachable_channels,
                 candidate_target_channels=candidate_target_channels,
+                candidate_alignment=args.candidate_alignment,
+                candidate_relation_distances=candidate_relation_distances,
+                current_problem=current_problem,
             )
             candidate_gate_audits.append(
                 {
@@ -972,14 +1129,25 @@ def main() -> None:
                     for steps in batch:
                         preflight_checked_count += 1
                         try:
-                            prepared_problem = build_branch(
-                                base_problem, steps, seed=args.seed
-                            )
+                            if args.branch_build_mode == "incremental":
+                                prepared_problem = prefix_cache.build(steps)
+                            elif args.branch_build_mode == "prefix-replay":
+                                prepared_problem = build_prefix_stable_branch(
+                                    base_problem, steps, seed=args.seed
+                                )
+                            else:
+                                prepared_problem = build_branch(
+                                    base_problem, steps, seed=args.seed
+                                )
                         except Exception as exc:
                             preflight_rejected_by_error[type(exc).__name__] += 1
                         else:
                             signature = tuple(step.key for step in steps)
-                            prepared_problems[signature] = prepared_problem
+                            prepared_problems[signature] = (
+                                prepared_problem.model_copy(deep=True)
+                                if args.branch_build_mode == "incremental"
+                                else prepared_problem
+                            )
                             executable_batch.append(steps)
                             preflight_retained_count += 1
                     batch = executable_batch
@@ -1077,6 +1245,8 @@ def main() -> None:
             ),
             "goal_channels": sorted(goal_channels),
             "candidate_gate": args.candidate_gate,
+            "candidate_alignment": args.candidate_alignment,
+            "branch_build_mode": args.branch_build_mode,
             "proof_hypergraph_relevance": proof_relevance,
             "same_morphism_input_orbit_priority": True,
             "obligation_guided": args.obligation_guided,
@@ -1153,12 +1323,36 @@ def main() -> None:
             ),
             "audits": candidate_gate_audits,
         },
+        "candidate_alignment": {
+            "mode": args.candidate_alignment,
+            "direct_match_candidates": sum(
+                audit["candidate_alignment"]["direct_match_candidates"]
+                for audit in candidate_gate_audits
+            ),
+            "reachable_candidates": sum(
+                audit["candidate_alignment"]["reachable_candidates"]
+                for audit in candidate_gate_audits
+            ),
+        },
+        "prefix_state_cache": asdict(prefix_cache.audit),
         "records": [asdict(record) for record in all_records],
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     if solved_steps is not None:
+        if args.branch_build_mode == "incremental":
+            confirmation_problem = prefix_cache.build(solved_steps).model_copy(
+                deep=True
+            )
+        elif args.branch_build_mode == "prefix-replay":
+            confirmation_problem = build_prefix_stable_branch(
+                base_problem, solved_steps, seed=args.seed
+            )
+        else:
+            confirmation_problem = build_branch(
+                base_problem, solved_steps, seed=args.seed
+            )
         confirmation = verify_problem(
-            build_branch(base_problem, solved_steps, seed=args.seed),
+            confirmation_problem,
             yuclid_exe=args.yuclid_exe.resolve(),
             ar_profile=args.ar_profile,
         )
@@ -1171,6 +1365,7 @@ def main() -> None:
             "status": confirmation.status,
             "all_deduction_count": confirmation.all_deduction_count,
             "goal_deduction_count": confirmation.goal_deduction_count,
+            "input_sha256": confirmation.input_sha256,
             "proof_sha256": confirmation.proof_sha256,
             "proof_path": proof_path.resolve().relative_to(ROOT).as_posix(),
         }
@@ -1184,6 +1379,7 @@ def main() -> None:
                     "evaluated_paths": artifact["evaluated_paths"],
                     "error_count": artifact["error_count"],
                     "candidate_gate": artifact["candidate_gate"],
+                    "candidate_alignment": artifact["candidate_alignment"],
                 },
                 indent=2,
             )
