@@ -20,6 +20,7 @@ on:
       - "data/open-goal-feedback-*.json"
       - "data/differentiable-*.json"
       - "data/candidate-gate-*.json"
+      - "data/proof-dag-*.json"
       - "data/chordal-lift-reproduction-manifest-*.json"
       - "data/mortra-reversible-synthesis-reproduction-manifest-*.json"
       - "data/yuclid-imo-ag-30-all-ar-*.json"
@@ -35,6 +36,10 @@ on:
       - "scripts/experiment_differentiable_proof_controller.py"
       - "scripts/experiment_candidate_gate_ablation.py"
       - "scripts/verify_candidate_gate_ablation.py"
+      - "scripts/experiment_proof_dag_meet_ablation.py"
+      - "scripts/compare_proof_dag_lazy_ablation.py"
+      - "scripts/verify_proof_dag_meet_ablation.py"
+      - "scripts/verify_proof_dag_lazy_ablation.py"
       - "scripts/experiment_open_goal_feedback_imo_ag_30.py"
       - "scripts/compare_open_goal_feedback_ablation.py"
       - "scripts/verify_open_goal_independent_exchange.py"
@@ -68,6 +73,8 @@ on:
       - "worker/backend/geometry_proof_hypergraph.py"
       - "worker/backend/geometry_ar_residual.py"
       - "worker/backend/differentiable_proof_controller.py"
+      - "worker/backend/typed_candidate_alignment.py"
+      - "worker/backend/typed_open_proof_dag.py"
       - "worker/backend/test_differentiable_proof_controller.py"
   pull_request:
     paths:
@@ -86,6 +93,7 @@ on:
       - "data/open-goal-feedback-*.json"
       - "data/differentiable-*.json"
       - "data/candidate-gate-*.json"
+      - "data/proof-dag-*.json"
       - "data/chordal-lift-reproduction-manifest-*.json"
       - "data/mortra-reversible-synthesis-reproduction-manifest-*.json"
       - "data/yuclid-imo-ag-30-all-ar-*.json"
@@ -101,6 +109,10 @@ on:
       - "scripts/experiment_differentiable_proof_controller.py"
       - "scripts/experiment_candidate_gate_ablation.py"
       - "scripts/verify_candidate_gate_ablation.py"
+      - "scripts/experiment_proof_dag_meet_ablation.py"
+      - "scripts/compare_proof_dag_lazy_ablation.py"
+      - "scripts/verify_proof_dag_meet_ablation.py"
+      - "scripts/verify_proof_dag_lazy_ablation.py"
       - "scripts/experiment_open_goal_feedback_imo_ag_30.py"
       - "scripts/compare_open_goal_feedback_ablation.py"
       - "scripts/verify_open_goal_independent_exchange.py"
@@ -134,6 +146,8 @@ on:
       - "worker/backend/geometry_proof_hypergraph.py"
       - "worker/backend/geometry_ar_residual.py"
       - "worker/backend/differentiable_proof_controller.py"
+      - "worker/backend/typed_candidate_alignment.py"
+      - "worker/backend/typed_open_proof_dag.py"
       - "worker/backend/test_differentiable_proof_controller.py"
   workflow_dispatch:
 
@@ -175,7 +189,9 @@ jobs:
             scripts/experiment_candidate_gate_ablation.py \
             scripts/verify_candidate_gate_ablation.py \
             scripts/experiment_proof_dag_meet_ablation.py \
+            scripts/compare_proof_dag_lazy_ablation.py \
             scripts/verify_proof_dag_meet_ablation.py \
+            scripts/verify_proof_dag_lazy_ablation.py \
             scripts/experiment_open_goal_feedback_imo_ag_30.py \
             scripts/compare_open_goal_feedback_ablation.py \
             scripts/verify_open_goal_independent_exchange.py \
@@ -268,6 +284,8 @@ jobs:
             --artifact data/candidate-gate-depth1-ablation-2026-08-18.json
           python scripts/verify_proof_dag_meet_ablation.py \
             --artifact data/proof-dag-meet-ablation-tabled-2026-08-18.json
+          python scripts/verify_proof_dag_lazy_ablation.py \
+            --artifact data/proof-dag-lazy-trust-comparison-2026-08-18.json
           python scripts/verify_wu_ritt_artifacts.py \
             --standard-artifact data/wu-ritt-standard-strict180-2021-p3-2026-08-17.json.gz \
             --proof-artifact data/wu-ritt-weak-strict180-2021-p3-2026-08-17.json.gz \

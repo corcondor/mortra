@@ -1,0 +1,125 @@
+{
+  "experiment": "or_preserving_proof_dag_meet_ablation",
+  "uses_external_llm": false,
+  "uses_problem_or_answer_memory": false,
+  "acceptance_truth_plane": "yuclid_native_certificate_replay_only",
+  "hypothesis": "A finite typed forward/backward meet reduces exact candidate evaluations without changing proof outcomes.",
+  "search_budget": {
+    "per_family_limit": 1,
+    "branch_limit": 32,
+    "max_workers": 8,
+    "proof_dag_depth": 2,
+    "proof_dag_branches": 96,
+    "proof_dag_states": 20000,
+    "candidate_cone_depth": 2,
+    "candidate_cone_fragments": 48,
+    "candidate_cone_states": 500,
+    "candidate_cone_initial_states": 64,
+    "candidate_promotion_limit": 8
+  },
+  "runs": [
+    {
+      "problem": "2008_p6",
+      "mode": "proof-dag-lazy",
+      "returncode": 0,
+      "wall_seconds": 60.87356499999805,
+      "solved": true,
+      "solved_path": [
+        "intersection_lt(a,i2,o,a,i2)->e"
+      ],
+      "evaluated_paths": 7,
+      "error_count": 0,
+      "input_sha256": "81ec86110e92ad04a2d30592bb229dbb3fc8eca37e8f3e201ad0f148981c0d70",
+      "direct_or_meet_candidates": 0,
+      "cone_truncated_candidates": 25,
+      "cone_search_states": 5471,
+      "proof_dag_branch_count": 127,
+      "proof_dag_search_states": 1140,
+      "artifact": "data/proof-dag-lazy-trust-gate-2026-08-18/2008_p6-proof-dag-lazy.json",
+      "artifact_sha256": "82bdb28b0653d50d6e38ce17e4e3f138f7fa19869073c23c8b753fb278061c4a"
+    },
+    {
+      "problem": "2009_p2",
+      "mode": "proof-dag-lazy",
+      "returncode": 0,
+      "wall_seconds": 37.872368899999856,
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 20,
+      "error_count": 0,
+      "input_sha256": null,
+      "direct_or_meet_candidates": 24,
+      "cone_truncated_candidates": 27,
+      "cone_search_states": 5767,
+      "proof_dag_branch_count": 119,
+      "proof_dag_search_states": 776,
+      "artifact": "data/proof-dag-lazy-trust-gate-2026-08-18/2009_p2-proof-dag-lazy.json",
+      "artifact_sha256": "c3f640b8bdcd122128d7443cabdc950a4c288e7aa62375a8b01c3df51b9d06a9"
+    },
+    {
+      "problem": "2010_p2",
+      "mode": "proof-dag-lazy",
+      "returncode": 0,
+      "wall_seconds": 31.550918900000397,
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 30,
+      "error_count": 0,
+      "input_sha256": null,
+      "direct_or_meet_candidates": 9,
+      "cone_truncated_candidates": 26,
+      "cone_search_states": 5777,
+      "proof_dag_branch_count": 133,
+      "proof_dag_search_states": 1451,
+      "artifact": "data/proof-dag-lazy-trust-gate-2026-08-18/2010_p2-proof-dag-lazy.json",
+      "artifact_sha256": "439eeeaa569816c16eb7fabdd09e32fadd44ab52729644896601ee5eea8909c9"
+    },
+    {
+      "problem": "2015_p3",
+      "mode": "proof-dag-lazy",
+      "returncode": 0,
+      "wall_seconds": 71.16370789999928,
+      "solved": true,
+      "solved_path": [
+        "intersection_lc(a,f,h)->d"
+      ],
+      "evaluated_paths": 9,
+      "error_count": 0,
+      "input_sha256": "addef461fc24ee57b208e4427363fd3d3988089beb64a2cc9c470bace4e8c676",
+      "direct_or_meet_candidates": 10,
+      "cone_truncated_candidates": 26,
+      "cone_search_states": 5758,
+      "proof_dag_branch_count": 191,
+      "proof_dag_search_states": 16191,
+      "artifact": "data/proof-dag-lazy-trust-gate-2026-08-18/2015_p3-proof-dag-lazy.json",
+      "artifact_sha256": "1b1964406d60a773ddde6c85ccebd312ebe6201f91e02b96506d257cdc71d7d6"
+    },
+    {
+      "problem": "2011_p6",
+      "mode": "proof-dag-lazy",
+      "returncode": 0,
+      "wall_seconds": 188.66982030000145,
+      "solved": false,
+      "solved_path": null,
+      "evaluated_paths": 23,
+      "error_count": 0,
+      "input_sha256": null,
+      "direct_or_meet_candidates": 4,
+      "cone_truncated_candidates": 25,
+      "cone_search_states": 5760,
+      "proof_dag_branch_count": 96,
+      "proof_dag_search_states": 20000,
+      "artifact": "data/proof-dag-lazy-trust-gate-2026-08-18/2011_p6-proof-dag-lazy.json",
+      "artifact_sha256": "6f815b4ff2d4bf3549780caeda2f421b7c2ff8e5bed8d55efb7df39481b19301"
+    }
+  ],
+  "pairs": [],
+  "totals": {
+    "proof-dag-lazy": {
+      "solved": 2,
+      "evaluated_paths": 89,
+      "errors": 0,
+      "wall_seconds": 390.13038099999903
+    }
+  }
+}

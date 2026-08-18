@@ -2,6 +2,7 @@ from worker.backend.geometry_proof_hypergraph import Atom, Theorem
 from worker.backend.typed_candidate_alignment import (
     align_candidate_atoms,
     align_candidate_cone_to_proof_branches,
+    align_candidate_groups_lazily,
     align_candidate_to_proof_branches,
 )
 from worker.backend.typed_open_proof_dag import (
@@ -257,3 +258,110 @@ def test_meet_rejects_circular_residual_goal() -> None:
 
     assert not alignment.has_meet
     assert alignment.cyclic_match_rejections > 0
+
+
+def test_lazy_alignment_promotes_only_reachable_candidate_to_depth_two() -> None:
+    rules = (
+        Theorem("seed-to-mid", (Atom("seed", ("?x",)),), Atom("mid", ("?x",))),
+        Theorem("mid-to-bridge", (Atom("mid", ("?x",)),), Atom("bridge", ("?x",))),
+        Theorem("bridge-to-goal", (Atom("bridge", ("?x",)),), Atom("goal", ("a",))),
+    )
+    dag = compile_open_proof_dag((), Atom("goal", ("a",)), rules, max_rule_depth=1)
+
+    results, _cones = align_candidate_groups_lazily(
+        (),
+        {
+            "reachable": (Atom("seed", ("d",)),),
+            "unreachable": (Atom("noise", ("d",)),),
+        },
+        rules,
+        dag.open_branches,
+        max_rule_depth=2,
+        initial_search_states=8,
+        promoted_search_states=32,
+        promotion_limit=1,
+    )
+
+    assert results["reachable"].has_meet
+    assert results["reachable"].promoted
+    assert results["reachable"].explored_depth == 2
+    assert not results["unreachable"].promoted
+    assert results["unreachable"].explored_depth == 1
+    assert len(results["reachable"].stage_search_states) == 2
+    assert len(results["unreachable"].stage_search_states) == 1
+
+
+def test_lazy_alignment_uses_parent_prefix_as_fact_not_candidate_credit() -> None:
+    rules = (
+        Theorem(
+            "join",
+            (Atom("parent", ("?x",)), Atom("extension", ("?x",))),
+            Atom("bridge", ("?x",)),
+        ),
+        Theorem("finish", (Atom("bridge", ("?x",)),), Atom("goal", ("a",))),
+    )
+    dag = compile_open_proof_dag((), Atom("goal", ("a",)), rules, max_rule_depth=1)
+
+    results, _cones = align_candidate_groups_lazily(
+        (Atom("parent", ("d",)),),
+        {"extension": (Atom("extension", ("d",)),)},
+        rules,
+        dag.open_branches,
+        max_rule_depth=1,
+        initial_search_states=16,
+    )
+
+    result = results["extension"]
+    assert result.has_meet
+    assert result.alignment.best_source_atom_count == 1
+    assert result.alignment.best_source_atoms == ("extension(d)",)
+
+
+def test_lazy_alignment_is_entity_renaming_invariant() -> None:
+    rules = (
+        Theorem("seed-to-bridge", (Atom("seed", ("?x",)),), Atom("bridge", ("?x",))),
+        Theorem("bridge-to-goal", (Atom("bridge", ("?x",)),), Atom("goal", ("?g",))),
+    )
+
+    def rank(goal: str, point: str) -> tuple[int, ...]:
+        dag = compile_open_proof_dag(
+            (), Atom("goal", (goal,)), rules, max_rule_depth=1
+        )
+        results, _cones = align_candidate_groups_lazily(
+            (),
+            {"candidate": (Atom("seed", (point,)),)},
+            rules,
+            dag.open_branches,
+            max_rule_depth=1,
+            initial_search_states=16,
+        )
+        return results["candidate"].rank
+
+    assert rank("a", "d") == rank("u", "v")
+
+
+def test_lazy_partial_meet_cannot_override_base_scheduler() -> None:
+    rules = (
+        Theorem(
+            "conditional",
+            (Atom("seed", ("?x",)), Atom("guard", ("?x",))),
+            Atom("bridge", ("?x",)),
+        ),
+        Theorem("finish", (Atom("bridge", ("?x",)),), Atom("goal", ("a",))),
+    )
+    dag = compile_open_proof_dag((), Atom("goal", ("a",)), rules, max_rule_depth=1)
+    results, _cones = align_candidate_groups_lazily(
+        (),
+        {"candidate": (Atom("seed", ("d",)),)},
+        rules,
+        dag.open_branches,
+        max_rule_depth=1,
+        initial_search_states=16,
+    )
+
+    result = results["candidate"]
+    assert result.has_meet
+    assert result.alignment.best_structural_residual_count == 1
+    assert not result.has_closed_structural_residual
+    assert result.rank == (1,)
+    assert result.exploration_rank[0] == 0

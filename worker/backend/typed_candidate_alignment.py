@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Mapping, Sequence
+from typing import Iterable, Mapping, Sequence
 
 from worker.backend.geometry_proof_hypergraph import (
     Atom,
+    Theorem,
     atom_pattern_unifications,
 )
 from worker.backend.typed_open_proof_dag import (
@@ -15,6 +16,7 @@ from worker.backend.typed_open_proof_dag import (
     ForwardProofFragment,
     OpenProofBranch,
     alpha_normalize_symbolic_atoms,
+    compile_candidate_forward_cone,
 )
 from worker.backend.typed_logic_circuit import (
     substitute_symbolic_atom,
@@ -160,6 +162,85 @@ class ProofDAGMeetAlignment:
             "branch_count": self.branch_count,
             "fragment_count": self.fragment_count,
             "rank": list(self.rank),
+        }
+
+
+@dataclass(frozen=True)
+class LazyProofDAGCandidateAlignment:
+    """Auditable result of budgeted, residual-guided cone expansion."""
+
+    alignment: ProofDAGMeetAlignment
+    predicate_distance: int
+    best_known_argument_overlap: int
+    fewest_missing_known_arguments: int
+    explored_depth: int
+    search_states: int
+    stage_search_states: tuple[int, ...]
+    promoted: bool
+    residual_improvements: int
+    truncated: bool
+
+    @property
+    def has_meet(self) -> bool:
+        return self.alignment.has_meet
+
+    @property
+    def exploration_rank(self) -> tuple[int, ...]:
+        if self.alignment.has_meet:
+            return (
+                0,
+                self.alignment.best_structural_residual_count or 0,
+                self.alignment.best_residual_size or 0,
+                self.alignment.best_residual_hole_count or 0,
+                (self.alignment.best_forward_depth or 0)
+                + (self.alignment.best_backward_depth or 0),
+                -self.best_known_argument_overlap,
+                -self.alignment.meet_count,
+            )
+        return (
+            1,
+            self.predicate_distance,
+            -self.best_known_argument_overlap,
+            self.fewest_missing_known_arguments,
+        )
+
+    @property
+    def has_closed_structural_residual(self) -> bool:
+        return (
+            self.alignment.has_meet
+            and self.alignment.best_structural_residual_count == 0
+        )
+
+    @property
+    def rank(self) -> tuple[int, ...]:
+        """Only a structurally closed meet may override the base scheduler."""
+
+        if not self.has_closed_structural_residual:
+            return (1,)
+        return (
+            0,
+            self.alignment.best_residual_size or 0,
+            self.alignment.best_residual_hole_count or 0,
+            (self.alignment.best_forward_depth or 0)
+            + (self.alignment.best_backward_depth or 0),
+            -self.alignment.meet_count,
+        )
+
+    def to_dict(self) -> dict[str, object]:
+        return {
+            **self.alignment.to_dict(),
+            "lazy_rank": list(self.rank),
+            "exploration_rank": list(self.exploration_rank),
+            "has_closed_structural_residual": self.has_closed_structural_residual,
+            "predicate_distance": self.predicate_distance,
+            "best_known_argument_overlap": self.best_known_argument_overlap,
+            "fewest_missing_known_arguments": self.fewest_missing_known_arguments,
+            "explored_depth": self.explored_depth,
+            "search_states": self.search_states,
+            "stage_search_states": list(self.stage_search_states),
+            "promoted": self.promoted,
+            "residual_improvements": self.residual_improvements,
+            "truncated": self.truncated,
         }
 
 
@@ -385,6 +466,196 @@ def align_candidate_cone_to_proof_branches(
         branch_count=len(branches),
         fragment_count=len(cone.fragments),
     )
+
+
+def _forward_predicate_distances(
+    theorems: Sequence[Theorem],
+    target_predicates: set[str],
+) -> dict[str, int]:
+    """Return a problem-independent lower bound on forward proof distance."""
+
+    reverse_edges: dict[str, set[str]] = {}
+    for theorem in theorems:
+        conclusion = theorem.conclusion.predicate.lower()
+        reverse_edges.setdefault(conclusion, set()).update(
+            premise.predicate.lower() for premise in theorem.premises
+        )
+    distances = {predicate.lower(): 0 for predicate in target_predicates}
+    frontier = list(distances)
+    while frontier:
+        conclusion = frontier.pop(0)
+        next_distance = distances[conclusion] + 1
+        for premise in sorted(reverse_edges.get(conclusion, ())):
+            if premise in distances and distances[premise] <= next_distance:
+                continue
+            distances[premise] = next_distance
+            frontier.append(premise)
+    return distances
+
+
+def _candidate_to_branch_gap(
+    candidate_atoms: Sequence[Atom],
+    branches: Sequence[OpenProofBranch],
+    predicate_distances: Mapping[str, int],
+) -> tuple[int, int, int]:
+    target_atoms = tuple(atom for branch in branches for atom in branch.frontier)
+    if not candidate_atoms or not target_atoms:
+        return UNREACHABLE_DISTANCE, 0, UNREACHABLE_DISTANCE
+    best_distance = min(
+        (
+            predicate_distances.get(
+                candidate.predicate.lower(), UNREACHABLE_DISTANCE
+            )
+            for candidate in candidate_atoms
+        ),
+        default=UNREACHABLE_DISTANCE,
+    )
+    best_overlap = 0
+    fewest_missing = UNREACHABLE_DISTANCE
+    for target in target_atoms:
+        known = {value for value in target.arguments if not _is_variable(value)}
+        for candidate in candidate_atoms:
+            overlap = len(known.intersection(candidate.arguments))
+            best_overlap = max(best_overlap, overlap)
+            fewest_missing = min(fewest_missing, len(known) - overlap)
+    return best_distance, best_overlap, fewest_missing
+
+
+def _meet_quality(alignment: ProofDAGMeetAlignment) -> tuple[int, ...]:
+    if not alignment.has_meet:
+        return (1, UNREACHABLE_DISTANCE)
+    return (
+        0,
+        alignment.best_structural_residual_count or 0,
+        alignment.best_residual_size or 0,
+        alignment.best_residual_hole_count or 0,
+    )
+
+
+def align_candidate_groups_lazily(
+    facts: Iterable[Atom],
+    candidate_groups: Mapping[str, Sequence[Atom]],
+    theorems: Sequence[Theorem],
+    branches: Sequence[OpenProofBranch],
+    *,
+    tiebreaks: Mapping[str, tuple[object, ...]] | None = None,
+    max_rule_depth: int = 2,
+    max_fragments: int = 48,
+    initial_search_states: int = 64,
+    promoted_search_states: int = 500,
+    promotion_limit: int = 8,
+) -> tuple[
+    dict[str, LazyProofDAGCandidateAlignment],
+    dict[str, CandidateForwardCone],
+]:
+    """Allocate deeper proof search only to candidates reducing typed residuals.
+
+    Every candidate receives the same shallow observation.  Later rounds are
+    assigned to a bounded Pareto prefix ordered by coherent meet residual,
+    predicate reachability, argument overlap, and a caller-supplied structural
+    tiebreak.  Native proof replay remains the acceptance boundary.
+    """
+
+    if max_rule_depth < 1:
+        raise ValueError("max_rule_depth must be positive")
+    if min(max_fragments, initial_search_states, promoted_search_states) < 1:
+        raise ValueError("search budgets must be positive")
+    if promotion_limit < 1:
+        raise ValueError("promotion_limit must be positive")
+
+    canonical_facts = tuple(facts)
+    theorem_tuple = tuple(theorems)
+    targets = tuple(atom for branch in branches for atom in branch.frontier)
+    target_predicates = {atom.predicate.lower() for atom in targets}
+    distances = _forward_predicate_distances(theorem_tuple, target_predicates)
+    tiebreaks = tiebreaks or {}
+    cones: dict[str, CandidateForwardCone] = {}
+    results: dict[str, LazyProofDAGCandidateAlignment] = {}
+    stage_states: dict[str, list[int]] = {key: [] for key in candidate_groups}
+    improvements = {key: 0 for key in candidate_groups}
+    promoted_keys: set[str] = set()
+
+    def observe(key: str, depth: int, state_budget: int) -> None:
+        atoms = tuple(candidate_groups[key])
+        cone = compile_candidate_forward_cone(
+            canonical_facts,
+            atoms,
+            theorem_tuple,
+            targets=targets,
+            max_rule_depth=depth,
+            max_fragments=max_fragments,
+            max_search_states=state_budget,
+        )
+        alignment = align_candidate_cone_to_proof_branches(cone, branches)
+        previous = results.get(key)
+        if previous is not None and _meet_quality(alignment) < _meet_quality(
+            previous.alignment
+        ):
+            improvements[key] += 1
+        if previous is not None and previous.exploration_rank < LazyProofDAGCandidateAlignment(
+            alignment=alignment,
+            predicate_distance=previous.predicate_distance,
+            best_known_argument_overlap=previous.best_known_argument_overlap,
+            fewest_missing_known_arguments=previous.fewest_missing_known_arguments,
+            explored_depth=depth,
+            search_states=0,
+            stage_search_states=(),
+            promoted=True,
+            residual_improvements=improvements[key],
+            truncated=cone.truncated,
+        ).exploration_rank:
+            alignment = previous.alignment
+        distance, overlap, missing = _candidate_to_branch_gap(
+            atoms, branches, distances
+        )
+        stage_states[key].append(cone.search_states)
+        cones[key] = cone
+        results[key] = LazyProofDAGCandidateAlignment(
+            alignment=alignment,
+            predicate_distance=distance,
+            best_known_argument_overlap=overlap,
+            fewest_missing_known_arguments=missing,
+            explored_depth=depth,
+            search_states=sum(stage_states[key]),
+            stage_search_states=tuple(stage_states[key]),
+            promoted=key in promoted_keys,
+            residual_improvements=improvements[key],
+            truncated=cone.truncated,
+        )
+
+    initial_depth = min(1, max_rule_depth)
+    for key in sorted(candidate_groups):
+        observe(key, initial_depth, initial_search_states)
+
+    for depth in range(2, max_rule_depth + 1):
+        ranked = sorted(
+            candidate_groups,
+            key=lambda key: (
+                results[key].rank,
+                results[key].exploration_rank,
+                tiebreaks.get(key, ()),
+                key,
+            ),
+        )
+        promoted = ranked[: min(promotion_limit, len(ranked))]
+        promoted_keys.update(promoted)
+        for key in promoted:
+            observe(key, depth, promoted_search_states)
+
+    for key, result in tuple(results.items()):
+        results[key] = LazyProofDAGCandidateAlignment(
+            alignment=result.alignment,
+            predicate_distance=result.predicate_distance,
+            best_known_argument_overlap=result.best_known_argument_overlap,
+            fewest_missing_known_arguments=result.fewest_missing_known_arguments,
+            explored_depth=result.explored_depth,
+            search_states=result.search_states,
+            stage_search_states=result.stage_search_states,
+            promoted=key in promoted_keys,
+            residual_improvements=result.residual_improvements,
+            truncated=result.truncated,
+        )
+    return results, cones
 
 
 def instantiate_relation_templates(

@@ -1,0 +1,89 @@
+{
+  "experiment": "or_preserving_proof_dag_meet_ablation",
+  "uses_external_llm": false,
+  "uses_problem_or_answer_memory": false,
+  "acceptance_truth_plane": "yuclid_native_certificate_replay_only",
+  "hypothesis": "A finite typed forward/backward meet reduces exact candidate evaluations without changing proof outcomes.",
+  "search_budget": {
+    "per_family_limit": 1,
+    "branch_limit": 32,
+    "max_workers": 8,
+    "proof_dag_depth": 2,
+    "proof_dag_branches": 96,
+    "proof_dag_states": 20000,
+    "candidate_cone_depth": 2,
+    "candidate_cone_fragments": 48,
+    "candidate_cone_states": 500,
+    "candidate_cone_initial_states": 64,
+    "candidate_promotion_limit": 8
+  },
+  "runs": [
+    {
+      "problem": "2015_p3",
+      "mode": "off",
+      "returncode": 0,
+      "wall_seconds": 21.514501599998766,
+      "solved": true,
+      "solved_path": [
+        "intersection_lc(a,f,h)->d"
+      ],
+      "evaluated_paths": 12,
+      "error_count": 0,
+      "input_sha256": "889a49d56f9ee0c4d2f0cac5d07aae212d1de81d9aa79ebef6d18e9c30dfc0fb",
+      "direct_or_meet_candidates": 0,
+      "cone_truncated_candidates": 0,
+      "cone_search_states": 0,
+      "proof_dag_branch_count": 0,
+      "proof_dag_search_states": 0,
+      "artifact": "data/proof-dag-lazy-determinism-2015-p3-2026-08-18/2015_p3-off.json",
+      "artifact_sha256": "82db9f7f550345567c09d5c5c4f2f62bf69d9a2a5aa760375b7e159fe814fdd4"
+    },
+    {
+      "problem": "2015_p3",
+      "mode": "proof-dag-lazy",
+      "returncode": 0,
+      "wall_seconds": 37.806085399999574,
+      "solved": true,
+      "solved_path": [
+        "intersection_lc(a,f,h)->d"
+      ],
+      "evaluated_paths": 9,
+      "error_count": 0,
+      "input_sha256": "889a49d56f9ee0c4d2f0cac5d07aae212d1de81d9aa79ebef6d18e9c30dfc0fb",
+      "direct_or_meet_candidates": 10,
+      "cone_truncated_candidates": 26,
+      "cone_search_states": 5758,
+      "proof_dag_branch_count": 191,
+      "proof_dag_search_states": 16191,
+      "artifact": "data/proof-dag-lazy-determinism-2015-p3-2026-08-18/2015_p3-proof-dag-lazy.json",
+      "artifact_sha256": "ace381466d3ce2f98328510712ebfed9d3a34e6693e7fb984ba1321dafa164fa"
+    }
+  ],
+  "pairs": [
+    {
+      "problem": "2015_p3",
+      "treatment": "proof-dag-lazy",
+      "valid_pair": true,
+      "control_success_preserved": true,
+      "same_solved_status": true,
+      "same_path_when_both_solved": true,
+      "evaluated_path_delta": -3,
+      "wall_seconds_delta": 16.291583800000808,
+      "error_delta": 0
+    }
+  ],
+  "totals": {
+    "off": {
+      "solved": 1,
+      "evaluated_paths": 12,
+      "errors": 0,
+      "wall_seconds": 21.514501599998766
+    },
+    "proof-dag-lazy": {
+      "solved": 1,
+      "evaluated_paths": 9,
+      "errors": 0,
+      "wall_seconds": 37.806085399999574
+    }
+  }
+}

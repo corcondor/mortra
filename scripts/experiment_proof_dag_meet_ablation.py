@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import subprocess
 import time
 from pathlib import Path
@@ -32,6 +33,8 @@ def run_once(
     candidate_cone_depth: int,
     candidate_cone_fragments: int,
     candidate_cone_states: int,
+    candidate_cone_initial_states: int,
+    candidate_promotion_limit: int,
 ) -> dict[str, Any]:
     command = [
         str(python),
@@ -87,6 +90,10 @@ def run_once(
         str(candidate_cone_fragments),
         "--candidate-cone-states",
         str(candidate_cone_states),
+        "--candidate-cone-initial-states",
+        str(candidate_cone_initial_states),
+        "--candidate-promotion-limit",
+        str(candidate_promotion_limit),
         "--progress",
         "none",
     ]
@@ -97,6 +104,7 @@ def run_once(
         check=False,
         capture_output=True,
         text=True,
+        env={**os.environ, "PYTHONHASHSEED": "0"},
     )
     wall_seconds = time.perf_counter() - started
     if completed.returncode != 0:
@@ -152,12 +160,20 @@ def main() -> None:
     parser.add_argument("--candidate-cone-depth", type=int, default=2)
     parser.add_argument("--candidate-cone-fragments", type=int, default=48)
     parser.add_argument("--candidate-cone-states", type=int, default=500)
+    parser.add_argument("--candidate-cone-initial-states", type=int, default=64)
+    parser.add_argument("--candidate-promotion-limit", type=int, default=8)
+    parser.add_argument(
+        "--modes",
+        nargs="+",
+        choices=("off", "proof-dag-meet", "proof-dag-lazy"),
+        default=("off", "proof-dag-meet"),
+    )
     args = parser.parse_args()
 
     args.run_dir.mkdir(parents=True, exist_ok=True)
     runs: list[dict[str, Any]] = []
     for problem in args.problems:
-        for mode in ("off", "proof-dag-meet"):
+        for mode in args.modes:
             output = args.run_dir / f"{problem}-{mode}.json"
             result = run_once(
                 python=args.python.resolve(),
@@ -176,6 +192,8 @@ def main() -> None:
                 candidate_cone_depth=args.candidate_cone_depth,
                 candidate_cone_fragments=args.candidate_cone_fragments,
                 candidate_cone_states=args.candidate_cone_states,
+                candidate_cone_initial_states=args.candidate_cone_initial_states,
+                candidate_promotion_limit=args.candidate_promotion_limit,
             )
             runs.append(result)
             print(json.dumps(result, ensure_ascii=False), flush=True)
@@ -183,48 +201,54 @@ def main() -> None:
     pairs: list[dict[str, Any]] = []
     for problem in args.problems:
         by_mode = {item["mode"]: item for item in runs if item["problem"] == problem}
+        if "off" not in by_mode:
+            continue
         control = by_mode["off"]
-        treatment = by_mode["proof-dag-meet"]
-        valid = control["returncode"] == treatment["returncode"] == 0
-        pairs.append(
-            {
-                "problem": problem,
-                "valid_pair": valid,
-                "control_success_preserved": (
-                    valid
-                    and (not control["solved"] or treatment["solved"])
-                ),
-                "same_solved_status": (
-                    valid and control["solved"] == treatment["solved"]
-                ),
-                "same_path_when_both_solved": (
-                    valid
-                    and control["solved"]
-                    and treatment["solved"]
-                    and control["solved_path"] == treatment["solved_path"]
-                ),
-                "evaluated_path_delta": (
-                    treatment["evaluated_paths"] - control["evaluated_paths"]
-                    if valid
-                    else None
-                ),
-                "wall_seconds_delta": (
-                    treatment["wall_seconds"] - control["wall_seconds"]
-                    if valid
-                    else None
-                ),
-                "error_delta": (
-                    treatment["error_count"] - control["error_count"]
-                    if valid
-                    else None
-                ),
-            }
-        )
+        for mode in args.modes:
+            if mode == "off":
+                continue
+            treatment = by_mode[mode]
+            valid = control["returncode"] == treatment["returncode"] == 0
+            pairs.append(
+                {
+                    "problem": problem,
+                    "treatment": mode,
+                    "valid_pair": valid,
+                    "control_success_preserved": (
+                        valid
+                        and (not control["solved"] or treatment["solved"])
+                    ),
+                    "same_solved_status": (
+                        valid and control["solved"] == treatment["solved"]
+                    ),
+                    "same_path_when_both_solved": (
+                        valid
+                        and control["solved"]
+                        and treatment["solved"]
+                        and control["solved_path"] == treatment["solved_path"]
+                    ),
+                    "evaluated_path_delta": (
+                        treatment["evaluated_paths"] - control["evaluated_paths"]
+                        if valid
+                        else None
+                    ),
+                    "wall_seconds_delta": (
+                        treatment["wall_seconds"] - control["wall_seconds"]
+                        if valid
+                        else None
+                    ),
+                    "error_delta": (
+                        treatment["error_count"] - control["error_count"]
+                        if valid
+                        else None
+                    ),
+                }
+            )
 
     valid_runs = [item for item in runs if item["returncode"] == 0]
     by_mode = {
         mode: [item for item in valid_runs if item["mode"] == mode]
-        for mode in ("off", "proof-dag-meet")
+        for mode in args.modes
     }
     summary = {
         "experiment": "or_preserving_proof_dag_meet_ablation",
@@ -245,6 +269,8 @@ def main() -> None:
             "candidate_cone_depth": args.candidate_cone_depth,
             "candidate_cone_fragments": args.candidate_cone_fragments,
             "candidate_cone_states": args.candidate_cone_states,
+            "candidate_cone_initial_states": args.candidate_cone_initial_states,
+            "candidate_promotion_limit": args.candidate_promotion_limit,
         },
         "runs": runs,
         "pairs": pairs,

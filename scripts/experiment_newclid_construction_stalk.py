@@ -78,6 +78,7 @@ from worker.backend.typed_candidate_alignment import (
     UNREACHABLE_DISTANCE,
     align_candidate_atoms,
     align_candidate_cone_to_proof_branches,
+    align_candidate_groups_lazily,
     instantiate_relation_templates,
 )
 from worker.backend.typed_open_proof_dag import (
@@ -501,6 +502,8 @@ def candidate_extensions(
     candidate_cone_depth: int = 2,
     candidate_cone_fragments: int = 128,
     candidate_cone_states: int = 5_000,
+    candidate_cone_initial_states: int = 64,
+    candidate_promotion_limit: int = 8,
     current_problem: Any | None = None,
 ) -> tuple[list[ConstructionStep], dict[str, Any]]:
     generated = {step.output for step in steps}
@@ -625,6 +628,41 @@ def candidate_extensions(
                 candidate.structural_rank,
             )
         )
+    elif candidate_alignment == "proof-dag-lazy":
+        parent_atoms = tuple(
+            atom
+            for step in steps
+            for atom in construction_relation_atoms(
+                step.family, step.output, step.inputs
+            )
+        )
+        candidate_atoms_by_key = {
+            candidate.key: construction_relation_atoms(
+                candidate.family, output, candidate.inputs
+            )
+            for candidate in candidates
+        }
+        alignment_by_key, meet_cones = align_candidate_groups_lazily(
+            (*proof_dag_facts, *parent_atoms),
+            candidate_atoms_by_key,
+            proof_dag_theorems,
+            proof_dag_branches,
+            tiebreaks={
+                candidate.key: candidate.structural_rank
+                for candidate in candidates
+            },
+            max_rule_depth=candidate_cone_depth,
+            max_fragments=candidate_cone_fragments,
+            initial_search_states=candidate_cone_initial_states,
+            promoted_search_states=candidate_cone_states,
+            promotion_limit=candidate_promotion_limit,
+        )
+        candidates.sort(
+            key=lambda candidate: (
+                alignment_by_key[candidate.key].rank,
+                candidate.structural_rank,
+            )
+        )
     elif candidate_alignment == "off":
         alignment_by_key = {}
         meet_cones = {}
@@ -638,7 +676,11 @@ def candidate_extensions(
                 for family in families
                 if family.name not in {candidate.family for candidate in candidates}
             ]
-            if candidate_alignment in {"typed-atom", "proof-dag-meet"}
+            if candidate_alignment in {
+                "typed-atom",
+                "proof-dag-meet",
+                "proof-dag-lazy",
+            }
             else [family.name for family in families]
         )
         candidates = schema_first_score_fill(
@@ -659,6 +701,12 @@ def candidate_extensions(
     elif candidate_alignment == "proof-dag-meet":
         direct_match_candidates = sum(item.has_meet for item in alignment_values)
         reachable_candidates = direct_match_candidates
+    elif candidate_alignment == "proof-dag-lazy":
+        direct_match_candidates = sum(item.has_meet for item in alignment_values)
+        reachable_candidates = sum(
+            item.predicate_distance < UNREACHABLE_DISTANCE
+            for item in alignment_values
+        )
     else:
         direct_match_candidates = 0
         reachable_candidates = 0
@@ -671,10 +719,15 @@ def candidate_extensions(
             "direct_match_candidates": direct_match_candidates,
             "reachable_candidates": reachable_candidates,
             "cone_truncated_candidates": sum(
+                item.truncated for item in alignment_values
+                if candidate_alignment == "proof-dag-lazy"
+            ) if candidate_alignment == "proof-dag-lazy" else sum(
                 cone.truncated for cone in meet_cones.values()
             ),
-            "cone_search_states": sum(
-                cone.search_states for cone in meet_cones.values()
+            "cone_search_states": (
+                sum(item.search_states for item in alignment_values)
+                if candidate_alignment == "proof-dag-lazy"
+                else sum(cone.search_states for cone in meet_cones.values())
             ),
             "top_candidates": [
                 {
@@ -975,9 +1028,12 @@ def main() -> None:
     )
     parser.add_argument(
         "--candidate-alignment",
-        choices=("off", "typed-atom", "proof-dag-meet"),
+        choices=("off", "typed-atom", "proof-dag-meet", "proof-dag-lazy"),
         default="off",
-        help="Rank by flat atoms or an OR-preserving forward/backward proof-DAG meet.",
+        help=(
+            "Rank by flat atoms, a fixed proof-DAG meet, or a residual-guided "
+            "lazy proof-DAG meet."
+        ),
     )
     parser.add_argument("--proof-dag-depth", type=int, default=2)
     parser.add_argument("--proof-dag-branches", type=int, default=128)
@@ -985,6 +1041,8 @@ def main() -> None:
     parser.add_argument("--candidate-cone-depth", type=int, default=2)
     parser.add_argument("--candidate-cone-fragments", type=int, default=128)
     parser.add_argument("--candidate-cone-states", type=int, default=5_000)
+    parser.add_argument("--candidate-cone-initial-states", type=int, default=64)
+    parser.add_argument("--candidate-promotion-limit", type=int, default=8)
     parser.add_argument(
         "--branch-build-mode",
         choices=("legacy", "prefix-replay", "incremental"),
@@ -1117,7 +1175,7 @@ def main() -> None:
             )
             for goal in goal_atoms
         )
-        if args.candidate_alignment == "proof-dag-meet"
+        if args.candidate_alignment in {"proof-dag-meet", "proof-dag-lazy"}
         else ()
     )
     proof_dag_branches = tuple(
@@ -1219,6 +1277,8 @@ def main() -> None:
                 candidate_cone_depth=args.candidate_cone_depth,
                 candidate_cone_fragments=args.candidate_cone_fragments,
                 candidate_cone_states=args.candidate_cone_states,
+                candidate_cone_initial_states=args.candidate_cone_initial_states,
+                candidate_promotion_limit=args.candidate_promotion_limit,
                 current_problem=current_problem,
             )
             candidate_gate_audits.append(

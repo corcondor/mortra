@@ -1,0 +1,72 @@
+{
+  "experiment": "residual_guided_lazy_proof_dag_with_trust_gate",
+  "uses_external_llm": false,
+  "uses_problem_or_answer_memory": false,
+  "acceptance_truth_plane": "yuclid_native_certificate_replay_only",
+  "hypotheses": {
+    "h1": "Lazy promotion reduces cone states versus fixed-depth all-candidate expansion.",
+    "h2": "Partial meets must not override the base scheduler until structural residuals close.",
+    "h3": "The treatment preserves native proof outcomes and deterministic replay."
+  },
+  "artifacts": {
+    "three_way": "data/proof-dag-lazy-ablation-2026-08-18.json",
+    "trust_gate": "data/proof-dag-lazy-trust-gate-2026-08-18.json",
+    "determinism": "data/proof-dag-lazy-determinism-2015-p3-2026-08-18.json"
+  },
+  "totals": {
+    "off": {
+      "solved": 2,
+      "evaluated_paths": 93,
+      "errors": 0,
+      "wall_seconds": 246.37845549999474,
+      "cone_search_states": 0,
+      "proof_dag_search_states": 0
+    },
+    "fixed_meet": {
+      "solved": 2,
+      "evaluated_paths": 98,
+      "errors": 0,
+      "wall_seconds": 636.0537239999976,
+      "cone_search_states": 77199,
+      "proof_dag_search_states": 39558
+    },
+    "lazy_ungated": {
+      "solved": 2,
+      "evaluated_paths": 100,
+      "errors": 0,
+      "wall_seconds": 469.4044858999987,
+      "cone_search_states": 28533,
+      "proof_dag_search_states": 39558
+    },
+    "lazy_trust_gate": {
+      "solved": 2,
+      "evaluated_paths": 89,
+      "errors": 0,
+      "wall_seconds": 390.13038099999903,
+      "cone_search_states": 28533,
+      "proof_dag_search_states": 39558
+    }
+  },
+  "effects": {
+    "lazy_trust_vs_fixed": {
+      "solved_delta": 0,
+      "evaluated_path_delta": -9,
+      "cone_state_delta": -48666,
+      "cone_state_ratio": 0.3696032332025026,
+      "wall_seconds_delta": -245.92334299999857,
+      "wall_seconds_ratio": 0.6133607371191188
+    },
+    "lazy_trust_vs_off": {
+      "solved_delta": 0,
+      "evaluated_path_delta": -4,
+      "wall_seconds_delta": 143.7519255000043
+    }
+  },
+  "determinism": {
+    "problem": "2015_p3",
+    "same_solved_path": true,
+    "same_input_sha256": true,
+    "passed": true
+  },
+  "conclusion": "The OR-preserving architecture is viable as a scheduler substrate. Residual-guided lazy promotion plus a structural trust gate reduces search work while preserving proof results, but it does not increase solved coverage on this calibration set."
+}

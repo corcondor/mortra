@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import lru_cache
 import hashlib
 from typing import Iterable
 
@@ -230,6 +231,24 @@ def _fragment_id(
     return hashlib.sha256(material.encode("utf-8")).hexdigest()[:16]
 
 
+@lru_cache(maxsize=16)
+def _cached_premise_index(
+    theorems: tuple[Theorem, ...],
+) -> dict[str, tuple[tuple[Theorem, int], ...]]:
+    index: dict[str, list[tuple[Theorem, int]]] = {}
+    for theorem in theorems:
+        for premise_index, premise in enumerate(theorem.premises):
+            index.setdefault(premise.predicate.lower(), []).append(
+                (theorem, premise_index)
+            )
+    return {
+        predicate: tuple(
+            sorted(items, key=lambda item: (len(item[0].premises), item[0].name, item[1]))
+        )
+        for predicate, items in index.items()
+    }
+
+
 def compile_candidate_forward_cone(
     facts: Iterable[Atom],
     candidate_atoms: Iterable[Atom],
@@ -274,18 +293,8 @@ def compile_candidate_forward_cone(
         ]
         known_by_predicate[predicate] = tuple(dict.fromkeys(tagged))
 
-    premise_index: dict[str, list[tuple[Theorem, int]]] = {}
-    for theorem in theorems:
-        for premise_index_value, premise in enumerate(theorem.premises):
-            premise_index.setdefault(premise.predicate.lower(), []).append(
-                (theorem, premise_index_value)
-            )
-    ordered_index = {
-        predicate: tuple(
-            sorted(items, key=lambda item: (len(item[0].premises), item[0].name, item[1]))
-        )
-        for predicate, items in premise_index.items()
-    }
+    theorem_tuple = tuple(theorems)
+    ordered_index = _cached_premise_index(theorem_tuple)
 
     roots = [
         ForwardProofFragment(
