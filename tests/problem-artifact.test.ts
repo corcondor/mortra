@@ -2,6 +2,8 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 
 import { buildProblemDiagram } from '../lib/mortra/problem-artifact'
+import { validateCalculusAnalysis, type CertifiedCalculusAnalysis } from '../lib/mortra/calculus-analysis'
+import { generateLiveProblem } from '../lib/mathos-live'
 
 test('geometry families produce an explanatory plane figure', () => {
   const diagram = buildProblemDiagram({
@@ -58,15 +60,67 @@ test('unknown families fall back to the actual morphism chain', () => {
   assert.deepEqual(diagram.nodes, ['IntegerObject', 'ModularReduction', 'FiniteCaseSplit', 'Conclusion'])
 })
 
-test('quadratic extrema produce a variation table from coefficients', () => {
+test('calculus artifacts use a backend-produced domain partition rather than a quadratic shortcut', () => {
+  const calculusAnalysis: CertifiedCalculusAnalysis = {
+    version: 1,
+    variable: 't',
+    functionTex: '\\frac{t+1}{t-1}',
+    derivativeTex: '-\\frac{2}{(t-1)^2}',
+    domainTex: '\\mathbb{R}\\setminus\\{1\\}',
+    columns: [
+      { role: 'interval', label: '(-\\infty,1)', derivative: '-', behavior: 'decrease', functionLabel: '' },
+      { role: 'singularity', label: '1', x: 1, derivative: 'undefined', behavior: 'discontinuous', functionLabel: '不定義' },
+      { role: 'interval', label: '(1,+\\infty)', derivative: '-', behavior: 'decrease', functionLabel: '' },
+    ],
+    plot: {
+      viewport: { xMin: -4, xMax: 6, yMin: -5, yMax: 7 },
+      segments: [
+        [{ x: -4, y: 0.6 }, { x: 0, y: -1 }, { x: 0.8, y: -9 }],
+        [{ x: 1.2, y: 11 }, { x: 2, y: 3 }, { x: 6, y: 1.4 }],
+      ],
+      keyPoints: [{ x: 1, y: 0, label: 't=1', role: 'singularity' }],
+    },
+    certificate: {
+      method: 'exact_rational_derivative_sign_partition',
+      checks: [{ id: 'domain', claim: 'denominator is nonzero exactly when t != 1', status: 'verified' }],
+    },
+  }
   const diagram = buildProblemDiagram({
-    familyId: 'construct.quadratic_extremum',
-    parameters: { a: 1, b: -4, c: 7 },
+    familyId: 'runtime.calculus.rational_variation',
+    calculusAnalysis,
   })
 
-  assert.equal(diagram.kind, 'variation')
-  if (diagram.kind !== 'variation') return
-  assert.deepEqual(diagram.columns, ['-∞', '2', '+∞'])
-  assert.deepEqual(diagram.rows[0].cells, ['-', '0', '+'])
-  assert.equal(diagram.rows[1].cells[1], '3')
+  assert.deepEqual(validateCalculusAnalysis(calculusAnalysis), [])
+  assert.equal(diagram.kind, 'calculus')
+  if (diagram.kind !== 'calculus') return
+  assert.equal(diagram.variation.variableLabel, 't')
+  assert.deepEqual(diagram.variation.rows[0].cells, ['-', 'undefined', '-'])
+  assert.equal(diagram.plot.shapes.filter(shape => shape.kind === 'polyline').length, 2)
+})
+
+test('live calculus generation returns statement, solution, sign chart, graph and certificate atomically', () => {
+  const problem = generateLiveProblem({
+    domain: 'analysis',
+    focusTags: ['calculus', 'derivative', 'variation', 'function_graph', 'extremum'],
+  })
+
+  assert.ok(problem)
+  assert.equal(problem?.familyId, 'runtime.calculus.polynomial_variation')
+  assert.ok(problem?.statementTex.includes('増減表'))
+  assert.ok(problem?.answerTex.includes('\\max f='))
+  assert.ok(problem?.solutionTex.includes("f'(x)="))
+  assert.ok(problem?.calculusAnalysis)
+  assert.equal(problem?.calculusAnalysis?.certificate.checks.length, 5)
+
+  const diagram = buildProblemDiagram({
+    familyId: problem?.familyId,
+    domain: problem?.domain,
+    parameters: problem?.parameters,
+    morphismChain: problem?.morphismChain,
+    calculusAnalysis: problem?.calculusAnalysis,
+  })
+  assert.equal(diagram.kind, 'calculus')
+  if (diagram.kind !== 'calculus') return
+  assert.equal(diagram.variation.columns.length, 7)
+  assert.equal(diagram.plot.shapes.filter(shape => shape.kind === 'point').length, 4)
 })

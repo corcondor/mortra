@@ -233,6 +233,7 @@ type GenerationProfile = {
 const QUERY_TAGS = new Set([
   'area', 'volume', 'radius_ratio', 'radius_product', 'circumradius',
   'curvature', 'center_distance', 'reciprocal_invariant', 'limit',
+  'extremum', 'function_graph',
 ])
 
 // 直接一致しないときも、Atlas上で意味のある隣接射だけを許す。遠距離ジャンプはしない。
@@ -265,6 +266,11 @@ const EXECUTABLE_TAG_BRIDGES: Record<string, string[]> = {
   roots_of_unity: ['complex', 'polynomial_roots', 'mobius'],
   projective_geometry: ['cross_ratio', 'mobius'],
   power_sum: ['symmetric_polynomial', 'polynomial_roots'],
+  calculus: ['derivative', 'variation', 'function_graph', 'extremum'],
+  derivative: ['calculus', 'variation', 'extremum'],
+  variation: ['derivative', 'function_graph', 'extremum'],
+  function_graph: ['variation', 'extremum'],
+  extremum: ['derivative', 'variation', 'function_graph'],
 }
 
 function expandedFocusTags(tags: string[]): string[] {
@@ -304,6 +310,11 @@ function preservedByAtlas(tag: string, candidateTags: string[]): boolean {
 }
 
 const TAG_PATTERNS: Array<[string, RegExp]> = [
+  ['calculus', /微分|導関数|増減|極大|極小|calculus|derivative/i],
+  ['derivative', /導関数|微分(?:する|せよ|して)|f\s*'|\\frac\{d\}\{d[a-z]\}|derivative/i],
+  ['variation', /増減表|増加区間|減少区間|単調(?:増加|減少)|variation|monotonic/i],
+  ['function_graph', /グラフ(?:の)?概形|概形を(?:か|描)|関数のグラフ|function[_\s-]?graph|sketch/i],
+  ['extremum', /極大(?:値)?|極小(?:値)?|最大値|最小値|extrem(?:um|a)|maximum|minimum/i],
   ['integral', /\\int|積分|integral|\\mathrm\{Ei\}|\bEi\s*\(/i],
   ['inequality', /不等式|大小を比較|評価せよ|比較せよ|\\le|\\ge|[<>]|inequal/i],
   ['exponential', /指数関数|指数積分|e\^|\\exp|exponential/i],
@@ -457,6 +468,7 @@ const SOLUTION_CORE_TAGS = new Set([
   'circle_centers', 'dynamical_system', 'recurrence', 'iteration', 'matrix',
   'characteristic_polynomial', 'pythagorean', 'gcd', 'modular',
   'integral', 'inequality', 'exponential', 'logarithm', 'special_function', 'asymptotic', 'limit',
+  'calculus', 'derivative', 'variation', 'function_graph', 'extremum',
 ])
 
 type ParentCoverage = {
@@ -1196,6 +1208,7 @@ async function generateCards(
       domain: live.domain,
       parameters: live.parameters,
       morphismChain: live.morphismChain,
+      calculusAnalysis: live.calculusAnalysis,
     })
     const meta = {
       shortId,
@@ -1203,6 +1216,7 @@ async function generateCards(
       tool: live.tool,
       parameters: live.parameters,
       diagram,
+      calculusAnalysis: live.calculusAnalysis,
       morphismChain: live.morphismChain,
       verificationMethod: live.verificationMethod,
       difficulty: diff,
@@ -1270,6 +1284,7 @@ async function generateCards(
       solution_tex: live.solutionTex,
       parameters: live.parameters,
       diagram,
+      calculus_analysis: live.calculusAnalysis,
       domain: live.domain,
       family_id: live.familyId,
       tool: live.tool,
@@ -1389,9 +1404,10 @@ export async function POST(request: NextRequest) {
         Math.max(10_000, searchBudgetSeconds * 1_000),
       ).certificate
     : undefined
-  // Fusion is always a long-running synthesis job. Keeping it inside a Vercel
-  // request would make valid 30-180 second searches look like network errors.
-  const needsStructuralDiscovery = mode === 'fusion'
+  // A fusion request first receives the same bounded executable search as the
+  // other modes. Only an actually unsolved endpoint pair is handed to the
+  // persistent discovery worker; known executable kernels must not be skipped.
+  const needsStructuralDiscovery = profiles.length === 0
 
   const attachGeneralization = (result: GenerationResult): GenerationResult => ({
     ...result,

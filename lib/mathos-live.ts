@@ -1,3 +1,5 @@
+import type { CertifiedCalculusAnalysis } from './mortra/calculus-analysis'
+
 /**
  * MathOS ライブ作問 — /sakumon を叩いた *その場* で問題を構築・検証する。
  *
@@ -193,6 +195,7 @@ export type LiveProblem = {
   proofCertificate?: ProofCertificateStep[]
   verificationMethod: string
   structureBlueprint?: StructureBlueprint
+  calculusAnalysis?: CertifiedCalculusAnalysis
 }
 
 export type ProofCertificateStep = {
@@ -1474,6 +1477,178 @@ const affineFixedChordRegion = affineImageOfSweptRegion(
   ['segment', 'chord', 'rotation'],
 )
 
+function polynomialTex(coefficients: number[]): string {
+  const terms: string[] = []
+  for (let power = coefficients.length - 1; power >= 0; power -= 1) {
+    const coefficient = coefficients[power]
+    if (!coefficient) continue
+    const magnitude = Math.abs(coefficient)
+    const variable = power === 0 ? '' : power === 1 ? 'x' : `x^{${power}}`
+    const body = power > 0 && magnitude === 1 ? variable : `${magnitude}${variable}`
+    if (!terms.length) terms.push(coefficient < 0 ? `-${body}` : body)
+    else terms.push(coefficient < 0 ? `-${body}` : `+${body}`)
+  }
+  return terms.join('') || '0'
+}
+
+/**
+ * A calculus problem is generated from an exact derivative factorization.
+ * The shared kernel is domain partition -> derivative sign -> extrema; no
+ * surface wording or answer instance is used to select the solution route.
+ */
+function cubicVariation(): LiveProblem | null {
+  const [leftCritical, rightCritical] = pick<readonly [number, number]>([
+    [-3, -1], [-2, 0], [-1, 1], [0, 2], [1, 3], [-3, 1], [-2, 2], [-1, 3],
+  ])
+  const leadingSign = pick([-1, 1])
+  const constant = pick([-4, -2, 0, 1, 3, 5])
+  const coefficients = [
+    constant,
+    leadingSign * 3 * leftCritical * rightCritical,
+    leadingSign * (-3 * (leftCritical + rightCritical) / 2),
+    leadingSign,
+  ]
+  if (coefficients.some(value => !Number.isInteger(value))) return null
+
+  const evaluate = (x: number) => coefficients.reduceRight((value, coefficient) => value * x + coefficient, 0)
+  const derivativeValue = (x: number) => leadingSign * 3 * (x - leftCritical) * (x - rightCritical)
+  const domainLeft = leftCritical - pick([2, 3])
+  const domainRight = rightCritical + pick([2, 3])
+  const candidates = [domainLeft, leftCritical, rightCritical, domainRight]
+    .map(x => ({ x, y: evaluate(x) }))
+  const maximum = Math.max(...candidates.map(candidate => candidate.y))
+  const minimum = Math.min(...candidates.map(candidate => candidate.y))
+  const maximumAt = candidates.filter(candidate => candidate.y === maximum).map(candidate => candidate.x)
+  const minimumAt = candidates.filter(candidate => candidate.y === minimum).map(candidate => candidate.x)
+  const locationTex = (values: number[]) => values.map(value => `x=${value}`).join(', ')
+  const signBefore = leadingSign > 0 ? '+' : '-'
+  const signBetween = leadingSign > 0 ? '-' : '+'
+  const firstBehavior = leadingSign > 0 ? 'maximum' : 'minimum'
+  const secondBehavior = leadingSign > 0 ? 'minimum' : 'maximum'
+  const firstArrow = leadingSign > 0 ? 'increase' : 'decrease'
+  const middleArrow = leadingSign > 0 ? 'decrease' : 'increase'
+
+  const sampleCount = 181
+  const samples = Array.from({ length: sampleCount }, (_, index) => {
+    const x = domainLeft + ((domainRight - domainLeft) * index) / (sampleCount - 1)
+    return { x, y: evaluate(x) }
+  })
+  const yValues = samples.map(sample => sample.y)
+  const yMin = Math.min(...yValues)
+  const yMax = Math.max(...yValues)
+  const yMargin = Math.max(1, (yMax - yMin) * 0.12)
+  const functionTex = polynomialTex(coefficients)
+  const derivativeTex = `${leadingSign < 0 ? '-' : ''}3(x-${leftCritical < 0 ? `(${leftCritical})` : leftCritical})(x-${rightCritical < 0 ? `(${rightCritical})` : rightCritical})`
+  const analysis: CertifiedCalculusAnalysis = {
+    version: 1,
+    variable: 'x',
+    functionTex,
+    derivativeTex,
+    domainTex: `[${domainLeft},${domainRight}]`,
+    columns: [
+      { role: 'endpoint', label: `${domainLeft}`, x: domainLeft, derivative: '', behavior: 'value', functionLabel: `${evaluate(domainLeft)}` },
+      { role: 'interval', label: `(${domainLeft},${leftCritical})`, derivative: signBefore, behavior: firstArrow, functionLabel: '' },
+      { role: 'critical', label: `${leftCritical}`, x: leftCritical, derivative: '0', behavior: firstBehavior, functionLabel: `${evaluate(leftCritical)}` },
+      { role: 'interval', label: `(${leftCritical},${rightCritical})`, derivative: signBetween, behavior: middleArrow, functionLabel: '' },
+      { role: 'critical', label: `${rightCritical}`, x: rightCritical, derivative: '0', behavior: secondBehavior, functionLabel: `${evaluate(rightCritical)}` },
+      { role: 'interval', label: `(${rightCritical},${domainRight})`, derivative: signBefore, behavior: firstArrow, functionLabel: '' },
+      { role: 'endpoint', label: `${domainRight}`, x: domainRight, derivative: '', behavior: 'value', functionLabel: `${evaluate(domainRight)}` },
+    ],
+    plot: {
+      viewport: { xMin: domainLeft - 0.5, xMax: domainRight + 0.5, yMin: yMin - yMargin, yMax: yMax + yMargin },
+      segments: [samples],
+      keyPoints: candidates.map(candidate => ({
+        ...candidate,
+        label: `(${candidate.x},${candidate.y})`,
+        role: candidate.x === leftCritical || candidate.x === rightCritical ? 'critical' as const : 'endpoint' as const,
+      })),
+    },
+    certificate: {
+      method: 'exact_polynomial_derivative_sign_partition',
+      checks: [
+        { id: 'DifferentiatePolynomial', claim: `f'(x)=${derivativeTex}`, status: 'verified' },
+        { id: 'CriticalPointZeros', claim: `f'(${leftCritical})=f'(${rightCritical})=0`, status: 'verified' },
+        { id: 'OrderedDomainPartition', claim: `${domainLeft}<${leftCritical}<${rightCritical}<${domainRight}`, status: 'verified' },
+        { id: 'IntervalSignWitnesses', claim: '各開区間の有理標本点で因子の符号を厳密評価', status: 'verified' },
+        { id: 'FiniteCandidateComparison', claim: '閉区間の端点と全臨界点の値を比較', status: 'verified' },
+      ],
+    },
+  }
+  const signWitnesses = [
+    (domainLeft + leftCritical) / 2,
+    (leftCritical + rightCritical) / 2,
+    (rightCritical + domainRight) / 2,
+  ].map(derivativeValue)
+  if (signWitnesses.some((value, index) => Math.sign(value) !== Math.sign(index === 1 ? leadingSign * -1 : leadingSign))) return null
+
+  const answerTex = `\\max f=${maximum}\\ (${locationTex(maximumAt)}),\\quad \\min f=${minimum}\\ (${locationTex(minimumAt)})`
+  const proofCertificate: ProofCertificateStep[] = analysis.certificate.checks.map(check => ({
+    id: check.id,
+    claim: check.claim,
+    verifier: check.id === 'OrderedDomainPartition' || check.id === 'IntervalSignWitnesses'
+      ? 'order_check'
+      : check.id === 'FiniteCandidateComparison'
+        ? 'exact_integer'
+        : 'symbolic_identity',
+  }))
+  const morphismChain = ['Polynomial', 'Derivative', 'CriticalSet', 'DomainPartition', 'SignChart', 'Monotonicity', 'ExtremumComparison', 'FunctionSketch']
+  return {
+    familyId: 'runtime.calculus.polynomial_variation',
+    domain: 'analysis',
+    tool: 'exact_derivative_factorization_and_sign_partition',
+    parameters: { domainLeft, domainRight, leftCritical, rightCritical, leadingSign, constant },
+    statementTex:
+      `閉区間 \\(${domainLeft}\\le x\\le ${domainRight}\\) で定義された関数 ` +
+      `\\(f(x)=${functionTex}\\) について、増減表を作り、グラフの概形をかけ。` +
+      `また、最大値と最小値を求めよ。`,
+    answerTex,
+    solutionTex:
+      `微分すると \\(f'(x)=${derivativeTex}\\) である。` +
+      `臨界点は \\(x=${leftCritical},${rightCritical}\\) であり、これらと定義域の端点で区間を分ける。` +
+      `各区間で因子の符号を調べると増減表の通りになる。` +
+      `閉区間上の最大・最小候補は端点と臨界点に限られるので、4点の値を比較して ` +
+      `\\(${answerTex}\\) を得る。概形は同じ符号分割に従って描く。`,
+    morphismChain,
+    proofCertificate,
+    verificationMethod: analysis.certificate.method,
+    calculusAnalysis: analysis,
+    structureBlueprint: {
+      id: 'runtime.calculus.domain_partition_sign_chart',
+      version: 1,
+      kernel: 'differentiable_function_on_ordered_domain',
+      observable: 'global_extrema_and_sketch',
+      operators: ['differentiate', 'solve_critical_set', 'partition_domain', 'evaluate_sign', 'compare_candidates'],
+      domain: 'analysis',
+      tags: ['analysis', 'calculus', 'derivative', 'variation', 'function_graph', 'extremum'],
+      morphismChain,
+      proofCertificate,
+      fusionContract: {
+        ports: [
+          {
+            id: 'differential_structure',
+            role: 'morphism',
+            accepts: ['calculus', 'derivative', 'algebra'],
+            witnessSteps: ['Derivative', 'CriticalSet'],
+          },
+          {
+            id: 'ordered_observation',
+            role: 'observable',
+            accepts: ['variation', 'function_graph', 'extremum'],
+            witnessSteps: ['DomainPartition', 'SignChart'],
+          },
+        ],
+        bridges: [{
+          id: 'derivative_sign_controls_monotonicity',
+          consumes: ['differential_structure', 'ordered_observation'],
+          produces: 'certified_function_shape',
+          witnessStep: 'Monotonicity',
+        }],
+      },
+      executable: true,
+    },
+  }
+}
+
 type GeneratorSpec = {
   generate: LiveGenerator
   domain: string
@@ -1490,6 +1665,7 @@ const GENERATORS: GeneratorSpec[] = [
   { generate: mobiusPeriod, domain: 'algebra', tags: ['algebra', 'iteration', 'matrix', 'period'], depth: 3 },
   { generate: cyclotomicMobiusOrbitMoment, domain: 'complex_algebra', tags: ['complex', 'roots_of_unity', 'mobius', 'cross_ratio', 'iteration', 'matrix', 'polynomial_roots', 'power_sum', 'symmetric_polynomial'], depth: 22 },
   { generate: integralRecurrenceSqueeze, domain: 'analysis', tags: ['integral', 'recurrence', 'inequality', 'limit', 'asymptotic'], depth: 8 },
+  { generate: cubicVariation, domain: 'analysis', tags: ['analysis', 'calculus', 'derivative', 'variation', 'function_graph', 'extremum'], depth: 8 },
   { generate: reciprocalRecurrence, domain: 'algebra', tags: ['algebra', 'recurrence', 'transformation'], depth: 3 },
   { generate: complexAffineLimit, domain: 'complex', tags: ['complex', 'recurrence', 'limit', 'fixed_point'], depth: 3 },
   { generate: axisInterceptSegmentRegion, domain: 'geometry', tags: ['geometry', 'passage_region', 'area', 'segment', 'parameter_elimination'], depth: 5 },

@@ -8,6 +8,7 @@ import {
   type PlaneProblemDiagram,
   type ProblemDiagram,
 } from '@/lib/mortra/problem-artifact'
+import type { CertifiedCalculusAnalysis } from '@/lib/mortra/calculus-analysis'
 import styles from './problemArtifact.module.css'
 
 export type ProblemArtifactCard = {
@@ -19,6 +20,7 @@ export type ProblemArtifactCard = {
   parameters?: Record<string, number>
   morphism_chain?: string[]
   diagram?: ProblemDiagram
+  calculus_analysis?: CertifiedCalculusAnalysis
   verification?: { method?: string; exact_backend?: boolean; independent_check?: boolean }
 }
 
@@ -171,7 +173,7 @@ function VariationFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind:
       <table className={styles.variationTable}>
         <thead>
           <tr>
-            <th>x</th>
+            <th>{diagram.variableLabel ?? 'x'}</th>
             {diagram.columns.map((column, index) => <th key={`${column}-${index}`}>{column}</th>)}
           </tr>
         </thead>
@@ -184,6 +186,25 @@ function VariationFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind:
           ))}
         </tbody>
       </table>
+    </div>
+  )
+}
+
+function CalculusFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind: 'calculus' }> }) {
+  const variable = diagram.variable
+  return (
+    <div className={styles.calculusFigure}>
+      <div className={styles.calculusIdentity}>
+        <div><span>FUNCTION</span><MathText text={`\\(f(${variable})=${diagram.functionTex}\\)`} /></div>
+        <div><span>DERIVATIVE</span><MathText text={`\\(f'(${variable})=${diagram.derivativeTex}\\)`} /></div>
+        <div><span>DOMAIN</span><MathText text={`\\(${diagram.domainTex}\\)`} /></div>
+      </div>
+      <VariationFigure diagram={diagram.variation} />
+      <PlaneFigure diagram={diagram.plot} />
+      <div className={styles.calculusCertificate}>
+        <span>CALCULUS CERTIFICATE</span>
+        <code>{diagram.certificateMethod}</code>
+      </div>
     </div>
   )
 }
@@ -201,6 +222,8 @@ export function ProblemFigure({ diagram }: { diagram: ProblemDiagram }) {
           ? <StateFigure diagram={diagram} />
           : diagram.kind === 'variation'
             ? <VariationFigure diagram={diagram} />
+            : diagram.kind === 'calculus'
+              ? <CalculusFigure diagram={diagram} />
           : <MorphismFigure diagram={diagram} />}
       <figcaption>{diagram.caption}</figcaption>
     </figure>
@@ -213,6 +236,7 @@ export function ProblemArtifact({ card, compact = false, showVerification = true
     domain: card.domain,
     parameters: card.parameters,
     morphismChain: card.morphism_chain,
+    calculusAnalysis: card.calculus_analysis,
   })
   const hasResolvedAnswer = Boolean(card.answer_tex?.trim() && card.solution_tex?.trim())
   const hasCertificate = Boolean(

@@ -1,3 +1,8 @@
+import {
+  validateCalculusAnalysis,
+  type CertifiedCalculusAnalysis,
+} from './calculus-analysis'
+
 export type DiagramPoint = { x: number; y: number }
 
 export type DiagramShape =
@@ -64,6 +69,7 @@ export type VariationProblemDiagram = {
   kind: 'variation'
   title: string
   caption: string
+  variableLabel?: string
   columns: string[]
   rows: Array<{
     label: string
@@ -72,17 +78,33 @@ export type VariationProblemDiagram = {
   }>
 }
 
+export type CalculusProblemDiagram = {
+  version: 1
+  kind: 'calculus'
+  title: string
+  caption: string
+  variable: string
+  functionTex: string
+  derivativeTex: string
+  domainTex: string
+  variation: VariationProblemDiagram
+  plot: PlaneProblemDiagram
+  certificateMethod: string
+}
+
 export type ProblemDiagram =
   | PlaneProblemDiagram
   | MorphismProblemDiagram
   | StateProblemDiagram
   | VariationProblemDiagram
+  | CalculusProblemDiagram
 
 export type ProblemArtifactSource = {
   familyId?: string
   domain?: string
   parameters?: Record<string, number>
   morphismChain?: string[]
+  calculusAnalysis?: CertifiedCalculusAnalysis
 }
 
 const point = (x: number, y: number): DiagramPoint => ({ x, y })
@@ -317,27 +339,69 @@ function endpointIntegralDiagram(parameters: Record<string, number>): PlaneProbl
   }
 }
 
-function formatNumber(value: number): string {
-  if (Number.isInteger(value)) return String(value)
-  return String(Math.round(value * 1000) / 1000)
-}
-
-function quadraticVariationDiagram(parameters: Record<string, number>): VariationProblemDiagram {
-  const a = parameters.a ?? 1
-  const b = parameters.b ?? 0
-  const c = parameters.c ?? 0
-  const vertexX = -b / (2 * a)
-  const vertexY = a * vertexX * vertexX + b * vertexX + c
+function calculusDiagram(analysis: CertifiedCalculusAnalysis): CalculusProblemDiagram {
+  const errors = validateCalculusAnalysis(analysis)
+  if (errors.length) throw new Error(`invalid calculus analysis: ${errors.join('; ')}`)
+  const behaviorSymbol = {
+    increase: '↗',
+    decrease: '↘',
+    maximum: '極大',
+    minimum: '極小',
+    value: '',
+    discontinuous: '不連続',
+  } as const
   return {
     version: 1,
-    kind: 'variation',
-    title: '導関数の符号と増減',
-    caption: `頂点 x=${formatNumber(vertexX)} の前後で導関数の符号が変わります。表とグラフを対応させて最大・最小を判定します。`,
-    columns: ['-∞', formatNumber(vertexX), '+∞'],
-    rows: [
-      { label: "f'(x)", cells: a > 0 ? ['-', '0', '+'] : ['+', '0', '-'], tone: 'primary' },
-      { label: 'f(x)', cells: a > 0 ? ['↘', formatNumber(vertexY), '↗'] : ['↗', formatNumber(vertexY), '↘'], tone: 'accent' },
-    ],
+    kind: 'calculus',
+    title: '増減表と関数の概形',
+    caption: '定義域を臨界点・端点・特異点で分け、各区間の導関数の符号から概形を描いています。',
+    variable: analysis.variable,
+    functionTex: analysis.functionTex,
+    derivativeTex: analysis.derivativeTex,
+    domainTex: analysis.domainTex,
+    variation: {
+      version: 1,
+      kind: 'variation',
+      title: '導関数の符号と増減',
+      caption: '点の値だけでなく、点の間の符号が増加・減少を決めます。',
+      variableLabel: analysis.variable,
+      columns: analysis.columns.map(column => column.label),
+      rows: [
+        { label: "f'(x)", cells: analysis.columns.map(column => column.derivative), tone: 'primary' },
+        {
+          label: 'f(x)',
+          cells: analysis.columns.map(column => {
+            const symbol = behaviorSymbol[column.behavior]
+            return [symbol, column.functionLabel].filter(Boolean).join(' ')
+          }),
+          tone: 'accent',
+        },
+      ],
+    },
+    plot: {
+      version: 1,
+      kind: 'plane',
+      title: '符号分割から復元した概形',
+      caption: '曲線は表示用の標本点です。極値と増減の判定は標本点ではなく、上の符号証明書に基づきます。',
+      viewport: analysis.plot.viewport,
+      axes: true,
+      shapes: [
+        ...analysis.plot.segments.map(segment => ({
+          kind: 'polyline' as const,
+          points: segment,
+          tone: 'primary' as const,
+        })),
+        ...analysis.plot.keyPoints
+          .filter(keyPoint => keyPoint.role !== 'singularity')
+          .map(keyPoint => ({
+            kind: 'point' as const,
+            point: { x: keyPoint.x, y: keyPoint.y },
+            label: keyPoint.label,
+            tone: keyPoint.role === 'critical' ? 'accent' as const : 'secondary' as const,
+          })),
+      ],
+    },
+    certificateMethod: analysis.certificate.method,
   }
 }
 
@@ -366,6 +430,7 @@ function morphismDiagram(source: ProblemArtifactSource): MorphismProblemDiagram 
 export function buildProblemDiagram(source: ProblemArtifactSource): ProblemDiagram {
   const familyId = source.familyId ?? ''
   const parameters = source.parameters ?? {}
+  if (source.calculusAnalysis) return calculusDiagram(source.calculusAnalysis)
   if (familyId.includes('parabola_right_angle_chord')) return parabolaDiagram(parameters)
   if (familyId.includes('axis_intercept_segment_swept_region')) return interceptRegionDiagram(parameters)
   if (familyId.includes('translated_disk_swept_region')) return translatedDiskDiagram(parameters)
@@ -374,8 +439,5 @@ export function buildProblemDiagram(source: ProblemArtifactSource): ProblemDiagr
   if (familyId.includes('gambler_ruin_probability')) return gamblerStateDiagram(parameters)
   if (familyId.includes('complex_rotation_period')) return complexRotationDiagram(parameters)
   if (familyId.includes('weighted_integral') || familyId.includes('integral_endpoint') || familyId.includes('integral_state')) return endpointIntegralDiagram(parameters)
-  if (familyId.includes('quadratic') && (familyId.includes('extrem') || familyId.includes('range') || familyId.includes('variation'))) {
-    return quadraticVariationDiagram(parameters)
-  }
   return morphismDiagram(source)
 }

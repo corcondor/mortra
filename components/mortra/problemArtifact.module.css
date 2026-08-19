@@ -184,6 +184,51 @@
   padding: 34px 20px 42px;
 }
 
+.calculusFigure {
+  display: grid;
+}
+
+.calculusIdentity {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.4fr) minmax(110px, 0.7fr);
+  border-top: 1px solid rgba(148, 163, 184, 0.12);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.calculusIdentity > div {
+  display: grid;
+  min-width: 0;
+  gap: 8px;
+  padding: 14px 16px 16px;
+  color: #d8dee3;
+  font-size: 12px;
+}
+
+.calculusIdentity > div + div {
+  border-left: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.calculusIdentity span,
+.calculusCertificate span {
+  color: #61707c;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 8px;
+}
+
+.calculusCertificate {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-top: 1px solid rgba(148, 163, 184, 0.12);
+  padding: 10px 16px;
+}
+
+.calculusCertificate code {
+  color: #7f8c96;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 8px;
+}
+
 .variationTable {
   width: 100%;
   min-width: 520px;
@@ -372,5 +417,14 @@
 
   .morphismStep:nth-child(even) i {
     display: none;
+  }
+
+  .calculusIdentity {
+    grid-template-columns: 1fr;
+  }
+
+  .calculusIdentity > div + div {
+    border-top: 1px solid rgba(148, 163, 184, 0.12);
+    border-left: 0;
   }
 }

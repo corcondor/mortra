@@ -8,9 +8,19 @@ const DESCRIPTION =
   '外部LLMを使わずIMO幾何25/30。複数の記号推論器を協調させ、数学を解き、作る研究システム。'
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://sakumon-web.vercel.app'),
   title: TITLE,
   description: DESCRIPTION,
   applicationName: 'MORTRA-1',
+  alternates: { canonical: '/' },
+  keywords: [
+    'MORTRA', '数学AI', '記号推論', '自動作問', '数学問題生成',
+    '幾何証明', '増減表', '関数グラフ', 'IMO geometry', 'symbolic reasoning',
+  ],
+  authors: [{ name: 'MORTRA' }],
+  creator: 'MORTRA',
+  publisher: 'MORTRA',
+  robots: { index: true, follow: true },
   openGraph: {
     title: TITLE,
     description: DESCRIPTION,
@@ -20,7 +30,7 @@ export const metadata: Metadata = {
     type: 'website',
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: TITLE,
     description: DESCRIPTION,
   },

@@ -39,8 +39,20 @@ const timeline = [
 ]
 
 export function MortraProductPage() {
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'MORTRA-1',
+    applicationCategory: 'EducationalApplication',
+    operatingSystem: 'Web',
+    url: 'https://sakumon-web.vercel.app/',
+    description: '記号推論で数学問題、図、解答、検証過程を生成する公開ベータ。',
+    softwareVersion: '1 Public Beta',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
+  }
   return (
     <main className={styles.page}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       <header className={styles.nav}>
         <div className={`${styles.shell} ${styles.navInner}`}>
           <Link className={styles.wordmark} href="/" aria-label="MORTRA-1 home">
@@ -85,7 +97,7 @@ export function MortraProductPage() {
             </div>
             <p className={styles.sectionCopy}>
               選んだ問題から対象、条件、結論を取り出し、両方に共通する構造と、その間をつなぐ補題を探します。
-              画面には、解析、探索、証明、検証の現在地を表示します。
+              画面には解析、探索、証明、検証の現在地を表示し、完成時には問題文、図、解答、検証結果を一緒に返します。
             </p>
           </div>
           <MortraTryConsole />
