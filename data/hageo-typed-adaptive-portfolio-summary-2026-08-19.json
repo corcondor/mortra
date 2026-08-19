@@ -1,0 +1,76 @@
+{
+  "experiment": "hageo_typed_adaptive_portfolio_no_llm",
+  "date": "2026-08-19",
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_problem_id_in_search": false,
+    "uses_expected_answer": false,
+    "uses_dataset_auxiliary_clauses": false,
+    "truth_plane": "yuclid_native_certificate_replay_only"
+  },
+  "candidate_coverage_dev": {
+    "paths": 3,
+    "steps": 4,
+    "per_family_32": 3,
+    "per_family_64": 4,
+    "source": "data/geometry-dev-candidate-coverage-limit64-2026-08-19.json"
+  },
+  "capability_regression": {
+    "solved": 3,
+    "total": 3,
+    "results": [
+      {
+        "problem": "2011CTSTp16",
+        "solved": true,
+        "elapsed_seconds": 46.271155100000215,
+        "path": ["reflect(k,b,c)->d"],
+        "source": "data/hageo-proof-dag-family-feedback16-fast-2011CTSTp16-2026-08-19.json"
+      },
+      {
+        "problem": "2012G4",
+        "solved": true,
+        "elapsed_seconds": 16.0026084000001,
+        "source": "data/hageo-proof-dag-family-fixed-2012G4-2026-08-19.json"
+      },
+      {
+        "problem": "2017G3",
+        "solved": true,
+        "elapsed_seconds": 29.61140720000003,
+        "source": "data/hageo-proof-dag-family-fixed-2017G3-2026-08-19.json"
+      }
+    ]
+  },
+  "development_problem": {
+    "problem": "2020_p1",
+    "solved": true,
+    "elapsed_seconds": 45.003887299999406,
+    "verification_calls": 96,
+    "path": [
+      "intersection_ll(a,y,b,u)->e",
+      "reflect(p,o,d)->f"
+    ],
+    "source": "data/hageo-capability-union2-feedback48-2020_p1-2026-08-19.json"
+  },
+  "adaptive_development": {
+    "problem": "2020_p1",
+    "solved": true,
+    "stages": 2,
+    "feedback_windows": [16, 48],
+    "elapsed_seconds": 91.2582371000008,
+    "source": "data/hageo-adaptive-feedback-window-2020_p1-2026-08-19.json"
+  },
+  "frozen_probe": {
+    "solved": 0,
+    "total": 3,
+    "problems": [
+      "2015IranTSTp18",
+      "2024VietnamTSTp5",
+      "2023IMOp6"
+    ],
+    "interpretation": "no certified accuracy improvement on the fixed three-problem probe"
+  },
+  "tests": {
+    "passed": 27,
+    "failed": 0
+  }
+}

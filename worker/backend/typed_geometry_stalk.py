@@ -295,6 +295,46 @@ def _family_inputs(
     raise ValueError(f"unknown construction symmetry: {family.symmetry}")
 
 
+def equivalent_construction_inputs(
+    family: ConstructionFamily,
+    left: Sequence[str],
+    right: Sequence[str],
+) -> bool:
+    """Compare construction inputs modulo the symmetry declared by the grammar."""
+
+    left = tuple(left)
+    right = tuple(right)
+    if len(left) != family.input_arity or len(right) != family.input_arity:
+        return False
+    if family.symmetry == "ordered":
+        return left == right
+    if family.symmetry == "all":
+        return sorted(left) == sorted(right)
+    if family.symmetry == "head_pair":
+        return left[0] == right[0] and sorted(left[1:]) == sorted(right[1:])
+    if family.symmetry == "line_pair":
+        left_lines = {frozenset(left[:2]), frozenset(left[2:])}
+        right_lines = {frozenset(right[:2]), frozenset(right[2:])}
+        return left_lines == right_lines
+    if family.symmetry == "line_relation":
+        return (
+            frozenset(left[:2]) == frozenset(right[:2])
+            and left[2] == right[2]
+            and frozenset(left[3:]) == frozenset(right[3:])
+        )
+    if family.symmetry == "relation_pair":
+        left_relations = {
+            (left[0], frozenset(left[1:3])),
+            (left[3], frozenset(left[4:6])),
+        }
+        right_relations = {
+            (right[0], frozenset(right[1:3])),
+            (right[3], frozenset(right[4:6])),
+        }
+        return left_relations == right_relations
+    raise ValueError(f"unknown construction symmetry: {family.symmetry}")
+
+
 def goal_distances(
     graph: Mapping[str, set[str]], goal_multiplicity: Mapping[str, int]
 ) -> dict[str, int]:
@@ -436,6 +476,55 @@ def schema_first_score_fill(
             selected.append(buckets[key].pop(0))
             if len(selected) == limit:
                 return selected
+    for candidate in candidates:
+        if candidate not in selected:
+            selected.append(candidate)
+            if len(selected) == limit:
+                break
+    return selected
+
+
+def schema_quota_score_fill(
+    candidates: Sequence[T],
+    *,
+    category: Callable[[T], Hashable],
+    category_order: Sequence[Hashable],
+    limit: int,
+    within_category_key: Callable[[T], object] | None = None,
+    quota_fraction: float = 1.0,
+) -> list[T]:
+    """Reserve a finite local prefix per schema, then fill by global score.
+
+    Global proof relevance and local construction coverage are distinct axes.
+    ``within_category_key`` prevents a global relation score from erasing a
+    structurally early candidate inside an otherwise useful schema.
+    """
+
+    if limit <= 0:
+        return []
+    if not 0.0 <= quota_fraction <= 1.0:
+        raise ValueError("quota_fraction must be between zero and one")
+    ordered_categories = tuple(dict.fromkeys(category_order))
+    reserved = int(limit * quota_fraction)
+    quota = (
+        max(1, reserved // max(1, len(ordered_categories)))
+        if reserved > 0
+        else 0
+    )
+    buckets: dict[Hashable, list[T]] = {key: [] for key in ordered_categories}
+    for candidate in candidates:
+        buckets.setdefault(category(candidate), []).append(candidate)
+    if within_category_key is not None:
+        for values in buckets.values():
+            values.sort(key=within_category_key)
+    selected: list[T] = []
+    for index in range(quota):
+        for key in ordered_categories:
+            values = buckets.get(key, ())
+            if index < len(values):
+                selected.append(values[index])
+                if len(selected) == limit:
+                    return selected
     for candidate in candidates:
         if candidate not in selected:
             selected.append(candidate)

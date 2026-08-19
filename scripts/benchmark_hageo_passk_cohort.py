@@ -39,6 +39,13 @@ def _artifact_result(
         "rounds_n": args.rounds,
         "attempts_k": args.attempts,
         "seed": args.seed,
+        "candidate_policy": args.candidate_policy,
+        "incremental_prefix": args.incremental_prefix,
+        "incidence_preselect_limit": args.incidence_preselect_limit,
+        "incidence_workers": args.incidence_workers,
+        "rank_temperature": args.rank_temperature,
+        "feedback_candidates": args.feedback_candidates,
+        "feedback_workers": args.feedback_workers,
     }
     observed = {key: protocol.get(key) for key in expected}
     if artifact.get("problem_name") != problem_name or observed != expected:
@@ -108,13 +115,27 @@ def _run_problem(
         str(args.per_family_limit),
         "--incidence-oversample-per-family",
         str(args.incidence_oversample_per_family),
+        "--incidence-preselect-limit",
+        str(args.incidence_preselect_limit),
+        "--incidence-workers",
+        str(args.incidence_workers),
         "--candidate-limit",
         str(args.candidate_limit),
+        "--candidate-policy",
+        args.candidate_policy,
+        "--rank-temperature",
+        str(args.rank_temperature),
+        "--feedback-candidates",
+        str(args.feedback_candidates),
+        "--feedback-workers",
+        str(args.feedback_workers),
         "--timeout-seconds",
         str(args.problem_timeout_seconds),
         "--ar-profile",
         args.ar_profile,
     ]
+    if args.incremental_prefix:
+        command.append("--incremental-prefix")
     started = time.perf_counter()
     try:
         completed = subprocess.run(
@@ -194,7 +215,18 @@ def _build_report(
             "per_family_limit": args.per_family_limit,
             "incidence_oversample_per_family": args.incidence_oversample_per_family,
             "candidate_limit": args.candidate_limit,
-            "trajectory_policy": "independent_seeded_numerical_incidence_sampling",
+            "candidate_policy": args.candidate_policy,
+            "rank_temperature": args.rank_temperature,
+            "incremental_prefix": args.incremental_prefix,
+            "incidence_workers": args.incidence_workers,
+            "incidence_preselect_limit": args.incidence_preselect_limit,
+            "feedback_candidates": args.feedback_candidates,
+            "feedback_workers": args.feedback_workers,
+            "trajectory_policy": (
+                "typed_formal_sheaf_rank_biased_sampling"
+                if args.candidate_policy == "typed-sheaf"
+                else "independent_seeded_numerical_incidence_sampling"
+            ),
             "truth_plane": "yuclid_native_certificate_replay_only",
         },
         "summary": {
@@ -233,7 +265,18 @@ def main() -> int:
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--per-family-limit", type=int, default=4)
     parser.add_argument("--incidence-oversample-per-family", type=int, default=16)
+    parser.add_argument("--incidence-preselect-limit", type=int, default=0)
+    parser.add_argument("--incidence-workers", type=int, default=1)
     parser.add_argument("--candidate-limit", type=int, default=64)
+    parser.add_argument(
+        "--candidate-policy",
+        choices=("random", "typed-sheaf"),
+        default="random",
+    )
+    parser.add_argument("--rank-temperature", type=float, default=2.0)
+    parser.add_argument("--incremental-prefix", action="store_true")
+    parser.add_argument("--feedback-candidates", type=int, default=0)
+    parser.add_argument("--feedback-workers", type=int, default=1)
     parser.add_argument("--problem-timeout-seconds", type=float, default=1200.0)
     parser.add_argument("--ar-profile", choices=("ratio-only", "standard", "all"), default="all")
     parser.add_argument("--resume-existing", action="store_true")

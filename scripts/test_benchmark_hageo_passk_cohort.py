@@ -23,6 +23,13 @@ class CohortCheckpointTest(unittest.TestCase):
             per_family_limit=4,
             incidence_oversample_per_family=16,
             candidate_limit=64,
+            candidate_policy="random",
+            rank_temperature=2.0,
+            incremental_prefix=False,
+            incidence_workers=1,
+            incidence_preselect_limit=0,
+            feedback_candidates=0,
+            feedback_workers=1,
         )
 
     def test_resume_artifact_and_partial_checkpoint(self) -> None:
@@ -37,7 +44,18 @@ class CohortCheckpointTest(unittest.TestCase):
                         "unique_paths": 8,
                         "right_censored_shards": 0,
                         "execution_error_shards": 0,
-                        "protocol": {"rounds_n": 6, "attempts_k": 8, "seed": 0},
+                        "protocol": {
+                            "rounds_n": 6,
+                            "attempts_k": 8,
+                            "seed": 0,
+                            "candidate_policy": "random",
+                            "incremental_prefix": False,
+                            "incidence_preselect_limit": 0,
+                            "incidence_workers": 1,
+                            "rank_temperature": 2.0,
+                            "feedback_candidates": 0,
+                            "feedback_workers": 1,
+                        },
                     }
                 ),
                 encoding="utf-8",
@@ -66,7 +84,18 @@ class CohortCheckpointTest(unittest.TestCase):
                         "unique_paths": 4,
                         "right_censored_shards": 0,
                         "execution_error_shards": 0,
-                        "protocol": {"rounds_n": 4, "attempts_k": 4, "seed": 0},
+                        "protocol": {
+                            "rounds_n": 4,
+                            "attempts_k": 4,
+                            "seed": 0,
+                            "candidate_policy": "random",
+                            "incremental_prefix": False,
+                            "incidence_preselect_limit": 0,
+                            "incidence_workers": 1,
+                            "rank_temperature": 2.0,
+                            "feedback_candidates": 0,
+                            "feedback_workers": 1,
+                        },
                     }
                 ),
                 encoding="utf-8",

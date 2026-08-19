@@ -52,11 +52,25 @@ def _run_shard(
         str(args.per_family_limit),
         "--incidence-oversample-per-family",
         str(args.incidence_oversample_per_family),
+        "--incidence-preselect-limit",
+        str(args.incidence_preselect_limit),
+        "--incidence-workers",
+        str(args.incidence_workers),
         "--candidate-limit",
         str(args.candidate_limit),
+        "--candidate-policy",
+        args.candidate_policy,
+        "--rank-temperature",
+        str(args.rank_temperature),
+        "--feedback-candidates",
+        str(args.feedback_candidates),
+        "--feedback-workers",
+        str(args.feedback_workers),
         "--ar-profile",
         args.ar_profile,
     ]
+    if args.incremental_prefix:
+        command.append("--incremental-prefix")
     started = time.perf_counter()
     try:
         completed = subprocess.run(
@@ -117,7 +131,18 @@ def main() -> int:
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--per-family-limit", type=int, default=4)
     parser.add_argument("--incidence-oversample-per-family", type=int, default=16)
+    parser.add_argument("--incidence-preselect-limit", type=int, default=0)
+    parser.add_argument("--incidence-workers", type=int, default=1)
     parser.add_argument("--candidate-limit", type=int, default=64)
+    parser.add_argument(
+        "--candidate-policy",
+        choices=("random", "typed-sheaf"),
+        default="random",
+    )
+    parser.add_argument("--rank-temperature", type=float, default=2.0)
+    parser.add_argument("--incremental-prefix", action="store_true")
+    parser.add_argument("--feedback-candidates", type=int, default=0)
+    parser.add_argument("--feedback-workers", type=int, default=1)
     parser.add_argument("--timeout-seconds", type=float, default=3600.0)
     parser.add_argument("--ar-profile", choices=("ratio-only", "standard", "all"), default="all")
     args = parser.parse_args()
@@ -187,7 +212,18 @@ def main() -> int:
             "attempts_k": args.attempts,
             "process_shards": shard_count,
             "seed": args.seed,
-            "trajectory_policy": "independent_seeded_numerical_incidence_sampling",
+            "candidate_policy": args.candidate_policy,
+            "rank_temperature": args.rank_temperature,
+            "incremental_prefix": args.incremental_prefix,
+            "feedback_candidates": args.feedback_candidates,
+            "feedback_workers": args.feedback_workers,
+            "incidence_workers": args.incidence_workers,
+            "incidence_preselect_limit": args.incidence_preselect_limit,
+            "trajectory_policy": (
+                "typed_formal_sheaf_rank_biased_sampling"
+                if args.candidate_policy == "typed-sheaf"
+                else "independent_seeded_numerical_incidence_sampling"
+            ),
             "truth_plane": "yuclid_native_certificate_replay_only",
         },
         "problem_name": args.problem_name,

@@ -1,0 +1,106 @@
+{
+  "experiment": "hageo_candidate_coverage_certified_development_paths",
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_expected_answers": false,
+    "uses_dataset_auxiliary_clauses_for_search": false,
+    "split": "dev",
+    "per_family_limit": 32,
+    "purpose": "coverage_audit_only_not_training_or_heldout_scoring"
+  },
+  "summary": {
+    "paths": 3,
+    "steps": 4,
+    "grammar_coverage": 4,
+    "budgeted_enumeration_coverage": 3,
+    "execution_coverage": 4,
+    "family_counts": {
+      "intersection_lc": 1,
+      "midpoint": 1,
+      "reflect": 2
+    }
+  },
+  "results": [
+    {
+      "problem_name": "2000_p6",
+      "trace": "data/newclid-dynamic-stalk-2000-p6-calibration-2026-08-15.json",
+      "normalization": {
+        "rewritten_constructions": 0,
+        "unchanged_constructions": 12,
+        "unresolved_constructions": 0
+      },
+      "path_length": 1,
+      "grammar_coverage": 1,
+      "budgeted_enumeration_coverage": 0,
+      "execution_coverage": 1,
+      "steps": [
+        {
+          "step": "midpoint(b,i)->d",
+          "family": "midpoint",
+          "grammar_encodable": true,
+          "enumerated_under_budget": false,
+          "executable": true,
+          "candidate_count": 1024,
+          "error": null
+        }
+      ]
+    },
+    {
+      "problem_name": "2015_p3",
+      "trace": "data/hageo-incidence-ablation-calibration-2026-08-18/2015_p3-hageo.json",
+      "normalization": {
+        "rewritten_constructions": 0,
+        "unchanged_constructions": 12,
+        "unresolved_constructions": 0
+      },
+      "path_length": 1,
+      "grammar_coverage": 1,
+      "budgeted_enumeration_coverage": 1,
+      "execution_coverage": 1,
+      "steps": [
+        {
+          "step": "intersection_lc(a,f,h)->d",
+          "family": "intersection_lc",
+          "grammar_encodable": true,
+          "enumerated_under_budget": true,
+          "executable": true,
+          "candidate_count": 1024,
+          "error": null
+        }
+      ]
+    },
+    {
+      "problem_name": "2020_p1",
+      "trace": "data/newclid-dynamic-stalk-2020-p1-recertified-2026-08-18.json",
+      "normalization": {
+        "rewritten_constructions": 0,
+        "unchanged_constructions": 13,
+        "unresolved_constructions": 0
+      },
+      "path_length": 2,
+      "grammar_coverage": 2,
+      "budgeted_enumeration_coverage": 2,
+      "execution_coverage": 2,
+      "steps": [
+        {
+          "step": "reflect(p,o,c)->e",
+          "family": "reflect",
+          "grammar_encodable": true,
+          "enumerated_under_budget": true,
+          "executable": true,
+          "candidate_count": 1024,
+          "error": null
+        },
+        {
+          "step": "reflect(a,o,d)->f",
+          "family": "reflect",
+          "grammar_encodable": true,
+          "enumerated_under_budget": true,
+          "executable": true,
+          "candidate_count": 1024,
+          "error": null
+        }
+      ]
+    }
+  ]
+}

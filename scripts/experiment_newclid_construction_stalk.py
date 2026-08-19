@@ -73,6 +73,7 @@ from worker.backend.geometry_proof_hypergraph import (
 from worker.backend.geometry_ar_residual import yuclid_ar_residual
 from worker.backend.differentiable_proof_controller import (
     DifferentiableProofController,
+    softplus,
 )
 from worker.backend.typed_candidate_alignment import (
     UNREACHABLE_DISTANCE,
@@ -91,6 +92,14 @@ from worker.backend.numerical_incidence_auxiliary import (
     NumericalIncidenceAtlas,
     NumericalIncidenceProfile,
 )
+from worker.backend.native_formal_obligation_sheaf import (
+    build_candidate_local_view,
+    capability_preserving_candidate_order,
+    coordinate_candidate_scores,
+)
+from worker.backend.mortra_unified_architecture import (
+    unified_geometry_architecture_manifest,
+)
 from worker.backend.typed_geometry_stalk import (
     DEFAULT_POINT_FAMILIES,
     EXTENDED_POINT_FAMILIES,
@@ -108,10 +117,32 @@ from worker.backend.typed_geometry_stalk import (
     prioritize_morphism_orbit,
     proof_hypergraph_point_relevance,
     schema_first_score_fill,
+    schema_quota_score_fill,
 )
 
 
 DEFINITIONS = JGEXDefinition.to_dict(ALL_JGEX_CONSTRUCTIONS)
+POLYNOMIAL_RELATION_CHANNELS = frozenset({"coll", "para", "perp", "cong"})
+
+
+def _ordinal_preferences(
+    candidates: list[TypedConstructionCandidate],
+    ranks: dict[str, tuple[object, ...]],
+) -> dict[str, float]:
+    """Turn an ordering into scale-free local preferences without labels."""
+
+    ordered_ranks = sorted({ranks[candidate.key] for candidate in candidates})
+    if not ordered_ranks:
+        return {}
+    denominator = max(1, len(ordered_ranks) - 1)
+    score_by_rank = {
+        rank: 1.0 - index / denominator
+        for index, rank in enumerate(ordered_ranks)
+    }
+    return {
+        candidate.key: score_by_rank[ranks[candidate.key]]
+        for candidate in candidates
+    }
 
 
 def construction_relation_atoms(
@@ -513,9 +544,12 @@ def candidate_extensions(
     candidate_incidence: str = "off",
     incidence_tolerance: float = 1e-7,
     incidence_oversample_per_family: int = 16,
+    incidence_preselect_limit: int = 0,
+    incidence_workers: int = 1,
     current_problem: Any | None = None,
     construction_seed: int = 0,
 ) -> tuple[list[ConstructionStep], dict[str, Any]]:
+    extension_started = time.perf_counter()
     generated = {step.output for step in steps}
     points = base_points | generated
     graph = augment_incidence_graph(
@@ -590,14 +624,53 @@ def candidate_extensions(
     )
     candidates = list(gate_result.candidates)
     output = next_point_name(points)
+    incidence_input_count = len(candidates)
+    if (
+        candidate_incidence == "hageo"
+        and incidence_preselect_limit > 0
+        and len(candidates) > incidence_preselect_limit
+    ):
+        if candidate_alignment in {"typed-atom", "native-formal-sheaf"}:
+            pre_alignment = {
+                candidate.key: align_candidate_atoms(
+                    construction_relation_atoms(
+                        candidate.family, output, candidate.inputs
+                    ),
+                    relation_demands,
+                    candidate_relation_distances or {},
+                )
+                for candidate in candidates
+            }
+            candidates.sort(
+                key=lambda candidate: (
+                    pre_alignment[candidate.key].rank,
+                    candidate.structural_rank,
+                )
+            )
+        else:
+            candidates.sort(key=lambda candidate: candidate.structural_rank)
+        candidates = schema_quota_score_fill(
+            candidates,
+            category=lambda candidate: candidate.family,
+            category_order=[family.name for family in families],
+            limit=incidence_preselect_limit,
+            within_category_key=lambda candidate: candidate.structural_rank,
+            quota_fraction=0.5,
+        )
     incidence_by_key: dict[str, NumericalIncidenceProfile] = {}
     incidence_errors: dict[str, int] = defaultdict(int)
+    incidence_started = time.perf_counter()
     if candidate_incidence == "hageo":
+        if incidence_workers < 1:
+            raise ValueError("incidence_workers must be positive")
         incidence_atlas = NumericalIncidenceAtlas.build(
             coordinates,
             tolerance=incidence_tolerance,
         )
-        for candidate in candidates:
+
+        def evaluate_incidence_candidate(
+            candidate: TypedConstructionCandidate,
+        ) -> tuple[str, NumericalIncidenceProfile | None, str | None]:
             step = ConstructionStep(
                 candidate.family,
                 output,
@@ -618,13 +691,32 @@ def candidate_extensions(
                     float(output_point.num.x),
                     float(output_point.num.y),
                 )
-                incidence_by_key[candidate.key] = incidence_atlas.profile(
-                    output_coordinates,
-                    family=candidate.family,
-                    inputs=candidate.inputs,
+                return (
+                    candidate.key,
+                    incidence_atlas.profile(
+                        output_coordinates,
+                        family=candidate.family,
+                        inputs=candidate.inputs,
+                    ),
+                    None,
                 )
             except Exception as exc:
-                incidence_errors[type(exc).__name__] += 1
+                return candidate.key, None, type(exc).__name__
+
+        if incidence_workers == 1:
+            incidence_results = map(evaluate_incidence_candidate, candidates)
+        else:
+            executor = ThreadPoolExecutor(max_workers=incidence_workers)
+            incidence_results = executor.map(evaluate_incidence_candidate, candidates)
+        try:
+            for candidate_key, profile, error_type in incidence_results:
+                if profile is not None:
+                    incidence_by_key[candidate_key] = profile
+                elif error_type is not None:
+                    incidence_errors[error_type] += 1
+        finally:
+            if incidence_workers != 1:
+                executor.shutdown(wait=True)
         candidates.sort(
             key=lambda candidate: (
                 incidence_by_key[candidate.key].rank
@@ -635,6 +727,7 @@ def candidate_extensions(
         )
     elif candidate_incidence != "off":
         raise ValueError(f"unknown candidate incidence mode: {candidate_incidence}")
+    incidence_elapsed_seconds = time.perf_counter() - incidence_started
 
     def incidence_rank(candidate: TypedConstructionCandidate) -> tuple[int, ...]:
         profile = incidence_by_key.get(candidate.key)
@@ -779,10 +872,317 @@ def candidate_extensions(
                 candidate.structural_rank,
             )
         )
+    elif candidate_alignment == "native-formal-sheaf":
+        # Each agent keeps a private candidate ordering.  Only candidates seen
+        # by two compatible formal languages reach an edge stalk.  The ADMM
+        # result controls search order only; Yuclid replay still decides truth.
+        demands = relation_demands or proof_dag_goals
+        alignment_by_key = {
+            candidate.key: align_candidate_atoms(
+                construction_relation_atoms(
+                    candidate.family, output, candidate.inputs
+                ),
+                demands,
+                candidate_relation_distances or {},
+            )
+            for candidate in candidates
+        }
+        grammar_scores = _ordinal_preferences(
+            candidates,
+            {candidate.key: candidate.structural_rank for candidate in candidates},
+        )
+        relation_scores = _ordinal_preferences(
+            candidates,
+            {
+                candidate.key: alignment_by_key[candidate.key].rank
+                for candidate in candidates
+            },
+        )
+        typed_incidence_scores = _ordinal_preferences(
+            candidates,
+            {
+                candidate.key: (
+                    alignment_by_key[candidate.key].rank,
+                    incidence_rank(candidate),
+                    candidate.structural_rank,
+                )
+                for candidate in candidates
+            },
+        )
+        typed_incidence_view = build_candidate_local_view(
+            agent_id="typed_incidence_proposal",
+            formal_language="typed relation plus numerical incidence proposal",
+            scores=typed_incidence_scores,
+        )
+        polynomial_eligible = {
+            candidate.key
+            for candidate in candidates
+            if {
+                atom.predicate
+                for atom in construction_relation_atoms(
+                    candidate.family, output, candidate.inputs
+                )
+            }
+            and {
+                atom.predicate
+                for atom in construction_relation_atoms(
+                    candidate.family, output, candidate.inputs
+                )
+            }
+            <= POLYNOMIAL_RELATION_CHANNELS
+        }
+        polynomial_scores = {
+            candidate.key: 1.0 for candidate in candidates
+            if candidate.key in polynomial_eligible
+        }
+        local_views = [
+            build_candidate_local_view(
+                agent_id="tong_action",
+                formal_language="typed construction action language",
+                scores=grammar_scores,
+            ),
+            build_candidate_local_view(
+                agent_id="newclid_relation",
+                formal_language="Newclid relation obligations",
+                scores=relation_scores,
+            ),
+        ]
+        proof_dag_view = None
+        proof_dag_search = None
+        proof_dag_elapsed_seconds = 0.0
+        if proof_dag_goals and proof_dag_theorems:
+            # Preserve the bounded bidirectional prover that predates the
+            # sheaf coordinator.  It receives at most the first 16 typed terms
+            # per construction family, so the local proof search stays finite
+            # while the global grammar may grow beyond that budget.
+            proof_dag_candidates = schema_quota_score_fill(
+                candidates,
+                category=lambda candidate: candidate.family,
+                category_order=[family.name for family in families],
+                limit=min(len(candidates), 16 * len(families)),
+                within_category_key=lambda candidate: candidate.structural_rank,
+                quota_fraction=1.0,
+            )
+            parent_atoms = tuple(
+                atom
+                for step in steps
+                for atom in construction_relation_atoms(
+                    step.family, step.output, step.inputs
+                )
+            )
+            proof_candidate_atoms = {
+                candidate.key: construction_relation_atoms(
+                    candidate.family, output, candidate.inputs
+                )
+                for candidate in proof_dag_candidates
+            }
+            proof_dag_started = time.perf_counter()
+            proof_dag_search = search_bidirectionally(
+                (*proof_dag_facts, *parent_atoms),
+                proof_dag_goals,
+                proof_candidate_atoms,
+                proof_dag_theorems,
+                max_backward_depth=candidate_cone_depth,
+                max_forward_depth=candidate_cone_depth,
+                max_backward_branches=candidate_cone_fragments,
+                max_forward_fragments=candidate_cone_fragments,
+                per_task_search_states=candidate_cone_states,
+                max_total_search_states=(
+                    candidate_cone_initial_states * len(proof_dag_candidates)
+                    + candidate_cone_states * candidate_promotion_limit
+                    + candidate_cone_states
+                ),
+                max_tasks=max(
+                    1,
+                    (len(proof_dag_candidates) + len(proof_dag_goals))
+                    * candidate_cone_depth,
+                ),
+            )
+            proof_dag_elapsed_seconds = time.perf_counter() - proof_dag_started
+            proof_dag_scores = _ordinal_preferences(
+                proof_dag_candidates,
+                {
+                    candidate.key: (
+                        proof_dag_search.candidates[candidate.key].rank,
+                        incidence_rank(candidate),
+                        candidate.structural_rank,
+                    )
+                    for candidate in proof_dag_candidates
+                },
+            )
+            proof_dag_view = build_candidate_local_view(
+                agent_id="newclid_bidirectional_proof_dag",
+                formal_language="Newclid typed backward/forward proof DAG",
+                scores=proof_dag_scores,
+            )
+        if polynomial_scores:
+            local_views.append(
+                build_candidate_local_view(
+                    agent_id="gclc_wu",
+                    formal_language="GCLC/Wu polynomial relation interface",
+                    scores=polynomial_scores,
+                )
+            )
+        if incidence_by_key:
+            incidence_candidates = [
+                candidate for candidate in candidates if candidate.key in incidence_by_key
+            ]
+            incidence_scores = _ordinal_preferences(
+                incidence_candidates,
+                {
+                    candidate.key: incidence_by_key[candidate.key].rank
+                    for candidate in incidence_candidates
+                },
+            )
+            local_views.append(
+                build_candidate_local_view(
+                    agent_id="hageo_incidence",
+                    formal_language="HAGeo numerical incidence observations",
+                    scores=incidence_scores,
+                )
+            )
+        coordination_started = time.perf_counter()
+        coordinated_scores, sheaf_result = coordinate_candidate_scores(local_views)
+        coordination_elapsed_seconds = time.perf_counter() - coordination_started
+        candidates.sort(
+            key=lambda candidate: (
+                -coordinated_scores.get(candidate.key, 0.0),
+                alignment_by_key[candidate.key].rank,
+                incidence_rank(candidate),
+                candidate.structural_rank,
+            )
+        )
+        consensus_ranking = [candidate.key for candidate in candidates]
+        portfolio_views = (
+            [typed_incidence_view, proof_dag_view, *local_views]
+            if proof_dag_view is not None
+            else [typed_incidence_view, *local_views]
+        )
+        portfolio_order = capability_preserving_candidate_order(
+            consensus_ranking,
+            portfolio_views,
+        )
+        if proof_dag_view is not None:
+            # A bounded specialist reservation prevents consensus from erasing
+            # a construction that one exact prover ranks highly.  The prefix
+            # remains problem-agnostic: it is derived only from typed proof
+            # obligations and contains no problem names or expected answers.
+            proof_priority = sorted(
+                proof_dag_view.preferences,
+                key=lambda name: (
+                    -float(proof_dag_view.preferences[name]),
+                    name,
+                ),
+            )
+            candidate_by_key = {candidate.key: candidate for candidate in candidates}
+            proof_family_priority: list[str] = []
+            proof_families: set[str] = set()
+            for key in proof_priority:
+                family = candidate_by_key[key].family
+                if family in proof_families:
+                    continue
+                proof_families.add(family)
+                proof_family_priority.append(key)
+            typed_priority = sorted(
+                typed_incidence_view.preferences,
+                key=lambda name: (
+                    -float(typed_incidence_view.preferences[name]),
+                    name,
+                ),
+            )[:8]
+            reserved_prefix = capability_preserving_candidate_order(
+                consensus_ranking[:8],
+                [
+                    build_candidate_local_view(
+                        agent_id="typed_incidence_proposal_prefix",
+                        formal_language=typed_incidence_view.formal_language,
+                        scores={
+                            key: float(len(typed_priority) - index)
+                            for index, key in enumerate(typed_priority)
+                        },
+                    ),
+                    build_candidate_local_view(
+                        agent_id="newclid_bidirectional_proof_dag_family_frontier",
+                        formal_language=proof_dag_view.formal_language,
+                        scores={
+                            key: float(len(proof_family_priority) - index)
+                            for index, key in enumerate(proof_family_priority)
+                        },
+                    )
+                ],
+            )
+            portfolio_order = tuple(
+                dict.fromkeys((*reserved_prefix, *portfolio_order))
+            )
+        portfolio_rank = {key: index for index, key in enumerate(portfolio_order)}
+        candidates.sort(key=lambda candidate: portfolio_rank[candidate.key])
+        meet_cones = {}
+        unified_search = None
+        last_trace = sheaf_result.trace[-1] if sheaf_result.trace else None
+        native_sheaf_audit = {
+            "agents": [
+                {
+                    "agent_id": view.agent_id,
+                    "formal_language": view.formal_language,
+                    "local_dimension": view.dimension,
+                    "participates_in_consensus": view in local_views,
+                }
+                for view in portfolio_views
+            ],
+            "consensus_agent_ids": [view.agent_id for view in local_views],
+            "portfolio_agent_ids": [view.agent_id for view in portfolio_views],
+            "restriction_edge_count": len(sheaf_result.edges),
+            "shared_candidate_count": len(coordinated_scores),
+            "iterations": len(sheaf_result.trace),
+            "primal_residual": (
+                last_trace.primal_residual if last_trace is not None else 0.0
+            ),
+            "dual_residual": (
+                last_trace.dual_residual if last_trace is not None else 0.0
+            ),
+            "sheaf_residual": (
+                last_trace.sheaf_residual if last_trace is not None else 0.0
+            ),
+            "truth_plane": "yuclid_native_certificate_replay_only",
+            "timing_seconds": {
+                "proof_dag": proof_dag_elapsed_seconds,
+                "coordination": coordination_elapsed_seconds,
+            },
+            "candidate_order": "capability_preserving_consensus_plus_local_interleave",
+            "proof_dag_specialist": (
+                {
+                    "candidate_count": len(proof_dag_view.preferences),
+                    "reserved_consensus": 8,
+                    "reserved_typed_incidence": typed_priority,
+                    "family_frontier": proof_family_priority,
+                    "queue": proof_dag_search.audit.to_dict(),
+                }
+                if proof_dag_view is not None and proof_dag_search is not None
+                else None
+            ),
+            "local_top_candidates": [
+                {
+                    "agent_id": view.agent_id,
+                    "candidates": sorted(
+                        view.preferences,
+                        key=lambda name: (-float(view.preferences[name]), name),
+                    )[:12],
+                }
+                for view in portfolio_views
+            ],
+            "top_candidates": [
+                {
+                    "candidate": candidate.key,
+                    "consensus_score": coordinated_scores.get(candidate.key, 0.0),
+                }
+                for candidate in candidates[:12]
+            ],
+        }
     elif candidate_alignment == "off":
         alignment_by_key = {}
         meet_cones = {}
         unified_search = None
+        native_sheaf_audit = None
     elif candidate_alignment != "off":
         raise ValueError(f"unknown candidate alignment: {candidate_alignment}")
     if branch_limit > 0:
@@ -798,6 +1198,7 @@ def candidate_extensions(
                 "proof-dag-meet",
                 "proof-dag-lazy",
                 "proof-dag-priority",
+                "native-formal-sheaf",
             }
             else [family.name for family in families]
         )
@@ -832,10 +1233,19 @@ def candidate_extensions(
         reachable_candidates = sum(
             item.has_closed_structural_residual for item in alignment_values
         )
+    elif candidate_alignment == "native-formal-sheaf":
+        direct_match_candidates = sum(
+            item.direct_match_count > 0 for item in alignment_values
+        )
+        reachable_candidates = sum(
+            item.best_relation_distance < UNREACHABLE_DISTANCE
+            for item in alignment_values
+        )
     else:
         direct_match_candidates = 0
         reachable_candidates = 0
     extension_audit = {
+        "elapsed_seconds": time.perf_counter() - extension_started,
         "mode": candidate_gate,
         "relation_reachability": asdict(gate_result.audit),
         "selected_after_branch_limit": len(candidates),
@@ -847,6 +1257,11 @@ def candidate_extensions(
                 if candidate_incidence == "hageo"
                 else per_family_limit
             ),
+            "workers": incidence_workers,
+            "elapsed_seconds": incidence_elapsed_seconds,
+            "preselect_limit": incidence_preselect_limit,
+            "input_candidates_before_preselection": incidence_input_count,
+            "candidates_after_preselection": len(candidates),
             "checked_candidates": len(incidence_by_key),
             "heuristic_candidates": sum(
                 profile.is_heuristic_candidate
@@ -896,6 +1311,11 @@ def candidate_extensions(
                 and unified_search is not None
                 else None
             ),
+            "native_formal_sheaf": (
+                native_sheaf_audit
+                if candidate_alignment == "native-formal-sheaf"
+                else None
+            ),
             "top_candidates": [
                 {
                     "candidate": candidate.key,
@@ -939,6 +1359,213 @@ def select_diverse_beam(
     ranking: str,
     controller: DifferentiableProofController | None = None,
 ) -> list[SearchRecord]:
+    if ranking in {
+        "native-formal-sheaf",
+        "native-formal-sheaf-portfolio",
+        "unified-formal-sheaf-portfolio",
+    }:
+        valid = [record for record in records if record.error is None]
+        if not valid:
+            return []
+
+        def record_key(record: SearchRecord) -> str:
+            return "|".join(step.key for step in record.steps)
+
+        def ordinal_scores(quality) -> dict[str, float]:
+            values = {record_key(record): quality(record) for record in valid}
+            levels = sorted(set(values.values()), reverse=True)
+            denominator = max(1, len(levels) - 1)
+            score_by_level = {
+                level: 1.0 - index / denominator
+                for index, level in enumerate(levels)
+            }
+            return {key: score_by_level[value] for key, value in values.items()}
+
+        structural_scores = ordinal_scores(
+            lambda record: tuple(
+                -float(value) for value in record.steps[-1].structural_rank[:7]
+            )
+        )
+        relation_scores = ordinal_scores(
+            lambda record: (
+                record.solved,
+                record.relation_near_goal_count,
+                record.relation_support_weight,
+                record.relation_target_assertion_count,
+                record.relation_transition_potential,
+            )
+        )
+        algebra_scores = ordinal_scores(
+            lambda record: (
+                record.solved,
+                record.ar_closed_goal_count,
+                -record.ar_residual_support_size,
+                -record.ar_residual_l1_weight,
+                record.ar_known_rank,
+            )
+        )
+        obligation_scores = ordinal_scores(
+            lambda record: (
+                record.solved,
+                -len(record.open_relation_demands),
+                -len(record.backward_obligations),
+                record.goal_deduction_count,
+            )
+        )
+        transition_scores = ordinal_scores(
+            lambda record: (
+                record.solved,
+                record.relation_transition_potential,
+                record.relation_transition_channel_coverage,
+                -min(
+                    (item.distance_to_goal for item in record.frontier_witnesses),
+                    default=10**6,
+                ),
+            )
+        )
+        resource_scores = ordinal_scores(
+            lambda record: (
+                record.solved,
+                -record.elapsed_seconds,
+                -record.all_deduction_count,
+            )
+        )
+        if ranking == "unified-formal-sheaf-portfolio":
+            if controller is None:
+                raise ValueError(f"{ranking} requires a differentiable controller")
+            learned_local = {
+                record_key(record): controller.score_record(record).local_scores
+                for record in valid
+            }
+            structural_scores = {
+                key: scores["structure"] for key, scores in learned_local.items()
+            }
+            relation_scores = {
+                key: scores["closure"] for key, scores in learned_local.items()
+            }
+            transition_scores = {
+                key: scores["transition"] for key, scores in learned_local.items()
+            }
+            algebra_scores = {
+                key: scores["algebra"] for key, scores in learned_local.items()
+            }
+            obligation_scores = {
+                key: scores["obligation"] for key, scores in learned_local.items()
+            }
+            resource_scores = {
+                key: scores["cost"] for key, scores in learned_local.items()
+            }
+        polynomial_eligible = {
+            record_key(record)
+            for record in valid
+            if {
+                atom.predicate
+                for atom in construction_relation_atoms(
+                    record.steps[-1].family,
+                    record.steps[-1].output,
+                    record.steps[-1].inputs,
+                )
+            }
+            <= POLYNOMIAL_RELATION_CHANNELS
+        }
+        views = [
+            build_candidate_local_view(
+                agent_id="tong_action",
+                formal_language="typed construction action language",
+                scores=structural_scores,
+            ),
+            build_candidate_local_view(
+                agent_id="newclid_relation",
+                formal_language="Newclid DD relation closure",
+                scores=relation_scores,
+            ),
+            build_candidate_local_view(
+                agent_id="newclid_ar",
+                formal_language="Newclid algebraic-rule residual",
+                scores=algebra_scores,
+            ),
+            build_candidate_local_view(
+                agent_id="sygus_obligation",
+                formal_language="typed open-obligation synthesis",
+                scores=obligation_scores,
+            ),
+        ]
+        if polynomial_eligible:
+            views.append(
+                build_candidate_local_view(
+                    agent_id="gclc_wu",
+                    formal_language="GCLC/Wu polynomial interface",
+                    scores=algebra_scores,
+                    eligible_candidates=polynomial_eligible,
+                )
+            )
+        trust_by_agent = None
+        rho = 1.0
+        if ranking == "unified-formal-sheaf-portfolio":
+            views.extend(
+                (
+                    build_candidate_local_view(
+                        agent_id="newclid_transition",
+                        formal_language="Newclid typed relation transitions",
+                        scores=transition_scores,
+                    ),
+                    build_candidate_local_view(
+                        agent_id="resource_scheduler",
+                        formal_language="proof-circuit execution cost",
+                        scores=resource_scores,
+                    ),
+                )
+            )
+            learned_trust = {
+                name: softplus(value) + 0.05
+                for name, value in controller.parameters.trust_logits.items()
+            }
+            trust_by_agent = {
+                "tong_action": learned_trust["structure"],
+                "newclid_relation": learned_trust["closure"],
+                "newclid_transition": learned_trust["transition"],
+                "newclid_ar": learned_trust["algebra"],
+                "sygus_obligation": learned_trust["obligation"],
+                "resource_scheduler": learned_trust["cost"],
+            }
+            if polynomial_eligible:
+                trust_by_agent["gclc_wu"] = learned_trust["algebra"]
+            rho = softplus(controller.parameters.log_rho) + 0.05
+        coordinated_scores, _result = coordinate_candidate_scores(
+            views,
+            rho=rho,
+            trust_by_agent=trust_by_agent,
+        )
+        sheaf_ranked = balanced_stratified_beam(
+            valid,
+            score=lambda record: (
+                record.solved,
+                coordinated_scores.get(record_key(record), 0.0),
+            ),
+            category=lambda record: record.steps[-1].family,
+            stratum=lambda record: (
+                tuple(step.key for step in record.steps[:-1]),
+                record.steps[-1].family,
+            ),
+            limit=beam_width,
+        )
+        if ranking == "native-formal-sheaf":
+            return sheaf_ranked
+
+        # Preserve half of the exact residual policy.  Self-organization must
+        # add capability before it is allowed to remove a proven search path.
+        exact_budget = (beam_width + 1) // 2
+        selected = select_diverse_beam(
+            records,
+            exact_budget,
+            ranking="ar-residual-pareto",
+        )
+        for record in sheaf_ranked:
+            if record not in selected:
+                selected.append(record)
+                if len(selected) == beam_width:
+                    break
+        return selected[:beam_width]
     if ranking in {"differentiable-consensus", "consensus-portfolio"}:
         if controller is None:
             raise ValueError(f"{ranking} requires a differentiable controller")
@@ -1201,6 +1828,7 @@ def main() -> None:
             "proof-dag-meet",
             "proof-dag-lazy",
             "proof-dag-priority",
+            "native-formal-sheaf",
         ),
         default="off",
         help=(
@@ -1259,6 +1887,9 @@ def main() -> None:
             "frontier",
             "frontier-pareto",
             "ar-residual-pareto",
+            "native-formal-sheaf",
+            "native-formal-sheaf-portfolio",
+            "unified-formal-sheaf-portfolio",
             "differentiable-consensus",
             "consensus-portfolio",
         ),
@@ -1285,6 +1916,7 @@ def main() -> None:
     if args.beam_ranking in {
         "differentiable-consensus",
         "consensus-portfolio",
+        "unified-formal-sheaf-portfolio",
     } and controller is None:
         parser.error(f"--beam-ranking {args.beam_ranking} requires --controller")
 
@@ -1431,7 +2063,7 @@ def main() -> None:
                     )
                     for target in candidate_target_channels
                 }
-                if args.candidate_alignment == "typed-atom"
+                if args.candidate_alignment in {"typed-atom", "native-formal-sheaf"}
                 else {}
             )
             extensions, gate_audit = candidate_extensions(
@@ -1581,6 +2213,13 @@ def main() -> None:
         "relation": "yuclid_novel_nonconstruction_target_relation_diverse_beam",
         "relation-transition": "yuclid_native_rule_transition_potential_diverse_beam",
         "ar-residual-pareto": "exact_ar_residual_frontier_structural_pareto_beam",
+        "native-formal-sheaf": "heterogeneous_native_local_view_sheaf_admm_beam",
+        "native-formal-sheaf-portfolio": (
+            "half_exact_residual_half_heterogeneous_native_sheaf_beam"
+        ),
+        "unified-formal-sheaf-portfolio": (
+            "half_exact_residual_half_differentiable_heterogeneous_formal_language_sheaf_beam"
+        ),
         "frontier-pareto": "yuclid_native_frontier_and_structural_pareto_beam",
         "frontier": "yuclid_native_frontier_witness_diverse_beam",
         "closure": "yuclid_closure_growth_diverse_beam",
@@ -1609,6 +2248,11 @@ def main() -> None:
                     "truth_plane": "native_certificate_replay_only",
                 }
                 if controller is not None and args.controller is not None
+                else None
+            ),
+            "unified_architecture": (
+                unified_geometry_architecture_manifest()
+                if args.beam_ranking == "unified-formal-sheaf-portfolio"
                 else None
             ),
             "goal_channels": sorted(goal_channels),
