@@ -1620,3 +1620,402 @@
     flex-direction: column;
   }
 }
+
+/* MORTRA Model 1 public workspace */
+.mark {
+  width: 32px;
+  height: 32px;
+  overflow: hidden;
+  border: 0;
+  background: transparent;
+}
+
+.brandIcon {
+  display: block;
+  width: 31px;
+  height: 31px;
+  object-fit: contain;
+}
+
+.modelLabel {
+  color: #737e88;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.heroContent {
+  width: min(660px, 58vw);
+}
+
+.hero h1 {
+  font-size: clamp(68px, 9vw, 126px);
+  line-height: 0.9;
+}
+
+.heroLead {
+  max-width: 590px;
+  font-size: 16px;
+  line-height: 1.9;
+}
+
+.console {
+  display: block;
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.parentGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 36px;
+}
+
+.parentField {
+  display: grid;
+  min-width: 0;
+  gap: 10px;
+}
+
+.parentField label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #77828d;
+  font-size: 10px;
+}
+
+.parentField label span:first-child {
+  color: var(--cyan);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+}
+
+.parentField textarea {
+  width: 100%;
+  min-height: 190px;
+  resize: vertical;
+  border: 1px solid #2b323a;
+  border-radius: 4px;
+  outline: none;
+  background: #050708;
+  color: #e9eef2;
+  padding: 20px;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 14px;
+  line-height: 1.9;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+
+.parentField textarea:focus {
+  border-color: var(--cyan);
+  background: #070a0c;
+}
+
+.parentField textarea::placeholder {
+  color: #4f5963;
+}
+
+.mergeRail {
+  position: relative;
+  width: min(50%, 640px);
+  height: 54px;
+  margin: 0 auto;
+  border-bottom: 1px solid rgba(40, 215, 242, 0.55);
+}
+
+.mergeRail::before,
+.mergeRail::after {
+  position: absolute;
+  bottom: 0;
+  width: 1px;
+  height: 26px;
+  background: rgba(40, 215, 242, 0.55);
+  content: "";
+}
+
+.mergeRail::before { left: 0; }
+.mergeRail::after { right: 0; }
+
+.mergeRail span {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cyan);
+  transform: translateX(-50%);
+}
+
+.inputActions {
+  display: flex;
+  width: min(100%, 430px);
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 26px auto 0;
+}
+
+.runButton {
+  flex: 1;
+  min-height: 48px;
+  border-color: #d8e0e6;
+  background: #f4f7fa;
+  color: #060708;
+  font-size: 13px;
+}
+
+.iconButton {
+  width: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 0;
+}
+
+.spin {
+  animation: mortra-spin 900ms linear infinite;
+}
+
+@keyframes mortra-spin {
+  to { transform: rotate(360deg); }
+}
+
+.execution {
+  margin-top: 70px;
+  border-top: 1px solid var(--line);
+}
+
+.executionVisual {
+  position: relative;
+  height: 260px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+  background: #030405;
+}
+
+.consoleScene {
+  width: 100%;
+  height: 260px;
+  border: 0;
+  opacity: 0.82;
+}
+
+.executionStatus {
+  position: absolute;
+  right: 24px;
+  bottom: 20px;
+  left: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  pointer-events: none;
+}
+
+.executionPhase {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #dce4ea;
+  font-size: 12px;
+}
+
+.executionStatus time {
+  color: #7d8994;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+}
+
+.phaseStrip {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid var(--line);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  list-style: none;
+}
+
+.phaseItem {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 17px 10px;
+  color: #58636e;
+  font-size: 10px;
+  text-align: center;
+}
+
+.phaseItem::before {
+  display: none;
+}
+
+.phaseItem::after {
+  position: absolute;
+  top: 50%;
+  right: -16%;
+  width: 32%;
+  height: 1px;
+  background: #252b31;
+  content: "";
+}
+
+.phaseItem:last-child::after {
+  display: none;
+}
+
+.phaseItem > span {
+  display: grid;
+  width: 18px;
+  height: 18px;
+  place-items: center;
+  border: 1px solid #323a42;
+  border-radius: 50%;
+  color: #071013;
+}
+
+.phaseActive {
+  color: var(--cyan);
+}
+
+.phaseActive > span {
+  border-color: var(--cyan);
+  box-shadow: inset 0 0 0 4px #030405;
+  background: var(--cyan);
+}
+
+.phaseDone {
+  color: #c9d3da;
+}
+
+.phaseDone > span {
+  border-color: var(--cyan);
+  background: var(--cyan);
+}
+
+.currentMessage {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 22px 20px;
+  color: #9da8b2;
+  font-size: 12px;
+  line-height: 1.8;
+  text-align: center;
+}
+
+.errorMessage {
+  color: #f2bd68;
+}
+
+.traceDisclosure {
+  border-top: 1px solid var(--line);
+  color: #74808b;
+}
+
+.traceDisclosure summary {
+  width: max-content;
+  margin: 0 auto;
+  padding: 15px 20px;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.liveLog {
+  max-height: 250px;
+  overflow: auto;
+  border: 0;
+  padding: 8px 20px 22px;
+}
+
+.logLine {
+  display: grid;
+  max-width: 880px;
+  margin: 0 auto 9px;
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: 14px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  line-height: 1.7;
+}
+
+.generatedArtifact {
+  margin-top: 56px;
+}
+
+@media (max-width: 700px) {
+  .modelLabel {
+    display: none;
+  }
+
+  .parentGrid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .parentField textarea {
+    min-height: 150px;
+    padding: 16px;
+    font-size: 13px;
+  }
+
+  .mergeRail {
+    width: 1px;
+    height: 34px;
+    border-bottom: 0;
+    background: rgba(40, 215, 242, 0.55);
+  }
+
+  .mergeRail::before,
+  .mergeRail::after {
+    display: none;
+  }
+
+  .mergeRail span {
+    bottom: -4px;
+  }
+
+  .inputActions {
+    width: 100%;
+    margin-top: 22px;
+  }
+
+  .execution {
+    margin-top: 52px;
+  }
+
+  .executionVisual,
+  .consoleScene {
+    height: 210px;
+  }
+
+  .phaseStrip {
+    overflow: visible;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .phaseItem {
+    gap: 5px;
+    padding: 14px 2px;
+    font-size: 8px;
+  }
+
+  .phaseItem::after {
+    display: none;
+  }
+
+  .phaseItem > span {
+    width: 15px;
+    height: 15px;
+  }
+
+  .hero h1 {
+    font-size: clamp(54px, 18vw, 76px);
+  }
+}

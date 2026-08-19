@@ -3,7 +3,7 @@ import './globals.css'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Analytics } from '@vercel/analytics/next'
 
-const TITLE = 'MORTRA-1 — 数学を、動かす。'
+const TITLE = 'MORTRA — 数学を、動かす。'
 const DESCRIPTION =
   '外部LLMを使わずIMO幾何25/30。複数の記号推論器を協調させ、数学を解き、作る研究システム。'
 
@@ -11,7 +11,12 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://sakumon-web.vercel.app'),
   title: TITLE,
   description: DESCRIPTION,
-  applicationName: 'MORTRA-1',
+  applicationName: 'MORTRA',
+  icons: {
+    icon: '/mortra-mark.png',
+    shortcut: '/mortra-mark.png',
+    apple: '/mortra-mark.png',
+  },
   alternates: { canonical: '/' },
   keywords: [
     'MORTRA', '数学AI', '記号推論', '自動作問', '数学問題生成',
@@ -25,7 +30,7 @@ export const metadata: Metadata = {
     title: TITLE,
     description: DESCRIPTION,
     url: 'https://sakumon-web.vercel.app/',
-    siteName: 'MORTRA-1',
+    siteName: 'MORTRA',
     locale: 'ja_JP',
     type: 'website',
   },

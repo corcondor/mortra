@@ -1171,7 +1171,21 @@ function rootTriangleInvariant(query: RootTriangleQuery): LiveProblem | null {
     familyId,
     domain: 'geometry_algebra',
     tool: `${chart}_vieta_heron_triangle_invariants`,
-    parameters: { e1, e2, e3, sourceE1, sourceE2, sourceE3, shift, chartCode: ['polynomial', 'shifted_polynomial', 'companion_matrix', 'power_sum_recurrence'].indexOf(chart), semiperimeter: s, areaSquared },
+    parameters: {
+      e1,
+      e2,
+      e3,
+      sourceE1,
+      sourceE2,
+      sourceE3,
+      shift,
+      chartCode: ['polynomial', 'shifted_polynomial', 'companion_matrix', 'power_sum_recurrence'].indexOf(chart),
+      semiperimeter: s,
+      areaSquared,
+      rootA: roots[0],
+      rootB: roots[1],
+      rootC: roots[2],
+    },
     statementTex,
     answerTex: ratTex(answer),
     solutionTex,
@@ -1194,6 +1208,30 @@ function rootTriangleInvariant(query: RootTriangleQuery): LiveProblem | null {
       tags: [...new Set(tags)],
       morphismChain,
       proofCertificate,
+      fusionContract: {
+        ports: [
+          {
+            id: 'algebraic_root_source',
+            role: 'object',
+            accepts: ['polynomial_roots', 'symmetric_polynomial', 'characteristic_polynomial', 'matrix', 'recurrence', 'power_sum', 'algebra'],
+            witnessSteps: ['DiscriminantEvaluation', 'VietaFirstSum', 'VietaSecondSum', 'VietaThirdSum'],
+          },
+          {
+            id: 'triangle_metric_constraint',
+            role: 'constraint',
+            accepts: ['triangle', 'heron', 'circle_centers', 'inradius', 'geometry'],
+            witnessSteps: ['PositiveSideLengths', 'TriangleInequality', 'PositiveArea'],
+          },
+        ],
+        bridges: [
+          {
+            id: 'root_multiset_to_triangle_invariant',
+            consumes: ['algebraic_root_source', 'triangle_metric_constraint'],
+            produces: 'verified_triangle_observable',
+            witnessStep: 'HeronFactorization',
+          },
+        ],
+      },
       executable: true,
     },
   }

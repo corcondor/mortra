@@ -1,7 +1,7 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Play, RotateCcw, Square, TimerReset } from 'lucide-react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { Check, LoaderCircle, Play, RotateCcw, Square } from 'lucide-react'
 import { ProofGraphScene } from './ProofGraphScene'
 import { ProblemArtifact, type ProblemArtifactCard } from './ProblemArtifact'
 import type { ProblemDiagram } from '@/lib/mortra/problem-artifact'
@@ -10,11 +10,7 @@ import styles from '@/app/mortra/mortra.module.css'
 type ProgressMessage = {
   phase?: string
   message?: string
-  current?: number
-  total?: number
   draft?: string
-  familyId?: string
-  morphisms?: string[]
   result?: GenerationResult
 }
 
@@ -37,34 +33,18 @@ type GenerationResult = {
   discoveryQueued?: boolean
   discoveryJobId?: string
   engine?: string
-  generalization?: {
-    target_sort?: string
-    common_invariants?: string[]
-  }
 }
 
 type JobStatus = {
-  id?: string
   status?: string
   logs?: Array<{ message?: string; ts?: string } | string>
-  result?: GenerationResult & {
-    searchState?: Record<string, unknown>
-  }
+  result?: GenerationResult
   error?: string | null
   replacement_job_id?: string | null
   telemetry?: {
     elapsed_seconds?: number | null
-    seconds_since_update?: number | null
-    worker_active?: boolean
-    waiting_for_next_round?: boolean
     runtime_phase?: string | null
     runtime_message?: string | null
-    round?: number
-    depth?: number
-    terms_enumerated?: number
-    executable_goals?: number
-    states_explored?: number
-    frontier_count?: number
   }
 }
 
@@ -74,16 +54,17 @@ type TraceLine = {
   text: string
 }
 
-const DEFAULT_PARENT_A = String.raw`\text{放物線 }C:y=x^2\text{ と直線 }\ell:y=mx+1\text{ の交点を }P,Q\text{ とする。}`
-const DEFAULT_PARENT_B = String.raw`\text{三角形 }ABC\text{ の重心 }G\text{ が動くとき、その軌跡と面積を求めよ。}`
+const DEFAULT_PARENT_A = String.raw`\text{三次方程式 }x^3-6x^2+11x-6=0\text{ の3実根の対称式を求めよ。}`
+const DEFAULT_PARENT_B = String.raw`\text{三角形の3辺から、面積と内接円・外接円の半径の関係を調べよ。}`
 const JOB_KEY = 'mortra-public-active-job'
+const SEARCH_BUDGET_SECONDS = 90
 
 const PHASES = [
-  { key: 'semantic', label: '意味解析' },
-  { key: 'typing', label: '型形成' },
-  { key: 'search', label: '射探索' },
-  { key: 'proof', label: '証明' },
-  { key: 'verify', label: '検証' },
+  { key: 'structure', label: '構造化' },
+  { key: 'candidate', label: '候補生成' },
+  { key: 'fusion', label: '融合検査' },
+  { key: 'verify', label: '厳密検証' },
+  { key: 'save', label: '保存' },
 ]
 
 function parentId(text: string, index: number) {
@@ -97,10 +78,11 @@ function parentId(text: string, index: number) {
 
 function stageForPhase(phase: string) {
   if (['complete', 'done', 'saving'].includes(phase)) return 4
-  if (['verifying', 'novelty'].includes(phase)) return 3
-  if (['searching', 'inducing', 'structuring'].includes(phase)) return 2
-  if (['registering'].includes(phase)) return 1
-  return 0
+  if (phase === 'verifying') return 3
+  if (phase === 'novelty') return 2
+  if (['searching', 'structuring'].includes(phase)) return 1
+  if (['start', 'inducing', 'registering'].includes(phase)) return 0
+  return -1
 }
 
 function formatClock(seconds: number) {
@@ -120,19 +102,15 @@ function isResolvedCard(card: GeneratedCard | null | undefined) {
 export function MortraTryConsole() {
   const [parentA, setParentA] = useState(DEFAULT_PARENT_A)
   const [parentB, setParentB] = useState(DEFAULT_PARENT_B)
-  const [budget, setBudget] = useState(90)
   const [running, setRunning] = useState(false)
   const [phase, setPhase] = useState('idle')
-  const [stage, setStage] = useState(0)
+  const [stage, setStage] = useState(-1)
   const [startedAt, setStartedAt] = useState<number | null>(null)
   const [elapsed, setElapsed] = useState(0)
   const [draft, setDraft] = useState('')
   const [result, setResult] = useState<GenerationResult | null>(null)
   const [jobId, setJobId] = useState<string | null>(null)
-  const [telemetry, setTelemetry] = useState<JobStatus['telemetry'] | null>(null)
-  const [trace, setTrace] = useState<TraceLine[]>([
-    { id: 'ready', at: null, text: '親問題を2つ固定すると、型付き構造の共通部分から探索を開始します。' },
-  ])
+  const [trace, setTrace] = useState<TraceLine[]>([])
   const abortRef = useRef<AbortController | null>(null)
 
   const addTrace = useCallback((text: string, at = Date.now()) => {
@@ -158,8 +136,9 @@ export function MortraTryConsole() {
     setJobId(stored)
     setRunning(true)
     setPhase('searching')
+    setStage(1)
     setStartedAt(Date.now())
-    addTrace(`継続中の探索 ${stored.slice(0, 8)} を再接続しました。`)
+    addTrace(`継続中の探索 ${stored.slice(0, 8)} に再接続しました。`)
   }, [addTrace])
 
   useEffect(() => {
@@ -176,10 +155,9 @@ export function MortraTryConsole() {
         if (data.replacement_job_id && data.replacement_job_id !== jobId) {
           window.localStorage.setItem(JOB_KEY, data.replacement_job_id)
           setJobId(data.replacement_job_id)
-          addTrace(`探索を次のworker ${data.replacement_job_id.slice(0, 8)} へ引き継ぎました。`)
+          addTrace(`探索を次の実行系 ${data.replacement_job_id.slice(0, 8)} へ引き継ぎました。`)
           return
         }
-        setTelemetry(data.telemetry)
         if (typeof data.telemetry?.elapsed_seconds === 'number') setElapsed(data.telemetry.elapsed_seconds)
         if (data.telemetry?.runtime_phase) {
           setPhase(data.telemetry.runtime_phase)
@@ -199,13 +177,13 @@ export function MortraTryConsole() {
           setDraft(completedCard?.statement_tex ?? '')
           const resolved = isResolvedCard(completedCard)
           setPhase(resolved ? 'complete' : 'researching')
-          setStage(resolved ? 4 : 2)
+          setStage(resolved ? 4 : 1)
           setRunning(false)
           setJobId(null)
           window.localStorage.removeItem(JOB_KEY)
           addTrace(resolved
-            ? '問題文・解答・解答図・検証証明書を受信しました。'
-            : '研究候補を保存しました。解答の検証は未完了です。')
+            ? '問題文、図、解答、検証証明書を受信しました。'
+            : '研究候補を保存しました。検証は継続中です。')
           return
         }
         if (data.status === 'failed') {
@@ -214,7 +192,7 @@ export function MortraTryConsole() {
           setRunning(false)
           setJobId(null)
           window.localStorage.removeItem(JOB_KEY)
-          addTrace(data.error || '探索は証明可能な候補を返せませんでした。')
+          addTrace(data.error || '証明可能な候補を返せませんでした。')
           return
         }
       } catch (error) {
@@ -238,22 +216,23 @@ export function MortraTryConsole() {
     }
     if (event.message) addTrace(event.message)
     if (event.draft) setDraft(event.draft)
-    if (event.result) {
-      setResult(event.result)
-      const first = cardFromResult(event.result)
-      if (first?.statement_tex) setDraft(first.statement_tex)
-      if (event.result.discoveryQueued && event.result.discoveryJobId) {
-        setJobId(event.result.discoveryJobId)
-        window.localStorage.setItem(JOB_KEY, event.result.discoveryJobId)
-        setPhase('searching')
-        setStage(2)
-        addTrace(`長時間worker ${event.result.discoveryJobId.slice(0, 8)} へ探索を移しました。`)
-      } else {
-        const resolved = isResolvedCard(first)
-        setRunning(false)
-        setPhase(resolved ? 'complete' : (event.result.generated ?? 0) > 0 ? 'researching' : 'error')
-      }
+    if (!event.result) return
+
+    setResult(event.result)
+    const first = cardFromResult(event.result)
+    if (first?.statement_tex) setDraft(first.statement_tex)
+    if (event.result.discoveryQueued && event.result.discoveryJobId) {
+      setJobId(event.result.discoveryJobId)
+      window.localStorage.setItem(JOB_KEY, event.result.discoveryJobId)
+      setPhase('searching')
+      setStage(1)
+      addTrace('長時間の探索へ移行しました。画面を閉じても処理は継続します。')
+      return
     }
+
+    const resolved = isResolvedCard(first)
+    setRunning(false)
+    setPhase(resolved ? 'complete' : (event.result.generated ?? 0) > 0 ? 'researching' : 'error')
   }, [addTrace])
 
   const run = async () => {
@@ -275,9 +254,8 @@ export function MortraTryConsole() {
     setElapsed(0)
     setResult(null)
     setDraft('')
-    setTelemetry(null)
     setTrace([])
-    addTrace('2つの親問題を固定端点として受理しました。')
+    addTrace('親問題AとBを、別々の証明入力として受理しました。')
 
     try {
       const response = await fetch('/api/mathos-generate', {
@@ -289,7 +267,7 @@ export function MortraTryConsole() {
           stream: true,
           mode: 'fusion',
           searchDepth: 'deep',
-          searchBudgetSeconds: budget,
+          searchBudgetSeconds: SEARCH_BUDGET_SECONDS,
           parents: [
             { id: parentId(a, 1), statement: a },
             { id: parentId(b, 2), statement: b },
@@ -319,7 +297,7 @@ export function MortraTryConsole() {
       }
     } catch (error) {
       if (controller.signal.aborted) {
-        addTrace('画面上の監視を停止しました。長時間workerへ移行済みなら探索自体は継続します。')
+        addTrace('画面上の監視を停止しました。長時間探索へ移行済みなら処理は継続します。')
       } else {
         addTrace(error instanceof Error ? error.message : String(error))
         setPhase('error')
@@ -339,128 +317,107 @@ export function MortraTryConsole() {
     setParentB(DEFAULT_PARENT_B)
     setResult(null)
     setDraft('')
-    setTelemetry(null)
-    setTrace([{ id: 'ready', at: Date.now(), text: '入力を初期化しました。' }])
+    setTrace([])
     setPhase('idle')
-    setStage(0)
+    setStage(-1)
     setElapsed(0)
     setStartedAt(null)
   }
 
   const card = cardFromResult(result)
-  const progress = phase === 'complete' ? 1 : Math.min(0.92, (stage + 0.55) / PHASES.length)
-  const eta = running && !jobId ? Math.max(0, budget - elapsed) : null
-  const statusText = running
-    ? jobId ? 'background worker' : 'live synthesis'
-    : phase === 'complete' ? 'verified' : phase === 'researching' ? 'candidate' : phase === 'error' ? 'needs review' : 'ready'
-
-  const metricValues = useMemo(() => [
-    ['経過', formatClock(elapsed)],
-    ['予想残り', eta === null ? (jobId ? '探索継続中' : '—') : formatClock(eta)],
-    ['深さ', String(telemetry?.depth ?? stage)],
-    ['探索状態', String(telemetry?.states_explored ?? telemetry?.terms_enumerated ?? trace.length)],
-  ], [elapsed, eta, jobId, stage, telemetry, trace.length])
+  const progress = phase === 'complete' ? 1 : Math.max(0.08, Math.min(0.92, (stage + 0.7) / PHASES.length))
+  const currentMessage = trace.at(-1)?.text ?? ''
+  const showExecution = running || trace.length > 0 || Boolean(draft) || Boolean(card)
 
   return (
     <>
       <div className={styles.console}>
-        <section className={styles.inputPanel} aria-label="MORTRA入力">
-        <div className={styles.panelHead}>
-          <span className={styles.panelLabel}>Parent problems</span>
-          <span className={styles.panelState}>2 endpoints required</span>
-        </div>
-        <div className={styles.inputBody}>
+        <div className={styles.parentGrid}>
           <div className={styles.parentField}>
-            <label htmlFor="mortra-parent-a"><span>P1</span><span>始点</span></label>
-            <textarea id="mortra-parent-a" value={parentA} onChange={event => setParentA(event.target.value)} />
-          </div>
-          <div className={styles.parentField}>
-            <label htmlFor="mortra-parent-b"><span>P2</span><span>終点</span></label>
-            <textarea id="mortra-parent-b" value={parentB} onChange={event => setParentB(event.target.value)} />
-          </div>
-          <div className={styles.budgetRow}>
-            <label htmlFor="mortra-budget"><span>探索時間</span><span>{budget}秒</span></label>
-            <input
-              id="mortra-budget"
-              type="range"
-              min={30}
-              max={180}
-              step={15}
-              value={budget}
-              onChange={event => setBudget(Number(event.target.value))}
+            <label htmlFor="mortra-parent-a"><span>A</span><span>親問題</span></label>
+            <textarea
+              id="mortra-parent-a"
+              value={parentA}
+              onChange={event => setParentA(event.target.value)}
+              placeholder="一つ目の問題をLaTeXまたは日本語で入力"
             />
           </div>
-          <div className={styles.inputActions}>
-            <button className={styles.runButton} type="button" onClick={() => void run()} disabled={running}>
-              <Play size={15} aria-hidden="true" />
-              構造を探索する
-            </button>
-            <button className={styles.iconButton} type="button" onClick={stop} disabled={!running} title="監視を停止">
+          <div className={styles.parentField}>
+            <label htmlFor="mortra-parent-b"><span>B</span><span>親問題</span></label>
+            <textarea
+              id="mortra-parent-b"
+              value={parentB}
+              onChange={event => setParentB(event.target.value)}
+              placeholder="二つ目の問題をLaTeXまたは日本語で入力"
+            />
+          </div>
+        </div>
+
+        <div className={styles.mergeRail} aria-hidden="true"><span /></div>
+
+        <div className={styles.inputActions}>
+          <button className={styles.runButton} type="button" onClick={() => void run()} disabled={running}>
+            {running ? <LoaderCircle className={styles.spin} size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}
+            {running ? '生成しています' : '融合問題を生成'}
+          </button>
+          {running ? (
+            <button className={styles.iconButton} type="button" onClick={stop} title="画面上の監視を停止" aria-label="画面上の監視を停止">
               <Square size={15} aria-hidden="true" />
             </button>
-            <button className={styles.iconButton} type="button" onClick={reset} title="入力を初期化">
-              <RotateCcw size={15} aria-hidden="true" />
-            </button>
-          </div>
+          ) : null}
+          <button className={styles.iconButton} type="button" onClick={reset} title="入力を初期化" aria-label="入力を初期化">
+            <RotateCcw size={15} aria-hidden="true" />
+          </button>
         </div>
-        </section>
 
-        <section className={styles.tracePanel} aria-label="MORTRA探索過程">
-        <div className={styles.panelHead}>
-          <span className={styles.panelLabel}>Executable proof graph</span>
-          <span className={styles.panelState}>{statusText}</span>
-        </div>
-        <ProofGraphScene className={styles.consoleScene} phase={phase} progress={progress} running={running} />
-        <div className={styles.phaseStrip} aria-label="生成段階">
-          {PHASES.map((item, index) => (
-            <div
-              key={item.key}
-              className={`${styles.phaseItem} ${index < stage ? styles.phaseDone : index === stage ? styles.phaseActive : ''}`}
-            >
-              {item.label}
-            </div>
-          ))}
-        </div>
-        <div className={styles.traceBody}>
-          <div className={styles.liveLog} aria-live="polite">
-            {trace.map((line, index) => (
-              <div key={line.id} className={`${styles.logLine} ${index === trace.length - 1 ? styles.logCurrent : ''}`}>
-                <span className={styles.logTime}>{line.at === null ? '--:--:--' : new Date(line.at).toLocaleTimeString('ja-JP', { hour12: false }).slice(0, 8)}</span>
-                <span className={styles.logText}>{line.text}</span>
+        {showExecution ? (
+          <section className={styles.execution} aria-label="生成の進行状況">
+            <div className={styles.executionVisual}>
+              <ProofGraphScene className={styles.consoleScene} phase={phase} progress={progress} running={running} />
+              <div className={styles.executionStatus} aria-live="polite">
+                <span className={styles.executionPhase}>
+                  {phase === 'complete' ? <Check size={14} aria-hidden="true" /> : running ? <LoaderCircle className={styles.spin} size={14} aria-hidden="true" /> : null}
+                  {phase === 'complete' ? '生成完了' : PHASES[Math.max(0, stage)]?.label ?? '待機中'}
+                </span>
+                {running ? <time>{formatClock(elapsed)}</time> : null}
               </div>
-            ))}
-          </div>
-          <div className={styles.resultPane}>
-            <div className={styles.metricGrid}>
-              {metricValues.map(([label, value]) => (
-                <div className={styles.metric} key={label}>
-                  <span>{label}</span>
-                  <strong>{value}</strong>
+            </div>
+
+            <ol className={styles.phaseStrip} aria-label="実際の生成段階">
+              {PHASES.map((item, index) => {
+                const complete = phase === 'complete' || index < stage
+                const active = running && index === stage
+                return (
+                  <li
+                    key={item.key}
+                    className={`${styles.phaseItem} ${complete ? styles.phaseDone : ''} ${active ? styles.phaseActive : ''}`}
+                    aria-current={active ? 'step' : undefined}
+                  >
+                    <span>{complete ? <Check size={12} aria-hidden="true" /> : null}</span>
+                    {item.label}
+                  </li>
+                )
+              })}
+            </ol>
+
+            {currentMessage ? <p className={`${styles.currentMessage} ${phase === 'error' ? styles.errorMessage : ''}`}>{currentMessage}</p> : null}
+            {trace.length > 1 ? (
+              <details className={styles.traceDisclosure}>
+                <summary>処理記録</summary>
+                <div className={styles.liveLog}>
+                  {trace.map(line => (
+                    <div key={line.id} className={styles.logLine}>
+                      <span className={styles.logTime}>{line.at === null ? '--:--:--' : new Date(line.at).toLocaleTimeString('ja-JP', { hour12: false }).slice(0, 8)}</span>
+                      <span className={styles.logText}>{line.text}</span>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            <div style={{ marginTop: 20 }}>
-              {card && isResolvedCard(card) ? (
-                <p className={styles.emptyResult}>検証済みの問題・解答図・模範解答を下に表示しました。</p>
-              ) : card || draft ? (
-                <ProblemArtifact
-                  compact
-                  card={card ?? {
-                    statement_tex: draft,
-                    morphism_chain: trace.slice(-5).map(line => line.text),
-                  }}
-                />
-              ) : (
-                <p className={styles.emptyResult}>
-                  <TimerReset size={14} aria-hidden="true" style={{ marginRight: 8, verticalAlign: -2 }} />
-                  型検査を通った中間構造と検証済み問題だけをここに表示します。
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-        </section>
+              </details>
+            ) : null}
+          </section>
+        ) : null}
       </div>
+
       {card && isResolvedCard(card) ? (
         <div className={styles.generatedArtifact}>
           <ProblemArtifact card={card} />

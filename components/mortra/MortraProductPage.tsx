@@ -1,9 +1,9 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import {
   ArrowRight,
   BookOpenText,
   Check,
-  CircleDot,
   Cpu,
   FlaskConical,
   GitBranch,
@@ -42,12 +42,12 @@ export function MortraProductPage() {
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
-    name: 'MORTRA-1',
+    name: 'MORTRA',
     applicationCategory: 'EducationalApplication',
     operatingSystem: 'Web',
     url: 'https://sakumon-web.vercel.app/',
-    description: '記号推論で数学問題、図、解答、検証過程を生成する公開ベータ。',
-    softwareVersion: '1 Public Beta',
+    description: '記号推論で数学問題、図、解答、検証過程を生成する数学研究システム。',
+    softwareVersion: '1',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
   }
   return (
@@ -55,10 +55,10 @@ export function MortraProductPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       <header className={styles.nav}>
         <div className={`${styles.shell} ${styles.navInner}`}>
-          <Link className={styles.wordmark} href="/" aria-label="MORTRA-1 home">
-            <span className={styles.mark}>M</span>
-            <span>MORTRA-1</span>
-            <span className={styles.beta}>PUBLIC BETA</span>
+          <Link className={styles.wordmark} href="/" aria-label="MORTRA home">
+            <span className={styles.mark}><Image className={styles.brandIcon} src="/mortra-mark.png" alt="" width={28} height={28} priority /></span>
+            <span>MORTRA</span>
+            <span className={styles.modelLabel}>Model 1</span>
           </Link>
           <nav className={styles.navLinks} aria-label="主要ナビゲーション">
             <a href="#results">Results</a>
@@ -74,11 +74,9 @@ export function MortraProductPage() {
         <div className={styles.heroFade} />
         <div className={styles.shell}>
           <div className={styles.heroContent}>
-            <p className={styles.eyebrow}><span className={styles.statusDot} />Symbolic mathematical intelligence</p>
-            <h1>Mathematics,<br />in motion.</h1>
+            <h1>MORTRA</h1>
             <p className={styles.heroLead}>
-              MORTRAは、数学を文章の続きを当てる問題として扱いません。数学的な対象と関係を読み取り、
-              異なる証明法を組み合わせ、検証できる答えへ進む記号推論システムです。
+              数学の構造をつなぎ、問題と証明をつくる。異なる証明法が協調し、答えまでの過程を検証可能な形で残します。
             </p>
             <div className={styles.heroActions}>
               <a className={styles.primaryButton} href="#try"><Play size={15} aria-hidden="true" />Try MORTRA</a>
@@ -93,11 +91,10 @@ export function MortraProductPage() {
           <div className={styles.sectionHead}>
             <div>
               <p className={styles.sectionIndex}>01 / TRY MORTRA</p>
-              <h2 className={styles.sectionTitle}>二つの問題の間を、<br />数学でつなぐ。</h2>
+              <h2 className={styles.sectionTitle}>問題をつなぐ。</h2>
             </div>
             <p className={styles.sectionCopy}>
-              選んだ問題から対象、条件、結論を取り出し、両方に共通する構造と、その間をつなぐ補題を探します。
-              画面には解析、探索、証明、検証の現在地を表示し、完成時には問題文、図、解答、検証結果を一緒に返します。
+              親問題を別々の証明入力として解析し、両方が不可欠になる構造だけを生成します。完成時には問題文、図、模範解答、検証結果を返します。
             </p>
           </div>
           <MortraTryConsole />
@@ -109,7 +106,7 @@ export function MortraProductPage() {
           <div className={styles.sectionHead}>
             <div>
               <p className={styles.sectionIndex}>02 / RESULTS</p>
-              <h2 className={styles.sectionTitle}>IMO幾何<br />25 / 30。</h2>
+              <h2 className={styles.sectionTitle}>IMO幾何 25 / 30。</h2>
             </div>
             <p className={styles.sectionCopy}>
               IMO-AG-30は、国際数学オリンピックの幾何30題を集めた標準的な評価です。
@@ -181,7 +178,7 @@ export function MortraProductPage() {
           <div className={styles.sectionHead}>
             <div>
               <p className={styles.sectionIndex}>03 / ARCHITECTURE</p>
-              <h2 className={styles.sectionTitle}>一つの巨大な脳ではなく、<br />協調する仕組みをつくる。</h2>
+              <h2 className={styles.sectionTitle}>証明器は、協調する。</h2>
             </div>
             <p className={styles.sectionCopy}>
               発想の手掛かりは多細胞生物です。細胞は近くの細胞と情報を交換しながら、全体として一つの組織をつくります。
@@ -219,7 +216,7 @@ export function MortraProductPage() {
           <div className={styles.sectionHead}>
             <div>
               <p className={styles.sectionIndex}>04 / RESEARCH</p>
-              <h2 className={styles.sectionTitle}>なぜ、この形の数学AIを<br />研究するのか。</h2>
+              <h2 className={styles.sectionTitle}>なぜ、この形の数学AIなのか。</h2>
             </div>
             <div className={styles.sectionCopyBlock}>
               <p className={styles.sectionCopy}>
@@ -246,7 +243,6 @@ export function MortraProductPage() {
       <section className={styles.section}>
         <div className={`${styles.shell} ${styles.visionBand}`}>
           <div className={styles.visionCopy}>
-            <p className={styles.eyebrow}><CircleDot size={13} aria-hidden="true" />From proof to construction</p>
             <h2>数学を、画面の外へ。</h2>
             <p>
               証明に使った点、線、円、変換の履歴を、そのまま動的な2D・3D作図へ送る。
@@ -264,7 +260,7 @@ export function MortraProductPage() {
 
       <footer className={styles.footer}>
         <div className={`${styles.shell} ${styles.footerInner}`}>
-          <span>MORTRA-1 / PUBLIC BETA</span>
+          <span>MORTRA / Model 1</span>
           <span>Different methods. Shared proofs. Verifiable results.</span>
         </div>
       </footer>

@@ -19,6 +19,27 @@ test('geometry families produce an explanatory plane figure', () => {
   assert.match(diagram.caption, /通過/)
 })
 
+test('root-triangle fusion draws the triangle together with its in- and circumcircles', () => {
+  const diagram = buildProblemDiagram({
+    familyId: 'runtime.root_triangle.polynomial.radius_ratio',
+    domain: 'geometry_algebra',
+    parameters: {
+      rootA: 4.2,
+      rootB: 5.1,
+      rootC: 6.3,
+      semiperimeter: 7.8,
+      areaSquared: 109.870236,
+    },
+    morphismChain: ['VietaFirstSum', 'HeronFactorization', 'RadiusRatio'],
+  })
+
+  assert.equal(diagram.kind, 'plane')
+  if (diagram.kind !== 'plane') return
+  assert.equal(diagram.shapes.filter(shape => shape.kind === 'circle').length, 2)
+  assert.ok(diagram.shapes.some(shape => shape.kind === 'polyline' && shape.closed))
+  assert.match(diagram.caption, /3根/)
+})
+
 test('probability families produce a state transition figure', () => {
   const diagram = buildProblemDiagram({
     familyId: 'construct.gambler_ruin_probability',

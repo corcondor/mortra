@@ -140,6 +140,56 @@ function parabolaDiagram(parameters: Record<string, number>): PlaneProblemDiagra
   }
 }
 
+function rootTriangleDiagram(parameters: Record<string, number>): ProblemDiagram {
+  const a = parameters.rootA
+  const b = parameters.rootB
+  const c = parameters.rootC
+  const s = parameters.semiperimeter ?? (a + b + c) / 2
+  const area = Math.sqrt(Math.max(0, parameters.areaSquared ?? s * (s - a) * (s - b) * (s - c)))
+  if (![a, b, c, s, area].every(Number.isFinite) || a <= 0 || b <= 0 || c <= 0 || area <= 0) {
+    return morphismDiagram({ familyId: 'root_triangle', parameters })
+  }
+
+  const A = point(0, 0)
+  const B = point(c, 0)
+  const cx = (b * b + c * c - a * a) / (2 * c)
+  const cy = (2 * area) / c
+  const C = point(cx, cy)
+  const perimeter = a + b + c
+  const I = point(
+    (a * A.x + b * B.x + c * C.x) / perimeter,
+    (a * A.y + b * B.y + c * C.y) / perimeter,
+  )
+  const inradius = area / s
+  const O = point(c / 2, (b * b - c * cx) / (2 * cy))
+  const circumradius = Math.hypot(O.x - A.x, O.y - A.y)
+  const margin = Math.max(0.7, circumradius * 0.18)
+
+  return {
+    version: 1,
+    kind: 'plane',
+    title: '特性根が定める三角形と二つの円',
+    caption: '三次方程式または特性方程式の3根を辺長へ移し、Heronの公式から面積を得ます。青は内接円、灰色は外接円です。',
+    viewport: {
+      xMin: O.x - circumradius - margin,
+      xMax: O.x + circumradius + margin,
+      yMin: O.y - circumradius - margin,
+      yMax: O.y + circumradius + margin,
+    },
+    shapes: [
+      { kind: 'circle', center: O, radius: circumradius, tone: 'muted' },
+      { kind: 'polyline', points: [A, B, C], closed: true, tone: 'secondary' },
+      { kind: 'circle', center: I, radius: inradius, tone: 'primary' },
+      { kind: 'polyline', points: [O, I], tone: 'accent', dashed: true },
+      { kind: 'point', point: A, label: 'A', tone: 'secondary' },
+      { kind: 'point', point: B, label: 'B', tone: 'secondary' },
+      { kind: 'point', point: C, label: 'C', tone: 'secondary' },
+      { kind: 'point', point: I, label: 'I', tone: 'primary' },
+      { kind: 'point', point: O, label: 'O', tone: 'accent' },
+    ],
+  }
+}
+
 function interceptRegionDiagram(parameters: Record<string, number>): PlaneProblemDiagram {
   const c = Math.max(2, parameters.c ?? 6)
   const boundary = Array.from({ length: 81 }, (_, index) => {
@@ -431,6 +481,7 @@ export function buildProblemDiagram(source: ProblemArtifactSource): ProblemDiagr
   const familyId = source.familyId ?? ''
   const parameters = source.parameters ?? {}
   if (source.calculusAnalysis) return calculusDiagram(source.calculusAnalysis)
+  if (familyId.includes('root_triangle')) return rootTriangleDiagram(parameters)
   if (familyId.includes('parabola_right_angle_chord')) return parabolaDiagram(parameters)
   if (familyId.includes('axis_intercept_segment_swept_region')) return interceptRegionDiagram(parameters)
   if (familyId.includes('translated_disk_swept_region')) return translatedDiskDiagram(parameters)

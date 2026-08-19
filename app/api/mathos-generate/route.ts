@@ -865,6 +865,69 @@ async function loadRegisteredStructureIds(): Promise<Set<string>> {
   return ids
 }
 
+type HistoricalDiversity = {
+  families: Set<string>
+  observables: Set<string>
+}
+
+function sameParentSet(left: string[], right: string[]): boolean {
+  if (left.length !== right.length) return false
+  const a = [...left].sort()
+  const b = [...right].sort()
+  return a.every((value, index) => value === b[index])
+}
+
+/**
+ * 同じ親集合から以前に公開した観測を取得する。
+ *
+ * 表層重複だけを避けると、係数だけが違う同じ問いを再生成できてしまう。
+ * 親IDは本文から安定生成されるため、親集合を固定したまま使用済みの
+ * family / observable を探索の初期除外集合へ入れる。
+ */
+async function loadHistoricalDiversity(profiles: GenerationProfile[]): Promise<HistoricalDiversity> {
+  const requestedParentSets = profiles
+    .map(profile => profile.parentIds.filter(Boolean))
+    .filter(parentIds => parentIds.length > 0)
+  const families = new Set<string>()
+  const observables = new Set<string>()
+  if (!requestedParentSets.length) return { families, observables }
+
+  const { data } = await getSupabaseAdmin()
+    .from('problems')
+    .select('topic_b,parent_ids,meta')
+    .eq('source_file', 'mathos_live_session')
+    .not('parent_ids', 'is', null)
+    .order('created_at', { ascending: false })
+    .limit(2_000)
+
+  for (const row of (data ?? []) as Array<{
+    topic_b?: string | null
+    parent_ids?: string[] | null
+    meta?: string | Record<string, unknown> | null
+  }>) {
+    const parentIds = Array.isArray(row.parent_ids) ? row.parent_ids.filter(Boolean) : []
+    if (!requestedParentSets.some(requested => sameParentSet(requested, parentIds))) continue
+    if (row.topic_b) families.add(row.topic_b)
+
+    let meta: Record<string, unknown> | null = null
+    if (typeof row.meta === 'string') {
+      try {
+        meta = JSON.parse(row.meta) as Record<string, unknown>
+      } catch {
+        meta = null
+      }
+    } else if (row.meta && typeof row.meta === 'object') {
+      meta = row.meta
+    }
+    const blueprint = meta?.structureBlueprint
+    if (blueprint && typeof blueprint === 'object') {
+      const observable = (blueprint as { observable?: unknown }).observable
+      if (typeof observable === 'string' && observable) observables.add(observable)
+    }
+  }
+  return { families, observables }
+}
+
 async function generateCards(
   count: number,
   profiles: GenerationProfile[],
@@ -890,10 +953,13 @@ async function generateCards(
     sessionLogs.push({ phase: event.phase, message: event.message, ts: new Date().toISOString() })
     emit(event)
   }
-  const [corpus, registeredStructureIds] = await Promise.all([
+  const [corpus, registeredStructureIds, historicalDiversity] = await Promise.all([
     loadNoveltyCorpus(),
     loadRegisteredStructureIds(),
+    loadHistoricalDiversity(profiles),
   ])
+  historicalDiversity.families.forEach(family => seenFamilies.add(family))
+  historicalDiversity.observables.forEach(observable => seenObservables.add(observable))
   const hasAllParentScaffold = profiles[0]?.allParentScaffold === true
   // 全親を結ぶ scaffold がある融合では、pair/single fallback へ切り替えない。
   // それを許すと、選択していない構造族の問題を「融合結果」として返してしまう。
