@@ -1,0 +1,267 @@
+'use client'
+
+import { CheckCircle2, FlaskConical } from 'lucide-react'
+import { MathText } from '@/components/MathText'
+import {
+  buildProblemDiagram,
+  type DiagramShape,
+  type PlaneProblemDiagram,
+  type ProblemDiagram,
+} from '@/lib/mortra/problem-artifact'
+import styles from './problemArtifact.module.css'
+
+export type ProblemArtifactCard = {
+  statement_tex?: string
+  answer_tex?: string
+  solution_tex?: string
+  family_id?: string
+  domain?: string
+  parameters?: Record<string, number>
+  morphism_chain?: string[]
+  diagram?: ProblemDiagram
+  verification?: { method?: string; exact_backend?: boolean; independent_check?: boolean }
+}
+
+type Props = {
+  card: ProblemArtifactCard
+  compact?: boolean
+  showVerification?: boolean
+}
+
+const WIDTH = 720
+const HEIGHT = 390
+const PAD = 34
+
+const toneClass = (tone: DiagramShape['tone']) => {
+  if (tone === 'primary') return styles.primary
+  if (tone === 'secondary') return styles.secondary
+  if (tone === 'accent') return styles.accent
+  return styles.muted
+}
+
+function PlaneFigure({ diagram }: { diagram: PlaneProblemDiagram }) {
+  const { xMin, xMax, yMin, yMax } = diagram.viewport
+  const x = (value: number) => PAD + ((value - xMin) / (xMax - xMin)) * (WIDTH - PAD * 2)
+  const y = (value: number) => HEIGHT - PAD - ((value - yMin) / (yMax - yMin)) * (HEIGHT - PAD * 2)
+  const rx = (value: number) => (value / (xMax - xMin)) * (WIDTH - PAD * 2)
+  const ry = (value: number) => (value / (yMax - yMin)) * (HEIGHT - PAD * 2)
+  const axisX = yMin <= 0 && yMax >= 0 ? y(0) : HEIGHT - PAD
+  const axisY = xMin <= 0 && xMax >= 0 ? x(0) : PAD
+
+  return (
+    <svg className={styles.svg} viewBox={`0 0 ${WIDTH} ${HEIGHT}`} role="img" aria-label={diagram.title}>
+      <defs>
+        <pattern id="problem-grid" width="36" height="36" patternUnits="userSpaceOnUse">
+          <path d="M 36 0 L 0 0 0 36" className={styles.gridLine} fill="none" />
+        </pattern>
+      </defs>
+      <rect width={WIDTH} height={HEIGHT} fill="url(#problem-grid)" />
+      {diagram.axes ? (
+        <g className={styles.axes}>
+          <line x1={PAD} y1={axisX} x2={WIDTH - PAD} y2={axisX} />
+          <line x1={axisY} y1={PAD} x2={axisY} y2={HEIGHT - PAD} />
+        </g>
+      ) : null}
+      {diagram.shapes.map((shape, index) => {
+        const className = `${styles.shape} ${toneClass(shape.tone)} ${'dashed' in shape && shape.dashed ? styles.dashed : ''}`
+        if (shape.kind === 'polyline') {
+          const d = shape.points.map((value, pointIndex) => `${pointIndex === 0 ? 'M' : 'L'} ${x(value.x)} ${y(value.y)}`).join(' ')
+          return <path key={index} d={`${d}${shape.closed ? ' Z' : ''}`} className={`${className} ${shape.fill ? styles.filled : ''}`} />
+        }
+        if (shape.kind === 'circle') {
+          return (
+            <ellipse
+              key={index}
+              cx={x(shape.center.x)}
+              cy={y(shape.center.y)}
+              rx={Math.abs(rx(shape.radius))}
+              ry={Math.abs(ry(shape.radius))}
+              className={className}
+            />
+          )
+        }
+        return (
+          <g key={index} className={toneClass(shape.tone)}>
+            <circle cx={x(shape.point.x)} cy={y(shape.point.y)} r="5.5" className={styles.point} />
+            {shape.label ? <text x={x(shape.point.x) + 9} y={y(shape.point.y) - 9} className={styles.pointLabel}>{shape.label}</text> : null}
+          </g>
+        )
+      })}
+    </svg>
+  )
+}
+
+function MorphismFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind: 'morphism' }> }) {
+  return (
+    <div className={styles.morphismFigure} role="img" aria-label={diagram.title}>
+      {diagram.nodes.map((node, index) => (
+        <div className={styles.morphismStep} key={`${node}-${index}`}>
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <b>{node}</b>
+          {index < diagram.nodes.length - 1 ? <i aria-hidden="true">→</i> : null}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function StateFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind: 'state' }> }) {
+  const visibleEdges = diagram.transitions.filter(transition => {
+    const from = diagram.states.findIndex(state => state.id === transition.from)
+    const to = diagram.states.findIndex(state => state.id === transition.to)
+    return from >= 0 && to >= 0 && Math.abs(from - to) === 1
+  })
+  return (
+    <div className={styles.stateFigure} role="img" aria-label={diagram.title}>
+      <svg viewBox="0 0 760 230" className={styles.stateSvg}>
+        <defs>
+          <marker id="state-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 Z" className={styles.stateArrowHead} />
+          </marker>
+        </defs>
+        {visibleEdges.map((transition, index) => {
+          const from = diagram.states.findIndex(state => state.id === transition.from)
+          const to = diagram.states.findIndex(state => state.id === transition.to)
+          const fromX = 70 + (from * 620) / Math.max(1, diagram.states.length - 1)
+          const toX = 70 + (to * 620) / Math.max(1, diagram.states.length - 1)
+          const upper = to > from
+          const y = upper ? 84 : 150
+          return (
+            <g key={`${transition.from}-${transition.to}-${index}`}>
+              <path
+                d={`M ${fromX + (upper ? 18 : -18)} 114 Q ${(fromX + toX) / 2} ${y} ${toX + (upper ? -22 : 22)} 114`}
+                className={styles.stateEdge}
+                markerEnd="url(#state-arrow)"
+              />
+              {transition.label ? <text x={(fromX + toX) / 2} y={upper ? y - 4 : y + 16} className={styles.stateEdgeLabel}>{transition.label}</text> : null}
+            </g>
+          )
+        })}
+        {diagram.states.slice(0, -1).map((state, index) => {
+          const next = diagram.states[index + 1]
+          const fromValue = Number(state.label)
+          const toValue = Number(next.label)
+          if (!Number.isFinite(fromValue) || !Number.isFinite(toValue) || toValue - fromValue <= 1) return null
+          const fromX = 70 + (index * 620) / Math.max(1, diagram.states.length - 1)
+          const toX = 70 + ((index + 1) * 620) / Math.max(1, diagram.states.length - 1)
+          return <text key={`${state.id}-${next.id}-gap`} x={(fromX + toX) / 2} y="121" className={styles.stateGap}>⋯</text>
+        })}
+        {diagram.states.map((state, index) => {
+          const cx = 70 + (index * 620) / Math.max(1, diagram.states.length - 1)
+          return (
+            <g key={state.id}>
+              <circle
+                cx={cx}
+                cy="114"
+                r={state.active ? 25 : 21}
+                className={`${styles.stateNode} ${state.terminal ? styles.stateTerminal : ''} ${state.active ? styles.stateActive : ''}`}
+              />
+              <text x={cx} y="119" textAnchor="middle" className={styles.stateLabel}>{state.label}</text>
+            </g>
+          )
+        })}
+      </svg>
+    </div>
+  )
+}
+
+function VariationFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind: 'variation' }> }) {
+  return (
+    <div className={styles.variationWrap} role="img" aria-label={diagram.title}>
+      <table className={styles.variationTable}>
+        <thead>
+          <tr>
+            <th>x</th>
+            {diagram.columns.map((column, index) => <th key={`${column}-${index}`}>{column}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {diagram.rows.map(row => (
+            <tr key={row.label} className={row.tone ? toneClass(row.tone) : undefined}>
+              <th>{row.label}</th>
+              {row.cells.map((cell, index) => <td key={`${row.label}-${index}`}>{cell}</td>)}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+export function ProblemFigure({ diagram }: { diagram: ProblemDiagram }) {
+  return (
+    <figure className={styles.figure}>
+      <div className={styles.figureHead}>
+        <span>FIGURE</span>
+        <strong>{diagram.title}</strong>
+      </div>
+      {diagram.kind === 'plane'
+        ? <PlaneFigure diagram={diagram} />
+        : diagram.kind === 'state'
+          ? <StateFigure diagram={diagram} />
+          : diagram.kind === 'variation'
+            ? <VariationFigure diagram={diagram} />
+          : <MorphismFigure diagram={diagram} />}
+      <figcaption>{diagram.caption}</figcaption>
+    </figure>
+  )
+}
+
+export function ProblemArtifact({ card, compact = false, showVerification = true }: Props) {
+  const diagram = card.diagram ?? buildProblemDiagram({
+    familyId: card.family_id,
+    domain: card.domain,
+    parameters: card.parameters,
+    morphismChain: card.morphism_chain,
+  })
+  const hasResolvedAnswer = Boolean(card.answer_tex?.trim() && card.solution_tex?.trim())
+  const hasCertificate = Boolean(
+    card.verification?.method ||
+    card.verification?.exact_backend ||
+    card.verification?.independent_check,
+  )
+  const verified = hasResolvedAnswer && hasCertificate
+
+  return (
+    <article className={`${styles.artifact} ${compact ? styles.compact : ''}`}>
+      <header className={styles.artifactHead}>
+        <div>
+          <span>{verified ? 'VERIFIED SOLUTION ARTIFACT' : 'RESEARCH CANDIDATE'}</span>
+          <strong>{card.family_id ?? 'verified.structure'}</strong>
+        </div>
+        {showVerification ? (
+          verified
+            ? <span className={styles.verified}><CheckCircle2 size={13} aria-hidden="true" />検証済み</span>
+            : <span className={styles.candidate}><FlaskConical size={13} aria-hidden="true" />検証継続中</span>
+        ) : null}
+      </header>
+
+      <section className={styles.statementSection}>
+        <p className={styles.label}>問題文</p>
+        <div className={styles.statement}><MathText text={card.statement_tex ?? ''} large={!compact} /></div>
+      </section>
+
+      <ProblemFigure diagram={diagram} />
+
+      <div className={styles.solutionGrid}>
+        <section>
+          <p className={styles.label}>答え</p>
+          <div className={styles.answer}><MathText text={card.answer_tex?.trim() || '未確定'} large /></div>
+        </section>
+        <section>
+          <p className={styles.label}>解答・図の読み方</p>
+          <div className={styles.solution}>
+            <MathText text={card.solution_tex?.trim() || '現在は型付き構造まで形成済みです。証明と反例検査が完了するまで、模範解答としては公開しません。'} />
+          </div>
+        </section>
+      </div>
+
+      {showVerification && card.verification?.method ? (
+        <footer className={styles.verificationLine}>
+          <span>VERIFY</span>
+          <code>{card.verification.method}</code>
+        </footer>
+      ) : null}
+    </article>
+  )
+}

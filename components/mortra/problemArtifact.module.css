@@ -1,0 +1,376 @@
+.artifact {
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgba(3, 5, 6, 0.9);
+  color: #f5f7f8;
+}
+
+.artifactHead {
+  display: flex;
+  min-height: 58px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+  padding: 12px 16px;
+}
+
+.artifactHead > div {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+}
+
+.artifactHead span,
+.label,
+.figureHead span,
+.verificationLine > span {
+  color: #64717d;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 8px;
+  letter-spacing: 0;
+}
+
+.artifactHead strong {
+  overflow: hidden;
+  color: #b9c3cc;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.artifactHead .verified {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+  color: #a3e635;
+  font-family: inherit;
+  font-size: 10px;
+}
+
+.artifactHead .candidate {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+  color: #f3bf58;
+  font-family: inherit;
+  font-size: 10px;
+}
+
+.statementSection {
+  padding: 20px 18px 22px;
+}
+
+.label {
+  margin: 0 0 10px;
+  color: #31c7df;
+}
+
+.statement {
+  color: #f2f4f5;
+  font-size: 14px;
+  line-height: 1.95;
+}
+
+.figure {
+  margin: 0;
+  border-top: 1px solid rgba(148, 163, 184, 0.14);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+  background: #050708;
+}
+
+.figureHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 12px 16px;
+}
+
+.figureHead strong {
+  color: #a9b5bf;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  aspect-ratio: 720 / 390;
+  max-height: 390px;
+}
+
+.gridLine {
+  stroke: rgba(148, 163, 184, 0.07);
+  stroke-width: 1;
+}
+
+.axes line {
+  stroke: rgba(148, 163, 184, 0.24);
+  stroke-width: 1.2;
+}
+
+.shape {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.3;
+  vector-effect: non-scaling-stroke;
+}
+
+.primary { color: #31c7df; }
+.secondary { color: #f3f5f6; }
+.accent { color: #a3e635; }
+.muted { color: #6f7c88; }
+
+.shape.dashed {
+  stroke-dasharray: 7 7;
+}
+
+.shape.filled {
+  fill: color-mix(in srgb, currentColor 15%, transparent);
+}
+
+.point {
+  fill: currentColor;
+  stroke: #030405;
+  stroke-width: 2;
+}
+
+.pointLabel {
+  fill: currentColor;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 14px;
+}
+
+.figure figcaption {
+  border-top: 1px solid rgba(148, 163, 184, 0.12);
+  padding: 11px 16px 13px;
+  color: #8e9aa4;
+  font-size: 11px;
+  line-height: 1.75;
+}
+
+.morphismFigure {
+  display: grid;
+  min-height: 210px;
+  align-content: center;
+  grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+  padding: 38px 18px;
+}
+
+.stateFigure {
+  min-height: 210px;
+  padding: 10px 14px;
+}
+
+.stateSvg {
+  display: block;
+  width: 100%;
+  min-width: 520px;
+}
+
+.stateFigure {
+  overflow-x: auto;
+}
+
+.variationWrap {
+  overflow-x: auto;
+  padding: 34px 20px 42px;
+}
+
+.variationTable {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  color: #d7dde2;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  text-align: center;
+}
+
+.variationTable th,
+.variationTable td {
+  min-width: 92px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  padding: 16px 12px;
+}
+
+.variationTable th:first-child {
+  min-width: 76px;
+  color: #8d99a3;
+  font-weight: 500;
+}
+
+.variationTable thead th {
+  color: #f2f5f6;
+  font-weight: 500;
+}
+
+.stateEdge {
+  fill: none;
+  stroke: #64717d;
+  stroke-width: 1.7;
+}
+
+.stateArrowHead {
+  fill: #64717d;
+}
+
+.stateEdgeLabel {
+  fill: #8c99a4;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  text-anchor: middle;
+}
+
+.stateGap {
+  fill: #697580;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 24px;
+  text-anchor: middle;
+}
+
+.stateNode {
+  fill: #080b0d;
+  stroke: #31c7df;
+  stroke-width: 2;
+}
+
+.stateTerminal {
+  stroke: #f3f5f6;
+  stroke-width: 3;
+}
+
+.stateActive {
+  fill: rgba(163, 230, 53, 0.12);
+  stroke: #a3e635;
+  stroke-width: 3;
+}
+
+.stateLabel {
+  fill: #eef2f4;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+}
+
+.morphismStep {
+  position: relative;
+  display: grid;
+  min-height: 86px;
+  align-content: center;
+  gap: 8px;
+  border-left: 1px solid rgba(49, 199, 223, 0.28);
+  padding: 12px 24px 12px 14px;
+}
+
+.morphismStep span {
+  color: #31c7df;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 8px;
+}
+
+.morphismStep b {
+  overflow-wrap: anywhere;
+  color: #c8d0d7;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.morphismStep i {
+  position: absolute;
+  top: 50%;
+  right: 7px;
+  color: #47535d;
+  font-style: normal;
+  transform: translateY(-50%);
+}
+
+.solutionGrid {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.65fr) minmax(0, 1.35fr);
+}
+
+.solutionGrid > section {
+  padding: 20px 18px 24px;
+}
+
+.solutionGrid > section + section {
+  border-left: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.answer {
+  color: #a3e635;
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.solution {
+  color: #adb8c1;
+  font-size: 12px;
+  line-height: 1.9;
+}
+
+.verificationLine {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-top: 1px solid rgba(148, 163, 184, 0.14);
+  padding: 11px 16px;
+}
+
+.verificationLine code {
+  overflow: hidden;
+  color: #71808c;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.compact .statementSection {
+  padding: 16px;
+}
+
+.compact .statement {
+  font-size: 13px;
+}
+
+.compact .svg {
+  max-height: 280px;
+}
+
+.compact .morphismFigure {
+  min-height: 150px;
+  padding: 24px 14px;
+}
+
+@media (max-width: 700px) {
+  .artifactHead {
+    align-items: flex-start;
+  }
+
+  .solutionGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .solutionGrid > section + section {
+    border-top: 1px solid rgba(148, 163, 184, 0.14);
+    border-left: 0;
+  }
+
+  .morphismFigure {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .morphismStep:nth-child(even) i {
+    display: none;
+  }
+}

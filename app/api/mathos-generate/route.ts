@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { generateLiveProblem, type StructureBlueprint } from '@/lib/mathos-live'
+import { buildProblemDiagram } from '@/lib/mortra/problem-artifact'
 import verifiedBatch from '@/data/mathos/continuous_verified_problem_batch1.json'
 import { generalizeParents, type GeneralizationCertificate } from '../../../worker/src/generalization-kernel'
 
@@ -1190,11 +1191,18 @@ async function generateCards(
     // 問題カードとして保存（LLM 不使用・検証済み・類似度は実測）
     const shortId = Math.random().toString(36).slice(2, 12)
     const id = `mathos-live-${shortId}`
+    const diagram = buildProblemDiagram({
+      familyId: live.familyId,
+      domain: live.domain,
+      parameters: live.parameters,
+      morphismChain: live.morphismChain,
+    })
     const meta = {
       shortId,
       familyId: live.familyId,
       tool: live.tool,
       parameters: live.parameters,
+      diagram,
       morphismChain: live.morphismChain,
       verificationMethod: live.verificationMethod,
       difficulty: diff,
@@ -1260,6 +1268,8 @@ async function generateCards(
       statement_tex: live.statementTex,
       answer_tex: live.answerTex,
       solution_tex: live.solutionTex,
+      parameters: live.parameters,
+      diagram,
       domain: live.domain,
       family_id: live.familyId,
       tool: live.tool,

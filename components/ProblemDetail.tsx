@@ -4,6 +4,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import type { ProblemWithRating } from '@/lib/types'
 import { DIFFICULTY_COLOR, DIFFICULTY_LABEL, TOPIC_EMOJI } from '@/lib/types'
 import { MathText } from './MathText'
+import { ProblemFigure } from './mortra/ProblemArtifact'
+import { buildProblemDiagram, type ProblemDiagram } from '@/lib/mortra/problem-artifact'
 
 interface Props {
   problem: ProblemWithRating | null
@@ -51,6 +53,10 @@ interface ProblemMeta {
   tikz?: string
   tikz_type?: string
   tikz_verified?: boolean
+  familyId?: string
+  parameters?: Record<string, number>
+  morphismChain?: string[]
+  diagram?: ProblemDiagram
 }
 
 export function ProblemDetail({ problem, onClose }: Props) {
@@ -166,6 +172,14 @@ export function ProblemDetail({ problem, onClose }: Props) {
 
   const diff = problem?.difficulty ?? 'C'
   const diffClass = DIFFICULTY_COLOR[diff] ?? DIFFICULTY_COLOR.C
+  const answerDiagram = problem?.source_file === 'mathos_live_session' || meta.diagram
+    ? meta.diagram ?? buildProblemDiagram({
+        familyId: meta.familyId ?? problem?.topic_b ?? undefined,
+        domain: problem?.topic_a,
+        parameters: meta.parameters,
+        morphismChain: meta.morphismChain,
+      })
+    : null
 
   return (
     <AnimatePresence>
@@ -247,6 +261,13 @@ export function ProblemDetail({ problem, onClose }: Props) {
                     <MathText text={problem.statement} large />
                   </div>
                 </section>
+
+                {answerDiagram && (
+                  <section>
+                    <h3 className="text-[11px] uppercase tracking-widest text-white/30 mb-3">解答で用いる図</h3>
+                    <ProblemFigure diagram={answerDiagram} />
+                  </section>
+                )}
 
                 {/* Features (特徴・狙い) */}
                 {meta.features && (

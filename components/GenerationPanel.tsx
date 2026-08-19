@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react'
 import type { ProblemWithRating } from '@/lib/types'
 import { MathText } from './MathText'
 import { UpgradeModal } from './UpgradeModal'
+import { ProblemArtifact } from './mortra/ProblemArtifact'
+import type { ProblemDiagram } from '@/lib/mortra/problem-artifact'
 
 const TOPIC_JP: Record<string, string> = {
   analysis: '実解析', algebra: '代数', geometry: '幾何', number_theory: '整数論',
@@ -27,6 +29,8 @@ type GenerationCard = {
   answer_tex?: string
   statement_tex?: string
   solution_tex?: string
+  parameters?: Record<string, number>
+  diagram?: ProblemDiagram
   domain?: string
   morphism_chain?: string[]
   similarity?: { score?: number; max?: number }
@@ -894,14 +898,7 @@ export function GenerationPanel({
                   Atlas拡張候補: {card.unmapped_tags.join(' / ')}
                 </div>
               ) : null}
-              <div className="text-[13px] leading-7 text-zinc-100">
-                <MathText text={card.statement_tex ?? ''} />
-              </div>
-              {card.answer_tex && (
-                <div className="mt-2 border-t border-zinc-800 pt-2 text-[12px] text-emerald-300">
-                  答え: <MathText text={card.answer_tex} />
-                </div>
-              )}
+              <ProblemArtifact compact card={card} />
             </article>
           ))}
         </section>

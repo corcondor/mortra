@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Play, RotateCcw, Square, TimerReset } from 'lucide-react'
 import { ProofGraphScene } from './ProofGraphScene'
+import { ProblemArtifact, type ProblemArtifactCard } from './ProblemArtifact'
+import type { ProblemDiagram } from '@/lib/mortra/problem-artifact'
 import styles from '@/app/mortra/mortra.module.css'
 
 type ProgressMessage = {
@@ -16,10 +18,12 @@ type ProgressMessage = {
   result?: GenerationResult
 }
 
-type GeneratedCard = {
+type GeneratedCard = ProblemArtifactCard & {
   statement_tex?: string
   answer_tex?: string
   solution_tex?: string
+  parameters?: Record<string, number>
+  diagram?: ProblemDiagram
   family_id?: string
   morphism_chain?: string[]
   verification?: { method?: string }
@@ -109,6 +113,10 @@ function cardFromResult(result: GenerationResult | null) {
   return result?.cards?.[0] ?? null
 }
 
+function isResolvedCard(card: GeneratedCard | null | undefined) {
+  return Boolean(card?.answer_tex?.trim() && card?.solution_tex?.trim())
+}
+
 export function MortraTryConsole() {
   const [parentA, setParentA] = useState(DEFAULT_PARENT_A)
   const [parentB, setParentB] = useState(DEFAULT_PARENT_B)
@@ -144,7 +152,8 @@ export function MortraTryConsole() {
   }, [running, startedAt])
 
   useEffect(() => {
-    const stored = window.localStorage.getItem(JOB_KEY)
+    const sharedJob = new URL(window.location.href).searchParams.get('job')
+    const stored = sharedJob || window.localStorage.getItem(JOB_KEY)
     if (!stored) return
     setJobId(stored)
     setRunning(true)
@@ -183,16 +192,20 @@ export function MortraTryConsole() {
           addTrace(text, at)
         }
         const jobResult = data.result ?? null
+        const completedCard = cardFromResult(jobResult)
         const generated = jobResult?.cards?.length ?? jobResult?.generated ?? 0
-        if (data.status === 'done' || generated > 0) {
+        if (data.status === 'done' || (generated > 0 && isResolvedCard(completedCard))) {
           setResult(jobResult)
-          setDraft(cardFromResult(jobResult)?.statement_tex ?? '')
-          setPhase('complete')
-          setStage(4)
+          setDraft(completedCard?.statement_tex ?? '')
+          const resolved = isResolvedCard(completedCard)
+          setPhase(resolved ? 'complete' : 'researching')
+          setStage(resolved ? 4 : 2)
           setRunning(false)
           setJobId(null)
           window.localStorage.removeItem(JOB_KEY)
-          addTrace('検証済み問題を受信しました。')
+          addTrace(resolved
+            ? '問題文・解答・解答図・検証証明書を受信しました。'
+            : '研究候補を保存しました。解答の検証は未完了です。')
           return
         }
         if (data.status === 'failed') {
@@ -236,8 +249,9 @@ export function MortraTryConsole() {
         setStage(2)
         addTrace(`長時間worker ${event.result.discoveryJobId.slice(0, 8)} へ探索を移しました。`)
       } else {
+        const resolved = isResolvedCard(first)
         setRunning(false)
-        setPhase((event.result.generated ?? 0) > 0 ? 'complete' : 'error')
+        setPhase(resolved ? 'complete' : (event.result.generated ?? 0) > 0 ? 'researching' : 'error')
       }
     }
   }, [addTrace])
@@ -338,7 +352,7 @@ export function MortraTryConsole() {
   const eta = running && !jobId ? Math.max(0, budget - elapsed) : null
   const statusText = running
     ? jobId ? 'background worker' : 'live synthesis'
-    : phase === 'complete' ? 'verified' : phase === 'error' ? 'needs review' : 'ready'
+    : phase === 'complete' ? 'verified' : phase === 'researching' ? 'candidate' : phase === 'error' ? 'needs review' : 'ready'
 
   const metricValues = useMemo(() => [
     ['経過', formatClock(elapsed)],
@@ -348,8 +362,9 @@ export function MortraTryConsole() {
   ], [elapsed, eta, jobId, stage, telemetry, trace.length])
 
   return (
-    <div className={styles.console}>
-      <section className={styles.inputPanel} aria-label="MORTRA入力">
+    <>
+      <div className={styles.console}>
+        <section className={styles.inputPanel} aria-label="MORTRA入力">
         <div className={styles.panelHead}>
           <span className={styles.panelLabel}>Parent problems</span>
           <span className={styles.panelState}>2 endpoints required</span>
@@ -388,9 +403,9 @@ export function MortraTryConsole() {
             </button>
           </div>
         </div>
-      </section>
+        </section>
 
-      <section className={styles.tracePanel} aria-label="MORTRA探索過程">
+        <section className={styles.tracePanel} aria-label="MORTRA探索過程">
         <div className={styles.panelHead}>
           <span className={styles.panelLabel}>Executable proof graph</span>
           <span className={styles.panelState}>{statusText}</span>
@@ -425,12 +440,16 @@ export function MortraTryConsole() {
               ))}
             </div>
             <div style={{ marginTop: 20 }}>
-              {card || draft ? (
-                <>
-                  <p className={styles.resultTitle}>Problem draft</p>
-                  <p className={styles.resultStatement}>{card?.statement_tex ?? draft}</p>
-                  {card?.answer_tex ? <div className={styles.resultAnswer}>answer: {card.answer_tex}</div> : null}
-                </>
+              {card && isResolvedCard(card) ? (
+                <p className={styles.emptyResult}>検証済みの問題・解答図・模範解答を下に表示しました。</p>
+              ) : card || draft ? (
+                <ProblemArtifact
+                  compact
+                  card={card ?? {
+                    statement_tex: draft,
+                    morphism_chain: trace.slice(-5).map(line => line.text),
+                  }}
+                />
               ) : (
                 <p className={styles.emptyResult}>
                   <TimerReset size={14} aria-hidden="true" style={{ marginRight: 8, verticalAlign: -2 }} />
@@ -440,7 +459,13 @@ export function MortraTryConsole() {
             </div>
           </div>
         </div>
-      </section>
-    </div>
+        </section>
+      </div>
+      {card && isResolvedCard(card) ? (
+        <div className={styles.generatedArtifact}>
+          <ProblemArtifact card={card} />
+        </div>
+      ) : null}
+    </>
   )
 }
