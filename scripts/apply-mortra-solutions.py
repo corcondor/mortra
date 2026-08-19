@@ -87,13 +87,16 @@ def apply_solutions(
     candidate_indices: set[int] | None = None,
 ) -> dict:
     source = source_path.read_text(encoding="utf-8")
-    existing_answers = _existing_answer_labels(source)
     clean_source = re.sub(
         rf"\n?{re.escape(BEGIN)}.*?{re.escape(END)}\n?",
         "\n",
         source,
         flags=re.DOTALL,
     )
+    # Generated answers are rebuilt from the current verifier result.  Only
+    # hand-authored answer sections outside the generated block count as
+    # pre-existing answers.
+    existing_answers = _existing_answer_labels(clean_source)
     problems = extract_itembox_problems(clean_source)
     if limit is not None:
         problems = problems[:limit]

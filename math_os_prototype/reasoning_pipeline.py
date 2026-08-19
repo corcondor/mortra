@@ -554,6 +554,67 @@ def is_safe_tool_call(call: ToolCall, ir: MathIR, domain_ir: DomainIR, problem: 
     text = problem.lower()
     if name.startswith(("number_theory.", "inequality.", "probability.", "geometry.circle_overlap_limit")):
         return True
+    if name == "sympy.typed_analysis_query":
+        payload = ir.givens.get("typed_analysis_query") if isinstance(ir.givens, dict) else None
+        certificate = payload.get("lowering_certificate") if isinstance(payload, dict) else None
+        return (
+            isinstance(payload, dict)
+            and payload.get("operator") in {"limit", "integral", "decide_closed_proposition"}
+            and isinstance(certificate, dict)
+            and certificate.get("complete_query_count") == 1
+            and certificate.get("multipart_rejected") is True
+        )
+    if name == "sympy.progression_query":
+        payload = ir.givens.get("progression_query") if isinstance(ir.givens, dict) else None
+        certificate = payload.get("lowering_certificate") if isinstance(payload, dict) else None
+        return (
+            isinstance(payload, dict)
+            and payload.get("progression") == "geometric"
+            and len(payload.get("terms") or []) == 3
+            and isinstance(certificate, dict)
+            and certificate.get("kind") == "finite_progression_definition"
+        )
+    if name == "sympy.iteration_query":
+        payload = ir.givens.get("iteration_query") if isinstance(ir.givens, dict) else None
+        certificate = payload.get("lowering_certificate") if isinstance(payload, dict) else None
+        return (
+            isinstance(payload, dict)
+            and payload.get("operator") == "nested_square_root_power"
+            and isinstance(certificate, dict)
+            and certificate.get("kind") == "self_similar_scalar_iteration"
+            and certificate.get("complete_observation") is True
+        )
+    if name == "sympy.cubic_centroid_locus":
+        payload = ir.givens.get("cubic_centroid_locus_query") if isinstance(ir.givens, dict) else None
+        certificate = payload.get("lowering_certificate") if isinstance(payload, dict) else None
+        return (
+            isinstance(payload, dict)
+            and isinstance(certificate, dict)
+            and certificate.get("kind") == "equilateral_centroid_cubic_elimination"
+            and certificate.get("curve_degree") == 3
+            and certificate.get("memorized_answer") is False
+        )
+    if name == "sympy.hilbert_witness_query":
+        payload = ir.givens.get("hilbert_witness_query") if isinstance(ir.givens, dict) else None
+        certificate = payload.get("lowering_certificate") if isinstance(payload, dict) else None
+        return (
+            isinstance(certificate, dict)
+            and certificate.get("kind") == "normalized_inner_product_witness"
+            and certificate.get("basis_size") == 2
+            and certificate.get("memorized_answer") is False
+        )
+    if name == "sympy.prime_structure_query":
+        payload = ir.givens.get("prime_structure_query") if isinstance(ir.givens, dict) else None
+        certificate = payload.get("lowering_certificate") if isinstance(payload, dict) else None
+        return (
+            isinstance(payload, dict)
+            and payload.get("operator") in {
+                "bound_prime_reciprocal_power_series",
+                "prove_prime_triangle_circumradius_irrational",
+            }
+            and isinstance(certificate, dict)
+            and certificate.get("memorized_answer") is False
+        )
     if name == "arithmetic.nl":
         return True
     if name == "geometry.constraint_ir":

@@ -218,6 +218,7 @@ def normalize_latex_math(expr: str) -> str:
     expr = normalize_mathbb(expr)
     expr = normalize_fractions(expr)
     expr = normalize_sqrt(expr)
+    expr = normalize_bare_function_arguments(expr)
     for latex, plain in LATEX_FUNCTIONS.items():
         expr = expr.replace(latex, plain)
     for name, plain in GREEK_NAMES.items():
@@ -254,6 +255,30 @@ def normalize_latex_math(expr: str) -> str:
     expr = expr.replace("^", "**")
     expr = normalize_spacing(expr)
     return insert_implicit_multiplication(expr)
+
+
+def normalize_bare_function_arguments(expr: str) -> str:
+    r"""Parenthesize TeX function applications with an unbraced atomic argument.
+
+    TeX writes ``\sin\theta`` and ``\sin x`` without an application
+    delimiter.  Leaving those forms until implicit-multiplication insertion
+    merges them into identifiers such as ``sintheta``.  This scanner-level
+    rewrite preserves application structure without knowing the surrounding
+    problem type.
+    """
+    greek = "|".join(re.escape(name) for name in GREEK_NAMES)
+    functions = "|".join(re.escape(name.removeprefix("\\")) for name in LATEX_FUNCTIONS)
+    expr = re.sub(
+        rf"\\(?P<function>{functions})\s*\\(?P<argument>{greek})(?![A-Za-z])",
+        lambda match: f"{match.group('function')}({GREEK_NAMES[match.group('argument')]})",
+        expr,
+    )
+    expr = re.sub(
+        rf"\\(?P<function>{functions})\s*(?P<argument>[A-Za-z])(?![A-Za-z0-9_])",
+        lambda match: f"{match.group('function')}({match.group('argument')})",
+        expr,
+    )
+    return expr
 
 
 def normalize_text_macros(expr: str) -> str:

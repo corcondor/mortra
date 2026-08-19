@@ -18,30 +18,45 @@ try:
     from math_os_prototype.arithmetic_nl import detect_arithmetic_nl_problem, solve_arithmetic_nl_problem
     from math_os_prototype.asymptote_geometry import detect_asymptote_geometry_problem, solve_asymptote_geometry_problem
     from math_os_prototype.container_geometry import detect_container_problem, solve_container_problem
+    from math_os_prototype.cubic_centroid_locus import (
+        compile_cubic_centroid_locus_query,
+        execute_cubic_centroid_locus_query,
+    )
     from math_os_prototype.discrete_constraint_query import compile_discrete_constraint_query, execute_discrete_constraint_query
     from math_os_prototype.field_adapters import detect_specialized_problem, solve_specialized_problem
     from math_os_prototype.finite_relation_query import compile_finite_relation_query, execute_finite_relation_query
     from math_os_prototype.geometry_dsl import inspect_geometry_dsl, run_geometry_dsl
     from math_os_prototype.geometry_nl import convert_geometry_nl
+    from math_os_prototype.iteration_query import compile_iteration_query, execute_iteration_query
+    from math_os_prototype.hilbert_witness_query import compile_hilbert_witness_query, execute_hilbert_witness_query
     from math_os_prototype.latex_frontend import looks_like_latex, parse_latex_problem
     from math_os_prototype.linear_constraint_query import compile_linear_constraint_query, execute_linear_constraint_query
     from math_os_prototype.matrix_semantic_query import compile_matrix_semantic_query, execute_matrix_semantic_query
+    from math_os_prototype.progression_query import compile_progression_query, execute_progression_query
+    from math_os_prototype.prime_structure_query import compile_prime_structure_query, execute_prime_structure_query
     from math_os_prototype.symbolic_query import compile_symbolic_query, execute_symbolic_query
+    from math_os_prototype.typed_analysis_query import compile_typed_analysis_query, execute_typed_analysis_query
     from math_os_prototype.vector_query import compile_vector_query, execute_vector_query
     from math_os_prototype.tool_adapters import ToolRegistry
 except ImportError:  # Allows `python math_os_prototype\math_os.py ...`.
     from arithmetic_nl import detect_arithmetic_nl_problem, solve_arithmetic_nl_problem
     from asymptote_geometry import detect_asymptote_geometry_problem, solve_asymptote_geometry_problem
     from container_geometry import detect_container_problem, solve_container_problem
+    from cubic_centroid_locus import compile_cubic_centroid_locus_query, execute_cubic_centroid_locus_query
     from discrete_constraint_query import compile_discrete_constraint_query, execute_discrete_constraint_query
     from field_adapters import detect_specialized_problem, solve_specialized_problem
     from finite_relation_query import compile_finite_relation_query, execute_finite_relation_query
     from geometry_dsl import inspect_geometry_dsl, run_geometry_dsl
     from geometry_nl import convert_geometry_nl
+    from iteration_query import compile_iteration_query, execute_iteration_query
+    from hilbert_witness_query import compile_hilbert_witness_query, execute_hilbert_witness_query
     from latex_frontend import looks_like_latex, parse_latex_problem
     from linear_constraint_query import compile_linear_constraint_query, execute_linear_constraint_query
     from matrix_semantic_query import compile_matrix_semantic_query, execute_matrix_semantic_query
+    from progression_query import compile_progression_query, execute_progression_query
+    from prime_structure_query import compile_prime_structure_query, execute_prime_structure_query
     from symbolic_query import compile_symbolic_query, execute_symbolic_query
+    from typed_analysis_query import compile_typed_analysis_query, execute_typed_analysis_query
     from vector_query import compile_vector_query, execute_vector_query
     from tool_adapters import ToolRegistry
 
@@ -224,6 +239,161 @@ class ProblemCompiler:
         self.allow_specialized = allow_specialized
 
     def compile(self, text: str) -> MathIR:
+        specialized_problem = detect_specialized_problem(text) if self.allow_specialized else None
+        if specialized_problem is not None:
+            return MathIR(
+                problem=text,
+                route=specialized_problem.domain,
+                intent=specialized_problem.intent,
+                symbols=specialized_problem.symbols,
+                givens=specialized_problem.givens,
+                goal=specialized_problem.goal,
+                plan=specialized_problem.plan,
+                tool_calls=[
+                    ToolCall(
+                        specialized_problem.tool_name,
+                        specialized_problem.command,
+                        executable=specialized_problem.executable,
+                    )
+                ],
+            )
+        if self.allow_specialized and looks_like_latex(text):
+            specialized_latex = parse_latex_problem(text)
+            specialized_problem = detect_specialized_problem(specialized_latex.normalized_text)
+            if specialized_problem is not None:
+                return MathIR(
+                    problem=text,
+                    route=specialized_problem.domain,
+                    intent=f"latex_to_{specialized_problem.intent}",
+                    symbols=specialized_problem.symbols,
+                    givens={**specialized_problem.givens, "latex_parse": asdict(specialized_latex)},
+                    goal=specialized_problem.goal,
+                    plan=specialized_problem.plan,
+                    tool_calls=[
+                        ToolCall(
+                            specialized_problem.tool_name,
+                            specialized_problem.command,
+                            executable=specialized_problem.executable,
+                        )
+                    ],
+                    notes=[f"Normalized LaTeX problem text: {specialized_latex.normalized_text}"],
+                )
+
+        cubic_centroid_query = compile_cubic_centroid_locus_query(text)
+        if cubic_centroid_query is not None:
+            payload = cubic_centroid_query.to_dict()
+            return MathIR(
+                problem=text,
+                route="geometry_symbolic",
+                intent="cubic_equilateral_centroid_locus_area",
+                symbols=[cubic_centroid_query.variable],
+                givens={"cubic_centroid_locus_query": payload},
+                goal="Derive and integrate the centroid locus of equilateral triples on a cubic.",
+                plan=[
+                    "Translate and, if needed, reflect the cubic by Euclidean isometries.",
+                    "Represent equilateral vertices by three phase-shifted radius vectors.",
+                    "Eliminate phase through the aliased Fourier-mode constraints.",
+                    "Integrate the verified algebraic boundary branches.",
+                ],
+                tool_calls=[ToolCall("sympy.cubic_centroid_locus", "eliminate phase and integrate locus", executable=True)],
+            )
+
+        iteration_query = compile_iteration_query(text)
+        if iteration_query is not None:
+            payload = iteration_query.to_dict()
+            return MathIR(
+                problem=text,
+                route="calculus",
+                intent="iteration_convergence",
+                symbols=[],
+                givens={"iteration_query": payload},
+                goal="Determine the convergence of a self-similar scalar iteration.",
+                plan=[
+                    "Recover the repeated layer as a scalar iteration map.",
+                    "Compare the map with the diagonal through an exact logarithmic minimum.",
+                    "Use monotonicity and the fixed-point condition to decide convergence.",
+                    "Return the limit with a reusable convergence certificate.",
+                ],
+                tool_calls=[ToolCall("sympy.iteration_query", iteration_query.operator, executable=True)],
+            )
+
+        analysis_query = compile_typed_analysis_query(text)
+        if analysis_query is not None:
+            payload = analysis_query.to_dict()
+            route = "calculus" if analysis_query.operator in {"limit", "integral"} else "formal_proof"
+            return MathIR(
+                problem=text,
+                route=route,
+                intent=f"typed_analysis_{analysis_query.operator}",
+                symbols=[],
+                givens={"typed_analysis_query": payload},
+                goal=f"Execute the closed typed analysis observation {analysis_query.operator}.",
+                plan=[
+                    "Parse the complete LaTeX operator tree and reject partial multi-part matches.",
+                    "Type-check bound variables, constants, and the requested output sort.",
+                    "Execute the exact symbolic operation.",
+                    "Reject results containing unevaluated operators or indeterminate values.",
+                ],
+                tool_calls=[ToolCall("sympy.typed_analysis_query", analysis_query.operator, executable=True)],
+            )
+
+        progression_query = compile_progression_query(text)
+        if progression_query is not None:
+            payload = progression_query.to_dict()
+            return MathIR(
+                problem=text,
+                route="symbolic_algebra",
+                intent=f"progression_{progression_query.progression}_constraint",
+                symbols=[],
+                givens={"progression_query": payload},
+                goal="Solve a finite progression relation by its algebraic definition.",
+                plan=[
+                    "Parse the ordered terms without attaching a problem-family template.",
+                    "Lower the progression definition to an exact algebraic relation.",
+                    "Eliminate auxiliary trigonometric coordinates with their defining identity.",
+                    "Filter candidates by the source domain and substitute them back.",
+                ],
+                tool_calls=[ToolCall("sympy.progression_query", progression_query.progression, executable=True)],
+            )
+
+        hilbert_query = compile_hilbert_witness_query(text)
+        if hilbert_query is not None:
+            payload = hilbert_query.to_dict()
+            return MathIR(
+                problem=text,
+                route="functional_analysis",
+                intent="hilbert_normalized_inner_product_witness",
+                symbols=[hilbert_query.variable],
+                givens={"hilbert_witness_query": payload},
+                goal="Construct a pair with the requested normalized inner product.",
+                plan=[
+                    "Parse the common integration interval and target correlation.",
+                    "Construct an explicit orthonormal pair in the interval L2 space.",
+                    "Rotate in the resulting two-dimensional subspace.",
+                    "Verify both norms and the inner product by exact integration.",
+                ],
+                tool_calls=[ToolCall("sympy.hilbert_witness_query", "construct orthonormal witness", executable=True)],
+            )
+
+        prime_query = compile_prime_structure_query(text)
+        if prime_query is not None:
+            payload = prime_query.to_dict()
+            return MathIR(
+                problem=text,
+                route="number_theory",
+                intent=f"prime_structure_{prime_query.operator}",
+                symbols=[],
+                givens={"prime_structure_query": payload},
+                goal="Discharge the theorem by reusable consequences of the Prime type.",
+                plan=[
+                    "Elaborate primality into parity and integer-set constraints.",
+                    "Split the finite parity cases or embed primes into a tractable superset.",
+                    "Reduce the goal to exact rational, zeta, or quadratic-residue obligations.",
+                    "Replay every branch and reject the theorem if one branch remains open.",
+                ],
+                tool_calls=[ToolCall("sympy.prime_structure_query", prime_query.operator, executable=True)],
+            )
+
         finite_relation = compile_finite_relation_query(text)
         if finite_relation is not None:
             payload = finite_relation.to_dict()
@@ -409,6 +579,32 @@ class ProblemCompiler:
                 and not looks_like_latex(latex_problem.normalized_text)
             )
             if can_reparse:
+                normalized_specialized = (
+                    detect_specialized_problem(latex_problem.normalized_text)
+                    if self.allow_specialized
+                    else None
+                )
+                if normalized_specialized is not None:
+                    return MathIR(
+                        problem=text,
+                        route=normalized_specialized.domain,
+                        intent=f"latex_to_{normalized_specialized.intent}",
+                        symbols=normalized_specialized.symbols,
+                        givens={
+                            **normalized_specialized.givens,
+                            "latex_parse": asdict(latex_problem),
+                        },
+                        goal=normalized_specialized.goal,
+                        plan=normalized_specialized.plan,
+                        tool_calls=[
+                            ToolCall(
+                                normalized_specialized.tool_name,
+                                normalized_specialized.command,
+                                executable=normalized_specialized.executable,
+                            )
+                        ],
+                        notes=[f"Normalized LaTeX problem text: {latex_problem.normalized_text}"],
+                    )
                 ir = self.compile(latex_problem.normalized_text)
                 ir.problem = text
                 ir.intent = f"latex_to_{ir.intent}"
@@ -418,25 +614,6 @@ class ProblemCompiler:
 
         if looks_like_geometry_dsl(text):
             return self._compile_geometry_dsl_source(text)
-
-        specialized_problem = detect_specialized_problem(text) if self.allow_specialized else None
-        if specialized_problem is not None:
-            return MathIR(
-                problem=text,
-                route=specialized_problem.domain,
-                intent=specialized_problem.intent,
-                symbols=specialized_problem.symbols,
-                givens=specialized_problem.givens,
-                goal=specialized_problem.goal,
-                plan=specialized_problem.plan,
-                tool_calls=[
-                    ToolCall(
-                        specialized_problem.tool_name,
-                        specialized_problem.command,
-                        executable=specialized_problem.executable,
-                    )
-                ],
-            )
 
         polynomial_remainder = detect_polynomial_remainder_problem(text)
         if polynomial_remainder is not None:
@@ -773,6 +950,18 @@ class ToolExecutor:
                     call.result = run_sympy_solve(ir.givens["equation"], ir.givens["variable"])
                 elif call.name == "sympy.semantic_query":
                     call.result = execute_symbolic_query(ir.givens["symbolic_query"])
+                elif call.name == "sympy.typed_analysis_query":
+                    call.result = execute_typed_analysis_query(ir.givens["typed_analysis_query"])
+                elif call.name == "sympy.progression_query":
+                    call.result = execute_progression_query(ir.givens["progression_query"])
+                elif call.name == "sympy.iteration_query":
+                    call.result = execute_iteration_query(ir.givens["iteration_query"])
+                elif call.name == "sympy.cubic_centroid_locus":
+                    call.result = execute_cubic_centroid_locus_query(ir.givens["cubic_centroid_locus_query"])
+                elif call.name == "sympy.hilbert_witness_query":
+                    call.result = execute_hilbert_witness_query(ir.givens["hilbert_witness_query"])
+                elif call.name == "sympy.prime_structure_query":
+                    call.result = execute_prime_structure_query(ir.givens["prime_structure_query"])
                 elif call.name == "sympy.vector_query":
                     call.result = execute_vector_query(ir.givens["vector_query"])
                 elif call.name == "sympy.matrix_semantic_query":

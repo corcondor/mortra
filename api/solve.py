@@ -8,6 +8,7 @@ an LLM and it does not manufacture an answer when verification fails.
 from __future__ import annotations
 
 import ast
+from dataclasses import dataclass
 import json
 import re
 from http.server import BaseHTTPRequestHandler
@@ -17,6 +18,12 @@ import sympy as sp
 from sympy.parsing.latex import parse_latex
 
 from math_os_prototype.web_app import solve_request_payload
+
+
+@dataclass(frozen=True)
+class ExactDisplayAnswer:
+    value: Any
+    latex: str
 
 
 def _first_executed_call(data: dict[str, Any]) -> dict[str, Any]:
@@ -64,6 +71,8 @@ def _latex_atom(value: Any) -> str:
 
 
 def _answer_latex(answer: Any) -> str:
+    if isinstance(answer, ExactDisplayAnswer):
+        return answer.latex
     if isinstance(answer, str):
         try:
             parsed = ast.literal_eval(answer)
@@ -148,20 +157,20 @@ def _direct_exact_solve(statement: str) -> tuple[Any, str, str] | None:
                 )
                 shift = sp.simplify(-quadratic / (3 * leading))
                 argument = sp.simplify((3 * q / (2 * p)) * sp.sqrt(-3 / p))
-                index = sp.symbols("k", integer=True)
-                root_term = sp.simplify(
-                    shift
-                    + 2
-                    * sp.sqrt(-p / 3)
-                    * sp.cos(sp.acos(argument) / 3 - 2 * sp.pi * index / 3)
-                )
-                displayed_roots = sp.ImageSet(sp.Lambda(index, root_term), sp.FiniteSet(0, 1, 2))
-                numeric_exact = sorted(complex(sp.N(root, 30)).real for root in roots)
-                numeric_display = sorted(
-                    complex(sp.N(root_term.subs(index, value), 30)).real for value in range(3)
-                )
-                if max(abs(exact - shown) for exact, shown in zip(numeric_exact, numeric_display)) < 1e-20:
-                    roots = displayed_roots
+                if sp.simplify(argument**2 < 1) is sp.true:
+                    roots = ExactDisplayAnswer(
+                        value=roots,
+                        latex=(
+                            r"\(\left\{\,"
+                            + sp.latex(shift)
+                            + "+"
+                            + sp.latex(2 * sp.sqrt(-p / 3))
+                            + r"\cos\left(\frac{1}{3}"
+                            + sp.latex(sp.acos(argument))
+                            + r"-\frac{2\pi k}{3}\right)"
+                            + r"\;\middle|\;k=0,1,2\,\right\}\)"
+                        ),
+                    )
             return roots, "sympy.solve", sp.latex(sp.Eq(left, right))
     except Exception:
         return None
@@ -220,8 +229,15 @@ def _math_expression(command: str) -> str:
 
 def _solution_text(problem: str, answer_tex: str, data: dict[str, Any]) -> str:
     call = _first_executed_call(data)
+    result = call.get("result") or {}
+    derivation = result.get("derivation_tex")
+    if isinstance(derivation, list) and derivation and all(isinstance(step, str) for step in derivation):
+        return "\n\n".join(
+            rf"\textbf{{{index}.}} {step}"
+            for index, step in enumerate(derivation, start=1)
+        )
     command = str(call.get("command") or "exact symbolic execution")
-    operator = str((call.get("result") or {}).get("query_operator") or call.get("name") or "constraint solving")
+    operator = str(result.get("query_operator") or call.get("name") or "constraint solving")
     expression = _math_expression(command)
     verification = data.get("verification", {})
     checks = verification.get("checks") or ["候補を元の制約へ代入して照合した。"]
@@ -273,10 +289,15 @@ def solve_problem(problem: str) -> tuple[int, dict[str, Any]]:
             ],
         }
 
-    answer_tex = _answer_latex(answer)
     intent = str(data.get("tool_execution", {}).get("intent") or "exact_constraint")
     route = str(data.get("tool_execution", {}).get("route") or data.get("domain_ir", {}).get("domain") or "mathematics")
     call = _first_executed_call(data)
+    result = call.get("result") or {}
+    answer_tex = (
+        result.get("answer_tex")
+        if isinstance(result.get("answer_tex"), str)
+        else _answer_latex(answer)
+    )
     tool_name = str(call.get("name") or "exact_backend")
     card = {
         "statement_tex": statement,
