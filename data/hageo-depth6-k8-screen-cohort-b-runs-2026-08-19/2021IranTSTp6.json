@@ -1,0 +1,1195 @@
+{
+  "experiment": "hageo_independent_pass_at_k_process_sharded_no_llm",
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_dataset_auxiliary_clauses": false,
+    "uses_problem_id_in_search": false,
+    "uses_expected_answer": false,
+    "rounds_n": 6,
+    "attempts_k": 8,
+    "process_shards": 2,
+    "seed": 0,
+    "trajectory_policy": "independent_seeded_numerical_incidence_sampling",
+    "truth_plane": "yuclid_native_certificate_replay_only"
+  },
+  "problem_name": "2021IranTSTp6",
+  "solved": false,
+  "pass_at_k": false,
+  "completed_attempts": 8,
+  "unique_paths": 8,
+  "right_censored_shards": 0,
+  "execution_error_shards": 0,
+  "elapsed_seconds": 192.20046010000806,
+  "shards": [
+    {
+      "shard": 0,
+      "status": "completed",
+      "count": 4,
+      "seed": 0,
+      "attempt_offset": 0,
+      "solved": false,
+      "unique_paths": 4,
+      "completed_attempts": 4,
+      "attempt_results": [
+        {
+          "attempt": 0,
+          "status": "unsolved",
+          "solved": false,
+          "rounds_completed": 6,
+          "path": [
+            "midpoint(x,p)->g",
+            "intersection_lp(b,o,q,c,x)->i",
+            "reflect(a,q,i)->j",
+            "between_bound(i,f)->k",
+            "intersection_lt(a,o,q,h,e)->l",
+            "intersection_lp(h,q,b,a,c)->m"
+          ],
+          "rounds": [
+            {
+              "round": 1,
+              "enumerated": 512,
+              "incidence_checked": 484,
+              "heuristic_candidates": 1,
+              "eligible_pool": 1,
+              "chosen": "midpoint(x,p)->g"
+            },
+            {
+              "round": 2,
+              "enumerated": 512,
+              "incidence_checked": 478,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "intersection_lp(b,o,q,c,x)->i"
+            },
+            {
+              "round": 3,
+              "enumerated": 512,
+              "incidence_checked": 484,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "reflect(a,q,i)->j"
+            },
+            {
+              "round": 4,
+              "enumerated": 512,
+              "incidence_checked": 483,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "between_bound(i,f)->k"
+            },
+            {
+              "round": 5,
+              "enumerated": 512,
+              "incidence_checked": 482,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "intersection_lt(a,o,q,h,e)->l"
+            },
+            {
+              "round": 6,
+              "enumerated": 512,
+              "incidence_checked": 487,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "intersection_lp(h,q,b,a,c)->m"
+            }
+          ],
+          "all_deduction_count": 5563,
+          "goal_deduction_count": 0,
+          "input_sha256": "27c65f7ea874e7fce6efbb33517a57b5b019bd01890b199b73149e119e084cd1",
+          "proof_sha256": "eea6e737ec47e9c9801f53665102f22c84ccc5c0c8a9b01477ba11b403bcd471",
+          "proof": null,
+          "elapsed_seconds": 45.83117839999613
+        },
+        {
+          "attempt": 1,
+          "status": "unsolved",
+          "solved": false,
+          "rounds_completed": 6,
+          "path": [
+            "between_bound(h,d)->g",
+            "on_circum(a,e,g)->i",
+            "on_circum(e,o2,i)->j",
+            "intersection_lt(o,x,e,q,x)->k",
+            "on_pline(k,c,a)->l",
+            "intersection_tt(b,a,c,e,q,o)->m"
+          ],
+          "rounds": [
+            {
+              "round": 1,
+              "enumerated": 512,
+              "incidence_checked": 487,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "between_bound(h,d)->g"
+            },
+            {
+              "round": 2,
+              "enumerated": 512,
+              "incidence_checked": 481,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "on_circum(a,e,g)->i"
+            },
+            {
+              "round": 3,
+              "enumerated": 512,
+              "incidence_checked": 491,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "on_circum(e,o2,i)->j"
+            },
+            {
+              "round": 4,
+              "enumerated": 512,
+              "incidence_checked": 489,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "intersection_lt(o,x,e,q,x)->k"
+            },
+            {
+              "round": 5,
+              "enumerated": 512,
+              "incidence_checked": 487,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "on_pline(k,c,a)->l"
+            },
+            {
+              "round": 6,
+              "enumerated": 512,
+              "incidence_checked": 486,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "intersection_tt(b,a,c,e,q,o)->m"
+            }
+          ],
+          "all_deduction_count": 5003,
+          "goal_deduction_count": 0,
+          "input_sha256": "461c62990193c640abb19af7e94a72854958abf7735b37cea55bf8e6520ffd62",
+          "proof_sha256": "7568ad47e905da855bf50ce813a91be7f3757972ae309c2711464e1a4cf81375",
+          "proof": null,
+          "elapsed_seconds": 44.78554559999611
+        },
+        {
+          "attempt": 2,
+          "status": "unsolved",
+          "solved": false,
+          "rounds_completed": 6,
+          "path": [
+            "intersection_lt(h,x,e,q,o)->g",
+            "between_bound(d,g)->i",
+            "intersection_lp(a,h,e,h,f)->j",
+            "orthocenter(q,e,j)->k",
+            "between_bound(o,k)->l",
+            "intersection_lt(b,d,a,b,f)->m"
+          ],
+          "rounds": [
+            {
+              "round": 1,
+              "enumerated": 512,
+              "incidence_checked": 482,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "intersection_lt(h,x,e,q,o)->g"
+            },
+            {
+              "round": 2,
+              "enumerated": 512,
+              "incidence_checked": 480,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "between_bound(d,g)->i"
+            },
+            {
+              "round": 3,
+              "enumerated": 512,
+              "incidence_checked": 488,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "intersection_lp(a,h,e,h,f)->j"
+            },
+            {
+              "round": 4,
+              "enumerated": 512,
+              "incidence_checked": 479,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "orthocenter(q,e,j)->k"
+            },
+            {
+              "round": 5,
+              "enumerated": 512,
+              "incidence_checked": 485,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "between_bound(o,k)->l"
+            },
+            {
+              "round": 6,
+              "enumerated": 512,
+              "incidence_checked": 489,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "intersection_lt(b,d,a,b,f)->m"
+            }
+          ],
+          "all_deduction_count": 5307,
+          "goal_deduction_count": 0,
+          "input_sha256": "c1d61c61d7433a5dc58d3e6e5c06e7d8d8c75205cd8acb576b97d91097dca4a9",
+          "proof_sha256": "42a2561ce2f4d49eda3e2ee4f887f10b7d2c8dfc317639904cc2d5c583c806aa",
+          "proof": null,
+          "elapsed_seconds": 43.47958369999833
+        },
+        {
+          "attempt": 3,
+          "status": "unsolved",
+          "solved": false,
+          "rounds_completed": 6,
+          "path": [
+            "midpoint(x,p)->g",
+            "mirror(g,a)->i",
+            "intersection_lp(q,o,c,e,d)->j",
+            "intersection_cc(i,a,f)->k",
+            "intersection_lt(c,e,f,h,e)->l",
+            "between_bound(k,l)->m"
+          ],
+          "rounds": [
+            {
+              "round": 1,
+              "enumerated": 512,
+              "incidence_checked": 483,
+              "heuristic_candidates": 1,
+              "eligible_pool": 1,
+              "chosen": "midpoint(x,p)->g"
+            },
+            {
+              "round": 2,
+              "enumerated": 512,
+              "incidence_checked": 476,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "mirror(g,a)->i"
+            },
+            {
+              "round": 3,
+              "enumerated": 512,
+              "incidence_checked": 479,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "intersection_lp(q,o,c,e,d)->j"
+            },
+            {
+              "round": 4,
+              "enumerated": 512,
+              "incidence_checked": 481,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "intersection_cc(i,a,f)->k"
+            },
+            {
+              "round": 5,
+              "enumerated": 512,
+              "incidence_checked": 478,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "intersection_lt(c,e,f,h,e)->l"
+            },
+            {
+              "round": 6,
+              "enumerated": 512,
+              "incidence_checked": 486,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "between_bound(k,l)->m"
+            }
+          ],
+          "all_deduction_count": 5834,
+          "goal_deduction_count": 0,
+          "input_sha256": "621b5c06dd8389f6cdfe52f9bdda75136dde3e5f2a068ab5ae7fa55923df1b64",
+          "proof_sha256": "7d303bf31e941ca24b278b7fc8d33cc73f79838e9040d4d87b31752b81241e57",
+          "proof": null,
+          "elapsed_seconds": 45.197552899990114
+        }
+      ],
+      "certificate": null,
+      "artifact": "data/hageo-depth6-k8-screen-cohort-b-runs-2026-08-19/2021IranTSTp6/shard-00.json",
+      "artifact_sha256": "0ee49b2c66869a6ff2668885cdbfbab6bf1d1ab89147eb0428b0756c7ca90f70",
+      "elapsed_seconds": 191.89189169999736
+    },
+    {
+      "shard": 1,
+      "status": "completed",
+      "count": 4,
+      "seed": 0,
+      "attempt_offset": 4,
+      "solved": false,
+      "unique_paths": 4,
+      "completed_attempts": 4,
+      "attempt_results": [
+        {
+          "attempt": 4,
+          "status": "unsolved",
+          "solved": false,
+          "rounds_completed": 6,
+          "path": [
+            "parallelogram(a,f,e)->g",
+            "midpoint(a,e)->i",
+            "mirror(b,i)->j",
+            "intersection_lt(h,x,f,h,b)->k",
+            "mirror(d,i)->l",
+            "on_dia(e,i)->m"
+          ],
+          "rounds": [
+            {
+              "round": 1,
+              "enumerated": 512,
+              "incidence_checked": 481,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "parallelogram(a,f,e)->g"
+            },
+            {
+              "round": 2,
+              "enumerated": 512,
+              "incidence_checked": 481,
+              "heuristic_candidates": 1,
+              "eligible_pool": 1,
+              "chosen": "midpoint(a,e)->i"
+            },
+            {
+              "round": 3,
+              "enumerated": 512,
+              "incidence_checked": 484,
+              "heuristic_candidates": 1,
+              "eligible_pool": 1,
+              "chosen": "mirror(b,i)->j"
+            },
+            {
+              "round": 4,
+              "enumerated": 512,
+              "incidence_checked": 485,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "intersection_lt(h,x,f,h,b)->k"
+            },
+            {
+              "round": 5,
+              "enumerated": 512,
+              "incidence_checked": 474,
+              "heuristic_candidates": 2,
+              "eligible_pool": 2,
+              "chosen": "mirror(d,i)->l"
+            },
+            {
+              "round": 6,
+              "enumerated": 512,
+              "incidence_checked": 487,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "on_dia(e,i)->m"
+            }
+          ],
+          "all_deduction_count": 7309,
+          "goal_deduction_count": 0,
+          "input_sha256": "4e5688e9a111d3018d6336cd65b5570d18c333707e3685d2ad957a1112355974",
+          "proof_sha256": "5ea489741cdf34b8a74e58bd1088c249d0f235113a2904ab5d017815fd3ea35a",
+          "proof": null,
+          "elapsed_seconds": 45.94101170000795
+        },
+        {
+          "attempt": 5,
+          "status": "unsolved",
+          "solved": false,
+          "rounds_completed": 6,
+          "path": [
+            "intersection_lp(q,x,h,b,d)->g",
+            "intersection_lp(a,b,x,a,q)->i",
+            "between_bound(h,i)->j",
+            "intersection_cc(a,i,c)->k",
+            "intersection_ll(q,i,b,x)->l",
+            "angle_bisector(d,g,f)->m"
+          ],
+          "rounds": [
+            {
+              "round": 1,
+              "enumerated": 512,
+              "incidence_checked": 489,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "intersection_lp(q,x,h,b,d)->g"
+            },
+            {
+              "round": 2,
+              "enumerated": 512,
+              "incidence_checked": 487,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "intersection_lp(a,b,x,a,q)->i"
+            },
+            {
+              "round": 3,
+              "enumerated": 512,
+              "incidence_checked": 485,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "between_bound(h,i)->j"
+            },
+            {
+              "round": 4,
+              "enumerated": 512,
+              "incidence_checked": 486,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "intersection_cc(a,i,c)->k"
+            },
+            {
+              "round": 5,
+              "enumerated": 512,
+              "incidence_checked": 473,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "intersection_ll(q,i,b,x)->l"
+            },
+            {
+              "round": 6,
+              "enumerated": 512,
+              "incidence_checked": 479,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "angle_bisector(d,g,f)->m"
+            }
+          ],
+          "all_deduction_count": 6132,
+          "goal_deduction_count": 0,
+          "input_sha256": "78e257924b805f3a98ed5a922d3a3d6430098bfdc184e5abccd1204516fba636",
+          "proof_sha256": "624c103359b687a851f2fb600d7ea44dde4a16d2b26c88bdc213e244284ef105",
+          "proof": null,
+          "elapsed_seconds": 45.22175199999765
+        },
+        {
+          "attempt": 6,
+          "status": "unsolved",
+          "solved": false,
+          "rounds_completed": 6,
+          "path": [
+            "intersection_lp(a,q,o,b,d)->g",
+            "intersection_lt(b,x,a,h,d)->i",
+            "intersection_lt(c,o,h,c,e)->j",
+            "orthocenter(q,o1,o2)->k",
+            "intersection_lp(q,d,a,d,o)->l",
+            "midpoint(x,p)->m"
+          ],
+          "rounds": [
+            {
+              "round": 1,
+              "enumerated": 512,
+              "incidence_checked": 487,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "intersection_lp(a,q,o,b,d)->g"
+            },
+            {
+              "round": 2,
+              "enumerated": 512,
+              "incidence_checked": 483,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "intersection_lt(b,x,a,h,d)->i"
+            },
+            {
+              "round": 3,
+              "enumerated": 512,
+              "incidence_checked": 484,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "intersection_lt(c,o,h,c,e)->j"
+            },
+            {
+              "round": 4,
+              "enumerated": 512,
+              "incidence_checked": 484,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "orthocenter(q,o1,o2)->k"
+            },
+            {
+              "round": 5,
+              "enumerated": 512,
+              "incidence_checked": 477,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "intersection_lp(q,d,a,d,o)->l"
+            },
+            {
+              "round": 6,
+              "enumerated": 512,
+              "incidence_checked": 476,
+              "heuristic_candidates": 1,
+              "eligible_pool": 1,
+              "chosen": "midpoint(x,p)->m"
+            }
+          ],
+          "all_deduction_count": 6517,
+          "goal_deduction_count": 0,
+          "input_sha256": "0911548dfe7541c8aed222c27faf0f18b384b58d5bb5f16e934397d30335f4d3",
+          "proof_sha256": "da2ace23888135797e4215f7d5b23972151942f9403589353ba8152fc2e68387",
+          "proof": null,
+          "elapsed_seconds": 43.219972699997015
+        },
+        {
+          "attempt": 7,
+          "status": "unsolved",
+          "solved": false,
+          "rounds_completed": 6,
+          "path": [
+            "on_tline(a,q,p)->g",
+            "intersection_lp(b,x,f,q,e)->i",
+            "psquare(a,g)->j",
+            "midpoint(x,p)->k",
+            "nsquare(k,x)->l",
+            "intersection_lt(q,c,e,b,d)->m"
+          ],
+          "rounds": [
+            {
+              "round": 1,
+              "enumerated": 512,
+              "incidence_checked": 488,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "on_tline(a,q,p)->g"
+            },
+            {
+              "round": 2,
+              "enumerated": 512,
+              "incidence_checked": 475,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "intersection_lp(b,x,f,q,e)->i"
+            },
+            {
+              "round": 3,
+              "enumerated": 512,
+              "incidence_checked": 489,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "psquare(a,g)->j"
+            },
+            {
+              "round": 4,
+              "enumerated": 512,
+              "incidence_checked": 482,
+              "heuristic_candidates": 1,
+              "eligible_pool": 1,
+              "chosen": "midpoint(x,p)->k"
+            },
+            {
+              "round": 5,
+              "enumerated": 512,
+              "incidence_checked": 483,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "nsquare(k,x)->l"
+            },
+            {
+              "round": 6,
+              "enumerated": 512,
+              "incidence_checked": 475,
+              "heuristic_candidates": 0,
+              "eligible_pool": 64,
+              "chosen": "intersection_lt(q,c,e,b,d)->m"
+            }
+          ],
+          "all_deduction_count": 6493,
+          "goal_deduction_count": 0,
+          "input_sha256": "b2c65e6a90cd59972a42e527cf54a57ae72cc5984b1161ebdf6a24fc5ac97dc4",
+          "proof_sha256": "e3e888aca4e1893b129b530ccfa3e84ca6ef1e967a2b42e7584983de5fe1b063",
+          "proof": null,
+          "elapsed_seconds": 45.102670299995225
+        }
+      ],
+      "certificate": null,
+      "artifact": "data/hageo-depth6-k8-screen-cohort-b-runs-2026-08-19/2021IranTSTp6/shard-01.json",
+      "artifact_sha256": "a0af9f153824a78929b5393b8d971115a019130abb429ef7d1189a03a68901a7",
+      "elapsed_seconds": 192.19476199999917
+    }
+  ],
+  "attempt_results": [
+    {
+      "attempt": 0,
+      "status": "unsolved",
+      "solved": false,
+      "rounds_completed": 6,
+      "path": [
+        "midpoint(x,p)->g",
+        "intersection_lp(b,o,q,c,x)->i",
+        "reflect(a,q,i)->j",
+        "between_bound(i,f)->k",
+        "intersection_lt(a,o,q,h,e)->l",
+        "intersection_lp(h,q,b,a,c)->m"
+      ],
+      "rounds": [
+        {
+          "round": 1,
+          "enumerated": 512,
+          "incidence_checked": 484,
+          "heuristic_candidates": 1,
+          "eligible_pool": 1,
+          "chosen": "midpoint(x,p)->g"
+        },
+        {
+          "round": 2,
+          "enumerated": 512,
+          "incidence_checked": 478,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "intersection_lp(b,o,q,c,x)->i"
+        },
+        {
+          "round": 3,
+          "enumerated": 512,
+          "incidence_checked": 484,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "reflect(a,q,i)->j"
+        },
+        {
+          "round": 4,
+          "enumerated": 512,
+          "incidence_checked": 483,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "between_bound(i,f)->k"
+        },
+        {
+          "round": 5,
+          "enumerated": 512,
+          "incidence_checked": 482,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "intersection_lt(a,o,q,h,e)->l"
+        },
+        {
+          "round": 6,
+          "enumerated": 512,
+          "incidence_checked": 487,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "intersection_lp(h,q,b,a,c)->m"
+        }
+      ],
+      "all_deduction_count": 5563,
+      "goal_deduction_count": 0,
+      "input_sha256": "27c65f7ea874e7fce6efbb33517a57b5b019bd01890b199b73149e119e084cd1",
+      "proof_sha256": "eea6e737ec47e9c9801f53665102f22c84ccc5c0c8a9b01477ba11b403bcd471",
+      "proof": null,
+      "elapsed_seconds": 45.83117839999613,
+      "shard": 0,
+      "local_attempt": 0
+    },
+    {
+      "attempt": 1,
+      "status": "unsolved",
+      "solved": false,
+      "rounds_completed": 6,
+      "path": [
+        "between_bound(h,d)->g",
+        "on_circum(a,e,g)->i",
+        "on_circum(e,o2,i)->j",
+        "intersection_lt(o,x,e,q,x)->k",
+        "on_pline(k,c,a)->l",
+        "intersection_tt(b,a,c,e,q,o)->m"
+      ],
+      "rounds": [
+        {
+          "round": 1,
+          "enumerated": 512,
+          "incidence_checked": 487,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "between_bound(h,d)->g"
+        },
+        {
+          "round": 2,
+          "enumerated": 512,
+          "incidence_checked": 481,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "on_circum(a,e,g)->i"
+        },
+        {
+          "round": 3,
+          "enumerated": 512,
+          "incidence_checked": 491,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "on_circum(e,o2,i)->j"
+        },
+        {
+          "round": 4,
+          "enumerated": 512,
+          "incidence_checked": 489,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "intersection_lt(o,x,e,q,x)->k"
+        },
+        {
+          "round": 5,
+          "enumerated": 512,
+          "incidence_checked": 487,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "on_pline(k,c,a)->l"
+        },
+        {
+          "round": 6,
+          "enumerated": 512,
+          "incidence_checked": 486,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "intersection_tt(b,a,c,e,q,o)->m"
+        }
+      ],
+      "all_deduction_count": 5003,
+      "goal_deduction_count": 0,
+      "input_sha256": "461c62990193c640abb19af7e94a72854958abf7735b37cea55bf8e6520ffd62",
+      "proof_sha256": "7568ad47e905da855bf50ce813a91be7f3757972ae309c2711464e1a4cf81375",
+      "proof": null,
+      "elapsed_seconds": 44.78554559999611,
+      "shard": 0,
+      "local_attempt": 1
+    },
+    {
+      "attempt": 2,
+      "status": "unsolved",
+      "solved": false,
+      "rounds_completed": 6,
+      "path": [
+        "intersection_lt(h,x,e,q,o)->g",
+        "between_bound(d,g)->i",
+        "intersection_lp(a,h,e,h,f)->j",
+        "orthocenter(q,e,j)->k",
+        "between_bound(o,k)->l",
+        "intersection_lt(b,d,a,b,f)->m"
+      ],
+      "rounds": [
+        {
+          "round": 1,
+          "enumerated": 512,
+          "incidence_checked": 482,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "intersection_lt(h,x,e,q,o)->g"
+        },
+        {
+          "round": 2,
+          "enumerated": 512,
+          "incidence_checked": 480,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "between_bound(d,g)->i"
+        },
+        {
+          "round": 3,
+          "enumerated": 512,
+          "incidence_checked": 488,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "intersection_lp(a,h,e,h,f)->j"
+        },
+        {
+          "round": 4,
+          "enumerated": 512,
+          "incidence_checked": 479,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "orthocenter(q,e,j)->k"
+        },
+        {
+          "round": 5,
+          "enumerated": 512,
+          "incidence_checked": 485,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "between_bound(o,k)->l"
+        },
+        {
+          "round": 6,
+          "enumerated": 512,
+          "incidence_checked": 489,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "intersection_lt(b,d,a,b,f)->m"
+        }
+      ],
+      "all_deduction_count": 5307,
+      "goal_deduction_count": 0,
+      "input_sha256": "c1d61c61d7433a5dc58d3e6e5c06e7d8d8c75205cd8acb576b97d91097dca4a9",
+      "proof_sha256": "42a2561ce2f4d49eda3e2ee4f887f10b7d2c8dfc317639904cc2d5c583c806aa",
+      "proof": null,
+      "elapsed_seconds": 43.47958369999833,
+      "shard": 0,
+      "local_attempt": 2
+    },
+    {
+      "attempt": 3,
+      "status": "unsolved",
+      "solved": false,
+      "rounds_completed": 6,
+      "path": [
+        "midpoint(x,p)->g",
+        "mirror(g,a)->i",
+        "intersection_lp(q,o,c,e,d)->j",
+        "intersection_cc(i,a,f)->k",
+        "intersection_lt(c,e,f,h,e)->l",
+        "between_bound(k,l)->m"
+      ],
+      "rounds": [
+        {
+          "round": 1,
+          "enumerated": 512,
+          "incidence_checked": 483,
+          "heuristic_candidates": 1,
+          "eligible_pool": 1,
+          "chosen": "midpoint(x,p)->g"
+        },
+        {
+          "round": 2,
+          "enumerated": 512,
+          "incidence_checked": 476,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "mirror(g,a)->i"
+        },
+        {
+          "round": 3,
+          "enumerated": 512,
+          "incidence_checked": 479,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "intersection_lp(q,o,c,e,d)->j"
+        },
+        {
+          "round": 4,
+          "enumerated": 512,
+          "incidence_checked": 481,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "intersection_cc(i,a,f)->k"
+        },
+        {
+          "round": 5,
+          "enumerated": 512,
+          "incidence_checked": 478,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "intersection_lt(c,e,f,h,e)->l"
+        },
+        {
+          "round": 6,
+          "enumerated": 512,
+          "incidence_checked": 486,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "between_bound(k,l)->m"
+        }
+      ],
+      "all_deduction_count": 5834,
+      "goal_deduction_count": 0,
+      "input_sha256": "621b5c06dd8389f6cdfe52f9bdda75136dde3e5f2a068ab5ae7fa55923df1b64",
+      "proof_sha256": "7d303bf31e941ca24b278b7fc8d33cc73f79838e9040d4d87b31752b81241e57",
+      "proof": null,
+      "elapsed_seconds": 45.197552899990114,
+      "shard": 0,
+      "local_attempt": 3
+    },
+    {
+      "attempt": 4,
+      "status": "unsolved",
+      "solved": false,
+      "rounds_completed": 6,
+      "path": [
+        "parallelogram(a,f,e)->g",
+        "midpoint(a,e)->i",
+        "mirror(b,i)->j",
+        "intersection_lt(h,x,f,h,b)->k",
+        "mirror(d,i)->l",
+        "on_dia(e,i)->m"
+      ],
+      "rounds": [
+        {
+          "round": 1,
+          "enumerated": 512,
+          "incidence_checked": 481,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "parallelogram(a,f,e)->g"
+        },
+        {
+          "round": 2,
+          "enumerated": 512,
+          "incidence_checked": 481,
+          "heuristic_candidates": 1,
+          "eligible_pool": 1,
+          "chosen": "midpoint(a,e)->i"
+        },
+        {
+          "round": 3,
+          "enumerated": 512,
+          "incidence_checked": 484,
+          "heuristic_candidates": 1,
+          "eligible_pool": 1,
+          "chosen": "mirror(b,i)->j"
+        },
+        {
+          "round": 4,
+          "enumerated": 512,
+          "incidence_checked": 485,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "intersection_lt(h,x,f,h,b)->k"
+        },
+        {
+          "round": 5,
+          "enumerated": 512,
+          "incidence_checked": 474,
+          "heuristic_candidates": 2,
+          "eligible_pool": 2,
+          "chosen": "mirror(d,i)->l"
+        },
+        {
+          "round": 6,
+          "enumerated": 512,
+          "incidence_checked": 487,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "on_dia(e,i)->m"
+        }
+      ],
+      "all_deduction_count": 7309,
+      "goal_deduction_count": 0,
+      "input_sha256": "4e5688e9a111d3018d6336cd65b5570d18c333707e3685d2ad957a1112355974",
+      "proof_sha256": "5ea489741cdf34b8a74e58bd1088c249d0f235113a2904ab5d017815fd3ea35a",
+      "proof": null,
+      "elapsed_seconds": 45.94101170000795,
+      "shard": 1,
+      "local_attempt": 0
+    },
+    {
+      "attempt": 5,
+      "status": "unsolved",
+      "solved": false,
+      "rounds_completed": 6,
+      "path": [
+        "intersection_lp(q,x,h,b,d)->g",
+        "intersection_lp(a,b,x,a,q)->i",
+        "between_bound(h,i)->j",
+        "intersection_cc(a,i,c)->k",
+        "intersection_ll(q,i,b,x)->l",
+        "angle_bisector(d,g,f)->m"
+      ],
+      "rounds": [
+        {
+          "round": 1,
+          "enumerated": 512,
+          "incidence_checked": 489,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "intersection_lp(q,x,h,b,d)->g"
+        },
+        {
+          "round": 2,
+          "enumerated": 512,
+          "incidence_checked": 487,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "intersection_lp(a,b,x,a,q)->i"
+        },
+        {
+          "round": 3,
+          "enumerated": 512,
+          "incidence_checked": 485,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "between_bound(h,i)->j"
+        },
+        {
+          "round": 4,
+          "enumerated": 512,
+          "incidence_checked": 486,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "intersection_cc(a,i,c)->k"
+        },
+        {
+          "round": 5,
+          "enumerated": 512,
+          "incidence_checked": 473,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "intersection_ll(q,i,b,x)->l"
+        },
+        {
+          "round": 6,
+          "enumerated": 512,
+          "incidence_checked": 479,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "angle_bisector(d,g,f)->m"
+        }
+      ],
+      "all_deduction_count": 6132,
+      "goal_deduction_count": 0,
+      "input_sha256": "78e257924b805f3a98ed5a922d3a3d6430098bfdc184e5abccd1204516fba636",
+      "proof_sha256": "624c103359b687a851f2fb600d7ea44dde4a16d2b26c88bdc213e244284ef105",
+      "proof": null,
+      "elapsed_seconds": 45.22175199999765,
+      "shard": 1,
+      "local_attempt": 1
+    },
+    {
+      "attempt": 6,
+      "status": "unsolved",
+      "solved": false,
+      "rounds_completed": 6,
+      "path": [
+        "intersection_lp(a,q,o,b,d)->g",
+        "intersection_lt(b,x,a,h,d)->i",
+        "intersection_lt(c,o,h,c,e)->j",
+        "orthocenter(q,o1,o2)->k",
+        "intersection_lp(q,d,a,d,o)->l",
+        "midpoint(x,p)->m"
+      ],
+      "rounds": [
+        {
+          "round": 1,
+          "enumerated": 512,
+          "incidence_checked": 487,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "intersection_lp(a,q,o,b,d)->g"
+        },
+        {
+          "round": 2,
+          "enumerated": 512,
+          "incidence_checked": 483,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "intersection_lt(b,x,a,h,d)->i"
+        },
+        {
+          "round": 3,
+          "enumerated": 512,
+          "incidence_checked": 484,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "intersection_lt(c,o,h,c,e)->j"
+        },
+        {
+          "round": 4,
+          "enumerated": 512,
+          "incidence_checked": 484,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "orthocenter(q,o1,o2)->k"
+        },
+        {
+          "round": 5,
+          "enumerated": 512,
+          "incidence_checked": 477,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "intersection_lp(q,d,a,d,o)->l"
+        },
+        {
+          "round": 6,
+          "enumerated": 512,
+          "incidence_checked": 476,
+          "heuristic_candidates": 1,
+          "eligible_pool": 1,
+          "chosen": "midpoint(x,p)->m"
+        }
+      ],
+      "all_deduction_count": 6517,
+      "goal_deduction_count": 0,
+      "input_sha256": "0911548dfe7541c8aed222c27faf0f18b384b58d5bb5f16e934397d30335f4d3",
+      "proof_sha256": "da2ace23888135797e4215f7d5b23972151942f9403589353ba8152fc2e68387",
+      "proof": null,
+      "elapsed_seconds": 43.219972699997015,
+      "shard": 1,
+      "local_attempt": 2
+    },
+    {
+      "attempt": 7,
+      "status": "unsolved",
+      "solved": false,
+      "rounds_completed": 6,
+      "path": [
+        "on_tline(a,q,p)->g",
+        "intersection_lp(b,x,f,q,e)->i",
+        "psquare(a,g)->j",
+        "midpoint(x,p)->k",
+        "nsquare(k,x)->l",
+        "intersection_lt(q,c,e,b,d)->m"
+      ],
+      "rounds": [
+        {
+          "round": 1,
+          "enumerated": 512,
+          "incidence_checked": 488,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "on_tline(a,q,p)->g"
+        },
+        {
+          "round": 2,
+          "enumerated": 512,
+          "incidence_checked": 475,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "intersection_lp(b,x,f,q,e)->i"
+        },
+        {
+          "round": 3,
+          "enumerated": 512,
+          "incidence_checked": 489,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "psquare(a,g)->j"
+        },
+        {
+          "round": 4,
+          "enumerated": 512,
+          "incidence_checked": 482,
+          "heuristic_candidates": 1,
+          "eligible_pool": 1,
+          "chosen": "midpoint(x,p)->k"
+        },
+        {
+          "round": 5,
+          "enumerated": 512,
+          "incidence_checked": 483,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "nsquare(k,x)->l"
+        },
+        {
+          "round": 6,
+          "enumerated": 512,
+          "incidence_checked": 475,
+          "heuristic_candidates": 0,
+          "eligible_pool": 64,
+          "chosen": "intersection_lt(q,c,e,b,d)->m"
+        }
+      ],
+      "all_deduction_count": 6493,
+      "goal_deduction_count": 0,
+      "input_sha256": "b2c65e6a90cd59972a42e527cf54a57ae72cc5984b1161ebdf6a24fc5ac97dc4",
+      "proof_sha256": "e3e888aca4e1893b129b530ccfa3e84ca6ef1e967a2b42e7584983de5fe1b063",
+      "proof": null,
+      "elapsed_seconds": 45.102670299995225,
+      "shard": 1,
+      "local_attempt": 3
+    }
+  ]
+}
