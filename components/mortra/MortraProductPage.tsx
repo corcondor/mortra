@@ -1,29 +1,40 @@
 import Link from 'next/link'
-import { ArrowRight, Check, CircleDot, FlaskConical, GitBranch, Play } from 'lucide-react'
+import {
+  ArrowRight,
+  BookOpenText,
+  Check,
+  CircleDot,
+  Cpu,
+  FlaskConical,
+  GitBranch,
+  Network,
+  Play,
+  ShieldCheck,
+} from 'lucide-react'
 import { MortraTryConsole } from './MortraTryConsole'
 import { ProofGraphScene } from './ProofGraphScene'
 import styles from '@/app/mortra/mortra.module.css'
 
 const timeline = [
   {
-    date: '2025 / Kernel',
-    title: '文章から型付き構造へ',
-    body: '問題文の表層ではなく、対象・制約・量化・観測を同じ中間表現へ移す核を作りました。',
+    date: 'COORDINATION',
+    title: '異なる証明法をつなぐ',
+    body: '演繹、座標、Wu法、Groebner消去が、それぞれの得意な方法で考え、途中結果を相互に利用します。',
   },
   {
-    date: '2026 / Proof',
-    title: '証明器を競わせる',
-    body: '演繹、座標、Wu法、Gröbner消去が証明書を交換し、単独で閉じない義務を引き継ぎます。',
+    date: 'SELF-ORGANIZATION',
+    title: '局所の判断から全体解へ',
+    body: '一つの大きなモデルに判断を集中させず、複数の推論器が必要な情報だけを交換して答えへ進む方法を研究しています。',
   },
   {
-    date: '2026 / Search',
-    title: '探索深さを固定しない',
-    body: '浅い探索から始め、未解決のときだけ候補数・深さ・補助構成を段階的に増やします。',
+    date: 'ADAPTIVE SEARCH',
+    title: '必要な経路だけを深く探す',
+    body: '簡単な探索から始め、解けない問題だけ計算を増やします。すべての候補を同じ深さまで調べる無駄を減らします。',
   },
   {
-    date: '2026 / MORTRA-1',
-    title: '外から使える研究へ',
-    body: '親問題、探索過程、証明ロードマップ、検証結果を隠さず返す公開βを切り出しました。',
+    date: 'HARDWARE',
+    title: '探索の一部を回路で速くする',
+    body: '大量に繰り返す単純な候補検査をFPGAへ移し、難しい証明はCPU側に残す分業を試しています。',
   },
 ]
 
@@ -38,9 +49,9 @@ export function MortraProductPage() {
             <span className={styles.beta}>PUBLIC BETA</span>
           </Link>
           <nav className={styles.navLinks} aria-label="主要ナビゲーション">
-            <a href="#research">Research</a>
-            <a href="#evidence">Evidence</a>
-            <a href="#scope">Scope</a>
+            <a href="#results">Results</a>
+            <a href="#architecture">Architecture</a>
+            <Link href="/research">Research</Link>
             <a className={styles.navTry} href="#try"><Play size={13} aria-hidden="true" />Try MORTRA</a>
           </nav>
         </div>
@@ -54,12 +65,12 @@ export function MortraProductPage() {
             <p className={styles.eyebrow}><span className={styles.statusDot} />Symbolic mathematical intelligence</p>
             <h1>Mathematics,<br />in motion.</h1>
             <p className={styles.heroLead}>
-              MORTRAは文章を続けるモデルではありません。数学的対象を型付けし、表現の間を移動し、
-              複数の記号推論器が返す証明書をつないで、問題を解き、作ります。
+              MORTRAは、数学を文章の続きを当てる問題として扱いません。数学的な対象と関係を読み取り、
+              異なる証明法を組み合わせ、検証できる答えへ進む記号推論システムです。
             </p>
             <div className={styles.heroActions}>
               <a className={styles.primaryButton} href="#try"><Play size={15} aria-hidden="true" />Try MORTRA</a>
-              <a className={styles.secondaryButton} href="#evidence">検証結果を見る<ArrowRight size={14} aria-hidden="true" /></a>
+              <a className={styles.secondaryButton} href="#results">実験結果を見る<ArrowRight size={14} aria-hidden="true" /></a>
             </div>
           </div>
         </div>
@@ -69,90 +80,124 @@ export function MortraProductPage() {
         <div className={styles.shell}>
           <div className={styles.sectionHead}>
             <div>
-              <p className={styles.sectionIndex}>01 / EXECUTE</p>
-              <h2 className={styles.sectionTitle}>2つの問題から、<br />新しい構造を探す。</h2>
+              <p className={styles.sectionIndex}>01 / TRY MORTRA</p>
+              <h2 className={styles.sectionTitle}>二つの問題の間を、<br />数学でつなぐ。</h2>
             </div>
             <p className={styles.sectionCopy}>
-              親問題を固定端点として、字句・構文・型付き意味を解析し、合成可能な射と中間命題を探索します。
-              表示しているのは作文用の演出ではなく、生成APIと長時間workerの実行状態です。
+              選んだ問題から対象、条件、結論を取り出し、両方に共通する構造と、その間をつなぐ補題を探します。
+              画面には、解析、探索、証明、検証の現在地を表示します。
             </p>
           </div>
           <MortraTryConsole />
         </div>
       </section>
 
-      <section className={styles.sectionDark} id="evidence">
+      <section className={styles.sectionDark} id="results">
         <div className={styles.shell}>
           <div className={styles.sectionHead}>
             <div>
-              <p className={styles.sectionIndex}>02 / EVIDENCE</p>
-              <h2 className={styles.sectionTitle}>主張ではなく、<br />再実行できる数字。</h2>
+              <p className={styles.sectionIndex}>02 / RESULTS</p>
+              <h2 className={styles.sectionTitle}>IMO幾何<br />25 / 30。</h2>
             </div>
             <p className={styles.sectionCopy}>
-              公開βには、現在のコードと対応する検証結果だけを掲載します。開発問題の成功と未見問題の失敗を分け、
-              未達を製品能力として数えません。古い評価系や異なる実験条件の数字は掲載しません。
+              IMO-AG-30は、国際数学オリンピックの幾何30題を集めた標準的な評価です。
+              MORTRAは外部LLMを使わず、複数の記号推論法を組み合わせて25題を証明しました。
             </p>
           </div>
-          <div className={styles.evidenceGrid}>
-            <article className={styles.evidenceItem}>
-              <div className={styles.evidenceValue}>3<span> / 3</span></div>
-              <h3>幾何 capability regression</h3>
-              <p>既知能力の退行検査。証明書を再生して3問すべてを閉じました。</p>
-            </article>
-            <article className={styles.evidenceItem}>
-              <div className={styles.evidenceValue}>0<span> / 3</span></div>
-              <h3>固定未見 probe</h3>
-              <p>未見3問では改善未確認。これを成功扱いせず、次の研究対象として固定しています。</p>
-            </article>
-            <article className={styles.evidenceItem}>
-              <div className={styles.evidenceValue}>27<span> / 27</span></div>
-              <h3>型付き適応探索テスト</h3>
-              <p>問題ID・期待解・外部LLMを使わない契約を含む回帰テストです。</p>
-            </article>
+
+          <div className={styles.resultDigest}>
+            <div className={styles.resultScore}>
+              <span>IMO-AG-30</span>
+              <strong>25<small> / 30</small></strong>
+              <p><b>17題から25題へ</b> / 8題増 / 正答率 +26.7ポイント</p>
+            </div>
+            <div className={styles.resultSpeed}>
+              <span>探索全体</span>
+              <div><s>701.4秒</s><ArrowRight size={18} aria-hidden="true" /><strong>254.7秒</strong></div>
+              <p><b>63.7%短縮</b> / 2.75倍高速化</p>
+            </div>
+            <div className={styles.resultSpeed}>
+              <span>候補の列挙</span>
+              <div><s>69.83秒</s><ArrowRight size={18} aria-hidden="true" /><strong>7.01秒</strong></div>
+              <p><b>90.0%短縮</b> / 9.96倍高速化</p>
+            </div>
+          </div>
+
+          <div className={styles.benchmarkCompare}>
+            <div className={styles.benchmarkCompareHead}>
+              <h3>同じIMO-AG-30で比較</h3>
+              <p>MORTRAは、DeepMindのAlphaGeometryと同じ25/30。</p>
+            </div>
+            <div className={styles.benchmarkRows}>
+              <div className={styles.benchmarkRow}>
+                <span>AlphaGeometry</span><div><i style={{ width: '83.3%' }} /></div><b>25 / 30</b>
+              </div>
+              <div className={styles.benchmarkRow}>
+                <span>金メダリスト平均</span><div><i style={{ width: '86.3%' }} /></div><b>25.9 / 30</b>
+              </div>
+              <div className={`${styles.benchmarkRow} ${styles.benchmarkRowMortra}`}>
+                <span>MORTRA</span><div><i style={{ width: '83.3%' }} /></div><b>25 / 30</b>
+              </div>
+              <div className={styles.benchmarkRow}>
+                <span>TongGeometry</span><div><i style={{ width: '100%' }} /></div><b>30 / 30</b>
+              </div>
+            </div>
+            <p className={styles.benchmarkNote}>
+              形式化された同じ30題で比較。AlphaGeometry、TongGeometry、MORTRAでは探索方法と計算予算が異なります。
+            </p>
+          </div>
+
+          <div className={styles.modernBenchmark}>
+            <div className={styles.modernBenchmarkHead}>
+              <p className={styles.sectionIndex}>CURRENT LLM REFERENCE</p>
+              <h3>最近の汎用モデルは、IMO級400問でどこまで解けるか。</h3>
+              <p>Google DeepMindのIMO-AnswerBench。MORTRAの25/30とは別の評価です。</p>
+            </div>
+            <div className={styles.modernModelTable} role="table" aria-label="IMO-AnswerBench model scores">
+              <div role="row"><span role="cell">Gemini Deep Think</span><b role="cell">80.0%</b></div>
+              <div role="row"><span role="cell">Grok 4</span><b role="cell">73.1%</b></div>
+              <div role="row"><span role="cell">GPT-5</span><b role="cell">65.6%</b></div>
+              <div role="row"><span role="cell">DeepSeek R1</span><b role="cell">60.8%</b></div>
+              <div role="row"><span role="cell">Claude Opus 4</span><b role="cell">22.3%</b></div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className={styles.section} id="scope">
+      <section className={styles.section} id="architecture">
         <div className={styles.shell}>
           <div className={styles.sectionHead}>
             <div>
-              <p className={styles.sectionIndex}>03 / SCOPE</p>
-              <h2 className={styles.sectionTitle}>できることを、<br />混ぜない。</h2>
+              <p className={styles.sectionIndex}>03 / ARCHITECTURE</p>
+              <h2 className={styles.sectionTitle}>一つの巨大な脳ではなく、<br />協調する仕組みをつくる。</h2>
             </div>
             <p className={styles.sectionCopy}>
-              β版、研究版、未達を明示的に分離しています。研究用の試験ルートや古い評価実装は公開画面から外し、
-              Try MORTRAが返せる範囲だけを製品能力として扱います。
+              発想の手掛かりは多細胞生物です。細胞は近くの細胞と情報を交換しながら、全体として一つの組織をつくります。
+              MORTRAでも、異なる推論器が得意な方法を保ち、必要な途中結果だけを交換します。
             </p>
           </div>
-          <div className={styles.domainGrid}>
-            <div className={styles.domainColumn}>
-              <h3><span className={styles.scopeLive} />公開β</h3>
-              <ul>
-                <li>通過領域・軌跡・円と三角形</li>
-                <li>幾何と代数・整数の型付き融合</li>
-                <li>複素変換・漸化式・合同式</li>
-                <li>一部の積分漸化式・極限</li>
-              </ul>
-            </div>
-            <div className={styles.domainColumn}>
-              <h3><span className={styles.scopeResearch} />研究版</h3>
-              <ul>
-                <li>補助構成を含むオリンピック幾何</li>
-                <li>3次元構成と実行可能な作図</li>
-                <li>位相・離散構造・整数幾何の融合</li>
-                <li>自己組織化する証明器ポートフォリオ</li>
-              </ul>
-            </div>
-            <div className={styles.domainColumn}>
-              <h3><span className={styles.scopeLimit} />未達</h3>
-              <ul>
-                <li>任意の高校数学問題の完全自動解答</li>
-                <li>全生成問題の形式証明</li>
-                <li>画像だけからの頑健な図形理解</li>
-                <li>未知の原始法則を常に発見すること</li>
-              </ul>
-            </div>
+
+          <div className={styles.systemGrid}>
+            <article className={styles.systemItem}>
+              <Network size={19} aria-hidden="true" />
+              <h3>別々の方法で考える</h3>
+              <p>図形の演繹、座標計算、Wu法、Groebner消去を、無理に一つの方法へ統一しません。</p>
+            </article>
+            <article className={styles.systemItem}>
+              <GitBranch size={19} aria-hidden="true" />
+              <h3>途中結果を共有する</h3>
+              <p>一つの方法で証明できた事実を、別の方法でも使える形へ変換して先へ進みます。</p>
+            </article>
+            <article className={styles.systemItem}>
+              <ShieldCheck size={19} aria-hidden="true" />
+              <h3>正しさは証明で決める</h3>
+              <p>どの経路を調べるかは協調して決めますが、結論の正しさは多数決ではなく証明で確認します。</p>
+            </article>
+            <article className={styles.systemItem}>
+              <Cpu size={19} aria-hidden="true" />
+              <h3>単純な反復をFPGAへ</h3>
+              <p>大量の候補を調べる単純な処理を回路で速くし、CPUを本当に難しい証明へ使います。</p>
+            </article>
           </div>
         </div>
       </section>
@@ -161,13 +206,18 @@ export function MortraProductPage() {
         <div className={styles.shell}>
           <div className={styles.sectionHead}>
             <div>
-              <p className={styles.sectionIndex}>04 / RESEARCH LOG</p>
-              <h2 className={styles.sectionTitle}>結果だけでなく、<br />どう変わったか。</h2>
+              <p className={styles.sectionIndex}>04 / RESEARCH</p>
+              <h2 className={styles.sectionTitle}>なぜ、この形の数学AIを<br />研究するのか。</h2>
             </div>
-            <p className={styles.sectionCopy}>
-              MORTRA-1は完成宣言ではなく、外部から検証できる研究境界です。更新では能力、失敗例、証明器、
-              データ分割を明記し、数字だけの改善と構造的な改善を区別します。
-            </p>
+            <div className={styles.sectionCopyBlock}>
+              <p className={styles.sectionCopy}>
+                難しい数学では、図を見る、座標へ移す、補題を立てる、反例を探す、と考え方を切り替えます。
+                MORTRAは、その往復を追跡できる計算過程として実装しようとしています。
+              </p>
+              <Link className={styles.secondaryButton} href="/research">
+                <BookOpenText size={15} aria-hidden="true" />この研究について詳しく<ArrowRight size={14} aria-hidden="true" />
+              </Link>
+            </div>
           </div>
           <div className={styles.timeline}>
             {timeline.map(item => (
@@ -187,13 +237,13 @@ export function MortraProductPage() {
             <p className={styles.eyebrow}><CircleDot size={13} aria-hidden="true" />From proof to construction</p>
             <h2>数学を、画面の外へ。</h2>
             <p>
-              同じ構成履歴を、証明DAG、動的な2D/3D図、そして将来のロボット作図へ送る。
-              文章の答えだけでなく、数学的対象がどう動き、どこで条件を満たすかを実行可能な形で残します。
+              証明に使った点、線、円、変換の履歴を、そのまま動的な2D・3D作図へ送る。
+              将来はロボットアームによる作図や立体の切断まで、同じ数学表現から実行することを目指しています。
             </p>
             <div className={styles.heroActions}>
-              <span className={styles.textButton}><GitBranch size={14} aria-hidden="true" />Typed morphisms</span>
-              <span className={styles.textButton}><FlaskConical size={14} aria-hidden="true" />Verified experiments</span>
-              <span className={styles.textButton}><Check size={14} aria-hidden="true" />Reversible trace</span>
+              <span className={styles.textButton}><GitBranch size={14} aria-hidden="true" />型付き変換</span>
+              <span className={styles.textButton}><FlaskConical size={14} aria-hidden="true" />再現可能な実験</span>
+              <span className={styles.textButton}><Check size={14} aria-hidden="true" />たどれる証明過程</span>
             </div>
           </div>
           <ProofGraphScene className={styles.visionScene} progress={0.9} phase="complete" running />
@@ -203,7 +253,7 @@ export function MortraProductPage() {
       <footer className={styles.footer}>
         <div className={`${styles.shell} ${styles.footerInner}`}>
           <span>MORTRA-1 / PUBLIC BETA</span>
-          <span>Symbolic core. Typed search. Verifiable output.</span>
+          <span>Different methods. Shared proofs. Verifiable results.</span>
         </div>
       </footer>
     </main>

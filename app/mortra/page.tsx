@@ -1,8 +1,8 @@
 import { MortraProductPage } from '@/components/mortra/MortraProductPage'
 
 export const metadata = {
-  title: 'MORTRA-1 — Mathematics, in motion.',
-  description: '型付き構造、記号推論、検証可能な問題生成を公開するMORTRA-1 β。',
+  title: 'MORTRA-1 — 数学を、動かす。',
+  description: '外部LLMを使わずIMO幾何25/30。複数の記号推論器を協調させ、数学を解き、作る研究システム。',
 }
 
 export default function MortraPage() {
