@@ -91,10 +91,12 @@ export function MortraProductPage() {
           <div className={styles.sectionHead}>
             <div>
               <p className={styles.sectionIndex}>01 / TRY MORTRA</p>
-              <h2 className={styles.sectionTitle}>問題をつなぐ。</h2>
+              <h2 className={styles.sectionTitle}>
+                1問を解く。<br /><span className={styles.noBreak}>2問をつなぐ。</span>
+              </h2>
             </div>
             <p className={styles.sectionCopy}>
-              親問題を別々の証明入力として解析し、両方が不可欠になる構造だけを生成します。完成時には問題文、図、模範解答、検証結果を返します。
+              片方だけなら入力した問題を解き、両方なら二つの構造を融合します。問題文、図、模範解答、検証結果までを一つの成果物として返します。
             </p>
           </div>
           <MortraTryConsole />

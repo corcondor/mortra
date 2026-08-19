@@ -7,6 +7,7 @@ type ProofGraphSceneProps = {
   phase?: string
   progress?: number
   running?: boolean
+  inputCount?: 1 | 2
   className?: string
 }
 
@@ -78,6 +79,7 @@ export function ProofGraphScene({
   phase = 'searching',
   progress = 0.38,
   running = true,
+  inputCount = 2,
   className,
 }: ProofGraphSceneProps) {
   const hostRef = useRef<HTMLDivElement>(null)
@@ -102,16 +104,30 @@ export function ProofGraphScene({
     root.rotation.y = -0.08
     scene.add(root)
 
-    const positions = new Map(GRAPH_NODES.map(node => [node.id, new THREE.Vector3(...node.position)]))
+    const omitted = inputCount === 1
+      ? new Set(['parent-b', 'b-object', 'b-relation', 'invariant-b'])
+      : new Set<string>()
+    const graphNodes = GRAPH_NODES
+      .filter(node => !omitted.has(node.id))
+      .map(node => {
+        if (inputCount !== 1) return node
+        if (node.id === 'parent-a') return { ...node, position: [-3.5, 0, 0] as [number, number, number] }
+        if (node.id === 'a-object') return { ...node, position: [-2.15, 0.48, 0.08] as [number, number, number] }
+        if (node.id === 'a-relation') return { ...node, position: [-2.15, -0.48, -0.08] as [number, number, number] }
+        if (node.id === 'invariant-a') return { ...node, position: [-0.68, 0, 0] as [number, number, number] }
+        return node
+      })
+    const graphEdges = GRAPH_EDGES.filter(([from, to]) => !omitted.has(from) && !omitted.has(to))
+    const positions = new Map(graphNodes.map(node => [node.id, new THREE.Vector3(...node.position)]))
 
     const baseEdges = new THREE.Group()
     const activeEdges: Array<{ line: THREE.Line; layer: number }> = []
-    GRAPH_EDGES.forEach(([from, to]) => {
+    graphEdges.forEach(([from, to]) => {
       const start = positions.get(from)
       const end = positions.get(to)
       if (!start || !end) return
       baseEdges.add(edgeLine(start, end, MUTED, 0.28))
-      const targetLayer = GRAPH_NODES.find(node => node.id === to)?.layer ?? 0
+      const targetLayer = graphNodes.find(node => node.id === to)?.layer ?? 0
       const line = edgeLine(start, end, CYAN, 0)
       activeEdges.push({ line, layer: targetLayer })
     })
@@ -119,7 +135,7 @@ export function ProofGraphScene({
     activeEdges.forEach(({ line }) => root.add(line))
 
     const nodeMeshes: Array<{ mesh: THREE.Mesh; layer: number; id: string }> = []
-    GRAPH_NODES.forEach(node => {
+    graphNodes.forEach(node => {
       const geometry = node.id === 'bridge' || node.id === 'certificate'
         ? new THREE.OctahedronGeometry(node.id === 'certificate' ? 0.16 : 0.13, 0)
         : new THREE.SphereGeometry(node.layer === 0 ? 0.12 : 0.085, 20, 20)
@@ -130,7 +146,7 @@ export function ProofGraphScene({
       nodeMeshes.push({ mesh, layer: node.layer, id: node.id })
     })
 
-    const endpointRings = GRAPH_NODES.filter(node => node.layer === 0).map(node => {
+    const endpointRings = graphNodes.filter(node => node.layer === 0).map(node => {
       const ring = new THREE.Mesh(
         new THREE.RingGeometry(0.17, 0.185, 40),
         new THREE.MeshBasicMaterial({ color: CYAN, transparent: true, opacity: 0.72, side: THREE.DoubleSide }),
@@ -222,7 +238,7 @@ export function ProofGraphScene({
       renderer.dispose()
       renderer.domElement.remove()
     }
-  }, [])
+  }, [inputCount])
 
-  return <div ref={hostRef} className={className} aria-label="二つの親問題から検証済み結論へ合流する証明DAG" role="img" />
+  return <div ref={hostRef} className={className} aria-label={inputCount === 1 ? '一つの問題から検証済み解答へ進む証明DAG' : '二つの親問題から検証済み結論へ合流する証明DAG'} role="img" />
 }

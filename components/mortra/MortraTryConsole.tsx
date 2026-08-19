@@ -33,6 +33,7 @@ type GenerationResult = {
   discoveryQueued?: boolean
   discoveryJobId?: string
   engine?: string
+  trace?: string[]
 }
 
 type JobStatus = {
@@ -59,12 +60,20 @@ const DEFAULT_PARENT_B = String.raw`\text{三角形の3辺から、面積と内�
 const JOB_KEY = 'mortra-public-active-job'
 const SEARCH_BUDGET_SECONDS = 90
 
-const PHASES = [
+const FUSION_PHASES = [
   { key: 'structure', label: '構造化' },
   { key: 'candidate', label: '候補生成' },
   { key: 'fusion', label: '融合検査' },
   { key: 'verify', label: '厳密検証' },
   { key: 'save', label: '保存' },
+]
+
+const SOLVE_PHASES = [
+  { key: 'structure', label: '構造化' },
+  { key: 'constraint', label: '制約化' },
+  { key: 'execute', label: '厳密計算' },
+  { key: 'verify', label: '検証' },
+  { key: 'answer', label: '解答' },
 ]
 
 function parentId(text: string, index: number) {
@@ -111,6 +120,7 @@ export function MortraTryConsole() {
   const [result, setResult] = useState<GenerationResult | null>(null)
   const [jobId, setJobId] = useState<string | null>(null)
   const [trace, setTrace] = useState<TraceLine[]>([])
+  const [taskMode, setTaskMode] = useState<'solve' | 'fusion'>('fusion')
   const abortRef = useRef<AbortController | null>(null)
 
   const addTrace = useCallback((text: string, at = Date.now()) => {
@@ -238,11 +248,14 @@ export function MortraTryConsole() {
   const run = async () => {
     const a = parentA.trim()
     const b = parentB.trim()
-    if (!a || !b) {
-      addTrace('親問題を2つ入力してください。')
+    const inputs = [a, b].filter(Boolean)
+    if (inputs.length === 0) {
+      addTrace('AまたはBに問題を入力してください。')
       setPhase('error')
       return
     }
+    const nextMode = inputs.length === 1 ? 'solve' : 'fusion'
+    setTaskMode(nextMode)
 
     abortRef.current?.abort()
     const controller = new AbortController()
@@ -255,9 +268,32 @@ export function MortraTryConsole() {
     setResult(null)
     setDraft('')
     setTrace([])
-    addTrace('親問題AとBを、別々の証明入力として受理しました。')
+    addTrace(nextMode === 'solve'
+      ? '入力問題を解答対象として受理しました。'
+      : '親問題AとBを、別々の証明入力として受理しました。')
 
     try {
+      if (nextMode === 'solve') {
+        setPhase('structuring')
+        setStage(0)
+        const response = await fetch('/api/solve', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal,
+          body: JSON.stringify({ problem: inputs[0] }),
+        })
+        const solved = await response.json() as GenerationResult & { error?: string }
+        for (const line of solved.trace ?? []) addTrace(line)
+        if (!response.ok) throw new Error(solved.error || `解答API ${response.status}`)
+        setStage(4)
+        setPhase('complete')
+        setResult(solved)
+        const solvedCard = cardFromResult(solved)
+        setDraft(solvedCard?.statement_tex ?? inputs[0])
+        setRunning(false)
+        return
+      }
+
       const response = await fetch('/api/mathos-generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -268,10 +304,7 @@ export function MortraTryConsole() {
           mode: 'fusion',
           searchDepth: 'deep',
           searchBudgetSeconds: SEARCH_BUDGET_SECONDS,
-          parents: [
-            { id: parentId(a, 1), statement: a },
-            { id: parentId(b, 2), statement: b },
-          ],
+          parents: inputs.map((statement, index) => ({ id: parentId(statement, index + 1), statement })),
         }),
       })
       if (!response.ok) {
@@ -322,10 +355,14 @@ export function MortraTryConsole() {
     setStage(-1)
     setElapsed(0)
     setStartedAt(null)
+    setTaskMode('fusion')
   }
 
   const card = cardFromResult(result)
-  const progress = phase === 'complete' ? 1 : Math.max(0.08, Math.min(0.92, (stage + 0.7) / PHASES.length))
+  const currentInputCount = parentA.trim() && parentB.trim() ? 2 : 1
+  const visibleMode = running || card ? taskMode : currentInputCount === 1 ? 'solve' : 'fusion'
+  const phases = visibleMode === 'solve' ? SOLVE_PHASES : FUSION_PHASES
+  const progress = phase === 'complete' ? 1 : Math.max(0.08, Math.min(0.92, (stage + 0.7) / phases.length))
   const currentMessage = trace.at(-1)?.text ?? ''
   const showExecution = running || trace.length > 0 || Boolean(draft) || Boolean(card)
 
@@ -334,7 +371,7 @@ export function MortraTryConsole() {
       <div className={styles.console}>
         <div className={styles.parentGrid}>
           <div className={styles.parentField}>
-            <label htmlFor="mortra-parent-a"><span>A</span><span>親問題</span></label>
+            <label htmlFor="mortra-parent-a"><span>A</span><span>問題</span></label>
             <textarea
               id="mortra-parent-a"
               value={parentA}
@@ -343,12 +380,12 @@ export function MortraTryConsole() {
             />
           </div>
           <div className={styles.parentField}>
-            <label htmlFor="mortra-parent-b"><span>B</span><span>親問題</span></label>
+            <label htmlFor="mortra-parent-b"><span>B</span><span>問題（任意）</span></label>
             <textarea
               id="mortra-parent-b"
               value={parentB}
               onChange={event => setParentB(event.target.value)}
-              placeholder="二つ目の問題をLaTeXまたは日本語で入力"
+              placeholder="融合するときだけ、二つ目の問題を入力"
             />
           </div>
         </div>
@@ -358,7 +395,7 @@ export function MortraTryConsole() {
         <div className={styles.inputActions}>
           <button className={styles.runButton} type="button" onClick={() => void run()} disabled={running}>
             {running ? <LoaderCircle className={styles.spin} size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}
-            {running ? '生成しています' : '融合問題を生成'}
+            {running ? (visibleMode === 'solve' ? '解いています' : '生成しています') : currentInputCount === 1 ? '問題を解く' : '融合問題を生成'}
           </button>
           {running ? (
             <button className={styles.iconButton} type="button" onClick={stop} title="画面上の監視を停止" aria-label="画面上の監視を停止">
@@ -373,18 +410,18 @@ export function MortraTryConsole() {
         {showExecution ? (
           <section className={styles.execution} aria-label="生成の進行状況">
             <div className={styles.executionVisual}>
-              <ProofGraphScene className={styles.consoleScene} phase={phase} progress={progress} running={running} />
+              <ProofGraphScene className={styles.consoleScene} phase={phase} progress={progress} running={running} inputCount={visibleMode === 'solve' ? 1 : 2} />
               <div className={styles.executionStatus} aria-live="polite">
                 <span className={styles.executionPhase}>
                   {phase === 'complete' ? <Check size={14} aria-hidden="true" /> : running ? <LoaderCircle className={styles.spin} size={14} aria-hidden="true" /> : null}
-                  {phase === 'complete' ? '生成完了' : PHASES[Math.max(0, stage)]?.label ?? '待機中'}
+                  {phase === 'complete' ? (visibleMode === 'solve' ? '解答完了' : '生成完了') : phases[Math.max(0, stage)]?.label ?? '待機中'}
                 </span>
                 {running ? <time>{formatClock(elapsed)}</time> : null}
               </div>
             </div>
 
             <ol className={styles.phaseStrip} aria-label="実際の生成段階">
-              {PHASES.map((item, index) => {
+              {phases.map((item, index) => {
                 const complete = phase === 'complete' || index < stage
                 const active = running && index === stage
                 return (
