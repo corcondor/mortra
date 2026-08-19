@@ -276,7 +276,7 @@ export function MortraTryConsole() {
       if (nextMode === 'solve') {
         setPhase('structuring')
         setStage(0)
-        const response = await fetch('/api', {
+        const response = await fetch('/api/solve', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           signal: controller.signal,
