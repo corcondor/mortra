@@ -964,11 +964,11 @@ class AngleSystem:
 
 
 # ---------------------------------------------------------------------------
-# 問題文 → 型付き Atom（MathVision のテキスト形式専用）
+# 英語・LaTeXの幾何問題文 → 型付き Atom
 # ---------------------------------------------------------------------------
 
 class ProblemParser:
-    """MathVision 問題文（LaTeX 込み）から Atom を抽出する。"""
+    """英語・LaTeXの幾何問題文からデータセット非依存の Atom を抽出する。"""
 
     def __init__(self, question: str) -> None:
         self.question = question

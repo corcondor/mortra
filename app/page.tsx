@@ -1,5 +1,5 @@
-import Landing from './landing'
+import { MortraProductPage } from '@/components/mortra/MortraProductPage'
 
 export default function Home() {
-  return <Landing />
+  return <MortraProductPage />
 }

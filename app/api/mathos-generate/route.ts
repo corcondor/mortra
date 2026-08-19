@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase-admin'
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { generateLiveProblem, type StructureBlueprint } from '@/lib/mathos-live'
 import verifiedBatch from '@/data/mathos/continuous_verified_problem_batch1.json'
 import { generalizeParents, type GeneralizationCertificate } from '../../../worker/src/generalization-kernel'
@@ -114,7 +114,7 @@ async function loadNoveltyCorpus(): Promise<NoveltyCorpus> {
   }
 
   // セッションごとに1回だけ取得する。旧実装は候補ごとに同じ4000問を再取得していた。
-  const { data } = await supabaseAdmin
+  const { data } = await getSupabaseAdmin()
     .from('problems')
     .select('id,statement,answer,topic_b')
     .not('statement', 'is', null)
@@ -732,7 +732,7 @@ async function enqueueParentConditionedDiscovery(
   mode: GenerationProfile['mode'],
 ): Promise<GenerationResult> {
   if (mode !== 'fusion' || result.generated > 0 || parents.length < 2) return result
-  const { data, error } = await supabaseAdmin.functions.invoke('enqueue-generation', {
+  const { data, error } = await getSupabaseAdmin().functions.invoke('enqueue-generation', {
     body: {
       parents,
       mode: 'mathos_discovery',
@@ -752,7 +752,7 @@ async function enqueueParentConditionedDiscovery(
   // This keeps generation alive even when the optional Edge dispatcher is unavailable.
   const fallbackJobId = crypto.randomUUID()
   const now = new Date().toISOString()
-  const { error: fallbackError } = await supabaseAdmin.from('generation_jobs').insert({
+  const { error: fallbackError } = await getSupabaseAdmin().from('generation_jobs').insert({
     id: fallbackJobId,
     status: 'processing',
     parents,
@@ -836,7 +836,7 @@ function stableStructureId(profile: GenerationProfile): string {
 }
 
 async function loadRegisteredStructureIds(): Promise<Set<string>> {
-  const { data } = await supabaseAdmin
+  const { data } = await getSupabaseAdmin()
     .from('generation_jobs')
     .select('result')
     .eq('status', 'done')
@@ -900,7 +900,7 @@ async function generateCards(
     ? ` / 継承: ${firstProfile.requiredTags.join(' + ')}`
     : ''
 
-  const { error: jobError } = await supabaseAdmin.from('generation_jobs').insert({
+  const { error: jobError } = await getSupabaseAdmin().from('generation_jobs').insert({
     id: jobId,
     status: 'processing',
     parents: profiles.map(profile => ({
@@ -1084,7 +1084,7 @@ async function generateCards(
           structureStatus: status,
         })
         if (jobWritable) {
-          const { error } = await supabaseAdmin.from('generation_jobs').update({
+          const { error } = await getSupabaseAdmin().from('generation_jobs').update({
             logs: sessionLogs,
             result: { phase: 'registering', structures },
             updated_at: new Date().toISOString(),
@@ -1228,7 +1228,7 @@ async function generateCards(
       morphisms: live.morphismChain,
     })
 
-    const { error } = await supabaseAdmin.from('problems').upsert(
+    const { error } = await getSupabaseAdmin().from('problems').upsert(
       {
         id,
         topic_a: live.domain,
@@ -1301,7 +1301,7 @@ async function generateCards(
     rejectionCounts,
   }
   if (jobWritable) {
-    await supabaseAdmin.from('generation_jobs').update({
+    await getSupabaseAdmin().from('generation_jobs').update({
       status: cards.length > 0 ? 'done' : 'failed',
       logs: sessionLogs,
       result: { ...result, structures },

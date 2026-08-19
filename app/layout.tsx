@@ -17,19 +17,19 @@ import { Analytics }     from '@vercel/analytics/next'
  *
  * MathOS は内部名として残す（= MORTRA Core）。
  */
-const TITLE = 'Sakumon by MORTRA'
+const TITLE = 'MORTRA-1 — Mathematics, in motion.'
 const DESCRIPTION =
-  '数学問題を作る人のためのワークスペース。生成・検証・比較・作図・書き出しまでを一つの流れで扱います。'
+  '型付き構造、記号推論、検証可能な問題生成を公開するMORTRA-1 β。'
 
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
-  applicationName: 'Sakumon',
+  applicationName: 'MORTRA-1',
   openGraph: {
     title: TITLE,
     description: DESCRIPTION,
     url: 'https://sakumon-web.vercel.app/',
-    siteName: 'Sakumon by MORTRA',
+    siteName: 'MORTRA-1',
     locale: 'ja_JP',
     type: 'website',
   },
@@ -53,7 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Zen+Old+Mincho:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
           rel="stylesheet"
         />
       </head>
