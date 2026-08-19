@@ -27,6 +27,9 @@ FORBIDDEN = (
 TEXT_SUFFIXES = {".ts", ".tsx", ".js", ".mjs", ".py", ".yml", ".yaml", ".json"}
 REFERENCE_ONLY = {
     Path("worker/backend/geometry_natural_formalizer.py"),
+    # Yuclid paper reproduction boundary. The external CLI's native mode name
+    # is part of its public interface and is not a MORTRA runtime dependency.
+    Path("worker/backend/yuclid_native_verifier.py"),
 }
 
 

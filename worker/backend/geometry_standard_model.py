@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""DDAR 型標準模型エンジン。
+"""型付き演繹データベースによる標準模型エンジン。
 
 Chou/Gao/Zhang (2000) の演繹データベース方式: 型付き Atom の定理 bank による
 前向き固定点閉包。Chou/Gao/Zhang (1996) の全角法: 有向角を線分方向の
@@ -1695,7 +1695,7 @@ class StandardModelResult:
 
 
 def solve_standard_model(question: str, options: Iterable[str] = ()) -> Optional[StandardModelResult]:
-    """DDAR 標準模型: 閉包 + 全角法で角度の値を一意に定めた時だけ答える。"""
+    """固定点閉包 + 全角法で角度の値を一意に定めた時だけ答える。"""
     option_list = list(options)
     try:
         parser = ProblemParser(question)
@@ -1738,7 +1738,7 @@ def solve_standard_model(question: str, options: Iterable[str] = ()) -> Optional
         "text:StandardModelFixpointClosureFullAngleGroup",
         {
             "goal": "".join(goal),
-            "method": "ddar-standard-model-full-angle-group",
+            "method": "typed-deduction-standard-model-full-angle-group",
             "closure_rounds": len(derived),
             "atoms": len(closed),
         },
@@ -1749,7 +1749,7 @@ def solve_standard_model(question: str, options: Iterable[str] = ()) -> Optional
 def extract_formal_propositions(question: str) -> Optional[dict]:
     """形式的命題の抽出: 問題文 → (与件, ゴール, 閉包, 導出記録)。
 
-    DDAR 標準模型の第一段（パーサー）の出力そのもの。証明 DAG の葉が
+    型付き演繹標準模型の第一段（パーサー）の出力そのもの。証明 DAG の葉が
     与件・ゴールの形式的表現になり、閉包がその前向き演繹の結果になる。
     """
     try:
