@@ -36,6 +36,7 @@ try:
     from math_os_prototype.prime_structure_query import compile_prime_structure_query, execute_prime_structure_query
     from math_os_prototype.symbolic_query import compile_symbolic_query, execute_symbolic_query
     from math_os_prototype.typed_analysis_query import compile_typed_analysis_query, execute_typed_analysis_query
+    from math_os_prototype.structural_theorem_query import compile_structural_theorem_query, execute_structural_theorem_query
     from math_os_prototype.vector_query import compile_vector_query, execute_vector_query
     from math_os_prototype.tool_adapters import ToolRegistry
 except ImportError:  # Allows `python math_os_prototype\math_os.py ...`.
@@ -57,6 +58,7 @@ except ImportError:  # Allows `python math_os_prototype\math_os.py ...`.
     from prime_structure_query import compile_prime_structure_query, execute_prime_structure_query
     from symbolic_query import compile_symbolic_query, execute_symbolic_query
     from typed_analysis_query import compile_typed_analysis_query, execute_typed_analysis_query
+    from structural_theorem_query import compile_structural_theorem_query, execute_structural_theorem_query
     from vector_query import compile_vector_query, execute_vector_query
     from tool_adapters import ToolRegistry
 
@@ -315,6 +317,25 @@ class ProblemCompiler:
                     "Return the limit with a reusable convergence certificate.",
                 ],
                 tool_calls=[ToolCall("sympy.iteration_query", iteration_query.operator, executable=True)],
+            )
+
+        theorem_query = compile_structural_theorem_query(text)
+        if theorem_query is not None:
+            payload = theorem_query.to_dict()
+            return MathIR(
+                problem=text,
+                route="structural_theorem",
+                intent=f"structural_theorem_{theorem_query.operator}",
+                symbols=[],
+                givens={"structural_theorem_query": payload},
+                goal=f"Execute the typed theorem kernel {theorem_query.operator}.",
+                plan=[
+                    "Lift the statement to alpha-renamable mathematical objects and constraints.",
+                    "Apply the reusable invariant, finite model, or elimination morphism.",
+                    "Construct an exact witness or exhaustive branch certificate.",
+                    "Replay the certificate independently before returning the observation.",
+                ],
+                tool_calls=[ToolCall("sympy.structural_theorem_query", theorem_query.operator, executable=True)],
             )
 
         analysis_query = compile_typed_analysis_query(text)
@@ -962,6 +983,8 @@ class ToolExecutor:
                     call.result = execute_hilbert_witness_query(ir.givens["hilbert_witness_query"])
                 elif call.name == "sympy.prime_structure_query":
                     call.result = execute_prime_structure_query(ir.givens["prime_structure_query"])
+                elif call.name == "sympy.structural_theorem_query":
+                    call.result = execute_structural_theorem_query(ir.givens["structural_theorem_query"])
                 elif call.name == "sympy.vector_query":
                     call.result = execute_vector_query(ir.givens["vector_query"])
                 elif call.name == "sympy.matrix_semantic_query":

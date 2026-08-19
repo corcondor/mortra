@@ -9,7 +9,7 @@ from typing import Any
 try:
     from math_os_prototype.domain_registry import DomainIR, DomainRegistry
     from math_os_prototype.formal_language import compile_formal_ir
-    from math_os_prototype.math_search import run_math_search
+    from math_os_prototype.math_search import MathSearchResult, run_math_search
     from math_os_prototype.math_os import MathIR, ToolCall, ToolExecutor, run_pipeline
     from math_os_prototype.category_semantics import compile_typed_semantic_graph, run_verifier_gate
     from math_os_prototype.retriever import HybridRetriever
@@ -22,7 +22,7 @@ try:
 except ImportError:  # Allows local script use from the package directory.
     from domain_registry import DomainIR, DomainRegistry
     from formal_language import compile_formal_ir
-    from math_search import run_math_search
+    from math_search import MathSearchResult, run_math_search
     from math_os import MathIR, ToolCall, ToolExecutor, run_pipeline
     from category_semantics import compile_typed_semantic_graph, run_verifier_gate
     from retriever import HybridRetriever
@@ -408,13 +408,27 @@ def run_reasoning_pipeline(
     structure = analyze_structure(problem)
     typed_definition_ir = compile_typed_definition_ir(problem)
     formal_ir = compile_formal_ir(problem)
-    search_result = run_math_search(structure, external_tools=external_tools)
     ir = run_pipeline(
         problem,
         execute=False,
         external_tools=external_tools,
         allow_specialized=allow_specialized,
     )
+    if ir.route == "structural_theorem" and isinstance(ir.givens.get("structural_theorem_query"), dict):
+        search_result = MathSearchResult(
+            status="skipped_dedicated_ir",
+            state={
+                "relations": structure.relations,
+                "constraints": [asdict(item) for item in structure.constraints],
+                "target_operations": [asdict(item) for item in structure.operations],
+                "quantities": structure.quantities,
+            },
+            actions=[],
+            answer=None,
+            notes=["Generic search was skipped because an executable typed theorem kernel was available."],
+        )
+    else:
+        search_result = run_math_search(structure, external_tools=external_tools)
     parser_info = {
         "intent": ir.intent,
         "route": ir.route,
@@ -613,6 +627,18 @@ def is_safe_tool_call(call: ToolCall, ir: MathIR, domain_ir: DomainIR, problem: 
                 "prove_prime_triangle_circumradius_irrational",
             }
             and isinstance(certificate, dict)
+            and certificate.get("memorized_answer") is False
+        )
+    if name == "sympy.structural_theorem_query":
+        payload = ir.givens.get("structural_theorem_query") if isinstance(ir.givens, dict) else None
+        certificate = payload.get("lowering_certificate") if isinstance(payload, dict) else None
+        return (
+            isinstance(payload, dict)
+            and bool(payload.get("operator"))
+            and isinstance(payload.get("objects"), dict)
+            and isinstance(certificate, dict)
+            and certificate.get("kind") == "typed_structural_theorem"
+            and certificate.get("alpha_renamable") is True
             and certificate.get("memorized_answer") is False
         )
     if name == "arithmetic.nl":
