@@ -78,7 +78,7 @@ function crossSection(vertices: V3[], normal: V3, c: number): V3[] {
     .map(x => x.p)
 }
 
-export default function ScrollSolid() {
+export default function ScrollSolid({ className }: { className?: string } = {}) {
   const mountRef = useRef<HTMLDivElement | null>(null)
   const progressRef = useRef(0)
 
@@ -202,7 +202,7 @@ export default function ScrollSolid() {
     <div
       ref={mountRef}
       aria-hidden
-      className="pointer-events-none fixed inset-0 -z-10 opacity-[0.55]"
+      className={className ?? 'pointer-events-none fixed inset-0 -z-10 opacity-[0.55]'}
     />
   )
 }
