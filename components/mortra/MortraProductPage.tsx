@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import {
   ArrowRight,
   BookOpenText,
@@ -12,6 +11,13 @@ import {
   ShieldCheck,
 } from 'lucide-react'
 import { MortraTryConsole } from './MortraTryConsole'
+import { ProofScrollScene } from './ProofScrollScene'
+import { RibbonMark } from './RibbonMark'
+import { PipelineDiagram } from './PipelineDiagram'
+import { WhyFiguresDiagram } from './WhyFiguresDiagram'
+import { ArchitectureFigure } from './ArchitectureFigure'
+import { AtlasFigure } from './AtlasFigure'
+import ScrollSolid from '../ScrollSolid'
 import { ProofGraphScene } from './ProofGraphScene'
 import styles from '@/app/mortra/mortra.module.css'
 
@@ -33,8 +39,8 @@ const timeline = [
   },
   {
     date: 'HARDWARE',
-    title: '探索の一部を回路で速くする',
-    body: '大量に繰り返す単純な候補検査をFPGAへ移し、難しい証明はCPU側に残す分業を試しています。',
+    title: '探索の絞り込みを、回路に落とした',
+    body: '候補検査の専用回路を設計し、1サイクル1件で流せる形にしました。10,000通りの入力でソフト実装と完全一致、Xilinx 7-seriesへの論理合成も通過。次は実機に載せて測ります。',
   },
 ]
 
@@ -45,7 +51,7 @@ export function MortraProductPage() {
     name: 'MORTRA',
     applicationCategory: 'EducationalApplication',
     operatingSystem: 'Web',
-    url: 'https://sakumon-web.vercel.app/',
+    url: 'https://mortra.vercel.app/',
     description: '記号推論で数学問題、図、解答、検証過程を生成する数学研究システム。',
     softwareVersion: '1',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
@@ -53,10 +59,13 @@ export function MortraProductPage() {
   return (
     <main className={styles.page}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+      <ProofScrollScene className={styles.proofScene} />
+      <div className={styles.proofVeil} aria-hidden="true" />
+
       <header className={styles.nav}>
         <div className={`${styles.shell} ${styles.navInner}`}>
           <Link className={styles.wordmark} href="/" aria-label="MORTRA home">
-            <span className={styles.mark}><Image className={styles.brandIcon} src="/mortra-mark.png" alt="" width={28} height={28} priority /></span>
+            <span className={styles.mark}><RibbonMark size={28} cols={12} pad={9} radius={5} /></span>
             <span>MORTRA</span>
             <span className={styles.modelLabel}>Model 1</span>
           </Link>
@@ -137,11 +146,11 @@ export function MortraProductPage() {
           <div className={styles.benchmarkCompare}>
             <div className={styles.benchmarkCompareHead}>
               <h3>同じIMO-AG-30で比較</h3>
-              <p>MORTRAは、DeepMindのAlphaGeometryと同じ25/30。</p>
+              <p>MORTRAは初代AlphaGeometryと同じ25/30。AlphaGeometry2とTongGeometryは、この30題では満点です。</p>
             </div>
             <div className={styles.benchmarkRows}>
               <div className={styles.benchmarkRow}>
-                <span>AlphaGeometry</span><div><i style={{ width: '83.3%' }} /></div><b>25 / 30</b>
+                <span>AlphaGeometry (2024)</span><div><i style={{ width: '83.3%' }} /></div><b>25 / 30</b>
               </div>
               <div className={styles.benchmarkRow}>
                 <span>金メダリスト平均</span><div><i style={{ width: '86.3%' }} /></div><b>25.9 / 30</b>
@@ -152,26 +161,35 @@ export function MortraProductPage() {
               <div className={styles.benchmarkRow}>
                 <span>TongGeometry</span><div><i style={{ width: '100%' }} /></div><b>30 / 30</b>
               </div>
+              <div className={styles.benchmarkRow}>
+                <span>AlphaGeometry2 (2025)</span><div><i style={{ width: '100%' }} /></div><b>30 / 30</b>
+              </div>
             </div>
             <p className={styles.benchmarkNote}>
-              形式化された同じ30題で比較。AlphaGeometry、TongGeometry、MORTRAでは探索方法と計算予算が異なります。
+              形式化された同じ30題で比較。AlphaGeometry2はこの30題では満点で、さらに広いIMO-AG-50（2000〜2024年の幾何全50題）でも42/50＝84%です。
+              幾何ではMORTRAは届いていません。ただしAlphaGeometryもTongGeometryも幾何専用で、数列・確率・積分・整数は扱えません。
+              MORTRAは同じ核で幾何以外も解きます。次の2つがその結果です。
             </p>
           </div>
 
-          <div className={styles.modernBenchmark}>
-            <div className={styles.modernBenchmarkHead}>
-              <p className={styles.sectionIndex}>CURRENT LLM REFERENCE</p>
-              <h3>最近の汎用モデルは、IMO級400問でどこまで解けるか。</h3>
-              <p>Google DeepMindのIMO-AnswerBench。MORTRAの25/30とは別の評価です。</p>
+          <div className={styles.benchmarkCompare}>
+            <div className={styles.benchmarkCompareHead}>
+              <h3>幾何専用ではない</h3>
+              <p>AlphaGeometryもTongGeometryも幾何しか扱えません。MORTRAは同じ核で振り分けます。</p>
             </div>
-            <div className={styles.modernModelTable} role="table" aria-label="IMO-AnswerBench model scores">
-              <div role="row"><span role="cell">Gemini Deep Think</span><b role="cell">80.0%</b></div>
-              <div role="row"><span role="cell">Grok 4</span><b role="cell">73.1%</b></div>
-              <div role="row"><span role="cell">GPT-5</span><b role="cell">65.6%</b></div>
-              <div role="row"><span role="cell">DeepSeek R1</span><b role="cell">60.8%</b></div>
-              <div role="row"><span role="cell">Claude Opus 4</span><b role="cell">22.3%</b></div>
+            <div className={styles.resultDigest}>
+              <div className={styles.resultScore}>
+                <span>オリンピアード幾何（監査済み89題）</span>
+                <strong>53<small> / 89</small></strong>
+                <p>ロシアARMO 11/12 ・ 中国TST 5/7 ・ IMO Shortlist 5/10 ・ CGMO 5/5</p>
+              </div>
+
             </div>
+            <p className={styles.benchmarkNote}>
+証明ファイルのハッシュが一致したものだけを数えています。
+            </p>
           </div>
+
         </div>
       </section>
 
@@ -180,12 +198,23 @@ export function MortraProductPage() {
           <div className={styles.sectionHead}>
             <div>
               <p className={styles.sectionIndex}>03 / ARCHITECTURE</p>
-              <h2 className={styles.sectionTitle}>証明器は、協調する。</h2>
+              <h2 className={styles.sectionTitle}>権限を、面で分ける。</h2>
             </div>
             <p className={styles.sectionCopy}>
-              発想の手掛かりは多細胞生物です。細胞は近くの細胞と情報を交換しながら、全体として一つの組織をつくります。
-              MORTRAでも、異なる推論器が得意な方法を保ち、必要な途中結果だけを交換します。
+              候補を出す面、解く面、順番を決める面、真偽を決める面、速くする面。情報は下へ流れ、権限は上へ戻らない。
             </p>
+          </div>
+
+          <div className={styles.pipelineFigure}>
+            <ArchitectureFigure />
+          </div>
+
+          <div className={styles.pipelineFigure}>
+            <AtlasFigure />
+          </div>
+
+          <div className={styles.pipelineFigure}>
+            <PipelineDiagram />
           </div>
 
           <div className={styles.systemGrid}>
@@ -206,8 +235,8 @@ export function MortraProductPage() {
             </article>
             <article className={styles.systemItem}>
               <Cpu size={19} aria-hidden="true" />
-              <h3>単純な反復をFPGAへ</h3>
-              <p>大量の候補を調べる単純な処理を回路で速くし、CPUを本当に難しい証明へ使います。</p>
+              <h3>絞り込みを回路へ</h3>
+              <p>候補検査の専用回路が1サイクル1件で動き、10,000通りでソフト実装と完全一致。論理合成まで通過済みです。数字は実機で測ってから出します。</p>
             </article>
           </div>
         </div>
@@ -218,18 +247,21 @@ export function MortraProductPage() {
           <div className={styles.sectionHead}>
             <div>
               <p className={styles.sectionIndex}>04 / RESEARCH</p>
-              <h2 className={styles.sectionTitle}>なぜ、この形の数学AIなのか。</h2>
+              <h2 className={styles.sectionTitle}>LLMは、図で説明できない。</h2>
             </div>
             <div className={styles.sectionCopyBlock}>
               <p className={styles.sectionCopy}>
-                難しい数学では、図を見る、座標へ移す、補題を立てる、反例を探す、と考え方を切り替えます。
-                MORTRAは、その往復を追跡できる計算過程として実装しようとしています。
+                文を書いてから、別に図を描くから。
               </p>
               <Link className={styles.secondaryButton} href="/research">
                 <BookOpenText size={15} aria-hidden="true" />この研究について詳しく<ArrowRight size={14} aria-hidden="true" />
               </Link>
             </div>
           </div>
+          <div className={styles.pipelineFigure}>
+            <WhyFiguresDiagram />
+          </div>
+
           <div className={styles.timeline}>
             {timeline.map(item => (
               <article className={styles.timelineItem} key={item.date}>
@@ -245,18 +277,18 @@ export function MortraProductPage() {
       <section className={styles.section}>
         <div className={`${styles.shell} ${styles.visionBand}`}>
           <div className={styles.visionCopy}>
-            <h2>数学を、画面の外へ。</h2>
+            <h2>数学の標準模型をつくる。</h2>
             <p>
-              証明に使った点、線、円、変換の履歴を、そのまま動的な2D・3D作図へ送る。
-              将来はロボットアームによる作図や立体の切断まで、同じ数学表現から実行することを目指しています。
+              式・図・運動を、一つの構造の別の見え方として持つ。
+              下の立方体は飾りではありません。断面の多角形を毎フレーム計算しています。
             </p>
             <div className={styles.heroActions}>
-              <span className={styles.textButton}><GitBranch size={14} aria-hidden="true" />型付き変換</span>
-              <span className={styles.textButton}><FlaskConical size={14} aria-hidden="true" />再現可能な実験</span>
-              <span className={styles.textButton}><Check size={14} aria-hidden="true" />たどれる証明過程</span>
+              <span className={styles.textButton}><GitBranch size={14} aria-hidden="true" />同じ構造を、式でも図でも運動でも</span>
+              <span className={styles.textButton}><FlaskConical size={14} aria-hidden="true" />指紋を固定した実験</span>
+              <span className={styles.textButton}><Check size={14} aria-hidden="true" />規則名つきの導出列</span>
             </div>
           </div>
-          <ProofGraphScene className={styles.visionScene} progress={0.9} phase="complete" running />
+          <ScrollSolid className={styles.solidScene} />
         </div>
       </section>
 

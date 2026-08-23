@@ -8,14 +8,14 @@ const DESCRIPTION =
   '外部LLMを使わずIMO幾何25/30。複数の記号推論器を協調させ、数学を解き、作る研究システム。'
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://sakumon-web.vercel.app'),
+  metadataBase: new URL('https://mortra.vercel.app'),
   title: TITLE,
   description: DESCRIPTION,
   applicationName: 'MORTRA',
   icons: {
-    icon: '/mortra-mark.png',
-    shortcut: '/mortra-mark.png',
-    apple: '/mortra-mark.png',
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/apple-icon.svg',
   },
   alternates: { canonical: '/' },
   keywords: [
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: TITLE,
     description: DESCRIPTION,
-    url: 'https://sakumon-web.vercel.app/',
+    url: 'https://mortra.vercel.app/',
     siteName: 'MORTRA',
     locale: 'ja_JP',
     type: 'website',
