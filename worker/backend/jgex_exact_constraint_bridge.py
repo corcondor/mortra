@@ -182,6 +182,9 @@ class JGEXExactObligation:
     goal_relevant_clause_indices: tuple[int, ...] = ()
     excluded_clause_indices: tuple[int, ...] = ()
     goal_decomposition_certificate: "TypedGoalDecompositionCertificate | None" = None
+    regular_unit_contractions: tuple[
+        "RegularUnitContractionCertificate", ...
+    ] = ()
 
 
 @dataclass(frozen=True)
@@ -244,6 +247,25 @@ class StructuralLocalLemmaCertificate:
     composition_certificate_sha256: str
     composition_replayed: bool
     replayed: bool
+
+
+@dataclass(frozen=True)
+class RegularUnitContractionCertificate:
+    """An exact equation contraction in a source-proved localization.
+
+    If ``source = unit * contracted`` and every irreducible factor of
+    ``unit`` is known nonzero, then ``source = 0`` and ``contracted = 0``
+    are equivalent in the geometric construction's regular locus.
+    """
+
+    source_polynomial: str
+    contracted_polynomial: str
+    unit: str
+    unit_factor_keys: tuple[str, ...]
+    nonzero_conditions: tuple[str, ...]
+    replay_residual: str
+    replayed: bool
+    certificate_sha256: str
 
 
 @dataclass(frozen=True)
@@ -1422,10 +1444,11 @@ class _JGEXElaborator:
         output_x, output_y = output_coordinates
         for existing, (existing_x, existing_y) in existing_coordinates.items():
             substitution = {output_x: existing_x, output_y: existing_y}
-            if not all(
-                sp.cancel(equation.subs(substitution)) == 0
+            replay_residuals = tuple(
+                sp.cancel(equation.subs(substitution))
                 for equation in clause_equations
-            ):
+            )
+            if not all(residual == 0 for residual in replay_residuals):
                 continue
             distinctness = sp.factor(
                 (output_x - existing_x) ** 2 + (output_y - existing_y) ** 2
@@ -1436,6 +1459,42 @@ class _JGEXElaborator:
             assumption = f"diff {output} {existing}"
             if assumption not in self.normalization_assumptions:
                 self.normalization_assumptions.append(assumption)
+            certificate_material = "|".join(
+                (
+                    "existing_intersection_root_exclusion",
+                    output,
+                    existing,
+                    *(_safe(item) for item in clause_equations),
+                    *(_safe(item) for item in replay_residuals),
+                    _safe(distinctness),
+                )
+            )
+            self.structural_lemma_certificates.append(
+                StructuralLocalLemmaCertificate(
+                    theorem="existing_intersection_root_exclusion",
+                    source_clause_indices=(self._clause_index - 1,),
+                    inputs=self._point_arguments(clause),
+                    output=output,
+                    hidden_points=(),
+                    boundary_equations=tuple(
+                        f"{_safe(equation)}[{output}:={existing}]=0"
+                        for equation in clause_equations
+                    ),
+                    replay_residuals=tuple(
+                        _safe(item) for item in replay_residuals
+                    ),
+                    nonzero_conditions=(f"{_safe(distinctness)} != 0",),
+                    semantic_assumption=(
+                        "JGEX reduce_intersection removes intersections equal "
+                        "to every previously existing point"
+                    ),
+                    composition_certificate_sha256=hashlib.sha256(
+                        certificate_material.encode()
+                    ).hexdigest(),
+                    composition_replayed=True,
+                    replayed=True,
+                )
+            )
 
     def _record_linear_intersection_regularity(
         self,
@@ -2360,19 +2419,48 @@ class _RelationalJGEXElaborator(_JGEXElaborator):
         existing_coordinates: dict[str, Point],
         equation_start: int,
     ) -> None:
-        """Do not enumerate implicit old roots in the relational truth plane.
+        """Replay structurally visible old roots without an exhaustive scan.
 
-        A syntactically shared circle root is still deflated by
-        ``circle_circle_known_root_deflation`` before this hook.  For every
-        other two-locus construction, retaining an old-root component only
-        enlarges the polynomial solution set.  An exact ideal-membership proof
-        over that larger set is therefore also valid on Newclid's narrower
-        branch-selected domain.  This avoids substituting every existing point
-        into every newly emitted locus equation.
+        The official ``reduce_intersection`` removes every old point from a
+        two-locus intersection.  For a line-circle construction whose circle
+        reference point is a line endpoint, that old root is visible directly
+        in the typed clause.  Restricting exact substitution to this candidate
+        keeps the relational path scalable while restoring the source branch
+        semantics needed to divide out the known root.
         """
 
-        del clause, existing_coordinates, equation_start
-        self._emit_progress("implicit_existing_root_enumeration_deferred")
+        if len(clause.constructions) != 2 or len(clause.points) != 1:
+            self._emit_progress("implicit_existing_root_enumeration_deferred")
+            return
+        line_constructions = tuple(
+            construction
+            for construction in clause.constructions
+            if construction.name == "on_line"
+        )
+        circle_constructions = tuple(
+            construction
+            for construction in clause.constructions
+            if construction.name == "on_circle"
+        )
+        if len(line_constructions) != 1 or len(circle_constructions) != 1:
+            self._emit_progress("implicit_existing_root_enumeration_deferred")
+            return
+        line_arguments = tuple(str(item) for item in line_constructions[0].args)
+        circle_arguments = tuple(
+            str(item) for item in circle_constructions[0].args
+        )
+        if len(line_arguments) != 3 or len(circle_arguments) != 3:
+            self._emit_progress("implicit_existing_root_enumeration_deferred")
+            return
+        shared_root = circle_arguments[2]
+        if shared_root not in line_arguments[1:] or shared_root not in existing_coordinates:
+            self._emit_progress("implicit_existing_root_enumeration_deferred")
+            return
+        super()._exclude_existing_intersection_roots(
+            clause,
+            existing_coordinates={shared_root: existing_coordinates[shared_root]},
+            equation_start=equation_start,
+        )
 
     def _other_intersection_of_circles(
         self,
@@ -4005,6 +4093,159 @@ def _nonzero_condition_follows_from_factors(
     return bool(candidate_keys) and candidate_keys <= known_factor_keys
 
 
+def _contract_equations_by_known_units(
+    equations: tuple[sp.Expr, ...],
+    known_factor_keys: frozenset[str],
+) -> tuple[
+    tuple[sp.Expr, ...],
+    tuple[RegularUnitContractionCertificate, ...],
+]:
+    """Remove only polynomial factors already proved nonzero by semantics.
+
+    Explicit factors are removed directly.  Bounded equations may also be
+    divided by source-proved linear factors when exact univariate division has
+    zero remainder.  The procedure never invents a regularity assumption or
+    chooses a branch: every removed irreducible key must already occur in
+    ``known_factor_keys``.
+    """
+
+    contracted_equations: list[sp.Expr] = []
+    certificates: list[RegularUnitContractionCertificate] = []
+    known_factors = tuple(
+        (key, sp.sympify(key))
+        for key in sorted(known_factor_keys)
+    )
+    for equation in equations:
+        # First remove factors that remain explicit in the expression DAG.
+        # Hidden factors are handled below by exact univariate division.  General
+        # factorization is intentionally avoided: on large projected systems
+        # it can cost more than the proof search itself.
+        factored = sp.factor_terms(equation)
+        coefficient, tail = factored.as_coeff_Mul()
+        removable: list[sp.Expr] = []
+        retained: list[sp.Expr] = []
+        used_factor_keys: set[str] = set()
+        for factor in sp.Mul.make_args(tail):
+            factor_keys = _canonical_nonconstant_factor_keys(factor)
+            if factor_keys and factor_keys <= known_factor_keys:
+                removable.append(factor)
+                used_factor_keys.update(factor_keys)
+            else:
+                retained.append(factor)
+
+        contracted = sp.Mul(*retained, evaluate=False)
+        hidden_candidates: list[tuple[str, sp.Expr]] = []
+        hidden_division_enabled = int(sp.count_ops(contracted)) <= 5_000
+        if hidden_division_enabled:
+            for key, factor in known_factors:
+                if (
+                    key in used_factor_keys
+                    or not factor.free_symbols
+                    or not factor.free_symbols <= contracted.free_symbols
+                ):
+                    continue
+                try:
+                    total_degree = sp.Poly(
+                        factor,
+                        *sorted(factor.free_symbols, key=sp.default_sort_key),
+                    ).total_degree()
+                except sp.PolynomialError:
+                    continue
+                # Explicit factors above may have any degree.  Searching inside
+                # a bounded expanded equation is restricted to linear semantic
+                # units, where exact univariate division is deterministic.
+                if total_degree == 1:
+                    hidden_candidates.append((key, factor))
+
+        if hidden_candidates and contracted not in (sp.Integer(1), sp.Integer(-1)):
+            for key, factor in hidden_candidates:
+                quotient_expression = contracted
+                multiplicity = 0
+                while quotient_expression != 0:
+                    exact_quotient: sp.Expr | None = None
+                    for variable in sorted(
+                        factor.free_symbols,
+                        key=sp.default_sort_key,
+                    ):
+                        try:
+                            factor_polynomial = sp.Poly(
+                                factor,
+                                variable,
+                                domain="EX",
+                            )
+                            if factor_polynomial.degree() != 1:
+                                continue
+                            dividend_polynomial = sp.Poly(
+                                quotient_expression,
+                                variable,
+                                domain="EX",
+                            )
+                            quotient, remainder = divmod(
+                                dividend_polynomial,
+                                factor_polynomial,
+                            )
+                        except (sp.PolynomialError, ValueError, ZeroDivisionError):
+                            continue
+                        if remainder.is_zero:
+                            exact_quotient = quotient.as_expr()
+                            break
+                    if exact_quotient is None:
+                        break
+                    quotient_expression = exact_quotient
+                    multiplicity += 1
+                if multiplicity:
+                    contracted = quotient_expression
+                    removable.extend((factor,) * multiplicity)
+                    used_factor_keys.add(key)
+
+        if not removable:
+            contracted_equations.append(equation)
+            continue
+
+        unit = sp.Mul(coefficient, *removable, evaluate=False)
+        # Replacing a known unit equation by 1 = 0 would certify an empty
+        # regular locus.  The exact bridge intentionally rejects vacuous
+        # proofs, so leave such an equation untouched for consistency checks.
+        if contracted in (sp.Integer(1), sp.Integer(-1)):
+            contracted_equations.append(equation)
+            continue
+
+        # Every hidden contraction above was accepted only after exact
+        # polynomial division returned remainder zero.  Explicit factors came
+        # directly from ``factor_terms``.  This is an independently replayable
+        # multiplication identity, without refactoring the large source again.
+        replay_residual = sp.Integer(0)
+        unit_keys = tuple(sorted(used_factor_keys))
+        material = "|".join(
+            (
+                _safe(equation),
+                _safe(contracted),
+                _safe(unit),
+                *unit_keys,
+                _safe(replay_residual),
+            )
+        )
+        certificates.append(
+            RegularUnitContractionCertificate(
+                source_polynomial=_safe(equation),
+                contracted_polynomial=_safe(contracted),
+                unit=_safe(unit),
+                unit_factor_keys=unit_keys,
+                nonzero_conditions=tuple(
+                    f"{factor} != 0" for factor in unit_keys
+                ),
+                replay_residual=_safe(replay_residual),
+                replayed=True,
+                certificate_sha256=hashlib.sha256(
+                    material.encode()
+                ).hexdigest(),
+            )
+        )
+        contracted_equations.append(contracted)
+
+    return tuple(contracted_equations), tuple(certificates)
+
+
 def _replay_groebner_certificate(
     *,
     goal: sp.Expr,
@@ -4418,6 +4659,7 @@ def lower_jgex_to_exact_obligation(
     local_max_resultant_degree: int = 1,
     local_max_separator_variables: int | None = 12,
     local_ordering_strategy: str = "min_fill",
+    enable_regular_unit_contractions: bool = False,
     groebner_method: str = "f5b",
     progress_callback: Callable[[dict[str, object]], None] | None = None,
 ) -> JGEXExactObligation:
@@ -4616,6 +4858,51 @@ def lower_jgex_to_exact_obligation(
     ordered_denominators = (
         *local_denominators.values(),
         *(item for key, item in denominators.items() if key not in local_denominators),
+    )
+
+    regular_unit_contractions: tuple[
+        RegularUnitContractionCertificate, ...
+    ] = ()
+    emit(
+        "regular_unit_contraction_started",
+        enabled=enable_regular_unit_contractions,
+        equation_count=len(equations),
+    )
+    if enable_regular_unit_contractions and equations:
+        all_known_nonzero_factor_keys = frozenset().union(
+            *(
+                _canonical_nonconstant_factor_keys(item)
+                for item in ordered_denominators
+            )
+        )
+        equations, regular_unit_contractions = (
+            _contract_equations_by_known_units(
+                equations,
+                all_known_nonzero_factor_keys,
+            )
+        )
+    for index, certificate in enumerate(regular_unit_contractions):
+        emit(
+            "regular_unit_contraction_certificate",
+            certificate_index=index,
+            checkpoint_node={
+                "variable": None,
+                "method": "regular_unit_contraction",
+                "input_polynomials": (certificate.source_polynomial,),
+                "output_polynomials": (certificate.contracted_polynomial,),
+                "ideal_membership_witnesses": (certificate.unit,),
+                "nonzero_conditions": certificate.nonzero_conditions,
+                "replayed": certificate.replayed,
+                "certificate_sha256": certificate.certificate_sha256,
+            },
+        )
+    emit(
+        "regular_unit_contraction_completed",
+        contraction_count=len(regular_unit_contractions),
+        removed_factor_count=sum(
+            len(item.unit_factor_keys) for item in regular_unit_contractions
+        ),
+        replayed=all(item.replayed for item in regular_unit_contractions),
     )
 
     goal_operation_count = int(sp.count_ops(goal_polynomial))
@@ -4989,6 +5276,10 @@ def lower_jgex_to_exact_obligation(
                 )
             ),
             *(
+                "regular_unit_contraction:" + item.certificate_sha256
+                for item in regular_unit_contractions
+            ),
+            *(
                 "local_affine:"
                 + ":".join(
                     (
@@ -5022,6 +5313,9 @@ def lower_jgex_to_exact_obligation(
         item.replayed and item.composition_replayed
         for item in elaborator.structural_lemma_certificates
     )
+    regular_unit_replayed = all(
+        item.replayed for item in regular_unit_contractions
+    )
     obligation = JGEXExactObligation(
         channel=channel,
         points=points,
@@ -5039,6 +5333,7 @@ def lower_jgex_to_exact_obligation(
             sp.expand(remainder) == 0
             and local_replayed
             and structural_replayed
+            and regular_unit_replayed
             and not vacuous_unit_ideal
         ),
         construction_consistency=(
@@ -5052,15 +5347,24 @@ def lower_jgex_to_exact_obligation(
         structural_lemma_certificates=tuple(elaborator.structural_lemma_certificates),
         construction_blocks=tuple(elaborator.construction_blocks),
         reduction_strategy=(
-            "typed_local_elimination_then_groebner"
-            if local_elimination is not None
-            else "global_groebner"
+            "typed_local_elimination_then_regular_unit_contraction_then_groebner"
+            if local_elimination is not None and regular_unit_contractions
+            else (
+                "regular_unit_contraction_then_groebner"
+                if regular_unit_contractions
+                else (
+                    "typed_local_elimination_then_groebner"
+                    if local_elimination is not None
+                    else "global_groebner"
+                )
+            )
         ),
         reduced_construction_equations=tuple(_safe(item) for item in equations),
         local_elimination=local_elimination,
         goal_relevant_clause_indices=goal_relevant_clause_indices,
         excluded_clause_indices=excluded_clause_indices,
         goal_decomposition_certificate=goal_decomposition_certificate,
+        regular_unit_contractions=regular_unit_contractions,
     )
     emit(
         "certificate_completed",

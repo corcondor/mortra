@@ -81,6 +81,7 @@ def _exact_worker(
     groebner_method: str = "f5b",
     local_max_output_terms: int = 64,
     local_max_resultant_degree: int = 1,
+    enable_regular_unit_contractions: bool = False,
 ) -> None:
     progress_events: deque[dict[str, object]] = deque(maxlen=64)
     progress_event_count = 0
@@ -134,6 +135,7 @@ def _exact_worker(
             groebner_method=groebner_method,
             local_max_output_terms=local_max_output_terms,
             local_max_resultant_degree=local_max_resultant_degree,
+            enable_regular_unit_contractions=enable_regular_unit_contractions,
             progress_callback=record_progress,
         )
         certificate = asdict(obligation)
@@ -167,6 +169,7 @@ def _run_isolated(
     groebner_method: str = "f5b",
     local_max_output_terms: int = 64,
     local_max_resultant_degree: int = 1,
+    enable_regular_unit_contractions: bool = False,
     progress_path: Path | None = None,
 ) -> dict:
     context = mp.get_context("spawn")
@@ -177,13 +180,18 @@ def _run_isolated(
             args=(
                 text,
                 str(output_path),
-                str(progress_path) if progress_path is not None else str(Path(directory) / "progress.json"),
+                (
+                    str(progress_path)
+                    if progress_path is not None
+                    else str(Path(directory) / "progress.json")
+                ),
                 representation,
                 max_saturation_rounds,
                 enable_affine_local_lemmas,
                 groebner_method,
                 local_max_output_terms,
                 local_max_resultant_degree,
+                enable_regular_unit_contractions,
             ),
         )
         process.start()
@@ -289,6 +297,14 @@ def main() -> int:
     )
     parser.add_argument("--local-max-output-terms", type=int, default=64)
     parser.add_argument("--local-max-resultant-degree", type=int, default=1)
+    parser.add_argument(
+        "--enable-regular-unit-contractions",
+        action="store_true",
+        help=(
+            "Divide terminal equations only by source-proved nonzero factors "
+            "and save replayable localization certificates."
+        ),
+    )
     args = parser.parse_args()
 
     problems = jgex_formulation_from_txt_file(args.dataset)
@@ -329,6 +345,9 @@ def main() -> int:
             groebner_method=args.groebner_method,
             local_max_output_terms=args.local_max_output_terms,
             local_max_resultant_degree=args.local_max_resultant_degree,
+            enable_regular_unit_contractions=(
+                args.enable_regular_unit_contractions
+            ),
             progress_path=progress_path,
         )
         result["elapsed_seconds"] = time.perf_counter() - started
@@ -344,7 +363,11 @@ def main() -> int:
                             "solution": result["solution"],
                         }
                         if "certificate" in result
-                        else {key: value for key, value in result.items() if key != "elapsed_seconds"}
+                        else {
+                            key: value
+                            for key, value in result.items()
+                            if key != "elapsed_seconds"
+                        }
                     ),
                 },
                 ensure_ascii=False,
@@ -385,6 +408,7 @@ def main() -> int:
         "groebner_method": args.groebner_method,
         "local_max_output_terms": args.local_max_output_terms,
         "local_max_resultant_degree": args.local_max_resultant_degree,
+        "regular_unit_contractions": args.enable_regular_unit_contractions,
         "run_dir": _display_path(run_dir),
         "per_problem_timeout_seconds": (
             args.timeout_seconds if args.timeout_seconds > 0 else None

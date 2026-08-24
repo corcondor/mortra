@@ -9,6 +9,7 @@ from worker.backend.jgex_exact_constraint_bridge import (
     _expand_polynomial_in_generators,
     _canonical_nonconstant_factors,
     _canonical_nonconstant_factor_keys,
+    _contract_equations_by_known_units,
     _direct_constraint_match,
     _flint_exact_principal_quotient,
     _groebner_reduce_preserving_sparse_remainder,
@@ -62,6 +63,55 @@ def test_nondegeneracy_products_are_split_into_irreducible_factors() -> None:
     factors = _canonical_nonconstant_factors(-6 * x**2 * (y + 1) ** 3)
 
     assert factors == (x, y + 1)
+
+
+def test_regular_unit_contraction_removes_only_source_proved_factors() -> None:
+    x, y, z = sp.symbols("x y z")
+    equation = sp.expand(
+        sp.Mul(
+            -4,
+            x**2,
+            (y + 1) ** 3,
+            z + 1,
+            evaluate=False,
+        )
+    )
+    known = _canonical_nonconstant_factor_keys(x * (y + 1))
+
+    equations, certificates = _contract_equations_by_known_units(
+        (equation,),
+        known,
+    )
+
+    assert len(certificates) == 1
+    assert sp.expand(equations[0] - (z + 1)) == 0
+    certificate = certificates[0]
+    assert certificate.unit_factor_keys == ("x", "y + 1")
+    assert certificate.replayed
+    assert certificate.replay_residual == "0"
+    assert certificate.certificate_sha256
+    assert sp.expand(
+        sp.sympify(certificate.source_polynomial)
+        - sp.sympify(certificate.unit)
+        * sp.sympify(certificate.contracted_polynomial)
+    ) == 0
+
+
+def test_regular_unit_contraction_retains_unknown_factors() -> None:
+    x, y, z = sp.symbols("x y z")
+    equation = sp.Mul(x, y + 1, z + 1, evaluate=False)
+    known = _canonical_nonconstant_factor_keys(x)
+
+    equations, certificates = _contract_equations_by_known_units(
+        (equation,),
+        known,
+    )
+
+    assert len(certificates) == 1
+    assert sp.expand(equations[0] - (y + 1) * (z + 1)) == 0
+    assert certificates[0].unit_factor_keys == ("x",)
+    assert "y + 1" not in certificates[0].nonzero_conditions
+    assert "z + 1" not in certificates[0].nonzero_conditions
 
 
 def test_principal_ideal_membership_is_generic_and_replayable() -> None:
@@ -865,6 +915,78 @@ def test_2022_chn_circle_intersection_preserves_newclids_branch_choice() -> None
     )
 
     assert "diff k a" in analysis.normalization_assumptions
+
+
+def test_line_circle_intersection_excludes_its_visible_existing_root() -> None:
+    statement = (
+        "a b c = triangle a b c; o = midpoint o a b; "
+        "t = on_line t a c, on_circle t o a ? coll t a c"
+    )
+    analysis = inspect_jgex_exact_system(
+        statement,
+        representation="relational",
+        enable_affine_local_lemmas=True,
+    )
+    certificates = tuple(
+        item
+        for item in analysis.structural_lemma_certificates
+        if item.theorem == "existing_intersection_root_exclusion"
+    )
+
+    assert "diff t a" in analysis.normalization_assumptions
+    assert len(certificates) == 1
+    assert certificates[0].output == "t"
+    assert certificates[0].replay_residuals == ("0", "0")
+    assert certificates[0].replayed
+    assert certificates[0].composition_replayed
+    assert certificates[0].composition_certificate_sha256
+
+    obligation = lower_jgex_to_exact_obligation(
+        statement,
+        representation="goal_local_relational",
+        enable_affine_local_lemmas=True,
+        enable_regular_unit_contractions=True,
+    )
+    assert any(
+        certificate.unit_factor_keys == ("_free_y_6",)
+        and certificate.replayed
+        for certificate in obligation.regular_unit_contractions
+    )
+
+
+def test_line_circle_root_exclusion_uses_structure_not_point_names() -> None:
+    analysis = inspect_jgex_exact_system(
+        "u v w = triangle u v w; z = midpoint z u v; "
+        "x = on_circle x z u, on_line x w u ? coll x w u",
+        representation="relational",
+        enable_affine_local_lemmas=True,
+    )
+    certificate = next(
+        item
+        for item in analysis.structural_lemma_certificates
+        if item.theorem == "existing_intersection_root_exclusion"
+    )
+
+    assert certificate.output == "x"
+    assert certificate.inputs == ("u", "w", "z")
+    assert "diff x u" in analysis.normalization_assumptions
+
+
+def test_line_circle_without_a_shared_reference_does_not_invent_exclusion() -> None:
+    analysis = inspect_jgex_exact_system(
+        "a b c = triangle a b c; o = midpoint o a b; "
+        "t = on_line t b c, on_circle t o a ? coll t b c",
+        representation="relational",
+        enable_affine_local_lemmas=True,
+    )
+
+    assert not any(
+        item.theorem == "existing_intersection_root_exclusion"
+        for item in analysis.structural_lemma_certificates
+    )
+    assert not any(
+        item.startswith("diff t ") for item in analysis.normalization_assumptions
+    )
 
 
 def test_2022_chn_angle_loci_export_their_cramer_determinant() -> None:
