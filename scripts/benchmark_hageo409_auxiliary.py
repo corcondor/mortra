@@ -47,6 +47,24 @@ def write_json_atomic(path: Path, payload: dict[str, Any]) -> None:
             time.sleep(0.01 * (2**attempt))
 
 
+def bounded_worker_counts(
+    *,
+    problem_workers: int,
+    candidate_workers: int,
+    max_total_native_workers: int,
+) -> tuple[int, int]:
+    """Bound nested Yuclid concurrency without changing searched candidates."""
+
+    if problem_workers < 1 or candidate_workers < 1:
+        raise ValueError("worker counts must be positive")
+    detected = os.cpu_count() or 1
+    budget = max_total_native_workers if max_total_native_workers > 0 else detected
+    effective_problem_workers = min(problem_workers, budget)
+    per_problem_budget = max(1, budget // effective_problem_workers)
+    effective_candidate_workers = min(candidate_workers, per_problem_budget)
+    return effective_problem_workers, effective_candidate_workers
+
+
 def run_problem(
     *,
     python: Path,
@@ -247,6 +265,15 @@ def main() -> int:
         default=2,
         help="Native candidate verifications run in parallel inside each problem.",
     )
+    parser.add_argument(
+        "--max-total-native-workers",
+        type=int,
+        default=0,
+        help=(
+            "Maximum nested Yuclid processes across the cohort; zero uses the "
+            "detected logical CPU count. This changes scheduling, not candidates."
+        ),
+    )
     parser.add_argument("--timeout-seconds", type=float, default=300.0)
     parser.add_argument(
         "--yuclid-timeout-seconds",
@@ -316,6 +343,11 @@ def main() -> int:
         help="Rebuild summary metadata from an existing complete report.",
     )
     args = parser.parse_args()
+    effective_problem_workers, effective_candidate_workers = bounded_worker_counts(
+        problem_workers=args.workers,
+        candidate_workers=args.candidate_workers,
+        max_total_native_workers=args.max_total_native_workers,
+    )
     if args.beam_ranking in {
         "differentiable-consensus",
         "consensus-portfolio",
@@ -451,6 +483,14 @@ def main() -> int:
                     ),
                     "proof_dag_timeout_seconds": args.proof_dag_timeout_seconds,
                     "workers": args.workers,
+                    "effective_problem_workers": effective_problem_workers,
+                    "candidate_workers": args.candidate_workers,
+                    "effective_candidate_workers": effective_candidate_workers,
+                    "max_total_native_workers": (
+                        args.max_total_native_workers
+                        if args.max_total_native_workers > 0
+                        else os.cpu_count() or 1
+                    ),
                     "timeout_seconds_per_problem": args.timeout_seconds,
                 },
                 "paper_comparability": (
@@ -497,7 +537,7 @@ def main() -> int:
         return report
 
     write_report(complete=not pending)
-    with ThreadPoolExecutor(max_workers=max(1, args.workers)) as executor:
+    with ThreadPoolExecutor(max_workers=effective_problem_workers) as executor:
         futures = {
             executor.submit(
                 run_problem,
@@ -523,7 +563,7 @@ def main() -> int:
                 candidate_cone_timeout_seconds=args.candidate_cone_timeout_seconds,
                 proof_dag_timeout_seconds=args.proof_dag_timeout_seconds,
                 yuclid_timeout_seconds=args.yuclid_timeout_seconds,
-                candidate_workers=args.candidate_workers,
+                candidate_workers=effective_candidate_workers,
                 resume_progress=(args.retry_timeouts or args.retry_unsolved),
             ): problem
             for problem in pending

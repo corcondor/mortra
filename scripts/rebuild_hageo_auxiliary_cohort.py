@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import statistics
 from pathlib import Path
 from typing import Any
 
@@ -79,7 +80,15 @@ def result_from_artifact(problem: str, path: Path) -> dict[str, Any]:
         "incidence_checked": int(incidence.get("checked_candidates", 0)),
         "incidence_heuristic": int(incidence.get("heuristic_candidates", 0)),
         "elapsed_seconds": max(elapsed_values) if elapsed_values else None,
-        "elapsed_semantics": "maximum recorded candidate completion time",
+        "elapsed_semantics": (
+            "maximum recorded candidate completion time; lower bound on wall-clock"
+        ),
+        "elapsed_is_lower_bound": True,
+        "candidate_elapsed_sum_seconds": sum(elapsed_values),
+        "candidate_elapsed_median_seconds": (
+            statistics.median(elapsed_values) if elapsed_values else None
+        ),
+        "candidate_elapsed_max_seconds": max(elapsed_values) if elapsed_values else None,
         "artifact": _display(path),
         "artifact_sha256": _sha256(path),
     }
@@ -114,17 +123,32 @@ def rebuild_report(
 
     fallback_runs: dict[str, dict[str, Any]] = {}
     for report_path in fallback_reports:
-        for run in _load(report_path).get("runs", ()): 
-            fallback_runs[str(run["problem"])] = dict(run)
+        for run in _load(report_path).get("runs", ()):
+            fallback = dict(run)
+            fallback["elapsed_source_report"] = _display(report_path)
+            fallback_runs[str(run["problem"])] = fallback
 
     runs: list[dict[str, Any]] = []
     missing: list[str] = []
     for problem in selected:
         artifact = run_dir / f"{problem}.json"
         if artifact.is_file():
-            runs.append(result_from_artifact(problem, artifact))
+            result = result_from_artifact(problem, artifact)
+            fallback = fallback_runs.get(problem)
+            if fallback is not None and fallback.get("elapsed_seconds") is not None:
+                fallback_sha = fallback.get("artifact_sha256")
+                if fallback_sha and fallback_sha != result["artifact_sha256"]:
+                    raise ValueError(
+                        f"fallback artifact hash mismatch for {problem}: "
+                        f"{fallback_sha} != {result['artifact_sha256']}"
+                    )
+                result["elapsed_seconds"] = float(fallback["elapsed_seconds"])
+                result["elapsed_semantics"] = "wall-clock time from source cohort report"
+                result["elapsed_is_lower_bound"] = False
+                result["elapsed_source_report"] = fallback["elapsed_source_report"]
+            runs.append(result)
         elif problem in fallback_runs:
-            run = fallback_runs[problem]
+            run = dict(fallback_runs[problem])
             if run.get("status") not in {
                 "right_censored_timeout",
                 "timeout",
@@ -133,6 +157,9 @@ def rebuild_report(
                 raise ValueError(
                     f"fallback for {problem} lacks a durable artifact and is not censored"
                 )
+            if run.get("elapsed_seconds") is not None:
+                run["elapsed_semantics"] = "wall-clock time from source cohort report"
+                run["elapsed_is_lower_bound"] = False
             runs.append(run)
         else:
             missing.append(problem)

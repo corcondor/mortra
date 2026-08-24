@@ -46,6 +46,10 @@ def _proof_terminal(trace_path: Path) -> str:
     )
 
 
+def _minutes(seconds: object) -> str:
+    return f"{float(seconds) / 60:.1f}"
+
+
 def build_report(
     *,
     native_report_path: Path,
@@ -93,6 +97,16 @@ def build_report(
     native_audit_summary = native_audit["summary"]
     native_trace_summary = native_trace["summary"]
     diagram_summary = solution_manifest["summary"]
+    measured_wall_runs = sorted(
+        (
+            run
+            for run in runs
+            if run.get("elapsed_seconds") is not None
+            and run.get("elapsed_is_lower_bound") is False
+        ),
+        key=lambda run: float(run["elapsed_seconds"]),
+        reverse=True,
+    )
 
     lines = [
         "# MORTRA 未証明問題の全件再実行と証明書監査（2026-08-24）",
@@ -178,6 +192,40 @@ def build_report(
             f"- 成果物出力: **{diagram_summary['artifacts_exported']}問**",
             f"- 認証済み証明本文: **{diagram_summary['certified_solutions_exported']}/{diagram_summary['certified_solutions_expected']}問**",
             "- 図が描けたこと自体は証明成功として数えていない。",
+            "",
+            "### 実行速度",
+            "",
+            "再構築時に候補1本の時間を全体時間として扱っていたため、再試行レポートに残る実壁時計時間を優先するよう修正した。",
+            "実壁時計を復元できない問題は、候補1本の最大完了時間を下限として保持し、全体時間とは呼ばない。",
+            "",
+            "| 問題 | 状態 | 実壁時計（分） | 評価候補 | 候補時間中央値（秒） | 候補CPU時間合計（分） |",
+            "|---|---|---:|---:|---:|---:|",
+        ]
+    )
+    for run in measured_wall_runs:
+        candidate_median = run.get("candidate_elapsed_median_seconds")
+        candidate_sum = run.get("candidate_elapsed_sum_seconds")
+        lines.append(
+            "| "
+            + " | ".join(
+                [
+                    f"`{run['problem']}`",
+                    str(run.get("status", "unknown")),
+                    _minutes(run["elapsed_seconds"]),
+                    str(run.get("evaluated_paths", "-")),
+                    f"{float(candidate_median):.1f}" if candidate_median is not None else "-",
+                    _minutes(candidate_sum) if candidate_sum is not None else "-",
+                ]
+            )
+            + " |"
+        )
+
+    lines.extend(
+        [
+            "",
+            "難しい2問では112候補を評価し、候補1本の中央値が数分に達した。候補生成用のprefix更新は0.3秒未満であり、",
+            "支配項は各候補でYuclidを新規起動して閉包と証明を再計算する処理である。再試行設定は問題3並列・問題内8候補並列で、",
+            "最大24個のnative検証を同時実行するため、CPUの過剰並列も速度低下要因になる。",
             "",
             "## 考察",
             "",
