@@ -32,6 +32,62 @@ def _is_variable(value: str) -> bool:
 
 
 @dataclass(frozen=True)
+class TypedObligationSignature:
+    atom: Atom
+    holes: tuple[str, ...]
+    known_entities: tuple[str, ...]
+
+    @property
+    def requires_witness(self) -> bool:
+        return bool(self.holes)
+
+
+def obligation_signature(atom: Atom) -> TypedObligationSignature:
+    canonical = atom.canonical()
+    return TypedObligationSignature(
+        atom=canonical,
+        holes=tuple(
+            dict.fromkeys(
+                argument for argument in canonical.arguments if _is_variable(argument)
+            )
+        ),
+        known_entities=tuple(
+            dict.fromkeys(
+                argument for argument in canonical.arguments if not _is_variable(argument)
+            )
+        ),
+    )
+
+
+def candidate_directly_satisfies_obligation(
+    candidate_atoms: Sequence[Atom],
+    demand: Atom,
+) -> bool:
+    """Accept direct construction coverage only with a compatible output hole.
+
+    A ground relation such as ``cyclic(p,q,r,t)`` is a proposition to prove;
+    constructing a fresh point on some circle is not a direct witness for it.
+    Ground obligations therefore require the exact fact.  Existential
+    obligations require every typed hole to be bound by symmetry-aware
+    unification.
+    """
+
+    signature = obligation_signature(demand)
+    candidates = tuple(atom.canonical() for atom in candidate_atoms)
+    if not signature.requires_witness:
+        return signature.atom in candidates
+    required = set(signature.holes)
+    for candidate in candidates:
+        for substitution in atom_pattern_unifications(signature.atom, candidate):
+            bindings = dict(substitution)
+            if required <= bindings.keys() and all(
+                not _is_variable(bindings[hole]) for hole in required
+            ):
+                return True
+    return False
+
+
+@dataclass(frozen=True)
 class TypedAtomAlignment:
     direct_match_count: int
     direct_hole_binding_count: int
@@ -122,12 +178,22 @@ class ProofDAGMeetAlignment:
     best_residual_atoms: tuple[str, ...]
     best_source_atoms: tuple[str, ...]
     best_theorem_chain: tuple[str, ...]
+    best_backward_frontier_size: int | None
     branch_count: int
     fragment_count: int
 
     @property
     def has_meet(self) -> bool:
         return self.meet_count > 0
+
+    @property
+    def has_residual_reduction(self) -> bool:
+        return (
+            self.has_meet
+            and self.best_residual_size is not None
+            and self.best_backward_frontier_size is not None
+            and self.best_residual_size < self.best_backward_frontier_size
+        )
 
     @property
     def rank(self) -> tuple[int, ...]:
@@ -159,6 +225,8 @@ class ProofDAGMeetAlignment:
             "best_residual_atoms": list(self.best_residual_atoms),
             "best_source_atoms": list(self.best_source_atoms),
             "best_theorem_chain": list(self.best_theorem_chain),
+            "best_backward_frontier_size": self.best_backward_frontier_size,
+            "has_residual_reduction": self.has_residual_reduction,
             "branch_count": self.branch_count,
             "fragment_count": self.fragment_count,
             "rank": list(self.rank),
@@ -426,6 +494,7 @@ def align_candidate_cone_to_proof_branches(
             (),
             (),
             (),
+            None,
             len(branches),
             len(cone.fragments),
         )
@@ -463,6 +532,7 @@ def align_candidate_cone_to_proof_branches(
             for atom in best_fragment.source_atoms
         ),
         best_theorem_chain=best_fragment.theorem_chain,
+        best_backward_frontier_size=len(best_branch.frontier),
         branch_count=len(branches),
         fragment_count=len(cone.fragments),
     )

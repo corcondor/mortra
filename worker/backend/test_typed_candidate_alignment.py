@@ -1,5 +1,6 @@
 from worker.backend.geometry_proof_hypergraph import Atom
 from worker.backend.typed_candidate_alignment import (
+    candidate_directly_satisfies_obligation,
     align_candidate_atoms,
     instantiate_relation_templates,
 )
@@ -54,3 +55,24 @@ def test_relation_templates_are_instantiated_without_text_heuristics() -> None:
     )
 
     assert atoms == (Atom("midp", ("m", "p", "q")),)
+
+
+def test_ground_relation_is_not_mistaken_for_a_fresh_point_construction() -> None:
+    assert not candidate_directly_satisfies_obligation(
+        (Atom("cyclic", ("d", "p", "a", "m")),),
+        Atom("cyclic", ("p", "q", "r", "t")),
+    )
+
+
+def test_construction_can_fill_an_explicit_typed_hole() -> None:
+    assert candidate_directly_satisfies_obligation(
+        (Atom("cyclic", ("d", "q", "r", "t")),),
+        Atom("cyclic", ("?x", "q", "r", "t")),
+    )
+
+
+def test_ground_relation_requires_the_exact_certified_fact() -> None:
+    assert candidate_directly_satisfies_obligation(
+        (Atom("cyclic", ("p", "q", "r", "t")),),
+        Atom("cyclic", ("p", "q", "r", "t")),
+    )

@@ -39,6 +39,7 @@ def run_method(
     method: str,
     *,
     prover_timeout_seconds: int | None = None,
+    proof_output: Path | None = None,
 ) -> dict:
     with tempfile.TemporaryDirectory(prefix=f"mortra-gclc-{method}-") as directory:
         workspace = Path(directory)
@@ -51,7 +52,11 @@ def run_method(
                 encoding="utf-8",
             )
         started = time.perf_counter()
-        external_timeout = max(60, (prover_timeout_seconds or 0) + 15)
+        # The internal prover timer does not cover every translation and
+        # elimination phase.  Keep a small hard-stop margin instead of the old
+        # fixed 60 s floor, which made bounded local-lemma portfolios scale
+        # linearly by a minute for every censored candidate.
+        external_timeout = max(10, (prover_timeout_seconds or 0) + 5)
         try:
             completed = subprocess.run(
                 [str(executable), str(copied), flag],
@@ -86,21 +91,30 @@ def run_method(
         # reproducible without publishing machine-specific absolute paths.
         transcript = transcript.replace(str(workspace), "<TEMP>")
         proof_path = workspace / f"{copied.stem}_proof.tex"
+        internal_timeout_reached = (
+            "conjecture not proved - timeout" in transcript.lower()
+        )
         proved = (
             return_code == 0
             and "conjecture successfully proved" in transcript.lower()
             and proof_path.exists()
         )
+        if proof_output is not None and proof_path.exists():
+            proof_output.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(proof_path, proof_output)
         return {
             "method": method,
             "flag": flag,
             "return_code": return_code,
             "proved": proved,
             "external_timeout_reached": external_timeout_reached,
+            "internal_timeout_reached": internal_timeout_reached,
+            "timed_out": external_timeout_reached or internal_timeout_reached,
             "external_timeout_seconds": external_timeout,
             "elapsed_seconds": elapsed,
             "proof_sha256": sha256(proof_path) if proof_path.exists() else None,
             "proof_bytes": proof_path.stat().st_size if proof_path.exists() else 0,
+            "proof_output": str(proof_output) if proof_output is not None and proof_path.exists() else None,
             "prover_timeout_seconds": prover_timeout_seconds,
             "transcript": transcript,
         }

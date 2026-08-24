@@ -88,11 +88,15 @@ class RuleClosureAdapter:
         *,
         imports: Iterable[str],
         exports: Iterable[str],
+        max_certificates_per_round: int | None = None,
     ) -> None:
         self.agent_id = agent_id
         self.theorems = tuple(theorems)
         self.imports = frozenset(name.lower() for name in imports)
         self.exports = frozenset(name.lower() for name in exports)
+        if max_certificates_per_round is not None and max_certificates_per_round < 1:
+            raise ValueError("max_certificates_per_round must be positive")
+        self.max_certificates_per_round = max_certificates_per_round
         self._theorem_by_name = {theorem.name: theorem for theorem in self.theorems}
 
     def _visible(self, facts: frozenset[Atom]) -> set[Atom]:
@@ -111,8 +115,23 @@ class RuleClosureAdapter:
     ) -> AgentProposal:
         visible = self._visible(facts)
         certificates: dict[Atom, LocalCertificate] = {}
-        for theorem in self.theorems:
-            for substitution, matched in _premise_matches(theorem.premises, visible):
+        goal_predicate = goal.canonical().predicate
+        theorems = sorted(
+            self.theorems,
+            key=lambda theorem: (
+                theorem.conclusion.canonical().predicate != goal_predicate,
+                theorem.name,
+            ),
+        )
+        candidate_budget = None
+        if self.max_certificates_per_round is not None:
+            candidate_budget = [max(4096, self.max_certificates_per_round * 64)]
+        for theorem in theorems:
+            for substitution, matched in _premise_matches(
+                theorem.premises,
+                visible,
+                candidate_budget=candidate_budget,
+            ):
                 conclusion = _instantiate(theorem.conclusion, substitution)
                 if conclusion is None:
                     continue
@@ -129,6 +148,19 @@ class RuleClosureAdapter:
                         native_payload={"round": round_index},
                     ),
                 )
+                if (
+                    self.max_certificates_per_round is not None
+                    and len(certificates) >= self.max_certificates_per_round
+                ):
+                    break
+            if (
+                candidate_budget is not None
+                and (
+                    candidate_budget[0] <= 0
+                    or len(certificates) >= self.max_certificates_per_round
+                )
+            ):
+                break
         goal_key = render_atom(goal)
         priorities = {
             render_atom(certificate.conclusion): (
@@ -137,11 +169,17 @@ class RuleClosureAdapter:
             for certificate in certificates.values()
         }
         priorities.setdefault(goal_key, 1.0)
-        return AgentProposal(
-            certificates=tuple(
-                certificates[key]
-                for key in sorted(certificates, key=render_atom)
+        ordered = sorted(
+            certificates.values(),
+            key=lambda certificate: (
+                certificate.conclusion.canonical() != goal.canonical(),
+                render_atom(certificate.conclusion),
             ),
+        )
+        if self.max_certificates_per_round is not None:
+            ordered = ordered[: self.max_certificates_per_round]
+        return AgentProposal(
+            certificates=tuple(ordered),
             open_obligations=() if goal.canonical() in visible else (goal.canonical(),),
             priorities=priorities,
         )
