@@ -55,7 +55,7 @@ jobs:
           git -C external/Newclid checkout ac6550732a950564cf7614d605b5bf1eadd29701
           python -m pip install -r worker/requirements.txt
           python -m pip install -e external/Newclid/newclid
-          python -m pip install pytest==8.4.1
+          python -m pip install pytest==8.4.1 python-flint==0.9.0
       - name: Verify typed translation, sheaf contracts, and artifacts
         run: >-
           python -B -m unittest
