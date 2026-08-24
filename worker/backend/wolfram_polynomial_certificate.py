@@ -61,7 +61,10 @@ class WolframPolynomialCertificate:
 
 
 def _wolfram_expression(expression: sp.Expr) -> str:
-    return mathematica_code(sp.expand(expression))
+    # Keep coefficient charts factored.  Expanding them in Python can be much
+    # larger than the active polynomial ring and does not change the exact
+    # polynomial Wolfram receives.
+    return mathematica_code(expression)
 
 
 def _parse_wolfram_expression(
@@ -153,6 +156,27 @@ def _extract_json(stdout: str) -> dict[str, object]:
     raise ValueError("wolframscript did not emit a JSON result")
 
 
+def _saturation_factors(
+    nonzero_conditions: tuple[str, ...],
+    *,
+    enabled: bool,
+    limit: int,
+) -> tuple[sp.Expr, ...]:
+    """Factor regularity conditions only when saturation will consume them."""
+
+    if not enabled or limit <= 0:
+        return ()
+    factors_by_text: dict[str, sp.Expr] = {}
+    for condition in nonzero_conditions:
+        expression = condition.removesuffix(" != 0").strip()
+        factor = sp.factor(sp.together(sp.sympify(expression)).as_numer_denom()[0])
+        if factor.could_extract_minus_sign():
+            factor = -factor
+        if factor != 0 and factor.free_symbols:
+            factors_by_text.setdefault(str(factor), factor)
+    return tuple(factors_by_text.values())[:limit]
+
+
 def certify_jgex_with_wolfram(
     text: str,
     *,
@@ -178,9 +202,15 @@ def certify_jgex_with_wolfram(
         raise ValueError("timeout_seconds must be positive")
     if reduction_mode not in {"direct", "extended_groebner"}:
         raise ValueError("reduction_mode must be direct or extended_groebner")
-    if preprocessing not in {"local_relational", "relational", "explicit"}:
+    if preprocessing not in {
+        "local_relational",
+        "goal_local_relational",
+        "relational",
+        "explicit",
+    }:
         raise ValueError(
-            "preprocessing must be local_relational, relational, or explicit"
+            "preprocessing must be local_relational, goal_local_relational, "
+            "relational, or explicit"
         )
     if saturation_mode not in {"none", "single", "cumulative"}:
         raise ValueError("saturation_mode must be none, single, or cumulative")
@@ -190,16 +220,18 @@ def certify_jgex_with_wolfram(
     nonzero_condition_text: tuple[str, ...] = ()
     preprocessing_replayed = True
     preprocessing_certificate_sha256: str | None = None
-    if preprocessing == "local_relational":
+    if preprocessing in {"local_relational", "goal_local_relational"}:
         analysis = inspect_jgex_local_elimination(
             text,
+            enable_affine_local_lemmas=True,
+            goal_directed=preprocessing == "goal_local_relational",
             max_output_terms=local_max_output_terms,
             max_resultant_degree=1,
             max_separator_variables=local_max_separator_variables,
             ordering_strategy="min_fill",
         )
         equations = tuple(
-            sp.expand(sp.sympify(item))
+            sp.sympify(item)
             for item in analysis.local_elimination.remaining_polynomials
         )
         variable_names = tuple(analysis.local_elimination.remaining_variables)
@@ -208,14 +240,13 @@ def certify_jgex_with_wolfram(
         initial_variable_count = analysis.initial_variable_count
         initial_total_expanded_terms = analysis.initial_total_expanded_terms
         reduced_total_expanded_terms = analysis.reduced_total_expanded_terms
-        exact_analysis = inspect_jgex_exact_system(text, representation="relational")
         local_conditions = tuple(
             condition
             for step in analysis.local_elimination.steps
             for condition in step.nonzero_conditions
         )
         nonzero_condition_text = tuple(
-            dict.fromkeys((*exact_analysis.nondegeneracy_conditions, *local_conditions))
+            dict.fromkeys((*analysis.nondegeneracy_conditions, *local_conditions))
         )
         preprocessing_replayed = analysis.all_local_certificates_replayed
         preprocessing_certificate_sha256 = hashlib.sha256(
@@ -239,16 +270,12 @@ def certify_jgex_with_wolfram(
         initial_total_expanded_terms = exact_analysis.total_expanded_terms
         reduced_total_expanded_terms = exact_analysis.total_expanded_terms
         nonzero_condition_text = exact_analysis.nondegeneracy_conditions
-    goal = sp.expand(sp.sympify(goal_text))
-    factors_by_text: dict[str, sp.Expr] = {}
-    for condition in nonzero_condition_text:
-        expression = condition.removesuffix(" != 0").strip()
-        factor = sp.factor(sp.together(sp.sympify(expression)).as_numer_denom()[0])
-        if factor.could_extract_minus_sign():
-            factor = -factor
-        if factor != 0 and factor.free_symbols:
-            factors_by_text.setdefault(str(factor), factor)
-    factors = tuple(factors_by_text.values())[:max_saturation_factors]
+    goal = sp.sympify(goal_text)
+    factors = _saturation_factors(
+        nonzero_condition_text,
+        enabled=saturation_mode != "none",
+        limit=max_saturation_factors,
+    )
     multiplier_specs: list[tuple[sp.Expr, tuple[str, ...]]] = [(sp.Integer(1), ())]
     if saturation_mode == "single":
         multiplier_specs.extend((factor, (str(factor),)) for factor in factors)
@@ -281,7 +308,7 @@ def certify_jgex_with_wolfram(
     equation_code = "{" + ",".join(map(_wolfram_expression, renamed_equations)) + "}"
     variable_code = "{" + ",".join(map(str, renamed_reduction_symbols)) + "}"
     target_codes = tuple(
-        _wolfram_expression(sp.expand(renamed_goal * multiplier))
+        _wolfram_expression(renamed_goal * multiplier)
         for multiplier, _ in renamed_multiplier_specs
     )
     reversed_variable_code = "{" + ",".join(map(str, reversed(renamed_reduction_symbols))) + "}"
@@ -293,6 +320,7 @@ def certify_jgex_with_wolfram(
         computation = (
             f"Module[{{extended, reductions, selectedIndex, reduction, originalQuotients}}, "
             f"extended = ResourceFunction[\"ExtendedGroebnerBasis\"][{equation_code}, {variable_code}, MonomialOrder -> DegreeReverseLexicographic]; "
+            "If[extended === $Failed, Return[\"extended_groebner_failed\"]]; "
             f"reductions = {reduction_code}; "
             "selectedIndex = SelectFirst[Range[Length[reductions]], Last[reductions[[#]]] === 0 &, 1]; "
             "reduction = reductions[[selectedIndex]]; "
@@ -318,7 +346,7 @@ def certify_jgex_with_wolfram(
     script = "\n".join(
         (
             f"result = TimeConstrained[{computation}, {timeout_seconds}, $Failed];",
-            'payload = If[result === $Failed, <|"status" -> "timeout"|>, <|"status" -> "complete", "strategy" -> result["strategy"], "multiplierIndex" -> result["multiplierIndex"], "basisSize" -> result["basisSize"], "quotients" -> (ToString[InputForm[#]] & /@ result["quotients"]), "remainder" -> ToString[InputForm[result["remainder"]]]|>];',
+            'payload = Which[result === $Failed, <|"status" -> "timeout"|>, result === "extended_groebner_failed", <|"status" -> "backend_failed", "reason" -> result|>, True, <|"status" -> "complete", "strategy" -> result["strategy"], "multiplierIndex" -> result["multiplierIndex"], "basisSize" -> result["basisSize"], "quotients" -> (ToString[InputForm[#]] & /@ result["quotients"]), "remainder" -> ToString[InputForm[result["remainder"]]]|>];',
             'WriteString[$Output, ExportString[payload, "RawJSON"], "\\n"];',
         )
     )
@@ -355,6 +383,10 @@ def certify_jgex_with_wolfram(
                 backend_stdout=str(exc.stdout or ""),
                 backend_stderr=str(exc.stderr or ""),
                 reason="wolframscript process timeout",
+                preprocessing_replayed=preprocessing_replayed,
+                preprocessing_certificate_sha256=(
+                    preprocessing_certificate_sha256
+                ),
             )
 
     try:
@@ -378,6 +410,8 @@ def certify_jgex_with_wolfram(
             backend_stdout=completed.stdout,
             backend_stderr=completed.stderr,
             reason=str(exc),
+            preprocessing_replayed=preprocessing_replayed,
+            preprocessing_certificate_sha256=preprocessing_certificate_sha256,
         )
     if payload.get("status") == "timeout":
         return WolframPolynomialCertificate(
@@ -398,6 +432,30 @@ def certify_jgex_with_wolfram(
             backend_stdout=completed.stdout,
             backend_stderr=completed.stderr,
             reason="Wolfram PolynomialReduce timeout",
+            preprocessing_replayed=preprocessing_replayed,
+            preprocessing_certificate_sha256=preprocessing_certificate_sha256,
+        )
+    if payload.get("status") == "backend_failed":
+        return WolframPolynomialCertificate(
+            status="execution_error",
+            exact_replay=False,
+            equation_count=len(equations),
+            variable_count=len(reduction_symbols),
+            initial_equation_count=initial_equation_count,
+            initial_variable_count=initial_variable_count,
+            initial_total_expanded_terms=initial_total_expanded_terms,
+            reduced_total_expanded_terms=reduced_total_expanded_terms,
+            quotient_certificate=(),
+            remainder="unknown",
+            replay_residual="unknown",
+            elapsed_seconds=time.perf_counter() - started,
+            certificate_sha256=None,
+            preprocessing=preprocessing,
+            backend_stdout=completed.stdout,
+            backend_stderr=completed.stderr,
+            reason=str(payload.get("reason", "Wolfram backend failed")),
+            preprocessing_replayed=preprocessing_replayed,
+            preprocessing_certificate_sha256=preprocessing_certificate_sha256,
         )
 
     quotient_text = tuple(str(item) for item in payload.get("quotients", ()))

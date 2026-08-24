@@ -103,6 +103,66 @@ def _term_count(polynomial: sp.Expr) -> int:
     return len(sp.Add.make_args(polynomial))
 
 
+@lru_cache(maxsize=16_384)
+def _active_polynomial_term_upper_bound(
+    expression: sp.Expr,
+    generators: frozenset[sp.Symbol],
+    cap: int,
+) -> int:
+    """Bound expanded terms in the active polynomial generators.
+
+    ``_term_count`` deliberately treats a factored separator message as one
+    top-level term.  That is useful for cheap ranking, but it is not a valid
+    expansion budget: ``(x + 1)**20`` would otherwise cost one term.  This
+    structural bound expands only the active-generator shape and treats every
+    coefficient-only chart as one atom.  Returning ``cap + 1`` is sufficient
+    for rejection and avoids materializing an expression that already exceeds
+    the configured budget.
+    """
+
+    if expression == 0:
+        return 0
+    if expression.free_symbols.isdisjoint(generators):
+        return 1
+    if expression.is_Atom:
+        return 1
+    if expression.is_Add:
+        total = 0
+        for argument in expression.args:
+            total += _active_polynomial_term_upper_bound(argument, generators, cap)
+            if total > cap:
+                return cap + 1
+        return total
+    if expression.is_Mul:
+        total = 1
+        for argument in expression.args:
+            factor_terms = _active_polynomial_term_upper_bound(
+                argument, generators, cap
+            )
+            if factor_terms == 0:
+                return 0
+            total *= factor_terms
+            if total > cap:
+                return cap + 1
+        return total
+    if expression.is_Pow:
+        base, exponent = expression.args
+        if exponent.is_Integer and int(exponent) >= 0:
+            exponent_value = int(exponent)
+            if exponent_value == 0:
+                return 1
+            base_terms = _active_polynomial_term_upper_bound(base, generators, cap)
+            total = 1
+            for _ in range(exponent_value):
+                total *= base_terms
+                if total > cap:
+                    return cap + 1
+            return total
+    # Derived messages are polynomial.  An unfamiliar active-generator node is
+    # conservatively over budget rather than silently admitting an explosion.
+    return cap + 1
+
+
 def _factor_bounded(expression: sp.Expr, *, max_operations: int = 128) -> sp.Expr:
     """Factor small expressions without re-expanding large separator charts."""
 
@@ -382,6 +442,7 @@ def _linear_eliminate(
     bucket: tuple[sp.Expr, ...],
     *,
     pivot_index: int | None = None,
+    require_pivot_nonzero: bool = True,
 ) -> tuple[tuple[sp.Expr, ...], LocalEliminationStep]:
     decomposed: list[tuple[sp.Expr, sp.Expr, sp.Expr]] = []
     for polynomial in bucket:
@@ -415,9 +476,10 @@ def _linear_eliminate(
     for index, (polynomial, coefficient, constant) in enumerate(decomposed):
         if index == pivot_index:
             continue
-        output = _factor_bounded(
+        determinant = (
             pivot_coefficient * constant - coefficient * pivot_constant
         )
+        output = _factor_bounded(determinant)
         if variable in output.free_symbols:
             raise AssertionError("linear local elimination retained its variable")
         # ``_coefficients_in_generator`` is an exact Poly decomposition.  In
@@ -426,13 +488,15 @@ def _linear_eliminate(
         #   pc*(c*x+k) - c*(pc*x+pk) = pc*k - c*pk.
         # Constructing and fully expanding the original chart again can be
         # exponentially larger while proving the same identity.
-        residual = sp.expand(
-            output
-            - (
-                pivot_coefficient * (coefficient * variable + constant)
-                - coefficient
-                * (pivot_coefficient * variable + pivot_constant)
-            )
+        # The coefficient lists came from an exact Poly decomposition.  When
+        # bounded factoring leaves the determinant unchanged, the replay is
+        # the defining 2x2 determinant identity and does not require expanding
+        # a potentially enormous coefficient chart.  Small factorizations are
+        # still checked explicitly.
+        residual = (
+            sp.Integer(0)
+            if output == determinant
+            else sp.expand(output - determinant)
         )
         if residual != 0:
             raise AssertionError("linear coefficient replay did not close")
@@ -456,10 +520,11 @@ def _linear_eliminate(
     outputs = tuple(item[0] for item in ordered)
     residuals = tuple(item[1] for item in ordered)
     witnesses = tuple(item[2] for item in ordered)
+    method = "linear_localization" if require_pivot_nonzero else "resultant_projection"
     material = "|".join(
         (
             str(variable),
-            "linear_localization",
+            method,
             *(sp.sstr(item) for item in bucket),
             *(sp.sstr(item) for item in outputs),
             *(sp.sstr(item) for item in residuals),
@@ -482,12 +547,16 @@ def _linear_eliminate(
     return tuple(outputs), LocalEliminationStep(
         variable=str(variable),
         separator_variables=separator_variables,
-        method="linear_localization",
+        method=method,
         input_polynomials=tuple(sp.sstr(item) for item in bucket),
         output_polynomials=tuple(sp.sstr(item) for item in outputs),
         replay_residuals=tuple(sp.sstr(item) for item in residuals),
         ideal_membership_witnesses=witnesses,
-        nonzero_conditions=(f"{sp.sstr(pivot_coefficient)} != 0",),
+        nonzero_conditions=(
+            (f"{sp.sstr(pivot_coefficient)} != 0",)
+            if require_pivot_nonzero
+            else ()
+        ),
         replayed=replayed,
         certificate_sha256=hashlib.sha256(material.encode()).hexdigest(),
     )
@@ -1082,7 +1151,16 @@ def eliminate_local_linear_variables(
                         }
                     )
                 if use_division_free_resultant:
-                    outputs, certificate = _resultant_eliminate(variable, bucket)
+                    # For linear equations the resultant is the exact 2x2
+                    # coefficient determinant.  Building a Sylvester matrix
+                    # and running gcdex can dominate the whole proof even
+                    # though the direct ideal witness is simply
+                    #   a*(c*x+d) - c*(a*x+b) = a*d-c*b.
+                    outputs, certificate = _linear_eliminate(
+                        variable,
+                        bucket,
+                        require_pivot_nonzero=False,
+                    )
                 else:
                     outputs, certificate = _linear_eliminate(
                         variable,
@@ -1141,25 +1219,54 @@ def eliminate_local_linear_variables(
                 for condition in certificate.nonzero_conditions
             ):
                 continue
-            if all(_term_count(item) <= max_output_terms for item in outputs):
+            output_generators = frozenset(remaining - {variable})
+            output_term_bounds = tuple(
+                _active_polynomial_term_upper_bound(
+                    item,
+                    output_generators,
+                    max_output_terms,
+                )
+                for item in outputs
+            )
+            if all(item <= max_output_terms for item in output_term_bounds):
                 selected = (variable, bucket, outputs, certificate)
                 break
+            if progress_callback is not None:
+                progress_callback(
+                    {
+                        "stage": "candidate_rejected",
+                        "variable": str(variable),
+                        "reason": "active_term_budget",
+                        "output_term_upper_bounds": list(output_term_bounds),
+                        "max_output_terms": max_output_terms,
+                    }
+                )
         if selected is None:
             stopped_reason = "term_budget"
             break
         variable, bucket, outputs, certificate = selected
+        next_remaining = remaining - {variable}
         factors = (
-            _deduplicate(item for item in factors if variable not in item.free_symbols)
+            _deduplicate(
+                (item for item in factors if variable not in item.free_symbols),
+                generators=next_remaining,
+            )
             + outputs
         )
-        factors = _deduplicate(factors)
+        # Normalize only in the variables that remain in the local polynomial
+        # ring.  Re-expanding coefficient-only geometry charts here repeats a
+        # large exact computation after every elimination step without changing
+        # the ideal or the certificate.
+        factors = _deduplicate(factors, generators=next_remaining)
         remaining.remove(variable)
         eliminated.append(str(variable))
         if certificate is not None:
             steps.append(certificate)
-            residual_messages = _deduplicate(
-                (*residual_messages, *outputs)
-            )
+            if ordering_strategy == "residual_conditioned":
+                residual_messages = _deduplicate(
+                    (*residual_messages, *outputs),
+                    generators=next_remaining,
+                )
         if progress_callback is not None:
             progress_callback(
                 {

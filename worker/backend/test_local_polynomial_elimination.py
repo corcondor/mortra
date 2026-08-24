@@ -1,6 +1,7 @@
 import sympy as sp
 
 from worker.backend.local_polynomial_elimination import (
+    _active_polynomial_term_upper_bound,
     _expanded_polynomial_degree,
     _polynomial_degree_capped,
     _polynomial_degree_upper_bound,
@@ -149,6 +150,34 @@ def test_unknown_localization_condition_can_be_rejected_by_caller() -> None:
     assert result.stopped_reason == "term_budget"
 
 
+def test_active_term_bound_sees_through_factored_separator_messages() -> None:
+    x, y, coefficient = sp.symbols("x y coefficient")
+
+    assert _active_polynomial_term_upper_bound(
+        coefficient * (x + 1) ** 20,
+        frozenset({x, y}),
+        64,
+    ) == 65
+    assert _active_polynomial_term_upper_bound(
+        coefficient * (x + 1) ** 2,
+        frozenset({x, y}),
+        64,
+    ) == 4
+
+
+def test_factored_linear_projection_respects_active_term_budget() -> None:
+    x, y, z = sp.symbols("x y z")
+    result = eliminate_local_linear_variables(
+        (x, x + (y + 1) ** 10 * (z + 1) ** 10),
+        (x, y, z),
+        protected_variables=(y, z),
+        max_output_terms=64,
+    )
+
+    assert result.eliminated_variables == ()
+    assert result.stopped_reason == "term_budget"
+
+
 def test_rejected_linear_division_falls_back_to_exact_resultant() -> None:
     x, a, b, c, d = sp.symbols("x a b c d")
     result = eliminate_local_linear_variables(
@@ -165,6 +194,29 @@ def test_rejected_linear_division_falls_back_to_exact_resultant() -> None:
         sp.expand(a * d - b * c),
         sp.expand(b * c - a * d),
     }
+    witness = result.steps[0].ideal_membership_witnesses[0]
+    assert witness.replay_residual == "0"
+    assert result.steps[0].nonzero_conditions == ()
+
+
+def test_division_free_linear_resultant_avoids_generic_resultant(monkeypatch) -> None:
+    x, a, b, c, d = sp.symbols("x a b c d")
+
+    def fail_if_called(*_args, **_kwargs):
+        raise AssertionError("generic resultant should not run for linear equations")
+
+    monkeypatch.setattr(sp, "resultant", fail_if_called)
+    result = eliminate_local_linear_variables(
+        (a * x + b, c * x + d),
+        (x, a, b, c, d),
+        protected_variables=(a, b, c, d),
+        nonzero_condition_acceptor=lambda _condition: False,
+    )
+
+    assert result.exact_replay
+    assert result.eliminated_variables == ("x",)
+    assert result.steps[0].method == "resultant_projection"
+    assert result.steps[0].nonzero_conditions == ()
 
 
 def test_resultant_pivot_minimizes_predicted_expansion_not_degree_only() -> None:

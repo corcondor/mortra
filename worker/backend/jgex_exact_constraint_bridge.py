@@ -8,12 +8,19 @@ and asks Groebner reduction only about the remaining polynomial constraints.
 from __future__ import annotations
 
 import hashlib
+from collections import Counter
 from dataclasses import dataclass
 from functools import lru_cache
 import time
 from typing import Callable
 
 import sympy as sp
+
+try:
+    from flint import fmpq, fmpq_mpoly_ctx
+except ImportError:  # pragma: no cover - SymPy remains the portable fallback.
+    fmpq = None
+    fmpq_mpoly_ctx = None
 from newclid.jgex.constructions import ALL_JGEX_CONSTRUCTIONS
 from newclid.jgex.definition import JGEXDefinition
 from newclid.jgex.formulation import JGEXFormulation
@@ -286,6 +293,7 @@ class JGEXLocalEliminationAnalysis:
     reduced_equation_count: int
     reduced_total_expanded_terms: int
     reduced_maximum_expanded_terms: int
+    nondegeneracy_conditions: tuple[str, ...]
     local_elimination: LocalEliminationResult
     structural_lemma_certificates: tuple[StructuralLocalLemmaCertificate, ...]
     all_local_certificates_replayed: bool
@@ -2983,7 +2991,15 @@ def _prepare_exact_system(
     projected_axis_goal: tuple[
         int, str, str, str, str, str
     ] | None = None
-    if goal_channel == "coll" and len(goal.args) == 3:
+    # The terminal circle-axis projection is implemented by the relational
+    # elaborator.  The explicit elaborator must keep the intersection point
+    # and its two circle equations; hiding it there leaves the ordinary goal
+    # encoder with no coordinates for the output.
+    if (
+        isinstance(elaborator, _RelationalJGEXElaborator)
+        and goal_channel == "coll"
+        and len(goal.args) == 3
+    ):
         left_center, right_center, output = tuple(str(item) for item in goal.args)
         for clause_index, clause in enumerate(formulation.setup_clauses):
             if tuple(map(str, clause.points)) != (output,):
@@ -3360,6 +3376,8 @@ def inspect_jgex_local_elimination(
     text: str,
     *,
     enable_structural_lemmas: bool = True,
+    enable_affine_local_lemmas: bool = False,
+    goal_directed: bool = False,
     max_steps: int | None = None,
     max_output_terms: int = 64,
     max_resultant_degree: int = 2,
@@ -3378,10 +3396,22 @@ def inspect_jgex_local_elimination(
         variables,
     ) = _prepare_exact_system(
         text,
-        enable_affine_local_lemmas=False,
+        enable_affine_local_lemmas=enable_affine_local_lemmas,
         enable_structural_lemmas=enable_structural_lemmas,
         representation="relational",
+        expand_equations=not goal_directed,
     )
+    selected_denominators = tuple(elaborator.denominators)
+    if goal_directed:
+        equations, selected_denominators, _, _ = _goal_directed_construction_slice(
+            elaborator,
+            points,
+            equations,
+        )
+        equations = tuple(
+            _expand_polynomial_in_generators(equation, variables)
+            for equation in equations
+        )
     # These counts are diagnostics only.  Expanding a high-degree geometry
     # goal solely to count its terms can exhaust memory before elimination
     # starts, so retain the current exact factorization here.
@@ -3390,7 +3420,7 @@ def inspect_jgex_local_elimination(
     protected = frozenset(goal_polynomial.free_symbols)
     known_nonzero_factor_keys = frozenset(
         key
-        for denominator in elaborator.denominators
+        for denominator in selected_denominators
         for key in _canonical_nonconstant_factor_keys(denominator)
     )
     elimination = eliminate_local_linear_variables(
@@ -3402,6 +3432,7 @@ def inspect_jgex_local_elimination(
         max_resultant_degree=max_resultant_degree,
         max_separator_variables=max_separator_variables,
         ordering_strategy=ordering_strategy,
+        pre_normalized=goal_directed,
         nonzero_condition_acceptor=lambda condition: (
             _nonzero_condition_follows_from_factors(
                 condition, known_nonzero_factor_keys
@@ -3427,6 +3458,16 @@ def inspect_jgex_local_elimination(
         reduced_equation_count=len(reduced),
         reduced_total_expanded_terms=sum(reduced_counts),
         reduced_maximum_expanded_terms=max(reduced_counts, default=0),
+        nondegeneracy_conditions=tuple(
+            f"{item} != 0"
+            for item in sorted(
+                {
+                    _safe(item)
+                    for item in selected_denominators
+                    if item != 0 and item.free_symbols
+                }
+            )
+        ),
         local_elimination=elimination,
         structural_lemma_certificates=tuple(elaborator.structural_lemma_certificates),
         all_local_certificates_replayed=(
@@ -3500,12 +3541,71 @@ def inspect_jgex_chordal_buchberger(
     )
 
 
+def _groebner_reduce_preserving_sparse_remainder(
+    basis: sp.GroebnerBasis,
+    expression: sp.Expr | sp.Poly,
+) -> tuple[list[sp.Expr], sp.Expr, sp.Poly]:
+    """Reduce once while retaining the sparse remainder for later products."""
+
+    from sympy.polys.rings import xring
+
+    domain = basis.domain
+    working_domain = (
+        domain.get_field() if domain.is_Ring and not domain.is_Field else domain
+    )
+    if isinstance(expression, sp.Poly):
+        if expression.gens != basis.gens:
+            raise ValueError("Polynomial generators do not match Groebner basis")
+        expression_polynomial = expression.set_domain(working_domain)
+    else:
+        expression_polynomial = sp.Poly(
+            expression,
+            *basis.gens,
+            domain=working_domain,
+        )
+    ring, _ = xring(
+        basis.gens,
+        working_domain,
+        basis._options.order,
+    )
+    ring_polynomials = [
+        ring.from_dict(expression_polynomial.rep.to_dict()),
+        *(
+            ring.from_dict(polynomial.set_domain(working_domain).rep.to_dict())
+            for polynomial in basis.polys
+        ),
+    ]
+    quotient_ring_polynomials, remainder_ring_polynomial = ring_polynomials[0].div(
+        ring_polynomials[1:]
+    )
+    quotient_polynomials = [
+        sp.Poly.from_dict(
+            dict(polynomial),
+            *basis.gens,
+            domain=working_domain,
+        )
+        for polynomial in quotient_ring_polynomials
+    ]
+    remainder_polynomial = sp.Poly.from_dict(
+        dict(remainder_ring_polynomial),
+        *basis.gens,
+        domain=working_domain,
+    )
+    return (
+        [polynomial.as_expr() for polynomial in quotient_polynomials],
+        remainder_polynomial.as_expr(),
+        remainder_polynomial,
+    )
+
+
 def _reduce_with_nondegeneracy_saturation(
     basis: sp.GroebnerBasis,
     goal: sp.Expr,
     denominators: tuple[tuple[str, sp.Expr], ...],
     *,
     max_rounds: int,
+    initial_reduction: tuple[list[sp.Expr], sp.Expr] | None = None,
+    initial_remainder_polynomial: sp.Poly | None = None,
     progress_callback: Callable[[dict[str, object]], None] | None = None,
 ) -> tuple[list[sp.Expr], sp.Expr, sp.Expr, tuple[str, ...]]:
     """Search bounded regularity products while retaining an exact proof.
@@ -3517,7 +3617,14 @@ def _reduce_with_nondegeneracy_saturation(
     accepted state is still replayed as ``multiplier * goal in I``.
     """
 
-    quotients, remainder = basis.reduce(goal)
+    if initial_reduction is None:
+        quotients, remainder = basis.reduce(goal)
+    else:
+        initial_quotients, initial_remainder = initial_reduction
+        quotients = list(initial_quotients)
+        remainder = initial_remainder
+        if progress_callback is not None:
+            progress_callback({"stage": "initial_reduction_reused"})
     multiplier = sp.Integer(1)
     assumptions_used: list[str] = []
     if sp.expand(remainder) == 0 or not max_rounds:
@@ -3532,20 +3639,62 @@ def _reduce_with_nondegeneracy_saturation(
             _safe(product),
         )
 
+    basis_generators = set(basis.gens)
+    coefficient_unit_denominators = tuple(
+        item
+        for item in denominators
+        if not (item[1].free_symbols & basis_generators)
+    )
+    if progress_callback is not None and coefficient_unit_denominators:
+        progress_callback(
+            {
+                "stage": "coefficient_unit_denominators_skipped",
+                "skipped_count": len(coefficient_unit_denominators),
+            }
+        )
     ordered_denominators = tuple(
         sorted(
-            denominators,
+            (
+                item
+                for item in denominators
+                if item[1].free_symbols & basis_generators
+            ),
             key=lambda item: (
                 int(sp.count_ops(item[1])),
                 item[0],
             ),
         )
     )
+    basis_expressions = tuple(polynomial.as_expr() for polynomial in basis.polys)
+    basis_leading_monomials = tuple(
+        polynomial.LM(order=basis._options.order).exponents
+        for polynomial in basis.polys
+    )
+    polynomial_cache: dict[sp.Expr, sp.Poly | None] = {}
+    if initial_remainder_polynomial is not None:
+        polynomial_cache[remainder] = initial_remainder_polynomial
+
+    def polynomial_in_basis_ring(
+        expression: sp.Expr,
+    ) -> tuple[sp.Poly | None, bool]:
+        if expression in polynomial_cache:
+            return polynomial_cache[expression], True
+        try:
+            polynomial = sp.Poly(
+                expression,
+                *basis.gens,
+                domain=basis.domain,
+            )
+        except sp.PolynomialError:
+            polynomial = None
+        polynomial_cache[expression] = polynomial
+        return polynomial, False
+
     beam: list[tuple[sp.Expr, tuple[str, ...], list[sp.Expr], sp.Expr]] = [
         (sp.Integer(1), (), quotients, remainder)
     ]
     beam_width = 4
-    seen_products = {"1"}
+    seen_factor_sets: set[tuple[str, ...]] = {()}
     best = beam[0]
     for depth in range(max_rounds):
         candidates: list[
@@ -3562,21 +3711,208 @@ def _reduce_with_nondegeneracy_saturation(
             for key, denominator in ordered_denominators:
                 if key in used:
                     continue
-                candidate_multiplier = sp.factor(current_multiplier * denominator)
-                candidate_id = _safe(candidate_multiplier)
-                if candidate_id in seen_products:
+                if progress_callback is not None:
+                    progress_callback(
+                        {
+                            "stage": "candidate_started",
+                            "depth": depth + 1,
+                            "assumption": key,
+                            "denominator_operation_count": int(
+                                sp.count_ops(denominator)
+                            ),
+                            "remainder_operation_count": int(
+                                sp.count_ops(current_remainder)
+                            ),
+                        }
+                    )
+                candidate_keys = tuple(sorted((*current_keys, key)))
+                if candidate_keys in seen_factor_sets:
                     continue
-                seen_products.add(candidate_id)
+                seen_factor_sets.add(candidate_keys)
+                # Every denominator was already split into canonical
+                # irreducible factors before this search.  Refactoring their
+                # product at every beam depth is algebraically redundant and
+                # can dominate the proof for large geometric determinants.
+                # Keep the exact product unevaluated; candidate_keys provides
+                # the canonical identity used for duplicate suppression.
+                candidate_multiplier = (
+                    denominator
+                    if current_multiplier == 1
+                    else sp.Mul(
+                        current_multiplier,
+                        denominator,
+                        evaluate=False,
+                    )
+                )
                 # If M*g = q.G + r, then d*M*g = (d*q + q').G + r'
                 # where d*r = q'.G + r'.  Reducing only the previous exact
                 # remainder avoids re-expanding the full geometric goal for
                 # every beam candidate while preserving the same certificate.
-                delta_quotients, candidate_remainder = basis.reduce(
-                    sp.expand(current_remainder * denominator)
+                # Keep the product in the same sparse polynomial ring as the
+                # Groebner basis. Expanding it as a SymPy expression first can
+                # duplicate large coefficient expressions thousands of times.
+                candidate_dividend = sp.Mul(
+                    current_remainder,
+                    denominator,
+                    evaluate=False,
                 )
+                candidate_polynomial: sp.Poly | None
+                remainder_polynomial, remainder_cache_hit = polynomial_in_basis_ring(
+                    current_remainder
+                )
+                denominator_polynomial, denominator_cache_hit = (
+                    polynomial_in_basis_ring(denominator)
+                )
+                if (
+                    remainder_polynomial is None
+                    or denominator_polynomial is None
+                ):
+                    candidate_polynomial = None
+                else:
+                    candidate_polynomial = (
+                        remainder_polynomial * denominator_polynomial
+                    )
+                dividend_operation_count = int(sp.count_ops(candidate_dividend))
+                dividend_term_count = (
+                    len(candidate_polynomial.terms())
+                    if candidate_polynomial is not None
+                    else len(sp.Add.make_args(sp.expand(candidate_dividend)))
+                )
+                reducible_term_count = (
+                    sum(
+                        1
+                        for monomial in candidate_polynomial.monoms()
+                        if any(
+                            all(
+                                exponent >= leading_exponent
+                                for exponent, leading_exponent in zip(
+                                    monomial,
+                                    leading_monomial,
+                                    strict=True,
+                                )
+                            )
+                            for leading_monomial in basis_leading_monomials
+                        )
+                    )
+                    if candidate_polynomial is not None
+                    else None
+                )
+                if progress_callback is not None:
+                    progress_callback(
+                        {
+                            "stage": "principal_scan_started",
+                            "depth": depth + 1,
+                            "assumption": key,
+                            "basis_polynomial_count": len(basis_expressions),
+                            "dividend_operation_count": dividend_operation_count,
+                            "dividend_term_count": dividend_term_count,
+                            "reducible_term_count": reducible_term_count,
+                            "sparse_polynomial_product": (
+                                candidate_polynomial is not None
+                            ),
+                            "remainder_polynomial_cache_hit": remainder_cache_hit,
+                            "denominator_polynomial_cache_hit": denominator_cache_hit,
+                        }
+                    )
+                # FLINT principal division is faster for compact factored goals,
+                # but converting a large expanded remainder into Q[x] can cost
+                # more than reducing it in the existing coefficient field.
+                principal_scan_limit = 20_000
+                principal_match = (
+                    _principal_basis_quotient(
+                        candidate_dividend,
+                        basis_expressions,
+                    )
+                    if (
+                        candidate_polynomial is None
+                        and dividend_operation_count <= principal_scan_limit
+                    )
+                    else None
+                )
+                if progress_callback is not None:
+                    progress_callback(
+                        {
+                            "stage": "principal_scan_completed",
+                            "depth": depth + 1,
+                            "assumption": key,
+                            "matched": principal_match is not None,
+                            "skipped_for_size": (
+                                dividend_operation_count > principal_scan_limit
+                            ),
+                            "skipped_for_sparse_ring_reduction": (
+                                candidate_polynomial is not None
+                            ),
+                            "operation_limit": principal_scan_limit,
+                        }
+                    )
+                if principal_match is None:
+                    if candidate_polynomial is not None and not reducible_term_count:
+                        delta_quotients = [
+                            sp.Integer(0) for _ in basis_expressions
+                        ]
+                        candidate_remainder_polynomial = candidate_polynomial
+                        candidate_remainder = candidate_polynomial.as_expr()
+                        polynomial_cache[candidate_remainder] = (
+                            candidate_remainder_polynomial
+                        )
+                        if progress_callback is not None:
+                            progress_callback(
+                                {
+                                    "stage": "candidate_reduction_skipped",
+                                    "depth": depth + 1,
+                                    "assumption": key,
+                                    "reason": "no_divisible_leading_monomial",
+                                }
+                            )
+                    else:
+                        if progress_callback is not None:
+                            progress_callback(
+                                {
+                                    "stage": "candidate_reduction_started",
+                                    "depth": depth + 1,
+                                    "assumption": key,
+                                }
+                            )
+                        (
+                            delta_quotients,
+                            candidate_remainder,
+                            candidate_remainder_polynomial,
+                        ) = _groebner_reduce_preserving_sparse_remainder(
+                            basis,
+                            candidate_polynomial
+                            if candidate_polynomial is not None
+                            else sp.expand(candidate_dividend)
+                        )
+                        polynomial_cache[candidate_remainder] = (
+                            candidate_remainder_polynomial
+                        )
+                        if progress_callback is not None:
+                            progress_callback(
+                                {
+                                    "stage": "candidate_reduction_completed",
+                                    "depth": depth + 1,
+                                    "assumption": key,
+                                    "remainder_is_zero": (
+                                        sp.expand(candidate_remainder) == 0
+                                    ),
+                                }
+                            )
+                else:
+                    basis_index, principal_quotient = principal_match
+                    delta_quotients = [
+                        (
+                            principal_quotient
+                            if index == basis_index
+                            else sp.Integer(0)
+                        )
+                        for index in range(len(basis_expressions))
+                    ]
+                    candidate_remainder = sp.Integer(0)
                 candidate_quotients = [
-                    sp.expand(
-                        denominator * current_quotient + delta_quotient
+                    sp.Add(
+                        denominator * current_quotient,
+                        delta_quotient,
+                        evaluate=False,
                     )
                     for current_quotient, delta_quotient in zip(
                         current_quotients, delta_quotients, strict=True
@@ -3585,7 +3921,7 @@ def _reduce_with_nondegeneracy_saturation(
                 attempted += 1
                 candidate = (
                     candidate_multiplier,
-                    (*current_keys, key),
+                    candidate_keys,
                     candidate_quotients,
                     candidate_remainder,
                 )
@@ -3630,24 +3966,32 @@ def _reduce_with_nondegeneracy_saturation(
     return best[2], best[3], best[0], best[1]
 
 
-def _canonical_nonconstant_factor_keys(expression: sp.Expr) -> frozenset[str]:
+def _canonical_nonconstant_factors(expression: sp.Expr) -> tuple[sp.Expr, ...]:
     """Return normalized irreducible factors relevant to non-vanishing."""
 
     numerator = sp.factor(sp.together(expression).as_numer_denom()[0])
     if numerator == 0:
-        return frozenset()
+        return ()
     try:
         _, factors = sp.factor_list(numerator)
     except sp.PolynomialError:
         factors = ((numerator, 1),)
-    keys: set[str] = set()
+    canonical: dict[str, sp.Expr] = {}
     for factor, _multiplicity in factors:
         factor = sp.factor(factor)
         if factor.could_extract_minus_sign():
             factor = -factor
         if factor.free_symbols:
-            keys.add(_safe(factor))
-    return frozenset(keys)
+            canonical.setdefault(_safe(factor), factor)
+    return tuple(canonical[key] for key in sorted(canonical))
+
+
+def _canonical_nonconstant_factor_keys(expression: sp.Expr) -> frozenset[str]:
+    """Return normalized irreducible factor names for certificate checks."""
+
+    return frozenset(
+        _safe(factor) for factor in _canonical_nonconstant_factors(expression)
+    )
 
 
 def _nonzero_condition_follows_from_factors(
@@ -3683,6 +4027,16 @@ def _replay_groebner_certificate(
         if basis[0] == -1 and quotients[0] == -goal:
             return True
 
+    flint_replay = _replay_polynomial_identity_with_flint(
+        goal=goal,
+        multiplier=multiplier,
+        quotients=quotients,
+        basis=basis,
+        remainder=remainder,
+    )
+    if flint_replay is not None:
+        return flint_replay
+
     if variables:
         try:
             residual = sp.Poly(goal * multiplier, *variables, domain=sp.EX)
@@ -3705,6 +4059,278 @@ def _replay_groebner_certificate(
         sp.Integer(0),
     )
     return sp.cancel(sp.together(expression)) == 0
+
+
+def _flint_polynomial_context(
+    expressions: tuple[sp.Expr, ...],
+):
+    """Convert polynomial expression DAGs to one exact FLINT ring.
+
+    Returning ``None`` means that python-flint is unavailable or an input is
+    outside Q[x_1, ..., x_n].  Callers then retain the existing SymPy path.
+    """
+
+    if fmpq is None or fmpq_mpoly_ctx is None:
+        return None
+    symbols = tuple(
+        sorted(
+            set().union(*(expression.free_symbols for expression in expressions)),
+            key=sp.default_sort_key,
+        )
+    )
+    if not symbols:
+        return None
+    context = fmpq_mpoly_ctx.get(
+        [str(symbol) for symbol in symbols],
+        ordering="degrevlex",
+    )
+    generators = dict(zip(symbols, context.gens(), strict=True))
+
+    @lru_cache(maxsize=None)
+    def convert(expression: sp.Expr):
+        if expression.is_Integer:
+            return context.constant(int(expression))
+        if expression.is_Rational:
+            return context.constant(
+                fmpq(int(expression.p), int(expression.q))
+            )
+        if expression.is_Symbol:
+            return generators[expression]
+        if expression.is_Add:
+            return sum(
+                (convert(argument) for argument in expression.args),
+                context.constant(0),
+            )
+        if expression.is_Mul:
+            result = context.constant(1)
+            for argument in expression.args:
+                result *= convert(argument)
+            return result
+        if (
+            expression.is_Pow
+            and expression.exp.is_Integer
+            and int(expression.exp) >= 0
+        ):
+            return convert(expression.base) ** int(expression.exp)
+        raise ValueError("expression is not a polynomial over the rationals")
+
+    try:
+        return symbols, context, tuple(convert(expression) for expression in expressions)
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+def _flint_polynomial_to_sympy(polynomial, symbols: tuple[sp.Symbol, ...]) -> sp.Expr:
+    terms: list[sp.Expr] = []
+    for exponents, coefficient in polynomial.terms():
+        rational = sp.Rational(
+            int(coefficient.numerator),
+            int(coefficient.denominator),
+        )
+        monomial = rational
+        for symbol, exponent in zip(symbols, exponents, strict=True):
+            if exponent:
+                monomial *= symbol ** int(exponent)
+        terms.append(monomial)
+    return sp.Add(*terms) if terms else sp.Integer(0)
+
+
+def _replay_polynomial_identity_with_flint(
+    *,
+    goal: sp.Expr,
+    multiplier: sp.Expr,
+    quotients: tuple[sp.Expr, ...] | list[sp.Expr],
+    basis: tuple[sp.Expr, ...],
+    remainder: sp.Expr,
+) -> bool | None:
+    expressions = (goal, multiplier, *quotients, *basis, remainder)
+    converted = _flint_polynomial_context(tuple(expressions))
+    if converted is None:
+        return None
+    _symbols, context, polynomials = converted
+    goal_polynomial = polynomials[0]
+    multiplier_polynomial = polynomials[1]
+    quotient_polynomials = polynomials[2 : 2 + len(quotients)]
+    basis_polynomials = polynomials[
+        2 + len(quotients) : 2 + len(quotients) + len(basis)
+    ]
+    remainder_polynomial = polynomials[-1]
+    residual = goal_polynomial * multiplier_polynomial - remainder_polynomial
+    residual -= sum(
+        (
+            quotient * polynomial
+            for quotient, polynomial in zip(
+                quotient_polynomials, basis_polynomials, strict=True
+            )
+        ),
+        context.constant(0),
+    )
+    return residual == 0
+
+
+def _flint_exact_principal_quotient(
+    goal: sp.Expr,
+    equation: sp.Expr,
+) -> sp.Expr | None:
+    """Divide in Q[x_1, ..., x_n] without expanding the SymPy expression DAG."""
+
+    converted = _flint_polynomial_context((goal, equation))
+    if converted is None:
+        return None
+    symbols, _context, (goal_polynomial, equation_polynomial) = converted
+    if equation_polynomial == 0:
+        return None
+    quotient, remainder = divmod(goal_polynomial, equation_polynomial)
+    if remainder != 0:
+        return None
+    if goal_polynomial != quotient * equation_polynomial:
+        raise AssertionError("FLINT principal-ideal certificate did not replay")
+    return _flint_polynomial_to_sympy(quotient, symbols)
+
+
+def _principal_basis_quotient(
+    dividend: sp.Expr,
+    basis: tuple[sp.Expr, ...],
+) -> tuple[int, sp.Expr] | None:
+    """Find a one-basis-polynomial certificate before full normal reduction.
+
+    Groebner bases over a rational-function coefficient field can contain
+    parameter denominators.  Divisibility is checked against the cleared
+    numerator in Q[x_1, ..., x_n], then the denominator is restored in the
+    quotient so the returned identity still targets the original basis entry.
+    """
+
+    dividend_numerator, dividend_denominator = sp.together(
+        dividend
+    ).as_numer_denom()
+    cleared_basis = tuple(
+        sp.together(polynomial).as_numer_denom() for polynomial in basis
+    )
+    converted = _flint_polynomial_context(
+        (dividend_numerator, *(numerator for numerator, _ in cleared_basis))
+    )
+    if converted is not None:
+        symbols, _context, polynomials = converted
+        dividend_polynomial = polynomials[0]
+        for index, ((_, basis_denominator), basis_polynomial) in enumerate(
+            zip(cleared_basis, polynomials[1:], strict=True)
+        ):
+            if basis_polynomial == 0:
+                continue
+            quotient, remainder = divmod(dividend_polynomial, basis_polynomial)
+            if remainder != 0:
+                continue
+            if dividend_polynomial != quotient * basis_polynomial:
+                raise AssertionError(
+                    "FLINT principal-basis certificate did not replay"
+                )
+            restored = sp.cancel(
+                _flint_polynomial_to_sympy(quotient, symbols)
+                * basis_denominator
+                / dividend_denominator
+            )
+            return index, restored
+
+    for index, (numerator, denominator) in enumerate(cleared_basis):
+        quotient = _flint_exact_principal_quotient(dividend_numerator, numerator)
+        if quotient is None:
+            continue
+        restored = sp.cancel(quotient * denominator / dividend_denominator)
+        if sp.cancel(dividend - restored * basis[index]) == 0:
+            return index, restored
+    return None
+
+
+def _principal_ideal_quotient(
+    goal: sp.Expr,
+    equation: sp.Expr,
+    variables: tuple[sp.Symbol, ...],
+) -> sp.Expr | None:
+    """Certify membership in a one-generator ideal without Buchberger search."""
+
+    if equation == 0 or not variables:
+        return None
+    goal_coefficient, goal_tail = goal.as_coeff_Mul()
+    equation_coefficient, equation_tail = equation.as_coeff_Mul()
+    goal_factors = Counter(sp.Mul.make_args(goal_tail))
+    equation_factors = Counter(sp.Mul.make_args(equation_tail))
+    if all(
+        goal_factors[factor] >= multiplicity
+        for factor, multiplicity in equation_factors.items()
+    ):
+        remaining_factors = goal_factors - equation_factors
+        quotient = sp.Rational(goal_coefficient, equation_coefficient) * sp.Mul(
+            *remaining_factors.elements()
+        )
+        if _replay_groebner_certificate(
+            goal=goal,
+            multiplier=sp.Integer(1),
+            quotients=(quotient,),
+            basis=(equation,),
+            remainder=sp.Integer(0),
+            variables=variables,
+        ):
+            return quotient
+    flint_quotient = _flint_exact_principal_quotient(goal, equation)
+    if flint_quotient is not None:
+        return flint_quotient
+    coefficient_parameters = tuple(
+        sorted(
+            (goal.free_symbols | equation.free_symbols) - set(variables),
+            key=sp.default_sort_key,
+        )
+    )
+    coefficient_domain = (
+        sp.QQ.frac_field(*coefficient_parameters)
+        if coefficient_parameters
+        else sp.QQ
+    )
+    try:
+        quotient, remainder = sp.div(
+            goal,
+            equation,
+            *variables,
+            domain=coefficient_domain,
+        )
+    except sp.PolynomialError:
+        return None
+    if remainder != 0 and sp.cancel(remainder) != 0:
+        return None
+    if not _replay_groebner_certificate(
+        goal=goal,
+        multiplier=sp.Integer(1),
+        quotients=(quotient,),
+        basis=(equation,),
+        remainder=sp.Integer(0),
+        variables=variables,
+    ):
+        return None
+    return quotient
+
+
+def _direct_constraint_match(
+    goal: sp.Expr,
+    equations: tuple[sp.Expr, ...],
+    *,
+    expanded_operation_budget: int = 256,
+) -> tuple[sp.Expr, sp.Expr] | None:
+    """Match exact constraints structurally before any bounded expansion."""
+
+    goal_operation_count = int(sp.count_ops(goal))
+    for equation in equations:
+        if goal == equation:
+            return equation, sp.Integer(1)
+        if goal == -equation:
+            return equation, sp.Integer(-1)
+        if (
+            goal_operation_count + int(sp.count_ops(equation))
+            <= expanded_operation_budget
+        ):
+            if sp.expand(goal - equation) == 0:
+                return equation, sp.Integer(1)
+            if sp.expand(goal + equation) == 0:
+                return equation, sp.Integer(-1)
+    return None
 
 
 def _typed_goal_decomposition(
@@ -3792,6 +4418,7 @@ def lower_jgex_to_exact_obligation(
     local_max_resultant_degree: int = 1,
     local_max_separator_variables: int | None = 12,
     local_ordering_strategy: str = "min_fill",
+    groebner_method: str = "f5b",
     progress_callback: Callable[[dict[str, object]], None] | None = None,
 ) -> JGEXExactObligation:
     started_at = time.perf_counter()
@@ -3809,7 +4436,8 @@ def lower_jgex_to_exact_obligation(
 
     base_representation = (
         "relational"
-        if representation in {"local_relational", "goal_local_relational"}
+        if representation
+        in {"local_relational", "goal_relational", "goal_local_relational"}
         else representation
     )
     emit("preparation_started", representation=representation)
@@ -3856,11 +4484,13 @@ def lower_jgex_to_exact_obligation(
     )
     if max_saturation_rounds < 0:
         raise ValueError("max_saturation_rounds must be non-negative")
+    if groebner_method not in {"f5b", "buchberger"}:
+        raise ValueError(f"unsupported Groebner method: {groebner_method}")
     original_equations = equations
     goal_relevant_clause_indices: tuple[int, ...] = ()
     excluded_clause_indices: tuple[int, ...] = ()
     selected_denominators = tuple(elaborator.denominators)
-    if representation == "goal_local_relational":
+    if representation in {"goal_relational", "goal_local_relational"}:
         emit(
             "goal_slice_started",
             construction_block_count=len(elaborator.construction_blocks),
@@ -3959,7 +4589,7 @@ def lower_jgex_to_exact_obligation(
             )
         if not local_elimination.exact_replay:
             raise AssertionError("JGEX local elimination certificate did not replay")
-        if local_elimination.steps:
+        if local_elimination.eliminated_variables:
             equations = tuple(
                 sp.sympify(item) for item in local_elimination.remaining_polynomials
             )
@@ -3988,7 +4618,6 @@ def lower_jgex_to_exact_obligation(
         *(item for key, item in denominators.items() if key not in local_denominators),
     )
 
-    direct_constraint: tuple[sp.Expr, sp.Expr] | None = None
     goal_operation_count = int(sp.count_ops(goal_polynomial))
     direct_scan_enabled = goal_operation_count <= 256
     emit(
@@ -3997,31 +4626,42 @@ def lower_jgex_to_exact_obligation(
         enabled=direct_scan_enabled,
         goal_operation_count=goal_operation_count,
     )
-    for equation in equations if direct_scan_enabled else ():
-        if goal_polynomial == equation:
-            direct_constraint = (equation, sp.Integer(1))
-            break
-        if goal_polynomial == -equation:
-            direct_constraint = (equation, sp.Integer(-1))
-            break
-        if goal_operation_count + int(sp.count_ops(equation)) <= 256:
-            if sp.expand(goal_polynomial - equation) == 0:
-                direct_constraint = (equation, sp.Integer(1))
-                break
-            if sp.expand(goal_polynomial + equation) == 0:
-                direct_constraint = (equation, sp.Integer(-1))
-                break
+    direct_constraint = _direct_constraint_match(goal_polynomial, equations)
     emit("direct_constraint_scan_completed", matched=direct_constraint is not None)
+    principal_constraint: tuple[sp.Expr, sp.Expr] | None = None
+    if direct_constraint is None and len(equations) == 1 and variables:
+        emit(
+            "principal_ideal_scan_started",
+            variable_count=len(variables),
+            goal_operation_count=goal_operation_count,
+        )
+        principal_quotient = _principal_ideal_quotient(
+            goal_polynomial,
+            equations[0],
+            variables,
+        )
+        if principal_quotient is not None:
+            principal_constraint = (equations[0], principal_quotient)
+        emit(
+            "principal_ideal_scan_completed",
+            matched=principal_constraint is not None,
+        )
     saturation_multiplier = sp.Integer(1)
     saturation_assumptions_used: list[str] = []
     goal_decomposition_certificate: TypedGoalDecompositionCertificate | None = None
     vacuous_unit_ideal = False
+    initial_remainder_polynomial: sp.Poly | None = None
     if goal_polynomial == 0 or goal_polynomial.is_zero is True:
         quotients: list[sp.Expr] = []
         remainder = sp.Integer(0)
         basis_expressions: tuple[sp.Expr, ...] = tuple()
     elif direct_constraint is not None:
         basis_expression, quotient = direct_constraint
+        quotients = [quotient]
+        remainder = sp.Integer(0)
+        basis_expressions = (basis_expression,)
+    elif principal_constraint is not None:
+        basis_expression, quotient = principal_constraint
         quotients = [quotient]
         remainder = sp.Integer(0)
         basis_expressions = (basis_expression,)
@@ -4054,12 +4694,13 @@ def lower_jgex_to_exact_obligation(
             variable_count=len(variables),
             coefficient_domain=str(coefficient_domain),
             coefficient_parameter_count=len(coefficient_parameters),
+            method=groebner_method,
         )
         basis = sp.groebner(
             equations,
             *variables,
             order="grevlex",
-            method="f5b",
+            method=groebner_method,
             domain=coefficient_domain,
         )
         basis_expressions = tuple(sp.expand(poly.as_expr()) for poly in basis.polys)
@@ -4088,7 +4729,7 @@ def lower_jgex_to_exact_obligation(
                     *full_variables,
                     order="grevlex",
                     domain=sp.QQ,
-                    method="f5b",
+                    method=groebner_method,
                 )
                 full_basis_expressions = tuple(
                     sp.expand(poly.as_expr()) for poly in full_basis.polys
@@ -4217,10 +4858,24 @@ def lower_jgex_to_exact_obligation(
                     all_components_zero=False,
                     fallback="whole_goal_reduction",
                 )
-                quotients, remainder = basis.reduce(goal_polynomial)
+                (
+                    quotients,
+                    remainder,
+                    initial_remainder_polynomial,
+                ) = _groebner_reduce_preserving_sparse_remainder(
+                    basis,
+                    goal_polynomial,
+                )
                 reduction_mode = "groebner_reduce_after_typed_components"
         else:
-            quotients, remainder = basis.reduce(goal_polynomial)
+            (
+                quotients,
+                remainder,
+                initial_remainder_polynomial,
+            ) = _groebner_reduce_preserving_sparse_remainder(
+                basis,
+                goal_polynomial,
+            )
             reduction_mode = "groebner_reduce"
         emit(
             "initial_reduction_completed",
@@ -4234,13 +4889,8 @@ def lower_jgex_to_exact_obligation(
                 denominator_count=len(ordered_denominators),
             )
             for denominator in ordered_denominators:
-                numerator = sp.factor(
-                    sp.together(denominator).as_numer_denom()[0]
-                )
-                if numerator.could_extract_minus_sign():
-                    numerator = -numerator
-                if numerator != 0 and numerator.free_symbols:
-                    canonical_denominators.setdefault(_safe(numerator), numerator)
+                for factor in _canonical_nonconstant_factors(denominator):
+                    canonical_denominators.setdefault(_safe(factor), factor)
             emit(
                 "denominator_canonicalization_completed",
                 denominator_count=len(canonical_denominators),
@@ -4270,6 +4920,8 @@ def lower_jgex_to_exact_obligation(
                 goal_polynomial,
                 tuple(canonical_denominators.items()),
                 max_rounds=max_saturation_rounds,
+                initial_reduction=(list(quotients), remainder),
+                initial_remainder_polynomial=initial_remainder_polynomial,
                 progress_callback=saturation_progress,
             )
         else:

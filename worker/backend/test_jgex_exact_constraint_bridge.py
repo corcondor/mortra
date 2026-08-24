@@ -1,12 +1,20 @@
 import sympy as sp
 import pytest
 
+import worker.backend.jgex_exact_constraint_bridge as exact_bridge
+
 from worker.backend.jgex_exact_constraint_bridge import (
     ConstructionEquationBlock,
     _RelationalJGEXElaborator,
     _expand_polynomial_in_generators,
+    _canonical_nonconstant_factors,
     _canonical_nonconstant_factor_keys,
+    _direct_constraint_match,
+    _flint_exact_principal_quotient,
+    _groebner_reduce_preserving_sparse_remainder,
     _nonzero_condition_follows_from_factors,
+    _principal_basis_quotient,
+    _principal_ideal_quotient,
     _prepare_exact_system,
     _reduce_with_nondegeneracy_saturation,
     _replay_groebner_certificate,
@@ -14,6 +22,7 @@ from worker.backend.jgex_exact_constraint_bridge import (
     inspect_jgex_exact_system,
     lower_jgex_to_exact_obligation,
 )
+from worker.backend.local_polynomial_elimination import LocalEliminationResult
 
 
 SETUP = (
@@ -45,6 +54,91 @@ def test_local_division_requires_source_semantic_nondegeneracy() -> None:
     assert _nonzero_condition_follows_from_factors("-2*x != 0", known)
     assert _nonzero_condition_follows_from_factors("x*(y + 1) != 0", known)
     assert not _nonzero_condition_follows_from_factors("x - y != 0", known)
+
+
+def test_nondegeneracy_products_are_split_into_irreducible_factors() -> None:
+    x, y = sp.symbols("x y")
+
+    factors = _canonical_nonconstant_factors(-6 * x**2 * (y + 1) ** 3)
+
+    assert factors == (x, y + 1)
+
+
+def test_principal_ideal_membership_is_generic_and_replayable() -> None:
+    x, y, parameter = sp.symbols("x y parameter")
+    equation = x + y
+    goal = equation * (x**2 + parameter)
+
+    quotient = _principal_ideal_quotient(goal, equation, (x, y))
+
+    assert quotient is not None
+    assert sp.expand(quotient - (x**2 + parameter)) == 0
+    assert _principal_ideal_quotient(x**2 + parameter, equation, (x, y)) is None
+
+
+def test_principal_ideal_membership_preserves_large_factored_products() -> None:
+    x, y = sp.symbols("x y")
+    equation = x + y
+    large_factor = sp.Add(*(x**index for index in range(1, 300)), evaluate=False)
+    goal = sp.Mul(equation, large_factor, evaluate=False)
+
+    quotient = _principal_ideal_quotient(goal, equation, (x, y))
+
+    assert quotient is not None
+    assert quotient == large_factor
+
+
+def test_flint_principal_division_handles_expanded_multivariate_certificate() -> None:
+    x, y, parameter = sp.symbols("x y parameter")
+    equation = x**2 + parameter * x + y
+    expected_quotient = x**3 - 2 * x * y + parameter**2
+    goal = sp.expand(equation * expected_quotient)
+
+    quotient = _flint_exact_principal_quotient(goal, equation)
+
+    assert quotient is not None
+    assert sp.Poly(
+        goal - quotient * equation,
+        x,
+        y,
+        parameter,
+        domain=sp.QQ,
+    ).is_zero
+
+
+def test_principal_basis_division_restores_parameter_denominator() -> None:
+    x, y, parameter = sp.symbols("x y parameter")
+    basis = ((x + y) / (parameter + 1), x**2 + 1)
+    dividend = sp.expand((x + y) * (x - parameter))
+
+    match = _principal_basis_quotient(dividend, basis)
+
+    assert match is not None
+    index, quotient = match
+    assert index == 0
+    assert sp.cancel(dividend - quotient * basis[index]) == 0
+
+
+def test_principal_basis_division_clears_dividend_denominator_once() -> None:
+    x, y, parameter = sp.symbols("x y parameter")
+    basis = ((x + y) / (parameter + 1), x**2 + 1)
+    dividend = (x + y) * (x - parameter) / (parameter - 2)
+
+    match = _principal_basis_quotient(dividend, basis)
+
+    assert match is not None
+    index, quotient = match
+    assert index == 0
+    assert sp.cancel(dividend - quotient * basis[index]) == 0
+
+
+def test_large_direct_constraint_keeps_the_constant_time_structural_path() -> None:
+    x = sp.Symbol("x")
+    large = sp.Add(*(x**index for index in range(1, 300)), evaluate=False)
+
+    assert int(sp.count_ops(large)) > 256
+    assert _direct_constraint_match(large, (large,)) == (large, sp.Integer(1))
+    assert _direct_constraint_match(-large, (large,)) == (large, sp.Integer(-1))
 
 
 def test_complex_future_clause_is_kept_as_a_typed_boundary() -> None:
@@ -121,6 +215,112 @@ def test_circle_axis_projection_clears_rational_coordinates_homogeneously() -> N
     assert qd in elaborator.denominators
 
 
+def test_terminal_circle_axis_goal_uses_the_encoder_owned_by_each_representation() -> None:
+    problem = (
+        "p q a b = quadrangle; "
+        "t = on_circle t p a, on_circle t q b ? coll p q t"
+    )
+
+    explicit = inspect_jgex_exact_system(
+        problem,
+        representation="explicit",
+        enable_affine_local_lemmas=True,
+    )
+    relational = inspect_jgex_exact_system(
+        problem,
+        representation="relational",
+        enable_affine_local_lemmas=True,
+    )
+
+    explicit_coordinates = dict(explicit.point_coordinates)
+    assert "t" in explicit_coordinates
+    assert any("free_" in coordinate for coordinate in explicit_coordinates["t"])
+    assert not any(
+        item.theorem == "circle_circle_axis_incidence_elimination"
+        for item in explicit.structural_lemma_certificates
+    )
+
+    relational_coordinates = dict(relational.point_coordinates)
+    assert "t" not in relational_coordinates
+    assert any(
+        item.theorem == "circle_circle_axis_incidence_elimination" and item.replayed
+        for item in relational.structural_lemma_certificates
+    )
+
+
+def test_goal_relational_slices_without_enabling_local_elimination() -> None:
+    problem = (
+        "a b c = triangle a b c; "
+        "x = on_line x a b; "
+        "y = on_line y b c ? coll a b x"
+    )
+
+    obligation = lower_jgex_to_exact_obligation(
+        problem,
+        representation="goal_relational",
+        max_saturation_rounds=0,
+    )
+
+    assert obligation.exact_replay
+    assert obligation.goal_relevant_clause_indices == (0, 1)
+    assert obligation.excluded_clause_indices == (2,)
+    assert obligation.local_elimination is None
+
+
+def test_unused_local_variables_reach_the_groebner_ring_without_steps(
+    monkeypatch,
+) -> None:
+    captured: dict[str, tuple[str, ...]] = {}
+
+    def capture_local_elimination(polynomials, variables, **_kwargs):
+        names = tuple(map(str, variables))
+        captured["before"] = names
+        captured["after"] = names[:-1]
+        return LocalEliminationResult(
+            initial_polynomials=tuple(map(sp.sstr, polynomials)),
+            remaining_polynomials=tuple(map(sp.sstr, polynomials)),
+            remaining_variables=names[:-1],
+            steps=(),
+            eliminated_variables=(names[-1],),
+            stopped_reason="no_local_variable",
+            exact_replay=True,
+        )
+
+    class GroebnerReached(RuntimeError):
+        pass
+
+    original_groebner = sp.groebner
+
+    def capture_groebner(equations, *variables, **kwargs):
+        if "after" not in captured:
+            return original_groebner(equations, *variables, **kwargs)
+        captured["groebner"] = tuple(map(str, variables))
+        raise GroebnerReached
+
+    monkeypatch.setattr(
+        exact_bridge,
+        "eliminate_local_linear_variables",
+        capture_local_elimination,
+    )
+    monkeypatch.setattr(sp, "groebner", capture_groebner)
+
+    with pytest.raises(GroebnerReached):
+        lower_jgex_to_exact_obligation(
+            "a b c = triangle; i1 = excenter a b c; d = foot i1 b c; "
+            "e = foot i1 a c; f = foot i1 a b; o1 = circumcenter a e f; "
+            "p = on_line b c, on_circle o1 a; "
+            "q = on_line b c, on_circle o1 a; m = midpoint a d; "
+            "o2 = circumcenter m p q; "
+            "u = on_circle o2 m, on_circle i1 d ? coll i1 u o2",
+            representation="goal_local_relational",
+            max_saturation_rounds=0,
+            local_max_output_terms=256,
+        )
+
+    assert captured["groebner"] == captured["after"]
+    assert len(captured["groebner"]) == len(captured["before"]) - 1
+
+
 def test_affine_point_boundary_projection_replays_cramers_rule() -> None:
     x, y = sp.symbols("x y")
     elaborator = _RelationalJGEXElaborator(enable_affine_local_lemmas=True)
@@ -180,6 +380,82 @@ def test_nondegeneracy_saturation_retains_a_replayable_multiplier() -> None:
     assert assumptions == ("x",)
 
 
+def test_sparse_groebner_reduction_matches_sympy_and_replays() -> None:
+    x, y, parameter = sp.symbols("x y parameter")
+    basis = sp.groebner(
+        (x * y - parameter, x**2 - y),
+        x,
+        y,
+        order="grevlex",
+        domain=sp.QQ.frac_field(parameter),
+    )
+    expression = (x + parameter) * (y**3 + x * y + 1)
+
+    expected_quotients, expected_remainder = basis.reduce(expression)
+    quotients, remainder, sparse_remainder = (
+        _groebner_reduce_preserving_sparse_remainder(basis, expression)
+    )
+    basis_expressions = tuple(polynomial.as_expr() for polynomial in basis.polys)
+
+    assert sp.cancel(remainder - expected_remainder) == 0
+    assert sparse_remainder.as_expr() == remainder
+    assert len(quotients) == len(expected_quotients)
+    assert _replay_groebner_certificate(
+        goal=expression,
+        multiplier=sp.Integer(1),
+        quotients=quotients,
+        basis=basis_expressions,
+        remainder=remainder,
+        variables=(x, y),
+    )
+
+
+def test_nondegeneracy_saturation_reuses_supplied_initial_reduction() -> None:
+    class BasisThatMustNotReduce:
+        def reduce(self, _value: sp.Expr) -> tuple[list[sp.Expr], sp.Expr]:
+            raise AssertionError("initial reduction was recomputed")
+
+    quotients, remainder, multiplier, assumptions = (
+        _reduce_with_nondegeneracy_saturation(
+            BasisThatMustNotReduce(),  # type: ignore[arg-type]
+            sp.Symbol("goal"),
+            (),
+            max_rounds=0,
+            initial_reduction=([sp.Integer(7)], sp.Integer(0)),
+        )
+    )
+
+    assert quotients == [7]
+    assert remainder == 0
+    assert multiplier == 1
+    assert assumptions == ()
+
+
+def test_nondegeneracy_saturation_skips_coefficient_field_units() -> None:
+    x, y, parameter = sp.symbols("x y parameter")
+    basis = sp.groebner(
+        (x * y,),
+        x,
+        y,
+        order="grevlex",
+        domain=sp.QQ.frac_field(parameter),
+    )
+
+    quotients, remainder, multiplier, assumptions = (
+        _reduce_with_nondegeneracy_saturation(
+            basis,
+            y,
+            (("parameter", parameter),),
+            max_rounds=1,
+        )
+    )
+
+    assert remainder == y
+    assert multiplier == 1
+    assert assumptions == ()
+    assert quotients == [0]
+
+
 def test_rational_coefficient_saturation_uses_a_compatible_ground_domain() -> None:
     x, y = sp.symbols("x y")
     basis = sp.groebner((x * y,), x, y, order="grevlex", domain=sp.QQ)
@@ -196,6 +472,65 @@ def test_rational_coefficient_saturation_uses_a_compatible_ground_domain() -> No
     assert remainder == 0
     assert multiplier == x / 3
     assert assumptions == ("x/3",)
+    assert quotients
+
+
+def test_saturation_reduces_sparse_poly_product_without_expression_expansion() -> None:
+    x, y, parameter = sp.symbols("x y parameter")
+    basis = sp.groebner(
+        (x * y,),
+        x,
+        y,
+        order="grevlex",
+        domain=sp.QQ.frac_field(parameter),
+    )
+    events: list[dict[str, object]] = []
+
+    quotients, remainder, multiplier, assumptions = (
+        _reduce_with_nondegeneracy_saturation(
+            basis,
+            y + parameter,
+            (("x", x), ("y", y)),
+            max_rounds=1,
+            progress_callback=events.append,
+        )
+    )
+
+    assert remainder == parameter * x
+    assert multiplier == x
+    assert assumptions == ("x",)
+    assert quotients
+    principal_events = [
+        event for event in events if event.get("stage") == "principal_scan_started"
+    ]
+    assert principal_events[0]["sparse_polynomial_product"] is True
+    assert principal_events[0]["dividend_term_count"] == 2
+    assert principal_events[0]["remainder_polynomial_cache_hit"] is False
+    assert principal_events[1]["remainder_polynomial_cache_hit"] is True
+
+
+def test_saturation_does_not_refactor_canonical_denominator_products(
+    monkeypatch,
+) -> None:
+    x, y = sp.symbols("x y")
+    basis = sp.groebner((x * y,), x, y, order="grevlex", domain=sp.QQ)
+
+    def fail_if_called(*_args, **_kwargs):
+        raise AssertionError("canonical denominator products must not be refactored")
+
+    monkeypatch.setattr(sp, "factor", fail_if_called)
+    quotients, remainder, multiplier, assumptions = (
+        _reduce_with_nondegeneracy_saturation(
+            basis,
+            y,
+            (("x", x),),
+            max_rounds=1,
+        )
+    )
+
+    assert remainder == 0
+    assert sp.expand(multiplier - x) == 0
+    assert assumptions == ("x",)
     assert quotients
 
 
@@ -673,6 +1008,31 @@ def test_remaining_hageo_goal_predicates_share_the_exact_kernel() -> None:
     assert not wrong_midpoint.exact_replay
 
 
+def test_affine_elimination_closes_alpha_renamed_orthocenter_reflection_chain() -> None:
+    obligation = lower_jgex_to_exact_obligation(
+        "u v w = triangle; q = foot u v w; n = midpoint v w; "
+        "q1 = mirror q n; c0 = circumcenter u v w; "
+        "t = on_tline v c0 v, on_tline w c0 w; "
+        "r = on_line u v, on_tline q1 t q1; "
+        "s = on_line u w, on_tline q1 t q1 "
+        "? eqangle s t t w r t t v",
+        representation="explicit",
+        max_saturation_rounds=2,
+        enable_affine_local_lemmas=True,
+    )
+
+    assert obligation.exact_replay
+    assert obligation.remainder == "0"
+    assert not obligation.vacuous_unit_ideal
+    assert obligation.construction_consistency == "not_refuted_by_exact_constraints"
+    assert len(obligation.local_lemma_certificates) == 3
+    assert all(item.replayed for item in obligation.local_lemma_certificates)
+    assert all(
+        item.forward_residual == item.reverse_residual == "0"
+        for item in obligation.local_lemma_certificates
+    )
+
+
 def test_midpoint_goal_replays_two_typed_components_and_their_composition() -> None:
     obligation = lower_jgex_to_exact_obligation(
         "a b c = triangle a b c; m = midpoint m a b ? midp m a b",
@@ -876,6 +1236,24 @@ def test_bounded_local_elimination_exports_replayed_separator_certificates() -> 
     assert analysis.all_local_certificates_replayed
     assert analysis.reduced_variable_count <= analysis.initial_variable_count
     assert analysis.local_elimination.exact_replay
+
+
+def test_goal_directed_local_inspection_excludes_unrelated_branch() -> None:
+    source = (
+        "a b c = triangle a b c; m = midpoint m a b; "
+        "u = midpoint u a c ? coll a m b"
+    )
+
+    full = inspect_jgex_local_elimination(source, max_output_terms=64)
+    goal_directed = inspect_jgex_local_elimination(
+        source,
+        goal_directed=True,
+        max_output_terms=64,
+    )
+
+    assert goal_directed.all_local_certificates_replayed
+    assert goal_directed.initial_equation_count < full.initial_equation_count
+    assert goal_directed.reduced_equation_count <= full.reduced_equation_count
 
 
 def test_local_relational_pipeline_replays_local_and_terminal_certificates() -> None:
