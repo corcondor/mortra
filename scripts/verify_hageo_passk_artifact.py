@@ -19,6 +19,7 @@ from scripts.experiment_newclid_construction_stalk import (  # noqa: E402
     JGEXFormulation,
     JGEXProblemBuilder,
     build_branch,
+    build_prefix_stable_branch,
     jgex_formulation_from_txt_file,
     normalize_legacy_formulation,
 )
@@ -36,6 +37,48 @@ def _parse_step(raw: str) -> ConstructionStep:
     return ConstructionStep(match.group("family"), match.group("output"), inputs)
 
 
+def _solved_trajectory(
+    artifact: dict[str, object],
+) -> tuple[int | None, int, list[str], str, dict[str, object]]:
+    """Normalize legacy Pass@K and current auxiliary-search artifacts."""
+
+    protocol = artifact.get("protocol")
+    if not isinstance(protocol, dict):
+        raise ValueError("artifact has no protocol")
+    seed = int(protocol["seed"])
+    attempt_results = artifact.get("attempt_results")
+    if isinstance(attempt_results, list):
+        solved = next(
+            (
+                item
+                for item in attempt_results
+                if isinstance(item, dict) and item.get("solved")
+            ),
+            None,
+        )
+        if solved is None:
+            raise ValueError("artifact has no solved attempt")
+        attempt = int(solved["attempt"])
+        attempt_seed = seed + 1_000_003 * attempt
+        path = [str(item) for item in solved["path"]]
+        raw_expected = artifact.get("certificate") or {
+            "input_sha256": solved.get("input_sha256"),
+            "proof_sha256": solved.get("proof_sha256"),
+        }
+        branch_build_mode = "full-path"
+    elif artifact.get("solved") and artifact.get("solved_path"):
+        attempt = None
+        attempt_seed = seed
+        path = [str(item) for item in artifact["solved_path"]]
+        raw_expected = artifact.get("confirmation") or {}
+        branch_build_mode = str(protocol.get("branch_build_mode", "full-path"))
+    else:
+        raise ValueError("artifact has no solved trajectory")
+    if not isinstance(raw_expected, dict):
+        raise ValueError("artifact certificate has an invalid shape")
+    return attempt, attempt_seed, path, branch_build_mode, raw_expected
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", type=Path, required=True)
@@ -47,15 +90,11 @@ def main() -> int:
     args = parser.parse_args()
 
     artifact = json.loads(args.artifact.read_text(encoding="utf-8"))
-    solved = next(
-        (item for item in artifact["attempt_results"] if item.get("solved")),
-        None,
-    )
-    if solved is None:
-        raise ValueError("artifact has no solved attempt")
     seed = int(artifact["protocol"]["seed"])
-    attempt_seed = seed + 1_000_003 * int(solved["attempt"])
-    steps = tuple(_parse_step(item) for item in solved["path"])
+    attempt, attempt_seed, path, branch_build_mode, expected = _solved_trajectory(
+        artifact
+    )
+    steps = tuple(_parse_step(item) for item in path)
 
     formulations = jgex_formulation_from_txt_file(args.dataset.resolve())
     raw = formulations[artifact["problem_name"]]
@@ -73,7 +112,11 @@ def main() -> int:
             .include_auxiliary_clauses(False)
             .build()
         )
-        replay_problem = build_branch(base_problem, steps, seed=attempt_seed)
+        replay_problem = (
+            build_prefix_stable_branch(base_problem, steps, seed=attempt_seed)
+            if branch_build_mode in {"incremental", "prefix-replay"}
+            else build_branch(base_problem, steps, seed=attempt_seed)
+        )
         replay = verify_problem(
             replay_problem,
             yuclid_exe=args.yuclid_exe.resolve(),
@@ -83,17 +126,19 @@ def main() -> int:
 
     replay, normalization = replay_once()
     repeated, _ = replay_once()
-    expected = artifact.get("certificate") or {
-        "input_sha256": solved.get("input_sha256"),
-        "proof_sha256": solved.get("proof_sha256"),
-    }
+    input_hash_matches = replay.input_sha256 == expected.get("input_sha256")
+    proof_hash_matches = replay.proof_sha256 == expected.get("proof_sha256")
+    expected_hashes_present = bool(
+        expected.get("input_sha256") and expected.get("proof_sha256")
+    )
     result = {
         "experiment": "hageo_passk_independent_certificate_replay",
         "problem_name": artifact["problem_name"],
         "source_artifact": args.artifact.resolve().relative_to(ROOT).as_posix(),
-        "attempt": solved["attempt"],
+        "attempt": attempt,
         "attempt_seed": attempt_seed,
-        "path": solved["path"],
+        "path": path,
+        "branch_build_mode": branch_build_mode,
         "normalization": {
             "rewritten_constructions": normalization.rewritten_constructions,
             "unchanged_constructions": normalization.unchanged_constructions,
@@ -102,18 +147,22 @@ def main() -> int:
         "replay_solved": replay.solved,
         "input_sha256": replay.input_sha256,
         "proof_sha256": replay.proof_sha256,
-        "input_hash_matches": replay.input_sha256 == expected.get("input_sha256"),
-        "proof_hash_matches": replay.proof_sha256 == expected.get("proof_sha256"),
+        "expected_hashes_present": expected_hashes_present,
+        "input_hash_matches": input_hash_matches,
+        "proof_hash_matches": proof_hash_matches,
         "repeat_replay_solved": repeated.solved,
         "repeat_input_hash_matches": replay.input_sha256 == repeated.input_sha256,
         "repeat_proof_hash_matches": replay.proof_sha256 == repeated.proof_sha256,
         "source_byte_hash_note": (
-            "Source hashes are diagnostic because an unfixed PYTHONHASHSEED can "
-            "change serialization order. Acceptance requires two fresh replays."
+            "Acceptance requires the source artifact hashes and two fresh replay "
+            "hashes to agree. Run benchmark and replay with a fixed PYTHONHASHSEED."
         ),
         "accepted": bool(
             replay.solved
             and repeated.solved
+            and expected_hashes_present
+            and input_hash_matches
+            and proof_hash_matches
             and replay.input_sha256 == repeated.input_sha256
             and replay.proof_sha256 == repeated.proof_sha256
         ),
