@@ -99,6 +99,10 @@ relational bridgeへ戻したことだけである。
 - 空虚証明の除外: 0
 - 未認証: 29問
 - 関連回帰試験: **85/85成功**
+- GitHub Actions: `32767685385` 成功
+
+最初のpushでは、FLINT専用試験を実行するCIに `python-flint` が入っておらず3件失敗した。
+実装の失敗と区別してログを確認し、`python-flint==0.9.0` を固定した再実行で全段階が成功した。
 
 ## 考察
 
@@ -126,3 +130,4 @@ relational bridgeへ戻したことだけである。
 - 7問コホート: `data/jgex-exact-known-root-line-circle-cohort7-180s-2026-08-25.json`
 - 60/89台帳: `data/hageo-certified-capability-union-plus-2024planet-2026-08-25.json`
 - 非空虚性再監査: `data/hageo-certified-capability-union-plus-2024planet-nonvacuous-audit-2026-08-25.json`
+- CI: `https://github.com/corcondor/sakumon-station/actions/runs/32767685385`
