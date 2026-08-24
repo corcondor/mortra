@@ -1,0 +1,56 @@
+{
+  "experiment": "HAGeo native concurrency cap A/B",
+  "date": "2026-08-24",
+  "code_commit": "cebfb985e16b23ae19ba9ccfec42ec5e290c1fc6",
+  "uses_external_llm": false,
+  "problems": [
+    "2015IranTSTp18",
+    "2023RMMSLG3",
+    "2024VietnamTSTp5"
+  ],
+  "fixed_budget": {
+    "problem_timeout_seconds": 600,
+    "candidate_timeout_seconds": 300,
+    "max_depth": 2,
+    "branch_limit": 16,
+    "beam_width": 6,
+    "enumeration_limit_per_family": 64
+  },
+  "candidate_set_sha256": {
+    "2015IranTSTp18": "f2796effb5a275efb796e6f3094a60013774a7820b1c83fbaae0c0d8e1001f2d",
+    "2023RMMSLG3": "945566bd71f902deb3033b0fe8741862aa52ab7f601c271a08b7cb9ef9486709",
+    "2024VietnamTSTp5": "800cdc0a5bcf6c44261fcfcfb45f33619b31fc77514c001de05a8cbb9aad6646"
+  },
+  "arms": {
+    "old_24": {
+      "problem_workers": 3,
+      "candidate_workers_per_problem": 8,
+      "max_total_native_workers": 24,
+      "wall_seconds": 600.5787728,
+      "completed_candidates": 8,
+      "completed_candidates_per_minute": 0.7992290466114189,
+      "candidate_elapsed_median_seconds": 291.6286433000023,
+      "candidate_elapsed_sum_seconds": 2357.199566700001,
+      "right_censored_problems": 3,
+      "report_sha256": "13b800f054126ca5e842f34c8a46f814c7cdc39abcf788ca17b7c700bc5dba2c"
+    },
+    "capped_18": {
+      "problem_workers": 3,
+      "candidate_workers_per_problem": 6,
+      "max_total_native_workers": 18,
+      "wall_seconds": 600.3158508,
+      "completed_candidates": 6,
+      "completed_candidates_per_minute": 0.5996843153820651,
+      "candidate_elapsed_median_seconds": 293.1473531999982,
+      "candidate_elapsed_sum_seconds": 1797.708188299992,
+      "right_censored_problems": 3,
+      "report_sha256": "4bf5edef5afcb5a224e50bfbd532361a7d4a39a7a0c861cd521cb5ac8fa6aba8"
+    }
+  },
+  "comparison": {
+    "wall_time_change": -0.0004377810404024851,
+    "candidate_median_time_change": 0.005212083804821077,
+    "candidate_throughput_change": -0.2496715204175649
+  },
+  "conclusion": "The 18-process cap did not accelerate this fixed workload. Median candidate latency was unchanged and completed-candidate throughput fell by about 25%. Keep the cap opt-in as a resource guard, not as a speedup."
+}

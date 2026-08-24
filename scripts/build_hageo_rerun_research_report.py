@@ -60,6 +60,7 @@ def build_report(
     union_path: Path,
     dossier_path: Path,
     solution_manifest_path: Path,
+    concurrency_ab_path: Path | None = None,
 ) -> str:
     native_report = _load(native_report_path)
     native_audit = _load(native_audit_path)
@@ -69,6 +70,7 @@ def build_report(
     union = _load(union_path)
     dossier = _load(dossier_path)
     solution_manifest = _load(solution_manifest_path)
+    concurrency_ab = _load(concurrency_ab_path) if concurrency_ab_path else None
 
     if cohort.get("run_state", {}).get("complete") is not True:
         raise ValueError("cohort rerun is incomplete")
@@ -198,7 +200,7 @@ def build_report(
             "再構築時に候補1本の時間を全体時間として扱っていたため、再試行レポートに残る実壁時計時間を優先するよう修正した。",
             "実壁時計を復元できない問題は、候補1本の最大完了時間を下限として保持し、全体時間とは呼ばない。",
             "",
-            "| 問題 | 状態 | 実壁時計（分） | 評価候補 | 候補時間中央値（秒） | 候補CPU時間合計（分） |",
+            "| 問題 | 状態 | 実壁時計（分） | 評価候補 | 候補時間中央値（秒） | 候補経過時間合計（分） |",
             "|---|---|---:|---:|---:|---:|",
         ]
     )
@@ -225,7 +227,50 @@ def build_report(
             "",
             "難しい2問では112候補を評価し、候補1本の中央値が数分に達した。候補生成用のprefix更新は0.3秒未満であり、",
             "支配項は各候補でYuclidを新規起動して閉包と証明を再計算する処理である。再試行設定は問題3並列・問題内8候補並列で、",
-            "最大24個のnative検証を同時実行するため、CPUの過剰並列も速度低下要因になる。",
+            "最大24個のnative検証を要求する。",
+        ]
+    )
+
+    if concurrency_ab is not None:
+        old = concurrency_ab["arms"]["old_24"]
+        capped = concurrency_ab["arms"]["capped_18"]
+        comparison = concurrency_ab["comparison"]
+        lines.extend(
+            [
+                "",
+                "#### 並列上限A/B",
+                "",
+                "24個から18個への上限制限が実際に高速化するかを、同じ3問、同じ候補集合、同じ600秒上限で測定した。",
+                "3問すべてで予定候補のSHA-256は一致した。",
+                "",
+                "| 設定 | 実壁時計（秒） | 完了候補 | 候補/分 | 候補時間中央値（秒） |",
+                "|---|---:|---:|---:|---:|",
+                (
+                    f"| 3問 x 8候補、上限24 | {old['wall_seconds']:.2f} | "
+                    f"{old['completed_candidates']} | "
+                    f"{old['completed_candidates_per_minute']:.3f} | "
+                    f"{old['candidate_elapsed_median_seconds']:.2f} |"
+                ),
+                (
+                    f"| 3問 x 6候補、上限18 | {capped['wall_seconds']:.2f} | "
+                    f"{capped['completed_candidates']} | "
+                    f"{capped['completed_candidates_per_minute']:.3f} | "
+                    f"{capped['candidate_elapsed_median_seconds']:.2f} |"
+                ),
+                "",
+                (
+                    "上限18では候補1本の中央値は"
+                    f"{100 * comparison['candidate_median_time_change']:.2f}%遅く、"
+                    "完了候補の処理量は"
+                    f"{abs(100 * comparison['candidate_throughput_change']):.2f}%低下した。"
+                ),
+                "したがって、この上限を高速化として扱う仮説は支持されない。上限はメモリ枯渇を避ける任意の資源保護としてのみ残し、",
+                "既定では無効にする。速度の本質的改善には、候補ごとの閉包再計算を避ける増分閉包または常駐Yuclidが必要である。",
+            ]
+        )
+
+    lines.extend(
+        [
             "",
             "## 考察",
             "",
@@ -256,6 +301,8 @@ def build_report(
             f"- 図・解答manifest: `{_display(solution_manifest_path)}`",
         ]
     )
+    if concurrency_ab_path is not None:
+        lines.append(f"- 並列上限A/B: `{_display(concurrency_ab_path)}`")
     if timeout_names:
         lines.extend(["", "### 時間打切り問題", "", ", ".join(f"`{name}`" for name in timeout_names)])
     if error_names:
@@ -273,6 +320,7 @@ def main() -> int:
     parser.add_argument("--union", type=Path, required=True)
     parser.add_argument("--dossier", type=Path, required=True)
     parser.add_argument("--solution-manifest", type=Path, required=True)
+    parser.add_argument("--concurrency-ab", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--obsidian-output", type=Path)
     args = parser.parse_args()
@@ -285,6 +333,9 @@ def main() -> int:
         union_path=args.union.resolve(),
         dossier_path=args.dossier.resolve(),
         solution_manifest_path=args.solution_manifest.resolve(),
+        concurrency_ab_path=(
+            args.concurrency_ab.resolve() if args.concurrency_ab else None
+        ),
     )
     for output in (args.output, args.obsidian_output):
         if output is None:

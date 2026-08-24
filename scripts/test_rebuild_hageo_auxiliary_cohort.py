@@ -30,6 +30,14 @@ def test_nested_native_workers_fit_the_available_budget() -> None:
     ) == (1, 8)
 
 
+def test_nested_native_worker_cap_is_opt_in() -> None:
+    assert bounded_worker_counts(
+        problem_workers=3,
+        candidate_workers=8,
+        max_total_native_workers=0,
+    ) == (3, 8)
+
+
 def test_rebuilds_artifacts_and_preserves_censored_fallback(tmp_path: Path) -> None:
     baseline = tmp_path / "baseline.json"
     problems = tmp_path / "problems.txt"

@@ -53,12 +53,13 @@ def bounded_worker_counts(
     candidate_workers: int,
     max_total_native_workers: int,
 ) -> tuple[int, int]:
-    """Bound nested Yuclid concurrency without changing searched candidates."""
+    """Optionally bound nested Yuclid concurrency without changing candidates."""
 
     if problem_workers < 1 or candidate_workers < 1:
         raise ValueError("worker counts must be positive")
-    detected = os.cpu_count() or 1
-    budget = max_total_native_workers if max_total_native_workers > 0 else detected
+    if max_total_native_workers <= 0:
+        return problem_workers, candidate_workers
+    budget = max_total_native_workers
     effective_problem_workers = min(problem_workers, budget)
     per_problem_budget = max(1, budget // effective_problem_workers)
     effective_candidate_workers = min(candidate_workers, per_problem_budget)
@@ -270,8 +271,8 @@ def main() -> int:
         type=int,
         default=0,
         help=(
-            "Maximum nested Yuclid processes across the cohort; zero uses the "
-            "detected logical CPU count. This changes scheduling, not candidates."
+            "Optional maximum nested Yuclid processes across the cohort; zero "
+            "disables the cap. This is a resource guard, not a speedup claim."
         ),
     )
     parser.add_argument("--timeout-seconds", type=float, default=300.0)
@@ -489,7 +490,7 @@ def main() -> int:
                     "max_total_native_workers": (
                         args.max_total_native_workers
                         if args.max_total_native_workers > 0
-                        else os.cpu_count() or 1
+                        else None
                     ),
                     "timeout_seconds_per_problem": args.timeout_seconds,
                 },
