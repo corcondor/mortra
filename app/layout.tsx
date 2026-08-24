@@ -8,7 +8,7 @@ const DESCRIPTION =
   '外部LLMを使わずIMO幾何25/30。複数の記号推論器を協調させ、数学を解き、作る研究システム。'
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://mortra.vercel.app'),
+  metadataBase: new URL('https://mortra.ai'),
   title: TITLE,
   description: DESCRIPTION,
   applicationName: 'MORTRA',
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: TITLE,
     description: DESCRIPTION,
-    url: 'https://mortra.vercel.app/',
+    url: 'https://mortra.ai/',
     siteName: 'MORTRA',
     locale: 'ja_JP',
     type: 'website',

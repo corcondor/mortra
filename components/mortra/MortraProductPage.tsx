@@ -51,7 +51,7 @@ export function MortraProductPage() {
     name: 'MORTRA',
     applicationCategory: 'EducationalApplication',
     operatingSystem: 'Web',
-    url: 'https://mortra.vercel.app/',
+    url: 'https://mortra.ai/',
     description: '記号推論で数学問題、図、解答、検証過程を生成する数学研究システム。',
     softwareVersion: '1',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
