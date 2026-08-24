@@ -1,0 +1,78 @@
+{
+  "experiment": "hageo409_typed_auxiliary_heldout_pilot",
+  "run_state": {
+    "complete": true,
+    "finished_count": 1,
+    "pending_count": 0,
+    "finished_problem_names": [
+      "2002CTSTp25"
+    ]
+  },
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_dataset_auxiliary_clauses": false,
+    "selection": "explicit baseline-unsolved problem-file",
+    "problem_file": "data/fixtures/hageo-indexed-target-2002CTSTp25-2026-08-24.txt",
+    "selected_count": 1,
+    "truth_plane": "native_yuclid_certificate_replay",
+    "candidate_proposal": "typed HAGeo numerical incidence",
+    "scheduler": "unified bidirectional priority queue",
+    "search_budget": {
+      "auxiliary_depth": 2,
+      "candidate_paths_per_prefix": 16,
+      "candidate_beam": 6,
+      "beam_ranking": "ar-residual-pareto",
+      "controller": null,
+      "per_family_limit": 1,
+      "incidence_oversample_per_family": 16,
+      "candidate_contract_synthesis": false,
+      "enumeration_limit_per_family": 64,
+      "candidate_cone_timeout_seconds": 10.0,
+      "proof_dag_timeout_seconds": 10.0,
+      "workers": 1,
+      "effective_problem_workers": 1,
+      "candidate_workers": 4,
+      "effective_candidate_workers": 4,
+      "max_total_native_workers": null,
+      "timeout_seconds_per_problem": 1800.0
+    },
+    "paper_comparability": "configurable MORTRA ablation; report max_depth and evaluated paths rather than claiming HAGeo N=6, K=2048/8192",
+    "timeout_semantics": "right-censored unknown; never counted as a wrong answer or a proof"
+  },
+  "summary": {
+    "baseline_total": 89,
+    "baseline_solved": 28,
+    "pilot_total": 1,
+    "newly_solved": 0,
+    "newly_solved_names": [],
+    "heldout_portfolio_solved": 28,
+    "heldout_portfolio_score": 0.3146067415730337,
+    "certified_score_lower_bound": 0.3146067415730337,
+    "optimistic_score_upper_bound": 0.3146067415730337,
+    "completed_auxiliary_searches": 1,
+    "conditional_new_solution_rate": 0.0,
+    "time_censored": 0,
+    "execution_errors": 0,
+    "unprocessed": 0,
+    "score_is_lower_bound": false
+  },
+  "selected_problem_names": [
+    "2002CTSTp25"
+  ],
+  "runs": [
+    {
+      "problem": "2002CTSTp25",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 112,
+      "right_censored_candidate_count": 0,
+      "incidence_checked": 3866,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 957.6830487999978,
+      "artifact": "data/hageo-409-indexed-target-2002CTSTp25-2026-08-24-runs/2002CTSTp25.json",
+      "artifact_sha256": "3639c22de973d7de31510817b0a1f9dc55e03c51b52ae0f46d0125a382562544"
+    }
+  ]
+}
