@@ -1,0 +1,3363 @@
+{
+  "experiment": "hageo409_native_yuclid_baseline",
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_dataset_auxiliary_clauses": false,
+    "same_command_for_every_problem": true,
+    "split": "held_out",
+    "ar_profile": "all",
+    "timeout_seconds": 300.0,
+    "workers": 6,
+    "proof_artifacts_persisted": true,
+    "run_dir": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs"
+  },
+  "summary": {
+    "total": 89,
+    "solved": 28,
+    "score": 0.3146067415730337,
+    "status_counts": {
+      "saturated_unsolved": 61,
+      "solved": 28
+    },
+    "wall_seconds": 21.653357299999698
+  },
+  "problem_names": [
+    "2000USATSTp2",
+    "2002CTSTp25",
+    "2004CTSTp1",
+    "2005CTSTp11b",
+    "2006G4",
+    "2007CMOp4",
+    "2008CTSTp4",
+    "2009ARMOg9p2",
+    "2010AsiaPacificMOp4",
+    "2010CHNWesternMOp6",
+    "2011ARMOg11p2",
+    "2011ARMOg11p8",
+    "2011AsiaPacificMOp3",
+    "2011CHNSouthEastMOp4",
+    "2011CTSTp16",
+    "2011G3",
+    "2011G5",
+    "2012EGMOp7",
+    "2012G4",
+    "2013ARMOg9p2",
+    "2013BalkanMOp1",
+    "2013CGMOp2",
+    "2013USAMOp1",
+    "2013USATSTp2",
+    "2014ARMOg9p6",
+    "2014BulgariaMOp6",
+    "2014CHNGaoLian",
+    "2014CHNWesternMOp2",
+    "2015ARMOg10p7",
+    "2015AsiaPacificMOp1",
+    "2015CTSTp9",
+    "2015IranGOAp1",
+    "2015IranTSTp18",
+    "2016BalkanMOp2",
+    "2016CGMOp7",
+    "2016CTSTp5",
+    "2016G5",
+    "2016G6",
+    "2016IranGOAp1",
+    "2016USATSTSTp6",
+    "2017ARMOg9p2",
+    "2017AsiaPacificMOp2",
+    "2017CHNSouthEastMOg10p2",
+    "2017G3",
+    "2017G4",
+    "2017USAMOp3",
+    "2018ARMOg11p4",
+    "2018CHNWesternMOp5",
+    "2018EuropeanMCupSp2",
+    "2018IranGOMp3",
+    "2018KoMaLA726",
+    "2018USAMOp5",
+    "2019CGMOp1",
+    "2019IranTSTp15",
+    "2019USATSTSTp5",
+    "2020ELMOp4",
+    "2020IranGOAp2",
+    "2020IranTSTp9",
+    "2021ARMOg10p1",
+    "2021ARMOg10p8",
+    "2021CGMOp2",
+    "2021CGMOp7",
+    "2021G1",
+    "2021GOWACAp5",
+    "2021IranTSTp6",
+    "2021IsraelOlympicRev",
+    "2021SilkRoadp3",
+    "2022ARMOg10p2",
+    "2022CHNSouthEastMOg11p6",
+    "2022CzechAPSlovakp5",
+    "2022G5",
+    "2022IZhautykovOp3",
+    "2022KoMaLA805",
+    "2023IMOp6",
+    "2023MOSTMockp2",
+    "2023RMMSLG3",
+    "2023SAGFp8",
+    "2023SerbiaMOp6",
+    "2023VietnamTSTp3",
+    "2024ARMOg9p4",
+    "2024ELMOSLp1",
+    "2024KoMaLA877",
+    "2024PlanetCupp10",
+    "2024VietnamTSTp5",
+    "2025KoeraFinalRoundp3",
+    "ShuZhiMiGeo128",
+    "ShuZhiMiGeo309",
+    "ShuZhiMiGeo489",
+    "ShuZhiMiGeo635"
+  ],
+  "results": {
+    "2000USATSTp2": {
+      "normalization": {
+        "rewritten_constructions": 8,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2000USATSTp2.txt",
+      "input_sha256": "af5e6aaa1da49c9eee9b2f337683fe0059ff8dc52731796a66ed9b6524fe2c19",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.1010850999991817,
+      "proof_sha256": "5d2f3e675d7145326feda62b6ca03de747244ff868c91900fafb8ba37b69e518",
+      "proof_chars": 723375,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2000USATSTp2.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 936,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 281,
+        "num": 168,
+        "refl": 3,
+        "ar": 484
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2002CTSTp25": {
+      "normalization": {
+        "rewritten_constructions": 8,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2002CTSTp25.txt",
+      "input_sha256": "43c4cf0fa5ae166a8cdc389c7aac2c646b23dcfaab5fe6cfd63be9d56cbcf2b6",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.055845099999714876,
+      "proof_sha256": "c9e4b18796ccfbecaaace7c07e21f08483ca67fed8dad4d5de66fba5c8b11f2e",
+      "proof_chars": 240486,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2002CTSTp25.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 509,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 181,
+        "num": 80,
+        "ar": 248
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2004CTSTp1": {
+      "normalization": {
+        "rewritten_constructions": 9,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2004CTSTp1.txt",
+      "input_sha256": "ffc3ab7d19c6bc80bed164731e4bd5c74cbfa33ca2d303e1f5e6e8a4af3b9815",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.20648519999940618,
+      "proof_sha256": "b93a670811d68d753ba7c208c2cd723407b6cd66f5f7e1e867a3ac856fc377d5",
+      "proof_chars": 1256961,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2004CTSTp1.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 1356,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 305,
+        "num": 196,
+        "refl": 12,
+        "ar": 843
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2005CTSTp11b": {
+      "normalization": {
+        "rewritten_constructions": 31,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2005CTSTp11b.txt",
+      "input_sha256": "c815acaf3c1984b10d69bd4bbd42f4200c335945aee435cd6d4bfa4c3580e4af",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 6.96369329999925,
+      "proof_sha256": "d53560770555a8099e2ee22ed3470762c53911c005e7bac0f82396709e031e58",
+      "proof_chars": 49885417,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2005CTSTp11b.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 27790,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 3471,
+        "num": 1990,
+        "refl": 34,
+        "ar": 22295
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2006G4": {
+      "normalization": {
+        "rewritten_constructions": 8,
+        "unchanged_constructions": 1,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2006G4.txt",
+      "input_sha256": "2d00b5a61774d06153bb8a6f60a7de3ad9e48a636628ff7666717de508dcff8a",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.12884289999965404,
+      "proof_sha256": "eead4f11e1f6940e076ef643e4f9307f5fb56d3584d09d511c015f34d21c1a23",
+      "proof_chars": 718064,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2006G4.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 1167,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 280,
+        "num": 123,
+        "refl": 4,
+        "ar": 760
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2007CMOp4": {
+      "normalization": {
+        "rewritten_constructions": 12,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2007CMOp4.txt",
+      "input_sha256": "b1055c07f732fbd60397b2e3ecb855e5fc9c53409c31dcb772977a99927688b9",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.45595500000035827,
+      "proof_sha256": "3a75b1952baa664717fc85d0927a32281e8901bfb50bbe442ca37b609085c0b5",
+      "proof_chars": 3817387,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2007CMOp4.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 3477,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 712,
+        "num": 359,
+        "refl": 10,
+        "ar": 2396
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2008CTSTp4": {
+      "normalization": {
+        "rewritten_constructions": 9,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2008CTSTp4.txt",
+      "input_sha256": "d686ea7386d3183c7ca025fb89fa810be26e061bd7cc87390233168e7fd4a60c",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.10361660000035045,
+      "proof_sha256": "72e587d45ccf753963f0b70f74221ef5bb7291dfe5878f2a746803975d410976",
+      "proof_chars": 443044,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2008CTSTp4.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 945,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 348,
+        "refl": 11,
+        "num": 203,
+        "ar": 383
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2009ARMOg9p2": {
+      "normalization": {
+        "rewritten_constructions": 10,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2009ARMOg9p2.txt",
+      "input_sha256": "22844df0eb616e584f1cbe6a959b0a5032a83568c176e1987202dbc246d13125",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.4799838999997519,
+      "proof_sha256": "d288024333f7eb42dc3ee19d1192c76614e0e8b6781a9be5fa79f69c01a2511e",
+      "proof_chars": 3459706,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2009ARMOg9p2.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 122,
+      "all_deduction_count": 2160,
+      "deduction_type_counts": {
+        "rule": 56,
+        "num": 33,
+        "refl": 9,
+        "ar": 24
+      },
+      "all_deduction_type_counts": {
+        "rule": 375,
+        "num": 270,
+        "refl": 19,
+        "ar": 1496
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 12,
+        "angle chasing": 10,
+        "squared lengths chasing": 2
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "coll",
+          "points": [
+            "b",
+            "m",
+            "f1"
+          ]
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2010AsiaPacificMOp4": {
+      "normalization": {
+        "rewritten_constructions": 10,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2010AsiaPacificMOp4.txt",
+      "input_sha256": "7f6120648a34c0b179bd40bbfa9232822f5aea03f62bed7ffde3ef2cd753fca4",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.5189896000001681,
+      "proof_sha256": "33d2fba6e930341f05cdc20896ba9f88a64a3d7ef575c44787811cd79b38bf10",
+      "proof_chars": 3957261,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2010AsiaPacificMOp4.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 183,
+      "all_deduction_count": 3691,
+      "deduction_type_counts": {
+        "rule": 83,
+        "num": 45,
+        "refl": 16,
+        "ar": 39
+      },
+      "all_deduction_type_counts": {
+        "rule": 655,
+        "num": 801,
+        "refl": 40,
+        "ar": 2195
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 22,
+        "angle chasing": 17
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "coll",
+          "points": [
+            "h",
+            "o",
+            "o3"
+          ]
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2010CHNWesternMOp6": {
+      "normalization": {
+        "rewritten_constructions": 10,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2010CHNWesternMOp6.txt",
+      "input_sha256": "433246e003dac9c19534d323e274d44760e659f1f659e9fafefb61958cfe2b0c",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.07328349999988859,
+      "proof_sha256": "64e38226b0bc690532f835b5142e228b2e9a0ae4a01c9054b96df205be001f07",
+      "proof_chars": 408732,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2010CHNWesternMOp6.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 113,
+      "all_deduction_count": 705,
+      "deduction_type_counts": {
+        "rule": 59,
+        "refl": 1,
+        "num": 30,
+        "ar": 23
+      },
+      "all_deduction_type_counts": {
+        "rule": 203,
+        "num": 90,
+        "refl": 2,
+        "ar": 410
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 2,
+        "angle chasing": 21
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "midp",
+          "points": [
+            "g",
+            "e",
+            "h"
+          ]
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2011ARMOg11p2": {
+      "normalization": {
+        "rewritten_constructions": 7,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2011ARMOg11p2.txt",
+      "input_sha256": "8e536ecdad587eea850c0f06481e72137e68aaa1ded1020927d217f87606224c",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.1842542999993384,
+      "proof_sha256": "5c17e8993a2e3e8e117b07779d2d62e0689afd44a032df6b58c31408a61958ba",
+      "proof_chars": 1337217,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2011ARMOg11p2.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 108,
+      "all_deduction_count": 1092,
+      "deduction_type_counts": {
+        "rule": 52,
+        "refl": 9,
+        "num": 26,
+        "ar": 21
+      },
+      "all_deduction_type_counts": {
+        "rule": 292,
+        "num": 178,
+        "refl": 11,
+        "ar": 611
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 11,
+        "angle chasing": 9,
+        "squared lengths chasing": 1
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "coll",
+          "points": [
+            "a",
+            "d",
+            "h"
+          ]
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2011ARMOg11p8": {
+      "normalization": {
+        "rewritten_constructions": 7,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2011ARMOg11p8.txt",
+      "input_sha256": "6fc2cedc14dccab20ecaedf84f66af2ee6cb483433439a5d0e1ef62b1bf3936f",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.07317170000078477,
+      "proof_sha256": "a011651be14fa186730db912bdb19b358df802851397b67df765f5c5ace408e4",
+      "proof_chars": 321507,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2011ARMOg11p8.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 624,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 207,
+        "num": 113,
+        "refl": 10,
+        "ar": 294
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2011AsiaPacificMOp3": {
+      "normalization": {
+        "rewritten_constructions": 14,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2011AsiaPacificMOp3.txt",
+      "input_sha256": "7b5279456cb02de6733b946f2f4a995ca59f2c7a7b14a3ab8c752f1ac938d98a",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.4695426000007501,
+      "proof_sha256": "bac6f3e14c79a278c4b5bc328883c6ccb7d11424b111e27f5b6a3d0d53d11252",
+      "proof_chars": 3533177,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2011AsiaPacificMOp3.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 199,
+      "all_deduction_count": 2699,
+      "deduction_type_counts": {
+        "rule": 104,
+        "num": 52,
+        "refl": 4,
+        "ar": 39
+      },
+      "all_deduction_type_counts": {
+        "rule": 582,
+        "num": 346,
+        "refl": 23,
+        "ar": 1748
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 6,
+        "angle chasing": 29,
+        "length chasing": 2,
+        "squared lengths chasing": 2
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "perp",
+          "points": [
+            "b",
+            "p",
+            "c",
+            "p"
+          ],
+          "lhs_terms": {
+            "∠(b-p)": "1/1",
+            "∠(c-p)": "-1/1"
+          }
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2011CHNSouthEastMOp4": {
+      "normalization": {
+        "rewritten_constructions": 7,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2011CHNSouthEastMOp4.txt",
+      "input_sha256": "1d966dba38350e3735d94e5c0abfb1fe6fef9e28af278af96b5af05b1c073c74",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.0764830999996775,
+      "proof_sha256": "492076424664b315e90143359f4fa50f54a890a0ab927d76c3634f90bfdc8945",
+      "proof_chars": 208311,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2011CHNSouthEastMOp4.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 478,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 189,
+        "refl": 3,
+        "num": 101,
+        "ar": 185
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2011CTSTp16": {
+      "normalization": {
+        "rewritten_constructions": 14,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2011CTSTp16.txt",
+      "input_sha256": "cf65011e6ea5c17ae051a178ba2488032a75908c707425034dce1ad56177cf66",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.4134455999992497,
+      "proof_sha256": "c797e0c0dedfc908b727950ccae1ee31545898580e1206edd883d9db20e0009a",
+      "proof_chars": 2712944,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2011CTSTp16.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 3897,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 798,
+        "num": 510,
+        "refl": 27,
+        "ar": 2562
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2011G3": {
+      "normalization": {
+        "rewritten_constructions": 20,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2011G3.txt",
+      "input_sha256": "352a7df3ad0cde902c198780b52f69bb8f82f0a72265b61c14223a932fc11f2b",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.7980508000000555,
+      "proof_sha256": "db87c862fbb46c8f08c1c4d21af190d488e4ac9b3db6dbe140b203c50c0ba5a0",
+      "proof_chars": 6568797,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2011G3.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 8049,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 2670,
+        "num": 1284,
+        "refl": 43,
+        "ar": 4052
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2011G5": {
+      "normalization": {
+        "rewritten_constructions": 17,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2011G5.txt",
+      "input_sha256": "7f5a70aa73dedd5c517c7105806e303e36ed71ddc040d336949486401145533f",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.9524869999995644,
+      "proof_sha256": "603544c8fc9b09a62ec068e1d4ed9707303de8da8d86116a16dd4688bea4affa",
+      "proof_chars": 6201109,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2011G5.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 6103,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 817,
+        "num": 698,
+        "refl": 27,
+        "ar": 4561
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2012EGMOp7": {
+      "normalization": {
+        "rewritten_constructions": 11,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2012EGMOp7.txt",
+      "input_sha256": "8fc145c704bd523b7bbe14dbce28ac5c19bfc0676f062d5da12b4c35838284d5",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.3388852999996743,
+      "proof_sha256": "493a952fc731965cecc7132d53583f052bdfa3e1b21db0307e8fefd40b854db9",
+      "proof_chars": 2948206,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2012EGMOp7.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 272,
+      "all_deduction_count": 2493,
+      "deduction_type_counts": {
+        "rule": 131,
+        "num": 60,
+        "refl": 17,
+        "ar": 64
+      },
+      "all_deduction_type_counts": {
+        "rule": 593,
+        "num": 400,
+        "refl": 30,
+        "ar": 1470
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 25,
+        "angle chasing": 39
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "coll",
+          "points": [
+            "b",
+            "c",
+            "p"
+          ]
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2012G4": {
+      "normalization": {
+        "rewritten_constructions": 10,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2012G4.txt",
+      "input_sha256": "1eb93b9f1566af91e504eccad48f7db09e5af3b1e77ff465f073595eea512377",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.12464710000040213,
+      "proof_sha256": "940cea5074e16cd30062f4a0c796bdc57f75f76ca84f2630313ae00b6fb2cf43",
+      "proof_chars": 840409,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2012G4.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 1116,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 297,
+        "num": 189,
+        "refl": 7,
+        "ar": 623
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2013ARMOg9p2": {
+      "normalization": {
+        "rewritten_constructions": 7,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2013ARMOg9p2.txt",
+      "input_sha256": "f7e4d556971fe14d9dcf58484e651cf946bea4f2859678f563f8c54a9d6ba5a7",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.18713690000004135,
+      "proof_sha256": "d3b96973c1491ed34b05a0abf5a0ace43d17b180e433e7596943af833731c137",
+      "proof_chars": 1408234,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2013ARMOg9p2.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 105,
+      "all_deduction_count": 1279,
+      "deduction_type_counts": {
+        "rule": 54,
+        "num": 23,
+        "refl": 3,
+        "ar": 25
+      },
+      "all_deduction_type_counts": {
+        "rule": 242,
+        "num": 156,
+        "refl": 6,
+        "ar": 875
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 7,
+        "angle chasing": 18
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "midp",
+          "points": [
+            "h",
+            "b",
+            "c"
+          ]
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2013BalkanMOp1": {
+      "normalization": {
+        "rewritten_constructions": 9,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2013BalkanMOp1.txt",
+      "input_sha256": "e79a17f2c44936a6807d15f2b7cd654bd35479294eeb471f5939f7664fb54eb0",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.5245095999998739,
+      "proof_sha256": "0407f5707975d26e1ca39a4191a85ca6f583b6b033e7df41d9848887590263e8",
+      "proof_chars": 2877352,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2013BalkanMOp1.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 160,
+      "all_deduction_count": 2939,
+      "deduction_type_counts": {
+        "rule": 86,
+        "num": 40,
+        "ar": 34
+      },
+      "all_deduction_type_counts": {
+        "rule": 569,
+        "num": 299,
+        "refl": 4,
+        "ar": 2067
+      },
+      "ar_reason_counts": {
+        "angle chasing": 33,
+        "ratio chasing": 1
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "cyclic",
+          "points": [
+            "k",
+            "l",
+            "m",
+            "p"
+          ]
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2013CGMOp2": {
+      "normalization": {
+        "rewritten_constructions": 9,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2013CGMOp2.txt",
+      "input_sha256": "97a45d5a6628e8f2ad1b39e686013c724ee931ef76c99791dc9dc316f8cc8ca5",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.15130090000002383,
+      "proof_sha256": "5d8881ea88ede076d3bd241b608da1d2ff01fe663562edc130233992eb3de631",
+      "proof_chars": 1043704,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2013CGMOp2.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 103,
+      "all_deduction_count": 1407,
+      "deduction_type_counts": {
+        "rule": 54,
+        "num": 30,
+        "ar": 19
+      },
+      "all_deduction_type_counts": {
+        "rule": 397,
+        "num": 205,
+        "ar": 805
+      },
+      "ar_reason_counts": {
+        "angle chasing": 18,
+        "ratio chasing": 1
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "coll",
+          "points": [
+            "p",
+            "q",
+            "x"
+          ]
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2013USAMOp1": {
+      "normalization": {
+        "rewritten_constructions": 10,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2013USAMOp1.txt",
+      "input_sha256": "4b1fc6ab23664290da7ccc4976192b59d1c9df3f0462d45b80156ea97e1ced77",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.11362420000023121,
+      "proof_sha256": "59a70ee12812dbc40571f2ffdf1d3ffd9dc213279a322c5633325b6f0b5b8b8b",
+      "proof_chars": 692824,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2013USAMOp1.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 140,
+      "all_deduction_count": 1071,
+      "deduction_type_counts": {
+        "rule": 75,
+        "num": 33,
+        "ar": 32
+      },
+      "all_deduction_type_counts": {
+        "rule": 262,
+        "num": 118,
+        "ar": 691
+      },
+      "ar_reason_counts": {
+        "angle chasing": 30,
+        "ratio chasing": 2
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "eqratio",
+          "points": [
+            "b",
+            "p",
+            "c",
+            "p",
+            "x",
+            "y",
+            "x",
+            "z"
+          ],
+          "lhs_terms": {
+            "|b-p|^2": "1/1",
+            "|c-p|^2": "-1/1",
+            "|x-y|^2": "-1/1",
+            "|x-z|^2": "1/1"
+          }
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2013USATSTp2": {
+      "normalization": {
+        "rewritten_constructions": 8,
+        "unchanged_constructions": 2,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2013USATSTp2.txt",
+      "input_sha256": "ff6f664cbce751505cbdadbb02138e88b2aeb15100ebb8d26aa4874aa017edfd",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.19566519999989396,
+      "proof_sha256": "d10e25ff62323e2a2456239bb75a04666e7ce9ce7d7c2b236aedf48f6e1c46b4",
+      "proof_chars": 471284,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2013USATSTp2.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 908,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 292,
+        "num": 145,
+        "refl": 10,
+        "ar": 461
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2014ARMOg9p6": {
+      "normalization": {
+        "rewritten_constructions": 10,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2014ARMOg9p6.txt",
+      "input_sha256": "575d72e261ff35dc28d34770efedd38b556b9a17c7587e35db6c5c29a79d1aeb",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.4863083000000188,
+      "proof_sha256": "5986f460231c0503d5c3fdbb6c21f226cdd0ba588a7c2d6cd6b126af25d96258",
+      "proof_chars": 3641821,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2014ARMOg9p6.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 173,
+      "all_deduction_count": 2883,
+      "deduction_type_counts": {
+        "rule": 88,
+        "num": 44,
+        "refl": 5,
+        "ar": 36
+      },
+      "all_deduction_type_counts": {
+        "rule": 557,
+        "num": 370,
+        "refl": 9,
+        "ar": 1947
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 11,
+        "angle chasing": 25
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "cyclic",
+          "points": [
+            "a",
+            "b",
+            "a2",
+            "b2"
+          ]
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2014BulgariaMOp6": {
+      "normalization": {
+        "rewritten_constructions": 13,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2014BulgariaMOp6.txt",
+      "input_sha256": "2a64a611cf5d7f7920f2db1045b9819aaffd90e5f3ede998f436ee0b38396e8f",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.28099699999984296,
+      "proof_sha256": "376f47a8afa0c6e45afe678b1463b2b3a97db457d560ac5607018707d61589a1",
+      "proof_chars": 1083170,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2014BulgariaMOp6.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 1886,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 654,
+        "num": 361,
+        "refl": 14,
+        "ar": 857
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2014CHNGaoLian": {
+      "normalization": {
+        "rewritten_constructions": 14,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2014CHNGaoLian.txt",
+      "input_sha256": "6c5de38d6fcf4cf26d85a2212f71f976ade226e254fd38685209903f4c92e7ca",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.30540149999978894,
+      "proof_sha256": "bc737903683e6361d7d5b321a15e1764df01755e6f3946513520397903d1902d",
+      "proof_chars": 1579823,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2014CHNGaoLian.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 2102,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 423,
+        "num": 257,
+        "refl": 8,
+        "ar": 1414
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2014CHNWesternMOp2": {
+      "normalization": {
+        "rewritten_constructions": 6,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2014CHNWesternMOp2.txt",
+      "input_sha256": "6bbe72f338d8796ea152a835b9307dbf3e912b3b4aefb205872c88d722ac13a9",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.13045750000037515,
+      "proof_sha256": "3ae68dd23725d0e84c4a7b53f6a1947d002455733b6b186714168b6c8fe2c781",
+      "proof_chars": 489757,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2014CHNWesternMOp2.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 109,
+      "all_deduction_count": 688,
+      "deduction_type_counts": {
+        "rule": 52,
+        "num": 27,
+        "refl": 7,
+        "ar": 23
+      },
+      "all_deduction_type_counts": {
+        "rule": 169,
+        "num": 152,
+        "refl": 16,
+        "ar": 351
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 11,
+        "angle chasing": 10,
+        "length chasing": 2
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "eqratio",
+          "points": [
+            "c",
+            "p",
+            "d",
+            "p",
+            "d",
+            "q",
+            "c",
+            "q"
+          ],
+          "lhs_terms": {
+            "|c-p|^2": "1/1",
+            "|c-q|^2": "1/1",
+            "|d-p|^2": "-1/1",
+            "|d-q|^2": "-1/1"
+          }
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2015ARMOg10p7": {
+      "normalization": {
+        "rewritten_constructions": 10,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2015ARMOg10p7.txt",
+      "input_sha256": "c237f10f32afa0aae64517e6d628bb2c0a768af2ec79087544ec03bf187b509b",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.17201850000037666,
+      "proof_sha256": "789a385b76daf875c9120430e299a9fe787e915eb1f9a040478d3d8e41466e85",
+      "proof_chars": 777131,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2015ARMOg10p7.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 43,
+      "all_deduction_count": 1151,
+      "deduction_type_counts": {
+        "rule": 24,
+        "num": 11,
+        "ar": 8
+      },
+      "all_deduction_type_counts": {
+        "rule": 298,
+        "num": 159,
+        "refl": 9,
+        "ar": 685
+      },
+      "ar_reason_counts": {
+        "angle chasing": 5,
+        "squared lengths chasing": 2,
+        "length chasing": 1
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "cong",
+          "points": [
+            "b",
+            "h",
+            "c",
+            "x"
+          ],
+          "lhs_terms": {
+            "|b-h|": "1/1",
+            "|c-x|": "-1/1"
+          }
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2015AsiaPacificMOp1": {
+      "normalization": {
+        "rewritten_constructions": 11,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2015AsiaPacificMOp1.txt",
+      "input_sha256": "ab335cc837caebb8ce4f68a2a81fb30f45ef4a0970fe2f955383623711b827bb",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.35092139999960636,
+      "proof_sha256": "97be632f3398f46a2419e728312de89d5e1c1ebdd2237323093c44820a829091",
+      "proof_chars": 3127682,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2015AsiaPacificMOp1.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 75,
+      "all_deduction_count": 1725,
+      "deduction_type_counts": {
+        "rule": 42,
+        "num": 24,
+        "ar": 9
+      },
+      "all_deduction_type_counts": {
+        "rule": 298,
+        "num": 164,
+        "refl": 1,
+        "ar": 1262
+      },
+      "ar_reason_counts": {
+        "angle chasing": 8,
+        "ratio chasing": 1
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "cong",
+          "points": [
+            "a",
+            "b",
+            "v",
+            "w"
+          ],
+          "lhs_terms": {
+            "|a-b|^2": "1/1",
+            "|v-w|^2": "-1/1"
+          }
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2015CTSTp9": {
+      "normalization": {
+        "rewritten_constructions": 19,
+        "unchanged_constructions": 1,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2015CTSTp9.txt",
+      "input_sha256": "18ec1e5a166809f7b113b976d1ace02431e8e8f716c75b6a72e056bed8cbb5d1",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 3.1570105000000694,
+      "proof_sha256": "ab37a53fe2edfd78a6db94090f6ab78a2b439a90908407ec35194fa9ab91e97d",
+      "proof_chars": 27852230,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2015CTSTp9.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 12572,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 2130,
+        "num": 1340,
+        "refl": 32,
+        "ar": 9070
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2015IranGOAp1": {
+      "normalization": {
+        "rewritten_constructions": 10,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2015IranGOAp1.txt",
+      "input_sha256": "7edc86a5b88776abe176857854e1d5e00add53ed7b4060d00c1cacfcbfc74a4a",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.08101380000061909,
+      "proof_sha256": "fb79cafb21fdb86eef6da6ef149c180a36b5fe3e10dd284a6d84540e0b79dfb5",
+      "proof_chars": 539536,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2015IranGOAp1.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 85,
+      "all_deduction_count": 872,
+      "deduction_type_counts": {
+        "rule": 39,
+        "num": 22,
+        "refl": 10,
+        "ar": 14
+      },
+      "all_deduction_type_counts": {
+        "rule": 226,
+        "num": 161,
+        "refl": 20,
+        "ar": 465
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 11,
+        "angle chasing": 3
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "cong",
+          "points": [
+            "a",
+            "x",
+            "k",
+            "x"
+          ],
+          "lhs_terms": {
+            "|a-x|^2": "1/1",
+            "|k-x|^2": "-1/1"
+          }
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2015IranTSTp18": {
+      "normalization": {
+        "rewritten_constructions": 11,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2015IranTSTp18.txt",
+      "input_sha256": "7870e2656fc8900b965c159defe70ceda01324af374c2109c8590bcf9a4bce3a",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.3748202999995556,
+      "proof_sha256": "395bc65fecc2ad5b4c2a0c7e8ef7182e277a582708c3b1b174a8b6577d21ef1c",
+      "proof_chars": 2701999,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2015IranTSTp18.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 2139,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 444,
+        "num": 272,
+        "refl": 9,
+        "ar": 1414
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2016BalkanMOp2": {
+      "normalization": {
+        "rewritten_constructions": 15,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2016BalkanMOp2.txt",
+      "input_sha256": "019b26987aa1f4f3be416aa5a1c6515dfd998b6e23a870c0db2bd9dcd94ff11c",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 1.652698199999577,
+      "proof_sha256": "20fbadbb5f6c36a5fc351c74301270e6fe43a816b056421feb183c772c4e44f1",
+      "proof_chars": 15250324,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2016BalkanMOp2.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 226,
+      "all_deduction_count": 7440,
+      "deduction_type_counts": {
+        "rule": 120,
+        "num": 53,
+        "refl": 8,
+        "ar": 45
+      },
+      "all_deduction_type_counts": {
+        "rule": 1285,
+        "num": 961,
+        "refl": 28,
+        "ar": 5166
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 14,
+        "angle chasing": 22,
+        "length chasing": 2,
+        "squared lengths chasing": 7
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "coll",
+          "points": [
+            "c",
+            "d",
+            "p"
+          ]
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2016CGMOp7": {
+      "normalization": {
+        "rewritten_constructions": 13,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2016CGMOp7.txt",
+      "input_sha256": "8842d22c252d0002054f8102bebff3304f096dc3925a35904a2378687221933f",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.29386930000055145,
+      "proof_sha256": "9d886a4a23b09885a5f25e3228f780f93a45a20897c5e86d90f829a966c992ea",
+      "proof_chars": 2025332,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2016CGMOp7.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 2854,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 541,
+        "num": 246,
+        "refl": 3,
+        "ar": 2064
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2016CTSTp5": {
+      "normalization": {
+        "rewritten_constructions": 17,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2016CTSTp5.txt",
+      "input_sha256": "66a7bd8b0292e9316532bb1ca8c5eb8357e3253e20671afd251402f59d5d91b7",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.35399730000062846,
+      "proof_sha256": "3bb203ae4dc43571d229901d701a091781400cbd029a823c3e5e0fd614c307c5",
+      "proof_chars": 2745961,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2016CTSTp5.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 3663,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 826,
+        "refl": 7,
+        "num": 367,
+        "ar": 2463
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2016G5": {
+      "normalization": {
+        "rewritten_constructions": 12,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2016G5.txt",
+      "input_sha256": "f52cf7a435f95325c601f94330db969aab24502c262a0873d667c76ba3ccd5d1",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.24922160000005533,
+      "proof_sha256": "f8d5e44c5f4d308957812043b00f2d3990a92923217ad4d16ea05ae2ed3be096",
+      "proof_chars": 1277453,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2016G5.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 2146,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 667,
+        "num": 331,
+        "refl": 19,
+        "ar": 1129
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2016G6": {
+      "normalization": {
+        "rewritten_constructions": 15,
+        "unchanged_constructions": 1,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2016G6.txt",
+      "input_sha256": "197b583177c75ef6f9800a2b2ddf07c55765dde85a9475f55fb782667d594183",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.23470970000016678,
+      "proof_sha256": "66097ccd2406df3efbbf3b984158ea41e729a4b23182de20af23efe45f6f64e7",
+      "proof_chars": 1281368,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2016G6.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 2250,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 683,
+        "num": 377,
+        "refl": 22,
+        "ar": 1168
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2016IranGOAp1": {
+      "normalization": {
+        "rewritten_constructions": 15,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2016IranGOAp1.txt",
+      "input_sha256": "b973e8e3568912133f5ee9a0a69c30be9ac795e896189b598ff9856502396011",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.3549412000002121,
+      "proof_sha256": "9425cf822f6903e26c20773f22d232e2ff707cccb2e0d7c5407c867e3b5de193",
+      "proof_chars": 2297211,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2016IranGOAp1.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 127,
+      "all_deduction_count": 2629,
+      "deduction_type_counts": {
+        "rule": 64,
+        "num": 28,
+        "refl": 10,
+        "ar": 25
+      },
+      "all_deduction_type_counts": {
+        "rule": 497,
+        "num": 634,
+        "refl": 32,
+        "ar": 1466
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 14,
+        "angle chasing": 11
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "coll",
+          "points": [
+            "a",
+            "p",
+            "q"
+          ]
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2016USATSTSTp6": {
+      "normalization": {
+        "rewritten_constructions": 23,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2016USATSTSTp6.txt",
+      "input_sha256": "ffd6a2e36a473113e198abd0a21a913f268d19e363530dbdc36aeda3ad36a017",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 2.299635500000477,
+      "proof_sha256": "3f84a3d298d9df37eedb89d77945b1a1c9d67ec9ff454cc9f6f30f8072c47f68",
+      "proof_chars": 18748637,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2016USATSTSTp6.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 12897,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 2956,
+        "num": 1774,
+        "refl": 96,
+        "ar": 8071
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2017ARMOg9p2": {
+      "normalization": {
+        "rewritten_constructions": 8,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2017ARMOg9p2.txt",
+      "input_sha256": "8c2006df8cada8341d4e774daf71ce2c7e97a762a4883bcce136e31d24197bd9",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.11441930000000866,
+      "proof_sha256": "a36e3bd042360abe3ac55593a5aac114c8562a215b44a71802c25f3266ba6d42",
+      "proof_chars": 828100,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2017ARMOg9p2.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 88,
+      "all_deduction_count": 951,
+      "deduction_type_counts": {
+        "rule": 43,
+        "num": 23,
+        "refl": 5,
+        "ar": 17
+      },
+      "all_deduction_type_counts": {
+        "rule": 223,
+        "num": 138,
+        "refl": 9,
+        "ar": 581
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 7,
+        "angle chasing": 10
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "coll",
+          "points": [
+            "x",
+            "y",
+            "z"
+          ]
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2017AsiaPacificMOp2": {
+      "normalization": {
+        "rewritten_constructions": 6,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2017AsiaPacificMOp2.txt",
+      "input_sha256": "bac9c8f8974bb2982edb67104f482242983a227769314f486216e13a9323973f",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.0340993999998318,
+      "proof_sha256": "1d84e9987a973928350bec0ddc38ba3d17ae018dd7493c4a0a70609a273f0ba1",
+      "proof_chars": 72939,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2017AsiaPacificMOp2.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 173,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 72,
+        "refl": 2,
+        "num": 37,
+        "ar": 62
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2017CHNSouthEastMOg10p2": {
+      "normalization": {
+        "rewritten_constructions": 11,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2017CHNSouthEastMOg10p2.txt",
+      "input_sha256": "2f95654e0cfce86e04fddbd92c34c8a3383d59da1ed7fa5f8eca0c2b8121dbf9",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.47103340000012395,
+      "proof_sha256": "d8b95fe45637956cef8b57aa0bc361029af12d102b31a27804289c2b865163b6",
+      "proof_chars": 3678713,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2017CHNSouthEastMOg10p2.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 2932,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 565,
+        "num": 307,
+        "refl": 13,
+        "ar": 2047
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2017G3": {
+      "normalization": {
+        "rewritten_constructions": 9,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2017G3.txt",
+      "input_sha256": "f1c772983279f06291edbbcf8115efd293a11688f133f1e4cc630ef8151a6360",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.1550575999999637,
+      "proof_sha256": "8be1d58297d75548cab9e27f33c4656a7673b8889cf5692ba7f4bf0af71fe083",
+      "proof_chars": 1039072,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2017G3.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 1402,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 305,
+        "num": 186,
+        "refl": 7,
+        "ar": 904
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2017G4": {
+      "normalization": {
+        "rewritten_constructions": 14,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2017G4.txt",
+      "input_sha256": "2488dd6a623c55498616fbb9a4d5adbff86c52fd04804d764df3e3b602f6e5ee",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.857560100000228,
+      "proof_sha256": "333a41a6708aacde9a205c743d12c7111510b0ed29786915c6540e2c5d510a04",
+      "proof_chars": 3869222,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2017G4.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 4682,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 999,
+        "num": 656,
+        "refl": 39,
+        "ar": 2988
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2017USAMOp3": {
+      "normalization": {
+        "rewritten_constructions": 17,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2017USAMOp3.txt",
+      "input_sha256": "d99e367d0583ee9a7fa035f7f7d50971f4311b6018876d958947c6a7fedc8572",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.8409296999998332,
+      "proof_sha256": "8c79660e745702c6f34d73285397dda57879b7597fbbf00826b69087ea4d665f",
+      "proof_chars": 5430400,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2017USAMOp3.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 4715,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 1147,
+        "num": 882,
+        "refl": 60,
+        "ar": 2626
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2018ARMOg11p4": {
+      "normalization": {
+        "rewritten_constructions": 11,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2018ARMOg11p4.txt",
+      "input_sha256": "1af3fb0486b2531b4415ad5c9a1eda8b428d3205868993d4dc7685cd359e3cff",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.1549830000003567,
+      "proof_sha256": "cdcdba4a890ded845865b275783ee41862bb28b09bbed2e74b3a6a4934152a4b",
+      "proof_chars": 505951,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2018ARMOg11p4.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 1070,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 384,
+        "num": 224,
+        "refl": 14,
+        "ar": 448
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2018CHNWesternMOp5": {
+      "normalization": {
+        "rewritten_constructions": 8,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2018CHNWesternMOp5.txt",
+      "input_sha256": "80e8882c25a6dccc109da9f9317f2c633223275fa086366b1abfbd092d4f793b",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.24402960000043095,
+      "proof_sha256": "ecd03d7765ead28c2751dee42ad7aae7d581ae73d305f3191dd58d0b1d9ddb0c",
+      "proof_chars": 632062,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2018CHNWesternMOp5.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 109,
+      "all_deduction_count": 892,
+      "deduction_type_counts": {
+        "rule": 48,
+        "num": 29,
+        "refl": 12,
+        "ar": 20
+      },
+      "all_deduction_type_counts": {
+        "rule": 239,
+        "num": 142,
+        "refl": 18,
+        "ar": 493
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 13,
+        "angle chasing": 6,
+        "squared lengths chasing": 1
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "cong",
+          "points": [
+            "c",
+            "e",
+            "d",
+            "m"
+          ],
+          "lhs_terms": {
+            "|c-e|^2": "1/1",
+            "|d-m|^2": "-1/1"
+          }
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2018EuropeanMCupSp2": {
+      "normalization": {
+        "rewritten_constructions": 19,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2018EuropeanMCupSp2.txt",
+      "input_sha256": "1eeef04f8c2956bf041113eec0243964507259c8f9ac438b75a11b8451da49ac",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 1.9202070000001186,
+      "proof_sha256": "54e4a0fb17efd16b42095ae522caabb74aa421d93ef4883fcd44d3f92e005840",
+      "proof_chars": 7672007,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2018EuropeanMCupSp2.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 295,
+      "all_deduction_count": 9476,
+      "deduction_type_counts": {
+        "rule": 139,
+        "refl": 25,
+        "num": 66,
+        "ar": 65
+      },
+      "all_deduction_type_counts": {
+        "rule": 1203,
+        "num": 2075,
+        "refl": 75,
+        "ar": 6123
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 34,
+        "angle chasing": 28,
+        "length chasing": 2,
+        "squared lengths chasing": 1
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "cong",
+          "points": [
+            "o",
+            "o1",
+            "o",
+            "o2"
+          ],
+          "lhs_terms": {
+            "|o-o1|": "1/1",
+            "|o-o2|": "-1/1"
+          }
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2018IranGOMp3": {
+      "normalization": {
+        "rewritten_constructions": 11,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2018IranGOMp3.txt",
+      "input_sha256": "c371c58695d7fae0b39cc9276636aef59478c673559bd34ac33cb173203686bb",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.20101270000031946,
+      "proof_sha256": "2bfc16de6d067d9891a89d750de7622795eef99d916fe1a7ce4901777c9c506a",
+      "proof_chars": 1190379,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2018IranGOMp3.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 105,
+      "all_deduction_count": 1613,
+      "deduction_type_counts": {
+        "rule": 48,
+        "num": 28,
+        "refl": 9,
+        "ar": 20
+      },
+      "all_deduction_type_counts": {
+        "rule": 233,
+        "num": 231,
+        "refl": 16,
+        "ar": 1133
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 11,
+        "angle chasing": 8,
+        "squared lengths chasing": 1
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "cong",
+          "points": [
+            "c",
+            "x",
+            "d",
+            "y"
+          ],
+          "lhs_terms": {
+            "|c-x|^2": "1/1",
+            "|d-y|^2": "-1/1"
+          }
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2018KoMaLA726": {
+      "normalization": {
+        "rewritten_constructions": 8,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2018KoMaLA726.txt",
+      "input_sha256": "2e5549b0f78618458e2d02fe595dc16fb1ae1a2eaff38a64036337b2ba0dba48",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.12242830000013782,
+      "proof_sha256": "7488ce35a42bf1195bc0c4fc29d048540acfb140435f09cfd04f88c3a452f01b",
+      "proof_chars": 778027,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2018KoMaLA726.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 105,
+      "all_deduction_count": 1013,
+      "deduction_type_counts": {
+        "rule": 51,
+        "num": 25,
+        "refl": 8,
+        "ar": 21
+      },
+      "all_deduction_type_counts": {
+        "rule": 249,
+        "num": 183,
+        "refl": 22,
+        "ar": 559
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 11,
+        "angle chasing": 10
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "cong",
+          "points": [
+            "a",
+            "i",
+            "i",
+            "p"
+          ],
+          "lhs_terms": {
+            "|a-i|^2": "1/1",
+            "|i-p|^2": "-1/1"
+          }
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2018USAMOp5": {
+      "normalization": {
+        "rewritten_constructions": 16,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2018USAMOp5.txt",
+      "input_sha256": "3e97aa29fca966adaf471a375d29f9edf3c8f460368eb0aa1142c1d636360737",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 1.4173252999999022,
+      "proof_sha256": "37afc316ab9edec9b7e40373a1beec01502efef406d7cfa2289ca1552846649e",
+      "proof_chars": 4482248,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2018USAMOp5.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 198,
+      "all_deduction_count": 3909,
+      "deduction_type_counts": {
+        "rule": 94,
+        "num": 56,
+        "refl": 12,
+        "ar": 36
+      },
+      "all_deduction_type_counts": {
+        "rule": 752,
+        "num": 447,
+        "refl": 15,
+        "ar": 2695
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 13,
+        "angle chasing": 23
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "perp",
+          "points": [
+            "a",
+            "c",
+            "a",
+            "m"
+          ],
+          "lhs_terms": {
+            "∠(a-c)": "1/1",
+            "∠(a-m)": "-1/1"
+          }
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2019CGMOp1": {
+      "normalization": {
+        "rewritten_constructions": 13,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2019CGMOp1.txt",
+      "input_sha256": "c6d57a08cf831154c5de83d5800d72bdcc3cb9cfff0cb71ff1bf5b27cde215e4",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.2520641000000978,
+      "proof_sha256": "d4ff9547ebecdd2b527790c0599bf51a7a5caad5c44fcedbfb4bec43a6242eaf",
+      "proof_chars": 1622755,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2019CGMOp1.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 141,
+      "all_deduction_count": 2173,
+      "deduction_type_counts": {
+        "rule": 67,
+        "num": 37,
+        "refl": 10,
+        "ar": 27
+      },
+      "all_deduction_type_counts": {
+        "rule": 588,
+        "num": 348,
+        "refl": 25,
+        "ar": 1212
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 14,
+        "angle chasing": 11,
+        "length chasing": 1,
+        "squared lengths chasing": 1
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "cong",
+          "points": [
+            "d",
+            "k",
+            "e",
+            "k"
+          ],
+          "lhs_terms": {
+            "|d-k|^2": "1/1",
+            "|e-k|^2": "-1/1"
+          }
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2019IranTSTp15": {
+      "normalization": {
+        "rewritten_constructions": 19,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2019IranTSTp15.txt",
+      "input_sha256": "2706434d9e84d5d7b11ce3bbb2994d0e4242bdb2f00e6ddd2490b422a5301ad1",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 5.478320799999892,
+      "proof_sha256": "7b13544cfb6b896c10ee21eb0e4fb68db21035c228e09f5e8e6665233ce8d281",
+      "proof_chars": 48693054,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2019IranTSTp15.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 14460,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 1894,
+        "num": 1273,
+        "refl": 35,
+        "ar": 11258
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2019USATSTSTp5": {
+      "normalization": {
+        "rewritten_constructions": 11,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2019USATSTSTp5.txt",
+      "input_sha256": "7d0126fbec5dd59e66b7921c543429b300f25ce53de850d578c97016b9ec2adf",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.40837699999974575,
+      "proof_sha256": "7282e8dffed3e7c463eeca1625f4add80c07ce2fa9cffc4de1b74ef509800c07",
+      "proof_chars": 1169093,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2019USATSTSTp5.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 1511,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 394,
+        "num": 253,
+        "refl": 16,
+        "ar": 848
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2020ELMOp4": {
+      "normalization": {
+        "rewritten_constructions": 11,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2020ELMOp4.txt",
+      "input_sha256": "b122748fcd28e17f09f9909c66f8bef9378b297612520dead1f28382488a59a1",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.46442019999994955,
+      "proof_sha256": "447951a1458a645d1d0c50685432bb3403a8f608a6a79a38a6b121666ffea264",
+      "proof_chars": 2160303,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2020ELMOp4.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 2537,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 574,
+        "num": 335,
+        "refl": 17,
+        "ar": 1611
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2020IranGOAp2": {
+      "normalization": {
+        "rewritten_constructions": 11,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2020IranGOAp2.txt",
+      "input_sha256": "85e48377a0b6e26ea36230f187df13f6af38e26cb8019a7ae9faa5adf95adeb7",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.2416677000001073,
+      "proof_sha256": "9072d777d3b1d814c6344247c597fda0677810052d3dd676b0b1dca306661d53",
+      "proof_chars": 1310884,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2020IranGOAp2.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 2231,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 701,
+        "num": 452,
+        "refl": 21,
+        "ar": 1057
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2020IranTSTp9": {
+      "normalization": {
+        "rewritten_constructions": 21,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2020IranTSTp9.txt",
+      "input_sha256": "29a9fb61f57d5b7062fb44e81c7a8eec8f7a3ea6590f3ee0e66754d39fa75caa",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.5826830999994854,
+      "proof_sha256": "c6ad98244e06f6feb044e0ca603f04636d81fa453dbffb0fc57b4b154c4e5288",
+      "proof_chars": 3259595,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2020IranTSTp9.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 5378,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 1646,
+        "num": 866,
+        "refl": 41,
+        "ar": 2825
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2021ARMOg10p1": {
+      "normalization": {
+        "rewritten_constructions": 10,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2021ARMOg10p1.txt",
+      "input_sha256": "6ed5376c2d3f2f7c8630aa142a7b743f34078ab7f60f0fbb1b11976ffe727dcf",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.1447374999997919,
+      "proof_sha256": "5a15cf95141ce0586f81f946f4fd04669424f76e2fe1a7db5f47b607f1f1bf13",
+      "proof_chars": 639777,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2021ARMOg10p1.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 72,
+      "all_deduction_count": 1219,
+      "deduction_type_counts": {
+        "rule": 36,
+        "refl": 6,
+        "num": 20,
+        "ar": 10
+      },
+      "all_deduction_type_counts": {
+        "rule": 284,
+        "num": 252,
+        "refl": 9,
+        "ar": 674
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 6,
+        "angle chasing": 4
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "perp",
+          "points": [
+            "a",
+            "e",
+            "e",
+            "o2"
+          ],
+          "lhs_terms": {
+            "∠(a-e)": "1/1",
+            "∠(e-o2)": "-1/1"
+          }
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2021ARMOg10p8": {
+      "normalization": {
+        "rewritten_constructions": 23,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2021ARMOg10p8.txt",
+      "input_sha256": "e9165479f04905dd253c1c4d1cfebf94fa6b9cdbe6890896c9967d6c6a332578",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 1.9505701999996745,
+      "proof_sha256": "f58afaf3444b3d2f6dcab6fd8f743aadeab14fb91fdef2f9b9c29be8df8720d8",
+      "proof_chars": 7502834,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2021ARMOg10p8.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 7413,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 2032,
+        "num": 1227,
+        "refl": 68,
+        "ar": 4086
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2021CGMOp2": {
+      "normalization": {
+        "rewritten_constructions": 13,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2021CGMOp2.txt",
+      "input_sha256": "bfeb1fa9b559507690476ffd5016b1143f1fb15da5e7256425a3c763f351f273",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.2794061000004149,
+      "proof_sha256": "95182755dd9f91f4fbfb7aaa4f54296bdadbb6013ca17b6d3bd9f819afeaff5d",
+      "proof_chars": 1514267,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2021CGMOp2.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 2461,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 704,
+        "num": 505,
+        "refl": 22,
+        "ar": 1230
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2021CGMOp7": {
+      "normalization": {
+        "rewritten_constructions": 10,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2021CGMOp7.txt",
+      "input_sha256": "e0c29d8832fabe011d7216dde2a4230163973ff91c3c00a7049044dac6884f8d",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.09812529999999242,
+      "proof_sha256": "2e08fc5e0db2c25b9130c6cf46a0a290685db54be8ec384ba706e2cef841af77",
+      "proof_chars": 337779,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2021CGMOp7.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 851,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 274,
+        "num": 233,
+        "refl": 10,
+        "ar": 334
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2021G1": {
+      "normalization": {
+        "rewritten_constructions": 11,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2021G1.txt",
+      "input_sha256": "aba3255c86a8ae3540454e7c35718cc49bae39ac6d7a1d8b2c772f8fd99e7ab3",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.4446723999999449,
+      "proof_sha256": "a821fe5dc5d3f42f86789fb831b5e9fdced3db31e0384d39168396cfc30ad3a0",
+      "proof_chars": 2788508,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2021G1.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 108,
+      "all_deduction_count": 2820,
+      "deduction_type_counts": {
+        "rule": 50,
+        "num": 31,
+        "refl": 11,
+        "ar": 16
+      },
+      "all_deduction_type_counts": {
+        "rule": 489,
+        "num": 407,
+        "refl": 17,
+        "ar": 1907
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 12,
+        "angle chasing": 4
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "coll",
+          "points": [
+            "b",
+            "r",
+            "x"
+          ]
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2021GOWACAp5": {
+      "normalization": {
+        "rewritten_constructions": 12,
+        "unchanged_constructions": 4,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2021GOWACAp5.txt",
+      "input_sha256": "a64b0589ec52852348fff41ae72c86319b073c2c9c517883044d833c208e5573",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 1.7789985999997953,
+      "proof_sha256": "97547c0aaafe0aa7be3cf7d928061676dd56443f17d74b34379e4bdd1e45ea20",
+      "proof_chars": 9353129,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2021GOWACAp5.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 10143,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 1662,
+        "num": 974,
+        "refl": 15,
+        "ar": 7492
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2021IranTSTp6": {
+      "normalization": {
+        "rewritten_constructions": 15,
+        "unchanged_constructions": 1,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2021IranTSTp6.txt",
+      "input_sha256": "260eda2ec771e54b489a68bf47f9b3083beb535fb95e9bcd80d243cb36aff10f",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.9685168999994858,
+      "proof_sha256": "96a76c3b138c15ddce3dcb4caefd155c23a2f12d2135ae89b074fdf87d62474d",
+      "proof_chars": 774524,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2021IranTSTp6.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 1960,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 819,
+        "num": 380,
+        "refl": 20,
+        "ar": 741
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2021IsraelOlympicRev": {
+      "normalization": {
+        "rewritten_constructions": 23,
+        "unchanged_constructions": 1,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2021IsraelOlympicRev.txt",
+      "input_sha256": "8c8691c3c5bdfc682b937068f36739e7d7aeb52aaee8d8b1c4713730e6c0e243",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.832578999999896,
+      "proof_sha256": "67e27bb614db8814e79180036540b1cdf00ab4948540ac5630f8aa137d89bfd1",
+      "proof_chars": 4394419,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2021IsraelOlympicRev.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 6574,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 1990,
+        "num": 1157,
+        "refl": 58,
+        "ar": 3369
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2021SilkRoadp3": {
+      "normalization": {
+        "rewritten_constructions": 12,
+        "unchanged_constructions": 1,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2021SilkRoadp3.txt",
+      "input_sha256": "bb5cf3623becf6040231fd257b9aafd04475e57382d4bbd4ad3aa084dbad7eb2",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.7156695999992735,
+      "proof_sha256": "e255ad1a2b254aea84edbf2fd326b22624c27d3f58ea9aa393acdd859b33c4d0",
+      "proof_chars": 1551990,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2021SilkRoadp3.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 2197,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 591,
+        "num": 369,
+        "refl": 24,
+        "ar": 1213
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2022ARMOg10p2": {
+      "normalization": {
+        "rewritten_constructions": 7,
+        "unchanged_constructions": 2,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2022ARMOg10p2.txt",
+      "input_sha256": "424a57df8b2843eed8fb7c749d03bd13cee90b843d241c63f27b021ebacf8ece",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.12998520000019198,
+      "proof_sha256": "2f404bd5bbf402ca4e53177847ef0d6721bc4d4d475e592a3ba3f4218f2b6ada",
+      "proof_chars": 841194,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2022ARMOg10p2.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 54,
+      "all_deduction_count": 1323,
+      "deduction_type_counts": {
+        "rule": 27,
+        "num": 15,
+        "ar": 12
+      },
+      "all_deduction_type_counts": {
+        "rule": 330,
+        "num": 240,
+        "refl": 17,
+        "ar": 736
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 6,
+        "squared lengths chasing": 2,
+        "angle chasing": 4
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "cong",
+          "points": [
+            "a",
+            "p",
+            "a",
+            "q"
+          ],
+          "lhs_terms": {
+            "|a-p|^2": "1/1",
+            "|a-q|^2": "-1/1"
+          }
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2022CHNSouthEastMOg11p6": {
+      "normalization": {
+        "rewritten_constructions": 7,
+        "unchanged_constructions": 2,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2022CHNSouthEastMOg11p6.txt",
+      "input_sha256": "0d40890008e875c5c14e6dc328d9f13c58b39c894cd145e62400f74eb50746aa",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.24206500000036613,
+      "proof_sha256": "0f7fab43fb183a74018772da673f3e5066f98f5914006ff7c46898936a2ab1d4",
+      "proof_chars": 154057,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2022CHNSouthEastMOg11p6.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 427,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 183,
+        "num": 100,
+        "refl": 9,
+        "ar": 135
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2022CzechAPSlovakp5": {
+      "normalization": {
+        "rewritten_constructions": 7,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2022CzechAPSlovakp5.txt",
+      "input_sha256": "365f1f96b610e2506c484fb479c2d6c19bc62860f75ed18845f9b06b5148bf03",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.18292699999983597,
+      "proof_sha256": "138b280150cd3f0f9a32a7d14e824f83975c30100e1fb0cebde718c0f43cd58a",
+      "proof_chars": 187506,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2022CzechAPSlovakp5.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 364,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 131,
+        "num": 66,
+        "refl": 5,
+        "ar": 162
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2022G5": {
+      "normalization": {
+        "rewritten_constructions": 26,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2022G5.txt",
+      "input_sha256": "2b6e8f44d3914a1b5335a76d4a130094f187c501bc0a9ec6a02d315d39230806",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 2.9921908000005715,
+      "proof_sha256": "0f5938c0614f2ca07fa280c1995b00aae0e9e50fd1c2cb3b2d32d6ad4296fe68",
+      "proof_chars": 12208444,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2022G5.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 10815,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 2290,
+        "num": 1197,
+        "refl": 18,
+        "ar": 7310
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2022IZhautykovOp3": {
+      "normalization": {
+        "rewritten_constructions": 12,
+        "unchanged_constructions": 1,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2022IZhautykovOp3.txt",
+      "input_sha256": "8fcab1e47d9ec6e3dfe0c877c87e87eef102d6c4c3409e0556d6008f80c1f33d",
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.5770561999997881,
+      "proof_sha256": "bbe99240f2b61941ab423a189ca1b4f7a40f9bb2fe20d38750675d2b8276e29b",
+      "proof_chars": 4401278,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2022IZhautykovOp3.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 139,
+      "all_deduction_count": 4418,
+      "deduction_type_counts": {
+        "rule": 67,
+        "num": 37,
+        "refl": 10,
+        "ar": 25
+      },
+      "all_deduction_type_counts": {
+        "rule": 671,
+        "num": 546,
+        "refl": 33,
+        "ar": 3168
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 15,
+        "angle chasing": 10
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "eqangle",
+          "points": [
+            "l",
+            "p",
+            "d",
+            "p",
+            "m",
+            "p",
+            "c",
+            "p"
+          ],
+          "lhs_terms": {
+            "∠(c-p)": "-1/1",
+            "∠(d-p)": "1/1",
+            "∠(l-p)": "-1/1",
+            "∠(m-p)": "1/1"
+          }
+        }
+      ],
+      "stderr_tail": ""
+    },
+    "2022KoMaLA805": {
+      "normalization": {
+        "rewritten_constructions": 14,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2022KoMaLA805.txt",
+      "input_sha256": "c91fac32adeb0336aff0c5117054251d66a03fa011cfe6c70a7726ce701a1a0e",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 1.3461692999999286,
+      "proof_sha256": "36785daaea0cd38462cbf2dfd0c89eee7129bd9a3571d60dbc941224616eb62a",
+      "proof_chars": 10197275,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2022KoMaLA805.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 8540,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 1109,
+        "num": 846,
+        "refl": 34,
+        "ar": 6551
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2023IMOp6": {
+      "normalization": {
+        "rewritten_constructions": 16,
+        "unchanged_constructions": 2,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2023IMOp6.txt",
+      "input_sha256": "9a1953e82a03c37a1ce5e991bb73441e0360ddb9ddfd65df776d718c544952f2",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.3558980999996493,
+      "proof_sha256": "8bd2822f8691fb21a763872bc65e49a56d667456c32ee58c9d5df835af61c466",
+      "proof_chars": 2306267,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2023IMOp6.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 3977,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 1305,
+        "num": 706,
+        "refl": 54,
+        "ar": 1912
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2023MOSTMockp2": {
+      "normalization": {
+        "rewritten_constructions": 23,
+        "unchanged_constructions": 2,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2023MOSTMockp2.txt",
+      "input_sha256": "800ac979a58bb45264241769d895925262c2cffde4f31ac66392f6d2a73591b8",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.5446753000005629,
+      "proof_sha256": "083ffca56cd42bb7ab5e4fa4354f36403050d75fa40a4d5e2012ab1604219694",
+      "proof_chars": 3208181,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2023MOSTMockp2.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 6737,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 2507,
+        "num": 1074,
+        "refl": 27,
+        "ar": 3129
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2023RMMSLG3": {
+      "normalization": {
+        "rewritten_constructions": 12,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2023RMMSLG3.txt",
+      "input_sha256": "132bd01d41573a1de9e9045063407e77403e2eca2f43f7d60f80b6e1a4f891e4",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.21472330000051443,
+      "proof_sha256": "ff0db4db00d2b6845fe4035938171fdcf293da4e8a9ccf285f52bf425884fda4",
+      "proof_chars": 1006488,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2023RMMSLG3.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 1818,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 667,
+        "num": 473,
+        "refl": 44,
+        "ar": 634
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2023SAGFp8": {
+      "normalization": {
+        "rewritten_constructions": 20,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2023SAGFp8.txt",
+      "input_sha256": "0eec560fc44055a28a740419cbae2ff97e72a96debdfcdfa6bdd5daf21083f01",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 5.588576600000124,
+      "proof_sha256": "a0ab176315b9386a5cd95338fce21179ac62cf574fa5fbc57e670afcc663d4e1",
+      "proof_chars": 41075664,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2023SAGFp8.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 43430,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 3881,
+        "num": 4978,
+        "refl": 96,
+        "ar": 34475
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2023SerbiaMOp6": {
+      "normalization": {
+        "rewritten_constructions": 21,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2023SerbiaMOp6.txt",
+      "input_sha256": "9e86fd5b43a6a8aea0fa7068d031595e0e9a880bcbe02c246a11dea538c6d2f0",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 1.1034091999999873,
+      "proof_sha256": "13d8c11f8597d7c122e8064e4ab84e183874748288f1ec84d7865d5ae0bd41ca",
+      "proof_chars": 3988083,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2023SerbiaMOp6.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 6240,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 1667,
+        "num": 1161,
+        "refl": 55,
+        "ar": 3357
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2023VietnamTSTp3": {
+      "normalization": {
+        "rewritten_constructions": 15,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2023VietnamTSTp3.txt",
+      "input_sha256": "681603c371620e379a6f6a685ad88c54e9aa663f7bc151e235fdc6b02818b94e",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.5084803999998257,
+      "proof_sha256": "151b2550847de0f7fdd301f48f95d4720a9e3aa80b343fc7775445e5e97ce0c5",
+      "proof_chars": 2743680,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2023VietnamTSTp3.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 3932,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 1093,
+        "num": 642,
+        "refl": 27,
+        "ar": 2170
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2024ARMOg9p4": {
+      "normalization": {
+        "rewritten_constructions": 13,
+        "unchanged_constructions": 2,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2024ARMOg9p4.txt",
+      "input_sha256": "fda9a12bc29958db5353e1321e440a20e7573c144651d59832cc3e09ca1eb2f8",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 1.1649801000003208,
+      "proof_sha256": "c7cb0737fe3052a8afa31f583bde94d7367de67d751b8cb8b75fb3dcaade5ddc",
+      "proof_chars": 1753449,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2024ARMOg9p4.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 2619,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 579,
+        "num": 291,
+        "refl": 16,
+        "ar": 1733
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2024ELMOSLp1": {
+      "normalization": {
+        "rewritten_constructions": 11,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2024ELMOSLp1.txt",
+      "input_sha256": "5e361894f697e79af3d28ffe0a20d267d604b121ad68d89e8aefcc71401f0a09",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 1.052484099999674,
+      "proof_sha256": "3e03754ccca6695b0ae2ec059910b16ec5d1f431fc539a126b03dfeb29dbc4e9",
+      "proof_chars": 688642,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2024ELMOSLp1.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 1077,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 275,
+        "num": 129,
+        "ar": 673
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2024KoMaLA877": {
+      "normalization": {
+        "rewritten_constructions": 17,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2024KoMaLA877.txt",
+      "input_sha256": "e944080707f05db3976832384ff5c08303a881a3e72359175b8164661a999925",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.48536779999994906,
+      "proof_sha256": "6fa11402ae5ec37efcd0ed00b33896d0e34e3892622c0b899e4cf7be83e8662a",
+      "proof_chars": 1471552,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2024KoMaLA877.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 2836,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 892,
+        "num": 448,
+        "refl": 29,
+        "ar": 1467
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2024PlanetCupp10": {
+      "normalization": {
+        "rewritten_constructions": 20,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2024PlanetCupp10.txt",
+      "input_sha256": "5ea9e4f1a8b2c50e63bc5ca93177f43097991a738a4846be8e6da6811955c718",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 1.6637236999995366,
+      "proof_sha256": "546d4329cc7b8c42604de4e614334ab8315d2c9c3da3146a9b36b321fd05e692",
+      "proof_chars": 12877740,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2024PlanetCupp10.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 9683,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 2029,
+        "num": 1002,
+        "refl": 23,
+        "ar": 6629
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2024VietnamTSTp5": {
+      "normalization": {
+        "rewritten_constructions": 14,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2024VietnamTSTp5.txt",
+      "input_sha256": "914aa1e9f24f5c7657c27ede60356db8a1007b653d500cbffee18e2f0b4e715f",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.4367584000001443,
+      "proof_sha256": "72b3fceec7adf4791ab2711f5e0517dbbc60c73135e5ccfc87304144a24a296b",
+      "proof_chars": 1324021,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2024VietnamTSTp5.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 2236,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 685,
+        "num": 317,
+        "refl": 18,
+        "ar": 1216
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "2025KoeraFinalRoundp3": {
+      "normalization": {
+        "rewritten_constructions": 12,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/2025KoeraFinalRoundp3.txt",
+      "input_sha256": "3b6f52e2a445e54c37b978012fa34dc1bca525f0acfdb924178e9ef024fd9b5a",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.3747683000001416,
+      "proof_sha256": "2fe97c19a1e2a3d82c6e0f8edcd501b79b10e7f0e2d35d9a76c60841e0000ea6",
+      "proof_chars": 933602,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/2025KoeraFinalRoundp3.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 1830,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 668,
+        "num": 322,
+        "refl": 19,
+        "ar": 821
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "ShuZhiMiGeo128": {
+      "normalization": {
+        "rewritten_constructions": 24,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/ShuZhiMiGeo128.txt",
+      "input_sha256": "2fd54fc19563bb673aee445aab1fda0817d5ca35c97dc11d19d3c5c95a115331",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.4830682000001616,
+      "proof_sha256": "d0fd00d2b9905577eb33b74028db820ca19e04bb51e7a45697de7246f5b65aa6",
+      "proof_chars": 2920867,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/ShuZhiMiGeo128.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 5533,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 2214,
+        "num": 1110,
+        "refl": 60,
+        "ar": 2149
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "ShuZhiMiGeo309": {
+      "normalization": {
+        "rewritten_constructions": 37,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/ShuZhiMiGeo309.txt",
+      "input_sha256": "b194a2552972b6d2ecd06aeecb16787300d1148a403dda03f54497cd2e87906e",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 6.0930187999992995,
+      "proof_sha256": "383ffa1de24fc7e191f21d51ce00d4559976d4524226a3e9db2524b9da0d118f",
+      "proof_chars": 57037396,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/ShuZhiMiGeo309.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 37641,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 8001,
+        "num": 4172,
+        "refl": 83,
+        "ar": 25385
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "ShuZhiMiGeo489": {
+      "normalization": {
+        "rewritten_constructions": 17,
+        "unchanged_constructions": 0,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/ShuZhiMiGeo489.txt",
+      "input_sha256": "76df24bed86e7b0a603c7e07dc7748a876c2dab8b93d19c068a4b12d2d5fedae",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.46992799999952695,
+      "proof_sha256": "a98cf33c21630b8e17363a4f682d39e3e22cc643c9ae9673f55360195cc3dc75",
+      "proof_chars": 2399961,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/ShuZhiMiGeo489.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 4124,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 1310,
+        "num": 707,
+        "refl": 34,
+        "ar": 2073
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    },
+    "ShuZhiMiGeo635": {
+      "normalization": {
+        "rewritten_constructions": 17,
+        "unchanged_constructions": 1,
+        "unresolved_constructions": 0
+      },
+      "input_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/inputs/ShuZhiMiGeo635.txt",
+      "input_sha256": "9c597dd3fb0859eb75c430355ada2c5ec39832d808b20837d078c25a6fe18315",
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 1.5687137999993865,
+      "proof_sha256": "56c21e5f16bb3ec5eab124bd7e526498cd191e1b92aad46af079305a6369608c",
+      "proof_chars": 12583043,
+      "proof_path": "data/hageo-409-current-native-certified-rerun-2026-08-24-runs/proofs/ShuZhiMiGeo635.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 10331,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 2815,
+        "num": 1547,
+        "refl": 41,
+        "ar": 5928
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": ""
+    }
+  }
+}

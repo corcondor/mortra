@@ -1,0 +1,100 @@
+{
+  "experiment": "hageo409_typed_auxiliary_heldout_pilot",
+  "run_state": {
+    "complete": true,
+    "finished_count": 3,
+    "pending_count": 0,
+    "finished_problem_names": [
+      "2015IranTSTp18",
+      "2023RMMSLG3",
+      "2024VietnamTSTp5"
+    ]
+  },
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_dataset_auxiliary_clauses": false,
+    "selection": "explicit baseline-unsolved problem-file",
+    "problem_file": "data/fixtures/hageo-strict-timecensored3-2026-08-24.txt",
+    "selected_count": 3,
+    "truth_plane": "native_yuclid_certificate_replay",
+    "candidate_proposal": "typed HAGeo numerical incidence",
+    "scheduler": "unified bidirectional priority queue",
+    "search_budget": {
+      "auxiliary_depth": 2,
+      "candidate_paths_per_prefix": 16,
+      "candidate_beam": 6,
+      "beam_ranking": "ar-residual-pareto",
+      "controller": null,
+      "per_family_limit": 1,
+      "incidence_oversample_per_family": 16,
+      "candidate_contract_synthesis": false,
+      "enumeration_limit_per_family": 64,
+      "candidate_cone_timeout_seconds": 10.0,
+      "proof_dag_timeout_seconds": 10.0,
+      "workers": 3,
+      "timeout_seconds_per_problem": 7200.0
+    },
+    "paper_comparability": "configurable MORTRA ablation; report max_depth and evaluated paths rather than claiming HAGeo N=6, K=2048/8192",
+    "timeout_semantics": "right-censored unknown; never counted as a wrong answer or a proof"
+  },
+  "summary": {
+    "baseline_total": 89,
+    "baseline_solved": 28,
+    "pilot_total": 3,
+    "newly_solved": 0,
+    "newly_solved_names": [],
+    "heldout_portfolio_solved": 28,
+    "heldout_portfolio_score": 0.3146067415730337,
+    "certified_score_lower_bound": 0.3146067415730337,
+    "optimistic_score_upper_bound": 0.3258426966292135,
+    "completed_auxiliary_searches": 2,
+    "conditional_new_solution_rate": 0.0,
+    "time_censored": 1,
+    "execution_errors": 0,
+    "unprocessed": 0,
+    "score_is_lower_bound": true
+  },
+  "selected_problem_names": [
+    "2015IranTSTp18",
+    "2023RMMSLG3",
+    "2024VietnamTSTp5"
+  ],
+  "runs": [
+    {
+      "problem": "2015IranTSTp18",
+      "status": "right_censored_timeout",
+      "solved": null,
+      "elapsed_seconds": 7200.355345600001,
+      "checkpoint": "data/hageo-409-current-aux-bounded64-rerun-2026-08-24-runs/2015IranTSTp18.progress.json",
+      "checkpoint_sha256": "b6fe398b3fa92470b7f9ff6bb2c048c84a98c65abd8051ee34bdf84ea9d7aa60"
+    },
+    {
+      "problem": "2023RMMSLG3",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 112,
+      "right_censored_candidate_count": 0,
+      "incidence_checked": 566,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 6366.736763599998,
+      "artifact": "data/hageo-409-current-aux-bounded64-rerun-2026-08-24-runs/2023RMMSLG3.json",
+      "artifact_sha256": "c4c89a9c3a8669f9a68016f7e1b0ac4afebd24792ae139a788730714ecf10f63"
+    },
+    {
+      "problem": "2024VietnamTSTp5",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 112,
+      "right_censored_candidate_count": 0,
+      "incidence_checked": 558,
+      "incidence_heuristic": 1,
+      "elapsed_seconds": 3770.8672920000026,
+      "artifact": "data/hageo-409-current-aux-bounded64-rerun-2026-08-24-runs/2024VietnamTSTp5.json",
+      "artifact_sha256": "a575dc8f1863e4cbd2bbbad63ee5cb73d916ce38b4cead85940afb45bc635044"
+    }
+  ]
+}

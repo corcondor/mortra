@@ -1,0 +1,6260 @@
+{
+  "experiment": "newclid_dynamic_typed_construction_stalk_no_llm",
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_dataset_auxiliary_clauses": false,
+    "uses_problem_id_in_search": false,
+    "resume": {
+      "enabled": true,
+      "checkpoint_sha256": "61535026682cbe066dee665451985abb24debbada70d90be4b6c775397184099",
+      "restored_verified_record_count": 2
+    },
+    "families": [
+      {
+        "name": "midpoint",
+        "input_arity": 2,
+        "symmetry": "all",
+        "output_channels": [
+          "midp",
+          "coll",
+          "cong"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "mirror",
+        "input_arity": 2,
+        "symmetry": "ordered",
+        "output_channels": [
+          "coll",
+          "cong"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "foot",
+        "input_arity": 3,
+        "symmetry": "head_pair",
+        "output_channels": [
+          "perp",
+          "coll"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "circle",
+        "input_arity": 3,
+        "symmetry": "all",
+        "output_channels": [
+          "circle"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "orthocenter",
+        "input_arity": 3,
+        "symmetry": "all",
+        "output_channels": [
+          "perp"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "reflect",
+        "input_arity": 3,
+        "symmetry": "head_pair",
+        "output_channels": [
+          "cong",
+          "perp"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "intersection_ll",
+        "input_arity": 4,
+        "symmetry": "line_pair",
+        "output_channels": [
+          "coll"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "angle_bisector",
+        "input_arity": 3,
+        "symmetry": "ordered",
+        "output_channels": [
+          "eqangle"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "angle_mirror",
+        "input_arity": 3,
+        "symmetry": "ordered",
+        "output_channels": [
+          "eqangle"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "eqdistance",
+        "input_arity": 3,
+        "symmetry": "ordered",
+        "output_channels": [
+          "cong"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "incenter",
+        "input_arity": 3,
+        "symmetry": "all",
+        "output_channels": [
+          "eqangle"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "excenter",
+        "input_arity": 3,
+        "symmetry": "ordered",
+        "output_channels": [
+          "eqangle"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "shift",
+        "input_arity": 3,
+        "symmetry": "ordered",
+        "output_channels": [
+          "cong"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "parallelogram",
+        "input_arity": 3,
+        "symmetry": "ordered",
+        "output_channels": [
+          "para",
+          "cong"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "circumcenter",
+        "input_arity": 3,
+        "symmetry": "all",
+        "output_channels": [
+          "cong"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "intersection_lc",
+        "input_arity": 3,
+        "symmetry": "ordered",
+        "output_channels": [
+          "coll",
+          "cong"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "intersection_cc",
+        "input_arity": 3,
+        "symmetry": "ordered",
+        "output_channels": [
+          "cong"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "on_line",
+        "input_arity": 2,
+        "symmetry": "all",
+        "output_channels": [
+          "coll"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "on_pline",
+        "input_arity": 3,
+        "symmetry": "ordered",
+        "output_channels": [
+          "para"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "on_tline",
+        "input_arity": 3,
+        "symmetry": "ordered",
+        "output_channels": [
+          "perp"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "on_bline",
+        "input_arity": 2,
+        "symmetry": "all",
+        "output_channels": [
+          "cong",
+          "eqangle"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "on_circle",
+        "input_arity": 2,
+        "symmetry": "ordered",
+        "output_channels": [
+          "cong"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "on_circum",
+        "input_arity": 3,
+        "symmetry": "all",
+        "output_channels": [
+          "cyclic"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "on_dia",
+        "input_arity": 2,
+        "symmetry": "all",
+        "output_channels": [
+          "perp"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "intersection_lp",
+        "input_arity": 5,
+        "symmetry": "line_relation",
+        "output_channels": [
+          "coll",
+          "para"
+        ],
+        "allow_repeated_inputs": true
+      },
+      {
+        "name": "intersection_pp",
+        "input_arity": 6,
+        "symmetry": "relation_pair",
+        "output_channels": [
+          "para"
+        ],
+        "allow_repeated_inputs": true
+      },
+      {
+        "name": "intersection_lt",
+        "input_arity": 5,
+        "symmetry": "line_relation",
+        "output_channels": [
+          "coll",
+          "perp"
+        ],
+        "allow_repeated_inputs": true
+      },
+      {
+        "name": "intersection_tt",
+        "input_arity": 6,
+        "symmetry": "relation_pair",
+        "output_channels": [
+          "perp"
+        ],
+        "allow_repeated_inputs": true
+      },
+      {
+        "name": "eq_triangle",
+        "input_arity": 2,
+        "symmetry": "all",
+        "output_channels": [
+          "cong",
+          "eqangle"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "psquare",
+        "input_arity": 2,
+        "symmetry": "ordered",
+        "output_channels": [
+          "cong",
+          "perp"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "nsquare",
+        "input_arity": 2,
+        "symmetry": "ordered",
+        "output_channels": [
+          "cong",
+          "perp"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "between_bound",
+        "input_arity": 2,
+        "symmetry": "ordered",
+        "output_channels": [
+          "coll",
+          "obtuse_angle"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "eqangle2",
+        "input_arity": 3,
+        "symmetry": "ordered",
+        "output_channels": [
+          "eqangle"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "lc_tangent",
+        "input_arity": 2,
+        "symmetry": "ordered",
+        "output_channels": [
+          "perp"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "on_aline",
+        "input_arity": 5,
+        "symmetry": "ordered",
+        "output_channels": [
+          "eqangle"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "eqangle3",
+        "input_arity": 5,
+        "symmetry": "ordered",
+        "output_channels": [
+          "eqangle"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "iso_triangle_vertex",
+        "input_arity": 2,
+        "symmetry": "all",
+        "output_channels": [
+          "cong"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "iso_triangle_vertex_angle",
+        "input_arity": 2,
+        "symmetry": "all",
+        "output_channels": [
+          "eqangle"
+        ],
+        "allow_repeated_inputs": false
+      }
+    ],
+    "first_stage_ranking": "goal_support_incidence",
+    "ranking": "structural",
+    "second_stage_ranking": "exact_ar_residual_frontier_structural_pareto_beam",
+    "beam_ranking": "ar-residual-pareto",
+    "differentiable_controller": null,
+    "unified_architecture": null,
+    "goal_channels": [
+      "cyclic"
+    ],
+    "candidate_gate": "combined",
+    "candidate_alignment": "proof-dag-priority",
+    "candidate_incidence": {
+      "mode": "hageo",
+      "tolerance": 1e-07,
+      "oversample_per_family": 16,
+      "truth_plane": "candidate_proposal_only"
+    },
+    "proof_dag_budget": {
+      "depth": 2,
+      "branches_per_goal": 48,
+      "states_per_goal": 10000,
+      "wall_seconds_per_goal": 10.0
+    },
+    "candidate_forward_cone_budget": {
+      "depth": 2,
+      "fragments": 32,
+      "states": 250,
+      "wall_seconds": 10.0
+    },
+    "branch_build_mode": "incremental",
+    "proof_hypergraph_relevance": {
+      "e": 0.5774917268207105,
+      "c": 0.9989609826082989,
+      "a": 0.99193233554679,
+      "d": 0.7981250326594608,
+      "f": 0.5793776743552272,
+      "b": 1.0,
+      "p": 0.41756090204277807,
+      "i2": 0.3922934251789063,
+      "i1": 0.39747177726345767,
+      "i3": 0.36990725704832483,
+      "i4": 0.3815161663512609,
+      "o": 0.24074644152418104
+    },
+    "same_morphism_input_orbit_priority": true,
+    "obligation_guided": true,
+    "typed_construction_contracts": {
+      "enabled": false,
+      "candidates_per_schema": 32,
+      "obligation_branch_count": 15,
+      "truth_plane": "native_certificate_replay_only"
+    },
+    "require_generated_input_after_first": false,
+    "baseline_backward_obligations": [
+      {
+        "theorem": "r04:0",
+        "goal": "cyclic(a,b,c,p)",
+        "matched_premises": [],
+        "open_premises": [
+          "eqangle(a,c,a,p,b,c,b,p)",
+          "ncoll(a,b,c,p)"
+        ],
+        "substitution": {
+          "?A": "a",
+          "?B": "b",
+          "?P": "c",
+          "?Q": "p"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r04:0",
+        "goal": "cyclic(a,b,c,p)",
+        "matched_premises": [],
+        "open_premises": [
+          "eqangle(a,c,a,p,b,c,b,p)",
+          "ncoll(a,b,c,p)"
+        ],
+        "substitution": {
+          "?A": "a",
+          "?B": "b",
+          "?P": "p",
+          "?Q": "c"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r04:0",
+        "goal": "cyclic(a,b,c,p)",
+        "matched_premises": [],
+        "open_premises": [
+          "eqangle(a,b,a,p,b,c,c,p)",
+          "ncoll(a,b,c,p)"
+        ],
+        "substitution": {
+          "?A": "a",
+          "?B": "c",
+          "?P": "b",
+          "?Q": "p"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r04:0",
+        "goal": "cyclic(a,b,c,p)",
+        "matched_premises": [],
+        "open_premises": [
+          "eqangle(a,b,a,c,b,p,c,p)",
+          "ncoll(a,b,c,p)"
+        ],
+        "substitution": {
+          "?A": "a",
+          "?B": "p",
+          "?P": "b",
+          "?Q": "c"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r04:0",
+        "goal": "cyclic(a,b,c,p)",
+        "matched_premises": [],
+        "open_premises": [
+          "eqangle(a,b,a,p,b,c,c,p)",
+          "ncoll(a,b,c,p)"
+        ],
+        "substitution": {
+          "?A": "a",
+          "?B": "c",
+          "?P": "p",
+          "?Q": "b"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r04:0",
+        "goal": "cyclic(a,b,c,p)",
+        "matched_premises": [],
+        "open_premises": [
+          "eqangle(a,b,a,c,b,p,c,p)",
+          "ncoll(a,b,c,p)"
+        ],
+        "substitution": {
+          "?A": "a",
+          "?B": "p",
+          "?P": "c",
+          "?Q": "b"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r04:0",
+        "goal": "cyclic(a,b,c,p)",
+        "matched_premises": [],
+        "open_premises": [
+          "eqangle(a,c,a,p,b,c,b,p)",
+          "ncoll(a,b,c,p)"
+        ],
+        "substitution": {
+          "?A": "b",
+          "?B": "a",
+          "?P": "c",
+          "?Q": "p"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r04:0",
+        "goal": "cyclic(a,b,c,p)",
+        "matched_premises": [],
+        "open_premises": [
+          "eqangle(a,c,a,p,b,c,b,p)",
+          "ncoll(a,b,c,p)"
+        ],
+        "substitution": {
+          "?A": "b",
+          "?B": "a",
+          "?P": "p",
+          "?Q": "c"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r04:0",
+        "goal": "cyclic(a,b,c,p)",
+        "matched_premises": [],
+        "open_premises": [
+          "eqangle(a,b,a,p,b,c,c,p)",
+          "ncoll(a,b,c,p)"
+        ],
+        "substitution": {
+          "?A": "c",
+          "?B": "a",
+          "?P": "b",
+          "?Q": "p"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r04:0",
+        "goal": "cyclic(a,b,c,p)",
+        "matched_premises": [],
+        "open_premises": [
+          "eqangle(a,b,a,c,b,p,c,p)",
+          "ncoll(a,b,c,p)"
+        ],
+        "substitution": {
+          "?A": "p",
+          "?B": "a",
+          "?P": "b",
+          "?Q": "c"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r04:0",
+        "goal": "cyclic(a,b,c,p)",
+        "matched_premises": [],
+        "open_premises": [
+          "eqangle(a,b,a,p,b,c,c,p)",
+          "ncoll(a,b,c,p)"
+        ],
+        "substitution": {
+          "?A": "c",
+          "?B": "a",
+          "?P": "p",
+          "?Q": "b"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r04:0",
+        "goal": "cyclic(a,b,c,p)",
+        "matched_premises": [],
+        "open_premises": [
+          "eqangle(a,b,a,c,b,p,c,p)",
+          "ncoll(a,b,c,p)"
+        ],
+        "substitution": {
+          "?A": "p",
+          "?B": "a",
+          "?P": "c",
+          "?Q": "b"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r04:0",
+        "goal": "cyclic(a,b,c,p)",
+        "matched_premises": [],
+        "open_premises": [
+          "eqangle(a,b,a,c,b,p,c,p)",
+          "ncoll(a,b,c,p)"
+        ],
+        "substitution": {
+          "?A": "b",
+          "?B": "c",
+          "?P": "a",
+          "?Q": "p"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r04:0",
+        "goal": "cyclic(a,b,c,p)",
+        "matched_premises": [],
+        "open_premises": [
+          "eqangle(a,b,a,p,b,c,c,p)",
+          "ncoll(a,b,c,p)"
+        ],
+        "substitution": {
+          "?A": "b",
+          "?B": "p",
+          "?P": "a",
+          "?Q": "c"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r04:0",
+        "goal": "cyclic(a,b,c,p)",
+        "matched_premises": [],
+        "open_premises": [
+          "eqangle(a,b,a,c,b,p,c,p)",
+          "ncoll(a,b,c,p)"
+        ],
+        "substitution": {
+          "?A": "c",
+          "?B": "b",
+          "?P": "a",
+          "?Q": "p"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r04:0",
+        "goal": "cyclic(a,b,c,p)",
+        "matched_premises": [],
+        "open_premises": [
+          "eqangle(a,b,a,p,b,c,c,p)",
+          "ncoll(a,b,c,p)"
+        ],
+        "substitution": {
+          "?A": "p",
+          "?B": "b",
+          "?P": "a",
+          "?Q": "c"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r04:0",
+        "goal": "cyclic(a,b,c,p)",
+        "matched_premises": [],
+        "open_premises": [
+          "eqangle(a,c,a,p,b,c,b,p)",
+          "ncoll(a,b,c,p)"
+        ],
+        "substitution": {
+          "?A": "c",
+          "?B": "p",
+          "?P": "a",
+          "?Q": "b"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r04:0",
+        "goal": "cyclic(a,b,c,p)",
+        "matched_premises": [],
+        "open_premises": [
+          "eqangle(a,c,a,p,b,c,b,p)",
+          "ncoll(a,b,c,p)"
+        ],
+        "substitution": {
+          "?A": "p",
+          "?B": "c",
+          "?P": "a",
+          "?Q": "b"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r04:0",
+        "goal": "cyclic(a,b,c,p)",
+        "matched_premises": [],
+        "open_premises": [
+          "eqangle(a,b,a,c,b,p,c,p)",
+          "ncoll(a,b,c,p)"
+        ],
+        "substitution": {
+          "?A": "b",
+          "?B": "c",
+          "?P": "p",
+          "?Q": "a"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r04:0",
+        "goal": "cyclic(a,b,c,p)",
+        "matched_premises": [],
+        "open_premises": [
+          "eqangle(a,b,a,p,b,c,c,p)",
+          "ncoll(a,b,c,p)"
+        ],
+        "substitution": {
+          "?A": "b",
+          "?B": "p",
+          "?P": "c",
+          "?Q": "a"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r04:0",
+        "goal": "cyclic(a,b,c,p)",
+        "matched_premises": [],
+        "open_premises": [
+          "eqangle(a,b,a,c,b,p,c,p)",
+          "ncoll(a,b,c,p)"
+        ],
+        "substitution": {
+          "?A": "c",
+          "?B": "b",
+          "?P": "p",
+          "?Q": "a"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r04:0",
+        "goal": "cyclic(a,b,c,p)",
+        "matched_premises": [],
+        "open_premises": [
+          "eqangle(a,b,a,p,b,c,c,p)",
+          "ncoll(a,b,c,p)"
+        ],
+        "substitution": {
+          "?A": "p",
+          "?B": "b",
+          "?P": "c",
+          "?Q": "a"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r04:0",
+        "goal": "cyclic(a,b,c,p)",
+        "matched_premises": [],
+        "open_premises": [
+          "eqangle(a,c,a,p,b,c,b,p)",
+          "ncoll(a,b,c,p)"
+        ],
+        "substitution": {
+          "?A": "c",
+          "?B": "p",
+          "?P": "b",
+          "?Q": "a"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r04:0",
+        "goal": "cyclic(a,b,c,p)",
+        "matched_premises": [],
+        "open_premises": [
+          "eqangle(a,c,a,p,b,c,b,p)",
+          "ncoll(a,b,c,p)"
+        ],
+        "substitution": {
+          "?A": "p",
+          "?B": "c",
+          "?P": "b",
+          "?Q": "a"
+        },
+        "unbound_variables": []
+      }
+    ],
+    "baseline_open_relation_demands": [
+      {
+        "predicate": "eqangle",
+        "arguments": [
+          "a",
+          "c",
+          "a",
+          "p",
+          "b",
+          "c",
+          "b",
+          "p"
+        ]
+      },
+      {
+        "predicate": "ncoll",
+        "arguments": [
+          "a",
+          "b",
+          "c",
+          "p"
+        ]
+      },
+      {
+        "predicate": "eqangle",
+        "arguments": [
+          "a",
+          "b",
+          "a",
+          "p",
+          "b",
+          "c",
+          "c",
+          "p"
+        ]
+      },
+      {
+        "predicate": "eqangle",
+        "arguments": [
+          "a",
+          "b",
+          "a",
+          "c",
+          "b",
+          "p",
+          "c",
+          "p"
+        ]
+      }
+    ],
+    "backward_relation_distances": {
+      "cyclic": 0,
+      "eqangle": 1,
+      "ncoll": 1,
+      "cong": 1,
+      "nperp": 1,
+      "para": 2,
+      "npara": 2,
+      "sameside": 2,
+      "sameclock": 2,
+      "simtri": 2,
+      "diff": 2,
+      "circle": 2,
+      "perp": 2,
+      "midp": 2,
+      "contri": 2,
+      "coll": 2,
+      "eqratio": 2,
+      "nsameside": 2,
+      "contrir": 2,
+      "simtrir": 2,
+      "aequation": 3,
+      "lequation": 3,
+      "obtuse_angle": 4
+    },
+    "per_family_limit": 1,
+    "enumeration_limit_per_family": 64,
+    "branch_limit": 16,
+    "beam_width": 6,
+    "max_depth": 2,
+    "max_workers": 2,
+    "yuclid_timeout_seconds": 0.0,
+    "seed": 0,
+    "ar_profile": "all"
+  },
+  "problem_name": "2014BulgariaMOp6",
+  "normalization": {
+    "rewritten_constructions": 0,
+    "unchanged_constructions": 13,
+    "unresolved_constructions": 0
+  },
+  "baseline": {
+    "solved": false,
+    "all_deduction_count": 1886,
+    "goal_deduction_count": 0,
+    "ar_residual": {
+      "supported_goal_count": 1,
+      "closed_goal_count": 0,
+      "residual_support_size": 6,
+      "residual_l1_weight": 14.0,
+      "known_rank": 35,
+      "goals": [
+        {
+          "relation": "cyclic",
+          "channel": "angle",
+          "known_equation_count": 246,
+          "known_rank": 32,
+          "closed": false,
+          "support_size": 6,
+          "l1_weight": 14.0,
+          "residual_terms": [
+            [
+              "angle:a-p",
+              "1"
+            ],
+            [
+              "angle:c-p",
+              "-1"
+            ],
+            [
+              "angle:d-i3",
+              "4"
+            ],
+            [
+              "angle:d-i4",
+              "2"
+            ],
+            [
+              "angle:d-o",
+              "-2"
+            ],
+            [
+              "angle:i2-i4",
+              "-4"
+            ]
+          ]
+        }
+      ]
+    }
+  },
+  "visible_formulation": "a b c = triangle a b c; d = on_circum d a b c; o = circumcenter o a b c; e = on_line e a c, on_line e b d; f = on_line f c b, on_line f d a; i1 = incenter i1 a b e; i2 = incenter i2 a b f; i3 = incenter i3 c d e; i4 = incenter i4 c d f; p = on_line p i1 i2, on_line p i3 i4 ? cyclic a b c p",
+  "constructed_formulation": "a b c = triangle a b c; d = on_circum d a b c; o = circumcenter o a b c; e = on_line e a c, on_line e b d; f = on_line f c b, on_line f d a; i1 = incenter i1 a b e; i2 = incenter i2 a b f; i3 = incenter i3 c d e; i4 = incenter i4 c d f; p = on_line p i1 i2, on_line p i3 i4; g = excenter g b a c ? cyclic a b c p",
+  "solved": true,
+  "solved_path": [
+    "excenter(b,a,c)->g"
+  ],
+  "evaluated_paths": 2,
+  "error_count": 0,
+  "right_censored_count": 0,
+  "candidate_gate": {
+    "mode": "combined",
+    "enumerated_candidates": 608,
+    "retained_candidates": 16,
+    "relation_retained_candidates": 608,
+    "rejected_candidates": 0,
+    "selected_after_branch_limit": 16,
+    "preflight_checked_count": 0,
+    "preflight_retained_count": 0,
+    "preflight_rejected_count": 0,
+    "preflight_rejected_by_error": [],
+    "fail_open_count": 0,
+    "audits": [
+      {
+        "depth": 1,
+        "parent_path": [],
+        "elapsed_seconds": 58.699819400000706,
+        "mode": "combined",
+        "candidate_enumeration": {
+          "examined_input_tuples": 2432,
+          "max_input_tuples_per_family": 64,
+          "truncated_family_count": 38,
+          "truncated_families": [
+            "midpoint",
+            "mirror",
+            "foot",
+            "circle",
+            "orthocenter",
+            "reflect",
+            "intersection_ll",
+            "angle_bisector",
+            "angle_mirror",
+            "eqdistance",
+            "incenter",
+            "excenter",
+            "shift",
+            "parallelogram",
+            "circumcenter",
+            "intersection_lc",
+            "intersection_cc",
+            "on_line",
+            "on_pline",
+            "on_tline",
+            "on_bline",
+            "on_circle",
+            "on_circum",
+            "on_dia",
+            "intersection_lp",
+            "intersection_pp",
+            "intersection_lt",
+            "intersection_tt",
+            "eq_triangle",
+            "psquare",
+            "nsquare",
+            "between_bound",
+            "eqangle2",
+            "lc_tangent",
+            "on_aline",
+            "eqangle3",
+            "iso_triangle_vertex",
+            "iso_triangle_vertex_angle"
+          ],
+          "selected_candidate_count": 608
+        },
+        "relation_reachability": {
+          "mode": "relation-reachability",
+          "input_count": 608,
+          "retained_count": 608,
+          "rejected_count": 0,
+          "target_channels": [
+            "eqangle",
+            "ncoll"
+          ],
+          "reachable_channels": [
+            "aequation",
+            "circle",
+            "coll",
+            "cong",
+            "contri",
+            "contrir",
+            "cyclic",
+            "diff",
+            "eqangle",
+            "eqratio",
+            "lequation",
+            "midp",
+            "ncoll",
+            "npara",
+            "nperp",
+            "nsameside",
+            "obtuse_angle",
+            "para",
+            "perp",
+            "sameclock",
+            "sameside",
+            "simtri",
+            "simtrir"
+          ],
+          "retained_by_family": [
+            [
+              "angle_bisector",
+              16
+            ],
+            [
+              "angle_mirror",
+              16
+            ],
+            [
+              "between_bound",
+              16
+            ],
+            [
+              "circle",
+              16
+            ],
+            [
+              "circumcenter",
+              16
+            ],
+            [
+              "eq_triangle",
+              16
+            ],
+            [
+              "eqangle2",
+              16
+            ],
+            [
+              "eqangle3",
+              16
+            ],
+            [
+              "eqdistance",
+              16
+            ],
+            [
+              "excenter",
+              16
+            ],
+            [
+              "foot",
+              16
+            ],
+            [
+              "incenter",
+              16
+            ],
+            [
+              "intersection_cc",
+              16
+            ],
+            [
+              "intersection_lc",
+              16
+            ],
+            [
+              "intersection_ll",
+              16
+            ],
+            [
+              "intersection_lp",
+              16
+            ],
+            [
+              "intersection_lt",
+              16
+            ],
+            [
+              "intersection_pp",
+              16
+            ],
+            [
+              "intersection_tt",
+              16
+            ],
+            [
+              "iso_triangle_vertex",
+              16
+            ],
+            [
+              "iso_triangle_vertex_angle",
+              16
+            ],
+            [
+              "lc_tangent",
+              16
+            ],
+            [
+              "midpoint",
+              16
+            ],
+            [
+              "mirror",
+              16
+            ],
+            [
+              "nsquare",
+              16
+            ],
+            [
+              "on_aline",
+              16
+            ],
+            [
+              "on_bline",
+              16
+            ],
+            [
+              "on_circle",
+              16
+            ],
+            [
+              "on_circum",
+              16
+            ],
+            [
+              "on_dia",
+              16
+            ],
+            [
+              "on_line",
+              16
+            ],
+            [
+              "on_pline",
+              16
+            ],
+            [
+              "on_tline",
+              16
+            ],
+            [
+              "orthocenter",
+              16
+            ],
+            [
+              "parallelogram",
+              16
+            ],
+            [
+              "psquare",
+              16
+            ],
+            [
+              "reflect",
+              16
+            ],
+            [
+              "shift",
+              16
+            ]
+          ],
+          "rejected_by_family": [],
+          "fail_open_reason": null
+        },
+        "selected_after_branch_limit": 16,
+        "typed_construction_contracts": {
+          "enabled": false,
+          "truth_plane": "candidate_proposal_only_native_replay_required",
+          "obligation_branch_count": 15,
+          "runtime_requirement_gate": {
+            "input_candidates": 0,
+            "executable_candidates": 0,
+            "held_open_candidates": 0,
+            "statically_rejected_candidates": 0
+          },
+          "candidate_plans": [],
+          "witness_obligations": 0,
+          "matched_obligations": 0,
+          "matched_contracts": 0,
+          "raw_generated_candidates": 0,
+          "generated_candidates": 0,
+          "truncated_contracts": 0,
+          "requirement_atoms": 0,
+          "open_requirement_atoms": 0,
+          "residual_reducing_candidates": 0,
+          "fully_closing_candidates": 0,
+          "chart_matched_candidates": 0,
+          "executable_candidates": 0,
+          "held_open_candidates": 0,
+          "statically_rejected_candidates": 0
+        },
+        "numerical_incidence": {
+          "mode": "hageo",
+          "truth_plane": "candidate_proposal_only",
+          "oversample_per_family": 16,
+          "workers": 1,
+          "elapsed_seconds": 1.6434238000001642,
+          "preselect_limit": 0,
+          "input_candidates_before_preselection": 608,
+          "candidates_after_preselection": 16,
+          "checked_candidates": 521,
+          "heuristic_candidates": 0,
+          "build_errors": {
+            "JGEXConstructionError": 69,
+            "ValidationError": 18
+          },
+          "top_candidates": [
+            {
+              "candidate": "excenter(b,a,c)",
+              "family": "excenter",
+              "coincident_points": [],
+              "incident_line_count": 2,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 2,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                -2,
+                -2,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "incenter(b,c,d)",
+              "family": "incenter",
+              "coincident_points": [],
+              "incident_line_count": 2,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 2,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                -2,
+                -2,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "on_aline(b,c,a,d,f)",
+              "family": "on_aline",
+              "coincident_points": [],
+              "incident_line_count": 1,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 1,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                -1,
+                -1,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "angle_bisector(b,c,f)",
+              "family": "angle_bisector",
+              "coincident_points": [],
+              "incident_line_count": 1,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 1,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                -1,
+                -1,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "angle_mirror(b,c,f)",
+              "family": "angle_mirror",
+              "coincident_points": [],
+              "incident_line_count": 1,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 1,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                -1,
+                -1,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "shift(b,c,f)",
+              "family": "shift",
+              "coincident_points": [],
+              "incident_line_count": 1,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 1,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                -1,
+                -1,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "circle(b,e,i1)",
+              "family": "circle",
+              "coincident_points": [],
+              "incident_line_count": 1,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 1,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                -1,
+                -1,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "circumcenter(b,e,i1)",
+              "family": "circumcenter",
+              "coincident_points": [],
+              "incident_line_count": 1,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 1,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                -1,
+                -1,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "intersection_lt(b,c,a,b,c)",
+              "family": "intersection_lt",
+              "coincident_points": [],
+              "incident_line_count": 1,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 1,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                -1,
+                -1,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "intersection_lp(b,c,a,b,d)",
+              "family": "intersection_lp",
+              "coincident_points": [],
+              "incident_line_count": 1,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 1,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                -1,
+                -1,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "on_pline(b,c,f)",
+              "family": "on_pline",
+              "coincident_points": [],
+              "incident_line_count": 1,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 1,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                -1,
+                -1,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "between_bound(b,c)",
+              "family": "between_bound",
+              "coincident_points": [],
+              "incident_line_count": 1,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 1,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                -1,
+                -1,
+                0,
+                0
+              ]
+            }
+          ],
+          "selected_candidates": [
+            {
+              "candidate": "excenter(b,a,c)",
+              "step_key": "excenter(b,a,c)->g",
+              "family": "excenter",
+              "coincident_points": [],
+              "incident_line_count": 2,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 2,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                -2,
+                -2,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "incenter(b,c,d)",
+              "step_key": "incenter(b,c,d)->g",
+              "family": "incenter",
+              "coincident_points": [],
+              "incident_line_count": 2,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 2,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                -2,
+                -2,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "on_aline(b,c,a,d,f)",
+              "step_key": "on_aline(b,c,a,d,f)->g",
+              "family": "on_aline",
+              "coincident_points": [],
+              "incident_line_count": 1,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 1,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                -1,
+                -1,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "angle_bisector(b,c,f)",
+              "step_key": "angle_bisector(b,c,f)->g",
+              "family": "angle_bisector",
+              "coincident_points": [],
+              "incident_line_count": 1,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 1,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                -1,
+                -1,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "angle_mirror(b,c,f)",
+              "step_key": "angle_mirror(b,c,f)->g",
+              "family": "angle_mirror",
+              "coincident_points": [],
+              "incident_line_count": 1,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 1,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                -1,
+                -1,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "shift(b,c,f)",
+              "step_key": "shift(b,c,f)->g",
+              "family": "shift",
+              "coincident_points": [],
+              "incident_line_count": 1,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 1,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                -1,
+                -1,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "circle(b,e,i1)",
+              "step_key": "circle(b,e,i1)->g",
+              "family": "circle",
+              "coincident_points": [],
+              "incident_line_count": 1,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 1,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                -1,
+                -1,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "circumcenter(b,e,i1)",
+              "step_key": "circumcenter(b,e,i1)->g",
+              "family": "circumcenter",
+              "coincident_points": [],
+              "incident_line_count": 1,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 1,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                -1,
+                -1,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "intersection_lt(b,c,a,b,c)",
+              "step_key": "intersection_lt(b,c,a,b,c)->g",
+              "family": "intersection_lt",
+              "coincident_points": [],
+              "incident_line_count": 1,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 1,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                -1,
+                -1,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "intersection_lp(b,c,a,b,d)",
+              "step_key": "intersection_lp(b,c,a,b,d)->g",
+              "family": "intersection_lp",
+              "coincident_points": [],
+              "incident_line_count": 1,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 1,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                -1,
+                -1,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "on_pline(b,c,f)",
+              "step_key": "on_pline(b,c,f)->g",
+              "family": "on_pline",
+              "coincident_points": [],
+              "incident_line_count": 1,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 1,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                -1,
+                -1,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "between_bound(b,c)",
+              "step_key": "between_bound(b,c)->g",
+              "family": "between_bound",
+              "coincident_points": [],
+              "incident_line_count": 1,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 1,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                -1,
+                -1,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "reflect(c,b,i2)",
+              "step_key": "reflect(c,b,i2)->g",
+              "family": "reflect",
+              "coincident_points": [],
+              "incident_line_count": 1,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 1,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                -1,
+                -1,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "eqangle3(b,c,a,d,i1)",
+              "step_key": "eqangle3(b,c,a,d,i1)->g",
+              "family": "eqangle3",
+              "coincident_points": [],
+              "incident_line_count": 0,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 0,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "eqdistance(b,c,f)",
+              "step_key": "eqdistance(b,c,f)->g",
+              "family": "eqdistance",
+              "coincident_points": [],
+              "incident_line_count": 0,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 0,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "candidate": "intersection_lc(b,c,f)",
+              "step_key": "intersection_lc(b,c,f)->g",
+              "family": "intersection_lc",
+              "coincident_points": [],
+              "incident_line_count": 1,
+              "incident_circle_count": 0,
+              "nontrivial_line_count": 0,
+              "nontrivial_circle_count": 0,
+              "heuristic_categories": [],
+              "is_heuristic_candidate": false,
+              "rank": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            }
+          ]
+        },
+        "candidate_alignment": {
+          "mode": "proof-dag-priority",
+          "direct_match_candidates": 0,
+          "reachable_candidates": 0,
+          "cone_truncated_candidates": 81,
+          "cone_search_states": 1188,
+          "unified_queue": {
+            "task_count": 81,
+            "backward_task_count": 0,
+            "forward_task_count": 81,
+            "backward_search_states": 0,
+            "forward_search_states": 1188,
+            "max_backward_depth_reached": 2,
+            "max_forward_depth_reached": 1,
+            "queue_peak": 608,
+            "truncated": true,
+            "wall_time_exhausted": true,
+            "elapsed_seconds": 56.905694799999765,
+            "task_trace": [
+              "forward:angle_bisector(b,a,c):d1",
+              "forward:angle_bisector(b,a,d):d1",
+              "forward:angle_bisector(b,c,a):d1",
+              "forward:angle_bisector(b,c,d):d1",
+              "forward:angle_bisector(b,c,e):d1",
+              "forward:angle_bisector(b,c,f):d1",
+              "forward:angle_bisector(b,c,o):d1",
+              "forward:angle_bisector(b,d,c):d1",
+              "forward:angle_bisector(b,d,e):d1",
+              "forward:angle_bisector(b,d,f):d1",
+              "forward:angle_bisector(b,e,c):d1",
+              "forward:angle_bisector(b,e,d):d1",
+              "forward:angle_bisector(b,e,i1):d1",
+              "forward:angle_bisector(b,f,c):d1",
+              "forward:angle_bisector(b,f,d):d1",
+              "forward:angle_bisector(b,f,i2):d1",
+              "forward:angle_mirror(b,a,c):d1",
+              "forward:angle_mirror(b,a,d):d1",
+              "forward:angle_mirror(b,c,a):d1",
+              "forward:angle_mirror(b,c,d):d1",
+              "forward:angle_mirror(b,c,e):d1",
+              "forward:angle_mirror(b,c,f):d1",
+              "forward:angle_mirror(b,c,o):d1",
+              "forward:angle_mirror(b,d,c):d1",
+              "forward:angle_mirror(b,d,e):d1",
+              "forward:angle_mirror(b,d,f):d1",
+              "forward:angle_mirror(b,e,c):d1",
+              "forward:angle_mirror(b,e,d):d1",
+              "forward:angle_mirror(b,e,i1):d1",
+              "forward:angle_mirror(b,f,c):d1",
+              "forward:angle_mirror(b,f,d):d1",
+              "forward:angle_mirror(b,f,i2):d1",
+              "forward:between_bound(a,c):d1",
+              "forward:between_bound(a,d):d1",
+              "forward:between_bound(a,f):d1",
+              "forward:between_bound(b,c):d1",
+              "forward:between_bound(b,d):d1",
+              "forward:between_bound(b,e):d1",
+              "forward:between_bound(b,f):d1",
+              "forward:between_bound(c,a):d1",
+              "forward:between_bound(c,b):d1",
+              "forward:between_bound(c,e):d1",
+              "forward:between_bound(c,f):d1",
+              "forward:between_bound(d,a):d1",
+              "forward:between_bound(d,b):d1",
+              "forward:between_bound(f,a):d1",
+              "forward:between_bound(f,b):d1",
+              "forward:between_bound(f,c):d1",
+              "forward:circle(b,a,d):d1",
+              "forward:circle(b,a,e):d1",
+              "forward:circle(b,a,f):d1",
+              "forward:circle(b,a,i1):d1",
+              "forward:circle(b,a,i2):d1",
+              "forward:circle(b,c,a):d1",
+              "forward:circle(b,c,d):d1",
+              "forward:circle(b,c,e):d1",
+              "forward:circle(b,c,o):d1",
+              "forward:circle(b,d,f):d1",
+              "forward:circle(b,e,i1):d1",
+              "forward:circle(b,f,i2):d1",
+              "forward:circle(b,i1,i2):d1",
+              "forward:circle(c,a,d):d1",
+              "forward:circle(c,a,f):d1",
+              "forward:circle(c,a,o):d1",
+              "forward:circumcenter(b,a,d):d1",
+              "forward:circumcenter(b,a,f):d1",
+              "forward:circumcenter(b,c,a):d1",
+              "forward:circumcenter(b,c,d):d1",
+              "forward:circumcenter(b,c,e):d1",
+              "forward:circumcenter(b,c,f):d1",
+              "forward:circumcenter(b,c,o):d1",
+              "forward:circumcenter(b,d,e):d1",
+              "forward:circumcenter(b,d,f):d1",
+              "forward:circumcenter(b,e,i1):d1",
+              "forward:circumcenter(b,f,i2):d1",
+              "forward:circumcenter(b,i1,i2):d1",
+              "forward:circumcenter(c,a,d):d1",
+              "forward:circumcenter(c,a,e):d1",
+              "forward:circumcenter(c,a,f):d1",
+              "forward:circumcenter(c,a,o):d1",
+              "forward:eq_triangle(a,d):d1"
+            ]
+          },
+          "iterative_deepening": {
+            "stop_reason": "wall_time_ceiling_before_typed_meet",
+            "stages": [
+              {
+                "depth": 1,
+                "per_task_search_states": 17,
+                "max_total_search_states": 10603,
+                "max_tasks": 609,
+                "typed_meet_candidates": [],
+                "diagnosis": "resource_ceiling_before_typed_meet",
+                "audit": {
+                  "task_count": 81,
+                  "backward_task_count": 0,
+                  "forward_task_count": 81,
+                  "backward_search_states": 0,
+                  "forward_search_states": 1188,
+                  "max_backward_depth_reached": 2,
+                  "max_forward_depth_reached": 1,
+                  "queue_peak": 608,
+                  "truncated": true,
+                  "wall_time_exhausted": true,
+                  "elapsed_seconds": 56.905694799999765,
+                  "task_trace": [
+                    "forward:angle_bisector(b,a,c):d1",
+                    "forward:angle_bisector(b,a,d):d1",
+                    "forward:angle_bisector(b,c,a):d1",
+                    "forward:angle_bisector(b,c,d):d1",
+                    "forward:angle_bisector(b,c,e):d1",
+                    "forward:angle_bisector(b,c,f):d1",
+                    "forward:angle_bisector(b,c,o):d1",
+                    "forward:angle_bisector(b,d,c):d1",
+                    "forward:angle_bisector(b,d,e):d1",
+                    "forward:angle_bisector(b,d,f):d1",
+                    "forward:angle_bisector(b,e,c):d1",
+                    "forward:angle_bisector(b,e,d):d1",
+                    "forward:angle_bisector(b,e,i1):d1",
+                    "forward:angle_bisector(b,f,c):d1",
+                    "forward:angle_bisector(b,f,d):d1",
+                    "forward:angle_bisector(b,f,i2):d1",
+                    "forward:angle_mirror(b,a,c):d1",
+                    "forward:angle_mirror(b,a,d):d1",
+                    "forward:angle_mirror(b,c,a):d1",
+                    "forward:angle_mirror(b,c,d):d1",
+                    "forward:angle_mirror(b,c,e):d1",
+                    "forward:angle_mirror(b,c,f):d1",
+                    "forward:angle_mirror(b,c,o):d1",
+                    "forward:angle_mirror(b,d,c):d1",
+                    "forward:angle_mirror(b,d,e):d1",
+                    "forward:angle_mirror(b,d,f):d1",
+                    "forward:angle_mirror(b,e,c):d1",
+                    "forward:angle_mirror(b,e,d):d1",
+                    "forward:angle_mirror(b,e,i1):d1",
+                    "forward:angle_mirror(b,f,c):d1",
+                    "forward:angle_mirror(b,f,d):d1",
+                    "forward:angle_mirror(b,f,i2):d1",
+                    "forward:between_bound(a,c):d1",
+                    "forward:between_bound(a,d):d1",
+                    "forward:between_bound(a,f):d1",
+                    "forward:between_bound(b,c):d1",
+                    "forward:between_bound(b,d):d1",
+                    "forward:between_bound(b,e):d1",
+                    "forward:between_bound(b,f):d1",
+                    "forward:between_bound(c,a):d1",
+                    "forward:between_bound(c,b):d1",
+                    "forward:between_bound(c,e):d1",
+                    "forward:between_bound(c,f):d1",
+                    "forward:between_bound(d,a):d1",
+                    "forward:between_bound(d,b):d1",
+                    "forward:between_bound(f,a):d1",
+                    "forward:between_bound(f,b):d1",
+                    "forward:between_bound(f,c):d1",
+                    "forward:circle(b,a,d):d1",
+                    "forward:circle(b,a,e):d1",
+                    "forward:circle(b,a,f):d1",
+                    "forward:circle(b,a,i1):d1",
+                    "forward:circle(b,a,i2):d1",
+                    "forward:circle(b,c,a):d1",
+                    "forward:circle(b,c,d):d1",
+                    "forward:circle(b,c,e):d1",
+                    "forward:circle(b,c,o):d1",
+                    "forward:circle(b,d,f):d1",
+                    "forward:circle(b,e,i1):d1",
+                    "forward:circle(b,f,i2):d1",
+                    "forward:circle(b,i1,i2):d1",
+                    "forward:circle(c,a,d):d1",
+                    "forward:circle(c,a,f):d1",
+                    "forward:circle(c,a,o):d1",
+                    "forward:circumcenter(b,a,d):d1",
+                    "forward:circumcenter(b,a,f):d1",
+                    "forward:circumcenter(b,c,a):d1",
+                    "forward:circumcenter(b,c,d):d1",
+                    "forward:circumcenter(b,c,e):d1",
+                    "forward:circumcenter(b,c,f):d1",
+                    "forward:circumcenter(b,c,o):d1",
+                    "forward:circumcenter(b,d,e):d1",
+                    "forward:circumcenter(b,d,f):d1",
+                    "forward:circumcenter(b,e,i1):d1",
+                    "forward:circumcenter(b,f,i2):d1",
+                    "forward:circumcenter(b,i1,i2):d1",
+                    "forward:circumcenter(c,a,d):d1",
+                    "forward:circumcenter(c,a,e):d1",
+                    "forward:circumcenter(c,a,f):d1",
+                    "forward:circumcenter(c,a,o):d1",
+                    "forward:eq_triangle(a,d):d1"
+                  ]
+                }
+              }
+            ]
+          },
+          "native_formal_sheaf": null,
+          "top_candidates": [
+            {
+              "candidate": "excenter(b,a,c)",
+              "candidate_key": "excenter(b,a,c)",
+              "explored_forward_depth": 0,
+              "search_states": 3,
+              "task_count": 0,
+              "has_closed_structural_residual": false,
+              "has_residual_reduction": false,
+              "rank": [
+                2
+              ],
+              "alignment": {
+                "meet_count": 0,
+                "cyclic_match_rejections": 0,
+                "best_branch_id": null,
+                "best_fragment_id": null,
+                "best_meet_atom": null,
+                "best_forward_depth": null,
+                "best_backward_depth": null,
+                "best_residual_size": null,
+                "best_structural_residual_count": null,
+                "best_residual_hole_count": null,
+                "best_source_atom_count": null,
+                "best_residual_atoms": [],
+                "best_source_atoms": [],
+                "best_theorem_chain": [],
+                "best_backward_frontier_size": null,
+                "has_residual_reduction": false,
+                "branch_count": 0,
+                "fragment_count": 0,
+                "rank": [
+                  1
+                ]
+              },
+              "cone_search_states": 3,
+              "cone_fragment_count": 3,
+              "cone_truncated": false
+            },
+            {
+              "candidate": "incenter(b,c,d)",
+              "candidate_key": "incenter(b,c,d)",
+              "explored_forward_depth": 0,
+              "search_states": 3,
+              "task_count": 0,
+              "has_closed_structural_residual": false,
+              "has_residual_reduction": false,
+              "rank": [
+                2
+              ],
+              "alignment": {
+                "meet_count": 0,
+                "cyclic_match_rejections": 0,
+                "best_branch_id": null,
+                "best_fragment_id": null,
+                "best_meet_atom": null,
+                "best_forward_depth": null,
+                "best_backward_depth": null,
+                "best_residual_size": null,
+                "best_structural_residual_count": null,
+                "best_residual_hole_count": null,
+                "best_source_atom_count": null,
+                "best_residual_atoms": [],
+                "best_source_atoms": [],
+                "best_theorem_chain": [],
+                "best_backward_frontier_size": null,
+                "has_residual_reduction": false,
+                "branch_count": 0,
+                "fragment_count": 0,
+                "rank": [
+                  1
+                ]
+              },
+              "cone_search_states": 3,
+              "cone_fragment_count": 3,
+              "cone_truncated": false
+            },
+            {
+              "candidate": "on_aline(b,c,a,d,f)",
+              "candidate_key": "on_aline(b,c,a,d,f)",
+              "explored_forward_depth": 0,
+              "search_states": 1,
+              "task_count": 0,
+              "has_closed_structural_residual": false,
+              "has_residual_reduction": false,
+              "rank": [
+                2
+              ],
+              "alignment": {
+                "meet_count": 0,
+                "cyclic_match_rejections": 0,
+                "best_branch_id": null,
+                "best_fragment_id": null,
+                "best_meet_atom": null,
+                "best_forward_depth": null,
+                "best_backward_depth": null,
+                "best_residual_size": null,
+                "best_structural_residual_count": null,
+                "best_residual_hole_count": null,
+                "best_source_atom_count": null,
+                "best_residual_atoms": [],
+                "best_source_atoms": [],
+                "best_theorem_chain": [],
+                "best_backward_frontier_size": null,
+                "has_residual_reduction": false,
+                "branch_count": 0,
+                "fragment_count": 0,
+                "rank": [
+                  1
+                ]
+              },
+              "cone_search_states": 1,
+              "cone_fragment_count": 1,
+              "cone_truncated": false
+            },
+            {
+              "candidate": "angle_bisector(b,c,f)",
+              "candidate_key": "angle_bisector(b,c,f)",
+              "explored_forward_depth": 1,
+              "search_states": 2,
+              "task_count": 1,
+              "has_closed_structural_residual": false,
+              "has_residual_reduction": false,
+              "rank": [
+                2
+              ],
+              "alignment": {
+                "meet_count": 0,
+                "cyclic_match_rejections": 0,
+                "best_branch_id": null,
+                "best_fragment_id": null,
+                "best_meet_atom": null,
+                "best_forward_depth": null,
+                "best_backward_depth": null,
+                "best_residual_size": null,
+                "best_structural_residual_count": null,
+                "best_residual_hole_count": null,
+                "best_source_atom_count": null,
+                "best_residual_atoms": [],
+                "best_source_atoms": [],
+                "best_theorem_chain": [],
+                "best_backward_frontier_size": null,
+                "has_residual_reduction": false,
+                "branch_count": 0,
+                "fragment_count": 0,
+                "rank": [
+                  1
+                ]
+              },
+              "cone_search_states": 1,
+              "cone_fragment_count": 1,
+              "cone_truncated": true
+            },
+            {
+              "candidate": "angle_mirror(b,c,f)",
+              "candidate_key": "angle_mirror(b,c,f)",
+              "explored_forward_depth": 1,
+              "search_states": 2,
+              "task_count": 1,
+              "has_closed_structural_residual": false,
+              "has_residual_reduction": false,
+              "rank": [
+                2
+              ],
+              "alignment": {
+                "meet_count": 0,
+                "cyclic_match_rejections": 0,
+                "best_branch_id": null,
+                "best_fragment_id": null,
+                "best_meet_atom": null,
+                "best_forward_depth": null,
+                "best_backward_depth": null,
+                "best_residual_size": null,
+                "best_structural_residual_count": null,
+                "best_residual_hole_count": null,
+                "best_source_atom_count": null,
+                "best_residual_atoms": [],
+                "best_source_atoms": [],
+                "best_theorem_chain": [],
+                "best_backward_frontier_size": null,
+                "has_residual_reduction": false,
+                "branch_count": 0,
+                "fragment_count": 0,
+                "rank": [
+                  1
+                ]
+              },
+              "cone_search_states": 1,
+              "cone_fragment_count": 1,
+              "cone_truncated": true
+            },
+            {
+              "candidate": "shift(b,c,f)",
+              "candidate_key": "shift(b,c,f)",
+              "explored_forward_depth": 0,
+              "search_states": 2,
+              "task_count": 0,
+              "has_closed_structural_residual": false,
+              "has_residual_reduction": false,
+              "rank": [
+                2
+              ],
+              "alignment": {
+                "meet_count": 0,
+                "cyclic_match_rejections": 0,
+                "best_branch_id": null,
+                "best_fragment_id": null,
+                "best_meet_atom": null,
+                "best_forward_depth": null,
+                "best_backward_depth": null,
+                "best_residual_size": null,
+                "best_structural_residual_count": null,
+                "best_residual_hole_count": null,
+                "best_source_atom_count": null,
+                "best_residual_atoms": [],
+                "best_source_atoms": [],
+                "best_theorem_chain": [],
+                "best_backward_frontier_size": null,
+                "has_residual_reduction": false,
+                "branch_count": 0,
+                "fragment_count": 0,
+                "rank": [
+                  1
+                ]
+              },
+              "cone_search_states": 2,
+              "cone_fragment_count": 2,
+              "cone_truncated": false
+            },
+            {
+              "candidate": "circle(b,e,i1)",
+              "candidate_key": "circle(b,e,i1)",
+              "explored_forward_depth": 1,
+              "search_states": 2,
+              "task_count": 1,
+              "has_closed_structural_residual": false,
+              "has_residual_reduction": false,
+              "rank": [
+                2
+              ],
+              "alignment": {
+                "meet_count": 0,
+                "cyclic_match_rejections": 0,
+                "best_branch_id": null,
+                "best_fragment_id": null,
+                "best_meet_atom": null,
+                "best_forward_depth": null,
+                "best_backward_depth": null,
+                "best_residual_size": null,
+                "best_structural_residual_count": null,
+                "best_residual_hole_count": null,
+                "best_source_atom_count": null,
+                "best_residual_atoms": [],
+                "best_source_atoms": [],
+                "best_theorem_chain": [],
+                "best_backward_frontier_size": null,
+                "has_residual_reduction": false,
+                "branch_count": 0,
+                "fragment_count": 0,
+                "rank": [
+                  1
+                ]
+              },
+              "cone_search_states": 1,
+              "cone_fragment_count": 1,
+              "cone_truncated": true
+            },
+            {
+              "candidate": "circumcenter(b,e,i1)",
+              "candidate_key": "circumcenter(b,e,i1)",
+              "explored_forward_depth": 1,
+              "search_states": 4,
+              "task_count": 1,
+              "has_closed_structural_residual": false,
+              "has_residual_reduction": false,
+              "rank": [
+                2
+              ],
+              "alignment": {
+                "meet_count": 0,
+                "cyclic_match_rejections": 0,
+                "best_branch_id": null,
+                "best_fragment_id": null,
+                "best_meet_atom": null,
+                "best_forward_depth": null,
+                "best_backward_depth": null,
+                "best_residual_size": null,
+                "best_structural_residual_count": null,
+                "best_residual_hole_count": null,
+                "best_source_atom_count": null,
+                "best_residual_atoms": [],
+                "best_source_atoms": [],
+                "best_theorem_chain": [],
+                "best_backward_frontier_size": null,
+                "has_residual_reduction": false,
+                "branch_count": 0,
+                "fragment_count": 0,
+                "rank": [
+                  1
+                ]
+              },
+              "cone_search_states": 2,
+              "cone_fragment_count": 2,
+              "cone_truncated": true
+            },
+            {
+              "candidate": "intersection_lt(b,c,a,b,c)",
+              "candidate_key": "intersection_lt(b,c,a,b,c)",
+              "explored_forward_depth": 0,
+              "search_states": 2,
+              "task_count": 0,
+              "has_closed_structural_residual": false,
+              "has_residual_reduction": false,
+              "rank": [
+                2
+              ],
+              "alignment": {
+                "meet_count": 0,
+                "cyclic_match_rejections": 0,
+                "best_branch_id": null,
+                "best_fragment_id": null,
+                "best_meet_atom": null,
+                "best_forward_depth": null,
+                "best_backward_depth": null,
+                "best_residual_size": null,
+                "best_structural_residual_count": null,
+                "best_residual_hole_count": null,
+                "best_source_atom_count": null,
+                "best_residual_atoms": [],
+                "best_source_atoms": [],
+                "best_theorem_chain": [],
+                "best_backward_frontier_size": null,
+                "has_residual_reduction": false,
+                "branch_count": 0,
+                "fragment_count": 0,
+                "rank": [
+                  1
+                ]
+              },
+              "cone_search_states": 2,
+              "cone_fragment_count": 2,
+              "cone_truncated": false
+            },
+            {
+              "candidate": "intersection_lp(b,c,a,b,d)",
+              "candidate_key": "intersection_lp(b,c,a,b,d)",
+              "explored_forward_depth": 0,
+              "search_states": 2,
+              "task_count": 0,
+              "has_closed_structural_residual": false,
+              "has_residual_reduction": false,
+              "rank": [
+                2
+              ],
+              "alignment": {
+                "meet_count": 0,
+                "cyclic_match_rejections": 0,
+                "best_branch_id": null,
+                "best_fragment_id": null,
+                "best_meet_atom": null,
+                "best_forward_depth": null,
+                "best_backward_depth": null,
+                "best_residual_size": null,
+                "best_structural_residual_count": null,
+                "best_residual_hole_count": null,
+                "best_source_atom_count": null,
+                "best_residual_atoms": [],
+                "best_source_atoms": [],
+                "best_theorem_chain": [],
+                "best_backward_frontier_size": null,
+                "has_residual_reduction": false,
+                "branch_count": 0,
+                "fragment_count": 0,
+                "rank": [
+                  1
+                ]
+              },
+              "cone_search_states": 2,
+              "cone_fragment_count": 2,
+              "cone_truncated": false
+            },
+            {
+              "candidate": "on_pline(b,c,f)",
+              "candidate_key": "on_pline(b,c,f)",
+              "explored_forward_depth": 0,
+              "search_states": 1,
+              "task_count": 0,
+              "has_closed_structural_residual": false,
+              "has_residual_reduction": false,
+              "rank": [
+                2
+              ],
+              "alignment": {
+                "meet_count": 0,
+                "cyclic_match_rejections": 0,
+                "best_branch_id": null,
+                "best_fragment_id": null,
+                "best_meet_atom": null,
+                "best_forward_depth": null,
+                "best_backward_depth": null,
+                "best_residual_size": null,
+                "best_structural_residual_count": null,
+                "best_residual_hole_count": null,
+                "best_source_atom_count": null,
+                "best_residual_atoms": [],
+                "best_source_atoms": [],
+                "best_theorem_chain": [],
+                "best_backward_frontier_size": null,
+                "has_residual_reduction": false,
+                "branch_count": 0,
+                "fragment_count": 0,
+                "rank": [
+                  1
+                ]
+              },
+              "cone_search_states": 1,
+              "cone_fragment_count": 1,
+              "cone_truncated": false
+            },
+            {
+              "candidate": "between_bound(b,c)",
+              "candidate_key": "between_bound(b,c)",
+              "explored_forward_depth": 1,
+              "search_states": 4,
+              "task_count": 1,
+              "has_closed_structural_residual": false,
+              "has_residual_reduction": false,
+              "rank": [
+                2
+              ],
+              "alignment": {
+                "meet_count": 0,
+                "cyclic_match_rejections": 0,
+                "best_branch_id": null,
+                "best_fragment_id": null,
+                "best_meet_atom": null,
+                "best_forward_depth": null,
+                "best_backward_depth": null,
+                "best_residual_size": null,
+                "best_structural_residual_count": null,
+                "best_residual_hole_count": null,
+                "best_source_atom_count": null,
+                "best_residual_atoms": [],
+                "best_source_atoms": [],
+                "best_theorem_chain": [],
+                "best_backward_frontier_size": null,
+                "has_residual_reduction": false,
+                "branch_count": 0,
+                "fragment_count": 0,
+                "rank": [
+                  1
+                ]
+              },
+              "cone_search_states": 2,
+              "cone_fragment_count": 2,
+              "cone_truncated": true
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "candidate_alignment": {
+    "mode": "proof-dag-priority",
+    "direct_match_candidates": 0,
+    "reachable_candidates": 0,
+    "cone_truncated_candidates": 81,
+    "cone_search_states": 1188,
+    "proof_dags": [
+      {
+        "goal": "cyclic(a,b,c,p)",
+        "max_rule_depth": 2,
+        "search_states": 50,
+        "fact_unifications": 0,
+        "rule_unifications": 48,
+        "rejected_nonprogressing_decompositions": 0,
+        "rejected_revisited_frontiers": 0,
+        "truncated": true,
+        "branch_count": 15,
+        "open_branch_count": 15,
+        "unique_frontier_atom_count": 31,
+        "branches": [
+          {
+            "branch_id": "92c1dde5024e3138",
+            "parent_id": "34ac853e51de1707",
+            "rule_depth": 1,
+            "theorem_chain": [
+              "r04:0"
+            ],
+            "frontier": [
+              "eqangle(a,b,a,c,b,p,c,p)",
+              "ncoll(a,b,c,p)"
+            ],
+            "matched_facts": []
+          },
+          {
+            "branch_id": "64a488ef5709b39f",
+            "parent_id": "34ac853e51de1707",
+            "rule_depth": 1,
+            "theorem_chain": [
+              "r04:0"
+            ],
+            "frontier": [
+              "eqangle(a,b,a,p,b,c,c,p)",
+              "ncoll(a,b,c,p)"
+            ],
+            "matched_facts": []
+          },
+          {
+            "branch_id": "480b6f4b1b456b49",
+            "parent_id": "34ac853e51de1707",
+            "rule_depth": 1,
+            "theorem_chain": [
+              "r04:0"
+            ],
+            "frontier": [
+              "eqangle(a,c,a,p,b,c,b,p)",
+              "ncoll(a,b,c,p)"
+            ],
+            "matched_facts": []
+          },
+          {
+            "branch_id": "3298406d73e1e9b8",
+            "parent_id": "34ac853e51de1707",
+            "rule_depth": 1,
+            "theorem_chain": [
+              "r74:0"
+            ],
+            "frontier": [
+              "cong(a,b,a,c)",
+              "eqangle(a,p,b,p,c,p,a,p)",
+              "ncoll(a,b,c,p)",
+              "nperp(a,p,b,c)"
+            ],
+            "matched_facts": []
+          },
+          {
+            "branch_id": "4ad3d210caabff8c",
+            "parent_id": "34ac853e51de1707",
+            "rule_depth": 1,
+            "theorem_chain": [
+              "r74:0"
+            ],
+            "frontier": [
+              "cong(a,b,a,p)",
+              "eqangle(a,c,b,c,c,p,a,c)",
+              "ncoll(a,b,c,p)",
+              "nperp(a,c,b,p)"
+            ],
+            "matched_facts": []
+          },
+          {
+            "branch_id": "24109ed578cbb7f5",
+            "parent_id": "34ac853e51de1707",
+            "rule_depth": 1,
+            "theorem_chain": [
+              "r74:0"
+            ],
+            "frontier": [
+              "cong(a,b,b,c)",
+              "eqangle(a,p,b,p,b,p,c,p)",
+              "ncoll(a,b,c,p)",
+              "nperp(a,c,b,p)"
+            ],
+            "matched_facts": []
+          },
+          {
+            "branch_id": "841660c2063bc15d",
+            "parent_id": "34ac853e51de1707",
+            "rule_depth": 1,
+            "theorem_chain": [
+              "r74:0"
+            ],
+            "frontier": [
+              "cong(a,b,b,p)",
+              "eqangle(a,c,b,c,b,c,c,p)",
+              "ncoll(a,b,c,p)",
+              "nperp(a,p,b,c)"
+            ],
+            "matched_facts": []
+          },
+          {
+            "branch_id": "27e2139de6a2d28b",
+            "parent_id": "34ac853e51de1707",
+            "rule_depth": 1,
+            "theorem_chain": [
+              "r74:0"
+            ],
+            "frontier": [
+              "cong(a,c,a,p)",
+              "eqangle(a,b,b,c,b,p,a,b)",
+              "ncoll(a,b,c,p)",
+              "nperp(a,b,c,p)"
+            ],
+            "matched_facts": []
+          },
+          {
+            "branch_id": "504e3d4301122727",
+            "parent_id": "34ac853e51de1707",
+            "rule_depth": 1,
+            "theorem_chain": [
+              "r74:0"
+            ],
+            "frontier": [
+              "cong(a,c,b,c)",
+              "eqangle(a,p,c,p,c,p,b,p)",
+              "ncoll(a,b,c,p)",
+              "nperp(a,b,c,p)"
+            ],
+            "matched_facts": []
+          },
+          {
+            "branch_id": "b8ae12db8422b8cd",
+            "parent_id": "34ac853e51de1707",
+            "rule_depth": 1,
+            "theorem_chain": [
+              "r74:0"
+            ],
+            "frontier": [
+              "cong(a,c,c,p)",
+              "eqangle(a,b,b,c,b,c,b,p)",
+              "ncoll(a,b,c,p)",
+              "nperp(a,p,b,c)"
+            ],
+            "matched_facts": []
+          },
+          {
+            "branch_id": "3227ac37112b7df4",
+            "parent_id": "34ac853e51de1707",
+            "rule_depth": 1,
+            "theorem_chain": [
+              "r74:0"
+            ],
+            "frontier": [
+              "cong(a,p,b,p)",
+              "eqangle(a,c,c,p,c,p,b,c)",
+              "ncoll(a,b,c,p)",
+              "nperp(a,b,c,p)"
+            ],
+            "matched_facts": []
+          },
+          {
+            "branch_id": "9abeb0a9f4520bfa",
+            "parent_id": "34ac853e51de1707",
+            "rule_depth": 1,
+            "theorem_chain": [
+              "r74:0"
+            ],
+            "frontier": [
+              "cong(a,p,c,p)",
+              "eqangle(a,b,b,p,b,p,b,c)",
+              "ncoll(a,b,c,p)",
+              "nperp(a,c,b,p)"
+            ],
+            "matched_facts": []
+          },
+          {
+            "branch_id": "16b55cadd4a6c067",
+            "parent_id": "34ac853e51de1707",
+            "rule_depth": 1,
+            "theorem_chain": [
+              "r74:0"
+            ],
+            "frontier": [
+              "cong(b,c,b,p)",
+              "eqangle(a,b,a,c,a,p,a,b)",
+              "ncoll(a,b,c,p)",
+              "nperp(a,b,c,p)"
+            ],
+            "matched_facts": []
+          },
+          {
+            "branch_id": "95b65888bc498423",
+            "parent_id": "34ac853e51de1707",
+            "rule_depth": 1,
+            "theorem_chain": [
+              "r74:0"
+            ],
+            "frontier": [
+              "cong(b,c,c,p)",
+              "eqangle(a,b,a,c,a,c,a,p)",
+              "ncoll(a,b,c,p)",
+              "nperp(a,c,b,p)"
+            ],
+            "matched_facts": []
+          },
+          {
+            "branch_id": "baf66cb210a704c8",
+            "parent_id": "34ac853e51de1707",
+            "rule_depth": 1,
+            "theorem_chain": [
+              "r74:0"
+            ],
+            "frontier": [
+              "cong(b,p,c,p)",
+              "eqangle(a,b,a,p,a,p,a,c)",
+              "ncoll(a,b,c,p)",
+              "nperp(a,p,b,c)"
+            ],
+            "matched_facts": []
+          }
+        ]
+      }
+    ]
+  },
+  "candidate_incidence": {
+    "mode": "hageo",
+    "checked_candidates": 521,
+    "heuristic_candidates": 0,
+    "build_errors": {
+      "JGEXConstructionError": 69,
+      "ValidationError": 18
+    },
+    "truth_plane": "yuclid_native_certificate_replay_only"
+  },
+  "prefix_state_cache": {
+    "cached_state_count": 1,
+    "cache_hits": 1,
+    "cache_misses": 0,
+    "transition_count": 0,
+    "transition_seconds": 0.0
+  },
+  "records": [
+    {
+      "steps": [
+        {
+          "family": "excenter",
+          "output": "g",
+          "inputs": [
+            "b",
+            "a",
+            "c"
+          ],
+          "structural_rank": [
+            1,
+            0,
+            0,
+            -2.6666666666666665,
+            -8,
+            -3,
+            0,
+            -2.9908933181550887,
+            0,
+            0,
+            -3,
+            -3,
+            -3,
+            1,
+            0,
+            0,
+            3,
+            "excenter",
+            [
+              "b",
+              "a",
+              "c"
+            ]
+          ]
+        }
+      ],
+      "solved": true,
+      "all_deduction_count": 2948,
+      "goal_deduction_count": 186,
+      "relation_target_assertion_count": 3,
+      "relation_support_weight": 24,
+      "relation_near_goal_count": 1,
+      "relation_transition_potential": 257.2333333333335,
+      "relation_transition_channel_coverage": 13,
+      "relation_channel_counts": [
+        [
+          "circle",
+          10
+        ],
+        [
+          "coll",
+          10
+        ],
+        [
+          "cong",
+          14
+        ],
+        [
+          "contrir",
+          6
+        ],
+        [
+          "cyclic",
+          4
+        ],
+        [
+          "diff",
+          30
+        ],
+        [
+          "eqangle",
+          886
+        ],
+        [
+          "eqratio",
+          47
+        ],
+        [
+          "equation_class yuclid::angle",
+          19
+        ],
+        [
+          "equation_class yuclid::dist",
+          10
+        ],
+        [
+          "equation_class yuclid::sinordist",
+          1410
+        ],
+        [
+          "ncoll",
+          276
+        ],
+        [
+          "npara",
+          15
+        ],
+        [
+          "obtuse_angle",
+          10
+        ],
+        [
+          "para",
+          30
+        ],
+        [
+          "sameclock",
+          144
+        ],
+        [
+          "sameside",
+          3
+        ],
+        [
+          "simtri",
+          6
+        ],
+        [
+          "simtrir",
+          18
+        ]
+      ],
+      "frontier_witnesses": [
+        {
+          "channel": "cyclic",
+          "points": [
+            "a",
+            "b",
+            "c",
+            "p"
+          ],
+          "support": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "g",
+            "i1",
+            "i2",
+            "i3",
+            "i4",
+            "p"
+          ],
+          "distance_to_goal": 0,
+          "goal_support_overlap": 4,
+          "rule": "r04",
+          "proof_reference": "c97933d9431d46977f58509375e41c4da69c458463fa40eb09ce1fd2fd0abd10"
+        },
+        {
+          "channel": "cyclic",
+          "points": [
+            "a",
+            "g",
+            "p",
+            "i2"
+          ],
+          "support": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "g",
+            "i1",
+            "i2",
+            "i3",
+            "i4",
+            "p"
+          ],
+          "distance_to_goal": 0,
+          "goal_support_overlap": 4,
+          "rule": "r04",
+          "proof_reference": "e66ef2a0f8731b205051c274644a9ab912e380a7b66ca64bf9dc36a6af7b016d"
+        },
+        {
+          "channel": "cyclic",
+          "points": [
+            "b",
+            "g",
+            "p",
+            "i1"
+          ],
+          "support": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "g",
+            "i1",
+            "i2",
+            "i3",
+            "i4",
+            "p"
+          ],
+          "distance_to_goal": 0,
+          "goal_support_overlap": 4,
+          "rule": "r04",
+          "proof_reference": "49d56a22829382f78a9414330623f9e5d7fe17a0b3b6b90278e5dfbe56e79f9f"
+        },
+        {
+          "channel": "eqangle",
+          "points": [
+            "a",
+            "g",
+            "a",
+            "p",
+            "a",
+            "i1",
+            "a",
+            "p"
+          ],
+          "support": [
+            "a",
+            "b",
+            "c",
+            "e",
+            "g",
+            "i1",
+            "p"
+          ],
+          "distance_to_goal": 1,
+          "goal_support_overlap": 4,
+          "rule": "native",
+          "proof_reference": "132939b70c4f329dd027e4a3b80f49d7e10b630ac7a63b7dc5e32b44c29bd4d5"
+        },
+        {
+          "channel": "eqangle",
+          "points": [
+            "a",
+            "g",
+            "g",
+            "p",
+            "g",
+            "i1",
+            "g",
+            "p"
+          ],
+          "support": [
+            "a",
+            "b",
+            "c",
+            "e",
+            "g",
+            "i1",
+            "p"
+          ],
+          "distance_to_goal": 1,
+          "goal_support_overlap": 4,
+          "rule": "native",
+          "proof_reference": "d624a64f99735a71a747407a907ba4fc4f759f3a8d951f7205d7f0ec5a8f72cc"
+        },
+        {
+          "channel": "eqangle",
+          "points": [
+            "a",
+            "i1",
+            "p",
+            "i1",
+            "g",
+            "i1",
+            "p",
+            "i1"
+          ],
+          "support": [
+            "a",
+            "b",
+            "c",
+            "e",
+            "g",
+            "i1",
+            "p"
+          ],
+          "distance_to_goal": 1,
+          "goal_support_overlap": 4,
+          "rule": "native",
+          "proof_reference": "1d317c77a647acbd4e10163913193aa348114026d464cc2fae150f5ad36fa5e4"
+        },
+        {
+          "channel": "eqangle",
+          "points": [
+            "b",
+            "g",
+            "b",
+            "p",
+            "b",
+            "i2",
+            "b",
+            "p"
+          ],
+          "support": [
+            "a",
+            "b",
+            "c",
+            "f",
+            "g",
+            "i2",
+            "p"
+          ],
+          "distance_to_goal": 1,
+          "goal_support_overlap": 4,
+          "rule": "native",
+          "proof_reference": "e6ad0ca4bfd81eeaab101f90ce417e9ecaac130f2a923a4d01d867815f60948a"
+        },
+        {
+          "channel": "eqangle",
+          "points": [
+            "b",
+            "g",
+            "g",
+            "p",
+            "g",
+            "i2",
+            "g",
+            "p"
+          ],
+          "support": [
+            "a",
+            "b",
+            "c",
+            "f",
+            "g",
+            "i2",
+            "p"
+          ],
+          "distance_to_goal": 1,
+          "goal_support_overlap": 4,
+          "rule": "native",
+          "proof_reference": "6257d0930bc76494295050414cf0ff20248e47c25793fac8224ef6c8f64cc34a"
+        }
+      ],
+      "backward_obligations": [
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "c",
+                "a",
+                "p",
+                "b",
+                "c",
+                "b",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "a"
+            ],
+            [
+              "?B",
+              "b"
+            ],
+            [
+              "?P",
+              "c"
+            ],
+            [
+              "?Q",
+              "p"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "c",
+                "a",
+                "p",
+                "b",
+                "c",
+                "b",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "a"
+            ],
+            [
+              "?B",
+              "b"
+            ],
+            [
+              "?P",
+              "p"
+            ],
+            [
+              "?Q",
+              "c"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "p",
+                "b",
+                "c",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "a"
+            ],
+            [
+              "?B",
+              "c"
+            ],
+            [
+              "?P",
+              "b"
+            ],
+            [
+              "?Q",
+              "p"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "c",
+                "b",
+                "p",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "a"
+            ],
+            [
+              "?B",
+              "p"
+            ],
+            [
+              "?P",
+              "b"
+            ],
+            [
+              "?Q",
+              "c"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "p",
+                "b",
+                "c",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "a"
+            ],
+            [
+              "?B",
+              "c"
+            ],
+            [
+              "?P",
+              "p"
+            ],
+            [
+              "?Q",
+              "b"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "c",
+                "b",
+                "p",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "a"
+            ],
+            [
+              "?B",
+              "p"
+            ],
+            [
+              "?P",
+              "c"
+            ],
+            [
+              "?Q",
+              "b"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "c",
+                "a",
+                "p",
+                "b",
+                "c",
+                "b",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "b"
+            ],
+            [
+              "?B",
+              "a"
+            ],
+            [
+              "?P",
+              "c"
+            ],
+            [
+              "?Q",
+              "p"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "c",
+                "a",
+                "p",
+                "b",
+                "c",
+                "b",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "b"
+            ],
+            [
+              "?B",
+              "a"
+            ],
+            [
+              "?P",
+              "p"
+            ],
+            [
+              "?Q",
+              "c"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "p",
+                "b",
+                "c",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "c"
+            ],
+            [
+              "?B",
+              "a"
+            ],
+            [
+              "?P",
+              "b"
+            ],
+            [
+              "?Q",
+              "p"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "c",
+                "b",
+                "p",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "p"
+            ],
+            [
+              "?B",
+              "a"
+            ],
+            [
+              "?P",
+              "b"
+            ],
+            [
+              "?Q",
+              "c"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "p",
+                "b",
+                "c",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "c"
+            ],
+            [
+              "?B",
+              "a"
+            ],
+            [
+              "?P",
+              "p"
+            ],
+            [
+              "?Q",
+              "b"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "c",
+                "b",
+                "p",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "p"
+            ],
+            [
+              "?B",
+              "a"
+            ],
+            [
+              "?P",
+              "c"
+            ],
+            [
+              "?Q",
+              "b"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "c",
+                "b",
+                "p",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "b"
+            ],
+            [
+              "?B",
+              "c"
+            ],
+            [
+              "?P",
+              "a"
+            ],
+            [
+              "?Q",
+              "p"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "p",
+                "b",
+                "c",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "b"
+            ],
+            [
+              "?B",
+              "p"
+            ],
+            [
+              "?P",
+              "a"
+            ],
+            [
+              "?Q",
+              "c"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "c",
+                "b",
+                "p",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "c"
+            ],
+            [
+              "?B",
+              "b"
+            ],
+            [
+              "?P",
+              "a"
+            ],
+            [
+              "?Q",
+              "p"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "p",
+                "b",
+                "c",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "p"
+            ],
+            [
+              "?B",
+              "b"
+            ],
+            [
+              "?P",
+              "a"
+            ],
+            [
+              "?Q",
+              "c"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "c",
+                "a",
+                "p",
+                "b",
+                "c",
+                "b",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "c"
+            ],
+            [
+              "?B",
+              "p"
+            ],
+            [
+              "?P",
+              "a"
+            ],
+            [
+              "?Q",
+              "b"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "c",
+                "a",
+                "p",
+                "b",
+                "c",
+                "b",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "p"
+            ],
+            [
+              "?B",
+              "c"
+            ],
+            [
+              "?P",
+              "a"
+            ],
+            [
+              "?Q",
+              "b"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "c",
+                "b",
+                "p",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "b"
+            ],
+            [
+              "?B",
+              "c"
+            ],
+            [
+              "?P",
+              "p"
+            ],
+            [
+              "?Q",
+              "a"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "p",
+                "b",
+                "c",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "b"
+            ],
+            [
+              "?B",
+              "p"
+            ],
+            [
+              "?P",
+              "c"
+            ],
+            [
+              "?Q",
+              "a"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "c",
+                "b",
+                "p",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "c"
+            ],
+            [
+              "?B",
+              "b"
+            ],
+            [
+              "?P",
+              "p"
+            ],
+            [
+              "?Q",
+              "a"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "p",
+                "b",
+                "c",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "p"
+            ],
+            [
+              "?B",
+              "b"
+            ],
+            [
+              "?P",
+              "c"
+            ],
+            [
+              "?Q",
+              "a"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "c",
+                "a",
+                "p",
+                "b",
+                "c",
+                "b",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "c"
+            ],
+            [
+              "?B",
+              "p"
+            ],
+            [
+              "?P",
+              "b"
+            ],
+            [
+              "?Q",
+              "a"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "c",
+                "a",
+                "p",
+                "b",
+                "c",
+                "b",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "p"
+            ],
+            [
+              "?B",
+              "c"
+            ],
+            [
+              "?P",
+              "b"
+            ],
+            [
+              "?Q",
+              "a"
+            ]
+          ],
+          "unbound_variables": []
+        }
+      ],
+      "open_relation_demands": [
+        {
+          "predicate": "ncoll",
+          "arguments": [
+            "a",
+            "b",
+            "c",
+            "p"
+          ]
+        }
+      ],
+      "ar_supported_goal_count": 1,
+      "ar_closed_goal_count": 1,
+      "ar_residual_support_size": 0,
+      "ar_residual_l1_weight": 0.0,
+      "ar_known_rank": 48,
+      "proof_dag_progress": {
+        "branch_count": 15,
+        "progressed_branch_count": 3,
+        "structurally_closed_branch_count": 3,
+        "best_structural_residual_count": 0,
+        "max_exact_covered_atoms": 1,
+        "unique_exact_covered_atoms": 3,
+        "support_improved_branch_count": 15,
+        "max_support_overlap_gain": 1,
+        "total_support_overlap_gain": 15
+      },
+      "proof_dag_increment": {
+        "newly_progressed_branch_count": 3,
+        "newly_structurally_closed_branch_count": 3,
+        "max_exact_covered_atoms_gain": 1,
+        "unique_exact_covered_atoms_gain": 3,
+        "support_improved_branch_count_gain": 15,
+        "support_overlap_gain": 15
+      },
+      "elapsed_seconds": 12.065336500003468,
+      "error": null,
+      "right_censored": false
+    },
+    {
+      "steps": [
+        {
+          "family": "incenter",
+          "output": "g",
+          "inputs": [
+            "b",
+            "c",
+            "d"
+          ],
+          "structural_rank": [
+            1,
+            0,
+            0,
+            -2.6666666666666665,
+            -8,
+            -3,
+            0,
+            -2.7970860152677597,
+            0,
+            0,
+            -3,
+            -2,
+            -2,
+            2,
+            1,
+            1,
+            3,
+            "incenter",
+            [
+              "b",
+              "c",
+              "d"
+            ]
+          ]
+        }
+      ],
+      "solved": true,
+      "all_deduction_count": 3096,
+      "goal_deduction_count": 201,
+      "relation_target_assertion_count": 5,
+      "relation_support_weight": 39,
+      "relation_near_goal_count": 3,
+      "relation_transition_potential": 295.0666666666667,
+      "relation_transition_channel_coverage": 13,
+      "relation_channel_counts": [
+        [
+          "circle",
+          10
+        ],
+        [
+          "coll",
+          10
+        ],
+        [
+          "cong",
+          14
+        ],
+        [
+          "contrir",
+          6
+        ],
+        [
+          "cyclic",
+          6
+        ],
+        [
+          "diff",
+          30
+        ],
+        [
+          "eqangle",
+          955
+        ],
+        [
+          "eqratio",
+          47
+        ],
+        [
+          "equation_class yuclid::angle",
+          27
+        ],
+        [
+          "equation_class yuclid::dist",
+          10
+        ],
+        [
+          "equation_class yuclid::sinordist",
+          1479
+        ],
+        [
+          "ncoll",
+          276
+        ],
+        [
+          "npara",
+          15
+        ],
+        [
+          "obtuse_angle",
+          10
+        ],
+        [
+          "para",
+          30
+        ],
+        [
+          "sameclock",
+          144
+        ],
+        [
+          "sameside",
+          3
+        ],
+        [
+          "simtri",
+          6
+        ],
+        [
+          "simtrir",
+          18
+        ]
+      ],
+      "frontier_witnesses": [
+        {
+          "channel": "cyclic",
+          "points": [
+            "a",
+            "b",
+            "c",
+            "p"
+          ],
+          "support": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "g",
+            "i1",
+            "i2",
+            "i3",
+            "i4",
+            "p"
+          ],
+          "distance_to_goal": 0,
+          "goal_support_overlap": 4,
+          "rule": "r04",
+          "proof_reference": "3783b970faadec6ee9573af4967976581bb2ac21265989b4f8af34f994344b8b"
+        },
+        {
+          "channel": "cyclic",
+          "points": [
+            "a",
+            "b",
+            "d",
+            "p"
+          ],
+          "support": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "g",
+            "i1",
+            "i2",
+            "i3",
+            "i4",
+            "p"
+          ],
+          "distance_to_goal": 0,
+          "goal_support_overlap": 4,
+          "rule": "r04",
+          "proof_reference": "38a08ce21f827b873eb229e13dc3ea7d304b454ed2ddc957bcab493d180afb0a"
+        },
+        {
+          "channel": "cyclic",
+          "points": [
+            "b",
+            "c",
+            "d",
+            "p"
+          ],
+          "support": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "g",
+            "i1",
+            "i2",
+            "i3",
+            "i4",
+            "p"
+          ],
+          "distance_to_goal": 0,
+          "goal_support_overlap": 4,
+          "rule": "r04",
+          "proof_reference": "65cdd9fc9656e6dc55121761de70c74f2e29001b0ac17341f838d28b98cd7c51"
+        },
+        {
+          "channel": "cyclic",
+          "points": [
+            "c",
+            "g",
+            "p",
+            "i3"
+          ],
+          "support": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "g",
+            "i1",
+            "i2",
+            "i3",
+            "i4",
+            "p"
+          ],
+          "distance_to_goal": 0,
+          "goal_support_overlap": 4,
+          "rule": "r04",
+          "proof_reference": "a5ac45e10616e2750a6bcbf951a3f64cde5bae10d645c7c384b437410251a519"
+        },
+        {
+          "channel": "cyclic",
+          "points": [
+            "d",
+            "g",
+            "p",
+            "i4"
+          ],
+          "support": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "g",
+            "i1",
+            "i2",
+            "i3",
+            "i4",
+            "p"
+          ],
+          "distance_to_goal": 0,
+          "goal_support_overlap": 4,
+          "rule": "r04",
+          "proof_reference": "1a912173f8b931e720f559f7fa0746aa26973f7b864d1e227b0b86ee05410743"
+        },
+        {
+          "channel": "eqangle",
+          "points": [
+            "a",
+            "b",
+            "a",
+            "c",
+            "b",
+            "p",
+            "c",
+            "p"
+          ],
+          "support": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "g",
+            "i1",
+            "i2",
+            "i3",
+            "i4",
+            "p"
+          ],
+          "distance_to_goal": 1,
+          "goal_support_overlap": 4,
+          "rule": "native",
+          "proof_reference": "3d494a6cfb5d7b19ced2ce2c055d1259de32e12dbdce9677288faeb0f3e93c77"
+        },
+        {
+          "channel": "eqangle",
+          "points": [
+            "a",
+            "b",
+            "a",
+            "d",
+            "b",
+            "p",
+            "d",
+            "p"
+          ],
+          "support": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "g",
+            "i1",
+            "i2",
+            "i3",
+            "i4",
+            "p"
+          ],
+          "distance_to_goal": 1,
+          "goal_support_overlap": 4,
+          "rule": "native",
+          "proof_reference": "f0074978efe3cdc8996585e67c70d1044e5ba8b54eb725087b6966c93afe1e19"
+        },
+        {
+          "channel": "eqangle",
+          "points": [
+            "a",
+            "b",
+            "a",
+            "e",
+            "b",
+            "p",
+            "c",
+            "p"
+          ],
+          "support": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "g",
+            "i1",
+            "i2",
+            "i3",
+            "i4",
+            "p"
+          ],
+          "distance_to_goal": 1,
+          "goal_support_overlap": 4,
+          "rule": "native",
+          "proof_reference": "d9d18d82b918dc0c5ace8838be98ca6b90b92ae1481e7d2110286ab37e0624a3"
+        }
+      ],
+      "backward_obligations": [
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "c",
+                "a",
+                "p",
+                "b",
+                "c",
+                "b",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "a"
+            ],
+            [
+              "?B",
+              "b"
+            ],
+            [
+              "?P",
+              "c"
+            ],
+            [
+              "?Q",
+              "p"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "c",
+                "a",
+                "p",
+                "b",
+                "c",
+                "b",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "a"
+            ],
+            [
+              "?B",
+              "b"
+            ],
+            [
+              "?P",
+              "p"
+            ],
+            [
+              "?Q",
+              "c"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "p",
+                "b",
+                "c",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "a"
+            ],
+            [
+              "?B",
+              "c"
+            ],
+            [
+              "?P",
+              "b"
+            ],
+            [
+              "?Q",
+              "p"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "c",
+                "b",
+                "p",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "a"
+            ],
+            [
+              "?B",
+              "p"
+            ],
+            [
+              "?P",
+              "b"
+            ],
+            [
+              "?Q",
+              "c"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "p",
+                "b",
+                "c",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "a"
+            ],
+            [
+              "?B",
+              "c"
+            ],
+            [
+              "?P",
+              "p"
+            ],
+            [
+              "?Q",
+              "b"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "c",
+                "b",
+                "p",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "a"
+            ],
+            [
+              "?B",
+              "p"
+            ],
+            [
+              "?P",
+              "c"
+            ],
+            [
+              "?Q",
+              "b"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "c",
+                "a",
+                "p",
+                "b",
+                "c",
+                "b",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "b"
+            ],
+            [
+              "?B",
+              "a"
+            ],
+            [
+              "?P",
+              "c"
+            ],
+            [
+              "?Q",
+              "p"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "c",
+                "a",
+                "p",
+                "b",
+                "c",
+                "b",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "b"
+            ],
+            [
+              "?B",
+              "a"
+            ],
+            [
+              "?P",
+              "p"
+            ],
+            [
+              "?Q",
+              "c"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "p",
+                "b",
+                "c",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "c"
+            ],
+            [
+              "?B",
+              "a"
+            ],
+            [
+              "?P",
+              "b"
+            ],
+            [
+              "?Q",
+              "p"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "c",
+                "b",
+                "p",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "p"
+            ],
+            [
+              "?B",
+              "a"
+            ],
+            [
+              "?P",
+              "b"
+            ],
+            [
+              "?Q",
+              "c"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "p",
+                "b",
+                "c",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "c"
+            ],
+            [
+              "?B",
+              "a"
+            ],
+            [
+              "?P",
+              "p"
+            ],
+            [
+              "?Q",
+              "b"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "c",
+                "b",
+                "p",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "p"
+            ],
+            [
+              "?B",
+              "a"
+            ],
+            [
+              "?P",
+              "c"
+            ],
+            [
+              "?Q",
+              "b"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "c",
+                "b",
+                "p",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "b"
+            ],
+            [
+              "?B",
+              "c"
+            ],
+            [
+              "?P",
+              "a"
+            ],
+            [
+              "?Q",
+              "p"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "p",
+                "b",
+                "c",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "b"
+            ],
+            [
+              "?B",
+              "p"
+            ],
+            [
+              "?P",
+              "a"
+            ],
+            [
+              "?Q",
+              "c"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "c",
+                "b",
+                "p",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "c"
+            ],
+            [
+              "?B",
+              "b"
+            ],
+            [
+              "?P",
+              "a"
+            ],
+            [
+              "?Q",
+              "p"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "p",
+                "b",
+                "c",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "p"
+            ],
+            [
+              "?B",
+              "b"
+            ],
+            [
+              "?P",
+              "a"
+            ],
+            [
+              "?Q",
+              "c"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "c",
+                "a",
+                "p",
+                "b",
+                "c",
+                "b",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "c"
+            ],
+            [
+              "?B",
+              "p"
+            ],
+            [
+              "?P",
+              "a"
+            ],
+            [
+              "?Q",
+              "b"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "c",
+                "a",
+                "p",
+                "b",
+                "c",
+                "b",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "p"
+            ],
+            [
+              "?B",
+              "c"
+            ],
+            [
+              "?P",
+              "a"
+            ],
+            [
+              "?Q",
+              "b"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "c",
+                "b",
+                "p",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "b"
+            ],
+            [
+              "?B",
+              "c"
+            ],
+            [
+              "?P",
+              "p"
+            ],
+            [
+              "?Q",
+              "a"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "p",
+                "b",
+                "c",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "b"
+            ],
+            [
+              "?B",
+              "p"
+            ],
+            [
+              "?P",
+              "c"
+            ],
+            [
+              "?Q",
+              "a"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "c",
+                "b",
+                "p",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "c"
+            ],
+            [
+              "?B",
+              "b"
+            ],
+            [
+              "?P",
+              "p"
+            ],
+            [
+              "?Q",
+              "a"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "b",
+                "a",
+                "p",
+                "b",
+                "c",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "p"
+            ],
+            [
+              "?B",
+              "b"
+            ],
+            [
+              "?P",
+              "c"
+            ],
+            [
+              "?Q",
+              "a"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "c",
+                "a",
+                "p",
+                "b",
+                "c",
+                "b",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "c"
+            ],
+            [
+              "?B",
+              "p"
+            ],
+            [
+              "?P",
+              "b"
+            ],
+            [
+              "?Q",
+              "a"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r04:0",
+          "goal": {
+            "predicate": "cyclic",
+            "arguments": [
+              "a",
+              "b",
+              "c",
+              "p"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "eqangle",
+              "arguments": [
+                "a",
+                "c",
+                "a",
+                "p",
+                "b",
+                "c",
+                "b",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "b",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "p"
+            ],
+            [
+              "?B",
+              "c"
+            ],
+            [
+              "?P",
+              "b"
+            ],
+            [
+              "?Q",
+              "a"
+            ]
+          ],
+          "unbound_variables": []
+        }
+      ],
+      "open_relation_demands": [
+        {
+          "predicate": "ncoll",
+          "arguments": [
+            "a",
+            "b",
+            "c",
+            "p"
+          ]
+        }
+      ],
+      "ar_supported_goal_count": 1,
+      "ar_closed_goal_count": 1,
+      "ar_residual_support_size": 0,
+      "ar_residual_l1_weight": 0.0,
+      "ar_known_rank": 48,
+      "proof_dag_progress": {
+        "branch_count": 15,
+        "progressed_branch_count": 3,
+        "structurally_closed_branch_count": 3,
+        "best_structural_residual_count": 0,
+        "max_exact_covered_atoms": 1,
+        "unique_exact_covered_atoms": 3,
+        "support_improved_branch_count": 15,
+        "max_support_overlap_gain": 1,
+        "total_support_overlap_gain": 15
+      },
+      "proof_dag_increment": {
+        "newly_progressed_branch_count": 3,
+        "newly_structurally_closed_branch_count": 3,
+        "max_exact_covered_atoms_gain": 1,
+        "unique_exact_covered_atoms_gain": 3,
+        "support_improved_branch_count_gain": 15,
+        "support_overlap_gain": 15
+      },
+      "elapsed_seconds": 12.32935870000074,
+      "error": null,
+      "right_censored": false
+    }
+  ],
+  "confirmation": {
+    "solved": true,
+    "status": "solved",
+    "all_deduction_count": 2948,
+    "goal_deduction_count": 186,
+    "input_sha256": "66cbcdaecaa8ff3cecb9736dabac891f3afce2b670544d2766bead7dde2e224b",
+    "proof_sha256": "fa4aabccb9ba3a7f7ab108641571c0eef737f52e18c0d6dc8c0d05d3b9c553f8",
+    "proof_path": "data/hageo-409-current-aux-bounded64-rerun-2026-08-24-runs/2014BulgariaMOp6.proof.json"
+  }
+}

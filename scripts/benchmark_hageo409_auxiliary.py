@@ -16,6 +16,37 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def require_same_report_cohort(
+    report: dict[str, Any], selected: list[str], *, output: Path
+) -> None:
+    """Prevent a subset retry from silently replacing a larger cohort report."""
+    prior_selected = report.get("selected_problem_names")
+    if prior_selected is None:
+        return
+    if set(map(str, prior_selected)) != set(selected):
+        raise ValueError(
+            "refusing to replace an existing report with a different problem cohort: "
+            f"{output}. Use a distinct --output path for subset retries."
+        )
+
+
+def write_json_atomic(path: Path, payload: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(f"{path.name}.{os.getpid()}.tmp")
+    temporary.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    for attempt in range(8):
+        try:
+            temporary.replace(path)
+            return
+        except PermissionError:
+            if attempt == 7:
+                raise
+            time.sleep(0.01 * (2**attempt))
+
+
 def run_problem(
     *,
     python: Path,
@@ -33,6 +64,13 @@ def run_problem(
     controller: Path | None = None,
     per_family_limit: int = 1,
     incidence_oversample_per_family: int = 16,
+    candidate_contract_synthesis: bool = False,
+    enumeration_limit_per_family: int = 64,
+    candidate_cone_timeout_seconds: float = 10.0,
+    proof_dag_timeout_seconds: float = 10.0,
+    yuclid_timeout_seconds: float = 0.0,
+    candidate_workers: int = 2,
+    resume_progress: bool = False,
 ) -> dict[str, Any]:
     command = [
         str(python),
@@ -59,7 +97,7 @@ def run_problem(
         "--max-depth",
         str(max_depth),
         "--max-workers",
-        "2",
+        str(max(1, candidate_workers)),
         "--seed",
         str(seed),
         "--obligation-guided",
@@ -85,6 +123,10 @@ def run_problem(
         "48",
         "--proof-dag-states",
         "10000",
+        "--proof-dag-timeout-seconds",
+        str(proof_dag_timeout_seconds),
+        "--yuclid-timeout-seconds",
+        str(yuclid_timeout_seconds),
         "--candidate-cone-depth",
         "2",
         "--candidate-cone-fragments",
@@ -95,11 +137,19 @@ def run_problem(
         "32",
         "--candidate-promotion-limit",
         "6",
+        "--enumeration-limit-per-family",
+        str(enumeration_limit_per_family),
+        "--candidate-cone-timeout-seconds",
+        str(candidate_cone_timeout_seconds),
         "--progress",
         "none",
     ]
     if controller is not None:
         command.extend(("--controller", str(controller)))
+    if candidate_contract_synthesis:
+        command.append("--candidate-contract-synthesis")
+    if resume_progress and output.with_suffix(".progress.json").is_file():
+        command.append("--resume-progress")
     started = time.perf_counter()
     try:
         completed = subprocess.run(
@@ -112,12 +162,19 @@ def run_problem(
             env={**os.environ, "PYTHONHASHSEED": "0"},
         )
     except subprocess.TimeoutExpired:
-        return {
+        result: dict[str, Any] = {
             "problem": problem,
             "status": "right_censored_timeout",
             "solved": None,
             "elapsed_seconds": time.perf_counter() - started,
         }
+        progress_path = output.with_suffix(".progress.json")
+        if progress_path.is_file():
+            result["checkpoint"] = progress_path.resolve().relative_to(ROOT).as_posix()
+            result["checkpoint_sha256"] = hashlib.sha256(
+                progress_path.read_bytes()
+            ).hexdigest()
+        return result
     if completed.returncode != 0 or not output.is_file():
         return {
             "problem": problem,
@@ -134,13 +191,22 @@ def run_problem(
         and confirmation.get("input_sha256")
         and confirmation.get("proof_sha256")
     )
+    candidate_timeouts = int(artifact.get("right_censored_count", 0))
+    incomplete = not artifact["solved"] and candidate_timeouts > 0
     return {
         "problem": problem,
-        "status": "solved" if artifact["solved"] else "unsolved",
-        "solved": artifact["solved"],
+        "status": (
+            "solved"
+            if artifact["solved"]
+            else "right_censored_timeout"
+            if incomplete
+            else "unsolved"
+        ),
+        "solved": artifact["solved"] if not incomplete else None,
         "native_confirmed": native_confirmed,
         "solved_path": artifact["solved_path"],
         "evaluated_paths": artifact["evaluated_paths"],
+        "right_censored_candidate_count": candidate_timeouts,
         "incidence_checked": artifact["candidate_incidence"]["checked_candidates"],
         "incidence_heuristic": artifact["candidate_incidence"][
             "heuristic_candidates"
@@ -160,15 +226,66 @@ def main() -> int:
     parser.add_argument("--runtime-path", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--run-dir", type=Path, required=True)
-    parser.add_argument("--limit", type=int, default=10)
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=0,
+        help="Number of baseline-unsolved IDs to run; 0 (default) means all.",
+    )
+    parser.add_argument(
+        "--problem-file",
+        type=Path,
+        help=(
+            "Optional newline-delimited problem IDs. Every ID must belong to "
+            "the baseline-unsolved set; this takes precedence over --limit."
+        ),
+    )
     parser.add_argument("--workers", type=int, default=2)
+    parser.add_argument(
+        "--candidate-workers",
+        type=int,
+        default=2,
+        help="Native candidate verifications run in parallel inside each problem.",
+    )
     parser.add_argument("--timeout-seconds", type=float, default=300.0)
+    parser.add_argument(
+        "--yuclid-timeout-seconds",
+        type=float,
+        default=0.0,
+        help=(
+            "Per-candidate native verification budget; zero is unbounded. "
+            "Candidate timeouts remain right-censored and are retryable."
+        ),
+    )
     parser.add_argument("--max-depth", type=int, default=1)
     parser.add_argument("--branch-limit", type=int, default=16)
     parser.add_argument("--beam-width", type=int, default=6)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--per-family-limit", type=int, default=1)
     parser.add_argument("--incidence-oversample-per-family", type=int, default=16)
+    parser.add_argument(
+        "--enumeration-limit-per-family",
+        type=int,
+        default=64,
+        help="Finite tuple budget per construction family; 0 explicitly requests exhaustive enumeration.",
+    )
+    parser.add_argument(
+        "--candidate-cone-timeout-seconds",
+        type=float,
+        default=10.0,
+        help="Per-candidate typed proof-cone compilation budget.",
+    )
+    parser.add_argument(
+        "--proof-dag-timeout-seconds",
+        type=float,
+        default=10.0,
+        help="Initial open-proof-DAG compilation budget per goal.",
+    )
+    parser.add_argument(
+        "--candidate-contract-synthesis",
+        action="store_true",
+        help="Enable finite typed construction synthesis from coherent obligations.",
+    )
     parser.add_argument(
         "--beam-ranking",
         choices=(
@@ -183,6 +300,16 @@ def main() -> int:
     )
     parser.add_argument("--controller", type=Path)
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument(
+        "--retry-timeouts",
+        action="store_true",
+        help="With --resume, rerun right-censored and execution-error items.",
+    )
+    parser.add_argument(
+        "--retry-unsolved",
+        action="store_true",
+        help="With --resume, continue completed unsolved items at a deeper budget.",
+    )
     parser.add_argument(
         "--report-only",
         action="store_true",
@@ -203,16 +330,45 @@ def main() -> int:
         for name in baseline["problem_names"]
         if baseline["results"][name]["status"] != "solved"
     )
-    selected = unsolved[: args.limit] if args.limit > 0 else unsolved
+    if args.problem_file is not None:
+        requested = [
+            line.strip()
+            for line in args.problem_file.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+        if len(requested) != len(set(requested)):
+            raise ValueError("problem-file contains duplicate IDs")
+        unknown = sorted(set(requested) - set(unsolved))
+        if unknown:
+            raise ValueError(
+                "problem-file contains IDs outside the baseline-unsolved set: "
+                + ", ".join(unknown)
+            )
+        selected = sorted(requested)
+    else:
+        selected = unsolved[: args.limit] if args.limit > 0 else unsolved
     args.run_dir.mkdir(parents=True, exist_ok=True)
     previous: dict[str, dict[str, Any]] = {}
-    if (args.resume or args.report_only) and args.output.is_file():
+    prior_report: dict[str, Any] | None = None
+    if args.output.is_file():
         prior_report = json.loads(args.output.read_text(encoding="utf-8"))
+        require_same_report_cohort(prior_report, selected, output=args.output)
+    if (args.resume or args.report_only) and prior_report is not None:
         previous = {
             item["problem"]: item
             for item in prior_report.get("runs", [])
             if args.report_only
-            or item.get("status") in {"solved", "unsolved"}
+            or item.get("status") == "solved"
+            or (
+                item.get("status") == "unsolved"
+                and not args.retry_unsolved
+            )
+            or (
+                args.resume
+                and not args.retry_timeouts
+                and item.get("status")
+                in {"timeout", "right_censored_timeout", "execution_error"}
+            )
         }
     if args.report_only and len(previous) != len(selected):
         raise ValueError("report-only requires one existing run for every selected ID")
@@ -220,6 +376,127 @@ def main() -> int:
         previous[name] for name in selected if name in previous
     ]
     pending = [name for name in selected if name not in previous]
+
+    def write_report(*, complete: bool) -> dict[str, Any]:
+        ordered_runs = sorted(runs, key=lambda item: item["problem"])
+        newly_solved = [item["problem"] for item in ordered_runs if item.get("solved")]
+        baseline_solved = int(baseline["summary"]["solved"])
+        right_censored = sum(
+            item.get("status") in {"timeout", "right_censored_timeout"}
+            for item in ordered_runs
+        )
+        execution_errors = sum(
+            item.get("status") == "execution_error" for item in ordered_runs
+        )
+        pending_count = len(selected) - len(ordered_runs)
+        completed_searches = len(ordered_runs) - right_censored - execution_errors
+        total = int(baseline["summary"]["total"])
+        certified_solved = baseline_solved + len(newly_solved)
+        report = {
+            "experiment": "hageo409_typed_auxiliary_heldout_pilot",
+            "run_state": {
+                "complete": complete,
+                "finished_count": len(ordered_runs),
+                "pending_count": pending_count,
+                "finished_problem_names": [item["problem"] for item in ordered_runs],
+            },
+            "protocol": {
+                "uses_external_llm": False,
+                "uses_dataset_auxiliary_clauses": False,
+                "selection": (
+                    "explicit baseline-unsolved problem-file"
+                    if args.problem_file is not None
+                    else (
+                        "all baseline-unsolved held_out IDs"
+                        if args.limit <= 0
+                        else "lexicographically first baseline-unsolved held_out IDs"
+                    )
+                ),
+                "problem_file": (
+                    args.problem_file.resolve().relative_to(ROOT).as_posix()
+                    if args.problem_file is not None
+                    and args.problem_file.resolve().is_relative_to(ROOT)
+                    else (
+                        args.problem_file.resolve().as_posix()
+                        if args.problem_file is not None
+                        else None
+                    )
+                ),
+                "selected_count": len(selected),
+                "truth_plane": "native_yuclid_certificate_replay",
+                "candidate_proposal": "typed HAGeo numerical incidence",
+                "scheduler": "unified bidirectional priority queue",
+                "search_budget": {
+                    "auxiliary_depth": args.max_depth,
+                    "candidate_paths_per_prefix": args.branch_limit,
+                    "candidate_beam": args.beam_width,
+                    "beam_ranking": args.beam_ranking,
+                    "controller": (
+                        args.controller.resolve().relative_to(ROOT).as_posix()
+                        if args.controller is not None
+                        else None
+                    ),
+                    "per_family_limit": args.per_family_limit,
+                    "incidence_oversample_per_family": (
+                        args.incidence_oversample_per_family
+                    ),
+                    "candidate_contract_synthesis": (
+                        args.candidate_contract_synthesis
+                    ),
+                    "enumeration_limit_per_family": (
+                        args.enumeration_limit_per_family
+                    ),
+                    "candidate_cone_timeout_seconds": (
+                        args.candidate_cone_timeout_seconds
+                    ),
+                    "proof_dag_timeout_seconds": args.proof_dag_timeout_seconds,
+                    "workers": args.workers,
+                    "timeout_seconds_per_problem": args.timeout_seconds,
+                },
+                "paper_comparability": (
+                    "configurable MORTRA ablation; report max_depth and evaluated "
+                    "paths rather than claiming HAGeo N=6, K=2048/8192"
+                ),
+                "timeout_semantics": (
+                    "right-censored unknown; never counted as a wrong answer or a proof"
+                ),
+            },
+            "summary": {
+                "baseline_total": baseline["summary"]["total"],
+                "baseline_solved": baseline_solved,
+                "pilot_total": len(selected),
+                "newly_solved": len(newly_solved),
+                "newly_solved_names": newly_solved,
+                "heldout_portfolio_solved": certified_solved,
+                "heldout_portfolio_score": certified_solved / total,
+                "certified_score_lower_bound": certified_solved / total,
+                "optimistic_score_upper_bound": (
+                    certified_solved
+                    + right_censored
+                    + execution_errors
+                    + pending_count
+                )
+                / total,
+                "completed_auxiliary_searches": completed_searches,
+                "conditional_new_solution_rate": (
+                    len(newly_solved) / completed_searches
+                    if completed_searches
+                    else None
+                ),
+                "time_censored": right_censored,
+                "execution_errors": execution_errors,
+                "unprocessed": pending_count,
+                "score_is_lower_bound": (
+                    not complete or right_censored > 0 or execution_errors > 0
+                ),
+            },
+            "selected_problem_names": selected,
+            "runs": ordered_runs,
+        }
+        write_json_atomic(args.output, report)
+        return report
+
+    write_report(complete=not pending)
     with ThreadPoolExecutor(max_workers=max(1, args.workers)) as executor:
         futures = {
             executor.submit(
@@ -241,84 +518,32 @@ def main() -> int:
                 incidence_oversample_per_family=(
                     args.incidence_oversample_per_family
                 ),
+                candidate_contract_synthesis=args.candidate_contract_synthesis,
+                enumeration_limit_per_family=args.enumeration_limit_per_family,
+                candidate_cone_timeout_seconds=args.candidate_cone_timeout_seconds,
+                proof_dag_timeout_seconds=args.proof_dag_timeout_seconds,
+                yuclid_timeout_seconds=args.yuclid_timeout_seconds,
+                candidate_workers=args.candidate_workers,
+                resume_progress=(args.retry_timeouts or args.retry_unsolved),
             ): problem
             for problem in pending
         }
         for future in as_completed(futures):
-            result = future.result()
+            problem = futures[future]
+            try:
+                result = future.result()
+            except Exception as exc:  # preserve the rest of a long cohort run
+                result = {
+                    "problem": problem,
+                    "status": "execution_error",
+                    "solved": None,
+                    "error": f"{type(exc).__name__}: {exc}",
+                }
             runs.append(result)
+            write_report(complete=len(runs) == len(selected))
             print(json.dumps(result, ensure_ascii=False), flush=True)
 
-    runs.sort(key=lambda item: item["problem"])
-    newly_solved = [item["problem"] for item in runs if item.get("solved")]
-    baseline_solved = int(baseline["summary"]["solved"])
-    right_censored = sum(
-        item.get("status") in {"timeout", "right_censored_timeout"}
-        for item in runs
-    )
-    completed_searches = len(runs) - right_censored
-    total = int(baseline["summary"]["total"])
-    certified_solved = baseline_solved + len(newly_solved)
-    report = {
-        "experiment": "hageo409_typed_auxiliary_heldout_pilot",
-        "protocol": {
-            "uses_external_llm": False,
-            "uses_dataset_auxiliary_clauses": False,
-            "selection": "lexicographically first baseline-unsolved held_out IDs",
-            "selected_count": len(selected),
-            "truth_plane": "native_yuclid_certificate_replay",
-            "candidate_proposal": "typed HAGeo numerical incidence",
-            "scheduler": "unified bidirectional priority queue",
-            "search_budget": {
-                "auxiliary_depth": args.max_depth,
-                "candidate_paths_per_prefix": args.branch_limit,
-                "candidate_beam": args.beam_width,
-                "beam_ranking": args.beam_ranking,
-                "controller": (
-                    args.controller.resolve().relative_to(ROOT).as_posix()
-                    if args.controller is not None
-                    else None
-                ),
-                "per_family_limit": args.per_family_limit,
-                "incidence_oversample_per_family": (
-                    args.incidence_oversample_per_family
-                ),
-                "workers": args.workers,
-                "timeout_seconds_per_problem": args.timeout_seconds,
-            },
-            "paper_comparability": (
-                "configurable MORTRA ablation; report max_depth and evaluated "
-                "paths rather than claiming HAGeo N=6, K=2048/8192"
-            ),
-            "timeout_semantics": (
-                "right-censored unknown; never counted as a wrong answer or a proof"
-            ),
-        },
-        "summary": {
-            "baseline_total": baseline["summary"]["total"],
-            "baseline_solved": baseline_solved,
-            "pilot_total": len(selected),
-            "newly_solved": len(newly_solved),
-            "newly_solved_names": newly_solved,
-            "heldout_portfolio_solved": certified_solved,
-            "heldout_portfolio_score": certified_solved / total,
-            "certified_score_lower_bound": certified_solved / total,
-            "optimistic_score_upper_bound": (certified_solved + right_censored) / total,
-            "completed_auxiliary_searches": completed_searches,
-            "conditional_new_solution_rate": (
-                len(newly_solved) / completed_searches if completed_searches else None
-            ),
-            "time_censored": right_censored,
-            "score_is_lower_bound": right_censored > 0,
-        },
-        "selected_problem_names": selected,
-        "runs": runs,
-    }
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(
-        json.dumps(report, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
+    report = write_report(complete=True)
     print(json.dumps(report["summary"], ensure_ascii=False), flush=True)
     return 0
 

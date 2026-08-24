@@ -4,6 +4,8 @@ MORTRA の実験目的、方法、結果、考察、限界を日付順に公開�
 
 ## 2026-08-24
 
+- [未証明34問の全件再実行・証明書監査](MORTRA-HAGEO-UNRESOLVED34-RERUN-20260824.md)
+- [未証明34問の図・解答・状態成果物](hageo-strict-unresolved34-artifacts-2026-08-24/)
 - [凍結 split 整合性監査](MORTRA-FROZEN-SPLIT-INTEGRITY-AUDIT-20260824.md)
 - [現行未解決問題 dossier](HAGEO-CURRENT-UNRESOLVED-DOSSIERS-20260824.md)
 - [公式構成 cohort 監査](MORTRA-OFFICIAL-CONSTRUCTION-COHORT-AUDIT-20260822.md)
