@@ -1,18 +1,23 @@
 from __future__ import annotations
 
 import unittest
+import time
 
 import numpy as np
 
 from worker.backend.native_formal_obligation_sheaf import (
+    CandidateTheoryAssignment,
     FormalLocalView,
     HeterogeneousSheafADMM,
     LocalCoordinate,
     SharedChannel,
+    build_mmt_candidate_local_view,
     build_candidate_local_view,
     build_pairwise_restriction_edges,
+    candidate_theory_assignment,
     capability_preserving_candidate_order,
     coordinate_candidate_scores,
+    coordinate_mmt_candidate_scores,
 )
 from worker.backend.typed_geometry_stalk import schema_quota_score_fill
 
@@ -105,6 +110,120 @@ class NativeFormalObligationSheafTests(unittest.TestCase):
         self.assertGreater(scores["good"], scores["relation-only"])
         self.assertGreater(scores["good"], scores["algebra-only"])
         self.assertGreater(len(result.edges), 0)
+
+    def test_mmt_view_transports_construction_meaning_between_native_languages(self) -> None:
+        assignments = {
+            "foot(e,a,b)": candidate_theory_assignment(
+                "foot(e,a,b)", family="foot", relations=("coll", "perp")
+            ),
+            "circle(o,a,b)": candidate_theory_assignment(
+                "circle(o,a,b)", family="circle", relations=("circle",)
+            ),
+        }
+        hageo = build_mmt_candidate_local_view(
+            agent_id="hageo",
+            formal_language="HAGeo numerical incidence",
+            scores={"foot(e,a,b)": 1.0, "circle(o,a,b)": 0.2},
+            assignments=assignments,
+            expose_morphisms=True,
+            expose_relations=True,
+        )
+        newclid = build_mmt_candidate_local_view(
+            agent_id="newclid",
+            formal_language="Newclid relation obligations",
+            scores={"foot(e,a,b)": 0.9},
+            assignments=assignments,
+            expose_relations=True,
+        )
+        scores, result = coordinate_mmt_candidate_scores(
+            (hageo, newclid), assignments, iterations=48
+        )
+        self.assertGreater(scores["foot(e,a,b)"], scores.get("circle(o,a,b)", 0.0))
+        self.assertTrue(any(channel.kind == "relation_symbol" for edge in result.edges for channel in edge.channels))
+
+    def test_mmt_view_does_not_promote_an_unshared_private_observation(self) -> None:
+        assignment = candidate_theory_assignment(
+            "circle(o,a,b)", family="circle", relations=("circle",)
+        )
+        assignments: dict[str, CandidateTheoryAssignment] = {
+            assignment.candidate_key: assignment
+        }
+        hageo = build_mmt_candidate_local_view(
+            agent_id="hageo",
+            formal_language="HAGeo numerical incidence",
+            scores={assignment.candidate_key: 1.0},
+            assignments=assignments,
+            expose_morphisms=True,
+            expose_relations=True,
+        )
+        scores, result = coordinate_mmt_candidate_scores((hageo,), assignments)
+        self.assertEqual(scores, {})
+        self.assertEqual(result.edges, ())
+
+    def test_sparse_mmt_coordination_scales_to_large_candidate_views(self) -> None:
+        assignments = {
+            f"candidate-{index}": candidate_theory_assignment(
+                f"candidate-{index}",
+                family=f"family-{index % 16}",
+                relations=(f"relation-{index % 8}",),
+            )
+            for index in range(2048)
+        }
+        views = tuple(
+            build_mmt_candidate_local_view(
+                agent_id=f"agent-{agent}",
+                formal_language=f"language-{agent}",
+                scores={
+                    key: float((index + agent) % 97) / 96.0
+                    for index, key in enumerate(assignments)
+                },
+                assignments=assignments,
+                expose_morphisms=True,
+                expose_relations=True,
+            )
+            for agent in range(5)
+        )
+        started = time.perf_counter()
+        scores, result = coordinate_mmt_candidate_scores(views, assignments)
+        elapsed = time.perf_counter() - started
+        self.assertEqual(len(scores), len(assignments))
+        self.assertEqual(len(result.edges), 10)
+        self.assertLess(elapsed, 5.0)
+
+    def test_sparse_mmt_coordination_matches_dense_selector_admm(self) -> None:
+        assignments = {
+            f"candidate-{index}": candidate_theory_assignment(
+                f"candidate-{index}",
+                family=f"family-{index % 3}",
+                relations=(f"relation-{index % 2}",),
+            )
+            for index in range(12)
+        }
+        views = tuple(
+            build_mmt_candidate_local_view(
+                agent_id=f"agent-{agent}",
+                formal_language=f"language-{agent}",
+                scores={
+                    key: float((index * 7 + agent) % 13) / 12.0
+                    for index, key in enumerate(assignments)
+                },
+                assignments=assignments,
+                expose_morphisms=True,
+                expose_relations=True,
+            )
+            for agent in range(3)
+        )
+        _scores, sparse = coordinate_mmt_candidate_scores(
+            views, assignments, rho=0.8, gamma=1.3, iterations=31
+        )
+        dense = HeterogeneousSheafADMM(
+            views, rho=0.8, gamma=1.3, iterations=31
+        ).solve()
+        sparse_shared = sparse.shared_scores(views)
+        dense_shared = dense.shared_scores(views)
+        self.assertEqual(sparse_shared.keys(), dense_shared.keys())
+        for key in sparse_shared:
+            self.assertAlmostEqual(sparse_shared[key], dense_shared[key], places=11)
 
     def test_duplicate_shared_coordinate_is_rejected(self) -> None:
         channel = SharedChannel("goal", "coll(p0,p1,p2)")

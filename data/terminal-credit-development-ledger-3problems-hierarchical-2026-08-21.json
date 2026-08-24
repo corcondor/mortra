@@ -1,0 +1,155 @@
+{
+  "experiment": "mortra_terminal_credit_development_ledger",
+  "protocol": {
+    "development_only": true,
+    "held_out_updates": false,
+    "uses_external_llm": false,
+    "uses_problem_id_in_signature": false,
+    "uses_expected_answer": false,
+    "truth_plane": "native_certificate_replay_only"
+  },
+  "sources": [
+    {
+      "artifact": "C:/Users/81808/.openclaw/workspace/mortra-1-release/data/terminal-credit-structural-ablation-credit-2011ctstp16-2026-08-21.json",
+      "sha256": "4083c38dd1c8ce2559e4f5f0437805ff3e19e3a933a570dfe83f331bc85e96bd",
+      "problem_name": "2011CTSTp16",
+      "native_solved": true,
+      "signature_count": 1,
+      "event_count": 2
+    },
+    {
+      "artifact": "C:/Users/81808/.openclaw/workspace/mortra-1-release/data/terminal-credit-structural-ablation-credit-2017g3-2026-08-21.json",
+      "sha256": "c0d43d87bc6a748f54c28b0f94d487b33cabcfd617cefbdc11afea4259ecdb85",
+      "problem_name": "2017G3",
+      "native_solved": true,
+      "signature_count": 2,
+      "event_count": 4
+    },
+    {
+      "artifact": "C:/Users/81808/.openclaw/workspace/mortra-1-release/data/terminal-credit-dev-current-2016cgmop7-2026-08-21.json",
+      "sha256": "82420f510e45f98ea43120f98cdaef0abb452f25e888487670a077cbfb95c0bc",
+      "problem_name": "2016CGMOp7",
+      "native_solved": true,
+      "signature_count": 9,
+      "event_count": 3
+    }
+  ],
+  "terminal_credit_ledger": {
+    "schema": "mortra-terminal-trajectory-credit-v2",
+    "truth_plane": "native_certificate_replay_only",
+    "forbidden_inputs": [
+      "problem_id",
+      "expected_answer",
+      "point_identity",
+      "numeric_coordinate",
+      "dataset_auxiliary_clause"
+    ],
+    "prior_weight": 2.0,
+    "signature_count": 17,
+    "event_count": 9,
+    "entries": [
+      {
+        "signature_key": "{\"family\":\"foot\",\"input_equalities\":[0,1,2],\"input_roles\":[\"given\",\"given\",\"given\"],\"resolution\":\"morphism_type\"}",
+        "credit_sum": 2.52200625,
+        "certificate_support": 3,
+        "score": 0.50440125
+      },
+      {
+        "signature_key": "{\"family\":\"foot\",\"input_equalities\":[0,1,2],\"input_roles\":[\"given\",\"given\",\"given\"],\"resolution\":\"target_context\",\"target_predicates\":[\"circle\",\"coll\",\"cong\",\"cyclic\",\"lequation\",\"midp\",\"para\"]}",
+        "credit_sum": 2.0,
+        "certificate_support": 2,
+        "score": 0.5
+      },
+      {
+        "signature_key": "{\"family\":\"foot\",\"input_equalities\":[0,1,2],\"input_roles\":[\"given\",\"given\",\"given\"],\"resolution\":\"target_context\",\"target_predicates\":[\"coll\"]}",
+        "credit_sum": 0.5220062499999999,
+        "certificate_support": 1,
+        "score": 0.1740020833333333
+      },
+      {
+        "signature_key": "{\"family\":\"foot\",\"input_equalities\":[0,1,2],\"input_roles\":[\"given\",\"given\",\"given\"],\"structural_shape\":[\"+1\",\"+1\",\"0\",\"-2\",\"-2\",\"-1\",\"+1\",\"-1\",\"+1\",\"0\",\"-2\",\"0\",\"0\",\"+2\",\"+2\",\"+1\",\"+2\"],\"target_predicates\":[\"coll\"]}",
+        "credit_sum": 0.5220062499999999,
+        "certificate_support": 1,
+        "score": 0.1740020833333333
+      },
+      {
+        "signature_key": "{\"family\":\"foot\",\"input_equalities\":[0,1,2],\"input_roles\":[\"given\",\"given\",\"given\"],\"structural_shape\":[\"+1\",\"+1\",\"0\",\"-2\",\"-2\",\"-1\",\"0\",\"-1\",\"0\",\"0\",\"-2\",\"-1\",\"-1\",\"0\",\"+1\",\"+1\",\"+2\"],\"target_predicates\":[\"circle\",\"coll\",\"cong\",\"cyclic\",\"lequation\",\"midp\",\"para\"]}",
+        "credit_sum": 2.0,
+        "certificate_support": 2,
+        "score": 0.5
+      },
+      {
+        "signature_key": "{\"family\":\"midpoint\",\"input_equalities\":[0,1],\"input_roles\":[\"given\",\"generated\"],\"resolution\":\"morphism_type\"}",
+        "credit_sum": 1.0,
+        "certificate_support": 1,
+        "score": 0.3333333333333333
+      },
+      {
+        "signature_key": "{\"family\":\"midpoint\",\"input_equalities\":[0,1],\"input_roles\":[\"given\",\"generated\"],\"resolution\":\"target_context\",\"target_predicates\":[\"coll\"]}",
+        "credit_sum": 1.0,
+        "certificate_support": 1,
+        "score": 0.3333333333333333
+      },
+      {
+        "signature_key": "{\"family\":\"midpoint\",\"input_equalities\":[0,1],\"input_roles\":[\"given\",\"generated\"],\"structural_shape\":[\"0\",\"0\",\"0\",\"-1\",\"-1\",\"-1\",\"0\",\"-0\",\"0\",\"0\",\"-1\",\"-1\",\"-1\",\"+2\",\"+1\",\"+1\",\"+1\"],\"target_predicates\":[\"coll\"]}",
+        "credit_sum": 1.0,
+        "certificate_support": 1,
+        "score": 0.3333333333333333
+      },
+      {
+        "signature_key": "{\"family\":\"mirror\",\"input_equalities\":[0,1],\"input_roles\":[\"given\",\"given\"],\"resolution\":\"morphism_type\"}",
+        "credit_sum": 1.7,
+        "certificate_support": 2,
+        "score": 0.425
+      },
+      {
+        "signature_key": "{\"family\":\"mirror\",\"input_equalities\":[0,1],\"input_roles\":[\"given\",\"given\"],\"resolution\":\"target_context\",\"target_predicates\":[\"circle\",\"coll\",\"cong\",\"cyclic\",\"lequation\",\"midp\",\"para\"]}",
+        "credit_sum": 1.7,
+        "certificate_support": 2,
+        "score": 0.425
+      },
+      {
+        "signature_key": "{\"family\":\"mirror\",\"input_equalities\":[0,1],\"input_roles\":[\"given\",\"given\"],\"structural_shape\":[\"+1\",\"0\",\"0\",\"-2\",\"-2\",\"-1\",\"0\",\"-1\",\"0\",\"0\",\"-1\",\"-1\",\"-1\",\"+1\",\"+1\",\"+1\",\"+1\"],\"target_predicates\":[\"circle\",\"coll\",\"cong\",\"cyclic\",\"lequation\",\"midp\",\"para\"]}",
+        "credit_sum": 1.7,
+        "certificate_support": 2,
+        "score": 0.425
+      },
+      {
+        "signature_key": "{\"family\":\"reflect\",\"input_equalities\":[0,1,2],\"input_roles\":[\"given\",\"given\",\"generated\"],\"resolution\":\"morphism_type\"}",
+        "credit_sum": 0.7224999999999999,
+        "certificate_support": 1,
+        "score": 0.24083333333333332
+      },
+      {
+        "signature_key": "{\"family\":\"reflect\",\"input_equalities\":[0,1,2],\"input_roles\":[\"given\",\"given\",\"generated\"],\"resolution\":\"target_context\",\"target_predicates\":[\"coll\"]}",
+        "credit_sum": 0.7224999999999999,
+        "certificate_support": 1,
+        "score": 0.24083333333333332
+      },
+      {
+        "signature_key": "{\"family\":\"reflect\",\"input_equalities\":[0,1,2],\"input_roles\":[\"given\",\"given\",\"generated\"],\"structural_shape\":[\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"-1\",\"0\",\"+1\",\"-1\",\"-1\",\"-1\",\"+2\",\"+2\",\"+1\",\"+2\"],\"target_predicates\":[\"coll\"]}",
+        "credit_sum": 0.7224999999999999,
+        "certificate_support": 1,
+        "score": 0.24083333333333332
+      },
+      {
+        "signature_key": "{\"family\":\"reflect\",\"input_equalities\":[0,1,2],\"input_roles\":[\"given\",\"given\",\"given\"],\"resolution\":\"morphism_type\"}",
+        "credit_sum": 2.0,
+        "certificate_support": 2,
+        "score": 0.5
+      },
+      {
+        "signature_key": "{\"family\":\"reflect\",\"input_equalities\":[0,1,2],\"input_roles\":[\"given\",\"given\",\"given\"],\"resolution\":\"target_context\",\"target_predicates\":[\"circle\"]}",
+        "credit_sum": 2.0,
+        "certificate_support": 2,
+        "score": 0.5
+      },
+      {
+        "signature_key": "{\"family\":\"reflect\",\"input_equalities\":[0,1,2],\"input_roles\":[\"given\",\"given\",\"given\"],\"structural_shape\":[\"+1\",\"+1\",\"0\",\"-2\",\"-2\",\"-1\",\"0\",\"-1\",\"0\",\"+1\",\"-2\",\"-1\",\"-2\",\"+1\",\"+1\",\"+1\",\"+2\"],\"target_predicates\":[\"circle\"]}",
+        "credit_sum": 2.0,
+        "certificate_support": 2,
+        "score": 0.5
+      }
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "experiment": "upstream_crasp_decider_reproduction",
+  "repository": "https://github.com/bveseli/state-tracking-crasp.git",
+  "commit": "903fba2f2a4d0ded811a6247155d38480ed4a381",
+  "uses_mortra_runtime": false,
+  "uses_external_llm": false,
+  "command": ".venv/Scripts/python.exe -B src/regex_generation/decider.py --regex '(cab+c)*' '(ab+ba)*' '(aabb)*'",
+  "environment_note": "The upstream requirements name automata==0.1.4 although the code imports the automata-lib namespace. The isolated reproduction used automata-lib 9.2.0 plus the other decider dependencies.",
+  "results": [
+    {
+      "regex": "(cab+c)*",
+      "R": false,
+      "C-RASP": false,
+      "R_infinity": false,
+      "R_G": false
+    },
+    {
+      "regex": "(ab+ba)*",
+      "R": false,
+      "C-RASP": true,
+      "R_infinity": true,
+      "R_G": true
+    },
+    {
+      "regex": "(aabb)*",
+      "R": false,
+      "C-RASP": true,
+      "R_infinity": true,
+      "R_G": true
+    }
+  ],
+  "interpretation": "This reproduces the upstream regular-language classifier only. It is not a MORTRA proof-search score."
+}

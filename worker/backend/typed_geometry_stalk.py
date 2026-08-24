@@ -102,6 +102,15 @@ EXTENDED_POINT_FAMILIES: tuple[ConstructionFamily, ...] = (
     ConstructionFamily("psquare", 2, "ordered", ("cong", "perp")),
     ConstructionFamily("nsquare", 2, "ordered", ("cong", "perp")),
     ConstructionFamily("between_bound", 2, "ordered", ("coll", "obtuse_angle")),
+    # General auxiliary constructions exposed by the Newclid/GenesisGeo
+    # formal language.  These extend the typed vocabulary, not a benchmark
+    # problem catalogue: candidates are still formed only from visible points.
+    ConstructionFamily("eqangle2", 3, "ordered", ("eqangle",)),
+    ConstructionFamily("lc_tangent", 2, "ordered", ("perp",)),
+    ConstructionFamily("on_aline", 5, "ordered", ("eqangle",)),
+    ConstructionFamily("eqangle3", 5, "ordered", ("eqangle",)),
+    ConstructionFamily("iso_triangle_vertex", 2, "all", ("cong",)),
+    ConstructionFamily("iso_triangle_vertex_angle", 2, "all", ("eqangle",)),
 )
 
 
@@ -293,6 +302,22 @@ def _family_inputs(
             yield (*left, *right)
         return
     raise ValueError(f"unknown construction symmetry: {family.symmetry}")
+
+
+def _bounded_family_points(
+    points: Sequence[str], family: ConstructionFamily, seed: int
+) -> tuple[str, ...]:
+    """Bound high-arity enumeration while rotating non-core typed points."""
+
+    ordered = tuple(points)
+    if family.input_arity < 5 or len(ordered) <= family.input_arity + 2:
+        return ordered
+    width = min(10, max(7, family.input_arity + 2))
+    core_size = min(len(ordered), family.input_arity + 1)
+    core = list(ordered[:core_size])
+    tail = list(ordered[core_size:])
+    random.Random(f"{seed}:{family.name}").shuffle(tail)
+    return tuple(core + tail[: max(0, width - len(core))])
 
 
 def equivalent_construction_inputs(
@@ -533,6 +558,67 @@ def schema_quota_score_fill(
     return selected
 
 
+def relevance_ordered_schema_quota_fill(
+    candidates: Sequence[T],
+    *,
+    category: Callable[[T], Hashable],
+    limit: int,
+    within_category_key: Callable[[T], object] | None = None,
+    quota_fraction: float = 1.0,
+) -> list[T]:
+    """Balance schemas without overriding the caller's relevance ordering.
+
+    ``candidates`` must already be sorted by the current proof obligation.
+    Deriving the schema order from that sequence prevents a static grammar
+    registration order from selecting irrelevant schemas under a small budget.
+    """
+
+    category_order = tuple(dict.fromkeys(category(item) for item in candidates))
+    return schema_quota_score_fill(
+        candidates,
+        category=category,
+        category_order=category_order,
+        limit=limit,
+        within_category_key=within_category_key,
+        quota_fraction=quota_fraction,
+    )
+
+
+def required_category_score_fill(
+    candidates: Sequence[T],
+    *,
+    memberships: Callable[[T], Iterable[Hashable]],
+    required_categories: Sequence[Hashable],
+    limit: int,
+) -> list[T]:
+    """Reserve the best ranked witness for each currently required category."""
+
+    if limit <= 0:
+        return []
+    ranked = list(candidates)
+    selected: list[T] = []
+    for required in dict.fromkeys(required_categories):
+        witness = next(
+            (
+                candidate
+                for candidate in ranked
+                if candidate not in selected
+                and required in set(memberships(candidate))
+            ),
+            None,
+        )
+        if witness is not None:
+            selected.append(witness)
+            if len(selected) == limit:
+                return selected
+    for candidate in ranked:
+        if candidate not in selected:
+            selected.append(candidate)
+            if len(selected) == limit:
+                break
+    return selected
+
+
 def numerical_precondition_holds(
     candidate: TypedConstructionCandidate,
     coordinates: Mapping[str, tuple[float, float]] | None,
@@ -607,6 +693,12 @@ def construction_semantic_weighted_edges(
         index_pairs = ((0, 2), (1, 2), (2, 3))
     elif name == "on_aline" and len(args) >= 6:
         index_pairs = ((0, 1), (1, 2), (3, 4), (4, 5))
+    elif name == "eqangle2" and len(args) >= 4:
+        index_pairs = ((0, 1), (0, 2), (0, 3), (1, 2), (2, 3))
+    elif name == "eqangle3" and len(args) >= 6:
+        index_pairs = ((0, 1), (0, 2), (3, 4), (3, 5))
+    elif name == "lc_tangent" and len(args) >= 3:
+        index_pairs = ((0, 1), (1, 2))
     elif name in {"on_pline", "on_tline"} and len(args) >= 4:
         index_pairs = ((0, 1), (2, 3))
     elif name == "intersection_ll" and len(args) >= 5:
@@ -692,6 +784,10 @@ def _construction_role_pairs(
 ) -> tuple[tuple[int, int], ...]:
     if family.name == "intersection_ll":
         return ((0, 1), (2, 3))
+    if family.name == "on_aline":
+        return ((0, 1), (2, 3), (3, 4))
+    if family.name == "eqangle3":
+        return ((0, 1), (2, 3), (2, 4))
     if family.name in {"foot", "reflect"}:
         return ((1, 2),)
     if family.symmetry == "line_relation":
@@ -803,6 +899,8 @@ def enumerate_typed_candidates(
     role_graph: Mapping[str, set[str]] | None = None,
     role_weights: Mapping[tuple[str, str], int] | None = None,
     required_input_points: set[str] | None = None,
+    max_input_tuples_per_family: int | None = None,
+    audit: dict[str, object] | None = None,
 ) -> list[TypedConstructionCandidate]:
     """Enumerate a balanced finite candidate set from typed structure only."""
 
@@ -832,13 +930,15 @@ def enumerate_typed_candidates(
     role_graph = role_graph or graph
     role_weights = role_weights or {}
     required_input_points = required_input_points or set()
+    if max_input_tuples_per_family is not None and max_input_tuples_per_family < 1:
+        raise ValueError("max_input_tuples_per_family must be positive")
     orbit = set(orbit_inputs)
     selected: list[TypedConstructionCandidate] = []
+    examined_input_tuples = 0
+    truncated_families: list[str] = []
     for family in families:
         family_candidates: list[TypedConstructionCandidate] = []
-        family_points = (
-            ordered_points[:10] if family.input_arity >= 5 else ordered_points
-        )
+        family_points = _bounded_family_points(ordered_points, family, seed)
         def ranked_candidate(inputs: tuple[str, ...]) -> TypedConstructionCandidate:
             pair_count = 0
             for left, right in combinations(inputs, 2):
@@ -922,7 +1022,16 @@ def enumerate_typed_candidates(
             )
             return TypedConstructionCandidate(family.name, inputs, rank)
 
+        family_input_tuples = 0
         for inputs in _family_inputs(family_points, family):
+            if (
+                max_input_tuples_per_family is not None
+                and family_input_tuples >= max_input_tuples_per_family
+            ):
+                truncated_families.append(family.name)
+                break
+            family_input_tuples += 1
+            examined_input_tuples += 1
             if not family.allow_repeated_inputs and len(set(inputs)) != len(inputs):
                 continue
             if required_input_points and not required_input_points.intersection(inputs):
@@ -969,8 +1078,20 @@ def enumerate_typed_candidates(
         )
     if ranking == "random":
         random.Random(f"{seed}|all-families").shuffle(selected)
-        return selected
-    return sorted(selected, key=lambda candidate: candidate.structural_rank)
+        result = selected
+    else:
+        result = sorted(selected, key=lambda candidate: candidate.structural_rank)
+    if audit is not None:
+        audit.update(
+            {
+                "examined_input_tuples": examined_input_tuples,
+                "max_input_tuples_per_family": max_input_tuples_per_family,
+                "truncated_family_count": len(truncated_families),
+                "truncated_families": truncated_families,
+                "selected_candidate_count": len(result),
+            }
+        )
+    return result
 
 
 def family_by_name(name: str) -> ConstructionFamily:

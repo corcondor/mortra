@@ -13,8 +13,50 @@ systems.  It contains no language model and no answer oracle.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import lru_cache
 from itertools import permutations
+import time
 from typing import Iterable, Iterator, Mapping
+
+
+_EQANGLE_GENERATORS: tuple[tuple[int, ...], ...] = (
+    (1, 0, 2, 3, 4, 5, 6, 7),
+    (0, 1, 3, 2, 4, 5, 6, 7),
+    (0, 1, 2, 3, 5, 4, 6, 7),
+    (0, 1, 2, 3, 4, 5, 7, 6),
+    (2, 3, 0, 1, 6, 7, 4, 5),
+    (4, 5, 6, 7, 0, 1, 2, 3),
+    (0, 1, 4, 5, 2, 3, 6, 7),
+    (6, 7, 2, 3, 4, 5, 0, 1),
+)
+
+
+def _permutation_group(
+    generators: tuple[tuple[int, ...], ...],
+) -> tuple[tuple[int, ...], ...]:
+    identity = tuple(range(len(generators[0])))
+    group = {identity}
+    frontier = [identity]
+    while frontier:
+        current = frontier.pop()
+        for generator in generators:
+            composed = tuple(current[generator[index]] for index in identity)
+            if composed not in group:
+                group.add(composed)
+                frontier.append(composed)
+    return tuple(sorted(group))
+
+
+_EQANGLE_GROUP = _permutation_group(_EQANGLE_GENERATORS)
+
+
+@lru_cache(maxsize=65536)
+def _eqangle_argument_orbit(args: tuple[str, ...]) -> tuple[tuple[str, ...], ...]:
+    if len(args) != 8:
+        return (args,)
+    return tuple(
+        sorted({tuple(args[permutation[index]] for index in range(8)) for permutation in _EQANGLE_GROUP})
+    )
 
 
 @dataclass(frozen=True, order=True)
@@ -22,16 +64,19 @@ class Atom:
     predicate: str
     arguments: tuple[str, ...]
 
+    @lru_cache(maxsize=65536)
     def canonical(self) -> "Atom":
         name = self.predicate.lower()
         args = self.arguments
-        if name in {"para", "perp", "cong"} and len(args) == 4:
+        if name in {"para", "perp", "cong", "npara", "nperp"} and len(args) == 4:
             left = tuple(sorted(args[:2]))
             right = tuple(sorted(args[2:]))
             first, second = sorted((left, right))
             args = (*first, *second)
-        elif name in {"coll", "cyclic"}:
+        elif name in {"coll", "cyclic", "ncoll", "diff"}:
             args = tuple(sorted(args))
+        elif name in {"eqangle", "eqratio"} and len(args) == 8:
+            args = min(_eqangle_argument_orbit(args))
         return Atom(name, tuple(args))
 
 
@@ -113,6 +158,7 @@ def _render_atom(atom: Atom) -> str:
     return f"{atom.predicate}({','.join(atom.arguments)})"
 
 
+@lru_cache(maxsize=65536)
 def _argument_orbit(atom: Atom) -> tuple[tuple[str, ...], ...]:
     """Return the finite symmetry orbit of a relation's arguments.
 
@@ -123,7 +169,7 @@ def _argument_orbit(atom: Atom) -> tuple[tuple[str, ...], ...]:
     """
     name = atom.predicate.lower()
     args = atom.arguments
-    if name in {"para", "perp", "cong"} and len(args) == 4:
+    if name in {"para", "perp", "cong", "npara", "nperp", "eqpoint"} and len(args) == 4:
         first = (args[0], args[1])
         second = (args[2], args[3])
         variants = {
@@ -133,8 +179,10 @@ def _argument_orbit(atom: Atom) -> tuple[tuple[str, ...], ...]:
             for right in (right, right[::-1])
         }
         return tuple(sorted(variants))
-    if name in {"coll", "cyclic"}:
+    if name in {"coll", "cyclic", "ncoll"}:
         return tuple(sorted(set(permutations(args))))
+    if name in {"eqangle", "eqratio"}:
+        return _eqangle_argument_orbit(args)
     return (args,)
 
 
@@ -232,6 +280,7 @@ def synthesize_backward_obligations(
     max_open_premises: int = 4,
     max_states_per_rule: int = 256,
     max_results: int = 64,
+    deadline: float | None = None,
 ) -> tuple[BackwardObligation, ...]:
     """Instantiate missing theorem premises from a fixed typed rule bank.
 
@@ -255,17 +304,33 @@ def synthesize_backward_obligations(
     results: dict[
         tuple[str, tuple[Atom, ...], tuple[tuple[str, str], ...]], BackwardObligation
     ] = {}
+    def current_results() -> tuple[BackwardObligation, ...]:
+        return tuple(sorted(results.values(), key=_obligation_rank)[:max_results])
+
+    def expired() -> bool:
+        return deadline is not None and time.perf_counter() >= deadline
+
     for theorem in theorems:
+        if expired():
+            return current_results()
         for initial in _unify_all(theorem.conclusion, wanted):
+            if expired():
+                return current_results()
             states: list[tuple[Substitution, tuple[Atom, ...], tuple[Atom, ...]]] = [
                 (initial, (), ())
             ]
             for premise in theorem.premises:
+                if expired():
+                    return current_results()
                 next_states: list[
                     tuple[Substitution, tuple[Atom, ...], tuple[Atom, ...]]
                 ] = []
                 for substitution, matched, opened in states:
+                    if expired():
+                        return current_results()
                     for fact in by_predicate.get(premise.predicate.lower(), ()):
+                        if expired():
+                            return current_results()
                         for merged in _unify_all(premise, fact, substitution):
                             next_states.append((merged, (*matched, fact), opened))
                     if len(opened) < max_open_premises:
@@ -322,7 +387,114 @@ def synthesize_backward_obligations(
                 previous = results.get(key)
                 if previous is None or _obligation_rank(item) < _obligation_rank(previous):
                     results[key] = item
-    return tuple(sorted(results.values(), key=_obligation_rank)[:max_results])
+    return current_results()
+
+
+def stratify_backward_obligations(
+    obligations: Iterable[BackwardObligation],
+    *,
+    limit: int,
+    witness_fraction: float = 0.25,
+) -> tuple[BackwardObligation, ...]:
+    """Preserve existential proof branches under a fixed finite budget.
+
+    Ground branches and branches with typed witness holes are alternative OR
+    paths.  A global rank by fewest unbound variables can otherwise erase all
+    constructive paths before an auxiliary-point search sees them.  This
+    scheduler reserves a bounded fraction for witness-bearing alternatives;
+    it neither asserts that a witness exists nor changes the truth plane.
+    """
+
+    if limit < 1:
+        raise ValueError("limit must be positive")
+    if not 0.0 <= witness_fraction <= 1.0:
+        raise ValueError("witness_fraction must be in [0, 1]")
+    ranked = tuple(sorted(obligations, key=_obligation_rank))
+    ground = [item for item in ranked if not item.unbound_variables]
+    witness = [item for item in ranked if item.unbound_variables]
+    witness_budget = (
+        min(len(witness), max(1, round(limit * witness_fraction)))
+        if witness and witness_fraction > 0.0
+        else 0
+    )
+    ground_budget = min(len(ground), limit - witness_budget)
+    spare = limit - ground_budget - witness_budget
+    if spare > 0:
+        extra_ground = min(spare, len(ground) - ground_budget)
+        ground_budget += extra_ground
+        spare -= extra_ground
+    if spare > 0:
+        witness_budget += min(spare, len(witness) - witness_budget)
+
+    selected_ground = ground[:ground_budget]
+    selected_witness = witness[:witness_budget]
+    result: list[BackwardObligation] = []
+    ground_index = 0
+    witness_index = 0
+    # At 25%, place one witness branch after every three ground branches so
+    # a later atom-level cap cannot erase all constructive alternatives.
+    stride = max(
+        1,
+        round((1.0 - witness_fraction) / max(witness_fraction, 1e-9)),
+    )
+    while ground_index < len(selected_ground) or witness_index < len(selected_witness):
+        for _ in range(stride):
+            if ground_index >= len(selected_ground):
+                break
+            result.append(selected_ground[ground_index])
+            ground_index += 1
+        if witness_index < len(selected_witness):
+            result.append(selected_witness[witness_index])
+            witness_index += 1
+    return tuple(result[:limit])
+
+
+def matched_theorem_support_facts(
+    facts: Iterable[Atom],
+    goals: Iterable[Atom],
+    theorems: Iterable[Theorem],
+    *,
+    max_matches: int = 256,
+) -> tuple[Atom, ...]:
+    """Return ground premises of complete theorem matches feeding the goals.
+
+    ``synthesize_backward_obligations`` intentionally omits a theorem instance
+    once all of its premises are already known.  Fact-basis compression still
+    needs those premises, otherwise a large native closure can discard the
+    very support that closes the goal.  This helper exposes only matched input
+    facts; it does not certify or add any conclusion.
+    """
+
+    known = {item.canonical() for item in facts}
+    fact_index = _predicate_fact_index(known)
+    support: set[Atom] = set()
+    matches = 0
+    for goal in goals:
+        wanted = goal.canonical()
+        for theorem in theorems:
+            for initial in _unify_all(theorem.conclusion, wanted):
+                for _, matched in _premise_matches(
+                    theorem.premises,
+                    known,
+                    substitution=initial,
+                    fact_index=fact_index,
+                ):
+                    support.update(item.canonical() for item in matched)
+                    matches += 1
+                    if matches >= max_matches:
+                        return tuple(sorted(support, key=_render_atom))
+    return tuple(sorted(support, key=_render_atom))
+
+
+def _predicate_fact_index(facts: Iterable[Atom]) -> dict[str, tuple[Atom, ...]]:
+    grouped: dict[str, list[Atom]] = {}
+    for fact in facts:
+        canonical = fact.canonical()
+        grouped.setdefault(canonical.predicate, []).append(canonical)
+    return {
+        predicate: tuple(sorted(items, key=_render_atom))
+        for predicate, items in grouped.items()
+    }
 
 
 def _premise_matches(
@@ -330,25 +502,58 @@ def _premise_matches(
     facts: set[Atom],
     index: int = 0,
     substitution: Substitution | None = None,
+    fact_index: Mapping[str, tuple[Atom, ...]] | None = None,
+    candidate_budget: list[int] | None = None,
+    deadline: float | None = None,
 ) -> Iterator[tuple[Substitution, tuple[Atom, ...]]]:
+    if deadline is not None and time.perf_counter() >= deadline:
+        return
+    if fact_index is None:
+        fact_index = _predicate_fact_index(facts)
     if index == len(premises):
         yield dict(substitution or {}), ()
         return
     pattern = premises[index]
-    for fact in facts:
+    for fact in fact_index.get(pattern.canonical().predicate, ()):
+        if deadline is not None and time.perf_counter() >= deadline:
+            return
+        if candidate_budget is not None:
+            if candidate_budget[0] <= 0:
+                return
+            candidate_budget[0] -= 1
         for merged in _unify_all(pattern, fact, substitution):
-            for final, tail in _premise_matches(premises, facts, index + 1, merged):
+            for final, tail in _premise_matches(
+                premises,
+                facts,
+                index + 1,
+                merged,
+                fact_index,
+                candidate_budget,
+                deadline,
+            ):
                 yield final, (fact,) + tail
 
 
-def _backward_relevant(goal: Atom, theorems: tuple[Theorem, ...], max_depth: int) -> set[str]:
+def _backward_relevant(
+    goal: Atom,
+    theorems: tuple[Theorem, ...],
+    max_depth: int,
+    *,
+    deadline: float | None = None,
+) -> set[str]:
     relevant: set[str] = set()
     frontier = {goal.canonical()}
     seen = set(frontier)
     for _ in range(max_depth):
+        if deadline is not None and time.perf_counter() >= deadline:
+            break
         next_frontier: set[Atom] = set()
         for wanted in frontier:
+            if deadline is not None and time.perf_counter() >= deadline:
+                break
             for theorem in theorems:
+                if deadline is not None and time.perf_counter() >= deadline:
+                    break
                 substitution = _unify(theorem.conclusion, wanted)
                 if substitution is None:
                     continue
@@ -387,6 +592,7 @@ class BidirectionalHypergraphProver:
         goal: Atom,
         *,
         max_rounds: int = 12,
+        deadline: float | None = None,
     ) -> HypergraphProof | None:
         goal = goal.canonical()
         known = {fact.canonical() for fact in facts}
@@ -396,14 +602,33 @@ class BidirectionalHypergraphProver:
         if goal in known:
             return HypergraphProof(goal, (proof[goal],), 0, 0, ())
 
-        relevant_names = _backward_relevant(goal, self.theorems, max_rounds)
+        if deadline is not None and time.perf_counter() >= deadline:
+            return None
+        relevant_names = _backward_relevant(
+            goal,
+            self.theorems,
+            max_rounds,
+            deadline=deadline,
+        )
         rules = tuple(rule for rule in self.theorems if rule.name in relevant_names)
         explored = 0
         for round_index in range(1, max_rounds + 1):
+            if deadline is not None and time.perf_counter() >= deadline:
+                return None
             candidates: list[tuple[tuple[int, int, int, str], Atom, Theorem, tuple[Atom, ...]]] = []
             existing_entities = {arg for atom in known for arg in atom.arguments}
+            fact_index = _predicate_fact_index(known)
             for theorem in rules:
-                for substitution, matched in _premise_matches(theorem.premises, known):
+                if deadline is not None and time.perf_counter() >= deadline:
+                    return None
+                for substitution, matched in _premise_matches(
+                    theorem.premises,
+                    known,
+                    fact_index=fact_index,
+                    deadline=deadline,
+                ):
+                    if deadline is not None and time.perf_counter() >= deadline:
+                        return None
                     explored += 1
                     conclusion = _instantiate(theorem.conclusion, substitution)
                     if conclusion is None or conclusion in known:
@@ -452,6 +677,24 @@ def euclidean_relation_theorems() -> tuple[Theorem, ...]:
     atom = lambda name, *args: Atom(name, tuple(args))
     return (
         Theorem(
+            "circle-definition-congruence-view",
+            (
+                atom("cong", "?O", "?A", "?O", "?B"),
+                atom("cong", "?O", "?B", "?O", "?C"),
+            ),
+            atom("circle", "?O", "?A", "?B", "?C"),
+        ),
+        Theorem(
+            "circle-radius-congruence-ab",
+            (atom("circle", "?O", "?A", "?B", "?C"),),
+            atom("cong", "?O", "?A", "?O", "?B"),
+        ),
+        Theorem(
+            "circle-radius-congruence-bc",
+            (atom("circle", "?O", "?A", "?B", "?C"),),
+            atom("cong", "?O", "?B", "?O", "?C"),
+        ),
+        Theorem(
             "parallel-transitivity",
             (atom("para", "?A", "?B", "?C", "?D"), atom("para", "?C", "?D", "?E", "?F")),
             atom("para", "?A", "?B", "?E", "?F"),
@@ -473,8 +716,19 @@ def euclidean_relation_theorems() -> tuple[Theorem, ...]:
         ),
         Theorem(
             "equal-angle-transitivity",
-            (atom("eqangle", "?A", "?B", "?C", "?D", "?E", "?F"), atom("eqangle", "?D", "?E", "?F", "?G", "?H", "?I")),
-            atom("eqangle", "?A", "?B", "?C", "?G", "?H", "?I"),
+            (
+                atom("eqangle", "?A", "?B", "?C", "?D", "?E", "?F", "?G", "?H"),
+                atom("eqangle", "?E", "?F", "?G", "?H", "?I", "?J", "?K", "?L"),
+            ),
+            atom("eqangle", "?A", "?B", "?C", "?D", "?I", "?J", "?K", "?L"),
+        ),
+        Theorem(
+            "equal-ratio-transitivity",
+            (
+                atom("eqratio", "?A", "?B", "?C", "?D", "?E", "?F", "?G", "?H"),
+                atom("eqratio", "?E", "?F", "?G", "?H", "?I", "?J", "?K", "?L"),
+            ),
+            atom("eqratio", "?A", "?B", "?C", "?D", "?I", "?J", "?K", "?L"),
         ),
     )
 

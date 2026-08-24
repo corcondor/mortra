@@ -1,0 +1,729 @@
+{
+  "experiment": "hageo_independent_pass_at_k_process_sharded_no_llm",
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_dataset_auxiliary_clauses": false,
+    "uses_problem_id_in_search": false,
+    "uses_expected_answer": false,
+    "rounds_n": 1,
+    "attempts_k": 1,
+    "process_shards": 1,
+    "seed": 19,
+    "candidate_policy": "mmt-hageo",
+    "rank_temperature": 2.0,
+    "incremental_prefix": false,
+    "feedback_candidates": 4,
+    "feedback_workers": 4,
+    "incidence_workers": 1,
+    "incidence_preselect_limit": 32,
+    "trajectory_policy": "hageo_incidence_gate_then_mmt_theory_view_ranking",
+    "truth_plane": "yuclid_native_certificate_replay_only"
+  },
+  "problem_name": "2020IranGOAp2",
+  "solved": false,
+  "pass_at_k": false,
+  "completed_attempts": 1,
+  "unique_paths": 1,
+  "right_censored_shards": 0,
+  "execution_error_shards": 0,
+  "reused_shards": 0,
+  "elapsed_seconds": 66.86186480000106,
+  "shards": [
+    {
+      "shard": 0,
+      "status": "completed",
+      "count": 1,
+      "seed": 19,
+      "attempt_offset": 0,
+      "solved": false,
+      "unique_paths": 1,
+      "completed_attempts": 1,
+      "attempt_results": [
+        {
+          "attempt": 0,
+          "status": "unsolved",
+          "solved": false,
+          "rounds_completed": 1,
+          "path": [
+            "reflect(t,p,a)->d"
+          ],
+          "rounds": [
+            {
+              "round": 1,
+              "candidate_extension_seconds": 20.89121769999838,
+              "enumerated": 304,
+              "incidence_checked": 18,
+              "heuristic_candidates": 0,
+              "eligible_pool": 9,
+              "ranked_candidates": [
+                "reflect(t,p,a)->d",
+                "eq_triangle(p,a)->d",
+                "shift(a,m,p)->d",
+                "mirror(a,p)->d",
+                "nsquare(a,p)->d",
+                "circle(i,b,c)->d",
+                "on_bline(p,a)->d",
+                "psquare(a,p)->d",
+                "eqdistance(a,m,p)->d"
+              ],
+              "chosen": "reflect(t,p,a)->d",
+              "relation_demands_in": [
+                "cyclic(p,q,r,t)",
+                "cong(o1,q,o1,t)",
+                "cong(o1,r,o1,t)"
+              ],
+              "relation_demands_observed": [
+                "cyclic(p,q,r,t)",
+                "cong(o1,q,o1,t)",
+                "cong(o1,r,o1,t)"
+              ],
+              "relation_demands_next": [
+                "cyclic(p,q,r,t)",
+                "cong(o1,q,o1,t)",
+                "cong(o1,r,o1,t)"
+              ],
+              "residual_feedback_applied": false,
+              "native_feedback": [
+                {
+                  "candidate": "reflect(t,p,a)->d",
+                  "static_rank": 0,
+                  "solved": false,
+                  "proof_residual": {
+                    "open_relation_demands": 3,
+                    "backward_obligations": 24,
+                    "ar_supported_goals": 1,
+                    "ar_closed_goals": 0,
+                    "ar_residual_support": 2,
+                    "ar_residual_l1": 2.0,
+                    "ar_known_rank": 52,
+                    "parent_relation_demands": 3,
+                    "retained_parent_demands": 3,
+                    "closed_parent_demands": 0,
+                    "introduced_relation_demands": 0,
+                    "mmt_solved": false,
+                    "mmt_replayed": false,
+                    "mmt_derived_facts": 44,
+                    "mmt_carried_proof_facts": 267,
+                    "mmt_open_relation_demands": 3,
+                    "mmt_residual_applied": false,
+                    "mmt_certificate_exchange": {
+                      "input_fact_count": 2595,
+                      "selected_fact_count": 192,
+                      "selection_strategy": "goal-conditioned-proof-basis",
+                      "accepted_fact_count": 246,
+                      "proof_state_fact_count": 2639,
+                      "derived_fact_count": 44,
+                      "certificate_count": 54,
+                      "certificate_sha256": "aab4f3ac3551cde20b6d64641bfe743dbfe9cf00119689c82948f561a876d556",
+                      "solved": false,
+                      "replayed": false,
+                      "initial_open_demand_count": 3,
+                      "open_demand_count": 3,
+                      "closed_demand_count": 0,
+                      "introduced_demand_count": 0,
+                      "made_goal_progress": false,
+                      "goals": [
+                        {
+                          "goal": "cong(o1,p,o1,t)",
+                          "solved": false,
+                          "replayed": false,
+                          "rounds": 4,
+                          "proposed": 54,
+                          "accepted": 54,
+                          "rejected": 0
+                        }
+                      ]
+                    }
+                  },
+                  "error": null,
+                  "selected": true
+                },
+                {
+                  "candidate": "eq_triangle(p,a)->d",
+                  "static_rank": 1,
+                  "solved": false,
+                  "proof_residual": {
+                    "open_relation_demands": 3,
+                    "backward_obligations": 24,
+                    "ar_supported_goals": 1,
+                    "ar_closed_goals": 0,
+                    "ar_residual_support": 2,
+                    "ar_residual_l1": 2.0,
+                    "ar_known_rank": 50,
+                    "parent_relation_demands": 3,
+                    "retained_parent_demands": 3,
+                    "closed_parent_demands": 0,
+                    "introduced_relation_demands": 0
+                  },
+                  "error": null,
+                  "selected": false
+                },
+                {
+                  "candidate": "shift(a,m,p)->d",
+                  "static_rank": 2,
+                  "solved": false,
+                  "proof_residual": {
+                    "open_relation_demands": 3,
+                    "backward_obligations": 24,
+                    "ar_supported_goals": 1,
+                    "ar_closed_goals": 0,
+                    "ar_residual_support": 2,
+                    "ar_residual_l1": 2.0,
+                    "ar_known_rank": 50,
+                    "parent_relation_demands": 3,
+                    "retained_parent_demands": 3,
+                    "closed_parent_demands": 0,
+                    "introduced_relation_demands": 0
+                  },
+                  "error": null,
+                  "selected": false
+                },
+                {
+                  "candidate": "mirror(a,p)->d",
+                  "static_rank": 3,
+                  "solved": false,
+                  "proof_residual": {
+                    "open_relation_demands": 3,
+                    "backward_obligations": 24,
+                    "ar_supported_goals": 1,
+                    "ar_closed_goals": 0,
+                    "ar_residual_support": 2,
+                    "ar_residual_l1": 2.0,
+                    "ar_known_rank": 50,
+                    "parent_relation_demands": 3,
+                    "retained_parent_demands": 3,
+                    "closed_parent_demands": 0,
+                    "introduced_relation_demands": 0
+                  },
+                  "error": null,
+                  "selected": false
+                }
+              ],
+              "coordination": {
+                "agents": 6,
+                "consensus_agents": 5,
+                "restriction_edges": 10,
+                "shared_candidates": 32,
+                "primal_residual": 5.551115123125783e-17,
+                "dual_residual": 0.0,
+                "sheaf_residual": 0.12061271698035077,
+                "exchange_layer": "openmath_terms_over_mmt_theory_views",
+                "shared_channel_kinds": [
+                  "construction_candidate",
+                  "relation_symbol",
+                  "theory_morphism"
+                ],
+                "local_top_candidates": [
+                  {
+                    "agent_id": "typed_incidence_proposal",
+                    "candidates": [
+                      "reflect(t,p,a)",
+                      "eq_triangle(p,a)",
+                      "parallelogram(a,m,p)",
+                      "shift(a,m,p)",
+                      "mirror(a,p)",
+                      "nsquare(a,p)",
+                      "on_bline(p,a)",
+                      "psquare(a,p)",
+                      "circumcenter(p,a,m)",
+                      "intersection_cc(a,m,p)",
+                      "intersection_lc(a,m,p)",
+                      "eqdistance(a,m,p)"
+                    ]
+                  },
+                  {
+                    "agent_id": "newclid_bidirectional_proof_dag",
+                    "candidates": [
+                      "eq_triangle(p,a)",
+                      "reflect(t,p,a)",
+                      "on_circum(p,a,m)",
+                      "parallelogram(a,m,p)"
+                    ]
+                  },
+                  {
+                    "agent_id": "tong_action",
+                    "candidates": [
+                      "on_circum(p,a,m)",
+                      "circumcenter(p,a,m)",
+                      "eqdistance(a,m,p)",
+                      "intersection_cc(a,m,p)",
+                      "intersection_lc(a,m,p)",
+                      "parallelogram(a,m,p)",
+                      "shift(a,m,p)",
+                      "angle_bisector(a,m,p)",
+                      "angle_mirror(a,m,p)",
+                      "excenter(a,m,p)",
+                      "incenter(p,a,m)",
+                      "circle(i,b,c)"
+                    ]
+                  },
+                  {
+                    "agent_id": "newclid_relation",
+                    "candidates": [
+                      "reflect(t,p,a)",
+                      "eq_triangle(p,a)",
+                      "parallelogram(a,m,p)",
+                      "circumcenter(p,a,m)",
+                      "intersection_cc(a,m,p)",
+                      "intersection_lc(a,m,p)",
+                      "mirror(a,p)",
+                      "nsquare(a,p)",
+                      "on_bline(p,a)",
+                      "psquare(a,p)",
+                      "shift(a,m,p)",
+                      "eqdistance(a,m,p)"
+                    ]
+                  },
+                  {
+                    "agent_id": "gclc_wu",
+                    "candidates": [
+                      "circumcenter(p,a,m)",
+                      "eqdistance(a,m,p)",
+                      "foot(t,p,a)",
+                      "intersection_cc(a,m,p)",
+                      "intersection_lc(a,m,p)",
+                      "intersection_ll(o1,p,a,i)",
+                      "intersection_lp(p,a,t,p,a)",
+                      "intersection_lt(p,a,t,p,a)",
+                      "intersection_pp(o1,p,a,t,p,a)",
+                      "intersection_tt(o1,p,a,t,p,a)",
+                      "mirror(a,p)",
+                      "nsquare(a,p)"
+                    ]
+                  },
+                  {
+                    "agent_id": "hageo_incidence",
+                    "candidates": [
+                      "circle(i,b,c)",
+                      "angle_mirror(a,m,p)",
+                      "between_bound(a,p)",
+                      "shift(a,m,p)",
+                      "eq_triangle(p,a)",
+                      "eqdistance(a,m,p)",
+                      "intersection_ll(o1,p,a,i)",
+                      "mirror(a,p)",
+                      "nsquare(a,p)",
+                      "on_bline(p,a)",
+                      "on_circle(a,p)",
+                      "on_dia(p,a)"
+                    ]
+                  }
+                ],
+                "proof_dag_specialist": {
+                  "candidate_count": 4,
+                  "reserved_consensus": 4,
+                  "reserved_typed_incidence": [
+                    "reflect(t,p,a)",
+                    "eq_triangle(p,a)",
+                    "parallelogram(a,m,p)",
+                    "shift(a,m,p)",
+                    "mirror(a,p)",
+                    "nsquare(a,p)",
+                    "on_bline(p,a)",
+                    "psquare(a,p)"
+                  ],
+                  "family_frontier": [
+                    "eq_triangle(p,a)",
+                    "reflect(t,p,a)",
+                    "on_circum(p,a,m)",
+                    "parallelogram(a,m,p)"
+                  ],
+                  "queue": {
+                    "task_count": 7,
+                    "backward_task_count": 3,
+                    "forward_task_count": 4,
+                    "backward_search_states": 158,
+                    "forward_search_states": 226,
+                    "max_backward_depth_reached": 1,
+                    "max_forward_depth_reached": 1,
+                    "queue_peak": 7,
+                    "truncated": false,
+                    "task_trace": [
+                      "backward:0:d1",
+                      "backward:1:d1",
+                      "backward:2:d1",
+                      "forward:eq_triangle(p,a):d1",
+                      "forward:on_circum(p,a,m):d1",
+                      "forward:parallelogram(a,m,p):d1",
+                      "forward:reflect(t,p,a):d1"
+                    ]
+                  }
+                },
+                "timing_seconds": {
+                  "proof_dag": 19.79033789999812,
+                  "coordination": 0.0048243999990518205
+                },
+                "incidence_seconds": 0.06256099999882281
+              }
+            }
+          ],
+          "verification_calls": 4,
+          "all_deduction_count": 2623,
+          "goal_deduction_count": 0,
+          "input_sha256": "7558673d8538da0bbff9980f18d2163b673139d261df22a9e8c31c66d2222df2",
+          "proof_sha256": "a962a829560a8d6bf763c5f88d16cc148656b60f9def0c37e46901468b53ff73",
+          "proof_residual": {
+            "open_relation_demands": 3,
+            "backward_obligations": 24,
+            "ar_supported_goals": 1,
+            "ar_closed_goals": 0,
+            "ar_residual_support": 2,
+            "ar_residual_l1": 2.0,
+            "ar_known_rank": 52,
+            "parent_relation_demands": 0,
+            "retained_parent_demands": 0,
+            "closed_parent_demands": 0,
+            "introduced_relation_demands": 3
+          },
+          "elapsed_seconds": 32.368731999999
+        }
+      ],
+      "certificate": null,
+      "artifact": "data/demand-predicate-coverage-v7-2020irangoap2-n1-k1-f4-runs-2026-08-21/shard-00.json",
+      "artifact_sha256": "567e53b84ac412593e87659eac9d48bffcc4312bfd4b71aff3108f672cee6e45",
+      "elapsed_seconds": 66.86068910000176
+    }
+  ],
+  "attempt_results": [
+    {
+      "attempt": 0,
+      "status": "unsolved",
+      "solved": false,
+      "rounds_completed": 1,
+      "path": [
+        "reflect(t,p,a)->d"
+      ],
+      "rounds": [
+        {
+          "round": 1,
+          "candidate_extension_seconds": 20.89121769999838,
+          "enumerated": 304,
+          "incidence_checked": 18,
+          "heuristic_candidates": 0,
+          "eligible_pool": 9,
+          "ranked_candidates": [
+            "reflect(t,p,a)->d",
+            "eq_triangle(p,a)->d",
+            "shift(a,m,p)->d",
+            "mirror(a,p)->d",
+            "nsquare(a,p)->d",
+            "circle(i,b,c)->d",
+            "on_bline(p,a)->d",
+            "psquare(a,p)->d",
+            "eqdistance(a,m,p)->d"
+          ],
+          "chosen": "reflect(t,p,a)->d",
+          "relation_demands_in": [
+            "cyclic(p,q,r,t)",
+            "cong(o1,q,o1,t)",
+            "cong(o1,r,o1,t)"
+          ],
+          "relation_demands_observed": [
+            "cyclic(p,q,r,t)",
+            "cong(o1,q,o1,t)",
+            "cong(o1,r,o1,t)"
+          ],
+          "relation_demands_next": [
+            "cyclic(p,q,r,t)",
+            "cong(o1,q,o1,t)",
+            "cong(o1,r,o1,t)"
+          ],
+          "residual_feedback_applied": false,
+          "native_feedback": [
+            {
+              "candidate": "reflect(t,p,a)->d",
+              "static_rank": 0,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 3,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 52,
+                "parent_relation_demands": 3,
+                "retained_parent_demands": 3,
+                "closed_parent_demands": 0,
+                "introduced_relation_demands": 0,
+                "mmt_solved": false,
+                "mmt_replayed": false,
+                "mmt_derived_facts": 44,
+                "mmt_carried_proof_facts": 267,
+                "mmt_open_relation_demands": 3,
+                "mmt_residual_applied": false,
+                "mmt_certificate_exchange": {
+                  "input_fact_count": 2595,
+                  "selected_fact_count": 192,
+                  "selection_strategy": "goal-conditioned-proof-basis",
+                  "accepted_fact_count": 246,
+                  "proof_state_fact_count": 2639,
+                  "derived_fact_count": 44,
+                  "certificate_count": 54,
+                  "certificate_sha256": "aab4f3ac3551cde20b6d64641bfe743dbfe9cf00119689c82948f561a876d556",
+                  "solved": false,
+                  "replayed": false,
+                  "initial_open_demand_count": 3,
+                  "open_demand_count": 3,
+                  "closed_demand_count": 0,
+                  "introduced_demand_count": 0,
+                  "made_goal_progress": false,
+                  "goals": [
+                    {
+                      "goal": "cong(o1,p,o1,t)",
+                      "solved": false,
+                      "replayed": false,
+                      "rounds": 4,
+                      "proposed": 54,
+                      "accepted": 54,
+                      "rejected": 0
+                    }
+                  ]
+                }
+              },
+              "error": null,
+              "selected": true
+            },
+            {
+              "candidate": "eq_triangle(p,a)->d",
+              "static_rank": 1,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 3,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 50,
+                "parent_relation_demands": 3,
+                "retained_parent_demands": 3,
+                "closed_parent_demands": 0,
+                "introduced_relation_demands": 0
+              },
+              "error": null,
+              "selected": false
+            },
+            {
+              "candidate": "shift(a,m,p)->d",
+              "static_rank": 2,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 3,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 50,
+                "parent_relation_demands": 3,
+                "retained_parent_demands": 3,
+                "closed_parent_demands": 0,
+                "introduced_relation_demands": 0
+              },
+              "error": null,
+              "selected": false
+            },
+            {
+              "candidate": "mirror(a,p)->d",
+              "static_rank": 3,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 3,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 50,
+                "parent_relation_demands": 3,
+                "retained_parent_demands": 3,
+                "closed_parent_demands": 0,
+                "introduced_relation_demands": 0
+              },
+              "error": null,
+              "selected": false
+            }
+          ],
+          "coordination": {
+            "agents": 6,
+            "consensus_agents": 5,
+            "restriction_edges": 10,
+            "shared_candidates": 32,
+            "primal_residual": 5.551115123125783e-17,
+            "dual_residual": 0.0,
+            "sheaf_residual": 0.12061271698035077,
+            "exchange_layer": "openmath_terms_over_mmt_theory_views",
+            "shared_channel_kinds": [
+              "construction_candidate",
+              "relation_symbol",
+              "theory_morphism"
+            ],
+            "local_top_candidates": [
+              {
+                "agent_id": "typed_incidence_proposal",
+                "candidates": [
+                  "reflect(t,p,a)",
+                  "eq_triangle(p,a)",
+                  "parallelogram(a,m,p)",
+                  "shift(a,m,p)",
+                  "mirror(a,p)",
+                  "nsquare(a,p)",
+                  "on_bline(p,a)",
+                  "psquare(a,p)",
+                  "circumcenter(p,a,m)",
+                  "intersection_cc(a,m,p)",
+                  "intersection_lc(a,m,p)",
+                  "eqdistance(a,m,p)"
+                ]
+              },
+              {
+                "agent_id": "newclid_bidirectional_proof_dag",
+                "candidates": [
+                  "eq_triangle(p,a)",
+                  "reflect(t,p,a)",
+                  "on_circum(p,a,m)",
+                  "parallelogram(a,m,p)"
+                ]
+              },
+              {
+                "agent_id": "tong_action",
+                "candidates": [
+                  "on_circum(p,a,m)",
+                  "circumcenter(p,a,m)",
+                  "eqdistance(a,m,p)",
+                  "intersection_cc(a,m,p)",
+                  "intersection_lc(a,m,p)",
+                  "parallelogram(a,m,p)",
+                  "shift(a,m,p)",
+                  "angle_bisector(a,m,p)",
+                  "angle_mirror(a,m,p)",
+                  "excenter(a,m,p)",
+                  "incenter(p,a,m)",
+                  "circle(i,b,c)"
+                ]
+              },
+              {
+                "agent_id": "newclid_relation",
+                "candidates": [
+                  "reflect(t,p,a)",
+                  "eq_triangle(p,a)",
+                  "parallelogram(a,m,p)",
+                  "circumcenter(p,a,m)",
+                  "intersection_cc(a,m,p)",
+                  "intersection_lc(a,m,p)",
+                  "mirror(a,p)",
+                  "nsquare(a,p)",
+                  "on_bline(p,a)",
+                  "psquare(a,p)",
+                  "shift(a,m,p)",
+                  "eqdistance(a,m,p)"
+                ]
+              },
+              {
+                "agent_id": "gclc_wu",
+                "candidates": [
+                  "circumcenter(p,a,m)",
+                  "eqdistance(a,m,p)",
+                  "foot(t,p,a)",
+                  "intersection_cc(a,m,p)",
+                  "intersection_lc(a,m,p)",
+                  "intersection_ll(o1,p,a,i)",
+                  "intersection_lp(p,a,t,p,a)",
+                  "intersection_lt(p,a,t,p,a)",
+                  "intersection_pp(o1,p,a,t,p,a)",
+                  "intersection_tt(o1,p,a,t,p,a)",
+                  "mirror(a,p)",
+                  "nsquare(a,p)"
+                ]
+              },
+              {
+                "agent_id": "hageo_incidence",
+                "candidates": [
+                  "circle(i,b,c)",
+                  "angle_mirror(a,m,p)",
+                  "between_bound(a,p)",
+                  "shift(a,m,p)",
+                  "eq_triangle(p,a)",
+                  "eqdistance(a,m,p)",
+                  "intersection_ll(o1,p,a,i)",
+                  "mirror(a,p)",
+                  "nsquare(a,p)",
+                  "on_bline(p,a)",
+                  "on_circle(a,p)",
+                  "on_dia(p,a)"
+                ]
+              }
+            ],
+            "proof_dag_specialist": {
+              "candidate_count": 4,
+              "reserved_consensus": 4,
+              "reserved_typed_incidence": [
+                "reflect(t,p,a)",
+                "eq_triangle(p,a)",
+                "parallelogram(a,m,p)",
+                "shift(a,m,p)",
+                "mirror(a,p)",
+                "nsquare(a,p)",
+                "on_bline(p,a)",
+                "psquare(a,p)"
+              ],
+              "family_frontier": [
+                "eq_triangle(p,a)",
+                "reflect(t,p,a)",
+                "on_circum(p,a,m)",
+                "parallelogram(a,m,p)"
+              ],
+              "queue": {
+                "task_count": 7,
+                "backward_task_count": 3,
+                "forward_task_count": 4,
+                "backward_search_states": 158,
+                "forward_search_states": 226,
+                "max_backward_depth_reached": 1,
+                "max_forward_depth_reached": 1,
+                "queue_peak": 7,
+                "truncated": false,
+                "task_trace": [
+                  "backward:0:d1",
+                  "backward:1:d1",
+                  "backward:2:d1",
+                  "forward:eq_triangle(p,a):d1",
+                  "forward:on_circum(p,a,m):d1",
+                  "forward:parallelogram(a,m,p):d1",
+                  "forward:reflect(t,p,a):d1"
+                ]
+              }
+            },
+            "timing_seconds": {
+              "proof_dag": 19.79033789999812,
+              "coordination": 0.0048243999990518205
+            },
+            "incidence_seconds": 0.06256099999882281
+          }
+        }
+      ],
+      "verification_calls": 4,
+      "all_deduction_count": 2623,
+      "goal_deduction_count": 0,
+      "input_sha256": "7558673d8538da0bbff9980f18d2163b673139d261df22a9e8c31c66d2222df2",
+      "proof_sha256": "a962a829560a8d6bf763c5f88d16cc148656b60f9def0c37e46901468b53ff73",
+      "proof_residual": {
+        "open_relation_demands": 3,
+        "backward_obligations": 24,
+        "ar_supported_goals": 1,
+        "ar_closed_goals": 0,
+        "ar_residual_support": 2,
+        "ar_residual_l1": 2.0,
+        "ar_known_rank": 52,
+        "parent_relation_demands": 0,
+        "retained_parent_demands": 0,
+        "closed_parent_demands": 0,
+        "introduced_relation_demands": 3
+      },
+      "elapsed_seconds": 32.368731999999,
+      "shard": 0,
+      "local_attempt": 0
+    }
+  ]
+}

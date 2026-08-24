@@ -1,0 +1,60 @@
+{
+  "experiment": "typed_obligation_iterative_deepening_and_local_lemma_cegis",
+  "date": "2026-08-21",
+  "uses_external_llm": false,
+  "acceptance_rule": "only native replayable proof certificates count as proved",
+  "fixed_problem": "2020IranGOAp2",
+  "results": {
+    "v8_before_fair_budgeting": {
+      "solved": false,
+      "reported_max_depth": 3,
+      "actual_max_backward_depth": 1,
+      "actual_max_forward_depth": 1,
+      "artifact": "data/typed-hole-iterative-v8-2020irangoap2-n1-k1-f4-2026-08-21.json"
+    },
+    "v9_after_fair_budgeting": {
+      "solved": false,
+      "actual_max_backward_depth": 3,
+      "actual_max_forward_depth": 0,
+      "diagnosis": "false theorem-vocabulary gap caused by discarded boundary branches",
+      "artifact": "data/typed-hole-fair-deepening-v9-2020irangoap2-n1-k1-f4-2026-08-21.json"
+    },
+    "v10_after_preserving_boundary_branches": {
+      "solved": false,
+      "actual_max_backward_depth": 3,
+      "actual_max_forward_depth": 3,
+      "resource_truncated": false,
+      "typed_meet_candidates": 0,
+      "diagnosis": "no_typed_meet_in_current_theory",
+      "elapsed_seconds": 71.79997650000223,
+      "artifact": "data/typed-hole-preserved-branch-v10-2020irangoap2-n1-k1-f4-2026-08-21.json"
+    },
+    "gclc_direct_portfolio": {
+      "translation_fix": "circumcenter is now mapped to the generic perpendicular-bisector construction",
+      "wu": {
+        "proved": false,
+        "external_timeout_seconds": 315.107
+      },
+      "groebner": {
+        "proved": false,
+        "prover_elapsed_seconds": 302.125,
+        "largest_intermediate_term_count": 233469,
+        "status": "internal timeout"
+      }
+    },
+    "local_lemma_oracle_smoke": {
+      "ambient_structure": "generic triangle with circumcenter",
+      "generated_local_goal": "cong(o,a,o,b)",
+      "proved": true,
+      "goal_deductions": 1,
+      "all_deductions": 51,
+      "certificate_sha256": "d643957895a8e1d3f3d095282d491307679aba65caf336e4b7b32d5d6e5fb4c8"
+    }
+  },
+  "tests": {
+    "newclid_gclc_runtime": "13 passed",
+    "pure_and_pipeline_regression": "78 passed",
+    "total": 91
+  },
+  "conclusion": "The typed CEGIS kernel and exact local-lemma oracle work, but the fixed difficult problem still requires autonomous multi-step auxiliary-construction synthesis and certified local theorem decomposition."
+}

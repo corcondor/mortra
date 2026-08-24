@@ -1,0 +1,1216 @@
+{
+  "experiment": "construction_block_and_dag_cohort",
+  "dataset": "C:/Users/81808/.cache/mortra-research-sources/GenesisGeo/benchmarks/hageo_409.txt",
+  "dataset_sha256": "55aa45dd16a1b69eaf612036468dbf3f62e73b654c0e3bb1a23fd3e5e3ed2368",
+  "timeout_seconds_per_problem": 120.0,
+  "max_separator_variables": 16,
+  "local_prepass_max_separator_variables": 12,
+  "max_pairs_per_clique": 4,
+  "terminal_max_pairs": 64,
+  "problems": [
+    "2024PlanetCupp10"
+  ],
+  "completed_problem_count": 1,
+  "solved_problem_count": 0,
+  "results": [
+    {
+      "problem_name": "2024PlanetCupp10",
+      "status": "unproved",
+      "solved": false,
+      "exact_replay": false,
+      "elapsed_seconds": 49.16080019999936,
+      "return_code": 0,
+      "stderr_tail": null,
+      "metrics": {
+        "construction_block_count": 15,
+        "initial_equation_count": null,
+        "initial_variable_count": 31,
+        "prepass_step_count": 6,
+        "prepass_eliminated_variables": [
+          "_apex_y_2",
+          "_apex_x_1",
+          "_free_x_25",
+          "_free_y_26",
+          "_free_x_19",
+          "_free_y_20"
+        ],
+        "remaining_variable_count": 25,
+        "remaining_polynomial_count": 34,
+        "prepass_exact_replay": true,
+        "completed_clique_count": 8,
+        "separator_lemma_count": 32,
+        "maximum_separator_width": 13,
+        "last_stage": "root_completed",
+        "last_variable": null,
+        "progress": []
+      },
+      "raw_result": {
+        "status": "unproved",
+        "certificate": {
+          "status": "open",
+          "target_relation": "perp",
+          "target_points": [
+            "m",
+            "o",
+            "p",
+            "q"
+          ],
+          "construction_nodes": [
+            {
+              "node_id": "construction:0:0",
+              "clause_index": 0,
+              "inputs": [],
+              "outputs": [
+                "a",
+                "b",
+                "c"
+              ],
+              "construction_vocabulary": [
+                "triangle"
+              ],
+              "parent_node_ids": [],
+              "equations": [],
+              "nonzero_conditions": []
+            },
+            {
+              "node_id": "construction:1:1",
+              "clause_index": 1,
+              "inputs": [
+                "a",
+                "b",
+                "c"
+              ],
+              "outputs": [
+                "d"
+              ],
+              "construction_vocabulary": [
+                "foot"
+              ],
+              "parent_node_ids": [
+                "construction:0:0"
+              ],
+              "equations": [
+                "-_apex_x_1*_free_y_4 - _apex_y_2*_base_0 + _apex_y_2*_free_x_3 + _base_0*_free_y_4",
+                "_apex_x_1*_free_x_3 + _apex_y_2*_free_y_4 - _base_0*_free_x_3"
+              ],
+              "nonzero_conditions": [
+                "_apex_x_1**2 - 2*_apex_x_1*_base_0 + _apex_y_2**2 + _base_0**2 != 0"
+              ]
+            },
+            {
+              "node_id": "construction:2:2",
+              "clause_index": 2,
+              "inputs": [
+                "a",
+                "b",
+                "c"
+              ],
+              "outputs": [
+                "e"
+              ],
+              "construction_vocabulary": [
+                "foot"
+              ],
+              "parent_node_ids": [
+                "construction:0:0"
+              ],
+              "equations": [
+                "-_apex_x_1*_free_y_6 + _apex_y_2*_free_x_5",
+                "-_apex_x_1*_base_0 + _apex_x_1*_free_x_5 + _apex_y_2*_free_y_6"
+              ],
+              "nonzero_conditions": [
+                "_apex_x_1**2 + _apex_y_2**2 != 0"
+              ]
+            },
+            {
+              "node_id": "construction:3:3",
+              "clause_index": 3,
+              "inputs": [
+                "a",
+                "b",
+                "c"
+              ],
+              "outputs": [
+                "f"
+              ],
+              "construction_vocabulary": [
+                "foot"
+              ],
+              "parent_node_ids": [
+                "construction:0:0"
+              ],
+              "equations": [
+                "-_base_0*_free_y_8",
+                "-_apex_x_1*_base_0 + _base_0*_free_x_7"
+              ],
+              "nonzero_conditions": [
+                "_base_0**2 != 0"
+              ]
+            },
+            {
+              "node_id": "construction:4:4",
+              "clause_index": 4,
+              "inputs": [
+                "d",
+                "e",
+                "f"
+              ],
+              "outputs": [
+                "d1"
+              ],
+              "construction_vocabulary": [
+                "foot"
+              ],
+              "parent_node_ids": [
+                "construction:1:1",
+                "construction:2:2",
+                "construction:3:3"
+              ],
+              "equations": [
+                "_free_x_5*_free_y_10 - _free_x_5*_free_y_8 - _free_x_7*_free_y_10 + _free_x_7*_free_y_6 - _free_x_9*_free_y_6 + _free_x_9*_free_y_8",
+                "_free_x_3*_free_x_5 - _free_x_3*_free_x_7 - _free_x_5*_free_x_9 + _free_x_7*_free_x_9 - _free_y_10*_free_y_6 + _free_y_10*_free_y_8 + _free_y_4*_free_y_6 - _free_y_4*_free_y_8"
+              ],
+              "nonzero_conditions": [
+                "_free_x_5**2 - 2*_free_x_5*_free_x_7 + _free_x_7**2 + _free_y_6**2 - 2*_free_y_6*_free_y_8 + _free_y_8**2 != 0"
+              ]
+            },
+            {
+              "node_id": "construction:5:5",
+              "clause_index": 5,
+              "inputs": [
+                "d",
+                "e",
+                "f"
+              ],
+              "outputs": [
+                "e1"
+              ],
+              "construction_vocabulary": [
+                "foot"
+              ],
+              "parent_node_ids": [
+                "construction:1:1",
+                "construction:2:2",
+                "construction:3:3"
+              ],
+              "equations": [
+                "-_free_x_11*_free_y_4 + _free_x_11*_free_y_8 + _free_x_3*_free_y_12 - _free_x_3*_free_y_8 - _free_x_7*_free_y_12 + _free_x_7*_free_y_4",
+                "-_free_x_11*_free_x_3 + _free_x_11*_free_x_7 + _free_x_3*_free_x_5 - _free_x_5*_free_x_7 - _free_y_12*_free_y_4 + _free_y_12*_free_y_8 + _free_y_4*_free_y_6 - _free_y_6*_free_y_8"
+              ],
+              "nonzero_conditions": [
+                "_free_x_3**2 - 2*_free_x_3*_free_x_7 + _free_x_7**2 + _free_y_4**2 - 2*_free_y_4*_free_y_8 + _free_y_8**2 != 0"
+              ]
+            },
+            {
+              "node_id": "construction:6:6",
+              "clause_index": 6,
+              "inputs": [
+                "d",
+                "e",
+                "f"
+              ],
+              "outputs": [
+                "f1"
+              ],
+              "construction_vocabulary": [
+                "foot"
+              ],
+              "parent_node_ids": [
+                "construction:1:1",
+                "construction:2:2",
+                "construction:3:3"
+              ],
+              "equations": [
+                "-_free_x_13*_free_y_4 + _free_x_13*_free_y_6 + _free_x_3*_free_y_14 - _free_x_3*_free_y_6 - _free_x_5*_free_y_14 + _free_x_5*_free_y_4",
+                "-_free_x_13*_free_x_3 + _free_x_13*_free_x_5 + _free_x_3*_free_x_7 - _free_x_5*_free_x_7 - _free_y_14*_free_y_4 + _free_y_14*_free_y_6 + _free_y_4*_free_y_8 - _free_y_6*_free_y_8"
+              ],
+              "nonzero_conditions": [
+                "_free_x_3**2 - 2*_free_x_3*_free_x_5 + _free_x_5**2 + _free_y_4**2 - 2*_free_y_4*_free_y_6 + _free_y_6**2 != 0"
+              ]
+            },
+            {
+              "node_id": "construction:7:7",
+              "clause_index": 7,
+              "inputs": [
+                "d",
+                "e",
+                "f"
+              ],
+              "outputs": [
+                "n1"
+              ],
+              "construction_vocabulary": [
+                "circumcenter"
+              ],
+              "parent_node_ids": [
+                "construction:1:1",
+                "construction:2:2",
+                "construction:3:3"
+              ],
+              "equations": [
+                "-2*_free_x_15*_free_x_3 + 2*_free_x_15*_free_x_5 + _free_x_3**2 - _free_x_5**2 - 2*_free_y_16*_free_y_4 + 2*_free_y_16*_free_y_6 + _free_y_4**2 - _free_y_6**2",
+                "-2*_free_x_15*_free_x_3 + 2*_free_x_15*_free_x_7 + _free_x_3**2 - _free_x_7**2 - 2*_free_y_16*_free_y_4 + 2*_free_y_16*_free_y_8 + _free_y_4**2 - _free_y_8**2"
+              ],
+              "nonzero_conditions": []
+            },
+            {
+              "node_id": "construction:8:8",
+              "clause_index": 8,
+              "inputs": [
+                "b",
+                "c"
+              ],
+              "outputs": [
+                "m"
+              ],
+              "construction_vocabulary": [
+                "midpoint"
+              ],
+              "parent_node_ids": [
+                "construction:0:0"
+              ],
+              "equations": [
+                "-_apex_x_1 - _base_0 + 2*_free_x_17",
+                "-_apex_y_2 + 2*_free_y_18"
+              ],
+              "nonzero_conditions": []
+            },
+            {
+              "node_id": "construction:9:9",
+              "clause_index": 9,
+              "inputs": [
+                "b",
+                "c",
+                "e1",
+                "f1"
+              ],
+              "outputs": [
+                "j"
+              ],
+              "construction_vocabulary": [
+                "on_line"
+              ],
+              "parent_node_ids": [
+                "construction:0:0",
+                "construction:5:5",
+                "construction:6:6"
+              ],
+              "equations": [
+                "-_free_x_11*_free_y_14 + _free_x_11*_free_y_20 + _free_x_13*_free_y_12 - _free_x_13*_free_y_20 - _free_x_19*_free_y_12 + _free_x_19*_free_y_14",
+                "-_apex_x_1*_free_y_20 - _apex_y_2*_base_0 + _apex_y_2*_free_x_19 + _base_0*_free_y_20"
+              ],
+              "nonzero_conditions": []
+            },
+            {
+              "node_id": "construction:10:10",
+              "clause_index": 10,
+              "inputs": [
+                "b",
+                "c",
+                "d1",
+                "n1"
+              ],
+              "outputs": [
+                "k"
+              ],
+              "construction_vocabulary": [
+                "on_line"
+              ],
+              "parent_node_ids": [
+                "construction:0:0",
+                "construction:4:4",
+                "construction:7:7"
+              ],
+              "equations": [
+                "_free_x_15*_free_y_10 - _free_x_15*_free_y_22 - _free_x_21*_free_y_10 + _free_x_21*_free_y_16 - _free_x_9*_free_y_16 + _free_x_9*_free_y_22",
+                "-_apex_x_1*_free_y_22 - _apex_y_2*_base_0 + _apex_y_2*_free_x_21 + _base_0*_free_y_22"
+              ],
+              "nonzero_conditions": []
+            },
+            {
+              "node_id": "construction:11:11",
+              "clause_index": 11,
+              "inputs": [
+                "a",
+                "j",
+                "k"
+              ],
+              "outputs": [
+                "o"
+              ],
+              "construction_vocabulary": [
+                "circumcenter"
+              ],
+              "parent_node_ids": [
+                "construction:0:0",
+                "construction:10:10",
+                "construction:9:9"
+              ],
+              "equations": [
+                "-_free_x_19**2 + 2*_free_x_19*_free_x_23 - _free_y_20**2 + 2*_free_y_20*_free_y_24",
+                "-_free_x_21**2 + 2*_free_x_21*_free_x_23 - _free_y_22**2 + 2*_free_y_22*_free_y_24"
+              ],
+              "nonzero_conditions": []
+            },
+            {
+              "node_id": "construction:12:12",
+              "clause_index": 12,
+              "inputs": [
+                "a",
+                "m",
+                "o"
+              ],
+              "outputs": [
+                "t"
+              ],
+              "construction_vocabulary": [
+                "on_circle",
+                "on_line"
+              ],
+              "parent_node_ids": [
+                "construction:0:0",
+                "construction:11:11",
+                "construction:8:8"
+              ],
+              "equations": [
+                "-_free_x_17*_free_y_26 + _free_x_25*_free_y_18",
+                "-2*_free_x_23*_free_x_25 + _free_x_25**2 - 2*_free_y_24*_free_y_26 + _free_y_26**2"
+              ],
+              "nonzero_conditions": []
+            },
+            {
+              "node_id": "construction:13:13",
+              "clause_index": 13,
+              "inputs": [
+                "a",
+                "e",
+                "f",
+                "m"
+              ],
+              "outputs": [
+                "p"
+              ],
+              "construction_vocabulary": [
+                "on_line"
+              ],
+              "parent_node_ids": [
+                "construction:0:0",
+                "construction:2:2",
+                "construction:3:3",
+                "construction:8:8"
+              ],
+              "equations": [
+                "-_free_x_17*_free_y_28 + _free_x_27*_free_y_18",
+                "-_free_x_27*_free_y_6 + _free_x_27*_free_y_8 + _free_x_5*_free_y_28 - _free_x_5*_free_y_8 - _free_x_7*_free_y_28 + _free_x_7*_free_y_6"
+              ],
+              "nonzero_conditions": []
+            },
+            {
+              "node_id": "construction:14:14",
+              "clause_index": 14,
+              "inputs": [
+                "a",
+                "j",
+                "k",
+                "t"
+              ],
+              "outputs": [
+                "q"
+              ],
+              "construction_vocabulary": [
+                "on_line"
+              ],
+              "parent_node_ids": [
+                "construction:0:0",
+                "construction:10:10",
+                "construction:12:12",
+                "construction:9:9"
+              ],
+              "equations": [
+                "_free_x_21*_free_y_26 - _free_x_21*_free_y_30 - _free_x_25*_free_y_22 + _free_x_25*_free_y_30 + _free_x_29*_free_y_22 - _free_x_29*_free_y_26",
+                "-_free_x_19*_free_y_30 + _free_x_29*_free_y_20"
+              ],
+              "nonzero_conditions": []
+            }
+          ],
+          "local_elimination_nodes": [
+            {
+              "node_id": "local:0:_apex_y_2",
+              "variable": "_apex_y_2",
+              "method": "linear_localization",
+              "parent_node_ids": [
+                "construction:10:10",
+                "construction:1:1",
+                "construction:2:2",
+                "construction:8:8",
+                "construction:9:9"
+              ],
+              "input_polynomials": [
+                "-_apex_x_1*_base_0 + _apex_x_1*_free_x_5 + _apex_y_2*_free_y_6",
+                "-_apex_x_1*_free_y_20 - _apex_y_2*_base_0 + _apex_y_2*_free_x_19 + _base_0*_free_y_20",
+                "-_apex_x_1*_free_y_22 - _apex_y_2*_base_0 + _apex_y_2*_free_x_21 + _base_0*_free_y_22",
+                "-_apex_x_1*_free_y_4 - _apex_y_2*_base_0 + _apex_y_2*_free_x_3 + _base_0*_free_y_4",
+                "-_apex_x_1*_free_y_6 + _apex_y_2*_free_x_5",
+                "-_apex_y_2 + 2*_free_y_18",
+                "_apex_x_1*_free_x_3 + _apex_y_2*_free_y_4 - _base_0*_free_x_3"
+              ],
+              "output_polynomials": [
+                "-_apex_x_1*_free_x_3 + _base_0*_free_x_3 - 2*_free_y_18*_free_y_4",
+                "_apex_x_1*_base_0 - _apex_x_1*_free_x_5 - 2*_free_y_18*_free_y_6",
+                "_apex_x_1*_free_y_20 + 2*_base_0*_free_y_18 - _base_0*_free_y_20 - 2*_free_x_19*_free_y_18",
+                "_apex_x_1*_free_y_22 + 2*_base_0*_free_y_18 - _base_0*_free_y_22 - 2*_free_x_21*_free_y_18",
+                "_apex_x_1*_free_y_4 + 2*_base_0*_free_y_18 - _base_0*_free_y_4 - 2*_free_x_3*_free_y_18",
+                "_apex_x_1*_free_y_6 - 2*_free_x_5*_free_y_18"
+              ],
+              "separator_variables": [
+                "_apex_x_1",
+                "_base_0",
+                "_free_x_19",
+                "_free_x_21",
+                "_free_x_3",
+                "_free_x_5",
+                "_free_y_18",
+                "_free_y_20",
+                "_free_y_22",
+                "_free_y_4",
+                "_free_y_6"
+              ],
+              "nonzero_conditions": [
+                "-1 != 0"
+              ],
+              "replayed": true,
+              "certificate_sha256": "e3af96bbc142f2dfd52af7c7c4d3ddc4c6b8c13b594cdd6f9ab0311a5babdd56"
+            },
+            {
+              "node_id": "local:1:_apex_x_1",
+              "variable": "_apex_x_1",
+              "method": "linear_localization",
+              "parent_node_ids": [
+                "construction:3:3",
+                "construction:8:8",
+                "local:0:_apex_y_2"
+              ],
+              "input_polynomials": [
+                "-_apex_x_1 - _base_0 + 2*_free_x_17",
+                "-_apex_x_1*_free_x_3 + _base_0*_free_x_3 - 2*_free_y_18*_free_y_4",
+                "-_base_0*(_apex_x_1 - _free_x_7)",
+                "_apex_x_1*_base_0 - _apex_x_1*_free_x_5 - 2*_free_y_18*_free_y_6",
+                "_apex_x_1*_free_y_20 + 2*_base_0*_free_y_18 - _base_0*_free_y_20 - 2*_free_x_19*_free_y_18",
+                "_apex_x_1*_free_y_22 + 2*_base_0*_free_y_18 - _base_0*_free_y_22 - 2*_free_x_21*_free_y_18",
+                "_apex_x_1*_free_y_4 + 2*_base_0*_free_y_18 - _base_0*_free_y_4 - 2*_free_x_3*_free_y_18",
+                "_apex_x_1*_free_y_6 - 2*_free_x_5*_free_y_18"
+              ],
+              "output_polynomials": [
+                "-_base_0*(2*_base_0*_free_y_18 - _base_0*_free_y_20 - 2*_free_x_19*_free_y_18 + _free_x_7*_free_y_20)",
+                "-_base_0*(2*_base_0*_free_y_18 - _base_0*_free_y_22 - 2*_free_x_21*_free_y_18 + _free_x_7*_free_y_22)",
+                "-_base_0*(_base_0*_free_x_3 - _free_x_3*_free_x_7 - 2*_free_y_18*_free_y_4)",
+                "-_base_0*(_base_0*_free_x_7 - _free_x_5*_free_x_7 - 2*_free_y_18*_free_y_6)",
+                "_base_0*(-2*_base_0*_free_y_18 + _base_0*_free_y_4 + 2*_free_x_3*_free_y_18 - _free_x_7*_free_y_4)",
+                "_base_0*(2*_free_x_5*_free_y_18 - _free_x_7*_free_y_6)",
+                "_base_0*(_base_0 - 2*_free_x_17 + _free_x_7)"
+              ],
+              "separator_variables": [
+                "_base_0",
+                "_free_x_17",
+                "_free_x_19",
+                "_free_x_21",
+                "_free_x_3",
+                "_free_x_5",
+                "_free_x_7",
+                "_free_y_18",
+                "_free_y_20",
+                "_free_y_22",
+                "_free_y_4",
+                "_free_y_6"
+              ],
+              "nonzero_conditions": [
+                "-_base_0 != 0"
+              ],
+              "replayed": true,
+              "certificate_sha256": "47d599a2226d285af7436537820b0b8a4cf9f6ab77d691be3be55ea146712c59"
+            },
+            {
+              "node_id": "local:2:_free_x_25",
+              "variable": "_free_x_25",
+              "method": "resultant_projection",
+              "parent_node_ids": [
+                "construction:12:12",
+                "construction:14:14"
+              ],
+              "input_polynomials": [
+                "-2*_free_x_23*_free_x_25 + _free_x_25**2 - 2*_free_y_24*_free_y_26 + _free_y_26**2",
+                "-_free_x_17*_free_y_26 + _free_x_25*_free_y_18",
+                "_free_x_21*_free_y_26 - _free_x_21*_free_y_30 - _free_x_25*_free_y_22 + _free_x_25*_free_y_30 + _free_x_29*_free_y_22 - _free_x_29*_free_y_26"
+              ],
+              "output_polynomials": [
+                "-_free_x_17*_free_y_22*_free_y_26 + _free_x_17*_free_y_26*_free_y_30 + _free_x_21*_free_y_18*_free_y_26 - _free_x_21*_free_y_18*_free_y_30 + _free_x_29*_free_y_18*_free_y_22 - _free_x_29*_free_y_18*_free_y_26",
+                "_free_y_26*(_free_x_17**2*_free_y_26 - 2*_free_x_17*_free_x_23*_free_y_18 - 2*_free_y_18**2*_free_y_24 + _free_y_18**2*_free_y_26)"
+              ],
+              "separator_variables": [
+                "_free_x_17",
+                "_free_x_21",
+                "_free_x_23",
+                "_free_x_29",
+                "_free_y_18",
+                "_free_y_22",
+                "_free_y_24",
+                "_free_y_26",
+                "_free_y_30"
+              ],
+              "nonzero_conditions": [],
+              "replayed": true,
+              "certificate_sha256": "26b30e65d8108fbe1fafc0109b1bfc4fee903686d167b05ef03ce784c16a4b8f"
+            },
+            {
+              "node_id": "local:3:_free_y_26",
+              "variable": "_free_y_26",
+              "method": "resultant_projection",
+              "parent_node_ids": [
+                "local:2:_free_x_25"
+              ],
+              "input_polynomials": [
+                "-_free_x_17*_free_y_22*_free_y_26 + _free_x_17*_free_y_26*_free_y_30 + _free_x_21*_free_y_18*_free_y_26 - _free_x_21*_free_y_18*_free_y_30 + _free_x_29*_free_y_18*_free_y_22 - _free_x_29*_free_y_18*_free_y_26",
+                "_free_y_26*(_free_x_17**2*_free_y_26 - 2*_free_x_17*_free_x_23*_free_y_18 - 2*_free_y_18**2*_free_y_24 + _free_y_18**2*_free_y_26)"
+              ],
+              "output_polynomials": [
+                "_free_y_18**2*(_free_x_21*_free_y_30 - _free_x_29*_free_y_22)*(_free_x_17**2*_free_x_21*_free_y_30 + 2*_free_x_17**2*_free_x_23*_free_y_22 - 2*_free_x_17**2*_free_x_23*_free_y_30 - _free_x_17**2*_free_x_29*_free_y_22 - 2*_free_x_17*_free_x_21*_free_x_23*_free_y_18 + 2*_free_x_17*_free_x_23*_free_x_29*_free_y_18 + 2*_free_x_17*_free_y_18*_free_y_22*_free_y_24 - 2*_free_x_17*_free_y_18*_free_y_24*_free_y_30 - 2*_free_x_21*_free_y_18**2*_free_y_24 + _free_x_21*_free_y_18**2*_free_y_30 - _free_x_29*_free_y_18**2*_free_y_22 + 2*_free_x_29*_free_y_18**2*_free_y_24)"
+              ],
+              "separator_variables": [
+                "_free_x_17",
+                "_free_x_21",
+                "_free_x_23",
+                "_free_x_29",
+                "_free_y_18",
+                "_free_y_22",
+                "_free_y_24",
+                "_free_y_30"
+              ],
+              "nonzero_conditions": [],
+              "replayed": true,
+              "certificate_sha256": "8eef58d0cf77bdeb4fab0ac8561ec2a49dbcbfe264cce046f0aea669b2cac9d8"
+            },
+            {
+              "node_id": "local:4:_free_x_19",
+              "variable": "_free_x_19",
+              "method": "resultant_projection",
+              "parent_node_ids": [
+                "construction:11:11",
+                "construction:14:14",
+                "construction:9:9",
+                "local:1:_apex_x_1"
+              ],
+              "input_polynomials": [
+                "-_base_0*(2*_base_0*_free_y_18 - _base_0*_free_y_20 - 2*_free_x_19*_free_y_18 + _free_x_7*_free_y_20)",
+                "-_free_x_11*_free_y_14 + _free_x_11*_free_y_20 + _free_x_13*_free_y_12 - _free_x_13*_free_y_20 - _free_x_19*_free_y_12 + _free_x_19*_free_y_14",
+                "-_free_x_19**2 + 2*_free_x_19*_free_x_23 - _free_y_20**2 + 2*_free_y_20*_free_y_24",
+                "-_free_x_19*_free_y_30 + _free_x_29*_free_y_20"
+              ],
+              "output_polynomials": [
+                "_base_0*(2*_base_0*_free_y_18*_free_y_30 - _base_0*_free_y_20*_free_y_30 - 2*_free_x_29*_free_y_18*_free_y_20 + _free_x_7*_free_y_20*_free_y_30)",
+                "_free_x_11*_free_y_14*_free_y_30 - _free_x_11*_free_y_20*_free_y_30 - _free_x_13*_free_y_12*_free_y_30 + _free_x_13*_free_y_20*_free_y_30 + _free_x_29*_free_y_12*_free_y_20 - _free_x_29*_free_y_14*_free_y_20",
+                "_free_y_20*(2*_free_x_23*_free_x_29*_free_y_30 - _free_x_29**2*_free_y_20 - _free_y_20*_free_y_30**2 + 2*_free_y_24*_free_y_30**2)"
+              ],
+              "separator_variables": [
+                "_base_0",
+                "_free_x_11",
+                "_free_x_13",
+                "_free_x_23",
+                "_free_x_29",
+                "_free_x_7",
+                "_free_y_12",
+                "_free_y_14",
+                "_free_y_18",
+                "_free_y_20",
+                "_free_y_24",
+                "_free_y_30"
+              ],
+              "nonzero_conditions": [],
+              "replayed": true,
+              "certificate_sha256": "969db09d1b241ce9ed078ef65528e10e899a39bd3fd981f887577c5b1f66d192"
+            },
+            {
+              "node_id": "local:5:_free_y_20",
+              "variable": "_free_y_20",
+              "method": "resultant_projection",
+              "parent_node_ids": [
+                "local:4:_free_x_19"
+              ],
+              "input_polynomials": [
+                "_base_0*(2*_base_0*_free_y_18*_free_y_30 - _base_0*_free_y_20*_free_y_30 - 2*_free_x_29*_free_y_18*_free_y_20 + _free_x_7*_free_y_20*_free_y_30)",
+                "_free_x_11*_free_y_14*_free_y_30 - _free_x_11*_free_y_20*_free_y_30 - _free_x_13*_free_y_12*_free_y_30 + _free_x_13*_free_y_20*_free_y_30 + _free_x_29*_free_y_12*_free_y_20 - _free_x_29*_free_y_14*_free_y_20",
+                "_free_y_20*(2*_free_x_23*_free_x_29*_free_y_30 - _free_x_29**2*_free_y_20 - _free_y_20*_free_y_30**2 + 2*_free_y_24*_free_y_30**2)"
+              ],
+              "output_polynomials": [
+                "-_base_0*_free_y_30*(_base_0*_free_x_11*_free_y_14*_free_y_30 - 2*_base_0*_free_x_11*_free_y_18*_free_y_30 - _base_0*_free_x_13*_free_y_12*_free_y_30 + 2*_base_0*_free_x_13*_free_y_18*_free_y_30 + 2*_base_0*_free_x_29*_free_y_12*_free_y_18 - 2*_base_0*_free_x_29*_free_y_14*_free_y_18 + 2*_free_x_11*_free_x_29*_free_y_14*_free_y_18 - _free_x_11*_free_x_7*_free_y_14*_free_y_30 - 2*_free_x_13*_free_x_29*_free_y_12*_free_y_18 + _free_x_13*_free_x_7*_free_y_12*_free_y_30)",
+                "4*_base_0**3*_free_y_18*_free_y_30**2*(_base_0*_free_x_23*_free_x_29*_free_y_30 - _base_0*_free_x_29**2*_free_y_18 - _base_0*_free_y_18*_free_y_30**2 + _base_0*_free_y_24*_free_y_30**2 + 2*_free_x_23*_free_x_29**2*_free_y_18 - _free_x_23*_free_x_29*_free_x_7*_free_y_30 + 2*_free_x_29*_free_y_18*_free_y_24*_free_y_30 - _free_x_7*_free_y_24*_free_y_30**2)"
+              ],
+              "separator_variables": [
+                "_base_0",
+                "_free_x_11",
+                "_free_x_13",
+                "_free_x_23",
+                "_free_x_29",
+                "_free_x_7",
+                "_free_y_12",
+                "_free_y_14",
+                "_free_y_18",
+                "_free_y_24",
+                "_free_y_30"
+              ],
+              "nonzero_conditions": [],
+              "replayed": true,
+              "certificate_sha256": "87cd6cd390b29ca17a4a70a1f183911c45378010f36833ffadc0c5bb7dd51539"
+            }
+          ],
+          "separator_nodes": [
+            {
+              "node_id": "separator:0:_free_x_15",
+              "variable": "_free_x_15",
+              "parent_node_ids": [
+                "construction:10:10",
+                "construction:4:4",
+                "construction:7:7"
+              ],
+              "input_polynomials": [
+                "-2*_free_x_15*_free_x_3 + 2*_free_x_15*_free_x_5 + _free_x_3**2 - _free_x_5**2 - 2*_free_y_16*_free_y_4 + 2*_free_y_16*_free_y_6 + _free_y_4**2 - _free_y_6**2",
+                "-2*_free_x_15*_free_x_3 + 2*_free_x_15*_free_x_7 + _free_x_3**2 - _free_x_7**2 - 2*_free_y_16*_free_y_4 + 2*_free_y_16*_free_y_8 + _free_y_4**2 - _free_y_8**2",
+                "_free_x_15*_free_y_10 - _free_x_15*_free_y_22 - _free_x_21*_free_y_10 + _free_x_21*_free_y_16 - _free_x_9*_free_y_16 + _free_x_9*_free_y_22",
+                "_free_x_3*_free_x_5 - _free_x_3*_free_x_7 - _free_x_5*_free_x_9 + _free_x_7*_free_x_9 - _free_y_10*_free_y_6 + _free_y_10*_free_y_8 + _free_y_4*_free_y_6 - _free_y_4*_free_y_8",
+                "_free_x_5*_free_y_10 - _free_x_5*_free_y_8 - _free_x_7*_free_y_10 + _free_x_7*_free_y_6 - _free_x_9*_free_y_6 + _free_x_9*_free_y_8"
+              ],
+              "output_polynomials": [
+                "_free_x_5*_free_y_10 - _free_x_5*_free_y_8 - _free_x_7*_free_y_10 + _free_x_7*_free_y_6 - _free_x_9*_free_y_6 + _free_x_9*_free_y_8",
+                "_free_x_3*_free_x_7*_free_y_6 - _free_x_3*_free_x_7*_free_y_8 - _free_x_3*_free_x_9*_free_y_6 + _free_x_3*_free_x_9*_free_y_8 - _free_x_7*_free_x_9*_free_y_6 + _free_x_7*_free_x_9*_free_y_8 + _free_x_9**2*_free_y_6 - _free_x_9**2*_free_y_8 + _free_y_10**2*_free_y_6 - _free_y_10**2*_free_y_8 - _free_y_10*_free_y_4*_free_y_6 + _free_y_10*_free_y_4*_free_y_8 - _free_y_10*_free_y_6*_free_y_8 + _free_y_10*_free_y_8**2 + _free_y_4*_free_y_6*_free_y_8 - _free_y_4*_free_y_8**2",
+                "_free_x_3*_free_x_5 - _free_x_3*_free_x_7 - _free_x_5*_free_x_9 + _free_x_7*_free_x_9 - _free_y_10*_free_y_6 + _free_y_10*_free_y_8 + _free_y_4*_free_y_6 - _free_y_4*_free_y_8",
+                "_free_x_21*_free_x_5*_free_y_16*_free_y_22 - _free_x_21*_free_x_5*_free_y_16*_free_y_8 - _free_x_21*_free_x_5*_free_y_22*_free_y_8 + _free_x_21*_free_x_5*_free_y_8**2 - _free_x_21*_free_x_7*_free_y_16*_free_y_22 + _free_x_21*_free_x_7*_free_y_16*_free_y_8 + _free_x_21*_free_x_7*_free_y_22*_free_y_6 - _free_x_21*_free_x_7*_free_y_6*_free_y_8 - _free_x_21*_free_x_9*_free_y_22*_free_y_6 + _free_x_21*_free_x_9*_free_y_22*_free_y_8 + _free_x_21*_free_x_9*_free_y_6*_free_y_8 - _free_x_21*_free_x_9*_free_y_8**2 - _free_x_5**2*_free_y_22**2/2 + _free_x_5**2*_free_y_22*_free_y_8 - _free_x_5**2*_free_y_8**2/2 - _free_x_5*_free_x_7*_free_y_22*_free_y_6/2 + _free_x_5*_free_x_7*_free_y_22*_free_y_8/2 + _free_x_5*_free_x_7*_free_y_6*_free_y_8/2 - _free_x_5*_free_x_7*_free_y_8**2/2 - _free_x_5*_free_x_9*_free_y_16*_free_y_22 + _free_x_5*_free_x_9*_free_y_16*_free_y_8 + _free_x_5*_free_x_9*_free_y_22**2 + _free_x_5*_free_x_9*_free_y_22*_free_y_6/2 - 3*_free_x_5*_free_x_9*_free_y_22*_free_y_8/2 - _free_x_5*_free_x_9*_free_y_6*_free_y_8/2 + _free_x_5*_free_x_9*_free_y_8**2/2 + _free_x_7**2*_free_y_22**2/2 - _free_x_7**2*_free_y_22*_free_y_6/2 - _free_x_7**2*_free_y_22*_free_y_8/2 + _free_x_7**2*_free_y_6*_free_y_8/2 + _free_x_7*_free_x_9*_free_y_16*_free_y_22 - _free_x_7*_free_x_9*_free_y_16*_free_y_8 - _free_x_7*_free_x_9*_free_y_22**2 + _free_x_7*_free_x_9*_free_y_22*_free_y_6/2 + _free_x_7*_free_x_9*_free_y_22*_free_y_8/2 - _free_x_7*_free_x_9*_free_y_6*_free_y_8/2 + _free_x_7*_free_x_9*_free_y_8**2/2 - _free_y_10*_free_y_16*_free_y_22*_free_y_6 + _free_y_10*_free_y_16*_free_y_22*_free_y_8 + _free_y_10*_free_y_16*_free_y_6*_free_y_8 - _free_y_10*_free_y_16*_free_y_8**2 + _free_y_10*_free_y_22*_free_y_6**2/2 - _free_y_10*_free_y_22*_free_y_8**2/2 - _free_y_10*_free_y_6**2*_free_y_8/2 + _free_y_10*_free_y_8**3/2 + _free_y_16*_free_y_22**2*_free_y_6 - _free_y_16*_free_y_22**2*_free_y_8 - _free_y_16*_free_y_22*_free_y_6*_free_y_8 + _free_y_16*_free_y_22*_free_y_8**2 - _free_y_22**2*_free_y_6**2/2 + _free_y_22**2*_free_y_8**2/2 + _free_y_22*_free_y_6**2*_free_y_8/2 - _free_y_22*_free_y_8**3/2"
+              ],
+              "separator_variables": [
+                "_free_x_21",
+                "_free_x_3",
+                "_free_x_5",
+                "_free_x_7",
+                "_free_x_9",
+                "_free_y_10",
+                "_free_y_16",
+                "_free_y_22",
+                "_free_y_4",
+                "_free_y_6",
+                "_free_y_8"
+              ],
+              "coefficient_nonzero_obligations": [
+                "-2*(_free_x_3 - _free_x_5) != 0",
+                "-2*(_free_x_3 - _free_x_7) != 0",
+                "_free_y_10 - _free_y_22 != 0"
+              ],
+              "buchberger_complete": false,
+              "goal_proved": false,
+              "goal_certificate_sha256": null,
+              "replayed": true,
+              "certificate_sha256": "a974fcd4591561a7f00dbad2db82bd7da3bc3a4157b6c3c3bfee3d264c57efeb"
+            },
+            {
+              "node_id": "separator:1:_free_x_9",
+              "variable": "_free_x_9",
+              "parent_node_ids": [
+                "construction:10:10",
+                "construction:7:7",
+                "separator:0:_free_x_15"
+              ],
+              "input_polynomials": [
+                "-2*_free_x_15*_free_x_3 + 2*_free_x_15*_free_x_5 + _free_x_3**2 - _free_x_5**2 - 2*_free_y_16*_free_y_4 + 2*_free_y_16*_free_y_6 + _free_y_4**2 - _free_y_6**2",
+                "-2*_free_x_15*_free_x_3 + 2*_free_x_15*_free_x_7 + _free_x_3**2 - _free_x_7**2 - 2*_free_y_16*_free_y_4 + 2*_free_y_16*_free_y_8 + _free_y_4**2 - _free_y_8**2",
+                "_free_x_15*_free_y_10 - _free_x_15*_free_y_22 - _free_x_21*_free_y_10 + _free_x_21*_free_y_16 - _free_x_9*_free_y_16 + _free_x_9*_free_y_22",
+                "_free_x_21*_free_x_5*_free_y_16*_free_y_22 - _free_x_21*_free_x_5*_free_y_16*_free_y_8 - _free_x_21*_free_x_5*_free_y_22*_free_y_8 + _free_x_21*_free_x_5*_free_y_8**2 - _free_x_21*_free_x_7*_free_y_16*_free_y_22 + _free_x_21*_free_x_7*_free_y_16*_free_y_8 + _free_x_21*_free_x_7*_free_y_22*_free_y_6 - _free_x_21*_free_x_7*_free_y_6*_free_y_8 - _free_x_21*_free_x_9*_free_y_22*_free_y_6 + _free_x_21*_free_x_9*_free_y_22*_free_y_8 + _free_x_21*_free_x_9*_free_y_6*_free_y_8 - _free_x_21*_free_x_9*_free_y_8**2 - _free_x_5**2*_free_y_22**2/2 + _free_x_5**2*_free_y_22*_free_y_8 - _free_x_5**2*_free_y_8**2/2 - _free_x_5*_free_x_7*_free_y_22*_free_y_6/2 + _free_x_5*_free_x_7*_free_y_22*_free_y_8/2 + _free_x_5*_free_x_7*_free_y_6*_free_y_8/2 - _free_x_5*_free_x_7*_free_y_8**2/2 - _free_x_5*_free_x_9*_free_y_16*_free_y_22 + _free_x_5*_free_x_9*_free_y_16*_free_y_8 + _free_x_5*_free_x_9*_free_y_22**2 + _free_x_5*_free_x_9*_free_y_22*_free_y_6/2 - 3*_free_x_5*_free_x_9*_free_y_22*_free_y_8/2 - _free_x_5*_free_x_9*_free_y_6*_free_y_8/2 + _free_x_5*_free_x_9*_free_y_8**2/2 + _free_x_7**2*_free_y_22**2/2 - _free_x_7**2*_free_y_22*_free_y_6/2 - _free_x_7**2*_free_y_22*_free_y_8/2 + _free_x_7**2*_free_y_6*_free_y_8/2 + _free_x_7*_free_x_9*_free_y_16*_free_y_22 - _free_x_7*_free_x_9*_free_y_16*_free_y_8 - _free_x_7*_free_x_9*_free_y_22**2 + _free_x_7*_free_x_9*_free_y_22*_free_y_6/2 + _free_x_7*_free_x_9*_free_y_22*_free_y_8/2 - _free_x_7*_free_x_9*_free_y_6*_free_y_8/2 + _free_x_7*_free_x_9*_free_y_8**2/2 - _free_y_10*_free_y_16*_free_y_22*_free_y_6 + _free_y_10*_free_y_16*_free_y_22*_free_y_8 + _free_y_10*_free_y_16*_free_y_6*_free_y_8 - _free_y_10*_free_y_16*_free_y_8**2 + _free_y_10*_free_y_22*_free_y_6**2/2 - _free_y_10*_free_y_22*_free_y_8**2/2 - _free_y_10*_free_y_6**2*_free_y_8/2 + _free_y_10*_free_y_8**3/2 + _free_y_16*_free_y_22**2*_free_y_6 - _free_y_16*_free_y_22**2*_free_y_8 - _free_y_16*_free_y_22*_free_y_6*_free_y_8 + _free_y_16*_free_y_22*_free_y_8**2 - _free_y_22**2*_free_y_6**2/2 + _free_y_22**2*_free_y_8**2/2 + _free_y_22*_free_y_6**2*_free_y_8/2 - _free_y_22*_free_y_8**3/2",
+                "_free_x_3*_free_x_5 - _free_x_3*_free_x_7 - _free_x_5*_free_x_9 + _free_x_7*_free_x_9 - _free_y_10*_free_y_6 + _free_y_10*_free_y_8 + _free_y_4*_free_y_6 - _free_y_4*_free_y_8",
+                "_free_x_3*_free_x_7*_free_y_6 - _free_x_3*_free_x_7*_free_y_8 - _free_x_3*_free_x_9*_free_y_6 + _free_x_3*_free_x_9*_free_y_8 - _free_x_7*_free_x_9*_free_y_6 + _free_x_7*_free_x_9*_free_y_8 + _free_x_9**2*_free_y_6 - _free_x_9**2*_free_y_8 + _free_y_10**2*_free_y_6 - _free_y_10**2*_free_y_8 - _free_y_10*_free_y_4*_free_y_6 + _free_y_10*_free_y_4*_free_y_8 - _free_y_10*_free_y_6*_free_y_8 + _free_y_10*_free_y_8**2 + _free_y_4*_free_y_6*_free_y_8 - _free_y_4*_free_y_8**2",
+                "_free_x_5*_free_y_10 - _free_x_5*_free_y_8 - _free_x_7*_free_y_10 + _free_x_7*_free_y_6 - _free_x_9*_free_y_6 + _free_x_9*_free_y_8"
+              ],
+              "output_polynomials": [
+                "_free_x_15*_free_x_3 - _free_x_15*_free_x_5 - _free_x_3**2/2 + _free_x_5**2/2 + _free_y_16*_free_y_4 - _free_y_16*_free_y_6 - _free_y_4**2/2 + _free_y_6**2/2",
+                "_free_x_15*_free_x_5 - _free_x_15*_free_x_7 - _free_x_5**2/2 + _free_x_7**2/2 + _free_y_16*_free_y_6 - _free_y_16*_free_y_8 - _free_y_6**2/2 + _free_y_8**2/2",
+                "_free_x_3**2*_free_x_5 - _free_x_3**2*_free_x_7 - _free_x_3*_free_x_5**2 + _free_x_3*_free_x_7**2 + 2*_free_x_3*_free_y_16*_free_y_6 - 2*_free_x_3*_free_y_16*_free_y_8 - _free_x_3*_free_y_6**2 + _free_x_3*_free_y_8**2 + _free_x_5**2*_free_x_7 - _free_x_5*_free_x_7**2 - 2*_free_x_5*_free_y_16*_free_y_4 + 2*_free_x_5*_free_y_16*_free_y_8 + _free_x_5*_free_y_4**2 - _free_x_5*_free_y_8**2 + 2*_free_x_7*_free_y_16*_free_y_4 - 2*_free_x_7*_free_y_16*_free_y_6 - _free_x_7*_free_y_4**2 + _free_x_7*_free_y_6**2",
+                "_free_x_21*_free_x_5*_free_y_10*_free_y_6 - _free_x_21*_free_x_5*_free_y_10*_free_y_8 - _free_x_21*_free_x_5*_free_y_16*_free_y_6 + _free_x_21*_free_x_5*_free_y_16*_free_y_8 - _free_x_21*_free_x_7*_free_y_10*_free_y_6 + _free_x_21*_free_x_7*_free_y_10*_free_y_8 + _free_x_21*_free_x_7*_free_y_16*_free_y_6 - _free_x_21*_free_x_7*_free_y_16*_free_y_8 + _free_x_5**2*_free_y_10*_free_y_16 - _free_x_5**2*_free_y_10*_free_y_22 - _free_x_5**2*_free_y_10*_free_y_6/2 + _free_x_5**2*_free_y_10*_free_y_8/2 - _free_x_5**2*_free_y_16*_free_y_8 + _free_x_5**2*_free_y_22*_free_y_6/2 + _free_x_5**2*_free_y_22*_free_y_8/2 - 2*_free_x_5*_free_x_7*_free_y_10*_free_y_16 + 2*_free_x_5*_free_x_7*_free_y_10*_free_y_22 + _free_x_5*_free_x_7*_free_y_16*_free_y_6 + _free_x_5*_free_x_7*_free_y_16*_free_y_8 - _free_x_5*_free_x_7*_free_y_22*_free_y_6 - _free_x_5*_free_x_7*_free_y_22*_free_y_8 + _free_x_7**2*_free_y_10*_free_y_16 - _free_x_7**2*_free_y_10*_free_y_22 + _free_x_7**2*_free_y_10*_free_y_6/2 - _free_x_7**2*_free_y_10*_free_y_8/2 - _free_x_7**2*_free_y_16*_free_y_6 + _free_x_7**2*_free_y_22*_free_y_6/2 + _free_x_7**2*_free_y_22*_free_y_8/2 + _free_y_10*_free_y_16*_free_y_6**2 - 2*_free_y_10*_free_y_16*_free_y_6*_free_y_8 + _free_y_10*_free_y_16*_free_y_8**2 - _free_y_10*_free_y_6**3/2 + _free_y_10*_free_y_6**2*_free_y_8/2 + _free_y_10*_free_y_6*_free_y_8**2/2 - _free_y_10*_free_y_8**3/2 - _free_y_16*_free_y_22*_free_y_6**2 + 2*_free_y_16*_free_y_22*_free_y_6*_free_y_8 - _free_y_16*_free_y_22*_free_y_8**2 + _free_y_22*_free_y_6**3/2 - _free_y_22*_free_y_6**2*_free_y_8/2 - _free_y_22*_free_y_6*_free_y_8**2/2 + _free_y_22*_free_y_8**3/2"
+              ],
+              "separator_variables": [
+                "_free_x_15",
+                "_free_x_21",
+                "_free_x_3",
+                "_free_x_5",
+                "_free_x_7",
+                "_free_y_10",
+                "_free_y_16",
+                "_free_y_22",
+                "_free_y_4",
+                "_free_y_6",
+                "_free_y_8"
+              ],
+              "coefficient_nonzero_obligations": [
+                "-(-_free_y_22 + _free_y_8)*(-2*_free_x_21*_free_y_6 + 2*_free_x_21*_free_y_8 - 2*_free_x_5*_free_y_16 + 2*_free_x_5*_free_y_22 + _free_x_5*_free_y_6 - _free_x_5*_free_y_8 + 2*_free_x_7*_free_y_16 - 2*_free_x_7*_free_y_22 + _free_x_7*_free_y_6 - _free_x_7*_free_y_8)/2 != 0",
+                "-_free_x_5 + _free_x_7 != 0",
+                "-_free_y_16 + _free_y_22 != 0",
+                "-_free_y_6 + _free_y_8 != 0",
+                "_free_y_6 - _free_y_8 != 0"
+              ],
+              "buchberger_complete": false,
+              "goal_proved": false,
+              "goal_certificate_sha256": null,
+              "replayed": true,
+              "certificate_sha256": "9775782f41ee9e0d566a6a3647a3b77bbe7768d0d1e49b8478b18907ec2a6592"
+            },
+            {
+              "node_id": "separator:2:_free_y_10",
+              "variable": "_free_y_10",
+              "parent_node_ids": [
+                "construction:10:10",
+                "construction:7:7",
+                "separator:0:_free_x_15",
+                "separator:1:_free_x_9"
+              ],
+              "input_polynomials": [
+                "-2*_free_x_15*_free_x_3 + 2*_free_x_15*_free_x_5 + _free_x_3**2 - _free_x_5**2 - 2*_free_y_16*_free_y_4 + 2*_free_y_16*_free_y_6 + _free_y_4**2 - _free_y_6**2",
+                "-2*_free_x_15*_free_x_3 + 2*_free_x_15*_free_x_7 + _free_x_3**2 - _free_x_7**2 - 2*_free_y_16*_free_y_4 + 2*_free_y_16*_free_y_8 + _free_y_4**2 - _free_y_8**2",
+                "_free_x_15*_free_x_3 - _free_x_15*_free_x_5 - _free_x_3**2/2 + _free_x_5**2/2 + _free_y_16*_free_y_4 - _free_y_16*_free_y_6 - _free_y_4**2/2 + _free_y_6**2/2",
+                "_free_x_15*_free_x_5 - _free_x_15*_free_x_7 - _free_x_5**2/2 + _free_x_7**2/2 + _free_y_16*_free_y_6 - _free_y_16*_free_y_8 - _free_y_6**2/2 + _free_y_8**2/2",
+                "_free_x_15*_free_y_10 - _free_x_15*_free_y_22 - _free_x_21*_free_y_10 + _free_x_21*_free_y_16 - _free_x_9*_free_y_16 + _free_x_9*_free_y_22",
+                "_free_x_21*_free_x_5*_free_y_10*_free_y_6 - _free_x_21*_free_x_5*_free_y_10*_free_y_8 - _free_x_21*_free_x_5*_free_y_16*_free_y_6 + _free_x_21*_free_x_5*_free_y_16*_free_y_8 - _free_x_21*_free_x_7*_free_y_10*_free_y_6 + _free_x_21*_free_x_7*_free_y_10*_free_y_8 + _free_x_21*_free_x_7*_free_y_16*_free_y_6 - _free_x_21*_free_x_7*_free_y_16*_free_y_8 + _free_x_5**2*_free_y_10*_free_y_16 - _free_x_5**2*_free_y_10*_free_y_22 - _free_x_5**2*_free_y_10*_free_y_6/2 + _free_x_5**2*_free_y_10*_free_y_8/2 - _free_x_5**2*_free_y_16*_free_y_8 + _free_x_5**2*_free_y_22*_free_y_6/2 + _free_x_5**2*_free_y_22*_free_y_8/2 - 2*_free_x_5*_free_x_7*_free_y_10*_free_y_16 + 2*_free_x_5*_free_x_7*_free_y_10*_free_y_22 + _free_x_5*_free_x_7*_free_y_16*_free_y_6 + _free_x_5*_free_x_7*_free_y_16*_free_y_8 - _free_x_5*_free_x_7*_free_y_22*_free_y_6 - _free_x_5*_free_x_7*_free_y_22*_free_y_8 + _free_x_7**2*_free_y_10*_free_y_16 - _free_x_7**2*_free_y_10*_free_y_22 + _free_x_7**2*_free_y_10*_free_y_6/2 - _free_x_7**2*_free_y_10*_free_y_8/2 - _free_x_7**2*_free_y_16*_free_y_6 + _free_x_7**2*_free_y_22*_free_y_6/2 + _free_x_7**2*_free_y_22*_free_y_8/2 + _free_y_10*_free_y_16*_free_y_6**2 - 2*_free_y_10*_free_y_16*_free_y_6*_free_y_8 + _free_y_10*_free_y_16*_free_y_8**2 - _free_y_10*_free_y_6**3/2 + _free_y_10*_free_y_6**2*_free_y_8/2 + _free_y_10*_free_y_6*_free_y_8**2/2 - _free_y_10*_free_y_8**3/2 - _free_y_16*_free_y_22*_free_y_6**2 + 2*_free_y_16*_free_y_22*_free_y_6*_free_y_8 - _free_y_16*_free_y_22*_free_y_8**2 + _free_y_22*_free_y_6**3/2 - _free_y_22*_free_y_6**2*_free_y_8/2 - _free_y_22*_free_y_6*_free_y_8**2/2 + _free_y_22*_free_y_8**3/2",
+                "_free_x_21*_free_x_5*_free_y_16*_free_y_22 - _free_x_21*_free_x_5*_free_y_16*_free_y_8 - _free_x_21*_free_x_5*_free_y_22*_free_y_8 + _free_x_21*_free_x_5*_free_y_8**2 - _free_x_21*_free_x_7*_free_y_16*_free_y_22 + _free_x_21*_free_x_7*_free_y_16*_free_y_8 + _free_x_21*_free_x_7*_free_y_22*_free_y_6 - _free_x_21*_free_x_7*_free_y_6*_free_y_8 - _free_x_21*_free_x_9*_free_y_22*_free_y_6 + _free_x_21*_free_x_9*_free_y_22*_free_y_8 + _free_x_21*_free_x_9*_free_y_6*_free_y_8 - _free_x_21*_free_x_9*_free_y_8**2 - _free_x_5**2*_free_y_22**2/2 + _free_x_5**2*_free_y_22*_free_y_8 - _free_x_5**2*_free_y_8**2/2 - _free_x_5*_free_x_7*_free_y_22*_free_y_6/2 + _free_x_5*_free_x_7*_free_y_22*_free_y_8/2 + _free_x_5*_free_x_7*_free_y_6*_free_y_8/2 - _free_x_5*_free_x_7*_free_y_8**2/2 - _free_x_5*_free_x_9*_free_y_16*_free_y_22 + _free_x_5*_free_x_9*_free_y_16*_free_y_8 + _free_x_5*_free_x_9*_free_y_22**2 + _free_x_5*_free_x_9*_free_y_22*_free_y_6/2 - 3*_free_x_5*_free_x_9*_free_y_22*_free_y_8/2 - _free_x_5*_free_x_9*_free_y_6*_free_y_8/2 + _free_x_5*_free_x_9*_free_y_8**2/2 + _free_x_7**2*_free_y_22**2/2 - _free_x_7**2*_free_y_22*_free_y_6/2 - _free_x_7**2*_free_y_22*_free_y_8/2 + _free_x_7**2*_free_y_6*_free_y_8/2 + _free_x_7*_free_x_9*_free_y_16*_free_y_22 - _free_x_7*_free_x_9*_free_y_16*_free_y_8 - _free_x_7*_free_x_9*_free_y_22**2 + _free_x_7*_free_x_9*_free_y_22*_free_y_6/2 + _free_x_7*_free_x_9*_free_y_22*_free_y_8/2 - _free_x_7*_free_x_9*_free_y_6*_free_y_8/2 + _free_x_7*_free_x_9*_free_y_8**2/2 - _free_y_10*_free_y_16*_free_y_22*_free_y_6 + _free_y_10*_free_y_16*_free_y_22*_free_y_8 + _free_y_10*_free_y_16*_free_y_6*_free_y_8 - _free_y_10*_free_y_16*_free_y_8**2 + _free_y_10*_free_y_22*_free_y_6**2/2 - _free_y_10*_free_y_22*_free_y_8**2/2 - _free_y_10*_free_y_6**2*_free_y_8/2 + _free_y_10*_free_y_8**3/2 + _free_y_16*_free_y_22**2*_free_y_6 - _free_y_16*_free_y_22**2*_free_y_8 - _free_y_16*_free_y_22*_free_y_6*_free_y_8 + _free_y_16*_free_y_22*_free_y_8**2 - _free_y_22**2*_free_y_6**2/2 + _free_y_22**2*_free_y_8**2/2 + _free_y_22*_free_y_6**2*_free_y_8/2 - _free_y_22*_free_y_8**3/2",
+                "_free_x_3**2*_free_x_5 - _free_x_3**2*_free_x_7 - _free_x_3*_free_x_5**2 + _free_x_3*_free_x_7**2 + 2*_free_x_3*_free_y_16*_free_y_6 - 2*_free_x_3*_free_y_16*_free_y_8 - _free_x_3*_free_y_6**2 + _free_x_3*_free_y_8**2 + _free_x_5**2*_free_x_7 - _free_x_5*_free_x_7**2 - 2*_free_x_5*_free_y_16*_free_y_4 + 2*_free_x_5*_free_y_16*_free_y_8 + _free_x_5*_free_y_4**2 - _free_x_5*_free_y_8**2 + 2*_free_x_7*_free_y_16*_free_y_4 - 2*_free_x_7*_free_y_16*_free_y_6 - _free_x_7*_free_y_4**2 + _free_x_7*_free_y_6**2",
+                "_free_x_3*_free_x_5 - _free_x_3*_free_x_7 - _free_x_5*_free_x_9 + _free_x_7*_free_x_9 - _free_y_10*_free_y_6 + _free_y_10*_free_y_8 + _free_y_4*_free_y_6 - _free_y_4*_free_y_8",
+                "_free_x_3*_free_x_7*_free_y_6 - _free_x_3*_free_x_7*_free_y_8 - _free_x_3*_free_x_9*_free_y_6 + _free_x_3*_free_x_9*_free_y_8 - _free_x_7*_free_x_9*_free_y_6 + _free_x_7*_free_x_9*_free_y_8 + _free_x_9**2*_free_y_6 - _free_x_9**2*_free_y_8 + _free_y_10**2*_free_y_6 - _free_y_10**2*_free_y_8 - _free_y_10*_free_y_4*_free_y_6 + _free_y_10*_free_y_4*_free_y_8 - _free_y_10*_free_y_6*_free_y_8 + _free_y_10*_free_y_8**2 + _free_y_4*_free_y_6*_free_y_8 - _free_y_4*_free_y_8**2",
+                "_free_x_5*_free_y_10 - _free_x_5*_free_y_8 - _free_x_7*_free_y_10 + _free_x_7*_free_y_6 - _free_x_9*_free_y_6 + _free_x_9*_free_y_8"
+              ],
+              "output_polynomials": [
+                "_free_x_15*_free_x_3 - _free_x_15*_free_x_5 - _free_x_3**2/2 + _free_x_5**2/2 + _free_y_16*_free_y_4 - _free_y_16*_free_y_6 - _free_y_4**2/2 + _free_y_6**2/2",
+                "_free_x_15*_free_x_5 - _free_x_15*_free_x_7 - _free_x_5**2/2 + _free_x_7**2/2 + _free_y_16*_free_y_6 - _free_y_16*_free_y_8 - _free_y_6**2/2 + _free_y_8**2/2",
+                "_free_x_3**2*_free_x_5 - _free_x_3**2*_free_x_7 - _free_x_3*_free_x_5**2 + _free_x_3*_free_x_7**2 + 2*_free_x_3*_free_y_16*_free_y_6 - 2*_free_x_3*_free_y_16*_free_y_8 - _free_x_3*_free_y_6**2 + _free_x_3*_free_y_8**2 + _free_x_5**2*_free_x_7 - _free_x_5*_free_x_7**2 - 2*_free_x_5*_free_y_16*_free_y_4 + 2*_free_x_5*_free_y_16*_free_y_8 + _free_x_5*_free_y_4**2 - _free_x_5*_free_y_8**2 + 2*_free_x_7*_free_y_16*_free_y_4 - 2*_free_x_7*_free_y_16*_free_y_6 - _free_x_7*_free_y_4**2 + _free_x_7*_free_y_6**2",
+                "_free_x_21*_free_x_5*_free_y_16*_free_y_22 - _free_x_21*_free_x_5*_free_y_16*_free_y_8 - _free_x_21*_free_x_5*_free_y_22*_free_y_8 + _free_x_21*_free_x_5*_free_y_8**2 - _free_x_21*_free_x_7*_free_y_16*_free_y_22 + _free_x_21*_free_x_7*_free_y_16*_free_y_8 + _free_x_21*_free_x_7*_free_y_22*_free_y_6 - _free_x_21*_free_x_7*_free_y_6*_free_y_8 - _free_x_21*_free_x_9*_free_y_22*_free_y_6 + _free_x_21*_free_x_9*_free_y_22*_free_y_8 + _free_x_21*_free_x_9*_free_y_6*_free_y_8 - _free_x_21*_free_x_9*_free_y_8**2 - _free_x_3*_free_x_5*_free_y_16*_free_y_22 + _free_x_3*_free_x_5*_free_y_16*_free_y_8 + _free_x_3*_free_x_5*_free_y_22*_free_y_6/2 + _free_x_3*_free_x_5*_free_y_22*_free_y_8/2 - _free_x_3*_free_x_5*_free_y_6*_free_y_8/2 - _free_x_3*_free_x_5*_free_y_8**2/2 + _free_x_3*_free_x_7*_free_y_16*_free_y_22 - _free_x_3*_free_x_7*_free_y_16*_free_y_8 - _free_x_3*_free_x_7*_free_y_22*_free_y_6/2 - _free_x_3*_free_x_7*_free_y_22*_free_y_8/2 + _free_x_3*_free_x_7*_free_y_6*_free_y_8/2 + _free_x_3*_free_x_7*_free_y_8**2/2 - _free_x_5**2*_free_y_22**2/2 + _free_x_5**2*_free_y_22*_free_y_8 - _free_x_5**2*_free_y_8**2/2 - _free_x_5*_free_x_7*_free_y_22*_free_y_6/2 + _free_x_5*_free_x_7*_free_y_22*_free_y_8/2 + _free_x_5*_free_x_7*_free_y_6*_free_y_8/2 - _free_x_5*_free_x_7*_free_y_8**2/2 + _free_x_5*_free_x_9*_free_y_22**2 - 2*_free_x_5*_free_x_9*_free_y_22*_free_y_8 + _free_x_5*_free_x_9*_free_y_8**2 + _free_x_7**2*_free_y_22**2/2 - _free_x_7**2*_free_y_22*_free_y_6/2 - _free_x_7**2*_free_y_22*_free_y_8/2 + _free_x_7**2*_free_y_6*_free_y_8/2 - _free_x_7*_free_x_9*_free_y_22**2 + _free_x_7*_free_x_9*_free_y_22*_free_y_6 + _free_x_7*_free_x_9*_free_y_22*_free_y_8 - _free_x_7*_free_x_9*_free_y_6*_free_y_8 + _free_y_16*_free_y_22**2*_free_y_6 - _free_y_16*_free_y_22**2*_free_y_8 - _free_y_16*_free_y_22*_free_y_4*_free_y_6 + _free_y_16*_free_y_22*_free_y_4*_free_y_8 - _free_y_16*_free_y_22*_free_y_6*_free_y_8 + _free_y_16*_free_y_22*_free_y_8**2 + _free_y_16*_free_y_4*_free_y_6*_free_y_8 - _free_y_16*_free_y_4*_free_y_8**2 - _free_y_22**2*_free_y_6**2/2 + _free_y_22**2*_free_y_8**2/2 + _free_y_22*_free_y_4*_free_y_6**2/2 - _free_y_22*_free_y_4*_free_y_8**2/2 + _free_y_22*_free_y_6**2*_free_y_8/2 - _free_y_22*_free_y_8**3/2 - _free_y_4*_free_y_6**2*_free_y_8/2 + _free_y_4*_free_y_8**3/2"
+              ],
+              "separator_variables": [
+                "_free_x_15",
+                "_free_x_21",
+                "_free_x_3",
+                "_free_x_5",
+                "_free_x_7",
+                "_free_x_9",
+                "_free_y_16",
+                "_free_y_22",
+                "_free_y_4",
+                "_free_y_6",
+                "_free_y_8"
+              ],
+              "coefficient_nonzero_obligations": [
+                "-(-2*_free_x_21*_free_x_5*_free_y_6 + 2*_free_x_21*_free_x_5*_free_y_8 + 2*_free_x_21*_free_x_7*_free_y_6 - 2*_free_x_21*_free_x_7*_free_y_8 - 2*_free_x_5**2*_free_y_16 + 2*_free_x_5**2*_free_y_22 + _free_x_5**2*_free_y_6 - _free_x_5**2*_free_y_8 + 4*_free_x_5*_free_x_7*_free_y_16 - 4*_free_x_5*_free_x_7*_free_y_22 - 2*_free_x_7**2*_free_y_16 + 2*_free_x_7**2*_free_y_22 - _free_x_7**2*_free_y_6 + _free_x_7**2*_free_y_8 - 2*_free_y_16*_free_y_6**2 + 4*_free_y_16*_free_y_6*_free_y_8 - 2*_free_y_16*_free_y_8**2 + _free_y_6**3 - _free_y_6**2*_free_y_8 - _free_y_6*_free_y_8**2 + _free_y_8**3)/2 != 0",
+                "-(-_free_y_22 + _free_y_8)*(_free_y_6 - _free_y_8)*(-2*_free_y_16 + _free_y_6 + _free_y_8)/2 != 0",
+                "-_free_y_6 + _free_y_8 != 0",
+                "_free_x_15 - _free_x_21 != 0",
+                "_free_x_5 - _free_x_7 != 0",
+                "_free_y_6 - _free_y_8 != 0"
+              ],
+              "buchberger_complete": false,
+              "goal_proved": false,
+              "goal_certificate_sha256": null,
+              "replayed": true,
+              "certificate_sha256": "89983e8af1ca258205362c0c9a0ce6b6d478938b971cd5593af3f90fffdb492c"
+            },
+            {
+              "node_id": "separator:3:_free_y_16",
+              "variable": "_free_y_16",
+              "parent_node_ids": [
+                "construction:10:10",
+                "construction:7:7",
+                "separator:0:_free_x_15",
+                "separator:1:_free_x_9",
+                "separator:2:_free_y_10"
+              ],
+              "input_polynomials": [
+                "-2*_free_x_15*_free_x_3 + 2*_free_x_15*_free_x_5 + _free_x_3**2 - _free_x_5**2 - 2*_free_y_16*_free_y_4 + 2*_free_y_16*_free_y_6 + _free_y_4**2 - _free_y_6**2",
+                "-2*_free_x_15*_free_x_3 + 2*_free_x_15*_free_x_7 + _free_x_3**2 - _free_x_7**2 - 2*_free_y_16*_free_y_4 + 2*_free_y_16*_free_y_8 + _free_y_4**2 - _free_y_8**2",
+                "_free_x_15*_free_x_3 - _free_x_15*_free_x_5 - _free_x_3**2/2 + _free_x_5**2/2 + _free_y_16*_free_y_4 - _free_y_16*_free_y_6 - _free_y_4**2/2 + _free_y_6**2/2",
+                "_free_x_15*_free_x_5 - _free_x_15*_free_x_7 - _free_x_5**2/2 + _free_x_7**2/2 + _free_y_16*_free_y_6 - _free_y_16*_free_y_8 - _free_y_6**2/2 + _free_y_8**2/2",
+                "_free_x_15*_free_y_10 - _free_x_15*_free_y_22 - _free_x_21*_free_y_10 + _free_x_21*_free_y_16 - _free_x_9*_free_y_16 + _free_x_9*_free_y_22",
+                "_free_x_21*_free_x_5*_free_y_10*_free_y_6 - _free_x_21*_free_x_5*_free_y_10*_free_y_8 - _free_x_21*_free_x_5*_free_y_16*_free_y_6 + _free_x_21*_free_x_5*_free_y_16*_free_y_8 - _free_x_21*_free_x_7*_free_y_10*_free_y_6 + _free_x_21*_free_x_7*_free_y_10*_free_y_8 + _free_x_21*_free_x_7*_free_y_16*_free_y_6 - _free_x_21*_free_x_7*_free_y_16*_free_y_8 + _free_x_5**2*_free_y_10*_free_y_16 - _free_x_5**2*_free_y_10*_free_y_22 - _free_x_5**2*_free_y_10*_free_y_6/2 + _free_x_5**2*_free_y_10*_free_y_8/2 - _free_x_5**2*_free_y_16*_free_y_8 + _free_x_5**2*_free_y_22*_free_y_6/2 + _free_x_5**2*_free_y_22*_free_y_8/2 - 2*_free_x_5*_free_x_7*_free_y_10*_free_y_16 + 2*_free_x_5*_free_x_7*_free_y_10*_free_y_22 + _free_x_5*_free_x_7*_free_y_16*_free_y_6 + _free_x_5*_free_x_7*_free_y_16*_free_y_8 - _free_x_5*_free_x_7*_free_y_22*_free_y_6 - _free_x_5*_free_x_7*_free_y_22*_free_y_8 + _free_x_7**2*_free_y_10*_free_y_16 - _free_x_7**2*_free_y_10*_free_y_22 + _free_x_7**2*_free_y_10*_free_y_6/2 - _free_x_7**2*_free_y_10*_free_y_8/2 - _free_x_7**2*_free_y_16*_free_y_6 + _free_x_7**2*_free_y_22*_free_y_6/2 + _free_x_7**2*_free_y_22*_free_y_8/2 + _free_y_10*_free_y_16*_free_y_6**2 - 2*_free_y_10*_free_y_16*_free_y_6*_free_y_8 + _free_y_10*_free_y_16*_free_y_8**2 - _free_y_10*_free_y_6**3/2 + _free_y_10*_free_y_6**2*_free_y_8/2 + _free_y_10*_free_y_6*_free_y_8**2/2 - _free_y_10*_free_y_8**3/2 - _free_y_16*_free_y_22*_free_y_6**2 + 2*_free_y_16*_free_y_22*_free_y_6*_free_y_8 - _free_y_16*_free_y_22*_free_y_8**2 + _free_y_22*_free_y_6**3/2 - _free_y_22*_free_y_6**2*_free_y_8/2 - _free_y_22*_free_y_6*_free_y_8**2/2 + _free_y_22*_free_y_8**3/2",
+                "_free_x_21*_free_x_5*_free_y_16*_free_y_22 - _free_x_21*_free_x_5*_free_y_16*_free_y_8 - _free_x_21*_free_x_5*_free_y_22*_free_y_8 + _free_x_21*_free_x_5*_free_y_8**2 - _free_x_21*_free_x_7*_free_y_16*_free_y_22 + _free_x_21*_free_x_7*_free_y_16*_free_y_8 + _free_x_21*_free_x_7*_free_y_22*_free_y_6 - _free_x_21*_free_x_7*_free_y_6*_free_y_8 - _free_x_21*_free_x_9*_free_y_22*_free_y_6 + _free_x_21*_free_x_9*_free_y_22*_free_y_8 + _free_x_21*_free_x_9*_free_y_6*_free_y_8 - _free_x_21*_free_x_9*_free_y_8**2 - _free_x_3*_free_x_5*_free_y_16*_free_y_22 + _free_x_3*_free_x_5*_free_y_16*_free_y_8 + _free_x_3*_free_x_5*_free_y_22*_free_y_6/2 + _free_x_3*_free_x_5*_free_y_22*_free_y_8/2 - _free_x_3*_free_x_5*_free_y_6*_free_y_8/2 - _free_x_3*_free_x_5*_free_y_8**2/2 + _free_x_3*_free_x_7*_free_y_16*_free_y_22 - _free_x_3*_free_x_7*_free_y_16*_free_y_8 - _free_x_3*_free_x_7*_free_y_22*_free_y_6/2 - _free_x_3*_free_x_7*_free_y_22*_free_y_8/2 + _free_x_3*_free_x_7*_free_y_6*_free_y_8/2 + _free_x_3*_free_x_7*_free_y_8**2/2 - _free_x_5**2*_free_y_22**2/2 + _free_x_5**2*_free_y_22*_free_y_8 - _free_x_5**2*_free_y_8**2/2 - _free_x_5*_free_x_7*_free_y_22*_free_y_6/2 + _free_x_5*_free_x_7*_free_y_22*_free_y_8/2 + _free_x_5*_free_x_7*_free_y_6*_free_y_8/2 - _free_x_5*_free_x_7*_free_y_8**2/2 + _free_x_5*_free_x_9*_free_y_22**2 - 2*_free_x_5*_free_x_9*_free_y_22*_free_y_8 + _free_x_5*_free_x_9*_free_y_8**2 + _free_x_7**2*_free_y_22**2/2 - _free_x_7**2*_free_y_22*_free_y_6/2 - _free_x_7**2*_free_y_22*_free_y_8/2 + _free_x_7**2*_free_y_6*_free_y_8/2 - _free_x_7*_free_x_9*_free_y_22**2 + _free_x_7*_free_x_9*_free_y_22*_free_y_6 + _free_x_7*_free_x_9*_free_y_22*_free_y_8 - _free_x_7*_free_x_9*_free_y_6*_free_y_8 + _free_y_16*_free_y_22**2*_free_y_6 - _free_y_16*_free_y_22**2*_free_y_8 - _free_y_16*_free_y_22*_free_y_4*_free_y_6 + _free_y_16*_free_y_22*_free_y_4*_free_y_8 - _free_y_16*_free_y_22*_free_y_6*_free_y_8 + _free_y_16*_free_y_22*_free_y_8**2 + _free_y_16*_free_y_4*_free_y_6*_free_y_8 - _free_y_16*_free_y_4*_free_y_8**2 - _free_y_22**2*_free_y_6**2/2 + _free_y_22**2*_free_y_8**2/2 + _free_y_22*_free_y_4*_free_y_6**2/2 - _free_y_22*_free_y_4*_free_y_8**2/2 + _free_y_22*_free_y_6**2*_free_y_8/2 - _free_y_22*_free_y_8**3/2 - _free_y_4*_free_y_6**2*_free_y_8/2 + _free_y_4*_free_y_8**3/2",
+                "_free_x_21*_free_x_5*_free_y_16*_free_y_22 - _free_x_21*_free_x_5*_free_y_16*_free_y_8 - _free_x_21*_free_x_5*_free_y_22*_free_y_8 + _free_x_21*_free_x_5*_free_y_8**2 - _free_x_21*_free_x_7*_free_y_16*_free_y_22 + _free_x_21*_free_x_7*_free_y_16*_free_y_8 + _free_x_21*_free_x_7*_free_y_22*_free_y_6 - _free_x_21*_free_x_7*_free_y_6*_free_y_8 - _free_x_21*_free_x_9*_free_y_22*_free_y_6 + _free_x_21*_free_x_9*_free_y_22*_free_y_8 + _free_x_21*_free_x_9*_free_y_6*_free_y_8 - _free_x_21*_free_x_9*_free_y_8**2 - _free_x_5**2*_free_y_22**2/2 + _free_x_5**2*_free_y_22*_free_y_8 - _free_x_5**2*_free_y_8**2/2 - _free_x_5*_free_x_7*_free_y_22*_free_y_6/2 + _free_x_5*_free_x_7*_free_y_22*_free_y_8/2 + _free_x_5*_free_x_7*_free_y_6*_free_y_8/2 - _free_x_5*_free_x_7*_free_y_8**2/2 - _free_x_5*_free_x_9*_free_y_16*_free_y_22 + _free_x_5*_free_x_9*_free_y_16*_free_y_8 + _free_x_5*_free_x_9*_free_y_22**2 + _free_x_5*_free_x_9*_free_y_22*_free_y_6/2 - 3*_free_x_5*_free_x_9*_free_y_22*_free_y_8/2 - _free_x_5*_free_x_9*_free_y_6*_free_y_8/2 + _free_x_5*_free_x_9*_free_y_8**2/2 + _free_x_7**2*_free_y_22**2/2 - _free_x_7**2*_free_y_22*_free_y_6/2 - _free_x_7**2*_free_y_22*_free_y_8/2 + _free_x_7**2*_free_y_6*_free_y_8/2 + _free_x_7*_free_x_9*_free_y_16*_free_y_22 - _free_x_7*_free_x_9*_free_y_16*_free_y_8 - _free_x_7*_free_x_9*_free_y_22**2 + _free_x_7*_free_x_9*_free_y_22*_free_y_6/2 + _free_x_7*_free_x_9*_free_y_22*_free_y_8/2 - _free_x_7*_free_x_9*_free_y_6*_free_y_8/2 + _free_x_7*_free_x_9*_free_y_8**2/2 - _free_y_10*_free_y_16*_free_y_22*_free_y_6 + _free_y_10*_free_y_16*_free_y_22*_free_y_8 + _free_y_10*_free_y_16*_free_y_6*_free_y_8 - _free_y_10*_free_y_16*_free_y_8**2 + _free_y_10*_free_y_22*_free_y_6**2/2 - _free_y_10*_free_y_22*_free_y_8**2/2 - _free_y_10*_free_y_6**2*_free_y_8/2 + _free_y_10*_free_y_8**3/2 + _free_y_16*_free_y_22**2*_free_y_6 - _free_y_16*_free_y_22**2*_free_y_8 - _free_y_16*_free_y_22*_free_y_6*_free_y_8 + _free_y_16*_free_y_22*_free_y_8**2 - _free_y_22**2*_free_y_6**2/2 + _free_y_22**2*_free_y_8**2/2 + _free_y_22*_free_y_6**2*_free_y_8/2 - _free_y_22*_free_y_8**3/2",
+                "_free_x_3**2*_free_x_5 - _free_x_3**2*_free_x_7 - _free_x_3*_free_x_5**2 + _free_x_3*_free_x_7**2 + 2*_free_x_3*_free_y_16*_free_y_6 - 2*_free_x_3*_free_y_16*_free_y_8 - _free_x_3*_free_y_6**2 + _free_x_3*_free_y_8**2 + _free_x_5**2*_free_x_7 - _free_x_5*_free_x_7**2 - 2*_free_x_5*_free_y_16*_free_y_4 + 2*_free_x_5*_free_y_16*_free_y_8 + _free_x_5*_free_y_4**2 - _free_x_5*_free_y_8**2 + 2*_free_x_7*_free_y_16*_free_y_4 - 2*_free_x_7*_free_y_16*_free_y_6 - _free_x_7*_free_y_4**2 + _free_x_7*_free_y_6**2",
+                "_free_x_3*_free_x_5 - _free_x_3*_free_x_7 - _free_x_5*_free_x_9 + _free_x_7*_free_x_9 - _free_y_10*_free_y_6 + _free_y_10*_free_y_8 + _free_y_4*_free_y_6 - _free_y_4*_free_y_8",
+                "_free_x_3*_free_x_7*_free_y_6 - _free_x_3*_free_x_7*_free_y_8 - _free_x_3*_free_x_9*_free_y_6 + _free_x_3*_free_x_9*_free_y_8 - _free_x_7*_free_x_9*_free_y_6 + _free_x_7*_free_x_9*_free_y_8 + _free_x_9**2*_free_y_6 - _free_x_9**2*_free_y_8 + _free_y_10**2*_free_y_6 - _free_y_10**2*_free_y_8 - _free_y_10*_free_y_4*_free_y_6 + _free_y_10*_free_y_4*_free_y_8 - _free_y_10*_free_y_6*_free_y_8 + _free_y_10*_free_y_8**2 + _free_y_4*_free_y_6*_free_y_8 - _free_y_4*_free_y_8**2",
+                "_free_x_5*_free_y_10 - _free_x_5*_free_y_8 - _free_x_7*_free_y_10 + _free_x_7*_free_y_6 - _free_x_9*_free_y_6 + _free_x_9*_free_y_8"
+              ],
+              "output_polynomials": [
+                "_free_x_5*_free_y_10 - _free_x_5*_free_y_8 - _free_x_7*_free_y_10 + _free_x_7*_free_y_6 - _free_x_9*_free_y_6 + _free_x_9*_free_y_8",
+                "_free_x_3*_free_x_7*_free_y_6 - _free_x_3*_free_x_7*_free_y_8 - _free_x_3*_free_x_9*_free_y_6 + _free_x_3*_free_x_9*_free_y_8 - _free_x_7*_free_x_9*_free_y_6 + _free_x_7*_free_x_9*_free_y_8 + _free_x_9**2*_free_y_6 - _free_x_9**2*_free_y_8 + _free_y_10**2*_free_y_6 - _free_y_10**2*_free_y_8 - _free_y_10*_free_y_4*_free_y_6 + _free_y_10*_free_y_4*_free_y_8 - _free_y_10*_free_y_6*_free_y_8 + _free_y_10*_free_y_8**2 + _free_y_4*_free_y_6*_free_y_8 - _free_y_4*_free_y_8**2",
+                "_free_x_15*_free_x_3*_free_y_6 - _free_x_15*_free_x_3*_free_y_8 - _free_x_15*_free_x_5*_free_y_4 + _free_x_15*_free_x_5*_free_y_8 + _free_x_15*_free_x_7*_free_y_4 - _free_x_15*_free_x_7*_free_y_6 - _free_x_3**2*_free_y_6/2 + _free_x_3**2*_free_y_8/2 + _free_x_5**2*_free_y_4/2 - _free_x_5**2*_free_y_8/2 - _free_x_7**2*_free_y_4/2 + _free_x_7**2*_free_y_6/2 - _free_y_4**2*_free_y_6/2 + _free_y_4**2*_free_y_8/2 + _free_y_4*_free_y_6**2/2 - _free_y_4*_free_y_8**2/2 - _free_y_6**2*_free_y_8/2 + _free_y_6*_free_y_8**2/2",
+                "_free_x_3*_free_x_5 - _free_x_3*_free_x_7 - _free_x_5*_free_x_9 + _free_x_7*_free_x_9 - _free_y_10*_free_y_6 + _free_y_10*_free_y_8 + _free_y_4*_free_y_6 - _free_y_4*_free_y_8"
+              ],
+              "separator_variables": [
+                "_free_x_15",
+                "_free_x_21",
+                "_free_x_3",
+                "_free_x_5",
+                "_free_x_7",
+                "_free_x_9",
+                "_free_y_10",
+                "_free_y_22",
+                "_free_y_4",
+                "_free_y_6",
+                "_free_y_8"
+              ],
+              "coefficient_nonzero_obligations": [
+                "(-_free_y_22 + _free_y_8)*(-_free_x_21*_free_x_5 + _free_x_21*_free_x_7 + _free_x_3*_free_x_5 - _free_x_3*_free_x_7 - _free_y_22*_free_y_6 + _free_y_22*_free_y_8 + _free_y_4*_free_y_6 - _free_y_4*_free_y_8) != 0",
+                "(-_free_y_22 + _free_y_8)*(-_free_x_21*_free_x_5 + _free_x_21*_free_x_7 + _free_x_5*_free_x_9 - _free_x_7*_free_x_9 + _free_y_10*_free_y_6 - _free_y_10*_free_y_8 - _free_y_22*_free_y_6 + _free_y_22*_free_y_8) != 0",
+                "-2*(_free_y_4 - _free_y_6) != 0",
+                "-2*(_free_y_4 - _free_y_8) != 0",
+                "-_free_x_21*_free_x_5*_free_y_6 + _free_x_21*_free_x_5*_free_y_8 + _free_x_21*_free_x_7*_free_y_6 - _free_x_21*_free_x_7*_free_y_8 + _free_x_5**2*_free_y_10 - _free_x_5**2*_free_y_8 - 2*_free_x_5*_free_x_7*_free_y_10 + _free_x_5*_free_x_7*_free_y_6 + _free_x_5*_free_x_7*_free_y_8 + _free_x_7**2*_free_y_10 - _free_x_7**2*_free_y_6 + _free_y_10*_free_y_6**2 - 2*_free_y_10*_free_y_6*_free_y_8 + _free_y_10*_free_y_8**2 - _free_y_22*_free_y_6**2 + 2*_free_y_22*_free_y_6*_free_y_8 - _free_y_22*_free_y_8**2 != 0",
+                "2*(_free_x_3*_free_y_6 - _free_x_3*_free_y_8 - _free_x_5*_free_y_4 + _free_x_5*_free_y_8 + _free_x_7*_free_y_4 - _free_x_7*_free_y_6) != 0",
+                "_free_x_21 - _free_x_9 != 0",
+                "_free_y_4 - _free_y_6 != 0",
+                "_free_y_6 - _free_y_8 != 0"
+              ],
+              "buchberger_complete": false,
+              "goal_proved": false,
+              "goal_certificate_sha256": null,
+              "replayed": true,
+              "certificate_sha256": "714d270ca082123ad2ceba6ffcf8ede200c85064fe5626d17e355625d3b64ada"
+            },
+            {
+              "node_id": "separator:4:_free_x_11",
+              "variable": "_free_x_11",
+              "parent_node_ids": [
+                "construction:3:3",
+                "construction:5:5",
+                "construction:6:6",
+                "local:1:_apex_x_1",
+                "local:5:_free_y_20"
+              ],
+              "input_polynomials": [
+                "-2*_base_0**2*_free_y_18 + _base_0**2*_free_y_4 + 2*_base_0*_free_x_3*_free_y_18 - _base_0*_free_x_7*_free_y_4",
+                "-_base_0**2*_free_x_11*_free_y_14*_free_y_30**2 + 2*_base_0**2*_free_x_11*_free_y_18*_free_y_30**2 + _base_0**2*_free_x_13*_free_y_12*_free_y_30**2 - 2*_base_0**2*_free_x_13*_free_y_18*_free_y_30**2 - 2*_base_0**2*_free_x_29*_free_y_12*_free_y_18*_free_y_30 + 2*_base_0**2*_free_x_29*_free_y_14*_free_y_18*_free_y_30 - 2*_base_0*_free_x_11*_free_x_29*_free_y_14*_free_y_18*_free_y_30 + _base_0*_free_x_11*_free_x_7*_free_y_14*_free_y_30**2 + 2*_base_0*_free_x_13*_free_x_29*_free_y_12*_free_y_18*_free_y_30 - _base_0*_free_x_13*_free_x_7*_free_y_12*_free_y_30**2",
+                "-_base_0**2*_free_x_3 + _base_0*_free_x_3*_free_x_7 + 2*_base_0*_free_y_18*_free_y_4",
+                "-_base_0**2*_free_x_7 + _base_0*_free_x_5*_free_x_7 + 2*_base_0*_free_y_18*_free_y_6",
+                "-_base_0*_free_y_8",
+                "-_free_x_11*_free_x_3 + _free_x_11*_free_x_7 + _free_x_3*_free_x_5 - _free_x_5*_free_x_7 - _free_y_12*_free_y_4 + _free_y_12*_free_y_8 + _free_y_4*_free_y_6 - _free_y_6*_free_y_8",
+                "-_free_x_11*_free_y_4 + _free_x_11*_free_y_8 + _free_x_3*_free_y_12 - _free_x_3*_free_y_8 - _free_x_7*_free_y_12 + _free_x_7*_free_y_4",
+                "-_free_x_13*_free_x_3 + _free_x_13*_free_x_5 + _free_x_3*_free_x_7 - _free_x_5*_free_x_7 - _free_y_14*_free_y_4 + _free_y_14*_free_y_6 + _free_y_4*_free_y_8 - _free_y_6*_free_y_8",
+                "-_free_x_13*_free_y_4 + _free_x_13*_free_y_6 + _free_x_3*_free_y_14 - _free_x_3*_free_y_6 - _free_x_5*_free_y_14 + _free_x_5*_free_y_4",
+                "2*_base_0*_free_x_5*_free_y_18 - _base_0*_free_x_7*_free_y_6"
+              ],
+              "output_polynomials": [
+                "_base_0*_free_x_5*_free_y_18 - _base_0*_free_x_7*_free_y_6/2",
+                "_base_0**2*_free_x_3 - _base_0*_free_x_3*_free_x_7 - 2*_base_0*_free_y_18*_free_y_4",
+                "_base_0**2*_free_x_7 - _base_0*_free_x_5*_free_x_7 - 2*_base_0*_free_y_18*_free_y_6",
+                "_base_0**2*_free_y_18 - _base_0**2*_free_y_4/2 - _base_0*_free_x_3*_free_y_18 + _base_0*_free_x_7*_free_y_4/2"
+              ],
+              "separator_variables": [
+                "_base_0",
+                "_free_x_13",
+                "_free_x_29",
+                "_free_x_3",
+                "_free_x_5",
+                "_free_x_7",
+                "_free_y_12",
+                "_free_y_14",
+                "_free_y_18",
+                "_free_y_30",
+                "_free_y_4",
+                "_free_y_6",
+                "_free_y_8"
+              ],
+              "coefficient_nonzero_obligations": [
+                "-_base_0*_free_y_30*(_base_0*_free_y_14*_free_y_30 - 2*_base_0*_free_y_18*_free_y_30 + 2*_free_x_29*_free_y_14*_free_y_18 - _free_x_7*_free_y_14*_free_y_30) != 0",
+                "-_free_x_3 + _free_x_7 != 0",
+                "-_free_y_4 + _free_y_8 != 0"
+              ],
+              "buchberger_complete": false,
+              "goal_proved": false,
+              "goal_certificate_sha256": null,
+              "replayed": true,
+              "certificate_sha256": "9e4fb8618e2666c547aa2c7e06f9698897750ef385775c5cbc104b3b72d80fe3"
+            },
+            {
+              "node_id": "separator:5:_free_x_13",
+              "variable": "_free_x_13",
+              "parent_node_ids": [
+                "construction:3:3",
+                "construction:5:5",
+                "construction:6:6",
+                "local:1:_apex_x_1",
+                "local:5:_free_y_20",
+                "separator:4:_free_x_11"
+              ],
+              "input_polynomials": [
+                "-2*_base_0**2*_free_y_18 + _base_0**2*_free_y_4 + 2*_base_0*_free_x_3*_free_y_18 - _base_0*_free_x_7*_free_y_4",
+                "-_base_0**2*_free_x_11*_free_y_14*_free_y_30**2 + 2*_base_0**2*_free_x_11*_free_y_18*_free_y_30**2 + _base_0**2*_free_x_13*_free_y_12*_free_y_30**2 - 2*_base_0**2*_free_x_13*_free_y_18*_free_y_30**2 - 2*_base_0**2*_free_x_29*_free_y_12*_free_y_18*_free_y_30 + 2*_base_0**2*_free_x_29*_free_y_14*_free_y_18*_free_y_30 - 2*_base_0*_free_x_11*_free_x_29*_free_y_14*_free_y_18*_free_y_30 + _base_0*_free_x_11*_free_x_7*_free_y_14*_free_y_30**2 + 2*_base_0*_free_x_13*_free_x_29*_free_y_12*_free_y_18*_free_y_30 - _base_0*_free_x_13*_free_x_7*_free_y_12*_free_y_30**2",
+                "-_base_0**2*_free_x_3 + _base_0*_free_x_3*_free_x_7 + 2*_base_0*_free_y_18*_free_y_4",
+                "-_base_0**2*_free_x_7 + _base_0*_free_x_5*_free_x_7 + 2*_base_0*_free_y_18*_free_y_6",
+                "-_base_0*_free_y_8",
+                "-_free_x_11*_free_x_3 + _free_x_11*_free_x_7 + _free_x_3*_free_x_5 - _free_x_5*_free_x_7 - _free_y_12*_free_y_4 + _free_y_12*_free_y_8 + _free_y_4*_free_y_6 - _free_y_6*_free_y_8",
+                "-_free_x_11*_free_y_4 + _free_x_11*_free_y_8 + _free_x_3*_free_y_12 - _free_x_3*_free_y_8 - _free_x_7*_free_y_12 + _free_x_7*_free_y_4",
+                "-_free_x_13*_free_x_3 + _free_x_13*_free_x_5 + _free_x_3*_free_x_7 - _free_x_5*_free_x_7 - _free_y_14*_free_y_4 + _free_y_14*_free_y_6 + _free_y_4*_free_y_8 - _free_y_6*_free_y_8",
+                "-_free_x_13*_free_y_4 + _free_x_13*_free_y_6 + _free_x_3*_free_y_14 - _free_x_3*_free_y_6 - _free_x_5*_free_y_14 + _free_x_5*_free_y_4",
+                "2*_base_0*_free_x_5*_free_y_18 - _base_0*_free_x_7*_free_y_6",
+                "_base_0**2*_free_x_3 - _base_0*_free_x_3*_free_x_7 - 2*_base_0*_free_y_18*_free_y_4",
+                "_base_0**2*_free_x_7 - _base_0*_free_x_5*_free_x_7 - 2*_base_0*_free_y_18*_free_y_6",
+                "_base_0**2*_free_y_18 - _base_0**2*_free_y_4/2 - _base_0*_free_x_3*_free_y_18 + _base_0*_free_x_7*_free_y_4/2",
+                "_base_0*_free_x_5*_free_y_18 - _base_0*_free_x_7*_free_y_6/2"
+              ],
+              "output_polynomials": [
+                "_base_0*_free_x_5*_free_y_18 - _base_0*_free_x_7*_free_y_6/2",
+                "_base_0**2*_free_x_3 - _base_0*_free_x_3*_free_x_7 - 2*_base_0*_free_y_18*_free_y_4",
+                "_base_0**2*_free_x_7 - _base_0*_free_x_5*_free_x_7 - 2*_base_0*_free_y_18*_free_y_6",
+                "_base_0**2*_free_y_18 - _base_0**2*_free_y_4/2 - _base_0*_free_x_3*_free_y_18 + _base_0*_free_x_7*_free_y_4/2"
+              ],
+              "separator_variables": [
+                "_base_0",
+                "_free_x_11",
+                "_free_x_29",
+                "_free_x_3",
+                "_free_x_5",
+                "_free_x_7",
+                "_free_y_12",
+                "_free_y_14",
+                "_free_y_18",
+                "_free_y_30",
+                "_free_y_4",
+                "_free_y_6",
+                "_free_y_8"
+              ],
+              "coefficient_nonzero_obligations": [
+                "-_free_x_3 + _free_x_5 != 0",
+                "-_free_y_4 + _free_y_6 != 0",
+                "_base_0*_free_y_30*(_base_0*_free_y_12*_free_y_30 - 2*_base_0*_free_y_18*_free_y_30 + 2*_free_x_29*_free_y_12*_free_y_18 - _free_x_7*_free_y_12*_free_y_30) != 0"
+              ],
+              "buchberger_complete": false,
+              "goal_proved": false,
+              "goal_certificate_sha256": null,
+              "replayed": true,
+              "certificate_sha256": "c41410c21b6dd166ea649bb9dabc4d1bce1fb6f1181c2e15ccb005246a68d55c"
+            },
+            {
+              "node_id": "separator:6:_free_y_12",
+              "variable": "_free_y_12",
+              "parent_node_ids": [
+                "construction:3:3",
+                "construction:5:5",
+                "construction:6:6",
+                "local:1:_apex_x_1",
+                "local:5:_free_y_20",
+                "separator:5:_free_x_13"
+              ],
+              "input_polynomials": [
+                "-2*_base_0**2*_free_y_18 + _base_0**2*_free_y_4 + 2*_base_0*_free_x_3*_free_y_18 - _base_0*_free_x_7*_free_y_4",
+                "-_base_0**2*_free_x_11*_free_y_14*_free_y_30**2 + 2*_base_0**2*_free_x_11*_free_y_18*_free_y_30**2 + _base_0**2*_free_x_13*_free_y_12*_free_y_30**2 - 2*_base_0**2*_free_x_13*_free_y_18*_free_y_30**2 - 2*_base_0**2*_free_x_29*_free_y_12*_free_y_18*_free_y_30 + 2*_base_0**2*_free_x_29*_free_y_14*_free_y_18*_free_y_30 - 2*_base_0*_free_x_11*_free_x_29*_free_y_14*_free_y_18*_free_y_30 + _base_0*_free_x_11*_free_x_7*_free_y_14*_free_y_30**2 + 2*_base_0*_free_x_13*_free_x_29*_free_y_12*_free_y_18*_free_y_30 - _base_0*_free_x_13*_free_x_7*_free_y_12*_free_y_30**2",
+                "-_base_0**2*_free_x_3 + _base_0*_free_x_3*_free_x_7 + 2*_base_0*_free_y_18*_free_y_4",
+                "-_base_0**2*_free_x_7 + _base_0*_free_x_5*_free_x_7 + 2*_base_0*_free_y_18*_free_y_6",
+                "-_base_0*_free_y_8",
+                "-_free_x_11*_free_x_3 + _free_x_11*_free_x_7 + _free_x_3*_free_x_5 - _free_x_5*_free_x_7 - _free_y_12*_free_y_4 + _free_y_12*_free_y_8 + _free_y_4*_free_y_6 - _free_y_6*_free_y_8",
+                "-_free_x_11*_free_y_4 + _free_x_11*_free_y_8 + _free_x_3*_free_y_12 - _free_x_3*_free_y_8 - _free_x_7*_free_y_12 + _free_x_7*_free_y_4",
+                "-_free_x_13*_free_x_3 + _free_x_13*_free_x_5 + _free_x_3*_free_x_7 - _free_x_5*_free_x_7 - _free_y_14*_free_y_4 + _free_y_14*_free_y_6 + _free_y_4*_free_y_8 - _free_y_6*_free_y_8",
+                "-_free_x_13*_free_y_4 + _free_x_13*_free_y_6 + _free_x_3*_free_y_14 - _free_x_3*_free_y_6 - _free_x_5*_free_y_14 + _free_x_5*_free_y_4",
+                "2*_base_0*_free_x_5*_free_y_18 - _base_0*_free_x_7*_free_y_6",
+                "_base_0**2*_free_x_3 - _base_0*_free_x_3*_free_x_7 - 2*_base_0*_free_y_18*_free_y_4",
+                "_base_0**2*_free_x_7 - _base_0*_free_x_5*_free_x_7 - 2*_base_0*_free_y_18*_free_y_6",
+                "_base_0**2*_free_y_18 - _base_0**2*_free_y_4/2 - _base_0*_free_x_3*_free_y_18 + _base_0*_free_x_7*_free_y_4/2",
+                "_base_0*_free_x_5*_free_y_18 - _base_0*_free_x_7*_free_y_6/2"
+              ],
+              "output_polynomials": [
+                "_base_0*_free_x_5*_free_y_18 - _base_0*_free_x_7*_free_y_6/2",
+                "_base_0**2*_free_x_3 - _base_0*_free_x_3*_free_x_7 - 2*_base_0*_free_y_18*_free_y_4",
+                "_base_0**2*_free_x_7 - _base_0*_free_x_5*_free_x_7 - 2*_base_0*_free_y_18*_free_y_6",
+                "_base_0**2*_free_y_18 - _base_0**2*_free_y_4/2 - _base_0*_free_x_3*_free_y_18 + _base_0*_free_x_7*_free_y_4/2"
+              ],
+              "separator_variables": [
+                "_base_0",
+                "_free_x_11",
+                "_free_x_13",
+                "_free_x_29",
+                "_free_x_3",
+                "_free_x_5",
+                "_free_x_7",
+                "_free_y_14",
+                "_free_y_18",
+                "_free_y_30",
+                "_free_y_4",
+                "_free_y_6",
+                "_free_y_8"
+              ],
+              "coefficient_nonzero_obligations": [
+                "-_free_y_4 + _free_y_8 != 0",
+                "_base_0*_free_y_30*(_base_0*_free_x_13*_free_y_30 - 2*_base_0*_free_x_29*_free_y_18 + 2*_free_x_13*_free_x_29*_free_y_18 - _free_x_13*_free_x_7*_free_y_30) != 0",
+                "_free_x_3 - _free_x_7 != 0"
+              ],
+              "buchberger_complete": false,
+              "goal_proved": false,
+              "goal_certificate_sha256": null,
+              "replayed": true,
+              "certificate_sha256": "00a05e32c737b67b2b07c0eaab57c548336f7ad8e483b223d6c862be9d348a86"
+            },
+            {
+              "node_id": "separator:7:_free_y_14",
+              "variable": "_free_y_14",
+              "parent_node_ids": [
+                "construction:3:3",
+                "construction:5:5",
+                "construction:6:6",
+                "local:1:_apex_x_1",
+                "local:5:_free_y_20",
+                "separator:6:_free_y_12"
+              ],
+              "input_polynomials": [
+                "-2*_base_0**2*_free_y_18 + _base_0**2*_free_y_4 + 2*_base_0*_free_x_3*_free_y_18 - _base_0*_free_x_7*_free_y_4",
+                "-_base_0**2*_free_x_11*_free_y_14*_free_y_30**2 + 2*_base_0**2*_free_x_11*_free_y_18*_free_y_30**2 + _base_0**2*_free_x_13*_free_y_12*_free_y_30**2 - 2*_base_0**2*_free_x_13*_free_y_18*_free_y_30**2 - 2*_base_0**2*_free_x_29*_free_y_12*_free_y_18*_free_y_30 + 2*_base_0**2*_free_x_29*_free_y_14*_free_y_18*_free_y_30 - 2*_base_0*_free_x_11*_free_x_29*_free_y_14*_free_y_18*_free_y_30 + _base_0*_free_x_11*_free_x_7*_free_y_14*_free_y_30**2 + 2*_base_0*_free_x_13*_free_x_29*_free_y_12*_free_y_18*_free_y_30 - _base_0*_free_x_13*_free_x_7*_free_y_12*_free_y_30**2",
+                "-_base_0**2*_free_x_3 + _base_0*_free_x_3*_free_x_7 + 2*_base_0*_free_y_18*_free_y_4",
+                "-_base_0**2*_free_x_7 + _base_0*_free_x_5*_free_x_7 + 2*_base_0*_free_y_18*_free_y_6",
+                "-_base_0*_free_y_8",
+                "-_free_x_11*_free_x_3 + _free_x_11*_free_x_7 + _free_x_3*_free_x_5 - _free_x_5*_free_x_7 - _free_y_12*_free_y_4 + _free_y_12*_free_y_8 + _free_y_4*_free_y_6 - _free_y_6*_free_y_8",
+                "-_free_x_11*_free_y_4 + _free_x_11*_free_y_8 + _free_x_3*_free_y_12 - _free_x_3*_free_y_8 - _free_x_7*_free_y_12 + _free_x_7*_free_y_4",
+                "-_free_x_13*_free_x_3 + _free_x_13*_free_x_5 + _free_x_3*_free_x_7 - _free_x_5*_free_x_7 - _free_y_14*_free_y_4 + _free_y_14*_free_y_6 + _free_y_4*_free_y_8 - _free_y_6*_free_y_8",
+                "-_free_x_13*_free_y_4 + _free_x_13*_free_y_6 + _free_x_3*_free_y_14 - _free_x_3*_free_y_6 - _free_x_5*_free_y_14 + _free_x_5*_free_y_4",
+                "2*_base_0*_free_x_5*_free_y_18 - _base_0*_free_x_7*_free_y_6",
+                "_base_0**2*_free_x_3 - _base_0*_free_x_3*_free_x_7 - 2*_base_0*_free_y_18*_free_y_4",
+                "_base_0**2*_free_x_7 - _base_0*_free_x_5*_free_x_7 - 2*_base_0*_free_y_18*_free_y_6",
+                "_base_0**2*_free_y_18 - _base_0**2*_free_y_4/2 - _base_0*_free_x_3*_free_y_18 + _base_0*_free_x_7*_free_y_4/2",
+                "_base_0*_free_x_5*_free_y_18 - _base_0*_free_x_7*_free_y_6/2"
+              ],
+              "output_polynomials": [
+                "_base_0*_free_x_5*_free_y_18 - _base_0*_free_x_7*_free_y_6/2",
+                "_base_0**2*_free_x_3 - _base_0*_free_x_3*_free_x_7 - 2*_base_0*_free_y_18*_free_y_4",
+                "_base_0**2*_free_x_7 - _base_0*_free_x_5*_free_x_7 - 2*_base_0*_free_y_18*_free_y_6",
+                "_base_0**2*_free_y_18 - _base_0**2*_free_y_4/2 - _base_0*_free_x_3*_free_y_18 + _base_0*_free_x_7*_free_y_4/2"
+              ],
+              "separator_variables": [
+                "_base_0",
+                "_free_x_11",
+                "_free_x_13",
+                "_free_x_29",
+                "_free_x_3",
+                "_free_x_5",
+                "_free_x_7",
+                "_free_y_12",
+                "_free_y_18",
+                "_free_y_30",
+                "_free_y_4",
+                "_free_y_6",
+                "_free_y_8"
+              ],
+              "coefficient_nonzero_obligations": [
+                "-_base_0*_free_y_30*(_base_0*_free_x_11*_free_y_30 - 2*_base_0*_free_x_29*_free_y_18 + 2*_free_x_11*_free_x_29*_free_y_18 - _free_x_11*_free_x_7*_free_y_30) != 0",
+                "-_free_y_4 + _free_y_6 != 0",
+                "_free_x_3 - _free_x_5 != 0"
+              ],
+              "buchberger_complete": false,
+              "goal_proved": false,
+              "goal_certificate_sha256": null,
+              "replayed": true,
+              "certificate_sha256": "c1d63f836d3ac653e5e1b94d12a5824012d8eb41812b64892c0598b7383a67b1"
+            }
+          ],
+          "root": {
+            "node_id": "root",
+            "parent_node_ids": [
+              "construction:10:10",
+              "construction:11:11",
+              "construction:13:13",
+              "construction:3:3",
+              "construction:5:5",
+              "construction:6:6",
+              "construction:7:7",
+              "local:1:_apex_x_1",
+              "local:3:_free_y_26",
+              "local:5:_free_y_20",
+              "separator:0:_free_x_15",
+              "separator:1:_free_x_9",
+              "separator:2:_free_y_10",
+              "separator:3:_free_y_16",
+              "separator:7:_free_y_14"
+            ],
+            "goal_polynomial": "_free_x_17*_free_x_27 - _free_x_17*_free_x_29 - _free_x_23*_free_x_27 + _free_x_23*_free_x_29 + _free_y_18*_free_y_28 - _free_y_18*_free_y_30 - _free_y_24*_free_y_28 + _free_y_24*_free_y_30",
+            "remaining_polynomials": [
+              "-2*_base_0**2*_free_y_18 + _base_0**2*_free_y_22 + 2*_base_0*_free_x_21*_free_y_18 - _base_0*_free_x_7*_free_y_22",
+              "-2*_base_0**2*_free_y_18 + _base_0**2*_free_y_4 + 2*_base_0*_free_x_3*_free_y_18 - _base_0*_free_x_7*_free_y_4",
+              "-2*_free_x_15*_free_x_3 + 2*_free_x_15*_free_x_5 + _free_x_3**2 - _free_x_5**2 - 2*_free_y_16*_free_y_4 + 2*_free_y_16*_free_y_6 + _free_y_4**2 - _free_y_6**2",
+              "-2*_free_x_15*_free_x_3 + 2*_free_x_15*_free_x_7 + _free_x_3**2 - _free_x_7**2 - 2*_free_y_16*_free_y_4 + 2*_free_y_16*_free_y_8 + _free_y_4**2 - _free_y_8**2",
+              "-_base_0**2*_free_x_11*_free_y_14*_free_y_30**2 + 2*_base_0**2*_free_x_11*_free_y_18*_free_y_30**2 + _base_0**2*_free_x_13*_free_y_12*_free_y_30**2 - 2*_base_0**2*_free_x_13*_free_y_18*_free_y_30**2 - 2*_base_0**2*_free_x_29*_free_y_12*_free_y_18*_free_y_30 + 2*_base_0**2*_free_x_29*_free_y_14*_free_y_18*_free_y_30 - 2*_base_0*_free_x_11*_free_x_29*_free_y_14*_free_y_18*_free_y_30 + _base_0*_free_x_11*_free_x_7*_free_y_14*_free_y_30**2 + 2*_base_0*_free_x_13*_free_x_29*_free_y_12*_free_y_18*_free_y_30 - _base_0*_free_x_13*_free_x_7*_free_y_12*_free_y_30**2",
+              "-_base_0**2*_free_x_3 + _base_0*_free_x_3*_free_x_7 + 2*_base_0*_free_y_18*_free_y_4",
+              "-_base_0**2*_free_x_7 + _base_0*_free_x_5*_free_x_7 + 2*_base_0*_free_y_18*_free_y_6",
+              "-_base_0*_free_y_8",
+              "-_free_x_11*_free_x_3 + _free_x_11*_free_x_7 + _free_x_3*_free_x_5 - _free_x_5*_free_x_7 - _free_y_12*_free_y_4 + _free_y_12*_free_y_8 + _free_y_4*_free_y_6 - _free_y_6*_free_y_8",
+              "-_free_x_11*_free_y_4 + _free_x_11*_free_y_8 + _free_x_3*_free_y_12 - _free_x_3*_free_y_8 - _free_x_7*_free_y_12 + _free_x_7*_free_y_4",
+              "-_free_x_13*_free_x_3 + _free_x_13*_free_x_5 + _free_x_3*_free_x_7 - _free_x_5*_free_x_7 - _free_y_14*_free_y_4 + _free_y_14*_free_y_6 + _free_y_4*_free_y_8 - _free_y_6*_free_y_8",
+              "-_free_x_13*_free_y_4 + _free_x_13*_free_y_6 + _free_x_3*_free_y_14 - _free_x_3*_free_y_6 - _free_x_5*_free_y_14 + _free_x_5*_free_y_4",
+              "-_free_x_17*_free_y_28 + _free_x_27*_free_y_18",
+              "-_free_x_21**2 + 2*_free_x_21*_free_x_23 - _free_y_22**2 + 2*_free_y_22*_free_y_24",
+              "-_free_x_27*_free_y_6 + _free_x_27*_free_y_8 + _free_x_5*_free_y_28 - _free_x_5*_free_y_8 - _free_x_7*_free_y_28 + _free_x_7*_free_y_6",
+              "2*_base_0*_free_x_5*_free_y_18 - _base_0*_free_x_7*_free_y_6",
+              "4*_base_0**4*_free_x_23*_free_x_29*_free_y_18*_free_y_30**3 - 4*_base_0**4*_free_x_29**2*_free_y_18**2*_free_y_30**2 - 4*_base_0**4*_free_y_18**2*_free_y_30**4 + 4*_base_0**4*_free_y_18*_free_y_24*_free_y_30**4 + 8*_base_0**3*_free_x_23*_free_x_29**2*_free_y_18**2*_free_y_30**2 - 4*_base_0**3*_free_x_23*_free_x_29*_free_x_7*_free_y_18*_free_y_30**3 + 8*_base_0**3*_free_x_29*_free_y_18**2*_free_y_24*_free_y_30**3 - 4*_base_0**3*_free_x_7*_free_y_18*_free_y_24*_free_y_30**4",
+              "_base_0**2 - 2*_base_0*_free_x_17 + _base_0*_free_x_7",
+              "_base_0**2*_free_x_3 - _base_0*_free_x_3*_free_x_7 - 2*_base_0*_free_y_18*_free_y_4",
+              "_base_0**2*_free_x_7 - _base_0*_free_x_5*_free_x_7 - 2*_base_0*_free_y_18*_free_y_6",
+              "_base_0**2*_free_y_18 - _base_0**2*_free_y_4/2 - _base_0*_free_x_3*_free_y_18 + _base_0*_free_x_7*_free_y_4/2",
+              "_base_0*_free_x_5*_free_y_18 - _base_0*_free_x_7*_free_y_6/2",
+              "_free_x_15*_free_x_3 - _free_x_15*_free_x_5 - _free_x_3**2/2 + _free_x_5**2/2 + _free_y_16*_free_y_4 - _free_y_16*_free_y_6 - _free_y_4**2/2 + _free_y_6**2/2",
+              "_free_x_15*_free_x_3*_free_y_6 - _free_x_15*_free_x_3*_free_y_8 - _free_x_15*_free_x_5*_free_y_4 + _free_x_15*_free_x_5*_free_y_8 + _free_x_15*_free_x_7*_free_y_4 - _free_x_15*_free_x_7*_free_y_6 - _free_x_3**2*_free_y_6/2 + _free_x_3**2*_free_y_8/2 + _free_x_5**2*_free_y_4/2 - _free_x_5**2*_free_y_8/2 - _free_x_7**2*_free_y_4/2 + _free_x_7**2*_free_y_6/2 - _free_y_4**2*_free_y_6/2 + _free_y_4**2*_free_y_8/2 + _free_y_4*_free_y_6**2/2 - _free_y_4*_free_y_8**2/2 - _free_y_6**2*_free_y_8/2 + _free_y_6*_free_y_8**2/2",
+              "_free_x_15*_free_x_5 - _free_x_15*_free_x_7 - _free_x_5**2/2 + _free_x_7**2/2 + _free_y_16*_free_y_6 - _free_y_16*_free_y_8 - _free_y_6**2/2 + _free_y_8**2/2",
+              "_free_x_15*_free_y_10 - _free_x_15*_free_y_22 - _free_x_21*_free_y_10 + _free_x_21*_free_y_16 - _free_x_9*_free_y_16 + _free_x_9*_free_y_22",
+              "_free_x_17**2*_free_x_21**2*_free_y_18**2*_free_y_30**2 + 2*_free_x_17**2*_free_x_21*_free_x_23*_free_y_18**2*_free_y_22*_free_y_30 - 2*_free_x_17**2*_free_x_21*_free_x_23*_free_y_18**2*_free_y_30**2 - 2*_free_x_17**2*_free_x_21*_free_x_29*_free_y_18**2*_free_y_22*_free_y_30 - 2*_free_x_17**2*_free_x_23*_free_x_29*_free_y_18**2*_free_y_22**2 + 2*_free_x_17**2*_free_x_23*_free_x_29*_free_y_18**2*_free_y_22*_free_y_30 + _free_x_17**2*_free_x_29**2*_free_y_18**2*_free_y_22**2 - 2*_free_x_17*_free_x_21**2*_free_x_23*_free_y_18**3*_free_y_30 + 2*_free_x_17*_free_x_21*_free_x_23*_free_x_29*_free_y_18**3*_free_y_22 + 2*_free_x_17*_free_x_21*_free_x_23*_free_x_29*_free_y_18**3*_free_y_30 + 2*_free_x_17*_free_x_21*_free_y_18**3*_free_y_22*_free_y_24*_free_y_30 - 2*_free_x_17*_free_x_21*_free_y_18**3*_free_y_24*_free_y_30**2 - 2*_free_x_17*_free_x_23*_free_x_29**2*_free_y_18**3*_free_y_22 - 2*_free_x_17*_free_x_29*_free_y_18**3*_free_y_22**2*_free_y_24 + 2*_free_x_17*_free_x_29*_free_y_18**3*_free_y_22*_free_y_24*_free_y_30 - 2*_free_x_21**2*_free_y_18**4*_free_y_24*_free_y_30 + _free_x_21**2*_free_y_18**4*_free_y_30**2 + 2*_free_x_21*_free_x_29*_free_y_18**4*_free_y_22*_free_y_24 - 2*_free_x_21*_free_x_29*_free_y_18**4*_free_y_22*_free_y_30 + 2*_free_x_21*_free_x_29*_free_y_18**4*_free_y_24*_free_y_30 + _free_x_29**2*_free_y_18**4*_free_y_22**2 - 2*_free_x_29**2*_free_y_18**4*_free_y_22*_free_y_24",
+              "_free_x_21*_free_x_5*_free_y_10*_free_y_6 - _free_x_21*_free_x_5*_free_y_10*_free_y_8 - _free_x_21*_free_x_5*_free_y_16*_free_y_6 + _free_x_21*_free_x_5*_free_y_16*_free_y_8 - _free_x_21*_free_x_7*_free_y_10*_free_y_6 + _free_x_21*_free_x_7*_free_y_10*_free_y_8 + _free_x_21*_free_x_7*_free_y_16*_free_y_6 - _free_x_21*_free_x_7*_free_y_16*_free_y_8 + _free_x_5**2*_free_y_10*_free_y_16 - _free_x_5**2*_free_y_10*_free_y_22 - _free_x_5**2*_free_y_10*_free_y_6/2 + _free_x_5**2*_free_y_10*_free_y_8/2 - _free_x_5**2*_free_y_16*_free_y_8 + _free_x_5**2*_free_y_22*_free_y_6/2 + _free_x_5**2*_free_y_22*_free_y_8/2 - 2*_free_x_5*_free_x_7*_free_y_10*_free_y_16 + 2*_free_x_5*_free_x_7*_free_y_10*_free_y_22 + _free_x_5*_free_x_7*_free_y_16*_free_y_6 + _free_x_5*_free_x_7*_free_y_16*_free_y_8 - _free_x_5*_free_x_7*_free_y_22*_free_y_6 - _free_x_5*_free_x_7*_free_y_22*_free_y_8 + _free_x_7**2*_free_y_10*_free_y_16 - _free_x_7**2*_free_y_10*_free_y_22 + _free_x_7**2*_free_y_10*_free_y_6/2 - _free_x_7**2*_free_y_10*_free_y_8/2 - _free_x_7**2*_free_y_16*_free_y_6 + _free_x_7**2*_free_y_22*_free_y_6/2 + _free_x_7**2*_free_y_22*_free_y_8/2 + _free_y_10*_free_y_16*_free_y_6**2 - 2*_free_y_10*_free_y_16*_free_y_6*_free_y_8 + _free_y_10*_free_y_16*_free_y_8**2 - _free_y_10*_free_y_6**3/2 + _free_y_10*_free_y_6**2*_free_y_8/2 + _free_y_10*_free_y_6*_free_y_8**2/2 - _free_y_10*_free_y_8**3/2 - _free_y_16*_free_y_22*_free_y_6**2 + 2*_free_y_16*_free_y_22*_free_y_6*_free_y_8 - _free_y_16*_free_y_22*_free_y_8**2 + _free_y_22*_free_y_6**3/2 - _free_y_22*_free_y_6**2*_free_y_8/2 - _free_y_22*_free_y_6*_free_y_8**2/2 + _free_y_22*_free_y_8**3/2",
+              "_free_x_21*_free_x_5*_free_y_16*_free_y_22 - _free_x_21*_free_x_5*_free_y_16*_free_y_8 - _free_x_21*_free_x_5*_free_y_22*_free_y_8 + _free_x_21*_free_x_5*_free_y_8**2 - _free_x_21*_free_x_7*_free_y_16*_free_y_22 + _free_x_21*_free_x_7*_free_y_16*_free_y_8 + _free_x_21*_free_x_7*_free_y_22*_free_y_6 - _free_x_21*_free_x_7*_free_y_6*_free_y_8 - _free_x_21*_free_x_9*_free_y_22*_free_y_6 + _free_x_21*_free_x_9*_free_y_22*_free_y_8 + _free_x_21*_free_x_9*_free_y_6*_free_y_8 - _free_x_21*_free_x_9*_free_y_8**2 - _free_x_3*_free_x_5*_free_y_16*_free_y_22 + _free_x_3*_free_x_5*_free_y_16*_free_y_8 + _free_x_3*_free_x_5*_free_y_22*_free_y_6/2 + _free_x_3*_free_x_5*_free_y_22*_free_y_8/2 - _free_x_3*_free_x_5*_free_y_6*_free_y_8/2 - _free_x_3*_free_x_5*_free_y_8**2/2 + _free_x_3*_free_x_7*_free_y_16*_free_y_22 - _free_x_3*_free_x_7*_free_y_16*_free_y_8 - _free_x_3*_free_x_7*_free_y_22*_free_y_6/2 - _free_x_3*_free_x_7*_free_y_22*_free_y_8/2 + _free_x_3*_free_x_7*_free_y_6*_free_y_8/2 + _free_x_3*_free_x_7*_free_y_8**2/2 - _free_x_5**2*_free_y_22**2/2 + _free_x_5**2*_free_y_22*_free_y_8 - _free_x_5**2*_free_y_8**2/2 - _free_x_5*_free_x_7*_free_y_22*_free_y_6/2 + _free_x_5*_free_x_7*_free_y_22*_free_y_8/2 + _free_x_5*_free_x_7*_free_y_6*_free_y_8/2 - _free_x_5*_free_x_7*_free_y_8**2/2 + _free_x_5*_free_x_9*_free_y_22**2 - 2*_free_x_5*_free_x_9*_free_y_22*_free_y_8 + _free_x_5*_free_x_9*_free_y_8**2 + _free_x_7**2*_free_y_22**2/2 - _free_x_7**2*_free_y_22*_free_y_6/2 - _free_x_7**2*_free_y_22*_free_y_8/2 + _free_x_7**2*_free_y_6*_free_y_8/2 - _free_x_7*_free_x_9*_free_y_22**2 + _free_x_7*_free_x_9*_free_y_22*_free_y_6 + _free_x_7*_free_x_9*_free_y_22*_free_y_8 - _free_x_7*_free_x_9*_free_y_6*_free_y_8 + _free_y_16*_free_y_22**2*_free_y_6 - _free_y_16*_free_y_22**2*_free_y_8 - _free_y_16*_free_y_22*_free_y_4*_free_y_6 + _free_y_16*_free_y_22*_free_y_4*_free_y_8 - _free_y_16*_free_y_22*_free_y_6*_free_y_8 + _free_y_16*_free_y_22*_free_y_8**2 + _free_y_16*_free_y_4*_free_y_6*_free_y_8 - _free_y_16*_free_y_4*_free_y_8**2 - _free_y_22**2*_free_y_6**2/2 + _free_y_22**2*_free_y_8**2/2 + _free_y_22*_free_y_4*_free_y_6**2/2 - _free_y_22*_free_y_4*_free_y_8**2/2 + _free_y_22*_free_y_6**2*_free_y_8/2 - _free_y_22*_free_y_8**3/2 - _free_y_4*_free_y_6**2*_free_y_8/2 + _free_y_4*_free_y_8**3/2",
+              "_free_x_21*_free_x_5*_free_y_16*_free_y_22 - _free_x_21*_free_x_5*_free_y_16*_free_y_8 - _free_x_21*_free_x_5*_free_y_22*_free_y_8 + _free_x_21*_free_x_5*_free_y_8**2 - _free_x_21*_free_x_7*_free_y_16*_free_y_22 + _free_x_21*_free_x_7*_free_y_16*_free_y_8 + _free_x_21*_free_x_7*_free_y_22*_free_y_6 - _free_x_21*_free_x_7*_free_y_6*_free_y_8 - _free_x_21*_free_x_9*_free_y_22*_free_y_6 + _free_x_21*_free_x_9*_free_y_22*_free_y_8 + _free_x_21*_free_x_9*_free_y_6*_free_y_8 - _free_x_21*_free_x_9*_free_y_8**2 - _free_x_5**2*_free_y_22**2/2 + _free_x_5**2*_free_y_22*_free_y_8 - _free_x_5**2*_free_y_8**2/2 - _free_x_5*_free_x_7*_free_y_22*_free_y_6/2 + _free_x_5*_free_x_7*_free_y_22*_free_y_8/2 + _free_x_5*_free_x_7*_free_y_6*_free_y_8/2 - _free_x_5*_free_x_7*_free_y_8**2/2 - _free_x_5*_free_x_9*_free_y_16*_free_y_22 + _free_x_5*_free_x_9*_free_y_16*_free_y_8 + _free_x_5*_free_x_9*_free_y_22**2 + _free_x_5*_free_x_9*_free_y_22*_free_y_6/2 - 3*_free_x_5*_free_x_9*_free_y_22*_free_y_8/2 - _free_x_5*_free_x_9*_free_y_6*_free_y_8/2 + _free_x_5*_free_x_9*_free_y_8**2/2 + _free_x_7**2*_free_y_22**2/2 - _free_x_7**2*_free_y_22*_free_y_6/2 - _free_x_7**2*_free_y_22*_free_y_8/2 + _free_x_7**2*_free_y_6*_free_y_8/2 + _free_x_7*_free_x_9*_free_y_16*_free_y_22 - _free_x_7*_free_x_9*_free_y_16*_free_y_8 - _free_x_7*_free_x_9*_free_y_22**2 + _free_x_7*_free_x_9*_free_y_22*_free_y_6/2 + _free_x_7*_free_x_9*_free_y_22*_free_y_8/2 - _free_x_7*_free_x_9*_free_y_6*_free_y_8/2 + _free_x_7*_free_x_9*_free_y_8**2/2 - _free_y_10*_free_y_16*_free_y_22*_free_y_6 + _free_y_10*_free_y_16*_free_y_22*_free_y_8 + _free_y_10*_free_y_16*_free_y_6*_free_y_8 - _free_y_10*_free_y_16*_free_y_8**2 + _free_y_10*_free_y_22*_free_y_6**2/2 - _free_y_10*_free_y_22*_free_y_8**2/2 - _free_y_10*_free_y_6**2*_free_y_8/2 + _free_y_10*_free_y_8**3/2 + _free_y_16*_free_y_22**2*_free_y_6 - _free_y_16*_free_y_22**2*_free_y_8 - _free_y_16*_free_y_22*_free_y_6*_free_y_8 + _free_y_16*_free_y_22*_free_y_8**2 - _free_y_22**2*_free_y_6**2/2 + _free_y_22**2*_free_y_8**2/2 + _free_y_22*_free_y_6**2*_free_y_8/2 - _free_y_22*_free_y_8**3/2",
+              "_free_x_3**2*_free_x_5 - _free_x_3**2*_free_x_7 - _free_x_3*_free_x_5**2 + _free_x_3*_free_x_7**2 + 2*_free_x_3*_free_y_16*_free_y_6 - 2*_free_x_3*_free_y_16*_free_y_8 - _free_x_3*_free_y_6**2 + _free_x_3*_free_y_8**2 + _free_x_5**2*_free_x_7 - _free_x_5*_free_x_7**2 - 2*_free_x_5*_free_y_16*_free_y_4 + 2*_free_x_5*_free_y_16*_free_y_8 + _free_x_5*_free_y_4**2 - _free_x_5*_free_y_8**2 + 2*_free_x_7*_free_y_16*_free_y_4 - 2*_free_x_7*_free_y_16*_free_y_6 - _free_x_7*_free_y_4**2 + _free_x_7*_free_y_6**2",
+              "_free_x_3*_free_x_5 - _free_x_3*_free_x_7 - _free_x_5*_free_x_9 + _free_x_7*_free_x_9 - _free_y_10*_free_y_6 + _free_y_10*_free_y_8 + _free_y_4*_free_y_6 - _free_y_4*_free_y_8",
+              "_free_x_3*_free_x_7*_free_y_6 - _free_x_3*_free_x_7*_free_y_8 - _free_x_3*_free_x_9*_free_y_6 + _free_x_3*_free_x_9*_free_y_8 - _free_x_7*_free_x_9*_free_y_6 + _free_x_7*_free_x_9*_free_y_8 + _free_x_9**2*_free_y_6 - _free_x_9**2*_free_y_8 + _free_y_10**2*_free_y_6 - _free_y_10**2*_free_y_8 - _free_y_10*_free_y_4*_free_y_6 + _free_y_10*_free_y_4*_free_y_8 - _free_y_10*_free_y_6*_free_y_8 + _free_y_10*_free_y_8**2 + _free_y_4*_free_y_6*_free_y_8 - _free_y_4*_free_y_8**2",
+              "_free_x_5*_free_y_10 - _free_x_5*_free_y_8 - _free_x_7*_free_y_10 + _free_x_7*_free_y_6 - _free_x_9*_free_y_6 + _free_x_9*_free_y_8"
+            ],
+            "proved": false,
+            "replayed": true,
+            "certificate_sha256": "4ee34d600f821226609d70e01dc3cd94db776ef578bedcfbe2800c0dca115788"
+          },
+          "eliminated_variables": [
+            "_apex_y_2",
+            "_apex_x_1",
+            "_free_x_25",
+            "_free_y_26",
+            "_free_x_19",
+            "_free_y_20"
+          ],
+          "remaining_variables": [
+            "_base_0",
+            "_free_x_11",
+            "_free_x_13",
+            "_free_x_15",
+            "_free_x_17",
+            "_free_x_21",
+            "_free_x_23",
+            "_free_x_27",
+            "_free_x_29",
+            "_free_x_3",
+            "_free_x_5",
+            "_free_x_7",
+            "_free_x_9",
+            "_free_y_10",
+            "_free_y_12",
+            "_free_y_14",
+            "_free_y_16",
+            "_free_y_18",
+            "_free_y_22",
+            "_free_y_24",
+            "_free_y_28",
+            "_free_y_30",
+            "_free_y_4",
+            "_free_y_6",
+            "_free_y_8"
+          ],
+          "prepass_stopped_reason": "term_budget",
+          "stopped_reason": "separator_budget",
+          "all_local_certificates_replayed": true,
+          "exact_replay": false,
+          "certificate_sha256": "3f97cd2c27871ff2dbc8195e373c8b6e92e2e0dcfb924ed5fb109feac194d33b"
+        }
+      },
+      "normalization": {
+        "rewritten_constructions": 0,
+        "unchanged_constructions": 20,
+        "unresolved_constructions": 0
+      }
+    }
+  ]
+}

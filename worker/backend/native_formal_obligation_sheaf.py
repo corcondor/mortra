@@ -147,6 +147,31 @@ class HeterogeneousAdmmResult:
         return {key: totals[key] / counts[key] for key in totals}
 
 
+@dataclass(frozen=True)
+class SparseRestrictionEdge:
+    """Auditable channel overlap without dense selector matrices."""
+
+    left: str
+    right: str
+    channels: tuple[SharedChannel, ...]
+
+
+@dataclass(frozen=True)
+class SparseHeterogeneousAdmmResult:
+    """MMT coordination result computed as a direct sum of channel blocks."""
+
+    agent_ids: tuple[str, ...]
+    x: Mapping[str, np.ndarray] = field(compare=False, repr=False)
+    z: Mapping[str, np.ndarray] = field(compare=False, repr=False)
+    u: Mapping[str, np.ndarray] = field(compare=False, repr=False)
+    edges: tuple[SparseRestrictionEdge, ...]
+    trace: tuple[HeterogeneousAdmmTrace, ...]
+    shared: Mapping[str, float] = field(compare=False, repr=False)
+
+    def shared_scores(self, _views: Sequence[FormalLocalView]) -> dict[str, float]:
+        return dict(self.shared)
+
+
 def build_pairwise_restriction_edges(
     views: Sequence[FormalLocalView],
 ) -> tuple[RestrictionEdge, ...]:
@@ -374,6 +399,291 @@ def candidate_channel(candidate_key: str) -> SharedChannel:
     """Typed channel used by construction-search agents for one candidate."""
 
     return SharedChannel("construction_candidate", candidate_key, "Construction")
+
+
+MMT_GEOMETRY_BASE = "https://mortra.dev/mmt/geometry"
+
+
+def _mmt_symbol_uri(theory: str, symbol: str) -> str:
+    """Return a stable MMT/OpenMath-style symbol URI.
+
+    The URI is an exchange identifier, not a new kernel constructor.  Native
+    agents keep their own syntax and expose assignments into these symbols.
+    """
+
+    normalized_theory = theory.strip().lower().replace(" ", "-")
+    normalized_symbol = symbol.strip().lower().replace(" ", "-")
+    if not normalized_theory or not normalized_symbol:
+        raise ValueError("MMT theory and symbol names must not be empty")
+    return f"{MMT_GEOMETRY_BASE}/{normalized_theory}?{normalized_symbol}"
+
+
+@dataclass(frozen=True)
+class CandidateTheoryAssignment:
+    """A finite view from one construction instance into shared theories.
+
+    ``candidate_key`` remains the native construction term.  ``morphism_uri``
+    identifies its construction schema, while ``relation_uris`` identify the
+    relation symbols that the schema is declared to produce.  This follows the
+    MMT distinction between terms, declarations, and theory morphisms without
+    replacing the native prover language.
+    """
+
+    candidate_key: str
+    morphism_uri: str
+    relation_uris: tuple[str, ...]
+
+
+def candidate_theory_assignment(
+    candidate_key: str,
+    *,
+    family: str,
+    relations: Iterable[str],
+) -> CandidateTheoryAssignment:
+    return CandidateTheoryAssignment(
+        candidate_key=candidate_key,
+        morphism_uri=_mmt_symbol_uri("construction", family),
+        relation_uris=tuple(
+            sorted({_mmt_symbol_uri("euclidean-relation", item) for item in relations})
+        ),
+    )
+
+
+def build_mmt_candidate_local_view(
+    *,
+    agent_id: str,
+    formal_language: str,
+    scores: Mapping[str, float],
+    assignments: Mapping[str, CandidateTheoryAssignment],
+    expose_instances: bool = True,
+    expose_morphisms: bool = False,
+    expose_relations: bool = False,
+) -> FormalLocalView:
+    """Expose a native ranking through an explicit Math-in-the-Middle view.
+
+    Several native terms may realize the same theory symbol.  They are reduced
+    with ``max`` because this layer transports a finite search preference, not
+    a probability or a truth value.  Exact proof replay remains authoritative.
+    """
+
+    channel_scores: dict[SharedChannel, float] = {}
+    for candidate_key, raw_score in scores.items():
+        assignment = assignments.get(candidate_key)
+        if assignment is None:
+            continue
+        score = max(float(raw_score), 0.0)
+        channels: list[SharedChannel] = []
+        if expose_instances:
+            channels.append(candidate_channel(candidate_key))
+        if expose_morphisms:
+            channels.append(
+                SharedChannel("theory_morphism", assignment.morphism_uri, "Morphism")
+            )
+        if expose_relations:
+            channels.extend(
+                SharedChannel("relation_symbol", uri, "Predicate")
+                for uri in assignment.relation_uris
+            )
+        for channel in channels:
+            channel_scores[channel] = max(channel_scores.get(channel, 0.0), score)
+
+    ordered = sorted(channel_scores, key=lambda item: item.key)
+    coordinates = tuple(
+        LocalCoordinate(f"view:{index}:{channel.key}", channel)
+        for index, channel in enumerate(ordered)
+    )
+    return FormalLocalView(
+        agent_id=agent_id,
+        formal_language=formal_language,
+        coordinates=coordinates,
+        preferences={
+            coordinate.local_name: channel_scores[channel]
+            for coordinate, channel in zip(coordinates, ordered, strict=True)
+        },
+    )
+
+
+def coordinate_mmt_candidate_scores(
+    views: Sequence[FormalLocalView],
+    assignments: Mapping[str, CandidateTheoryAssignment],
+    *,
+    rho: float = 1.0,
+    gamma: float = 1.0,
+    trust_by_agent: Mapping[str, float] | None = None,
+    iterations: int = 24,
+) -> tuple[dict[str, float], SparseHeterogeneousAdmmResult]:
+    """Transport local preferences through MMT views and score candidates.
+
+    The score combines three independently inspectable channels: native term
+    identity, construction morphism, and induced relation symbols.  Missing
+    shared channels contribute nothing; a private observation is never
+    promoted merely because an agent emitted it.
+    """
+
+    result = _coordinate_selector_channels_sparse(
+        views,
+        rho=rho,
+        gamma=gamma,
+        trust_by_agent=trust_by_agent,
+        iterations=iterations,
+    )
+    shared = result.shared_scores(views)
+    weights = {
+        "instance": 0.65,
+        "morphism": 0.15,
+        "relation": 0.20,
+    }
+    candidate_scores: dict[str, float] = {}
+    for candidate_key, assignment in assignments.items():
+        weighted: list[tuple[float, float]] = []
+        instance = shared.get(candidate_channel(candidate_key).key)
+        if instance is not None:
+            weighted.append((weights["instance"], instance))
+        morphism = shared.get(
+            SharedChannel("theory_morphism", assignment.morphism_uri, "Morphism").key
+        )
+        if morphism is not None:
+            weighted.append((weights["morphism"], morphism))
+        relation_values = [
+            shared[SharedChannel("relation_symbol", uri, "Predicate").key]
+            for uri in assignment.relation_uris
+            if SharedChannel("relation_symbol", uri, "Predicate").key in shared
+        ]
+        if relation_values:
+            weighted.append((weights["relation"], sum(relation_values) / len(relation_values)))
+        if weighted:
+            total_weight = sum(weight for weight, _value in weighted)
+            candidate_scores[candidate_key] = sum(
+                weight * value for weight, value in weighted
+            ) / total_weight
+    return candidate_scores, result
+
+
+def _coordinate_selector_channels_sparse(
+    views: Sequence[FormalLocalView],
+    *,
+    rho: float,
+    gamma: float,
+    trust_by_agent: Mapping[str, float] | None,
+    iterations: int,
+    tolerance: float = 1e-9,
+) -> SparseHeterogeneousAdmmResult:
+    """Solve selector-map ADMM as independent shared-channel blocks."""
+
+    if not views:
+        raise ValueError("at least one local view is required")
+    if rho <= 0 or gamma < 0 or iterations < 1:
+        raise ValueError("rho and iterations must be positive; gamma must be nonnegative")
+    ids = [view.agent_id for view in views]
+    if len(ids) != len(set(ids)):
+        raise ValueError("agent_id must be unique")
+    supplied_trust = dict(trust_by_agent or {})
+    unknown_trust = set(supplied_trust) - set(ids)
+    if unknown_trust:
+        raise ValueError(f"trust references unknown local views: {sorted(unknown_trust)}")
+    if any(float(value) <= 0 for value in supplied_trust.values()):
+        raise ValueError("all local trust weights must be positive")
+
+    channel_rows: dict[SharedChannel, list[tuple[str, int, float, float]]] = {}
+    local_shapes: dict[str, int] = {}
+    for view in views:
+        local_shapes[view.agent_id] = view.dimension
+        preference = view.preference_vector()
+        trust = float(supplied_trust.get(view.agent_id, 1.0))
+        for index, coordinate in enumerate(view.coordinates):
+            if coordinate.scale != 1.0:
+                raise ValueError("sparse MMT coordination requires unit selector maps")
+            channel_rows.setdefault(coordinate.shared, []).append(
+                (view.agent_id, index, float(preference[index]), trust)
+            )
+
+    shared_rows = {
+        channel: rows for channel, rows in channel_rows.items() if len(rows) >= 2
+    }
+    x_by_agent = {
+        agent: np.zeros(size, dtype=float) for agent, size in local_shapes.items()
+    }
+    z_by_agent = {
+        agent: np.zeros(size, dtype=float) for agent, size in local_shapes.items()
+    }
+    u_by_agent = {
+        agent: np.zeros(size, dtype=float) for agent, size in local_shapes.items()
+    }
+    states: dict[
+        SharedChannel,
+        tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray],
+    ] = {}
+    for channel, rows in shared_rows.items():
+        preferences = np.asarray([row[2] for row in rows], dtype=float)
+        trust = np.asarray([row[3] for row in rows], dtype=float)
+        states[channel] = (
+            preferences.copy(),
+            preferences.copy(),
+            np.zeros_like(preferences),
+            preferences,
+            trust,
+        )
+
+    trace: list[HeterogeneousAdmmTrace] = []
+    for iteration in range(1, iterations + 1):
+        primal_sq = 0.0
+        dual_sq = 0.0
+        sheaf_sq = 0.0
+        sheaf_count = 0
+        next_states = {}
+        for channel, (_x, z, u, preferences, trust) in states.items():
+            z_previous = z
+            x = np.maximum(
+                (trust * preferences + rho * (z - u)) / (trust + rho),
+                0.0,
+            )
+            rhs = rho * (x + u)
+            size = len(rhs)
+            diagonal = rho + gamma * size
+            z = rhs / diagonal + gamma * float(np.sum(rhs)) / (diagonal * rho)
+            u = u + x - z
+            primal_sq += float(np.dot(x - z, x - z))
+            dual_sq += float(np.dot(z - z_previous, z - z_previous))
+            if size > 1:
+                differences = z[:, None] - z[None, :]
+                upper = differences[np.triu_indices(size, 1)]
+                sheaf_sq += float(np.dot(upper, upper))
+                sheaf_count += len(upper)
+            next_states[channel] = (x, z, u, preferences, trust)
+        states = next_states
+        primal = float(np.sqrt(primal_sq))
+        dual = float(rho * np.sqrt(dual_sq))
+        sheaf = float(np.sqrt(sheaf_sq / sheaf_count)) if sheaf_count else 0.0
+        trace.append(HeterogeneousAdmmTrace(iteration, primal, dual, sheaf))
+        if primal <= tolerance and dual <= tolerance:
+            break
+
+    shared: dict[str, float] = {}
+    edge_channels: dict[tuple[str, str], list[SharedChannel]] = {}
+    for channel, rows in shared_rows.items():
+        x, z, u, _preferences, _trust = states[channel]
+        shared[channel.key] = float(max(np.mean(z), 0.0))
+        for position, (agent, index, _preference, _weight) in enumerate(rows):
+            x_by_agent[agent][index] = x[position]
+            z_by_agent[agent][index] = z[position]
+            u_by_agent[agent][index] = u[position]
+        agents = sorted(row[0] for row in rows)
+        for left_index, left in enumerate(agents):
+            for right in agents[left_index + 1 :]:
+                edge_channels.setdefault((left, right), []).append(channel)
+    edges = tuple(
+        SparseRestrictionEdge(left, right, tuple(sorted(channels)))
+        for (left, right), channels in sorted(edge_channels.items())
+    )
+    return SparseHeterogeneousAdmmResult(
+        agent_ids=tuple(ids),
+        x=x_by_agent,
+        z=z_by_agent,
+        u=u_by_agent,
+        edges=edges,
+        trace=tuple(trace),
+        shared=shared,
+    )
 
 
 def build_candidate_local_view(

@@ -1,0 +1,99 @@
+{
+  "experiment": "obligation_conditioned_elimination",
+  "problem_name": "2016G6",
+  "dataset": "C:/Users/81808/.cache/mortra-research-sources/GenesisGeo/benchmarks/hageo_409.txt",
+  "dataset_sha256": "55aa45dd16a1b69eaf612036468dbf3f62e73b654c0e3bb1a23fd3e5e3ed2368",
+  "normalization": {
+    "rewritten_constructions": 0,
+    "unchanged_constructions": 16,
+    "unresolved_constructions": 0
+  },
+  "baseline": {
+    "solved": false,
+    "native_fact_count": 2229,
+    "open_obligation_count": 24,
+    "open_demand_count": 18
+  },
+  "guidance_atoms": [
+    "lequation(1/1,a,p,*,a,p,1/1,c,q,*,c,q,-1/1,a,q,*,a,q,-1/1,c,p,*,c,p,0)",
+    "lequation(1/1,a,q,*,a,q,1/1,c,p,*,c,p,-1/1,a,p,*,a,p,-1/1,c,q,*,c,q,0)",
+    "lequation(1/1,c,p,*,c,p,1/1,a,q,*,a,q,-1/1,c,q,*,c,q,-1/1,a,p,*,a,p,0)",
+    "lequation(1/1,c,q,*,c,q,1/1,a,p,*,a,p,-1/1,c,p,*,c,p,-1/1,a,q,*,a,q,0)",
+    "lequation(1/1,p,a,*,p,a,1/1,q,c,*,q,c,-1/1,p,c,*,p,c,-1/1,q,a,*,q,a,0)",
+    "lequation(1/1,q,a,*,q,a,1/1,p,c,*,p,c,-1/1,q,c,*,q,c,-1/1,p,a,*,p,a,0)",
+    "lequation(1/1,p,c,*,p,c,1/1,q,a,*,q,a,-1/1,p,a,*,p,a,-1/1,q,c,*,q,c,0)",
+    "lequation(1/1,q,c,*,q,c,1/1,p,a,*,p,a,-1/1,q,a,*,q,a,-1/1,p,c,*,p,c,0)",
+    "perp(a,e,p,q)",
+    "perp(a,f,p,q)",
+    "perp(a,m,p,q)",
+    "perp(c,e,p,q)",
+    "perp(c,f,p,q)",
+    "perp(c,m,p,q)"
+  ],
+  "same_budget": {
+    "timeout_seconds_per_arm": 45.0,
+    "representation": "construction_block_dag",
+    "execution": "sequential"
+  },
+  "control": {
+    "status": "right_censored_timeout",
+    "elapsed_seconds": 45.04599680000683,
+    "certificate_available": true,
+    "exact_replay": true,
+    "ordering_strategy": "min_fill",
+    "selected_variables": [
+      "_free_x_15",
+      "_free_y_16",
+      "_free_x_5",
+      "_length_7",
+      "_length_8",
+      "_length_11",
+      "_free_x_19",
+      "_free_y_20",
+      "_free_x_21",
+      "_length_12",
+      "_free_y_22",
+      "_free_y_6"
+    ],
+    "local_node_count": 9,
+    "separator_node_count": 2,
+    "replayed_polynomial_count": 20,
+    "recovered_guidance_atoms": [],
+    "novel_recovered_guidance_atoms": [],
+    "solved": false
+  },
+  "treatment": {
+    "status": "right_censored_timeout",
+    "elapsed_seconds": 45.05784309998853,
+    "certificate_available": true,
+    "exact_replay": true,
+    "ordering_strategy": "obligation_conditioned",
+    "selected_variables": [
+      "_free_x_15",
+      "_free_y_16",
+      "_free_x_5",
+      "_length_7",
+      "_length_8",
+      "_length_11",
+      "_free_x_19",
+      "_free_y_20",
+      "_free_x_21",
+      "_length_12",
+      "_free_y_22",
+      "_free_y_6"
+    ],
+    "local_node_count": 9,
+    "separator_node_count": 2,
+    "replayed_polynomial_count": 20,
+    "recovered_guidance_atoms": [],
+    "novel_recovered_guidance_atoms": [],
+    "solved": false
+  },
+  "delta": {
+    "solved": 0,
+    "local_nodes": 0,
+    "separator_nodes": 0,
+    "novel_recovered_guidance_atoms": 0
+  },
+  "elapsed_seconds": 92.29983829997946
+}

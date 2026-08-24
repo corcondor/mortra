@@ -1,0 +1,658 @@
+{
+  "experiment": "geometry_goal_theorem_entry_symmetry_coverage",
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_expected_answers": false,
+    "uses_dataset_auxiliary_clauses": false,
+    "comparison": "position_wise_unification_vs_relation_symmetry_orbit"
+  },
+  "dataset": "C:/Users/81808/.cache/mortra-research-sources/GenesisGeo/benchmarks/hageo_409.txt",
+  "summary": {
+    "problems": 409,
+    "goals": 409,
+    "native_legacy_covered": 389,
+    "native_symmetry_covered": 408,
+    "full_representation_covered": 409,
+    "recovered_by_symmetry": 19,
+    "recovered_by_universal_morphism": 1,
+    "native_legacy_rate": 0.9511002444987775,
+    "native_symmetry_rate": 0.9975550122249389,
+    "full_representation_rate": 1.0
+  },
+  "by_predicate": {
+    "coll": {
+      "goals": 144,
+      "legacy_covered": 144,
+      "symmetry_covered": 144,
+      "full_representation_covered": 144,
+      "recovered_by_symmetry": 0,
+      "recovered_by_universal_morphism": 0
+    },
+    "cong": {
+      "goals": 59,
+      "legacy_covered": 59,
+      "symmetry_covered": 59,
+      "full_representation_covered": 59,
+      "recovered_by_symmetry": 0,
+      "recovered_by_universal_morphism": 0
+    },
+    "contri": {
+      "goals": 1,
+      "legacy_covered": 1,
+      "symmetry_covered": 1,
+      "full_representation_covered": 1,
+      "recovered_by_symmetry": 0,
+      "recovered_by_universal_morphism": 0
+    },
+    "cyclic": {
+      "goals": 82,
+      "legacy_covered": 82,
+      "symmetry_covered": 82,
+      "full_representation_covered": 82,
+      "recovered_by_symmetry": 0,
+      "recovered_by_universal_morphism": 0
+    },
+    "eqangle": {
+      "goals": 27,
+      "legacy_covered": 12,
+      "symmetry_covered": 27,
+      "full_representation_covered": 27,
+      "recovered_by_symmetry": 15,
+      "recovered_by_universal_morphism": 0
+    },
+    "eqratio": {
+      "goals": 7,
+      "legacy_covered": 2,
+      "symmetry_covered": 6,
+      "full_representation_covered": 7,
+      "recovered_by_symmetry": 4,
+      "recovered_by_universal_morphism": 1
+    },
+    "midp": {
+      "goals": 9,
+      "legacy_covered": 9,
+      "symmetry_covered": 9,
+      "full_representation_covered": 9,
+      "recovered_by_symmetry": 0,
+      "recovered_by_universal_morphism": 0
+    },
+    "para": {
+      "goals": 25,
+      "legacy_covered": 25,
+      "symmetry_covered": 25,
+      "full_representation_covered": 25,
+      "recovered_by_symmetry": 0,
+      "recovered_by_universal_morphism": 0
+    },
+    "perp": {
+      "goals": 50,
+      "legacy_covered": 50,
+      "symmetry_covered": 50,
+      "full_representation_covered": 50,
+      "recovered_by_symmetry": 0,
+      "recovered_by_universal_morphism": 0
+    },
+    "simtri": {
+      "goals": 4,
+      "legacy_covered": 4,
+      "symmetry_covered": 4,
+      "full_representation_covered": 4,
+      "recovered_by_symmetry": 0,
+      "recovered_by_universal_morphism": 0
+    },
+    "simtrir": {
+      "goals": 1,
+      "legacy_covered": 1,
+      "symmetry_covered": 1,
+      "full_representation_covered": 1,
+      "recovered_by_symmetry": 0,
+      "recovered_by_universal_morphism": 0
+    }
+  },
+  "recovered_goals": {
+    "eqangle": [
+      {
+        "problem_name": "2009ARMOg11p7",
+        "goal": {
+          "predicate": "eqangle",
+          "arguments": [
+            "a",
+            "b",
+            "b",
+            "q",
+            "d",
+            "p",
+            "a",
+            "d"
+          ]
+        },
+        "matching_theorems": [
+          "r52:0",
+          "r52:1",
+          "r52:2",
+          "r53:0",
+          "r53:1",
+          "r53:2",
+          "r58:0",
+          "r59:0"
+        ]
+      },
+      {
+        "problem_name": "2011CHNSouthEastMOp4",
+        "goal": {
+          "predicate": "eqangle",
+          "arguments": [
+            "a",
+            "b",
+            "a",
+            "c",
+            "e",
+            "o",
+            "f",
+            "o"
+          ]
+        },
+        "matching_theorems": [
+          "r52:0",
+          "r52:1",
+          "r52:2",
+          "r53:0",
+          "r53:1",
+          "r53:2",
+          "r58:0",
+          "r59:0"
+        ]
+      },
+      {
+        "problem_name": "2012CGMOp5",
+        "goal": {
+          "predicate": "eqangle",
+          "arguments": [
+            "b",
+            "d",
+            "d",
+            "o",
+            "e",
+            "o",
+            "c",
+            "e"
+          ]
+        },
+        "matching_theorems": [
+          "r52:0",
+          "r52:1",
+          "r52:2",
+          "r53:0",
+          "r53:1",
+          "r53:2",
+          "r58:0",
+          "r59:0"
+        ]
+      },
+      {
+        "problem_name": "2013ARMOg9p7",
+        "goal": {
+          "predicate": "eqangle",
+          "arguments": [
+            "a",
+            "c",
+            "c",
+            "p",
+            "c",
+            "s",
+            "b",
+            "c"
+          ]
+        },
+        "matching_theorems": [
+          "r52:0",
+          "r52:1",
+          "r52:2",
+          "r53:0",
+          "r53:1",
+          "r53:2",
+          "r58:0",
+          "r59:0"
+        ]
+      },
+      {
+        "problem_name": "2013USATSTp2",
+        "goal": {
+          "predicate": "eqangle",
+          "arguments": [
+            "a",
+            "c",
+            "c",
+            "t",
+            "c",
+            "t",
+            "b",
+            "c"
+          ]
+        },
+        "matching_theorems": [
+          "r11:0",
+          "r46:0",
+          "r52:0",
+          "r52:1",
+          "r52:2",
+          "r53:0",
+          "r53:1",
+          "r53:2",
+          "r58:0",
+          "r59:0"
+        ]
+      },
+      {
+        "problem_name": "2014IranGOAp3",
+        "goal": {
+          "predicate": "eqangle",
+          "arguments": [
+            "a",
+            "x",
+            "a",
+            "y",
+            "x",
+            "y",
+            "m",
+            "y"
+          ]
+        },
+        "matching_theorems": [
+          "r52:0",
+          "r52:1",
+          "r52:2",
+          "r53:0",
+          "r53:1",
+          "r53:2",
+          "r58:0",
+          "r59:0"
+        ]
+      },
+      {
+        "problem_name": "2015IranTSTp18",
+        "goal": {
+          "predicate": "eqangle",
+          "arguments": [
+            "b",
+            "x",
+            "c",
+            "x",
+            "x",
+            "y",
+            "x",
+            "z"
+          ]
+        },
+        "matching_theorems": [
+          "r52:0",
+          "r52:1",
+          "r52:2",
+          "r53:0",
+          "r53:1",
+          "r53:2",
+          "r58:0",
+          "r59:0"
+        ]
+      },
+      {
+        "problem_name": "2016SilkRoadp2",
+        "goal": {
+          "predicate": "eqangle",
+          "arguments": [
+            "a1",
+            "k",
+            "k",
+            "m",
+            "k",
+            "n",
+            "b1",
+            "k"
+          ]
+        },
+        "matching_theorems": [
+          "r52:0",
+          "r52:1",
+          "r52:2",
+          "r53:0",
+          "r53:1",
+          "r53:2",
+          "r58:0",
+          "r59:0"
+        ]
+      },
+      {
+        "problem_name": "2020USATSTSTp2a",
+        "goal": {
+          "predicate": "eqangle",
+          "arguments": [
+            "d",
+            "g",
+            "g",
+            "m",
+            "g",
+            "q",
+            "d",
+            "g"
+          ]
+        },
+        "matching_theorems": [
+          "r11:0",
+          "r46:0",
+          "r52:0",
+          "r52:1",
+          "r52:2",
+          "r53:0",
+          "r53:1",
+          "r53:2",
+          "r58:0",
+          "r59:0"
+        ]
+      },
+      {
+        "problem_name": "2020USATSTSTp2b",
+        "goal": {
+          "predicate": "eqangle",
+          "arguments": [
+            "d",
+            "m",
+            "g",
+            "m",
+            "m",
+            "q",
+            "d",
+            "m"
+          ]
+        },
+        "matching_theorems": [
+          "r11:0",
+          "r46:0",
+          "r52:0",
+          "r52:1",
+          "r52:2",
+          "r53:0",
+          "r53:1",
+          "r53:2",
+          "r58:0",
+          "r59:0"
+        ]
+      },
+      {
+        "problem_name": "2021ARMOg11p4",
+        "goal": {
+          "predicate": "eqangle",
+          "arguments": [
+            "a",
+            "i",
+            "b",
+            "o4",
+            "c",
+            "i",
+            "b",
+            "o6"
+          ]
+        },
+        "matching_theorems": [
+          "r52:0",
+          "r52:1",
+          "r52:2",
+          "r53:0",
+          "r53:1",
+          "r53:2",
+          "r58:0",
+          "r59:0"
+        ]
+      },
+      {
+        "problem_name": "2022CGMOp3",
+        "goal": {
+          "predicate": "eqangle",
+          "arguments": [
+            "a",
+            "b",
+            "b",
+            "i",
+            "b",
+            "j",
+            "b",
+            "l"
+          ]
+        },
+        "matching_theorems": [
+          "r52:0",
+          "r52:1",
+          "r52:2",
+          "r53:0",
+          "r53:1",
+          "r53:2",
+          "r58:0",
+          "r59:0"
+        ]
+      },
+      {
+        "problem_name": "2023SAGFp2",
+        "goal": {
+          "predicate": "eqangle",
+          "arguments": [
+            "a",
+            "a1",
+            "a1",
+            "m",
+            "k",
+            "p",
+            "a",
+            "p"
+          ]
+        },
+        "matching_theorems": [
+          "r52:0",
+          "r52:1",
+          "r52:2",
+          "r53:0",
+          "r53:1",
+          "r53:2",
+          "r58:0",
+          "r59:0"
+        ]
+      },
+      {
+        "problem_name": "2024VietnamTSTp5",
+        "goal": {
+          "predicate": "eqangle",
+          "arguments": [
+            "a",
+            "s",
+            "i",
+            "s",
+            "j",
+            "s",
+            "s",
+            "t"
+          ]
+        },
+        "matching_theorems": [
+          "r52:0",
+          "r52:1",
+          "r52:2",
+          "r53:0",
+          "r53:1",
+          "r53:2",
+          "r58:0",
+          "r59:0"
+        ]
+      },
+      {
+        "problem_name": "ShuZhiMiGeo109",
+        "goal": {
+          "predicate": "eqangle",
+          "arguments": [
+            "d",
+            "e",
+            "e",
+            "n1",
+            "e",
+            "n1",
+            "e",
+            "f"
+          ]
+        },
+        "matching_theorems": [
+          "r11:0",
+          "r46:0",
+          "r52:0",
+          "r52:1",
+          "r52:2",
+          "r53:0",
+          "r53:1",
+          "r53:2",
+          "r58:0",
+          "r59:0"
+        ]
+      }
+    ],
+    "eqratio": [
+      {
+        "problem_name": "2012AsiaPacificMOp4",
+        "goal": {
+          "predicate": "eqratio",
+          "arguments": [
+            "a",
+            "b",
+            "a",
+            "c",
+            "b",
+            "f",
+            "c",
+            "f"
+          ]
+        },
+        "matching_theorems": [
+          "r07:1",
+          "r07:2",
+          "r12:0",
+          "r42:0",
+          "r52:3",
+          "r52:4",
+          "r53:3",
+          "r53:4",
+          "r70:0",
+          "r71:0"
+        ]
+      },
+      {
+        "problem_name": "2012CHNSouthEastMOp2",
+        "goal": {
+          "predicate": "eqratio",
+          "arguments": [
+            "d",
+            "m",
+            "d",
+            "n",
+            "f",
+            "k",
+            "e",
+            "k"
+          ]
+        },
+        "matching_theorems": [
+          "r42:0",
+          "r52:3",
+          "r52:4",
+          "r53:3",
+          "r53:4",
+          "r71:0"
+        ]
+      },
+      {
+        "problem_name": "2013USAMOp1",
+        "goal": {
+          "predicate": "eqratio",
+          "arguments": [
+            "b",
+            "p",
+            "c",
+            "p",
+            "x",
+            "y",
+            "x",
+            "z"
+          ]
+        },
+        "matching_theorems": [
+          "r42:0",
+          "r52:3",
+          "r52:4",
+          "r53:3",
+          "r53:4",
+          "r71:0"
+        ]
+      },
+      {
+        "problem_name": "2014CHNSouthEastMOg11p1",
+        "goal": {
+          "predicate": "eqratio",
+          "arguments": [
+            "b",
+            "i",
+            "c",
+            "i",
+            "d",
+            "e",
+            "e",
+            "i"
+          ]
+        },
+        "matching_theorems": [
+          "r42:0",
+          "r52:3",
+          "r52:4",
+          "r53:3",
+          "r53:4",
+          "r71:0"
+        ]
+      }
+    ],
+    "coll": [],
+    "cong": [],
+    "contri": [],
+    "cyclic": [],
+    "midp": [],
+    "para": [],
+    "perp": [],
+    "simtri": [],
+    "simtrir": []
+  },
+  "morphism_recovered_goals": {
+    "eqratio": [
+      {
+        "problem_name": "2013CHNGaoLianA",
+        "goal": {
+          "predicate": "eqratio",
+          "arguments": [
+            "a",
+            "c",
+            "c",
+            "d",
+            "e",
+            "f",
+            "b",
+            "d"
+          ]
+        },
+        "matching_theorems": [
+          "equal-ratio-transitivity"
+        ]
+      }
+    ],
+    "coll": [],
+    "cong": [],
+    "contri": [],
+    "cyclic": [],
+    "eqangle": [],
+    "midp": [],
+    "para": [],
+    "perp": [],
+    "simtri": [],
+    "simtrir": []
+  }
+}

@@ -1,0 +1,1560 @@
+{
+  "experiment": "hageo_independent_n_round_pass_at_k_no_llm",
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_dataset_auxiliary_clauses": false,
+    "uses_problem_id_in_search": false,
+    "uses_expected_answer": false,
+    "trajectory_policy": "typed_atom_obligation_unification_verified_credit_portfolio",
+    "ddAR_calls": "baseline_plus_native_shortlist_feedback_with_terminal_reuse",
+    "rounds_n": 1,
+    "attempts_k": 1,
+    "attempt_offset": 0,
+    "workers": 1,
+    "seed": 31,
+    "per_family_limit": 4,
+    "incidence_oversample_per_family": 8,
+    "incidence_preselect_limit": 48,
+    "incidence_workers": 1,
+    "candidate_limit": 32,
+    "candidate_policy": "obligation-credit-mixed",
+    "rank_temperature": 2.0,
+    "incremental_prefix": false,
+    "feedback_candidates": 4,
+    "feedback_workers": 4,
+    "ar_profile": "all",
+    "proof_dag_specialist_budget": {
+      "per_family_candidates": 4,
+      "depth": 3,
+      "fragments": 16,
+      "initial_states_per_candidate": 16,
+      "states_per_task": 64,
+      "reserved_consensus": 4,
+      "reserved_family_frontier": true
+    },
+    "truth_plane": "yuclid_native_certificate_replay_only",
+    "terminal_credit_control_only": true,
+    "terminal_credit_ledger_input": "C:/Users/81808/.openclaw/workspace/mortra-1-release/data/terminal-credit-development-ledger-3problems-hierarchical-2026-08-21.json",
+    "terminal_credit_ledger_input_sha256": "718d6fe8604e905f9d3eef1600c5ff7f664641436ad97af66270ea46971fe186",
+    "terminal_credit_ledger_frozen": true
+  },
+  "problem_name": "2020IranGOAp2",
+  "normalization": {
+    "rewritten_constructions": 11,
+    "unchanged_constructions": 0,
+    "unresolved_constructions": 0
+  },
+  "baseline_solved": false,
+  "baseline_proof_residual": {
+    "open_relation_demands": 17,
+    "backward_obligations": 24,
+    "ar_supported_goals": 1,
+    "ar_closed_goals": 0,
+    "ar_residual_support": 2,
+    "ar_residual_l1": 2.0,
+    "ar_known_rank": 45,
+    "parent_relation_demands": 0,
+    "retained_parent_demands": 0,
+    "closed_parent_demands": 0,
+    "closed_parent_obligations": [],
+    "new_native_facts": 2226,
+    "introduced_relation_demands": 17
+  },
+  "mmt_exact_coordination": null,
+  "solved": false,
+  "pass_at_k": false,
+  "first_solved_attempt": null,
+  "unique_paths": 1,
+  "completed_attempts": 1,
+  "execution_errors": 0,
+  "elapsed_seconds": 3.9053327000001445,
+  "attempt_results": [
+    {
+      "attempt": 0,
+      "status": "unsolved",
+      "solved": false,
+      "rounds_completed": 1,
+      "path": [
+        "reflect(t,o1,p)->d"
+      ],
+      "rounds": [
+        {
+          "round": 1,
+          "candidate_extension_seconds": 2.208544200002507,
+          "enumerated": 304,
+          "incidence_checked": 33,
+          "heuristic_candidates": 0,
+          "eligible_pool": 22,
+          "ranked_candidates": [
+            "foot(t,p,a)->d",
+            "reflect(t,o1,p)->d",
+            "mirror(a,p)->d",
+            "eq_triangle(o1,p)->d",
+            "orthocenter(o1,p,q)->d",
+            "intersection_lt(p,a,t,p,a)->d",
+            "intersection_tt(t,p,a,a,o1,p)->d",
+            "intersection_ll(o1,p,a,q)->d",
+            "eqdistance(a,m,p)->d",
+            "on_tline(t,a,p)->d",
+            "shift(a,m,p)->d",
+            "on_pline(t,a,p)->d",
+            "nsquare(a,p)->d",
+            "psquare(a,p)->d",
+            "on_bline(p,a)->d",
+            "on_circle(a,p)->d",
+            "on_dia(p,a)->d",
+            "lc_tangent(a,p)->d",
+            "iso_triangle_vertex(p,a)->d",
+            "between_bound(a,p)->d",
+            "eqangle3(a,i,o1,p,q)->d",
+            "on_aline(a,i,p,o1,q)->d"
+          ],
+          "terminal_credit_ranking": [
+            {
+              "candidate": "foot(t,p,a)->d",
+              "original_rank": 3,
+              "credit_rank": 0,
+              "rank_change": 3,
+              "credit_score": 0.1261003125,
+              "signature": {
+                "family": "foot",
+                "input_roles": [
+                  "given",
+                  "given",
+                  "given"
+                ],
+                "input_equalities": [
+                  0,
+                  1,
+                  2
+                ],
+                "target_predicates": [
+                  "cong",
+                  "cyclic",
+                  "midp",
+                  "npara",
+                  "perp"
+                ],
+                "structural_shape": [
+                  "+1",
+                  "+1",
+                  "0",
+                  "-2",
+                  "-2",
+                  "-1",
+                  "0",
+                  "-1",
+                  "0",
+                  "0",
+                  "-1",
+                  "-1",
+                  "-1",
+                  "0",
+                  "+1",
+                  "+1",
+                  "+2"
+                ]
+              }
+            },
+            {
+              "candidate": "reflect(t,o1,p)->d",
+              "original_rank": 0,
+              "credit_rank": 1,
+              "rank_change": -1,
+              "credit_score": 0.125,
+              "signature": {
+                "family": "reflect",
+                "input_roles": [
+                  "given",
+                  "given",
+                  "given"
+                ],
+                "input_equalities": [
+                  0,
+                  1,
+                  2
+                ],
+                "target_predicates": [
+                  "cong",
+                  "cyclic",
+                  "midp",
+                  "npara",
+                  "perp"
+                ],
+                "structural_shape": [
+                  "+1",
+                  "+1",
+                  "0",
+                  "-2",
+                  "-2",
+                  "-1",
+                  "0",
+                  "-1",
+                  "0",
+                  "0",
+                  "-1",
+                  "-2",
+                  "-1",
+                  "0",
+                  "0",
+                  "0",
+                  "+2"
+                ]
+              }
+            },
+            {
+              "candidate": "mirror(a,p)->d",
+              "original_rank": 1,
+              "credit_rank": 2,
+              "rank_change": -1,
+              "credit_score": 0.10625,
+              "signature": {
+                "family": "mirror",
+                "input_roles": [
+                  "given",
+                  "given"
+                ],
+                "input_equalities": [
+                  0,
+                  1
+                ],
+                "target_predicates": [
+                  "cong",
+                  "cyclic",
+                  "midp",
+                  "npara",
+                  "perp"
+                ],
+                "structural_shape": [
+                  "+1",
+                  "0",
+                  "0",
+                  "-2",
+                  "-2",
+                  "-1",
+                  "0",
+                  "-1",
+                  "0",
+                  "0",
+                  "-1",
+                  "-1",
+                  "0",
+                  "+1",
+                  "+1",
+                  "+1",
+                  "+1"
+                ]
+              }
+            },
+            {
+              "candidate": "eq_triangle(o1,p)->d",
+              "original_rank": 2,
+              "credit_rank": 3,
+              "rank_change": -1,
+              "credit_score": 0.0,
+              "signature": {
+                "family": "eq_triangle",
+                "input_roles": [
+                  "given",
+                  "given"
+                ],
+                "input_equalities": [
+                  0,
+                  1
+                ],
+                "target_predicates": [
+                  "cong",
+                  "cyclic",
+                  "midp",
+                  "npara",
+                  "perp"
+                ],
+                "structural_shape": [
+                  "+1",
+                  "0",
+                  "0",
+                  "-2",
+                  "-2",
+                  "-1",
+                  "0",
+                  "-1",
+                  "0",
+                  "0",
+                  "-1",
+                  "-2",
+                  "-1",
+                  "+1",
+                  "0",
+                  "0",
+                  "+1"
+                ]
+              }
+            },
+            {
+              "candidate": "orthocenter(o1,p,q)->d",
+              "original_rank": 4,
+              "credit_rank": 4,
+              "rank_change": 0,
+              "credit_score": 0.0,
+              "signature": {
+                "family": "orthocenter",
+                "input_roles": [
+                  "given",
+                  "given",
+                  "given"
+                ],
+                "input_equalities": [
+                  0,
+                  1,
+                  2
+                ],
+                "target_predicates": [
+                  "cong",
+                  "cyclic",
+                  "midp",
+                  "npara",
+                  "perp"
+                ],
+                "structural_shape": [
+                  "+1",
+                  "0",
+                  "0",
+                  "-1",
+                  "-3",
+                  "-2",
+                  "0",
+                  "-1",
+                  "0",
+                  "0",
+                  "-2",
+                  "-2",
+                  "-1",
+                  "+1",
+                  "+1",
+                  "+1",
+                  "+2"
+                ]
+              }
+            },
+            {
+              "candidate": "intersection_lt(p,a,t,p,a)->d",
+              "original_rank": 5,
+              "credit_rank": 5,
+              "rank_change": 0,
+              "credit_score": 0.0,
+              "signature": {
+                "family": "intersection_lt",
+                "input_roles": [
+                  "given",
+                  "given",
+                  "given",
+                  "given",
+                  "given"
+                ],
+                "input_equalities": [
+                  0,
+                  1,
+                  2,
+                  0,
+                  1
+                ],
+                "target_predicates": [
+                  "cong",
+                  "cyclic",
+                  "midp",
+                  "npara",
+                  "perp"
+                ],
+                "structural_shape": [
+                  "+1",
+                  "0",
+                  "0",
+                  "-2",
+                  "-2",
+                  "-1",
+                  "0",
+                  "-2",
+                  "0",
+                  "0",
+                  "-2",
+                  "-2",
+                  "-1",
+                  "0",
+                  "+1",
+                  "+1",
+                  "+2"
+                ]
+              }
+            },
+            {
+              "candidate": "intersection_tt(t,p,a,a,o1,p)->d",
+              "original_rank": 6,
+              "credit_rank": 6,
+              "rank_change": 0,
+              "credit_score": 0.0,
+              "signature": {
+                "family": "intersection_tt",
+                "input_roles": [
+                  "given",
+                  "given",
+                  "given",
+                  "given",
+                  "given",
+                  "given"
+                ],
+                "input_equalities": [
+                  0,
+                  1,
+                  2,
+                  2,
+                  3,
+                  1
+                ],
+                "target_predicates": [
+                  "cong",
+                  "cyclic",
+                  "midp",
+                  "npara",
+                  "perp"
+                ],
+                "structural_shape": [
+                  "+1",
+                  "0",
+                  "0",
+                  "-2",
+                  "-2",
+                  "-1",
+                  "0",
+                  "-2",
+                  "0",
+                  "0",
+                  "-3",
+                  "-2",
+                  "-1",
+                  "0",
+                  "+1",
+                  "+1",
+                  "+2"
+                ]
+              }
+            },
+            {
+              "candidate": "intersection_ll(o1,p,a,q)->d",
+              "original_rank": 7,
+              "credit_rank": 7,
+              "rank_change": 0,
+              "credit_score": 0.0,
+              "signature": {
+                "family": "intersection_ll",
+                "input_roles": [
+                  "given",
+                  "given",
+                  "given",
+                  "given"
+                ],
+                "input_equalities": [
+                  0,
+                  1,
+                  2,
+                  3
+                ],
+                "target_predicates": [
+                  "cong",
+                  "cyclic",
+                  "midp",
+                  "npara",
+                  "perp"
+                ],
+                "structural_shape": [
+                  "+1",
+                  "0",
+                  "0",
+                  "-2",
+                  "-2",
+                  "-1",
+                  "0",
+                  "-2",
+                  "0",
+                  "+1",
+                  "-2",
+                  "-2",
+                  "-1",
+                  "0",
+                  "+1",
+                  "+1",
+                  "+2"
+                ]
+              }
+            },
+            {
+              "candidate": "eqdistance(a,m,p)->d",
+              "original_rank": 8,
+              "credit_rank": 8,
+              "rank_change": 0,
+              "credit_score": 0.0,
+              "signature": {
+                "family": "eqdistance",
+                "input_roles": [
+                  "given",
+                  "given",
+                  "given"
+                ],
+                "input_equalities": [
+                  0,
+                  1,
+                  2
+                ],
+                "target_predicates": [
+                  "cong",
+                  "cyclic",
+                  "midp",
+                  "npara",
+                  "perp"
+                ],
+                "structural_shape": [
+                  "+1",
+                  "0",
+                  "0",
+                  "-2",
+                  "-3",
+                  "-2",
+                  "0",
+                  "-1",
+                  "0",
+                  "0",
+                  "-2",
+                  "-1",
+                  "0",
+                  "+1",
+                  "+1",
+                  "+1",
+                  "+2"
+                ]
+              }
+            },
+            {
+              "candidate": "on_tline(t,a,p)->d",
+              "original_rank": 9,
+              "credit_rank": 9,
+              "rank_change": 0,
+              "credit_score": 0.0,
+              "signature": {
+                "family": "on_tline",
+                "input_roles": [
+                  "given",
+                  "given",
+                  "given"
+                ],
+                "input_equalities": [
+                  0,
+                  1,
+                  2
+                ],
+                "target_predicates": [
+                  "cong",
+                  "cyclic",
+                  "midp",
+                  "npara",
+                  "perp"
+                ],
+                "structural_shape": [
+                  "+1",
+                  "0",
+                  "0",
+                  "-2",
+                  "-2",
+                  "-1",
+                  "0",
+                  "-1",
+                  "0",
+                  "0",
+                  "-1",
+                  "-1",
+                  "-1",
+                  "0",
+                  "+1",
+                  "+1",
+                  "+2"
+                ]
+              }
+            },
+            {
+              "candidate": "shift(a,m,p)->d",
+              "original_rank": 10,
+              "credit_rank": 10,
+              "rank_change": 0,
+              "credit_score": 0.0,
+              "signature": {
+                "family": "shift",
+                "input_roles": [
+                  "given",
+                  "given",
+                  "given"
+                ],
+                "input_equalities": [
+                  0,
+                  1,
+                  2
+                ],
+                "target_predicates": [
+                  "cong",
+                  "cyclic",
+                  "midp",
+                  "npara",
+                  "perp"
+                ],
+                "structural_shape": [
+                  "+1",
+                  "0",
+                  "0",
+                  "-2",
+                  "-3",
+                  "-2",
+                  "0",
+                  "-1",
+                  "0",
+                  "0",
+                  "-2",
+                  "-1",
+                  "0",
+                  "+1",
+                  "+1",
+                  "+1",
+                  "+2"
+                ]
+              }
+            },
+            {
+              "candidate": "on_pline(t,a,p)->d",
+              "original_rank": 11,
+              "credit_rank": 11,
+              "rank_change": 0,
+              "credit_score": 0.0,
+              "signature": {
+                "family": "on_pline",
+                "input_roles": [
+                  "given",
+                  "given",
+                  "given"
+                ],
+                "input_equalities": [
+                  0,
+                  1,
+                  2
+                ],
+                "target_predicates": [
+                  "cong",
+                  "cyclic",
+                  "midp",
+                  "npara",
+                  "perp"
+                ],
+                "structural_shape": [
+                  "+1",
+                  "0",
+                  "0",
+                  "-2",
+                  "-2",
+                  "-1",
+                  "0",
+                  "-1",
+                  "0",
+                  "+1",
+                  "-1",
+                  "-1",
+                  "-1",
+                  "0",
+                  "+1",
+                  "+1",
+                  "+2"
+                ]
+              }
+            },
+            {
+              "candidate": "nsquare(a,p)->d",
+              "original_rank": 12,
+              "credit_rank": 12,
+              "rank_change": 0,
+              "credit_score": 0.0,
+              "signature": {
+                "family": "nsquare",
+                "input_roles": [
+                  "given",
+                  "given"
+                ],
+                "input_equalities": [
+                  0,
+                  1
+                ],
+                "target_predicates": [
+                  "cong",
+                  "cyclic",
+                  "midp",
+                  "npara",
+                  "perp"
+                ],
+                "structural_shape": [
+                  "+1",
+                  "0",
+                  "0",
+                  "-2",
+                  "-2",
+                  "-1",
+                  "0",
+                  "-1",
+                  "0",
+                  "0",
+                  "-1",
+                  "-1",
+                  "-1",
+                  "+1",
+                  "+1",
+                  "+1",
+                  "+1"
+                ]
+              }
+            },
+            {
+              "candidate": "psquare(a,p)->d",
+              "original_rank": 13,
+              "credit_rank": 13,
+              "rank_change": 0,
+              "credit_score": 0.0,
+              "signature": {
+                "family": "psquare",
+                "input_roles": [
+                  "given",
+                  "given"
+                ],
+                "input_equalities": [
+                  0,
+                  1
+                ],
+                "target_predicates": [
+                  "cong",
+                  "cyclic",
+                  "midp",
+                  "npara",
+                  "perp"
+                ],
+                "structural_shape": [
+                  "+1",
+                  "0",
+                  "0",
+                  "-2",
+                  "-2",
+                  "-1",
+                  "0",
+                  "-1",
+                  "0",
+                  "0",
+                  "-1",
+                  "-1",
+                  "-1",
+                  "+1",
+                  "+1",
+                  "+1",
+                  "+1"
+                ]
+              }
+            },
+            {
+              "candidate": "on_bline(p,a)->d",
+              "original_rank": 14,
+              "credit_rank": 14,
+              "rank_change": 0,
+              "credit_score": 0.0,
+              "signature": {
+                "family": "on_bline",
+                "input_roles": [
+                  "given",
+                  "given"
+                ],
+                "input_equalities": [
+                  0,
+                  1
+                ],
+                "target_predicates": [
+                  "cong",
+                  "cyclic",
+                  "midp",
+                  "npara",
+                  "perp"
+                ],
+                "structural_shape": [
+                  "+1",
+                  "0",
+                  "0",
+                  "-2",
+                  "-2",
+                  "-1",
+                  "0",
+                  "-1",
+                  "0",
+                  "0",
+                  "-1",
+                  "-1",
+                  "0",
+                  "+1",
+                  "+1",
+                  "+1",
+                  "+1"
+                ]
+              }
+            },
+            {
+              "candidate": "on_circle(a,p)->d",
+              "original_rank": 15,
+              "credit_rank": 15,
+              "rank_change": 0,
+              "credit_score": 0.0,
+              "signature": {
+                "family": "on_circle",
+                "input_roles": [
+                  "given",
+                  "given"
+                ],
+                "input_equalities": [
+                  0,
+                  1
+                ],
+                "target_predicates": [
+                  "cong",
+                  "cyclic",
+                  "midp",
+                  "npara",
+                  "perp"
+                ],
+                "structural_shape": [
+                  "+1",
+                  "0",
+                  "0",
+                  "-2",
+                  "-2",
+                  "-1",
+                  "0",
+                  "-1",
+                  "0",
+                  "0",
+                  "-1",
+                  "-1",
+                  "0",
+                  "+1",
+                  "+1",
+                  "+1",
+                  "+1"
+                ]
+              }
+            },
+            {
+              "candidate": "on_dia(p,a)->d",
+              "original_rank": 16,
+              "credit_rank": 16,
+              "rank_change": 0,
+              "credit_score": 0.0,
+              "signature": {
+                "family": "on_dia",
+                "input_roles": [
+                  "given",
+                  "given"
+                ],
+                "input_equalities": [
+                  0,
+                  1
+                ],
+                "target_predicates": [
+                  "cong",
+                  "cyclic",
+                  "midp",
+                  "npara",
+                  "perp"
+                ],
+                "structural_shape": [
+                  "+1",
+                  "0",
+                  "0",
+                  "-2",
+                  "-2",
+                  "-1",
+                  "0",
+                  "-1",
+                  "0",
+                  "0",
+                  "-1",
+                  "-1",
+                  "-1",
+                  "+1",
+                  "+1",
+                  "+1",
+                  "+1"
+                ]
+              }
+            },
+            {
+              "candidate": "lc_tangent(a,p)->d",
+              "original_rank": 17,
+              "credit_rank": 17,
+              "rank_change": 0,
+              "credit_score": 0.0,
+              "signature": {
+                "family": "lc_tangent",
+                "input_roles": [
+                  "given",
+                  "given"
+                ],
+                "input_equalities": [
+                  0,
+                  1
+                ],
+                "target_predicates": [
+                  "cong",
+                  "cyclic",
+                  "midp",
+                  "npara",
+                  "perp"
+                ],
+                "structural_shape": [
+                  "+1",
+                  "0",
+                  "0",
+                  "-2",
+                  "-2",
+                  "-1",
+                  "0",
+                  "-1",
+                  "0",
+                  "0",
+                  "-1",
+                  "-1",
+                  "-1",
+                  "+1",
+                  "+1",
+                  "+1",
+                  "+1"
+                ]
+              }
+            },
+            {
+              "candidate": "iso_triangle_vertex(p,a)->d",
+              "original_rank": 18,
+              "credit_rank": 18,
+              "rank_change": 0,
+              "credit_score": 0.0,
+              "signature": {
+                "family": "iso_triangle_vertex",
+                "input_roles": [
+                  "given",
+                  "given"
+                ],
+                "input_equalities": [
+                  0,
+                  1
+                ],
+                "target_predicates": [
+                  "cong",
+                  "cyclic",
+                  "midp",
+                  "npara",
+                  "perp"
+                ],
+                "structural_shape": [
+                  "+1",
+                  "0",
+                  "0",
+                  "-2",
+                  "-2",
+                  "-1",
+                  "0",
+                  "-1",
+                  "0",
+                  "0",
+                  "-1",
+                  "-1",
+                  "0",
+                  "+1",
+                  "+1",
+                  "+1",
+                  "+1"
+                ]
+              }
+            },
+            {
+              "candidate": "between_bound(a,p)->d",
+              "original_rank": 19,
+              "credit_rank": 19,
+              "rank_change": 0,
+              "credit_score": 0.0,
+              "signature": {
+                "family": "between_bound",
+                "input_roles": [
+                  "given",
+                  "given"
+                ],
+                "input_equalities": [
+                  0,
+                  1
+                ],
+                "target_predicates": [
+                  "cong",
+                  "cyclic",
+                  "midp",
+                  "npara",
+                  "perp"
+                ],
+                "structural_shape": [
+                  "+1",
+                  "0",
+                  "0",
+                  "-2",
+                  "-2",
+                  "-1",
+                  "0",
+                  "-1",
+                  "0",
+                  "+1",
+                  "-1",
+                  "-1",
+                  "-1",
+                  "+1",
+                  "+1",
+                  "+1",
+                  "+1"
+                ]
+              }
+            },
+            {
+              "candidate": "eqangle3(a,i,o1,p,q)->d",
+              "original_rank": 20,
+              "credit_rank": 20,
+              "rank_change": 0,
+              "credit_score": 0.0,
+              "signature": {
+                "family": "eqangle3",
+                "input_roles": [
+                  "given",
+                  "given",
+                  "given",
+                  "given",
+                  "given"
+                ],
+                "input_equalities": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4
+                ],
+                "target_predicates": [
+                  "cong",
+                  "cyclic",
+                  "midp",
+                  "npara",
+                  "perp"
+                ],
+                "structural_shape": [
+                  "+1",
+                  "0",
+                  "0",
+                  "-2",
+                  "-3",
+                  "-2",
+                  "0",
+                  "-2",
+                  "0",
+                  "+1",
+                  "-3",
+                  "-2",
+                  "-1",
+                  "0",
+                  "+2",
+                  "+1",
+                  "+2"
+                ]
+              }
+            },
+            {
+              "candidate": "on_aline(a,i,p,o1,q)->d",
+              "original_rank": 21,
+              "credit_rank": 21,
+              "rank_change": 0,
+              "credit_score": 0.0,
+              "signature": {
+                "family": "on_aline",
+                "input_roles": [
+                  "given",
+                  "given",
+                  "given",
+                  "given",
+                  "given"
+                ],
+                "input_equalities": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4
+                ],
+                "target_predicates": [
+                  "cong",
+                  "cyclic",
+                  "midp",
+                  "npara",
+                  "perp"
+                ],
+                "structural_shape": [
+                  "+1",
+                  "0",
+                  "0",
+                  "-2",
+                  "-3",
+                  "-2",
+                  "0",
+                  "-2",
+                  "0",
+                  "+1",
+                  "-3",
+                  "-2",
+                  "-1",
+                  "0",
+                  "+2",
+                  "+1",
+                  "+2"
+                ]
+              }
+            }
+          ],
+          "obligation_credit_ranking": [
+            {
+              "candidate": "reflect(t,o1,p)->d",
+              "original_rank": 0,
+              "credit_rank": 1,
+              "rank_change": -1,
+              "credit_score": 0.125,
+              "signature": {
+                "family": "reflect",
+                "input_roles": [
+                  "given",
+                  "given",
+                  "given"
+                ],
+                "input_equalities": [
+                  0,
+                  1,
+                  2
+                ],
+                "target_predicates": [
+                  "cong",
+                  "cyclic",
+                  "midp",
+                  "npara",
+                  "perp"
+                ],
+                "structural_shape": [
+                  "+1",
+                  "+1",
+                  "0",
+                  "-2",
+                  "-2",
+                  "-1",
+                  "0",
+                  "-1",
+                  "0",
+                  "0",
+                  "-1",
+                  "-2",
+                  "-1",
+                  "0",
+                  "0",
+                  "0",
+                  "+2"
+                ]
+              },
+              "matched_obligations": [
+                "cong(?D,o1,o1,t)",
+                "cong(?B,o1,o1,t)"
+              ],
+              "direct_match_count": 2
+            }
+          ],
+          "shortlist_channels": [
+            {
+              "candidate": "reflect(t,o1,p)->d",
+              "channel": "obligation_credit_probe"
+            },
+            {
+              "candidate": "mirror(a,p)->d",
+              "channel": "residual_frontier"
+            },
+            {
+              "candidate": "eq_triangle(o1,p)->d",
+              "channel": "residual_frontier"
+            },
+            {
+              "candidate": "foot(t,p,a)->d",
+              "channel": "residual_frontier"
+            }
+          ],
+          "chosen": "reflect(t,o1,p)->d",
+          "relation_demands_in": [
+            "cyclic(p,q,r,t)",
+            "cong(o1,q,o1,t)",
+            "cong(o1,r,o1,t)",
+            "perp(?C,t,p,t)",
+            "midp(o1,p,?C)",
+            "perp(?C,p,p,t)",
+            "midp(o1,t,?C)",
+            "cyclic(?D,p,q,t)",
+            "cong(?D,o1,o1,t)",
+            "npara(p,q,t,?D)",
+            "cyclic(?D,p,r,t)",
+            "npara(p,r,t,?D)",
+            "cyclic(?B,p,q,t)",
+            "cong(?B,o1,o1,t)",
+            "npara(t,?B,p,q)",
+            "cyclic(?B,p,r,t)",
+            "npara(t,?B,p,r)"
+          ],
+          "relation_demands_observed": [
+            "cyclic(d,p,q,t)",
+            "cyclic(d,p,r,t)",
+            "perp(?C,t,p,t)",
+            "midp(o1,p,?C)",
+            "cyclic(p,q,r,t)",
+            "cong(d,o1,o1,p)",
+            "perp(?C,p,p,t)",
+            "midp(o1,t,?C)",
+            "cong(o1,q,o1,t)",
+            "cong(o1,r,o1,t)",
+            "cyclic(?D,p,q,t)",
+            "cong(?D,o1,o1,t)",
+            "npara(p,q,t,?D)",
+            "cyclic(?D,p,r,t)",
+            "npara(p,r,t,?D)",
+            "cyclic(?B,d,p,t)",
+            "cong(?B,o1,o1,p)",
+            "npara(p,?B,t,d)",
+            "cyclic(?D,d,p,t)",
+            "cong(?D,o1,o1,p)",
+            "npara(t,d,p,?D)"
+          ],
+          "relation_demands_next": [
+            "cyclic(d,p,q,t)",
+            "cyclic(d,p,r,t)",
+            "perp(?C,t,p,t)",
+            "midp(o1,p,?C)",
+            "cyclic(p,q,r,t)",
+            "cong(d,o1,o1,p)",
+            "perp(?C,p,p,t)",
+            "midp(o1,t,?C)",
+            "cong(o1,q,o1,t)",
+            "cong(o1,r,o1,t)",
+            "cyclic(?D,p,q,t)",
+            "cong(?D,o1,o1,t)",
+            "npara(p,q,t,?D)",
+            "cyclic(?D,p,r,t)",
+            "npara(p,r,t,?D)",
+            "cyclic(?B,d,p,t)",
+            "cong(?B,o1,o1,p)",
+            "npara(p,?B,t,d)",
+            "cyclic(?D,d,p,t)",
+            "cong(?D,o1,o1,p)",
+            "npara(t,d,p,?D)"
+          ],
+          "residual_feedback_applied": true,
+          "native_feedback": [
+            {
+              "candidate": "reflect(t,o1,p)->d",
+              "static_rank": 0,
+              "selection_channel": "obligation_credit_probe",
+              "matched_obligations": [
+                "cong(?D,o1,o1,t)",
+                "cong(?B,o1,o1,t)"
+              ],
+              "obligation_credit_verified": true,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 21,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 50,
+                "parent_relation_demands": 17,
+                "retained_parent_demands": 11,
+                "closed_parent_demands": 6,
+                "closed_parent_obligations": [
+                  "cong(?D,o1,o1,t)",
+                  "npara(p,q,t,?D)",
+                  "npara(p,r,t,?D)",
+                  "cong(?B,o1,o1,t)",
+                  "npara(t,?B,p,q)",
+                  "npara(t,?B,p,r)"
+                ],
+                "new_native_facts": 346,
+                "introduced_relation_demands": 7
+              },
+              "error": null,
+              "selected": true
+            },
+            {
+              "candidate": "mirror(a,p)->d",
+              "static_rank": 1,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 17,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 50,
+                "parent_relation_demands": 17,
+                "retained_parent_demands": 17,
+                "closed_parent_demands": 0,
+                "closed_parent_obligations": [],
+                "new_native_facts": 648,
+                "introduced_relation_demands": 0
+              },
+              "error": null,
+              "selected": false
+            },
+            {
+              "candidate": "eq_triangle(o1,p)->d",
+              "static_rank": 2,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 9,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 51,
+                "parent_relation_demands": 17,
+                "retained_parent_demands": 6,
+                "closed_parent_demands": 4,
+                "closed_parent_obligations": [
+                  "npara(p,q,t,?D)",
+                  "npara(p,r,t,?D)",
+                  "npara(t,?B,p,q)",
+                  "npara(t,?B,p,r)"
+                ],
+                "new_native_facts": 395,
+                "introduced_relation_demands": 3
+              },
+              "error": null,
+              "selected": false
+            },
+            {
+              "candidate": "foot(t,p,a)->d",
+              "static_rank": 3,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 17,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 49,
+                "parent_relation_demands": 17,
+                "retained_parent_demands": 17,
+                "closed_parent_demands": 0,
+                "closed_parent_obligations": [],
+                "new_native_facts": 597,
+                "introduced_relation_demands": 0
+              },
+              "error": null,
+              "selected": false
+            }
+          ],
+          "coordination": null
+        }
+      ],
+      "verification_calls": 4,
+      "all_deduction_count": 2547,
+      "goal_deduction_count": 0,
+      "input_sha256": "a0c57498b90ec381075271c36c28415ab648fac218435ca3c9f6c8f4ad45f9d3",
+      "proof_sha256": "faef9c3a94b941c0af01f9fdd697dab68d1a9c02900159d2364d0b6c59fcebaf",
+      "terminal_credit_events": [],
+      "proof_residual": {
+        "open_relation_demands": 21,
+        "backward_obligations": 24,
+        "ar_supported_goals": 1,
+        "ar_closed_goals": 0,
+        "ar_residual_support": 2,
+        "ar_residual_l1": 2.0,
+        "ar_known_rank": 50,
+        "parent_relation_demands": 0,
+        "retained_parent_demands": 0,
+        "closed_parent_demands": 0,
+        "closed_parent_obligations": [],
+        "new_native_facts": 2546,
+        "introduced_relation_demands": 21
+      },
+      "elapsed_seconds": 3.3810905999998795
+    }
+  ],
+  "terminal_credit_ledger": {
+    "schema": "mortra-terminal-trajectory-credit-v2",
+    "truth_plane": "native_certificate_replay_only",
+    "forbidden_inputs": [
+      "problem_id",
+      "expected_answer",
+      "point_identity",
+      "numeric_coordinate",
+      "dataset_auxiliary_clause"
+    ],
+    "prior_weight": 2.0,
+    "signature_count": 17,
+    "event_count": 9,
+    "entries": [
+      {
+        "signature_key": "{\"family\":\"foot\",\"input_equalities\":[0,1,2],\"input_roles\":[\"given\",\"given\",\"given\"],\"resolution\":\"morphism_type\"}",
+        "credit_sum": 2.52200625,
+        "certificate_support": 3,
+        "posterior_score": 0.50440125,
+        "transfer_weight": 0.25,
+        "score": 0.1261003125
+      },
+      {
+        "signature_key": "{\"family\":\"foot\",\"input_equalities\":[0,1,2],\"input_roles\":[\"given\",\"given\",\"given\"],\"resolution\":\"target_context\",\"target_predicates\":[\"circle\",\"coll\",\"cong\",\"cyclic\",\"lequation\",\"midp\",\"para\"]}",
+        "credit_sum": 2.0,
+        "certificate_support": 2,
+        "posterior_score": 0.5,
+        "transfer_weight": 0.5,
+        "score": 0.25
+      },
+      {
+        "signature_key": "{\"family\":\"foot\",\"input_equalities\":[0,1,2],\"input_roles\":[\"given\",\"given\",\"given\"],\"resolution\":\"target_context\",\"target_predicates\":[\"coll\"]}",
+        "credit_sum": 0.5220062499999999,
+        "certificate_support": 1,
+        "posterior_score": 0.1740020833333333,
+        "transfer_weight": 0.5,
+        "score": 0.08700104166666665
+      },
+      {
+        "signature_key": "{\"family\":\"foot\",\"input_equalities\":[0,1,2],\"input_roles\":[\"given\",\"given\",\"given\"],\"structural_shape\":[\"+1\",\"+1\",\"0\",\"-2\",\"-2\",\"-1\",\"+1\",\"-1\",\"+1\",\"0\",\"-2\",\"0\",\"0\",\"+2\",\"+2\",\"+1\",\"+2\"],\"target_predicates\":[\"coll\"]}",
+        "credit_sum": 0.5220062499999999,
+        "certificate_support": 1,
+        "posterior_score": 0.1740020833333333,
+        "transfer_weight": 1.0,
+        "score": 0.1740020833333333
+      },
+      {
+        "signature_key": "{\"family\":\"foot\",\"input_equalities\":[0,1,2],\"input_roles\":[\"given\",\"given\",\"given\"],\"structural_shape\":[\"+1\",\"+1\",\"0\",\"-2\",\"-2\",\"-1\",\"0\",\"-1\",\"0\",\"0\",\"-2\",\"-1\",\"-1\",\"0\",\"+1\",\"+1\",\"+2\"],\"target_predicates\":[\"circle\",\"coll\",\"cong\",\"cyclic\",\"lequation\",\"midp\",\"para\"]}",
+        "credit_sum": 2.0,
+        "certificate_support": 2,
+        "posterior_score": 0.5,
+        "transfer_weight": 1.0,
+        "score": 0.5
+      },
+      {
+        "signature_key": "{\"family\":\"midpoint\",\"input_equalities\":[0,1],\"input_roles\":[\"given\",\"generated\"],\"resolution\":\"morphism_type\"}",
+        "credit_sum": 1.0,
+        "certificate_support": 1,
+        "posterior_score": 0.3333333333333333,
+        "transfer_weight": 0.25,
+        "score": 0.08333333333333333
+      },
+      {
+        "signature_key": "{\"family\":\"midpoint\",\"input_equalities\":[0,1],\"input_roles\":[\"given\",\"generated\"],\"resolution\":\"target_context\",\"target_predicates\":[\"coll\"]}",
+        "credit_sum": 1.0,
+        "certificate_support": 1,
+        "posterior_score": 0.3333333333333333,
+        "transfer_weight": 0.5,
+        "score": 0.16666666666666666
+      },
+      {
+        "signature_key": "{\"family\":\"midpoint\",\"input_equalities\":[0,1],\"input_roles\":[\"given\",\"generated\"],\"structural_shape\":[\"0\",\"0\",\"0\",\"-1\",\"-1\",\"-1\",\"0\",\"-0\",\"0\",\"0\",\"-1\",\"-1\",\"-1\",\"+2\",\"+1\",\"+1\",\"+1\"],\"target_predicates\":[\"coll\"]}",
+        "credit_sum": 1.0,
+        "certificate_support": 1,
+        "posterior_score": 0.3333333333333333,
+        "transfer_weight": 1.0,
+        "score": 0.3333333333333333
+      },
+      {
+        "signature_key": "{\"family\":\"mirror\",\"input_equalities\":[0,1],\"input_roles\":[\"given\",\"given\"],\"resolution\":\"morphism_type\"}",
+        "credit_sum": 1.7,
+        "certificate_support": 2,
+        "posterior_score": 0.425,
+        "transfer_weight": 0.25,
+        "score": 0.10625
+      },
+      {
+        "signature_key": "{\"family\":\"mirror\",\"input_equalities\":[0,1],\"input_roles\":[\"given\",\"given\"],\"resolution\":\"target_context\",\"target_predicates\":[\"circle\",\"coll\",\"cong\",\"cyclic\",\"lequation\",\"midp\",\"para\"]}",
+        "credit_sum": 1.7,
+        "certificate_support": 2,
+        "posterior_score": 0.425,
+        "transfer_weight": 0.5,
+        "score": 0.2125
+      },
+      {
+        "signature_key": "{\"family\":\"mirror\",\"input_equalities\":[0,1],\"input_roles\":[\"given\",\"given\"],\"structural_shape\":[\"+1\",\"0\",\"0\",\"-2\",\"-2\",\"-1\",\"0\",\"-1\",\"0\",\"0\",\"-1\",\"-1\",\"-1\",\"+1\",\"+1\",\"+1\",\"+1\"],\"target_predicates\":[\"circle\",\"coll\",\"cong\",\"cyclic\",\"lequation\",\"midp\",\"para\"]}",
+        "credit_sum": 1.7,
+        "certificate_support": 2,
+        "posterior_score": 0.425,
+        "transfer_weight": 1.0,
+        "score": 0.425
+      },
+      {
+        "signature_key": "{\"family\":\"reflect\",\"input_equalities\":[0,1,2],\"input_roles\":[\"given\",\"given\",\"generated\"],\"resolution\":\"morphism_type\"}",
+        "credit_sum": 0.7224999999999999,
+        "certificate_support": 1,
+        "posterior_score": 0.24083333333333332,
+        "transfer_weight": 0.25,
+        "score": 0.06020833333333333
+      },
+      {
+        "signature_key": "{\"family\":\"reflect\",\"input_equalities\":[0,1,2],\"input_roles\":[\"given\",\"given\",\"generated\"],\"resolution\":\"target_context\",\"target_predicates\":[\"coll\"]}",
+        "credit_sum": 0.7224999999999999,
+        "certificate_support": 1,
+        "posterior_score": 0.24083333333333332,
+        "transfer_weight": 0.5,
+        "score": 0.12041666666666666
+      },
+      {
+        "signature_key": "{\"family\":\"reflect\",\"input_equalities\":[0,1,2],\"input_roles\":[\"given\",\"given\",\"generated\"],\"structural_shape\":[\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"-1\",\"0\",\"+1\",\"-1\",\"-1\",\"-1\",\"+2\",\"+2\",\"+1\",\"+2\"],\"target_predicates\":[\"coll\"]}",
+        "credit_sum": 0.7224999999999999,
+        "certificate_support": 1,
+        "posterior_score": 0.24083333333333332,
+        "transfer_weight": 1.0,
+        "score": 0.24083333333333332
+      },
+      {
+        "signature_key": "{\"family\":\"reflect\",\"input_equalities\":[0,1,2],\"input_roles\":[\"given\",\"given\",\"given\"],\"resolution\":\"morphism_type\"}",
+        "credit_sum": 2.0,
+        "certificate_support": 2,
+        "posterior_score": 0.5,
+        "transfer_weight": 0.25,
+        "score": 0.125
+      },
+      {
+        "signature_key": "{\"family\":\"reflect\",\"input_equalities\":[0,1,2],\"input_roles\":[\"given\",\"given\",\"given\"],\"resolution\":\"target_context\",\"target_predicates\":[\"circle\"]}",
+        "credit_sum": 2.0,
+        "certificate_support": 2,
+        "posterior_score": 0.5,
+        "transfer_weight": 0.5,
+        "score": 0.25
+      },
+      {
+        "signature_key": "{\"family\":\"reflect\",\"input_equalities\":[0,1,2],\"input_roles\":[\"given\",\"given\",\"given\"],\"structural_shape\":[\"+1\",\"+1\",\"0\",\"-2\",\"-2\",\"-1\",\"0\",\"-1\",\"0\",\"+1\",\"-2\",\"-1\",\"-2\",\"+1\",\"+1\",\"+1\",\"+2\"],\"target_predicates\":[\"circle\"]}",
+        "credit_sum": 2.0,
+        "certificate_support": 2,
+        "posterior_score": 0.5,
+        "transfer_weight": 1.0,
+        "score": 0.5
+      }
+    ]
+  }
+}

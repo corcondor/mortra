@@ -14,10 +14,13 @@ def test_separator_messages_prove_a_goal_across_two_local_cliques() -> None:
         goal_polynomial=x - target,
     )
     assert result.exact_replay
-    assert set(result.eliminated_variables) == {"y", "z"}
+    assert set(result.eliminated_variables) == {"y"}
+    assert result.stopped_reason == "local_target_membership"
+    assert len(result.steps) == 2
     assert result.goal_membership is not None
     assert result.goal_membership.proved and result.goal_membership.replayed
-    assert result.local_complete_step_count == 2
+    assert result.local_complete_step_count == 1
+    assert result.local_incomplete_step_count == 1
 
 
 def test_clique_computation_keeps_separator_only_generators() -> None:
@@ -107,3 +110,68 @@ def test_nonunit_leading_coefficient_becomes_an_explicit_obligation() -> None:
     assert step.leading_coefficient_polynomials == ("a",)
     assert step.coefficient_nonzero_obligations == ("a != 0",)
     assert not step.unit_leading_coefficient_available
+
+
+def test_local_clique_membership_closes_root_without_global_completion() -> None:
+    x, a, b = sp.symbols("x a b")
+    result = eliminate_with_certified_chordal_buchberger(
+        (x - a, x - b),
+        (x, a, b),
+        protected_variables=(a, b),
+        goal_polynomial=a - b,
+        max_pairs_per_clique=4,
+        terminal_max_pairs=0,
+    )
+
+    assert result.stopped_reason == "local_target_membership"
+    assert result.goal_membership is not None
+    assert result.goal_membership.proved
+    assert result.goal_membership.replayed
+    assert result.steps[0].goal_membership is not None
+    assert result.exact_replay
+
+
+def test_obligation_conditioned_clique_order_prefers_a_target_separator() -> None:
+    x, y, a, b = sp.symbols("x y a b")
+    equations = (x - a, y - b)
+    control = eliminate_with_certified_chordal_buchberger(
+        equations,
+        (x, y, a, b),
+        protected_variables=(a, b),
+        max_steps=1,
+        ordering_strategy="min_fill",
+        terminal_max_pairs=0,
+    )
+    treatment = eliminate_with_certified_chordal_buchberger(
+        equations,
+        (x, y, a, b),
+        protected_variables=(a, b),
+        max_steps=1,
+        ordering_strategy="obligation_conditioned",
+        guidance_polynomials=(b,),
+        terminal_max_pairs=0,
+    )
+
+    assert control.steps[0].variable == "x"
+    assert treatment.steps[0].variable == "y"
+    assert treatment.exact_replay
+
+
+def test_normal_form_residual_ranks_complete_and_branches() -> None:
+    x, y, a, b, u, v = sp.symbols("x y a b u v")
+
+    treatment = eliminate_with_certified_chordal_buchberger(
+        (x - u, x - v, y - a, y - b),
+        (x, y, a, b, u, v),
+        protected_variables=(a, b, u, v),
+        max_steps=1,
+        ordering_strategy="residual_conditioned",
+        guidance_polynomials=(a - b,),
+        guidance_branches=((a - b,),),
+        residual_max_pairs=0,
+        terminal_max_pairs=0,
+    )
+
+    assert treatment.steps[0].variable == "y"
+    assert "a - b" in treatment.remaining_polynomials
+    assert treatment.exact_replay

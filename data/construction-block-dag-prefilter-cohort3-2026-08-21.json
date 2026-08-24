@@ -1,0 +1,1439 @@
+{
+  "experiment": "construction_block_and_dag_cohort",
+  "dataset": "C:/Users/81808/.cache/mortra-research-sources/GenesisGeo/benchmarks/hageo_409.txt",
+  "dataset_sha256": "55aa45dd16a1b69eaf612036468dbf3f62e73b654c0e3bb1a23fd3e5e3ed2368",
+  "timeout_seconds_per_problem": 30.0,
+  "problems": [
+    "2016G6",
+    "2024PlanetCupp10",
+    "2025KoeraFinalRoundp3"
+  ],
+  "completed_problem_count": 3,
+  "solved_problem_count": 0,
+  "results": [
+    {
+      "problem_name": "2016G6",
+      "status": "right_censored_timeout",
+      "solved": false,
+      "exact_replay": false,
+      "elapsed_seconds": 30.659747500001686,
+      "return_code": null,
+      "stderr_tail": null,
+      "metrics": {
+        "construction_block_count": 10,
+        "initial_equation_count": 21,
+        "initial_variable_count": 25,
+        "prepass_step_count": 9,
+        "prepass_eliminated_variables": [
+          "_free_x_15",
+          "_free_y_16",
+          "_free_x_5",
+          "_length_7",
+          "_length_8",
+          "_length_11",
+          "_free_x_19",
+          "_free_y_20",
+          "_free_x_21"
+        ],
+        "remaining_variable_count": 16,
+        "remaining_polynomial_count": 12,
+        "prepass_exact_replay": true,
+        "completed_clique_count": 2,
+        "separator_lemma_count": 8,
+        "maximum_separator_width": 11,
+        "last_stage": "clique_started",
+        "last_variable": "_free_y_6",
+        "progress": [
+          {
+            "stage": "construction_chart_ready",
+            "construction_block_count": 10,
+            "equation_count": 21,
+            "variable_count": 25,
+            "maximum_expanded_terms": 8
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_15",
+            "method": "linear_localization",
+            "bucket_size": 3,
+            "separator_width": 9
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_15",
+            "method": "linear_localization",
+            "remaining_variable_count": 24,
+            "remaining_polynomial_count": 20,
+            "output_polynomial_count": 2,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_y_16",
+            "method": "linear_localization",
+            "bucket_size": 3,
+            "separator_width": 9
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_y_16",
+            "method": "linear_localization",
+            "remaining_variable_count": 23,
+            "remaining_polynomial_count": 19,
+            "output_polynomial_count": 2,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_5",
+            "method": "linear_localization",
+            "bucket_size": 4,
+            "separator_width": 12
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_5",
+            "method": "linear_localization",
+            "remaining_variable_count": 22,
+            "remaining_polynomial_count": 18,
+            "output_polynomial_count": 3,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_length_7",
+            "method": "resultant_projection",
+            "bucket_size": 2,
+            "separator_width": 4,
+            "predicted_max_output_terms": 5
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_length_7",
+            "method": "resultant_projection",
+            "remaining_variable_count": 21,
+            "remaining_polynomial_count": 17,
+            "output_polynomial_count": 1,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_length_8",
+            "method": "resultant_projection",
+            "bucket_size": 2,
+            "separator_width": 4,
+            "predicted_max_output_terms": 49
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_length_8",
+            "method": "resultant_projection",
+            "remaining_variable_count": 20,
+            "remaining_polynomial_count": 16,
+            "output_polynomial_count": 1,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_length_11",
+            "method": "resultant_projection",
+            "bucket_size": 2,
+            "separator_width": 7,
+            "predicted_max_output_terms": 76
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_length_11",
+            "method": "resultant_projection",
+            "remaining_variable_count": 19,
+            "remaining_polynomial_count": 15,
+            "output_polynomial_count": 1,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_19",
+            "method": "resultant_projection",
+            "bucket_size": 3,
+            "separator_width": 9,
+            "predicted_max_output_terms": 16
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_19",
+            "method": "resultant_projection",
+            "remaining_variable_count": 18,
+            "remaining_polynomial_count": 14,
+            "output_polynomial_count": 2,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_y_20",
+            "method": "resultant_projection",
+            "bucket_size": 2,
+            "separator_width": 8,
+            "predicted_max_output_terms": 144
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_y_20",
+            "method": "resultant_projection",
+            "remaining_variable_count": 17,
+            "remaining_polynomial_count": 13,
+            "output_polynomial_count": 1,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_21",
+            "method": "resultant_projection",
+            "bucket_size": 3,
+            "separator_width": 12,
+            "predicted_max_output_terms": 40
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_21",
+            "method": "resultant_projection",
+            "remaining_variable_count": 16,
+            "remaining_polynomial_count": 12,
+            "output_polynomial_count": 2,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_completed",
+            "step_count": 9,
+            "eliminated_variable_count": 9,
+            "eliminated_variables": [
+              "_free_x_15",
+              "_free_y_16",
+              "_free_x_5",
+              "_length_7",
+              "_length_8",
+              "_length_11",
+              "_free_x_19",
+              "_free_y_20",
+              "_free_x_21"
+            ],
+            "remaining_variable_count": 16,
+            "remaining_polynomial_count": 12,
+            "stopped_reason": "term_budget",
+            "exact_replay": true
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_length_12",
+            "separator_width": 6,
+            "input_polynomial_count": 3,
+            "eliminated_variable_count": 0
+          },
+          {
+            "stage": "clique_completed",
+            "variable": "_length_12",
+            "separator_width": 6,
+            "input_polynomial_count": 3,
+            "output_polynomial_count": 4,
+            "candidate_output_polynomial_count": 5,
+            "coefficient_nonzero_obligation_count": 1,
+            "unit_leading_coefficient_available": true,
+            "processed_pair_count": 4,
+            "deferred_pair_count": 0,
+            "buchberger_complete": false,
+            "stopped_reason": "pair_budget",
+            "elimination_committed": false,
+            "elapsed_seconds": 0.5206593000038993,
+            "eliminated_variable_count": 0,
+            "goal_proved": false
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_free_y_22",
+            "separator_width": 11,
+            "input_polynomial_count": 9,
+            "eliminated_variable_count": 0
+          },
+          {
+            "stage": "clique_completed",
+            "variable": "_free_y_22",
+            "separator_width": 11,
+            "input_polynomial_count": 9,
+            "output_polynomial_count": 4,
+            "candidate_output_polynomial_count": 7,
+            "coefficient_nonzero_obligation_count": 2,
+            "unit_leading_coefficient_available": false,
+            "processed_pair_count": 4,
+            "deferred_pair_count": 0,
+            "buchberger_complete": false,
+            "stopped_reason": "pair_budget",
+            "elimination_committed": false,
+            "elapsed_seconds": 0.6796999999933178,
+            "eliminated_variable_count": 0,
+            "goal_proved": false
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_free_y_6",
+            "separator_width": 9,
+            "input_polynomial_count": 4,
+            "eliminated_variable_count": 0
+          }
+        ]
+      },
+      "raw_result": {
+        "status": "running",
+        "progress": [
+          {
+            "stage": "construction_chart_ready",
+            "construction_block_count": 10,
+            "equation_count": 21,
+            "variable_count": 25,
+            "maximum_expanded_terms": 8
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_15",
+            "method": "linear_localization",
+            "bucket_size": 3,
+            "separator_width": 9
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_15",
+            "method": "linear_localization",
+            "remaining_variable_count": 24,
+            "remaining_polynomial_count": 20,
+            "output_polynomial_count": 2,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_y_16",
+            "method": "linear_localization",
+            "bucket_size": 3,
+            "separator_width": 9
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_y_16",
+            "method": "linear_localization",
+            "remaining_variable_count": 23,
+            "remaining_polynomial_count": 19,
+            "output_polynomial_count": 2,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_5",
+            "method": "linear_localization",
+            "bucket_size": 4,
+            "separator_width": 12
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_5",
+            "method": "linear_localization",
+            "remaining_variable_count": 22,
+            "remaining_polynomial_count": 18,
+            "output_polynomial_count": 3,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_length_7",
+            "method": "resultant_projection",
+            "bucket_size": 2,
+            "separator_width": 4,
+            "predicted_max_output_terms": 5
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_length_7",
+            "method": "resultant_projection",
+            "remaining_variable_count": 21,
+            "remaining_polynomial_count": 17,
+            "output_polynomial_count": 1,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_length_8",
+            "method": "resultant_projection",
+            "bucket_size": 2,
+            "separator_width": 4,
+            "predicted_max_output_terms": 49
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_length_8",
+            "method": "resultant_projection",
+            "remaining_variable_count": 20,
+            "remaining_polynomial_count": 16,
+            "output_polynomial_count": 1,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_length_11",
+            "method": "resultant_projection",
+            "bucket_size": 2,
+            "separator_width": 7,
+            "predicted_max_output_terms": 76
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_length_11",
+            "method": "resultant_projection",
+            "remaining_variable_count": 19,
+            "remaining_polynomial_count": 15,
+            "output_polynomial_count": 1,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_19",
+            "method": "resultant_projection",
+            "bucket_size": 3,
+            "separator_width": 9,
+            "predicted_max_output_terms": 16
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_19",
+            "method": "resultant_projection",
+            "remaining_variable_count": 18,
+            "remaining_polynomial_count": 14,
+            "output_polynomial_count": 2,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_y_20",
+            "method": "resultant_projection",
+            "bucket_size": 2,
+            "separator_width": 8,
+            "predicted_max_output_terms": 144
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_y_20",
+            "method": "resultant_projection",
+            "remaining_variable_count": 17,
+            "remaining_polynomial_count": 13,
+            "output_polynomial_count": 1,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_21",
+            "method": "resultant_projection",
+            "bucket_size": 3,
+            "separator_width": 12,
+            "predicted_max_output_terms": 40
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_21",
+            "method": "resultant_projection",
+            "remaining_variable_count": 16,
+            "remaining_polynomial_count": 12,
+            "output_polynomial_count": 2,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_completed",
+            "step_count": 9,
+            "eliminated_variable_count": 9,
+            "eliminated_variables": [
+              "_free_x_15",
+              "_free_y_16",
+              "_free_x_5",
+              "_length_7",
+              "_length_8",
+              "_length_11",
+              "_free_x_19",
+              "_free_y_20",
+              "_free_x_21"
+            ],
+            "remaining_variable_count": 16,
+            "remaining_polynomial_count": 12,
+            "stopped_reason": "term_budget",
+            "exact_replay": true
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_length_12",
+            "separator_width": 6,
+            "input_polynomial_count": 3,
+            "eliminated_variable_count": 0
+          },
+          {
+            "stage": "clique_completed",
+            "variable": "_length_12",
+            "separator_width": 6,
+            "input_polynomial_count": 3,
+            "output_polynomial_count": 4,
+            "candidate_output_polynomial_count": 5,
+            "coefficient_nonzero_obligation_count": 1,
+            "unit_leading_coefficient_available": true,
+            "processed_pair_count": 4,
+            "deferred_pair_count": 0,
+            "buchberger_complete": false,
+            "stopped_reason": "pair_budget",
+            "elimination_committed": false,
+            "elapsed_seconds": 0.5206593000038993,
+            "eliminated_variable_count": 0,
+            "goal_proved": false
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_free_y_22",
+            "separator_width": 11,
+            "input_polynomial_count": 9,
+            "eliminated_variable_count": 0
+          },
+          {
+            "stage": "clique_completed",
+            "variable": "_free_y_22",
+            "separator_width": 11,
+            "input_polynomial_count": 9,
+            "output_polynomial_count": 4,
+            "candidate_output_polynomial_count": 7,
+            "coefficient_nonzero_obligation_count": 2,
+            "unit_leading_coefficient_available": false,
+            "processed_pair_count": 4,
+            "deferred_pair_count": 0,
+            "buchberger_complete": false,
+            "stopped_reason": "pair_budget",
+            "elimination_committed": false,
+            "elapsed_seconds": 0.6796999999933178,
+            "eliminated_variable_count": 0,
+            "goal_proved": false
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_free_y_6",
+            "separator_width": 9,
+            "input_polynomial_count": 4,
+            "eliminated_variable_count": 0
+          }
+        ]
+      },
+      "normalization": {
+        "rewritten_constructions": 0,
+        "unchanged_constructions": 16,
+        "unresolved_constructions": 0
+      }
+    },
+    {
+      "problem_name": "2024PlanetCupp10",
+      "status": "right_censored_timeout",
+      "solved": false,
+      "exact_replay": false,
+      "elapsed_seconds": 30.045447999989847,
+      "return_code": null,
+      "stderr_tail": null,
+      "metrics": {
+        "construction_block_count": 15,
+        "initial_equation_count": 28,
+        "initial_variable_count": 31,
+        "prepass_step_count": 6,
+        "prepass_eliminated_variables": [
+          "_apex_y_2",
+          "_apex_x_1",
+          "_free_x_25",
+          "_free_y_26",
+          "_free_x_19",
+          "_free_y_20"
+        ],
+        "remaining_variable_count": 25,
+        "remaining_polynomial_count": 22,
+        "prepass_exact_replay": true,
+        "completed_clique_count": 4,
+        "separator_lemma_count": 16,
+        "maximum_separator_width": 11,
+        "last_stage": "terminal_started",
+        "last_variable": null,
+        "progress": [
+          {
+            "stage": "construction_chart_ready",
+            "construction_block_count": 15,
+            "equation_count": 28,
+            "variable_count": 31,
+            "maximum_expanded_terms": 8
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_apex_y_2",
+            "method": "linear_localization",
+            "bucket_size": 7,
+            "separator_width": 11
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_apex_y_2",
+            "method": "linear_localization",
+            "remaining_variable_count": 30,
+            "remaining_polynomial_count": 27,
+            "output_polynomial_count": 6,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_apex_x_1",
+            "method": "linear_localization",
+            "bucket_size": 8,
+            "separator_width": 12
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_apex_x_1",
+            "method": "linear_localization",
+            "remaining_variable_count": 29,
+            "remaining_polynomial_count": 26,
+            "output_polynomial_count": 7,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_25",
+            "method": "resultant_projection",
+            "bucket_size": 3,
+            "separator_width": 9,
+            "predicted_max_output_terms": 6
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_25",
+            "method": "resultant_projection",
+            "remaining_variable_count": 28,
+            "remaining_polynomial_count": 25,
+            "output_polynomial_count": 2,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_y_26",
+            "method": "resultant_projection",
+            "bucket_size": 2,
+            "separator_width": 8,
+            "predicted_max_output_terms": 24
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_y_26",
+            "method": "resultant_projection",
+            "remaining_variable_count": 27,
+            "remaining_polynomial_count": 24,
+            "output_polynomial_count": 1,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_19",
+            "method": "resultant_projection",
+            "bucket_size": 4,
+            "separator_width": 12,
+            "predicted_max_output_terms": 6
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_19",
+            "method": "resultant_projection",
+            "remaining_variable_count": 26,
+            "remaining_polynomial_count": 23,
+            "output_polynomial_count": 3,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_y_20",
+            "method": "resultant_projection",
+            "bucket_size": 3,
+            "separator_width": 11,
+            "predicted_max_output_terms": 10
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_y_20",
+            "method": "resultant_projection",
+            "remaining_variable_count": 25,
+            "remaining_polynomial_count": 22,
+            "output_polynomial_count": 2,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_completed",
+            "step_count": 6,
+            "eliminated_variable_count": 6,
+            "eliminated_variables": [
+              "_apex_y_2",
+              "_apex_x_1",
+              "_free_x_25",
+              "_free_y_26",
+              "_free_x_19",
+              "_free_y_20"
+            ],
+            "remaining_variable_count": 25,
+            "remaining_polynomial_count": 22,
+            "stopped_reason": "term_budget",
+            "exact_replay": true
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_free_x_15",
+            "separator_width": 11,
+            "input_polynomial_count": 5,
+            "eliminated_variable_count": 0
+          },
+          {
+            "stage": "clique_completed",
+            "variable": "_free_x_15",
+            "separator_width": 11,
+            "input_polynomial_count": 5,
+            "output_polynomial_count": 4,
+            "candidate_output_polynomial_count": 4,
+            "coefficient_nonzero_obligation_count": 3,
+            "unit_leading_coefficient_available": false,
+            "processed_pair_count": 4,
+            "deferred_pair_count": 0,
+            "buchberger_complete": false,
+            "stopped_reason": "pair_budget",
+            "elimination_committed": false,
+            "elapsed_seconds": 0.46177199999510776,
+            "eliminated_variable_count": 0,
+            "goal_proved": false
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_free_x_9",
+            "separator_width": 11,
+            "input_polynomial_count": 7,
+            "eliminated_variable_count": 0
+          },
+          {
+            "stage": "clique_completed",
+            "variable": "_free_x_9",
+            "separator_width": 11,
+            "input_polynomial_count": 7,
+            "output_polynomial_count": 4,
+            "candidate_output_polynomial_count": 5,
+            "coefficient_nonzero_obligation_count": 5,
+            "unit_leading_coefficient_available": false,
+            "processed_pair_count": 4,
+            "deferred_pair_count": 0,
+            "buchberger_complete": false,
+            "stopped_reason": "pair_budget",
+            "elimination_committed": false,
+            "elapsed_seconds": 0.6810400999966078,
+            "eliminated_variable_count": 0,
+            "goal_proved": false
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_free_y_10",
+            "separator_width": 11,
+            "input_polynomial_count": 11,
+            "eliminated_variable_count": 0
+          },
+          {
+            "stage": "clique_completed",
+            "variable": "_free_y_10",
+            "separator_width": 11,
+            "input_polynomial_count": 11,
+            "output_polynomial_count": 4,
+            "candidate_output_polynomial_count": 5,
+            "coefficient_nonzero_obligation_count": 6,
+            "unit_leading_coefficient_available": false,
+            "processed_pair_count": 4,
+            "deferred_pair_count": 0,
+            "buchberger_complete": false,
+            "stopped_reason": "pair_budget",
+            "elimination_committed": false,
+            "elapsed_seconds": 3.327348799997708,
+            "eliminated_variable_count": 0,
+            "goal_proved": false
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_free_y_16",
+            "separator_width": 11,
+            "input_polynomial_count": 12,
+            "eliminated_variable_count": 0
+          },
+          {
+            "stage": "clique_completed",
+            "variable": "_free_y_16",
+            "separator_width": 11,
+            "input_polynomial_count": 12,
+            "output_polynomial_count": 4,
+            "candidate_output_polynomial_count": 5,
+            "coefficient_nonzero_obligation_count": 9,
+            "unit_leading_coefficient_available": false,
+            "processed_pair_count": 4,
+            "deferred_pair_count": 0,
+            "buchberger_complete": false,
+            "stopped_reason": "pair_budget",
+            "elimination_committed": false,
+            "elapsed_seconds": 1.3122959000029368,
+            "eliminated_variable_count": 0,
+            "goal_proved": false
+          },
+          {
+            "stage": "terminal_started",
+            "variable_count": 25,
+            "polynomial_count": 30
+          }
+        ]
+      },
+      "raw_result": {
+        "status": "running",
+        "progress": [
+          {
+            "stage": "construction_chart_ready",
+            "construction_block_count": 15,
+            "equation_count": 28,
+            "variable_count": 31,
+            "maximum_expanded_terms": 8
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_apex_y_2",
+            "method": "linear_localization",
+            "bucket_size": 7,
+            "separator_width": 11
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_apex_y_2",
+            "method": "linear_localization",
+            "remaining_variable_count": 30,
+            "remaining_polynomial_count": 27,
+            "output_polynomial_count": 6,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_apex_x_1",
+            "method": "linear_localization",
+            "bucket_size": 8,
+            "separator_width": 12
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_apex_x_1",
+            "method": "linear_localization",
+            "remaining_variable_count": 29,
+            "remaining_polynomial_count": 26,
+            "output_polynomial_count": 7,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_25",
+            "method": "resultant_projection",
+            "bucket_size": 3,
+            "separator_width": 9,
+            "predicted_max_output_terms": 6
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_25",
+            "method": "resultant_projection",
+            "remaining_variable_count": 28,
+            "remaining_polynomial_count": 25,
+            "output_polynomial_count": 2,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_y_26",
+            "method": "resultant_projection",
+            "bucket_size": 2,
+            "separator_width": 8,
+            "predicted_max_output_terms": 24
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_y_26",
+            "method": "resultant_projection",
+            "remaining_variable_count": 27,
+            "remaining_polynomial_count": 24,
+            "output_polynomial_count": 1,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_19",
+            "method": "resultant_projection",
+            "bucket_size": 4,
+            "separator_width": 12,
+            "predicted_max_output_terms": 6
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_19",
+            "method": "resultant_projection",
+            "remaining_variable_count": 26,
+            "remaining_polynomial_count": 23,
+            "output_polynomial_count": 3,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_y_20",
+            "method": "resultant_projection",
+            "bucket_size": 3,
+            "separator_width": 11,
+            "predicted_max_output_terms": 10
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_y_20",
+            "method": "resultant_projection",
+            "remaining_variable_count": 25,
+            "remaining_polynomial_count": 22,
+            "output_polynomial_count": 2,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_completed",
+            "step_count": 6,
+            "eliminated_variable_count": 6,
+            "eliminated_variables": [
+              "_apex_y_2",
+              "_apex_x_1",
+              "_free_x_25",
+              "_free_y_26",
+              "_free_x_19",
+              "_free_y_20"
+            ],
+            "remaining_variable_count": 25,
+            "remaining_polynomial_count": 22,
+            "stopped_reason": "term_budget",
+            "exact_replay": true
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_free_x_15",
+            "separator_width": 11,
+            "input_polynomial_count": 5,
+            "eliminated_variable_count": 0
+          },
+          {
+            "stage": "clique_completed",
+            "variable": "_free_x_15",
+            "separator_width": 11,
+            "input_polynomial_count": 5,
+            "output_polynomial_count": 4,
+            "candidate_output_polynomial_count": 4,
+            "coefficient_nonzero_obligation_count": 3,
+            "unit_leading_coefficient_available": false,
+            "processed_pair_count": 4,
+            "deferred_pair_count": 0,
+            "buchberger_complete": false,
+            "stopped_reason": "pair_budget",
+            "elimination_committed": false,
+            "elapsed_seconds": 0.46177199999510776,
+            "eliminated_variable_count": 0,
+            "goal_proved": false
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_free_x_9",
+            "separator_width": 11,
+            "input_polynomial_count": 7,
+            "eliminated_variable_count": 0
+          },
+          {
+            "stage": "clique_completed",
+            "variable": "_free_x_9",
+            "separator_width": 11,
+            "input_polynomial_count": 7,
+            "output_polynomial_count": 4,
+            "candidate_output_polynomial_count": 5,
+            "coefficient_nonzero_obligation_count": 5,
+            "unit_leading_coefficient_available": false,
+            "processed_pair_count": 4,
+            "deferred_pair_count": 0,
+            "buchberger_complete": false,
+            "stopped_reason": "pair_budget",
+            "elimination_committed": false,
+            "elapsed_seconds": 0.6810400999966078,
+            "eliminated_variable_count": 0,
+            "goal_proved": false
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_free_y_10",
+            "separator_width": 11,
+            "input_polynomial_count": 11,
+            "eliminated_variable_count": 0
+          },
+          {
+            "stage": "clique_completed",
+            "variable": "_free_y_10",
+            "separator_width": 11,
+            "input_polynomial_count": 11,
+            "output_polynomial_count": 4,
+            "candidate_output_polynomial_count": 5,
+            "coefficient_nonzero_obligation_count": 6,
+            "unit_leading_coefficient_available": false,
+            "processed_pair_count": 4,
+            "deferred_pair_count": 0,
+            "buchberger_complete": false,
+            "stopped_reason": "pair_budget",
+            "elimination_committed": false,
+            "elapsed_seconds": 3.327348799997708,
+            "eliminated_variable_count": 0,
+            "goal_proved": false
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_free_y_16",
+            "separator_width": 11,
+            "input_polynomial_count": 12,
+            "eliminated_variable_count": 0
+          },
+          {
+            "stage": "clique_completed",
+            "variable": "_free_y_16",
+            "separator_width": 11,
+            "input_polynomial_count": 12,
+            "output_polynomial_count": 4,
+            "candidate_output_polynomial_count": 5,
+            "coefficient_nonzero_obligation_count": 9,
+            "unit_leading_coefficient_available": false,
+            "processed_pair_count": 4,
+            "deferred_pair_count": 0,
+            "buchberger_complete": false,
+            "stopped_reason": "pair_budget",
+            "elimination_committed": false,
+            "elapsed_seconds": 1.3122959000029368,
+            "eliminated_variable_count": 0,
+            "goal_proved": false
+          },
+          {
+            "stage": "terminal_started",
+            "variable_count": 25,
+            "polynomial_count": 30
+          }
+        ]
+      },
+      "normalization": {
+        "rewritten_constructions": 0,
+        "unchanged_constructions": 20,
+        "unresolved_constructions": 0
+      }
+    },
+    {
+      "problem_name": "2025KoeraFinalRoundp3",
+      "status": "right_censored_timeout",
+      "solved": false,
+      "exact_replay": false,
+      "elapsed_seconds": 30.127992199995788,
+      "return_code": null,
+      "stderr_tail": null,
+      "metrics": {
+        "construction_block_count": 10,
+        "initial_equation_count": 21,
+        "initial_variable_count": 24,
+        "prepass_step_count": 6,
+        "prepass_eliminated_variables": [
+          "_length_7",
+          "_length_6",
+          "_free_x_10",
+          "_free_y_11",
+          "_free_x_8",
+          "_free_y_9"
+        ],
+        "remaining_variable_count": 18,
+        "remaining_polynomial_count": 15,
+        "prepass_exact_replay": true,
+        "completed_clique_count": 2,
+        "separator_lemma_count": 6,
+        "maximum_separator_width": 9,
+        "last_stage": "clique_started",
+        "last_variable": "_free_y_19",
+        "progress": [
+          {
+            "stage": "construction_chart_ready",
+            "construction_block_count": 10,
+            "equation_count": 21,
+            "variable_count": 24,
+            "maximum_expanded_terms": 8
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_length_7",
+            "method": "resultant_projection",
+            "bucket_size": 3,
+            "separator_width": 7,
+            "predicted_max_output_terms": 10
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_length_7",
+            "method": "resultant_projection",
+            "remaining_variable_count": 23,
+            "remaining_polynomial_count": 20,
+            "output_polynomial_count": 2,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_length_6",
+            "method": "resultant_projection",
+            "bucket_size": 3,
+            "separator_width": 6,
+            "predicted_max_output_terms": 38
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_length_6",
+            "method": "resultant_projection",
+            "remaining_variable_count": 22,
+            "remaining_polynomial_count": 19,
+            "output_polynomial_count": 2,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_10",
+            "method": "resultant_projection",
+            "bucket_size": 6,
+            "separator_width": 12,
+            "predicted_max_output_terms": 8
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_10",
+            "method": "resultant_projection",
+            "remaining_variable_count": 21,
+            "remaining_polynomial_count": 18,
+            "output_polynomial_count": 5,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_y_11",
+            "method": "resultant_projection",
+            "bucket_size": 5,
+            "separator_width": 11,
+            "predicted_max_output_terms": 32
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_y_11",
+            "method": "resultant_projection",
+            "remaining_variable_count": 20,
+            "remaining_polynomial_count": 17,
+            "output_polynomial_count": 4,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_8",
+            "method": "resultant_projection",
+            "bucket_size": 6,
+            "separator_width": 12,
+            "predicted_max_output_terms": 8
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_8",
+            "method": "resultant_projection",
+            "remaining_variable_count": 19,
+            "remaining_polynomial_count": 16,
+            "output_polynomial_count": 5,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_y_9",
+            "method": "resultant_projection",
+            "bucket_size": 5,
+            "separator_width": 11,
+            "predicted_max_output_terms": 44
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_y_9",
+            "method": "resultant_projection",
+            "remaining_variable_count": 18,
+            "remaining_polynomial_count": 15,
+            "output_polynomial_count": 4,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_completed",
+            "step_count": 6,
+            "eliminated_variable_count": 6,
+            "eliminated_variables": [
+              "_length_7",
+              "_length_6",
+              "_free_x_10",
+              "_free_y_11",
+              "_free_x_8",
+              "_free_y_9"
+            ],
+            "remaining_variable_count": 18,
+            "remaining_polynomial_count": 15,
+            "stopped_reason": "term_budget",
+            "exact_replay": true
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_length_5",
+            "separator_width": 5,
+            "input_polynomial_count": 3,
+            "eliminated_variable_count": 0
+          },
+          {
+            "stage": "clique_completed",
+            "variable": "_length_5",
+            "separator_width": 5,
+            "input_polynomial_count": 3,
+            "output_polynomial_count": 4,
+            "candidate_output_polynomial_count": 6,
+            "coefficient_nonzero_obligation_count": 2,
+            "unit_leading_coefficient_available": true,
+            "processed_pair_count": 4,
+            "deferred_pair_count": 0,
+            "buchberger_complete": false,
+            "stopped_reason": "pair_budget",
+            "elimination_committed": false,
+            "elapsed_seconds": 0.8661086000065552,
+            "eliminated_variable_count": 0,
+            "goal_proved": false
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_free_x_18",
+            "separator_width": 9,
+            "input_polynomial_count": 3,
+            "eliminated_variable_count": 0
+          },
+          {
+            "stage": "clique_completed",
+            "variable": "_free_x_18",
+            "separator_width": 9,
+            "input_polynomial_count": 3,
+            "output_polynomial_count": 2,
+            "candidate_output_polynomial_count": 2,
+            "coefficient_nonzero_obligation_count": 3,
+            "unit_leading_coefficient_available": false,
+            "processed_pair_count": 4,
+            "deferred_pair_count": 0,
+            "buchberger_complete": false,
+            "stopped_reason": "pair_budget",
+            "elimination_committed": false,
+            "elapsed_seconds": 4.482373299993924,
+            "eliminated_variable_count": 0,
+            "goal_proved": false
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_free_y_19",
+            "separator_width": 9,
+            "input_polynomial_count": 5,
+            "eliminated_variable_count": 0
+          }
+        ]
+      },
+      "raw_result": {
+        "status": "running",
+        "progress": [
+          {
+            "stage": "construction_chart_ready",
+            "construction_block_count": 10,
+            "equation_count": 21,
+            "variable_count": 24,
+            "maximum_expanded_terms": 8
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_length_7",
+            "method": "resultant_projection",
+            "bucket_size": 3,
+            "separator_width": 7,
+            "predicted_max_output_terms": 10
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_length_7",
+            "method": "resultant_projection",
+            "remaining_variable_count": 23,
+            "remaining_polynomial_count": 20,
+            "output_polynomial_count": 2,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_length_6",
+            "method": "resultant_projection",
+            "bucket_size": 3,
+            "separator_width": 6,
+            "predicted_max_output_terms": 38
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_length_6",
+            "method": "resultant_projection",
+            "remaining_variable_count": 22,
+            "remaining_polynomial_count": 19,
+            "output_polynomial_count": 2,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_10",
+            "method": "resultant_projection",
+            "bucket_size": 6,
+            "separator_width": 12,
+            "predicted_max_output_terms": 8
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_10",
+            "method": "resultant_projection",
+            "remaining_variable_count": 21,
+            "remaining_polynomial_count": 18,
+            "output_polynomial_count": 5,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_y_11",
+            "method": "resultant_projection",
+            "bucket_size": 5,
+            "separator_width": 11,
+            "predicted_max_output_terms": 32
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_y_11",
+            "method": "resultant_projection",
+            "remaining_variable_count": 20,
+            "remaining_polynomial_count": 17,
+            "output_polynomial_count": 4,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_8",
+            "method": "resultant_projection",
+            "bucket_size": 6,
+            "separator_width": 12,
+            "predicted_max_output_terms": 8
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_8",
+            "method": "resultant_projection",
+            "remaining_variable_count": 19,
+            "remaining_polynomial_count": 16,
+            "output_polynomial_count": 5,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_y_9",
+            "method": "resultant_projection",
+            "bucket_size": 5,
+            "separator_width": 11,
+            "predicted_max_output_terms": 44
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_y_9",
+            "method": "resultant_projection",
+            "remaining_variable_count": 18,
+            "remaining_polynomial_count": 15,
+            "output_polynomial_count": 4,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_completed",
+            "step_count": 6,
+            "eliminated_variable_count": 6,
+            "eliminated_variables": [
+              "_length_7",
+              "_length_6",
+              "_free_x_10",
+              "_free_y_11",
+              "_free_x_8",
+              "_free_y_9"
+            ],
+            "remaining_variable_count": 18,
+            "remaining_polynomial_count": 15,
+            "stopped_reason": "term_budget",
+            "exact_replay": true
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_length_5",
+            "separator_width": 5,
+            "input_polynomial_count": 3,
+            "eliminated_variable_count": 0
+          },
+          {
+            "stage": "clique_completed",
+            "variable": "_length_5",
+            "separator_width": 5,
+            "input_polynomial_count": 3,
+            "output_polynomial_count": 4,
+            "candidate_output_polynomial_count": 6,
+            "coefficient_nonzero_obligation_count": 2,
+            "unit_leading_coefficient_available": true,
+            "processed_pair_count": 4,
+            "deferred_pair_count": 0,
+            "buchberger_complete": false,
+            "stopped_reason": "pair_budget",
+            "elimination_committed": false,
+            "elapsed_seconds": 0.8661086000065552,
+            "eliminated_variable_count": 0,
+            "goal_proved": false
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_free_x_18",
+            "separator_width": 9,
+            "input_polynomial_count": 3,
+            "eliminated_variable_count": 0
+          },
+          {
+            "stage": "clique_completed",
+            "variable": "_free_x_18",
+            "separator_width": 9,
+            "input_polynomial_count": 3,
+            "output_polynomial_count": 2,
+            "candidate_output_polynomial_count": 2,
+            "coefficient_nonzero_obligation_count": 3,
+            "unit_leading_coefficient_available": false,
+            "processed_pair_count": 4,
+            "deferred_pair_count": 0,
+            "buchberger_complete": false,
+            "stopped_reason": "pair_budget",
+            "elimination_committed": false,
+            "elapsed_seconds": 4.482373299993924,
+            "eliminated_variable_count": 0,
+            "goal_proved": false
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_free_y_19",
+            "separator_width": 9,
+            "input_polynomial_count": 5,
+            "eliminated_variable_count": 0
+          }
+        ]
+      },
+      "normalization": {
+        "rewritten_constructions": 0,
+        "unchanged_constructions": 12,
+        "unresolved_constructions": 0
+      }
+    }
+  ]
+}

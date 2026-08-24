@@ -1,0 +1,50 @@
+{
+  "experiment": "mortra_terminal_credit_frozen_transfer",
+  "date": "2026-08-21",
+  "uses_external_llm": false,
+  "truth_plane": "yuclid_native_certificate_replay_only",
+  "development": {
+    "problems": 3,
+    "certificate_events": 9,
+    "exact_signatures": 6,
+    "hierarchical_ledger_entries": 17,
+    "ledger_sha256": "718d6fe8604e905f9d3eef1600c5ff7f664641436ad97af66270ea46971fe186"
+  },
+  "calibration_cohort": {
+    "problems": 5,
+    "fully_observed_pairs": 3,
+    "right_censored_per_condition": 2,
+    "control_solved": 0,
+    "credit_solved": 0,
+    "credited_candidates": 13,
+    "promoted_candidates": 8,
+    "changed_paths": 3,
+    "maximum_rank_promotion": 16
+  },
+  "frozen_probe": {
+    "problems": 10,
+    "fully_observed_pairs": 9,
+    "right_censored_per_condition": 1,
+    "execution_errors": 0,
+    "control_solved": 0,
+    "credit_solved": 0,
+    "credited_candidates": 25,
+    "promoted_candidates": 22,
+    "changed_paths": 8,
+    "maximum_rank_promotion": 20,
+    "control_mean_attempt_seconds": 10.568765988888723,
+    "credit_mean_attempt_seconds": 11.164303588887883,
+    "credit_overhead_percent": 5.634883018748527,
+    "ledger_event_count_before": 9,
+    "ledger_event_count_after": 9,
+    "control_sha256": "c0d2a8f2d4f7cc63f932c517fdfa0bbac5615573c0e4941c11e808eb244cfcdc",
+    "credit_sha256": "3f61592fa8dcb4273b9251ae1283eafb96555894164236e6b8b41af92ec75594"
+  },
+  "conclusion": {
+    "typed_credit_transfer_operational": true,
+    "pass_at_k_improved": false,
+    "runtime_improved": false,
+    "false_proofs": 0,
+    "hypothesis_supported": false
+  }
+}

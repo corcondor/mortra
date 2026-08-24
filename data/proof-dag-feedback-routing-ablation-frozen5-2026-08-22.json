@@ -1,0 +1,207 @@
+{
+  "experiment": "typed_proof_dag_decomposition_progress_ablation",
+  "uses_external_llm": false,
+  "problem_specific_rules_added": false,
+  "protocol": {
+    "depth": 6,
+    "branches": 256,
+    "states": 10000,
+    "seed": 0,
+    "truth_criterion": "empty_exact_typed_frontier"
+  },
+  "summary": {
+    "problems": 5,
+    "goals": 5,
+    "control_solves": 0,
+    "treatment_solves": 0,
+    "lost_solves": 0,
+    "additional_solves": 0,
+    "control_search_states": 50000,
+    "treatment_search_states": 50000,
+    "rejected_nonprogressing_decompositions": 658,
+    "rejected_revisited_frontiers": 193,
+    "elapsed_seconds": 381.39718719999655
+  },
+  "records": [
+    {
+      "problem": "2007CMOp4",
+      "native_baseline_solved": false,
+      "goals": [
+        {
+          "goal": "perp(i,o,m,n)",
+          "control": {
+            "solved_frontier": false,
+            "search_states": 10000,
+            "branch_count": 406,
+            "open_branch_count": 406,
+            "rule_unifications": 9734,
+            "fact_unifications": 152,
+            "rejected_nonprogressing_decompositions": 0,
+            "rejected_revisited_frontiers": 0,
+            "truncated": true
+          },
+          "treatment": {
+            "solved_frontier": false,
+            "search_states": 10000,
+            "branch_count": 405,
+            "open_branch_count": 405,
+            "rule_unifications": 9851,
+            "fact_unifications": 152,
+            "rejected_nonprogressing_decompositions": 116,
+            "rejected_revisited_frontiers": 56,
+            "truncated": true
+          },
+          "causal_difference": {
+            "solve_change": 0,
+            "search_state_change": 0,
+            "branch_count_change": -1
+          }
+        }
+      ]
+    },
+    {
+      "problem": "2016G6",
+      "native_baseline_solved": false,
+      "goals": [
+        {
+          "goal": "perp(a,c,p,q)",
+          "control": {
+            "solved_frontier": false,
+            "search_states": 10000,
+            "branch_count": 528,
+            "open_branch_count": 528,
+            "rule_unifications": 9458,
+            "fact_unifications": 348,
+            "rejected_nonprogressing_decompositions": 0,
+            "rejected_revisited_frontiers": 0,
+            "truncated": true
+          },
+          "treatment": {
+            "solved_frontier": false,
+            "search_states": 10000,
+            "branch_count": 528,
+            "open_branch_count": 528,
+            "rule_unifications": 9635,
+            "fact_unifications": 348,
+            "rejected_nonprogressing_decompositions": 176,
+            "rejected_revisited_frontiers": 74,
+            "truncated": true
+          },
+          "causal_difference": {
+            "solve_change": 0,
+            "search_state_change": 0,
+            "branch_count_change": 0
+          }
+        }
+      ]
+    },
+    {
+      "problem": "2020IranGOAp2",
+      "native_baseline_solved": false,
+      "goals": [
+        {
+          "goal": "cong(o1,p,o1,t)",
+          "control": {
+            "solved_frontier": false,
+            "search_states": 10000,
+            "branch_count": 540,
+            "open_branch_count": 540,
+            "rule_unifications": 9695,
+            "fact_unifications": 21,
+            "rejected_nonprogressing_decompositions": 0,
+            "rejected_revisited_frontiers": 0,
+            "truncated": true
+          },
+          "treatment": {
+            "solved_frontier": false,
+            "search_states": 10000,
+            "branch_count": 537,
+            "open_branch_count": 537,
+            "rule_unifications": 9695,
+            "fact_unifications": 39,
+            "rejected_nonprogressing_decompositions": 18,
+            "rejected_revisited_frontiers": 7,
+            "truncated": true
+          },
+          "causal_difference": {
+            "solve_change": 0,
+            "search_state_change": 0,
+            "branch_count_change": -3
+          }
+        }
+      ]
+    },
+    {
+      "problem": "2023SAGFp8",
+      "native_baseline_solved": false,
+      "goals": [
+        {
+          "goal": "para(h,o,h1,o1)",
+          "control": {
+            "solved_frontier": false,
+            "search_states": 10000,
+            "branch_count": 508,
+            "open_branch_count": 508,
+            "rule_unifications": 9661,
+            "fact_unifications": 60,
+            "rejected_nonprogressing_decompositions": 0,
+            "rejected_revisited_frontiers": 0,
+            "truncated": true
+          },
+          "treatment": {
+            "solved_frontier": false,
+            "search_states": 10000,
+            "branch_count": 534,
+            "open_branch_count": 534,
+            "rule_unifications": 9825,
+            "fact_unifications": 120,
+            "rejected_nonprogressing_decompositions": 224,
+            "rejected_revisited_frontiers": 0,
+            "truncated": true
+          },
+          "causal_difference": {
+            "solve_change": 0,
+            "search_state_change": 0,
+            "branch_count_change": 26
+          }
+        }
+      ]
+    },
+    {
+      "problem": "2024PlanetCupp10",
+      "native_baseline_solved": false,
+      "goals": [
+        {
+          "goal": "perp(m,o,p,q)",
+          "control": {
+            "solved_frontier": false,
+            "search_states": 10000,
+            "branch_count": 402,
+            "open_branch_count": 402,
+            "rule_unifications": 9742,
+            "fact_unifications": 144,
+            "rejected_nonprogressing_decompositions": 0,
+            "rejected_revisited_frontiers": 0,
+            "truncated": true
+          },
+          "treatment": {
+            "solved_frontier": false,
+            "search_states": 10000,
+            "branch_count": 401,
+            "open_branch_count": 401,
+            "rule_unifications": 9867,
+            "fact_unifications": 144,
+            "rejected_nonprogressing_decompositions": 124,
+            "rejected_revisited_frontiers": 56,
+            "truncated": true
+          },
+          "causal_difference": {
+            "solve_change": 0,
+            "search_state_change": 0,
+            "branch_count_change": -1
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "experiment": "obligation_conditioned_terminal_credit_no_llm",
+  "date": "2026-08-21",
+  "hypothesis": "A historical terminal-credit prior improves auxiliary-construction search only when the candidate postcondition unifies with a current typed obligation and native replay proves a newly introduced fact that closes that same obligation.",
+  "truth_plane": "yuclid_native_certificate_replay_only",
+  "uses_external_llm": false,
+  "uses_problem_id_in_search": false,
+  "uses_expected_answer": false,
+  "uses_dataset_auxiliary_clauses": false,
+  "formal_gate": {
+    "direct_match": "q(c) > 0 and U(c,S) != empty",
+    "unification": "U(c,S) = {o in O(S) | exists p in P(c): typed_unify(p,o)}",
+    "causal_verification": "V(c,S) iff U(c,S) intersects Closed(NewFacts(S,c))",
+    "promotion": "credit is a scheduling preference only after native closure; it never certifies the theorem"
+  },
+  "bounded_search": {
+    "backward_obligation_limit": 24,
+    "witness_branch_fraction": 0.25,
+    "feedback_candidates": 4,
+    "credit_slots": 1
+  },
+  "single_problem_smoke": {
+    "problem": "2020IranGOAp2",
+    "open_typed_demands": 17,
+    "demands_with_holes": 14,
+    "positive_credit_candidates": 3,
+    "conditioned_credit_candidates": 1,
+    "candidate": "reflect(t,o1,p)->d",
+    "matched_obligations": [
+      "cong(?D,o1,o1,t)",
+      "cong(?B,o1,o1,t)"
+    ],
+    "same_obligations_closed_by_new_native_facts": true,
+    "solved": false,
+    "artifact": "data/obligation-credit-causal-smoke-2020irangoap2-n1-k1-f4-2026-08-21.json",
+    "artifact_sha256": "2c5a93df2318c3177a86caa92db6035a806b07ac3c3f1b8d6c2cf2112f0735d2"
+  },
+  "fixed_unseen_cohort": {
+    "problems": 10,
+    "rounds_n": 1,
+    "attempts_k": 1,
+    "seed": 31,
+    "control_policy": "residual-portfolio",
+    "treatment_policy": "obligation-credit-mixed",
+    "control": {
+      "solved": 0,
+      "complete": true,
+      "wall_seconds": 115.65683739999804,
+      "mean_problem_seconds": 39.573169370000684,
+      "median_problem_seconds": 18.456602300004306,
+      "selected_closed_obligations": 7,
+      "final_open_obligations": 202,
+      "artifact": "data/obligation-credit-causal-probe10-control-n1-k1-f4-2026-08-21.json",
+      "artifact_sha256": "5c5642d3230cdb6c20901acca6a475196041a01ff671e247c930e6c259195967"
+    },
+    "treatment": {
+      "solved": 0,
+      "complete": true,
+      "wall_seconds": 148.6644923999993,
+      "mean_problem_seconds": 55.272125610000515,
+      "median_problem_seconds": 41.28457105000416,
+      "typed_hole_demands": 50,
+      "positive_credit_candidates": 27,
+      "conditioned_credit_candidates": 3,
+      "credit_probes": 2,
+      "causally_verified_credit_candidates": 2,
+      "selected_closed_obligations": 7,
+      "final_open_obligations": 202,
+      "artifact": "data/obligation-credit-causal-probe10-treatment-n1-k1-f4-2026-08-21.json",
+      "artifact_sha256": "7db67af4791d3e58d082e251bd38e3a2487724cab5d74e0d621a951806da6ee7"
+    },
+    "changed_paths": 0,
+    "additional_solved": 0,
+    "wall_time_delta_percent": 28.539302770180885
+  },
+  "result": {
+    "local_credit_validity_supported": true,
+    "score_improvement_supported": false,
+    "efficiency_improvement_supported": false,
+    "interpretation": "The strict gate prevents name-only or stale-fact credit, but at N=1,K=1 the residual frontier already selects the same paths. The additional verifier work adds cost without changing coverage."
+  },
+  "source_sha256": {
+    "worker/backend/hageo_search_control.py": "7796b76c5d781849df1229d4cdb4ee11d77f1f659c2ed6a8d3545abaf4c26c0d",
+    "scripts/experiment_hageo_passk.py": "6aca2b94f726c52cb6a6134f8e000bed317a53d72ed1856b62bbe79f1fc4a666",
+    "terminal_credit_ledger": "718d6fe8604e905f9d3eef1600c5ff7f664641436ad97af66270ea46971fe186"
+  }
+}

@@ -1,0 +1,572 @@
+{
+  "experiment": "obligation_conditioned_elimination",
+  "problem_name": "2016G6",
+  "dataset": "C:/Users/81808/.cache/mortra-research-sources/GenesisGeo/benchmarks/hageo_409.txt",
+  "dataset_sha256": "55aa45dd16a1b69eaf612036468dbf3f62e73b654c0e3bb1a23fd3e5e3ed2368",
+  "normalization": {
+    "rewritten_constructions": 0,
+    "unchanged_constructions": 16,
+    "unresolved_constructions": 0
+  },
+  "baseline": {
+    "solved": false,
+    "native_fact_count": 2229,
+    "open_obligation_count": 24,
+    "open_demand_count": 18
+  },
+  "guidance_atoms": [
+    "lequation(1/1,a,p,*,a,p,1/1,c,q,*,c,q,-1/1,a,q,*,a,q,-1/1,c,p,*,c,p,0)",
+    "lequation(1/1,a,q,*,a,q,1/1,c,p,*,c,p,-1/1,a,p,*,a,p,-1/1,c,q,*,c,q,0)",
+    "lequation(1/1,c,p,*,c,p,1/1,a,q,*,a,q,-1/1,c,q,*,c,q,-1/1,a,p,*,a,p,0)",
+    "lequation(1/1,c,q,*,c,q,1/1,a,p,*,a,p,-1/1,c,p,*,c,p,-1/1,a,q,*,a,q,0)",
+    "lequation(1/1,p,a,*,p,a,1/1,q,c,*,q,c,-1/1,p,c,*,p,c,-1/1,q,a,*,q,a,0)",
+    "lequation(1/1,q,a,*,q,a,1/1,p,c,*,p,c,-1/1,q,c,*,q,c,-1/1,p,a,*,p,a,0)",
+    "lequation(1/1,p,c,*,p,c,1/1,q,a,*,q,a,-1/1,p,a,*,p,a,-1/1,q,c,*,q,c,0)",
+    "lequation(1/1,q,c,*,q,c,1/1,p,a,*,p,a,-1/1,q,a,*,q,a,-1/1,p,c,*,p,c,0)",
+    "perp(a,e,p,q)",
+    "perp(a,f,p,q)",
+    "perp(a,m,p,q)",
+    "perp(c,e,p,q)",
+    "perp(c,f,p,q)",
+    "perp(c,m,p,q)"
+  ],
+  "guidance_branches": [
+    [
+      "lequation(1/1,a,p,*,a,p,1/1,c,q,*,c,q,-1/1,a,q,*,a,q,-1/1,c,p,*,c,p,0)"
+    ],
+    [
+      "lequation(1/1,a,q,*,a,q,1/1,c,p,*,c,p,-1/1,a,p,*,a,p,-1/1,c,q,*,c,q,0)"
+    ],
+    [
+      "lequation(1/1,c,p,*,c,p,1/1,a,q,*,a,q,-1/1,c,q,*,c,q,-1/1,a,p,*,a,p,0)"
+    ],
+    [
+      "lequation(1/1,c,q,*,c,q,1/1,a,p,*,a,p,-1/1,c,p,*,c,p,-1/1,a,q,*,a,q,0)"
+    ],
+    [
+      "lequation(1/1,p,a,*,p,a,1/1,q,c,*,q,c,-1/1,p,c,*,p,c,-1/1,q,a,*,q,a,0)"
+    ],
+    [
+      "lequation(1/1,q,a,*,q,a,1/1,p,c,*,p,c,-1/1,q,c,*,q,c,-1/1,p,a,*,p,a,0)"
+    ],
+    [
+      "lequation(1/1,p,c,*,p,c,1/1,q,a,*,q,a,-1/1,p,a,*,p,a,-1/1,q,c,*,q,c,0)"
+    ],
+    [
+      "lequation(1/1,q,c,*,q,c,1/1,p,a,*,p,a,-1/1,q,a,*,q,a,-1/1,p,c,*,p,c,0)"
+    ],
+    [
+      "perp(a,e,p,q)"
+    ],
+    [
+      "perp(a,f,p,q)"
+    ],
+    [
+      "perp(a,m,p,q)"
+    ],
+    [
+      "perp(c,e,p,q)"
+    ],
+    [
+      "perp(c,f,p,q)"
+    ],
+    [
+      "perp(c,m,p,q)"
+    ]
+  ],
+  "same_budget": {
+    "timeout_seconds_per_arm": 25.0,
+    "representation": "construction_block_dag",
+    "execution": "sequential"
+  },
+  "control": {
+    "status": "right_censored_timeout",
+    "elapsed_seconds": 25.05397219999577,
+    "certificate_available": true,
+    "exact_replay": true,
+    "ordering_strategy": "min_fill",
+    "selected_variables": [
+      "_free_x_15",
+      "_free_y_16",
+      "_free_x_5",
+      "_length_7",
+      "_length_8",
+      "_length_11",
+      "_free_x_19",
+      "_free_y_20",
+      "_free_x_21",
+      "_length_12",
+      "_free_y_22",
+      "_free_y_6"
+    ],
+    "decision_trace": [
+      {
+        "stage": "local_prepass_candidate_started",
+        "variable": "_free_x_15",
+        "candidate_count": 14,
+        "eligible_candidate_count": 14,
+        "cost_rank": [
+          1,
+          13,
+          9,
+          3,
+          12
+        ],
+        "obligation_alignment_rank": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "proof_residual_rank": null
+      },
+      {
+        "stage": "local_prepass_candidate_started",
+        "variable": "_free_y_16",
+        "candidate_count": 13,
+        "eligible_candidate_count": 13,
+        "cost_rank": [
+          1,
+          12,
+          9,
+          3,
+          12
+        ],
+        "obligation_alignment_rank": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "proof_residual_rank": null
+      },
+      {
+        "stage": "local_prepass_candidate_started",
+        "variable": "_free_x_5",
+        "candidate_count": 12,
+        "eligible_candidate_count": 12,
+        "cost_rank": [
+          1,
+          30,
+          12,
+          4,
+          17
+        ],
+        "obligation_alignment_rank": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "proof_residual_rank": null
+      },
+      {
+        "stage": "local_prepass_candidate_started",
+        "variable": "_length_7",
+        "candidate_count": 11,
+        "eligible_candidate_count": 11,
+        "cost_rank": [
+          2,
+          0,
+          4,
+          2,
+          5
+        ],
+        "obligation_alignment_rank": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "proof_residual_rank": null
+      },
+      {
+        "stage": "local_prepass_candidate_started",
+        "variable": "_length_8",
+        "candidate_count": 10,
+        "eligible_candidate_count": 10,
+        "cost_rank": [
+          2,
+          0,
+          4,
+          2,
+          9
+        ],
+        "obligation_alignment_rank": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "proof_residual_rank": null
+      },
+      {
+        "stage": "local_prepass_candidate_started",
+        "variable": "_length_11",
+        "candidate_count": 8,
+        "eligible_candidate_count": 8,
+        "cost_rank": [
+          2,
+          0,
+          7,
+          2,
+          11
+        ],
+        "obligation_alignment_rank": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "proof_residual_rank": null
+      },
+      {
+        "stage": "local_prepass_candidate_started",
+        "variable": "_free_x_19",
+        "candidate_count": 9,
+        "eligible_candidate_count": 9,
+        "cost_rank": [
+          2,
+          12,
+          9,
+          3,
+          16
+        ],
+        "obligation_alignment_rank": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "proof_residual_rank": null
+      },
+      {
+        "stage": "local_prepass_candidate_started",
+        "variable": "_free_y_20",
+        "candidate_count": 8,
+        "eligible_candidate_count": 8,
+        "cost_rank": [
+          2,
+          6,
+          8,
+          2,
+          17
+        ],
+        "obligation_alignment_rank": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "proof_residual_rank": null
+      },
+      {
+        "stage": "local_prepass_candidate_started",
+        "variable": "_free_x_21",
+        "candidate_count": 5,
+        "eligible_candidate_count": 5,
+        "cost_rank": [
+          2,
+          10,
+          12,
+          3,
+          18
+        ],
+        "obligation_alignment_rank": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "proof_residual_rank": null
+      },
+      {
+        "stage": "clique_started",
+        "variable": "_length_12",
+        "candidate_count": 3,
+        "eligible_candidate_count": 3,
+        "cost_rank": [
+          0,
+          6,
+          3,
+          54
+        ],
+        "obligation_alignment_rank": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "proof_residual_rank": null
+      },
+      {
+        "stage": "clique_started",
+        "variable": "_free_y_22",
+        "candidate_count": 2,
+        "eligible_candidate_count": 2,
+        "cost_rank": [
+          0,
+          11,
+          9,
+          135
+        ],
+        "obligation_alignment_rank": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "proof_residual_rank": null
+      },
+      {
+        "stage": "clique_started",
+        "variable": "_free_y_6",
+        "candidate_count": 1,
+        "eligible_candidate_count": 1,
+        "cost_rank": [
+          4,
+          9,
+          4,
+          101
+        ],
+        "obligation_alignment_rank": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "proof_residual_rank": null
+      }
+    ],
+    "residual_evaluation_failures": [],
+    "local_node_count": 9,
+    "separator_node_count": 2,
+    "replayed_polynomial_count": 20,
+    "recovered_guidance_atoms": [],
+    "novel_recovered_guidance_atoms": [],
+    "solved": false
+  },
+  "treatment": {
+    "status": "right_censored_timeout",
+    "elapsed_seconds": 25.04572590001044,
+    "certificate_available": true,
+    "exact_replay": true,
+    "ordering_strategy": "residual_conditioned",
+    "selected_variables": [
+      "_free_x_15",
+      "_free_y_16",
+      "_free_x_5",
+      "_length_8",
+      "_length_7",
+      "_length_11"
+    ],
+    "decision_trace": [
+      {
+        "stage": "local_prepass_candidate_started",
+        "variable": "_free_x_15",
+        "candidate_count": 11,
+        "eligible_candidate_count": 2,
+        "cost_rank": [
+          1,
+          13,
+          9,
+          3,
+          12
+        ],
+        "obligation_alignment_rank": [
+          1,
+          4,
+          2,
+          7,
+          0,
+          8,
+          0,
+          -2,
+          13
+        ],
+        "proof_residual_rank": [
+          1,
+          4,
+          2,
+          7
+        ]
+      },
+      {
+        "stage": "local_prepass_candidate_started",
+        "variable": "_free_y_16",
+        "candidate_count": 10,
+        "eligible_candidate_count": 1,
+        "cost_rank": [
+          1,
+          12,
+          9,
+          3,
+          12
+        ],
+        "obligation_alignment_rank": [
+          1,
+          4,
+          2,
+          7,
+          0,
+          8,
+          0,
+          -2,
+          11
+        ],
+        "proof_residual_rank": [
+          1,
+          4,
+          2,
+          7
+        ]
+      },
+      {
+        "stage": "local_prepass_candidate_started",
+        "variable": "_free_x_5",
+        "candidate_count": 9,
+        "eligible_candidate_count": 1,
+        "cost_rank": [
+          1,
+          30,
+          12,
+          4,
+          17
+        ],
+        "obligation_alignment_rank": [
+          1,
+          4,
+          2,
+          7,
+          0,
+          7,
+          0,
+          -7,
+          6
+        ],
+        "proof_residual_rank": [
+          1,
+          4,
+          2,
+          7
+        ]
+      },
+      {
+        "stage": "local_prepass_candidate_started",
+        "variable": "_length_8",
+        "candidate_count": 8,
+        "eligible_candidate_count": 2,
+        "cost_rank": [
+          2,
+          1,
+          5,
+          2,
+          8
+        ],
+        "obligation_alignment_rank": [
+          1,
+          4,
+          2,
+          7,
+          0,
+          0,
+          0,
+          -3,
+          7
+        ],
+        "proof_residual_rank": [
+          1,
+          4,
+          2,
+          7
+        ]
+      },
+      {
+        "stage": "local_prepass_candidate_started",
+        "variable": "_length_7",
+        "candidate_count": 8,
+        "eligible_candidate_count": 1,
+        "cost_rank": [
+          2,
+          0,
+          4,
+          2,
+          9
+        ],
+        "obligation_alignment_rank": [
+          1,
+          4,
+          2,
+          7,
+          0,
+          0,
+          0,
+          -3,
+          6
+        ],
+        "proof_residual_rank": [
+          1,
+          4,
+          2,
+          7
+        ]
+      },
+      {
+        "stage": "local_prepass_candidate_started",
+        "variable": "_length_11",
+        "candidate_count": 6,
+        "eligible_candidate_count": 2,
+        "cost_rank": [
+          2,
+          0,
+          7,
+          2,
+          11
+        ],
+        "obligation_alignment_rank": [
+          1,
+          4,
+          2,
+          7,
+          0,
+          0,
+          0,
+          -4,
+          7
+        ],
+        "proof_residual_rank": [
+          1,
+          4,
+          2,
+          7
+        ]
+      }
+    ],
+    "residual_evaluation_failures": [],
+    "local_node_count": 6,
+    "separator_node_count": 0,
+    "replayed_polynomial_count": 10,
+    "recovered_guidance_atoms": [],
+    "novel_recovered_guidance_atoms": [],
+    "solved": false
+  },
+  "delta": {
+    "solved": 0,
+    "local_nodes": -3,
+    "separator_nodes": -2,
+    "novel_recovered_guidance_atoms": 0
+  },
+  "elapsed_seconds": 52.660735400015255
+}

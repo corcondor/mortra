@@ -1,0 +1,85 @@
+{
+  "experiment": "mortra_terminal_certificate_backward_credit_ablation",
+  "date": "2026-08-21",
+  "objective": "Return credit from a replayed terminal proof to the intermediate construction morphisms used by that proof, without changing mathematical truth.",
+  "hypotheses": {
+    "attribution": "A replayed multi-step proof can identify and credit its causal intermediate constructions.",
+    "search_effect": "Reusing that credit improves Pass@K or proof-search cost against immediate residual feedback."
+  },
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_problem_id_as_feature": false,
+    "uses_expected_answer": false,
+    "uses_dataset_auxiliary_clauses": false,
+    "uses_point_identity_as_feature": false,
+    "truth_plane": "yuclid_native_certificate_replay_only",
+    "credit_plane": "construction_family_plus_alpha_invariant_roles_plus_quantized_structural_shape_plus_open_predicates",
+    "credit_source": "deductions_for_goal dependency slice",
+    "unsolved_trajectory_credit": 0.0,
+    "discount": 0.85
+  },
+  "results": [
+    {
+      "problem": "2011CTSTp16",
+      "kind": "single_step_capability_regression",
+      "control_solved": true,
+      "credit_solved": true,
+      "control_elapsed_seconds": 10.211505,
+      "credit_elapsed_seconds": 10.870339,
+      "elapsed_delta_percent": 6.45,
+      "control_verifier_calls": 8,
+      "credit_verifier_calls": 8,
+      "credited_path": ["reflect(k,b,c)->d"],
+      "credit_events": 2,
+      "credit_signatures": 1
+    },
+    {
+      "problem": "2017G3",
+      "kind": "two_step_capability_regression",
+      "control_solved": true,
+      "credit_solved": true,
+      "control_elapsed_seconds": 27.220997,
+      "credit_elapsed_seconds": 28.53134,
+      "elapsed_delta_percent": 4.81,
+      "control_verifier_calls": 10,
+      "credit_verifier_calls": 10,
+      "credited_path": ["mirror(a,o)->d", "foot(a,b,c)->e"],
+      "first_step_credit": 0.85,
+      "terminal_step_credit": 1.0,
+      "credit_events": 4,
+      "credit_signatures": 2,
+      "unrelated_same_family_credit_leak_after_structural_signature": 0
+    },
+    {
+      "problem": "2020IranGOAp2",
+      "kind": "fixed_unsolved_probe",
+      "control_solved": false,
+      "credit_solved": false,
+      "control_elapsed_seconds": 2.202544,
+      "credit_elapsed_seconds": 2.127034,
+      "elapsed_delta_percent": -3.43,
+      "control_verifier_calls": 4,
+      "credit_verifier_calls": 4,
+      "control_path": ["reflect(t,p,a)->d"],
+      "credit_path": ["reflect(t,p,a)->d"],
+      "credit_events": 0,
+      "credit_signatures": 0,
+      "false_proof_acceptances": 0
+    }
+  ],
+  "conclusion": {
+    "attribution_hypothesis": "supported_on_one_single_step_and_one_two_step_regression",
+    "search_effect_hypothesis": "not_supported_on_this_small_ablation",
+    "score_change": 0,
+    "reason": "The certified constructions were already inside the immediate-residual shortlist, so credit changed no verifier call count.",
+    "next_falsifiable_test": "Train the identity-free credit controller only on solved development trajectories, freeze it, and compare Hit@k and Pass@K on unseen problems where the certified prefix is outside the immediate shortlist."
+  },
+  "artifacts": [
+    "data/terminal-credit-ablation-residual-2011ctstp16-2026-08-21.json",
+    "data/terminal-credit-structural-ablation-credit-2011ctstp16-2026-08-21.json",
+    "data/terminal-credit-ablation-residual-2017g3-2026-08-21.json",
+    "data/terminal-credit-structural-ablation-credit-2017g3-2026-08-21.json",
+    "data/terminal-credit-frozen-control-2020irangoap2-n1-k1-f4-2026-08-21.json",
+    "data/terminal-credit-frozen-2020irangoap2-n1-k1-f4-2026-08-21.json"
+  ]
+}

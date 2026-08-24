@@ -1,0 +1,3338 @@
+{
+  "experiment": "llm-free-symbolic-sheaf-admm-v2",
+  "phase": "post-repair-confirmation",
+  "generated_at": "2026-08-22T02:59:12.791815+00:00",
+  "uses_llm": false,
+  "source_basis": {
+    "paper": "arXiv:2605.31005",
+    "repository": "https://github.com/SakanaAI/sheaf-admm",
+    "commit": "1e2b5d648361802234348b0b1a7fb3a222128e7d",
+    "ported_mechanisms": [
+      "private x / consensus z / scaled dual y",
+      "typed pairwise restriction maps",
+      "sheaf Laplacian z solve",
+      "primal / dual / sheaf residual diagnostics"
+    ],
+    "deliberate_difference": "Neural encoders/decoders and end-to-end gradients are replaced by exact certificate replay plus Beta-Bernoulli learning of structural proof flows."
+  },
+  "protocol": {
+    "train": 30,
+    "dev": 15,
+    "frozen_test": 60,
+    "domains": [
+      "geometry",
+      "integer",
+      "set"
+    ],
+    "test_only_once": true,
+    "entity_and_numeric_overlap_across_splits": false,
+    "learner_inputs": [
+      "agent role",
+      "premise-predicate multiset",
+      "conclusion predicate",
+      "replayed certificate dataflow"
+    ],
+    "forbidden_inputs": [
+      "problem text",
+      "problem ID",
+      "entity label",
+      "numeric answer"
+    ],
+    "selected_budget": 1,
+    "split_seeds": {
+      "train_start": 10000,
+      "dev_start": 20000,
+      "test_start": 40000
+    }
+  },
+  "learner": {
+    "training_episodes": 30,
+    "replayed_episodes": 30,
+    "rule_weights": {
+      "closure:difference+divides+divides->divides": 0.08333333333333333,
+      "closure:divides+divides+sum->divides": 0.9166666666666666,
+      "incidence:distinct+g_perp+g_perp->g_para": 0.9166666666666666,
+      "incidence:g_para->g_parallel_view": 0.08333333333333333,
+      "order:subset+subset->subset_span": 0.9166666666666666,
+      "order:subset+subset_span->subset_span": 0.08333333333333333,
+      "projection:divides+product->divides": 0.08333333333333333,
+      "projection:gcd->divides": 0.9166666666666666,
+      "restriction:disjoint+subset_span->disjoint": 0.9166666666666666,
+      "restriction:disjoint->empty_intersection": 0.08333333333333333,
+      "transport:g_para+g_para->g_para": 0.08333333333333333,
+      "transport:g_para+g_perp->g_perp": 0.9166666666666666
+    },
+    "edge_weights": {
+      "closure->projection:divides": 0.08333333333333333,
+      "incidence->transport:g_para": 0.08333333333333333,
+      "order->restriction:subset_span": 0.9166666666666666,
+      "projection->closure:divides": 0.9166666666666666,
+      "transport->incidence:g_para": 0.08333333333333333,
+      "transport->incidence:g_perp": 0.9166666666666666
+    }
+  },
+  "dev_budget_trials": [
+    {
+      "episodes": 15,
+      "budget_per_round": 1,
+      "solved": {
+        "independent": 0,
+        "strict": 15,
+        "blackboard": 3,
+        "learned_global_blackboard": 15,
+        "sheaf_static": 15,
+        "sheaf_learned": 15
+      },
+      "solve_rate": {
+        "independent": 0.0,
+        "strict": 1.0,
+        "blackboard": 0.2,
+        "learned_global_blackboard": 1.0,
+        "sheaf_static": 1.0,
+        "sheaf_learned": 1.0
+      },
+      "replayed": {
+        "independent": 0,
+        "strict": 15,
+        "blackboard": 3,
+        "learned_global_blackboard": 15,
+        "sheaf_static": 15,
+        "sheaf_learned": 15
+      },
+      "proposed": {
+        "independent": 0,
+        "strict": 453,
+        "blackboard": 1907,
+        "learned_global_blackboard": 543,
+        "sheaf_static": 1043,
+        "sheaf_learned": 532
+      },
+      "transmitted": {
+        "independent": 0,
+        "strict": 453,
+        "blackboard": 225,
+        "learned_global_blackboard": 71,
+        "sheaf_static": 101,
+        "sheaf_learned": 69
+      },
+      "peer_messages": {
+        "independent": 0,
+        "strict": 0,
+        "blackboard": 80,
+        "learned_global_blackboard": 33,
+        "sheaf_static": 33,
+        "sheaf_learned": 32
+      },
+      "communication_reduction_vs_strict": {
+        "blackboard": 0.5033112582781457,
+        "learned_global_blackboard": 0.8432671081677704,
+        "sheaf_static": 0.7770419426048565,
+        "sheaf_learned": 0.847682119205298
+      },
+      "by_domain": {
+        "geometry": {
+          "independent": 0,
+          "strict": 5,
+          "blackboard": 0,
+          "learned_global_blackboard": 5,
+          "sheaf_static": 5,
+          "sheaf_learned": 5
+        },
+        "integer": {
+          "independent": 0,
+          "strict": 5,
+          "blackboard": 0,
+          "learned_global_blackboard": 5,
+          "sheaf_static": 5,
+          "sheaf_learned": 5
+        },
+        "set": {
+          "independent": 0,
+          "strict": 5,
+          "blackboard": 3,
+          "learned_global_blackboard": 5,
+          "sheaf_static": 5,
+          "sheaf_learned": 5
+        }
+      },
+      "fault_control": {
+        "enabled": false,
+        "false_accepts": 0,
+        "invalid_certificates_rejected": 0
+      },
+      "paired_sheaf_vs_global_blackboard": {
+        "metric": "communication messages; negative favors sheaf",
+        "mean_difference": -0.13333333333333333,
+        "median_difference": 0,
+        "sheaf_wins": 1,
+        "ties": 14,
+        "global_blackboard_wins": 0,
+        "bootstrap_95pct_mean_ci": [
+          -0.4,
+          0.0
+        ],
+        "bootstrap_samples": 2000
+      }
+    },
+    {
+      "episodes": 15,
+      "budget_per_round": 2,
+      "solved": {
+        "independent": 0,
+        "strict": 15,
+        "blackboard": 7,
+        "learned_global_blackboard": 15,
+        "sheaf_static": 15,
+        "sheaf_learned": 15
+      },
+      "solve_rate": {
+        "independent": 0.0,
+        "strict": 1.0,
+        "blackboard": 0.4666666666666667,
+        "learned_global_blackboard": 1.0,
+        "sheaf_static": 1.0,
+        "sheaf_learned": 1.0
+      },
+      "replayed": {
+        "independent": 0,
+        "strict": 15,
+        "blackboard": 7,
+        "learned_global_blackboard": 15,
+        "sheaf_static": 15,
+        "sheaf_learned": 15
+      },
+      "proposed": {
+        "independent": 0,
+        "strict": 453,
+        "blackboard": 1399,
+        "learned_global_blackboard": 465,
+        "sheaf_static": 695,
+        "sheaf_learned": 465
+      },
+      "transmitted": {
+        "independent": 0,
+        "strict": 453,
+        "blackboard": 401,
+        "learned_global_blackboard": 119,
+        "sheaf_static": 129,
+        "sheaf_learned": 119
+      },
+      "peer_messages": {
+        "independent": 0,
+        "strict": 0,
+        "blackboard": 153,
+        "learned_global_blackboard": 57,
+        "sheaf_static": 37,
+        "sheaf_learned": 57
+      },
+      "communication_reduction_vs_strict": {
+        "blackboard": 0.11479028697571747,
+        "learned_global_blackboard": 0.7373068432671082,
+        "sheaf_static": 0.7152317880794702,
+        "sheaf_learned": 0.7373068432671082
+      },
+      "by_domain": {
+        "geometry": {
+          "independent": 0,
+          "strict": 5,
+          "blackboard": 0,
+          "learned_global_blackboard": 5,
+          "sheaf_static": 5,
+          "sheaf_learned": 5
+        },
+        "integer": {
+          "independent": 0,
+          "strict": 5,
+          "blackboard": 2,
+          "learned_global_blackboard": 5,
+          "sheaf_static": 5,
+          "sheaf_learned": 5
+        },
+        "set": {
+          "independent": 0,
+          "strict": 5,
+          "blackboard": 5,
+          "learned_global_blackboard": 5,
+          "sheaf_static": 5,
+          "sheaf_learned": 5
+        }
+      },
+      "fault_control": {
+        "enabled": false,
+        "false_accepts": 0,
+        "invalid_certificates_rejected": 0
+      },
+      "paired_sheaf_vs_global_blackboard": {
+        "metric": "communication messages; negative favors sheaf",
+        "mean_difference": 0.0,
+        "median_difference": 0,
+        "sheaf_wins": 0,
+        "ties": 15,
+        "global_blackboard_wins": 0,
+        "bootstrap_95pct_mean_ci": [
+          0.0,
+          0.0
+        ],
+        "bootstrap_samples": 2000
+      }
+    },
+    {
+      "episodes": 15,
+      "budget_per_round": 3,
+      "solved": {
+        "independent": 0,
+        "strict": 15,
+        "blackboard": 13,
+        "learned_global_blackboard": 15,
+        "sheaf_static": 15,
+        "sheaf_learned": 15
+      },
+      "solve_rate": {
+        "independent": 0.0,
+        "strict": 1.0,
+        "blackboard": 0.8666666666666667,
+        "learned_global_blackboard": 1.0,
+        "sheaf_static": 1.0,
+        "sheaf_learned": 1.0
+      },
+      "replayed": {
+        "independent": 0,
+        "strict": 15,
+        "blackboard": 13,
+        "learned_global_blackboard": 15,
+        "sheaf_static": 15,
+        "sheaf_learned": 15
+      },
+      "proposed": {
+        "independent": 0,
+        "strict": 453,
+        "blackboard": 1078,
+        "learned_global_blackboard": 463,
+        "sheaf_static": 588,
+        "sheaf_learned": 466
+      },
+      "transmitted": {
+        "independent": 0,
+        "strict": 453,
+        "blackboard": 504,
+        "learned_global_blackboard": 181,
+        "sheaf_static": 181,
+        "sheaf_learned": 171
+      },
+      "peer_messages": {
+        "independent": 0,
+        "strict": 0,
+        "blackboard": 198,
+        "learned_global_blackboard": 88,
+        "sheaf_static": 58,
+        "sheaf_learned": 78
+      },
+      "communication_reduction_vs_strict": {
+        "blackboard": -0.11258278145695355,
+        "learned_global_blackboard": 0.6004415011037527,
+        "sheaf_static": 0.6004415011037527,
+        "sheaf_learned": 0.6225165562913908
+      },
+      "by_domain": {
+        "geometry": {
+          "independent": 0,
+          "strict": 5,
+          "blackboard": 3,
+          "learned_global_blackboard": 5,
+          "sheaf_static": 5,
+          "sheaf_learned": 5
+        },
+        "integer": {
+          "independent": 0,
+          "strict": 5,
+          "blackboard": 5,
+          "learned_global_blackboard": 5,
+          "sheaf_static": 5,
+          "sheaf_learned": 5
+        },
+        "set": {
+          "independent": 0,
+          "strict": 5,
+          "blackboard": 5,
+          "learned_global_blackboard": 5,
+          "sheaf_static": 5,
+          "sheaf_learned": 5
+        }
+      },
+      "fault_control": {
+        "enabled": false,
+        "false_accepts": 0,
+        "invalid_certificates_rejected": 0
+      },
+      "paired_sheaf_vs_global_blackboard": {
+        "metric": "communication messages; negative favors sheaf",
+        "mean_difference": -0.6666666666666666,
+        "median_difference": 0,
+        "sheaf_wins": 5,
+        "ties": 10,
+        "global_blackboard_wins": 0,
+        "bootstrap_95pct_mean_ci": [
+          -1.2,
+          -0.26666666666666666
+        ],
+        "bootstrap_samples": 2000
+      }
+    },
+    {
+      "episodes": 15,
+      "budget_per_round": 4,
+      "solved": {
+        "independent": 0,
+        "strict": 15,
+        "blackboard": 15,
+        "learned_global_blackboard": 15,
+        "sheaf_static": 15,
+        "sheaf_learned": 15
+      },
+      "solve_rate": {
+        "independent": 0.0,
+        "strict": 1.0,
+        "blackboard": 1.0,
+        "learned_global_blackboard": 1.0,
+        "sheaf_static": 1.0,
+        "sheaf_learned": 1.0
+      },
+      "replayed": {
+        "independent": 0,
+        "strict": 15,
+        "blackboard": 15,
+        "learned_global_blackboard": 15,
+        "sheaf_static": 15,
+        "sheaf_learned": 15
+      },
+      "proposed": {
+        "independent": 0,
+        "strict": 453,
+        "blackboard": 867,
+        "learned_global_blackboard": 456,
+        "sheaf_static": 561,
+        "sheaf_learned": 456
+      },
+      "transmitted": {
+        "independent": 0,
+        "strict": 453,
+        "blackboard": 548,
+        "learned_global_blackboard": 230,
+        "sheaf_static": 260,
+        "sheaf_learned": 220
+      },
+      "peer_messages": {
+        "independent": 0,
+        "strict": 0,
+        "blackboard": 219,
+        "learned_global_blackboard": 110,
+        "sheaf_static": 100,
+        "sheaf_learned": 100
+      },
+      "communication_reduction_vs_strict": {
+        "blackboard": -0.20971302428256067,
+        "learned_global_blackboard": 0.49227373068432667,
+        "sheaf_static": 0.42604856512141276,
+        "sheaf_learned": 0.5143487858719646
+      },
+      "by_domain": {
+        "geometry": {
+          "independent": 0,
+          "strict": 5,
+          "blackboard": 5,
+          "learned_global_blackboard": 5,
+          "sheaf_static": 5,
+          "sheaf_learned": 5
+        },
+        "integer": {
+          "independent": 0,
+          "strict": 5,
+          "blackboard": 5,
+          "learned_global_blackboard": 5,
+          "sheaf_static": 5,
+          "sheaf_learned": 5
+        },
+        "set": {
+          "independent": 0,
+          "strict": 5,
+          "blackboard": 5,
+          "learned_global_blackboard": 5,
+          "sheaf_static": 5,
+          "sheaf_learned": 5
+        }
+      },
+      "fault_control": {
+        "enabled": false,
+        "false_accepts": 0,
+        "invalid_certificates_rejected": 0
+      },
+      "paired_sheaf_vs_global_blackboard": {
+        "metric": "communication messages; negative favors sheaf",
+        "mean_difference": -0.6666666666666666,
+        "median_difference": 0,
+        "sheaf_wins": 5,
+        "ties": 10,
+        "global_blackboard_wins": 0,
+        "bootstrap_95pct_mean_ci": [
+          -1.2,
+          -0.26666666666666666
+        ],
+        "bootstrap_samples": 2000
+      }
+    },
+    {
+      "episodes": 15,
+      "budget_per_round": 6,
+      "solved": {
+        "independent": 0,
+        "strict": 15,
+        "blackboard": 15,
+        "learned_global_blackboard": 15,
+        "sheaf_static": 15,
+        "sheaf_learned": 15
+      },
+      "solve_rate": {
+        "independent": 0.0,
+        "strict": 1.0,
+        "blackboard": 1.0,
+        "learned_global_blackboard": 1.0,
+        "sheaf_static": 1.0,
+        "sheaf_learned": 1.0
+      },
+      "replayed": {
+        "independent": 0,
+        "strict": 15,
+        "blackboard": 15,
+        "learned_global_blackboard": 15,
+        "sheaf_static": 15,
+        "sheaf_learned": 15
+      },
+      "proposed": {
+        "independent": 0,
+        "strict": 453,
+        "blackboard": 650,
+        "learned_global_blackboard": 462,
+        "sheaf_static": 462,
+        "sheaf_learned": 462
+      },
+      "transmitted": {
+        "independent": 0,
+        "strict": 453,
+        "blackboard": 571,
+        "learned_global_blackboard": 330,
+        "sheaf_static": 335,
+        "sheaf_learned": 330
+      },
+      "peer_messages": {
+        "independent": 0,
+        "strict": 0,
+        "blackboard": 227,
+        "learned_global_blackboard": 150,
+        "sheaf_static": 125,
+        "sheaf_learned": 150
+      },
+      "communication_reduction_vs_strict": {
+        "blackboard": -0.26048565121412803,
+        "learned_global_blackboard": 0.2715231788079471,
+        "sheaf_static": 0.26048565121412803,
+        "sheaf_learned": 0.2715231788079471
+      },
+      "by_domain": {
+        "geometry": {
+          "independent": 0,
+          "strict": 5,
+          "blackboard": 5,
+          "learned_global_blackboard": 5,
+          "sheaf_static": 5,
+          "sheaf_learned": 5
+        },
+        "integer": {
+          "independent": 0,
+          "strict": 5,
+          "blackboard": 5,
+          "learned_global_blackboard": 5,
+          "sheaf_static": 5,
+          "sheaf_learned": 5
+        },
+        "set": {
+          "independent": 0,
+          "strict": 5,
+          "blackboard": 5,
+          "learned_global_blackboard": 5,
+          "sheaf_static": 5,
+          "sheaf_learned": 5
+        }
+      },
+      "fault_control": {
+        "enabled": false,
+        "false_accepts": 0,
+        "invalid_certificates_rejected": 0
+      },
+      "paired_sheaf_vs_global_blackboard": {
+        "metric": "communication messages; negative favors sheaf",
+        "mean_difference": 0.0,
+        "median_difference": 0,
+        "sheaf_wins": 0,
+        "ties": 15,
+        "global_blackboard_wins": 0,
+        "bootstrap_95pct_mean_ci": [
+          0.0,
+          0.0
+        ],
+        "bootstrap_samples": 2000
+      }
+    }
+  ],
+  "frozen_test": {
+    "episodes": 60,
+    "budget_per_round": 1,
+    "solved": {
+      "independent": 1,
+      "strict": 60,
+      "blackboard": 6,
+      "learned_global_blackboard": 60,
+      "sheaf_static": 60,
+      "sheaf_learned": 60
+    },
+    "solve_rate": {
+      "independent": 0.016666666666666666,
+      "strict": 1.0,
+      "blackboard": 0.1,
+      "learned_global_blackboard": 1.0,
+      "sheaf_static": 1.0,
+      "sheaf_learned": 1.0
+    },
+    "replayed": {
+      "independent": 1,
+      "strict": 60,
+      "blackboard": 6,
+      "learned_global_blackboard": 60,
+      "sheaf_static": 60,
+      "sheaf_learned": 60
+    },
+    "proposed": {
+      "independent": 0,
+      "strict": 2461,
+      "blackboard": 10877,
+      "learned_global_blackboard": 2901,
+      "sheaf_static": 6679,
+      "sheaf_learned": 2861
+    },
+    "transmitted": {
+      "independent": 0,
+      "strict": 2461,
+      "blackboard": 940,
+      "learned_global_blackboard": 282,
+      "sheaf_static": 442,
+      "sheaf_learned": 276
+    },
+    "peer_messages": {
+      "independent": 0,
+      "strict": 0,
+      "blackboard": 352,
+      "learned_global_blackboard": 131,
+      "sheaf_static": 131,
+      "sheaf_learned": 128
+    },
+    "communication_reduction_vs_strict": {
+      "blackboard": 0.6180414465664363,
+      "learned_global_blackboard": 0.885412433969931,
+      "sheaf_static": 0.8203982121088988,
+      "sheaf_learned": 0.8878504672897196
+    },
+    "by_domain": {
+      "geometry": {
+        "independent": 0,
+        "strict": 20,
+        "blackboard": 0,
+        "learned_global_blackboard": 20,
+        "sheaf_static": 20,
+        "sheaf_learned": 20
+      },
+      "integer": {
+        "independent": 1,
+        "strict": 20,
+        "blackboard": 1,
+        "learned_global_blackboard": 20,
+        "sheaf_static": 20,
+        "sheaf_learned": 20
+      },
+      "set": {
+        "independent": 0,
+        "strict": 20,
+        "blackboard": 5,
+        "learned_global_blackboard": 20,
+        "sheaf_static": 20,
+        "sheaf_learned": 20
+      }
+    },
+    "fault_control": {
+      "enabled": false,
+      "false_accepts": 0,
+      "invalid_certificates_rejected": 0
+    },
+    "paired_sheaf_vs_global_blackboard": {
+      "metric": "communication messages; negative favors sheaf",
+      "mean_difference": -0.1,
+      "median_difference": 0.0,
+      "sheaf_wins": 3,
+      "ties": 57,
+      "global_blackboard_wins": 0,
+      "bootstrap_95pct_mean_ci": [
+        -0.23333333333333334,
+        0.0
+      ],
+      "bootstrap_samples": 2000
+    },
+    "episode_records": [
+      {
+        "episode_id": "geometry-40000",
+        "domain": "geometry",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 53
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 10,
+            "selected_certificates": 10,
+            "peer_messages": 0
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 11,
+            "selected_certificates": 9,
+            "peer_messages": 2
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          }
+        }
+      },
+      {
+        "episode_id": "geometry-40001",
+        "domain": "geometry",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 53
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 10,
+            "selected_certificates": 10,
+            "peer_messages": 0
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 11,
+            "selected_certificates": 9,
+            "peer_messages": 2
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          }
+        }
+      },
+      {
+        "episode_id": "geometry-40002",
+        "domain": "geometry",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 53
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 10,
+            "selected_certificates": 10,
+            "peer_messages": 0
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 11,
+            "selected_certificates": 9,
+            "peer_messages": 2
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          }
+        }
+      },
+      {
+        "episode_id": "geometry-40003",
+        "domain": "geometry",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 53
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 10,
+            "selected_certificates": 10,
+            "peer_messages": 0
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 11,
+            "selected_certificates": 9,
+            "peer_messages": 2
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          }
+        }
+      },
+      {
+        "episode_id": "geometry-40004",
+        "domain": "geometry",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 53
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 10,
+            "selected_certificates": 10,
+            "peer_messages": 0
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 11,
+            "selected_certificates": 9,
+            "peer_messages": 2
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          }
+        }
+      },
+      {
+        "episode_id": "geometry-40005",
+        "domain": "geometry",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 53
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 10,
+            "selected_certificates": 10,
+            "peer_messages": 0
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 11,
+            "selected_certificates": 9,
+            "peer_messages": 2
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          }
+        }
+      },
+      {
+        "episode_id": "geometry-40006",
+        "domain": "geometry",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 53
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 10,
+            "selected_certificates": 10,
+            "peer_messages": 0
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 11,
+            "selected_certificates": 9,
+            "peer_messages": 2
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          }
+        }
+      },
+      {
+        "episode_id": "geometry-40007",
+        "domain": "geometry",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 53
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 10,
+            "selected_certificates": 10,
+            "peer_messages": 0
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 11,
+            "selected_certificates": 9,
+            "peer_messages": 2
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          }
+        }
+      },
+      {
+        "episode_id": "geometry-40008",
+        "domain": "geometry",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 53
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 10,
+            "selected_certificates": 10,
+            "peer_messages": 0
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 11,
+            "selected_certificates": 9,
+            "peer_messages": 2
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          }
+        }
+      },
+      {
+        "episode_id": "geometry-40009",
+        "domain": "geometry",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 53
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 10,
+            "selected_certificates": 10,
+            "peer_messages": 0
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 11,
+            "selected_certificates": 9,
+            "peer_messages": 2
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          }
+        }
+      },
+      {
+        "episode_id": "geometry-40010",
+        "domain": "geometry",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 53
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 10,
+            "selected_certificates": 10,
+            "peer_messages": 0
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 11,
+            "selected_certificates": 9,
+            "peer_messages": 2
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          }
+        }
+      },
+      {
+        "episode_id": "geometry-40011",
+        "domain": "geometry",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 53
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 10,
+            "selected_certificates": 10,
+            "peer_messages": 0
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 11,
+            "selected_certificates": 9,
+            "peer_messages": 2
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          }
+        }
+      },
+      {
+        "episode_id": "geometry-40012",
+        "domain": "geometry",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 53
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 10,
+            "selected_certificates": 10,
+            "peer_messages": 0
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 11,
+            "selected_certificates": 9,
+            "peer_messages": 2
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          }
+        }
+      },
+      {
+        "episode_id": "geometry-40013",
+        "domain": "geometry",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 53
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 10,
+            "selected_certificates": 10,
+            "peer_messages": 0
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 11,
+            "selected_certificates": 9,
+            "peer_messages": 2
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          }
+        }
+      },
+      {
+        "episode_id": "geometry-40014",
+        "domain": "geometry",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 53
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 10,
+            "selected_certificates": 10,
+            "peer_messages": 0
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 11,
+            "selected_certificates": 9,
+            "peer_messages": 2
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          }
+        }
+      },
+      {
+        "episode_id": "geometry-40015",
+        "domain": "geometry",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 53
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 10,
+            "selected_certificates": 10,
+            "peer_messages": 0
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 11,
+            "selected_certificates": 9,
+            "peer_messages": 2
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          }
+        }
+      },
+      {
+        "episode_id": "geometry-40016",
+        "domain": "geometry",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 53
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 10,
+            "selected_certificates": 10,
+            "peer_messages": 0
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 11,
+            "selected_certificates": 9,
+            "peer_messages": 2
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          }
+        }
+      },
+      {
+        "episode_id": "geometry-40017",
+        "domain": "geometry",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 53
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 10,
+            "selected_certificates": 10,
+            "peer_messages": 0
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 11,
+            "selected_certificates": 9,
+            "peer_messages": 2
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          }
+        }
+      },
+      {
+        "episode_id": "geometry-40018",
+        "domain": "geometry",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 53
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 10,
+            "selected_certificates": 10,
+            "peer_messages": 0
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 11,
+            "selected_certificates": 9,
+            "peer_messages": 2
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          }
+        }
+      },
+      {
+        "episode_id": "geometry-40019",
+        "domain": "geometry",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 53
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 10,
+            "selected_certificates": 10,
+            "peer_messages": 0
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 11,
+            "selected_certificates": 9,
+            "peer_messages": 2
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          }
+        }
+      },
+      {
+        "episode_id": "integer-140000",
+        "domain": "integer",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 37
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 20,
+            "selected_certificates": 10,
+            "peer_messages": 10
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 8,
+            "selected_certificates": 4,
+            "peer_messages": 4
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 8,
+            "selected_certificates": 4,
+            "peer_messages": 4
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 8,
+            "selected_certificates": 4,
+            "peer_messages": 4
+          }
+        }
+      },
+      {
+        "episode_id": "integer-140001",
+        "domain": "integer",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 40
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 20,
+            "selected_certificates": 10,
+            "peer_messages": 10
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          }
+        }
+      },
+      {
+        "episode_id": "integer-140002",
+        "domain": "integer",
+        "variants": {
+          "independent": {
+            "solved": true,
+            "replayed": true,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 37
+          },
+          "blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 2,
+            "peer_messages": 2
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 2,
+            "selected_certificates": 1,
+            "peer_messages": 1
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 2,
+            "selected_certificates": 1,
+            "peer_messages": 1
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 2,
+            "selected_certificates": 1,
+            "peer_messages": 1
+          }
+        }
+      },
+      {
+        "episode_id": "integer-140003",
+        "domain": "integer",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 40
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 20,
+            "selected_certificates": 10,
+            "peer_messages": 10
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          }
+        }
+      },
+      {
+        "episode_id": "integer-140004",
+        "domain": "integer",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 39
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 20,
+            "selected_certificates": 10,
+            "peer_messages": 10
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          }
+        }
+      },
+      {
+        "episode_id": "integer-140005",
+        "domain": "integer",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 38
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 20,
+            "selected_certificates": 10,
+            "peer_messages": 10
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 12,
+            "selected_certificates": 6,
+            "peer_messages": 6
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 12,
+            "selected_certificates": 6,
+            "peer_messages": 6
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 10,
+            "selected_certificates": 5,
+            "peer_messages": 5
+          }
+        }
+      },
+      {
+        "episode_id": "integer-140006",
+        "domain": "integer",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 38
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 20,
+            "selected_certificates": 10,
+            "peer_messages": 10
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          }
+        }
+      },
+      {
+        "episode_id": "integer-140007",
+        "domain": "integer",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 37
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 20,
+            "selected_certificates": 10,
+            "peer_messages": 10
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          }
+        }
+      },
+      {
+        "episode_id": "integer-140008",
+        "domain": "integer",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 37
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 20,
+            "selected_certificates": 10,
+            "peer_messages": 10
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 8,
+            "selected_certificates": 4,
+            "peer_messages": 4
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 8,
+            "selected_certificates": 4,
+            "peer_messages": 4
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 8,
+            "selected_certificates": 4,
+            "peer_messages": 4
+          }
+        }
+      },
+      {
+        "episode_id": "integer-140009",
+        "domain": "integer",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 40
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 20,
+            "selected_certificates": 10,
+            "peer_messages": 10
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          }
+        }
+      },
+      {
+        "episode_id": "integer-140010",
+        "domain": "integer",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 38
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 20,
+            "selected_certificates": 10,
+            "peer_messages": 10
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 12,
+            "selected_certificates": 6,
+            "peer_messages": 6
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 12,
+            "selected_certificates": 6,
+            "peer_messages": 6
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 10,
+            "selected_certificates": 5,
+            "peer_messages": 5
+          }
+        }
+      },
+      {
+        "episode_id": "integer-140011",
+        "domain": "integer",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 37
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 20,
+            "selected_certificates": 10,
+            "peer_messages": 10
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          }
+        }
+      },
+      {
+        "episode_id": "integer-140012",
+        "domain": "integer",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 38
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 20,
+            "selected_certificates": 10,
+            "peer_messages": 10
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 10,
+            "selected_certificates": 5,
+            "peer_messages": 5
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 10,
+            "selected_certificates": 5,
+            "peer_messages": 5
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 8,
+            "selected_certificates": 4,
+            "peer_messages": 4
+          }
+        }
+      },
+      {
+        "episode_id": "integer-140013",
+        "domain": "integer",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 38
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 20,
+            "selected_certificates": 10,
+            "peer_messages": 10
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          }
+        }
+      },
+      {
+        "episode_id": "integer-140014",
+        "domain": "integer",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 38
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 20,
+            "selected_certificates": 10,
+            "peer_messages": 10
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          }
+        }
+      },
+      {
+        "episode_id": "integer-140015",
+        "domain": "integer",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 37
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 20,
+            "selected_certificates": 10,
+            "peer_messages": 10
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          }
+        }
+      },
+      {
+        "episode_id": "integer-140016",
+        "domain": "integer",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 37
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 20,
+            "selected_certificates": 10,
+            "peer_messages": 10
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 8,
+            "selected_certificates": 4,
+            "peer_messages": 4
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 8,
+            "selected_certificates": 4,
+            "peer_messages": 4
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 8,
+            "selected_certificates": 4,
+            "peer_messages": 4
+          }
+        }
+      },
+      {
+        "episode_id": "integer-140017",
+        "domain": "integer",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 38
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 20,
+            "selected_certificates": 10,
+            "peer_messages": 10
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 8,
+            "selected_certificates": 4,
+            "peer_messages": 4
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 8,
+            "selected_certificates": 4,
+            "peer_messages": 4
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 8,
+            "selected_certificates": 4,
+            "peer_messages": 4
+          }
+        }
+      },
+      {
+        "episode_id": "integer-140018",
+        "domain": "integer",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 38
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 20,
+            "selected_certificates": 10,
+            "peer_messages": 10
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 6,
+            "selected_certificates": 3,
+            "peer_messages": 3
+          }
+        }
+      },
+      {
+        "episode_id": "integer-140019",
+        "domain": "integer",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 39
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 20,
+            "selected_certificates": 10,
+            "peer_messages": 10
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 8,
+            "selected_certificates": 4,
+            "peer_messages": 4
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 8,
+            "selected_certificates": 4,
+            "peer_messages": 4
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 8,
+            "selected_certificates": 4,
+            "peer_messages": 4
+          }
+        }
+      },
+      {
+        "episode_id": "set-240000",
+        "domain": "set",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 32
+          },
+          "blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 17,
+            "selected_certificates": 9,
+            "peer_messages": 8
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 3,
+            "peer_messages": 1
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          }
+        }
+      },
+      {
+        "episode_id": "set-240001",
+        "domain": "set",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 32
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 18,
+            "selected_certificates": 10,
+            "peer_messages": 8
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 3,
+            "peer_messages": 1
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          }
+        }
+      },
+      {
+        "episode_id": "set-240002",
+        "domain": "set",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 32
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 18,
+            "selected_certificates": 10,
+            "peer_messages": 8
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 3,
+            "peer_messages": 1
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          }
+        }
+      },
+      {
+        "episode_id": "set-240003",
+        "domain": "set",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 32
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 18,
+            "selected_certificates": 10,
+            "peer_messages": 8
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 3,
+            "peer_messages": 1
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          }
+        }
+      },
+      {
+        "episode_id": "set-240004",
+        "domain": "set",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 32
+          },
+          "blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 17,
+            "selected_certificates": 9,
+            "peer_messages": 8
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 3,
+            "peer_messages": 1
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          }
+        }
+      },
+      {
+        "episode_id": "set-240005",
+        "domain": "set",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 32
+          },
+          "blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 18,
+            "selected_certificates": 10,
+            "peer_messages": 8
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 3,
+            "peer_messages": 1
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          }
+        }
+      },
+      {
+        "episode_id": "set-240006",
+        "domain": "set",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 32
+          },
+          "blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 17,
+            "selected_certificates": 9,
+            "peer_messages": 8
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 3,
+            "peer_messages": 1
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          }
+        }
+      },
+      {
+        "episode_id": "set-240007",
+        "domain": "set",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 32
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 18,
+            "selected_certificates": 10,
+            "peer_messages": 8
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 3,
+            "peer_messages": 1
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          }
+        }
+      },
+      {
+        "episode_id": "set-240008",
+        "domain": "set",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 32
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 18,
+            "selected_certificates": 10,
+            "peer_messages": 8
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 3,
+            "peer_messages": 1
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          }
+        }
+      },
+      {
+        "episode_id": "set-240009",
+        "domain": "set",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 32
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 18,
+            "selected_certificates": 10,
+            "peer_messages": 8
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 3,
+            "peer_messages": 1
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          }
+        }
+      },
+      {
+        "episode_id": "set-240010",
+        "domain": "set",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 32
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 18,
+            "selected_certificates": 10,
+            "peer_messages": 8
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 3,
+            "peer_messages": 1
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          }
+        }
+      },
+      {
+        "episode_id": "set-240011",
+        "domain": "set",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 32
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 18,
+            "selected_certificates": 10,
+            "peer_messages": 8
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 3,
+            "peer_messages": 1
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          }
+        }
+      },
+      {
+        "episode_id": "set-240012",
+        "domain": "set",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 32
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 18,
+            "selected_certificates": 10,
+            "peer_messages": 8
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 3,
+            "peer_messages": 1
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          }
+        }
+      },
+      {
+        "episode_id": "set-240013",
+        "domain": "set",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 32
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 18,
+            "selected_certificates": 10,
+            "peer_messages": 8
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 3,
+            "peer_messages": 1
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          }
+        }
+      },
+      {
+        "episode_id": "set-240014",
+        "domain": "set",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 32
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 18,
+            "selected_certificates": 10,
+            "peer_messages": 8
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 3,
+            "peer_messages": 1
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          }
+        }
+      },
+      {
+        "episode_id": "set-240015",
+        "domain": "set",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 32
+          },
+          "blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 17,
+            "selected_certificates": 9,
+            "peer_messages": 8
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 3,
+            "peer_messages": 1
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          }
+        }
+      },
+      {
+        "episode_id": "set-240016",
+        "domain": "set",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 32
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 18,
+            "selected_certificates": 10,
+            "peer_messages": 8
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 3,
+            "peer_messages": 1
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          }
+        }
+      },
+      {
+        "episode_id": "set-240017",
+        "domain": "set",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 32
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 18,
+            "selected_certificates": 10,
+            "peer_messages": 8
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 3,
+            "peer_messages": 1
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          }
+        }
+      },
+      {
+        "episode_id": "set-240018",
+        "domain": "set",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 32
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 18,
+            "selected_certificates": 10,
+            "peer_messages": 8
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 3,
+            "peer_messages": 1
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          }
+        }
+      },
+      {
+        "episode_id": "set-240019",
+        "domain": "set",
+        "variants": {
+          "independent": {
+            "solved": false,
+            "replayed": false,
+            "communication": 0
+          },
+          "strict": {
+            "solved": true,
+            "replayed": true,
+            "communication": 32
+          },
+          "blackboard": {
+            "solved": false,
+            "replayed": false,
+            "communication": 18,
+            "selected_certificates": 10,
+            "peer_messages": 8
+          },
+          "learned_global_blackboard": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          },
+          "sheaf_static": {
+            "solved": true,
+            "replayed": true,
+            "communication": 4,
+            "selected_certificates": 3,
+            "peer_messages": 1
+          },
+          "sheaf_learned": {
+            "solved": true,
+            "replayed": true,
+            "communication": 3,
+            "selected_certificates": 2,
+            "peer_messages": 1
+          }
+        }
+      }
+    ]
+  },
+  "fault_ablation": {
+    "sheaf_learned_solved": 60,
+    "sheaf_learned_replayed": 60,
+    "enabled": true,
+    "false_accepts": 0,
+    "invalid_certificates_rejected": 59
+  },
+  "claim_scope": "This tests self-organized search allocation on held-out typed proof tasks. It is not a reproduction of the paper's neural Sudoku/maze scores and not an external olympiad benchmark improvement."
+}

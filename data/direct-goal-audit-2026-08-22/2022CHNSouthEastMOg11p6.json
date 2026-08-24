@@ -1,0 +1,6214 @@
+{
+  "problem_name": "2022CHNSouthEastMOg11p6",
+  "source_setup": "(a b c = triangle, o = circumcenter a b c, p = on_bline a o, on_pline o b c, d = on_aline d b a b a c, on_aline d c a c a b, q = midpoint a d, k = on_circle p a, on_circle q a)",
+  "source_goal": "(cyclic b c d k,)",
+  "auxiliary_steps": [
+    "ConstructionStep(family='lc_tangent', output='e', inputs=('d', 'a'), structural_rank=())",
+    "ConstructionStep(family='intersection_pp', output='f', inputs=('b', 'c', 'e', 'q', 'd', 'a'), structural_rank=())",
+    "ConstructionStep(family='on_tline', output='g', inputs=('e', 'q', 'k'), structural_rank=())",
+    "ConstructionStep(family='eqangle2', output='h', inputs=('f', 'd', 'e'), structural_rank=())",
+    "ConstructionStep(family='eq_triangle', output='i', inputs=('a', 'g'), structural_rank=())",
+    "ConstructionStep(family='foot', output='j', inputs=('q', 'c', 'f'), structural_rank=())"
+  ],
+  "solved": false,
+  "all_deduction_count": 1830,
+  "goal": {
+    "predicate": "cyclic",
+    "points": [
+      "b",
+      "c",
+      "d",
+      "k"
+    ]
+  },
+  "closest_goal_predicate_facts": [],
+  "r01_center_witnesses": [
+    {
+      "center": "o",
+      "proved_count": 1,
+      "premises": [
+        {
+          "premise": "cong(o,b,o,c)",
+          "proved": true,
+          "proofs": [
+            {
+              "rule": "By construction",
+              "deduction_index": 4,
+              "points": [
+                "b",
+                "o",
+                "c",
+                "o"
+              ]
+            }
+          ]
+        },
+        {
+          "premise": "cong(o,c,o,d)",
+          "proved": false,
+          "proofs": []
+        },
+        {
+          "premise": "cong(o,d,o,k)",
+          "proved": false,
+          "proofs": []
+        }
+      ]
+    },
+    {
+      "center": "q",
+      "proved_count": 1,
+      "premises": [
+        {
+          "premise": "cong(q,b,q,c)",
+          "proved": false,
+          "proofs": []
+        },
+        {
+          "premise": "cong(q,c,q,d)",
+          "proved": false,
+          "proofs": []
+        },
+        {
+          "premise": "cong(q,d,q,k)",
+          "proved": true,
+          "proofs": [
+            {
+              "rule": "ar",
+              "deduction_index": 1420,
+              "points": [
+                "d",
+                "q",
+                "k",
+                "q"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "backward_rule_instances": [
+    {
+      "theorem": "r74:0",
+      "substitution": {
+        "?A": "b",
+        "?B": "c",
+        "?C": "d",
+        "?D": "k"
+      },
+      "premises": [
+        {
+          "premise": "eqangle(b,d,d,k,d,k,c,d)",
+          "proved": false,
+          "proofs": [],
+          "closest": [
+            {
+              "rule": "ar",
+              "deduction_index": 656,
+              "points": [
+                "a",
+                "b",
+                "b",
+                "d",
+                "c",
+                "d",
+                "a",
+                "c"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 2,
+                "goal_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "d",
+                    "k"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "a",
+                    "c"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "d",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "c"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "d",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "c",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-1/1",
+                    "∠(a-c)": "2/1",
+                    "∠(c-d)": "-1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "b",
+                    "b",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-2/1",
+                    "∠(a-c)": "1/1",
+                    "∠(b-d)": "1/1"
+                  }
+                }
+              ],
+              "equations": []
+            },
+            {
+              "rule": "ar",
+              "deduction_index": 1613,
+              "points": [
+                "a",
+                "d",
+                "d",
+                "k",
+                "d",
+                "k",
+                "k",
+                "q"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 2,
+                "goal_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "d",
+                    "k"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "k",
+                    "q"
+                  ],
+                  [
+                    "a",
+                    "d"
+                  ],
+                  [
+                    "d",
+                    "k"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 2,
+                    "required": [
+                      "c",
+                      "d"
+                    ],
+                    "actual": [
+                      "k",
+                      "q"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "d"
+                    ],
+                    "actual": [
+                      "a",
+                      "d"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "d",
+                    "k",
+                    "k",
+                    "q",
+                    "d",
+                    "q",
+                    "d",
+                    "k"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(d-k)": "-2/1",
+                    "∠(d-q)": "1/1",
+                    "∠(k-q)": "1/1"
+                  }
+                },
+                {
+                  "name": "para",
+                  "points": [
+                    "a",
+                    "q",
+                    "d",
+                    "q"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-q)": "1/1",
+                    "∠(d-q)": "-1/1"
+                  }
+                },
+                {
+                  "name": "para",
+                  "points": [
+                    "a",
+                    "d",
+                    "a",
+                    "q"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-d)": "1/1",
+                    "∠(a-q)": "-1/1"
+                  }
+                }
+              ],
+              "equations": []
+            },
+            {
+              "rule": "ar",
+              "deduction_index": 1611,
+              "points": [
+                "d",
+                "k",
+                "k",
+                "q",
+                "d",
+                "f",
+                "d",
+                "k"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 2,
+                "goal_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "d",
+                    "k"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "k",
+                    "q"
+                  ],
+                  [
+                    "d",
+                    "f"
+                  ],
+                  [
+                    "d",
+                    "k"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 2,
+                    "required": [
+                      "c",
+                      "d"
+                    ],
+                    "actual": [
+                      "k",
+                      "q"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "d"
+                    ],
+                    "actual": [
+                      "d",
+                      "f"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "d",
+                    "k",
+                    "k",
+                    "q",
+                    "d",
+                    "q",
+                    "d",
+                    "k"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(d-k)": "-2/1",
+                    "∠(d-q)": "1/1",
+                    "∠(k-q)": "1/1"
+                  }
+                },
+                {
+                  "name": "para",
+                  "points": [
+                    "d",
+                    "f",
+                    "d",
+                    "q"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(d-f)": "1/1",
+                    "∠(d-q)": "-1/1"
+                  }
+                }
+              ],
+              "equations": []
+            }
+          ]
+        },
+        {
+          "premise": "cong(b,k,c,k)",
+          "proved": false,
+          "proofs": []
+        },
+        {
+          "premise": "ncoll(b,c,d,k)",
+          "proved": true,
+          "proofs": []
+        },
+        {
+          "premise": "nperp(b,c,d,k)",
+          "proved": true,
+          "proofs": []
+        }
+      ],
+      "proved_count": 2
+    },
+    {
+      "theorem": "r74:0",
+      "substitution": {
+        "?A": "b",
+        "?B": "c",
+        "?C": "k",
+        "?D": "d"
+      },
+      "premises": [
+        {
+          "premise": "eqangle(b,k,d,k,d,k,c,k)",
+          "proved": false,
+          "proofs": [],
+          "closest": [
+            {
+              "rule": "ar",
+              "deduction_index": 1613,
+              "points": [
+                "a",
+                "d",
+                "d",
+                "k",
+                "d",
+                "k",
+                "k",
+                "q"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 2,
+                "goal_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "k"
+                  ],
+                  [
+                    "d",
+                    "k"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "k",
+                    "q"
+                  ],
+                  [
+                    "a",
+                    "d"
+                  ],
+                  [
+                    "d",
+                    "k"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 2,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "k",
+                      "q"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "d"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "d",
+                    "k",
+                    "k",
+                    "q",
+                    "d",
+                    "q",
+                    "d",
+                    "k"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(d-k)": "-2/1",
+                    "∠(d-q)": "1/1",
+                    "∠(k-q)": "1/1"
+                  }
+                },
+                {
+                  "name": "para",
+                  "points": [
+                    "a",
+                    "q",
+                    "d",
+                    "q"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-q)": "1/1",
+                    "∠(d-q)": "-1/1"
+                  }
+                },
+                {
+                  "name": "para",
+                  "points": [
+                    "a",
+                    "d",
+                    "a",
+                    "q"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-d)": "1/1",
+                    "∠(a-q)": "-1/1"
+                  }
+                }
+              ],
+              "equations": []
+            },
+            {
+              "rule": "ar",
+              "deduction_index": 1611,
+              "points": [
+                "d",
+                "k",
+                "k",
+                "q",
+                "d",
+                "f",
+                "d",
+                "k"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 2,
+                "goal_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "k"
+                  ],
+                  [
+                    "d",
+                    "k"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "k",
+                    "q"
+                  ],
+                  [
+                    "d",
+                    "f"
+                  ],
+                  [
+                    "d",
+                    "k"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 2,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "k",
+                      "q"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "d",
+                      "f"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "d",
+                    "k",
+                    "k",
+                    "q",
+                    "d",
+                    "q",
+                    "d",
+                    "k"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(d-k)": "-2/1",
+                    "∠(d-q)": "1/1",
+                    "∠(k-q)": "1/1"
+                  }
+                },
+                {
+                  "name": "para",
+                  "points": [
+                    "d",
+                    "f",
+                    "d",
+                    "q"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(d-f)": "1/1",
+                    "∠(d-q)": "-1/1"
+                  }
+                }
+              ],
+              "equations": []
+            },
+            {
+              "rule": "r13",
+              "deduction_index": 1422,
+              "points": [
+                "d",
+                "k",
+                "k",
+                "q",
+                "d",
+                "q",
+                "d",
+                "k"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 2,
+                "goal_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "k"
+                  ],
+                  [
+                    "d",
+                    "k"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "k",
+                    "q"
+                  ],
+                  [
+                    "d",
+                    "q"
+                  ],
+                  [
+                    "d",
+                    "k"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 2,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "k",
+                      "q"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "d",
+                      "q"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "cong",
+                  "points": [
+                    "d",
+                    "q",
+                    "k",
+                    "q"
+                  ]
+                }
+              ],
+              "equations": []
+            }
+          ]
+        },
+        {
+          "premise": "cong(b,d,c,d)",
+          "proved": false,
+          "proofs": []
+        },
+        {
+          "premise": "ncoll(b,c,d,k)",
+          "proved": true,
+          "proofs": []
+        },
+        {
+          "premise": "nperp(b,c,d,k)",
+          "proved": true,
+          "proofs": []
+        }
+      ],
+      "proved_count": 2
+    },
+    {
+      "theorem": "r74:0",
+      "substitution": {
+        "?A": "b",
+        "?B": "d",
+        "?C": "c",
+        "?D": "k"
+      },
+      "premises": [
+        {
+          "premise": "eqangle(b,c,c,k,c,k,c,d)",
+          "proved": false,
+          "proofs": [],
+          "closest": [
+            {
+              "rule": "ar",
+              "deduction_index": 638,
+              "points": [
+                "a",
+                "b",
+                "a",
+                "o",
+                "c",
+                "o",
+                "c",
+                "d"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "c",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ],
+                  [
+                    "c",
+                    "k"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "c",
+                    "o"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ],
+                  [
+                    "a",
+                    "o"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "c",
+                      "o"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "o"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "c",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-1/1",
+                    "∠(a-c)": "2/1",
+                    "∠(c-d)": "-1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "c",
+                    "c",
+                    "o",
+                    "a",
+                    "o",
+                    "a",
+                    "c"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-c)": "-2/1",
+                    "∠(a-o)": "1/1",
+                    "∠(c-o)": "1/1"
+                  }
+                }
+              ],
+              "equations": []
+            },
+            {
+              "rule": "ar",
+              "deduction_index": 656,
+              "points": [
+                "a",
+                "b",
+                "b",
+                "d",
+                "c",
+                "d",
+                "a",
+                "c"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "c",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ],
+                  [
+                    "c",
+                    "k"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "a",
+                    "c"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "c"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "b",
+                      "d"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "c",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-1/1",
+                    "∠(a-c)": "2/1",
+                    "∠(c-d)": "-1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "b",
+                    "b",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-2/1",
+                    "∠(a-c)": "1/1",
+                    "∠(b-d)": "1/1"
+                  }
+                }
+              ],
+              "equations": []
+            },
+            {
+              "rule": "ar",
+              "deduction_index": 640,
+              "points": [
+                "a",
+                "b",
+                "b",
+                "o",
+                "c",
+                "d",
+                "c",
+                "o"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "c",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ],
+                  [
+                    "c",
+                    "k"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "c",
+                    "o"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "o"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "c",
+                      "o"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "b",
+                      "o"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "c",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-1/1",
+                    "∠(a-c)": "2/1",
+                    "∠(c-d)": "-1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "c",
+                    "c",
+                    "o",
+                    "a",
+                    "o",
+                    "a",
+                    "c"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-c)": "-2/1",
+                    "∠(a-o)": "1/1",
+                    "∠(c-o)": "1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "b",
+                    "b",
+                    "o",
+                    "a",
+                    "o",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-2/1",
+                    "∠(a-o)": "1/1",
+                    "∠(b-o)": "1/1"
+                  }
+                }
+              ],
+              "equations": []
+            }
+          ]
+        },
+        {
+          "premise": "cong(b,k,d,k)",
+          "proved": false,
+          "proofs": []
+        },
+        {
+          "premise": "ncoll(b,c,d,k)",
+          "proved": true,
+          "proofs": []
+        },
+        {
+          "premise": "nperp(b,d,c,k)",
+          "proved": true,
+          "proofs": []
+        }
+      ],
+      "proved_count": 2
+    },
+    {
+      "theorem": "r74:0",
+      "substitution": {
+        "?A": "b",
+        "?B": "k",
+        "?C": "c",
+        "?D": "d"
+      },
+      "premises": [
+        {
+          "premise": "eqangle(b,c,c,d,c,d,c,k)",
+          "proved": false,
+          "proofs": [],
+          "closest": [
+            {
+              "rule": "ar",
+              "deduction_index": 638,
+              "points": [
+                "a",
+                "b",
+                "a",
+                "o",
+                "c",
+                "o",
+                "c",
+                "d"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "c",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "c",
+                    "o"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ],
+                  [
+                    "a",
+                    "o"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "c",
+                      "o"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "c",
+                      "d"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "a",
+                      "o"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "c",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-1/1",
+                    "∠(a-c)": "2/1",
+                    "∠(c-d)": "-1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "c",
+                    "c",
+                    "o",
+                    "a",
+                    "o",
+                    "a",
+                    "c"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-c)": "-2/1",
+                    "∠(a-o)": "1/1",
+                    "∠(c-o)": "1/1"
+                  }
+                }
+              ],
+              "equations": []
+            },
+            {
+              "rule": "ar",
+              "deduction_index": 656,
+              "points": [
+                "a",
+                "b",
+                "b",
+                "d",
+                "c",
+                "d",
+                "a",
+                "c"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "c",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "a",
+                    "c"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "c"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "c",
+                      "d"
+                    ],
+                    "actual": [
+                      "b",
+                      "d"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "c",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-1/1",
+                    "∠(a-c)": "2/1",
+                    "∠(c-d)": "-1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "b",
+                    "b",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-2/1",
+                    "∠(a-c)": "1/1",
+                    "∠(b-d)": "1/1"
+                  }
+                }
+              ],
+              "equations": []
+            },
+            {
+              "rule": "ar",
+              "deduction_index": 640,
+              "points": [
+                "a",
+                "b",
+                "b",
+                "o",
+                "c",
+                "d",
+                "c",
+                "o"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "c",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "c",
+                    "o"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "o"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "c",
+                      "o"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "c",
+                      "d"
+                    ],
+                    "actual": [
+                      "b",
+                      "o"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "c",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-1/1",
+                    "∠(a-c)": "2/1",
+                    "∠(c-d)": "-1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "c",
+                    "c",
+                    "o",
+                    "a",
+                    "o",
+                    "a",
+                    "c"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-c)": "-2/1",
+                    "∠(a-o)": "1/1",
+                    "∠(c-o)": "1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "b",
+                    "b",
+                    "o",
+                    "a",
+                    "o",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-2/1",
+                    "∠(a-o)": "1/1",
+                    "∠(b-o)": "1/1"
+                  }
+                }
+              ],
+              "equations": []
+            }
+          ]
+        },
+        {
+          "premise": "cong(b,d,d,k)",
+          "proved": false,
+          "proofs": []
+        },
+        {
+          "premise": "ncoll(b,c,d,k)",
+          "proved": true,
+          "proofs": []
+        },
+        {
+          "premise": "nperp(b,k,c,d)",
+          "proved": true,
+          "proofs": []
+        }
+      ],
+      "proved_count": 2
+    },
+    {
+      "theorem": "r74:0",
+      "substitution": {
+        "?A": "b",
+        "?B": "d",
+        "?C": "k",
+        "?D": "c"
+      },
+      "premises": [
+        {
+          "premise": "eqangle(b,k,c,k,c,k,d,k)",
+          "proved": false,
+          "proofs": [],
+          "closest": [
+            {
+              "rule": "ar",
+              "deduction_index": 1722,
+              "points": [
+                "a",
+                "d",
+                "a",
+                "k",
+                "d",
+                "e",
+                "d",
+                "k"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "k"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "d",
+                    "e"
+                  ],
+                  [
+                    "a",
+                    "k"
+                  ],
+                  [
+                    "a",
+                    "d"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 2,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "d",
+                      "e"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "k"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "d"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "perp",
+                  "points": [
+                    "a",
+                    "d",
+                    "d",
+                    "e"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-d)": "1/1",
+                    "∠(d-e)": "-1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "k",
+                    "k",
+                    "q",
+                    "a",
+                    "q",
+                    "a",
+                    "k"
+                  ],
+                  "coeff": "-1/2",
+                  "lhs_terms": {
+                    "∠(a-k)": "-2/1",
+                    "∠(a-q)": "1/1",
+                    "∠(k-q)": "1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "d",
+                    "k",
+                    "k",
+                    "q",
+                    "d",
+                    "q",
+                    "d",
+                    "k"
+                  ],
+                  "coeff": "1/2",
+                  "lhs_terms": {
+                    "∠(d-k)": "-2/1",
+                    "∠(d-q)": "1/1",
+                    "∠(k-q)": "1/1"
+                  }
+                },
+                {
+                  "name": "para",
+                  "points": [
+                    "a",
+                    "q",
+                    "d",
+                    "q"
+                  ],
+                  "coeff": "1/2",
+                  "lhs_terms": {
+                    "∠(a-q)": "1/1",
+                    "∠(d-q)": "-1/1"
+                  }
+                }
+              ],
+              "equations": []
+            },
+            {
+              "rule": "ar",
+              "deduction_index": 1596,
+              "points": [
+                "a",
+                "d",
+                "d",
+                "k",
+                "a",
+                "q",
+                "p",
+                "q"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "k"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "a",
+                    "d"
+                  ],
+                  [
+                    "p",
+                    "q"
+                  ],
+                  [
+                    "a",
+                    "q"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 2,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "d"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "p",
+                      "q"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "q"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "k",
+                    "k",
+                    "q",
+                    "a",
+                    "q",
+                    "a",
+                    "k"
+                  ],
+                  "coeff": "1/2",
+                  "lhs_terms": {
+                    "∠(a-k)": "-2/1",
+                    "∠(a-q)": "1/1",
+                    "∠(k-q)": "1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "d",
+                    "k",
+                    "k",
+                    "q",
+                    "d",
+                    "q",
+                    "d",
+                    "k"
+                  ],
+                  "coeff": "-1/2",
+                  "lhs_terms": {
+                    "∠(d-k)": "-2/1",
+                    "∠(d-q)": "1/1",
+                    "∠(k-q)": "1/1"
+                  }
+                },
+                {
+                  "name": "perp",
+                  "points": [
+                    "a",
+                    "k",
+                    "p",
+                    "q"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-k)": "1/1",
+                    "∠(p-q)": "-1/1"
+                  }
+                },
+                {
+                  "name": "para",
+                  "points": [
+                    "a",
+                    "q",
+                    "d",
+                    "q"
+                  ],
+                  "coeff": "-1/2",
+                  "lhs_terms": {
+                    "∠(a-q)": "1/1",
+                    "∠(d-q)": "-1/1"
+                  }
+                },
+                {
+                  "name": "para",
+                  "points": [
+                    "a",
+                    "d",
+                    "a",
+                    "q"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-d)": "1/1",
+                    "∠(a-q)": "-1/1"
+                  }
+                }
+              ],
+              "equations": []
+            },
+            {
+              "rule": "ar",
+              "deduction_index": 1625,
+              "points": [
+                "a",
+                "d",
+                "d",
+                "k",
+                "d",
+                "f",
+                "d",
+                "k"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "k"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "d",
+                    "f"
+                  ],
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "a",
+                    "d"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 2,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "d",
+                      "f"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "d",
+                      "k"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "d"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "para",
+                  "points": [
+                    "a",
+                    "q",
+                    "d",
+                    "q"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-q)": "1/1",
+                    "∠(d-q)": "-1/1"
+                  }
+                },
+                {
+                  "name": "para",
+                  "points": [
+                    "a",
+                    "d",
+                    "a",
+                    "q"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-d)": "1/1",
+                    "∠(a-q)": "-1/1"
+                  }
+                },
+                {
+                  "name": "para",
+                  "points": [
+                    "d",
+                    "f",
+                    "d",
+                    "q"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(d-f)": "1/1",
+                    "∠(d-q)": "-1/1"
+                  }
+                }
+              ],
+              "equations": []
+            }
+          ]
+        },
+        {
+          "premise": "cong(b,c,c,d)",
+          "proved": false,
+          "proofs": []
+        },
+        {
+          "premise": "ncoll(b,c,d,k)",
+          "proved": true,
+          "proofs": []
+        },
+        {
+          "premise": "nperp(b,d,c,k)",
+          "proved": true,
+          "proofs": []
+        }
+      ],
+      "proved_count": 2
+    },
+    {
+      "theorem": "r74:0",
+      "substitution": {
+        "?A": "b",
+        "?B": "k",
+        "?C": "d",
+        "?D": "c"
+      },
+      "premises": [
+        {
+          "premise": "eqangle(b,d,c,d,c,d,d,k)",
+          "proved": false,
+          "proofs": [],
+          "closest": [
+            {
+              "rule": "ar",
+              "deduction_index": 638,
+              "points": [
+                "a",
+                "b",
+                "a",
+                "o",
+                "c",
+                "o",
+                "c",
+                "d"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "c",
+                    "o"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ],
+                  [
+                    "a",
+                    "o"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "d",
+                      "k"
+                    ],
+                    "actual": [
+                      "c",
+                      "o"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "c",
+                      "d"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "b",
+                      "d"
+                    ],
+                    "actual": [
+                      "a",
+                      "o"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "c",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-1/1",
+                    "∠(a-c)": "2/1",
+                    "∠(c-d)": "-1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "c",
+                    "c",
+                    "o",
+                    "a",
+                    "o",
+                    "a",
+                    "c"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-c)": "-2/1",
+                    "∠(a-o)": "1/1",
+                    "∠(c-o)": "1/1"
+                  }
+                }
+              ],
+              "equations": []
+            },
+            {
+              "rule": "By construction",
+              "deduction_index": 9,
+              "points": [
+                "a",
+                "b",
+                "b",
+                "d",
+                "a",
+                "c",
+                "a",
+                "b"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "a",
+                    "c"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "d",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "c"
+                    ]
+                  },
+                  {
+                    "role": 2,
+                    "required": [
+                      "c",
+                      "d"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "c",
+                      "d"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [],
+              "equations": []
+            },
+            {
+              "rule": "ar",
+              "deduction_index": 656,
+              "points": [
+                "a",
+                "b",
+                "b",
+                "d",
+                "c",
+                "d",
+                "a",
+                "c"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "a",
+                    "c"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "d",
+                      "k"
+                    ],
+                    "actual": [
+                      "c",
+                      "d"
+                    ]
+                  },
+                  {
+                    "role": 2,
+                    "required": [
+                      "c",
+                      "d"
+                    ],
+                    "actual": [
+                      "a",
+                      "c"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "c",
+                      "d"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "c",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-1/1",
+                    "∠(a-c)": "2/1",
+                    "∠(c-d)": "-1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "b",
+                    "b",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-2/1",
+                    "∠(a-c)": "1/1",
+                    "∠(b-d)": "1/1"
+                  }
+                }
+              ],
+              "equations": []
+            }
+          ]
+        },
+        {
+          "premise": "cong(b,c,c,k)",
+          "proved": false,
+          "proofs": []
+        },
+        {
+          "premise": "ncoll(b,c,d,k)",
+          "proved": true,
+          "proofs": []
+        },
+        {
+          "premise": "nperp(b,k,c,d)",
+          "proved": true,
+          "proofs": []
+        }
+      ],
+      "proved_count": 2
+    },
+    {
+      "theorem": "r74:0",
+      "substitution": {
+        "?A": "c",
+        "?B": "d",
+        "?C": "b",
+        "?D": "k"
+      },
+      "premises": [
+        {
+          "premise": "eqangle(b,c,b,k,b,k,b,d)",
+          "proved": false,
+          "proofs": [],
+          "closest": [
+            {
+              "rule": "By construction",
+              "deduction_index": 9,
+              "points": [
+                "a",
+                "b",
+                "b",
+                "d",
+                "a",
+                "c",
+                "a",
+                "b"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "b",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ],
+                  [
+                    "b",
+                    "k"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "a",
+                    "b"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "a",
+                    "c"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "a",
+                      "c"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [],
+              "equations": []
+            },
+            {
+              "rule": "ar",
+              "deduction_index": 656,
+              "points": [
+                "a",
+                "b",
+                "b",
+                "d",
+                "c",
+                "d",
+                "a",
+                "c"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "b",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ],
+                  [
+                    "b",
+                    "k"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "a",
+                    "b"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "a",
+                    "c"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "c",
+                      "d"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "c"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "c",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-1/1",
+                    "∠(a-c)": "2/1",
+                    "∠(c-d)": "-1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "b",
+                    "b",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-2/1",
+                    "∠(a-c)": "1/1",
+                    "∠(b-d)": "1/1"
+                  }
+                }
+              ],
+              "equations": []
+            },
+            {
+              "rule": "ar",
+              "deduction_index": 573,
+              "points": [
+                "a",
+                "c",
+                "a",
+                "o",
+                "b",
+                "o",
+                "b",
+                "d"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "b",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ],
+                  [
+                    "b",
+                    "k"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "b",
+                    "o"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "a",
+                    "c"
+                  ],
+                  [
+                    "a",
+                    "o"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "b",
+                      "o"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "a",
+                      "c"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "o"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "b",
+                    "b",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-2/1",
+                    "∠(a-c)": "1/1",
+                    "∠(b-d)": "1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "b",
+                    "b",
+                    "o",
+                    "a",
+                    "o",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-2/1",
+                    "∠(a-o)": "1/1",
+                    "∠(b-o)": "1/1"
+                  }
+                }
+              ],
+              "equations": []
+            }
+          ]
+        },
+        {
+          "premise": "cong(c,k,d,k)",
+          "proved": false,
+          "proofs": []
+        },
+        {
+          "premise": "ncoll(b,c,d,k)",
+          "proved": true,
+          "proofs": []
+        },
+        {
+          "premise": "nperp(b,k,c,d)",
+          "proved": true,
+          "proofs": []
+        }
+      ],
+      "proved_count": 2
+    },
+    {
+      "theorem": "r74:0",
+      "substitution": {
+        "?A": "c",
+        "?B": "k",
+        "?C": "b",
+        "?D": "d"
+      },
+      "premises": [
+        {
+          "premise": "eqangle(b,c,b,d,b,d,b,k)",
+          "proved": false,
+          "proofs": [],
+          "closest": [
+            {
+              "rule": "By construction",
+              "deduction_index": 9,
+              "points": [
+                "a",
+                "b",
+                "b",
+                "d",
+                "a",
+                "c",
+                "a",
+                "b"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "b",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "a",
+                    "b"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "a",
+                    "c"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "d"
+                    ],
+                    "actual": [
+                      "a",
+                      "c"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [],
+              "equations": []
+            },
+            {
+              "rule": "ar",
+              "deduction_index": 656,
+              "points": [
+                "a",
+                "b",
+                "b",
+                "d",
+                "c",
+                "d",
+                "a",
+                "c"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "b",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "a",
+                    "c"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "c"
+                    ]
+                  },
+                  {
+                    "role": 2,
+                    "required": [
+                      "b",
+                      "d"
+                    ],
+                    "actual": [
+                      "c",
+                      "d"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "c",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-1/1",
+                    "∠(a-c)": "2/1",
+                    "∠(c-d)": "-1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "b",
+                    "b",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-2/1",
+                    "∠(a-c)": "1/1",
+                    "∠(b-d)": "1/1"
+                  }
+                }
+              ],
+              "equations": []
+            },
+            {
+              "rule": "ar",
+              "deduction_index": 573,
+              "points": [
+                "a",
+                "c",
+                "a",
+                "o",
+                "b",
+                "o",
+                "b",
+                "d"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "b",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "b",
+                    "o"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "a",
+                    "c"
+                  ],
+                  [
+                    "a",
+                    "o"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "b",
+                      "o"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "d"
+                    ],
+                    "actual": [
+                      "a",
+                      "c"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "a",
+                      "o"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "b",
+                    "b",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-2/1",
+                    "∠(a-c)": "1/1",
+                    "∠(b-d)": "1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "b",
+                    "b",
+                    "o",
+                    "a",
+                    "o",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-2/1",
+                    "∠(a-o)": "1/1",
+                    "∠(b-o)": "1/1"
+                  }
+                }
+              ],
+              "equations": []
+            }
+          ]
+        },
+        {
+          "premise": "cong(c,d,d,k)",
+          "proved": false,
+          "proofs": []
+        },
+        {
+          "premise": "ncoll(b,c,d,k)",
+          "proved": true,
+          "proofs": []
+        },
+        {
+          "premise": "nperp(b,d,c,k)",
+          "proved": true,
+          "proofs": []
+        }
+      ],
+      "proved_count": 2
+    },
+    {
+      "theorem": "r74:0",
+      "substitution": {
+        "?A": "d",
+        "?B": "k",
+        "?C": "b",
+        "?D": "c"
+      },
+      "premises": [
+        {
+          "premise": "eqangle(b,c,b,d,b,k,b,c)",
+          "proved": false,
+          "proofs": [],
+          "closest": [
+            {
+              "rule": "r53",
+              "deduction_index": 487,
+              "points": [
+                "b",
+                "c",
+                "c",
+                "o",
+                "b",
+                "o",
+                "b",
+                "c"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 2,
+                "goal_lines": [
+                  [
+                    "b",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "c",
+                    "o"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ],
+                  [
+                    "b",
+                    "o"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "c",
+                      "o"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "b",
+                      "d"
+                    ],
+                    "actual": [
+                      "b",
+                      "o"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "simtrir",
+                  "points": [
+                    "b",
+                    "c",
+                    "o",
+                    "c",
+                    "b",
+                    "o"
+                  ]
+                },
+                {
+                  "name": "sameclock",
+                  "points": [
+                    "c",
+                    "o",
+                    "b",
+                    "b",
+                    "c",
+                    "o"
+                  ]
+                }
+              ],
+              "equations": []
+            },
+            {
+              "rule": "By construction",
+              "deduction_index": 9,
+              "points": [
+                "a",
+                "b",
+                "b",
+                "d",
+                "a",
+                "c",
+                "a",
+                "b"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "b",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "a",
+                    "c"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "c"
+                    ]
+                  },
+                  {
+                    "role": 2,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [],
+              "equations": []
+            },
+            {
+              "rule": "ar",
+              "deduction_index": 656,
+              "points": [
+                "a",
+                "b",
+                "b",
+                "d",
+                "c",
+                "d",
+                "a",
+                "c"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "b",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "a",
+                    "c"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "c",
+                      "d"
+                    ]
+                  },
+                  {
+                    "role": 2,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "a",
+                      "c"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "c",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-1/1",
+                    "∠(a-c)": "2/1",
+                    "∠(c-d)": "-1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "b",
+                    "b",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-2/1",
+                    "∠(a-c)": "1/1",
+                    "∠(b-d)": "1/1"
+                  }
+                }
+              ],
+              "equations": []
+            }
+          ]
+        },
+        {
+          "premise": "cong(c,d,c,k)",
+          "proved": false,
+          "proofs": []
+        },
+        {
+          "premise": "ncoll(b,c,d,k)",
+          "proved": true,
+          "proofs": []
+        },
+        {
+          "premise": "nperp(b,c,d,k)",
+          "proved": true,
+          "proofs": []
+        }
+      ],
+      "proved_count": 2
+    },
+    {
+      "theorem": "r74:0",
+      "substitution": {
+        "?A": "c",
+        "?B": "d",
+        "?C": "k",
+        "?D": "b"
+      },
+      "premises": [
+        {
+          "premise": "eqangle(b,k,c,k,d,k,b,k)",
+          "proved": false,
+          "proofs": [],
+          "closest": [
+            {
+              "rule": "ar",
+              "deduction_index": 1722,
+              "points": [
+                "a",
+                "d",
+                "a",
+                "k",
+                "d",
+                "e",
+                "d",
+                "k"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "k"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "d",
+                    "e"
+                  ],
+                  [
+                    "a",
+                    "k"
+                  ],
+                  [
+                    "a",
+                    "d"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 2,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "d",
+                      "e"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "k"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "d"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "perp",
+                  "points": [
+                    "a",
+                    "d",
+                    "d",
+                    "e"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-d)": "1/1",
+                    "∠(d-e)": "-1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "k",
+                    "k",
+                    "q",
+                    "a",
+                    "q",
+                    "a",
+                    "k"
+                  ],
+                  "coeff": "-1/2",
+                  "lhs_terms": {
+                    "∠(a-k)": "-2/1",
+                    "∠(a-q)": "1/1",
+                    "∠(k-q)": "1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "d",
+                    "k",
+                    "k",
+                    "q",
+                    "d",
+                    "q",
+                    "d",
+                    "k"
+                  ],
+                  "coeff": "1/2",
+                  "lhs_terms": {
+                    "∠(d-k)": "-2/1",
+                    "∠(d-q)": "1/1",
+                    "∠(k-q)": "1/1"
+                  }
+                },
+                {
+                  "name": "para",
+                  "points": [
+                    "a",
+                    "q",
+                    "d",
+                    "q"
+                  ],
+                  "coeff": "1/2",
+                  "lhs_terms": {
+                    "∠(a-q)": "1/1",
+                    "∠(d-q)": "-1/1"
+                  }
+                }
+              ],
+              "equations": []
+            },
+            {
+              "rule": "ar",
+              "deduction_index": 1596,
+              "points": [
+                "a",
+                "d",
+                "d",
+                "k",
+                "a",
+                "q",
+                "p",
+                "q"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "k"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "a",
+                    "d"
+                  ],
+                  [
+                    "p",
+                    "q"
+                  ],
+                  [
+                    "a",
+                    "q"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 2,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "d"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "p",
+                      "q"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "q"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "k",
+                    "k",
+                    "q",
+                    "a",
+                    "q",
+                    "a",
+                    "k"
+                  ],
+                  "coeff": "1/2",
+                  "lhs_terms": {
+                    "∠(a-k)": "-2/1",
+                    "∠(a-q)": "1/1",
+                    "∠(k-q)": "1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "d",
+                    "k",
+                    "k",
+                    "q",
+                    "d",
+                    "q",
+                    "d",
+                    "k"
+                  ],
+                  "coeff": "-1/2",
+                  "lhs_terms": {
+                    "∠(d-k)": "-2/1",
+                    "∠(d-q)": "1/1",
+                    "∠(k-q)": "1/1"
+                  }
+                },
+                {
+                  "name": "perp",
+                  "points": [
+                    "a",
+                    "k",
+                    "p",
+                    "q"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-k)": "1/1",
+                    "∠(p-q)": "-1/1"
+                  }
+                },
+                {
+                  "name": "para",
+                  "points": [
+                    "a",
+                    "q",
+                    "d",
+                    "q"
+                  ],
+                  "coeff": "-1/2",
+                  "lhs_terms": {
+                    "∠(a-q)": "1/1",
+                    "∠(d-q)": "-1/1"
+                  }
+                },
+                {
+                  "name": "para",
+                  "points": [
+                    "a",
+                    "d",
+                    "a",
+                    "q"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-d)": "1/1",
+                    "∠(a-q)": "-1/1"
+                  }
+                }
+              ],
+              "equations": []
+            },
+            {
+              "rule": "ar",
+              "deduction_index": 1625,
+              "points": [
+                "a",
+                "d",
+                "d",
+                "k",
+                "d",
+                "f",
+                "d",
+                "k"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "k"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "d",
+                    "f"
+                  ],
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "a",
+                    "d"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 2,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "d",
+                      "f"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "d",
+                      "k"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "d"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "para",
+                  "points": [
+                    "a",
+                    "q",
+                    "d",
+                    "q"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-q)": "1/1",
+                    "∠(d-q)": "-1/1"
+                  }
+                },
+                {
+                  "name": "para",
+                  "points": [
+                    "a",
+                    "d",
+                    "a",
+                    "q"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-d)": "1/1",
+                    "∠(a-q)": "-1/1"
+                  }
+                },
+                {
+                  "name": "para",
+                  "points": [
+                    "d",
+                    "f",
+                    "d",
+                    "q"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(d-f)": "1/1",
+                    "∠(d-q)": "-1/1"
+                  }
+                }
+              ],
+              "equations": []
+            }
+          ]
+        },
+        {
+          "premise": "cong(b,c,b,d)",
+          "proved": false,
+          "proofs": []
+        },
+        {
+          "premise": "ncoll(b,c,d,k)",
+          "proved": true,
+          "proofs": []
+        },
+        {
+          "premise": "nperp(b,k,c,d)",
+          "proved": true,
+          "proofs": []
+        }
+      ],
+      "proved_count": 2
+    },
+    {
+      "theorem": "r74:0",
+      "substitution": {
+        "?A": "c",
+        "?B": "k",
+        "?C": "d",
+        "?D": "b"
+      },
+      "premises": [
+        {
+          "premise": "eqangle(b,d,c,d,d,k,b,d)",
+          "proved": false,
+          "proofs": [],
+          "closest": [
+            {
+              "rule": "ar",
+              "deduction_index": 638,
+              "points": [
+                "a",
+                "b",
+                "a",
+                "o",
+                "c",
+                "o",
+                "c",
+                "d"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "a",
+                    "b"
+                  ],
+                  [
+                    "a",
+                    "o"
+                  ],
+                  [
+                    "c",
+                    "o"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "d",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  },
+                  {
+                    "role": 2,
+                    "required": [
+                      "b",
+                      "d"
+                    ],
+                    "actual": [
+                      "a",
+                      "o"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "d"
+                    ],
+                    "actual": [
+                      "c",
+                      "o"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "c",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-1/1",
+                    "∠(a-c)": "2/1",
+                    "∠(c-d)": "-1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "c",
+                    "c",
+                    "o",
+                    "a",
+                    "o",
+                    "a",
+                    "c"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-c)": "-2/1",
+                    "∠(a-o)": "1/1",
+                    "∠(c-o)": "1/1"
+                  }
+                }
+              ],
+              "equations": []
+            },
+            {
+              "rule": "By construction",
+              "deduction_index": 9,
+              "points": [
+                "a",
+                "b",
+                "b",
+                "d",
+                "a",
+                "c",
+                "a",
+                "b"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "a",
+                    "b"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "a",
+                    "c"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "d",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "d"
+                    ],
+                    "actual": [
+                      "a",
+                      "c"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "c",
+                      "d"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [],
+              "equations": []
+            },
+            {
+              "rule": "ar",
+              "deduction_index": 656,
+              "points": [
+                "a",
+                "b",
+                "b",
+                "d",
+                "c",
+                "d",
+                "a",
+                "c"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ],
+                  [
+                    "a",
+                    "c"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "d",
+                      "k"
+                    ],
+                    "actual": [
+                      "b",
+                      "d"
+                    ]
+                  },
+                  {
+                    "role": 2,
+                    "required": [
+                      "b",
+                      "d"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "d"
+                    ],
+                    "actual": [
+                      "a",
+                      "c"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "c",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-1/1",
+                    "∠(a-c)": "2/1",
+                    "∠(c-d)": "-1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "b",
+                    "b",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-2/1",
+                    "∠(a-c)": "1/1",
+                    "∠(b-d)": "1/1"
+                  }
+                }
+              ],
+              "equations": []
+            }
+          ]
+        },
+        {
+          "premise": "cong(b,c,b,k)",
+          "proved": false,
+          "proofs": []
+        },
+        {
+          "premise": "ncoll(b,c,d,k)",
+          "proved": true,
+          "proofs": []
+        },
+        {
+          "premise": "nperp(b,d,c,k)",
+          "proved": true,
+          "proofs": []
+        }
+      ],
+      "proved_count": 2
+    },
+    {
+      "theorem": "r74:0",
+      "substitution": {
+        "?A": "d",
+        "?B": "k",
+        "?C": "c",
+        "?D": "b"
+      },
+      "premises": [
+        {
+          "premise": "eqangle(b,c,c,d,c,k,b,c)",
+          "proved": false,
+          "proofs": [],
+          "closest": [
+            {
+              "rule": "r53",
+              "deduction_index": 487,
+              "points": [
+                "b",
+                "c",
+                "c",
+                "o",
+                "b",
+                "o",
+                "b",
+                "c"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 2,
+                "goal_lines": [
+                  [
+                    "c",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "c",
+                    "o"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ],
+                  [
+                    "b",
+                    "o"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "c",
+                      "o"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "c",
+                      "d"
+                    ],
+                    "actual": [
+                      "b",
+                      "o"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "simtrir",
+                  "points": [
+                    "b",
+                    "c",
+                    "o",
+                    "c",
+                    "b",
+                    "o"
+                  ]
+                },
+                {
+                  "name": "sameclock",
+                  "points": [
+                    "c",
+                    "o",
+                    "b",
+                    "b",
+                    "c",
+                    "o"
+                  ]
+                }
+              ],
+              "equations": []
+            },
+            {
+              "rule": "ar",
+              "deduction_index": 638,
+              "points": [
+                "a",
+                "b",
+                "a",
+                "o",
+                "c",
+                "o",
+                "c",
+                "d"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "c",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "a",
+                    "b"
+                  ],
+                  [
+                    "a",
+                    "o"
+                  ],
+                  [
+                    "c",
+                    "o"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  },
+                  {
+                    "role": 2,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "a",
+                      "o"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "c",
+                      "o"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "c",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-1/1",
+                    "∠(a-c)": "2/1",
+                    "∠(c-d)": "-1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "c",
+                    "c",
+                    "o",
+                    "a",
+                    "o",
+                    "a",
+                    "c"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-c)": "-2/1",
+                    "∠(a-o)": "1/1",
+                    "∠(c-o)": "1/1"
+                  }
+                }
+              ],
+              "equations": []
+            },
+            {
+              "rule": "ar",
+              "deduction_index": 656,
+              "points": [
+                "a",
+                "b",
+                "b",
+                "d",
+                "c",
+                "d",
+                "a",
+                "c"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "c",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ],
+                  [
+                    "a",
+                    "c"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "b",
+                      "d"
+                    ]
+                  },
+                  {
+                    "role": 2,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "a",
+                      "c"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "c",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-1/1",
+                    "∠(a-c)": "2/1",
+                    "∠(c-d)": "-1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "b",
+                    "b",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-2/1",
+                    "∠(a-c)": "1/1",
+                    "∠(b-d)": "1/1"
+                  }
+                }
+              ],
+              "equations": []
+            }
+          ]
+        },
+        {
+          "premise": "cong(b,d,b,k)",
+          "proved": false,
+          "proofs": []
+        },
+        {
+          "premise": "ncoll(b,c,d,k)",
+          "proved": true,
+          "proofs": []
+        },
+        {
+          "premise": "nperp(b,c,d,k)",
+          "proved": true,
+          "proofs": []
+        }
+      ],
+      "proved_count": 2
+    },
+    {
+      "theorem": "r04:0",
+      "substitution": {
+        "?A": "b",
+        "?B": "c",
+        "?P": "d",
+        "?Q": "k"
+      },
+      "premises": [
+        {
+          "premise": "eqangle(b,d,b,k,c,d,c,k)",
+          "proved": false,
+          "proofs": [],
+          "closest": [
+            {
+              "rule": "ar",
+              "deduction_index": 638,
+              "points": [
+                "a",
+                "b",
+                "a",
+                "o",
+                "c",
+                "o",
+                "c",
+                "d"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "c",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "c",
+                    "o"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ],
+                  [
+                    "a",
+                    "o"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "c",
+                      "o"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "b",
+                      "d"
+                    ],
+                    "actual": [
+                      "a",
+                      "o"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "c",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-1/1",
+                    "∠(a-c)": "2/1",
+                    "∠(c-d)": "-1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "c",
+                    "c",
+                    "o",
+                    "a",
+                    "o",
+                    "a",
+                    "c"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-c)": "-2/1",
+                    "∠(a-o)": "1/1",
+                    "∠(c-o)": "1/1"
+                  }
+                }
+              ],
+              "equations": []
+            },
+            {
+              "rule": "By construction",
+              "deduction_index": 9,
+              "points": [
+                "a",
+                "b",
+                "b",
+                "d",
+                "a",
+                "c",
+                "a",
+                "b"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "c",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "a",
+                    "c"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "c"
+                    ]
+                  },
+                  {
+                    "role": 2,
+                    "required": [
+                      "c",
+                      "d"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [],
+              "equations": []
+            },
+            {
+              "rule": "ar",
+              "deduction_index": 656,
+              "points": [
+                "a",
+                "b",
+                "b",
+                "d",
+                "c",
+                "d",
+                "a",
+                "c"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "c",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "a",
+                    "c"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "c",
+                      "d"
+                    ]
+                  },
+                  {
+                    "role": 2,
+                    "required": [
+                      "c",
+                      "d"
+                    ],
+                    "actual": [
+                      "a",
+                      "c"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "c",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-1/1",
+                    "∠(a-c)": "2/1",
+                    "∠(c-d)": "-1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "b",
+                    "b",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-2/1",
+                    "∠(a-c)": "1/1",
+                    "∠(b-d)": "1/1"
+                  }
+                }
+              ],
+              "equations": []
+            }
+          ]
+        },
+        {
+          "premise": "ncoll(b,c,d,k)",
+          "proved": true,
+          "proofs": []
+        }
+      ],
+      "proved_count": 1
+    },
+    {
+      "theorem": "r04:0",
+      "substitution": {
+        "?A": "b",
+        "?B": "d",
+        "?P": "c",
+        "?Q": "k"
+      },
+      "premises": [
+        {
+          "premise": "eqangle(b,c,b,k,c,d,d,k)",
+          "proved": false,
+          "proofs": [],
+          "closest": [
+            {
+              "rule": "ar",
+              "deduction_index": 638,
+              "points": [
+                "a",
+                "b",
+                "a",
+                "o",
+                "c",
+                "o",
+                "c",
+                "d"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "c",
+                    "o"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ],
+                  [
+                    "a",
+                    "o"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "d",
+                      "k"
+                    ],
+                    "actual": [
+                      "c",
+                      "o"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "a",
+                      "o"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "c",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-1/1",
+                    "∠(a-c)": "2/1",
+                    "∠(c-d)": "-1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "c",
+                    "c",
+                    "o",
+                    "a",
+                    "o",
+                    "a",
+                    "c"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-c)": "-2/1",
+                    "∠(a-o)": "1/1",
+                    "∠(c-o)": "1/1"
+                  }
+                }
+              ],
+              "equations": []
+            },
+            {
+              "rule": "ar",
+              "deduction_index": 656,
+              "points": [
+                "a",
+                "b",
+                "b",
+                "d",
+                "c",
+                "d",
+                "a",
+                "c"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "a",
+                    "c"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "d",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "c"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "b",
+                      "d"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "c",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-1/1",
+                    "∠(a-c)": "2/1",
+                    "∠(c-d)": "-1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "b",
+                    "b",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-2/1",
+                    "∠(a-c)": "1/1",
+                    "∠(b-d)": "1/1"
+                  }
+                }
+              ],
+              "equations": []
+            },
+            {
+              "rule": "ar",
+              "deduction_index": 640,
+              "points": [
+                "a",
+                "b",
+                "b",
+                "o",
+                "c",
+                "d",
+                "c",
+                "o"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "c",
+                    "o"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "o"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "d",
+                      "k"
+                    ],
+                    "actual": [
+                      "c",
+                      "o"
+                    ]
+                  },
+                  {
+                    "role": 3,
+                    "required": [
+                      "b",
+                      "k"
+                    ],
+                    "actual": [
+                      "b",
+                      "o"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "c",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-1/1",
+                    "∠(a-c)": "2/1",
+                    "∠(c-d)": "-1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "c",
+                    "c",
+                    "o",
+                    "a",
+                    "o",
+                    "a",
+                    "c"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-c)": "-2/1",
+                    "∠(a-o)": "1/1",
+                    "∠(c-o)": "1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "b",
+                    "b",
+                    "o",
+                    "a",
+                    "o",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-2/1",
+                    "∠(a-o)": "1/1",
+                    "∠(b-o)": "1/1"
+                  }
+                }
+              ],
+              "equations": []
+            }
+          ]
+        },
+        {
+          "premise": "ncoll(b,c,d,k)",
+          "proved": true,
+          "proofs": []
+        }
+      ],
+      "proved_count": 1
+    },
+    {
+      "theorem": "r04:0",
+      "substitution": {
+        "?A": "b",
+        "?B": "k",
+        "?P": "c",
+        "?Q": "d"
+      },
+      "premises": [
+        {
+          "premise": "eqangle(b,c,b,d,c,k,d,k)",
+          "proved": false,
+          "proofs": [],
+          "closest": [
+            {
+              "rule": "By construction",
+              "deduction_index": 9,
+              "points": [
+                "a",
+                "b",
+                "b",
+                "d",
+                "a",
+                "c",
+                "a",
+                "b"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "a",
+                    "b"
+                  ],
+                  [
+                    "a",
+                    "c"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "d",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  },
+                  {
+                    "role": 2,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "c"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [],
+              "equations": []
+            },
+            {
+              "rule": "ar",
+              "deduction_index": 656,
+              "points": [
+                "a",
+                "b",
+                "b",
+                "d",
+                "c",
+                "d",
+                "a",
+                "c"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "a",
+                    "c"
+                  ],
+                  [
+                    "c",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "a",
+                    "b"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "d",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "c"
+                    ]
+                  },
+                  {
+                    "role": 2,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "c",
+                      "d"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "a",
+                      "b"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "c",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-1/1",
+                    "∠(a-c)": "2/1",
+                    "∠(c-d)": "-1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "b",
+                    "b",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-2/1",
+                    "∠(a-c)": "1/1",
+                    "∠(b-d)": "1/1"
+                  }
+                }
+              ],
+              "equations": []
+            },
+            {
+              "rule": "ar",
+              "deduction_index": 573,
+              "points": [
+                "a",
+                "c",
+                "a",
+                "o",
+                "b",
+                "o",
+                "b",
+                "d"
+              ],
+              "alignment": {
+                "equivalent": false,
+                "matching_lines": 1,
+                "goal_lines": [
+                  [
+                    "d",
+                    "k"
+                  ],
+                  [
+                    "c",
+                    "k"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "c"
+                  ]
+                ],
+                "candidate_lines": [
+                  [
+                    "a",
+                    "o"
+                  ],
+                  [
+                    "a",
+                    "c"
+                  ],
+                  [
+                    "b",
+                    "d"
+                  ],
+                  [
+                    "b",
+                    "o"
+                  ]
+                ],
+                "different_roles": [
+                  {
+                    "role": 1,
+                    "required": [
+                      "d",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "o"
+                    ]
+                  },
+                  {
+                    "role": 2,
+                    "required": [
+                      "c",
+                      "k"
+                    ],
+                    "actual": [
+                      "a",
+                      "c"
+                    ]
+                  },
+                  {
+                    "role": 4,
+                    "required": [
+                      "b",
+                      "c"
+                    ],
+                    "actual": [
+                      "b",
+                      "o"
+                    ]
+                  }
+                ]
+              },
+              "assumptions": [
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "b",
+                    "b",
+                    "d",
+                    "a",
+                    "c",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "-1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-2/1",
+                    "∠(a-c)": "1/1",
+                    "∠(b-d)": "1/1"
+                  }
+                },
+                {
+                  "name": "eqangle",
+                  "points": [
+                    "a",
+                    "b",
+                    "b",
+                    "o",
+                    "a",
+                    "o",
+                    "a",
+                    "b"
+                  ],
+                  "coeff": "1/1",
+                  "lhs_terms": {
+                    "∠(a-b)": "-2/1",
+                    "∠(a-o)": "1/1",
+                    "∠(b-o)": "1/1"
+                  }
+                }
+              ],
+              "equations": []
+            }
+          ]
+        },
+        {
+          "premise": "ncoll(b,c,d,k)",
+          "proved": true,
+          "proofs": []
+        }
+      ],
+      "proved_count": 1
+    }
+  ]
+}

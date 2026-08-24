@@ -1,0 +1,1160 @@
+{
+  "experiment": "formalgeo_typed_obligation_exact_replay",
+  "problem_name": "2010_p2",
+  "dataset": "C:/Users/81808/.cache/mortra-research-sources/Newclid/newclid/problems_datasets/imo.txt",
+  "normalization": {
+    "rewritten_constructions": 0,
+    "unchanged_constructions": 11,
+    "unresolved_constructions": 0
+  },
+  "formalgeo": [
+    {
+      "goal": {
+        "predicate": "cong",
+        "arguments": [
+          "a",
+          "o",
+          "k",
+          "o"
+        ]
+      },
+      "translation": {
+        "elaboration": {
+          "facts": [],
+          "goal": "cong(a,o,k,o)",
+          "constructions": [
+            "Point(A):FreePoint(A)",
+            "Point(B):FreePoint(B)",
+            "Point(C):PointLeftSegment(C,A,B)",
+            "Line(a):PointOnLine(A,a)&PointOnLine(B,a)",
+            "Line(b):PointOnLine(B,b)&PointOnLine(C,b)",
+            "Line(c):PointOnLine(A,c)&PointOnLine(C,c)&Triangle(A,a,B,b,C,c)",
+            "Circle(\u03a9):CircumcircleOfTriangle(\u03a9,A,a,B,b,C,c)",
+            "Point(J):CenterOfCircle(J,\u03a9)",
+            "Point(H):IncenterOfTriangle(H,A,a,B,b,C,c)",
+            "Line(d):PointOnLine(A,d)&PointOnLine(H,d)",
+            "Point(D):PointOnLine(D,d)&PointOnCircle(D,\u03a9)&~SamePoint(D,A)",
+            "Point(F):PointOnLine(F,b)",
+            "Line(e):PointOnLine(A,e)&PointOnLine(F,e)",
+            "Line(f):PointOnLine(A,f)&EqualAngle(f,c,a,e)",
+            "Point(E):PointOnLine(E,f)&PointOnCircle(E,\u03a9)&~SamePoint(E,A)",
+            "Point(G):Eq(Sub(Mul(2,G.x),Add(H.x,F.x)))&Eq(Sub(Mul(2,G.y),Add(H.y,F.y)))",
+            "Line(g):PointOnLine(D,g)&PointOnLine(G,g)",
+            "Line(h):PointOnLine(E,h)&PointOnLine(H,h)",
+            "Point(I):PointOnLine(I,g)&PointOnLine(I,h)"
+          ],
+          "formal_goal": "EqualDistancePointToPoint(A,J,I,J)",
+          "point_to_object": {
+            "a": "A",
+            "b": "B",
+            "c": "C",
+            "d": "D",
+            "e": "E",
+            "f": "F",
+            "g": "G",
+            "i": "H",
+            "k": "I",
+            "o": "J"
+          },
+          "segment_to_object": [
+            {
+              "segment": [
+                "a",
+                "b"
+              ],
+              "object": "a"
+            },
+            {
+              "segment": [
+                "a",
+                "c"
+              ],
+              "object": "c"
+            },
+            {
+              "segment": [
+                "a",
+                "e"
+              ],
+              "object": "f"
+            },
+            {
+              "segment": [
+                "a",
+                "f"
+              ],
+              "object": "e"
+            },
+            {
+              "segment": [
+                "a",
+                "i"
+              ],
+              "object": "d"
+            },
+            {
+              "segment": [
+                "b",
+                "c"
+              ],
+              "object": "b"
+            },
+            {
+              "segment": [
+                "d",
+                "g"
+              ],
+              "object": "g"
+            },
+            {
+              "segment": [
+                "e",
+                "i"
+              ],
+              "object": "h"
+            }
+          ]
+        },
+        "translated_clauses": 8,
+        "construction_kinds": [
+          "free_point",
+          "free_point",
+          "free_point",
+          "secant_line",
+          "secant_line",
+          "triangle",
+          "circumcircle",
+          "circle_center",
+          "incenter",
+          "secant_line",
+          "on_line+on_circle",
+          "on_line",
+          "secant_line",
+          "equal_angle_line",
+          "on_aline+on_circle",
+          "midpoint",
+          "secant_line",
+          "secant_line",
+          "on_line+on_line"
+        ],
+        "circle_to_object": {
+          "o": "\u03a9"
+        }
+      },
+      "runtime": {
+        "available": true,
+        "elaborated": true,
+        "root_solved": false,
+        "replay_required": true,
+        "elaboration": {
+          "facts": [],
+          "goal": "cong(a,o,k,o)",
+          "constructions": [
+            "Point(A):FreePoint(A)",
+            "Point(B):FreePoint(B)",
+            "Point(C):PointLeftSegment(C,A,B)",
+            "Line(a):PointOnLine(A,a)&PointOnLine(B,a)",
+            "Line(b):PointOnLine(B,b)&PointOnLine(C,b)",
+            "Line(c):PointOnLine(A,c)&PointOnLine(C,c)&Triangle(A,a,B,b,C,c)",
+            "Circle(\u03a9):CircumcircleOfTriangle(\u03a9,A,a,B,b,C,c)",
+            "Point(J):CenterOfCircle(J,\u03a9)",
+            "Point(H):IncenterOfTriangle(H,A,a,B,b,C,c)",
+            "Line(d):PointOnLine(A,d)&PointOnLine(H,d)",
+            "Point(D):PointOnLine(D,d)&PointOnCircle(D,\u03a9)&~SamePoint(D,A)",
+            "Point(F):PointOnLine(F,b)",
+            "Line(e):PointOnLine(A,e)&PointOnLine(F,e)",
+            "Line(f):PointOnLine(A,f)&EqualAngle(f,c,a,e)",
+            "Point(E):PointOnLine(E,f)&PointOnCircle(E,\u03a9)&~SamePoint(E,A)",
+            "Point(G):Eq(Sub(Mul(2,G.x),Add(H.x,F.x)))&Eq(Sub(Mul(2,G.y),Add(H.y,F.y)))",
+            "Line(g):PointOnLine(D,g)&PointOnLine(G,g)",
+            "Line(h):PointOnLine(E,h)&PointOnLine(H,h)",
+            "Point(I):PointOnLine(I,g)&PointOnLine(I,h)"
+          ],
+          "formal_goal": "EqualDistancePointToPoint(A,J,I,J)",
+          "point_to_object": {
+            "a": "A",
+            "b": "B",
+            "c": "C",
+            "d": "D",
+            "e": "E",
+            "f": "F",
+            "g": "G",
+            "i": "H",
+            "k": "I",
+            "o": "J"
+          },
+          "segment_to_object": [
+            {
+              "segment": [
+                "a",
+                "b"
+              ],
+              "object": "a"
+            },
+            {
+              "segment": [
+                "a",
+                "c"
+              ],
+              "object": "c"
+            },
+            {
+              "segment": [
+                "a",
+                "e"
+              ],
+              "object": "f"
+            },
+            {
+              "segment": [
+                "a",
+                "f"
+              ],
+              "object": "e"
+            },
+            {
+              "segment": [
+                "a",
+                "i"
+              ],
+              "object": "d"
+            },
+            {
+              "segment": [
+                "b",
+                "c"
+              ],
+              "object": "b"
+            },
+            {
+              "segment": [
+                "d",
+                "g"
+              ],
+              "object": "g"
+            },
+            {
+              "segment": [
+                "e",
+                "i"
+              ],
+              "object": "h"
+            }
+          ]
+        },
+        "translated_goals": [
+          {
+            "goal_id": 0,
+            "status": 0,
+            "operation_id": 19,
+            "operation": [
+              "auto",
+              "set_initial_goal",
+              null
+            ],
+            "root_sub_goal_id": null,
+            "premise_fact_ids": [],
+            "tree": {
+              "kind": "atom",
+              "sub_goal_id": 0,
+              "goal_id": 0,
+              "predicate": "EqualDistancePointToPoint",
+              "instance": [
+                "A",
+                "J",
+                "I",
+                "J"
+              ],
+              "status": 0,
+              "premise_fact_ids": [],
+              "child_goal_ids": [
+                1
+              ],
+              "rendered_atom": "cong(a,o,k,o)"
+            }
+          },
+          {
+            "goal_id": 1,
+            "status": 0,
+            "operation_id": 20,
+            "operation": [
+              "decompose",
+              "equal_distance_point_to_point_determination_algebraic",
+              [
+                "A",
+                "J",
+                "I",
+                "J"
+              ]
+            ],
+            "root_sub_goal_id": 0,
+            "premise_fact_ids": [],
+            "tree": {
+              "kind": "and",
+              "children": [
+                {
+                  "kind": "atom",
+                  "sub_goal_id": 1,
+                  "goal_id": 1,
+                  "predicate": "Point",
+                  "instance": [
+                    "A"
+                  ],
+                  "status": 1,
+                  "premise_fact_ids": [
+                    0
+                  ],
+                  "child_goal_ids": [],
+                  "rendered_atom": "formalgeo.point(a)"
+                },
+                {
+                  "kind": "and",
+                  "children": [
+                    {
+                      "kind": "atom",
+                      "sub_goal_id": 2,
+                      "goal_id": 1,
+                      "predicate": "Point",
+                      "instance": [
+                        "J"
+                      ],
+                      "status": 1,
+                      "premise_fact_ids": [
+                        18
+                      ],
+                      "child_goal_ids": [],
+                      "rendered_atom": "formalgeo.point(o)"
+                    },
+                    {
+                      "kind": "and",
+                      "children": [
+                        {
+                          "kind": "atom",
+                          "sub_goal_id": 3,
+                          "goal_id": 1,
+                          "predicate": "Point",
+                          "instance": [
+                            "I"
+                          ],
+                          "status": 1,
+                          "premise_fact_ids": [
+                            48
+                          ],
+                          "child_goal_ids": [],
+                          "rendered_atom": "formalgeo.point(k)"
+                        },
+                        {
+                          "kind": "and",
+                          "children": [
+                            {
+                              "kind": "atom",
+                              "sub_goal_id": 4,
+                              "goal_id": 1,
+                              "predicate": "Point",
+                              "instance": [
+                                "J"
+                              ],
+                              "status": 1,
+                              "premise_fact_ids": [
+                                18
+                              ],
+                              "child_goal_ids": [],
+                              "rendered_atom": "formalgeo.point(o)"
+                            },
+                            {
+                              "kind": "atom",
+                              "sub_goal_id": 5,
+                              "goal_id": 1,
+                              "predicate": "Eq",
+                              "instance": "AJ.dpp - IJ.dpp",
+                              "status": 0,
+                              "premise_fact_ids": [],
+                              "child_goal_ids": [],
+                              "algebraic_ast": {
+                                "kind": "add",
+                                "args": [
+                                  {
+                                    "kind": "symbol",
+                                    "name": "AJ.dpp"
+                                  },
+                                  {
+                                    "kind": "mul",
+                                    "args": [
+                                      {
+                                        "kind": "integer",
+                                        "value": -1
+                                      },
+                                      {
+                                        "kind": "symbol",
+                                        "name": "IJ.dpp"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "rendered_atom": "cong(a,o,k,o)"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "open_branches": [
+          [
+            "cong(a,o,k,o)"
+          ]
+        ],
+        "runtime_trace": {
+          "ok": true,
+          "mode": "backward_decompose",
+          "formalgeo_version": "2.2.2",
+          "root_solved": false,
+          "construction_trace": [
+            {
+              "statement": "Point(A):FreePoint(A)",
+              "random_seed": 101,
+              "accepted": true
+            },
+            {
+              "statement": "Point(B):FreePoint(B)",
+              "random_seed": 102,
+              "accepted": true
+            },
+            {
+              "statement": "Point(C):PointLeftSegment(C,A,B)",
+              "random_seed": 103,
+              "accepted": true
+            },
+            {
+              "statement": "Line(a):PointOnLine(A,a)&PointOnLine(B,a)",
+              "random_seed": 104,
+              "accepted": true
+            },
+            {
+              "statement": "Line(b):PointOnLine(B,b)&PointOnLine(C,b)",
+              "random_seed": 105,
+              "accepted": true
+            },
+            {
+              "statement": "Line(c):PointOnLine(A,c)&PointOnLine(C,c)&Triangle(A,a,B,b,C,c)",
+              "random_seed": 106,
+              "accepted": true
+            },
+            {
+              "statement": "Circle(\u03a9):CircumcircleOfTriangle(\u03a9,A,a,B,b,C,c)",
+              "random_seed": 107,
+              "accepted": true
+            },
+            {
+              "statement": "Point(J):CenterOfCircle(J,\u03a9)",
+              "random_seed": 108,
+              "accepted": true
+            },
+            {
+              "statement": "Point(H):IncenterOfTriangle(H,A,a,B,b,C,c)",
+              "random_seed": 109,
+              "accepted": true
+            },
+            {
+              "statement": "Line(d):PointOnLine(A,d)&PointOnLine(H,d)",
+              "random_seed": 110,
+              "accepted": true
+            },
+            {
+              "statement": "Point(D):PointOnLine(D,d)&PointOnCircle(D,\u03a9)&~SamePoint(D,A)",
+              "random_seed": 111,
+              "accepted": true
+            },
+            {
+              "statement": "Point(F):PointOnLine(F,b)",
+              "random_seed": 112,
+              "accepted": true
+            },
+            {
+              "statement": "Line(e):PointOnLine(A,e)&PointOnLine(F,e)",
+              "random_seed": 113,
+              "accepted": true
+            },
+            {
+              "statement": "Line(f):PointOnLine(A,f)&EqualAngle(f,c,a,e)",
+              "random_seed": 114,
+              "accepted": true
+            },
+            {
+              "statement": "Point(E):PointOnLine(E,f)&PointOnCircle(E,\u03a9)&~SamePoint(E,A)",
+              "random_seed": 115,
+              "accepted": true
+            },
+            {
+              "statement": "Point(G):Eq(Sub(Mul(2,G.x),Add(H.x,F.x)))&Eq(Sub(Mul(2,G.y),Add(H.y,F.y)))",
+              "random_seed": 116,
+              "accepted": true
+            },
+            {
+              "statement": "Line(g):PointOnLine(D,g)&PointOnLine(G,g)",
+              "random_seed": 117,
+              "accepted": true
+            },
+            {
+              "statement": "Line(h):PointOnLine(E,h)&PointOnLine(H,h)",
+              "random_seed": 118,
+              "accepted": true
+            },
+            {
+              "statement": "Point(I):PointOnLine(I,g)&PointOnLine(I,h)",
+              "random_seed": 119,
+              "accepted": true
+            }
+          ],
+          "branch_attempts": [
+            {
+              "seed_offset": 0,
+              "construction_ok": true,
+              "goal_accepted": false,
+              "goal_error": "Algebraic forms check not passed when set init goal 'EqualDistancePointToPoint(A,J,I,J)'.",
+              "construction_trace": [
+                {
+                  "statement": "Point(A):FreePoint(A)",
+                  "random_seed": 1,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(B):FreePoint(B)",
+                  "random_seed": 2,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(C):PointLeftSegment(C,A,B)",
+                  "random_seed": 3,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(a):PointOnLine(A,a)&PointOnLine(B,a)",
+                  "random_seed": 4,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(b):PointOnLine(B,b)&PointOnLine(C,b)",
+                  "random_seed": 5,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(c):PointOnLine(A,c)&PointOnLine(C,c)&Triangle(A,a,B,b,C,c)",
+                  "random_seed": 6,
+                  "accepted": true
+                },
+                {
+                  "statement": "Circle(\u03a9):CircumcircleOfTriangle(\u03a9,A,a,B,b,C,c)",
+                  "random_seed": 7,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(J):CenterOfCircle(J,\u03a9)",
+                  "random_seed": 8,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(H):IncenterOfTriangle(H,A,a,B,b,C,c)",
+                  "random_seed": 9,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(d):PointOnLine(A,d)&PointOnLine(H,d)",
+                  "random_seed": 10,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(D):PointOnLine(D,d)&PointOnCircle(D,\u03a9)&~SamePoint(D,A)",
+                  "random_seed": 11,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(F):PointOnLine(F,b)",
+                  "random_seed": 12,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(e):PointOnLine(A,e)&PointOnLine(F,e)",
+                  "random_seed": 13,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(f):PointOnLine(A,f)&EqualAngle(f,c,a,e)",
+                  "random_seed": 14,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(E):PointOnLine(E,f)&PointOnCircle(E,\u03a9)&~SamePoint(E,A)",
+                  "random_seed": 15,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(G):Eq(Sub(Mul(2,G.x),Add(H.x,F.x)))&Eq(Sub(Mul(2,G.y),Add(H.y,F.y)))",
+                  "random_seed": 16,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(g):PointOnLine(D,g)&PointOnLine(G,g)",
+                  "random_seed": 17,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(h):PointOnLine(E,h)&PointOnLine(H,h)",
+                  "random_seed": 18,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(I):PointOnLine(I,g)&PointOnLine(I,h)",
+                  "random_seed": 19,
+                  "accepted": true
+                }
+              ]
+            },
+            {
+              "seed_offset": 100,
+              "construction_ok": true,
+              "goal_accepted": true,
+              "goal_error": null,
+              "construction_trace": [
+                {
+                  "statement": "Point(A):FreePoint(A)",
+                  "random_seed": 101,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(B):FreePoint(B)",
+                  "random_seed": 102,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(C):PointLeftSegment(C,A,B)",
+                  "random_seed": 103,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(a):PointOnLine(A,a)&PointOnLine(B,a)",
+                  "random_seed": 104,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(b):PointOnLine(B,b)&PointOnLine(C,b)",
+                  "random_seed": 105,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(c):PointOnLine(A,c)&PointOnLine(C,c)&Triangle(A,a,B,b,C,c)",
+                  "random_seed": 106,
+                  "accepted": true
+                },
+                {
+                  "statement": "Circle(\u03a9):CircumcircleOfTriangle(\u03a9,A,a,B,b,C,c)",
+                  "random_seed": 107,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(J):CenterOfCircle(J,\u03a9)",
+                  "random_seed": 108,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(H):IncenterOfTriangle(H,A,a,B,b,C,c)",
+                  "random_seed": 109,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(d):PointOnLine(A,d)&PointOnLine(H,d)",
+                  "random_seed": 110,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(D):PointOnLine(D,d)&PointOnCircle(D,\u03a9)&~SamePoint(D,A)",
+                  "random_seed": 111,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(F):PointOnLine(F,b)",
+                  "random_seed": 112,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(e):PointOnLine(A,e)&PointOnLine(F,e)",
+                  "random_seed": 113,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(f):PointOnLine(A,f)&EqualAngle(f,c,a,e)",
+                  "random_seed": 114,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(E):PointOnLine(E,f)&PointOnCircle(E,\u03a9)&~SamePoint(E,A)",
+                  "random_seed": 115,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(G):Eq(Sub(Mul(2,G.x),Add(H.x,F.x)))&Eq(Sub(Mul(2,G.y),Add(H.y,F.y)))",
+                  "random_seed": 116,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(g):PointOnLine(D,g)&PointOnLine(G,g)",
+                  "random_seed": 117,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(h):PointOnLine(E,h)&PointOnLine(H,h)",
+                  "random_seed": 118,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(I):PointOnLine(I,g)&PointOnLine(I,h)",
+                  "random_seed": 119,
+                  "accepted": true
+                }
+              ]
+            }
+          ],
+          "round_trace": [
+            {
+              "round": 1,
+              "open_predicates": [
+                "EqualDistancePointToPoint"
+              ],
+              "candidate_theorem_count": 1,
+              "candidate_theorem_calls": [
+                "equal_distance_point_to_point_determination_algebraic(A,J,I,J)"
+              ],
+              "fallback_theorem_names": [],
+              "changed_theorems": [
+                "equal_distance_point_to_point_determination_algebraic(A,J,I,J)"
+              ],
+              "root_status": 0,
+              "goal_count": 2,
+              "sub_goal_count": 6
+            }
+          ],
+          "frontier_tree": {
+            "kind": "and",
+            "children": [
+              {
+                "kind": "atom",
+                "sub_goal_id": 1,
+                "goal_id": 1,
+                "predicate": "Point",
+                "instance": [
+                  "A"
+                ],
+                "status": 1,
+                "premise_fact_ids": [
+                  0
+                ],
+                "child_goal_ids": []
+              },
+              {
+                "kind": "and",
+                "children": [
+                  {
+                    "kind": "atom",
+                    "sub_goal_id": 2,
+                    "goal_id": 1,
+                    "predicate": "Point",
+                    "instance": [
+                      "J"
+                    ],
+                    "status": 1,
+                    "premise_fact_ids": [
+                      18
+                    ],
+                    "child_goal_ids": []
+                  },
+                  {
+                    "kind": "and",
+                    "children": [
+                      {
+                        "kind": "atom",
+                        "sub_goal_id": 3,
+                        "goal_id": 1,
+                        "predicate": "Point",
+                        "instance": [
+                          "I"
+                        ],
+                        "status": 1,
+                        "premise_fact_ids": [
+                          48
+                        ],
+                        "child_goal_ids": []
+                      },
+                      {
+                        "kind": "and",
+                        "children": [
+                          {
+                            "kind": "atom",
+                            "sub_goal_id": 4,
+                            "goal_id": 1,
+                            "predicate": "Point",
+                            "instance": [
+                              "J"
+                            ],
+                            "status": 1,
+                            "premise_fact_ids": [
+                              18
+                            ],
+                            "child_goal_ids": []
+                          },
+                          {
+                            "kind": "atom",
+                            "sub_goal_id": 5,
+                            "goal_id": 1,
+                            "predicate": "Eq",
+                            "instance": "AJ.dpp - IJ.dpp",
+                            "status": 0,
+                            "premise_fact_ids": [],
+                            "child_goal_ids": [],
+                            "algebraic_ast": {
+                              "kind": "add",
+                              "args": [
+                                {
+                                  "kind": "symbol",
+                                  "name": "AJ.dpp"
+                                },
+                                {
+                                  "kind": "mul",
+                                  "args": [
+                                    {
+                                      "kind": "integer",
+                                      "value": -1
+                                    },
+                                    {
+                                      "kind": "symbol",
+                                      "name": "IJ.dpp"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "goals": [
+            {
+              "goal_id": 0,
+              "status": 0,
+              "operation_id": 19,
+              "operation": [
+                "auto",
+                "set_initial_goal",
+                null
+              ],
+              "root_sub_goal_id": null,
+              "premise_fact_ids": [],
+              "tree": {
+                "kind": "atom",
+                "sub_goal_id": 0,
+                "goal_id": 0,
+                "predicate": "EqualDistancePointToPoint",
+                "instance": [
+                  "A",
+                  "J",
+                  "I",
+                  "J"
+                ],
+                "status": 0,
+                "premise_fact_ids": [],
+                "child_goal_ids": [
+                  1
+                ]
+              }
+            },
+            {
+              "goal_id": 1,
+              "status": 0,
+              "operation_id": 20,
+              "operation": [
+                "decompose",
+                "equal_distance_point_to_point_determination_algebraic",
+                [
+                  "A",
+                  "J",
+                  "I",
+                  "J"
+                ]
+              ],
+              "root_sub_goal_id": 0,
+              "premise_fact_ids": [],
+              "tree": {
+                "kind": "and",
+                "children": [
+                  {
+                    "kind": "atom",
+                    "sub_goal_id": 1,
+                    "goal_id": 1,
+                    "predicate": "Point",
+                    "instance": [
+                      "A"
+                    ],
+                    "status": 1,
+                    "premise_fact_ids": [
+                      0
+                    ],
+                    "child_goal_ids": []
+                  },
+                  {
+                    "kind": "and",
+                    "children": [
+                      {
+                        "kind": "atom",
+                        "sub_goal_id": 2,
+                        "goal_id": 1,
+                        "predicate": "Point",
+                        "instance": [
+                          "J"
+                        ],
+                        "status": 1,
+                        "premise_fact_ids": [
+                          18
+                        ],
+                        "child_goal_ids": []
+                      },
+                      {
+                        "kind": "and",
+                        "children": [
+                          {
+                            "kind": "atom",
+                            "sub_goal_id": 3,
+                            "goal_id": 1,
+                            "predicate": "Point",
+                            "instance": [
+                              "I"
+                            ],
+                            "status": 1,
+                            "premise_fact_ids": [
+                              48
+                            ],
+                            "child_goal_ids": []
+                          },
+                          {
+                            "kind": "and",
+                            "children": [
+                              {
+                                "kind": "atom",
+                                "sub_goal_id": 4,
+                                "goal_id": 1,
+                                "predicate": "Point",
+                                "instance": [
+                                  "J"
+                                ],
+                                "status": 1,
+                                "premise_fact_ids": [
+                                  18
+                                ],
+                                "child_goal_ids": []
+                              },
+                              {
+                                "kind": "atom",
+                                "sub_goal_id": 5,
+                                "goal_id": 1,
+                                "predicate": "Eq",
+                                "instance": "AJ.dpp - IJ.dpp",
+                                "status": 0,
+                                "premise_fact_ids": [],
+                                "child_goal_ids": [],
+                                "algebraic_ast": {
+                                  "kind": "add",
+                                  "args": [
+                                    {
+                                      "kind": "symbol",
+                                      "name": "AJ.dpp"
+                                    },
+                                    {
+                                      "kind": "mul",
+                                      "args": [
+                                        {
+                                          "kind": "integer",
+                                          "value": -1
+                                        },
+                                        {
+                                          "kind": "symbol",
+                                          "name": "IJ.dpp"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "operations": [
+            [
+              "construction",
+              "Point(A)",
+              "FreePoint(A)"
+            ],
+            [
+              "construction",
+              "Point(B)",
+              "FreePoint(B)"
+            ],
+            [
+              "construction",
+              "Point(C)",
+              "PointLeftSegment(C,A,B)"
+            ],
+            [
+              "construction",
+              "Line(a)",
+              "PointOnLine(A,a)&PointOnLine(B,a)"
+            ],
+            [
+              "construction",
+              "Line(b)",
+              "PointOnLine(B,b)&PointOnLine(C,b)"
+            ],
+            [
+              "construction",
+              "Line(c)",
+              "PointOnLine(A,c)&PointOnLine(C,c)&Triangle(A,a,B,b,C,c)"
+            ],
+            [
+              "construction",
+              "Circle(\u03a9)",
+              "CircumcircleOfTriangle(\u03a9,A,a,B,b,C,c)"
+            ],
+            [
+              "construction",
+              "Point(J)",
+              "CenterOfCircle(J,\u03a9)"
+            ],
+            [
+              "construction",
+              "Point(H)",
+              "IncenterOfTriangle(H,A,a,B,b,C,c)"
+            ],
+            [
+              "construction",
+              "Line(d)",
+              "PointOnLine(A,d)&PointOnLine(H,d)"
+            ],
+            [
+              "construction",
+              "Point(D)",
+              "PointOnLine(D,d)&PointOnCircle(D,\u03a9)&~SamePoint(D,A)"
+            ],
+            [
+              "construction",
+              "Point(F)",
+              "PointOnLine(F,b)"
+            ],
+            [
+              "construction",
+              "Line(e)",
+              "PointOnLine(A,e)&PointOnLine(F,e)"
+            ],
+            [
+              "construction",
+              "Line(f)",
+              "PointOnLine(A,f)&EqualAngle(f,c,a,e)"
+            ],
+            [
+              "construction",
+              "Point(E)",
+              "PointOnLine(E,f)&PointOnCircle(E,\u03a9)&~SamePoint(E,A)"
+            ],
+            [
+              "construction",
+              "Point(G)",
+              "Eq(Sub(Mul(2,G.x),Add(H.x,F.x)))&Eq(Sub(Mul(2,G.y),Add(H.y,F.y)))"
+            ],
+            [
+              "construction",
+              "Line(g)",
+              "PointOnLine(D,g)&PointOnLine(G,g)"
+            ],
+            [
+              "construction",
+              "Line(h)",
+              "PointOnLine(E,h)&PointOnLine(H,h)"
+            ],
+            [
+              "construction",
+              "Point(I)",
+              "PointOnLine(I,g)&PointOnLine(I,h)"
+            ],
+            [
+              "auto",
+              "set_initial_goal",
+              null
+            ],
+            [
+              "decompose",
+              "equal_distance_point_to_point_determination_algebraic",
+              [
+                "A",
+                "J",
+                "I",
+                "J"
+              ]
+            ]
+          ],
+          "fact_count": 51
+        },
+        "error": null
+      }
+    }
+  ],
+  "typed_open_branches": [
+    [
+      {
+        "predicate": "cong",
+        "arguments": [
+          "a",
+          "o",
+          "k",
+          "o"
+        ]
+      }
+    ]
+  ],
+  "exact_exchange": {
+    "status": "open",
+    "solved": false,
+    "eligible_ground_obligations": 1,
+    "certified_lemmas": 0,
+    "lemmas": [
+      {
+        "atom": "cong(a,o,k,o)",
+        "status": "right_censored_timeout",
+        "reason": null,
+        "return_code": null,
+        "stderr_tail": null,
+        "source": "jgex_exact_elimination",
+        "elapsed_seconds": 15.029527999999118,
+        "input_sha256": null,
+        "certificate_sha256": null,
+        "related_native_facts": []
+      }
+    ],
+    "hypergraph_proofs": []
+  },
+  "solved": false,
+  "acceptance_rule": "count solved only when an exact certificate is replayed into the typed goal; FormalGeo frontier extraction alone is not a solve",
+  "elapsed_seconds": 20.078250699996715
+}

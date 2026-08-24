@@ -1,0 +1,5227 @@
+{
+  "experiment": "hageo_independent_n_round_pass_at_k_no_llm",
+  "artifact_schema_version": 2,
+  "reproducibility": {
+    "python": {
+      "executable": "C:/Users/81808/.cache/mortra-research-sources/Newclid/.venv/Scripts/python.exe",
+      "version": "3.12.10",
+      "pythonhashseed": null
+    },
+    "dataset": {
+      "path": "C:/Users/81808/.cache/mortra-research-sources/GenesisGeo/benchmarks/hageo_409.txt",
+      "sha256": "55aa45dd16a1b69eaf612036468dbf3f62e73b654c0e3bb1a23fd3e5e3ed2368"
+    },
+    "yuclid": {
+      "path": "C:/Users/81808/.cache/mortra-research-sources/Newclid/.venv/Scripts/yuclid.exe",
+      "sha256": "dc40a72767c15a90b48471619a0b00734b611eeecfc9c7815328ae0eae4f1397"
+    },
+    "runtime_path": "C:/Users/81808/.cache/mortra-research-sources/boost_1_88_0/lib64-msvc-14.3",
+    "newclid_module": "C:/Users/81808/.cache/mortra-research-sources/Newclid/newclid/src/newclid/__init__.py",
+    "mortra_sources": {
+      "scripts/experiment_hageo_passk.py": "955a23ac9f6a1701b75b15516e63c5ab664d1dac83e17c381badddca2fe3b6c3",
+      "scripts/experiment_newclid_construction_stalk.py": "c3bb717adf04b84b72e36fe86b97010ef95efa690e40250a89dd5aaecb02f736",
+      "worker/backend/hageo_search_control.py": "f1b259d9b7930269269adfe9b6bf3b47777e7f797b19f654939622b1221c2d08",
+      "worker/backend/geometry_proof_hypergraph.py": "3f0d809bb654e6ce1e569b9e630cff3bead2d634eb2aaf461f93d81062d3c235",
+      "worker/backend/yuclid_native_verifier.py": "173799bdb056d5f4935cf4f18e2c2a0489b4ea290c9fe05ffd4fc150d03623a9"
+    }
+  },
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_dataset_auxiliary_clauses": false,
+    "uses_problem_id_in_search": false,
+    "uses_expected_answer": false,
+    "trajectory_policy": "typed_contract_reverse_unification_residual_portfolio",
+    "ddAR_calls": "baseline_plus_native_shortlist_feedback_with_terminal_reuse",
+    "rounds_n": 6,
+    "attempts_k": 2,
+    "attempt_offset": 0,
+    "workers": 2,
+    "seed": 0,
+    "per_family_limit": 4,
+    "incidence_oversample_per_family": 8,
+    "incidence_preselect_limit": 64,
+    "incidence_workers": 1,
+    "candidate_limit": 64,
+    "candidate_policy": "contract-portfolio",
+    "rank_temperature": 2.0,
+    "incremental_prefix": true,
+    "feedback_candidates": 2,
+    "feedback_workers": 2,
+    "max_verification_concurrency": 2,
+    "ar_profile": "all",
+    "proof_dag_specialist_budget": {
+      "per_family_candidates": 4,
+      "depth": 3,
+      "fragments": 16,
+      "initial_states_per_candidate": 16,
+      "states_per_task": 64,
+      "reserved_consensus": 4,
+      "reserved_family_frontier": true
+    },
+    "truth_plane": "yuclid_native_certificate_replay_only",
+    "terminal_credit_control_only": false,
+    "terminal_credit_ledger_input": null,
+    "terminal_credit_ledger_input_sha256": null,
+    "terminal_credit_ledger_frozen": false
+  },
+  "problem_name": "2007CMOp4",
+  "normalization": {
+    "rewritten_constructions": 0,
+    "unchanged_constructions": 12,
+    "unresolved_constructions": 0
+  },
+  "baseline_solved": false,
+  "baseline_proof_residual": {
+    "open_relation_demands": 16,
+    "backward_obligations": 24,
+    "ar_supported_goals": 1,
+    "ar_closed_goals": 0,
+    "ar_residual_support": 2,
+    "ar_residual_l1": 2.0,
+    "ar_known_rank": 48,
+    "parent_relation_demands": 0,
+    "retained_parent_demands": 0,
+    "closed_parent_demands": 0,
+    "closed_parent_obligations": [],
+    "new_native_facts": 3477,
+    "introduced_relation_demands": 16
+  },
+  "mmt_exact_coordination": null,
+  "solved": false,
+  "pass_at_k": false,
+  "first_solved_attempt": null,
+  "unique_paths": 2,
+  "completed_attempts": 2,
+  "execution_errors": 0,
+  "elapsed_seconds": 486.77718829999503,
+  "attempt_results": [
+    {
+      "attempt": 0,
+      "status": "unsolved",
+      "solved": false,
+      "rounds_completed": 6,
+      "path": [
+        "on_pline(a,i,o)->g",
+        "intersection_lp(a,c,g,m,n)->h",
+        "mirror(a,c)->j",
+        "on_circle(c,h)->k",
+        "mirror(h,c)->l",
+        "on_circle(c,a)->r"
+      ],
+      "rounds": [
+        {
+          "round": 1,
+          "candidate_extension_seconds": 10.351014799998666,
+          "enumerated": 368,
+          "incidence_checked": 62,
+          "heuristic_candidates": 1,
+          "typed_construction_contracts": {
+            "enabled": true,
+            "truth_plane": "candidate_proposal_only_native_replay_required",
+            "obligation_branch_count": 24,
+            "witness_obligations": 4,
+            "matched_obligations": 4,
+            "matched_contracts": 20,
+            "raw_generated_candidates": 460,
+            "generated_candidates": 64,
+            "truncated_contracts": 10
+          },
+          "eligible_pool": 62,
+          "ranked_candidates": [
+            "on_pline(a,i,o)->g",
+            "midpoint(i,a)->g",
+            "on_tline(a,i,o)->g",
+            "mirror(a,i)->g",
+            "eqangle3(f,n,a,b,i)->g",
+            "foot(a,i,b)->g",
+            "on_aline(b,i,a,p,m)->g",
+            "circle(i,a,b)->g",
+            "orthocenter(i,a,b)->g",
+            "parallelogram(a,b,i)->g",
+            "reflect(a,i,b)->g",
+            "angle_bisector(a,b,i)->g",
+            "intersection_ll(i,b,a,c)->g",
+            "angle_mirror(a,b,i)->g",
+            "circumcenter(i,a,b)->g",
+            "eqdistance(a,b,i)->g",
+            "eqangle2(a,b,i)->g",
+            "incenter(i,a,b)->g",
+            "excenter(a,b,i)->g",
+            "shift(a,b,i)->g",
+            "intersection_cc(a,b,i)->g",
+            "intersection_lc(a,b,i)->g",
+            "on_circum(i,a,b)->g",
+            "on_line(i,a)->g",
+            "intersection_pp(a,i,b,b,i,a)->g",
+            "intersection_tt(a,i,b,b,i,a)->g",
+            "on_bline(i,a)->g",
+            "lc_tangent(a,i)->g",
+            "on_circle(a,i)->g",
+            "nsquare(a,i)->g",
+            "on_dia(i,a)->g",
+            "psquare(a,i)->g",
+            "between_bound(a,i)->g",
+            "eq_triangle(i,a)->g",
+            "iso_triangle_vertex(i,a)->g",
+            "iso_triangle_vertex_angle(i,a)->g",
+            "on_pline(a,m,n)->g",
+            "on_pline(a,n,m)->g",
+            "on_pline(a,o,i)->g",
+            "on_pline(b,i,o)->g",
+            "on_pline(b,m,n)->g",
+            "on_pline(b,n,m)->g",
+            "on_pline(b,o,i)->g",
+            "on_pline(c,i,o)->g",
+            "on_pline(c,m,n)->g",
+            "on_pline(c,n,m)->g",
+            "on_pline(c,o,i)->g",
+            "on_pline(d,i,o)->g",
+            "on_pline(d,m,n)->g",
+            "on_pline(d,n,m)->g",
+            "on_pline(d,o,i)->g",
+            "on_pline(e,i,o)->g",
+            "on_pline(e,m,n)->g",
+            "on_pline(e,n,m)->g",
+            "on_pline(e,o,i)->g",
+            "on_pline(f,i,o)->g",
+            "on_pline(f,m,n)->g",
+            "on_pline(f,n,m)->g",
+            "on_pline(f,o,i)->g",
+            "on_pline(i,m,n)->g",
+            "on_pline(i,n,m)->g",
+            "on_pline(m,i,o)->g"
+          ],
+          "terminal_credit_ranking": [],
+          "obligation_credit_ranking": [],
+          "shortlist_channels": [
+            {
+              "candidate": "on_pline(a,i,o)->g",
+              "channel": "residual_frontier"
+            },
+            {
+              "candidate": "midpoint(i,a)->g",
+              "channel": "residual_frontier"
+            }
+          ],
+          "chosen": "on_pline(a,i,o)->g",
+          "relation_demands_in": [
+            "lequation(1/1,i,m,*,i,m,1/1,o,n,*,o,n,-1/1,i,n,*,i,n,-1/1,o,m,*,o,m,0)",
+            "lequation(1/1,i,n,*,i,n,1/1,o,m,*,o,m,-1/1,i,m,*,i,m,-1/1,o,n,*,o,n,0)",
+            "lequation(1/1,o,m,*,o,m,1/1,i,n,*,i,n,-1/1,o,n,*,o,n,-1/1,i,m,*,i,m,0)",
+            "perp(?C,?D,i,o)",
+            "para(?C,?D,m,n)",
+            "lequation(1/1,o,n,*,o,n,1/1,i,m,*,i,m,-1/1,o,m,*,o,m,-1/1,i,n,*,i,n,0)",
+            "lequation(1/1,m,i,*,m,i,1/1,n,o,*,n,o,-1/1,m,o,*,m,o,-1/1,n,i,*,n,i,0)",
+            "lequation(1/1,n,i,*,n,i,1/1,m,o,*,m,o,-1/1,n,o,*,n,o,-1/1,m,i,*,m,i,0)",
+            "lequation(1/1,m,o,*,m,o,1/1,n,i,*,n,i,-1/1,m,i,*,m,i,-1/1,n,o,*,n,o,0)",
+            "lequation(1/1,n,o,*,n,o,1/1,m,i,*,m,i,-1/1,n,i,*,n,i,-1/1,m,o,*,m,o,0)",
+            "perp(i,m,n,o)",
+            "perp(i,n,m,o)",
+            "perp(?C,?D,m,n)",
+            "para(?C,?D,i,o)",
+            "ncoll(i,o,m)",
+            "ncoll(i,o,n)"
+          ],
+          "obligation_branches_in": [
+            [
+              "lequation(1/1,i,m,*,i,m,1/1,o,n,*,o,n,-1/1,i,n,*,i,n,-1/1,o,m,*,o,m,0)"
+            ],
+            [
+              "lequation(1/1,i,n,*,i,n,1/1,o,m,*,o,m,-1/1,i,m,*,i,m,-1/1,o,n,*,o,n,0)"
+            ],
+            [
+              "lequation(1/1,o,m,*,o,m,1/1,i,n,*,i,n,-1/1,o,n,*,o,n,-1/1,i,m,*,i,m,0)"
+            ],
+            [
+              "perp(?C,?D,i,o)",
+              "para(?C,?D,m,n)"
+            ],
+            [
+              "lequation(1/1,o,n,*,o,n,1/1,i,m,*,i,m,-1/1,o,m,*,o,m,-1/1,i,n,*,i,n,0)"
+            ],
+            [
+              "lequation(1/1,m,i,*,m,i,1/1,n,o,*,n,o,-1/1,m,o,*,m,o,-1/1,n,i,*,n,i,0)"
+            ],
+            [
+              "lequation(1/1,n,i,*,n,i,1/1,m,o,*,m,o,-1/1,n,o,*,n,o,-1/1,m,i,*,m,i,0)"
+            ],
+            [
+              "perp(?C,?D,i,o)",
+              "para(?C,?D,m,n)"
+            ],
+            [
+              "lequation(1/1,m,o,*,m,o,1/1,n,i,*,n,i,-1/1,m,i,*,m,i,-1/1,n,o,*,n,o,0)"
+            ],
+            [
+              "lequation(1/1,n,o,*,n,o,1/1,m,i,*,m,i,-1/1,n,i,*,n,i,-1/1,m,o,*,m,o,0)"
+            ],
+            [
+              "perp(i,m,n,o)",
+              "perp(i,n,m,o)"
+            ],
+            [
+              "perp(?C,?D,i,o)",
+              "para(?C,?D,m,n)"
+            ],
+            [
+              "perp(i,n,m,o)",
+              "perp(i,m,n,o)"
+            ],
+            [
+              "perp(i,m,n,o)",
+              "perp(i,n,m,o)"
+            ],
+            [
+              "perp(i,n,m,o)",
+              "perp(i,m,n,o)"
+            ],
+            [
+              "perp(?C,?D,i,o)",
+              "para(?C,?D,m,n)"
+            ],
+            [
+              "perp(i,n,m,o)",
+              "perp(i,m,n,o)"
+            ],
+            [
+              "perp(i,m,n,o)",
+              "perp(i,n,m,o)"
+            ],
+            [
+              "perp(i,n,m,o)",
+              "perp(i,m,n,o)"
+            ],
+            [
+              "perp(?C,?D,m,n)",
+              "para(?C,?D,i,o)"
+            ],
+            [
+              "perp(i,m,n,o)",
+              "perp(i,n,m,o)"
+            ],
+            [
+              "lequation(1/1,i,m,*,i,m,1/1,o,n,*,o,n,-1/1,i,n,*,i,n,-1/1,o,m,*,o,m,0)",
+              "ncoll(i,o,m)"
+            ],
+            [
+              "lequation(1/1,i,n,*,i,n,1/1,o,m,*,o,m,-1/1,i,m,*,i,m,-1/1,o,n,*,o,n,0)",
+              "ncoll(i,o,n)"
+            ],
+            [
+              "perp(?C,?D,m,n)",
+              "para(?C,?D,i,o)"
+            ]
+          ],
+          "relation_demands_observed": [
+            "perp(a,g,m,n)"
+          ],
+          "relation_demands_next": [
+            "perp(a,g,m,n)"
+          ],
+          "residual_feedback_applied": true,
+          "native_feedback": [
+            {
+              "candidate": "on_pline(a,i,o)->g",
+              "static_rank": 0,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 15,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 49,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 16,
+                "retained_parent_demands": 13,
+                "closed_parent_demands": 1,
+                "closed_parent_obligations": [
+                  "para(?C,?D,i,o)"
+                ],
+                "new_native_facts": 349,
+                "introduced_relation_demands": 0,
+                "persistent_branch_feedback_applied": true,
+                "persistent_branch_count": 1,
+                "persistent_branch_matched_atoms": 2,
+                "persistent_branch_fully_closed": 0
+              },
+              "branch_reduction": {
+                "matched_atom_count": 2,
+                "progressed_branch_count": 1,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": [
+                  [
+                    "perp(a,g,m,n)"
+                  ]
+                ]
+              },
+              "error": null,
+              "selected": true
+            },
+            {
+              "candidate": "midpoint(i,a)->g",
+              "static_rank": 1,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 16,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 55,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 16,
+                "retained_parent_demands": 16,
+                "closed_parent_demands": 0,
+                "closed_parent_obligations": [],
+                "new_native_facts": 1563,
+                "introduced_relation_demands": 0
+              },
+              "branch_reduction": {
+                "matched_atom_count": 0,
+                "progressed_branch_count": 0,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": []
+              },
+              "error": null,
+              "selected": false
+            }
+          ],
+          "coordination": null
+        },
+        {
+          "round": 2,
+          "candidate_extension_seconds": 6.833151899998484,
+          "enumerated": 624,
+          "incidence_checked": 59,
+          "heuristic_candidates": 0,
+          "typed_construction_contracts": {
+            "enabled": true,
+            "truth_plane": "candidate_proposal_only_native_replay_required",
+            "obligation_branch_count": 14,
+            "witness_obligations": 26,
+            "matched_obligations": 21,
+            "matched_contracts": 112,
+            "raw_generated_candidates": 2262,
+            "generated_candidates": 331,
+            "truncated_contracts": 52
+          },
+          "eligible_pool": 59,
+          "ranked_candidates": [
+            "intersection_lp(a,c,g,m,n)->h",
+            "midpoint(b,g)->h",
+            "on_line(a,g)->h",
+            "mirror(b,g)->h",
+            "circle(b,a,g)->h",
+            "foot(b,a,g)->h",
+            "on_pline(a,g,m)->h",
+            "on_tline(a,g,m)->h",
+            "orthocenter(a,b,g)->h",
+            "between_bound(a,c)->h",
+            "reflect(b,a,g)->h",
+            "angle_bisector(a,b,g)->h",
+            "angle_mirror(a,b,g)->h",
+            "eqdistance(a,b,g)->h",
+            "intersection_lc(a,b,g)->h",
+            "incenter(a,b,g)->h",
+            "parallelogram(a,b,g)->h",
+            "excenter(a,b,g)->h",
+            "shift(a,b,g)->h",
+            "circumcenter(a,b,g)->h",
+            "eqangle2(a,b,g)->h",
+            "intersection_cc(a,b,g)->h",
+            "on_circum(a,b,g)->h",
+            "on_bline(b,g)->h",
+            "on_circle(b,g)->h",
+            "on_dia(b,g)->h",
+            "lc_tangent(b,g)->h",
+            "nsquare(b,g)->h",
+            "intersection_pp(a,i,b,b,i,a)->h",
+            "intersection_tt(a,i,b,b,i,a)->h",
+            "psquare(b,g)->h",
+            "eq_triangle(b,g)->h",
+            "iso_triangle_vertex(b,g)->h",
+            "iso_triangle_vertex_angle(b,g)->h",
+            "on_aline(a,i,b,q,n)->h",
+            "eqangle3(a,i,b,d,o)->h",
+            "intersection_lp(a,d,g,m,n)->h",
+            "intersection_lp(a,e,g,m,n)->h",
+            "intersection_lp(a,f,g,m,n)->h",
+            "intersection_lp(a,i,g,m,n)->h",
+            "intersection_lp(a,m,g,m,n)->h",
+            "intersection_lp(a,n,g,m,n)->h",
+            "intersection_lp(a,o,g,m,n)->h",
+            "intersection_lp(a,p,g,m,n)->h",
+            "intersection_lp(a,q,g,m,n)->h",
+            "intersection_lp(b,g,a,m,n)->h",
+            "intersection_lp(c,g,a,m,n)->h",
+            "intersection_lp(a,b,g,m,n)->h",
+            "on_line(b,a)->h",
+            "on_line(c,a)->h",
+            "on_line(d,a)->h",
+            "on_line(d,g)->h",
+            "on_line(e,a)->h",
+            "on_line(f,a)->h",
+            "on_line(i,a)->h",
+            "on_line(i,g)->h",
+            "on_line(m,a)->h",
+            "on_line(m,g)->h",
+            "on_line(n,a)->h"
+          ],
+          "terminal_credit_ranking": [],
+          "obligation_credit_ranking": [],
+          "shortlist_channels": [
+            {
+              "candidate": "intersection_lp(a,c,g,m,n)->h",
+              "channel": "residual_frontier"
+            },
+            {
+              "candidate": "midpoint(b,g)->h",
+              "channel": "residual_frontier"
+            }
+          ],
+          "chosen": "intersection_lp(a,c,g,m,n)->h",
+          "relation_demands_in": [
+            "para(?h0,?h1,m,n)",
+            "perp(?h0,?h1,a,g)",
+            "lequation(1/1,a,m,*,a,m,1/1,g,?h0,*,g,?h0,-1/1,a,?h0,*,a,?h0,-1/1,g,m,*,g,m,0)",
+            "para(?h0,m,m,n)",
+            "lequation(1/1,a,n,*,a,n,1/1,g,?h0,*,g,?h0,-1/1,a,?h0,*,a,?h0,-1/1,g,n,*,g,n,0)",
+            "para(?h0,n,m,n)",
+            "coll(?h0,m,n)",
+            "perp(?h0,m,a,g)",
+            "perp(?h0,n,a,g)",
+            "perp(?h0,?h1,i,o)",
+            "para(?h0,?h1,a,m)",
+            "perp(?h0,?h1,g,n)",
+            "perp(a,n,g,m)",
+            "para(?h0,?h1,a,n)",
+            "perp(?h0,?h1,g,m)",
+            "perp(a,m,g,n)",
+            "para(?h0,?h1,g,m)",
+            "perp(?h0,?h1,a,n)",
+            "para(?h0,?h1,g,n)",
+            "perp(?h0,?h1,a,m)",
+            "circle(?h0,?h1,a,g)",
+            "coll(?h0,?h1,g)",
+            "para(?h1,a,m,n)",
+            "circle(?h0,?h1,g,a)",
+            "coll(?h0,?h1,a)",
+            "para(?h1,g,m,n)",
+            "circle(?h0,a,g,?h1)",
+            "circle(?h0,g,a,?h1)"
+          ],
+          "obligation_branches_in": [
+            [
+              "para(?h0,?h1,m,n)",
+              "perp(?h0,?h1,a,g)"
+            ],
+            [
+              "lequation(1/1,a,m,*,a,m,1/1,g,?h0,*,g,?h0,-1/1,a,?h0,*,a,?h0,-1/1,g,m,*,g,m,0)",
+              "para(?h0,m,m,n)"
+            ],
+            [
+              "lequation(1/1,a,n,*,a,n,1/1,g,?h0,*,g,?h0,-1/1,a,?h0,*,a,?h0,-1/1,g,n,*,g,n,0)",
+              "para(?h0,n,m,n)"
+            ],
+            [
+              "coll(?h0,m,n)",
+              "perp(?h0,m,a,g)"
+            ],
+            [
+              "coll(?h0,m,n)",
+              "perp(?h0,n,a,g)"
+            ],
+            [
+              "para(?h0,?h1,m,n)",
+              "perp(?h0,?h1,i,o)"
+            ],
+            [
+              "para(?h0,?h1,a,m)",
+              "perp(?h0,?h1,g,n)",
+              "perp(a,n,g,m)"
+            ],
+            [
+              "para(?h0,?h1,a,n)",
+              "perp(?h0,?h1,g,m)",
+              "perp(a,m,g,n)"
+            ],
+            [
+              "para(?h0,?h1,g,m)",
+              "perp(?h0,?h1,a,n)",
+              "perp(a,m,g,n)"
+            ],
+            [
+              "para(?h0,?h1,g,n)",
+              "perp(?h0,?h1,a,m)",
+              "perp(a,n,g,m)"
+            ],
+            [
+              "circle(?h0,?h1,a,g)",
+              "coll(?h0,?h1,g)",
+              "para(?h1,a,m,n)"
+            ],
+            [
+              "circle(?h0,?h1,g,a)",
+              "coll(?h0,?h1,a)",
+              "para(?h1,g,m,n)"
+            ],
+            [
+              "circle(?h0,a,g,?h1)",
+              "coll(?h0,?h1,a)",
+              "para(?h1,g,m,n)"
+            ],
+            [
+              "circle(?h0,g,a,?h1)",
+              "coll(?h0,?h1,g)",
+              "para(?h1,a,m,n)"
+            ]
+          ],
+          "relation_demands_observed": [
+            "perp(a,g,g,h)",
+            "perp(g,h,i,o)",
+            "circle(c,h,g,a)",
+            "circle(c,a,g,h)"
+          ],
+          "relation_demands_next": [
+            "perp(a,g,g,h)",
+            "perp(g,h,i,o)",
+            "circle(c,h,g,a)",
+            "circle(c,a,g,h)"
+          ],
+          "residual_feedback_applied": true,
+          "native_feedback": [
+            {
+              "candidate": "intersection_lp(a,c,g,m,n)->h",
+              "static_rank": 0,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 14,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 55,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 28,
+                "retained_parent_demands": 4,
+                "closed_parent_demands": 4,
+                "closed_parent_obligations": [
+                  "para(?h0,?h1,m,n)",
+                  "para(?h0,?h1,a,m)",
+                  "coll(?h0,?h1,a)",
+                  "para(?h1,g,m,n)"
+                ],
+                "new_native_facts": 1178,
+                "introduced_relation_demands": 10,
+                "persistent_branch_feedback_applied": true,
+                "persistent_branch_count": 4,
+                "persistent_branch_matched_atoms": 6,
+                "persistent_branch_fully_closed": 0
+              },
+              "branch_reduction": {
+                "matched_atom_count": 6,
+                "progressed_branch_count": 4,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": [
+                  [
+                    "perp(a,g,g,h)"
+                  ],
+                  [
+                    "perp(g,h,i,o)"
+                  ],
+                  [
+                    "circle(c,h,g,a)"
+                  ],
+                  [
+                    "circle(c,a,g,h)"
+                  ]
+                ]
+              },
+              "error": null,
+              "selected": true
+            },
+            {
+              "candidate": "midpoint(b,g)->h",
+              "static_rank": 1,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 15,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 52,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 28,
+                "retained_parent_demands": 5,
+                "closed_parent_demands": 1,
+                "closed_parent_obligations": [
+                  "coll(?h0,?h1,g)"
+                ],
+                "new_native_facts": 529,
+                "introduced_relation_demands": 12
+              },
+              "branch_reduction": {
+                "matched_atom_count": 0,
+                "progressed_branch_count": 0,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": []
+              },
+              "error": null,
+              "selected": false
+            }
+          ],
+          "coordination": null
+        },
+        {
+          "round": 3,
+          "candidate_extension_seconds": 31.55179219999991,
+          "enumerated": 522,
+          "incidence_checked": 58,
+          "heuristic_candidates": 0,
+          "typed_construction_contracts": {
+            "enabled": true,
+            "truth_plane": "candidate_proposal_only_native_replay_required",
+            "obligation_branch_count": 64,
+            "witness_obligations": 72,
+            "matched_obligations": 14,
+            "matched_contracts": 127,
+            "raw_generated_candidates": 1091,
+            "generated_candidates": 220,
+            "truncated_contracts": 25
+          },
+          "eligible_pool": 58,
+          "ranked_candidates": [
+            "mirror(a,c)->j",
+            "midpoint(i,g)->j",
+            "on_circle(c,a)->j",
+            "eqdistance(a,c,h)->j",
+            "circle(i,a,g)->j",
+            "on_circum(b,a,h)->j",
+            "orthocenter(i,a,g)->j",
+            "nsquare(c,a)->j",
+            "reflect(i,a,g)->j",
+            "psquare(c,a)->j",
+            "intersection_ll(i,b,a,g)->j",
+            "intersection_lc(a,h,c)->j",
+            "angle_bisector(a,g,i)->j",
+            "lc_tangent(a,h)->j",
+            "angle_mirror(a,g,i)->j",
+            "on_line(a,c)->j",
+            "between_bound(a,c)->j",
+            "incenter(i,a,g)->j",
+            "on_tline(g,a,i)->j",
+            "excenter(a,g,i)->j",
+            "on_pline(g,a,i)->j",
+            "shift(a,g,i)->j",
+            "eqangle3(a,g,b,i,o)->j",
+            "parallelogram(a,g,i)->j",
+            "on_aline(a,g,i,b,o)->j",
+            "circumcenter(i,a,g)->j",
+            "on_bline(i,g)->j",
+            "on_dia(i,g)->j",
+            "intersection_pp(a,i,b,b,i,a)->j",
+            "eqangle2(a,g,i)->j",
+            "eq_triangle(i,g)->j",
+            "iso_triangle_vertex(i,g)->j",
+            "iso_triangle_vertex_angle(i,g)->j",
+            "mirror(h,c)->j",
+            "on_circle(c,h)->j",
+            "eqdistance(a,h,c)->j",
+            "eqdistance(b,a,c)->j",
+            "eqdistance(b,c,a)->j",
+            "eqdistance(b,c,h)->j",
+            "eqdistance(b,h,c)->j",
+            "eqdistance(d,a,c)->j",
+            "eqdistance(d,c,a)->j",
+            "eqdistance(d,c,h)->j",
+            "eqdistance(d,h,c)->j",
+            "eqdistance(e,a,c)->j",
+            "eqdistance(e,c,a)->j",
+            "eqdistance(e,c,h)->j",
+            "eqdistance(e,h,c)->j",
+            "eqdistance(f,a,c)->j",
+            "eqdistance(f,c,a)->j",
+            "eqdistance(f,c,h)->j",
+            "eqdistance(f,h,c)->j",
+            "eqdistance(g,a,c)->j",
+            "eqdistance(g,c,a)->j",
+            "eqdistance(g,c,h)->j",
+            "eqdistance(g,h,c)->j",
+            "eqdistance(h,a,c)->j",
+            "eqdistance(h,c,a)->j"
+          ],
+          "terminal_credit_ranking": [],
+          "obligation_credit_ranking": [],
+          "shortlist_channels": [
+            {
+              "candidate": "mirror(a,c)->j",
+              "channel": "residual_frontier"
+            },
+            {
+              "candidate": "midpoint(i,g)->j",
+              "channel": "residual_frontier"
+            }
+          ],
+          "chosen": "mirror(a,c)->j",
+          "relation_demands_in": [
+            "perp(a,g,g,h)",
+            "perp(g,h,i,o)",
+            "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+            "midp(c,a,?h0)",
+            "perp(?h0,h,a,h)",
+            "midp(c,h,?h0)",
+            "perp(?h0,a,a,h)",
+            "contri(a,c,?h0,c,h,?h1)",
+            "contri(a,c,?h0,h,c,?h1)",
+            "contri(c,a,?h0,c,h,?h1)",
+            "contri(c,a,?h0,h,c,?h1)",
+            "contri(c,h,?h0,a,c,?h1)",
+            "contri(c,h,?h0,c,a,?h1)",
+            "contri(h,c,?h0,a,c,?h1)",
+            "contri(h,c,?h0,c,a,?h1)",
+            "contrir(a,c,?h0,c,h,?h1)",
+            "contrir(a,c,?h0,h,c,?h1)",
+            "contrir(c,a,?h0,c,h,?h1)",
+            "contrir(c,a,?h0,h,c,?h1)",
+            "contrir(c,h,?h0,a,c,?h1)",
+            "contrir(c,h,?h0,c,a,?h1)",
+            "contrir(h,c,?h0,a,c,?h1)",
+            "contrir(h,c,?h0,c,a,?h1)",
+            "circle(c,a,?h0,?h1)",
+            "cyclic(?h0,?h1,a,h)",
+            "circle(c,h,?h0,?h1)",
+            "cong(?h0,?h1,a,c)",
+            "cong(?h0,?h1,c,h)",
+            "cong(?h0,c,a,c)",
+            "cong(?h1,c,c,h)",
+            "npara(a,?h0,h,?h1)",
+            "cong(?h0,c,c,h)",
+            "cong(?h1,c,a,c)",
+            "npara(h,?h0,a,?h1)",
+            "circle(c,h,g,a)",
+            "circle(?h0,a,a,h)",
+            "coll(?h0,a,h)",
+            "midp(c,h,a)",
+            "circle(?h0,a,h,a)",
+            "coll(?h0,a,a)",
+            "midp(c,h,h)",
+            "circle(?h0,a,h,h)",
+            "midp(c,a,h)",
+            "circle(?h0,h,a,a)",
+            "circle(?h0,h,a,h)",
+            "coll(?h0,h,h)",
+            "midp(c,a,a)",
+            "circle(?h0,h,h,a)",
+            "coll(?h0,a,c)",
+            "coll(?h0,c,h)",
+            "lequation(1/1,?h0,a,*,?h0,a,1/1,a,h,*,a,h,-1/1,?h0,h,*,?h0,h,-1/1,a,a,*,a,a,0)",
+            "ncoll(?h0,a,a)",
+            "lequation(1/1,?h0,a,*,?h0,a,1/1,h,h,*,h,h,-1/1,?h0,h,*,?h0,h,-1/1,h,a,*,h,a,0)",
+            "ncoll(?h0,h,a)",
+            "lequation(1/1,?h0,h,*,?h0,h,1/1,a,a,*,a,a,-1/1,?h0,a,*,?h0,a,-1/1,a,h,*,a,h,0)",
+            "ncoll(?h0,a,h)",
+            "lequation(1/1,?h0,h,*,?h0,h,1/1,h,a,*,h,a,-1/1,?h0,a,*,?h0,a,-1/1,h,h,*,h,h,0)",
+            "ncoll(?h0,h,h)",
+            "lequation(1/1,a,?h0,*,a,?h0,1/1,h,a,*,h,a,-1/1,a,a,*,a,a,-1/1,h,?h0,*,h,?h0,0)",
+            "ncoll(a,h,?h0)",
+            "lequation(1/1,a,?h0,*,a,?h0,1/1,h,h,*,h,h,-1/1,a,h,*,a,h,-1/1,h,?h0,*,h,?h0,0)",
+            "lequation(1/1,a,a,*,a,a,1/1,?h0,h,*,?h0,h,-1/1,a,h,*,a,h,-1/1,?h0,a,*,?h0,a,0)",
+            "ncoll(a,?h0,a)",
+            "lequation(1/1,a,a,*,a,a,1/1,h,?h0,*,h,?h0,-1/1,a,?h0,*,a,?h0,-1/1,h,a,*,h,a,0)",
+            "ncoll(a,h,a)",
+            "lequation(1/1,a,h,*,a,h,1/1,?h0,a,*,?h0,a,-1/1,a,a,*,a,a,-1/1,?h0,h,*,?h0,h,0)",
+            "ncoll(a,?h0,h)",
+            "lequation(1/1,a,h,*,a,h,1/1,h,?h0,*,h,?h0,-1/1,a,?h0,*,a,?h0,-1/1,h,h,*,h,h,0)",
+            "ncoll(a,h,h)",
+            "lequation(1/1,h,?h0,*,h,?h0,1/1,a,a,*,a,a,-1/1,h,a,*,h,a,-1/1,a,?h0,*,a,?h0,0)",
+            "ncoll(h,a,?h0)",
+            "lequation(1/1,h,?h0,*,h,?h0,1/1,a,h,*,a,h,-1/1,h,h,*,h,h,-1/1,a,?h0,*,a,?h0,0)",
+            "lequation(1/1,h,a,*,h,a,1/1,?h0,h,*,?h0,h,-1/1,h,h,*,h,h,-1/1,?h0,a,*,?h0,a,0)",
+            "ncoll(h,?h0,a)",
+            "lequation(1/1,h,a,*,h,a,1/1,a,?h0,*,a,?h0,-1/1,h,?h0,*,h,?h0,-1/1,a,a,*,a,a,0)",
+            "ncoll(h,a,a)",
+            "lequation(1/1,h,h,*,h,h,1/1,?h0,a,*,?h0,a,-1/1,h,a,*,h,a,-1/1,?h0,h,*,?h0,h,0)",
+            "ncoll(h,?h0,h)",
+            "lequation(1/1,h,h,*,h,h,1/1,a,?h0,*,a,?h0,-1/1,h,?h0,*,h,?h0,-1/1,a,h,*,a,h,0)",
+            "ncoll(h,a,h)",
+            "perp(?h0,a,h,h)",
+            "ncoll(h,h,?h0)",
+            "ncoll(h,h,a)",
+            "perp(?h0,h,a,a)",
+            "ncoll(a,a,?h0)",
+            "ncoll(a,a,h)"
+          ],
+          "obligation_branches_in": [
+            [
+              "perp(a,g,g,h)"
+            ],
+            [
+              "perp(g,h,i,o)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "midp(c,a,?h0)",
+              "perp(?h0,h,a,h)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "midp(c,h,?h0)",
+              "perp(?h0,a,a,h)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contri(a,c,?h0,c,h,?h1)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contri(a,c,?h0,h,c,?h1)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contri(c,a,?h0,c,h,?h1)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contri(c,a,?h0,h,c,?h1)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contri(c,h,?h0,a,c,?h1)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contri(c,h,?h0,c,a,?h1)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contri(h,c,?h0,a,c,?h1)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contri(h,c,?h0,c,a,?h1)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contrir(a,c,?h0,c,h,?h1)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contrir(a,c,?h0,h,c,?h1)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contrir(c,a,?h0,c,h,?h1)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contrir(c,a,?h0,h,c,?h1)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contrir(c,h,?h0,a,c,?h1)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contrir(c,h,?h0,c,a,?h1)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contrir(h,c,?h0,a,c,?h1)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contrir(h,c,?h0,c,a,?h1)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "circle(c,a,?h0,?h1)",
+              "cyclic(?h0,?h1,a,h)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "circle(c,h,?h0,?h1)",
+              "cyclic(?h0,?h1,a,h)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "cong(?h0,?h1,a,c)",
+              "cong(?h0,?h1,c,h)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "cong(?h0,c,a,c)",
+              "cong(?h1,c,c,h)",
+              "cyclic(?h0,?h1,a,h)",
+              "npara(a,?h0,h,?h1)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "cong(?h0,c,c,h)",
+              "cong(?h1,c,a,c)",
+              "cyclic(?h0,?h1,a,h)",
+              "npara(h,?h0,a,?h1)"
+            ],
+            [
+              "circle(c,h,g,a)",
+              "midp(c,a,?h0)",
+              "perp(?h0,h,a,h)"
+            ],
+            [
+              "circle(c,h,g,a)",
+              "midp(c,h,?h0)",
+              "perp(?h0,a,a,h)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "circle(?h0,a,a,h)",
+              "coll(?h0,a,h)",
+              "midp(c,h,a)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "circle(?h0,a,h,a)",
+              "coll(?h0,a,a)",
+              "midp(c,h,h)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "circle(?h0,a,h,h)",
+              "coll(?h0,a,h)",
+              "midp(c,a,h)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "circle(?h0,h,a,a)",
+              "coll(?h0,a,h)",
+              "midp(c,h,a)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "circle(?h0,h,a,h)",
+              "coll(?h0,h,h)",
+              "midp(c,a,a)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "circle(?h0,h,h,a)",
+              "coll(?h0,a,h)",
+              "midp(c,a,h)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "coll(?h0,a,c)",
+              "cong(?h0,c,a,c)",
+              "perp(?h0,h,a,h)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "coll(?h0,c,h)",
+              "cong(?h0,c,c,h)",
+              "perp(?h0,a,a,h)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "lequation(1/1,?h0,a,*,?h0,a,1/1,a,h,*,a,h,-1/1,?h0,h,*,?h0,h,-1/1,a,a,*,a,a,0)",
+              "midp(c,h,?h0)",
+              "ncoll(?h0,a,a)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "lequation(1/1,?h0,a,*,?h0,a,1/1,h,h,*,h,h,-1/1,?h0,h,*,?h0,h,-1/1,h,a,*,h,a,0)",
+              "midp(c,a,?h0)",
+              "ncoll(?h0,h,a)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "lequation(1/1,?h0,h,*,?h0,h,1/1,a,a,*,a,a,-1/1,?h0,a,*,?h0,a,-1/1,a,h,*,a,h,0)",
+              "midp(c,h,?h0)",
+              "ncoll(?h0,a,h)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "lequation(1/1,?h0,h,*,?h0,h,1/1,h,a,*,h,a,-1/1,?h0,a,*,?h0,a,-1/1,h,h,*,h,h,0)",
+              "midp(c,a,?h0)",
+              "ncoll(?h0,h,h)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "lequation(1/1,a,?h0,*,a,?h0,1/1,h,a,*,h,a,-1/1,a,a,*,a,a,-1/1,h,?h0,*,h,?h0,0)",
+              "midp(c,h,?h0)",
+              "ncoll(a,h,?h0)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "lequation(1/1,a,?h0,*,a,?h0,1/1,h,h,*,h,h,-1/1,a,h,*,a,h,-1/1,h,?h0,*,h,?h0,0)",
+              "midp(c,a,?h0)",
+              "ncoll(a,h,?h0)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "lequation(1/1,a,a,*,a,a,1/1,?h0,h,*,?h0,h,-1/1,a,h,*,a,h,-1/1,?h0,a,*,?h0,a,0)",
+              "midp(c,h,?h0)",
+              "ncoll(a,?h0,a)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "lequation(1/1,a,a,*,a,a,1/1,h,?h0,*,h,?h0,-1/1,a,?h0,*,a,?h0,-1/1,h,a,*,h,a,0)",
+              "midp(c,h,?h0)",
+              "ncoll(a,h,a)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "lequation(1/1,a,h,*,a,h,1/1,?h0,a,*,?h0,a,-1/1,a,a,*,a,a,-1/1,?h0,h,*,?h0,h,0)",
+              "midp(c,h,?h0)",
+              "ncoll(a,?h0,h)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "lequation(1/1,a,h,*,a,h,1/1,h,?h0,*,h,?h0,-1/1,a,?h0,*,a,?h0,-1/1,h,h,*,h,h,0)",
+              "midp(c,a,?h0)",
+              "ncoll(a,h,h)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "lequation(1/1,h,?h0,*,h,?h0,1/1,a,a,*,a,a,-1/1,h,a,*,h,a,-1/1,a,?h0,*,a,?h0,0)",
+              "midp(c,h,?h0)",
+              "ncoll(h,a,?h0)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "lequation(1/1,h,?h0,*,h,?h0,1/1,a,h,*,a,h,-1/1,h,h,*,h,h,-1/1,a,?h0,*,a,?h0,0)",
+              "midp(c,a,?h0)",
+              "ncoll(h,a,?h0)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "lequation(1/1,h,a,*,h,a,1/1,?h0,h,*,?h0,h,-1/1,h,h,*,h,h,-1/1,?h0,a,*,?h0,a,0)",
+              "midp(c,a,?h0)",
+              "ncoll(h,?h0,a)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "lequation(1/1,h,a,*,h,a,1/1,a,?h0,*,a,?h0,-1/1,h,?h0,*,h,?h0,-1/1,a,a,*,a,a,0)",
+              "midp(c,h,?h0)",
+              "ncoll(h,a,a)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "lequation(1/1,h,h,*,h,h,1/1,?h0,a,*,?h0,a,-1/1,h,a,*,h,a,-1/1,?h0,h,*,?h0,h,0)",
+              "midp(c,a,?h0)",
+              "ncoll(h,?h0,h)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "lequation(1/1,h,h,*,h,h,1/1,a,?h0,*,a,?h0,-1/1,h,?h0,*,h,?h0,-1/1,a,h,*,a,h,0)",
+              "midp(c,a,?h0)",
+              "ncoll(h,a,h)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "midp(c,a,?h0)",
+              "ncoll(?h0,a,h)",
+              "perp(?h0,a,h,h)",
+              "perp(?h0,h,a,h)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "midp(c,a,?h0)",
+              "ncoll(?h0,h,a)",
+              "perp(?h0,a,h,h)",
+              "perp(?h0,h,a,h)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "midp(c,a,?h0)",
+              "ncoll(a,?h0,h)",
+              "perp(?h0,a,h,h)",
+              "perp(?h0,h,a,h)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "midp(c,a,?h0)",
+              "ncoll(a,h,?h0)",
+              "perp(?h0,a,h,h)",
+              "perp(?h0,h,a,h)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "midp(c,a,?h0)",
+              "ncoll(h,?h0,h)",
+              "perp(?h0,a,h,h)",
+              "perp(?h0,h,a,h)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "midp(c,a,?h0)",
+              "ncoll(h,a,h)",
+              "perp(?h0,a,h,h)",
+              "perp(?h0,h,a,h)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "midp(c,a,?h0)",
+              "ncoll(h,h,?h0)",
+              "perp(?h0,a,h,h)",
+              "perp(?h0,h,a,h)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "midp(c,a,?h0)",
+              "ncoll(h,h,a)",
+              "perp(?h0,a,h,h)",
+              "perp(?h0,h,a,h)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "midp(c,h,?h0)",
+              "ncoll(?h0,a,h)",
+              "perp(?h0,a,a,h)",
+              "perp(?h0,h,a,a)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "midp(c,h,?h0)",
+              "ncoll(?h0,h,a)",
+              "perp(?h0,a,a,h)",
+              "perp(?h0,h,a,a)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "midp(c,h,?h0)",
+              "ncoll(a,?h0,a)",
+              "perp(?h0,a,a,h)",
+              "perp(?h0,h,a,a)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "midp(c,h,?h0)",
+              "ncoll(a,a,?h0)",
+              "perp(?h0,a,a,h)",
+              "perp(?h0,h,a,a)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "midp(c,h,?h0)",
+              "ncoll(a,a,h)",
+              "perp(?h0,a,a,h)",
+              "perp(?h0,h,a,a)"
+            ]
+          ],
+          "relation_demands_observed": [
+            "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+            "cong(c,h,c,j)",
+            "cong(?h1,c,c,h)",
+            "cyclic(?h1,a,h,j)",
+            "npara(a,j,h,?h1)",
+            "cong(?h0,c,c,h)",
+            "cyclic(?h0,a,h,j)",
+            "npara(h,?h0,a,j)",
+            "perp(a,h,h,j)"
+          ],
+          "relation_demands_next": [
+            "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+            "cong(c,h,c,j)",
+            "cong(?h1,c,c,h)",
+            "cyclic(?h1,a,h,j)",
+            "npara(a,j,h,?h1)",
+            "cong(?h0,c,c,h)",
+            "cyclic(?h0,a,h,j)",
+            "npara(h,?h0,a,j)",
+            "perp(a,h,h,j)"
+          ],
+          "residual_feedback_applied": true,
+          "native_feedback": [
+            {
+              "candidate": "mirror(a,c)->j",
+              "static_rank": 0,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 14,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 62,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 86,
+                "retained_parent_demands": 1,
+                "closed_parent_demands": 7,
+                "closed_parent_obligations": [
+                  "midp(c,a,?h0)",
+                  "cong(?h0,?h1,a,c)",
+                  "cong(?h0,c,a,c)",
+                  "cong(?h1,c,a,c)",
+                  "coll(?h0,a,h)",
+                  "coll(?h0,a,c)",
+                  "coll(?h0,c,h)"
+                ],
+                "new_native_facts": 1530,
+                "introduced_relation_demands": 13,
+                "persistent_branch_feedback_applied": true,
+                "persistent_branch_count": 4,
+                "persistent_branch_matched_atoms": 5,
+                "persistent_branch_fully_closed": 0
+              },
+              "branch_reduction": {
+                "matched_atom_count": 5,
+                "progressed_branch_count": 4,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": [
+                  [
+                    "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+                    "cong(c,h,c,j)"
+                  ],
+                  [
+                    "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+                    "cong(?h1,c,c,h)",
+                    "cyclic(?h1,a,h,j)",
+                    "npara(a,j,h,?h1)"
+                  ],
+                  [
+                    "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+                    "cong(?h0,c,c,h)",
+                    "cyclic(?h0,a,h,j)",
+                    "npara(h,?h0,a,j)"
+                  ],
+                  [
+                    "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+                    "perp(a,h,h,j)"
+                  ]
+                ]
+              },
+              "error": null,
+              "selected": true
+            },
+            {
+              "candidate": "midpoint(i,g)->j",
+              "static_rank": 1,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 14,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 58,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 86,
+                "retained_parent_demands": 1,
+                "closed_parent_demands": 6,
+                "closed_parent_obligations": [
+                  "ncoll(?h0,h,a)",
+                  "ncoll(?h0,a,h)",
+                  "ncoll(a,h,?h0)",
+                  "ncoll(a,?h0,h)",
+                  "ncoll(h,a,?h0)",
+                  "ncoll(h,?h0,a)"
+                ],
+                "new_native_facts": 619,
+                "introduced_relation_demands": 13
+              },
+              "branch_reduction": {
+                "matched_atom_count": 0,
+                "progressed_branch_count": 0,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": []
+              },
+              "error": null,
+              "selected": false
+            }
+          ],
+          "coordination": null
+        },
+        {
+          "round": 4,
+          "candidate_extension_seconds": 6.714753599997493,
+          "enumerated": 321,
+          "incidence_checked": 48,
+          "heuristic_candidates": 0,
+          "typed_construction_contracts": {
+            "enabled": true,
+            "truth_plane": "candidate_proposal_only_native_replay_required",
+            "obligation_branch_count": 4,
+            "witness_obligations": 6,
+            "matched_obligations": 2,
+            "matched_contracts": 24,
+            "raw_generated_candidates": 58,
+            "generated_candidates": 17,
+            "truncated_contracts": 0
+          },
+          "eligible_pool": 48,
+          "ranked_candidates": [
+            "on_circle(c,h)->k",
+            "midpoint(n,h)->k",
+            "mirror(h,c)->k",
+            "nsquare(c,h)->k",
+            "foot(b,a,j)->k",
+            "psquare(c,h)->k",
+            "circle(i,a,j)->k",
+            "intersection_ll(i,b,a,j)->k",
+            "orthocenter(i,a,j)->k",
+            "on_tline(g,a,i)->k",
+            "reflect(i,a,j)->k",
+            "on_pline(g,a,i)->k",
+            "angle_bisector(a,i,j)->k",
+            "angle_mirror(a,i,j)->k",
+            "circumcenter(i,a,j)->k",
+            "eqdistance(a,i,j)->k",
+            "incenter(i,a,j)->k",
+            "intersection_lc(a,i,j)->k",
+            "excenter(a,i,j)->k",
+            "parallelogram(a,i,j)->k",
+            "shift(a,i,j)->k",
+            "intersection_cc(b,c,h)->k",
+            "eqangle2(a,i,j)->k",
+            "on_line(n,h)->k",
+            "eq_triangle(n,h)->k",
+            "on_bline(n,h)->k",
+            "iso_triangle_vertex(n,h)->k",
+            "on_dia(n,h)->k",
+            "intersection_lp(a,b,h,i,a)->k",
+            "lc_tangent(h,n)->k",
+            "intersection_pp(a,i,b,b,i,a)->k",
+            "intersection_tt(a,i,b,b,i,a)->k",
+            "between_bound(h,n)->k",
+            "iso_triangle_vertex_angle(n,h)->k",
+            "on_aline(f,n,a,b,i)->k",
+            "eqangle3(a,i,b,d,o)->k",
+            "intersection_cc(c,b,h)->k",
+            "intersection_cc(c,d,h)->k",
+            "intersection_cc(c,f,h)->k",
+            "intersection_cc(c,g,h)->k",
+            "intersection_cc(c,i,h)->k",
+            "intersection_cc(c,n,h)->k",
+            "on_tline(i,a,j)->k",
+            "on_tline(i,j,a)->k",
+            "on_pline(i,a,j)->k",
+            "on_pline(i,j,a)->k",
+            "reflect(b,a,j)->k",
+            "intersection_lp(a,b,i,a,h)->k"
+          ],
+          "terminal_credit_ranking": [],
+          "obligation_credit_ranking": [],
+          "shortlist_channels": [
+            {
+              "candidate": "on_circle(c,h)->k",
+              "channel": "residual_frontier"
+            },
+            {
+              "candidate": "midpoint(n,h)->k",
+              "channel": "residual_frontier"
+            }
+          ],
+          "chosen": "on_circle(c,h)->k",
+          "relation_demands_in": [
+            "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+            "cong(c,h,c,j)",
+            "cong(?h1,c,c,h)",
+            "cyclic(?h1,a,h,j)",
+            "npara(a,j,h,?h1)",
+            "cong(?h0,c,c,h)",
+            "cyclic(?h0,a,h,j)",
+            "npara(h,?h0,a,j)",
+            "perp(a,h,h,j)"
+          ],
+          "obligation_branches_in": [
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "cong(c,h,c,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "cong(?h1,c,c,h)",
+              "cyclic(?h1,a,h,j)",
+              "npara(a,j,h,?h1)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "cong(?h0,c,c,h)",
+              "cyclic(?h0,a,h,j)",
+              "npara(h,?h0,a,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "perp(a,h,h,j)"
+            ]
+          ],
+          "relation_demands_observed": [
+            "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+            "cyclic(a,h,j,k)",
+            "npara(a,j,h,k)",
+            "npara(h,k,a,j)"
+          ],
+          "relation_demands_next": [
+            "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+            "cyclic(a,h,j,k)",
+            "npara(a,j,h,k)",
+            "npara(h,k,a,j)"
+          ],
+          "residual_feedback_applied": true,
+          "native_feedback": [
+            {
+              "candidate": "on_circle(c,h)->k",
+              "static_rank": 0,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 14,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 64,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 9,
+                "retained_parent_demands": 0,
+                "closed_parent_demands": 2,
+                "closed_parent_obligations": [
+                  "cong(?h1,c,c,h)",
+                  "cong(?h0,c,c,h)"
+                ],
+                "new_native_facts": 628,
+                "introduced_relation_demands": 14,
+                "persistent_branch_feedback_applied": true,
+                "persistent_branch_count": 2,
+                "persistent_branch_matched_atoms": 2,
+                "persistent_branch_fully_closed": 0
+              },
+              "branch_reduction": {
+                "matched_atom_count": 2,
+                "progressed_branch_count": 2,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": [
+                  [
+                    "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+                    "cyclic(a,h,j,k)",
+                    "npara(a,j,h,k)"
+                  ],
+                  [
+                    "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+                    "cyclic(a,h,j,k)",
+                    "npara(h,k,a,j)"
+                  ]
+                ]
+              },
+              "error": null,
+              "selected": true
+            },
+            {
+              "candidate": "midpoint(n,h)->k",
+              "static_rank": 1,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 14,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 65,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 9,
+                "retained_parent_demands": 0,
+                "closed_parent_demands": 0,
+                "closed_parent_obligations": [],
+                "new_native_facts": 863,
+                "introduced_relation_demands": 14
+              },
+              "branch_reduction": {
+                "matched_atom_count": 0,
+                "progressed_branch_count": 0,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": []
+              },
+              "error": null,
+              "selected": false
+            }
+          ],
+          "coordination": null
+        },
+        {
+          "round": 5,
+          "candidate_extension_seconds": 18.07803199999762,
+          "enumerated": 406,
+          "incidence_checked": 51,
+          "heuristic_candidates": 0,
+          "typed_construction_contracts": {
+            "enabled": true,
+            "truth_plane": "candidate_proposal_only_native_replay_required",
+            "obligation_branch_count": 46,
+            "witness_obligations": 31,
+            "matched_obligations": 7,
+            "matched_contracts": 69,
+            "raw_generated_candidates": 452,
+            "generated_candidates": 110,
+            "truncated_contracts": 8
+          },
+          "eligible_pool": 51,
+          "ranked_candidates": [
+            "eqdistance(a,c,h)->l",
+            "mirror(h,c)->l",
+            "on_circum(b,a,h)->l",
+            "circle(a,g,h)->l",
+            "reflect(i,a,j)->l",
+            "nsquare(c,a)->l",
+            "intersection_ll(i,b,a,j)->l",
+            "psquare(c,a)->l",
+            "angle_mirror(a,c,j)->l",
+            "eqangle3(a,j,b,i,o)->l",
+            "shift(a,c,j)->l",
+            "on_line(a,j)->l",
+            "intersection_tt(a,i,b,k,i,a)->l",
+            "on_pline(g,a,i)->l",
+            "on_tline(g,a,i)->l",
+            "on_bline(a,j)->l",
+            "on_circle(a,h)->l",
+            "eq_triangle(a,j)->l",
+            "on_dia(a,j)->l",
+            "iso_triangle_vertex(a,j)->l",
+            "intersection_pp(a,i,b,b,i,a)->l",
+            "lc_tangent(a,j)->l",
+            "between_bound(a,j)->l",
+            "iso_triangle_vertex_angle(a,j)->l",
+            "on_aline(b,i,a,p,m)->l",
+            "eqdistance(a,h,c)->l",
+            "eqdistance(b,a,c)->l",
+            "eqdistance(b,c,a)->l",
+            "eqdistance(b,c,h)->l",
+            "eqdistance(b,h,c)->l",
+            "eqdistance(d,a,c)->l",
+            "eqdistance(d,c,a)->l",
+            "eqdistance(d,c,h)->l",
+            "eqdistance(d,h,c)->l",
+            "eqdistance(e,a,c)->l",
+            "eqdistance(e,c,a)->l",
+            "eqdistance(e,c,h)->l",
+            "eqdistance(e,h,c)->l",
+            "eqdistance(f,a,c)->l",
+            "eqdistance(f,c,a)->l",
+            "eqdistance(f,c,h)->l",
+            "eqdistance(f,h,c)->l",
+            "eqdistance(g,a,c)->l",
+            "eqdistance(g,c,a)->l",
+            "eqdistance(g,c,h)->l",
+            "eqdistance(g,h,c)->l",
+            "eqdistance(h,a,c)->l",
+            "eqdistance(h,c,a)->l",
+            "eqdistance(i,a,c)->l",
+            "eqdistance(i,c,a)->l",
+            "eqdistance(i,c,h)->l"
+          ],
+          "terminal_credit_ranking": [],
+          "obligation_credit_ranking": [],
+          "shortlist_channels": [
+            {
+              "candidate": "eqdistance(a,c,h)->l",
+              "channel": "residual_frontier"
+            },
+            {
+              "candidate": "mirror(h,c)->l",
+              "channel": "residual_frontier"
+            }
+          ],
+          "chosen": "mirror(h,c)->l",
+          "relation_demands_in": [
+            "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+            "midp(c,a,?h0)",
+            "perp(?h0,h,a,h)",
+            "cyclic(a,h,j,k)",
+            "npara(a,j,h,k)",
+            "midp(c,h,?h0)",
+            "perp(?h0,a,a,h)",
+            "contri(a,c,?h0,c,h,?h1)",
+            "contri(a,c,?h0,h,c,?h1)",
+            "contri(c,a,?h0,c,h,?h1)",
+            "contri(c,a,?h0,h,c,?h1)",
+            "contri(c,h,?h0,a,c,?h1)",
+            "contri(c,h,?h0,c,a,?h1)",
+            "contri(h,c,?h0,a,c,?h1)",
+            "contri(h,c,?h0,c,a,?h1)",
+            "contrir(a,c,?h0,c,h,?h1)",
+            "contrir(a,c,?h0,h,c,?h1)",
+            "contrir(c,a,?h0,c,h,?h1)",
+            "contrir(c,a,?h0,h,c,?h1)",
+            "contrir(c,h,?h0,a,c,?h1)",
+            "contrir(c,h,?h0,c,a,?h1)",
+            "contrir(h,c,?h0,a,c,?h1)",
+            "contrir(h,c,?h0,c,a,?h1)",
+            "circle(c,a,?h0,?h1)",
+            "cyclic(?h0,?h1,a,h)",
+            "circle(c,h,?h0,?h1)",
+            "cong(?h0,?h1,a,c)",
+            "cong(?h0,?h1,c,h)",
+            "cong(?h0,c,a,c)",
+            "cong(?h1,c,c,h)",
+            "npara(a,?h0,h,?h1)",
+            "cong(?h0,c,c,h)",
+            "cong(?h1,c,a,c)",
+            "npara(h,?h0,a,?h1)",
+            "npara(h,k,a,j)"
+          ],
+          "obligation_branches_in": [
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "midp(c,a,?h0)",
+              "perp(?h0,h,a,h)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "midp(c,h,?h0)",
+              "perp(?h0,a,a,h)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contri(a,c,?h0,c,h,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contri(a,c,?h0,h,c,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contri(c,a,?h0,c,h,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contri(c,a,?h0,h,c,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contri(c,h,?h0,a,c,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contri(c,h,?h0,c,a,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contri(h,c,?h0,a,c,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contri(h,c,?h0,c,a,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contrir(a,c,?h0,c,h,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contrir(a,c,?h0,h,c,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contrir(c,a,?h0,c,h,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contrir(c,a,?h0,h,c,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contrir(c,h,?h0,a,c,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contrir(c,h,?h0,c,a,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contrir(h,c,?h0,a,c,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contrir(h,c,?h0,c,a,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "circle(c,a,?h0,?h1)",
+              "cyclic(?h0,?h1,a,h)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "circle(c,h,?h0,?h1)",
+              "cyclic(?h0,?h1,a,h)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "cong(?h0,?h1,a,c)",
+              "cong(?h0,?h1,c,h)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "cong(?h0,c,a,c)",
+              "cong(?h1,c,c,h)",
+              "cyclic(?h0,?h1,a,h)",
+              "npara(a,?h0,h,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "cong(?h0,c,c,h)",
+              "cong(?h1,c,a,c)",
+              "cyclic(?h0,?h1,a,h)",
+              "npara(h,?h0,a,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "midp(c,a,?h0)",
+              "perp(?h0,h,a,h)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "midp(c,h,?h0)",
+              "perp(?h0,a,a,h)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contri(a,c,?h0,c,h,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contri(a,c,?h0,h,c,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contri(c,a,?h0,c,h,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contri(c,a,?h0,h,c,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contri(c,h,?h0,a,c,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contri(c,h,?h0,c,a,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contri(h,c,?h0,a,c,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contri(h,c,?h0,c,a,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contrir(a,c,?h0,c,h,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contrir(a,c,?h0,h,c,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contrir(c,a,?h0,c,h,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contrir(c,a,?h0,h,c,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contrir(c,h,?h0,a,c,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contrir(c,h,?h0,c,a,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contrir(h,c,?h0,a,c,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "contrir(h,c,?h0,c,a,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "circle(c,a,?h0,?h1)",
+              "cyclic(?h0,?h1,a,h)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "circle(c,h,?h0,?h1)",
+              "cyclic(?h0,?h1,a,h)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "cong(?h0,?h1,a,c)",
+              "cong(?h0,?h1,c,h)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "cong(?h0,c,a,c)",
+              "cong(?h1,c,c,h)",
+              "cyclic(?h0,?h1,a,h)",
+              "npara(a,?h0,h,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "cong(?h0,c,c,h)",
+              "cong(?h1,c,a,c)",
+              "cyclic(?h0,?h1,a,h)",
+              "npara(h,?h0,a,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ]
+          ],
+          "relation_demands_observed": [
+            "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+            "cong(a,c,c,l)",
+            "cyclic(a,h,j,k)",
+            "npara(a,j,h,k)",
+            "cong(?h0,c,a,c)",
+            "cyclic(?h0,a,h,l)",
+            "npara(a,?h0,h,l)",
+            "cong(?h1,c,a,c)",
+            "cyclic(?h1,a,h,l)",
+            "npara(h,l,a,?h1)",
+            "npara(h,k,a,j)"
+          ],
+          "relation_demands_next": [
+            "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+            "cong(a,c,c,l)",
+            "cyclic(a,h,j,k)",
+            "npara(a,j,h,k)",
+            "cong(?h0,c,a,c)",
+            "cyclic(?h0,a,h,l)",
+            "npara(a,?h0,h,l)",
+            "cong(?h1,c,a,c)",
+            "cyclic(?h1,a,h,l)",
+            "npara(h,l,a,?h1)",
+            "npara(h,k,a,j)"
+          ],
+          "residual_feedback_applied": true,
+          "native_feedback": [
+            {
+              "candidate": "eqdistance(a,c,h)->l",
+              "static_rank": 0,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 14,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 65,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 35,
+                "retained_parent_demands": 0,
+                "closed_parent_demands": 1,
+                "closed_parent_obligations": [
+                  "cong(?h0,?h1,c,h)"
+                ],
+                "new_native_facts": 664,
+                "introduced_relation_demands": 14
+              },
+              "branch_reduction": {
+                "matched_atom_count": 2,
+                "progressed_branch_count": 2,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": [
+                  [
+                    "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+                    "cong(a,c,a,l)",
+                    "cyclic(a,h,j,k)",
+                    "npara(a,j,h,k)"
+                  ],
+                  [
+                    "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+                    "cong(a,c,a,l)",
+                    "cyclic(a,h,j,k)",
+                    "npara(h,k,a,j)"
+                  ]
+                ]
+              },
+              "error": null,
+              "selected": false
+            },
+            {
+              "candidate": "mirror(h,c)->l",
+              "static_rank": 1,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 14,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 75,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 35,
+                "retained_parent_demands": 0,
+                "closed_parent_demands": 5,
+                "closed_parent_obligations": [
+                  "midp(c,h,?h0)",
+                  "circle(c,h,?h0,?h1)",
+                  "cong(?h0,?h1,c,h)",
+                  "cong(?h1,c,c,h)",
+                  "cong(?h0,c,c,h)"
+                ],
+                "new_native_facts": 2200,
+                "introduced_relation_demands": 14,
+                "persistent_branch_feedback_applied": true,
+                "persistent_branch_count": 6,
+                "persistent_branch_matched_atoms": 6,
+                "persistent_branch_fully_closed": 0
+              },
+              "branch_reduction": {
+                "matched_atom_count": 6,
+                "progressed_branch_count": 6,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": [
+                  [
+                    "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+                    "cong(a,c,c,l)",
+                    "cyclic(a,h,j,k)",
+                    "npara(a,j,h,k)"
+                  ],
+                  [
+                    "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+                    "cong(?h0,c,a,c)",
+                    "cyclic(?h0,a,h,l)",
+                    "npara(a,?h0,h,l)",
+                    "cyclic(a,h,j,k)",
+                    "npara(a,j,h,k)"
+                  ],
+                  [
+                    "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+                    "cong(?h1,c,a,c)",
+                    "cyclic(?h1,a,h,l)",
+                    "npara(h,l,a,?h1)",
+                    "cyclic(a,h,j,k)",
+                    "npara(a,j,h,k)"
+                  ],
+                  [
+                    "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+                    "cong(a,c,c,l)",
+                    "cyclic(a,h,j,k)",
+                    "npara(h,k,a,j)"
+                  ],
+                  [
+                    "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+                    "cong(?h0,c,a,c)",
+                    "cyclic(?h0,a,h,l)",
+                    "npara(a,?h0,h,l)",
+                    "cyclic(a,h,j,k)",
+                    "npara(h,k,a,j)"
+                  ],
+                  [
+                    "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+                    "cong(?h1,c,a,c)",
+                    "cyclic(?h1,a,h,l)",
+                    "npara(h,l,a,?h1)",
+                    "cyclic(a,h,j,k)",
+                    "npara(h,k,a,j)"
+                  ]
+                ]
+              },
+              "error": null,
+              "selected": true
+            }
+          ],
+          "coordination": null
+        },
+        {
+          "round": 6,
+          "candidate_extension_seconds": 9.120909800003574,
+          "enumerated": 320,
+          "incidence_checked": 40,
+          "heuristic_candidates": 0,
+          "typed_construction_contracts": {
+            "enabled": true,
+            "truth_plane": "candidate_proposal_only_native_replay_required",
+            "obligation_branch_count": 6,
+            "witness_obligations": 6,
+            "matched_obligations": 2,
+            "matched_contracts": 24,
+            "raw_generated_candidates": 65,
+            "generated_candidates": 17,
+            "truncated_contracts": 0
+          },
+          "eligible_pool": 40,
+          "ranked_candidates": [
+            "on_circle(c,a)->r",
+            "mirror(a,h)->r",
+            "nsquare(c,a)->r",
+            "circle(a,g,h)->r",
+            "psquare(c,a)->r",
+            "reflect(i,a,j)->r",
+            "intersection_cc(b,c,a)->r",
+            "intersection_ll(i,b,a,j)->r",
+            "eqdistance(a,c,j)->r",
+            "angle_bisector(a,j,c)->r",
+            "shift(a,c,j)->r",
+            "angle_mirror(a,c,j)->r",
+            "intersection_pp(a,i,b,g,i,a)->r",
+            "intersection_tt(a,i,b,j,i,a)->r",
+            "intersection_lc(a,j,c)->r",
+            "intersection_lt(i,a,l,i,a)->r",
+            "on_line(a,j)->r",
+            "on_pline(g,a,i)->r",
+            "on_tline(g,a,i)->r",
+            "on_bline(a,j)->r",
+            "eq_triangle(a,j)->r",
+            "iso_triangle_vertex(a,j)->r",
+            "on_dia(a,j)->r",
+            "between_bound(a,j)->r",
+            "iso_triangle_vertex_angle(a,j)->r",
+            "lc_tangent(a,j)->r",
+            "eqangle3(a,g,b,i,o)->r",
+            "on_aline(k,n,a,b,i)->r",
+            "intersection_cc(c,b,a)->r",
+            "intersection_cc(c,d,a)->r",
+            "intersection_cc(c,f,a)->r",
+            "intersection_cc(c,g,a)->r",
+            "intersection_cc(c,i,a)->r",
+            "intersection_cc(c,k,a)->r",
+            "intersection_cc(c,n,a)->r",
+            "eqdistance(a,j,c)->r",
+            "eqdistance(j,a,c)->r",
+            "intersection_lc(j,a,c)->r",
+            "angle_bisector(j,a,c)->r",
+            "angle_mirror(a,j,c)->r"
+          ],
+          "terminal_credit_ranking": [],
+          "obligation_credit_ranking": [],
+          "shortlist_channels": [
+            {
+              "candidate": "on_circle(c,a)->r",
+              "channel": "residual_frontier"
+            },
+            {
+              "candidate": "mirror(a,h)->r",
+              "channel": "residual_frontier"
+            }
+          ],
+          "chosen": "on_circle(c,a)->r",
+          "relation_demands_in": [
+            "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+            "cong(a,c,c,l)",
+            "cyclic(a,h,j,k)",
+            "npara(a,j,h,k)",
+            "cong(?h0,c,a,c)",
+            "cyclic(?h0,a,h,l)",
+            "npara(a,?h0,h,l)",
+            "cong(?h1,c,a,c)",
+            "cyclic(?h1,a,h,l)",
+            "npara(h,l,a,?h1)",
+            "npara(h,k,a,j)"
+          ],
+          "obligation_branches_in": [
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "cong(a,c,c,l)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "cong(?h0,c,a,c)",
+              "cyclic(?h0,a,h,l)",
+              "npara(a,?h0,h,l)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "cong(?h1,c,a,c)",
+              "cyclic(?h1,a,h,l)",
+              "npara(h,l,a,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(a,j,h,k)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "cong(a,c,c,l)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "cong(?h0,c,a,c)",
+              "cyclic(?h0,a,h,l)",
+              "npara(a,?h0,h,l)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ],
+            [
+              "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+              "cong(?h1,c,a,c)",
+              "cyclic(?h1,a,h,l)",
+              "npara(h,l,a,?h1)",
+              "cyclic(a,h,j,k)",
+              "npara(h,k,a,j)"
+            ]
+          ],
+          "relation_demands_observed": [
+            "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+            "cyclic(a,h,l,r)",
+            "npara(a,r,h,l)",
+            "cyclic(a,h,j,k)",
+            "npara(a,j,h,k)",
+            "npara(h,l,a,r)",
+            "npara(h,k,a,j)"
+          ],
+          "relation_demands_next": [
+            "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+            "cyclic(a,h,l,r)",
+            "npara(a,r,h,l)",
+            "cyclic(a,h,j,k)",
+            "npara(a,j,h,k)",
+            "npara(h,l,a,r)",
+            "npara(h,k,a,j)"
+          ],
+          "residual_feedback_applied": true,
+          "native_feedback": [
+            {
+              "candidate": "on_circle(c,a)->r",
+              "static_rank": 0,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 14,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 78,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 11,
+                "retained_parent_demands": 0,
+                "closed_parent_demands": 2,
+                "closed_parent_obligations": [
+                  "cong(?h0,c,a,c)",
+                  "cong(?h1,c,a,c)"
+                ],
+                "new_native_facts": 924,
+                "introduced_relation_demands": 14,
+                "persistent_branch_feedback_applied": true,
+                "persistent_branch_count": 4,
+                "persistent_branch_matched_atoms": 4,
+                "persistent_branch_fully_closed": 0
+              },
+              "branch_reduction": {
+                "matched_atom_count": 4,
+                "progressed_branch_count": 4,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": [
+                  [
+                    "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+                    "cyclic(a,h,l,r)",
+                    "npara(a,r,h,l)",
+                    "cyclic(a,h,j,k)",
+                    "npara(a,j,h,k)"
+                  ],
+                  [
+                    "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+                    "cyclic(a,h,l,r)",
+                    "npara(h,l,a,r)",
+                    "cyclic(a,h,j,k)",
+                    "npara(a,j,h,k)"
+                  ],
+                  [
+                    "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+                    "cyclic(a,h,l,r)",
+                    "npara(a,r,h,l)",
+                    "cyclic(a,h,j,k)",
+                    "npara(h,k,a,j)"
+                  ],
+                  [
+                    "aequation(1/1,h,g,g,a,1/1,a,h,h,c,90o)",
+                    "cyclic(a,h,l,r)",
+                    "npara(h,l,a,r)",
+                    "cyclic(a,h,j,k)",
+                    "npara(h,k,a,j)"
+                  ]
+                ]
+              },
+              "error": null,
+              "selected": true
+            },
+            {
+              "candidate": "mirror(a,h)->r",
+              "static_rank": 1,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 14,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 85,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 11,
+                "retained_parent_demands": 0,
+                "closed_parent_demands": 0,
+                "closed_parent_obligations": [],
+                "new_native_facts": 2698,
+                "introduced_relation_demands": 14
+              },
+              "branch_reduction": {
+                "matched_atom_count": 0,
+                "progressed_branch_count": 0,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": []
+              },
+              "error": null,
+              "selected": false
+            }
+          ],
+          "coordination": null
+        }
+      ],
+      "verification_calls": 12,
+      "all_deduction_count": 10251,
+      "goal_deduction_count": 0,
+      "input_sha256": "6925ed0d1d6db08f648df0a790b78c1f03c2a7294050c38bcf158d4325b7baf3",
+      "proof_sha256": "0d6316f65617cb2c5df489798c61fee6082446bd71887a89859585ec4f3b43d2",
+      "terminal_credit_events": [],
+      "proof_residual": {
+        "open_relation_demands": 14,
+        "backward_obligations": 24,
+        "ar_supported_goals": 1,
+        "ar_closed_goals": 0,
+        "ar_residual_support": 2,
+        "ar_residual_l1": 2.0,
+        "ar_known_rank": 78,
+        "parent_relation_demands": 0,
+        "retained_parent_demands": 0,
+        "closed_parent_demands": 0,
+        "closed_parent_obligations": [],
+        "new_native_facts": 10251,
+        "introduced_relation_demands": 14
+      },
+      "elapsed_seconds": 280.4808441999994
+    },
+    {
+      "attempt": 1,
+      "status": "unsolved",
+      "solved": false,
+      "rounds_completed": 6,
+      "path": [
+        "on_tline(a,i,o)->g",
+        "mirror(g,m)->h",
+        "intersection_lp(b,m,a,b,h)->j",
+        "on_pline(j,m,n)->k",
+        "intersection_ll(i,a,m,g)->l",
+        "on_tline(a,m,n)->r"
+      ],
+      "rounds": [
+        {
+          "round": 1,
+          "candidate_extension_seconds": 10.331187099996896,
+          "enumerated": 368,
+          "incidence_checked": 61,
+          "heuristic_candidates": 1,
+          "typed_construction_contracts": {
+            "enabled": true,
+            "truth_plane": "candidate_proposal_only_native_replay_required",
+            "obligation_branch_count": 24,
+            "witness_obligations": 4,
+            "matched_obligations": 4,
+            "matched_contracts": 20,
+            "raw_generated_candidates": 460,
+            "generated_candidates": 64,
+            "truncated_contracts": 10
+          },
+          "eligible_pool": 61,
+          "ranked_candidates": [
+            "on_pline(a,i,o)->g",
+            "midpoint(i,a)->g",
+            "on_tline(a,i,o)->g",
+            "mirror(a,i)->g",
+            "orthocenter(i,a,b)->g",
+            "foot(a,i,b)->g",
+            "parallelogram(a,b,i)->g",
+            "circle(i,a,b)->g",
+            "angle_bisector(a,b,i)->g",
+            "angle_mirror(a,b,i)->g",
+            "reflect(a,i,b)->g",
+            "intersection_ll(i,b,a,c)->g",
+            "circumcenter(i,a,b)->g",
+            "eqangle2(a,b,i)->g",
+            "eqdistance(a,b,i)->g",
+            "excenter(a,b,i)->g",
+            "incenter(i,a,b)->g",
+            "intersection_cc(a,b,i)->g",
+            "shift(a,b,i)->g",
+            "intersection_lc(a,b,i)->g",
+            "on_circum(i,a,b)->g",
+            "intersection_pp(a,i,b,b,i,a)->g",
+            "intersection_tt(a,i,b,b,i,a)->g",
+            "on_line(i,a)->g",
+            "lc_tangent(a,i)->g",
+            "nsquare(a,i)->g",
+            "on_bline(i,a)->g",
+            "on_dia(i,a)->g",
+            "on_circle(a,i)->g",
+            "psquare(a,i)->g",
+            "between_bound(a,i)->g",
+            "eq_triangle(i,a)->g",
+            "iso_triangle_vertex(i,a)->g",
+            "iso_triangle_vertex_angle(i,a)->g",
+            "on_aline(a,i,d,b,o)->g",
+            "on_pline(a,m,n)->g",
+            "on_pline(a,n,m)->g",
+            "on_pline(a,o,i)->g",
+            "on_pline(b,i,o)->g",
+            "on_pline(b,m,n)->g",
+            "on_pline(b,n,m)->g",
+            "on_pline(b,o,i)->g",
+            "on_pline(c,i,o)->g",
+            "on_pline(c,m,n)->g",
+            "on_pline(c,n,m)->g",
+            "on_pline(c,o,i)->g",
+            "on_pline(d,i,o)->g",
+            "on_pline(d,m,n)->g",
+            "on_pline(d,n,m)->g",
+            "on_pline(d,o,i)->g",
+            "on_pline(e,i,o)->g",
+            "on_pline(e,m,n)->g",
+            "on_pline(e,n,m)->g",
+            "on_pline(e,o,i)->g",
+            "on_pline(f,i,o)->g",
+            "on_pline(f,m,n)->g",
+            "on_pline(f,n,m)->g",
+            "on_pline(f,o,i)->g",
+            "on_pline(i,m,n)->g",
+            "on_pline(i,n,m)->g",
+            "on_pline(m,i,o)->g"
+          ],
+          "terminal_credit_ranking": [],
+          "obligation_credit_ranking": [],
+          "shortlist_channels": [
+            {
+              "candidate": "midpoint(i,a)->g",
+              "channel": "residual_frontier"
+            },
+            {
+              "candidate": "on_tline(a,i,o)->g",
+              "channel": "residual_frontier"
+            }
+          ],
+          "chosen": "on_tline(a,i,o)->g",
+          "relation_demands_in": [
+            "lequation(1/1,i,m,*,i,m,1/1,o,n,*,o,n,-1/1,i,n,*,i,n,-1/1,o,m,*,o,m,0)",
+            "lequation(1/1,i,n,*,i,n,1/1,o,m,*,o,m,-1/1,i,m,*,i,m,-1/1,o,n,*,o,n,0)",
+            "lequation(1/1,o,m,*,o,m,1/1,i,n,*,i,n,-1/1,o,n,*,o,n,-1/1,i,m,*,i,m,0)",
+            "perp(?C,?D,i,o)",
+            "para(?C,?D,m,n)",
+            "lequation(1/1,o,n,*,o,n,1/1,i,m,*,i,m,-1/1,o,m,*,o,m,-1/1,i,n,*,i,n,0)",
+            "lequation(1/1,m,i,*,m,i,1/1,n,o,*,n,o,-1/1,m,o,*,m,o,-1/1,n,i,*,n,i,0)",
+            "lequation(1/1,n,i,*,n,i,1/1,m,o,*,m,o,-1/1,n,o,*,n,o,-1/1,m,i,*,m,i,0)",
+            "lequation(1/1,m,o,*,m,o,1/1,n,i,*,n,i,-1/1,m,i,*,m,i,-1/1,n,o,*,n,o,0)",
+            "lequation(1/1,n,o,*,n,o,1/1,m,i,*,m,i,-1/1,n,i,*,n,i,-1/1,m,o,*,m,o,0)",
+            "perp(i,m,n,o)",
+            "perp(i,n,m,o)",
+            "perp(?C,?D,m,n)",
+            "para(?C,?D,i,o)",
+            "ncoll(i,o,m)",
+            "ncoll(i,o,n)"
+          ],
+          "obligation_branches_in": [
+            [
+              "lequation(1/1,i,m,*,i,m,1/1,o,n,*,o,n,-1/1,i,n,*,i,n,-1/1,o,m,*,o,m,0)"
+            ],
+            [
+              "lequation(1/1,i,n,*,i,n,1/1,o,m,*,o,m,-1/1,i,m,*,i,m,-1/1,o,n,*,o,n,0)"
+            ],
+            [
+              "lequation(1/1,o,m,*,o,m,1/1,i,n,*,i,n,-1/1,o,n,*,o,n,-1/1,i,m,*,i,m,0)"
+            ],
+            [
+              "perp(?C,?D,i,o)",
+              "para(?C,?D,m,n)"
+            ],
+            [
+              "lequation(1/1,o,n,*,o,n,1/1,i,m,*,i,m,-1/1,o,m,*,o,m,-1/1,i,n,*,i,n,0)"
+            ],
+            [
+              "lequation(1/1,m,i,*,m,i,1/1,n,o,*,n,o,-1/1,m,o,*,m,o,-1/1,n,i,*,n,i,0)"
+            ],
+            [
+              "lequation(1/1,n,i,*,n,i,1/1,m,o,*,m,o,-1/1,n,o,*,n,o,-1/1,m,i,*,m,i,0)"
+            ],
+            [
+              "perp(?C,?D,i,o)",
+              "para(?C,?D,m,n)"
+            ],
+            [
+              "lequation(1/1,m,o,*,m,o,1/1,n,i,*,n,i,-1/1,m,i,*,m,i,-1/1,n,o,*,n,o,0)"
+            ],
+            [
+              "lequation(1/1,n,o,*,n,o,1/1,m,i,*,m,i,-1/1,n,i,*,n,i,-1/1,m,o,*,m,o,0)"
+            ],
+            [
+              "perp(i,m,n,o)",
+              "perp(i,n,m,o)"
+            ],
+            [
+              "perp(?C,?D,i,o)",
+              "para(?C,?D,m,n)"
+            ],
+            [
+              "perp(i,n,m,o)",
+              "perp(i,m,n,o)"
+            ],
+            [
+              "perp(i,m,n,o)",
+              "perp(i,n,m,o)"
+            ],
+            [
+              "perp(i,n,m,o)",
+              "perp(i,m,n,o)"
+            ],
+            [
+              "perp(?C,?D,i,o)",
+              "para(?C,?D,m,n)"
+            ],
+            [
+              "perp(i,n,m,o)",
+              "perp(i,m,n,o)"
+            ],
+            [
+              "perp(i,m,n,o)",
+              "perp(i,n,m,o)"
+            ],
+            [
+              "perp(i,n,m,o)",
+              "perp(i,m,n,o)"
+            ],
+            [
+              "perp(?C,?D,m,n)",
+              "para(?C,?D,i,o)"
+            ],
+            [
+              "perp(i,m,n,o)",
+              "perp(i,n,m,o)"
+            ],
+            [
+              "lequation(1/1,i,m,*,i,m,1/1,o,n,*,o,n,-1/1,i,n,*,i,n,-1/1,o,m,*,o,m,0)",
+              "ncoll(i,o,m)"
+            ],
+            [
+              "lequation(1/1,i,n,*,i,n,1/1,o,m,*,o,m,-1/1,i,m,*,i,m,-1/1,o,n,*,o,n,0)",
+              "ncoll(i,o,n)"
+            ],
+            [
+              "perp(?C,?D,m,n)",
+              "para(?C,?D,i,o)"
+            ]
+          ],
+          "relation_demands_observed": [
+            "para(a,g,m,n)"
+          ],
+          "relation_demands_next": [
+            "para(a,g,m,n)"
+          ],
+          "residual_feedback_applied": true,
+          "native_feedback": [
+            {
+              "candidate": "midpoint(i,a)->g",
+              "static_rank": 1,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 16,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 55,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 16,
+                "retained_parent_demands": 16,
+                "closed_parent_demands": 0,
+                "closed_parent_obligations": [],
+                "new_native_facts": 1563,
+                "introduced_relation_demands": 0
+              },
+              "branch_reduction": {
+                "matched_atom_count": 0,
+                "progressed_branch_count": 0,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": []
+              },
+              "error": null,
+              "selected": false
+            },
+            {
+              "candidate": "on_tline(a,i,o)->g",
+              "static_rank": 2,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 15,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 49,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 16,
+                "retained_parent_demands": 13,
+                "closed_parent_demands": 1,
+                "closed_parent_obligations": [
+                  "perp(?C,?D,i,o)"
+                ],
+                "new_native_facts": 359,
+                "introduced_relation_demands": 0,
+                "persistent_branch_feedback_applied": true,
+                "persistent_branch_count": 1,
+                "persistent_branch_matched_atoms": 4,
+                "persistent_branch_fully_closed": 0
+              },
+              "branch_reduction": {
+                "matched_atom_count": 4,
+                "progressed_branch_count": 1,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": [
+                  [
+                    "para(a,g,m,n)"
+                  ]
+                ]
+              },
+              "error": null,
+              "selected": true
+            }
+          ],
+          "coordination": null
+        },
+        {
+          "round": 2,
+          "candidate_extension_seconds": 24.216949200003,
+          "enumerated": 560,
+          "incidence_checked": 60,
+          "heuristic_candidates": 0,
+          "typed_construction_contracts": {
+            "enabled": true,
+            "truth_plane": "candidate_proposal_only_native_replay_required",
+            "obligation_branch_count": 29,
+            "witness_obligations": 60,
+            "matched_obligations": 20,
+            "matched_contracts": 80,
+            "raw_generated_candidates": 1300,
+            "generated_candidates": 260,
+            "truncated_contracts": 34
+          },
+          "eligible_pool": 60,
+          "ranked_candidates": [
+            "on_pline(b,m,n)->h",
+            "midpoint(a,m)->h",
+            "mirror(g,m)->h",
+            "on_line(g,m)->h",
+            "foot(a,g,m)->h",
+            "between_bound(g,m)->h",
+            "circle(a,b,g)->h",
+            "orthocenter(a,b,g)->h",
+            "reflect(b,a,g)->h",
+            "on_tline(g,a,b)->h",
+            "intersection_ll(i,b,a,g)->h",
+            "angle_bisector(a,b,g)->h",
+            "angle_mirror(a,b,g)->h",
+            "parallelogram(a,b,g)->h",
+            "eqdistance(a,b,g)->h",
+            "intersection_lc(a,b,g)->h",
+            "incenter(a,b,g)->h",
+            "shift(a,b,g)->h",
+            "circumcenter(a,b,g)->h",
+            "eqangle2(a,b,g)->h",
+            "intersection_cc(a,b,g)->h",
+            "on_circum(a,b,g)->h",
+            "on_bline(b,g)->h",
+            "on_circle(b,g)->h",
+            "eq_triangle(b,g)->h",
+            "on_dia(b,g)->h",
+            "iso_triangle_vertex(b,g)->h",
+            "intersection_tt(a,i,b,b,i,a)->h",
+            "iso_triangle_vertex_angle(b,g)->h",
+            "lc_tangent(b,g)->h",
+            "psquare(b,g)->h",
+            "nsquare(b,g)->h",
+            "on_aline(a,b,i,c,o)->h",
+            "eqangle3(a,b,c,i,o)->h",
+            "on_pline(b,n,m)->h",
+            "on_pline(c,m,n)->h",
+            "on_pline(c,n,m)->h",
+            "on_pline(e,a,g)->h",
+            "on_pline(e,g,a)->h",
+            "on_pline(e,m,n)->h",
+            "on_pline(e,n,m)->h",
+            "on_pline(f,a,g)->h",
+            "on_pline(f,g,a)->h",
+            "on_pline(f,m,n)->h",
+            "on_pline(f,n,m)->h",
+            "on_pline(p,a,g)->h",
+            "on_pline(p,g,a)->h",
+            "on_pline(p,m,n)->h",
+            "on_pline(p,n,m)->h",
+            "on_pline(q,a,g)->h",
+            "on_pline(q,g,a)->h",
+            "on_pline(q,m,n)->h",
+            "on_pline(q,n,m)->h",
+            "on_pline(a,m,n)->h",
+            "on_pline(a,n,m)->h",
+            "on_pline(d,a,g)->h",
+            "on_pline(d,g,a)->h",
+            "on_pline(d,m,n)->h",
+            "on_pline(d,n,m)->h",
+            "on_pline(g,m,n)->h"
+          ],
+          "terminal_credit_ranking": [],
+          "obligation_credit_ranking": [],
+          "shortlist_channels": [
+            {
+              "candidate": "midpoint(a,m)->h",
+              "channel": "residual_frontier"
+            },
+            {
+              "candidate": "mirror(g,m)->h",
+              "channel": "residual_frontier"
+            }
+          ],
+          "chosen": "mirror(g,m)->h",
+          "relation_demands_in": [
+            "midp(?h0,a,m)",
+            "midp(?h0,g,n)",
+            "midp(?h0,a,n)",
+            "midp(?h0,g,m)",
+            "midp(?h0,m,a)",
+            "midp(?h0,n,g)",
+            "midp(?h0,m,g)",
+            "midp(?h0,n,a)",
+            "coll(?h0,g,m)",
+            "eqratio(?h0,g,a,b,g,m,a,n)",
+            "para(?h0,b,m,n)",
+            "sameside(a,n,b,g,m,?h0)",
+            "sameside(g,m,?h0,a,n,b)",
+            "eqratio(?h0,g,a,f,g,m,a,n)",
+            "para(?h0,f,m,n)",
+            "sameside(a,n,f,g,m,?h0)",
+            "sameside(g,m,?h0,a,n,f)",
+            "eqratio(?h0,g,a,q,g,m,a,n)",
+            "para(?h0,q,m,n)",
+            "sameside(a,n,q,g,m,?h0)",
+            "sameside(g,m,?h0,a,n,q)",
+            "eqratio(?h0,m,b,n,g,m,a,n)",
+            "para(?h0,b,a,g)",
+            "sameside(m,g,?h0,n,a,b)",
+            "sameside(n,a,b,m,g,?h0)",
+            "eqratio(?h0,m,f,n,g,m,a,n)",
+            "para(?h0,f,a,g)",
+            "sameside(m,g,?h0,n,a,f)",
+            "sameside(n,a,f,m,g,?h0)",
+            "eqratio(?h0,m,g,m,n,q,a,n)",
+            "para(?h0,q,a,g)",
+            "sameside(m,g,?h0,n,a,q)",
+            "sameside(n,a,q,m,g,?h0)",
+            "coll(?h0,g,n)",
+            "eqratio(?h0,g,a,c,g,n,a,m)",
+            "para(?h0,c,m,n)",
+            "sameside(a,m,c,g,n,?h0)",
+            "sameside(g,n,?h0,a,m,c)",
+            "eqratio(?h0,g,a,e,g,n,a,m)",
+            "para(?h0,e,m,n)",
+            "sameside(a,m,e,g,n,?h0)",
+            "sameside(g,n,?h0,a,m,e)",
+            "eqratio(?h0,g,a,p,g,n,a,m)",
+            "para(?h0,p,m,n)",
+            "sameside(a,m,p,g,n,?h0)",
+            "sameside(g,n,?h0,a,m,p)",
+            "eqratio(?h0,n,c,m,g,n,a,m)",
+            "para(?h0,c,a,g)",
+            "sameside(m,a,c,n,g,?h0)",
+            "sameside(n,g,?h0,m,a,c)",
+            "eqratio(?h0,n,e,m,g,n,a,m)",
+            "para(?h0,e,a,g)",
+            "sameside(m,a,e,n,g,?h0)",
+            "sameside(n,g,?h0,m,a,e)",
+            "eqratio(?h0,n,g,n,m,p,a,m)",
+            "para(?h0,p,a,g)",
+            "sameside(m,a,p,n,g,?h0)",
+            "sameside(n,g,?h0,m,a,p)",
+            "para(?h0,?h1,a,g)",
+            "para(?h0,?h1,m,n)"
+          ],
+          "obligation_branches_in": [
+            [
+              "midp(?h0,a,m)",
+              "midp(?h0,g,n)"
+            ],
+            [
+              "midp(?h0,a,n)",
+              "midp(?h0,g,m)"
+            ],
+            [
+              "midp(?h0,m,a)",
+              "midp(?h0,n,g)"
+            ],
+            [
+              "midp(?h0,m,g)",
+              "midp(?h0,n,a)"
+            ],
+            [
+              "coll(?h0,g,m)",
+              "eqratio(?h0,g,a,b,g,m,a,n)",
+              "para(?h0,b,m,n)",
+              "sameside(a,n,b,g,m,?h0)"
+            ],
+            [
+              "coll(?h0,g,m)",
+              "eqratio(?h0,g,a,b,g,m,a,n)",
+              "para(?h0,b,m,n)",
+              "sameside(g,m,?h0,a,n,b)"
+            ],
+            [
+              "coll(?h0,g,m)",
+              "eqratio(?h0,g,a,f,g,m,a,n)",
+              "para(?h0,f,m,n)",
+              "sameside(a,n,f,g,m,?h0)"
+            ],
+            [
+              "coll(?h0,g,m)",
+              "eqratio(?h0,g,a,f,g,m,a,n)",
+              "para(?h0,f,m,n)",
+              "sameside(g,m,?h0,a,n,f)"
+            ],
+            [
+              "coll(?h0,g,m)",
+              "eqratio(?h0,g,a,q,g,m,a,n)",
+              "para(?h0,q,m,n)",
+              "sameside(a,n,q,g,m,?h0)"
+            ],
+            [
+              "coll(?h0,g,m)",
+              "eqratio(?h0,g,a,q,g,m,a,n)",
+              "para(?h0,q,m,n)",
+              "sameside(g,m,?h0,a,n,q)"
+            ],
+            [
+              "coll(?h0,g,m)",
+              "eqratio(?h0,m,b,n,g,m,a,n)",
+              "para(?h0,b,a,g)",
+              "sameside(m,g,?h0,n,a,b)"
+            ],
+            [
+              "coll(?h0,g,m)",
+              "eqratio(?h0,m,b,n,g,m,a,n)",
+              "para(?h0,b,a,g)",
+              "sameside(n,a,b,m,g,?h0)"
+            ],
+            [
+              "coll(?h0,g,m)",
+              "eqratio(?h0,m,f,n,g,m,a,n)",
+              "para(?h0,f,a,g)",
+              "sameside(m,g,?h0,n,a,f)"
+            ],
+            [
+              "coll(?h0,g,m)",
+              "eqratio(?h0,m,f,n,g,m,a,n)",
+              "para(?h0,f,a,g)",
+              "sameside(n,a,f,m,g,?h0)"
+            ],
+            [
+              "coll(?h0,g,m)",
+              "eqratio(?h0,m,g,m,n,q,a,n)",
+              "para(?h0,q,a,g)",
+              "sameside(m,g,?h0,n,a,q)"
+            ],
+            [
+              "coll(?h0,g,m)",
+              "eqratio(?h0,m,g,m,n,q,a,n)",
+              "para(?h0,q,a,g)",
+              "sameside(n,a,q,m,g,?h0)"
+            ],
+            [
+              "coll(?h0,g,n)",
+              "eqratio(?h0,g,a,c,g,n,a,m)",
+              "para(?h0,c,m,n)",
+              "sameside(a,m,c,g,n,?h0)"
+            ],
+            [
+              "coll(?h0,g,n)",
+              "eqratio(?h0,g,a,c,g,n,a,m)",
+              "para(?h0,c,m,n)",
+              "sameside(g,n,?h0,a,m,c)"
+            ],
+            [
+              "coll(?h0,g,n)",
+              "eqratio(?h0,g,a,e,g,n,a,m)",
+              "para(?h0,e,m,n)",
+              "sameside(a,m,e,g,n,?h0)"
+            ],
+            [
+              "coll(?h0,g,n)",
+              "eqratio(?h0,g,a,e,g,n,a,m)",
+              "para(?h0,e,m,n)",
+              "sameside(g,n,?h0,a,m,e)"
+            ],
+            [
+              "coll(?h0,g,n)",
+              "eqratio(?h0,g,a,p,g,n,a,m)",
+              "para(?h0,p,m,n)",
+              "sameside(a,m,p,g,n,?h0)"
+            ],
+            [
+              "coll(?h0,g,n)",
+              "eqratio(?h0,g,a,p,g,n,a,m)",
+              "para(?h0,p,m,n)",
+              "sameside(g,n,?h0,a,m,p)"
+            ],
+            [
+              "coll(?h0,g,n)",
+              "eqratio(?h0,n,c,m,g,n,a,m)",
+              "para(?h0,c,a,g)",
+              "sameside(m,a,c,n,g,?h0)"
+            ],
+            [
+              "coll(?h0,g,n)",
+              "eqratio(?h0,n,c,m,g,n,a,m)",
+              "para(?h0,c,a,g)",
+              "sameside(n,g,?h0,m,a,c)"
+            ],
+            [
+              "coll(?h0,g,n)",
+              "eqratio(?h0,n,e,m,g,n,a,m)",
+              "para(?h0,e,a,g)",
+              "sameside(m,a,e,n,g,?h0)"
+            ],
+            [
+              "coll(?h0,g,n)",
+              "eqratio(?h0,n,e,m,g,n,a,m)",
+              "para(?h0,e,a,g)",
+              "sameside(n,g,?h0,m,a,e)"
+            ],
+            [
+              "coll(?h0,g,n)",
+              "eqratio(?h0,n,g,n,m,p,a,m)",
+              "para(?h0,p,a,g)",
+              "sameside(m,a,p,n,g,?h0)"
+            ],
+            [
+              "coll(?h0,g,n)",
+              "eqratio(?h0,n,g,n,m,p,a,m)",
+              "para(?h0,p,a,g)",
+              "sameside(n,g,?h0,m,a,p)"
+            ],
+            [
+              "para(?h0,?h1,a,g)",
+              "para(?h0,?h1,m,n)"
+            ]
+          ],
+          "relation_demands_observed": [
+            "eqratio(a,b,a,n,g,h,g,m)",
+            "para(b,h,m,n)",
+            "sameside(a,n,b,g,m,h)",
+            "sameside(g,m,h,a,n,b)",
+            "eqratio(a,f,a,n,g,h,g,m)",
+            "para(f,h,m,n)",
+            "sameside(a,n,f,g,m,h)",
+            "sameside(g,m,h,a,n,f)",
+            "eqratio(a,n,a,q,g,m,g,h)",
+            "para(h,q,m,n)",
+            "sameside(a,n,q,g,m,h)",
+            "sameside(g,m,h,a,n,q)",
+            "eqratio(a,n,b,n,g,m,h,m)",
+            "para(a,g,b,h)",
+            "sameside(m,g,h,n,a,b)",
+            "sameside(n,a,b,m,g,h)",
+            "eqratio(a,n,f,n,g,m,h,m)",
+            "para(a,g,f,h)",
+            "sameside(m,g,h,n,a,f)",
+            "sameside(n,a,f,m,g,h)",
+            "eqratio(a,n,g,m,n,q,h,m)",
+            "para(a,g,h,q)",
+            "sameside(m,g,h,n,a,q)",
+            "sameside(n,a,q,m,g,h)"
+          ],
+          "relation_demands_next": [
+            "eqratio(a,b,a,n,g,h,g,m)",
+            "para(b,h,m,n)",
+            "sameside(a,n,b,g,m,h)",
+            "sameside(g,m,h,a,n,b)",
+            "eqratio(a,f,a,n,g,h,g,m)",
+            "para(f,h,m,n)",
+            "sameside(a,n,f,g,m,h)",
+            "sameside(g,m,h,a,n,f)",
+            "eqratio(a,n,a,q,g,m,g,h)",
+            "para(h,q,m,n)",
+            "sameside(a,n,q,g,m,h)",
+            "sameside(g,m,h,a,n,q)",
+            "eqratio(a,n,b,n,g,m,h,m)",
+            "para(a,g,b,h)",
+            "sameside(m,g,h,n,a,b)",
+            "sameside(n,a,b,m,g,h)",
+            "eqratio(a,n,f,n,g,m,h,m)",
+            "para(a,g,f,h)",
+            "sameside(m,g,h,n,a,f)",
+            "sameside(n,a,f,m,g,h)",
+            "eqratio(a,n,g,m,n,q,h,m)",
+            "para(a,g,h,q)",
+            "sameside(m,g,h,n,a,q)",
+            "sameside(n,a,q,m,g,h)"
+          ],
+          "residual_feedback_applied": true,
+          "native_feedback": [
+            {
+              "candidate": "midpoint(a,m)->h",
+              "static_rank": 1,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 15,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 55,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 60,
+                "retained_parent_demands": 2,
+                "closed_parent_demands": 1,
+                "closed_parent_obligations": [
+                  "midp(?h0,a,m)"
+                ],
+                "new_native_facts": 1176,
+                "introduced_relation_demands": 13
+              },
+              "branch_reduction": {
+                "matched_atom_count": 1,
+                "progressed_branch_count": 1,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": [
+                  [
+                    "midp(h,g,n)"
+                  ]
+                ]
+              },
+              "error": null,
+              "selected": false
+            },
+            {
+              "candidate": "mirror(g,m)->h",
+              "static_rank": 2,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 15,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 56,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 60,
+                "retained_parent_demands": 2,
+                "closed_parent_demands": 1,
+                "closed_parent_obligations": [
+                  "coll(?h0,g,m)"
+                ],
+                "new_native_facts": 649,
+                "introduced_relation_demands": 13,
+                "persistent_branch_feedback_applied": true,
+                "persistent_branch_count": 12,
+                "persistent_branch_matched_atoms": 12,
+                "persistent_branch_fully_closed": 0
+              },
+              "branch_reduction": {
+                "matched_atom_count": 12,
+                "progressed_branch_count": 12,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": [
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "para(b,h,m,n)",
+                    "sameside(a,n,b,g,m,h)"
+                  ],
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "para(b,h,m,n)",
+                    "sameside(g,m,h,a,n,b)"
+                  ],
+                  [
+                    "eqratio(a,f,a,n,g,h,g,m)",
+                    "para(f,h,m,n)",
+                    "sameside(a,n,f,g,m,h)"
+                  ],
+                  [
+                    "eqratio(a,f,a,n,g,h,g,m)",
+                    "para(f,h,m,n)",
+                    "sameside(g,m,h,a,n,f)"
+                  ],
+                  [
+                    "eqratio(a,n,a,q,g,m,g,h)",
+                    "para(h,q,m,n)",
+                    "sameside(a,n,q,g,m,h)"
+                  ],
+                  [
+                    "eqratio(a,n,a,q,g,m,g,h)",
+                    "para(h,q,m,n)",
+                    "sameside(g,m,h,a,n,q)"
+                  ],
+                  [
+                    "eqratio(a,n,b,n,g,m,h,m)",
+                    "para(a,g,b,h)",
+                    "sameside(m,g,h,n,a,b)"
+                  ],
+                  [
+                    "eqratio(a,n,b,n,g,m,h,m)",
+                    "para(a,g,b,h)",
+                    "sameside(n,a,b,m,g,h)"
+                  ],
+                  [
+                    "eqratio(a,n,f,n,g,m,h,m)",
+                    "para(a,g,f,h)",
+                    "sameside(m,g,h,n,a,f)"
+                  ],
+                  [
+                    "eqratio(a,n,f,n,g,m,h,m)",
+                    "para(a,g,f,h)",
+                    "sameside(n,a,f,m,g,h)"
+                  ],
+                  [
+                    "eqratio(a,n,g,m,n,q,h,m)",
+                    "para(a,g,h,q)",
+                    "sameside(m,g,h,n,a,q)"
+                  ],
+                  [
+                    "eqratio(a,n,g,m,n,q,h,m)",
+                    "para(a,g,h,q)",
+                    "sameside(n,a,q,m,g,h)"
+                  ]
+                ]
+              },
+              "error": null,
+              "selected": true
+            }
+          ],
+          "coordination": null
+        },
+        {
+          "round": 3,
+          "candidate_extension_seconds": 21.635152999995626,
+          "enumerated": 502,
+          "incidence_checked": 62,
+          "heuristic_candidates": 0,
+          "typed_construction_contracts": {
+            "enabled": true,
+            "truth_plane": "candidate_proposal_only_native_replay_required",
+            "obligation_branch_count": 64,
+            "witness_obligations": 58,
+            "matched_obligations": 18,
+            "matched_contracts": 90,
+            "raw_generated_candidates": 1436,
+            "generated_candidates": 198,
+            "truncated_contracts": 33
+          },
+          "eligible_pool": 62,
+          "ranked_candidates": [
+            "intersection_ll(h,n,b,m)->j",
+            "midpoint(b,m)->j",
+            "intersection_lp(b,m,a,b,h)->j",
+            "mirror(b,m)->j",
+            "on_pline(a,b,h)->j",
+            "foot(a,b,m)->j",
+            "on_tline(a,b,h)->j",
+            "circle(m,e,h)->j",
+            "intersection_lt(b,m,a,b,h)->j",
+            "orthocenter(m,e,h)->j",
+            "reflect(a,m,g)->j",
+            "on_line(b,m)->j",
+            "between_bound(b,m)->j",
+            "angle_bisector(e,h,m)->j",
+            "angle_mirror(e,h,m)->j",
+            "eqdistance(e,h,m)->j",
+            "incenter(m,e,h)->j",
+            "parallelogram(e,h,m)->j",
+            "excenter(e,h,m)->j",
+            "intersection_lc(e,h,m)->j",
+            "shift(e,h,m)->j",
+            "circumcenter(m,e,h)->j",
+            "intersection_cc(e,h,m)->j",
+            "eqangle2(e,h,m)->j",
+            "on_bline(a,g)->j",
+            "on_circle(a,g)->j",
+            "on_circum(m,e,h)->j",
+            "on_dia(a,g)->j",
+            "lc_tangent(a,g)->j",
+            "nsquare(a,g)->j",
+            "eq_triangle(a,g)->j",
+            "psquare(a,g)->j",
+            "iso_triangle_vertex(a,g)->j",
+            "iso_triangle_vertex_angle(a,g)->j",
+            "on_aline(a,i,d,b,o)->j",
+            "eqangle3(f,n,a,b,i)->j",
+            "intersection_ll(h,n,f,m)->j",
+            "intersection_lp(f,m,a,f,h)->j",
+            "intersection_lp(h,n,a,b,h)->j",
+            "intersection_lp(h,n,a,f,h)->j",
+            "on_pline(a,f,h)->j",
+            "on_pline(a,h,b)->j",
+            "on_pline(a,h,f)->j",
+            "on_pline(a,m,n)->j",
+            "on_pline(a,n,m)->j",
+            "on_pline(b,f,h)->j",
+            "on_pline(b,h,f)->j",
+            "on_pline(b,m,n)->j",
+            "on_pline(b,n,m)->j",
+            "on_pline(c,b,h)->j",
+            "on_pline(c,f,h)->j",
+            "on_pline(c,h,b)->j",
+            "on_pline(c,h,f)->j",
+            "on_pline(c,m,n)->j",
+            "on_pline(c,n,m)->j",
+            "on_pline(d,b,h)->j",
+            "on_pline(d,f,h)->j",
+            "on_pline(d,h,b)->j",
+            "on_pline(d,h,f)->j",
+            "on_pline(d,m,n)->j",
+            "on_pline(d,n,m)->j",
+            "on_pline(e,b,h)->j"
+          ],
+          "terminal_credit_ranking": [],
+          "obligation_credit_ranking": [],
+          "shortlist_channels": [
+            {
+              "candidate": "midpoint(b,m)->j",
+              "channel": "residual_frontier"
+            },
+            {
+              "candidate": "intersection_lp(b,m,a,b,h)->j",
+              "channel": "residual_frontier"
+            }
+          ],
+          "chosen": "intersection_lp(b,m,a,b,h)->j",
+          "relation_demands_in": [
+            "eqratio(?h0,?h1,?h2,?h3,a,b,g,h)",
+            "eqratio(?h0,?h1,?h2,?h3,a,n,g,m)",
+            "para(b,h,m,n)",
+            "sameside(a,n,b,g,m,h)",
+            "eqratio(?h0,?h1,?h2,?h3,g,h,a,b)",
+            "eqratio(?h0,?h1,?h2,?h3,g,m,a,n)",
+            "eqratio(a,b,a,n,g,h,g,m)",
+            "midp(?h0,b,m)",
+            "midp(?h0,h,n)",
+            "midp(?h0,b,n)",
+            "midp(?h0,h,m)",
+            "midp(?h0,m,b)",
+            "midp(?h0,n,h)",
+            "midp(?h0,m,h)",
+            "midp(?h0,n,b)",
+            "coll(?h0,b,m)",
+            "coll(?h0,h,n)",
+            "eqratio(?h0,b,?h0,h,b,m,h,n)",
+            "sameside(b,?h0,m,h,?h0,n)",
+            "sameside(h,?h0,n,b,?h0,m)",
+            "eqratio(?h0,m,?h0,n,b,m,h,n)",
+            "sameside(m,?h0,b,n,?h0,h)",
+            "sameside(n,?h0,h,m,?h0,b)",
+            "para(?h0,?h1,b,h)",
+            "para(?h0,?h1,m,n)",
+            "perp(?h0,?h1,b,h)",
+            "perp(?h0,?h1,m,n)",
+            "coll(?h1,h,n)",
+            "eqratio(?h0,b,?h1,h,b,m,h,n)",
+            "sameside(h,n,?h1,b,m,?h0)",
+            "eqratio(?h0,m,?h1,n,b,m,h,n)",
+            "sameside(n,h,?h1,m,b,?h0)",
+            "coll(?h1,b,m)",
+            "eqratio(?h0,h,?h1,b,h,n,b,m)",
+            "sameside(b,m,?h1,h,n,?h0)",
+            "eqratio(?h0,n,?h1,m,h,n,b,m)",
+            "sameside(m,b,?h1,n,h,?h0)",
+            "sameside(g,m,h,a,n,b)",
+            "eqratio(?h0,?h1,?h2,?h3,a,f,g,h)",
+            "para(f,h,m,n)",
+            "sameside(a,n,f,g,m,h)",
+            "eqratio(?h0,?h1,?h2,?h3,g,h,a,f)",
+            "eqratio(a,f,a,n,g,h,g,m)",
+            "midp(?h0,f,m)",
+            "midp(?h0,f,n)",
+            "midp(?h0,m,f)",
+            "midp(?h0,n,f)",
+            "coll(?h0,f,m)",
+            "eqratio(?h0,f,?h0,h,f,m,h,n)",
+            "sameside(f,?h0,m,h,?h0,n)",
+            "sameside(h,?h0,n,f,?h0,m)",
+            "eqratio(?h0,m,?h0,n,f,m,h,n)",
+            "sameside(m,?h0,f,n,?h0,h)",
+            "sameside(n,?h0,h,m,?h0,f)",
+            "para(?h0,?h1,f,h)",
+            "perp(?h0,?h1,f,h)",
+            "eqratio(?h0,f,?h1,h,f,m,h,n)",
+            "sameside(h,n,?h1,f,m,?h0)",
+            "eqratio(?h0,m,?h1,n,f,m,h,n)",
+            "sameside(n,h,?h1,m,f,?h0)",
+            "coll(?h1,f,m)",
+            "eqratio(?h0,h,?h1,f,h,n,f,m)",
+            "sameside(f,m,?h1,h,n,?h0)",
+            "eqratio(?h0,n,?h1,m,h,n,f,m)",
+            "sameside(m,f,?h1,n,h,?h0)",
+            "sameside(g,m,h,a,n,f)"
+          ],
+          "obligation_branches_in": [
+            [
+              "eqratio(?h0,?h1,?h2,?h3,a,b,g,h)",
+              "eqratio(?h0,?h1,?h2,?h3,a,n,g,m)",
+              "para(b,h,m,n)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(?h0,?h1,?h2,?h3,g,h,a,b)",
+              "eqratio(?h0,?h1,?h2,?h3,g,m,a,n)",
+              "para(b,h,m,n)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "midp(?h0,b,m)",
+              "midp(?h0,h,n)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "midp(?h0,b,n)",
+              "midp(?h0,h,m)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "midp(?h0,m,b)",
+              "midp(?h0,n,h)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "midp(?h0,m,h)",
+              "midp(?h0,n,b)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(?h0,b,m)",
+              "coll(?h0,h,n)",
+              "eqratio(?h0,b,?h0,h,b,m,h,n)",
+              "sameside(b,?h0,m,h,?h0,n)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(?h0,b,m)",
+              "coll(?h0,h,n)",
+              "eqratio(?h0,b,?h0,h,b,m,h,n)",
+              "sameside(h,?h0,n,b,?h0,m)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(?h0,b,m)",
+              "coll(?h0,h,n)",
+              "eqratio(?h0,m,?h0,n,b,m,h,n)",
+              "sameside(m,?h0,b,n,?h0,h)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(?h0,b,m)",
+              "coll(?h0,h,n)",
+              "eqratio(?h0,m,?h0,n,b,m,h,n)",
+              "sameside(n,?h0,h,m,?h0,b)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "para(?h0,?h1,b,h)",
+              "para(?h0,?h1,m,n)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "perp(?h0,?h1,b,h)",
+              "perp(?h0,?h1,m,n)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(?h0,b,m)",
+              "coll(?h1,h,n)",
+              "eqratio(?h0,b,?h1,h,b,m,h,n)",
+              "para(?h0,?h1,m,n)",
+              "sameside(h,n,?h1,b,m,?h0)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(?h0,b,m)",
+              "coll(?h1,h,n)",
+              "eqratio(?h0,m,?h1,n,b,m,h,n)",
+              "para(?h0,?h1,b,h)",
+              "sameside(n,h,?h1,m,b,?h0)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(?h0,h,n)",
+              "coll(?h1,b,m)",
+              "eqratio(?h0,h,?h1,b,h,n,b,m)",
+              "para(?h0,?h1,m,n)",
+              "sameside(b,m,?h1,h,n,?h0)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(?h0,h,n)",
+              "coll(?h1,b,m)",
+              "eqratio(?h0,n,?h1,m,h,n,b,m)",
+              "para(?h0,?h1,b,h)",
+              "sameside(m,b,?h1,n,h,?h0)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(?h0,?h1,?h2,?h3,a,b,g,h)",
+              "eqratio(?h0,?h1,?h2,?h3,a,n,g,m)",
+              "para(b,h,m,n)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(?h0,?h1,?h2,?h3,g,h,a,b)",
+              "eqratio(?h0,?h1,?h2,?h3,g,m,a,n)",
+              "para(b,h,m,n)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "midp(?h0,b,m)",
+              "midp(?h0,h,n)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "midp(?h0,b,n)",
+              "midp(?h0,h,m)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "midp(?h0,m,b)",
+              "midp(?h0,n,h)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "midp(?h0,m,h)",
+              "midp(?h0,n,b)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(?h0,b,m)",
+              "coll(?h0,h,n)",
+              "eqratio(?h0,b,?h0,h,b,m,h,n)",
+              "sameside(b,?h0,m,h,?h0,n)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(?h0,b,m)",
+              "coll(?h0,h,n)",
+              "eqratio(?h0,b,?h0,h,b,m,h,n)",
+              "sameside(h,?h0,n,b,?h0,m)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(?h0,b,m)",
+              "coll(?h0,h,n)",
+              "eqratio(?h0,m,?h0,n,b,m,h,n)",
+              "sameside(m,?h0,b,n,?h0,h)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(?h0,b,m)",
+              "coll(?h0,h,n)",
+              "eqratio(?h0,m,?h0,n,b,m,h,n)",
+              "sameside(n,?h0,h,m,?h0,b)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "para(?h0,?h1,b,h)",
+              "para(?h0,?h1,m,n)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "perp(?h0,?h1,b,h)",
+              "perp(?h0,?h1,m,n)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(?h0,b,m)",
+              "coll(?h1,h,n)",
+              "eqratio(?h0,b,?h1,h,b,m,h,n)",
+              "para(?h0,?h1,m,n)",
+              "sameside(h,n,?h1,b,m,?h0)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(?h0,b,m)",
+              "coll(?h1,h,n)",
+              "eqratio(?h0,m,?h1,n,b,m,h,n)",
+              "para(?h0,?h1,b,h)",
+              "sameside(n,h,?h1,m,b,?h0)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(?h0,h,n)",
+              "coll(?h1,b,m)",
+              "eqratio(?h0,h,?h1,b,h,n,b,m)",
+              "para(?h0,?h1,m,n)",
+              "sameside(b,m,?h1,h,n,?h0)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(?h0,h,n)",
+              "coll(?h1,b,m)",
+              "eqratio(?h0,n,?h1,m,h,n,b,m)",
+              "para(?h0,?h1,b,h)",
+              "sameside(m,b,?h1,n,h,?h0)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(?h0,?h1,?h2,?h3,a,f,g,h)",
+              "eqratio(?h0,?h1,?h2,?h3,a,n,g,m)",
+              "para(f,h,m,n)",
+              "sameside(a,n,f,g,m,h)"
+            ],
+            [
+              "eqratio(?h0,?h1,?h2,?h3,g,h,a,f)",
+              "eqratio(?h0,?h1,?h2,?h3,g,m,a,n)",
+              "para(f,h,m,n)",
+              "sameside(a,n,f,g,m,h)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "midp(?h0,f,m)",
+              "midp(?h0,h,n)",
+              "sameside(a,n,f,g,m,h)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "midp(?h0,f,n)",
+              "midp(?h0,h,m)",
+              "sameside(a,n,f,g,m,h)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "midp(?h0,m,f)",
+              "midp(?h0,n,h)",
+              "sameside(a,n,f,g,m,h)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "midp(?h0,m,h)",
+              "midp(?h0,n,f)",
+              "sameside(a,n,f,g,m,h)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "coll(?h0,f,m)",
+              "coll(?h0,h,n)",
+              "eqratio(?h0,f,?h0,h,f,m,h,n)",
+              "sameside(f,?h0,m,h,?h0,n)",
+              "sameside(a,n,f,g,m,h)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "coll(?h0,f,m)",
+              "coll(?h0,h,n)",
+              "eqratio(?h0,f,?h0,h,f,m,h,n)",
+              "sameside(h,?h0,n,f,?h0,m)",
+              "sameside(a,n,f,g,m,h)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "coll(?h0,f,m)",
+              "coll(?h0,h,n)",
+              "eqratio(?h0,m,?h0,n,f,m,h,n)",
+              "sameside(m,?h0,f,n,?h0,h)",
+              "sameside(a,n,f,g,m,h)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "coll(?h0,f,m)",
+              "coll(?h0,h,n)",
+              "eqratio(?h0,m,?h0,n,f,m,h,n)",
+              "sameside(n,?h0,h,m,?h0,f)",
+              "sameside(a,n,f,g,m,h)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "para(?h0,?h1,f,h)",
+              "para(?h0,?h1,m,n)",
+              "sameside(a,n,f,g,m,h)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "perp(?h0,?h1,f,h)",
+              "perp(?h0,?h1,m,n)",
+              "sameside(a,n,f,g,m,h)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "coll(?h0,f,m)",
+              "coll(?h1,h,n)",
+              "eqratio(?h0,f,?h1,h,f,m,h,n)",
+              "para(?h0,?h1,m,n)",
+              "sameside(h,n,?h1,f,m,?h0)",
+              "sameside(a,n,f,g,m,h)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "coll(?h0,f,m)",
+              "coll(?h1,h,n)",
+              "eqratio(?h0,m,?h1,n,f,m,h,n)",
+              "para(?h0,?h1,f,h)",
+              "sameside(n,h,?h1,m,f,?h0)",
+              "sameside(a,n,f,g,m,h)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "coll(?h0,h,n)",
+              "coll(?h1,f,m)",
+              "eqratio(?h0,h,?h1,f,h,n,f,m)",
+              "para(?h0,?h1,m,n)",
+              "sameside(f,m,?h1,h,n,?h0)",
+              "sameside(a,n,f,g,m,h)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "coll(?h0,h,n)",
+              "coll(?h1,f,m)",
+              "eqratio(?h0,n,?h1,m,h,n,f,m)",
+              "para(?h0,?h1,f,h)",
+              "sameside(m,f,?h1,n,h,?h0)",
+              "sameside(a,n,f,g,m,h)"
+            ],
+            [
+              "eqratio(?h0,?h1,?h2,?h3,a,f,g,h)",
+              "eqratio(?h0,?h1,?h2,?h3,a,n,g,m)",
+              "para(f,h,m,n)",
+              "sameside(g,m,h,a,n,f)"
+            ],
+            [
+              "eqratio(?h0,?h1,?h2,?h3,g,h,a,f)",
+              "eqratio(?h0,?h1,?h2,?h3,g,m,a,n)",
+              "para(f,h,m,n)",
+              "sameside(g,m,h,a,n,f)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "midp(?h0,f,m)",
+              "midp(?h0,h,n)",
+              "sameside(g,m,h,a,n,f)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "midp(?h0,f,n)",
+              "midp(?h0,h,m)",
+              "sameside(g,m,h,a,n,f)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "midp(?h0,m,f)",
+              "midp(?h0,n,h)",
+              "sameside(g,m,h,a,n,f)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "midp(?h0,m,h)",
+              "midp(?h0,n,f)",
+              "sameside(g,m,h,a,n,f)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "coll(?h0,f,m)",
+              "coll(?h0,h,n)",
+              "eqratio(?h0,f,?h0,h,f,m,h,n)",
+              "sameside(f,?h0,m,h,?h0,n)",
+              "sameside(g,m,h,a,n,f)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "coll(?h0,f,m)",
+              "coll(?h0,h,n)",
+              "eqratio(?h0,f,?h0,h,f,m,h,n)",
+              "sameside(h,?h0,n,f,?h0,m)",
+              "sameside(g,m,h,a,n,f)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "coll(?h0,f,m)",
+              "coll(?h0,h,n)",
+              "eqratio(?h0,m,?h0,n,f,m,h,n)",
+              "sameside(m,?h0,f,n,?h0,h)",
+              "sameside(g,m,h,a,n,f)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "coll(?h0,f,m)",
+              "coll(?h0,h,n)",
+              "eqratio(?h0,m,?h0,n,f,m,h,n)",
+              "sameside(n,?h0,h,m,?h0,f)",
+              "sameside(g,m,h,a,n,f)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "para(?h0,?h1,f,h)",
+              "para(?h0,?h1,m,n)",
+              "sameside(g,m,h,a,n,f)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "perp(?h0,?h1,f,h)",
+              "perp(?h0,?h1,m,n)",
+              "sameside(g,m,h,a,n,f)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "coll(?h0,f,m)",
+              "coll(?h1,h,n)",
+              "eqratio(?h0,f,?h1,h,f,m,h,n)",
+              "para(?h0,?h1,m,n)",
+              "sameside(h,n,?h1,f,m,?h0)",
+              "sameside(g,m,h,a,n,f)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "coll(?h0,f,m)",
+              "coll(?h1,h,n)",
+              "eqratio(?h0,m,?h1,n,f,m,h,n)",
+              "para(?h0,?h1,f,h)",
+              "sameside(n,h,?h1,m,f,?h0)",
+              "sameside(g,m,h,a,n,f)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "coll(?h0,h,n)",
+              "coll(?h1,f,m)",
+              "eqratio(?h0,h,?h1,f,h,n,f,m)",
+              "para(?h0,?h1,m,n)",
+              "sameside(f,m,?h1,h,n,?h0)",
+              "sameside(g,m,h,a,n,f)"
+            ],
+            [
+              "eqratio(a,f,a,n,g,h,g,m)",
+              "coll(?h0,h,n)",
+              "coll(?h1,f,m)",
+              "eqratio(?h0,n,?h1,m,h,n,f,m)",
+              "para(?h0,?h1,f,h)",
+              "sameside(m,f,?h1,n,h,?h0)",
+              "sameside(g,m,h,a,n,f)"
+            ]
+          ],
+          "relation_demands_observed": [
+            "eqratio(a,b,a,n,g,h,g,m)",
+            "coll(h,j,n)",
+            "eqratio(b,j,b,m,h,j,h,n)",
+            "sameside(b,j,m,h,j,n)",
+            "sameside(a,n,b,g,m,h)",
+            "sameside(h,j,n,b,j,m)",
+            "eqratio(b,m,h,n,j,m,j,n)",
+            "sameside(m,j,b,n,j,h)",
+            "sameside(n,j,h,m,j,b)",
+            "para(a,j,m,n)",
+            "coll(?h1,h,n)",
+            "eqratio(?h1,h,b,j,h,n,b,m)",
+            "para(?h1,j,m,n)",
+            "sameside(h,n,?h1,b,m,j)",
+            "coll(a,h,n)",
+            "eqratio(a,n,h,n,j,m,b,m)",
+            "sameside(n,h,a,m,b,j)",
+            "coll(?h0,h,n)",
+            "eqratio(?h0,h,b,j,h,n,b,m)",
+            "para(?h0,j,m,n)",
+            "sameside(b,m,j,h,n,?h0)",
+            "sameside(m,b,j,n,h,a)",
+            "sameside(g,m,h,a,n,b)"
+          ],
+          "relation_demands_next": [
+            "eqratio(a,b,a,n,g,h,g,m)",
+            "coll(h,j,n)",
+            "eqratio(b,j,b,m,h,j,h,n)",
+            "sameside(b,j,m,h,j,n)",
+            "sameside(a,n,b,g,m,h)",
+            "sameside(h,j,n,b,j,m)",
+            "eqratio(b,m,h,n,j,m,j,n)",
+            "sameside(m,j,b,n,j,h)",
+            "sameside(n,j,h,m,j,b)",
+            "para(a,j,m,n)",
+            "coll(?h1,h,n)",
+            "eqratio(?h1,h,b,j,h,n,b,m)",
+            "para(?h1,j,m,n)",
+            "sameside(h,n,?h1,b,m,j)",
+            "coll(a,h,n)",
+            "eqratio(a,n,h,n,j,m,b,m)",
+            "sameside(n,h,a,m,b,j)",
+            "coll(?h0,h,n)",
+            "eqratio(?h0,h,b,j,h,n,b,m)",
+            "para(?h0,j,m,n)",
+            "sameside(b,m,j,h,n,?h0)",
+            "sameside(m,b,j,n,h,a)",
+            "sameside(g,m,h,a,n,b)"
+          ],
+          "residual_feedback_applied": true,
+          "native_feedback": [
+            {
+              "candidate": "midpoint(b,m)->j",
+              "static_rank": 1,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 15,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 59,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 66,
+                "retained_parent_demands": 2,
+                "closed_parent_demands": 3,
+                "closed_parent_obligations": [
+                  "midp(?h0,b,m)",
+                  "coll(?h0,b,m)",
+                  "coll(?h1,b,m)"
+                ],
+                "new_native_facts": 628,
+                "introduced_relation_demands": 12
+              },
+              "branch_reduction": {
+                "matched_atom_count": 2,
+                "progressed_branch_count": 2,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": [
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "midp(j,h,n)",
+                    "sameside(a,n,b,g,m,h)"
+                  ],
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "midp(j,h,n)",
+                    "sameside(g,m,h,a,n,b)"
+                  ]
+                ]
+              },
+              "error": null,
+              "selected": false
+            },
+            {
+              "candidate": "intersection_lp(b,m,a,b,h)->j",
+              "static_rank": 2,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 15,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 59,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 66,
+                "retained_parent_demands": 2,
+                "closed_parent_demands": 3,
+                "closed_parent_obligations": [
+                  "coll(?h0,b,m)",
+                  "para(?h0,?h1,b,h)",
+                  "coll(?h1,b,m)"
+                ],
+                "new_native_facts": 600,
+                "introduced_relation_demands": 12,
+                "persistent_branch_feedback_applied": true,
+                "persistent_branch_count": 18,
+                "persistent_branch_matched_atoms": 22,
+                "persistent_branch_fully_closed": 0
+              },
+              "branch_reduction": {
+                "matched_atom_count": 22,
+                "progressed_branch_count": 18,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": [
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "coll(h,j,n)",
+                    "eqratio(b,j,b,m,h,j,h,n)",
+                    "sameside(b,j,m,h,j,n)",
+                    "sameside(a,n,b,g,m,h)"
+                  ],
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "coll(h,j,n)",
+                    "eqratio(b,j,b,m,h,j,h,n)",
+                    "sameside(h,j,n,b,j,m)",
+                    "sameside(a,n,b,g,m,h)"
+                  ],
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "coll(h,j,n)",
+                    "eqratio(b,m,h,n,j,m,j,n)",
+                    "sameside(m,j,b,n,j,h)",
+                    "sameside(a,n,b,g,m,h)"
+                  ],
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "coll(h,j,n)",
+                    "eqratio(b,m,h,n,j,m,j,n)",
+                    "sameside(n,j,h,m,j,b)",
+                    "sameside(a,n,b,g,m,h)"
+                  ],
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "para(a,j,m,n)",
+                    "sameside(a,n,b,g,m,h)"
+                  ],
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "coll(?h1,h,n)",
+                    "eqratio(?h1,h,b,j,h,n,b,m)",
+                    "para(?h1,j,m,n)",
+                    "sameside(h,n,?h1,b,m,j)",
+                    "sameside(a,n,b,g,m,h)"
+                  ],
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "coll(a,h,n)",
+                    "eqratio(a,n,h,n,j,m,b,m)",
+                    "sameside(n,h,a,m,b,j)",
+                    "sameside(a,n,b,g,m,h)"
+                  ],
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "coll(?h0,h,n)",
+                    "eqratio(?h0,h,b,j,h,n,b,m)",
+                    "para(?h0,j,m,n)",
+                    "sameside(b,m,j,h,n,?h0)",
+                    "sameside(a,n,b,g,m,h)"
+                  ],
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "coll(a,h,n)",
+                    "eqratio(a,n,h,n,j,m,b,m)",
+                    "sameside(m,b,j,n,h,a)",
+                    "sameside(a,n,b,g,m,h)"
+                  ],
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "coll(h,j,n)",
+                    "eqratio(b,j,b,m,h,j,h,n)",
+                    "sameside(b,j,m,h,j,n)",
+                    "sameside(g,m,h,a,n,b)"
+                  ],
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "coll(h,j,n)",
+                    "eqratio(b,j,b,m,h,j,h,n)",
+                    "sameside(h,j,n,b,j,m)",
+                    "sameside(g,m,h,a,n,b)"
+                  ],
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "coll(h,j,n)",
+                    "eqratio(b,m,h,n,j,m,j,n)",
+                    "sameside(m,j,b,n,j,h)",
+                    "sameside(g,m,h,a,n,b)"
+                  ],
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "coll(h,j,n)",
+                    "eqratio(b,m,h,n,j,m,j,n)",
+                    "sameside(n,j,h,m,j,b)",
+                    "sameside(g,m,h,a,n,b)"
+                  ],
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "para(a,j,m,n)",
+                    "sameside(g,m,h,a,n,b)"
+                  ],
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "coll(?h1,h,n)",
+                    "eqratio(?h1,h,b,j,h,n,b,m)",
+                    "para(?h1,j,m,n)",
+                    "sameside(h,n,?h1,b,m,j)",
+                    "sameside(g,m,h,a,n,b)"
+                  ],
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "coll(a,h,n)",
+                    "eqratio(a,n,h,n,j,m,b,m)",
+                    "sameside(n,h,a,m,b,j)",
+                    "sameside(g,m,h,a,n,b)"
+                  ],
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "coll(?h0,h,n)",
+                    "eqratio(?h0,h,b,j,h,n,b,m)",
+                    "para(?h0,j,m,n)",
+                    "sameside(b,m,j,h,n,?h0)",
+                    "sameside(g,m,h,a,n,b)"
+                  ],
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "coll(a,h,n)",
+                    "eqratio(a,n,h,n,j,m,b,m)",
+                    "sameside(m,b,j,n,h,a)",
+                    "sameside(g,m,h,a,n,b)"
+                  ]
+                ]
+              },
+              "error": null,
+              "selected": true
+            }
+          ],
+          "coordination": null
+        },
+        {
+          "round": 4,
+          "candidate_extension_seconds": 6.562507499998901,
+          "enumerated": 368,
+          "incidence_checked": 61,
+          "heuristic_candidates": 1,
+          "typed_construction_contracts": {
+            "enabled": true,
+            "truth_plane": "candidate_proposal_only_native_replay_required",
+            "obligation_branch_count": 18,
+            "witness_obligations": 8,
+            "matched_obligations": 4,
+            "matched_contracts": 24,
+            "raw_generated_candidates": 370,
+            "generated_candidates": 64,
+            "truncated_contracts": 10
+          },
+          "eligible_pool": 61,
+          "ranked_candidates": [
+            "on_line(h,n)->k",
+            "midpoint(i,g)->k",
+            "on_pline(j,m,n)->k",
+            "mirror(h,n)->k",
+            "between_bound(h,n)->k",
+            "foot(a,h,n)->k",
+            "circle(m,e,h)->k",
+            "orthocenter(m,e,h)->k",
+            "intersection_ll(h,n,c,q)->k",
+            "reflect(i,m,h)->k",
+            "on_tline(g,a,i)->k",
+            "angle_bisector(e,h,m)->k",
+            "intersection_lc(e,h,m)->k",
+            "angle_mirror(e,h,m)->k",
+            "parallelogram(e,h,m)->k",
+            "eqdistance(e,h,m)->k",
+            "incenter(m,e,h)->k",
+            "excenter(e,h,m)->k",
+            "shift(e,h,m)->k",
+            "circumcenter(m,e,h)->k",
+            "eqangle2(e,h,m)->k",
+            "intersection_cc(e,h,m)->k",
+            "on_circum(m,e,h)->k",
+            "on_bline(i,g)->k",
+            "on_circle(g,i)->k",
+            "eq_triangle(i,g)->k",
+            "on_dia(i,g)->k",
+            "iso_triangle_vertex(i,g)->k",
+            "intersection_pp(a,i,b,b,i,a)->k",
+            "iso_triangle_vertex_angle(i,g)->k",
+            "intersection_tt(a,i,b,b,i,a)->k",
+            "lc_tangent(g,i)->k",
+            "nsquare(g,i)->k",
+            "psquare(g,i)->k",
+            "eqangle3(e,m,a,b,i)->k",
+            "on_aline(a,b,i,c,o)->k",
+            "on_pline(j,n,m)->k",
+            "between_bound(n,h)->k",
+            "mirror(n,h)->k",
+            "foot(b,h,n)->k",
+            "foot(c,h,n)->k",
+            "foot(d,h,n)->k",
+            "foot(e,h,n)->k",
+            "foot(f,h,n)->k",
+            "foot(g,h,n)->k",
+            "foot(i,h,n)->k",
+            "foot(j,h,n)->k",
+            "foot(m,h,n)->k",
+            "foot(o,h,n)->k",
+            "intersection_ll(h,n,d,e)->k",
+            "intersection_ll(h,n,d,f)->k",
+            "intersection_ll(h,n,d,g)->k",
+            "intersection_ll(h,n,d,i)->k",
+            "intersection_ll(h,n,d,m)->k",
+            "intersection_ll(h,n,d,o)->k",
+            "intersection_ll(h,n,d,p)->k",
+            "intersection_ll(h,n,d,q)->k",
+            "intersection_ll(h,n,e,f)->k",
+            "intersection_ll(h,n,e,g)->k",
+            "intersection_ll(h,n,e,i)->k",
+            "intersection_ll(h,n,e,j)->k"
+          ],
+          "terminal_credit_ranking": [],
+          "obligation_credit_ranking": [],
+          "shortlist_channels": [
+            {
+              "candidate": "midpoint(i,g)->k",
+              "channel": "residual_frontier"
+            },
+            {
+              "candidate": "on_pline(j,m,n)->k",
+              "channel": "residual_frontier"
+            }
+          ],
+          "chosen": "on_pline(j,m,n)->k",
+          "relation_demands_in": [
+            "eqratio(a,b,a,n,g,h,g,m)",
+            "coll(h,j,n)",
+            "eqratio(b,j,b,m,h,j,h,n)",
+            "sameside(b,j,m,h,j,n)",
+            "sameside(a,n,b,g,m,h)",
+            "sameside(h,j,n,b,j,m)",
+            "eqratio(b,m,h,n,j,m,j,n)",
+            "sameside(m,j,b,n,j,h)",
+            "sameside(n,j,h,m,j,b)",
+            "para(a,j,m,n)",
+            "coll(?h1,h,n)",
+            "eqratio(?h1,h,b,j,h,n,b,m)",
+            "para(?h1,j,m,n)",
+            "sameside(h,n,?h1,b,m,j)",
+            "coll(a,h,n)",
+            "eqratio(a,n,h,n,j,m,b,m)",
+            "sameside(n,h,a,m,b,j)",
+            "coll(?h0,h,n)",
+            "eqratio(?h0,h,b,j,h,n,b,m)",
+            "para(?h0,j,m,n)",
+            "sameside(b,m,j,h,n,?h0)",
+            "sameside(m,b,j,n,h,a)",
+            "sameside(g,m,h,a,n,b)"
+          ],
+          "obligation_branches_in": [
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(h,j,n)",
+              "eqratio(b,j,b,m,h,j,h,n)",
+              "sameside(b,j,m,h,j,n)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(h,j,n)",
+              "eqratio(b,j,b,m,h,j,h,n)",
+              "sameside(h,j,n,b,j,m)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(h,j,n)",
+              "eqratio(b,m,h,n,j,m,j,n)",
+              "sameside(m,j,b,n,j,h)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(h,j,n)",
+              "eqratio(b,m,h,n,j,m,j,n)",
+              "sameside(n,j,h,m,j,b)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "para(a,j,m,n)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(?h1,h,n)",
+              "eqratio(?h1,h,b,j,h,n,b,m)",
+              "para(?h1,j,m,n)",
+              "sameside(h,n,?h1,b,m,j)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(a,h,n)",
+              "eqratio(a,n,h,n,j,m,b,m)",
+              "sameside(n,h,a,m,b,j)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(?h0,h,n)",
+              "eqratio(?h0,h,b,j,h,n,b,m)",
+              "para(?h0,j,m,n)",
+              "sameside(b,m,j,h,n,?h0)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(a,h,n)",
+              "eqratio(a,n,h,n,j,m,b,m)",
+              "sameside(m,b,j,n,h,a)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(h,j,n)",
+              "eqratio(b,j,b,m,h,j,h,n)",
+              "sameside(b,j,m,h,j,n)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(h,j,n)",
+              "eqratio(b,j,b,m,h,j,h,n)",
+              "sameside(h,j,n,b,j,m)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(h,j,n)",
+              "eqratio(b,m,h,n,j,m,j,n)",
+              "sameside(m,j,b,n,j,h)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(h,j,n)",
+              "eqratio(b,m,h,n,j,m,j,n)",
+              "sameside(n,j,h,m,j,b)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "para(a,j,m,n)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(?h1,h,n)",
+              "eqratio(?h1,h,b,j,h,n,b,m)",
+              "para(?h1,j,m,n)",
+              "sameside(h,n,?h1,b,m,j)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(a,h,n)",
+              "eqratio(a,n,h,n,j,m,b,m)",
+              "sameside(n,h,a,m,b,j)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(?h0,h,n)",
+              "eqratio(?h0,h,b,j,h,n,b,m)",
+              "para(?h0,j,m,n)",
+              "sameside(b,m,j,h,n,?h0)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(a,h,n)",
+              "eqratio(a,n,h,n,j,m,b,m)",
+              "sameside(m,b,j,n,h,a)",
+              "sameside(g,m,h,a,n,b)"
+            ]
+          ],
+          "relation_demands_observed": [
+            "eqratio(a,b,a,n,g,h,g,m)",
+            "coll(h,k,n)",
+            "eqratio(b,j,b,m,h,k,h,n)",
+            "sameside(h,n,k,b,m,j)",
+            "sameside(a,n,b,g,m,h)",
+            "sameside(b,m,j,h,n,k)",
+            "sameside(g,m,h,a,n,b)"
+          ],
+          "relation_demands_next": [
+            "eqratio(a,b,a,n,g,h,g,m)",
+            "coll(h,k,n)",
+            "eqratio(b,j,b,m,h,k,h,n)",
+            "sameside(h,n,k,b,m,j)",
+            "sameside(a,n,b,g,m,h)",
+            "sameside(b,m,j,h,n,k)",
+            "sameside(g,m,h,a,n,b)"
+          ],
+          "residual_feedback_applied": true,
+          "native_feedback": [
+            {
+              "candidate": "midpoint(i,g)->k",
+              "static_rank": 1,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 15,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 63,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 23,
+                "retained_parent_demands": 0,
+                "closed_parent_demands": 0,
+                "closed_parent_obligations": [],
+                "new_native_facts": 660,
+                "introduced_relation_demands": 15
+              },
+              "branch_reduction": {
+                "matched_atom_count": 0,
+                "progressed_branch_count": 0,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": []
+              },
+              "error": null,
+              "selected": false
+            },
+            {
+              "candidate": "on_pline(j,m,n)->k",
+              "static_rank": 2,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 14,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 60,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 23,
+                "retained_parent_demands": 0,
+                "closed_parent_demands": 2,
+                "closed_parent_obligations": [
+                  "para(?h1,j,m,n)",
+                  "para(?h0,j,m,n)"
+                ],
+                "new_native_facts": 488,
+                "introduced_relation_demands": 14,
+                "persistent_branch_feedback_applied": true,
+                "persistent_branch_count": 4,
+                "persistent_branch_matched_atoms": 4,
+                "persistent_branch_fully_closed": 0
+              },
+              "branch_reduction": {
+                "matched_atom_count": 4,
+                "progressed_branch_count": 4,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": [
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "coll(h,k,n)",
+                    "eqratio(b,j,b,m,h,k,h,n)",
+                    "sameside(h,n,k,b,m,j)",
+                    "sameside(a,n,b,g,m,h)"
+                  ],
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "coll(h,k,n)",
+                    "eqratio(b,j,b,m,h,k,h,n)",
+                    "sameside(b,m,j,h,n,k)",
+                    "sameside(a,n,b,g,m,h)"
+                  ],
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "coll(h,k,n)",
+                    "eqratio(b,j,b,m,h,k,h,n)",
+                    "sameside(h,n,k,b,m,j)",
+                    "sameside(g,m,h,a,n,b)"
+                  ],
+                  [
+                    "eqratio(a,b,a,n,g,h,g,m)",
+                    "coll(h,k,n)",
+                    "eqratio(b,j,b,m,h,k,h,n)",
+                    "sameside(b,m,j,h,n,k)",
+                    "sameside(g,m,h,a,n,b)"
+                  ]
+                ]
+              },
+              "error": null,
+              "selected": true
+            }
+          ],
+          "coordination": null
+        },
+        {
+          "round": 5,
+          "candidate_extension_seconds": 6.7927128999945126,
+          "enumerated": 304,
+          "incidence_checked": 56,
+          "heuristic_candidates": 0,
+          "typed_construction_contracts": {
+            "enabled": true,
+            "truth_plane": "candidate_proposal_only_native_replay_required",
+            "obligation_branch_count": 24,
+            "witness_obligations": 12,
+            "matched_obligations": 0,
+            "matched_contracts": 0,
+            "raw_generated_candidates": 0,
+            "generated_candidates": 0,
+            "truncated_contracts": 0
+          },
+          "eligible_pool": 56,
+          "ranked_candidates": [
+            "intersection_tt(a,i,b,j,i,a)->l",
+            "midpoint(a,g)->l",
+            "intersection_ll(i,a,m,g)->l",
+            "mirror(a,g)->l",
+            "on_tline(g,a,i)->l",
+            "foot(a,m,h)->l",
+            "on_pline(j,a,i)->l",
+            "circle(a,b,j)->l",
+            "orthocenter(a,b,j)->l",
+            "reflect(a,m,g)->l",
+            "intersection_lc(a,b,j)->l",
+            "angle_bisector(a,b,j)->l",
+            "angle_mirror(a,b,j)->l",
+            "eqdistance(a,b,j)->l",
+            "circumcenter(a,b,j)->l",
+            "incenter(a,b,j)->l",
+            "eqangle2(a,b,j)->l",
+            "excenter(a,b,j)->l",
+            "shift(a,b,j)->l",
+            "parallelogram(a,b,j)->l",
+            "intersection_cc(a,b,j)->l",
+            "on_circum(a,b,j)->l",
+            "on_line(a,g)->l",
+            "eqangle3(k,n,a,b,i)->l",
+            "on_bline(a,g)->l",
+            "on_aline(k,n,a,b,i)->l",
+            "on_circle(a,g)->l",
+            "between_bound(a,g)->l",
+            "on_dia(a,g)->l",
+            "intersection_pp(a,i,b,b,i,a)->l",
+            "eq_triangle(a,g)->l",
+            "iso_triangle_vertex(a,g)->l",
+            "psquare(a,g)->l",
+            "iso_triangle_vertex_angle(a,g)->l",
+            "nsquare(a,g)->l",
+            "lc_tangent(a,g)->l",
+            "intersection_ll(i,a,m,h)->l",
+            "foot(a,m,g)->l",
+            "on_pline(a,g,m)->l",
+            "on_pline(a,m,g)->l",
+            "on_tline(a,g,m)->l",
+            "on_tline(a,m,g)->l",
+            "reflect(a,m,h)->l",
+            "on_tline(a,g,h)->l",
+            "intersection_tt(i,a,j,a,i,b)->l",
+            "intersection_tt(i,a,j,j,i,a)->l",
+            "intersection_ll(m,h,a,j)->l",
+            "intersection_lc(a,j,b)->l",
+            "intersection_lc(j,a,b)->l",
+            "angle_bisector(a,j,b)->l",
+            "angle_bisector(j,a,b)->l",
+            "angle_mirror(a,j,b)->l",
+            "angle_mirror(j,a,b)->l",
+            "eqangle2(a,j,b)->l",
+            "eqangle2(j,a,b)->l",
+            "eqdistance(a,j,b)->l"
+          ],
+          "terminal_credit_ranking": [],
+          "obligation_credit_ranking": [],
+          "shortlist_channels": [
+            {
+              "candidate": "midpoint(a,g)->l",
+              "channel": "residual_frontier"
+            },
+            {
+              "candidate": "intersection_ll(i,a,m,g)->l",
+              "channel": "residual_frontier"
+            }
+          ],
+          "chosen": "intersection_ll(i,a,m,g)->l",
+          "relation_demands_in": [
+            "eqratio(?h0,?h1,?h2,?h3,a,b,g,h)",
+            "eqratio(?h0,?h1,?h2,?h3,a,n,g,m)",
+            "coll(h,k,n)",
+            "eqratio(b,j,b,m,h,k,h,n)",
+            "sameside(h,n,k,b,m,j)",
+            "sameside(a,n,b,g,m,h)",
+            "eqratio(?h0,?h1,?h2,?h3,g,h,a,b)",
+            "eqratio(?h0,?h1,?h2,?h3,g,m,a,n)",
+            "eqratio(a,b,a,n,g,h,g,m)",
+            "eqratio(?h0,?h1,?h2,?h3,b,j,b,m)",
+            "eqratio(?h0,?h1,?h2,?h3,h,k,h,n)",
+            "eqratio(?h0,?h1,?h2,?h3,b,j,h,k)",
+            "eqratio(?h0,?h1,?h2,?h3,b,m,h,n)",
+            "eqratio(?h0,?h1,?h2,?h3,b,m,b,j)",
+            "eqratio(?h0,?h1,?h2,?h3,h,n,h,k)",
+            "eqratio(?h0,?h1,?h2,?h3,h,k,b,j)",
+            "eqratio(?h0,?h1,?h2,?h3,h,n,b,m)",
+            "sameside(b,m,j,h,n,k)",
+            "sameside(g,m,h,a,n,b)"
+          ],
+          "obligation_branches_in": [
+            [
+              "eqratio(?h0,?h1,?h2,?h3,a,b,g,h)",
+              "eqratio(?h0,?h1,?h2,?h3,a,n,g,m)",
+              "coll(h,k,n)",
+              "eqratio(b,j,b,m,h,k,h,n)",
+              "sameside(h,n,k,b,m,j)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(?h0,?h1,?h2,?h3,g,h,a,b)",
+              "eqratio(?h0,?h1,?h2,?h3,g,m,a,n)",
+              "coll(h,k,n)",
+              "eqratio(b,j,b,m,h,k,h,n)",
+              "sameside(h,n,k,b,m,j)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(h,k,n)",
+              "eqratio(?h0,?h1,?h2,?h3,b,j,b,m)",
+              "eqratio(?h0,?h1,?h2,?h3,h,k,h,n)",
+              "sameside(h,n,k,b,m,j)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(h,k,n)",
+              "eqratio(?h0,?h1,?h2,?h3,b,j,h,k)",
+              "eqratio(?h0,?h1,?h2,?h3,b,m,h,n)",
+              "sameside(h,n,k,b,m,j)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(h,k,n)",
+              "eqratio(?h0,?h1,?h2,?h3,b,m,b,j)",
+              "eqratio(?h0,?h1,?h2,?h3,h,n,h,k)",
+              "sameside(h,n,k,b,m,j)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(h,k,n)",
+              "eqratio(?h0,?h1,?h2,?h3,h,k,b,j)",
+              "eqratio(?h0,?h1,?h2,?h3,h,n,b,m)",
+              "sameside(h,n,k,b,m,j)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(?h0,?h1,?h2,?h3,a,b,g,h)",
+              "eqratio(?h0,?h1,?h2,?h3,a,n,g,m)",
+              "coll(h,k,n)",
+              "eqratio(b,j,b,m,h,k,h,n)",
+              "sameside(b,m,j,h,n,k)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(?h0,?h1,?h2,?h3,g,h,a,b)",
+              "eqratio(?h0,?h1,?h2,?h3,g,m,a,n)",
+              "coll(h,k,n)",
+              "eqratio(b,j,b,m,h,k,h,n)",
+              "sameside(b,m,j,h,n,k)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(h,k,n)",
+              "eqratio(?h0,?h1,?h2,?h3,b,j,b,m)",
+              "eqratio(?h0,?h1,?h2,?h3,h,k,h,n)",
+              "sameside(b,m,j,h,n,k)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(h,k,n)",
+              "eqratio(?h0,?h1,?h2,?h3,b,j,h,k)",
+              "eqratio(?h0,?h1,?h2,?h3,b,m,h,n)",
+              "sameside(b,m,j,h,n,k)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(h,k,n)",
+              "eqratio(?h0,?h1,?h2,?h3,b,m,b,j)",
+              "eqratio(?h0,?h1,?h2,?h3,h,n,h,k)",
+              "sameside(b,m,j,h,n,k)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(h,k,n)",
+              "eqratio(?h0,?h1,?h2,?h3,h,k,b,j)",
+              "eqratio(?h0,?h1,?h2,?h3,h,n,b,m)",
+              "sameside(b,m,j,h,n,k)",
+              "sameside(a,n,b,g,m,h)"
+            ],
+            [
+              "eqratio(?h0,?h1,?h2,?h3,a,b,g,h)",
+              "eqratio(?h0,?h1,?h2,?h3,a,n,g,m)",
+              "coll(h,k,n)",
+              "eqratio(b,j,b,m,h,k,h,n)",
+              "sameside(h,n,k,b,m,j)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(?h0,?h1,?h2,?h3,g,h,a,b)",
+              "eqratio(?h0,?h1,?h2,?h3,g,m,a,n)",
+              "coll(h,k,n)",
+              "eqratio(b,j,b,m,h,k,h,n)",
+              "sameside(h,n,k,b,m,j)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(h,k,n)",
+              "eqratio(?h0,?h1,?h2,?h3,b,j,b,m)",
+              "eqratio(?h0,?h1,?h2,?h3,h,k,h,n)",
+              "sameside(h,n,k,b,m,j)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(h,k,n)",
+              "eqratio(?h0,?h1,?h2,?h3,b,j,h,k)",
+              "eqratio(?h0,?h1,?h2,?h3,b,m,h,n)",
+              "sameside(h,n,k,b,m,j)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(h,k,n)",
+              "eqratio(?h0,?h1,?h2,?h3,b,m,b,j)",
+              "eqratio(?h0,?h1,?h2,?h3,h,n,h,k)",
+              "sameside(h,n,k,b,m,j)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(h,k,n)",
+              "eqratio(?h0,?h1,?h2,?h3,h,k,b,j)",
+              "eqratio(?h0,?h1,?h2,?h3,h,n,b,m)",
+              "sameside(h,n,k,b,m,j)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(?h0,?h1,?h2,?h3,a,b,g,h)",
+              "eqratio(?h0,?h1,?h2,?h3,a,n,g,m)",
+              "coll(h,k,n)",
+              "eqratio(b,j,b,m,h,k,h,n)",
+              "sameside(b,m,j,h,n,k)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(?h0,?h1,?h2,?h3,g,h,a,b)",
+              "eqratio(?h0,?h1,?h2,?h3,g,m,a,n)",
+              "coll(h,k,n)",
+              "eqratio(b,j,b,m,h,k,h,n)",
+              "sameside(b,m,j,h,n,k)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(h,k,n)",
+              "eqratio(?h0,?h1,?h2,?h3,b,j,b,m)",
+              "eqratio(?h0,?h1,?h2,?h3,h,k,h,n)",
+              "sameside(b,m,j,h,n,k)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(h,k,n)",
+              "eqratio(?h0,?h1,?h2,?h3,b,j,h,k)",
+              "eqratio(?h0,?h1,?h2,?h3,b,m,h,n)",
+              "sameside(b,m,j,h,n,k)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(h,k,n)",
+              "eqratio(?h0,?h1,?h2,?h3,b,m,b,j)",
+              "eqratio(?h0,?h1,?h2,?h3,h,n,h,k)",
+              "sameside(b,m,j,h,n,k)",
+              "sameside(g,m,h,a,n,b)"
+            ],
+            [
+              "eqratio(a,b,a,n,g,h,g,m)",
+              "coll(h,k,n)",
+              "eqratio(?h0,?h1,?h2,?h3,h,k,b,j)",
+              "eqratio(?h0,?h1,?h2,?h3,h,n,b,m)",
+              "sameside(b,m,j,h,n,k)",
+              "sameside(g,m,h,a,n,b)"
+            ]
+          ],
+          "relation_demands_observed": [
+            "lequation(1/1,i,m,*,i,m,1/1,o,n,*,o,n,-1/1,i,n,*,i,n,-1/1,o,m,*,o,m,0)",
+            "lequation(1/1,i,n,*,i,n,1/1,o,m,*,o,m,-1/1,i,m,*,i,m,-1/1,o,n,*,o,n,0)",
+            "lequation(1/1,o,m,*,o,m,1/1,i,n,*,i,n,-1/1,o,n,*,o,n,-1/1,i,m,*,i,m,0)",
+            "perp(?C,?D,i,o)",
+            "para(?C,?D,m,n)",
+            "lequation(1/1,o,n,*,o,n,1/1,i,m,*,i,m,-1/1,o,m,*,o,m,-1/1,i,n,*,i,n,0)",
+            "lequation(1/1,m,i,*,m,i,1/1,n,o,*,n,o,-1/1,m,o,*,m,o,-1/1,n,i,*,n,i,0)",
+            "lequation(1/1,n,i,*,n,i,1/1,m,o,*,m,o,-1/1,n,o,*,n,o,-1/1,m,i,*,m,i,0)",
+            "lequation(1/1,m,o,*,m,o,1/1,n,i,*,n,i,-1/1,m,i,*,m,i,-1/1,n,o,*,n,o,0)",
+            "lequation(1/1,n,o,*,n,o,1/1,m,i,*,m,i,-1/1,n,i,*,n,i,-1/1,m,o,*,m,o,0)",
+            "para(a,g,m,n)",
+            "perp(i,o,j,k)",
+            "perp(?C,?D,m,n)",
+            "para(?C,?D,i,o)"
+          ],
+          "relation_demands_next": [
+            "lequation(1/1,i,m,*,i,m,1/1,o,n,*,o,n,-1/1,i,n,*,i,n,-1/1,o,m,*,o,m,0)",
+            "lequation(1/1,i,n,*,i,n,1/1,o,m,*,o,m,-1/1,i,m,*,i,m,-1/1,o,n,*,o,n,0)",
+            "lequation(1/1,o,m,*,o,m,1/1,i,n,*,i,n,-1/1,o,n,*,o,n,-1/1,i,m,*,i,m,0)",
+            "perp(?C,?D,i,o)",
+            "para(?C,?D,m,n)",
+            "lequation(1/1,o,n,*,o,n,1/1,i,m,*,i,m,-1/1,o,m,*,o,m,-1/1,i,n,*,i,n,0)",
+            "lequation(1/1,m,i,*,m,i,1/1,n,o,*,n,o,-1/1,m,o,*,m,o,-1/1,n,i,*,n,i,0)",
+            "lequation(1/1,n,i,*,n,i,1/1,m,o,*,m,o,-1/1,n,o,*,n,o,-1/1,m,i,*,m,i,0)",
+            "lequation(1/1,m,o,*,m,o,1/1,n,i,*,n,i,-1/1,m,i,*,m,i,-1/1,n,o,*,n,o,0)",
+            "lequation(1/1,n,o,*,n,o,1/1,m,i,*,m,i,-1/1,n,i,*,n,i,-1/1,m,o,*,m,o,0)",
+            "para(a,g,m,n)",
+            "perp(i,o,j,k)",
+            "perp(?C,?D,m,n)",
+            "para(?C,?D,i,o)"
+          ],
+          "residual_feedback_applied": true,
+          "native_feedback": [
+            {
+              "candidate": "midpoint(a,g)->l",
+              "static_rank": 1,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 16,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 64,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 19,
+                "retained_parent_demands": 0,
+                "closed_parent_demands": 0,
+                "closed_parent_obligations": [],
+                "new_native_facts": 813,
+                "introduced_relation_demands": 16
+              },
+              "branch_reduction": {
+                "matched_atom_count": 0,
+                "progressed_branch_count": 0,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": []
+              },
+              "error": null,
+              "selected": false
+            },
+            {
+              "candidate": "intersection_ll(i,a,m,g)->l",
+              "static_rank": 2,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 14,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 67,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 19,
+                "retained_parent_demands": 0,
+                "closed_parent_demands": 0,
+                "closed_parent_obligations": [],
+                "new_native_facts": 1314,
+                "introduced_relation_demands": 14
+              },
+              "branch_reduction": {
+                "matched_atom_count": 0,
+                "progressed_branch_count": 0,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": []
+              },
+              "error": null,
+              "selected": true
+            }
+          ],
+          "coordination": null
+        },
+        {
+          "round": 6,
+          "candidate_extension_seconds": 8.853543099998205,
+          "enumerated": 368,
+          "incidence_checked": 61,
+          "heuristic_candidates": 1,
+          "typed_construction_contracts": {
+            "enabled": true,
+            "truth_plane": "candidate_proposal_only_native_replay_required",
+            "obligation_branch_count": 24,
+            "witness_obligations": 4,
+            "matched_obligations": 4,
+            "matched_contracts": 20,
+            "raw_generated_candidates": 528,
+            "generated_candidates": 64,
+            "truncated_contracts": 10
+          },
+          "eligible_pool": 61,
+          "ranked_candidates": [
+            "on_pline(a,i,o)->r",
+            "midpoint(b,j)->r",
+            "on_tline(a,m,n)->r",
+            "mirror(b,j)->r",
+            "foot(b,a,l)->r",
+            "reflect(b,a,l)->r",
+            "circle(a,b,j)->r",
+            "intersection_tt(a,i,b,j,i,a)->r",
+            "orthocenter(a,b,j)->r",
+            "eqangle3(j,m,a,b,i)->r",
+            "angle_bisector(a,b,j)->r",
+            "parallelogram(a,b,j)->r",
+            "angle_mirror(a,b,j)->r",
+            "eqdistance(a,b,j)->r",
+            "incenter(a,b,j)->r",
+            "excenter(a,b,j)->r",
+            "circumcenter(a,b,j)->r",
+            "shift(a,b,j)->r",
+            "eqangle2(a,b,j)->r",
+            "intersection_lc(a,b,j)->r",
+            "intersection_cc(a,b,j)->r",
+            "on_line(b,j)->r",
+            "on_circum(a,b,j)->r",
+            "on_bline(b,j)->r",
+            "lc_tangent(b,j)->r",
+            "on_circle(b,j)->r",
+            "nsquare(b,j)->r",
+            "on_dia(b,j)->r",
+            "psquare(b,j)->r",
+            "intersection_pp(a,i,b,b,i,a)->r",
+            "between_bound(b,j)->r",
+            "eq_triangle(b,j)->r",
+            "iso_triangle_vertex(b,j)->r",
+            "iso_triangle_vertex_angle(b,j)->r",
+            "on_aline(a,i,b,q,n)->r",
+            "on_pline(a,m,n)->r",
+            "on_pline(a,n,m)->r",
+            "on_pline(a,o,i)->r",
+            "on_pline(b,i,o)->r",
+            "on_pline(b,m,n)->r",
+            "on_pline(b,n,m)->r",
+            "on_pline(b,o,i)->r",
+            "on_pline(c,i,o)->r",
+            "on_pline(c,m,n)->r",
+            "on_pline(c,n,m)->r",
+            "on_pline(c,o,i)->r",
+            "on_pline(d,i,o)->r",
+            "on_pline(d,m,n)->r",
+            "on_pline(d,n,m)->r",
+            "on_pline(d,o,i)->r",
+            "on_pline(e,i,o)->r",
+            "on_pline(e,m,n)->r",
+            "on_pline(e,n,m)->r",
+            "on_pline(e,o,i)->r",
+            "on_pline(f,i,o)->r",
+            "on_pline(f,m,n)->r",
+            "on_pline(f,n,m)->r",
+            "on_pline(f,o,i)->r",
+            "on_pline(g,i,o)->r",
+            "on_pline(g,m,n)->r",
+            "on_pline(g,n,m)->r"
+          ],
+          "terminal_credit_ranking": [],
+          "obligation_credit_ranking": [],
+          "shortlist_channels": [
+            {
+              "candidate": "midpoint(b,j)->r",
+              "channel": "residual_frontier"
+            },
+            {
+              "candidate": "on_tline(a,m,n)->r",
+              "channel": "residual_frontier"
+            }
+          ],
+          "chosen": "on_tline(a,m,n)->r",
+          "relation_demands_in": [
+            "lequation(1/1,i,m,*,i,m,1/1,o,n,*,o,n,-1/1,i,n,*,i,n,-1/1,o,m,*,o,m,0)",
+            "lequation(1/1,i,n,*,i,n,1/1,o,m,*,o,m,-1/1,i,m,*,i,m,-1/1,o,n,*,o,n,0)",
+            "lequation(1/1,o,m,*,o,m,1/1,i,n,*,i,n,-1/1,o,n,*,o,n,-1/1,i,m,*,i,m,0)",
+            "perp(?C,?D,i,o)",
+            "para(?C,?D,m,n)",
+            "lequation(1/1,o,n,*,o,n,1/1,i,m,*,i,m,-1/1,o,m,*,o,m,-1/1,i,n,*,i,n,0)",
+            "lequation(1/1,m,i,*,m,i,1/1,n,o,*,n,o,-1/1,m,o,*,m,o,-1/1,n,i,*,n,i,0)",
+            "lequation(1/1,n,i,*,n,i,1/1,m,o,*,m,o,-1/1,n,o,*,n,o,-1/1,m,i,*,m,i,0)",
+            "lequation(1/1,m,o,*,m,o,1/1,n,i,*,n,i,-1/1,m,i,*,m,i,-1/1,n,o,*,n,o,0)",
+            "lequation(1/1,n,o,*,n,o,1/1,m,i,*,m,i,-1/1,n,i,*,n,i,-1/1,m,o,*,m,o,0)",
+            "para(a,g,m,n)",
+            "perp(i,o,j,k)",
+            "perp(?C,?D,m,n)",
+            "para(?C,?D,i,o)"
+          ],
+          "obligation_branches_in": [
+            [
+              "lequation(1/1,i,m,*,i,m,1/1,o,n,*,o,n,-1/1,i,n,*,i,n,-1/1,o,m,*,o,m,0)"
+            ],
+            [
+              "lequation(1/1,i,n,*,i,n,1/1,o,m,*,o,m,-1/1,i,m,*,i,m,-1/1,o,n,*,o,n,0)"
+            ],
+            [
+              "lequation(1/1,o,m,*,o,m,1/1,i,n,*,i,n,-1/1,o,n,*,o,n,-1/1,i,m,*,i,m,0)"
+            ],
+            [
+              "perp(?C,?D,i,o)",
+              "para(?C,?D,m,n)"
+            ],
+            [
+              "lequation(1/1,o,n,*,o,n,1/1,i,m,*,i,m,-1/1,o,m,*,o,m,-1/1,i,n,*,i,n,0)"
+            ],
+            [
+              "lequation(1/1,m,i,*,m,i,1/1,n,o,*,n,o,-1/1,m,o,*,m,o,-1/1,n,i,*,n,i,0)"
+            ],
+            [
+              "lequation(1/1,n,i,*,n,i,1/1,m,o,*,m,o,-1/1,n,o,*,n,o,-1/1,m,i,*,m,i,0)"
+            ],
+            [
+              "perp(?C,?D,i,o)",
+              "para(?C,?D,m,n)"
+            ],
+            [
+              "lequation(1/1,m,o,*,m,o,1/1,n,i,*,n,i,-1/1,m,i,*,m,i,-1/1,n,o,*,n,o,0)"
+            ],
+            [
+              "lequation(1/1,n,o,*,n,o,1/1,m,i,*,m,i,-1/1,n,i,*,n,i,-1/1,m,o,*,m,o,0)"
+            ],
+            [
+              "para(a,g,m,n)"
+            ],
+            [
+              "perp(?C,?D,i,o)",
+              "para(?C,?D,m,n)"
+            ],
+            [
+              "para(a,g,m,n)"
+            ],
+            [
+              "perp(i,o,j,k)"
+            ],
+            [
+              "perp(i,o,j,k)"
+            ],
+            [
+              "perp(?C,?D,i,o)",
+              "para(?C,?D,m,n)"
+            ],
+            [
+              "para(a,g,m,n)"
+            ],
+            [
+              "para(a,g,m,n)"
+            ],
+            [
+              "perp(i,o,j,k)"
+            ],
+            [
+              "perp(?C,?D,m,n)",
+              "para(?C,?D,i,o)"
+            ],
+            [
+              "perp(i,o,j,k)"
+            ],
+            [
+              "para(a,g,m,n)"
+            ],
+            [
+              "para(a,g,m,n)"
+            ],
+            [
+              "perp(?C,?D,m,n)",
+              "para(?C,?D,i,o)"
+            ]
+          ],
+          "relation_demands_observed": [
+            "para(a,r,i,o)"
+          ],
+          "relation_demands_next": [
+            "para(a,r,i,o)"
+          ],
+          "residual_feedback_applied": true,
+          "native_feedback": [
+            {
+              "candidate": "midpoint(b,j)->r",
+              "static_rank": 1,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 14,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 71,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 14,
+                "retained_parent_demands": 14,
+                "closed_parent_demands": 0,
+                "closed_parent_obligations": [],
+                "new_native_facts": 1071,
+                "introduced_relation_demands": 0
+              },
+              "branch_reduction": {
+                "matched_atom_count": 0,
+                "progressed_branch_count": 0,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": []
+              },
+              "error": null,
+              "selected": false
+            },
+            {
+              "candidate": "on_tline(a,m,n)->r",
+              "static_rank": 2,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 14,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 68,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 14,
+                "retained_parent_demands": 13,
+                "closed_parent_demands": 1,
+                "closed_parent_obligations": [
+                  "perp(?C,?D,m,n)"
+                ],
+                "new_native_facts": 597,
+                "introduced_relation_demands": 0,
+                "persistent_branch_feedback_applied": true,
+                "persistent_branch_count": 1,
+                "persistent_branch_matched_atoms": 2,
+                "persistent_branch_fully_closed": 0
+              },
+              "branch_reduction": {
+                "matched_atom_count": 2,
+                "progressed_branch_count": 1,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": [
+                  [
+                    "para(a,r,i,o)"
+                  ]
+                ]
+              },
+              "error": null,
+              "selected": true
+            }
+          ],
+          "coordination": null
+        }
+      ],
+      "verification_calls": 12,
+      "all_deduction_count": 7481,
+      "goal_deduction_count": 0,
+      "input_sha256": "c739b19c8bd5c6847936fe38fedc7033e92a93fdce7bdbf759d716caa49a26a0",
+      "proof_sha256": "f25a03c70756d0372e076330c3e492b0e34685aa3410bbfefd99aee0dc096a51",
+      "terminal_credit_events": [],
+      "proof_residual": {
+        "open_relation_demands": 14,
+        "backward_obligations": 24,
+        "ar_supported_goals": 1,
+        "ar_closed_goals": 0,
+        "ar_residual_support": 2,
+        "ar_residual_l1": 2.0,
+        "ar_known_rank": 68,
+        "parent_relation_demands": 0,
+        "retained_parent_demands": 0,
+        "closed_parent_demands": 0,
+        "closed_parent_obligations": [],
+        "new_native_facts": 7481,
+        "introduced_relation_demands": 14
+      },
+      "elapsed_seconds": 485.32742999999755
+    }
+  ],
+  "terminal_credit_ledger": null
+}

@@ -1,0 +1,489 @@
+{
+  "experiment": "hageo_nonvacuous_capability_union_audit",
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_expected_answer": false,
+    "truth_plane": "audited proof artifact with matching certificate file hash",
+    "consistency_policy": "unit Groebner ideals are rejected unless an independent non-emptiness witness is replayed",
+    "source_union": {
+      "path": "data/hageo-certified-capability-union-stage-guided-v5-2026-08-23.json",
+      "sha256": "33fa7a2b459349f1607dbd29dab4d528fc3e9d514aba197dec89cebe722f7d2f"
+    },
+    "frozen_split": {
+      "path": "data/hageo-409-heldout-native-baseline-2026-08-18.json",
+      "sha256": "10257796593dc107ab2bd37e313042a296a876259d9dd525c2f0442ae1323a3e"
+    },
+    "audited_chain": [
+      {
+        "path": "data/hageo-certified-capability-union-stage-guided-v5-2026-08-23.json",
+        "sha256": "33fa7a2b459349f1607dbd29dab4d528fc3e9d514aba197dec89cebe722f7d2f",
+        "reported_solved": 67,
+        "addition_count": 1
+      },
+      {
+        "path": "data/hageo-certified-capability-union-stage-guided-v4-2026-08-23.json",
+        "sha256": "0732ee1258158638310df88584a8bd1e14afde07c7ec31ccf606791ef9471207",
+        "reported_solved": 66,
+        "addition_count": 1
+      },
+      {
+        "path": "data/hageo-certified-capability-union-stage-guided-v3-2026-08-23.json",
+        "sha256": "e220eefc1192620cfe077e5416345345dbf70714e046c879dd65091632fdb0b2",
+        "reported_solved": 65,
+        "addition_count": 1
+      },
+      {
+        "path": "data/hageo-certified-capability-union-stage-guided-v2-2026-08-23.json",
+        "sha256": "027929d09082b84bbb7145c707a922a5d9717db14ac1553ff19fe6a97ff71702",
+        "reported_solved": 64,
+        "addition_count": 1
+      },
+      {
+        "path": "data/hageo-certified-capability-union-nonlinear-boundary-2026-08-23.json",
+        "sha256": "a1503ad22ea619536b63127aee8fe4bbfadee68e681ad33fe4cfca09916854f6",
+        "reported_solved": 63,
+        "addition_count": 1
+      },
+      {
+        "path": "data/hageo-certified-capability-union-stage-guided-2026-08-23.json",
+        "sha256": "b25a87bb5a1abbe0844e26da00af642c1a77dd804739d09d09b601c37573c6b0",
+        "reported_solved": 62,
+        "addition_count": 1
+      },
+      {
+        "path": "data/hageo-certified-capability-union-implicit-root-deferred-2026-08-23.json",
+        "sha256": "bff7ab76b68c0b0f33d111a93d40350e305517a08bd22dfdeb2340279cdabe9b",
+        "reported_solved": 61,
+        "addition_count": 1
+      },
+      {
+        "path": "data/hageo-certified-capability-union-generalized-known-root-2026-08-23.json",
+        "sha256": "ce6effd29c852fafd002e3c6cf10154a5416316db48ac613c0d4bd3e4a90bea8",
+        "reported_solved": 60,
+        "addition_count": 2
+      },
+      {
+        "path": "data/hageo-certified-capability-union-known-root-circle-deep-final-2026-08-23.json",
+        "sha256": "c863f378719393423e91542f594233f3142ef287732ff19d4f33f0374f8411b4",
+        "reported_solved": 58,
+        "addition_count": 2
+      },
+      {
+        "path": "data/hageo-certified-capability-union-known-root-circle-2026-08-22.json",
+        "sha256": "7a6a819c064093e4a2f20cad0983d1abb03ffe4f2a398f25418361e6deb37d42",
+        "reported_solved": 56,
+        "addition_count": 2
+      },
+      {
+        "path": "data/hageo-certified-capability-union-exact-2026-08-22.json",
+        "sha256": "2c962fec0af60ee19761d2e514e51cce107bce5ec846bda54fe33c068d388976",
+        "reported_solved": 54,
+        "addition_count": 1
+      },
+      {
+        "path": "data/hageo-certified-capability-union-gclc-2026-08-21.json",
+        "sha256": "6ede2cac7a866ef80a4f5061bb52c450d7cd9f82a7f06d3c9db13ca69ca9ed66",
+        "reported_solved": 53,
+        "addition_count": 2
+      },
+      {
+        "path": "data/hageo-certified-capability-union-2026-08-21.json",
+        "sha256": "671c683c51cdca5db019c187d016385961bb79a26f34d33f62c71059c1f03977",
+        "reported_solved": 52,
+        "addition_count": 1
+      },
+      {
+        "path": "data/hageo-certified-capability-union-2026-08-20.json",
+        "sha256": "576729a2671bb7bd42e89d04a42ec61e050011078876b08b624d7c9e9ff2543b",
+        "reported_solved": 51,
+        "addition_count": 0
+      }
+    ]
+  },
+  "summary": {
+    "total": 89,
+    "claimed_certified_solved": 67,
+    "claimed_inside_frozen_split": 56,
+    "excluded_outside_frozen_split": 11,
+    "excluded_vacuous_unit_ideal": 8,
+    "excluded_unique_total": 12,
+    "primary_certified_solved": 55,
+    "primary_certified_score": 0.6179775280898876,
+    "unresolved_frozen_problems": 34
+  },
+  "sets": {
+    "claimed_primary_union": [
+      "2000USATSTp2",
+      "2002CTSTp25",
+      "2004CTSTp1",
+      "2005CTSTp11b",
+      "2005CTSTp19",
+      "2006G4",
+      "2006G9",
+      "2007CMOp4",
+      "2008CTSTp4",
+      "2009ARMOg9p2",
+      "2010AsiaPacificMOp4",
+      "2010CHNWesternMOp6",
+      "2011ARMOg11p2",
+      "2011ARMOg11p8",
+      "2011AsiaPacificMOp3",
+      "2011CHNSouthEastMOp4",
+      "2011CTSTp16",
+      "2012EGMOp7",
+      "2012G4",
+      "2013ARMOg9p2",
+      "2013BalkanMOp1",
+      "2013CGMOp2",
+      "2013USAMOp1",
+      "2013USATSTp2",
+      "2014ARMOg9p6",
+      "2014CHNWesternMOp2",
+      "2015ARMOg10p7",
+      "2015AsiaPacificMOp1",
+      "2015IranGOAp1",
+      "2016BalkanMOp2",
+      "2016CGMOp7",
+      "2016G5",
+      "2016IranGOAp1",
+      "2016USATSTSTp2",
+      "2017ARMOg9p2",
+      "2017AsiaPacificMOp2",
+      "2017CHNGaoLian",
+      "2017CHNSouthEastMOg10p2",
+      "2017G3",
+      "2018ARMOg11p4",
+      "2018CHNWesternMOp5",
+      "2018CzechAPSlovakp2-",
+      "2018EuropeanMCupSp2",
+      "2018IranGOMp3",
+      "2018KoMaLA726",
+      "2018USAMOp5",
+      "2019CGMOp1",
+      "2019ELMOSLp4",
+      "2019USATSTSTp5",
+      "2020ELMOp4",
+      "2021ARMOg10p1",
+      "2021CGMOp2",
+      "2021CGMOp7",
+      "2021G1",
+      "2021GOWACAp3",
+      "2021SilkRoadp3",
+      "2022ARMOg10p2",
+      "2022CHNSouthEastMOg11p6",
+      "2022CzechAPSlovakp5",
+      "2022IZhautykovOp3",
+      "2022IranGOAp3",
+      "2022KoMaLA805",
+      "2023PlanetCupp9",
+      "2023SerbiaMOp6",
+      "2023USAMOp6",
+      "2024ARMOg9p4",
+      "XinXingV28p2"
+    ],
+    "excluded_outside_frozen_split": [
+      "2005CTSTp19",
+      "2006G9",
+      "2016USATSTSTp2",
+      "2017CHNGaoLian",
+      "2018CzechAPSlovakp2-",
+      "2019ELMOSLp4",
+      "2021GOWACAp3",
+      "2022IranGOAp3",
+      "2023PlanetCupp9",
+      "2023USAMOp6",
+      "XinXingV28p2"
+    ],
+    "excluded_vacuous_unit_ideal": [
+      "2005CTSTp19",
+      "2016USATSTSTp2",
+      "2017CHNGaoLian",
+      "2021GOWACAp3",
+      "2023PlanetCupp9",
+      "2023SerbiaMOp6",
+      "2023USAMOp6",
+      "XinXingV28p2"
+    ],
+    "primary_union": [
+      "2000USATSTp2",
+      "2002CTSTp25",
+      "2004CTSTp1",
+      "2005CTSTp11b",
+      "2006G4",
+      "2007CMOp4",
+      "2008CTSTp4",
+      "2009ARMOg9p2",
+      "2010AsiaPacificMOp4",
+      "2010CHNWesternMOp6",
+      "2011ARMOg11p2",
+      "2011ARMOg11p8",
+      "2011AsiaPacificMOp3",
+      "2011CHNSouthEastMOp4",
+      "2011CTSTp16",
+      "2012EGMOp7",
+      "2012G4",
+      "2013ARMOg9p2",
+      "2013BalkanMOp1",
+      "2013CGMOp2",
+      "2013USAMOp1",
+      "2013USATSTp2",
+      "2014ARMOg9p6",
+      "2014CHNWesternMOp2",
+      "2015ARMOg10p7",
+      "2015AsiaPacificMOp1",
+      "2015IranGOAp1",
+      "2016BalkanMOp2",
+      "2016CGMOp7",
+      "2016G5",
+      "2016IranGOAp1",
+      "2017ARMOg9p2",
+      "2017AsiaPacificMOp2",
+      "2017CHNSouthEastMOg10p2",
+      "2017G3",
+      "2018ARMOg11p4",
+      "2018CHNWesternMOp5",
+      "2018EuropeanMCupSp2",
+      "2018IranGOMp3",
+      "2018KoMaLA726",
+      "2018USAMOp5",
+      "2019CGMOp1",
+      "2019USATSTSTp5",
+      "2020ELMOp4",
+      "2021ARMOg10p1",
+      "2021CGMOp2",
+      "2021CGMOp7",
+      "2021G1",
+      "2021SilkRoadp3",
+      "2022ARMOg10p2",
+      "2022CHNSouthEastMOg11p6",
+      "2022CzechAPSlovakp5",
+      "2022IZhautykovOp3",
+      "2022KoMaLA805",
+      "2024ARMOg9p4"
+    ],
+    "unresolved_frozen_problems": [
+      "2011G3",
+      "2011G5",
+      "2014BulgariaMOp6",
+      "2014CHNGaoLian",
+      "2015CTSTp9",
+      "2015IranTSTp18",
+      "2016CTSTp5",
+      "2016G6",
+      "2016USATSTSTp6",
+      "2017G4",
+      "2017USAMOp3",
+      "2019IranTSTp15",
+      "2020IranGOAp2",
+      "2020IranTSTp9",
+      "2021ARMOg10p8",
+      "2021GOWACAp5",
+      "2021IranTSTp6",
+      "2021IsraelOlympicRev",
+      "2022G5",
+      "2023IMOp6",
+      "2023MOSTMockp2",
+      "2023RMMSLG3",
+      "2023SAGFp8",
+      "2023SerbiaMOp6",
+      "2023VietnamTSTp3",
+      "2024ELMOSLp1",
+      "2024KoMaLA877",
+      "2024PlanetCupp10",
+      "2024VietnamTSTp5",
+      "2025KoeraFinalRoundp3",
+      "ShuZhiMiGeo128",
+      "ShuZhiMiGeo309",
+      "ShuZhiMiGeo489",
+      "ShuZhiMiGeo635"
+    ]
+  },
+  "excluded_artifacts": {
+    "2023SerbiaMOp6": {
+      "reason": "integrity_verified_but_unit_groebner_basis_has_no_independent_nonempty_witness",
+      "artifact": "data/known-root-circle-projective-lcm-v28-2023serbiamop6-300s-2026-08-23/artifacts/2023SerbiaMOp6.json",
+      "proof_path": "data/known-root-circle-projective-lcm-v28-2023serbiamop6-300s-2026-08-23/proofs/2023SerbiaMOp6.json",
+      "proof_file_sha256": "f8249b22f03988151e5d395d69aa7c16db8347d796fa0365a96e74c30941b2d2",
+      "proof_file_hash_matches_metadata": true,
+      "internal_certificate_sha256": "aa04a4bb5c25dc653c4c2d744c03f4453cb1869df265ef0918d15971d3e73899",
+      "internal_certificate_hash_matches_artifact": true,
+      "exact_replay": true,
+      "remainder": "0",
+      "groebner_basis": [
+        "1"
+      ],
+      "construction_consistency_field_present": false,
+      "independent_nonempty_witness_present": false,
+      "mathematical_conclusion_status": "not_refuted_but_not_certified_by_this_artifact"
+    },
+    "XinXingV28p2": {
+      "reason": "integrity_verified_but_unit_groebner_basis_has_no_independent_nonempty_witness",
+      "artifact": "data/known-root-circle-xinxingv28p2-single-240s-2026-08-23/artifacts/XinXingV28p2.json",
+      "proof_path": "data/known-root-circle-xinxingv28p2-single-240s-2026-08-23/proofs/XinXingV28p2.json",
+      "proof_file_sha256": "15aab2d823d716a157aa1db8cd0345a82af702624b62279e3c22c13bf98995fd",
+      "proof_file_hash_matches_metadata": true,
+      "internal_certificate_sha256": "741185e08e53ec8b1ba7fc50075f790002edc3f7ca9aec0fce4f87260a296d44",
+      "internal_certificate_hash_matches_artifact": true,
+      "exact_replay": true,
+      "remainder": "0",
+      "groebner_basis": [
+        "1"
+      ],
+      "construction_consistency_field_present": false,
+      "independent_nonempty_witness_present": false,
+      "mathematical_conclusion_status": "not_refuted_but_not_certified_by_this_artifact"
+    },
+    "2023PlanetCupp9": {
+      "reason": "integrity_verified_but_unit_groebner_basis_has_no_independent_nonempty_witness",
+      "artifact": "data/known-root-circle-2023planetcup9-single-180s-2026-08-23/artifacts/2023PlanetCupp9.json",
+      "proof_path": "data/known-root-circle-2023planetcup9-single-180s-2026-08-23/proofs/2023PlanetCupp9.json",
+      "proof_file_sha256": "facddfd04d7da2cde3637df4d1db0ea24a0f8814c6f46fc18f1ca49f08fc6ddf",
+      "proof_file_hash_matches_metadata": true,
+      "internal_certificate_sha256": "0b9036fa516421b632047ec62e4901b866d74044e93f367e6df956ba6460c940",
+      "internal_certificate_hash_matches_artifact": true,
+      "exact_replay": true,
+      "remainder": "0",
+      "groebner_basis": [
+        "1"
+      ],
+      "construction_consistency_field_present": false,
+      "independent_nonempty_witness_present": false,
+      "mathematical_conclusion_status": "not_refuted_but_not_certified_by_this_artifact"
+    },
+    "2021GOWACAp3": {
+      "reason": "integrity_verified_but_unit_groebner_basis_has_no_independent_nonempty_witness",
+      "artifact": "data/known-root-circle-2021gowaca3-single-240s-2026-08-23/artifacts/2021GOWACAp3.json",
+      "proof_path": "data/known-root-circle-2021gowaca3-single-240s-2026-08-23/proofs/2021GOWACAp3.json",
+      "proof_file_sha256": "8fb66f4309fcd4817c1262b3aabdf9893326ee1dace7630a7b7b97198061bd61",
+      "proof_file_hash_matches_metadata": true,
+      "internal_certificate_sha256": "c44a74129b997e0adde21d38b84b61948b50dd4c033daccfc0933329fbb367ad",
+      "internal_certificate_hash_matches_artifact": true,
+      "exact_replay": true,
+      "remainder": "0",
+      "groebner_basis": [
+        "1"
+      ],
+      "construction_consistency_field_present": false,
+      "independent_nonempty_witness_present": false,
+      "mathematical_conclusion_status": "not_refuted_but_not_certified_by_this_artifact"
+    },
+    "2023USAMOp6": {
+      "reason": "integrity_verified_but_unit_groebner_basis_has_no_independent_nonempty_witness",
+      "artifact": "data/known-root-circle-nonlinear-boundary-2023usamop6-120s-2026-08-23/artifacts/2023USAMOp6.json",
+      "proof_path": "data/known-root-circle-nonlinear-boundary-2023usamop6-120s-2026-08-23/proofs/2023USAMOp6.json",
+      "proof_file_sha256": "29c4eff7ce2bde97d857f350e88758a7572d430b5d632f4fdc253bd648b00638",
+      "proof_file_hash_matches_metadata": true,
+      "internal_certificate_sha256": "1a4a9ac405d44a3b2e24fbbe3a7e44872de5668d3bfc2673074f49e84fa4e97f",
+      "internal_certificate_hash_matches_artifact": true,
+      "exact_replay": true,
+      "remainder": "0",
+      "groebner_basis": [
+        "1"
+      ],
+      "construction_consistency_field_present": false,
+      "independent_nonempty_witness_present": false,
+      "mathematical_conclusion_status": "not_refuted_but_not_certified_by_this_artifact"
+    },
+    "2017CHNGaoLian": {
+      "reason": "integrity_verified_but_unit_groebner_basis_has_no_independent_nonempty_witness",
+      "artifact": "data/known-root-circle-2017chngaolian-single-180s-2026-08-23/artifacts/2017CHNGaoLian.json",
+      "proof_path": "data/known-root-circle-2017chngaolian-single-180s-2026-08-23/proofs/2017CHNGaoLian.json",
+      "proof_file_sha256": "e1da28b92fe1758d4398e05451ae7d51b4a70b758c92fe9c669f55ac803aa9c1",
+      "proof_file_hash_matches_metadata": true,
+      "internal_certificate_sha256": "1be496502be9650524c86914d674b7806e1529d689476e13a808f395aadc3a6e",
+      "internal_certificate_hash_matches_artifact": true,
+      "exact_replay": true,
+      "remainder": "0",
+      "groebner_basis": [
+        "1"
+      ],
+      "construction_consistency_field_present": false,
+      "independent_nonempty_witness_present": false,
+      "mathematical_conclusion_status": "not_refuted_but_not_certified_by_this_artifact"
+    },
+    "2005CTSTp19": {
+      "reason": "integrity_verified_but_unit_groebner_basis_has_no_independent_nonempty_witness",
+      "artifact": "data/known-root-circle-protected-elimination-fastpath-2005-180s-2026-08-23/artifacts/2005CTSTp19.json",
+      "proof_path": "data/known-root-circle-protected-elimination-fastpath-2005-180s-2026-08-23/proofs/2005CTSTp19.json",
+      "proof_file_sha256": "97239ca8cd9f5e3cb80e0d66f6430733e33d31b8b1c852409e9a3012681a6422",
+      "proof_file_hash_matches_metadata": true,
+      "internal_certificate_sha256": "507e9813f8f33695ef8d2ddcccf319c3a33bcc51305bb148e259f27a970e8749",
+      "internal_certificate_hash_matches_artifact": true,
+      "exact_replay": true,
+      "remainder": "0",
+      "groebner_basis": [
+        "1"
+      ],
+      "construction_consistency_field_present": false,
+      "independent_nonempty_witness_present": false,
+      "mathematical_conclusion_status": "not_refuted_but_not_certified_by_this_artifact"
+    },
+    "2016USATSTSTp2": {
+      "reason": "integrity_verified_but_unit_groebner_basis_has_no_independent_nonempty_witness",
+      "artifact": "data/known-root-circle-generalized-treatment-28-isolated-2026-08-23/artifacts/2016USATSTSTp2.json",
+      "proof_path": "data/known-root-circle-generalized-treatment-28-isolated-2026-08-23/proofs/2016USATSTSTp2.json",
+      "proof_file_sha256": "b02783a6df9a343ad57449776689b113f2ce8f52e7f9ae36e1aa0093b2a23873",
+      "proof_file_hash_matches_metadata": true,
+      "internal_certificate_sha256": "5d17d5e5a525bde50e3b4042e01db5cd9ee1096a7fc97828c27c0aec33a06cb1",
+      "internal_certificate_hash_matches_artifact": true,
+      "exact_replay": true,
+      "remainder": "0",
+      "groebner_basis": [
+        "1"
+      ],
+      "construction_consistency_field_present": false,
+      "independent_nonempty_witness_present": false,
+      "mathematical_conclusion_status": "not_refuted_but_not_certified_by_this_artifact"
+    }
+  },
+  "audited_incremental_artifacts": {
+    "2006G9": {
+      "certificate_kind": "jgex_exact_json",
+      "reason": "replayed_jgex_exact_certificate",
+      "artifact": "data/known-root-circle-simtri-gaussian-2006g9-2026-08-23/artifacts/2006G9.json",
+      "proof_path": "data/known-root-circle-simtri-gaussian-2006g9-2026-08-23/proofs/2006G9.json"
+    },
+    "2019ELMOSLp4": {
+      "certificate_kind": "jgex_exact_json",
+      "reason": "replayed_jgex_exact_certificate",
+      "artifact": "data/known-root-circle-cohort30-deep-g3-2026-08-22/artifacts/2019ELMOSLp4.json",
+      "proof_path": "data/known-root-circle-cohort30-deep-g3-2026-08-22/proofs/2019ELMOSLp4.json"
+    },
+    "2022IranGOAp3": {
+      "certificate_kind": "jgex_exact_json",
+      "reason": "replayed_jgex_exact_certificate",
+      "artifact": "data/known-root-circle-cohort30-deep-h2-2026-08-23/artifacts/2022IranGOAp3.json",
+      "proof_path": "data/known-root-circle-cohort30-deep-h2-2026-08-23/proofs/2022IranGOAp3.json"
+    },
+    "2018CzechAPSlovakp2-": {
+      "certificate_kind": "jgex_exact_json",
+      "reason": "replayed_jgex_exact_certificate",
+      "artifact": "data/known-root-circle-cohort36-persistent-2026-08-22/artifacts/2018CzechAPSlovakp2-.json",
+      "proof_path": "data/known-root-circle-cohort36-persistent-2026-08-22/proofs/2018CzechAPSlovakp2-.json"
+    },
+    "2022KoMaLA805": {
+      "certificate_kind": "jgex_exact_json",
+      "reason": "replayed_jgex_exact_certificate",
+      "artifact": "data/known-root-circle-cohort36-persistent-2026-08-22/artifacts/2022KoMaLA805.json",
+      "proof_path": "data/known-root-circle-cohort36-persistent-2026-08-22/proofs/2022KoMaLA805.json"
+    },
+    "2022CHNSouthEastMOg11p6": {
+      "certificate_kind": "jgex_exact_json",
+      "reason": "replayed_jgex_exact_certificate",
+      "artifact": "data/2022CHN-exact-union-addition-2026-08-22.json",
+      "proof_path": "data/2022CHN-exact-structural-proof-2026-08-22.json"
+    },
+    "2007CMOp4": {
+      "certificate_kind": "gclc_wu_tex",
+      "reason": "replayed_gclc_wu_certificate",
+      "artifact": "data/mortra-portfolio-gclc-2007cmop4-2026-08-21.json",
+      "proof_path": "data/mortra-portfolio-gclc-2007cmop4-2026-08-21.gclc-proof.tex"
+    },
+    "2021CGMOp7": {
+      "certificate_kind": "gclc_wu_tex",
+      "reason": "replayed_gclc_wu_certificate",
+      "artifact": "data/mortra-gclc-wu-direct-remaining38-runs/2021CGMOp7.json",
+      "proof_path": "data/mortra-gclc-wu-direct-remaining38-runs/2021CGMOp7/shard-00.gclc-proof.tex"
+    }
+  }
+}

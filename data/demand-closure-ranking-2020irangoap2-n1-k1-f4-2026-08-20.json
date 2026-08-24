@@ -1,0 +1,384 @@
+{
+  "experiment": "hageo_independent_n_round_pass_at_k_no_llm",
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_dataset_auxiliary_clauses": false,
+    "uses_problem_id_in_search": false,
+    "uses_expected_answer": false,
+    "trajectory_policy": "hageo_incidence_gate_then_mmt_theory_view_ranking",
+    "ddAR_calls": "baseline_plus_native_shortlist_feedback_with_terminal_reuse",
+    "rounds_n": 1,
+    "attempts_k": 1,
+    "attempt_offset": 0,
+    "workers": 1,
+    "seed": 19,
+    "per_family_limit": 4,
+    "incidence_oversample_per_family": 8,
+    "incidence_preselect_limit": 32,
+    "incidence_workers": 1,
+    "candidate_limit": 16,
+    "candidate_policy": "mmt-hageo-lite",
+    "rank_temperature": 2.0,
+    "incremental_prefix": false,
+    "feedback_candidates": 4,
+    "feedback_workers": 4,
+    "ar_profile": "all",
+    "proof_dag_specialist_budget": {
+      "per_family_candidates": 16,
+      "depth": 2,
+      "fragments": 32,
+      "initial_states_per_candidate": 32,
+      "states_per_task": 250,
+      "reserved_consensus": 8,
+      "reserved_family_frontier": true
+    },
+    "truth_plane": "yuclid_native_certificate_replay_only"
+  },
+  "problem_name": "2020IranGOAp2",
+  "normalization": {
+    "rewritten_constructions": 0,
+    "unchanged_constructions": 11,
+    "unresolved_constructions": 0
+  },
+  "baseline_solved": false,
+  "baseline_proof_residual": {
+    "open_relation_demands": 3,
+    "backward_obligations": 24,
+    "ar_supported_goals": 1,
+    "ar_closed_goals": 0,
+    "ar_residual_support": 2,
+    "ar_residual_l1": 2.0,
+    "ar_known_rank": 45,
+    "parent_relation_demands": 0,
+    "retained_parent_demands": 0,
+    "closed_parent_demands": 0,
+    "introduced_relation_demands": 3
+  },
+  "mmt_exact_coordination": {
+    "input_fact_count": 2211,
+    "selected_fact_count": 192,
+    "selection_strategy": "goal-conditioned-proof-basis",
+    "accepted_fact_count": 247,
+    "derived_fact_count": 55,
+    "certificate_count": 55,
+    "certificate_sha256": "436323cce3edf3de3b86ce6859c64dad6b2d942e21188edadec1e48415a83e67",
+    "solved": false,
+    "replayed": false,
+    "initial_open_demand_count": 3,
+    "open_demand_count": 4,
+    "closed_demand_count": 0,
+    "introduced_demand_count": 1,
+    "made_goal_progress": false,
+    "goals": [
+      {
+        "goal": "cong(o1,p,o1,t)",
+        "solved": false,
+        "replayed": false,
+        "rounds": 4,
+        "proposed": 55,
+        "accepted": 55,
+        "rejected": 0
+      }
+    ]
+  },
+  "solved": false,
+  "pass_at_k": false,
+  "first_solved_attempt": null,
+  "unique_paths": 1,
+  "completed_attempts": 1,
+  "execution_errors": 0,
+  "elapsed_seconds": 15.273866700001236,
+  "attempt_results": [
+    {
+      "attempt": 0,
+      "status": "unsolved",
+      "solved": false,
+      "rounds_completed": 1,
+      "path": [
+        "circle(i,b,c)->d"
+      ],
+      "rounds": [
+        {
+          "round": 1,
+          "candidate_extension_seconds": 1.1192971000018588,
+          "enumerated": 304,
+          "incidence_checked": 18,
+          "heuristic_candidates": 0,
+          "eligible_pool": 10,
+          "ranked_candidates": [
+            "reflect(t,p,a)->d",
+            "circle(i,b,c)->d",
+            "eq_triangle(p,a)->d",
+            "eqdistance(a,m,p)->d",
+            "angle_mirror(a,m,p)->d",
+            "between_bound(a,p)->d",
+            "shift(a,m,p)->d",
+            "mirror(a,p)->d",
+            "nsquare(a,p)->d",
+            "intersection_ll(o1,p,a,i)->d"
+          ],
+          "chosen": "circle(i,b,c)->d",
+          "relation_demands_in": [
+            "cong(o1,p,o1,t)",
+            "cyclic(p,q,r,t)",
+            "cong(o1,q,o1,t)",
+            "cong(o1,r,o1,t)"
+          ],
+          "relation_demands_observed": [
+            "cyclic(p,q,r,t)",
+            "cong(o1,q,o1,t)",
+            "cong(o1,r,o1,t)"
+          ],
+          "relation_demands_next": [
+            "cong(o1,p,o1,t)",
+            "cyclic(p,q,r,t)",
+            "cong(o1,q,o1,t)",
+            "cong(o1,r,o1,t)"
+          ],
+          "residual_feedback_applied": false,
+          "native_feedback": [
+            {
+              "candidate": "reflect(t,p,a)->d",
+              "static_rank": 0,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 3,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 52,
+                "parent_relation_demands": 4,
+                "retained_parent_demands": 3,
+                "closed_parent_demands": 0,
+                "introduced_relation_demands": 0
+              },
+              "error": null,
+              "selected": false
+            },
+            {
+              "candidate": "circle(i,b,c)->d",
+              "static_rank": 1,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 3,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 57,
+                "parent_relation_demands": 4,
+                "retained_parent_demands": 3,
+                "closed_parent_demands": 0,
+                "introduced_relation_demands": 0,
+                "mmt_solved": false,
+                "mmt_replayed": false,
+                "mmt_derived_facts": 5,
+                "mmt_open_relation_demands": 4,
+                "mmt_residual_applied": false,
+                "mmt_certificate_exchange": {
+                  "input_fact_count": 4141,
+                  "selected_fact_count": 192,
+                  "selection_strategy": "goal-conditioned-proof-basis",
+                  "accepted_fact_count": 197,
+                  "derived_fact_count": 5,
+                  "certificate_count": 5,
+                  "certificate_sha256": "1e9eaf98132b386e2c628832ce10bfa4390a7d88c867911bc94995f09ecfaa15",
+                  "solved": false,
+                  "replayed": false,
+                  "initial_open_demand_count": 3,
+                  "open_demand_count": 4,
+                  "closed_demand_count": 0,
+                  "introduced_demand_count": 1,
+                  "made_goal_progress": false,
+                  "goals": [
+                    {
+                      "goal": "cong(o1,p,o1,t)",
+                      "solved": false,
+                      "replayed": false,
+                      "rounds": 2,
+                      "proposed": 5,
+                      "accepted": 5,
+                      "rejected": 0
+                    }
+                  ]
+                }
+              },
+              "error": null,
+              "selected": true
+            },
+            {
+              "candidate": "eq_triangle(p,a)->d",
+              "static_rank": 2,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 3,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 50,
+                "parent_relation_demands": 4,
+                "retained_parent_demands": 3,
+                "closed_parent_demands": 0,
+                "introduced_relation_demands": 0
+              },
+              "error": null,
+              "selected": false
+            },
+            {
+              "candidate": "eqdistance(a,m,p)->d",
+              "static_rank": 3,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 3,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 47,
+                "parent_relation_demands": 4,
+                "retained_parent_demands": 3,
+                "closed_parent_demands": 0,
+                "introduced_relation_demands": 0
+              },
+              "error": null,
+              "selected": false
+            }
+          ],
+          "coordination": {
+            "agents": 5,
+            "consensus_agents": 4,
+            "restriction_edges": 6,
+            "shared_candidates": 32,
+            "primal_residual": 5.551115123125783e-17,
+            "dual_residual": 0.0,
+            "sheaf_residual": 0.12529801598827395,
+            "exchange_layer": "openmath_terms_over_mmt_theory_views",
+            "shared_channel_kinds": [
+              "construction_candidate",
+              "relation_symbol",
+              "theory_morphism"
+            ],
+            "local_top_candidates": [
+              {
+                "agent_id": "typed_incidence_proposal",
+                "candidates": [
+                  "reflect(t,p,a)",
+                  "eq_triangle(p,a)",
+                  "parallelogram(a,m,p)",
+                  "shift(a,m,p)",
+                  "mirror(a,p)",
+                  "nsquare(a,p)",
+                  "on_bline(p,a)",
+                  "psquare(a,p)",
+                  "circumcenter(p,a,m)",
+                  "intersection_cc(a,m,p)",
+                  "intersection_lc(a,m,p)",
+                  "eqdistance(a,m,p)"
+                ]
+              },
+              {
+                "agent_id": "tong_action",
+                "candidates": [
+                  "circumcenter(p,a,m)",
+                  "eqdistance(a,m,p)",
+                  "intersection_cc(a,m,p)",
+                  "intersection_lc(a,m,p)",
+                  "parallelogram(a,m,p)",
+                  "shift(a,m,p)",
+                  "on_circum(p,a,m)",
+                  "angle_bisector(a,m,p)",
+                  "angle_mirror(a,m,p)",
+                  "excenter(a,m,p)",
+                  "incenter(p,a,m)",
+                  "circle(i,b,c)"
+                ]
+              },
+              {
+                "agent_id": "newclid_relation",
+                "candidates": [
+                  "reflect(t,p,a)",
+                  "eq_triangle(p,a)",
+                  "parallelogram(a,m,p)",
+                  "circumcenter(p,a,m)",
+                  "intersection_cc(a,m,p)",
+                  "intersection_lc(a,m,p)",
+                  "mirror(a,p)",
+                  "nsquare(a,p)",
+                  "on_bline(p,a)",
+                  "psquare(a,p)",
+                  "shift(a,m,p)",
+                  "eqdistance(a,m,p)"
+                ]
+              },
+              {
+                "agent_id": "gclc_wu",
+                "candidates": [
+                  "circumcenter(p,a,m)",
+                  "eqdistance(a,m,p)",
+                  "foot(t,p,a)",
+                  "intersection_cc(a,m,p)",
+                  "intersection_lc(a,m,p)",
+                  "intersection_ll(o1,p,a,i)",
+                  "intersection_lp(p,a,t,p,a)",
+                  "intersection_lt(p,a,t,p,a)",
+                  "intersection_pp(o1,p,a,t,p,a)",
+                  "intersection_tt(o1,p,a,t,p,a)",
+                  "mirror(a,p)",
+                  "nsquare(a,p)"
+                ]
+              },
+              {
+                "agent_id": "hageo_incidence",
+                "candidates": [
+                  "circle(i,b,c)",
+                  "angle_mirror(a,m,p)",
+                  "between_bound(a,p)",
+                  "shift(a,m,p)",
+                  "eq_triangle(p,a)",
+                  "eqdistance(a,m,p)",
+                  "intersection_ll(o1,p,a,i)",
+                  "mirror(a,p)",
+                  "nsquare(a,p)",
+                  "on_bline(p,a)",
+                  "on_circle(a,p)",
+                  "on_dia(p,a)"
+                ]
+              }
+            ],
+            "proof_dag_specialist": null,
+            "timing_seconds": {
+              "proof_dag": 0.0,
+              "coordination": 0.006557799999427516
+            },
+            "incidence_seconds": 0.05824679999932414
+          }
+        }
+      ],
+      "verification_calls": 4,
+      "all_deduction_count": 4198,
+      "goal_deduction_count": 0,
+      "input_sha256": "ef426aef4d659c8e2d03fd5783d33b77fbbcf2b6f8cffe366357110c1e2681cc",
+      "proof_sha256": "683e1a5882f59fd588ef5afdc7a82b7437caff4fd52a77fe355ec71cda91d6f1",
+      "proof_residual": {
+        "open_relation_demands": 3,
+        "backward_obligations": 24,
+        "ar_supported_goals": 1,
+        "ar_closed_goals": 0,
+        "ar_residual_support": 2,
+        "ar_residual_l1": 2.0,
+        "ar_known_rank": 57,
+        "parent_relation_demands": 0,
+        "retained_parent_demands": 0,
+        "closed_parent_demands": 0,
+        "introduced_relation_demands": 3
+      },
+      "elapsed_seconds": 2.678376899999421
+    }
+  ]
+}

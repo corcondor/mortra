@@ -1,0 +1,471 @@
+{
+  "experiment": "formalgeo_typed_obligation_exact_replay",
+  "problem_name": "2016CTSTp5",
+  "dataset": "C:/Users/81808/.cache/mortra-research-sources/GenesisGeo/benchmarks/hageo_409.txt",
+  "normalization": {
+    "rewritten_constructions": 0,
+    "unchanged_constructions": 17,
+    "unresolved_constructions": 0
+  },
+  "formalgeo": [
+    {
+      "goal": {
+        "predicate": "perp",
+        "arguments": [
+          "m",
+          "o",
+          "n",
+          "o"
+        ]
+      },
+      "translation": {
+        "elaboration": {
+          "facts": [],
+          "goal": "perp(m,o,n,o)",
+          "constructions": [
+            "Point(A):FreePoint(A)",
+            "Point(B):FreePoint(B)",
+            "Point(C):PointLeftSegment(C,A,B)",
+            "Line(a):PointOnLine(A,a)&PointOnLine(B,a)",
+            "Line(b):PointOnLine(B,b)&PointOnLine(C,b)",
+            "Line(c):PointOnLine(A,c)&PointOnLine(C,c)&Triangle(A,a,B,b,C,c)",
+            "Circle(\u03a9):CircumcircleOfTriangle(\u03a9,A,a,B,b,C,c)",
+            "Point(D):PointOnCircle(D,\u03a9)",
+            "Point(I):CenterOfCircle(I,\u03a9)",
+            "Line(d):PointOnLine(A,d)&PointOnLine(D,d)",
+            "Line(e):PointOnLine(A,e)&AngleBisector(A,e,d,a)",
+            "Line(f):PointOnLine(C,f)&PointOnLine(D,f)",
+            "Line(g):PointOnLine(C,g)&AngleBisector(C,g,b,f)",
+            "Point(E):PointOnLine(E,e)&PointOnLine(E,g)",
+            "Line(h):PointOnLine(B,h)&AngleBisector(B,h,a,b)",
+            "Line(i):PointOnLine(D,i)&AngleBisector(D,i,f,d)",
+            "Point(F):PointOnLine(F,h)&PointOnLine(F,i)",
+            "Line(j):PointOnLine(E,j)&PointOnLine(F,j)",
+            "Point(J):PointOnLine(J,a)&PointOnLine(J,j)",
+            "Point(L):PointOnLine(L,f)&PointOnLine(L,j)",
+            "Point(K):PointOnLine(K,b)&PointOnLine(K,j)",
+            "Point(M):PointOnLine(M,d)&PointOnLine(M,j)",
+            "Point(G):Eq(Sub(Mul(2,G.x),Add(J.x,L.x)))&Eq(Sub(Mul(2,G.y),Add(J.y,L.y)))",
+            "Point(H):Eq(Sub(Mul(2,H.x),Add(K.x,M.x)))&Eq(Sub(Mul(2,H.y),Add(K.y,M.y)))",
+            "Line(k):PointOnLine(G,k)&PointOnLine(I,k)",
+            "Line(l):PointOnLine(H,l)&PointOnLine(I,l)"
+          ],
+          "formal_goal": "PerpendicularBetweenLine(k,l)",
+          "point_to_object": {
+            "a": "A",
+            "b": "B",
+            "c": "C",
+            "d": "D",
+            "i": "E",
+            "j": "F",
+            "m": "G",
+            "n": "H",
+            "o": "I",
+            "p": "J",
+            "q": "K",
+            "r": "L",
+            "s": "M"
+          },
+          "segment_to_object": [
+            {
+              "segment": [
+                "a",
+                "b"
+              ],
+              "object": "a"
+            },
+            {
+              "segment": [
+                "a",
+                "c"
+              ],
+              "object": "c"
+            },
+            {
+              "segment": [
+                "a",
+                "d"
+              ],
+              "object": "d"
+            },
+            {
+              "segment": [
+                "a",
+                "i"
+              ],
+              "object": "e"
+            },
+            {
+              "segment": [
+                "b",
+                "c"
+              ],
+              "object": "b"
+            },
+            {
+              "segment": [
+                "b",
+                "j"
+              ],
+              "object": "h"
+            },
+            {
+              "segment": [
+                "c",
+                "d"
+              ],
+              "object": "f"
+            },
+            {
+              "segment": [
+                "c",
+                "i"
+              ],
+              "object": "g"
+            },
+            {
+              "segment": [
+                "d",
+                "j"
+              ],
+              "object": "i"
+            },
+            {
+              "segment": [
+                "i",
+                "j"
+              ],
+              "object": "j"
+            },
+            {
+              "segment": [
+                "m",
+                "o"
+              ],
+              "object": "k"
+            },
+            {
+              "segment": [
+                "n",
+                "o"
+              ],
+              "object": "l"
+            }
+          ]
+        },
+        "translated_clauses": 11,
+        "construction_kinds": [
+          "free_point",
+          "free_point",
+          "free_point",
+          "secant_line",
+          "secant_line",
+          "triangle",
+          "circumcircle",
+          "on_circum",
+          "circumcenter",
+          "secant_line",
+          "angle_bisector",
+          "secant_line",
+          "angle_bisector",
+          "angle_bisector+angle_bisector",
+          "angle_bisector",
+          "angle_bisector",
+          "angle_bisector+angle_bisector",
+          "secant_line",
+          "on_line+on_line",
+          "on_line+on_line",
+          "on_line+on_line",
+          "on_line+on_line",
+          "midpoint",
+          "midpoint",
+          "secant_line",
+          "secant_line"
+        ],
+        "circle_to_object": {
+          "circum:a:b:c": "\u03a9"
+        }
+      },
+      "runtime": {
+        "available": true,
+        "elaborated": true,
+        "root_solved": false,
+        "replay_required": true,
+        "elaboration": {
+          "facts": [],
+          "goal": "perp(m,o,n,o)",
+          "constructions": [
+            "Point(A):FreePoint(A)",
+            "Point(B):FreePoint(B)",
+            "Point(C):PointLeftSegment(C,A,B)",
+            "Line(a):PointOnLine(A,a)&PointOnLine(B,a)",
+            "Line(b):PointOnLine(B,b)&PointOnLine(C,b)",
+            "Line(c):PointOnLine(A,c)&PointOnLine(C,c)&Triangle(A,a,B,b,C,c)",
+            "Circle(\u03a9):CircumcircleOfTriangle(\u03a9,A,a,B,b,C,c)",
+            "Point(D):PointOnCircle(D,\u03a9)",
+            "Point(I):CenterOfCircle(I,\u03a9)",
+            "Line(d):PointOnLine(A,d)&PointOnLine(D,d)",
+            "Line(e):PointOnLine(A,e)&AngleBisector(A,e,d,a)",
+            "Line(f):PointOnLine(C,f)&PointOnLine(D,f)",
+            "Line(g):PointOnLine(C,g)&AngleBisector(C,g,b,f)",
+            "Point(E):PointOnLine(E,e)&PointOnLine(E,g)",
+            "Line(h):PointOnLine(B,h)&AngleBisector(B,h,a,b)",
+            "Line(i):PointOnLine(D,i)&AngleBisector(D,i,f,d)",
+            "Point(F):PointOnLine(F,h)&PointOnLine(F,i)",
+            "Line(j):PointOnLine(E,j)&PointOnLine(F,j)",
+            "Point(J):PointOnLine(J,a)&PointOnLine(J,j)",
+            "Point(L):PointOnLine(L,f)&PointOnLine(L,j)",
+            "Point(K):PointOnLine(K,b)&PointOnLine(K,j)",
+            "Point(M):PointOnLine(M,d)&PointOnLine(M,j)",
+            "Point(G):Eq(Sub(Mul(2,G.x),Add(J.x,L.x)))&Eq(Sub(Mul(2,G.y),Add(J.y,L.y)))",
+            "Point(H):Eq(Sub(Mul(2,H.x),Add(K.x,M.x)))&Eq(Sub(Mul(2,H.y),Add(K.y,M.y)))",
+            "Line(k):PointOnLine(G,k)&PointOnLine(I,k)",
+            "Line(l):PointOnLine(H,l)&PointOnLine(I,l)"
+          ],
+          "formal_goal": "PerpendicularBetweenLine(k,l)",
+          "point_to_object": {
+            "a": "A",
+            "b": "B",
+            "c": "C",
+            "d": "D",
+            "i": "E",
+            "j": "F",
+            "m": "G",
+            "n": "H",
+            "o": "I",
+            "p": "J",
+            "q": "K",
+            "r": "L",
+            "s": "M"
+          },
+          "segment_to_object": [
+            {
+              "segment": [
+                "a",
+                "b"
+              ],
+              "object": "a"
+            },
+            {
+              "segment": [
+                "a",
+                "c"
+              ],
+              "object": "c"
+            },
+            {
+              "segment": [
+                "a",
+                "d"
+              ],
+              "object": "d"
+            },
+            {
+              "segment": [
+                "a",
+                "i"
+              ],
+              "object": "e"
+            },
+            {
+              "segment": [
+                "b",
+                "c"
+              ],
+              "object": "b"
+            },
+            {
+              "segment": [
+                "b",
+                "j"
+              ],
+              "object": "h"
+            },
+            {
+              "segment": [
+                "c",
+                "d"
+              ],
+              "object": "f"
+            },
+            {
+              "segment": [
+                "c",
+                "i"
+              ],
+              "object": "g"
+            },
+            {
+              "segment": [
+                "d",
+                "j"
+              ],
+              "object": "i"
+            },
+            {
+              "segment": [
+                "i",
+                "j"
+              ],
+              "object": "j"
+            },
+            {
+              "segment": [
+                "m",
+                "o"
+              ],
+              "object": "k"
+            },
+            {
+              "segment": [
+                "n",
+                "o"
+              ],
+              "object": "l"
+            }
+          ]
+        },
+        "translated_goals": [],
+        "open_branches": [
+          [
+            "perp(m,o,n,o)"
+          ]
+        ],
+        "runtime_trace": {
+          "timed_out": true,
+          "timeout_seconds": 5.0,
+          "error_type": "TimeoutExpired",
+          "root_obligation_preserved": true
+        },
+        "error": "TimeoutExpired: Command '['C:\\\\Users\\\\81808\\\\.cache\\\\mortra-research-sources\\\\FormalGeo\\\\.venv-mortra\\\\Scripts\\\\python.exe', 'C:\\\\Users\\\\81808\\\\.openclaw\\\\workspace\\\\mortra-1-release\\\\scripts\\\\run_formalgeo_runtime.py']' timed out after 5.0 seconds"
+      }
+    }
+  ],
+  "typed_open_branches": [
+    [
+      {
+        "predicate": "perp",
+        "arguments": [
+          "m",
+          "o",
+          "n",
+          "o"
+        ]
+      }
+    ]
+  ],
+  "exact_exchange": {
+    "status": "open",
+    "solved": false,
+    "eligible_ground_obligations": 1,
+    "certified_lemmas": 0,
+    "lemmas": [
+      {
+        "atom": "perp(m,o,n,o)",
+        "status": "right_censored_timeout",
+        "reason": null,
+        "return_code": null,
+        "stderr_tail": null,
+        "source": "jgex_exact_elimination",
+        "elapsed_seconds": 30.031399300001794,
+        "input_sha256": null,
+        "certificate_sha256": null,
+        "related_native_facts": []
+      }
+    ],
+    "hypergraph_proofs": []
+  },
+  "gclc_exchange": {
+    "status": "open",
+    "solved": false,
+    "eligible_ground_obligations": 1,
+    "source_obligation_branches": 1,
+    "executable_obligation_branches": 1,
+    "certified_lemmas": 0,
+    "numerical_incidence": {
+      "samples": 0,
+      "checked": 1,
+      "accepted": 1,
+      "records": [
+        {
+          "atom": "perp(m,o,n,o)",
+          "passed": true,
+          "errors": []
+        }
+      ]
+    },
+    "lemmas": [
+      {
+        "atom": "perp(m,o,n,o)",
+        "status": "right_censored_timeout",
+        "source": "gclc_local_relation",
+        "elapsed_seconds": 129.15207860000373,
+        "input_sha256": "8dda4ac876c23617719b5fbd57c8349fd029535f73c802e4d73fbcae7e9d7775",
+        "selected_method": null,
+        "proof_sha256": "2a5997ac6344ff4850f5f76036d3f477ea3b47bcd6c5f3d26d1a0237fb6ce25d",
+        "proof_file_sha256": null,
+        "translation": {
+          "source_sha256": "2b7301f2bc7ba2edaa6b843497f944fb9b407d5d00e620f7e80951043f6a6287",
+          "source_lines": 32,
+          "original_clause_count": 11,
+          "translated_clause_count": 11,
+          "local_lemma_certificates": []
+        },
+        "method_diagnostics": [
+          {
+            "method": "area",
+            "proved": false,
+            "timed_out": false,
+            "external_timeout_reached": false,
+            "internal_timeout_reached": false,
+            "elapsed_seconds": 1.0910700999957044,
+            "polynomial_scale": null,
+            "conclusion": null,
+            "execution_error": null
+          },
+          {
+            "method": "wu",
+            "proved": false,
+            "timed_out": true,
+            "external_timeout_reached": true,
+            "internal_timeout_reached": false,
+            "elapsed_seconds": 65.03523500000301,
+            "polynomial_scale": null,
+            "conclusion": null,
+            "execution_error": null
+          },
+          {
+            "method": "groebner",
+            "proved": false,
+            "timed_out": true,
+            "external_timeout_reached": false,
+            "internal_timeout_reached": true,
+            "elapsed_seconds": 62.55797700000403,
+            "polynomial_scale": "The largest polynomial obtained during the proof process contains 101540 terms.",
+            "conclusion": "The conjecture not proved - timeout.",
+            "execution_error": null
+          }
+        ],
+        "portfolio_diagnostics": {
+          "gclc": {
+            "status": "right_censored_timeout",
+            "elapsed_seconds": 129.15207860000373
+          },
+          "wolfram": {
+            "status": "disabled",
+            "elapsed_seconds": null,
+            "preprocessing": "local_relational",
+            "reduction_mode": "extended_groebner",
+            "saturation_mode": "none",
+            "max_saturation_factors": 12
+          }
+        },
+        "wolfram_certificate": null
+      }
+    ],
+    "hypergraph_proofs": []
+  },
+  "solved": false,
+  "acceptance_rule": "count solved only when an exact certificate is replayed into the typed goal; FormalGeo frontier extraction alone is not a solve",
+  "elapsed_seconds": 164.471418000001
+}

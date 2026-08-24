@@ -1,0 +1,437 @@
+{
+  "experiment": "hageo_independent_n_round_pass_at_k_no_llm",
+  "artifact_schema_version": 2,
+  "reproducibility": {
+    "python": {
+      "executable": "C:/Users/81808/.cache/mortra-research-sources/Newclid/.venv/Scripts/python.exe",
+      "version": "3.12.10",
+      "pythonhashseed": null
+    },
+    "dataset": {
+      "path": "C:/Users/81808/.cache/mortra-research-sources/GenesisGeo/benchmarks/hageo_409.txt",
+      "sha256": "55aa45dd16a1b69eaf612036468dbf3f62e73b654c0e3bb1a23fd3e5e3ed2368"
+    },
+    "yuclid": {
+      "path": "C:/Users/81808/.cache/mortra-research-sources/Newclid/.venv/Scripts/yuclid.exe",
+      "sha256": "dc40a72767c15a90b48471619a0b00734b611eeecfc9c7815328ae0eae4f1397"
+    },
+    "runtime_path": "C:/Users/81808/.cache/mortra-research-sources/boost_1_88_0/lib64-msvc-14.3",
+    "newclid_module": "C:/Users/81808/.cache/mortra-research-sources/Newclid/newclid/src/newclid/__init__.py",
+    "mortra_sources": {
+      "scripts/experiment_hageo_passk.py": "8fc213ea70ed16002e1782aa9c9d16af8c04481bcaa3161d4c8700488cab4eb5",
+      "scripts/experiment_newclid_construction_stalk.py": "c3bb717adf04b84b72e36fe86b97010ef95efa690e40250a89dd5aaecb02f736",
+      "worker/backend/hageo_search_control.py": "f1b259d9b7930269269adfe9b6bf3b47777e7f797b19f654939622b1221c2d08",
+      "worker/backend/geometry_proof_hypergraph.py": "3f0d809bb654e6ce1e569b9e630cff3bead2d634eb2aaf461f93d81062d3c235",
+      "worker/backend/yuclid_native_verifier.py": "173799bdb056d5f4935cf4f18e2c2a0489b4ea290c9fe05ffd4fc150d03623a9"
+    }
+  },
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_dataset_auxiliary_clauses": false,
+    "uses_problem_id_in_search": false,
+    "uses_expected_answer": false,
+    "trajectory_policy": "typed_contract_reverse_unification_residual_portfolio",
+    "ddAR_calls": "baseline_plus_native_shortlist_feedback_with_terminal_reuse",
+    "rounds_n": 1,
+    "attempts_k": 1,
+    "attempt_offset": 0,
+    "workers": 1,
+    "seed": 0,
+    "per_family_limit": 4,
+    "incidence_oversample_per_family": 8,
+    "incidence_preselect_limit": 64,
+    "incidence_workers": 1,
+    "candidate_limit": 64,
+    "candidate_policy": "contract-portfolio",
+    "rank_temperature": 2.0,
+    "incremental_prefix": true,
+    "feedback_candidates": 2,
+    "feedback_workers": 2,
+    "max_verification_concurrency": 1,
+    "exact_specialist_timeout_seconds": 60.0,
+    "exact_specialist_representation": "goal_local_relational",
+    "exact_specialist_saturation_rounds": 1,
+    "ar_profile": "all",
+    "proof_dag_specialist_budget": {
+      "per_family_candidates": 4,
+      "depth": 3,
+      "fragments": 16,
+      "initial_states_per_candidate": 16,
+      "states_per_task": 64,
+      "reserved_consensus": 4,
+      "reserved_family_frontier": true
+    },
+    "truth_plane": "yuclid_native_or_jgex_exact_certificate_replay",
+    "terminal_credit_control_only": false,
+    "terminal_credit_ledger_input": null,
+    "terminal_credit_ledger_input_sha256": null,
+    "terminal_credit_ledger_frozen": false
+  },
+  "problem_name": "2007CMOp4",
+  "normalization": {
+    "rewritten_constructions": 0,
+    "unchanged_constructions": 12,
+    "unresolved_constructions": 0
+  },
+  "baseline_solved": false,
+  "baseline_proof_residual": {
+    "open_relation_demands": 16,
+    "backward_obligations": 24,
+    "ar_supported_goals": 1,
+    "ar_closed_goals": 0,
+    "ar_residual_support": 2,
+    "ar_residual_l1": 2.0,
+    "ar_known_rank": 48,
+    "parent_relation_demands": 0,
+    "retained_parent_demands": 0,
+    "closed_parent_demands": 0,
+    "closed_parent_obligations": [],
+    "new_native_facts": 3477,
+    "introduced_relation_demands": 16
+  },
+  "mmt_exact_coordination": null,
+  "solved": false,
+  "pass_at_k": false,
+  "first_solved_attempt": null,
+  "unique_paths": 1,
+  "completed_attempts": 1,
+  "execution_errors": 0,
+  "elapsed_seconds": 66.28785069999867,
+  "attempt_results": [
+    {
+      "attempt": 0,
+      "status": "unsolved",
+      "solved": false,
+      "proof_source": null,
+      "rounds_completed": 1,
+      "path": [
+        "on_pline(a,i,o)->g"
+      ],
+      "rounds": [
+        {
+          "round": 1,
+          "candidate_extension_seconds": 3.6189975000015693,
+          "enumerated": 368,
+          "incidence_checked": 62,
+          "heuristic_candidates": 1,
+          "typed_construction_contracts": {
+            "enabled": true,
+            "truth_plane": "candidate_proposal_only_native_replay_required",
+            "obligation_branch_count": 24,
+            "witness_obligations": 4,
+            "matched_obligations": 4,
+            "matched_contracts": 20,
+            "raw_generated_candidates": 460,
+            "generated_candidates": 64,
+            "truncated_contracts": 10
+          },
+          "eligible_pool": 62,
+          "ranked_candidates": [
+            "on_pline(a,i,o)->g",
+            "midpoint(i,a)->g",
+            "on_tline(a,i,o)->g",
+            "mirror(a,i)->g",
+            "eqangle3(f,n,a,b,i)->g",
+            "foot(a,i,b)->g",
+            "on_aline(b,i,a,p,m)->g",
+            "circle(i,a,b)->g",
+            "orthocenter(i,a,b)->g",
+            "parallelogram(a,b,i)->g",
+            "reflect(a,i,b)->g",
+            "angle_bisector(a,b,i)->g",
+            "intersection_ll(i,b,a,c)->g",
+            "angle_mirror(a,b,i)->g",
+            "circumcenter(i,a,b)->g",
+            "eqdistance(a,b,i)->g",
+            "eqangle2(a,b,i)->g",
+            "incenter(i,a,b)->g",
+            "excenter(a,b,i)->g",
+            "shift(a,b,i)->g",
+            "intersection_cc(a,b,i)->g",
+            "intersection_lc(a,b,i)->g",
+            "on_circum(i,a,b)->g",
+            "on_line(i,a)->g",
+            "intersection_pp(a,i,b,b,i,a)->g",
+            "intersection_tt(a,i,b,b,i,a)->g",
+            "on_bline(i,a)->g",
+            "lc_tangent(a,i)->g",
+            "on_circle(a,i)->g",
+            "nsquare(a,i)->g",
+            "on_dia(i,a)->g",
+            "psquare(a,i)->g",
+            "between_bound(a,i)->g",
+            "eq_triangle(i,a)->g",
+            "iso_triangle_vertex(i,a)->g",
+            "iso_triangle_vertex_angle(i,a)->g",
+            "on_pline(a,m,n)->g",
+            "on_pline(a,n,m)->g",
+            "on_pline(a,o,i)->g",
+            "on_pline(b,i,o)->g",
+            "on_pline(b,m,n)->g",
+            "on_pline(b,n,m)->g",
+            "on_pline(b,o,i)->g",
+            "on_pline(c,i,o)->g",
+            "on_pline(c,m,n)->g",
+            "on_pline(c,n,m)->g",
+            "on_pline(c,o,i)->g",
+            "on_pline(d,i,o)->g",
+            "on_pline(d,m,n)->g",
+            "on_pline(d,n,m)->g",
+            "on_pline(d,o,i)->g",
+            "on_pline(e,i,o)->g",
+            "on_pline(e,m,n)->g",
+            "on_pline(e,n,m)->g",
+            "on_pline(e,o,i)->g",
+            "on_pline(f,i,o)->g",
+            "on_pline(f,m,n)->g",
+            "on_pline(f,n,m)->g",
+            "on_pline(f,o,i)->g",
+            "on_pline(i,m,n)->g",
+            "on_pline(i,n,m)->g",
+            "on_pline(m,i,o)->g"
+          ],
+          "terminal_credit_ranking": [],
+          "obligation_credit_ranking": [],
+          "shortlist_channels": [
+            {
+              "candidate": "on_pline(a,i,o)->g",
+              "channel": "residual_frontier"
+            },
+            {
+              "candidate": "midpoint(i,a)->g",
+              "channel": "residual_frontier"
+            }
+          ],
+          "chosen": "on_pline(a,i,o)->g",
+          "relation_demands_in": [
+            "lequation(1/1,i,m,*,i,m,1/1,o,n,*,o,n,-1/1,i,n,*,i,n,-1/1,o,m,*,o,m,0)",
+            "lequation(1/1,i,n,*,i,n,1/1,o,m,*,o,m,-1/1,i,m,*,i,m,-1/1,o,n,*,o,n,0)",
+            "lequation(1/1,o,m,*,o,m,1/1,i,n,*,i,n,-1/1,o,n,*,o,n,-1/1,i,m,*,i,m,0)",
+            "perp(?C,?D,i,o)",
+            "para(?C,?D,m,n)",
+            "lequation(1/1,o,n,*,o,n,1/1,i,m,*,i,m,-1/1,o,m,*,o,m,-1/1,i,n,*,i,n,0)",
+            "lequation(1/1,m,i,*,m,i,1/1,n,o,*,n,o,-1/1,m,o,*,m,o,-1/1,n,i,*,n,i,0)",
+            "lequation(1/1,n,i,*,n,i,1/1,m,o,*,m,o,-1/1,n,o,*,n,o,-1/1,m,i,*,m,i,0)",
+            "lequation(1/1,m,o,*,m,o,1/1,n,i,*,n,i,-1/1,m,i,*,m,i,-1/1,n,o,*,n,o,0)",
+            "lequation(1/1,n,o,*,n,o,1/1,m,i,*,m,i,-1/1,n,i,*,n,i,-1/1,m,o,*,m,o,0)",
+            "perp(i,m,n,o)",
+            "perp(i,n,m,o)",
+            "perp(?C,?D,m,n)",
+            "para(?C,?D,i,o)",
+            "ncoll(i,o,m)",
+            "ncoll(i,o,n)"
+          ],
+          "obligation_branches_in": [
+            [
+              "lequation(1/1,i,m,*,i,m,1/1,o,n,*,o,n,-1/1,i,n,*,i,n,-1/1,o,m,*,o,m,0)"
+            ],
+            [
+              "lequation(1/1,i,n,*,i,n,1/1,o,m,*,o,m,-1/1,i,m,*,i,m,-1/1,o,n,*,o,n,0)"
+            ],
+            [
+              "lequation(1/1,o,m,*,o,m,1/1,i,n,*,i,n,-1/1,o,n,*,o,n,-1/1,i,m,*,i,m,0)"
+            ],
+            [
+              "perp(?C,?D,i,o)",
+              "para(?C,?D,m,n)"
+            ],
+            [
+              "lequation(1/1,o,n,*,o,n,1/1,i,m,*,i,m,-1/1,o,m,*,o,m,-1/1,i,n,*,i,n,0)"
+            ],
+            [
+              "lequation(1/1,m,i,*,m,i,1/1,n,o,*,n,o,-1/1,m,o,*,m,o,-1/1,n,i,*,n,i,0)"
+            ],
+            [
+              "lequation(1/1,n,i,*,n,i,1/1,m,o,*,m,o,-1/1,n,o,*,n,o,-1/1,m,i,*,m,i,0)"
+            ],
+            [
+              "perp(?C,?D,i,o)",
+              "para(?C,?D,m,n)"
+            ],
+            [
+              "lequation(1/1,m,o,*,m,o,1/1,n,i,*,n,i,-1/1,m,i,*,m,i,-1/1,n,o,*,n,o,0)"
+            ],
+            [
+              "lequation(1/1,n,o,*,n,o,1/1,m,i,*,m,i,-1/1,n,i,*,n,i,-1/1,m,o,*,m,o,0)"
+            ],
+            [
+              "perp(i,m,n,o)",
+              "perp(i,n,m,o)"
+            ],
+            [
+              "perp(?C,?D,i,o)",
+              "para(?C,?D,m,n)"
+            ],
+            [
+              "perp(i,n,m,o)",
+              "perp(i,m,n,o)"
+            ],
+            [
+              "perp(i,m,n,o)",
+              "perp(i,n,m,o)"
+            ],
+            [
+              "perp(i,n,m,o)",
+              "perp(i,m,n,o)"
+            ],
+            [
+              "perp(?C,?D,i,o)",
+              "para(?C,?D,m,n)"
+            ],
+            [
+              "perp(i,n,m,o)",
+              "perp(i,m,n,o)"
+            ],
+            [
+              "perp(i,m,n,o)",
+              "perp(i,n,m,o)"
+            ],
+            [
+              "perp(i,n,m,o)",
+              "perp(i,m,n,o)"
+            ],
+            [
+              "perp(?C,?D,m,n)",
+              "para(?C,?D,i,o)"
+            ],
+            [
+              "perp(i,m,n,o)",
+              "perp(i,n,m,o)"
+            ],
+            [
+              "lequation(1/1,i,m,*,i,m,1/1,o,n,*,o,n,-1/1,i,n,*,i,n,-1/1,o,m,*,o,m,0)",
+              "ncoll(i,o,m)"
+            ],
+            [
+              "lequation(1/1,i,n,*,i,n,1/1,o,m,*,o,m,-1/1,i,m,*,i,m,-1/1,o,n,*,o,n,0)",
+              "ncoll(i,o,n)"
+            ],
+            [
+              "perp(?C,?D,m,n)",
+              "para(?C,?D,i,o)"
+            ]
+          ],
+          "relation_demands_observed": [
+            "perp(a,g,m,n)"
+          ],
+          "relation_demands_next": [
+            "perp(a,g,m,n)"
+          ],
+          "residual_feedback_applied": true,
+          "native_feedback": [
+            {
+              "candidate": "on_pline(a,i,o)->g",
+              "static_rank": 0,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 15,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 49,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 16,
+                "retained_parent_demands": 13,
+                "closed_parent_demands": 1,
+                "closed_parent_obligations": [
+                  "para(?C,?D,i,o)"
+                ],
+                "new_native_facts": 349,
+                "introduced_relation_demands": 0,
+                "persistent_branch_feedback_applied": true,
+                "persistent_branch_count": 1,
+                "persistent_branch_matched_atoms": 2,
+                "persistent_branch_fully_closed": 0
+              },
+              "branch_reduction": {
+                "matched_atom_count": 2,
+                "progressed_branch_count": 1,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": [
+                  [
+                    "perp(a,g,m,n)"
+                  ]
+                ]
+              },
+              "error": null,
+              "selected": true
+            },
+            {
+              "candidate": "midpoint(i,a)->g",
+              "static_rank": 1,
+              "selection_channel": "residual_frontier",
+              "matched_obligations": [],
+              "obligation_credit_verified": false,
+              "solved": false,
+              "proof_residual": {
+                "open_relation_demands": 16,
+                "backward_obligations": 24,
+                "ar_supported_goals": 1,
+                "ar_closed_goals": 0,
+                "ar_residual_support": 2,
+                "ar_residual_l1": 2.0,
+                "ar_known_rank": 55,
+                "contract_frontier_witnesses": 4,
+                "parent_relation_demands": 16,
+                "retained_parent_demands": 16,
+                "closed_parent_demands": 0,
+                "closed_parent_obligations": [],
+                "new_native_facts": 1563,
+                "introduced_relation_demands": 0
+              },
+              "branch_reduction": {
+                "matched_atom_count": 0,
+                "progressed_branch_count": 0,
+                "fully_closed_branch_count": 0,
+                "progressed_branches": []
+              },
+              "error": null,
+              "selected": false
+            }
+          ],
+          "coordination": null
+        }
+      ],
+      "verification_calls": 2,
+      "all_deduction_count": 3826,
+      "goal_deduction_count": 0,
+      "input_sha256": "8333330c1fbd33d3fb4e4d02dda47b0ad509eadcee0836e54a0f41aaec6de86d",
+      "proof_sha256": "ec9afcb94182a400ab08c1f3c547d7a03ee09a89edebc7bd574f5651d19f5dd5",
+      "exact_specialist": {
+        "status": "right_censored_timeout",
+        "elapsed_seconds": 60.04091250000056
+      },
+      "terminal_credit_events": [],
+      "proof_residual": {
+        "open_relation_demands": 15,
+        "backward_obligations": 24,
+        "ar_supported_goals": 1,
+        "ar_closed_goals": 0,
+        "ar_residual_support": 2,
+        "ar_residual_l1": 2.0,
+        "ar_known_rank": 49,
+        "parent_relation_demands": 0,
+        "retained_parent_demands": 0,
+        "closed_parent_demands": 0,
+        "closed_parent_obligations": [],
+        "new_native_facts": 3826,
+        "introduced_relation_demands": 15
+      },
+      "final_relation_demands": [
+        "perp(a,g,m,n)"
+      ],
+      "final_obligation_branches": [
+        [
+          "perp(a,g,m,n)"
+        ]
+      ],
+      "elapsed_seconds": 65.38946479999868
+    }
+  ],
+  "terminal_credit_ledger": null
+}

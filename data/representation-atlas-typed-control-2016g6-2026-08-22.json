@@ -1,0 +1,3961 @@
+{
+  "experiment": "newclid_dynamic_typed_construction_stalk_no_llm",
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_dataset_auxiliary_clauses": false,
+    "uses_problem_id_in_search": false,
+    "families": [
+      {
+        "name": "midpoint",
+        "input_arity": 2,
+        "symmetry": "all",
+        "output_channels": [
+          "midp",
+          "coll",
+          "cong"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "mirror",
+        "input_arity": 2,
+        "symmetry": "ordered",
+        "output_channels": [
+          "coll",
+          "cong"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "foot",
+        "input_arity": 3,
+        "symmetry": "head_pair",
+        "output_channels": [
+          "perp",
+          "coll"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "circle",
+        "input_arity": 3,
+        "symmetry": "all",
+        "output_channels": [
+          "circle"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "orthocenter",
+        "input_arity": 3,
+        "symmetry": "all",
+        "output_channels": [
+          "perp"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "reflect",
+        "input_arity": 3,
+        "symmetry": "head_pair",
+        "output_channels": [
+          "cong",
+          "perp"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "intersection_ll",
+        "input_arity": 4,
+        "symmetry": "line_pair",
+        "output_channels": [
+          "coll"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "angle_bisector",
+        "input_arity": 3,
+        "symmetry": "ordered",
+        "output_channels": [
+          "eqangle"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "angle_mirror",
+        "input_arity": 3,
+        "symmetry": "ordered",
+        "output_channels": [
+          "eqangle"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "eqdistance",
+        "input_arity": 3,
+        "symmetry": "ordered",
+        "output_channels": [
+          "cong"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "incenter",
+        "input_arity": 3,
+        "symmetry": "all",
+        "output_channels": [
+          "eqangle"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "excenter",
+        "input_arity": 3,
+        "symmetry": "ordered",
+        "output_channels": [
+          "eqangle"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "shift",
+        "input_arity": 3,
+        "symmetry": "ordered",
+        "output_channels": [
+          "cong"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "parallelogram",
+        "input_arity": 3,
+        "symmetry": "ordered",
+        "output_channels": [
+          "para",
+          "cong"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "circumcenter",
+        "input_arity": 3,
+        "symmetry": "all",
+        "output_channels": [
+          "cong"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "intersection_lc",
+        "input_arity": 3,
+        "symmetry": "ordered",
+        "output_channels": [
+          "coll",
+          "cong"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "intersection_cc",
+        "input_arity": 3,
+        "symmetry": "ordered",
+        "output_channels": [
+          "cong"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "on_line",
+        "input_arity": 2,
+        "symmetry": "all",
+        "output_channels": [
+          "coll"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "on_pline",
+        "input_arity": 3,
+        "symmetry": "ordered",
+        "output_channels": [
+          "para"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "on_tline",
+        "input_arity": 3,
+        "symmetry": "ordered",
+        "output_channels": [
+          "perp"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "on_bline",
+        "input_arity": 2,
+        "symmetry": "all",
+        "output_channels": [
+          "cong",
+          "eqangle"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "on_circle",
+        "input_arity": 2,
+        "symmetry": "ordered",
+        "output_channels": [
+          "cong"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "on_circum",
+        "input_arity": 3,
+        "symmetry": "all",
+        "output_channels": [
+          "cyclic"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "on_dia",
+        "input_arity": 2,
+        "symmetry": "all",
+        "output_channels": [
+          "perp"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "intersection_lp",
+        "input_arity": 5,
+        "symmetry": "line_relation",
+        "output_channels": [
+          "coll",
+          "para"
+        ],
+        "allow_repeated_inputs": true
+      },
+      {
+        "name": "intersection_pp",
+        "input_arity": 6,
+        "symmetry": "relation_pair",
+        "output_channels": [
+          "para"
+        ],
+        "allow_repeated_inputs": true
+      },
+      {
+        "name": "intersection_lt",
+        "input_arity": 5,
+        "symmetry": "line_relation",
+        "output_channels": [
+          "coll",
+          "perp"
+        ],
+        "allow_repeated_inputs": true
+      },
+      {
+        "name": "intersection_tt",
+        "input_arity": 6,
+        "symmetry": "relation_pair",
+        "output_channels": [
+          "perp"
+        ],
+        "allow_repeated_inputs": true
+      },
+      {
+        "name": "eq_triangle",
+        "input_arity": 2,
+        "symmetry": "all",
+        "output_channels": [
+          "cong",
+          "eqangle"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "psquare",
+        "input_arity": 2,
+        "symmetry": "ordered",
+        "output_channels": [
+          "cong",
+          "perp"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "nsquare",
+        "input_arity": 2,
+        "symmetry": "ordered",
+        "output_channels": [
+          "cong",
+          "perp"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "between_bound",
+        "input_arity": 2,
+        "symmetry": "ordered",
+        "output_channels": [
+          "coll",
+          "obtuse_angle"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "eqangle2",
+        "input_arity": 3,
+        "symmetry": "ordered",
+        "output_channels": [
+          "eqangle"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "lc_tangent",
+        "input_arity": 2,
+        "symmetry": "ordered",
+        "output_channels": [
+          "perp"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "on_aline",
+        "input_arity": 5,
+        "symmetry": "ordered",
+        "output_channels": [
+          "eqangle"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "eqangle3",
+        "input_arity": 5,
+        "symmetry": "ordered",
+        "output_channels": [
+          "eqangle"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "iso_triangle_vertex",
+        "input_arity": 2,
+        "symmetry": "all",
+        "output_channels": [
+          "cong"
+        ],
+        "allow_repeated_inputs": false
+      },
+      {
+        "name": "iso_triangle_vertex_angle",
+        "input_arity": 2,
+        "symmetry": "all",
+        "output_channels": [
+          "eqangle"
+        ],
+        "allow_repeated_inputs": false
+      }
+    ],
+    "first_stage_ranking": "goal_support_incidence",
+    "ranking": "structural",
+    "second_stage_ranking": "yuclid_closure_growth_diverse_beam",
+    "beam_ranking": "closure",
+    "differentiable_controller": null,
+    "unified_architecture": null,
+    "goal_channels": [
+      "perp"
+    ],
+    "candidate_gate": "relation-reachability",
+    "candidate_alignment": "typed-atom",
+    "candidate_incidence": {
+      "mode": "off",
+      "tolerance": 1e-07,
+      "oversample_per_family": 16,
+      "truth_plane": "candidate_proposal_only"
+    },
+    "proof_dag_budget": {
+      "depth": 2,
+      "branches_per_goal": 128,
+      "states_per_goal": 20000
+    },
+    "candidate_forward_cone_budget": {
+      "depth": 2,
+      "fragments": 128,
+      "states": 5000
+    },
+    "branch_build_mode": "incremental",
+    "proof_hypergraph_relevance": {
+      "a": 1.0,
+      "e": 0.7263470052176966,
+      "c": 0.99094450273821,
+      "f": 0.7473956461744148,
+      "p": 0.7356693162380911,
+      "b": 0.5432777306636423,
+      "d": 0.4884775984246333,
+      "q": 0.532332078021017,
+      "x": 0.4184681835822425,
+      "y": 0.424795352948788,
+      "o": 0.36559773468830564,
+      "m": 0.5789795676359444
+    },
+    "same_morphism_input_orbit_priority": true,
+    "obligation_guided": true,
+    "typed_construction_contracts": {
+      "enabled": false,
+      "candidates_per_schema": 32,
+      "obligation_branch_count": 1,
+      "truth_plane": "native_certificate_replay_only"
+    },
+    "require_generated_input_after_first": false,
+    "baseline_backward_obligations": [
+      {
+        "theorem": "r86:0",
+        "goal": "perp(a,c,p,q)",
+        "matched_premises": [
+          "ncoll(a,c,p)"
+        ],
+        "open_premises": [
+          "lequation(1/1,a,p,*,a,p,1/1,c,q,*,c,q,-1/1,a,q,*,a,q,-1/1,c,p,*,c,p,0)"
+        ],
+        "substitution": {
+          "?A": "a",
+          "?B": "c",
+          "?C": "p",
+          "?D": "q"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r86:0",
+        "goal": "perp(a,c,p,q)",
+        "matched_premises": [
+          "ncoll(a,c,q)"
+        ],
+        "open_premises": [
+          "lequation(1/1,a,q,*,a,q,1/1,c,p,*,c,p,-1/1,a,p,*,a,p,-1/1,c,q,*,c,q,0)"
+        ],
+        "substitution": {
+          "?A": "a",
+          "?B": "c",
+          "?C": "q",
+          "?D": "p"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r86:0",
+        "goal": "perp(a,c,p,q)",
+        "matched_premises": [
+          "ncoll(a,c,p)"
+        ],
+        "open_premises": [
+          "lequation(1/1,c,p,*,c,p,1/1,a,q,*,a,q,-1/1,c,q,*,c,q,-1/1,a,p,*,a,p,0)"
+        ],
+        "substitution": {
+          "?A": "c",
+          "?B": "a",
+          "?C": "p",
+          "?D": "q"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "perpendicular-transport-over-parallel",
+        "goal": "perp(a,c,p,q)",
+        "matched_premises": [],
+        "open_premises": [
+          "perp(?C,?D,a,c)",
+          "para(?C,?D,p,q)"
+        ],
+        "substitution": {
+          "?A": "a",
+          "?B": "c",
+          "?E": "p",
+          "?F": "q"
+        },
+        "unbound_variables": [
+          "?C",
+          "?D"
+        ]
+      },
+      {
+        "theorem": "r86:0",
+        "goal": "perp(a,c,p,q)",
+        "matched_premises": [
+          "ncoll(a,c,q)"
+        ],
+        "open_premises": [
+          "lequation(1/1,c,q,*,c,q,1/1,a,p,*,a,p,-1/1,c,p,*,c,p,-1/1,a,q,*,a,q,0)"
+        ],
+        "substitution": {
+          "?A": "c",
+          "?B": "a",
+          "?C": "q",
+          "?D": "p"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r86:0",
+        "goal": "perp(a,c,p,q)",
+        "matched_premises": [
+          "ncoll(a,p,q)"
+        ],
+        "open_premises": [
+          "lequation(1/1,p,a,*,p,a,1/1,q,c,*,q,c,-1/1,p,c,*,p,c,-1/1,q,a,*,q,a,0)"
+        ],
+        "substitution": {
+          "?A": "p",
+          "?B": "q",
+          "?C": "a",
+          "?D": "c"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r86:0",
+        "goal": "perp(a,c,p,q)",
+        "matched_premises": [
+          "ncoll(a,p,q)"
+        ],
+        "open_premises": [
+          "lequation(1/1,q,a,*,q,a,1/1,p,c,*,p,c,-1/1,q,c,*,q,c,-1/1,p,a,*,p,a,0)"
+        ],
+        "substitution": {
+          "?A": "q",
+          "?B": "p",
+          "?C": "a",
+          "?D": "c"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "perpendicular-transport-over-parallel",
+        "goal": "perp(a,c,p,q)",
+        "matched_premises": [],
+        "open_premises": [
+          "perp(?C,?D,a,c)",
+          "para(?C,?D,p,q)"
+        ],
+        "substitution": {
+          "?A": "a",
+          "?B": "c",
+          "?E": "q",
+          "?F": "p"
+        },
+        "unbound_variables": [
+          "?C",
+          "?D"
+        ]
+      },
+      {
+        "theorem": "r86:0",
+        "goal": "perp(a,c,p,q)",
+        "matched_premises": [
+          "ncoll(c,p,q)"
+        ],
+        "open_premises": [
+          "lequation(1/1,p,c,*,p,c,1/1,q,a,*,q,a,-1/1,p,a,*,p,a,-1/1,q,c,*,q,c,0)"
+        ],
+        "substitution": {
+          "?A": "p",
+          "?B": "q",
+          "?C": "c",
+          "?D": "a"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "r86:0",
+        "goal": "perp(a,c,p,q)",
+        "matched_premises": [
+          "ncoll(c,p,q)"
+        ],
+        "open_premises": [
+          "lequation(1/1,q,c,*,q,c,1/1,p,a,*,p,a,-1/1,q,a,*,q,a,-1/1,p,c,*,p,c,0)"
+        ],
+        "substitution": {
+          "?A": "q",
+          "?B": "p",
+          "?C": "c",
+          "?D": "a"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "perpendicular-transport-over-parallel",
+        "goal": "perp(a,c,p,q)",
+        "matched_premises": [
+          "para(a,c,a,e)"
+        ],
+        "open_premises": [
+          "perp(a,e,p,q)"
+        ],
+        "substitution": {
+          "?A": "p",
+          "?B": "q",
+          "?C": "a",
+          "?D": "e",
+          "?E": "a",
+          "?F": "c"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "perpendicular-transport-over-parallel",
+        "goal": "perp(a,c,p,q)",
+        "matched_premises": [],
+        "open_premises": [
+          "perp(?C,?D,a,c)",
+          "para(?C,?D,p,q)"
+        ],
+        "substitution": {
+          "?A": "c",
+          "?B": "a",
+          "?E": "p",
+          "?F": "q"
+        },
+        "unbound_variables": [
+          "?C",
+          "?D"
+        ]
+      },
+      {
+        "theorem": "perpendicular-transport-over-parallel",
+        "goal": "perp(a,c,p,q)",
+        "matched_premises": [
+          "para(a,c,a,f)"
+        ],
+        "open_premises": [
+          "perp(a,f,p,q)"
+        ],
+        "substitution": {
+          "?A": "p",
+          "?B": "q",
+          "?C": "a",
+          "?D": "f",
+          "?E": "a",
+          "?F": "c"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "perpendicular-transport-over-parallel",
+        "goal": "perp(a,c,p,q)",
+        "matched_premises": [
+          "para(a,c,a,m)"
+        ],
+        "open_premises": [
+          "perp(a,m,p,q)"
+        ],
+        "substitution": {
+          "?A": "p",
+          "?B": "q",
+          "?C": "a",
+          "?D": "m",
+          "?E": "a",
+          "?F": "c"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "perpendicular-transport-over-parallel",
+        "goal": "perp(a,c,p,q)",
+        "matched_premises": [
+          "para(a,c,c,e)"
+        ],
+        "open_premises": [
+          "perp(c,e,p,q)"
+        ],
+        "substitution": {
+          "?A": "p",
+          "?B": "q",
+          "?C": "c",
+          "?D": "e",
+          "?E": "a",
+          "?F": "c"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "perpendicular-transport-over-parallel",
+        "goal": "perp(a,c,p,q)",
+        "matched_premises": [],
+        "open_premises": [
+          "perp(?C,?D,a,c)",
+          "para(?C,?D,p,q)"
+        ],
+        "substitution": {
+          "?A": "c",
+          "?B": "a",
+          "?E": "q",
+          "?F": "p"
+        },
+        "unbound_variables": [
+          "?C",
+          "?D"
+        ]
+      },
+      {
+        "theorem": "perpendicular-transport-over-parallel",
+        "goal": "perp(a,c,p,q)",
+        "matched_premises": [
+          "para(a,c,c,f)"
+        ],
+        "open_premises": [
+          "perp(c,f,p,q)"
+        ],
+        "substitution": {
+          "?A": "p",
+          "?B": "q",
+          "?C": "c",
+          "?D": "f",
+          "?E": "a",
+          "?F": "c"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "perpendicular-transport-over-parallel",
+        "goal": "perp(a,c,p,q)",
+        "matched_premises": [
+          "para(a,c,c,m)"
+        ],
+        "open_premises": [
+          "perp(c,m,p,q)"
+        ],
+        "substitution": {
+          "?A": "p",
+          "?B": "q",
+          "?C": "c",
+          "?D": "m",
+          "?E": "a",
+          "?F": "c"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "perpendicular-transport-over-parallel",
+        "goal": "perp(a,c,p,q)",
+        "matched_premises": [
+          "para(a,c,a,e)"
+        ],
+        "open_premises": [
+          "perp(a,e,p,q)"
+        ],
+        "substitution": {
+          "?A": "p",
+          "?B": "q",
+          "?C": "e",
+          "?D": "a",
+          "?E": "a",
+          "?F": "c"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "perpendicular-transport-over-parallel",
+        "goal": "perp(a,c,p,q)",
+        "matched_premises": [],
+        "open_premises": [
+          "perp(?C,?D,p,q)",
+          "para(?C,?D,a,c)"
+        ],
+        "substitution": {
+          "?A": "p",
+          "?B": "q",
+          "?E": "a",
+          "?F": "c"
+        },
+        "unbound_variables": [
+          "?C",
+          "?D"
+        ]
+      },
+      {
+        "theorem": "perpendicular-transport-over-parallel",
+        "goal": "perp(a,c,p,q)",
+        "matched_premises": [
+          "para(a,c,c,e)"
+        ],
+        "open_premises": [
+          "perp(c,e,p,q)"
+        ],
+        "substitution": {
+          "?A": "p",
+          "?B": "q",
+          "?C": "e",
+          "?D": "c",
+          "?E": "a",
+          "?F": "c"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "perpendicular-transport-over-parallel",
+        "goal": "perp(a,c,p,q)",
+        "matched_premises": [
+          "para(a,c,a,f)"
+        ],
+        "open_premises": [
+          "perp(a,f,p,q)"
+        ],
+        "substitution": {
+          "?A": "p",
+          "?B": "q",
+          "?C": "f",
+          "?D": "a",
+          "?E": "a",
+          "?F": "c"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "perpendicular-transport-over-parallel",
+        "goal": "perp(a,c,p,q)",
+        "matched_premises": [
+          "para(a,c,c,f)"
+        ],
+        "open_premises": [
+          "perp(c,f,p,q)"
+        ],
+        "substitution": {
+          "?A": "p",
+          "?B": "q",
+          "?C": "f",
+          "?D": "c",
+          "?E": "a",
+          "?F": "c"
+        },
+        "unbound_variables": []
+      },
+      {
+        "theorem": "perpendicular-transport-over-parallel",
+        "goal": "perp(a,c,p,q)",
+        "matched_premises": [],
+        "open_premises": [
+          "perp(?C,?D,p,q)",
+          "para(?C,?D,a,c)"
+        ],
+        "substitution": {
+          "?A": "q",
+          "?B": "p",
+          "?E": "a",
+          "?F": "c"
+        },
+        "unbound_variables": [
+          "?C",
+          "?D"
+        ]
+      }
+    ],
+    "baseline_open_relation_demands": [
+      {
+        "predicate": "lequation",
+        "arguments": [
+          "1/1",
+          "a",
+          "p",
+          "*",
+          "a",
+          "p",
+          "1/1",
+          "c",
+          "q",
+          "*",
+          "c",
+          "q",
+          "-1/1",
+          "a",
+          "q",
+          "*",
+          "a",
+          "q",
+          "-1/1",
+          "c",
+          "p",
+          "*",
+          "c",
+          "p",
+          "0"
+        ]
+      },
+      {
+        "predicate": "lequation",
+        "arguments": [
+          "1/1",
+          "a",
+          "q",
+          "*",
+          "a",
+          "q",
+          "1/1",
+          "c",
+          "p",
+          "*",
+          "c",
+          "p",
+          "-1/1",
+          "a",
+          "p",
+          "*",
+          "a",
+          "p",
+          "-1/1",
+          "c",
+          "q",
+          "*",
+          "c",
+          "q",
+          "0"
+        ]
+      },
+      {
+        "predicate": "lequation",
+        "arguments": [
+          "1/1",
+          "c",
+          "p",
+          "*",
+          "c",
+          "p",
+          "1/1",
+          "a",
+          "q",
+          "*",
+          "a",
+          "q",
+          "-1/1",
+          "c",
+          "q",
+          "*",
+          "c",
+          "q",
+          "-1/1",
+          "a",
+          "p",
+          "*",
+          "a",
+          "p",
+          "0"
+        ]
+      },
+      {
+        "predicate": "perp",
+        "arguments": [
+          "?C",
+          "?D",
+          "a",
+          "c"
+        ]
+      },
+      {
+        "predicate": "para",
+        "arguments": [
+          "?C",
+          "?D",
+          "p",
+          "q"
+        ]
+      },
+      {
+        "predicate": "lequation",
+        "arguments": [
+          "1/1",
+          "c",
+          "q",
+          "*",
+          "c",
+          "q",
+          "1/1",
+          "a",
+          "p",
+          "*",
+          "a",
+          "p",
+          "-1/1",
+          "c",
+          "p",
+          "*",
+          "c",
+          "p",
+          "-1/1",
+          "a",
+          "q",
+          "*",
+          "a",
+          "q",
+          "0"
+        ]
+      },
+      {
+        "predicate": "lequation",
+        "arguments": [
+          "1/1",
+          "p",
+          "a",
+          "*",
+          "p",
+          "a",
+          "1/1",
+          "q",
+          "c",
+          "*",
+          "q",
+          "c",
+          "-1/1",
+          "p",
+          "c",
+          "*",
+          "p",
+          "c",
+          "-1/1",
+          "q",
+          "a",
+          "*",
+          "q",
+          "a",
+          "0"
+        ]
+      },
+      {
+        "predicate": "lequation",
+        "arguments": [
+          "1/1",
+          "q",
+          "a",
+          "*",
+          "q",
+          "a",
+          "1/1",
+          "p",
+          "c",
+          "*",
+          "p",
+          "c",
+          "-1/1",
+          "q",
+          "c",
+          "*",
+          "q",
+          "c",
+          "-1/1",
+          "p",
+          "a",
+          "*",
+          "p",
+          "a",
+          "0"
+        ]
+      },
+      {
+        "predicate": "lequation",
+        "arguments": [
+          "1/1",
+          "p",
+          "c",
+          "*",
+          "p",
+          "c",
+          "1/1",
+          "q",
+          "a",
+          "*",
+          "q",
+          "a",
+          "-1/1",
+          "p",
+          "a",
+          "*",
+          "p",
+          "a",
+          "-1/1",
+          "q",
+          "c",
+          "*",
+          "q",
+          "c",
+          "0"
+        ]
+      },
+      {
+        "predicate": "lequation",
+        "arguments": [
+          "1/1",
+          "q",
+          "c",
+          "*",
+          "q",
+          "c",
+          "1/1",
+          "p",
+          "a",
+          "*",
+          "p",
+          "a",
+          "-1/1",
+          "q",
+          "a",
+          "*",
+          "q",
+          "a",
+          "-1/1",
+          "p",
+          "c",
+          "*",
+          "p",
+          "c",
+          "0"
+        ]
+      },
+      {
+        "predicate": "perp",
+        "arguments": [
+          "a",
+          "e",
+          "p",
+          "q"
+        ]
+      },
+      {
+        "predicate": "perp",
+        "arguments": [
+          "a",
+          "f",
+          "p",
+          "q"
+        ]
+      },
+      {
+        "predicate": "perp",
+        "arguments": [
+          "a",
+          "m",
+          "p",
+          "q"
+        ]
+      },
+      {
+        "predicate": "perp",
+        "arguments": [
+          "c",
+          "e",
+          "p",
+          "q"
+        ]
+      },
+      {
+        "predicate": "perp",
+        "arguments": [
+          "c",
+          "f",
+          "p",
+          "q"
+        ]
+      },
+      {
+        "predicate": "perp",
+        "arguments": [
+          "c",
+          "m",
+          "p",
+          "q"
+        ]
+      },
+      {
+        "predicate": "perp",
+        "arguments": [
+          "?C",
+          "?D",
+          "p",
+          "q"
+        ]
+      },
+      {
+        "predicate": "para",
+        "arguments": [
+          "?C",
+          "?D",
+          "a",
+          "c"
+        ]
+      }
+    ],
+    "backward_relation_distances": {
+      "perp": 0,
+      "ncoll": 1,
+      "lequation": 1,
+      "circle": 1,
+      "coll": 1,
+      "para": 2,
+      "midp": 2,
+      "obtuse_angle": 2,
+      "cong": 2,
+      "cyclic": 2,
+      "aequation": 2,
+      "contrir": 3,
+      "eqangle": 3,
+      "contri": 3,
+      "sameside": 3,
+      "eqratio": 3,
+      "nperp": 3,
+      "npara": 3,
+      "sameclock": 4,
+      "diff": 4,
+      "simtri": 4,
+      "nsameside": 4,
+      "simtrir": 4
+    },
+    "per_family_limit": 1,
+    "branch_limit": 4,
+    "beam_width": 4,
+    "max_depth": 1,
+    "max_workers": 1,
+    "seed": 0,
+    "ar_profile": "all"
+  },
+  "problem_name": "2016G6",
+  "normalization": {
+    "rewritten_constructions": 0,
+    "unchanged_constructions": 16,
+    "unresolved_constructions": 0
+  },
+  "baseline": {
+    "solved": false,
+    "all_deduction_count": 2250,
+    "goal_deduction_count": 0,
+    "ar_residual": {
+      "supported_goal_count": 1,
+      "closed_goal_count": 0,
+      "residual_support_size": 3,
+      "residual_l1_weight": 3.0,
+      "known_rank": 39,
+      "goals": [
+        {
+          "relation": "perp",
+          "channel": "angle",
+          "known_equation_count": 282,
+          "known_rank": 34,
+          "closed": false,
+          "support_size": 3,
+          "l1_weight": 3.0,
+          "residual_terms": [
+            [
+              "angle:#quarter_turn",
+              "-1"
+            ],
+            [
+              "angle:f-m",
+              "1"
+            ],
+            [
+              "angle:p-q",
+              "-1"
+            ]
+          ]
+        }
+      ]
+    }
+  },
+  "visible_formulation": "a b c = triangle a b c; d = eqangle3 d a c b c a; e = on_line e a c, angle_bisector e a b c; f = on_line f a c, angle_bisector f a d c; p = on_line p b e, on_line p d f; m = midpoint m a c; o = circumcenter o b p d; x = on_line x b m, on_circle x o b; y = on_line y d m, on_circle y o b; q = on_line q x e, on_line q y f ? perp a c p q",
+  "constructed_formulation": null,
+  "solved": false,
+  "solved_path": null,
+  "evaluated_paths": 4,
+  "error_count": 3,
+  "candidate_gate": {
+    "mode": "relation-reachability",
+    "enumerated_candidates": 38,
+    "retained_candidates": 4,
+    "relation_retained_candidates": 38,
+    "rejected_candidates": 0,
+    "selected_after_branch_limit": 4,
+    "preflight_checked_count": 0,
+    "preflight_retained_count": 0,
+    "preflight_rejected_count": 0,
+    "preflight_rejected_by_error": [],
+    "fail_open_count": 0,
+    "audits": [
+      {
+        "depth": 1,
+        "parent_path": [],
+        "elapsed_seconds": 4.686934500001371,
+        "mode": "relation-reachability",
+        "relation_reachability": {
+          "mode": "relation-reachability",
+          "input_count": 38,
+          "retained_count": 38,
+          "rejected_count": 0,
+          "target_channels": [
+            "lequation",
+            "para",
+            "perp"
+          ],
+          "reachable_channels": [
+            "aequation",
+            "circle",
+            "coll",
+            "cong",
+            "contri",
+            "contrir",
+            "cyclic",
+            "diff",
+            "eqangle",
+            "eqratio",
+            "lequation",
+            "midp",
+            "ncoll",
+            "npara",
+            "nperp",
+            "nsameside",
+            "obtuse_angle",
+            "para",
+            "perp",
+            "sameclock",
+            "sameside",
+            "simtri",
+            "simtrir"
+          ],
+          "retained_by_family": [
+            [
+              "angle_bisector",
+              1
+            ],
+            [
+              "angle_mirror",
+              1
+            ],
+            [
+              "between_bound",
+              1
+            ],
+            [
+              "circle",
+              1
+            ],
+            [
+              "circumcenter",
+              1
+            ],
+            [
+              "eq_triangle",
+              1
+            ],
+            [
+              "eqangle2",
+              1
+            ],
+            [
+              "eqangle3",
+              1
+            ],
+            [
+              "eqdistance",
+              1
+            ],
+            [
+              "excenter",
+              1
+            ],
+            [
+              "foot",
+              1
+            ],
+            [
+              "incenter",
+              1
+            ],
+            [
+              "intersection_cc",
+              1
+            ],
+            [
+              "intersection_lc",
+              1
+            ],
+            [
+              "intersection_ll",
+              1
+            ],
+            [
+              "intersection_lp",
+              1
+            ],
+            [
+              "intersection_lt",
+              1
+            ],
+            [
+              "intersection_pp",
+              1
+            ],
+            [
+              "intersection_tt",
+              1
+            ],
+            [
+              "iso_triangle_vertex",
+              1
+            ],
+            [
+              "iso_triangle_vertex_angle",
+              1
+            ],
+            [
+              "lc_tangent",
+              1
+            ],
+            [
+              "midpoint",
+              1
+            ],
+            [
+              "mirror",
+              1
+            ],
+            [
+              "nsquare",
+              1
+            ],
+            [
+              "on_aline",
+              1
+            ],
+            [
+              "on_bline",
+              1
+            ],
+            [
+              "on_circle",
+              1
+            ],
+            [
+              "on_circum",
+              1
+            ],
+            [
+              "on_dia",
+              1
+            ],
+            [
+              "on_line",
+              1
+            ],
+            [
+              "on_pline",
+              1
+            ],
+            [
+              "on_tline",
+              1
+            ],
+            [
+              "orthocenter",
+              1
+            ],
+            [
+              "parallelogram",
+              1
+            ],
+            [
+              "psquare",
+              1
+            ],
+            [
+              "reflect",
+              1
+            ],
+            [
+              "shift",
+              1
+            ]
+          ],
+          "rejected_by_family": [],
+          "fail_open_reason": null
+        },
+        "selected_after_branch_limit": 4,
+        "typed_construction_contracts": {
+          "enabled": false,
+          "truth_plane": "candidate_proposal_only_native_replay_required",
+          "obligation_branch_count": 1,
+          "runtime_requirement_gate": {
+            "input_candidates": 0,
+            "executable_candidates": 0,
+            "held_open_candidates": 0,
+            "statically_rejected_candidates": 0
+          },
+          "candidate_plans": [],
+          "witness_obligations": 0,
+          "matched_obligations": 0,
+          "matched_contracts": 0,
+          "raw_generated_candidates": 0,
+          "generated_candidates": 0,
+          "truncated_contracts": 0,
+          "requirement_atoms": 0,
+          "open_requirement_atoms": 0,
+          "residual_reducing_candidates": 0,
+          "fully_closing_candidates": 0,
+          "chart_matched_candidates": 0,
+          "executable_candidates": 0,
+          "held_open_candidates": 0,
+          "statically_rejected_candidates": 0
+        },
+        "numerical_incidence": {
+          "mode": "off",
+          "truth_plane": "candidate_proposal_only",
+          "oversample_per_family": 1,
+          "workers": 1,
+          "elapsed_seconds": 3.999739419668913e-07,
+          "preselect_limit": 0,
+          "input_candidates_before_preselection": 38,
+          "candidates_after_preselection": 4,
+          "checked_candidates": 0,
+          "heuristic_candidates": 0,
+          "build_errors": {},
+          "top_candidates": [],
+          "selected_candidates": []
+        },
+        "candidate_alignment": {
+          "mode": "typed-atom",
+          "direct_match_candidates": 0,
+          "reachable_candidates": 38,
+          "cone_truncated_candidates": 0,
+          "cone_search_states": 0,
+          "unified_queue": null,
+          "iterative_deepening": null,
+          "native_formal_sheaf": null,
+          "top_candidates": [
+            {
+              "candidate": "intersection_pp(a,c,f,c,a,f)",
+              "direct_match_count": 0,
+              "direct_hole_binding_count": 0,
+              "best_relation_distance": 0,
+              "best_known_argument_overlap": 2,
+              "fewest_missing_known_arguments": 0,
+              "candidate_atom_count": 2,
+              "demand_count": 18,
+              "rank": [
+                1,
+                0,
+                0,
+                0,
+                -2,
+                0,
+                -2
+              ]
+            },
+            {
+              "candidate": "intersection_lt(a,c,a,c,f)",
+              "direct_match_count": 0,
+              "direct_hole_binding_count": 0,
+              "best_relation_distance": 0,
+              "best_known_argument_overlap": 2,
+              "fewest_missing_known_arguments": 0,
+              "candidate_atom_count": 2,
+              "demand_count": 18,
+              "rank": [
+                1,
+                0,
+                0,
+                0,
+                -2,
+                0,
+                -2
+              ]
+            },
+            {
+              "candidate": "parallelogram(b,e,p)",
+              "direct_match_count": 0,
+              "direct_hole_binding_count": 0,
+              "best_relation_distance": 0,
+              "best_known_argument_overlap": 2,
+              "fewest_missing_known_arguments": 1,
+              "candidate_atom_count": 4,
+              "demand_count": 18,
+              "rank": [
+                1,
+                0,
+                0,
+                0,
+                -2,
+                1,
+                -4
+              ]
+            },
+            {
+              "candidate": "reflect(a,e,b)",
+              "direct_match_count": 0,
+              "direct_hole_binding_count": 0,
+              "best_relation_distance": 0,
+              "best_known_argument_overlap": 2,
+              "fewest_missing_known_arguments": 1,
+              "candidate_atom_count": 3,
+              "demand_count": 18,
+              "rank": [
+                1,
+                0,
+                0,
+                0,
+                -2,
+                1,
+                -3
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "candidate_alignment": {
+    "mode": "typed-atom",
+    "direct_match_candidates": 0,
+    "reachable_candidates": 38,
+    "cone_truncated_candidates": 0,
+    "cone_search_states": 0,
+    "proof_dags": []
+  },
+  "candidate_incidence": {
+    "mode": "off",
+    "checked_candidates": 0,
+    "heuristic_candidates": 0,
+    "build_errors": {},
+    "truth_plane": "yuclid_native_certificate_replay_only"
+  },
+  "prefix_state_cache": {
+    "cached_state_count": 1,
+    "cache_hits": 1,
+    "cache_misses": 0,
+    "transition_count": 0,
+    "transition_seconds": 0.0
+  },
+  "records": [
+    {
+      "steps": [
+        {
+          "family": "intersection_lt",
+          "output": "g",
+          "inputs": [
+            "a",
+            "c",
+            "a",
+            "c",
+            "f"
+          ],
+          "structural_rank": [
+            1,
+            0,
+            0,
+            -3.0,
+            -6,
+            -2,
+            0,
+            -4.7292846516508344,
+            0,
+            0,
+            -8,
+            -4,
+            -2,
+            0,
+            1,
+            1,
+            5,
+            "intersection_lt",
+            [
+              "a",
+              "c",
+              "a",
+              "c",
+              "f"
+            ]
+          ]
+        }
+      ],
+      "solved": false,
+      "all_deduction_count": 0,
+      "goal_deduction_count": 0,
+      "relation_target_assertion_count": 0,
+      "relation_support_weight": 0,
+      "relation_near_goal_count": 0,
+      "relation_transition_potential": 0.0,
+      "relation_transition_channel_coverage": 0,
+      "relation_channel_counts": [],
+      "frontier_witnesses": [],
+      "backward_obligations": [],
+      "open_relation_demands": [],
+      "ar_supported_goal_count": 0,
+      "ar_closed_goal_count": 0,
+      "ar_residual_support_size": 0,
+      "ar_residual_l1_weight": 0.0,
+      "ar_known_rank": 0,
+      "elapsed_seconds": 0.12485309998737648,
+      "error": "1 validation error for PredicateConstruction\n  Value error, Invalid construction: ncoll a c a [type=value_error, input_value={'string': 'ncoll a c a'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/value_error"
+    },
+    {
+      "steps": [
+        {
+          "family": "intersection_pp",
+          "output": "g",
+          "inputs": [
+            "a",
+            "c",
+            "f",
+            "c",
+            "a",
+            "f"
+          ],
+          "structural_rank": [
+            1,
+            0,
+            0,
+            -3.0,
+            -6,
+            -2,
+            0,
+            -5.47668029782525,
+            0,
+            0,
+            -12,
+            -4,
+            -2,
+            0,
+            2,
+            1,
+            6,
+            "intersection_pp",
+            [
+              "a",
+              "c",
+              "f",
+              "c",
+              "a",
+              "f"
+            ]
+          ]
+        }
+      ],
+      "solved": false,
+      "all_deduction_count": 0,
+      "goal_deduction_count": 0,
+      "relation_target_assertion_count": 0,
+      "relation_support_weight": 0,
+      "relation_near_goal_count": 0,
+      "relation_transition_potential": 0.0,
+      "relation_transition_channel_coverage": 0,
+      "relation_channel_counts": [],
+      "frontier_witnesses": [],
+      "backward_obligations": [],
+      "open_relation_demands": [],
+      "ar_supported_goal_count": 0,
+      "ar_closed_goal_count": 0,
+      "ar_residual_support_size": 0,
+      "ar_residual_l1_weight": 0.0,
+      "ar_known_rank": 0,
+      "elapsed_seconds": 0.001010999985737726,
+      "error": "Failed to add clause to problem problem after 5 attempts. Last error: Could not reduce [JGEXLine(0.9844646942961253, -0.17558264630776246, -0.31314441415904004), JGEXLine(0.9844646942961253, -0.1755826463077622, -0.31314441415904026)] to a single new point, intersections: (), existing points: [JGEXPoint(0.4126714639001544, 0.5303261703377309), JGEXPoint(0.9201678147586083, 0.6639432475191882), JGEXPoint(0.5467821565428718, 1.2822640458094112), JGEXPoint(0.3181059169891676, 0.5312485998875133), JGEXPoint(0.4691062643944332, 0.846747353094485), JGEXPoint(0.4270898826656587, 0.6111680104665991), JGEXPoint(0.4797268102215131, 0.906295108073571), JGEXPoint(0.6600904646763381, 0.41178133467839134), JGEXPoint(0.6489500921925868, 0.7738610916578013), JGEXPoint(0.7957184702699006, 0.7476844492993472), JGEXPoint(0.7339101760124204, 0.7664311740010716), JGEXPoint(0.3383903998873127, 0.5783193982797261)]"
+    },
+    {
+      "steps": [
+        {
+          "family": "parallelogram",
+          "output": "g",
+          "inputs": [
+            "b",
+            "e",
+            "p"
+          ],
+          "structural_rank": [
+            1,
+            0,
+            0,
+            -3.3333333333333335,
+            -10,
+            -3,
+            0,
+            -2.00529405211943,
+            0,
+            0,
+            -3,
+            -1,
+            -1,
+            1,
+            2,
+            1,
+            3,
+            "parallelogram",
+            [
+              "b",
+              "e",
+              "p"
+            ]
+          ]
+        }
+      ],
+      "solved": false,
+      "all_deduction_count": 0,
+      "goal_deduction_count": 0,
+      "relation_target_assertion_count": 0,
+      "relation_support_weight": 0,
+      "relation_near_goal_count": 0,
+      "relation_transition_potential": 0.0,
+      "relation_transition_channel_coverage": 0,
+      "relation_channel_counts": [],
+      "frontier_witnesses": [],
+      "backward_obligations": [],
+      "open_relation_demands": [],
+      "ar_supported_goal_count": 0,
+      "ar_closed_goal_count": 0,
+      "ar_residual_support_size": 0,
+      "ar_residual_l1_weight": 0.0,
+      "ar_known_rank": 0,
+      "elapsed_seconds": 0.0013660999829880893,
+      "error": "Failed to add clause to problem problem after 5 attempts. Last error: Could not reduce [JGEXLine(0.37560154819097846, 0.9267812454924518, -0.9609466056909792), JGEXLine(0.3756015481909786, 0.9267812454924518, -0.9609466056909793)] to a single new point, intersections: (), existing points: [JGEXPoint(0.4126714639001544, 0.5303261703377309), JGEXPoint(0.9201678147586083, 0.6639432475191882), JGEXPoint(0.5467821565428718, 1.2822640458094112), JGEXPoint(0.3181059169891676, 0.5312485998875133), JGEXPoint(0.4691062643944332, 0.846747353094485), JGEXPoint(0.4270898826656587, 0.6111680104665991), JGEXPoint(0.4797268102215131, 0.906295108073571), JGEXPoint(0.6600904646763381, 0.41178133467839134), JGEXPoint(0.6489500921925868, 0.7738610916578013), JGEXPoint(0.7957184702699006, 0.7476844492993472), JGEXPoint(0.7339101760124204, 0.7664311740010716), JGEXPoint(0.3383903998873127, 0.5783193982797261)]"
+    },
+    {
+      "steps": [
+        {
+          "family": "reflect",
+          "output": "g",
+          "inputs": [
+            "a",
+            "e",
+            "b"
+          ],
+          "structural_rank": [
+            1,
+            1,
+            0,
+            -4.0,
+            -4,
+            -1,
+            0,
+            -2.269624735881339,
+            0,
+            0,
+            -3,
+            -1,
+            -2,
+            2,
+            2,
+            1,
+            3,
+            "reflect",
+            [
+              "a",
+              "e",
+              "b"
+            ]
+          ]
+        }
+      ],
+      "solved": false,
+      "all_deduction_count": 2817,
+      "goal_deduction_count": 0,
+      "relation_target_assertion_count": 2,
+      "relation_support_weight": 8,
+      "relation_near_goal_count": 0,
+      "relation_transition_potential": 86.85000000000002,
+      "relation_transition_channel_coverage": 12,
+      "relation_channel_counts": [
+        [
+          "circle",
+          10
+        ],
+        [
+          "coll",
+          17
+        ],
+        [
+          "cong",
+          22
+        ],
+        [
+          "contrir",
+          16
+        ],
+        [
+          "cyclic",
+          5
+        ],
+        [
+          "diff",
+          40
+        ],
+        [
+          "eqangle",
+          796
+        ],
+        [
+          "eqratio",
+          38
+        ],
+        [
+          "equation_class yuclid::angle",
+          30
+        ],
+        [
+          "equation_class yuclid::dist",
+          17
+        ],
+        [
+          "equation_class yuclid::sinordist",
+          1313
+        ],
+        [
+          "equation_class yuclid::squareddist",
+          13
+        ],
+        [
+          "midp",
+          1
+        ],
+        [
+          "ncoll",
+          269
+        ],
+        [
+          "npara",
+          45
+        ],
+        [
+          "obtuse_angle",
+          17
+        ],
+        [
+          "para",
+          51
+        ],
+        [
+          "perp",
+          3
+        ],
+        [
+          "sameclock",
+          93
+        ],
+        [
+          "sameside",
+          3
+        ],
+        [
+          "simtrir",
+          18
+        ]
+      ],
+      "frontier_witnesses": [
+        {
+          "channel": "perp",
+          "points": [
+            "a",
+            "g",
+            "b",
+            "p"
+          ],
+          "support": [
+            "a",
+            "b",
+            "e",
+            "g",
+            "p"
+          ],
+          "distance_to_goal": 0,
+          "goal_support_overlap": 2,
+          "rule": "native",
+          "proof_reference": "3754a2973bb51286d410cd71138b47ebf458669b85789e19ed4f997c7facc1fd"
+        },
+        {
+          "channel": "perp",
+          "points": [
+            "a",
+            "g",
+            "e",
+            "p"
+          ],
+          "support": [
+            "a",
+            "b",
+            "e",
+            "g",
+            "p"
+          ],
+          "distance_to_goal": 0,
+          "goal_support_overlap": 2,
+          "rule": "native",
+          "proof_reference": "a93243dfd412f41f71d4af576e50d235ecfb826d61941acc0f89942e4a922c25"
+        },
+        {
+          "channel": "ncoll",
+          "points": [
+            "a",
+            "c",
+            "g"
+          ],
+          "support": [
+            "a",
+            "c",
+            "g"
+          ],
+          "distance_to_goal": 1,
+          "goal_support_overlap": 2,
+          "rule": "Numerical check",
+          "proof_reference": "b4c004e361297cf7208b078423aa249294b511cd3f7d4b1b6cae5406dfefa001"
+        },
+        {
+          "channel": "ncoll",
+          "points": [
+            "a",
+            "g",
+            "p"
+          ],
+          "support": [
+            "a",
+            "g",
+            "p"
+          ],
+          "distance_to_goal": 1,
+          "goal_support_overlap": 2,
+          "rule": "Numerical check",
+          "proof_reference": "a7127d65ca3a29122b7ffe016b4230e3987a150f0671ff921e4a4a39595744eb"
+        },
+        {
+          "channel": "ncoll",
+          "points": [
+            "a",
+            "g",
+            "q"
+          ],
+          "support": [
+            "a",
+            "g",
+            "q"
+          ],
+          "distance_to_goal": 1,
+          "goal_support_overlap": 2,
+          "rule": "Numerical check",
+          "proof_reference": "c4b6cbeb0ba7024e685e645730afcd4dda8c228b5a7ddc2a6bc8548c92db5900"
+        },
+        {
+          "channel": "ncoll",
+          "points": [
+            "c",
+            "g",
+            "p"
+          ],
+          "support": [
+            "c",
+            "g",
+            "p"
+          ],
+          "distance_to_goal": 1,
+          "goal_support_overlap": 2,
+          "rule": "Numerical check",
+          "proof_reference": "11eacf180e0df98224c1e9a56fd5a8b33fb0f3739c0ea1df8b58988c21c7d4cd"
+        },
+        {
+          "channel": "ncoll",
+          "points": [
+            "c",
+            "g",
+            "q"
+          ],
+          "support": [
+            "c",
+            "g",
+            "q"
+          ],
+          "distance_to_goal": 1,
+          "goal_support_overlap": 2,
+          "rule": "Numerical check",
+          "proof_reference": "20bd8fbd38b3dd7fcbd6e7baa6ab92df1621d83fb4304bd908a76580d1a18cc0"
+        },
+        {
+          "channel": "ncoll",
+          "points": [
+            "g",
+            "p",
+            "q"
+          ],
+          "support": [
+            "g",
+            "p",
+            "q"
+          ],
+          "distance_to_goal": 1,
+          "goal_support_overlap": 2,
+          "rule": "Numerical check",
+          "proof_reference": "27f9918a1a496216635ae2577fd1a415c159f355053533480e164ad3f6cc7305"
+        }
+      ],
+      "backward_obligations": [
+        {
+          "theorem": "r86:0",
+          "goal": {
+            "predicate": "perp",
+            "arguments": [
+              "a",
+              "c",
+              "p",
+              "q"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "lequation",
+              "arguments": [
+                "1/1",
+                "a",
+                "p",
+                "*",
+                "a",
+                "p",
+                "1/1",
+                "c",
+                "q",
+                "*",
+                "c",
+                "q",
+                "-1/1",
+                "a",
+                "q",
+                "*",
+                "a",
+                "q",
+                "-1/1",
+                "c",
+                "p",
+                "*",
+                "c",
+                "p",
+                "0"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "a"
+            ],
+            [
+              "?B",
+              "c"
+            ],
+            [
+              "?C",
+              "p"
+            ],
+            [
+              "?D",
+              "q"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r86:0",
+          "goal": {
+            "predicate": "perp",
+            "arguments": [
+              "a",
+              "c",
+              "p",
+              "q"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "c",
+                "q"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "lequation",
+              "arguments": [
+                "1/1",
+                "a",
+                "q",
+                "*",
+                "a",
+                "q",
+                "1/1",
+                "c",
+                "p",
+                "*",
+                "c",
+                "p",
+                "-1/1",
+                "a",
+                "p",
+                "*",
+                "a",
+                "p",
+                "-1/1",
+                "c",
+                "q",
+                "*",
+                "c",
+                "q",
+                "0"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "a"
+            ],
+            [
+              "?B",
+              "c"
+            ],
+            [
+              "?C",
+              "q"
+            ],
+            [
+              "?D",
+              "p"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r86:0",
+          "goal": {
+            "predicate": "perp",
+            "arguments": [
+              "a",
+              "c",
+              "p",
+              "q"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "c",
+                "p"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "lequation",
+              "arguments": [
+                "1/1",
+                "c",
+                "p",
+                "*",
+                "c",
+                "p",
+                "1/1",
+                "a",
+                "q",
+                "*",
+                "a",
+                "q",
+                "-1/1",
+                "c",
+                "q",
+                "*",
+                "c",
+                "q",
+                "-1/1",
+                "a",
+                "p",
+                "*",
+                "a",
+                "p",
+                "0"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "c"
+            ],
+            [
+              "?B",
+              "a"
+            ],
+            [
+              "?C",
+              "p"
+            ],
+            [
+              "?D",
+              "q"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "perpendicular-transport-over-parallel",
+          "goal": {
+            "predicate": "perp",
+            "arguments": [
+              "a",
+              "c",
+              "p",
+              "q"
+            ]
+          },
+          "matched_premises": [],
+          "open_premises": [
+            {
+              "predicate": "perp",
+              "arguments": [
+                "?C",
+                "?D",
+                "a",
+                "c"
+              ]
+            },
+            {
+              "predicate": "para",
+              "arguments": [
+                "?C",
+                "?D",
+                "p",
+                "q"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "a"
+            ],
+            [
+              "?B",
+              "c"
+            ],
+            [
+              "?E",
+              "p"
+            ],
+            [
+              "?F",
+              "q"
+            ]
+          ],
+          "unbound_variables": [
+            "?C",
+            "?D"
+          ]
+        },
+        {
+          "theorem": "r86:0",
+          "goal": {
+            "predicate": "perp",
+            "arguments": [
+              "a",
+              "c",
+              "p",
+              "q"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "c",
+                "q"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "lequation",
+              "arguments": [
+                "1/1",
+                "c",
+                "q",
+                "*",
+                "c",
+                "q",
+                "1/1",
+                "a",
+                "p",
+                "*",
+                "a",
+                "p",
+                "-1/1",
+                "c",
+                "p",
+                "*",
+                "c",
+                "p",
+                "-1/1",
+                "a",
+                "q",
+                "*",
+                "a",
+                "q",
+                "0"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "c"
+            ],
+            [
+              "?B",
+              "a"
+            ],
+            [
+              "?C",
+              "q"
+            ],
+            [
+              "?D",
+              "p"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r86:0",
+          "goal": {
+            "predicate": "perp",
+            "arguments": [
+              "a",
+              "c",
+              "p",
+              "q"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "p",
+                "q"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "lequation",
+              "arguments": [
+                "1/1",
+                "p",
+                "a",
+                "*",
+                "p",
+                "a",
+                "1/1",
+                "q",
+                "c",
+                "*",
+                "q",
+                "c",
+                "-1/1",
+                "p",
+                "c",
+                "*",
+                "p",
+                "c",
+                "-1/1",
+                "q",
+                "a",
+                "*",
+                "q",
+                "a",
+                "0"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "p"
+            ],
+            [
+              "?B",
+              "q"
+            ],
+            [
+              "?C",
+              "a"
+            ],
+            [
+              "?D",
+              "c"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r86:0",
+          "goal": {
+            "predicate": "perp",
+            "arguments": [
+              "a",
+              "c",
+              "p",
+              "q"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "a",
+                "p",
+                "q"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "lequation",
+              "arguments": [
+                "1/1",
+                "q",
+                "a",
+                "*",
+                "q",
+                "a",
+                "1/1",
+                "p",
+                "c",
+                "*",
+                "p",
+                "c",
+                "-1/1",
+                "q",
+                "c",
+                "*",
+                "q",
+                "c",
+                "-1/1",
+                "p",
+                "a",
+                "*",
+                "p",
+                "a",
+                "0"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "q"
+            ],
+            [
+              "?B",
+              "p"
+            ],
+            [
+              "?C",
+              "a"
+            ],
+            [
+              "?D",
+              "c"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "perpendicular-transport-over-parallel",
+          "goal": {
+            "predicate": "perp",
+            "arguments": [
+              "a",
+              "c",
+              "p",
+              "q"
+            ]
+          },
+          "matched_premises": [],
+          "open_premises": [
+            {
+              "predicate": "perp",
+              "arguments": [
+                "?C",
+                "?D",
+                "a",
+                "c"
+              ]
+            },
+            {
+              "predicate": "para",
+              "arguments": [
+                "?C",
+                "?D",
+                "p",
+                "q"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "a"
+            ],
+            [
+              "?B",
+              "c"
+            ],
+            [
+              "?E",
+              "q"
+            ],
+            [
+              "?F",
+              "p"
+            ]
+          ],
+          "unbound_variables": [
+            "?C",
+            "?D"
+          ]
+        },
+        {
+          "theorem": "r86:0",
+          "goal": {
+            "predicate": "perp",
+            "arguments": [
+              "a",
+              "c",
+              "p",
+              "q"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "c",
+                "p",
+                "q"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "lequation",
+              "arguments": [
+                "1/1",
+                "p",
+                "c",
+                "*",
+                "p",
+                "c",
+                "1/1",
+                "q",
+                "a",
+                "*",
+                "q",
+                "a",
+                "-1/1",
+                "p",
+                "a",
+                "*",
+                "p",
+                "a",
+                "-1/1",
+                "q",
+                "c",
+                "*",
+                "q",
+                "c",
+                "0"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "p"
+            ],
+            [
+              "?B",
+              "q"
+            ],
+            [
+              "?C",
+              "c"
+            ],
+            [
+              "?D",
+              "a"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "r86:0",
+          "goal": {
+            "predicate": "perp",
+            "arguments": [
+              "a",
+              "c",
+              "p",
+              "q"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "ncoll",
+              "arguments": [
+                "c",
+                "p",
+                "q"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "lequation",
+              "arguments": [
+                "1/1",
+                "q",
+                "c",
+                "*",
+                "q",
+                "c",
+                "1/1",
+                "p",
+                "a",
+                "*",
+                "p",
+                "a",
+                "-1/1",
+                "q",
+                "a",
+                "*",
+                "q",
+                "a",
+                "-1/1",
+                "p",
+                "c",
+                "*",
+                "p",
+                "c",
+                "0"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "q"
+            ],
+            [
+              "?B",
+              "p"
+            ],
+            [
+              "?C",
+              "c"
+            ],
+            [
+              "?D",
+              "a"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "perpendicular-transport-over-parallel",
+          "goal": {
+            "predicate": "perp",
+            "arguments": [
+              "a",
+              "c",
+              "p",
+              "q"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "para",
+              "arguments": [
+                "a",
+                "c",
+                "a",
+                "e"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "perp",
+              "arguments": [
+                "a",
+                "e",
+                "p",
+                "q"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "p"
+            ],
+            [
+              "?B",
+              "q"
+            ],
+            [
+              "?C",
+              "a"
+            ],
+            [
+              "?D",
+              "e"
+            ],
+            [
+              "?E",
+              "a"
+            ],
+            [
+              "?F",
+              "c"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "perpendicular-transport-over-parallel",
+          "goal": {
+            "predicate": "perp",
+            "arguments": [
+              "a",
+              "c",
+              "p",
+              "q"
+            ]
+          },
+          "matched_premises": [],
+          "open_premises": [
+            {
+              "predicate": "perp",
+              "arguments": [
+                "?C",
+                "?D",
+                "a",
+                "c"
+              ]
+            },
+            {
+              "predicate": "para",
+              "arguments": [
+                "?C",
+                "?D",
+                "p",
+                "q"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "c"
+            ],
+            [
+              "?B",
+              "a"
+            ],
+            [
+              "?E",
+              "p"
+            ],
+            [
+              "?F",
+              "q"
+            ]
+          ],
+          "unbound_variables": [
+            "?C",
+            "?D"
+          ]
+        },
+        {
+          "theorem": "perpendicular-transport-over-parallel",
+          "goal": {
+            "predicate": "perp",
+            "arguments": [
+              "a",
+              "c",
+              "p",
+              "q"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "para",
+              "arguments": [
+                "a",
+                "c",
+                "a",
+                "f"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "perp",
+              "arguments": [
+                "a",
+                "f",
+                "p",
+                "q"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "p"
+            ],
+            [
+              "?B",
+              "q"
+            ],
+            [
+              "?C",
+              "a"
+            ],
+            [
+              "?D",
+              "f"
+            ],
+            [
+              "?E",
+              "a"
+            ],
+            [
+              "?F",
+              "c"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "perpendicular-transport-over-parallel",
+          "goal": {
+            "predicate": "perp",
+            "arguments": [
+              "a",
+              "c",
+              "p",
+              "q"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "para",
+              "arguments": [
+                "a",
+                "c",
+                "a",
+                "m"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "perp",
+              "arguments": [
+                "a",
+                "m",
+                "p",
+                "q"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "p"
+            ],
+            [
+              "?B",
+              "q"
+            ],
+            [
+              "?C",
+              "a"
+            ],
+            [
+              "?D",
+              "m"
+            ],
+            [
+              "?E",
+              "a"
+            ],
+            [
+              "?F",
+              "c"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "perpendicular-transport-over-parallel",
+          "goal": {
+            "predicate": "perp",
+            "arguments": [
+              "a",
+              "c",
+              "p",
+              "q"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "para",
+              "arguments": [
+                "a",
+                "c",
+                "c",
+                "e"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "perp",
+              "arguments": [
+                "c",
+                "e",
+                "p",
+                "q"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "p"
+            ],
+            [
+              "?B",
+              "q"
+            ],
+            [
+              "?C",
+              "c"
+            ],
+            [
+              "?D",
+              "e"
+            ],
+            [
+              "?E",
+              "a"
+            ],
+            [
+              "?F",
+              "c"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "perpendicular-transport-over-parallel",
+          "goal": {
+            "predicate": "perp",
+            "arguments": [
+              "a",
+              "c",
+              "p",
+              "q"
+            ]
+          },
+          "matched_premises": [],
+          "open_premises": [
+            {
+              "predicate": "perp",
+              "arguments": [
+                "?C",
+                "?D",
+                "a",
+                "c"
+              ]
+            },
+            {
+              "predicate": "para",
+              "arguments": [
+                "?C",
+                "?D",
+                "p",
+                "q"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "c"
+            ],
+            [
+              "?B",
+              "a"
+            ],
+            [
+              "?E",
+              "q"
+            ],
+            [
+              "?F",
+              "p"
+            ]
+          ],
+          "unbound_variables": [
+            "?C",
+            "?D"
+          ]
+        },
+        {
+          "theorem": "perpendicular-transport-over-parallel",
+          "goal": {
+            "predicate": "perp",
+            "arguments": [
+              "a",
+              "c",
+              "p",
+              "q"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "para",
+              "arguments": [
+                "a",
+                "c",
+                "c",
+                "f"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "perp",
+              "arguments": [
+                "c",
+                "f",
+                "p",
+                "q"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "p"
+            ],
+            [
+              "?B",
+              "q"
+            ],
+            [
+              "?C",
+              "c"
+            ],
+            [
+              "?D",
+              "f"
+            ],
+            [
+              "?E",
+              "a"
+            ],
+            [
+              "?F",
+              "c"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "perpendicular-transport-over-parallel",
+          "goal": {
+            "predicate": "perp",
+            "arguments": [
+              "a",
+              "c",
+              "p",
+              "q"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "para",
+              "arguments": [
+                "a",
+                "c",
+                "c",
+                "m"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "perp",
+              "arguments": [
+                "c",
+                "m",
+                "p",
+                "q"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "p"
+            ],
+            [
+              "?B",
+              "q"
+            ],
+            [
+              "?C",
+              "c"
+            ],
+            [
+              "?D",
+              "m"
+            ],
+            [
+              "?E",
+              "a"
+            ],
+            [
+              "?F",
+              "c"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "perpendicular-transport-over-parallel",
+          "goal": {
+            "predicate": "perp",
+            "arguments": [
+              "a",
+              "c",
+              "p",
+              "q"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "para",
+              "arguments": [
+                "a",
+                "c",
+                "a",
+                "e"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "perp",
+              "arguments": [
+                "a",
+                "e",
+                "p",
+                "q"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "p"
+            ],
+            [
+              "?B",
+              "q"
+            ],
+            [
+              "?C",
+              "e"
+            ],
+            [
+              "?D",
+              "a"
+            ],
+            [
+              "?E",
+              "a"
+            ],
+            [
+              "?F",
+              "c"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "perpendicular-transport-over-parallel",
+          "goal": {
+            "predicate": "perp",
+            "arguments": [
+              "a",
+              "c",
+              "p",
+              "q"
+            ]
+          },
+          "matched_premises": [],
+          "open_premises": [
+            {
+              "predicate": "perp",
+              "arguments": [
+                "?C",
+                "?D",
+                "p",
+                "q"
+              ]
+            },
+            {
+              "predicate": "para",
+              "arguments": [
+                "?C",
+                "?D",
+                "a",
+                "c"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "p"
+            ],
+            [
+              "?B",
+              "q"
+            ],
+            [
+              "?E",
+              "a"
+            ],
+            [
+              "?F",
+              "c"
+            ]
+          ],
+          "unbound_variables": [
+            "?C",
+            "?D"
+          ]
+        },
+        {
+          "theorem": "perpendicular-transport-over-parallel",
+          "goal": {
+            "predicate": "perp",
+            "arguments": [
+              "a",
+              "c",
+              "p",
+              "q"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "para",
+              "arguments": [
+                "a",
+                "c",
+                "c",
+                "e"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "perp",
+              "arguments": [
+                "c",
+                "e",
+                "p",
+                "q"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "p"
+            ],
+            [
+              "?B",
+              "q"
+            ],
+            [
+              "?C",
+              "e"
+            ],
+            [
+              "?D",
+              "c"
+            ],
+            [
+              "?E",
+              "a"
+            ],
+            [
+              "?F",
+              "c"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "perpendicular-transport-over-parallel",
+          "goal": {
+            "predicate": "perp",
+            "arguments": [
+              "a",
+              "c",
+              "p",
+              "q"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "para",
+              "arguments": [
+                "a",
+                "c",
+                "a",
+                "f"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "perp",
+              "arguments": [
+                "a",
+                "f",
+                "p",
+                "q"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "p"
+            ],
+            [
+              "?B",
+              "q"
+            ],
+            [
+              "?C",
+              "f"
+            ],
+            [
+              "?D",
+              "a"
+            ],
+            [
+              "?E",
+              "a"
+            ],
+            [
+              "?F",
+              "c"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "perpendicular-transport-over-parallel",
+          "goal": {
+            "predicate": "perp",
+            "arguments": [
+              "a",
+              "c",
+              "p",
+              "q"
+            ]
+          },
+          "matched_premises": [
+            {
+              "predicate": "para",
+              "arguments": [
+                "a",
+                "c",
+                "c",
+                "f"
+              ]
+            }
+          ],
+          "open_premises": [
+            {
+              "predicate": "perp",
+              "arguments": [
+                "c",
+                "f",
+                "p",
+                "q"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "p"
+            ],
+            [
+              "?B",
+              "q"
+            ],
+            [
+              "?C",
+              "f"
+            ],
+            [
+              "?D",
+              "c"
+            ],
+            [
+              "?E",
+              "a"
+            ],
+            [
+              "?F",
+              "c"
+            ]
+          ],
+          "unbound_variables": []
+        },
+        {
+          "theorem": "perpendicular-transport-over-parallel",
+          "goal": {
+            "predicate": "perp",
+            "arguments": [
+              "a",
+              "c",
+              "p",
+              "q"
+            ]
+          },
+          "matched_premises": [],
+          "open_premises": [
+            {
+              "predicate": "perp",
+              "arguments": [
+                "?C",
+                "?D",
+                "p",
+                "q"
+              ]
+            },
+            {
+              "predicate": "para",
+              "arguments": [
+                "?C",
+                "?D",
+                "a",
+                "c"
+              ]
+            }
+          ],
+          "substitution": [
+            [
+              "?A",
+              "q"
+            ],
+            [
+              "?B",
+              "p"
+            ],
+            [
+              "?E",
+              "a"
+            ],
+            [
+              "?F",
+              "c"
+            ]
+          ],
+          "unbound_variables": [
+            "?C",
+            "?D"
+          ]
+        }
+      ],
+      "open_relation_demands": [
+        {
+          "predicate": "lequation",
+          "arguments": [
+            "1/1",
+            "a",
+            "p",
+            "*",
+            "a",
+            "p",
+            "1/1",
+            "c",
+            "q",
+            "*",
+            "c",
+            "q",
+            "-1/1",
+            "a",
+            "q",
+            "*",
+            "a",
+            "q",
+            "-1/1",
+            "c",
+            "p",
+            "*",
+            "c",
+            "p",
+            "0"
+          ]
+        },
+        {
+          "predicate": "lequation",
+          "arguments": [
+            "1/1",
+            "a",
+            "q",
+            "*",
+            "a",
+            "q",
+            "1/1",
+            "c",
+            "p",
+            "*",
+            "c",
+            "p",
+            "-1/1",
+            "a",
+            "p",
+            "*",
+            "a",
+            "p",
+            "-1/1",
+            "c",
+            "q",
+            "*",
+            "c",
+            "q",
+            "0"
+          ]
+        },
+        {
+          "predicate": "lequation",
+          "arguments": [
+            "1/1",
+            "c",
+            "p",
+            "*",
+            "c",
+            "p",
+            "1/1",
+            "a",
+            "q",
+            "*",
+            "a",
+            "q",
+            "-1/1",
+            "c",
+            "q",
+            "*",
+            "c",
+            "q",
+            "-1/1",
+            "a",
+            "p",
+            "*",
+            "a",
+            "p",
+            "0"
+          ]
+        },
+        {
+          "predicate": "perp",
+          "arguments": [
+            "?C",
+            "?D",
+            "a",
+            "c"
+          ]
+        },
+        {
+          "predicate": "para",
+          "arguments": [
+            "?C",
+            "?D",
+            "p",
+            "q"
+          ]
+        },
+        {
+          "predicate": "lequation",
+          "arguments": [
+            "1/1",
+            "c",
+            "q",
+            "*",
+            "c",
+            "q",
+            "1/1",
+            "a",
+            "p",
+            "*",
+            "a",
+            "p",
+            "-1/1",
+            "c",
+            "p",
+            "*",
+            "c",
+            "p",
+            "-1/1",
+            "a",
+            "q",
+            "*",
+            "a",
+            "q",
+            "0"
+          ]
+        },
+        {
+          "predicate": "lequation",
+          "arguments": [
+            "1/1",
+            "p",
+            "a",
+            "*",
+            "p",
+            "a",
+            "1/1",
+            "q",
+            "c",
+            "*",
+            "q",
+            "c",
+            "-1/1",
+            "p",
+            "c",
+            "*",
+            "p",
+            "c",
+            "-1/1",
+            "q",
+            "a",
+            "*",
+            "q",
+            "a",
+            "0"
+          ]
+        },
+        {
+          "predicate": "lequation",
+          "arguments": [
+            "1/1",
+            "q",
+            "a",
+            "*",
+            "q",
+            "a",
+            "1/1",
+            "p",
+            "c",
+            "*",
+            "p",
+            "c",
+            "-1/1",
+            "q",
+            "c",
+            "*",
+            "q",
+            "c",
+            "-1/1",
+            "p",
+            "a",
+            "*",
+            "p",
+            "a",
+            "0"
+          ]
+        },
+        {
+          "predicate": "lequation",
+          "arguments": [
+            "1/1",
+            "p",
+            "c",
+            "*",
+            "p",
+            "c",
+            "1/1",
+            "q",
+            "a",
+            "*",
+            "q",
+            "a",
+            "-1/1",
+            "p",
+            "a",
+            "*",
+            "p",
+            "a",
+            "-1/1",
+            "q",
+            "c",
+            "*",
+            "q",
+            "c",
+            "0"
+          ]
+        },
+        {
+          "predicate": "lequation",
+          "arguments": [
+            "1/1",
+            "q",
+            "c",
+            "*",
+            "q",
+            "c",
+            "1/1",
+            "p",
+            "a",
+            "*",
+            "p",
+            "a",
+            "-1/1",
+            "q",
+            "a",
+            "*",
+            "q",
+            "a",
+            "-1/1",
+            "p",
+            "c",
+            "*",
+            "p",
+            "c",
+            "0"
+          ]
+        },
+        {
+          "predicate": "perp",
+          "arguments": [
+            "a",
+            "e",
+            "p",
+            "q"
+          ]
+        },
+        {
+          "predicate": "perp",
+          "arguments": [
+            "a",
+            "f",
+            "p",
+            "q"
+          ]
+        },
+        {
+          "predicate": "perp",
+          "arguments": [
+            "a",
+            "m",
+            "p",
+            "q"
+          ]
+        },
+        {
+          "predicate": "perp",
+          "arguments": [
+            "c",
+            "e",
+            "p",
+            "q"
+          ]
+        },
+        {
+          "predicate": "perp",
+          "arguments": [
+            "c",
+            "f",
+            "p",
+            "q"
+          ]
+        },
+        {
+          "predicate": "perp",
+          "arguments": [
+            "c",
+            "m",
+            "p",
+            "q"
+          ]
+        },
+        {
+          "predicate": "perp",
+          "arguments": [
+            "?C",
+            "?D",
+            "p",
+            "q"
+          ]
+        },
+        {
+          "predicate": "para",
+          "arguments": [
+            "?C",
+            "?D",
+            "a",
+            "c"
+          ]
+        }
+      ],
+      "ar_supported_goal_count": 1,
+      "ar_closed_goal_count": 0,
+      "ar_residual_support_size": 2,
+      "ar_residual_l1_weight": 2.0,
+      "ar_known_rank": 48,
+      "elapsed_seconds": 0.6929142999870237,
+      "error": null
+    }
+  ]
+}

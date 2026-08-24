@@ -1,0 +1,875 @@
+{
+  "experiment": "formalgeo_typed_obligation_exact_replay",
+  "problem_name": "2007CMOp4",
+  "dataset": "C:/Users/81808/.cache/mortra-research-sources/GenesisGeo/benchmarks/hageo_409.txt",
+  "normalization": {
+    "rewritten_constructions": 0,
+    "unchanged_constructions": 12,
+    "unresolved_constructions": 0
+  },
+  "formalgeo": [
+    {
+      "goal": {
+        "predicate": "perp",
+        "arguments": [
+          "i",
+          "o",
+          "m",
+          "n"
+        ]
+      },
+      "translation": {
+        "elaboration": {
+          "facts": [],
+          "goal": "perp(i,o,m,n)",
+          "constructions": [
+            "Point(A):FreePoint(A)",
+            "Point(B):FreePoint(B)",
+            "Point(C):PointLeftSegment(C,A,B)",
+            "Line(a):PointOnLine(A,a)&PointOnLine(B,a)",
+            "Line(b):PointOnLine(B,b)&PointOnLine(C,b)",
+            "Line(c):PointOnLine(A,c)&PointOnLine(C,c)&Triangle(A,a,B,b,C,c)",
+            "Circle(\u03a9):CircumcircleOfTriangle(\u03a9,A,a,B,b,C,c)",
+            "Point(J):CenterOfCircle(J,\u03a9)",
+            "Point(G):IncenterOfTriangle(G,A,a,B,b,C,c)",
+            "Line(d):PointOnLine(G,d)&PerpendicularBetweenLine(b,d)",
+            "Point(D):PointOnLine(D,b)&PointOnLine(D,d)",
+            "Line(e):PointOnLine(G,e)&PerpendicularBetweenLine(c,e)",
+            "Point(E):PointOnLine(E,c)&PointOnLine(E,e)",
+            "Line(f):PointOnLine(G,f)&PerpendicularBetweenLine(a,f)",
+            "Point(F):PointOnLine(F,a)&PointOnLine(F,f)",
+            "Line(g):PointOnLine(F,g)&PointOnLine(D,g)",
+            "Point(K):PointOnLine(K,g)&PointOnLine(K,c)",
+            "Line(h):PointOnLine(E,h)&PointOnLine(D,h)",
+            "Point(L):PointOnLine(L,h)&PointOnLine(L,a)",
+            "Point(H):Eq(Sub(Mul(2,H.x),Add(K.x,E.x)))&Eq(Sub(Mul(2,H.y),Add(K.y,E.y)))",
+            "Point(I):Eq(Sub(Mul(2,I.x),Add(L.x,F.x)))&Eq(Sub(Mul(2,I.y),Add(L.y,F.y)))",
+            "Line(i):PointOnLine(G,i)&PointOnLine(J,i)",
+            "Line(j):PointOnLine(H,j)&PointOnLine(I,j)"
+          ],
+          "formal_goal": "PerpendicularBetweenLine(i,j)",
+          "point_to_object": {
+            "a": "A",
+            "b": "B",
+            "c": "C",
+            "d": "D",
+            "e": "E",
+            "f": "F",
+            "i": "G",
+            "m": "H",
+            "n": "I",
+            "o": "J",
+            "p": "K",
+            "q": "L"
+          },
+          "segment_to_object": [
+            {
+              "segment": [
+                "a",
+                "b"
+              ],
+              "object": "a"
+            },
+            {
+              "segment": [
+                "a",
+                "c"
+              ],
+              "object": "c"
+            },
+            {
+              "segment": [
+                "b",
+                "c"
+              ],
+              "object": "b"
+            },
+            {
+              "segment": [
+                "d",
+                "e"
+              ],
+              "object": "h"
+            },
+            {
+              "segment": [
+                "d",
+                "f"
+              ],
+              "object": "g"
+            },
+            {
+              "segment": [
+                "d",
+                "i"
+              ],
+              "object": "d"
+            },
+            {
+              "segment": [
+                "e",
+                "i"
+              ],
+              "object": "e"
+            },
+            {
+              "segment": [
+                "f",
+                "i"
+              ],
+              "object": "f"
+            },
+            {
+              "segment": [
+                "i",
+                "o"
+              ],
+              "object": "i"
+            },
+            {
+              "segment": [
+                "m",
+                "n"
+              ],
+              "object": "j"
+            }
+          ]
+        },
+        "translated_clauses": 10,
+        "construction_kinds": [
+          "free_point",
+          "free_point",
+          "free_point",
+          "secant_line",
+          "secant_line",
+          "triangle",
+          "circumcircle",
+          "circumcenter",
+          "incenter",
+          "altitude",
+          "foot",
+          "altitude",
+          "foot",
+          "altitude",
+          "foot",
+          "secant_line",
+          "on_line+on_line",
+          "secant_line",
+          "on_line+on_line",
+          "midpoint",
+          "midpoint",
+          "secant_line",
+          "secant_line"
+        ],
+        "circle_to_object": {
+          "circum:a:b:c": "\u03a9"
+        }
+      },
+      "runtime": {
+        "available": true,
+        "elaborated": true,
+        "root_solved": false,
+        "replay_required": true,
+        "elaboration": {
+          "facts": [],
+          "goal": "perp(i,o,m,n)",
+          "constructions": [
+            "Point(A):FreePoint(A)",
+            "Point(B):FreePoint(B)",
+            "Point(C):PointLeftSegment(C,A,B)",
+            "Line(a):PointOnLine(A,a)&PointOnLine(B,a)",
+            "Line(b):PointOnLine(B,b)&PointOnLine(C,b)",
+            "Line(c):PointOnLine(A,c)&PointOnLine(C,c)&Triangle(A,a,B,b,C,c)",
+            "Circle(\u03a9):CircumcircleOfTriangle(\u03a9,A,a,B,b,C,c)",
+            "Point(J):CenterOfCircle(J,\u03a9)",
+            "Point(G):IncenterOfTriangle(G,A,a,B,b,C,c)",
+            "Line(d):PointOnLine(G,d)&PerpendicularBetweenLine(b,d)",
+            "Point(D):PointOnLine(D,b)&PointOnLine(D,d)",
+            "Line(e):PointOnLine(G,e)&PerpendicularBetweenLine(c,e)",
+            "Point(E):PointOnLine(E,c)&PointOnLine(E,e)",
+            "Line(f):PointOnLine(G,f)&PerpendicularBetweenLine(a,f)",
+            "Point(F):PointOnLine(F,a)&PointOnLine(F,f)",
+            "Line(g):PointOnLine(F,g)&PointOnLine(D,g)",
+            "Point(K):PointOnLine(K,g)&PointOnLine(K,c)",
+            "Line(h):PointOnLine(E,h)&PointOnLine(D,h)",
+            "Point(L):PointOnLine(L,h)&PointOnLine(L,a)",
+            "Point(H):Eq(Sub(Mul(2,H.x),Add(K.x,E.x)))&Eq(Sub(Mul(2,H.y),Add(K.y,E.y)))",
+            "Point(I):Eq(Sub(Mul(2,I.x),Add(L.x,F.x)))&Eq(Sub(Mul(2,I.y),Add(L.y,F.y)))",
+            "Line(i):PointOnLine(G,i)&PointOnLine(J,i)",
+            "Line(j):PointOnLine(H,j)&PointOnLine(I,j)"
+          ],
+          "formal_goal": "PerpendicularBetweenLine(i,j)",
+          "point_to_object": {
+            "a": "A",
+            "b": "B",
+            "c": "C",
+            "d": "D",
+            "e": "E",
+            "f": "F",
+            "i": "G",
+            "m": "H",
+            "n": "I",
+            "o": "J",
+            "p": "K",
+            "q": "L"
+          },
+          "segment_to_object": [
+            {
+              "segment": [
+                "a",
+                "b"
+              ],
+              "object": "a"
+            },
+            {
+              "segment": [
+                "a",
+                "c"
+              ],
+              "object": "c"
+            },
+            {
+              "segment": [
+                "b",
+                "c"
+              ],
+              "object": "b"
+            },
+            {
+              "segment": [
+                "d",
+                "e"
+              ],
+              "object": "h"
+            },
+            {
+              "segment": [
+                "d",
+                "f"
+              ],
+              "object": "g"
+            },
+            {
+              "segment": [
+                "d",
+                "i"
+              ],
+              "object": "d"
+            },
+            {
+              "segment": [
+                "e",
+                "i"
+              ],
+              "object": "e"
+            },
+            {
+              "segment": [
+                "f",
+                "i"
+              ],
+              "object": "f"
+            },
+            {
+              "segment": [
+                "i",
+                "o"
+              ],
+              "object": "i"
+            },
+            {
+              "segment": [
+                "m",
+                "n"
+              ],
+              "object": "j"
+            }
+          ]
+        },
+        "translated_goals": [
+          {
+            "goal_id": 0,
+            "status": 0,
+            "operation_id": 23,
+            "operation": [
+              "auto",
+              "set_initial_goal",
+              null
+            ],
+            "root_sub_goal_id": null,
+            "premise_fact_ids": [],
+            "tree": {
+              "kind": "atom",
+              "sub_goal_id": 0,
+              "goal_id": 0,
+              "predicate": "PerpendicularBetweenLine",
+              "instance": [
+                "i",
+                "j"
+              ],
+              "status": 0,
+              "premise_fact_ids": [],
+              "child_goal_ids": [],
+              "rendered_atom": "perp(i,o,m,n)"
+            }
+          }
+        ],
+        "open_branches": [
+          [
+            "perp(i,o,m,n)"
+          ]
+        ],
+        "runtime_trace": {
+          "ok": true,
+          "mode": "backward_decompose",
+          "formalgeo_version": "2.2.2",
+          "checkpoint_stage": "goal_initialized",
+          "root_solved": false,
+          "construction_trace": [
+            {
+              "statement": "Point(A):FreePoint(A)",
+              "random_seed": 1,
+              "accepted": true
+            },
+            {
+              "statement": "Point(B):FreePoint(B)",
+              "random_seed": 2,
+              "accepted": true
+            },
+            {
+              "statement": "Point(C):PointLeftSegment(C,A,B)",
+              "random_seed": 3,
+              "accepted": true
+            },
+            {
+              "statement": "Line(a):PointOnLine(A,a)&PointOnLine(B,a)",
+              "random_seed": 4,
+              "accepted": true
+            },
+            {
+              "statement": "Line(b):PointOnLine(B,b)&PointOnLine(C,b)",
+              "random_seed": 5,
+              "accepted": true
+            },
+            {
+              "statement": "Line(c):PointOnLine(A,c)&PointOnLine(C,c)&Triangle(A,a,B,b,C,c)",
+              "random_seed": 6,
+              "accepted": true
+            },
+            {
+              "statement": "Circle(\u03a9):CircumcircleOfTriangle(\u03a9,A,a,B,b,C,c)",
+              "random_seed": 7,
+              "accepted": true
+            },
+            {
+              "statement": "Point(J):CenterOfCircle(J,\u03a9)",
+              "random_seed": 8,
+              "accepted": true
+            },
+            {
+              "statement": "Point(G):IncenterOfTriangle(G,A,a,B,b,C,c)",
+              "random_seed": 9,
+              "accepted": true
+            },
+            {
+              "statement": "Line(d):PointOnLine(G,d)&PerpendicularBetweenLine(b,d)",
+              "random_seed": 10,
+              "accepted": true
+            },
+            {
+              "statement": "Point(D):PointOnLine(D,b)&PointOnLine(D,d)",
+              "random_seed": 11,
+              "accepted": true
+            },
+            {
+              "statement": "Line(e):PointOnLine(G,e)&PerpendicularBetweenLine(c,e)",
+              "random_seed": 12,
+              "accepted": true
+            },
+            {
+              "statement": "Point(E):PointOnLine(E,c)&PointOnLine(E,e)",
+              "random_seed": 13,
+              "accepted": true
+            },
+            {
+              "statement": "Line(f):PointOnLine(G,f)&PerpendicularBetweenLine(a,f)",
+              "random_seed": 14,
+              "accepted": true
+            },
+            {
+              "statement": "Point(F):PointOnLine(F,a)&PointOnLine(F,f)",
+              "random_seed": 15,
+              "accepted": true
+            },
+            {
+              "statement": "Line(g):PointOnLine(F,g)&PointOnLine(D,g)",
+              "random_seed": 16,
+              "accepted": true
+            },
+            {
+              "statement": "Point(K):PointOnLine(K,g)&PointOnLine(K,c)",
+              "random_seed": 17,
+              "accepted": true
+            },
+            {
+              "statement": "Line(h):PointOnLine(E,h)&PointOnLine(D,h)",
+              "random_seed": 18,
+              "accepted": true
+            },
+            {
+              "statement": "Point(L):PointOnLine(L,h)&PointOnLine(L,a)",
+              "random_seed": 19,
+              "accepted": true
+            },
+            {
+              "statement": "Point(H):Eq(Sub(Mul(2,H.x),Add(K.x,E.x)))&Eq(Sub(Mul(2,H.y),Add(K.y,E.y)))",
+              "random_seed": 20,
+              "accepted": true
+            },
+            {
+              "statement": "Point(I):Eq(Sub(Mul(2,I.x),Add(L.x,F.x)))&Eq(Sub(Mul(2,I.y),Add(L.y,F.y)))",
+              "random_seed": 21,
+              "accepted": true
+            },
+            {
+              "statement": "Line(i):PointOnLine(G,i)&PointOnLine(J,i)",
+              "random_seed": 22,
+              "accepted": true
+            },
+            {
+              "statement": "Line(j):PointOnLine(H,j)&PointOnLine(I,j)",
+              "random_seed": 23,
+              "accepted": true
+            }
+          ],
+          "branch_attempts": [
+            {
+              "seed_offset": 0,
+              "construction_ok": true,
+              "goal_accepted": true,
+              "goal_error": null,
+              "construction_trace": [
+                {
+                  "statement": "Point(A):FreePoint(A)",
+                  "random_seed": 1,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(B):FreePoint(B)",
+                  "random_seed": 2,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(C):PointLeftSegment(C,A,B)",
+                  "random_seed": 3,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(a):PointOnLine(A,a)&PointOnLine(B,a)",
+                  "random_seed": 4,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(b):PointOnLine(B,b)&PointOnLine(C,b)",
+                  "random_seed": 5,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(c):PointOnLine(A,c)&PointOnLine(C,c)&Triangle(A,a,B,b,C,c)",
+                  "random_seed": 6,
+                  "accepted": true
+                },
+                {
+                  "statement": "Circle(\u03a9):CircumcircleOfTriangle(\u03a9,A,a,B,b,C,c)",
+                  "random_seed": 7,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(J):CenterOfCircle(J,\u03a9)",
+                  "random_seed": 8,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(G):IncenterOfTriangle(G,A,a,B,b,C,c)",
+                  "random_seed": 9,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(d):PointOnLine(G,d)&PerpendicularBetweenLine(b,d)",
+                  "random_seed": 10,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(D):PointOnLine(D,b)&PointOnLine(D,d)",
+                  "random_seed": 11,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(e):PointOnLine(G,e)&PerpendicularBetweenLine(c,e)",
+                  "random_seed": 12,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(E):PointOnLine(E,c)&PointOnLine(E,e)",
+                  "random_seed": 13,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(f):PointOnLine(G,f)&PerpendicularBetweenLine(a,f)",
+                  "random_seed": 14,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(F):PointOnLine(F,a)&PointOnLine(F,f)",
+                  "random_seed": 15,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(g):PointOnLine(F,g)&PointOnLine(D,g)",
+                  "random_seed": 16,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(K):PointOnLine(K,g)&PointOnLine(K,c)",
+                  "random_seed": 17,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(h):PointOnLine(E,h)&PointOnLine(D,h)",
+                  "random_seed": 18,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(L):PointOnLine(L,h)&PointOnLine(L,a)",
+                  "random_seed": 19,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(H):Eq(Sub(Mul(2,H.x),Add(K.x,E.x)))&Eq(Sub(Mul(2,H.y),Add(K.y,E.y)))",
+                  "random_seed": 20,
+                  "accepted": true
+                },
+                {
+                  "statement": "Point(I):Eq(Sub(Mul(2,I.x),Add(L.x,F.x)))&Eq(Sub(Mul(2,I.y),Add(L.y,F.y)))",
+                  "random_seed": 21,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(i):PointOnLine(G,i)&PointOnLine(J,i)",
+                  "random_seed": 22,
+                  "accepted": true
+                },
+                {
+                  "statement": "Line(j):PointOnLine(H,j)&PointOnLine(I,j)",
+                  "random_seed": 23,
+                  "accepted": true
+                }
+              ]
+            }
+          ],
+          "round_trace": [],
+          "frontier_tree": {
+            "kind": "atom",
+            "sub_goal_id": 0,
+            "goal_id": 0,
+            "predicate": "PerpendicularBetweenLine",
+            "instance": [
+              "i",
+              "j"
+            ],
+            "status": 0,
+            "premise_fact_ids": [],
+            "child_goal_ids": []
+          },
+          "goals": [
+            {
+              "goal_id": 0,
+              "status": 0,
+              "operation_id": 23,
+              "operation": [
+                "auto",
+                "set_initial_goal",
+                null
+              ],
+              "root_sub_goal_id": null,
+              "premise_fact_ids": [],
+              "tree": {
+                "kind": "atom",
+                "sub_goal_id": 0,
+                "goal_id": 0,
+                "predicate": "PerpendicularBetweenLine",
+                "instance": [
+                  "i",
+                  "j"
+                ],
+                "status": 0,
+                "premise_fact_ids": [],
+                "child_goal_ids": []
+              }
+            }
+          ],
+          "operations": [
+            [
+              "construction",
+              "Point(A)",
+              "FreePoint(A)"
+            ],
+            [
+              "construction",
+              "Point(B)",
+              "FreePoint(B)"
+            ],
+            [
+              "construction",
+              "Point(C)",
+              "PointLeftSegment(C,A,B)"
+            ],
+            [
+              "construction",
+              "Line(a)",
+              "PointOnLine(A,a)&PointOnLine(B,a)"
+            ],
+            [
+              "construction",
+              "Line(b)",
+              "PointOnLine(B,b)&PointOnLine(C,b)"
+            ],
+            [
+              "construction",
+              "Line(c)",
+              "PointOnLine(A,c)&PointOnLine(C,c)&Triangle(A,a,B,b,C,c)"
+            ],
+            [
+              "construction",
+              "Circle(\u03a9)",
+              "CircumcircleOfTriangle(\u03a9,A,a,B,b,C,c)"
+            ],
+            [
+              "construction",
+              "Point(J)",
+              "CenterOfCircle(J,\u03a9)"
+            ],
+            [
+              "construction",
+              "Point(G)",
+              "IncenterOfTriangle(G,A,a,B,b,C,c)"
+            ],
+            [
+              "construction",
+              "Line(d)",
+              "PointOnLine(G,d)&PerpendicularBetweenLine(b,d)"
+            ],
+            [
+              "construction",
+              "Point(D)",
+              "PointOnLine(D,b)&PointOnLine(D,d)"
+            ],
+            [
+              "construction",
+              "Line(e)",
+              "PointOnLine(G,e)&PerpendicularBetweenLine(c,e)"
+            ],
+            [
+              "construction",
+              "Point(E)",
+              "PointOnLine(E,c)&PointOnLine(E,e)"
+            ],
+            [
+              "construction",
+              "Line(f)",
+              "PointOnLine(G,f)&PerpendicularBetweenLine(a,f)"
+            ],
+            [
+              "construction",
+              "Point(F)",
+              "PointOnLine(F,a)&PointOnLine(F,f)"
+            ],
+            [
+              "construction",
+              "Line(g)",
+              "PointOnLine(F,g)&PointOnLine(D,g)"
+            ],
+            [
+              "construction",
+              "Point(K)",
+              "PointOnLine(K,g)&PointOnLine(K,c)"
+            ],
+            [
+              "construction",
+              "Line(h)",
+              "PointOnLine(E,h)&PointOnLine(D,h)"
+            ],
+            [
+              "construction",
+              "Point(L)",
+              "PointOnLine(L,h)&PointOnLine(L,a)"
+            ],
+            [
+              "construction",
+              "Point(H)",
+              "Eq(Sub(Mul(2,H.x),Add(K.x,E.x)))&Eq(Sub(Mul(2,H.y),Add(K.y,E.y)))"
+            ],
+            [
+              "construction",
+              "Point(I)",
+              "Eq(Sub(Mul(2,I.x),Add(L.x,F.x)))&Eq(Sub(Mul(2,I.y),Add(L.y,F.y)))"
+            ],
+            [
+              "construction",
+              "Line(i)",
+              "PointOnLine(G,i)&PointOnLine(J,i)"
+            ],
+            [
+              "construction",
+              "Line(j)",
+              "PointOnLine(H,j)&PointOnLine(I,j)"
+            ],
+            [
+              "auto",
+              "set_initial_goal",
+              null
+            ]
+          ],
+          "fact_count": 64,
+          "timed_out": true,
+          "right_censored": true,
+          "timeout_seconds": 15.0,
+          "error_type": "TimeoutExpired"
+        },
+        "error": "TimeoutExpired: Command '['C:\\\\Users\\\\81808\\\\.cache\\\\mortra-research-sources\\\\FormalGeo\\\\.venv-mortra\\\\Scripts\\\\python.exe', 'C:\\\\Users\\\\81808\\\\.openclaw\\\\workspace\\\\mortra-1-release\\\\scripts\\\\run_formalgeo_runtime.py']' timed out after 15.0 seconds"
+      }
+    }
+  ],
+  "typed_open_branches": [
+    [
+      {
+        "predicate": "perp",
+        "arguments": [
+          "i",
+          "o",
+          "m",
+          "n"
+        ]
+      }
+    ]
+  ],
+  "exact_exchange": {
+    "status": "open",
+    "solved": false,
+    "eligible_ground_obligations": 1,
+    "certified_lemmas": 0,
+    "lemmas": [
+      {
+        "atom": "perp(i,o,m,n)",
+        "status": "exact_disabled",
+        "reason": null,
+        "return_code": null,
+        "stderr_tail": null,
+        "source": "typed_theorem_hypergraph",
+        "elapsed_seconds": 0.0,
+        "input_sha256": null,
+        "certificate_sha256": null,
+        "related_native_facts": []
+      }
+    ],
+    "hypergraph_proofs": []
+  },
+  "gclc_exchange": {
+    "status": "proved",
+    "solved": true,
+    "eligible_ground_obligations": 1,
+    "source_obligation_branches": 1,
+    "executable_obligation_branches": 1,
+    "certified_lemmas": 1,
+    "numerical_incidence": {
+      "samples": 0,
+      "checked": 1,
+      "accepted": 1,
+      "records": [
+        {
+          "atom": "perp(i,o,m,n)",
+          "passed": true,
+          "errors": []
+        }
+      ]
+    },
+    "lemmas": [
+      {
+        "atom": "perp(i,o,m,n)",
+        "status": "proved",
+        "source": "gclc_local_relation",
+        "elapsed_seconds": 0.8224846999946749,
+        "input_sha256": "b4d20db6935610c293387ec0d35f17ab2adc507cc2c32951d84ea4a6456ac9a2",
+        "selected_method": "wu",
+        "proof_sha256": "5cf8a1123f6e2af367565d9bc46041637dbbbeb873c5867d93923c893ea64853",
+        "proof_file_sha256": "5cf8a1123f6e2af367565d9bc46041637dbbbeb873c5867d93923c893ea64853",
+        "translation": {
+          "source_sha256": "64ba6a96c509264941a433e4362a6e1b6931970c0e2bbf00a6da6501a1d14948",
+          "source_lines": 24,
+          "original_clause_count": 10,
+          "translated_clause_count": 10,
+          "local_lemma_certificates": []
+        },
+        "method_diagnostics": [
+          {
+            "method": "area",
+            "proved": false,
+            "timed_out": false,
+            "external_timeout_reached": false,
+            "internal_timeout_reached": false,
+            "elapsed_seconds": 0.21129029999428894,
+            "polynomial_scale": null,
+            "conclusion": "The conjecture given to prove is ill-formed or includes a point that is not constructed by commands supported by the prover. (Line: 25, position: 7)",
+            "execution_error": null
+          },
+          {
+            "method": "wu",
+            "proved": true,
+            "timed_out": false,
+            "external_timeout_reached": false,
+            "internal_timeout_reached": false,
+            "elapsed_seconds": 0.5513043999962974,
+            "polynomial_scale": "The largest polynomial obtained during the proof process contains 421 terms.",
+            "conclusion": "The conjecture successfully proved.",
+            "execution_error": null
+          }
+        ],
+        "portfolio_diagnostics": {
+          "gclc": {
+            "status": "proved",
+            "elapsed_seconds": 0.8224846999946749
+          },
+          "wolfram": {
+            "status": "skipped_after_gclc_proof",
+            "elapsed_seconds": null,
+            "preprocessing": "local_relational",
+            "reduction_mode": "extended_groebner",
+            "saturation_mode": "none",
+            "max_saturation_factors": 12
+          }
+        },
+        "wolfram_certificate": null,
+        "proof_text": "\\documentclass[a4paper]{article}\n\\usepackage{gclc_proof}\n\n\n\\begin{document}\n\n\\title{GCLC Prover Output for conjecture ``C:\\Users\\81808\\AppData\\Local\\Temp\\mortra-gclc-wu-ylvafz1z\\obligation'' }\n\n\\author{Wu's method used}\n\n\\maketitle\n\n\n\n\n\n\\section{Construction and prover internal state}\n\n\n\n\n\n\\subsection*{Construction commands:}\n\n\\begin{itemize}\n\n\\item \n\nPoint $a$ \n\\item \n\nPoint $b$ \n\\item \n\nPoint $c$ \n\\item \n\nMedian, $mortra_med_0$: $a$ $b$ \n\\item \n\nMedian, $mortra_med_1$: $a$ $c$ \n\\item \n\nIntersection of lines, $o$: $mortra_med_0$ $mortra_med_1$ \n\\item \n\nBisector $mortra_bis_2$ $b$ $a$ $c$ \n\\item \n\nBisector $mortra_bis_3$ $c$ $b$ $a$ \n\\item \n\nIntersection of lines, $i$: $mortra_bis_2$ $mortra_bis_3$ \n\\item \n\nLine $mortra_foot_side_4$: $b$ $c$ \n\\item \n\nFoot, $d$: $i$ $mortra_foot_side_4$ \n\\item \n\nLine $mortra_foot_side_5$: $a$ $c$ \n\\item \n\nFoot, $e$: $i$ $mortra_foot_side_5$ \n\\item \n\nLine $mortra_foot_side_6$: $a$ $b$ \n\\item \n\nFoot, $f$: $i$ $mortra_foot_side_6$ \n\\item \n\nLine $mortra_on_line_7$: $f$ $d$ \n\\item \n\nLine $mortra_on_line_8$: $a$ $c$ \n\\item \n\nIntersection of lines, $p$: $mortra_on_line_7$ $mortra_on_line_8$ \n\\item \n\nLine $mortra_on_line_9$: $e$ $d$ \n\\item \n\nLine $mortra_on_line_10$: $a$ $b$ \n\\item \n\nIntersection of lines, $q$: $mortra_on_line_9$ $mortra_on_line_10$ \n\\item \n\nMidpoint, $m$: $p$ $e$ \n\\item \n\nMidpoint, $n$: $q$ $f$ \n\\end{itemize}\n\n\n\n\n\n\\subsection*{Coordinates assigned to the points:}\n\n\\begin{itemize}\n\n\\item $a = (0, 0)$\n\n\\item $b = (u_{1}, 0)$\n\n\\item $c = (u_{2}, u_{3})$\n\n\\item $o = (x_{1}, x_{2})$\n\n\\item $i = (x_{3}, x_{4})$\n\n\\item $d = (x_{5}, x_{6})$\n\n\\item $e = (x_{7}, x_{8})$\n\n\\item $f = (x_{3}, 0)$\n\n\\item $p = (x_{11}, x_{12})$\n\n\\item $q = (x_{13}, 0)$\n\n\\item $m = (x_{15}, x_{16})$\n\n\\item $n = (x_{17}, x_{18})$\n\n\\end{itemize}\n\n\n\n\n\n\\subsection*{Conjecture(s):}\n\n\\begin{enumerate}\n\n\\item Given conjecture\n\n\\begin{itemize}\n\n\\item \\textbf{GCLC code:}\n\n\n\\begin{verbatim}\n perpendicular i o m n \n\\end{verbatim}\n\n\\end{itemize}\n\n\\begin{itemize}\n\n\\item \\textbf{Expression:}\n\n\n\n$io\\perp mn $\\end{itemize}\n\n\\end{enumerate}\n\n\\hspace*{4.1mm}\n\n\n\n\n\n\\section{Resolving constructed lines}\n\n\\begin{itemize}\n\n\\item $mortra_med_0 \\ni o$ ; line is vertical\\item $mortra_med_1 \\ni o$ \\item $mortra_bis_2 \\ni a, i$ \\item $mortra_bis_3 \\ni b, i$ \\item $mortra_foot_side_4 \\ni b, c, d$ \\item $di \\ni d, i$ ; line is generated by the prover\\item $mortra_foot_side_5 \\ni a, c, e$ \\item $ei \\ni e, i$ ; line is generated by the prover\\item $mortra_foot_side_6 \\ni a, b, f, q$ ; line is horizontal (i.e., $y(a) = y(b)$)\\item $fi \\ni f, i$ ; line is vertical (i.e., $x(f) = x(i))$; line is generated by the prover\\item $mortra_on_line_7 \\ni f, d, p$ \\item $mortra_on_line_8 \\ni a, c, p$ \\item $mortra_on_line_9 \\ni e, d, q$ \\item $mortra_on_line_10 \\ni a, b, q$ ; line is horizontal (i.e., $y(a) = y(b)$)\\item $pe \\ni p, e, m$ ; line is generated by the prover\\item $qf \\ni q, f, n$ ; line is generated by the prover\\end{itemize}\n\n\n\n\n\n\\section{Creating polynomials from hypotheses}\n\n\\begin{itemize}\n\n\\item \n\nPoint $a$ \n\n\nno condition\\item \n\nPoint $b$ \n\n\nno condition\\item \n\nPoint $c$ \n\n\nno condition\\item \n\nMedian, $mortra_med_0$: $a$ $b$ \n\\begin{itemize}\n\n\\item \n Segment [$o$, $a$] equal size as segment [$o$, $b$]\n\n$$\np_{1}  =  2u_{1}x_{1}-u_{1}^{2}\n$$\n\\end{itemize}\n\n\\item \n\nMedian, $mortra_med_1$: $a$ $c$ \n\\begin{itemize}\n\n\\item \n Segment [$o$, $a$] equal size as segment [$o$, $c$]\n\n$$\np_{2}  =  2u_{3}x_{2}+2u_{2}x_{1}+(-u_{3}^{2}-u_{2}^{2})\n$$\n\\end{itemize}\n\n\\item \n\nIntersection of lines, $o$: $mortra_med_0$ $mortra_med_1$ \n\\begin{itemize}\n\n\\item Line or points not used.\n\nno condition\\item Line or points not used.\n\nno condition\\end{itemize}\n\n\\item \n\nBisector $mortra_bis_2$ $b$ $a$ $c$ \n\\begin{itemize}\n\n\\item Equal angles condition, line $mortra_bis_2$ bisecting $\\angle bac$ \n\n$$\np_{3}  =  u_{3}u_{1}x_{4}^{2}+2u_{2}u_{1}x_{4}x_{3}-u_{3}u_{1}x_{3}^{2}\n$$\n\\end{itemize}\n\n\\item \n\nBisector $mortra_bis_3$ $c$ $b$ $a$ \n\\begin{itemize}\n\n\\item Equal angles condition, line $mortra_bis_3$ bisecting $\\angle cba$ \n\n$$\np_{4}  =  -u_{3}u_{1}x_{4}^{2}+(-2u_{2}u_{1}+2u_{1}^{2})x_{4}x_{3}+\n$$\n$$\n(2u_{2}u_{1}^{2}-2u_{1}^{3})x_{4}+u_{3}u_{1}x_{3}^{2}-2u_{3}u_{1}^{2}x_{3}+u_{3}u_{1}^{3}\n$$\n\\end{itemize}\n\n\\item \n\nIntersection of lines, $i$: $mortra_bis_2$ $mortra_bis_3$ \n\\begin{itemize}\n\n\\item \n\npoint $i$ is on the line ($a$, $i$)\n\n\nno condition\\item \n\npoint $i$ is on the line ($b$, $i$)\n\n\nno condition\\end{itemize}\n\n\\item \n\nLine $mortra_foot_side_4$: $b$ $c$ \n\\begin{itemize}\n\n\\item \n\npoint $b$ is on the line ($b$, $c$)\n\n\nno condition\\item \n\npoint $c$ is on the line ($b$, $c$)\n\n\nno condition\\end{itemize}\n\n\\item \n\nFoot, $d$: $i$ $mortra_foot_side_4$ \n\\begin{itemize}\n\n\\item \n\npoint $d$ is on the line ($b$, $c$)\n$$\np_{5}  =  (u_{2}-u_{1})x_{6}-u_{3}x_{5}+u_{3}u_{1}\n$$\n\\item Line ($d$, $i$) perpendicular with line ($b$, $c$)\n\n$$\np_{6}  =  -u_{3}x_{6}+(-u_{2}+u_{1})x_{5}+u_{3}x_{4}+(u_{2}-u_{1})x_{3}\n$$\n\\end{itemize}\n\n\\item \n\nLine $mortra_foot_side_5$: $a$ $c$ \n\\begin{itemize}\n\n\\item \n\npoint $a$ is on the line ($a$, $c$)\n\n\nno condition\\item \n\npoint $c$ is on the line ($a$, $c$)\n\n\nno condition\\end{itemize}\n\n\\item \n\nFoot, $e$: $i$ $mortra_foot_side_5$ \n\\begin{itemize}\n\n\\item \n\npoint $e$ is on the line ($a$, $c$)\n$$\np_{7}  =  u_{2}x_{8}-u_{3}x_{7}\n$$\n\\item Line ($e$, $i$) perpendicular with line ($a$, $c$)\n\n$$\np_{8}  =  -u_{3}x_{8}-u_{2}x_{7}+u_{3}x_{4}+u_{2}x_{3}\n$$\n\\end{itemize}\n\n\\item \n\nLine $mortra_foot_side_6$: $a$ $b$ \n\\begin{itemize}\n\n\\item \n\npoint $a$ is on the line ($a$, $b$)\n\n\nno condition\\item \n\npoint $b$ is on the line ($a$, $b$)\n\n\nno condition\\end{itemize}\n\n\\item \n\nFoot, $f$: $i$ $mortra_foot_side_6$ \n\\begin{itemize}\n\n\\item \n\npoint $f$ is on the line ($a$, $b$)\n --- true by the construction\n\n\n\nno condition\\item Line ($f$, $i$) perpendicular with line ($a$, $b$)\n\n --- true by the construction\n\n\\end{itemize}\n\n\\item \n\nLine $mortra_on_line_7$: $f$ $d$ \n\\begin{itemize}\n\n\\item \n\npoint $f$ is on the line ($f$, $d$)\n\n\nno condition\\item \n\npoint $d$ is on the line ($f$, $d$)\n\n\nno condition\\end{itemize}\n\n\\item \n\nLine $mortra_on_line_8$: $a$ $c$ \n\\begin{itemize}\n\n\\item \n\npoint $a$ is on the line ($a$, $c$)\n\n\nno condition\\item \n\npoint $c$ is on the line ($a$, $c$)\n\n\nno condition\\end{itemize}\n\n\\item \n\nIntersection of lines, $p$: $mortra_on_line_7$ $mortra_on_line_8$ \n\\begin{itemize}\n\n\\item \n\npoint $p$ is on the line ($f$, $d$)\n$$\np_{9}  =  x_{12}x_{5}-x_{12}x_{3}-x_{11}x_{6}+x_{6}x_{3}\n$$\n\\item \n\npoint $p$ is on the line ($a$, $c$)\n$$\np_{10}  =  u_{2}x_{12}-u_{3}x_{11}\n$$\n\\end{itemize}\n\n\\item \n\nLine $mortra_on_line_9$: $e$ $d$ \n\\begin{itemize}\n\n\\item \n\npoint $e$ is on the line ($e$, $d$)\n\n\nno condition\\item \n\npoint $d$ is on the line ($e$, $d$)\n\n\nno condition\\end{itemize}\n\n\\item \n\nLine $mortra_on_line_10$: $a$ $b$ \n\\begin{itemize}\n\n\\item \n\npoint $a$ is on the line ($a$, $b$)\n\n\nno condition\\item \n\npoint $b$ is on the line ($a$, $b$)\n\n\nno condition\\end{itemize}\n\n\\item \n\nIntersection of lines, $q$: $mortra_on_line_9$ $mortra_on_line_10$ \n\\begin{itemize}\n\n\\item \n\npoint $q$ is on the line ($e$, $d$)\n$$\np_{11}  =  x_{13}x_{8}-x_{13}x_{6}-x_{8}x_{5}+x_{7}x_{6}\n$$\n\\item \n\npoint $q$ is on the line ($a$, $b$)\n --- true by the construction\n\n\n\nno condition\\end{itemize}\n\n\\item \n\nMidpoint, $m$: $p$ $e$ \n\\begin{itemize}\n\n\\item \n\npoint $m$ is the midpoint of ($p$, $e$) ($x$)\n$$\np_{12}  =  2x_{15}-x_{11}-x_{7}\n$$\n\\item \n\npoint $m$ is the midpoint of ($p$, $e$) ($y$)\n$$\np_{13}  =  2x_{16}-x_{12}-x_{8}\n$$\n\\end{itemize}\n\n\\item \n\nMidpoint, $n$: $q$ $f$ \n\\begin{itemize}\n\n\\item \n\npoint $n$ is the midpoint of ($q$, $f$) ($x$)\n$$\np_{14}  =  2x_{17}-x_{13}-x_{3}\n$$\n\\item \n\npoint $n$ is the midpoint of ($q$, $f$) ($y$)\n$$\np_{15}  =  2x_{18}\n$$\n\\end{itemize}\n\n\\end{itemize}\n\n\n\n\n\n\\section{Creating polynomial from the conjecture}\n\n\\begin{itemize}\n\n\\item Processing given conjecture(s).\n\n\\item Line ($i$, $o$) perpendicular with line ($m$, $n$)\n\n$$\np_{16}  =  -x_{18}x_{4}+x_{18}x_{2}-x_{17}x_{3}+x_{17}x_{1}+x_{16}x_{4}-x_{16}x_{2}+x_{15}x_{3}-x_{15}x_{1}\n$$\n\\end{itemize}\n\n\\begin{description}\n\n\\item [Conjecture 1:] $$\np_{17}  =  -x_{18}x_{4}+x_{18}x_{2}-x_{17}x_{3}+x_{17}x_{1}+x_{16}x_{4}-x_{16}x_{2}+x_{15}x_{3}-x_{15}x_{1}\n$$\n\\end{description}\n\n\n\n\n\n\\section{Invoking the theorem prover}\n\nThe used proving method is Wu's method.\n\nThe input system is:\n\n\\begin{eqnarray*}\np_{0} &=& 2u_{1}x_{1}-u_{1}^{2}\\\\\np_{1} &=& 2u_{3}x_{2}+2u_{2}x_{1}+(-u_{3}^{2}-u_{2}^{2})\\\\\np_{2} &=& u_{3}u_{1}x_{4}^{2}+2u_{2}u_{1}x_{4}x_{3}-u_{3}u_{1}x_{3}^{2}\\\\\np_{3} &=& -u_{3}u_{1}x_{4}^{2}+(-2u_{2}u_{1}+2u_{1}^{2})x_{4}x_{3}+\\\\\n& & (2u_{2}u_{1}^{2}-2u_{1}^{3})x_{4}+u_{3}u_{1}x_{3}^{2}-2u_{3}u_{1}^{2}x_{3}+u_{3}u_{1}^{3}\\\\\np_{4} &=& (u_{2}-u_{1})x_{6}-u_{3}x_{5}+u_{3}u_{1}\\\\\np_{5} &=& -u_{3}x_{6}+(-u_{2}+u_{1})x_{5}+u_{3}x_{4}+(u_{2}-u_{1})x_{3}\\\\\np_{6} &=& u_{2}x_{8}-u_{3}x_{7}\\\\\np_{7} &=& -u_{3}x_{8}-u_{2}x_{7}+u_{3}x_{4}+u_{2}x_{3}\\\\\np_{8} &=& x_{12}x_{5}-x_{12}x_{3}-x_{11}x_{6}+x_{6}x_{3}\\\\\np_{9} &=& u_{2}x_{12}-u_{3}x_{11}\\\\\np_{10} &=& x_{13}x_{8}-x_{13}x_{6}-x_{8}x_{5}+x_{7}x_{6}\\\\\np_{11} &=& 2x_{15}-x_{11}-x_{7}\\\\\np_{12} &=& 2x_{16}-x_{12}-x_{8}\\\\\np_{13} &=& 2x_{17}-x_{13}-x_{3}\\\\\np_{14} &=& 2x_{18}\\\\\n\\end{eqnarray*}\n\n\n\n\n\\subsection{Triangulation, step 1}\n\n\\begin{description}\n\n\\item [Choosing variable:]  Trying the variable with index 18.\n\n\\item [Variable $x_{18}$ selected:]  The number of polynomials with this variable is 1.\n\n\\item [Single polynomial with chosen variable:]  No reduction needed.\n\n\\item The triangular system has not been changed.\n\n\n\n\\end{description}\n\n\n\n\n\n\\subsection{Triangulation, step 2}\n\n\\begin{description}\n\n\\item [Choosing variable:]  Trying the variable with index 17.\n\n\\item [Variable $x_{17}$ selected:]  The number of polynomials with this variable is 1.\n\n\\item [Single polynomial with chosen variable:]  No reduction needed.\n\n\\item The triangular system has not been changed.\n\n\n\n\\end{description}\n\n\n\n\n\n\\subsection{Triangulation, step 3}\n\n\\begin{description}\n\n\\item [Choosing variable:]  Trying the variable with index 16.\n\n\\item [Variable $x_{16}$ selected:]  The number of polynomials with this variable is 1.\n\n\\item [Single polynomial with chosen variable:]  No reduction needed.\n\n\\item The triangular system has not been changed.\n\n\n\n\\end{description}\n\n\n\n\n\n\\subsection{Triangulation, step 4}\n\n\\begin{description}\n\n\\item [Choosing variable:]  Trying the variable with index 15.\n\n\\item [Variable $x_{15}$ selected:]  The number of polynomials with this variable is 1.\n\n\\item [Single polynomial with chosen variable:]  No reduction needed.\n\n\\item The triangular system has not been changed.\n\n\n\n\\end{description}\n\n\n\n\n\n\\subsection{Triangulation, step 5}\n\n\\begin{description}\n\n\\item [Choosing variable:]  Trying the variable with index 14.\n\n\\item [Choosing variable:]  Trying the variable with index 13.\n\n\\item [Variable $x_{13}$ selected:]  The number of polynomials with this variable is 1.\n\n\\item [Single polynomial with chosen variable:]  No reduction needed.\n\n\\item The triangular system has not been changed.\n\n\n\n\\end{description}\n\n\n\n\n\n\\subsection{Triangulation, step 6}\n\n\\begin{description}\n\n\\item [Choosing variable:]  Trying the variable with index 12.\n\n\\item [Variable $x_{12}$ selected:]  The number of polynomials with this variable is 2.\n\n\\item [Minimal degrees:]  9 polynomials with degree 1 and 8 polynomials with degree 1.\n\n\\item [Polynomial with linear degree:]  Removing variable $x_{12}$ from all other polynomials by reducing them with polynomial $p_{9}$.\n\n\\end{description}\n\nFinished a triangulation step, the current system is:\n\n\\begin{eqnarray*}\np_{0} &=& 2u_{1}x_{1}-u_{1}^{2}\\\\\np_{1} &=& 2u_{3}x_{2}+2u_{2}x_{1}+(-u_{3}^{2}-u_{2}^{2})\\\\\np_{2} &=& u_{3}u_{1}x_{4}^{2}+2u_{2}u_{1}x_{4}x_{3}-u_{3}u_{1}x_{3}^{2}\\\\\np_{3} &=& -u_{3}u_{1}x_{4}^{2}+(-2u_{2}u_{1}+2u_{1}^{2})x_{4}x_{3}+\\\\\n& & (2u_{2}u_{1}^{2}-2u_{1}^{3})x_{4}+u_{3}u_{1}x_{3}^{2}-2u_{3}u_{1}^{2}x_{3}+u_{3}u_{1}^{3}\\\\\np_{4} &=& (u_{2}-u_{1})x_{6}-u_{3}x_{5}+u_{3}u_{1}\\\\\np_{5} &=& -u_{3}x_{6}+(-u_{2}+u_{1})x_{5}+u_{3}x_{4}+(u_{2}-u_{1})x_{3}\\\\\np_{6} &=& u_{2}x_{8}-u_{3}x_{7}\\\\\np_{7} &=& -u_{3}x_{8}-u_{2}x_{7}+u_{3}x_{4}+u_{2}x_{3}\\\\\np_{8} &=& -u_{2}x_{11}x_{6}+u_{3}x_{11}x_{5}-u_{3}x_{11}x_{3}+u_{2}x_{6}x_{3}\\\\\np_{9} &=& u_{2}x_{12}-u_{3}x_{11}\\\\\np_{10} &=& x_{13}x_{8}-x_{13}x_{6}-x_{8}x_{5}+x_{7}x_{6}\\\\\np_{11} &=& 2x_{15}-x_{11}-x_{7}\\\\\np_{12} &=& 2x_{16}-x_{12}-x_{8}\\\\\np_{13} &=& 2x_{17}-x_{13}-x_{3}\\\\\np_{14} &=& 2x_{18}\\\\\n\\end{eqnarray*}\n\n\n\n\n\\subsection{Triangulation, step 7}\n\n\\begin{description}\n\n\\item [Choosing variable:]  Trying the variable with index 11.\n\n\\item [Variable $x_{11}$ selected:]  The number of polynomials with this variable is 1.\n\n\\item [Single polynomial with chosen variable:]  No reduction needed.\n\n\\item The triangular system has not been changed.\n\n\n\n\\end{description}\n\n\n\n\n\n\\subsection{Triangulation, step 8}\n\n\\begin{description}\n\n\\item [Choosing variable:]  Trying the variable with index 10.\n\n\\item [Choosing variable:]  Trying the variable with index 9.\n\n\\item [Choosing variable:]  Trying the variable with index 8.\n\n\\item [Variable $x_{8}$ selected:]  The number of polynomials with this variable is 2.\n\n\\item [Minimal degrees:]  7 polynomials with degree 1 and 6 polynomials with degree 1.\n\n\\item [Polynomial with linear degree:]  Removing variable $x_{8}$ from all other polynomials by reducing them with polynomial $p_{7}$.\n\n\\end{description}\n\nFinished a triangulation step, the current system is:\n\n\\begin{eqnarray*}\np_{0} &=& 2u_{1}x_{1}-u_{1}^{2}\\\\\np_{1} &=& 2u_{3}x_{2}+2u_{2}x_{1}+(-u_{3}^{2}-u_{2}^{2})\\\\\np_{2} &=& u_{3}u_{1}x_{4}^{2}+2u_{2}u_{1}x_{4}x_{3}-u_{3}u_{1}x_{3}^{2}\\\\\np_{3} &=& -u_{3}u_{1}x_{4}^{2}+(-2u_{2}u_{1}+2u_{1}^{2})x_{4}x_{3}+\\\\\n& & (2u_{2}u_{1}^{2}-2u_{1}^{3})x_{4}+u_{3}u_{1}x_{3}^{2}-2u_{3}u_{1}^{2}x_{3}+u_{3}u_{1}^{3}\\\\\np_{4} &=& (u_{2}-u_{1})x_{6}-u_{3}x_{5}+u_{3}u_{1}\\\\\np_{5} &=& -u_{3}x_{6}+(-u_{2}+u_{1})x_{5}+u_{3}x_{4}+(u_{2}-u_{1})x_{3}\\\\\np_{6} &=& (u_{3}^{2}+u_{2}^{2})x_{7}-u_{3}u_{2}x_{4}-u_{2}^{2}x_{3}\\\\\np_{7} &=& -u_{3}x_{8}-u_{2}x_{7}+u_{3}x_{4}+u_{2}x_{3}\\\\\np_{8} &=& -u_{2}x_{11}x_{6}+u_{3}x_{11}x_{5}-u_{3}x_{11}x_{3}+u_{2}x_{6}x_{3}\\\\\np_{9} &=& u_{2}x_{12}-u_{3}x_{11}\\\\\np_{10} &=& x_{13}x_{8}-x_{13}x_{6}-x_{8}x_{5}+x_{7}x_{6}\\\\\np_{11} &=& 2x_{15}-x_{11}-x_{7}\\\\\np_{12} &=& 2x_{16}-x_{12}-x_{8}\\\\\np_{13} &=& 2x_{17}-x_{13}-x_{3}\\\\\np_{14} &=& 2x_{18}\\\\\n\\end{eqnarray*}\n\n\n\n\n\\subsection{Triangulation, step 9}\n\n\\begin{description}\n\n\\item [Choosing variable:]  Trying the variable with index 7.\n\n\\item [Variable $x_{7}$ selected:]  The number of polynomials with this variable is 1.\n\n\\item [Single polynomial with chosen variable:]  No reduction needed.\n\n\\item The triangular system has not been changed.\n\n\n\n\\end{description}\n\n\n\n\n\n\\subsection{Triangulation, step 10}\n\n\\begin{description}\n\n\\item [Choosing variable:]  Trying the variable with index 6.\n\n\\item [Variable $x_{6}$ selected:]  The number of polynomials with this variable is 2.\n\n\\item [Minimal degrees:]  5 polynomials with degree 1 and 4 polynomials with degree 1.\n\n\\item [Polynomial with linear degree:]  Removing variable $x_{6}$ from all other polynomials by reducing them with polynomial $p_{5}$.\n\n\\end{description}\n\nFinished a triangulation step, the current system is:\n\n\\begin{eqnarray*}\np_{0} &=& 2u_{1}x_{1}-u_{1}^{2}\\\\\np_{1} &=& 2u_{3}x_{2}+2u_{2}x_{1}+(-u_{3}^{2}-u_{2}^{2})\\\\\np_{2} &=& u_{3}u_{1}x_{4}^{2}+2u_{2}u_{1}x_{4}x_{3}-u_{3}u_{1}x_{3}^{2}\\\\\np_{3} &=& -u_{3}u_{1}x_{4}^{2}+(-2u_{2}u_{1}+2u_{1}^{2})x_{4}x_{3}+\\\\\n& & (2u_{2}u_{1}^{2}-2u_{1}^{3})x_{4}+u_{3}u_{1}x_{3}^{2}-2u_{3}u_{1}^{2}x_{3}+u_{3}u_{1}^{3}\\\\\np_{4} &=& (u_{3}^{2}+u_{2}^{2}-2u_{2}u_{1}+u_{1}^{2})x_{5}+(-u_{3}u_{2}+u_{3}u_{1})x_{4}+\\\\\n& & (-u_{2}^{2}+2u_{2}u_{1}-u_{1}^{2})x_{3}-u_{3}^{2}u_{1}\\\\\np_{5} &=& -u_{3}x_{6}+(-u_{2}+u_{1})x_{5}+u_{3}x_{4}+(u_{2}-u_{1})x_{3}\\\\\np_{6} &=& (u_{3}^{2}+u_{2}^{2})x_{7}-u_{3}u_{2}x_{4}-u_{2}^{2}x_{3}\\\\\np_{7} &=& -u_{3}x_{8}-u_{2}x_{7}+u_{3}x_{4}+u_{2}x_{3}\\\\\np_{8} &=& -u_{2}x_{11}x_{6}+u_{3}x_{11}x_{5}-u_{3}x_{11}x_{3}+u_{2}x_{6}x_{3}\\\\\np_{9} &=& u_{2}x_{12}-u_{3}x_{11}\\\\\np_{10} &=& x_{13}x_{8}-x_{13}x_{6}-x_{8}x_{5}+x_{7}x_{6}\\\\\np_{11} &=& 2x_{15}-x_{11}-x_{7}\\\\\np_{12} &=& 2x_{16}-x_{12}-x_{8}\\\\\np_{13} &=& 2x_{17}-x_{13}-x_{3}\\\\\np_{14} &=& 2x_{18}\\\\\n\\end{eqnarray*}\n\n\n\n\n\\subsection{Triangulation, step 11}\n\n\\begin{description}\n\n\\item [Choosing variable:]  Trying the variable with index 5.\n\n\\item [Variable $x_{5}$ selected:]  The number of polynomials with this variable is 1.\n\n\\item [Single polynomial with chosen variable:]  No reduction needed.\n\n\\item The triangular system has not been changed.\n\n\n\n\\end{description}\n\n\n\n\n\n\\subsection{Triangulation, step 12}\n\n\\begin{description}\n\n\\item [Choosing variable:]  Trying the variable with index 4.\n\n\\item [Variable $x_{4}$ selected:]  The number of polynomials with this variable is 2.\n\n\\item [Minimal degrees:]  3 polynomials with degree 2 and 2 polynomials with degree 2.\n\n\\item [No linear degree polynomials:]  Reducing polynomial $p_{2}$ (of degree 2) with $p_{3}$ (of degree 2).\n\n\\item [Repeat same iteration:]  Two polynomials has been reduced, repeating iteration.\n\n\\end{description}\n\n\n\n\n\n\\subsection{Triangulation, step 12}\n\n\\begin{description}\n\n\\item [Choosing variable:]  Trying the variable with index 4.\n\n\\item [Variable $x_{4}$ selected:]  The number of polynomials with this variable is 2.\n\n\\item [Minimal degrees:]  2 polynomials with degree 1 and 3 polynomials with degree 2.\n\n\\item [Polynomial with linear degree:]  Removing variable $x_{4}$ from all other polynomials by reducing them with polynomial $p_{3}$.\n\n\\end{description}\n\nFinished a triangulation step, the current system is:\n\n\\begin{eqnarray*}\np_{0} &=& 2u_{1}x_{1}-u_{1}^{2}\\\\\np_{1} &=& 2u_{3}x_{2}+2u_{2}x_{1}+(-u_{3}^{2}-u_{2}^{2})\\\\\np_{2} &=& 4u_{3}^{3}u_{1}^{7}x_{3}^{4}-8u_{3}^{3}u_{1}^{8}x_{3}^{3}+\\\\\n& & (-4u_{3}^{5}u_{1}^{7}-4u_{3}^{3}u_{2}^{2}u_{1}^{7}+4u_{3}^{3}u_{2}u_{1}^{8}+4u_{3}^{3}u_{1}^{9})x_{3}^{2}+\\\\\n& & (4u_{3}^{5}u_{1}^{8}+4u_{3}^{3}u_{2}^{2}u_{1}^{8}-4u_{3}^{3}u_{2}u_{1}^{9})x_{3}-u_{3}^{5}u_{1}^{9}\\\\\np_{3} &=& -2u_{3}u_{1}^{3}x_{4}x_{3}+(-2u_{3}u_{2}u_{1}^{3}+2u_{3}u_{1}^{4})x_{4}+2u_{3}^{2}u_{1}^{3}x_{3}-u_{3}^{2}u_{1}^{4}\\\\\np_{4} &=& (u_{3}^{2}+u_{2}^{2}-2u_{2}u_{1}+u_{1}^{2})x_{5}+(-u_{3}u_{2}+u_{3}u_{1})x_{4}+\\\\\n& & (-u_{2}^{2}+2u_{2}u_{1}-u_{1}^{2})x_{3}-u_{3}^{2}u_{1}\\\\\np_{5} &=& -u_{3}x_{6}+(-u_{2}+u_{1})x_{5}+u_{3}x_{4}+(u_{2}-u_{1})x_{3}\\\\\np_{6} &=& (u_{3}^{2}+u_{2}^{2})x_{7}-u_{3}u_{2}x_{4}-u_{2}^{2}x_{3}\\\\\np_{7} &=& -u_{3}x_{8}-u_{2}x_{7}+u_{3}x_{4}+u_{2}x_{3}\\\\\np_{8} &=& -u_{2}x_{11}x_{6}+u_{3}x_{11}x_{5}-u_{3}x_{11}x_{3}+u_{2}x_{6}x_{3}\\\\\np_{9} &=& u_{2}x_{12}-u_{3}x_{11}\\\\\np_{10} &=& x_{13}x_{8}-x_{13}x_{6}-x_{8}x_{5}+x_{7}x_{6}\\\\\np_{11} &=& 2x_{15}-x_{11}-x_{7}\\\\\np_{12} &=& 2x_{16}-x_{12}-x_{8}\\\\\np_{13} &=& 2x_{17}-x_{13}-x_{3}\\\\\np_{14} &=& 2x_{18}\\\\\n\\end{eqnarray*}\n\n\n\n\n\\subsection{Triangulation, step 13}\n\n\\begin{description}\n\n\\item [Choosing variable:]  Trying the variable with index 3.\n\n\\item [Variable $x_{3}$ selected:]  The number of polynomials with this variable is 1.\n\n\\item [Single polynomial with chosen variable:]  No reduction needed.\n\n\\item The triangular system has not been changed.\n\n\n\n\\end{description}\n\n\n\n\n\n\\subsection{Triangulation, step 14}\n\n\\begin{description}\n\n\\item [Choosing variable:]  Trying the variable with index 2.\n\n\\item [Variable $x_{2}$ selected:]  The number of polynomials with this variable is 1.\n\n\\item [Single polynomial with chosen variable:]  No reduction needed.\n\n\\item The triangular system has not been changed.\n\n\n\n\\end{description}\n\n\n\n\n\n\\subsection{Triangulation, step 15}\n\n\\begin{description}\n\n\\item [Choosing variable:]  Trying the variable with index 1.\n\n\\item [Variable $x_{1}$ selected:]  The number of polynomials with this variable is 1.\n\n\\item [Single polynomial with chosen variable:]  No reduction needed.\n\n\\item The triangular system has not been changed.\n\n\n\n\\end{description}\n\nThe triangular system is:\n\n\\begin{eqnarray*}\np_{0} &=& 2u_{1}x_{1}-u_{1}^{2}\\\\\np_{1} &=& 2u_{3}x_{2}+2u_{2}x_{1}+(-u_{3}^{2}-u_{2}^{2})\\\\\np_{2} &=& 4u_{3}^{3}u_{1}^{7}x_{3}^{4}-8u_{3}^{3}u_{1}^{8}x_{3}^{3}+\\\\\n& & (-4u_{3}^{5}u_{1}^{7}-4u_{3}^{3}u_{2}^{2}u_{1}^{7}+4u_{3}^{3}u_{2}u_{1}^{8}+4u_{3}^{3}u_{1}^{9})x_{3}^{2}+\\\\\n& & (4u_{3}^{5}u_{1}^{8}+4u_{3}^{3}u_{2}^{2}u_{1}^{8}-4u_{3}^{3}u_{2}u_{1}^{9})x_{3}-u_{3}^{5}u_{1}^{9}\\\\\np_{3} &=& -2u_{3}u_{1}^{3}x_{4}x_{3}+(-2u_{3}u_{2}u_{1}^{3}+2u_{3}u_{1}^{4})x_{4}+2u_{3}^{2}u_{1}^{3}x_{3}-u_{3}^{2}u_{1}^{4}\\\\\np_{4} &=& (u_{3}^{2}+u_{2}^{2}-2u_{2}u_{1}+u_{1}^{2})x_{5}+(-u_{3}u_{2}+u_{3}u_{1})x_{4}+\\\\\n& & (-u_{2}^{2}+2u_{2}u_{1}-u_{1}^{2})x_{3}-u_{3}^{2}u_{1}\\\\\np_{5} &=& -u_{3}x_{6}+(-u_{2}+u_{1})x_{5}+u_{3}x_{4}+(u_{2}-u_{1})x_{3}\\\\\np_{6} &=& (u_{3}^{2}+u_{2}^{2})x_{7}-u_{3}u_{2}x_{4}-u_{2}^{2}x_{3}\\\\\np_{7} &=& -u_{3}x_{8}-u_{2}x_{7}+u_{3}x_{4}+u_{2}x_{3}\\\\\np_{8} &=& -u_{2}x_{11}x_{6}+u_{3}x_{11}x_{5}-u_{3}x_{11}x_{3}+u_{2}x_{6}x_{3}\\\\\np_{9} &=& u_{2}x_{12}-u_{3}x_{11}\\\\\np_{10} &=& x_{13}x_{8}-x_{13}x_{6}-x_{8}x_{5}+x_{7}x_{6}\\\\\np_{11} &=& 2x_{15}-x_{11}-x_{7}\\\\\np_{12} &=& 2x_{16}-x_{12}-x_{8}\\\\\np_{13} &=& 2x_{17}-x_{13}-x_{3}\\\\\np_{14} &=& 2x_{18}\\\\\n\\end{eqnarray*}\n\n\n\n\n\\section{Final remainder}\n\n\n\n\n\n\\subsection{Final remainder for conjecture 1}\n\nCalculating final remainder of the conclusion:\n$$\ng  =  -x_{18}x_{4}+x_{18}x_{2}-x_{17}x_{3}+x_{17}x_{1}+x_{16}x_{4}-x_{16}x_{2}+x_{15}x_{3}-x_{15}x_{1}\n$$\nwith respect to the triangular system.\n\n\\begin{enumerate}\n\n\\item Pseudo remainder with $p_{14}$ over variable $x_{18}$:\n$$\ng  =  -2x_{17}x_{3}+2x_{17}x_{1}+2x_{16}x_{4}-2x_{16}x_{2}+2x_{15}x_{3}-2x_{15}x_{1}\n$$\n\\item Pseudo remainder with $p_{13}$ over variable $x_{17}$:\n$$\ng  =  4x_{16}x_{4}-4x_{16}x_{2}+4x_{15}x_{3}-4x_{15}x_{1}-2x_{13}x_{3}+2x_{13}x_{1}-2x_{3}^{2}+2x_{3}x_{1}\n$$\n\\item Pseudo remainder with $p_{12}$ over variable $x_{16}$:\n$$\ng  =  8\n$$\n$$\nx_{15}x_{3}-8x_{15}x_{1}-4x_{13}x_{3}+4x_{13}x_{1}+4x_{12}x_{4}-4x_{12}x_{2}+4x_{8}x_{4}-4x_{8}x_{2}-4x_{3}^{2}+\n$$\n$$\n4x_{3}x_{1}\n$$\n\\item Pseudo remainder with $p_{11}$ over variable $x_{15}$:\n$$\ng  =  -\n$$\n$$\n8x_{13}x_{3}+8x_{13}x_{1}+8x_{12}x_{4}-8x_{12}x_{2}+8x_{11}x_{3}-8x_{11}x_{1}+8x_{8}x_{4}-8x_{8}x_{2}+8x_{7}x_{3}-\n$$\n$$\n8x_{7}x_{1}-8x_{3}^{2}+8x_{3}x_{1}\n$$\n\\item Pseudo remainder with $p_{10}$ over variable $x_{13}$:\n$$\ng  =  8\n$$\n$$\nx_{12}x_{8}x_{4}-8x_{12}x_{8}x_{2}-8x_{12}x_{6}x_{4}+8x_{12}x_{6}x_{2}+8x_{11}x_{8}x_{3}-8x_{11}x_{8}x_{1}-\n$$\n$$\n8x_{11}x_{6}x_{3}+8x_{11}x_{6}x_{1}+8x_{8}^{2}x_{4}-8x_{8}^{2}x_{2}+8x_{8}x_{7}x_{3}-8x_{8}x_{7}x_{1}-8x_{8}x_{6}x_{4}+\n$$\n$$\n8x_{8}x_{6}x_{2}-8x_{8}x_{5}x_{3}+8x_{8}x_{5}x_{1}-8x_{8}x_{3}^{2}+8x_{8}x_{3}x_{1}+8x_{6}x_{3}^{2}-8x_{6}x_{3}x_{1}\n$$\n\\item Pseudo remainder with $p_{9}$ over variable $x_{12}$:\n$$\ng  =  8\n$$\n$$\nu_{3}x_{11}x_{8}x_{4}+8u_{2}x_{11}x_{8}x_{3}-8u_{3}x_{11}x_{8}x_{2}-8u_{2}x_{11}x_{8}x_{1}-8u_{3}x_{11}x_{6}x_{4}-\n$$\n$$\n8u_{2}x_{11}x_{6}x_{3}+8u_{3}x_{11}x_{6}x_{2}+8u_{2}x_{11}x_{6}x_{1}+8u_{2}x_{8}^{2}x_{4}-8u_{2}x_{8}^{2}x_{2}+\n$$\n$$\n8u_{2}x_{8}x_{7}x_{3}-8u_{2}x_{8}x_{7}x_{1}-8u_{2}x_{8}x_{6}x_{4}+8u_{2}x_{8}x_{6}x_{2}-8u_{2}x_{8}x_{5}x_{3}+\n$$\n$$\n8u_{2}x_{8}x_{5}x_{1}-8u_{2}x_{8}x_{3}^{2}+8u_{2}x_{8}x_{3}x_{1}+8u_{2}x_{6}x_{3}^{2}-8u_{2}x_{6}x_{3}x_{1}\n$$\n\\item Pseudo remainder with $p_{8}$ over variable $x_{11}$:\n$$\ng  =  -\n$$\n$$\n8u_{2}^{2}x_{8}^{2}x_{6}x_{4}+8u_{2}^{2}x_{8}^{2}x_{6}x_{2}+8u_{3}u_{2}x_{8}^{2}x_{5}x_{4}-8u_{3}u_{2}x_{8}^{2}x_{5}x_{2}-\n$$\n$$\n8u_{3}u_{2}x_{8}^{2}x_{4}x_{3}+8u_{3}u_{2}x_{8}^{2}x_{3}x_{2}-8u_{2}^{2}x_{8}x_{7}x_{6}x_{3}+\n$$\n$$\n8u_{2}^{2}x_{8}x_{7}x_{6}x_{1}+8u_{3}u_{2}x_{8}x_{7}x_{5}x_{3}-8u_{3}u_{2}x_{8}x_{7}x_{5}x_{1}-\n$$\n$$\n8u_{3}u_{2}x_{8}x_{7}x_{3}^{2}+8u_{3}u_{2}x_{8}x_{7}x_{3}x_{1}+8u_{2}^{2}x_{8}x_{6}^{2}x_{4}-\n$$\n$$\n8u_{2}^{2}x_{8}x_{6}^{2}x_{2}-8u_{3}u_{2}x_{8}x_{6}x_{5}x_{4}+8u_{2}^{2}x_{8}x_{6}x_{5}x_{3}+\n$$\n$$\n8u_{3}u_{2}x_{8}x_{6}x_{5}x_{2}-8u_{2}^{2}x_{8}x_{6}x_{5}x_{1}-8u_{3}u_{2}x_{8}x_{5}^{2}x_{3}+\n$$\n$$\n8u_{3}u_{2}x_{8}x_{5}^{2}x_{1}+8u_{3}u_{2}x_{8}x_{3}^{3}-8u_{3}u_{2}x_{8}x_{3}^{2}x_{1}+8u_{3}u_{2}x_{6}^{2}x_{4}x_{3}-\n$$\n$$\n8u_{3}u_{2}x_{6}^{2}x_{3}x_{2}+8u_{3}u_{2}x_{6}x_{5}x_{3}^{2}-8u_{3}u_{2}x_{6}x_{5}x_{3}x_{1}-8u_{3}u_{2}x_{6}x_{3}^{3}+\n$$\n$$\n8u_{3}u_{2}x_{6}x_{3}^{2}x_{1}\n$$\n\\item Pseudo remainder with $p_{7}$ over variable $x_{8}$:\n\nPolynomial too big for output (text size is 2964 characters, number of terms is 78)\\\\ \n\n\\item Pseudo remainder with $p_{6}$ over variable $x_{7}$:\n\nPolynomial too big for output (text size is 2154 characters, number of terms is 44)\\\\ \n\n\\item Pseudo remainder with $p_{5}$ over variable $x_{6}$:\n\nPolynomial too big for output (text size is 4669 characters, number of terms is 30)\\\\ \n\n\\item Pseudo remainder with $p_{4}$ over variable $x_{5}$:\n\nPolynomial too big for output (text size is 6393 characters, number of terms is 30)\\\\ \n\n\\item Pseudo remainder with $p_{3}$ over variable $x_{4}$:\n Polynomial too big for output (number of terms is 25)\n\\item Pseudo remainder with $p_{2}$ over variable $x_{3}$:\n Polynomial too big for output (number of terms is 12)\n\\item Pseudo remainder with $p_{1}$ over variable $x_{2}$:\n\nPolynomial too big for output (text size is 5856 characters, number of terms is 8)\\\\ \n\n\\item Pseudo remainder with $p_{0}$ over variable $x_{1}$:\n$$\ng  =  0\n$$\n\\end{enumerate}\n\n\n\n\n\n\\section{Prover report}\n\n\\begin{description}\n\n\\item [Status:]  The conjecture has been proved.\n\n\\item [Space Complexity:]  The biggest polynomial obtained during proof process contained 421 terms.\n\n\\item [Time Complexity:]  Time spent by the prover: 0.156 seconds. There are no ndg conditions.\n\n\\end{description}\n\n\\end{document}\n"
+      }
+    ],
+    "hypergraph_proofs": [
+      {
+        "goal": "perp(i,o,m,n)",
+        "rounds": 0,
+        "explored_hyperedges": 0,
+        "relevant_theorems": [],
+        "steps": [
+          {
+            "atom": "perp(i,o,m,n)",
+            "theorem": "given",
+            "premises": [],
+            "depth": 0
+          }
+        ]
+      }
+    ]
+  },
+  "solved": true,
+  "acceptance_rule": "count solved only when an exact certificate is replayed into the typed goal; FormalGeo frontier extraction alone is not a solve",
+  "elapsed_seconds": 16.066973099994357
+}

@@ -68,6 +68,7 @@ from worker.backend.geometry_proof_hypergraph import (
     BackwardObligation,
     Theorem,
     euclidean_relation_theorems,
+    stratify_backward_obligations,
     synthesize_backward_obligations,
 )
 from worker.backend.geometry_ar_residual import yuclid_ar_residual
@@ -80,22 +81,43 @@ from worker.backend.typed_candidate_alignment import (
     align_candidate_atoms,
     align_candidate_cone_to_proof_branches,
     align_candidate_groups_lazily,
+    candidate_directly_satisfies_obligation,
     instantiate_relation_templates,
 )
+from worker.backend.typed_construction_contracts import (
+    ContractSynthesisAudit,
+    TypedConstructionContract,
+    assess_construction_requirements,
+    synthesize_contract_candidates,
+)
+from worker.backend.typed_construction_cegis import (
+    TypedConstructionProposal,
+    rank_construction_proposals,
+)
 from worker.backend.typed_open_proof_dag import (
+    NativeProofDAGIncrement,
+    NativeProofDAGProgress,
+    OpenProofDAG,
+    assess_native_proof_dag_progress,
     OpenProofBranch,
     compile_candidate_forward_cone,
     compile_open_proof_dag,
+    native_proof_dag_increment,
 )
-from worker.backend.typed_bidirectional_priority import search_bidirectionally
+from worker.backend.typed_bidirectional_priority import (
+    search_bidirectionally_iterative,
+)
 from worker.backend.numerical_incidence_auxiliary import (
     NumericalIncidenceAtlas,
     NumericalIncidenceProfile,
 )
 from worker.backend.native_formal_obligation_sheaf import (
     build_candidate_local_view,
+    build_mmt_candidate_local_view,
+    candidate_theory_assignment,
     capability_preserving_candidate_order,
     coordinate_candidate_scores,
+    coordinate_mmt_candidate_scores,
 )
 from worker.backend.mortra_unified_architecture import (
     unified_geometry_architecture_manifest,
@@ -116,6 +138,8 @@ from worker.backend.typed_geometry_stalk import (
     goal_relevant_families,
     prioritize_morphism_orbit,
     proof_hypergraph_point_relevance,
+    relevance_ordered_schema_quota_fill,
+    required_category_score_fill,
     schema_first_score_fill,
     schema_quota_score_fill,
 )
@@ -166,6 +190,57 @@ def construction_relation_atoms(
     )
 
 
+def construction_requirement_atoms(
+    family: str,
+    output: str,
+    inputs: tuple[str, ...],
+) -> tuple[Atom, ...]:
+    """Instantiate the declared existence/nondegeneracy side conditions."""
+
+    definition = DEFINITIONS[family]
+    templates = tuple(
+        Atom(tokens[0], tokens[1:])
+        for construction in definition.requirements.constructions
+        if (tokens := tuple(str(construction.string).split()))
+    )
+    return instantiate_relation_templates(
+        tuple(map(str, definition.args)),
+        templates,
+        (output, *inputs),
+    )
+
+
+def typed_construction_contracts(
+    families: tuple[ConstructionFamily, ...],
+) -> tuple[TypedConstructionContract, ...]:
+    """Expose JGEX definitions as alpha-renamable construction contracts."""
+
+    contracts: list[TypedConstructionContract] = []
+    for family in families:
+        output_variable = "?OUT"
+        input_variables = tuple(
+            f"?INPUT{index}" for index in range(family.input_arity)
+        )
+        contracts.append(
+            TypedConstructionContract(
+                family=family,
+                output_variable=output_variable,
+                input_variables=input_variables,
+                relation_atoms=construction_relation_atoms(
+                    family.name,
+                    output_variable,
+                    input_variables,
+                ),
+                requirement_atoms=construction_requirement_atoms(
+                    family.name,
+                    output_variable,
+                    input_variables,
+                ),
+            )
+        )
+    return tuple(contracts)
+
+
 @dataclass(frozen=True)
 class ConstructionStep:
     family: str
@@ -176,6 +251,36 @@ class ConstructionStep:
     @property
     def key(self) -> str:
         return f"{self.family}({','.join(self.inputs)})->{self.output}"
+
+
+def construction_path_from_payload(
+    payload: list[dict[str, Any]],
+) -> tuple[ConstructionStep, ...]:
+    """Restore an enumerated construction path without re-enumerating it."""
+
+    return tuple(
+        ConstructionStep(
+            family=str(item["family"]),
+            output=str(item["output"]),
+            inputs=tuple(str(value) for value in item.get("inputs", ())),
+        )
+        for item in payload
+    )
+
+
+def construction_path_to_payload(
+    path: tuple[ConstructionStep, ...],
+) -> list[dict[str, Any]]:
+    """Persist an enumerated path in a stable, JSON-safe representation."""
+
+    return [
+        {
+            "family": step.family,
+            "output": step.output,
+            "inputs": list(step.inputs),
+        }
+        for step in path
+    ]
 
 
 @dataclass(frozen=True)
@@ -198,8 +303,108 @@ class SearchRecord:
     ar_residual_support_size: int
     ar_residual_l1_weight: float
     ar_known_rank: int
+    proof_dag_progress: NativeProofDAGProgress
+    proof_dag_increment: NativeProofDAGIncrement
     elapsed_seconds: float
     error: str | None = None
+    right_censored: bool = False
+
+
+def _atom_from_dict(payload: dict[str, Any]) -> Atom:
+    return Atom(
+        str(payload["predicate"]),
+        tuple(map(str, payload.get("arguments", ()))),
+    )
+
+
+def search_record_from_dict(payload: dict[str, Any]) -> SearchRecord:
+    """Restore a verified candidate record from an atomic progress checkpoint."""
+
+    return SearchRecord(
+        steps=tuple(
+            ConstructionStep(
+                family=str(step["family"]),
+                output=str(step["output"]),
+                inputs=tuple(map(str, step.get("inputs", ()))),
+                structural_rank=tuple(step.get("structural_rank", ())),
+            )
+            for step in payload.get("steps", ())
+        ),
+        solved=bool(payload.get("solved")),
+        all_deduction_count=int(payload.get("all_deduction_count", 0)),
+        goal_deduction_count=int(payload.get("goal_deduction_count", 0)),
+        relation_target_assertion_count=int(
+            payload.get("relation_target_assertion_count", 0)
+        ),
+        relation_support_weight=int(payload.get("relation_support_weight", 0)),
+        relation_near_goal_count=int(payload.get("relation_near_goal_count", 0)),
+        relation_transition_potential=float(
+            payload.get("relation_transition_potential", 0.0)
+        ),
+        relation_transition_channel_coverage=int(
+            payload.get("relation_transition_channel_coverage", 0)
+        ),
+        relation_channel_counts=tuple(
+            (str(item[0]), int(item[1]))
+            for item in payload.get("relation_channel_counts", ())
+        ),
+        frontier_witnesses=tuple(
+            RelationFrontierWitness(
+                channel=str(item["channel"]),
+                points=tuple(map(str, item.get("points", ()))),
+                support=tuple(map(str, item.get("support", ()))),
+                distance_to_goal=int(item.get("distance_to_goal", 0)),
+                goal_support_overlap=int(item.get("goal_support_overlap", 0)),
+                rule=str(item.get("rule", "")),
+                proof_reference=str(item.get("proof_reference", "")),
+            )
+            for item in payload.get("frontier_witnesses", ())
+        ),
+        backward_obligations=tuple(
+            BackwardObligation(
+                theorem=str(item["theorem"]),
+                goal=_atom_from_dict(item["goal"]),
+                matched_premises=tuple(
+                    _atom_from_dict(atom)
+                    for atom in item.get("matched_premises", ())
+                ),
+                open_premises=tuple(
+                    _atom_from_dict(atom) for atom in item.get("open_premises", ())
+                ),
+                substitution=tuple(
+                    (str(pair[0]), str(pair[1]))
+                    for pair in item.get("substitution", ())
+                ),
+                unbound_variables=tuple(
+                    map(str, item.get("unbound_variables", ()))
+                ),
+            )
+            for item in payload.get("backward_obligations", ())
+        ),
+        open_relation_demands=tuple(
+            _atom_from_dict(item) for item in payload.get("open_relation_demands", ())
+        ),
+        ar_supported_goal_count=int(payload.get("ar_supported_goal_count", 0)),
+        ar_closed_goal_count=int(payload.get("ar_closed_goal_count", 0)),
+        ar_residual_support_size=int(payload.get("ar_residual_support_size", 0)),
+        ar_residual_l1_weight=float(payload.get("ar_residual_l1_weight", 0.0)),
+        ar_known_rank=int(payload.get("ar_known_rank", 0)),
+        proof_dag_progress=NativeProofDAGProgress(
+            **{
+                key: int(value)
+                for key, value in payload.get("proof_dag_progress", {}).items()
+            }
+        ),
+        proof_dag_increment=NativeProofDAGIncrement(
+            **{
+                key: int(value)
+                for key, value in payload.get("proof_dag_increment", {}).items()
+            }
+        ),
+        elapsed_seconds=float(payload.get("elapsed_seconds", 0.0)),
+        error=payload.get("error"),
+        right_censored=bool(payload.get("right_censored", False)),
+    )
 
 
 def formulation_structure(
@@ -296,14 +501,19 @@ def proof_state_obligations(
     facts = tuple(Atom(predicate, points) for predicate, points in yuclid_assertion_keys(payload))
     obligations: list[BackwardObligation] = []
     for goal in goals:
+        expanded = synthesize_backward_obligations(
+            facts,
+            goal,
+            theorems,
+            max_open_premises=4,
+            max_states_per_rule=192,
+            max_results=max_results * 4,
+        )
         obligations.extend(
-            synthesize_backward_obligations(
-                facts,
-                goal,
-                theorems,
-                max_open_premises=4,
-                max_states_per_rule=192,
-                max_results=max_results,
+            stratify_backward_obligations(
+                expanded,
+                limit=max_results,
+                witness_fraction=0.25,
             )
         )
     ranked = tuple(obligations[:max_results])
@@ -349,6 +559,23 @@ def next_point_name(points: set[str]) -> str:
 def branch_seed(seed: int, steps: tuple[ConstructionStep, ...]) -> int:
     payload = str(seed) + "|" + "|".join(step.key for step in steps)
     return int.from_bytes(hashlib.sha256(payload.encode()).digest()[:8], "big")
+
+
+def write_json_atomic(path: Path, payload: dict[str, Any]) -> None:
+    """Persist a checkpoint without exposing a partially written JSON file."""
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(f"{path.name}.{os.getpid()}.tmp")
+    temporary.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    for attempt in range(8):
+        try:
+            temporary.replace(path)
+            return
+        except PermissionError:
+            if attempt == 7:
+                raise
+            # Windows can briefly lock a checkpoint while the monitor reads it.
+            time.sleep(0.01 * (2**attempt))
 
 
 def build_branch(base_problem: Any, steps: tuple[ConstructionStep, ...], *, seed: int) -> Any:
@@ -426,10 +653,16 @@ def evaluate_steps(
     transition_distances: dict[str, int],
     goal_atoms: tuple[Atom, ...],
     rule_theorems: tuple[Theorem, ...],
+    proof_dag_branches: tuple[OpenProofBranch, ...],
+    parent_proof_dag_progress: NativeProofDAGProgress,
     obligation_guided: bool,
+    yuclid_timeout_seconds: float | None = None,
     prepared_problem: Any | None = None,
 ) -> SearchRecord:
-    from worker.backend.yuclid_native_verifier import verify_problem
+    from worker.backend.yuclid_native_verifier import (
+        YuclidTimeoutError,
+        verify_problem,
+    )
 
     started = time.perf_counter()
     try:
@@ -439,7 +672,10 @@ def evaluate_steps(
             else build_branch(base_problem, steps, seed=seed)
         )
         verification = verify_problem(
-            problem, yuclid_exe=yuclid_exe, ar_profile=ar_profile
+            problem,
+            yuclid_exe=yuclid_exe,
+            ar_profile=ar_profile,
+            timeout_seconds=yuclid_timeout_seconds,
         )
         relation_metrics = yuclid_relation_metrics(
             verification.payload,
@@ -464,6 +700,23 @@ def evaluate_steps(
             verification.payload,
             ((atom.predicate, atom.arguments) for atom in goal_atoms),
         )
+        proof_dag_progress = assess_native_proof_dag_progress(
+            (
+                Atom(predicate, points)
+                for predicate, points in yuclid_assertion_keys(
+                    verification.payload
+                )
+            ),
+            proof_dag_branches,
+            baseline_facts=(
+                Atom(predicate, points)
+                for predicate, points in baseline_assertion_keys
+            ),
+        )
+        proof_dag_increment = native_proof_dag_increment(
+            parent_proof_dag_progress,
+            proof_dag_progress,
+        )
         return SearchRecord(
             steps,
             verification.solved,
@@ -483,6 +736,8 @@ def evaluate_steps(
             ar_residual.residual_support_size,
             ar_residual.residual_l1_weight,
             ar_residual.known_rank,
+            proof_dag_progress,
+            proof_dag_increment,
             time.perf_counter() - started,
         )
     except Exception as exc:
@@ -505,8 +760,11 @@ def evaluate_steps(
             0,
             0.0,
             0,
+            NativeProofDAGProgress(0, 0, 0, -1, 0, 0, 0, 0, 0),
+            NativeProofDAGIncrement(0, 0, 0, 0, 0, 0),
             time.perf_counter() - started,
-            str(exc),
+            error=str(exc),
+            right_censored=isinstance(exc, YuclidTimeoutError),
         )
 
 
@@ -533,6 +791,7 @@ def candidate_extensions(
     candidate_alignment: str = "off",
     candidate_relation_distances: dict[str, dict[str, int]] | None = None,
     proof_dag_branches: tuple[OpenProofBranch, ...] = (),
+    proof_dags: tuple[OpenProofDAG, ...] = (),
     proof_dag_goals: tuple[Atom, ...] = (),
     proof_dag_facts: tuple[Atom, ...] = (),
     proof_dag_theorems: tuple[Theorem, ...] = (),
@@ -548,6 +807,11 @@ def candidate_extensions(
     incidence_workers: int = 1,
     current_problem: Any | None = None,
     construction_seed: int = 0,
+    candidate_contract_synthesis: bool = False,
+    contract_candidates_per_schema: int = 32,
+    contract_obligation_branches: tuple[tuple[Atom, ...], ...] = (),
+    enumeration_limit_per_family: int = 0,
+    candidate_cone_timeout_seconds: float = 0.0,
 ) -> tuple[list[ConstructionStep], dict[str, Any]]:
     extension_started = time.perf_counter()
     generated = {step.output for step in steps}
@@ -577,6 +841,8 @@ def candidate_extensions(
         str(point.name): (float(point.num.x), float(point.num.y))
         for point in current_problem.points
     }
+    output = next_point_name(points)
+    enumeration_audit: dict[str, object] = {}
     candidates = enumerate_typed_candidates(
         points=tuple(points),
         graph=graph,
@@ -599,7 +865,119 @@ def candidate_extensions(
         role_graph=role_graph,
         role_weights=role_weights,
         required_input_points=(generated if require_generated_input else set()),
+        max_input_tuples_per_family=(
+            enumeration_limit_per_family
+            if enumeration_limit_per_family > 0
+            else None
+        ),
+        audit=enumeration_audit,
     )
+    contract_audit = ContractSynthesisAudit(0, 0, 0, 0, 0, 0)
+    contract_candidates = ()
+    contract_chart_rank_by_key: dict[str, tuple[tuple[int, int, int], bool]] = {}
+    contract_requirement_gate = {
+        "input_candidates": 0,
+        "executable_candidates": 0,
+        "held_open_candidates": 0,
+        "statically_rejected_candidates": 0,
+    }
+    if candidate_contract_synthesis:
+        contract_candidates, contract_audit = synthesize_contract_candidates(
+            relation_demands,
+            typed_construction_contracts(families),
+            visible_entities=tuple(sorted(points)),
+            output_entity=output,
+            used_keys=used,
+            max_candidates_per_contract=contract_candidates_per_schema,
+            obligation_branches=contract_obligation_branches,
+            known_facts=proof_dag_facts,
+        )
+        generic_candidates = [
+            TypedConstructionCandidate(
+                candidate.family,
+                candidate.inputs,
+                (1, *candidate.structural_rank),
+            )
+            for candidate in candidates
+        ]
+        synthesized_candidates = [
+            TypedConstructionCandidate(
+                candidate.family,
+                candidate.inputs,
+                (0, *candidate.rank),
+            )
+            for candidate in contract_candidates
+        ]
+        candidates_by_key: dict[str, TypedConstructionCandidate] = {}
+        for candidate in (*synthesized_candidates, *generic_candidates):
+            previous = candidates_by_key.get(candidate.key)
+            if previous is None or candidate.structural_rank < previous.structural_rank:
+                candidates_by_key[candidate.key] = candidate
+        requirement_assessments = {
+            candidate.key: assess_construction_requirements(
+                construction_requirement_atoms(
+                    candidate.family, output, candidate.inputs
+                ),
+                proof_dag_facts,
+            )
+            for candidate in candidates_by_key.values()
+        }
+        contract_requirement_gate = {
+            "input_candidates": len(requirement_assessments),
+            "executable_candidates": sum(
+                item.executable for item in requirement_assessments.values()
+            ),
+            "held_open_candidates": sum(
+                bool(item.open) and not item.contradictory
+                for item in requirement_assessments.values()
+            ),
+            "statically_rejected_candidates": sum(
+                bool(item.contradictory)
+                for item in requirement_assessments.values()
+            ),
+        }
+        candidates = [
+            candidate
+            for candidate in candidates_by_key.values()
+            if requirement_assessments[candidate.key].executable
+        ]
+        if contract_obligation_branches:
+            chart_ranked = rank_construction_proposals(
+                proof_dag_facts,
+                contract_obligation_branches,
+                tuple(
+                    TypedConstructionProposal(
+                        key=candidate.key,
+                        family=candidate.family,
+                        inputs=candidate.inputs,
+                        postconditions=construction_relation_atoms(
+                            candidate.family, output, candidate.inputs
+                        ),
+                        requirements=construction_requirement_atoms(
+                            candidate.family, output, candidate.inputs
+                        ),
+                    )
+                    for candidate in candidates
+                ),
+            )
+            contract_chart_rank_by_key = {
+                proposal.key: (rank, reduced)
+                for proposal, rank, reduced in chart_ranked
+            }
+            candidates = [
+                TypedConstructionCandidate(
+                    candidate.family,
+                    candidate.inputs,
+                    (
+                        0
+                        if contract_chart_rank_by_key[candidate.key][1]
+                        else 1,
+                        *contract_chart_rank_by_key[candidate.key][0],
+                        *candidate.structural_rank,
+                    ),
+                )
+                for candidate in candidates
+            ]
     candidates = prioritize_morphism_orbit(
         candidates,
         previous_family=steps[-1].family if steps else None,
@@ -623,14 +1001,18 @@ def candidate_extensions(
         ),
     )
     candidates = list(gate_result.candidates)
-    output = next_point_name(points)
     incidence_input_count = len(candidates)
     if (
         candidate_incidence == "hageo"
         and incidence_preselect_limit > 0
         and len(candidates) > incidence_preselect_limit
     ):
-        if candidate_alignment in {"typed-atom", "native-formal-sheaf"}:
+        if candidate_alignment in {
+            "typed-atom",
+            "proof-dag-priority",
+            "native-formal-sheaf",
+            "mmt-theory-view",
+        }:
             pre_alignment = {
                 candidate.key: align_candidate_atoms(
                     construction_relation_atoms(
@@ -641,22 +1023,46 @@ def candidate_extensions(
                 )
                 for candidate in candidates
             }
-            candidates.sort(
-                key=lambda candidate: (
-                    pre_alignment[candidate.key].rank,
-                    candidate.structural_rank,
+            if (
+                candidate_contract_synthesis
+                and candidate_alignment != "proof-dag-priority"
+            ):
+                candidates.sort(
+                    key=lambda candidate: (
+                        candidate.structural_rank,
+                        pre_alignment[candidate.key].rank,
+                    )
                 )
-            )
+            else:
+                candidates.sort(
+                    key=lambda candidate: (
+                        pre_alignment[candidate.key].rank,
+                        candidate.structural_rank,
+                    )
+                )
         else:
             candidates.sort(key=lambda candidate: candidate.structural_rank)
-        candidates = schema_quota_score_fill(
-            candidates,
-            category=lambda candidate: candidate.family,
-            category_order=[family.name for family in families],
-            limit=incidence_preselect_limit,
-            within_category_key=lambda candidate: candidate.structural_rank,
-            quota_fraction=0.5,
-        )
+        if candidate_alignment == "proof-dag-priority":
+            relevant_families = tuple(
+                dict.fromkeys(candidate.family for candidate in candidates)
+            )[:2]
+            candidates = schema_quota_score_fill(
+                candidates,
+                category=lambda candidate: candidate.family,
+                category_order=relevant_families,
+                limit=incidence_preselect_limit,
+                within_category_key=lambda candidate: candidate.structural_rank,
+                quota_fraction=0.25,
+            )
+        else:
+            candidates = schema_quota_score_fill(
+                candidates,
+                category=lambda candidate: candidate.family,
+                category_order=[family.name for family in families],
+                limit=incidence_preselect_limit,
+                within_category_key=lambda candidate: candidate.structural_rank,
+                quota_fraction=0.5,
+            )
     incidence_by_key: dict[str, NumericalIncidenceProfile] = {}
     incidence_errors: dict[str, int] = defaultdict(int)
     incidence_started = time.perf_counter()
@@ -733,6 +1139,7 @@ def candidate_extensions(
         profile = incidence_by_key.get(candidate.key)
         return profile.rank if profile is not None else ((2,) if candidate_incidence == "hageo" else ())
 
+    unified_iterative_search = None
     if candidate_alignment == "typed-atom":
         alignment_by_key = {
             candidate.key: align_candidate_atoms(
@@ -745,10 +1152,22 @@ def candidate_extensions(
             for candidate in candidates
         }
         candidates.sort(
-            key=lambda candidate: (
-                alignment_by_key[candidate.key].rank,
-                incidence_rank(candidate),
-                candidate.structural_rank,
+            key=(
+                (
+                    lambda candidate: (
+                        candidate.structural_rank,
+                        alignment_by_key[candidate.key].rank,
+                        incidence_rank(candidate),
+                    )
+                )
+                if candidate_contract_synthesis
+                else (
+                    lambda candidate: (
+                        alignment_by_key[candidate.key].rank,
+                        incidence_rank(candidate),
+                        candidate.structural_rank,
+                    )
+                )
             )
         )
         meet_cones = {}
@@ -842,13 +1261,12 @@ def candidate_extensions(
             )
             for candidate in candidates
         }
-        unified_search = search_bidirectionally(
+        unified_iterative_search = search_bidirectionally_iterative(
             (*proof_dag_facts, *parent_atoms),
             proof_dag_goals,
             candidate_atoms_by_key,
             proof_dag_theorems,
-            max_backward_depth=candidate_cone_depth,
-            max_forward_depth=candidate_cone_depth,
+            max_depth=candidate_cone_depth,
             max_backward_branches=candidate_cone_fragments,
             max_forward_fragments=candidate_cone_fragments,
             per_task_search_states=candidate_cone_states,
@@ -862,7 +1280,14 @@ def candidate_extensions(
                 (len(candidates) + len(proof_dag_goals))
                 * candidate_cone_depth,
             ),
+            max_wall_seconds=(
+                candidate_cone_timeout_seconds
+                if candidate_cone_timeout_seconds > 0
+                else None
+            ),
+            initial_proof_dags=proof_dags,
         )
+        unified_search = unified_iterative_search.search
         alignment_by_key = dict(unified_search.candidates)
         meet_cones = dict(unified_search.forward_cones)
         candidates.sort(
@@ -872,7 +1297,7 @@ def candidate_extensions(
                 candidate.structural_rank,
             )
         )
-    elif candidate_alignment == "native-formal-sheaf":
+    elif candidate_alignment in {"native-formal-sheaf", "mmt-theory-view"}:
         # Each agent keeps a private candidate ordering.  Only candidates seen
         # by two compatible formal languages reach an edge stalk.  The ADMM
         # result controls search order only; Yuclid replay still decides truth.
@@ -935,6 +1360,19 @@ def candidate_extensions(
             candidate.key: 1.0 for candidate in candidates
             if candidate.key in polynomial_eligible
         }
+        theory_assignments = {
+            candidate.key: candidate_theory_assignment(
+                candidate.key,
+                family=candidate.family,
+                relations=(
+                    atom.predicate
+                    for atom in construction_relation_atoms(
+                        candidate.family, output, candidate.inputs
+                    )
+                ),
+            )
+            for candidate in candidates
+        }
         local_views = [
             build_candidate_local_view(
                 agent_id="tong_action",
@@ -951,17 +1389,53 @@ def candidate_extensions(
         proof_dag_search = None
         proof_dag_elapsed_seconds = 0.0
         if proof_dag_goals and proof_dag_theorems:
-            # Preserve the bounded bidirectional prover that predates the
-            # sheaf coordinator.  It receives at most the first 16 typed terms
-            # per construction family, so the local proof search stays finite
-            # while the global grammar may grow beyond that budget.
-            proof_dag_candidates = schema_quota_score_fill(
+            # Stage the expensive bidirectional prover.  Use a schema-balanced
+            # shortlist across independent trajectories, and spend only the
+            # configured branch budget on strong residual matches.  Sending
+            # every enumerated term to this specialist made a nominal
+            # branch_limit=16 expand more than 300 proof cones before any
+            # native feedback was seen.  The full candidate set remains in the
+            # cheaper MMT/incidence portfolio and rotates with the attempt seed.
+            proof_dag_limit = min(
+                len(candidates),
+                max(1, min(branch_limit, candidate_promotion_limit)),
+            )
+            ranked_proof_candidates = sorted(
                 candidates,
+                key=lambda candidate: (
+                    alignment_by_key[candidate.key].rank,
+                    incidence_rank(candidate),
+                    candidate.structural_rank,
+                ),
+            )
+            family_balanced_candidates = relevance_ordered_schema_quota_fill(
+                ranked_proof_candidates,
                 category=lambda candidate: candidate.family,
-                category_order=[family.name for family in families],
-                limit=min(len(candidates), 16 * len(families)),
-                within_category_key=lambda candidate: candidate.structural_rank,
+                limit=len(ranked_proof_candidates),
+                within_category_key=lambda candidate: (
+                    alignment_by_key[candidate.key].rank,
+                    incidence_rank(candidate),
+                    candidate.structural_rank,
+                ),
                 quota_fraction=1.0,
+            )
+            candidate_atoms_by_key = {
+                candidate.key: construction_relation_atoms(
+                    candidate.family, output, candidate.inputs
+                )
+                for candidate in ranked_proof_candidates
+            }
+            proof_dag_candidates = required_category_score_fill(
+                family_balanced_candidates,
+                memberships=lambda candidate: (
+                    demand
+                    for demand in proof_dag_goals
+                    if candidate_directly_satisfies_obligation(
+                        candidate_atoms_by_key[candidate.key], demand
+                    )
+                ),
+                required_categories=proof_dag_goals,
+                limit=proof_dag_limit,
             )
             parent_atoms = tuple(
                 atom
@@ -971,19 +1445,16 @@ def candidate_extensions(
                 )
             )
             proof_candidate_atoms = {
-                candidate.key: construction_relation_atoms(
-                    candidate.family, output, candidate.inputs
-                )
+                candidate.key: candidate_atoms_by_key[candidate.key]
                 for candidate in proof_dag_candidates
             }
             proof_dag_started = time.perf_counter()
-            proof_dag_search = search_bidirectionally(
+            proof_dag_search = search_bidirectionally_iterative(
                 (*proof_dag_facts, *parent_atoms),
                 proof_dag_goals,
                 proof_candidate_atoms,
                 proof_dag_theorems,
-                max_backward_depth=candidate_cone_depth,
-                max_forward_depth=candidate_cone_depth,
+                max_depth=candidate_cone_depth,
                 max_backward_branches=candidate_cone_fragments,
                 max_forward_fragments=candidate_cone_fragments,
                 per_task_search_states=candidate_cone_states,
@@ -997,6 +1468,12 @@ def candidate_extensions(
                     (len(proof_dag_candidates) + len(proof_dag_goals))
                     * candidate_cone_depth,
                 ),
+                max_wall_seconds=(
+                    candidate_cone_timeout_seconds
+                    if candidate_cone_timeout_seconds > 0
+                    else None
+                ),
+                initial_proof_dags=proof_dags,
             )
             proof_dag_elapsed_seconds = time.perf_counter() - proof_dag_started
             proof_dag_scores = _ordinal_preferences(
@@ -1041,8 +1518,40 @@ def candidate_extensions(
                     scores=incidence_scores,
                 )
             )
+        coordination_views = local_views
+        if candidate_alignment == "mmt-theory-view":
+            coordination_source_views = (
+                [*local_views, proof_dag_view]
+                if proof_dag_view is not None
+                else local_views
+            )
+            coordination_views = [
+                build_mmt_candidate_local_view(
+                    agent_id=view.agent_id,
+                    formal_language=view.formal_language,
+                    scores=view.preferences,
+                    assignments=theory_assignments,
+                    expose_instances=True,
+                    expose_morphisms=view.agent_id
+                    in {"tong_action", "typed_incidence_proposal", "hageo_incidence"},
+                    expose_relations=view.agent_id
+                    in {
+                        "newclid_relation",
+                        "newclid_bidirectional_proof_dag",
+                        "gclc_wu",
+                        "hageo_incidence",
+                    },
+                )
+                for view in coordination_source_views
+            ]
         coordination_started = time.perf_counter()
-        coordinated_scores, sheaf_result = coordinate_candidate_scores(local_views)
+        if candidate_alignment == "mmt-theory-view":
+            coordinated_scores, sheaf_result = coordinate_mmt_candidate_scores(
+                coordination_views,
+                theory_assignments,
+            )
+        else:
+            coordinated_scores, sheaf_result = coordinate_candidate_scores(local_views)
         coordination_elapsed_seconds = time.perf_counter() - coordination_started
         candidates.sort(
             key=lambda candidate: (
@@ -1129,7 +1638,7 @@ def candidate_extensions(
                 }
                 for view in portfolio_views
             ],
-            "consensus_agent_ids": [view.agent_id for view in local_views],
+            "consensus_agent_ids": [view.agent_id for view in coordination_views],
             "portfolio_agent_ids": [view.agent_id for view in portfolio_views],
             "restriction_edge_count": len(sheaf_result.edges),
             "shared_candidate_count": len(coordinated_scores),
@@ -1144,6 +1653,18 @@ def candidate_extensions(
                 last_trace.sheaf_residual if last_trace is not None else 0.0
             ),
             "truth_plane": "yuclid_native_certificate_replay_only",
+            "exchange_layer": (
+                "openmath_terms_over_mmt_theory_views"
+                if candidate_alignment == "mmt-theory-view"
+                else "exact_native_candidate_channels"
+            ),
+            "shared_channel_kinds": sorted(
+                {
+                    channel.kind
+                    for edge in sheaf_result.edges
+                    for channel in edge.channels
+                }
+            ),
             "timing_seconds": {
                 "proof_dag": proof_dag_elapsed_seconds,
                 "coordination": coordination_elapsed_seconds,
@@ -1152,10 +1673,11 @@ def candidate_extensions(
             "proof_dag_specialist": (
                 {
                     "candidate_count": len(proof_dag_view.preferences),
-                    "reserved_consensus": 8,
+                    "reserved_consensus": candidate_promotion_limit,
                     "reserved_typed_incidence": typed_priority,
                     "family_frontier": proof_family_priority,
                     "queue": proof_dag_search.audit.to_dict(),
+                    "iterative_deepening": proof_dag_search.to_dict(),
                 }
                 if proof_dag_view is not None and proof_dag_search is not None
                 else None
@@ -1199,6 +1721,7 @@ def candidate_extensions(
                 "proof-dag-lazy",
                 "proof-dag-priority",
                 "native-formal-sheaf",
+                "mmt-theory-view",
             }
             else [family.name for family in families]
         )
@@ -1233,7 +1756,7 @@ def candidate_extensions(
         reachable_candidates = sum(
             item.has_closed_structural_residual for item in alignment_values
         )
-    elif candidate_alignment == "native-formal-sheaf":
+    elif candidate_alignment in {"native-formal-sheaf", "mmt-theory-view"}:
         direct_match_candidates = sum(
             item.direct_match_count > 0 for item in alignment_values
         )
@@ -1247,8 +1770,50 @@ def candidate_extensions(
     extension_audit = {
         "elapsed_seconds": time.perf_counter() - extension_started,
         "mode": candidate_gate,
+        "candidate_enumeration": enumeration_audit,
         "relation_reachability": asdict(gate_result.audit),
         "selected_after_branch_limit": len(candidates),
+        "typed_construction_contracts": {
+            "enabled": candidate_contract_synthesis,
+            "truth_plane": "candidate_proposal_only_native_replay_required",
+            "obligation_branch_count": len(contract_obligation_branches),
+            "runtime_requirement_gate": contract_requirement_gate,
+            "candidate_plans": [
+                {
+                    "candidate": candidate.key,
+                    "matched_obligation": str(candidate.matched_obligation),
+                    "residual_frontier": [
+                        str(atom) for atom in candidate.residual_frontier
+                    ],
+                    "residual_reduction": candidate.residual_reduction,
+                    "fully_closes_branch": candidate.fully_closes_branch,
+                    "requirements": [
+                        str(atom) for atom in candidate.requirement_atoms
+                    ],
+                    "open_requirements": [
+                        str(atom) for atom in candidate.open_requirements
+                    ],
+                    "plan_certificate_sha256": (
+                        candidate.plan_certificate_sha256
+                    ),
+                    "matched_via_chart": candidate.matched_via_chart,
+                    "chart_name": candidate.chart_name,
+                    "chart_certificate_sha256": (
+                        candidate.chart_certificate_sha256
+                    ),
+                    "chart_residual_rank": list(
+                        contract_chart_rank_by_key.get(
+                            candidate.key, ((10**9, 10**9, 10**9), False)
+                        )[0]
+                    ),
+                    "chart_residual_reduced": contract_chart_rank_by_key.get(
+                        candidate.key, ((10**9, 10**9, 10**9), False)
+                    )[1],
+                }
+                for candidate in contract_candidates[:12]
+            ],
+            **asdict(contract_audit),
+        },
         "numerical_incidence": {
             "mode": candidate_incidence,
             "truth_plane": "candidate_proposal_only",
@@ -1311,9 +1876,15 @@ def candidate_extensions(
                 and unified_search is not None
                 else None
             ),
+            "iterative_deepening": (
+                unified_iterative_search.to_dict()
+                if candidate_alignment == "proof-dag-priority"
+                and unified_iterative_search is not None
+                else None
+            ),
             "native_formal_sheaf": (
                 native_sheaf_audit
-                if candidate_alignment == "native-formal-sheaf"
+                if candidate_alignment in {"native-formal-sheaf", "mmt-theory-view"}
                 else None
             ),
             "top_candidates": [
@@ -1675,6 +2246,40 @@ def select_diverse_beam(
                     if len(selected) == beam_width:
                         break
         return selected[:beam_width]
+    if ranking == "proof-dag-residual":
+        def proof_dag_score(record: SearchRecord) -> tuple[object, ...]:
+            progress = record.proof_dag_progress
+            increment = record.proof_dag_increment
+            residual = progress.best_structural_residual_count
+            return (
+                record.solved,
+                increment.newly_structurally_closed_branch_count,
+                increment.newly_progressed_branch_count,
+                increment.unique_exact_covered_atoms_gain,
+                increment.max_exact_covered_atoms_gain,
+                increment.support_overlap_gain,
+                increment.support_improved_branch_count_gain,
+                progress.structurally_closed_branch_count,
+                -residual if residual >= 0 else -(10**6),
+                progress.progressed_branch_count,
+                progress.max_exact_covered_atoms,
+                progress.unique_exact_covered_atoms,
+                progress.support_improved_branch_count,
+                progress.max_support_overlap_gain,
+                progress.total_support_overlap_gain,
+                record.relation_transition_potential,
+            )
+
+        return balanced_stratified_beam(
+            [record for record in records if record.error is None],
+            score=proof_dag_score,
+            category=lambda record: record.steps[-1].family,
+            stratum=lambda record: (
+                tuple(step.key for step in record.steps[:-1]),
+                record.steps[-1].family,
+            ),
+            limit=beam_width,
+        )
     if ranking == "frontier-pareto":
         frontier_score = lambda record: (
             record.solved,
@@ -1786,7 +2391,7 @@ def select_diverse_beam(
 
 
 def main() -> None:
-    from worker.backend.yuclid_native_verifier import verify_problem
+    from worker.backend.yuclid_native_verifier import YuclidTimeoutError, verify_problem
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", type=Path, required=True)
@@ -1794,6 +2399,11 @@ def main() -> None:
     parser.add_argument("--yuclid-exe", type=Path, required=True)
     parser.add_argument("--runtime-path", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument(
+        "--resume-progress",
+        action="store_true",
+        help="Restore verified candidate records from OUTPUT.progress.json.",
+    )
     parser.add_argument(
         "--families",
         default=",".join(family.name for family in DEFAULT_POINT_FAMILIES),
@@ -1829,6 +2439,7 @@ def main() -> None:
             "proof-dag-lazy",
             "proof-dag-priority",
             "native-formal-sheaf",
+            "mmt-theory-view",
         ),
         default="off",
         help=(
@@ -1839,11 +2450,29 @@ def main() -> None:
     parser.add_argument("--proof-dag-depth", type=int, default=2)
     parser.add_argument("--proof-dag-branches", type=int, default=128)
     parser.add_argument("--proof-dag-states", type=int, default=20_000)
+    parser.add_argument(
+        "--proof-dag-timeout-seconds",
+        type=float,
+        default=0.0,
+        help=(
+            "Truncate proof-DAG scheduling compilation after this wall time; "
+            "zero leaves it unbounded. Native proof acceptance is unaffected."
+        ),
+    )
     parser.add_argument("--candidate-cone-depth", type=int, default=2)
     parser.add_argument("--candidate-cone-fragments", type=int, default=128)
     parser.add_argument("--candidate-cone-states", type=int, default=5_000)
     parser.add_argument("--candidate-cone-initial-states", type=int, default=64)
     parser.add_argument("--candidate-promotion-limit", type=int, default=8)
+    parser.add_argument(
+        "--candidate-cone-timeout-seconds",
+        type=float,
+        default=0.0,
+        help=(
+            "Truncate candidate/proof-DAG alignment after this wall time; "
+            "zero leaves it unbounded. Native proof acceptance is unaffected."
+        ),
+    )
     parser.add_argument(
         "--candidate-incidence",
         choices=("off", "hageo"),
@@ -1862,15 +2491,47 @@ def main() -> None:
         help="Choose whole-path replay or prefix-stable incremental state reuse.",
     )
     parser.add_argument("--per-family-limit", type=int, default=8)
+    parser.add_argument(
+        "--enumeration-limit-per-family",
+        type=int,
+        default=0,
+        help=(
+            "Inspect at most this many typed input tuples per construction family; "
+            "zero keeps exhaustive family enumeration. Truncation is audited."
+        ),
+    )
     parser.add_argument("--branch-limit", type=int, default=32)
     parser.add_argument("--beam-width", type=int, default=7)
     parser.add_argument("--max-depth", type=int, default=2)
     parser.add_argument("--max-workers", type=int, default=4)
+    parser.add_argument(
+        "--yuclid-timeout-seconds",
+        type=float,
+        default=0.0,
+        help=(
+            "Right-censor one candidate after this many seconds; zero keeps "
+            "the verifier unbounded. Timeouts are never counted as wrong proofs."
+        ),
+    )
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument(
         "--obligation-guided",
         action="store_true",
         help="Recompute point-level missing theorem premises after every branch.",
+    )
+    parser.add_argument(
+        "--candidate-contract-synthesis",
+        action="store_true",
+        help=(
+            "Compile coherent typed proof obligations into finite construction "
+            "contracts. Candidate truth still requires native certificate replay."
+        ),
+    )
+    parser.add_argument(
+        "--contract-candidates-per-schema",
+        type=int,
+        default=32,
+        help="Finite candidate cap for each typed construction contract.",
     )
     parser.add_argument(
         "--require-generated-input-after-first",
@@ -1892,6 +2553,7 @@ def main() -> None:
             "unified-formal-sheaf-portfolio",
             "differentiable-consensus",
             "consensus-portfolio",
+            "proof-dag-residual",
         ),
         default="closure",
     )
@@ -1908,6 +2570,65 @@ def main() -> None:
         help="Control console output; artifacts always retain the complete trace.",
     )
     args = parser.parse_args()
+    progress_output = args.output.with_suffix(".progress.json")
+    resume_payload: dict[str, Any] | None = None
+    resume_record_payloads: list[dict[str, Any]] = []
+    resume_scheduled_path_payloads: list[list[dict[str, Any]]] = []
+    resume_scheduled_depth: int | None = None
+    resume_checkpoint_sha256: str | None = None
+    if args.resume_progress and progress_output.is_file():
+        checkpoint_bytes = progress_output.read_bytes()
+        resume_payload = json.loads(checkpoint_bytes)
+        if resume_payload.get("problem_name") != args.problem_name:
+            raise ValueError("resume checkpoint belongs to a different problem")
+        resume_record_payloads = [
+            item
+            for item in resume_payload.get("records", ())
+            if not item.get("right_censored")
+        ]
+        resume_scheduled_path_payloads = list(
+            resume_payload.get("scheduled_paths", ())
+        )
+        raw_resume_depth = resume_payload.get("depth")
+        resume_scheduled_depth = (
+            int(raw_resume_depth)
+            if raw_resume_depth is not None and resume_scheduled_path_payloads
+            else None
+        )
+        resume_checkpoint_sha256 = hashlib.sha256(checkpoint_bytes).hexdigest()
+        if not resume_record_payloads and args.output.is_file():
+            completed_bytes = args.output.read_bytes()
+            completed_payload = json.loads(completed_bytes)
+            if completed_payload.get("problem_name") != args.problem_name:
+                raise ValueError("resume artifact belongs to a different problem")
+            resume_record_payloads = list(completed_payload.get("records", ()))
+            resume_checkpoint_sha256 = hashlib.sha256(completed_bytes).hexdigest()
+    experiment_started_at = time.perf_counter()
+
+    def checkpoint(
+        stage: str,
+        *,
+        status: str = "running",
+        **details: Any,
+    ) -> None:
+        if resume_record_payloads and "records" not in details:
+            details = {
+                "resumed_record_count": len(resume_record_payloads),
+                "records": resume_record_payloads,
+                **details,
+            }
+        write_json_atomic(
+            progress_output,
+            {
+                "status": status,
+                "stage": stage,
+                "problem_name": args.problem_name,
+                "elapsed_seconds": time.perf_counter() - experiment_started_at,
+                **details,
+            },
+        )
+
+    checkpoint("runtime_initialization")
     controller = (
         DifferentiableProofController.load(args.controller.resolve())
         if args.controller is not None
@@ -1934,6 +2655,7 @@ def main() -> None:
         raise ValueError(f"unknown families: {unknown}")
     families = tuple(family_map[name] for name in requested)
 
+    checkpoint("input_elaboration")
     formulations = jgex_formulation_from_txt_file(args.dataset.resolve())
     raw = formulations[args.problem_name]
     raw = JGEXFormulation(
@@ -1945,8 +2667,38 @@ def main() -> None:
     builder = JGEXProblemBuilder(np.random.default_rng(args.seed))
     formulation, normalization = normalize_legacy_formulation(raw, builder.jgex_defs)
     base_problem = builder.with_problem(formulation).include_auxiliary_clauses(False).build()
-    baseline = verify_problem(
-        base_problem, yuclid_exe=args.yuclid_exe.resolve(), ar_profile=args.ar_profile
+    checkpoint("baseline_native_verification")
+    try:
+        baseline = verify_problem(
+            base_problem,
+            yuclid_exe=args.yuclid_exe.resolve(),
+            ar_profile=args.ar_profile,
+            timeout_seconds=(
+                args.yuclid_timeout_seconds
+                if args.yuclid_timeout_seconds > 0
+                else None
+            ),
+        )
+    except YuclidTimeoutError as exc:
+        checkpoint(
+            "baseline_native_verification",
+            status="right_censored",
+            right_censored_count=1,
+            timeout_seconds=exc.timeout_seconds,
+            truth_plane="no_result",
+        )
+        if args.progress != "none":
+            print(
+                "baseline native verification was right-censored; "
+                f"checkpoint={progress_output}",
+                flush=True,
+            )
+        return
+    checkpoint(
+        "baseline_native_verification_completed",
+        baseline_solved=baseline.solved,
+        baseline_all_deduction_count=baseline.all_deduction_count,
+        baseline_goal_deduction_count=baseline.goal_deduction_count,
     )
     baseline_assertion_keys = yuclid_assertion_keys(baseline.payload)
     (
@@ -1979,6 +2731,7 @@ def main() -> None:
         Atom(predicate, points)
         for predicate, points in yuclid_assertion_keys(baseline.payload)
     )
+    checkpoint("open_proof_dag_compilation")
     proof_dags = (
         tuple(
             compile_open_proof_dag(
@@ -1988,10 +2741,24 @@ def main() -> None:
                 max_rule_depth=args.proof_dag_depth,
                 max_branches=args.proof_dag_branches,
                 max_search_states=args.proof_dag_states,
+                max_wall_seconds=(
+                    args.proof_dag_timeout_seconds
+                    if args.proof_dag_timeout_seconds > 0
+                    else None
+                ),
             )
             for goal in goal_atoms
         )
-        if args.candidate_alignment in {"proof-dag-meet", "proof-dag-lazy"}
+        if (
+            args.candidate_alignment in {
+                "proof-dag-meet",
+                "proof-dag-lazy",
+                "proof-dag-priority",
+                "native-formal-sheaf",
+                "mmt-theory-view",
+            }
+            or args.beam_ranking == "proof-dag-residual"
+        )
         else ()
     )
     proof_dag_branches = tuple(
@@ -2002,6 +2769,21 @@ def main() -> None:
         if args.obligation_guided
         else ((), ())
     )
+    checkpoint(
+        "open_proof_dag_compilation_completed",
+        proof_dag_count=len(proof_dags),
+        open_branch_count=len(proof_dag_branches),
+        open_demand_count=len(baseline_demands),
+    )
+    contract_obligation_branches = tuple(
+        tuple(branch.frontier)
+        for branch in proof_dag_branches
+        if branch.frontier
+    )
+    if not contract_obligation_branches and baseline_demands:
+        contract_obligation_branches = (tuple(baseline_demands),)
+    if not contract_obligation_branches and goal_atoms:
+        contract_obligation_branches = (tuple(goal_atoms),)
     rule_channels = [
         (
             [premise.name for premise in rule.premises],
@@ -2023,7 +2805,32 @@ def main() -> None:
             parent, step, path, seed=args.seed
         ),
     )
+    baseline_proof_dag_progress = assess_native_proof_dag_progress(
+        baseline_facts,
+        proof_dag_branches,
+        baseline_facts=baseline_facts,
+    )
+    progress_by_path: dict[tuple[str, ...], NativeProofDAGProgress] = {
+        (): baseline_proof_dag_progress
+    }
+    resumed_records = tuple(
+        search_record_from_dict(item) for item in resume_record_payloads
+    )
 
+    resumed_scheduled_paths = (
+        tuple(
+            construction_path_from_payload(item)
+            for item in resume_scheduled_path_payloads
+        )
+        if resume_scheduled_depth is not None
+        else ()
+    )
+    resumed_records_by_depth: dict[int, list[SearchRecord]] = defaultdict(list)
+    for record in resumed_records:
+        resumed_records_by_depth[len(record.steps)].append(record)
+        progress_by_path[tuple(step.key for step in record.steps)] = (
+            record.proof_dag_progress
+        )
     frontier: list[tuple[tuple[ConstructionStep, ...], tuple[Atom, ...]]] = [
         (tuple(), baseline_demands)
     ]
@@ -2034,18 +2841,47 @@ def main() -> None:
     preflight_rejected_by_error: dict[str, int] = defaultdict(int)
     solved_steps: tuple[ConstructionStep, ...] | None = None
     for depth in range(1, args.max_depth + 1):
-        layer: list[SearchRecord] = []
+        layer: list[SearchRecord] = list(resumed_records_by_depth.get(depth, ()))
+        restored_signatures = {
+            tuple(step.key for step in record.steps) for record in layer
+        }
+        checkpoint(
+            "candidate_enumeration",
+            depth=depth,
+            frontier_count=len(frontier),
+            evaluated_path_count=len(all_records) + len(layer),
+        )
         seen_paths: set[tuple[str, ...]] = set()
         candidate_paths: list[tuple[ConstructionStep, ...]] = []
-        for parent, parent_demands in frontier:
-            if args.branch_build_mode == "incremental":
-                current_problem = prefix_cache.build(parent)
-            elif args.branch_build_mode == "prefix-replay":
-                current_problem = build_prefix_stable_branch(
-                    base_problem, parent, seed=args.seed
+        if resume_scheduled_depth == depth:
+            candidate_paths = [
+                path
+                for path in resumed_scheduled_paths
+                if tuple(step.key for step in path) not in restored_signatures
+            ]
+            seen_paths.update(
+                tuple(step.key for step in path) for path in candidate_paths
+        )
+        for parent, parent_demands in (() if resume_scheduled_depth == depth else frontier):
+            try:
+                if args.branch_build_mode == "incremental":
+                    current_problem = prefix_cache.build(parent)
+                elif args.branch_build_mode == "prefix-replay":
+                    current_problem = build_prefix_stable_branch(
+                        base_problem, parent, seed=args.seed
+                    )
+                else:
+                    current_problem = None
+            except Exception as exc:
+                candidate_gate_audits.append(
+                    {
+                        "depth": depth,
+                        "parent_path": [step.key for step in parent],
+                        "status": "invalid_parent_prefix_rejected",
+                        "error": f"{type(exc).__name__}: {exc}",
+                    }
                 )
-            else:
-                current_problem = None
+                continue
             candidate_target_channels = {
                 demand.predicate.lower() for demand in parent_demands
             } or {channel.lower() for channel in goal_channels}
@@ -2063,7 +2899,8 @@ def main() -> None:
                     )
                     for target in candidate_target_channels
                 }
-                if args.candidate_alignment in {"typed-atom", "native-formal-sheaf"}
+                if args.candidate_alignment
+                in {"typed-atom", "native-formal-sheaf", "mmt-theory-view"}
                 else {}
             )
             extensions, gate_audit = candidate_extensions(
@@ -2088,6 +2925,7 @@ def main() -> None:
                 candidate_alignment=args.candidate_alignment,
                 candidate_relation_distances=candidate_relation_distances,
                 proof_dag_branches=proof_dag_branches,
+                proof_dags=proof_dags,
                 proof_dag_goals=goal_atoms,
                 proof_dag_facts=baseline_facts,
                 proof_dag_theorems=rule_theorems,
@@ -2103,6 +2941,15 @@ def main() -> None:
                 ),
                 current_problem=current_problem,
                 construction_seed=args.seed,
+                candidate_contract_synthesis=args.candidate_contract_synthesis,
+                contract_candidates_per_schema=(
+                    args.contract_candidates_per_schema
+                ),
+                contract_obligation_branches=contract_obligation_branches,
+                enumeration_limit_per_family=args.enumeration_limit_per_family,
+                candidate_cone_timeout_seconds=(
+                    args.candidate_cone_timeout_seconds
+                ),
             )
             candidate_gate_audits.append(
                 {
@@ -2114,12 +2961,26 @@ def main() -> None:
             for extension in extensions:
                 steps = (*parent, extension)
                 signature = tuple(step.key for step in steps)
-                if signature in seen_paths:
+                if signature in seen_paths or signature in restored_signatures:
                     continue
                 seen_paths.add(signature)
                 candidate_paths.append(steps)
+        checkpoint(
+            "candidate_verification",
+            depth=depth,
+            scheduled_path_count=len(candidate_paths),
+            evaluated_path_count=len(all_records) + len(layer),
+            resumed_path_count=len(restored_signatures),
+            resumed_scheduled_paths=resume_scheduled_depth == depth,
+            scheduled_paths=[
+                construction_path_to_payload(path) for path in candidate_paths
+            ],
+            records=[asdict(record) for record in (*all_records, *layer)],
+        )
         batch_size = max(1, args.max_workers)
-        layer_solved = False
+        layer_solved = any(record.solved for record in layer)
+        if layer_solved:
+            candidate_paths = []
         with ThreadPoolExecutor(max_workers=batch_size) as executor:
             for batch_start in range(0, len(candidate_paths), batch_size):
                 batch = candidate_paths[batch_start : batch_start + batch_size]
@@ -2167,7 +3028,16 @@ def main() -> None:
                         transition_distances=transition_distances,
                         goal_atoms=goal_atoms,
                         rule_theorems=rule_theorems,
+                        proof_dag_branches=proof_dag_branches,
+                        parent_proof_dag_progress=progress_by_path[
+                            tuple(step.key for step in steps[:-1])
+                        ],
                         obligation_guided=args.obligation_guided,
+                        yuclid_timeout_seconds=(
+                            args.yuclid_timeout_seconds
+                            if args.yuclid_timeout_seconds > 0
+                            else None
+                        ),
                         prepared_problem=prepared_problems.get(
                             tuple(step.key for step in steps)
                         ),
@@ -2180,6 +3050,9 @@ def main() -> None:
                 )
                 for record in batch_records:
                     layer.append(record)
+                    progress_by_path[
+                        tuple(step.key for step in record.steps)
+                    ] = record.proof_dag_progress
                     if args.progress == "all":
                         print(
                             f"depth={depth} solved={record.solved} "
@@ -2187,6 +3060,26 @@ def main() -> None:
                             f"path={[step.key for step in record.steps]}",
                             flush=True,
                         )
+                completed_records = [*all_records, *layer]
+                write_json_atomic(
+                    progress_output,
+                    {
+                        "status": "running",
+                        "stage": "candidate_verification",
+                        "problem_name": args.problem_name,
+                        "depth": depth,
+                        "scheduled_path_count": len(candidate_paths),
+                        "evaluated_path_count": len(completed_records),
+                        "scheduled_paths": [
+                            construction_path_to_payload(path)
+                            for path in candidate_paths
+                        ],
+                        "right_censored_count": sum(
+                            record.right_censored for record in completed_records
+                        ),
+                        "records": [asdict(record) for record in completed_records],
+                    },
+                )
                 if any(record.solved for record in batch_records):
                     layer_solved = True
                     break
@@ -2225,13 +3118,31 @@ def main() -> None:
         "closure": "yuclid_closure_growth_diverse_beam",
         "differentiable-consensus": "frozen_differentiable_consensus_diverse_beam",
         "consensus-portfolio": "half_exact_residual_half_differentiable_consensus_beam",
+        "proof-dag-residual": (
+            "exact_native_closure_progress_on_coherent_open_proof_dag_branches"
+        ),
     }
+    measured_candidate_gate_audits = [
+        audit
+        for audit in candidate_gate_audits
+        if "relation_reachability" in audit
+    ]
+    invalid_parent_prefix_audits = [
+        audit
+        for audit in candidate_gate_audits
+        if audit.get("status") == "invalid_parent_prefix_rejected"
+    ]
     artifact: dict[str, Any] = {
         "experiment": "newclid_dynamic_typed_construction_stalk_no_llm",
         "protocol": {
             "uses_external_llm": False,
             "uses_dataset_auxiliary_clauses": False,
             "uses_problem_id_in_search": False,
+            "resume": {
+                "enabled": args.resume_progress,
+                "checkpoint_sha256": resume_checkpoint_sha256,
+                "restored_verified_record_count": len(resumed_records),
+            },
             "families": [asdict(family) for family in families],
             "first_stage_ranking": (
                 "goal_support_incidence"
@@ -2268,16 +3179,24 @@ def main() -> None:
                 "depth": args.proof_dag_depth,
                 "branches_per_goal": args.proof_dag_branches,
                 "states_per_goal": args.proof_dag_states,
+                "wall_seconds_per_goal": args.proof_dag_timeout_seconds,
             },
             "candidate_forward_cone_budget": {
                 "depth": args.candidate_cone_depth,
                 "fragments": args.candidate_cone_fragments,
                 "states": args.candidate_cone_states,
+                "wall_seconds": args.candidate_cone_timeout_seconds,
             },
             "branch_build_mode": args.branch_build_mode,
             "proof_hypergraph_relevance": proof_relevance,
             "same_morphism_input_orbit_priority": True,
             "obligation_guided": args.obligation_guided,
+            "typed_construction_contracts": {
+                "enabled": args.candidate_contract_synthesis,
+                "candidates_per_schema": args.contract_candidates_per_schema,
+                "obligation_branch_count": len(contract_obligation_branches),
+                "truth_plane": "native_certificate_replay_only",
+            },
             "require_generated_input_after_first": (
                 args.require_generated_input_after_first
             ),
@@ -2290,10 +3209,12 @@ def main() -> None:
             ],
             "backward_relation_distances": transition_distances,
             "per_family_limit": args.per_family_limit,
+            "enumeration_limit_per_family": args.enumeration_limit_per_family,
             "branch_limit": args.branch_limit,
             "beam_width": args.beam_width,
             "max_depth": args.max_depth,
             "max_workers": args.max_workers,
+            "yuclid_timeout_seconds": args.yuclid_timeout_seconds,
             "seed": args.seed,
             "ar_profile": args.ar_profile,
         },
@@ -2315,27 +3236,30 @@ def main() -> None:
         "solved_path": [step.key for step in solved_steps] if solved_steps else None,
         "evaluated_paths": len(all_records),
         "error_count": sum(record.error is not None for record in all_records),
+        "right_censored_count": sum(
+            record.right_censored for record in all_records
+        ),
         "candidate_gate": {
             "mode": args.candidate_gate,
             "enumerated_candidates": sum(
                 audit["relation_reachability"]["input_count"]
-                for audit in candidate_gate_audits
+                for audit in measured_candidate_gate_audits
             ),
             "retained_candidates": sum(
                 audit["selected_after_branch_limit"]
-                for audit in candidate_gate_audits
+                for audit in measured_candidate_gate_audits
             ) - sum(preflight_rejected_by_error.values()),
             "relation_retained_candidates": sum(
                 audit["relation_reachability"]["retained_count"]
-                for audit in candidate_gate_audits
+                for audit in measured_candidate_gate_audits
             ),
             "rejected_candidates": sum(
                 audit["relation_reachability"]["rejected_count"]
-                for audit in candidate_gate_audits
+                for audit in measured_candidate_gate_audits
             ) + sum(preflight_rejected_by_error.values()),
             "selected_after_branch_limit": sum(
                 audit["selected_after_branch_limit"]
-                for audit in candidate_gate_audits
+                for audit in measured_candidate_gate_audits
             ),
             "preflight_checked_count": preflight_checked_count,
             "preflight_retained_count": preflight_retained_count,
@@ -2347,27 +3271,28 @@ def main() -> None:
             ),
             "fail_open_count": sum(
                 audit["relation_reachability"]["fail_open_reason"] is not None
-                for audit in candidate_gate_audits
+                for audit in measured_candidate_gate_audits
             ),
+            "invalid_parent_prefix_count": len(invalid_parent_prefix_audits),
             "audits": candidate_gate_audits,
         },
         "candidate_alignment": {
             "mode": args.candidate_alignment,
             "direct_match_candidates": sum(
                 audit["candidate_alignment"]["direct_match_candidates"]
-                for audit in candidate_gate_audits
+                for audit in measured_candidate_gate_audits
             ),
             "reachable_candidates": sum(
                 audit["candidate_alignment"]["reachable_candidates"]
-                for audit in candidate_gate_audits
+                for audit in measured_candidate_gate_audits
             ),
             "cone_truncated_candidates": sum(
                 audit["candidate_alignment"]["cone_truncated_candidates"]
-                for audit in candidate_gate_audits
+                for audit in measured_candidate_gate_audits
             ),
             "cone_search_states": sum(
                 audit["candidate_alignment"]["cone_search_states"]
-                for audit in candidate_gate_audits
+                for audit in measured_candidate_gate_audits
             ),
             "proof_dags": [dag.to_dict() for dag in proof_dags],
         },
@@ -2375,11 +3300,11 @@ def main() -> None:
             "mode": args.candidate_incidence,
             "checked_candidates": sum(
                 audit["numerical_incidence"]["checked_candidates"]
-                for audit in candidate_gate_audits
+                for audit in measured_candidate_gate_audits
             ),
             "heuristic_candidates": sum(
                 audit["numerical_incidence"]["heuristic_candidates"]
-                for audit in candidate_gate_audits
+                for audit in measured_candidate_gate_audits
             ),
             "build_errors": dict(
                 sorted(
@@ -2389,12 +3314,12 @@ def main() -> None:
                             audit["numerical_incidence"]["build_errors"].get(
                                 error, 0
                             )
-                            for audit in candidate_gate_audits
+                            for audit in measured_candidate_gate_audits
                         ),
                     )
                     for error in {
                         key
-                        for audit in candidate_gate_audits
+                        for audit in measured_candidate_gate_audits
                         for key in audit["numerical_incidence"]["build_errors"]
                     }
                 )
@@ -2436,7 +3361,18 @@ def main() -> None:
             "proof_sha256": confirmation.proof_sha256,
             "proof_path": proof_path.resolve().relative_to(ROOT).as_posix(),
         }
-    args.output.write_text(json.dumps(artifact, indent=2) + "\n", encoding="utf-8")
+    write_json_atomic(args.output, artifact)
+    write_json_atomic(
+        progress_output,
+        {
+            "status": "completed",
+            "problem_name": args.problem_name,
+            "solved": artifact["solved"],
+            "evaluated_path_count": artifact["evaluated_paths"],
+            "right_censored_count": artifact["right_censored_count"],
+            "final_artifact": args.output.resolve().relative_to(ROOT).as_posix(),
+        },
+    )
     if args.progress != "none":
         print(
             json.dumps(

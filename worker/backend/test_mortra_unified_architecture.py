@@ -15,9 +15,15 @@ class MortraUnifiedArchitectureTest(unittest.TestCase):
         validate_unified_geometry_architecture(manifest)
         self.assertIn("hageo_numerical_incidence", manifest["proposal_plane"]["agents"])
         self.assertEqual(
-            manifest["coordination_plane"]["method"],
-            "differentiable_heterogeneous_sheaf_admm",
+            manifest["coordination_plane"]["active_method"],
+            "exact_mmt_certificate_exchange",
         )
+        self.assertFalse(manifest["coordination_plane"]["enabled_in_default_scoring"])
+        self.assertEqual(
+            manifest["knowledge_plane"]["method"],
+            "openmath_terms_over_mmt_theory_graph",
+        )
+        self.assertIn("hageo_numerical_incidence", manifest["interface_theory_views"])
         self.assertFalse(manifest["execution_plane"]["changes_mathematical_truth"])
 
     def test_priority_cannot_be_promoted_to_truth(self) -> None:

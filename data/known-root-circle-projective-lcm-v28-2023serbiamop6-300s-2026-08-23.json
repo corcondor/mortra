@@ -1,0 +1,567 @@
+{
+  "experiment": "hageo_known_root_circle_intersection_cohort",
+  "created_at": "2026-08-22T20:22:47.936217+00:00",
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_expected_answer": false,
+    "uses_problem_specific_solver_logic": false,
+    "dataset_auxiliary_clauses_hidden": true,
+    "cohort_selection": "parsed JGEX clause with one output and exactly two on_circle constructions sharing the identical second argument",
+    "truth_plane": "exact polynomial certificate replay with zero remainder",
+    "timeout_semantics": "right-censored unknown",
+    "timeout_seconds_per_problem": 300.0,
+    "workers": 1,
+    "execution_mode": "isolated",
+    "startup_timeout_seconds": 300.0,
+    "representation": "goal_local_relational",
+    "affine_local_lemmas": true,
+    "max_saturation_rounds": 1,
+    "dataset_sha256": "629e621cea5b4d9bf4bcae835c286606be3294cc8cc0c794b210fdaec011f8c2",
+    "base_union_sha256": "0732ee1258158638310df88584a8bd1e14afde07c7ec31ccf606791ef9471207",
+    "surface_regex_audit": {
+      "previous_count": 37,
+      "parsed_problem_count": 36,
+      "false_positive": "2021GOWACAp4",
+      "reason": "the surface backreference matched radius point 'a1' as if it were the shared point 'a'; parsed arguments are distinct"
+    }
+  },
+  "summary": {
+    "cohort_total": 1,
+    "exact_proved": 1,
+    "already_in_base_union": 0,
+    "new_certified_candidates": 1,
+    "by_classification": {
+      "exact_proof": 1
+    }
+  },
+  "sets": {
+    "cohort": [
+      "2023SerbiaMOp6"
+    ],
+    "exact_proved": [
+      "2023SerbiaMOp6"
+    ],
+    "already_in_base_union": [],
+    "new_certified_candidates": [
+      "2023SerbiaMOp6"
+    ]
+  },
+  "results": [
+    {
+      "problem": "2023SerbiaMOp6",
+      "matched_clauses": [
+        {
+          "clause_index": 7,
+          "clause": "g = on_circle o1 a, on_circle o a",
+          "output": "g",
+          "centers": [
+            "o1",
+            "o"
+          ],
+          "shared_known_point": "a"
+        }
+      ],
+      "status": "proved",
+      "classification": "exact_proof",
+      "solved": true,
+      "reason": null,
+      "input": "data/known-root-circle-projective-lcm-v28-2023serbiamop6-300s-2026-08-23/inputs/2023SerbiaMOp6.txt",
+      "proof": "data/known-root-circle-projective-lcm-v28-2023serbiamop6-300s-2026-08-23/proofs/2023SerbiaMOp6.json",
+      "proof_file_sha256": "f8249b22f03988151e5d395d69aa7c16db8347d796fa0365a96e74c30941b2d2",
+      "certified_artifact": "data/known-root-circle-projective-lcm-v28-2023serbiamop6-300s-2026-08-23/artifacts/2023SerbiaMOp6.json",
+      "certificate_sha256": "aa04a4bb5c25dc653c4c2d744c03f4453cb1869df265ef0918d15971d3e73899",
+      "construction_vocabulary": [
+        "circumcenter",
+        "foot",
+        "incenter",
+        "on_circle",
+        "on_line",
+        "on_tline",
+        "triangle"
+      ],
+      "progress_checkpoint": {
+        "status": "running",
+        "latest_stage": "certificate_completed",
+        "progress": [
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 7.498002,
+            "preparation_stage": "construction_operation",
+            "operation": "existing_root_exclusion_started",
+            "clause_index": 11
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 7.502478,
+            "preparation_stage": "construction_operation",
+            "operation": "implicit_existing_root_enumeration_deferred",
+            "clause_index": 12
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 7.505092,
+            "preparation_stage": "construction_operation",
+            "operation": "existing_root_exclusion_completed",
+            "clause_index": 11
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 7.902973,
+            "preparation_stage": "construction_operation",
+            "operation": "construction_block_materialization_started",
+            "clause_index": 11,
+            "surviving_variable_count": 2,
+            "surviving_equation_count": 2
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 9.209043,
+            "preparation_stage": "construction_operation",
+            "operation": "construction_block_materialization_completed",
+            "clause_index": 11
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 9.212573,
+            "preparation_stage": "construction_clause_completed",
+            "clause_index": 11,
+            "equation_count": 12,
+            "variable_count": 15
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 9.217802,
+            "preparation_stage": "construction_clause_started",
+            "clause_index": 12,
+            "equation_count": 12,
+            "variable_count": 15
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 9.220954,
+            "preparation_stage": "construction_operation",
+            "operation": "clause_raw_elaboration_started",
+            "clause_index": 12
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 9.233597,
+            "preparation_stage": "construction_operation",
+            "operation": "equation_together_started",
+            "clause_index": 13,
+            "equation_index": 12
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 9.25174,
+            "preparation_stage": "construction_operation",
+            "operation": "equation_denominator_factor_started",
+            "clause_index": 13,
+            "equation_index": 12
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 9.258513,
+            "preparation_stage": "construction_operation",
+            "operation": "equation_completed",
+            "clause_index": 13,
+            "equation_index": 12,
+            "numerator_factorization_deferred": true
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 9.264374,
+            "preparation_stage": "construction_operation",
+            "operation": "equation_together_started",
+            "clause_index": 13,
+            "equation_index": 13
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 9.275642,
+            "preparation_stage": "construction_operation",
+            "operation": "equation_denominator_factor_started",
+            "clause_index": 13,
+            "equation_index": 13
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 9.286989,
+            "preparation_stage": "construction_operation",
+            "operation": "equation_completed",
+            "clause_index": 13,
+            "equation_index": 13,
+            "numerator_factorization_deferred": true
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 9.290704,
+            "preparation_stage": "construction_operation",
+            "operation": "clause_raw_elaboration_completed",
+            "clause_index": 12,
+            "construction_vocabulary": [
+              "circumcenter"
+            ]
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 9.293341,
+            "preparation_stage": "construction_operation",
+            "operation": "intersection_regularity_started",
+            "clause_index": 12
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 9.295821,
+            "preparation_stage": "construction_operation",
+            "operation": "intersection_regularity_completed",
+            "clause_index": 12
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 9.298194,
+            "preparation_stage": "construction_operation",
+            "operation": "existing_root_exclusion_started",
+            "clause_index": 12
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 9.302814,
+            "preparation_stage": "construction_operation",
+            "operation": "implicit_existing_root_enumeration_deferred",
+            "clause_index": 13
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 9.306065,
+            "preparation_stage": "construction_operation",
+            "operation": "existing_root_exclusion_completed",
+            "clause_index": 12
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 9.313406,
+            "preparation_stage": "construction_operation",
+            "operation": "construction_block_materialization_started",
+            "clause_index": 12,
+            "surviving_variable_count": 2,
+            "surviving_equation_count": 2
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 9.32682,
+            "preparation_stage": "construction_operation",
+            "operation": "construction_block_materialization_completed",
+            "clause_index": 12
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 9.330176,
+            "preparation_stage": "construction_clause_completed",
+            "clause_index": 12,
+            "equation_count": 14,
+            "variable_count": 17
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 9.333204,
+            "preparation_stage": "construction_clause_started",
+            "clause_index": 13,
+            "equation_count": 14,
+            "variable_count": 17
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 9.339086,
+            "preparation_stage": "construction_clause_completed",
+            "clause_index": 13,
+            "equation_count": 14,
+            "variable_count": 17,
+            "projected_hidden_circle_intersection": true
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 9.340984,
+            "preparation_stage": "distinct_locus_closure_started"
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 9.343271,
+            "preparation_stage": "distinct_locus_closure_completed",
+            "equation_count": 14,
+            "variable_count": 17,
+            "denominator_count": 47
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 9.345832,
+            "preparation_stage": "goal_elaboration_started",
+            "channel": "coll",
+            "point_count": 3
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 9.348253,
+            "preparation_stage": "construction_operation",
+            "operation": "affine_boundary_projection_started",
+            "clause_index": 13,
+            "output": "o3"
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 11.053701,
+            "preparation_stage": "construction_operation",
+            "operation": "affine_boundary_equations_loaded",
+            "clause_index": 13,
+            "output": "o3",
+            "equation_count": 2
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 11.056416,
+            "preparation_stage": "construction_operation",
+            "operation": "affine_boundary_coefficients_started",
+            "clause_index": 13,
+            "output": "o3"
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 12.191055,
+            "preparation_stage": "construction_operation",
+            "operation": "affine_boundary_coefficients_completed",
+            "clause_index": 13,
+            "output": "o3"
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 16.011714,
+            "preparation_stage": "construction_operation",
+            "operation": "affine_boundary_projection_completed",
+            "clause_index": 13,
+            "output": "o3"
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 16.014667,
+            "preparation_stage": "construction_operation",
+            "operation": "affine_boundary_projection_started",
+            "clause_index": 13,
+            "output": "o4"
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 16.03114,
+            "preparation_stage": "construction_operation",
+            "operation": "affine_boundary_equations_loaded",
+            "clause_index": 13,
+            "output": "o4",
+            "equation_count": 2
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 16.035806,
+            "preparation_stage": "construction_operation",
+            "operation": "affine_boundary_coefficients_started",
+            "clause_index": 13,
+            "output": "o4"
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 16.06695,
+            "preparation_stage": "construction_operation",
+            "operation": "affine_boundary_coefficients_completed",
+            "clause_index": 13,
+            "output": "o4"
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 16.110096,
+            "preparation_stage": "construction_operation",
+            "operation": "affine_boundary_projection_completed",
+            "clause_index": 13,
+            "output": "o4"
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 20.16654,
+            "preparation_stage": "construction_operation",
+            "operation": "circle_axis_homogeneous_projection_completed",
+            "clause_index": 13,
+            "output": "t",
+            "denominator_operation_count": 21976,
+            "polynomial_operation_count": 619185
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 20.725971,
+            "preparation_stage": "goal_elaboration_completed",
+            "channel": "coll",
+            "goal_variable_count": 11
+          },
+          {
+            "stage": "preparation_progress",
+            "elapsed_seconds": 21.330283,
+            "preparation_stage": "polynomial_expansion_deferred",
+            "equation_count": 14,
+            "variable_count": 7
+          },
+          {
+            "stage": "preparation_completed",
+            "elapsed_seconds": 21.958097,
+            "channel": "coll",
+            "point_count": 3,
+            "construction_block_count": 14,
+            "equation_count": 14,
+            "variable_count": 7,
+            "goal_variable_count": 11
+          },
+          {
+            "stage": "goal_slice_started",
+            "elapsed_seconds": 21.961426,
+            "construction_block_count": 14,
+            "equation_count": 14
+          },
+          {
+            "stage": "goal_slice_completed",
+            "elapsed_seconds": 24.764723,
+            "retained_clause_count": 11,
+            "excluded_clause_count": 3,
+            "retained_equation_count": 10
+          },
+          {
+            "stage": "polynomial_expansion_started",
+            "elapsed_seconds": 24.771805,
+            "equation_count": 10,
+            "variable_count": 7,
+            "coefficient_preserving": true
+          },
+          {
+            "stage": "polynomial_expansion_completed",
+            "elapsed_seconds": 24.822325,
+            "equation_count": 10,
+            "variable_count": 7,
+            "coefficient_preserving": true
+          },
+          {
+            "stage": "local_elimination_started",
+            "elapsed_seconds": 25.839327,
+            "equation_count": 10,
+            "variable_count": 7,
+            "protected_variable_count": 11,
+            "ordering_strategy": "min_fill"
+          },
+          {
+            "stage": "local_elimination_progress",
+            "elapsed_seconds": 25.843417,
+            "local_stage": "normalization_started",
+            "polynomial_count": 10,
+            "variable_count": 7,
+            "pre_normalized": true
+          },
+          {
+            "stage": "local_elimination_progress",
+            "elapsed_seconds": 25.854798,
+            "local_stage": "normalization_completed",
+            "polynomial_count": 10
+          },
+          {
+            "stage": "local_elimination_progress",
+            "elapsed_seconds": 25.859063,
+            "local_stage": "candidate_scan_started",
+            "remaining_variable_count": 7,
+            "polynomial_count": 10
+          },
+          {
+            "stage": "local_elimination_progress",
+            "elapsed_seconds": 25.870893,
+            "local_stage": "candidate_degree_scan_started",
+            "variable": "_free_x_16",
+            "bucket_size": 5
+          },
+          {
+            "stage": "local_elimination_progress",
+            "elapsed_seconds": 25.876446,
+            "local_stage": "candidate_degree_scan_started",
+            "variable": "_free_y_17",
+            "bucket_size": 4
+          },
+          {
+            "stage": "local_elimination_completed",
+            "elapsed_seconds": 26.025216,
+            "step_count": 0,
+            "eliminated_variable_count": 0,
+            "remaining_variable_count": 7,
+            "remaining_polynomial_count": 10,
+            "stopped_reason": "no_locally_linear_variable",
+            "exact_replay": true
+          },
+          {
+            "stage": "direct_constraint_scan_started",
+            "elapsed_seconds": 28.328122,
+            "equation_count": 10,
+            "enabled": false,
+            "goal_operation_count": 619185
+          },
+          {
+            "stage": "direct_constraint_scan_completed",
+            "elapsed_seconds": 28.330462,
+            "matched": false
+          },
+          {
+            "stage": "groebner_started",
+            "elapsed_seconds": 28.343027,
+            "equation_count": 10,
+            "variable_count": 7,
+            "coefficient_domain": "EX"
+          },
+          {
+            "stage": "groebner_completed",
+            "elapsed_seconds": 30.254389,
+            "basis_polynomial_count": 1
+          },
+          {
+            "stage": "initial_reduction_started",
+            "elapsed_seconds": 30.256864
+          },
+          {
+            "stage": "initial_reduction_completed",
+            "elapsed_seconds": 30.258996,
+            "remainder_is_zero": true,
+            "reduction_mode": "unit_basis_identity"
+          },
+          {
+            "stage": "saturation_started",
+            "elapsed_seconds": 30.260606,
+            "denominator_count": 0,
+            "max_saturation_rounds": 1
+          },
+          {
+            "stage": "saturation_completed",
+            "elapsed_seconds": 30.262185,
+            "assumptions_used_count": 0,
+            "remainder_is_zero": true
+          },
+          {
+            "stage": "certificate_replay_started",
+            "elapsed_seconds": 30.263748,
+            "basis_polynomial_count": 1,
+            "quotient_count": 1
+          },
+          {
+            "stage": "certificate_replay_completed",
+            "elapsed_seconds": 30.267869,
+            "replayed": true
+          },
+          {
+            "stage": "certificate_completed",
+            "elapsed_seconds": 83.494185,
+            "exact_replay": true,
+            "reduction_strategy": "typed_local_elimination_then_groebner",
+            "remainder_is_zero": true
+          }
+        ]
+      },
+      "reused": false
+    }
+  ]
+}

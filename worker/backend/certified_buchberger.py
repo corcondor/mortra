@@ -140,7 +140,7 @@ def _monomial(
 
 
 def _leading_term(polynomial: sp.Poly) -> tuple[tuple[int, ...], sp.Expr]:
-    terms = polynomial.terms(order="lex")
+    terms = polynomial.terms()
     if not terms:
         raise ValueError("zero polynomial has no leading term")
     return terms[0]

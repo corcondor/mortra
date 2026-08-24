@@ -105,6 +105,46 @@ class CohortCheckpointTest(unittest.TestCase):
                     "p", path, args=self.args, elapsed_seconds=0.0, reused=True
                 )
 
+    def test_timeout_artifact_is_not_counted_as_wrong(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT / "data") as temporary:
+            path = Path(temporary) / "p.json"
+            path.write_text(
+                json.dumps(
+                    {
+                        "problem_name": "p",
+                        "solved": False,
+                        "completed_attempts": 0,
+                        "unique_paths": 0,
+                        "right_censored_shards": 4,
+                        "execution_error_shards": 0,
+                        "protocol": {
+                            "rounds_n": 6,
+                            "attempts_k": 8,
+                            "seed": 0,
+                            "candidate_policy": "random",
+                            "incremental_prefix": False,
+                            "incidence_preselect_limit": 0,
+                            "incidence_workers": 1,
+                            "rank_temperature": 2.0,
+                            "feedback_candidates": 0,
+                            "feedback_workers": 1,
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+            result = _artifact_result(
+                "p", path, args=self.args, elapsed_seconds=1.0, reused=False
+            )
+            report = _build_report(
+                ["p"], [result], args=self.args, started=time.perf_counter()
+            )
+        self.assertEqual(result["status"], "right_censored_timeout")
+        self.assertEqual(report["summary"]["right_censored_problems"], 1)
+        self.assertIsNone(report["summary"]["pass_at_k"])
+        self.assertEqual(report["summary"]["fully_observed_problems"], 0)
+        self.assertFalse(report["summary"]["complete"])
+
 
 if __name__ == "__main__":
     unittest.main()

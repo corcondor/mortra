@@ -1,0 +1,324 @@
+{
+  "experiment": "hageo_independent_n_round_pass_at_k_no_llm",
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_dataset_auxiliary_clauses": false,
+    "uses_problem_id_in_search": false,
+    "uses_expected_answer": false,
+    "trajectory_policy": "hageo_incidence_gate_then_mmt_theory_view_ranking",
+    "ddAR_calls": "baseline_plus_one_terminal_call_per_complete_attempt",
+    "rounds_n": 1,
+    "attempts_k": 1,
+    "attempt_offset": 0,
+    "workers": 1,
+    "seed": 19,
+    "per_family_limit": 4,
+    "incidence_oversample_per_family": 8,
+    "incidence_preselect_limit": 32,
+    "incidence_workers": 1,
+    "candidate_limit": 16,
+    "candidate_policy": "mmt-hageo-lite",
+    "rank_temperature": 2.0,
+    "incremental_prefix": false,
+    "feedback_candidates": 0,
+    "feedback_workers": 1,
+    "ar_profile": "all",
+    "proof_dag_specialist_budget": {
+      "per_family_candidates": 16,
+      "depth": 2,
+      "fragments": 32,
+      "initial_states_per_candidate": 32,
+      "states_per_task": 250,
+      "reserved_consensus": 8,
+      "reserved_family_frontier": true
+    },
+    "truth_plane": "yuclid_native_certificate_replay_only"
+  },
+  "problem_name": "2011CTSTp16",
+  "normalization": {
+    "rewritten_constructions": 0,
+    "unchanged_constructions": 14,
+    "unresolved_constructions": 0
+  },
+  "baseline_solved": false,
+  "baseline_proof_residual": {
+    "open_relation_demands": 24,
+    "backward_obligations": 24,
+    "ar_supported_goals": 1,
+    "ar_closed_goals": 0,
+    "ar_residual_support": 2,
+    "ar_residual_l1": 2.0,
+    "ar_known_rank": 49
+  },
+  "mmt_exact_coordination": {
+    "input_fact_count": 3757,
+    "selected_fact_count": 192,
+    "selection_strategy": "goal-conditioned-proof-basis",
+    "accepted_fact_count": 281,
+    "derived_fact_count": 89,
+    "certificate_count": 89,
+    "certificate_sha256": "b794d847bd9ebf136b18e505d06841d1578c23cf4452ce5056787e882f1a567b",
+    "solved": false,
+    "replayed": false,
+    "initial_open_demand_count": 24,
+    "open_demand_count": 24,
+    "closed_demand_count": 0,
+    "made_goal_progress": false,
+    "goals": [
+      {
+        "goal": "cong(j,k,j,m)",
+        "solved": false,
+        "replayed": false,
+        "rounds": 6,
+        "proposed": 89,
+        "accepted": 89,
+        "rejected": 0
+      }
+    ]
+  },
+  "solved": false,
+  "pass_at_k": false,
+  "first_solved_attempt": null,
+  "unique_paths": 1,
+  "completed_attempts": 1,
+  "execution_errors": 0,
+  "elapsed_seconds": 19.3190351000012,
+  "attempt_results": [
+    {
+      "attempt": 0,
+      "status": "unsolved",
+      "solved": false,
+      "rounds_completed": 1,
+      "path": [
+        "angle_bisector(b,c,j)->d"
+      ],
+      "rounds": [
+        {
+          "round": 1,
+          "candidate_extension_seconds": 3.078708799999731,
+          "enumerated": 304,
+          "incidence_checked": 23,
+          "heuristic_candidates": 0,
+          "eligible_pool": 11,
+          "ranked_candidates": [
+            "shift(b,c,j)->d",
+            "circle(o,b,c)->d",
+            "angle_bisector(b,c,j)->d",
+            "angle_mirror(b,c,j)->d",
+            "eqdistance(b,c,j)->d",
+            "foot(m,a,o)->d",
+            "between_bound(m,p)->d",
+            "intersection_lt(a,o,m,a,o)->d",
+            "eq_triangle(m,p)->d",
+            "intersection_lc(b,c,j)->d",
+            "reflect(m,a,o)->d"
+          ],
+          "chosen": "angle_bisector(b,c,j)->d",
+          "relation_demands_in": [
+            "circle(j,k,a,b)",
+            "circle(j,k,a,c)",
+            "circle(j,k,a,p)",
+            "circle(j,k,a,q)",
+            "circle(j,k,b,a)",
+            "circle(j,k,b,c)",
+            "circle(j,k,b,p)",
+            "circle(j,k,b,q)",
+            "circle(j,k,c,a)",
+            "circle(j,k,c,b)",
+            "circle(j,k,c,p)",
+            "circle(j,k,c,q)",
+            "circle(j,k,p,a)",
+            "circle(j,k,p,b)",
+            "circle(j,k,p,c)",
+            "circle(j,k,p,q)",
+            "circle(j,k,q,a)",
+            "circle(j,k,q,b)",
+            "circle(j,k,q,c)",
+            "circle(j,k,q,p)",
+            "circle(j,m,a,b)",
+            "circle(j,m,a,c)",
+            "circle(j,m,a,p)",
+            "circle(j,m,a,q)"
+          ],
+          "relation_demands_observed": [
+            "circle(j,k,a,b)",
+            "circle(j,k,a,c)",
+            "circle(j,k,a,p)",
+            "circle(j,k,a,q)",
+            "circle(j,k,b,a)",
+            "circle(j,k,b,c)",
+            "circle(j,k,b,p)",
+            "circle(j,k,b,q)",
+            "circle(j,k,c,a)",
+            "circle(j,k,c,b)",
+            "circle(j,k,c,p)",
+            "circle(j,k,c,q)",
+            "circle(j,k,p,a)",
+            "circle(j,k,p,b)",
+            "circle(j,k,p,c)",
+            "circle(j,k,p,q)",
+            "circle(j,k,q,a)",
+            "circle(j,k,q,b)",
+            "circle(j,k,q,c)",
+            "circle(j,k,q,p)",
+            "circle(j,m,a,b)",
+            "circle(j,m,a,c)",
+            "circle(j,m,a,p)",
+            "circle(j,m,a,q)"
+          ],
+          "relation_demands_next": [
+            "circle(j,k,a,b)",
+            "circle(j,k,a,c)",
+            "circle(j,k,a,p)",
+            "circle(j,k,a,q)",
+            "circle(j,k,b,a)",
+            "circle(j,k,b,c)",
+            "circle(j,k,b,p)",
+            "circle(j,k,b,q)",
+            "circle(j,k,c,a)",
+            "circle(j,k,c,b)",
+            "circle(j,k,c,p)",
+            "circle(j,k,c,q)",
+            "circle(j,k,p,a)",
+            "circle(j,k,p,b)",
+            "circle(j,k,p,c)",
+            "circle(j,k,p,q)",
+            "circle(j,k,q,a)",
+            "circle(j,k,q,b)",
+            "circle(j,k,q,c)",
+            "circle(j,k,q,p)",
+            "circle(j,m,a,b)",
+            "circle(j,m,a,c)",
+            "circle(j,m,a,p)",
+            "circle(j,m,a,q)"
+          ],
+          "residual_feedback_applied": false,
+          "native_feedback": [],
+          "coordination": {
+            "agents": 5,
+            "consensus_agents": 4,
+            "restriction_edges": 6,
+            "shared_candidates": 32,
+            "primal_residual": 5.551115123125783e-17,
+            "dual_residual": 0.0,
+            "sheaf_residual": 0.13188947497332382,
+            "exchange_layer": "openmath_terms_over_mmt_theory_views",
+            "shared_channel_kinds": [
+              "construction_candidate",
+              "relation_symbol",
+              "theory_morphism"
+            ],
+            "local_top_candidates": [
+              {
+                "agent_id": "typed_incidence_proposal",
+                "candidates": [
+                  "circle(o,b,c)",
+                  "parallelogram(b,c,j)",
+                  "shift(b,c,j)",
+                  "eqdistance(b,c,j)",
+                  "eq_triangle(m,p)",
+                  "reflect(m,a,o)",
+                  "intersection_lc(b,c,j)",
+                  "mirror(m,p)",
+                  "nsquare(m,p)",
+                  "on_bline(m,p)",
+                  "psquare(m,p)",
+                  "circumcenter(j,b,c)"
+                ]
+              },
+              {
+                "agent_id": "tong_action",
+                "candidates": [
+                  "angle_bisector(b,c,j)",
+                  "angle_mirror(b,c,j)",
+                  "circumcenter(j,b,c)",
+                  "eqdistance(b,c,j)",
+                  "excenter(b,c,j)",
+                  "incenter(j,b,c)",
+                  "intersection_cc(b,c,j)",
+                  "intersection_lc(b,c,j)",
+                  "on_circum(j,b,c)",
+                  "parallelogram(b,c,j)",
+                  "shift(b,c,j)",
+                  "circle(o,b,c)"
+                ]
+              },
+              {
+                "agent_id": "newclid_relation",
+                "candidates": [
+                  "circle(o,b,c)",
+                  "parallelogram(b,c,j)",
+                  "shift(b,c,j)",
+                  "eqdistance(b,c,j)",
+                  "eq_triangle(m,p)",
+                  "reflect(m,a,o)",
+                  "circumcenter(j,b,c)",
+                  "intersection_cc(b,c,j)",
+                  "intersection_lc(b,c,j)",
+                  "mirror(m,p)",
+                  "nsquare(m,p)",
+                  "on_bline(m,p)"
+                ]
+              },
+              {
+                "agent_id": "gclc_wu",
+                "candidates": [
+                  "circumcenter(j,b,c)",
+                  "eqdistance(b,c,j)",
+                  "foot(m,a,o)",
+                  "intersection_cc(b,c,j)",
+                  "intersection_lc(b,c,j)",
+                  "intersection_ll(m,p,a,o)",
+                  "intersection_lp(a,o,m,a,o)",
+                  "intersection_lt(a,o,m,a,o)",
+                  "intersection_pp(m,a,o,k,a,o)",
+                  "intersection_tt(m,a,o,k,a,o)",
+                  "mirror(m,p)",
+                  "nsquare(m,p)"
+                ]
+              },
+              {
+                "agent_id": "hageo_incidence",
+                "candidates": [
+                  "angle_bisector(b,c,j)",
+                  "angle_mirror(b,c,j)",
+                  "between_bound(m,p)",
+                  "intersection_lt(a,o,m,a,o)",
+                  "shift(b,c,j)",
+                  "circle(o,b,c)",
+                  "eq_triangle(m,p)",
+                  "eqdistance(b,c,j)",
+                  "foot(m,a,o)",
+                  "intersection_lc(b,c,j)",
+                  "intersection_ll(m,p,a,o)",
+                  "midpoint(m,p)"
+                ]
+              }
+            ],
+            "proof_dag_specialist": null,
+            "timing_seconds": {
+              "proof_dag": 0.0,
+              "coordination": 0.005985400002828101
+            },
+            "incidence_seconds": 0.05437249999886262
+          }
+        }
+      ],
+      "verification_calls": 1,
+      "all_deduction_count": 4796,
+      "goal_deduction_count": 0,
+      "input_sha256": "9b90f883a194a277ca5de257b22d97f48c9d3268f1ee409c98ac1913bc3f2bb6",
+      "proof_sha256": "8b86a1951eaa87c8a841d120e067319f44f9d6ef1d1576f2d41666e6affdacff",
+      "proof_residual": {
+        "open_relation_demands": 24,
+        "backward_obligations": 24,
+        "ar_supported_goals": 1,
+        "ar_closed_goals": 0,
+        "ar_residual_support": 2,
+        "ar_residual_l1": 2.0,
+        "ar_known_rank": 53
+      },
+      "elapsed_seconds": 3.8116589999990538
+    }
+  ]
+}

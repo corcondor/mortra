@@ -4,11 +4,18 @@ from __future__ import annotations
 
 import hashlib
 import time
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from itertools import combinations
 from typing import Callable, Iterable
 
 import sympy as sp
+
+from worker.backend.polynomial_obligation_alignment import (
+    polynomial_obligation_alignment_rank,
+)
+from worker.backend.polynomial_proof_residual import (
+    bounded_normal_form_residual,
+)
 
 from worker.backend.certified_buchberger import (
     CertifiedBuchbergerDAGResult,
@@ -31,6 +38,7 @@ class CertifiedCliqueEliminationStep:
     candidate_output_polynomials: tuple[str, ...]
     output_polynomials: tuple[str, ...]
     internal_identities: tuple[PolynomialDAGIdentity, ...]
+    goal_membership: CertifiedDAGIdealMembership | None
     buchberger_complete: bool
     processed_pair_count: int
     deferred_pair_count: int
@@ -124,6 +132,27 @@ def _scope_distance_to_goal(
     return len(adjacency) + 1
 
 
+def _scope_alignment_to_obligations(
+    scope: frozenset[sp.Symbol],
+    obligation_scopes: tuple[frozenset[sp.Symbol], ...],
+    adjacency: dict[sp.Symbol, set[sp.Symbol]],
+) -> tuple[int, int, int]:
+    """Rank a separator by its proximity to forward-elaborated obligations."""
+
+    if not obligation_scopes:
+        return (0, 0, 0)
+    obligation_union = frozenset().union(*obligation_scopes)
+    overlap = max(len(scope & target) for target in obligation_scopes)
+    symmetric_difference = min(
+        len(scope ^ target) for target in obligation_scopes
+    )
+    return (
+        _scope_distance_to_goal(scope, obligation_union, adjacency),
+        -overlap,
+        symmetric_difference,
+    )
+
+
 def _select_incomplete_messages(
     candidates: tuple[sp.Expr, ...],
     *,
@@ -154,9 +183,7 @@ def _select_incomplete_messages(
         if not variables:
             selected.append(polynomial)
         else:
-            powers, _ = sp.Poly(polynomial, *variables, domain=sp.QQ).terms(
-                order="lex"
-            )[0]
+            powers, _ = sp.Poly(polynomial, *variables, domain=sp.QQ).terms()[0]
             signature = (tuple(str(item) for item in variables), powers)
             if any(
                 signature[0] == old_variables
@@ -225,6 +252,7 @@ def _clique_step(
     goal_variables: frozenset[sp.Symbol],
     global_adjacency: dict[sp.Symbol, set[sp.Symbol]],
     max_incomplete_messages: int,
+    goal_polynomial: sp.Expr | None,
 ) -> tuple[tuple[sp.Expr, ...], CertifiedCliqueEliminationStep]:
     started = time.perf_counter()
     leading_coefficients, coefficient_obligations, unit_available = (
@@ -233,6 +261,12 @@ def _clique_step(
     local_variables = (variable,) + tuple(
         sorted(clique - {variable}, key=str)
     )
+    local_goal = (
+        goal_polynomial
+        if goal_polynomial is not None
+        and goal_polynomial.free_symbols <= set(local_variables)
+        else None
+    )
     result = certified_buchberger_dag(
         inputs,
         local_variables,
@@ -240,6 +274,13 @@ def _clique_step(
         max_basis_size=max_basis_size,
         max_polynomial_terms=max_polynomial_terms,
         max_certificate_terms=max_witness_terms,
+        membership_target=local_goal,
+        membership_check_interval=1,
+    )
+    goal_membership = (
+        certify_dag_ideal_membership(local_goal, result)
+        if local_goal is not None
+        else None
     )
     output_by_polynomial: dict[str, sp.Expr] = {}
     for polynomial in result.basis_polynomials:
@@ -277,6 +318,11 @@ def _clique_step(
             str(result.processed_pair_count),
             str(result.deferred_pair_count),
             str(result.stopped_reason),
+            (
+                goal_membership.certificate_sha256
+                if goal_membership is not None
+                else ""
+            ),
         )
     )
     return outputs, CertifiedCliqueEliminationStep(
@@ -294,6 +340,7 @@ def _clique_step(
         ),
         output_polynomials=tuple(sp.sstr(item) for item in outputs),
         internal_identities=result.identities,
+        goal_membership=goal_membership,
         buchberger_complete=result.groebner_complete,
         processed_pair_count=result.processed_pair_count,
         deferred_pair_count=result.deferred_pair_count,
@@ -311,6 +358,14 @@ def eliminate_with_certified_chordal_buchberger(
     *,
     protected_variables: Iterable[sp.Symbol] = (),
     goal_polynomial: sp.Expr | None = None,
+    guidance_polynomials: Iterable[sp.Expr] = (),
+    guidance_branches: Iterable[Iterable[sp.Expr]] = (),
+    initial_residual_messages: Iterable[sp.Expr] = (),
+    ordering_strategy: str = "min_fill",
+    obligation_cost_slack: int = 1,
+    residual_candidate_limit: int = 2,
+    residual_max_pairs: int = 1,
+    residual_max_basis_size: int = 32,
     max_steps: int | None = None,
     max_separator_variables: int | None = 12,
     max_clique_polynomials: int = 32,
@@ -325,17 +380,48 @@ def eliminate_with_certified_chordal_buchberger(
 ) -> ChordalBuchbergerEliminationResult:
     """クリーク内で消去し、境界多項式だけを消去木の親へ渡す。"""
 
+    if ordering_strategy not in {
+        "min_fill",
+        "obligation_conditioned",
+        "residual_conditioned",
+    }:
+        raise ValueError(f"unknown ordering strategy: {ordering_strategy}")
+    if obligation_cost_slack < 0:
+        raise ValueError("obligation_cost_slack must be nonnegative")
+    if residual_candidate_limit < 1:
+        raise ValueError("residual_candidate_limit must be positive")
     initial = _deduplicate(polynomials)
     factors = initial
     remaining = set(variables)
     protected = set(protected_variables)
-    goal_variables = frozenset(
+    obligation_polynomials = tuple(
+        sp.expand(sp.sympify(item)) for item in guidance_polynomials
+    )
+    raw_obligation_branches = tuple(
+        tuple(branch) for branch in guidance_branches
+    )
+    obligation_branches = tuple(
+        tuple(sp.expand(sp.sympify(item)) for item in branch)
+        for branch in raw_obligation_branches
+        if branch
+    )
+    obligation_scopes = tuple(
+        frozenset(item.free_symbols)
+        for item in obligation_polynomials
+        if item.free_symbols
+    )
+    goal_seed = set(
         goal_polynomial.free_symbols if goal_polynomial is not None else protected
     )
+    if obligation_scopes:
+        goal_seed.update(set().union(*obligation_scopes))
+    goal_variables = frozenset(goal_seed)
     steps: list[CertifiedCliqueEliminationStep] = []
     eliminated: list[str] = []
     blocked: set[sp.Symbol] = set()
     stopped_reason: str | None = None
+    local_goal_membership: CertifiedDAGIdealMembership | None = None
+    residual_messages = _deduplicate(initial_residual_messages)
 
     while remaining - protected - blocked:
         if max_steps is not None and len(steps) >= max_steps:
@@ -343,7 +429,13 @@ def eliminate_with_certified_chordal_buchberger(
             break
         adjacency = _primal_adjacency(factors)
         candidates: list[
-            tuple[tuple[int, int, int, int, str], sp.Symbol, frozenset[sp.Symbol], tuple[sp.Expr, ...]]
+            tuple[
+                tuple[int, int, int, int],
+                tuple[int, ...],
+                sp.Symbol,
+                frozenset[sp.Symbol],
+                tuple[sp.Expr, ...],
+            ]
         ] = []
         blocked_separator = False
         blocked_polynomials = False
@@ -359,14 +451,23 @@ def eliminate_with_certified_chordal_buchberger(
             if len(local) > max_clique_polynomials:
                 blocked_polynomials = True
                 continue
-            rank = (
+            base_rank = (
                 _fill_edge_count(variable, adjacency),
                 len(neighbors),
                 len(local),
                 sum(_term_count(item) for item in local),
-                str(variable),
             )
-            candidates.append((rank, variable, clique, local))
+            alignment_rank = (
+                *polynomial_obligation_alignment_rank(
+                    local, obligation_polynomials
+                ),
+                *_scope_alignment_to_obligations(
+                    frozenset(neighbors), obligation_scopes, adjacency
+                ),
+            )
+            candidates.append(
+                (base_rank, alignment_rank, variable, clique, local)
+            )
         if not candidates:
             stopped_reason = (
                 "separator_budget"
@@ -377,7 +478,129 @@ def eliminate_with_certified_chordal_buchberger(
             )
             break
 
-        _, variable, clique, local = min(candidates, key=lambda item: item[0])
+        precomputed_step: tuple[
+            tuple[sp.Expr, ...], CertifiedCliqueEliminationStep
+        ] | None = None
+        selected_residual_rank: tuple[int, int, int, int] | None = None
+        if ordering_strategy in {
+            "obligation_conditioned",
+            "residual_conditioned",
+        }:
+            minimum_fill = min(item[0][0] for item in candidates)
+            fill_pool = [
+                item
+                for item in candidates
+                if item[0][0] <= minimum_fill + obligation_cost_slack
+            ]
+            minimum_width = min(item[0][1] for item in fill_pool)
+            bounded = [
+                item
+                for item in fill_pool
+                if item[0][1] <= minimum_width + obligation_cost_slack
+            ]
+            if ordering_strategy == "residual_conditioned" and obligation_branches:
+                evaluated: list[
+                    tuple[
+                        tuple[int, int, int, int],
+                        tuple[int, ...],
+                        tuple[int, int, int, int],
+                        sp.Symbol,
+                        frozenset[sp.Symbol],
+                        tuple[sp.Expr, ...],
+                        tuple[sp.Expr, ...],
+                        CertifiedCliqueEliminationStep | None,
+                    ]
+                ] = []
+                shortlist = sorted(
+                    bounded,
+                    key=lambda item: (item[1], item[0], str(item[2])),
+                )[:residual_candidate_limit]
+                for cost_rank, alignment_rank, candidate, candidate_clique, candidate_local in shortlist:
+                    candidate_outputs: tuple[sp.Expr, ...] = ()
+                    candidate_step: CertifiedCliqueEliminationStep | None = None
+                    if any(candidate in item.free_symbols for item in candidate_local):
+                        candidate_outputs, candidate_step = _clique_step(
+                            candidate,
+                            candidate_clique,
+                            candidate_local,
+                            max_pairs=max_pairs_per_clique,
+                            max_basis_size=max_basis_size_per_clique,
+                            max_polynomial_terms=max_polynomial_terms,
+                            max_witness_terms=max_witness_terms,
+                            goal_variables=goal_variables,
+                            global_adjacency=adjacency,
+                            max_incomplete_messages=max_incomplete_messages,
+                            goal_polynomial=goal_polynomial,
+                        )
+                        if not candidate_step.replayed:
+                            continue
+                    simulated = _deduplicate(
+                        (*residual_messages, *candidate_outputs)
+                    )
+                    try:
+                        residual = bounded_normal_form_residual(
+                            simulated,
+                            obligation_branches,
+                            max_pairs=residual_max_pairs,
+                            max_basis_size=residual_max_basis_size,
+                            max_polynomial_terms=min(max_polynomial_terms, 512),
+                            max_certificate_terms=min(max_witness_terms, 4_096),
+                            linear_span_reduction=True,
+                        )
+                        residual_rank = residual.selected_rank
+                    except (ValueError, sp.PolynomialError) as exc:
+                        residual_rank = (10**9, 10**9, 10**9, 10**9)
+                        if progress_callback is not None:
+                            progress_callback(
+                                {
+                                    "stage": "residual_evaluation_failed",
+                                    "variable": str(candidate),
+                                    "reason": f"{type(exc).__name__}: {exc}",
+                                    "message_count": len(simulated),
+                                    "branch_count": len(obligation_branches),
+                                }
+                            )
+                    evaluated.append(
+                        (
+                            residual_rank,
+                            alignment_rank,
+                            cost_rank,
+                            candidate,
+                            candidate_clique,
+                            candidate_local,
+                            candidate_outputs,
+                            candidate_step,
+                        )
+                    )
+                if evaluated:
+                    (
+                        selected_residual_rank,
+                        selected_alignment_rank,
+                        selected_cost_rank,
+                        variable,
+                        clique,
+                        local,
+                        cached_outputs,
+                        cached_step,
+                    ) = min(evaluated, key=lambda item: (*item[:3], str(item[3])))
+                    if cached_step is not None:
+                        precomputed_step = (cached_outputs, cached_step)
+                else:
+                    selected_cost_rank, selected_alignment_rank, variable, clique, local = min(
+                        bounded,
+                        key=lambda item: (item[1], item[0], str(item[2])),
+                    )
+            else:
+                selected_cost_rank, selected_alignment_rank, variable, clique, local = min(
+                    bounded,
+                    key=lambda item: (item[1], item[0], str(item[2])),
+                )
+            eligible_candidate_count = len(bounded)
+        else:
+            selected_cost_rank, selected_alignment_rank, variable, clique, local = min(
+                candidates, key=lambda item: (item[0], str(item[2]))
+            )
+            eligible_candidate_count = len(candidates)
         if progress_callback is not None:
             progress_callback(
                 {
@@ -386,28 +609,47 @@ def eliminate_with_certified_chordal_buchberger(
                     "separator_width": len(clique) - 1,
                     "input_polynomial_count": len(local),
                     "eliminated_variable_count": len(eliminated),
+                    "ordering_strategy": ordering_strategy,
+                    "candidate_count": len(candidates),
+                    "eligible_candidate_count": eligible_candidate_count,
+                    "cost_rank": list(selected_cost_rank),
+                    "obligation_alignment_rank": list(
+                        selected_alignment_rank
+                    ),
+                    "proof_residual_rank": (
+                        list(selected_residual_rank)
+                        if selected_residual_rank is not None
+                        else None
+                    ),
                 }
             )
         if not any(variable in item.free_symbols for item in local):
             remaining.remove(variable)
             eliminated.append(str(variable))
             continue
-        outputs, step = _clique_step(
-            variable,
-            clique,
-            local,
-            max_pairs=max_pairs_per_clique,
-            max_basis_size=max_basis_size_per_clique,
-            max_polynomial_terms=max_polynomial_terms,
-            max_witness_terms=max_witness_terms,
-            goal_variables=goal_variables,
-            global_adjacency=adjacency,
-            max_incomplete_messages=max_incomplete_messages,
-        )
+        if precomputed_step is not None:
+            outputs, step = precomputed_step
+        else:
+            outputs, step = _clique_step(
+                variable,
+                clique,
+                local,
+                max_pairs=max_pairs_per_clique,
+                max_basis_size=max_basis_size_per_clique,
+                max_polynomial_terms=max_polynomial_terms,
+                max_witness_terms=max_witness_terms,
+                goal_variables=goal_variables,
+                global_adjacency=adjacency,
+                max_incomplete_messages=max_incomplete_messages,
+                goal_polynomial=goal_polynomial,
+            )
         if not step.replayed:
             stopped_reason = "certificate_replay_failed"
             break
         steps.append(step)
+        residual_messages = _deduplicate(
+            (*residual_messages, *outputs)
+        )
         if step.buchberger_complete:
             local_set = set(local)
             factors = _deduplicate(
@@ -444,15 +686,29 @@ def eliminate_with_certified_chordal_buchberger(
                     "elimination_committed": step.elimination_committed,
                     "elapsed_seconds": step.elapsed_seconds,
                     "eliminated_variable_count": len(eliminated),
+                    "goal_proved": bool(
+                        step.goal_membership is not None
+                        and step.goal_membership.proved
+                        and step.goal_membership.replayed
+                    ),
+                    "checkpoint_node": asdict(step),
                 }
             )
+        if (
+            step.goal_membership is not None
+            and step.goal_membership.proved
+            and step.goal_membership.replayed
+        ):
+            local_goal_membership = step.goal_membership
+            stopped_reason = "local_target_membership"
+            break
 
     if stopped_reason is None and remaining - protected:
         stopped_reason = "incomplete_local_basis"
 
     terminal_result = None
-    goal_membership = None
-    if goal_polynomial is not None:
+    goal_membership = local_goal_membership
+    if goal_polynomial is not None and goal_membership is None:
         terminal_variables = tuple(
             sorted(
                 set().union(
@@ -470,6 +726,12 @@ def eliminate_with_certified_chordal_buchberger(
                         "stage": "terminal_started",
                         "variable_count": len(terminal_variables),
                         "polynomial_count": len(factors),
+                        "remaining_variables": [
+                            str(item) for item in terminal_variables
+                        ],
+                        "remaining_polynomials": [
+                            sp.sstr(item) for item in factors
+                        ],
                     }
                 )
             terminal_result = certified_buchberger_dag(

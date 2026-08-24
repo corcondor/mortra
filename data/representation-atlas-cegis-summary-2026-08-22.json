@@ -1,0 +1,190 @@
+{
+  "experiment": "representation_atlas_residual_construction_cegis",
+  "uses_external_llm": false,
+  "problem_specific_rules_added": false,
+  "pairs": [
+    {
+      "problem": "2000USATSTp2",
+      "control": {
+        "artifact": "data/representation-atlas-typed-control-2000usatstp2-2026-08-22.json",
+        "solved": false,
+        "evaluated_paths": 4,
+        "error_count": 1,
+        "minimum_certified_residual_support": 2,
+        "minimum_certified_residual_l1": 2.0,
+        "selected_terms": [
+          "intersection_pp(e,a,d,a,d,b)",
+          "intersection_tt(e,a,d,a,d,b)",
+          "parallelogram(a,d,m)",
+          "reflect(e,a,d)"
+        ],
+        "runtime_requirement_gate": null,
+        "generated_contract_candidates": 0,
+        "executable_contract_candidates": 0,
+        "held_open_contract_candidates": 0,
+        "statically_rejected_instantiations": 0,
+        "chart_matched_candidates": 0
+      },
+      "treatment": {
+        "artifact": "data/representation-atlas-typed-treatment-v2-2000usatstp2-2026-08-22.json",
+        "solved": false,
+        "evaluated_paths": 4,
+        "error_count": 0,
+        "minimum_certified_residual_support": 2,
+        "minimum_certified_residual_l1": 2.0,
+        "selected_terms": [
+          "foot(a,e,f)",
+          "on_pline(a,e,f)",
+          "on_tline(a,e,f)",
+          "parallelogram(a,e,f)"
+        ],
+        "runtime_requirement_gate": {
+          "input_candidates": 102,
+          "executable_candidates": 75,
+          "held_open_candidates": 27,
+          "statically_rejected_candidates": 0
+        },
+        "generated_contract_candidates": 64,
+        "executable_contract_candidates": 56,
+        "held_open_contract_candidates": 8,
+        "statically_rejected_instantiations": 448,
+        "chart_matched_candidates": 0
+      },
+      "causal_difference": {
+        "additional_solve": 0,
+        "error_count_change": -1,
+        "residual_support_change": 0,
+        "residual_l1_change": 0.0
+      }
+    },
+    {
+      "problem": "2016G6",
+      "control": {
+        "artifact": "data/representation-atlas-typed-control-2016g6-2026-08-22.json",
+        "solved": false,
+        "evaluated_paths": 4,
+        "error_count": 3,
+        "minimum_certified_residual_support": 2,
+        "minimum_certified_residual_l1": 2.0,
+        "selected_terms": [
+          "intersection_lt(a,c,a,c,f)",
+          "intersection_pp(a,c,f,c,a,f)",
+          "parallelogram(b,e,p)",
+          "reflect(a,e,b)"
+        ],
+        "runtime_requirement_gate": {
+          "input_candidates": 0,
+          "executable_candidates": 0,
+          "held_open_candidates": 0,
+          "statically_rejected_candidates": 0
+        },
+        "generated_contract_candidates": 0,
+        "executable_contract_candidates": 0,
+        "held_open_contract_candidates": 0,
+        "statically_rejected_instantiations": 0,
+        "chart_matched_candidates": 0
+      },
+      "treatment": {
+        "artifact": "data/representation-atlas-typed-treatment-2016g6-2026-08-22.json",
+        "solved": false,
+        "evaluated_paths": 4,
+        "error_count": 0,
+        "minimum_certified_residual_support": 2,
+        "minimum_certified_residual_l1": 2.0,
+        "selected_terms": [
+          "lc_tangent(b,e)",
+          "on_pline(a,p,q)",
+          "on_tline(a,p,q)",
+          "parallelogram(a,c,d)"
+        ],
+        "runtime_requirement_gate": {
+          "input_candidates": 102,
+          "executable_candidates": 71,
+          "held_open_candidates": 30,
+          "statically_rejected_candidates": 1
+        },
+        "generated_contract_candidates": 64,
+        "executable_contract_candidates": 54,
+        "held_open_contract_candidates": 10,
+        "statically_rejected_instantiations": 681,
+        "chart_matched_candidates": 0
+      },
+      "causal_difference": {
+        "additional_solve": 0,
+        "error_count_change": -3,
+        "residual_support_change": 0,
+        "residual_l1_change": 0.0
+      }
+    },
+    {
+      "problem": "2024PlanetCupp10",
+      "control": {
+        "artifact": "data/representation-atlas-typed-control-2024planetcup-p10-2026-08-22.json",
+        "solved": false,
+        "evaluated_paths": 4,
+        "error_count": 3,
+        "minimum_certified_residual_support": 2,
+        "minimum_certified_residual_l1": 2.0,
+        "selected_terms": [
+          "intersection_pp(m,p,a,a,m,p)",
+          "intersection_tt(m,p,a,a,m,p)",
+          "parallelogram(a,m,p)",
+          "reflect(b,m,p)"
+        ],
+        "runtime_requirement_gate": {
+          "input_candidates": 0,
+          "executable_candidates": 0,
+          "held_open_candidates": 0,
+          "statically_rejected_candidates": 0
+        },
+        "generated_contract_candidates": 0,
+        "executable_contract_candidates": 0,
+        "held_open_contract_candidates": 0,
+        "statically_rejected_instantiations": 0,
+        "chart_matched_candidates": 0
+      },
+      "treatment": {
+        "artifact": "data/representation-atlas-typed-treatment-2024planetcup-p10-2026-08-22.json",
+        "solved": false,
+        "evaluated_paths": 4,
+        "error_count": 0,
+        "minimum_certified_residual_support": 2,
+        "minimum_certified_residual_l1": 2.0,
+        "selected_terms": [
+          "on_aline(a,o,b,m,p)",
+          "on_pline(a,m,o)",
+          "on_tline(a,m,o)",
+          "parallelogram(a,m,o)"
+        ],
+        "runtime_requirement_gate": {
+          "input_candidates": 102,
+          "executable_candidates": 83,
+          "held_open_candidates": 19,
+          "statically_rejected_candidates": 0
+        },
+        "generated_contract_candidates": 64,
+        "executable_contract_candidates": 64,
+        "held_open_contract_candidates": 0,
+        "statically_rejected_instantiations": 1266,
+        "chart_matched_candidates": 0
+      },
+      "causal_difference": {
+        "additional_solve": 0,
+        "error_count_change": -3,
+        "residual_support_change": 0,
+        "residual_l1_change": 0.0
+      }
+    }
+  ],
+  "aggregate": {
+    "problem_count": 3,
+    "additional_solves": 0,
+    "control_errors": 7,
+    "treatment_errors": 0,
+    "statically_rejected_instantiations": 2395,
+    "held_open_contract_candidates": 18,
+    "chart_matched_candidates": 0,
+    "residual_improvements": 0
+  },
+  "conclusion": "The requirement gate removed invalid construction executions, but the tested representation charts produced no additional solve or native proof-residual reduction on this fixed cohort."
+}

@@ -1,0 +1,177 @@
+{
+  "experiment": "polynomial_relation_reelaboration",
+  "problem_name": "2024PlanetCupp10",
+  "dataset": "C:/Users/81808/.cache/mortra-research-sources/GenesisGeo/benchmarks/hageo_409.txt",
+  "dataset_sha256": "55aa45dd16a1b69eaf612036468dbf3f62e73b654c0e3bb1a23fd3e5e3ed2368",
+  "exact_artifact": "C:/Users/81808/.openclaw/workspace/mortra-1-release/data/polynomial-reelaboration-cached-2024planet-runs/2024PlanetCupp10.json",
+  "exact_artifact_sha256": "5a81f408f65c68baf0d3e062d49c696545b5cc00ae7b12e7f7e0063e86bef8bf",
+  "normalization": {
+    "rewritten_constructions": 0,
+    "unchanged_constructions": 20,
+    "unresolved_constructions": 0
+  },
+  "baseline": {
+    "solved": false,
+    "native_fact_count": 9683,
+    "open_obligation_branch_count": 24,
+    "open_demand_count": 16,
+    "goals": [
+      "perp(m,o,p,q)"
+    ],
+    "open_demands": [
+      "lequation(1/1,m,p,*,m,p,1/1,o,q,*,o,q,-1/1,m,q,*,m,q,-1/1,o,p,*,o,p,0)",
+      "lequation(1/1,m,q,*,m,q,1/1,o,p,*,o,p,-1/1,m,p,*,m,p,-1/1,o,q,*,o,q,0)",
+      "lequation(1/1,o,p,*,o,p,1/1,m,q,*,m,q,-1/1,o,q,*,o,q,-1/1,m,p,*,m,p,0)",
+      "perp(?C,?D,m,o)",
+      "para(?C,?D,p,q)",
+      "lequation(1/1,o,q,*,o,q,1/1,m,p,*,m,p,-1/1,o,p,*,o,p,-1/1,m,q,*,m,q,0)",
+      "lequation(1/1,p,m,*,p,m,1/1,q,o,*,q,o,-1/1,p,o,*,p,o,-1/1,q,m,*,q,m,0)",
+      "lequation(1/1,q,m,*,q,m,1/1,p,o,*,p,o,-1/1,q,o,*,q,o,-1/1,p,m,*,p,m,0)",
+      "lequation(1/1,p,o,*,p,o,1/1,q,m,*,q,m,-1/1,p,m,*,p,m,-1/1,q,o,*,q,o,0)",
+      "lequation(1/1,q,o,*,q,o,1/1,p,m,*,p,m,-1/1,q,m,*,q,m,-1/1,p,o,*,p,o,0)",
+      "perp(m,p,o,q)",
+      "perp(m,q,o,p)",
+      "perp(?C,?D,p,q)",
+      "para(?C,?D,m,o)",
+      "ncoll(o,m,p)",
+      "ncoll(o,m,q)"
+    ],
+    "open_obligation_branches": [
+      [
+        "lequation(1/1,m,p,*,m,p,1/1,o,q,*,o,q,-1/1,m,q,*,m,q,-1/1,o,p,*,o,p,0)"
+      ],
+      [
+        "lequation(1/1,m,q,*,m,q,1/1,o,p,*,o,p,-1/1,m,p,*,m,p,-1/1,o,q,*,o,q,0)"
+      ],
+      [
+        "lequation(1/1,o,p,*,o,p,1/1,m,q,*,m,q,-1/1,o,q,*,o,q,-1/1,m,p,*,m,p,0)"
+      ],
+      [
+        "perp(?C,?D,m,o)",
+        "para(?C,?D,p,q)"
+      ],
+      [
+        "lequation(1/1,o,q,*,o,q,1/1,m,p,*,m,p,-1/1,o,p,*,o,p,-1/1,m,q,*,m,q,0)"
+      ],
+      [
+        "lequation(1/1,p,m,*,p,m,1/1,q,o,*,q,o,-1/1,p,o,*,p,o,-1/1,q,m,*,q,m,0)"
+      ],
+      [
+        "lequation(1/1,q,m,*,q,m,1/1,p,o,*,p,o,-1/1,q,o,*,q,o,-1/1,p,m,*,p,m,0)"
+      ],
+      [
+        "perp(?C,?D,m,o)",
+        "para(?C,?D,p,q)"
+      ],
+      [
+        "lequation(1/1,p,o,*,p,o,1/1,q,m,*,q,m,-1/1,p,m,*,p,m,-1/1,q,o,*,q,o,0)"
+      ],
+      [
+        "lequation(1/1,q,o,*,q,o,1/1,p,m,*,p,m,-1/1,q,m,*,q,m,-1/1,p,o,*,p,o,0)"
+      ],
+      [
+        "perp(m,p,o,q)",
+        "perp(m,q,o,p)"
+      ],
+      [
+        "perp(?C,?D,m,o)",
+        "para(?C,?D,p,q)"
+      ],
+      [
+        "perp(m,q,o,p)",
+        "perp(m,p,o,q)"
+      ],
+      [
+        "perp(m,p,o,q)",
+        "perp(m,q,o,p)"
+      ],
+      [
+        "perp(m,q,o,p)",
+        "perp(m,p,o,q)"
+      ],
+      [
+        "perp(?C,?D,m,o)",
+        "para(?C,?D,p,q)"
+      ],
+      [
+        "perp(m,q,o,p)",
+        "perp(m,p,o,q)"
+      ],
+      [
+        "perp(m,p,o,q)",
+        "perp(m,q,o,p)"
+      ],
+      [
+        "perp(m,q,o,p)",
+        "perp(m,p,o,q)"
+      ],
+      [
+        "perp(?C,?D,p,q)",
+        "para(?C,?D,m,o)"
+      ],
+      [
+        "perp(m,p,o,q)",
+        "perp(m,q,o,p)"
+      ],
+      [
+        "lequation(1/1,o,p,*,o,p,1/1,m,q,*,m,q,-1/1,o,q,*,o,q,-1/1,m,p,*,m,p,0)",
+        "ncoll(o,m,p)"
+      ],
+      [
+        "lequation(1/1,o,q,*,o,q,1/1,m,p,*,m,p,-1/1,o,p,*,o,p,-1/1,m,q,*,m,q,0)",
+        "ncoll(o,m,q)"
+      ],
+      [
+        "perp(?C,?D,p,q)",
+        "para(?C,?D,m,o)"
+      ]
+    ]
+  },
+  "exchange": {
+    "status": "open",
+    "solved": false,
+    "source": "polynomial_relation_reelaboration",
+    "certified_lemmas": 4,
+    "targeted_obligation_lemmas": 0,
+    "targeted_polynomial_count": 55,
+    "targeted_demand_count": 267,
+    "targeted_candidate_comparisons": 14685,
+    "ideal_membership_lemmas": 0,
+    "ideal_max_multiplier_degree": 0,
+    "hole_candidate_count": 256,
+    "atoms": [
+      {
+        "atom": "coll(d1,e,f)",
+        "source_node_id": "separator:0:_free_x_15",
+        "certificate_sha256": "bbaa47b9e982b5193a4fc43ed30f56cd644e2b0f802bd50156488f568fa01ffe"
+      },
+      {
+        "atom": "perp(d,d1,e,f)",
+        "source_node_id": "separator:0:_free_x_15",
+        "certificate_sha256": "101d3f51ed8197e76a3b2f2661344ab9a122ee0efc503216779cf7560fb97e78"
+      },
+      {
+        "atom": "cong(d,n1,e,n1)",
+        "source_node_id": "separator:1:_free_x_9",
+        "certificate_sha256": "c377197ef7ddcdee45cb6440545132d8e34ed5a4b5e02a807bce7480fa9a718d"
+      },
+      {
+        "atom": "cong(e,n1,f,n1)",
+        "source_node_id": "separator:1:_free_x_9",
+        "certificate_sha256": "8eab4bca3df88c481f39d20843d3b410ebc6c658c049053b90618dc8875889c9"
+      }
+    ],
+    "hypergraph_proofs": []
+  },
+  "precomputed_certificate_count": 4,
+  "unique_recovered_atoms": [
+    "coll(d1,e,f)",
+    "perp(d,d1,e,f)",
+    "cong(d,n1,e,n1)",
+    "cong(e,n1,f,n1)"
+  ],
+  "novel_vs_native_atoms": [],
+  "recovered_open_demands": [],
+  "causal_gain": false,
+  "elapsed_seconds": 25.625175499997567
+}

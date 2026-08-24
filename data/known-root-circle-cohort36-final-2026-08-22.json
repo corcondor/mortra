@@ -1,0 +1,1021 @@
+{
+  "experiment": "hageo_known_root_circle_intersection_cohort",
+  "created_at": "2026-08-22T14:43:19.068844+00:00",
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_expected_answer": false,
+    "uses_problem_specific_solver_logic": false,
+    "dataset_auxiliary_clauses_hidden": true,
+    "cohort_selection": "parsed JGEX clause with one output and exactly two on_circle constructions sharing the identical second argument",
+    "truth_plane": "exact polynomial certificate replay with zero remainder",
+    "timeout_semantics": "right-censored unknown",
+    "timeout_seconds_per_problem": 60.0,
+    "workers": 2,
+    "execution_mode": "persistent",
+    "startup_timeout_seconds": 300.0,
+    "representation": "goal_local_relational",
+    "affine_local_lemmas": true,
+    "max_saturation_rounds": 1,
+    "dataset_sha256": "629e621cea5b4d9bf4bcae835c286606be3294cc8cc0c794b210fdaec011f8c2",
+    "base_union_sha256": "2c962fec0af60ee19761d2e514e51cce107bce5ec846bda54fe33c068d388976",
+    "surface_regex_audit": {
+      "previous_count": 37,
+      "parsed_problem_count": 36,
+      "false_positive": "2021GOWACAp4",
+      "reason": "the surface backreference matched radius point 'a1' as if it were the shared point 'a'; parsed arguments are distinct"
+    }
+  },
+  "summary": {
+    "cohort_total": 36,
+    "exact_proved": 3,
+    "already_in_base_union": 1,
+    "new_certified_candidates": 2,
+    "by_classification": {
+      "exact_proof": 3,
+      "right_censored_timeout": 33
+    }
+  },
+  "sets": {
+    "cohort": [
+      "2005CTSTp19",
+      "2006CGMOp2",
+      "2006G9",
+      "2012EGMOp7",
+      "2016BalkanMOp2",
+      "2016CTSTp7",
+      "2016G2",
+      "2016USATSTSTp2",
+      "2017CHNGaoLian",
+      "2018CTSTp21",
+      "2018CzechAPSlovakp2-",
+      "2019ELMOSLp4",
+      "2019GOTEEMp6",
+      "2020AQGOp5",
+      "2020CSMGOp2",
+      "2020CSMGOp6",
+      "2020IranTSTp9",
+      "2020KoMaLA771",
+      "2021CGMOp2",
+      "2021CzechAPSlovakp6",
+      "2021GOWACAp3",
+      "2021IsraelOlympicRev",
+      "2022CHNSouthEastMOg11p6",
+      "2022G2",
+      "2022IranGOAp3",
+      "2022KoMaLA805",
+      "2022USATSTSTp6",
+      "2023PlanetCupp9",
+      "2023RMMSLG1",
+      "2023SAGFp3",
+      "2023SerbiaMOp6",
+      "2023USAMOp6",
+      "2024ARMOg9p6",
+      "2024AsiaPacificMOp5",
+      "2025XinXingSpringMOp5",
+      "XinXingV28p2"
+    ],
+    "exact_proved": [
+      "2018CzechAPSlovakp2-",
+      "2022CHNSouthEastMOg11p6",
+      "2022KoMaLA805"
+    ],
+    "already_in_base_union": [
+      "2022CHNSouthEastMOg11p6"
+    ],
+    "new_certified_candidates": [
+      "2018CzechAPSlovakp2-",
+      "2022KoMaLA805"
+    ]
+  },
+  "results": [
+    {
+      "problem": "2005CTSTp19",
+      "matched_clauses": [
+        {
+          "clause_index": 6,
+          "clause": "q = on_circle o1 p, on_circle o2 p",
+          "output": "q",
+          "centers": [
+            "o1",
+            "o2"
+          ],
+          "shared_known_point": "p"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2005CTSTp19.txt",
+      "reused": true
+    },
+    {
+      "problem": "2006CGMOp2",
+      "matched_clauses": [
+        {
+          "clause_index": 4,
+          "clause": "m = on_circle o1 o, on_circle o2 o",
+          "output": "m",
+          "centers": [
+            "o1",
+            "o2"
+          ],
+          "shared_known_point": "o"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2006CGMOp2.txt",
+      "reused": true
+    },
+    {
+      "problem": "2006G9",
+      "matched_clauses": [
+        {
+          "clause_index": 6,
+          "clause": "a2 = on_circle o1 a, on_circle o a",
+          "output": "a2",
+          "centers": [
+            "o1",
+            "o"
+          ],
+          "shared_known_point": "a"
+        },
+        {
+          "clause_index": 8,
+          "clause": "b2 = on_circle o2 b, on_circle o b",
+          "output": "b2",
+          "centers": [
+            "o2",
+            "o"
+          ],
+          "shared_known_point": "b"
+        },
+        {
+          "clause_index": 10,
+          "clause": "c2 = on_circle o3 c, on_circle o c",
+          "output": "c2",
+          "centers": [
+            "o3",
+            "o"
+          ],
+          "shared_known_point": "c"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2006G9.txt",
+      "reused": true
+    },
+    {
+      "problem": "2012EGMOp7",
+      "matched_clauses": [
+        {
+          "clause_index": 7,
+          "clause": "e = on_circle o b, on_circle o1 b",
+          "output": "e",
+          "centers": [
+            "o",
+            "o1"
+          ],
+          "shared_known_point": "b"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2012EGMOp7.txt",
+      "reused": true
+    },
+    {
+      "problem": "2016BalkanMOp2",
+      "matched_clauses": [
+        {
+          "clause_index": 11,
+          "clause": "p = on_circle o1 m, on_circle o2 m",
+          "output": "p",
+          "centers": [
+            "o1",
+            "o2"
+          ],
+          "shared_known_point": "m"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2016BalkanMOp2.txt",
+      "reused": true
+    },
+    {
+      "problem": "2016CTSTp7",
+      "matched_clauses": [
+        {
+          "clause_index": 11,
+          "clause": "t = on_circle o1 p, on_circle o2 p",
+          "output": "t",
+          "centers": [
+            "o1",
+            "o2"
+          ],
+          "shared_known_point": "p"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2016CTSTp7.txt",
+      "reused": true
+    },
+    {
+      "problem": "2016G2",
+      "matched_clauses": [
+        {
+          "clause_index": 8,
+          "clause": "x = on_circle o1 a, on_circle o a",
+          "output": "x",
+          "centers": [
+            "o1",
+            "o"
+          ],
+          "shared_known_point": "a"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2016G2.txt",
+      "reused": true
+    },
+    {
+      "problem": "2016USATSTSTp2",
+      "matched_clauses": [
+        {
+          "clause_index": 5,
+          "clause": "g = on_circle m a, on_circle o a",
+          "output": "g",
+          "centers": [
+            "m",
+            "o"
+          ],
+          "shared_known_point": "a"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2016USATSTSTp2.txt",
+      "reused": true
+    },
+    {
+      "problem": "2017CHNGaoLian",
+      "matched_clauses": [
+        {
+          "clause_index": 3,
+          "clause": "p = on_circle a b, on_circle o3 b",
+          "output": "p",
+          "centers": [
+            "a",
+            "o3"
+          ],
+          "shared_known_point": "b"
+        },
+        {
+          "clause_index": 4,
+          "clause": "q = on_circle i b, on_circle o3 b",
+          "output": "q",
+          "centers": [
+            "i",
+            "o3"
+          ],
+          "shared_known_point": "b"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-iso-triangle-retest-2026-08-22/inputs/2017CHNGaoLian.txt",
+      "reused": true
+    },
+    {
+      "problem": "2018CTSTp21",
+      "matched_clauses": [
+        {
+          "clause_index": 6,
+          "clause": "g = on_circle o1 a, on_circle o2 a",
+          "output": "g",
+          "centers": [
+            "o1",
+            "o2"
+          ],
+          "shared_known_point": "a"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-iso-triangle-retest-2026-08-22/inputs/2018CTSTp21.txt",
+      "reused": true
+    },
+    {
+      "problem": "2018CzechAPSlovakp2-",
+      "matched_clauses": [
+        {
+          "clause_index": 7,
+          "clause": "x = on_circle o a, on_circle o3 a",
+          "output": "x",
+          "centers": [
+            "o",
+            "o3"
+          ],
+          "shared_known_point": "a"
+        }
+      ],
+      "status": "proved",
+      "classification": "exact_proof",
+      "solved": true,
+      "reason": null,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2018CzechAPSlovakp2-.txt",
+      "proof": "data/known-root-circle-cohort36-persistent-2026-08-22/proofs/2018CzechAPSlovakp2-.json",
+      "proof_file_sha256": "05b76c289685bde5f9aaa86192d4149f73442676fc2cd34fbdeb3ff9fad18817",
+      "certified_artifact": "data/known-root-circle-cohort36-persistent-2026-08-22/artifacts/2018CzechAPSlovakp2-.json",
+      "certificate_sha256": "0f41681bb095db134a9f382533b726d529c768a5565d53f502f681f8d41be8a3",
+      "construction_vocabulary": [
+        "circumcenter",
+        "eqdistance",
+        "on_circle",
+        "on_line",
+        "triangle"
+      ],
+      "reused": true
+    },
+    {
+      "problem": "2019ELMOSLp4",
+      "matched_clauses": [
+        {
+          "clause_index": 8,
+          "clause": "p = on_circle o a, on_circle o1 a",
+          "output": "p",
+          "centers": [
+            "o",
+            "o1"
+          ],
+          "shared_known_point": "a"
+        },
+        {
+          "clause_index": 9,
+          "clause": "q = on_circle o a, on_circle o2 a",
+          "output": "q",
+          "centers": [
+            "o",
+            "o2"
+          ],
+          "shared_known_point": "a"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2019ELMOSLp4.txt",
+      "reused": true
+    },
+    {
+      "problem": "2019GOTEEMp6",
+      "matched_clauses": [
+        {
+          "clause_index": 5,
+          "clause": "x = on_circle o a, on_circle o1 a",
+          "output": "x",
+          "centers": [
+            "o",
+            "o1"
+          ],
+          "shared_known_point": "a"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2019GOTEEMp6.txt",
+      "reused": true
+    },
+    {
+      "problem": "2020AQGOp5",
+      "matched_clauses": [
+        {
+          "clause_index": 11,
+          "clause": "k = on_circle o2 d, on_circle i d",
+          "output": "k",
+          "centers": [
+            "o2",
+            "i"
+          ],
+          "shared_known_point": "d"
+        },
+        {
+          "clause_index": 15,
+          "clause": "r = on_circle o3 a, on_circle o a",
+          "output": "r",
+          "centers": [
+            "o3",
+            "o"
+          ],
+          "shared_known_point": "a"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2020AQGOp5.txt",
+      "reused": true
+    },
+    {
+      "problem": "2020CSMGOp2",
+      "matched_clauses": [
+        {
+          "clause_index": 4,
+          "clause": "s = on_circle m1 a, on_circle o a",
+          "output": "s",
+          "centers": [
+            "m1",
+            "o"
+          ],
+          "shared_known_point": "a"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2020CSMGOp2.txt",
+      "reused": true
+    },
+    {
+      "problem": "2020CSMGOp6",
+      "matched_clauses": [
+        {
+          "clause_index": 10,
+          "clause": "k = on_circle o1 x, on_circle o2 x",
+          "output": "k",
+          "centers": [
+            "o1",
+            "o2"
+          ],
+          "shared_known_point": "x"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2020CSMGOp6.txt",
+      "reused": true
+    },
+    {
+      "problem": "2020IranTSTp9",
+      "matched_clauses": [
+        {
+          "clause_index": 10,
+          "clause": "s = on_circle o1 a, on_circle o a",
+          "output": "s",
+          "centers": [
+            "o1",
+            "o"
+          ],
+          "shared_known_point": "a"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2020IranTSTp9.txt",
+      "reused": true
+    },
+    {
+      "problem": "2020KoMaLA771",
+      "matched_clauses": [
+        {
+          "clause_index": 7,
+          "clause": "m = on_circle i d, on_circle o1 d",
+          "output": "m",
+          "centers": [
+            "i",
+            "o1"
+          ],
+          "shared_known_point": "d"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2020KoMaLA771.txt",
+      "reused": true
+    },
+    {
+      "problem": "2021CGMOp2",
+      "matched_clauses": [
+        {
+          "clause_index": 5,
+          "clause": "x = on_circle o a, on_circle m1 a",
+          "output": "x",
+          "centers": [
+            "o",
+            "m1"
+          ],
+          "shared_known_point": "a"
+        },
+        {
+          "clause_index": 7,
+          "clause": "y = on_circle o a, on_circle m2 a",
+          "output": "y",
+          "centers": [
+            "o",
+            "m2"
+          ],
+          "shared_known_point": "a"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2021CGMOp2.txt",
+      "reused": true
+    },
+    {
+      "problem": "2021CzechAPSlovakp6",
+      "matched_clauses": [
+        {
+          "clause_index": 9,
+          "clause": "a0 = on_circle o1 a, on_circle o2 a",
+          "output": "a0",
+          "centers": [
+            "o1",
+            "o2"
+          ],
+          "shared_known_point": "a"
+        },
+        {
+          "clause_index": 12,
+          "clause": "b0 = on_circle o3 b, on_circle o4 b",
+          "output": "b0",
+          "centers": [
+            "o3",
+            "o4"
+          ],
+          "shared_known_point": "b"
+        },
+        {
+          "clause_index": 15,
+          "clause": "c0 = on_circle o5 c, on_circle o6 c",
+          "output": "c0",
+          "centers": [
+            "o5",
+            "o6"
+          ],
+          "shared_known_point": "c"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2021CzechAPSlovakp6.txt",
+      "reused": true
+    },
+    {
+      "problem": "2021GOWACAp3",
+      "matched_clauses": [
+        {
+          "clause_index": 5,
+          "clause": "s = on_circle o a, on_circle m1 a",
+          "output": "s",
+          "centers": [
+            "o",
+            "m1"
+          ],
+          "shared_known_point": "a"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2021GOWACAp3.txt",
+      "reused": true
+    },
+    {
+      "problem": "2021IsraelOlympicRev",
+      "matched_clauses": [
+        {
+          "clause_index": 7,
+          "clause": "x1 = on_circle o a, on_circle o2 a",
+          "output": "x1",
+          "centers": [
+            "o",
+            "o2"
+          ],
+          "shared_known_point": "a"
+        },
+        {
+          "clause_index": 9,
+          "clause": "x2 = on_circle o b, on_circle o3 b",
+          "output": "x2",
+          "centers": [
+            "o",
+            "o3"
+          ],
+          "shared_known_point": "b"
+        },
+        {
+          "clause_index": 11,
+          "clause": "x3 = on_circle o c, on_circle o4 c",
+          "output": "x3",
+          "centers": [
+            "o",
+            "o4"
+          ],
+          "shared_known_point": "c"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2021IsraelOlympicRev.txt",
+      "reused": true
+    },
+    {
+      "problem": "2022CHNSouthEastMOg11p6",
+      "matched_clauses": [
+        {
+          "clause_index": 5,
+          "clause": "k = on_circle p a, on_circle q a",
+          "output": "k",
+          "centers": [
+            "p",
+            "q"
+          ],
+          "shared_known_point": "a"
+        }
+      ],
+      "status": "proved",
+      "classification": "exact_proof",
+      "solved": true,
+      "reason": null,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2022CHNSouthEastMOg11p6.txt",
+      "proof": "data/known-root-circle-cohort36-persistent-2026-08-22/proofs/2022CHNSouthEastMOg11p6.json",
+      "proof_file_sha256": "16bee74bf82520c61c9ff0885e9dbfda9c07220bf44baa19699663ccde3418a5",
+      "certified_artifact": "data/known-root-circle-cohort36-persistent-2026-08-22/artifacts/2022CHNSouthEastMOg11p6.json",
+      "certificate_sha256": "815b6b6fdd143f5288ad0352dfeef9a4d061fb45880d065f5f546764ebceb1e1",
+      "construction_vocabulary": [
+        "circumcenter",
+        "midpoint",
+        "on_aline",
+        "on_bline",
+        "on_circle",
+        "on_pline",
+        "triangle"
+      ],
+      "reused": true
+    },
+    {
+      "problem": "2022G2",
+      "matched_clauses": [
+        {
+          "clause_index": 6,
+          "clause": "x = on_circle d a, on_circle o1 a",
+          "output": "x",
+          "centers": [
+            "d",
+            "o1"
+          ],
+          "shared_known_point": "a"
+        },
+        {
+          "clause_index": 7,
+          "clause": "y = on_circle e a, on_circle o2 a",
+          "output": "y",
+          "centers": [
+            "e",
+            "o2"
+          ],
+          "shared_known_point": "a"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2022G2.txt",
+      "reused": true
+    },
+    {
+      "problem": "2022IranGOAp3",
+      "matched_clauses": [
+        {
+          "clause_index": 9,
+          "clause": "e = on_circle o1 o, on_circle o2 o",
+          "output": "e",
+          "centers": [
+            "o1",
+            "o2"
+          ],
+          "shared_known_point": "o"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2022IranGOAp3.txt",
+      "reused": true
+    },
+    {
+      "problem": "2022KoMaLA805",
+      "matched_clauses": [
+        {
+          "clause_index": 6,
+          "clause": "p = on_circle o a, on_circle o1 a",
+          "output": "p",
+          "centers": [
+            "o",
+            "o1"
+          ],
+          "shared_known_point": "a"
+        },
+        {
+          "clause_index": 8,
+          "clause": "q = on_circle o b, on_circle o2 b",
+          "output": "q",
+          "centers": [
+            "o",
+            "o2"
+          ],
+          "shared_known_point": "b"
+        }
+      ],
+      "status": "proved",
+      "classification": "exact_proof",
+      "solved": true,
+      "reason": null,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2022KoMaLA805.txt",
+      "proof": "data/known-root-circle-cohort36-persistent-2026-08-22/proofs/2022KoMaLA805.json",
+      "proof_file_sha256": "9f691d30247e3af0810c5c7206e7e434120033277d627f1bf3510a9106a68740",
+      "certified_artifact": "data/known-root-circle-cohort36-persistent-2026-08-22/artifacts/2022KoMaLA805.json",
+      "certificate_sha256": "fba996f02982cd52e3522e56f388de780fddf03527b48db32f735b558fb80cdd",
+      "construction_vocabulary": [
+        "circumcenter",
+        "foot",
+        "on_circle",
+        "on_line",
+        "orthocenter",
+        "triangle"
+      ],
+      "reused": true
+    },
+    {
+      "problem": "2022USATSTSTp6",
+      "matched_clauses": [
+        {
+          "clause_index": 7,
+          "clause": "ka = on_circle o_a o, on_circle o1 o",
+          "output": "ka",
+          "centers": [
+            "o_a",
+            "o1"
+          ],
+          "shared_known_point": "o"
+        },
+        {
+          "clause_index": 12,
+          "clause": "kb = on_circle o_b o, on_circle o2 o",
+          "output": "kb",
+          "centers": [
+            "o_b",
+            "o2"
+          ],
+          "shared_known_point": "o"
+        },
+        {
+          "clause_index": 17,
+          "clause": "kc = on_circle o_c o, on_circle o3 o",
+          "output": "kc",
+          "centers": [
+            "o_c",
+            "o3"
+          ],
+          "shared_known_point": "o"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2022USATSTSTp6.txt",
+      "reused": true
+    },
+    {
+      "problem": "2023PlanetCupp9",
+      "matched_clauses": [
+        {
+          "clause_index": 6,
+          "clause": "k = on_circle o1 a, on_circle o a",
+          "output": "k",
+          "centers": [
+            "o1",
+            "o"
+          ],
+          "shared_known_point": "a"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2023PlanetCupp9.txt",
+      "reused": true
+    },
+    {
+      "problem": "2023RMMSLG1",
+      "matched_clauses": [
+        {
+          "clause_index": 7,
+          "clause": "p = on_circle o a, on_circle o1 a",
+          "output": "p",
+          "centers": [
+            "o",
+            "o1"
+          ],
+          "shared_known_point": "a"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2023RMMSLG1.txt",
+      "reused": true
+    },
+    {
+      "problem": "2023SAGFp3",
+      "matched_clauses": [
+        {
+          "clause_index": 10,
+          "clause": "m = on_circle o3 p, on_circle o4 p",
+          "output": "m",
+          "centers": [
+            "o3",
+            "o4"
+          ],
+          "shared_known_point": "p"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2023SAGFp3.txt",
+      "reused": true
+    },
+    {
+      "problem": "2023SerbiaMOp6",
+      "matched_clauses": [
+        {
+          "clause_index": 7,
+          "clause": "g = on_circle o1 a, on_circle o a",
+          "output": "g",
+          "centers": [
+            "o1",
+            "o"
+          ],
+          "shared_known_point": "a"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2023SerbiaMOp6.txt",
+      "reused": true
+    },
+    {
+      "problem": "2023USAMOp6",
+      "matched_clauses": [
+        {
+          "clause_index": 9,
+          "clause": "f = on_circle o1 d, on_circle o2 d",
+          "output": "f",
+          "centers": [
+            "o1",
+            "o2"
+          ],
+          "shared_known_point": "d"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2023USAMOp6.txt",
+      "reused": true
+    },
+    {
+      "problem": "2024ARMOg9p6",
+      "matched_clauses": [
+        {
+          "clause_index": 6,
+          "clause": "y = on_circle o a, on_circle o2 a",
+          "output": "y",
+          "centers": [
+            "o",
+            "o2"
+          ],
+          "shared_known_point": "a"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2024ARMOg9p6.txt",
+      "reused": true
+    },
+    {
+      "problem": "2024AsiaPacificMOp5",
+      "matched_clauses": [
+        {
+          "clause_index": 9,
+          "clause": "n = on_circle o1 q, on_circle o2 q",
+          "output": "n",
+          "centers": [
+            "o1",
+            "o2"
+          ],
+          "shared_known_point": "q"
+        },
+        {
+          "clause_index": 12,
+          "clause": "m = on_circle o3 p, on_circle o4 p",
+          "output": "m",
+          "centers": [
+            "o3",
+            "o4"
+          ],
+          "shared_known_point": "p"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-segment-general-retest-2026-08-22/inputs/2024AsiaPacificMOp5.txt",
+      "reused": true
+    },
+    {
+      "problem": "2025XinXingSpringMOp5",
+      "matched_clauses": [
+        {
+          "clause_index": 6,
+          "clause": "g = on_circle o a, on_circle o1 a",
+          "output": "g",
+          "centers": [
+            "o",
+            "o1"
+          ],
+          "shared_known_point": "a"
+        },
+        {
+          "clause_index": 9,
+          "clause": "k = on_circle o1 a, on_circle h a",
+          "output": "k",
+          "centers": [
+            "o1",
+            "h"
+          ],
+          "shared_known_point": "a"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/2025XinXingSpringMOp5.txt",
+      "reused": true
+    },
+    {
+      "problem": "XinXingV28p2",
+      "matched_clauses": [
+        {
+          "clause_index": 18,
+          "clause": "u = on_circle o1 f, on_circle o2 f",
+          "output": "u",
+          "centers": [
+            "o1",
+            "o2"
+          ],
+          "shared_known_point": "f"
+        },
+        {
+          "clause_index": 19,
+          "clause": "v = on_circle o1 e, on_circle o3 e",
+          "output": "v",
+          "centers": [
+            "o1",
+            "o3"
+          ],
+          "shared_known_point": "e"
+        }
+      ],
+      "status": "right_censored_timeout",
+      "classification": "right_censored_timeout",
+      "solved": false,
+      "input": "data/known-root-circle-cohort36-persistent-2026-08-22/inputs/XinXingV28p2.txt",
+      "reused": true
+    }
+  ]
+}

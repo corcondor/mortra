@@ -1,0 +1,85 @@
+{
+  "experiment": "hageo_capability_preserving_policy_portfolio",
+  "protocol": {
+    "uses_external_llm": false,
+    "acceptance": "union_of_replayed_native_yuclid_certificates",
+    "exact_agent": "residual-static",
+    "coordination_scores_never_override_native_truth": true
+  },
+  "summary": {
+    "total": 1,
+    "exact_solved": 1,
+    "portfolio_solved": 1,
+    "portfolio_additions": 0,
+    "capability_preserved": true,
+    "right_censored_unsolved": 0,
+    "certified_score_lower_bound": 1.0,
+    "optimistic_score_upper_bound": 1.0,
+    "results": [
+      {
+        "problem": "2011CTSTp16",
+        "admitted": true,
+        "admitted_agents": [
+          "residual-static"
+        ],
+        "exact_agent_admitted": true,
+        "rejected_claims": [],
+        "right_censored_agents": []
+      }
+    ]
+  },
+  "runs": [
+    {
+      "problem": "2011CTSTp16",
+      "agent": "residual-static",
+      "solved": true,
+      "native_confirmed": true,
+      "status": "solved",
+      "artifact": "data/residual-static-exact-comparison-2011ctstp16-n4-k1-f4-2026-08-20.json",
+      "artifact_sha256": "fd69dbbeb073fb3a7f58dfafc62ba6e6a575911ee1cffd1067c5a0030f76ca7b",
+      "elapsed_seconds": 6.764932600000066,
+      "certificate": {
+        "source": "search_attempt",
+        "proof_path": "data/residual-static-exact-comparison-2011ctstp16-n4-k1-f4-2026-08-20.proof.json",
+        "file_hash_ok": true,
+        "provenance_ok": true,
+        "matching_attempt_count": 1,
+        "goal_deduction_count": 201
+      },
+      "mmt_exact_coordination": null
+    },
+    {
+      "problem": "2011CTSTp16",
+      "agent": "mmt-hageo-lite",
+      "solved": false,
+      "native_confirmed": false,
+      "status": "unsolved",
+      "artifact": "data/mmt-exact-scoring-2011ctstp16-n4-k1-f4-2026-08-20.json",
+      "artifact_sha256": "df8a8be66d67c9abbe5e2b2fc175badf52fd52473871fc7fb5caa1bc7dd6a827",
+      "elapsed_seconds": 42.70746280000003,
+      "certificate": null,
+      "mmt_exact_coordination": {
+        "input_fact_count": 3757,
+        "selected_fact_count": 192,
+        "accepted_fact_count": 192,
+        "derived_fact_count": 0,
+        "certificate_count": 0,
+        "certificate_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "solved": false,
+        "replayed": false,
+        "open_demand_count": 24,
+        "goals": [
+          {
+            "goal": "cong(j,k,j,m)",
+            "solved": false,
+            "replayed": false,
+            "rounds": 1,
+            "proposed": 0,
+            "accepted": 0,
+            "rejected": 0
+          }
+        ]
+      }
+    }
+  ]
+}

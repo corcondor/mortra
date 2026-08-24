@@ -1,0 +1,204 @@
+{
+  "experiment": "hageo_independent_n_round_pass_at_k_no_llm",
+  "artifact_schema_version": 2,
+  "reproducibility": {
+    "python": {
+      "executable": "C:/Users/81808/.cache/mortra-research-sources/Newclid/.venv/Scripts/python.exe",
+      "version": "3.12.10",
+      "pythonhashseed": null
+    },
+    "dataset": {
+      "path": "C:/Users/81808/.cache/mortra-research-sources/Newclid/newclid/problems_datasets/imo.txt",
+      "sha256": "18d29e2851e5a52bcefbc7e3300266798f0496e933ad323c7755a41ccbb9cb59"
+    },
+    "yuclid": {
+      "path": "C:/Users/81808/.cache/mortra-research-sources/Newclid/.venv/Scripts/yuclid.exe",
+      "sha256": "dc40a72767c15a90b48471619a0b00734b611eeecfc9c7815328ae0eae4f1397"
+    },
+    "gclc": null,
+    "wolfram": null,
+    "runtime_path": "C:/Users/81808/.cache/mortra-research-sources/boost_1_88_0/lib64-msvc-14.3",
+    "newclid_module": "C:/Users/81808/.cache/mortra-research-sources/Newclid/newclid/src/newclid/__init__.py",
+    "mortra_sources": {
+      "scripts/experiment_hageo_passk.py": "fe7e0e64a36626261975d08b911ebe9a627f8ca37b3f34821038a9d5e1b41867",
+      "scripts/experiment_newclid_construction_stalk.py": "44a308f2dff8b9970ecef5ac2339ae1a534c394850556ea07687af96c1955169",
+      "scripts/run_gclc_wu_specialist.py": "bc1ca0a2c18f23166b10cfd7c014463fdd591be528d733c5a06b3f30c21b6826",
+      "scripts/run_jgex_exact_specialist.py": "45e4ab28fa767f787f71b82d9ffe1a818fdb765f344535db7c91ead966e1c98b",
+      "worker/backend/hageo_search_control.py": "289d85283f6d41a203ac72c0a89389ef20271c8abe6c515ab321aca0a94acf1d",
+      "worker/backend/geometry_proof_hypergraph.py": "baead7f5cfe5753dfed52d63375f1f6a84733f499faeb3c0175f6f4a599f33e3",
+      "worker/backend/formalgeo_runtime_bridge.py": "f1190b8b18872c243d736339fc5cb37bc168a5a29baaffcdea27ce58f82dbb12",
+      "worker/backend/jgex_formalgeo_translator.py": "18d5f4dfac8719371e6f641b404c0e505d8679ad710cbc673522340c8ec2a5f3",
+      "scripts/run_formalgeo_runtime.py": "4e17dec544736e77a8d275c18e5b1cdccda7adc81658fc73a0d2f107592ea589",
+      "worker/backend/hageo_mmt_certificate_bridge.py": "aee18ae3a6281b99a46b504c4eea06b8652b79e469a40a713a786602da9c2089",
+      "worker/backend/jgex_exact_constraint_bridge.py": "b683672c6a8a574029837237b7f26224e2ca92d3a01b552e5240ccd5469897d3",
+      "worker/backend/typed_relation_separator.py": "bdfe6f2ca5ac7dd05867dc8ae4d0c3ffba11ce3f200016ad3a718af407337860",
+      "worker/backend/bounded_macaulay_membership.py": "962cceb1b43a349f2d4c22deffbf2c31a0b8cccde15dbbfe0a5be40886066ba6",
+      "worker/backend/local_polynomial_elimination.py": "548ff5f0ff9f7abe2d21423825d0e57d50d80403785a1a33f1a9c566e9671d85",
+      "worker/backend/typed_construction_contracts.py": "7fbbea59efde623547687e48f15814413b7be0056ccdb66c4fea7a71c91f1109",
+      "worker/backend/typed_candidate_alignment.py": "044da3b0515e8d2d22d93c369d4a500c31cac2efd5d4408c6fc96cf1813dbccf",
+      "worker/backend/typed_bidirectional_priority.py": "d0c4d145159ecff74751074fa64eb856bef189624c46ab0b661994a70370e131",
+      "worker/backend/typed_open_proof_dag.py": "0f784a84ea5d54297781a9b01c78eaee5b41f753f1d0fe0aa1f81f5c86a7a409",
+      "worker/backend/wolfram_polynomial_certificate.py": "83902440e5d2dda52cc6718473058165a831749250b3075d23c7db1d53676e0e",
+      "worker/backend/yuclid_native_verifier.py": "173799bdb056d5f4935cf4f18e2c2a0489b4ea290c9fe05ffd4fc150d03623a9"
+    }
+  },
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_dataset_auxiliary_clauses": false,
+    "uses_problem_id_in_search": false,
+    "uses_expected_answer": false,
+    "trajectory_policy": "hageo_incidence_gate_then_mmt_theory_view_ranking",
+    "ddAR_calls": "baseline_plus_native_shortlist_feedback_with_terminal_reuse",
+    "rounds_n": 1,
+    "attempts_k": 1,
+    "attempt_offset": 0,
+    "workers": 1,
+    "seed": 0,
+    "per_family_limit": 2,
+    "incidence_oversample_per_family": 2,
+    "incidence_preselect_limit": 16,
+    "incidence_workers": 1,
+    "candidate_limit": 16,
+    "candidate_policy": "mmt-hageo",
+    "rank_temperature": 2.0,
+    "incremental_prefix": false,
+    "feedback_candidates": 4,
+    "feedback_workers": 1,
+    "max_verification_concurrency": 1,
+    "exact_specialist_timeout_seconds": 0.0,
+    "formalgeo_timeout_seconds": 0.0,
+    "formalgeo_max_facts": 12,
+    "formalgeo_max_elaborations": 2,
+    "formalgeo_max_rounds": 2,
+    "formalgeo_seed_branches": 4,
+    "exact_specialist_representation": "goal_local_relational",
+    "exact_specialist_saturation_rounds": 1,
+    "exact_lemma_limit": 0,
+    "gclc_exe": null,
+    "gclc_timeout_seconds": 0,
+    "gclc_methods": [
+      "wu"
+    ],
+    "gclc_lemma_limit": 0,
+    "gclc_incidence_samples": 0,
+    "wolfram_exe": null,
+    "wolfram_timeout_seconds": 0,
+    "wolfram_preprocessing": "local_relational",
+    "wolfram_reduction_mode": "extended_groebner",
+    "wolfram_saturation_mode": "none",
+    "wolfram_max_saturation_factors": 12,
+    "ar_profile": "all",
+    "proof_dag_specialist_budget": {
+      "per_family_candidates": 4,
+      "depth": 3,
+      "fragments": 16,
+      "initial_states_per_candidate": 16,
+      "states_per_task": 64,
+      "reserved_consensus": 4,
+      "reserved_family_frontier": true
+    },
+    "truth_plane": "yuclid_native_certificate_replay_only",
+    "terminal_credit_control_only": false,
+    "terminal_credit_ledger_input": null,
+    "terminal_credit_ledger_input_sha256": null,
+    "terminal_credit_ledger_frozen": false
+  },
+  "problem_name": "2007_p4",
+  "normalization": {
+    "rewritten_constructions": 0,
+    "unchanged_constructions": 12,
+    "unresolved_constructions": 0
+  },
+  "baseline_solved": true,
+  "baseline_portfolio_solved": true,
+  "baseline_formalgeo_exchange": [],
+  "baseline_exact_lemma_exchange": {
+    "status": "native_already_solved",
+    "solved": true,
+    "lemmas": []
+  },
+  "baseline_gclc_lemma_exchange": {
+    "status": "native_already_solved",
+    "solved": true,
+    "lemmas": []
+  },
+  "baseline_gclc_specialist": {
+    "status": "native_already_solved"
+  },
+  "baseline_exact_specialist": {
+    "status": "prior_specialist_solved"
+  },
+  "baseline_exact_relation_exchange": {
+    "status": "prior_specialist_solved",
+    "solved": true,
+    "atoms": []
+  },
+  "baseline_proof_residual": {
+    "open_relation_demands": 1,
+    "backward_obligations": 24,
+    "ar_supported_goals": 0,
+    "ar_closed_goals": 0,
+    "ar_residual_support": 0,
+    "ar_residual_l1": 0,
+    "ar_known_rank": 48,
+    "parent_relation_demands": 0,
+    "retained_parent_demands": 0,
+    "closed_parent_demands": 0,
+    "closed_parent_obligations": [],
+    "new_native_facts": 4781,
+    "introduced_relation_demands": 1
+  },
+  "mmt_exact_coordination": {
+    "input_fact_count": 4685,
+    "selected_fact_count": 192,
+    "selection_strategy": "goal-conditioned-proof-basis",
+    "accepted_fact_count": 200,
+    "proof_state_fact_count": 4693,
+    "derived_fact_count": 8,
+    "certificate_count": 8,
+    "certificate_sha256": "154c53fca1628fddf780f486dd4689819cf9f29e5d452075ceefd213d4a1e5e9",
+    "solved": true,
+    "replayed": true,
+    "initial_open_demand_count": 1,
+    "open_demand_count": 0,
+    "closed_demand_count": 1,
+    "introduced_demand_count": 0,
+    "made_goal_progress": true,
+    "goals": [
+      {
+        "goal": "eqratio(k,k1,l,l1,q,r,p,r)",
+        "solved": true,
+        "replayed": true,
+        "rounds": 1,
+        "proposed": 8,
+        "accepted": 8,
+        "rejected": 0
+      }
+    ]
+  },
+  "solved": true,
+  "pass_at_k": true,
+  "right_censored": false,
+  "right_censored_sources": {
+    "baseline_formalgeo_exchange": false,
+    "baseline_exact_lemma_exchange": false,
+    "baseline_gclc_lemma_exchange": false,
+    "baseline_gclc_specialist": false,
+    "baseline_exact_specialist": false,
+    "search_attempts": false
+  },
+  "first_solved_attempt": null,
+  "unique_paths": 0,
+  "completed_attempts": 0,
+  "execution_errors": 0,
+  "elapsed_seconds": 19.63479389998247,
+  "attempt_results": [],
+  "terminal_credit_ledger": null,
+  "certificate": {
+    "source": "baseline",
+    "input_sha256": "1ec08314c154d1d684924a7cea3d2ce007c54dfab882d0a009c181c26e68e0a9",
+    "proof_sha256": "35aa6d93ad3e826eb8ec6fb6e38761f043cd737724c424367b8862248a60d195",
+    "proof_path": "data/six-paper-mmt-hageo-runtime-smoke-2007p4-2026-08-22.proof.json",
+    "proof_file_sha256": "18e98f6a238fbcc6fdc00ea36708f93a19b083b6d93ecc29ef6e27233b7154c6"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "experiment": "hageo_fixed_cohort_independent_pass_at_k_no_llm",
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_dataset_auxiliary_clauses": false,
+    "uses_problem_id_in_search": false,
+    "uses_expected_answer": false,
+    "cohort_fixed_before_search": true,
+    "rounds_n": 1,
+    "attempts_k_per_problem": 1,
+    "seed": 19,
+    "per_family_limit": 4,
+    "incidence_oversample_per_family": 8,
+    "candidate_limit": 16,
+    "candidate_policy": "mmt-hageo",
+    "rank_temperature": 2.0,
+    "incremental_prefix": false,
+    "incidence_workers": 1,
+    "incidence_preselect_limit": 32,
+    "feedback_candidates": 4,
+    "feedback_workers": 4,
+    "trajectory_policy": "hageo_incidence_gate_then_mmt_theory_view_ranking",
+    "truth_plane": "yuclid_native_certificate_replay_only"
+  },
+  "summary": {
+    "problems": 3,
+    "completed_problems": 3,
+    "missing_problems": 0,
+    "complete": false,
+    "solved": 0,
+    "pass_at_k": 0.0,
+    "pass_at_k_lower_bound": 0.0,
+    "completed_attempts": 1,
+    "right_censored_problems": 2,
+    "execution_errors": 0,
+    "reused_problems": 0,
+    "elapsed_seconds": 240.538459899999
+  },
+  "solved_names": [],
+  "missing_names": [],
+  "results": [
+    {
+      "problem_name": "2015IranTSTp18",
+      "status": "right_censored_timeout",
+      "solved": false,
+      "completed_attempts": 0,
+      "unique_paths": 0,
+      "right_censored_shards": 1,
+      "execution_error_shards": 0,
+      "artifact": "data/relevance-scheduler-v6-frozen3-n1-k1-f4-runs-2026-08-21/2015IranTSTp18.json",
+      "artifact_sha256": "7456330e90c9da6342201309bc9b48c94c0aab994be39f9efc730b61ac6ed271",
+      "elapsed_seconds": 240.51115449999998,
+      "reused": false
+    },
+    {
+      "problem_name": "2024VietnamTSTp5",
+      "status": "right_censored_timeout",
+      "solved": false,
+      "completed_attempts": 0,
+      "unique_paths": 0,
+      "right_censored_shards": 1,
+      "execution_error_shards": 0,
+      "artifact": "data/relevance-scheduler-v6-frozen3-n1-k1-f4-runs-2026-08-21/2024VietnamTSTp5.json",
+      "artifact_sha256": "d3995629840bd3f35537467e111724fa9d3616239c79c63c520c352d680f4b62",
+      "elapsed_seconds": 240.5148721000005,
+      "reused": false
+    },
+    {
+      "problem_name": "2020IranGOAp2",
+      "status": "unsolved",
+      "solved": false,
+      "completed_attempts": 1,
+      "unique_paths": 1,
+      "right_censored_shards": 0,
+      "execution_error_shards": 0,
+      "artifact": "data/relevance-scheduler-v6-frozen3-n1-k1-f4-runs-2026-08-21/2020IranGOAp2.json",
+      "artifact_sha256": "7b393ac6774cf720c2054822fc8b87b40ef96e847b6e6c572b0883c1b27bd76e",
+      "elapsed_seconds": 205.95853029999853,
+      "reused": false
+    }
+  ]
+}

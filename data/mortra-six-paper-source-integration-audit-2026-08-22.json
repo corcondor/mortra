@@ -1,0 +1,667 @@
+{
+  "experiment": "mortra_external_source_integration_audit",
+  "protocol": {
+    "clone_is_not_integration": true,
+    "documentation_is_not_runtime_evidence": true,
+    "independent_reconstruction_is_not_full_reproduction": true,
+    "score_claim_requires_separate_benchmark_artifact": true,
+    "paper_method_must_be_recorded_before_derived_implementation_claim": true
+  },
+  "summary": {
+    "sources": 26,
+    "native_or_library_runtime": 6,
+    "reference_only": 11,
+    "complete_reverse_engineering_claim": false
+  },
+  "sources": [
+    {
+      "name": "C-RASP state-tracking theory",
+      "directory": "state-tracking-crasp",
+      "integration": "reference-controller-audit",
+      "evidence": [
+        {
+          "path": "data/crasp-upstream-decider-reproduction-2026-08-22.json",
+          "exists": true,
+          "sha256": "0b6e8610eedc9c0e6b3ad77550d257838deda24809f6faa80be0687caa166b82"
+        }
+      ],
+      "limitation": "the upstream decider classifies regular-language state tracking; a MORTRA proof search is not itself supplied as a regular expression",
+      "paper_method": "algebraic decomposition decides which finite-state languages admit C-RASP length generalization",
+      "benchmark_artifacts": [],
+      "checkout_exists": true,
+      "git_head": "903fba2f2a4d0ded811a6247155d38480ed4a381",
+      "origin": "https://github.com/bveseli/state-tracking-crasp.git",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": false,
+      "score_claim_supported": false
+    },
+    {
+      "name": "AlphaGeometry",
+      "directory": "AlphaGeometry",
+      "integration": "reference-only",
+      "evidence": [],
+      "limitation": "official DDAR/LM runtime is not the MORTRA scoring process",
+      "paper_method": "DD+AR closes a symbolic proof graph; a language model proposes auxiliary constructions",
+      "benchmark_artifacts": [],
+      "checkout_exists": false,
+      "git_head": "",
+      "origin": "",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": false,
+      "score_claim_supported": false
+    },
+    {
+      "name": "AlphaGeometry2",
+      "directory": "alphageometry2",
+      "integration": "reference-only",
+      "evidence": [],
+      "limitation": "public DDAR core is not directly invoked by MORTRA",
+      "paper_method": "",
+      "benchmark_artifacts": [],
+      "checkout_exists": false,
+      "git_head": "",
+      "origin": "",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": false,
+      "score_claim_supported": false
+    },
+    {
+      "name": "AutoGPS",
+      "directory": "AutoGPS",
+      "integration": "reference-only",
+      "evidence": [],
+      "limitation": "",
+      "paper_method": "",
+      "benchmark_artifacts": [],
+      "checkout_exists": false,
+      "git_head": "",
+      "origin": "",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": false,
+      "score_claim_supported": false
+    },
+    {
+      "name": "Euclean",
+      "directory": "Euclean",
+      "integration": "reference-only",
+      "evidence": [],
+      "limitation": "",
+      "paper_method": "",
+      "benchmark_artifacts": [],
+      "checkout_exists": false,
+      "git_head": "",
+      "origin": "",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": false,
+      "score_claim_supported": false
+    },
+    {
+      "name": "FGPS",
+      "directory": "FGPS",
+      "integration": "reference-only",
+      "evidence": [],
+      "limitation": "",
+      "paper_method": "",
+      "benchmark_artifacts": [],
+      "checkout_exists": false,
+      "git_head": "",
+      "origin": "",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": false,
+      "score_claim_supported": false
+    },
+    {
+      "name": "FormalGeo",
+      "directory": "FormalGeo",
+      "integration": "native-runtime-bridge",
+      "evidence": [
+        {
+          "path": "scripts/run_formalgeo_runtime.py",
+          "exists": true,
+          "sha256": "4e17dec544736e77a8d275c18e5b1cdccda7adc81658fc73a0d2f107592ea589"
+        },
+        {
+          "path": "worker/backend/formalgeo_runtime_bridge.py",
+          "exists": true,
+          "sha256": "f1190b8b18872c243d736339fc5cb37bc168a5a29baaffcdea27ce58f82dbb12"
+        },
+        {
+          "path": "worker/backend/jgex_formalgeo_translator.py",
+          "exists": true,
+          "sha256": "18d5f4dfac8719371e6f641b404c0e505d8679ad710cbc673522340c8ec2a5f3"
+        },
+        {
+          "path": "worker/backend/test_formalgeo_runtime_bridge.py",
+          "exists": true,
+          "sha256": "fc711362a2b8cbcfc962ed5a65dcb96cab17d5f943558d450a38bb705458d0a7"
+        },
+        {
+          "path": "worker/backend/test_jgex_formalgeo_translator.py",
+          "exists": true,
+          "sha256": "cf33362a33a70af079a2580f7700a9fac4b90a9f7dda84987e3127c7ba52d4ec"
+        },
+        {
+          "path": "scripts/experiment_hageo_passk.py",
+          "exists": true,
+          "sha256": "fe7e0e64a36626261975d08b911ebe9a627f8ca37b3f34821038a9d5e1b41867"
+        },
+        {
+          "path": "worker/backend/construction_block_proof_dag.py",
+          "exists": true,
+          "sha256": "98fbad0e5de499c7a6befd7dd5fac79b94c26eec5ccb4b27482061a47d9aac14"
+        },
+        {
+          "path": "worker/backend/local_polynomial_elimination.py",
+          "exists": true,
+          "sha256": "548ff5f0ff9f7abe2d21423825d0e57d50d80403785a1a33f1a9c566e9671d85"
+        },
+        {
+          "path": "worker/backend/chordal_buchberger_elimination.py",
+          "exists": true,
+          "sha256": "b7c82db2489420af5a035ca52c00b2629983a94c93ae3d1248c6470086238afa"
+        },
+        {
+          "path": "scripts/experiment_construction_block_dag_cohort.py",
+          "exists": true,
+          "sha256": "28d8eb46fd44018a0f648d816f821de59bde93efd47272be2580e7907d17204f"
+        },
+        {
+          "path": "worker/backend/test_construction_block_proof_dag.py",
+          "exists": true,
+          "sha256": "defc7b21472b6bbb82bc54a54c9cd452e839312432015cd38a0c1529995fd022"
+        },
+        {
+          "path": "worker/backend/test_chordal_buchberger_elimination.py",
+          "exists": true,
+          "sha256": "9431e3c1c634a6e513c24067e5a30d243a71c16da24153c0b016e2070785f6bf"
+        }
+      ],
+      "limitation": "official GPL runtime is isolated behind JSON; GDL construction coverage is partial and FormalGeo obligations still require Newclid/GCLC replay before MORTRA counts a solution",
+      "paper_method": "GDL theorem instances support forward hypergraph closure and backward AND/OR goal decomposition",
+      "benchmark_artifacts": [],
+      "checkout_exists": false,
+      "git_head": "",
+      "origin": "",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": true,
+      "score_claim_supported": false
+    },
+    {
+      "name": "GCLC",
+      "directory": "gclc",
+      "integration": "native-runtime-bridge",
+      "evidence": [
+        {
+          "path": "worker/backend/gclc_newclid_bridge.py",
+          "exists": true,
+          "sha256": "3be9af44b6974133d8e0769affd292176a76cd5aab20d11309b40bd34a243fd6"
+        },
+        {
+          "path": "worker/backend/jgex_gclc_translator.py",
+          "exists": true,
+          "sha256": "113c71e80923c8fce1d3a937cc6e0db2e87920e051a0f47a5b11df1fbd458d21"
+        },
+        {
+          "path": "scripts/experiment_gclc_newclid_certificate_bridge.py",
+          "exists": true,
+          "sha256": "4850768a32a978931da13e0700aee443d8ea89095a78ddd1342430ebf1aca73c"
+        }
+      ],
+      "limitation": "",
+      "paper_method": "Area, Wu, and Groebner provers emit symbolic proof obligations and proof artifacts",
+      "benchmark_artifacts": [
+        {
+          "path": "data/gclc-newclid-concrete-certificate-bridge-2026-08-15.json",
+          "exists": true,
+          "sha256": "a22b50653643e968e14a0f46c46228e684b799516281729fb5e53cf3cf37bba5"
+        },
+        {
+          "path": "data/hageo-certified-capability-union-gclc-2026-08-21.json",
+          "exists": true,
+          "sha256": "6ede2cac7a866ef80a4f5061bb52c450d7cd9f82a7f06d3c9db13ca69ca9ed66"
+        }
+      ],
+      "checkout_exists": false,
+      "git_head": "",
+      "origin": "",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": true,
+      "score_claim_supported": true
+    },
+    {
+      "name": "GenesisGeo",
+      "directory": "GenesisGeo",
+      "integration": "dataset-and-grammar-input",
+      "evidence": [
+        {
+          "path": "scripts/experiment_hageo_passk.py",
+          "exists": true,
+          "sha256": "fe7e0e64a36626261975d08b911ebe9a627f8ca37b3f34821038a9d5e1b41867"
+        }
+      ],
+      "limitation": "",
+      "paper_method": "",
+      "benchmark_artifacts": [],
+      "checkout_exists": false,
+      "git_head": "",
+      "origin": "",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": false,
+      "score_claim_supported": false
+    },
+    {
+      "name": "GeoParser",
+      "directory": "GeoParser",
+      "integration": "reference-only",
+      "evidence": [],
+      "limitation": "",
+      "paper_method": "",
+      "benchmark_artifacts": [],
+      "checkout_exists": false,
+      "git_head": "",
+      "origin": "",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": false,
+      "score_claim_supported": false
+    },
+    {
+      "name": "HAGeo",
+      "directory": "HAGeo",
+      "integration": "independent-reconstruction",
+      "evidence": [
+        {
+          "path": "scripts/experiment_hageo_passk.py",
+          "exists": true,
+          "sha256": "fe7e0e64a36626261975d08b911ebe9a627f8ca37b3f34821038a9d5e1b41867"
+        },
+        {
+          "path": "scripts/benchmark_hageo_passk_cohort.py",
+          "exists": true,
+          "sha256": "5ecbfbe69896e995e681266d7ba7ec2de580f674ad8591d9391c1152f9903fa4"
+        }
+      ],
+      "limitation": "upstream repository states that full code is not released",
+      "paper_method": "N-round/K-trajectory auxiliary construction with six numerical-incidence candidate families",
+      "benchmark_artifacts": [
+        {
+          "path": "data/hageo-certified-capability-union-gclc-2026-08-21.json",
+          "exists": true,
+          "sha256": "6ede2cac7a866ef80a4f5061bb52c450d7cd9f82a7f06d3c9db13ca69ca9ed66"
+        }
+      ],
+      "checkout_exists": true,
+      "git_head": "2217d813960cd689cf21c25520f6af664dc2da6e",
+      "origin": "https://github.com/boduan1/HAGeo.git",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": false,
+      "score_claim_supported": true
+    },
+    {
+      "name": "Hilbert-Geo",
+      "directory": "Hilbert-Geo",
+      "integration": "predicate-schema-adaptation",
+      "evidence": [
+        {
+          "path": "worker/backend/mortra_geometry_content_dictionary.py",
+          "exists": true,
+          "sha256": "075478b0531d06b37153da6ea01aee931977296968c8f7ad92748357943f407d"
+        },
+        {
+          "path": "worker/backend/test_mortra_geometry_content_dictionary.py",
+          "exists": true,
+          "sha256": "40b147e7ec4db9e0ca2cae6fa664be53724e097daa495b3509bdd85ef125dcf8"
+        }
+      ],
+      "limitation": "the public predicate schema informed MORTRA's independent typed 2D/3D vocabulary; its theorem bank is not copied into the runtime",
+      "paper_method": "typed spatial predicates and theorem-guided 3D reasoning",
+      "benchmark_artifacts": [],
+      "checkout_exists": true,
+      "git_head": "7a230d0dec1f4945fb53edd3a05bc989de82363c",
+      "origin": "https://github.com/PremiLab-Math/Hilbert-Geo.git",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": false,
+      "score_claim_supported": false
+    },
+    {
+      "name": "LEAP",
+      "directory": "LEAP",
+      "integration": "paper-derived-symbolic-adaptation",
+      "evidence": [
+        {
+          "path": "worker/backend/typed_open_proof_dag.py",
+          "exists": true,
+          "sha256": "0f784a84ea5d54297781a9b01c78eaee5b41f753f1d0fe0aa1f81f5c86a7a409"
+        },
+        {
+          "path": "worker/backend/test_typed_open_proof_dag.py",
+          "exists": true,
+          "sha256": "478fad9b54d26c337a7a208eab5506ab2c6d43b6818a095848a1bd002640d294"
+        },
+        {
+          "path": "scripts/experiment_proof_dag_progress_ablation.py",
+          "exists": true,
+          "sha256": "ca3aabf5a7c53b1d0c44de68bc4c3a75a8da48413c1394e05888be928810cb01"
+        }
+      ],
+      "limitation": "no official code checkout was found; MORTRA implements an exact, LLM-free decomposition reviewer and verifier-feedback ranking",
+      "paper_method": "OR-rooted subgoal DAG with proof feedback and no-progress review",
+      "benchmark_artifacts": [
+        {
+          "path": "data/proof-dag-progress-ablation-frozen5-2026-08-22.json",
+          "exists": true,
+          "sha256": "1583ca65314e1d1306d7043a49d129f7b693b27733b20fc3a72338054d08a26c"
+        },
+        {
+          "path": "data/proof-dag-feedback-routing-ablation-frozen5-2026-08-22.json",
+          "exists": true,
+          "sha256": "87dad06d589aad19336bf193d545ab7c507e01b34436f0c5728575560671e313"
+        }
+      ],
+      "checkout_exists": false,
+      "git_head": "",
+      "origin": "",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": false,
+      "score_claim_supported": true
+    },
+    {
+      "name": "OpenMath Content Dictionaries",
+      "directory": "OpenMath-CDs",
+      "integration": "semantic-schema-adaptation",
+      "evidence": [
+        {
+          "path": "worker/backend/mortra_geometry_content_dictionary.py",
+          "exists": true,
+          "sha256": "075478b0531d06b37153da6ea01aee931977296968c8f7ad92748357943f407d"
+        },
+        {
+          "path": "worker/backend/test_mortra_geometry_content_dictionary.py",
+          "exists": true,
+          "sha256": "40b147e7ec4db9e0ca2cae6fa664be53724e097daa495b3509bdd85ef125dcf8"
+        }
+      ],
+      "limitation": "MORTRA reuses public symbol URIs where semantics agree and keeps new spatial symbols in a private content dictionary",
+      "paper_method": "content dictionaries assign stable semantics and signatures to symbols",
+      "benchmark_artifacts": [],
+      "checkout_exists": true,
+      "git_head": "cbf607561e3f90630ce7a57fe9a85f5bc0dfdd3c",
+      "origin": "https://github.com/OpenMath/CDs.git",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": false,
+      "score_claim_supported": false
+    },
+    {
+      "name": "MMT",
+      "directory": "MMT",
+      "integration": "independent-theory-view-runtime",
+      "evidence": [
+        {
+          "path": "worker/backend/mmt_exact_coordination.py",
+          "exists": true,
+          "sha256": "2fc1c11f5c2db50ae9f79c2359ab41a51128efb71a72617c50fb4ff22f30c4ef"
+        },
+        {
+          "path": "worker/backend/hageo_mmt_certificate_bridge.py",
+          "exists": true,
+          "sha256": "aee18ae3a6281b99a46b504c4eea06b8652b79e469a40a713a786602da9c2089"
+        },
+        {
+          "path": "worker/backend/test_mmt_exact_coordination.py",
+          "exists": true,
+          "sha256": "dcfbbcd5ccfc309014832d7a622d61ece32737e6699ae1ed7891f6685c94c383"
+        },
+        {
+          "path": "worker/backend/test_hageo_mmt_certificate_bridge.py",
+          "exists": true,
+          "sha256": "43b643904bf2c8b009e47f29374f59dfafd71713b9be64bda4ac66172102321d"
+        },
+        {
+          "path": "data/six-paper-mmt-hageo-runtime-smoke-2007p4-2026-08-22.json",
+          "exists": true,
+          "sha256": "c6908f09788764cead53ee4c161a5755d944298ee033b4f567ee2c7cb565a513"
+        }
+      ],
+      "limitation": "this is an independent executable subset of theory views and exact certificate transport, not an embedding of the Scala MMT server",
+      "paper_method": "foundation-independent theory graphs and meaning-preserving views",
+      "benchmark_artifacts": [],
+      "checkout_exists": true,
+      "git_head": "fca5d7e12db5b4e9d6329590f9d25380017981d8",
+      "origin": "https://github.com/UniFormal/MMT.git",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": true,
+      "score_claim_supported": false
+    },
+    {
+      "name": "HyperGNet",
+      "directory": "HyperGNet",
+      "integration": "reference-only",
+      "evidence": [],
+      "limitation": "",
+      "paper_method": "",
+      "benchmark_artifacts": [],
+      "checkout_exists": false,
+      "git_head": "",
+      "origin": "",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": false,
+      "score_claim_supported": false
+    },
+    {
+      "name": "Newclid/Yuclid",
+      "directory": "Newclid",
+      "integration": "native-runtime",
+      "evidence": [
+        {
+          "path": "worker/backend/yuclid_native_verifier.py",
+          "exists": true,
+          "sha256": "173799bdb056d5f4935cf4f18e2c2a0489b4ea290c9fe05ffd4fc150d03623a9"
+        },
+        {
+          "path": "scripts/benchmark_hageo409_native.py",
+          "exists": true,
+          "sha256": "c8fe2b3b4810bdf85849610d200f9ef1082c3609f9ba9f73811d3d56b4204725"
+        }
+      ],
+      "limitation": "",
+      "paper_method": "Native deductive-database and algebraic-reasoning proof replay",
+      "benchmark_artifacts": [
+        {
+          "path": "data/yuclid-imo-ag-30-all-ar-2026-08-15.json",
+          "exists": true,
+          "sha256": "e576ab916899ecccdf4c90594df03f5ffbdf39429bf0c57fbc7757b076f4be75"
+        }
+      ],
+      "checkout_exists": false,
+      "git_head": "",
+      "origin": "",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": true,
+      "score_claim_supported": true
+    },
+    {
+      "name": "Seed-Prover",
+      "directory": "Seed-Prover",
+      "integration": "unusable-checkout",
+      "evidence": [],
+      "limitation": "local checkout has extensive missing or modified files and is not evidence of reproduction",
+      "paper_method": "",
+      "benchmark_artifacts": [],
+      "checkout_exists": false,
+      "git_head": "",
+      "origin": "",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": false,
+      "score_claim_supported": false
+    },
+    {
+      "name": "Sheaf-ADMM",
+      "directory": "sheaf-admm",
+      "integration": "partial-independent-adaptation",
+      "evidence": [
+        {
+          "path": "worker/backend/native_formal_obligation_sheaf.py",
+          "exists": true,
+          "sha256": "5bda8ae23f806007f90cb89ee284912571ef8c6803867d92b1033526b895d895"
+        },
+        {
+          "path": "worker/backend/symbolic_sheaf_learning.py",
+          "exists": true,
+          "sha256": "8a2447c4ea0f15088b1d7113f27987898d2aa9c9357956c7b2bf8f0b83600fda"
+        },
+        {
+          "path": "worker/backend/test_native_formal_obligation_sheaf.py",
+          "exists": true,
+          "sha256": "4c2779ba5d175b44c104c5f6d06e9a72771946d555c2459d91b11535adf2e662"
+        },
+        {
+          "path": "worker/backend/test_symbolic_sheaf_learning.py",
+          "exists": true,
+          "sha256": "68ef052acf76e7cb12376ecf73ca40d85290ab501feb2dc2473bc0e309fc76e3"
+        },
+        {
+          "path": "data/six-paper-sheaf-ablation-2026-08-22.json",
+          "exists": true,
+          "sha256": "8254519a8c632a62574cb7f73d628af91be33f2dd1227e085e7727810f966e01"
+        }
+      ],
+      "limitation": "official JAX/Flax encoder training and paper task reproduction are not in the MORTRA scoring path; frozen MORTRA tests have not shown an additional certified solve",
+      "paper_method": "Overlapping local views solve convex subproblems and coordinate through sheaf-constrained ADMM",
+      "benchmark_artifacts": [],
+      "checkout_exists": true,
+      "git_head": "1e2b5d648361802234348b0b1a7fb3a222128e7d",
+      "origin": "https://github.com/SakanaAI/sheaf-admm.git",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": false,
+      "score_claim_supported": false
+    },
+    {
+      "name": "TongGeometry",
+      "directory": "tong-geometry",
+      "integration": "reference-derived-view",
+      "evidence": [
+        {
+          "path": "scripts/experiment_newclid_construction_stalk.py",
+          "exists": true,
+          "sha256": "44a308f2dff8b9970ecef5ac2339ae1a534c394850556ea07687af96c1955169"
+        }
+      ],
+      "limitation": "",
+      "paper_method": "",
+      "benchmark_artifacts": [],
+      "checkout_exists": false,
+      "git_head": "",
+      "origin": "",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": false,
+      "score_claim_supported": false
+    },
+    {
+      "name": "egglog",
+      "directory": "egglog",
+      "integration": "library-runtime",
+      "evidence": [
+        {
+          "path": "worker/backend/primitive_law_induction.py",
+          "exists": true,
+          "sha256": "7ea6c43afdf9d248587f4fd5bc8e6f095e181c44e0b19051add97ce155ec6b38"
+        }
+      ],
+      "limitation": "",
+      "paper_method": "",
+      "benchmark_artifacts": [],
+      "checkout_exists": false,
+      "git_head": "",
+      "origin": "",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": true,
+      "score_claim_supported": false
+    },
+    {
+      "name": "cvc5",
+      "directory": "cvc5",
+      "integration": "library-runtime",
+      "evidence": [
+        {
+          "path": "worker/backend/primitive_law_induction.py",
+          "exists": true,
+          "sha256": "7ea6c43afdf9d248587f4fd5bc8e6f095e181c44e0b19051add97ce155ec6b38"
+        }
+      ],
+      "limitation": "",
+      "paper_method": "",
+      "benchmark_artifacts": [],
+      "checkout_exists": false,
+      "git_head": "",
+      "origin": "",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": true,
+      "score_claim_supported": false
+    },
+    {
+      "name": "Ruler",
+      "directory": "ruler-oopsla21",
+      "integration": "reference-only",
+      "evidence": [],
+      "limitation": "",
+      "paper_method": "",
+      "benchmark_artifacts": [],
+      "checkout_exists": false,
+      "git_head": "",
+      "origin": "",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": false,
+      "score_claim_supported": false
+    },
+    {
+      "name": "LNN",
+      "directory": "LNN",
+      "integration": "reference-only",
+      "evidence": [],
+      "limitation": "",
+      "paper_method": "",
+      "benchmark_artifacts": [],
+      "checkout_exists": false,
+      "git_head": "",
+      "origin": "",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": false,
+      "score_claim_supported": false
+    },
+    {
+      "name": "Scallop",
+      "directory": "scallop",
+      "integration": "reference-only",
+      "evidence": [
+        {
+          "path": "scripts/experiment_typed_logic_circuit.py",
+          "exists": true,
+          "sha256": "7776f594591ec9cd0fa6dc261721ca86344567b63469811b95150a94e5e8e030"
+        }
+      ],
+      "limitation": "",
+      "paper_method": "",
+      "benchmark_artifacts": [],
+      "checkout_exists": false,
+      "git_head": "",
+      "origin": "",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": false,
+      "score_claim_supported": false
+    },
+    {
+      "name": "DiffLogic",
+      "directory": "difflogic",
+      "integration": "reference-only",
+      "evidence": [],
+      "limitation": "",
+      "paper_method": "",
+      "benchmark_artifacts": [],
+      "checkout_exists": false,
+      "git_head": "",
+      "origin": "",
+      "dirty_entry_count": 0,
+      "runtime_claim_supported": false,
+      "score_claim_supported": false
+    }
+  ]
+}

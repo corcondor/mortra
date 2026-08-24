@@ -1,0 +1,81 @@
+{
+  "experiment": "mortra_terminal_credit_mixed_portfolio_frozen_transfer",
+  "date": "2026-08-21",
+  "hypothesis": "one frozen terminal-credit candidate plus three live proof-residual candidates improves unseen native proof completion under a matched verification budget",
+  "decision": "rejected_under_fixed_n1_k1_f4_protocol",
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_problem_id_in_search": false,
+    "uses_expected_answer": false,
+    "truth_plane": "yuclid_native_certificate_replay_only",
+    "rounds_n": 1,
+    "attempts_k": 1,
+    "seed": 31,
+    "candidate_limit": 32,
+    "incidence_preselect_limit": 48,
+    "feedback_candidates": 4,
+    "feedback_workers": 4,
+    "credit_slots": 1,
+    "residual_slots": 3,
+    "credit_ledger_frozen": true
+  },
+  "inputs": {
+    "cohort": {
+      "path": "data/terminal-credit-mixed-frozen-probe10-2026-08-21.txt",
+      "sha256": "f695cde4c7d2a42f2221cbf1e1e2f5c30529265a69db921e2214187056b9f5c0",
+      "problems": 10
+    },
+    "credit_ledger": {
+      "path": "data/terminal-credit-development-ledger-3problems-hierarchical-2026-08-21.json",
+      "sha256": "718d6fe8604e905f9d3eef1600c5ff7f664641436ad97af66270ea46971fe186",
+      "development_problems": 3,
+      "certificate_events": 9,
+      "hierarchical_entries": 17
+    }
+  },
+  "artifacts": {
+    "control": {
+      "path": "data/terminal-credit-mixed-probe10-control-n1-k1-f4-2026-08-21.json",
+      "sha256": "073e20c64f50c74355002ecb5e1b027a0115b26ea9b798456fc564b1c57fa0f3"
+    },
+    "treatment": {
+      "path": "data/terminal-credit-mixed-probe10-treatment-n1-k1-f4-2026-08-21.json",
+      "sha256": "db0e1b841b54bdaebb72fba72d6e181687f341c0597466934b00035eecafe8e3"
+    }
+  },
+  "results": {
+    "fully_observed_control": 10,
+    "fully_observed_treatment": 10,
+    "solved_control": 0,
+    "solved_treatment": 0,
+    "right_censored_control": 0,
+    "right_censored_treatment": 0,
+    "execution_errors_control": 0,
+    "execution_errors_treatment": 0,
+    "native_verification_calls_control": 40,
+    "native_verification_calls_treatment": 40,
+    "exact_one_credit_three_residual_shortlists": 10,
+    "selected_credit_channel": 2,
+    "selected_residual_channel": 8,
+    "changed_paths": 1,
+    "open_relation_demands_control": 202,
+    "open_relation_demands_treatment": 202,
+    "ar_known_rank_control": 466,
+    "ar_known_rank_treatment": 468,
+    "false_proofs": 0,
+    "cohort_wall_seconds_control": 97.4581668000028,
+    "cohort_wall_seconds_treatment": 112.94452000000456,
+    "cohort_wall_time_increase_percent": 15.89,
+    "per_problem_mean_seconds_control": 33.41,
+    "per_problem_mean_seconds_treatment": 39.732,
+    "per_problem_median_seconds_control": 13.653,
+    "per_problem_median_seconds_treatment": 18.777
+  },
+  "failure_analysis": {
+    "dominant_credit_family": "foot",
+    "problems_with_dominant_credit_family": 10,
+    "mechanism": "context-free hierarchical credit collapsed to the highest-scoring morphism family present in every candidate pool",
+    "interpretation": "credit prior changed one path but did not reduce any typed open relation demand"
+  },
+  "next_falsifiable_hypothesis": "credit transfers only when a candidate postcondition unifies with a currently open typed obligation and native one-step replay closes or strictly reduces that obligation"
+}

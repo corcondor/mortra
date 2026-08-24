@@ -1,0 +1,643 @@
+{
+  "experiment": "construction_block_and_dag_cohort",
+  "dataset": "C:/Users/81808/.cache/mortra-research-sources/GenesisGeo/benchmarks/hageo_409.txt",
+  "dataset_sha256": "55aa45dd16a1b69eaf612036468dbf3f62e73b654c0e3bb1a23fd3e5e3ed2368",
+  "timeout_seconds_per_problem": 120.0,
+  "max_separator_variables": 16,
+  "max_pairs_per_clique": 4,
+  "terminal_max_pairs": 64,
+  "problems": [
+    "2024PlanetCupp10"
+  ],
+  "completed_problem_count": 1,
+  "solved_problem_count": 0,
+  "results": [
+    {
+      "problem_name": "2024PlanetCupp10",
+      "status": "right_censored_timeout",
+      "solved": false,
+      "exact_replay": false,
+      "elapsed_seconds": 120.05674150001141,
+      "return_code": null,
+      "stderr_tail": null,
+      "metrics": {
+        "construction_block_count": 15,
+        "initial_equation_count": 28,
+        "initial_variable_count": 31,
+        "prepass_step_count": 12,
+        "prepass_eliminated_variables": [
+          "_apex_y_2",
+          "_apex_x_1",
+          "_free_x_25",
+          "_free_y_26",
+          "_free_x_19",
+          "_free_y_20",
+          "_free_x_3",
+          "_free_y_4",
+          "_free_x_21",
+          "_free_y_8",
+          "_free_x_5",
+          "_free_y_6"
+        ],
+        "remaining_variable_count": 19,
+        "remaining_polynomial_count": 16,
+        "prepass_exact_replay": true,
+        "completed_clique_count": 2,
+        "separator_lemma_count": 8,
+        "maximum_separator_width": 7,
+        "last_stage": "clique_started",
+        "last_variable": "_free_y_10",
+        "progress": [
+          {
+            "stage": "construction_chart_ready",
+            "construction_block_count": 15,
+            "equation_count": 28,
+            "variable_count": 31,
+            "maximum_expanded_terms": 8
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_apex_y_2",
+            "method": "linear_localization",
+            "bucket_size": 7,
+            "separator_width": 11
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_apex_y_2",
+            "method": "linear_localization",
+            "remaining_variable_count": 30,
+            "remaining_polynomial_count": 27,
+            "output_polynomial_count": 6,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_apex_x_1",
+            "method": "linear_localization",
+            "bucket_size": 8,
+            "separator_width": 12
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_apex_x_1",
+            "method": "linear_localization",
+            "remaining_variable_count": 29,
+            "remaining_polynomial_count": 26,
+            "output_polynomial_count": 7,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_25",
+            "method": "resultant_projection",
+            "bucket_size": 3,
+            "separator_width": 9,
+            "predicted_max_output_terms": 6
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_25",
+            "method": "resultant_projection",
+            "remaining_variable_count": 28,
+            "remaining_polynomial_count": 25,
+            "output_polynomial_count": 2,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_y_26",
+            "method": "resultant_projection",
+            "bucket_size": 2,
+            "separator_width": 8,
+            "predicted_max_output_terms": 24
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_y_26",
+            "method": "resultant_projection",
+            "remaining_variable_count": 27,
+            "remaining_polynomial_count": 24,
+            "output_polynomial_count": 1,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_19",
+            "method": "resultant_projection",
+            "bucket_size": 4,
+            "separator_width": 12,
+            "predicted_max_output_terms": 6
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_19",
+            "method": "resultant_projection",
+            "remaining_variable_count": 26,
+            "remaining_polynomial_count": 23,
+            "output_polynomial_count": 3,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_y_20",
+            "method": "resultant_projection",
+            "bucket_size": 3,
+            "separator_width": 11,
+            "predicted_max_output_terms": 10
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_y_20",
+            "method": "resultant_projection",
+            "remaining_variable_count": 25,
+            "remaining_polynomial_count": 22,
+            "output_polynomial_count": 2,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_3",
+            "method": "resultant_projection",
+            "bucket_size": 9,
+            "separator_width": 15,
+            "predicted_max_output_terms": 18
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_3",
+            "method": "resultant_projection",
+            "remaining_variable_count": 24,
+            "remaining_polynomial_count": 21,
+            "output_polynomial_count": 8,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_y_4",
+            "method": "resultant_projection",
+            "bucket_size": 8,
+            "separator_width": 14,
+            "predicted_max_output_terms": 152
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_y_4",
+            "method": "resultant_projection",
+            "remaining_variable_count": 23,
+            "remaining_polynomial_count": 20,
+            "output_polynomial_count": 7,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_21",
+            "method": "resultant_projection",
+            "bucket_size": 4,
+            "separator_width": 13,
+            "predicted_max_output_terms": 74
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_21",
+            "method": "resultant_projection",
+            "remaining_variable_count": 22,
+            "remaining_polynomial_count": 19,
+            "output_polynomial_count": 3,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_y_8",
+            "method": "resultant_projection",
+            "bucket_size": 8,
+            "separator_width": 15,
+            "predicted_max_output_terms": 29
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_y_8",
+            "method": "resultant_projection",
+            "remaining_variable_count": 21,
+            "remaining_polynomial_count": 18,
+            "output_polynomial_count": 7,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_5",
+            "method": "resultant_projection",
+            "bucket_size": 9,
+            "separator_width": 14,
+            "predicted_max_output_terms": 50
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_5",
+            "method": "resultant_projection",
+            "remaining_variable_count": 20,
+            "remaining_polynomial_count": 17,
+            "output_polynomial_count": 8,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_y_6",
+            "method": "resultant_projection",
+            "bucket_size": 8,
+            "separator_width": 13,
+            "predicted_max_output_terms": 106
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_y_6",
+            "method": "resultant_projection",
+            "remaining_variable_count": 19,
+            "remaining_polynomial_count": 16,
+            "output_polynomial_count": 7,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_completed",
+            "step_count": 12,
+            "eliminated_variable_count": 12,
+            "eliminated_variables": [
+              "_apex_y_2",
+              "_apex_x_1",
+              "_free_x_25",
+              "_free_y_26",
+              "_free_x_19",
+              "_free_y_20",
+              "_free_x_3",
+              "_free_y_4",
+              "_free_x_21",
+              "_free_y_8",
+              "_free_x_5",
+              "_free_y_6"
+            ],
+            "remaining_variable_count": 19,
+            "remaining_polynomial_count": 16,
+            "stopped_reason": "term_budget",
+            "exact_replay": true
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_free_x_15",
+            "separator_width": 7,
+            "input_polynomial_count": 5,
+            "eliminated_variable_count": 0
+          },
+          {
+            "stage": "clique_completed",
+            "variable": "_free_x_15",
+            "separator_width": 7,
+            "input_polynomial_count": 5,
+            "output_polynomial_count": 4,
+            "candidate_output_polynomial_count": 6,
+            "coefficient_nonzero_obligation_count": 3,
+            "unit_leading_coefficient_available": false,
+            "processed_pair_count": 4,
+            "deferred_pair_count": 0,
+            "buchberger_complete": false,
+            "stopped_reason": "pair_budget",
+            "elimination_committed": false,
+            "elapsed_seconds": 2.2691797000006773,
+            "eliminated_variable_count": 0,
+            "goal_proved": false
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_free_x_9",
+            "separator_width": 7,
+            "input_polynomial_count": 9,
+            "eliminated_variable_count": 0
+          },
+          {
+            "stage": "clique_completed",
+            "variable": "_free_x_9",
+            "separator_width": 7,
+            "input_polynomial_count": 9,
+            "output_polynomial_count": 4,
+            "candidate_output_polynomial_count": 7,
+            "coefficient_nonzero_obligation_count": 7,
+            "unit_leading_coefficient_available": false,
+            "processed_pair_count": 4,
+            "deferred_pair_count": 0,
+            "buchberger_complete": false,
+            "stopped_reason": "pair_budget",
+            "elimination_committed": false,
+            "elapsed_seconds": 4.608368800007156,
+            "eliminated_variable_count": 0,
+            "goal_proved": false
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_free_y_10",
+            "separator_width": 7,
+            "input_polynomial_count": 13,
+            "eliminated_variable_count": 0
+          }
+        ]
+      },
+      "raw_result": {
+        "status": "running",
+        "progress": [
+          {
+            "stage": "construction_chart_ready",
+            "construction_block_count": 15,
+            "equation_count": 28,
+            "variable_count": 31,
+            "maximum_expanded_terms": 8
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_apex_y_2",
+            "method": "linear_localization",
+            "bucket_size": 7,
+            "separator_width": 11
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_apex_y_2",
+            "method": "linear_localization",
+            "remaining_variable_count": 30,
+            "remaining_polynomial_count": 27,
+            "output_polynomial_count": 6,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_apex_x_1",
+            "method": "linear_localization",
+            "bucket_size": 8,
+            "separator_width": 12
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_apex_x_1",
+            "method": "linear_localization",
+            "remaining_variable_count": 29,
+            "remaining_polynomial_count": 26,
+            "output_polynomial_count": 7,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_25",
+            "method": "resultant_projection",
+            "bucket_size": 3,
+            "separator_width": 9,
+            "predicted_max_output_terms": 6
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_25",
+            "method": "resultant_projection",
+            "remaining_variable_count": 28,
+            "remaining_polynomial_count": 25,
+            "output_polynomial_count": 2,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_y_26",
+            "method": "resultant_projection",
+            "bucket_size": 2,
+            "separator_width": 8,
+            "predicted_max_output_terms": 24
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_y_26",
+            "method": "resultant_projection",
+            "remaining_variable_count": 27,
+            "remaining_polynomial_count": 24,
+            "output_polynomial_count": 1,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_19",
+            "method": "resultant_projection",
+            "bucket_size": 4,
+            "separator_width": 12,
+            "predicted_max_output_terms": 6
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_19",
+            "method": "resultant_projection",
+            "remaining_variable_count": 26,
+            "remaining_polynomial_count": 23,
+            "output_polynomial_count": 3,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_y_20",
+            "method": "resultant_projection",
+            "bucket_size": 3,
+            "separator_width": 11,
+            "predicted_max_output_terms": 10
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_y_20",
+            "method": "resultant_projection",
+            "remaining_variable_count": 25,
+            "remaining_polynomial_count": 22,
+            "output_polynomial_count": 2,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_3",
+            "method": "resultant_projection",
+            "bucket_size": 9,
+            "separator_width": 15,
+            "predicted_max_output_terms": 18
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_3",
+            "method": "resultant_projection",
+            "remaining_variable_count": 24,
+            "remaining_polynomial_count": 21,
+            "output_polynomial_count": 8,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_y_4",
+            "method": "resultant_projection",
+            "bucket_size": 8,
+            "separator_width": 14,
+            "predicted_max_output_terms": 152
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_y_4",
+            "method": "resultant_projection",
+            "remaining_variable_count": 23,
+            "remaining_polynomial_count": 20,
+            "output_polynomial_count": 7,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_21",
+            "method": "resultant_projection",
+            "bucket_size": 4,
+            "separator_width": 13,
+            "predicted_max_output_terms": 74
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_21",
+            "method": "resultant_projection",
+            "remaining_variable_count": 22,
+            "remaining_polynomial_count": 19,
+            "output_polynomial_count": 3,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_y_8",
+            "method": "resultant_projection",
+            "bucket_size": 8,
+            "separator_width": 15,
+            "predicted_max_output_terms": 29
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_y_8",
+            "method": "resultant_projection",
+            "remaining_variable_count": 21,
+            "remaining_polynomial_count": 18,
+            "output_polynomial_count": 7,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_x_5",
+            "method": "resultant_projection",
+            "bucket_size": 9,
+            "separator_width": 14,
+            "predicted_max_output_terms": 50
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_x_5",
+            "method": "resultant_projection",
+            "remaining_variable_count": 20,
+            "remaining_polynomial_count": 17,
+            "output_polynomial_count": 8,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_candidate_started",
+            "variable": "_free_y_6",
+            "method": "resultant_projection",
+            "bucket_size": 8,
+            "separator_width": 13,
+            "predicted_max_output_terms": 106
+          },
+          {
+            "stage": "local_prepass_step_completed",
+            "variable": "_free_y_6",
+            "method": "resultant_projection",
+            "remaining_variable_count": 19,
+            "remaining_polynomial_count": 16,
+            "output_polynomial_count": 7,
+            "exact_replay": true
+          },
+          {
+            "stage": "local_prepass_completed",
+            "step_count": 12,
+            "eliminated_variable_count": 12,
+            "eliminated_variables": [
+              "_apex_y_2",
+              "_apex_x_1",
+              "_free_x_25",
+              "_free_y_26",
+              "_free_x_19",
+              "_free_y_20",
+              "_free_x_3",
+              "_free_y_4",
+              "_free_x_21",
+              "_free_y_8",
+              "_free_x_5",
+              "_free_y_6"
+            ],
+            "remaining_variable_count": 19,
+            "remaining_polynomial_count": 16,
+            "stopped_reason": "term_budget",
+            "exact_replay": true
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_free_x_15",
+            "separator_width": 7,
+            "input_polynomial_count": 5,
+            "eliminated_variable_count": 0
+          },
+          {
+            "stage": "clique_completed",
+            "variable": "_free_x_15",
+            "separator_width": 7,
+            "input_polynomial_count": 5,
+            "output_polynomial_count": 4,
+            "candidate_output_polynomial_count": 6,
+            "coefficient_nonzero_obligation_count": 3,
+            "unit_leading_coefficient_available": false,
+            "processed_pair_count": 4,
+            "deferred_pair_count": 0,
+            "buchberger_complete": false,
+            "stopped_reason": "pair_budget",
+            "elimination_committed": false,
+            "elapsed_seconds": 2.2691797000006773,
+            "eliminated_variable_count": 0,
+            "goal_proved": false
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_free_x_9",
+            "separator_width": 7,
+            "input_polynomial_count": 9,
+            "eliminated_variable_count": 0
+          },
+          {
+            "stage": "clique_completed",
+            "variable": "_free_x_9",
+            "separator_width": 7,
+            "input_polynomial_count": 9,
+            "output_polynomial_count": 4,
+            "candidate_output_polynomial_count": 7,
+            "coefficient_nonzero_obligation_count": 7,
+            "unit_leading_coefficient_available": false,
+            "processed_pair_count": 4,
+            "deferred_pair_count": 0,
+            "buchberger_complete": false,
+            "stopped_reason": "pair_budget",
+            "elimination_committed": false,
+            "elapsed_seconds": 4.608368800007156,
+            "eliminated_variable_count": 0,
+            "goal_proved": false
+          },
+          {
+            "stage": "clique_started",
+            "variable": "_free_y_10",
+            "separator_width": 7,
+            "input_polynomial_count": 13,
+            "eliminated_variable_count": 0
+          }
+        ]
+      },
+      "normalization": {
+        "rewritten_constructions": 0,
+        "unchanged_constructions": 20,
+        "unresolved_constructions": 0
+      }
+    }
+  ]
+}

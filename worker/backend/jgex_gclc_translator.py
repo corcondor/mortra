@@ -30,23 +30,31 @@ LINE_LOCI = frozenset(
         "on_aline",
     }
 )
-CIRCLE_LOCI = frozenset({"on_circle", "on_dia", "eqangle3"})
+CIRCLE_LOCI = frozenset({"on_circle", "on_circum", "on_dia", "eqangle3"})
 DIRECT_CONSTRUCTIONS = frozenset(
     {
+        "free",
         "triangle",
+        "iso_triangle",
+        "quadrangle",
         "r_triangle",
         "midpoint",
+        "centroid",
         "foot",
         "orthocenter",
         "circle",
+        "circumcenter",
         "incenter",
         "incenter2",
+        "excenter",
         "mirror",
         "reflect",
         "cc_tangent",
     }
 )
-SUPPORTED_GOALS = frozenset({"coll", "para", "perp", "cong", "cyclic"})
+SUPPORTED_GOALS = frozenset(
+    {"coll", "para", "perp", "cong", "cyclic", "eqangle"}
+)
 
 
 @dataclass(frozen=True)
@@ -57,6 +65,8 @@ class GCLCTranslation:
     goal_points: tuple[str, ...]
     source_sha256: str
     local_lemma_certificates: tuple[str, ...] = ()
+    original_clause_count: int = 0
+    translated_clause_count: int = 0
 
 
 def canonical_typed_goal_key(
@@ -212,6 +222,56 @@ class _Emitter:
 
 def _construction_args(construction) -> tuple[str, ...]:
     return tuple(_identifier(str(value)) for value in construction.args)
+
+
+def slice_formulation_to_goal_cone(
+    formulation: JGEXFormulation,
+) -> JGEXFormulation:
+    """Keep only construction ancestors and closed constraints of the goal.
+
+    A proof from this weaker hypothesis set is valid for the original problem.
+    The slice is structural and depends only on point production/consumption,
+    never on a problem name or expected theorem result.
+    """
+
+    needed = {
+        _identifier(str(argument))
+        for goal in formulation.goals
+        for argument in goal.args
+        if str(argument) and str(argument)[0].isalpha()
+    }
+    selected: set[int] = set()
+    clauses = formulation.setup_clauses
+    for index in range(len(clauses) - 1, -1, -1):
+        clause = clauses[index]
+        outputs = {_identifier(str(point)) for point in clause.points}
+        if outputs and outputs.intersection(needed):
+            selected.add(index)
+            for construction in clause.constructions:
+                needed.update(
+                    _identifier(str(argument))
+                    for argument in construction.args
+                    if str(argument) and str(argument)[0].isalpha()
+                )
+    for index, clause in enumerate(clauses):
+        if clause.points:
+            continue
+        arguments = {
+            _identifier(str(argument))
+            for construction in clause.constructions
+            for argument in construction.args
+            if str(argument) and str(argument)[0].isalpha()
+        }
+        if arguments and arguments.issubset(needed):
+            selected.add(index)
+    return JGEXFormulation(
+        name=formulation.name,
+        setup_clauses=tuple(
+            clause for index, clause in enumerate(clauses) if index in selected
+        ),
+        auxiliary_clauses=(),
+        goals=formulation.goals,
+    )
 
 
 @dataclass(frozen=True)
@@ -492,6 +552,14 @@ def _circle_locus(
     if name == "on_circle":
         circle = emitter.circle(args[1], args[2])
         return circle, args[1], args[2]
+    if name == "on_circum":
+        center = emitter.fresh("circum_center")
+        first_bisector = emitter.perpendicular_bisector(args[1], args[2])
+        second_bisector = emitter.perpendicular_bisector(args[1], args[3])
+        emitter.emit(f"intersec {center} {first_bisector} {second_bisector}")
+        emitter.points.add(center)
+        circle = emitter.circle(center, args[1])
+        return circle, center, args[1]
     if name == "on_dia":
         midpoint = emitter.fresh("dia_mid")
         emitter.emit(f"midpoint {midpoint} {args[1]} {args[2]}")
@@ -551,8 +619,29 @@ def _emit_locus_clause(emitter: _Emitter, constructions: tuple) -> None:
         emitter.points.update((output, other))
         return
     if len(circles) >= 2:
+        first_circle, first_center, first_radius_point = circles[0]
+        second_circle, second_center, second_radius_point = circles[1]
+        if first_radius_point == second_radius_point:
+            # GCLC can draw a circle-circle intersection, but its Wu and
+            # Groebner provers reject p_intercc.  When the two circles share a
+            # known point A, their other intersection is the reflection of A
+            # in the line joining their centers.  This exact reduction uses
+            # only prover-supported line, foot, and point-ratio commands.
+            centers_axis = emitter.line(
+                first_center,
+                second_center,
+                "common_chord_centers",
+            )
+            projection = emitter.fresh("common_chord_foot")
+            emitter.emit(
+                f"foot {projection} {first_radius_point} {centers_axis}"
+            )
+            emitter.points.add(projection)
+            emitter.emit(f"towards {output} {first_radius_point} {projection} 2")
+            emitter.points.add(output)
+            return
         other = emitter.fresh("other_root")
-        emitter.emit(f"intersec2 {output} {other} {circles[0][0]} {circles[1][0]}")
+        emitter.emit(f"intersec2 {output} {other} {first_circle} {second_circle}")
         emitter.points.update((output, other))
         return
     if len(lines) == 1:
@@ -566,9 +655,19 @@ def _emit_locus_clause(emitter: _Emitter, constructions: tuple) -> None:
 
 
 def _emit_direct(emitter: _Emitter, name: str, args: tuple[str, ...]) -> None:
-    if name == "triangle":
+    if name == "free":
+        emitter.free_point(args[0])
+        return
+    if name in {"triangle", "quadrangle"}:
         for point in args:
             emitter.free_point(point)
+        return
+    if name == "iso_triangle":
+        apex, left, right = args
+        emitter.free_point(left)
+        emitter.free_point(right)
+        symmetry_axis = emitter.perpendicular_bisector(left, right)
+        emitter.arbitrary_point_on_line(apex, symmetry_axis)
         return
     if name == "r_triangle":
         vertex, left, right = args
@@ -586,6 +685,17 @@ def _emit_direct(emitter: _Emitter, name: str, args: tuple[str, ...]) -> None:
         emitter.emit(f"midpoint {args[0]} {args[1]} {args[2]}")
         emitter.points.add(args[0])
         return
+    if name == "centroid":
+        midpoint_a, midpoint_b, midpoint_c, center, a, b, c = args
+        emitter.emit(f"midpoint {midpoint_a} {b} {c}")
+        emitter.emit(f"midpoint {midpoint_b} {c} {a}")
+        emitter.emit(f"midpoint {midpoint_c} {a} {b}")
+        emitter.points.update((midpoint_a, midpoint_b, midpoint_c))
+        median_a = emitter.line(a, midpoint_a, "median")
+        median_b = emitter.line(b, midpoint_b, "median")
+        emitter.emit(f"intersec {center} {median_a} {median_b}")
+        emitter.points.add(center)
+        return
     if name == "foot":
         side = emitter.line(args[2], args[3], "foot_side")
         emitter.emit(f"foot {args[0]} {args[1]} {side}")
@@ -600,7 +710,7 @@ def _emit_direct(emitter: _Emitter, name: str, args: tuple[str, ...]) -> None:
         emitter.emit(f"intersec {output} {altitude_a} {altitude_b}")
         emitter.points.add(output)
         return
-    if name == "circle":
+    if name in {"circle", "circumcenter"}:
         output, a, b, c = args
         bisector_ab = emitter.perpendicular_bisector(a, b)
         bisector_ac = emitter.perpendicular_bisector(a, c)
@@ -628,6 +738,14 @@ def _emit_direct(emitter: _Emitter, name: str, args: tuple[str, ...]) -> None:
                 side = emitter.line(left, right, "incenter_side")
                 emitter.emit(f"foot {foot} {center} {side}")
                 emitter.points.add(foot)
+        return
+    if name == "excenter":
+        center, a, b, c = args
+        internal_at_a = emitter.bisector(b, a, c)
+        internal_at_c = emitter.bisector(b, c, a)
+        external_at_c = emitter.perpendicular(c, internal_at_c)
+        emitter.emit(f"intersec {center} {internal_at_a} {external_at_c}")
+        emitter.points.add(center)
         return
     if name == "mirror":
         output, source, center = args
@@ -767,6 +885,7 @@ def _emit_direct(emitter: _Emitter, name: str, args: tuple[str, ...]) -> None:
 
 
 def _goal_line(
+    emitter: _Emitter,
     channel: str,
     points: tuple[str, ...],
 ) -> str:
@@ -793,6 +912,18 @@ def _goal_line(
             f"prove {{ equal {{ mult {first_cross} {second_dot} }} "
             f"{{ mult {first_dot} {second_cross} }} }}"
         )
+    if channel == "eqangle" and len(points) == 8:
+        a, b, c, d, e, f, g, h = points
+        translated_d = emitter.translate(c, d, a, "goal_angle_vector")
+        translated_h = emitter.translate(g, h, e, "goal_angle_vector")
+        first_cross = f"{{ signed_area3 {a} {b} {translated_d} }}"
+        first_dot = f"{{ pythagoras_difference3 {a} {b} {translated_d} }}"
+        second_cross = f"{{ signed_area3 {e} {f} {translated_h} }}"
+        second_dot = f"{{ pythagoras_difference3 {e} {f} {translated_h} }}"
+        return (
+            f"prove {{ equal {{ mult {first_cross} {second_dot} }} "
+            f"{{ mult {first_dot} {second_cross} }} }}"
+        )
     raise ValueError(f"unsupported GCLC goal: {channel} {points}")
 
 
@@ -801,6 +932,7 @@ def translate_jgex_to_gclc(
     *,
     sketch_seed: int = 0,
     enable_structural_lemmas: bool = True,
+    goal_local: bool = False,
 ) -> GCLCTranslation:
     definitions = JGEXDefinition.to_dict(list(ALL_JGEX_CONSTRUCTIONS))
     formulation, report = normalize_legacy_formulation(
@@ -808,6 +940,9 @@ def translate_jgex_to_gclc(
     )
     if report.unresolved_constructions:
         raise ValueError("JGEX normalization left unresolved constructions")
+    original_clause_count = len(formulation.setup_clauses)
+    if goal_local:
+        formulation = slice_formulation_to_goal_cone(formulation)
     if len(formulation.goals) != 1:
         raise ValueError("GCLC translation requires exactly one goal")
     goal = formulation.goals[0]
@@ -842,7 +977,7 @@ def translate_jgex_to_gclc(
             continue
         _emit_locus_clause(emitter, constructions)
 
-    emitter.emit(_goal_line(channel, points))
+    emitter.emit(_goal_line(emitter, channel, points))
     source = "\n".join(emitter.lines) + "\n"
     return GCLCTranslation(
         source=source,
@@ -851,4 +986,6 @@ def translate_jgex_to_gclc(
         goal_points=points,
         source_sha256=hashlib.sha256(source.encode("utf-8")).hexdigest(),
         local_lemma_certificates=tuple(item.certificate for item in homothety_macros),
+        original_clause_count=original_clause_count,
+        translated_clause_count=len(formulation.setup_clauses),
     )
