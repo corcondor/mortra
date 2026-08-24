@@ -1,0 +1,73 @@
+{
+  "experiment": "exact_backward_obligation_positional_index",
+  "date": "2026-08-24",
+  "uses_external_llm": false,
+  "truth_plane": "native_yuclid_certificate_replay_unchanged",
+  "implementation": {
+    "changed_component": "worker/backend/geometry_proof_hypergraph.py",
+    "method": "predicate-arity-position-value prefilter followed by the existing symmetry-aware _unify_all matcher",
+    "approximate_pruning": false,
+    "problem_id_or_expected_answer_branching": false
+  },
+  "measurements": {
+    "proof_state_obligations_single_candidate": {
+      "before_seconds": 27.95457,
+      "after_seconds": 0.3789764,
+      "speedup": 73.7633509622235,
+      "obligations_before": 24,
+      "obligations_after": 24,
+      "demands_before": 24,
+      "demands_after": 24,
+      "normalized_output_equal": true
+    },
+    "eight_candidate_serial_search": {
+      "before_seconds": 346.6976166,
+      "after_seconds": 23.9601777,
+      "speedup": 14.469743126734308,
+      "candidate_count_equal": true,
+      "solved_status_equal": true
+    },
+    "full_problem_rerun": [
+      {
+        "problem": "2024VietnamTSTp5",
+        "before_seconds": 3770.87,
+        "after_seconds": 445.16927150000265,
+        "speedup": 8.470643401503935,
+        "evaluated_candidates_before": 112,
+        "evaluated_candidates_after": 112,
+        "status_before": "unsolved",
+        "status_after": "unsolved"
+      },
+      {
+        "problem": "2015IranTSTp18",
+        "before_seconds": 7200.36,
+        "after_seconds": 826.3392093000002,
+        "speedup_lower_bound": 8.713564878306761,
+        "before_was_right_censored": true,
+        "evaluated_candidates_after": 112,
+        "status_after": "unsolved"
+      },
+      {
+        "problem": "2023RMMSLG3",
+        "before_seconds": 6366.74,
+        "after_seconds": 1200.2111208999995,
+        "after_status": "right_censored_timeout",
+        "after_stage": "candidate_enumeration",
+        "comparison_valid": false,
+        "reason": "the new run used a shorter per-problem wall limit and stopped in a separate proof-DAG candidate-ranking prepass"
+      }
+    ]
+  },
+  "verification": {
+    "related_tests_passed": 71,
+    "related_tests_failed": 0,
+    "candidate_inputs_checked": 112,
+    "unique_candidate_input_sha256": 112,
+    "duplicate_candidate_inputs": 0
+  },
+  "score_effect": {
+    "newly_certified_solutions": 0,
+    "certified_union_before": "57/89",
+    "certified_union_after": "57/89"
+  }
+}

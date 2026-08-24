@@ -150,6 +150,70 @@ class BackwardObligation:
 Substitution = dict[str, str]
 
 
+class _FactIndex:
+    """Exact positional index for symmetry-aware premise unification.
+
+    ``_unify_all`` remains the final matcher.  The index only removes facts
+    that cannot match any argument orbit under the current substitution.
+    """
+
+    def __init__(self, facts: Iterable[Atom]) -> None:
+        ordered = tuple(sorted({fact.canonical() for fact in facts}, key=_render_atom))
+        by_predicate: dict[str, list[Atom]] = {}
+        by_position: dict[tuple[str, int, int, str], set[Atom]] = {}
+        for fact in ordered:
+            predicate = fact.predicate.lower()
+            by_predicate.setdefault(predicate, []).append(fact)
+            arity = len(fact.arguments)
+            for position, value in enumerate(fact.arguments):
+                by_position.setdefault(
+                    (predicate, arity, position, value), set()
+                ).add(fact)
+        self.by_predicate = {
+            predicate: tuple(items) for predicate, items in by_predicate.items()
+        }
+        self.by_position = by_position
+
+    def candidates(
+        self,
+        pattern: Atom,
+        substitution: Mapping[str, str],
+    ) -> tuple[Atom, ...]:
+        predicate = pattern.predicate.lower()
+        facts = self.by_predicate.get(predicate, ())
+        if not facts:
+            return ()
+
+        possible: set[Atom] = set()
+        for pattern_args in _argument_orbit(pattern):
+            constraints: list[set[Atom]] = []
+            for position, expected in enumerate(pattern_args):
+                value = substitution.get(expected) if _is_variable(expected) else expected
+                if value is None:
+                    continue
+                posting = self.by_position.get(
+                    (predicate, len(pattern_args), position, value)
+                )
+                if not posting:
+                    constraints = []
+                    break
+                constraints.append(posting)
+            else:
+                if not constraints:
+                    return facts
+                smallest, *rest = sorted(constraints, key=len)
+                matches = set(smallest)
+                for posting in rest:
+                    matches.intersection_update(posting)
+                    if not matches:
+                        break
+                possible.update(matches)
+
+        if not possible:
+            return ()
+        return tuple(fact for fact in facts if fact in possible)
+
+
 def _is_variable(value: str) -> bool:
     return value.startswith("?")
 
@@ -291,16 +355,14 @@ def synthesize_backward_obligations(
     """
 
     known = {fact.canonical() for fact in facts}
-    by_predicate = {
-        predicate: tuple(
-            sorted(
-                (fact for fact in known if fact.predicate == predicate),
-                key=_render_atom,
-            )
-        )
-        for predicate in {fact.predicate for fact in known}
-    }
+    fact_index = _FactIndex(known)
     wanted = goal.canonical()
+    theorem_index: dict[tuple[str, int], list[Theorem]] = {}
+    for theorem in theorems:
+        conclusion = theorem.conclusion
+        theorem_index.setdefault(
+            (conclusion.predicate.lower(), len(conclusion.arguments)), []
+        ).append(theorem)
     results: dict[
         tuple[str, tuple[Atom, ...], tuple[tuple[str, str], ...]], BackwardObligation
     ] = {}
@@ -310,7 +372,9 @@ def synthesize_backward_obligations(
     def expired() -> bool:
         return deadline is not None and time.perf_counter() >= deadline
 
-    for theorem in theorems:
+    for theorem in theorem_index.get(
+        (wanted.predicate.lower(), len(wanted.arguments)), ()
+    ):
         if expired():
             return current_results()
         for initial in _unify_all(theorem.conclusion, wanted):
@@ -328,7 +392,7 @@ def synthesize_backward_obligations(
                 for substitution, matched, opened in states:
                     if expired():
                         return current_results()
-                    for fact in by_predicate.get(premise.predicate.lower(), ()):
+                    for fact in fact_index.candidates(premise, substitution):
                         if expired():
                             return current_results()
                         for merged in _unify_all(premise, fact, substitution):
