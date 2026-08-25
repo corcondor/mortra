@@ -87,3 +87,13 @@ Newclidの `reduce_intersection` は複数交点を独立にシャッフルし�
 - `data/hageo-remaining26-structure-audit-2026-08-26.json`
 - HAGeo-409 parquet SHA-256: `6e23990b4f7b20b82d7fc44ff192a9149e430a58a7824bad266b6622d2675df9`
 - Newclid commit: `ac6550732a950564cf7614d605b5bf1eadd29701`
+
+## 実装後の結果
+
+上記の次段階を実装した。英文の半平面関係を型付きIRへ変換し、対称な接線・等半径作図の二枝を多項式恒等式で分解したうえで、厳密符号条件に反する枝だけを棄却する証明書を追加した。
+
+`2014CHNGaoLian` は60.74秒で `remainder=0`、証明書再生成功となり、固定89問の監査済み総合値は **63/89から64/89** へ上昇した。条件なし・矛盾条件では同じ枝を選ばず証明も閉じない対照実験を通している。
+
+固定89問全体で同じ作図型と意味条件を監査したところ、この定理が発火するのは同問だけだった。残り25問には別の意味述語、または長い円・外心DAGの局所補題合成が必要である。
+
+詳細: `docs/research/MORTRA-HAGEO-SEMIALGEBRAIC-BRANCH-CERTIFICATE-20260826.md`

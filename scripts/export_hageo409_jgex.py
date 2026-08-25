@@ -70,6 +70,11 @@ def main() -> int:
     parser.add_argument("--parquet", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--manifest", type=Path, required=True)
+    parser.add_argument(
+        "--semantic-output",
+        type=Path,
+        help="Optional problem-id keyed natural-language sidecar for typed semantics.",
+    )
     args = parser.parse_args()
 
     frame = pd.read_parquet(args.parquet.resolve())
@@ -103,6 +108,21 @@ def main() -> int:
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(payload, encoding="utf-8")
 
+    semantic_payload = {
+        identifier: str(natural_language).strip()
+        for identifier, natural_language in zip(
+            identifiers,
+            frame["Natural_Language"],
+            strict=True,
+        )
+    }
+    semantic_serialized = (
+        json.dumps(semantic_payload, ensure_ascii=False, indent=2) + "\n"
+    )
+    if args.semantic_output is not None:
+        args.semantic_output.parent.mkdir(parents=True, exist_ok=True)
+        args.semantic_output.write_text(semantic_serialized, encoding="utf-8")
+
     difficulty = pd.to_numeric(frame["Difficulty_Score"], errors="coerce")
     manifest = {
         "dataset": "HAGeo-409",
@@ -116,7 +136,17 @@ def main() -> int:
             "mean": float(difficulty.mean()),
         },
         "parquet_sha256": hashlib.sha256(args.parquet.read_bytes()).hexdigest(),
-        "jgex_sha256": hashlib.sha256(payload.encode("utf-8")).hexdigest(),
+        "jgex_sha256": hashlib.sha256(args.output.read_bytes()).hexdigest(),
+        "natural_language_sha256": hashlib.sha256(
+            args.semantic_output.read_bytes()
+            if args.semantic_output is not None
+            else semantic_serialized.encode("utf-8")
+        ).hexdigest(),
+        "semantic_sidecar": (
+            args.semantic_output.as_posix()
+            if args.semantic_output is not None
+            else None
+        ),
         "uses_external_llm": False,
     }
     args.manifest.parent.mkdir(parents=True, exist_ok=True)

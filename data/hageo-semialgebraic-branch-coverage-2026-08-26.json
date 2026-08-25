@@ -1,0 +1,238 @@
+{
+  "experiment": "hageo_semialgebraic_branch_coverage_audit",
+  "uses_external_llm": false,
+  "uses_expected_answer": false,
+  "uses_problem_identifier_dispatch": false,
+  "sources": {
+    "dataset": {
+      "path": "data/hageo-409-jgex-2026-08-18.txt",
+      "sha256": "629e621cea5b4d9bf4bcae835c286606be3294cc8cc0c794b210fdaec011f8c2"
+    },
+    "semantic_dataset": {
+      "path": "data/hageo-409-natural-language-2026-08-26.json",
+      "sha256": "ec263f6fb369d67207502fbe1a9a341474fdcbde6f03c503d52788b248d70d27"
+    },
+    "baseline": {
+      "path": "data/hageo-certified-capability-union-plus-2025korea-2026-08-26.json",
+      "sha256": "dbf739f1b2b2343e5946b6bb4d81ccd16ffdbdf9b95eb1e698368cf935174236"
+    }
+  },
+  "summary": {
+    "total": 89,
+    "certified_before_audit": 63,
+    "unresolved_before_audit": 26,
+    "problems_with_half_plane_relations": 1,
+    "problems_with_paired_tangent_candidates": 1,
+    "problems_with_source_selected_candidates": 1,
+    "unresolved_with_source_selected_candidates": 1
+  },
+  "sets": {
+    "source_selected": [
+      "2014CHNGaoLian"
+    ],
+    "unresolved_source_selected": [
+      "2014CHNGaoLian"
+    ]
+  },
+  "unresolved_results": {
+    "2011G3": {
+      "certified_before_audit": false,
+      "half_plane_relations": 0,
+      "paired_tangent_candidates": 0,
+      "source_selected_candidates": 0,
+      "matches": []
+    },
+    "2014CHNGaoLian": {
+      "certified_before_audit": false,
+      "half_plane_relations": 2,
+      "paired_tangent_candidates": 1,
+      "source_selected_candidates": 1,
+      "matches": [
+        {
+          "theorem": "paired_circumcircle_tangent_equal_radius_same_side_reflection",
+          "source_clause_indices": [
+            1,
+            2,
+            3
+          ],
+          "points": [
+            "o",
+            "b",
+            "c",
+            "d",
+            "e"
+          ],
+          "same_side_derivation_rule": "opposite_to_common_anchor_implies_same_side"
+        }
+      ]
+    },
+    "2016CTSTp5": {
+      "certified_before_audit": false,
+      "half_plane_relations": 0,
+      "paired_tangent_candidates": 0,
+      "source_selected_candidates": 0,
+      "matches": []
+    },
+    "2016USATSTSTp6": {
+      "certified_before_audit": false,
+      "half_plane_relations": 0,
+      "paired_tangent_candidates": 0,
+      "source_selected_candidates": 0,
+      "matches": []
+    },
+    "2017G4": {
+      "certified_before_audit": false,
+      "half_plane_relations": 0,
+      "paired_tangent_candidates": 0,
+      "source_selected_candidates": 0,
+      "matches": []
+    },
+    "2017USAMOp3": {
+      "certified_before_audit": false,
+      "half_plane_relations": 0,
+      "paired_tangent_candidates": 0,
+      "source_selected_candidates": 0,
+      "matches": []
+    },
+    "2019IranTSTp15": {
+      "certified_before_audit": false,
+      "half_plane_relations": 0,
+      "paired_tangent_candidates": 0,
+      "source_selected_candidates": 0,
+      "matches": []
+    },
+    "2020IranGOAp2": {
+      "certified_before_audit": false,
+      "half_plane_relations": 0,
+      "paired_tangent_candidates": 0,
+      "source_selected_candidates": 0,
+      "matches": []
+    },
+    "2020IranTSTp9": {
+      "certified_before_audit": false,
+      "half_plane_relations": 0,
+      "paired_tangent_candidates": 0,
+      "source_selected_candidates": 0,
+      "matches": []
+    },
+    "2021ARMOg10p8": {
+      "certified_before_audit": false,
+      "half_plane_relations": 0,
+      "paired_tangent_candidates": 0,
+      "source_selected_candidates": 0,
+      "matches": []
+    },
+    "2021GOWACAp5": {
+      "certified_before_audit": false,
+      "half_plane_relations": 0,
+      "paired_tangent_candidates": 0,
+      "source_selected_candidates": 0,
+      "matches": []
+    },
+    "2021IranTSTp6": {
+      "certified_before_audit": false,
+      "half_plane_relations": 0,
+      "paired_tangent_candidates": 0,
+      "source_selected_candidates": 0,
+      "matches": []
+    },
+    "2021IsraelOlympicRev": {
+      "certified_before_audit": false,
+      "half_plane_relations": 0,
+      "paired_tangent_candidates": 0,
+      "source_selected_candidates": 0,
+      "matches": []
+    },
+    "2022G5": {
+      "certified_before_audit": false,
+      "half_plane_relations": 0,
+      "paired_tangent_candidates": 0,
+      "source_selected_candidates": 0,
+      "matches": []
+    },
+    "2023IMOp6": {
+      "certified_before_audit": false,
+      "half_plane_relations": 0,
+      "paired_tangent_candidates": 0,
+      "source_selected_candidates": 0,
+      "matches": []
+    },
+    "2023MOSTMockp2": {
+      "certified_before_audit": false,
+      "half_plane_relations": 0,
+      "paired_tangent_candidates": 0,
+      "source_selected_candidates": 0,
+      "matches": []
+    },
+    "2023RMMSLG3": {
+      "certified_before_audit": false,
+      "half_plane_relations": 0,
+      "paired_tangent_candidates": 0,
+      "source_selected_candidates": 0,
+      "matches": []
+    },
+    "2023SAGFp8": {
+      "certified_before_audit": false,
+      "half_plane_relations": 0,
+      "paired_tangent_candidates": 0,
+      "source_selected_candidates": 0,
+      "matches": []
+    },
+    "2023SerbiaMOp6": {
+      "certified_before_audit": false,
+      "half_plane_relations": 0,
+      "paired_tangent_candidates": 0,
+      "source_selected_candidates": 0,
+      "matches": []
+    },
+    "2023VietnamTSTp3": {
+      "certified_before_audit": false,
+      "half_plane_relations": 0,
+      "paired_tangent_candidates": 0,
+      "source_selected_candidates": 0,
+      "matches": []
+    },
+    "2024KoMaLA877": {
+      "certified_before_audit": false,
+      "half_plane_relations": 0,
+      "paired_tangent_candidates": 0,
+      "source_selected_candidates": 0,
+      "matches": []
+    },
+    "2024VietnamTSTp5": {
+      "certified_before_audit": false,
+      "half_plane_relations": 0,
+      "paired_tangent_candidates": 0,
+      "source_selected_candidates": 0,
+      "matches": []
+    },
+    "ShuZhiMiGeo128": {
+      "certified_before_audit": false,
+      "half_plane_relations": 0,
+      "paired_tangent_candidates": 0,
+      "source_selected_candidates": 0,
+      "matches": []
+    },
+    "ShuZhiMiGeo309": {
+      "certified_before_audit": false,
+      "half_plane_relations": 0,
+      "paired_tangent_candidates": 0,
+      "source_selected_candidates": 0,
+      "matches": []
+    },
+    "ShuZhiMiGeo489": {
+      "certified_before_audit": false,
+      "half_plane_relations": 0,
+      "paired_tangent_candidates": 0,
+      "source_selected_candidates": 0,
+      "matches": []
+    },
+    "ShuZhiMiGeo635": {
+      "certified_before_audit": false,
+      "half_plane_relations": 0,
+      "paired_tangent_candidates": 0,
+      "source_selected_candidates": 0,
+      "matches": []
+    }
+  }
+}

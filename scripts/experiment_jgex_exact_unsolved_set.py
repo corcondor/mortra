@@ -82,6 +82,7 @@ def _exact_worker(
     local_max_output_terms: int = 64,
     local_max_resultant_degree: int = 1,
     enable_regular_unit_contractions: bool = False,
+    natural_language: str | None = None,
 ) -> None:
     progress_events: deque[dict[str, object]] = deque(maxlen=64)
     progress_event_count = 0
@@ -136,6 +137,7 @@ def _exact_worker(
     try:
         obligation = lower_jgex_to_exact_obligation(
             text,
+            natural_language=natural_language,
             representation=representation,
             max_saturation_rounds=max_saturation_rounds,
             enable_affine_local_lemmas=enable_affine_local_lemmas,
@@ -170,6 +172,7 @@ def _run_isolated(
     text: str,
     timeout_seconds: float,
     *,
+    natural_language: str | None = None,
     representation: str = "explicit",
     max_saturation_rounds: int = 1,
     enable_affine_local_lemmas: bool = False,
@@ -199,6 +202,7 @@ def _run_isolated(
                 local_max_output_terms,
                 local_max_resultant_degree,
                 enable_regular_unit_contractions,
+                natural_language,
             ),
         )
         process.start()
@@ -270,6 +274,11 @@ def _display_path(path: Path) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", type=Path, required=True)
+    parser.add_argument(
+        "--semantic-dataset",
+        type=Path,
+        help="Problem-id keyed JSON containing source natural-language statements.",
+    )
     parser.add_argument("--baseline", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument(
@@ -315,6 +324,17 @@ def main() -> int:
     args = parser.parse_args()
 
     problems = jgex_formulation_from_txt_file(args.dataset)
+    semantic_problems: dict[str, str] = {}
+    if args.semantic_dataset is not None:
+        loaded_semantics = json.loads(
+            args.semantic_dataset.read_text(encoding="utf-8")
+        )
+        if not isinstance(loaded_semantics, dict):
+            raise ValueError("semantic dataset must be a problem-id keyed object")
+        semantic_problems = {
+            str(name): str(statement)
+            for name, statement in loaded_semantics.items()
+        }
     baseline = json.loads(args.baseline.read_text(encoding="utf-8"))
     baseline_solved, benchmark_total, unresolved = _baseline_state(
         baseline,
@@ -346,6 +366,7 @@ def main() -> int:
         result = _run_isolated(
             str(setup_only),
             args.timeout_seconds,
+            natural_language=semantic_problems.get(name),
             representation=args.representation,
             max_saturation_rounds=args.max_saturation_rounds,
             enable_affine_local_lemmas=args.enable_affine_local_lemmas,
@@ -412,8 +433,14 @@ def main() -> int:
         "experiment": "jgex_exact_frozen_unsolved_set",
         "generated_at": datetime.now(UTC).isoformat(),
         "uses_llm": False,
+        "uses_expected_answer": False,
         "uses_problem_specific_solver_logic": False,
         "dataset_auxiliary_clauses_hidden": True,
+        "semantic_dataset": (
+            _display_path(args.semantic_dataset)
+            if args.semantic_dataset is not None
+            else None
+        ),
         "representation": args.representation,
         "max_saturation_rounds": args.max_saturation_rounds,
         "affine_local_lemmas": args.enable_affine_local_lemmas,

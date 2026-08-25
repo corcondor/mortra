@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import hashlib
 from collections import Counter
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from functools import lru_cache
 import time
 from typing import Callable
@@ -32,6 +32,12 @@ from worker.backend.jgex_gclc_translator import (
 )
 from worker.backend.geometry_local_lemma_certificate import (
     external_homothety_tangent_certificate,
+)
+from worker.backend.geometry_semantic_constraints import (
+    GeometrySemanticContext,
+    SemialgebraicBranchCertificate,
+    certify_paired_circumcircle_tangent_branch,
+    parse_geometry_semantic_context,
 )
 from worker.backend.chordal_buchberger_elimination import (
     ChordalBuchbergerEliminationResult,
@@ -273,6 +279,9 @@ class JGEXExactObligation:
     certificate_sha256: str
     local_lemma_certificates: tuple["AffineLocalLemmaCertificate", ...] = ()
     structural_lemma_certificates: tuple["StructuralLocalLemmaCertificate", ...] = ()
+    semialgebraic_branch_certificates: tuple[
+        SemialgebraicBranchCertificate, ...
+    ] = ()
     construction_blocks: tuple["ConstructionEquationBlock", ...] = ()
     reduction_strategy: str = "global_groebner"
     reduced_construction_equations: tuple[str, ...] = ()
@@ -400,6 +409,9 @@ class JGEXExactSystemAnalysis:
     maximum_expanded_terms: int
     local_lemma_certificates: tuple[AffineLocalLemmaCertificate, ...]
     structural_lemma_certificates: tuple[StructuralLocalLemmaCertificate, ...]
+    semialgebraic_branch_certificates: tuple[
+        SemialgebraicBranchCertificate, ...
+    ]
     construction_blocks: tuple[ConstructionEquationBlock, ...]
     point_coordinates: tuple[tuple[str, tuple[str, str]], ...]
 
@@ -431,6 +443,9 @@ class JGEXLocalEliminationAnalysis:
     nondegeneracy_conditions: tuple[str, ...]
     local_elimination: LocalEliminationResult
     structural_lemma_certificates: tuple[StructuralLocalLemmaCertificate, ...]
+    semialgebraic_branch_certificates: tuple[
+        SemialgebraicBranchCertificate, ...
+    ]
     all_local_certificates_replayed: bool
 
 
@@ -516,10 +531,16 @@ class _JGEXElaborator:
         self.side_lengths: dict[tuple[str, str], sp.Symbol] = {}
         self.local_lemma_certificates: list[AffineLocalLemmaCertificate] = []
         self.structural_lemma_certificates: list[StructuralLocalLemmaCertificate] = []
+        self.semialgebraic_branch_certificates: list[
+            SemialgebraicBranchCertificate
+        ] = []
         self.construction_blocks: list[ConstructionEquationBlock] = []
         self.construction_input_overrides: dict[int, tuple[str, ...]] = {}
         self.construction_hidden_inputs: dict[int, set[str]] = {}
         self.projected_affine_lines: list[_ProjectedAffineLine] = []
+        self.preferred_triangle_gauges: dict[
+            frozenset[str], tuple[str, str, str]
+        ] = {}
         self._parameter_index = 0
         self._clause_index = 0
         self.enable_affine_local_lemmas = enable_affine_local_lemmas
@@ -704,7 +725,10 @@ class _JGEXElaborator:
     def _triangle(self, points: tuple[str, ...]) -> None:
         if len(points) != 3:
             raise ValueError("triangle expects three output points")
-        left, right, apex = points
+        left, right, apex = self.preferred_triangle_gauges.get(
+            frozenset(points),
+            points,
+        )
         base = self._parameter("base")
         apex_x = self._parameter("apex_x")
         apex_y = self._parameter("apex_y")
@@ -3607,9 +3631,289 @@ def _goal_directed_construction_slice(
     )
 
 
+@dataclass(frozen=True)
+class _TangentEqualRadiusLocus:
+    clause_index: int
+    output: str
+    vertex: str
+    circumcenter: str
+    opposite_vertex: str
+
+
+@dataclass(frozen=True)
+class JGEXSemanticBranchMatch:
+    theorem: str
+    source_clause_indices: tuple[int, int, int]
+    points: tuple[str, str, str, str, str]
+    same_side_derivation_rule: str | None
+
+
+def _paired_tangent_equal_radius_loci(formulation: JGEXFormulation) -> tuple[
+    tuple[int, str, str, str, str, _TangentEqualRadiusLocus, _TangentEqualRadiusLocus],
+    ...,
+]:
+    """Find source-level paired tangent constructions without consulting goals."""
+
+    circumcenters: dict[str, tuple[int, tuple[str, str, str]]] = {}
+    loci: list[_TangentEqualRadiusLocus] = []
+    for clause_index, clause in enumerate(formulation.setup_clauses):
+        outputs = tuple(map(str, clause.points))
+        constructions = tuple(clause.constructions)
+        if len(outputs) == 1 and len(constructions) == 1:
+            construction = constructions[0]
+            if construction.name == "circumcenter":
+                arguments = tuple(map(str, construction.args))
+                if arguments and arguments[0] == outputs[0]:
+                    arguments = arguments[1:]
+                if len(arguments) == 3:
+                    circumcenters[outputs[0]] = (clause_index, arguments)
+        if len(outputs) != 1 or len(constructions) != 2:
+            continue
+        by_name = {construction.name: construction for construction in constructions}
+        if set(by_name) != {"on_tline", "on_circle"}:
+            continue
+        tangent = tuple(map(str, by_name["on_tline"].args))
+        circle = tuple(map(str, by_name["on_circle"].args))
+        if tangent and tangent[0] == outputs[0]:
+            tangent = tangent[1:]
+        if circle and circle[0] == outputs[0]:
+            circle = circle[1:]
+        if len(tangent) != 3 or len(circle) != 2:
+            continue
+        vertex, center, repeated_vertex = tangent
+        circle_center, radius_point = circle
+        if vertex != repeated_vertex or vertex != circle_center:
+            continue
+        loci.append(
+            _TangentEqualRadiusLocus(
+                clause_index=clause_index,
+                output=outputs[0],
+                vertex=vertex,
+                circumcenter=center,
+                opposite_vertex=radius_point,
+            )
+        )
+
+    pairs: list[
+        tuple[
+            int,
+            str,
+            str,
+            str,
+            str,
+            _TangentEqualRadiusLocus,
+            _TangentEqualRadiusLocus,
+        ]
+    ] = []
+    for first_index, first in enumerate(loci):
+        for second in loci[first_index + 1 :]:
+            if first.circumcenter != second.circumcenter:
+                continue
+            if (
+                first.vertex != second.opposite_vertex
+                or second.vertex != first.opposite_vertex
+            ):
+                continue
+            center_data = circumcenters.get(first.circumcenter)
+            if center_data is None:
+                continue
+            center_clause_index, triangle = center_data
+            if first.vertex not in triangle or second.vertex not in triangle:
+                continue
+            third_vertices = tuple(
+                point
+                for point in triangle
+                if point not in {first.vertex, second.vertex}
+            )
+            if len(third_vertices) != 1:
+                continue
+            pairs.append(
+                (
+                    center_clause_index,
+                    first.circumcenter,
+                    first.vertex,
+                    second.vertex,
+                    third_vertices[0],
+                    first,
+                    second,
+                )
+            )
+    return tuple(pairs)
+
+
+def inspect_jgex_semantic_branch_matches(
+    text: str,
+    *,
+    natural_language: str | None = None,
+) -> tuple[JGEXSemanticBranchMatch, ...]:
+    """List source-conditioned branch theorems without consulting the goal."""
+
+    formulation = JGEXFormulation.from_text(text)
+    semantic_context = parse_geometry_semantic_context(natural_language)
+    matches: list[JGEXSemanticBranchMatch] = []
+    for (
+        center_clause_index,
+        center_name,
+        b_name,
+        c_name,
+        _triangle_apex,
+        first,
+        second,
+    ) in _paired_tangent_equal_radius_loci(formulation):
+        derivation = semantic_context.derive_same_side(
+            first.output,
+            second.output,
+            b_name,
+            c_name,
+        )
+        matches.append(
+            JGEXSemanticBranchMatch(
+                theorem=(
+                    "paired_circumcircle_tangent_equal_radius_"
+                    "same_side_reflection"
+                ),
+                source_clause_indices=(
+                    center_clause_index,
+                    first.clause_index,
+                    second.clause_index,
+                ),
+                points=(
+                    center_name,
+                    b_name,
+                    c_name,
+                    first.output,
+                    second.output,
+                ),
+                same_side_derivation_rule=(
+                    derivation.rule if derivation is not None else None
+                ),
+            )
+        )
+    return tuple(matches)
+
+
+def _apply_semialgebraic_branch_constraints(
+    formulation: JGEXFormulation,
+    elaborator: _JGEXElaborator,
+    semantic_context: GeometrySemanticContext,
+) -> None:
+    """Add only branch equalities justified by replayable strict-side proofs."""
+
+    for (
+        center_clause_index,
+        center_name,
+        b_name,
+        c_name,
+        _triangle_apex,
+        first,
+        second,
+    ) in _paired_tangent_equal_radius_loci(formulation):
+        same_side = semantic_context.derive_same_side(
+            first.output,
+            second.output,
+            b_name,
+            c_name,
+        )
+        if same_side is None:
+            continue
+        required_points = {
+            center_name,
+            b_name,
+            c_name,
+            first.output,
+            second.output,
+        }
+        if not required_points <= set(elaborator.coordinates):
+            continue
+        certificate, selected_equations, regularity, reflected_output = (
+            certify_paired_circumcircle_tangent_branch(
+                center=elaborator.coordinates[center_name],
+                first_center=elaborator.coordinates[b_name],
+                second_center=elaborator.coordinates[c_name],
+                first_output=elaborator.coordinates[first.output],
+                second_output=elaborator.coordinates[second.output],
+                point_names=(
+                    center_name,
+                    b_name,
+                    c_name,
+                    first.output,
+                    second.output,
+                ),
+                source_clause_indices=(
+                    center_clause_index,
+                    first.clause_index,
+                    second.clause_index,
+                ),
+                same_side_derivation=same_side,
+            )
+        )
+        if any(
+            existing.theorem == certificate.theorem
+            and existing.source_clause_indices == certificate.source_clause_indices
+            and existing.points == certificate.points
+            for existing in elaborator.semialgebraic_branch_certificates
+        ):
+            continue
+        output_coordinates = elaborator.coordinates[second.output]
+        if all(isinstance(item, sp.Symbol) for item in output_coordinates):
+            for variable, replacement in zip(
+                output_coordinates,
+                reflected_output,
+                strict=True,
+            ):
+                rewritten_equations: list[sp.Expr] = []
+                for equation in elaborator.equations:
+                    numerator, denominator = sp.together(
+                        equation.subs(variable, replacement)
+                    ).as_numer_denom()
+                    numerator = sp.factor_terms(numerator)
+                    denominator = sp.factor_terms(denominator)
+                    if numerator != 0:
+                        rewritten_equations.append(numerator)
+                    if denominator not in {0, 1, -1}:
+                        elaborator.denominators.append(denominator)
+                elaborator.equations = rewritten_equations
+                rewritten_blocks: list[ConstructionEquationBlock] = []
+                for block in elaborator.construction_blocks:
+                    surviving: list[str] = []
+                    for serialized in block.surviving_equations:
+                        numerator = sp.factor_terms(
+                            sp.together(
+                                sp.sympify(serialized).subs(variable, replacement)
+                            ).as_numer_denom()[0]
+                        )
+                        if numerator != 0:
+                            surviving.append(_safe(numerator))
+                    rewritten_blocks.append(
+                        replace(
+                            block,
+                            introduced_variables=tuple(
+                                item
+                                for item in block.introduced_variables
+                                if item != _safe(variable)
+                            ),
+                            surviving_equations=tuple(surviving),
+                        )
+                    )
+                elaborator.construction_blocks = rewritten_blocks
+                elaborator._substitute_coordinates(variable, replacement)
+                if variable in elaborator.variables:
+                    elaborator.variables.remove(variable)
+                elaborator.existential_coordinate_variables.discard(variable)
+        else:
+            for equation in selected_equations:
+                elaborator._append_equation(equation)
+        elaborator.denominators.append(sp.factor(regularity))
+        elaborator.normalization_assumptions.append(
+            "semantic_source_sha256 " + semantic_context.source_sha256
+        )
+        elaborator.semialgebraic_branch_certificates.append(certificate)
+
+
 def _prepare_exact_system(
     text: str,
     *,
+    natural_language: str | None = None,
     enable_affine_local_lemmas: bool = False,
     enable_structural_lemmas: bool = True,
     representation: str = "explicit",
@@ -3633,6 +3937,7 @@ def _prepare_exact_system(
     emit("definition_index_completed", definition_count=len(definitions))
     emit("parse_started")
     formulation = JGEXFormulation.from_text(text)
+    semantic_context = parse_geometry_semantic_context(natural_language)
     emit(
         "parse_completed",
         setup_clause_count=len(formulation.setup_clauses),
@@ -3663,6 +3968,30 @@ def _prepare_exact_system(
     else:
         raise ValueError(f"unknown exact representation: {representation}")
     elaborator.progress_callback = progress_callback
+    for (
+        _center_clause_index,
+        _center_name,
+        semantic_base_left,
+        semantic_base_right,
+        semantic_apex,
+        semantic_first,
+        semantic_second,
+    ) in _paired_tangent_equal_radius_loci(formulation):
+        if semantic_context.derive_same_side(
+            semantic_first.output,
+            semantic_second.output,
+            semantic_base_left,
+            semantic_base_right,
+        ) is not None:
+            elaborator.preferred_triangle_gauges[
+                frozenset(
+                    (semantic_base_left, semantic_base_right, semantic_apex)
+                )
+            ] = (
+                semantic_base_left,
+                semantic_base_right,
+                semantic_apex,
+            )
     projected_axis_goal: tuple[
         int, str, str, str, str, str
     ] | None = None
@@ -3823,12 +4152,32 @@ def _prepare_exact_system(
             continue
         elaborator._clause_index = clause_index
         vocabulary.extend(elaborator.elaborate_clause(clause))
+        _apply_semialgebraic_branch_constraints(
+            formulation,
+            elaborator,
+            semantic_context,
+        )
         emit(
             "construction_clause_completed",
             clause_index=clause_index,
             equation_count=len(elaborator.equations),
             variable_count=len(elaborator.variables),
         )
+
+    emit(
+        "semantic_branch_elaboration_started",
+        half_plane_relation_count=len(semantic_context.half_plane_relations),
+    )
+    _apply_semialgebraic_branch_constraints(
+        formulation,
+        elaborator,
+        semantic_context,
+    )
+    emit(
+        "semantic_branch_elaboration_completed",
+        certificate_count=len(elaborator.semialgebraic_branch_certificates),
+        equation_count=len(elaborator.equations),
+    )
 
     emit("distinct_locus_closure_started")
     elaborator.close_distinct_locus_roots()
@@ -3935,6 +4284,7 @@ def _prepare_exact_system(
 def inspect_jgex_exact_system(
     text: str,
     *,
+    natural_language: str | None = None,
     enable_affine_local_lemmas: bool = False,
     enable_structural_lemmas: bool = True,
     representation: str = "explicit",
@@ -3949,6 +4299,7 @@ def inspect_jgex_exact_system(
         variables,
     ) = _prepare_exact_system(
         text,
+        natural_language=natural_language,
         enable_affine_local_lemmas=enable_affine_local_lemmas,
         enable_structural_lemmas=enable_structural_lemmas,
         representation=representation,
@@ -3989,6 +4340,9 @@ def inspect_jgex_exact_system(
         maximum_expanded_terms=max(term_counts, default=0),
         local_lemma_certificates=tuple(elaborator.local_lemma_certificates),
         structural_lemma_certificates=tuple(elaborator.structural_lemma_certificates),
+        semialgebraic_branch_certificates=tuple(
+            elaborator.semialgebraic_branch_certificates
+        ),
         construction_blocks=tuple(elaborator.construction_blocks),
         point_coordinates=tuple(
             sorted(
@@ -4050,6 +4404,7 @@ def inspect_jgex_relation_polynomials(
 def inspect_jgex_local_elimination(
     text: str,
     *,
+    natural_language: str | None = None,
     enable_structural_lemmas: bool = True,
     enable_affine_local_lemmas: bool = False,
     goal_directed: bool = False,
@@ -4071,6 +4426,7 @@ def inspect_jgex_local_elimination(
         variables,
     ) = _prepare_exact_system(
         text,
+        natural_language=natural_language,
         enable_affine_local_lemmas=enable_affine_local_lemmas,
         enable_structural_lemmas=enable_structural_lemmas,
         representation="relational",
@@ -4145,8 +4501,16 @@ def inspect_jgex_local_elimination(
         ),
         local_elimination=elimination,
         structural_lemma_certificates=tuple(elaborator.structural_lemma_certificates),
+        semialgebraic_branch_certificates=tuple(
+            elaborator.semialgebraic_branch_certificates
+        ),
         all_local_certificates_replayed=(
-            elimination.exact_replay and structural_replayed
+            elimination.exact_replay
+            and structural_replayed
+            and all(
+                item.replayed and item.goal_independent
+                for item in elaborator.semialgebraic_branch_certificates
+            )
         ),
     )
 
@@ -5606,6 +5970,7 @@ def _typed_goal_decomposition(
 def lower_jgex_to_exact_obligation(
     text: str,
     *,
+    natural_language: str | None = None,
     enable_affine_local_lemmas: bool = False,
     enable_structural_lemmas: bool = True,
     representation: str = "explicit",
@@ -5659,6 +6024,7 @@ def lower_jgex_to_exact_obligation(
         variables,
     ) = _prepare_exact_system(
         text,
+        natural_language=natural_language,
         enable_affine_local_lemmas=enable_affine_local_lemmas,
         enable_structural_lemmas=enable_structural_lemmas,
         representation=base_representation,
@@ -6342,6 +6708,10 @@ def lower_jgex_to_exact_obligation(
                 )
                 for item in elaborator.structural_lemma_certificates
             ),
+            *(
+                "semialgebraic_branch:" + item.certificate_sha256
+                for item in elaborator.semialgebraic_branch_certificates
+            ),
         )
     )
     local_replayed = bool(
@@ -6350,6 +6720,10 @@ def lower_jgex_to_exact_obligation(
     structural_replayed = all(
         item.replayed and item.composition_replayed
         for item in elaborator.structural_lemma_certificates
+    )
+    semialgebraic_branch_replayed = all(
+        item.replayed and item.goal_independent
+        for item in elaborator.semialgebraic_branch_certificates
     )
     regular_unit_replayed = all(
         item.replayed for item in regular_unit_contractions
@@ -6374,6 +6748,7 @@ def lower_jgex_to_exact_obligation(
             sp.expand(remainder) == 0
             and local_replayed
             and structural_replayed
+            and semialgebraic_branch_replayed
             and regular_unit_replayed
             and nonzero_transport_replayed
             and not vacuous_unit_ideal
@@ -6387,6 +6762,9 @@ def lower_jgex_to_exact_obligation(
         certificate_sha256=hashlib.sha256(certificate_material.encode()).hexdigest(),
         local_lemma_certificates=tuple(elaborator.local_lemma_certificates),
         structural_lemma_certificates=tuple(elaborator.structural_lemma_certificates),
+        semialgebraic_branch_certificates=tuple(
+            elaborator.semialgebraic_branch_certificates
+        ),
         construction_blocks=tuple(elaborator.construction_blocks),
         reduction_strategy=(
             "typed_local_elimination_then_regular_unit_contraction_then_groebner"
