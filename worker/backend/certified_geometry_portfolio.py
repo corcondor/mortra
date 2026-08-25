@@ -158,6 +158,21 @@ def _audit_exact_json(
             local_elimination.get("exact_replay") is True
         )
 
+    transports = exact.get("nonzero_condition_transports", [])
+    if not isinstance(transports, list):
+        checks["nonzero_condition_transport_shape"] = False
+    else:
+        checks["nonzero_condition_transport_replay"] = all(
+            isinstance(item, Mapping)
+            and item.get("replayed") is True
+            and str(item.get("replay_residual", "")) == "0"
+            and bool(item.get("source_polynomial"))
+            and bool(item.get("target_polynomial"))
+            and bool(item.get("pivot_coefficient"))
+            and bool(item.get("certificate_sha256"))
+            for item in transports
+        )
+
     # Certificates emitted after the consistency audit must carry their own
     # human-readable solution projection.  The text is not an independent
     # proof, but its certificate hash guarantees that every displayed step is
@@ -181,6 +196,107 @@ def _audit_exact_json(
     if source not in {"jgex_exact_elimination", "baseline_jgex_exact"}:
         return False, f"unsupported_exact_certificate_source:{source}"
     return True, "replayed_jgex_exact_certificate"
+
+
+def _audit_singular_lift_json(
+    root: Path,
+    proof_path: Path,
+    certificate: Mapping[str, Any],
+) -> tuple[bool, str]:
+    """Audit a source-level bounded Singular lift and its terminal checkpoint."""
+
+    proof = _load(proof_path)
+    singular = proof.get("singular_certificate")
+    lifted = proof.get("lifted_saturation_certificate")
+    if not isinstance(singular, Mapping) or not isinstance(lifted, Mapping):
+        return False, "singular_lift_has_no_certificate"
+
+    report_copy = dict(proof)
+    report_sha256 = str(report_copy.pop("report_sha256", ""))
+    report_material = json.dumps(report_copy, ensure_ascii=False, sort_keys=True)
+    observed_report_sha256 = hashlib.sha256(report_material.encode()).hexdigest()
+
+    checkpoint_path = _resolve(root, proof.get("source_checkpoint", ""))
+    checkpoint: Mapping[str, Any] = {}
+    checkpoint_sha256 = ""
+    if checkpoint_path.is_file():
+        checkpoint = _load(checkpoint_path)
+        checkpoint_material = "\n".join(
+            (
+                "terminal_groebner_system_v1",
+                *map(str, checkpoint.get("input_polynomials", ())),
+                "variables=" + ",".join(map(str, checkpoint.get("variables", ()))),
+                "coefficient_parameters="
+                + ",".join(map(str, checkpoint.get("coefficient_parameters", ()))),
+                "coefficient_domain=" + str(checkpoint.get("coefficient_domain", "")),
+                "goal=" + str(checkpoint.get("goal_polynomial", "")),
+                *map(str, checkpoint.get("nonzero_conditions", ())),
+            )
+        )
+        checkpoint_sha256 = hashlib.sha256(checkpoint_material.encode()).hexdigest()
+
+    singular_material = "|".join(
+        (
+            str(singular.get("basis_engine", "")),
+            str(singular.get("certificate_degree", "")),
+            *map(str, singular.get("initial_polynomials", ())),
+            str(singular.get("goal_polynomial", "")),
+            *map(str, singular.get("initial_multipliers", ())),
+            str(singular.get("replay_residual", "")),
+        )
+    )
+    observed_singular_sha256 = hashlib.sha256(singular_material.encode()).hexdigest()
+    factor_cover = proof.get("admissible_factor_cover", {})
+    checks = {
+        "report_hash": bool(report_sha256)
+        and report_sha256 == observed_report_sha256
+        and report_sha256 == certificate.get("proof_sha256"),
+        "source_checkpoint": checkpoint_path.is_file(),
+        "source_checkpoint_hash": bool(checkpoint_sha256)
+        and checkpoint_sha256 == checkpoint.get("certificate_sha256")
+        and checkpoint_sha256 == proof.get("source_checkpoint_sha256"),
+        "no_external_llm": proof.get("uses_llm") is False,
+        "no_expected_answer": proof.get("uses_expected_answer") is False,
+        "no_problem_specific_logic": (
+            proof.get("uses_problem_specific_solver_logic") is False
+        ),
+        "single_admissible_factor_branch": (
+            factor_cover.get("branch_count") == 1
+            and factor_cover.get("selected_branch_index") == 0
+            and factor_cover.get("factorizations_replayed") is True
+        ),
+        "bounded_linear_engine": singular.get("basis_engine") == "bounded_linear",
+        "positive_certificate_degree": int(singular.get("certificate_degree") or 0) > 0,
+        "singular_status": singular.get("status") == "proved",
+        "singular_proved": singular.get("proved") is True,
+        "singular_replayed": singular.get("replayed") is True,
+        "singular_zero_remainder": str(singular.get("remainder", "")) == "0",
+        "singular_zero_replay_residual": (
+            str(singular.get("replay_residual", "")) == "0"
+        ),
+        "singular_certificate_hash": (
+            bool(singular.get("certificate_sha256"))
+            and singular.get("certificate_sha256") == observed_singular_sha256
+        ),
+        "multiplier_arity": len(singular.get("initial_multipliers", ()))
+        == len(singular.get("initial_polynomials", ()))
+        > 0,
+        "source_multiplier_arity": len(lifted.get("source_multipliers", ()))
+        == int(proof.get("linear_elimination", {}).get("source_equation_count", 0))
+        > 0,
+        "lifted_replayed": lifted.get("replayed") is True,
+        "lifted_zero_residual": str(lifted.get("replay_residual", "")) == "0",
+        "nonzero_multiplier_proved": (
+            lifted.get("multiplier_source_proved_nonzero") is True
+        ),
+        "strict_acceptance": proof.get("strictly_accepted") is True,
+    }
+    failed = sorted(name for name, ok in checks.items() if not ok)
+    if failed:
+        return False, "singular_lift_failed:" + ",".join(failed)
+    if str(certificate.get("source", "")) != "singular_lift_exact":
+        return False, "unsupported_singular_lift_certificate_source"
+    return True, "replayed_source_level_singular_lift"
 
 
 def _audit_gclc_tex(
@@ -300,7 +416,14 @@ def audit_geometry_artifact(
     suffix = proof_path.suffix.lower()
     if suffix == ".json":
         proof_payload = _load(proof_path)
-        if proof_payload.get("status") == "proved" and isinstance(
+        if proof_payload.get("strictly_accepted") is True and isinstance(
+            proof_payload.get("singular_certificate"), Mapping
+        ):
+            admitted, reason = _audit_singular_lift_json(
+                root, proof_path, certificate
+            )
+            kind = "singular_lift_json"
+        elif proof_payload.get("status") == "proved" and isinstance(
             proof_payload.get("certificate"), Mapping
         ):
             admitted, reason = _audit_exact_json(proof_path, certificate)

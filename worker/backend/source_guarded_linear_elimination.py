@@ -64,6 +64,18 @@ class LiftedSaturationCertificate:
 
 
 @dataclass(frozen=True)
+class LiftedRadicalCertificate:
+    exponent: int
+    reduced_goal_power_multiplier: sp.Expr
+    goal_power_multiplier: sp.Expr
+    source_multipliers: tuple[sp.Expr, ...]
+    replay_residual: sp.Expr
+    replayed: bool
+    nonzero_multiplier_factor_keys: tuple[str, ...]
+    multiplier_source_proved_nonzero: bool
+
+
+@dataclass(frozen=True)
 class GoalFactorCandidate:
     factor: sp.Expr
     complementary_multiplier: sp.Expr
@@ -804,14 +816,140 @@ def lift_guarded_linear_certificate(
     )
 
 
+def lift_guarded_linear_power_certificate(
+    system: GuardedLinearSystem,
+    reduced_multipliers: Iterable[sp.Expr],
+    *,
+    exponent: int,
+    reduced_goal_power_multiplier: sp.Expr = sp.Integer(1),
+) -> LiftedRadicalCertificate:
+    """Lift an exact reduced-goal power certificate through guarded steps."""
+
+    if exponent < 1:
+        raise ValueError("radical exponent must be positive")
+    reduced_goal_power_multiplier = sp.expand(reduced_goal_power_multiplier)
+    reduced_multiplier_keys = tuple(
+        sorted(_canonical_nonconstant_factor_keys(reduced_goal_power_multiplier))
+    )
+    reduced_multiplier_source_proved_nonzero = set(reduced_multiplier_keys) <= set(
+        _known_nonzero_keys(system.reduced_nonzero_expressions)
+    )
+    multiplier_by_source = dict(
+        zip(system.reduced_source_indices, reduced_multipliers, strict=True)
+    )
+    goal_power_multiplier = reduced_goal_power_multiplier
+    for step in reversed(system.steps):
+        scaled_goal = (
+            step.transformed_goal
+            + step.goal_pivot_quotient * step.pivot_polynomial
+        )
+        difference_quotient = sum(
+            scaled_goal ** (exponent - 1 - offset)
+            * step.transformed_goal**offset
+            for offset in range(exponent)
+        )
+        pivot_multiplier = (
+            goal_power_multiplier
+            * step.goal_pivot_quotient
+            * difference_quotient
+            - sum(
+                multiplier_by_source[transform.source_index]
+                * transform.pivot_quotient
+                for transform in step.transforms
+            )
+        )
+        multiplier_by_source = {
+            transform.source_index: (
+                multiplier_by_source[transform.source_index]
+                * step.coefficient**transform.degree
+            )
+            for transform in step.transforms
+        }
+        multiplier_by_source[step.pivot_source_index] = pivot_multiplier
+        goal_power_multiplier *= step.coefficient ** (
+            step.goal_degree * exponent
+        )
+
+    source_multipliers = tuple(
+        multiplier_by_source[index]
+        for index in range(len(system.source_polynomials))
+    )
+    coefficient_parameters = tuple(
+        sorted(
+            set().union(
+                goal_power_multiplier.free_symbols,
+                system.source_goal.free_symbols,
+                *(item.free_symbols for item in source_multipliers),
+                *(item.free_symbols for item in system.source_polynomials),
+            )
+            - set(system.source_variables),
+            key=str,
+        )
+    )
+    domain = (
+        sp.QQ.frac_field(*coefficient_parameters)
+        if coefficient_parameters
+        else sp.QQ
+    )
+    if system.source_variables:
+        residual_poly = sp.Poly(
+            goal_power_multiplier * system.source_goal**exponent,
+            *system.source_variables,
+            domain=domain,
+        )
+        for multiplier, polynomial in zip(
+            source_multipliers,
+            system.source_polynomials,
+            strict=True,
+        ):
+            residual_poly -= sp.Poly(
+                multiplier * polynomial,
+                *system.source_variables,
+                domain=domain,
+            )
+        replayed = residual_poly.is_zero
+        residual = sp.Integer(0) if replayed else residual_poly.as_expr()
+    else:
+        residual = sp.cancel(
+            goal_power_multiplier * system.source_goal**exponent
+            - sum(
+                multiplier * polynomial
+                for multiplier, polynomial in zip(
+                    source_multipliers,
+                    system.source_polynomials,
+                    strict=True,
+                )
+            )
+        )
+        replayed = residual == 0
+    multiplier_keys = tuple(
+        sorted(_canonical_nonconstant_factor_keys(goal_power_multiplier))
+    )
+    return LiftedRadicalCertificate(
+        exponent=exponent,
+        reduced_goal_power_multiplier=reduced_goal_power_multiplier,
+        goal_power_multiplier=goal_power_multiplier,
+        source_multipliers=source_multipliers,
+        replay_residual=residual,
+        replayed=replayed,
+        nonzero_multiplier_factor_keys=multiplier_keys,
+        multiplier_source_proved_nonzero=all(
+            step.coefficient_source_proved_nonzero for step in system.steps
+        )
+        and reduced_multiplier_source_proved_nonzero,
+    )
+
+
 __all__ = [
     "GoalFactorCandidate",
     "GuardedLinearStep",
     "GuardedLinearSystem",
+    "LiftedRadicalCertificate",
     "LiftedSaturationCertificate",
     "PolynomialTransform",
     "eliminate_source_guarded_linear_variables",
     "lift_guarded_linear_certificate",
+    "lift_guarded_linear_power_certificate",
     "source_proved_nondegeneracy_factors",
     "source_preserving_goal_factor_candidates",
 ]

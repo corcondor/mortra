@@ -313,9 +313,100 @@ def lift_reduced_multipliers(
     return tuple(multipliers)
 
 
+def lift_reduced_power_multipliers(
+    reduction: SourcePreservingReduction,
+    reduced_multipliers: Iterable[sp.Expr],
+    *,
+    exponent: int,
+) -> tuple[sp.Expr, ...]:
+    """Lift ``reduced_goal**exponent`` to ``goal**exponent`` exactly."""
+
+    if exponent < 1:
+        raise ValueError("power-lift exponent must be positive")
+    reduced_multiplier_tuple = tuple(sp.sympify(item) for item in reduced_multipliers)
+    if len(reduced_multiplier_tuple) != len(reduction.reduced_polynomials):
+        raise ValueError("one multiplier is required for every reduced polynomial")
+
+    goal = reduction.goal
+    reduced_goal = reduction.reduced_goal
+    difference_quotient = sum(
+        goal ** (exponent - 1 - offset) * reduced_goal**offset
+        for offset in range(exponent)
+    )
+    multipliers = [sp.Integer(0) for _ in reduction.input_polynomials]
+    for multiplier, item in zip(
+        reduced_multiplier_tuple,
+        reduction.reduced_polynomials,
+        strict=True,
+    ):
+        multipliers[item.input_index] = multiplier
+    for reducer_offset, reducer_input_index in enumerate(
+        reduction.reducer_input_indices
+    ):
+        correction = (
+            difference_quotient * reduction.goal_reducer_quotients[reducer_offset]
+            - sum(
+                multiplier * item.reducer_quotients[reducer_offset]
+                for multiplier, item in zip(
+                    reduced_multiplier_tuple,
+                    reduction.reduced_polynomials,
+                    strict=True,
+                )
+            )
+        )
+        multipliers[reducer_input_index] += correction
+
+    coefficient_parameters = tuple(
+        sorted(
+            set().union(
+                goal.free_symbols,
+                reduced_goal.free_symbols,
+                *(item.free_symbols for item in multipliers),
+                *(item.free_symbols for item in reduction.input_polynomials),
+            )
+            - set(reduction.variables),
+            key=str,
+        )
+    )
+    domain = (
+        sp.QQ.frac_field(*coefficient_parameters)
+        if coefficient_parameters
+        else sp.QQ
+    )
+    if reduction.variables:
+        residual = sp.Poly(goal**exponent, *reduction.variables, domain=domain)
+        for multiplier, polynomial in zip(
+            multipliers,
+            reduction.input_polynomials,
+            strict=True,
+        ):
+            residual -= sp.Poly(
+                multiplier * polynomial,
+                *reduction.variables,
+                domain=domain,
+            )
+        replayed = residual.is_zero
+    else:
+        replayed = sp.cancel(
+            goal**exponent
+            - sum(
+                multiplier * polynomial
+                for multiplier, polynomial in zip(
+                    multipliers,
+                    reduction.input_polynomials,
+                    strict=True,
+                )
+            )
+        ) == 0
+    if not replayed:
+        raise AssertionError("source-preserving power lift did not replay")
+    return tuple(multipliers)
+
+
 __all__ = [
     "ReducedPolynomial",
     "SourcePreservingReduction",
+    "lift_reduced_power_multipliers",
     "lift_reduced_multipliers",
     "reduce_by_monic_univariate_relations",
     "retarget_source_preserving_reduction",

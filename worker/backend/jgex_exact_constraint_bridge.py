@@ -39,7 +39,9 @@ from worker.backend.chordal_buchberger_elimination import (
 )
 from worker.backend.local_polynomial_elimination import (
     LocalEliminationResult,
+    NonzeroConditionTransportCertificate,
     eliminate_local_linear_variables,
+    transport_nonzero_conditions_through_local_elimination,
 )
 
 
@@ -185,6 +187,10 @@ class JGEXExactObligation:
     regular_unit_contractions: tuple[
         "RegularUnitContractionCertificate", ...
     ] = ()
+    nonzero_condition_transports: tuple[
+        NonzeroConditionTransportCertificate, ...
+    ] = ()
+    untransported_nonzero_conditions: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -4924,8 +4930,13 @@ def lower_jgex_to_exact_obligation(
             for item in denominators.values()
         )
     )
+    active_denominators = dict(denominators)
     local_elimination: LocalEliminationResult | None = None
     local_denominators: dict[str, sp.Expr] = {}
+    nonzero_condition_transports: tuple[
+        NonzeroConditionTransportCertificate, ...
+    ] = ()
+    untransported_nonzero_conditions: tuple[str, ...] = ()
     if representation in {"local_relational", "goal_local_relational"}:
         protected = frozenset(goal_polynomial.free_symbols)
         emit(
@@ -4984,6 +4995,27 @@ def lower_jgex_to_exact_obligation(
             )
             remaining_names = set(local_elimination.remaining_variables)
             variables = tuple(item for item in variables if str(item) in remaining_names)
+            (
+                transported_denominators,
+                nonzero_condition_transports,
+                untransported_nonzero_conditions,
+            ) = transport_nonzero_conditions_through_local_elimination(
+                denominators.values(), local_elimination.steps
+            )
+            active_denominators = {
+                _safe(item): item
+                for item in transported_denominators
+                if item != 0 and item.free_symbols
+            }
+            emit(
+                "nonzero_condition_transport_completed",
+                transported_count=len(nonzero_condition_transports),
+                untransported_count=len(untransported_nonzero_conditions),
+                active_condition_count=len(active_denominators),
+                replayed=all(
+                    item.replayed for item in nonzero_condition_transports
+                ),
+            )
         for step in local_elimination.steps:
             for condition in step.nonzero_conditions:
                 expression = condition.removesuffix(" != 0").strip()
@@ -4991,7 +5023,7 @@ def lower_jgex_to_exact_obligation(
                 if factor != 0 and factor.free_symbols:
                     local_denominators.setdefault(_safe(factor), factor)
         for key, factor in local_denominators.items():
-            denominators.setdefault(key, factor)
+            active_denominators.setdefault(key, factor)
         emit(
             "local_elimination_completed",
             step_count=len(local_elimination.steps),
@@ -5004,7 +5036,11 @@ def lower_jgex_to_exact_obligation(
 
     ordered_denominators = (
         *local_denominators.values(),
-        *(item for key, item in denominators.items() if key not in local_denominators),
+        *(
+            item
+            for key, item in active_denominators.items()
+            if key not in local_denominators
+        ),
     )
 
     regular_unit_contractions: tuple[
@@ -5444,6 +5480,14 @@ def lower_jgex_to_exact_obligation(
                 for item in regular_unit_contractions
             ),
             *(
+                "nonzero_condition_transport:" + item.certificate_sha256
+                for item in nonzero_condition_transports
+            ),
+            *(
+                "untransported_nonzero_condition:" + item
+                for item in untransported_nonzero_conditions
+            ),
+            *(
                 "local_affine:"
                 + ":".join(
                     (
@@ -5480,6 +5524,9 @@ def lower_jgex_to_exact_obligation(
     regular_unit_replayed = all(
         item.replayed for item in regular_unit_contractions
     )
+    nonzero_transport_replayed = all(
+        item.replayed for item in nonzero_condition_transports
+    )
     obligation = JGEXExactObligation(
         channel=channel,
         points=points,
@@ -5498,6 +5545,7 @@ def lower_jgex_to_exact_obligation(
             and local_replayed
             and structural_replayed
             and regular_unit_replayed
+            and nonzero_transport_replayed
             and not vacuous_unit_ideal
         ),
         construction_consistency=(
@@ -5529,6 +5577,8 @@ def lower_jgex_to_exact_obligation(
         excluded_clause_indices=excluded_clause_indices,
         goal_decomposition_certificate=goal_decomposition_certificate,
         regular_unit_contractions=regular_unit_contractions,
+        nonzero_condition_transports=nonzero_condition_transports,
+        untransported_nonzero_conditions=untransported_nonzero_conditions,
     )
     emit(
         "certificate_completed",

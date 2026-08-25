@@ -1,6 +1,7 @@
 import sympy as sp
 
 from worker.backend.source_preserving_polynomial_reduction import (
+    lift_reduced_power_multipliers,
     lift_reduced_multipliers,
     reduce_by_monic_univariate_relations,
     retarget_source_preserving_reduction,
@@ -23,6 +24,26 @@ def test_monic_reduction_and_multiplier_lift_replay() -> None:
     assert reduction.reduced_goal == a**3 + b
     lifted = lift_reduced_multipliers(reduction, (1,))
     assert lifted == (0, 1)
+
+
+def test_radical_power_lift_replays_against_unreduced_goal() -> None:
+    x, a, b = sp.symbols("x a b")
+    source = (x - a, (a + b) ** 2)
+    reduction = reduce_by_monic_univariate_relations(source, (x,), x + b)
+
+    assert reduction.reduced_goal == a + b
+    assert sp.expand(
+        reduction.reduced_polynomials[0].expression - (a + b) ** 2
+    ) == 0
+    lifted = lift_reduced_power_multipliers(reduction, (1,), exponent=2)
+
+    assert sp.expand(
+        (x + b) ** 2
+        - sum(
+            multiplier * polynomial
+            for multiplier, polynomial in zip(lifted, source, strict=True)
+        )
+    ) == 0
 
 
 def test_quadratic_reducer_remains_in_the_quotient_proof_ring() -> None:

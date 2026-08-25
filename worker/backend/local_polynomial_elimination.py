@@ -40,6 +40,21 @@ class LocalEliminationStep:
     nonzero_conditions: tuple[str, ...]
     replayed: bool
     certificate_sha256: str
+    pivot_coefficient: str = ""
+    pivot_constant: str = ""
+
+
+@dataclass(frozen=True)
+class NonzeroConditionTransportCertificate:
+    source_polynomial: str
+    target_polynomial: str
+    variable: str
+    pivot_coefficient: str
+    pivot_constant: str
+    degree: int
+    replay_residual: str
+    replayed: bool
+    certificate_sha256: str
 
 
 @dataclass(frozen=True)
@@ -559,7 +574,225 @@ def _linear_eliminate(
         ),
         replayed=replayed,
         certificate_sha256=hashlib.sha256(material.encode()).hexdigest(),
+        pivot_coefficient=(
+            sp.sstr(pivot_coefficient) if require_pivot_nonzero else ""
+        ),
+        pivot_constant=sp.sstr(pivot_constant) if require_pivot_nonzero else "",
     )
+
+
+def _mixed_degree_linear_eliminate(
+    variable: sp.Symbol,
+    bucket: tuple[sp.Expr, ...],
+    *,
+    pivot_index: int,
+) -> tuple[tuple[sp.Expr, ...], LocalEliminationStep]:
+    """Eliminate through one source-proved linear pivot without division."""
+
+    pivot = bucket[pivot_index]
+    pivot_coefficients = _coefficients_in_generator(pivot, variable)
+    if len(pivot_coefficients) != 2:
+        raise sp.PolynomialError("mixed-degree pivot must be linear")
+    pivot_coefficient = _factor_bounded(pivot_coefficients[-2])
+    pivot_constant = _factor_bounded(pivot_coefficients[-1])
+    separator_variables = tuple(
+        sorted(
+            str(item)
+            for item in set().union(*(item.free_symbols for item in bucket))
+            - {variable}
+        )
+    )
+    derived: dict[str, tuple[sp.Expr, sp.Expr, PolynomialCombinationWitness]] = {}
+    for index, polynomial in enumerate(bucket):
+        if index == pivot_index:
+            continue
+        univariate = sp.Poly(polynomial, variable, domain="EX")
+        degree = max(int(univariate.degree()), 0)
+        transformed = sp.expand(
+            sum(
+                univariate.nth(power)
+                * (-pivot_constant) ** power
+                * pivot_coefficient ** (degree - power)
+                for power in range(degree + 1)
+            )
+        )
+        quotient = sp.expand(
+            sum(
+                univariate.nth(power)
+                * pivot_coefficient ** (degree - power)
+                * sum(
+                    (pivot_coefficient * variable) ** (power - 1 - offset)
+                    * (-pivot_constant) ** offset
+                    for offset in range(power)
+                )
+                for power in range(1, degree + 1)
+            )
+        )
+        output = _factor_bounded(transformed)
+        if variable in output.free_symbols:
+            raise AssertionError("mixed-degree localization retained its variable")
+        residual = sp.expand(output - transformed)
+        if residual != 0:
+            raise AssertionError("mixed-degree localization did not replay")
+        key = sp.sstr(output)
+        derived.setdefault(
+            key,
+            (
+                output,
+                residual,
+                PolynomialCombinationWitness(
+                    output_polynomial=key,
+                    left_input=sp.sstr(polynomial),
+                    right_input=sp.sstr(pivot),
+                    left_multiplier=sp.sstr(pivot_coefficient**degree),
+                    right_multiplier=sp.sstr(-quotient),
+                    replay_residual=sp.sstr(residual),
+                ),
+            ),
+        )
+    ordered = tuple(derived[key] for key in sorted(derived))
+    outputs = tuple(item[0] for item in ordered)
+    residuals = tuple(item[1] for item in ordered)
+    witnesses = tuple(item[2] for item in ordered)
+    material = "|".join(
+        (
+            str(variable),
+            "mixed_degree_linear_localization",
+            *(sp.sstr(item) for item in bucket),
+            *(sp.sstr(item) for item in outputs),
+            *(
+                "::".join(
+                    (
+                        item.output_polynomial,
+                        item.left_input,
+                        item.right_input,
+                        item.left_multiplier,
+                        item.right_multiplier,
+                    )
+                )
+                for item in witnesses
+            ),
+            sp.sstr(pivot_coefficient),
+        )
+    )
+    return outputs, LocalEliminationStep(
+        variable=str(variable),
+        separator_variables=separator_variables,
+        method="mixed_degree_linear_localization",
+        input_polynomials=tuple(sp.sstr(item) for item in bucket),
+        output_polynomials=tuple(sp.sstr(item) for item in outputs),
+        replay_residuals=tuple(sp.sstr(item) for item in residuals),
+        ideal_membership_witnesses=witnesses,
+        nonzero_conditions=(f"{sp.sstr(pivot_coefficient)} != 0",),
+        replayed=all(item == 0 for item in residuals),
+        certificate_sha256=hashlib.sha256(material.encode()).hexdigest(),
+        pivot_coefficient=sp.sstr(pivot_coefficient),
+        pivot_constant=sp.sstr(pivot_constant),
+    )
+
+
+def transport_nonzero_conditions_through_local_elimination(
+    expressions: Iterable[sp.Expr],
+    steps: Iterable[LocalEliminationStep],
+) -> tuple[
+    tuple[sp.Expr, ...],
+    tuple[NonzeroConditionTransportCertificate, ...],
+    tuple[str, ...],
+]:
+    """Transport source nonzero assumptions through certified localizations.
+
+    For a pivot ``c*x+k=0`` with source-proved ``c != 0``, a condition
+    ``h(x) != 0`` is equivalent to ``c**deg(h) h(-k/c) != 0``.  Resultant
+    projections do not select a branch and therefore cannot transport a
+    condition involving the eliminated variable; such conditions are
+    reported rather than silently reused in the smaller polynomial ring.
+    """
+
+    active = [sp.factor(item) for item in expressions if item != 0]
+    certificates: list[NonzeroConditionTransportCertificate] = []
+    unresolved: list[str] = []
+    for step in steps:
+        variable = sp.Symbol(step.variable)
+        if not any(variable in item.free_symbols for item in active):
+            continue
+        if not step.pivot_coefficient:
+            retained: list[sp.Expr] = []
+            for item in active:
+                if variable in item.free_symbols:
+                    unresolved.append(sp.sstr(item))
+                else:
+                    retained.append(item)
+            active = retained
+            continue
+        coefficient = sp.sympify(step.pivot_coefficient)
+        constant = sp.sympify(step.pivot_constant)
+        pivot = sp.expand(coefficient * variable + constant)
+        transported: list[sp.Expr] = []
+        for source in active:
+            if variable not in source.free_symbols:
+                transported.append(source)
+                continue
+            try:
+                polynomial = sp.Poly(source, variable, domain="EX")
+            except sp.PolynomialError:
+                unresolved.append(sp.sstr(source))
+                continue
+            degree = max(int(polynomial.degree()), 0)
+            target = sp.factor(
+                sum(
+                    polynomial.nth(power)
+                    * (-constant) ** power
+                    * coefficient ** (degree - power)
+                    for power in range(degree + 1)
+                )
+            )
+            quotient = sp.expand(
+                sum(
+                    polynomial.nth(power)
+                    * coefficient ** (degree - power)
+                    * sum(
+                        (coefficient * variable) ** (power - 1 - offset)
+                        * (-constant) ** offset
+                        for offset in range(power)
+                    )
+                    for power in range(1, degree + 1)
+                )
+            )
+            residual = sp.expand(
+                target - coefficient**degree * source + pivot * quotient
+            )
+            if residual != 0 or target == 0:
+                unresolved.append(sp.sstr(source))
+                continue
+            material = "|".join(
+                (
+                    sp.sstr(source),
+                    sp.sstr(target),
+                    str(variable),
+                    sp.sstr(coefficient),
+                    sp.sstr(constant),
+                    str(degree),
+                )
+            )
+            certificates.append(
+                NonzeroConditionTransportCertificate(
+                    source_polynomial=sp.sstr(source),
+                    target_polynomial=sp.sstr(target),
+                    variable=str(variable),
+                    pivot_coefficient=sp.sstr(coefficient),
+                    pivot_constant=sp.sstr(constant),
+                    degree=degree,
+                    replay_residual=sp.sstr(residual),
+                    replayed=True,
+                    certificate_sha256=hashlib.sha256(
+                        material.encode()
+                    ).hexdigest(),
+                )
+            )
+            transported.append(target)
+        active = transported
+    deduplicated = _deduplicate(active)
+    return deduplicated, tuple(certificates), tuple(sorted(set(unresolved)))
 
 
 def _resultant_eliminate(
@@ -1168,51 +1401,114 @@ def eliminate_local_linear_variables(
                         pivot_index=pivot_index,
                     )
             else:
-                pivot = _select_resultant_pivot(bucket, variable)
-                if any(
-                    _resultant_term_upper_bound(pivot, polynomial, variable)
-                    > max_output_terms
-                    for polynomial in bucket
-                    if polynomial != pivot
-                ):
-                    continue
-                if progress_callback is not None:
-                    progress_callback(
-                        {
-                            "stage": "candidate_started",
-                            "variable": str(variable),
-                            "method": "resultant_projection",
-                            "bucket_size": len(bucket),
-                            "ordering_strategy": ordering_strategy,
-                            "candidate_count": len(candidates),
-                            "eligible_candidate_count": eligible_candidate_count,
-                            "cost_rank": list(cost_rank),
-                            "obligation_alignment_rank": list(alignment_rank),
-                            "proof_residual_rank": (
-                                list(alignment_rank[:4])
-                                if ordering_strategy == "residual_conditioned"
-                                else None
-                            ),
-                            "separator_width": len(
-                                set().union(*(item.free_symbols for item in bucket))
-                                - {variable}
-                            ),
-                            "predicted_max_output_terms": max(
+                mixed_linear_pivots: list[tuple[tuple[int, int, str], int]] = []
+                if nonzero_condition_acceptor is not None:
+                    for index, polynomial in enumerate(bucket):
+                        coefficients = _coefficients_in_generator(
+                            polynomial, variable
+                        )
+                        if len(coefficients) != 2:
+                            continue
+                        coefficient = sp.factor(coefficients[-2])
+                        if nonzero_condition_acceptor(
+                            f"{sp.sstr(coefficient)} != 0"
+                        ):
+                            mixed_linear_pivots.append(
                                 (
-                                    _resultant_term_upper_bound(
-                                        pivot,
-                                        polynomial,
-                                        variable,
+                                    (
+                                        int(sp.count_ops(coefficient)),
+                                        _term_count(polynomial),
+                                        sp.sstr(polynomial),
+                                    ),
+                                    index,
+                                )
+                            )
+                if mixed_linear_pivots:
+                    pivot_index = min(mixed_linear_pivots)[1]
+                    if progress_callback is not None:
+                        progress_callback(
+                            {
+                                "stage": "candidate_started",
+                                "variable": str(variable),
+                                "method": "mixed_degree_linear_localization",
+                                "bucket_size": len(bucket),
+                                "ordering_strategy": ordering_strategy,
+                                "candidate_count": len(candidates),
+                                "eligible_candidate_count": eligible_candidate_count,
+                                "cost_rank": list(cost_rank),
+                                "obligation_alignment_rank": list(alignment_rank),
+                                "proof_residual_rank": None,
+                                "separator_width": len(
+                                    set().union(
+                                        *(item.free_symbols for item in bucket)
                                     )
-                                    for polynomial in bucket
-                                    if polynomial != pivot
+                                    - {variable}
                                 ),
-                                default=0,
-                            ),
-                        }
+                            }
+                        )
+                    outputs, certificate = _mixed_degree_linear_eliminate(
+                        variable,
+                        bucket,
+                        pivot_index=pivot_index,
                     )
-                outputs, certificate = _resultant_eliminate(variable, bucket)
+                else:
+                    pivot = _select_resultant_pivot(bucket, variable)
+                    if any(
+                        _resultant_term_upper_bound(pivot, polynomial, variable)
+                        > max_output_terms
+                        for polynomial in bucket
+                        if polynomial != pivot
+                    ):
+                        continue
+                    if progress_callback is not None:
+                        progress_callback(
+                            {
+                                "stage": "candidate_started",
+                                "variable": str(variable),
+                                "method": "resultant_projection",
+                                "bucket_size": len(bucket),
+                                "ordering_strategy": ordering_strategy,
+                                "candidate_count": len(candidates),
+                                "eligible_candidate_count": eligible_candidate_count,
+                                "cost_rank": list(cost_rank),
+                                "obligation_alignment_rank": list(alignment_rank),
+                                "proof_residual_rank": (
+                                    list(alignment_rank[:4])
+                                    if ordering_strategy == "residual_conditioned"
+                                    else None
+                                ),
+                                "separator_width": len(
+                                    set().union(
+                                        *(item.free_symbols for item in bucket)
+                                    )
+                                    - {variable}
+                                ),
+                                "predicted_max_output_terms": max(
+                                    (
+                                        _resultant_term_upper_bound(
+                                            pivot,
+                                            polynomial,
+                                            variable,
+                                        )
+                                        for polynomial in bucket
+                                        if polynomial != pivot
+                                    ),
+                                    default=0,
+                                ),
+                            }
+                        )
+                    outputs, certificate = _resultant_eliminate(variable, bucket)
             if not certificate.replayed:
+                continue
+            if (
+                certificate.method == "resultant_projection"
+                and outputs
+                and all(sp.expand(item) == 0 for item in outputs)
+            ):
+                # A zero resultant only says that the bucket shares an
+                # unmodelled component.  Removing the variable here discards
+                # the very branch information that a later localization can
+                # use, while adding no polynomial consequence at all.
                 continue
             if nonzero_condition_acceptor is not None and any(
                 not nonzero_condition_acceptor(condition)

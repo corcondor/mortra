@@ -44,6 +44,26 @@ class SingularLiftCertificate:
 
 
 @dataclass(frozen=True)
+class SingularRadicalCertificate:
+    """Exact source-level witness that a power of the goal is in the ideal."""
+
+    initial_polynomials: tuple[str, ...]
+    variables: tuple[str, ...]
+    monomial_order: str
+    basis_engine: str
+    goal_polynomial: str
+    radical_exponent: int | None
+    source_multipliers: tuple[str, ...]
+    replay_residual: str
+    augmented_certificate_sha256: str
+    proved: bool
+    replayed: bool
+    status: str
+    elapsed_seconds: float
+    certificate_sha256: str
+
+
+@dataclass(frozen=True)
 class SingularMembershipProbe:
     variables: tuple[str, ...]
     monomial_order: str
@@ -129,10 +149,10 @@ def _bounded_monomial_powers(
     return tuple(powers)
 
 
-def _render_bounded_linear_program(
+def _render_bounded_linear_batch_program(
     polynomials: tuple[sp.Expr, ...],
     variables: tuple[sp.Symbol, ...],
-    goal: sp.Expr,
+    goals: tuple[sp.Expr, ...],
     *,
     coefficient_parameters: tuple[sp.Symbol, ...],
     certificate_degree: int,
@@ -141,6 +161,8 @@ def _render_bounded_linear_program(
     dict[str, sp.Symbol],
     tuple[tuple[int, tuple[int, ...]], ...],
 ]:
+    if not goals:
+        raise ValueError("at least one bounded membership target is required")
     if not coefficient_parameters:
         coefficient_domain = sp.QQ
     else:
@@ -149,8 +171,13 @@ def _render_bounded_linear_program(
         sp.Poly(item, *variables, domain=coefficient_domain)
         for item in polynomials
     )
-    polynomial_goal = sp.Poly(goal, *variables, domain=coefficient_domain)
-    if certificate_degree < polynomial_goal.total_degree():
+    polynomial_goals = tuple(
+        sp.Poly(goal, *variables, domain=coefficient_domain) for goal in goals
+    )
+    if any(
+        certificate_degree < polynomial_goal.total_degree()
+        for polynomial_goal in polynomial_goals
+    ):
         raise ValueError("certificate degree must cover the goal degree")
 
     multiplier_terms: list[tuple[int, tuple[int, ...]]] = []
@@ -170,7 +197,8 @@ def _render_bounded_linear_program(
 
     support = tuple(
         sorted(
-            set(polynomial_goal.monoms()).union(
+            set().union(
+                *(set(polynomial_goal.monoms()) for polynomial_goal in polynomial_goals),
                 *(set(column.monoms()) for column in columns)
             ),
             reverse=True,
@@ -200,10 +228,15 @@ def _render_bounded_linear_program(
         + "]"
         for column in columns
     )
-    target_column = "[" + ",".join(
-        render_coefficient(polynomial_goal.coeff_monomial(monomial))
-        for monomial in support
-    ) + "]"
+    target_columns = tuple(
+        "["
+        + ",".join(
+            render_coefficient(polynomial_goal.coeff_monomial(monomial))
+            for monomial in support
+        )
+        + "]"
+        for polynomial_goal in polynomial_goals
+    )
     coefficient_field = (
         "("
         + ",".join(("0", *(symbol_map[item] for item in coefficient_parameters)))
@@ -215,38 +248,107 @@ def _render_bounded_linear_program(
         f"ring mortra={coefficient_field},(mortraDummy),(c,dp);",
         "short=0;",
         f"module M={module_columns};",
-        f"module N={target_column};",
         f'attrib(M,"rank",{len(support)});',
-        f'attrib(N,"rank",{len(support)});',
         "module G=std(M);",
-        "module rem=reduce(N,G);",
         'print("MORTRA_STATUS=COMPUTED");',
         f'print("MORTRA_BASIS_SIZE={len(columns)}");',
         f'print("MORTRA_BOUNDED_COLUMN_COUNT={len(columns)}");',
-        'if (size(rem)==0) { print("MORTRA_REMAINDER=0"); }',
-        'else { print("MORTRA_REMAINDER=NONZERO"); }',
-        "if (size(rem)==0)",
-        "{",
-        "  matrix H=lift(M,N);",
-        "  module source_residual=N-M*H;",
-        '  print("MORTRA_LIFT_ROWS="+string(nrows(H)));',
-        '  print("MORTRA_LIFT_COLUMNS="+string(ncols(H)));',
-        "  int mortraNonzeroEntries=0;",
-        f"  for (int i=1; i<={len(columns)}; i++)",
-        "  {",
-        "    if (H[i,1] != 0) { mortraNonzeroEntries++; }",
-        '    print("MORTRA_LINEAR_COEFFICIENT_"+string(i)+"_BEGIN");',
-        "    print(H[i,1]);",
-        '    print("MORTRA_LINEAR_COEFFICIENT_"+string(i)+"_END");',
-        "  }",
-        '  print("MORTRA_LIFT_NONZERO_ENTRIES="+string(mortraNonzeroEntries));',
-        '  if (size(source_residual)==0) { print("MORTRA_SOURCE_RESIDUAL=0"); }',
-        '  else { print("MORTRA_SOURCE_RESIDUAL=NONZERO"); }',
-        "}",
-        'print("MORTRA_DONE=1");',
-        "quit;",
+        f'print("MORTRA_TARGET_COUNT={len(target_columns)}");',
     ]
+    for target_index, target_column in enumerate(target_columns, 1):
+        prefix = f"MORTRA_TARGET_{target_index}"
+        lines.extend(
+            (
+                f"module N{target_index}={target_column};",
+                f'attrib(N{target_index},"rank",{len(support)});',
+                f"module rem{target_index}=reduce(N{target_index},G);",
+                (
+                    f'if (size(rem{target_index})==0) '
+                    f'{{ print("{prefix}_REMAINDER=0"); }}'
+                ),
+                (
+                    f'else {{ print("{prefix}_REMAINDER=NONZERO"); }}'
+                ),
+                f"if (size(rem{target_index})==0)",
+                "{",
+                f"  matrix H{target_index}=lift(M,N{target_index});",
+                (
+                    f"  module source_residual{target_index}="
+                    f"N{target_index}-M*H{target_index};"
+                ),
+                (
+                    f'  print("{prefix}_LIFT_ROWS="+'
+                    f"string(nrows(H{target_index})));"
+                ),
+                (
+                    f'  print("{prefix}_LIFT_COLUMNS="+'
+                    f"string(ncols(H{target_index})));"
+                ),
+                f"  int mortraNonzeroEntries{target_index}=0;",
+                f"  for (int i=1; i<={len(columns)}; i++)",
+                "  {",
+                (
+                    f"    if (H{target_index}[i,1] != 0) "
+                    f"{{ mortraNonzeroEntries{target_index}++; }}"
+                ),
+                (
+                    f'    print("{prefix}_LINEAR_COEFFICIENT_"+'
+                    'string(i)+"_BEGIN");'
+                ),
+                f"    print(H{target_index}[i,1]);",
+                (
+                    f'    print("{prefix}_LINEAR_COEFFICIENT_"+'
+                    'string(i)+"_END");'
+                ),
+                "  }",
+                (
+                    f'  print("{prefix}_LIFT_NONZERO_ENTRIES="+'
+                    f"string(mortraNonzeroEntries{target_index}));"
+                ),
+                (
+                    f'  if (size(source_residual{target_index})==0) '
+                    f'{{ print("{prefix}_SOURCE_RESIDUAL=0"); }}'
+                ),
+                (
+                    f'  else {{ print("{prefix}_SOURCE_RESIDUAL=NONZERO"); }}'
+                ),
+                "}",
+            )
+        )
+    lines.extend(('print("MORTRA_DONE=1");', "quit;"))
     return "\n".join(lines) + "\n", reverse_map, tuple(multiplier_terms)
+
+
+def _render_bounded_linear_program(
+    polynomials: tuple[sp.Expr, ...],
+    variables: tuple[sp.Symbol, ...],
+    goal: sp.Expr,
+    *,
+    coefficient_parameters: tuple[sp.Symbol, ...],
+    certificate_degree: int,
+) -> tuple[
+    str,
+    dict[str, sp.Symbol],
+    tuple[tuple[int, tuple[int, ...]], ...],
+]:
+    program, reverse_map, multiplier_terms = _render_bounded_linear_batch_program(
+        polynomials,
+        variables,
+        (goal,),
+        coefficient_parameters=coefficient_parameters,
+        certificate_degree=certificate_degree,
+    )
+    # Preserve the legacy marker names for callers and stored parser fixtures.
+    program = program.replace("MORTRA_TARGET_1_", "MORTRA_")
+    for batch_name, legacy_name in (
+        ("source_residual1", "source_residual"),
+        ("mortraNonzeroEntries1", "mortraNonzeroEntries"),
+        ("rem1", "rem"),
+        ("H1", "H"),
+        ("N1", "N"),
+    ):
+        program = program.replace(batch_name, legacy_name)
+    return program, reverse_map, multiplier_terms
 
 
 def _render_program(
@@ -882,6 +984,199 @@ def _prove_bounded_linear_membership(
     )
 
 
+def _prove_bounded_linear_memberships(
+    polynomials: tuple[sp.Expr, ...],
+    variables: tuple[sp.Symbol, ...],
+    goals: tuple[sp.Expr, ...],
+    *,
+    certificate_degree: int,
+    coefficient_parameters: tuple[sp.Symbol, ...],
+    timeout_seconds: float,
+    wsl_distribution: str,
+    singular_root: Path,
+) -> tuple[SingularLiftCertificate, ...]:
+    program, reverse_map, multiplier_terms = _render_bounded_linear_batch_program(
+        polynomials,
+        variables,
+        goals,
+        coefficient_parameters=coefficient_parameters,
+        certificate_degree=certificate_degree,
+    )
+    command = _singular_command(
+        singular_root=singular_root,
+        wsl_distribution=wsl_distribution,
+        timeout_seconds=timeout_seconds,
+    )
+    started = time.perf_counter()
+    try:
+        completed = subprocess.run(
+            command,
+            input=program,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=None if timeout_seconds <= 0 else timeout_seconds + 10.0,
+            check=False,
+        )
+    except subprocess.TimeoutExpired as error:
+        elapsed = time.perf_counter() - started
+        stdout = error.stdout if isinstance(error.stdout, str) else ""
+        return tuple(
+            _empty_certificate(
+                polynomials,
+                variables,
+                goal,
+                monomial_order="bounded_total_degree",
+                basis_engine="bounded_linear",
+                status="timeout",
+                elapsed_seconds=elapsed,
+                stdout=stdout,
+                certificate_degree=certificate_degree,
+            )
+            for goal in goals
+        )
+
+    elapsed = time.perf_counter() - started
+    stdout = completed.stdout
+    combined_output = stdout + completed.stderr
+    markers = _marker_map(stdout)
+    if completed.returncode in {124, 137, 143}:
+        status = "timeout"
+    elif completed.returncode != 0 or markers.get("MORTRA_DONE") != "1":
+        status = f"execution_error:{completed.returncode}"
+    else:
+        status = None
+    if status is not None:
+        return tuple(
+            _empty_certificate(
+                polynomials,
+                variables,
+                goal,
+                monomial_order="bounded_total_degree",
+                basis_engine="bounded_linear",
+                status=status,
+                elapsed_seconds=elapsed,
+                stdout=combined_output,
+                certificate_degree=certificate_degree,
+            )
+            for goal in goals
+        )
+
+    runtime_errors = tuple(
+        line.strip()
+        for line in stdout.splitlines()
+        if line.lstrip().startswith("?")
+    )
+    runtime_diagnostics = tuple(
+        line.strip()
+        for line in stdout.splitlines()
+        if line.lstrip().startswith(("?", "// **"))
+    )
+    bounded_column_count = (
+        int(markers["MORTRA_BOUNDED_COLUMN_COUNT"])
+        if "MORTRA_BOUNDED_COLUMN_COUNT" in markers
+        else None
+    )
+    stdout_sha256 = hashlib.sha256(stdout.encode()).hexdigest()
+    results: list[SingularLiftCertificate] = []
+    for target_index, goal in enumerate(goals, 1):
+        prefix = f"MORTRA_TARGET_{target_index}"
+        proved = (
+            markers.get(f"{prefix}_REMAINDER") == "0" and not runtime_errors
+        )
+        source_residual_zero = (
+            markers.get(f"{prefix}_SOURCE_RESIDUAL") == "0"
+        )
+        multipliers: list[sp.Expr] = [sp.S.Zero] * len(polynomials)
+        if proved:
+            for index, (source_index, powers) in enumerate(multiplier_terms, 1):
+                coefficient = _parse_expression(
+                    markers.get(
+                        f"{prefix}_LINEAR_COEFFICIENT_{index}",
+                        "0",
+                    ),
+                    reverse_map,
+                )
+                monomial = sp.prod(
+                    variable**power
+                    for variable, power in zip(variables, powers, strict=True)
+                )
+                multipliers[source_index] += coefficient * monomial
+        multiplier_tuple = tuple(multipliers)
+        replay_residual = (
+            _replay_source_lift(
+                goal,
+                multiplier_tuple,
+                polynomials,
+                variables,
+                coefficient_parameters,
+            )
+            if proved
+            else goal
+        )
+        replayed = proved and source_residual_zero and replay_residual == 0
+        multiplier_text = tuple(sp.sstr(item) for item in multiplier_tuple)
+        material = "|".join(
+            (
+                "bounded_linear",
+                str(certificate_degree),
+                *(sp.sstr(item) for item in polynomials),
+                sp.sstr(goal),
+                *multiplier_text,
+                sp.sstr(replay_residual),
+            )
+        )
+        results.append(
+            SingularLiftCertificate(
+                initial_polynomials=tuple(sp.sstr(item) for item in polynomials),
+                variables=tuple(str(item) for item in variables),
+                monomial_order="bounded_total_degree",
+                basis_engine="bounded_linear",
+                basis_polynomials=(),
+                goal_polynomial=sp.sstr(goal),
+                remainder=(
+                    "0"
+                    if proved
+                    else markers.get(f"{prefix}_REMAINDER", "")
+                ),
+                initial_multipliers=multiplier_text,
+                replay_residual=sp.sstr(replay_residual),
+                proved=proved,
+                replayed=replayed,
+                status=(
+                    "proved"
+                    if replayed
+                    else "execution_error"
+                    if runtime_errors
+                    else "not_proved"
+                ),
+                elapsed_seconds=elapsed,
+                certificate_sha256=hashlib.sha256(material.encode()).hexdigest(),
+                singular_stdout_sha256=stdout_sha256,
+                certificate_degree=certificate_degree,
+                lift_matrix_rows=(
+                    int(markers[f"{prefix}_LIFT_ROWS"])
+                    if f"{prefix}_LIFT_ROWS" in markers
+                    else None
+                ),
+                lift_matrix_columns=(
+                    int(markers[f"{prefix}_LIFT_COLUMNS"])
+                    if f"{prefix}_LIFT_COLUMNS" in markers
+                    else None
+                ),
+                lift_nonzero_entries=(
+                    int(markers[f"{prefix}_LIFT_NONZERO_ENTRIES"])
+                    if f"{prefix}_LIFT_NONZERO_ENTRIES" in markers
+                    else None
+                ),
+                bounded_column_count=bounded_column_count,
+                runtime_diagnostics=runtime_diagnostics,
+            )
+        )
+    return tuple(results)
+
+
 def probe_ideal_membership_with_singular(
     polynomials: Iterable[sp.Expr],
     variables: Iterable[sp.Symbol],
@@ -968,6 +1263,62 @@ def probe_ideal_membership_with_singular(
         singular_stdout_sha256=hashlib.sha256(
             (stdout + completed.stderr).encode()
         ).hexdigest(),
+    )
+
+
+def prove_ideal_memberships_with_singular(
+    polynomials: Iterable[sp.Expr],
+    variables: Iterable[sp.Symbol],
+    goals: Iterable[sp.Expr],
+    *,
+    timeout_seconds: float = 300.0,
+    max_certificate_degree: int | None = None,
+    coefficient_parameters: Iterable[sp.Symbol] = (),
+    wsl_distribution: str = "Ubuntu",
+    singular_root: Path = DEFAULT_SINGULAR_ROOT,
+) -> tuple[SingularLiftCertificate, ...]:
+    """Check several bounded ideal targets against one exact Macaulay basis."""
+
+    initial = tuple(sp.sympify(item) for item in polynomials)
+    ordered_variables = tuple(variables)
+    ordered_parameters = tuple(coefficient_parameters)
+    expanded_goals = tuple(sp.sympify(goal) for goal in goals)
+    if not expanded_goals:
+        raise ValueError("at least one ideal membership target is required")
+    all_symbols = set().union(
+        *(goal.free_symbols for goal in expanded_goals),
+        *(item.free_symbols for item in initial),
+    )
+    unknown = all_symbols - set((*ordered_variables, *ordered_parameters))
+    if unknown:
+        raise ValueError(f"variables omitted from ring: {sorted(map(str, unknown))}")
+    coefficient_domain = (
+        sp.QQ.frac_field(*ordered_parameters) if ordered_parameters else sp.QQ
+    )
+    minimum_degree = max(
+        *(
+            sp.Poly(goal, *ordered_variables, domain=coefficient_domain).total_degree()
+            for goal in expanded_goals
+        ),
+        *(
+            sp.Poly(item, *ordered_variables, domain=coefficient_domain).total_degree()
+            for item in initial
+        ),
+    )
+    certificate_degree = (
+        minimum_degree + 2
+        if max_certificate_degree is None
+        else max_certificate_degree
+    )
+    return _prove_bounded_linear_memberships(
+        initial,
+        ordered_variables,
+        expanded_goals,
+        certificate_degree=certificate_degree,
+        coefficient_parameters=ordered_parameters,
+        timeout_seconds=timeout_seconds,
+        wsl_distribution=wsl_distribution,
+        singular_root=singular_root,
     )
 
 
@@ -1178,6 +1529,189 @@ def prove_ideal_membership_with_singular(
         certificate_sha256=hashlib.sha256(material.encode()).hexdigest(),
         singular_stdout_sha256=hashlib.sha256(stdout.encode()).hexdigest(),
         runtime_diagnostics=tuple(runtime_diagnostics),
+    )
+
+
+def prove_radical_membership_with_singular(
+    polynomials: Iterable[sp.Expr],
+    variables: Iterable[sp.Symbol],
+    goal: sp.Expr,
+    *,
+    timeout_seconds: float = 300.0,
+    monomial_order: str = "dp",
+    basis_engine: str = "slimgb_lift",
+    coefficient_parameters: Iterable[sp.Symbol] = (),
+    wsl_distribution: str = "Ubuntu",
+    singular_root: Path = DEFAULT_SINGULAR_ROOT,
+) -> SingularRadicalCertificate:
+    """Prove ``goal`` is in the radical by an exact Rabinowitsch lift.
+
+    Singular proves ``1`` belongs to ``<I, 1 - t*goal>``.  Substituting
+    ``t = 1/goal`` in that source lift and clearing the bounded power of
+    ``goal`` yields a directly replayable certificate ``goal**N in I``.
+    """
+
+    started = time.perf_counter()
+    initial = tuple(sp.sympify(item) for item in polynomials)
+    ordered_variables = tuple(variables)
+    ordered_parameters = tuple(coefficient_parameters)
+    expanded_goal = sp.sympify(goal)
+    known_symbols = set((*ordered_variables, *ordered_parameters))
+    unknown = set().union(
+        expanded_goal.free_symbols,
+        *(item.free_symbols for item in initial),
+    ) - known_symbols
+    if unknown:
+        raise ValueError(f"variables omitted from ring: {sorted(map(str, unknown))}")
+
+    def build_result(
+        *,
+        exponent: int | None,
+        multipliers: tuple[sp.Expr, ...] = (),
+        residual: sp.Expr | str = "",
+        augmented_sha256: str = "",
+        proved: bool = False,
+        replayed: bool = False,
+        status: str,
+    ) -> SingularRadicalCertificate:
+        multiplier_text = tuple(sp.sstr(item) for item in multipliers)
+        residual_text = sp.sstr(residual) if not isinstance(residual, str) else residual
+        material = "|".join(
+            (
+                monomial_order,
+                basis_engine,
+                *(sp.sstr(item) for item in initial),
+                sp.sstr(expanded_goal),
+                str(exponent),
+                *multiplier_text,
+                residual_text,
+                augmented_sha256,
+                status,
+            )
+        )
+        return SingularRadicalCertificate(
+            initial_polynomials=tuple(sp.sstr(item) for item in initial),
+            variables=tuple(str(item) for item in ordered_variables),
+            monomial_order=monomial_order,
+            basis_engine=basis_engine,
+            goal_polynomial=sp.sstr(expanded_goal),
+            radical_exponent=exponent,
+            source_multipliers=multiplier_text,
+            replay_residual=residual_text,
+            augmented_certificate_sha256=augmented_sha256,
+            proved=proved,
+            replayed=replayed,
+            status=status,
+            elapsed_seconds=time.perf_counter() - started,
+            certificate_sha256=hashlib.sha256(material.encode()).hexdigest(),
+        )
+
+    if expanded_goal == 0:
+        zeros = tuple(sp.S.Zero for _ in initial)
+        return build_result(
+            exponent=1,
+            multipliers=zeros,
+            residual=sp.S.Zero,
+            proved=True,
+            replayed=True,
+            status="proved",
+        )
+
+    occupied_names = {str(symbol) for symbol in known_symbols}
+    suffix = 0
+    while True:
+        name = "_mortra_rabinowitsch" + (f"_{suffix}" if suffix else "")
+        if name not in occupied_names:
+            rabinowitsch_variable = sp.Symbol(name)
+            break
+        suffix += 1
+
+    augmented = prove_ideal_membership_with_singular(
+        (*initial, 1 - rabinowitsch_variable * expanded_goal),
+        (*ordered_variables, rabinowitsch_variable),
+        sp.S.One,
+        timeout_seconds=timeout_seconds,
+        monomial_order=monomial_order,
+        basis_engine=basis_engine,
+        coefficient_parameters=ordered_parameters,
+        wsl_distribution=wsl_distribution,
+        singular_root=singular_root,
+    )
+    if not augmented.replayed:
+        return build_result(
+            exponent=None,
+            augmented_sha256=augmented.certificate_sha256,
+            status=(
+                "not_proved"
+                if augmented.status == "not_proved"
+                else f"augmented_{augmented.status}"
+            ),
+        )
+
+    reverse_locals = {
+        str(symbol): symbol
+        for symbol in (*ordered_variables, *ordered_parameters, rabinowitsch_variable)
+    }
+    augmented_multipliers = tuple(
+        sp.sympify(text, locals=reverse_locals)
+        for text in augmented.initial_multipliers
+    )
+    if len(augmented_multipliers) != len(initial) + 1:
+        return build_result(
+            exponent=None,
+            augmented_sha256=augmented.certificate_sha256,
+            status="invalid_augmented_lift",
+        )
+
+    source_augmented_multipliers = augmented_multipliers[: len(initial)]
+    exponent = max(
+        (
+            int(sp.Poly(item, rabinowitsch_variable, domain=sp.EX).degree())
+            for item in source_augmented_multipliers
+            if item != 0
+        ),
+        default=0,
+    )
+    try:
+        domain = (
+            sp.QQ.frac_field(*ordered_parameters)
+            if ordered_parameters
+            else sp.QQ
+        )
+        source_multipliers = tuple(
+            sp.Poly(
+                sp.cancel(
+                    expanded_goal**exponent
+                    * multiplier.subs(rabinowitsch_variable, 1 / expanded_goal)
+                ),
+                *ordered_variables,
+                domain=domain,
+            ).as_expr()
+            for multiplier in source_augmented_multipliers
+        )
+        residual = _replay_source_lift(
+            expanded_goal**exponent,
+            source_multipliers,
+            initial,
+            ordered_variables,
+            ordered_parameters,
+        )
+    except (sp.PolynomialError, ValueError, ZeroDivisionError):
+        return build_result(
+            exponent=exponent,
+            augmented_sha256=augmented.certificate_sha256,
+            status="power_lift_not_polynomial",
+        )
+
+    replayed = residual == 0 and exponent >= 1
+    return build_result(
+        exponent=exponent,
+        multipliers=source_multipliers,
+        residual=residual,
+        augmented_sha256=augmented.certificate_sha256,
+        proved=replayed,
+        replayed=replayed,
+        status="proved" if replayed else "source_replay_failed",
     )
 
 

@@ -252,3 +252,79 @@ Wolfram起動前にメモリが増大する不具合を修正し、128,723 byte�
 - `data/2023VietnamTSTp3-guarded-bounded-d5-sat-index1-2-v1-2026-08-25.json`
 - `data/2023RMMSLG3-guarded-bounded-d5-sat-index0-2-v1-2026-08-25.json`
 - `data/2023RMMSLG3-guarded-bounded-d5-sat-index4-5-v1-2026-08-26.json`
+## 継続実験: 非零条件の証明付き移送（2026-08-26）
+
+### 目的
+
+局所消去後の終端系へ、元の非退化条件を消去済み変数のまま渡していた接続不良を修正する。
+問題ID、期待解答、外部LLM、問題固有の分岐は使わない。
+
+### 原理
+
+線形ピボット `c*x+k=0` と元条件 `c != 0` が証明済みなら、多項式条件
+`h(x) != 0` は `c^deg(h) h(-k/c) != 0` と同値である。
+この変換を分母なしの多項式恒等式として再生し、SHA-256付き証明書を保存する。
+逆向きの枝選択を保証できないresultantでは、消去変数を含む条件を下流で再利用しない。
+また、出力が恒等的に0だけのresultantは新しい多項式帰結を作らないため、探索射として棄却する。
+
+### 実装
+
+- 線形式と二次式が同じbucketにある場合も、元条件から非零性が証明された線形ピボットを優先
+- `mixed_degree_linear_localization` を分母なしで実装し、全出力を元式へ再生
+- 非零条件を各localizationの後へ順次移送する証明書を追加
+- 移送不能条件を小さい環へ誤投入せず、明示的に記録
+- 恒等的に0だけを返すresultant projectionを棄却
+- 認証監査器へ条件移送の再生、余り0、証明書hashの検査を追加
+
+### 結果
+
+`2024ELMOSLp1` は同じ入力・同じ共通規則で次のように変化した。
+
+| 段階 | 結果 |
+|---|---|
+| 修正前 | 消去済み `_free_y_10` を係数環へ入れて `execution_error` |
+| mixed-degree localizationのみ | 56.81秒、`unproved` |
+| 条件移送 + 0-resultant棄却 | **80.89秒、厳密証明成功** |
+
+最終成果物は `remainder=0`、局所消去再生成功、非零条件移送2件成功、
+未移送0件、検証済み解答4段を保持する。監査済み集合和は
+**61/89 (68.54%) から 62/89 (69.66%)** へ上昇した。
+
+同じ処置を終端到達群5問へ適用した結果は、`unproved` 1問、180秒timeout 4問、
+追加証明0だった。したがって残り27問は同一原因ではない。
+`2020IranGOAp2` は5式・5変数、`2023RMMSLG3` は6式・8変数の終端Groebnerで停止し、
+`2024VietnamTSTp5` は作図elaboration、`2025KoeraFinalRoundp3` は項数上限256の局所射影で停止した。
+
+有界所属判定の同一元式バッチ化は `2020IranGOAp2` で
+282.75秒から70.56秒へ短縮し、**4.01倍**だった。証明状態とSHAは逐次版と一致した。
+一方、`2024ELMOSLp1` と `2023VietnamTSTp3` の根基所属判定は追加証明0で、
+全非退化因子積を使う厳密Rabinowitsch検証も900秒でtimeoutした。
+「通常イデアルを根基へ変えれば残りが解ける」という仮説は支持されない。
+
+### 考察
+
+残り27問は全く別分野ではない。目標述語は既認証群と同じ
+`coll/cyclic/cong/eqangle/perp/para` だが、作図数の中央値は既認証群8に対し残り群13で、
+円・外心・垂足・垂線の連鎖が長い。今回の1問は語彙追加ではなく、
+同じ数学的条件を表現チャート間で失わず運ぶことで解けた。
+
+残りの主要な不足は三つに分かれる。
+
+1. 5〜8変数の終端系を型付き中間補題へ分割する機構
+2. 項数上限を超える局所射影を、因子・ブロック単位の小証明へ分解する機構
+3. 長い作図elaborationを増分化し、保存checkpointから再開する機構
+
+### 結論
+
+性能上昇は実在し、今回さらに認証問題を1問増やした。ただし残りは新しい分野ではなく、
+同じ幾何構造の長い合成と分岐条件が作るhard tailである。
+探索時間の一律増加ではなく、条件の可逆移送と中間補題分割を次の中心課題とする。
+
+### 成果物
+
+- `data/jgex-nonzero-transport-2024elmo-2026-08-26.json`
+- `data/jgex-nonzero-transport-2024elmo-runs/2024ELMOSLp1.json`
+- `data/2024ELMOSLp1-nonzero-transport-union-addition-2026-08-26.json`
+- `data/hageo-certified-capability-union-plus-2024elmo-2026-08-26.json`
+- `data/jgex-nonzero-transport-terminal-cohort5-2026-08-26.json`
+- `data/2023VietnamTSTp3-terminal-all-saturated-radical-v3-2026-08-26.json`

@@ -5,6 +5,7 @@ import sympy as sp
 
 from worker.backend.singular_lift_backend import (
     _marker_map,
+    _render_bounded_linear_batch_program,
     _render_bounded_linear_program,
     _render_probe_program,
     _render_program,
@@ -13,7 +14,9 @@ from worker.backend.singular_lift_backend import (
     _singular_command,
     _singular_expression,
     probe_ideal_membership_with_singular,
+    prove_ideal_memberships_with_singular,
     prove_ideal_membership_with_singular,
+    prove_radical_membership_with_singular,
     singular_runtime_available,
 )
 
@@ -239,6 +242,23 @@ def test_bounded_program_records_lift_matrix_shape_and_nonzero_count() -> None:
     assert 'attrib(N,"rank",1);' in program
 
 
+def test_bounded_batch_program_builds_one_basis_for_multiple_targets() -> None:
+    x = sp.symbols("x")
+    program, _, _ = _render_bounded_linear_batch_program(
+        (x,),
+        (x,),
+        (x, sp.Integer(1)),
+        coefficient_parameters=(),
+        certificate_degree=1,
+    )
+
+    assert program.count("module G=std(M);") == 1
+    assert "module N1=" in program
+    assert "module N2=" in program
+    assert "MORTRA_TARGET_1_REMAINDER=" in program
+    assert "MORTRA_TARGET_2_REMAINDER=" in program
+
+
 def test_runtime_command_enforces_timeout_inside_wsl() -> None:
     command = _singular_command(
         singular_root=Path("/opt/singular"),
@@ -416,3 +436,65 @@ def test_live_bounded_linear_replays_against_source_generators() -> None:
     assert result.proved and result.replayed
     assert result.basis_engine == "bounded_linear"
     assert result.certificate_degree == 2
+
+
+@pytest.mark.skipif(
+    not singular_runtime_available(),
+    reason="local isolated Singular runtime is unavailable",
+)
+def test_live_bounded_batch_separates_proved_and_unproved_targets() -> None:
+    x = sp.symbols("x")
+    proved, unproved = prove_ideal_memberships_with_singular(
+        (x,),
+        (x,),
+        (x, sp.Integer(1)),
+        timeout_seconds=120,
+        max_certificate_degree=1,
+        singular_root=Path("/home/shibahara/.local/mortra-singular/root"),
+    )
+
+    assert proved.status == "proved"
+    assert proved.proved and proved.replayed
+    assert proved.replay_residual == "0"
+    assert unproved.status == "not_proved"
+    assert not unproved.proved and not unproved.replayed
+
+
+@pytest.mark.skipif(
+    not singular_runtime_available(),
+    reason="local isolated Singular runtime is unavailable",
+)
+def test_live_radical_membership_replays_a_power_over_source_generators() -> None:
+    x = sp.Symbol("x")
+    result = prove_radical_membership_with_singular(
+        (x**2,),
+        (x,),
+        x,
+        timeout_seconds=30,
+        singular_root=Path("/home/shibahara/.local/mortra-singular/root"),
+    )
+
+    assert result.status == "proved"
+    assert result.proved and result.replayed
+    assert result.radical_exponent == 2
+    assert result.replay_residual == "0"
+    assert result.source_multipliers == ("1",)
+
+
+@pytest.mark.skipif(
+    not singular_runtime_available(),
+    reason="local isolated Singular runtime is unavailable",
+)
+def test_live_radical_membership_rejects_nonvanishing_goal() -> None:
+    x, y = sp.symbols("x y")
+    result = prove_radical_membership_with_singular(
+        (x * y,),
+        (x, y),
+        x,
+        timeout_seconds=30,
+        singular_root=Path("/home/shibahara/.local/mortra-singular/root"),
+    )
+
+    assert result.status == "not_proved"
+    assert not result.proved and not result.replayed
+    assert result.radical_exponent is None

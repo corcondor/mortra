@@ -8,6 +8,7 @@ from worker.backend.local_polynomial_elimination import (
     _resultant_term_upper_bound,
     _select_resultant_pivot,
     eliminate_local_linear_variables,
+    transport_nonzero_conditions_through_local_elimination,
 )
 
 
@@ -109,6 +110,59 @@ def test_quadratic_resultant_is_recomputed_exactly() -> None:
     assert witness.replay_residual == "0"
     assert sp.denom(sp.sympify(witness.left_multiplier)) == 1
     assert sp.denom(sp.sympify(witness.right_multiplier)) == 1
+
+
+def test_mixed_degree_bucket_prefers_source_proved_linear_pivot() -> None:
+    x, y, a, b = sp.symbols("x y a b")
+    result = eliminate_local_linear_variables(
+        (a * x + b, x**2 - y),
+        (x, y, a, b),
+        protected_variables=(y, a, b),
+        nonzero_condition_acceptor=lambda condition: condition == "a != 0",
+    )
+
+    assert result.exact_replay
+    assert result.eliminated_variables == ("x",)
+    assert result.steps[0].method == "mixed_degree_linear_localization"
+    assert result.steps[0].nonzero_conditions == ("a != 0",)
+    output = sp.sympify(result.remaining_polynomials[0])
+    assert sp.expand(output - (b**2 - a**2 * y)) == 0
+
+
+def test_zero_resultant_does_not_erase_a_shared_component() -> None:
+    x, y, z = sp.symbols("x y z")
+    result = eliminate_local_linear_variables(
+        (x * y, x * z),
+        (x, y, z),
+        protected_variables=(y, z),
+        nonzero_condition_acceptor=lambda _condition: False,
+    )
+
+    assert result.exact_replay
+    assert result.eliminated_variables == ()
+    assert result.remaining_polynomials == ("x*y", "x*z")
+    assert result.stopped_reason == "term_budget"
+
+
+def test_nonzero_condition_is_transported_through_localization() -> None:
+    x, y, a, b = sp.symbols("x y a b")
+    result = eliminate_local_linear_variables(
+        (a * x + b, x**2 - y),
+        (x, y, a, b),
+        protected_variables=(y, a, b),
+        nonzero_condition_acceptor=lambda condition: condition == "a != 0",
+    )
+
+    conditions, certificates, unresolved = (
+        transport_nonzero_conditions_through_local_elimination(
+            (x + y,), result.steps
+        )
+    )
+
+    assert unresolved == ()
+    assert len(certificates) == 1
+    assert certificates[0].replayed
+    assert sp.expand(conditions[0] - (a * y - b)) == 0
 
 
 def test_resultant_term_bound_is_computed_without_expansion() -> None:

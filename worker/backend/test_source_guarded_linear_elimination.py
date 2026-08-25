@@ -5,6 +5,7 @@ from worker.backend.source_guarded_linear_elimination import (
     _linear_coefficients_structural,
     eliminate_source_guarded_linear_variables,
     lift_guarded_linear_certificate,
+    lift_guarded_linear_power_certificate,
     source_preserving_goal_factor_candidates,
     source_proved_nondegeneracy_factors,
 )
@@ -63,6 +64,58 @@ def test_guarded_linear_elimination_and_source_lift_replay() -> None:
     assert lifted.replay_residual == 0
     assert lifted.replayed
     assert lifted.multiplier_source_proved_nonzero
+
+
+def test_guarded_linear_radical_power_lift_replays() -> None:
+    x, a, b = sp.symbols("x a b")
+    source = (a * x + b, b**2)
+    reduced = eliminate_source_guarded_linear_variables(
+        source,
+        (x,),
+        x,
+        (a,),
+        max_steps=1,
+    )
+
+    assert reduced.reduced_goal == -b
+    assert reduced.reduced_polynomials == (b**2,)
+    lifted = lift_guarded_linear_power_certificate(
+        reduced,
+        (1,),
+        exponent=2,
+    )
+
+    assert lifted.replayed
+    assert lifted.replay_residual == 0
+    assert lifted.goal_power_multiplier == a**2
+    assert lifted.multiplier_source_proved_nonzero
+
+
+def test_radical_power_saturation_multiplier_must_be_source_proved_nonzero() -> None:
+    x, a, b = sp.symbols("x a b")
+    reduced = eliminate_source_guarded_linear_variables(
+        (x**2,),
+        (x,),
+        x,
+        (a,),
+        max_steps=0,
+    )
+
+    accepted = lift_guarded_linear_power_certificate(
+        reduced,
+        (a**2,),
+        exponent=2,
+        reduced_goal_power_multiplier=a**2,
+    )
+    rejected = lift_guarded_linear_power_certificate(
+        reduced,
+        (b**2,),
+        exponent=2,
+        reduced_goal_power_multiplier=b**2,
+    )
+
+    assert accepted.replayed and accepted.multiplier_source_proved_nonzero
+    assert rejected.replayed and not rejected.multiplier_source_proved_nonzero
 
 
 def test_guarded_linear_elimination_rejects_unproved_coefficient() -> None:
