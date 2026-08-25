@@ -1,0 +1,432 @@
+{
+  "experiment": "hageo_remaining_structure_audit",
+  "generated_at": "2026-08-25T19:59:53.978703+00:00",
+  "uses_external_llm": false,
+  "uses_expected_answer": false,
+  "sources": {
+    "capability_union": {
+      "path": "data/hageo-certified-capability-union-plus-2025korea-2026-08-26.json",
+      "sha256": "dbf739f1b2b2343e5946b6bb4d81ccd16ffdbdf9b95eb1e698368cf935174236"
+    },
+    "dataset": {
+      "path": "GenesisGeo/benchmarks/hageo_409.txt",
+      "sha256": "55aa45dd16a1b69eaf612036468dbf3f62e73b654c0e3bb1a23fd3e5e3ed2368"
+    }
+  },
+  "summary": {
+    "certified_count": 63,
+    "unresolved_count": 26,
+    "total": 89,
+    "certified_setup_clause_median": 8,
+    "unresolved_setup_clause_median": 13.5,
+    "unresolved_vocabulary_count": 23,
+    "shared_unresolved_vocabulary_count": 22,
+    "unresolved_vocabulary_unseen_in_certified": [
+      "free"
+    ],
+    "all_unresolved_goal_predicates_seen_in_certified": true,
+    "unresolved_with_circumcenter": 26,
+    "unresolved_with_on_circle": 23
+  },
+  "goal_predicate_counts": {
+    "certified": {
+      "coll": 18,
+      "cong": 12,
+      "cyclic": 12,
+      "eqangle": 5,
+      "eqratio": 3,
+      "midp": 3,
+      "para": 1,
+      "perp": 9
+    },
+    "unresolved": {
+      "coll": 14,
+      "cong": 2,
+      "cyclic": 6,
+      "eqangle": 2,
+      "para": 1,
+      "perp": 1
+    }
+  },
+  "unresolved_problems": {
+    "2011G3": {
+      "setup_clause_count": 16,
+      "goal_predicates": [
+        "coll"
+      ],
+      "construction_vocabulary": [
+        "circumcenter",
+        "foot",
+        "midpoint",
+        "on_circle",
+        "quadrangle"
+      ]
+    },
+    "2014CHNGaoLian": {
+      "setup_clause_count": 8,
+      "goal_predicates": [
+        "cong"
+      ],
+      "construction_vocabulary": [
+        "circumcenter",
+        "on_circle",
+        "on_line",
+        "on_tline",
+        "triangle"
+      ]
+    },
+    "2016CTSTp5": {
+      "setup_clause_count": 11,
+      "goal_predicates": [
+        "perp"
+      ],
+      "construction_vocabulary": [
+        "angle_bisector",
+        "circumcenter",
+        "midpoint",
+        "on_circum",
+        "on_line",
+        "triangle"
+      ]
+    },
+    "2016USATSTSTp6": {
+      "setup_clause_count": 17,
+      "goal_predicates": [
+        "coll"
+      ],
+      "construction_vocabulary": [
+        "circumcenter",
+        "foot",
+        "incenter",
+        "midpoint",
+        "on_circle",
+        "triangle"
+      ]
+    },
+    "2017G4": {
+      "setup_clause_count": 11,
+      "goal_predicates": [
+        "coll"
+      ],
+      "construction_vocabulary": [
+        "circumcenter",
+        "excenter",
+        "foot",
+        "midpoint",
+        "on_circle",
+        "on_line",
+        "triangle"
+      ]
+    },
+    "2017USAMOp3": {
+      "setup_clause_count": 12,
+      "goal_predicates": [
+        "cyclic"
+      ],
+      "construction_vocabulary": [
+        "circumcenter",
+        "incenter",
+        "midpoint",
+        "on_circle",
+        "on_dia",
+        "on_line",
+        "triangle"
+      ]
+    },
+    "2019IranTSTp15": {
+      "setup_clause_count": 14,
+      "goal_predicates": [
+        "coll"
+      ],
+      "construction_vocabulary": [
+        "angle_bisector",
+        "circumcenter",
+        "foot",
+        "midpoint",
+        "mirror",
+        "on_circle",
+        "on_line",
+        "triangle"
+      ]
+    },
+    "2020IranGOAp2": {
+      "setup_clause_count": 10,
+      "goal_predicates": [
+        "cong"
+      ],
+      "construction_vocabulary": [
+        "circumcenter",
+        "foot",
+        "incenter",
+        "midpoint",
+        "mirror",
+        "on_bline",
+        "on_circle",
+        "triangle"
+      ]
+    },
+    "2020IranTSTp9": {
+      "setup_clause_count": 14,
+      "goal_predicates": [
+        "cyclic"
+      ],
+      "construction_vocabulary": [
+        "angle_bisector",
+        "circumcenter",
+        "incenter",
+        "midpoint",
+        "on_bline",
+        "on_circle",
+        "on_line",
+        "reflect",
+        "triangle"
+      ]
+    },
+    "2021ARMOg10p8": {
+      "setup_clause_count": 15,
+      "goal_predicates": [
+        "cyclic"
+      ],
+      "construction_vocabulary": [
+        "circumcenter",
+        "on_circle",
+        "on_circum",
+        "on_line",
+        "reflect",
+        "triangle"
+      ]
+    },
+    "2021GOWACAp5": {
+      "setup_clause_count": 11,
+      "goal_predicates": [
+        "coll"
+      ],
+      "construction_vocabulary": [
+        "centroid",
+        "circumcenter",
+        "foot",
+        "incenter",
+        "mirror",
+        "on_aline",
+        "on_line",
+        "on_tline",
+        "triangle"
+      ]
+    },
+    "2021IranTSTp6": {
+      "setup_clause_count": 11,
+      "goal_predicates": [
+        "coll"
+      ],
+      "construction_vocabulary": [
+        "circumcenter",
+        "eqangle3",
+        "on_circle",
+        "on_line",
+        "orthocenter",
+        "triangle"
+      ]
+    },
+    "2021IsraelOlympicRev": {
+      "setup_clause_count": 15,
+      "goal_predicates": [
+        "cyclic"
+      ],
+      "construction_vocabulary": [
+        "circumcenter",
+        "eqangle3",
+        "on_circle",
+        "on_line",
+        "triangle"
+      ]
+    },
+    "2022G5": {
+      "setup_clause_count": 16,
+      "goal_predicates": [
+        "coll"
+      ],
+      "construction_vocabulary": [
+        "circumcenter",
+        "on_circle",
+        "on_line",
+        "on_pline",
+        "on_tline",
+        "triangle"
+      ]
+    },
+    "2023IMOp6": {
+      "setup_clause_count": 13,
+      "goal_predicates": [
+        "cyclic"
+      ],
+      "construction_vocabulary": [
+        "circumcenter",
+        "ieq_triangle",
+        "on_aline",
+        "on_bline",
+        "on_circle",
+        "on_line"
+      ]
+    },
+    "2023MOSTMockp2": {
+      "setup_clause_count": 17,
+      "goal_predicates": [
+        "coll"
+      ],
+      "construction_vocabulary": [
+        "circumcenter",
+        "free",
+        "on_aline",
+        "on_line",
+        "triangle"
+      ]
+    },
+    "2023RMMSLG3": {
+      "setup_clause_count": 10,
+      "goal_predicates": [
+        "eqangle"
+      ],
+      "construction_vocabulary": [
+        "circumcenter",
+        "free",
+        "on_circle",
+        "reflect",
+        "triangle"
+      ]
+    },
+    "2023SAGFp8": {
+      "setup_clause_count": 17,
+      "goal_predicates": [
+        "para"
+      ],
+      "construction_vocabulary": [
+        "circumcenter",
+        "mirror",
+        "on_bline",
+        "on_circle",
+        "orthocenter",
+        "reflect",
+        "triangle"
+      ]
+    },
+    "2023SerbiaMOp6": {
+      "setup_clause_count": 14,
+      "goal_predicates": [
+        "coll"
+      ],
+      "construction_vocabulary": [
+        "circumcenter",
+        "foot",
+        "incenter",
+        "on_circle",
+        "on_line",
+        "on_tline",
+        "triangle"
+      ]
+    },
+    "2023VietnamTSTp3": {
+      "setup_clause_count": 12,
+      "goal_predicates": [
+        "coll"
+      ],
+      "construction_vocabulary": [
+        "circumcenter",
+        "foot",
+        "midpoint",
+        "on_circle",
+        "on_line",
+        "on_pline",
+        "on_tline",
+        "triangle"
+      ]
+    },
+    "2024KoMaLA877": {
+      "setup_clause_count": 11,
+      "goal_predicates": [
+        "coll"
+      ],
+      "construction_vocabulary": [
+        "circumcenter",
+        "on_circle",
+        "on_line",
+        "on_tline",
+        "reflect",
+        "triangle"
+      ]
+    },
+    "2024VietnamTSTp5": {
+      "setup_clause_count": 10,
+      "goal_predicates": [
+        "eqangle"
+      ],
+      "construction_vocabulary": [
+        "circumcenter",
+        "foot",
+        "incenter",
+        "on_circle",
+        "on_line",
+        "on_tline",
+        "triangle"
+      ]
+    },
+    "ShuZhiMiGeo128": {
+      "setup_clause_count": 16,
+      "goal_predicates": [
+        "cyclic"
+      ],
+      "construction_vocabulary": [
+        "circumcenter",
+        "free",
+        "on_circle",
+        "on_line",
+        "triangle"
+      ]
+    },
+    "ShuZhiMiGeo309": {
+      "setup_clause_count": 25,
+      "goal_predicates": [
+        "coll"
+      ],
+      "construction_vocabulary": [
+        "circumcenter",
+        "excenter",
+        "foot",
+        "incenter",
+        "on_circle",
+        "on_line",
+        "triangle"
+      ]
+    },
+    "ShuZhiMiGeo489": {
+      "setup_clause_count": 13,
+      "goal_predicates": [
+        "coll"
+      ],
+      "construction_vocabulary": [
+        "circumcenter",
+        "foot",
+        "incenter",
+        "on_circle",
+        "on_line",
+        "reflect",
+        "triangle"
+      ]
+    },
+    "ShuZhiMiGeo635": {
+      "setup_clause_count": 14,
+      "goal_predicates": [
+        "coll"
+      ],
+      "construction_vocabulary": [
+        "centroid",
+        "circumcenter",
+        "foot",
+        "incenter",
+        "on_circle",
+        "on_line",
+        "triangle"
+      ]
+    }
+  },
+  "conclusion": "The unresolved tail reuses certified goal predicates and 22/23 construction vocabulary items, but has longer construction chains concentrated on circumcenters and points on circles."
+}

@@ -122,7 +122,14 @@ def _exact_worker(
             + "\n",
             encoding="utf-8",
         )
-        temporary.replace(progress_file)
+        for attempt in range(5):
+            try:
+                temporary.replace(progress_file)
+                break
+            except PermissionError:
+                if attempt == 4:
+                    raise
+                time.sleep(0.02 * (attempt + 1))
         last_progress_write = now
         last_written_stage = stage_identity
 
@@ -376,8 +383,13 @@ def main() -> int:
             + "\n",
             encoding="utf-8",
         )
-        result["artifact_path"] = _display_path(artifact_path)
-        results[name] = result
+        report_result = {
+            key: value
+            for key, value in result.items()
+            if key not in {"certificate", "solution"}
+        }
+        report_result["artifact_path"] = _display_path(artifact_path)
+        results[name] = report_result
         print(
             f"[{len(results)}/{len(unresolved)}] {name}: {result['status']} "
             f"({result['elapsed_seconds']:.2f}s)",

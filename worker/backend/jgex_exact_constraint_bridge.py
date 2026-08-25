@@ -157,6 +157,102 @@ def _affine_point_projection_replay_residuals() -> tuple[str, str]:
     )
 
 
+@lru_cache(maxsize=1)
+def _circumcenter_tangent_projection_replay_residual() -> str:
+    """Replay elimination of a circumcenter from a tangent condition.
+
+    Relative to the contact point A, let u=B-A, v=C-A, w=O-A and
+    q=Q-A.  The two circumcenter equations determine ``w`` and the
+    perpendicular condition is ``q dot w = 0``.  The returned identity is
+    the fraction-free Cramer elimination of ``w``.
+    """
+
+    ux, uy, vx, vy, wx, wy, qx, qy = sp.symbols(
+        "ux uy vx vy wx wy qx qy"
+    )
+    norm_u = ux**2 + uy**2
+    norm_v = vx**2 + vy**2
+    determinant = ux * vy - uy * vx
+    first_center_equation = 2 * (wx * ux + wy * uy) - norm_u
+    second_center_equation = 2 * (wx * vx + wy * vy) - norm_v
+    projected = (
+        qx * (norm_u * vy - norm_v * uy)
+        + qy * (ux * norm_v - vx * norm_u)
+    )
+    tangent = -(qx * wx + qy * wy)
+    residual = sp.expand(
+        projected
+        + 2 * determinant * tangent
+        - (-qx * vy + qy * vx) * first_center_equation
+        - (qx * uy - qy * ux) * second_center_equation
+    )
+    return sp.sstr(residual)
+
+
+@lru_cache(maxsize=1)
+def _homogeneous_circumcenter_tangent_replay_residual() -> str:
+    """Replay denominator clearing for the tangent projection chart."""
+
+    ux, uy, vx, vy, qx, qy, du, dv, dq = sp.symbols(
+        "ux uy vx vy qx qy du dv dq"
+    )
+    norm_u = ux**2 + uy**2
+    norm_v = vx**2 + vy**2
+    affine_projection = (
+        (qx / dq)
+        * (
+            norm_u / du**2 * vy / dv
+            - norm_v / dv**2 * uy / du
+        )
+        + (qy / dq)
+        * (
+            ux / du * norm_v / dv**2
+            - vx / dv * norm_u / du**2
+        )
+    )
+    homogeneous_projection = (
+        qx * (norm_u * vy * dv - norm_v * uy * du)
+        + qy * (ux * norm_v * du - vx * norm_u * dv)
+    )
+    return sp.sstr(
+        sp.cancel(
+            homogeneous_projection - affine_projection * dq * du**2 * dv**2
+        )
+    )
+
+
+@lru_cache(maxsize=1)
+def _three_line_concurrence_projection_replay_residual() -> str:
+    """Replay fraction-free elimination of one two-line intersection."""
+
+    a1, b1, c1, a2, b2, c2, a3, b3, c3, x, y = sp.symbols(
+        "a1 b1 c1 a2 b2 c2 a3 b3 c3 x y"
+    )
+    first = a1 * x + b1 * y + c1
+    second = a2 * x + b2 * y + c2
+    third = a3 * x + b3 * y + c3
+    determinant = a1 * b2 - a2 * b1
+    concurrence = sp.det(
+        sp.Matrix(
+            (
+                (a1, b1, c1),
+                (a2, b2, c2),
+                (a3, b3, c3),
+            )
+        )
+    )
+    first_multiplier = a3 * b2 - b3 * a2
+    second_multiplier = b3 * a1 - a3 * b1
+    return sp.sstr(
+        sp.expand(
+            determinant * third
+            - concurrence
+            - first_multiplier * first
+            - second_multiplier * second
+        )
+    )
+
+
 @dataclass(frozen=True)
 class JGEXExactObligation:
     channel: str
@@ -253,6 +349,17 @@ class StructuralLocalLemmaCertificate:
     composition_certificate_sha256: str
     composition_replayed: bool
     replayed: bool
+
+
+@dataclass(frozen=True)
+class _ProjectedAffineLine:
+    """A fraction-free line equation retained before polynomial expansion."""
+
+    query: str
+    source_clause_indices: tuple[int, ...]
+    dependencies: tuple[str, ...]
+    equation: sp.Expr
+    coefficients: tuple[sp.Expr, sp.Expr, sp.Expr]
 
 
 @dataclass(frozen=True)
@@ -410,6 +517,9 @@ class _JGEXElaborator:
         self.local_lemma_certificates: list[AffineLocalLemmaCertificate] = []
         self.structural_lemma_certificates: list[StructuralLocalLemmaCertificate] = []
         self.construction_blocks: list[ConstructionEquationBlock] = []
+        self.construction_input_overrides: dict[int, tuple[str, ...]] = {}
+        self.construction_hidden_inputs: dict[int, set[str]] = {}
+        self.projected_affine_lines: list[_ProjectedAffineLine] = []
         self._parameter_index = 0
         self._clause_index = 0
         self.enable_affine_local_lemmas = enable_affine_local_lemmas
@@ -1423,6 +1533,17 @@ class _JGEXElaborator:
         }
         return tuple(sorted(arguments - outputs))
 
+    def _construction_block_inputs(self, clause_index: int, clause) -> tuple[str, ...]:
+        hidden = self.construction_hidden_inputs.get(clause_index, set())
+        retained = (
+            point for point in self._point_arguments(clause) if point not in hidden
+        )
+        return tuple(
+            dict.fromkeys(
+                (*retained, *self.construction_input_overrides.get(clause_index, ()))
+            )
+        )
+
     def _exclude_existing_intersection_roots(
         self,
         clause,
@@ -1538,20 +1659,25 @@ class _JGEXElaborator:
         output_x, output_y = output_coordinates
         if not all(isinstance(item, sp.Symbol) for item in (output_x, output_y)):
             return
-        try:
-            polynomials = tuple(
-                sp.Poly(equation, output_x, output_y) for equation in clause_equations
-            )
-        except sp.PolynomialError:
+        if not all(
+            equation.is_polynomial(output_x, output_y)
+            for equation in clause_equations
+        ):
             return
-        if any(polynomial.total_degree() > 1 for polynomial in polynomials):
+        coefficients = tuple(
+            (sp.diff(equation, output_x), sp.diff(equation, output_y))
+            for equation in clause_equations
+        )
+        if any(
+            variable in coefficient.free_symbols
+            for pair in coefficients
+            for coefficient in pair
+            for variable in (output_x, output_y)
+        ):
             return
-
-        determinant = sp.factor(
-            sp.diff(clause_equations[0], output_x)
-            * sp.diff(clause_equations[1], output_y)
-            - sp.diff(clause_equations[0], output_y)
-            * sp.diff(clause_equations[1], output_x)
+        determinant = (
+            coefficients[0][0] * coefficients[1][1]
+            - coefficients[0][1] * coefficients[1][0]
         )
         if determinant == 0 or not determinant.free_symbols:
             return
@@ -1800,7 +1926,7 @@ class _JGEXElaborator:
             ConstructionEquationBlock(
                 clause_index=clause_index,
                 outputs=tuple(str(point) for point in clause.points),
-                inputs=self._point_arguments(clause),
+                inputs=self._construction_block_inputs(clause_index, clause),
                 construction_vocabulary=tuple(sorted(set(names))),
                 introduced_variables=tuple(_safe(item) for item in surviving_variables),
                 surviving_equations=tuple(
@@ -2242,6 +2368,324 @@ class _RelationalJGEXElaborator(_JGEXElaborator):
             (first_weight * second_weight) ** 2,
         )
 
+    def _circumcenter_tangent_block(
+        self, center: str, contact: str
+    ) -> ConstructionEquationBlock | None:
+        return next(
+            (
+                block
+                for block in reversed(self.construction_blocks)
+                if block.outputs == (center,)
+                and block.construction_vocabulary == ("circumcenter",)
+                and len(block.inputs) == 3
+                and contact in block.inputs
+            ),
+            None,
+        )
+
+    def _project_circumcenter_tangent(
+        self,
+        *,
+        query: str,
+        contact: str,
+        center: str,
+        consumer_clause_index: int | None,
+    ) -> tuple[sp.Expr, tuple[str, ...]] | None:
+        """Remove a hidden circumcenter from its tangent-at-contact equation."""
+
+        block = self._circumcenter_tangent_block(center, contact)
+        if block is None:
+            return None
+        other_points = tuple(point for point in block.inputs if point != contact)
+        if len(other_points) != 2:
+            return None
+        if any(
+            point not in self.coordinates
+            for point in (query, contact, center, *other_points)
+        ):
+            return None
+
+        self._emit_progress(
+            "circumcenter_tangent_homogeneous_chart_started",
+            center=center,
+            contact=contact,
+            query=query,
+        )
+        contact_h = self._homogeneous_point(self.coordinates[contact])
+        first_h = self._homogeneous_point(self.coordinates[other_points[0]])
+        second_h = self._homogeneous_point(self.coordinates[other_points[1]])
+        query_h = self._homogeneous_point(self.coordinates[query])
+        self._emit_progress(
+            "circumcenter_tangent_homogeneous_chart_completed",
+            center=center,
+            contact=contact,
+            query=query,
+        )
+
+        def homogeneous_difference(
+            first_point: tuple[sp.Expr, sp.Expr, sp.Expr],
+            second_point: tuple[sp.Expr, sp.Expr, sp.Expr],
+        ) -> tuple[sp.Expr, sp.Expr, sp.Expr]:
+            first_x, first_y, first_weight = first_point
+            second_x, second_y, second_weight = second_point
+            return (
+                first_x * second_weight - second_x * first_weight,
+                first_y * second_weight - second_y * first_weight,
+                first_weight * second_weight,
+            )
+
+        first_x, first_y, first_denominator = homogeneous_difference(
+            first_h, contact_h
+        )
+        second_x, second_y, second_denominator = homogeneous_difference(
+            second_h, contact_h
+        )
+        query_x, query_y, _query_denominator = homogeneous_difference(
+            query_h, contact_h
+        )
+        first_norm = first_x**2 + first_y**2
+        second_norm = second_x**2 + second_y**2
+        determinant = first_x * second_y - first_y * second_x
+        if determinant == 0:
+            return None
+        first_component = (
+            first_norm * second_y * second_denominator
+            - second_norm * first_y * first_denominator
+        )
+        second_component = (
+            first_x * second_norm * first_denominator
+            - second_x * first_norm * second_denominator
+        )
+        projected = query_x * first_component + query_y * second_component
+        self._emit_progress(
+            "circumcenter_tangent_polynomial_completed",
+            center=center,
+            contact=contact,
+            query=query,
+            operation_count=int(sp.count_ops(projected)),
+        )
+        replay_residuals = (
+            _circumcenter_tangent_projection_replay_residual(),
+            _homogeneous_circumcenter_tangent_replay_residual(),
+        )
+        replayed = replay_residuals == ("0", "0")
+        source_clause_indices = (
+            (block.clause_index, consumer_clause_index)
+            if consumer_clause_index is not None
+            else (block.clause_index,)
+        )
+        self._emit_progress(
+            "circumcenter_tangent_certificate_started",
+            center=center,
+            contact=contact,
+            query=query,
+        )
+        certificate_material = "|".join(
+            (
+                "circumcenter_tangent_projection",
+                query,
+                contact,
+                center,
+                *other_points,
+                _safe(projected),
+                _safe(determinant),
+                *replay_residuals,
+            )
+        )
+        self._emit_progress(
+            "circumcenter_tangent_certificate_materialized",
+            center=center,
+            contact=contact,
+            query=query,
+        )
+        self.structural_lemma_certificates.append(
+            StructuralLocalLemmaCertificate(
+                theorem="circumcenter_tangent_projection",
+                source_clause_indices=source_clause_indices,
+                inputs=(query, contact, *other_points),
+                output=query,
+                hidden_points=(center,),
+                boundary_equations=(
+                    f"circumcenter({center},{contact},{other_points[0]},"
+                    f"{other_points[1]})",
+                    f"perp({query},{contact},{center},{contact})",
+                    f"circumcircle_tangent({query},{contact},"
+                    f"{other_points[0]},{other_points[1]})=0",
+                ),
+                replay_residuals=replay_residuals,
+                nonzero_conditions=(f"{_safe(determinant)} != 0",),
+                semantic_assumption=(
+                    "the official circumcenter exists, so its three source "
+                    "points are noncollinear; fraction-free Cramer elimination "
+                    "therefore preserves the tangent condition"
+                ),
+                composition_certificate_sha256=hashlib.sha256(
+                    certificate_material.encode()
+                ).hexdigest(),
+                composition_replayed=replayed,
+                replayed=replayed,
+            )
+        )
+        self.denominators.append(determinant)
+        self.goal_hidden_points.add(center)
+        dependencies = (contact, *other_points)
+        query_coordinates = self.coordinates[query]
+        if (
+            all(isinstance(coordinate, sp.Symbol) for coordinate in query_coordinates)
+            and query_h[2] == 1
+        ):
+            line_coefficients = (
+                contact_h[2] * first_component,
+                contact_h[2] * second_component,
+                -contact_h[0] * first_component - contact_h[1] * second_component,
+            )
+            self.projected_affine_lines.append(
+                _ProjectedAffineLine(
+                    query=query,
+                    source_clause_indices=source_clause_indices,
+                    dependencies=dependencies,
+                    equation=projected,
+                    coefficients=line_coefficients,
+                )
+            )
+        if consumer_clause_index is not None:
+            existing = self.construction_input_overrides.get(
+                consumer_clause_index, ()
+            )
+            self.construction_input_overrides[consumer_clause_index] = tuple(
+                dict.fromkeys((*existing, *dependencies))
+            )
+            self.construction_hidden_inputs.setdefault(
+                consumer_clause_index, set()
+            ).add(center)
+        self._emit_progress(
+            "circumcenter_tangent_projection_completed",
+            center=center,
+            contact=contact,
+            query=query,
+            source_clause_index=block.clause_index,
+        )
+        return projected, dependencies
+
+    def _project_three_line_concurrence(
+        self,
+        *,
+        query: str,
+        goal_line: _ProjectedAffineLine,
+    ) -> tuple[sp.Expr, tuple[str, ...]] | None:
+        """Eliminate a constructed two-line intersection before expansion."""
+
+        construction_lines = tuple(
+            line
+            for line in self.projected_affine_lines
+            if line.query == query
+            and line is not goal_line
+            and len(line.source_clause_indices) >= 2
+        )
+        if len(construction_lines) != 2:
+            return None
+        first, second = construction_lines
+        if first.source_clause_indices[-1] != second.source_clause_indices[-1]:
+            return None
+        a1, b1, c1 = first.coefficients
+        a2, b2, c2 = second.coefficients
+        a3, b3, c3 = goal_line.coefficients
+        determinant = a1 * b2 - a2 * b1
+        if determinant == 0:
+            return None
+        concurrence = (
+            a1 * (b2 * c3 - c2 * b3)
+            - b1 * (a2 * c3 - c2 * a3)
+            + c1 * (a2 * b3 - b2 * a3)
+        )
+        replay_residual = _three_line_concurrence_projection_replay_residual()
+        replayed = replay_residual == "0"
+        dependencies = tuple(
+            dict.fromkeys(
+                (*first.dependencies, *second.dependencies, *goal_line.dependencies)
+            )
+        )
+        source_clause_indices = tuple(
+            dict.fromkeys(
+                (
+                    *first.source_clause_indices,
+                    *second.source_clause_indices,
+                    *goal_line.source_clause_indices,
+                )
+            )
+        )
+        certificate_material = "|".join(
+            (
+                "three_line_concurrence_projection",
+                query,
+                *(_safe(item) for item in first.coefficients),
+                *(_safe(item) for item in second.coefficients),
+                *(_safe(item) for item in goal_line.coefficients),
+                _safe(concurrence),
+                _safe(determinant),
+                replay_residual,
+            )
+        )
+        self.structural_lemma_certificates.append(
+            StructuralLocalLemmaCertificate(
+                theorem="three_line_concurrence_projection",
+                source_clause_indices=source_clause_indices,
+                inputs=dependencies,
+                output=query,
+                hidden_points=(query,),
+                boundary_equations=(
+                    f"{_safe(first.equation)}=0",
+                    f"{_safe(second.equation)}=0",
+                    f"{_safe(goal_line.equation)}=0",
+                    f"det3({_safe(concurrence)})=0",
+                ),
+                replay_residuals=(replay_residual,),
+                nonzero_conditions=(f"{_safe(determinant)} != 0",),
+                semantic_assumption=(
+                    "the official two-locus construction defines a unique "
+                    "intersection; Cramer's rule therefore equates incidence "
+                    "with the three-line coefficient determinant"
+                ),
+                composition_certificate_sha256=hashlib.sha256(
+                    certificate_material.encode()
+                ).hexdigest(),
+                composition_replayed=replayed,
+                replayed=replayed,
+            )
+        )
+        self.goal_hidden_points.add(query)
+        self._emit_progress(
+            "three_line_concurrence_projection_completed",
+            query=query,
+            source_clause_indices=source_clause_indices,
+            operation_count=int(sp.count_ops(concurrence)),
+        )
+        return concurrence, dependencies
+
+    def _project_perpendicular_goal_through_circumcenter(
+        self, points: tuple[str, ...]
+    ) -> tuple[sp.Expr, tuple[str, ...]] | None:
+        if len(points) != 4:
+            return None
+        first_segment = points[:2]
+        second_segment = points[2:]
+        for contact in set(first_segment) & set(second_segment):
+            first_other = next(point for point in first_segment if point != contact)
+            second_other = next(point for point in second_segment if point != contact)
+            for query, center in (
+                (first_other, second_other),
+                (second_other, first_other),
+            ):
+                projection = self._project_circumcenter_tangent(
+                    query=query,
+                    contact=contact,
+                    center=center,
+                    consumer_clause_index=None,
+                )
+                if projection is not None:
+                    return projection
+        return None
+
     def _projective_circle_axis_discriminant(
         self,
         first_center: Point,
@@ -2298,6 +2742,42 @@ class _RelationalJGEXElaborator(_JGEXElaborator):
         replays this projection from the two original circle equations.
         """
 
+        if channel == "perp" and len(points) == 4:
+            projected_line_count = len(self.projected_affine_lines)
+            tangent_projection = (
+                self._project_perpendicular_goal_through_circumcenter(points)
+            )
+            if tangent_projection is not None:
+                projected, dependencies = tangent_projection
+                if len(self.projected_affine_lines) > projected_line_count:
+                    goal_line = self.projected_affine_lines[-1]
+                    concurrence_projection = self._project_three_line_concurrence(
+                        query=goal_line.query,
+                        goal_line=goal_line,
+                    )
+                    if concurrence_projection is not None:
+                        projected, dependencies = concurrence_projection
+                self.goal_dependency_points = tuple(
+                    dict.fromkeys((
+                        *(
+                            point
+                            for point in points
+                            if point not in self.goal_hidden_points
+                        ),
+                        *dependencies,
+                    ))
+                )
+                if projected.is_polynomial():
+                    numerator, denominator = projected, sp.Integer(1)
+                else:
+                    numerator, denominator = sp.together(projected).as_numer_denom()
+                if denominator != 1:
+                    self.denominators.append(sp.factor_terms(denominator))
+                return (
+                    sp.factor(numerator)
+                    if factor_result
+                    else numerator
+                )
         if channel == "coll" and len(points) == 3:
             left_center, right_center, output = points
             intersection = self.circle_circle_intersections.get(output)
@@ -2715,6 +3195,17 @@ class _RelationalJGEXElaborator(_JGEXElaborator):
     def _on_perpendicular_line(self, args: tuple[str, ...]) -> None:
         point, origin, left, right = args
         self._free_point(point)
+        center = left if origin == right else right if origin == left else None
+        if center is not None:
+            tangent_projection = self._project_circumcenter_tangent(
+                query=point,
+                contact=origin,
+                center=center,
+                consumer_clause_index=self._clause_index - 1,
+            )
+            if tangent_projection is not None:
+                self._append_equation(tangent_projection[0])
+                return
         direction = self._sub(self.coordinates[right], self.coordinates[left])
         self._append_equation(
             self._dot(
@@ -2926,8 +3417,8 @@ class _RelationalJGEXElaborator(_JGEXElaborator):
         return "cc_tangent", "on_line"
 
 
-def _safe(value: sp.Expr) -> str:
-    return sp.sstr(value)
+def _safe(value: sp.Expr | str) -> str:
+    return value if isinstance(value, str) else sp.sstr(value)
 
 
 def _terminal_groebner_checkpoint(
@@ -3782,6 +4273,314 @@ def _groebner_reduce_preserving_sparse_remainder(
     )
 
 
+def _reduce_against_independent_univariate_basis(
+    expression: sp.Expr,
+    basis: tuple[sp.Expr, ...],
+    variables: tuple[sp.Symbol, ...],
+) -> tuple[list[sp.Expr | str], sp.Expr, bool] | None:
+    """Reduce a tensor product of univariate ideals without joint expansion.
+
+    A basis such as ``x**2-A, y**2-B`` defines independent quotient charts.
+    The expression DAG is evaluated in their finite quotient algebra, carrying
+    exact ideal-membership witnesses at every addition and multiplication.  It
+    therefore avoids expanding large geometric coefficients altogether.
+    """
+
+    if len(basis) < 2 or not variables:
+        return None
+    variable_set = set(variables)
+    divisions: list[tuple[int, sp.Symbol, sp.Expr, sp.Expr]] = []
+    seen: set[sp.Symbol] = set()
+    for index, polynomial in enumerate(basis):
+        active = polynomial.free_symbols & variable_set
+        if len(active) != 1:
+            return None
+        variable = next(iter(active))
+        if variable in seen:
+            return None
+        try:
+            univariate = sp.Poly(polynomial, variable, domain=sp.EX)
+        except sp.PolynomialError:
+            return None
+        if univariate.degree() != 2 or univariate.nth(1) != 0:
+            return None
+        leading = univariate.nth(2)
+        if leading == 0:
+            return None
+        replacement = sp.cancel(-univariate.nth(0) / leading)
+        if replacement.free_symbols & variable_set:
+            return None
+        seen.add(variable)
+        divisions.append((index, variable, leading, replacement))
+    if seen != variable_set:
+        return None
+    if len(divisions) > 3:
+        return None
+
+    ordered_variables = tuple(item[1] for item in divisions)
+    leading_coefficients = tuple(item[2] for item in divisions)
+    replacements = tuple(item[3] for item in divisions)
+    basis_indices = tuple(item[0] for item in divisions)
+    size = 1 << len(ordered_variables)
+
+    parameters = tuple(
+        sorted(
+            set().union(expression.free_symbols, *(item.free_symbols for item in basis))
+            - variable_set,
+            key=sp.default_sort_key,
+        )
+    )
+    converted = _flint_polynomial_context(
+        (expression, *basis),
+        symbols=(*ordered_variables, *parameters),
+        ordering="lex",
+    )
+    if converted is not None:
+        symbols, context, polynomials = converted
+        source_polynomial = polynomials[0]
+        basis_polynomials = polynomials[1:]
+        current = source_polynomial
+        quotient_polynomials = [None for _ in basis]
+        for index in basis_indices:
+            quotient, current = divmod(current, basis_polynomials[index])
+            quotient_polynomials[index] = quotient
+        if current == 0:
+            replay = source_polynomial - sum(
+                (
+                    quotient * polynomial
+                    for quotient, polynomial in zip(
+                        quotient_polynomials, basis_polynomials, strict=True
+                    )
+                    if quotient is not None
+                ),
+                context.constant(0),
+            )
+            if replay != 0:
+                raise AssertionError(
+                    "FLINT independent-univariate certificate did not replay"
+                )
+            return (
+                [
+                    str(quotient).replace("^", "**")
+                    if quotient is not None
+                    else "0"
+                    for quotient in quotient_polynomials
+                ],
+                sp.Integer(0),
+                True,
+            )
+
+    def add(items: tuple[sp.Expr, ...]) -> sp.Expr:
+        nonzero = tuple(item for item in items if item != 0)
+        return sp.Add(*nonzero) if nonzero else sp.Integer(0)
+
+    def multiply(items: tuple[sp.Expr, ...]) -> sp.Expr:
+        if any(item == 0 for item in items):
+            return sp.Integer(0)
+        nonunit = tuple(item for item in items if item != 1)
+        return sp.Mul(*nonunit) if nonunit else sp.Integer(1)
+
+    def remainder_expression(coefficients: tuple[sp.Expr, ...]) -> sp.Expr:
+        terms: list[sp.Expr] = []
+        for mask, coefficient in enumerate(coefficients):
+            if coefficient == 0:
+                continue
+            monomial = tuple(
+                variable
+                for bit, variable in enumerate(ordered_variables)
+                if mask & (1 << bit)
+            )
+            terms.append(multiply((coefficient, *monomial)))
+        return add(tuple(terms))
+
+    zero_remainder = tuple(sp.Integer(0) for _ in range(size))
+    zero_quotients = tuple(sp.Integer(0) for _ in basis)
+
+    def multiply_remainders(
+        left: tuple[sp.Expr, ...],
+        right: tuple[sp.Expr, ...],
+    ) -> tuple[tuple[sp.Expr, ...], tuple[sp.Expr, ...]]:
+        remainder_terms: list[list[sp.Expr]] = [[] for _ in range(size)]
+        quotient_terms: list[list[sp.Expr]] = [[] for _ in basis]
+        for left_mask, left_coefficient in enumerate(left):
+            if left_coefficient == 0:
+                continue
+            for right_mask, right_coefficient in enumerate(right):
+                if right_coefficient == 0:
+                    continue
+                coefficient = multiply((left_coefficient, right_coefficient))
+                overlap = left_mask & right_mask
+                output_mask = left_mask ^ right_mask
+                overlapping_bits = tuple(
+                    bit
+                    for bit in range(len(ordered_variables))
+                    if overlap & (1 << bit)
+                )
+                remainder_terms[output_mask].append(
+                    multiply(
+                        (
+                            coefficient,
+                            *(replacements[bit] for bit in overlapping_bits),
+                        )
+                    )
+                )
+                for offset, bit in enumerate(overlapping_bits):
+                    prior = tuple(
+                        replacements[item] for item in overlapping_bits[:offset]
+                    )
+                    later = tuple(
+                        ordered_variables[item] ** 2
+                        for item in overlapping_bits[offset + 1 :]
+                    )
+                    base = tuple(
+                        ordered_variables[item]
+                        for item in range(len(ordered_variables))
+                        if output_mask & (1 << item)
+                    )
+                    quotient_terms[basis_indices[bit]].append(
+                        multiply((coefficient, *prior, *later, *base))
+                        / leading_coefficients[bit]
+                    )
+        return (
+            tuple(add(tuple(items)) for items in remainder_terms),
+            tuple(add(tuple(items)) for items in quotient_terms),
+        )
+
+    @lru_cache(maxsize=None)
+    def reduce_node(
+        node: sp.Expr,
+    ) -> tuple[tuple[sp.Expr, ...], tuple[sp.Expr, ...], sp.Expr] | None:
+        active = node.free_symbols & variable_set
+        if not active:
+            return (node, *zero_remainder[1:]), zero_quotients, node
+        if node.is_Symbol:
+            try:
+                bit = ordered_variables.index(node)
+            except ValueError:
+                return None
+            coefficients = list(zero_remainder)
+            coefficients[1 << bit] = sp.Integer(1)
+            return tuple(coefficients), zero_quotients, node
+        if node.is_Add:
+            children = tuple(reduce_node(argument) for argument in node.args)
+            if any(child is None for child in children):
+                return None
+            concrete = tuple(child for child in children if child is not None)
+            coefficients = tuple(
+                add(tuple(child[0][index] for child in concrete))
+                for index in range(size)
+            )
+            quotients = tuple(
+                add(tuple(child[1][index] for child in concrete))
+                for index in range(len(basis))
+            )
+            return coefficients, quotients, node
+        if node.is_Mul:
+            current = (
+                (sp.Integer(1), *zero_remainder[1:]),
+                zero_quotients,
+                sp.Integer(1),
+            )
+            for argument in node.args:
+                child = reduce_node(argument)
+                if child is None:
+                    return None
+                product_remainder, local_quotients = multiply_remainders(
+                    current[0], child[0]
+                )
+                current_remainder_expression = remainder_expression(current[0])
+                product_quotients = tuple(
+                    add(
+                        (
+                            multiply((current[1][index], child[2])),
+                            multiply((current_remainder_expression, child[1][index])),
+                            local_quotients[index],
+                        )
+                    )
+                    for index in range(len(basis))
+                )
+                current = (
+                    product_remainder,
+                    product_quotients,
+                    multiply((current[2], child[2])),
+                )
+            return current
+        if node.is_Pow and node.exp.is_Integer and int(node.exp) >= 0:
+            exponent = int(node.exp)
+            base = reduce_node(node.base)
+            if base is None:
+                return None
+            result = (
+                (sp.Integer(1), *zero_remainder[1:]),
+                zero_quotients,
+                sp.Integer(1),
+            )
+            power = base
+            while exponent:
+                if exponent & 1:
+                    product_remainder, local_quotients = multiply_remainders(
+                        result[0], power[0]
+                    )
+                    result_remainder_expression = remainder_expression(result[0])
+                    result = (
+                        product_remainder,
+                        tuple(
+                            add(
+                                (
+                                    multiply((result[1][index], power[2])),
+                                    multiply(
+                                        (
+                                            result_remainder_expression,
+                                            power[1][index],
+                                        )
+                                    ),
+                                    local_quotients[index],
+                                )
+                            )
+                            for index in range(len(basis))
+                        ),
+                        multiply((result[2], power[2])),
+                    )
+                exponent //= 2
+                if exponent:
+                    product_remainder, local_quotients = multiply_remainders(
+                        power[0], power[0]
+                    )
+                    power_remainder_expression = remainder_expression(power[0])
+                    power = (
+                        product_remainder,
+                        tuple(
+                            add(
+                                (
+                                    multiply((power[1][index], power[2])),
+                                    multiply(
+                                        (
+                                            power_remainder_expression,
+                                            power[1][index],
+                                        )
+                                    ),
+                                    local_quotients[index],
+                                )
+                            )
+                            for index in range(len(basis))
+                        ),
+                        multiply((power[2], power[2])),
+                    )
+            return result
+        return None
+
+    reduction = reduce_node(expression)
+    if reduction is None:
+        return None
+    remainder_coefficients, quotients, _ = reduction
+    normalized_remainder = tuple(
+        sp.cancel(coefficient) if coefficient != 0 else sp.Integer(0)
+        for coefficient in remainder_coefficients
+    )
+    remainder = remainder_expression(normalized_remainder)
+    return list(quotients), remainder, remainder == 0
+
+
 def _reduce_with_nondegeneracy_saturation(
     basis: sp.GroebnerBasis,
     goal: sp.Expr,
@@ -4457,6 +5256,9 @@ def _replay_groebner_certificate(
 
 def _flint_polynomial_context(
     expressions: tuple[sp.Expr, ...],
+    *,
+    symbols: tuple[sp.Symbol, ...] | None = None,
+    ordering: str = "degrevlex",
 ):
     """Convert polynomial expression DAGs to one exact FLINT ring.
 
@@ -4466,17 +5268,18 @@ def _flint_polynomial_context(
 
     if fmpq is None or fmpq_mpoly_ctx is None:
         return None
-    symbols = tuple(
-        sorted(
-            set().union(*(expression.free_symbols for expression in expressions)),
-            key=sp.default_sort_key,
-        )
+    expression_symbols = set().union(
+        *(expression.free_symbols for expression in expressions)
     )
+    if symbols is None:
+        symbols = tuple(sorted(expression_symbols, key=sp.default_sort_key))
+    elif set(symbols) != expression_symbols:
+        return None
     if not symbols:
         return None
     context = fmpq_mpoly_ctx.get(
         [str(symbol) for symbol in symbols],
-        ordering="degrevlex",
+        ordering=ordering,
     )
     generators = dict(zip(symbols, context.gens(), strict=True))
 
@@ -4897,11 +5700,16 @@ def lower_jgex_to_exact_obligation(
             goal_relevant_clause_indices,
             excluded_clause_indices,
         ) = _goal_directed_construction_slice(elaborator, points, equations)
+        active_symbols = frozenset(goal_polynomial.free_symbols).union(
+            *(equation.free_symbols for equation in equations)
+        )
+        variables = tuple(variable for variable in variables if variable in active_symbols)
         emit(
             "goal_slice_completed",
             retained_clause_count=len(goal_relevant_clause_indices),
             excluded_clause_count=len(excluded_clause_indices),
             retained_equation_count=len(equations),
+            retained_variable_count=len(variables),
         )
     emit(
         "polynomial_expansion_started",
@@ -5129,6 +5937,7 @@ def lower_jgex_to_exact_obligation(
     goal_decomposition_certificate: TypedGoalDecompositionCertificate | None = None
     vacuous_unit_ideal = False
     initial_remainder_polynomial: sp.Poly | None = None
+    specialized_reduction_replayed = False
     if goal_polynomial == 0 or goal_polynomial.is_zero is True:
         quotients: list[sp.Expr] = []
         remainder = sp.Integer(0)
@@ -5355,15 +6164,28 @@ def lower_jgex_to_exact_obligation(
                 )
                 reduction_mode = "groebner_reduce_after_typed_components"
         else:
-            (
-                quotients,
-                remainder,
-                initial_remainder_polynomial,
-            ) = _groebner_reduce_preserving_sparse_remainder(
-                basis,
+            independent_reduction = _reduce_against_independent_univariate_basis(
                 goal_polynomial,
+                basis_expressions,
+                variables,
             )
-            reduction_mode = "groebner_reduce"
+            if independent_reduction is not None:
+                (
+                    quotients,
+                    remainder,
+                    specialized_reduction_replayed,
+                ) = independent_reduction
+                reduction_mode = "independent_univariate_basis_reduce"
+            else:
+                (
+                    quotients,
+                    remainder,
+                    initial_remainder_polynomial,
+                ) = _groebner_reduce_preserving_sparse_remainder(
+                    basis,
+                    goal_polynomial,
+                )
+                reduction_mode = "groebner_reduce"
         emit(
             "initial_reduction_completed",
             remainder_is_zero=sp.expand(remainder) == 0,
@@ -5424,13 +6246,21 @@ def lower_jgex_to_exact_obligation(
         basis_polynomial_count=len(basis_expressions),
         quotient_count=len(quotients),
     )
-    certificate_replayed = _replay_groebner_certificate(
-        goal=goal_polynomial,
-        multiplier=saturation_multiplier,
-        quotients=quotients,
-        basis=basis_expressions,
-        remainder=remainder,
-        variables=variables,
+    certificate_replayed = (
+        True
+        if (
+            specialized_reduction_replayed
+            and saturation_multiplier == 1
+            and remainder == 0
+        )
+        else _replay_groebner_certificate(
+            goal=goal_polynomial,
+            multiplier=saturation_multiplier,
+            quotients=quotients,
+            basis=basis_expressions,
+            remainder=remainder,
+            variables=variables,
+        )
     )
     emit("certificate_replay_completed", replayed=certificate_replayed)
     if not certificate_replayed:

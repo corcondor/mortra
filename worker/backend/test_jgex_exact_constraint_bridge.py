@@ -9,6 +9,9 @@ from worker.backend.jgex_exact_constraint_bridge import (
     _bounded_nonzero_factor_keys,
     _expand_polynomial_in_generators,
     _canonical_nonconstant_factors,
+    _circumcenter_tangent_projection_replay_residual,
+    _homogeneous_circumcenter_tangent_replay_residual,
+    _three_line_concurrence_projection_replay_residual,
     _canonical_nonconstant_factor_keys,
     _contract_equations_by_known_units,
     _direct_constraint_match,
@@ -19,6 +22,7 @@ from worker.backend.jgex_exact_constraint_bridge import (
     _principal_ideal_quotient,
     _prepare_exact_system,
     _reduce_with_nondegeneracy_saturation,
+    _reduce_against_independent_univariate_basis,
     _replay_groebner_certificate,
     inspect_jgex_local_elimination,
     inspect_jgex_exact_system,
@@ -47,6 +51,31 @@ def test_generator_only_expansion_preserves_exact_coefficient_charts() -> None:
     assert sp.expand(lowered - expression) == 0
     assert lowered.coeff(x, 2) == coefficient
     assert len(sp.Add.make_args(lowered.coeff(x, 2))) == 1
+
+
+def test_independent_univariate_basis_reduction_replays_exactly() -> None:
+    x, y, a, b = sp.symbols("x y a b")
+    basis = (x**2 - a, y**2 - b)
+    goal = (x**2 - a) * (x + y + a) ** 4 + (y**2 - b) * (x - y + b) ** 5
+
+    reduction = _reduce_against_independent_univariate_basis(
+        goal, basis, (x, y)
+    )
+
+    assert reduction is not None
+    quotients, remainder, replayed = reduction
+    assert replayed
+    assert sp.expand(remainder) == 0
+    assert sp.expand(
+        goal
+        - sum(
+            (
+                sp.sympify(quotient) * polynomial
+                for quotient, polynomial in zip(quotients, basis, strict=True)
+            ),
+            sp.Integer(0),
+        )
+    ) == 0
 
 
 def test_local_division_requires_source_semantic_nondegeneracy() -> None:
@@ -487,6 +516,70 @@ def test_affine_point_boundary_projection_replays_cramers_rule() -> None:
     assert certificate.replayed
     assert certificate.composition_replayed
     assert certificate.replay_residuals == ("0", "0")
+
+
+def test_circumcenter_tangent_projection_replays_fraction_free_identity() -> None:
+    assert _circumcenter_tangent_projection_replay_residual() == "0"
+    assert _homogeneous_circumcenter_tangent_replay_residual() == "0"
+    assert _three_line_concurrence_projection_replay_residual() == "0"
+
+
+def test_circumcenter_tangent_projection_removes_hidden_center_dependency() -> None:
+    analysis = inspect_jgex_exact_system(
+        "a b c = triangle a b c; o = circumcenter o a b c; "
+        "q = on_tline q a o a, on_line q b c ? perp q a o a",
+        enable_affine_local_lemmas=True,
+        representation="relational",
+    )
+
+    center_coordinates = dict(analysis.point_coordinates)["o"]
+    assert all(variable not in analysis.goal_polynomial for variable in center_coordinates)
+    q_block = next(block for block in analysis.construction_blocks if block.outputs == ("q",))
+    assert "o" not in q_block.inputs
+    assert {"a", "b", "c"} <= set(q_block.inputs)
+    tangent_certificates = tuple(
+        certificate
+        for certificate in analysis.structural_lemma_certificates
+        if certificate.theorem == "circumcenter_tangent_projection"
+    )
+    assert len(tangent_certificates) == 2
+    assert all(certificate.replayed for certificate in tangent_certificates)
+    assert all(certificate.nonzero_conditions for certificate in tangent_certificates)
+
+
+def test_three_circumcircle_tangents_project_to_one_concurrence_determinant() -> None:
+    text = (
+        "a b c = triangle a b c; "
+        "o1 = circumcenter o1 a b c; "
+        "o2 = circumcenter o2 a b c; "
+        "o3 = circumcenter o3 a b c; "
+        "q = on_tline q a o1 a, on_tline q b o2 b "
+        "? perp q c o3 c"
+    )
+
+    elaborator, _, _, points, goal, equations, variables = _prepare_exact_system(
+        text,
+        enable_affine_local_lemmas=False,
+        representation="relational",
+        expand_equations=False,
+    )
+    equations, _, _, _ = exact_bridge._goal_directed_construction_slice(
+        elaborator, points, equations
+    )
+    q_coordinates = set(elaborator.coordinates["q"])
+
+    assert q_coordinates.isdisjoint(goal.free_symbols)
+    assert all(q_coordinates.isdisjoint(equation.free_symbols) for equation in equations)
+    certificates = tuple(
+        certificate
+        for certificate in elaborator.structural_lemma_certificates
+        if certificate.theorem == "three_line_concurrence_projection"
+    )
+    assert len(certificates) == 1
+    assert certificates[0].replayed
+    assert certificates[0].nonzero_conditions
+    active = goal.free_symbols.union(*(equation.free_symbols for equation in equations))
+    assert all(variable not in q_coordinates for variable in variables if variable in active)
 
 
 def test_nondegeneracy_saturation_retains_a_replayable_multiplier() -> None:
