@@ -491,11 +491,15 @@ class _JGEXElaborator:
             "equation_together_started", equation_index=equation_index
         )
         numerator, denominator = sp.together(expression).as_numer_denom()
+        # ``together`` already returns an exact polynomial denominator.  Eager
+        # multivariate factorization here can dominate the whole proof run for
+        # deeply nested constructions, even though factorization is only needed
+        # later when saturation is actually attempted.  Preserve the exact
+        # source denominator and defer that optional work.
         self._emit_progress(
-            "equation_denominator_factor_started", equation_index=equation_index
+            "equation_denominator_record_started", equation_index=equation_index
         )
-        denominator = sp.factor(denominator)
-        if denominator != 1:
+        if denominator is not sp.S.One:
             self.denominators.append(denominator)
         self._emit_progress(
             "equation_numerator_factor_started", equation_index=equation_index
@@ -588,6 +592,8 @@ class _JGEXElaborator:
         base = self._parameter("base")
         apex_x = self._parameter("apex_x")
         apex_y = self._parameter("apex_y")
+        base_key = tuple(sorted((left, right)))
+        self.side_lengths[base_key] = base
         self.coordinates[left] = (sp.Integer(0), sp.Integer(0))
         self.coordinates[right] = (base, sp.Integer(0))
         self.coordinates[apex] = (apex_x, apex_y)
@@ -595,6 +601,7 @@ class _JGEXElaborator:
             (
                 f"euclidean_gauge {left}=(0,0) {right}=({_safe(base)},0) "
                 f"{apex}=({_safe(apex_x)},{_safe(apex_y)})",
+                f"principal_length {_safe(base)}=distance({base_key[0]},{base_key[1]})",
                 f"{_safe(base)} != 0",
                 f"{_safe(apex_y)} != 0",
             )
@@ -1560,13 +1567,16 @@ class _JGEXElaborator:
         for denominator in self.denominators:
             substituted = sp.together(denominator.subs(variable, replacement))
             numerator, replacement_denominator = substituted.as_numer_denom()
-            numerator = sp.factor(numerator)
+            # Full multivariate factorization is deferred to the canonical
+            # nondegeneracy pass.  It is not needed for this exact
+            # substitution and can dominate affine clause compression.
+            numerator = sp.factor_terms(numerator)
             if numerator != 0:
                 substituted_denominators.append(numerator)
             # The affine elimination coefficient is recorded separately before
             # this substitution. Retain any additional denominator introduced
             # by a nested rational coordinate expression as well.
-            replacement_denominator = sp.factor(replacement_denominator)
+            replacement_denominator = sp.factor_terms(replacement_denominator)
             if replacement_denominator not in {0, 1, -1}:
                 substituted_denominators.append(replacement_denominator)
         self.denominators = substituted_denominators
@@ -1651,7 +1661,7 @@ class _JGEXElaborator:
             self._substitute_coordinates(variable, replacement)
             del self.equations[equation_index]
             for index in range(equation_start, len(self.equations)):
-                self.equations[index] = sp.factor(
+                self.equations[index] = sp.factor_terms(
                     sp.together(
                         self.equations[index].subs(variable, replacement)
                     ).as_numer_denom()[0]
@@ -2048,6 +2058,26 @@ class _RelationalJGEXElaborator(_JGEXElaborator):
     coordinates as local variables constrained by small polynomial blocks.
     """
 
+    @staticmethod
+    def _dot(left: Point, right: Point) -> sp.Expr:
+        """Retain the two bilinear terms instead of expanding coefficient charts."""
+
+        return sp.Add(
+            sp.Mul(left[0], right[0], evaluate=False),
+            sp.Mul(left[1], right[1], evaluate=False),
+            evaluate=False,
+        )
+
+    @staticmethod
+    def _cross(left: Point, right: Point) -> sp.Expr:
+        """Retain the determinant DAG until the polynomial backend needs it."""
+
+        return sp.Add(
+            sp.Mul(left[0], right[1], evaluate=False),
+            sp.Mul(-1, left[1], right[0], evaluate=False),
+            evaluate=False,
+        )
+
     def _append_equation(self, expression: sp.Expr) -> sp.Expr:
         equation_index = len(self.equations)
         if expression.is_polynomial():
@@ -2061,10 +2091,9 @@ class _RelationalJGEXElaborator(_JGEXElaborator):
             )
             numerator, denominator = sp.together(expression).as_numer_denom()
         self._emit_progress(
-            "equation_denominator_factor_started", equation_index=equation_index
+            "equation_denominator_record_started", equation_index=equation_index
         )
-        denominator = sp.factor(denominator)
-        if denominator != 1:
+        if denominator is not sp.S.One:
             self.denominators.append(denominator)
         self.equations.append(numerator)
         self._emit_progress(
@@ -2579,7 +2608,7 @@ class _RelationalJGEXElaborator(_JGEXElaborator):
                 direction,
             )
         )
-        self.denominators.append(sp.factor(self._dot(direction, direction)))
+        self.denominators.append(self._dot(direction, direction))
 
     def _midpoint(self, args: tuple[str, ...]) -> None:
         midpoint, left, right = args
@@ -2675,7 +2704,7 @@ class _RelationalJGEXElaborator(_JGEXElaborator):
                 direction,
             )
         )
-        self.denominators.append(sp.factor(self._dot(direction, direction)))
+        self.denominators.append(self._dot(direction, direction))
 
     def _on_perpendicular_line(self, args: tuple[str, ...]) -> None:
         point, origin, left, right = args
@@ -2895,6 +2924,53 @@ def _safe(value: sp.Expr) -> str:
     return sp.sstr(value)
 
 
+def _terminal_groebner_checkpoint(
+    equations: tuple[sp.Expr, ...],
+    variables: tuple[sp.Symbol, ...],
+    coefficient_parameters: tuple[sp.Symbol, ...],
+    coefficient_domain: object,
+    goal_polynomial: sp.Expr,
+    nonzero_factors: tuple[sp.Expr, ...],
+) -> dict[str, object]:
+    """Serialize the exact terminal ideal so another prover can resume it."""
+
+    # The relational elaborator has already cleared denominators, so these are
+    # terminal polynomial expressions.  Re-cancelling every expression expands
+    # large coefficient charts and used to consume most of the per-problem
+    # budget before the Groebner backend even started.
+    input_polynomials = tuple(_safe(item) for item in equations)
+    variable_names = tuple(_safe(item) for item in variables)
+    coefficient_names = tuple(_safe(item) for item in coefficient_parameters)
+    nonzero_conditions = tuple(f"{_safe(item)} != 0" for item in nonzero_factors)
+    goal_text = _safe(goal_polynomial)
+    material = "\n".join(
+        (
+            "terminal_groebner_system_v1",
+            *input_polynomials,
+            "variables=" + ",".join(variable_names),
+            "coefficient_parameters=" + ",".join(coefficient_names),
+            "coefficient_domain=" + str(coefficient_domain),
+            "goal=" + goal_text,
+            *nonzero_conditions,
+        )
+    )
+    return {
+        "schema": "mortra.terminal_groebner_system.v1",
+        "variable": None,
+        "method": "terminal_groebner_system",
+        "input_polynomials": input_polynomials,
+        "output_polynomials": (),
+        "ideal_membership_witnesses": (),
+        "variables": variable_names,
+        "coefficient_parameters": coefficient_names,
+        "coefficient_domain": str(coefficient_domain),
+        "goal_polynomial": goal_text,
+        "nonzero_conditions": nonzero_conditions,
+        "replayed": True,
+        "certificate_sha256": hashlib.sha256(material.encode("utf-8")).hexdigest(),
+    }
+
+
 def _expand_polynomial_in_generators(
     expression: sp.Expr,
     generators: tuple[sp.Symbol, ...],
@@ -2912,6 +2988,12 @@ def _expand_polynomial_in_generators(
         return expression
 
     generator_set = frozenset(generators)
+    if expression.free_symbols.issubset(generator_set):
+        try:
+            return sp.Poly(expression, *generators).as_expr()
+        except sp.PolynomialError:
+            return sp.expand(expression)
+
     protected: dict[sp.Expr, sp.Dummy] = {}
 
     def protect_coefficients(node: sp.Expr) -> None:
@@ -2925,7 +3007,15 @@ def _expand_polynomial_in_generators(
 
     protect_coefficients(expression)
     guarded = expression.xreplace(protected)
-    expanded = sp.expand(guarded)
+    if len(protected) > max(16, 2 * len(generators)):
+        try:
+            return sp.Poly(expression, *generators, domain=sp.EX).as_expr()
+        except sp.PolynomialError:
+            return sp.expand(expression)
+    try:
+        expanded = sp.Poly(guarded, *generators, domain=sp.EX).as_expr()
+    except sp.PolynomialError:
+        expanded = sp.expand(guarded)
     return expanded.xreplace({value: key for key, value in protected.items()})
 
 
@@ -3728,36 +3818,6 @@ def _reduce_with_nondegeneracy_saturation(
         )
 
     basis_generators = set(basis.gens)
-    coefficient_unit_denominators = tuple(
-        item
-        for item in denominators
-        if not (item[1].free_symbols & basis_generators)
-    )
-    if progress_callback is not None and coefficient_unit_denominators:
-        progress_callback(
-            {
-                "stage": "coefficient_unit_denominators_skipped",
-                "skipped_count": len(coefficient_unit_denominators),
-            }
-        )
-    ordered_denominators = tuple(
-        sorted(
-            (
-                item
-                for item in denominators
-                if item[1].free_symbols & basis_generators
-            ),
-            key=lambda item: (
-                int(sp.count_ops(item[1])),
-                item[0],
-            ),
-        )
-    )
-    basis_expressions = tuple(polynomial.as_expr() for polynomial in basis.polys)
-    basis_leading_monomials = tuple(
-        polynomial.LM(order=basis._options.order).exponents
-        for polynomial in basis.polys
-    )
     polynomial_cache: dict[sp.Expr, sp.Poly | None] = {}
     if initial_remainder_polynomial is not None:
         polynomial_cache[remainder] = initial_remainder_polynomial
@@ -3773,11 +3833,55 @@ def _reduce_with_nondegeneracy_saturation(
                 *basis.gens,
                 domain=basis.domain,
             )
-        except sp.PolynomialError:
+        except (sp.PolynomialError, sp.polys.polyerrors.CoercionFailed):
             polynomial = None
         polynomial_cache[expression] = polynomial
         return polynomial, False
 
+    coefficient_unit_denominators = tuple(
+        item
+        for item in denominators
+        if not (item[1].free_symbols & basis_generators)
+    )
+    if progress_callback is not None and coefficient_unit_denominators:
+        progress_callback(
+            {
+                "stage": "coefficient_unit_denominators_skipped",
+                "skipped_count": len(coefficient_unit_denominators),
+            }
+        )
+    nonrepresentable_denominators = tuple(
+        item
+        for item in denominators
+        if item[1].free_symbols & basis_generators
+        and polynomial_in_basis_ring(item[1])[0] is None
+    )
+    if progress_callback is not None and nonrepresentable_denominators:
+        progress_callback(
+            {
+                "stage": "nonrepresentable_denominators_skipped",
+                "skipped_count": len(nonrepresentable_denominators),
+            }
+        )
+    ordered_denominators = tuple(
+        sorted(
+            (
+                item
+                for item in denominators
+                if item[1].free_symbols & basis_generators
+                and polynomial_in_basis_ring(item[1])[0] is not None
+            ),
+            key=lambda item: (
+                int(sp.count_ops(item[1])),
+                item[0],
+            ),
+        )
+    )
+    basis_expressions = tuple(polynomial.as_expr() for polynomial in basis.polys)
+    basis_leading_monomials = tuple(
+        polynomial.LM(order=basis._options.order).exponents
+        for polynomial in basis.polys
+    )
     beam: list[tuple[sp.Expr, tuple[str, ...], list[sp.Expr], sp.Expr]] = [
         (sp.Integer(1), (), quotients, remainder)
     ]
@@ -4082,6 +4186,33 @@ def _canonical_nonconstant_factor_keys(expression: sp.Expr) -> frozenset[str]:
     )
 
 
+def _bounded_nonzero_factor_keys(
+    expression: sp.Expr,
+    *,
+    max_factor_operation_count: int = 256,
+) -> frozenset[str]:
+    """Extract only cheap, source-proved factors for an optional optimization.
+
+    Regular-unit contraction is not required for correctness.  Factoring a
+    large expanded denominator solely to discover removable units can cost more
+    than the terminal proof.  Large additive expressions are therefore skipped;
+    explicit multiplicative pieces are still inspected independently.  Omitting
+    a factor can only miss a contraction, never introduce an assumption.
+    """
+
+    if expression == 0 or not expression.free_symbols:
+        return frozenset()
+    explicit_factors = sp.Mul.make_args(expression)
+    keys: set[str] = set()
+    for factor in explicit_factors:
+        if not factor.free_symbols:
+            continue
+        if int(sp.count_ops(factor)) > max_factor_operation_count:
+            continue
+        keys.update(_canonical_nonconstant_factor_keys(factor))
+    return frozenset(keys)
+
+
 def _nonzero_condition_follows_from_factors(
     condition: str,
     known_factor_keys: frozenset[str],
@@ -4109,6 +4240,9 @@ def _contract_equations_by_known_units(
     ``known_factor_keys``.
     """
 
+    if not known_factor_keys:
+        return equations, ()
+
     contracted_equations: list[sp.Expr] = []
     certificates: list[RegularUnitContractionCertificate] = []
     known_factors = tuple(
@@ -4116,6 +4250,12 @@ def _contract_equations_by_known_units(
         for key in sorted(known_factor_keys)
     )
     for equation in equations:
+        # Unit contraction is optional.  Avoid even ``factor_terms`` once the
+        # expression DAG is large; the unchanged equation remains an exact
+        # generator of the same ideal and is handled by the terminal backend.
+        if int(sp.count_ops(equation)) > 1_024:
+            contracted_equations.append(equation)
+            continue
         # First remove factors that remain explicit in the expression DAG.
         # Hidden factors are handled below by exact univariate division.  General
         # factorization is intentionally avoided: on large projected systems
@@ -4135,7 +4275,14 @@ def _contract_equations_by_known_units(
 
         contracted = sp.Mul(*retained, evaluate=False)
         hidden_candidates: list[tuple[str, sp.Expr]] = []
-        hidden_division_enabled = int(sp.count_ops(contracted)) <= 5_000
+        # Hidden-factor discovery is only a speed optimization.  Its old
+        # equation-by-factor Cartesian scan became the dominant cost on large
+        # source systems.  Keep the exact scan for bounded cases and otherwise
+        # retain the original equation for the terminal prover.
+        hidden_division_enabled = (
+            int(sp.count_ops(contracted)) <= 5_000
+            and len(known_factors) <= 32
+        )
         if hidden_division_enabled:
             for key, factor in known_factors:
                 if (
@@ -4869,12 +5016,20 @@ def lower_jgex_to_exact_obligation(
         equation_count=len(equations),
     )
     if enable_regular_unit_contractions and equations:
-        all_known_nonzero_factor_keys = frozenset().union(
-            *(
-                _canonical_nonconstant_factor_keys(item)
-                for item in ordered_denominators
+        if len(ordered_denominators) > 64:
+            all_known_nonzero_factor_keys = frozenset()
+            emit(
+                "regular_unit_contraction_prefilter_skipped",
+                denominator_count=len(ordered_denominators),
+                maximum_denominator_count=64,
             )
-        )
+        else:
+            all_known_nonzero_factor_keys = frozenset().union(
+                *(
+                    _bounded_nonzero_factor_keys(item)
+                    for item in ordered_denominators
+                )
+            )
         equations, regular_unit_contractions = (
             _contract_equations_by_known_units(
                 equations,
@@ -4975,6 +5130,14 @@ def lower_jgex_to_exact_obligation(
             if coefficient_parameters
             else sp.QQ
         )
+        terminal_checkpoint = _terminal_groebner_checkpoint(
+            equations,
+            variables,
+            coefficient_parameters,
+            coefficient_domain,
+            goal_polynomial,
+            tuple(ordered_denominators),
+        )
         emit(
             "groebner_started",
             equation_count=len(equations),
@@ -4982,6 +5145,7 @@ def lower_jgex_to_exact_obligation(
             coefficient_domain=str(coefficient_domain),
             coefficient_parameter_count=len(coefficient_parameters),
             method=groebner_method,
+            checkpoint_node=terminal_checkpoint,
         )
         basis = sp.groebner(
             equations,

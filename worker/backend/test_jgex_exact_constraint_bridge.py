@@ -6,6 +6,7 @@ import worker.backend.jgex_exact_constraint_bridge as exact_bridge
 from worker.backend.jgex_exact_constraint_bridge import (
     ConstructionEquationBlock,
     _RelationalJGEXElaborator,
+    _bounded_nonzero_factor_keys,
     _expand_polynomial_in_generators,
     _canonical_nonconstant_factors,
     _canonical_nonconstant_factor_keys,
@@ -65,6 +66,20 @@ def test_nondegeneracy_products_are_split_into_irreducible_factors() -> None:
     assert factors == (x, y + 1)
 
 
+def test_optional_unit_contraction_skips_expensive_expanded_denominators() -> None:
+    x, y = sp.symbols("x y")
+    large_additive_denominator = sp.Add(
+        *(x**index + y**index for index in range(1, 180)),
+        evaluate=False,
+    )
+
+    assert int(sp.count_ops(large_additive_denominator)) > 256
+    assert _bounded_nonzero_factor_keys(large_additive_denominator) == frozenset()
+    assert _bounded_nonzero_factor_keys(x * (y + 1)) == frozenset(
+        {"x", "y + 1"}
+    )
+
+
 def test_regular_unit_contraction_removes_only_source_proved_factors() -> None:
     x, y, z = sp.symbols("x y z")
     equation = sp.expand(
@@ -112,6 +127,66 @@ def test_regular_unit_contraction_retains_unknown_factors() -> None:
     assert certificates[0].unit_factor_keys == ("x",)
     assert "y + 1" not in certificates[0].nonzero_conditions
     assert "z + 1" not in certificates[0].nonzero_conditions
+
+
+def test_regular_unit_contraction_skips_unbounded_hidden_factor_scan() -> None:
+    x, y = sp.symbols("x y")
+    equation = sp.expand((x + 1) * (y + 1))
+    known = frozenset(str(x + index) for index in range(1, 35))
+
+    equations, certificates = _contract_equations_by_known_units(
+        (equation,),
+        known,
+    )
+
+    assert equations == (equation,)
+    assert certificates == ()
+
+
+def test_regular_unit_contraction_preserves_oversized_equation_unchanged() -> None:
+    x, y = sp.symbols("x y")
+    oversized = sp.Add(
+        *(x**index * (y + 1) for index in range(1, 1_100)),
+        evaluate=False,
+    )
+
+    equations, certificates = _contract_equations_by_known_units(
+        (oversized,),
+        frozenset({"y + 1"}),
+    )
+
+    assert int(sp.count_ops(oversized)) > 1_024
+    assert equations == (oversized,)
+    assert certificates == ()
+
+
+def test_terminal_groebner_checkpoint_is_complete_and_deterministic() -> None:
+    x, y, parameter = sp.symbols("x y parameter")
+    arguments = (
+        (x + y / parameter, x * y - 1),
+        (x, y),
+        (parameter,),
+        sp.QQ.frac_field(parameter),
+        x - y,
+        (parameter,),
+    )
+
+    first = exact_bridge._terminal_groebner_checkpoint(*arguments)
+    second = exact_bridge._terminal_groebner_checkpoint(*arguments)
+
+    assert first == second
+    assert first["schema"] == "mortra.terminal_groebner_system.v1"
+    assert first["method"] == "terminal_groebner_system"
+    assert first["input_polynomials"] == (
+        "x + y/parameter",
+        "x*y - 1",
+    )
+    assert first["variables"] == ("x", "y")
+    assert first["coefficient_parameters"] == ("parameter",)
+    assert first["goal_polynomial"] == "x - y"
+    assert first["nonzero_conditions"] == ("parameter != 0",)
+    assert first["replayed"] is True
+    assert len(first["certificate_sha256"]) == 64
 
 
 def test_principal_ideal_membership_is_generic_and_replayable() -> None:
@@ -202,6 +277,19 @@ def test_complex_future_clause_is_kept_as_a_typed_boundary() -> None:
         ("on_line", "on_circle"),
         equation_start=0,
     )
+
+
+def test_relational_bilinear_forms_preserve_compact_expression_dags() -> None:
+    x, y, u, v = sp.symbols("x y u v")
+    elaborator = _RelationalJGEXElaborator(enable_affine_local_lemmas=True)
+
+    dot = elaborator._dot((x + y, x - y), (u + v, u - v))
+    cross = elaborator._cross((x + y, x - y), (u + v, u - v))
+
+    assert len(sp.Add.make_args(dot)) == 2
+    assert len(sp.Add.make_args(cross)) == 2
+    assert sp.expand(dot - ((x + y) * (u + v) + (x - y) * (u - v))) == 0
+    assert sp.expand(cross - ((x + y) * (u - v) - (x - y) * (u + v))) == 0
 
 
 def test_circle_intersection_axis_goal_projects_to_boundary_discriminant() -> None:
@@ -504,6 +592,38 @@ def test_nondegeneracy_saturation_skips_coefficient_field_units() -> None:
     assert multiplier == 1
     assert assumptions == ()
     assert quotients == [0]
+
+
+def test_nondegeneracy_saturation_skips_eliminated_symbol_factors() -> None:
+    x, y, parameter, eliminated = sp.symbols("x y parameter eliminated")
+    basis = sp.groebner(
+        (x * y,),
+        x,
+        y,
+        order="grevlex",
+        domain=sp.QQ.frac_field(parameter),
+    )
+    events: list[dict[str, object]] = []
+
+    quotients, remainder, multiplier, assumptions = (
+        _reduce_with_nondegeneracy_saturation(
+            basis,
+            y,
+            (("x + eliminated", x + eliminated),),
+            max_rounds=1,
+            progress_callback=events.append,
+        )
+    )
+
+    assert remainder == y
+    assert multiplier == 1
+    assert assumptions == ()
+    assert quotients == [0]
+    assert any(
+        event.get("stage") == "nonrepresentable_denominators_skipped"
+        and event.get("skipped_count") == 1
+        for event in events
+    )
 
 
 def test_rational_coefficient_saturation_uses_a_compatible_ground_domain() -> None:
@@ -1303,6 +1423,35 @@ def test_relational_ring_keeps_constrained_principal_lengths() -> None:
     }
     assert live_lengths
     assert live_lengths <= set(variables)
+
+
+def test_triangle_gauge_reuses_its_base_as_the_principal_side_length() -> None:
+    (
+        elaborator,
+        _,
+        _,
+        _,
+        _,
+        equations,
+        _,
+    ) = _prepare_exact_system(
+        "a b c = triangle; i = incenter a b c ? coll a i b",
+        representation="relational",
+        expand_equations=False,
+    )
+
+    base = sp.Symbol("_base_0")
+    assert elaborator.side_lengths[("a", "b")] == base
+    assert any(
+        assumption == "principal_length _base_0=distance(a,b)"
+        for assumption in elaborator.normalization_assumptions
+    )
+    assert not any(
+        sp.factor(equation) in {base**2 - length**2, length**2 - base**2}
+        for equation in equations
+        for length in equation.free_symbols
+        if length.name.startswith("_length_")
+    )
 
 
 def test_relational_ring_keeps_constrained_free_locus_coordinates() -> None:
