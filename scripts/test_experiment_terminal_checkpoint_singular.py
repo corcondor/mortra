@@ -2,6 +2,7 @@ import json
 
 import sympy as sp
 
+from scripts.experiment_guarded_linear_singular import _bounded_goal_degree
 from scripts.experiment_terminal_checkpoint_singular import (
     factor_terminal_systems,
     load_terminal_checkpoint,
@@ -64,6 +65,47 @@ def test_terminal_checkpoint_loader_rejects_unproved_denominator(tmp_path) -> No
         assert "unproved denominator" in str(error)
     else:
         raise AssertionError("an unproved denominator must not be cleared")
+
+
+def test_terminal_checkpoint_loader_parses_large_expanded_polynomial(tmp_path) -> None:
+    checkpoint = tmp_path / "checkpoint.json"
+    term_count = 4_000
+    expanded_polynomial = " + ".join(
+        f"x**{degree}*y" for degree in range(term_count)
+    )
+    checkpoint.write_text(
+        json.dumps(
+            {
+                "schema": "mortra.terminal_groebner_system.v1",
+                "certificate_sha256": "large-expression",
+                "input_polynomials": [expanded_polynomial],
+                "variables": ["x", "y"],
+                "coefficient_parameters": [],
+                "goal_polynomial": "y",
+                "nonzero_conditions": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    loaded = load_terminal_checkpoint(checkpoint)
+
+    x, y = sp.symbols("x y")
+    polynomial = sp.Poly(loaded["polynomials"][0], x, y)
+    assert polynomial.length() == term_count
+    assert polynomial.total_degree() == term_count
+
+
+def test_bounded_goal_degree_treats_parameters_as_coefficients() -> None:
+    x, y, p = sp.symbols("x y p")
+
+    degree = _bounded_goal_degree(
+        p**20 * x**3 + p * y**5,
+        variables=(x, y),
+        coefficient_parameters=(p,),
+    )
+
+    assert degree == 5
 
 
 def test_factor_terminal_systems_builds_complete_replayed_cover() -> None:

@@ -25,6 +25,59 @@ from worker.backend.singular_lift_backend import (  # noqa: E402
 )
 
 
+_DIRECT_SYMPIFY_CHARACTER_LIMIT = 32_768
+
+
+def _split_top_level_addends(text: str) -> tuple[str, ...]:
+    """Split an expanded expression without compiling one enormous sum."""
+
+    addends: list[str] = []
+    depth = 0
+    start = 0
+    for index, character in enumerate(text):
+        if character in "([{":
+            depth += 1
+        elif character in ")]}":
+            depth -= 1
+            if depth < 0:
+                raise ValueError("unbalanced checkpoint expression")
+        elif character in "+-" and depth == 0 and index > start:
+            previous = text[index - 1]
+            if previous in "eE" and index >= 2 and text[index - 2].isdigit():
+                continue
+            addend = text[start:index].strip()
+            if addend:
+                addends.append(addend)
+            start = index
+    if depth != 0:
+        raise ValueError("unbalanced checkpoint expression")
+    final_addend = text[start:].strip()
+    if final_addend:
+        addends.append(final_addend)
+    return tuple(addends)
+
+
+def _sympify_checkpoint_expression(
+    value: object,
+    *,
+    symbols: dict[str, sp.Symbol],
+) -> sp.Expr:
+    """Parse exact checkpoint expressions without Python AST-depth failures."""
+
+    text = str(value)
+    if len(text) <= _DIRECT_SYMPIFY_CHARACTER_LIMIT:
+        return sp.sympify(text, locals=symbols)
+    addends = _split_top_level_addends(text)
+    if len(addends) <= 1:
+        return sp.sympify(text, locals=symbols)
+    return sp.Add(
+        *(
+            _sympify_checkpoint_expression(addend, symbols=symbols)
+            for addend in addends
+        )
+    )
+
+
 def load_terminal_checkpoint(
     path: Path,
     *,
@@ -44,11 +97,18 @@ def load_terminal_checkpoint(
     )
     symbols = {name: sp.Symbol(name) for name in names}
     equations = tuple(
-        sp.sympify(item, locals=symbols) for item in payload["input_polynomials"]
+        _sympify_checkpoint_expression(item, symbols=symbols)
+        for item in payload["input_polynomials"]
     )
-    goal = sp.sympify(payload["goal_polynomial"], locals=symbols)
+    goal = _sympify_checkpoint_expression(
+        payload["goal_polynomial"],
+        symbols=symbols,
+    )
     nonzero_expressions = tuple(
-        sp.sympify(str(item).removesuffix(" != 0"), locals=symbols)
+        _sympify_checkpoint_expression(
+            str(item).removesuffix(" != 0"),
+            symbols=symbols,
+        )
         for item in payload.get("nonzero_conditions", ())
     )
     all_declared_symbols = tuple(symbols.values())
@@ -125,7 +185,8 @@ def load_terminal_checkpoint(
         "coefficient_parameters": coefficient_parameters,
         "nonzero_expressions": nonzero_expressions,
         "nonzero_factor_expressions": tuple(
-            sp.sympify(key, locals=symbols) for key in sorted(known_nonzero_keys)
+            _sympify_checkpoint_expression(key, symbols=symbols)
+            for key in sorted(known_nonzero_keys)
         ),
         "known_nonzero_factor_keys": tuple(sorted(known_nonzero_keys)),
         "full_ring_variables": full_ring_variables,

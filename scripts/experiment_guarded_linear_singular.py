@@ -33,7 +33,40 @@ from worker.backend.source_guarded_linear_elimination import (  # noqa: E402
 from worker.backend.source_preserving_polynomial_reduction import (  # noqa: E402
     lift_reduced_multipliers,
     reduce_by_monic_univariate_relations,
+    retarget_source_preserving_reduction,
 )
+
+
+class CertificateDegreeBudgetExceeded(ValueError):
+    def __init__(
+        self,
+        *,
+        required: int,
+        requested: int,
+        triangular_elapsed_seconds: float,
+        triangular_source_reused: bool,
+    ) -> None:
+        super().__init__(
+            f"bounded certificate requires degree {required}, budget is {requested}"
+        )
+        self.required = required
+        self.requested = requested
+        self.triangular_elapsed_seconds = triangular_elapsed_seconds
+        self.triangular_source_reused = triangular_source_reused
+
+
+def _bounded_goal_degree(
+    goal: sp.Expr,
+    *,
+    variables: tuple[sp.Symbol, ...],
+    coefficient_parameters: tuple[sp.Symbol, ...],
+) -> int:
+    domain = (
+        sp.QQ.frac_field(*coefficient_parameters)
+        if coefficient_parameters
+        else sp.QQ
+    )
+    return int(sp.Poly(goal, *variables, domain=domain).total_degree())
 
 
 def _parse_multipliers(
@@ -68,6 +101,7 @@ def main() -> int:
     parser.add_argument("--max-certificate-degree", type=int)
     parser.add_argument("--max-saturation-rounds", type=int, default=0)
     parser.add_argument("--max-saturation-candidates", type=int, default=16)
+    parser.add_argument("--saturation-start-index", type=int, default=0)
     parser.add_argument("--admissible-branch-index", type=int, default=0)
     parser.add_argument(
         "--unfactored",
@@ -87,7 +121,11 @@ def main() -> int:
         ),
     )
     args = parser.parse_args()
-    if args.max_saturation_rounds < 0 or args.max_saturation_candidates < 0:
+    if (
+        args.max_saturation_rounds < 0
+        or args.max_saturation_candidates < 0
+        or args.saturation_start_index < 0
+    ):
         raise ValueError("saturation bounds must be non-negative")
 
     terminal = load_terminal_checkpoint(
@@ -151,7 +189,10 @@ def main() -> int:
             flush=True,
         )
 
+    triangular_base = None
+
     def run_multiplier(multiplier: sp.Expr):
+        nonlocal triangular_base
         proof_goal = (
             selected_goal_factor.factor
             if selected_goal_factor is not None
@@ -159,17 +200,26 @@ def main() -> int:
         )
         target = sp.sympify(multiplier) * proof_goal
         triangular_started = time.perf_counter()
-        triangular_result = reduce_by_monic_univariate_relations(
-            reduced.reduced_polynomials,
-            reduced.reduced_variables,
-            target,
-            max_degree=args.max_triangular_degree,
-        )
+        triangular_reused = triangular_base is not None
+        if triangular_base is None:
+            triangular_result = reduce_by_monic_univariate_relations(
+                reduced.reduced_polynomials,
+                reduced.reduced_variables,
+                target,
+                max_degree=args.max_triangular_degree,
+            )
+            triangular_base = triangular_result
+        else:
+            triangular_result = retarget_source_preserving_reduction(
+                triangular_base,
+                target,
+            )
         triangular_seconds = time.perf_counter() - triangular_started
         print(
             "stage=triangular_reduction_complete "
             f"seconds={triangular_seconds:.3f} "
-            f"variables={len(triangular_result.reduced_variables)}",
+            f"variables={len(triangular_result.reduced_variables)} "
+            f"source_reused={str(triangular_reused).lower()}",
             flush=True,
         )
         ordered_proof_variables = triangular_result.reduced_variables
@@ -190,6 +240,23 @@ def main() -> int:
                 )
             ordered_proof_variables = tuple(by_name[name] for name in requested_names)
         backend_started = time.perf_counter()
+        required_certificate_degree = None
+        if args.basis_engine == "bounded_linear":
+            required_certificate_degree = _bounded_goal_degree(
+                triangular_result.reduced_goal,
+                variables=ordered_proof_variables,
+                coefficient_parameters=terminal["coefficient_parameters"],
+            )
+            if (
+                args.max_certificate_degree is not None
+                and args.max_certificate_degree < required_certificate_degree
+            ):
+                raise CertificateDegreeBudgetExceeded(
+                    required=required_certificate_degree,
+                    requested=args.max_certificate_degree,
+                    triangular_elapsed_seconds=triangular_seconds,
+                    triangular_source_reused=triangular_reused,
+                )
         result = prove_ideal_membership_with_singular(
             tuple(item.expression for item in triangular_result.reduced_polynomials),
             ordered_proof_variables,
@@ -238,6 +305,12 @@ def main() -> int:
             result,
             lifted_result,
             accepted,
+            {
+                "required_certificate_degree": required_certificate_degree,
+                "triangular_elapsed_seconds": triangular_seconds,
+                "triangular_source_reused": triangular_reused,
+                "backend_elapsed_seconds": backend_seconds,
+            },
         )
 
     (
@@ -246,6 +319,7 @@ def main() -> int:
         certificate,
         lifted,
         strictly_accepted,
+        ordinary_attempt_metrics,
     ) = run_multiplier(sp.Integer(1))
     ordinary_certificate = certificate
     saturation_factors = source_proved_nondegeneracy_factors(
@@ -258,20 +332,54 @@ def main() -> int:
     )
     saturation_attempts: list[dict[str, object]] = []
     attempted = 0
+    candidate_index = -1
     if not strictly_accepted:
         for depth in range(1, args.max_saturation_rounds + 1):
             for selected_factors in combinations(saturation_factors, depth):
+                candidate_index += 1
+                if candidate_index < args.saturation_start_index:
+                    continue
                 if attempted >= args.max_saturation_candidates:
                     break
                 attempted += 1
                 multiplier = sp.Mul(*selected_factors)
-                (
-                    candidate_triangular,
-                    candidate_variables,
-                    candidate_certificate,
-                    candidate_lifted,
-                    candidate_accepted,
-                ) = run_multiplier(multiplier)
+                try:
+                    (
+                        candidate_triangular,
+                        candidate_variables,
+                        candidate_certificate,
+                        candidate_lifted,
+                        candidate_accepted,
+                        candidate_attempt_metrics,
+                    ) = run_multiplier(multiplier)
+                except CertificateDegreeBudgetExceeded as error:
+                    saturation_attempts.append(
+                        {
+                            "depth": depth,
+                            "multiplier": sp.sstr(multiplier),
+                            "status": "skipped_certificate_degree_budget",
+                            "proved": False,
+                            "replayed": False,
+                            "strictly_accepted": False,
+                            "certificate_sha256": None,
+                            "required_certificate_degree": error.required,
+                            "requested_certificate_degree": error.requested,
+                            "triangular_elapsed_seconds": (
+                                error.triangular_elapsed_seconds
+                            ),
+                            "triangular_source_reused": (
+                                error.triangular_source_reused
+                            ),
+                            "backend_elapsed_seconds": 0.0,
+                        }
+                    )
+                    print(
+                        "stage=saturation_candidate_skipped "
+                        f"required_degree={error.required} "
+                        f"requested_degree={error.requested}",
+                        flush=True,
+                    )
+                    continue
                 saturation_attempts.append(
                     {
                         "depth": depth,
@@ -283,6 +391,21 @@ def main() -> int:
                         "certificate_sha256": (
                             candidate_certificate.certificate_sha256
                         ),
+                        "required_certificate_degree": (
+                            candidate_attempt_metrics[
+                                "required_certificate_degree"
+                            ]
+                        ),
+                        "requested_certificate_degree": args.max_certificate_degree,
+                        "triangular_elapsed_seconds": candidate_attempt_metrics[
+                            "triangular_elapsed_seconds"
+                        ],
+                        "triangular_source_reused": candidate_attempt_metrics[
+                            "triangular_source_reused"
+                        ],
+                        "backend_elapsed_seconds": candidate_attempt_metrics[
+                            "backend_elapsed_seconds"
+                        ],
                     }
                 )
                 if candidate_accepted:
@@ -394,9 +517,14 @@ def main() -> int:
             "proof_variable_order": tuple(str(item) for item in proof_variables),
         },
         "ordinary_ideal_certificate": asdict(ordinary_certificate),
+        "ordinary_required_certificate_degree": (
+            ordinary_attempt_metrics["required_certificate_degree"]
+        ),
+        "ordinary_attempt_metrics": ordinary_attempt_metrics,
         "nondegeneracy_saturation_search": {
             "max_rounds": args.max_saturation_rounds,
             "max_candidates": args.max_saturation_candidates,
+            "start_index": args.saturation_start_index,
             "candidate_factors": tuple(sp.sstr(item) for item in saturation_factors),
             "attempts": tuple(saturation_attempts),
             "selected_multiplier": (

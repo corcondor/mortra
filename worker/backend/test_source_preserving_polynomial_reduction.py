@@ -3,6 +3,7 @@ import sympy as sp
 from worker.backend.source_preserving_polynomial_reduction import (
     lift_reduced_multipliers,
     reduce_by_monic_univariate_relations,
+    retarget_source_preserving_reduction,
 )
 
 
@@ -36,6 +37,27 @@ def test_quadratic_reducer_remains_in_the_quotient_proof_ring() -> None:
     assert len(reduction.reduced_polynomials) == 2
     assert reduction.reduced_polynomials[1].expression == a * x + b
     assert lift_reduced_multipliers(reduction, (0, 1)) == (0, 1)
+
+
+def test_retarget_reuses_source_reduction_and_replays_new_goal() -> None:
+    x, a, b = sp.symbols("x a b")
+    source = (x**2 - a, x**3 + b)
+    initial = reduce_by_monic_univariate_relations(source, (x,), x**3 + b)
+
+    retargeted = retarget_source_preserving_reduction(initial, x**4 - a**2)
+    fresh = reduce_by_monic_univariate_relations(source, (x,), x**4 - a**2)
+
+    assert retargeted.reduced_polynomials == initial.reduced_polynomials
+    assert retargeted.reduced_goal == fresh.reduced_goal == 0
+    assert retargeted.goal_reducer_quotients == fresh.goal_reducer_quotients
+    lifted = lift_reduced_multipliers(retargeted, (0, 0))
+    assert sp.expand(
+        retargeted.goal
+        - sum(
+            multiplier * polynomial
+            for multiplier, polynomial in zip(lifted, source, strict=True)
+        )
+    ) == 0
 
 
 def test_only_monic_univariate_relations_are_selected() -> None:

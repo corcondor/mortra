@@ -1,0 +1,183 @@
+{
+  "experiment": "source-guarded-linear-elimination-singular-lift",
+  "generated_at": "2026-08-25T14:50:47.864032+00:00",
+  "uses_llm": false,
+  "uses_expected_answer": false,
+  "uses_problem_specific_solver_logic": false,
+  "source_checkpoint": "C:/Users/81808/.openclaw/workspace/mortra-1-release/data/jgex-terminal-checkpoint-small6-runs/2024ELMOSLp1.progress.checkpoints/d040793c41082f5df1e724f8468505587e8f68f25eafea6e3dcea3a17d0957cc.json",
+  "source_checkpoint_sha256": "d040793c41082f5df1e724f8468505587e8f68f25eafea6e3dcea3a17d0957cc",
+  "admissible_factor_cover": {
+    "enumerated": false,
+    "branch_count": null,
+    "selected_branch_index": null,
+    "selected_choice_indices": null,
+    "factorizations_replayed": true
+  },
+  "proof_scope": "unfactored_source_system",
+  "linear_elimination": {
+    "source_equation_count": 3,
+    "source_variable_count": 4,
+    "step_count": 1,
+    "elapsed_seconds": 0.15877440001349896,
+    "stopped_reason": null,
+    "max_expression_operation_count": 100000,
+    "max_total_operation_count": 300000,
+    "operation_counts_by_stage": [
+      [
+        6,
+        39,
+        63,
+        35
+      ],
+      [
+        39,
+        105,
+        52
+      ]
+    ],
+    "reduced_equation_count": 2,
+    "reduced_variable_count": 3,
+    "steps": [
+      {
+        "pivot_source_index": 0,
+        "pivot_variable": "_free_x_13",
+        "coefficient": "_third_y_2",
+        "coefficient_factor_keys": [
+          "_third_y_2"
+        ],
+        "coefficient_source_proved_nonzero": true
+      }
+    ]
+  },
+  "goal_factorization": {
+    "candidate_count": 2,
+    "selected_index": 1,
+    "selected_factor": "-_base_0*_fourth_x_3*_fourth_y_4*_free_y_14*_third_y_2**2 + _base_0*_fourth_y_4**2*_third_y_2*(_base_0*_third_y_2 + _free_y_14*(-_base_0 + _third_x_1)) + _fourth_x_3**2*_free_y_12*_free_y_14*_third_y_2**2 + _fourth_y_4**2*_free_y_12*_free_y_14*_third_y_2**2 - _fourth_y_4**2*_free_y_14**2*_third_y_2**2 - _fourth_y_4**2*(_base_0*_third_y_2 + _free_y_14*(-_base_0 + _third_x_1))**2",
+    "selected_complementary_multiplier": "_base_0*_free_y_12",
+    "selected_replayed": true,
+    "candidates": [
+      {
+        "factor": "_free_y_12",
+        "complementary_multiplier": "_base_0*(-_base_0*_fourth_x_3*_fourth_y_4*_free_y_14*_third_y_2**2 + _base_0*_fourth_y_4**2*_third_y_2*(_base_0*_third_y_2 + _free_y_14*(-_base_0 + _third_x_1)) + _fourth_x_3**2*_free_y_12*_free_y_14*_third_y_2**2 + _fourth_y_4**2*_free_y_12*_free_y_14*_third_y_2**2 - _fourth_y_4**2*_free_y_14**2*_third_y_2**2 - _fourth_y_4**2*(_base_0*_third_y_2 + _free_y_14*(-_base_0 + _third_x_1))**2)",
+        "factor_operation_count": 0,
+        "replayed": true
+      },
+      {
+        "factor": "-_base_0*_fourth_x_3*_fourth_y_4*_free_y_14*_third_y_2**2 + _base_0*_fourth_y_4**2*_third_y_2*(_base_0*_third_y_2 + _free_y_14*(-_base_0 + _third_x_1)) + _fourth_x_3**2*_free_y_12*_free_y_14*_third_y_2**2 + _fourth_y_4**2*_free_y_12*_free_y_14*_third_y_2**2 - _fourth_y_4**2*_free_y_14**2*_third_y_2**2 - _fourth_y_4**2*(_base_0*_third_y_2 + _free_y_14*(-_base_0 + _third_x_1))**2",
+        "complementary_multiplier": "_base_0*_free_y_12",
+        "factor_operation_count": 40,
+        "replayed": true
+      }
+    ]
+  },
+  "source_preserving_reduction": {
+    "reducer_input_indices": [],
+    "eliminated_reducer_input_indices": [],
+    "kept_input_indices": [
+      0,
+      1
+    ],
+    "input_operation_counts": [
+      39,
+      105
+    ],
+    "reduced_operation_counts": [
+      39,
+      105
+    ],
+    "goal_operation_count_before": 52,
+    "goal_operation_count_after": 40,
+    "proof_variable_order": [
+      "_free_y_14",
+      "_free_y_12",
+      "_free_x_9"
+    ]
+  },
+  "ordinary_ideal_certificate": {
+    "initial_polynomials": [
+      "-_base_0**2*_free_x_9*_third_y_2 + _base_0*_fourth_x_3*_free_x_9*_third_y_2 - _base_0*_fourth_y_4*_free_x_9*_third_x_1 + _base_0*_fourth_y_4*_third_x_1**2 + _base_0*_fourth_y_4*_third_y_2**2 + _base_0*_free_x_9**2*_third_y_2 - _fourth_x_3*_free_x_9**2*_third_y_2 + _fourth_y_4*_free_x_9**2*_third_x_1 - _fourth_y_4*_free_x_9*_third_x_1**2 - _fourth_y_4*_free_x_9*_third_y_2**2",
+      "-_base_0**2*_fourth_x_3*_free_y_14*_third_y_2**2 - _base_0**2*_fourth_y_4*_free_x_9*_third_y_2**2 + _base_0**2*_fourth_y_4*_third_y_2*(_base_0*_third_y_2 + _free_y_14*(-_base_0 + _third_x_1)) + _base_0**2*_free_x_9*_free_y_14*_third_y_2**2 + _base_0*_fourth_x_3**2*_free_y_14*_third_y_2**2 + _base_0*_fourth_y_4**2*_free_y_14*_third_y_2**2 + _base_0*_fourth_y_4*_free_x_9**2*_third_y_2**2 - _base_0*_fourth_y_4*_free_y_14**2*_third_y_2**2 - _base_0*_fourth_y_4*(_base_0*_third_y_2 + _free_y_14*(-_base_0 + _third_x_1))**2 - _base_0*_free_x_9**2*_free_y_14*_third_y_2**2 - _fourth_x_3**2*_free_x_9*_free_y_14*_third_y_2**2 + _fourth_x_3*_free_x_9**2*_free_y_14*_third_y_2**2 - _fourth_y_4**2*_free_x_9*_free_y_14*_third_y_2**2 - _fourth_y_4*_free_x_9**2*_third_y_2*(_base_0*_third_y_2 + _free_y_14*(-_base_0 + _third_x_1)) + _fourth_y_4*_free_x_9*_free_y_14**2*_third_y_2**2 + _fourth_y_4*_free_x_9*(_base_0*_third_y_2 + _free_y_14*(-_base_0 + _third_x_1))**2"
+    ],
+    "variables": [
+      "_free_y_14",
+      "_free_y_12",
+      "_free_x_9"
+    ],
+    "monomial_order": "bounded_total_degree",
+    "basis_engine": "bounded_linear",
+    "basis_polynomials": [],
+    "goal_polynomial": "-_base_0*_fourth_x_3*_fourth_y_4*_free_y_14*_third_y_2**2 + _base_0*_fourth_y_4**2*_third_y_2*(_base_0*_third_y_2 + _free_y_14*(-_base_0 + _third_x_1)) + _fourth_x_3**2*_free_y_12*_free_y_14*_third_y_2**2 + _fourth_y_4**2*_free_y_12*_free_y_14*_third_y_2**2 - _fourth_y_4**2*_free_y_14**2*_third_y_2**2 - _fourth_y_4**2*(_base_0*_third_y_2 + _free_y_14*(-_base_0 + _third_x_1))**2",
+    "remainder": "NONZERO",
+    "initial_multipliers": [
+      "0",
+      "0"
+    ],
+    "replay_residual": "-_base_0*_fourth_x_3*_fourth_y_4*_free_y_14*_third_y_2**2 + _base_0*_fourth_y_4**2*_third_y_2*(_base_0*_third_y_2 + _free_y_14*(-_base_0 + _third_x_1)) + _fourth_x_3**2*_free_y_12*_free_y_14*_third_y_2**2 + _fourth_y_4**2*_free_y_12*_free_y_14*_third_y_2**2 - _fourth_y_4**2*_free_y_14**2*_third_y_2**2 - _fourth_y_4**2*(_base_0*_third_y_2 + _free_y_14*(-_base_0 + _third_x_1))**2",
+    "proved": false,
+    "replayed": false,
+    "status": "not_proved",
+    "elapsed_seconds": 23.928840400010813,
+    "certificate_sha256": "2be312f4aa44ed01ed4b1e4a8703969a7bdcc2005aed1cc9f5599b5dbe9fef4f",
+    "singular_stdout_sha256": "676b9fe9486ad647946689346ea4c30874bb39c62458104ef0646b31bf52afeb",
+    "certificate_degree": 5,
+    "lift_matrix_rows": null,
+    "lift_matrix_columns": null,
+    "lift_nonzero_entries": null,
+    "bounded_column_count": 30,
+    "runtime_diagnostics": [
+      "// ** Could not find dynamic library: p_Procs_FieldIndep.so (path )",
+      "// ** Singular will work properly, but much slower.",
+      "// ** See the INSTALL section in the Singular manual for details."
+    ]
+  },
+  "ordinary_required_certificate_degree": 2,
+  "nondegeneracy_saturation_search": {
+    "max_rounds": 0,
+    "max_candidates": 0,
+    "start_index": 0,
+    "candidate_factors": [],
+    "attempts": [],
+    "selected_multiplier": null
+  },
+  "singular_certificate": {
+    "initial_polynomials": [
+      "-_base_0**2*_free_x_9*_third_y_2 + _base_0*_fourth_x_3*_free_x_9*_third_y_2 - _base_0*_fourth_y_4*_free_x_9*_third_x_1 + _base_0*_fourth_y_4*_third_x_1**2 + _base_0*_fourth_y_4*_third_y_2**2 + _base_0*_free_x_9**2*_third_y_2 - _fourth_x_3*_free_x_9**2*_third_y_2 + _fourth_y_4*_free_x_9**2*_third_x_1 - _fourth_y_4*_free_x_9*_third_x_1**2 - _fourth_y_4*_free_x_9*_third_y_2**2",
+      "-_base_0**2*_fourth_x_3*_free_y_14*_third_y_2**2 - _base_0**2*_fourth_y_4*_free_x_9*_third_y_2**2 + _base_0**2*_fourth_y_4*_third_y_2*(_base_0*_third_y_2 + _free_y_14*(-_base_0 + _third_x_1)) + _base_0**2*_free_x_9*_free_y_14*_third_y_2**2 + _base_0*_fourth_x_3**2*_free_y_14*_third_y_2**2 + _base_0*_fourth_y_4**2*_free_y_14*_third_y_2**2 + _base_0*_fourth_y_4*_free_x_9**2*_third_y_2**2 - _base_0*_fourth_y_4*_free_y_14**2*_third_y_2**2 - _base_0*_fourth_y_4*(_base_0*_third_y_2 + _free_y_14*(-_base_0 + _third_x_1))**2 - _base_0*_free_x_9**2*_free_y_14*_third_y_2**2 - _fourth_x_3**2*_free_x_9*_free_y_14*_third_y_2**2 + _fourth_x_3*_free_x_9**2*_free_y_14*_third_y_2**2 - _fourth_y_4**2*_free_x_9*_free_y_14*_third_y_2**2 - _fourth_y_4*_free_x_9**2*_third_y_2*(_base_0*_third_y_2 + _free_y_14*(-_base_0 + _third_x_1)) + _fourth_y_4*_free_x_9*_free_y_14**2*_third_y_2**2 + _fourth_y_4*_free_x_9*(_base_0*_third_y_2 + _free_y_14*(-_base_0 + _third_x_1))**2"
+    ],
+    "variables": [
+      "_free_y_14",
+      "_free_y_12",
+      "_free_x_9"
+    ],
+    "monomial_order": "bounded_total_degree",
+    "basis_engine": "bounded_linear",
+    "basis_polynomials": [],
+    "goal_polynomial": "-_base_0*_fourth_x_3*_fourth_y_4*_free_y_14*_third_y_2**2 + _base_0*_fourth_y_4**2*_third_y_2*(_base_0*_third_y_2 + _free_y_14*(-_base_0 + _third_x_1)) + _fourth_x_3**2*_free_y_12*_free_y_14*_third_y_2**2 + _fourth_y_4**2*_free_y_12*_free_y_14*_third_y_2**2 - _fourth_y_4**2*_free_y_14**2*_third_y_2**2 - _fourth_y_4**2*(_base_0*_third_y_2 + _free_y_14*(-_base_0 + _third_x_1))**2",
+    "remainder": "NONZERO",
+    "initial_multipliers": [
+      "0",
+      "0"
+    ],
+    "replay_residual": "-_base_0*_fourth_x_3*_fourth_y_4*_free_y_14*_third_y_2**2 + _base_0*_fourth_y_4**2*_third_y_2*(_base_0*_third_y_2 + _free_y_14*(-_base_0 + _third_x_1)) + _fourth_x_3**2*_free_y_12*_free_y_14*_third_y_2**2 + _fourth_y_4**2*_free_y_12*_free_y_14*_third_y_2**2 - _fourth_y_4**2*_free_y_14**2*_third_y_2**2 - _fourth_y_4**2*(_base_0*_third_y_2 + _free_y_14*(-_base_0 + _third_x_1))**2",
+    "proved": false,
+    "replayed": false,
+    "status": "not_proved",
+    "elapsed_seconds": 23.928840400010813,
+    "certificate_sha256": "2be312f4aa44ed01ed4b1e4a8703969a7bdcc2005aed1cc9f5599b5dbe9fef4f",
+    "singular_stdout_sha256": "676b9fe9486ad647946689346ea4c30874bb39c62458104ef0646b31bf52afeb",
+    "certificate_degree": 5,
+    "lift_matrix_rows": null,
+    "lift_matrix_columns": null,
+    "lift_nonzero_entries": null,
+    "bounded_column_count": 30,
+    "runtime_diagnostics": [
+      "// ** Could not find dynamic library: p_Procs_FieldIndep.so (path )",
+      "// ** Singular will work properly, but much slower.",
+      "// ** See the INSTALL section in the Singular manual for details."
+    ]
+  },
+  "lifted_saturation_certificate": null,
+  "strictly_accepted": false,
+  "claim_scope": "Accepted only when every source-nonzero factor case is pruned exactly, Singular's reduced lift replays, and the lifted source-level saturation identity replays with a proved-nonzero goal multiplier.",
+  "report_sha256": "af801f1c8e1662dbc64f412b8e981dd686a85ff41d198fca3135428ee7f825aa"
+}

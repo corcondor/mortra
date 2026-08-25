@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Iterable
 
 import sympy as sp
@@ -193,6 +193,38 @@ def reduce_by_monic_univariate_relations(
     )
 
 
+def retarget_source_preserving_reduction(
+    reduction: SourcePreservingReduction,
+    goal: sp.Expr,
+) -> SourcePreservingReduction:
+    """Reuse an exact source reduction while reducing a different goal."""
+
+    reducers: list[tuple[int, sp.Symbol, sp.Expr]] = []
+    for input_index in reduction.reducer_input_indices:
+        expression = reduction.input_polynomials[input_index]
+        proof_symbols = expression.free_symbols & set(reduction.variables)
+        if len(proof_symbols) != 1:
+            raise ValueError("stored triangular reducer is no longer univariate")
+        variable = next(iter(proof_symbols))
+        polynomial = sp.Poly(expression, variable, domain="EX")
+        if sp.expand(polynomial.LC()) not in {sp.Integer(1), sp.Integer(-1)}:
+            raise ValueError("stored triangular reducer is no longer monic")
+        normalized = expression if polynomial.LC() == 1 else -expression
+        reducers.append((input_index, variable, normalized))
+
+    parsed_goal = sp.sympify(goal)
+    reduced_goal, goal_quotients = _reduce_expression(
+        parsed_goal,
+        tuple(reducers),
+    )
+    return replace(
+        reduction,
+        goal=parsed_goal,
+        reduced_goal=reduced_goal,
+        goal_reducer_quotients=goal_quotients,
+    )
+
+
 def lift_reduced_multipliers(
     reduction: SourcePreservingReduction,
     reduced_multipliers: Iterable[sp.Expr],
@@ -286,4 +318,5 @@ __all__ = [
     "SourcePreservingReduction",
     "lift_reduced_multipliers",
     "reduce_by_monic_univariate_relations",
+    "retarget_source_preserving_reduction",
 ]
