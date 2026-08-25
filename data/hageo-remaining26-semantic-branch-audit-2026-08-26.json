@@ -1,0 +1,83 @@
+{
+  "experiment": "hageo_remaining26_semantic_branch_audit",
+  "generated_at": "2026-08-26",
+  "uses_external_llm": false,
+  "uses_expected_answer": false,
+  "sources": {
+    "hageo_409_parquet": {
+      "path": "C:/Users/81808/.cache/mortra-research-sources/HAGeo-409/HAGeo-409.parquet",
+      "sha256": "6e23990b4f7b20b82d7fc44ff192a9149e430a58a7824bad266b6622d2675df9"
+    },
+    "remaining26_structure_audit": {
+      "path": "data/hageo-remaining26-structure-audit-2026-08-26.json",
+      "sha256": "79f91cb8b05a13807c68a08e6cb9fb1a5aada11ff19c236b8fffbbf0ea146813"
+    },
+    "newclid_commit": "ac6550732a950564cf7614d605b5bf1eadd29701"
+  },
+  "summary": {
+    "certified": 63,
+    "unresolved": 26,
+    "total": 89,
+    "certified_rate": 0.7078651685393258,
+    "all_unresolved_goal_predicates_seen_in_certified": true,
+    "shared_unresolved_construction_vocabulary": 22,
+    "unresolved_construction_vocabulary": 23,
+    "certified_setup_clause_median": 8,
+    "unresolved_setup_clause_median": 13.5,
+    "unresolved_with_circumcenter": 26,
+    "unresolved_with_on_circle": 23,
+    "natural_language_with_branch_or_order_qualifiers": 16
+  },
+  "case_study": {
+    "problem": "2014CHNGaoLian",
+    "natural_language_conditions_lost_by_jgex": [
+      "ABC is acute",
+      "angle BAC is not 60 degrees",
+      "A and D,E lie in opposite open half-planes bounded by BC"
+    ],
+    "normalization": {
+      "A": ["1/2", "1"],
+      "B": ["0", "0"],
+      "C": ["1", "0"]
+    },
+    "branch_parameterization": {
+      "D_epsilon": ["-3*epsilon/5", "4*epsilon/5"],
+      "E_delta": ["1+3*delta/5", "4*delta/5"],
+      "epsilon_values": [-1, 1],
+      "delta_values": [-1, 1]
+    },
+    "exact_results": [
+      {
+        "epsilon": -1,
+        "delta": -1,
+        "satisfies_natural_half_plane_condition": true,
+        "AM_squared_minus_AN_squared": "0"
+      },
+      {
+        "epsilon": 1,
+        "delta": -1,
+        "satisfies_natural_half_plane_condition": false,
+        "AM_squared_minus_AN_squared": "-5929/3600"
+      },
+      {
+        "epsilon": -1,
+        "delta": 1,
+        "satisfies_natural_half_plane_condition": false,
+        "AM_squared_minus_AN_squared": "5929/3600"
+      }
+    ],
+    "conclusion": "The polynomial loci alone include counterexample branches. The theorem becomes valid only after retaining the natural-language half-plane condition."
+  },
+  "newclid_branch_semantics": {
+    "intersection_selection": "reduce_intersection independently shuffles multiple intersections and returns the first unused point",
+    "problem_validation": "nc_problem_is_valid numerically checks assumptions and goals, so JGEXProblemBuilder rejection-samples until the goal holds",
+    "strict_implication": "A polynomial proof from the visible JGEX equalities must not silently use this goal-conditioned branch selection."
+  },
+  "required_capabilities": [
+    "typed same-side and opposite-side predicates",
+    "between, ray, segment, interior and second-intersection semantics",
+    "semialgebraic branch certificates independent of the expected goal",
+    "typed re-elaboration of local circle and tangent lemmas",
+    "proof-DAG compression for long circumcenter and circle chains"
+  ]
+}
