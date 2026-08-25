@@ -1,0 +1,1 @@
+t1 t2 t3 = triangle; i = circumcenter t1 t2 t3; t4 = on_circle i t1; a = on_tline t1 i t1, on_tline t2 i t2; b = on_tline t2 i t2, on_tline t3 i t3; c = on_tline t3 i t3, on_tline t4 i t4; d = on_tline t1 i t1, on_tline t4 i t4; t5 = on_circle i t1, on_tline i a c; p = on_tline t5 i t5, on_line b d; t = reflect t5 i p; o = circumcenter a t c ? coll i o t

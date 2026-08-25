@@ -198,6 +198,61 @@ def _audit_exact_json(
     return True, "replayed_jgex_exact_certificate"
 
 
+def _audit_exact_chart_json(
+    proof_path: Path,
+    certificate: Mapping[str, Any],
+) -> tuple[bool, str]:
+    """Audit a structural exact-chart proof and its application replay."""
+
+    proof = _load(proof_path)
+    selected = proof.get("selected")
+    if not isinstance(selected, Mapping):
+        return False, "exact_chart_has_no_selected_proof"
+    chart = selected.get("certificate")
+    application = selected.get("application")
+    if not isinstance(chart, Mapping) or not isinstance(application, Mapping):
+        return False, "exact_chart_has_no_replay_payload"
+    residuals = chart.get("replay_residuals")
+    if not isinstance(residuals, Mapping):
+        return False, "exact_chart_has_no_residual_map"
+
+    chart_hash = str(chart.get("certificate_sha256", ""))
+    checks = {
+        "portfolio_solved": proof.get("solved") is True,
+        "portfolio_not_conditional": proof.get("conditional") is False,
+        "portfolio_not_ambiguous": proof.get("ambiguous") is False,
+        "selected_proved": selected.get("proof_status") == "proved",
+        "no_undischarged_obligations": not selected.get(
+            "undischarged_obligations", ()
+        ),
+        "chart_replayed": chart.get("replayed") is True,
+        "chart_domain_discharged": chart.get("all_conditions_discharged") is True,
+        "nonempty_zero_residuals": bool(residuals)
+        and all(str(value) == "0" for value in residuals.values()),
+        "application_replayed": application.get("replayed") is True,
+        "application_domain_discharged": not application.get(
+            "undischarged_nondegeneracy_obligations", ()
+        ),
+        "certificate_hash_chain": bool(chart_hash)
+        and selected.get("chart_certificate_sha256") == chart_hash
+        and application.get("chart_certificate_sha256") == chart_hash
+        and certificate.get("proof_sha256") == chart_hash,
+        "source_hash_chain": bool(proof.get("source_sha256"))
+        and selected.get("source_sha256") == proof.get("source_sha256")
+        and application.get("source_sha256") == proof.get("source_sha256")
+        and certificate.get("input_sha256") == proof.get("source_sha256"),
+        "theorem_chain": bool(selected.get("theorem"))
+        and selected.get("theorem") == chart.get("theorem")
+        and selected.get("theorem") == application.get("theorem"),
+    }
+    failed = sorted(name for name, ok in checks.items() if not ok)
+    if failed:
+        return False, "exact_chart_failed:" + ",".join(failed)
+    if str(certificate.get("source", "")) != "jgex_exact_chart":
+        return False, "unsupported_exact_chart_certificate_source"
+    return True, "replayed_jgex_exact_chart_certificate"
+
+
 def _audit_singular_lift_json(
     root: Path,
     proof_path: Path,
@@ -416,7 +471,12 @@ def audit_geometry_artifact(
     suffix = proof_path.suffix.lower()
     if suffix == ".json":
         proof_payload = _load(proof_path)
-        if proof_payload.get("strictly_accepted") is True and isinstance(
+        if proof_payload.get("solved") is True and isinstance(
+            proof_payload.get("selected"), Mapping
+        ):
+            admitted, reason = _audit_exact_chart_json(proof_path, certificate)
+            kind = "jgex_exact_chart_json"
+        elif proof_payload.get("strictly_accepted") is True and isinstance(
             proof_payload.get("singular_certificate"), Mapping
         ):
             admitted, reason = _audit_singular_lift_json(
