@@ -57,6 +57,11 @@ from worker.backend.orthocenter_circle_intersection_chart import (
     certify_orthocenter_circle_intersection_chart,
     render_orthocenter_circle_chart_svg,
 )
+from worker.backend.parallel_transversal_perpendicular_circles_chart import (
+    certify_jgex_parallel_transversal_perpendicular_circles_application,
+    certify_parallel_transversal_perpendicular_circles_chart,
+    render_parallel_transversal_perpendicular_circles_chart_svg,
+)
 from worker.backend.positive_similarity_six_circumcenters_chart import (
     certify_jgex_positive_similarity_six_circumcenters_application,
     certify_positive_similarity_six_circumcenters_chart,
@@ -66,6 +71,11 @@ from worker.backend.tangential_quadrilateral_second_tangent_chart import (
     certify_jgex_tangential_quadrilateral_second_tangent_application,
     certify_tangential_quadrilateral_second_tangent_chart,
     render_tangential_quadrilateral_second_tangent_chart_svg,
+)
+from worker.backend.tangent_triangle_secant_midpoint_chart import (
+    certify_jgex_tangent_triangle_secant_midpoint_application,
+    certify_tangent_triangle_secant_midpoint_chart,
+    render_tangent_triangle_secant_midpoint_chart_svg,
 )
 
 
@@ -233,6 +243,36 @@ _CHARTS = (
         certify_tangential_quadrilateral_second_tangent_chart,
         render_tangential_quadrilateral_second_tangent_chart_svg,
         (("circumcenter", 2), ("on_tline", 10), ("reflect", 1)),
+        "coll",
+    ),
+    _ChartSpec(
+        "tangent-triangle-secant-midpoint-circle-tangency",
+        "posthoc_exact_chart_replayed",
+        certify_jgex_tangent_triangle_secant_midpoint_application,
+        certify_tangent_triangle_secant_midpoint_chart,
+        render_tangent_triangle_secant_midpoint_chart_svg,
+        (
+            ("foot", 3),
+            ("circumcenter", 2),
+            ("on_circle", 3),
+            ("on_line", 2),
+            ("midpoint", 1),
+        ),
+        "coll",
+    ),
+    _ChartSpec(
+        "parallel-transversal-perpendicular-triangle-circles-tangent",
+        "posthoc_exact_chart_replayed",
+        certify_jgex_parallel_transversal_perpendicular_circles_application,
+        certify_parallel_transversal_perpendicular_circles_chart,
+        render_parallel_transversal_perpendicular_circles_chart_svg,
+        (
+            ("triangle", 1),
+            ("on_pline", 2),
+            ("on_tline", 12),
+            ("circumcenter", 2),
+            ("on_circle", 2),
+        ),
         "coll",
     ),
 )

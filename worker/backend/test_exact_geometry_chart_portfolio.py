@@ -140,3 +140,39 @@ def test_registry_replaces_2005_numeric_orientation_guards_with_exact_chart() ->
     assert result.selected.chart_id == "intersecting-chords-three-circles-collinearity"
     assert result.selected.proof_status == "proved"
     assert result.selected.undischarged_obligations == ()
+
+
+def test_registry_replays_tangent_triangle_secant_midpoint_chart() -> None:
+    source = (ROOT / "data" / "fixtures" / "2017G4.jgex.txt").read_text(
+        encoding="utf-8"
+    )
+    result = certify_jgex_with_exact_chart_portfolio(source, include_diagram=False)
+
+    assert result.solved is True
+    assert result.conditional is False
+    assert result.ambiguous is False
+    assert result.selected is not None
+    assert result.selected.chart_id == (
+        "tangent-triangle-secant-midpoint-circle-tangency"
+    )
+    assert result.selected.proof_status == "proved"
+    assert result.selected.identity_count == 19
+    assert result.selected.undischarged_obligations == ()
+
+
+def test_registry_replays_parallel_transversal_circle_family_chart() -> None:
+    source = (ROOT / "data" / "fixtures" / "2022G5.jgex.txt").read_text(
+        encoding="utf-8"
+    )
+    result = certify_jgex_with_exact_chart_portfolio(source, include_diagram=False)
+
+    assert result.solved is True
+    assert result.conditional is False
+    assert result.ambiguous is False
+    assert result.selected is not None
+    assert result.selected.chart_id == (
+        "parallel-transversal-perpendicular-triangle-circles-tangent"
+    )
+    assert result.selected.proof_status == "proved"
+    assert result.selected.identity_count == 33
+    assert result.selected.undischarged_obligations == ()
