@@ -151,6 +151,7 @@ export function MortraProductPage({ lang = 'en' }: { lang?: Lang }) {
               </div>
             </div>
             <p className={styles.headlineRatio}>{t.results.primary.ratio}</p>
+            <p className={styles.headlineNote}>{t.results.primary.note}</p>
           </div>
 
           {/* B. IMO-AG-30 — ニューラル有無と対応範囲の列を足した比較 */}

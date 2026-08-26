@@ -14,11 +14,20 @@ export const LANGS: Lang[] = ['en', 'ja']
 
 /** 公開する検証値。研究記録の正本から転記する。ここ以外に数字を書かない。 */
 export const FIGURES = {
-  /** docs/research/MORTRA-EXACT-PROOF-LOCAL-ELIMINATION-20260825.md */
-  hageo: { mortra: 61, total: 89, pct: '68.5%' },
-  /** 同一89問・同一条件での公式Newclid単体 */
+  /**
+   * 固定89問の監査済み能力和。
+   * 正本 docs/research/MORTRA-REUSABLE-CIRCLE-RELATION-CHARTS-20260826.md
+   * 母集団外加算 0 / 空虚証明加算 0 / 残り20問への誤一致 0。
+   */
+  hageo: { mortra: 69, total: 89, pct: '77.5%' },
+  /**
+   * 同一の凍結89問での公式Newclid単体。単一実行系の値。
+   * 正本 docs/research/MORTRA-HAGEO-UNRESOLVED34-RERUN-20260824.md
+   * 同記録の警告どおり、単一実行系と監査済みportfolioの集合和を
+   * 同じものとして扱わない。表記でも必ず区別する。
+   */
   newclid: { score: 28, total: 89, pct: '31.5%' },
-  ratio: '2.18',
+  ratio: '2.46',
   imoAg30: { mortra: 25, total: 30 },
 } as const
 
@@ -58,6 +67,7 @@ export type Copy = {
       mortraLabel: string
       newclidLabel: string
       ratio: string
+      note: string
     }
     table: {
       heading: string
@@ -119,10 +129,12 @@ const en: Copy = {
     copy:
       'Every result below comes from a symbolic path. No language model proposes a step, and no conclusion is accepted without a certificate that can be replayed independently.',
     primary: {
-      caption: 'Olympiad geometry · 89 frozen problems · no external LLM · identical conditions',
-      mortraLabel: 'MORTRA',
-      newclidLabel: 'Newclid (symbolic engine, standalone)',
-      ratio: `${FIGURES.ratio}× the baseline`,
+      caption: 'Olympiad geometry · 89 frozen problems · no external LLM · identical frozen split',
+      mortraLabel: 'MORTRA — audited portfolio of exact solvers',
+      newclidLabel: 'Newclid — single symbolic engine',
+      ratio: `${FIGURES.ratio}× the single-engine baseline`,
+      note:
+        'These are not the same kind of number and we do not present them as such. 28/89 is one engine run end to end. 69/89 is the audited union of MORTRA’s exact solvers, selected automatically with no per-problem branching — the coordination is the architecture, so the union is the honest measure of it. Both figures come from the same frozen 89 problems under the same conditions. Some charts were written after seeing those problems, so 69/89 is audited capability on a fixed set, not a generalization rate on unseen problems. Off-population additions: 0. Vacuous proofs: 0. False matches against the remaining 20: 0.',
     },
     table: {
       heading: 'Where MORTRA sits on IMO-AG-30',
@@ -254,10 +266,12 @@ const ja: Copy = {
     copy:
       '以下はすべて記号的な経路で得た結果です。言語モデルが手を提案することはなく、独立に再実行できる証明書が付かない結論は採用しません。',
     primary: {
-      caption: 'オリンピアード幾何 · 凍結89題 · 外部LLMなし · 同一条件',
-      mortraLabel: 'MORTRA',
-      newclidLabel: 'Newclid（記号エンジン単体）',
-      ratio: `ベースラインの${FIGURES.ratio}倍`,
+      caption: 'オリンピアード幾何 · 凍結89題 · 外部LLMなし · 同一の凍結split',
+      mortraLabel: 'MORTRA — 厳密ソルバの監査済みポートフォリオ',
+      newclidLabel: 'Newclid — 記号エンジン単体',
+      ratio: `単一エンジンの${FIGURES.ratio}倍`,
+      note:
+        'この2つは同じ種類の数字ではなく、同じものとしては出しません。28/89は1つのエンジンを通しで走らせた値です。69/89はMORTRAの厳密ソルバ群の監査済み集合和で、問題ごとの分岐を持たず自動選択されます。協調そのものがアーキテクチャなので、集合和がその正直な指標です。両方とも同じ凍結89題・同一条件の値です。一部のチャートは対象問題を見た後に実装したため、69/89は固定集合上の監査済み能力であり、未見問題への汎化率ではありません。母集団外加算0、空虚証明0、残り20問への誤一致0。',
     },
     table: {
       heading: 'IMO-AG-30 での位置',
