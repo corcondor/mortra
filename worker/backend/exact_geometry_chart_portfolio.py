@@ -22,6 +22,11 @@ from worker.backend.barycentric_circle_chart import (
     certify_jgex_incenter_excenter_radical_axis_application,
     render_incenter_excenter_radical_axis_chart_svg,
 )
+from worker.backend.arc_midpoint_reflection_center_axis_chart import (
+    certify_arc_midpoint_reflection_center_axis_chart,
+    certify_jgex_arc_midpoint_reflection_center_axis_application,
+    render_arc_midpoint_reflection_center_axis_chart_svg,
+)
 from worker.backend.euler_line_bisector_chart import (
     certify_euler_line_bisector_chart,
     certify_jgex_euler_line_bisector_application,
@@ -36,6 +41,11 @@ from worker.backend.incircle_three_circle_axis_chart import (
     certify_incircle_three_circle_axis_chart,
     certify_jgex_incircle_three_circle_axis_application,
     render_incircle_three_circle_axis_chart_svg,
+)
+from worker.backend.incircle_contact_pencil_midpoint_chart import (
+    certify_incircle_contact_pencil_midpoint_chart,
+    certify_jgex_incircle_contact_pencil_midpoint_application,
+    render_incircle_contact_pencil_midpoint_chart_svg,
 )
 from worker.backend.isosceles_two_circle_perpendicular_chart import (
     certify_isosceles_two_circle_perpendicular_chart,
@@ -76,6 +86,11 @@ from worker.backend.tangent_triangle_secant_midpoint_chart import (
     certify_jgex_tangent_triangle_secant_midpoint_application,
     certify_tangent_triangle_secant_midpoint_chart,
     render_tangent_triangle_secant_midpoint_chart_svg,
+)
+from worker.backend.two_diameter_pedal_radical_axis_chart import (
+    certify_jgex_two_diameter_pedal_radical_axis_application,
+    certify_two_diameter_pedal_radical_axis_chart,
+    render_two_diameter_pedal_radical_axis_chart_svg,
 )
 
 
@@ -274,6 +289,54 @@ _CHARTS = (
             ("on_circle", 2),
         ),
         "coll",
+    ),
+    _ChartSpec(
+        "two-diameter-circles-pedal-radical-axis",
+        "posthoc_exact_chart_replayed",
+        certify_jgex_two_diameter_pedal_radical_axis_application,
+        certify_two_diameter_pedal_radical_axis_chart,
+        render_two_diameter_pedal_radical_axis_chart_svg,
+        (
+            ("quadrangle", 1),
+            ("midpoint", 3),
+            ("on_circle", 8),
+            ("foot", 6),
+            ("circumcenter", 2),
+        ),
+        "coll",
+    ),
+    _ChartSpec(
+        "incircle-contact-circle-pencil-midpoint-radical-axis",
+        "posthoc_exact_chart_replayed",
+        certify_jgex_incircle_contact_pencil_midpoint_application,
+        certify_incircle_contact_pencil_midpoint_chart,
+        render_incircle_contact_pencil_midpoint_chart_svg,
+        (
+            ("triangle", 1),
+            ("incenter", 1),
+            ("foot", 4),
+            ("circumcenter", 4),
+            ("on_circle", 12),
+            ("midpoint", 1),
+        ),
+        "coll",
+    ),
+    _ChartSpec(
+        "arc-midpoint-antipode-reflection-center-axis",
+        "posthoc_exact_chart_replayed",
+        certify_jgex_arc_midpoint_reflection_center_axis_application,
+        certify_arc_midpoint_reflection_center_axis_chart,
+        render_arc_midpoint_reflection_center_axis_chart_svg,
+        (
+            ("triangle", 1),
+            ("circumcenter", 2),
+            ("on_bline", 3),
+            ("on_circle", 3),
+            ("mirror", 3),
+            ("reflect", 6),
+            ("orthocenter", 2),
+        ),
+        "para",
     ),
 )
 

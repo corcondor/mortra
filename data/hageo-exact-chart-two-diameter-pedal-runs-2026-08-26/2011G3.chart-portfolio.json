@@ -1,0 +1,316 @@
+{
+  "source_sha256": "38954dfe92dae2bffa7b4947d4e864dd9c4d9fc218a5cd570a01d4bde125e4f0",
+  "solved": true,
+  "conditional": false,
+  "ambiguous": false,
+  "selected": {
+    "chart_id": "two-diameter-circles-pedal-radical-axis",
+    "proof_class": "posthoc_exact_chart_replayed",
+    "source_sha256": "38954dfe92dae2bffa7b4947d4e864dd9c4d9fc218a5cd570a01d4bde125e4f0",
+    "theorem": "two-diameter-circles-pedal-radical-axis",
+    "roles": {
+      "A": "d",
+      "B": "c",
+      "C": "b",
+      "D": "a",
+      "M1": "m2",
+      "M2": "m1",
+      "E": "e",
+      "F": "f",
+      "E1": "e3",
+      "E2": "e2",
+      "E3": "e1",
+      "F1": "f3",
+      "F2": "f2",
+      "F3": "f1",
+      "OE": "o_e",
+      "OF": "o_f",
+      "K1": "k2",
+      "K2": "k1",
+      "M": "m"
+    },
+    "matched_constructions": [
+      "two midpoint-centred diameter circles with two common points",
+      "two alternating triples of orthogonal projections",
+      "two pedal circumcircles with two common points",
+      "the midpoint of the original common chord"
+    ],
+    "goal": "coll m k1 k2",
+    "nondegeneracy_obligations": [
+      "A,B,C,D form the defined quadrangle used by the construction",
+      "M1 and M2 are the midpoints of AB and CD",
+      "E and F are the two defined common points of the M1- and M2-centred circles",
+      "the six displayed orthogonal projections are defined",
+      "the two displayed pedal circumcircles are defined",
+      "K1 and K2 are the two supplied common points of the pedal circumcircles"
+    ],
+    "identity_count": 15,
+    "chart_certificate_sha256": "66c2da925fdea8c2482bbb8ad3aab86eec6d77f6fce00e312d8bcfdef754865c",
+    "application": {
+      "theorem": "two-diameter-circles-pedal-radical-axis",
+      "source_sha256": "38954dfe92dae2bffa7b4947d4e864dd9c4d9fc218a5cd570a01d4bde125e4f0",
+      "roles": {
+        "A": "d",
+        "B": "c",
+        "C": "b",
+        "D": "a",
+        "M1": "m2",
+        "M2": "m1",
+        "E": "e",
+        "F": "f",
+        "E1": "e3",
+        "E2": "e2",
+        "E3": "e1",
+        "F1": "f3",
+        "F2": "f2",
+        "F3": "f1",
+        "OE": "o_e",
+        "OF": "o_f",
+        "K1": "k2",
+        "K2": "k1",
+        "M": "m"
+      },
+      "matched_constructions": [
+        "two midpoint-centred diameter circles with two common points",
+        "two alternating triples of orthogonal projections",
+        "two pedal circumcircles with two common points",
+        "the midpoint of the original common chord"
+      ],
+      "goal": "coll m k1 k2",
+      "proof_bridge": "Complete each displayed three-foot circle by the missing fourth projection. Transfer the two missing projections across the opposite carrier lines.  The two crossed intersections U,V have equal powers to both pedal circles by the intersecting-secants theorem.  In the normalized two-line chart E+F=U+V, so the midpoint of EF lies on the radical axis UV.  The supplied common points K1,K2 span the same radical axis.",
+      "chart_certificate_sha256": "66c2da925fdea8c2482bbb8ad3aab86eec6d77f6fce00e312d8bcfdef754865c",
+      "nondegeneracy_obligations": [
+        "A,B,C,D form the defined quadrangle used by the construction",
+        "M1 and M2 are the midpoints of AB and CD",
+        "E and F are the two defined common points of the M1- and M2-centred circles",
+        "the six displayed orthogonal projections are defined",
+        "the two displayed pedal circumcircles are defined",
+        "K1 and K2 are the two supplied common points of the pedal circumcircles"
+      ],
+      "undischarged_nondegeneracy_obligations": [],
+      "replayed": true
+    },
+    "certificate": {
+      "theorem": "two-diameter-circles-pedal-radical-axis",
+      "assumptions": [
+        "A,B,C,D form the defined quadrangle used by the construction",
+        "M1 and M2 are the midpoints of AB and CD",
+        "E and F are the two defined common points of the M1- and M2-centred circles",
+        "the six displayed orthogonal projections are defined",
+        "the two displayed pedal circumcircles are defined",
+        "K1 and K2 are the two supplied common points of the pedal circumcircles"
+      ],
+      "discharged_conditions": {
+        "A,B,C,D form the defined quadrangle used by the construction": "The JGEX quadrangle constructor fixes four points with a nonzero base and a third point off that base; all later carrier lines are accepted only when defined.",
+        "M1 and M2 are the midpoints of AB and CD": "The two midpoint constructors are matched explicitly.",
+        "E and F are the two defined common points of the M1- and M2-centred circles": "The two joint on_circle constructors use the two midpoint centres.  Newclid's intersection reducer rejects absent intersections and previously returned branches.",
+        "the six displayed orthogonal projections are defined": "Every foot constructor rejects a zero carrier direction.",
+        "the two displayed pedal circumcircles are defined": "Each circumcenter constructor rejects a collinear or repeated triple.",
+        "K1 and K2 are the two supplied common points of the pedal circumcircles": "The final two joint on_circle constructors supply real common points.  Equality of powers puts the EF midpoint on their radical-axis line; tangent and limiting carrier cases follow from the replayed polynomial identities by continuity."
+      },
+      "upstream_semantics": [
+        "JGEX midpoint makes its output the affine midpoint of its two inputs.",
+        "A point on the midpoint-centred endpoint circle lies on the corresponding diameter circle.",
+        "JGEX foot is the orthogonal projection onto a nonzero carrier line.",
+        "JGEX circumcenter rejects collinear or repeated triples.",
+        "JGEX circle-circle intersection returns defined real branches.",
+        "The intersecting-secants theorem identifies signed segment products with circle power."
+      ],
+      "normalization": "For the final affine block, put AD on the x-axis and write the unit direction of BC as (cosine,sine).  If E=(ex,ey), F=(fx,fy), the transferred perpendicular intersections are U=(ex,fy+cosine*(fx-ex)/sine) and V=(fx,ey+cosine*(ex-fx)/sine).",
+      "representation_chart": [
+        "diameter incidence -> right-angle angle partition",
+        "three feet -> four-projection cyclic completion",
+        "projection plus opposite carrier -> second point on the same pedal circle",
+        "two cyclic secants -> equal circle powers",
+        "crossed perpendicular transfers -> affine parallelogram",
+        "equal powers -> radical-axis collinearity"
+      ],
+      "proof_dag": [
+        "Complete omega_E with the projection of E onto DA.",
+        "Complete omega_F with the projection of F onto BC.",
+        "Transfer both new projections across the opposite carrier line.",
+        "Construct U and V as the two crossed perpendicular intersections.",
+        "Use cyclic secants to prove U and V have equal powers to omega_E and omega_F.",
+        "Use E+F=U+V to put the midpoint of EF on line UV, hence on the radical axis.",
+        "The supplied common points K1,K2 span that same radical axis."
+      ],
+      "replay_residuals": {
+        "diameter_AB_right_angle_partition": "0",
+        "diameter_CD_right_angle_partition": "0",
+        "four_projection_cyclic_angle_sum": "0",
+        "projection_transfer_angle_chain": "0",
+        "two_right_angles_give_cyclic_secants": "0",
+        "circle_restricted_to_a_line_is_quadratic": "0",
+        "radical_axis_is_linear": "0",
+        "transferred_projection_U_x": "0",
+        "transferred_projection_U_perpendicular_second_line": "0",
+        "transferred_projection_V_x": "0",
+        "transferred_projection_V_perpendicular_second_line": "0",
+        "EUFV_parallelogram_x": "0",
+        "EUFV_parallelogram_y": "0",
+        "midpoint_EF_equals_midpoint_UV_x": "0",
+        "midpoint_EF_equals_midpoint_UV_y": "0"
+      },
+      "replayed": true,
+      "all_conditions_discharged": true,
+      "certificate_sha256": "66c2da925fdea8c2482bbb8ad3aab86eec6d77f6fce00e312d8bcfdef754865c"
+    },
+    "proof_markdown": "# two-diameter-circles-pedal-radical-axis 適用証明\n\n## 判定\n\n- 構成依存関係と目標を照合した。\n- 座標チャート上の全恒等式を厳密再生した。\n- 判定: `proved`（構成の定義域条件まで消去済み）。\n- 問題確認後に実装したチャートなので、凍結未見得点には遡及加算しない。\n\n## 入力問題\n\n```text\na b c d = quadrangle; m1 = midpoint a b; m2 = midpoint c d; e = on_circle m1 a, on_circle m2 c; f = on_circle m1 a, on_circle m2 c; e1 = foot e a b; e2 = foot e b c; e3 = foot e c d; o_e = circumcenter e1 e2 e3; f1 = foot f c d; f2 = foot f d a; f3 = foot f a b; o_f = circumcenter f1 f2 f3; k1 = on_circle o_e e1, on_circle o_f f1; k2 = on_circle o_e e1, on_circle o_f f1; m = midpoint e f ? coll m k1 k2\n```\n\n## 点の役割対応\n\n- `A` -> `d`\n- `B` -> `c`\n- `C` -> `b`\n- `D` -> `a`\n- `E` -> `e`\n- `E1` -> `e3`\n- `E2` -> `e2`\n- `E3` -> `e1`\n- `F` -> `f`\n- `F1` -> `f3`\n- `F2` -> `f2`\n- `F3` -> `f1`\n- `K1` -> `k2`\n- `K2` -> `k1`\n- `M` -> `m`\n- `M1` -> `m2`\n- `M2` -> `m1`\n- `OE` -> `o_e`\n- `OF` -> `o_f`\n\n## 非退化条件\n\n- `A,B,C,D form the defined quadrangle used by the construction`\n- `M1 and M2 are the midpoints of AB and CD`\n- `E and F are the two defined common points of the M1- and M2-centred circles`\n- `the six displayed orthogonal projections are defined`\n- `the two displayed pedal circumcircles are defined`\n- `K1 and K2 are the two supplied common points of the pedal circumcircles`\n\n## 未消去条件\n\n- なし\n\n## 証明書\n\n- SHA-256: `66c2da925fdea8c2482bbb8ad3aab86eec6d77f6fce00e312d8bcfdef754865c`\n- 再生恒等式: `15`\n\n# Two-diameter pedal radical-axis chart\n\n## Theorem\n\nLet E,F be the common points of two circles with diameters AB and CD.  Let omega_E pass through the projections of E onto AB,BC,CD, and let omega_F pass through the projections of F onto CD,DA,AB.  Then the midpoint of EF has equal power to omega_E and omega_F.\n\n## Representation changes\n\n- two diameter circles -> two right-angle partitions\n- three explicit feet -> a four-projection cyclic completion\n- two circle intersections -> equality of powers on the radical axis\n- transferred perpendiculars -> one affine parallelogram identity\n- affine identity: `E+F=U+V`\n\n## Replayed identities\n\n- `diameter_AB_right_angle_partition`: `0`\n- `diameter_CD_right_angle_partition`: `0`\n- `four_projection_cyclic_angle_sum`: `0`\n- `projection_transfer_angle_chain`: `0`\n- `two_right_angles_give_cyclic_secants`: `0`\n- `circle_restricted_to_a_line_is_quadratic`: `0`\n- `radical_axis_is_linear`: `0`\n- `transferred_projection_U_x`: `0`\n- `transferred_projection_U_perpendicular_second_line`: `0`\n- `transferred_projection_V_x`: `0`\n- `transferred_projection_V_perpendicular_second_line`: `0`\n- `EUFV_parallelogram_x`: `0`\n- `EUFV_parallelogram_y`: `0`\n- `midpoint_EF_equals_midpoint_UV_x`: `0`\n- `midpoint_EF_equals_midpoint_UV_y`: `0`\n\n- all identities replayed: `True`\n- all domain conditions discharged: `True`\n- certificate SHA-256: `66c2da925fdea8c2482bbb8ad3aab86eec6d77f6fce00e312d8bcfdef754865c`\n",
+    "diagram_svg": "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?>\n<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\"\n  \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n<svg xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"485.116981pt\" height=\"347.04pt\" viewBox=\"0 0 485.116981 347.04\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">\n <metadata>\n  <rdf:RDF xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:cc=\"http://creativecommons.org/ns#\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n   <cc:Work>\n    <dc:type rdf:resource=\"http://purl.org/dc/dcmitype/StillImage\"/>\n    <dc:date>2026-08-26T23:35:15.380546</dc:date>\n    <dc:format>image/svg+xml</dc:format>\n    <dc:creator>\n     <cc:Agent>\n      <dc:title>Matplotlib v3.10.5, https://matplotlib.org/</dc:title>\n     </cc:Agent>\n    </dc:creator>\n   </cc:Work>\n  </rdf:RDF>\n </metadata>\n <defs>\n  <style type=\"text/css\">*{stroke-linejoin: round; stroke-linecap: butt}</style>\n </defs>\n <g id=\"figure_1\">\n  <g id=\"patch_1\">\n   <path d=\"M 0 347.04 \nL 485.116981 347.04 \nL 485.116981 -0 \nL 0 -0 \nz\n\" style=\"fill: #050709\"/>\n  </g>\n  <g id=\"axes_1\">\n   <g id=\"patch_2\">\n    <path d=\"M 214.315472 314.735094 \nC 248.437203 314.735094 281.16599 301.178387 305.293698 277.050679 \nC 329.421406 252.922971 342.978113 220.194184 342.978113 186.072453 \nC 342.978113 151.950721 329.421406 119.221934 305.293698 95.094227 \nC 281.16599 70.966519 248.437203 57.409811 214.315472 57.409811 \nC 180.19374 57.409811 147.464953 70.966519 123.337245 95.094227 \nC 99.209538 119.221934 85.65283 151.950721 85.65283 186.072453 \nC 85.65283 220.194184 99.209538 252.922971 123.337245 277.050679 \nC 147.464953 301.178387 180.19374 314.735094 214.315472 314.735094 \nL 214.315472 314.735094 \nz\n\" clip-path=\"url(#p04c8a1231d)\" style=\"fill: none; stroke: #22d3ee; stroke-width: 1.5; stroke-linejoin: miter\"/>\n   </g>\n   <g id=\"patch_3\">\n    <path d=\"M 286.492075 294.023547 \nC 316.785515 294.023547 345.842292 281.987836 367.262989 260.56714 \nC 388.683685 239.146443 400.719396 210.089666 400.719396 179.796226 \nC 400.719396 149.502787 388.683685 120.44601 367.262989 99.025313 \nC 345.842292 77.604617 316.785515 65.568906 286.492075 65.568906 \nC 256.198636 65.568906 227.141859 77.604617 205.721162 99.025313 \nC 184.300466 120.44601 172.264755 149.502787 172.264755 179.796226 \nC 172.264755 210.089666 184.300466 239.146443 205.721162 260.56714 \nC 227.141859 281.987836 256.198636 294.023547 286.492075 294.023547 \nL 286.492075 294.023547 \nz\n\" clip-path=\"url(#p04c8a1231d)\" style=\"fill: none; stroke: #a3e635; stroke-width: 1.5; stroke-linejoin: miter\"/>\n   </g>\n   <g id=\"line2d_1\">\n    <path d=\"M 51.133585 308.458868 \nL 164.10566 57.409811 \nL 415.154717 76.238491 \nL 440.259623 295.906415 \nL 51.133585 308.458868 \n\" clip-path=\"url(#p04c8a1231d)\" style=\"fill: none; stroke: #64748b; stroke-width: 1.4; stroke-linecap: square\"/>\n   </g>\n   <g id=\"line2d_2\">\n    <path d=\"M 238.165132 77.493736 \nL 255.110943 294.65117 \n\" clip-path=\"url(#p04c8a1231d)\" style=\"fill: none; stroke: #f8fafc; stroke-opacity: 0.9; stroke-width: 2; stroke-linecap: square\"/>\n   </g>\n   <g id=\"text_1\">\n    <!-- A -->\n    <g style=\"fill: #94a3b8\" transform=\"translate(57.409811 302.182642) scale(0.1 -0.1)\">\n     <defs>\n      <path id=\"DejaVuSans-41\" d=\"M 2188 4044 \nL 1331 1722 \nL 3047 1722 \nL 2188 4044 \nz\nM 1831 4666 \nL 2547 4666 \nL 4325 0 \nL 3669 0 \nL 3244 1197 \nL 1141 1197 \nL 716 0 \nL 50 0 \nL 1831 4666 \nz\n\" transform=\"scale(0.015625)\"/>\n     </defs>\n     <use xlink:href=\"#DejaVuSans-41\"/>\n    </g>\n   </g>\n   <g id=\"text_2\">\n    <!-- B -->\n    <g style=\"fill: #94a3b8\" transform=\"translate(170.381887 51.133585) scale(0.1 -0.1)\">\n     <defs>\n      <path id=\"DejaVuSans-42\" d=\"M 1259 2228 \nL 1259 519 \nL 2272 519 \nQ 2781 519 3026 730 \nQ 3272 941 3272 1375 \nQ 3272 1813 3026 2020 \nQ 2781 2228 2272 2228 \nL 1259 2228 \nz\nM 1259 4147 \nL 1259 2741 \nL 2194 2741 \nQ 2656 2741 2882 2914 \nQ 3109 3088 3109 3444 \nQ 3109 3797 2882 3972 \nQ 2656 4147 2194 4147 \nL 1259 4147 \nz\nM 628 4666 \nL 2241 4666 \nQ 2963 4666 3353 4366 \nQ 3744 4066 3744 3513 \nQ 3744 3084 3544 2831 \nQ 3344 2578 2956 2516 \nQ 3422 2416 3680 2098 \nQ 3938 1781 3938 1306 \nQ 3938 681 3513 340 \nQ 3088 0 2303 0 \nL 628 0 \nL 628 4666 \nz\n\" transform=\"scale(0.015625)\"/>\n     </defs>\n     <use xlink:href=\"#DejaVuSans-42\"/>\n    </g>\n   </g>\n   <g id=\"text_3\">\n    <!-- C -->\n    <g style=\"fill: #94a3b8\" transform=\"translate(421.430943 69.962264) scale(0.1 -0.1)\">\n     <defs>\n      <path id=\"DejaVuSans-43\" d=\"M 4122 4306 \nL 4122 3641 \nQ 3803 3938 3442 4084 \nQ 3081 4231 2675 4231 \nQ 1875 4231 1450 3742 \nQ 1025 3253 1025 2328 \nQ 1025 1406 1450 917 \nQ 1875 428 2675 428 \nQ 3081 428 3442 575 \nQ 3803 722 4122 1019 \nL 4122 359 \nQ 3791 134 3420 21 \nQ 3050 -91 2638 -91 \nQ 1578 -91 968 557 \nQ 359 1206 359 2328 \nQ 359 3453 968 4101 \nQ 1578 4750 2638 4750 \nQ 3056 4750 3426 4639 \nQ 3797 4528 4122 4306 \nz\n\" transform=\"scale(0.015625)\"/>\n     </defs>\n     <use xlink:href=\"#DejaVuSans-43\"/>\n    </g>\n   </g>\n   <g id=\"text_4\">\n    <!-- D -->\n    <g style=\"fill: #94a3b8\" transform=\"translate(446.535849 289.630189) scale(0.1 -0.1)\">\n     <defs>\n      <path id=\"DejaVuSans-44\" d=\"M 1259 4147 \nL 1259 519 \nL 2022 519 \nQ 2988 519 3436 956 \nQ 3884 1394 3884 2338 \nQ 3884 3275 3436 3711 \nQ 2988 4147 2022 4147 \nL 1259 4147 \nz\nM 628 4666 \nL 1925 4666 \nQ 3281 4666 3915 4102 \nQ 4550 3538 4550 2338 \nQ 4550 1131 3912 565 \nQ 3275 0 1925 0 \nL 628 0 \nL 628 4666 \nz\n\" transform=\"scale(0.015625)\"/>\n     </defs>\n     <use xlink:href=\"#DejaVuSans-44\"/>\n    </g>\n   </g>\n   <g id=\"text_5\">\n    <!-- E -->\n    <g style=\"fill: #22d3ee\" transform=\"translate(233.144151 154.691321) scale(0.1 -0.1)\">\n     <defs>\n      <path id=\"DejaVuSans-45\" d=\"M 628 4666 \nL 3578 4666 \nL 3578 4134 \nL 1259 4134 \nL 1259 2753 \nL 3481 2753 \nL 3481 2222 \nL 1259 2222 \nL 1259 531 \nL 3634 531 \nL 3634 0 \nL 628 0 \nL 628 4666 \nz\n\" transform=\"scale(0.015625)\"/>\n     </defs>\n     <use xlink:href=\"#DejaVuSans-45\"/>\n    </g>\n   </g>\n   <g id=\"text_6\">\n    <!-- F -->\n    <g style=\"fill: #a3e635\" transform=\"translate(280.215849 204.901132) scale(0.1 -0.1)\">\n     <defs>\n      <path id=\"DejaVuSans-46\" d=\"M 628 4666 \nL 3309 4666 \nL 3309 4134 \nL 1259 4134 \nL 1259 2759 \nL 3109 2759 \nL 3109 2228 \nL 1259 2228 \nL 1259 0 \nL 628 0 \nL 628 4666 \nz\n\" transform=\"scale(0.015625)\"/>\n     </defs>\n     <use xlink:href=\"#DejaVuSans-46\"/>\n    </g>\n   </g>\n   <g id=\"text_7\">\n    <!-- K1 -->\n    <g style=\"fill: #f8fafc\" transform=\"translate(244.441358 71.217509) scale(0.1 -0.1)\">\n     <defs>\n      <path id=\"DejaVuSans-4b\" d=\"M 628 4666 \nL 1259 4666 \nL 1259 2694 \nL 3353 4666 \nL 4166 4666 \nL 1850 2491 \nL 4331 0 \nL 3500 0 \nL 1259 2247 \nL 1259 0 \nL 628 0 \nL 628 4666 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"DejaVuSans-31\" d=\"M 794 531 \nL 1825 531 \nL 1825 4091 \nL 703 3866 \nL 703 4441 \nL 1819 4666 \nL 2450 4666 \nL 2450 531 \nL 3481 531 \nL 3481 0 \nL 794 0 \nL 794 531 \nz\n\" transform=\"scale(0.015625)\"/>\n     </defs>\n     <use xlink:href=\"#DejaVuSans-4b\"/>\n     <use xlink:href=\"#DejaVuSans-31\" transform=\"translate(65.576172 0)\"/>\n    </g>\n   </g>\n   <g id=\"text_8\">\n    <!-- K2 -->\n    <g style=\"fill: #f8fafc\" transform=\"translate(261.38717 288.374943) scale(0.1 -0.1)\">\n     <defs>\n      <path id=\"DejaVuSans-32\" d=\"M 1228 531 \nL 3431 531 \nL 3431 0 \nL 469 0 \nL 469 531 \nQ 828 903 1448 1529 \nQ 2069 2156 2228 2338 \nQ 2531 2678 2651 2914 \nQ 2772 3150 2772 3378 \nQ 2772 3750 2511 3984 \nQ 2250 4219 1831 4219 \nQ 1534 4219 1204 4116 \nQ 875 4013 500 3803 \nL 500 4441 \nQ 881 4594 1212 4672 \nQ 1544 4750 1819 4750 \nQ 2544 4750 2975 4387 \nQ 3406 4025 3406 3419 \nQ 3406 3131 3298 2873 \nQ 3191 2616 2906 2266 \nQ 2828 2175 2409 1742 \nQ 1991 1309 1228 531 \nz\n\" transform=\"scale(0.015625)\"/>\n     </defs>\n     <use xlink:href=\"#DejaVuSans-4b\"/>\n     <use xlink:href=\"#DejaVuSans-32\" transform=\"translate(65.576172 0)\"/>\n    </g>\n   </g>\n   <g id=\"text_9\">\n    <!-- M -->\n    <g style=\"fill: #fbbf24\" transform=\"translate(256.68 179.796226) scale(0.1 -0.1)\">\n     <defs>\n      <path id=\"DejaVuSans-4d\" d=\"M 628 4666 \nL 1569 4666 \nL 2759 1491 \nL 3956 4666 \nL 4897 4666 \nL 4897 0 \nL 4281 0 \nL 4281 4097 \nL 3078 897 \nL 2444 897 \nL 1241 4097 \nL 1241 0 \nL 628 0 \nL 628 4666 \nz\n\" transform=\"scale(0.015625)\"/>\n     </defs>\n     <use xlink:href=\"#DejaVuSans-4d\"/>\n    </g>\n   </g>\n   <g id=\"text_10\">\n    <!-- pedal circle of E -->\n    <g style=\"fill: #22d3ee\" transform=\"translate(60.547925 32.304906) scale(0.1 -0.1)\">\n     <defs>\n      <path id=\"DejaVuSans-70\" d=\"M 1159 525 \nL 1159 -1331 \nL 581 -1331 \nL 581 3500 \nL 1159 3500 \nL 1159 2969 \nQ 1341 3281 1617 3432 \nQ 1894 3584 2278 3584 \nQ 2916 3584 3314 3078 \nQ 3713 2572 3713 1747 \nQ 3713 922 3314 415 \nQ 2916 -91 2278 -91 \nQ 1894 -91 1617 61 \nQ 1341 213 1159 525 \nz\nM 3116 1747 \nQ 3116 2381 2855 2742 \nQ 2594 3103 2138 3103 \nQ 1681 3103 1420 2742 \nQ 1159 2381 1159 1747 \nQ 1159 1113 1420 752 \nQ 1681 391 2138 391 \nQ 2594 391 2855 752 \nQ 3116 1113 3116 1747 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"DejaVuSans-65\" d=\"M 3597 1894 \nL 3597 1613 \nL 953 1613 \nQ 991 1019 1311 708 \nQ 1631 397 2203 397 \nQ 2534 397 2845 478 \nQ 3156 559 3463 722 \nL 3463 178 \nQ 3153 47 2828 -22 \nQ 2503 -91 2169 -91 \nQ 1331 -91 842 396 \nQ 353 884 353 1716 \nQ 353 2575 817 3079 \nQ 1281 3584 2069 3584 \nQ 2775 3584 3186 3129 \nQ 3597 2675 3597 1894 \nz\nM 3022 2063 \nQ 3016 2534 2758 2815 \nQ 2500 3097 2075 3097 \nQ 1594 3097 1305 2825 \nQ 1016 2553 972 2059 \nL 3022 2063 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"DejaVuSans-64\" d=\"M 2906 2969 \nL 2906 4863 \nL 3481 4863 \nL 3481 0 \nL 2906 0 \nL 2906 525 \nQ 2725 213 2448 61 \nQ 2172 -91 1784 -91 \nQ 1150 -91 751 415 \nQ 353 922 353 1747 \nQ 353 2572 751 3078 \nQ 1150 3584 1784 3584 \nQ 2172 3584 2448 3432 \nQ 2725 3281 2906 2969 \nz\nM 947 1747 \nQ 947 1113 1208 752 \nQ 1469 391 1925 391 \nQ 2381 391 2643 752 \nQ 2906 1113 2906 1747 \nQ 2906 2381 2643 2742 \nQ 2381 3103 1925 3103 \nQ 1469 3103 1208 2742 \nQ 947 2381 947 1747 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"DejaVuSans-61\" d=\"M 2194 1759 \nQ 1497 1759 1228 1600 \nQ 959 1441 959 1056 \nQ 959 750 1161 570 \nQ 1363 391 1709 391 \nQ 2188 391 2477 730 \nQ 2766 1069 2766 1631 \nL 2766 1759 \nL 2194 1759 \nz\nM 3341 1997 \nL 3341 0 \nL 2766 0 \nL 2766 531 \nQ 2569 213 2275 61 \nQ 1981 -91 1556 -91 \nQ 1019 -91 701 211 \nQ 384 513 384 1019 \nQ 384 1609 779 1909 \nQ 1175 2209 1959 2209 \nL 2766 2209 \nL 2766 2266 \nQ 2766 2663 2505 2880 \nQ 2244 3097 1772 3097 \nQ 1472 3097 1187 3025 \nQ 903 2953 641 2809 \nL 641 3341 \nQ 956 3463 1253 3523 \nQ 1550 3584 1831 3584 \nQ 2591 3584 2966 3190 \nQ 3341 2797 3341 1997 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"DejaVuSans-6c\" d=\"M 603 4863 \nL 1178 4863 \nL 1178 0 \nL 603 0 \nL 603 4863 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"DejaVuSans-20\" transform=\"scale(0.015625)\"/>\n      <path id=\"DejaVuSans-63\" d=\"M 3122 3366 \nL 3122 2828 \nQ 2878 2963 2633 3030 \nQ 2388 3097 2138 3097 \nQ 1578 3097 1268 2742 \nQ 959 2388 959 1747 \nQ 959 1106 1268 751 \nQ 1578 397 2138 397 \nQ 2388 397 2633 464 \nQ 2878 531 3122 666 \nL 3122 134 \nQ 2881 22 2623 -34 \nQ 2366 -91 2075 -91 \nQ 1284 -91 818 406 \nQ 353 903 353 1747 \nQ 353 2603 823 3093 \nQ 1294 3584 2113 3584 \nQ 2378 3584 2631 3529 \nQ 2884 3475 3122 3366 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"DejaVuSans-69\" d=\"M 603 3500 \nL 1178 3500 \nL 1178 0 \nL 603 0 \nL 603 3500 \nz\nM 603 4863 \nL 1178 4863 \nL 1178 4134 \nL 603 4134 \nL 603 4863 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"DejaVuSans-72\" d=\"M 2631 2963 \nQ 2534 3019 2420 3045 \nQ 2306 3072 2169 3072 \nQ 1681 3072 1420 2755 \nQ 1159 2438 1159 1844 \nL 1159 0 \nL 581 0 \nL 581 3500 \nL 1159 3500 \nL 1159 2956 \nQ 1341 3275 1631 3429 \nQ 1922 3584 2338 3584 \nQ 2397 3584 2469 3576 \nQ 2541 3569 2628 3553 \nL 2631 2963 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"DejaVuSans-6f\" d=\"M 1959 3097 \nQ 1497 3097 1228 2736 \nQ 959 2375 959 1747 \nQ 959 1119 1226 758 \nQ 1494 397 1959 397 \nQ 2419 397 2687 759 \nQ 2956 1122 2956 1747 \nQ 2956 2369 2687 2733 \nQ 2419 3097 1959 3097 \nz\nM 1959 3584 \nQ 2709 3584 3137 3096 \nQ 3566 2609 3566 1747 \nQ 3566 888 3137 398 \nQ 2709 -91 1959 -91 \nQ 1206 -91 779 398 \nQ 353 888 353 1747 \nQ 353 2609 779 3096 \nQ 1206 3584 1959 3584 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"DejaVuSans-66\" d=\"M 2375 4863 \nL 2375 4384 \nL 1825 4384 \nQ 1516 4384 1395 4259 \nQ 1275 4134 1275 3809 \nL 1275 3500 \nL 2222 3500 \nL 2222 3053 \nL 1275 3053 \nL 1275 0 \nL 697 0 \nL 697 3053 \nL 147 3053 \nL 147 3500 \nL 697 3500 \nL 697 3744 \nQ 697 4328 969 4595 \nQ 1241 4863 1831 4863 \nL 2375 4863 \nz\n\" transform=\"scale(0.015625)\"/>\n     </defs>\n     <use xlink:href=\"#DejaVuSans-70\"/>\n     <use xlink:href=\"#DejaVuSans-65\" transform=\"translate(63.476562 0)\"/>\n     <use xlink:href=\"#DejaVuSans-64\" transform=\"translate(125 0)\"/>\n     <use xlink:href=\"#DejaVuSans-61\" transform=\"translate(188.476562 0)\"/>\n     <use xlink:href=\"#DejaVuSans-6c\" transform=\"translate(249.755859 0)\"/>\n     <use xlink:href=\"#DejaVuSans-20\" transform=\"translate(277.539062 0)\"/>\n     <use xlink:href=\"#DejaVuSans-63\" transform=\"translate(309.326172 0)\"/>\n     <use xlink:href=\"#DejaVuSans-69\" transform=\"translate(364.306641 0)\"/>\n     <use xlink:href=\"#DejaVuSans-72\" transform=\"translate(392.089844 0)\"/>\n     <use xlink:href=\"#DejaVuSans-63\" transform=\"translate(430.953125 0)\"/>\n     <use xlink:href=\"#DejaVuSans-6c\" transform=\"translate(485.933594 0)\"/>\n     <use xlink:href=\"#DejaVuSans-65\" transform=\"translate(513.716797 0)\"/>\n     <use xlink:href=\"#DejaVuSans-20\" transform=\"translate(575.240234 0)\"/>\n     <use xlink:href=\"#DejaVuSans-6f\" transform=\"translate(607.027344 0)\"/>\n     <use xlink:href=\"#DejaVuSans-66\" transform=\"translate(668.208984 0)\"/>\n     <use xlink:href=\"#DejaVuSans-20\" transform=\"translate(703.414062 0)\"/>\n     <use xlink:href=\"#DejaVuSans-45\" transform=\"translate(735.201172 0)\"/>\n    </g>\n   </g>\n   <g id=\"text_11\">\n    <!-- pedal circle of F -->\n    <g style=\"fill: #a3e635\" transform=\"translate(302.182642 47.995472) scale(0.1 -0.1)\">\n     <use xlink:href=\"#DejaVuSans-70\"/>\n     <use xlink:href=\"#DejaVuSans-65\" transform=\"translate(63.476562 0)\"/>\n     <use xlink:href=\"#DejaVuSans-64\" transform=\"translate(125 0)\"/>\n     <use xlink:href=\"#DejaVuSans-61\" transform=\"translate(188.476562 0)\"/>\n     <use xlink:href=\"#DejaVuSans-6c\" transform=\"translate(249.755859 0)\"/>\n     <use xlink:href=\"#DejaVuSans-20\" transform=\"translate(277.539062 0)\"/>\n     <use xlink:href=\"#DejaVuSans-63\" transform=\"translate(309.326172 0)\"/>\n     <use xlink:href=\"#DejaVuSans-69\" transform=\"translate(364.306641 0)\"/>\n     <use xlink:href=\"#DejaVuSans-72\" transform=\"translate(392.089844 0)\"/>\n     <use xlink:href=\"#DejaVuSans-63\" transform=\"translate(430.953125 0)\"/>\n     <use xlink:href=\"#DejaVuSans-6c\" transform=\"translate(485.933594 0)\"/>\n     <use xlink:href=\"#DejaVuSans-65\" transform=\"translate(513.716797 0)\"/>\n     <use xlink:href=\"#DejaVuSans-20\" transform=\"translate(575.240234 0)\"/>\n     <use xlink:href=\"#DejaVuSans-6f\" transform=\"translate(607.027344 0)\"/>\n     <use xlink:href=\"#DejaVuSans-66\" transform=\"translate(668.208984 0)\"/>\n     <use xlink:href=\"#DejaVuSans-20\" transform=\"translate(703.414062 0)\"/>\n     <use xlink:href=\"#DejaVuSans-46\" transform=\"translate(735.201172 0)\"/>\n    </g>\n   </g>\n   <g id=\"text_12\">\n    <!-- radical axis -->\n    <g style=\"fill: #f8fafc\" transform=\"translate(263.270038 319.756075) scale(0.1 -0.1)\">\n     <defs>\n      <path id=\"DejaVuSans-78\" d=\"M 3513 3500 \nL 2247 1797 \nL 3578 0 \nL 2900 0 \nL 1881 1375 \nL 863 0 \nL 184 0 \nL 1544 1831 \nL 300 3500 \nL 978 3500 \nL 1906 2253 \nL 2834 3500 \nL 3513 3500 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"DejaVuSans-73\" d=\"M 2834 3397 \nL 2834 2853 \nQ 2591 2978 2328 3040 \nQ 2066 3103 1784 3103 \nQ 1356 3103 1142 2972 \nQ 928 2841 928 2578 \nQ 928 2378 1081 2264 \nQ 1234 2150 1697 2047 \nL 1894 2003 \nQ 2506 1872 2764 1633 \nQ 3022 1394 3022 966 \nQ 3022 478 2636 193 \nQ 2250 -91 1575 -91 \nQ 1294 -91 989 -36 \nQ 684 19 347 128 \nL 347 722 \nQ 666 556 975 473 \nQ 1284 391 1588 391 \nQ 1994 391 2212 530 \nQ 2431 669 2431 922 \nQ 2431 1156 2273 1281 \nQ 2116 1406 1581 1522 \nL 1381 1569 \nQ 847 1681 609 1914 \nQ 372 2147 372 2553 \nQ 372 3047 722 3315 \nQ 1072 3584 1716 3584 \nQ 2034 3584 2315 3537 \nQ 2597 3491 2834 3397 \nz\n\" transform=\"scale(0.015625)\"/>\n     </defs>\n     <use xlink:href=\"#DejaVuSans-72\"/>\n     <use xlink:href=\"#DejaVuSans-61\" transform=\"translate(41.113281 0)\"/>\n     <use xlink:href=\"#DejaVuSans-64\" transform=\"translate(102.392578 0)\"/>\n     <use xlink:href=\"#DejaVuSans-69\" transform=\"translate(165.869141 0)\"/>\n     <use xlink:href=\"#DejaVuSans-63\" transform=\"translate(193.652344 0)\"/>\n     <use xlink:href=\"#DejaVuSans-61\" transform=\"translate(248.632812 0)\"/>\n     <use xlink:href=\"#DejaVuSans-6c\" transform=\"translate(309.912109 0)\"/>\n     <use xlink:href=\"#DejaVuSans-20\" transform=\"translate(337.695312 0)\"/>\n     <use xlink:href=\"#DejaVuSans-61\" transform=\"translate(369.482422 0)\"/>\n     <use xlink:href=\"#DejaVuSans-78\" transform=\"translate(430.761719 0)\"/>\n     <use xlink:href=\"#DejaVuSans-69\" transform=\"translate(489.941406 0)\"/>\n     <use xlink:href=\"#DejaVuSans-73\" transform=\"translate(517.724609 0)\"/>\n    </g>\n   </g>\n   <g id=\"PathCollection_1\">\n    <defs>\n     <path id=\"m1520e16678\" d=\"M 0 2.828427 \nC 0.750108 2.828427 1.469594 2.530406 2 2 \nC 2.530406 1.469594 2.828427 0.750108 2.828427 0 \nC 2.828427 -0.750108 2.530406 -1.469594 2 -2 \nC 1.469594 -2.530406 0.750108 -2.828427 0 -2.828427 \nC -0.750108 -2.828427 -1.469594 -2.530406 -2 -2 \nC -2.530406 -1.469594 -2.828427 -0.750108 -2.828427 0 \nC -2.828427 0.750108 -2.530406 1.469594 -2 2 \nC -1.469594 2.530406 -0.750108 2.828427 0 2.828427 \nz\n\" style=\"stroke: #94a3b8\"/>\n    </defs>\n    <g clip-path=\"url(#p04c8a1231d)\">\n     <use xlink:href=\"#m1520e16678\" x=\"51.133585\" y=\"308.458868\" style=\"fill: #94a3b8; stroke: #94a3b8\"/>\n    </g>\n   </g>\n   <g id=\"PathCollection_2\">\n    <g clip-path=\"url(#p04c8a1231d)\">\n     <use xlink:href=\"#m1520e16678\" x=\"164.10566\" y=\"57.409811\" style=\"fill: #94a3b8; stroke: #94a3b8\"/>\n    </g>\n   </g>\n   <g id=\"PathCollection_3\">\n    <g clip-path=\"url(#p04c8a1231d)\">\n     <use xlink:href=\"#m1520e16678\" x=\"415.154717\" y=\"76.238491\" style=\"fill: #94a3b8; stroke: #94a3b8\"/>\n    </g>\n   </g>\n   <g id=\"PathCollection_4\">\n    <g clip-path=\"url(#p04c8a1231d)\">\n     <use xlink:href=\"#m1520e16678\" x=\"440.259623\" y=\"295.906415\" style=\"fill: #94a3b8; stroke: #94a3b8\"/>\n    </g>\n   </g>\n   <g id=\"PathCollection_5\">\n    <defs>\n     <path id=\"m740dff59d3\" d=\"M 0 2.828427 \nC 0.750108 2.828427 1.469594 2.530406 2 2 \nC 2.530406 1.469594 2.828427 0.750108 2.828427 0 \nC 2.828427 -0.750108 2.530406 -1.469594 2 -2 \nC 1.469594 -2.530406 0.750108 -2.828427 0 -2.828427 \nC -0.750108 -2.828427 -1.469594 -2.530406 -2 -2 \nC -2.530406 -1.469594 -2.828427 -0.750108 -2.828427 0 \nC -2.828427 0.750108 -2.530406 1.469594 -2 2 \nC -1.469594 2.530406 -0.750108 2.828427 0 2.828427 \nz\n\" style=\"stroke: #22d3ee\"/>\n    </defs>\n    <g clip-path=\"url(#p04c8a1231d)\">\n     <use xlink:href=\"#m740dff59d3\" x=\"226.867925\" y=\"160.967547\" style=\"fill: #22d3ee; stroke: #22d3ee\"/>\n    </g>\n   </g>\n   <g id=\"PathCollection_6\">\n    <defs>\n     <path id=\"mbaf664e1be\" d=\"M 0 2.828427 \nC 0.750108 2.828427 1.469594 2.530406 2 2 \nC 2.530406 1.469594 2.828427 0.750108 2.828427 0 \nC 2.828427 -0.750108 2.530406 -1.469594 2 -2 \nC 1.469594 -2.530406 0.750108 -2.828427 0 -2.828427 \nC -0.750108 -2.828427 -1.469594 -2.530406 -2 -2 \nC -2.530406 -1.469594 -2.828427 -0.750108 -2.828427 0 \nC -2.828427 0.750108 -2.530406 1.469594 -2 2 \nC -1.469594 2.530406 -0.750108 2.828427 0 2.828427 \nz\n\" style=\"stroke: #a3e635\"/>\n    </defs>\n    <g clip-path=\"url(#p04c8a1231d)\">\n     <use xlink:href=\"#mbaf664e1be\" x=\"273.939623\" y=\"211.177358\" style=\"fill: #a3e635; stroke: #a3e635\"/>\n    </g>\n   </g>\n   <g id=\"PathCollection_7\">\n    <defs>\n     <path id=\"m8322b1463b\" d=\"M 0 2.828427 \nC 0.750108 2.828427 1.469594 2.530406 2 2 \nC 2.530406 1.469594 2.828427 0.750108 2.828427 0 \nC 2.828427 -0.750108 2.530406 -1.469594 2 -2 \nC 1.469594 -2.530406 0.750108 -2.828427 0 -2.828427 \nC -0.750108 -2.828427 -1.469594 -2.530406 -2 -2 \nC -2.530406 -1.469594 -2.828427 -0.750108 -2.828427 0 \nC -2.828427 0.750108 -2.530406 1.469594 -2 2 \nC -1.469594 2.530406 -0.750108 2.828427 0 2.828427 \nz\n\" style=\"stroke: #f8fafc\"/>\n    </defs>\n    <g clip-path=\"url(#p04c8a1231d)\">\n     <use xlink:href=\"#m8322b1463b\" x=\"238.165132\" y=\"77.493736\" style=\"fill: #f8fafc; stroke: #f8fafc\"/>\n    </g>\n   </g>\n   <g id=\"PathCollection_8\">\n    <g clip-path=\"url(#p04c8a1231d)\">\n     <use xlink:href=\"#m8322b1463b\" x=\"255.110943\" y=\"294.65117\" style=\"fill: #f8fafc; stroke: #f8fafc\"/>\n    </g>\n   </g>\n   <g id=\"PathCollection_9\">\n    <defs>\n     <path id=\"mb1ea766809\" d=\"M 0 2.828427 \nC 0.750108 2.828427 1.469594 2.530406 2 2 \nC 2.530406 1.469594 2.828427 0.750108 2.828427 0 \nC 2.828427 -0.750108 2.530406 -1.469594 2 -2 \nC 1.469594 -2.530406 0.750108 -2.828427 0 -2.828427 \nC -0.750108 -2.828427 -1.469594 -2.530406 -2 -2 \nC -2.530406 -1.469594 -2.828427 -0.750108 -2.828427 0 \nC -2.828427 0.750108 -2.530406 1.469594 -2 2 \nC -1.469594 2.530406 -0.750108 2.828427 0 2.828427 \nz\n\" style=\"stroke: #fbbf24\"/>\n    </defs>\n    <g clip-path=\"url(#p04c8a1231d)\">\n     <use xlink:href=\"#mb1ea766809\" x=\"250.403774\" y=\"186.072453\" style=\"fill: #fbbf24; stroke: #fbbf24\"/>\n    </g>\n   </g>\n  </g>\n </g>\n <defs>\n  <clipPath id=\"p04c8a1231d\">\n   <rect x=\"7.2\" y=\"7.2\" width=\"470.716981\" height=\"332.64\"/>\n  </clipPath>\n </defs>\n</svg>\n",
+    "proof_status": "proved",
+    "undischarged_obligations": [],
+    "strict_frozen_score_eligible": false
+  },
+  "attempts": [
+    {
+      "chart_id": "intersecting-chords-three-circles-collinearity",
+      "proof_class": "exact_chart_with_construction_domain_discharged",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "isosceles-two-circle-intersection-perpendicular",
+      "proof_class": "exact_chart_with_construction_domain_discharged",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "orthocenter-midpoint-two-circle-common-point-on-line",
+      "proof_class": "posthoc_exact_existential_chart_with_quantifier_repair",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "incircle-diameter-circle-reflection",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "euler-line-circle-bisector-equal-distance",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "mixtilinear-two-circumcircles-tangent",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "incenter-excenter-radical-axis-isogonal-trace",
+      "proof_class": "external_theorem_reimplemented_and_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "incircle-antipodes-three-circle-axis",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "positive-similarity-six-circumcenters-concurrency",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "tangential-quadrilateral-second-tangent-circle-tangency",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "tangent-triangle-secant-midpoint-circle-tangency",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "parallel-transversal-perpendicular-triangle-circles-tangent",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "two-diameter-circles-pedal-radical-axis",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": true,
+      "theorem": "two-diameter-circles-pedal-radical-axis",
+      "matched_constructions": [
+        "two midpoint-centred diameter circles with two common points",
+        "two alternating triples of orthogonal projections",
+        "two pedal circumcircles with two common points",
+        "the midpoint of the original common chord"
+      ],
+      "role_count": 19,
+      "goal": "coll m k1 k2",
+      "error": null,
+      "proof_status": "proved"
+    }
+  ],
+  "strict_frozen_score_eligible": false,
+  "benchmark_admission": "A fresh held-out cohort must establish transfer before score admission."
+}
