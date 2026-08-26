@@ -101,6 +101,46 @@ H1-O1 = real_scalar * (H-O)
 
 と因数分解できる。符号については `sd^2=se^2=sf^2=1` で剰余を取り、8通りすべての枝で実数係数になることを1つの多項式義務として再生した。
 
+### 4. 円に内接する四角形・対向二等分線・横断線
+
+対象は `2016CTSTp5`。外接円上の4点を半角複素数で表し、対向する2組の角の二等分線を、それぞれ対蹠な弧中点を結ぶ直線へ変換した。横断線との4交点は同次座標の外積だけで構成できる。対辺上の交点対の中点を `M,N` とすると、目標の直交性はHermitian内積
+
+```text
+M0*N1 + M1*N0 = 0
+```
+
+へ縮約される。4つの独立な二等分線分岐すべてで恒等的に0となった。
+
+### 5. 三外心円・根軸鏡映・等角共役
+
+対象は `2023RMMSLG3`。`ABC` を単位円に置き、自由点 `P` の共役だけを独立変数として保持した。`APB`,`BPC`,`CPA` の3外心を6本の等距離一次式で解き、その3点円と単位円の差から根軸を直接得た。根軸に関する `P` の鏡映を `Q` とすると、
+
+```text
+(P-A)(Q-A) / ((B-A)(C-A))
+```
+
+が共役と一致するため、`AP` と `AQ` は角 `BAC` で等角共役になる。
+
+### 6. 接触三角形・ジェルゴンヌ点・三外心重心
+
+対象は `ShuZhiMiGeo635`。内接円を単位円、接点を `D=(1,0),E(u),F(v)` とした。3辺は接線なので `ABC`、ジェルゴンヌ点 `K`、チェバ線と外接円の第2交点 `X,Y,Z` は2変数 `u,v` の有理式になる。`YKZ`,`ZKX`,`XKY` の外心を線形に解いて平均すると、内心を原点として
+
+```text
+G = ((u^2 v^2 + u^2 + 2uv + v^2 + 3) / (6(uv+1))) K
+```
+
+と因数分解できる。したがって `G,I,K` は共線である。接触円チャートと三外心チャートを同じ2変数座標で合成した例である。
+
+### 7. 垂足枠・平行弦・二外心接線
+
+対象は `2023VietnamTSTp3`。`A=(0,0),B=(1,0),C=(u,v)` とし、円上の可動点 `P` を直線 `AP` の傾き `t` で有理パラメータ化した。`P` を既知根として割ることで、`PQ || BC` を満たす第2交点 `Q` を得る。垂足 `E,F`、垂心 `H`、中点 `M`、射影 `K`、2外心、2接線はすべて一次式で解ける。接線交点 `X` について
+
+```text
+det(X-M, K-M) = 0
+```
+
+が3変数 `u,v,t` の恒等式として消去された。
+
 ## 実装
 
 | チャート | 問題 | 局所恒等式 | 独立配置 |
@@ -108,6 +148,10 @@ H1-O1 = real_scalar * (H-O)
 | two-diameter-circles-pedal-radical-axis | `2011G3` | 15/15 | 有理8配置 |
 | incircle-contact-circle-pencil-midpoint-radical-axis | `2016USATSTSTp6` | 22/22 | 有理8配置 |
 | arc-midpoint-antipode-reflection-center-axis | `2023SAGFp8` | 22/22 | 有理4配置 x 8枝 |
+| cyclic-opposite-bisectors-transversal-midpoints | `2016CTSTp5` | 20/20 | 有理4配置 x 4枝 |
+| three-circumcenters-radical-reflection | `2023RMMSLG3` | 18/18 | 有理8配置 |
+| incircle-gergonne-three-circumcenters | `ShuZhiMiGeo635` | 30/30 | 有理8配置 |
+| orthic-parallel-chord-two-tangents | `2023VietnamTSTp3` | 23/23 | 有理8配置 |
 
 各チャートは証明Markdown、SVG、構造適用記録、証明書SHA-256を生成する。ポートフォリオには問題IDによる分岐を追加していない。
 
@@ -120,8 +164,12 @@ H1-O1 = real_scalar * (H-O)
 2011G3                     +1
 2016USATSTSTp6             +1
 2023SAGFp8                 +1
-現在                       72/89 = 80.90%
-未証明                     17問
+2016CTSTp5                 +1
+2023RMMSLG3                +1
+ShuZhiMiGeo635             +1
+2023VietnamTSTp3           +1
+現在                       76/89 = 85.39%
+未証明                     13問
 母集団外加算                0
 空虚単位イデアル加算        0
 既認証との重複              0
@@ -134,65 +182,85 @@ H1-O1 = real_scalar * (H-O)
 | `2011G3` | `66c2da925fdea8c2482bbb8ad3aab86eec6d77f6fce00e312d8bcfdef754865c` |
 | `2016USATSTSTp6` | `9af628159cba1714545645950dc531cb26fdbe3e87cf228bca3798cc15d8773c` |
 | `2023SAGFp8` | `714f18e864507c514c5366c4bb63d30f86709b21a6ee8d81d127b1436717c5c3` |
+| `2016CTSTp5` | `49f3179997618d5c6d84833435ded44c4446109bfba09a72a3a58cfd3d5fd6b9` |
+| `2023RMMSLG3` | `cb3a76184864f6f644a48258b1208e052b21e2cc9b183215b7d181f80ae8cd37` |
+| `ShuZhiMiGeo635` | `7a0a41039baac848422e6458e90f1fc7c24ff6ee24a6167db315b634a61b287d` |
+| `2023VietnamTSTp3` | `fde31ec4d2f576dfb59f1d5543edf9b2e625fbc482ff131b3df27602650d217e` |
 
 ### 回帰と誤判定
 
 | 検査 | 結果 |
 |---|---:|
-| 3チャートの全点名変更 | 3/3 採用 |
-| 近傍接続破壊 | 14/14 不採用 |
-| 独立有理配置 | 48/48 成功 |
-| 全厳密チャート回帰 | 113/113 成功 |
+| 7チャートの全点名変更 | 7/7 採用 |
+| 近傍接続破壊 | 36/36 不採用 |
+| 独立有理配置・分岐 | 88/88 成功 |
+| 全厳密チャート・能力和監査回帰 | 168/168 成功 |
 | 能力和・非空虚監査回帰 | 4/4 成功 |
-| 残り17問への再照合 | 採用0、曖昧0 |
+| 残り13問への再照合 | 採用0、曖昧0 |
 
 ## 考察
 
 ### 何が正答を増やしたか
 
-探索深度や変換規則数を増やした効果ではない。3問とも、長い構成を別の表現へ移して次元を下げたことが直接の要因である。
+探索深度や変換規則数を増やした効果ではない。7問とも、長い構成を別の表現へ移して次元を下げたことが直接の要因である。
 
 ```text
 多数の垂足       -> 4つの局所橋と1つのアフィン恒等式
 4つの円交点      -> 2本の共通弦と2つの円束係数
 12回の中心・鏡映 -> 半角複素数と実スカラー因数分解
+4本の角二等分線 -> 対蹠弧中点と同次外積
+3外心円と鏡映   -> Hermitian円差と実交比
+接触三角形と3外心 -> 2変数有理座標と重心のスカラー倍
+平行弦と2接線   -> 既知根除去と一次接線交点
 ```
 
-この方法は「規則を増やさない」こと自体を目的にしていない。必要な数学構造を、より少数の生成子と合成則で再表現する。追加した3チャートは既存規則を列挙したものではなく、各構成族を一括して扱う座標変換である。
+この方法は「規則を増やさない」こと自体を目的にしていない。必要な数学構造を、より少数の生成子と合成則で再表現する。追加した7チャートは既存規則を列挙したものではなく、各構成族を一括して扱う座標変換である。
 
 ### 汎化について言えること
 
 点名、三角形頂点の順序、円交点の順序、円弧中点の8枝には依存しない。近傍接続を壊すと受理しない。したがって同型構造への汎化は実証した。
 
-ただし3問はいずれも問題を確認した後のpost-hoc追加である。72/89は現在のコードが固定集合上で再生できる監査済み能力和であり、独立未見集合での正答率ではない。未見集合での追加正答が出るまで、任意の幾何問題を解けるとは主張しない。
+ただし7問はいずれも問題を確認した後のpost-hoc追加である。76/89は現在のコードが固定集合上で再生できる監査済み能力和であり、独立未見集合での正答率ではない。未見集合での追加正答が出るまで、任意の幾何問題を解けるとは主張しない。
+
+### 量化・分岐の監査
+
+`2020IranGOAp2` は自然文で点 `N` を大弧 `BAC` 上に固定するが、凍結JGEXは垂直二等分線と外接円の2交点を一出力で選択している。独立数値検査では大弧側だけが成立し、他方の枝は成立しなかった。`2017USAMOp3` も自然文は2交点の少なくとも一方に関する存在命題だが、JGEXは一方だけを無指定で選ぶ。したがって両問は、量化修復なしに得点へ加えていない。これは探索不足ではなく、入力意味論の不一致である。
 
 ### 残る不足
 
-残り17問には少なくとも次が残る。
+残り13問には少なくとも次が残る。
 
 1. 角の二等分線が作る射影・極・調和束の共通チャート。
 2. 接線、方べき、円周角を双方向に移す円チャート。
-3. 複数外心と反転・相似中心を同じアフィン/複素表現へ移すチャート。
+3. 反転・相似中心・複数円交点を同じアフィン/複素表現へ移すチャート。
 4. 3次元または順序条件を含む構成の型付き非退化処理。
 
 次の問題は名前順ではなく、停止した証明義務をこれらのチャート候補へクラスタリングし、1チャートが複数問へ発火する候補を優先する。
 
 ## 結論
 
-未証明3問を、3つの問題名非依存チャートで追加認証した。巨大な一括消去を採用せず、円束・根軸・複素中心軸へ縮約した結果、固定89問の監査済み能力和は69から72へ増え、80%を超えた。全113回帰、非空虚監査、残り17問の誤一致監査を通過した。
+未証明7問を、7つの問題名非依存チャートで追加認証した。巨大な一括消去を採用せず、円束・根軸・複素中心軸・接触円座標・既知根除去へ縮約した結果、固定89問の監査済み能力和は69から76へ増え、85%を超えた。全168回帰、非空虚監査、残り13問の誤一致監査を通過した。
 
 ## 再現資料
 
 - `worker/backend/two_diameter_pedal_radical_axis_chart.py`
 - `worker/backend/incircle_contact_pencil_midpoint_chart.py`
 - `worker/backend/arc_midpoint_reflection_center_axis_chart.py`
+- `worker/backend/cyclic_bisector_transversal_midpoints_chart.py`
+- `worker/backend/three_circumcenters_radical_reflection_chart.py`
+- `worker/backend/incircle_gergonne_three_circumcenters_chart.py`
+- `worker/backend/orthic_parallel_chord_two_tangents_chart.py`
 - `worker/backend/exact_geometry_chart_portfolio.py`
 - `data/hageo-exact-chart-two-diameter-pedal-runs-2026-08-26/`
 - `data/hageo-exact-chart-incircle-pencil-runs-2026-08-26/`
 - `data/hageo-exact-chart-arc-reflection-axis-runs-2026-08-27/`
-- `data/hageo-certified-capability-union-plus-arc-reflection-axis-chart-2026-08-27.json`
-- `data/hageo-certified-capability-union-plus-arc-reflection-axis-chart-nonvacuous-audit-2026-08-27.json`
-- `data/exact-chart-remaining17-runtime-audit-2026-08-27.json`
+- `data/hageo-exact-chart-cyclic-bisector-runs-2026-08-27/`
+- `data/hageo-exact-chart-three-circumcenters-runs-2026-08-27/`
+- `data/hageo-exact-chart-incircle-gergonne-three-centers-runs-2026-08-27/`
+- `data/hageo-exact-chart-orthic-parallel-chord-two-tangents-runs-2026-08-27/`
+- `data/hageo-certified-capability-union-plus-orthic-parallel-chord-two-tangents-chart-2026-08-27.json`
+- `data/hageo-certified-capability-union-plus-orthic-parallel-chord-two-tangents-chart-nonvacuous-audit-2026-08-27.json`
+- `data/exact-chart-remaining13-runtime-audit-2026-08-27.json`
 
 ## 参考
 

@@ -27,6 +27,11 @@ from worker.backend.arc_midpoint_reflection_center_axis_chart import (
     certify_jgex_arc_midpoint_reflection_center_axis_application,
     render_arc_midpoint_reflection_center_axis_chart_svg,
 )
+from worker.backend.cyclic_bisector_transversal_midpoints_chart import (
+    certify_cyclic_bisector_transversal_midpoints_chart,
+    certify_jgex_cyclic_bisector_transversal_midpoints_application,
+    render_cyclic_bisector_transversal_midpoints_chart_svg,
+)
 from worker.backend.euler_line_bisector_chart import (
     certify_euler_line_bisector_chart,
     certify_jgex_euler_line_bisector_application,
@@ -46,6 +51,11 @@ from worker.backend.incircle_contact_pencil_midpoint_chart import (
     certify_incircle_contact_pencil_midpoint_chart,
     certify_jgex_incircle_contact_pencil_midpoint_application,
     render_incircle_contact_pencil_midpoint_chart_svg,
+)
+from worker.backend.incircle_gergonne_three_circumcenters_chart import (
+    certify_incircle_gergonne_three_circumcenters_chart,
+    certify_jgex_incircle_gergonne_three_circumcenters_application,
+    render_incircle_gergonne_three_circumcenters_chart_svg,
 )
 from worker.backend.isosceles_two_circle_perpendicular_chart import (
     certify_isosceles_two_circle_perpendicular_chart,
@@ -67,6 +77,11 @@ from worker.backend.orthocenter_circle_intersection_chart import (
     certify_orthocenter_circle_intersection_chart,
     render_orthocenter_circle_chart_svg,
 )
+from worker.backend.orthic_parallel_chord_two_tangents_chart import (
+    certify_jgex_orthic_parallel_chord_two_tangents_application,
+    certify_orthic_parallel_chord_two_tangents_chart,
+    render_orthic_parallel_chord_two_tangents_chart_svg,
+)
 from worker.backend.parallel_transversal_perpendicular_circles_chart import (
     certify_jgex_parallel_transversal_perpendicular_circles_application,
     certify_parallel_transversal_perpendicular_circles_chart,
@@ -86,6 +101,11 @@ from worker.backend.tangent_triangle_secant_midpoint_chart import (
     certify_jgex_tangent_triangle_secant_midpoint_application,
     certify_tangent_triangle_secant_midpoint_chart,
     render_tangent_triangle_secant_midpoint_chart_svg,
+)
+from worker.backend.three_circumcenters_radical_reflection_chart import (
+    certify_jgex_three_circumcenters_radical_reflection_application,
+    certify_three_circumcenters_radical_reflection_chart,
+    render_three_circumcenters_radical_reflection_chart_svg,
 )
 from worker.backend.two_diameter_pedal_radical_axis_chart import (
     certify_jgex_two_diameter_pedal_radical_axis_application,
@@ -170,6 +190,72 @@ class _ChartSpec:
 
 
 _CHARTS = (
+    _ChartSpec(
+        "orthic-parallel-chord-two-tangents-collinearity",
+        "posthoc_exact_chart_replayed",
+        certify_jgex_orthic_parallel_chord_two_tangents_application,
+        certify_orthic_parallel_chord_two_tangents_chart,
+        render_orthic_parallel_chord_two_tangents_chart_svg,
+        (
+            ("triangle", 1),
+            ("circumcenter", 3),
+            ("foot", 3),
+            ("on_line", 2),
+            ("midpoint", 1),
+            ("on_circle", 2),
+            ("on_pline", 1),
+            ("on_tline", 2),
+        ),
+        "coll",
+    ),
+    _ChartSpec(
+        "incircle-gergonne-three-circumcenters-centroid-axis",
+        "posthoc_exact_chart_replayed",
+        certify_jgex_incircle_gergonne_three_circumcenters_application,
+        certify_incircle_gergonne_three_circumcenters_chart,
+        render_incircle_gergonne_three_circumcenters_chart_svg,
+        (
+            ("triangle", 1),
+            ("incenter", 1),
+            ("foot", 3),
+            ("on_line", 5),
+            ("circumcenter", 4),
+            ("on_circle", 3),
+            ("centroid", 1),
+        ),
+        "coll",
+    ),
+    _ChartSpec(
+        "three-circumcenters-radical-axis-reflection-isogonal",
+        "posthoc_exact_chart_replayed",
+        certify_jgex_three_circumcenters_radical_reflection_application,
+        certify_three_circumcenters_radical_reflection_chart,
+        render_three_circumcenters_radical_reflection_chart_svg,
+        (
+            ("triangle", 1),
+            ("free", 1),
+            ("circumcenter", 5),
+            ("on_circle", 4),
+            ("reflect", 1),
+        ),
+        "eqangle",
+    ),
+    _ChartSpec(
+        "cyclic-opposite-bisectors-transversal-midpoints-perpendicular",
+        "posthoc_exact_chart_replayed",
+        certify_jgex_cyclic_bisector_transversal_midpoints_application,
+        certify_cyclic_bisector_transversal_midpoints_chart,
+        render_cyclic_bisector_transversal_midpoints_chart_svg,
+        (
+            ("triangle", 1),
+            ("on_circum", 1),
+            ("circumcenter", 1),
+            ("angle_bisector", 4),
+            ("on_line", 8),
+            ("midpoint", 2),
+        ),
+        "perp",
+    ),
     _ChartSpec(
         "intersecting-chords-three-circles-collinearity",
         "exact_chart_with_construction_domain_discharged",
@@ -372,9 +458,7 @@ def _proof_markdown(source: str, application: Any, certificate: Any) -> str:
     obligation_lines = "\n".join(
         f"- `{item}`" for item in application.nondegeneracy_obligations
     )
-    repair_required = bool(
-        getattr(application, "formalization_repair_required", False)
-    )
+    repair_required = bool(getattr(application, "formalization_repair_required", False))
     quantification_lines = (
         (
             "## 量化監査",
@@ -383,10 +467,7 @@ def _proof_markdown(source: str, application: Any, certificate: Any) -> str:
                 "- 元の一出力交点節は2つの交点から分岐を選ばないため、"
                 "そのままでは自然文の存在命題と同値ではない。"
             ),
-            (
-                "- 修復後: `"
-                f"{getattr(application, 'repaired_quantified_goal', '')}`"
-            ),
+            ("- 修復後: `" f"{getattr(application, 'repaired_quantified_goal', '')}`"),
             "- 自然文の存在命題: `proved`",
             "- 元入力の任意交点版: `not proved`",
             "- この量化修復は凍結ベンチマーク得点へ加算しない。",
@@ -427,7 +508,7 @@ def _proof_markdown(source: str, application: Any, certificate: Any) -> str:
             "## 未消去条件",
             "",
             *(f"- `{item}`" for item in unresolved),
-            *( ("- なし",) if not unresolved else () ),
+            *(("- なし",) if not unresolved else ()),
             "",
             *quantification_lines,
             "## 証明書",
@@ -509,9 +590,7 @@ def certify_jgex_with_exact_chart_portfolio(
                                 application.nondegeneracy_obligations
                             ),
                             identity_count=len(certificate.replay_residuals),
-                            chart_certificate_sha256=(
-                                certificate.certificate_sha256
-                            ),
+                            chart_certificate_sha256=(certificate.certificate_sha256),
                             application=application.to_dict(),
                             certificate=certificate.to_dict(),
                             proof_markdown=_proof_markdown(
@@ -543,9 +622,11 @@ def certify_jgex_with_exact_chart_portfolio(
                                 application.nondegeneracy_obligations,
                             )
                         )
-                        else "conditional"
-                        if application.replayed and error is None
-                        else "not_matched"
+                        else (
+                            "conditional"
+                            if application.replayed and error is None
+                            else "not_matched"
+                        )
                     ),
                 )
             )
@@ -568,8 +649,7 @@ def certify_jgex_with_exact_chart_portfolio(
     proved = selected is not None and selected.proof_status == "proved"
     conditional = selected is not None and selected.proof_status == "conditional"
     repair_required = bool(
-        selected
-        and selected.application.get("formalization_repair_required", False)
+        selected and selected.application.get("formalization_repair_required", False)
     )
     return ExactGeometryChartPortfolioResult(
         source_sha256=source_sha256,
