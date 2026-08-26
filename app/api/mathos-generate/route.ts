@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { generateLiveProblem, type StructureBlueprint } from '@/lib/mathos-live'
 import { buildProblemDiagram } from '@/lib/mortra/problem-artifact'
+import {
+  synthesizeCertifiedPolynomialFusions,
+  type CertifiedFusionCard,
+} from '@/lib/mortra/certified-fusion'
 import verifiedBatch from '@/data/mathos/continuous_verified_problem_batch1.json'
 import { generalizeParents, type GeneralizationCertificate } from '../../../worker/src/generalization-kernel'
 
@@ -271,6 +275,49 @@ const EXECUTABLE_TAG_BRIDGES: Record<string, string[]> = {
   variation: ['derivative', 'function_graph', 'extremum'],
   function_graph: ['variation', 'extremum'],
   extremum: ['derivative', 'variation', 'function_graph'],
+}
+
+async function persistCertifiedFusionCards(cards: CertifiedFusionCard[]): Promise<string[]> {
+  const errors: string[] = []
+  for (const card of cards) {
+    const meta = {
+      familyId: card.family_id,
+      diagram: card.diagram,
+      morphismChain: card.morphism_chain,
+      verificationMethod: card.verification.method,
+      generatedBy: 'mortra_certified_reversible_synthesis',
+      structureBlueprint: card.structure_blueprint,
+      fusionDerivation: card.fusion_derivation,
+      searchEvidence: card.search_evidence,
+    }
+    try {
+      const { error } = await getSupabaseAdmin().from('problems').upsert({
+        id: card.id,
+        topic_a: card.domain,
+        topic_b: card.family_id,
+        variation: 0,
+        statement: card.statement_tex,
+        answer: card.answer_tex,
+        difficulty: 'A',
+        solution: card.solution_tex,
+        surprise: 8,
+        minimality: 8,
+        connection: 9,
+        inevitability: 9,
+        diff_cal: 8,
+        total: Math.min(10, 7 + card.difficulty.score / 10),
+        inspiration: card.morphism_chain.join(' → '),
+        meta: JSON.stringify(meta),
+        generation: 0,
+        parent_ids: card.parent_ids,
+        source_file: 'mortra_certified_reversible_synthesis',
+      }, { onConflict: 'id' })
+      if (error) errors.push(`保存失敗: ${error.message}`)
+    } catch (error) {
+      errors.push(`保存失敗: ${error instanceof Error ? error.message : String(error)}`)
+    }
+  }
+  return errors
 }
 
 function expandedFocusTags(tags: string[]): string[] {
@@ -730,7 +777,7 @@ type GenerationResult = {
   generated: number
   requested: number
   engine: string
-  cards: Record<string, unknown>[]
+  cards: Array<Record<string, unknown> | CertifiedFusionCard>
   errors: string[]
   rejectionCounts?: Record<string, number>
   discoveryQueued?: boolean
@@ -1434,6 +1481,7 @@ export async function POST(request: NextRequest) {
   let searchDepth: 'standard' | 'deep' = 'deep'
   let searchBudgetSeconds = 90
   let mode: GenerationProfile['mode'] = 'batch'
+  let publicSurface = false
   try {
     const body = await request.json()
     count = Math.min(Math.max(Number(body?.count ?? 1), 1), 10)
@@ -1445,6 +1493,7 @@ export async function POST(request: NextRequest) {
     searchDepth = body?.searchDepth === 'standard' ? 'standard' : 'deep'
     searchBudgetSeconds = Math.min(Math.max(Number(body?.searchBudgetSeconds ?? (searchDepth === 'deep' ? 90 : 30)), 20), 180)
     mode = ['similar', 'fusion', 'expand'].includes(body?.mode) ? body.mode : 'batch'
+    publicSurface = body?.surface === 'public_try'
   } catch {
     // 既定値で続行
   }
@@ -1469,6 +1518,80 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       )
     }
+  }
+
+  const certifiedFusionCards = mode === 'fusion'
+    ? synthesizeCertifiedPolynomialFusions(
+        parents.map(parent => ({ id: parent.id!, statement: parent.statement! })),
+        count,
+      )
+    : []
+  if (certifiedFusionCards.length > 0) {
+    const makeResult = async (): Promise<GenerationResult> => {
+      const errors = await persistCertifiedFusionCards(certifiedFusionCards)
+      return {
+        generated: certifiedFusionCards.length,
+        requested: count,
+        engine: 'MORTRA exact reversible synthesis (no LLM)',
+        cards: certifiedFusionCards,
+        errors,
+        rejectionCounts: {},
+      }
+    }
+    if (!stream) return NextResponse.json(await makeResult())
+
+    const encoder = new TextEncoder()
+    return new Response(new ReadableStream({
+      async start(controller) {
+        const send = (event: ProgressEvent | { phase: 'done'; result: GenerationResult }) => {
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`))
+        }
+        send({ phase: 'structuring', message: '両方の親問題を一変数多項式の根配置へ型付けしました', current: 0, total: count })
+        send({ phase: 'inducing', message: '二つの根配置を別々の入力ポートとして合成しています', current: 0, total: count })
+        send({ phase: 'verifying', message: 'Newton和とSylvester終結式を独立に計算し、係数列を照合しています', current: certifiedFusionCards.length, total: count })
+        const result = await makeResult()
+        send({ phase: 'saving', message: result.errors?.length ? '問題は生成済みです。ライブラリ保存だけ失敗しました' : '検証済み問題をライブラリへ保存しました', current: certifiedFusionCards.length, total: count })
+        send({ phase: 'done', result })
+        controller.close()
+      },
+    }), {
+      headers: {
+        'Content-Type': 'text/event-stream; charset=utf-8',
+        'Cache-Control': 'no-cache, no-transform',
+        Connection: 'keep-alive',
+        'X-Accel-Buffering': 'no',
+      },
+    })
+  }
+
+  if (publicSurface && mode === 'fusion') {
+    const unsupported: GenerationResult = {
+      generated: 0,
+      requested: count,
+      engine: 'MORTRA public certified synthesis (no LLM)',
+      cards: [],
+      errors: ['公開版の厳密融合は現在、次数2〜4の一変数モニック整数多項式を含む2問に対応しています。この組合せは研究版の未検証探索へは自動送信しません。'],
+      rejectionCounts: { unsupported_public_fusion_ir: 1 },
+    }
+    if (!stream) return NextResponse.json(unsupported)
+    const encoder = new TextEncoder()
+    return new Response(new ReadableStream({
+      start(controller) {
+        const send = (event: ProgressEvent | { phase: 'done'; result: GenerationResult }) => {
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`))
+        }
+        send({ phase: 'structuring', message: '両方の親問題を解析しましたが、公開版の実行可能な共通IRへ型付けできませんでした', current: 0, total: count })
+        send({ phase: 'done', result: unsupported })
+        controller.close()
+      },
+    }), {
+      headers: {
+        'Content-Type': 'text/event-stream; charset=utf-8',
+        'Cache-Control': 'no-cache, no-transform',
+        Connection: 'keep-alive',
+        'X-Accel-Buffering': 'no',
+      },
+    })
   }
 
   const shuffledParents = [...parents]

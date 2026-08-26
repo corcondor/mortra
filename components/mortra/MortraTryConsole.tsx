@@ -84,8 +84,8 @@ const SEARCH_BUDGET_SECONDS = 90
 
 const CONSOLE_TEXT = {
   ja: {
-    parentA: String.raw`\text{三次方程式 }x^3-6x^2+11x-6=0\text{ の3実根の対称式を求めよ。}`,
-    parentB: String.raw`\text{三角形の3辺から、面積と内接円・外接円の半径の関係を調べよ。}`,
+    parentA: '方程式 $x^2-5x+6=0$ を解け。',
+    parentB: '方程式 $y^2-y-1=0$ の根を考える。',
     fusionPhases: ['構造化', '候補生成', '融合検査', '厳密検証', '保存'],
     solvePhases: ['構造化', '制約化', '厳密計算', '検証', '解答'],
     labelA: '問題',
@@ -107,7 +107,7 @@ const CONSOLE_TEXT = {
     tState: '状態', tRound: 'ラウンド', tDepth: '探索深さ',
     tStates: '検査状態', tGoals: '実行候補', tFrontier: '未閉鎖義務',
     traceSummary: '処理記録',
-    researchNotice: 'これは選択した親問題から得た研究候補です。問題文と証明ロードマップを表示したまま、反例探索と厳密検証を継続しています。',
+    researchNotice: '公開版の2問融合は、次数2〜4の一変数モニック整数多項式に対応しています。Newton和と終結式が一致した問題だけを表示します。',
     searching: '探索中',
     nextRound: (s: number) => `次の探索まで ${s} 秒`,
     resuming: '再開準備中',
@@ -131,8 +131,8 @@ const CONSOLE_TEXT = {
     },
   },
   en: {
-    parentA: String.raw`\text{Find the symmetric functions of the three real roots of }x^3-6x^2+11x-6=0.`,
-    parentB: String.raw`\text{From the three sides of a triangle, relate the area to the inradius and circumradius.}`,
+    parentA: 'Solve the equation $x^2-5x+6=0$.',
+    parentB: 'Consider the roots of $y^2-y-1=0$.',
     fusionPhases: ['Structure', 'Candidates', 'Fusion check', 'Exact verify', 'Save'],
     solvePhases: ['Structure', 'Constraints', 'Exact compute', 'Verify', 'Answer'],
     labelA: 'Problem',
@@ -154,7 +154,7 @@ const CONSOLE_TEXT = {
     tState: 'State', tRound: 'Round', tDepth: 'Depth',
     tStates: 'States seen', tGoals: 'Executable goals', tFrontier: 'Open obligations',
     traceSummary: 'Execution log',
-    researchNotice: 'This is a research candidate derived from the parent problems you chose. The statement and proof roadmap stay on screen while counterexample search and exact verification continue.',
+    researchNotice: 'Public two-parent fusion currently supports degree 2–4 monic univariate integer polynomials. A problem is shown only when Newton sums and an independent resultant agree.',
     searching: 'Searching',
     nextRound: (s: number) => `Next round in ${s}s`,
     resuming: 'Resuming',
@@ -216,8 +216,8 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
   const tr = c.tr
   const FUSION_PHASES = c.fusionPhases.map((label, i) => ({ key: `fusion-${i}`, label }))
   const SOLVE_PHASES = c.solvePhases.map((label, i) => ({ key: `solve-${i}`, label }))
-  const [parentA, setParentA] = useState(c.parentA)
-  const [parentB, setParentB] = useState(c.parentB)
+  const [parentA, setParentA] = useState<string>(c.parentA)
+  const [parentB, setParentB] = useState<string>(c.parentB)
   const [running, setRunning] = useState(false)
   const [phase, setPhase] = useState('idle')
   const [stage, setStage] = useState(-1)
@@ -348,6 +348,7 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
     if (!event.result) return
 
     setResult(event.result)
+    for (const error of event.result.errors ?? []) addTrace(error)
     const first = cardFromResult(event.result)
     if (first?.statement_tex) setDraft(first.statement_tex)
     if (event.result.discoveryQueued && event.result.discoveryJobId) {
@@ -402,7 +403,13 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
           signal: controller.signal,
           body: JSON.stringify({ problem: inputs[0] }),
         })
-        const solved = await response.json() as GenerationResult & { error?: string }
+        const raw = await response.text()
+        let solved: GenerationResult & { error?: string }
+        try {
+          solved = JSON.parse(raw) as GenerationResult & { error?: string }
+        } catch {
+          throw new Error(tr.solveApi(response.status))
+        }
         for (const line of solved.trace ?? []) addTrace(line)
         if (!response.ok) throw new Error(solved.error || tr.solveApi(response.status))
         setStage(4)
@@ -422,6 +429,7 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
           count: 1,
           stream: true,
           mode: 'fusion',
+          surface: 'public_try',
           searchDepth: 'deep',
           searchBudgetSeconds: SEARCH_BUDGET_SECONDS,
           parents: inputs.map((statement, index) => ({ id: parentId(statement, index + 1), statement })),

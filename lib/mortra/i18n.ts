@@ -16,10 +16,10 @@ export const LANGS: Lang[] = ['en', 'ja']
 export const FIGURES = {
   /**
    * 固定89問の監査済み能力和。
-   * 正本 docs/research/MORTRA-REUSABLE-CIRCLE-RELATION-CHARTS-20260826.md
-   * 母集団外加算 0 / 空虚証明加算 0 / 残り20問への誤一致 0。
+   * 正本 docs/research/MORTRA-MINIMAL-REPRESENTATION-CHARTS-20260827.md
+   * 母集団外加算 0 / 空虚証明加算 0 / 残り13問への誤一致 0。
    */
-  hageo: { mortra: 69, total: 89, pct: '77.5%' },
+  hageo: { mortra: 76, total: 89, pct: '85.4%' },
   /**
    * 同一の凍結89問での公式Newclid単体。単一実行系の値。
    * 正本 docs/research/MORTRA-HAGEO-UNRESOLVED34-RERUN-20260824.md
@@ -27,7 +27,7 @@ export const FIGURES = {
    * 同じものとして扱わない。表記でも必ず区別する。
    */
   newclid: { score: 28, total: 89, pct: '31.5%' },
-  ratio: '2.46',
+  ratio: '2.71',
   imoAg30: { mortra: 25, total: 30 },
 } as const
 
@@ -115,7 +115,7 @@ const en: Copy = {
     title: 'Solve one.',
     titleBreak: 'Fuse two.',
     copy:
-      'Enter one problem and MORTRA solves it. Enter two and it fuses their structures. What comes back is a single artifact: the statement, the figure, a worked solution and the verification result.',
+      'Enter one supported problem to solve it. The public fusion kernel currently accepts two degree 2–4 monic univariate integer polynomials and constructs a new root-structure problem on demand. Every returned artifact includes the statement, figure, worked solution and two-path verification.',
   },
   why: {
     index: '02 / WHY FIGURES',
@@ -134,7 +134,7 @@ const en: Copy = {
       newclidLabel: 'Newclid — single symbolic engine',
       ratio: `${FIGURES.ratio}× the single-engine baseline`,
       note:
-        'These are not the same kind of number and we do not present them as such. 28/89 is one engine run end to end. 69/89 is the audited union of MORTRA’s exact solvers, selected automatically with no per-problem branching — the coordination is the architecture, so the union is the honest measure of it. Both figures come from the same frozen 89 problems under the same conditions. Some charts were written after seeing those problems, so 69/89 is audited capability on a fixed set, not a generalization rate on unseen problems. Off-population additions: 0. Vacuous proofs: 0. False matches against the remaining 20: 0.',
+        'These are not the same kind of number and we do not present them as such. 28/89 is one engine run end to end. 76/89 is the audited union of MORTRA’s exact solvers, selected automatically with no per-problem branching — the coordination is the architecture, so the union is the honest measure of it. Both figures come from the same frozen 89 problems under the same conditions. Seven reusable charts were written after inspecting unresolved problems, so 76/89 is audited capability on a fixed set, not a generalization rate on unseen problems. Off-population additions: 0. Vacuous proofs: 0. False matches against the remaining 13: 0.',
     },
     table: {
       heading: 'Where MORTRA sits on IMO-AG-30',
@@ -188,7 +188,7 @@ const en: Copy = {
       },
       {
         title: 'The filter, put on silicon',
-        body: 'A dedicated candidate-check circuit runs one per cycle and matched the software implementation exactly across 10,000 inputs. Logic synthesis passed. Timing numbers will be posted after measurement on hardware.',
+        body: 'A dedicated candidate-check circuit runs one per cycle and matched the software implementation across 2,000,000 simulated inputs with zero mismatches. Xilinx 7-series logic synthesis passed. Timing numbers will be posted only after measurement on physical hardware.',
       },
     ],
   },
@@ -213,7 +213,7 @@ const en: Copy = {
       {
         date: 'HARDWARE',
         title: 'Candidate filtering, lowered to a circuit',
-        body: 'A dedicated circuit processes one candidate per cycle, matched the software exactly across 10,000 inputs, and passed synthesis for Xilinx 7-series. Measurement on real hardware is next.',
+        body: 'A dedicated circuit processes one candidate per cycle, matched the software across 2,000,000 simulated inputs with zero mismatches, and passed synthesis for Xilinx 7-series. Physical-board timing has not yet been measured.',
       },
     ],
   },
@@ -252,7 +252,7 @@ const ja: Copy = {
     title: '1問を解く。',
     titleBreak: '2問をつなぐ。',
     copy:
-      '片方だけなら入力した問題を解き、両方なら二つの構造を融合します。問題文、図、模範解答、検証結果までを一つの成果物として返します。',
+      '片方だけなら対応する問題を解きます。公開版の2問融合は現在、次数2〜4の一変数モニック整数多項式を受け取り、根構造から新しい問題をその場で構成します。問題文、図、模範解答、二経路の検証結果までを一つの成果物として返します。',
   },
   why: {
     index: '02 / WHY FIGURES',
@@ -271,7 +271,7 @@ const ja: Copy = {
       newclidLabel: 'Newclid — 記号エンジン単体',
       ratio: `単一エンジンの${FIGURES.ratio}倍`,
       note:
-        'この2つは同じ種類の数字ではなく、同じものとしては出しません。28/89は1つのエンジンを通しで走らせた値です。69/89はMORTRAの厳密ソルバ群の監査済み集合和で、問題ごとの分岐を持たず自動選択されます。協調そのものがアーキテクチャなので、集合和がその正直な指標です。両方とも同じ凍結89題・同一条件の値です。一部のチャートは対象問題を見た後に実装したため、69/89は固定集合上の監査済み能力であり、未見問題への汎化率ではありません。母集団外加算0、空虚証明0、残り20問への誤一致0。',
+        'この2つは同じ種類の数字ではなく、同じものとしては出しません。28/89は1つのエンジンを通しで走らせた値です。76/89はMORTRAの厳密ソルバ群の監査済み集合和で、問題ごとの分岐を持たず自動選択されます。協調そのものがアーキテクチャなので、集合和がその正直な指標です。両方とも同じ凍結89題・同一条件の値です。未証明問題を見てから追加した再利用可能チャートが7個あるため、76/89は固定集合上の監査済み能力であり、未見問題への汎化率ではありません。母集団外加算0、空虚証明0、残り13問への誤一致0。',
     },
     table: {
       heading: 'IMO-AG-30 での位置',
@@ -325,7 +325,7 @@ const ja: Copy = {
       },
       {
         title: '絞り込みを回路へ',
-        body: '候補検査の専用回路が1サイクル1件で動き、10,000通りでソフト実装と完全一致。論理合成まで通過済みです。数字は実機で測ってから出します。',
+        body: '候補検査の専用回路が1サイクル1件で動く設計です。200万通りのシミュレーションでソフト実装との不一致0、Xilinx 7-series向け論理合成まで通過済みです。実機速度はまだ掲載しません。',
       },
     ],
   },
@@ -350,7 +350,7 @@ const ja: Copy = {
       {
         date: 'HARDWARE',
         title: '探索の絞り込みを、回路に落とした',
-        body: '候補検査の専用回路を設計し、1サイクル1件で流せる形にしました。10,000通りの入力でソフト実装と完全一致、Xilinx 7-seriesへの論理合成も通過。次は実機に載せて測ります。',
+        body: '候補検査の専用回路を設計し、1サイクル1件で流せる形にしました。200万通りのシミュレーションでソフト実装との不一致0、Xilinx 7-seriesへの論理合成も通過。実機速度は未測定です。',
       },
     ],
   },
