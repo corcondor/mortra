@@ -20,7 +20,7 @@ matplotlib.use("Agg")
 
 from matplotlib import pyplot as plt
 from matplotlib.patches import Circle
-from newclid.jgex.formulation import JGEXFormulation
+from worker.backend.jgex_chart_parser import ChartJGEXFormulation as JGEXFormulation
 
 from worker.backend.geometry_proof_hypergraph import Atom
 
