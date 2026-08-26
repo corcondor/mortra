@@ -57,6 +57,11 @@ from worker.backend.orthocenter_circle_intersection_chart import (
     certify_orthocenter_circle_intersection_chart,
     render_orthocenter_circle_chart_svg,
 )
+from worker.backend.positive_similarity_six_circumcenters_chart import (
+    certify_jgex_positive_similarity_six_circumcenters_application,
+    certify_positive_similarity_six_circumcenters_chart,
+    render_positive_similarity_six_circumcenters_chart_svg,
+)
 from worker.backend.tangential_quadrilateral_second_tangent_chart import (
     certify_jgex_tangential_quadrilateral_second_tangent_application,
     certify_tangential_quadrilateral_second_tangent_chart,
@@ -210,6 +215,15 @@ _CHARTS = (
         certify_incircle_three_circle_axis_chart,
         render_incircle_three_circle_axis_chart_svg,
         (("incenter", 1), ("mirror", 3), ("foot", 3)),
+        "coll",
+    ),
+    _ChartSpec(
+        "positive-similarity-six-circumcenters-concurrency",
+        "posthoc_exact_chart_replayed",
+        certify_jgex_positive_similarity_six_circumcenters_application,
+        certify_positive_similarity_six_circumcenters_chart,
+        render_positive_similarity_six_circumcenters_chart_svg,
+        (("triangle", 1), ("on_aline", 2), ("circumcenter", 6)),
         "coll",
     ),
     _ChartSpec(

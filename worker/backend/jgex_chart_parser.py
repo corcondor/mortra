@@ -68,11 +68,18 @@ def _parse_setup_clause(raw: str) -> ChartSetupClause:
         raise ValueError(f"invalid JGEX setup clause: {raw.strip()}")
     output_text, construction_text = raw.split("=", maxsplit=1)
     points = _tokens(output_text, context="output point list")
-    constructions = tuple(
-        ChartConstruction(tokens[0], tokens[1:])
-        for part in construction_text.split(",")
-        if (tokens := _tokens(part, context="construction"))
-    )
+    construction_items = []
+    for part in construction_text.split(","):
+        tokens = _tokens(part, context="construction")
+        args = tokens[1:]
+        # The frozen corpus contains both ``x = on_line a b`` and
+        # ``x = on_line x a b``.  Multi-output constructors can likewise
+        # repeat their complete output tuple.  Those names are surface syntax,
+        # not mathematical inputs, so normalize them at the parser boundary.
+        if len(args) >= len(points) and args[: len(points)] == points:
+            args = args[len(points) :]
+        construction_items.append(ChartConstruction(tokens[0], args))
+    constructions = tuple(construction_items)
     if not constructions:
         raise ValueError(f"setup clause has no construction: {raw.strip()}")
     return ChartSetupClause(points=points, constructions=constructions)

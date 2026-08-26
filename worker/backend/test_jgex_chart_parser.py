@@ -29,6 +29,19 @@ def test_parser_canonicalizes_equal_angles_like_newclid() -> None:
     assert str(formulation.goals[0]) == "eqangle p u u v u w u x"
 
 
+def test_parser_erases_repeated_output_names_from_frozen_jgex_surface() -> None:
+    formulation = ChartJGEXFormulation.from_text(
+        "a b c = triangle a b c; x = on_line x a b, on_line x b c ? coll a x b"
+    )
+
+    assert formulation.setup_clauses[0].constructions[0].name == "triangle"
+    assert formulation.setup_clauses[0].constructions[0].args == ()
+    assert tuple(
+        construction.args
+        for construction in formulation.setup_clauses[1].constructions
+    ) == (("a", "b"), ("b", "c"))
+
+
 @pytest.mark.parametrize(
     "source",
     (
