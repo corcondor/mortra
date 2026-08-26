@@ -14,6 +14,8 @@
  *   実行面は速くするが真理を変えない        (changes_mathematical_truth: False)
  */
 
+import type { Lang } from '@/lib/mortra/i18n'
+
 type Plane = {
   id: string
   label: string
@@ -22,55 +24,45 @@ type Plane = {
   authority: 'none' | 'priority' | 'truth' | 'speed'
 }
 
-const PLANES: Plane[] = [
-  {
-    id: 'proposal',
-    label: 'PROPOSAL',
-    role: '候補を出す',
-    items: ['HAGeo 数値incidence', 'Tong 型付き構成'],
-    authority: 'none',
+const TEXT = {
+  ja: {
+    alt: 'MORTRAの面分離アーキテクチャ。提案・局所形式言語・知識・協調・真理・実行の6面。情報は上から下へ流れるが、真偽を決める権限は真理面だけが持つ。',
+    figTitle: 'FIG. 1 — 面の分離と権限の非伝播',
+    footA: '情報は下へ流れる。真偽を決める権限は真理面だけが持ち、上へ戻らない。',
+    footB: 'この4つの制約は validate_unified_geometry_architecture() が実行時に検査し、破れば例外で落ちる。',
+    notes: ['真理ではない', '優先順位と予算だけ', '証明書の再生のみ', '真理を変えない'],
+    planes: [
+      { id: 'proposal', label: 'PROPOSAL', role: '候補を出す', items: ['HAGeo 数値incidence', 'Tong 型付き構成'], authority: 'none' },
+      { id: 'local', label: 'LOCAL FORMAL LANGUAGES', role: '各々の言語のまま解く', items: ['Newclid DD閉包', 'Newclid 型付き遷移', 'AR残差', 'GCLC-Wu 多項式義務', 'SyGuS 開義務'], authority: 'none' },
+      { id: 'knowledge', label: 'KNOWLEDGE', role: '意味を保って写す', items: ['OpenMath 項', 'MMT theory graph', 'interface view'], authority: 'none' },
+      { id: 'coordination', label: 'COORDINATION', role: '優先順位と予算だけ', items: ['exact 証明書交換（既定）', 'Sheaf-ADMM（実験・既定OFF）'], authority: 'priority' },
+      { id: 'truth', label: 'TRUTH', role: 'ここだけが真偽を決める', items: ['型付き native 証明書の再生'], authority: 'truth' },
+      { id: 'execution', label: 'EXECUTION', role: '速くする。真理は変えない', items: ['RISC-V 型付き命令スケジューリング', 'FPGA bitset関係閉包 / 有界多項式核'], authority: 'speed' },
+    ] as Plane[],
   },
-  {
-    id: 'local',
-    label: 'LOCAL FORMAL LANGUAGES',
-    role: '各々の言語のまま解く',
-    items: ['Newclid DD閉包', 'Newclid 型付き遷移', 'AR残差', 'GCLC-Wu 多項式義務', 'SyGuS 開義務'],
-    authority: 'none',
+  en: {
+    alt: "MORTRA's plane-separated architecture: proposal, local formal languages, knowledge, coordination, truth and execution. Information flows downward, but only the truth plane may decide whether something holds.",
+    figTitle: 'FIG. 1 — Separation of planes, non-propagation of authority',
+    footA: 'Information flows down. Only the truth plane decides what holds, and that authority never flows back up.',
+    footB: 'These four constraints are checked at runtime by validate_unified_geometry_architecture(); a violation raises.',
+    notes: ['not truth', 'priority and budget only', 'certificate replay only', 'does not change truth'],
+    planes: [
+      { id: 'proposal', label: 'PROPOSAL', role: 'proposes candidates', items: ['HAGeo numeric incidence', 'Tong typed construction'], authority: 'none' },
+      { id: 'local', label: 'LOCAL FORMAL LANGUAGES', role: 'each solves in its own language', items: ['Newclid DD closure', 'Newclid typed transitions', 'AR residual', 'GCLC-Wu polynomial obligations', 'SyGuS open obligations'], authority: 'none' },
+      { id: 'knowledge', label: 'KNOWLEDGE', role: 'transports meaning', items: ['OpenMath terms', 'MMT theory graph', 'interface view'], authority: 'none' },
+      { id: 'coordination', label: 'COORDINATION', role: 'priority and budget only', items: ['exact certificate exchange (default)', 'Sheaf-ADMM (experimental, off)'], authority: 'priority' },
+      { id: 'truth', label: 'TRUTH', role: 'the only plane that decides', items: ['replay of typed native certificates'], authority: 'truth' },
+      { id: 'execution', label: 'EXECUTION', role: 'makes it fast, not true', items: ['RISC-V typed instruction scheduling', 'FPGA bitset closure / bounded polynomial core'], authority: 'speed' },
+    ] as Plane[],
   },
-  {
-    id: 'knowledge',
-    label: 'KNOWLEDGE',
-    role: '意味を保って写す',
-    items: ['OpenMath 項', 'MMT theory graph', 'interface view'],
-    authority: 'none',
-  },
-  {
-    id: 'coordination',
-    label: 'COORDINATION',
-    role: '優先順位と予算だけ',
-    items: ['exact 証明書交換（既定）', 'Sheaf-ADMM（実験・既定OFF）'],
-    authority: 'priority',
-  },
-  {
-    id: 'truth',
-    label: 'TRUTH',
-    role: 'ここだけが真偽を決める',
-    items: ['型付き native 証明書の再生'],
-    authority: 'truth',
-  },
-  {
-    id: 'execution',
-    label: 'EXECUTION',
-    role: '速くする。真理は変えない',
-    items: ['RISC-V 型付き命令スケジューリング', 'FPGA bitset関係閉包 / 有界多項式核'],
-    authority: 'speed',
-  },
-]
+} as const
 
 const CYAN = '#5eead4'
 const AMBER = '#f0a03c'
 
-export function ArchitectureFigure() {
+export function ArchitectureFigure({ lang = 'en' }: { lang?: Lang }) {
+  const c0 = TEXT[lang]
+  const PLANES = c0.planes
   const W = 940
   const rowH = 66
   const gap = 10
@@ -83,12 +75,12 @@ export function ArchitectureFigure() {
     <svg
       viewBox={`0 0 ${W} ${H}`}
       role="img"
-      aria-label="MORTRAの面分離アーキテクチャ。提案・局所形式言語・知識・協調・真理・実行の6面。情報は上から下へ流れるが、真偽を決める権限は真理面だけが持つ。"
+      aria-label={c0.alt}
       style={{ width: '100%', height: 'auto', display: 'block' }}
     >
       <g fill="currentColor" fontFamily="ui-monospace, SFMono-Regular, Menlo, monospace">
         <text x="0" y="18" fontSize="11.5" opacity="0.5" letterSpacing="0.1em">
-          FIG. 1 — 面の分離と権限の非伝播
+          {c0.figTitle}
         </text>
 
         {PLANES.map((p, i) => {
@@ -132,10 +124,10 @@ export function ArchitectureFigure() {
         {/* 右側: 権限の注記。これがこの図の主張 */}
         {(() => {
           const notes = [
-            { i: 0, t: '真理ではない', c: AMBER },
-            { i: 3, t: '優先順位と予算だけ', c: AMBER },
-            { i: 4, t: '証明書の再生のみ', c: CYAN },
-            { i: 5, t: '真理を変えない', c: AMBER },
+            { i: 0, t: c0.notes[0], c: AMBER },
+            { i: 3, t: c0.notes[1], c: AMBER },
+            { i: 4, t: c0.notes[2], c: CYAN },
+            { i: 5, t: c0.notes[3], c: AMBER },
           ]
           return notes.map(n => {
             const y = top + n.i * (rowH + gap) + rowH / 2
@@ -160,10 +152,10 @@ export function ArchitectureFigure() {
         </g>
 
         <text x="0" y={H - 22} fontSize="10.5" opacity="0.55">
-          情報は下へ流れる。真偽を決める権限は真理面だけが持ち、上へ戻らない。
+          {c0.footA}
         </text>
         <text x="0" y={H - 6} fontSize="10" opacity="0.38">
-          この4つの制約は validate_unified_geometry_architecture() が実行時に検査し、破れば例外で落ちる。
+          {c0.footB}
         </text>
       </g>
     </svg>

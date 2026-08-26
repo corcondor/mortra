@@ -1,10 +1,15 @@
+import type { Metadata } from 'next'
 import { MortraProductPage } from '@/components/mortra/MortraProductPage'
+import { getCopy } from '@/lib/mortra/i18n'
 
-export const metadata = {
-  title: 'MORTRA-1 — 数学を、動かす。',
-  description: '外部LLMを使わずIMO幾何25/30。複数の記号推論器を協調させ、数学を解き、作る研究システム。',
+const t = getCopy('en')
+
+export const metadata: Metadata = {
+  title: t.meta.title,
+  description: t.meta.description,
+  alternates: { canonical: '/', languages: { en: '/', ja: '/ja', 'x-default': '/' } },
 }
 
 export default function MortraPage() {
-  return <MortraProductPage />
+  return <MortraProductPage lang="en" />
 }

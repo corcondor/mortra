@@ -3,9 +3,11 @@ import './globals.css'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Analytics } from '@vercel/analytics/next'
 
-const TITLE = 'MORTRA — 数学を、動かす。'
+// 既定は英語。日本語は /ja が自前の metadata で上書きする。
+// 数字はここに書かない。正本は lib/mortra/i18n.ts の FIGURES。
+const TITLE = 'MORTRA — Finite primitives. Infinite mathematics.'
 const DESCRIPTION =
-  '外部LLMを使わずIMO幾何25/30。複数の記号推論器を協調させ、数学を解き、作る研究システム。'
+  'MORTRA researches how mathematics can be represented, transformed and verified through a compact system of typed objects, morphisms and invariants. No neural components in the reasoning path.'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://mortra.ai'),
@@ -19,8 +21,9 @@ export const metadata: Metadata = {
   },
   alternates: { canonical: '/' },
   keywords: [
-    'MORTRA', '数学AI', '記号推論', '自動作問', '数学問題生成',
-    '幾何証明', '増減表', '関数グラフ', 'IMO geometry', 'symbolic reasoning',
+    'MORTRA', 'symbolic reasoning', 'automated theorem proving', 'geometry proof',
+    'mathematical structure', 'proof certificate', 'IMO geometry', 'non-LLM reasoning',
+    '数学AI', '記号推論', '幾何証明', '自動作問',
   ],
   authors: [{ name: 'MORTRA' }],
   creator: 'MORTRA',
@@ -31,7 +34,7 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     url: 'https://mortra.ai/',
     siteName: 'MORTRA',
-    locale: 'ja_JP',
+    locale: 'en_US',
     type: 'website',
   },
   twitter: {
@@ -43,7 +46,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ja">
+    <html lang="en">
       <head>
         {/* KaTeX CSS + fonts via CDN — ローカルだとフォントパスが狂うため CDN を使用 */}
         <link

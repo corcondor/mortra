@@ -65,8 +65,31 @@ export async function GET(req: NextRequest) {
       }
       superseded_by?: string
     } | null)
-    const state = resultEnvelope?.searchState
+    let state = resultEnvelope?.searchState
     const runtime = resultEnvelope?.searchRuntime
+    let replacementJobId: string | null = resultEnvelope?.superseded_by ?? null
+    if (replacementJobId) {
+      const { data: replacement } = await supabase
+        .from('generation_jobs')
+        .select('id')
+        .eq('id', replacementJobId)
+        .maybeSingle()
+      if (!replacement) {
+        const rawResult = data.result && typeof data.result === 'object'
+          ? data.result as Record<string, unknown>
+          : {}
+        const repairedState = {
+          ...(state ?? {}),
+          continuing: true,
+          next_attempt_at: null,
+        }
+        const { superseded_by: _missingSuccessor, ...repairableResult } = rawResult
+        data.result = { ...repairableResult, searchState: repairedState }
+        state = repairedState
+        replacementJobId = null
+        await supabase.from('generation_jobs').update({ result: data.result }).eq('id', jobId)
+      }
+    }
     const now = Date.now()
     const updatedAt = Date.parse(data.updated_at ?? '')
     const createdAt = Date.parse(data.created_at ?? '')
@@ -79,7 +102,6 @@ export async function GET(req: NextRequest) {
     const secondsUntilNextRound = waitingForNextRound ? Math.max(0, Math.ceil((nextAttemptAt - now) / 1000)) : 0
     const stale = secondsSinceUpdate === null || secondsSinceUpdate >= 90
     let resumeRequested = false
-    let replacementJobId: string | null = resultEnvelope?.superseded_by ?? null
     if (due && stale && !replacementJobId) {
       const { data: resumeData, error: resumeError } = await supabase.functions.invoke('enqueue-generation', {
         body: { resume_job_id: jobId },
@@ -116,12 +138,67 @@ export async function GET(req: NextRequest) {
             },
             updated_at: new Date().toISOString(),
           }).eq('id', jobId)
+          const { data: visibleSuccessor } = await supabase
+            .from('generation_jobs')
+            .select('id')
+            .eq('id', replacementJobId)
+            .maybeSingle()
+          // The Edge Function may return before the inserted row is visible to this
+          // request. Keep polling the current job until the successor can be read.
+          if (!visibleSuccessor) replacementJobId = null
         }
       }
     }
-    const { parents: _parents, mode: _mode, count: _count, ...publicData } = data
+    const compactSearchState = state ? {
+      continuing: state.continuing,
+      next_attempt_at: state.next_attempt_at,
+      round: state.round,
+      depth: state.depth,
+      terms_enumerated: state.terms_enumerated,
+      executable_goals: state.executable_goals,
+      states_explored: state.states_explored,
+      progress_delta: state.progress_delta,
+      frontier: state.frontier?.slice(0, 12),
+      stagnant_rounds: state.stagnant_rounds,
+      last_progress_at: state.last_progress_at,
+    } : undefined
+    const rawPublicResult = data.result && typeof data.result === 'object'
+      ? data.result as Record<string, unknown>
+      : null
+    const publicResult = rawPublicResult ? (() => {
+      const {
+        searchState: _fullSearchState,
+        hypotheses: _fullHypotheses,
+        typedEnumeration: _fullTypedEnumeration,
+        ...summary
+      } = rawPublicResult
+      const typedEnumeration = _fullTypedEnumeration && typeof _fullTypedEnumeration === 'object'
+        ? _fullTypedEnumeration as {
+            goals?: unknown[]
+            terms?: unknown[]
+            frontier?: unknown[]
+            exhausted?: boolean
+            statesExplored?: number
+          }
+        : null
+      return {
+        ...summary,
+        searchState: compactSearchState,
+        hypothesis_count: Array.isArray(_fullHypotheses) ? _fullHypotheses.length : 0,
+        typedEnumeration: typedEnumeration ? {
+          goals: typedEnumeration.goals?.slice(0, 12) ?? [],
+          term_count: typedEnumeration.terms?.length ?? 0,
+          frontier: typedEnumeration.frontier?.slice(0, 12) ?? [],
+          frontier_count: typedEnumeration.frontier?.length ?? 0,
+          exhausted: typedEnumeration.exhausted ?? false,
+          statesExplored: typedEnumeration.statesExplored ?? 0,
+        } : undefined,
+      }
+    })() : null
+    const { parents: _parents, mode: _mode, count: _count, result: _result, ...publicData } = data
     return NextResponse.json({
       ...publicData,
+      result: publicResult,
       telemetry: {
         server_time: new Date(now).toISOString(),
         elapsed_seconds: Number.isFinite(createdAt) ? Math.max(0, Math.floor((now - createdAt) / 1000)) : null,

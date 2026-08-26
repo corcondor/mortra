@@ -953,11 +953,34 @@ async function generateCards(
     sessionLogs.push({ phase: event.phase, message: event.message, ts: new Date().toISOString() })
     emit(event)
   }
-  const [corpus, registeredStructureIds, historicalDiversity] = await Promise.all([
-    loadNoveltyCorpus(),
-    loadRegisteredStructureIds(),
-    loadHistoricalDiversity(profiles),
-  ])
+  report({
+    phase: 'structuring',
+    message: '親問題の型付き構造を固定し、既存問題・登録構造との差分を読み込んでいます',
+    current: 0,
+    total: count,
+  })
+  let preloadBeat = 0
+  const preloadTimer = setInterval(() => {
+    preloadBeat += 1
+    report({
+      phase: 'structuring',
+      message: `構造照合を継続中: 既存問題・Atlas・観測量を並列読込（${preloadBeat * 5}秒）`,
+      current: 0,
+      total: count,
+    })
+  }, 5_000)
+  let corpus: NoveltyCorpus
+  let registeredStructureIds: Set<string>
+  let historicalDiversity: Awaited<ReturnType<typeof loadHistoricalDiversity>>
+  try {
+    ;[corpus, registeredStructureIds, historicalDiversity] = await Promise.all([
+      loadNoveltyCorpus(),
+      loadRegisteredStructureIds(),
+      loadHistoricalDiversity(profiles),
+    ])
+  } finally {
+    clearInterval(preloadTimer)
+  }
   historicalDiversity.families.forEach(family => seenFamilies.add(family))
   historicalDiversity.observables.forEach(observable => seenObservables.add(observable))
   const hasAllParentScaffold = profiles[0]?.allParentScaffold === true

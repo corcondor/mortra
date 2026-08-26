@@ -1,7 +1,8 @@
 'use client'
 
-import { CheckCircle2, FlaskConical } from 'lucide-react'
+import { CheckCircle2, FileDown, FlaskConical } from 'lucide-react'
 import { MathText } from '@/components/MathText'
+import type { Lang } from '@/lib/mortra/i18n'
 import {
   buildProblemDiagram,
   type DiagramShape,
@@ -21,6 +22,9 @@ export type ProblemArtifactCard = {
   morphism_chain?: string[]
   diagram?: ProblemDiagram
   calculus_analysis?: CertifiedCalculusAnalysis
+  solution_document_tex?: string
+  diagram_tikz?: string
+  proof_trace?: string[]
   verification?: { method?: string; exact_backend?: boolean; independent_check?: boolean }
 }
 
@@ -28,6 +32,7 @@ type Props = {
   card: ProblemArtifactCard
   compact?: boolean
   showVerification?: boolean
+  lang?: Lang
 }
 
 const WIDTH = 720
@@ -230,7 +235,31 @@ export function ProblemFigure({ diagram }: { diagram: ProblemDiagram }) {
   )
 }
 
-export function ProblemArtifact({ card, compact = false, showVerification = true }: Props) {
+const ARTIFACT_TEXT = {
+  ja: {
+    saveTex: '解答TeXを保存',
+    verified: '検証済み',
+    candidate: '検証継続中',
+    statement: '問題文',
+    answer: '答え',
+    undecided: '未確定',
+    solution: '解答・図の読み方',
+    solutionPending: '現在は型付き構造まで形成済みです。証明と反例検査が完了するまで、模範解答としては公開しません。',
+  },
+  en: {
+    saveTex: 'Save the solution as TeX',
+    verified: 'Verified',
+    candidate: 'Verification in progress',
+    statement: 'Statement',
+    answer: 'Answer',
+    undecided: 'Not yet determined',
+    solution: 'Solution and how to read the figure',
+    solutionPending: 'The typed structure is in place. The worked solution is withheld until the proof and counterexample search complete.',
+  },
+} as const
+
+export function ProblemArtifact({ card, compact = false, showVerification = true, lang = 'en' }: Props) {
+  const a = ARTIFACT_TEXT[lang]
   const diagram = card.diagram ?? buildProblemDiagram({
     familyId: card.family_id,
     domain: card.domain,
@@ -245,6 +274,16 @@ export function ProblemArtifact({ card, compact = false, showVerification = true
     card.verification?.independent_check,
   )
   const verified = hasResolvedAnswer && hasCertificate
+  const downloadTex = () => {
+    if (!card.solution_document_tex) return
+    const blob = new Blob([card.solution_document_tex], { type: 'application/x-tex;charset=utf-8' })
+    const href = URL.createObjectURL(blob)
+    const anchor = document.createElement('a')
+    anchor.href = href
+    anchor.download = 'mortra-solution.tex'
+    anchor.click()
+    URL.revokeObjectURL(href)
+  }
 
   return (
     <article className={`${styles.artifact} ${compact ? styles.compact : ''}`}>
@@ -253,15 +292,22 @@ export function ProblemArtifact({ card, compact = false, showVerification = true
           <span>{verified ? 'VERIFIED SOLUTION ARTIFACT' : 'RESEARCH CANDIDATE'}</span>
           <strong>{card.family_id ?? 'verified.structure'}</strong>
         </div>
-        {showVerification ? (
-          verified
-            ? <span className={styles.verified}><CheckCircle2 size={13} aria-hidden="true" />検証済み</span>
-            : <span className={styles.candidate}><FlaskConical size={13} aria-hidden="true" />検証継続中</span>
-        ) : null}
+        <div className={styles.artifactActions}>
+          {card.solution_document_tex ? (
+            <button type="button" className={styles.texButton} onClick={downloadTex} title={a.saveTex}>
+              <FileDown size={14} aria-hidden="true" />TeX
+            </button>
+          ) : null}
+          {showVerification ? (
+            verified
+              ? <span className={styles.verified}><CheckCircle2 size={13} aria-hidden="true" />{a.verified}</span>
+              : <span className={styles.candidate}><FlaskConical size={13} aria-hidden="true" />{a.candidate}</span>
+          ) : null}
+        </div>
       </header>
 
       <section className={styles.statementSection}>
-        <p className={styles.label}>問題文</p>
+        <p className={styles.label}>{a.statement}</p>
         <div className={styles.statement}><MathText text={card.statement_tex ?? ''} large={!compact} /></div>
       </section>
 
@@ -269,13 +315,13 @@ export function ProblemArtifact({ card, compact = false, showVerification = true
 
       <div className={styles.solutionGrid}>
         <section>
-          <p className={styles.label}>答え</p>
-          <div className={styles.answer}><MathText text={card.answer_tex?.trim() || '未確定'} large /></div>
+          <p className={styles.label}>{a.answer}</p>
+          <div className={styles.answer}><MathText text={card.answer_tex?.trim() || a.undecided} large /></div>
         </section>
         <section>
-          <p className={styles.label}>解答・図の読み方</p>
+          <p className={styles.label}>{a.solution}</p>
           <div className={styles.solution}>
-            <MathText text={card.solution_tex?.trim() || '現在は型付き構造まで形成済みです。証明と反例検査が完了するまで、模範解答としては公開しません。'} />
+            <MathText text={card.solution_tex?.trim() || a.solutionPending} />
           </div>
         </section>
       </div>

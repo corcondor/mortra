@@ -260,6 +260,7 @@
 }
 
 .sectionTitle {
+  word-break: keep-all;
   margin: 13px 0 0;
   font-size: clamp(30px, 3.7vw, 48px);
   font-weight: 520;
@@ -360,8 +361,12 @@
   background: #050607;
   color: #e7edf3;
   padding: 14px;
-  font-family: "Noto Sans JP", sans-serif;
-  font-size: 13px;
+  /* LaTeX を打つ欄なので等幅を先に置く。
+     Noto Sans JP のバックスラッシュはほぼ視認できず、
+     コマンド先頭の \ が消えて見えていた。 */
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace,
+    "Noto Sans JP", sans-serif;
+  font-size: 12.5px;
   line-height: 1.75;
   transition: border-color 150ms ease;
 }
@@ -1437,7 +1442,7 @@
     width: min(100% - 28px, 1360px);
   }
 
-  .navLinks a:not(.navTry) {
+  .navLinks a:not(.navTry):not(.langToggle) {
     display: none;
   }
 
@@ -1719,8 +1724,9 @@
   background: #050708;
   color: #e9eef2;
   padding: 20px;
-  font-family: "Noto Sans JP", sans-serif;
-  font-size: 14px;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace,
+    "Noto Sans JP", sans-serif;
+  font-size: 13px;
   line-height: 1.9;
   transition: border-color 150ms ease, background 150ms ease;
 }
@@ -2192,4 +2198,357 @@
 
 @media (prefers-reduced-motion: reduce) {
   .cine > * { opacity: 1; transform: none; transition: none; }
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+   2026-08-26 公開ページ改稿
+   hero のスローガン化、言語トグル、
+   同一条件ベースライン比、ニューラル有無つき比較表。
+   既存の配色・線・余白の規約はそのまま使う。
+   ────────────────────────────────────────────────────────────────────── */
+
+/* ── 言語トグル ─────────────────────────────────────────────────── */
+.langToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  white-space: nowrap;
+  border: 1px solid var(--line);
+  padding: 6px 11px;
+  border-radius: 3px;
+  color: #9aa5b0;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  transition: color .18s ease, border-color .18s ease;
+}
+
+.langToggle:hover {
+  color: var(--text);
+  border-color: #3a434d;
+}
+
+/* ── hero ───────────────────────────────────────────────────────── */
+.heroWordmark {
+  margin: 0;
+  color: var(--cyan);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.34em;
+}
+
+.hero h1.heroSlogan {
+  max-width: 15ch;
+  margin: 20px 0 0;
+  font-size: clamp(38px, 5.2vw, 74px);
+  font-weight: 540;
+  line-height: 1.04;
+  letter-spacing: -0.01em;
+}
+
+.heroStandardModel {
+  max-width: 46ch;
+  margin: 22px 0 0;
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.heroContent .heroLead {
+  margin-top: 20px;
+}
+
+/* ── A. 同一条件ベースライン比 ──────────────────────────────────── */
+.headlineResult {
+  margin-top: 8px;
+  border-top: 1px solid var(--line);
+  padding-top: 34px;
+}
+
+.headlineCaption {
+  margin: 0 0 26px;
+  color: #68737e;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+
+.headlineRows {
+  display: grid;
+  gap: 20px;
+}
+
+.headlineRow {
+  display: grid;
+  align-items: center;
+  gap: 18px;
+  grid-template-columns: minmax(150px, 260px) minmax(80px, 1fr) 86px 62px;
+}
+
+.headlineRow > span {
+  color: #9aa5b0;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+}
+
+.headlineRow > div {
+  height: 8px;
+  overflow: hidden;
+  background: #1b2026;
+}
+
+.headlineRow > div i {
+  display: block;
+  height: 100%;
+  background: #68737e;
+}
+
+.headlineRow > b {
+  color: #9aa5b0;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 18px;
+  font-weight: 500;
+  text-align: right;
+}
+
+.headlineRow > em {
+  color: #68737e;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  font-style: normal;
+  text-align: right;
+}
+
+.headlineRowSelf > span,
+.headlineRowSelf > b,
+.headlineRowSelf > em {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.headlineRowSelf > b {
+  font-size: 26px;
+}
+
+.headlineRowSelf > div i {
+  background: var(--green);
+}
+
+.headlineRatio {
+  margin: 22px 0 0;
+  color: var(--green);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+
+/* ── B. ニューラル有無つき比較表 ───────────────────────────────── */
+.compareTable {
+  margin-top: 6px;
+  border-top: 1px solid var(--line);
+}
+
+.compareHead,
+.compareRow {
+  display: grid;
+  align-items: center;
+  gap: 14px;
+  grid-template-columns: minmax(140px, 200px) minmax(60px, 1fr) 70px 92px 104px;
+  border-bottom: 1px solid var(--line);
+  padding: 14px 0;
+}
+
+.compareHead > span {
+  color: #4f5862;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.compareName {
+  color: #9aa5b0;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+}
+
+.compareBar {
+  height: 5px;
+  overflow: hidden;
+  background: #1b2026;
+}
+
+.compareBar i {
+  display: block;
+  height: 100%;
+  background: #4f5862;
+}
+
+.compareScore {
+  color: #9aa5b0;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: right;
+}
+
+.compareFlag {
+  color: #68737e;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.02em;
+}
+
+.compareRowHuman .compareName,
+.compareRowHuman .compareScore {
+  color: #7d8894;
+  font-style: italic;
+}
+
+.compareRowHuman .compareBar i {
+  background: #3a434d;
+}
+
+.compareRowSelf {
+  border-bottom-color: rgba(168, 241, 47, 0.28);
+}
+
+.compareRowSelf .compareName,
+.compareRowSelf .compareScore {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.compareRowSelf .compareBar i {
+  background: var(--green);
+}
+
+.compareFlagGood {
+  color: var(--green);
+  font-weight: 600;
+}
+
+/* ── C. 幾何以外の対応領域 ─────────────────────────────────────── */
+.domainList {
+  display: grid;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  gap: 12px 28px;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  border-top: 1px solid var(--line);
+  padding-top: 26px;
+}
+
+.domainList li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #9aa5b0;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.domainList li svg {
+  flex: none;
+  color: var(--green);
+}
+
+/* ── 狭い画面 ───────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .compareHead,
+  .compareRow {
+    grid-template-columns: minmax(120px, 1fr) 64px 78px 92px;
+    gap: 10px;
+  }
+
+  .compareBar,
+  .compareHead > span:nth-child(2) {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .hero h1.heroSlogan {
+    max-width: none;
+    font-size: clamp(32px, 8.4vw, 46px);
+  }
+
+  .heroStandardModel {
+    font-size: 15px;
+  }
+
+  .headlineRow {
+    grid-template-columns: 1fr 74px 56px;
+    gap: 10px 12px;
+  }
+
+  .headlineRow > span {
+    grid-column: 1 / -1;
+  }
+
+  .headlineRow > div {
+    grid-column: 1;
+  }
+
+  .compareHead {
+    display: none;
+  }
+
+  .compareRow {
+    grid-template-columns: 1fr auto;
+    gap: 6px 12px;
+    padding: 16px 0;
+  }
+
+  .compareName {
+    font-size: 12px;
+  }
+
+  .compareScore {
+    font-size: 14px;
+  }
+
+  .compareFlag {
+    font-size: 9.5px;
+  }
+
+  .compareRow .compareFlag:nth-of-type(1) {
+    grid-column: 1;
+  }
+
+  .langToggle {
+    padding: 5px 9px;
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+   固定背景（.proofScene z-index:0 / .proofVeil z-index:1）と本文の重なり修正。
+
+   .section / .sectionDark は position:static のままだったので、
+   塗り順で必ず固定レイヤーの下に入っていた。デスクトップでは veil が
+   横方向グラデーション（左94% → 右6%）で、本文が右寄りに来るため
+   露見しなかったが、幅が狭いと画面全体が左端の 94% 不透明に覆われ、
+   RESULTS を含む中盤の節が完全に見えなくなる。
+
+   hero だけは .heroContent が z-index:2 を持っていたので表示されていた。
+   同じ持ち上げを全節に与える。
+   ────────────────────────────────────────────────────────────────────── */
+.section,
+.sectionDark,
+.footer {
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 900px) {
+  /* 横グラデーションは広い画面用。狭い画面では一様に落とす */
+  .proofVeil {
+    background: linear-gradient(180deg,
+      rgba(3, 4, 5, 0.88) 0%,
+      rgba(3, 4, 5, 0.82) 100%);
+  }
 }
