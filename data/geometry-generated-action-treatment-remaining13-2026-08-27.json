@@ -1,0 +1,438 @@
+{
+  "experiment": "hageo409_typed_auxiliary_heldout_pilot",
+  "run_state": {
+    "complete": true,
+    "finished_count": 13,
+    "pending_count": 0,
+    "finished_problem_names": [
+      "2017USAMOp3",
+      "2019IranTSTp15",
+      "2020IranGOAp2",
+      "2020IranTSTp9",
+      "2021ARMOg10p8",
+      "2021GOWACAp5",
+      "2021IranTSTp6",
+      "2021IsraelOlympicRev",
+      "2023IMOp6",
+      "2024VietnamTSTp5",
+      "ShuZhiMiGeo128",
+      "ShuZhiMiGeo309",
+      "ShuZhiMiGeo489"
+    ]
+  },
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_dataset_auxiliary_clauses": false,
+    "selection": "explicit baseline-unsolved problem-file",
+    "problem_file": "data/geometry-generated-action-unresolved13-frozen-v1.txt",
+    "selected_count": 13,
+    "truth_plane": "native_yuclid_certificate_replay",
+    "candidate_proposal": "typed HAGeo numerical incidence",
+    "scheduler": "unified bidirectional priority queue",
+    "search_budget": {
+      "auxiliary_depth": 2,
+      "candidate_paths_per_prefix": 16,
+      "generated_action_quotient": true,
+      "generated_action_oversample_factor": 4,
+      "candidate_beam": 6,
+      "beam_ranking": "ar-residual-pareto",
+      "controller": null,
+      "per_family_limit": 1,
+      "incidence_oversample_per_family": 16,
+      "candidate_contract_synthesis": false,
+      "enumeration_limit_per_family": 64,
+      "candidate_cone_timeout_seconds": 10.0,
+      "proof_dag_timeout_seconds": 10.0,
+      "workers": 1,
+      "effective_problem_workers": 1,
+      "candidate_workers": 2,
+      "effective_candidate_workers": 2,
+      "max_total_native_workers": 2,
+      "timeout_seconds_per_problem": 3600.0
+    },
+    "paper_comparability": "configurable MORTRA ablation; report max_depth and evaluated paths rather than claiming HAGeo N=6, K=2048/8192",
+    "timeout_semantics": "right-censored unknown; never counted as a wrong answer or a proof"
+  },
+  "summary": {
+    "baseline_total": 89,
+    "baseline_solved": 76,
+    "pilot_total": 13,
+    "newly_solved": 0,
+    "newly_solved_names": [],
+    "heldout_portfolio_solved": 76,
+    "heldout_portfolio_score": 0.8539325842696629,
+    "certified_score_lower_bound": 0.8539325842696629,
+    "optimistic_score_upper_bound": 0.8764044943820225,
+    "completed_auxiliary_searches": 11,
+    "conditional_new_solution_rate": 0.0,
+    "time_censored": 2,
+    "execution_errors": 0,
+    "unprocessed": 0,
+    "score_is_lower_bound": true
+  },
+  "selected_problem_names": [
+    "2017USAMOp3",
+    "2019IranTSTp15",
+    "2020IranGOAp2",
+    "2020IranTSTp9",
+    "2021ARMOg10p8",
+    "2021GOWACAp5",
+    "2021IranTSTp6",
+    "2021IsraelOlympicRev",
+    "2023IMOp6",
+    "2024VietnamTSTp5",
+    "ShuZhiMiGeo128",
+    "ShuZhiMiGeo309",
+    "ShuZhiMiGeo489"
+  ],
+  "runs": [
+    {
+      "problem": "2017USAMOp3",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 112,
+      "right_censored_candidate_count": 0,
+      "incidence_checked": 3804,
+      "incidence_heuristic": 6,
+      "elapsed_seconds": 730.1854555999962,
+      "artifact": "data/geometry-generated-action-treatment-remaining13-runs-2026-08-27/2017USAMOp3.json",
+      "artifact_sha256": "0db88d46a856587668d1073fc4aca0509960fc91289adca11f9d3b4d012745fb",
+      "generated_action_quotient": {
+        "enabled": true,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 4,
+        "normalized_candidate_paths": 113,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 1,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "numeric-branch-search-completeness",
+          "native-proof-outcome-equivalence"
+        ]
+      }
+    },
+    {
+      "problem": "2019IranTSTp15",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 128,
+      "right_censored_candidate_count": 0,
+      "incidence_checked": 508,
+      "incidence_heuristic": 1,
+      "elapsed_seconds": 1102.3121763,
+      "artifact": "data/geometry-generated-action-treatment-remaining13-runs-2026-08-27/2019IranTSTp15.json",
+      "artifact_sha256": "09d538902ee42454f91f510bbc845ac0a78879b0c8ed262f7971d89bd73153dd",
+      "generated_action_quotient": {
+        "enabled": true,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 4,
+        "normalized_candidate_paths": 16,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 16,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "numeric-branch-search-completeness",
+          "native-proof-outcome-equivalence"
+        ]
+      }
+    },
+    {
+      "problem": "2020IranGOAp2",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 112,
+      "right_censored_candidate_count": 0,
+      "incidence_checked": 3954,
+      "incidence_heuristic": 9,
+      "elapsed_seconds": 404.9144720999975,
+      "artifact": "data/geometry-generated-action-treatment-remaining13-runs-2026-08-27/2020IranGOAp2.json",
+      "artifact_sha256": "4145785ec8a5f11a3a0ef5664b581f8f3f637a79beb8e59950879eb487165176",
+      "generated_action_quotient": {
+        "enabled": true,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 4,
+        "normalized_candidate_paths": 114,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 2,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "numeric-branch-search-completeness",
+          "native-proof-outcome-equivalence"
+        ]
+      }
+    },
+    {
+      "problem": "2020IranTSTp9",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 112,
+      "right_censored_candidate_count": 0,
+      "incidence_checked": 3731,
+      "incidence_heuristic": 6,
+      "elapsed_seconds": 644.1615021000034,
+      "artifact": "data/geometry-generated-action-treatment-remaining13-runs-2026-08-27/2020IranTSTp9.json",
+      "artifact_sha256": "f11e7aa576c713e5a58b63412741703b953c64af759a4faba6118a14a5ef52cb",
+      "generated_action_quotient": {
+        "enabled": true,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 4,
+        "normalized_candidate_paths": 112,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "numeric-branch-search-completeness",
+          "native-proof-outcome-equivalence"
+        ]
+      }
+    },
+    {
+      "problem": "2021ARMOg10p8",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 112,
+      "right_censored_candidate_count": 0,
+      "incidence_checked": 3583,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 879.278848199996,
+      "artifact": "data/geometry-generated-action-treatment-remaining13-runs-2026-08-27/2021ARMOg10p8.json",
+      "artifact_sha256": "db519db43178f5e82c21e6cd92e9ef01866ef8b4ab1b0f52556a3e4696d2a667",
+      "generated_action_quotient": {
+        "enabled": true,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 4,
+        "normalized_candidate_paths": 112,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "numeric-branch-search-completeness",
+          "native-proof-outcome-equivalence"
+        ]
+      }
+    },
+    {
+      "problem": "2021GOWACAp5",
+      "status": "right_censored_timeout",
+      "solved": null,
+      "elapsed_seconds": 3601.713749100001,
+      "checkpoint": "data/geometry-generated-action-treatment-remaining13-runs-2026-08-27/2021GOWACAp5.progress.json",
+      "checkpoint_sha256": "985020d336d3be8d6a4e3e6c7e69104ecc9865949a18cadc5383c773a2573177",
+      "evaluated_paths": 97
+    },
+    {
+      "problem": "2021IranTSTp6",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 112,
+      "right_censored_candidate_count": 0,
+      "incidence_checked": 3640,
+      "incidence_heuristic": 1,
+      "elapsed_seconds": 543.7785609999992,
+      "artifact": "data/geometry-generated-action-treatment-remaining13-runs-2026-08-27/2021IranTSTp6.json",
+      "artifact_sha256": "3eb11b3fba350f28e1f594ee25a74c8c3415dc6dfa6b5fbae56134d10df7ed01",
+      "generated_action_quotient": {
+        "enabled": true,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 4,
+        "normalized_candidate_paths": 115,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 3,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "numeric-branch-search-completeness",
+          "native-proof-outcome-equivalence"
+        ]
+      }
+    },
+    {
+      "problem": "2021IsraelOlympicRev",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 112,
+      "right_censored_candidate_count": 0,
+      "incidence_checked": 3723,
+      "incidence_heuristic": 11,
+      "elapsed_seconds": 1043.8871378999997,
+      "artifact": "data/geometry-generated-action-treatment-remaining13-runs-2026-08-27/2021IsraelOlympicRev.json",
+      "artifact_sha256": "e8e14f17eb2a357c243c79a0a9e8b9ccf5ed4dfc7787ae7a18ab050bb9327215",
+      "generated_action_quotient": {
+        "enabled": true,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 4,
+        "normalized_candidate_paths": 116,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 4,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "numeric-branch-search-completeness",
+          "native-proof-outcome-equivalence"
+        ]
+      }
+    },
+    {
+      "problem": "2023IMOp6",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 112,
+      "right_censored_candidate_count": 0,
+      "incidence_checked": 3878,
+      "incidence_heuristic": 4,
+      "elapsed_seconds": 952.0165396000002,
+      "artifact": "data/geometry-generated-action-treatment-remaining13-runs-2026-08-27/2023IMOp6.json",
+      "artifact_sha256": "540dd627995b75909ce3ed6031461e0879f006ba8fb9490fd057ee10111b7cf2",
+      "generated_action_quotient": {
+        "enabled": true,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 4,
+        "normalized_candidate_paths": 112,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "numeric-branch-search-completeness",
+          "native-proof-outcome-equivalence"
+        ]
+      }
+    },
+    {
+      "problem": "2024VietnamTSTp5",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 112,
+      "right_censored_candidate_count": 0,
+      "incidence_checked": 3919,
+      "incidence_heuristic": 1,
+      "elapsed_seconds": 562.7784767999997,
+      "artifact": "data/geometry-generated-action-treatment-remaining13-runs-2026-08-27/2024VietnamTSTp5.json",
+      "artifact_sha256": "7392197e5d2862d1c46d471c46031081f81418f38a8d68bdd570ae26677ea06c",
+      "generated_action_quotient": {
+        "enabled": true,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 4,
+        "normalized_candidate_paths": 113,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 1,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "numeric-branch-search-completeness",
+          "native-proof-outcome-equivalence"
+        ]
+      }
+    },
+    {
+      "problem": "ShuZhiMiGeo128",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 112,
+      "right_censored_candidate_count": 0,
+      "incidence_checked": 3802,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 661.9196873000001,
+      "artifact": "data/geometry-generated-action-treatment-remaining13-runs-2026-08-27/ShuZhiMiGeo128.json",
+      "artifact_sha256": "7c6795fb9f0dbaa05aa7c6a0ae185e052b682621fac78ab640720e77ab9f0931",
+      "generated_action_quotient": {
+        "enabled": true,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 4,
+        "normalized_candidate_paths": 113,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 1,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "numeric-branch-search-completeness",
+          "native-proof-outcome-equivalence"
+        ]
+      }
+    },
+    {
+      "problem": "ShuZhiMiGeo309",
+      "status": "right_censored_timeout",
+      "solved": null,
+      "elapsed_seconds": 3600.361466999999,
+      "checkpoint": "data/geometry-generated-action-treatment-remaining13-runs-2026-08-27/ShuZhiMiGeo309.progress.json",
+      "checkpoint_sha256": "b34a4dab1371d00d33f29cd74776eda54caaa335cec629d03380cceee388e1e4",
+      "evaluated_paths": 96
+    },
+    {
+      "problem": "ShuZhiMiGeo489",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 112,
+      "right_censored_candidate_count": 0,
+      "incidence_checked": 3628,
+      "incidence_heuristic": 19,
+      "elapsed_seconds": 819.5794696000003,
+      "artifact": "data/geometry-generated-action-treatment-remaining13-runs-2026-08-27/ShuZhiMiGeo489.json",
+      "artifact_sha256": "06f55b30c7abbdc6192b4e7a0f21a26f6b43d1268d36ec96c8de26fb1c1a982b",
+      "generated_action_quotient": {
+        "enabled": true,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 4,
+        "normalized_candidate_paths": 114,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 2,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "numeric-branch-search-completeness",
+          "native-proof-outcome-equivalence"
+        ]
+      }
+    }
+  ]
+}

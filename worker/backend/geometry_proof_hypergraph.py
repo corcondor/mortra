@@ -12,6 +12,8 @@ systems.  It contains no language model and no answer oracle.
 
 from __future__ import annotations
 
+from array import array
+from bisect import bisect_left
 from dataclasses import dataclass
 from functools import lru_cache
 from itertools import permutations
@@ -158,20 +160,31 @@ class _FactIndex:
     """
 
     def __init__(self, facts: Iterable[Atom]) -> None:
-        ordered = tuple(sorted({fact.canonical() for fact in facts}, key=_render_atom))
-        by_predicate: dict[str, list[Atom]] = {}
-        by_position: dict[tuple[str, int, int, str], set[Atom]] = {}
-        for fact in ordered:
-            predicate = fact.predicate.lower()
-            by_predicate.setdefault(predicate, []).append(fact)
-            arity = len(fact.arguments)
-            for position, value in enumerate(fact.arguments):
-                by_position.setdefault(
-                    (predicate, arity, position, value), set()
-                ).add(fact)
-        self.by_predicate = {
-            predicate: tuple(items) for predicate, items in by_predicate.items()
-        }
+        # Process one predicate bucket at a time instead of retaining a global
+        # canonical set, a second global sorted tuple, and all posting lists.
+        canonical_by_predicate: dict[str, set[Atom]] = {}
+        for fact in facts:
+            canonical = fact.canonical()
+            canonical_by_predicate.setdefault(
+                canonical.predicate.lower(), set()
+            ).add(canonical)
+
+        by_predicate: dict[str, tuple[Atom, ...]] = {}
+        by_position: dict[tuple[str, int, int, str], array[int]] = {}
+        predicates = sorted(
+            canonical_by_predicate,
+            key=lambda predicate: (-len(canonical_by_predicate[predicate]), predicate),
+        )
+        for predicate in predicates:
+            ordered = tuple(sorted(canonical_by_predicate.pop(predicate), key=_render_atom))
+            by_predicate[predicate] = ordered
+            for fact_index, fact in enumerate(ordered):
+                arity = len(fact.arguments)
+                for position, value in enumerate(fact.arguments):
+                    by_position.setdefault(
+                        (predicate, arity, position, value), array("I")
+                    ).append(fact_index)
+        self.by_predicate = by_predicate
         self.by_position = by_position
 
     def candidates(
@@ -184,9 +197,9 @@ class _FactIndex:
         if not facts:
             return ()
 
-        possible: set[Atom] = set()
+        possible: set[int] = set()
         for pattern_args in _argument_orbit(pattern):
-            constraints: list[set[Atom]] = []
+            constraints: list[array[int]] = []
             for position, expected in enumerate(pattern_args):
                 value = substitution.get(expected) if _is_variable(expected) else expected
                 if value is None:
@@ -202,16 +215,20 @@ class _FactIndex:
                 if not constraints:
                     return facts
                 smallest, *rest = sorted(constraints, key=len)
-                matches = set(smallest)
-                for posting in rest:
-                    matches.intersection_update(posting)
-                    if not matches:
-                        break
+                matches = {
+                    index
+                    for index in smallest
+                    if all(
+                        (offset := bisect_left(posting, index)) < len(posting)
+                        and posting[offset] == index
+                        for posting in rest
+                    )
+                }
                 possible.update(matches)
 
         if not possible:
             return ()
-        return tuple(fact for fact in facts if fact in possible)
+        return tuple(facts[index] for index in sorted(possible))
 
 
 def _is_variable(value: str) -> bool:

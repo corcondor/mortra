@@ -8,12 +8,143 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import signal
 import subprocess
 import time
 from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def terminate_process_tree(process: subprocess.Popen[str]) -> None:
+    """Stop the whole search tree so a timed-out Yuclid worker cannot leak."""
+
+    if process.poll() is not None:
+        return
+    if os.name == "nt":
+        subprocess.run(
+            ["taskkill", "/PID", str(process.pid), "/T", "/F"],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+    else:
+        os.killpg(process.pid, signal.SIGKILL)
+    try:
+        process.wait(timeout=5)
+    except subprocess.TimeoutExpired:
+        process.kill()
+        process.wait()
+
+
+def run_command_with_process_tree_timeout(
+    command: list[str],
+    *,
+    cwd: Path,
+    timeout_seconds: float,
+    env: dict[str, str],
+) -> subprocess.CompletedProcess[str]:
+    """Run a search in its own process group and preserve TimeoutExpired semantics."""
+
+    platform_options: dict[str, Any]
+    if os.name == "nt":
+        platform_options = {
+            "creationflags": subprocess.CREATE_NEW_PROCESS_GROUP,
+        }
+    else:
+        platform_options = {"start_new_session": True}
+    process = subprocess.Popen(
+        command,
+        cwd=cwd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        env=env,
+        **platform_options,
+    )
+    try:
+        stdout, stderr = process.communicate(timeout=timeout_seconds)
+    except subprocess.TimeoutExpired:
+        terminate_process_tree(process)
+        raise
+    return subprocess.CompletedProcess(
+        command,
+        process.returncode,
+        stdout,
+        stderr,
+    )
+
+
+def normalize_baseline_for_driver(
+    raw: dict[str, Any], *, baseline_path: Path
+) -> dict[str, Any]:
+    """Expose both legacy baselines and certified unions through one contract."""
+
+    results = raw.get("results")
+    if isinstance(results, dict):
+        problem_names = raw.get("problem_names")
+        if not isinstance(problem_names, list):
+            problem_names = sorted(map(str, results))
+        summary = raw.get("summary")
+        if not isinstance(summary, dict) or "solved" not in summary:
+            raise ValueError(f"baseline has no solved summary: {baseline_path}")
+        return {
+            **raw,
+            "problem_names": list(map(str, problem_names)),
+            "results": results,
+        }
+
+    sets = raw.get("sets")
+    protocol = raw.get("protocol")
+    summary = raw.get("summary")
+    if not all(isinstance(item, dict) for item in (sets, protocol, summary)):
+        raise ValueError(f"unsupported baseline format: {baseline_path}")
+    primary_union = sets.get("primary_union")
+    frozen_split = protocol.get("frozen_split")
+    if not isinstance(primary_union, list) or not isinstance(frozen_split, dict):
+        raise ValueError(f"certified union is missing its frozen split: {baseline_path}")
+    frozen_reference = frozen_split.get("path")
+    if not isinstance(frozen_reference, str):
+        raise ValueError(f"certified union has no frozen split path: {baseline_path}")
+    frozen_path = Path(frozen_reference)
+    if not frozen_path.is_absolute():
+        frozen_path = ROOT / frozen_path
+    expected_hash = frozen_split.get("sha256")
+    actual_hash = hashlib.sha256(frozen_path.read_bytes()).hexdigest()
+    if expected_hash and actual_hash != expected_hash:
+        raise ValueError(
+            "certified union frozen split hash mismatch: "
+            f"expected {expected_hash}, got {actual_hash}"
+        )
+    frozen = json.loads(frozen_path.read_text(encoding="utf-8"))
+    problem_names = list(map(str, frozen.get("problem_names", ())))
+    solved_names = set(map(str, primary_union))
+    unknown = sorted(solved_names - set(problem_names))
+    if unknown:
+        raise ValueError(
+            "certified union contains names outside its frozen split: "
+            + ", ".join(unknown)
+        )
+    declared_solved = summary.get("primary_certified_solved")
+    if declared_solved is not None and int(declared_solved) != len(solved_names):
+        raise ValueError("certified union solved count does not match primary_union")
+    declared_total = int(summary.get("total", len(problem_names)))
+    if declared_total != len(problem_names):
+        raise ValueError("certified union total does not match its frozen split")
+    return {
+        **raw,
+        "problem_names": problem_names,
+        "results": {
+            name: {"status": "solved" if name in solved_names else "unsolved"}
+            for name in problem_names
+        },
+        "summary": {
+            **summary,
+            "solved": len(solved_names),
+            "total": declared_total,
+        },
+    }
 
 
 def require_same_report_cohort(
@@ -28,6 +159,49 @@ def require_same_report_cohort(
             "refusing to replace an existing report with a different problem cohort: "
             f"{output}. Use a distinct --output path for subset retries."
         )
+
+
+def enrich_run_from_artifact(
+    run: dict[str, Any], *, run_dir: Path
+) -> dict[str, Any]:
+    """Embed compact audit data and a content hash in the cohort report."""
+
+    enriched = dict(run)
+    path = run_dir / f"{run['problem']}.json"
+    if path.is_file():
+        resolved = path.resolve()
+        enriched["artifact"] = (
+            resolved.relative_to(ROOT).as_posix()
+            if resolved.is_relative_to(ROOT)
+            else resolved.as_posix()
+        )
+        enriched["artifact_sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+        artifact = json.loads(path.read_text(encoding="utf-8"))
+        if "generated_action_quotient" not in enriched:
+            audit = artifact.get("protocol", {}).get("generated_action_quotient")
+            if isinstance(audit, dict):
+                enriched["generated_action_quotient"] = audit
+        if "evaluated_paths" not in enriched:
+            enriched["evaluated_paths"] = int(artifact.get("evaluated_paths", 0))
+
+    checkpoint = enriched.get("checkpoint")
+    expected_checkpoint_hash = enriched.get("checkpoint_sha256")
+    if "evaluated_paths" not in enriched and isinstance(checkpoint, str):
+        checkpoint_path = Path(checkpoint)
+        if not checkpoint_path.is_absolute():
+            checkpoint_path = ROOT / checkpoint_path
+        if checkpoint_path.is_file():
+            observed_hash = hashlib.sha256(checkpoint_path.read_bytes()).hexdigest()
+            if (
+                isinstance(expected_checkpoint_hash, str)
+                and expected_checkpoint_hash != observed_hash
+            ):
+                raise ValueError(f"checkpoint hash mismatch: {checkpoint_path}")
+            progress = json.loads(checkpoint_path.read_text(encoding="utf-8"))
+            enriched["evaluated_paths"] = int(
+                progress.get("evaluated_path_count", 0)
+            )
+    return enriched
 
 
 def write_json_atomic(path: Path, payload: dict[str, Any]) -> None:
@@ -90,6 +264,8 @@ def run_problem(
     yuclid_timeout_seconds: float = 0.0,
     candidate_workers: int = 2,
     resume_progress: bool = False,
+    generated_action_quotient: bool = False,
+    generated_action_oversample_factor: int = 4,
 ) -> dict[str, Any]:
     command = [
         str(python),
@@ -167,17 +343,22 @@ def run_problem(
         command.extend(("--controller", str(controller)))
     if candidate_contract_synthesis:
         command.append("--candidate-contract-synthesis")
+    if generated_action_quotient:
+        command.extend(
+            (
+                "--generated-action-quotient",
+                "--generated-action-oversample-factor",
+                str(max(1, generated_action_oversample_factor)),
+            )
+        )
     if resume_progress and output.with_suffix(".progress.json").is_file():
         command.append("--resume-progress")
     started = time.perf_counter()
     try:
-        completed = subprocess.run(
+        completed = run_command_with_process_tree_timeout(
             command,
             cwd=ROOT,
-            check=False,
-            capture_output=True,
-            text=True,
-            timeout=timeout_seconds,
+            timeout_seconds=timeout_seconds,
             env={**os.environ, "PYTHONHASHSEED": "0"},
         )
     except subprocess.TimeoutExpired:
@@ -230,6 +411,9 @@ def run_problem(
         "incidence_heuristic": artifact["candidate_incidence"][
             "heuristic_candidates"
         ],
+        "generated_action_quotient": artifact.get("protocol", {}).get(
+            "generated_action_quotient"
+        ),
         "elapsed_seconds": time.perf_counter() - started,
         "artifact": output.resolve().relative_to(ROOT).as_posix(),
         "artifact_sha256": hashlib.sha256(output.read_bytes()).hexdigest(),
@@ -287,6 +471,8 @@ def main() -> int:
     )
     parser.add_argument("--max-depth", type=int, default=1)
     parser.add_argument("--branch-limit", type=int, default=16)
+    parser.add_argument("--generated-action-quotient", action="store_true")
+    parser.add_argument("--generated-action-oversample-factor", type=int, default=4)
     parser.add_argument("--beam-width", type=int, default=6)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--per-family-limit", type=int, default=1)
@@ -357,7 +543,10 @@ def main() -> int:
         if args.controller is None:
             parser.error(f"--beam-ranking {args.beam_ranking} requires --controller")
 
-    baseline = json.loads(args.baseline.read_text(encoding="utf-8"))
+    baseline = normalize_baseline_for_driver(
+        json.loads(args.baseline.read_text(encoding="utf-8")),
+        baseline_path=args.baseline,
+    )
     unsolved = sorted(
         name
         for name in baseline["problem_names"]
@@ -411,7 +600,13 @@ def main() -> int:
     pending = [name for name in selected if name not in previous]
 
     def write_report(*, complete: bool) -> dict[str, Any]:
-        ordered_runs = sorted(runs, key=lambda item: item["problem"])
+        ordered_runs = sorted(
+            (
+                enrich_run_from_artifact(item, run_dir=args.run_dir)
+                for item in runs
+            ),
+            key=lambda item: item["problem"],
+        )
         newly_solved = [item["problem"] for item in ordered_runs if item.get("solved")]
         baseline_solved = int(baseline["summary"]["solved"])
         right_censored = sum(
@@ -462,6 +657,10 @@ def main() -> int:
                 "search_budget": {
                     "auxiliary_depth": args.max_depth,
                     "candidate_paths_per_prefix": args.branch_limit,
+                    "generated_action_quotient": args.generated_action_quotient,
+                    "generated_action_oversample_factor": (
+                        args.generated_action_oversample_factor
+                    ),
                     "candidate_beam": args.beam_width,
                     "beam_ranking": args.beam_ranking,
                     "controller": (
@@ -566,6 +765,10 @@ def main() -> int:
                 yuclid_timeout_seconds=args.yuclid_timeout_seconds,
                 candidate_workers=effective_candidate_workers,
                 resume_progress=(args.retry_timeouts or args.retry_unsolved),
+                generated_action_quotient=args.generated_action_quotient,
+                generated_action_oversample_factor=(
+                    args.generated_action_oversample_factor
+                ),
             ): problem
             for problem in pending
         }

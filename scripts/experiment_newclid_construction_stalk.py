@@ -55,6 +55,10 @@ from worker.backend.incremental_prefix_state import (
     PrefixStateCache,
     replay_prefix_state,
 )
+from worker.backend.generated_construction_action import (
+    normalize_construction_actions,
+    verify_construction_action_certificate,
+)
 from worker.backend.geometry_relation_channels import (
     AssertionKey,
     RelationFrontierWitness,
@@ -566,7 +570,12 @@ def write_json_atomic(path: Path, payload: dict[str, Any]) -> None:
 
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_name(f"{path.name}.{os.getpid()}.tmp")
-    temporary.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    # Avoid duplicating a large proof trace as one in-memory JSON string.
+    encoder = json.JSONEncoder(indent=2)
+    with temporary.open("w", encoding="utf-8", newline="\n") as stream:
+        for chunk in encoder.iterencode(payload):
+            stream.write(chunk)
+        stream.write("\n")
     for attempt in range(8):
         try:
             temporary.replace(path)
@@ -2501,6 +2510,20 @@ def main() -> None:
         ),
     )
     parser.add_argument("--branch-limit", type=int, default=32)
+    parser.add_argument(
+        "--generated-action-quotient",
+        action="store_true",
+        help=(
+            "Deduplicate alpha-renamed, symmetry-equivalent construction DAG "
+            "states and spend the same verification budget on the next ranked states."
+        ),
+    )
+    parser.add_argument(
+        "--generated-action-oversample-factor",
+        type=int,
+        default=4,
+        help="Candidate oversampling used only before generated-action deduplication.",
+    )
     parser.add_argument("--beam-width", type=int, default=7)
     parser.add_argument("--max-depth", type=int, default=2)
     parser.add_argument("--max-workers", type=int, default=4)
@@ -2840,6 +2863,36 @@ def main() -> None:
     preflight_retained_count = 0
     preflight_rejected_by_error: dict[str, int] = defaultdict(int)
     solved_steps: tuple[ConstructionStep, ...] | None = None
+    seen_generated_action_states: set[str] = set()
+    generated_action_audit: dict[str, Any] = {
+        "enabled": bool(args.generated_action_quotient),
+        "quotient": (
+            "alpha-renaming+declared-input-symmetry+independent-action-order"
+        ),
+        "oversample_factor": (
+            max(1, args.generated_action_oversample_factor)
+            if args.generated_action_quotient
+            else 1
+        ),
+        "normalized_candidate_paths": 0,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 0,
+        "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence",
+        ],
+    }
+    if args.generated_action_quotient:
+        for record in resumed_records:
+            normalized = normalize_construction_actions(record.steps)
+            if normalized.certificate is not None:
+                seen_generated_action_states.add(
+                    normalized.certificate.semantic_state_key
+                )
     for depth in range(1, args.max_depth + 1):
         layer: list[SearchRecord] = list(resumed_records_by_depth.get(depth, ()))
         restored_signatures = {
@@ -2914,7 +2967,12 @@ def main() -> None:
                 steps=parent,
                 families=families,
                 per_family_limit=args.per_family_limit,
-                branch_limit=args.branch_limit,
+                branch_limit=(
+                    args.branch_limit
+                    * max(1, args.generated_action_oversample_factor)
+                    if args.generated_action_quotient
+                    else args.branch_limit
+                ),
                 ranking=args.ranking,
                 seed=branch_seed(args.seed, parent),
                 relation_demands=parent_demands,
@@ -2958,18 +3016,41 @@ def main() -> None:
                     **gate_audit,
                 }
             )
+            parent_scheduled = 0
             for extension in extensions:
                 steps = (*parent, extension)
                 signature = tuple(step.key for step in steps)
                 if signature in seen_paths or signature in restored_signatures:
                     continue
+                if args.generated_action_quotient:
+                    generated_action_audit["normalized_candidate_paths"] += 1
+                    normalized = normalize_construction_actions(steps)
+                    if normalized.certificate is None:
+                        generated_action_audit["invalid_paths"] += 1
+                        continue
+                    if verify_construction_action_certificate(
+                        normalized.certificate
+                    ):
+                        generated_action_audit["certificate_replay_failures"] += 1
+                        continue
+                    state_key = normalized.certificate.semantic_state_key
+                    if state_key in seen_generated_action_states:
+                        generated_action_audit["equivalent_paths_skipped"] += 1
+                        continue
+                    seen_generated_action_states.add(state_key)
                 seen_paths.add(signature)
                 candidate_paths.append(steps)
+                parent_scheduled += 1
+                generated_action_audit["scheduled_unique_paths"] += 1
+                if parent_scheduled >= args.branch_limit:
+                    break
         checkpoint(
             "candidate_verification",
             depth=depth,
             scheduled_path_count=len(candidate_paths),
             evaluated_path_count=len(all_records) + len(layer),
+            current_depth_evaluated_path_count=len(layer),
+            prior_depth_evaluated_path_count=len(all_records),
             resumed_path_count=len(restored_signatures),
             resumed_scheduled_paths=resume_scheduled_depth == depth,
             scheduled_paths=[
@@ -3070,6 +3151,8 @@ def main() -> None:
                         "depth": depth,
                         "scheduled_path_count": len(candidate_paths),
                         "evaluated_path_count": len(completed_records),
+                        "current_depth_evaluated_path_count": len(layer),
+                        "prior_depth_evaluated_path_count": len(all_records),
                         "scheduled_paths": [
                             construction_path_to_payload(path)
                             for path in candidate_paths
@@ -3211,6 +3294,7 @@ def main() -> None:
             "per_family_limit": args.per_family_limit,
             "enumeration_limit_per_family": args.enumeration_limit_per_family,
             "branch_limit": args.branch_limit,
+            "generated_action_quotient": generated_action_audit,
             "beam_width": args.beam_width,
             "max_depth": args.max_depth,
             "max_workers": args.max_workers,

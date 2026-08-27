@@ -1,0 +1,26 @@
+{
+  "benchmarkId": "directional-css-mutual-parity-frozen-v1",
+  "paperSource": {
+    "path": "~/.cache/mortra-research-sources/directional-tile-paper/extracted/main.tex",
+    "sourceUrl": "https://arxiv.org/src/2606.19482",
+    "pathOverrideEnvironment": "MORTRA_DIRECTIONAL_TILE_SOURCE",
+    "sha256": "a4ae4e1d54e810fbb5a3387cea289cbd3de6b911b5c06fd34207f8ef293eaee5",
+    "definition": "mutual orientation-swapped reflection and even multiplicity of every ordered odd-vertical displacement vector"
+  },
+  "foundationalSource": {
+    "arxiv": "2507.19430v3",
+    "sourceUrl": "https://arxiv.org/html/2507.19430v3#S5.Thmthm1",
+    "theorem": "Theorem 1, equations (4) and (5)",
+    "deltaVector": "d_i + 2*sum(d_p, i<p<j) + d_j",
+    "role": "independent algebraic oracle for ordered displacement multiplicity"
+  },
+  "cases": [
+    { "id": "paper-w5", "word": "NESEN", "simple": true, "commutes": true, "displacementParity": true },
+    { "id": "paper-w7", "word": "N^2 E S E N^2", "simple": true, "commutes": true, "displacementParity": true },
+    { "id": "paper-w9", "word": "N^2 E^2 S E^2 N^2", "simple": true, "commutes": true, "displacementParity": true },
+    { "id": "paper-w11", "word": "N^2 E^2 S E S E^2 N^2", "simple": true, "commutes": true, "displacementParity": true },
+    { "id": "paper-w13", "word": "N^2 E^2 S E^3 S E^2 N^2", "simple": true, "commutes": true, "displacementParity": true },
+    { "id": "negative-odd-displacement", "word": "NE", "simple": true, "commutes": true, "displacementParity": false },
+    { "id": "negative-repeated-edge", "word": "NS", "simple": false, "commutes": true, "displacementParity": true }
+  ]
+}

@@ -1,0 +1,241 @@
+{
+  "experiment": "directional_css_exact_mutual_commutation_and_displacement_parity",
+  "benchmarkId": "directional-css-mutual-parity-frozen-v1",
+  "principle": {
+    "mutualCondition": "H(a,b) maps to V(B-1-a,B-1-b), and V maps to H",
+    "commutation": "finite X/Z support cross-correlation enumerates every relative anchor translation with nonzero overlap; CSS commutation requires even overlap",
+    "displacementParity": "edge centres are represented in doubled integer coordinates; every ordered vector with odd dy2 must have even multiplicity"
+  },
+  "provenance": {
+    "manifest": "data/directional-css-frozen-v1.json",
+    "manifestSha256": "2ee3fe495e3ffa38d809a1cba881b61ce253a92d234612cfa1b274b541e9536a",
+    "paperSource": {
+      "path": "~/.cache/mortra-research-sources/directional-tile-paper/extracted/main.tex",
+      "sourceUrl": "https://arxiv.org/src/2606.19482",
+      "pathOverrideEnvironment": "MORTRA_DIRECTIONAL_TILE_SOURCE",
+      "sha256": "a4ae4e1d54e810fbb5a3387cea289cbd3de6b911b5c06fd34207f8ef293eaee5",
+      "definition": "mutual orientation-swapped reflection and even multiplicity of every ordered odd-vertical displacement vector",
+      "observedPath": "~/.cache/mortra-research-sources/directional-tile-paper/extracted/main.tex"
+    },
+    "foundationalSource": {
+      "arxiv": "2507.19430v3",
+      "sourceUrl": "https://arxiv.org/html/2507.19430v3#S5.Thmthm1",
+      "theorem": "Theorem 1, equations (4) and (5)",
+      "deltaVector": "d_i + 2*sum(d_p, i<p<j) + d_j",
+      "role": "independent algebraic oracle for ordered displacement multiplicity"
+    },
+    "implementation": "lib/mortra/cross-domain/directional-css-certificate.ts",
+    "implementationSha256": "43f127e133f1b537f6193f8d9cd3ee818116685bd79500a6e3c197ea6a353f14",
+    "usesExternalLlm": false
+  },
+  "summary": {
+    "total": 7,
+    "accepted": 7,
+    "expectationAccuracy": 1,
+    "independentOracleMatches": 7,
+    "certificateReplayRate": 1,
+    "falseAccepts": 0,
+    "mutationRejected": true,
+    "paperPositiveCases": 5,
+    "paperPositiveCasesCertified": 5,
+    "checkedRelativeTranslations": 101,
+    "checkedOrderedPairs": 202
+  },
+  "exhaustiveSummary": {
+    "maxLength": 6,
+    "total": 5460,
+    "orderedResultSha256": "ef952c9d9125bc838953fe1008ee5d55418f01ba3739ab475494f81f0ca88841",
+    "independentOracleMatches": 5460,
+    "certificateReplaysAccepted": 5460,
+    "staleCertificatesRejected": 5460,
+    "simpleSupports": 1392,
+    "staticCommutationAccepted": 5460,
+    "displacementParityAccepted": 1404,
+    "fullyDirectional": 104
+  },
+  "cases": [
+    {
+      "id": "paper-w5",
+      "word": "NESEN",
+      "expected": {
+        "simple": true,
+        "commutes": true,
+        "displacementParity": true
+      },
+      "observed": {
+        "simple": true,
+        "commutes": true,
+        "displacementParity": true
+      },
+      "expectationMatched": true,
+      "independentOracleMatched": true,
+      "certificateReplayAccepted": true,
+      "certificateReplayErrors": [],
+      "distinctSupportEdges": 5,
+      "gridSize": 4,
+      "checkedMutualEdges": 5,
+      "checkedRelativeTranslations": 6,
+      "maximumStaticOverlap": 2,
+      "checkedOrderedPairs": 10,
+      "oddVerticalVectorKinds": 3,
+      "parityViolationKinds": 0
+    },
+    {
+      "id": "paper-w7",
+      "word": "N^2 E S E N^2",
+      "expected": {
+        "simple": true,
+        "commutes": true,
+        "displacementParity": true
+      },
+      "observed": {
+        "simple": true,
+        "commutes": true,
+        "displacementParity": true
+      },
+      "expectationMatched": true,
+      "independentOracleMatched": true,
+      "certificateReplayAccepted": true,
+      "certificateReplayErrors": [],
+      "distinctSupportEdges": 7,
+      "gridSize": 4,
+      "checkedMutualEdges": 7,
+      "checkedRelativeTranslations": 10,
+      "maximumStaticOverlap": 2,
+      "checkedOrderedPairs": 21,
+      "oddVerticalVectorKinds": 5,
+      "parityViolationKinds": 0
+    },
+    {
+      "id": "paper-w9",
+      "word": "N^2 E^2 S E^2 N^2",
+      "expected": {
+        "simple": true,
+        "commutes": true,
+        "displacementParity": true
+      },
+      "observed": {
+        "simple": true,
+        "commutes": true,
+        "displacementParity": true
+      },
+      "expectationMatched": true,
+      "independentOracleMatched": true,
+      "certificateReplayAccepted": true,
+      "certificateReplayErrors": [],
+      "distinctSupportEdges": 9,
+      "gridSize": 6,
+      "checkedMutualEdges": 9,
+      "checkedRelativeTranslations": 20,
+      "maximumStaticOverlap": 2,
+      "checkedOrderedPairs": 36,
+      "oddVerticalVectorKinds": 10,
+      "parityViolationKinds": 0
+    },
+    {
+      "id": "paper-w11",
+      "word": "N^2 E^2 S E S E^2 N^2",
+      "expected": {
+        "simple": true,
+        "commutes": true,
+        "displacementParity": true
+      },
+      "observed": {
+        "simple": true,
+        "commutes": true,
+        "displacementParity": true
+      },
+      "expectationMatched": true,
+      "independentOracleMatched": true,
+      "certificateReplayAccepted": true,
+      "certificateReplayErrors": [],
+      "distinctSupportEdges": 11,
+      "gridSize": 7,
+      "checkedMutualEdges": 11,
+      "checkedRelativeTranslations": 28,
+      "maximumStaticOverlap": 4,
+      "checkedOrderedPairs": 55,
+      "oddVerticalVectorKinds": 14,
+      "parityViolationKinds": 0
+    },
+    {
+      "id": "paper-w13",
+      "word": "N^2 E^2 S E^3 S E^2 N^2",
+      "expected": {
+        "simple": true,
+        "commutes": true,
+        "displacementParity": true
+      },
+      "observed": {
+        "simple": true,
+        "commutes": true,
+        "displacementParity": true
+      },
+      "expectationMatched": true,
+      "independentOracleMatched": true,
+      "certificateReplayAccepted": true,
+      "certificateReplayErrors": [],
+      "distinctSupportEdges": 13,
+      "gridSize": 9,
+      "checkedMutualEdges": 13,
+      "checkedRelativeTranslations": 36,
+      "maximumStaticOverlap": 4,
+      "checkedOrderedPairs": 78,
+      "oddVerticalVectorKinds": 18,
+      "parityViolationKinds": 0
+    },
+    {
+      "id": "negative-odd-displacement",
+      "word": "NE",
+      "expected": {
+        "simple": true,
+        "commutes": true,
+        "displacementParity": false
+      },
+      "observed": {
+        "simple": true,
+        "commutes": true,
+        "displacementParity": false
+      },
+      "expectationMatched": true,
+      "independentOracleMatched": true,
+      "certificateReplayAccepted": true,
+      "certificateReplayErrors": [],
+      "distinctSupportEdges": 2,
+      "gridSize": 3,
+      "checkedMutualEdges": 2,
+      "checkedRelativeTranslations": 1,
+      "maximumStaticOverlap": 2,
+      "checkedOrderedPairs": 1,
+      "oddVerticalVectorKinds": 1,
+      "parityViolationKinds": 1
+    },
+    {
+      "id": "negative-repeated-edge",
+      "word": "NS",
+      "expected": {
+        "simple": false,
+        "commutes": true,
+        "displacementParity": true
+      },
+      "observed": {
+        "simple": false,
+        "commutes": true,
+        "displacementParity": true
+      },
+      "expectationMatched": true,
+      "independentOracleMatched": true,
+      "certificateReplayAccepted": true,
+      "certificateReplayErrors": [],
+      "distinctSupportEdges": 1,
+      "gridSize": 2,
+      "checkedMutualEdges": 1,
+      "checkedRelativeTranslations": 0,
+      "maximumStaticOverlap": 0,
+      "checkedOrderedPairs": 1,
+      "oddVerticalVectorKinds": 0,
+      "parityViolationKinds": 0
+    }
+  ],
+  "conclusion": "The frozen cases and all words through length six agree with an independent oracle; every certificate replays and every stale certificate is rejected."
+}

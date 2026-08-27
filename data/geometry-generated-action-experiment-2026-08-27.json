@@ -1,0 +1,4386 @@
+{
+  "experiment": "geometry_construction_generated_action_controlled_audit",
+  "benchmarkId": "geometry-generated-action-frozen-v1",
+  "principle": {
+    "quotient": "alpha-renaming + declared input symmetry + order of independent actions",
+    "preserved": "typed construction dependency DAG and semantic construction terms",
+    "notInferred": "numeric branch, point coordinates, numerical-search completeness, or native proof outcome",
+    "acceptance": "only native certificate hashes count as strict solves"
+  },
+  "provenance": {
+    "manifest": "data/geometry-generated-action-frozen-v1.json",
+    "manifestSha256": "689be407626396e54882cccc4118546802a6bd44cace70e75809f0373d519ab3",
+    "dataset": {
+      "path": "data/hageo-409-jgex-2026-08-18.txt",
+      "sha256": "629e621cea5b4d9bf4bcae835c286606be3294cc8cc0c794b210fdaec011f8c2"
+    },
+    "baselineUnion": {
+      "path": "data/hageo-certified-capability-union-plus-orthic-parallel-chord-two-tangents-chart-2026-08-27.json",
+      "sha256": "04a00da0e0f21b30fd598a37c86b6cc2723917822b5554e52e75363347b29f59",
+      "solved": 76,
+      "total": 89
+    },
+    "baselineUnionObservedSha256": "04a00da0e0f21b30fd598a37c86b6cc2723917822b5554e52e75363347b29f59",
+    "implementation": {
+      "generatedAction": {
+        "path": "worker/backend/generated_construction_action.py",
+        "sha256": "f18e01bb4bc41a41cbaf10f7196c4c249f67a13072b51f6156ed149834335d7e"
+      },
+      "search": {
+        "path": "scripts/experiment_newclid_construction_stalk.py",
+        "sha256": "e53cf21ffc8ca2340bb059d10ed33b848f122e30d062351d97989eaf859c5de0"
+      },
+      "cohortDriver": {
+        "path": "scripts/benchmark_hageo409_auxiliary.py",
+        "sha256": "f1823fec0a760a4b5d972b8a5ecef067fa61ac186d0dc0c316807abf9cce6cc9"
+      }
+    },
+    "usesExternalLlm": false
+  },
+  "retrospectiveControl": {
+    "rawVerifiedPaths": 1505,
+    "uniqueGeneratedActionStates": 1487,
+    "equivalentPathsRemoved": 18,
+    "quotientReductionRate": 0.011960132890365448,
+    "certificateReplayRate": 1.0,
+    "normalizationErrorCount": 0,
+    "outcomeInconsistentClassCount": 0
+  },
+  "unresolvedSurfaceInventory": {
+    "interpretationBoundary": "surface vocabulary only; occurrence does not establish the causal reason a proof search stopped",
+    "problems": [
+      {
+        "name": "2017USAMOp3",
+        "goal": "cyclic a b c p",
+        "explicitConstructionCounts": {
+          "on_circle": 4,
+          "circumcenter": 3,
+          "incenter": 1,
+          "midpoint": 2
+        }
+      },
+      {
+        "name": "2019IranTSTp15",
+        "goal": "coll x h l",
+        "explicitConstructionCounts": {
+          "angle_bisector": 1,
+          "foot": 1,
+          "on_circle": 2,
+          "circumcenter": 2,
+          "mirror": 2,
+          "midpoint": 3
+        }
+      },
+      {
+        "name": "2020IranGOAp2",
+        "goal": "cong o1 p o1 t",
+        "explicitConstructionCounts": {
+          "foot": 2,
+          "on_bline": 1,
+          "on_circle": 1,
+          "circumcenter": 2,
+          "incenter": 1,
+          "mirror": 2,
+          "midpoint": 1
+        }
+      },
+      {
+        "name": "2020IranTSTp9",
+        "goal": "cyclic t j i x",
+        "explicitConstructionCounts": {
+          "angle_bisector": 2,
+          "on_bline": 1,
+          "on_circle": 5,
+          "circumcenter": 3,
+          "incenter": 1,
+          "reflect": 1,
+          "midpoint": 1
+        }
+      },
+      {
+        "name": "2021ARMOg10p8",
+        "goal": "cyclic z p q r",
+        "explicitConstructionCounts": {
+          "on_circle": 6,
+          "on_circum": 2,
+          "circumcenter": 3,
+          "reflect": 1
+        }
+      },
+      {
+        "name": "2021GOWACAp5",
+        "goal": "coll i a d",
+        "explicitConstructionCounts": {
+          "foot": 1,
+          "on_tline": 3,
+          "circumcenter": 1,
+          "incenter": 1,
+          "on_aline": 3,
+          "mirror": 1,
+          "centroid": 1
+        }
+      },
+      {
+        "name": "2021IranTSTp6",
+        "goal": "coll q a h",
+        "explicitConstructionCounts": {
+          "on_circle": 2,
+          "circumcenter": 3,
+          "eqangle3": 1
+        }
+      },
+      {
+        "name": "2021IsraelOlympicRev",
+        "goal": "cyclic k a p2 p3",
+        "explicitConstructionCounts": {
+          "on_circle": 6,
+          "circumcenter": 4,
+          "eqangle3": 1
+        }
+      },
+      {
+        "name": "2023IMOp6",
+        "goal": "cyclic x c c1 c2",
+        "explicitConstructionCounts": {
+          "on_bline": 3,
+          "on_circle": 2,
+          "circumcenter": 4,
+          "on_aline": 2
+        }
+      },
+      {
+        "name": "2024VietnamTSTp5",
+        "goal": "eqangle a s s j i s s t",
+        "explicitConstructionCounts": {
+          "foot": 3,
+          "on_tline": 4,
+          "on_circle": 1,
+          "circumcenter": 1,
+          "incenter": 1
+        }
+      },
+      {
+        "name": "ShuZhiMiGeo128",
+        "goal": "cyclic t c l f",
+        "explicitConstructionCounts": {
+          "on_circle": 7,
+          "circumcenter": 5
+        }
+      },
+      {
+        "name": "ShuZhiMiGeo309",
+        "goal": "coll i o1 o2",
+        "explicitConstructionCounts": {
+          "foot": 6,
+          "on_circle": 12,
+          "circumcenter": 2,
+          "incenter": 1,
+          "excenter": 3
+        }
+      },
+      {
+        "name": "ShuZhiMiGeo489",
+        "goal": "coll y1 b c",
+        "explicitConstructionCounts": {
+          "foot": 3,
+          "on_circle": 3,
+          "circumcenter": 2,
+          "incenter": 1,
+          "reflect": 2
+        }
+      }
+    ],
+    "problemCountByToken": {
+      "angle_bisector": 2,
+      "centroid": 1,
+      "circumcenter": 13,
+      "eqangle3": 2,
+      "excenter": 1,
+      "foot": 6,
+      "incenter": 7,
+      "midpoint": 4,
+      "mirror": 3,
+      "on_aline": 2,
+      "on_bline": 3,
+      "on_circle": 12,
+      "on_circum": 1,
+      "on_tline": 2,
+      "reflect": 3
+    },
+    "occurrenceCountByToken": {
+      "angle_bisector": 3,
+      "centroid": 1,
+      "circumcenter": 35,
+      "eqangle3": 2,
+      "excenter": 3,
+      "foot": 16,
+      "incenter": 7,
+      "midpoint": 7,
+      "mirror": 5,
+      "on_aline": 5,
+      "on_bline": 5,
+      "on_circle": 51,
+      "on_circum": 2,
+      "on_tline": 7,
+      "reflect": 4
+    },
+    "notRepresentedByThisFormalCohort": [
+      "general-natural-language-elaboration",
+      "three-dimensional-geometry",
+      "explicit-polar-harmonic-inversion-complex-coordinate-charts"
+    ]
+  },
+  "nativeProofReplay": {
+    "total": 7,
+    "accepted": 7,
+    "rate": 1.0,
+    "runs": [
+      {
+        "name": "2006G4",
+        "available": true,
+        "path": "data/geometry-generated-action-fresh-replays-2026-08-27/2006G4.replay.json",
+        "sha256": "aefe4e2120ef244be91349e8d25b6b1e452412843e7b832f855d88c0c19595ff",
+        "accepted": true,
+        "declaredAccepted": true,
+        "expectedHashesPresent": true,
+        "replaySolved": true,
+        "inputHashMatches": true,
+        "proofHashMatches": true,
+        "repeatReplaySolved": true,
+        "repeatInputHashMatches": true,
+        "repeatProofHashMatches": true
+      },
+      {
+        "name": "2012G4",
+        "available": true,
+        "path": "data/geometry-generated-action-fresh-replays-2026-08-27/2012G4.replay.json",
+        "sha256": "662e4e15f44d87c40693c706f2d9c8a0a9e527d1386157ba9cdbdf776338f03d",
+        "accepted": true,
+        "declaredAccepted": true,
+        "expectedHashesPresent": true,
+        "replaySolved": true,
+        "inputHashMatches": true,
+        "proofHashMatches": true,
+        "repeatReplaySolved": true,
+        "repeatInputHashMatches": true,
+        "repeatProofHashMatches": true
+      },
+      {
+        "name": "2013USATSTp2",
+        "available": true,
+        "path": "data/geometry-generated-action-fresh-replays-2026-08-27/2013USATSTp2.replay.json",
+        "sha256": "c91942d8e855a0dc1a704e0e71617a8a5308f63738cc2156d28683731769b407",
+        "accepted": true,
+        "declaredAccepted": true,
+        "expectedHashesPresent": true,
+        "replaySolved": true,
+        "inputHashMatches": true,
+        "proofHashMatches": true,
+        "repeatReplaySolved": true,
+        "repeatInputHashMatches": true,
+        "repeatProofHashMatches": true
+      },
+      {
+        "name": "2014BulgariaMOp6",
+        "available": true,
+        "path": "data/geometry-generated-action-fresh-replays-2026-08-27/2014BulgariaMOp6.replay.json",
+        "sha256": "ed97ad3c2558d425f2894232da2a8fd3d487edbcbf695937e2bfc7af4281946b",
+        "accepted": true,
+        "declaredAccepted": true,
+        "expectedHashesPresent": true,
+        "replaySolved": true,
+        "inputHashMatches": true,
+        "proofHashMatches": true,
+        "repeatReplaySolved": true,
+        "repeatInputHashMatches": true,
+        "repeatProofHashMatches": true
+      },
+      {
+        "name": "2016G6",
+        "available": true,
+        "path": "data/geometry-generated-action-fresh-replays-2026-08-27/2016G6.replay.json",
+        "sha256": "cf9b36dcf1126082b5b0585a467cfd2b35270f31e5c74db8ecae68ad7fb1a821",
+        "accepted": true,
+        "declaredAccepted": true,
+        "expectedHashesPresent": true,
+        "replaySolved": true,
+        "inputHashMatches": true,
+        "proofHashMatches": true,
+        "repeatReplaySolved": true,
+        "repeatInputHashMatches": true,
+        "repeatProofHashMatches": true
+      },
+      {
+        "name": "2017AsiaPacificMOp2",
+        "available": true,
+        "path": "data/geometry-generated-action-fresh-replays-2026-08-27/2017AsiaPacificMOp2.replay.json",
+        "sha256": "7b8f55554542dce29d25614dbba0255c162978834c75dfd1a53f96a79abe6bcf",
+        "accepted": true,
+        "declaredAccepted": true,
+        "expectedHashesPresent": true,
+        "replaySolved": true,
+        "inputHashMatches": true,
+        "proofHashMatches": true,
+        "repeatReplaySolved": true,
+        "repeatInputHashMatches": true,
+        "repeatProofHashMatches": true
+      },
+      {
+        "name": "2020ELMOp4",
+        "available": true,
+        "path": "data/geometry-generated-action-fresh-replays-2026-08-27/2020ELMOp4.replay.json",
+        "sha256": "2f3098194e449ff2bc89b8be748838815d3528e3cbdfa715381768f4aa02a31e",
+        "accepted": true,
+        "declaredAccepted": true,
+        "expectedHashesPresent": true,
+        "replaySolved": true,
+        "inputHashMatches": true,
+        "proofHashMatches": true,
+        "repeatReplaySolved": true,
+        "repeatInputHashMatches": true,
+        "repeatProofHashMatches": true
+      }
+    ]
+  },
+  "control": {
+    "report": "data/geometry-generated-action-control-remaining13-2026-08-27.json",
+    "reportSha256": "352dd67afdc07f8d55908969b53c08c51a708ae02d87334cf7ebbd17669d2765",
+    "complete": true,
+    "selectedProblemNames": [
+      "2017USAMOp3",
+      "2019IranTSTp15",
+      "2020IranGOAp2",
+      "2020IranTSTp9",
+      "2021ARMOg10p8",
+      "2021GOWACAp5",
+      "2021IranTSTp6",
+      "2021IsraelOlympicRev",
+      "2023IMOp6",
+      "2024VietnamTSTp5",
+      "ShuZhiMiGeo128",
+      "ShuZhiMiGeo309",
+      "ShuZhiMiGeo489"
+    ],
+    "searchBudget": {
+      "auxiliary_depth": 2,
+      "candidate_paths_per_prefix": 16,
+      "generated_action_quotient": false,
+      "generated_action_oversample_factor": 4,
+      "candidate_beam": 6,
+      "beam_ranking": "ar-residual-pareto",
+      "controller": null,
+      "per_family_limit": 1,
+      "incidence_oversample_per_family": 16,
+      "candidate_contract_synthesis": false,
+      "enumeration_limit_per_family": 64,
+      "candidate_cone_timeout_seconds": 10.0,
+      "proof_dag_timeout_seconds": 10.0,
+      "workers": 4,
+      "effective_problem_workers": 4,
+      "candidate_workers": 2,
+      "effective_candidate_workers": 2,
+      "max_total_native_workers": 8,
+      "timeout_seconds_per_problem": 3600.0
+    },
+    "statusCounts": {
+      "right_censored_timeout": 3,
+      "unsolved": 10
+    },
+    "perProblem": [
+      {
+        "name": "2017USAMOp3",
+        "status": "unsolved",
+        "evaluatedPaths": 112,
+        "nativeConfirmed": false
+      },
+      {
+        "name": "2019IranTSTp15",
+        "status": "right_censored_timeout",
+        "evaluatedPaths": 78,
+        "nativeConfirmed": false
+      },
+      {
+        "name": "2020IranGOAp2",
+        "status": "unsolved",
+        "evaluatedPaths": 112,
+        "nativeConfirmed": false
+      },
+      {
+        "name": "2020IranTSTp9",
+        "status": "unsolved",
+        "evaluatedPaths": 112,
+        "nativeConfirmed": false
+      },
+      {
+        "name": "2021ARMOg10p8",
+        "status": "unsolved",
+        "evaluatedPaths": 112,
+        "nativeConfirmed": false
+      },
+      {
+        "name": "2021GOWACAp5",
+        "status": "right_censored_timeout",
+        "evaluatedPaths": 86,
+        "nativeConfirmed": false
+      },
+      {
+        "name": "2021IranTSTp6",
+        "status": "unsolved",
+        "evaluatedPaths": 112,
+        "nativeConfirmed": false
+      },
+      {
+        "name": "2021IsraelOlympicRev",
+        "status": "unsolved",
+        "evaluatedPaths": 112,
+        "nativeConfirmed": false
+      },
+      {
+        "name": "2023IMOp6",
+        "status": "unsolved",
+        "evaluatedPaths": 112,
+        "nativeConfirmed": false
+      },
+      {
+        "name": "2024VietnamTSTp5",
+        "status": "unsolved",
+        "evaluatedPaths": 112,
+        "nativeConfirmed": false
+      },
+      {
+        "name": "ShuZhiMiGeo128",
+        "status": "unsolved",
+        "evaluatedPaths": 112,
+        "nativeConfirmed": false
+      },
+      {
+        "name": "ShuZhiMiGeo309",
+        "status": "right_censored_timeout",
+        "evaluatedPaths": 94,
+        "nativeConfirmed": false
+      },
+      {
+        "name": "ShuZhiMiGeo489",
+        "status": "unsolved",
+        "evaluatedPaths": 112,
+        "nativeConfirmed": false
+      }
+    ],
+    "evaluatedPaths": 1378,
+    "incidenceChecked": 37662,
+    "elapsedProblemSeconds": 18628.1737651,
+    "nativeConfirmedBeforeIndependentReplay": [],
+    "strictNewSolves": [],
+    "unreplayedNativeConfirmations": [],
+    "proofReplays": [],
+    "rightCensored": 3,
+    "executionErrors": 0,
+    "artifactSha256": {
+      "2017USAMOp3": "e6530766a86a85f8835d215c005a6a7f8f6fdb7719bdbd4f7d9870c77bd4aa6c",
+      "2020IranGOAp2": "fc4c84cf82ca6bb7b7c993998ad81292c8d486ce47f906ab51130b5c4581ec77",
+      "2020IranTSTp9": "9251f403b1678f099360f98fef66613b1144c84cb825de7e9f1a29b4a4587622",
+      "2021ARMOg10p8": "0d6dfb544b68b63af644ffaaab291adb4acd2368cad02dc7872fba7c13f1eabc",
+      "2021IranTSTp6": "3f2e757309e3dffa4cff41f5be647c6188a89b90e711a0ebaaef588adeada7ad",
+      "2021IsraelOlympicRev": "0bb001cff079821d0898dfce88a5b33e33c7c34cc3ff3c7d9c70b7de3deb21c5",
+      "2023IMOp6": "87dac59d7019655876e4cabc747e8633b69f607dd50f4eb227c712eb4bc6fe45",
+      "2024VietnamTSTp5": "ea220c332a34a5e29d89647d298816b3e9a87a4904718a2c80cf8881b45302ab",
+      "ShuZhiMiGeo128": "7da4eec11badbc075d2f672e1d76c26cf4bd078d6020909db23090ab0f60b2bd",
+      "ShuZhiMiGeo489": "c8dc48a4b96fdd8bc3d4e927ff78264da8efe086ae1750bcfcdb994fc6076e1a"
+    },
+    "checkpointSha256": {
+      "2019IranTSTp15": "83b52cdc67695db74a0ef69fadbb1bbb83536fd70456cf17cb44e90ce81c7441",
+      "2021GOWACAp5": "ae6e21cde601bb19eff089709bceccac824154f2e9585708709e149433725862",
+      "ShuZhiMiGeo309": "6a3ff6834ae51bf07cff7677c3c2b2d65da827f4966c013eea0fa387d08adad3"
+    },
+    "generatedActionAudits": [
+      {
+        "name": "2017USAMOp3",
+        "enabled": false,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 1,
+        "normalized_candidate_paths": 0,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "native-proof-outcome-equivalence"
+        ]
+      },
+      {
+        "name": "2020IranGOAp2",
+        "enabled": false,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 1,
+        "normalized_candidate_paths": 0,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "native-proof-outcome-equivalence"
+        ]
+      },
+      {
+        "name": "2020IranTSTp9",
+        "enabled": false,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 1,
+        "normalized_candidate_paths": 0,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "native-proof-outcome-equivalence"
+        ]
+      },
+      {
+        "name": "2021ARMOg10p8",
+        "enabled": false,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 1,
+        "normalized_candidate_paths": 0,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "native-proof-outcome-equivalence"
+        ]
+      },
+      {
+        "name": "2021IranTSTp6",
+        "enabled": false,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 1,
+        "normalized_candidate_paths": 0,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "native-proof-outcome-equivalence"
+        ]
+      },
+      {
+        "name": "2021IsraelOlympicRev",
+        "enabled": false,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 1,
+        "normalized_candidate_paths": 0,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "native-proof-outcome-equivalence"
+        ]
+      },
+      {
+        "name": "2023IMOp6",
+        "enabled": false,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 1,
+        "normalized_candidate_paths": 0,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "native-proof-outcome-equivalence"
+        ]
+      },
+      {
+        "name": "2024VietnamTSTp5",
+        "enabled": false,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 1,
+        "normalized_candidate_paths": 0,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "native-proof-outcome-equivalence"
+        ]
+      },
+      {
+        "name": "ShuZhiMiGeo128",
+        "enabled": false,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 1,
+        "normalized_candidate_paths": 0,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "native-proof-outcome-equivalence"
+        ]
+      },
+      {
+        "name": "ShuZhiMiGeo489",
+        "enabled": false,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 1,
+        "normalized_candidate_paths": 0,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "native-proof-outcome-equivalence"
+        ]
+      }
+    ],
+    "normalizedCandidatePaths": 0,
+    "invalidCandidatePaths": 0,
+    "scheduledUniquePaths": 1120,
+    "equivalentCandidatesSkipped": 0,
+    "certificateReplayFailures": 0
+  },
+  "treatment": {
+    "report": "data/geometry-generated-action-treatment-remaining13-2026-08-27.json",
+    "reportSha256": "823dd0527cd6fdb0e6a856ab0d936bbcc46d0ce4d4f3f0d8a4b256eb7ddd1f7a",
+    "complete": true,
+    "selectedProblemNames": [
+      "2017USAMOp3",
+      "2019IranTSTp15",
+      "2020IranGOAp2",
+      "2020IranTSTp9",
+      "2021ARMOg10p8",
+      "2021GOWACAp5",
+      "2021IranTSTp6",
+      "2021IsraelOlympicRev",
+      "2023IMOp6",
+      "2024VietnamTSTp5",
+      "ShuZhiMiGeo128",
+      "ShuZhiMiGeo309",
+      "ShuZhiMiGeo489"
+    ],
+    "searchBudget": {
+      "auxiliary_depth": 2,
+      "candidate_paths_per_prefix": 16,
+      "generated_action_quotient": true,
+      "generated_action_oversample_factor": 4,
+      "candidate_beam": 6,
+      "beam_ranking": "ar-residual-pareto",
+      "controller": null,
+      "per_family_limit": 1,
+      "incidence_oversample_per_family": 16,
+      "candidate_contract_synthesis": false,
+      "enumeration_limit_per_family": 64,
+      "candidate_cone_timeout_seconds": 10.0,
+      "proof_dag_timeout_seconds": 10.0,
+      "workers": 1,
+      "effective_problem_workers": 1,
+      "candidate_workers": 2,
+      "effective_candidate_workers": 2,
+      "max_total_native_workers": 2,
+      "timeout_seconds_per_problem": 3600.0
+    },
+    "statusCounts": {
+      "right_censored_timeout": 2,
+      "unsolved": 11
+    },
+    "perProblem": [
+      {
+        "name": "2017USAMOp3",
+        "status": "unsolved",
+        "evaluatedPaths": 112,
+        "nativeConfirmed": false
+      },
+      {
+        "name": "2019IranTSTp15",
+        "status": "unsolved",
+        "evaluatedPaths": 128,
+        "nativeConfirmed": false
+      },
+      {
+        "name": "2020IranGOAp2",
+        "status": "unsolved",
+        "evaluatedPaths": 112,
+        "nativeConfirmed": false
+      },
+      {
+        "name": "2020IranTSTp9",
+        "status": "unsolved",
+        "evaluatedPaths": 112,
+        "nativeConfirmed": false
+      },
+      {
+        "name": "2021ARMOg10p8",
+        "status": "unsolved",
+        "evaluatedPaths": 112,
+        "nativeConfirmed": false
+      },
+      {
+        "name": "2021GOWACAp5",
+        "status": "right_censored_timeout",
+        "evaluatedPaths": 97,
+        "nativeConfirmed": false
+      },
+      {
+        "name": "2021IranTSTp6",
+        "status": "unsolved",
+        "evaluatedPaths": 112,
+        "nativeConfirmed": false
+      },
+      {
+        "name": "2021IsraelOlympicRev",
+        "status": "unsolved",
+        "evaluatedPaths": 112,
+        "nativeConfirmed": false
+      },
+      {
+        "name": "2023IMOp6",
+        "status": "unsolved",
+        "evaluatedPaths": 112,
+        "nativeConfirmed": false
+      },
+      {
+        "name": "2024VietnamTSTp5",
+        "status": "unsolved",
+        "evaluatedPaths": 112,
+        "nativeConfirmed": false
+      },
+      {
+        "name": "ShuZhiMiGeo128",
+        "status": "unsolved",
+        "evaluatedPaths": 112,
+        "nativeConfirmed": false
+      },
+      {
+        "name": "ShuZhiMiGeo309",
+        "status": "right_censored_timeout",
+        "evaluatedPaths": 96,
+        "nativeConfirmed": false
+      },
+      {
+        "name": "ShuZhiMiGeo489",
+        "status": "unsolved",
+        "evaluatedPaths": 112,
+        "nativeConfirmed": false
+      }
+    ],
+    "evaluatedPaths": 1441,
+    "incidenceChecked": 38170,
+    "elapsedProblemSeconds": 15546.887542599992,
+    "nativeConfirmedBeforeIndependentReplay": [],
+    "strictNewSolves": [],
+    "unreplayedNativeConfirmations": [],
+    "proofReplays": [],
+    "rightCensored": 2,
+    "executionErrors": 0,
+    "artifactSha256": {
+      "2017USAMOp3": "0db88d46a856587668d1073fc4aca0509960fc91289adca11f9d3b4d012745fb",
+      "2019IranTSTp15": "09d538902ee42454f91f510bbc845ac0a78879b0c8ed262f7971d89bd73153dd",
+      "2020IranGOAp2": "4145785ec8a5f11a3a0ef5664b581f8f3f637a79beb8e59950879eb487165176",
+      "2020IranTSTp9": "f11e7aa576c713e5a58b63412741703b953c64af759a4faba6118a14a5ef52cb",
+      "2021ARMOg10p8": "db519db43178f5e82c21e6cd92e9ef01866ef8b4ab1b0f52556a3e4696d2a667",
+      "2021IranTSTp6": "3eb11b3fba350f28e1f594ee25a74c8c3415dc6dfa6b5fbae56134d10df7ed01",
+      "2021IsraelOlympicRev": "e8e14f17eb2a357c243c79a0a9e8b9ccf5ed4dfc7787ae7a18ab050bb9327215",
+      "2023IMOp6": "540dd627995b75909ce3ed6031461e0879f006ba8fb9490fd057ee10111b7cf2",
+      "2024VietnamTSTp5": "7392197e5d2862d1c46d471c46031081f81418f38a8d68bdd570ae26677ea06c",
+      "ShuZhiMiGeo128": "7c6795fb9f0dbaa05aa7c6a0ae185e052b682621fac78ab640720e77ab9f0931",
+      "ShuZhiMiGeo489": "06f55b30c7abbdc6192b4e7a0f21a26f6b43d1268d36ec96c8de26fb1c1a982b"
+    },
+    "checkpointSha256": {
+      "2021GOWACAp5": "985020d336d3be8d6a4e3e6c7e69104ecc9865949a18cadc5383c773a2573177",
+      "ShuZhiMiGeo309": "b34a4dab1371d00d33f29cd74776eda54caaa335cec629d03380cceee388e1e4"
+    },
+    "generatedActionAudits": [
+      {
+        "name": "2017USAMOp3",
+        "enabled": true,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 4,
+        "normalized_candidate_paths": 113,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 1,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "numeric-branch-search-completeness",
+          "native-proof-outcome-equivalence"
+        ]
+      },
+      {
+        "name": "2019IranTSTp15",
+        "enabled": true,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 4,
+        "normalized_candidate_paths": 16,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 16,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "numeric-branch-search-completeness",
+          "native-proof-outcome-equivalence"
+        ]
+      },
+      {
+        "name": "2020IranGOAp2",
+        "enabled": true,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 4,
+        "normalized_candidate_paths": 114,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 2,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "numeric-branch-search-completeness",
+          "native-proof-outcome-equivalence"
+        ]
+      },
+      {
+        "name": "2020IranTSTp9",
+        "enabled": true,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 4,
+        "normalized_candidate_paths": 112,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "numeric-branch-search-completeness",
+          "native-proof-outcome-equivalence"
+        ]
+      },
+      {
+        "name": "2021ARMOg10p8",
+        "enabled": true,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 4,
+        "normalized_candidate_paths": 112,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "numeric-branch-search-completeness",
+          "native-proof-outcome-equivalence"
+        ]
+      },
+      {
+        "name": "2021IranTSTp6",
+        "enabled": true,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 4,
+        "normalized_candidate_paths": 115,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 3,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "numeric-branch-search-completeness",
+          "native-proof-outcome-equivalence"
+        ]
+      },
+      {
+        "name": "2021IsraelOlympicRev",
+        "enabled": true,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 4,
+        "normalized_candidate_paths": 116,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 4,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "numeric-branch-search-completeness",
+          "native-proof-outcome-equivalence"
+        ]
+      },
+      {
+        "name": "2023IMOp6",
+        "enabled": true,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 4,
+        "normalized_candidate_paths": 112,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "numeric-branch-search-completeness",
+          "native-proof-outcome-equivalence"
+        ]
+      },
+      {
+        "name": "2024VietnamTSTp5",
+        "enabled": true,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 4,
+        "normalized_candidate_paths": 113,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 1,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "numeric-branch-search-completeness",
+          "native-proof-outcome-equivalence"
+        ]
+      },
+      {
+        "name": "ShuZhiMiGeo128",
+        "enabled": true,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 4,
+        "normalized_candidate_paths": 113,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 1,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "numeric-branch-search-completeness",
+          "native-proof-outcome-equivalence"
+        ]
+      },
+      {
+        "name": "ShuZhiMiGeo489",
+        "enabled": true,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 4,
+        "normalized_candidate_paths": 114,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 2,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "numeric-branch-search-completeness",
+          "native-proof-outcome-equivalence"
+        ]
+      }
+    ],
+    "normalizedCandidatePaths": 1150,
+    "invalidCandidatePaths": 0,
+    "scheduledUniquePaths": 1136,
+    "equivalentCandidatesSkipped": 14,
+    "certificateReplayFailures": 0
+  },
+  "controlledEffect": {
+    "sameFrozenCohort": true,
+    "sameMathematicalSearchBudgetOutsideIntervention": true,
+    "sameResourceConcurrency": false,
+    "resourceConcurrency": {
+      "control": {
+        "workers": 4,
+        "effective_problem_workers": 4,
+        "candidate_workers": 2,
+        "effective_candidate_workers": 2,
+        "max_total_native_workers": 8
+      },
+      "treatment": {
+        "workers": 1,
+        "effective_problem_workers": 1,
+        "candidate_workers": 2,
+        "effective_candidate_workers": 2,
+        "max_total_native_workers": 2
+      }
+    },
+    "wallClockCausalClaimAllowed": false,
+    "pairedTerminalProblems": [
+      "2017USAMOp3",
+      "2020IranGOAp2",
+      "2020IranTSTp9",
+      "2021ARMOg10p8",
+      "2021IranTSTp6",
+      "2021IsraelOlympicRev",
+      "2023IMOp6",
+      "2024VietnamTSTp5",
+      "ShuZhiMiGeo128",
+      "ShuZhiMiGeo489"
+    ],
+    "unpairedOrRightCensoredProblems": [
+      "2019IranTSTp15",
+      "2021GOWACAp5",
+      "ShuZhiMiGeo309"
+    ],
+    "pairedEvaluatedPaths": {
+      "control": 1120,
+      "treatment": 1120,
+      "delta": 0
+    },
+    "allRunEvaluatedPathDeltaDescriptiveOnly": 63,
+    "elapsedProblemSecondsDeltaDescriptiveOnly": -3081.286222500008,
+    "rightCensoredDelta": -1,
+    "executionErrorDelta": 0,
+    "pairedGeneratedActionAudit": {
+      "control": {
+        "normalized_candidate_paths": 0,
+        "invalid_paths": 0,
+        "scheduled_unique_paths": 1120,
+        "equivalent_paths_skipped": 0,
+        "certificate_replay_failures": 0
+      },
+      "treatment": {
+        "normalized_candidate_paths": 1134,
+        "invalid_paths": 0,
+        "scheduled_unique_paths": 1120,
+        "equivalent_paths_skipped": 14,
+        "certificate_replay_failures": 0
+      },
+      "delta": {
+        "normalized_candidate_paths": 1134,
+        "invalid_paths": 0,
+        "scheduled_unique_paths": 0,
+        "equivalent_paths_skipped": 14,
+        "certificate_replay_failures": 0
+      }
+    },
+    "allRunGeneratedActionAuditDescriptiveOnly": {
+      "control": {
+        "normalized_candidate_paths": 0,
+        "invalid_paths": 0,
+        "scheduled_unique_paths": 1120,
+        "equivalent_paths_skipped": 0,
+        "certificate_replay_failures": 0
+      },
+      "treatment": {
+        "normalized_candidate_paths": 1150,
+        "invalid_paths": 0,
+        "scheduled_unique_paths": 1136,
+        "equivalent_paths_skipped": 14,
+        "certificate_replay_failures": 0
+      },
+      "delta": {
+        "normalized_candidate_paths": 1150,
+        "invalid_paths": 0,
+        "scheduled_unique_paths": 16,
+        "equivalent_paths_skipped": 14,
+        "certificate_replay_failures": 0
+      }
+    },
+    "pairedStrictTreatmentOnlySolves": [],
+    "pairedStrictControlOnlySolves": [],
+    "pairedStrictSharedSolves": [],
+    "unpairedStrictSolvesNotAttributedToIntervention": []
+  },
+  "score": {
+    "before": {
+      "solved": 76,
+      "total": 89,
+      "rate": 0.8539325842696629
+    },
+    "strictAdditionalSolves": [],
+    "after": {
+      "solved": 76,
+      "total": 89,
+      "rate": 0.8539325842696629
+    }
+  },
+  "unresolvedProblems": [
+    {
+      "name": "2017USAMOp3",
+      "artifact": "data/hageo-409-current-aux-bounded64-rerun-2026-08-24-runs/2017USAMOp3.json",
+      "artifactSha256": "2a8cbed090fddbb6f7c8f47b2f192175fe45bd5348d10128255966dcc880f00a",
+      "solved": false,
+      "rawVerifiedPaths": 112,
+      "certifiedPaths": 112,
+      "uniqueGeneratedActionStates": 111,
+      "equivalentPathsRemoved": 1,
+      "quotientReductionRate": 0.008928571428571428,
+      "canonicalOrderChanged": 11,
+      "depthHistogram": {
+        "1": 16,
+        "2": 96
+      },
+      "normalizationErrors": [],
+      "certificateReplayFailures": [],
+      "outcomeInconsistentClasses": [],
+      "certificateSamples": [
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "angle_bisector",
+              "output": "e",
+              "inputs": [
+                "b",
+                "o",
+                "c"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "angle_bisector",
+              "output": "g0",
+              "inputs": [
+                "b",
+                "o",
+                "c"
+              ],
+              "semantic_term": "angle_bisector(point(b),point(o),point(c))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "b",
+            "c",
+            "o"
+          ],
+          "semantic_state": [
+            "angle_bisector(point(b),point(o),point(c))"
+          ],
+          "semantic_state_key": "angle_bisector(point(b),point(o),point(c))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "1ccab76324189782f39e76acd6c74f72d31c2b8f180d0cbc526be662897e0ea7"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "angle_mirror",
+              "output": "e",
+              "inputs": [
+                "b",
+                "c",
+                "i"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "angle_mirror",
+              "output": "g0",
+              "inputs": [
+                "b",
+                "c",
+                "i"
+              ],
+              "semantic_term": "angle_mirror(point(b),point(c),point(i))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "b",
+            "c",
+            "i"
+          ],
+          "semantic_state": [
+            "angle_mirror(point(b),point(c),point(i))"
+          ],
+          "semantic_state_key": "angle_mirror(point(b),point(c),point(i))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "e8270dfedf51e7a2db3e2159ed3fd6e8a8a4ad44cbf24e29d142f1a894625ad9"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "circle",
+              "output": "e",
+              "inputs": [
+                "b",
+                "c",
+                "o"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "circle",
+              "output": "g0",
+              "inputs": [
+                "b",
+                "c",
+                "o"
+              ],
+              "semantic_term": "circle(point(b),point(c),point(o))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "b",
+            "c",
+            "o"
+          ],
+          "semantic_state": [
+            "circle(point(b),point(c),point(o))"
+          ],
+          "semantic_state_key": "circle(point(b),point(c),point(o))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "67b947f17d9627ffb0e2c2dcf40b9e14b0432c0fa204a6a37a69656623bc59e5"
+        }
+      ]
+    },
+    {
+      "name": "2019IranTSTp15",
+      "artifact": "data/hageo-409-current-aux-bounded64-rerun-2026-08-24-runs/2019IranTSTp15.json",
+      "artifactSha256": "6295b5f25525d7bee389d420872588907b1ae400303f9fe0730f9ce53c9679e3",
+      "solved": false,
+      "rawVerifiedPaths": 112,
+      "certifiedPaths": 112,
+      "uniqueGeneratedActionStates": 110,
+      "equivalentPathsRemoved": 2,
+      "quotientReductionRate": 0.017857142857142856,
+      "canonicalOrderChanged": 15,
+      "depthHistogram": {
+        "1": 16,
+        "2": 96
+      },
+      "normalizationErrors": [],
+      "certificateReplayFailures": [],
+      "outcomeInconsistentClasses": [],
+      "certificateSamples": [
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "angle_bisector",
+              "output": "d",
+              "inputs": [
+                "h",
+                "b",
+                "c"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "angle_bisector",
+              "output": "g0",
+              "inputs": [
+                "h",
+                "b",
+                "c"
+              ],
+              "semantic_term": "angle_bisector(point(h),point(b),point(c))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "b",
+            "c",
+            "h"
+          ],
+          "semantic_state": [
+            "angle_bisector(point(h),point(b),point(c))"
+          ],
+          "semantic_state_key": "angle_bisector(point(h),point(b),point(c))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "ce0da73c5a08851ca20b975ed3af76567f287ccfde5dc53a0918bb0984514129"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "angle_mirror",
+              "output": "d",
+              "inputs": [
+                "h",
+                "b",
+                "c"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "angle_mirror",
+              "output": "g0",
+              "inputs": [
+                "h",
+                "b",
+                "c"
+              ],
+              "semantic_term": "angle_mirror(point(h),point(b),point(c))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "b",
+            "c",
+            "h"
+          ],
+          "semantic_state": [
+            "angle_mirror(point(h),point(b),point(c))"
+          ],
+          "semantic_state_key": "angle_mirror(point(h),point(b),point(c))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "2b2f15135eac6083ac1c3af1ac494cee02bcc31ff3337d5eafb1db007ba883f8"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "between_bound",
+              "output": "d",
+              "inputs": [
+                "x",
+                "k"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "between_bound",
+              "output": "g0",
+              "inputs": [
+                "x",
+                "k"
+              ],
+              "semantic_term": "between_bound(point(x),point(k))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "k",
+            "x"
+          ],
+          "semantic_state": [
+            "between_bound(point(x),point(k))"
+          ],
+          "semantic_state_key": "between_bound(point(x),point(k))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "b3bfdfea2b52b65c79b98af7e7881d1f7a9eafc0bbeee63b9ab675d8e4e5f9f8"
+        }
+      ]
+    },
+    {
+      "name": "2020IranGOAp2",
+      "artifact": "data/hageo-409-current-aux-bounded64-rerun-2026-08-24-runs/2020IranGOAp2.json",
+      "artifactSha256": "1c4b58aeff599fbc02896d16d4d4d975fa8235e4adf00723b3dbac8a0c490027",
+      "solved": false,
+      "rawVerifiedPaths": 112,
+      "certifiedPaths": 112,
+      "uniqueGeneratedActionStates": 110,
+      "equivalentPathsRemoved": 2,
+      "quotientReductionRate": 0.017857142857142856,
+      "canonicalOrderChanged": 19,
+      "depthHistogram": {
+        "1": 16,
+        "2": 96
+      },
+      "normalizationErrors": [],
+      "certificateReplayFailures": [],
+      "outcomeInconsistentClasses": [],
+      "certificateSamples": [
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "between_bound",
+              "output": "d",
+              "inputs": [
+                "a",
+                "p"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "between_bound",
+              "output": "g0",
+              "inputs": [
+                "a",
+                "p"
+              ],
+              "semantic_term": "between_bound(point(a),point(p))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "p"
+          ],
+          "semantic_state": [
+            "between_bound(point(a),point(p))"
+          ],
+          "semantic_state_key": "between_bound(point(a),point(p))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "3dd0ce47229f50bfc1d42e258da66ea1a593d9f81c3e4103d7c71ead113ed7ee"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "circle",
+              "output": "d",
+              "inputs": [
+                "o1",
+                "q",
+                "r"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "circle",
+              "output": "g0",
+              "inputs": [
+                "o1",
+                "q",
+                "r"
+              ],
+              "semantic_term": "circle(point(o1),point(q),point(r))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "o1",
+            "q",
+            "r"
+          ],
+          "semantic_state": [
+            "circle(point(o1),point(q),point(r))"
+          ],
+          "semantic_state_key": "circle(point(o1),point(q),point(r))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "0f24507d22eac54b686e5d9c03e0eff199fb767b79cf0a6c7c623389fa7adb84"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "circumcenter",
+              "output": "d",
+              "inputs": [
+                "o1",
+                "q",
+                "r"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "circumcenter",
+              "output": "g0",
+              "inputs": [
+                "o1",
+                "q",
+                "r"
+              ],
+              "semantic_term": "circumcenter(point(o1),point(q),point(r))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "o1",
+            "q",
+            "r"
+          ],
+          "semantic_state": [
+            "circumcenter(point(o1),point(q),point(r))"
+          ],
+          "semantic_state_key": "circumcenter(point(o1),point(q),point(r))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "2d5c91edf1cd0ec53418d6584fd6182d2bb7d4a59efc7ed33097c8aba38abd1f"
+        }
+      ]
+    },
+    {
+      "name": "2020IranTSTp9",
+      "artifact": "data/hageo-409-current-aux-bounded64-rerun-2026-08-24-runs/2020IranTSTp9.json",
+      "artifactSha256": "61e5cfe5e07e1006661a0415236cd203e14bcb1d5190deda7ab8c99200d312e7",
+      "solved": false,
+      "rawVerifiedPaths": 112,
+      "certifiedPaths": 112,
+      "uniqueGeneratedActionStates": 112,
+      "equivalentPathsRemoved": 0,
+      "quotientReductionRate": 0.0,
+      "canonicalOrderChanged": 10,
+      "depthHistogram": {
+        "1": 16,
+        "2": 96
+      },
+      "normalizationErrors": [],
+      "certificateReplayFailures": [],
+      "outcomeInconsistentClasses": [],
+      "certificateSamples": [
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "angle_bisector",
+              "output": "d",
+              "inputs": [
+                "x",
+                "a",
+                "j"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "angle_bisector",
+              "output": "g0",
+              "inputs": [
+                "x",
+                "a",
+                "j"
+              ],
+              "semantic_term": "angle_bisector(point(x),point(a),point(j))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "j",
+            "x"
+          ],
+          "semantic_state": [
+            "angle_bisector(point(x),point(a),point(j))"
+          ],
+          "semantic_state_key": "angle_bisector(point(x),point(a),point(j))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "444aa2532f7948de148f71f201b728ce5c5644bbda8bae9364847e32304a2855"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "angle_mirror",
+              "output": "d",
+              "inputs": [
+                "x",
+                "a",
+                "j"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "angle_mirror",
+              "output": "g0",
+              "inputs": [
+                "x",
+                "a",
+                "j"
+              ],
+              "semantic_term": "angle_mirror(point(x),point(a),point(j))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "j",
+            "x"
+          ],
+          "semantic_state": [
+            "angle_mirror(point(x),point(a),point(j))"
+          ],
+          "semantic_state_key": "angle_mirror(point(x),point(a),point(j))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "11b0202fb38f74a555812de4bb55213ed6cb0c8e4d8538ca32b32cce2b6112c1"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "between_bound",
+              "output": "d",
+              "inputs": [
+                "a",
+                "x"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "between_bound",
+              "output": "g0",
+              "inputs": [
+                "a",
+                "x"
+              ],
+              "semantic_term": "between_bound(point(a),point(x))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "x"
+          ],
+          "semantic_state": [
+            "between_bound(point(a),point(x))"
+          ],
+          "semantic_state_key": "between_bound(point(a),point(x))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "8d71da17925d35e4df0878528e63a3d4911ce1edde0dc1a0516dde8e0e3c17a4"
+        }
+      ]
+    },
+    {
+      "name": "2021ARMOg10p8",
+      "artifact": "data/hageo-409-current-aux-bounded64-rerun-2026-08-24-runs/2021ARMOg10p8.json",
+      "artifactSha256": "9ac53bbdca380638d65d0271f8937486e08ebb9d6c0bab1dd5d0df7fa7194a8f",
+      "solved": false,
+      "rawVerifiedPaths": 112,
+      "certifiedPaths": 112,
+      "uniqueGeneratedActionStates": 112,
+      "equivalentPathsRemoved": 0,
+      "quotientReductionRate": 0.0,
+      "canonicalOrderChanged": 3,
+      "depthHistogram": {
+        "1": 16,
+        "2": 96
+      },
+      "normalizationErrors": [],
+      "certificateReplayFailures": [],
+      "outcomeInconsistentClasses": [],
+      "certificateSamples": [
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "angle_bisector",
+              "output": "f",
+              "inputs": [
+                "p",
+                "b",
+                "y"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "angle_bisector",
+              "output": "g0",
+              "inputs": [
+                "p",
+                "b",
+                "y"
+              ],
+              "semantic_term": "angle_bisector(point(p),point(b),point(y))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "b",
+            "p",
+            "y"
+          ],
+          "semantic_state": [
+            "angle_bisector(point(p),point(b),point(y))"
+          ],
+          "semantic_state_key": "angle_bisector(point(p),point(b),point(y))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "5276a8cd11aed104e4e14e5194671d783a38b82b4a32cc70654b49635b520e73"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "angle_mirror",
+              "output": "f",
+              "inputs": [
+                "p",
+                "b",
+                "y"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "angle_mirror",
+              "output": "g0",
+              "inputs": [
+                "p",
+                "b",
+                "y"
+              ],
+              "semantic_term": "angle_mirror(point(p),point(b),point(y))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "b",
+            "p",
+            "y"
+          ],
+          "semantic_state": [
+            "angle_mirror(point(p),point(b),point(y))"
+          ],
+          "semantic_state_key": "angle_mirror(point(p),point(b),point(y))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "e07b1e4542bc29752e2b4d9953895bfc9bd235c3ab3dfb850e20c753ca899495"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "between_bound",
+              "output": "f",
+              "inputs": [
+                "p",
+                "b"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "between_bound",
+              "output": "g0",
+              "inputs": [
+                "p",
+                "b"
+              ],
+              "semantic_term": "between_bound(point(p),point(b))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "b",
+            "p"
+          ],
+          "semantic_state": [
+            "between_bound(point(p),point(b))"
+          ],
+          "semantic_state_key": "between_bound(point(p),point(b))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "2dc9b401fe46a91ee9d811fb1a24669bc183b31061177dc87c6f18bfa1f6a1fb"
+        }
+      ]
+    },
+    {
+      "name": "2021GOWACAp5",
+      "artifact": "data/hageo-409-current-aux-bounded64-rerun-2026-08-24-runs/2021GOWACAp5.json",
+      "artifactSha256": "566f9533dc793150a1fe9d6c2172a3012db627fd0609793fb439cfa931cf85d0",
+      "solved": false,
+      "rawVerifiedPaths": 112,
+      "certifiedPaths": 112,
+      "uniqueGeneratedActionStates": 110,
+      "equivalentPathsRemoved": 2,
+      "quotientReductionRate": 0.017857142857142856,
+      "canonicalOrderChanged": 6,
+      "depthHistogram": {
+        "1": 16,
+        "2": 96
+      },
+      "normalizationErrors": [],
+      "certificateReplayFailures": [],
+      "outcomeInconsistentClasses": [],
+      "certificateSamples": [
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "angle_mirror",
+              "output": "e",
+              "inputs": [
+                "d",
+                "m",
+                "d1"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "angle_mirror",
+              "output": "g0",
+              "inputs": [
+                "d",
+                "m",
+                "d1"
+              ],
+              "semantic_term": "angle_mirror(point(d),point(m),point(d1))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "d",
+            "d1",
+            "m"
+          ],
+          "semantic_state": [
+            "angle_mirror(point(d),point(m),point(d1))"
+          ],
+          "semantic_state_key": "angle_mirror(point(d),point(m),point(d1))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "2f30b589fa81a416301dd4ffe9a01d598cc1f4abc2abc5bc4d3ac6b8712aa033"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "between_bound",
+              "output": "e",
+              "inputs": [
+                "d",
+                "m"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "between_bound",
+              "output": "g0",
+              "inputs": [
+                "d",
+                "m"
+              ],
+              "semantic_term": "between_bound(point(d),point(m))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "d",
+            "m"
+          ],
+          "semantic_state": [
+            "between_bound(point(d),point(m))"
+          ],
+          "semantic_state_key": "between_bound(point(d),point(m))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "896d95292f616cfebc61c2fe6c23956079ff90428408e7e4b8fc977ec1b5d4e1"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "circle",
+              "output": "e",
+              "inputs": [
+                "d",
+                "a",
+                "d1"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "circle",
+              "output": "g0",
+              "inputs": [
+                "a",
+                "d",
+                "d1"
+              ],
+              "semantic_term": "circle(point(a),point(d),point(d1))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "d",
+            "d1"
+          ],
+          "semantic_state": [
+            "circle(point(a),point(d),point(d1))"
+          ],
+          "semantic_state_key": "circle(point(a),point(d),point(d1))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "2d33363400e2bd458a53c81db48bd7ab8d4121a9b593d5a99d6adeaaf2dd325f"
+        }
+      ]
+    },
+    {
+      "name": "2021IranTSTp6",
+      "artifact": "data/hageo-409-current-aux-bounded64-rerun-2026-08-24-runs/2021IranTSTp6.json",
+      "artifactSha256": "cbd7aedbc24336ed5c2b7c23e7e3e12679b0e3030fa824e224673c95d38298a8",
+      "solved": false,
+      "rawVerifiedPaths": 112,
+      "certifiedPaths": 112,
+      "uniqueGeneratedActionStates": 110,
+      "equivalentPathsRemoved": 2,
+      "quotientReductionRate": 0.017857142857142856,
+      "canonicalOrderChanged": 5,
+      "depthHistogram": {
+        "1": 16,
+        "2": 96
+      },
+      "normalizationErrors": [],
+      "certificateReplayFailures": [],
+      "outcomeInconsistentClasses": [],
+      "certificateSamples": [
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "angle_bisector",
+              "output": "g",
+              "inputs": [
+                "a",
+                "b",
+                "f"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "angle_bisector",
+              "output": "g0",
+              "inputs": [
+                "a",
+                "b",
+                "f"
+              ],
+              "semantic_term": "angle_bisector(point(a),point(b),point(f))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "b",
+            "f"
+          ],
+          "semantic_state": [
+            "angle_bisector(point(a),point(b),point(f))"
+          ],
+          "semantic_state_key": "angle_bisector(point(a),point(b),point(f))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "3051b901a2e88c9d7cd83166474bed23ca7775f70071333d0a54d1c90dc52397"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "angle_mirror",
+              "output": "g",
+              "inputs": [
+                "a",
+                "b",
+                "f"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "angle_mirror",
+              "output": "g0",
+              "inputs": [
+                "a",
+                "b",
+                "f"
+              ],
+              "semantic_term": "angle_mirror(point(a),point(b),point(f))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "b",
+            "f"
+          ],
+          "semantic_state": [
+            "angle_mirror(point(a),point(b),point(f))"
+          ],
+          "semantic_state_key": "angle_mirror(point(a),point(b),point(f))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "b4e0e85c1044bf9c81cac0bb808b82f6634754f123968b16b223d27b67b365d4"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "between_bound",
+              "output": "g",
+              "inputs": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "between_bound",
+              "output": "g0",
+              "inputs": [
+                "a",
+                "b"
+              ],
+              "semantic_term": "between_bound(point(a),point(b))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "b"
+          ],
+          "semantic_state": [
+            "between_bound(point(a),point(b))"
+          ],
+          "semantic_state_key": "between_bound(point(a),point(b))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "70af3b27dc924290b55007787ebcef090cff4045adcca2392c7a031935768bdb"
+        }
+      ]
+    },
+    {
+      "name": "2021IsraelOlympicRev",
+      "artifact": "data/hageo-409-current-aux-bounded64-rerun-2026-08-24-runs/2021IsraelOlympicRev.json",
+      "artifactSha256": "987c6b677a87314c61164a08d250b10749f3036c5d0e663a25974dc474f8b985",
+      "solved": false,
+      "rawVerifiedPaths": 112,
+      "certifiedPaths": 112,
+      "uniqueGeneratedActionStates": 108,
+      "equivalentPathsRemoved": 4,
+      "quotientReductionRate": 0.03571428571428571,
+      "canonicalOrderChanged": 15,
+      "depthHistogram": {
+        "1": 16,
+        "2": 96
+      },
+      "normalizationErrors": [],
+      "certificateReplayFailures": [],
+      "outcomeInconsistentClasses": [],
+      "certificateSamples": [
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "angle_bisector",
+              "output": "d",
+              "inputs": [
+                "a",
+                "b",
+                "p3"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "angle_bisector",
+              "output": "g0",
+              "inputs": [
+                "a",
+                "b",
+                "p3"
+              ],
+              "semantic_term": "angle_bisector(point(a),point(b),point(p3))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "b",
+            "p3"
+          ],
+          "semantic_state": [
+            "angle_bisector(point(a),point(b),point(p3))"
+          ],
+          "semantic_state_key": "angle_bisector(point(a),point(b),point(p3))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "befa95e73b92d4ef48015170047edfcf0a80367979b8c8d2f8a4d0a4f9bbc32a"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "angle_mirror",
+              "output": "d",
+              "inputs": [
+                "a",
+                "b",
+                "p3"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "angle_mirror",
+              "output": "g0",
+              "inputs": [
+                "a",
+                "b",
+                "p3"
+              ],
+              "semantic_term": "angle_mirror(point(a),point(b),point(p3))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "b",
+            "p3"
+          ],
+          "semantic_state": [
+            "angle_mirror(point(a),point(b),point(p3))"
+          ],
+          "semantic_state_key": "angle_mirror(point(a),point(b),point(p3))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "370cceb190086d9d441d1c309b2b384296c74576b8316717e885e958dc3356e9"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "between_bound",
+              "output": "d",
+              "inputs": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "between_bound",
+              "output": "g0",
+              "inputs": [
+                "a",
+                "b"
+              ],
+              "semantic_term": "between_bound(point(a),point(b))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "b"
+          ],
+          "semantic_state": [
+            "between_bound(point(a),point(b))"
+          ],
+          "semantic_state_key": "between_bound(point(a),point(b))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "a7ff8908bcb9f1e8c4663afdfce14cdf2fa13a766fc871a2a34b18c623b71b2d"
+        }
+      ]
+    },
+    {
+      "name": "2023IMOp6",
+      "artifact": "data/hageo-409-current-aux-bounded64-rerun-2026-08-24-runs/2023IMOp6.json",
+      "artifactSha256": "e9d0591964efcb5e83f6c5df4eb9e39da8718abe8e7f63147b5e817fee975554",
+      "solved": false,
+      "rawVerifiedPaths": 112,
+      "certifiedPaths": 112,
+      "uniqueGeneratedActionStates": 112,
+      "equivalentPathsRemoved": 0,
+      "quotientReductionRate": 0.0,
+      "canonicalOrderChanged": 11,
+      "depthHistogram": {
+        "1": 16,
+        "2": 96
+      },
+      "normalizationErrors": [],
+      "certificateReplayFailures": [],
+      "outcomeInconsistentClasses": [],
+      "certificateSamples": [
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "angle_mirror",
+              "output": "d",
+              "inputs": [
+                "c",
+                "a",
+                "o"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "angle_mirror",
+              "output": "g0",
+              "inputs": [
+                "c",
+                "a",
+                "o"
+              ],
+              "semantic_term": "angle_mirror(point(c),point(a),point(o))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "c",
+            "o"
+          ],
+          "semantic_state": [
+            "angle_mirror(point(c),point(a),point(o))"
+          ],
+          "semantic_state_key": "angle_mirror(point(c),point(a),point(o))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "fb261d340790f29652c75f89e82b44daae7bf360dad8ca9f4c44c0e11df53d0f"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "between_bound",
+              "output": "d",
+              "inputs": [
+                "c",
+                "o"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "between_bound",
+              "output": "g0",
+              "inputs": [
+                "c",
+                "o"
+              ],
+              "semantic_term": "between_bound(point(c),point(o))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "c",
+            "o"
+          ],
+          "semantic_state": [
+            "between_bound(point(c),point(o))"
+          ],
+          "semantic_state_key": "between_bound(point(c),point(o))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "0718eed35ad8c01d63cf6a99b2b4bc5eec5a5c4a4023b88c37daa31243798583"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "circle",
+              "output": "d",
+              "inputs": [
+                "c",
+                "a",
+                "o"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "circle",
+              "output": "g0",
+              "inputs": [
+                "a",
+                "c",
+                "o"
+              ],
+              "semantic_term": "circle(point(a),point(c),point(o))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "c",
+            "o"
+          ],
+          "semantic_state": [
+            "circle(point(a),point(c),point(o))"
+          ],
+          "semantic_state_key": "circle(point(a),point(c),point(o))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "2150991ecbc3d0449b583161b2efbcd9ee8e0ad1003053f2e14268de59975485"
+        }
+      ]
+    },
+    {
+      "name": "2024VietnamTSTp5",
+      "artifact": "data/hageo-409-current-aux-bounded64-rerun-2026-08-24-runs/2024VietnamTSTp5.json",
+      "artifactSha256": "a575dc8f1863e4cbd2bbbad63ee5cb73d916ce38b4cead85940afb45bc635044",
+      "solved": false,
+      "rawVerifiedPaths": 112,
+      "certifiedPaths": 112,
+      "uniqueGeneratedActionStates": 111,
+      "equivalentPathsRemoved": 1,
+      "quotientReductionRate": 0.008928571428571428,
+      "canonicalOrderChanged": 40,
+      "depthHistogram": {
+        "1": 16,
+        "2": 96
+      },
+      "normalizationErrors": [],
+      "certificateReplayFailures": [],
+      "outcomeInconsistentClasses": [],
+      "certificateSamples": [
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "between_bound",
+              "output": "g",
+              "inputs": [
+                "a",
+                "i"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "between_bound",
+              "output": "g0",
+              "inputs": [
+                "a",
+                "i"
+              ],
+              "semantic_term": "between_bound(point(a),point(i))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "i"
+          ],
+          "semantic_state": [
+            "between_bound(point(a),point(i))"
+          ],
+          "semantic_state_key": "between_bound(point(a),point(i))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "f10b5630469a549dc5b6851fe7cae389777541f8c45e5f549793557e1862f56c"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "circle",
+              "output": "g",
+              "inputs": [
+                "a",
+                "i",
+                "m"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "circle",
+              "output": "g0",
+              "inputs": [
+                "a",
+                "i",
+                "m"
+              ],
+              "semantic_term": "circle(point(a),point(i),point(m))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "i",
+            "m"
+          ],
+          "semantic_state": [
+            "circle(point(a),point(i),point(m))"
+          ],
+          "semantic_state_key": "circle(point(a),point(i),point(m))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "54490636bc5128bee6523d49e14b29a86a97e749b1db76d1d1bb58aab77b0e59"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "circumcenter",
+              "output": "g",
+              "inputs": [
+                "a",
+                "i",
+                "m"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "circumcenter",
+              "output": "g0",
+              "inputs": [
+                "a",
+                "i",
+                "m"
+              ],
+              "semantic_term": "circumcenter(point(a),point(i),point(m))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "i",
+            "m"
+          ],
+          "semantic_state": [
+            "circumcenter(point(a),point(i),point(m))"
+          ],
+          "semantic_state_key": "circumcenter(point(a),point(i),point(m))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "c8cebb482d5189bddbfd2c5f1e11c8cb30ebd2d461876bd5ccd98012552930be"
+        }
+      ]
+    },
+    {
+      "name": "ShuZhiMiGeo128",
+      "artifact": "data/hageo-409-current-aux-bounded64-rerun-2026-08-24-runs/ShuZhiMiGeo128.json",
+      "artifactSha256": "0ce2fcd8079dd0ea86049f9376f371c048883cd7d8ded0645d9fba99013b3f38",
+      "solved": false,
+      "rawVerifiedPaths": 112,
+      "certifiedPaths": 112,
+      "uniqueGeneratedActionStates": 111,
+      "equivalentPathsRemoved": 1,
+      "quotientReductionRate": 0.008928571428571428,
+      "canonicalOrderChanged": 16,
+      "depthHistogram": {
+        "1": 16,
+        "2": 96
+      },
+      "normalizationErrors": [],
+      "certificateReplayFailures": [],
+      "outcomeInconsistentClasses": [],
+      "certificateSamples": [
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "angle_bisector",
+              "output": "g",
+              "inputs": [
+                "c",
+                "l",
+                "r"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "angle_bisector",
+              "output": "g0",
+              "inputs": [
+                "c",
+                "l",
+                "r"
+              ],
+              "semantic_term": "angle_bisector(point(c),point(l),point(r))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "c",
+            "l",
+            "r"
+          ],
+          "semantic_state": [
+            "angle_bisector(point(c),point(l),point(r))"
+          ],
+          "semantic_state_key": "angle_bisector(point(c),point(l),point(r))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "043007beb5725799e14ab8af102e99875c3366c0cded9d4a041fc01e6c0852bf"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "angle_mirror",
+              "output": "g",
+              "inputs": [
+                "c",
+                "a",
+                "e"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "angle_mirror",
+              "output": "g0",
+              "inputs": [
+                "c",
+                "a",
+                "e"
+              ],
+              "semantic_term": "angle_mirror(point(c),point(a),point(e))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "c",
+            "e"
+          ],
+          "semantic_state": [
+            "angle_mirror(point(c),point(a),point(e))"
+          ],
+          "semantic_state_key": "angle_mirror(point(c),point(a),point(e))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "a4af76a1a47e0efb336224cbbb4acde24ae3798d0f041b9d553a5c34a12205ec"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "between_bound",
+              "output": "g",
+              "inputs": [
+                "c",
+                "f"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "between_bound",
+              "output": "g0",
+              "inputs": [
+                "c",
+                "f"
+              ],
+              "semantic_term": "between_bound(point(c),point(f))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "c",
+            "f"
+          ],
+          "semantic_state": [
+            "between_bound(point(c),point(f))"
+          ],
+          "semantic_state_key": "between_bound(point(c),point(f))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "00858f31edcab90d604b9f8c3579d6e24910bc153c767bf43d2de85113bbd900"
+        }
+      ]
+    },
+    {
+      "name": "ShuZhiMiGeo309",
+      "artifact": "data/hageo-409-current-aux-bounded64-rerun-2026-08-24-runs/ShuZhiMiGeo309.json",
+      "artifactSha256": "209b3260c462847f98ad1c45b41c4c4324e0a64e4942aa81c510610c9db14d3d",
+      "solved": false,
+      "rawVerifiedPaths": 124,
+      "certifiedPaths": 124,
+      "uniqueGeneratedActionStates": 123,
+      "equivalentPathsRemoved": 1,
+      "quotientReductionRate": 0.008064516129032258,
+      "canonicalOrderChanged": 11,
+      "depthHistogram": {
+        "1": 28,
+        "2": 96
+      },
+      "normalizationErrors": [],
+      "certificateReplayFailures": [],
+      "outcomeInconsistentClasses": [],
+      "certificateSamples": [
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "between_bound",
+              "output": "g",
+              "inputs": [
+                "i",
+                "a"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "between_bound",
+              "output": "g0",
+              "inputs": [
+                "i",
+                "a"
+              ],
+              "semantic_term": "between_bound(point(i),point(a))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "i"
+          ],
+          "semantic_state": [
+            "between_bound(point(i),point(a))"
+          ],
+          "semantic_state_key": "between_bound(point(i),point(a))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "fdac3ef5250ddb668d46002c1bbf052abd7d5c1311a352de33e94a442200b086"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "between_bound",
+              "output": "g",
+              "inputs": [
+                "i",
+                "o1"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "between_bound",
+              "output": "g0",
+              "inputs": [
+                "i",
+                "o1"
+              ],
+              "semantic_term": "between_bound(point(i),point(o1))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "i",
+            "o1"
+          ],
+          "semantic_state": [
+            "between_bound(point(i),point(o1))"
+          ],
+          "semantic_state_key": "between_bound(point(i),point(o1))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "18526150e9818a4c81e07cb2a8654a13aec6d573b059409f7a57077ff10512fd"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "eq_triangle",
+              "output": "g",
+              "inputs": [
+                "i",
+                "a"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "eq_triangle",
+              "output": "g0",
+              "inputs": [
+                "a",
+                "i"
+              ],
+              "semantic_term": "eq_triangle(point(a),point(i))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "i"
+          ],
+          "semantic_state": [
+            "eq_triangle(point(a),point(i))"
+          ],
+          "semantic_state_key": "eq_triangle(point(a),point(i))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "599f3ebc5e49b0452a7904526ff2fc615db9a74e4528e4cd2f58e3bbe8ba3d5f"
+        }
+      ]
+    },
+    {
+      "name": "ShuZhiMiGeo489",
+      "artifact": "data/hageo-409-current-aux-bounded64-rerun-2026-08-24-runs/ShuZhiMiGeo489.json",
+      "artifactSha256": "86a3114c1ac8accb420456e58f1239ddf579bdae877e55a55afa83c8edd3dc65",
+      "solved": false,
+      "rawVerifiedPaths": 112,
+      "certifiedPaths": 112,
+      "uniqueGeneratedActionStates": 110,
+      "equivalentPathsRemoved": 2,
+      "quotientReductionRate": 0.017857142857142856,
+      "canonicalOrderChanged": 7,
+      "depthHistogram": {
+        "1": 16,
+        "2": 96
+      },
+      "normalizationErrors": [],
+      "certificateReplayFailures": [],
+      "outcomeInconsistentClasses": [],
+      "certificateSamples": [
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "angle_bisector",
+              "output": "g",
+              "inputs": [
+                "b",
+                "a",
+                "c"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "angle_bisector",
+              "output": "g0",
+              "inputs": [
+                "b",
+                "a",
+                "c"
+              ],
+              "semantic_term": "angle_bisector(point(b),point(a),point(c))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "b",
+            "c"
+          ],
+          "semantic_state": [
+            "angle_bisector(point(b),point(a),point(c))"
+          ],
+          "semantic_state_key": "angle_bisector(point(b),point(a),point(c))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "50f37e54b036f0b13ac85f1d8be9d480159c8e79700639aa275e8061c5ffdf64"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "angle_mirror",
+              "output": "g",
+              "inputs": [
+                "b",
+                "c",
+                "i"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "angle_mirror",
+              "output": "g0",
+              "inputs": [
+                "b",
+                "c",
+                "i"
+              ],
+              "semantic_term": "angle_mirror(point(b),point(c),point(i))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "b",
+            "c",
+            "i"
+          ],
+          "semantic_state": [
+            "angle_mirror(point(b),point(c),point(i))"
+          ],
+          "semantic_state_key": "angle_mirror(point(b),point(c),point(i))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "10e836787961f3d59b73f33ca235362b9001861d4866e7fd34c998f6f5e3ab68"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "between_bound",
+              "output": "g",
+              "inputs": [
+                "b",
+                "c"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "between_bound",
+              "output": "g0",
+              "inputs": [
+                "b",
+                "c"
+              ],
+              "semantic_term": "between_bound(point(b),point(c))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "b",
+            "c"
+          ],
+          "semantic_state": [
+            "between_bound(point(b),point(c))"
+          ],
+          "semantic_state_key": "between_bound(point(b),point(c))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "12d75ae33111e25e6502d67f428308febed3d0fc208888d903cfd32867ab96cb"
+        }
+      ]
+    }
+  ],
+  "proofReplayControls": [
+    {
+      "name": "2006G4",
+      "artifact": "data/hageo-409-current-aux-bounded64-rerun-2026-08-24-runs/2006G4.json",
+      "artifactSha256": "4d266c2fd9ab3a2e88b08acd4c1ada711c1fdb5895c795ca2dc58cb2c9f0a76c",
+      "solved": true,
+      "rawVerifiedPaths": 3,
+      "certifiedPaths": 3,
+      "uniqueGeneratedActionStates": 3,
+      "equivalentPathsRemoved": 0,
+      "quotientReductionRate": 0.0,
+      "canonicalOrderChanged": 0,
+      "depthHistogram": {
+        "1": 3
+      },
+      "normalizationErrors": [],
+      "certificateReplayFailures": [],
+      "outcomeInconsistentClasses": [],
+      "certificateSamples": [
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "eq_triangle",
+              "output": "e",
+              "inputs": [
+                "a",
+                "m"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "eq_triangle",
+              "output": "g0",
+              "inputs": [
+                "a",
+                "m"
+              ],
+              "semantic_term": "eq_triangle(point(a),point(m))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "m"
+          ],
+          "semantic_state": [
+            "eq_triangle(point(a),point(m))"
+          ],
+          "semantic_state_key": "eq_triangle(point(a),point(m))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "71b6afdd8147ae446c4209dadd58e82546dc61e171e77d5981c9f9205584bb1b"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "eqdistance",
+              "output": "e",
+              "inputs": [
+                "a",
+                "j",
+                "m"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "eqdistance",
+              "output": "g0",
+              "inputs": [
+                "a",
+                "j",
+                "m"
+              ],
+              "semantic_term": "eqdistance(point(a),point(j),point(m))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "j",
+            "m"
+          ],
+          "semantic_state": [
+            "eqdistance(point(a),point(j),point(m))"
+          ],
+          "semantic_state_key": "eqdistance(point(a),point(j),point(m))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "fd66210a8462a29244382d168801a69b2e51f1eab18a255f859b5ecd11161a6b"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "reflect",
+              "output": "e",
+              "inputs": [
+                "a",
+                "m",
+                "l"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "reflect",
+              "output": "g0",
+              "inputs": [
+                "a",
+                "l",
+                "m"
+              ],
+              "semantic_term": "reflect(point(a),point(l),point(m))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "l",
+            "m"
+          ],
+          "semantic_state": [
+            "reflect(point(a),point(l),point(m))"
+          ],
+          "semantic_state_key": "reflect(point(a),point(l),point(m))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "fc4b26accab554e89526502712b1e32603c7df0a94dac0f36e76c3e3c3d7c309"
+        }
+      ]
+    },
+    {
+      "name": "2012G4",
+      "artifact": "data/hageo-409-current-aux-bounded64-rerun-2026-08-24-runs/2012G4.json",
+      "artifactSha256": "6b7ebf3b1fd2689978e9c8c2d437a7d0919fca8fcbd7d2da5d6efddbbfbb6487",
+      "solved": true,
+      "rawVerifiedPaths": 2,
+      "certifiedPaths": 2,
+      "uniqueGeneratedActionStates": 2,
+      "equivalentPathsRemoved": 0,
+      "quotientReductionRate": 0.0,
+      "canonicalOrderChanged": 0,
+      "depthHistogram": {
+        "1": 2
+      },
+      "normalizationErrors": [],
+      "certificateReplayFailures": [],
+      "outcomeInconsistentClasses": [],
+      "certificateSamples": [
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "circle",
+              "output": "f",
+              "inputs": [
+                "y",
+                "d",
+                "e"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "circle",
+              "output": "g0",
+              "inputs": [
+                "d",
+                "e",
+                "y"
+              ],
+              "semantic_term": "circle(point(d),point(e),point(y))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "d",
+            "e",
+            "y"
+          ],
+          "semantic_state": [
+            "circle(point(d),point(e),point(y))"
+          ],
+          "semantic_state_key": "circle(point(d),point(e),point(y))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "d5e5e2de679571051a6b14e62cdb798344c8cab636a7cb31587c53507d9ea9bc"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "midpoint",
+              "output": "f",
+              "inputs": [
+                "y",
+                "d"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "midpoint",
+              "output": "g0",
+              "inputs": [
+                "d",
+                "y"
+              ],
+              "semantic_term": "midpoint(point(d),point(y))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "d",
+            "y"
+          ],
+          "semantic_state": [
+            "midpoint(point(d),point(y))"
+          ],
+          "semantic_state_key": "midpoint(point(d),point(y))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "165d96e6a4a052c94700b76aabbcc514347c9893da83d97ca1892b7e7c165cdc"
+        }
+      ]
+    },
+    {
+      "name": "2013USATSTp2",
+      "artifact": "data/hageo-409-current-aux-bounded64-rerun-2026-08-24-runs/2013USATSTp2.json",
+      "artifactSha256": "62d13f3f91a71d6a27cd3de66dc64e7d4d866659ef1cab783f8e742a9fcd0568",
+      "solved": true,
+      "rawVerifiedPaths": 2,
+      "certifiedPaths": 2,
+      "uniqueGeneratedActionStates": 2,
+      "equivalentPathsRemoved": 0,
+      "quotientReductionRate": 0.0,
+      "canonicalOrderChanged": 0,
+      "depthHistogram": {
+        "1": 2
+      },
+      "normalizationErrors": [],
+      "certificateReplayFailures": [],
+      "outcomeInconsistentClasses": [],
+      "certificateSamples": [
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "angle_bisector",
+              "output": "e",
+              "inputs": [
+                "c",
+                "x",
+                "d"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "angle_bisector",
+              "output": "g0",
+              "inputs": [
+                "c",
+                "x",
+                "d"
+              ],
+              "semantic_term": "angle_bisector(point(c),point(x),point(d))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "c",
+            "d",
+            "x"
+          ],
+          "semantic_state": [
+            "angle_bisector(point(c),point(x),point(d))"
+          ],
+          "semantic_state_key": "angle_bisector(point(c),point(x),point(d))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "ad53eef4a107d4073b25e06b944e9923e11db7de82d5094024474403a6028423"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "orthocenter",
+              "output": "e",
+              "inputs": [
+                "a",
+                "b",
+                "x"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "orthocenter",
+              "output": "g0",
+              "inputs": [
+                "a",
+                "b",
+                "x"
+              ],
+              "semantic_term": "orthocenter(point(a),point(b),point(x))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "b",
+            "x"
+          ],
+          "semantic_state": [
+            "orthocenter(point(a),point(b),point(x))"
+          ],
+          "semantic_state_key": "orthocenter(point(a),point(b),point(x))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "a2200cdf12e792c03656af2b0b7eeb9625409463d6e4a0a3d9d8944c9d85af4c"
+        }
+      ]
+    },
+    {
+      "name": "2014BulgariaMOp6",
+      "artifact": "data/hageo-409-current-aux-bounded64-rerun-2026-08-24-runs/2014BulgariaMOp6.json",
+      "artifactSha256": "96da542be1693b8cb544385788effe5d72d959bb2329b25e9e73e1de6c7f817b",
+      "solved": true,
+      "rawVerifiedPaths": 2,
+      "certifiedPaths": 2,
+      "uniqueGeneratedActionStates": 2,
+      "equivalentPathsRemoved": 0,
+      "quotientReductionRate": 0.0,
+      "canonicalOrderChanged": 0,
+      "depthHistogram": {
+        "1": 2
+      },
+      "normalizationErrors": [],
+      "certificateReplayFailures": [],
+      "outcomeInconsistentClasses": [],
+      "certificateSamples": [
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "excenter",
+              "output": "g",
+              "inputs": [
+                "b",
+                "a",
+                "c"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "excenter",
+              "output": "g0",
+              "inputs": [
+                "b",
+                "a",
+                "c"
+              ],
+              "semantic_term": "excenter(point(b),point(a),point(c))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "b",
+            "c"
+          ],
+          "semantic_state": [
+            "excenter(point(b),point(a),point(c))"
+          ],
+          "semantic_state_key": "excenter(point(b),point(a),point(c))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "175eb3853b26639f10d87e7cc9b6ba29da4477eca71737b9ffd0fe617105110b"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "incenter",
+              "output": "g",
+              "inputs": [
+                "b",
+                "c",
+                "d"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "incenter",
+              "output": "g0",
+              "inputs": [
+                "b",
+                "c",
+                "d"
+              ],
+              "semantic_term": "incenter(point(b),point(c),point(d))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "b",
+            "c",
+            "d"
+          ],
+          "semantic_state": [
+            "incenter(point(b),point(c),point(d))"
+          ],
+          "semantic_state_key": "incenter(point(b),point(c),point(d))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "a1c9299790f23b196ae20456c2f7222d3c43181524938940c41c04aa83177332"
+        }
+      ]
+    },
+    {
+      "name": "2016G6",
+      "artifact": "data/hageo-409-current-aux-bounded64-rerun-2026-08-24-runs/2016G6.json",
+      "artifactSha256": "559167203835f7b25fd1ae6f040b56108f35158919654d6f6b5cd98c82ce6bd8",
+      "solved": true,
+      "rawVerifiedPaths": 14,
+      "certifiedPaths": 14,
+      "uniqueGeneratedActionStates": 14,
+      "equivalentPathsRemoved": 0,
+      "quotientReductionRate": 0.0,
+      "canonicalOrderChanged": 0,
+      "depthHistogram": {
+        "1": 14
+      },
+      "normalizationErrors": [],
+      "certificateReplayFailures": [],
+      "outcomeInconsistentClasses": [],
+      "certificateSamples": [
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "angle_bisector",
+              "output": "g",
+              "inputs": [
+                "a",
+                "c",
+                "f"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "angle_bisector",
+              "output": "g0",
+              "inputs": [
+                "a",
+                "c",
+                "f"
+              ],
+              "semantic_term": "angle_bisector(point(a),point(c),point(f))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "c",
+            "f"
+          ],
+          "semantic_state": [
+            "angle_bisector(point(a),point(c),point(f))"
+          ],
+          "semantic_state_key": "angle_bisector(point(a),point(c),point(f))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "b55d90301dfa05e2c9274805650578ad55a5e1ea5be11e77be960b05161b8d97"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "angle_mirror",
+              "output": "g",
+              "inputs": [
+                "a",
+                "c",
+                "f"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "angle_mirror",
+              "output": "g0",
+              "inputs": [
+                "a",
+                "c",
+                "f"
+              ],
+              "semantic_term": "angle_mirror(point(a),point(c),point(f))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "c",
+            "f"
+          ],
+          "semantic_state": [
+            "angle_mirror(point(a),point(c),point(f))"
+          ],
+          "semantic_state_key": "angle_mirror(point(a),point(c),point(f))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "aea5f084ecc1bd8ed9160abb5cb51e9e94baac82268176265d0a3870903ebf38"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "between_bound",
+              "output": "g",
+              "inputs": [
+                "e",
+                "b"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "between_bound",
+              "output": "g0",
+              "inputs": [
+                "e",
+                "b"
+              ],
+              "semantic_term": "between_bound(point(e),point(b))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "b",
+            "e"
+          ],
+          "semantic_state": [
+            "between_bound(point(e),point(b))"
+          ],
+          "semantic_state_key": "between_bound(point(e),point(b))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "7f5a595593ebd4f6ba64a59ca1446d8071e3e2abc2f75026f9207ef47d1aae11"
+        }
+      ]
+    },
+    {
+      "name": "2017AsiaPacificMOp2",
+      "artifact": "data/hageo-409-current-aux-bounded64-rerun-2026-08-24-runs/2017AsiaPacificMOp2.json",
+      "artifactSha256": "a8788a051e05279070ce9a9dd096bc955e7240553ff1ba7a6fdc4d27c672af50",
+      "solved": true,
+      "rawVerifiedPaths": 10,
+      "certifiedPaths": 10,
+      "uniqueGeneratedActionStates": 10,
+      "equivalentPathsRemoved": 0,
+      "quotientReductionRate": 0.0,
+      "canonicalOrderChanged": 0,
+      "depthHistogram": {
+        "1": 10
+      },
+      "normalizationErrors": [],
+      "certificateReplayFailures": [],
+      "outcomeInconsistentClasses": [],
+      "certificateSamples": [
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "between_bound",
+              "output": "e",
+              "inputs": [
+                "a",
+                "d"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "between_bound",
+              "output": "g0",
+              "inputs": [
+                "a",
+                "d"
+              ],
+              "semantic_term": "between_bound(point(a),point(d))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "d"
+          ],
+          "semantic_state": [
+            "between_bound(point(a),point(d))"
+          ],
+          "semantic_state_key": "between_bound(point(a),point(d))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "2e0be1c3db7b12951dc558990ec6d3dd77f6d31badb1a4e9bff600c227f7f1bf"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "intersection_cc",
+              "output": "e",
+              "inputs": [
+                "a",
+                "d",
+                "b"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "intersection_cc",
+              "output": "g0",
+              "inputs": [
+                "a",
+                "d",
+                "b"
+              ],
+              "semantic_term": "intersection_cc(point(a),point(d),point(b))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "b",
+            "d"
+          ],
+          "semantic_state": [
+            "intersection_cc(point(a),point(d),point(b))"
+          ],
+          "semantic_state_key": "intersection_cc(point(a),point(d),point(b))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "fc3632a39bf8f73809de0e5ca8c8d38cb53d725b1bfd77c0e2079c53c1d06d98"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "intersection_lp",
+              "output": "e",
+              "inputs": [
+                "a",
+                "d",
+                "c",
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "intersection_lp",
+              "output": "g0",
+              "inputs": [
+                "a",
+                "d",
+                "c",
+                "a",
+                "b"
+              ],
+              "semantic_term": "intersection_lp(point(a),point(d),point(c),point(a),point(b))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ],
+          "semantic_state": [
+            "intersection_lp(point(a),point(d),point(c),point(a),point(b))"
+          ],
+          "semantic_state_key": "intersection_lp(point(a),point(d),point(c),point(a),point(b))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "113df2ed733a2e8938e52e7665e05051641ba7f4a4650aab136455e67c7121ff"
+        }
+      ]
+    },
+    {
+      "name": "2020ELMOp4",
+      "artifact": "data/hageo-409-current-aux-bounded64-rerun-2026-08-24-runs/2020ELMOp4.json",
+      "artifactSha256": "bd832c6e92153c5aca0c7f75975f5d7dc227a6fb5526baaab39d3f5e0d74aba5",
+      "solved": true,
+      "rawVerifiedPaths": 4,
+      "certifiedPaths": 4,
+      "uniqueGeneratedActionStates": 4,
+      "equivalentPathsRemoved": 0,
+      "quotientReductionRate": 0.0,
+      "canonicalOrderChanged": 0,
+      "depthHistogram": {
+        "1": 4
+      },
+      "normalizationErrors": [],
+      "certificateReplayFailures": [],
+      "outcomeInconsistentClasses": [],
+      "certificateSamples": [
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "between_bound",
+              "output": "e",
+              "inputs": [
+                "o2",
+                "h"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "between_bound",
+              "output": "g0",
+              "inputs": [
+                "o2",
+                "h"
+              ],
+              "semantic_term": "between_bound(point(o2),point(h))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "h",
+            "o2"
+          ],
+          "semantic_state": [
+            "between_bound(point(o2),point(h))"
+          ],
+          "semantic_state_key": "between_bound(point(o2),point(h))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "39e208eacc16d8fe17a771b6466d28aa893aaca887890c0a8723842303e6d0c3"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "midpoint",
+              "output": "e",
+              "inputs": [
+                "h",
+                "o2"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "midpoint",
+              "output": "g0",
+              "inputs": [
+                "h",
+                "o2"
+              ],
+              "semantic_term": "midpoint(point(h),point(o2))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "h",
+            "o2"
+          ],
+          "semantic_state": [
+            "midpoint(point(h),point(o2))"
+          ],
+          "semantic_state_key": "midpoint(point(h),point(o2))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "9e1f5ea760b4775a200d5ba48b0922008be286f753f4969f3fa543d9da872b1f"
+        },
+        {
+          "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+          "original_actions": [
+            {
+              "family": "mirror",
+              "output": "e",
+              "inputs": [
+                "h",
+                "o2"
+              ]
+            }
+          ],
+          "canonical_actions": [
+            {
+              "family": "mirror",
+              "output": "g0",
+              "inputs": [
+                "h",
+                "o2"
+              ],
+              "semantic_term": "mirror(point(h),point(o2))",
+              "source_index": 0,
+              "dependency_indices": []
+            }
+          ],
+          "base_symbols": [
+            "h",
+            "o2"
+          ],
+          "semantic_state": [
+            "mirror(point(h),point(o2))"
+          ],
+          "semantic_state_key": "mirror(point(h),point(o2))",
+          "dependency_edges": [],
+          "preserved": [
+            "construction-family",
+            "typed-input-dependency-DAG",
+            "family-declared-input-symmetry",
+            "multiset-of-semantic-construction-terms"
+          ],
+          "not_claimed": [
+            "numeric-branch-equivalence",
+            "generated-point-coordinate-equality",
+            "numeric-branch-search-completeness",
+            "native-proof-outcome-equivalence"
+          ],
+          "certificate_sha256": "b3f537ca9576bb4f8934ab631de7fe83c7b3dc08ce5c7864e2cf194187da5e0a"
+        }
+      ]
+    }
+  ],
+  "conclusion": "The symbolic generated-action certificates replay; the frozen A/B result counts only independently replayed native proofs and does not infer numerical-search completeness or unmeasured score gains."
+}

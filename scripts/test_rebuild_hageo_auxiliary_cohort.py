@@ -1,12 +1,17 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
+import subprocess
 
 import pytest
 
 from scripts.benchmark_hageo409_auxiliary import (
     bounded_worker_counts,
+    enrich_run_from_artifact,
+    normalize_baseline_for_driver,
+    run_command_with_process_tree_timeout,
     require_same_report_cohort,
 )
 from scripts.rebuild_hageo_auxiliary_cohort import rebuild_report
@@ -36,6 +41,109 @@ def test_nested_native_worker_cap_is_opt_in() -> None:
         candidate_workers=8,
         max_total_native_workers=0,
     ) == (3, 8)
+
+
+def test_normalizes_certified_union_against_its_frozen_split(
+    tmp_path: Path,
+) -> None:
+    frozen = tmp_path / "frozen.json"
+    _write(frozen, {"problem_names": ["a", "b", "c"]})
+    raw = {
+        "protocol": {
+            "frozen_split": {
+                "path": str(frozen),
+                "sha256": hashlib.sha256(frozen.read_bytes()).hexdigest(),
+            }
+        },
+        "summary": {"total": 3, "primary_certified_solved": 2},
+        "sets": {"primary_union": ["a", "c"]},
+    }
+
+    normalized = normalize_baseline_for_driver(raw, baseline_path=tmp_path / "u.json")
+
+    assert normalized["summary"]["solved"] == 2
+    assert normalized["problem_names"] == ["a", "b", "c"]
+    assert normalized["results"] == {
+        "a": {"status": "solved"},
+        "b": {"status": "unsolved"},
+        "c": {"status": "solved"},
+    }
+
+
+def test_embeds_compact_generated_action_audit_and_artifact_hash(tmp_path: Path) -> None:
+    run_dir = tmp_path / "runs"
+    run_dir.mkdir()
+    artifact = run_dir / "p.json"
+    _write(
+        artifact,
+        {
+            "evaluated_paths": 17,
+            "protocol": {
+                "generated_action_quotient": {
+                    "enabled": True,
+                    "equivalent_paths_skipped": 3,
+                }
+            },
+        },
+    )
+
+    enriched = enrich_run_from_artifact(
+        {"problem": "p", "status": "unsolved"}, run_dir=run_dir
+    )
+
+    assert enriched["evaluated_paths"] == 17
+    assert enriched["generated_action_quotient"]["equivalent_paths_skipped"] == 3
+    assert enriched["artifact_sha256"] == hashlib.sha256(artifact.read_bytes()).hexdigest()
+
+
+def test_embeds_evaluated_paths_from_a_frozen_timeout_checkpoint(tmp_path: Path) -> None:
+    run_dir = tmp_path / "runs"
+    run_dir.mkdir()
+    checkpoint = run_dir / "p.progress.json"
+    _write(checkpoint, {"evaluated_path_count": 41})
+    digest = hashlib.sha256(checkpoint.read_bytes()).hexdigest()
+
+    enriched = enrich_run_from_artifact(
+        {
+            "problem": "p",
+            "status": "right_censored_timeout",
+            "checkpoint": str(checkpoint),
+            "checkpoint_sha256": digest,
+        },
+        run_dir=run_dir,
+    )
+
+    assert enriched["evaluated_paths"] == 41
+
+
+def test_command_timeout_terminates_the_process_tree(monkeypatch, tmp_path: Path) -> None:
+    class FakeProcess:
+        pid = 123
+        returncode = None
+
+        def communicate(self, *, timeout: float):
+            raise subprocess.TimeoutExpired(["search"], timeout)
+
+    process = FakeProcess()
+    terminated: list[object] = []
+    monkeypatch.setattr(
+        "scripts.benchmark_hageo409_auxiliary.subprocess.Popen",
+        lambda *args, **kwargs: process,
+    )
+    monkeypatch.setattr(
+        "scripts.benchmark_hageo409_auxiliary.terminate_process_tree",
+        lambda value: terminated.append(value),
+    )
+
+    with pytest.raises(subprocess.TimeoutExpired):
+        run_command_with_process_tree_timeout(
+            ["search"],
+            cwd=tmp_path,
+            timeout_seconds=1,
+            env={},
+        )
+
+    assert terminated == [process]
 
 
 def test_rebuilds_artifacts_and_preserves_censored_fallback(tmp_path: Path) -> None:

@@ -23,9 +23,13 @@ test('one directional word compiles into geometry, support, schedule, and matrix
   assert.equal(built.compilation.stabilizer.weight, 7)
   assert.deepEqual(built.compilation.stabilizer.codeAdmissibility, {
     simpleEdgeSupport: true,
-    mutualPrimalDualCommutation: 'not_checked',
-    displacementParityCondition: 'not_checked',
+    mutualPrimalDualCommutation: true,
+    displacementParityCondition: true,
+    certifiedDirectionalTile: true,
   })
+  assert.equal(built.compilation.stabilizer.cssCertificate.mutualCondition.checkedEdges, 7)
+  assert.equal(built.compilation.stabilizer.cssCertificate.staticCssCommutation.oddOverlapViolations.length, 0)
+  assert.equal(built.compilation.stabilizer.cssCertificate.displacementParity.oddMultiplicityViolations.length, 0)
   assert.equal(built.compilation.schedule.interactionDepth, 7)
   assert.equal(built.compilation.schedule.roundDepthWithPreparationAndMeasurement, 9)
   assert.equal(built.compilation.schedule.forwardInverseRestoresOrigin, true)
@@ -36,8 +40,9 @@ test('one directional word compiles into geometry, support, schedule, and matrix
   assert.deepEqual([...sorts].sort(), ['Matrix', 'Sequence', 'Stabilizer', 'VisualElement'])
 })
 
-test('the four paper words preserve their stated weights and circuit depths', () => {
+test('the five paper words preserve their stated weights and circuit depths', () => {
   const examples = [
+    ['N E S E N', 5],
     ['N^2 E S E N^2', 7],
     ['N^2 E^2 S E^2 N^2', 9],
     ['N^2 E^2 S E S E^2 N^2', 11],
@@ -49,6 +54,7 @@ test('the four paper words preserve their stated weights and circuit depths', ()
     assert.equal(built.compilation.steps.length, weight)
     assert.equal(built.compilation.stabilizer.weight, weight)
     assert.equal(built.compilation.schedule.roundDepthWithPreparationAndMeasurement, weight + 2)
+    assert.equal(built.compilation.stabilizer.codeAdmissibility.certifiedDirectionalTile, true)
     assert.deepEqual(verifyDirectionalWordCompilation(built.compilation), [])
   }
 })
@@ -79,7 +85,23 @@ test('a backtracking word is represented but is not mislabelled as a simple code
   assert.equal(built.compilation.stabilizer.weight, 1)
   assert.deepEqual(built.compilation.stabilizer.repeatedEdges, ['0,0|0,1'])
   assert.equal(built.compilation.stabilizer.codeAdmissibility.simpleEdgeSupport, false)
-  assert.equal(built.compilation.stabilizer.codeAdmissibility.mutualPrimalDualCommutation, 'not_checked')
+  assert.equal(built.compilation.stabilizer.codeAdmissibility.certifiedDirectionalTile, false)
+})
+
+test('the displacement condition rejects an odd singleton vector instead of silently certifying it', () => {
+  const built = compileDirectionalWord('odd-displacement', 'NE')
+  assert.ok(built.compilation)
+  assert.equal(built.compilation.stabilizer.codeAdmissibility.mutualPrimalDualCommutation, true)
+  assert.equal(built.compilation.stabilizer.codeAdmissibility.displacementParityCondition, false)
+  assert.deepEqual(
+    built.compilation.stabilizer.cssCertificate.displacementParity.oddMultiplicityViolations.map(item => [
+      item.dx2,
+      item.dy2,
+      item.multiplicity,
+    ]),
+    [[1, 1, 1]],
+  )
+  assert.deepEqual(verifyDirectionalWordCompilation(built.compilation), [])
 })
 
 test('stale multi-view and normal-form certificates are rejected', () => {
@@ -89,6 +111,10 @@ test('stale multi-view and normal-form certificates are rejected', () => {
   const staleCompilation = structuredClone(built.compilation)
   staleCompilation.geometry.endpoint.x += 1
   assert.match(verifyDirectionalWordCompilation(staleCompilation).join(' '), /geometric path replay mismatch/)
+
+  const staleCssCertificate = structuredClone(built.compilation)
+  staleCssCertificate.stabilizer.cssCertificate.staticCssCommutation.witnesses[0].overlap += 1
+  assert.match(verifyDirectionalWordCompilation(staleCssCertificate).join(' '), /CSS certificate replay mismatch/)
 
   const staleCertificate = structuredClone(built.compilation.endpointNormalForm)
   staleCertificate.originalMatrix[0][2] += 1

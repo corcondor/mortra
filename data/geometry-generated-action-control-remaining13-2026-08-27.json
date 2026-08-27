@@ -1,0 +1,407 @@
+{
+  "experiment": "hageo409_typed_auxiliary_heldout_pilot",
+  "run_state": {
+    "complete": true,
+    "finished_count": 13,
+    "pending_count": 0,
+    "finished_problem_names": [
+      "2017USAMOp3",
+      "2019IranTSTp15",
+      "2020IranGOAp2",
+      "2020IranTSTp9",
+      "2021ARMOg10p8",
+      "2021GOWACAp5",
+      "2021IranTSTp6",
+      "2021IsraelOlympicRev",
+      "2023IMOp6",
+      "2024VietnamTSTp5",
+      "ShuZhiMiGeo128",
+      "ShuZhiMiGeo309",
+      "ShuZhiMiGeo489"
+    ]
+  },
+  "protocol": {
+    "uses_external_llm": false,
+    "uses_dataset_auxiliary_clauses": false,
+    "selection": "explicit baseline-unsolved problem-file",
+    "problem_file": "data/geometry-generated-action-unresolved13-frozen-v1.txt",
+    "selected_count": 13,
+    "truth_plane": "native_yuclid_certificate_replay",
+    "candidate_proposal": "typed HAGeo numerical incidence",
+    "scheduler": "unified bidirectional priority queue",
+    "search_budget": {
+      "auxiliary_depth": 2,
+      "candidate_paths_per_prefix": 16,
+      "generated_action_quotient": false,
+      "generated_action_oversample_factor": 4,
+      "candidate_beam": 6,
+      "beam_ranking": "ar-residual-pareto",
+      "controller": null,
+      "per_family_limit": 1,
+      "incidence_oversample_per_family": 16,
+      "candidate_contract_synthesis": false,
+      "enumeration_limit_per_family": 64,
+      "candidate_cone_timeout_seconds": 10.0,
+      "proof_dag_timeout_seconds": 10.0,
+      "workers": 4,
+      "effective_problem_workers": 4,
+      "candidate_workers": 2,
+      "effective_candidate_workers": 2,
+      "max_total_native_workers": 8,
+      "timeout_seconds_per_problem": 3600.0
+    },
+    "paper_comparability": "configurable MORTRA ablation; report max_depth and evaluated paths rather than claiming HAGeo N=6, K=2048/8192",
+    "timeout_semantics": "right-censored unknown; never counted as a wrong answer or a proof"
+  },
+  "summary": {
+    "baseline_total": 89,
+    "baseline_solved": 76,
+    "pilot_total": 13,
+    "newly_solved": 0,
+    "newly_solved_names": [],
+    "heldout_portfolio_solved": 76,
+    "heldout_portfolio_score": 0.8539325842696629,
+    "certified_score_lower_bound": 0.8539325842696629,
+    "optimistic_score_upper_bound": 0.8876404494382022,
+    "completed_auxiliary_searches": 10,
+    "conditional_new_solution_rate": 0.0,
+    "time_censored": 3,
+    "execution_errors": 0,
+    "unprocessed": 0,
+    "score_is_lower_bound": true
+  },
+  "selected_problem_names": [
+    "2017USAMOp3",
+    "2019IranTSTp15",
+    "2020IranGOAp2",
+    "2020IranTSTp9",
+    "2021ARMOg10p8",
+    "2021GOWACAp5",
+    "2021IranTSTp6",
+    "2021IsraelOlympicRev",
+    "2023IMOp6",
+    "2024VietnamTSTp5",
+    "ShuZhiMiGeo128",
+    "ShuZhiMiGeo309",
+    "ShuZhiMiGeo489"
+  ],
+  "runs": [
+    {
+      "problem": "2017USAMOp3",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 112,
+      "right_censored_candidate_count": 0,
+      "incidence_checked": 3804,
+      "incidence_heuristic": 6,
+      "elapsed_seconds": 989.4924612999966,
+      "artifact": "data/geometry-generated-action-control-remaining13-runs-2026-08-27/2017USAMOp3.json",
+      "artifact_sha256": "e6530766a86a85f8835d215c005a6a7f8f6fdb7719bdbd4f7d9870c77bd4aa6c",
+      "generated_action_quotient": {
+        "enabled": false,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 1,
+        "normalized_candidate_paths": 0,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "native-proof-outcome-equivalence"
+        ]
+      }
+    },
+    {
+      "problem": "2019IranTSTp15",
+      "status": "right_censored_timeout",
+      "solved": null,
+      "elapsed_seconds": 3601.7211249999964,
+      "checkpoint": "data/geometry-generated-action-control-remaining13-runs-2026-08-27/2019IranTSTp15.progress.json",
+      "checkpoint_sha256": "83b52cdc67695db74a0ef69fadbb1bbb83536fd70456cf17cb44e90ce81c7441",
+      "evaluated_paths": 78
+    },
+    {
+      "problem": "2020IranGOAp2",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 112,
+      "right_censored_candidate_count": 0,
+      "incidence_checked": 3954,
+      "incidence_heuristic": 9,
+      "elapsed_seconds": 595.6837427999999,
+      "artifact": "data/geometry-generated-action-control-remaining13-runs-2026-08-27/2020IranGOAp2.json",
+      "artifact_sha256": "fc4c84cf82ca6bb7b7c993998ad81292c8d486ce47f906ab51130b5c4581ec77",
+      "generated_action_quotient": {
+        "enabled": false,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 1,
+        "normalized_candidate_paths": 0,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "native-proof-outcome-equivalence"
+        ]
+      }
+    },
+    {
+      "problem": "2020IranTSTp9",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 112,
+      "right_censored_candidate_count": 0,
+      "incidence_checked": 3731,
+      "incidence_heuristic": 6,
+      "elapsed_seconds": 878.0946328000064,
+      "artifact": "data/geometry-generated-action-control-remaining13-runs-2026-08-27/2020IranTSTp9.json",
+      "artifact_sha256": "9251f403b1678f099360f98fef66613b1144c84cb825de7e9f1a29b4a4587622",
+      "generated_action_quotient": {
+        "enabled": false,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 1,
+        "normalized_candidate_paths": 0,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "native-proof-outcome-equivalence"
+        ]
+      }
+    },
+    {
+      "problem": "2021ARMOg10p8",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 112,
+      "right_censored_candidate_count": 0,
+      "incidence_checked": 3583,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 1346.3195244000017,
+      "artifact": "data/geometry-generated-action-control-remaining13-runs-2026-08-27/2021ARMOg10p8.json",
+      "artifact_sha256": "0d6dfb544b68b63af644ffaaab291adb4acd2368cad02dc7872fba7c13f1eabc",
+      "generated_action_quotient": {
+        "enabled": false,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 1,
+        "normalized_candidate_paths": 0,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "native-proof-outcome-equivalence"
+        ]
+      }
+    },
+    {
+      "problem": "2021GOWACAp5",
+      "status": "right_censored_timeout",
+      "solved": null,
+      "elapsed_seconds": 3602.308666100005,
+      "checkpoint": "data/geometry-generated-action-control-remaining13-runs-2026-08-27/2021GOWACAp5.progress.json",
+      "checkpoint_sha256": "ae6e21cde601bb19eff089709bceccac824154f2e9585708709e149433725862",
+      "evaluated_paths": 86
+    },
+    {
+      "problem": "2021IranTSTp6",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 112,
+      "right_censored_candidate_count": 0,
+      "incidence_checked": 3640,
+      "incidence_heuristic": 1,
+      "elapsed_seconds": 728.0073635000008,
+      "artifact": "data/geometry-generated-action-control-remaining13-runs-2026-08-27/2021IranTSTp6.json",
+      "artifact_sha256": "3f2e757309e3dffa4cff41f5be647c6188a89b90e711a0ebaaef588adeada7ad",
+      "generated_action_quotient": {
+        "enabled": false,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 1,
+        "normalized_candidate_paths": 0,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "native-proof-outcome-equivalence"
+        ]
+      }
+    },
+    {
+      "problem": "2021IsraelOlympicRev",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 112,
+      "right_censored_candidate_count": 0,
+      "incidence_checked": 3723,
+      "incidence_heuristic": 11,
+      "elapsed_seconds": 835.9774545000037,
+      "artifact": "data/geometry-generated-action-control-remaining13-runs-2026-08-27/2021IsraelOlympicRev.json",
+      "artifact_sha256": "0bb001cff079821d0898dfce88a5b33e33c7c34cc3ff3c7d9c70b7de3deb21c5",
+      "generated_action_quotient": {
+        "enabled": false,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 1,
+        "normalized_candidate_paths": 0,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "native-proof-outcome-equivalence"
+        ]
+      }
+    },
+    {
+      "problem": "2023IMOp6",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 112,
+      "right_censored_candidate_count": 0,
+      "incidence_checked": 3878,
+      "incidence_heuristic": 4,
+      "elapsed_seconds": 612.271290800003,
+      "artifact": "data/geometry-generated-action-control-remaining13-runs-2026-08-27/2023IMOp6.json",
+      "artifact_sha256": "87dac59d7019655876e4cabc747e8633b69f607dd50f4eb227c712eb4bc6fe45",
+      "generated_action_quotient": {
+        "enabled": false,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 1,
+        "normalized_candidate_paths": 0,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "native-proof-outcome-equivalence"
+        ]
+      }
+    },
+    {
+      "problem": "2024VietnamTSTp5",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 112,
+      "right_censored_candidate_count": 0,
+      "incidence_checked": 3919,
+      "incidence_heuristic": 1,
+      "elapsed_seconds": 472.82791589999397,
+      "artifact": "data/geometry-generated-action-control-remaining13-runs-2026-08-27/2024VietnamTSTp5.json",
+      "artifact_sha256": "ea220c332a34a5e29d89647d298816b3e9a87a4904718a2c80cf8881b45302ab",
+      "generated_action_quotient": {
+        "enabled": false,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 1,
+        "normalized_candidate_paths": 0,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "native-proof-outcome-equivalence"
+        ]
+      }
+    },
+    {
+      "problem": "ShuZhiMiGeo128",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 112,
+      "right_censored_candidate_count": 0,
+      "incidence_checked": 3802,
+      "incidence_heuristic": 0,
+      "elapsed_seconds": 530.7199593999976,
+      "artifact": "data/geometry-generated-action-control-remaining13-runs-2026-08-27/ShuZhiMiGeo128.json",
+      "artifact_sha256": "7da4eec11badbc075d2f672e1d76c26cf4bd078d6020909db23090ab0f60b2bd",
+      "generated_action_quotient": {
+        "enabled": false,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 1,
+        "normalized_candidate_paths": 0,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "native-proof-outcome-equivalence"
+        ]
+      }
+    },
+    {
+      "problem": "ShuZhiMiGeo309",
+      "status": "right_censored_timeout",
+      "solved": null,
+      "elapsed_seconds": 3600.2236096999986,
+      "checkpoint": "data/geometry-generated-action-control-remaining13-runs-2026-08-27/ShuZhiMiGeo309.progress.json",
+      "checkpoint_sha256": "6a3ff6834ae51bf07cff7677c3c2b2d65da827f4966c013eea0fa387d08adad3",
+      "evaluated_paths": 94
+    },
+    {
+      "problem": "ShuZhiMiGeo489",
+      "status": "unsolved",
+      "solved": false,
+      "native_confirmed": false,
+      "solved_path": null,
+      "evaluated_paths": 112,
+      "right_censored_candidate_count": 0,
+      "incidence_checked": 3628,
+      "incidence_heuristic": 19,
+      "elapsed_seconds": 834.5260188999964,
+      "artifact": "data/geometry-generated-action-control-remaining13-runs-2026-08-27/ShuZhiMiGeo489.json",
+      "artifact_sha256": "c8dc48a4b96fdd8bc3d4e927ff78264da8efe086ae1750bcfcdb994fc6076e1a",
+      "generated_action_quotient": {
+        "enabled": false,
+        "quotient": "alpha-renaming+declared-input-symmetry+independent-action-order",
+        "oversample_factor": 1,
+        "normalized_candidate_paths": 0,
+        "certificate_replay_failures": 0,
+        "invalid_paths": 0,
+        "equivalent_paths_skipped": 0,
+        "scheduled_unique_paths": 112,
+        "not_claimed": [
+          "numeric-branch-equivalence",
+          "generated-point-coordinate-equality",
+          "native-proof-outcome-equivalence"
+        ]
+      }
+    }
+  ]
+}

@@ -9,6 +9,11 @@ import {
   type SemanticId,
   type SemanticKernel,
 } from '../kernel/semantic-kernel'
+import {
+  deriveDirectionalCssCertificate,
+  verifyDirectionalCssCertificate,
+  type DirectionalCssCertificate,
+} from './directional-css-certificate'
 
 export type Direction = 'N' | 'E' | 'S' | 'W'
 export type GridPoint = { x: number; y: number }
@@ -35,10 +40,12 @@ export type DirectionalWordStabilizer = {
   parityRow: number[]
   weight: number
   repeatedEdges: string[]
+  cssCertificate: DirectionalCssCertificate
   codeAdmissibility: {
     simpleEdgeSupport: boolean
-    mutualPrimalDualCommutation: 'not_checked'
-    displacementParityCondition: 'not_checked'
+    mutualPrimalDualCommutation: boolean
+    displacementParityCondition: boolean
+    certifiedDirectionalTile: boolean
   }
 }
 
@@ -227,16 +234,25 @@ function deriveStabilizer(geometry: DirectionalWordGeometry): DirectionalWordSta
   const counts = new Map<string, number>()
   for (const edge of geometry.edges) counts.set(edge.supportKey, (counts.get(edge.supportKey) ?? 0) + 1)
   const support = [...counts.keys()].sort()
+  const cssCertificate = deriveDirectionalCssCertificate(geometry)
+  const simpleEdgeSupport = [...counts.values()].every(count => count === 1)
   return {
     orderedSupport: geometry.edges.map(edge => edge.supportKey),
     support,
     parityRow: support.map(() => 1),
     weight: support.length,
     repeatedEdges: [...counts.entries()].filter(([, count]) => count > 1).map(([key]) => key).sort(),
+    cssCertificate,
     codeAdmissibility: {
-      simpleEdgeSupport: [...counts.values()].every(count => count === 1),
-      mutualPrimalDualCommutation: 'not_checked',
-      displacementParityCondition: 'not_checked',
+      simpleEdgeSupport,
+      mutualPrimalDualCommutation:
+        cssCertificate.mutualCondition.valid && cssCertificate.staticCssCommutation.valid,
+      displacementParityCondition: cssCertificate.displacementParity.valid,
+      certifiedDirectionalTile:
+        simpleEdgeSupport
+        && cssCertificate.mutualCondition.valid
+        && cssCertificate.staticCssCommutation.valid
+        && cssCertificate.displacementParity.valid,
     },
   }
 }
@@ -297,7 +313,7 @@ function buildSemanticKernel(
     addObject(kernel, {
       ...target,
       definition: target.id === ids.stabilizer
-        ? 'a candidate support derived from the same word; CSS code admissibility is not certified here'
+        ? 'a local X/Z tile pair with replayable mutual-condition, translated-commutation, and displacement-parity evidence'
         : 'a certified representation of the same directional word',
       assumptions: [ids.word],
       conventions: [{ kind: 'orientation', value: 'N=(0,1),E=(1,0),S=(0,-1),W=(-1,0)' }],
@@ -318,7 +334,7 @@ function buildSemanticKernel(
       name: 'DirectionalWordToStabilizerSupport',
       sort: 'Stabilizer' as const,
       preserved: ['ordered edge support', 'set support', 'support weight', 'explicit code-admissibility boundary'],
-      detail: `${stabilizer.weight} distinct support edges`,
+      detail: `${stabilizer.weight} distinct support edges; directional tile certified=${stabilizer.codeAdmissibility.certifiedDirectionalTile}`,
     },
     {
       target: ids.schedule,
@@ -466,6 +482,7 @@ export function verifyDirectionalWordCompilation(compilation: DirectionalWordCom
   const matrix = composeDirectionMatrices(compilation.steps)
   if (JSON.stringify(geometry) !== JSON.stringify(compilation.geometry)) errors.push('geometric path replay mismatch')
   if (JSON.stringify(stabilizer) !== JSON.stringify(compilation.stabilizer)) errors.push('stabilizer support replay mismatch')
+  errors.push(...verifyDirectionalCssCertificate(geometry, compilation.stabilizer.cssCertificate))
   if (JSON.stringify(schedule) !== JSON.stringify(compilation.schedule)) errors.push('schedule replay mismatch')
   if (!matricesEqual(matrix, compilation.translationMatrix)) errors.push('translation matrix replay mismatch')
   errors.push(...verifyEndpointNormalFormCertificate(compilation.endpointNormalForm, compilation.steps))
