@@ -1,0 +1,669 @@
+{
+  "experiment": "midpoint_bisector_equal_power_minimal_chart",
+  "protocol": {
+    "uses_external_llm_at_runtime": false,
+    "uses_expected_answer": false,
+    "problem_id_branch": false,
+    "frozen_dataset": "data/hageo-409-jgex-2026-08-18.txt",
+    "frozen_dataset_sha256": "629e621cea5b4d9bf4bcae835c286606be3294cc8cc0c794b210fdaec011f8c2",
+    "base_union": "data/hageo-certified-capability-union-plus-orthic-parallel-chord-two-tangents-chart-2026-08-27.json",
+    "base_union_sha256": "04a00da0e0f21b30fd598a37c86b6cc2723917822b5554e52e75363347b29f59"
+  },
+  "summary": {
+    "frozen_problem_count": 89,
+    "natural_theorems_added": 1,
+    "strict_frozen_score_additions": 0,
+    "primary_certified_solved_before": 76,
+    "primary_certified_solved_after": 76,
+    "primary_certified_score_after": 0.8539325842696629,
+    "reason_not_admitted": "the raw one-output circle intersection omits L != H",
+    "new_chart_matches": [
+      "2019IranTSTp15"
+    ],
+    "symbolic_identities_replayed": 24,
+    "independent_rational_models": 64,
+    "point_renaming_trials": 64,
+    "point_renaming_accepts": 64,
+    "broken_mutation_trials": 96,
+    "broken_mutation_false_accepts": 0
+  },
+  "artifact": {
+    "problem": "2019IranTSTp15",
+    "theorem": "midpoint-bisector-two-circles-equal-power",
+    "proof_status": "natural_theorem_proved_after_quantifier_repair",
+    "strict_frozen_score_eligible": false,
+    "formalization_repair": "exists l: on_circle(o1) and on_circle(o2) and l != h and coll(x,h,l)",
+    "certificate_sha256": "78187f5e265cb3497488be438ba6b49c827e32df432d5f6b1e4294f5370ee213",
+    "proof_path": "data/hageo-exact-chart-midpoint-bisector-equal-power-runs-2026-08-27/2019IranTSTp15.proof.md",
+    "proof_sha256": "9ced5d6e2e00bf2e01ec670771f5bda616513e6baa1500f8a1caca43e284efe7",
+    "diagram_path": "data/hageo-exact-chart-midpoint-bisector-equal-power-runs-2026-08-27/2019IranTSTp15.diagram.svg",
+    "diagram_sha256": "67ffe71217ca3f83098f30d4eabc6cc52cf5f1b407a1cd619f7b31e54f7a661f",
+    "portfolio_path": "data/hageo-exact-chart-midpoint-bisector-equal-power-runs-2026-08-27/2019IranTSTp15.chart-portfolio.json",
+    "portfolio_sha256": "9f50a8dcfbeb02700fc2721b83266746d1289ac4c1ad135920d014ecb89e9267"
+  },
+  "frozen_scan": [
+    {
+      "problem": "2000USATSTp2",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2002CTSTp25",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2004CTSTp1",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2005CTSTp11b",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2006G4",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2007CMOp4",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2008CTSTp4",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2009ARMOg9p2",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2010AsiaPacificMOp4",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2010CHNWesternMOp6",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2011ARMOg11p2",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2011ARMOg11p8",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2011AsiaPacificMOp3",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2011CHNSouthEastMOp4",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2011CTSTp16",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2011G3",
+      "solved_by_portfolio": true,
+      "selected_chart": "two-diameter-circles-pedal-radical-axis",
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2011G5",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2012EGMOp7",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2012G4",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2013ARMOg9p2",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2013BalkanMOp1",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2013CGMOp2",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2013USAMOp1",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2013USATSTp2",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2014ARMOg9p6",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2014BulgariaMOp6",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2014CHNGaoLian",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2014CHNWesternMOp2",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2015ARMOg10p7",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2015AsiaPacificMOp1",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2015CTSTp9",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2015IranGOAp1",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2015IranTSTp18",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2016BalkanMOp2",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2016CGMOp7",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2016CTSTp5",
+      "solved_by_portfolio": true,
+      "selected_chart": "cyclic-opposite-bisectors-transversal-midpoints-perpendicular",
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2016G5",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2016G6",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2016IranGOAp1",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2016USATSTSTp6",
+      "solved_by_portfolio": true,
+      "selected_chart": "incircle-contact-circle-pencil-midpoint-radical-axis",
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2017ARMOg9p2",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2017AsiaPacificMOp2",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2017CHNSouthEastMOg10p2",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2017G3",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2017G4",
+      "solved_by_portfolio": true,
+      "selected_chart": "tangent-triangle-secant-midpoint-circle-tangency",
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2017USAMOp3",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2018ARMOg11p4",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2018CHNWesternMOp5",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2018EuropeanMCupSp2",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2018IranGOMp3",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2018KoMaLA726",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2018USAMOp5",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2019CGMOp1",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2019IranTSTp15",
+      "solved_by_portfolio": true,
+      "selected_chart": "midpoint-bisector-two-circles-equal-power",
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2019USATSTSTp5",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2020ELMOp4",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2020IranGOAp2",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2020IranTSTp9",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2021ARMOg10p1",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2021ARMOg10p8",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2021CGMOp2",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2021CGMOp7",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2021G1",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2021GOWACAp5",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2021IranTSTp6",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2021IsraelOlympicRev",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2021SilkRoadp3",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2022ARMOg10p2",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2022CHNSouthEastMOg11p6",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2022CzechAPSlovakp5",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2022G5",
+      "solved_by_portfolio": true,
+      "selected_chart": "parallel-transversal-perpendicular-triangle-circles-tangent",
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2022IZhautykovOp3",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2022KoMaLA805",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2023IMOp6",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2023MOSTMockp2",
+      "solved_by_portfolio": true,
+      "selected_chart": "positive-similarity-six-circumcenters-concurrency",
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2023RMMSLG3",
+      "solved_by_portfolio": true,
+      "selected_chart": "three-circumcenters-radical-axis-reflection-isogonal",
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2023SAGFp8",
+      "solved_by_portfolio": true,
+      "selected_chart": "arc-midpoint-antipode-reflection-center-axis",
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2023SerbiaMOp6",
+      "solved_by_portfolio": true,
+      "selected_chart": "mixtilinear-two-circumcircles-tangent",
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2023VietnamTSTp3",
+      "solved_by_portfolio": true,
+      "selected_chart": "orthic-parallel-chord-two-tangents-collinearity",
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2024ARMOg9p4",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2024ELMOSLp1",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2024KoMaLA877",
+      "solved_by_portfolio": true,
+      "selected_chart": "tangential-quadrilateral-second-tangent-circle-tangency",
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2024PlanetCupp10",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2024VietnamTSTp5",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "2025KoeraFinalRoundp3",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "ShuZhiMiGeo128",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "ShuZhiMiGeo309",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "ShuZhiMiGeo489",
+      "solved_by_portfolio": false,
+      "selected_chart": null,
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    },
+    {
+      "problem": "ShuZhiMiGeo635",
+      "solved_by_portfolio": true,
+      "selected_chart": "incircle-gergonne-three-circumcenters-centroid-axis",
+      "ambiguous": false,
+      "strict_frozen_score_eligible": false
+    }
+  ]
+}

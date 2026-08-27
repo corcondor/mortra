@@ -72,6 +72,11 @@ from worker.backend.mixtilinear_tangent_circle_chart import (
     certify_mixtilinear_tangent_circle_chart,
     render_mixtilinear_tangent_circle_chart_svg,
 )
+from worker.backend.midpoint_bisector_equal_power_chart import (
+    certify_jgex_midpoint_bisector_equal_power_application,
+    certify_midpoint_bisector_equal_power_chart,
+    render_midpoint_bisector_equal_power_chart_svg,
+)
 from worker.backend.orthocenter_circle_intersection_chart import (
     certify_jgex_orthocenter_circle_chart_application,
     certify_orthocenter_circle_intersection_chart,
@@ -190,6 +195,24 @@ class _ChartSpec:
 
 
 _CHARTS = (
+    _ChartSpec(
+        "midpoint-bisector-two-circles-equal-power",
+        "posthoc_exact_existential_chart_with_quantifier_repair",
+        certify_jgex_midpoint_bisector_equal_power_application,
+        certify_midpoint_bisector_equal_power_chart,
+        render_midpoint_bisector_equal_power_chart_svg,
+        (
+            ("triangle", 1),
+            ("mirror", 2),
+            ("angle_bisector", 1),
+            ("midpoint", 3),
+            ("on_line", 7),
+            ("foot", 1),
+            ("circumcenter", 2),
+            ("on_circle", 2),
+        ),
+        "coll",
+    ),
     _ChartSpec(
         "orthic-parallel-chord-two-tangents-collinearity",
         "posthoc_exact_chart_replayed",
