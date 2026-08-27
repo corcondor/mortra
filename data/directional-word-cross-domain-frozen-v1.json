@@ -1,0 +1,46 @@
+{
+  "benchmarkId": "directional-word-cross-domain-frozen-v1",
+  "frozenOn": "2026-08-27",
+  "generatorAlphabet": ["N", "E", "S", "W"],
+  "exhaustiveMaxLength": 6,
+  "namedExamples": [
+    {
+      "id": "paper-weight-7",
+      "input": "N^2 E S E N^2",
+      "expectedWord": "NNESENN",
+      "expectedWeight": 7
+    },
+    {
+      "id": "paper-weight-9",
+      "input": "N^2 E^2 S E^2 N^2",
+      "expectedWord": "NNEESEENN",
+      "expectedWeight": 9
+    },
+    {
+      "id": "paper-weight-11",
+      "input": "N^2 E^2 S E S E^2 N^2",
+      "expectedWord": "NNEESESEENN",
+      "expectedWeight": 11
+    },
+    {
+      "id": "paper-weight-13",
+      "input": "N^2 E^2 S E^3 S E^2 N^2",
+      "expectedWord": "NNEESEEESEENN",
+      "expectedWeight": 13
+    }
+  ],
+  "source": {
+    "paper": "Nearest-neighbour gates are all you need: High-rate quantum low-density parity-check codes on a planar grid",
+    "arxiv": "https://arxiv.org/abs/2606.19482",
+    "claimsUsed": [
+      "one directional word specifies a geometric path, stabilizer support, and ordered nearest-neighbour schedule",
+      "a word of weight w has interaction depth w and round depth w+2 including preparation and measurement",
+      "consecutive rounds alternate the word and its inverse"
+    ]
+  },
+  "prohibitedShortcuts": [
+    "expected output lookup",
+    "problem-id branch",
+    "treating endpoint equality as support or schedule equality"
+  ]
+}

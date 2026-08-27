@@ -1,0 +1,42 @@
+{
+  "runDate": "2026-08-27",
+  "source": {
+    "paper": "Beyond transversality: structure of Clifford circuits for CSS codes",
+    "arxiv": "https://arxiv.org/abs/2608.05688",
+    "repository": "https://github.com/valbert4/two-fold-transversal",
+    "commit": "813862cd0a990ddb6b2ef9eff3126551d892f2b1"
+  },
+  "reproduction": [
+    {
+      "command": "python code/certificate/verify_certificate.py",
+      "exitCode": 0,
+      "result": {
+        "width1": { "states": 6, "terminalBlocks": 2, "maximumDistance": 1 },
+        "width2": { "states": 720, "terminalBlocks": 16, "maximumDistance": 3 },
+        "storedPathsReplay": true,
+        "distancesIndependentlyMinimal": true,
+        "terminalNormalFormsValid": true,
+        "status": "PASS"
+      }
+    },
+    {
+      "command": "python code/certificate/full_reduction.py",
+      "exitCode": 0,
+      "result": {
+        "readsStoredCertificate": false,
+        "reachableStates": [6, 720],
+        "status": "PASS"
+      }
+    },
+    {
+      "command": "python code/figure-reproduction/check_tables_and_claims.py",
+      "exitCode": 0,
+      "result": {
+        "checksPassed": 754,
+        "checksFailed": 0,
+        "status": "ALL OK"
+      }
+    }
+  ],
+  "scope": "Official artifact reproduction only. MORTRA reuses the certificate pattern, not the paper's CSS/Clifford mathematical claims as its own result."
+}

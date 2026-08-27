@@ -1,0 +1,37 @@
+{
+  "benchmarkId": "generated-action-cross-domain-frozen-v1",
+  "completedAt": "2026-08-27T11:06:15.317Z",
+  "digest": "27eb736709a1bac8a3eb0b57fcfe2ef4a948edc7b3e223f79d3bf03b4e9d95ac",
+  "method": {
+    "model": "symbolic only; no external LLM",
+    "totalCases": 40634,
+    "commonKernel": "finite generated action with canonical shortest witnesses",
+    "domains": [
+      "integer congruence",
+      "affine modular recurrence"
+    ],
+    "independentOracles": [
+      "brute residue substitution",
+      "direct orbit/cycle reduction"
+    ],
+    "newMathSortDeclarations": 0,
+    "elapsedMilliseconds": 9757.764,
+    "timingClaim": "diagnostic only; not a controlled speed benchmark"
+  },
+  "results": {
+    "congruence": "22139/22139",
+    "congruenceSolvable": 15951,
+    "recurrence": "18495/18495",
+    "wrongAnswers": 0,
+    "abstentions": 0,
+    "invalid": 0,
+    "totalReachableStatesReplayed": 569934
+  },
+  "errors": [],
+  "allClaimsPassed": true,
+  "limitations": [
+    "The recurrence cohort is order-one affine over small residue rings.",
+    "The congruence cohort is linear and uses moduli at most 40.",
+    "Explicit atlas enumeration is bounded and abstains for large state spaces."
+  ]
+}

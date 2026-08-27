@@ -1,0 +1,70 @@
+{
+  "benchmarkId": "directional-word-cross-domain-frozen-v1",
+  "completedAt": "2026-08-27T11:06:06.942Z",
+  "inputDigest": "5ce56233b225aef2b5e9f0c86b29bf68d70f374ba2be497be60d0da9a405f7aa",
+  "method": {
+    "model": "symbolic only; no external LLM",
+    "exhaustiveWords": 5460,
+    "namedPaperExamples": 4,
+    "totalCases": 5464,
+    "generatorSymbols": 4,
+    "existingMathSortsReused": [
+      "Sequence",
+      "VisualElement",
+      "Stabilizer",
+      "Matrix"
+    ],
+    "newMathSortDeclarations": 0,
+    "independentOracles": [
+      "direct coordinate walk",
+      "undirected edge support",
+      "inverse schedule",
+      "homogeneous translation"
+    ],
+    "durableCheckpoint": "input-digest guarded, atomic periodic checkpoint"
+  },
+  "results": {
+    "certified": "5464/5464",
+    "geometry": "5464/5464",
+    "stabilizer": "5464/5464",
+    "schedule": "5464/5464",
+    "matrix": "5464/5464",
+    "staleCertificateRejected": "5464/5464",
+    "falseAccepts": 0,
+    "endpointQuotientSupportLossCases": 5380,
+    "simpleEdgeSupportCandidates": 1396,
+    "originalStepSymbols": 30988,
+    "endpointNormalFormSymbols": 14344,
+    "endpointActionCompressionPercent": 53.711,
+    "sharedParseStepCopies": 30988,
+    "fourIndependentViewStepCopies": 123952,
+    "representationDuplicationAvoidedPercent": 75
+  },
+  "finiteGeneratedAction": {
+    "stateSpace": "Z/7Z x Z/7Z",
+    "reachableStates": 49,
+    "maximumCanonicalDistance": 6,
+    "distanceHistogram": {
+      "0": 1,
+      "1": 4,
+      "2": 8,
+      "3": 12,
+      "4": 12,
+      "5": 8,
+      "6": 4
+    },
+    "deterministicDigest": "e6830add",
+    "verificationErrors": [],
+    "longWordLength": 15,
+    "canonicalLength": 1,
+    "normalizationErrors": []
+  },
+  "errors": [],
+  "allClaimsPassed": true,
+  "limitations": [
+    "This proves cross-representation compilation and canonical finite-action reduction, not quantum-code distance or fault tolerance.",
+    "Mutual primal/dual commutation and the displacement-parity condition for a valid directional CSS code are not checked.",
+    "Endpoint normal form is valid only in the translation-action quotient and must not replace support or schedule.",
+    "The benchmark contains structural words, not competition-level problems."
+  ]
+}
