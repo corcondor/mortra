@@ -6,6 +6,7 @@ import {
   synthesizeCertifiedPolynomialFusions,
   type CertifiedFusionCard,
 } from '@/lib/mortra/certified-fusion'
+import { synthesizeCertifiedCircleRadicalAxisFusion } from '@/lib/mortra/certified-circle-fusion'
 import verifiedBatch from '@/data/mathos/continuous_verified_problem_batch1.json'
 import { generalizeParents, type GeneralizationCertificate } from '../../../worker/src/generalization-kernel'
 
@@ -1520,11 +1521,12 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  const certifiedParents = parents.map(parent => ({ id: parent.id!, statement: parent.statement! }))
   const certifiedFusionCards = mode === 'fusion'
-    ? synthesizeCertifiedPolynomialFusions(
-        parents.map(parent => ({ id: parent.id!, statement: parent.statement! })),
-        count,
-      )
+    ? [
+        ...synthesizeCertifiedPolynomialFusions(certifiedParents, count),
+        ...synthesizeCertifiedCircleRadicalAxisFusion(certifiedParents),
+      ].slice(0, count)
     : []
   if (certifiedFusionCards.length > 0) {
     const makeResult = async (): Promise<GenerationResult> => {
@@ -1546,9 +1548,10 @@ export async function POST(request: NextRequest) {
         const send = (event: ProgressEvent | { phase: 'done'; result: GenerationResult }) => {
           controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`))
         }
-        send({ phase: 'structuring', message: '両方の親問題を一変数多項式の根配置へ型付けしました', current: 0, total: count })
-        send({ phase: 'inducing', message: '二つの根配置を別々の入力ポートとして合成しています', current: 0, total: count })
-        send({ phase: 'verifying', message: 'Newton和とSylvester終結式を独立に計算し、係数列を照合しています', current: certifiedFusionCards.length, total: count })
+        const circleFusion = certifiedFusionCards[0]?.family_id === 'certified.circle_radical_axis'
+        send({ phase: 'structuring', message: circleFusion ? '両方の親問題を円の対称二次形式へ型付けしました' : '両方の親問題を一変数多項式の根配置へ型付けしました', current: 0, total: count })
+        send({ phase: 'inducing', message: circleFusion ? '二つの方べき関数の差から根軸を構成しています' : '二つの根配置を別々の入力ポートとして合成しています', current: 0, total: count })
+        send({ phase: 'verifying', message: circleFusion ? '根軸上の有理点で両円の方べきを独立再計算しています' : 'Newton和とSylvester終結式を独立に計算し、係数列を照合しています', current: certifiedFusionCards.length, total: count })
         const result = await makeResult()
         send({ phase: 'saving', message: result.errors?.length ? '問題は生成済みです。ライブラリ保存だけ失敗しました' : '検証済み問題をライブラリへ保存しました', current: certifiedFusionCards.length, total: count })
         send({ phase: 'done', result })
@@ -1570,7 +1573,7 @@ export async function POST(request: NextRequest) {
       requested: count,
       engine: 'MORTRA public certified synthesis (no LLM)',
       cards: [],
-      errors: ['公開版の厳密融合は現在、次数2〜4の一変数モニック整数多項式を含む2問に対応しています。この組合せは研究版の未検証探索へは自動送信しません。'],
+      errors: ['公開版の厳密融合は現在、次数2〜4の一変数モニック整数多項式2問、または座標平面上の円方程式2問に対応しています。この組合せは研究版の未検証探索へは自動送信しません。'],
       rejectionCounts: { unsupported_public_fusion_ir: 1 },
     }
     if (!stream) return NextResponse.json(unsupported)
