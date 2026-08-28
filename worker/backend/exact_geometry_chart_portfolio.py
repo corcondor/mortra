@@ -97,6 +97,11 @@ from worker.backend.positive_similarity_six_circumcenters_chart import (
     certify_positive_similarity_six_circumcenters_chart,
     render_positive_similarity_six_circumcenters_chart_svg,
 )
+from worker.backend.second_lemoine_harmonic_incenter_chart import (
+    certify_jgex_second_lemoine_harmonic_incenter_application,
+    certify_second_lemoine_harmonic_incenter_chart,
+    render_second_lemoine_harmonic_incenter_chart_svg,
+)
 from worker.backend.tangential_quadrilateral_second_tangent_chart import (
     certify_jgex_tangential_quadrilateral_second_tangent_application,
     certify_tangential_quadrilateral_second_tangent_chart,
@@ -154,6 +159,7 @@ class ExactGeometryChartSolution:
     proof_status: str
     undischarged_obligations: tuple[str, ...]
     strict_frozen_score_eligible: bool = False
+    natural_statement_sha256: str | None = None
 
     def to_dict(self) -> dict[str, object]:
         return asdict(self)
@@ -169,6 +175,7 @@ class ExactGeometryChartPortfolioResult:
     attempts: tuple[ExactGeometryChartAttempt, ...]
     strict_frozen_score_eligible: bool
     benchmark_admission: str
+    natural_statement_sha256: str | None = None
 
     def to_dict(self) -> dict[str, object]:
         return {
@@ -180,6 +187,7 @@ class ExactGeometryChartPortfolioResult:
             "attempts": [item.to_dict() for item in self.attempts],
             "strict_frozen_score_eligible": self.strict_frozen_score_eligible,
             "benchmark_admission": self.benchmark_admission,
+            "natural_statement_sha256": self.natural_statement_sha256,
         }
 
 
@@ -187,14 +195,35 @@ class ExactGeometryChartPortfolioResult:
 class _ChartSpec:
     chart_id: str
     proof_class: str
-    apply: Callable[[str], Any]
+    apply: Callable[..., Any]
     certify: Callable[[], Any]
     render: Callable[[], str]
     required_operation_counts: tuple[tuple[str, int], ...]
     goal_predicate: str
+    uses_natural_statement: bool = False
 
 
 _CHARTS = (
+    _ChartSpec(
+        "second-lemoine-harmonic-pascal-incenter-altitude",
+        "posthoc_exact_chart_with_hash_bound_natural_domain",
+        certify_jgex_second_lemoine_harmonic_incenter_application,
+        certify_second_lemoine_harmonic_incenter_chart,
+        render_second_lemoine_harmonic_incenter_chart_svg,
+        (
+            ("triangle", 1),
+            ("foot", 1),
+            ("circumcenter", 1),
+            ("centroid", 1),
+            ("on_aline", 3),
+            ("mirror", 1),
+            ("on_line", 4),
+            ("on_tline", 3),
+            ("incenter", 1),
+        ),
+        "coll",
+        uses_natural_statement=True,
+    ),
     _ChartSpec(
         "midpoint-bisector-two-circles-equal-power",
         "posthoc_exact_existential_chart_with_quantifier_repair",
@@ -482,6 +511,25 @@ def _proof_markdown(source: str, application: Any, certificate: Any) -> str:
         f"- `{item}`" for item in application.nondegeneracy_obligations
     )
     repair_required = bool(getattr(application, "formalization_repair_required", False))
+    natural_statement = str(getattr(application, "natural_statement", "")).strip()
+    natural_lines = (
+        (
+            "## Natural-language domain",
+            "",
+            "```text",
+            natural_statement,
+            "```",
+            "",
+            "- typed atoms: "
+            + ", ".join(getattr(application, "natural_semantic_atoms", ())),
+            "- statement SHA-256: `"
+            + str(getattr(application, "natural_statement_sha256", ""))
+            + "`",
+            "",
+        )
+        if natural_statement
+        else ()
+    )
     quantification_lines = (
         (
             "## 量化監査",
@@ -520,6 +568,7 @@ def _proof_markdown(source: str, application: Any, certificate: Any) -> str:
             source.strip(),
             "```",
             "",
+            *natural_lines,
             "## 点の役割対応",
             "",
             role_lines or "- なし",
@@ -548,11 +597,18 @@ def certify_jgex_with_exact_chart_portfolio(
     source: str,
     *,
     include_diagram: bool = True,
+    natural_statement: str | None = None,
 ) -> ExactGeometryChartPortfolioResult:
     """Match and replay every registered chart without problem-name branches."""
 
     normalized = source.strip()
+    normalized_natural = (natural_statement or "").strip()
     source_sha256 = hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+    natural_statement_sha256 = (
+        hashlib.sha256(normalized_natural.encode("utf-8")).hexdigest()
+        if normalized_natural
+        else None
+    )
     attempts: list[ExactGeometryChartAttempt] = []
     matches: list[ExactGeometryChartSolution] = []
 
@@ -573,7 +629,11 @@ def certify_jgex_with_exact_chart_portfolio(
             )
             continue
         try:
-            application = spec.apply(normalized)
+            application = (
+                spec.apply(normalized, normalized_natural)
+                if spec.uses_natural_statement
+                else spec.apply(normalized)
+            )
             error: str | None = None
             if application.replayed:
                 certificate = spec.certify()
@@ -622,6 +682,13 @@ def certify_jgex_with_exact_chart_portfolio(
                             diagram_svg=spec.render() if include_diagram else None,
                             proof_status=proof_status,
                             undischarged_obligations=unresolved,
+                            natural_statement_sha256=(
+                                str(application.natural_statement_sha256)
+                                if getattr(
+                                    application, "natural_statement_sha256", ""
+                                )
+                                else None
+                            ),
                         )
                     )
             attempts.append(
@@ -690,6 +757,7 @@ def certify_jgex_with_exact_chart_portfolio(
             if repair_required
             else "A fresh held-out cohort must establish transfer before score admission."
         ),
+        natural_statement_sha256=natural_statement_sha256,
     )
 
 

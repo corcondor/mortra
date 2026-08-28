@@ -233,6 +233,10 @@ def _audit_exact_chart_json(
         "application_domain_discharged": not application.get(
             "undischarged_nondegeneracy_obligations", ()
         ),
+        "no_quantifier_repair": application.get(
+            "formalization_repair_required", False
+        )
+        is not True,
         "certificate_hash_chain": bool(chart_hash)
         and selected.get("chart_certificate_sha256") == chart_hash
         and application.get("chart_certificate_sha256") == chart_hash
@@ -245,6 +249,16 @@ def _audit_exact_chart_json(
         and selected.get("theorem") == chart.get("theorem")
         and selected.get("theorem") == application.get("theorem"),
     }
+    natural_hash = proof.get("natural_statement_sha256")
+    if natural_hash:
+        checks["natural_statement_hash_chain"] = (
+            selected.get("natural_statement_sha256") == natural_hash
+            and application.get("natural_statement_sha256") == natural_hash
+            and certificate.get("natural_statement_sha256") == natural_hash
+        )
+        checks["typed_natural_semantics"] = bool(
+            application.get("natural_semantic_atoms")
+        ) and bool(application.get("natural_statement"))
     failed = sorted(name for name, ok in checks.items() if not ok)
     if failed:
         return False, "exact_chart_failed:" + ",".join(failed)
