@@ -12,6 +12,7 @@ separate responsibility of the benchmark auditor.
 
 from __future__ import annotations
 
+from collections.abc import Collection
 from dataclasses import asdict, dataclass
 import hashlib
 import re
@@ -76,6 +77,11 @@ from worker.backend.midpoint_bisector_equal_power_chart import (
     certify_jgex_midpoint_bisector_equal_power_application,
     certify_midpoint_bisector_equal_power_chart,
     render_midpoint_bisector_equal_power_chart_svg,
+)
+from worker.backend.major_arc_homothety_tangent_chart import (
+    certify_jgex_major_arc_homothety_tangent_application,
+    certify_major_arc_homothety_tangent_chart,
+    render_major_arc_homothety_tangent_chart_svg,
 )
 from worker.backend.orthocenter_circle_intersection_chart import (
     certify_jgex_orthocenter_circle_chart_application,
@@ -204,6 +210,25 @@ class _ChartSpec:
 
 
 _CHARTS = (
+    _ChartSpec(
+        "major-arc-homothety-right-circle-tangent",
+        "posthoc_exact_chart_with_hash_bound_natural_branch",
+        certify_jgex_major_arc_homothety_tangent_application,
+        certify_major_arc_homothety_tangent_chart,
+        render_major_arc_homothety_tangent_chart_svg,
+        (
+            ("triangle", 1),
+            ("incenter", 1),
+            ("circumcenter", 2),
+            ("on_bline", 1),
+            ("on_circle", 1),
+            ("midpoint", 1),
+            ("mirror", 2),
+            ("foot", 2),
+        ),
+        "cong",
+        uses_natural_statement=True,
+    ),
     _ChartSpec(
         "second-lemoine-harmonic-pascal-incenter-altitude",
         "posthoc_exact_chart_with_hash_bound_natural_domain",
@@ -496,6 +521,21 @@ def _passes_structural_prefilter(source: str, spec: _ChartSpec) -> bool:
     )
 
 
+def registered_exact_chart_contracts() -> tuple[dict[str, object], ...]:
+    """Expose finite structural contracts without exposing solver callbacks."""
+
+    return tuple(
+        {
+            "chart_id": spec.chart_id,
+            "proof_class": spec.proof_class,
+            "goal_predicate": spec.goal_predicate,
+            "required_operation_counts": dict(spec.required_operation_counts),
+            "uses_natural_statement": spec.uses_natural_statement,
+        }
+        for spec in _CHARTS
+    )
+
+
 def _proof_markdown(source: str, application: Any, certificate: Any) -> str:
     unresolved = tuple(
         getattr(
@@ -598,6 +638,7 @@ def certify_jgex_with_exact_chart_portfolio(
     *,
     include_diagram: bool = True,
     natural_statement: str | None = None,
+    disabled_chart_ids: Collection[str] = (),
 ) -> ExactGeometryChartPortfolioResult:
     """Match and replay every registered chart without problem-name branches."""
 
@@ -613,6 +654,21 @@ def certify_jgex_with_exact_chart_portfolio(
     matches: list[ExactGeometryChartSolution] = []
 
     for spec in _CHARTS:
+        if spec.chart_id in disabled_chart_ids:
+            attempts.append(
+                ExactGeometryChartAttempt(
+                    chart_id=spec.chart_id,
+                    proof_class=spec.proof_class,
+                    replayed=False,
+                    theorem=None,
+                    matched_constructions=(),
+                    role_count=0,
+                    goal=None,
+                    error="disabled_by_experiment",
+                    proof_status="not_matched",
+                )
+            )
+            continue
         if not _passes_structural_prefilter(normalized, spec):
             attempts.append(
                 ExactGeometryChartAttempt(
@@ -766,4 +822,5 @@ __all__ = [
     "ExactGeometryChartPortfolioResult",
     "ExactGeometryChartSolution",
     "certify_jgex_with_exact_chart_portfolio",
+    "registered_exact_chart_contracts",
 ]

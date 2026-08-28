@@ -19,6 +19,7 @@ _SYMBOL = r"[A-Z][0-9]*"
 
 def _plain_text(statement: str) -> str:
     text = re.sub(r"\\overline\s*\{([^{}]+)\}", r"\1", statement)
+    text = re.sub(r"\\overarc\s*\{([^{}]+)\}", r"\1", text)
     text = re.sub(r"\\triangle\b", " triangle ", text)
     text = text.replace("$", " ").replace("\\(", " ").replace("\\)", " ")
     text = text.replace("{", "").replace("}", "").replace("_", "")
@@ -32,6 +33,7 @@ class NaturalGeometrySemantics:
     normalized_text: str
     acute_triangles: tuple[tuple[str, str, str], ...]
     segment_memberships: tuple[tuple[str, str, str], ...]
+    arc_midpoints_through: tuple[tuple[str, str, str, str], ...]
     typed_atoms: tuple[str, ...]
 
     def to_dict(self) -> dict[str, object]:
@@ -51,6 +53,24 @@ class NaturalGeometrySemantics:
             candidate == wanted_point
             and frozenset((left, right)) == wanted_endpoints
             for candidate, left, right in self.segment_memberships
+        )
+
+    def has_arc_midpoint_through(
+        self,
+        point: str,
+        endpoints: tuple[str, str],
+        through: str,
+    ) -> bool:
+        """Return whether ``point`` bisects the endpoint arc containing ``through``."""
+
+        wanted_point = point.upper()
+        wanted_endpoints = frozenset(endpoint.upper() for endpoint in endpoints)
+        wanted_through = through.upper()
+        return any(
+            candidate == wanted_point
+            and frozenset((left, right)) == wanted_endpoints
+            and arc_through == wanted_through
+            for candidate, left, arc_through, right in self.arc_midpoints_through
         )
 
 
@@ -86,6 +106,25 @@ def extract_geometry_natural_semantics(statement: str) -> NaturalGeometrySemanti
     for match in singular_pattern.finditer(plain):
         segment_memberships.add((match.group(1), match.group(2), match.group(3)))
 
+    arc_midpoints_through: set[tuple[str, str, str, str]] = set()
+    arc_midpoint_patterns = (
+        re.compile(
+            rf"\b({_SYMBOL})\s+(?:IS|BE)\s+(?:THE\s+)?MIDPOINT\s+OF\s+"
+            r"(?:THE\s+)?(?:MAJOR\s+|MINOR\s+)?ARC\s+"
+            r"([A-Z])([A-Z])([A-Z])\b"
+        ),
+        re.compile(
+            rf"\bDENOTE\s+BY\s+({_SYMBOL})\s+(?:THE\s+)?MIDPOINT\s+OF\s+"
+            r"(?:THE\s+)?(?:MAJOR\s+|MINOR\s+)?ARC\s+"
+            r"([A-Z])([A-Z])([A-Z])\b"
+        ),
+    )
+    for pattern in arc_midpoint_patterns:
+        for match in pattern.finditer(plain):
+            arc_midpoints_through.add(
+                (match.group(1), match.group(2), match.group(3), match.group(4))
+            )
+
     atoms = tuple(
         sorted(
             [
@@ -96,14 +135,19 @@ def extract_geometry_natural_semantics(statement: str) -> NaturalGeometrySemanti
                 f"between({point},{left},{right})"
                 for point, left, right in segment_memberships
             ]
+            + [
+                f"arc_midpoint_through({point},{left},{through},{right})"
+                for point, left, through, right in arc_midpoints_through
+            ]
         )
     )
     return NaturalGeometrySemantics(
-        parser_version="geometry-natural-semantics-v1",
+        parser_version="geometry-natural-semantics-v2",
         statement_sha256=hashlib.sha256(normalized.encode("utf-8")).hexdigest(),
         normalized_text=plain,
         acute_triangles=tuple(sorted(acute_triangles)),
         segment_memberships=tuple(sorted(segment_memberships)),
+        arc_midpoints_through=tuple(sorted(arc_midpoints_through)),
         typed_atoms=atoms,
     )
 

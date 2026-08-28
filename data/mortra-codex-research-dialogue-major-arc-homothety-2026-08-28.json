@@ -1,0 +1,5380 @@
+{
+  "protocol_version": "mortra-codex-research-dialogue-v1",
+  "objective_code": "close_frozen_unproved_with_minimal_reusable_typed_chart",
+  "frozen_cohort_sha256": "bb29dfae75e47cceea5eebc585c936b6bd6582869f691f17119cd0bb63383c69",
+  "head_sha256": "6e84616e82fed6e8bdec560d3f1e58b3a577eba32cf279ae4203d3ff8379327f",
+  "entries": [
+    {
+      "sequence": 0,
+      "role": "mortra",
+      "kind": "cohort_observation",
+      "cycle_fingerprint": "7afc3b97751d233adcc28434f72257e98484ca949094fcf43c2276496cb9bdb6",
+      "payload": {
+        "cohort_size": 12,
+        "uses_external_llm": false,
+        "uses_expected_answer": false,
+        "control_intervention": {
+          "disabled_chart_ids": [
+            "major-arc-homothety-right-circle-tangent"
+          ]
+        },
+        "problems": {
+          "2017USAMOp3": {
+            "source_sha256": "f5f95395e467e1c87ea564dc13e584c7cbd8387e19c6a4f6bf32a1c6c21dc709",
+            "natural_statement_sha256": "432dba7f07b42bb761951d6c62d1648077223bce5c50673b4ffc227c046ca6b4",
+            "operation_multiset": {
+              "circumcenter": 3,
+              "incenter": 1,
+              "midpoint": 2,
+              "on_circle": 4,
+              "on_dia": 1,
+              "on_line": 5,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "cyclic",
+                  "args": [
+                    "a",
+                    "b",
+                    "c",
+                    "p"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "cyclic",
+                    "args": [
+                      "a",
+                      "b",
+                      "c",
+                      "p"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "incenter",
+                "midpoint",
+                "on_circle",
+                "on_dia",
+                "on_line",
+                "triangle"
+              ]
+            }
+          },
+          "2019IranTSTp15": {
+            "source_sha256": "f2ce10af4f04fa76a43cf041b2360820465512e842b5fb7b01465aef1023d272",
+            "natural_statement_sha256": "ea99f700179d96f345ba6aee1e7cc66f10ef1a43fd47b5c0430e1532384b2225",
+            "operation_multiset": {
+              "angle_bisector": 1,
+              "circumcenter": 2,
+              "foot": 1,
+              "midpoint": 3,
+              "mirror": 2,
+              "on_circle": 2,
+              "on_line": 7,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "coll",
+                  "args": [
+                    "x",
+                    "h",
+                    "l"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [
+              "between(K,N,P)"
+            ],
+            "control": {
+              "solved": true,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": "midpoint-bisector-two-circles-equal-power",
+              "proof_status": "proved",
+              "certificate_sha256": "78187f5e265cb3497488be438ba6b49c827e32df432d5f6b1e4294f5370ee213",
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                },
+                {
+                  "chart_id": "midpoint-bisector-two-circles-equal-power",
+                  "proof_status": "proved",
+                  "replayed": true,
+                  "error": null,
+                  "role_count": 16
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1,
+                "none": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "coll",
+                    "args": [
+                      "x",
+                      "h",
+                      "l"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "angle_bisector",
+                "circumcenter",
+                "foot",
+                "midpoint",
+                "mirror",
+                "on_circle",
+                "on_line",
+                "triangle"
+              ]
+            }
+          },
+          "2020IranGOAp2": {
+            "source_sha256": "4b17f467b21e05ae13a1fbc7a2a81043232278bbf99ee674896fbe3a4b6cb980",
+            "natural_statement_sha256": "677c2308e59fb8ff5544a0e6dbe6e4a33424338512b7f14b08ae4bf99464e6ab",
+            "operation_multiset": {
+              "circumcenter": 2,
+              "foot": 2,
+              "incenter": 1,
+              "midpoint": 1,
+              "mirror": 2,
+              "on_bline": 1,
+              "on_circle": 1,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "cong",
+                  "args": [
+                    "o1",
+                    "p",
+                    "o1",
+                    "t"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [
+              "acute(A,B,C)",
+              "arc_midpoint_through(N,B,A,C)"
+            ],
+            "control": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "cong",
+                    "args": [
+                      "o1",
+                      "p",
+                      "o1",
+                      "t"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "foot",
+                "incenter",
+                "midpoint",
+                "mirror",
+                "on_bline",
+                "on_circle",
+                "triangle"
+              ]
+            }
+          },
+          "2020IranTSTp9": {
+            "source_sha256": "906973306ef01a3476cb7ac01cf1a65603772e7ed56847f7689209f039ba399c",
+            "natural_statement_sha256": "df3bbe857a77c82bb3963c87bb51d0faf0b95d452c1b34741bd10b2622062a37",
+            "operation_multiset": {
+              "angle_bisector": 2,
+              "circumcenter": 3,
+              "incenter": 1,
+              "midpoint": 1,
+              "on_bline": 1,
+              "on_circle": 5,
+              "on_line": 6,
+              "reflect": 1,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "cyclic",
+                  "args": [
+                    "t",
+                    "j",
+                    "i",
+                    "x"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [
+              "arc_midpoint_through(T,B,A,C)"
+            ],
+            "control": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "cyclic",
+                    "args": [
+                      "t",
+                      "j",
+                      "i",
+                      "x"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "angle_bisector",
+                "circumcenter",
+                "incenter",
+                "midpoint",
+                "on_bline",
+                "on_circle",
+                "on_line",
+                "reflect",
+                "triangle"
+              ]
+            }
+          },
+          "2021ARMOg10p8": {
+            "source_sha256": "e807e63a9cf3965468160ad0c52271fb57bb645e8460f48c35a692e356b658f4",
+            "natural_statement_sha256": "dc38541fbc96e0761b48d9f49dcef9bbf8c6e67a07dba80f3b400d4b1765e103",
+            "operation_multiset": {
+              "circumcenter": 3,
+              "on_circle": 6,
+              "on_circum": 2,
+              "on_line": 10,
+              "reflect": 1,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "cyclic",
+                  "args": [
+                    "z",
+                    "p",
+                    "q",
+                    "r"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "cyclic",
+                    "args": [
+                      "z",
+                      "p",
+                      "q",
+                      "r"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "on_circle",
+                "on_circum",
+                "on_line",
+                "reflect",
+                "triangle"
+              ]
+            }
+          },
+          "2021IranTSTp6": {
+            "source_sha256": "55d4ad1e42718f4af2814e08c4a7cc122cede985aa9aed29a9986e18c8ac7988",
+            "natural_statement_sha256": "2858f9f9bd4589e338fdc47fe32a7502f380b0cf9093a506e912fef89c7d4270",
+            "operation_multiset": {
+              "circumcenter": 3,
+              "eqangle3": 1,
+              "on_circle": 2,
+              "on_line": 8,
+              "orthocenter": 1,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "coll",
+                  "args": [
+                    "q",
+                    "a",
+                    "h"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "coll",
+                    "args": [
+                      "q",
+                      "a",
+                      "h"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "eqangle3",
+                "on_circle",
+                "on_line",
+                "orthocenter",
+                "triangle"
+              ]
+            }
+          },
+          "2021IsraelOlympicRev": {
+            "source_sha256": "bfd1df47ec81911791c74b2f5ecd79fa7b4568ec16dfe7e30eeeb65a5e04751f",
+            "natural_statement_sha256": "95fd9752a2113f7ccb1984496b685b86a35323bda62a84c8e75f1b99c9678ab9",
+            "operation_multiset": {
+              "circumcenter": 4,
+              "eqangle3": 1,
+              "on_circle": 6,
+              "on_line": 12,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "cyclic",
+                  "args": [
+                    "k",
+                    "a",
+                    "p2",
+                    "p3"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "cyclic",
+                    "args": [
+                      "k",
+                      "a",
+                      "p2",
+                      "p3"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "eqangle3",
+                "on_circle",
+                "on_line",
+                "triangle"
+              ]
+            }
+          },
+          "2023IMOp6": {
+            "source_sha256": "73f46505849e02a4c9c39b43605bce36f66d45cbb024d9b82a8865edd81608a0",
+            "natural_statement_sha256": "02249dc07f381b43571aa009999c6415635e7a749423b805fb2dbc42d7b29413",
+            "operation_multiset": {
+              "circumcenter": 4,
+              "ieq_triangle": 1,
+              "on_aline": 2,
+              "on_bline": 3,
+              "on_circle": 2,
+              "on_line": 6
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "cyclic",
+                  "args": [
+                    "x",
+                    "c",
+                    "c1",
+                    "c2"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "cyclic",
+                    "args": [
+                      "x",
+                      "c",
+                      "c1",
+                      "c2"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "ieq_triangle",
+                "on_aline",
+                "on_bline",
+                "on_circle",
+                "on_line"
+              ]
+            }
+          },
+          "2024VietnamTSTp5": {
+            "source_sha256": "5478497171bfefb97594519e2972d8d3f3481186534ef39a467427621419dbd2",
+            "natural_statement_sha256": "4f7c855daf7658132a284388c7f8be3c8c8fe9ab4300e3d19a838a7f76c4b0bc",
+            "operation_multiset": {
+              "circumcenter": 1,
+              "foot": 3,
+              "incenter": 1,
+              "on_circle": 1,
+              "on_line": 3,
+              "on_tline": 4,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "eqangle",
+                  "args": [
+                    "a",
+                    "s",
+                    "j",
+                    "s",
+                    "i",
+                    "s",
+                    "s",
+                    "t"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "eqangle",
+                    "args": [
+                      "a",
+                      "s",
+                      "j",
+                      "s",
+                      "i",
+                      "s",
+                      "s",
+                      "t"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "foot",
+                "incenter",
+                "on_circle",
+                "on_line",
+                "on_tline",
+                "triangle"
+              ]
+            }
+          },
+          "ShuZhiMiGeo128": {
+            "source_sha256": "0f68647e5d204eabf3ba8a69c5eeb250c9b1a61db2bb2788296e2f420a1c88fd",
+            "natural_statement_sha256": "501eda8c6d0c9e4821b802feae4d238385413b277e8767069a55b3abcdcf3adc",
+            "operation_multiset": {
+              "circumcenter": 5,
+              "free": 1,
+              "on_circle": 7,
+              "on_line": 10,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "cyclic",
+                  "args": [
+                    "t",
+                    "c",
+                    "l",
+                    "f"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "cyclic",
+                    "args": [
+                      "t",
+                      "c",
+                      "l",
+                      "f"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "free",
+                "on_circle",
+                "on_line",
+                "triangle"
+              ]
+            }
+          },
+          "ShuZhiMiGeo309": {
+            "source_sha256": "9e4c6a600f76139c902f47a6887459b0bbf951a7cd3d7b2e66e1060364fb963c",
+            "natural_statement_sha256": "779b6e54c4ea2ea6433ba07647a603128dd47bed80c1a38c2c8956eae01c0518",
+            "operation_multiset": {
+              "circumcenter": 2,
+              "excenter": 3,
+              "foot": 6,
+              "incenter": 1,
+              "on_circle": 12,
+              "on_line": 12,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "coll",
+                  "args": [
+                    "i",
+                    "o1",
+                    "o2"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "coll",
+                    "args": [
+                      "i",
+                      "o1",
+                      "o2"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "excenter",
+                "foot",
+                "incenter",
+                "on_circle",
+                "on_line",
+                "triangle"
+              ]
+            }
+          },
+          "ShuZhiMiGeo489": {
+            "source_sha256": "aec26017085c1c2bf4779bb1de9dec131d1587e9fbab2cbf9a706c151074deba",
+            "natural_statement_sha256": "1e149437af0b74d75609e7d2e16d5825c6e3ed8309a81a22901e52aecf69ba92",
+            "operation_multiset": {
+              "circumcenter": 2,
+              "foot": 3,
+              "incenter": 1,
+              "on_circle": 3,
+              "on_line": 5,
+              "reflect": 2,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "coll",
+                  "args": [
+                    "y1",
+                    "b",
+                    "c"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "coll",
+                    "args": [
+                      "y1",
+                      "b",
+                      "c"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "foot",
+                "incenter",
+                "on_circle",
+                "on_line",
+                "reflect",
+                "triangle"
+              ]
+            }
+          }
+        }
+      },
+      "previous_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "entry_sha256": "4477ce660c0666017c6a8dfdd42fd97ffd4fb858df5b5f74d23bd0b19358fb7f"
+    },
+    {
+      "sequence": 1,
+      "role": "codex",
+      "kind": "typed_hypothesis",
+      "cycle_fingerprint": "7afc3b97751d233adcc28434f72257e98484ca949094fcf43c2276496cb9bdb6",
+      "payload": {
+        "intervention_class": "reusable_typed_representation_chart",
+        "chart_id": "major-arc-homothety-right-circle-tangent",
+        "trigger_contract": {
+          "goal_predicate": "cong",
+          "minimum_operation_counts": {
+            "triangle": 1,
+            "incenter": 1,
+            "circumcenter": 2,
+            "on_bline": 1,
+            "on_circle": 1,
+            "midpoint": 1,
+            "mirror": 2,
+            "foot": 2
+          },
+          "required_natural_atom_schemas": [
+            "acute(A,B,C)",
+            "arc_midpoint_through(N,B,A,C)"
+          ]
+        },
+        "morphism_sequence": [
+          "arc_through_midpoint_to_antipode",
+          "construction_to_homothety_A_half",
+          "right_triangle_similarity_to_power",
+          "arc_midpoint_to_power",
+          "two_tangent_circles_to_unique_circle",
+          "inverse_homothety_to_goal"
+        ],
+        "chart_certificate_sha256": "14fce866da10724217a145f52c199e0e50c860400d1559d0d5321f6c71a24045",
+        "forbidden_conditioning": [
+          "problem_identifier",
+          "expected_answer",
+          "benchmark_membership",
+          "surface_number_constants"
+        ],
+        "acceptance_rule": {
+          "minimum_new_exact_solves": 1,
+          "maximum_regressions": 0,
+          "maximum_ambiguous_matches": 0,
+          "require_certificate_hash_match": true
+        }
+      },
+      "previous_sha256": "4477ce660c0666017c6a8dfdd42fd97ffd4fb858df5b5f74d23bd0b19358fb7f",
+      "entry_sha256": "d2e861ba6900a3719513abda9824c84bfc68b1aa0fd9dcf5fd33e5cd98741926"
+    },
+    {
+      "sequence": 2,
+      "role": "mortra",
+      "kind": "controlled_experiment",
+      "cycle_fingerprint": "7afc3b97751d233adcc28434f72257e98484ca949094fcf43c2276496cb9bdb6",
+      "payload": {
+        "design": "paired_frozen_control_treatment_ablation",
+        "uses_external_llm": false,
+        "uses_expected_answer": false,
+        "control": {
+          "disabled_chart_ids": [
+            "major-arc-homothety-right-circle-tangent"
+          ]
+        },
+        "treatment": {
+          "enabled_chart_ids": [
+            "major-arc-homothety-right-circle-tangent"
+          ]
+        },
+        "summary": {
+          "evaluated": 12,
+          "new_exact_solves": 1,
+          "regressions": 0,
+          "ambiguous": 0,
+          "certificate_hash_failures": 0,
+          "remaining_unproved": 10
+        },
+        "sets": {
+          "new_exact_solves": [
+            "2020IranGOAp2"
+          ],
+          "regressions": [],
+          "ambiguous": [],
+          "certificate_hash_failures": [],
+          "remaining_unproved": [
+            "2017USAMOp3",
+            "2020IranTSTp9",
+            "2021ARMOg10p8",
+            "2021IranTSTp6",
+            "2021IsraelOlympicRev",
+            "2023IMOp6",
+            "2024VietnamTSTp5",
+            "ShuZhiMiGeo128",
+            "ShuZhiMiGeo309",
+            "ShuZhiMiGeo489"
+          ]
+        },
+        "results": {
+          "2017USAMOp3": {
+            "source_sha256": "f5f95395e467e1c87ea564dc13e584c7cbd8387e19c6a4f6bf32a1c6c21dc709",
+            "control": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "2019IranTSTp15": {
+            "source_sha256": "f2ce10af4f04fa76a43cf041b2360820465512e842b5fb7b01465aef1023d272",
+            "control": {
+              "solved": true,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": "midpoint-bisector-two-circles-equal-power",
+              "proof_status": "proved",
+              "certificate_sha256": "78187f5e265cb3497488be438ba6b49c827e32df432d5f6b1e4294f5370ee213",
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                },
+                {
+                  "chart_id": "midpoint-bisector-two-circles-equal-power",
+                  "proof_status": "proved",
+                  "replayed": true,
+                  "error": null,
+                  "role_count": 16
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1,
+                "none": 1
+              }
+            },
+            "treatment": {
+              "solved": true,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": "midpoint-bisector-two-circles-equal-power",
+              "proof_status": "proved",
+              "certificate_sha256": "78187f5e265cb3497488be438ba6b49c827e32df432d5f6b1e4294f5370ee213",
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "midpoint-bisector-two-circles-equal-power",
+                  "proof_status": "proved",
+                  "replayed": true,
+                  "error": null,
+                  "role_count": 16
+                }
+              ],
+              "active_error_histogram": {
+                "none": 1
+              }
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "2020IranGOAp2": {
+            "source_sha256": "4b17f467b21e05ae13a1fbc7a2a81043232278bbf99ee674896fbe3a4b6cb980",
+            "control": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": true,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": "major-arc-homothety-right-circle-tangent",
+              "proof_status": "proved",
+              "certificate_sha256": "14fce866da10724217a145f52c199e0e50c860400d1559d0d5321f6c71a24045",
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "proved",
+                  "replayed": true,
+                  "error": null,
+                  "role_count": 12
+                }
+              ],
+              "active_error_histogram": {
+                "none": 1
+              }
+            },
+            "delta": {
+              "new_exact_solve": true,
+              "regression": false
+            }
+          },
+          "2020IranTSTp9": {
+            "source_sha256": "906973306ef01a3476cb7ac01cf1a65603772e7ed56847f7689209f039ba399c",
+            "control": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "2021ARMOg10p8": {
+            "source_sha256": "e807e63a9cf3965468160ad0c52271fb57bb645e8460f48c35a692e356b658f4",
+            "control": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "2021IranTSTp6": {
+            "source_sha256": "55d4ad1e42718f4af2814e08c4a7cc122cede985aa9aed29a9986e18c8ac7988",
+            "control": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "2021IsraelOlympicRev": {
+            "source_sha256": "bfd1df47ec81911791c74b2f5ecd79fa7b4568ec16dfe7e30eeeb65a5e04751f",
+            "control": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "2023IMOp6": {
+            "source_sha256": "73f46505849e02a4c9c39b43605bce36f66d45cbb024d9b82a8865edd81608a0",
+            "control": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "2024VietnamTSTp5": {
+            "source_sha256": "5478497171bfefb97594519e2972d8d3f3481186534ef39a467427621419dbd2",
+            "control": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "ShuZhiMiGeo128": {
+            "source_sha256": "0f68647e5d204eabf3ba8a69c5eeb250c9b1a61db2bb2788296e2f420a1c88fd",
+            "control": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "ShuZhiMiGeo309": {
+            "source_sha256": "9e4c6a600f76139c902f47a6887459b0bbf951a7cd3d7b2e66e1060364fb963c",
+            "control": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "ShuZhiMiGeo489": {
+            "source_sha256": "aec26017085c1c2bf4779bb1de9dec131d1587e9fbab2cbf9a706c151074deba",
+            "control": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          }
+        }
+      },
+      "previous_sha256": "d2e861ba6900a3719513abda9824c84bfc68b1aa0fd9dcf5fd33e5cd98741926",
+      "entry_sha256": "69632facb9bcf013265392c2bfaae9d983b03d06f5e4a2e01a5c1ec46129b8bc"
+    },
+    {
+      "sequence": 3,
+      "role": "governor",
+      "kind": "decision",
+      "cycle_fingerprint": "7afc3b97751d233adcc28434f72257e98484ca949094fcf43c2276496cb9bdb6",
+      "payload": {
+        "accepted": true,
+        "status": "accepted_as_post_inspection_capability",
+        "score_admission": "not_unseen_frozen_score",
+        "capability_union_delta": 1,
+        "frozen_unseen_score_delta": 0,
+        "evidence": {
+          "evaluated": 12,
+          "new_exact_solves": 1,
+          "regressions": 0,
+          "ambiguous": 0,
+          "certificate_hash_failures": 0,
+          "remaining_unproved": 10
+        },
+        "next_stop_obligations": [
+          "2017USAMOp3",
+          "2020IranTSTp9",
+          "2021ARMOg10p8",
+          "2021IranTSTp6",
+          "2021IsraelOlympicRev",
+          "2023IMOp6",
+          "2024VietnamTSTp5",
+          "ShuZhiMiGeo128",
+          "ShuZhiMiGeo309",
+          "ShuZhiMiGeo489"
+        ]
+      },
+      "previous_sha256": "69632facb9bcf013265392c2bfaae9d983b03d06f5e4a2e01a5c1ec46129b8bc",
+      "entry_sha256": "12ed950dd5acfec3b4aaf9071fe8f7b0f83b1bc9eaf2d72f9d5132bc917a32fa"
+    },
+    {
+      "sequence": 4,
+      "role": "mortra",
+      "kind": "cohort_observation",
+      "cycle_fingerprint": "c921a45528f962b0168f68f97284617ce0785ca799e7c1b31837a82701aba4e6",
+      "payload": {
+        "cohort_size": 12,
+        "uses_external_llm": false,
+        "uses_expected_answer": false,
+        "control_intervention": {
+          "disabled_chart_ids": [
+            "major-arc-homothety-right-circle-tangent"
+          ]
+        },
+        "problems": {
+          "2017USAMOp3": {
+            "source_sha256": "f5f95395e467e1c87ea564dc13e584c7cbd8387e19c6a4f6bf32a1c6c21dc709",
+            "natural_statement_sha256": "432dba7f07b42bb761951d6c62d1648077223bce5c50673b4ffc227c046ca6b4",
+            "operation_multiset": {
+              "circumcenter": 3,
+              "incenter": 1,
+              "midpoint": 2,
+              "on_circle": 4,
+              "on_dia": 1,
+              "on_line": 5,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "cyclic",
+                  "args": [
+                    "a",
+                    "b",
+                    "c",
+                    "p"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "cyclic",
+                    "args": [
+                      "a",
+                      "b",
+                      "c",
+                      "p"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "incenter",
+                "midpoint",
+                "on_circle",
+                "on_dia",
+                "on_line",
+                "triangle"
+              ]
+            }
+          },
+          "2019IranTSTp15": {
+            "source_sha256": "f2ce10af4f04fa76a43cf041b2360820465512e842b5fb7b01465aef1023d272",
+            "natural_statement_sha256": "ea99f700179d96f345ba6aee1e7cc66f10ef1a43fd47b5c0430e1532384b2225",
+            "operation_multiset": {
+              "angle_bisector": 1,
+              "circumcenter": 2,
+              "foot": 1,
+              "midpoint": 3,
+              "mirror": 2,
+              "on_circle": 2,
+              "on_line": 7,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "coll",
+                  "args": [
+                    "x",
+                    "h",
+                    "l"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [
+              "between(K,N,P)"
+            ],
+            "control": {
+              "solved": false,
+              "raw_chart_solved": true,
+              "proved_after_quantifier_repair_only": true,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": "midpoint-bisector-two-circles-equal-power",
+              "proof_status": "proved",
+              "certificate_sha256": "78187f5e265cb3497488be438ba6b49c827e32df432d5f6b1e4294f5370ee213",
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                },
+                {
+                  "chart_id": "midpoint-bisector-two-circles-equal-power",
+                  "proof_status": "proved",
+                  "replayed": true,
+                  "error": null,
+                  "role_count": 16
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1,
+                "none": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "coll",
+                    "args": [
+                      "x",
+                      "h",
+                      "l"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "angle_bisector",
+                "circumcenter",
+                "foot",
+                "midpoint",
+                "mirror",
+                "on_circle",
+                "on_line",
+                "triangle"
+              ]
+            }
+          },
+          "2020IranGOAp2": {
+            "source_sha256": "4b17f467b21e05ae13a1fbc7a2a81043232278bbf99ee674896fbe3a4b6cb980",
+            "natural_statement_sha256": "677c2308e59fb8ff5544a0e6dbe6e4a33424338512b7f14b08ae4bf99464e6ab",
+            "operation_multiset": {
+              "circumcenter": 2,
+              "foot": 2,
+              "incenter": 1,
+              "midpoint": 1,
+              "mirror": 2,
+              "on_bline": 1,
+              "on_circle": 1,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "cong",
+                  "args": [
+                    "o1",
+                    "p",
+                    "o1",
+                    "t"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [
+              "acute(A,B,C)",
+              "arc_midpoint_through(N,B,A,C)"
+            ],
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "cong",
+                    "args": [
+                      "o1",
+                      "p",
+                      "o1",
+                      "t"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "foot",
+                "incenter",
+                "midpoint",
+                "mirror",
+                "on_bline",
+                "on_circle",
+                "triangle"
+              ]
+            }
+          },
+          "2020IranTSTp9": {
+            "source_sha256": "906973306ef01a3476cb7ac01cf1a65603772e7ed56847f7689209f039ba399c",
+            "natural_statement_sha256": "df3bbe857a77c82bb3963c87bb51d0faf0b95d452c1b34741bd10b2622062a37",
+            "operation_multiset": {
+              "angle_bisector": 2,
+              "circumcenter": 3,
+              "incenter": 1,
+              "midpoint": 1,
+              "on_bline": 1,
+              "on_circle": 5,
+              "on_line": 6,
+              "reflect": 1,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "cyclic",
+                  "args": [
+                    "t",
+                    "j",
+                    "i",
+                    "x"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [
+              "arc_midpoint_through(T,B,A,C)"
+            ],
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "cyclic",
+                    "args": [
+                      "t",
+                      "j",
+                      "i",
+                      "x"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "angle_bisector",
+                "circumcenter",
+                "incenter",
+                "midpoint",
+                "on_bline",
+                "on_circle",
+                "on_line",
+                "reflect",
+                "triangle"
+              ]
+            }
+          },
+          "2021ARMOg10p8": {
+            "source_sha256": "e807e63a9cf3965468160ad0c52271fb57bb645e8460f48c35a692e356b658f4",
+            "natural_statement_sha256": "dc38541fbc96e0761b48d9f49dcef9bbf8c6e67a07dba80f3b400d4b1765e103",
+            "operation_multiset": {
+              "circumcenter": 3,
+              "on_circle": 6,
+              "on_circum": 2,
+              "on_line": 10,
+              "reflect": 1,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "cyclic",
+                  "args": [
+                    "z",
+                    "p",
+                    "q",
+                    "r"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "cyclic",
+                    "args": [
+                      "z",
+                      "p",
+                      "q",
+                      "r"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "on_circle",
+                "on_circum",
+                "on_line",
+                "reflect",
+                "triangle"
+              ]
+            }
+          },
+          "2021IranTSTp6": {
+            "source_sha256": "55d4ad1e42718f4af2814e08c4a7cc122cede985aa9aed29a9986e18c8ac7988",
+            "natural_statement_sha256": "2858f9f9bd4589e338fdc47fe32a7502f380b0cf9093a506e912fef89c7d4270",
+            "operation_multiset": {
+              "circumcenter": 3,
+              "eqangle3": 1,
+              "on_circle": 2,
+              "on_line": 8,
+              "orthocenter": 1,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "coll",
+                  "args": [
+                    "q",
+                    "a",
+                    "h"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "coll",
+                    "args": [
+                      "q",
+                      "a",
+                      "h"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "eqangle3",
+                "on_circle",
+                "on_line",
+                "orthocenter",
+                "triangle"
+              ]
+            }
+          },
+          "2021IsraelOlympicRev": {
+            "source_sha256": "bfd1df47ec81911791c74b2f5ecd79fa7b4568ec16dfe7e30eeeb65a5e04751f",
+            "natural_statement_sha256": "95fd9752a2113f7ccb1984496b685b86a35323bda62a84c8e75f1b99c9678ab9",
+            "operation_multiset": {
+              "circumcenter": 4,
+              "eqangle3": 1,
+              "on_circle": 6,
+              "on_line": 12,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "cyclic",
+                  "args": [
+                    "k",
+                    "a",
+                    "p2",
+                    "p3"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "cyclic",
+                    "args": [
+                      "k",
+                      "a",
+                      "p2",
+                      "p3"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "eqangle3",
+                "on_circle",
+                "on_line",
+                "triangle"
+              ]
+            }
+          },
+          "2023IMOp6": {
+            "source_sha256": "73f46505849e02a4c9c39b43605bce36f66d45cbb024d9b82a8865edd81608a0",
+            "natural_statement_sha256": "02249dc07f381b43571aa009999c6415635e7a749423b805fb2dbc42d7b29413",
+            "operation_multiset": {
+              "circumcenter": 4,
+              "ieq_triangle": 1,
+              "on_aline": 2,
+              "on_bline": 3,
+              "on_circle": 2,
+              "on_line": 6
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "cyclic",
+                  "args": [
+                    "x",
+                    "c",
+                    "c1",
+                    "c2"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "cyclic",
+                    "args": [
+                      "x",
+                      "c",
+                      "c1",
+                      "c2"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "ieq_triangle",
+                "on_aline",
+                "on_bline",
+                "on_circle",
+                "on_line"
+              ]
+            }
+          },
+          "2024VietnamTSTp5": {
+            "source_sha256": "5478497171bfefb97594519e2972d8d3f3481186534ef39a467427621419dbd2",
+            "natural_statement_sha256": "4f7c855daf7658132a284388c7f8be3c8c8fe9ab4300e3d19a838a7f76c4b0bc",
+            "operation_multiset": {
+              "circumcenter": 1,
+              "foot": 3,
+              "incenter": 1,
+              "on_circle": 1,
+              "on_line": 3,
+              "on_tline": 4,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "eqangle",
+                  "args": [
+                    "a",
+                    "s",
+                    "j",
+                    "s",
+                    "i",
+                    "s",
+                    "s",
+                    "t"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "eqangle",
+                    "args": [
+                      "a",
+                      "s",
+                      "j",
+                      "s",
+                      "i",
+                      "s",
+                      "s",
+                      "t"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "foot",
+                "incenter",
+                "on_circle",
+                "on_line",
+                "on_tline",
+                "triangle"
+              ]
+            }
+          },
+          "ShuZhiMiGeo128": {
+            "source_sha256": "0f68647e5d204eabf3ba8a69c5eeb250c9b1a61db2bb2788296e2f420a1c88fd",
+            "natural_statement_sha256": "501eda8c6d0c9e4821b802feae4d238385413b277e8767069a55b3abcdcf3adc",
+            "operation_multiset": {
+              "circumcenter": 5,
+              "free": 1,
+              "on_circle": 7,
+              "on_line": 10,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "cyclic",
+                  "args": [
+                    "t",
+                    "c",
+                    "l",
+                    "f"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "cyclic",
+                    "args": [
+                      "t",
+                      "c",
+                      "l",
+                      "f"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "free",
+                "on_circle",
+                "on_line",
+                "triangle"
+              ]
+            }
+          },
+          "ShuZhiMiGeo309": {
+            "source_sha256": "9e4c6a600f76139c902f47a6887459b0bbf951a7cd3d7b2e66e1060364fb963c",
+            "natural_statement_sha256": "779b6e54c4ea2ea6433ba07647a603128dd47bed80c1a38c2c8956eae01c0518",
+            "operation_multiset": {
+              "circumcenter": 2,
+              "excenter": 3,
+              "foot": 6,
+              "incenter": 1,
+              "on_circle": 12,
+              "on_line": 12,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "coll",
+                  "args": [
+                    "i",
+                    "o1",
+                    "o2"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "coll",
+                    "args": [
+                      "i",
+                      "o1",
+                      "o2"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "excenter",
+                "foot",
+                "incenter",
+                "on_circle",
+                "on_line",
+                "triangle"
+              ]
+            }
+          },
+          "ShuZhiMiGeo489": {
+            "source_sha256": "aec26017085c1c2bf4779bb1de9dec131d1587e9fbab2cbf9a706c151074deba",
+            "natural_statement_sha256": "1e149437af0b74d75609e7d2e16d5825c6e3ed8309a81a22901e52aecf69ba92",
+            "operation_multiset": {
+              "circumcenter": 2,
+              "foot": 3,
+              "incenter": 1,
+              "on_circle": 3,
+              "on_line": 5,
+              "reflect": 2,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "coll",
+                  "args": [
+                    "y1",
+                    "b",
+                    "c"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "coll",
+                    "args": [
+                      "y1",
+                      "b",
+                      "c"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "foot",
+                "incenter",
+                "on_circle",
+                "on_line",
+                "reflect",
+                "triangle"
+              ]
+            }
+          }
+        }
+      },
+      "previous_sha256": "12ed950dd5acfec3b4aaf9071fe8f7b0f83b1bc9eaf2d72f9d5132bc917a32fa",
+      "entry_sha256": "6b7e8391a245d0e0da696c65c3ba32e96a1c5a7ceed716653588225f4f45840f"
+    },
+    {
+      "sequence": 5,
+      "role": "codex",
+      "kind": "typed_hypothesis",
+      "cycle_fingerprint": "c921a45528f962b0168f68f97284617ce0785ca799e7c1b31837a82701aba4e6",
+      "payload": {
+        "intervention_class": "reusable_typed_representation_chart",
+        "chart_id": "major-arc-homothety-right-circle-tangent",
+        "trigger_contract": {
+          "goal_predicate": "cong",
+          "minimum_operation_counts": {
+            "triangle": 1,
+            "incenter": 1,
+            "circumcenter": 2,
+            "on_bline": 1,
+            "on_circle": 1,
+            "midpoint": 1,
+            "mirror": 2,
+            "foot": 2
+          },
+          "required_natural_atom_schemas": [
+            "acute(A,B,C)",
+            "arc_midpoint_through(N,B,A,C)"
+          ]
+        },
+        "morphism_sequence": [
+          "arc_through_midpoint_to_antipode",
+          "construction_to_homothety_A_half",
+          "right_triangle_similarity_to_power",
+          "arc_midpoint_to_power",
+          "two_tangent_circles_to_unique_circle",
+          "inverse_homothety_to_goal"
+        ],
+        "chart_certificate_sha256": "14fce866da10724217a145f52c199e0e50c860400d1559d0d5321f6c71a24045",
+        "forbidden_conditioning": [
+          "problem_identifier",
+          "expected_answer",
+          "benchmark_membership",
+          "surface_number_constants"
+        ],
+        "acceptance_rule": {
+          "minimum_new_exact_solves": 1,
+          "maximum_regressions": 0,
+          "maximum_ambiguous_matches": 0,
+          "require_certificate_hash_match": true
+        }
+      },
+      "previous_sha256": "6b7e8391a245d0e0da696c65c3ba32e96a1c5a7ceed716653588225f4f45840f",
+      "entry_sha256": "56b9557f9dd0b572bcf7d3dbde0c92b11a557a7c84009bf46ecad88afbf4517e"
+    },
+    {
+      "sequence": 6,
+      "role": "mortra",
+      "kind": "controlled_experiment",
+      "cycle_fingerprint": "c921a45528f962b0168f68f97284617ce0785ca799e7c1b31837a82701aba4e6",
+      "payload": {
+        "design": "paired_frozen_control_treatment_ablation",
+        "uses_external_llm": false,
+        "uses_expected_answer": false,
+        "control": {
+          "disabled_chart_ids": [
+            "major-arc-homothety-right-circle-tangent"
+          ]
+        },
+        "treatment": {
+          "enabled_chart_ids": [
+            "major-arc-homothety-right-circle-tangent"
+          ]
+        },
+        "summary": {
+          "evaluated": 12,
+          "new_exact_solves": 1,
+          "regressions": 0,
+          "ambiguous": 0,
+          "certificate_hash_failures": 0,
+          "remaining_unproved": 11
+        },
+        "sets": {
+          "new_exact_solves": [
+            "2020IranGOAp2"
+          ],
+          "regressions": [],
+          "ambiguous": [],
+          "certificate_hash_failures": [],
+          "remaining_unproved": [
+            "2017USAMOp3",
+            "2019IranTSTp15",
+            "2020IranTSTp9",
+            "2021ARMOg10p8",
+            "2021IranTSTp6",
+            "2021IsraelOlympicRev",
+            "2023IMOp6",
+            "2024VietnamTSTp5",
+            "ShuZhiMiGeo128",
+            "ShuZhiMiGeo309",
+            "ShuZhiMiGeo489"
+          ]
+        },
+        "results": {
+          "2017USAMOp3": {
+            "source_sha256": "f5f95395e467e1c87ea564dc13e584c7cbd8387e19c6a4f6bf32a1c6c21dc709",
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "2019IranTSTp15": {
+            "source_sha256": "f2ce10af4f04fa76a43cf041b2360820465512e842b5fb7b01465aef1023d272",
+            "control": {
+              "solved": false,
+              "raw_chart_solved": true,
+              "proved_after_quantifier_repair_only": true,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": "midpoint-bisector-two-circles-equal-power",
+              "proof_status": "proved",
+              "certificate_sha256": "78187f5e265cb3497488be438ba6b49c827e32df432d5f6b1e4294f5370ee213",
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                },
+                {
+                  "chart_id": "midpoint-bisector-two-circles-equal-power",
+                  "proof_status": "proved",
+                  "replayed": true,
+                  "error": null,
+                  "role_count": 16
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1,
+                "none": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "raw_chart_solved": true,
+              "proved_after_quantifier_repair_only": true,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": "midpoint-bisector-two-circles-equal-power",
+              "proof_status": "proved",
+              "certificate_sha256": "78187f5e265cb3497488be438ba6b49c827e32df432d5f6b1e4294f5370ee213",
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "midpoint-bisector-two-circles-equal-power",
+                  "proof_status": "proved",
+                  "replayed": true,
+                  "error": null,
+                  "role_count": 16
+                }
+              ],
+              "active_error_histogram": {
+                "none": 1
+              }
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "2020IranGOAp2": {
+            "source_sha256": "4b17f467b21e05ae13a1fbc7a2a81043232278bbf99ee674896fbe3a4b6cb980",
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": true,
+              "raw_chart_solved": true,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": "major-arc-homothety-right-circle-tangent",
+              "proof_status": "proved",
+              "certificate_sha256": "14fce866da10724217a145f52c199e0e50c860400d1559d0d5321f6c71a24045",
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "proved",
+                  "replayed": true,
+                  "error": null,
+                  "role_count": 12
+                }
+              ],
+              "active_error_histogram": {
+                "none": 1
+              }
+            },
+            "delta": {
+              "new_exact_solve": true,
+              "regression": false
+            }
+          },
+          "2020IranTSTp9": {
+            "source_sha256": "906973306ef01a3476cb7ac01cf1a65603772e7ed56847f7689209f039ba399c",
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "2021ARMOg10p8": {
+            "source_sha256": "e807e63a9cf3965468160ad0c52271fb57bb645e8460f48c35a692e356b658f4",
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "2021IranTSTp6": {
+            "source_sha256": "55d4ad1e42718f4af2814e08c4a7cc122cede985aa9aed29a9986e18c8ac7988",
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "2021IsraelOlympicRev": {
+            "source_sha256": "bfd1df47ec81911791c74b2f5ecd79fa7b4568ec16dfe7e30eeeb65a5e04751f",
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "2023IMOp6": {
+            "source_sha256": "73f46505849e02a4c9c39b43605bce36f66d45cbb024d9b82a8865edd81608a0",
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "2024VietnamTSTp5": {
+            "source_sha256": "5478497171bfefb97594519e2972d8d3f3481186534ef39a467427621419dbd2",
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "ShuZhiMiGeo128": {
+            "source_sha256": "0f68647e5d204eabf3ba8a69c5eeb250c9b1a61db2bb2788296e2f420a1c88fd",
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "ShuZhiMiGeo309": {
+            "source_sha256": "9e4c6a600f76139c902f47a6887459b0bbf951a7cd3d7b2e66e1060364fb963c",
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "ShuZhiMiGeo489": {
+            "source_sha256": "aec26017085c1c2bf4779bb1de9dec131d1587e9fbab2cbf9a706c151074deba",
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          }
+        }
+      },
+      "previous_sha256": "56b9557f9dd0b572bcf7d3dbde0c92b11a557a7c84009bf46ecad88afbf4517e",
+      "entry_sha256": "371d00a3e5909b9fd5c983d3901e4b59c64c7d2e61016de5c882d0cfa2f90163"
+    },
+    {
+      "sequence": 7,
+      "role": "governor",
+      "kind": "decision",
+      "cycle_fingerprint": "c921a45528f962b0168f68f97284617ce0785ca799e7c1b31837a82701aba4e6",
+      "payload": {
+        "accepted": true,
+        "status": "accepted_as_post_inspection_capability",
+        "score_admission": "not_unseen_frozen_score",
+        "capability_union_delta": 1,
+        "frozen_unseen_score_delta": 0,
+        "evidence": {
+          "evaluated": 12,
+          "new_exact_solves": 1,
+          "regressions": 0,
+          "ambiguous": 0,
+          "certificate_hash_failures": 0,
+          "remaining_unproved": 11
+        },
+        "next_stop_obligations": [
+          "2017USAMOp3",
+          "2019IranTSTp15",
+          "2020IranTSTp9",
+          "2021ARMOg10p8",
+          "2021IranTSTp6",
+          "2021IsraelOlympicRev",
+          "2023IMOp6",
+          "2024VietnamTSTp5",
+          "ShuZhiMiGeo128",
+          "ShuZhiMiGeo309",
+          "ShuZhiMiGeo489"
+        ]
+      },
+      "previous_sha256": "371d00a3e5909b9fd5c983d3901e4b59c64c7d2e61016de5c882d0cfa2f90163",
+      "entry_sha256": "7305fc10818fb28d329269d7ace4cb738b1948f24bf8ac66cc79a82d720cc17d"
+    },
+    {
+      "sequence": 8,
+      "role": "mortra",
+      "kind": "cohort_observation",
+      "cycle_fingerprint": "85c257a3fe89ba13a3414ec502e679c194d4b5e69946f0adf69595bf23c034ee",
+      "payload": {
+        "cohort_size": 12,
+        "uses_external_llm": false,
+        "uses_expected_answer": false,
+        "control_intervention": {
+          "disabled_chart_ids": [
+            "major-arc-homothety-right-circle-tangent"
+          ]
+        },
+        "problems": {
+          "2017USAMOp3": {
+            "source_sha256": "f5f95395e467e1c87ea564dc13e584c7cbd8387e19c6a4f6bf32a1c6c21dc709",
+            "natural_statement_sha256": "432dba7f07b42bb761951d6c62d1648077223bce5c50673b4ffc227c046ca6b4",
+            "operation_multiset": {
+              "circumcenter": 3,
+              "incenter": 1,
+              "midpoint": 2,
+              "on_circle": 4,
+              "on_dia": 1,
+              "on_line": 5,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "cyclic",
+                  "args": [
+                    "a",
+                    "b",
+                    "c",
+                    "p"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "cyclic",
+                    "args": [
+                      "a",
+                      "b",
+                      "c",
+                      "p"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "incenter",
+                "midpoint",
+                "on_circle",
+                "on_dia",
+                "on_line",
+                "triangle"
+              ],
+              "nearest_chart_contracts": [
+                {
+                  "chart_id": "euler-line-circle-bisector-equal-distance",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "orthocenter": 1,
+                    "on_bline": 1
+                  },
+                  "structural_distance": 3,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "incircle-diameter-circle-reflection",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "orthocenter": 1,
+                    "mirror": 1
+                  },
+                  "structural_distance": 3,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "isosceles-two-circle-intersection-perpendicular",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "iso_triangle": 1,
+                    "on_bline": 1
+                  },
+                  "structural_distance": 3,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "orthocenter-midpoint-two-circle-common-point-on-line",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "orthocenter": 1,
+                    "on_tline": 1
+                  },
+                  "structural_distance": 3,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "incenter-excenter-radical-axis-isogonal-trace",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "excenter": 3
+                  },
+                  "structural_distance": 4,
+                  "uses_natural_statement": false
+                }
+              ]
+            }
+          },
+          "2019IranTSTp15": {
+            "source_sha256": "f2ce10af4f04fa76a43cf041b2360820465512e842b5fb7b01465aef1023d272",
+            "natural_statement_sha256": "ea99f700179d96f345ba6aee1e7cc66f10ef1a43fd47b5c0430e1532384b2225",
+            "operation_multiset": {
+              "angle_bisector": 1,
+              "circumcenter": 2,
+              "foot": 1,
+              "midpoint": 3,
+              "mirror": 2,
+              "on_circle": 2,
+              "on_line": 7,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "coll",
+                  "args": [
+                    "x",
+                    "h",
+                    "l"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [
+              "between(K,N,P)"
+            ],
+            "control": {
+              "solved": false,
+              "raw_chart_solved": true,
+              "proved_after_quantifier_repair_only": true,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": "midpoint-bisector-two-circles-equal-power",
+              "proof_status": "proved",
+              "certificate_sha256": "78187f5e265cb3497488be438ba6b49c827e32df432d5f6b1e4294f5370ee213",
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                },
+                {
+                  "chart_id": "midpoint-bisector-two-circles-equal-power",
+                  "proof_status": "proved",
+                  "replayed": true,
+                  "error": null,
+                  "role_count": 16
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1,
+                "none": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "coll",
+                    "args": [
+                      "x",
+                      "h",
+                      "l"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "angle_bisector",
+                "circumcenter",
+                "foot",
+                "midpoint",
+                "mirror",
+                "on_circle",
+                "on_line",
+                "triangle"
+              ],
+              "nearest_chart_contracts": [
+                {
+                  "chart_id": "midpoint-bisector-two-circles-equal-power",
+                  "goal_mismatch": false,
+                  "missing_operation_counts": {},
+                  "structural_distance": 0,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "orthocenter-midpoint-two-circle-common-point-on-line",
+                  "goal_mismatch": false,
+                  "missing_operation_counts": {
+                    "orthocenter": 1,
+                    "on_tline": 1
+                  },
+                  "structural_distance": 2,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "euler-line-circle-bisector-equal-distance",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "orthocenter": 1,
+                    "on_bline": 1
+                  },
+                  "structural_distance": 3,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "incircle-diameter-circle-reflection",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "incenter": 1,
+                    "orthocenter": 1
+                  },
+                  "structural_distance": 3,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "intersecting-chords-three-circles-collinearity",
+                  "goal_mismatch": false,
+                  "missing_operation_counts": {
+                    "on_circum": 1,
+                    "on_bline": 2
+                  },
+                  "structural_distance": 3,
+                  "uses_natural_statement": false
+                }
+              ]
+            }
+          },
+          "2020IranGOAp2": {
+            "source_sha256": "4b17f467b21e05ae13a1fbc7a2a81043232278bbf99ee674896fbe3a4b6cb980",
+            "natural_statement_sha256": "677c2308e59fb8ff5544a0e6dbe6e4a33424338512b7f14b08ae4bf99464e6ab",
+            "operation_multiset": {
+              "circumcenter": 2,
+              "foot": 2,
+              "incenter": 1,
+              "midpoint": 1,
+              "mirror": 2,
+              "on_bline": 1,
+              "on_circle": 1,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "cong",
+                  "args": [
+                    "o1",
+                    "p",
+                    "o1",
+                    "t"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [
+              "acute(A,B,C)",
+              "arc_midpoint_through(N,B,A,C)"
+            ],
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "cong",
+                    "args": [
+                      "o1",
+                      "p",
+                      "o1",
+                      "t"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "foot",
+                "incenter",
+                "midpoint",
+                "mirror",
+                "on_bline",
+                "on_circle",
+                "triangle"
+              ],
+              "nearest_chart_contracts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "goal_mismatch": false,
+                  "missing_operation_counts": {},
+                  "structural_distance": 0,
+                  "uses_natural_statement": true
+                },
+                {
+                  "chart_id": "euler-line-circle-bisector-equal-distance",
+                  "goal_mismatch": false,
+                  "missing_operation_counts": {
+                    "orthocenter": 1
+                  },
+                  "structural_distance": 1,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "incircle-diameter-circle-reflection",
+                  "goal_mismatch": false,
+                  "missing_operation_counts": {
+                    "orthocenter": 1,
+                    "midpoint": 1
+                  },
+                  "structural_distance": 2,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "isosceles-two-circle-intersection-perpendicular",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "iso_triangle": 1
+                  },
+                  "structural_distance": 2,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "incircle-antipodes-three-circle-axis",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "mirror": 1,
+                    "foot": 1
+                  },
+                  "structural_distance": 3,
+                  "uses_natural_statement": false
+                }
+              ]
+            }
+          },
+          "2020IranTSTp9": {
+            "source_sha256": "906973306ef01a3476cb7ac01cf1a65603772e7ed56847f7689209f039ba399c",
+            "natural_statement_sha256": "df3bbe857a77c82bb3963c87bb51d0faf0b95d452c1b34741bd10b2622062a37",
+            "operation_multiset": {
+              "angle_bisector": 2,
+              "circumcenter": 3,
+              "incenter": 1,
+              "midpoint": 1,
+              "on_bline": 1,
+              "on_circle": 5,
+              "on_line": 6,
+              "reflect": 1,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "cyclic",
+                  "args": [
+                    "t",
+                    "j",
+                    "i",
+                    "x"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [
+              "arc_midpoint_through(T,B,A,C)"
+            ],
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "cyclic",
+                    "args": [
+                      "t",
+                      "j",
+                      "i",
+                      "x"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "angle_bisector",
+                "circumcenter",
+                "incenter",
+                "midpoint",
+                "on_bline",
+                "on_circle",
+                "on_line",
+                "reflect",
+                "triangle"
+              ],
+              "nearest_chart_contracts": [
+                {
+                  "chart_id": "euler-line-circle-bisector-equal-distance",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "orthocenter": 1
+                  },
+                  "structural_distance": 2,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "isosceles-two-circle-intersection-perpendicular",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "iso_triangle": 1
+                  },
+                  "structural_distance": 2,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "intersecting-chords-three-circles-collinearity",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "on_circum": 1,
+                    "on_bline": 1
+                  },
+                  "structural_distance": 3,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "incenter-excenter-radical-axis-isogonal-trace",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "excenter": 3
+                  },
+                  "structural_distance": 4,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "incircle-diameter-circle-reflection",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "orthocenter": 1,
+                    "mirror": 1,
+                    "midpoint": 1
+                  },
+                  "structural_distance": 4,
+                  "uses_natural_statement": false
+                }
+              ]
+            }
+          },
+          "2021ARMOg10p8": {
+            "source_sha256": "e807e63a9cf3965468160ad0c52271fb57bb645e8460f48c35a692e356b658f4",
+            "natural_statement_sha256": "dc38541fbc96e0761b48d9f49dcef9bbf8c6e67a07dba80f3b400d4b1765e103",
+            "operation_multiset": {
+              "circumcenter": 3,
+              "on_circle": 6,
+              "on_circum": 2,
+              "on_line": 10,
+              "reflect": 1,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "cyclic",
+                  "args": [
+                    "z",
+                    "p",
+                    "q",
+                    "r"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "cyclic",
+                    "args": [
+                      "z",
+                      "p",
+                      "q",
+                      "r"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "on_circle",
+                "on_circum",
+                "on_line",
+                "reflect",
+                "triangle"
+              ],
+              "nearest_chart_contracts": [
+                {
+                  "chart_id": "intersecting-chords-three-circles-collinearity",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "on_bline": 2
+                  },
+                  "structural_distance": 3,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "euler-line-circle-bisector-equal-distance",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "orthocenter": 1,
+                    "on_bline": 1,
+                    "midpoint": 1
+                  },
+                  "structural_distance": 4,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "isosceles-two-circle-intersection-perpendicular",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "iso_triangle": 1,
+                    "incenter": 1,
+                    "on_bline": 1
+                  },
+                  "structural_distance": 4,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "three-circumcenters-radical-axis-reflection-isogonal",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "free": 1,
+                    "circumcenter": 2
+                  },
+                  "structural_distance": 4,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "incenter-excenter-radical-axis-isogonal-trace",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "incenter": 1,
+                    "excenter": 3
+                  },
+                  "structural_distance": 5,
+                  "uses_natural_statement": false
+                }
+              ]
+            }
+          },
+          "2021IranTSTp6": {
+            "source_sha256": "55d4ad1e42718f4af2814e08c4a7cc122cede985aa9aed29a9986e18c8ac7988",
+            "natural_statement_sha256": "2858f9f9bd4589e338fdc47fe32a7502f380b0cf9093a506e912fef89c7d4270",
+            "operation_multiset": {
+              "circumcenter": 3,
+              "eqangle3": 1,
+              "on_circle": 2,
+              "on_line": 8,
+              "orthocenter": 1,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "coll",
+                  "args": [
+                    "q",
+                    "a",
+                    "h"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "coll",
+                    "args": [
+                      "q",
+                      "a",
+                      "h"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "eqangle3",
+                "on_circle",
+                "on_line",
+                "orthocenter",
+                "triangle"
+              ],
+              "nearest_chart_contracts": [
+                {
+                  "chart_id": "euler-line-circle-bisector-equal-distance",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "on_bline": 1,
+                    "midpoint": 1
+                  },
+                  "structural_distance": 3,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "intersecting-chords-three-circles-collinearity",
+                  "goal_mismatch": false,
+                  "missing_operation_counts": {
+                    "on_circum": 1,
+                    "on_bline": 2
+                  },
+                  "structural_distance": 3,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "orthocenter-midpoint-two-circle-common-point-on-line",
+                  "goal_mismatch": false,
+                  "missing_operation_counts": {
+                    "on_tline": 1,
+                    "midpoint": 2
+                  },
+                  "structural_distance": 3,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "isosceles-two-circle-intersection-perpendicular",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "iso_triangle": 1,
+                    "incenter": 1,
+                    "on_bline": 1
+                  },
+                  "structural_distance": 4,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "mixtilinear-two-circumcircles-tangent",
+                  "goal_mismatch": false,
+                  "missing_operation_counts": {
+                    "incenter": 1,
+                    "on_tline": 2,
+                    "foot": 1
+                  },
+                  "structural_distance": 4,
+                  "uses_natural_statement": false
+                }
+              ]
+            }
+          },
+          "2021IsraelOlympicRev": {
+            "source_sha256": "bfd1df47ec81911791c74b2f5ecd79fa7b4568ec16dfe7e30eeeb65a5e04751f",
+            "natural_statement_sha256": "95fd9752a2113f7ccb1984496b685b86a35323bda62a84c8e75f1b99c9678ab9",
+            "operation_multiset": {
+              "circumcenter": 4,
+              "eqangle3": 1,
+              "on_circle": 6,
+              "on_line": 12,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "cyclic",
+                  "args": [
+                    "k",
+                    "a",
+                    "p2",
+                    "p3"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "cyclic",
+                    "args": [
+                      "k",
+                      "a",
+                      "p2",
+                      "p3"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "eqangle3",
+                "on_circle",
+                "on_line",
+                "triangle"
+              ],
+              "nearest_chart_contracts": [
+                {
+                  "chart_id": "euler-line-circle-bisector-equal-distance",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "orthocenter": 1,
+                    "on_bline": 1,
+                    "midpoint": 1
+                  },
+                  "structural_distance": 4,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "intersecting-chords-three-circles-collinearity",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "on_circum": 1,
+                    "on_bline": 2
+                  },
+                  "structural_distance": 4,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "isosceles-two-circle-intersection-perpendicular",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "iso_triangle": 1,
+                    "incenter": 1,
+                    "on_bline": 1
+                  },
+                  "structural_distance": 4,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "three-circumcenters-radical-axis-reflection-isogonal",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "free": 1,
+                    "circumcenter": 1,
+                    "reflect": 1
+                  },
+                  "structural_distance": 4,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "incenter-excenter-radical-axis-isogonal-trace",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "incenter": 1,
+                    "excenter": 3
+                  },
+                  "structural_distance": 5,
+                  "uses_natural_statement": false
+                }
+              ]
+            }
+          },
+          "2023IMOp6": {
+            "source_sha256": "73f46505849e02a4c9c39b43605bce36f66d45cbb024d9b82a8865edd81608a0",
+            "natural_statement_sha256": "02249dc07f381b43571aa009999c6415635e7a749423b805fb2dbc42d7b29413",
+            "operation_multiset": {
+              "circumcenter": 4,
+              "ieq_triangle": 1,
+              "on_aline": 2,
+              "on_bline": 3,
+              "on_circle": 2,
+              "on_line": 6
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "cyclic",
+                  "args": [
+                    "x",
+                    "c",
+                    "c1",
+                    "c2"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "cyclic",
+                    "args": [
+                      "x",
+                      "c",
+                      "c1",
+                      "c2"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "ieq_triangle",
+                "on_aline",
+                "on_bline",
+                "on_circle",
+                "on_line"
+              ],
+              "nearest_chart_contracts": [
+                {
+                  "chart_id": "euler-line-circle-bisector-equal-distance",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "orthocenter": 1,
+                    "midpoint": 1
+                  },
+                  "structural_distance": 3,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "intersecting-chords-three-circles-collinearity",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "triangle": 1,
+                    "on_circum": 1
+                  },
+                  "structural_distance": 3,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "isosceles-two-circle-intersection-perpendicular",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "iso_triangle": 1,
+                    "incenter": 1
+                  },
+                  "structural_distance": 3,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "positive-similarity-six-circumcenters-concurrency",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "triangle": 1,
+                    "circumcenter": 2
+                  },
+                  "structural_distance": 4,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "incenter-excenter-radical-axis-isogonal-trace",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "incenter": 1,
+                    "excenter": 3
+                  },
+                  "structural_distance": 5,
+                  "uses_natural_statement": false
+                }
+              ]
+            }
+          },
+          "2024VietnamTSTp5": {
+            "source_sha256": "5478497171bfefb97594519e2972d8d3f3481186534ef39a467427621419dbd2",
+            "natural_statement_sha256": "4f7c855daf7658132a284388c7f8be3c8c8fe9ab4300e3d19a838a7f76c4b0bc",
+            "operation_multiset": {
+              "circumcenter": 1,
+              "foot": 3,
+              "incenter": 1,
+              "on_circle": 1,
+              "on_line": 3,
+              "on_tline": 4,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "eqangle",
+                  "args": [
+                    "a",
+                    "s",
+                    "j",
+                    "s",
+                    "i",
+                    "s",
+                    "s",
+                    "t"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "eqangle",
+                    "args": [
+                      "a",
+                      "s",
+                      "j",
+                      "s",
+                      "i",
+                      "s",
+                      "s",
+                      "t"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "foot",
+                "incenter",
+                "on_circle",
+                "on_line",
+                "on_tline",
+                "triangle"
+              ],
+              "nearest_chart_contracts": [
+                {
+                  "chart_id": "mixtilinear-two-circumcircles-tangent",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {},
+                  "structural_distance": 1,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "incenter-excenter-radical-axis-isogonal-trace",
+                  "goal_mismatch": false,
+                  "missing_operation_counts": {
+                    "excenter": 3
+                  },
+                  "structural_distance": 3,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "isosceles-two-circle-intersection-perpendicular",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "iso_triangle": 1,
+                    "on_bline": 1
+                  },
+                  "structural_distance": 3,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "euler-line-circle-bisector-equal-distance",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "orthocenter": 1,
+                    "on_bline": 1,
+                    "midpoint": 1
+                  },
+                  "structural_distance": 4,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "incircle-antipodes-three-circle-axis",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "mirror": 3
+                  },
+                  "structural_distance": 4,
+                  "uses_natural_statement": false
+                }
+              ]
+            }
+          },
+          "ShuZhiMiGeo128": {
+            "source_sha256": "0f68647e5d204eabf3ba8a69c5eeb250c9b1a61db2bb2788296e2f420a1c88fd",
+            "natural_statement_sha256": "501eda8c6d0c9e4821b802feae4d238385413b277e8767069a55b3abcdcf3adc",
+            "operation_multiset": {
+              "circumcenter": 5,
+              "free": 1,
+              "on_circle": 7,
+              "on_line": 10,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "cyclic",
+                  "args": [
+                    "t",
+                    "c",
+                    "l",
+                    "f"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "cyclic",
+                    "args": [
+                      "t",
+                      "c",
+                      "l",
+                      "f"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "free",
+                "on_circle",
+                "on_line",
+                "triangle"
+              ],
+              "nearest_chart_contracts": [
+                {
+                  "chart_id": "three-circumcenters-radical-axis-reflection-isogonal",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "reflect": 1
+                  },
+                  "structural_distance": 2,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "euler-line-circle-bisector-equal-distance",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "orthocenter": 1,
+                    "on_bline": 1,
+                    "midpoint": 1
+                  },
+                  "structural_distance": 4,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "intersecting-chords-three-circles-collinearity",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "on_circum": 1,
+                    "on_bline": 2
+                  },
+                  "structural_distance": 4,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "isosceles-two-circle-intersection-perpendicular",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "iso_triangle": 1,
+                    "incenter": 1,
+                    "on_bline": 1
+                  },
+                  "structural_distance": 4,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "positive-similarity-six-circumcenters-concurrency",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {
+                    "on_aline": 2,
+                    "circumcenter": 1
+                  },
+                  "structural_distance": 4,
+                  "uses_natural_statement": false
+                }
+              ]
+            }
+          },
+          "ShuZhiMiGeo309": {
+            "source_sha256": "9e4c6a600f76139c902f47a6887459b0bbf951a7cd3d7b2e66e1060364fb963c",
+            "natural_statement_sha256": "779b6e54c4ea2ea6433ba07647a603128dd47bed80c1a38c2c8956eae01c0518",
+            "operation_multiset": {
+              "circumcenter": 2,
+              "excenter": 3,
+              "foot": 6,
+              "incenter": 1,
+              "on_circle": 12,
+              "on_line": 12,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "coll",
+                  "args": [
+                    "i",
+                    "o1",
+                    "o2"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "coll",
+                    "args": [
+                      "i",
+                      "o1",
+                      "o2"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "excenter",
+                "foot",
+                "incenter",
+                "on_circle",
+                "on_line",
+                "triangle"
+              ],
+              "nearest_chart_contracts": [
+                {
+                  "chart_id": "incenter-excenter-radical-axis-isogonal-trace",
+                  "goal_mismatch": true,
+                  "missing_operation_counts": {},
+                  "structural_distance": 1,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "tangent-triangle-secant-midpoint-circle-tangency",
+                  "goal_mismatch": false,
+                  "missing_operation_counts": {
+                    "midpoint": 1
+                  },
+                  "structural_distance": 1,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "mixtilinear-two-circumcircles-tangent",
+                  "goal_mismatch": false,
+                  "missing_operation_counts": {
+                    "on_tline": 2
+                  },
+                  "structural_distance": 2,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "incircle-antipodes-three-circle-axis",
+                  "goal_mismatch": false,
+                  "missing_operation_counts": {
+                    "mirror": 3
+                  },
+                  "structural_distance": 3,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "incircle-contact-circle-pencil-midpoint-radical-axis",
+                  "goal_mismatch": false,
+                  "missing_operation_counts": {
+                    "circumcenter": 2,
+                    "midpoint": 1
+                  },
+                  "structural_distance": 3,
+                  "uses_natural_statement": false
+                }
+              ]
+            }
+          },
+          "ShuZhiMiGeo489": {
+            "source_sha256": "aec26017085c1c2bf4779bb1de9dec131d1587e9fbab2cbf9a706c151074deba",
+            "natural_statement_sha256": "1e149437af0b74d75609e7d2e16d5825c6e3ed8309a81a22901e52aecf69ba92",
+            "operation_multiset": {
+              "circumcenter": 2,
+              "foot": 3,
+              "incenter": 1,
+              "on_circle": 3,
+              "on_line": 5,
+              "reflect": 2,
+              "triangle": 1
+            },
+            "goal": {
+              "alternatives": [
+                {
+                  "predicate": "coll",
+                  "args": [
+                    "y1",
+                    "b",
+                    "c"
+                  ]
+                }
+              ]
+            },
+            "natural_semantic_atoms": [],
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "stop_obligation": {
+              "kind": "no_replayed_exact_certificate",
+              "goal": {
+                "alternatives": [
+                  {
+                    "predicate": "coll",
+                    "args": [
+                      "y1",
+                      "b",
+                      "c"
+                    ]
+                  }
+                ]
+              },
+              "construction_types": [
+                "circumcenter",
+                "foot",
+                "incenter",
+                "on_circle",
+                "on_line",
+                "reflect",
+                "triangle"
+              ],
+              "nearest_chart_contracts": [
+                {
+                  "chart_id": "tangent-triangle-secant-midpoint-circle-tangency",
+                  "goal_mismatch": false,
+                  "missing_operation_counts": {
+                    "midpoint": 1
+                  },
+                  "structural_distance": 1,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "mixtilinear-two-circumcircles-tangent",
+                  "goal_mismatch": false,
+                  "missing_operation_counts": {
+                    "on_tline": 2
+                  },
+                  "structural_distance": 2,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "incircle-antipodes-three-circle-axis",
+                  "goal_mismatch": false,
+                  "missing_operation_counts": {
+                    "mirror": 3
+                  },
+                  "structural_distance": 3,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "incircle-gergonne-three-circumcenters-centroid-axis",
+                  "goal_mismatch": false,
+                  "missing_operation_counts": {
+                    "circumcenter": 2,
+                    "centroid": 1
+                  },
+                  "structural_distance": 3,
+                  "uses_natural_statement": false
+                },
+                {
+                  "chart_id": "intersecting-chords-three-circles-collinearity",
+                  "goal_mismatch": false,
+                  "missing_operation_counts": {
+                    "on_circum": 1,
+                    "on_bline": 2
+                  },
+                  "structural_distance": 3,
+                  "uses_natural_statement": false
+                }
+              ]
+            }
+          }
+        }
+      },
+      "previous_sha256": "7305fc10818fb28d329269d7ace4cb738b1948f24bf8ac66cc79a82d720cc17d",
+      "entry_sha256": "62b5e9954a3505f6b85d70a1e17dfa5a42a27f558d34a6572cfc110de36cb5db"
+    },
+    {
+      "sequence": 9,
+      "role": "codex",
+      "kind": "typed_hypothesis",
+      "cycle_fingerprint": "85c257a3fe89ba13a3414ec502e679c194d4b5e69946f0adf69595bf23c034ee",
+      "payload": {
+        "intervention_class": "reusable_typed_representation_chart",
+        "chart_id": "major-arc-homothety-right-circle-tangent",
+        "trigger_contract": {
+          "goal_predicate": "cong",
+          "minimum_operation_counts": {
+            "triangle": 1,
+            "incenter": 1,
+            "circumcenter": 2,
+            "on_bline": 1,
+            "on_circle": 1,
+            "midpoint": 1,
+            "mirror": 2,
+            "foot": 2
+          },
+          "required_natural_atom_schemas": [
+            "acute(A,B,C)",
+            "arc_midpoint_through(N,B,A,C)"
+          ]
+        },
+        "morphism_sequence": [
+          "arc_through_midpoint_to_antipode",
+          "construction_to_homothety_A_half",
+          "right_triangle_similarity_to_power",
+          "arc_midpoint_to_power",
+          "two_tangent_circles_to_unique_circle",
+          "inverse_homothety_to_goal"
+        ],
+        "chart_certificate_sha256": "14fce866da10724217a145f52c199e0e50c860400d1559d0d5321f6c71a24045",
+        "forbidden_conditioning": [
+          "problem_identifier",
+          "expected_answer",
+          "benchmark_membership",
+          "surface_number_constants"
+        ],
+        "acceptance_rule": {
+          "minimum_new_exact_solves": 1,
+          "maximum_regressions": 0,
+          "maximum_ambiguous_matches": 0,
+          "require_certificate_hash_match": true
+        }
+      },
+      "previous_sha256": "62b5e9954a3505f6b85d70a1e17dfa5a42a27f558d34a6572cfc110de36cb5db",
+      "entry_sha256": "823e689dc68749a34747502ab17178a9b7a3d623532f22758055c1e8d5ab6f7e"
+    },
+    {
+      "sequence": 10,
+      "role": "mortra",
+      "kind": "controlled_experiment",
+      "cycle_fingerprint": "85c257a3fe89ba13a3414ec502e679c194d4b5e69946f0adf69595bf23c034ee",
+      "payload": {
+        "design": "paired_frozen_control_treatment_ablation",
+        "uses_external_llm": false,
+        "uses_expected_answer": false,
+        "control": {
+          "disabled_chart_ids": [
+            "major-arc-homothety-right-circle-tangent"
+          ]
+        },
+        "treatment": {
+          "enabled_chart_ids": [
+            "major-arc-homothety-right-circle-tangent"
+          ]
+        },
+        "summary": {
+          "evaluated": 12,
+          "new_exact_solves": 1,
+          "regressions": 0,
+          "ambiguous": 0,
+          "certificate_hash_failures": 0,
+          "remaining_unproved": 11
+        },
+        "sets": {
+          "new_exact_solves": [
+            "2020IranGOAp2"
+          ],
+          "regressions": [],
+          "ambiguous": [],
+          "certificate_hash_failures": [],
+          "remaining_unproved": [
+            "2017USAMOp3",
+            "2019IranTSTp15",
+            "2020IranTSTp9",
+            "2021ARMOg10p8",
+            "2021IranTSTp6",
+            "2021IsraelOlympicRev",
+            "2023IMOp6",
+            "2024VietnamTSTp5",
+            "ShuZhiMiGeo128",
+            "ShuZhiMiGeo309",
+            "ShuZhiMiGeo489"
+          ]
+        },
+        "results": {
+          "2017USAMOp3": {
+            "source_sha256": "f5f95395e467e1c87ea564dc13e584c7cbd8387e19c6a4f6bf32a1c6c21dc709",
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "2019IranTSTp15": {
+            "source_sha256": "f2ce10af4f04fa76a43cf041b2360820465512e842b5fb7b01465aef1023d272",
+            "control": {
+              "solved": false,
+              "raw_chart_solved": true,
+              "proved_after_quantifier_repair_only": true,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": "midpoint-bisector-two-circles-equal-power",
+              "proof_status": "proved",
+              "certificate_sha256": "78187f5e265cb3497488be438ba6b49c827e32df432d5f6b1e4294f5370ee213",
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                },
+                {
+                  "chart_id": "midpoint-bisector-two-circles-equal-power",
+                  "proof_status": "proved",
+                  "replayed": true,
+                  "error": null,
+                  "role_count": 16
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1,
+                "none": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "raw_chart_solved": true,
+              "proved_after_quantifier_repair_only": true,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": "midpoint-bisector-two-circles-equal-power",
+              "proof_status": "proved",
+              "certificate_sha256": "78187f5e265cb3497488be438ba6b49c827e32df432d5f6b1e4294f5370ee213",
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "midpoint-bisector-two-circles-equal-power",
+                  "proof_status": "proved",
+                  "replayed": true,
+                  "error": null,
+                  "role_count": 16
+                }
+              ],
+              "active_error_histogram": {
+                "none": 1
+              }
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "2020IranGOAp2": {
+            "source_sha256": "4b17f467b21e05ae13a1fbc7a2a81043232278bbf99ee674896fbe3a4b6cb980",
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": true,
+              "raw_chart_solved": true,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": "major-arc-homothety-right-circle-tangent",
+              "proof_status": "proved",
+              "certificate_sha256": "14fce866da10724217a145f52c199e0e50c860400d1559d0d5321f6c71a24045",
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "proved",
+                  "replayed": true,
+                  "error": null,
+                  "role_count": 12
+                }
+              ],
+              "active_error_histogram": {
+                "none": 1
+              }
+            },
+            "delta": {
+              "new_exact_solve": true,
+              "regression": false
+            }
+          },
+          "2020IranTSTp9": {
+            "source_sha256": "906973306ef01a3476cb7ac01cf1a65603772e7ed56847f7689209f039ba399c",
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "2021ARMOg10p8": {
+            "source_sha256": "e807e63a9cf3965468160ad0c52271fb57bb645e8460f48c35a692e356b658f4",
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "2021IranTSTp6": {
+            "source_sha256": "55d4ad1e42718f4af2814e08c4a7cc122cede985aa9aed29a9986e18c8ac7988",
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "2021IsraelOlympicRev": {
+            "source_sha256": "bfd1df47ec81911791c74b2f5ecd79fa7b4568ec16dfe7e30eeeb65a5e04751f",
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "2023IMOp6": {
+            "source_sha256": "73f46505849e02a4c9c39b43605bce36f66d45cbb024d9b82a8865edd81608a0",
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "2024VietnamTSTp5": {
+            "source_sha256": "5478497171bfefb97594519e2972d8d3f3481186534ef39a467427621419dbd2",
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "ShuZhiMiGeo128": {
+            "source_sha256": "0f68647e5d204eabf3ba8a69c5eeb250c9b1a61db2bb2788296e2f420a1c88fd",
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "ShuZhiMiGeo309": {
+            "source_sha256": "9e4c6a600f76139c902f47a6887459b0bbf951a7cd3d7b2e66e1060364fb963c",
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          },
+          "ShuZhiMiGeo489": {
+            "source_sha256": "aec26017085c1c2bf4779bb1de9dec131d1587e9fbab2cbf9a706c151074deba",
+            "control": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [
+                {
+                  "chart_id": "major-arc-homothety-right-circle-tangent",
+                  "proof_status": "not_matched",
+                  "replayed": false,
+                  "error": "disabled_by_experiment",
+                  "role_count": 0
+                }
+              ],
+              "active_error_histogram": {
+                "disabled_by_experiment": 1
+              }
+            },
+            "treatment": {
+              "solved": false,
+              "raw_chart_solved": false,
+              "proved_after_quantifier_repair_only": false,
+              "conditional": false,
+              "ambiguous": false,
+              "selected_chart_id": null,
+              "proof_status": "not_proved",
+              "certificate_sha256": null,
+              "undischarged_obligations": [],
+              "active_attempts": [],
+              "active_error_histogram": {}
+            },
+            "delta": {
+              "new_exact_solve": false,
+              "regression": false
+            }
+          }
+        }
+      },
+      "previous_sha256": "823e689dc68749a34747502ab17178a9b7a3d623532f22758055c1e8d5ab6f7e",
+      "entry_sha256": "16ab69558a1d7f349e4d1ab0fb1df549203f51a2b33e4ef64ac4f602d1ad8aa8"
+    },
+    {
+      "sequence": 11,
+      "role": "governor",
+      "kind": "decision",
+      "cycle_fingerprint": "85c257a3fe89ba13a3414ec502e679c194d4b5e69946f0adf69595bf23c034ee",
+      "payload": {
+        "accepted": true,
+        "status": "accepted_as_post_inspection_capability",
+        "score_admission": "not_unseen_frozen_score",
+        "capability_union_delta": 1,
+        "frozen_unseen_score_delta": 0,
+        "evidence": {
+          "evaluated": 12,
+          "new_exact_solves": 1,
+          "regressions": 0,
+          "ambiguous": 0,
+          "certificate_hash_failures": 0,
+          "remaining_unproved": 11
+        },
+        "next_stop_obligations": [
+          "2017USAMOp3",
+          "2019IranTSTp15",
+          "2020IranTSTp9",
+          "2021ARMOg10p8",
+          "2021IranTSTp6",
+          "2021IsraelOlympicRev",
+          "2023IMOp6",
+          "2024VietnamTSTp5",
+          "ShuZhiMiGeo128",
+          "ShuZhiMiGeo309",
+          "ShuZhiMiGeo489"
+        ]
+      },
+      "previous_sha256": "16ab69558a1d7f349e4d1ab0fb1df549203f51a2b33e4ef64ac4f602d1ad8aa8",
+      "entry_sha256": "6e84616e82fed6e8bdec560d3f1e58b3a577eba32cf279ae4203d3ff8379327f"
+    }
+  ]
+}
