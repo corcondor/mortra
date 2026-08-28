@@ -9,8 +9,8 @@ of powers
     Pow_(AKH)(X) = Pow_(HEF)(X).
 
 The frozen JGEX source represents the second common point of the two circles
-as an unqualified one-output intersection.  The natural theorem is therefore
-proved only after restoring the missing ``L != H`` branch condition.
+as an unqualified one-output intersection.  A hash-bound natural-language
+atom supplies the typed ``L != H`` second-root condition.
 """
 
 from __future__ import annotations
@@ -31,6 +31,9 @@ from matplotlib import pyplot as plt
 from matplotlib.patches import Circle
 
 from worker.backend.geometry_proof_hypergraph import Atom
+from worker.backend.geometry_natural_semantics import (
+    extract_geometry_natural_semantics,
+)
 from worker.backend.jgex_chart_parser import ChartJGEXFormulation as JGEXFormulation
 
 
@@ -112,6 +115,9 @@ class MidpointBisectorEqualPowerCertificate:
 class JGEXMidpointBisectorEqualPowerApplication:
     theorem: str
     source_sha256: str
+    natural_statement_sha256: str
+    natural_statement: str
+    natural_semantic_atoms: tuple[str, ...]
     roles: dict[str, str]
     matched_constructions: tuple[str, ...]
     goal: str
@@ -297,8 +303,11 @@ def _single(
 
 def certify_jgex_midpoint_bisector_equal_power_application(
     source: str,
+    natural_statement: str | None = None,
 ) -> JGEXMidpointBisectorEqualPowerApplication:
     normalized = source.strip()
+    natural = (natural_statement or "").strip()
+    semantics = extract_geometry_natural_semantics(natural)
     formulation = JGEXFormulation.from_text(normalized)
     records = _records(formulation)
     candidates: dict[tuple[str, ...], dict[str, str]] = {}
@@ -391,6 +400,17 @@ def certify_jgex_midpoint_bisector_equal_power_application(
 
     chart = certify_midpoint_bisector_equal_power_chart()
     unique = accepted[0] if len(accepted) == 1 else {}
+    typed_second_root = bool(
+        unique
+        and semantics.has_second_circle_intersection(
+            unique["L"],
+            unique["H"],
+            (
+                (unique["A"], unique["K"], unique["H"]),
+                (unique["H"], unique["E"], unique["F"]),
+            ),
+        )
+    )
     replayed = bool(
         chart.replayed
         and chart.all_conditions_discharged
@@ -407,6 +427,11 @@ def certify_jgex_midpoint_bisector_equal_power_application(
     return JGEXMidpointBisectorEqualPowerApplication(
         theorem=chart.theorem,
         source_sha256=hashlib.sha256(normalized.encode("utf-8")).hexdigest(),
+        natural_statement_sha256=hashlib.sha256(
+            natural.encode("utf-8")
+        ).hexdigest(),
+        natural_statement=natural,
+        natural_semantic_atoms=semantics.typed_atoms,
         roles=unique,
         matched_constructions=(
             "reflected side intersected with the internal angle bisector",
@@ -426,7 +451,7 @@ def certify_jgex_midpoint_bisector_equal_power_application(
         chart_certificate_sha256=chart.certificate_sha256,
         nondegeneracy_obligations=chart.assumptions,
         undischarged_nondegeneracy_obligations=(),
-        formalization_repair_required=bool(unique),
+        formalization_repair_required=bool(unique and not typed_second_root),
         repaired_quantified_goal=repaired_goal,
         replayed=replayed,
     )

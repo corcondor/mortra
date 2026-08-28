@@ -28,15 +28,45 @@ from worker.backend.arc_midpoint_reflection_center_axis_chart import (
     certify_jgex_arc_midpoint_reflection_center_axis_application,
     render_arc_midpoint_reflection_center_axis_chart_svg,
 )
+from worker.backend.arc_midpoint_reflected_bisector_cyclic_chart import (
+    certify_arc_midpoint_reflected_bisector_cyclic_chart,
+    certify_jgex_arc_midpoint_reflected_bisector_cyclic_application,
+    render_arc_midpoint_reflected_bisector_cyclic_chart_svg,
+)
 from worker.backend.cyclic_bisector_transversal_midpoints_chart import (
     certify_cyclic_bisector_transversal_midpoints_chart,
     certify_jgex_cyclic_bisector_transversal_midpoints_application,
     render_cyclic_bisector_transversal_midpoints_chart_svg,
 )
+from worker.backend.contact_polar_reflection_secant_chart import (
+    certify_contact_polar_reflection_secant_chart,
+    certify_jgex_contact_polar_reflection_secant_application,
+    render_contact_polar_reflection_secant_chart_svg,
+)
+from worker.backend.cevian_radical_axes_equal_angle_chart import (
+    certify_cevian_radical_axes_equal_angle_chart,
+    certify_jgex_cevian_radical_axes_equal_angle_application,
+    render_cevian_radical_axes_equal_angle_chart_svg,
+)
 from worker.backend.euler_line_bisector_chart import (
     certify_euler_line_bisector_chart,
     certify_jgex_euler_line_bisector_application,
     render_euler_line_bisector_chart_svg,
+)
+from worker.backend.euler_line_equal_angle_radical_altitude_chart import (
+    certify_euler_line_equal_angle_radical_altitude_chart,
+    certify_jgex_euler_line_equal_angle_radical_altitude_application,
+    render_euler_line_equal_angle_radical_altitude_chart_svg,
+)
+from worker.backend.equilateral_angle_sum_three_circles_chart import (
+    certify_equilateral_angle_sum_three_circles_chart,
+    certify_jgex_equilateral_angle_sum_three_circles_application,
+    render_equilateral_angle_sum_three_circles_chart_svg,
+)
+from worker.backend.excentral_radical_centers_axis_chart import (
+    certify_excentral_radical_centers_axis_chart,
+    certify_jgex_excentral_radical_centers_axis_application,
+    render_excentral_radical_centers_axis_chart_svg,
 )
 from worker.backend.incircle_reflection_chart import (
     certify_incircle_reflection_chart,
@@ -48,10 +78,20 @@ from worker.backend.incircle_three_circle_axis_chart import (
     certify_jgex_incircle_three_circle_axis_application,
     render_incircle_three_circle_axis_chart_svg,
 )
+from worker.backend.incenter_ninepoint_power_midpoint_chart import (
+    certify_incenter_ninepoint_power_midpoint_chart,
+    certify_jgex_incenter_ninepoint_power_midpoint_application,
+    render_incenter_ninepoint_power_midpoint_chart_svg,
+)
 from worker.backend.incircle_contact_pencil_midpoint_chart import (
     certify_incircle_contact_pencil_midpoint_chart,
     certify_jgex_incircle_contact_pencil_midpoint_application,
     render_incircle_contact_pencil_midpoint_chart_svg,
+)
+from worker.backend.incircle_contact_tangent_isogonal_chart import (
+    certify_incircle_contact_tangent_isogonal_chart,
+    certify_jgex_incircle_contact_tangent_isogonal_application,
+    render_incircle_contact_tangent_isogonal_chart_svg,
 )
 from worker.backend.incircle_gergonne_three_circumcenters_chart import (
     certify_incircle_gergonne_three_circumcenters_chart,
@@ -72,6 +112,11 @@ from worker.backend.mixtilinear_tangent_circle_chart import (
     certify_jgex_mixtilinear_tangent_circle_application,
     certify_mixtilinear_tangent_circle_chart,
     render_mixtilinear_tangent_circle_chart_svg,
+)
+from worker.backend.miquel_cevian_coaxial_chart import (
+    certify_jgex_miquel_cevian_coaxial_application,
+    certify_miquel_cevian_coaxial_chart,
+    render_miquel_cevian_coaxial_chart_svg,
 )
 from worker.backend.midpoint_bisector_equal_power_chart import (
     certify_jgex_midpoint_bisector_equal_power_application,
@@ -97,6 +142,11 @@ from worker.backend.parallel_transversal_perpendicular_circles_chart import (
     certify_jgex_parallel_transversal_perpendicular_circles_application,
     certify_parallel_transversal_perpendicular_circles_chart,
     render_parallel_transversal_perpendicular_circles_chart_svg,
+)
+from worker.backend.reflected_chord_circle_pair_chart import (
+    certify_jgex_reflected_chord_circle_pair_application,
+    certify_reflected_chord_circle_pair_chart,
+    render_reflected_chord_circle_pair_chart_svg,
 )
 from worker.backend.positive_similarity_six_circumcenters_chart import (
     certify_jgex_positive_similarity_six_circumcenters_application,
@@ -211,6 +261,175 @@ class _ChartSpec:
 
 _CHARTS = (
     _ChartSpec(
+        "reflected-chord-existential-circle-pair-return",
+        "exact_rational_field_known_root_existential_pair_chart",
+        certify_jgex_reflected_chord_circle_pair_application,
+        certify_reflected_chord_circle_pair_chart,
+        render_reflected_chord_circle_pair_chart_svg,
+        (
+            ("triangle", 1),
+            ("on_circum", 2),
+            ("circumcenter", 3),
+            ("on_line", 8),
+            ("on_circle", 6),
+            ("reflect", 1),
+        ),
+        "cyclic",
+        uses_natural_statement=True,
+    ),
+    _ChartSpec(
+        "cevian-three-radical-axes-equal-angle",
+        "exact_rational_field_three_radical_axes_and_equal_angle_ideal_chart",
+        certify_jgex_cevian_radical_axes_equal_angle_application,
+        certify_cevian_radical_axes_equal_angle_chart,
+        render_cevian_radical_axes_equal_angle_chart_svg,
+        (
+            ("triangle", 1),
+            ("eqangle3", 1),
+            ("on_line", 12),
+            ("circumcenter", 4),
+            ("on_circle", 6),
+        ),
+        "cyclic",
+    ),
+    _ChartSpec(
+        "euler-line-equal-angle-radical-altitude",
+        "exact_rational_field_equal_angle_ideal_and_radical_axis_chart",
+        certify_jgex_euler_line_equal_angle_radical_altitude_application,
+        certify_euler_line_equal_angle_radical_altitude_chart,
+        render_euler_line_equal_angle_radical_altitude_chart_svg,
+        (
+            ("triangle", 1),
+            ("circumcenter", 3),
+            ("orthocenter", 1),
+            ("eqangle3", 1),
+            ("on_line", 8),
+            ("on_circle", 2),
+        ),
+        "coll",
+    ),
+    _ChartSpec(
+        "equilateral-angle-sum-three-circle-pencil",
+        "exact_algebraic_field_direct_similarity_circle_pencil_chart",
+        certify_jgex_equilateral_angle_sum_three_circles_application,
+        certify_equilateral_angle_sum_three_circles_chart,
+        render_equilateral_angle_sum_three_circles_chart_svg,
+        (
+            ("ieq_triangle", 1),
+            ("circumcenter", 4),
+            ("on_bline", 3),
+            ("on_aline", 2),
+            ("on_line", 6),
+            ("on_circle", 2),
+        ),
+        "cyclic",
+    ),
+    _ChartSpec(
+        "excentral-contact-radical-centers-incenter-axis",
+        "exact_unit-incircle_signed-distance_and_radical-axis_chart",
+        certify_jgex_excentral_radical_centers_axis_application,
+        certify_excentral_radical_centers_axis_chart,
+        render_excentral_radical_centers_axis_chart_svg,
+        (
+            ("triangle", 1),
+            ("incenter", 1),
+            ("excenter", 3),
+            ("foot", 6),
+            ("on_line", 12),
+            ("circumcenter", 2),
+            ("on_circle", 12),
+        ),
+        "coll",
+    ),
+    _ChartSpec(
+        "miquel-cevian-three-target-circles-coaxial",
+        "exact_homogeneous_polynomial_chart_with_hash_bound_miquel_branch",
+        certify_jgex_miquel_cevian_coaxial_application,
+        certify_miquel_cevian_coaxial_chart,
+        render_miquel_cevian_coaxial_chart_svg,
+        (
+            ("triangle", 1),
+            ("free", 1),
+            ("on_line", 10),
+            ("circumcenter", 5),
+            ("on_circle", 7),
+        ),
+        "cyclic",
+        uses_natural_statement=True,
+    ),
+    _ChartSpec(
+        "contact-polar-reflection-two-secants-side-return",
+        "posthoc_exact_chart_replayed",
+        certify_jgex_contact_polar_reflection_secant_application,
+        certify_contact_polar_reflection_secant_chart,
+        render_contact_polar_reflection_secant_chart_svg,
+        (
+            ("triangle", 1),
+            ("circumcenter", 2),
+            ("incenter", 1),
+            ("foot", 3),
+            ("reflect", 2),
+            ("on_line", 5),
+            ("on_circle", 3),
+        ),
+        "coll",
+    ),
+    _ChartSpec(
+        "incircle-contact-chord-circumtangent-isogonality",
+        "posthoc_exact_chart_replayed",
+        certify_jgex_incircle_contact_tangent_isogonal_application,
+        certify_incircle_contact_tangent_isogonal_chart,
+        render_incircle_contact_tangent_isogonal_chart_svg,
+        (
+            ("triangle", 1),
+            ("incenter", 1),
+            ("foot", 3),
+            ("circumcenter", 1),
+            ("on_line", 3),
+            ("on_circle", 1),
+            ("on_tline", 4),
+        ),
+        "eqangle",
+    ),
+    _ChartSpec(
+        "arc-midpoint-reflected-bisector-two-circle-cyclicity",
+        "exact_rational_field_chart_with_hash_bound_arc_branch",
+        certify_jgex_arc_midpoint_reflected_bisector_cyclic_application,
+        certify_arc_midpoint_reflected_bisector_cyclic_chart,
+        render_arc_midpoint_reflected_bisector_cyclic_chart_svg,
+        (
+            ("triangle", 1),
+            ("circumcenter", 3),
+            ("incenter", 1),
+            ("angle_bisector", 2),
+            ("on_line", 6),
+            ("on_circle", 5),
+            ("on_bline", 1),
+            ("midpoint", 1),
+            ("reflect", 1),
+        ),
+        "cyclic",
+        uses_natural_statement=True,
+    ),
+    _ChartSpec(
+        "incenter-nine-point-power-chain-midpoint",
+        "exact_chart_with_hash_bound_typed_existential_branch",
+        certify_jgex_incenter_ninepoint_power_midpoint_application,
+        certify_incenter_ninepoint_power_midpoint_chart,
+        render_incenter_ninepoint_power_midpoint_chart_svg,
+        (
+            ("triangle", 1),
+            ("circumcenter", 3),
+            ("incenter", 1),
+            ("on_line", 5),
+            ("on_circle", 4),
+            ("on_dia", 1),
+            ("midpoint", 2),
+        ),
+        "cyclic",
+        uses_natural_statement=True,
+    ),
+    _ChartSpec(
         "major-arc-homothety-right-circle-tangent",
         "posthoc_exact_chart_with_hash_bound_natural_branch",
         certify_jgex_major_arc_homothety_tangent_application,
@@ -251,7 +470,7 @@ _CHARTS = (
     ),
     _ChartSpec(
         "midpoint-bisector-two-circles-equal-power",
-        "posthoc_exact_existential_chart_with_quantifier_repair",
+        "exact_chart_with_hash_bound_typed_second_root",
         certify_jgex_midpoint_bisector_equal_power_application,
         certify_midpoint_bisector_equal_power_chart,
         render_midpoint_bisector_equal_power_chart_svg,
@@ -266,6 +485,7 @@ _CHARTS = (
             ("on_circle", 2),
         ),
         "coll",
+        uses_natural_statement=True,
     ),
     _ChartSpec(
         "orthic-parallel-chord-two-tangents-collinearity",
@@ -813,7 +1033,11 @@ def certify_jgex_with_exact_chart_portfolio(
             if repair_required
             else "A fresh held-out cohort must establish transfer before score admission."
         ),
-        natural_statement_sha256=natural_statement_sha256,
+        natural_statement_sha256=(
+            selected.natural_statement_sha256
+            if selected is not None
+            else natural_statement_sha256
+        ),
     )
 
 

@@ -176,3 +176,19 @@ def test_registry_replays_parallel_transversal_circle_family_chart() -> None:
     assert result.selected.proof_status == "proved"
     assert result.selected.identity_count == 33
     assert result.selected.undischarged_obligations == ()
+
+
+def test_registry_hashes_only_natural_text_used_by_selected_chart() -> None:
+    source = (ROOT / "data" / "fixtures" / "2022G5.jgex.txt").read_text(
+        encoding="utf-8"
+    )
+    result = certify_jgex_with_exact_chart_portfolio(
+        source,
+        include_diagram=False,
+        natural_statement="This text is deliberately irrelevant to the formal proof.",
+    )
+
+    assert result.solved is True
+    assert result.selected is not None
+    assert result.selected.natural_statement_sha256 is None
+    assert result.natural_statement_sha256 is None

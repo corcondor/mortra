@@ -1,0 +1,1131 @@
+{
+  "protocol_version": "mortra-codex-research-dialogue-v1",
+  "objective_code": "synchronous_mortra_codex_strict_geometry_improvement",
+  "frozen_cohort_sha256": "afd6b38077edbd7e7a17f60517d3bb11060d6e26cf1ecfae6dd25461de3e3c4d",
+  "head_sha256": "d2c69a4da4de0c2e23e3327508cf41db48d90c68fa49c1f0e6e62db3387822ec",
+  "entries": [
+    {
+      "sequence": 0,
+      "role": "mortra",
+      "kind": "cohort_observation",
+      "cycle_fingerprint": "423794cf59f6d4bb4ef11573cbfa4ba553483eb4dbdc4554622a4ed6a1f9add8",
+      "payload": {
+        "transport": "synchronous-jsonl-stdio-v1",
+        "turn": 0,
+        "snapshot": {
+          "dataset_sha256": "629e621cea5b4d9bf4bcae835c286606be3294cc8cc0c794b210fdaec011f8c2",
+          "natural_dataset_sha256": "65fea067a9a712c9363e65025c2585ddced4b1e9beaa77512e661df49b0b9c56",
+          "problems": {
+            "2017USAMOp3": {
+              "active_attempts": [
+                {
+                  "chart_id": "incenter-nine-point-power-chain-midpoint",
+                  "error": null,
+                  "proof_status": "proved",
+                  "replayed": true,
+                  "role_count": 16
+                }
+              ],
+              "active_error_histogram": {
+                "none": 1
+              },
+              "ambiguous": false,
+              "certificate_sha256": "122db1143ca7a9f7b9702e8f5168c4222186f2c23c2f081146801538d3236f03",
+              "conditional": false,
+              "goal": {
+                "alternatives": [
+                  {
+                    "args": [
+                      "a",
+                      "b",
+                      "c",
+                      "p"
+                    ],
+                    "predicate": "cyclic"
+                  }
+                ]
+              },
+              "natural_semantic_atoms": [
+                "circle_intersection_pair(L1,L2,circumcircle(K,I,D),circumcircle(M,A,N))",
+                "exists_midpoint_on_circumcircle(I,L1,L2,A,B,C)"
+              ],
+              "natural_statement_sha256": "432dba7f07b42bb761951d6c62d1648077223bce5c50673b4ffc227c046ca6b4",
+              "operation_multiset": {
+                "circumcenter": 3,
+                "incenter": 1,
+                "midpoint": 2,
+                "on_circle": 4,
+                "on_dia": 1,
+                "on_line": 5,
+                "triangle": 1
+              },
+              "proof_status": "proved",
+              "proved_after_quantifier_repair_only": false,
+              "raw_chart_solved": true,
+              "selected_chart_id": "incenter-nine-point-power-chain-midpoint",
+              "solved": true,
+              "source_sha256": "f5f95395e467e1c87ea564dc13e584c7cbd8387e19c6a4f6bf32a1c6c21dc709",
+              "stop_obligation": {
+                "kind": "no_replayed_exact_certificate",
+                "nearest_chart_contracts": [
+                  {
+                    "chart_id": "incenter-nine-point-power-chain-midpoint",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {},
+                    "structural_distance": 0,
+                    "uses_natural_statement": true
+                  },
+                  {
+                    "chart_id": "euler-line-circle-bisector-equal-distance",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {
+                      "on_bline": 1,
+                      "orthocenter": 1
+                    },
+                    "structural_distance": 3,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "incircle-diameter-circle-reflection",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {
+                      "mirror": 1,
+                      "orthocenter": 1
+                    },
+                    "structural_distance": 3,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "isosceles-two-circle-intersection-perpendicular",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {
+                      "iso_triangle": 1,
+                      "on_bline": 1
+                    },
+                    "structural_distance": 3,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "orthocenter-midpoint-two-circle-common-point-on-line",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {
+                      "on_tline": 1,
+                      "orthocenter": 1
+                    },
+                    "structural_distance": 3,
+                    "uses_natural_statement": false
+                  }
+                ]
+              },
+              "undischarged_obligations": []
+            },
+            "2019IranTSTp15": {
+              "active_attempts": [
+                {
+                  "chart_id": "midpoint-bisector-two-circles-equal-power",
+                  "error": null,
+                  "proof_status": "proved",
+                  "replayed": true,
+                  "role_count": 16
+                }
+              ],
+              "active_error_histogram": {
+                "none": 1
+              },
+              "ambiguous": false,
+              "certificate_sha256": "78187f5e265cb3497488be438ba6b49c827e32df432d5f6b1e4294f5370ee213",
+              "conditional": false,
+              "goal": {
+                "alternatives": [
+                  {
+                    "args": [
+                      "x",
+                      "h",
+                      "l"
+                    ],
+                    "predicate": "coll"
+                  }
+                ]
+              },
+              "natural_semantic_atoms": [
+                "between(K,N,P)",
+                "second_circle_intersection(L,H,circumcircle(A,K,H),circumcircle(H,E,F))"
+              ],
+              "natural_statement_sha256": "ea99f700179d96f345ba6aee1e7cc66f10ef1a43fd47b5c0430e1532384b2225",
+              "operation_multiset": {
+                "angle_bisector": 1,
+                "circumcenter": 2,
+                "foot": 1,
+                "midpoint": 3,
+                "mirror": 2,
+                "on_circle": 2,
+                "on_line": 7,
+                "triangle": 1
+              },
+              "proof_status": "proved",
+              "proved_after_quantifier_repair_only": false,
+              "raw_chart_solved": true,
+              "selected_chart_id": "midpoint-bisector-two-circles-equal-power",
+              "solved": true,
+              "source_sha256": "f2ce10af4f04fa76a43cf041b2360820465512e842b5fb7b01465aef1023d272",
+              "stop_obligation": {
+                "kind": "no_replayed_exact_certificate",
+                "nearest_chart_contracts": [
+                  {
+                    "chart_id": "midpoint-bisector-two-circles-equal-power",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {},
+                    "structural_distance": 0,
+                    "uses_natural_statement": true
+                  },
+                  {
+                    "chart_id": "orthocenter-midpoint-two-circle-common-point-on-line",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {
+                      "on_tline": 1,
+                      "orthocenter": 1
+                    },
+                    "structural_distance": 2,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "euler-line-circle-bisector-equal-distance",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {
+                      "on_bline": 1,
+                      "orthocenter": 1
+                    },
+                    "structural_distance": 3,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "incircle-diameter-circle-reflection",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {
+                      "incenter": 1,
+                      "orthocenter": 1
+                    },
+                    "structural_distance": 3,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "intersecting-chords-three-circles-collinearity",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {
+                      "on_bline": 2,
+                      "on_circum": 1
+                    },
+                    "structural_distance": 3,
+                    "uses_natural_statement": false
+                  }
+                ]
+              },
+              "undischarged_obligations": []
+            },
+            "2020IranTSTp9": {
+              "active_attempts": [
+                {
+                  "chart_id": "arc-midpoint-reflected-bisector-two-circle-cyclicity",
+                  "error": null,
+                  "proof_status": "proved",
+                  "replayed": true,
+                  "role_count": 16
+                }
+              ],
+              "active_error_histogram": {
+                "none": 1
+              },
+              "ambiguous": false,
+              "certificate_sha256": "35bb2e4e8a9c3a0ecaf8484c50f5493490f6db14a6c52ff677b32f5b9aeb747c",
+              "conditional": false,
+              "goal": {
+                "alternatives": [
+                  {
+                    "args": [
+                      "t",
+                      "j",
+                      "i",
+                      "x"
+                    ],
+                    "predicate": "cyclic"
+                  }
+                ]
+              },
+              "natural_semantic_atoms": [
+                "arc_midpoint_through(T,B,A,C)"
+              ],
+              "natural_statement_sha256": "df3bbe857a77c82bb3963c87bb51d0faf0b95d452c1b34741bd10b2622062a37",
+              "operation_multiset": {
+                "angle_bisector": 2,
+                "circumcenter": 3,
+                "incenter": 1,
+                "midpoint": 1,
+                "on_bline": 1,
+                "on_circle": 5,
+                "on_line": 6,
+                "reflect": 1,
+                "triangle": 1
+              },
+              "proof_status": "proved",
+              "proved_after_quantifier_repair_only": false,
+              "raw_chart_solved": true,
+              "selected_chart_id": "arc-midpoint-reflected-bisector-two-circle-cyclicity",
+              "solved": true,
+              "source_sha256": "906973306ef01a3476cb7ac01cf1a65603772e7ed56847f7689209f039ba399c",
+              "stop_obligation": {
+                "kind": "no_replayed_exact_certificate",
+                "nearest_chart_contracts": [
+                  {
+                    "chart_id": "arc-midpoint-reflected-bisector-two-circle-cyclicity",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {},
+                    "structural_distance": 0,
+                    "uses_natural_statement": true
+                  },
+                  {
+                    "chart_id": "euler-line-circle-bisector-equal-distance",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {
+                      "orthocenter": 1
+                    },
+                    "structural_distance": 2,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "incenter-nine-point-power-chain-midpoint",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {
+                      "midpoint": 1,
+                      "on_dia": 1
+                    },
+                    "structural_distance": 2,
+                    "uses_natural_statement": true
+                  },
+                  {
+                    "chart_id": "isosceles-two-circle-intersection-perpendicular",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {
+                      "iso_triangle": 1
+                    },
+                    "structural_distance": 2,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "intersecting-chords-three-circles-collinearity",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {
+                      "on_bline": 1,
+                      "on_circum": 1
+                    },
+                    "structural_distance": 3,
+                    "uses_natural_statement": false
+                  }
+                ]
+              },
+              "undischarged_obligations": []
+            },
+            "2021ARMOg10p8": {
+              "active_attempts": [
+                {
+                  "chart_id": "reflected-chord-existential-circle-pair-return",
+                  "error": null,
+                  "proof_status": "proved",
+                  "replayed": true,
+                  "role_count": 17
+                }
+              ],
+              "active_error_histogram": {
+                "none": 1
+              },
+              "ambiguous": false,
+              "certificate_sha256": "918c9b77925d78d496751d63f42234e16c9b878a295bef6277bc776adeab16be",
+              "conditional": false,
+              "goal": {
+                "alternatives": [
+                  {
+                    "args": [
+                      "z",
+                      "p",
+                      "q",
+                      "r"
+                    ],
+                    "predicate": "cyclic"
+                  }
+                ]
+              },
+              "natural_semantic_atoms": [
+                "exists_circle_pair_labelling(M,N,circumcircle(P,Q,R),circumcircle(A1,X,Y))"
+              ],
+              "natural_statement_sha256": "ebb2780c75f6deaf3cd7d1eec93ee95887502a51ad8a70b42e82cdfe180faabd",
+              "operation_multiset": {
+                "circumcenter": 3,
+                "on_circle": 6,
+                "on_circum": 2,
+                "on_line": 10,
+                "reflect": 1,
+                "triangle": 1
+              },
+              "proof_status": "proved",
+              "proved_after_quantifier_repair_only": false,
+              "raw_chart_solved": true,
+              "selected_chart_id": "reflected-chord-existential-circle-pair-return",
+              "solved": true,
+              "source_sha256": "e807e63a9cf3965468160ad0c52271fb57bb645e8460f48c35a692e356b658f4",
+              "stop_obligation": {
+                "kind": "no_replayed_exact_certificate",
+                "nearest_chart_contracts": [
+                  {
+                    "chart_id": "reflected-chord-existential-circle-pair-return",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {},
+                    "structural_distance": 0,
+                    "uses_natural_statement": true
+                  },
+                  {
+                    "chart_id": "euler-line-equal-angle-radical-altitude",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {
+                      "eqangle3": 1,
+                      "orthocenter": 1
+                    },
+                    "structural_distance": 3,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "intersecting-chords-three-circles-collinearity",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {
+                      "on_bline": 2
+                    },
+                    "structural_distance": 3,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "cevian-three-radical-axes-equal-angle",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {
+                      "circumcenter": 1,
+                      "eqangle3": 1,
+                      "on_line": 2
+                    },
+                    "structural_distance": 4,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "euler-line-circle-bisector-equal-distance",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {
+                      "midpoint": 1,
+                      "on_bline": 1,
+                      "orthocenter": 1
+                    },
+                    "structural_distance": 4,
+                    "uses_natural_statement": false
+                  }
+                ]
+              },
+              "undischarged_obligations": []
+            },
+            "2021IranTSTp6": {
+              "active_attempts": [
+                {
+                  "chart_id": "euler-line-equal-angle-radical-altitude",
+                  "error": null,
+                  "proof_status": "proved",
+                  "replayed": true,
+                  "role_count": 13
+                }
+              ],
+              "active_error_histogram": {
+                "none": 1
+              },
+              "ambiguous": false,
+              "certificate_sha256": "2eeab57e459bf781f37371e0ef040a7c69171de8de5528b75dd6b9e8ee4e108f",
+              "conditional": false,
+              "goal": {
+                "alternatives": [
+                  {
+                    "args": [
+                      "q",
+                      "a",
+                      "h"
+                    ],
+                    "predicate": "coll"
+                  }
+                ]
+              },
+              "natural_semantic_atoms": [],
+              "natural_statement_sha256": null,
+              "operation_multiset": {
+                "circumcenter": 3,
+                "eqangle3": 1,
+                "on_circle": 2,
+                "on_line": 8,
+                "orthocenter": 1,
+                "triangle": 1
+              },
+              "proof_status": "proved",
+              "proved_after_quantifier_repair_only": false,
+              "raw_chart_solved": true,
+              "selected_chart_id": "euler-line-equal-angle-radical-altitude",
+              "solved": true,
+              "source_sha256": "55d4ad1e42718f4af2814e08c4a7cc122cede985aa9aed29a9986e18c8ac7988",
+              "stop_obligation": {
+                "kind": "no_replayed_exact_certificate",
+                "nearest_chart_contracts": [
+                  {
+                    "chart_id": "euler-line-equal-angle-radical-altitude",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {},
+                    "structural_distance": 0,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "euler-line-circle-bisector-equal-distance",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {
+                      "midpoint": 1,
+                      "on_bline": 1
+                    },
+                    "structural_distance": 3,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "intersecting-chords-three-circles-collinearity",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {
+                      "on_bline": 2,
+                      "on_circum": 1
+                    },
+                    "structural_distance": 3,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "orthocenter-midpoint-two-circle-common-point-on-line",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {
+                      "midpoint": 2,
+                      "on_tline": 1
+                    },
+                    "structural_distance": 3,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "isosceles-two-circle-intersection-perpendicular",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {
+                      "incenter": 1,
+                      "iso_triangle": 1,
+                      "on_bline": 1
+                    },
+                    "structural_distance": 4,
+                    "uses_natural_statement": false
+                  }
+                ]
+              },
+              "undischarged_obligations": []
+            },
+            "2021IsraelOlympicRev": {
+              "active_attempts": [
+                {
+                  "chart_id": "cevian-three-radical-axes-equal-angle",
+                  "error": null,
+                  "proof_status": "proved",
+                  "replayed": true,
+                  "role_count": 17
+                }
+              ],
+              "active_error_histogram": {
+                "none": 1
+              },
+              "ambiguous": false,
+              "certificate_sha256": "00303c2b0605153f0bbdfdcc35a13a81d5c1c48ab25c5f187d116c559cd0efe6",
+              "conditional": false,
+              "goal": {
+                "alternatives": [
+                  {
+                    "args": [
+                      "k",
+                      "a",
+                      "p2",
+                      "p3"
+                    ],
+                    "predicate": "cyclic"
+                  }
+                ]
+              },
+              "natural_semantic_atoms": [],
+              "natural_statement_sha256": null,
+              "operation_multiset": {
+                "circumcenter": 4,
+                "eqangle3": 1,
+                "on_circle": 6,
+                "on_line": 12,
+                "triangle": 1
+              },
+              "proof_status": "proved",
+              "proved_after_quantifier_repair_only": false,
+              "raw_chart_solved": true,
+              "selected_chart_id": "cevian-three-radical-axes-equal-angle",
+              "solved": true,
+              "source_sha256": "bfd1df47ec81911791c74b2f5ecd79fa7b4568ec16dfe7e30eeeb65a5e04751f",
+              "stop_obligation": {
+                "kind": "no_replayed_exact_certificate",
+                "nearest_chart_contracts": [
+                  {
+                    "chart_id": "cevian-three-radical-axes-equal-angle",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {},
+                    "structural_distance": 0,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "euler-line-equal-angle-radical-altitude",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {
+                      "orthocenter": 1
+                    },
+                    "structural_distance": 2,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "miquel-cevian-three-target-circles-coaxial",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {
+                      "circumcenter": 1,
+                      "free": 1,
+                      "on_circle": 1
+                    },
+                    "structural_distance": 3,
+                    "uses_natural_statement": true
+                  },
+                  {
+                    "chart_id": "reflected-chord-existential-circle-pair-return",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {
+                      "on_circum": 2,
+                      "reflect": 1
+                    },
+                    "structural_distance": 3,
+                    "uses_natural_statement": true
+                  },
+                  {
+                    "chart_id": "euler-line-circle-bisector-equal-distance",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {
+                      "midpoint": 1,
+                      "on_bline": 1,
+                      "orthocenter": 1
+                    },
+                    "structural_distance": 4,
+                    "uses_natural_statement": false
+                  }
+                ]
+              },
+              "undischarged_obligations": []
+            },
+            "2023IMOp6": {
+              "active_attempts": [
+                {
+                  "chart_id": "equilateral-angle-sum-three-circle-pencil",
+                  "error": null,
+                  "proof_status": "proved",
+                  "replayed": true,
+                  "role_count": 15
+                }
+              ],
+              "active_error_histogram": {
+                "none": 1
+              },
+              "ambiguous": false,
+              "certificate_sha256": "4dff71a9cb69c6791c85f1af476c92d4bb0660e2b8bfa782c3c3cd7e3d02e45c",
+              "conditional": false,
+              "goal": {
+                "alternatives": [
+                  {
+                    "args": [
+                      "x",
+                      "c",
+                      "c1",
+                      "c2"
+                    ],
+                    "predicate": "cyclic"
+                  }
+                ]
+              },
+              "natural_semantic_atoms": [],
+              "natural_statement_sha256": null,
+              "operation_multiset": {
+                "circumcenter": 4,
+                "ieq_triangle": 1,
+                "on_aline": 2,
+                "on_bline": 3,
+                "on_circle": 2,
+                "on_line": 6
+              },
+              "proof_status": "proved",
+              "proved_after_quantifier_repair_only": false,
+              "raw_chart_solved": true,
+              "selected_chart_id": "equilateral-angle-sum-three-circle-pencil",
+              "solved": true,
+              "source_sha256": "73f46505849e02a4c9c39b43605bce36f66d45cbb024d9b82a8865edd81608a0",
+              "stop_obligation": {
+                "kind": "no_replayed_exact_certificate",
+                "nearest_chart_contracts": [
+                  {
+                    "chart_id": "equilateral-angle-sum-three-circle-pencil",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {},
+                    "structural_distance": 0,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "euler-line-circle-bisector-equal-distance",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {
+                      "midpoint": 1,
+                      "orthocenter": 1
+                    },
+                    "structural_distance": 3,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "intersecting-chords-three-circles-collinearity",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {
+                      "on_circum": 1,
+                      "triangle": 1
+                    },
+                    "structural_distance": 3,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "isosceles-two-circle-intersection-perpendicular",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {
+                      "incenter": 1,
+                      "iso_triangle": 1
+                    },
+                    "structural_distance": 3,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "positive-similarity-six-circumcenters-concurrency",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {
+                      "circumcenter": 2,
+                      "triangle": 1
+                    },
+                    "structural_distance": 4,
+                    "uses_natural_statement": false
+                  }
+                ]
+              },
+              "undischarged_obligations": []
+            },
+            "2024VietnamTSTp5": {
+              "active_attempts": [
+                {
+                  "chart_id": "incircle-contact-chord-circumtangent-isogonality",
+                  "error": null,
+                  "proof_status": "proved",
+                  "replayed": true,
+                  "role_count": 12
+                }
+              ],
+              "active_error_histogram": {
+                "none": 1
+              },
+              "ambiguous": false,
+              "certificate_sha256": "de3428739823e63c65aca9b509ea139cf37e2aa7775781d2c96192558a67579c",
+              "conditional": false,
+              "goal": {
+                "alternatives": [
+                  {
+                    "args": [
+                      "a",
+                      "s",
+                      "j",
+                      "s",
+                      "i",
+                      "s",
+                      "s",
+                      "t"
+                    ],
+                    "predicate": "eqangle"
+                  }
+                ]
+              },
+              "natural_semantic_atoms": [],
+              "natural_statement_sha256": null,
+              "operation_multiset": {
+                "circumcenter": 1,
+                "foot": 3,
+                "incenter": 1,
+                "on_circle": 1,
+                "on_line": 3,
+                "on_tline": 4,
+                "triangle": 1
+              },
+              "proof_status": "proved",
+              "proved_after_quantifier_repair_only": false,
+              "raw_chart_solved": true,
+              "selected_chart_id": "incircle-contact-chord-circumtangent-isogonality",
+              "solved": true,
+              "source_sha256": "5478497171bfefb97594519e2972d8d3f3481186534ef39a467427621419dbd2",
+              "stop_obligation": {
+                "kind": "no_replayed_exact_certificate",
+                "nearest_chart_contracts": [
+                  {
+                    "chart_id": "incircle-contact-chord-circumtangent-isogonality",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {},
+                    "structural_distance": 0,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "mixtilinear-two-circumcircles-tangent",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {},
+                    "structural_distance": 1,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "incenter-excenter-radical-axis-isogonal-trace",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {
+                      "excenter": 3
+                    },
+                    "structural_distance": 3,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "isosceles-two-circle-intersection-perpendicular",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {
+                      "iso_triangle": 1,
+                      "on_bline": 1
+                    },
+                    "structural_distance": 3,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "euler-line-circle-bisector-equal-distance",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {
+                      "midpoint": 1,
+                      "on_bline": 1,
+                      "orthocenter": 1
+                    },
+                    "structural_distance": 4,
+                    "uses_natural_statement": false
+                  }
+                ]
+              },
+              "undischarged_obligations": []
+            },
+            "ShuZhiMiGeo128": {
+              "active_attempts": [
+                {
+                  "chart_id": "miquel-cevian-three-target-circles-coaxial",
+                  "error": null,
+                  "proof_status": "proved",
+                  "replayed": true,
+                  "role_count": 18
+                }
+              ],
+              "active_error_histogram": {
+                "none": 1
+              },
+              "ambiguous": false,
+              "certificate_sha256": "bbae333ed91ab522160f1d5cb890bd5b29ea603cb16b0fa337cb2c5a41ca1beb",
+              "conditional": false,
+              "goal": {
+                "alternatives": [
+                  {
+                    "args": [
+                      "t",
+                      "c",
+                      "l",
+                      "f"
+                    ],
+                    "predicate": "cyclic"
+                  }
+                ]
+              },
+              "natural_semantic_atoms": [
+                "miquel_point(Q,D,E,F)"
+              ],
+              "natural_statement_sha256": "501eda8c6d0c9e4821b802feae4d238385413b277e8767069a55b3abcdcf3adc",
+              "operation_multiset": {
+                "circumcenter": 5,
+                "free": 1,
+                "on_circle": 7,
+                "on_line": 10,
+                "triangle": 1
+              },
+              "proof_status": "proved",
+              "proved_after_quantifier_repair_only": false,
+              "raw_chart_solved": true,
+              "selected_chart_id": "miquel-cevian-three-target-circles-coaxial",
+              "solved": true,
+              "source_sha256": "0f68647e5d204eabf3ba8a69c5eeb250c9b1a61db2bb2788296e2f420a1c88fd",
+              "stop_obligation": {
+                "kind": "no_replayed_exact_certificate",
+                "nearest_chart_contracts": [
+                  {
+                    "chart_id": "miquel-cevian-three-target-circles-coaxial",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {},
+                    "structural_distance": 0,
+                    "uses_natural_statement": true
+                  },
+                  {
+                    "chart_id": "three-circumcenters-radical-axis-reflection-isogonal",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {
+                      "reflect": 1
+                    },
+                    "structural_distance": 2,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "cevian-three-radical-axes-equal-angle",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {
+                      "eqangle3": 1,
+                      "on_line": 2
+                    },
+                    "structural_distance": 3,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "euler-line-equal-angle-radical-altitude",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {
+                      "eqangle3": 1,
+                      "orthocenter": 1
+                    },
+                    "structural_distance": 3,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "reflected-chord-existential-circle-pair-return",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {
+                      "on_circum": 2,
+                      "reflect": 1
+                    },
+                    "structural_distance": 3,
+                    "uses_natural_statement": true
+                  }
+                ]
+              },
+              "undischarged_obligations": []
+            },
+            "ShuZhiMiGeo309": {
+              "active_attempts": [
+                {
+                  "chart_id": "excentral-contact-radical-centers-incenter-axis",
+                  "error": null,
+                  "proof_status": "proved",
+                  "replayed": true,
+                  "role_count": 21
+                }
+              ],
+              "active_error_histogram": {
+                "none": 1
+              },
+              "ambiguous": false,
+              "certificate_sha256": "3c880120f12cf0d46feb9f4f5b1d9e847ea224c1ea791136216d3461a090d3dd",
+              "conditional": false,
+              "goal": {
+                "alternatives": [
+                  {
+                    "args": [
+                      "i",
+                      "o1",
+                      "o2"
+                    ],
+                    "predicate": "coll"
+                  }
+                ]
+              },
+              "natural_semantic_atoms": [],
+              "natural_statement_sha256": null,
+              "operation_multiset": {
+                "circumcenter": 2,
+                "excenter": 3,
+                "foot": 6,
+                "incenter": 1,
+                "on_circle": 12,
+                "on_line": 12,
+                "triangle": 1
+              },
+              "proof_status": "proved",
+              "proved_after_quantifier_repair_only": false,
+              "raw_chart_solved": true,
+              "selected_chart_id": "excentral-contact-radical-centers-incenter-axis",
+              "solved": true,
+              "source_sha256": "9e4c6a600f76139c902f47a6887459b0bbf951a7cd3d7b2e66e1060364fb963c",
+              "stop_obligation": {
+                "kind": "no_replayed_exact_certificate",
+                "nearest_chart_contracts": [
+                  {
+                    "chart_id": "excentral-contact-radical-centers-incenter-axis",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {},
+                    "structural_distance": 0,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "incenter-excenter-radical-axis-isogonal-trace",
+                    "goal_mismatch": true,
+                    "missing_operation_counts": {},
+                    "structural_distance": 1,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "tangent-triangle-secant-midpoint-circle-tangency",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {
+                      "midpoint": 1
+                    },
+                    "structural_distance": 1,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "contact-polar-reflection-two-secants-side-return",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {
+                      "reflect": 2
+                    },
+                    "structural_distance": 2,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "mixtilinear-two-circumcircles-tangent",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {
+                      "on_tline": 2
+                    },
+                    "structural_distance": 2,
+                    "uses_natural_statement": false
+                  }
+                ]
+              },
+              "undischarged_obligations": []
+            },
+            "ShuZhiMiGeo489": {
+              "active_attempts": [
+                {
+                  "chart_id": "contact-polar-reflection-two-secants-side-return",
+                  "error": null,
+                  "proof_status": "proved",
+                  "replayed": true,
+                  "role_count": 15
+                }
+              ],
+              "active_error_histogram": {
+                "none": 1
+              },
+              "ambiguous": false,
+              "certificate_sha256": "c0b41fb469db3c61f089c93fd35012a125e9ed535ff2cd4aba2a9d3cbec8e2df",
+              "conditional": false,
+              "goal": {
+                "alternatives": [
+                  {
+                    "args": [
+                      "y1",
+                      "b",
+                      "c"
+                    ],
+                    "predicate": "coll"
+                  }
+                ]
+              },
+              "natural_semantic_atoms": [],
+              "natural_statement_sha256": null,
+              "operation_multiset": {
+                "circumcenter": 2,
+                "foot": 3,
+                "incenter": 1,
+                "on_circle": 3,
+                "on_line": 5,
+                "reflect": 2,
+                "triangle": 1
+              },
+              "proof_status": "proved",
+              "proved_after_quantifier_repair_only": false,
+              "raw_chart_solved": true,
+              "selected_chart_id": "contact-polar-reflection-two-secants-side-return",
+              "solved": true,
+              "source_sha256": "aec26017085c1c2bf4779bb1de9dec131d1587e9fbab2cbf9a706c151074deba",
+              "stop_obligation": {
+                "kind": "no_replayed_exact_certificate",
+                "nearest_chart_contracts": [
+                  {
+                    "chart_id": "contact-polar-reflection-two-secants-side-return",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {},
+                    "structural_distance": 0,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "tangent-triangle-secant-midpoint-circle-tangency",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {
+                      "midpoint": 1
+                    },
+                    "structural_distance": 1,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "mixtilinear-two-circumcircles-tangent",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {
+                      "on_tline": 2
+                    },
+                    "structural_distance": 2,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "incircle-antipodes-three-circle-axis",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {
+                      "mirror": 3
+                    },
+                    "structural_distance": 3,
+                    "uses_natural_statement": false
+                  },
+                  {
+                    "chart_id": "incircle-gergonne-three-circumcenters-centroid-axis",
+                    "goal_mismatch": false,
+                    "missing_operation_counts": {
+                      "centroid": 1,
+                      "circumcenter": 2
+                    },
+                    "structural_distance": 3,
+                    "uses_natural_statement": false
+                  }
+                ]
+              },
+              "undischarged_obligations": []
+            }
+          },
+          "protocol": "synchronous-jsonl-stdio-v1",
+          "registered_chart_contracts_sha256": "3f275861563277310422a92e479e7704c618dead0faf98cf2e569b54c8f0fc4a",
+          "summary": {
+            "evaluated": 11,
+            "quantifier_repair_only": 0,
+            "remaining_unproved": 0,
+            "solved": 11
+          },
+          "union_sha256": "12a7b7d8f32224e7ac27b7e054fc570c4f68e49370526181f1eb87b008598708"
+        }
+      },
+      "previous_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "entry_sha256": "d2c69a4da4de0c2e23e3327508cf41db48d90c68fa49c1f0e6e62db3387822ec"
+    }
+  ]
+}

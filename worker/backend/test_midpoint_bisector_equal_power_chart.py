@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 import re
 
 import pytest
@@ -17,6 +18,11 @@ ROOT = Path(__file__).resolve().parents[2]
 SOURCE = (ROOT / "data" / "fixtures" / "2019IranTSTp15.jgex.txt").read_text(
     encoding="utf-8"
 ).strip()
+NATURAL = json.loads(
+    (ROOT / "data" / "hageo-409-natural-language-2026-08-26.json").read_text(
+        encoding="utf-8"
+    )
+)["2019IranTSTp15"]
 
 
 def _rename_points(source: str) -> str:
@@ -104,6 +110,20 @@ def test_chart_matches_structure_without_problem_id() -> None:
     assert "l != h" in application.repaired_quantified_goal
 
 
+def test_natural_second_intersection_elaborates_without_repair() -> None:
+    application = certify_jgex_midpoint_bisector_equal_power_application(
+        SOURCE,
+        NATURAL,
+    )
+
+    assert application.replayed is True
+    assert application.formalization_repair_required is False
+    assert any(
+        atom.startswith("second_circle_intersection(")
+        for atom in application.natural_semantic_atoms
+    )
+
+
 def test_chart_is_invariant_under_complete_point_renaming() -> None:
     application = certify_jgex_midpoint_bisector_equal_power_application(
         _rename_points(SOURCE)
@@ -184,3 +204,16 @@ def test_portfolio_returns_natural_proof_but_not_raw_frozen_admission() -> None:
     assert "量化監査" in result.selected.proof_markdown
     assert result.selected.diagram_svg is not None
     assert "<svg" in result.selected.diagram_svg[:512]
+
+
+def test_portfolio_accepts_hash_bound_typed_second_root() -> None:
+    result = certify_jgex_with_exact_chart_portfolio(
+        SOURCE,
+        natural_statement=NATURAL,
+        include_diagram=False,
+    )
+
+    assert result.solved is True
+    assert result.selected is not None
+    assert result.selected.application["formalization_repair_required"] is False
+    assert "量化監査" not in result.selected.proof_markdown
