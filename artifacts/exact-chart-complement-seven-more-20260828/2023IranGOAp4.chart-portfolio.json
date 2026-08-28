@@ -1,0 +1,650 @@
+{
+  "source_sha256": "9be80e2fa8948288fbd57d1812df1e05b10716f8617a98cc9889ccb10bc0df66",
+  "solved": true,
+  "conditional": false,
+  "ambiguous": false,
+  "selected": {
+    "chart_id": "incenter-bisector-orthocenters-midpoint-on-bisector",
+    "proof_class": "exact_unit-incircle_tangent_and_orthocenter_chart",
+    "source_sha256": "9be80e2fa8948288fbd57d1812df1e05b10716f8617a98cc9889ccb10bc0df66",
+    "theorem": "incenter-bisector-orthocenters-midpoint-on-bisector",
+    "roles": {
+      "A": "a",
+      "B": "b",
+      "C": "c",
+      "I": "i",
+      "D": "d",
+      "E": "e",
+      "F": "f",
+      "M": "m",
+      "N": "n",
+      "P": "p",
+      "X": "x",
+      "Y": "y",
+      "K": "m_xy"
+    },
+    "matched_constructions": [
+      "I is the incenter and E,F are the two internal-bisector traces",
+      "D is the foot from I to BC",
+      "M,N are the orthocenters of AIF and AIE",
+      "P is the intersection of EM and FN",
+      "X is the midpoint of BC",
+      "Y lies on AD and XY is perpendicular to IP",
+      "the goal places the midpoint K of XY on AI"
+    ],
+    "goal": "coll m_xy a i",
+    "nondegeneracy_obligations": [
+      "p and q are real",
+      "p*q*(p-q)*(1+p*q) != 0",
+      "all line intersections, feet, and orthocenters in the source are defined"
+    ],
+    "identity_count": 29,
+    "chart_certificate_sha256": "a862323bab5abc64d5e5efa787a5a550560c5e7372f2389f2259af7336f0f60a",
+    "application": {
+      "theorem": "incenter-bisector-orthocenters-midpoint-on-bisector",
+      "source_sha256": "9be80e2fa8948288fbd57d1812df1e05b10716f8617a98cc9889ccb10bc0df66",
+      "roles": {
+        "A": "a",
+        "B": "b",
+        "C": "c",
+        "I": "i",
+        "D": "d",
+        "E": "e",
+        "F": "f",
+        "M": "m",
+        "N": "n",
+        "P": "p",
+        "X": "x",
+        "Y": "y",
+        "K": "m_xy"
+      },
+      "matched_constructions": [
+        "I is the incenter and E,F are the two internal-bisector traces",
+        "D is the foot from I to BC",
+        "M,N are the orthocenters of AIF and AIE",
+        "P is the intersection of EM and FN",
+        "X is the midpoint of BC",
+        "Y lies on AD and XY is perpendicular to IP",
+        "the goal places the midpoint K of XY on AI"
+      ],
+      "goal": "coll m_xy a i",
+      "chart_certificate_sha256": "a862323bab5abc64d5e5efa787a5a550560c5e7372f2389f2259af7336f0f60a",
+      "nondegeneracy_obligations": [
+        "p and q are real",
+        "p*q*(p-q)*(1+p*q) != 0",
+        "all line intersections, feet, and orthocenters in the source are defined"
+      ],
+      "undischarged_nondegeneracy_obligations": [],
+      "replayed": true
+    },
+    "certificate": {
+      "theorem": "incenter-bisector-orthocenters-midpoint-on-bisector",
+      "normalization": "I=(0,0), the incircle has radius 1, BC is x=1, and CA,AB use the rational tangent half-angle parameters p,q.",
+      "parameter_domain": [
+        "p and q are real",
+        "p*q*(p-q)*(1+p*q) != 0"
+      ],
+      "construction_domain_conditions": [
+        "all line intersections, feet, and orthocenters in the source are defined"
+      ],
+      "discharged_conditions": {
+        "p*q*(p-q)*(1+p*q) != 0": "The nondegenerate JGEX triangle with an incenter has three distinct nonparallel side tangents in this unit-incircle chart.",
+        "E,F,M,N,P,Y are uniquely defined": "Each source construction is an accepted line intersection, orthocenter, foot, or perpendicular-line intersection; its displayed determinant is nonzero.",
+        "p+q != 0 and the two cevian denominators are nonzero": "These are factors of the accepted P, E, and F constructions and are therefore discharged by the JGEX construction domain."
+      },
+      "upstream_semantics": [
+        "The incenter makes BI and CI the corresponding internal angle bisectors.",
+        "JGEX foot and on_tline constructors enforce Euclidean perpendicularity.",
+        "JGEX line intersections and orthocenters reject degenerate inputs."
+      ],
+      "coordinates": {
+        "I": [
+          "0",
+          "0"
+        ],
+        "A": [
+          "-(p*q - 1)/(p*q + 1)",
+          "(p + q)/(p*q + 1)"
+        ],
+        "B": [
+          "1",
+          "q"
+        ],
+        "C": [
+          "1",
+          "p"
+        ],
+        "D": [
+          "1",
+          "0"
+        ],
+        "E": [
+          "-(p**2 + 1)/(p**2 - 2*p*q - 1)",
+          "-q*(p**2 + 1)/(p**2 - 2*p*q - 1)"
+        ],
+        "F": [
+          "(q**2 + 1)/(2*p*q - q**2 + 1)",
+          "p*(q**2 + 1)/(2*p*q - q**2 + 1)"
+        ],
+        "M": [
+          "-(p**2 + 1)*(q - 1)*(q + 1)/((p*q + 1)*(2*p*q - q**2 + 1))",
+          "2*q*(p**2 + 1)/((p*q + 1)*(2*p*q - q**2 + 1))"
+        ],
+        "N": [
+          "(p - 1)*(p + 1)*(q**2 + 1)/((p*q + 1)*(p**2 - 2*p*q - 1))",
+          "-2*p*(q**2 + 1)/((p*q + 1)*(p**2 - 2*p*q - 1))"
+        ],
+        "P": [
+          "1/(p*q + 1)",
+          "p*q*(p*q + 3)/((p + q)*(p*q + 1))"
+        ],
+        "X": [
+          "1",
+          "(p + q)/2"
+        ],
+        "Y": [
+          "-(p**2*q**2 + 2*p*q - 1)/(p*q + 1)",
+          "(p + q)*(p*q + 3)/(2*(p*q + 1))"
+        ],
+        "K": [
+          "-(p*q - 1)*(p*q + 2)/(2*(p*q + 1))",
+          "(p + q)*(p*q + 2)/(2*(p*q + 1))"
+        ]
+      },
+      "determinant_factors": {
+        "triangle_ABC_twice_area": "2*p*q*(p - q)/(p*q + 1)",
+        "E_intersection": "-q*(p**2 - 2*p*q - 1)/(p*q + 1)",
+        "F_intersection": "p*(2*p*q - q**2 + 1)/(p*q + 1)",
+        "P_intersection": "-(p - q)*(p + q)**2*(p**2 + 1)**2*(q**2 + 1)**2/((p*q + 1)*(p**2 - 2*p*q - 1)**2*(2*p*q - q**2 + 1)**2)",
+        "Y_intersection": "-p*q/(p*q + 1)"
+      },
+      "replay_residuals": {
+        "CA_tangent_normalized": "0",
+        "AB_tangent_normalized": "0",
+        "A_on_CA": "0",
+        "A_on_AB": "0",
+        "B_on_AB": "0",
+        "B_on_BC": "0",
+        "C_on_BC": "0",
+        "C_on_CA": "0",
+        "E_on_AC": "0",
+        "E_on_BI": "0",
+        "F_on_AB": "0",
+        "F_on_CI": "0",
+        "D_on_BC": "0",
+        "ID_perpendicular_BC": "0",
+        "M_altitude_A": "0",
+        "M_altitude_I": "0",
+        "M_altitude_F": "0",
+        "N_altitude_A": "0",
+        "N_altitude_I": "0",
+        "N_altitude_E": "0",
+        "P_on_EM": "0",
+        "P_on_FN": "0",
+        "X_midpoint_BC_x": "0",
+        "X_midpoint_BC_y": "0",
+        "Y_on_AD": "0",
+        "XY_perpendicular_IP": "0",
+        "K_midpoint_XY_x": "0",
+        "K_midpoint_XY_y": "0",
+        "goal_K_on_AI": "0"
+      },
+      "replayed": true,
+      "all_conditions_discharged": true,
+      "certificate_sha256": "a862323bab5abc64d5e5efa787a5a550560c5e7372f2389f2259af7336f0f60a",
+      "assumptions": [
+        "p and q are real",
+        "p*q*(p-q)*(1+p*q) != 0",
+        "all line intersections, feet, and orthocenters in the source are defined"
+      ]
+    },
+    "proof_markdown": "# incenter-bisector-orthocenters-midpoint-on-bisector 適用証明\n\n## 判定\n\n- 構成依存関係と目標を照合した。\n- 座標チャート上の全恒等式を厳密再生した。\n- 判定: `proved`（構成の定義域条件まで消去済み）。\n- 問題確認後に実装したチャートなので、凍結未見得点には遡及加算しない。\n\n## 入力問題\n\n```text\na b c = triangle; e = on_line a c, angle_bisector a b c; f = on_line a b, angle_bisector a c b; i = incenter a b c; d = foot i b c; m = orthocenter a i f; n = orthocenter a i e; p = on_line e m, on_line f n; x = midpoint b c; y = on_line a d, on_tline x i p; m_xy = midpoint x y ? coll m_xy a i\n```\n\n## 点の役割対応\n\n- `A` -> `a`\n- `B` -> `b`\n- `C` -> `c`\n- `D` -> `d`\n- `E` -> `e`\n- `F` -> `f`\n- `I` -> `i`\n- `K` -> `m_xy`\n- `M` -> `m`\n- `N` -> `n`\n- `P` -> `p`\n- `X` -> `x`\n- `Y` -> `y`\n\n## 非退化条件\n\n- `p and q are real`\n- `p*q*(p-q)*(1+p*q) != 0`\n- `all line intersections, feet, and orthocenters in the source are defined`\n\n## 未消去条件\n\n- なし\n\n## 証明書\n\n- SHA-256: `a862323bab5abc64d5e5efa787a5a550560c5e7372f2389f2259af7336f0f60a`\n- 再生恒等式: `29`\n\n# 内心・二等分線・垂心対の中点チャート\n\n## 定理\n\n三角形 $ABC$ の内心を $I$ とし、$E=BI\\cap AC$, $F=CI\\cap AB$、$D$ を $I$ から $BC$ への垂足とする。$M,N$ を三角形 $AIF,AIE$ の垂心、$P=EM\\cap FN$、$X$ を $BC$ の中点とする。$Y\\in AD$ かつ $XY\\perp IP$ とすると、$XY$ の中点は $AI$ 上にある。\n\n## 標準化\n\nI=(0,0), the incircle has radius 1, BC is x=1, and CA,AB use the rational tangent half-angle parameters p,q.\n\n## 定義域条件\n\n- `p and q are real`\n- `p*q*(p-q)*(1+p*q) != 0`\n- `all line intersections, feet, and orthocenters in the source are defined`\n\n## 条件の消去\n\n- `p*q*(p-q)*(1+p*q) != 0`: The nondegenerate JGEX triangle with an incenter has three distinct nonparallel side tangents in this unit-incircle chart.\n- `E,F,M,N,P,Y are uniquely defined`: Each source construction is an accepted line intersection, orthocenter, foot, or perpendicular-line intersection; its displayed determinant is nonzero.\n- `p+q != 0 and the two cevian denominators are nonzero`: These are factors of the accepted P, E, and F constructions and are therefore discharged by the JGEX construction domain.\n\n## 座標\n\n- `I=(0, 0)`\n- `A=(-(p*q - 1)/(p*q + 1), (p + q)/(p*q + 1))`\n- `B=(1, q)`\n- `C=(1, p)`\n- `D=(1, 0)`\n- `E=(-(p**2 + 1)/(p**2 - 2*p*q - 1), -q*(p**2 + 1)/(p**2 - 2*p*q - 1))`\n- `F=((q**2 + 1)/(2*p*q - q**2 + 1), p*(q**2 + 1)/(2*p*q - q**2 + 1))`\n- `M=(-(p**2 + 1)*(q - 1)*(q + 1)/((p*q + 1)*(2*p*q - q**2 + 1)), 2*q*(p**2 + 1)/((p*q + 1)*(2*p*q - q**2 + 1)))`\n- `N=((p - 1)*(p + 1)*(q**2 + 1)/((p*q + 1)*(p**2 - 2*p*q - 1)), -2*p*(q**2 + 1)/((p*q + 1)*(p**2 - 2*p*q - 1)))`\n- `P=(1/(p*q + 1), p*q*(p*q + 3)/((p + q)*(p*q + 1)))`\n- `X=(1, (p + q)/2)`\n- `Y=(-(p**2*q**2 + 2*p*q - 1)/(p*q + 1), (p + q)*(p*q + 3)/(2*(p*q + 1)))`\n- `K=(-(p*q - 1)*(p*q + 2)/(2*(p*q + 1)), (p + q)*(p*q + 2)/(2*(p*q + 1)))`\n\n## 非退化因子\n\n- `triangle_ABC_twice_area`: `2*p*q*(p - q)/(p*q + 1)`\n- `E_intersection`: `-q*(p**2 - 2*p*q - 1)/(p*q + 1)`\n- `F_intersection`: `p*(2*p*q - q**2 + 1)/(p*q + 1)`\n- `P_intersection`: `-(p - q)*(p + q)**2*(p**2 + 1)**2*(q**2 + 1)**2/((p*q + 1)*(p**2 - 2*p*q - 1)**2*(2*p*q - q**2 + 1)**2)`\n- `Y_intersection`: `-p*q/(p*q + 1)`\n\n## 恒等式再生\n\n- `CA_tangent_normalized`: `0`\n- `AB_tangent_normalized`: `0`\n- `A_on_CA`: `0`\n- `A_on_AB`: `0`\n- `B_on_AB`: `0`\n- `B_on_BC`: `0`\n- `C_on_BC`: `0`\n- `C_on_CA`: `0`\n- `E_on_AC`: `0`\n- `E_on_BI`: `0`\n- `F_on_AB`: `0`\n- `F_on_CI`: `0`\n- `D_on_BC`: `0`\n- `ID_perpendicular_BC`: `0`\n- `M_altitude_A`: `0`\n- `M_altitude_I`: `0`\n- `M_altitude_F`: `0`\n- `N_altitude_A`: `0`\n- `N_altitude_I`: `0`\n- `N_altitude_E`: `0`\n- `P_on_EM`: `0`\n- `P_on_FN`: `0`\n- `X_midpoint_BC_x`: `0`\n- `X_midpoint_BC_y`: `0`\n- `Y_on_AD`: `0`\n- `XY_perpendicular_IP`: `0`\n- `K_midpoint_XY_x`: `0`\n- `K_midpoint_XY_y`: `0`\n- `goal_K_on_AI`: `0`\n\n- 全恒等式再生: `True`\n- 未消去条件なし: `True`\n- 証明書 SHA-256: `a862323bab5abc64d5e5efa787a5a550560c5e7372f2389f2259af7336f0f60a`\n",
+    "diagram_svg": "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?>\n<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\"\n  \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n<svg xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"676.8pt\" height=\"446.4pt\" viewBox=\"0 0 676.8 446.4\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">\n <metadata>\n  <rdf:RDF xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:cc=\"http://creativecommons.org/ns#\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n   <cc:Work>\n    <dc:type rdf:resource=\"http://purl.org/dc/dcmitype/StillImage\"/>\n    <dc:date>2026-08-28T17:57:04.227256</dc:date>\n    <dc:format>image/svg+xml</dc:format>\n    <dc:creator>\n     <cc:Agent>\n      <dc:title>Matplotlib v3.10.5, https://matplotlib.org/</dc:title>\n     </cc:Agent>\n    </dc:creator>\n   </cc:Work>\n  </rdf:RDF>\n </metadata>\n <defs>\n  <style type=\"text/css\">*{stroke-linejoin: round; stroke-linecap: butt}</style>\n </defs>\n <g id=\"figure_1\">\n  <g id=\"patch_1\">\n   <path d=\"M 0 446.4 \nL 676.8 446.4 \nL 676.8 0 \nL 0 0 \nz\n\" style=\"fill: #f8fafc\"/>\n  </g>\n  <g id=\"axes_1\">\n   <g id=\"line2d_1\">\n    <path d=\"M 173.263867 155.559305 \nL 503.536133 403.263504 \n\" clip-path=\"url(#p13be2827ee)\" style=\"fill: none; stroke: #64748b; stroke-width: 1.3; stroke-linecap: square\"/>\n   </g>\n   <g id=\"line2d_2\">\n    <path d=\"M 503.536133 403.263504 \nL 503.536133 67.910127 \n\" clip-path=\"url(#p13be2827ee)\" style=\"fill: none; stroke: #64748b; stroke-width: 1.3; stroke-linecap: square\"/>\n   </g>\n   <g id=\"line2d_3\">\n    <path d=\"M 503.536133 67.910127 \nL 173.263867 155.559305 \n\" clip-path=\"url(#p13be2827ee)\" style=\"fill: none; stroke: #64748b; stroke-width: 1.3; stroke-linecap: square\"/>\n   </g>\n   <g id=\"line2d_4\">\n    <path d=\"M 503.536133 403.263504 \nL 355.502384 107.196006 \n\" clip-path=\"url(#p13be2827ee)\" style=\"fill: none; stroke: #2563eb; stroke-width: 1.2; stroke-linecap: square\"/>\n   </g>\n   <g id=\"line2d_5\">\n    <path d=\"M 503.536133 67.910127 \nL 339.949119 280.573244 \n\" clip-path=\"url(#p13be2827ee)\" style=\"fill: none; stroke: #2563eb; stroke-width: 1.2; stroke-linecap: square\"/>\n   </g>\n   <g id=\"line2d_6\">\n    <path d=\"M 355.502384 107.196006 \nL 339.406928 283.361659 \n\" clip-path=\"url(#p13be2827ee)\" style=\"fill: none; stroke: #2563eb; stroke-width: 1.2; stroke-linecap: square\"/>\n   </g>\n   <g id=\"line2d_7\">\n    <path d=\"M 339.949119 280.573244 \nL 364.71136 59.835558 \n\" clip-path=\"url(#p13be2827ee)\" style=\"fill: none; stroke: #2563eb; stroke-width: 1.2; stroke-linecap: square\"/>\n   </g>\n   <g id=\"line2d_8\">\n    <path d=\"M 173.263867 155.559305 \nL 503.536133 200.019033 \n\" clip-path=\"url(#p13be2827ee)\" style=\"fill: none; stroke: #94a3b8; stroke-width: 1.3; stroke-linecap: square\"/>\n   </g>\n   <g id=\"line2d_9\">\n    <path d=\"M 503.536133 235.586815 \nL 437.48168 191.127087 \n\" clip-path=\"url(#p13be2827ee)\" style=\"fill: none; stroke: #e11d48; stroke-width: 2.2; stroke-linecap: square\"/>\n   </g>\n   <g id=\"line2d_10\">\n    <path d=\"M 401.913897 200.019033 \nL 338.4 294.382537 \n\" clip-path=\"url(#p13be2827ee)\" style=\"fill: none; stroke: #7c3aed; stroke-width: 1.4; stroke-linecap: square\"/>\n   </g>\n   <g id=\"text_1\">\n    <!-- A -->\n    <g style=\"fill: #0f172a\" transform=\"translate(179.263867 150.559305) scale(0.09 -0.09)\">\n     <defs>\n      <path id=\"DejaVuSans-41\" d=\"M 2188 4044 \nL 1331 1722 \nL 3047 1722 \nL 2188 4044 \nz\nM 1831 4666 \nL 2547 4666 \nL 4325 0 \nL 3669 0 \nL 3244 1197 \nL 1141 1197 \nL 716 0 \nL 50 0 \nL 1831 4666 \nz\n\" transform=\"scale(0.015625)\"/>\n     </defs>\n     <use xlink:href=\"#DejaVuSans-41\"/>\n    </g>\n   </g>\n   <g id=\"text_2\">\n    <!-- B -->\n    <g style=\"fill: #0f172a\" transform=\"translate(509.536133 398.263504) scale(0.09 -0.09)\">\n     <defs>\n      <path id=\"DejaVuSans-42\" d=\"M 1259 2228 \nL 1259 519 \nL 2272 519 \nQ 2781 519 3026 730 \nQ 3272 941 3272 1375 \nQ 3272 1813 3026 2020 \nQ 2781 2228 2272 2228 \nL 1259 2228 \nz\nM 1259 4147 \nL 1259 2741 \nL 2194 2741 \nQ 2656 2741 2882 2914 \nQ 3109 3088 3109 3444 \nQ 3109 3797 2882 3972 \nQ 2656 4147 2194 4147 \nL 1259 4147 \nz\nM 628 4666 \nL 2241 4666 \nQ 2963 4666 3353 4366 \nQ 3744 4066 3744 3513 \nQ 3744 3084 3544 2831 \nQ 3344 2578 2956 2516 \nQ 3422 2416 3680 2098 \nQ 3938 1781 3938 1306 \nQ 3938 681 3513 340 \nQ 3088 0 2303 0 \nL 628 0 \nL 628 4666 \nz\n\" transform=\"scale(0.015625)\"/>\n     </defs>\n     <use xlink:href=\"#DejaVuSans-42\"/>\n    </g>\n   </g>\n   <g id=\"text_3\">\n    <!-- C -->\n    <g style=\"fill: #0f172a\" transform=\"translate(509.536133 62.910127) scale(0.09 -0.09)\">\n     <defs>\n      <path id=\"DejaVuSans-43\" d=\"M 4122 4306 \nL 4122 3641 \nQ 3803 3938 3442 4084 \nQ 3081 4231 2675 4231 \nQ 1875 4231 1450 3742 \nQ 1025 3253 1025 2328 \nQ 1025 1406 1450 917 \nQ 1875 428 2675 428 \nQ 3081 428 3442 575 \nQ 3803 722 4122 1019 \nL 4122 359 \nQ 3791 134 3420 21 \nQ 3050 -91 2638 -91 \nQ 1578 -91 968 557 \nQ 359 1206 359 2328 \nQ 359 3453 968 4101 \nQ 1578 4750 2638 4750 \nQ 3056 4750 3426 4639 \nQ 3797 4528 4122 4306 \nz\n\" transform=\"scale(0.015625)\"/>\n     </defs>\n     <use xlink:href=\"#DejaVuSans-43\"/>\n    </g>\n   </g>\n   <g id=\"text_4\">\n    <!-- I -->\n    <g style=\"fill: #0f172a\" transform=\"translate(407.913897 195.019033) scale(0.09 -0.09)\">\n     <defs>\n      <path id=\"DejaVuSans-49\" d=\"M 628 4666 \nL 1259 4666 \nL 1259 0 \nL 628 0 \nL 628 4666 \nz\n\" transform=\"scale(0.015625)\"/>\n     </defs>\n     <use xlink:href=\"#DejaVuSans-49\"/>\n    </g>\n   </g>\n   <g id=\"text_5\">\n    <!-- D -->\n    <g style=\"fill: #0f172a\" transform=\"translate(509.536133 195.019033) scale(0.09 -0.09)\">\n     <defs>\n      <path id=\"DejaVuSans-44\" d=\"M 1259 4147 \nL 1259 519 \nL 2022 519 \nQ 2988 519 3436 956 \nQ 3884 1394 3884 2338 \nQ 3884 3275 3436 3711 \nQ 2988 4147 2022 4147 \nL 1259 4147 \nz\nM 628 4666 \nL 1925 4666 \nQ 3281 4666 3915 4102 \nQ 4550 3538 4550 2338 \nQ 4550 1131 3912 565 \nQ 3275 0 1925 0 \nL 628 0 \nL 628 4666 \nz\n\" transform=\"scale(0.015625)\"/>\n     </defs>\n     <use xlink:href=\"#DejaVuSans-44\"/>\n    </g>\n   </g>\n   <g id=\"text_6\">\n    <!-- E -->\n    <g style=\"fill: #0f172a\" transform=\"translate(361.502384 102.196006) scale(0.09 -0.09)\">\n     <defs>\n      <path id=\"DejaVuSans-45\" d=\"M 628 4666 \nL 3578 4666 \nL 3578 4134 \nL 1259 4134 \nL 1259 2753 \nL 3481 2753 \nL 3481 2222 \nL 1259 2222 \nL 1259 531 \nL 3634 531 \nL 3634 0 \nL 628 0 \nL 628 4666 \nz\n\" transform=\"scale(0.015625)\"/>\n     </defs>\n     <use xlink:href=\"#DejaVuSans-45\"/>\n    </g>\n   </g>\n   <g id=\"text_7\">\n    <!-- F -->\n    <g style=\"fill: #0f172a\" transform=\"translate(345.949119 275.573244) scale(0.09 -0.09)\">\n     <defs>\n      <path id=\"DejaVuSans-46\" d=\"M 628 4666 \nL 3309 4666 \nL 3309 4134 \nL 1259 4134 \nL 1259 2759 \nL 3109 2759 \nL 3109 2228 \nL 1259 2228 \nL 1259 0 \nL 628 0 \nL 628 4666 \nz\n\" transform=\"scale(0.015625)\"/>\n     </defs>\n     <use xlink:href=\"#DejaVuSans-46\"/>\n    </g>\n   </g>\n   <g id=\"text_8\">\n    <!-- M -->\n    <g style=\"fill: #0f172a\" transform=\"translate(345.406928 278.361659) scale(0.09 -0.09)\">\n     <defs>\n      <path id=\"DejaVuSans-4d\" d=\"M 628 4666 \nL 1569 4666 \nL 2759 1491 \nL 3956 4666 \nL 4897 4666 \nL 4897 0 \nL 4281 0 \nL 4281 4097 \nL 3078 897 \nL 2444 897 \nL 1241 4097 \nL 1241 0 \nL 628 0 \nL 628 4666 \nz\n\" transform=\"scale(0.015625)\"/>\n     </defs>\n     <use xlink:href=\"#DejaVuSans-4d\"/>\n    </g>\n   </g>\n   <g id=\"text_9\">\n    <!-- N -->\n    <g style=\"fill: #0f172a\" transform=\"translate(370.71136 54.835558) scale(0.09 -0.09)\">\n     <defs>\n      <path id=\"DejaVuSans-4e\" d=\"M 628 4666 \nL 1478 4666 \nL 3547 763 \nL 3547 4666 \nL 4159 4666 \nL 4159 0 \nL 3309 0 \nL 1241 3903 \nL 1241 0 \nL 628 0 \nL 628 4666 \nz\n\" transform=\"scale(0.015625)\"/>\n     </defs>\n     <use xlink:href=\"#DejaVuSans-4e\"/>\n    </g>\n   </g>\n   <g id=\"text_10\">\n    <!-- P -->\n    <g style=\"fill: #0f172a\" transform=\"translate(344.4 289.382537) scale(0.09 -0.09)\">\n     <defs>\n      <path id=\"DejaVuSans-50\" d=\"M 1259 4147 \nL 1259 2394 \nL 2053 2394 \nQ 2494 2394 2734 2622 \nQ 2975 2850 2975 3272 \nQ 2975 3691 2734 3919 \nQ 2494 4147 2053 4147 \nL 1259 4147 \nz\nM 628 4666 \nL 2053 4666 \nQ 2838 4666 3239 4311 \nQ 3641 3956 3641 3272 \nQ 3641 2581 3239 2228 \nQ 2838 1875 2053 1875 \nL 1259 1875 \nL 1259 0 \nL 628 0 \nL 628 4666 \nz\n\" transform=\"scale(0.015625)\"/>\n     </defs>\n     <use xlink:href=\"#DejaVuSans-50\"/>\n    </g>\n   </g>\n   <g id=\"text_11\">\n    <!-- X -->\n    <g style=\"fill: #e11d48\" transform=\"translate(509.536133 230.586815) scale(0.09 -0.09)\">\n     <defs>\n      <path id=\"DejaVuSans-Bold-58\" d=\"M 3188 2381 \nL 4806 0 \nL 3553 0 \nL 2463 1594 \nL 1381 0 \nL 122 0 \nL 1741 2381 \nL 184 4666 \nL 1441 4666 \nL 2463 3163 \nL 3481 4666 \nL 4744 4666 \nL 3188 2381 \nz\n\" transform=\"scale(0.015625)\"/>\n     </defs>\n     <use xlink:href=\"#DejaVuSans-Bold-58\"/>\n    </g>\n   </g>\n   <g id=\"text_12\">\n    <!-- Y -->\n    <g style=\"fill: #e11d48\" transform=\"translate(443.48168 186.127087) scale(0.09 -0.09)\">\n     <defs>\n      <path id=\"DejaVuSans-Bold-59\" d=\"M -63 4666 \nL 1253 4666 \nL 2316 3003 \nL 3378 4666 \nL 4697 4666 \nL 2919 1966 \nL 2919 0 \nL 1716 0 \nL 1716 1966 \nL -63 4666 \nz\n\" transform=\"scale(0.015625)\"/>\n     </defs>\n     <use xlink:href=\"#DejaVuSans-Bold-59\"/>\n    </g>\n   </g>\n   <g id=\"text_13\">\n    <!-- K -->\n    <g style=\"fill: #e11d48\" transform=\"translate(476.508906 208.356951) scale(0.09 -0.09)\">\n     <defs>\n      <path id=\"DejaVuSans-Bold-4b\" d=\"M 588 4666 \nL 1791 4666 \nL 1791 2963 \nL 3525 4666 \nL 4922 4666 \nL 2675 2456 \nL 5153 0 \nL 3647 0 \nL 1791 1838 \nL 1791 0 \nL 588 0 \nL 588 4666 \nz\n\" transform=\"scale(0.015625)\"/>\n     </defs>\n     <use xlink:href=\"#DejaVuSans-Bold-4b\"/>\n    </g>\n   </g>\n   <g id=\"text_14\">\n    <!-- 二等分線と2つの垂心から中点を決める -->\n    <g style=\"fill: #0f172a\" transform=\"translate(3.00024 13.699303) scale(0.14 -0.14)\">\n     <defs>\n      <path id=\"YuGothic-Regular-4e8c\" d=\"M 2031 3956 \nL 1122 3944 \nQ 1075 3944 1075 3988 \nL 1075 4225 \nQ 1075 4269 1122 4269 \nL 2031 4256 \nL 4322 4256 \nL 5238 4269 \nQ 5281 4269 5281 4225 \nL 5281 3988 \nQ 5281 3944 5238 3944 \nL 4322 3956 \nL 2031 3956 \nz\nM 1384 513 \nL 525 500 \nQ 481 500 481 544 \nL 481 788 \nQ 481 831 525 831 \nL 1384 819 \nL 5019 819 \nL 5875 831 \nQ 5922 831 5922 788 \nL 5922 544 \nQ 5922 500 5875 500 \nL 5019 513 \nL 1384 513 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"YuGothic-Regular-7b49\" d=\"M 4203 1197 \nL 1491 1197 \nL 613 1184 \nQ 569 1184 569 1228 \nL 569 1428 \nQ 569 1472 613 1472 \nL 1491 1459 \nL 4203 1459 \nQ 4203 1819 4147 2047 \nQ 4359 2038 4478 2009 \nQ 4550 2000 4550 1966 \nQ 4550 1941 4513 1850 \nQ 4491 1800 4491 1647 \nL 4491 1459 \nL 4919 1459 \nL 5797 1472 \nQ 5841 1472 5841 1428 \nL 5841 1228 \nQ 5841 1184 5797 1184 \nL 4919 1197 \nL 4491 1197 \nL 4491 928 \nL 4497 122 \nQ 4497 -169 4331 -281 \nQ 4166 -384 3616 -384 \nQ 3534 -384 3519 -369 \nQ 3503 -353 3488 -275 \nQ 3463 -178 3378 -56 \nQ 3588 -84 3822 -84 \nQ 3884 -84 3972 -81 \nQ 4203 -81 4203 178 \nL 4203 1197 \nz\nM 1419 4728 \nL 2444 4728 \nL 3091 4741 \nQ 3134 4741 3134 4703 \nL 3134 4516 \nQ 3134 4472 3091 4472 \nL 2444 4484 \nL 2169 4484 \nQ 2319 4231 2444 3897 \nQ 2450 3878 2450 3872 \nQ 2450 3844 2388 3825 \nL 2259 3781 \nQ 2200 3763 2188 3763 \nQ 2166 3763 2156 3800 \nQ 2016 4228 1863 4484 \nL 1284 4484 \nQ 1047 4094 631 3678 \nQ 578 3622 553 3622 \nQ 528 3622 478 3672 \nQ 400 3750 319 3775 \nQ 975 4375 1266 5081 \nQ 1313 5194 1331 5325 \nQ 1503 5291 1619 5253 \nQ 1675 5234 1675 5191 \nQ 1675 5159 1625 5106 \nQ 1584 5069 1528 4953 \nQ 1519 4938 1472 4831 \nQ 1441 4769 1419 4728 \nz\nM 3781 4728 \nL 5169 4728 \nL 5913 4741 \nQ 5956 4741 5956 4703 \nL 5956 4516 \nQ 5956 4472 5913 4472 \nL 5169 4484 \nL 4594 4484 \nQ 4772 4225 4913 3881 \nQ 4919 3869 4919 3863 \nQ 4919 3838 4850 3813 \nL 4728 3769 \nQ 4675 3747 4659 3747 \nQ 4638 3747 4619 3794 \nQ 4481 4181 4288 4484 \nL 3659 4484 \nQ 3503 4209 3300 3972 \nQ 3247 3906 3225 3906 \nQ 3206 3906 3141 3953 \nQ 3088 3991 2975 4031 \nQ 3431 4497 3609 5075 \nQ 3644 5181 3659 5325 \nQ 3869 5288 3963 5253 \nQ 4019 5234 4019 5197 \nQ 4019 5166 3975 5119 \nQ 3931 5078 3891 4972 \nQ 3850 4866 3781 4728 \nz\nM 2981 2413 \nL 2981 3097 \nL 2003 3097 \nL 1088 3084 \nQ 1041 3084 1041 3128 \nL 1041 3322 \nQ 1041 3366 1088 3366 \nL 2003 3353 \nL 2981 3353 \nQ 2981 3675 2944 3859 \nQ 3128 3850 3269 3822 \nQ 3331 3806 3331 3775 \nQ 3331 3756 3306 3678 \nQ 3278 3613 3269 3353 \nL 4388 3353 \nL 5303 3366 \nQ 5350 3366 5350 3322 \nL 5350 3128 \nQ 5350 3084 5303 3084 \nL 4388 3097 \nL 3269 3097 \nL 3269 2413 \nL 5094 2413 \nL 5944 2425 \nQ 5981 2425 5981 2381 \nL 5981 2181 \nQ 5981 2144 5944 2144 \nL 5094 2150 \nL 1316 2150 \nL 472 2144 \nQ 428 2144 428 2181 \nL 428 2381 \nQ 428 2425 472 2425 \nL 1316 2413 \nL 2981 2413 \nz\nM 1906 978 \nQ 2259 722 2619 250 \nQ 2634 228 2634 216 \nQ 2634 197 2591 166 \nL 2475 78 \nQ 2416 25 2397 25 \nQ 2384 25 2366 56 \nQ 2047 519 1675 813 \nQ 1656 828 1656 841 \nQ 1656 856 1706 897 \nL 1809 966 \nQ 1856 1000 1869 1000 \nQ 1881 1000 1906 978 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"YuGothic-Regular-5206\" d=\"M 2675 2438 \nL 2313 2438 \nL 1447 2425 \nQ 1403 2425 1403 2469 \nL 1403 2681 \nQ 1403 2725 1447 2725 \nL 2313 2713 \nL 3900 2713 \nL 4769 2725 \nQ 4819 2725 4819 2675 \nQ 4813 2566 4806 2341 \nQ 4800 2109 4794 1984 \nQ 4772 1228 4641 434 \nQ 4516 -275 3872 -275 \nQ 3516 -275 3328 -256 \nQ 3247 -247 3234 -231 \nQ 3222 -216 3206 -134 \nQ 3178 3 3106 97 \nQ 3491 31 3828 31 \nQ 4075 31 4197 169 \nQ 4300 288 4347 538 \nQ 4475 1263 4494 2438 \nL 2978 2438 \nQ 2847 478 1050 -366 \nQ 988 -394 975 -394 \nQ 947 -394 897 -313 \nQ 841 -225 731 -159 \nQ 2541 553 2675 2438 \nz\nM 225 2497 \nQ 972 2944 1550 3634 \nQ 2009 4181 2272 4775 \nQ 2350 4956 2369 5125 \nQ 2531 5091 2688 5013 \nQ 2766 4978 2766 4928 \nQ 2766 4906 2716 4863 \nQ 2650 4809 2613 4738 \nQ 2191 3897 1672 3309 \nQ 1222 2800 566 2331 \nQ 506 2288 481 2288 \nQ 453 2288 403 2350 \nQ 338 2447 225 2497 \nz\nM 6178 2572 \nQ 6072 2500 6003 2394 \nQ 5959 2322 5938 2322 \nQ 5922 2322 5863 2363 \nQ 4406 3353 3644 4984 \nQ 3634 5006 3634 5016 \nQ 3634 5028 3700 5063 \nL 3822 5119 \nQ 3872 5144 3888 5144 \nQ 3900 5144 3919 5106 \nQ 4650 3469 6178 2572 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"YuGothic-Regular-7dda\" d=\"M 4372 2113 \nQ 4416 313 4416 147 \nQ 4416 -128 4231 -250 \nQ 4097 -328 3738 -328 \nQ 3675 -328 3603 -328 \nQ 3525 -328 3509 -313 \nQ 3494 -300 3475 -225 \nQ 3450 -119 3375 -31 \nQ 3597 -53 3834 -53 \nQ 4019 -53 4078 9 \nQ 4128 63 4128 197 \nL 4128 2591 \nL 3791 2591 \nL 3022 2578 \nQ 2978 2578 2978 2622 \nL 2991 3219 \nL 2991 4038 \nL 2978 4634 \nQ 2978 4678 3022 4678 \nL 3791 4666 \nL 3963 4666 \nQ 4056 4884 4097 5031 \nQ 4153 5216 4166 5381 \nQ 4334 5350 4447 5319 \nQ 4519 5300 4519 5253 \nQ 4519 5228 4469 5178 \nQ 4419 5128 4391 5056 \nQ 4319 4863 4238 4666 \nL 4800 4666 \nL 5556 4678 \nQ 5600 4678 5600 4634 \nL 5588 4038 \nL 5588 3219 \nL 5600 2622 \nQ 5600 2578 5556 2578 \nL 4800 2591 \nL 4403 2591 \nQ 4631 1916 4909 1447 \nQ 5281 1778 5509 2078 \nQ 5622 2225 5666 2322 \nQ 5797 2250 5891 2175 \nQ 5941 2134 5941 2100 \nQ 5941 2066 5878 2028 \nQ 5756 1963 5634 1809 \nQ 5481 1625 5038 1253 \nQ 5441 659 6144 206 \nQ 6063 147 5991 44 \nQ 5944 -28 5919 -28 \nQ 5897 -28 5850 13 \nQ 5259 491 4934 963 \nQ 4619 1419 4372 2113 \nz\nM 3266 2828 \nL 5313 2828 \nL 5313 3531 \nL 3266 3531 \nL 3266 2828 \nz\nM 3266 3769 \nL 5313 3769 \nL 5313 4428 \nL 3266 4428 \nL 3266 3769 \nz\nM 1347 3169 \nQ 838 3781 372 4184 \nQ 353 4206 353 4219 \nQ 353 4238 400 4294 \nL 456 4366 \nQ 494 4413 516 4413 \nQ 528 4413 547 4397 \nQ 609 4341 703 4253 \nQ 813 4147 834 4128 \nQ 1106 4547 1275 4878 \nQ 1422 5159 1463 5313 \nQ 1644 5238 1738 5178 \nQ 1794 5138 1794 5106 \nQ 1794 5075 1744 5044 \nQ 1688 5003 1634 4916 \nQ 1256 4291 1013 3950 \nQ 1347 3591 1506 3406 \nQ 1794 3859 2006 4244 \nQ 2147 4488 2197 4666 \nQ 2359 4600 2475 4531 \nQ 2531 4494 2531 4459 \nQ 2531 4422 2475 4384 \nQ 2403 4328 2250 4084 \nQ 1644 3128 1156 2472 \nQ 1953 2525 2313 2553 \nQ 2191 2878 2056 3097 \nQ 2047 3116 2047 3125 \nQ 2047 3144 2122 3175 \nL 2191 3206 \nQ 2228 3228 2247 3228 \nQ 2266 3228 2281 3200 \nQ 2553 2709 2716 2188 \nQ 2722 2175 2722 2166 \nQ 2722 2144 2672 2125 \nL 2556 2088 \nQ 2509 2072 2497 2072 \nQ 2475 2072 2459 2113 \nQ 2453 2134 2422 2231 \nQ 2403 2291 2391 2328 \nL 1763 2266 \nL 1763 563 \nL 1775 -397 \nQ 1775 -441 1731 -441 \nL 1513 -441 \nQ 1469 -441 1469 -397 \nL 1481 563 \nL 1481 2241 \nQ 1081 2209 778 2181 \nQ 600 2169 528 2131 \nQ 478 2106 463 2106 \nQ 416 2106 400 2175 \nQ 369 2319 363 2463 \nQ 509 2450 619 2450 \nQ 666 2450 731 2453 \nQ 797 2453 834 2456 \nQ 1050 2734 1347 3169 \nz\nM 384 153 \nQ 625 703 713 1313 \nQ 741 1497 741 1616 \nQ 741 1647 738 1697 \nQ 938 1663 994 1638 \nQ 1078 1606 1078 1581 \nQ 1078 1544 1044 1509 \nQ 1022 1450 981 1259 \nQ 900 725 681 109 \nQ 653 31 631 31 \nQ 613 31 553 75 \nQ 475 131 384 153 \nz\nM 2222 1741 \nQ 2266 1753 2278 1753 \nQ 2297 1753 2313 1722 \nQ 2463 1356 2581 728 \nQ 2584 719 2584 709 \nQ 2584 691 2497 653 \nL 2428 628 \nQ 2363 600 2347 600 \nQ 2328 600 2325 641 \nQ 2238 1234 2081 1644 \nQ 2075 1663 2075 1669 \nQ 2075 1691 2153 1716 \nL 2222 1741 \nz\nM 2300 128 \nQ 3181 706 3534 1709 \nL 3175 1709 \nL 2728 1697 \nQ 2684 1697 2684 1741 \nL 2684 1931 \nQ 2684 1978 2728 1978 \nL 3194 1966 \nL 3491 1966 \nQ 3578 1966 3619 1984 \nQ 3644 1997 3663 1997 \nQ 3713 1997 3803 1906 \nQ 3900 1813 3900 1772 \nQ 3900 1728 3856 1703 \nQ 3781 1653 3747 1550 \nQ 3434 647 2600 -22 \nQ 2541 -66 2522 -66 \nQ 2497 -66 2447 6 \nQ 2394 75 2300 128 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"YuGothic-Regular-3068\" d=\"M 2169 4978 \nQ 2419 4978 2609 4928 \nQ 2675 4913 2675 4863 \nL 2634 4647 \nQ 2634 4475 2666 4244 \nQ 2750 3519 2944 2875 \nQ 3100 2956 3591 3200 \nQ 3944 3378 4153 3488 \nQ 4384 3609 4497 3756 \nQ 4669 3606 4781 3456 \nQ 4803 3428 4803 3394 \nQ 4803 3322 4703 3309 \nQ 4550 3281 4141 3103 \nQ 3288 2722 2725 2400 \nQ 1719 1819 1719 1178 \nQ 1719 763 2081 591 \nQ 2438 422 3238 422 \nQ 3972 422 4916 559 \nQ 4925 559 4931 559 \nQ 4984 559 4991 506 \nQ 5016 359 5025 269 \nQ 5025 259 5025 253 \nQ 5025 194 4941 188 \nQ 4066 97 3256 97 \nQ 2244 97 1791 384 \nQ 1388 641 1388 1153 \nQ 1388 1619 1747 2019 \nQ 2044 2350 2656 2719 \nQ 2428 3394 2303 4391 \nQ 2266 4731 2169 4978 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"YuGothic-Regular-32\" d=\"M 459 3597 \nQ 588 4228 988 4541 \nQ 1325 4806 1819 4806 \nQ 2406 4806 2750 4453 \nQ 3059 4138 3059 3628 \nQ 3059 3219 2838 2875 \nQ 2628 2556 2094 2075 \nQ 1191 1284 825 494 \nL 3066 494 \nL 3066 141 \nL 422 141 \nL 422 456 \nQ 819 1406 1806 2309 \nQ 2331 2800 2497 3088 \nQ 2638 3331 2638 3628 \nQ 2638 4038 2378 4263 \nQ 2156 4453 1813 4453 \nQ 1025 4453 863 3494 \nL 459 3597 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"YuGothic-Regular-3064\" d=\"M 569 3219 \nQ 834 3234 1809 3578 \nQ 3138 4050 3928 4050 \nQ 4753 4050 5206 3575 \nQ 5594 3169 5594 2522 \nQ 5594 1472 4563 897 \nQ 3856 506 2866 359 \nQ 2850 356 2831 356 \nQ 2775 356 2738 416 \nQ 2659 534 2516 641 \nQ 3600 781 4300 1147 \nQ 5216 1619 5216 2528 \nQ 5216 3153 4803 3472 \nQ 4459 3744 3884 3744 \nQ 3391 3744 2766 3556 \nQ 2272 3409 1431 3066 \nQ 1116 2938 1003 2841 \nQ 947 2791 894 2791 \nQ 847 2791 800 2847 \nQ 675 2984 569 3219 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"YuGothic-Regular-306e\" d=\"M 3400 4091 \nQ 3306 3228 3056 2425 \nQ 2838 1719 2559 1275 \nQ 2159 634 1647 634 \nQ 1278 634 1019 1044 \nQ 775 1434 775 2022 \nQ 775 2497 997 2966 \nQ 1194 3391 1525 3688 \nQ 2269 4359 3378 4359 \nQ 4494 4359 5100 3731 \nQ 5619 3197 5619 2350 \nQ 5619 1506 5075 931 \nQ 4559 381 3603 153 \nQ 3581 150 3569 150 \nQ 3509 150 3475 219 \nQ 3416 325 3303 391 \nQ 4347 606 4844 1191 \nQ 5266 1688 5266 2413 \nQ 5266 3213 4691 3694 \nQ 4216 4091 3547 4091 \nQ 3438 4091 3400 4091 \nz\nM 3059 4072 \nQ 2275 3994 1741 3481 \nQ 1391 3147 1222 2697 \nQ 1094 2353 1094 2019 \nQ 1094 1478 1313 1184 \nQ 1472 975 1669 975 \nQ 2000 975 2297 1481 \nQ 2584 1972 2803 2731 \nQ 3000 3422 3059 4072 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"YuGothic-Regular-5782\" d=\"M 3297 4538 \nL 3297 3700 \nL 4656 3700 \nL 5553 3713 \nQ 5603 3713 5603 3669 \nL 5603 3475 \nQ 5603 3438 5553 3438 \nL 4778 3444 \nL 4778 2559 \nL 5225 2559 \nL 6044 2572 \nQ 6084 2572 6084 2522 \nL 6084 2328 \nQ 6084 2284 6044 2284 \nL 5225 2297 \nL 4778 2297 \nL 4778 1313 \nL 5531 1325 \nQ 5578 1325 5578 1281 \nL 5578 1088 \nQ 5578 1044 5531 1044 \nL 4631 1056 \nL 3297 1056 \nL 3297 166 \nL 5034 166 \nL 5891 178 \nQ 5934 178 5934 134 \nL 5934 -72 \nQ 5934 -116 5891 -116 \nL 5034 -103 \nL 1372 -103 \nL 516 -116 \nQ 469 -116 469 -72 \nL 469 134 \nQ 469 178 516 178 \nL 1372 166 \nL 3009 166 \nL 3009 1056 \nL 1775 1056 \nL 878 1044 \nQ 834 1044 834 1088 \nL 834 1281 \nQ 834 1325 878 1325 \nL 1609 1313 \nL 1609 2297 \nL 1166 2297 \nL 347 2284 \nQ 309 2284 309 2328 \nL 309 2522 \nQ 309 2572 347 2572 \nL 1166 2559 \nL 1609 2559 \nL 1609 3444 \nL 878 3438 \nQ 834 3438 834 3475 \nL 834 3669 \nQ 834 3713 878 3713 \nL 1775 3700 \nL 3009 3700 \nL 3009 4506 \nL 2963 4500 \nQ 2038 4403 1097 4366 \nQ 1022 4366 1003 4381 \nQ 991 4394 963 4469 \nQ 925 4569 853 4641 \nQ 1709 4647 2919 4763 \nQ 3822 4853 4650 5050 \nQ 4831 5103 4938 5166 \nQ 5078 5072 5159 4981 \nQ 5219 4922 5219 4891 \nQ 5219 4841 5122 4841 \nQ 5022 4841 4878 4806 \nQ 4038 4634 3297 4538 \nz\nM 4497 3444 \nL 3297 3444 \nL 3297 2559 \nL 4497 2559 \nL 4497 3444 \nz\nM 3009 3444 \nL 1891 3444 \nL 1891 2559 \nL 3009 2559 \nL 3009 3444 \nz\nM 1891 1313 \nL 3009 1313 \nL 3009 2297 \nL 1891 2297 \nL 1891 1313 \nz\nM 3297 1313 \nL 4497 1313 \nL 4497 2297 \nL 3297 2297 \nL 3297 1313 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"YuGothic-Regular-5fc3\" d=\"M 4469 1466 \nQ 4547 1397 4691 1344 \nQ 4766 1319 4778 1297 \nQ 4788 1278 4788 1209 \nQ 4772 603 4684 331 \nQ 4609 100 4450 6 \nQ 4141 -206 3353 -206 \nQ 2672 -206 2447 -97 \nQ 2291 -22 2228 97 \nQ 2159 231 2159 475 \nL 2159 2981 \nQ 2159 3313 2122 3513 \nQ 2291 3503 2459 3469 \nQ 2528 3450 2528 3419 \nQ 2528 3397 2503 3334 \nQ 2466 3259 2466 2931 \nL 2466 556 \nQ 2466 256 2625 178 \nQ 2803 100 3363 100 \nQ 4028 100 4213 247 \nQ 4375 356 4422 600 \nQ 4472 850 4469 1466 \nz\nM 5172 2919 \nQ 5728 2088 6069 1063 \nQ 6078 1041 6078 1031 \nQ 6078 1003 5997 959 \nL 5884 903 \nQ 5809 863 5788 863 \nQ 5766 863 5756 900 \nQ 5456 1931 4891 2778 \nQ 4878 2794 4878 2806 \nQ 4878 2831 4950 2869 \nL 5063 2919 \nQ 5122 2944 5138 2944 \nQ 5156 2944 5172 2919 \nz\nM 2466 5119 \nQ 3416 4753 4138 4244 \nQ 4159 4225 4159 4213 \nQ 4159 4197 4122 4141 \nL 4053 4019 \nQ 4000 3938 3981 3938 \nQ 3972 3938 3950 3956 \nQ 3156 4563 2306 4863 \nQ 2278 4872 2278 4891 \nQ 2278 4906 2313 4966 \nL 2375 5063 \nQ 2419 5125 2441 5125 \nQ 2450 5125 2466 5119 \nz\nM 1263 2828 \nL 1378 2803 \nQ 1463 2784 1463 2756 \nQ 1463 2753 1459 2741 \nQ 1275 1681 750 678 \nQ 734 644 713 644 \nQ 694 644 641 672 \nL 525 722 \nQ 434 772 434 800 \nQ 434 809 444 825 \nQ 978 1759 1147 2819 \nQ 1153 2850 1172 2850 \nQ 1184 2850 1263 2828 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"YuGothic-Regular-304b\" d=\"M 2266 3388 \nQ 2413 3875 2506 4288 \nQ 2563 4531 2563 4766 \nQ 2563 4847 2559 4916 \nQ 2806 4853 2994 4756 \nQ 3041 4728 3041 4684 \nQ 3041 4647 3006 4616 \nQ 2925 4534 2891 4409 \nQ 2747 3881 2603 3425 \nQ 2984 3481 3256 3481 \nQ 3709 3481 3891 3234 \nQ 4063 3006 4063 2503 \nQ 4063 1172 3716 450 \nQ 3484 -38 3050 -38 \nQ 2697 -38 2388 78 \nQ 2328 97 2328 159 \nQ 2328 303 2266 469 \nQ 2666 294 2994 294 \nQ 3269 294 3425 619 \nQ 3731 1281 3731 2497 \nQ 3731 2916 3616 3066 \nQ 3509 3206 3256 3206 \nQ 2997 3206 2522 3138 \nQ 2009 1566 1216 91 \nQ 1200 53 1166 53 \nQ 1147 53 1134 63 \nQ 1122 72 1025 138 \nQ 956 184 928 206 \nQ 906 219 906 238 \nQ 906 253 922 281 \nQ 1641 1522 2175 3084 \nQ 1584 3000 1338 2956 \nQ 1113 2919 984 2856 \nQ 931 2831 900 2831 \nQ 850 2831 825 2881 \nQ 750 3044 703 3241 \nQ 778 3234 856 3234 \nQ 1078 3234 1350 3266 \nQ 1650 3297 2266 3388 \nz\nM 4563 3638 \nQ 4681 3731 4788 3784 \nQ 4803 3791 4816 3791 \nQ 4844 3791 4875 3766 \nQ 5578 3156 5888 2216 \nQ 5897 2178 5897 2166 \nQ 5897 2138 5875 2116 \nQ 5809 2059 5675 1994 \nQ 5647 1978 5625 1978 \nQ 5584 1978 5572 2031 \nQ 5272 3009 4563 3638 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"YuGothic-Regular-3089\" d=\"M 2172 4850 \nQ 2231 4950 2338 5056 \nQ 2363 5081 2384 5081 \nQ 2397 5081 2419 5075 \nQ 3000 4828 3553 4359 \nQ 3578 4338 3578 4319 \nQ 3578 4303 3566 4281 \nQ 3528 4225 3400 4084 \nQ 3381 4066 3363 4066 \nQ 3341 4066 3316 4091 \nQ 2825 4563 2172 4850 \nz\nM 1647 3688 \nQ 1856 3625 2000 3519 \nQ 2056 3484 2056 3438 \nQ 2056 3409 2031 3378 \nQ 1969 3319 1928 3084 \nQ 1747 2144 1728 1491 \nQ 2225 2109 2919 2450 \nQ 3488 2731 4000 2731 \nQ 4663 2731 5031 2363 \nQ 5344 2047 5344 1553 \nQ 5344 697 4378 216 \nQ 3741 -97 2869 -191 \nQ 2850 -194 2834 -194 \nQ 2766 -194 2734 -141 \nQ 2650 -6 2503 97 \nQ 3591 184 4203 500 \nQ 4984 906 4984 1581 \nQ 4984 2000 4706 2222 \nQ 4444 2431 3963 2431 \nQ 3472 2431 2922 2125 \nQ 2453 1863 2044 1434 \nQ 1847 1222 1747 1044 \nQ 1728 1009 1703 1009 \nQ 1694 1009 1666 1019 \nQ 1572 1053 1459 1116 \nQ 1422 1134 1422 1191 \nQ 1447 2059 1606 3175 \nQ 1647 3453 1647 3622 \nQ 1647 3666 1647 3688 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"YuGothic-Regular-4e2d\" d=\"M 2991 1734 \nL 1197 1734 \nL 1197 1356 \nQ 1197 1313 1153 1313 \nL 934 1313 \nQ 891 1313 891 1356 \nL 903 2541 \nL 903 3125 \nL 891 3913 \nQ 891 3956 934 3956 \nL 1850 3944 \nL 2991 3944 \nL 2991 4481 \nQ 2991 5063 2947 5300 \nQ 3119 5294 3297 5269 \nQ 3363 5256 3363 5219 \nQ 3363 5209 3338 5109 \nQ 3297 4981 3297 4506 \nL 3297 3944 \nL 4553 3944 \nL 5469 3956 \nQ 5513 3956 5513 3913 \nL 5500 3206 \nL 5500 2559 \nL 5513 1381 \nQ 5513 1338 5469 1338 \nL 5250 1338 \nQ 5206 1338 5206 1381 \nL 5206 1734 \nL 3297 1734 \nL 3297 763 \nL 3309 -384 \nQ 3309 -428 3266 -428 \nL 3022 -428 \nQ 2978 -428 2978 -384 \nL 2991 756 \nL 2991 1734 \nz\nM 2991 2003 \nL 2991 3669 \nL 1197 3669 \nL 1197 2003 \nL 2991 2003 \nz\nM 3297 2003 \nL 5206 2003 \nL 5206 3669 \nL 3297 3669 \nL 3297 2003 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"YuGothic-Regular-70b9\" d=\"M 3231 3303 \nL 4153 3303 \nL 5056 3316 \nQ 5100 3316 5100 3278 \nL 5088 2716 \nL 5088 2009 \nL 5100 1447 \nQ 5100 1403 5056 1403 \nL 4153 1416 \nL 2266 1416 \nL 1369 1403 \nQ 1325 1403 1325 1447 \nL 1338 2009 \nL 1338 2716 \nL 1325 3278 \nQ 1325 3316 1369 3316 \nL 2266 3303 \nL 2931 3303 \nL 2931 4544 \nQ 2931 5050 2888 5313 \nQ 3097 5303 3231 5272 \nQ 3303 5263 3303 5228 \nQ 3303 5188 3278 5119 \nQ 3231 4997 3231 4575 \nL 3231 4416 \nL 4716 4416 \nL 5619 4428 \nQ 5663 4428 5663 4384 \nL 5663 4166 \nQ 5663 4122 5619 4122 \nL 4716 4134 \nL 3231 4134 \nL 3231 3303 \nz\nM 1638 3028 \nL 1638 1691 \nL 4788 1691 \nL 4788 3028 \nL 1638 3028 \nz\nM 2441 941 \nQ 2472 947 2488 947 \nQ 2522 947 2534 903 \nQ 2684 453 2781 -197 \nQ 2781 -206 2781 -213 \nQ 2781 -247 2703 -263 \nL 2581 -281 \nQ 2531 -288 2516 -288 \nQ 2478 -288 2478 -241 \nQ 2444 269 2263 863 \nQ 2256 881 2256 888 \nQ 2256 916 2338 928 \nL 2441 941 \nz\nM 1531 831 \nQ 1263 188 781 -313 \nQ 756 -344 738 -344 \nQ 719 -344 653 -306 \nL 566 -256 \nQ 484 -209 484 -191 \nQ 484 -178 506 -159 \nQ 1003 309 1269 934 \nQ 1281 969 1309 969 \nQ 1334 969 1384 947 \nL 1466 909 \nQ 1541 878 1541 859 \nQ 1541 850 1531 831 \nz\nM 3675 953 \nQ 3700 963 3713 963 \nQ 3738 963 3756 928 \nQ 4034 422 4178 -166 \nQ 4184 -184 4184 -191 \nQ 4184 -219 4122 -238 \nL 4006 -269 \nQ 3941 -291 3925 -291 \nQ 3903 -291 3894 -250 \nQ 3753 369 3497 850 \nQ 3488 869 3488 878 \nQ 3488 897 3566 922 \nL 3675 953 \nz\nM 5025 1038 \nQ 5494 525 5831 -141 \nQ 5841 -159 5841 -169 \nQ 5841 -194 5775 -231 \nL 5678 -281 \nQ 5603 -319 5588 -319 \nQ 5569 -319 5556 -288 \nQ 5275 338 4781 909 \nQ 4766 925 4766 934 \nQ 4766 950 4841 991 \nL 4916 1031 \nQ 4966 1059 4984 1059 \nQ 5003 1059 5025 1038 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"YuGothic-Regular-3092\" d=\"M 2822 5125 \nQ 3097 5066 3225 4997 \nQ 3269 4978 3269 4938 \nQ 3269 4903 3238 4878 \nQ 3159 4819 3109 4691 \nQ 3016 4459 2878 4166 \nQ 3578 4213 4288 4391 \nQ 4319 4400 4328 4400 \nQ 4353 4400 4359 4372 \nQ 4384 4278 4384 4147 \nQ 4384 4091 4313 4078 \nQ 3566 3919 2744 3859 \nQ 2359 3184 2059 2834 \nL 2078 2822 \nQ 2463 3109 2903 3109 \nQ 3638 3109 3713 2316 \nQ 3903 2397 4728 2784 \nQ 5081 2956 5228 3116 \nQ 5419 2963 5491 2822 \nQ 5503 2797 5503 2775 \nQ 5503 2722 5438 2706 \nQ 5238 2656 5066 2584 \nQ 4644 2416 3725 2016 \nQ 3725 1291 3722 941 \nQ 3722 884 3672 875 \nQ 3500 856 3441 856 \nQ 3397 856 3397 922 \nQ 3406 1347 3406 1575 \nQ 3406 1719 3403 1875 \nQ 2794 1581 2519 1319 \nQ 2244 1050 2244 759 \nQ 2244 456 2541 316 \nQ 2825 184 3416 184 \nQ 4047 184 4919 306 \nQ 4966 306 4978 269 \nQ 5009 141 5009 31 \nQ 5009 -38 4966 -44 \nQ 4203 -128 3391 -128 \nQ 1944 -128 1944 744 \nQ 1944 1166 2316 1513 \nQ 2653 1825 3391 2181 \nQ 3381 2569 3244 2722 \nQ 3119 2859 2847 2859 \nQ 2331 2859 1716 2328 \nQ 1525 2150 1125 1741 \nQ 1100 1709 1078 1709 \nQ 1059 1709 1041 1728 \nQ 944 1813 869 1913 \nQ 853 1934 853 1947 \nQ 853 1963 875 1984 \nQ 1809 2791 2400 3834 \nQ 2063 3813 1725 3813 \nQ 1447 3813 1156 3825 \nQ 1103 3825 1094 3878 \nQ 1075 3988 1063 4134 \nQ 1406 4109 1744 4109 \nQ 2131 4109 2534 4141 \nQ 2688 4472 2781 4794 \nQ 2822 4928 2822 5066 \nQ 2822 5106 2822 5125 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"YuGothic-Regular-6c7a\" d=\"M 3903 2106 \nQ 4463 616 6047 -166 \nQ 5953 -231 5881 -350 \nQ 5834 -422 5809 -422 \nQ 5794 -422 5725 -381 \nQ 5334 -147 5113 28 \nQ 4497 506 4141 1069 \nQ 3881 1466 3709 1959 \nQ 3372 422 1888 -416 \nQ 1828 -447 1806 -447 \nQ 1775 -447 1728 -375 \nQ 1653 -275 1553 -228 \nQ 2394 209 2831 744 \nQ 3200 1200 3397 1869 \nQ 3434 2022 3453 2106 \nL 2828 2106 \nL 1913 2094 \nQ 1869 2094 1869 2138 \nL 1869 2338 \nQ 1869 2388 1913 2388 \nL 2828 2375 \nL 3500 2375 \nQ 3584 2928 3597 3763 \nL 3109 3763 \nL 2278 3750 \nQ 2231 3750 2231 3794 \nL 2231 4000 \nQ 2231 4044 2278 4044 \nL 3109 4031 \nL 3603 4031 \nL 3603 4575 \nQ 3603 5025 3556 5284 \nQ 3731 5284 3903 5253 \nQ 3978 5231 3978 5191 \nQ 3978 5163 3963 5128 \nQ 3947 5088 3941 5069 \nQ 3903 4972 3903 4600 \nL 3903 4031 \nL 4531 4031 \nL 5381 4044 \nQ 5425 4044 5425 4000 \nL 5413 3444 \nL 5413 2375 \nQ 5678 2378 5881 2384 \nQ 6019 2388 6022 2388 \nQ 6066 2388 6066 2338 \nL 6066 2138 \nQ 6066 2094 6022 2094 \nL 5113 2106 \nL 3903 2106 \nz\nM 3788 2375 \nL 5119 2375 \nL 5119 3763 \nL 3897 3763 \nL 3866 3072 \nQ 3838 2725 3788 2375 \nz\nM 544 -172 \nQ 759 75 881 341 \nQ 1213 1047 1472 1797 \nQ 1538 1706 1613 1650 \nQ 1688 1591 1688 1566 \nQ 1688 1550 1669 1491 \nQ 1403 772 1034 -19 \nQ 934 -231 913 -313 \nQ 903 -384 856 -384 \nQ 831 -384 772 -347 \nQ 631 -253 544 -172 \nz\nM 1028 5131 \nQ 1478 4850 1888 4409 \nQ 1906 4391 1906 4378 \nQ 1906 4363 1863 4306 \nL 1784 4213 \nQ 1731 4153 1719 4153 \nQ 1706 4153 1688 4172 \nQ 1325 4581 850 4922 \nQ 822 4941 822 4953 \nQ 822 4972 869 5019 \nL 941 5100 \nQ 984 5144 1000 5144 \nQ 1009 5144 1028 5131 \nz\nM 625 3553 \nQ 1081 3294 1497 2881 \nQ 1519 2859 1519 2844 \nQ 1519 2822 1478 2772 \nL 1400 2675 \nQ 1356 2619 1338 2619 \nQ 1322 2619 1297 2644 \nQ 875 3084 447 3341 \nQ 422 3353 422 3366 \nQ 422 3381 466 3438 \nL 544 3525 \nQ 575 3566 591 3566 \nQ 600 3566 625 3553 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"YuGothic-Regular-3081\" d=\"M 3488 3694 \nQ 3628 4072 3713 4409 \nQ 3759 4606 3759 4744 \nQ 3759 4809 3750 4891 \nQ 4013 4825 4175 4722 \nQ 4231 4691 4231 4641 \nQ 4231 4603 4194 4563 \nQ 4100 4472 4047 4313 \nQ 3953 4072 3816 3694 \nQ 4703 3669 5197 3125 \nQ 5619 2666 5619 1966 \nQ 5619 1141 4963 613 \nQ 4475 219 3700 44 \nQ 3672 41 3656 41 \nQ 3600 41 3566 91 \nQ 3478 213 3353 281 \nQ 4319 459 4822 938 \nQ 5272 1366 5272 1966 \nQ 5272 2569 4919 2972 \nQ 4513 3438 3731 3438 \nQ 3222 2191 2713 1466 \nQ 2875 1238 3109 991 \nQ 3041 906 2931 822 \nQ 2906 803 2884 803 \nQ 2853 803 2822 834 \nQ 2675 991 2528 1209 \nQ 1891 475 1416 475 \nQ 1141 475 969 694 \nQ 788 919 788 1313 \nQ 788 2225 1716 3034 \nQ 1594 3463 1497 3897 \nQ 1397 4350 1319 4488 \nQ 1541 4488 1697 4434 \nQ 1766 4409 1766 4319 \nL 1766 4216 \nQ 1766 4122 1778 4044 \nQ 1850 3613 1972 3200 \nQ 2666 3631 3488 3694 \nz\nM 2041 2944 \nQ 2278 2163 2547 1703 \nQ 2981 2297 3406 3431 \nQ 2697 3363 2041 2944 \nz\nM 1800 2753 \nQ 1081 2075 1081 1350 \nQ 1081 1056 1188 906 \nQ 1278 775 1428 775 \nQ 1806 775 2350 1459 \nQ 2016 2066 1800 2753 \nz\n\" transform=\"scale(0.015625)\"/>\n      <path id=\"YuGothic-Regular-308b\" d=\"M 3834 4500 \nQ 3172 4403 2113 4213 \nQ 2003 4194 1906 4147 \nQ 1844 4116 1794 4116 \nQ 1741 4116 1703 4178 \nQ 1634 4319 1569 4531 \nQ 1741 4513 1881 4513 \nQ 2000 4513 2119 4525 \nQ 2941 4613 3756 4756 \nQ 3838 4766 3900 4806 \nQ 3950 4844 3975 4844 \nQ 4016 4844 4084 4794 \nQ 4247 4663 4316 4575 \nQ 4347 4534 4347 4484 \nQ 4347 4403 4256 4378 \nQ 4134 4347 3944 4141 \nQ 3259 3372 2216 2309 \nL 2234 2284 \nQ 3025 2822 3744 2822 \nQ 4469 2822 4863 2397 \nQ 5197 2038 5197 1466 \nQ 5197 709 4591 263 \nQ 4034 -147 3131 -147 \nQ 2566 -147 2284 97 \nQ 2075 281 2075 544 \nQ 2075 825 2281 1009 \nQ 2475 1178 2772 1178 \nQ 3216 1178 3513 875 \nQ 3756 625 3841 231 \nQ 4331 369 4594 697 \nQ 4850 1019 4850 1478 \nQ 4850 2003 4466 2309 \nQ 4150 2559 3713 2559 \nQ 2850 2559 1906 1816 \nQ 1644 1616 1338 1313 \nQ 1303 1278 1278 1278 \nQ 1256 1278 1234 1300 \nQ 1106 1428 1056 1491 \nQ 1044 1513 1044 1525 \nQ 1044 1547 1075 1575 \nQ 1731 2141 2522 2994 \nQ 3191 3722 3834 4500 \nz\nM 3528 166 \nQ 3463 528 3256 728 \nQ 3063 916 2784 916 \nQ 2350 916 2350 556 \nQ 2350 359 2559 234 \nQ 2750 122 3053 122 \nQ 3288 122 3528 166 \nz\n\" transform=\"scale(0.015625)\"/>\n     </defs>\n     <use xlink:href=\"#YuGothic-Regular-4e8c\"/>\n     <use xlink:href=\"#YuGothic-Regular-7b49\" transform=\"translate(100 0)\"/>\n     <use xlink:href=\"#YuGothic-Regular-5206\" transform=\"translate(200 0)\"/>\n     <use xlink:href=\"#YuGothic-Regular-7dda\" transform=\"translate(300 0)\"/>\n     <use xlink:href=\"#YuGothic-Regular-3068\" transform=\"translate(400 0)\"/>\n     <use xlink:href=\"#YuGothic-Regular-32\" transform=\"translate(500 0)\"/>\n     <use xlink:href=\"#YuGothic-Regular-3064\" transform=\"translate(555.615234 0)\"/>\n     <use xlink:href=\"#YuGothic-Regular-306e\" transform=\"translate(655.615234 0)\"/>\n     <use xlink:href=\"#YuGothic-Regular-5782\" transform=\"translate(755.615234 0)\"/>\n     <use xlink:href=\"#YuGothic-Regular-5fc3\" transform=\"translate(855.615234 0)\"/>\n     <use xlink:href=\"#YuGothic-Regular-304b\" transform=\"translate(955.615234 0)\"/>\n     <use xlink:href=\"#YuGothic-Regular-3089\" transform=\"translate(1055.615234 0)\"/>\n     <use xlink:href=\"#YuGothic-Regular-4e2d\" transform=\"translate(1155.615234 0)\"/>\n     <use xlink:href=\"#YuGothic-Regular-70b9\" transform=\"translate(1255.615234 0)\"/>\n     <use xlink:href=\"#YuGothic-Regular-3092\" transform=\"translate(1355.615234 0)\"/>\n     <use xlink:href=\"#YuGothic-Regular-6c7a\" transform=\"translate(1455.615234 0)\"/>\n     <use xlink:href=\"#YuGothic-Regular-3081\" transform=\"translate(1555.615234 0)\"/>\n     <use xlink:href=\"#YuGothic-Regular-308b\" transform=\"translate(1655.615234 0)\"/>\n    </g>\n   </g>\n   <g id=\"PathCollection_1\">\n    <defs>\n     <path id=\"m9c9819ba01\" d=\"M 0 2.645751 \nC 0.701661 2.645751 1.374679 2.366978 1.870829 1.870829 \nC 2.366978 1.374679 2.645751 0.701661 2.645751 0 \nC 2.645751 -0.701661 2.366978 -1.374679 1.870829 -1.870829 \nC 1.374679 -2.366978 0.701661 -2.645751 0 -2.645751 \nC -0.701661 -2.645751 -1.374679 -2.366978 -1.870829 -1.870829 \nC -2.366978 -1.374679 -2.645751 -0.701661 -2.645751 0 \nC -2.645751 0.701661 -2.366978 1.374679 -1.870829 1.870829 \nC -1.374679 2.366978 -0.701661 2.645751 0 2.645751 \nz\n\" style=\"stroke: #0f172a\"/>\n    </defs>\n    <g clip-path=\"url(#p13be2827ee)\">\n     <use xlink:href=\"#m9c9819ba01\" x=\"173.263867\" y=\"155.559305\" style=\"fill: #0f172a; stroke: #0f172a\"/>\n    </g>\n   </g>\n   <g id=\"PathCollection_2\">\n    <g clip-path=\"url(#p13be2827ee)\">\n     <use xlink:href=\"#m9c9819ba01\" x=\"503.536133\" y=\"403.263504\" style=\"fill: #0f172a; stroke: #0f172a\"/>\n    </g>\n   </g>\n   <g id=\"PathCollection_3\">\n    <g clip-path=\"url(#p13be2827ee)\">\n     <use xlink:href=\"#m9c9819ba01\" x=\"503.536133\" y=\"67.910127\" style=\"fill: #0f172a; stroke: #0f172a\"/>\n    </g>\n   </g>\n   <g id=\"PathCollection_4\">\n    <g clip-path=\"url(#p13be2827ee)\">\n     <use xlink:href=\"#m9c9819ba01\" x=\"401.913897\" y=\"200.019033\" style=\"fill: #0f172a; stroke: #0f172a\"/>\n    </g>\n   </g>\n   <g id=\"PathCollection_5\">\n    <g clip-path=\"url(#p13be2827ee)\">\n     <use xlink:href=\"#m9c9819ba01\" x=\"503.536133\" y=\"200.019033\" style=\"fill: #0f172a; stroke: #0f172a\"/>\n    </g>\n   </g>\n   <g id=\"PathCollection_6\">\n    <g clip-path=\"url(#p13be2827ee)\">\n     <use xlink:href=\"#m9c9819ba01\" x=\"355.502384\" y=\"107.196006\" style=\"fill: #0f172a; stroke: #0f172a\"/>\n    </g>\n   </g>\n   <g id=\"PathCollection_7\">\n    <g clip-path=\"url(#p13be2827ee)\">\n     <use xlink:href=\"#m9c9819ba01\" x=\"339.949119\" y=\"280.573244\" style=\"fill: #0f172a; stroke: #0f172a\"/>\n    </g>\n   </g>\n   <g id=\"PathCollection_8\">\n    <g clip-path=\"url(#p13be2827ee)\">\n     <use xlink:href=\"#m9c9819ba01\" x=\"339.406928\" y=\"283.361659\" style=\"fill: #0f172a; stroke: #0f172a\"/>\n    </g>\n   </g>\n   <g id=\"PathCollection_9\">\n    <g clip-path=\"url(#p13be2827ee)\">\n     <use xlink:href=\"#m9c9819ba01\" x=\"364.71136\" y=\"59.835558\" style=\"fill: #0f172a; stroke: #0f172a\"/>\n    </g>\n   </g>\n   <g id=\"PathCollection_10\">\n    <g clip-path=\"url(#p13be2827ee)\">\n     <use xlink:href=\"#m9c9819ba01\" x=\"338.4\" y=\"294.382537\" style=\"fill: #0f172a; stroke: #0f172a\"/>\n    </g>\n   </g>\n   <g id=\"PathCollection_11\">\n    <defs>\n     <path id=\"m4d10065df1\" d=\"M 0 2.645751 \nC 0.701661 2.645751 1.374679 2.366978 1.870829 1.870829 \nC 2.366978 1.374679 2.645751 0.701661 2.645751 0 \nC 2.645751 -0.701661 2.366978 -1.374679 1.870829 -1.870829 \nC 1.374679 -2.366978 0.701661 -2.645751 0 -2.645751 \nC -0.701661 -2.645751 -1.374679 -2.366978 -1.870829 -1.870829 \nC -2.366978 -1.374679 -2.645751 -0.701661 -2.645751 0 \nC -2.645751 0.701661 -2.366978 1.374679 -1.870829 1.870829 \nC -1.374679 2.366978 -0.701661 2.645751 0 2.645751 \nz\n\" style=\"stroke: #e11d48\"/>\n    </defs>\n    <g clip-path=\"url(#p13be2827ee)\">\n     <use xlink:href=\"#m4d10065df1\" x=\"503.536133\" y=\"235.586815\" style=\"fill: #e11d48; stroke: #e11d48\"/>\n    </g>\n   </g>\n   <g id=\"PathCollection_12\">\n    <g clip-path=\"url(#p13be2827ee)\">\n     <use xlink:href=\"#m4d10065df1\" x=\"437.48168\" y=\"191.127087\" style=\"fill: #e11d48; stroke: #e11d48\"/>\n    </g>\n   </g>\n   <g id=\"PathCollection_13\">\n    <g clip-path=\"url(#p13be2827ee)\">\n     <use xlink:href=\"#m4d10065df1\" x=\"470.508906\" y=\"213.356951\" style=\"fill: #e11d48; stroke: #e11d48\"/>\n    </g>\n   </g>\n  </g>\n </g>\n <defs>\n  <clipPath id=\"p13be2827ee\">\n   <rect x=\"3.00024\" y=\"19.699303\" width=\"670.79952\" height=\"423.700457\"/>\n  </clipPath>\n </defs>\n</svg>\n",
+    "proof_status": "proved",
+    "undischarged_obligations": [],
+    "strict_frozen_score_eligible": false,
+    "natural_statement_sha256": null
+  },
+  "attempts": [
+    {
+      "chart_id": "reflected-chord-existential-circle-pair-return",
+      "proof_class": "exact_rational_field_known_root_existential_pair_chart",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "cevian-three-radical-axes-equal-angle",
+      "proof_class": "exact_rational_field_three_radical_axes_and_equal_angle_ideal_chart",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "euler-line-equal-angle-radical-altitude",
+      "proof_class": "exact_rational_field_equal_angle_ideal_and_radical_axis_chart",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "equilateral-angle-sum-three-circle-pencil",
+      "proof_class": "exact_algebraic_field_direct_similarity_circle_pencil_chart",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "excentral-contact-radical-centers-incenter-axis",
+      "proof_class": "exact_unit-incircle_signed-distance_and_radical-axis_chart",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "miquel-cevian-three-target-circles-coaxial",
+      "proof_class": "exact_homogeneous_polynomial_chart_with_hash_bound_miquel_branch",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "contact-polar-reflection-two-secants-side-return",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "incircle-contact-chord-circumtangent-isogonality",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "arc-midpoint-reflected-bisector-two-circle-cyclicity",
+      "proof_class": "exact_rational_field_chart_with_hash_bound_arc_branch",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "incenter-nine-point-power-chain-midpoint",
+      "proof_class": "exact_chart_with_hash_bound_typed_existential_branch",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "major-arc-homothety-right-circle-tangent",
+      "proof_class": "posthoc_exact_chart_with_hash_bound_natural_branch",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "second-lemoine-harmonic-pascal-incenter-altitude",
+      "proof_class": "posthoc_exact_chart_with_hash_bound_natural_domain",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "midpoint-bisector-two-circles-equal-power",
+      "proof_class": "exact_chart_with_hash_bound_typed_second_root",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "orthic-parallel-chord-two-tangents-collinearity",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "incircle-gergonne-three-circumcenters-centroid-axis",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "three-circumcenters-radical-axis-reflection-isogonal",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "cyclic-opposite-bisectors-transversal-midpoints-perpendicular",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "intersecting-chords-three-circles-collinearity",
+      "proof_class": "exact_chart_with_construction_domain_discharged",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "isosceles-two-circle-intersection-perpendicular",
+      "proof_class": "exact_chart_with_construction_domain_discharged",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "two-euler-midpoints-cross-perpendiculars-orthocenter-line",
+      "proof_class": "exact_chart_with_construction_domain_discharged",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "incenter-side-midpoint-perpendicular-triangle-radical-axis",
+      "proof_class": "exact_unit-incircle_tangent_and_equal-power_chart",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "incenter-bisector-orthocenters-midpoint-on-bisector",
+      "proof_class": "exact_unit-incircle_tangent_and_orthocenter_chart",
+      "replayed": true,
+      "theorem": "incenter-bisector-orthocenters-midpoint-on-bisector",
+      "matched_constructions": [
+        "I is the incenter and E,F are the two internal-bisector traces",
+        "D is the foot from I to BC",
+        "M,N are the orthocenters of AIF and AIE",
+        "P is the intersection of EM and FN",
+        "X is the midpoint of BC",
+        "Y lies on AD and XY is perpendicular to IP",
+        "the goal places the midpoint K of XY on AI"
+      ],
+      "role_count": 13,
+      "goal": "coll m_xy a i",
+      "error": null,
+      "proof_status": "proved"
+    },
+    {
+      "chart_id": "isosceles-orthocenter-midpoint-trisection-perpendicular",
+      "proof_class": "exact_affine_metric_ratio_chart",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "median-projection-second-circle-intersection-midpoint-equidistant",
+      "proof_class": "exact_affine_projection_known-root_circle_chart",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "incircle-touchpoint-circumcenter-line-second-root-equals-inradius",
+      "proof_class": "exact_unit-incircle_known-root_circle_chart",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "incircle-two-contacts-bci-circumcenter-equal-angle",
+      "proof_class": "exact_unit-incircle_directed-angle_chart",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "orthocenter-midpoint-two-circle-common-point-on-line",
+      "proof_class": "posthoc_exact_existential_chart_with_quantifier_repair",
+      "replayed": false,
+      "theorem": "orthocenter-midpoint-two-circle-common-point-on-line",
+      "matched_constructions": [],
+      "role_count": 3,
+      "goal": "coll m_xy a i",
+      "error": null,
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "incircle-diameter-circle-reflection",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "euler-line-circle-bisector-equal-distance",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "mixtilinear-two-circumcircles-tangent",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "incenter-excenter-radical-axis-isogonal-trace",
+      "proof_class": "external_theorem_reimplemented_and_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "incircle-antipodes-three-circle-axis",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "positive-similarity-six-circumcenters-concurrency",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "tangential-quadrilateral-second-tangent-circle-tangency",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "tangent-triangle-secant-midpoint-circle-tangency",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "parallel-transversal-perpendicular-triangle-circles-tangent",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "two-diameter-circles-pedal-radical-axis",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "incircle-contact-circle-pencil-midpoint-radical-axis",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    },
+    {
+      "chart_id": "arc-midpoint-antipode-reflection-center-axis",
+      "proof_class": "posthoc_exact_chart_replayed",
+      "replayed": false,
+      "theorem": null,
+      "matched_constructions": [],
+      "role_count": 0,
+      "goal": null,
+      "error": "structural_prefilter_miss",
+      "proof_status": "not_matched"
+    }
+  ],
+  "strict_frozen_score_eligible": false,
+  "benchmark_admission": "A fresh held-out cohort must establish transfer before score admission.",
+  "natural_statement_sha256": null
+}

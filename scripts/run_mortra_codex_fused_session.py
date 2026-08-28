@@ -37,6 +37,19 @@ def _dataset(path: Path) -> dict[str, str]:
     return {lines[index]: lines[index + 1] for index in range(0, len(lines), 2)}
 
 
+def _stop_obligation(*, solved: bool, source: str) -> dict[str, Any] | None:
+    if solved:
+        return None
+    from scripts.experiment_mortra_codex_research_dialogue import (
+        _nearest_chart_contracts,
+    )
+
+    return {
+        "kind": "no_replayed_exact_certificate",
+        "nearest_chart_contracts": _nearest_chart_contracts(source),
+    }
+
+
 def _snapshot(
     *,
     union_path: Path,
@@ -46,7 +59,6 @@ def _snapshot(
     from scripts.experiment_mortra_codex_research_dialogue import (
         _attempt_summary,
         _goal,
-        _nearest_chart_contracts,
         _operation_multiset,
     )
     from worker.backend.exact_geometry_chart_portfolio import (
@@ -80,10 +92,10 @@ def _snapshot(
             "natural_semantic_atoms": list(
                 extract_geometry_natural_semantics(natural).typed_atoms
             ),
-            "stop_obligation": {
-                "kind": "no_replayed_exact_certificate",
-                "nearest_chart_contracts": _nearest_chart_contracts(source),
-            },
+            "stop_obligation": _stop_obligation(
+                solved=bool(result.solved),
+                source=source,
+            ),
         }
     return {
         "protocol": TRANSPORT,

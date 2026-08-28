@@ -27,7 +27,7 @@ CHART_ID = "major-arc-homothety-right-circle-tangent"
 def test_natural_semantics_preserve_arc_through_branch() -> None:
     semantics = extract_geometry_natural_semantics(NATURAL)
 
-    assert semantics.parser_version == "geometry-natural-semantics-v2"
+    assert semantics.parser_version == "geometry-natural-semantics-v5"
     assert semantics.has_acute_triangle(("A", "B", "C"))
     assert semantics.has_arc_midpoint_through("N", ("B", "C"), "A")
     assert "arc_midpoint_through(N,B,A,C)" in semantics.typed_atoms

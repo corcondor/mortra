@@ -42,6 +42,21 @@ def _run_one(
     natural_statement: str | None = None,
 ) -> None:
     source = input_path.read_text(encoding="utf-8").strip()
+    _run_source(
+        source=source,
+        output_dir=output_dir,
+        name=name,
+        natural_statement=natural_statement,
+    )
+
+
+def _run_source(
+    *,
+    source: str,
+    output_dir: Path,
+    name: str,
+    natural_statement: str | None = None,
+) -> None:
     result = certify_jgex_with_exact_chart_portfolio(
         source,
         include_diagram=True,
@@ -99,15 +114,19 @@ def main() -> int:
     inputs = parser.add_mutually_exclusive_group(required=True)
     inputs.add_argument("--input", type=Path)
     inputs.add_argument("--input-dir", type=Path)
+    inputs.add_argument("--dataset", type=Path)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--problem-name")
     parser.add_argument("--natural-input", type=Path)
     parser.add_argument("--natural-json", type=Path)
+    parser.add_argument("--problem-report", type=Path)
     args = parser.parse_args()
 
     if args.input is not None:
-        if args.natural_json is not None:
-            parser.error("--natural-json is only valid with --input-dir")
+        if args.natural_json is not None or args.problem_report is not None:
+            parser.error(
+                "--natural-json and --problem-report are invalid with --input"
+            )
         _run_one(
             input_path=args.input,
             output_dir=args.output_dir,
@@ -120,10 +139,45 @@ def main() -> int:
         )
         return 0
 
+    if args.dataset is not None:
+        if args.problem_report is None:
+            parser.error("--dataset requires --problem-report")
+        if args.problem_name is not None or args.natural_input is not None:
+            parser.error(
+                "--problem-name and --natural-input are invalid with --dataset"
+            )
+        lines = args.dataset.read_text(encoding="utf-8").splitlines()
+        if len(lines) % 2:
+            parser.error("--dataset must contain problem/source line pairs")
+        sources = {
+            lines[index]: lines[index + 1]
+            for index in range(0, len(lines), 2)
+        }
+        report = json.loads(args.problem_report.read_text(encoding="utf-8"))
+        names = tuple(map(str, report.get("sets", {}).get("strict_matches", ())))
+        missing = sorted(set(names) - set(sources))
+        if missing:
+            parser.error("report problems missing from dataset: " + ", ".join(missing))
+        natural_sources = (
+            json.loads(args.natural_json.read_text(encoding="utf-8"))
+            if args.natural_json is not None
+            else {}
+        )
+        for name in names:
+            _run_source(
+                source=sources[name],
+                output_dir=args.output_dir,
+                name=name,
+                natural_statement=natural_sources.get(name),
+            )
+        return 0
+
     if args.problem_name is not None:
         parser.error("--problem-name is only valid with --input")
     if args.natural_input is not None:
         parser.error("--natural-input is only valid with --input")
+    if args.problem_report is not None:
+        parser.error("--problem-report is only valid with --dataset")
     natural_sources = (
         json.loads(args.natural_json.read_text(encoding="utf-8"))
         if args.natural_json is not None

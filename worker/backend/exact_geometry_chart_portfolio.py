@@ -38,10 +38,25 @@ from worker.backend.cyclic_bisector_transversal_midpoints_chart import (
     certify_jgex_cyclic_bisector_transversal_midpoints_application,
     render_cyclic_bisector_transversal_midpoints_chart_svg,
 )
+from worker.backend.cyclic_cevian_reflection_second_roots_parallel_chart import (
+    certify_cyclic_cevian_reflection_second_roots_parallel_chart,
+    certify_jgex_cyclic_cevian_reflection_second_roots_parallel_application,
+    render_cyclic_cevian_reflection_second_roots_parallel_chart_svg,
+)
+from worker.backend.cross_altitudes_right_angle_pedal_chart import (
+    certify_cross_altitudes_right_angle_pedal_chart,
+    certify_jgex_cross_altitudes_right_angle_pedal_application,
+    render_cross_altitudes_right_angle_pedal_chart_svg,
+)
 from worker.backend.contact_polar_reflection_secant_chart import (
     certify_contact_polar_reflection_secant_chart,
     certify_jgex_contact_polar_reflection_secant_application,
     render_contact_polar_reflection_secant_chart_svg,
+)
+from worker.backend.circumcenter_diameter_parallelogram_chart import (
+    certify_circumcenter_diameter_parallelogram_chart,
+    certify_jgex_circumcenter_diameter_parallelogram_application,
+    render_circumcenter_diameter_parallelogram_chart_svg,
 )
 from worker.backend.cevian_radical_axes_equal_angle_chart import (
     certify_cevian_radical_axes_equal_angle_chart,
@@ -57,6 +72,51 @@ from worker.backend.euler_line_equal_angle_radical_altitude_chart import (
     certify_euler_line_equal_angle_radical_altitude_chart,
     certify_jgex_euler_line_equal_angle_radical_altitude_application,
     render_euler_line_equal_angle_radical_altitude_chart_svg,
+)
+from worker.backend.euler_midpoints_cross_perpendicular_chart import (
+    certify_euler_midpoints_cross_perpendicular_chart,
+    certify_jgex_euler_midpoints_cross_perpendicular_application,
+    render_euler_midpoints_cross_perpendicular_chart_svg,
+)
+from worker.backend.incenter_midpoint_perpendicular_radical_axis_chart import (
+    certify_incenter_midpoint_perpendicular_radical_axis_chart,
+    certify_jgex_incenter_midpoint_perpendicular_radical_axis_application,
+    render_incenter_midpoint_perpendicular_radical_axis_chart_svg,
+)
+from worker.backend.incenter_midline_perpendicular_antipode_angle_chart import (
+    certify_incenter_midline_perpendicular_antipode_angle_chart,
+    certify_jgex_incenter_midline_perpendicular_antipode_angle_application,
+    render_incenter_midline_perpendicular_antipode_angle_chart_svg,
+)
+from worker.backend.incenter_bisector_orthocenters_midpoint_chart import (
+    certify_incenter_bisector_orthocenters_midpoint_chart,
+    certify_jgex_incenter_bisector_orthocenters_midpoint_application,
+    render_incenter_bisector_orthocenters_midpoint_chart_svg,
+)
+from worker.backend.isosceles_orthocenter_trisection_perpendicular_chart import (
+    certify_isosceles_orthocenter_trisection_perpendicular_chart,
+    certify_jgex_isosceles_orthocenter_trisection_perpendicular_application,
+    render_isosceles_orthocenter_trisection_perpendicular_chart_svg,
+)
+from worker.backend.isogonal_median_circumcenters_chart import (
+    certify_isogonal_median_circumcenters_chart,
+    certify_jgex_isogonal_median_circumcenters_application,
+    render_isogonal_median_circumcenters_chart_svg,
+)
+from worker.backend.median_projection_second_circle_midpoint_chart import (
+    certify_jgex_median_projection_second_circle_midpoint_application,
+    certify_median_projection_second_circle_midpoint_chart,
+    render_median_projection_second_circle_midpoint_chart_svg,
+)
+from worker.backend.incircle_touchpoint_circumcenter_second_root_chart import (
+    certify_incircle_touchpoint_circumcenter_second_root_chart,
+    certify_jgex_incircle_touchpoint_circumcenter_second_root_application,
+    render_incircle_touchpoint_circumcenter_second_root_chart_svg,
+)
+from worker.backend.incircle_two_contacts_bci_circumcenter_angle_chart import (
+    certify_incircle_two_contacts_bci_circumcenter_angle_chart,
+    certify_jgex_incircle_two_contacts_bci_circumcenter_angle_application,
+    render_incircle_two_contacts_bci_circumcenter_angle_chart_svg,
 )
 from worker.backend.equilateral_angle_sum_three_circles_chart import (
     certify_equilateral_angle_sum_three_circles_chart,
@@ -123,6 +183,16 @@ from worker.backend.midpoint_bisector_equal_power_chart import (
     certify_midpoint_bisector_equal_power_chart,
     render_midpoint_bisector_equal_power_chart_svg,
 )
+from worker.backend.midpoint_feet_circumcenters_parallel_chart import (
+    certify_jgex_midpoint_feet_circumcenters_parallel_application,
+    certify_midpoint_feet_circumcenters_parallel_chart,
+    render_midpoint_feet_circumcenters_parallel_chart_svg,
+)
+from worker.backend.orthic_transversals_midpoint_right_angle_chart import (
+    certify_jgex_orthic_transversals_midpoint_right_angle_application,
+    certify_orthic_transversals_midpoint_right_angle_chart,
+    render_orthic_transversals_midpoint_right_angle_chart_svg,
+)
 from worker.backend.major_arc_homothety_tangent_chart import (
     certify_jgex_major_arc_homothety_tangent_application,
     certify_major_arc_homothety_tangent_chart,
@@ -172,6 +242,11 @@ from worker.backend.three_circumcenters_radical_reflection_chart import (
     certify_jgex_three_circumcenters_radical_reflection_application,
     certify_three_circumcenters_radical_reflection_chart,
     render_three_circumcenters_radical_reflection_chart_svg,
+)
+from worker.backend.transversal_midpoint_projection_chart import (
+    certify_jgex_transversal_midpoint_projection_application,
+    certify_transversal_midpoint_projection_chart,
+    render_transversal_midpoint_projection_chart_svg,
 )
 from worker.backend.two_diameter_pedal_radical_axis_chart import (
     certify_jgex_two_diameter_pedal_radical_axis_application,
@@ -260,6 +335,22 @@ class _ChartSpec:
 
 
 _CHARTS = (
+    _ChartSpec(
+        "circumcenter-secondary-circle-diameter-parallelogram",
+        "exact_rational_unit_circle_known_root_parallelogram_chart",
+        certify_jgex_circumcenter_diameter_parallelogram_application,
+        certify_circumcenter_diameter_parallelogram_chart,
+        render_circumcenter_diameter_parallelogram_chart_svg,
+        (
+            ("triangle", 1),
+            ("circumcenter", 2),
+            ("on_line", 2),
+            ("on_circle", 2),
+            ("mirror", 1),
+        ),
+        "para",
+        uses_natural_statement=True,
+    ),
     _ChartSpec(
         "reflected-chord-existential-circle-pair-return",
         "exact_rational_field_known_root_existential_pair_chart",
@@ -488,6 +579,21 @@ _CHARTS = (
         uses_natural_statement=True,
     ),
     _ChartSpec(
+        "midpoint-feet-two-circumcenters-parallel-to-base",
+        "exact_affine_metric_shared_circumcenter_height_chart",
+        certify_jgex_midpoint_feet_circumcenters_parallel_application,
+        certify_midpoint_feet_circumcenters_parallel_chart,
+        render_midpoint_feet_circumcenters_parallel_chart_svg,
+        (
+            ("triangle", 1),
+            ("midpoint", 2),
+            ("foot", 2),
+            ("on_line", 4),
+            ("circumcenter", 2),
+        ),
+        "para",
+    ),
+    _ChartSpec(
         "orthic-parallel-chord-two-tangents-collinearity",
         "posthoc_exact_chart_replayed",
         certify_jgex_orthic_parallel_chord_two_tangents_application,
@@ -504,6 +610,21 @@ _CHARTS = (
             ("on_tline", 2),
         ),
         "coll",
+    ),
+    _ChartSpec(
+        "orthic-transversals-midpoint-right-angle",
+        "exact_affine_metric_orthic_elimination_chart",
+        certify_jgex_orthic_transversals_midpoint_right_angle_application,
+        certify_orthic_transversals_midpoint_right_angle_chart,
+        render_orthic_transversals_midpoint_right_angle_chart_svg,
+        (
+            ("triangle", 1),
+            ("foot", 3),
+            ("on_line", 4),
+            ("on_tline", 2),
+            ("midpoint", 1),
+        ),
+        "perp",
     ),
     _ChartSpec(
         "incircle-gergonne-three-circumcenters-centroid-axis",
@@ -554,6 +675,37 @@ _CHARTS = (
         "perp",
     ),
     _ChartSpec(
+        "cyclic-cevian-reflection-second-roots-parallel",
+        "exact_power_converse_and_known_root_reduction_chart",
+        certify_jgex_cyclic_cevian_reflection_second_roots_parallel_application,
+        certify_cyclic_cevian_reflection_second_roots_parallel_chart,
+        render_cyclic_cevian_reflection_second_roots_parallel_chart_svg,
+        (
+            ("triangle", 1),
+            ("circumcenter", 3),
+            ("on_circle", 4),
+            ("on_line", 7),
+            ("midpoint", 1),
+            ("mirror", 1),
+        ),
+        "para",
+        uses_natural_statement=True,
+    ),
+    _ChartSpec(
+        "cross-altitudes-right-angle-pedal-on-diameter-circle",
+        "exact_affine_right_angle_pedal_circle_chart",
+        certify_jgex_cross_altitudes_right_angle_pedal_application,
+        certify_cross_altitudes_right_angle_pedal_chart,
+        render_cross_altitudes_right_angle_pedal_chart_svg,
+        (
+            ("triangle", 1),
+            ("foot", 3),
+            ("on_line", 2),
+            ("on_tline", 1),
+        ),
+        "perp",
+    ),
+    _ChartSpec(
         "intersecting-chords-three-circles-collinearity",
         "exact_chart_with_construction_domain_discharged",
         certify_jgex_intersecting_chords_three_circles_application,
@@ -570,6 +722,163 @@ _CHARTS = (
         render_isosceles_two_circle_perpendicular_chart_svg,
         (("iso_triangle", 1), ("incenter", 1), ("on_bline", 1)),
         "perp",
+    ),
+    _ChartSpec(
+        "two-euler-midpoints-cross-perpendiculars-orthocenter-line",
+        "exact_chart_with_construction_domain_discharged",
+        certify_jgex_euler_midpoints_cross_perpendicular_application,
+        certify_euler_midpoints_cross_perpendicular_chart,
+        render_euler_midpoints_cross_perpendicular_chart_svg,
+        (
+            ("quadrangle", 1),
+            ("on_line", 2),
+            ("circumcenter", 2),
+            ("orthocenter", 2),
+            ("midpoint", 2),
+            ("on_tline", 2),
+        ),
+        "coll",
+    ),
+    _ChartSpec(
+        "transversal-cross-midpoints-perpendicular-bisectors-translation",
+        "exact_affine_midpoint_projection_translation_chart",
+        certify_jgex_transversal_midpoint_projection_application,
+        certify_transversal_midpoint_projection_chart,
+        render_transversal_midpoint_projection_chart_svg,
+        (
+            ("triangle", 1),
+            ("on_line", 2),
+            ("midpoint", 2),
+            ("on_bline", 2),
+            ("on_tline", 2),
+        ),
+        "para",
+    ),
+    _ChartSpec(
+        "incenter-side-midpoint-perpendicular-triangle-radical-axis",
+        "exact_unit-incircle_tangent_and_equal-power_chart",
+        certify_jgex_incenter_midpoint_perpendicular_radical_axis_application,
+        certify_incenter_midpoint_perpendicular_radical_axis_chart,
+        render_incenter_midpoint_perpendicular_radical_axis_chart_svg,
+        (
+            ("triangle", 1),
+            ("incenter", 1),
+            ("midpoint", 4),
+            ("on_tline", 6),
+            ("orthocenter", 1),
+            ("circumcenter", 2),
+            ("on_circle", 4),
+        ),
+        "coll",
+    ),
+    _ChartSpec(
+        "unit-incircle-midline-perpendicular-antipode-equal-angle",
+        "exact_unit_incircle_three_tangent_angle_chart",
+        certify_jgex_incenter_midline_perpendicular_antipode_angle_application,
+        certify_incenter_midline_perpendicular_antipode_angle_chart,
+        render_incenter_midline_perpendicular_antipode_angle_chart_svg,
+        (
+            ("triangle", 1),
+            ("incenter", 1),
+            ("midpoint", 1),
+            ("on_tline", 1),
+            ("on_line", 1),
+            ("mirror", 1),
+        ),
+        "eqangle",
+    ),
+    _ChartSpec(
+        "incenter-bisector-orthocenters-midpoint-on-bisector",
+        "exact_unit-incircle_tangent_and_orthocenter_chart",
+        certify_jgex_incenter_bisector_orthocenters_midpoint_application,
+        certify_incenter_bisector_orthocenters_midpoint_chart,
+        render_incenter_bisector_orthocenters_midpoint_chart_svg,
+        (
+            ("triangle", 1),
+            ("incenter", 1),
+            ("angle_bisector", 2),
+            ("foot", 1),
+            ("orthocenter", 2),
+            ("on_line", 5),
+            ("on_tline", 1),
+            ("midpoint", 2),
+        ),
+        "coll",
+    ),
+    _ChartSpec(
+        "isosceles-orthocenter-midpoint-trisection-perpendicular",
+        "exact_affine_metric_ratio_chart",
+        certify_jgex_isosceles_orthocenter_trisection_perpendicular_application,
+        certify_isosceles_orthocenter_trisection_perpendicular_chart,
+        render_isosceles_orthocenter_trisection_perpendicular_chart_svg,
+        (
+            ("iso_triangle", 1),
+            ("orthocenter", 1),
+            ("midpoint", 1),
+            ("trisegment", 1),
+        ),
+        "perp",
+    ),
+    _ChartSpec(
+        "isogonal-median-two-circumcenters-midpoint-on-euler-radius",
+        "exact_symmetric_ray_isogonal_circumcenter_chart",
+        certify_jgex_isogonal_median_circumcenters_application,
+        certify_isogonal_median_circumcenters_chart,
+        render_isogonal_median_circumcenters_chart_svg,
+        (
+            ("triangle", 1),
+            ("midpoint", 2),
+            ("on_aline", 1),
+            ("circumcenter", 3),
+        ),
+        "coll",
+    ),
+    _ChartSpec(
+        "median-projection-second-circle-intersection-midpoint-equidistant",
+        "exact_affine_projection_known-root_circle_chart",
+        certify_jgex_median_projection_second_circle_midpoint_application,
+        certify_median_projection_second_circle_midpoint_chart,
+        render_median_projection_second_circle_midpoint_chart_svg,
+        (
+            ("triangle", 1),
+            ("midpoint", 2),
+            ("foot", 1),
+            ("on_line", 1),
+            ("on_circum", 1),
+        ),
+        "cong",
+        uses_natural_statement=True,
+    ),
+    _ChartSpec(
+        "incircle-touchpoint-circumcenter-line-second-root-equals-inradius",
+        "exact_unit-incircle_known-root_circle_chart",
+        certify_jgex_incircle_touchpoint_circumcenter_second_root_application,
+        certify_incircle_touchpoint_circumcenter_second_root_chart,
+        render_incircle_touchpoint_circumcenter_second_root_chart_svg,
+        (
+            ("triangle", 1),
+            ("incenter", 1),
+            ("foot", 1),
+            ("circumcenter", 1),
+            ("on_line", 1),
+            ("on_circum", 1),
+        ),
+        "cong",
+        uses_natural_statement=True,
+    ),
+    _ChartSpec(
+        "incircle-two-contacts-bci-circumcenter-equal-angle",
+        "exact_unit-incircle_directed-angle_chart",
+        certify_jgex_incircle_two_contacts_bci_circumcenter_angle_application,
+        certify_incircle_two_contacts_bci_circumcenter_angle_chart,
+        render_incircle_two_contacts_bci_circumcenter_angle_chart_svg,
+        (
+            ("triangle", 1),
+            ("incenter", 1),
+            ("foot", 2),
+            ("circumcenter", 1),
+        ),
+        "eqangle",
     ),
     _ChartSpec(
         "orthocenter-midpoint-two-circle-common-point-on-line",
