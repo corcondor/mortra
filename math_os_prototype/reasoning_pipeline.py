@@ -403,6 +403,7 @@ def run_reasoning_pipeline(
     external_tools: bool = False,
     live_retrieval: bool = False,
     allow_specialized: bool = False,
+    allow_theorem_kernels: bool | None = None,
 ) -> ReasoningPipelineResult:
     registry = DomainRegistry()
     structure = analyze_structure(problem)
@@ -413,6 +414,7 @@ def run_reasoning_pipeline(
         execute=False,
         external_tools=external_tools,
         allow_specialized=allow_specialized,
+        allow_theorem_kernels=allow_theorem_kernels,
     )
     if ir.route == "structural_theorem" and isinstance(ir.givens.get("structural_theorem_query"), dict):
         search_result = MathSearchResult(
@@ -435,7 +437,7 @@ def run_reasoning_pipeline(
         "symbols": ir.symbols,
         "givens": ir.givens,
         "notes": ir.notes,
-        "cold_mode": not allow_specialized,
+        "cold_mode": not allow_specialized and not bool(allow_theorem_kernels),
     }
     domain_ir = registry.analyze(problem, parser_info)
     execute_safe_tool_calls(ir, domain_ir, problem, external_tools=external_tools)

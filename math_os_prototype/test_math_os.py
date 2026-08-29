@@ -1823,6 +1823,19 @@ class MathOsPrototypeTest(unittest.TestCase):
         symbolic_ir = result["data"]["parser"]["givens"]["symbolic_query"]
         self.assertEqual(symbolic_ir["constraints"], ["-5<u**4+5*u**2", "u**4+5*u**2<24"])
 
+    def test_symbolic_query_does_not_drop_equation_for_domain_inequalities(self):
+        problem = (
+            r"$0<2p<q$, $n\geqq2$ and "
+            r"$\cos^n\frac{p\pi}{q}+\sin^n\frac{p\pi}{q}="
+            r"\cos\frac{np\pi}{q}+\sin\frac{np\pi}{q}$. "
+            r"Find all triples $(n,p,q)$."
+        )
+
+        compiled = compile_symbolic_query(problem)
+
+        self.assertIsNotNone(compiled)
+        self.assertNotEqual(compiled.query_operator, "solve_inequality")
+
     def test_structural_interval_requires_token_and_explicit_delimiters(self):
         prose = analyze_structure("A shop sells mini cupcakes in boxes, and asks how many remain.")
         self.assertFalse(any(item.kind == "interval" for item in prose.constraints))

@@ -406,7 +406,10 @@ def compile_symbolic_query(text: str) -> SymbolicQueryIR | None:
                 },
             )
 
-    if inequality and query_requests_solution_set(lower):
+    # An order constraint can describe the domain of an equation.  Lowering
+    # such a mixed problem to the inequality alone silently drops its main
+    # obligation and can certify an unrelated set.
+    if inequality and not equation and query_requests_solution_set(lower):
         return build_ir(
             constraints,
             expressions,

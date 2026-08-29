@@ -38,6 +38,10 @@ def solve_request_payload(payload: dict[str, Any]) -> dict[str, Any]:
     external_tools = bool(payload.get("external_tools", False))
     live_retrieval = bool(payload.get("live_retrieval", False))
     allow_specialized = bool(payload.get("allow_specialized", False))
+    allow_theorem_kernels_value = payload.get("allow_theorem_kernels")
+    allow_theorem_kernels = (
+        None if allow_theorem_kernels_value is None else bool(allow_theorem_kernels_value)
+    )
 
     if full_pipeline:
         result = run_reasoning_pipeline(
@@ -45,6 +49,7 @@ def solve_request_payload(payload: dict[str, Any]) -> dict[str, Any]:
             external_tools=external_tools,
             live_retrieval=live_retrieval,
             allow_specialized=allow_specialized,
+            allow_theorem_kernels=allow_theorem_kernels,
         )
         data = json.loads(result.to_json())
         return {
@@ -61,6 +66,7 @@ def solve_request_payload(payload: dict[str, Any]) -> dict[str, Any]:
         execute=True,
         external_tools=external_tools,
         allow_specialized=allow_specialized,
+        allow_theorem_kernels=allow_theorem_kernels,
     )
     data = json.loads(ir.to_json())
     return {

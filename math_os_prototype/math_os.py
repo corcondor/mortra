@@ -236,11 +236,46 @@ class TinyRouter:
 
 
 class ProblemCompiler:
-    def __init__(self, router: TinyRouter | None = None, *, allow_specialized: bool = False):
+    def __init__(
+        self,
+        router: TinyRouter | None = None,
+        *,
+        allow_specialized: bool = False,
+        allow_theorem_kernels: bool | None = None,
+    ):
         self.router = router or TinyRouter()
         self.allow_specialized = allow_specialized
+        self.allow_theorem_kernels = (
+            allow_specialized if allow_theorem_kernels is None else allow_theorem_kernels
+        )
 
     def compile(self, text: str) -> MathIR:
+        # Typed theorem kernels are independent of the legacy surface-specialist
+        # router.  Keeping the switches separate prevents a broad heuristic from
+        # shadowing a more precise executable theorem query in portfolio runs.
+        theorem_query = (
+            compile_structural_theorem_query(text)
+            if self.allow_theorem_kernels and not self.allow_specialized
+            else None
+        )
+        if theorem_query is not None:
+            payload = theorem_query.to_dict()
+            return MathIR(
+                problem=text,
+                route="structural_theorem",
+                intent=f"structural_theorem_{theorem_query.operator}",
+                symbols=[],
+                givens={"structural_theorem_query": payload},
+                goal=f"Execute the typed theorem kernel {theorem_query.operator}.",
+                plan=[
+                    "Lift the statement to alpha-renamable mathematical objects and constraints.",
+                    "Apply the reusable invariant, finite model, or elimination morphism.",
+                    "Construct an exact witness or exhaustive branch certificate.",
+                    "Replay the certificate independently before returning the observation.",
+                ],
+                tool_calls=[ToolCall("sympy.structural_theorem_query", theorem_query.operator, executable=True)],
+            )
+
         specialized_problem = detect_specialized_problem(text) if self.allow_specialized else None
         if specialized_problem is not None:
             return MathIR(
@@ -319,7 +354,12 @@ class ProblemCompiler:
                 tool_calls=[ToolCall("sympy.iteration_query", iteration_query.operator, executable=True)],
             )
 
-        theorem_query = compile_structural_theorem_query(text)
+        # Backward-compatible ordering for callers that explicitly enable the
+        # legacy surface-specialist router: dedicated adapters get first refusal,
+        # then the typed theorem portfolio handles the remaining statements.
+        theorem_query = (
+            compile_structural_theorem_query(text) if self.allow_theorem_kernels else None
+        )
         if theorem_query is not None:
             payload = theorem_query.to_dict()
             return MathIR(
@@ -1410,8 +1450,13 @@ def run_pipeline(
     execute: bool = True,
     external_tools: bool = False,
     allow_specialized: bool = False,
+    allow_theorem_kernels: bool | None = None,
 ) -> MathIR:
-    compiler = ProblemCompiler(router, allow_specialized=allow_specialized)
+    compiler = ProblemCompiler(
+        router,
+        allow_specialized=allow_specialized,
+        allow_theorem_kernels=allow_theorem_kernels,
+    )
     ir = compiler.compile(text)
     if execute:
         ToolExecutor(external_tools=external_tools).execute(ir)
