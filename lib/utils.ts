@@ -88,6 +88,10 @@ export function normalizeStatement(text: string): string {
   out = out.replace(/\\(?:sub)*section\*?\{([^}]*)\}/g, '\n$1\n')
   out = out.replace(/\\paragraph\*?\{([^}]*)\}/g, '\n$1 ')
 
+  // 数式外の強調・書体指定は、Webでは親文字だけを表示する。
+  // 残すと splitBareLatex が日本語を含む行全体を数式と誤認する。
+  out = out.replace(/\\(?:textbf|textit|texttt|textrm|emph)\{([^{}]*)\}/g, '$1')
+
   // 取り込み時にエスケープが解けず文字列 "\n" のまま残っているものを改行へ。
   // \newline も同じ扱い。\noindent 等は上で処理済みなので後置で安全。
   out = out.replace(/\\newline\b/g, '\n')

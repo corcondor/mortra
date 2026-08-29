@@ -72,3 +72,10 @@ test('版面指示と文字列 \\n が消える', () => {
 test('ルビは親文字だけ残る', () => {
   assert.equal(normalizeStatement('\\ruby{正三角形}{せいさんかくけい}'), '正三角形')
 })
+
+test('解説の書体指定は親文字だけ残る', () => {
+  assert.equal(
+    normalizeStatement('\\textbf{1.} 因数分解する。\\emph{検証済み}'),
+    '1. 因数分解する。検証済み',
+  )
+})

@@ -20,7 +20,7 @@ import { ArchitectureFigure } from './ArchitectureFigure'
 import { AtlasFigure } from './AtlasFigure'
 import ScrollSolid from '../ScrollSolid'
 import { ProofGraphScene } from './ProofGraphScene'
-import { getCopy, FIGURES, type Lang } from '@/lib/mortra/i18n'
+import { getCopy, type Lang } from '@/lib/mortra/i18n'
 import styles from '@/app/mortra/mortra.module.css'
 
 const systemIcons = [Network, GitBranch, ShieldCheck, Cpu]
@@ -73,8 +73,8 @@ export function MortraProductPage({ lang = 'en' }: { lang?: Lang }) {
         <div className={styles.heroFade} />
         <div className={styles.shell}>
           <div className={styles.heroContent}>
-            <p className={styles.heroWordmark}>MORTRA</p>
-            <h1 className={styles.heroSlogan}>{t.hero.slogan}</h1>
+            <p className={styles.heroWordmark}>{t.hero.slogan}</p>
+            <h1 className={styles.heroTitle}>MORTRA</h1>
             <p className={styles.heroStandardModel}>{t.hero.standardModel}</p>
             <p className={styles.heroLead}>{t.hero.lead}</p>
             <div className={styles.heroActions}>
@@ -133,73 +133,16 @@ export function MortraProductPage({ lang = 'en' }: { lang?: Lang }) {
             <p className={styles.sectionCopy}>{t.results.copy}</p>
           </div>
 
-          {/* A. 主指標 — 同一条件のベースライン比 */}
-          <div className={styles.headlineResult}>
-            <p className={styles.headlineCaption}>{t.results.primary.caption}</p>
-            <div className={styles.headlineRows}>
-              <div className={`${styles.headlineRow} ${styles.headlineRowSelf}`}>
-                <span>{t.results.primary.mortraLabel}</span>
-                <div><i style={{ width: '100%' }} /></div>
-                <b>{FIGURES.hageo.mortra} / {FIGURES.hageo.total}</b>
-                <em>{FIGURES.hageo.pct}</em>
-              </div>
-              <div className={styles.headlineRow}>
-                <span>{t.results.primary.newclidLabel}</span>
-                <div><i style={{ width: `${(FIGURES.newclid.score / FIGURES.hageo.mortra) * 100}%` }} /></div>
-                <b>{FIGURES.newclid.score} / {FIGURES.newclid.total}</b>
-                <em>{FIGURES.newclid.pct}</em>
-              </div>
-            </div>
-            <p className={styles.headlineRatio}>{t.results.primary.ratio}</p>
-            <p className={styles.headlineNote}>{t.results.primary.note}</p>
+          <div className={styles.resultMetricGrid}>
+            {t.results.metrics.map(metric => (
+              <article className={styles.resultMetric} data-tone={metric.tone} key={metric.label}>
+                <strong>{metric.value}</strong>
+                <h3>{metric.label}</h3>
+                <p>{metric.body}</p>
+              </article>
+            ))}
           </div>
 
-          {/* B. IMO-AG-30 — ニューラル有無と対応範囲の列を足した比較 */}
-          <div className={styles.benchmarkCompare}>
-            <div className={styles.benchmarkCompareHead}>
-              <h3>{t.results.table.heading}</h3>
-              <p>{t.results.table.copy}</p>
-            </div>
-            <div className={styles.compareTable} role="table">
-              <div className={styles.compareHead} role="row">
-                <span role="columnheader">IMO-AG-30</span>
-                <span role="columnheader" aria-hidden="true" />
-                <span role="columnheader" aria-hidden="true" />
-                <span role="columnheader">{t.results.table.colNeural}</span>
-                <span role="columnheader">{t.results.table.colScope}</span>
-              </div>
-              {t.results.table.rows.map(row => (
-                <div
-                  key={row.name}
-                  role="row"
-                  className={[
-                    styles.compareRow,
-                    row.self ? styles.compareRowSelf : '',
-                    row.human ? styles.compareRowHuman : '',
-                  ].filter(Boolean).join(' ')}
-                >
-                  <span className={styles.compareName} role="cell">{row.name}</span>
-                  <div className={styles.compareBar} role="cell"><i style={{ width: row.width }} /></div>
-                  <b className={styles.compareScore} role="cell">{row.score}</b>
-                  <span
-                    className={`${styles.compareFlag} ${row.self ? styles.compareFlagGood : ''}`}
-                    role="cell"
-                  >
-                    {row.neural}
-                  </span>
-                  <span
-                    className={`${styles.compareFlag} ${row.self ? styles.compareFlagGood : ''}`}
-                    role="cell"
-                  >
-                    {row.scope}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <p className={styles.benchmarkNote}>{t.results.table.note}</p>
-          </div>
-
-          {/* C. 幾何専用ではない — 競合がそもそも列を持たない領域 */}
           <div className={styles.benchmarkCompare}>
             <div className={styles.benchmarkCompareHead}>
               <h3>{t.results.cross.heading}</h3>

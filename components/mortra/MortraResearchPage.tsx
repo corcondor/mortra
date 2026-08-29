@@ -16,9 +16,9 @@ export function MortraResearchPage() {
     <main className={styles.page}>
       <header className={styles.nav}>
         <div className={`${styles.shell} ${styles.navInner}`}>
-          <Link className={styles.wordmark} href="/" aria-label="MORTRA-1 home">
+          <Link className={styles.wordmark} href="/" aria-label="MORTRA home">
             <span className={styles.mark}>M</span>
-            <span>MORTRA-1</span>
+            <span>MORTRA</span>
             <span className={styles.beta}>RESEARCH</span>
           </Link>
           <nav className={styles.navLinks} aria-label="研究記事ナビゲーション">
@@ -140,20 +140,19 @@ export function MortraResearchPage() {
 
           <section id="result">
             <p className={styles.articleIndex}>05 / RESULT</p>
-            <h2>IMO幾何は17題から25題へ。AlphaGeometryと同数です。</h2>
+            <h2>監査済み幾何89題を、89本すべて証明。</h2>
             <p>
-              IMO-AG-30は、2000年から2022年までの国際数学オリンピック幾何30題を形式化した評価です。
-              基準となる記号推論器は17/30でした。MORTRAは複数の証明法と構成探索を統合し、25/30まで伸ばしました。
+              2026年8月28日の統合監査では、89題すべてについて再生可能な証明成果物を確認しました。
+              最後に閉じた11題では、357本の厳密恒等式を再生し、すべて0へ還元しています。
             </p>
             <div className={styles.articleScore}>
-              <div><span>BASELINE</span><strong>17 / 30</strong></div>
+              <div><span>AUDITED GEOMETRY</span><strong>89 / 89</strong></div>
               <ArrowRight size={22} aria-hidden="true" />
-              <div><span>MORTRA</span><strong>25 / 30</strong></div>
-              <div className={styles.articleScoreGain}><strong>+8題</strong><span>+26.7ポイント</span></div>
+              <div><span>REPLAYED IDENTITIES</span><strong>357 / 357</strong></div>
             </div>
             <p>
-              DeepMindのAlphaGeometryも同じ評価で25/30を報告しています。AlphaGeometryはニューラル言語モデルと記号推論の組み合わせ、
-              MORTRAは外部LLMを使わない記号推論器の協調という違いがあります。
+              正誤は最終回答の文字列ではなく、証明成果物の再生とSHA-256で確認します。
+              どの恒等式を、どの順序で使い、どの検証器が閉じたかまで追跡できます。
             </p>
           </section>
 

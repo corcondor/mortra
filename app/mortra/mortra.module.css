@@ -1,14 +1,14 @@
 .page {
-  --black: #030405;
-  --surface: #0a0c0f;
-  --surface-2: #0e1115;
-  --line: #242a31;
-  --line-strong: #3b434d;
+  --black: #05070a;
+  --surface: #090d11;
+  --surface-2: #0d1217;
+  --line: #26313a;
+  --line-strong: #43515d;
   --text: #f4f7fa;
-  --muted: #8e98a4;
-  --cyan: #28d7f2;
-  --green: #a8f12f;
-  --amber: #f4b942;
+  --muted: #9aa9b4;
+  --cyan: #4fc3ff;
+  --green: #4dffa0;
+  --amber: #ff9d2e;
 
   /* 射の型の色。細い線に高い彩度を乗せ、二重描画で発光させる。
      太さで見せると子供っぽくなり、彩度を落とすと黒地に沈む。 */
@@ -37,9 +37,8 @@
   left: 0;
   right: 0;
   height: 66px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(3, 4, 5, 0.86);
-  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--line);
+  background: #05070a;
 }
 
 .navInner {
@@ -109,6 +108,7 @@
 
 .hero {
   position: relative;
+  z-index: 2;
   display: grid;
   min-height: 82dvh;
   padding-top: 66px;
@@ -128,7 +128,7 @@
   position: absolute;
   z-index: 1;
   inset: 0;
-  background: linear-gradient(90deg, var(--black) 0%, rgba(3, 4, 5, 0.92) 33%, rgba(3, 4, 5, 0.18) 67%, rgba(3, 4, 5, 0.42) 100%);
+  background: transparent;
   pointer-events: none;
 }
 
@@ -218,7 +218,7 @@
 .textButton,
 .iconButton {
   border-color: var(--line-strong);
-  background: rgba(9, 11, 14, 0.76);
+  background: #090d11;
   color: #d7dee6;
 }
 
@@ -1625,6 +1625,12 @@
 
   .articleScore {
     grid-template-columns: 1fr auto 1fr;
+    gap: 12px;
+  }
+
+  .articleScore > div:not(.articleScoreGain) strong {
+    font-size: 24px;
+    white-space: nowrap;
   }
 
   .articleScoreGain {
@@ -2112,8 +2118,8 @@
   margin: 34px 0 46px;
   padding: 26px 20px 14px;
   border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.015);
+  border-radius: 6px;
+  background: #070a0d;
   color: rgba(233, 240, 244, 0.92);
   overflow-x: auto;
 }
@@ -2232,20 +2238,20 @@
 /* ── hero ───────────────────────────────────────────────────────── */
 .heroWordmark {
   margin: 0;
-  color: var(--cyan);
+  color: var(--morph-numeric);
   font-family: "JetBrains Mono", monospace;
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.34em;
 }
 
-.hero h1.heroSlogan {
-  max-width: 15ch;
+.hero h1.heroTitle {
+  max-width: none;
   margin: 20px 0 0;
-  font-size: clamp(38px, 5.2vw, 74px);
-  font-weight: 540;
-  line-height: 1.04;
-  letter-spacing: -0.01em;
+  font-size: clamp(72px, 12vw, 168px);
+  font-weight: 620;
+  line-height: 0.84;
+  letter-spacing: 0;
 }
 
 .heroStandardModel {
@@ -2262,173 +2268,64 @@
 }
 
 /* ── A. 同一条件ベースライン比 ──────────────────────────────────── */
-.headlineResult {
-  margin-top: 8px;
+.resultMetricGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   border-top: 1px solid var(--line);
-  padding-top: 34px;
-}
-
-.headlineCaption {
-  margin: 0 0 26px;
-  color: #68737e;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10px;
-  letter-spacing: 0.04em;
-}
-
-.headlineRows {
-  display: grid;
-  gap: 20px;
-}
-
-.headlineRow {
-  display: grid;
-  align-items: center;
-  gap: 18px;
-  grid-template-columns: minmax(150px, 260px) minmax(80px, 1fr) 86px 62px;
-}
-
-.headlineRow > span {
-  color: #9aa5b0;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
-}
-
-.headlineRow > div {
-  height: 8px;
-  overflow: hidden;
-  background: #1b2026;
-}
-
-.headlineRow > div i {
-  display: block;
-  height: 100%;
-  background: #68737e;
-}
-
-.headlineRow > b {
-  color: #9aa5b0;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 18px;
-  font-weight: 500;
-  text-align: right;
-}
-
-.headlineRow > em {
-  color: #68737e;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
-  font-style: normal;
-  text-align: right;
-}
-
-.headlineRowSelf > span,
-.headlineRowSelf > b,
-.headlineRowSelf > em {
-  color: var(--text);
-  font-weight: 600;
-}
-
-.headlineRowSelf > b {
-  font-size: 26px;
-}
-
-.headlineRowSelf > div i {
-  background: var(--green);
-}
-
-.headlineRatio {
-  margin: 22px 0 0;
-  color: var(--green);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 13px;
-  letter-spacing: 0.02em;
-}
-
-/* ── B. ニューラル有無つき比較表 ───────────────────────────────── */
-.compareTable {
-  margin-top: 6px;
-  border-top: 1px solid var(--line);
-}
-
-.compareHead,
-.compareRow {
-  display: grid;
-  align-items: center;
-  gap: 14px;
-  grid-template-columns: minmax(140px, 200px) minmax(60px, 1fr) 70px 92px 104px;
   border-bottom: 1px solid var(--line);
-  padding: 14px 0;
 }
 
-.compareHead > span {
-  color: #4f5862;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+.resultMetric {
+  position: relative;
+  min-width: 0;
+  min-height: 260px;
+  border-right: 1px solid var(--line);
+  padding: 32px 26px;
+  background: #070a0d;
 }
 
-.compareName {
-  color: #9aa5b0;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
+.resultMetric:last-child {
+  border-right: 0;
 }
 
-.compareBar {
-  height: 5px;
-  overflow: hidden;
-  background: #1b2026;
+.resultMetric::before {
+  position: absolute;
+  top: -1px;
+  left: 26px;
+  width: 48px;
+  height: 2px;
+  background: var(--metric-tone, var(--morph-algebra));
+  box-shadow: 0 0 16px color-mix(in srgb, var(--metric-tone, #fff) 58%, transparent);
+  content: "";
 }
 
-.compareBar i {
+.resultMetric[data-tone="orange"] { --metric-tone: var(--morph-construct); }
+.resultMetric[data-tone="rose"] { --metric-tone: var(--morph-theorem); }
+.resultMetric[data-tone="green"] { --metric-tone: var(--morph-close); }
+.resultMetric[data-tone="blue"] { --metric-tone: var(--morph-numeric); }
+
+.resultMetric strong {
   display: block;
-  height: 100%;
-  background: #4f5862;
-}
-
-.compareScore {
-  color: #9aa5b0;
+  overflow-wrap: anywhere;
+  color: var(--metric-tone);
   font-family: "JetBrains Mono", monospace;
-  font-size: 12px;
+  font-size: clamp(27px, 3.2vw, 46px);
   font-weight: 500;
-  text-align: right;
+  line-height: 1;
 }
 
-.compareFlag {
-  color: #68737e;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10px;
-  letter-spacing: 0.02em;
-}
-
-.compareRowHuman .compareName,
-.compareRowHuman .compareScore {
-  color: #7d8894;
-  font-style: italic;
-}
-
-.compareRowHuman .compareBar i {
-  background: #3a434d;
-}
-
-.compareRowSelf {
-  border-bottom-color: rgba(168, 241, 47, 0.28);
-}
-
-.compareRowSelf .compareName,
-.compareRowSelf .compareScore {
+.resultMetric h3 {
+  margin: 34px 0 0;
   color: var(--text);
+  font-size: 14px;
   font-weight: 600;
 }
 
-.compareRowSelf .compareBar i {
-  background: var(--green);
-}
-
-.compareFlagGood {
-  color: var(--green);
-  font-weight: 600;
+.resultMetric p {
+  margin: 13px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
 }
 
 /* ── C. 幾何以外の対応領域 ─────────────────────────────────────── */
@@ -2459,66 +2356,25 @@
 
 /* ── 狭い画面 ───────────────────────────────────────────────────── */
 @media (max-width: 900px) {
-  .compareHead,
-  .compareRow {
-    grid-template-columns: minmax(120px, 1fr) 64px 78px 92px;
-    gap: 10px;
-  }
-
-  .compareBar,
-  .compareHead > span:nth-child(2) {
-    display: none;
-  }
+  .resultMetricGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .resultMetric:nth-child(2) { border-right: 0; }
+  .resultMetric:nth-child(-n + 2) { border-bottom: 1px solid var(--line); }
 }
 
 @media (max-width: 700px) {
-  .hero h1.heroSlogan {
+  .hero h1.heroTitle {
     max-width: none;
-    font-size: clamp(32px, 8.4vw, 46px);
+    font-size: clamp(64px, 19vw, 98px);
   }
 
   .heroStandardModel {
     font-size: 15px;
   }
 
-  .headlineRow {
-    grid-template-columns: 1fr 74px 56px;
-    gap: 10px 12px;
-  }
-
-  .headlineRow > span {
-    grid-column: 1 / -1;
-  }
-
-  .headlineRow > div {
-    grid-column: 1;
-  }
-
-  .compareHead {
-    display: none;
-  }
-
-  .compareRow {
-    grid-template-columns: 1fr auto;
-    gap: 6px 12px;
-    padding: 16px 0;
-  }
-
-  .compareName {
-    font-size: 12px;
-  }
-
-  .compareScore {
-    font-size: 14px;
-  }
-
-  .compareFlag {
-    font-size: 9.5px;
-  }
-
-  .compareRow .compareFlag:nth-of-type(1) {
-    grid-column: 1;
-  }
+  .resultMetricGrid { grid-template-columns: 1fr; }
+  .resultMetric,
+  .resultMetric:nth-child(2) { min-height: 0; border-right: 0; border-bottom: 1px solid var(--line); }
+  .resultMetric:last-child { border-bottom: 0; }
 
   .langToggle {
     padding: 5px 9px;
@@ -2551,13 +2407,4 @@
       rgba(3, 4, 5, 0.88) 0%,
       rgba(3, 4, 5, 0.82) 100%);
   }
-}
-
-/* 主指標の下に置く但し書き。.benchmarkNote は grid 前提なので分ける */
-.headlineNote {
-  max-width: 92ch;
-  margin: 20px 0 0;
-  color: #68737e;
-  font-size: 10.5px;
-  line-height: 1.85;
 }

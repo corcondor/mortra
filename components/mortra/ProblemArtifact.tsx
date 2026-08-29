@@ -25,7 +25,24 @@ export type ProblemArtifactCard = {
   solution_document_tex?: string
   diagram_tikz?: string
   proof_trace?: string[]
-  verification?: { method?: string; exact_backend?: boolean; independent_check?: boolean }
+  proof_roadmap?: Array<{
+    morphism_id?: string
+    label_ja?: string
+    source_ja?: string
+    target_ja?: string
+    role_ja?: string
+  }>
+  proof_obligations?: Array<{
+    id?: string
+    claim_ja?: string
+    status?: string
+  }>
+  verification?: {
+    method?: string
+    exact_backend?: boolean
+    independent_check?: boolean
+    certificate_sha256?: string
+  }
 }
 
 type Props = {
@@ -245,6 +262,10 @@ const ARTIFACT_TEXT = {
     undecided: '未確定',
     solution: '解答・図の読み方',
     solutionPending: '現在は型付き構造まで形成済みです。証明と反例検査が完了するまで、模範解答としては公開しません。',
+    proofRoute: '証明の経路',
+    proofObligations: '証明義務',
+    obligationVerified: '検証済み',
+    certificate: '証明書',
   },
   en: {
     saveTex: 'Save the solution as TeX',
@@ -255,11 +276,26 @@ const ARTIFACT_TEXT = {
     undecided: 'Not yet determined',
     solution: 'Solution and how to read the figure',
     solutionPending: 'The typed structure is in place. The worked solution is withheld until the proof and counterexample search complete.',
+    proofRoute: 'Proof route',
+    proofObligations: 'Proof obligations',
+    obligationVerified: 'Verified',
+    certificate: 'Certificate',
   },
 } as const
 
 export function ProblemArtifact({ card, compact = false, showVerification = true, lang = 'en' }: Props) {
   const a = ARTIFACT_TEXT[lang]
+  const proofRoadmap = card.proof_roadmap?.length
+    ? card.proof_roadmap
+    : (card.morphism_chain ?? []).slice(1).map((morphismId, index, chain) => ({
+        morphism_id: morphismId === 'VerifiedAnswer' ? 'certificate.replay.verify' : morphismId,
+        label_ja: morphismId,
+        source_ja: index === 0 ? (card.morphism_chain?.[0] ?? '問題文') : chain[index - 1],
+        target_ja: morphismId,
+        role_ja: lang === 'ja'
+          ? '証明書に記録された型付き射を実行し、次の表現へ変換します。'
+          : 'Executes the typed morphism recorded in the certificate and produces the next representation.',
+      }))
   const diagram = card.diagram ?? buildProblemDiagram({
     familyId: card.family_id,
     domain: card.domain,
@@ -326,10 +362,74 @@ export function ProblemArtifact({ card, compact = false, showVerification = true
         </section>
       </div>
 
+      {proofRoadmap.length ? (
+        <section className={styles.proofAudit} aria-labelledby="proof-route-title">
+          <div className={styles.proofAuditHead}>
+            <p className={styles.label} id="proof-route-title">{a.proofRoute}</p>
+            <span>{proofRoadmap.length} MORPHISMS</span>
+          </div>
+          <ol className={styles.proofRouteList}>
+            {proofRoadmap.map((step, index) => (
+              <li className={styles.proofRouteItem} key={`${step.morphism_id ?? 'morphism'}-${index}`}>
+                <span className={styles.proofRouteIndex}>{String(index + 1).padStart(2, '0')}</span>
+                <div className={styles.proofRouteBody}>
+                  <strong>{step.label_ja || step.morphism_id || `Morphism ${index + 1}`}</strong>
+                  {(step.source_ja || step.target_ja) ? (
+                    <div className={styles.proofRouteMap}>
+                      <span>{step.source_ja || '入力'}</span>
+                      <i aria-hidden="true">→</i>
+                      <span>{step.target_ja || '出力'}</span>
+                    </div>
+                  ) : null}
+                  {step.role_ja ? <p>{step.role_ja}</p> : null}
+                  {step.morphism_id ? <code>{step.morphism_id}</code> : null}
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+      ) : null}
+
+      {card.proof_obligations?.length ? (
+        <section className={styles.obligationAudit} aria-labelledby="proof-obligations-title">
+          <div className={styles.proofAuditHead}>
+            <p className={styles.label} id="proof-obligations-title">{a.proofObligations}</p>
+            <span>{card.proof_obligations.length} CHECKS</span>
+          </div>
+          <ul className={styles.obligationList}>
+            {card.proof_obligations.map((obligation, index) => {
+              const obligationId = obligation.id || `O${index + 1}`
+              const obligationVerified = obligation.status === 'verified'
+              return (
+                <li className={styles.obligationItem} key={`${obligationId}-${index}`}>
+                  <CheckCircle2
+                    size={16}
+                    aria-hidden="true"
+                    className={obligationVerified ? styles.obligationCheck : styles.obligationPending}
+                  />
+                  <div>
+                    <span>{obligationId} / {obligationVerified ? a.obligationVerified : obligation.status || a.candidate}</span>
+                    <p>{obligation.claim_ja || a.solutionPending}</p>
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+        </section>
+      ) : null}
+
       {showVerification && card.verification?.method ? (
         <footer className={styles.verificationLine}>
-          <span>VERIFY</span>
-          <code>{card.verification.method}</code>
+          <div>
+            <span>VERIFY</span>
+            <code>{card.verification.method}</code>
+          </div>
+          {card.verification.certificate_sha256 ? (
+            <div>
+              <span>{a.certificate}</span>
+              <code>{card.verification.certificate_sha256}</code>
+            </div>
+          ) : null}
         </footer>
       ) : null}
     </article>

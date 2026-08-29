@@ -7,7 +7,7 @@ import { Analytics } from '@vercel/analytics/next'
 // 数字はここに書かない。正本は lib/mortra/i18n.ts の FIGURES。
 const TITLE = 'MORTRA — Finite primitives. Infinite mathematics.'
 const DESCRIPTION =
-  'MORTRA researches how mathematics can be represented, transformed and verified through a compact system of typed objects, morphisms and invariants. No neural components in the reasoning path.'
+  'MORTRA turns mathematical statements into typed structures and returns proofs, figures, derivation routes and replayable certificates from one execution.'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://mortra.ai'),
@@ -56,10 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Zen+Old+Mincho:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
-          rel="stylesheet"
-        />
+        <link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
       </head>
       <body className="min-h-[100dvh] bg-[#09090b] text-zinc-100">
         {children}

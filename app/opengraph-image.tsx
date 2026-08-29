@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og'
 
-export const alt = 'MORTRA-1: mathematics in motion'
+export const alt = 'MORTRA: finite primitives, infinite mathematics'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
@@ -14,17 +14,19 @@ export default function Image() {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 18, fontSize: 24 }}>
-        <div style={{ width: 44, height: 44, border: '1px solid #31c7df', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#31c7df' }}>M</div>
-        <b>MORTRA-1</b>
+        <div style={{ width: 44, height: 44, border: '1px solid #ff9d2e', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ff9d2e' }}>M</div>
+        <b>MORTRA</b>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', fontSize: 78, lineHeight: 1.04, fontWeight: 700 }}>
-          <span>Mathematics,</span><span>in motion.</span>
+        <div style={{ display: 'flex', flexDirection: 'column', fontSize: 72, lineHeight: 1.04, fontWeight: 700 }}>
+          <span>Finite primitives.</span><span>Infinite mathematics.</span>
         </div>
-        <div style={{ color: '#aeb8c0', fontSize: 27 }}>問題・図・解答・証明過程を、同じ数学構造から。</div>
+        <div style={{ color: '#aeb8c0', fontSize: 27 }}>問題文から証明書まで、数学を実行可能に。</div>
       </div>
-      <div style={{ display: 'flex', gap: 34, color: '#31c7df', fontSize: 21 }}>
-        <span>IMO geometry 25 / 30</span><span>Symbolic reasoning</span><span>Public beta</span>
+      <div style={{ display: 'flex', gap: 34, fontSize: 21 }}>
+        <span style={{ color: '#ff9d2e' }}>Audited geometry 89 / 89</span>
+        <span style={{ color: '#ff5fb0' }}>Replayed identities 357 / 357</span>
+        <span style={{ color: '#4dffa0' }}>Replayable certificates</span>
       </div>
     </div>,
     size,
