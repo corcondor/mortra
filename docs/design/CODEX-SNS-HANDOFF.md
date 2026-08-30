@@ -337,7 +337,7 @@ arXiv 2502.03544  AlphaGeometry2
 
 ```
 プロジェクト   mortra（旧 sakumon-web からリネーム）
-リポジトリ     github.com/corcondor/sakumon-station
+リポジトリ     github.com/corcondor/mortra
 本番ブランチ   master
 ドメイン       mortra.ai（本番）/ mortra.vercel.app / sakumon-web.vercel.app
               後ろ2つは貼った先が切れないよう残してある

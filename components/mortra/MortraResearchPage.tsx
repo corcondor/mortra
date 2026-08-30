@@ -185,7 +185,7 @@ export function MortraResearchPage() {
             <a href="https://arxiv.org/abs/2512.00097" target="_blank" rel="noreferrer">
               HAGeo: auxiliary construction search <ExternalLink size={13} />
             </a>
-            <a href="https://github.com/corcondor/sakumon-station/tree/master/docs/research" target="_blank" rel="noreferrer">
+            <a href="https://github.com/corcondor/mortra/tree/release/mortra-1-beta/docs/research" target="_blank" rel="noreferrer">
               MORTRA research records and reproduction artifacts <ExternalLink size={13} />
             </a>
           </section>

@@ -20,7 +20,7 @@ At the start of this pass, the product, website, X account, and GitHub repositor
 
 - The website already uses `mortra.ai` and the current MORTRA 1 result ledger.
 - The official X account uses the right name and slogan, but has not yet accumulated a recognizable visual identity or publishing rhythm.
-- The GitHub repository presented the former `sakumon-station` product description and the legacy `mortra.vercel.app` address.
+- The GitHub repository initially presented the former `sakumon-station` product description and the legacy `mortra.vercel.app` address.
 - GitHub had no topics and no social preview, so a shared repository link did not explain why the work matters.
 - The README began with setup. A first-time visitor therefore met implementation details before seeing the product, evidence, or research purpose.
 
@@ -106,7 +106,7 @@ It should provide:
 - a citation file;
 - topics that place MORTRA in mathematical reasoning and formal methods searches.
 
-The current repository name can remain temporarily to avoid breaking deployment and integration references. A later move to `mortra` or a MORTRA organization should be a deliberate migration with redirects, Vercel relinking, and Actions checks.
+The public repository is `corcondor/mortra`. GitHub redirects the former repository URL, and `release/mortra-1-beta` is the default branch and Vercel production branch.
 
 ### Instagram: visual archive
 
@@ -207,17 +207,17 @@ Do not optimize for impressions alone. The primary launch metric is the number o
 
 ## Immediate implementation boundary
 
-This pass changes the visual identity, social assets, website/GitHub links, repository metadata, README, and attribution plan. It does not rename the repository, alter production deployment branches, or publish posts. The avatar/header pair has been reviewed together; the official X profile remains untouched only because the available OAuth credentials authenticate the personal account rather than `@MORTRA_AI`.
+This pass changes the visual identity, social assets, website/GitHub links, repository metadata, README, attribution plan, repository name, default branch, and production deployment. The avatar/header pair has been reviewed together; the official X profile remains untouched only because the available OAuth credentials authenticate the personal account rather than `@MORTRA_AI`.
 
 ## Implementation status on 2026-08-30
 
 | Surface | Status | Evidence / next boundary |
 |---|---|---|
 | Brand asset set | Complete | Generated from semantic hash `e6523b41e3883cc66f665f09930d10ae27c980d30a7c79f175e73277e23017cb`; 12 outputs recorded in `brand/social/manifest.json`. |
-| Website identity | Complete in beta branch | Favicon, Apple icon, navigation mark, Open Graph card, Twitter card, GitHub link, and official X link are implemented. |
+| Website identity | Live in production | Favicon, Apple icon, navigation mark, Open Graph card, Twitter card, GitHub link, and official X link are implemented at `mortra.ai`. |
 | Desktop/mobile QA | Complete | Both viewports return 200, render the 32 px mark, preserve the GitHub path, and have no horizontal overflow or page errors. |
-| GitHub metadata | Live | Description, `mortra.ai` homepage, and eight research/discovery topics are updated. |
-| GitHub README/assets | Pushed to beta branch | Brand assets, README, website links, and this strategy are isolated in commit `4610bd0`; unrelated research changes are not included. |
+| GitHub metadata | Live | Repository renamed to `corcondor/mortra`; description, `mortra.ai` homepage, eight research/discovery topics, and the default branch are updated. |
+| GitHub README/assets | Live on default branch | Brand assets, README, website links, citation metadata, and this strategy are published from `release/mortra-1-beta`; unrelated research changes are not included. |
 | GitHub social preview | Asset complete | GitHub does not expose this upload in the repository REST API; upload `brand/social/mortra-github-social-preview-1280x640.png` in repository settings. |
 | Official X profile | Assets complete, account update pending | Repository OAuth currently authenticates personal account `@corcondol`, not `@MORTRA_AI`; obtain official-account authorization before changing profile media. |
-| Vercel production | Not promoted | Local production build passes. The beta push produced no GitHub-recorded deployment, and production promotion is intentionally separate because `master` is the deployment branch. |
+| Vercel production | Live | Deployment `dpl_8PXdwvtP3V6wpXJJJ53EWoQN1pdo` is `READY` and `PROMOTED`; aliases include `mortra.ai` and `www.mortra.ai`. |

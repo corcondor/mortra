@@ -40,7 +40,7 @@ export function MortraProductPage({ lang = 'en' }: { lang?: Lang }) {
     description: t.meta.description,
     softwareVersion: '1',
     sameAs: [
-      'https://github.com/corcondor/sakumon-station',
+      'https://github.com/corcondor/mortra',
       'https://x.com/MORTRA_AI',
     ],
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
@@ -67,7 +67,7 @@ export function MortraProductPage({ lang = 'en' }: { lang?: Lang }) {
             <Link href="/research">{t.nav.research}</Link>
             <a
               className={styles.navIcon}
-              href="https://github.com/corcondor/sakumon-station"
+              href="https://github.com/corcondor/mortra"
               target="_blank"
               rel="noreferrer"
               aria-label={lang === 'ja' ? 'MORTRAのGitHubを開く' : 'Open MORTRA on GitHub'}
@@ -252,7 +252,7 @@ export function MortraProductPage({ lang = 'en' }: { lang?: Lang }) {
         <div className={`${styles.shell} ${styles.footerInner}`}>
           <span>{t.footer.left}</span>
           <div className={styles.footerLinks}>
-            <a href="https://github.com/corcondor/sakumon-station" target="_blank" rel="noreferrer">
+            <a href="https://github.com/corcondor/mortra" target="_blank" rel="noreferrer">
               <Github size={14} aria-hidden="true" />GitHub
             </a>
             <a href="https://x.com/MORTRA_AI" target="_blank" rel="noreferrer">
