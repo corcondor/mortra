@@ -1,63 +1,88 @@
-# MORTRA
+<p align="center">
+  <img src="brand/social/mortra-github-social-preview-1280x640.png" alt="MORTRA — Finite primitives. Infinite mathematics." width="100%" />
+</p>
 
-**One structure. Many representations.**
+<h1 align="center">MORTRA</h1>
 
-MORTRAは、自然言語・TeX・MathMLを型付き数学構造へ変換し、独自のCAS、記号証明、
-不等式、幾何、構造探索backendで検証する数学システムです。証明・発見・作問・図・Web表現は
-別々の出力ではなく、同じsemantic stateのprojectionであり、検証済み候補を推論へ戻します。
+<p align="center"><strong>Finite primitives. Infinite mathematics.</strong></p>
 
-現在の中心経路は外部の数学AIや外部LLMを必要としません。
-AlphaGeometry / AlphaGeometry2は設計研究上の歴史的参考であり、runtime依存ではありません。
+<p align="center">
+  <a href="https://mortra.ai/?utm_source=github&utm_medium=repository&utm_campaign=mortra1">Try MORTRA</a>
+  ·
+  <a href="https://mortra.ai/research?utm_source=github&utm_medium=repository&utm_campaign=mortra1">Research</a>
+  ·
+  <a href="docs/research/README.md">Reproducible artifacts</a>
+</p>
 
-## Architecture
+MORTRA turns mathematical statements into typed structures, searches executable morphisms, and returns the problem, proof route, figure, and replayable certificate from one semantic state.
+
+The core path is symbolic and inspectable. A result is accepted only when its certificate can be replayed.
+
+## Current verified results
+
+| Result | Current ledger | Evidence |
+|---|---:|---|
+| Audited geometry cohort | **89 / 89** | [remaining-11 closure and non-vacuity audit](docs/research/MORTRA-CODEX-FUSED-REMAINING11-CLOSURE-20260828.md) |
+| Replayed exact identities | **357 / 357** | [proof-artifact ledger](docs/research/MORTRA-CODEX-FUSED-REMAINING11-CLOSURE-20260828.md) |
+| Software/circuit equivalence | **2,000,000 / 2,000,000** | [machine-readable claim verification](data/claim-verification-2026-08-22.json) |
+
+The website reads these public figures from one source, [`lib/mortra/i18n.ts`](lib/mortra/i18n.ts), to prevent stale copies across pages.
+
+## One state, many representations
 
 ```text
-                           Reasoning
-                               <->
-Natural language / TeX -> Typed Semantic State <- Diagram / Data
-                         /        |        \
-                Discovery    Generation    Experience
-                         \        |        /
-                          Verification
-                               -> Reasoning
+Natural language / TeX ──> Typed semantic state <── Diagram / data
+                                  │
+                     ┌────────────┼────────────┐
+                     │            │            │
+                 Discovery    Generation   Experience
+                     │            │            │
+                     └──────── Verification ───┘
+                                  │
+                         Replayable certificate
 ```
 
-## Setup
+The same geometry kernel also produced the MORTRA `Incidence weave` identity used across the site, X, and this repository. Avatar, header, and social cards preserve semantic hash `e6523b41e3883cc66f665f09930d10ae27c980d30a7c79f175e73277e23017cb`; only the render policy changes.
 
-1. Supabaseで`supabase/schema.sql`を実行します。
-2. `.env.local.example`を`.env.local`へ複製し、Supabaseの値を設定します。
-3. 開発サーバーを起動します。
+## Repository map
 
-```powershell
+- [`math_os_prototype/`](math_os_prototype/) — typed mathematical objects, morphisms, proof and figure experiments
+- [`worker/`](worker/) — long-running search and specialist backends
+- [`app/`](app/) and [`components/`](components/) — MORTRA web product
+- [`docs/research/`](docs/research/) — methods, results, failures, and conclusions
+- [`data/`](data/) and [`artifacts/`](artifacts/) — machine-readable ledgers and replay artifacts
+- [`research/fpga/`](research/fpga/) — candidate-filter circuit research
+
+## Run locally
+
+```bash
 npm install
 npm run dev
 ```
 
-既定URLは`http://localhost:3002`です。
+The local product opens at `http://localhost:3002`.
 
-## Required environment
+Required web environment values are documented in [`.env.local.example`](.env.local.example). X credentials are needed only for publishing; mathematical reasoning does not depend on them.
 
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_KEY`
+## Verify
 
-X投稿機能を使う場合だけ、X APIの4変数が必要です。長時間構造探索Workerでは
-`SUPABASE_URL`と`SUPABASE_SERVICE_ROLE_KEY`を使います。
-
-## Verification
-
-```powershell
+```bash
 cd worker
 npm ci
 npm test
 npm run build
 ```
 
-semantic geometry feedback loop:
+Generate and verify the current brand assets from the same semantic figure:
 
-```powershell
-npm run test:visual-loop
-npm run experiment:visual-loop
+```bash
+python scripts/generate_incidence_brand_assets.py
 ```
 
-benchmarkの正本、測定の分類、現在の未達は`docs/MORTRA-STATE.md`を参照してください。
+The generator fails if the source semantic hash changes or if the GitHub social preview exceeds GitHub's file-size limit.
+
+## Research practice
+
+MORTRA separates capability claims from exploratory results. Research notes record the objective, method, result, interpretation, and next falsifiable experiment. Scores are tied to frozen cohorts and proof artifacts rather than copied from console output.
+
+Start with the [research index](docs/research/README.md) and the [current distribution strategy](docs/design/MORTRA-DISTRIBUTION-STRATEGY-20260830.md).

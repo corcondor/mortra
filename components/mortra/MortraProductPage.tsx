@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import {
   ArrowRight,
   BookOpenText,
@@ -6,6 +7,7 @@ import {
   Cpu,
   FlaskConical,
   GitBranch,
+  Github,
   Languages,
   Network,
   Play,
@@ -13,7 +15,6 @@ import {
 } from 'lucide-react'
 import { MortraTryConsole } from './MortraTryConsole'
 import { ProofScrollScene } from './ProofScrollScene'
-import { RibbonMark } from './RibbonMark'
 import { PipelineDiagram } from './PipelineDiagram'
 import { WhyFiguresDiagram } from './WhyFiguresDiagram'
 import { ArchitectureFigure } from './ArchitectureFigure'
@@ -38,6 +39,10 @@ export function MortraProductPage({ lang = 'en' }: { lang?: Lang }) {
     url: 'https://mortra.ai/',
     description: t.meta.description,
     softwareVersion: '1',
+    sameAs: [
+      'https://github.com/corcondor/sakumon-station',
+      'https://x.com/MORTRA_AI',
+    ],
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
   }
 
@@ -50,7 +55,9 @@ export function MortraProductPage({ lang = 'en' }: { lang?: Lang }) {
       <header className={styles.nav}>
         <div className={`${styles.shell} ${styles.navInner}`}>
           <Link className={styles.wordmark} href={home} aria-label="MORTRA home">
-            <span className={styles.mark}><RibbonMark size={28} cols={12} pad={9} radius={5} /></span>
+            <span className={styles.mark}>
+              <Image src="/brand/mortra-incidence-mark.svg" alt="" width={28} height={28} priority />
+            </span>
             <span>MORTRA</span>
             <span className={styles.modelLabel}>Model 1</span>
           </Link>
@@ -58,6 +65,16 @@ export function MortraProductPage({ lang = 'en' }: { lang?: Lang }) {
             <a href="#results">{t.nav.results}</a>
             <a href="#architecture">{t.nav.architecture}</a>
             <Link href="/research">{t.nav.research}</Link>
+            <a
+              className={styles.navIcon}
+              href="https://github.com/corcondor/sakumon-station"
+              target="_blank"
+              rel="noreferrer"
+              aria-label={lang === 'ja' ? 'MORTRAのGitHubを開く' : 'Open MORTRA on GitHub'}
+              title="GitHub"
+            >
+              <Github size={16} aria-hidden="true" />
+            </a>
             <a className={styles.navTry} href="#try"><Play size={13} aria-hidden="true" />{t.nav.try}</a>
             <Link className={styles.langToggle} href={t.langToggle.href} hrefLang={lang === 'ja' ? 'en' : 'ja'}>
               <Languages size={13} aria-hidden="true" />
@@ -234,7 +251,15 @@ export function MortraProductPage({ lang = 'en' }: { lang?: Lang }) {
       <footer className={styles.footer}>
         <div className={`${styles.shell} ${styles.footerInner}`}>
           <span>{t.footer.left}</span>
-          <span>{t.footer.right}</span>
+          <div className={styles.footerLinks}>
+            <a href="https://github.com/corcondor/sakumon-station" target="_blank" rel="noreferrer">
+              <Github size={14} aria-hidden="true" />GitHub
+            </a>
+            <a href="https://x.com/MORTRA_AI" target="_blank" rel="noreferrer">
+              <span aria-hidden="true">X</span>@MORTRA_AI
+            </a>
+            <span>{t.footer.right}</span>
+          </div>
         </div>
       </footer>
     </main>
