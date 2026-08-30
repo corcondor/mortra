@@ -34,7 +34,7 @@ class PublicSolveTests(unittest.TestCase):
         self.assertEqual(len(card["proof_obligations"]), 8)
         self.assertIn("cyclotomic.conjugate.uniform_norm_bound.v1", card["morphism_chain"])
         document = card["solution_document_tex"]
-        self.assertIn("図による確認", document)
+        self.assertIn("一手ずつ見る図解", document)
         self.assertIn("使った射と役割", document)
         self.assertIn("証明義務", document)
         self.assertIn("O8", document)
@@ -72,7 +72,27 @@ class PublicSolveTests(unittest.TestCase):
         card = payload["cards"][0]
         self.assertEqual(card["answer_tex"], r"\(\left\{2,\;3\right\}\)")
         self.assertTrue(card["verification"]["exact_backend"])
-        self.assertEqual(card["artifact_version"], 2)
+        self.assertEqual(card["artifact_version"], 4)
+        self.assertEqual(card["field_labels"], ["代数"])
+        self.assertTrue(card["publication_contract"]["exact_answer_required"])
+        self.assertTrue(card["publication_contract"]["decimal_only_final_answer_forbidden"])
+        self.assertTrue(card["publication_contract"]["diagram_for_every_visual_step"])
+        self.assertTrue(card["publication_contract"]["commentary_required"])
+        self.assertGreaterEqual(len(card["visual_explanation"]["steps"]), 1)
+        self.assertTrue(
+            all(
+                step["diagram"]["kind"] == "plane"
+                for step in card["visual_explanation"]["steps"]
+            )
+        )
+        visual_titles = [step["title"] for step in card["visual_explanation"]["steps"]]
+        self.assertIn("数式を正確に読み取る", visual_titles)
+        self.assertIn("方程式を厳密に解く", visual_titles)
+        self.assertNotIn("SymPyExpression", visual_titles)
+        self.assertEqual(
+            card["visual_explanation"]["steps"][-1]["diagram"],
+            card["diagram"],
+        )
         self.assertEqual(card["diagram"]["kind"], "plane")
         self.assertEqual(card["diagram"]["title"], "方程式の零点")
         self.assertGreater(len(card["diagram"]["shapes"]), 1)
@@ -80,9 +100,37 @@ class PublicSolveTests(unittest.TestCase):
         self.assertIn(r"\begin{tikzpicture}", card["diagram_tikz"])
         self.assertIn(r"\documentclass[uplatex,dvipdfmx,11pt]{jsarticle}", card["solution_document_tex"])
         self.assertIn(card["answer_tex"], card["solution_document_tex"])
+        self.assertIn("分野：代数", card["solution_document_tex"])
+        self.assertIn(r"\section*{講評}", card["solution_document_tex"])
         self.assertRegex(card["verification"]["certificate_sha256"], r"^[0-9a-f]{64}$")
         self.assertIn(card["verification"]["certificate_sha256"], card["solution_document_tex"])
         self.assertEqual(card["proof_trace"], payload["trace"])
+
+    def test_regular_polygon_roll_exports_exact_stepwise_visual_solution(self) -> None:
+        problem = (
+            "正の整数 n>=3 に対し，外接円の半径が1である二つの正n角形を考える。"
+            "固定する正n角形はすべて同じ中心Oと同じ頂点P_1を共有するように配置する。"
+            "一方を固定し，他方を，一辺を共有する状態から，接点が常に両者の頂点となるように，"
+            "固定した正n角形の外側を滑ることなく一周させる。"
+            "動く正n角形が通過する部分をD_nとする。D_3,D_4,...,D_nの共通部分の面積を"
+            "S_nとするとき，lim S_nを求めよ。"
+        )
+
+        status, payload = solve_problem(problem)
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        visual = card["visual_explanation"]
+        self.assertTrue(visual["composition_verified"])
+        self.assertEqual(len(visual["steps"]), 9)
+        self.assertTrue(all(step.get("diagram") for step in visual["steps"]))
+        self.assertEqual(card["publication_contract"]["visual_step_count"], 9)
+        self.assertIn(r"\mathcal A", card["answer_tex"])
+        self.assertNotIn("16.082", card["answer_tex"])
+        self.assertIn("一手ずつ見る図解", card["solution_document_tex"])
+        self.assertIn("arc[start angle", card["solution_document_tex"])
+        for index in range(3, 8):
+            self.assertIn(f"n={index}", card["solution_document_tex"])
 
     def test_solution_tex_normalizes_extracted_list_environments(self) -> None:
         status, payload = solve_problem(
@@ -124,6 +172,114 @@ class PublicSolveTests(unittest.TestCase):
         self.assertEqual(card["answer_tex"], r"\(\frac{1}{3}\)")
         self.assertEqual(card["diagram"]["kind"], "plane")
         self.assertIn("微積分の基本定理", card["solution_tex"])
+        self.assertEqual(card["field_labels"], ["解析"])
+
+    def test_probability_statistics_output_has_admissions_commentary(self) -> None:
+        from math_os_prototype.solution_artifact import attach_solution_artifact
+
+        card = attach_solution_artifact(
+            {
+                "statement_tex": "二つの確率変数の相関係数を求めよ。",
+                "answer_tex": r"\(\rho=\frac14\)",
+                "solution_tex": "期待値、分散、共分散を順に求める。",
+                "family_id": "solve.probability.correlation",
+                "domain": "probability",
+                "morphism_chain": ["ProblemText", "TypedSemanticIR", "VerifiedAnswer"],
+                "verification": {"method": "exact finite sum"},
+            },
+            ["有限和を厳密計算", "定義へ代入して検証"],
+        )
+
+        self.assertEqual(card["field_labels"], ["確率・統計"])
+        self.assertIn("新課程の確率・統計", card["editorial"]["admissions_context"])
+        self.assertIn("相関係数", card["solution_document_tex"])
+
+    def test_verified_visual_program_compiles_for_an_unrelated_geometry_proof(self) -> None:
+        from math_os_prototype.solution_artifact import attach_solution_artifact
+
+        initial = {
+            "version": 1,
+            "kind": "plane",
+            "title": "三角形ABC",
+            "caption": "初期配置",
+            "viewport": {"xMin": -1, "xMax": 5, "yMin": -1, "yMax": 4},
+            "axes": False,
+            "shapes": [
+                {
+                    "id": "triangle",
+                    "kind": "polyline",
+                    "points": [{"x": 0, "y": 0}, {"x": 4, "y": 0}, {"x": 1, "y": 3}],
+                    "closed": True,
+                    "tone": "secondary",
+                },
+                {"id": "A", "kind": "point", "point": {"x": 0, "y": 0}, "label": "A"},
+                {"id": "B", "kind": "point", "point": {"x": 4, "y": 0}, "label": "B"},
+                {"id": "C", "kind": "point", "point": {"x": 1, "y": 3}, "label": "C"},
+            ],
+        }
+        roadmap = [
+            {
+                "morphism_id": "geometry.midpoint.construct.v1",
+                "label_ja": "中点を構成",
+                "source_ja": "三角形ABC",
+                "target_ja": "中点Mを含む図",
+                "role_ja": "辺BCの中点Mを図へ加える。",
+                "visual_actions": [
+                    {
+                        "op": "add",
+                        "shape": {
+                            "id": "M",
+                            "kind": "point",
+                            "point": {"x": 2.5, "y": 1.5},
+                            "label": "M",
+                            "tone": "accent",
+                        },
+                    }
+                ],
+            },
+            {
+                "morphism_id": "geometry.median.focus.v1",
+                "label_ja": "中線へ着目",
+                "source_ja": "中点Mを含む図",
+                "target_ja": "中線AMの拡大図",
+                "role_ja": "必要な部分へ拡大し、中線AMを強調する。",
+                "visual_actions": [
+                    {
+                        "op": "add",
+                        "shape": {
+                            "id": "AM",
+                            "kind": "polyline",
+                            "points": [{"x": 0, "y": 0}, {"x": 2.5, "y": 1.5}],
+                            "tone": "primary",
+                        },
+                    },
+                    {"op": "focus", "shape_ids": ["A", "M", "AM"], "margin": 0.25},
+                ],
+            },
+        ]
+        card = attach_solution_artifact(
+            {
+                "statement_tex": "三角形ABCで辺BCの中点をMとする。",
+                "answer_tex": r"\(AM\text{ は中線}\)",
+                "solution_tex": "中点を構成し、AとMを結ぶ。",
+                "family_id": "geometry.midpoint.median",
+                "domain": "geometry",
+                "morphism_chain": ["ProblemText", "TypedSemanticIR", "VerifiedAnswer"],
+                "verification": {"method": "exact affine midpoint check"},
+                "visual_initial_diagram": initial,
+                "diagram": initial,
+                "execution_certificate": {
+                    "witness": {"shared_chart": {"proof_roadmap": roadmap}}
+                },
+            },
+            ["M=(B+C)/2 を厳密検証"],
+        )
+
+        self.assertTrue(card["publication_contract"]["visual_program_compiled"])
+        self.assertEqual(card["publication_contract"]["visual_step_count"], 2)
+        self.assertEqual(len(card["visual_explanation"]["steps"][0]["diagram"]["shapes"]), 5)
+        self.assertEqual(card["visual_explanation"]["steps"][1]["diagram"], card["diagram"])
+        self.assertIn("中線へ着目", card["solution_document_tex"])
 
     def test_limit_uses_exact_backend(self) -> None:
         status, payload = solve_problem(r"$\lim_{x\to0}\frac{\sin x}{x}$ を求めよ。")

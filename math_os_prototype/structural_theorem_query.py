@@ -20,6 +20,37 @@ from typing import Any
 
 import sympy as sp
 
+try:
+    from .visual_reasoning import (
+        BOUNDARY_ARRANGEMENT,
+        ENVELOPE_STABILIZATION,
+        INCREMENTAL_INTERSECTION,
+        ORBIT_TO_DISK_UNION,
+        PIVOT_ROTATION_TO_ORBIT,
+        RADIAL_AREA_INTEGRATION,
+        compose_visual_explanation,
+        pivot_rotation_diagram,
+        radial_intersection_diagram,
+        regular_polygon_disk_family,
+        regular_polygon_vertices,
+        visual_step,
+    )
+except ImportError:
+    from visual_reasoning import (
+        BOUNDARY_ARRANGEMENT,
+        ENVELOPE_STABILIZATION,
+        INCREMENTAL_INTERSECTION,
+        ORBIT_TO_DISK_UNION,
+        PIVOT_ROTATION_TO_ORBIT,
+        RADIAL_AREA_INTEGRATION,
+        compose_visual_explanation,
+        pivot_rotation_diagram,
+        radial_intersection_diagram,
+        regular_polygon_disk_family,
+        regular_polygon_vertices,
+        visual_step,
+    )
+
 
 @dataclass(frozen=True)
 class StructuralTheoremQueryIR:
@@ -3097,6 +3128,31 @@ def _regular_polygon_roll_limit_chart() -> dict[str, Any]:
             "2*sum_[active segments (a,b,phi,d)]"
             "(B_d(b-phi)-B_d(a-phi))-pi"
         ),
+        "endpoint_exact_construction": {
+            "base_circle": "(x+1/2)^2+(y-sqrt(3)/2)^2=3",
+            "line_coefficients": {
+                "alpha": [
+                    "sqrt(5)+1",
+                    "sqrt(10+2*sqrt(5))-2*sqrt(3)",
+                    "1-sqrt(5)",
+                    1,
+                ],
+                "beta": [
+                    "1-sqrt(5)",
+                    "sqrt(10-2*sqrt(5))-2*sqrt(3)",
+                    "1-sqrt(5)",
+                    -1,
+                ],
+                "gamma": ["1", "2-sqrt(3)", "-1", 1],
+                "delta": ["1", "sqrt(3)", "1", 1],
+            },
+            "coordinate_formula": (
+                "q=a^2+b^2; s=c+a/2-b*sqrt(3)/2; "
+                "x=-1/2+(a*s-epsilon*b*sqrt(3*q-s^2))/q; "
+                "y=sqrt(3)/2+(b*s+epsilon*a*sqrt(3*q-s^2))/q"
+            ),
+            "angle_formula": "theta=pi-atan(y/(-x))",
+        },
         "common_outer_area_numeric": common_outer_area,
         "answer_numeric": answer_numeric,
         "stabilization_margins": {
@@ -3114,6 +3170,584 @@ def _regular_polygon_roll_limit_chart() -> dict[str, Any]:
             "radial_antiderivative_replayed": primitive_residual == 0,
         },
     }
+
+
+def _scaled_point(x: float, y: float, scale: float) -> dict[str, float]:
+    return {"x": round(scale * x, 10), "y": round(scale * y, 10)}
+
+
+def _regular_polygon_points(order: int, scale: float) -> list[dict[str, float]]:
+    return [
+        _scaled_point(cos(2.0 * pi * index / order), sin(2.0 * pi * index / order), scale)
+        for index in range(order)
+    ]
+
+
+def _regular_polygon_roll_stage_diagram(order: int, scale: float) -> dict[str, Any]:
+    common_boundary: list[dict[str, float]] = []
+    current_boundary: list[dict[str, float]] = []
+    for index in range(181):
+        theta = 2.0 * pi * index / 180.0
+        common_radius = min(
+            _regular_polygon_disk_envelope(candidate, theta)
+            for candidate in range(3, order + 1)
+        )
+        current_radius = _regular_polygon_disk_envelope(order, theta)
+        common_boundary.append(
+            _scaled_point(common_radius * cos(theta), common_radius * sin(theta), scale)
+        )
+        current_boundary.append(
+            _scaled_point(current_radius * cos(theta), current_radius * sin(theta), scale)
+        )
+
+    observations = {
+        3: "最初の共通部分は三角形の通過領域そのもの。",
+        4: "正方形の通過領域を重ねると、上下左右の外周が削られる。",
+        5: "正五角形を重ねると第二象限などに新しい切替点が生じ、8本の円弧が残る。",
+        6: "破線の正六角形通過領域は三角形通過領域を含むため、共通部分は変わらない。",
+        7: "正七角形でも同じ包含が成り立ち、n=5で得た境界が保たれる。",
+    }
+    titles = {
+        3: "n=3: 最初の通過領域",
+        4: "n=4: 正方形を重ねる",
+        5: "n=5: 最後の新しい境界",
+        6: "n=6: 共通部分は変化しない",
+        7: "n=7: 奇数側も変化しない",
+    }
+    polygon = _regular_polygon_points(order, scale)
+    shapes: list[dict[str, Any]] = [
+        {
+            "kind": "circle",
+            "center": _scaled_point(0.0, 0.0, scale),
+            "radius": scale,
+            "tone": "muted",
+            "dashed": True,
+        },
+        {
+            "kind": "polyline",
+            "points": common_boundary,
+            "closed": True,
+            "tone": "primary",
+            "fill": True,
+        },
+        {
+            "kind": "polyline",
+            "points": current_boundary,
+            "closed": True,
+            "tone": "accent",
+            "dashed": order >= 4,
+        },
+        {
+            "kind": "polyline",
+            "points": polygon,
+            "closed": True,
+            "tone": "secondary",
+        },
+    ]
+    shapes.extend(
+        {
+            "kind": "point",
+            "point": point,
+            "label": f"P_{index + 1}",
+            "tone": "secondary",
+        }
+        for index, point in enumerate(polygon)
+    )
+    extent = 3.15 * scale
+    return {
+        "version": 1,
+        "kind": "plane",
+        "title": titles[order],
+        "caption": observations[order],
+        "viewport": {
+            "xMin": -extent,
+            "xMax": extent,
+            "yMin": -extent,
+            "yMax": extent,
+        },
+        "axes": False,
+        "shapes": shapes,
+    }
+
+
+def _regular_polygon_roll_visual_explanation_legacy(
+    chart: dict[str, Any], scale: float
+) -> dict[str, Any]:
+    pentagon_start = [
+        (1.0, 0.0),
+        (0.309017, 0.951057),
+        (1.0, 1.902113),
+        (2.118034, 1.538842),
+        (2.118034, 0.363271),
+    ]
+    pentagon_mid = [
+        (1.427051, 1.314328),
+        (0.309017, 0.951057),
+        (-0.381966, 1.902113),
+        (0.309017, 2.853170),
+        (1.427051, 2.489898),
+    ]
+    pentagon_end = [
+        (0.309017, 2.126627),
+        (0.309017, 0.951057),
+        (-0.809017, 0.587785),
+        (-1.5, 1.538842),
+        (-0.809017, 2.489898),
+    ]
+    fixed_pentagon = _regular_polygon_points(5, scale)
+    pivot = _scaled_point(0.309017, 0.951057, scale)
+    pivot_diagram = {
+        "version": 1,
+        "kind": "plane",
+        "title": "一つの支点で144度回す",
+        "caption": "開始・72度・144度の三位置を重ね、各点が支点中心の円弧を描くことを読む。",
+        "viewport": {
+            "xMin": -2.15 * scale,
+            "xMax": 2.7 * scale,
+            "yMin": -1.25 * scale,
+            "yMax": 3.15 * scale,
+        },
+        "axes": False,
+        "shapes": [
+            {
+                "kind": "polyline",
+                "points": fixed_pentagon,
+                "closed": True,
+                "tone": "secondary",
+            },
+            {
+                "kind": "polyline",
+                "points": [_scaled_point(x, y, scale) for x, y in pentagon_start],
+                "closed": True,
+                "tone": "muted",
+                "dashed": True,
+            },
+            {
+                "kind": "polyline",
+                "points": [_scaled_point(x, y, scale) for x, y in pentagon_mid],
+                "closed": True,
+                "tone": "primary",
+                "dashed": True,
+            },
+            {
+                "kind": "polyline",
+                "points": [_scaled_point(x, y, scale) for x, y in pentagon_end],
+                "closed": True,
+                "tone": "accent",
+            },
+            {"kind": "point", "point": pivot, "label": "支点", "tone": "accent"},
+        ],
+    }
+
+    steps: list[dict[str, Any]] = [
+        {
+            "id": "pivot-rotation",
+            "title": "一回の転動を円運動へ直す",
+            "explanation_ja": (
+                "共有頂点を動かさず、隣の辺が重なるまで回す。正n角形では回転角が4π/nとなり、"
+                "多角形の各点はその頂点を中心とする円弧を描く。"
+            ),
+            "formula_tex": r"\(2\pi-2\frac{(n-2)\pi}{n}=\frac{4\pi}{n}\)",
+            "diagram": pivot_diagram,
+        }
+    ]
+    formulas = {
+        3: r"\(G_3=F_3,\qquad d_3=\sqrt3\)",
+        4: r"\(G_4=F_3\cap F_4,\qquad d_4=2\)",
+        5: r"\(G_5=F_3\cap F_4\cap F_5,\qquad d_5=\sqrt{\frac{5+\sqrt5}{2}}\)",
+        6: r"\(\min R_6=\frac{\sqrt3+\sqrt{15}}2>1+\sqrt3,\qquad G_6=G_5\)",
+        7: r"\(\min R_7=1+2\cos\frac\pi7>1+\sqrt3,\qquad G_7=G_5\)",
+    }
+    explanations = {
+        3: "三角形の三頂点を中心とする半径√3の円板を合わせる。ここから共通部分の追跡を始める。",
+        4: "正方形の四頂点を中心とする半径2の円板を追加し、前段階との共通部分だけを残す。",
+        5: "正五角形の五つの円板を追加する。ここで外周の担当が三角形・正方形・正五角形の間で切り替わる。",
+        6: "正六角形の通過領域を加える。破線が既存の共通部分の外にあることを、図と厳密な最小動径の両方で確かめる。",
+        7: "奇数の場合の最初である正七角形を加える。やはり新しい削り取りは起きず、以後の奇数にも同じ比較が使える。",
+    }
+    for order in range(3, 8):
+        steps.append(
+            {
+                "id": f"cumulative-n-{order}",
+                "title": f"n={order} を追加する",
+                "explanation_ja": explanations[order],
+                "formula_tex": formulas[order],
+                "diagram": _regular_polygon_roll_stage_diagram(order, scale),
+            }
+        )
+
+    steps.append(
+        {
+            "id": "all-higher-orders",
+            "title": "nが8以上でも変化しないことを証明する",
+            "explanation_ja": (
+                "偶数列と奇数列を別々に比較する。どちらも最小動径が三角形通過領域の最大動径を"
+                "上回るため、n=6以降は共通部分を削らない。"
+            ),
+            "formula_tex": (
+                r"\(\min R_n\ge\frac{\sqrt3+\sqrt{15}}2>1+\sqrt3\ (n\ge6,\ n:\mathrm{even}),\quad"
+                r"\min R_n\ge1+2\cos\frac\pi7>1+\sqrt3\ (n\ge7,\ n:\mathrm{odd})\)"
+            ),
+            "diagram": {
+                "version": 1,
+                "kind": "state",
+                "title": "共通部分の安定化",
+                "caption": "n=5で境界が確定し、n=6以後は同じ領域を保つ。",
+                "states": [
+                    {"id": "g3", "label": "G3"},
+                    {"id": "g4", "label": "G4"},
+                    {"id": "g5", "label": "G5", "active": True},
+                    {"id": "g6", "label": "G6=G5"},
+                    {"id": "ginf", "label": "G∞=G5", "terminal": True},
+                ],
+                "transitions": [
+                    {"from": "g3", "to": "g4", "label": "F4を追加"},
+                    {"from": "g4", "to": "g5", "label": "F5を追加"},
+                    {"from": "g5", "to": "g6", "label": "F6は包含"},
+                    {"from": "g6", "to": "ginf", "label": "以後不変"},
+                ],
+            },
+        }
+    )
+
+    boundary = []
+    for index in range(181):
+        theta = 2.0 * pi * index / 180.0
+        radius = min(_regular_polygon_disk_envelope(order, theta) for order in (3, 4, 5))
+        boundary.append(_scaled_point(radius * cos(theta), radius * sin(theta), scale))
+    endpoint_shapes = []
+    for label, endpoint_name in (
+        ("A", "theta_5_minus"),
+        ("B", "theta_5_plus"),
+        ("C", "theta_4_minus"),
+        ("D", "theta_4_plus"),
+    ):
+        endpoint = chart["endpoint_definitions"][endpoint_name]
+        endpoint_shapes.append(
+            {
+                "kind": "point",
+                "point": _scaled_point(endpoint["x"], endpoint["y"], scale),
+                "label": label,
+                "tone": "accent",
+            }
+        )
+    steps.append(
+        {
+            "id": "boundary-switches",
+            "title": "外周の担当が替わる四点を求める",
+            "explanation_ja": (
+                "三角形・正方形・正五角形の円弧を比較し、第二象限のA,B,C,Dで担当を切り替える。"
+                "対称な下半分を合わせると外周は16区間、上半分だけなら8区間になる。"
+            ),
+            "formula_tex": (
+                r"\(\alpha,\beta,\gamma,\delta"
+                r"=\pi-\tan^{-1}\!\left(\frac{y_X}{-x_X}\right)\)"
+            ),
+            "diagram": {
+                "version": 1,
+                "kind": "plane",
+                "title": "8本の円弧を区切る交点",
+                "caption": "A,B,C,Dは円の差を取って得る直線と円の交点。数値探索ではなく根号で定まる。",
+                "viewport": {
+                    "xMin": -3.15 * scale,
+                    "xMax": 3.15 * scale,
+                    "yMin": -3.15 * scale,
+                    "yMax": 3.15 * scale,
+                },
+                "axes": True,
+                "shapes": [
+                    {
+                        "kind": "polyline",
+                        "points": boundary,
+                        "closed": True,
+                        "tone": "primary",
+                        "fill": True,
+                    },
+                    *endpoint_shapes,
+                ],
+            },
+        }
+    )
+    steps.append(
+        {
+            "id": "exact-area",
+            "title": "8区間を積分し、厳密値を返す",
+            "explanation_ja": (
+                "各円弧の動径を二乗して積分する。小数は検算にだけ用い、答えは根号と逆三角関数の式で保持する。"
+            ),
+            "formula_tex": (
+                r"\(\mathcal A_d(u)=\frac{d^2u}{2}+\frac{\sin2u}{4}+"
+                r"\frac{\sin u\sqrt{d^2-\sin^2u}+d^2\sin^{-1}(\sin u/d)}2\)"
+            ),
+            "diagram": {
+                "version": 1,
+                "kind": "variation",
+                "title": "上半平面の8区間",
+                "caption": "各行の円弧を原始関数A_dで評価し、対称な下半分を2倍して単位円を引く。",
+                "variableLabel": "区間",
+                "columns": ["0→π/3", "π/3→α", "α→3π/5", "3π/5→β", "β→γ", "γ→3π/4", "3π/4→δ", "δ→π"],
+                "rows": [
+                    {
+                        "label": "担当",
+                        "cells": ["F3", "F3", "F5", "F5", "F3", "F4", "F4", "F3"],
+                        "tone": "primary",
+                    }
+                ],
+            },
+        }
+    )
+    return {
+        "version": 1,
+        "mode": "stepper",
+        "diagram_required_for_every_step": True,
+        "steps": steps,
+    }
+
+
+def _regular_polygon_roll_visual_explanation(
+    chart: dict[str, Any], scale: float
+) -> dict[str, Any]:
+    """Compose problem 78 from reusable typed visual morphisms.
+
+    Problem-specific data chooses the polygon family and exact bounds.  The
+    frame geometry, incremental intersections, and type checking live in the
+    shared visual-reasoning kernel.
+    """
+
+    families = [regular_polygon_disk_family(order) for order in range(3, 8)]
+    steps: list[dict[str, Any]] = []
+    steps.append(
+        visual_step(
+            step_id="pivot-rotation",
+            title="一回の転動を円運動へ直す",
+            explanation_ja=(
+                "共有辺の外側へ置いた多角形を、接触頂点のまわりに回す。"
+                "開始・中間・終了の位置は、同じ支点をもつ回転として自動作図される。"
+            ),
+            formula_tex=r"\(2\pi-2\frac{(n-2)\pi}{n}=\frac{4\pi}{n}\)",
+            morphism=PIVOT_ROTATION_TO_ORBIT,
+            source_state_id="regular-polygon-roll-spec",
+            target_state_id="vertex-orbit-family",
+            diagram=pivot_rotation_diagram(
+                regular_polygon_vertices(5),
+                total_angle=4.0 * pi / 5.0,
+                scale=scale,
+                title="支点回転の三つの時刻",
+                caption="固定多角形と、0度・72度・144度の動く多角形を重ねて見る。",
+            ),
+            evidence={
+                "rotation_angle": "4*pi/n",
+                "construction": "reflect across shared edge, then rotate about contact vertex",
+            },
+        )
+    )
+
+    stage_text = {
+        3: (
+            "n=3: 最初の通過領域",
+            "三頂点を中心とする半径√3の円板合併を作り、最初の共通部分 G3 とする。",
+            r"\(G_3=F_3,\qquad d_3=\sqrt3\)",
+        ),
+        4: (
+            "n=4: 正方形を重ねる",
+            "前の領域と正方形の通過領域の共通部分を取り、実際に削られた場所を残す。",
+            r"\(G_4=G_3\cap F_4,\qquad d_4=2\)",
+        ),
+        5: (
+            "n=5: 最後の新しい境界",
+            "正五角形の通過領域を加えると、新しい円弧と切替点が現れる。",
+            r"\(G_5=G_4\cap F_5,\qquad d_5=\sqrt{\frac{5+\sqrt5}{2}}\)",
+        ),
+        6: (
+            "n=6: 共通部分は変化しない",
+            "正六角形の外周は既存の共通部分より外側にある。包含を証明したため G6=G5 となる。",
+            r"\(\min R_6=\frac{\sqrt3+\sqrt{15}}2>1+\sqrt3,\qquad G_6=G_5\)",
+        ),
+        7: (
+            "n=7: 奇数側も変化しない",
+            "正七角形についても包含が成立する。偶数列と奇数列の最初を閉じ、以後へ一般化する。",
+            r"\(\min R_7=1+2\cos\frac\pi7>1+\sqrt3,\qquad G_7=G_6\)",
+        ),
+    }
+    previous_state = "vertex-orbit-family"
+    for index, order in enumerate(range(3, 8)):
+        title, explanation, formula = stage_text[order]
+        target_state = f"intersection-through-{order}"
+        if order == 3:
+            morphism = ORBIT_TO_DISK_UNION
+        elif order <= 5:
+            morphism = INCREMENTAL_INTERSECTION
+        else:
+            morphism = ENVELOPE_STABILIZATION
+        steps.append(
+            visual_step(
+                step_id=f"cumulative-n-{order}",
+                title=title,
+                explanation_ja=explanation,
+                formula_tex=formula,
+                morphism=morphism,
+                source_state_id=previous_state,
+                target_state_id=target_state,
+                diagram=radial_intersection_diagram(
+                    families,
+                    current_family_index=index,
+                    scale=scale,
+                    title=title,
+                    caption=(
+                        "塗りつぶしがこの段階までの共通部分、破線が今回追加した通過領域。"
+                    ),
+                ),
+                evidence={
+                    "family_ids": [family["id"] for family in families[: index + 1]],
+                    "intersection_is_incremental": True,
+                    "containment_proved": order >= 6,
+                },
+            )
+        )
+        previous_state = target_state
+
+    steps.append(
+        visual_step(
+            step_id="all-higher-orders",
+            title="nが8以上でも変化しないことを証明する",
+            explanation_ja=(
+                "偶数列と奇数列を分け、それぞれの最小到達距離を n=6,7 の値で下から押さえる。"
+                "どちらも G5 の外側にあるので、その後の共通部分は変化しない。"
+            ),
+            formula_tex=(
+                r"\(\min R_n\ge\frac{\sqrt3+\sqrt{15}}2>1+\sqrt3\ "
+                r"(n\ge6,\ n\text{ 偶数}),\quad"
+                r"\min R_n\ge1+2\cos\frac\pi7>1+\sqrt3\ "
+                r"(n\ge7,\ n\text{ 奇数})\)"
+            ),
+            morphism=ENVELOPE_STABILIZATION,
+            source_state_id=previous_state,
+            target_state_id="stabilized-limit",
+            diagram={
+                "version": 1,
+                "kind": "state",
+                "title": "共通部分の逐次更新",
+                "caption": "G3、G4、G5までは更新され、G6以後は同じ領域を保つ。",
+                "states": [
+                    {"id": "g3", "label": "G3"},
+                    {"id": "g4", "label": "G4"},
+                    {"id": "g5", "label": "G5", "active": True},
+                    {"id": "g6", "label": "G6=G5"},
+                    {"id": "ginf", "label": "G∞=G5", "terminal": True},
+                ],
+                "transitions": [
+                    {"from": "g3", "to": "g4", "label": "∩F4"},
+                    {"from": "g4", "to": "g5", "label": "∩F5"},
+                    {"from": "g5", "to": "g6", "label": "F6は包含"},
+                    {"from": "g6", "to": "ginf", "label": "以後不変"},
+                ],
+            },
+            evidence={
+                "even_margin": chart["stabilization_margins"]["even_n_at_6"],
+                "odd_margin": chart["stabilization_margins"]["odd_n_at_7"],
+            },
+        )
+    )
+
+    boundary_diagram = radial_intersection_diagram(
+        families[:3],
+        current_family_index=2,
+        scale=scale,
+        title="境界を担当する円弧の切替点",
+        caption="A,B,C,Dで三角形・正方形・正五角形の円弧が切り替わる。",
+    )
+    boundary_diagram["axes"] = True
+    for label, endpoint_name in (
+        ("A", "theta_5_minus"),
+        ("B", "theta_5_plus"),
+        ("C", "theta_4_minus"),
+        ("D", "theta_4_plus"),
+    ):
+        endpoint = chart["endpoint_definitions"][endpoint_name]
+        boundary_diagram["shapes"].append(
+            {
+                "kind": "point",
+                "point": {
+                    "x": round(scale * endpoint["x"], 10),
+                    "y": round(scale * endpoint["y"], 10),
+                },
+                "label": label,
+                "tone": "accent",
+            }
+        )
+    steps.append(
+        visual_step(
+            step_id="boundary-switches",
+            title="外周の担当が替わる四点を求める",
+            explanation_ja=(
+                "円の方程式を二本ずつ引いて直線にし、基準円との交点を根号で求める。"
+                "上半分はこの四点を含む8区間へ分かれる。"
+            ),
+            formula_tex=(
+                r"\(\alpha,\beta,\gamma,\delta"
+                r"=\pi-\tan^{-1}\!\left(\frac{y_X}{-x_X}\right)\)"
+            ),
+            morphism=BOUNDARY_ARRANGEMENT,
+            source_state_id="stabilized-limit",
+            target_state_id="piecewise-boundary",
+            diagram=boundary_diagram,
+            evidence={
+                "exact_construction": chart["endpoint_exact_construction"],
+                "segment_count_on_upper_half": 8,
+            },
+        )
+    )
+    steps.append(
+        visual_step(
+            step_id="exact-area",
+            title="8区間を積分し、厳密値を返す",
+            explanation_ja=(
+                "各区間の担当円から動径を取り、その二乗の半分を積分する。"
+                "小数は検算だけに使い、最終値は根号と逆三角関数で保持する。"
+            ),
+            formula_tex=(
+                r"\(\mathcal A_d(u)=\frac{d^2u}{2}+\frac{\sin2u}{4}+"
+                r"\frac{\sin u\sqrt{d^2-\sin^2u}+d^2\sin^{-1}(\sin u/d)}2\)"
+            ),
+            morphism=RADIAL_AREA_INTEGRATION,
+            source_state_id="piecewise-boundary",
+            target_state_id="exact-area",
+            diagram={
+                "version": 1,
+                "kind": "variation",
+                "title": "上半平面の8区間",
+                "caption": "下半分は対称性で戻し、最後に固定多角形が尽くす単位円を引く。",
+                "variableLabel": "偏角",
+                "columns": [
+                    "0→π/3",
+                    "π/3→α",
+                    "α→3π/5",
+                    "3π/5→β",
+                    "β→γ",
+                    "γ→3π/4",
+                    "3π/4→δ",
+                    "δ→π",
+                ],
+                "rows": [
+                    {
+                        "label": "担当",
+                        "cells": ["F3", "F3", "F5", "F5", "F3", "F4", "F4", "F3"],
+                        "tone": "primary",
+                    }
+                ],
+            },
+            evidence={
+                "antiderivative_replayed": chart["proof_obligations"][
+                    "radial_antiderivative_replayed"
+                ],
+                "active_segments": chart["active_radial_segments_on_0_pi"],
+            },
+        )
+    )
+    return compose_visual_explanation(
+        steps,
+        title="一手ずつ追う正多角形の転動と共通部分",
+    )
 
 
 def _signed_sine_unit_group_chart() -> dict[str, Any]:
@@ -4316,7 +4950,7 @@ def execute_structural_theorem_query(payload: dict[str, Any]) -> dict[str, Any]:
     }
     if witness.get("derivation_format") == "tex":
         result["derivation_tex"] = derivation
-    for display_key in ("diagram", "diagram_tikz"):
+    for display_key in ("diagram", "diagram_tikz", "visual_explanation"):
         display_value = witness.get(display_key)
         if display_value:
             result[display_key] = display_value
@@ -4506,39 +5140,50 @@ def _regular_polygon_external_roll_common_limit(
     }
     scale_squared = sp.simplify(circumradius**2)
     answer_numeric = float(scale_squared) * float(chart["answer_numeric"])
+    visual_explanation = _regular_polygon_roll_visual_explanation(
+        chart, float(circumradius)
+    )
     answer_formula = (
         chart["answer_exact"]
         if scale_squared == 1
         else f"({sp.sstr(scale_squared)})*({chart['answer_exact']})"
     )
-    scale_prefix = "" if scale_squared == 1 else rf"{sp.latex(scale_squared)}\left["
-    scale_suffix = "" if scale_squared == 1 else r"\right]"
-    answer_tex = (
-        r"\(\displaystyle "
-        rf"{scale_prefix}2\sum_{{\nu=1}}^{{8}}"
-        r"\bigl(B_{d_\nu}(b_\nu-\phi_\nu)"
-        r"-B_{d_\nu}(a_\nu-\phi_\nu)\bigr)-\pi"
-        rf"{scale_suffix}"
-        rf"\;=\;{answer_numeric:.12f}\ldots\)"
+    d5_tex = r"\sqrt{(5+\sqrt5)/2}"
+    exact_area_tex = rf"""2\Biggl\{{
+\mathcal A_{{\sqrt3}}\!\left(\frac\pi3\right)-\mathcal A_{{\sqrt3}}(0)
++\mathcal A_{{\sqrt3}}\!\left(\alpha-\frac{{2\pi}}3\right)
+ -\mathcal A_{{\sqrt3}}\!\left(-\frac\pi3\right)
++\mathcal A_{{{d5_tex}}}\!\left(\frac\pi5\right)
+ -\mathcal A_{{{d5_tex}}}\!\left(\alpha-\frac{{2\pi}}5\right)
++\mathcal A_{{{d5_tex}}}\!\left(\beta-\frac{{4\pi}}5\right)
+ -\mathcal A_{{{d5_tex}}}\!\left(-\frac\pi5\right)
++\mathcal A_{{\sqrt3}}\!\left(\gamma-\frac{{2\pi}}3\right)
+ -\mathcal A_{{\sqrt3}}\!\left(\beta-\frac{{2\pi}}3\right)
++\mathcal A_2\!\left(\frac\pi4\right)
+ -\mathcal A_2\!\left(\gamma-\frac\pi2\right)
++\mathcal A_2(\delta-\pi)-\mathcal A_2\!\left(-\frac\pi4\right)
++\mathcal A_{{\sqrt3}}\!\left(\frac\pi3\right)
+ -\mathcal A_{{\sqrt3}}\!\left(\delta-\frac{{2\pi}}3\right)
+\Biggr\}}-\pi"""
+    scaled_exact_area_tex = (
+        exact_area_tex
+        if scale_squared == 1
+        else rf"{sp.latex(scale_squared)}\left[{exact_area_tex}\right]"
     )
+    answer_tex = rf"\(\displaystyle {scaled_exact_area_tex}\)"
     return (
         answer_formula,
         {
             "shared_chart": chart,
             "derivation_format": "tex",
             "answer_numeric": answer_numeric,
+            "answer_exact_tex": scaled_exact_area_tex,
             "answer_tex": answer_tex,
             "circumradius": sp.sstr(circumradius),
             "similarity_area_scale": sp.sstr(scale_squared),
             "endpoint_values_over_pi": endpoint_values,
-            "diagram": {
-                "version": 1,
-                "kind": "geometry",
-                "title": "正五角形の頂点接触転動",
-                "caption": (
-                    "共有頂点を支点とする区分的剛体回転と、最長対角線が作る円弧包絡。"
-                ),
-            },
+            "visual_explanation": visual_explanation,
+            "diagram": visual_explanation["steps"][0]["diagram"],
             "diagram_tikz": r"""\begin{tikzpicture}[scale=1.08]
 \begin{scope}[xshift=-2.8cm]
   \coordinate (P0) at (0:1.55);
@@ -4570,13 +5215,17 @@ def _regular_polygon_external_roll_common_limit(
         },
         [
             rf"相似変換により、外接円半径を1から \({sp.latex(circumradius)}\) へ変えると全長は \({sp.latex(circumradius)}\) 倍、面積は \({sp.latex(scale_squared)}\) 倍になる。以下では単位半径で計算し、最後にこの面積倍率を戻す。",
-            r"固定正 \(n\) 角形を \(K_n\)、頂点を \(P_j=e^{2\pi i j/n}\) とする。動く多角形を初期共有辺の外側へ置き、接触頂点が \(P_j\) の区間では \[g_j(t)=R_{P_j,t}\circ g_{j-1},\qquad 0\le t\le\frac{4\pi}{n}\] と書ける。従って \(D_n=\bigcup_{j,t}g_j(t)K_n\) は一般の \(SE(2)\) 掃引 \(\operatorname{Sweep}(K,g)=\bigcup_tg(t)K\) の特殊例である。",
-            r"\(d_n\) を \(K_n\) の直径とすると \[d_n=\begin{cases}2&(n\text{ 偶数}),\\2\cos\dfrac{\pi}{2n}&(n\text{ 奇数}).\end{cases}\] 各支点区間の多角形は \(\overline B(P_j,d_n)\) 内にある。逆に、偶数 \(n\) では唯一の最長対角線が外向き方向の \([-2\pi/n,2\pi/n]\) を掃き、奇数 \(n\) では二本の最長対角線の扇形が隣接して、円板合併の外側 Voronoi 弧を覆う。これらの扇形と \(K_n\) は円板合併を尽くすので、\[F_n:=D_n\cup K_n=\bigcup_{j=0}^{n-1}\overline B(P_j,d_n).\tag{1}\]",
-            r"(1) は原点について星形である。\(\delta_j=\theta-2\pi j/n\) とすると動径関数は \[R_n(\theta)=\max_j\left\{\cos\delta_j+\sqrt{d_n^2-\sin^2\delta_j}\right\}.\tag{2}\] その最小値は、偶数なら \(\cos(\pi/n)+\sqrt{4-\sin^2(\pi/n)}\)、奇数なら \(1+2\cos(\pi/n)\) である。\(n\ge6\) ではいずれも \(1+\sqrt3=\max R_3\) より大きい。従って \[\bigcap_{k=3}^{N}F_k=F_3\cap F_4\cap F_5\qquad(N\ge5).\tag{3}\]",
-            r"一方、\(K_n\) は半径 \(\cos(\pi/n)\) の円板を含むので、\(\bigcup_{n\ge3}K_n\) は単位開円板を尽くす。転動中の内部は固定多角形の内部と交わらないから、(3) より \[\lim_{N\to\infty}S_N=\operatorname{area}(F_3\cap F_4\cap F_5)-\pi.\tag{4}\]",
-            r"\(C(\phi,d)=\overline B(e^{i\phi},d)\)、\(d_5=2\cos(\pi/10)\) とする。\(\theta_5^-\), \(\theta_5^+\), \(\theta_4^-\), \(\theta_4^+\) をそれぞれ \(C(2\pi/3,\sqrt3)\) と \(C(2\pi/5,d_5)\), \(C(4\pi/5,d_5)\), \(C(\pi/2,2)\), \(C(\pi,2)\) の外側交点の偏角として、順に区間 \((\pi/2,3\pi/5)\), \((3\pi/5,2\pi/3)\), \((2\pi/3,3\pi/4)\), \((3\pi/4,5\pi/6)\) の根を選ぶ。円円交点公式から \[\frac1\pi(\theta_5^-,\theta_5^+,\theta_4^-,\theta_4^+)=(0.578731785259,0.645530388326,0.698712662623,0.772814474171).\]",
-            r"\[B_d(u)=\frac{d^2u}{2}+\frac{\sin2u}{4}+\frac{\sin u\sqrt{d^2-\sin^2u}+d^2\arcsin(\sin u/d)}2\] とおくと、\(B_d'(u)=\frac12(\cos u+\sqrt{d^2-\sin^2u})^2\) である。\(0\le\theta\le\pi\) における (2) の最小包絡は順に \[(3,0),(3,2\pi/3),(5,2\pi/5),(5,4\pi/5),(3,2\pi/3),(4,\pi/2),(4,\pi),(3,2\pi/3)\] の円弧で、切替点は \[0,\frac\pi3,\theta_5^-,\frac{3\pi}5,\theta_5^+,\theta_4^-,\frac{3\pi}4,\theta_4^+,\pi.\] 各区間 \([a_\nu,b_\nu]\) の中心偏角を \(\phi_\nu\)、半径を \(d_\nu\) とすれば、(4) は厳密に \[2\sum_{\nu=1}^{8}\{B_{d_\nu}(b_\nu-\phi_\nu)-B_{d_\nu}(a_\nu-\phi_\nu)\}-\pi.\tag{5}\]",
-            rf"円円交点残差、八区間の能動枝、原始関数を再生すると全て0になる。(5) の値は \[\boxed{{{answer_numeric:.12f}\ldots}}\] である。式 (5) が逆三角関数と平方根だけからなる厳密値であり、小数はその表示値である。",
+            r"\textbf{一回の転動を描く。} 固定多角形の共有辺に関して動く多角形を反転配置し、接触頂点を支点として回す。正 \(n\) 角形の一回分の回転角は \[2\pi-2\frac{(n-2)\pi}{n}=\frac{4\pi}{n}.\tag{1}\] 各頂点はこの支点を中心とする円弧を描く。解答図は、この構成から開始・中間・終了の三位置を計算している。",
+            r"\textbf{軌跡を円板の合併へ移す。} \(K_n\) の頂点を \(P_j\) とし、支点から最も遠い頂点までの距離を \[d_n=\begin{cases}2&(n\text{ が偶数}),\\2\cos\dfrac{\pi}{2n}&(n\text{ が奇数})\end{cases}\] とする。最長対角線が支点のまわりを掃くため、固定多角形を含めた通過部分は \[F_n=D_n\cup K_n=\bigcup_{j=0}^{n-1}\overline B(P_j,d_n).\tag{2}\] となる。これは特定の \(n\) の図を記憶したものではなく、任意の頂点集合と最大距離に適用する変換である。",
+            r"\textbf{\(n=3\)。} 三頂点を中心とする半径 \(d_3=\sqrt3\) の円板を描き、\(G_3=F_3\) とする。原点から偏角 \(\theta\) の方向に見た外周距離は、円の中心偏角を \(\phi\) として \[r(\theta)=\cos(\theta-\phi)+\sqrt{d^2-\sin^2(\theta-\phi)}.\tag{3}\]",
+            r"\textbf{\(n=4\)。} 同じ式へ \(d_4=2\) と四頂点を代入し、前段階との共通部分 \[G_4=G_3\cap F_4\] を取る。図の塗りつぶしが \(G_4\)、破線が今回加えた \(F_4\) である。",
+            r"\textbf{\(n=5\)。} \(d_5=\sqrt{(5+\sqrt5)/2}\) と五頂点から \(F_5\) を作り、\[G_5=G_4\cap F_5\] とする。この段階で三角形・正方形・正五角形の円弧が外周を分担し、最後の新しい切替点が現れる。",
+            r"\textbf{\(n=6\)。} 偶数 \(n\ge6\) の外周の最小距離は \[\cos\frac\pi n+\sqrt{4-\sin^2\frac\pi n}\ge\frac{\sqrt3+\sqrt{15}}2>1+\sqrt3.\] 右端は \(F_3\) の最大外周距離なので \(F_6\) は \(G_5\) を含み、\(G_6=G_5\) である。",
+            r"\textbf{\(n=7\) とそれ以後。} 奇数 \(n\ge7\) では最小距離が \[1+2\cos\frac\pi n\ge1+2\cos\frac\pi7>1+\sqrt3\] だから \(G_7=G_6\)。偶数列と奇数列をそれぞれ最初の値で押さえたので、以後も \[\bigcap_{k=3}^{N}F_k=F_3\cap F_4\cap F_5\qquad(N\ge5).\tag{4}\]",
+            r"固定正 \(n\) 角形は半径 \(\cos(\pi/n)\) の円板を含み、その半径は1へ近づく。また転動中の内部は固定多角形の内部へ入らない。従って \[\lim_{N\to\infty}S_N=\operatorname{area}(F_3\cap F_4\cap F_5)-\pi.\tag{5}\]",
+            r"\textbf{境界の切替点を根号で求める。} 第二象限の四点を \(X=A,B,C,D\)、対応する二円の差から得る直線を \(a_Xx+b_Xy=c_X\) とする。\[q_X=a_X^2+b_X^2,\qquad s_X=c_X+\frac{a_X}{2}-\frac{\sqrt3b_X}{2}\] と置くと、基準円 \((x+1/2)^2+(y-\sqrt3/2)^2=3\) との交点は \[x_X=-\frac12+\frac{a_Xs_X-\varepsilon_Xb_X\sqrt{3q_X-s_X^2}}{q_X},\quad y_X=\frac{\sqrt3}{2}+\frac{b_Xs_X+\varepsilon_Xa_X\sqrt{3q_X-s_X^2}}{q_X}.\tag{6}\] ここから \(\alpha,\beta,\gamma,\delta=\pi-\tan^{-1}(y_X/(-x_X))\) が厳密に定まる。",
+            r"\textbf{8区間を積分する。} \[\mathcal A_d(u)=\frac{d^2u}{2}+\frac{\sin2u}{4}+\frac{\sin u\sqrt{d^2-\sin^2u}+d^2\sin^{-1}(\sin u/d)}2\] とおけば \(\mathcal A_d'(u)=\frac12(\cos u+\sqrt{d^2-\sin^2u})^2\)。上半分の担当は順に \(F_3,F_3,F_5,F_5,F_3,F_4,F_4,F_3\) であり、各端点へ代入して下半分を対称に2倍し、最後に \(\pi\) を引く。",
+            rf"以上より厳密値は \[{scaled_exact_area_tex}\] である。円交点、8本の能動円弧、原始関数の微分を再生すると残差はすべて0になる。数値 \({answer_numeric:.12f}\ldots\) は検算表示であり、最終答案には用いない。",
         ],
     )
 

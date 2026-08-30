@@ -1453,6 +1453,23 @@ class StructuralTheoremQueryTests(unittest.TestCase):
         self.assertTrue(all(chart["proof_obligations"].values()))
         self.assertEqual(len(chart["active_radial_segments_on_0_pi"]), 8)
         self.assertIn("tikzpicture", result["diagram_tikz"])
+        visual = result["visual_explanation"]
+        self.assertTrue(visual["composition_verified"])
+        self.assertEqual(len(visual["steps"]), 9)
+        self.assertEqual(
+            [step["id"] for step in visual["steps"][1:6]],
+            [
+                "cumulative-n-3",
+                "cumulative-n-4",
+                "cumulative-n-5",
+                "cumulative-n-6",
+                "cumulative-n-7",
+            ],
+        )
+        self.assertTrue(all(step.get("diagram") for step in visual["steps"]))
+        self.assertIn(r"\mathcal A", result["answer_tex"])
+        self.assertNotIn("16.082", result["answer_tex"])
+        self.assertNotIn("SE(2)", " ".join(result["derivation_tex"]))
 
         radius_two = statement.replace("半径が1", "半径が2")
         scaled_compiled = compile_structural_theorem_query(radius_two)
