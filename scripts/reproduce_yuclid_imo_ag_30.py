@@ -110,6 +110,15 @@ def git_output(root: Path, *args: str) -> str | None:
     return process.stdout.strip() if process.returncode == 0 else None
 
 
+def portable_path(path: Path | None) -> str | None:
+    if path is None:
+        return None
+    try:
+        return path.relative_to(Path.cwd()).as_posix()
+    except ValueError:
+        return path.as_posix()
+
+
 def run_problem(
     executable: Path,
     input_path: Path,
@@ -202,7 +211,7 @@ def run_problem(
             "elapsed_seconds": elapsed,
             "proof_sha256": hashlib.sha256(stdout.encode("utf-8")).hexdigest(),
             "proof_chars": len(stdout),
-            "proof_path": str(proof_output_path) if proof_output_path is not None else None,
+            "proof_path": portable_path(proof_output_path),
             "proof_json_parsed": proof_payload is not None,
             "solver_json_status": proof_payload.get("status")
             if isinstance(proof_payload, dict)

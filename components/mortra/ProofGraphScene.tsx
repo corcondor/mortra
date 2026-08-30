@@ -17,11 +17,13 @@ type GraphNode = {
   position: [number, number, number]
 }
 
-const CYAN = new THREE.Color('#28d7f2')
-const GREEN = new THREE.Color('#a8f12f')
-const AMBER = new THREE.Color('#f4b942')
-const WHITE = new THREE.Color('#d7dde5')
-const MUTED = new THREE.Color('#4b5563')
+const CYAN = new THREE.Color('#62d8e8')
+const GREEN = new THREE.Color('#64e6b2')
+const AMBER = new THREE.Color('#ffb866')
+const ROSE = new THREE.Color('#ff78ad')
+const WHITE = new THREE.Color('#f3f0e8')
+const MUTED = new THREE.Color('#66727b')
+const LAYER_COLORS = [CYAN, AMBER, ROSE, WHITE, CYAN, GREEN]
 
 const GRAPH_NODES: GraphNode[] = [
   { id: 'parent-a', layer: 0, position: [-3.5, 0.92, 0.16] },
@@ -68,10 +70,16 @@ function edgeLine(
   opacity: number,
 ) {
   const midpoint = start.clone().lerp(end, 0.5)
-  midpoint.z += Math.abs(start.y - end.y) * 0.08
+  midpoint.z += Math.abs(start.y - end.y) * 0.14
   const curve = new THREE.QuadraticBezierCurve3(start, midpoint, end)
   const geometry = new THREE.BufferGeometry().setFromPoints(curve.getPoints(24))
-  const material = new THREE.LineBasicMaterial({ color, transparent: true, opacity })
+  const material = new THREE.LineBasicMaterial({
+    color,
+    transparent: true,
+    opacity,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+  })
   return new THREE.Line(geometry, material)
 }
 
@@ -97,11 +105,11 @@ export function ProofGraphScene({
 
     const scene = new THREE.Scene()
     const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 50)
-    camera.position.set(0, 0, 9.6)
+    camera.position.set(0, 0, 8.9)
 
     const root = new THREE.Group()
-    root.rotation.x = -0.06
-    root.rotation.y = -0.08
+    root.rotation.x = -0.1
+    root.rotation.y = -0.12
     scene.add(root)
 
     const omitted = inputCount === 1
@@ -126,7 +134,7 @@ export function ProofGraphScene({
       const start = positions.get(from)
       const end = positions.get(to)
       if (!start || !end) return
-      baseEdges.add(edgeLine(start, end, MUTED, 0.28))
+      baseEdges.add(edgeLine(start, end, MUTED, 0.34))
       const targetLayer = graphNodes.find(node => node.id === to)?.layer ?? 0
       const line = edgeLine(start, end, CYAN, 0)
       activeEdges.push({ line, layer: targetLayer })
@@ -137,8 +145,8 @@ export function ProofGraphScene({
     const nodeMeshes: Array<{ mesh: THREE.Mesh; layer: number; id: string }> = []
     graphNodes.forEach(node => {
       const geometry = node.id === 'bridge' || node.id === 'certificate'
-        ? new THREE.OctahedronGeometry(node.id === 'certificate' ? 0.16 : 0.13, 0)
-        : new THREE.SphereGeometry(node.layer === 0 ? 0.12 : 0.085, 20, 20)
+        ? new THREE.OctahedronGeometry(node.id === 'certificate' ? 0.2 : 0.16, 0)
+        : new THREE.SphereGeometry(node.layer === 0 ? 0.145 : 0.105, 24, 24)
       const material = new THREE.MeshBasicMaterial({ color: WHITE, transparent: true, opacity: 0.34 })
       const mesh = new THREE.Mesh(geometry, material)
       mesh.position.set(...node.position)
@@ -156,11 +164,29 @@ export function ProofGraphScene({
       return ring
     })
 
+    const nodeHalos = graphNodes.map(node => {
+      const radius = node.layer === 0 ? 0.21 : node.id === 'certificate' ? 0.27 : 0.155
+      const halo = new THREE.Mesh(
+        new THREE.RingGeometry(radius, radius + 0.012, 48),
+        new THREE.MeshBasicMaterial({
+          color: LAYER_COLORS[node.layer] ?? CYAN,
+          transparent: true,
+          opacity: 0,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
+          side: THREE.DoubleSide,
+        }),
+      )
+      halo.position.set(...node.position)
+      root.add(halo)
+      return { halo, layer: node.layer }
+    })
+
     const targetRotation = { x: root.rotation.x, y: root.rotation.y }
     const onPointerMove = (event: PointerEvent) => {
       const rect = host.getBoundingClientRect()
-      targetRotation.y = -0.08 + ((event.clientX - rect.left) / rect.width - 0.5) * 0.12
-      targetRotation.x = -0.06 + ((event.clientY - rect.top) / rect.height - 0.5) * 0.08
+      targetRotation.y = -0.12 + ((event.clientX - rect.left) / rect.width - 0.5) * 0.18
+      targetRotation.x = -0.1 + ((event.clientY - rect.top) / rect.height - 0.5) * 0.12
     }
     host.addEventListener('pointermove', onPointerMove, { passive: true })
 
@@ -174,7 +200,7 @@ export function ProofGraphScene({
       const aspect = width / height
       renderer.setSize(width, height, true)
       camera.aspect = aspect
-      camera.position.z = aspect < 1 ? 13.4 : aspect < 1.45 ? 10.8 : 9.6
+      camera.position.z = aspect < 1 ? 12.8 : aspect < 1.45 ? 10.2 : 8.9
       camera.updateProjectionMatrix()
     }
     const resizeObserver = new ResizeObserver(resize)
@@ -198,14 +224,23 @@ export function ProofGraphScene({
 
       activeEdges.forEach(({ line, layer }) => {
         const material = line.material as THREE.LineBasicMaterial
-        material.color.copy(color)
-        material.opacity += ((layer <= reachedLayer ? 0.92 : 0) - material.opacity) * 0.08
+        const layerColor = current.phase === 'error'
+          ? AMBER
+          : current.phase === 'complete'
+            ? GREEN
+            : (LAYER_COLORS[layer] ?? color)
+        material.color.copy(layerColor)
+        material.opacity += ((layer <= reachedLayer ? 0.98 : 0) - material.opacity) * 0.08
       })
 
       nodeMeshes.forEach(({ mesh, layer, id }) => {
         const material = mesh.material as THREE.MeshBasicMaterial
         const reached = layer <= reachedLayer
-        const nodeColor = id === 'certificate' && current.phase === 'complete' ? GREEN : color
+        const nodeColor = current.phase === 'error'
+          ? AMBER
+          : id === 'certificate' && current.phase === 'complete'
+            ? GREEN
+            : (LAYER_COLORS[layer] ?? color)
         material.color.copy(reached ? nodeColor : WHITE)
         material.opacity += ((reached ? 0.98 : 0.34) - material.opacity) * 0.08
         const pulse = reached && current.running && !reduced ? 1 + Math.sin(elapsed * 3.1 - layer * 0.7) * 0.07 : 1
@@ -217,6 +252,14 @@ export function ProofGraphScene({
         material.color.copy(color)
         const pulse = reduced ? 1 : 1 + Math.sin(elapsed * 2.2 + index * Math.PI) * 0.05
         ring.scale.setScalar(pulse)
+      })
+
+      nodeHalos.forEach(({ halo, layer }, index) => {
+        const material = halo.material as THREE.MeshBasicMaterial
+        const reached = layer <= reachedLayer
+        material.opacity += ((reached ? 0.34 : 0.05) - material.opacity) * 0.07
+        const pulse = reduced ? 1 : 1 + Math.sin(elapsed * 1.65 + index * 0.43) * 0.1
+        halo.scale.setScalar(pulse)
       })
 
       renderer.render(scene, camera)

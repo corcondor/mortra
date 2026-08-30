@@ -1,0 +1,1240 @@
+{
+  "experiment": "yuclid_imo_ag_30_no_llm_reproduction",
+  "protocol": {
+    "same_command_for_every_problem": true,
+    "uses_external_llm": false,
+    "uses_auxiliary_point_generator": false,
+    "yuclid_iteration_limit": 500,
+    "ar_profile": "all",
+    "solver_options": [],
+    "timeout_seconds": 30.0
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "Intel64 Family 6 Model 170 Stepping 4, GenuineIntel",
+    "python": "3.12.10",
+    "newclid_commit": "ac6550732a950564cf7614d605b5bf1eadd29701",
+    "newclid_commit_date": "2026-02-24T21:43:01+01:00",
+    "yuclid_executable": "yuclid.exe",
+    "yuclid_executable_sha256": "dc40a72767c15a90b48471619a0b00734b611eeecfc9c7815328ae0eae4f1397"
+  },
+  "scores": {
+    "original_imo_ag_30": {
+      "total": 30,
+      "solved": 17,
+      "score": 0.5666666666666667,
+      "status_counts": {
+        "solved": 17,
+        "saturated_unsolved": 13
+      },
+      "solved_names": [
+        "2000_p1",
+        "2002_p2a",
+        "2002_p2b",
+        "2003_p4",
+        "2004_p1",
+        "2004_p5",
+        "2005_p5",
+        "2007_p4",
+        "2010_p4",
+        "2012_p1",
+        "2013_p4",
+        "2014_p4",
+        "2015_p4",
+        "2016_p1",
+        "2017_p4",
+        "2018_p1",
+        "2022_p4"
+      ]
+    },
+    "readme_reformulated_imo_ag_30": {
+      "total": 30,
+      "solved": 18,
+      "score": 0.6,
+      "status_counts": {
+        "solved": 18,
+        "saturated_unsolved": 12
+      },
+      "solved_names": [
+        "2000_p1",
+        "2002_p2a",
+        "2002_p2b",
+        "2003_p4",
+        "2004_p1",
+        "2004_p5",
+        "2005_p5",
+        "2007_p4",
+        "2010_p4",
+        "2012_p1",
+        "2013_p4",
+        "2014_p4",
+        "2015_p4",
+        "2016_p1",
+        "2017_p4",
+        "2018_p1",
+        "2019_p2_easy",
+        "2022_p4"
+      ]
+    }
+  },
+  "official_ctest_expectation": {
+    "expected_solved": [
+      "2000_p1",
+      "2002_p2a",
+      "2002_p2b",
+      "2003_p4",
+      "2004_p1",
+      "2004_p5",
+      "2005_p5",
+      "2007_p4",
+      "2010_p4",
+      "2012_p1",
+      "2013_p4",
+      "2014_p4",
+      "2015_p4",
+      "2016_p1",
+      "2017_p4",
+      "2019_p2_easy",
+      "2022_p4"
+    ],
+    "missing_expected_solved": [],
+    "unexpected_solved": [
+      "2018_p1"
+    ]
+  },
+  "wall_seconds": 50.9225626999978,
+  "results": {
+    "2000_p1": {
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.9802557999937562,
+      "proof_sha256": "d1d245493eec4567984628fa73f395e4a9f3100f4f13d26aad96d4a3c333885a",
+      "proof_chars": 2404770,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2000_p1.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 194,
+      "all_deduction_count": 3298,
+      "deduction_type_counts": {
+        "rule": 95,
+        "refl": 10,
+        "num": 49,
+        "ar": 40
+      },
+      "all_deduction_type_counts": {
+        "rule": 547,
+        "num": 551,
+        "refl": 22,
+        "ar": 2178
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 13,
+        "angle chasing": 27
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "cong",
+          "points": [
+            "e",
+            "p",
+            "e",
+            "q"
+          ],
+          "lhs_terms": {
+            "|e-p|^2": "1/1",
+            "|e-q|^2": "-1/1"
+          }
+        }
+      ],
+      "stderr_tail": "",
+      "input_sha256": "911c75c7e3b23c0eef768b133a7c637498ca5d26844bc7e9cf71fb1d7a85e9c6"
+    },
+    "2000_p6": {
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 5.19494929999928,
+      "proof_sha256": "2a22b516e68d8c63d87effb8279f7e363b8ca13002e9a46072095d9447875a01",
+      "proof_chars": 12088921,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2000_p6.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 10025,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 1791,
+        "num": 1238,
+        "refl": 36,
+        "ar": 6960
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": "",
+      "input_sha256": "d81a5175c108726b7d014a6a3ae9d3a4f58fd406c37ca42376ff040449a8480d"
+    },
+    "2002_p2a": {
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.40996820000873413,
+      "proof_sha256": "5262be497d7d49cbd9023ae522f505593ffe1779310eb625930b7d4fc38e2410",
+      "proof_chars": 1077605,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2002_p2a.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 94,
+      "all_deduction_count": 1825,
+      "deduction_type_counts": {
+        "rule": 46,
+        "num": 22,
+        "refl": 7,
+        "ar": 19
+      },
+      "all_deduction_type_counts": {
+        "rule": 312,
+        "num": 348,
+        "refl": 33,
+        "ar": 1132
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 11,
+        "angle chasing": 7,
+        "length chasing": 1
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "eqangle",
+          "points": [
+            "c",
+            "e",
+            "e",
+            "j",
+            "e",
+            "j",
+            "e",
+            "f"
+          ],
+          "lhs_terms": {
+            "∠(c-e)": "-1/1",
+            "∠(e-f)": "-1/1",
+            "∠(e-j)": "2/1"
+          }
+        }
+      ],
+      "stderr_tail": "",
+      "input_sha256": "2d85a82e81dc760a3961109bad4762bb3101295028e9f62036f24690067e2b4e"
+    },
+    "2002_p2b": {
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.7629757000104291,
+      "proof_sha256": "5cf37f3756b1a0d4772e8b90fb2f6c61d09e44ddbb15d2c76d22fa63a5ad8d6e",
+      "proof_chars": 1050738,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2002_p2b.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 35,
+      "all_deduction_count": 1821,
+      "deduction_type_counts": {
+        "rule": 18,
+        "refl": 3,
+        "num": 8,
+        "ar": 6
+      },
+      "all_deduction_type_counts": {
+        "rule": 312,
+        "num": 345,
+        "refl": 33,
+        "ar": 1131
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 4,
+        "angle chasing": 2
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "eqangle",
+          "points": [
+            "c",
+            "e",
+            "c",
+            "j",
+            "c",
+            "j",
+            "c",
+            "f"
+          ],
+          "lhs_terms": {
+            "∠(c-e)": "-1/1",
+            "∠(c-f)": "-1/1",
+            "∠(c-j)": "2/1"
+          }
+        }
+      ],
+      "stderr_tail": "",
+      "input_sha256": "f000f266ead0bc83f141754c450c218ea7a0608a5961574076f47648c8413f0a"
+    },
+    "2003_p4": {
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 1.8984430999989854,
+      "proof_sha256": "366527ef231db672b0ce7acc44b2544217a40be089756a90ea4e7a9514566a4b",
+      "proof_chars": 2690788,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2003_p4.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 184,
+      "all_deduction_count": 3740,
+      "deduction_type_counts": {
+        "rule": 89,
+        "num": 46,
+        "refl": 12,
+        "ar": 37
+      },
+      "all_deduction_type_counts": {
+        "rule": 620,
+        "num": 463,
+        "refl": 23,
+        "ar": 2634
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 16,
+        "angle chasing": 21
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "cong",
+          "points": [
+            "p",
+            "q",
+            "q",
+            "r"
+          ],
+          "lhs_terms": {
+            "|p-q|^2": "1/1",
+            "|q-r|^2": "-1/1"
+          }
+        }
+      ],
+      "stderr_tail": "",
+      "input_sha256": "ac5df637e9e4984a0eb026ff25202205133b332272f62249303f5fb23d6a4241"
+    },
+    "2004_p1": {
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.7530337999924086,
+      "proof_sha256": "806a85e46e77caa101e40267d0b428270de2727495f8ab114a501a6923da3939",
+      "proof_chars": 3232433,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2004_p1.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 114,
+      "all_deduction_count": 2306,
+      "deduction_type_counts": {
+        "rule": 50,
+        "num": 28,
+        "refl": 13,
+        "ar": 23
+      },
+      "all_deduction_type_counts": {
+        "rule": 480,
+        "num": 316,
+        "refl": 23,
+        "ar": 1487
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 15,
+        "angle chasing": 7,
+        "length chasing": 1
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "coll",
+          "points": [
+            "b",
+            "c",
+            "p"
+          ]
+        }
+      ],
+      "stderr_tail": "",
+      "input_sha256": "e7301ddc0659f6864174bb6f347373093f943165fc2ea352f598e4cf8b8a28aa"
+    },
+    "2004_p5": {
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.6892938000091817,
+      "proof_sha256": "4ca078ffc3de6067e4313eb61562eabef2a8b19a94ea13c24631294673deaa8b",
+      "proof_chars": 103604,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2004_p5.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 47,
+      "all_deduction_count": 221,
+      "deduction_type_counts": {
+        "rule": 20,
+        "refl": 6,
+        "num": 12,
+        "ar": 9
+      },
+      "all_deduction_type_counts": {
+        "rule": 83,
+        "num": 52,
+        "refl": 9,
+        "ar": 77
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 6,
+        "angle chasing": 2,
+        "squared lengths chasing": 1
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "cong",
+          "points": [
+            "a",
+            "p",
+            "c",
+            "p"
+          ],
+          "lhs_terms": {
+            "|a-p|^2": "1/1",
+            "|c-p|^2": "-1/1"
+          }
+        }
+      ],
+      "stderr_tail": "",
+      "input_sha256": "e6382722e1548c4ae6e626aa0dd17b4d44536ace4e83c3bff7bbf547a29adff2"
+    },
+    "2005_p5": {
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 2.1479589999944437,
+      "proof_sha256": "9bdaa9ea943c0b90583737f42feb8ec7c87dd572873c509583d5b19da4d3f05f",
+      "proof_chars": 4013229,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2005_p5.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 171,
+      "all_deduction_count": 3430,
+      "deduction_type_counts": {
+        "rule": 81,
+        "num": 50,
+        "refl": 11,
+        "ar": 29
+      },
+      "all_deduction_type_counts": {
+        "rule": 754,
+        "num": 524,
+        "refl": 20,
+        "ar": 2132
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 15,
+        "angle chasing": 14
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "cyclic",
+          "points": [
+            "p",
+            "q",
+            "r",
+            "m"
+          ]
+        }
+      ],
+      "stderr_tail": "",
+      "input_sha256": "39551d31a53b3a7e11f3832da654b3e092b6f19fdcc7915fe1e6911b35d032ea"
+    },
+    "2007_p4": {
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 1.2381262999988394,
+      "proof_sha256": "f5cfe4217503ce0a31601b3fa05e0a6d939dad59fcbbfb29de3a5552a0587107",
+      "proof_chars": 5811124,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2007_p4.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 160,
+      "all_deduction_count": 4907,
+      "deduction_type_counts": {
+        "rule": 73,
+        "num": 48,
+        "refl": 4,
+        "ar": 35
+      },
+      "all_deduction_type_counts": {
+        "rule": 622,
+        "num": 480,
+        "refl": 15,
+        "ar": 3790
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 14,
+        "angle chasing": 17,
+        "squared lengths chasing": 4
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "eqratio",
+          "points": [
+            "r",
+            "p",
+            "r",
+            "q",
+            "l",
+            "l1",
+            "k",
+            "k1"
+          ],
+          "lhs_terms": {
+            "|r-p|^2": "1/1",
+            "|r-q|^2": "-1/1",
+            "|l-l1|^2": "-1/1",
+            "|k-k1|^2": "1/1"
+          }
+        }
+      ],
+      "stderr_tail": "",
+      "input_sha256": "c1059f9ca68a91bffb3c4957183ef163a4a0fa1f0d660827ed277f49700e42e2"
+    },
+    "2008_p1a": {
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.7557012000033865,
+      "proof_sha256": "a3a1b88a7428fd528ba71373ea3937efc267c683f942b7a6353567b212dcc380",
+      "proof_chars": 4036212,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2008_p1a.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 5124,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 926,
+        "num": 646,
+        "refl": 8,
+        "ar": 3544
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": "",
+      "input_sha256": "7bddd18d3e79d1bc691c58308b337fbac4dda2661c3fd79da89ae63795885e42"
+    },
+    "2008_p1b": {
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 2.867363400000613,
+      "proof_sha256": "4c6fc7a9c736d4136674edff48ead308b906ca929f6d8a1997479bfc81f32d5b",
+      "proof_chars": 4056618,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2008_p1b.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 5125,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 926,
+        "num": 646,
+        "refl": 9,
+        "ar": 3544
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": "",
+      "input_sha256": "b13788c3707d7557faf570b2c4f547b84136d926341f34481c75e13c632c4581"
+    },
+    "2008_p6": {
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.7835136000066996,
+      "proof_sha256": "a4aa9a9faae8ce57ac82d5c434bc0eeb47e3f96da75394711ccc743e62de2ead",
+      "proof_chars": 3782550,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2008_p6.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 6315,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 2225,
+        "num": 1108,
+        "refl": 39,
+        "ar": 2943
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": "",
+      "input_sha256": "7b28a77f292e36162289a62a056ad8680a6ae2a07d6f689bed1533d39c086d54"
+    },
+    "2009_p2": {
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.21362470000167377,
+      "proof_sha256": "25101acae62a3e89a76e4781e181d09c2d8674a70a91332a3a358c1a1ba5e930",
+      "proof_chars": 520729,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2009_p2.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 1055,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 384,
+        "num": 240,
+        "refl": 10,
+        "ar": 421
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": "",
+      "input_sha256": "3b6d697d645f0a92b3da8b2293ea3068d428b158d79630fde3525e0194f26ccc"
+    },
+    "2010_p2": {
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 1.2690976000012597,
+      "proof_sha256": "a2e3ffe1b22f0d7d5dd7c45da5d19e7de624ce59dec4ddbaef7da840d6914339",
+      "proof_chars": 561619,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2010_p2.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 1229,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 409,
+        "num": 269,
+        "refl": 24,
+        "ar": 527
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": "",
+      "input_sha256": "d14824b5b9a18088b4817a0e7a4eaaa7b94e2cc5baa2680e6cbf37e640244a6f"
+    },
+    "2010_p4": {
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.2773797999980161,
+      "proof_sha256": "143b935604590b0e50ee1d6809034031a6dea8da2ad22d370b8432ca456d4073",
+      "proof_chars": 1379666,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2010_p4.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 210,
+      "all_deduction_count": 1581,
+      "deduction_type_counts": {
+        "rule": 94,
+        "num": 46,
+        "refl": 14,
+        "ar": 56
+      },
+      "all_deduction_type_counts": {
+        "rule": 355,
+        "num": 239,
+        "refl": 23,
+        "ar": 964
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 17,
+        "length chasing": 1,
+        "angle chasing": 38
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "eqangle",
+          "points": [
+            "b",
+            "m",
+            "b",
+            "l",
+            "b",
+            "k",
+            "b",
+            "m"
+          ],
+          "lhs_terms": {
+            "∠(b-m)": "-2/1",
+            "∠(b-l)": "1/1",
+            "∠(b-k)": "1/1"
+          }
+        }
+      ],
+      "stderr_tail": "",
+      "input_sha256": "79176d9e7ade8da87c5fcd05d156371d541bc4628dc0b86cfb9d645cf0f7aac4"
+    },
+    "2011_p6": {
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.9103965000103926,
+      "proof_sha256": "e4f5c32ad3307c362802450b8220cd9ba78d38f6299017fb2bd0c6ba016893e9",
+      "proof_chars": 5223608,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2011_p6.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 6629,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 1947,
+        "num": 1167,
+        "refl": 44,
+        "ar": 3471
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": "",
+      "input_sha256": "49826bbb4b2c482022355bff43d4993b52ec50ad9426351325d2a8d303e7e123"
+    },
+    "2012_p1": {
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 1.3290708999993512,
+      "proof_sha256": "e078df56f7ed8e3fe3f7f69a4600bd4177ad32ea01dbeefcae81f7366610f6bc",
+      "proof_chars": 7102747,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2012_p1.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 200,
+      "all_deduction_count": 7077,
+      "deduction_type_counts": {
+        "rule": 100,
+        "num": 49,
+        "ar": 51
+      },
+      "all_deduction_type_counts": {
+        "rule": 578,
+        "num": 757,
+        "refl": 22,
+        "ar": 5720
+      },
+      "ar_reason_counts": {
+        "angle chasing": 44,
+        "ratio chasing": 4,
+        "squared lengths chasing": 2,
+        "length chasing": 1
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "cong",
+          "points": [
+            "m",
+            "s",
+            "m",
+            "t"
+          ],
+          "lhs_terms": {
+            "|m-s|": "1/1",
+            "|m-t|": "-1/1"
+          }
+        }
+      ],
+      "stderr_tail": "",
+      "input_sha256": "a446a18d52344d1032fdba89b74024fb256355ab7d73a4ead1b2f27784600a8f"
+    },
+    "2012_p5": {
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.8054450000054203,
+      "proof_sha256": "6cea459102380a2cc23a9f5c0fcaf8c5637bbd11bc9c2681142208f748ba6e46",
+      "proof_chars": 329148,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2012_p5.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 615,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 199,
+        "num": 100,
+        "refl": 4,
+        "ar": 312
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": "",
+      "input_sha256": "e01aa221d0bb94418d57cf82111e7fb1a18c1289819cbb0471e27678127591e7"
+    },
+    "2013_p4": {
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 2.387944400004926,
+      "proof_sha256": "503cbcbf9a19a53f41b000f715ee9c65950b33380a149c2f14c580bdfd13e60b",
+      "proof_chars": 2589043,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2013_p4.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 218,
+      "all_deduction_count": 2524,
+      "deduction_type_counts": {
+        "rule": 104,
+        "num": 57,
+        "refl": 10,
+        "ar": 47
+      },
+      "all_deduction_type_counts": {
+        "rule": 589,
+        "num": 327,
+        "refl": 14,
+        "ar": 1594
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 13,
+        "angle chasing": 33,
+        "squared lengths chasing": 1
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "coll",
+          "points": [
+            "h",
+            "x",
+            "y"
+          ]
+        }
+      ],
+      "stderr_tail": "",
+      "input_sha256": "f4297e9a8c60ab2e282be709b90b6626a1f2a9f884fe5c899714532d80cab806"
+    },
+    "2014_p4": {
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.31858189999184106,
+      "proof_sha256": "c1e6e3f0c0b4cf265297bbd842f87dd0c9d360a148195f1b0ec030a9badb5944",
+      "proof_chars": 2077184,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2014_p4.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 74,
+      "all_deduction_count": 1658,
+      "deduction_type_counts": {
+        "rule": 37,
+        "refl": 3,
+        "num": 24,
+        "ar": 10
+      },
+      "all_deduction_type_counts": {
+        "rule": 319,
+        "num": 224,
+        "refl": 10,
+        "ar": 1105
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 4,
+        "angle chasing": 6
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "cong",
+          "points": [
+            "a",
+            "o",
+            "x",
+            "o"
+          ]
+        }
+      ],
+      "stderr_tail": "",
+      "input_sha256": "959cfad85c524c122cc1c11a4c710303b1b3a01de7c8b79f4856ca8f4520df93"
+    },
+    "2015_p3": {
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.34659210000245366,
+      "proof_sha256": "b21254d78bfb6bbefafe8837c1bb363a19de91754247266c3119f5e8392ebe99",
+      "proof_chars": 1160684,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2015_p3.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 1885,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 545,
+        "num": 322,
+        "refl": 22,
+        "ar": 996
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": "",
+      "input_sha256": "d8afb1c1d005a2c3dcdd3013cfb33edd64f7c80a4f1d033ea44fdf9d9a1e91d4"
+    },
+    "2015_p4": {
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 2.568092000001343,
+      "proof_sha256": "5b2661bdf2ea9d03d1a061301fd7264bfdf8675d593cf9f73e3c6e83975bca01",
+      "proof_chars": 5241204,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2015_p4.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 152,
+      "all_deduction_count": 4576,
+      "deduction_type_counts": {
+        "rule": 70,
+        "refl": 16,
+        "num": 41,
+        "ar": 25
+      },
+      "all_deduction_type_counts": {
+        "rule": 982,
+        "num": 655,
+        "refl": 38,
+        "ar": 2901
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 18,
+        "angle chasing": 5,
+        "squared lengths chasing": 2
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "coll",
+          "points": [
+            "a",
+            "o",
+            "x"
+          ]
+        }
+      ],
+      "stderr_tail": "",
+      "input_sha256": "8842b39c90c3b625cbb731f3f130920560bb1a693bfe23b748e822e5e514c2cb"
+    },
+    "2016_p1": {
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 3.7557126999890897,
+      "proof_sha256": "1e1e48c017529d7e824b49c7108961d8478f1064a5bcef0b92c0398af49cf9d4",
+      "proof_chars": 16624292,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2016_p1.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 173,
+      "all_deduction_count": 9376,
+      "deduction_type_counts": {
+        "rule": 88,
+        "num": 44,
+        "ar": 41
+      },
+      "all_deduction_type_counts": {
+        "rule": 618,
+        "num": 1462,
+        "refl": 34,
+        "ar": 7262
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 5,
+        "angle chasing": 33,
+        "length chasing": 2,
+        "squared lengths chasing": 1
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "coll",
+          "points": [
+            "b",
+            "d",
+            "y"
+          ]
+        }
+      ],
+      "stderr_tail": "",
+      "input_sha256": "22a7d06e54644d65ed2a0e0a3435138dd142e0349b7fb0b561890cacb2f038de"
+    },
+    "2017_p4": {
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.3879670000023907,
+      "proof_sha256": "815e3cf1526ff68e72323b791d390ad27e04f1e77fef6a1c622fd8f3af0b8310",
+      "proof_chars": 1211856,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2017_p4.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 108,
+      "all_deduction_count": 1503,
+      "deduction_type_counts": {
+        "rule": 50,
+        "num": 27,
+        "refl": 10,
+        "ar": 21
+      },
+      "all_deduction_type_counts": {
+        "rule": 359,
+        "num": 270,
+        "refl": 19,
+        "ar": 855
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 12,
+        "angle chasing": 9
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "perp",
+          "points": [
+            "t",
+            "o1",
+            "t",
+            "k"
+          ],
+          "lhs_terms": {
+            "∠(t-o1)": "1/1",
+            "∠(t-k)": "-1/1"
+          }
+        }
+      ],
+      "stderr_tail": "",
+      "input_sha256": "171f8ad48f0a1516fb4e40a1b3aa628001c0c7f12622166316a52d5dfbecb6a6"
+    },
+    "2018_p1": {
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.14242420000664424,
+      "proof_sha256": "ceadcf4f5babaff8b0902e95fc938e144b07ab8bc8d078773bdf049646e6216a",
+      "proof_chars": 377528,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2018_p1.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 92,
+      "all_deduction_count": 670,
+      "deduction_type_counts": {
+        "rule": 44,
+        "refl": 10,
+        "num": 20,
+        "ar": 18
+      },
+      "all_deduction_type_counts": {
+        "rule": 214,
+        "num": 116,
+        "refl": 15,
+        "ar": 325
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 11,
+        "angle chasing": 7
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "para",
+          "points": [
+            "d",
+            "e",
+            "f",
+            "g"
+          ],
+          "lhs_terms": {
+            "∠(d-e)": "1/1",
+            "∠(f-g)": "-1/1"
+          }
+        }
+      ],
+      "stderr_tail": "",
+      "input_sha256": "86166bc2012986e73aab77ed1cf42a238f0609d0ee95aeb6179a6212279cd321"
+    },
+    "2019_p2": {
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.140163100004429,
+      "proof_sha256": "2d18232595450c0b91a1185c181fcddb3f4f861d9767930d835c4e5b6961c9f9",
+      "proof_chars": 241339,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2019_p2.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 601,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 251,
+        "num": 102,
+        "ar": 248
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": "",
+      "input_sha256": "0b2d097874acac40481aedd0ff1197008e36715ba843a53ea64915ffd3bab489"
+    },
+    "2019_p6": {
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 1.7548009000020102,
+      "proof_sha256": "5b9755679ed14f0633c207e92445f2fbe5b9ce1927296dd9d07269de2adf30ad",
+      "proof_chars": 3554710,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2019_p6.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 3379,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 926,
+        "num": 504,
+        "refl": 34,
+        "ar": 1915
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": "",
+      "input_sha256": "10b9fe78fd098f28116c7cc9f64ff147417565a50370c9025feaf701eccc9019"
+    },
+    "2020_p1": {
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.14463789999717847,
+      "proof_sha256": "6445b30a8a1b10c0b232eed7615111d1908a889a5ec825bcc0458662c07760c0",
+      "proof_chars": 267796,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2020_p1.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 902,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 509,
+        "refl": 4,
+        "num": 244,
+        "ar": 145
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": "",
+      "input_sha256": "a3a936d6786f02421a71dbd6b7edefe8916be09f9a287e53b9ca4d4dc9bd3221"
+    },
+    "2021_p3": {
+      "status": "saturated_unsolved",
+      "return_code": 2,
+      "elapsed_seconds": 0.22840990000986494,
+      "proof_sha256": "3b928882afd6db89ba98fcfd61845bc09fdf2f6e6b2452a2379a9065c9871a8b",
+      "proof_chars": 364179,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2021_p3.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "saturated",
+      "deduction_count": 0,
+      "all_deduction_count": 913,
+      "deduction_type_counts": {},
+      "all_deduction_type_counts": {
+        "rule": 348,
+        "num": 180,
+        "refl": 8,
+        "ar": 377
+      },
+      "ar_reason_counts": {},
+      "unresolved_goal_count": 0,
+      "final_assertions": [],
+      "stderr_tail": "",
+      "input_sha256": "957f3561711453a3fbf96981110ccdb2d403272a87285a90e2c2d5c983583c97"
+    },
+    "2022_p4": {
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 1.2137731000111671,
+      "proof_sha256": "b3ec8a2930241758ad5d7bf863f8a146a1aca21f0b2b1166d2499b4634f029ec",
+      "proof_chars": 1726116,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2022_p4.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 129,
+      "all_deduction_count": 1599,
+      "deduction_type_counts": {
+        "rule": 66,
+        "num": 39,
+        "ar": 24
+      },
+      "all_deduction_type_counts": {
+        "rule": 390,
+        "num": 182,
+        "refl": 2,
+        "ar": 1025
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 3,
+        "angle chasing": 21
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "cyclic",
+          "points": [
+            "p",
+            "q",
+            "r",
+            "s"
+          ]
+        }
+      ],
+      "stderr_tail": "",
+      "input_sha256": "2db4b5f61d326e28822bcfb649e2e1df8a21751fbaf4df6e4b9a80d136d006b3"
+    },
+    "2019_p2_easy": {
+      "status": "solved",
+      "return_code": 0,
+      "elapsed_seconds": 0.7408937999862246,
+      "proof_sha256": "ca54c31b66d80640602bcc39db1e39f0784e9c9bdb52b5c2f241eda64e5315e0",
+      "proof_chars": 3347382,
+      "proof_path": "artifacts/benchmarks/imo-ag-30-all-ar-2026-08-30-proofs/2019_p2_easy.json",
+      "proof_json_parsed": true,
+      "solver_json_status": "solved",
+      "deduction_count": 206,
+      "all_deduction_count": 2925,
+      "deduction_type_counts": {
+        "rule": 99,
+        "num": 56,
+        "refl": 10,
+        "ar": 41
+      },
+      "all_deduction_type_counts": {
+        "rule": 707,
+        "num": 316,
+        "refl": 13,
+        "ar": 1889
+      },
+      "ar_reason_counts": {
+        "ratio chasing": 12,
+        "angle chasing": 29
+      },
+      "unresolved_goal_count": 0,
+      "final_assertions": [
+        {
+          "name": "cyclic",
+          "points": [
+            "p",
+            "q",
+            "p1",
+            "q1"
+          ]
+        }
+      ],
+      "stderr_tail": "",
+      "input_sha256": "eae26685de17f5b43c4f98aae552ac0c0a2d2150eba50aab438ced6aa293a501"
+    }
+  }
+}

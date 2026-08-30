@@ -21,6 +21,7 @@ import { ArchitectureFigure } from './ArchitectureFigure'
 import { AtlasFigure } from './AtlasFigure'
 import ScrollSolid from '../ScrollSolid'
 import { ProofGraphScene } from './ProofGraphScene'
+import { ShaderField } from './ShaderField'
 import { getCopy, type Lang } from '@/lib/mortra/i18n'
 import styles from '@/app/mortra/mortra.module.css'
 
@@ -86,6 +87,7 @@ export function MortraProductPage({ lang = 'en' }: { lang?: Lang }) {
 
       {/* ── HERO ───────────────────────────────────────────────────────── */}
       <section className={styles.hero}>
+        <ShaderField className={styles.heroField} />
         <ProofGraphScene className={styles.heroScene} progress={0.68} phase="searching" running />
         <div className={styles.heroFade} />
         <div className={styles.shell}>
