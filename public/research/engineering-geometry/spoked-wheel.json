@@ -1,0 +1,827 @@
+{
+  "part_id": "spoked_wheel",
+  "title": "Six-spoke wheel",
+  "passed": true,
+  "kernel": "build123d/OpenCascade exact B-rep",
+  "dimensions_mm": {
+    "outer_diameter": 76.0,
+    "bore_diameter": 8.0,
+    "thickness": 7.0,
+    "spoke_width": 5.0,
+    "spoke_count": 6
+  },
+  "geometry": {
+    "volume_mm3": 15718.781472217523,
+    "surface_area_mm2": 9629.585571990927,
+    "solid_count": 1,
+    "face_count": 28,
+    "edge_count": 78,
+    "bbox_mm": [
+      76.0,
+      76.0,
+      7.0
+    ],
+    "is_valid": true
+  },
+  "checks": [
+    {
+      "name": "valid_brep",
+      "passed": true,
+      "observed": true,
+      "expected": true,
+      "tolerance": null,
+      "message": ""
+    },
+    {
+      "name": "single_solid",
+      "passed": true,
+      "observed": 1,
+      "expected": 1,
+      "tolerance": null,
+      "message": ""
+    },
+    {
+      "name": "positive_volume",
+      "passed": true,
+      "observed": 15718.781472217523,
+      "expected": "> 0",
+      "tolerance": null,
+      "message": ""
+    }
+  ],
+  "views": [
+    {
+      "name": "TOP",
+      "visible_edges": 26,
+      "hidden_edges": 0,
+      "bbox": {
+        "width": 83.99999977894737,
+        "height": 83.99999977894737
+      },
+      "source_bbox": {
+        "width": 76.0,
+        "height": 76.0
+      },
+      "drawing_scale": 1.1052631549861496,
+      "page_box": [
+        -184,
+        28,
+        -24,
+        122
+      ]
+    },
+    {
+      "name": "FRONT",
+      "visible_edges": 4,
+      "hidden_edges": 80,
+      "bbox": {
+        "width": 83.99999997894741,
+        "height": 7.736842284903048
+      },
+      "source_bbox": {
+        "width": 76.00000020000004,
+        "height": 7.0000002
+      },
+      "drawing_scale": 1.1052631549861496,
+      "page_box": [
+        -184,
+        -55,
+        -24,
+        17
+      ]
+    },
+    {
+      "name": "RIGHT",
+      "visible_edges": 6,
+      "hidden_edges": 86,
+      "bbox": {
+        "width": 83.99999997894736,
+        "height": 7.736842284903048
+      },
+      "source_bbox": {
+        "width": 76.0000002,
+        "height": 7.0000002
+      },
+      "drawing_scale": 1.1052631549861496,
+      "page_box": [
+        -12,
+        -55,
+        82,
+        17
+      ]
+    },
+    {
+      "name": "ISOMETRIC",
+      "visible_edges": 57,
+      "hidden_edges": 58,
+      "bbox": {
+        "width": 102.60000000000002,
+        "height": 58.74191714182489
+      },
+      "source_bbox": {
+        "width": 76.0,
+        "height": 43.512531216166586
+      },
+      "drawing_scale": 1.35,
+      "page_box": [
+        30,
+        28,
+        184,
+        122
+      ]
+    }
+  ],
+  "section": {
+    "plane": "XZ",
+    "face_count": 2,
+    "area_mm2": 475.9999999999999,
+    "hatch_segment_count": 14,
+    "drawing_scale": 1.1052631549861496,
+    "page_box": [
+      -184,
+      -121,
+      -18,
+      -71
+    ]
+  },
+  "program": {
+    "program_id": "spoked_wheel",
+    "basis_version": "engineering-geometry-8op-v1",
+    "entities": {
+      "rim_profile": {
+        "name": "rim_profile",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 2,
+          "kind": "region"
+        },
+        "role": "input"
+      },
+      "rim": {
+        "name": "rim",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 3,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "hub_profile": {
+        "name": "hub_profile",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 2,
+          "kind": "region"
+        },
+        "role": "input"
+      },
+      "hub": {
+        "name": "hub",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 3,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "spoke_profile": {
+        "name": "spoke_profile",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 2,
+          "kind": "region"
+        },
+        "role": "input"
+      },
+      "spoke_profile_1": {
+        "name": "spoke_profile_1",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 2,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "spoke_1": {
+        "name": "spoke_1",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 3,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "spoke_profile_2": {
+        "name": "spoke_profile_2",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 2,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "spoke_2": {
+        "name": "spoke_2",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 3,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "spoke_profile_3": {
+        "name": "spoke_profile_3",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 2,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "spoke_3": {
+        "name": "spoke_3",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 3,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "spoke_profile_4": {
+        "name": "spoke_profile_4",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 2,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "spoke_4": {
+        "name": "spoke_4",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 3,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "spoke_profile_5": {
+        "name": "spoke_profile_5",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 2,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "spoke_5": {
+        "name": "spoke_5",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 3,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "spoke_profile_6": {
+        "name": "spoke_profile_6",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 2,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "spoke_6": {
+        "name": "spoke_6",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 3,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "finished_spoked_wheel": {
+        "name": "finished_spoked_wheel",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 3,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "finished_spoked_wheel__checked_1": {
+        "name": "finished_spoked_wheel__checked_1",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 3,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "finished_spoked_wheel__checked_1__checked_2": {
+        "name": "finished_spoked_wheel__checked_1__checked_2",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 3,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "finished_spoked_wheel__checked_1__checked_2__checked_3": {
+        "name": "finished_spoked_wheel__checked_1__checked_2__checked_3",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 3,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "finished_spoked_wheel__checked_1__checked_2__checked_3__annotated_1": {
+        "name": "finished_spoked_wheel__checked_1__checked_2__checked_3__annotated_1",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 3,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "drawing_top": {
+        "name": "drawing_top",
+        "geometric_type": {
+          "ambient_dimension": 2,
+          "intrinsic_dimension": 2,
+          "kind": "drawing"
+        },
+        "role": "geometry"
+      },
+      "drawing_front": {
+        "name": "drawing_front",
+        "geometric_type": {
+          "ambient_dimension": 2,
+          "intrinsic_dimension": 2,
+          "kind": "drawing"
+        },
+        "role": "geometry"
+      },
+      "drawing_right": {
+        "name": "drawing_right",
+        "geometric_type": {
+          "ambient_dimension": 2,
+          "intrinsic_dimension": 2,
+          "kind": "drawing"
+        },
+        "role": "geometry"
+      },
+      "drawing_isometric": {
+        "name": "drawing_isometric",
+        "geometric_type": {
+          "ambient_dimension": 2,
+          "intrinsic_dimension": 2,
+          "kind": "drawing"
+        },
+        "role": "geometry"
+      },
+      "section_xz": {
+        "name": "section_xz",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 2,
+          "kind": "section"
+        },
+        "role": "geometry"
+      }
+    },
+    "steps": [
+      {
+        "step_id": "s001",
+        "op": "sweep",
+        "inputs": [
+          "rim_profile"
+        ],
+        "output": "rim",
+        "parameters": {
+          "path_dimension": 1,
+          "trajectory": "line",
+          "vector": [
+            0,
+            0,
+            7.0
+          ]
+        }
+      },
+      {
+        "step_id": "s002",
+        "op": "sweep",
+        "inputs": [
+          "hub_profile"
+        ],
+        "output": "hub",
+        "parameters": {
+          "path_dimension": 1,
+          "trajectory": "line",
+          "vector": [
+            0,
+            0,
+            7.0
+          ]
+        }
+      },
+      {
+        "step_id": "s003",
+        "op": "transform",
+        "inputs": [
+          "spoke_profile"
+        ],
+        "output": "spoke_profile_1",
+        "parameters": {
+          "translation": [
+            21.0,
+            0.0,
+            0
+          ],
+          "angle_degrees": 0.0
+        }
+      },
+      {
+        "step_id": "s004",
+        "op": "sweep",
+        "inputs": [
+          "spoke_profile_1"
+        ],
+        "output": "spoke_1",
+        "parameters": {
+          "path_dimension": 1,
+          "trajectory": "line",
+          "vector": [
+            0,
+            0,
+            7.0
+          ]
+        }
+      },
+      {
+        "step_id": "s005",
+        "op": "transform",
+        "inputs": [
+          "spoke_profile"
+        ],
+        "output": "spoke_profile_2",
+        "parameters": {
+          "translation": [
+            10.500000000000002,
+            18.186533479473212,
+            0
+          ],
+          "angle_degrees": 60.0
+        }
+      },
+      {
+        "step_id": "s006",
+        "op": "sweep",
+        "inputs": [
+          "spoke_profile_2"
+        ],
+        "output": "spoke_2",
+        "parameters": {
+          "path_dimension": 1,
+          "trajectory": "line",
+          "vector": [
+            0,
+            0,
+            7.0
+          ]
+        }
+      },
+      {
+        "step_id": "s007",
+        "op": "transform",
+        "inputs": [
+          "spoke_profile"
+        ],
+        "output": "spoke_profile_3",
+        "parameters": {
+          "translation": [
+            -10.499999999999995,
+            18.186533479473212,
+            0
+          ],
+          "angle_degrees": 120.0
+        }
+      },
+      {
+        "step_id": "s008",
+        "op": "sweep",
+        "inputs": [
+          "spoke_profile_3"
+        ],
+        "output": "spoke_3",
+        "parameters": {
+          "path_dimension": 1,
+          "trajectory": "line",
+          "vector": [
+            0,
+            0,
+            7.0
+          ]
+        }
+      },
+      {
+        "step_id": "s009",
+        "op": "transform",
+        "inputs": [
+          "spoke_profile"
+        ],
+        "output": "spoke_profile_4",
+        "parameters": {
+          "translation": [
+            -21.0,
+            2.5717582782094417e-15,
+            0
+          ],
+          "angle_degrees": 180.0
+        }
+      },
+      {
+        "step_id": "s010",
+        "op": "sweep",
+        "inputs": [
+          "spoke_profile_4"
+        ],
+        "output": "spoke_4",
+        "parameters": {
+          "path_dimension": 1,
+          "trajectory": "line",
+          "vector": [
+            0,
+            0,
+            7.0
+          ]
+        }
+      },
+      {
+        "step_id": "s011",
+        "op": "transform",
+        "inputs": [
+          "spoke_profile"
+        ],
+        "output": "spoke_profile_5",
+        "parameters": {
+          "translation": [
+            -10.500000000000009,
+            -18.18653347947321,
+            0
+          ],
+          "angle_degrees": 240.0
+        }
+      },
+      {
+        "step_id": "s012",
+        "op": "sweep",
+        "inputs": [
+          "spoke_profile_5"
+        ],
+        "output": "spoke_5",
+        "parameters": {
+          "path_dimension": 1,
+          "trajectory": "line",
+          "vector": [
+            0,
+            0,
+            7.0
+          ]
+        }
+      },
+      {
+        "step_id": "s013",
+        "op": "transform",
+        "inputs": [
+          "spoke_profile"
+        ],
+        "output": "spoke_profile_6",
+        "parameters": {
+          "translation": [
+            10.500000000000002,
+            -18.186533479473212,
+            0
+          ],
+          "angle_degrees": 300.0
+        }
+      },
+      {
+        "step_id": "s014",
+        "op": "sweep",
+        "inputs": [
+          "spoke_profile_6"
+        ],
+        "output": "spoke_6",
+        "parameters": {
+          "path_dimension": 1,
+          "trajectory": "line",
+          "vector": [
+            0,
+            0,
+            7.0
+          ]
+        }
+      },
+      {
+        "step_id": "s015",
+        "op": "combine",
+        "inputs": [
+          "rim",
+          "hub",
+          "spoke_1",
+          "spoke_2",
+          "spoke_3",
+          "spoke_4",
+          "spoke_5",
+          "spoke_6"
+        ],
+        "output": "finished_spoked_wheel",
+        "parameters": {
+          "operation": "union"
+        }
+      },
+      {
+        "step_id": "s016",
+        "op": "constrain",
+        "inputs": [
+          "finished_spoked_wheel"
+        ],
+        "output": "finished_spoked_wheel__checked_1",
+        "parameters": {
+          "predicate": "valid_brep",
+          "passed": true
+        }
+      },
+      {
+        "step_id": "s017",
+        "op": "constrain",
+        "inputs": [
+          "finished_spoked_wheel__checked_1"
+        ],
+        "output": "finished_spoked_wheel__checked_1__checked_2",
+        "parameters": {
+          "predicate": "single_solid",
+          "passed": true
+        }
+      },
+      {
+        "step_id": "s018",
+        "op": "constrain",
+        "inputs": [
+          "finished_spoked_wheel__checked_1__checked_2"
+        ],
+        "output": "finished_spoked_wheel__checked_1__checked_2__checked_3",
+        "parameters": {
+          "predicate": "positive_volume",
+          "passed": true
+        }
+      },
+      {
+        "step_id": "s019",
+        "op": "annotate",
+        "inputs": [
+          "finished_spoked_wheel__checked_1__checked_2__checked_3"
+        ],
+        "output": "finished_spoked_wheel__checked_1__checked_2__checked_3__annotated_1",
+        "parameters": {
+          "annotation_set": "nominal_dimensions",
+          "fields": [
+            "bore_diameter",
+            "outer_diameter",
+            "spoke_count",
+            "spoke_width",
+            "thickness"
+          ]
+        }
+      },
+      {
+        "step_id": "s020",
+        "op": "project",
+        "inputs": [
+          "finished_spoked_wheel__checked_1__checked_2__checked_3__annotated_1"
+        ],
+        "output": "drawing_top",
+        "parameters": {
+          "projection": "orthographic",
+          "look_from": [
+            0,
+            0,
+            160
+          ],
+          "look_up": [
+            0,
+            1,
+            0
+          ],
+          "include_hidden": false
+        }
+      },
+      {
+        "step_id": "s021",
+        "op": "project",
+        "inputs": [
+          "finished_spoked_wheel__checked_1__checked_2__checked_3__annotated_1"
+        ],
+        "output": "drawing_front",
+        "parameters": {
+          "projection": "orthographic",
+          "look_from": [
+            0,
+            -160,
+            0
+          ],
+          "look_up": [
+            0,
+            0,
+            1
+          ],
+          "include_hidden": true
+        }
+      },
+      {
+        "step_id": "s022",
+        "op": "project",
+        "inputs": [
+          "finished_spoked_wheel__checked_1__checked_2__checked_3__annotated_1"
+        ],
+        "output": "drawing_right",
+        "parameters": {
+          "projection": "orthographic",
+          "look_from": [
+            160,
+            0,
+            0
+          ],
+          "look_up": [
+            0,
+            0,
+            1
+          ],
+          "include_hidden": true
+        }
+      },
+      {
+        "step_id": "s023",
+        "op": "project",
+        "inputs": [
+          "finished_spoked_wheel__checked_1__checked_2__checked_3__annotated_1"
+        ],
+        "output": "drawing_isometric",
+        "parameters": {
+          "projection": "orthographic",
+          "look_from": [
+            150,
+            -150,
+            120
+          ],
+          "look_up": [
+            0,
+            0,
+            1
+          ],
+          "include_hidden": true
+        }
+      },
+      {
+        "step_id": "s024",
+        "op": "slice",
+        "inputs": [
+          "finished_spoked_wheel__checked_1__checked_2__checked_3__annotated_1"
+        ],
+        "output": "section_xz",
+        "parameters": {
+          "codimension": 1,
+          "plane": "XZ"
+        }
+      }
+    ],
+    "operator_histogram": {
+      "transform": 6,
+      "sweep": 8,
+      "combine": 1,
+      "select": 0,
+      "slice": 1,
+      "project": 4,
+      "constrain": 3,
+      "annotate": 1
+    }
+  },
+  "metadata": {
+    "family": "annular sweeps + repeated radial transforms + union",
+    "evaluation_role": "topology_holdout",
+    "drawing_notes": [
+      "OD 76   BORE 8",
+      "6 SPOKES x 5",
+      "THICKNESS 7"
+    ]
+  },
+  "artifacts": {
+    "step": "spoked_wheel.step",
+    "stl": "spoked_wheel.stl",
+    "svg": "spoked_wheel-drawing.svg",
+    "dxf": "spoked_wheel-drawing.dxf"
+  }
+}

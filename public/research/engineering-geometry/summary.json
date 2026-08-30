@@ -1,0 +1,373 @@
+{
+  "experiment": "dimension-independent-engineering-geometry-basis-v1",
+  "basis": {
+    "basis": [
+      "transform",
+      "sweep",
+      "combine",
+      "select",
+      "slice",
+      "project",
+      "constrain",
+      "annotate"
+    ],
+    "basis_size": 8,
+    "legacy_aliases": {
+      "Rotate3": {
+        "op": "transform",
+        "family": "rigid_rotation"
+      },
+      "Extrude": {
+        "op": "sweep",
+        "trajectory": "line"
+      },
+      "Revolve": {
+        "op": "sweep",
+        "trajectory": "circle"
+      },
+      "Loft": {
+        "op": "sweep",
+        "trajectory": "section_family"
+      },
+      "Boundary": {
+        "op": "select",
+        "selector": "boundary"
+      },
+      "CrossSection": {
+        "op": "slice",
+        "slice": "affine_flat"
+      }
+    },
+    "dimension_policy": "The operator set is independent of ambient dimension.  Concrete CAD backends may support only a subset such as R2 and R3."
+  },
+  "cases": 11,
+  "basis_cases": 5,
+  "holdout_cases": 6,
+  "parameter_holdout_cases": 3,
+  "topology_holdout_cases": 3,
+  "passed_cases": 11,
+  "all_brep_valid": true,
+  "all_single_solid": true,
+  "used_operator_families": [
+    "annotate",
+    "combine",
+    "constrain",
+    "project",
+    "slice",
+    "sweep",
+    "transform"
+  ],
+  "used_operator_family_count": 7,
+  "new_operator_families_needed_by_holdouts": [],
+  "elapsed_seconds": 101.12030550000054,
+  "records": [
+    {
+      "part_id": "flange",
+      "role": "basis",
+      "passed": true,
+      "geometry": {
+        "volume_mm3": 23890.17850237051,
+        "surface_area_mm2": 9249.854081817506,
+        "solid_count": 1,
+        "face_count": 10,
+        "edge_count": 24,
+        "bbox_mm": [
+          68.0,
+          68.0,
+          8.0
+        ],
+        "is_valid": true
+      },
+      "operator_histogram": {
+        "transform": 6,
+        "sweep": 7,
+        "combine": 1,
+        "select": 0,
+        "slice": 1,
+        "project": 4,
+        "constrain": 3,
+        "annotate": 1
+      }
+    },
+    {
+      "part_id": "stepped_shaft",
+      "role": "basis",
+      "passed": true,
+      "geometry": {
+        "volume_mm3": 33388.846722352326,
+        "surface_area_mm2": 8545.13201776424,
+        "solid_count": 1,
+        "face_count": 8,
+        "edge_count": 12,
+        "bbox_mm": [
+          78.0,
+          30.0,
+          30.0
+        ],
+        "is_valid": true
+      },
+      "operator_histogram": {
+        "transform": 0,
+        "sweep": 2,
+        "combine": 1,
+        "select": 0,
+        "slice": 1,
+        "project": 4,
+        "constrain": 3,
+        "annotate": 1
+      }
+    },
+    {
+      "part_id": "angle_bracket",
+      "role": "basis",
+      "passed": true,
+      "geometry": {
+        "volume_mm3": 39140.81421051076,
+        "surface_area_mm2": 15316.530964914873,
+        "solid_count": 1,
+        "face_count": 10,
+        "edge_count": 24,
+        "bbox_mm": [
+          72.0,
+          48.0,
+          50.0
+        ],
+        "is_valid": true
+      },
+      "operator_histogram": {
+        "transform": 3,
+        "sweep": 4,
+        "combine": 2,
+        "select": 0,
+        "slice": 1,
+        "project": 4,
+        "constrain": 3,
+        "annotate": 1
+      }
+    },
+    {
+      "part_id": "transition_duct",
+      "role": "basis",
+      "passed": true,
+      "geometry": {
+        "volume_mm3": 28079.50089008898,
+        "surface_area_mm2": 19754.10196069003,
+        "solid_count": 1,
+        "face_count": 12,
+        "edge_count": 30,
+        "bbox_mm": [
+          64.0000002,
+          46.0000002,
+          58.00000020000001
+        ],
+        "is_valid": true
+      },
+      "operator_histogram": {
+        "transform": 0,
+        "sweep": 2,
+        "combine": 1,
+        "select": 0,
+        "slice": 1,
+        "project": 4,
+        "constrain": 3,
+        "annotate": 1
+      }
+    },
+    {
+      "part_id": "lattice_panel",
+      "role": "basis",
+      "passed": true,
+      "geometry": {
+        "volume_mm3": 11900.0,
+        "surface_area_mm2": 10110.0,
+        "solid_count": 1,
+        "face_count": 70,
+        "edge_count": 204,
+        "bbox_mm": [
+          72.0,
+          72.0,
+          4.0
+        ],
+        "is_valid": true
+      },
+      "operator_histogram": {
+        "transform": 11,
+        "sweep": 1,
+        "combine": 1,
+        "select": 0,
+        "slice": 1,
+        "project": 4,
+        "constrain": 3,
+        "annotate": 1
+      }
+    },
+    {
+      "part_id": "flange_holdout",
+      "role": "parameter_holdout",
+      "passed": true,
+      "geometry": {
+        "volume_mm3": 46584.572593005156,
+        "surface_area_mm2": 13439.293549085627,
+        "solid_count": 1,
+        "face_count": 12,
+        "edge_count": 30,
+        "bbox_mm": [
+          78.0,
+          78.0,
+          11.0
+        ],
+        "is_valid": true
+      },
+      "operator_histogram": {
+        "transform": 8,
+        "sweep": 9,
+        "combine": 1,
+        "select": 0,
+        "slice": 1,
+        "project": 4,
+        "constrain": 3,
+        "annotate": 1
+      }
+    },
+    {
+      "part_id": "shaft_holdout",
+      "role": "parameter_holdout",
+      "passed": true,
+      "geometry": {
+        "volume_mm3": 37124.200387470584,
+        "surface_area_mm2": 8413.185126313465,
+        "solid_count": 1,
+        "face_count": 8,
+        "edge_count": 12,
+        "bbox_mm": [
+          76.0,
+          32.0,
+          32.0
+        ],
+        "is_valid": true
+      },
+      "operator_histogram": {
+        "transform": 0,
+        "sweep": 2,
+        "combine": 1,
+        "select": 0,
+        "slice": 1,
+        "project": 4,
+        "constrain": 3,
+        "annotate": 1
+      }
+    },
+    {
+      "part_id": "duct_holdout",
+      "role": "parameter_holdout",
+      "passed": true,
+      "geometry": {
+        "volume_mm3": 26521.588902144642,
+        "surface_area_mm2": 22314.41794683801,
+        "solid_count": 1,
+        "face_count": 12,
+        "edge_count": 30,
+        "bbox_mm": [
+          78.0000002,
+          38.0000002,
+          67.00000020000002
+        ],
+        "is_valid": true
+      },
+      "operator_histogram": {
+        "transform": 0,
+        "sweep": 2,
+        "combine": 1,
+        "select": 0,
+        "slice": 1,
+        "project": 4,
+        "constrain": 3,
+        "annotate": 1
+      }
+    },
+    {
+      "part_id": "spoked_wheel",
+      "role": "topology_holdout",
+      "passed": true,
+      "geometry": {
+        "volume_mm3": 15718.781472217523,
+        "surface_area_mm2": 9629.585571990927,
+        "solid_count": 1,
+        "face_count": 28,
+        "edge_count": 78,
+        "bbox_mm": [
+          76.0,
+          76.0,
+          7.0
+        ],
+        "is_valid": true
+      },
+      "operator_histogram": {
+        "transform": 6,
+        "sweep": 8,
+        "combine": 1,
+        "select": 0,
+        "slice": 1,
+        "project": 4,
+        "constrain": 3,
+        "annotate": 1
+      }
+    },
+    {
+      "part_id": "clevis_bracket",
+      "role": "topology_holdout",
+      "passed": true,
+      "geometry": {
+        "volume_mm3": 22796.81421051076,
+        "surface_area_mm2": 9868.530964914873,
+        "solid_count": 1,
+        "face_count": 18,
+        "edge_count": 42,
+        "bbox_mm": [
+          54.0,
+          42.0,
+          40.0
+        ],
+        "is_valid": true
+      },
+      "operator_histogram": {
+        "transform": 3,
+        "sweep": 4,
+        "combine": 2,
+        "select": 0,
+        "slice": 1,
+        "project": 4,
+        "constrain": 3,
+        "annotate": 1
+      }
+    },
+    {
+      "part_id": "cross_drilled_manifold",
+      "role": "topology_holdout",
+      "passed": true,
+      "geometry": {
+        "volume_mm3": 79890.81942332532,
+        "surface_area_mm2": 14675.62994879273,
+        "solid_count": 1,
+        "face_count": 12,
+        "edge_count": 42,
+        "bbox_mm": [
+          58.0000002,
+          44.0000002,
+          34.0000002
+        ],
+        "is_valid": true
+      },
+      "operator_histogram": {
+        "transform": 2,
+        "sweep": 4,
+        "combine": 1,
+        "select": 0,
+        "slice": 1,
+        "project": 4,
+        "constrain": 3,
+        "annotate": 1
+      }
+    }
+  ]
+}

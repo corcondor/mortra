@@ -1,0 +1,672 @@
+.page {
+  --canvas: #050709;
+  --line: rgba(225, 241, 244, 0.15);
+  --line-strong: rgba(225, 241, 244, 0.28);
+  --text: #f3f7f7;
+  --muted: #93a3a8;
+  --cyan: #65dbea;
+  --green: #70e1aa;
+  --amber: #f2b86d;
+  position: relative;
+  min-height: 100vh;
+  overflow: clip;
+  background: var(--canvas);
+  color: var(--text);
+}
+
+.backgroundField {
+  position: fixed !important;
+  z-index: 0;
+  inset: 0;
+  opacity: 0.42;
+  pointer-events: none;
+}
+
+.backgroundVeil {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  background: rgba(5, 7, 9, 0.62);
+  pointer-events: none;
+}
+
+.shell {
+  width: min(1240px, calc(100% - 64px));
+  margin: 0 auto;
+}
+
+.hero,
+.section,
+.footer {
+  position: relative;
+  z-index: 1;
+}
+
+.hero {
+  padding: 136px 0 96px;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 54px;
+  color: #819196;
+  font-size: 11px;
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: var(--cyan);
+}
+
+.heroCopy {
+  max-width: 980px;
+}
+
+.sectionLabel {
+  margin: 0 0 20px;
+  color: var(--cyan);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+}
+
+.heroCopy h1,
+.sectionHead h2,
+.boundaryGrid h2 {
+  margin: 0;
+  letter-spacing: 0;
+}
+
+.heroCopy h1 {
+  max-width: 930px;
+  font-size: 68px;
+  font-weight: 580;
+  line-height: 1.08;
+}
+
+.heroCopy > p:not(.sectionLabel) {
+  max-width: 760px;
+  margin: 28px 0 0;
+  color: #aab6ba;
+  font-size: 16px;
+  line-height: 1.9;
+}
+
+.metricRail {
+  display: grid;
+  margin-top: 58px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.metricRail > div {
+  display: grid;
+  min-height: 112px;
+  align-content: center;
+  gap: 9px;
+  border-right: 1px solid var(--line);
+  padding: 20px 24px;
+}
+
+.metricRail > div:last-child {
+  border-right: 0;
+}
+
+.metricRail strong {
+  color: #f7fbfb;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 25px;
+  font-weight: 500;
+}
+
+.metricRail span {
+  color: #7e8f94;
+  font-size: 10px;
+}
+
+.heroDrawing {
+  position: relative;
+  height: 680px;
+  margin: 54px 0 0;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  background: #f8f8f5;
+}
+
+.heroDrawing img,
+.drawingCanvas img {
+  object-fit: contain;
+}
+
+.heroDrawing figcaption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  min-height: 43px;
+  align-items: center;
+  gap: 16px;
+  border-top: 1px solid rgba(10, 17, 20, 0.16);
+  padding: 0 16px;
+  background: rgba(247, 247, 243, 0.95);
+  color: #384247;
+  font-size: 9px;
+}
+
+.heroDrawing figcaption span {
+  color: #097789;
+  font-family: "IBM Plex Mono", monospace;
+}
+
+.section {
+  border-top: 1px solid var(--line);
+  padding: 112px 0;
+}
+
+.sectionHead {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(340px, 0.64fr);
+  gap: 96px;
+  margin-bottom: 58px;
+  align-items: end;
+}
+
+.sectionHead h2,
+.boundaryGrid h2 {
+  max-width: 720px;
+  font-size: 44px;
+  font-weight: 560;
+  line-height: 1.18;
+}
+
+.sectionHead > p,
+.boundaryCopy p {
+  margin: 0;
+  color: #95a5aa;
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+.operationGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
+
+.operationGrid > div {
+  display: grid;
+  min-height: 188px;
+  align-content: start;
+  gap: 14px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 24px;
+}
+
+.operationGrid span {
+  color: #596c72;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+}
+
+.operationGrid code {
+  color: var(--cyan);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 17px;
+}
+
+.operationGrid p {
+  margin: 0;
+  color: #88999e;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.typeRule {
+  display: grid;
+  grid-template-columns: minmax(360px, 0.94fr) minmax(300px, 0.7fr);
+  gap: 72px;
+  margin-top: 48px;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 34px 0;
+}
+
+.typeRule > div {
+  display: grid;
+  gap: 13px;
+}
+
+.typeRule span {
+  color: #697b81;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+}
+
+.typeRule strong {
+  color: #ecf3f3;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.typeRule p {
+  margin: 0;
+  color: #819297;
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.pipelineSection,
+.resultsSection {
+  background: rgba(4, 6, 8, 0.58);
+}
+
+.pipeline {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.pipeline > div {
+  position: relative;
+  min-height: 204px;
+  border-right: 1px solid var(--line);
+  padding: 24px 22px;
+}
+
+.pipeline > div:last-child {
+  border-right: 0;
+}
+
+.pipeline > div > span {
+  color: var(--amber);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 9px;
+}
+
+.pipeline strong {
+  display: block;
+  margin-top: 28px;
+  color: #eaf0f1;
+  font-size: 13px;
+  font-weight: 580;
+}
+
+.pipeline p {
+  margin: 12px 0 0;
+  color: #75878d;
+  font-size: 10px;
+  line-height: 1.7;
+}
+
+.pipeline svg {
+  position: absolute;
+  z-index: 2;
+  top: 31px;
+  right: -8px;
+  color: #64777d;
+}
+
+.drawingList {
+  display: grid;
+  gap: 70px;
+}
+
+.drawingList figure {
+  margin: 0;
+}
+
+.drawingCanvas {
+  position: relative;
+  height: 690px;
+  border: 1px solid var(--line-strong);
+  background: #f8f8f5;
+}
+
+.drawingList figcaption {
+  display: grid;
+  grid-template-columns: 90px 220px minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid var(--line);
+  padding: 19px 2px;
+}
+
+.drawingList figcaption span {
+  color: var(--cyan);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 9px;
+}
+
+.drawingList figcaption strong {
+  font-size: 12px;
+  font-weight: 560;
+}
+
+.drawingList figcaption p {
+  margin: 0;
+  color: #7f9095;
+  font-size: 10px;
+}
+
+.resultTable {
+  border-top: 1px solid var(--line);
+}
+
+.resultTable > div {
+  display: grid;
+  min-height: 78px;
+  grid-template-columns: minmax(170px, 0.56fr) minmax(100px, 0.25fr) minmax(300px, 1fr);
+  align-items: center;
+  gap: 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.resultTable span,
+.resultTable p {
+  color: #7f9095;
+  font-size: 10px;
+}
+
+.resultTable strong {
+  color: var(--green);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.resultTable p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.artifactLinks {
+  display: grid;
+  margin-top: 58px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.artifactLinks a {
+  display: grid;
+  min-height: 92px;
+  grid-template-columns: 26px minmax(0, 1fr) 18px;
+  align-items: center;
+  gap: 10px;
+  border-right: 1px solid var(--line);
+  padding: 15px;
+  color: #819298;
+  text-decoration: none;
+}
+
+.artifactLinks a:last-child {
+  border-right: 0;
+}
+
+.artifactLinks a:hover {
+  background: rgba(101, 219, 234, 0.05);
+  color: var(--cyan);
+}
+
+.artifactLinks span {
+  display: grid;
+  gap: 5px;
+}
+
+.artifactLinks b {
+  color: #dbe5e6;
+  font-size: 11px;
+}
+
+.artifactLinks small {
+  color: #6e8187;
+  font-size: 8px;
+}
+
+.boundaryGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.84fr) minmax(400px, 0.72fr);
+  gap: 110px;
+}
+
+.boundaryCopy {
+  display: grid;
+  gap: 24px;
+}
+
+.footer {
+  border-top: 1px solid var(--line);
+}
+
+.footer > div {
+  display: flex;
+  min-height: 86px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  color: #65787e;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+}
+
+.footer span,
+.footer a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer a {
+  color: #829399;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: var(--cyan);
+}
+
+@media (max-width: 980px) {
+  .shell {
+    width: min(100% - 34px, 820px);
+  }
+
+  .heroCopy h1 {
+    font-size: 54px;
+  }
+
+  .heroDrawing,
+  .drawingCanvas {
+    height: 520px;
+  }
+
+  .sectionHead,
+  .typeRule,
+  .boundaryGrid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .operationGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pipeline {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pipeline > div:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .pipeline > div:nth-child(-n + 4) {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .artifactLinks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .artifactLinks a:nth-child(2) {
+    border-right: 0;
+  }
+
+  .artifactLinks a:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--line);
+  }
+}
+
+@media (max-width: 640px) {
+  .shell {
+    width: calc(100% - 24px);
+  }
+
+  .hero {
+    padding: 104px 0 74px;
+  }
+
+  .backLink {
+    margin-bottom: 36px;
+  }
+
+  .heroCopy h1 {
+    font-size: 38px;
+    line-height: 1.16;
+  }
+
+  .heroCopy > p:not(.sectionLabel) {
+    font-size: 14px;
+  }
+
+  .metricRail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 42px;
+  }
+
+  .metricRail > div:nth-child(2) {
+    border-right: 0;
+  }
+
+  .metricRail > div:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .metricRail > div {
+    min-height: 94px;
+    padding: 15px;
+  }
+
+  .metricRail strong {
+    font-size: 20px;
+  }
+
+  .heroDrawing,
+  .drawingCanvas {
+    height: 330px;
+  }
+
+  .heroDrawing figcaption {
+    position: static;
+    min-height: 54px;
+    line-height: 1.5;
+  }
+
+  .section {
+    padding: 78px 0;
+  }
+
+  .sectionHead {
+    margin-bottom: 38px;
+  }
+
+  .sectionHead h2,
+  .boundaryGrid h2 {
+    font-size: 33px;
+  }
+
+  .sectionHead > p,
+  .boundaryCopy p {
+    font-size: 12px;
+  }
+
+  .operationGrid,
+  .pipeline,
+  .artifactLinks {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .operationGrid > div {
+    min-height: 142px;
+  }
+
+  .pipeline > div,
+  .pipeline > div:nth-child(2n) {
+    min-height: 156px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .pipeline > div:last-child {
+    border-bottom: 0;
+  }
+
+  .pipeline svg {
+    top: auto;
+    right: 20px;
+    bottom: -8px;
+    transform: rotate(90deg);
+  }
+
+  .drawingList {
+    gap: 46px;
+  }
+
+  .drawingList figcaption {
+    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .drawingList figcaption p {
+    grid-column: 1 / -1;
+  }
+
+  .resultTable > div {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 7px 18px;
+    padding: 16px 0;
+  }
+
+  .resultTable p {
+    grid-column: 1 / -1;
+  }
+
+  .artifactLinks a,
+  .artifactLinks a:nth-child(2) {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .artifactLinks a:last-child {
+    border-bottom: 0;
+  }
+
+  .footer > div {
+    min-height: 106px;
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backgroundField {
+    display: none;
+  }
+}

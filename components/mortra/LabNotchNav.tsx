@@ -10,9 +10,10 @@ import styles from './labNotchNav.module.css'
 type LabNotchNavProps = {
   lang: Lang
   active?: 'home' | 'research'
+  alternateHref?: string
 }
 
-export function LabNotchNav({ lang, active = 'home' }: LabNotchNavProps) {
+export function LabNotchNav({ lang, active = 'home', alternateHref }: LabNotchNavProps) {
   const copy = getCopy(lang)
   const [expanded, setExpanded] = useState(false)
   const hoverRef = useRef(false)
@@ -130,9 +131,9 @@ export function LabNotchNav({ lang, active = 'home' }: LabNotchNavProps) {
           </a>
           <Link
             className={styles.languageLink}
-            href={active === 'research'
+            href={alternateHref ?? (active === 'research'
               ? (lang === 'ja' ? '/research' : '/ja/research')
-              : copy.langToggle.href}
+              : copy.langToggle.href)}
             hrefLang={lang === 'ja' ? 'en' : 'ja'}
             aria-label={copy.langToggle.to}
             title={copy.langToggle.to}

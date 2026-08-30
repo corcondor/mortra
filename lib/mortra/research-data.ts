@@ -165,6 +165,13 @@ export const REPRESENTATION_PATHS = [
 
 export const RESEARCH_RECORDS = [
   {
+    date: '2026-08-31',
+    ja: '次元非依存幾何基底と3D機械製図',
+    en: 'Dimension-independent geometry basis and 3D drafting',
+    href: 'https://github.com/corcondor/mortra/blob/release/mortra-1-beta/docs/research/MORTRA-DIMENSION-INDEPENDENT-ENGINEERING-GEOMETRY-20260831.md',
+    tag: 'ENGINEERING GEOMETRY',
+  },
+  {
     date: '2026-08-30',
     ja: '既存幾何基底による複雑図形生成',
     en: 'Complex figure generation from the existing geometry basis',

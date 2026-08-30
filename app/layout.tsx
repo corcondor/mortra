@@ -8,6 +8,7 @@ import { Analytics } from '@vercel/analytics/next'
 const TITLE = 'MORTRA — Finite primitives. Infinite mathematics.'
 const DESCRIPTION =
   'MORTRA turns mathematical statements into typed structures and returns proofs, figures, derivation routes and replayable certificates from one execution.'
+const IS_VERCEL = process.env.VERCEL === '1'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://mortra.ai'),
@@ -60,8 +61,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-[100dvh] bg-[#09090b] text-zinc-100">
         {children}
-        <SpeedInsights />
-        <Analytics />
+        {IS_VERCEL ? <SpeedInsights /> : null}
+        {IS_VERCEL ? <Analytics /> : null}
       </body>
     </html>
   )
