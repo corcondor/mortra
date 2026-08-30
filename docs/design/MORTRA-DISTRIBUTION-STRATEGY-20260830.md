@@ -14,15 +14,15 @@ MORTRA should be understood in one pass as an executable mathematics system, the
 
 The system is not marketed by abstract claims. It is marketed by a visible mathematical object, a working interaction, and a reproducible artifact.
 
-## Current diagnosis
+## Baseline diagnosis
 
-The product, website, X account, and GitHub repository currently describe different stages of the project.
+At the start of this pass, the product, website, X account, and GitHub repository described different stages of the project.
 
 - The website already uses `mortra.ai` and the current MORTRA 1 result ledger.
 - The official X account uses the right name and slogan, but has not yet accumulated a recognizable visual identity or publishing rhythm.
-- The GitHub repository still presents the former `sakumon-station` product description and the legacy `mortra.vercel.app` address.
-- GitHub has no topics and no social preview, so a shared repository link does not explain why the work matters.
-- The current README begins with setup. A first-time visitor therefore meets implementation details before seeing the product, evidence, or research purpose.
+- The GitHub repository presented the former `sakumon-station` product description and the legacy `mortra.vercel.app` address.
+- GitHub had no topics and no social preview, so a shared repository link did not explain why the work matters.
+- The README began with setup. A first-time visitor therefore met implementation details before seeing the product, evidence, or research purpose.
 
 GitHub traffic on 2026-08-30 was 4 views from 2 unique visitors over the available 14-day window, with no recorded external referrers. Clone counts were much larger, but without referrers they must not be treated as human acquisition; CI and automated work can dominate that number.
 
@@ -207,7 +207,7 @@ Do not optimize for impressions alone. The primary launch metric is the number o
 
 ## Immediate implementation boundary
 
-This pass changes the visual identity, social assets, website/GitHub links, repository metadata, README, and attribution plan. It does not rename the repository, alter production deployment branches, publish posts, or overwrite an X profile until the final avatar/header pair has been reviewed as a pair.
+This pass changes the visual identity, social assets, website/GitHub links, repository metadata, README, and attribution plan. It does not rename the repository, alter production deployment branches, or publish posts. The avatar/header pair has been reviewed together; the official X profile remains untouched only because the available OAuth credentials authenticate the personal account rather than `@MORTRA_AI`.
 
 ## Implementation status on 2026-08-30
 
@@ -217,7 +217,7 @@ This pass changes the visual identity, social assets, website/GitHub links, repo
 | Website identity | Complete in beta branch | Favicon, Apple icon, navigation mark, Open Graph card, Twitter card, GitHub link, and official X link are implemented. |
 | Desktop/mobile QA | Complete | Both viewports return 200, render the 32 px mark, preserve the GitHub path, and have no horizontal overflow or page errors. |
 | GitHub metadata | Live | Description, `mortra.ai` homepage, and eight research/discovery topics are updated. |
-| GitHub README/assets | Complete in beta working tree | Commit and branch promotion remain separate from the dirty research worktree. |
+| GitHub README/assets | Pushed to beta branch | Brand assets, README, website links, and this strategy are isolated in commit `4610bd0`; unrelated research changes are not included. |
 | GitHub social preview | Asset complete | GitHub does not expose this upload in the repository REST API; upload `brand/social/mortra-github-social-preview-1280x640.png` in repository settings. |
 | Official X profile | Assets complete, account update pending | Repository OAuth currently authenticates personal account `@corcondol`, not `@MORTRA_AI`; obtain official-account authorization before changing profile media. |
-| Vercel production | Not promoted | Local production build passes. Production promotion is intentionally separate because `master` is the deployment branch and the active beta worktree contains unrelated research changes. |
+| Vercel production | Not promoted | Local production build passes. The beta push produced no GitHub-recorded deployment, and production promotion is intentionally separate because `master` is the deployment branch. |
