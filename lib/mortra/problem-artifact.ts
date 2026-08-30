@@ -7,6 +7,7 @@ export type DiagramPoint = { x: number; y: number }
 
 export type DiagramShape =
   | {
+      id?: string
       kind: 'polyline'
       points: DiagramPoint[]
       closed?: boolean
@@ -15,6 +16,7 @@ export type DiagramShape =
       fill?: boolean
     }
   | {
+      id?: string
       kind: 'circle'
       center: DiagramPoint
       radius: number
@@ -22,9 +24,37 @@ export type DiagramShape =
       dashed?: boolean
     }
   | {
+      id?: string
       kind: 'point'
       point: DiagramPoint
       label?: string
+      tone?: 'primary' | 'secondary' | 'muted' | 'accent'
+    }
+  | {
+      id?: string
+      kind: 'arc'
+      center: DiagramPoint
+      radius: number
+      startAngle: number
+      endAngle: number
+      arrowEnd?: boolean
+      tone?: 'primary' | 'secondary' | 'muted' | 'accent'
+      dashed?: boolean
+    }
+  | {
+      id?: string
+      kind: 'vector'
+      from: DiagramPoint
+      to: DiagramPoint
+      label?: string
+      tone?: 'primary' | 'secondary' | 'muted' | 'accent'
+      dashed?: boolean
+    }
+  | {
+      id?: string
+      kind: 'label'
+      point: DiagramPoint
+      text: string
       tone?: 'primary' | 'secondary' | 'muted' | 'accent'
     }
 
@@ -98,6 +128,35 @@ export type ProblemDiagram =
   | StateProblemDiagram
   | VariationProblemDiagram
   | CalculusProblemDiagram
+
+export type VisualMorphismRecord = {
+  morphism_id: string
+  label_ja: string
+  input_type: string
+  output_type: string
+}
+
+export type VisualReasoningStep = {
+  id: string
+  title: string
+  explanation_ja: string
+  formula_tex?: string
+  morphism: VisualMorphismRecord
+  source_state: { id: string; type: string }
+  target_state: { id: string; type: string }
+  evidence?: Record<string, unknown>
+  diagram: ProblemDiagram
+}
+
+export type VisualExplanation = {
+  version: 1
+  mode: 'stepper'
+  title: string
+  diagram_required_for_every_step: true
+  composition_verified: boolean
+  morphism_chain: string[]
+  steps: VisualReasoningStep[]
+}
 
 export type ProblemArtifactSource = {
   familyId?: string

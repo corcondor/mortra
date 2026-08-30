@@ -1,6 +1,7 @@
 'use client'
 
-import { CheckCircle2, FileDown, FlaskConical } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { CheckCircle2, ChevronLeft, ChevronRight, FileDown, FlaskConical, Pause, Play } from 'lucide-react'
 import { MathText } from '@/components/MathText'
 import type { Lang } from '@/lib/mortra/i18n'
 import {
@@ -8,6 +9,7 @@ import {
   type DiagramShape,
   type PlaneProblemDiagram,
   type ProblemDiagram,
+  type VisualExplanation,
 } from '@/lib/mortra/problem-artifact'
 import type { CertifiedCalculusAnalysis } from '@/lib/mortra/calculus-analysis'
 import styles from './problemArtifact.module.css'
@@ -21,6 +23,7 @@ export type ProblemArtifactCard = {
   parameters?: Record<string, number>
   morphism_chain?: string[]
   diagram?: ProblemDiagram
+  visual_explanation?: VisualExplanation
   calculus_analysis?: CertifiedCalculusAnalysis
   solution_document_tex?: string
   diagram_tikz?: string
@@ -78,6 +81,9 @@ function PlaneFigure({ diagram }: { diagram: PlaneProblemDiagram }) {
         <pattern id="problem-grid" width="36" height="36" patternUnits="userSpaceOnUse">
           <path d="M 36 0 L 0 0 0 36" className={styles.gridLine} fill="none" />
         </pattern>
+        <marker id="plane-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 Z" fill="context-stroke" />
+        </marker>
       </defs>
       <rect width={WIDTH} height={HEIGHT} fill="url(#problem-grid)" />
       {diagram.axes ? (
@@ -102,6 +108,60 @@ function PlaneFigure({ diagram }: { diagram: PlaneProblemDiagram }) {
               ry={Math.abs(ry(shape.radius))}
               className={className}
             />
+          )
+        }
+        if (shape.kind === 'arc') {
+          const start = (shape.startAngle * Math.PI) / 180
+          const end = (shape.endAngle * Math.PI) / 180
+          const startPoint = {
+            x: shape.center.x + shape.radius * Math.cos(start),
+            y: shape.center.y + shape.radius * Math.sin(start),
+          }
+          const endPoint = {
+            x: shape.center.x + shape.radius * Math.cos(end),
+            y: shape.center.y + shape.radius * Math.sin(end),
+          }
+          const span = Math.abs(shape.endAngle - shape.startAngle) % 360
+          return (
+            <path
+              key={index}
+              d={`M ${x(startPoint.x)} ${y(startPoint.y)} A ${Math.abs(rx(shape.radius))} ${Math.abs(ry(shape.radius))} 0 ${span > 180 ? 1 : 0} ${shape.endAngle >= shape.startAngle ? 0 : 1} ${x(endPoint.x)} ${y(endPoint.y)}`}
+              className={className}
+              markerEnd={shape.arrowEnd ? 'url(#plane-arrow)' : undefined}
+            />
+          )
+        }
+        if (shape.kind === 'vector') {
+          return (
+            <g key={index} className={toneClass(shape.tone)}>
+              <line
+                x1={x(shape.from.x)}
+                y1={y(shape.from.y)}
+                x2={x(shape.to.x)}
+                y2={y(shape.to.y)}
+                className={className}
+                markerEnd="url(#plane-arrow)"
+              />
+              {shape.label ? (
+                <text
+                  x={(x(shape.from.x) + x(shape.to.x)) / 2}
+                  y={(y(shape.from.y) + y(shape.to.y)) / 2 - 9}
+                  textAnchor="middle"
+                  className={styles.diagramLabel}
+                >{shape.label}</text>
+              ) : null}
+            </g>
+          )
+        }
+        if (shape.kind === 'label') {
+          return (
+            <text
+              key={index}
+              x={x(shape.point.x)}
+              y={y(shape.point.y)}
+              textAnchor="middle"
+              className={`${styles.diagramLabel} ${toneClass(shape.tone)}`}
+            >{shape.text}</text>
           )
         }
         return (
@@ -252,6 +312,119 @@ export function ProblemFigure({ diagram }: { diagram: ProblemDiagram }) {
   )
 }
 
+function VisualExplanationStepper({
+  explanation,
+  lang,
+}: {
+  explanation: VisualExplanation
+  lang: Lang
+}) {
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [playing, setPlaying] = useState(false)
+  const steps = explanation.steps
+  const activeIndex = Math.min(selectedIndex, Math.max(0, steps.length - 1))
+  const activeStep = steps[activeIndex]
+
+  const goTo = (index: number) => setSelectedIndex(Math.max(0, Math.min(steps.length - 1, index)))
+  const previousLabel = lang === 'ja' ? '前の手順' : 'Previous step'
+  const nextLabel = lang === 'ja' ? '次の手順' : 'Next step'
+  const playLabel = lang === 'ja' ? '図解を再生' : 'Play visual explanation'
+  const pauseLabel = lang === 'ja' ? '図解を一時停止' : 'Pause visual explanation'
+
+  useEffect(() => {
+    if (!playing || steps.length < 2) return undefined
+    const timer = window.setTimeout(() => {
+      setSelectedIndex(current => {
+        if (current >= steps.length - 1) {
+          setPlaying(false)
+          return current
+        }
+        return current + 1
+      })
+    }, 2200)
+    return () => window.clearTimeout(timer)
+  }, [playing, activeIndex, steps.length])
+
+  const togglePlayback = () => {
+    if (!playing && activeIndex === steps.length - 1) setSelectedIndex(0)
+    setPlaying(current => !current)
+  }
+
+  if (!activeStep) return null
+
+  return (
+    <section className={styles.visualStepper} aria-label={explanation.title}>
+      <header className={styles.visualStepperHead}>
+        <div>
+          <span>VISUAL REASONING</span>
+          <strong>{explanation.title}</strong>
+        </div>
+        <b>{String(activeIndex + 1).padStart(2, '0')} / {String(steps.length).padStart(2, '0')}</b>
+      </header>
+
+      <nav className={styles.visualStepNav} aria-label={lang === 'ja' ? '解答の手順' : 'Solution steps'}>
+        {steps.map((step, index) => (
+          <button
+            type="button"
+            key={step.id}
+            className={index === activeIndex ? styles.visualStepActive : styles.visualStepButton}
+            aria-current={index === activeIndex ? 'step' : undefined}
+            aria-label={`${lang === 'ja' ? '手順' : 'Step'} ${index + 1}: ${step.title}`}
+            title={step.title}
+            onClick={() => goTo(index)}
+          >
+            {String(index + 1).padStart(2, '0')}
+          </button>
+        ))}
+      </nav>
+
+      <div className={styles.visualStepCopy} aria-live="polite">
+        <span>{activeStep.morphism.label_ja}</span>
+        <h3>{activeStep.title}</h3>
+        <p>{activeStep.explanation_ja}</p>
+        {activeStep.formula_tex ? (
+          <div className={styles.visualStepFormula}><MathText text={activeStep.formula_tex} /></div>
+        ) : null}
+      </div>
+
+      <div key={activeStep.id} className={styles.visualStepFigure}>
+        <ProblemFigure diagram={activeStep.diagram} />
+      </div>
+
+      <footer className={styles.visualStepperControls}>
+        <div>
+          <button
+            type="button"
+            onClick={togglePlayback}
+            aria-label={playing ? pauseLabel : playLabel}
+            title={playing ? pauseLabel : playLabel}
+          >
+            {playing ? <Pause size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}
+          </button>
+          <button
+            type="button"
+            onClick={() => goTo(activeIndex - 1)}
+            disabled={activeIndex === 0}
+            aria-label={previousLabel}
+            title={previousLabel}
+          >
+            <ChevronLeft size={17} aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            onClick={() => goTo(activeIndex + 1)}
+            disabled={activeIndex === steps.length - 1}
+            aria-label={nextLabel}
+            title={nextLabel}
+          >
+            <ChevronRight size={17} aria-hidden="true" />
+          </button>
+        </div>
+      </footer>
+    </section>
+  )
+}
+
 const ARTIFACT_TEXT = {
   ja: {
     saveTex: '解答TeXを保存',
@@ -347,7 +520,11 @@ export function ProblemArtifact({ card, compact = false, showVerification = true
         <div className={styles.statement}><MathText text={card.statement_tex ?? ''} large={!compact} /></div>
       </section>
 
-      <ProblemFigure diagram={diagram} />
+      {card.visual_explanation?.steps.length ? (
+        <VisualExplanationStepper explanation={card.visual_explanation} lang={lang} />
+      ) : (
+        <ProblemFigure diagram={diagram} />
+      )}
 
       <div className={styles.solutionGrid}>
         <section>

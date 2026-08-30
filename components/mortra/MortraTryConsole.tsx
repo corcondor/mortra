@@ -1,8 +1,21 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Check, LoaderCircle, Play, RotateCcw, Square } from 'lucide-react'
-import { ProofGraphScene } from './ProofGraphScene'
+import {
+  Braces,
+  Check,
+  ChevronDown,
+  CircleHelp,
+  DraftingCompass,
+  GitMerge,
+  LoaderCircle,
+  Play,
+  RotateCcw,
+  Square,
+  TerminalSquare,
+} from 'lucide-react'
+import { InformationGeometryMap } from './InformationGeometryMap'
+import { LiveTexPreview } from './LiveTexPreview'
 import { ProblemArtifact, type ProblemArtifactCard } from './ProblemArtifact'
 import type { ProblemDiagram } from '@/lib/mortra/problem-artifact'
 import type { Lang } from '@/lib/mortra/i18n'
@@ -79,6 +92,52 @@ type TraceLine = {
   text: string
 }
 
+type WorkspaceMode = 'solve' | 'fusion' | 'draw'
+
+type WorkspaceCommand = {
+  id: WorkspaceMode
+  command: '/solve' | '/combine' | '/draw'
+  icon: typeof Braces
+  ja: string
+  en: string
+  detailJa: string
+  detailEn: string
+  example: string
+}
+
+const WORKSPACE_COMMANDS: WorkspaceCommand[] = [
+  {
+    id: 'solve',
+    command: '/solve',
+    icon: Braces,
+    ja: '一問を解く',
+    en: 'Solve one problem',
+    detailJa: '問題文を型付き構造へ変換し、解答・証明過程・証明書を返します。',
+    detailEn: 'Elaborate one statement into typed structure and return a solution, proof trace and certificate.',
+    example: '/solve A',
+  },
+  {
+    id: 'fusion',
+    command: '/combine',
+    icon: GitMerge,
+    ja: '二問を融合する',
+    en: 'Combine two problems',
+    detailJa: 'AとBを別々の端点として保持し、共有構造から新しい問題と解答を生成します。',
+    detailEn: 'Keep A and B as separate endpoints and generate a new problem and solution from shared structure.',
+    example: '/combine A B',
+  },
+  {
+    id: 'draw',
+    command: '/draw',
+    icon: DraftingCompass,
+    ja: '解答図を作る',
+    en: 'Build the solution figure',
+    detailJa: '問題を解き、証明と同じ数学状態から必要な図・グラフ・状態遷移を構成します。',
+    detailEn: 'Solve the problem and construct the required figure, plot or state transition from the same proof state.',
+    example: '/draw A',
+  },
+]
+
 const JOB_KEY = 'mortra-public-active-job'
 const SEARCH_BUDGET_SECONDS = 90
 
@@ -122,6 +181,7 @@ const CONSOLE_TEXT = {
       refetch: (m: string) => `状態を再取得します: ${m}`,
       movedToLong: '長時間の探索へ移行しました。画面を閉じても処理は継続します。',
       needInput: 'AまたはBに問題を入力してください。',
+      needTwo: '/combine にはAとBの二問が必要です。',
       acceptedSolve: '入力問題を解答対象として受理しました。',
       acceptedFusion: '親問題AとBを、別々の証明入力として受理しました。',
       solveApi: (code: number) => `解答API ${code}`,
@@ -169,6 +229,7 @@ const CONSOLE_TEXT = {
       refetch: (m: string) => `Refetching state: ${m}`,
       movedToLong: 'Moved to long-running search. Processing continues even if you close this page.',
       needInput: 'Enter a problem in A or B.',
+      needTwo: '/combine requires both problem A and problem B.',
       acceptedSolve: 'Accepted the input problem as the target to solve.',
       acceptedFusion: 'Accepted parents A and B as separate proof inputs.',
       solveApi: (code: number) => `Solve API ${code}`,
@@ -229,7 +290,13 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
   const [telemetry, setTelemetry] = useState<JobTelemetry | null>(null)
   const [trace, setTrace] = useState<TraceLine[]>([])
   const [taskMode, setTaskMode] = useState<'solve' | 'fusion'>('fusion')
+  const [workspaceMode, setWorkspaceMode] = useState<WorkspaceMode>('fusion')
+  const [commandLine, setCommandLine] = useState('/combine')
+  const [commandMenuOpen, setCommandMenuOpen] = useState(false)
+  const [showAllCommands, setShowAllCommands] = useState(false)
+  const [commandHelp, setCommandHelp] = useState<WorkspaceMode>('fusion')
   const abortRef = useRef<AbortController | null>(null)
+  const helpTimerRef = useRef<number | null>(null)
   const traceSequenceRef = useRef(0)
   const seenRemoteLogsRef = useRef(new Set<string>())
 
@@ -240,6 +307,35 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
       const id = `${at}-${traceSequenceRef.current++}`
       return [...lines.slice(-79), { id, at, text }]
     })
+  }, [])
+
+  const chooseCommand = useCallback((next: WorkspaceMode) => {
+    const command = WORKSPACE_COMMANDS.find(item => item.id === next)
+    if (!command) return
+    setWorkspaceMode(next)
+    setCommandHelp(next)
+    setCommandLine(command.command)
+    setCommandMenuOpen(false)
+    setShowAllCommands(false)
+    if (next !== 'fusion') setParentB('')
+    else setParentB(value => value || c.parentB)
+  }, [c.parentB])
+
+  const beginCommandHelp = (command: WorkspaceMode) => {
+    if (helpTimerRef.current !== null) window.clearTimeout(helpTimerRef.current)
+    helpTimerRef.current = window.setTimeout(() => {
+      setCommandHelp(command)
+      setCommandMenuOpen(true)
+    }, 460)
+  }
+
+  const endCommandHelp = () => {
+    if (helpTimerRef.current !== null) window.clearTimeout(helpTimerRef.current)
+    helpTimerRef.current = null
+  }
+
+  useEffect(() => () => {
+    if (helpTimerRef.current !== null) window.clearTimeout(helpTimerRef.current)
   }, [])
 
   useEffect(() => {
@@ -365,16 +461,37 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
     setPhase(resolved ? 'complete' : (event.result.generated ?? 0) > 0 ? 'researching' : 'error')
   }, [addTrace])
 
+  const activeCommand = WORKSPACE_COMMANDS.find(item => item.id === commandHelp) ?? WORKSPACE_COMMANDS[0]
+  const commandOptions = showAllCommands
+    ? WORKSPACE_COMMANDS
+    : WORKSPACE_COMMANDS.filter(item => (
+        item.command.startsWith(commandLine.trim().toLowerCase())
+        || commandLine.trim() === '/'
+        || commandLine.trim() === ''
+      ))
+
+  const applyCommandLine = () => {
+    const token = commandLine.trim().split(/\s+/)[0]?.toLowerCase()
+    const command = WORKSPACE_COMMANDS.find(item => item.command === token)
+    if (command) chooseCommand(command.id)
+    else setCommandMenuOpen(true)
+  }
+
   const run = async () => {
     const a = parentA.trim()
-    const b = parentB.trim()
-    const inputs = [a, b].filter(Boolean)
+    const b = workspaceMode === 'fusion' ? parentB.trim() : ''
+    const inputs = workspaceMode === 'fusion' ? [a, b].filter(Boolean) : [a || b].filter(Boolean)
     if (inputs.length === 0) {
       addTrace(tr.needInput)
       setPhase('error')
       return
     }
-    const nextMode = inputs.length === 1 ? 'solve' : 'fusion'
+    if (workspaceMode === 'fusion' && inputs.length < 2) {
+      addTrace(tr.needTwo)
+      setPhase('error')
+      return
+    }
+    const nextMode = workspaceMode === 'fusion' ? 'fusion' : 'solve'
     setTaskMode(nextMode)
 
     abortRef.current?.abort()
@@ -401,7 +518,11 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           signal: controller.signal,
-          body: JSON.stringify({ problem: inputs[0] }),
+          body: JSON.stringify({
+            problem: inputs[0],
+            output: workspaceMode === 'draw' ? 'solution_and_diagram' : 'solution',
+            diagram_required: workspaceMode === 'draw',
+          }),
         })
         const raw = await response.text()
         let solved: GenerationResult & { error?: string }
@@ -485,18 +606,21 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
     setTelemetry(null)
     setStartedAt(null)
     setTaskMode('fusion')
+    setWorkspaceMode('fusion')
+    setCommandLine('/combine')
+    setCommandHelp('fusion')
+    setCommandMenuOpen(false)
+    setShowAllCommands(false)
     traceSequenceRef.current = 0
     seenRemoteLogsRef.current.clear()
   }
 
   const card = cardFromResult(result)
-  const currentInputCount = parentA.trim() && parentB.trim() ? 2 : 1
-  const visibleMode = running || card ? taskMode : currentInputCount === 1 ? 'solve' : 'fusion'
+  const visibleMode = running || card ? taskMode : workspaceMode === 'fusion' ? 'fusion' : 'solve'
   const phases = visibleMode === 'solve' ? SOLVE_PHASES : FUSION_PHASES
   const progress = phase === 'complete' ? 1 : Math.max(0.08, Math.min(0.92, (stage + 0.7) / phases.length))
   const currentMessage = trace.at(-1)?.text ?? ''
   const showExecution = running || trace.length > 0 || Boolean(draft) || Boolean(card)
-  const researchCandidate = card && !isResolvedCard(card)
   const workerState = telemetry?.worker_active
     ? c.searching
     : telemetry?.waiting_for_next_round
@@ -507,56 +631,158 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
 
   return (
     <>
-      <div className={styles.console}>
-        <div className={styles.parentGrid}>
-          <div className={styles.parentField}>
-            <label htmlFor="mortra-parent-a"><span>A</span><span>{c.labelA}</span></label>
-            <textarea
-              id="mortra-parent-a"
-              value={parentA}
-              onChange={event => setParentA(event.target.value)}
-              placeholder={c.placeholderA}
-            />
+      <div className={styles.commandWorkspace} data-mode={workspaceMode}>
+        <header className={styles.commandWorkspaceHeader}>
+          <div>
+            <TerminalSquare size={15} aria-hidden="true" />
+            <strong>MORTRA COMMAND WORKSPACE</strong>
+            <span>exact symbolic / no external LLM</span>
           </div>
-          <div className={styles.parentField}>
-            <label htmlFor="mortra-parent-b"><span>B</span><span>{c.labelB}</span></label>
-            <textarea
-              id="mortra-parent-b"
-              value={parentB}
-              onChange={event => setParentB(event.target.value)}
-              placeholder={c.placeholderB}
-            />
+          <div>
+            <span><i />{running ? (lang === 'ja' ? '実行中' : 'running') : (lang === 'ja' ? '入力可能' : 'ready')}</span>
+            <code>session / public</code>
           </div>
-        </div>
+        </header>
 
-        <div className={styles.mergeRail} aria-hidden="true"><span /></div>
+        <div className={styles.workspaceMain}>
+          <section className={styles.commandConsolePane} aria-label={lang === 'ja' ? 'MORTRAコマンド入力' : 'MORTRA command input'}>
+            <header className={styles.workspacePaneHeader}>
+              <span><TerminalSquare size={14} aria-hidden="true" />COMMAND CONSOLE</span>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowAllCommands(true)
+                  setCommandMenuOpen(value => !value)
+                }}
+                aria-expanded={commandMenuOpen}
+                aria-controls="mortra-command-menu"
+              >
+                <CircleHelp size={13} aria-hidden="true" />{lang === 'ja' ? 'コマンド' : 'Commands'}<ChevronDown size={12} aria-hidden="true" />
+              </button>
+            </header>
 
-        <div className={styles.inputActions}>
-          <button className={styles.runButton} type="button" onClick={() => void run()} disabled={running}>
-            {running ? <LoaderCircle className={styles.spin} size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}
-            {running ? (visibleMode === 'solve' ? c.solving : c.generating) : currentInputCount === 1 ? c.solveOne : c.fuseTwo}
-          </button>
-          {running ? (
-            <button className={styles.iconButton} type="button" onClick={stop} title={c.stopWatch} aria-label={c.stopWatch}>
-              <Square size={15} aria-hidden="true" />
-            </button>
-          ) : null}
-          <button className={styles.iconButton} type="button" onClick={reset} title={c.resetInput} aria-label={c.resetInput}>
-            <RotateCcw size={15} aria-hidden="true" />
-          </button>
+            <div className={styles.commandPromptRow}>
+              <span>mortra›</span>
+              <input
+                aria-label={lang === 'ja' ? 'コマンド' : 'Command'}
+                value={commandLine}
+                spellCheck={false}
+                onFocus={() => {
+                  setShowAllCommands(false)
+                  setCommandMenuOpen(true)
+                }}
+                onChange={event => {
+                  setCommandLine(event.target.value)
+                  setShowAllCommands(false)
+                  setCommandMenuOpen(event.target.value.trim().startsWith('/'))
+                }}
+                onKeyDown={event => {
+                  if (event.key === 'Escape') setCommandMenuOpen(false)
+                  if (event.key === 'Enter') {
+                    event.preventDefault()
+                    applyCommandLine()
+                  }
+                }}
+              />
+              <kbd>Enter</kbd>
+            </div>
+
+            {commandMenuOpen && (
+              <div className={styles.commandMenu} id="mortra-command-menu">
+                <div className={styles.commandList} role="menu">
+                  {(commandOptions.length ? commandOptions : WORKSPACE_COMMANDS).map(command => {
+                    const Icon = command.icon
+                    return (
+                      <button
+                        type="button"
+                        role="menuitem"
+                        key={command.id}
+                        data-selected={workspaceMode === command.id}
+                        onClick={() => chooseCommand(command.id)}
+                        onPointerEnter={() => setCommandHelp(command.id)}
+                        onFocus={() => setCommandHelp(command.id)}
+                        onPointerDown={() => beginCommandHelp(command.id)}
+                        onPointerUp={endCommandHelp}
+                        onPointerCancel={endCommandHelp}
+                      >
+                        <Icon size={14} aria-hidden="true" />
+                        <code>{command.command}</code>
+                        <span>{lang === 'ja' ? command.ja : command.en}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+                <aside className={styles.commandHelp} aria-live="polite">
+                  <span>{activeCommand.command}</span>
+                  <strong>{lang === 'ja' ? activeCommand.ja : activeCommand.en}</strong>
+                  <p>{lang === 'ja' ? activeCommand.detailJa : activeCommand.detailEn}</p>
+                  <code>{activeCommand.example}</code>
+                </aside>
+              </div>
+            )}
+
+            <div className={styles.sourceEditorStack}>
+              <div className={styles.sourceEditor}>
+                <label htmlFor="mortra-parent-a"><span>A</span><b>{c.labelA}</b><small>TeX / UTF-8</small></label>
+                <textarea
+                  id="mortra-parent-a"
+                  value={parentA}
+                  onChange={event => setParentA(event.target.value)}
+                  placeholder={c.placeholderA}
+                  spellCheck={false}
+                />
+              </div>
+              {workspaceMode === 'fusion' && (
+                <div className={styles.sourceEditor}>
+                  <label htmlFor="mortra-parent-b"><span>B</span><b>{c.labelB}</b><small>TeX / UTF-8</small></label>
+                  <textarea
+                    id="mortra-parent-b"
+                    value={parentB}
+                    onChange={event => setParentB(event.target.value)}
+                    placeholder={c.placeholderB}
+                    spellCheck={false}
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className={styles.commandActions}>
+              <span><code>{WORKSPACE_COMMANDS.find(item => item.id === workspaceMode)?.command}</code>{lang === 'ja' ? ' を実行' : ' execution'}</span>
+              <div>
+                {running ? (
+                  <button className={styles.workspaceIconButton} type="button" onClick={stop} title={c.stopWatch} aria-label={c.stopWatch}>
+                    <Square size={14} aria-hidden="true" />
+                  </button>
+                ) : null}
+                <button className={styles.workspaceIconButton} type="button" onClick={reset} title={c.resetInput} aria-label={c.resetInput}>
+                  <RotateCcw size={14} aria-hidden="true" />
+                </button>
+                <button className={styles.workspaceRunButton} type="button" onClick={() => void run()} disabled={running}>
+                  {running ? <LoaderCircle className={styles.spin} size={15} aria-hidden="true" /> : <Play size={14} fill="currentColor" aria-hidden="true" />}
+                  {running
+                    ? (visibleMode === 'solve' ? c.solving : c.generating)
+                    : workspaceMode === 'draw'
+                      ? (lang === 'ja' ? '解いて図を作る' : 'Solve and draw')
+                      : workspaceMode === 'fusion' ? c.fuseTwo : c.solveOne}
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <LiveTexPreview lang={lang} sourceA={parentA} sourceB={parentB} mode={workspaceMode} />
         </div>
 
         {showExecution ? (
           <section className={styles.execution} aria-label={c.progressAria}>
-            <div className={styles.executionVisual}>
-              <ProofGraphScene className={styles.consoleScene} phase={phase} progress={progress} running={running} inputCount={visibleMode === 'solve' ? 1 : 2} />
-              <div className={styles.executionStatus} aria-live="polite">
+            <div className={styles.executionStatus} aria-live="polite">
+              <div>
                 <span className={styles.executionPhase}>
                   {phase === 'complete' ? <Check size={14} aria-hidden="true" /> : running ? <LoaderCircle className={styles.spin} size={14} aria-hidden="true" /> : null}
                   {phase === 'complete' ? (visibleMode === 'solve' ? c.solveDone : c.generateDone) : phases[Math.max(0, stage)]?.label ?? c.idle}
                 </span>
-                {running ? <time>{formatClock(elapsed)}</time> : null}
+                <code>{phase}</code>
               </div>
+              {running ? <time>{formatClock(elapsed)}</time> : null}
             </div>
 
             <ol className={styles.phaseStrip} aria-label={c.phaseStripAria}>
@@ -576,6 +802,34 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
               })}
             </ol>
 
+            <div className={styles.runtimeGrid}>
+              <InformationGeometryMap
+                lang={lang}
+                phase={phase}
+                progress={progress}
+                running={running}
+                inputCount={visibleMode === 'solve' ? 1 : 2}
+                frontier={telemetry?.frontier_count ?? null}
+              />
+              <section className={styles.runtimeTerminal} aria-label={c.traceSummary}>
+                <header className={styles.runtimePaneHeader}>
+                  <div><span>EXECUTION TRANSCRIPT</span><small>{jobId ? `job / ${jobId.slice(0, 8)}` : 'local / stream'}</small></div>
+                  <span className={styles.runtimeLive}><i data-running={running} />{running ? 'LIVE' : 'STATE'}</span>
+                </header>
+                <div className={styles.liveLog} role="log" aria-live="polite">
+                  {trace.length ? trace.map((line, index) => (
+                    <div key={line.id} className={styles.logLine} data-latest={index === trace.length - 1}>
+                      <span className={styles.logTime}>{line.at === null ? '--:--:--' : new Date(line.at).toLocaleTimeString('ja-JP', { hour12: false }).slice(0, 8)}</span>
+                      <span className={styles.logPrompt}>{index === trace.length - 1 ? '›' : '·'}</span>
+                      <span className={styles.logText}>{line.text}</span>
+                    </div>
+                  )) : (
+                    <div className={styles.terminalEmpty}><span>mortra›</span><p>{lang === 'ja' ? 'コマンドを実行すると、射と検証結果をここへ記録します。' : 'Run a command to stream morphisms and verification results here.'}</p></div>
+                  )}
+                </div>
+              </section>
+            </div>
+
             {jobId && telemetry ? (
               <div className={styles.searchTelemetry} aria-label={c.telemetryAria}>
                 <div><span>{c.tState}</span><strong>{workerState}</strong></div>
@@ -588,19 +842,6 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
             ) : null}
 
             {currentMessage ? <p className={`${styles.currentMessage} ${phase === 'error' ? styles.errorMessage : ''}`}>{currentMessage}</p> : null}
-            {trace.length > 1 ? (
-              <details className={styles.traceDisclosure}>
-                <summary>{c.traceSummary}</summary>
-                <div className={styles.liveLog}>
-                  {trace.map(line => (
-                    <div key={line.id} className={styles.logLine}>
-                      <span className={styles.logTime}>{line.at === null ? '--:--:--' : new Date(line.at).toLocaleTimeString('ja-JP', { hour12: false }).slice(0, 8)}</span>
-                      <span className={styles.logText}>{line.text}</span>
-                    </div>
-                  ))}
-                </div>
-              </details>
-            ) : null}
           </section>
         ) : null}
       </div>
@@ -608,11 +849,6 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
       {card ? (
         <div className={styles.generatedArtifact}>
           <ProblemArtifact card={card} lang={lang} />
-          {researchCandidate && running ? (
-            <p className={styles.researchNotice}>
-              {c.researchNotice}
-            </p>
-          ) : null}
         </div>
       ) : null}
     </>

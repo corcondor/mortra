@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import {
   ArrowRight,
   BookOpenText,
@@ -8,7 +7,6 @@ import {
   FlaskConical,
   GitBranch,
   Github,
-  Languages,
   Network,
   Play,
   ShieldCheck,
@@ -22,6 +20,7 @@ import { AtlasFigure } from './AtlasFigure'
 import ScrollSolid from '../ScrollSolid'
 import { ProofGraphScene } from './ProofGraphScene'
 import { ShaderField } from './ShaderField'
+import { LabNotchNav } from './LabNotchNav'
 import { getCopy, type Lang } from '@/lib/mortra/i18n'
 import styles from '@/app/mortra/mortra.module.css'
 
@@ -30,6 +29,7 @@ const systemIcons = [Network, GitBranch, ShieldCheck, Cpu]
 export function MortraProductPage({ lang = 'en' }: { lang?: Lang }) {
   const t = getCopy(lang)
   const home = lang === 'ja' ? '/ja' : '/'
+  const researchHref = lang === 'ja' ? '/ja/research' : '/research'
 
   const structuredData = {
     '@context': 'https://schema.org',
@@ -53,37 +53,7 @@ export function MortraProductPage({ lang = 'en' }: { lang?: Lang }) {
       <ProofScrollScene className={styles.proofScene} />
       <div className={styles.proofVeil} aria-hidden="true" />
 
-      <header className={styles.nav}>
-        <div className={`${styles.shell} ${styles.navInner}`}>
-          <Link className={styles.wordmark} href={home} aria-label="MORTRA home">
-            <span className={styles.mark}>
-              <Image src="/brand/mortra-incidence-mark.svg" alt="" width={28} height={28} priority />
-            </span>
-            <span>MORTRA</span>
-            <span className={styles.modelLabel}>Model 1</span>
-          </Link>
-          <nav className={styles.navLinks} aria-label={lang === 'ja' ? '主要ナビゲーション' : 'Primary navigation'}>
-            <a href="#results">{t.nav.results}</a>
-            <a href="#architecture">{t.nav.architecture}</a>
-            <Link href="/research">{t.nav.research}</Link>
-            <a
-              className={styles.navIcon}
-              href="https://github.com/corcondor/mortra"
-              target="_blank"
-              rel="noreferrer"
-              aria-label={lang === 'ja' ? 'MORTRAのGitHubを開く' : 'Open MORTRA on GitHub'}
-              title="GitHub"
-            >
-              <Github size={16} aria-hidden="true" />
-            </a>
-            <a className={styles.navTry} href="#try"><Play size={13} aria-hidden="true" />{t.nav.try}</a>
-            <Link className={styles.langToggle} href={t.langToggle.href} hrefLang={lang === 'ja' ? 'en' : 'ja'}>
-              <Languages size={13} aria-hidden="true" />
-              {t.langToggle.to}
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <LabNotchNav lang={lang} active="home" />
 
       {/* ── HERO ───────────────────────────────────────────────────────── */}
       <section className={styles.hero}>
@@ -130,7 +100,7 @@ export function MortraProductPage({ lang = 'en' }: { lang?: Lang }) {
             </div>
             <div className={styles.sectionCopyBlock}>
               <p className={styles.sectionCopy}>{t.why.copy}</p>
-              <Link className={styles.secondaryButton} href="/research">
+              <Link className={styles.secondaryButton} href={researchHref}>
                 <BookOpenText size={15} aria-hidden="true" />{t.why.more}<ArrowRight size={14} aria-hidden="true" />
               </Link>
             </div>

@@ -1,10 +1,15 @@
 import { MortraResearchPage } from '@/components/mortra/MortraResearchPage'
+import type { Metadata } from 'next'
 
-export const metadata = {
-  title: 'Research — MORTRA',
-  description: '自己組織化する記号推論、監査済み幾何89/89、357本の厳密恒等式再生、FPGA回路等価性。その研究の経緯と方法。',
+export const metadata: Metadata = {
+  title: 'Research | MORTRA',
+  description: 'Explore MORTRA through certified proof replay, typed morphism maps, reproducible benchmarks and a live public research stream.',
+  alternates: {
+    canonical: 'https://mortra.ai/research',
+    languages: { en: 'https://mortra.ai/research', ja: 'https://mortra.ai/ja/research' },
+  },
 }
 
 export default function ResearchPage() {
-  return <MortraResearchPage />
+  return <MortraResearchPage lang="en" />
 }

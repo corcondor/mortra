@@ -2,6 +2,19 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  experimental: {
+    proxyTimeout: 300_000,
+  },
+  async rewrites() {
+    const localSolveUrl = process.env.MORTRA_LOCAL_SOLVE_URL
+    if (!localSolveUrl) return []
+    return [
+      {
+        source: '/api/solve',
+        destination: `${localSolveUrl.replace(/\/$/, '')}/api/solve`,
+      },
+    ]
+  },
   // KaTeX fonts
   async headers() {
     return [

@@ -1,0 +1,291 @@
+.header {
+  position: fixed;
+  z-index: 90;
+  top: 0;
+  left: 50%;
+  width: min(940px, calc(100% - 28px));
+  height: 88px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.notch {
+  --glass-x: 50%;
+  --glass-y: 0px;
+  position: relative;
+  display: flex;
+  width: min(920px, 100%);
+  height: 66px;
+  margin: 0 auto;
+  overflow: hidden;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid rgba(236, 248, 250, 0.22);
+  border-top-color: rgba(255, 255, 255, 0.34);
+  border-radius: 0 0 23px 23px;
+  padding: 0 16px;
+  background:
+    linear-gradient(116deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.025) 34%, rgba(100, 217, 232, 0.035) 66%, rgba(255, 255, 255, 0.08)),
+    rgba(8, 11, 14, 0.42);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.07),
+    0 20px 70px rgba(0, 0, 0, 0.48),
+    0 0 48px rgba(65, 206, 224, 0.055);
+  -webkit-backdrop-filter: blur(30px) saturate(185%) contrast(106%);
+  backdrop-filter: blur(30px) saturate(185%) contrast(106%);
+  transition:
+    width 460ms cubic-bezier(0.16, 1, 0.3, 1),
+    height 460ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 180ms ease,
+    transform 460ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-radius 360ms ease,
+    background 300ms ease,
+    box-shadow 300ms ease;
+  pointer-events: auto;
+  isolation: isolate;
+}
+
+.header[data-expanded="false"] .notch {
+  opacity: 0;
+  transform: translateY(calc(-100% - 12px)) scaleX(0.74);
+  pointer-events: none;
+}
+
+.header[data-expanded="true"] .notch {
+  opacity: 1;
+  transform: translateY(0) scaleX(1);
+  background:
+    linear-gradient(112deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.035) 28%, rgba(86, 213, 230, 0.045) 68%, rgba(255, 255, 255, 0.11)),
+    rgba(8, 11, 14, 0.36);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.09),
+    0 28px 88px rgba(0, 0, 0, 0.52),
+    0 0 70px rgba(65, 206, 224, 0.075);
+}
+
+.notch::before,
+.notch::after {
+  position: absolute;
+  content: "";
+  pointer-events: none;
+}
+
+.notch::before {
+  z-index: -1;
+  inset: 0;
+  background:
+    radial-gradient(220px 90px at var(--glass-x) var(--glass-y), rgba(255, 255, 255, 0.22), transparent 68%),
+    linear-gradient(90deg, transparent 8%, rgba(255, 255, 255, 0.045) 50%, transparent 92%);
+  opacity: 0.78;
+}
+
+.notch::after {
+  z-index: -1;
+  right: 34px;
+  bottom: -42px;
+  left: 34px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(102, 225, 238, 0.12);
+  filter: blur(28px);
+}
+
+.specular {
+  position: absolute;
+  top: 1px;
+  right: 22px;
+  left: 22px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.72), transparent);
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.brand {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 9px;
+  color: #f5f7f6;
+  text-decoration: none;
+}
+
+.mark {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  overflow: hidden;
+  place-items: center;
+  border: 1px solid rgba(231, 247, 250, 0.25);
+  border-radius: 7px;
+  background: rgba(4, 8, 10, 0.38);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.08), 0 5px 18px rgba(0, 0, 0, 0.28);
+}
+
+.mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.brandName {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.model {
+  display: grid;
+  width: 18px;
+  height: 18px;
+  place-items: center;
+  border: 1px solid rgba(222, 238, 242, 0.2);
+  border-radius: 50%;
+  color: #99a6ad;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+}
+
+.liveState {
+  display: inline-flex;
+  min-width: 70px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #78dce7;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+  white-space: nowrap;
+  transition: color 180ms ease;
+}
+
+.liveState svg {
+  filter: drop-shadow(0 0 6px rgba(98, 216, 232, 0.55));
+}
+
+.links {
+  display: flex;
+  min-width: 0;
+  margin-left: auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 180ms ease, transform 360ms cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: auto;
+}
+
+.links a {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  padding: 0 10px;
+  color: #aab5bc;
+  font-size: 10.5px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.links a:hover,
+.links a[data-active="true"] {
+  background: rgba(255, 255, 255, 0.065);
+  color: #fff;
+}
+
+.links a[data-active="true"]::before {
+  width: 4px;
+  height: 4px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: #69dce7;
+  box-shadow: 0 0 10px rgba(105, 220, 231, 0.8);
+  content: "";
+}
+
+.links .iconLink,
+.links .languageLink {
+  width: 34px;
+  padding: 0;
+}
+
+.links .tryLink {
+  gap: 7px;
+  border: 1px solid rgba(238, 247, 248, 0.34);
+  padding: 0 13px;
+  background: rgba(239, 247, 248, 0.08);
+  color: #fff;
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.links .tryLink:hover {
+  border-color: rgba(244, 250, 251, 0.58);
+  background: rgba(243, 249, 250, 0.14);
+}
+
+@media (max-width: 760px) {
+  .header {
+    width: calc(100% - 16px);
+  }
+
+  .notch,
+  .header[data-expanded="true"] .notch {
+    width: 100%;
+    height: 58px;
+    gap: 8px;
+    border-radius: 0 0 18px 18px;
+    padding: 0 10px;
+  }
+
+  .header[data-expanded="false"] .notch {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .brandName {
+    font-size: 12px;
+  }
+
+  .model,
+  .liveState,
+  .links > a:nth-child(3),
+  .links > a:nth-child(4),
+  .links .iconLink {
+    display: none;
+  }
+
+  .links {
+    gap: 2px;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .links a {
+    min-height: 32px;
+    padding: 0 7px;
+    font-size: 9.5px;
+  }
+
+  .links .tryLink {
+    width: 34px;
+    padding: 0;
+  }
+
+  .tryLink span {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notch,
+  .links {
+    transition: none;
+  }
+}

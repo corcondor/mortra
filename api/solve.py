@@ -819,7 +819,7 @@ def solve_problem(
         },
         "execution_certificate": execution_certificate,
     }
-    for display_key in ("diagram", "diagram_tikz"):
+    for display_key in ("diagram", "diagram_tikz", "visual_explanation"):
         display_value = result.get(display_key)
         if display_value:
             card_payload[display_key] = display_value
