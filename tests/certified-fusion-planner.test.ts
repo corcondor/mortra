@@ -49,3 +49,11 @@ test('an unmatched endpoint set abstains and records no fabricated attempt', () 
   assert.deepEqual(plan.cards, [])
   assert.deepEqual(plan.attempts, [])
 })
+
+test('the public registry never drops a selected parent to manufacture a result', () => {
+  const unrelated = { id: 'required-unrelated', statement: '三角形ABCの面積を求めよ。' }
+  assert.deepEqual(
+    synthesizeCertifiedFusions([unrelated, angleParent, recurrenceParent], 64),
+    [],
+  )
+})

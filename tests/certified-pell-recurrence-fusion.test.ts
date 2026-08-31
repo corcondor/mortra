@@ -45,6 +45,22 @@ test('unseen Pell and recurrence endpoints produce a certified product-orbit pro
   assert.match(card.solution_tex, /最小周期は 8/)
 })
 
+test('the same Pell-recurrence product orbit exposes three reusable observables', () => {
+  const cards = synthesizeCertifiedPellRecurrenceFusion([pellParent, recurrenceParent], 64)
+  assert.equal(cards.length, 3)
+  assert.deepEqual(cards.map(card => card.structure_blueprint.observable), [
+    'periodic_congruence_solution_set',
+    'pell_recurrence_cross_determinant_solution_set',
+    'pell_recurrence_difference_vector_period',
+  ])
+  assert.deepEqual(cards.map(card => card.answer_tex), [
+    '\\(n\\ge1,\\quad n\\bmod 8\\in\\{2,3,5\\}\\)',
+    '\\(n\\ge1,\\quad n\\bmod 12\\in\\{3,5,10\\}\\)',
+    '\\((N_0,T)=(1,24)\\)',
+  ])
+  assert.equal(new Set(cards.map(card => card.structure_blueprint.kernel)).size, 1)
+})
+
 test('coordinate and sequence renaming preserve the normalized structure', () => {
   const renamedPell = { id: 'renamed-pell', statement: 'u^{2}-3v^{2}=1' }
   const renamedRecurrence = {
@@ -114,6 +130,23 @@ test('the same Pell orbit acts as an exponent generator for the shared power-sum
   assert.equal(card.fusion_derivation.ablationPassed, true)
 })
 
+test('the Pell-indexed power-sum certificate supports inequality equality cutoff and maximum queries', () => {
+  const cards = synthesizeCertifiedPellIndexedPowerSumFusion([pellParent, powerParent], 64)
+  assert.equal(cards.length, 4)
+  assert.deepEqual(cards.map(card => card.structure_blueprint.observable), [
+    'pell_indexed_power_sum_inequality_solution_set',
+    'indexed_power_sum_equality_solution_set',
+    'indexed_power_sum_last_threshold_crossing',
+    'indexed_power_sum_global_maximum',
+  ])
+  assert.deepEqual(cards.map(card => card.answer_tex), [
+    '\\(k\\in\\{1\\}\\)',
+    '\\(k\\in\\varnothing\\)',
+    '\\(K=2\\)',
+    '\\(\\max u_{x_k}=1,\\quad k\\in\\{1\\}\\)',
+  ])
+})
+
 test('mutating the Pell discriminant recomputes the indexed power-sum answer', () => {
   const mutation = { id: 'pell-five', statement: 'u^2-5v^2=1' }
   const base = synthesizeCertifiedPellIndexedPowerSumFusion([pellParent, powerParent])[0]
@@ -128,4 +161,16 @@ test('mutating the Pell discriminant recomputes the indexed power-sum answer', (
 test('the registry dispatches the Pell-indexed power-sum engine', () => {
   const cards = synthesizeCertifiedFusions([pellParent, powerParent], 1)
   assert.equal(cards[0]?.family_id, 'certified.pell_indexed_power_sum')
+})
+
+test('the public registry returns every certified Pell-indexed observable on request', () => {
+  const cards = synthesizeCertifiedFusions([pellParent, powerParent], 64)
+  assert.equal(cards.length, 4)
+  assert.equal(new Set(cards.map(card => card.structure_blueprint.kernel)).size, 1)
+  assert.deepEqual(cards.map(card => card.structure_blueprint.observable), [
+    'pell_indexed_power_sum_inequality_solution_set',
+    'indexed_power_sum_equality_solution_set',
+    'indexed_power_sum_last_threshold_crossing',
+    'indexed_power_sum_global_maximum',
+  ])
 })

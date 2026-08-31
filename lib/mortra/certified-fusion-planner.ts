@@ -31,6 +31,7 @@ import {
   parseRationalAngles,
   synthesizeCertifiedFiniteStateTrigFusion,
 } from './certified-finite-state-trig-fusion'
+import { synthesizeCertifiedThreeParentPowerThresholdFusion } from './certified-multi-parent-power-fusion'
 
 export type CertifiedFusionEndpointKind =
   | 'polynomial.root_configuration'
@@ -51,8 +52,8 @@ export type CertifiedFusionEndpoint = {
 
 export type CertifiedFusionChartAttempt = {
   chartId: string
-  parentIds: [string, string]
-  inputKinds: [CertifiedFusionEndpointKind, CertifiedFusionEndpointKind]
+  parentIds: string[]
+  inputKinds: CertifiedFusionEndpointKind[]
   produced: number
 }
 
@@ -69,7 +70,8 @@ type FusionEngine = (
 
 type FusionChart = {
   id: string
-  inputKinds: readonly [CertifiedFusionEndpointKind, CertifiedFusionEndpointKind]
+  inputKinds: readonly CertifiedFusionEndpointKind[]
+  outputKind: 'structural' | 'proof_composition'
   engine: FusionEngine
 }
 
@@ -122,66 +124,106 @@ const CHARTS: readonly FusionChart[] = [
   {
     id: 'polynomial-root-configuration',
     inputKinds: ['polynomial.root_configuration', 'polynomial.root_configuration'],
+    outputKind: 'structural',
     engine: synthesizeCertifiedPolynomialFusions,
   },
   {
     id: 'mobius-polynomial-fixed-point-transport',
     inputKinds: ['polynomial.root_configuration', 'transform.mobius'],
-    engine: (parents, requested) => synthesizeCertifiedMobiusPolynomialFusion(parents).slice(0, requested),
+    outputKind: 'structural',
+    engine: synthesizeCertifiedMobiusPolynomialFusion,
   },
   {
     id: 'circle-quadratic-form',
     inputKinds: ['geometry.affine_circle', 'geometry.affine_circle'],
-    engine: (parents, requested) => synthesizeCertifiedCircleRadicalAxisFusion(parents).slice(0, requested),
+    outputKind: 'structural',
+    engine: synthesizeCertifiedCircleRadicalAxisFusion,
   },
   {
     id: 'recurrence-indexed-power-sum',
     inputKinds: ['sequence.positive_second_order', 'trigonometry.power_sum'],
-    engine: (parents, requested) => synthesizeCertifiedIndexedPowerSumFusion(parents).slice(0, requested),
+    outputKind: 'structural',
+    engine: synthesizeCertifiedIndexedPowerSumFusion,
+  },
+  {
+    id: 'three-parent-recurrence-power-angle',
+    inputKinds: [
+      'sequence.positive_second_order',
+      'trigonometry.power_sum',
+      'angle.rational_phase',
+    ],
+    outputKind: 'structural',
+    engine: synthesizeCertifiedThreeParentPowerThresholdFusion,
   },
   {
     id: 'finite-state-rational-angle-orbit',
     inputKinds: ['sequence.integer_second_order', 'angle.rational_phase'],
+    outputKind: 'structural',
     engine: synthesizeCertifiedFiniteStateTrigFusion,
   },
   {
     id: 'pell-recurrence-state-product',
     inputKinds: ['number_theory.pell_orbit', 'sequence.positive_second_order'],
-    engine: (parents, requested) => synthesizeCertifiedPellRecurrenceFusion(parents).slice(0, requested),
+    outputKind: 'structural',
+    engine: synthesizeCertifiedPellRecurrenceFusion,
   },
   {
     id: 'pell-indexed-power-sum',
     inputKinds: ['number_theory.pell_orbit', 'trigonometry.power_sum'],
-    engine: (parents, requested) => synthesizeCertifiedPellIndexedPowerSumFusion(parents).slice(0, requested),
+    outputKind: 'structural',
+    engine: synthesizeCertifiedPellIndexedPowerSumFusion,
   },
   {
     id: 'verified-answer-companion-recurrence',
     inputKinds: ['scalar.certified_exact', 'scalar.certified_exact'],
+    outputKind: 'proof_composition',
     engine: synthesizeCertifiedAnswerRecurrenceFusion,
   },
 ]
 
-function matchingParentPairs(
+export function listCertifiedFusionChartSignatures(): Array<{
+  id: string
+  inputKinds: CertifiedFusionEndpointKind[]
+  outputKind: 'structural' | 'proof_composition'
+}> {
+  return CHARTS.map(chart => ({
+    id: chart.id,
+    inputKinds: [...chart.inputKinds],
+    outputKind: chart.outputKind,
+  }))
+}
+
+function matchingParentGroups(
   chart: FusionChart,
   endpoints: CertifiedFusionEndpoint[],
-): Array<[string, string]> {
-  const [leftKind, rightKind] = chart.inputKinds
-  const left = [...new Set(endpoints.filter(item => item.kind === leftKind).map(item => item.parentId))]
-  const right = [...new Set(endpoints.filter(item => item.kind === rightKind).map(item => item.parentId))]
-  const pairs: Array<[string, string]> = []
+): string[][] {
+  const candidates = chart.inputKinds.map(kind => [
+    ...new Set(endpoints.filter(item => item.kind === kind).map(item => item.parentId)),
+  ])
+  if (candidates.some(items => items.length === 0)) return []
+  const groups: string[][] = []
   const seen = new Set<string>()
-  for (const leftId of left) {
-    for (const rightId of right) {
-      if (leftId === rightId) continue
-      const key = leftKind === rightKind
-        ? [leftId, rightId].sort().join('\u0000')
-        : `${leftId}\u0000${rightId}`
-      if (seen.has(key)) continue
+
+  const visit = (position: number, selected: string[]) => {
+    if (position === candidates.length) {
+      const key = chart.inputKinds
+        .map((kind, index) => `${kind}\u0000${selected[index]}`)
+        .sort()
+        .join('\u0001')
+      if (seen.has(key)) return
       seen.add(key)
-      pairs.push([leftId, rightId])
+      groups.push([...selected])
+      return
+    }
+    for (const parentId of candidates[position]) {
+      if (selected.includes(parentId)) continue
+      selected.push(parentId)
+      visit(position + 1, selected)
+      selected.pop()
     }
   }
-  return pairs
+  visit(0, [])
+  return groups
 }
 
 export function planCertifiedFusions(
@@ -197,17 +239,17 @@ export function planCertifiedFusions(
 
   if (limit === 0 || parentById.size < 2) return { cards, endpoints, attempts }
 
-  for (const chart of CHARTS) {
-    for (const [leftId, rightId] of matchingParentPairs(chart, endpoints)) {
-      const left = parentById.get(leftId)
-      const right = parentById.get(rightId)
-      if (!left || !right) continue
+  const chartsByArity = [...CHARTS].sort((left, right) => right.inputKinds.length - left.inputKinds.length)
+  for (const chart of chartsByArity) {
+    for (const parentIds of matchingParentGroups(chart, endpoints)) {
+      const selectedParents = parentIds.map(parentId => parentById.get(parentId))
+      if (selectedParents.some(parent => !parent)) continue
       const remaining = limit - cards.length
       if (remaining <= 0) return { cards, endpoints, attempts }
-      const generated = chart.engine([left, right], remaining)
+      const generated = chart.engine(selectedParents as CertifiedFusionParent[], remaining)
       attempts.push({
         chartId: chart.id,
-        parentIds: [leftId, rightId],
+        parentIds,
         inputKinds: [...chart.inputKinds],
         produced: generated.length,
       })

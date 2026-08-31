@@ -6,6 +6,7 @@ import {
   certifyPowerSumTail,
   parsePositiveSecondOrderRecurrence,
   parseTrigonometricPowerSum,
+  synthesizeIndexedPowerObservableVariants,
   type ParsedPositiveRecurrence,
   type Q,
 } from './certified-indexed-power-fusion'
@@ -300,6 +301,55 @@ function minimalObservablePeriod(
   return statePeriod
 }
 
+function certifyProjectionPeriod(
+  rows: StateRow[],
+  cycleStart: number,
+  statePeriod: number,
+  project: (row: StateRow) => string,
+): { start: number; period: number; cycle: string[] } {
+  const byIndex = new Map(rows.map(row => [row.index, project(row)]))
+  const valueAt = (index: number): string => {
+    const direct = byIndex.get(index)
+    if (direct !== undefined) return direct
+    const normalized = cycleStart + ((index - cycleStart) % statePeriod + statePeriod) % statePeriod
+    return byIndex.get(normalized) ?? ''
+  }
+  let period = statePeriod
+  for (let candidate = 1; candidate <= statePeriod; candidate += 1) {
+    if (statePeriod % candidate !== 0) continue
+    let valid = true
+    for (let index = cycleStart; index < cycleStart + statePeriod; index += 1) {
+      if (valueAt(index) !== valueAt(index + candidate)) {
+        valid = false
+        break
+      }
+    }
+    if (valid) {
+      period = candidate
+      break
+    }
+  }
+  let start = cycleStart
+  for (let candidate = 1; candidate <= cycleStart; candidate += 1) {
+    let valid = true
+    for (let index = candidate; index < cycleStart + statePeriod; index += 1) {
+      if (valueAt(index) !== valueAt(index + period)) {
+        valid = false
+        break
+      }
+    }
+    if (valid) {
+      start = candidate
+      break
+    }
+  }
+  return {
+    start,
+    period,
+    cycle: Array.from({ length: period }, (_, offset) => valueAt(start + offset)),
+  }
+}
+
 function texDocument(statement: string, solution: string): string {
   return [
     '\\documentclass[a4paper,11pt]{jsarticle}',
@@ -324,6 +374,7 @@ function recurrenceDefinition(recurrence: ParsedPositiveRecurrence): string {
 
 export function synthesizeCertifiedPellRecurrenceFusion(
   parents: CertifiedFusionParent[],
+  requested = 1,
 ): CertifiedFusionCard[] {
   const startedAt = Date.now()
   if (parents.length !== 2 || new Set(parents.map(parent => parent.id)).size !== 2) return []
@@ -422,7 +473,7 @@ export function synthesizeCertifiedPellRecurrenceFusion(
     active: row.accepted,
   }))
 
-  return [{
+  const baseCard: CertifiedFusionCard = {
     id: 'mortra-' + structureId,
     statement_tex: statement,
     answer_tex: answerTex,
@@ -432,6 +483,71 @@ export function synthesizeCertifiedPellRecurrenceFusion(
     family_id: 'certified.pell_recurrence_state_product',
     tool: 'MORTRA exact reversible synthesis',
     morphism_chain: morphisms,
+    proof_roadmap: [
+      {
+        morphism_id: 'PellEquationElaboration',
+        label_ja: 'Pell方程式を読み取る',
+        source_ja: '一方の親問題にある二次不定方程式',
+        target_ja: '判別式と整数解の型',
+        role_ja: '変数名に依存せず、x²-Dy²=1という構造を取り出します。',
+      },
+      {
+        morphism_id: 'ContinuedFractionFundamentalUnit',
+        label_ja: '最小の基本解を求める',
+        source_ja: '平方数でない正整数D',
+        target_ja: '最小の正のPell単数',
+        role_ja: '平方根の連分数を用い、全解を生成する最小の単数を厳密に求めます。',
+      },
+      {
+        morphism_id: 'QuadraticUnitOrbit',
+        label_ja: 'Pell方程式の解の列を生成する',
+        source_ja: '基本解',
+        target_ja: 'すべての正の解からなる整数軌道',
+        role_ja: '二次体の乗法を2×2整数行列として実行します。',
+      },
+      {
+        morphism_id: 'PositiveSecondOrderRecurrenceElaboration',
+        label_ja: 'もう一つの整数列を読み取る',
+        source_ja: '他方の親問題にある二階漸化式',
+        target_ja: '初期値と係数',
+        role_ja: 'Pell軌道とは独立な整数列を同じ状態形式へ直します。',
+      },
+      {
+        morphism_id: 'CompanionMatrixAction',
+        label_ja: '漸化式を行列の作用に直す',
+        source_ja: '二階漸化式',
+        target_ja: '2×2整数行列の軌道',
+        role_ja: '項を逐次生成でき、かつ行列の累乗でも再生できる形にします。',
+      },
+      {
+        morphism_id: 'FiniteStateProduct',
+        label_ja: '二つの整数軌道を同期させる',
+        source_ja: 'Pell軌道と漸化式の軌道',
+        target_ja: '法Dにおける直積状態',
+        role_ja: '二つの親問題を同じ添字で進め、合同条件を一つの有限状態上で判定します。',
+      },
+      {
+        morphism_id: 'CycleCertificate',
+        label_ja: '真の周期と解の剰余類を確定する',
+        source_ja: '有限個の直積状態',
+        target_ja: '完全な周期的解集合',
+        role_ja: '状態の再訪と周期の全約数を調べ、より短い周期がないことも証明します。',
+      },
+      {
+        morphism_id: 'IndependentMatrixReplay',
+        label_ja: '別の計算経路で一周期を検算する',
+        source_ja: '二つの整数行列',
+        target_ja: '同一の有限状態列',
+        role_ja: '逐次更新とは別に二進累乗を使い、各状態と判定を照合します。',
+      },
+      {
+        morphism_id: 'AllParentAblation',
+        label_ja: '二つの親がともに必要か確かめる',
+        source_ja: 'Pell軌道と漸化式の軌道',
+        target_ja: '親依存性の証明',
+        role_ja: '一方を除くと直積上の合同条件を定義できないことを型検査で確認します。',
+      },
+    ],
     diagram: {
       version: 1,
       kind: 'state',
@@ -538,7 +654,211 @@ export function synthesizeCertifiedPellRecurrenceFusion(
       valid_hypotheses: answer.residues.length + answer.prefix.length,
       elapsed_ms: Date.now() - startedAt,
     },
-  }]
+  }
+
+  const projectionMorphism = 'CertifiedObservableProjection'
+  const variantMorphisms = [...morphisms, projectionMorphism]
+  const buildEventVariant = (
+    id: string,
+    observable: string,
+    querySignature: string,
+    congruenceTex: string,
+    observe: (row: StateRow) => boolean,
+    difficultyOffset: number,
+  ): CertifiedFusionCard | null => {
+    const projectedRows = orbit.rows.map(row => ({ ...row, accepted: observe(row) }))
+    const period = minimalObservablePeriod(projectedRows, orbit.cycleStart, orbit.period)
+    const classified = answerBody(projectedRows, orbit.cycleStart, period)
+    if (!classified.residues.length && !classified.prefix.length) return null
+    const statementTex = [
+      '\\(x^2-' + modulus + 'y^2=1\\) の非負整数解を',
+      '\\[x_n+y_n\\sqrt{' + modulus + '}=(' + unitX + '+' +
+        (unitY === 1n ? '' : String(unitY)) + '\\sqrt{' + modulus + '})^n\\]',
+      'で定め、整数列 \\(\\{a_n\\}\\) を \\[' + recurrenceTex + '\\] で定める。',
+      '\\[' + congruenceTex + '\\]',
+      'を満たす正の整数 \\(n\\) をすべて求めよ。',
+    ].join('\n')
+    const answerTex = '\\(' + classified.tex + '\\)'
+    const solutionTex = [
+      'Pell解の列と漸化式の列を、それぞれの \\(2\\times2\\) 整数行列で法 \\(' + modulus + '\\) に落とす。',
+      '同期状態 \\((x_n,y_n,a_n,a_{n+1})\\bmod ' + modulus + '\\) は第 \\(' +
+        orbit.cycleStart + '\\) 項から周期 \\(' + orbit.period + '\\) で循環する。',
+      'この同じ状態列へ条件 \\(' + congruenceTex + '\\) を適用し、真偽列の周期の真の約数をすべて調べると最小周期は \\(' +
+        period + '\\) である。',
+      '成立する剰余類だけを読むと \\[' + classified.tex + '\\] を得る。',
+      '逐次遷移とは独立に二つの行列を二進累乗し、全状態と真偽値が一致することを確認した。',
+    ].join('\n')
+    const variantId = structureId + '.' + id
+    const activeRows = projectedRows.filter(
+      row => row.index >= orbit.cycleStart && row.index < orbit.cycleStart + period,
+    )
+    return {
+      ...baseCard,
+      id: 'mortra-' + variantId,
+      statement_tex: statementTex,
+      answer_tex: answerTex,
+      solution_tex: solutionTex,
+      solution_document_tex: texDocument(statementTex, solutionTex),
+      morphism_chain: variantMorphisms,
+      diagram: {
+        version: 1,
+        kind: 'state',
+        title: '同じ積状態から合同条件を読む',
+        caption: 'Pell軌道と漸化式の同期状態は共通です。色付きの状態だけが今回の合同条件を満たします。',
+        states: activeRows.map(row => ({
+          id: 'n' + row.index,
+          label: 'n=' + row.index + ': (' + row.x + ',' + row.y + ';' + row.current + ',' + row.next + ')',
+          active: row.accepted,
+        })),
+        transitions: activeRows.map((row, index) => ({
+          from: 'n' + row.index,
+          to: 'n' + activeRows[(index + 1) % activeRows.length].index,
+          label: 'mod ' + modulus,
+        })),
+      },
+      verification: {
+        ...baseCard.verification,
+        method: baseCard.verification.method + ' + reusable certified observable projection',
+        samples: [...baseCard.verification.samples, period],
+      },
+      difficulty: {
+        band: baseCard.difficulty.band,
+        score: baseCard.difficulty.score + difficultyOffset,
+      },
+      fusion_derivation: {
+        ...baseCard.fusion_derivation,
+        reason: baseCard.fusion_derivation.reason + '; a second exact predicate is projected from the same product state',
+        bridges: baseCard.fusion_derivation.bridges.map(bridge => ({ ...bridge, produces: observable })),
+      },
+      structure_blueprint: {
+        ...baseCard.structure_blueprint,
+        id: variantId,
+        observable,
+        operators: variantMorphisms,
+        tags: [...baseCard.structure_blueprint.tags, 'observable-projection'],
+        morphismChain: variantMorphisms,
+        proofCertificate: [
+          ...baseCard.structure_blueprint.proofCertificate,
+          {
+            id: 'observable-' + id,
+            claim: 'the projected event set is complete and has the certified minimal period',
+            verifier: 'exact product-orbit query and divisor audit',
+          },
+        ],
+        structuralUniqueness: {
+          ...baseCard.structure_blueprint.structuralUniqueness,
+          querySignature,
+          normalForm: answerTex,
+          numericInstanceConstants: [
+            ...baseCard.structure_blueprint.structuralUniqueness.numericInstanceConstants,
+            period,
+            ...classified.residues,
+          ],
+        },
+      },
+      search_evidence: {
+        hypotheses_evaluated: orbit.rows.length,
+        valid_hypotheses: classified.residues.length + classified.prefix.length,
+        elapsed_ms: Date.now() - startedAt,
+      },
+    }
+  }
+
+  const determinantVariant = buildEventVariant(
+    'cross-determinant-zero',
+    'pell_recurrence_cross_determinant_solution_set',
+    'classify zero determinants between the Pell and recurrence state vectors',
+    'x_na_{n+1}\\equiv y_na_n\\pmod{' + modulus + '}',
+    row => positiveMod(row.x * row.next - row.y * row.current, modulus) === 0n,
+    0.6,
+  )
+
+  const projection = certifyProjectionPeriod(
+    orbit.rows,
+    orbit.cycleStart,
+    orbit.period,
+    row => positiveMod(row.x - row.current, modulus) + ',' +
+      positiveMod(row.y - row.next, modulus),
+  )
+  const projectionStatement = [
+    '\\(x^2-' + modulus + 'y^2=1\\) の非負整数解を',
+    '\\[x_n+y_n\\sqrt{' + modulus + '}=(' + unitX + '+' +
+      (unitY === 1n ? '' : String(unitY)) + '\\sqrt{' + modulus + '})^n\\]',
+    'で定め、整数列 \\(\\{a_n\\}\\) を \\[' + recurrenceTex + '\\] で定める。',
+    '\\[d_n=(x_n-a_n,\\ y_n-a_{n+1})\\pmod{' + modulus + '}\\]',
+    'とおく。すべての \\(n\\ge N_0\\) で \\(d_{n+T}=d_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求めよ。',
+  ].join('\n')
+  const projectionAnswer = '\\((N_0,T)=(' + projection.start + ',' + projection.period + ')\\)'
+  const projectionSolution = [
+    '二つの行列軌道を法 \\(' + modulus + '\\) で同期させると、完全状態は第 \\(' +
+      orbit.cycleStart + '\\) 項から周期 \\(' + orbit.period + '\\) で循環する。',
+    '各状態を差ベクトル \\(d_n\\) へ写し、\\(' + orbit.period + '\\) の約数を小さい順にすべて検査すると、最小周期は \\(' +
+      projection.period + '\\) である。',
+    '循環前の状態も順に比較すると最小開始添字は \\(N_0=' + projection.start + '\\) となる。',
+    '二つの伴行列の二進累乗でも同じ差ベクトル列を再生し、最小性を独立に確認した。',
+  ].join('\n')
+  const projectionId = structureId + '.difference-vector-period'
+  const projectionCard: CertifiedFusionCard = {
+    ...baseCard,
+    id: 'mortra-' + projectionId,
+    statement_tex: projectionStatement,
+    answer_tex: projectionAnswer,
+    solution_tex: projectionSolution,
+    solution_document_tex: texDocument(projectionStatement, projectionSolution),
+    morphism_chain: variantMorphisms,
+    verification: {
+      ...baseCard.verification,
+      method: baseCard.verification.method + ' + complete projected-period divisor audit',
+      samples: [...baseCard.verification.samples, projection.start, projection.period],
+    },
+    difficulty: { band: baseCard.difficulty.band, score: baseCard.difficulty.score + 0.9 },
+    fusion_derivation: {
+      ...baseCard.fusion_derivation,
+      reason: baseCard.fusion_derivation.reason + '; the difference-vector period exists only after synchronizing both parent actions',
+      bridges: baseCard.fusion_derivation.bridges.map(bridge => ({
+        ...bridge,
+        produces: 'pell_recurrence_difference_vector_period',
+      })),
+    },
+    structure_blueprint: {
+      ...baseCard.structure_blueprint,
+      id: projectionId,
+      observable: 'pell_recurrence_difference_vector_period',
+      operators: variantMorphisms,
+      tags: [...baseCard.structure_blueprint.tags, 'observable-projection', 'difference-vector'],
+      morphismChain: variantMorphisms,
+      proofCertificate: [
+        ...baseCard.structure_blueprint.proofCertificate,
+        {
+          id: 'difference-period',
+          claim: 'the projected difference vector has the stated minimal eventual period',
+          verifier: 'complete exact divisor and transient audit',
+        },
+      ],
+      structuralUniqueness: {
+        ...baseCard.structure_blueprint.structuralUniqueness,
+        querySignature: 'minimal eventual period of the cross-parent difference vector',
+        normalForm: projectionAnswer,
+        finiteSolutionSet: true,
+        numericInstanceConstants: [
+          ...baseCard.structure_blueprint.structuralUniqueness.numericInstanceConstants,
+          projection.start,
+          projection.period,
+        ],
+      },
+    },
+    search_evidence: {
+      hypotheses_evaluated: orbit.rows.length,
+      valid_hypotheses: 1,
+      elapsed_ms: Date.now() - startedAt,
+    },
+  }
+
+  return [
+    baseCard,
+    ...(determinantVariant ? [determinantVariant] : []),
+    projectionCard,
+  ].slice(0, Math.max(0, requested))
 }
 
 function pellIndexTerms(
@@ -585,6 +905,7 @@ function rationalTex(value: Q): string {
 
 export function synthesizeCertifiedPellIndexedPowerSumFusion(
   parents: CertifiedFusionParent[],
+  requested = 1,
 ): CertifiedFusionCard[] {
   const startedAt = Date.now()
   if (parents.length !== 2 || new Set(parents.map(parent => parent.id)).size !== 2) return []
@@ -691,7 +1012,7 @@ export function synthesizeCertifiedPellIndexedPowerSumFusion(
     active: item.passed,
   }))
 
-  return [{
+  const baseCard: CertifiedFusionCard = {
     id: 'mortra-' + structureId,
     statement_tex: statement,
     answer_tex: answerTex,
@@ -701,6 +1022,78 @@ export function synthesizeCertifiedPellIndexedPowerSumFusion(
     family_id: 'certified.pell_indexed_power_sum',
     tool: 'MORTRA exact reversible synthesis',
     morphism_chain: morphisms,
+    proof_roadmap: [
+      {
+        morphism_id: 'PellEquationElaboration',
+        label_ja: 'Pell方程式を読み取る',
+        source_ja: '一方の親問題にある二次不定方程式',
+        target_ja: '判別式と整数解の型',
+        role_ja: 'x²-Dy²=1という構造を、問題文の変数名から切り離して保持します。',
+      },
+      {
+        morphism_id: 'ContinuedFractionFundamentalUnit',
+        label_ja: '最小の基本解を求める',
+        source_ja: '平方数でない正整数D',
+        target_ja: '最小の正のPell単数',
+        role_ja: '平方根の連分数から、全解を生成する基本解を厳密に求めます。',
+      },
+      {
+        morphism_id: 'QuadraticUnitOrbit',
+        label_ja: '指数として使う整数列を生成する',
+        source_ja: '基本解',
+        target_ja: '狭義単調なPell解のx座標列',
+        role_ja: '二次体の乗法と独立な二階漸化式の両方で同じ列を再生します。',
+      },
+      {
+        morphism_id: 'SymmetricTrigonometricPairElaboration',
+        label_ja: '正弦と余弦を対称式として読む',
+        source_ja: '他方の親問題にある正弦と余弦の和',
+        target_ja: '和と積が既知の二数',
+        role_ja: 'sin²θ+cos²θ=1を使って積も厳密に定めます。',
+      },
+      {
+        morphism_id: 'NewtonPowerSumRecurrence',
+        label_ja: 'べき和を共通の漸化式で表す',
+        source_ja: '正弦と余弦の和と積',
+        target_ja: 'u_m=sin^mθ+cos^mθ',
+        role_ja: '指数ごとの別解を作らず、すべてのべき和を一つの式で生成します。',
+      },
+      {
+        morphism_id: 'SubsequencePullback',
+        label_ja: 'Pell軌道をべき和の指数へ入れる',
+        source_ja: 'Pell解のx座標列とべき和の列',
+        target_ja: 'u_{x_k}',
+        role_ja: '二つの親問題を合成し、Pell解から得た整数だけを指数として使います。',
+      },
+      {
+        morphism_id: 'ExactRationalInequality',
+        label_ja: '有限個の候補を厳密比較する',
+        source_ja: 'Pell添字付きべき和',
+        target_ja: '不等号と等号の真偽',
+        role_ja: '小数近似を使わず、分数の整数比較だけで各候補を判定します。',
+      },
+      {
+        morphism_id: 'CertifiedTailBound',
+        label_ja: '残りの無限個の項をまとめて除く',
+        source_ja: '絶対値が1未満の二つの根',
+        target_ja: '有限の検査で十分であるという証明',
+        role_ja: '奇数と偶数を分けた上界とPell指数の単調性を組み合わせます。',
+      },
+      {
+        morphism_id: 'IndependentRecurrenceReplay',
+        label_ja: '独立な計算経路で検算する',
+        source_ja: 'Pell軌道とべき和の二つの漸化式',
+        target_ja: '同一の有限比較表',
+        role_ja: '二次体の乗法および伴行列の計算結果と逐次計算を照合します。',
+      },
+      {
+        morphism_id: 'AllParentAblation',
+        label_ja: '二つの親がともに必要か確かめる',
+        source_ja: 'Pell方程式と三角条件',
+        target_ja: '親依存性の証明',
+        role_ja: '一方を除くとPell添字付きべき和を定義できないことを型検査で確認します。',
+      },
+    ],
     diagram: {
       version: 1,
       kind: 'state',
@@ -826,5 +1219,22 @@ export function synthesizeCertifiedPellIndexedPowerSumFusion(
       valid_hypotheses: evaluation.answerIndices.length,
       elapsed_ms: Date.now() - startedAt,
     },
-  }]
+  }
+  const definitionTex = [
+    'Pell方程式 \\(x^2-' + pell.discriminant + 'y^2=1\\) の正の解を',
+    '\\[x_k+y_k\\sqrt{' + pell.discriminant + '}=(' + unitTex + ')^k\\]',
+    'で定める。実数 \\(\\theta\\) が',
+    '\\[\\sin\\theta+\\cos\\theta=' + c + '\\]',
+    'を満たすとする。',
+  ].join('\n')
+  return [
+    baseCard,
+    ...synthesizeIndexedPowerObservableVariants(baseCard, evaluation, {
+      definitionTex,
+      indexSymbol: 'k',
+      exponentTex: 'x_k',
+      exponentSequenceJa: 'Pell単数から得られる指数列 \\(x_k\\)',
+      independentReplayJa: 'Pell軌道の二階漸化式とべき和の伴行列による独立計算',
+    }, startedAt),
+  ].slice(0, Math.max(0, requested))
 }

@@ -1,0 +1,2916 @@
+{
+  "schema": 1,
+  "measuredAt": "2026-08-31T20:17:14.249Z",
+  "purpose": "少数の再利用可能な射が、一つの証明核から複数の問いと三親以上の問題を厳密に生成できるかを測る",
+  "definitions": {
+    "parentConfiguration": "生成に同時使用した相異なる親問題の集合",
+    "proofKernel": "数値や問い方が変わっても共有される実行可能な中間表現と証明手続き",
+    "observable": "同じ検証済み証明核から問題として読み出す量または命題",
+    "card": "問題文、厳密解、解説、証明書を一体にした一つの出力"
+  },
+  "method": {
+    "catalogPath": "artifacts/benchmarks/fullproblem-certified-catalog-20260831.json",
+    "baselinePath": "artifacts/benchmarks/certified-difficult-problem-generation-20260901.json",
+    "catalogProblemCount": 90,
+    "untypedPairPopulationCount": 4005,
+    "eligibleGroupSelection": "型付き入力端点が既存の生成チャートを満たす親問題集合だけを列挙した",
+    "perConfigurationLimit": 256,
+    "acceptance": "厳密計算、独立検算、全親依存、親をまたぐ合成、前提最小性、逆再生拒否をすべて監査した",
+    "aggregateScoreUsed": false
+  },
+  "baseline": {
+    "cardCount": 49,
+    "distinctStatementCount": 49,
+    "distinctQuestionFormCount": 11,
+    "familyIdCount": 5,
+    "parentConfigurationCount": 10
+  },
+  "result": {
+    "eligibleParentConfigurationCount": 18,
+    "eligibleParentConfigurationCountsByCardinality": {
+      "2": 11,
+      "3": 7
+    },
+    "productiveParentConfigurationCount": 12,
+    "productiveParentConfigurationCountsByCardinality": {
+      "2": 11,
+      "3": 1
+    },
+    "abstainedParentConfigurationCount": 6,
+    "rawCardInstanceCount": 65,
+    "passedCardInstanceCount": 65,
+    "rejectedCardInstanceCount": 0,
+    "allProducedCardsPassedAudit": true,
+    "uniqueCardCount": 59,
+    "uniqueStatementCount": 59,
+    "proofKernelCount": 4,
+    "observableCount": 18,
+    "familyIdCount": 7,
+    "morphismVocabularyCount": 42,
+    "proofKernelInstanceCount": 12,
+    "oneToManyProofKernelInstanceCount": 11,
+    "maximumObservablesFromOneProofKernelInstance": 7,
+    "cardInstanceCountsByParentCardinality": {
+      "2": 64,
+      "3": 1
+    },
+    "familyCounts": {
+      "certified.mobius_polynomial_fixed_point_transport": 1,
+      "certified.mobius_polynomial_power_sums": 1,
+      "certified.pell_indexed_power_sum": 4,
+      "certified.pell_recurrence_state_product": 3,
+      "certified.recurrence_indexed_power_sum": 4,
+      "certified.recurrence_rational_angle_orbit": 51,
+      "certified.three_parent_recurrence_power_angle": 1
+    },
+    "kernelCounts": {
+      "FiniteGeneratedActionProductIR": 3,
+      "FiniteStateCyclicCharacterFusionIR": 51,
+      "ReversibleGeneratedIndexPowerSumIR": 9,
+      "ReversibleMobiusPolynomialTransportIR": 2
+    },
+    "observableCounts": {
+      "cosine_zero_index_set": 3,
+      "eventual_cosine_sign_profile": 8,
+      "eventual_minimal_sine_period": 8,
+      "eventual_minimal_trigonometric_period": 8,
+      "eventual_minimal_unit_circle_point_period": 8,
+      "indexed_power_sum_equality_solution_set": 2,
+      "indexed_power_sum_global_maximum": 2,
+      "indexed_power_sum_inequality_solution_set": 1,
+      "indexed_power_sum_last_threshold_crossing": 2,
+      "initial_unit_circle_point_return_set": 8,
+      "pell_indexed_power_sum_inequality_solution_set": 1,
+      "pell_recurrence_cross_determinant_solution_set": 1,
+      "pell_recurrence_difference_vector_period": 1,
+      "periodic_congruence_solution_set": 1,
+      "sine_zero_index_set": 8,
+      "three_parent_indexed_power_sum_threshold_solution_set": 1,
+      "transported_root_fixed_point_equation": 1,
+      "transported_root_power_sums": 1
+    }
+  },
+  "morphismVocabulary": [
+    "AllParentAblation",
+    "CertifiedObservableProjection",
+    "CertifiedTailBound",
+    "CompanionMatrixAction",
+    "CompanionMatrixIndexGeneration",
+    "ContinuedFractionFundamentalUnit",
+    "CosineSignCharacter",
+    "CosineZeroPredicate",
+    "CycleCertificate",
+    "CyclicCharacterConstruction",
+    "DenominatorClearing",
+    "EventuallyPeriodicEventSet",
+    "EventuallyPeriodicReturnSet",
+    "ExactRationalInequality",
+    "FiniteStateProduct",
+    "FixedPointRearrangement",
+    "IndependentMatrixReplay",
+    "IndependentRecurrenceReplay",
+    "InitialPhaseReturnPredicate",
+    "IntegerRecurrenceElaboration",
+    "MatrixReplayVerification",
+    "MinimalObservablePeriod",
+    "MinimalPointOrbitPeriod",
+    "MinimalSignPeriodAndMultiplicity",
+    "MinimalSinePeriod",
+    "MobiusTransformationElaboration",
+    "ModuloStateProjection",
+    "NewtonPowerSumRecurrence",
+    "PellEquationElaboration",
+    "PolynomialElaboration",
+    "PositiveSecondOrderRecurrenceElaboration",
+    "QuadraticUnitOrbit",
+    "RationalAngleElaboration",
+    "RationalCoordinateTransport",
+    "ReverseTransportIdentity",
+    "RootConfiguration",
+    "SineCharacterConstruction",
+    "SineZeroPredicate",
+    "SubsequencePullback",
+    "SymmetricTrigonometricPairElaboration",
+    "SynchronousProductOrbit",
+    "UnitCirclePointConstruction"
+  ],
+  "chartResults": [
+    {
+      "chartId": "polynomial-root-configuration",
+      "parentCardinality": 2,
+      "eligibleParentConfigurationCount": 0,
+      "productiveParentConfigurationCount": 0,
+      "producedCardCountBeforeAudit": 0
+    },
+    {
+      "chartId": "mobius-polynomial-fixed-point-transport",
+      "parentCardinality": 2,
+      "eligibleParentConfigurationCount": 1,
+      "productiveParentConfigurationCount": 1,
+      "producedCardCountBeforeAudit": 2
+    },
+    {
+      "chartId": "circle-quadratic-form",
+      "parentCardinality": 2,
+      "eligibleParentConfigurationCount": 0,
+      "productiveParentConfigurationCount": 0,
+      "producedCardCountBeforeAudit": 0
+    },
+    {
+      "chartId": "recurrence-indexed-power-sum",
+      "parentCardinality": 2,
+      "eligibleParentConfigurationCount": 1,
+      "productiveParentConfigurationCount": 1,
+      "producedCardCountBeforeAudit": 4
+    },
+    {
+      "chartId": "three-parent-recurrence-power-angle",
+      "parentCardinality": 3,
+      "eligibleParentConfigurationCount": 7,
+      "productiveParentConfigurationCount": 1,
+      "producedCardCountBeforeAudit": 1
+    },
+    {
+      "chartId": "finite-state-rational-angle-orbit",
+      "parentCardinality": 2,
+      "eligibleParentConfigurationCount": 7,
+      "productiveParentConfigurationCount": 7,
+      "producedCardCountBeforeAudit": 51
+    },
+    {
+      "chartId": "pell-recurrence-state-product",
+      "parentCardinality": 2,
+      "eligibleParentConfigurationCount": 1,
+      "productiveParentConfigurationCount": 1,
+      "producedCardCountBeforeAudit": 3
+    },
+    {
+      "chartId": "pell-indexed-power-sum",
+      "parentCardinality": 2,
+      "eligibleParentConfigurationCount": 1,
+      "productiveParentConfigurationCount": 1,
+      "producedCardCountBeforeAudit": 4
+    }
+  ],
+  "controlledFixtures": [
+    {
+      "id": "affine-circle-pair-one-to-many",
+      "reason": "全問題90問には、二つのアフィン円方程式を同時に含む親配置がないため、円幾何の同一核・複数問だけを固定入力で検証した",
+      "parentCount": 2,
+      "generatedCardCount": 2,
+      "passedCardCount": 2,
+      "kernels": [
+        "ReversibleAffineCircleQuadraticFormIR"
+      ],
+      "observables": [
+        "radical_axis",
+        "common_chord_midpoint_and_length"
+      ],
+      "cards": [
+        {
+          "cardId": "mortra-certified.circle-radical-axis.a5b6d728615f47c5",
+          "family": "certified.circle_radical_axis",
+          "domain": "geometry",
+          "kernel": "ReversibleAffineCircleQuadraticFormIR",
+          "observable": "radical_axis",
+          "querySignature": "radical-axis-locus",
+          "parentIds": [
+            "fixture-circle-a",
+            "fixture-circle-b"
+          ],
+          "parentCount": 2,
+          "sourceConfigurationKeys": [
+            "controlled:affine-circle-pair"
+          ],
+          "statement": "座標平面上の2円\n\\[C_1:x^{2}+y^{2}-6x+4y-3=0,\\qquad C_2:x^{2}+y^{2}+2x-4y-5=0\\]\nについて、点 $P(x,y)$ の $C_1,C_2$ に関する方べきが等しくなる点 $P$ の軌跡を求め、図示せよ。",
+          "answer": "\\(-8x+8y+2=0\\)",
+          "solution": "円 $C_i$ の正規化二次形式を $q_i(x,y)$ とする。点 $P$ の方べきは $q_i(P)$ に等しい。したがって等方べき条件は $q_1-q_2=0$ である。二つの二次形式の $x^{2}+y^{2}$ 項は相殺され、\n\\[-8x+8y+2=0\\]\nを得る。これは2円の根軸である。独立検算として、この直線上の3個の有理点を生成し、各点で $q_1(P)=q_2(P)$ を厳密有理数計算により確認した。",
+          "morphismChain": [
+            "AffineCircleEquationElaboration",
+            "SymmetricQuadraticForm",
+            "PowerOfPointEvaluation",
+            "QuadraticFormDifference",
+            "RadicalAxisExtraction",
+            "IndependentRationalPointReplay",
+            "AllParentAblation"
+          ],
+          "exactBackend": true,
+          "independentCheck": true,
+          "auditPassed": true,
+          "auditFailures": [],
+          "proofStepCount": 7
+        },
+        {
+          "cardId": "mortra-certified.circle-radical-axis.a5b6d728615f47c5.common-chord-metric",
+          "family": "certified.circle_common_chord_metric",
+          "domain": "geometry",
+          "kernel": "ReversibleAffineCircleQuadraticFormIR",
+          "observable": "common_chord_midpoint_and_length",
+          "querySignature": "compute common-chord midpoint and exact length",
+          "parentIds": [
+            "fixture-circle-a",
+            "fixture-circle-b"
+          ],
+          "parentCount": 2,
+          "sourceConfigurationKeys": [
+            "controlled:affine-circle-pair"
+          ],
+          "statement": "2円\n\\[C_1:x^{2}+y^{2}-6x+4y-3=0,\\qquad C_2:x^{2}+y^{2}+2x-4y-5=0\\]\nは2点 $A,B$ で交わる。共通弦 $AB$ の中点 $M$ の座標と、長さ $AB$ を求めよ。",
+          "answer": "\\(M=\\left(\\frac{5}{8},\\frac{3}{8}\\right),\\quad AB=2\\sqrt{\\frac{151}{32}}\\)",
+          "solution": "共通弦 $AB$ は2円の根軸上にある。二つの円の式を引くと\n\\[-8x+8y+2=0\\tag{1}\\]\nを得る。$C_1$ の中心を $O=(3,-2)$ とすると、共通弦の中点 $M$ は $O$ から直線 $(1)$ へ下ろした垂線の足である。直線を $ax+by+c=0$ と書けば\n\\[\nM=O-\\frac{aO_x+bO_y+c}{a^2+b^2}(a,b)\n=\\left(\\frac{5}{8},\\frac{3}{8}\\right).\n\\]\n$C_1$ の半径の二乗は \\(16\\) であり、\n\\[OM^2=\\frac{361}{32}\\]\nだから、直角三角形 $OMA$ により\n\\[AM^2=16-\\frac{361}{32}=\\frac{151}{32}.\\]\nしたがって\n\\[AB=2AM=2\\sqrt{\\frac{151}{32}}\\]\nである。最後に $M$ を $(1)$ と二円の方べき差へ代入し、さらに $OM^2+AM^2$ が半径の二乗に一致することを厳密有理数で検算した。",
+          "morphismChain": [
+            "AffineCircleEquationElaboration",
+            "SymmetricQuadraticForm",
+            "PowerOfPointEvaluation",
+            "QuadraticFormDifference",
+            "RadicalAxisExtraction",
+            "IndependentRationalPointReplay",
+            "AllParentAblation",
+            "CertifiedObservableProjection"
+          ],
+          "exactBackend": true,
+          "independentCheck": true,
+          "auditPassed": true,
+          "auditFailures": [],
+          "proofStepCount": 8
+        }
+      ]
+    }
+  ],
+  "oneToManyProofKernelInstances": [
+    {
+      "key": "fullproblem-001\u0000fullproblem-054\u0001FiniteStateCyclicCharacterFusionIR",
+      "observableCount": 7,
+      "observables": [
+        "cosine_zero_index_set",
+        "eventual_cosine_sign_profile",
+        "eventual_minimal_sine_period",
+        "eventual_minimal_trigonometric_period",
+        "eventual_minimal_unit_circle_point_period",
+        "initial_unit_circle_point_return_set",
+        "sine_zero_index_set"
+      ]
+    },
+    {
+      "key": "fullproblem-054\u0000fullproblem-065\u0001FiniteStateCyclicCharacterFusionIR",
+      "observableCount": 7,
+      "observables": [
+        "cosine_zero_index_set",
+        "eventual_cosine_sign_profile",
+        "eventual_minimal_sine_period",
+        "eventual_minimal_trigonometric_period",
+        "eventual_minimal_unit_circle_point_period",
+        "initial_unit_circle_point_return_set",
+        "sine_zero_index_set"
+      ]
+    },
+    {
+      "key": "fullproblem-054\u0000fullproblem-080\u0001FiniteStateCyclicCharacterFusionIR",
+      "observableCount": 7,
+      "observables": [
+        "cosine_zero_index_set",
+        "eventual_cosine_sign_profile",
+        "eventual_minimal_sine_period",
+        "eventual_minimal_trigonometric_period",
+        "eventual_minimal_unit_circle_point_period",
+        "initial_unit_circle_point_return_set",
+        "sine_zero_index_set"
+      ]
+    },
+    {
+      "key": "fullproblem-005\u0000fullproblem-054\u0001FiniteStateCyclicCharacterFusionIR",
+      "observableCount": 6,
+      "observables": [
+        "eventual_cosine_sign_profile",
+        "eventual_minimal_sine_period",
+        "eventual_minimal_trigonometric_period",
+        "eventual_minimal_unit_circle_point_period",
+        "initial_unit_circle_point_return_set",
+        "sine_zero_index_set"
+      ]
+    },
+    {
+      "key": "fullproblem-018\u0000fullproblem-054\u0001FiniteStateCyclicCharacterFusionIR",
+      "observableCount": 6,
+      "observables": [
+        "eventual_cosine_sign_profile",
+        "eventual_minimal_sine_period",
+        "eventual_minimal_trigonometric_period",
+        "eventual_minimal_unit_circle_point_period",
+        "initial_unit_circle_point_return_set",
+        "sine_zero_index_set"
+      ]
+    },
+    {
+      "key": "fullproblem-025\u0000fullproblem-054\u0001FiniteStateCyclicCharacterFusionIR",
+      "observableCount": 6,
+      "observables": [
+        "eventual_cosine_sign_profile",
+        "eventual_minimal_sine_period",
+        "eventual_minimal_trigonometric_period",
+        "eventual_minimal_unit_circle_point_period",
+        "initial_unit_circle_point_return_set",
+        "sine_zero_index_set"
+      ]
+    },
+    {
+      "key": "fullproblem-054\u0000fullproblem-086\u0001FiniteStateCyclicCharacterFusionIR",
+      "observableCount": 6,
+      "observables": [
+        "eventual_cosine_sign_profile",
+        "eventual_minimal_sine_period",
+        "eventual_minimal_trigonometric_period",
+        "eventual_minimal_unit_circle_point_period",
+        "initial_unit_circle_point_return_set",
+        "sine_zero_index_set"
+      ]
+    },
+    {
+      "key": "fullproblem-034\u0000fullproblem-090\u0001ReversibleGeneratedIndexPowerSumIR",
+      "observableCount": 4,
+      "observables": [
+        "indexed_power_sum_equality_solution_set",
+        "indexed_power_sum_global_maximum",
+        "indexed_power_sum_last_threshold_crossing",
+        "pell_indexed_power_sum_inequality_solution_set"
+      ]
+    },
+    {
+      "key": "fullproblem-054\u0000fullproblem-090\u0001ReversibleGeneratedIndexPowerSumIR",
+      "observableCount": 4,
+      "observables": [
+        "indexed_power_sum_equality_solution_set",
+        "indexed_power_sum_global_maximum",
+        "indexed_power_sum_inequality_solution_set",
+        "indexed_power_sum_last_threshold_crossing"
+      ]
+    },
+    {
+      "key": "fullproblem-034\u0000fullproblem-054\u0001FiniteGeneratedActionProductIR",
+      "observableCount": 3,
+      "observables": [
+        "pell_recurrence_cross_determinant_solution_set",
+        "pell_recurrence_difference_vector_period",
+        "periodic_congruence_solution_set"
+      ]
+    },
+    {
+      "key": "fullproblem-017\u0000fullproblem-018\u0001ReversibleMobiusPolynomialTransportIR",
+      "observableCount": 2,
+      "observables": [
+        "transported_root_fixed_point_equation",
+        "transported_root_power_sums"
+      ]
+    }
+  ],
+  "rejectedCards": [],
+  "parentConfigurations": [
+    {
+      "key": "fullproblem-017\u0000fullproblem-018",
+      "parentIds": [
+        "fullproblem-017",
+        "fullproblem-018"
+      ],
+      "parentLabels": [
+        "問題17",
+        "問題18"
+      ],
+      "parentCount": 2,
+      "eligibleChartIds": [
+        "mobius-polynomial-fixed-point-transport"
+      ],
+      "plannerAttemptCount": 1,
+      "plannerAttempts": [
+        {
+          "chartId": "mobius-polynomial-fixed-point-transport",
+          "produced": 2
+        }
+      ],
+      "rawCardCount": 2,
+      "passedCardCount": 2,
+      "rejectedCardCount": 0
+    },
+    {
+      "key": "fullproblem-054\u0000fullproblem-090",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-090"
+      ],
+      "parentLabels": [
+        "問題53",
+        "問題89"
+      ],
+      "parentCount": 2,
+      "eligibleChartIds": [
+        "recurrence-indexed-power-sum"
+      ],
+      "plannerAttemptCount": 1,
+      "plannerAttempts": [
+        {
+          "chartId": "recurrence-indexed-power-sum",
+          "produced": 4
+        }
+      ],
+      "rawCardCount": 4,
+      "passedCardCount": 4,
+      "rejectedCardCount": 0
+    },
+    {
+      "key": "fullproblem-001\u0000fullproblem-054\u0000fullproblem-090",
+      "parentIds": [
+        "fullproblem-001",
+        "fullproblem-054",
+        "fullproblem-090"
+      ],
+      "parentLabels": [
+        "問題1",
+        "問題53",
+        "問題89"
+      ],
+      "parentCount": 3,
+      "eligibleChartIds": [
+        "three-parent-recurrence-power-angle"
+      ],
+      "plannerAttemptCount": 1,
+      "plannerAttempts": [
+        {
+          "chartId": "three-parent-recurrence-power-angle",
+          "produced": 1
+        }
+      ],
+      "rawCardCount": 1,
+      "passedCardCount": 1,
+      "rejectedCardCount": 0
+    },
+    {
+      "key": "fullproblem-005\u0000fullproblem-054\u0000fullproblem-090",
+      "parentIds": [
+        "fullproblem-005",
+        "fullproblem-054",
+        "fullproblem-090"
+      ],
+      "parentLabels": [
+        "問題5",
+        "問題53",
+        "問題89"
+      ],
+      "parentCount": 3,
+      "eligibleChartIds": [
+        "three-parent-recurrence-power-angle"
+      ],
+      "plannerAttemptCount": 1,
+      "plannerAttempts": [
+        {
+          "chartId": "three-parent-recurrence-power-angle",
+          "produced": 0
+        }
+      ],
+      "rawCardCount": 0,
+      "passedCardCount": 0,
+      "rejectedCardCount": 0
+    },
+    {
+      "key": "fullproblem-018\u0000fullproblem-054\u0000fullproblem-090",
+      "parentIds": [
+        "fullproblem-018",
+        "fullproblem-054",
+        "fullproblem-090"
+      ],
+      "parentLabels": [
+        "問題18",
+        "問題53",
+        "問題89"
+      ],
+      "parentCount": 3,
+      "eligibleChartIds": [
+        "three-parent-recurrence-power-angle"
+      ],
+      "plannerAttemptCount": 1,
+      "plannerAttempts": [
+        {
+          "chartId": "three-parent-recurrence-power-angle",
+          "produced": 0
+        }
+      ],
+      "rawCardCount": 0,
+      "passedCardCount": 0,
+      "rejectedCardCount": 0
+    },
+    {
+      "key": "fullproblem-025\u0000fullproblem-054\u0000fullproblem-090",
+      "parentIds": [
+        "fullproblem-025",
+        "fullproblem-054",
+        "fullproblem-090"
+      ],
+      "parentLabels": [
+        "問題25",
+        "問題53",
+        "問題89"
+      ],
+      "parentCount": 3,
+      "eligibleChartIds": [
+        "three-parent-recurrence-power-angle"
+      ],
+      "plannerAttemptCount": 1,
+      "plannerAttempts": [
+        {
+          "chartId": "three-parent-recurrence-power-angle",
+          "produced": 0
+        }
+      ],
+      "rawCardCount": 0,
+      "passedCardCount": 0,
+      "rejectedCardCount": 0
+    },
+    {
+      "key": "fullproblem-054\u0000fullproblem-065\u0000fullproblem-090",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-065",
+        "fullproblem-090"
+      ],
+      "parentLabels": [
+        "問題53",
+        "問題64",
+        "問題89"
+      ],
+      "parentCount": 3,
+      "eligibleChartIds": [
+        "three-parent-recurrence-power-angle"
+      ],
+      "plannerAttemptCount": 1,
+      "plannerAttempts": [
+        {
+          "chartId": "three-parent-recurrence-power-angle",
+          "produced": 0
+        }
+      ],
+      "rawCardCount": 0,
+      "passedCardCount": 0,
+      "rejectedCardCount": 0
+    },
+    {
+      "key": "fullproblem-054\u0000fullproblem-080\u0000fullproblem-090",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-080",
+        "fullproblem-090"
+      ],
+      "parentLabels": [
+        "問題53",
+        "問題79",
+        "問題89"
+      ],
+      "parentCount": 3,
+      "eligibleChartIds": [
+        "three-parent-recurrence-power-angle"
+      ],
+      "plannerAttemptCount": 1,
+      "plannerAttempts": [
+        {
+          "chartId": "three-parent-recurrence-power-angle",
+          "produced": 0
+        }
+      ],
+      "rawCardCount": 0,
+      "passedCardCount": 0,
+      "rejectedCardCount": 0
+    },
+    {
+      "key": "fullproblem-054\u0000fullproblem-086\u0000fullproblem-090",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-086",
+        "fullproblem-090"
+      ],
+      "parentLabels": [
+        "問題53",
+        "問題85",
+        "問題89"
+      ],
+      "parentCount": 3,
+      "eligibleChartIds": [
+        "three-parent-recurrence-power-angle"
+      ],
+      "plannerAttemptCount": 1,
+      "plannerAttempts": [
+        {
+          "chartId": "three-parent-recurrence-power-angle",
+          "produced": 0
+        }
+      ],
+      "rawCardCount": 0,
+      "passedCardCount": 0,
+      "rejectedCardCount": 0
+    },
+    {
+      "key": "fullproblem-001\u0000fullproblem-054",
+      "parentIds": [
+        "fullproblem-001",
+        "fullproblem-054"
+      ],
+      "parentLabels": [
+        "問題1",
+        "問題53"
+      ],
+      "parentCount": 2,
+      "eligibleChartIds": [
+        "finite-state-rational-angle-orbit"
+      ],
+      "plannerAttemptCount": 1,
+      "plannerAttempts": [
+        {
+          "chartId": "finite-state-rational-angle-orbit",
+          "produced": 7
+        }
+      ],
+      "rawCardCount": 7,
+      "passedCardCount": 7,
+      "rejectedCardCount": 0
+    },
+    {
+      "key": "fullproblem-005\u0000fullproblem-054",
+      "parentIds": [
+        "fullproblem-005",
+        "fullproblem-054"
+      ],
+      "parentLabels": [
+        "問題5",
+        "問題53"
+      ],
+      "parentCount": 2,
+      "eligibleChartIds": [
+        "finite-state-rational-angle-orbit"
+      ],
+      "plannerAttemptCount": 1,
+      "plannerAttempts": [
+        {
+          "chartId": "finite-state-rational-angle-orbit",
+          "produced": 6
+        }
+      ],
+      "rawCardCount": 6,
+      "passedCardCount": 6,
+      "rejectedCardCount": 0
+    },
+    {
+      "key": "fullproblem-018\u0000fullproblem-054",
+      "parentIds": [
+        "fullproblem-018",
+        "fullproblem-054"
+      ],
+      "parentLabels": [
+        "問題18",
+        "問題53"
+      ],
+      "parentCount": 2,
+      "eligibleChartIds": [
+        "finite-state-rational-angle-orbit"
+      ],
+      "plannerAttemptCount": 1,
+      "plannerAttempts": [
+        {
+          "chartId": "finite-state-rational-angle-orbit",
+          "produced": 12
+        }
+      ],
+      "rawCardCount": 12,
+      "passedCardCount": 12,
+      "rejectedCardCount": 0
+    },
+    {
+      "key": "fullproblem-025\u0000fullproblem-054",
+      "parentIds": [
+        "fullproblem-025",
+        "fullproblem-054"
+      ],
+      "parentLabels": [
+        "問題25",
+        "問題53"
+      ],
+      "parentCount": 2,
+      "eligibleChartIds": [
+        "finite-state-rational-angle-orbit"
+      ],
+      "plannerAttemptCount": 1,
+      "plannerAttempts": [
+        {
+          "chartId": "finite-state-rational-angle-orbit",
+          "produced": 6
+        }
+      ],
+      "rawCardCount": 6,
+      "passedCardCount": 6,
+      "rejectedCardCount": 0
+    },
+    {
+      "key": "fullproblem-054\u0000fullproblem-065",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-065"
+      ],
+      "parentLabels": [
+        "問題53",
+        "問題64"
+      ],
+      "parentCount": 2,
+      "eligibleChartIds": [
+        "finite-state-rational-angle-orbit"
+      ],
+      "plannerAttemptCount": 1,
+      "plannerAttempts": [
+        {
+          "chartId": "finite-state-rational-angle-orbit",
+          "produced": 7
+        }
+      ],
+      "rawCardCount": 7,
+      "passedCardCount": 7,
+      "rejectedCardCount": 0
+    },
+    {
+      "key": "fullproblem-054\u0000fullproblem-080",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-080"
+      ],
+      "parentLabels": [
+        "問題53",
+        "問題79"
+      ],
+      "parentCount": 2,
+      "eligibleChartIds": [
+        "finite-state-rational-angle-orbit"
+      ],
+      "plannerAttemptCount": 1,
+      "plannerAttempts": [
+        {
+          "chartId": "finite-state-rational-angle-orbit",
+          "produced": 7
+        }
+      ],
+      "rawCardCount": 7,
+      "passedCardCount": 7,
+      "rejectedCardCount": 0
+    },
+    {
+      "key": "fullproblem-054\u0000fullproblem-086",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-086"
+      ],
+      "parentLabels": [
+        "問題53",
+        "問題85"
+      ],
+      "parentCount": 2,
+      "eligibleChartIds": [
+        "finite-state-rational-angle-orbit"
+      ],
+      "plannerAttemptCount": 1,
+      "plannerAttempts": [
+        {
+          "chartId": "finite-state-rational-angle-orbit",
+          "produced": 6
+        }
+      ],
+      "rawCardCount": 6,
+      "passedCardCount": 6,
+      "rejectedCardCount": 0
+    },
+    {
+      "key": "fullproblem-034\u0000fullproblem-054",
+      "parentIds": [
+        "fullproblem-034",
+        "fullproblem-054"
+      ],
+      "parentLabels": [
+        "問題34",
+        "問題53"
+      ],
+      "parentCount": 2,
+      "eligibleChartIds": [
+        "pell-recurrence-state-product"
+      ],
+      "plannerAttemptCount": 1,
+      "plannerAttempts": [
+        {
+          "chartId": "pell-recurrence-state-product",
+          "produced": 3
+        }
+      ],
+      "rawCardCount": 3,
+      "passedCardCount": 3,
+      "rejectedCardCount": 0
+    },
+    {
+      "key": "fullproblem-034\u0000fullproblem-090",
+      "parentIds": [
+        "fullproblem-034",
+        "fullproblem-090"
+      ],
+      "parentLabels": [
+        "問題34",
+        "問題89"
+      ],
+      "parentCount": 2,
+      "eligibleChartIds": [
+        "pell-indexed-power-sum"
+      ],
+      "plannerAttemptCount": 1,
+      "plannerAttempts": [
+        {
+          "chartId": "pell-indexed-power-sum",
+          "produced": 4
+        }
+      ],
+      "rawCardCount": 4,
+      "passedCardCount": 4,
+      "rejectedCardCount": 0
+    }
+  ],
+  "cards": [
+    {
+      "cardId": "mortra-certified.mobius-polynomial-fixed-point.b9949dd26a69df47",
+      "family": "certified.mobius_polynomial_fixed_point_transport",
+      "domain": "algebraic_dynamics",
+      "kernel": "ReversibleMobiusPolynomialTransportIR",
+      "observable": "transported_root_fixed_point_equation",
+      "querySignature": "transport-root-scheme-and-recover-fixed-map",
+      "parentIds": [
+        "fullproblem-017",
+        "fullproblem-018"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-017\u0000fullproblem-018"
+      ],
+      "statement": "\\(f(x)=x^{3}-2026x^{2}-2029x-1\\) とし、その根を \\(\\alpha_1,\\ldots,\\alpha_3\\) とする。一次分数変換\n\\[T(x)=\\frac{1}{-x+1}\\]\nにより \\(S_i=T(\\alpha_i)\\) とおく。\n\n\\(S_1,\\ldots,S_3\\) をちょうど根にもつ整数係数多項式 \\(P(S)\\) を一つ求めよ。さらに、\\(P(S)=0\\) を\n\\[S=g(S)=C_0+\\frac{C_1}{S}+\\frac{C_2}{S^{2}}\\]\nの形へ直し、\\(g(S)\\) と \\(C_0\\) を求めよ。",
+      "answer": "\\(P(S)=4055S^{3}-6078S^{2}+2023S+1\\),\\quad \\(g(S)=\\frac{6078S^{2}-2023S-1}{4055S^{2}}\\),\\quad \\(C_0=\\frac{6078}{4055}\\)",
+      "solution": "変換行列の行列式は \\(\\Delta=1\\neq0\\) であり、逆変換は\n\\[x=\\frac{S-1}{S}\\]\nである。したがって分母を払った\n\\[P(S)=S^{3}f\\!\\left(\\frac{S-1}{S}\\right)\n=4055S^{3}-6078S^{2}+2023S+1\\]\nの根は、重複度込みでちょうど \\(S_i=T(\\alpha_i)\\) である。\n\n最高次項を右辺へ移すと\n\\[S=\\frac{6078S^{2}-2023S-1}{4055S^{2}}=g(S)\\]\nとなり、\\(S^0\\) に対応する定数項は \\(C_0=\\frac{6078}{4055}\\) である。\n\n独立な逆向き検証として \\(S=T(x)\\) を代入し、\n\\[\\left(-x+1\\right)^{3}P(T(x))=-\\Delta^{3}f(x)\\]\nを整数係数多項式の係数比較で確認した。また\n\\[4055S^{2}\\{S-g(S)\\}=P(S)\\]\nも恒等的に成り立つ。よって余分な固定点も欠落した固定点もない。",
+      "morphismChain": [
+        "PolynomialElaboration",
+        "RootConfiguration",
+        "MobiusTransformationElaboration",
+        "RationalCoordinateTransport",
+        "DenominatorClearing",
+        "FixedPointRearrangement",
+        "ReverseTransportIdentity",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 7
+    },
+    {
+      "cardId": "mortra-certified.mobius-polynomial-fixed-point.b9949dd26a69df47.initial-power-sums",
+      "family": "certified.mobius_polynomial_power_sums",
+      "domain": "algebraic_dynamics",
+      "kernel": "ReversibleMobiusPolynomialTransportIR",
+      "observable": "transported_root_power_sums",
+      "querySignature": "compute initial power sums of the transported root configuration",
+      "parentIds": [
+        "fullproblem-017",
+        "fullproblem-018"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-017\u0000fullproblem-018"
+      ],
+      "statement": "\\(f(x)=x^{3}-2026x^{2}-2029x-1\\) とし、その根を \\(\\alpha_1,\\ldots,\\alpha_3\\) とする。一次分数変換\n\\[T(x)=\\frac{1}{-x+1}\\]\nにより \\(S_i=T(\\alpha_i)\\) とおく。\\(m=1,\\ldots,3\\) に対し\n\\[p_m=\\sum_{i=1}^{3}S_i^m\\]\nとするとき、\\(p_1,\\ldots,p_3\\) を求めよ。",
+      "answer": "\\(p_1=\\frac{6078}{4055},\\quad p_2=\\frac{20535554}{16443025},\\quad p_3=\\frac{74906323467}{66676466375}\\)",
+      "solution": "逆変換\n\\[x=\\frac{S-1}{S}\\]\nを \\(f\\) へ代入して分母を払うと、変換後の根を重複度込みでちょうど根にもつ多項式は\n\\[P(S)=4055S^{3}-6078S^{2}+2023S+1\\]\nである。最高次係数 \\(4055\\) で割り、\n\\[\\frac{P(S)}{4055}\n=S^{3}+c_1S^{2}+\\cdots+c_3\\]\nと書く。Newtonの公式\n\\[p_m+c_1p_{m-1}+\\cdots+c_{m-1}p_1+mc_m=0\\qquad(1\\le m\\le3)\\]\nを順に用いると\n\\[\np_1-\\frac{6078}{4055}=0,\\qquad p_1=\\frac{6078}{4055}\\\\\np_2-\\frac{6078}{4055}p_1+\\frac{4046}{4055}=0,\\qquad p_2=\\frac{20535554}{16443025}\\\\\np_3-\\frac{6078}{4055}p_2+\\frac{2023}{4055}p_1+\\frac{3}{4055}=0,\\qquad p_3=\\frac{74906323467}{66676466375}\n\\]\nを得る。したがって\n\\[p_1=\\frac{6078}{4055},\\quad p_2=\\frac{20535554}{16443025},\\quad p_3=\\frac{74906323467}{66676466375}\\]\nである。逆代入による多項式恒等式も係数ごとに再検証したので、ここで用いた根配置に過不足はない。",
+      "morphismChain": [
+        "PolynomialElaboration",
+        "RootConfiguration",
+        "MobiusTransformationElaboration",
+        "RationalCoordinateTransport",
+        "DenominatorClearing",
+        "FixedPointRearrangement",
+        "ReverseTransportIdentity",
+        "AllParentAblation",
+        "CertifiedObservableProjection"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified.indexed-power-sum.33b630d2c7648ffc",
+      "family": "certified.recurrence_indexed_power_sum",
+      "domain": "number_theory_analysis",
+      "kernel": "ReversibleGeneratedIndexPowerSumIR",
+      "observable": "indexed_power_sum_inequality_solution_set",
+      "querySignature": "classify-recurrence-indexed-power-sum-inequality",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-090"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-054\u0000fullproblem-090"
+      ],
+      "statement": "数列 \\(\\{a_k\\}\\) を\n\\[a_1=1,\\ a_2=1,\\ a_{k+2}=a_{k+1}+a_k\\]\nで定める。実数 \\(\\theta\\) が\n\\[\\sin\\theta+\\cos\\theta=\\frac{1}{2027}\\]\nを満たすとき、\n\\[\\sin^{a_k}\\theta+\\cos^{a_k}\\theta>\\frac{1}{2027}\\]\nとなる正の整数 \\(k\\) をすべて求めよ。",
+      "answer": "\\(k\\in\\{3,4,5,6\\}\\)",
+      "solution": "\\(x=\\sin\\theta,\\ y=\\cos\\theta\\) とおき、\\(u_m=x^m+y^m\\) とする。条件から\n  \\[x+y=\\frac{1}{2027},\\qquad xy=\\frac{(\\frac{1}{2027})^2-1}{2},\\]\n  したがって、\\(x,y\\) はともに\n  \\[t^2-\\frac{1}{2027}t-\\frac{1-(\\frac{1}{2027})^2}{2}=0\\]\n  の解である。各辺にそれぞれ \\(x^m,y^m\\) を掛けて加えると、べき和 \\(u_m\\) は\n  \\[u_0=2,\\quad u_1=\\frac{1}{2027},\\quad u_{m+2}=\\frac{1}{2027}u_{m+1}+\\frac{1-(\\frac{1}{2027})^2}{2}u_m\\tag{1}\\]\nを得る。一方、第一の親問題から得た添字列は\n\\[1, 1, 2, 3, 5, 8, 13, 21, 34,\\ldots\\]\nである。\\((1)\\)を厳密有理数で計算すると\n\\[\n\\begin{array}{c|cccccc}\nk&1&2&3&4&5&6\\\\\\hline\na_k&1&1&2&3&5&8\\\\\nu_{a_k}-\\frac{1}{2027}&=0&=0&>0&>0&>0&>0\n\\end{array}\n\\]\nとなる。\n\n残りが有限計算の外へ逃げないことを示す。\\(x=\\alpha>0,\\ y=-\\beta<0\\) と番号を付けると、\\(\\alpha-\\beta=\\frac{1}{2027}\\) である。二次方程式から\n\\[\\max(\\alpha,\\beta)<r=\\frac{71}{100}\\]\nが従う。実際、\\((2r-\\frac{1}{2027})^2>2-(\\frac{1}{2027})^2\\) は整数の大小比較で確認できる。奇数 \\(m\\ge 7\\) では\n\\[|u_m|=\\alpha^m-\\beta^m\\le \\frac{1}{2027}\\,m r^{m-1}<\\frac{1}{2027},\\]\n偶数 \\(m\\ge 26\\) では\n\\[0<u_m\\le2r^m<\\frac{1}{2027}.\\]\n  添字列は正で単調に増加し、第2項以後は狭義単調である。表には、上の評価をまだ適用できない項だけを載せた。表にない項は、奇数なら \\(a_k\\ge7\\)、偶数なら \\(a_k\\ge26\\) なので、いずれも不等式を満たさない。また、\\(a_9=34\\ge26\\) であり、添字列は以後も増加するから、新しい解は生じない。したがって答えは\n\\[k\\in\\{3,4,5,6\\}\\]\nである。なお、\\((1)\\)による逐次計算とは独立に、冪和の \\(2\\times2\\) 伴行列と添字列の伴行列を高速累乗し、表の全項が一致することを確認した。",
+      "morphismChain": [
+        "PositiveSecondOrderRecurrenceElaboration",
+        "CompanionMatrixIndexGeneration",
+        "SymmetricTrigonometricPairElaboration",
+        "NewtonPowerSumRecurrence",
+        "SubsequencePullback",
+        "ExactRationalInequality",
+        "CertifiedTailBound",
+        "IndependentMatrixReplay",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 9
+    },
+    {
+      "cardId": "mortra-certified.indexed-power-sum.33b630d2c7648ffc.equality-set",
+      "family": "certified.recurrence_indexed_power_sum",
+      "domain": "number_theory_analysis",
+      "kernel": "ReversibleGeneratedIndexPowerSumIR",
+      "observable": "indexed_power_sum_equality_solution_set",
+      "querySignature": "classify every generated index attaining the parent symmetric sum",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-090"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-054\u0000fullproblem-090"
+      ],
+      "statement": "数列 \\(\\{a_k\\}\\) を\n\\[a_1=1,\\ a_2=1,\\ a_{k+2}=a_{k+1}+a_k\\]\nで定める。実数 \\(\\theta\\) が\n\\[\\sin\\theta+\\cos\\theta=\\frac{1}{2027}\\]\nを満たすとする。\n\\[\\sin^{a_k}\\theta+\\cos^{a_k}\\theta=\\frac{1}{2027}\\]\nとなる正の整数 \\(k\\) をすべて求めよ。",
+      "answer": "\\(k\\in\\{1,2\\}\\)",
+      "solution": "\\(X=\\sin\\theta,\\ Y=\\cos\\theta\\) とおき、\\(u_m=X^m+Y^m\\) とする。条件から\n\\[\nu_0=2,\\qquad u_1=\\frac{1}{2027},\\qquad\nu_{m+2}=\\frac{1}{2027}u_{m+1}+\\frac{1-(\\frac{1}{2027})^2}{2}u_m.\\tag{1}\n\\]\n漸化式で定まる指数列 \\(a_k\\)を \\((1)\\) の添字へ代入し、厳密有理数で計算すると\n\\[\n\\begin{array}{c|cccccc}\nk&1&2&3&4&5&6\\\\\\hline\na_k&1&1&2&3&5&8\\\\\nu_{a_k}-\\frac{1}{2027}&0&0&\\frac{2026}{2027}&\\frac{2054364}{8328393683}&\\frac{4220413498860}{34219112648758907}&\\frac{35483287185437200456802366}{284990241621789078848784481}\n\\end{array}\n\\]\nを得る。\n\n一方、\\(X=\\alpha>0,\\ Y=-\\beta<0\\) と番号を付けると、検証済みの上界 \\(r=\\frac{71}{100}<1\\) により、奇数 \\(m\\ge7\\) では\n\\[|u_m|\\le \\frac{1}{2027}\\,m r^{m-1}<\\frac{1}{2027},\\]\n偶数 \\(m\\ge26\\) では\n\\[0<u_m\\le2r^m<\\frac{1}{2027}\\]\nとなる。したがって表の外では \\(u_m=\\frac{1}{2027}\\) にも \\(u_m>\\frac{1}{2027}\\) にもならない。よって等号が成り立つ添字は \\[k\\in\\{1,2\\}\\] で尽くされる。\nべき和の伴行列と添字列の伴行列による独立計算でも同じ表と結論を得た。",
+      "morphismChain": [
+        "PositiveSecondOrderRecurrenceElaboration",
+        "CompanionMatrixIndexGeneration",
+        "SymmetricTrigonometricPairElaboration",
+        "NewtonPowerSumRecurrence",
+        "SubsequencePullback",
+        "ExactRationalInequality",
+        "CertifiedTailBound",
+        "IndependentMatrixReplay",
+        "AllParentAblation",
+        "CertifiedObservableProjection"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 10
+    },
+    {
+      "cardId": "mortra-certified.indexed-power-sum.33b630d2c7648ffc.eventual-cutoff",
+      "family": "certified.recurrence_indexed_power_sum",
+      "domain": "number_theory_analysis",
+      "kernel": "ReversibleGeneratedIndexPowerSumIR",
+      "observable": "indexed_power_sum_last_threshold_crossing",
+      "querySignature": "find the minimal index after the final strict threshold crossing",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-090"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-054\u0000fullproblem-090"
+      ],
+      "statement": "数列 \\(\\{a_k\\}\\) を\n\\[a_1=1,\\ a_2=1,\\ a_{k+2}=a_{k+1}+a_k\\]\nで定める。実数 \\(\\theta\\) が\n\\[\\sin\\theta+\\cos\\theta=\\frac{1}{2027}\\]\nを満たすとする。\nすべての \\(k\\ge K\\) に対して\n\\[\\sin^{a_k}\\theta+\\cos^{a_k}\\theta\\le\\frac{1}{2027}\\]\nとなる最小の正整数 \\(K\\) を求めよ。",
+      "answer": "\\(K=7\\)",
+      "solution": "\\(X=\\sin\\theta,\\ Y=\\cos\\theta\\) とおき、\\(u_m=X^m+Y^m\\) とする。条件から\n\\[\nu_0=2,\\qquad u_1=\\frac{1}{2027},\\qquad\nu_{m+2}=\\frac{1}{2027}u_{m+1}+\\frac{1-(\\frac{1}{2027})^2}{2}u_m.\\tag{1}\n\\]\n漸化式で定まる指数列 \\(a_k\\)を \\((1)\\) の添字へ代入し、厳密有理数で計算すると\n\\[\n\\begin{array}{c|cccccc}\nk&1&2&3&4&5&6\\\\\\hline\na_k&1&1&2&3&5&8\\\\\nu_{a_k}-\\frac{1}{2027}&0&0&\\frac{2026}{2027}&\\frac{2054364}{8328393683}&\\frac{4220413498860}{34219112648758907}&\\frac{35483287185437200456802366}{284990241621789078848784481}\n\\end{array}\n\\]\nを得る。\n\n一方、\\(X=\\alpha>0,\\ Y=-\\beta<0\\) と番号を付けると、検証済みの上界 \\(r=\\frac{71}{100}<1\\) により、奇数 \\(m\\ge7\\) では\n\\[|u_m|\\le \\frac{1}{2027}\\,m r^{m-1}<\\frac{1}{2027},\\]\n偶数 \\(m\\ge26\\) では\n\\[0<u_m\\le2r^m<\\frac{1}{2027}\\]\nとなる。したがって表の外では \\(u_m=\\frac{1}{2027}\\) にも \\(u_m>\\frac{1}{2027}\\) にもならない。厳密な不等式が最後に成り立つのは \\(k=6\\) であるから、求める最小値は \\(K=7\\) である。\nべき和の伴行列と添字列の伴行列による独立計算でも同じ表と結論を得た。",
+      "morphismChain": [
+        "PositiveSecondOrderRecurrenceElaboration",
+        "CompanionMatrixIndexGeneration",
+        "SymmetricTrigonometricPairElaboration",
+        "NewtonPowerSumRecurrence",
+        "SubsequencePullback",
+        "ExactRationalInequality",
+        "CertifiedTailBound",
+        "IndependentMatrixReplay",
+        "AllParentAblation",
+        "CertifiedObservableProjection"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 10
+    },
+    {
+      "cardId": "mortra-certified.indexed-power-sum.33b630d2c7648ffc.global-maximum",
+      "family": "certified.recurrence_indexed_power_sum",
+      "domain": "number_theory_analysis",
+      "kernel": "ReversibleGeneratedIndexPowerSumIR",
+      "observable": "indexed_power_sum_global_maximum",
+      "querySignature": "determine the exact global maximum and every attaining generated index",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-090"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-054\u0000fullproblem-090"
+      ],
+      "statement": "数列 \\(\\{a_k\\}\\) を\n\\[a_1=1,\\ a_2=1,\\ a_{k+2}=a_{k+1}+a_k\\]\nで定める。実数 \\(\\theta\\) が\n\\[\\sin\\theta+\\cos\\theta=\\frac{1}{2027}\\]\nを満たすとする。\n数列\n\\[v_k=\\sin^{a_k}\\theta+\\cos^{a_k}\\theta\\]\nの最大値と、その値をとるすべての正整数 \\(k\\) を求めよ。",
+      "answer": "\\(\\max u_{a_k}=1,\\quad k\\in\\{3\\}\\)",
+      "solution": "\\(X=\\sin\\theta,\\ Y=\\cos\\theta\\) とおき、\\(u_m=X^m+Y^m\\) とする。条件から\n\\[\nu_0=2,\\qquad u_1=\\frac{1}{2027},\\qquad\nu_{m+2}=\\frac{1}{2027}u_{m+1}+\\frac{1-(\\frac{1}{2027})^2}{2}u_m.\\tag{1}\n\\]\n漸化式で定まる指数列 \\(a_k\\)を \\((1)\\) の添字へ代入し、厳密有理数で計算すると\n\\[\n\\begin{array}{c|cccccc}\nk&1&2&3&4&5&6\\\\\\hline\na_k&1&1&2&3&5&8\\\\\nu_{a_k}-1&\\frac{-2026}{2027}&\\frac{-2026}{2027}&0&\\frac{-8322230590}{8328393683}&\\frac{-34198010581264606}{34219112648758907}&\\frac{-249366357375857655856782912}{284990241621789078848784481}\n\\end{array}\n\\]\nを得る。\n\n一方、\\(X=\\alpha>0,\\ Y=-\\beta<0\\) と番号を付けると、検証済みの上界 \\(r=\\frac{71}{100}<1\\) により、奇数 \\(m\\ge7\\) では\n\\[|u_m|\\le \\frac{1}{2027}\\,m r^{m-1}<\\frac{1}{2027},\\]\n偶数 \\(m\\ge26\\) では\n\\[0<u_m\\le2r^m<\\frac{1}{2027}\\]\nとなる。したがって表の外では \\(u_m=\\frac{1}{2027}\\) にも \\(u_m>\\frac{1}{2027}\\) にもならない。表の最大値は \\(1\\) であり、尾部では \\(|u_m|<\\frac{1}{2027}\\le1\\) だから、全体の最大値も \\(1\\) である。等号は \\(k\\in\\{3\\}\\) に限る。\nべき和の伴行列と添字列の伴行列による独立計算でも同じ表と結論を得た。",
+      "morphismChain": [
+        "PositiveSecondOrderRecurrenceElaboration",
+        "CompanionMatrixIndexGeneration",
+        "SymmetricTrigonometricPairElaboration",
+        "NewtonPowerSumRecurrence",
+        "SubsequencePullback",
+        "ExactRationalInequality",
+        "CertifiedTailBound",
+        "IndependentMatrixReplay",
+        "AllParentAblation",
+        "CertifiedObservableProjection"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 10
+    },
+    {
+      "cardId": "mortra-certified.three-parent-power-threshold.f853f4646a788943",
+      "family": "certified.three_parent_recurrence_power_angle",
+      "domain": "number_theory_analysis",
+      "kernel": "ReversibleGeneratedIndexPowerSumIR",
+      "observable": "three_parent_indexed_power_sum_threshold_solution_set",
+      "querySignature": "classify recurrence-indexed power sums above an independent rational-angle threshold",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-090",
+        "fullproblem-001"
+      ],
+      "parentCount": 3,
+      "sourceConfigurationKeys": [
+        "fullproblem-001\u0000fullproblem-054\u0000fullproblem-090"
+      ],
+      "statement": "数列 \\(\\{a_k\\}\\) を\n\\[a_1=1,\\quad a_2=1,\\quad a_{k+2}=a_{k+1}+a_k\\]\nで定める。実数 \\(\\theta\\) と角 \\(\\varphi\\) が\n\\[\\sin\\theta+\\cos\\theta=\\frac{1}{2027},\\qquad \\varphi=\\frac{\\pi}{6}\\]\nを満たすとする。\n\\[\\sin^{a_k}\\theta+\\cos^{a_k}\\theta>\\cos(2\\varphi)\\]\nとなる正の整数 \\(k\\) をすべて求めよ。",
+      "answer": "\\(k\\in\\{3\\}\\)",
+      "solution": "\\(X=\\sin\\theta,\\ Y=\\cos\\theta\\) とおき、\\(u_m=X^m+Y^m\\) とする。\n\\[\nX+Y=\\frac{1}{2027},\\qquad XY=\\frac{(\\frac{1}{2027})^2-1}{2}\n\\]\nであるから、べき和は\n\\[\nu_0=2,\\qquad u_1=\\frac{1}{2027},\\qquad\nu_{m+2}=\\frac{1}{2027}u_{m+1}+\\frac{1-(\\frac{1}{2027})^2}{2}u_m\\tag{1}\n\\]\nを満たす。\n\n\\(\\varphi=\\frac{\\pi}{6}\\) なので、倍角の値を厳密に計算すると\n\\[\\cos(2\\varphi)=\\frac{1}{2}\\]\nである。漸化式で得られる指数を \\((1)\\) へ代入すると\n\\[\n\\begin{array}{c|cccccc}\nk&1&2&3&4&5&6\\\\\n\\hline\na_k&1&1&2&3&5&8\\\\\nu_{a_k}-\\frac{1}{2}&-\\frac{2025}{4054}&-\\frac{2025}{4054}&\\frac{1}{2}&-\\frac{8316067497}{16656787366}&-\\frac{34176908513770305}{68438225297517814}&-\\frac{213742473129926232864781343}{569980483243578157697568962}\n\\end{array}\n\\]\nとなる。\n\n残りの項については、元のべき和に対する検証済みの評価から、奇数 \\(m\\ge7\\) と偶数 \\(m\\ge26\\) のいずれでも\n\\[|u_m|<\\frac{1}{2027}<\\frac{1}{2}\\]\nである。表はこの評価を適用する前に必要な項をすべて含む。また、指数列は以後も増加する。したがって新しい解はなく、\n\\[k\\in\\{3\\}\\]\nである。指数列は伴行列の累乗でも再生し、べき和は別の伴行列でも計算して、表の全項が一致することを確認した。",
+      "morphismChain": [
+        "PositiveSecondOrderRecurrenceElaboration",
+        "CompanionMatrixIndexGeneration",
+        "SymmetricTrigonometricPairElaboration",
+        "NewtonPowerSumRecurrence",
+        "SubsequencePullback",
+        "ExactRationalInequality",
+        "CertifiedTailBound",
+        "IndependentMatrixReplay",
+        "RationalAngleElaboration",
+        "CertifiedObservableProjection",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 11
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig.b387eebb79c14218",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_minimal_trigonometric_period",
+      "querySignature": "minimal eventual period and one exact cycle",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-001"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-001\u0000fullproblem-054"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{6}\\) を定め、\\(c_n=\\cos(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(c_{n+T}=c_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,24)\\)。1周期は \\(\\cos \\frac{\\pi}{6}, \\cos \\frac{\\pi}{6}, \\cos \\frac{\\pi}{3}, 0, \\cos \\frac{5\\pi}{6}, \\cos \\frac{2\\pi}{3}, \\cos \\frac{\\pi}{6}, 0, \\cos \\frac{\\pi}{3}, \\cos \\frac{5\\pi}{6}, \\cos \\frac{5\\pi}{6}, 1, \\cos \\frac{5\\pi}{6}, \\cos \\frac{5\\pi}{6}, \\cos \\frac{\\pi}{3}, 0, \\cos \\frac{\\pi}{6}, \\cos \\frac{2\\pi}{3}, \\cos \\frac{5\\pi}{6}, 0, \\cos \\frac{\\pi}{3}, \\cos \\frac{\\pi}{6}, \\cos \\frac{\\pi}{6}, 1\\)。",
+      "solution": "角 \\(\\theta=\\frac{\\pi}{6}\\) に対して余弦の値は \\(F_n\\bmod 12\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 12\\) を考える。遷移行列は\n\\[\nA=\\begin{pmatrix}0&1\\\\1&1\\end{pmatrix}\n\\]\nである。有限個の状態を順に調べると、状態の循環開始位置は 0、状態周期は 24 である。余弦は位相 \\(r\\) と \\(-r\\) を同じ値へ写すため、余弦列の最小周期は 24 まで短くなる。循環前も直接照合すると最小開始添字は \\(N_0=1\\) であり、1周期は \\(\\cos \\frac{\\pi}{6}, \\cos \\frac{\\pi}{6}, \\cos \\frac{\\pi}{3}, 0, \\cos \\frac{5\\pi}{6}, \\cos \\frac{2\\pi}{3}, \\cos \\frac{\\pi}{6}, 0, \\cos \\frac{\\pi}{3}, \\cos \\frac{5\\pi}{6}, \\cos \\frac{5\\pi}{6}, 1, \\cos \\frac{5\\pi}{6}, \\cos \\frac{5\\pi}{6}, \\cos \\frac{\\pi}{3}, 0, \\cos \\frac{\\pi}{6}, \\cos \\frac{2\\pi}{3}, \\cos \\frac{5\\pi}{6}, 0, \\cos \\frac{\\pi}{3}, \\cos \\frac{\\pi}{6}, \\cos \\frac{\\pi}{6}, 1\\) である。独立検算として \\(A^k v_1\\) を二進法で計算し、逐次遷移と全状態で一致することを確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "CyclicCharacterConstruction",
+        "SynchronousProductOrbit",
+        "MinimalObservablePeriod",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-sine-period.c660715a8ebc5249",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_minimal_sine_period",
+      "querySignature": "minimal eventual sine period and one exact cycle",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-001"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-001\u0000fullproblem-054"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{6}\\) を定め、\\(s_n=\\sin(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(s_{n+T}=s_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,24)\\)。1周期は \\(\\sin \\frac{\\pi}{6}, \\sin \\frac{\\pi}{6}, \\sin \\frac{\\pi}{3}, 1, \\sin \\frac{\\pi}{6}, -\\sin \\frac{2\\pi}{3}, \\sin \\frac{\\pi}{6}, -1, -\\sin \\frac{2\\pi}{3}, -\\sin \\frac{5\\pi}{6}, \\sin \\frac{\\pi}{6}, 0, \\sin \\frac{\\pi}{6}, \\sin \\frac{\\pi}{6}, -\\sin \\frac{2\\pi}{3}, 1, \\sin \\frac{\\pi}{6}, \\sin \\frac{\\pi}{3}, \\sin \\frac{\\pi}{6}, -1, \\sin \\frac{\\pi}{3}, -\\sin \\frac{5\\pi}{6}, \\sin \\frac{\\pi}{6}, 0\\)。",
+      "solution": "角 \\(\\theta=\\frac{\\pi}{6}\\) に対して正弦の値は \\(F_n\\bmod 12\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 12\\) を考える。正弦では位相 \\(r\\) と \\(6-r\\) が同じ値を与える。この同値関係で状態をまとめ、状態周期 24 の約数を小さい順にすべて検査すると、正弦列の最小周期は 24 である。循環前も直接照合すると最小開始添字は \\(N_0=1\\) となる。したがって1周期は \\(\\sin \\frac{\\pi}{6}, \\sin \\frac{\\pi}{6}, \\sin \\frac{\\pi}{3}, 1, \\sin \\frac{\\pi}{6}, -\\sin \\frac{2\\pi}{3}, \\sin \\frac{\\pi}{6}, -1, -\\sin \\frac{2\\pi}{3}, -\\sin \\frac{5\\pi}{6}, \\sin \\frac{\\pi}{6}, 0, \\sin \\frac{\\pi}{6}, \\sin \\frac{\\pi}{6}, -\\sin \\frac{2\\pi}{3}, 1, \\sin \\frac{\\pi}{6}, \\sin \\frac{\\pi}{3}, \\sin \\frac{\\pi}{6}, -1, \\sin \\frac{\\pi}{3}, -\\sin \\frac{5\\pi}{6}, \\sin \\frac{\\pi}{6}, 0\\) である。独立検算として遷移行列の二進累乗で全状態を再生し、逐次遷移と一致することを確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "SineCharacterConstruction",
+        "SynchronousProductOrbit",
+        "MinimalSinePeriod",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-unit-circle-point-period.24f0c8d65f2275cc",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_minimal_unit_circle_point_period",
+      "querySignature": "minimal eventual unit-circle point period and one exact orbit",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-001"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-001\u0000fullproblem-054"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{6}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(z_{n+T}=z_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の点を順に書け。",
+      "answer": "\\((N_0,T)=(1,24)\\)。1周期は \\(\\left(\\cos \\frac{\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(\\cos \\frac{\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(0,1\\right), \\left(\\cos \\frac{5\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(\\cos \\frac{2\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(0,-1\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{5\\pi}{6},-\\sin \\frac{5\\pi}{6}\\right), \\left(\\cos \\frac{5\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(1,0\\right), \\left(\\cos \\frac{5\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(\\cos \\frac{5\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(0,1\\right), \\left(\\cos \\frac{\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(\\cos \\frac{2\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{5\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(0,-1\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{6},-\\sin \\frac{5\\pi}{6}\\right), \\left(\\cos \\frac{\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(1,0\\right)\\)。",
+      "solution": "点 \\(z_n\\) は、位相 \\(F_n\\theta\\) を単位円上の点としてそのまま記録する。したがって \\(z_n\\) は \\(F_n\\bmod 12\\) だけで決まる。状態 \\(v_n=(F_n,F_{n+1})\\bmod 12\\) を列挙すると、循環開始位置は 0、状態周期は 24 である。単位円上の点では余弦だけの場合のような \\(r\\) と \\(-r\\) の同一視を行わない。状態周期の約数をすべて検査すると、点列の最小周期は 24、最小開始添字は \\(N_0=1\\) となる。よって1周期は \\(\\left(\\cos \\frac{\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(\\cos \\frac{\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(0,1\\right), \\left(\\cos \\frac{5\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(\\cos \\frac{2\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(0,-1\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{5\\pi}{6},-\\sin \\frac{5\\pi}{6}\\right), \\left(\\cos \\frac{5\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(1,0\\right), \\left(\\cos \\frac{5\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(\\cos \\frac{5\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(0,1\\right), \\left(\\cos \\frac{\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(\\cos \\frac{2\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{5\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(0,-1\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{6},-\\sin \\frac{5\\pi}{6}\\right), \\left(\\cos \\frac{\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(1,0\\right)\\) である。遷移行列の二進累乗による再生も逐次列挙と一致した。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "UnitCirclePointConstruction",
+        "SynchronousProductOrbit",
+        "MinimalPointOrbitPeriod",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-sine-zero-set.a332d495e905f28a",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "sine_zero_index_set",
+      "querySignature": "classify all recurrence indices at which the rational-angle sine vanishes",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-001"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-001\u0000fullproblem-054"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{6}\\) を定める。\\(\\sin(F_n\\theta)=0\\) となるすべての整数 \\(n\\ge 1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 1,\\quad n\\bmod 12\\in\\{0\\}\\}\\)",
+      "solution": "\\(\\sin(F_n\\theta)=0\\) であることは、位相が \\(0\\) または \\(\\pi\\) に一致すること、すなわち \\(F_n1\\equiv0,6\\pmod{12}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 12\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 12 である。周期部分で条件を満たす剰余は \\(\\{0\\}\\)、周期部分の開始添字は 1 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 1,\\quad n\\bmod 12\\in\\{0\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "SineZeroPredicate",
+        "SynchronousProductOrbit",
+        "EventuallyPeriodicEventSet",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-cosine-zero-set.f8e299a5252e7094",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "cosine_zero_index_set",
+      "querySignature": "classify all recurrence indices at which the rational-angle cosine vanishes",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-001"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-001\u0000fullproblem-054"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{6}\\) を定める。\\(\\cos(F_n\\theta)=0\\) となるすべての整数 \\(n\\ge 1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 1,\\quad n\\bmod 12\\in\\{4,8\\}\\}\\)",
+      "solution": "\\(\\cos(F_n\\theta)=0\\) であることは、\\(2F_n1\\equiv6\\pmod{12}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 12\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 12 である。周期部分で条件を満たす剰余は \\(\\{4,8\\}\\)、周期部分の開始添字は 1 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 1,\\quad n\\bmod 12\\in\\{4,8\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "CosineZeroPredicate",
+        "SynchronousProductOrbit",
+        "EventuallyPeriodicEventSet",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-initial-point-return-set.a0a682a61736d824",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "initial_unit_circle_point_return_set",
+      "querySignature": "classify every return time to the initial unit-circle point",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-001"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-001\u0000fullproblem-054"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{6}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。\\(z_n=z_1\\) となるすべての整数 \\(n>1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 2,\\quad n\\bmod 24\\in\\{1,2,7,17,23\\}\\}\\)",
+      "solution": "余弦と正弦の組が等しいことは位相そのものが等しいことと同値なので、\\(z_n=z_1\\) は \\(F_n1\\equiv1\\pmod{12}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 12\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 24 である。周期部分で条件を満たす剰余は \\(\\{1,2,7,17,23\\}\\)、周期部分の開始添字は 2 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 2,\\quad n\\bmod 24\\in\\{1,2,7,17,23\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "InitialPhaseReturnPredicate",
+        "SynchronousProductOrbit",
+        "EventuallyPeriodicReturnSet",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-cosine-sign-profile.303421580badbba6",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_cosine_sign_profile",
+      "querySignature": "minimal eventual cosine-sign period and exact sign multiplicities",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-001"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-001\u0000fullproblem-054"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{6}\\) を定め、\n\\[\n\\varepsilon_n=\\begin{cases}\n1&\\cos(F_n\\theta)>0,\\\\\n0&\\cos(F_n\\theta)=0,\\\\\n-1&\\cos(F_n\\theta)<0\n\\end{cases}\n\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(\\varepsilon_{n+T}=\\varepsilon_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求めよ。さらに、1周期中の \\(1,0,-1\\) の個数をこの順に求めよ。",
+      "answer": "\\((N_0,T)=(1,24)\\)、個数は \\((12,4,8)\\)。",
+      "solution": "位相を \\(r\\pi/6\\) と書く。余弦の符号は \\(2r<6\\) または \\(2r>18\\) のとき正、等号のとき0、それ以外のとき負である。したがって符号は \\(F_n\\bmod 12\\) だけで決まる。合同状態を列挙して得られる符号列について、状態周期 24 の約数をすべて検査すると、最小周期は 24、最小開始添字は \\(N_0=1\\) となる。1周期を数えると、正が 12 個、0が 4 個、負が 8 個である。遷移行列の二進累乗で状態を独立に再生し、符号と個数が一致することも確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "CosineSignCharacter",
+        "SynchronousProductOrbit",
+        "MinimalSignPeriodAndMultiplicity",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig.a44cdc7ecb8af119",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_minimal_trigonometric_period",
+      "querySignature": "minimal eventual period and one exact cycle",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-005"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-005\u0000fullproblem-054"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{2\\pi}{7}\\) を定め、\\(c_n=\\cos(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(c_{n+T}=c_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,8)\\)。1周期は \\(\\cos \\frac{2\\pi}{7}, \\cos \\frac{2\\pi}{7}, \\cos \\frac{4\\pi}{7}, \\cos \\frac{6\\pi}{7}, \\cos \\frac{4\\pi}{7}, \\cos \\frac{2\\pi}{7}, \\cos \\frac{2\\pi}{7}, 1\\)。",
+      "solution": "角 \\(\\theta=\\frac{2\\pi}{7}\\) に対して余弦の値は \\(F_n\\bmod 14\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 14\\) を考える。遷移行列は\n\\[\nA=\\begin{pmatrix}0&1\\\\1&1\\end{pmatrix}\n\\]\nである。有限個の状態を順に調べると、状態の循環開始位置は 0、状態周期は 48 である。余弦は位相 \\(r\\) と \\(-r\\) を同じ値へ写すため、余弦列の最小周期は 8 まで短くなる。循環前も直接照合すると最小開始添字は \\(N_0=1\\) であり、1周期は \\(\\cos \\frac{2\\pi}{7}, \\cos \\frac{2\\pi}{7}, \\cos \\frac{4\\pi}{7}, \\cos \\frac{6\\pi}{7}, \\cos \\frac{4\\pi}{7}, \\cos \\frac{2\\pi}{7}, \\cos \\frac{2\\pi}{7}, 1\\) である。独立検算として \\(A^k v_1\\) を二進法で計算し、逐次遷移と全状態で一致することを確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "CyclicCharacterConstruction",
+        "SynchronousProductOrbit",
+        "MinimalObservablePeriod",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-sine-period.5e58ddb7ee08e891",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_minimal_sine_period",
+      "querySignature": "minimal eventual sine period and one exact cycle",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-005"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-005\u0000fullproblem-054"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{2\\pi}{7}\\) を定め、\\(s_n=\\sin(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(s_{n+T}=s_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,16)\\)。1周期は \\(\\sin \\frac{2\\pi}{7}, \\sin \\frac{2\\pi}{7}, \\sin \\frac{3\\pi}{7}, \\sin \\frac{\\pi}{7}, -\\sin \\frac{4\\pi}{7}, \\sin \\frac{2\\pi}{7}, -\\sin \\frac{5\\pi}{7}, 0, -\\sin \\frac{5\\pi}{7}, -\\sin \\frac{5\\pi}{7}, -\\sin \\frac{4\\pi}{7}, -\\sin \\frac{6\\pi}{7}, \\sin \\frac{3\\pi}{7}, -\\sin \\frac{5\\pi}{7}, \\sin \\frac{2\\pi}{7}, 0\\)。",
+      "solution": "角 \\(\\theta=\\frac{2\\pi}{7}\\) に対して正弦の値は \\(F_n\\bmod 14\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 14\\) を考える。正弦では位相 \\(r\\) と \\(7-r\\) が同じ値を与える。この同値関係で状態をまとめ、状態周期 48 の約数を小さい順にすべて検査すると、正弦列の最小周期は 16 である。循環前も直接照合すると最小開始添字は \\(N_0=1\\) となる。したがって1周期は \\(\\sin \\frac{2\\pi}{7}, \\sin \\frac{2\\pi}{7}, \\sin \\frac{3\\pi}{7}, \\sin \\frac{\\pi}{7}, -\\sin \\frac{4\\pi}{7}, \\sin \\frac{2\\pi}{7}, -\\sin \\frac{5\\pi}{7}, 0, -\\sin \\frac{5\\pi}{7}, -\\sin \\frac{5\\pi}{7}, -\\sin \\frac{4\\pi}{7}, -\\sin \\frac{6\\pi}{7}, \\sin \\frac{3\\pi}{7}, -\\sin \\frac{5\\pi}{7}, \\sin \\frac{2\\pi}{7}, 0\\) である。独立検算として遷移行列の二進累乗で全状態を再生し、逐次遷移と一致することを確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "SineCharacterConstruction",
+        "SynchronousProductOrbit",
+        "MinimalSinePeriod",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-unit-circle-point-period.bc790266914ad0d1",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_minimal_unit_circle_point_period",
+      "querySignature": "minimal eventual unit-circle point period and one exact orbit",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-005"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-005\u0000fullproblem-054"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{2\\pi}{7}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(z_{n+T}=z_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の点を順に書け。",
+      "answer": "\\((N_0,T)=(1,16)\\)。1周期は \\(\\left(\\cos \\frac{2\\pi}{7},\\sin \\frac{2\\pi}{7}\\right), \\left(\\cos \\frac{2\\pi}{7},\\sin \\frac{2\\pi}{7}\\right), \\left(\\cos \\frac{4\\pi}{7},\\sin \\frac{3\\pi}{7}\\right), \\left(\\cos \\frac{6\\pi}{7},\\sin \\frac{\\pi}{7}\\right), \\left(\\cos \\frac{4\\pi}{7},-\\sin \\frac{4\\pi}{7}\\right), \\left(\\cos \\frac{2\\pi}{7},\\sin \\frac{2\\pi}{7}\\right), \\left(\\cos \\frac{2\\pi}{7},-\\sin \\frac{5\\pi}{7}\\right), \\left(1,0\\right), \\left(\\cos \\frac{2\\pi}{7},-\\sin \\frac{5\\pi}{7}\\right), \\left(\\cos \\frac{2\\pi}{7},-\\sin \\frac{5\\pi}{7}\\right), \\left(\\cos \\frac{4\\pi}{7},-\\sin \\frac{4\\pi}{7}\\right), \\left(\\cos \\frac{6\\pi}{7},-\\sin \\frac{6\\pi}{7}\\right), \\left(\\cos \\frac{4\\pi}{7},\\sin \\frac{3\\pi}{7}\\right), \\left(\\cos \\frac{2\\pi}{7},-\\sin \\frac{5\\pi}{7}\\right), \\left(\\cos \\frac{2\\pi}{7},\\sin \\frac{2\\pi}{7}\\right), \\left(1,0\\right)\\)。",
+      "solution": "点 \\(z_n\\) は、位相 \\(F_n\\theta\\) を単位円上の点としてそのまま記録する。したがって \\(z_n\\) は \\(F_n\\bmod 14\\) だけで決まる。状態 \\(v_n=(F_n,F_{n+1})\\bmod 14\\) を列挙すると、循環開始位置は 0、状態周期は 48 である。単位円上の点では余弦だけの場合のような \\(r\\) と \\(-r\\) の同一視を行わない。状態周期の約数をすべて検査すると、点列の最小周期は 16、最小開始添字は \\(N_0=1\\) となる。よって1周期は \\(\\left(\\cos \\frac{2\\pi}{7},\\sin \\frac{2\\pi}{7}\\right), \\left(\\cos \\frac{2\\pi}{7},\\sin \\frac{2\\pi}{7}\\right), \\left(\\cos \\frac{4\\pi}{7},\\sin \\frac{3\\pi}{7}\\right), \\left(\\cos \\frac{6\\pi}{7},\\sin \\frac{\\pi}{7}\\right), \\left(\\cos \\frac{4\\pi}{7},-\\sin \\frac{4\\pi}{7}\\right), \\left(\\cos \\frac{2\\pi}{7},\\sin \\frac{2\\pi}{7}\\right), \\left(\\cos \\frac{2\\pi}{7},-\\sin \\frac{5\\pi}{7}\\right), \\left(1,0\\right), \\left(\\cos \\frac{2\\pi}{7},-\\sin \\frac{5\\pi}{7}\\right), \\left(\\cos \\frac{2\\pi}{7},-\\sin \\frac{5\\pi}{7}\\right), \\left(\\cos \\frac{4\\pi}{7},-\\sin \\frac{4\\pi}{7}\\right), \\left(\\cos \\frac{6\\pi}{7},-\\sin \\frac{6\\pi}{7}\\right), \\left(\\cos \\frac{4\\pi}{7},\\sin \\frac{3\\pi}{7}\\right), \\left(\\cos \\frac{2\\pi}{7},-\\sin \\frac{5\\pi}{7}\\right), \\left(\\cos \\frac{2\\pi}{7},\\sin \\frac{2\\pi}{7}\\right), \\left(1,0\\right)\\) である。遷移行列の二進累乗による再生も逐次列挙と一致した。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "UnitCirclePointConstruction",
+        "SynchronousProductOrbit",
+        "MinimalPointOrbitPeriod",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-sine-zero-set.2d93cb06cf151cb2",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "sine_zero_index_set",
+      "querySignature": "classify all recurrence indices at which the rational-angle sine vanishes",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-005"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-005\u0000fullproblem-054"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{2\\pi}{7}\\) を定める。\\(\\sin(F_n\\theta)=0\\) となるすべての整数 \\(n\\ge 1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 1,\\quad n\\bmod 8\\in\\{0\\}\\}\\)",
+      "solution": "\\(\\sin(F_n\\theta)=0\\) であることは、位相が \\(0\\) または \\(\\pi\\) に一致すること、すなわち \\(F_n2\\equiv0,7\\pmod{14}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 14\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 8 である。周期部分で条件を満たす剰余は \\(\\{0\\}\\)、周期部分の開始添字は 1 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 1,\\quad n\\bmod 8\\in\\{0\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "SineZeroPredicate",
+        "SynchronousProductOrbit",
+        "EventuallyPeriodicEventSet",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-initial-point-return-set.1a06481514fac528",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "initial_unit_circle_point_return_set",
+      "querySignature": "classify every return time to the initial unit-circle point",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-005"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-005\u0000fullproblem-054"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{2\\pi}{7}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。\\(z_n=z_1\\) となるすべての整数 \\(n>1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 2,\\quad n\\bmod 16\\in\\{1,2,6,15\\}\\}\\)",
+      "solution": "余弦と正弦の組が等しいことは位相そのものが等しいことと同値なので、\\(z_n=z_1\\) は \\(F_n2\\equiv2\\pmod{14}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 14\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 16 である。周期部分で条件を満たす剰余は \\(\\{1,2,6,15\\}\\)、周期部分の開始添字は 2 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 2,\\quad n\\bmod 16\\in\\{1,2,6,15\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "InitialPhaseReturnPredicate",
+        "SynchronousProductOrbit",
+        "EventuallyPeriodicReturnSet",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-cosine-sign-profile.6eccd3506a1049f2",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_cosine_sign_profile",
+      "querySignature": "minimal eventual cosine-sign period and exact sign multiplicities",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-005"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-005\u0000fullproblem-054"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{2\\pi}{7}\\) を定め、\n\\[\n\\varepsilon_n=\\begin{cases}\n1&\\cos(F_n\\theta)>0,\\\\\n0&\\cos(F_n\\theta)=0,\\\\\n-1&\\cos(F_n\\theta)<0\n\\end{cases}\n\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(\\varepsilon_{n+T}=\\varepsilon_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求めよ。さらに、1周期中の \\(1,0,-1\\) の個数をこの順に求めよ。",
+      "answer": "\\((N_0,T)=(1,8)\\)、個数は \\((5,0,3)\\)。",
+      "solution": "位相を \\(r\\pi/7\\) と書く。余弦の符号は \\(2r<7\\) または \\(2r>21\\) のとき正、等号のとき0、それ以外のとき負である。したがって符号は \\(F_n\\bmod 14\\) だけで決まる。合同状態を列挙して得られる符号列について、状態周期 48 の約数をすべて検査すると、最小周期は 8、最小開始添字は \\(N_0=1\\) となる。1周期を数えると、正が 5 個、0が 0 個、負が 3 個である。遷移行列の二進累乗で状態を独立に再生し、符号と個数が一致することも確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "CosineSignCharacter",
+        "SynchronousProductOrbit",
+        "MinimalSignPeriodAndMultiplicity",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig.93f68cc87a2b6734",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_minimal_trigonometric_period",
+      "querySignature": "minimal eventual period and one exact cycle",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-018"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-018\u0000fullproblem-054"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{2\\pi}{11}\\) を定め、\\(c_n=\\cos(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(c_{n+T}=c_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,10)\\)。1周期は \\(\\cos \\frac{2\\pi}{11}, \\cos \\frac{2\\pi}{11}, \\cos \\frac{4\\pi}{11}, \\cos \\frac{6\\pi}{11}, \\cos \\frac{10\\pi}{11}, \\cos \\frac{6\\pi}{11}, \\cos \\frac{4\\pi}{11}, \\cos \\frac{2\\pi}{11}, \\cos \\frac{2\\pi}{11}, 1\\)。",
+      "solution": "角 \\(\\theta=\\frac{2\\pi}{11}\\) に対して余弦の値は \\(F_n\\bmod 22\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 22\\) を考える。遷移行列は\n\\[\nA=\\begin{pmatrix}0&1\\\\1&1\\end{pmatrix}\n\\]\nである。有限個の状態を順に調べると、状態の循環開始位置は 0、状態周期は 30 である。余弦は位相 \\(r\\) と \\(-r\\) を同じ値へ写すため、余弦列の最小周期は 10 まで短くなる。循環前も直接照合すると最小開始添字は \\(N_0=1\\) であり、1周期は \\(\\cos \\frac{2\\pi}{11}, \\cos \\frac{2\\pi}{11}, \\cos \\frac{4\\pi}{11}, \\cos \\frac{6\\pi}{11}, \\cos \\frac{10\\pi}{11}, \\cos \\frac{6\\pi}{11}, \\cos \\frac{4\\pi}{11}, \\cos \\frac{2\\pi}{11}, \\cos \\frac{2\\pi}{11}, 1\\) である。独立検算として \\(A^k v_1\\) を二進法で計算し、逐次遷移と全状態で一致することを確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "CyclicCharacterConstruction",
+        "SynchronousProductOrbit",
+        "MinimalObservablePeriod",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-sine-period.6759fdb09834e7b1",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_minimal_sine_period",
+      "querySignature": "minimal eventual sine period and one exact cycle",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-018"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-018\u0000fullproblem-054"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{2\\pi}{11}\\) を定め、\\(s_n=\\sin(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(s_{n+T}=s_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,10)\\)。1周期は \\(\\sin \\frac{2\\pi}{11}, \\sin \\frac{2\\pi}{11}, \\sin \\frac{4\\pi}{11}, \\sin \\frac{5\\pi}{11}, \\sin \\frac{\\pi}{11}, -\\sin \\frac{6\\pi}{11}, \\sin \\frac{4\\pi}{11}, -\\sin \\frac{9\\pi}{11}, \\sin \\frac{2\\pi}{11}, 0\\)。",
+      "solution": "角 \\(\\theta=\\frac{2\\pi}{11}\\) に対して正弦の値は \\(F_n\\bmod 22\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 22\\) を考える。正弦では位相 \\(r\\) と \\(11-r\\) が同じ値を与える。この同値関係で状態をまとめ、状態周期 30 の約数を小さい順にすべて検査すると、正弦列の最小周期は 10 である。循環前も直接照合すると最小開始添字は \\(N_0=1\\) となる。したがって1周期は \\(\\sin \\frac{2\\pi}{11}, \\sin \\frac{2\\pi}{11}, \\sin \\frac{4\\pi}{11}, \\sin \\frac{5\\pi}{11}, \\sin \\frac{\\pi}{11}, -\\sin \\frac{6\\pi}{11}, \\sin \\frac{4\\pi}{11}, -\\sin \\frac{9\\pi}{11}, \\sin \\frac{2\\pi}{11}, 0\\) である。独立検算として遷移行列の二進累乗で全状態を再生し、逐次遷移と一致することを確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "SineCharacterConstruction",
+        "SynchronousProductOrbit",
+        "MinimalSinePeriod",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-unit-circle-point-period.14273deaacefc9a8",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_minimal_unit_circle_point_period",
+      "querySignature": "minimal eventual unit-circle point period and one exact orbit",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-018"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-018\u0000fullproblem-054"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{2\\pi}{11}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(z_{n+T}=z_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の点を順に書け。",
+      "answer": "\\((N_0,T)=(1,10)\\)。1周期は \\(\\left(\\cos \\frac{2\\pi}{11},\\sin \\frac{2\\pi}{11}\\right), \\left(\\cos \\frac{2\\pi}{11},\\sin \\frac{2\\pi}{11}\\right), \\left(\\cos \\frac{4\\pi}{11},\\sin \\frac{4\\pi}{11}\\right), \\left(\\cos \\frac{6\\pi}{11},\\sin \\frac{5\\pi}{11}\\right), \\left(\\cos \\frac{10\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(\\cos \\frac{6\\pi}{11},-\\sin \\frac{6\\pi}{11}\\right), \\left(\\cos \\frac{4\\pi}{11},\\sin \\frac{4\\pi}{11}\\right), \\left(\\cos \\frac{2\\pi}{11},-\\sin \\frac{9\\pi}{11}\\right), \\left(\\cos \\frac{2\\pi}{11},\\sin \\frac{2\\pi}{11}\\right), \\left(1,0\\right)\\)。",
+      "solution": "点 \\(z_n\\) は、位相 \\(F_n\\theta\\) を単位円上の点としてそのまま記録する。したがって \\(z_n\\) は \\(F_n\\bmod 22\\) だけで決まる。状態 \\(v_n=(F_n,F_{n+1})\\bmod 22\\) を列挙すると、循環開始位置は 0、状態周期は 30 である。単位円上の点では余弦だけの場合のような \\(r\\) と \\(-r\\) の同一視を行わない。状態周期の約数をすべて検査すると、点列の最小周期は 10、最小開始添字は \\(N_0=1\\) となる。よって1周期は \\(\\left(\\cos \\frac{2\\pi}{11},\\sin \\frac{2\\pi}{11}\\right), \\left(\\cos \\frac{2\\pi}{11},\\sin \\frac{2\\pi}{11}\\right), \\left(\\cos \\frac{4\\pi}{11},\\sin \\frac{4\\pi}{11}\\right), \\left(\\cos \\frac{6\\pi}{11},\\sin \\frac{5\\pi}{11}\\right), \\left(\\cos \\frac{10\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(\\cos \\frac{6\\pi}{11},-\\sin \\frac{6\\pi}{11}\\right), \\left(\\cos \\frac{4\\pi}{11},\\sin \\frac{4\\pi}{11}\\right), \\left(\\cos \\frac{2\\pi}{11},-\\sin \\frac{9\\pi}{11}\\right), \\left(\\cos \\frac{2\\pi}{11},\\sin \\frac{2\\pi}{11}\\right), \\left(1,0\\right)\\) である。遷移行列の二進累乗による再生も逐次列挙と一致した。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "UnitCirclePointConstruction",
+        "SynchronousProductOrbit",
+        "MinimalPointOrbitPeriod",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-sine-zero-set.dbdefb105031ed11",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "sine_zero_index_set",
+      "querySignature": "classify all recurrence indices at which the rational-angle sine vanishes",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-018"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-018\u0000fullproblem-054"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{2\\pi}{11}\\) を定める。\\(\\sin(F_n\\theta)=0\\) となるすべての整数 \\(n\\ge 1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 1,\\quad n\\bmod 10\\in\\{0\\}\\}\\)",
+      "solution": "\\(\\sin(F_n\\theta)=0\\) であることは、位相が \\(0\\) または \\(\\pi\\) に一致すること、すなわち \\(F_n2\\equiv0,11\\pmod{22}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 22\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 10 である。周期部分で条件を満たす剰余は \\(\\{0\\}\\)、周期部分の開始添字は 1 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 1,\\quad n\\bmod 10\\in\\{0\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "SineZeroPredicate",
+        "SynchronousProductOrbit",
+        "EventuallyPeriodicEventSet",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-initial-point-return-set.b222ebde6df8359a",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "initial_unit_circle_point_return_set",
+      "querySignature": "classify every return time to the initial unit-circle point",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-018"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-018\u0000fullproblem-054"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{2\\pi}{11}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。\\(z_n=z_1\\) となるすべての整数 \\(n>1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 2,\\quad n\\bmod 10\\in\\{1,2,9\\}\\}\\)",
+      "solution": "余弦と正弦の組が等しいことは位相そのものが等しいことと同値なので、\\(z_n=z_1\\) は \\(F_n2\\equiv2\\pmod{22}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 22\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 10 である。周期部分で条件を満たす剰余は \\(\\{1,2,9\\}\\)、周期部分の開始添字は 2 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 2,\\quad n\\bmod 10\\in\\{1,2,9\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "InitialPhaseReturnPredicate",
+        "SynchronousProductOrbit",
+        "EventuallyPeriodicReturnSet",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-cosine-sign-profile.ca479946cac8ffab",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_cosine_sign_profile",
+      "querySignature": "minimal eventual cosine-sign period and exact sign multiplicities",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-018"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-018\u0000fullproblem-054"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{2\\pi}{11}\\) を定め、\n\\[\n\\varepsilon_n=\\begin{cases}\n1&\\cos(F_n\\theta)>0,\\\\\n0&\\cos(F_n\\theta)=0,\\\\\n-1&\\cos(F_n\\theta)<0\n\\end{cases}\n\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(\\varepsilon_{n+T}=\\varepsilon_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求めよ。さらに、1周期中の \\(1,0,-1\\) の個数をこの順に求めよ。",
+      "answer": "\\((N_0,T)=(1,10)\\)、個数は \\((7,0,3)\\)。",
+      "solution": "位相を \\(r\\pi/11\\) と書く。余弦の符号は \\(2r<11\\) または \\(2r>33\\) のとき正、等号のとき0、それ以外のとき負である。したがって符号は \\(F_n\\bmod 22\\) だけで決まる。合同状態を列挙して得られる符号列について、状態周期 30 の約数をすべて検査すると、最小周期は 10、最小開始添字は \\(N_0=1\\) となる。1周期を数えると、正が 7 個、0が 0 個、負が 3 個である。遷移行列の二進累乗で状態を独立に再生し、符号と個数が一致することも確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "CosineSignCharacter",
+        "SynchronousProductOrbit",
+        "MinimalSignPeriodAndMultiplicity",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig.6e8d726320f4a279",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_minimal_trigonometric_period",
+      "querySignature": "minimal eventual period and one exact cycle",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-018"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-018\u0000fullproblem-054"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{11}\\) を定め、\\(c_n=\\cos(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(c_{n+T}=c_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,30)\\)。1周期は \\(\\cos \\frac{\\pi}{11}, \\cos \\frac{\\pi}{11}, \\cos \\frac{2\\pi}{11}, \\cos \\frac{3\\pi}{11}, \\cos \\frac{5\\pi}{11}, \\cos \\frac{8\\pi}{11}, \\cos \\frac{9\\pi}{11}, \\cos \\frac{\\pi}{11}, \\cos \\frac{10\\pi}{11}, -1, \\cos \\frac{\\pi}{11}, \\cos \\frac{10\\pi}{11}, \\cos \\frac{9\\pi}{11}, \\cos \\frac{3\\pi}{11}, \\cos \\frac{6\\pi}{11}, \\cos \\frac{3\\pi}{11}, \\cos \\frac{9\\pi}{11}, \\cos \\frac{10\\pi}{11}, \\cos \\frac{\\pi}{11}, -1, \\cos \\frac{10\\pi}{11}, \\cos \\frac{\\pi}{11}, \\cos \\frac{9\\pi}{11}, \\cos \\frac{8\\pi}{11}, \\cos \\frac{5\\pi}{11}, \\cos \\frac{3\\pi}{11}, \\cos \\frac{2\\pi}{11}, \\cos \\frac{\\pi}{11}, \\cos \\frac{\\pi}{11}, 1\\)。",
+      "solution": "角 \\(\\theta=\\frac{\\pi}{11}\\) に対して余弦の値は \\(F_n\\bmod 22\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 22\\) を考える。遷移行列は\n\\[\nA=\\begin{pmatrix}0&1\\\\1&1\\end{pmatrix}\n\\]\nである。有限個の状態を順に調べると、状態の循環開始位置は 0、状態周期は 30 である。余弦は位相 \\(r\\) と \\(-r\\) を同じ値へ写すため、余弦列の最小周期は 30 まで短くなる。循環前も直接照合すると最小開始添字は \\(N_0=1\\) であり、1周期は \\(\\cos \\frac{\\pi}{11}, \\cos \\frac{\\pi}{11}, \\cos \\frac{2\\pi}{11}, \\cos \\frac{3\\pi}{11}, \\cos \\frac{5\\pi}{11}, \\cos \\frac{8\\pi}{11}, \\cos \\frac{9\\pi}{11}, \\cos \\frac{\\pi}{11}, \\cos \\frac{10\\pi}{11}, -1, \\cos \\frac{\\pi}{11}, \\cos \\frac{10\\pi}{11}, \\cos \\frac{9\\pi}{11}, \\cos \\frac{3\\pi}{11}, \\cos \\frac{6\\pi}{11}, \\cos \\frac{3\\pi}{11}, \\cos \\frac{9\\pi}{11}, \\cos \\frac{10\\pi}{11}, \\cos \\frac{\\pi}{11}, -1, \\cos \\frac{10\\pi}{11}, \\cos \\frac{\\pi}{11}, \\cos \\frac{9\\pi}{11}, \\cos \\frac{8\\pi}{11}, \\cos \\frac{5\\pi}{11}, \\cos \\frac{3\\pi}{11}, \\cos \\frac{2\\pi}{11}, \\cos \\frac{\\pi}{11}, \\cos \\frac{\\pi}{11}, 1\\) である。独立検算として \\(A^k v_1\\) を二進法で計算し、逐次遷移と全状態で一致することを確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "CyclicCharacterConstruction",
+        "SynchronousProductOrbit",
+        "MinimalObservablePeriod",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-sine-period.47e64a404650be4d",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_minimal_sine_period",
+      "querySignature": "minimal eventual sine period and one exact cycle",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-018"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-018\u0000fullproblem-054"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{11}\\) を定め、\\(s_n=\\sin(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(s_{n+T}=s_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,30)\\)。1周期は \\(\\sin \\frac{\\pi}{11}, \\sin \\frac{\\pi}{11}, \\sin \\frac{2\\pi}{11}, \\sin \\frac{3\\pi}{11}, \\sin \\frac{5\\pi}{11}, \\sin \\frac{3\\pi}{11}, -\\sin \\frac{9\\pi}{11}, -\\sin \\frac{10\\pi}{11}, -\\sin \\frac{10\\pi}{11}, 0, \\sin \\frac{\\pi}{11}, -\\sin \\frac{10\\pi}{11}, -\\sin \\frac{9\\pi}{11}, \\sin \\frac{3\\pi}{11}, -\\sin \\frac{6\\pi}{11}, -\\sin \\frac{8\\pi}{11}, -\\sin \\frac{9\\pi}{11}, \\sin \\frac{\\pi}{11}, \\sin \\frac{\\pi}{11}, 0, -\\sin \\frac{10\\pi}{11}, \\sin \\frac{\\pi}{11}, -\\sin \\frac{9\\pi}{11}, -\\sin \\frac{8\\pi}{11}, \\sin \\frac{5\\pi}{11}, -\\sin \\frac{8\\pi}{11}, \\sin \\frac{2\\pi}{11}, -\\sin \\frac{10\\pi}{11}, \\sin \\frac{\\pi}{11}, 0\\)。",
+      "solution": "角 \\(\\theta=\\frac{\\pi}{11}\\) に対して正弦の値は \\(F_n\\bmod 22\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 22\\) を考える。正弦では位相 \\(r\\) と \\(11-r\\) が同じ値を与える。この同値関係で状態をまとめ、状態周期 30 の約数を小さい順にすべて検査すると、正弦列の最小周期は 30 である。循環前も直接照合すると最小開始添字は \\(N_0=1\\) となる。したがって1周期は \\(\\sin \\frac{\\pi}{11}, \\sin \\frac{\\pi}{11}, \\sin \\frac{2\\pi}{11}, \\sin \\frac{3\\pi}{11}, \\sin \\frac{5\\pi}{11}, \\sin \\frac{3\\pi}{11}, -\\sin \\frac{9\\pi}{11}, -\\sin \\frac{10\\pi}{11}, -\\sin \\frac{10\\pi}{11}, 0, \\sin \\frac{\\pi}{11}, -\\sin \\frac{10\\pi}{11}, -\\sin \\frac{9\\pi}{11}, \\sin \\frac{3\\pi}{11}, -\\sin \\frac{6\\pi}{11}, -\\sin \\frac{8\\pi}{11}, -\\sin \\frac{9\\pi}{11}, \\sin \\frac{\\pi}{11}, \\sin \\frac{\\pi}{11}, 0, -\\sin \\frac{10\\pi}{11}, \\sin \\frac{\\pi}{11}, -\\sin \\frac{9\\pi}{11}, -\\sin \\frac{8\\pi}{11}, \\sin \\frac{5\\pi}{11}, -\\sin \\frac{8\\pi}{11}, \\sin \\frac{2\\pi}{11}, -\\sin \\frac{10\\pi}{11}, \\sin \\frac{\\pi}{11}, 0\\) である。独立検算として遷移行列の二進累乗で全状態を再生し、逐次遷移と一致することを確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "SineCharacterConstruction",
+        "SynchronousProductOrbit",
+        "MinimalSinePeriod",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-unit-circle-point-period.55263c29172f158f",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_minimal_unit_circle_point_period",
+      "querySignature": "minimal eventual unit-circle point period and one exact orbit",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-018"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-018\u0000fullproblem-054"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{11}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(z_{n+T}=z_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の点を順に書け。",
+      "answer": "\\((N_0,T)=(1,30)\\)。1周期は \\(\\left(\\cos \\frac{\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(\\cos \\frac{\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(\\cos \\frac{2\\pi}{11},\\sin \\frac{2\\pi}{11}\\right), \\left(\\cos \\frac{3\\pi}{11},\\sin \\frac{3\\pi}{11}\\right), \\left(\\cos \\frac{5\\pi}{11},\\sin \\frac{5\\pi}{11}\\right), \\left(\\cos \\frac{8\\pi}{11},\\sin \\frac{3\\pi}{11}\\right), \\left(\\cos \\frac{9\\pi}{11},-\\sin \\frac{9\\pi}{11}\\right), \\left(\\cos \\frac{\\pi}{11},-\\sin \\frac{10\\pi}{11}\\right), \\left(\\cos \\frac{10\\pi}{11},-\\sin \\frac{10\\pi}{11}\\right), \\left(-1,0\\right), \\left(\\cos \\frac{\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(\\cos \\frac{10\\pi}{11},-\\sin \\frac{10\\pi}{11}\\right), \\left(\\cos \\frac{9\\pi}{11},-\\sin \\frac{9\\pi}{11}\\right), \\left(\\cos \\frac{3\\pi}{11},\\sin \\frac{3\\pi}{11}\\right), \\left(\\cos \\frac{6\\pi}{11},-\\sin \\frac{6\\pi}{11}\\right), \\left(\\cos \\frac{3\\pi}{11},-\\sin \\frac{8\\pi}{11}\\right), \\left(\\cos \\frac{9\\pi}{11},-\\sin \\frac{9\\pi}{11}\\right), \\left(\\cos \\frac{10\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(\\cos \\frac{\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(-1,0\\right), \\left(\\cos \\frac{10\\pi}{11},-\\sin \\frac{10\\pi}{11}\\right), \\left(\\cos \\frac{\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(\\cos \\frac{9\\pi}{11},-\\sin \\frac{9\\pi}{11}\\right), \\left(\\cos \\frac{8\\pi}{11},-\\sin \\frac{8\\pi}{11}\\right), \\left(\\cos \\frac{5\\pi}{11},\\sin \\frac{5\\pi}{11}\\right), \\left(\\cos \\frac{3\\pi}{11},-\\sin \\frac{8\\pi}{11}\\right), \\left(\\cos \\frac{2\\pi}{11},\\sin \\frac{2\\pi}{11}\\right), \\left(\\cos \\frac{\\pi}{11},-\\sin \\frac{10\\pi}{11}\\right), \\left(\\cos \\frac{\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(1,0\\right)\\)。",
+      "solution": "点 \\(z_n\\) は、位相 \\(F_n\\theta\\) を単位円上の点としてそのまま記録する。したがって \\(z_n\\) は \\(F_n\\bmod 22\\) だけで決まる。状態 \\(v_n=(F_n,F_{n+1})\\bmod 22\\) を列挙すると、循環開始位置は 0、状態周期は 30 である。単位円上の点では余弦だけの場合のような \\(r\\) と \\(-r\\) の同一視を行わない。状態周期の約数をすべて検査すると、点列の最小周期は 30、最小開始添字は \\(N_0=1\\) となる。よって1周期は \\(\\left(\\cos \\frac{\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(\\cos \\frac{\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(\\cos \\frac{2\\pi}{11},\\sin \\frac{2\\pi}{11}\\right), \\left(\\cos \\frac{3\\pi}{11},\\sin \\frac{3\\pi}{11}\\right), \\left(\\cos \\frac{5\\pi}{11},\\sin \\frac{5\\pi}{11}\\right), \\left(\\cos \\frac{8\\pi}{11},\\sin \\frac{3\\pi}{11}\\right), \\left(\\cos \\frac{9\\pi}{11},-\\sin \\frac{9\\pi}{11}\\right), \\left(\\cos \\frac{\\pi}{11},-\\sin \\frac{10\\pi}{11}\\right), \\left(\\cos \\frac{10\\pi}{11},-\\sin \\frac{10\\pi}{11}\\right), \\left(-1,0\\right), \\left(\\cos \\frac{\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(\\cos \\frac{10\\pi}{11},-\\sin \\frac{10\\pi}{11}\\right), \\left(\\cos \\frac{9\\pi}{11},-\\sin \\frac{9\\pi}{11}\\right), \\left(\\cos \\frac{3\\pi}{11},\\sin \\frac{3\\pi}{11}\\right), \\left(\\cos \\frac{6\\pi}{11},-\\sin \\frac{6\\pi}{11}\\right), \\left(\\cos \\frac{3\\pi}{11},-\\sin \\frac{8\\pi}{11}\\right), \\left(\\cos \\frac{9\\pi}{11},-\\sin \\frac{9\\pi}{11}\\right), \\left(\\cos \\frac{10\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(\\cos \\frac{\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(-1,0\\right), \\left(\\cos \\frac{10\\pi}{11},-\\sin \\frac{10\\pi}{11}\\right), \\left(\\cos \\frac{\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(\\cos \\frac{9\\pi}{11},-\\sin \\frac{9\\pi}{11}\\right), \\left(\\cos \\frac{8\\pi}{11},-\\sin \\frac{8\\pi}{11}\\right), \\left(\\cos \\frac{5\\pi}{11},\\sin \\frac{5\\pi}{11}\\right), \\left(\\cos \\frac{3\\pi}{11},-\\sin \\frac{8\\pi}{11}\\right), \\left(\\cos \\frac{2\\pi}{11},\\sin \\frac{2\\pi}{11}\\right), \\left(\\cos \\frac{\\pi}{11},-\\sin \\frac{10\\pi}{11}\\right), \\left(\\cos \\frac{\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(1,0\\right)\\) である。遷移行列の二進累乗による再生も逐次列挙と一致した。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "UnitCirclePointConstruction",
+        "SynchronousProductOrbit",
+        "MinimalPointOrbitPeriod",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-sine-zero-set.9855b002e9001c4f",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "sine_zero_index_set",
+      "querySignature": "classify all recurrence indices at which the rational-angle sine vanishes",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-018"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-018\u0000fullproblem-054"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{11}\\) を定める。\\(\\sin(F_n\\theta)=0\\) となるすべての整数 \\(n\\ge 1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 1,\\quad n\\bmod 10\\in\\{0\\}\\}\\)",
+      "solution": "\\(\\sin(F_n\\theta)=0\\) であることは、位相が \\(0\\) または \\(\\pi\\) に一致すること、すなわち \\(F_n1\\equiv0,11\\pmod{22}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 22\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 10 である。周期部分で条件を満たす剰余は \\(\\{0\\}\\)、周期部分の開始添字は 1 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 1,\\quad n\\bmod 10\\in\\{0\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "SineZeroPredicate",
+        "SynchronousProductOrbit",
+        "EventuallyPeriodicEventSet",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-initial-point-return-set.30b63b2e0770ac4b",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "initial_unit_circle_point_return_set",
+      "querySignature": "classify every return time to the initial unit-circle point",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-018"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-018\u0000fullproblem-054"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{11}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。\\(z_n=z_1\\) となるすべての整数 \\(n>1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 2,\\quad n\\bmod 30\\in\\{1,2,11,19,22,29\\}\\}\\)",
+      "solution": "余弦と正弦の組が等しいことは位相そのものが等しいことと同値なので、\\(z_n=z_1\\) は \\(F_n1\\equiv1\\pmod{22}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 22\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 30 である。周期部分で条件を満たす剰余は \\(\\{1,2,11,19,22,29\\}\\)、周期部分の開始添字は 2 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 2,\\quad n\\bmod 30\\in\\{1,2,11,19,22,29\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "InitialPhaseReturnPredicate",
+        "SynchronousProductOrbit",
+        "EventuallyPeriodicReturnSet",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-cosine-sign-profile.5f34a2723856e2e3",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_cosine_sign_profile",
+      "querySignature": "minimal eventual cosine-sign period and exact sign multiplicities",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-018"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-018\u0000fullproblem-054"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{11}\\) を定め、\n\\[\n\\varepsilon_n=\\begin{cases}\n1&\\cos(F_n\\theta)>0,\\\\\n0&\\cos(F_n\\theta)=0,\\\\\n-1&\\cos(F_n\\theta)<0\n\\end{cases}\n\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(\\varepsilon_{n+T}=\\varepsilon_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求めよ。さらに、1周期中の \\(1,0,-1\\) の個数をこの順に求めよ。",
+      "answer": "\\((N_0,T)=(1,30)\\)、個数は \\((17,0,13)\\)。",
+      "solution": "位相を \\(r\\pi/11\\) と書く。余弦の符号は \\(2r<11\\) または \\(2r>33\\) のとき正、等号のとき0、それ以外のとき負である。したがって符号は \\(F_n\\bmod 22\\) だけで決まる。合同状態を列挙して得られる符号列について、状態周期 30 の約数をすべて検査すると、最小周期は 30、最小開始添字は \\(N_0=1\\) となる。1周期を数えると、正が 17 個、0が 0 個、負が 13 個である。遷移行列の二進累乗で状態を独立に再生し、符号と個数が一致することも確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "CosineSignCharacter",
+        "SynchronousProductOrbit",
+        "MinimalSignPeriodAndMultiplicity",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig.015a7c04dc0a0604",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_minimal_trigonometric_period",
+      "querySignature": "minimal eventual period and one exact cycle",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-086"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-025\u0000fullproblem-054",
+        "fullproblem-054\u0000fullproblem-086"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{3}\\) を定め、\\(c_n=\\cos(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(c_{n+T}=c_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,12)\\)。1周期は \\(\\cos \\frac{\\pi}{3}, \\cos \\frac{\\pi}{3}, \\cos \\frac{2\\pi}{3}, -1, \\cos \\frac{\\pi}{3}, \\cos \\frac{2\\pi}{3}, \\cos \\frac{\\pi}{3}, -1, \\cos \\frac{2\\pi}{3}, \\cos \\frac{\\pi}{3}, \\cos \\frac{\\pi}{3}, 1\\)。",
+      "solution": "角 \\(\\theta=\\frac{\\pi}{3}\\) に対して余弦の値は \\(F_n\\bmod 6\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 6\\) を考える。遷移行列は\n\\[\nA=\\begin{pmatrix}0&1\\\\1&1\\end{pmatrix}\n\\]\nである。有限個の状態を順に調べると、状態の循環開始位置は 0、状態周期は 24 である。余弦は位相 \\(r\\) と \\(-r\\) を同じ値へ写すため、余弦列の最小周期は 12 まで短くなる。循環前も直接照合すると最小開始添字は \\(N_0=1\\) であり、1周期は \\(\\cos \\frac{\\pi}{3}, \\cos \\frac{\\pi}{3}, \\cos \\frac{2\\pi}{3}, -1, \\cos \\frac{\\pi}{3}, \\cos \\frac{2\\pi}{3}, \\cos \\frac{\\pi}{3}, -1, \\cos \\frac{2\\pi}{3}, \\cos \\frac{\\pi}{3}, \\cos \\frac{\\pi}{3}, 1\\) である。独立検算として \\(A^k v_1\\) を二進法で計算し、逐次遷移と全状態で一致することを確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "CyclicCharacterConstruction",
+        "SynchronousProductOrbit",
+        "MinimalObservablePeriod",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-sine-period.2e5a1d4cc6a08bd0",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_minimal_sine_period",
+      "querySignature": "minimal eventual sine period and one exact cycle",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-086"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-025\u0000fullproblem-054",
+        "fullproblem-054\u0000fullproblem-086"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{3}\\) を定め、\\(s_n=\\sin(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(s_{n+T}=s_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,24)\\)。1周期は \\(\\sin \\frac{\\pi}{3}, \\sin \\frac{\\pi}{3}, \\sin \\frac{\\pi}{3}, 0, -\\sin \\frac{2\\pi}{3}, \\sin \\frac{\\pi}{3}, \\sin \\frac{\\pi}{3}, 0, -\\sin \\frac{2\\pi}{3}, \\sin \\frac{\\pi}{3}, -\\sin \\frac{2\\pi}{3}, 0, -\\sin \\frac{2\\pi}{3}, -\\sin \\frac{2\\pi}{3}, -\\sin \\frac{2\\pi}{3}, 0, \\sin \\frac{\\pi}{3}, -\\sin \\frac{2\\pi}{3}, -\\sin \\frac{2\\pi}{3}, 0, \\sin \\frac{\\pi}{3}, -\\sin \\frac{2\\pi}{3}, \\sin \\frac{\\pi}{3}, 0\\)。",
+      "solution": "角 \\(\\theta=\\frac{\\pi}{3}\\) に対して正弦の値は \\(F_n\\bmod 6\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 6\\) を考える。正弦では位相 \\(r\\) と \\(3-r\\) が同じ値を与える。この同値関係で状態をまとめ、状態周期 24 の約数を小さい順にすべて検査すると、正弦列の最小周期は 24 である。循環前も直接照合すると最小開始添字は \\(N_0=1\\) となる。したがって1周期は \\(\\sin \\frac{\\pi}{3}, \\sin \\frac{\\pi}{3}, \\sin \\frac{\\pi}{3}, 0, -\\sin \\frac{2\\pi}{3}, \\sin \\frac{\\pi}{3}, \\sin \\frac{\\pi}{3}, 0, -\\sin \\frac{2\\pi}{3}, \\sin \\frac{\\pi}{3}, -\\sin \\frac{2\\pi}{3}, 0, -\\sin \\frac{2\\pi}{3}, -\\sin \\frac{2\\pi}{3}, -\\sin \\frac{2\\pi}{3}, 0, \\sin \\frac{\\pi}{3}, -\\sin \\frac{2\\pi}{3}, -\\sin \\frac{2\\pi}{3}, 0, \\sin \\frac{\\pi}{3}, -\\sin \\frac{2\\pi}{3}, \\sin \\frac{\\pi}{3}, 0\\) である。独立検算として遷移行列の二進累乗で全状態を再生し、逐次遷移と一致することを確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "SineCharacterConstruction",
+        "SynchronousProductOrbit",
+        "MinimalSinePeriod",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-unit-circle-point-period.03150d5e7766a4c0",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_minimal_unit_circle_point_period",
+      "querySignature": "minimal eventual unit-circle point period and one exact orbit",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-086"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-025\u0000fullproblem-054",
+        "fullproblem-054\u0000fullproblem-086"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{3}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(z_{n+T}=z_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の点を順に書け。",
+      "answer": "\\((N_0,T)=(1,24)\\)。1周期は \\(\\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{2\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(-1,0\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{2\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(-1,0\\right), \\left(\\cos \\frac{2\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(1,0\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{2\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(-1,0\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{2\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(-1,0\\right), \\left(\\cos \\frac{2\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(1,0\\right)\\)。",
+      "solution": "点 \\(z_n\\) は、位相 \\(F_n\\theta\\) を単位円上の点としてそのまま記録する。したがって \\(z_n\\) は \\(F_n\\bmod 6\\) だけで決まる。状態 \\(v_n=(F_n,F_{n+1})\\bmod 6\\) を列挙すると、循環開始位置は 0、状態周期は 24 である。単位円上の点では余弦だけの場合のような \\(r\\) と \\(-r\\) の同一視を行わない。状態周期の約数をすべて検査すると、点列の最小周期は 24、最小開始添字は \\(N_0=1\\) となる。よって1周期は \\(\\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{2\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(-1,0\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{2\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(-1,0\\right), \\left(\\cos \\frac{2\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(1,0\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{2\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(-1,0\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{2\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(-1,0\\right), \\left(\\cos \\frac{2\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(1,0\\right)\\) である。遷移行列の二進累乗による再生も逐次列挙と一致した。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "UnitCirclePointConstruction",
+        "SynchronousProductOrbit",
+        "MinimalPointOrbitPeriod",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-sine-zero-set.57570a9dc991a7a4",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "sine_zero_index_set",
+      "querySignature": "classify all recurrence indices at which the rational-angle sine vanishes",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-086"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-025\u0000fullproblem-054",
+        "fullproblem-054\u0000fullproblem-086"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{3}\\) を定める。\\(\\sin(F_n\\theta)=0\\) となるすべての整数 \\(n\\ge 1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 1,\\quad n\\bmod 4\\in\\{0\\}\\}\\)",
+      "solution": "\\(\\sin(F_n\\theta)=0\\) であることは、位相が \\(0\\) または \\(\\pi\\) に一致すること、すなわち \\(F_n1\\equiv0,3\\pmod{6}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 6\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 4 である。周期部分で条件を満たす剰余は \\(\\{0\\}\\)、周期部分の開始添字は 1 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 1,\\quad n\\bmod 4\\in\\{0\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "SineZeroPredicate",
+        "SynchronousProductOrbit",
+        "EventuallyPeriodicEventSet",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-initial-point-return-set.a8785833f3f948c9",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "initial_unit_circle_point_return_set",
+      "querySignature": "classify every return time to the initial unit-circle point",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-086"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-025\u0000fullproblem-054",
+        "fullproblem-054\u0000fullproblem-086"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{3}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。\\(z_n=z_1\\) となるすべての整数 \\(n>1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 2,\\quad n\\bmod 24\\in\\{1,2,7,10,17,23\\}\\}\\)",
+      "solution": "余弦と正弦の組が等しいことは位相そのものが等しいことと同値なので、\\(z_n=z_1\\) は \\(F_n1\\equiv1\\pmod{6}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 6\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 24 である。周期部分で条件を満たす剰余は \\(\\{1,2,7,10,17,23\\}\\)、周期部分の開始添字は 2 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 2,\\quad n\\bmod 24\\in\\{1,2,7,10,17,23\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "InitialPhaseReturnPredicate",
+        "SynchronousProductOrbit",
+        "EventuallyPeriodicReturnSet",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-cosine-sign-profile.9f4c564fba0fe16a",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_cosine_sign_profile",
+      "querySignature": "minimal eventual cosine-sign period and exact sign multiplicities",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-086"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-025\u0000fullproblem-054",
+        "fullproblem-054\u0000fullproblem-086"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{3}\\) を定め、\n\\[\n\\varepsilon_n=\\begin{cases}\n1&\\cos(F_n\\theta)>0,\\\\\n0&\\cos(F_n\\theta)=0,\\\\\n-1&\\cos(F_n\\theta)<0\n\\end{cases}\n\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(\\varepsilon_{n+T}=\\varepsilon_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求めよ。さらに、1周期中の \\(1,0,-1\\) の個数をこの順に求めよ。",
+      "answer": "\\((N_0,T)=(1,12)\\)、個数は \\((7,0,5)\\)。",
+      "solution": "位相を \\(r\\pi/3\\) と書く。余弦の符号は \\(2r<3\\) または \\(2r>9\\) のとき正、等号のとき0、それ以外のとき負である。したがって符号は \\(F_n\\bmod 6\\) だけで決まる。合同状態を列挙して得られる符号列について、状態周期 24 の約数をすべて検査すると、最小周期は 12、最小開始添字は \\(N_0=1\\) となる。1周期を数えると、正が 7 個、0が 0 個、負が 5 個である。遷移行列の二進累乗で状態を独立に再生し、符号と個数が一致することも確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "CosineSignCharacter",
+        "SynchronousProductOrbit",
+        "MinimalSignPeriodAndMultiplicity",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig.a7caf4b761a3f505",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_minimal_trigonometric_period",
+      "querySignature": "minimal eventual period and one exact cycle",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-065"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-054\u0000fullproblem-065"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{2}\\) を定め、\\(c_n=\\cos(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(c_{n+T}=c_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,6)\\)。1周期は \\(0, 0, -1, 0, 0, 1\\)。",
+      "solution": "角 \\(\\theta=\\frac{\\pi}{2}\\) に対して余弦の値は \\(F_n\\bmod 4\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 4\\) を考える。遷移行列は\n\\[\nA=\\begin{pmatrix}0&1\\\\1&1\\end{pmatrix}\n\\]\nである。有限個の状態を順に調べると、状態の循環開始位置は 0、状態周期は 6 である。余弦は位相 \\(r\\) と \\(-r\\) を同じ値へ写すため、余弦列の最小周期は 6 まで短くなる。循環前も直接照合すると最小開始添字は \\(N_0=1\\) であり、1周期は \\(0, 0, -1, 0, 0, 1\\) である。独立検算として \\(A^k v_1\\) を二進法で計算し、逐次遷移と全状態で一致することを確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "CyclicCharacterConstruction",
+        "SynchronousProductOrbit",
+        "MinimalObservablePeriod",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-sine-period.d59bce1a906575a9",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_minimal_sine_period",
+      "querySignature": "minimal eventual sine period and one exact cycle",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-065"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-054\u0000fullproblem-065"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{2}\\) を定め、\\(s_n=\\sin(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(s_{n+T}=s_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,6)\\)。1周期は \\(1, 1, 0, -1, 1, 0\\)。",
+      "solution": "角 \\(\\theta=\\frac{\\pi}{2}\\) に対して正弦の値は \\(F_n\\bmod 4\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 4\\) を考える。正弦では位相 \\(r\\) と \\(2-r\\) が同じ値を与える。この同値関係で状態をまとめ、状態周期 6 の約数を小さい順にすべて検査すると、正弦列の最小周期は 6 である。循環前も直接照合すると最小開始添字は \\(N_0=1\\) となる。したがって1周期は \\(1, 1, 0, -1, 1, 0\\) である。独立検算として遷移行列の二進累乗で全状態を再生し、逐次遷移と一致することを確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "SineCharacterConstruction",
+        "SynchronousProductOrbit",
+        "MinimalSinePeriod",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-unit-circle-point-period.c683ef896253090e",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_minimal_unit_circle_point_period",
+      "querySignature": "minimal eventual unit-circle point period and one exact orbit",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-065"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-054\u0000fullproblem-065"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{2}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(z_{n+T}=z_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の点を順に書け。",
+      "answer": "\\((N_0,T)=(1,6)\\)。1周期は \\(\\left(0,1\\right), \\left(0,1\\right), \\left(-1,0\\right), \\left(0,-1\\right), \\left(0,1\\right), \\left(1,0\\right)\\)。",
+      "solution": "点 \\(z_n\\) は、位相 \\(F_n\\theta\\) を単位円上の点としてそのまま記録する。したがって \\(z_n\\) は \\(F_n\\bmod 4\\) だけで決まる。状態 \\(v_n=(F_n,F_{n+1})\\bmod 4\\) を列挙すると、循環開始位置は 0、状態周期は 6 である。単位円上の点では余弦だけの場合のような \\(r\\) と \\(-r\\) の同一視を行わない。状態周期の約数をすべて検査すると、点列の最小周期は 6、最小開始添字は \\(N_0=1\\) となる。よって1周期は \\(\\left(0,1\\right), \\left(0,1\\right), \\left(-1,0\\right), \\left(0,-1\\right), \\left(0,1\\right), \\left(1,0\\right)\\) である。遷移行列の二進累乗による再生も逐次列挙と一致した。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "UnitCirclePointConstruction",
+        "SynchronousProductOrbit",
+        "MinimalPointOrbitPeriod",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-sine-zero-set.93d7850bb8c7ecb0",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "sine_zero_index_set",
+      "querySignature": "classify all recurrence indices at which the rational-angle sine vanishes",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-065"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-054\u0000fullproblem-065"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{2}\\) を定める。\\(\\sin(F_n\\theta)=0\\) となるすべての整数 \\(n\\ge 1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 1,\\quad n\\bmod 3\\in\\{0\\}\\}\\)",
+      "solution": "\\(\\sin(F_n\\theta)=0\\) であることは、位相が \\(0\\) または \\(\\pi\\) に一致すること、すなわち \\(F_n1\\equiv0,2\\pmod{4}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 4\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 3 である。周期部分で条件を満たす剰余は \\(\\{0\\}\\)、周期部分の開始添字は 1 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 1,\\quad n\\bmod 3\\in\\{0\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "SineZeroPredicate",
+        "SynchronousProductOrbit",
+        "EventuallyPeriodicEventSet",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-cosine-zero-set.dc3a160459ac99a2",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "cosine_zero_index_set",
+      "querySignature": "classify all recurrence indices at which the rational-angle cosine vanishes",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-065"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-054\u0000fullproblem-065"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{2}\\) を定める。\\(\\cos(F_n\\theta)=0\\) となるすべての整数 \\(n\\ge 1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 1,\\quad n\\bmod 3\\in\\{1,2\\}\\}\\)",
+      "solution": "\\(\\cos(F_n\\theta)=0\\) であることは、\\(2F_n1\\equiv2\\pmod{4}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 4\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 3 である。周期部分で条件を満たす剰余は \\(\\{1,2\\}\\)、周期部分の開始添字は 1 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 1,\\quad n\\bmod 3\\in\\{1,2\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "CosineZeroPredicate",
+        "SynchronousProductOrbit",
+        "EventuallyPeriodicEventSet",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-initial-point-return-set.97585341984fb243",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "initial_unit_circle_point_return_set",
+      "querySignature": "classify every return time to the initial unit-circle point",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-065"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-054\u0000fullproblem-065"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{2}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。\\(z_n=z_1\\) となるすべての整数 \\(n>1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 2,\\quad n\\bmod 6\\in\\{1,2,5\\}\\}\\)",
+      "solution": "余弦と正弦の組が等しいことは位相そのものが等しいことと同値なので、\\(z_n=z_1\\) は \\(F_n1\\equiv1\\pmod{4}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 4\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 6 である。周期部分で条件を満たす剰余は \\(\\{1,2,5\\}\\)、周期部分の開始添字は 2 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 2,\\quad n\\bmod 6\\in\\{1,2,5\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "InitialPhaseReturnPredicate",
+        "SynchronousProductOrbit",
+        "EventuallyPeriodicReturnSet",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-cosine-sign-profile.6634d3d7379503c4",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_cosine_sign_profile",
+      "querySignature": "minimal eventual cosine-sign period and exact sign multiplicities",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-065"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-054\u0000fullproblem-065"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{2}\\) を定め、\n\\[\n\\varepsilon_n=\\begin{cases}\n1&\\cos(F_n\\theta)>0,\\\\\n0&\\cos(F_n\\theta)=0,\\\\\n-1&\\cos(F_n\\theta)<0\n\\end{cases}\n\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(\\varepsilon_{n+T}=\\varepsilon_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求めよ。さらに、1周期中の \\(1,0,-1\\) の個数をこの順に求めよ。",
+      "answer": "\\((N_0,T)=(1,6)\\)、個数は \\((1,4,1)\\)。",
+      "solution": "位相を \\(r\\pi/2\\) と書く。余弦の符号は \\(2r<2\\) または \\(2r>6\\) のとき正、等号のとき0、それ以外のとき負である。したがって符号は \\(F_n\\bmod 4\\) だけで決まる。合同状態を列挙して得られる符号列について、状態周期 6 の約数をすべて検査すると、最小周期は 6、最小開始添字は \\(N_0=1\\) となる。1周期を数えると、正が 1 個、0が 4 個、負が 1 個である。遷移行列の二進累乗で状態を独立に再生し、符号と個数が一致することも確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "CosineSignCharacter",
+        "SynchronousProductOrbit",
+        "MinimalSignPeriodAndMultiplicity",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig.fa9875c41c6984bf",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_minimal_trigonometric_period",
+      "querySignature": "minimal eventual period and one exact cycle",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-080"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-054\u0000fullproblem-080"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{4}\\) を定め、\\(c_n=\\cos(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(c_{n+T}=c_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,12)\\)。1周期は \\(\\cos \\frac{\\pi}{4}, \\cos \\frac{\\pi}{4}, 0, \\cos \\frac{3\\pi}{4}, \\cos \\frac{3\\pi}{4}, 1, \\cos \\frac{3\\pi}{4}, \\cos \\frac{3\\pi}{4}, 0, \\cos \\frac{\\pi}{4}, \\cos \\frac{\\pi}{4}, 1\\)。",
+      "solution": "角 \\(\\theta=\\frac{\\pi}{4}\\) に対して余弦の値は \\(F_n\\bmod 8\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 8\\) を考える。遷移行列は\n\\[\nA=\\begin{pmatrix}0&1\\\\1&1\\end{pmatrix}\n\\]\nである。有限個の状態を順に調べると、状態の循環開始位置は 0、状態周期は 12 である。余弦は位相 \\(r\\) と \\(-r\\) を同じ値へ写すため、余弦列の最小周期は 12 まで短くなる。循環前も直接照合すると最小開始添字は \\(N_0=1\\) であり、1周期は \\(\\cos \\frac{\\pi}{4}, \\cos \\frac{\\pi}{4}, 0, \\cos \\frac{3\\pi}{4}, \\cos \\frac{3\\pi}{4}, 1, \\cos \\frac{3\\pi}{4}, \\cos \\frac{3\\pi}{4}, 0, \\cos \\frac{\\pi}{4}, \\cos \\frac{\\pi}{4}, 1\\) である。独立検算として \\(A^k v_1\\) を二進法で計算し、逐次遷移と全状態で一致することを確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "CyclicCharacterConstruction",
+        "SynchronousProductOrbit",
+        "MinimalObservablePeriod",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-sine-period.e6e34e943bfcedb0",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_minimal_sine_period",
+      "querySignature": "minimal eventual sine period and one exact cycle",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-080"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-054\u0000fullproblem-080"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{4}\\) を定め、\\(s_n=\\sin(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(s_{n+T}=s_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,12)\\)。1周期は \\(\\sin \\frac{\\pi}{4}, \\sin \\frac{\\pi}{4}, 1, \\sin \\frac{\\pi}{4}, -\\sin \\frac{3\\pi}{4}, 0, -\\sin \\frac{3\\pi}{4}, -\\sin \\frac{3\\pi}{4}, 1, -\\sin \\frac{3\\pi}{4}, \\sin \\frac{\\pi}{4}, 0\\)。",
+      "solution": "角 \\(\\theta=\\frac{\\pi}{4}\\) に対して正弦の値は \\(F_n\\bmod 8\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 8\\) を考える。正弦では位相 \\(r\\) と \\(4-r\\) が同じ値を与える。この同値関係で状態をまとめ、状態周期 12 の約数を小さい順にすべて検査すると、正弦列の最小周期は 12 である。循環前も直接照合すると最小開始添字は \\(N_0=1\\) となる。したがって1周期は \\(\\sin \\frac{\\pi}{4}, \\sin \\frac{\\pi}{4}, 1, \\sin \\frac{\\pi}{4}, -\\sin \\frac{3\\pi}{4}, 0, -\\sin \\frac{3\\pi}{4}, -\\sin \\frac{3\\pi}{4}, 1, -\\sin \\frac{3\\pi}{4}, \\sin \\frac{\\pi}{4}, 0\\) である。独立検算として遷移行列の二進累乗で全状態を再生し、逐次遷移と一致することを確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "SineCharacterConstruction",
+        "SynchronousProductOrbit",
+        "MinimalSinePeriod",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-unit-circle-point-period.f572dcd114f8bf36",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_minimal_unit_circle_point_period",
+      "querySignature": "minimal eventual unit-circle point period and one exact orbit",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-080"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-054\u0000fullproblem-080"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{4}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(z_{n+T}=z_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の点を順に書け。",
+      "answer": "\\((N_0,T)=(1,12)\\)。1周期は \\(\\left(\\cos \\frac{\\pi}{4},\\sin \\frac{\\pi}{4}\\right), \\left(\\cos \\frac{\\pi}{4},\\sin \\frac{\\pi}{4}\\right), \\left(0,1\\right), \\left(\\cos \\frac{3\\pi}{4},\\sin \\frac{\\pi}{4}\\right), \\left(\\cos \\frac{3\\pi}{4},-\\sin \\frac{3\\pi}{4}\\right), \\left(1,0\\right), \\left(\\cos \\frac{3\\pi}{4},-\\sin \\frac{3\\pi}{4}\\right), \\left(\\cos \\frac{3\\pi}{4},-\\sin \\frac{3\\pi}{4}\\right), \\left(0,1\\right), \\left(\\cos \\frac{\\pi}{4},-\\sin \\frac{3\\pi}{4}\\right), \\left(\\cos \\frac{\\pi}{4},\\sin \\frac{\\pi}{4}\\right), \\left(1,0\\right)\\)。",
+      "solution": "点 \\(z_n\\) は、位相 \\(F_n\\theta\\) を単位円上の点としてそのまま記録する。したがって \\(z_n\\) は \\(F_n\\bmod 8\\) だけで決まる。状態 \\(v_n=(F_n,F_{n+1})\\bmod 8\\) を列挙すると、循環開始位置は 0、状態周期は 12 である。単位円上の点では余弦だけの場合のような \\(r\\) と \\(-r\\) の同一視を行わない。状態周期の約数をすべて検査すると、点列の最小周期は 12、最小開始添字は \\(N_0=1\\) となる。よって1周期は \\(\\left(\\cos \\frac{\\pi}{4},\\sin \\frac{\\pi}{4}\\right), \\left(\\cos \\frac{\\pi}{4},\\sin \\frac{\\pi}{4}\\right), \\left(0,1\\right), \\left(\\cos \\frac{3\\pi}{4},\\sin \\frac{\\pi}{4}\\right), \\left(\\cos \\frac{3\\pi}{4},-\\sin \\frac{3\\pi}{4}\\right), \\left(1,0\\right), \\left(\\cos \\frac{3\\pi}{4},-\\sin \\frac{3\\pi}{4}\\right), \\left(\\cos \\frac{3\\pi}{4},-\\sin \\frac{3\\pi}{4}\\right), \\left(0,1\\right), \\left(\\cos \\frac{\\pi}{4},-\\sin \\frac{3\\pi}{4}\\right), \\left(\\cos \\frac{\\pi}{4},\\sin \\frac{\\pi}{4}\\right), \\left(1,0\\right)\\) である。遷移行列の二進累乗による再生も逐次列挙と一致した。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "UnitCirclePointConstruction",
+        "SynchronousProductOrbit",
+        "MinimalPointOrbitPeriod",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-sine-zero-set.c4dd27110de5af2f",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "sine_zero_index_set",
+      "querySignature": "classify all recurrence indices at which the rational-angle sine vanishes",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-080"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-054\u0000fullproblem-080"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{4}\\) を定める。\\(\\sin(F_n\\theta)=0\\) となるすべての整数 \\(n\\ge 1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 1,\\quad n\\bmod 6\\in\\{0\\}\\}\\)",
+      "solution": "\\(\\sin(F_n\\theta)=0\\) であることは、位相が \\(0\\) または \\(\\pi\\) に一致すること、すなわち \\(F_n1\\equiv0,4\\pmod{8}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 8\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 6 である。周期部分で条件を満たす剰余は \\(\\{0\\}\\)、周期部分の開始添字は 1 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 1,\\quad n\\bmod 6\\in\\{0\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "SineZeroPredicate",
+        "SynchronousProductOrbit",
+        "EventuallyPeriodicEventSet",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-cosine-zero-set.bb40b7d6d50b86a0",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "cosine_zero_index_set",
+      "querySignature": "classify all recurrence indices at which the rational-angle cosine vanishes",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-080"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-054\u0000fullproblem-080"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{4}\\) を定める。\\(\\cos(F_n\\theta)=0\\) となるすべての整数 \\(n\\ge 1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 1,\\quad n\\bmod 6\\in\\{3\\}\\}\\)",
+      "solution": "\\(\\cos(F_n\\theta)=0\\) であることは、\\(2F_n1\\equiv4\\pmod{8}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 8\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 6 である。周期部分で条件を満たす剰余は \\(\\{3\\}\\)、周期部分の開始添字は 1 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 1,\\quad n\\bmod 6\\in\\{3\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "CosineZeroPredicate",
+        "SynchronousProductOrbit",
+        "EventuallyPeriodicEventSet",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-initial-point-return-set.a69a65f5751a429c",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "initial_unit_circle_point_return_set",
+      "querySignature": "classify every return time to the initial unit-circle point",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-080"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-054\u0000fullproblem-080"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{4}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。\\(z_n=z_1\\) となるすべての整数 \\(n>1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 2,\\quad n\\bmod 12\\in\\{1,2,11\\}\\}\\)",
+      "solution": "余弦と正弦の組が等しいことは位相そのものが等しいことと同値なので、\\(z_n=z_1\\) は \\(F_n1\\equiv1\\pmod{8}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 8\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 12 である。周期部分で条件を満たす剰余は \\(\\{1,2,11\\}\\)、周期部分の開始添字は 2 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 2,\\quad n\\bmod 12\\in\\{1,2,11\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "InitialPhaseReturnPredicate",
+        "SynchronousProductOrbit",
+        "EventuallyPeriodicReturnSet",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-cosine-sign-profile.0601ad950b7a2b4e",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "domain": "finite_state_trigonometry",
+      "kernel": "FiniteStateCyclicCharacterFusionIR",
+      "observable": "eventual_cosine_sign_profile",
+      "querySignature": "minimal eventual cosine-sign period and exact sign multiplicities",
+      "parentIds": [
+        "fullproblem-054",
+        "fullproblem-080"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-054\u0000fullproblem-080"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{4}\\) を定め、\n\\[\n\\varepsilon_n=\\begin{cases}\n1&\\cos(F_n\\theta)>0,\\\\\n0&\\cos(F_n\\theta)=0,\\\\\n-1&\\cos(F_n\\theta)<0\n\\end{cases}\n\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(\\varepsilon_{n+T}=\\varepsilon_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求めよ。さらに、1周期中の \\(1,0,-1\\) の個数をこの順に求めよ。",
+      "answer": "\\((N_0,T)=(1,12)\\)、個数は \\((6,2,4)\\)。",
+      "solution": "位相を \\(r\\pi/4\\) と書く。余弦の符号は \\(2r<4\\) または \\(2r>12\\) のとき正、等号のとき0、それ以外のとき負である。したがって符号は \\(F_n\\bmod 8\\) だけで決まる。合同状態を列挙して得られる符号列について、状態周期 12 の約数をすべて検査すると、最小周期は 12、最小開始添字は \\(N_0=1\\) となる。1周期を数えると、正が 6 個、0が 2 個、負が 4 個である。遷移行列の二進累乗で状態を独立に再生し、符号と個数が一致することも確かめた。",
+      "morphismChain": [
+        "IntegerRecurrenceElaboration",
+        "ModuloStateProjection",
+        "RationalAngleElaboration",
+        "CosineSignCharacter",
+        "SynchronousProductOrbit",
+        "MinimalSignPeriodAndMultiplicity",
+        "MatrixReplayVerification",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 8
+    },
+    {
+      "cardId": "mortra-certified.pell-recurrence-product.e7bc6fac4b7b816a",
+      "family": "certified.pell_recurrence_state_product",
+      "domain": "number_theory_dynamical_systems",
+      "kernel": "FiniteGeneratedActionProductIR",
+      "observable": "periodic_congruence_solution_set",
+      "querySignature": "classify-equality-states-in-product-orbit",
+      "parentIds": [
+        "fullproblem-034",
+        "fullproblem-054"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-034\u0000fullproblem-054"
+      ],
+      "statement": "\\(x^2-3y^2=1\\) の非負整数解を、\n\\[\nx_n+y_n\\sqrt{3}=(2+\\sqrt{3})^n\n\\qquad(n=1,2,3,\\ldots)\n\\]\nで定める。また、整数列 \\(\\{a_n\\}\\) を\n\\[a_1=1,\\quad a_2=1,\\quad a_{n+2}=a_{n+1}+a_n\\]\nで定める。合同式\n\\[\nx_n\\equiv a_n\\pmod{3}\n\\]\nを満たす正の整数 \\(n\\) をすべて求めよ。",
+      "answer": "\\(n\\ge1,\\quad n\\bmod 8\\in\\{2,3,5\\}\\)",
+      "solution": "Pell方程式の最小の正の解は \\((2,1)\\) である。連分数法により得られ、正の解はすべて\n\\[\nx_n+y_n\\sqrt{3}=(2+\\sqrt{3})^n\n\\]\nと一意に表される。したがって\n\\[\n\\binom{x_{n+1}}{y_{n+1}}=\n\\begin{pmatrix}2&3\\\\1&2\\end{pmatrix}\n\\binom{x_n}{y_n}\n\\]\nである。一方、与えられた漸化式も\n\\[\n\\binom{a_{n+1}}{a_n}=\n\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\n\\binom{a_n}{a_{n-1}}\n\\]\nと書ける。両者を法 \\(3\\) で同時に追うと、状態\n\\((x_n,y_n,a_n,a_{n+1})\\bmod 3\\) は有限個しかなく、次の表を得る。\n\\[\n\\begin{array}{c|cccccccc}\nn&1&2&3&4&5&6&7&8\\\\\\hline\nx_n\\bmod 3&2&1&2&1&2&1&2&1\\\\\na_n\\bmod 3&1&1&2&0&2&2&1&0\\\\\n\\text{一致}&\\times&\\circ&\\circ&\\times&\\circ&\\times&\\times&\\times\n\\end{array}\n\\]\n第 \\(1\\) 項の完全状態が 24 段後に初めて戻る。さらに一周期内の一致・不一致だけを比較すると最小周期は 8 である。したがって合同条件は以後も周期 8 で繰り返す。\n表で二つの剰余が一致する列だけを取れば、\n\\[n\\ge1,\\quad n\\bmod 8\\in\\{2,3,5\\}\\]\nである。なお、表は逐次漸化式と二つの伴行列の高速累乗を別々に実行して一致を確認している。",
+      "morphismChain": [
+        "PellEquationElaboration",
+        "ContinuedFractionFundamentalUnit",
+        "QuadraticUnitOrbit",
+        "PositiveSecondOrderRecurrenceElaboration",
+        "CompanionMatrixAction",
+        "FiniteStateProduct",
+        "CycleCertificate",
+        "IndependentMatrixReplay",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 9
+    },
+    {
+      "cardId": "mortra-certified.pell-recurrence-product.e7bc6fac4b7b816a.cross-determinant-zero",
+      "family": "certified.pell_recurrence_state_product",
+      "domain": "number_theory_dynamical_systems",
+      "kernel": "FiniteGeneratedActionProductIR",
+      "observable": "pell_recurrence_cross_determinant_solution_set",
+      "querySignature": "classify zero determinants between the Pell and recurrence state vectors",
+      "parentIds": [
+        "fullproblem-034",
+        "fullproblem-054"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-034\u0000fullproblem-054"
+      ],
+      "statement": "\\(x^2-3y^2=1\\) の非負整数解を\n\\[x_n+y_n\\sqrt{3}=(2+\\sqrt{3})^n\\]\nで定め、整数列 \\(\\{a_n\\}\\) を \\[a_1=1,\\quad a_2=1,\\quad a_{n+2}=a_{n+1}+a_n\\] で定める。\n\\[x_na_{n+1}\\equiv y_na_n\\pmod{3}\\]\nを満たす正の整数 \\(n\\) をすべて求めよ。",
+      "answer": "\\(n\\ge1,\\quad n\\bmod 12\\in\\{3,5,10\\}\\)",
+      "solution": "Pell解の列と漸化式の列を、それぞれの \\(2\\times2\\) 整数行列で法 \\(3\\) に落とす。\n同期状態 \\((x_n,y_n,a_n,a_{n+1})\\bmod 3\\) は第 \\(1\\) 項から周期 \\(24\\) で循環する。\nこの同じ状態列へ条件 \\(x_na_{n+1}\\equiv y_na_n\\pmod{3}\\) を適用し、真偽列の周期の真の約数をすべて調べると最小周期は \\(12\\) である。\n成立する剰余類だけを読むと \\[n\\ge1,\\quad n\\bmod 12\\in\\{3,5,10\\}\\] を得る。\n逐次遷移とは独立に二つの行列を二進累乗し、全状態と真偽値が一致することを確認した。",
+      "morphismChain": [
+        "PellEquationElaboration",
+        "ContinuedFractionFundamentalUnit",
+        "QuadraticUnitOrbit",
+        "PositiveSecondOrderRecurrenceElaboration",
+        "CompanionMatrixAction",
+        "FiniteStateProduct",
+        "CycleCertificate",
+        "IndependentMatrixReplay",
+        "AllParentAblation",
+        "CertifiedObservableProjection"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 9
+    },
+    {
+      "cardId": "mortra-certified.pell-recurrence-product.e7bc6fac4b7b816a.difference-vector-period",
+      "family": "certified.pell_recurrence_state_product",
+      "domain": "number_theory_dynamical_systems",
+      "kernel": "FiniteGeneratedActionProductIR",
+      "observable": "pell_recurrence_difference_vector_period",
+      "querySignature": "minimal eventual period of the cross-parent difference vector",
+      "parentIds": [
+        "fullproblem-034",
+        "fullproblem-054"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-034\u0000fullproblem-054"
+      ],
+      "statement": "\\(x^2-3y^2=1\\) の非負整数解を\n\\[x_n+y_n\\sqrt{3}=(2+\\sqrt{3})^n\\]\nで定め、整数列 \\(\\{a_n\\}\\) を \\[a_1=1,\\quad a_2=1,\\quad a_{n+2}=a_{n+1}+a_n\\] で定める。\n\\[d_n=(x_n-a_n,\\ y_n-a_{n+1})\\pmod{3}\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(d_{n+T}=d_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求めよ。",
+      "answer": "\\((N_0,T)=(1,24)\\)",
+      "solution": "二つの行列軌道を法 \\(3\\) で同期させると、完全状態は第 \\(1\\) 項から周期 \\(24\\) で循環する。\n各状態を差ベクトル \\(d_n\\) へ写し、\\(24\\) の約数を小さい順にすべて検査すると、最小周期は \\(24\\) である。\n循環前の状態も順に比較すると最小開始添字は \\(N_0=1\\) となる。\n二つの伴行列の二進累乗でも同じ差ベクトル列を再生し、最小性を独立に確認した。",
+      "morphismChain": [
+        "PellEquationElaboration",
+        "ContinuedFractionFundamentalUnit",
+        "QuadraticUnitOrbit",
+        "PositiveSecondOrderRecurrenceElaboration",
+        "CompanionMatrixAction",
+        "FiniteStateProduct",
+        "CycleCertificate",
+        "IndependentMatrixReplay",
+        "AllParentAblation",
+        "CertifiedObservableProjection"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 9
+    },
+    {
+      "cardId": "mortra-certified.pell-indexed-power-sum.88fa901da61aad9f",
+      "family": "certified.pell_indexed_power_sum",
+      "domain": "number_theory_analysis",
+      "kernel": "ReversibleGeneratedIndexPowerSumIR",
+      "observable": "pell_indexed_power_sum_inequality_solution_set",
+      "querySignature": "classify-pell-indexed-power-sum-inequality",
+      "parentIds": [
+        "fullproblem-034",
+        "fullproblem-090"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-034\u0000fullproblem-090"
+      ],
+      "statement": "Pell方程式 \\(x^2-3y^2=1\\) の正の解を\n\\[\nx_k+y_k\\sqrt{3}=(2+\\sqrt{3})^k\n\\qquad(k=1,2,3,\\ldots)\n\\]\nで定める。実数 \\(\\theta\\) が\n\\[\\sin\\theta+\\cos\\theta=\\frac{1}{2027}\\]\nを満たすとき、\n\\[\\sin^{x_k}\\theta+\\cos^{x_k}\\theta>\\frac{1}{2027}\\]\nとなる正の整数 \\(k\\) をすべて求めよ。",
+      "answer": "\\(k\\in\\{1\\}\\)",
+      "solution": "\\(X=\\sin\\theta,\\ Y=\\cos\\theta\\) とおき、\\(u_m=X^m+Y^m\\) とする。条件から\n\\[X+Y=\\frac{1}{2027},\\qquad XY=\\frac{(\\frac{1}{2027})^2-1}{2},\\]\nしたがって、\\(X,Y\\) はともに\n\\[t^2-\\frac{1}{2027}t-\\frac{1-(\\frac{1}{2027})^2}{2}=0\\]\nの解である。各辺にそれぞれ \\(X^m,Y^m\\) を掛けて加えると、べき和 \\(u_m\\) は\n\\[u_0=2,\\quad u_1=\\frac{1}{2027},\\quad u_{m+2}=\\frac{1}{2027}u_{m+1}+\\frac{1-(\\frac{1}{2027})^2}{2}u_m\\tag{1}\\]\nを満たす。\n一方、\\(x_k+y_k\\sqrt{3}\\) に \\(2+\\sqrt{3}\\) を掛け、\\(1,\\sqrt{3}\\) の係数を比較すると\n\\[\n\\binom{x_{k+1}}{y_{k+1}}=\n\\begin{pmatrix}2&3\\\\1&2\\end{pmatrix}\\binom{x_k}{y_k}\n\\]\nであり、添字列は\n\\[2, 7, 26,\\ldots\\]\nとなる。これを \\((1)\\) に代入して厳密有理数で比較すると\n\\[\n\\begin{array}{c|c}\nk&1\\\\\n\\hline\nx_k&2\\\\\nu_{x_k}-\\frac{1}{2027}&\\frac{2026}{2027}\n\\end{array}\n\\]\nを得る。\n残りを評価する。\\(X=\\alpha>0,\\ Y=-\\beta<0\\) とすると \\(\\alpha-\\beta=\\frac{1}{2027}\\) であり、\n\\[\\max(\\alpha,\\beta)<r=\\frac{71}{100}\\]\nが成り立つ。奇数 \\(m\\ge7\\) では\n\\[|u_m|\\le \\frac{1}{2027}\\,m r^{m-1}<\\frac{1}{2027},\\]\n偶数 \\(m\\ge26\\) では\n\\[0<u_m\\le2r^m<\\frac{1}{2027}.\\]\n\\(x_k\\) は狭義単調に増加する。表には、上の評価をまだ適用できない項だけを載せた。表にない項は、奇数なら \\(x_k\\ge7\\)、偶数なら \\(x_k\\ge26\\) なので、いずれも不等式を満たさない。また、\\(x_3=26\\ge26\\) であり、以後も増加するから、新しい解はない。\nよって\n\\[k\\in\\{1\\}\\]\nである。Pell方程式の解の列は、上の行列計算とは別に二階漸化式でも再生した。べき和も、逐次計算と伴行列の累乗という二つの方法で同じ値になることを確認した。",
+      "morphismChain": [
+        "PellEquationElaboration",
+        "ContinuedFractionFundamentalUnit",
+        "QuadraticUnitOrbit",
+        "SymmetricTrigonometricPairElaboration",
+        "NewtonPowerSumRecurrence",
+        "SubsequencePullback",
+        "ExactRationalInequality",
+        "CertifiedTailBound",
+        "IndependentRecurrenceReplay",
+        "AllParentAblation"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 10
+    },
+    {
+      "cardId": "mortra-certified.pell-indexed-power-sum.88fa901da61aad9f.equality-set",
+      "family": "certified.pell_indexed_power_sum",
+      "domain": "number_theory_analysis",
+      "kernel": "ReversibleGeneratedIndexPowerSumIR",
+      "observable": "indexed_power_sum_equality_solution_set",
+      "querySignature": "classify every generated index attaining the parent symmetric sum",
+      "parentIds": [
+        "fullproblem-034",
+        "fullproblem-090"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-034\u0000fullproblem-090"
+      ],
+      "statement": "Pell方程式 \\(x^2-3y^2=1\\) の正の解を\n\\[x_k+y_k\\sqrt{3}=(2+\\sqrt{3})^k\\]\nで定める。実数 \\(\\theta\\) が\n\\[\\sin\\theta+\\cos\\theta=\\frac{1}{2027}\\]\nを満たすとする。\n\\[\\sin^{x_k}\\theta+\\cos^{x_k}\\theta=\\frac{1}{2027}\\]\nとなる正の整数 \\(k\\) をすべて求めよ。",
+      "answer": "\\(k\\in\\varnothing\\)",
+      "solution": "\\(X=\\sin\\theta,\\ Y=\\cos\\theta\\) とおき、\\(u_m=X^m+Y^m\\) とする。条件から\n\\[\nu_0=2,\\qquad u_1=\\frac{1}{2027},\\qquad\nu_{m+2}=\\frac{1}{2027}u_{m+1}+\\frac{1-(\\frac{1}{2027})^2}{2}u_m.\\tag{1}\n\\]\nPell単数から得られる指数列 \\(x_k\\)を \\((1)\\) の添字へ代入し、厳密有理数で計算すると\n\\[\n\\begin{array}{c|c}\nk&1\\\\\\hline\nx_k&2\\\\\nu_{x_k}-\\frac{1}{2027}&\\frac{2026}{2027}\n\\end{array}\n\\]\nを得る。\n\n一方、\\(X=\\alpha>0,\\ Y=-\\beta<0\\) と番号を付けると、検証済みの上界 \\(r=\\frac{71}{100}<1\\) により、奇数 \\(m\\ge7\\) では\n\\[|u_m|\\le \\frac{1}{2027}\\,m r^{m-1}<\\frac{1}{2027},\\]\n偶数 \\(m\\ge26\\) では\n\\[0<u_m\\le2r^m<\\frac{1}{2027}\\]\nとなる。したがって表の外では \\(u_m=\\frac{1}{2027}\\) にも \\(u_m>\\frac{1}{2027}\\) にもならない。よって等号が成り立つ添字は \\[k\\in\\varnothing\\] で尽くされる。\nPell軌道の二階漸化式とべき和の伴行列による独立計算でも同じ表と結論を得た。",
+      "morphismChain": [
+        "PellEquationElaboration",
+        "ContinuedFractionFundamentalUnit",
+        "QuadraticUnitOrbit",
+        "SymmetricTrigonometricPairElaboration",
+        "NewtonPowerSumRecurrence",
+        "SubsequencePullback",
+        "ExactRationalInequality",
+        "CertifiedTailBound",
+        "IndependentRecurrenceReplay",
+        "AllParentAblation",
+        "CertifiedObservableProjection"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 11
+    },
+    {
+      "cardId": "mortra-certified.pell-indexed-power-sum.88fa901da61aad9f.eventual-cutoff",
+      "family": "certified.pell_indexed_power_sum",
+      "domain": "number_theory_analysis",
+      "kernel": "ReversibleGeneratedIndexPowerSumIR",
+      "observable": "indexed_power_sum_last_threshold_crossing",
+      "querySignature": "find the minimal index after the final strict threshold crossing",
+      "parentIds": [
+        "fullproblem-034",
+        "fullproblem-090"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-034\u0000fullproblem-090"
+      ],
+      "statement": "Pell方程式 \\(x^2-3y^2=1\\) の正の解を\n\\[x_k+y_k\\sqrt{3}=(2+\\sqrt{3})^k\\]\nで定める。実数 \\(\\theta\\) が\n\\[\\sin\\theta+\\cos\\theta=\\frac{1}{2027}\\]\nを満たすとする。\nすべての \\(k\\ge K\\) に対して\n\\[\\sin^{x_k}\\theta+\\cos^{x_k}\\theta\\le\\frac{1}{2027}\\]\nとなる最小の正整数 \\(K\\) を求めよ。",
+      "answer": "\\(K=2\\)",
+      "solution": "\\(X=\\sin\\theta,\\ Y=\\cos\\theta\\) とおき、\\(u_m=X^m+Y^m\\) とする。条件から\n\\[\nu_0=2,\\qquad u_1=\\frac{1}{2027},\\qquad\nu_{m+2}=\\frac{1}{2027}u_{m+1}+\\frac{1-(\\frac{1}{2027})^2}{2}u_m.\\tag{1}\n\\]\nPell単数から得られる指数列 \\(x_k\\)を \\((1)\\) の添字へ代入し、厳密有理数で計算すると\n\\[\n\\begin{array}{c|c}\nk&1\\\\\\hline\nx_k&2\\\\\nu_{x_k}-\\frac{1}{2027}&\\frac{2026}{2027}\n\\end{array}\n\\]\nを得る。\n\n一方、\\(X=\\alpha>0,\\ Y=-\\beta<0\\) と番号を付けると、検証済みの上界 \\(r=\\frac{71}{100}<1\\) により、奇数 \\(m\\ge7\\) では\n\\[|u_m|\\le \\frac{1}{2027}\\,m r^{m-1}<\\frac{1}{2027},\\]\n偶数 \\(m\\ge26\\) では\n\\[0<u_m\\le2r^m<\\frac{1}{2027}\\]\nとなる。したがって表の外では \\(u_m=\\frac{1}{2027}\\) にも \\(u_m>\\frac{1}{2027}\\) にもならない。厳密な不等式が最後に成り立つのは \\(k=1\\) であるから、求める最小値は \\(K=2\\) である。\nPell軌道の二階漸化式とべき和の伴行列による独立計算でも同じ表と結論を得た。",
+      "morphismChain": [
+        "PellEquationElaboration",
+        "ContinuedFractionFundamentalUnit",
+        "QuadraticUnitOrbit",
+        "SymmetricTrigonometricPairElaboration",
+        "NewtonPowerSumRecurrence",
+        "SubsequencePullback",
+        "ExactRationalInequality",
+        "CertifiedTailBound",
+        "IndependentRecurrenceReplay",
+        "AllParentAblation",
+        "CertifiedObservableProjection"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 11
+    },
+    {
+      "cardId": "mortra-certified.pell-indexed-power-sum.88fa901da61aad9f.global-maximum",
+      "family": "certified.pell_indexed_power_sum",
+      "domain": "number_theory_analysis",
+      "kernel": "ReversibleGeneratedIndexPowerSumIR",
+      "observable": "indexed_power_sum_global_maximum",
+      "querySignature": "determine the exact global maximum and every attaining generated index",
+      "parentIds": [
+        "fullproblem-034",
+        "fullproblem-090"
+      ],
+      "parentCount": 2,
+      "sourceConfigurationKeys": [
+        "fullproblem-034\u0000fullproblem-090"
+      ],
+      "statement": "Pell方程式 \\(x^2-3y^2=1\\) の正の解を\n\\[x_k+y_k\\sqrt{3}=(2+\\sqrt{3})^k\\]\nで定める。実数 \\(\\theta\\) が\n\\[\\sin\\theta+\\cos\\theta=\\frac{1}{2027}\\]\nを満たすとする。\n数列\n\\[v_k=\\sin^{x_k}\\theta+\\cos^{x_k}\\theta\\]\nの最大値と、その値をとるすべての正整数 \\(k\\) を求めよ。",
+      "answer": "\\(\\max u_{x_k}=1,\\quad k\\in\\{1\\}\\)",
+      "solution": "\\(X=\\sin\\theta,\\ Y=\\cos\\theta\\) とおき、\\(u_m=X^m+Y^m\\) とする。条件から\n\\[\nu_0=2,\\qquad u_1=\\frac{1}{2027},\\qquad\nu_{m+2}=\\frac{1}{2027}u_{m+1}+\\frac{1-(\\frac{1}{2027})^2}{2}u_m.\\tag{1}\n\\]\nPell単数から得られる指数列 \\(x_k\\)を \\((1)\\) の添字へ代入し、厳密有理数で計算すると\n\\[\n\\begin{array}{c|c}\nk&1\\\\\\hline\nx_k&2\\\\\nu_{x_k}-1&0\n\\end{array}\n\\]\nを得る。\n\n一方、\\(X=\\alpha>0,\\ Y=-\\beta<0\\) と番号を付けると、検証済みの上界 \\(r=\\frac{71}{100}<1\\) により、奇数 \\(m\\ge7\\) では\n\\[|u_m|\\le \\frac{1}{2027}\\,m r^{m-1}<\\frac{1}{2027},\\]\n偶数 \\(m\\ge26\\) では\n\\[0<u_m\\le2r^m<\\frac{1}{2027}\\]\nとなる。したがって表の外では \\(u_m=\\frac{1}{2027}\\) にも \\(u_m>\\frac{1}{2027}\\) にもならない。表の最大値は \\(1\\) であり、尾部では \\(|u_m|<\\frac{1}{2027}\\le1\\) だから、全体の最大値も \\(1\\) である。等号は \\(k\\in\\{1\\}\\) に限る。\nPell軌道の二階漸化式とべき和の伴行列による独立計算でも同じ表と結論を得た。",
+      "morphismChain": [
+        "PellEquationElaboration",
+        "ContinuedFractionFundamentalUnit",
+        "QuadraticUnitOrbit",
+        "SymmetricTrigonometricPairElaboration",
+        "NewtonPowerSumRecurrence",
+        "SubsequencePullback",
+        "ExactRationalInequality",
+        "CertifiedTailBound",
+        "IndependentRecurrenceReplay",
+        "AllParentAblation",
+        "CertifiedObservableProjection"
+      ],
+      "exactBackend": true,
+      "independentCheck": true,
+      "auditPassed": true,
+      "auditFailures": [],
+      "proofStepCount": 11
+    }
+  ],
+  "elapsedMs": 1578
+}

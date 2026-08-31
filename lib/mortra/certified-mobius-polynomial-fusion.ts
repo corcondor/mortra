@@ -228,6 +228,60 @@ function rootListLabel(degree: number): string {
   return Array.from({ length: degree }, (_, index) => `S${subscript(index + 1)}`).join(', ')
 }
 
+type Rational = { n: bigint; d: bigint }
+
+function rationalGcd(left: bigint, right: bigint): bigint {
+  let a = left < 0n ? -left : left
+  let b = right < 0n ? -right : right
+  while (b !== 0n) [a, b] = [b, a % b]
+  return a || 1n
+}
+
+function rational(numerator: bigint, denominator = 1n): Rational {
+  if (denominator === 0n) throw new Error('zero denominator')
+  const sign = denominator < 0n ? -1n : 1n
+  const divisor = rationalGcd(numerator, denominator)
+  return { n: sign * numerator / divisor, d: sign * denominator / divisor }
+}
+
+function addRational(left: Rational, right: Rational): Rational {
+  return rational(left.n * right.d + right.n * left.d, left.d * right.d)
+}
+
+function multiplyRational(left: Rational, right: Rational): Rational {
+  return rational(left.n * right.n, left.d * right.d)
+}
+
+function negateRational(value: Rational): Rational {
+  return { n: -value.n, d: value.d }
+}
+
+function rationalValueTex(value: Rational): string {
+  if (value.d === 1n) return String(value.n)
+  return value.n < 0n
+    ? '-\\frac{' + (-value.n) + '}{' + value.d + '}'
+    : '\\frac{' + value.n + '}{' + value.d + '}'
+}
+
+function rationalPowerSums(coefficients: PolyZ, maximum: number): Rational[] {
+  const degree = coefficients.length - 1
+  const leading = coefficients[degree]
+  const monic = Array.from(
+    { length: degree + 1 },
+    (_, index) => index === 0 ? rational(1n) : rational(coefficients[degree - index], leading),
+  )
+  const sums: Rational[] = [rational(BigInt(degree))]
+  for (let exponent = 1; exponent <= maximum; exponent += 1) {
+    let total = rational(0n)
+    for (let index = 1; index < exponent; index += 1) {
+      total = addRational(total, multiplyRational(monic[index], sums[exponent - index]))
+    }
+    total = addRational(total, multiplyRational(rational(BigInt(exponent)), monic[exponent]))
+    sums.push(negateRational(total))
+  }
+  return sums
+}
+
 function hash(value: unknown, length = 16): string {
   return createHash('sha256').update(JSON.stringify(value)).digest('hex').slice(0, length)
 }
@@ -246,6 +300,7 @@ ${solution}
 
 export function synthesizeCertifiedMobiusPolynomialFusion(
   parents: CertifiedFusionParent[],
+  requested = 1,
 ): CertifiedFusionCard[] {
   const startedAt = Date.now()
   if (parents.length !== 2 || new Set(parents.map(parent => parent.id)).size !== 2) return []
@@ -323,7 +378,7 @@ export function synthesizeCertifiedMobiusPolynomialFusion(
     { id: 'ablation', claim: 'removing the polynomial removes the root object; removing the transformation removes the transport', verifier: 'typed two-port ablation' },
   ]
 
-  return [{
+  const baseCard: CertifiedFusionCard = {
     id: `mortra-${structureId}`,
     statement_tex: statement,
     answer_tex: answer,
@@ -479,5 +534,131 @@ export function synthesizeCertifiedMobiusPolynomialFusion(
       valid_hypotheses: 1,
       elapsed_ms: Date.now() - startedAt,
     },
-  }]
+  }
+
+  const maximumPower = Math.min(3, degree)
+  const powerSums = rationalPowerSums(transformed, maximumPower).slice(1)
+  const powerSumSymbols = powerSums.map((_, index) => `p_${index + 1}`)
+  const powerSumAnswer = powerSums
+    .map((value, index) => `${powerSumSymbols[index]}=${rationalValueTex(value)}`)
+    .join(',\\quad ')
+  const monicCoefficients = Array.from(
+    { length: maximumPower },
+    (_, index) => rational(transformed[degree - index - 1], leadingCoefficient),
+  )
+  const newtonRows = powerSums.map((value, index) => {
+    const exponent = index + 1
+    const terms = [`p_${exponent}`]
+    for (let coefficient = 1; coefficient < exponent; coefficient += 1) {
+      terms.push(`${rationalValueTex(monicCoefficients[coefficient - 1])}p_${exponent - coefficient}`)
+    }
+    terms.push(rationalValueTex(multiplyRational(
+      rational(BigInt(exponent)),
+      monicCoefficients[exponent - 1],
+    )))
+    return `${terms.join('+').replaceAll('+-', '-')}=0,\\qquad p_${exponent}=${rationalValueTex(value)}`
+  })
+  const powerSumStatement = String.raw`\(f(${sourceSymbol})=${sourcePolynomial}\) とし、その根を \(\alpha_1,\ldots,\alpha_${degree}\) とする。一次分数変換
+\[T(${sourceSymbol})=\frac{${forwardNumerator}}{${forwardDenominator}}\]
+により \(${targetSymbol}_i=T(\alpha_i)\) とおく。\(m=1,\ldots,${maximumPower}\) に対し
+\[p_m=\sum_{i=1}^{${degree}}${targetSymbol}_i^m\]
+とするとき、\(p_1,\ldots,p_${maximumPower}\) を求めよ。`
+  const powerSumSolution = String.raw`逆変換
+\[${sourceSymbol}=\frac{${inverseNumerator}}{${inverseDenominator}}\]
+を \(f\) へ代入して分母を払うと、変換後の根を重複度込みでちょうど根にもつ多項式は
+\[P(${targetSymbol})=${targetPolynomial}\]
+である。最高次係数 \(${leadingCoefficient}\) で割り、
+\[\frac{P(${targetSymbol})}{${leadingCoefficient}}
+=${targetSymbol}^{${degree}}+c_1${targetSymbol}^{${degree - 1}}+\cdots+c_${degree}\]
+と書く。Newtonの公式
+\[p_m+c_1p_{m-1}+\cdots+c_{m-1}p_1+mc_m=0\qquad(1\le m\le${maximumPower})\]
+を順に用いると
+\[
+${newtonRows.join('\\\\\n')}
+\]
+を得る。したがって
+\[${powerSumAnswer}\]
+である。逆代入による多項式恒等式も係数ごとに再検証したので、ここで用いた根配置に過不足はない。`
+  const powerSumMorphisms = [...morphisms, 'CertifiedObservableProjection']
+  const powerSumStructureId = `${structureId}.initial-power-sums`
+  const powerSumCard: CertifiedFusionCard = {
+    ...baseCard,
+    id: `mortra-${powerSumStructureId}`,
+    statement_tex: powerSumStatement,
+    answer_tex: `\\(${powerSumAnswer}\\)`,
+    solution_tex: powerSumSolution,
+    solution_document_tex: texDocument(powerSumStatement, powerSumSolution),
+    family_id: 'certified.mobius_polynomial_power_sums',
+    morphism_chain: powerSumMorphisms,
+    proof_roadmap: [
+      ...(baseCard.proof_roadmap ?? []),
+      {
+        morphism_id: 'CertifiedObservableProjection',
+        label_ja: '変換後の根配置からべき和を読み取る',
+        source_ja: '変換後の根をもつ多項式',
+        target_ja: '最初のべき和',
+        role_ja: '新しい根の計算法を加えず、同じ証明済み多項式へNewtonの公式を適用します。',
+      },
+    ],
+    proof_obligations: [
+      ...(baseCard.proof_obligations ?? []),
+      { id: 'transported-power-sums', claim_ja: '表示したべき和が変換後の根全体のべき和に一致する', status: 'verified' },
+    ],
+    diagram: {
+      version: 1,
+      kind: 'morphism',
+      title: '一つの変換済み根配置から複数の量を読む',
+      caption: '根の輸送と逆向き検証は共通です。最後の観測だけを固定点方程式からべき和へ替えます。',
+      nodes: [`f(x)=0 の ${degree} 根`, 'T(x)', rootListLabel(degree), 'P(S)=0', `p₁,…,p${maximumPower}`],
+    },
+    verification: {
+      ...baseCard.verification,
+      method: `${baseCard.verification.method} + exact Newton power-sum identities`,
+      samples: [...baseCard.verification.samples, maximumPower],
+    },
+    difficulty: {
+      band: baseCard.difficulty.band,
+      score: baseCard.difficulty.score + 0.4,
+    },
+    fusion_derivation: {
+      ...baseCard.fusion_derivation,
+      reason: `${baseCard.fusion_derivation.reason}; the same transported root object supports a second certified observable`,
+      bridges: baseCard.fusion_derivation.bridges.map(bridge => ({
+        ...bridge,
+        produces: 'transported_root_power_sums',
+      })),
+    },
+    structure_blueprint: {
+      ...baseCard.structure_blueprint,
+      id: powerSumStructureId,
+      observable: 'transported_root_power_sums',
+      operators: powerSumMorphisms,
+      tags: [...baseCard.structure_blueprint.tags, 'newton-sums', 'observable-projection'],
+      morphismChain: powerSumMorphisms,
+      proofCertificate: [
+        ...baseCard.structure_blueprint.proofCertificate,
+        {
+          id: 'power-sum-projection',
+          claim: 'the reported initial power sums follow from the transported polynomial by exact Newton identities',
+          verifier: 'BigInt rational Newton recurrence',
+        },
+      ],
+      structuralUniqueness: {
+        ...baseCard.structure_blueprint.structuralUniqueness,
+        querySignature: 'compute initial power sums of the transported root configuration',
+        normalForm: powerSumAnswer,
+        numericInstanceConstants: [
+          ...baseCard.structure_blueprint.structuralUniqueness.numericInstanceConstants,
+          maximumPower,
+        ],
+      },
+    },
+    search_evidence: {
+      hypotheses_evaluated: maximumPower,
+      valid_hypotheses: maximumPower,
+      elapsed_ms: Date.now() - startedAt,
+    },
+  }
+
+  return [baseCard, powerSumCard].slice(0, Math.max(0, requested))
 }

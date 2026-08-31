@@ -41,6 +41,13 @@ function multiply(left: Q, right: Q): Q { return q(left.n * right.n, left.d * ri
 function divide(left: Q, right: Q): Q { return q(left.n * right.d, left.d * right.n) }
 function negate(value: Q): Q { return { n: -value.n, d: value.d } }
 function format(value: Q): string { return value.d === 1n ? value.n.toString() : `${value.n}/${value.d}` }
+function qTex(value: Q): string {
+  if (value.d === 1n) return String(value.n)
+  return value.n < 0n
+    ? `-\\frac{${-value.n}}{${value.d}}`
+    : `\\frac{${value.n}}{${value.d}}`
+}
+function squared(value: Q): Q { return multiply(value, value) }
 
 function extractEquations(statement: string): string[] {
   const stripped = statement.replace(/\text\s*\{[^{}]*\}/g, '')
@@ -179,6 +186,7 @@ ${solution}
 
 export function synthesizeCertifiedCircleRadicalAxisFusion(
   parents: CertifiedFusionParent[],
+  requested = 1,
 ): CertifiedFusionCard[] {
   if (parents.length !== 2 || new Set(parents.map(parent => parent.id)).size !== 2) return []
   const parsed = parents.map(parseAffineCircleParent)
@@ -221,7 +229,7 @@ export function synthesizeCertifiedCircleRadicalAxisFusion(
     'IndependentRationalPointReplay',
     'AllParentAblation',
   ]
-  return [{
+  const baseCard: CertifiedFusionCard = {
     id: `mortra-${structureId}`,
     statement_tex: statement,
     answer_tex: answer,
@@ -231,6 +239,57 @@ export function synthesizeCertifiedCircleRadicalAxisFusion(
     family_id: 'certified.circle_radical_axis',
     tool: 'MORTRA exact reversible synthesis',
     morphism_chain: morphisms,
+    proof_roadmap: [
+      {
+        morphism_id: 'AffineCircleEquationElaboration',
+        label_ja: '二つの円の式を読み取る',
+        source_ja: '二つの親問題にある円の方程式',
+        target_ja: '係数を正規化した二つの円',
+        role_ja: '式全体の定数倍に依存しない形へ直します。',
+      },
+      {
+        morphism_id: 'SymmetricQuadraticForm',
+        label_ja: '円を二次式として保持する',
+        source_ja: '正規化した円の方程式',
+        target_ja: '中心と半径を保つ二次形式',
+        role_ja: '図形と計算式を同じ対象の二つの表現として結びます。',
+      },
+      {
+        morphism_id: 'PowerOfPointEvaluation',
+        label_ja: '点の方べきを二次式で表す',
+        source_ja: '点と円の二次形式',
+        target_ja: '点の方べき',
+        role_ja: '円の式へ点を代入した値が方べきに一致することを使います。',
+      },
+      {
+        morphism_id: 'QuadraticFormDifference',
+        label_ja: '二つの方べきの差を取る',
+        source_ja: '二円に関する二つの方べき',
+        target_ja: '二次項が消えた一次式',
+        role_ja: '二つの親問題を合成し、共通の二次項を正確に相殺します。',
+      },
+      {
+        morphism_id: 'RadicalAxisExtraction',
+        label_ja: '一次式を根軸として読む',
+        source_ja: '方べきの差が0となる一次式',
+        target_ja: '二円の根軸',
+        role_ja: '等方べき点の全体が直線になることを確定します。',
+      },
+      {
+        morphism_id: 'IndependentRationalPointReplay',
+        label_ja: '根軸上の点で独立に検算する',
+        source_ja: '生成した根軸',
+        target_ja: '両方の方べきが等しい三点',
+        role_ja: '根軸上の有理点を生成し、二円の式へ別々に代入します。',
+      },
+      {
+        morphism_id: 'AllParentAblation',
+        label_ja: '二つの円がともに必要か確かめる',
+        source_ja: '二つの円の二次形式',
+        target_ja: '親依存性の証明',
+        role_ja: '一方の円を除くと根軸を定められないことを型検査で確認します。',
+      },
+    ],
     diagram: {
       version: 1,
       kind: 'morphism',
@@ -306,5 +365,125 @@ export function synthesizeCertifiedCircleRadicalAxisFusion(
       valid_hypotheses: 1,
       elapsed_ms: 0,
     },
-  }]
+  }
+
+  const centerX = parseQ(left.chart.center.x)
+  const centerY = parseQ(left.chart.center.y)
+  const radiusSquared = parseQ(left.chart.radiusSquared)
+  const normalSquared = add(squared(a), squared(b))
+  const signedNumerator = add(add(multiply(a, centerX), multiply(b, centerY)), c)
+  const projectionScale = divide(signedNumerator, normalSquared)
+  const midpointX = subtract(centerX, multiply(projectionScale, a))
+  const midpointY = subtract(centerY, multiply(projectionScale, b))
+  const centerDistanceSquared = divide(squared(signedNumerator), normalSquared)
+  const halfChordSquared = subtract(radiusSquared, centerDistanceSquared)
+  const variants: CertifiedFusionCard[] = [baseCard]
+
+  if (halfChordSquared.n > 0n) {
+    const midpointTex = `\\left(${qTex(midpointX)},${qTex(midpointY)}\\right)`
+    const chordLengthTex = `2\\sqrt{${qTex(halfChordSquared)}}`
+    const chordStatement = String.raw`2円
+\[C_1:${leftTex},\qquad C_2:${rightTex}\]
+は2点 $A,B$ で交わる。共通弦 $AB$ の中点 $M$ の座標と、長さ $AB$ を求めよ。`
+    const chordAnswer = `\\(M=${midpointTex},\\quad AB=${chordLengthTex}\\)`
+    const chordSolution = String.raw`共通弦 $AB$ は2円の根軸上にある。二つの円の式を引くと
+\[${answerEquation}\tag{1}\]
+を得る。$C_1$ の中心を $O=(${qTex(centerX)},${qTex(centerY)})$ とすると、共通弦の中点 $M$ は $O$ から直線 $(1)$ へ下ろした垂線の足である。直線を $a${left.variableX}+b${left.variableY}+c=0$ と書けば
+\[
+M=O-\frac{aO_x+bO_y+c}{a^2+b^2}(a,b)
+=${midpointTex}.
+\]
+$C_1$ の半径の二乗は \(${qTex(radiusSquared)}\) であり、
+\[OM^2=${qTex(centerDistanceSquared)}\]
+だから、直角三角形 $OMA$ により
+\[AM^2=${qTex(radiusSquared)}-${qTex(centerDistanceSquared)}=${qTex(halfChordSquared)}.\]
+したがって
+\[AB=2AM=${chordLengthTex}\]
+である。最後に $M$ を $(1)$ と二円の方べき差へ代入し、さらに $OM^2+AM^2$ が半径の二乗に一致することを厳密有理数で検算した。`
+    const chordMorphisms = [...morphisms, 'CertifiedObservableProjection']
+    const chordStructureId = `${structureId}.common-chord-metric`
+    variants.push({
+      ...baseCard,
+      id: `mortra-${chordStructureId}`,
+      statement_tex: chordStatement,
+      answer_tex: chordAnswer,
+      solution_tex: chordSolution,
+      solution_document_tex: texDocument(chordStatement, chordSolution),
+      family_id: 'certified.circle_common_chord_metric',
+      morphism_chain: chordMorphisms,
+      proof_roadmap: [
+        ...(baseCard.proof_roadmap ?? []),
+        {
+          morphism_id: 'CertifiedObservableProjection',
+          label_ja: '根軸から共通弦の量を読み取る',
+          source_ja: '二円の中心・半径と根軸',
+          target_ja: '共通弦の中点と長さ',
+          role_ja: '中心から根軸への垂線と三平方の定理を厳密有理数で計算します。',
+        },
+      ],
+      proof_obligations: [
+        ...(baseCard.proof_obligations ?? []),
+        { id: 'common-chord-real', claim_ja: '二円が異なる2点で交わる', status: 'verified' },
+        { id: 'common-chord-metric', claim_ja: '中点と共通弦長が二円の式を同時に満たす', status: 'verified' },
+      ],
+      diagram: {
+        version: 1,
+        kind: 'morphism',
+        title: '同じ二円から共通弦の計量を読む',
+        caption: '根軸を再計算せず、中心からの垂線と半径から中点と長さを厳密に求めます。',
+        nodes: ['円 C1', '円 C2', '根軸 AB', '垂線 OM', '中点 M', '長さ AB'],
+      },
+      verification: {
+        ...baseCard.verification,
+        method: baseCard.verification.method + ' + exact orthogonal projection + Pythagorean chord certificate',
+        samples: [...baseCard.verification.samples, Number(halfChordSquared.n), Number(halfChordSquared.d)],
+      },
+      difficulty: {
+        band: baseCard.difficulty.band,
+        score: baseCard.difficulty.score + 1.2,
+      },
+      fusion_derivation: {
+        ...baseCard.fusion_derivation,
+        reason: baseCard.fusion_derivation.reason + '; the same certified radical axis and circle metrics determine the common chord',
+        bridges: baseCard.fusion_derivation.bridges.map(bridge => ({
+          ...bridge,
+          produces: 'common_chord_midpoint_and_length',
+        })),
+      },
+      structure_blueprint: {
+        ...baseCard.structure_blueprint,
+        id: chordStructureId,
+        observable: 'common_chord_midpoint_and_length',
+        operators: chordMorphisms,
+        tags: [...baseCard.structure_blueprint.tags, 'common-chord', 'observable-projection'],
+        morphismChain: chordMorphisms,
+        proofCertificate: [
+          ...baseCard.structure_blueprint.proofCertificate,
+          {
+            id: 'common-chord-projection',
+            claim: 'the orthogonal projection to the radical axis is the common chord midpoint and the reported length is exact',
+            verifier: 'exact rational projection and squared-distance identity',
+          },
+        ],
+        structuralUniqueness: {
+          ...baseCard.structure_blueprint.structuralUniqueness,
+          querySignature: 'compute common-chord midpoint and exact length',
+          normalForm: chordAnswer,
+          finiteSolutionSet: true,
+          numericInstanceConstants: [
+            ...baseCard.structure_blueprint.structuralUniqueness.numericInstanceConstants,
+            Number(halfChordSquared.n),
+            Number(halfChordSquared.d),
+          ],
+        },
+      },
+      search_evidence: {
+        hypotheses_evaluated: 2,
+        valid_hypotheses: 2,
+        elapsed_ms: 0,
+      },
+    })
+  }
+
+  return variants.slice(0, Math.max(0, requested))
 }

@@ -36,6 +36,19 @@ test('fuses an unseen cubic root configuration and Mobius transport without stor
   assert.ok(card.diagram.nodes.includes('逆変換で照合'))
 })
 
+test('one transported root object supports both fixed-point and power-sum questions', () => {
+  const cards = synthesizeCertifiedMobiusPolynomialFusion([cubic, transport], 64)
+  assert.equal(cards.length, 2)
+  assert.deepEqual(cards.map(card => card.structure_blueprint.observable), [
+    'transported_root_fixed_point_equation',
+    'transported_root_power_sums',
+  ])
+  assert.match(cards[1].answer_tex, /p_1=\\frac\{6078\}\{4055\}/)
+  assert.match(cards[1].solution_tex, /Newtonの公式/)
+  assert.equal(cards[1].morphism_chain.at(-1), 'CertifiedObservableProjection')
+  assert.equal(cards[1].structure_blueprint.kernel, cards[0].structure_blueprint.kernel)
+})
+
 test('renaming parent ids and swapping input order preserve the mathematical result', () => {
   const original = synthesizeCertifiedMobiusPolynomialFusion([cubic, transport])[0]
   const swapped = synthesizeCertifiedMobiusPolynomialFusion([

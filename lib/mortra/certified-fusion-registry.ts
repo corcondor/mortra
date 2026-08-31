@@ -24,6 +24,11 @@ export const CERTIFIED_FUSION_CAPABILITIES = [
     labelEn: 'second-order recurrences and trigonometric power sums',
   },
   {
+    id: 'three-parent-recurrence-power-angle',
+    labelJa: '二階漸化式・三角冪和・有理角の三親合成',
+    labelEn: 'three-parent composition of recurrence, trigonometric power sum, and rational angle',
+  },
+  {
     id: 'pell-recurrence-state-product',
     labelJa: 'Pell軌道と二階漸化式',
     labelEn: 'Pell orbits and second-order recurrences',
@@ -49,7 +54,13 @@ export function synthesizeCertifiedFusions(
   parents: CertifiedFusionParent[],
   requested = 1,
 ): CertifiedFusionCard[] {
+  const requestedParentIds = [...new Set(parents.map(parent => parent.id))].sort()
   return planCertifiedFusions(parents, requested).cards
+    .filter(card => {
+      const cardParentIds = [...new Set(card.parent_ids)].sort()
+      return cardParentIds.length === requestedParentIds.length
+        && cardParentIds.every((parentId, index) => parentId === requestedParentIds[index])
+    })
     .map(card => attachCertifiedGenerationAudit(card, parents))
     .filter(card => card.generation_audit?.passed)
 }

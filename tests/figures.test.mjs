@@ -5,33 +5,46 @@
  */
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
-import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import test from 'node:test'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)))
-const outDir = mkdtempSync(join(tmpdir(), 'sakumon-fig-'))
-for (const name of ['figures', 'kinematics']) {
+const scratchDir = mkdtempSync(join(tmpdir(), 'sakumon-fig-'))
+const sourceDir = join(scratchDir, 'lib')
+const glyphDir = join(scratchDir, 'data', 'strokes')
+const compiledDir = join(scratchDir, 'out', 'lib')
+mkdirSync(sourceDir, { recursive: true })
+mkdirSync(glyphDir, { recursive: true })
+
+const modules = ['figures', 'kinematics', 'handwriting']
+for (const name of modules) {
   writeFileSync(
-    join(outDir, `${name}.ts`),
+    join(sourceDir, `${name}.ts`),
     readFileSync(join(repoRoot, 'lib', `${name}.ts`), 'utf8'),
     'utf8',
   )
 }
+writeFileSync(
+  join(glyphDir, 'ja.json'),
+  readFileSync(join(repoRoot, 'data', 'strokes', 'ja.json'), 'utf8'),
+  'utf8',
+)
 execFileSync(
   process.execPath,
   [
     join(repoRoot, 'node_modules', 'typescript', 'bin', 'tsc'),
-    join(outDir, 'figures.ts'), join(outDir, 'kinematics.ts'),
-    '--target', 'es2021', '--module', 'esnext',
-    '--moduleResolution', 'bundler', '--skipLibCheck',
+    ...modules.map(name => join(sourceDir, `${name}.ts`)),
+    '--target', 'es2021', '--module', 'commonjs',
+    '--moduleResolution', 'node', '--resolveJsonModule', '--esModuleInterop',
+    '--skipLibCheck', '--outDir', join(scratchDir, 'out'), '--rootDir', scratchDir,
   ],
   { cwd: repoRoot, stdio: 'pipe' },
 )
-const fig = await import(pathToFileURL(join(outDir, 'figures.js')).href)
-const kin = await import(pathToFileURL(join(outDir, 'kinematics.js')).href)
+const fig = await import(pathToFileURL(join(compiledDir, 'figures.js')).href)
+const kin = await import(pathToFileURL(join(compiledDir, 'kinematics.js')).href)
 
 const BOARD_UP = [0, 0, 1]
 const DEFAULT_APPROACH = [0, 1, 0]

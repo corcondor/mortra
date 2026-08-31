@@ -1,25 +1,36 @@
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
-import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import test from 'node:test'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)))
-const outDir = mkdtempSync(join(tmpdir(), 'mathos-live-'))
-const entry = join(outDir, 'mathos-live.ts')
+const scratchDir = mkdtempSync(join(tmpdir(), 'mathos-live-'))
+const sourceDir = join(scratchDir, 'lib')
+const mortraDir = join(sourceDir, 'mortra')
+const compiledDir = join(scratchDir, 'out', 'lib')
+mkdirSync(mortraDir, { recursive: true })
+const entry = join(sourceDir, 'mathos-live.ts')
 writeFileSync(entry, readFileSync(join(repoRoot, 'lib', 'mathos-live.ts'), 'utf8'), 'utf8')
+writeFileSync(
+  join(mortraDir, 'calculus-analysis.ts'),
+  readFileSync(join(repoRoot, 'lib', 'mortra', 'calculus-analysis.ts'), 'utf8'),
+  'utf8',
+)
 execFileSync(
   process.execPath,
   [
     join(repoRoot, 'node_modules', 'typescript', 'bin', 'tsc'),
-    entry, '--target', 'es2022', '--module', 'esnext',
-    '--moduleResolution', 'bundler', '--skipLibCheck',
+    entry, join(mortraDir, 'calculus-analysis.ts'),
+    '--target', 'es2022', '--module', 'commonjs',
+    '--moduleResolution', 'node', '--skipLibCheck',
+    '--outDir', join(scratchDir, 'out'), '--rootDir', scratchDir,
   ],
   { cwd: repoRoot, stdio: 'pipe' },
 )
-const mathos = await import(pathToFileURL(join(outDir, 'mathos-live.js')).href)
+const mathos = await import(pathToFileURL(join(compiledDir, 'mathos-live.js')).href)
 
 test('解析タグを指定すると積分状態列と不等式制約を接続する', () => {
   const problem = mathos.generateLiveProblem({

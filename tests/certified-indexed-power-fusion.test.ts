@@ -39,6 +39,25 @@ test('unseen corpus endpoints produce a new exact indexed power-sum problem', ()
   assert.equal(card.diagram.kind, 'state')
 })
 
+test('one certified indexed orbit supports several distinct questions without new solving rules', () => {
+  const cards = synthesizeCertifiedIndexedPowerSumFusion([recurrenceParent, powerParent], 64)
+  assert.equal(cards.length, 4)
+  assert.deepEqual(cards.map(card => card.structure_blueprint.observable), [
+    'indexed_power_sum_inequality_solution_set',
+    'indexed_power_sum_equality_solution_set',
+    'indexed_power_sum_last_threshold_crossing',
+    'indexed_power_sum_global_maximum',
+  ])
+  assert.deepEqual(cards.map(card => card.answer_tex), [
+    String.raw`\(k\in\{3,4,5,6\}\)`,
+    String.raw`\(k\in\{1,2\}\)`,
+    String.raw`\(K=7\)`,
+    String.raw`\(\max u_{a_k}=1,\quad k\in\{3\}\)`,
+  ])
+  assert.ok(cards.slice(1).every(card => card.morphism_chain.at(-1) === 'CertifiedObservableProjection'))
+  assert.equal(new Set(cards.map(card => card.structure_blueprint.kernel)).size, 1)
+})
+
 test('generated TeX preserves commands and contains no control characters', () => {
   const card = synthesizeCertifiedIndexedPowerSumFusion([recurrenceParent, powerParent])[0]
   assert.ok(card)
@@ -114,4 +133,16 @@ test('parsers read mathematical structure rather than labels', () => {
 test('the public certified registry dispatches the new cross-domain engine', () => {
   const cards = synthesizeCertifiedFusions([recurrenceParent, powerParent], 1)
   assert.equal(cards[0]?.family_id, 'certified.recurrence_indexed_power_sum')
+})
+
+test('the public registry preserves all observable projections requested from one kernel', () => {
+  const cards = synthesizeCertifiedFusions([recurrenceParent, powerParent], 64)
+  assert.equal(cards.length, 4)
+  assert.equal(new Set(cards.map(card => card.structure_blueprint.kernel)).size, 1)
+  assert.deepEqual(cards.map(card => card.structure_blueprint.observable), [
+    'indexed_power_sum_inequality_solution_set',
+    'indexed_power_sum_equality_solution_set',
+    'indexed_power_sum_last_threshold_crossing',
+    'indexed_power_sum_global_maximum',
+  ])
 })

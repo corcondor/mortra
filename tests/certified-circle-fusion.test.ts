@@ -5,6 +5,7 @@ import {
   parseAffineCircleParent,
   synthesizeCertifiedCircleRadicalAxisFusion,
 } from '../lib/mortra/certified-circle-fusion.js'
+import { synthesizeCertifiedFusions } from '../lib/mortra/certified-fusion-registry.js'
 
 const parents = [
   { id: 'left', statement: '円 $x^2+y^2-6x+4y-3=0$ を考える。' },
@@ -30,6 +31,25 @@ test('generates a proof-and-diagram radical-axis problem from two circle parents
   assert.equal(cards[0].diagram.kind, 'morphism')
   assert.equal(cards[0].verification.independent_check, true)
   assert.equal(cards[0].fusion_derivation.ablationPassed, true)
+})
+
+test('projects more than one exact question from the same certified circle kernel', () => {
+  const cards = synthesizeCertifiedCircleRadicalAxisFusion(parents, 64)
+
+  assert.equal(cards.length, 2)
+  assert.deepEqual(cards.map(card => card.structure_blueprint.kernel), [
+    'ReversibleAffineCircleQuadraticFormIR',
+    'ReversibleAffineCircleQuadraticFormIR',
+  ])
+  assert.deepEqual(cards.map(card => card.structure_blueprint.observable), [
+    'radical_axis',
+    'common_chord_midpoint_and_length',
+  ])
+  assert.match(cards[1].statement_tex, /共通弦/)
+  assert.match(cards[1].answer_tex, /M=\\left\(\\frac\{5\}\{8\},\\frac\{3\}\{8\}\\right\)/)
+  assert.match(cards[1].answer_tex, /AB=2\\sqrt\{\\frac\{151\}\{32\}\}/)
+  assert.equal(cards[1].morphism_chain.at(-1), 'CertifiedObservableProjection')
+  assert.equal(cards[1].verification.independent_check, true)
 })
 
 test('common scaling of either equation preserves the generated result', () => {
@@ -61,4 +81,14 @@ test('rejects a non-circle endpoint and concentric pairs', () => {
     { id: 'c1', statement: '円 $x^2+y^2-1=0$ を考える。' },
     { id: 'c2', statement: '円 $x^2+y^2-4=0$ を考える。' },
   ]), [])
+})
+
+test('the public registry exposes both exact circle observables', () => {
+  const cards = synthesizeCertifiedFusions(parents, 64)
+  assert.equal(cards.length, 2)
+  assert.deepEqual(cards.map(card => card.structure_blueprint.observable), [
+    'radical_axis',
+    'common_chord_midpoint_and_length',
+  ])
+  assert.ok(cards.every(card => card.verification.exact_backend && card.verification.independent_check))
 })

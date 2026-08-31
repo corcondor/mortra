@@ -211,7 +211,10 @@ function findTailThresholds(sum: Q, bound: Q): { odd: number; even: number } | n
   return odd && even ? { odd, even } : null
 }
 
-function recurrenceTerms(spec: ParsedPositiveRecurrence, cutoff: number): bigint[] | null {
+export function generatePositiveRecurrenceTerms(
+  spec: ParsedPositiveRecurrence,
+  cutoff: number,
+): bigint[] | null {
   const [a, b] = spec.coefficients
   const terms = [...spec.initial]
   while (terms.at(-1)! < BigInt(cutoff) && terms.length < 256) {
@@ -313,12 +316,14 @@ function integerSetTex(values: number[]): string {
 }
 
 export type CertifiedIndexedPowerSumEvaluation = {
+  sum: Q
   bound: Q
   thresholds: { odd: number; even: number }
   cutoff: number
   checked: Array<{
     index: number
     exponent: bigint
+    value: Q
     difference: Q
     passed: boolean
   }>
@@ -382,6 +387,7 @@ export function certifyIndexedPowerSumTerms(
     return {
       index,
       exponent,
+      value: sequential,
       difference: subtract(sequential, powerParent.sum),
       passed: compare(sequential, powerParent.sum) > 0,
     }
@@ -404,6 +410,7 @@ export function certifyIndexedPowerSumTerms(
     '\\]',
   ].join('\n')
   return {
+    sum: powerParent.sum,
     bound,
     thresholds,
     cutoff,
@@ -415,8 +422,245 @@ export function certifyIndexedPowerSumTerms(
   }
 }
 
+export type IndexedPowerVariantContext = {
+  definitionTex: string
+  indexSymbol: string
+  exponentTex: string
+  exponentSequenceJa: string
+  independentReplayJa: string
+}
+
+function comparisonTable(
+  evaluation: CertifiedIndexedPowerSumEvaluation,
+  indexLabel: string,
+  exponentLabel: string,
+  label: string,
+  cells: string[],
+): string {
+  if (!evaluation.checked.length) return String.raw`\[\text{直接比較すべき項はない。}\]`
+  return String.raw`\[
+\begin{array}{c|${'c'.repeat(evaluation.checked.length)}}
+${indexLabel}&${evaluation.checked.map(item => item.index).join('&')}\\\hline
+${exponentLabel}&${evaluation.checked.map(item => item.exponent).join('&')}\\
+${label}&${cells.join('&')}
+\end{array}
+\]`
+}
+
+function indexedPowerVariant(
+  base: CertifiedFusionCard,
+  evaluation: CertifiedIndexedPowerSumEvaluation,
+  context: IndexedPowerVariantContext,
+  spec: {
+    id: string
+    observable: string
+    querySignature: string
+    statement: string
+    answer: string
+    conclusion: string
+    tableLabel: string
+    tableCells: string[]
+    active: (item: CertifiedIndexedPowerSumEvaluation['checked'][number]) => boolean
+    validHypotheses: number
+    finiteSolutionSet: boolean
+    difficultyOffset: number
+    certificateClaim: string
+  },
+  startedAt: number,
+): CertifiedFusionCard {
+  const c = evaluation.sumTex
+  const table = comparisonTable(
+    evaluation,
+    context.indexSymbol,
+    context.exponentTex,
+    spec.tableLabel,
+    spec.tableCells,
+  )
+  const solution = String.raw`\(X=\sin\theta,\ Y=\cos\theta\) とおき、\(u_m=X^m+Y^m\) とする。条件から
+\[
+u_0=2,\qquad u_1=${c},\qquad
+u_{m+2}=${c}u_{m+1}+\frac{1-(${c})^2}{2}u_m.\tag{1}
+\]
+${context.exponentSequenceJa}を \((1)\) の添字へ代入し、厳密有理数で計算すると
+${table}
+を得る。
+
+一方、\(X=\alpha>0,\ Y=-\beta<0\) と番号を付けると、検証済みの上界 \(r=${qTex(evaluation.bound)}<1\) により、奇数 \(m\ge${evaluation.thresholds.odd}\) では
+\[|u_m|\le ${c}\,m r^{m-1}<${c},\]
+偶数 \(m\ge${evaluation.thresholds.even}\) では
+\[0<u_m\le2r^m<${c}\]
+となる。したがって表の外では \(u_m=${c}\) にも \(u_m>${c}\) にもならない。${spec.conclusion}
+${context.independentReplayJa}でも同じ表と結論を得た。`
+  const morphisms = [...base.morphism_chain, 'CertifiedObservableProjection']
+  const exactStates = evaluation.checked.map(item => ({
+    id: `${context.indexSymbol}${item.index}`,
+    label: `${context.indexSymbol}=${item.index}, ${context.exponentTex}=${item.exponent}`,
+    active: spec.active(item),
+  }))
+  const structureId = `${base.structure_blueprint.id}.${spec.id}`
+  return {
+    ...base,
+    id: `mortra-${structureId}`,
+    statement_tex: spec.statement,
+    answer_tex: spec.answer,
+    solution_tex: solution,
+    solution_document_tex: texDocument(spec.statement, solution),
+    morphism_chain: morphisms,
+    proof_roadmap: [
+      ...(base.proof_roadmap ?? []),
+      {
+        morphism_id: 'CertifiedObservableProjection',
+        label_ja: '同じ証明済み状態から問いを取り出す',
+        source_ja: '添字付きべき和と有限尾部証明',
+        target_ja: '等号・最大値・最終通過位置',
+        role_ja: '新しい計算法を足さず、同じ厳密状態へ別の観測条件を適用します。',
+      },
+    ],
+    diagram: {
+      version: 1,
+      kind: 'state',
+      title: '一つのべき和軌道から別の問いを読む',
+      caption: '指数列とべき和の証明済み状態は共通です。色付きの状態だけが今回の問いに該当します。',
+      states: [...exactStates, { id: 'tail', label: `${context.exponentTex} \ge ${evaluation.cutoff}: 一括評価`, terminal: true }],
+      transitions: [
+        ...exactStates.slice(1).map((state, index) => ({
+          from: exactStates[index].id,
+          to: state.id,
+          label: '次の項',
+        })),
+        { from: exactStates.at(-1)?.id ?? 'start', to: 'tail', label: '以後を一括証明' },
+      ],
+    },
+    verification: {
+      ...base.verification,
+      method: `${base.verification.method} + reusable certified observable projection`,
+      samples: [...base.verification.samples, spec.validHypotheses],
+    },
+    difficulty: {
+      band: base.difficulty.band,
+      score: base.difficulty.score + spec.difficultyOffset,
+    },
+    fusion_derivation: {
+      ...base.fusion_derivation,
+      reason: `${base.fusion_derivation.reason}; the query is a reusable projection of the same certified orbit`,
+      bridges: base.fusion_derivation.bridges.map(bridge => ({
+        ...bridge,
+        produces: spec.observable,
+      })),
+    },
+    structure_blueprint: {
+      ...base.structure_blueprint,
+      id: structureId,
+      observable: spec.observable,
+      operators: morphisms,
+      tags: [...base.structure_blueprint.tags, 'observable-projection'],
+      morphismChain: morphisms,
+      proofCertificate: [
+        ...base.structure_blueprint.proofCertificate,
+        { id: `observable-${spec.id}`, claim: spec.certificateClaim, verifier: 'exact rational orbit query' },
+      ],
+      structuralUniqueness: {
+        ...base.structure_blueprint.structuralUniqueness,
+        querySignature: spec.querySignature,
+        normalForm: spec.answer,
+        finiteSolutionSet: spec.finiteSolutionSet,
+        numericInstanceConstants: [
+          ...base.structure_blueprint.structuralUniqueness.numericInstanceConstants,
+          spec.validHypotheses,
+        ],
+      },
+    },
+    search_evidence: {
+      hypotheses_evaluated: evaluation.checked.length,
+      valid_hypotheses: spec.validHypotheses,
+      elapsed_ms: Date.now() - startedAt,
+    },
+  }
+}
+
+export function synthesizeIndexedPowerObservableVariants(
+  base: CertifiedFusionCard,
+  evaluation: CertifiedIndexedPowerSumEvaluation,
+  context: IndexedPowerVariantContext,
+  startedAt: number,
+): CertifiedFusionCard[] {
+  const equalIndices = evaluation.checked
+    .filter(item => item.difference.n === 0n)
+    .map(item => item.index)
+  const lastGreaterIndex = evaluation.answerIndices.at(-1) ?? 0
+  const cutoffIndex = lastGreaterIndex + 1
+  const cutoffConclusion = lastGreaterIndex > 0
+    ? `厳密な不等式が最後に成り立つのは \\(${context.indexSymbol}=${lastGreaterIndex}\\) であるから、求める最小値は \\(K=${cutoffIndex}\\) である。`
+    : `厳密な不等式は初項から一度も成り立たないので、求める最小値は \\(K=1\\) である。`
+  const equalityAnswer = `\\(${context.indexSymbol}\\in${integerSetTex(equalIndices)}\\)`
+  const cutoffAnswer = `\\(K=${cutoffIndex}\\)`
+  const variants: CertifiedFusionCard[] = [
+    indexedPowerVariant(base, evaluation, context, {
+      id: 'equality-set',
+      observable: 'indexed_power_sum_equality_solution_set',
+      querySignature: 'classify every generated index attaining the parent symmetric sum',
+      statement: `${context.definitionTex}\n\\[\\sin^{${context.exponentTex}}\\theta+\\cos^{${context.exponentTex}}\\theta=${evaluation.sumTex}\\]\nとなる正の整数 \\(${context.indexSymbol}\\) をすべて求めよ。`,
+      answer: equalityAnswer,
+      conclusion: `よって等号が成り立つ添字は \\[${context.indexSymbol}\\in${integerSetTex(equalIndices)}\\] で尽くされる。`,
+      tableLabel: `u_{${context.exponentTex}}-${evaluation.sumTex}`,
+      tableCells: evaluation.checked.map(item => qTex(item.difference)),
+      active: item => item.difference.n === 0n,
+      validHypotheses: equalIndices.length,
+      finiteSolutionSet: true,
+      difficultyOffset: 0.2,
+      certificateClaim: 'all equality indices are exhausted before the strict tail bound',
+    }, startedAt),
+    indexedPowerVariant(base, evaluation, context, {
+      id: 'eventual-cutoff',
+      observable: 'indexed_power_sum_last_threshold_crossing',
+      querySignature: 'find the minimal index after the final strict threshold crossing',
+      statement: `${context.definitionTex}\nすべての \\(${context.indexSymbol}\\ge K\\) に対して\n\\[\\sin^{${context.exponentTex}}\\theta+\\cos^{${context.exponentTex}}\\theta\\le${evaluation.sumTex}\\]\nとなる最小の正整数 \\(K\\) を求めよ。`,
+      answer: cutoffAnswer,
+      conclusion: cutoffConclusion,
+      tableLabel: `u_{${context.exponentTex}}-${evaluation.sumTex}`,
+      tableCells: evaluation.checked.map(item => qTex(item.difference)),
+      active: item => item.passed,
+      validHypotheses: cutoffIndex,
+      finiteSolutionSet: true,
+      difficultyOffset: 0.4,
+      certificateClaim: 'the final strict crossing and the minimal eventual cutoff are certified exactly',
+    }, startedAt),
+  ]
+
+  if (evaluation.checked.length) {
+    const maximum = evaluation.checked.reduce(
+      (current, item) => compare(item.value, current) > 0 ? item.value : current,
+      evaluation.checked[0].value,
+    )
+    if (compare(maximum, evaluation.sum) >= 0) {
+      const maximumIndices = evaluation.checked
+        .filter(item => equal(item.value, maximum))
+        .map(item => item.index)
+      const maximumTex = qTex(maximum)
+      const answer = `\\(\\max u_{${context.exponentTex}}=${maximumTex},\\quad ${context.indexSymbol}\\in${integerSetTex(maximumIndices)}\\)`
+      variants.push(indexedPowerVariant(base, evaluation, context, {
+        id: 'global-maximum',
+        observable: 'indexed_power_sum_global_maximum',
+        querySignature: 'determine the exact global maximum and every attaining generated index',
+        statement: `${context.definitionTex}\n数列\n\\[v_${context.indexSymbol}=\\sin^{${context.exponentTex}}\\theta+\\cos^{${context.exponentTex}}\\theta\\]\nの最大値と、その値をとるすべての正整数 \\(${context.indexSymbol}\\) を求めよ。`,
+        answer,
+        conclusion: `表の最大値は \\(${maximumTex}\\) であり、尾部では \\(|u_m|<${evaluation.sumTex}\\le${maximumTex}\\) だから、全体の最大値も \\(${maximumTex}\\) である。等号は \\(${context.indexSymbol}\\in${integerSetTex(maximumIndices)}\\) に限る。`,
+        tableLabel: `u_{${context.exponentTex}}-${maximumTex}`,
+        tableCells: evaluation.checked.map(item => qTex(subtract(item.value, maximum))),
+        active: item => equal(item.value, maximum),
+        validHypotheses: maximumIndices.length,
+        finiteSolutionSet: true,
+        difficultyOffset: 0.7,
+        certificateClaim: 'the finite exact maximum dominates the rigorously bounded infinite tail',
+      }, startedAt))
+    }
+  }
+  return variants
+}
+
 export function synthesizeCertifiedIndexedPowerSumFusion(
   parents: CertifiedFusionParent[],
+  requested = 1,
 ): CertifiedFusionCard[] {
   const startedAt = Date.now()
   if (parents.length !== 2 || new Set(parents.map(parent => parent.id)).size !== 2) return []
@@ -429,7 +673,7 @@ export function synthesizeCertifiedIndexedPowerSumFusion(
   const preliminaryThresholds = findTailThresholds(powerParent.sum, preliminaryBound)
   if (!preliminaryThresholds) return []
   const preliminaryCutoff = Math.max(preliminaryThresholds.odd, preliminaryThresholds.even)
-  const terms = recurrenceTerms(recurrence, preliminaryCutoff)
+  const terms = generatePositiveRecurrenceTerms(recurrence, preliminaryCutoff)
   if (!terms) return []
   if (!terms.every((term, index) => recurrenceTermByMatrix(recurrence, index + 1) === term)) return []
   const evaluation = certifyIndexedPowerSumTerms(powerParent, terms)
@@ -509,7 +753,7 @@ ${table}
     label: `k=${item.index}, a_k=${item.exponent}`,
     active: item.passed,
   }))
-  return [{
+  const baseCard: CertifiedFusionCard = {
     id: `mortra-${structureId}`,
     statement_tex: statement,
     answer_tex: answer,
@@ -519,6 +763,71 @@ ${table}
     family_id: 'certified.recurrence_indexed_power_sum',
     tool: 'MORTRA exact reversible synthesis',
     morphism_chain: morphisms,
+    proof_roadmap: [
+      {
+        morphism_id: 'PositiveSecondOrderRecurrenceElaboration',
+        label_ja: '整数列の定義を読み取る',
+        source_ja: '一方の親問題にある二階漸化式',
+        target_ja: '初期値と二つの係数',
+        role_ja: '添字として使う整数列を、問題文の記号名に依存しない形へ直します。',
+      },
+      {
+        morphism_id: 'CompanionMatrixIndexGeneration',
+        label_ja: '添字列を正確に生成する',
+        source_ja: '二階漸化式',
+        target_ja: '増加する整数の軌道',
+        role_ja: '逐次計算と行列の累乗を独立に行い、同じ整数列になることを確かめます。',
+      },
+      {
+        morphism_id: 'SymmetricTrigonometricPairElaboration',
+        label_ja: '正弦と余弦を対称式として読む',
+        source_ja: 'もう一方の親問題にある正弦と余弦の和',
+        target_ja: '和と積が既知の二数',
+        role_ja: 'sin²θ+cos²θ=1を使い、正弦と余弦の積も厳密に定めます。',
+      },
+      {
+        morphism_id: 'NewtonPowerSumRecurrence',
+        label_ja: 'すべてのべき和を一つの漸化式で表す',
+        source_ja: '正弦と余弦の和と積',
+        target_ja: 'u_m=sin^mθ+cos^mθ',
+        role_ja: '指数ごとの個別計算を避け、共通の二階漸化式を導きます。',
+      },
+      {
+        morphism_id: 'SubsequencePullback',
+        label_ja: '整数列をべき和の指数へ入れる',
+        source_ja: '整数の軌道とべき和の列',
+        target_ja: 'u_{a_k}',
+        role_ja: '二つの親問題を合成し、生成された整数だけを指数として取り出します。',
+      },
+      {
+        morphism_id: 'ExactRationalInequality',
+        label_ja: '必要な有限個の項を比較する',
+        source_ja: '添字付きべき和',
+        target_ja: '等号と不等号の真偽',
+        role_ja: '小数近似を使わず、分数の整数比較で各候補を判定します。',
+      },
+      {
+        morphism_id: 'CertifiedTailBound',
+        label_ja: '残りの無限個の項をまとめて除く',
+        source_ja: '絶対値が1未満の二つの根',
+        target_ja: '有限の検査で十分であるという証明',
+        role_ja: '奇数と偶数を分けた上界により、表の後に新しい解がないことを示します。',
+      },
+      {
+        morphism_id: 'IndependentMatrixReplay',
+        label_ja: '別の計算法で全候補を検算する',
+        source_ja: '二つの伴行列',
+        target_ja: '同一の指数列とべき和',
+        role_ja: '逐次漸化式とは別に行列の累乗を使い、有限表を再現します。',
+      },
+      {
+        morphism_id: 'AllParentAblation',
+        label_ja: '二つの親がともに必要か確かめる',
+        source_ja: '指数を与える親とべき和を与える親',
+        target_ja: '親依存性の証明',
+        role_ja: 'どちらか一方を除くと添字付きの問いを定義できないことを型検査で確認します。',
+      },
+    ],
     diagram: {
       version: 1,
       kind: 'state',
@@ -621,5 +930,15 @@ ${table}
       valid_hypotheses: 1,
       elapsed_ms: Date.now() - startedAt,
     },
-  }]
+  }
+  return [
+    baseCard,
+    ...synthesizeIndexedPowerObservableVariants(baseCard, evaluation, {
+      definitionTex: `数列 \\(\\{a_k\\}\\) を\n\\[${recurrenceTex}\\]\nで定める。実数 \\(\\theta\\) が\n\\[\\sin\\theta+\\cos\\theta=${c}\\]\nを満たすとする。`,
+      indexSymbol: 'k',
+      exponentTex: 'a_k',
+      exponentSequenceJa: '漸化式で定まる指数列 \\(a_k\\)',
+      independentReplayJa: 'べき和の伴行列と添字列の伴行列による独立計算',
+    }, startedAt),
+  ].slice(0, Math.max(0, requested))
 }

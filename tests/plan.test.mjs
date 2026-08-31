@@ -10,43 +10,47 @@
  */
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
-import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import test from 'node:test'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)))
-const outDir = mkdtempSync(join(tmpdir(), 'sakumon-plan-'))
-const modules = ['figures', 'kinematics', 'trajectory', 'plan']
+const scratchDir = mkdtempSync(join(tmpdir(), 'sakumon-plan-'))
+const sourceDir = join(scratchDir, 'lib')
+const glyphDir = join(scratchDir, 'data', 'strokes')
+const compiledDir = join(scratchDir, 'out', 'lib')
+mkdirSync(sourceDir, { recursive: true })
+mkdirSync(glyphDir, { recursive: true })
+
+const modules = ['figures', 'kinematics', 'trajectory', 'plan', 'handwriting']
 for (const name of modules) {
   writeFileSync(
-    join(outDir, `${name}.ts`),
+    join(sourceDir, `${name}.ts`),
     readFileSync(join(repoRoot, 'lib', `${name}.ts`), 'utf8'),
     'utf8',
   )
 }
+writeFileSync(
+  join(glyphDir, 'ja.json'),
+  readFileSync(join(repoRoot, 'data', 'strokes', 'ja.json'), 'utf8'),
+  'utf8',
+)
 execFileSync(
   process.execPath,
   [
     join(repoRoot, 'node_modules', 'typescript', 'bin', 'tsc'),
-    ...modules.map((n) => join(outDir, `${n}.ts`)),
-    '--target', 'es2021', '--module', 'esnext',
-    '--moduleResolution', 'bundler', '--skipLibCheck',
+    ...modules.map((n) => join(sourceDir, `${n}.ts`)),
+    '--target', 'es2021', '--module', 'commonjs',
+    '--moduleResolution', 'node', '--resolveJsonModule', '--esModuleInterop',
+    '--skipLibCheck', '--outDir', join(scratchDir, 'out'), '--rootDir', scratchDir,
   ],
   { cwd: repoRoot, stdio: 'pipe' },
 )
-for (const name of modules) {
-  const file = join(outDir, `${name}.js`)
-  writeFileSync(
-    file,
-    readFileSync(file, 'utf8').replace(/from '(\.\/[^']+)'/g, "from '$1.js'"),
-    'utf8',
-  )
-}
-const fig = await import(pathToFileURL(join(outDir, 'figures.js')).href)
-const kin = await import(pathToFileURL(join(outDir, 'kinematics.js')).href)
-const plan = await import(pathToFileURL(join(outDir, 'plan.js')).href)
+const fig = await import(pathToFileURL(join(compiledDir, 'figures.js')).href)
+const kin = await import(pathToFileURL(join(compiledDir, 'kinematics.js')).href)
+const plan = await import(pathToFileURL(join(compiledDir, 'plan.js')).href)
 
 const plans = fig.FIGURES.map((figure) => ({
   figure, built: plan.buildPlan(figure),
@@ -119,6 +123,6 @@ function sample(built, t) {
 }
 let trajectorySample
 {
-  const traj = await import(pathToFileURL(join(outDir, 'trajectory.js')).href)
+  const traj = await import(pathToFileURL(join(compiledDir, 'trajectory.js')).href)
   trajectorySample = traj.sampleAt
 }
