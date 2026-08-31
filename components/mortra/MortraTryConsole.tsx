@@ -92,6 +92,15 @@ type TraceLine = {
   text: string
 }
 
+type CatalogProblem = {
+  id: string
+  ordinal: number
+  label: string
+  statement: string
+  status: 'verified' | 'unresolved'
+  familyId?: string | null
+}
+
 type WorkspaceMode = 'solve' | 'fusion' | 'draw'
 
 type WorkspaceCommand = {
@@ -166,7 +175,7 @@ const CONSOLE_TEXT = {
     tState: '状態', tRound: 'ラウンド', tDepth: '探索深さ',
     tStates: '検査状態', tGoals: '実行候補', tFrontier: '未閉鎖義務',
     traceSummary: '処理記録',
-    researchNotice: '公開版の2問融合は、次数2〜4の一変数モニック整数多項式と、座標平面上の円方程式に対応しています。独立した厳密検算まで通った問題だけを表示します。',
+    researchNotice: '直接の構造融合を優先し、対応外でも二つの検証済み厳密解は共通の漸化式へ合成します。未知問題は停止せず長時間探索へ移します。',
     searching: '探索中',
     nextRound: (s: number) => `次の探索まで ${s} 秒`,
     resuming: '再開準備中',
@@ -214,7 +223,7 @@ const CONSOLE_TEXT = {
     tState: 'State', tRound: 'Round', tDepth: 'Depth',
     tStates: 'States seen', tGoals: 'Executable goals', tFrontier: 'Open obligations',
     traceSummary: 'Execution log',
-    researchNotice: 'Public two-parent fusion currently supports degree 2–4 monic univariate integer polynomials and affine circle equations. A problem is shown only after an independent exact check passes.',
+    researchNotice: 'Direct structural fusion runs first. Two certified exact answers can also be composed through one reusable recurrence construction; unknown inputs continue in long-running search.',
     searching: 'Searching',
     nextRound: (s: number) => `Next round in ${s}s`,
     resuming: 'Resuming',
@@ -279,6 +288,9 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
   const SOLVE_PHASES = c.solvePhases.map((label, i) => ({ key: `solve-${i}`, label }))
   const [parentA, setParentA] = useState<string>(c.parentA)
   const [parentB, setParentB] = useState<string>(c.parentB)
+  const [parentAId, setParentAId] = useState<string | null>(null)
+  const [parentBId, setParentBId] = useState<string | null>(null)
+  const [catalog, setCatalog] = useState<CatalogProblem[]>([])
   const [running, setRunning] = useState(false)
   const [phase, setPhase] = useState('idle')
   const [stage, setStage] = useState(-1)
@@ -300,6 +312,40 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
   const traceSequenceRef = useRef(0)
   const seenRemoteLogsRef = useRef(new Set<string>())
 
+  useEffect(() => {
+    let active = true
+    void fetch('/api/problem-catalog')
+      .then(response => response.ok ? response.json() : Promise.reject(new Error(String(response.status))))
+      .then((payload: { entries?: CatalogProblem[] }) => {
+        if (active && Array.isArray(payload.entries)) setCatalog(payload.entries)
+      })
+      .catch(() => {
+        // Free-text input remains available when the catalog endpoint is unavailable.
+      })
+    return () => { active = false }
+  }, [])
+
+  const chooseCatalogProblem = (slot: 'a' | 'b', id: string) => {
+    const problem = catalog.find(entry => entry.id === id)
+    if (slot === 'a') {
+      setParentAId(problem?.id ?? null)
+      if (problem) setParentA(problem.statement)
+    } else {
+      setParentBId(problem?.id ?? null)
+      if (problem) setParentB(problem.statement)
+    }
+  }
+
+  const editParent = (slot: 'a' | 'b', value: string) => {
+    if (slot === 'a') {
+      setParentAId(null)
+      setParentA(value)
+    } else {
+      setParentBId(null)
+      setParentB(value)
+    }
+  }
+
   const addTrace = useCallback((text: string, at = Date.now()) => {
     if (!text.trim()) return
     setTrace(lines => {
@@ -317,7 +363,10 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
     setCommandLine(command.command)
     setCommandMenuOpen(false)
     setShowAllCommands(false)
-    if (next !== 'fusion') setParentB('')
+    if (next !== 'fusion') {
+      setParentB('')
+      setParentBId(null)
+    }
     else setParentB(value => value || c.parentB)
   }, [c.parentB])
 
@@ -520,6 +569,7 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
           signal: controller.signal,
           body: JSON.stringify({
             problem: inputs[0],
+            problemId: parentAId,
             output: workspaceMode === 'draw' ? 'solution_and_diagram' : 'solution',
             diagram_required: workspaceMode === 'draw',
           }),
@@ -553,7 +603,10 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
           surface: 'public_try',
           searchDepth: 'deep',
           searchBudgetSeconds: SEARCH_BUDGET_SECONDS,
-          parents: inputs.map((statement, index) => ({ id: parentId(statement, index + 1), statement })),
+          parents: inputs.map((statement, index) => ({
+            id: (index === 0 ? parentAId : parentBId) ?? parentId(statement, index + 1),
+            statement,
+          })),
         }),
       })
       if (!response.ok) {
@@ -597,6 +650,8 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
     abortRef.current?.abort()
     setParentA(c.parentA)
     setParentB(c.parentB)
+    setParentAId(null)
+    setParentBId(null)
     setResult(null)
     setDraft('')
     setTrace([])
@@ -724,10 +779,25 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
             <div className={styles.sourceEditorStack}>
               <div className={styles.sourceEditor}>
                 <label htmlFor="mortra-parent-a"><span>A</span><b>{c.labelA}</b><small>TeX / UTF-8</small></label>
+                {catalog.length > 0 ? (
+                  <select
+                    className={styles.problemCatalogSelect}
+                    aria-label={lang === 'ja' ? '問題Aを全問題.texから選択' : 'Choose problem A from the catalog'}
+                    value={parentAId ?? ''}
+                    onChange={event => chooseCatalogProblem('a', event.target.value)}
+                  >
+                    <option value="">{lang === 'ja' ? '全問題.texから選択' : 'Choose from 全問題.tex'}</option>
+                    {catalog.map(problem => (
+                      <option key={problem.id} value={problem.id}>
+                        {problem.label}{problem.status === 'verified' ? ' · 証明済み' : ' · 探索対象'}
+                      </option>
+                    ))}
+                  </select>
+                ) : null}
                 <textarea
                   id="mortra-parent-a"
                   value={parentA}
-                  onChange={event => setParentA(event.target.value)}
+                  onChange={event => editParent('a', event.target.value)}
                   placeholder={c.placeholderA}
                   spellCheck={false}
                 />
@@ -735,10 +805,25 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
               {workspaceMode === 'fusion' && (
                 <div className={styles.sourceEditor}>
                   <label htmlFor="mortra-parent-b"><span>B</span><b>{c.labelB}</b><small>TeX / UTF-8</small></label>
+                  {catalog.length > 0 ? (
+                    <select
+                      className={styles.problemCatalogSelect}
+                      aria-label={lang === 'ja' ? '問題Bを全問題.texから選択' : 'Choose problem B from the catalog'}
+                      value={parentBId ?? ''}
+                      onChange={event => chooseCatalogProblem('b', event.target.value)}
+                    >
+                      <option value="">{lang === 'ja' ? '全問題.texから選択' : 'Choose from 全問題.tex'}</option>
+                      {catalog.map(problem => (
+                        <option key={problem.id} value={problem.id} disabled={problem.id === parentAId}>
+                          {problem.label}{problem.status === 'verified' ? ' · 証明済み' : ' · 探索対象'}
+                        </option>
+                      ))}
+                    </select>
+                  ) : null}
                   <textarea
                     id="mortra-parent-b"
                     value={parentB}
-                    onChange={event => setParentB(event.target.value)}
+                    onChange={event => editParent('b', event.target.value)}
                     placeholder={c.placeholderB}
                     spellCheck={false}
                   />

@@ -1,6 +1,7 @@
 import { spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import type { DiscoveryParent } from './parent-conditioned-discovery'
 import type { ExecutableFusionCard } from './executable-fusion'
 import {
@@ -109,7 +110,7 @@ export function extractPolynomial(parent: DiscoveryParent, index: number): Polyn
 }
 
 function backendPath(): string {
-  return path.resolve(process.cwd(), 'backend', 'sympy_fusion.py')
+  return path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'backend', 'sympy_fusion.py')
 }
 
 function runBackend(left: PolynomialInput, right: PolynomialInput, operation: Operation): BackendResult | null {

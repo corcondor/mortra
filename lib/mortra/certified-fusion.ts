@@ -6,6 +6,13 @@ type FusionOperation = 'sum' | 'difference' | 'product'
 export type CertifiedFusionParent = {
   id: string
   statement: string
+  answer?: string | null
+  solution?: string | null
+  certificate?: {
+    verified: true
+    id: string
+    method?: string
+  } | null
 }
 
 type ParsedPolynomial = {
@@ -25,6 +32,18 @@ export type CertifiedFusionCard = {
   family_id: string
   tool: string
   morphism_chain: string[]
+  proof_roadmap?: Array<{
+    morphism_id: string
+    label_ja: string
+    source_ja: string
+    target_ja: string
+    role_ja: string
+  }>
+  proof_obligations?: Array<{
+    id: string
+    claim_ja: string
+    status: 'verified'
+  }>
   diagram: ProblemDiagram
   parent_ids: string[]
   verification: {
@@ -127,6 +146,7 @@ function extractEquation(statement: string): string | null {
   const segments = [
     ...Array.from(statement.matchAll(/\$([^$]+)\$/g), match => match[1]),
     ...Array.from(statement.matchAll(/\\\(([^]*?)\\\)/g), match => match[1]),
+    ...Array.from(statement.matchAll(/\\\[([^]*?)\\\]/g), match => match[1]),
     withoutTextCommands,
   ]
   return segments.find(segment => /[^=<>]+=[^=<>]+/.test(segment)) ?? null

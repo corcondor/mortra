@@ -1,6 +1,7 @@
 import { spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import type { ExecutableFusionCard } from './executable-fusion'
 import type { HyperMorphismSchema } from './generalization-kernel'
 import type { DiscoveryParent } from './parent-conditioned-discovery'
@@ -92,7 +93,7 @@ function hash(value: unknown, length = 14): string {
 }
 
 function backendPath(): string {
-  return path.resolve(process.cwd(), 'backend', 'primitive_law_induction.py')
+  return path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'backend', 'primitive_law_induction.py')
 }
 
 function runBackend(request: object): BackendResult | null {

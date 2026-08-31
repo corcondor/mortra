@@ -1,5 +1,6 @@
 .artifact {
   overflow: hidden;
+  scroll-margin-top: 86px;
   border: 1px solid rgba(148, 163, 184, 0.18);
   background: rgba(3, 5, 6, 0.9);
   color: #f5f7f8;
@@ -65,6 +66,23 @@
   font-weight: 500;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.artifactHead .artifactKind {
+  color: #8b98a3;
+  font-size: 9px;
+}
+
+.artifact[data-artifact-kind='structural'] .artifactKind {
+  color: #31c7df;
+}
+
+.artifact[data-artifact-kind='proof-composition'] .artifactKind {
+  color: #f3bf58;
+}
+
+.artifact[data-artifact-kind='research'] .artifactKind {
+  color: #a7b0b8;
 }
 
 .artifactHead .verified {
@@ -498,6 +516,10 @@
   fill: #eef2f4;
   font-family: "JetBrains Mono", monospace;
   font-size: 13px;
+}
+
+.stateLabelMultiline {
+  font-size: 10px;
 }
 
 .morphismStep {

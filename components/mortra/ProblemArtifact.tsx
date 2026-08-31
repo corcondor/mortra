@@ -12,6 +12,7 @@ import {
   type VisualExplanation,
 } from '@/lib/mortra/problem-artifact'
 import type { CertifiedCalculusAnalysis } from '@/lib/mortra/calculus-analysis'
+import { certifiedFusionKind } from '@/lib/mortra/certified-fusion-kind'
 import styles from './problemArtifact.module.css'
 
 export type ProblemArtifactCard = {
@@ -189,6 +190,14 @@ function MorphismFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind: 
   )
 }
 
+function stateLabelLines(label: string): string[] {
+  for (const separator of [': ', ', ']) {
+    const index = label.indexOf(separator)
+    if (index > 0) return [label.slice(0, index), label.slice(index + separator.length)]
+  }
+  return [label]
+}
+
 function StateFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind: 'state' }> }) {
   const visibleEdges = diagram.transitions.filter(transition => {
     const from = diagram.states.findIndex(state => state.id === transition.from)
@@ -232,15 +241,26 @@ function StateFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind: 'st
         })}
         {diagram.states.map((state, index) => {
           const cx = 70 + (index * 620) / Math.max(1, diagram.states.length - 1)
+          const labelLines = stateLabelLines(state.label)
+          const multiline = labelLines.length > 1
           return (
             <g key={state.id}>
               <circle
                 cx={cx}
                 cy="114"
-                r={state.active ? 25 : 21}
+                r={state.active ? (multiline ? 29 : 25) : (multiline ? 27 : 21)}
                 className={`${styles.stateNode} ${state.terminal ? styles.stateTerminal : ''} ${state.active ? styles.stateActive : ''}`}
               />
-              <text x={cx} y="119" textAnchor="middle" className={styles.stateLabel}>{state.label}</text>
+              <text
+                x={cx}
+                y={multiline ? 111 : 119}
+                textAnchor="middle"
+                className={`${styles.stateLabel} ${multiline ? styles.stateLabelMultiline : ''}`}
+              >
+                {labelLines.map((line, lineIndex) => (
+                  <tspan key={`${state.id}-${lineIndex}`} x={cx} dy={lineIndex === 0 ? 0 : 13}>{line}</tspan>
+                ))}
+              </text>
             </g>
           )
         })}
@@ -439,6 +459,10 @@ const ARTIFACT_TEXT = {
     proofObligations: '証明義務',
     obligationVerified: '検証済み',
     certificate: '証明書',
+    structuralFusion: '構造融合',
+    proofComposition: '証明合成',
+    verifiedSolution: '検証済み解答',
+    researchCandidate: '研究継続中',
   },
   en: {
     saveTex: 'Save the solution as TeX',
@@ -453,6 +477,10 @@ const ARTIFACT_TEXT = {
     proofObligations: 'Proof obligations',
     obligationVerified: 'Verified',
     certificate: 'Certificate',
+    structuralFusion: 'Structural fusion',
+    proofComposition: 'Proof composition',
+    verifiedSolution: 'Verified solution',
+    researchCandidate: 'Research in progress',
   },
 } as const
 
@@ -483,6 +511,21 @@ export function ProblemArtifact({ card, compact = false, showVerification = true
     card.verification?.independent_check,
   )
   const verified = hasResolvedAnswer && hasCertificate
+  const fusionKind = certifiedFusionKind(card.family_id)
+  const artifactKind = !verified
+    ? 'research'
+    : fusionKind === 'structural'
+      ? 'structural'
+      : fusionKind === 'proof_composition'
+        ? 'proof-composition'
+        : 'solution'
+  const artifactLabel = artifactKind === 'research'
+    ? a.researchCandidate
+    : artifactKind === 'structural'
+      ? a.structuralFusion
+      : artifactKind === 'proof-composition'
+        ? a.proofComposition
+        : a.verifiedSolution
   const downloadTex = () => {
     if (!card.solution_document_tex) return
     const blob = new Blob([card.solution_document_tex], { type: 'application/x-tex;charset=utf-8' })
@@ -495,10 +538,10 @@ export function ProblemArtifact({ card, compact = false, showVerification = true
   }
 
   return (
-    <article className={`${styles.artifact} ${compact ? styles.compact : ''}`}>
+    <article className={`${styles.artifact} ${compact ? styles.compact : ''}`} data-artifact-kind={artifactKind}>
       <header className={styles.artifactHead}>
         <div>
-          <span>{verified ? 'VERIFIED SOLUTION ARTIFACT' : 'RESEARCH CANDIDATE'}</span>
+          <span className={styles.artifactKind}>{artifactLabel}</span>
           <strong>{card.family_id ?? 'verified.structure'}</strong>
         </div>
         <div className={styles.artifactActions}>
