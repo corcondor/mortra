@@ -26,7 +26,7 @@ def test_four_dimensional_cell_is_executed_not_only_typechecked() -> None:
 
 
 def test_linear_sweep_scales_to_multiple_ambient_dimensions() -> None:
-    for dimension in range(1, 8):
+    for dimension in range(1, 13):
         executor = ExactCellExecutor(f"hypercube-{dimension}d")
         cell = executor.point("origin", (0,) * dimension)
         for index in range(dimension):

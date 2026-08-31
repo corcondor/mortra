@@ -28,6 +28,14 @@ const operations = [
 
 const drawings = [
   {
+    src: '/research/engineering-geometry/declarative-flange-semantics.svg',
+    id: 'FLG-SEM-001',
+    en: 'Six-hole flange with engineering semantics',
+    ja: '工学情報付き6穴フランジ',
+    detailEn: 'Third-angle views, section, dimensions, material, tolerances, datum, load and calculated mass from one B-rep.',
+    detailJa: '一つの境界表現から、第三角法、断面、寸法、材料、公差、基準、荷重、質量を生成。',
+  },
+  {
     src: '/research/engineering-geometry/normal-offset-gasket.svg',
     id: 'NGS-001',
     en: 'Normal-offset gasket',
@@ -89,24 +97,28 @@ const pipeline = [
   ['01', 'Finite program', '有限JSONと8射で構成を記録'],
   ['02', 'Exact backend', '3次元B-repまたは高次元有理セルを実行'],
   ['03', 'Derived views', '投影、隠れ線、断面をB-repから導出'],
-  ['04', 'Drawing', '中心線、寸法、注記を意味対象へ接続'],
+  ['04', 'Engineering semantics', '材料、公差、基準、接合、荷重を形状へ接続'],
   ['05', 'Artifacts', 'STEP、STL、SVG、DXF、JSONを保存'],
 ] as const
 
 const resultRows = [
   ['有限入力プログラム', 'Finite-input programs', '6 / 6', '曲線部品、平行集合、薄肉化、角丸を任意B-rep入力なしで実行', 'Curve-based parts, parallel sets, thin walls and blends executed without arbitrary B-rep inputs'],
+  ['工学情報の因果比較', 'Engineering-semantics causal checks', '3 / 3', '材料、公差、基準、荷重を加えても形状と8操作の使用回数は不変', 'Geometry and all eight operation counts stayed unchanged after adding material, tolerances, datums and loads'],
   ['閉形式体積', 'Closed-form volumes', '6 / 6', '数値の正体積だけでなく、各形状の幾何式と照合', 'Checked against a geometric formula, not only positive numerical volume'],
-  ['高次元セル', 'Higher-dimensional cells', '4D / 5D / 6D', '同じ sweep と project で厳密有理セルを構成・射影', 'Exact rational cells constructed and projected with the same sweep and project operations'],
+  ['高次元セル', 'Higher-dimensional cells', '4D–12D', '同じ sweep と project で厳密有理セルを構成・射影', 'Exact rational cells constructed and projected with the same sweep and project operations'],
+  ['広域回帰試験', 'Geometry regression suite', '57 / 57', '機械製図、宣言的CAD、生成幾何、異分野間変換、高次元セルを一括検査', 'Mechanical drawing, declarative CAD, generative geometry, cross-domain transforms and higher-dimensional cells all passed'],
   ['外部操作の構造被覆', 'External operation coverage', '23,946 / 24,213', 'CADTestBench 2,400プログラムの構成呼び出しを静的に監査', 'Static audit of construction calls in 2,400 CADTestBench programs'],
   ['完全被覆ファイル', 'Fully covered files', '2,277 / 2,400', '各ファイル内の構成呼び出しがすべて現在の実行系に対応', 'Every construction call in each file maps to the current runtime'],
-  ['追加した射', 'Added morphisms', '0', '曲線部品と高次元実行のための部品別命令は追加していない', 'No part-specific operation was added for curve-based parts or higher dimensions'],
+  ['追加した幾何操作', 'Added geometry operations', '0', '工学情報と12次元実行のための部品別命令は追加していない', 'No part-specific operation was added for engineering semantics or 12-dimensional execution'],
 ] as const
 
 const dimensionRows = [
-  ['3D', '6 / 6', 'finite programs', '6 STEP / 5 drawings'],
+  ['3D', '3 / 3', 'semantic cases', 'STEP / STL / SVG / DXF / JSON'],
   ['4D', '16', 'vertices', '32 edges'],
-  ['5D', '32', 'vertices', '80 edges'],
   ['6D', '64', 'vertices', '192 edges'],
+  ['8D', '256', 'vertices', '1,024 edges'],
+  ['10D', '1,024', 'vertices', '5,120 edges'],
+  ['12D', '4,096', 'vertices', '24,576 edges'],
 ] as const
 
 export function EngineeringGeometryResearchPage({ lang = 'en' }: { lang?: Lang }) {
@@ -131,29 +143,29 @@ export function EngineeringGeometryResearchPage({ lang = 'en' }: { lang?: Lang }
             <p className={styles.sectionLabel}>ENGINEERING GEOMETRY / 2026.08.31</p>
             <h1>{ja ? '同じ8つの射から、立体と図面を生成する。' : 'One set of eight morphisms produces both solids and drawings.'}</h1>
             <p>{ja
-              ? '任意の完成形状を入力へ隠さず、有限な線・円弧・経路と8つの共通操作から、厳密な3D形状、第三角法、断面、寸法、高次元射影を導出します。'
-              : 'Without hiding finished shapes in the input, finite lines, arcs and paths combine with eight generic operations to derive exact 3D solids, third-angle drawings, sections, dimensions and higher-dimensional projections.'}</p>
+              ? '有限な線・円弧・経路と8つの共通操作から、厳密な3D形状、第三角法、断面、寸法を生成します。同じ形状へ材料、公差、基準、荷重を接続し、12次元まで同じ型規則を実行しました。'
+              : 'Finite lines, arcs and paths combine with eight generic operations to produce exact 3D solids, third-angle drawings, sections and dimensions. The same shape receives material, tolerance, datum and load semantics, while the shared type rules execute through 12 dimensions.'}</p>
           </div>
 
           <div className={styles.metricRail} aria-label={ja ? '実験結果' : 'Experiment results'}>
             <div><strong>8</strong><span>{ja ? '共通射' : 'generic morphisms'}</span></div>
-            <div><strong>6 / 6</strong><span>{ja ? '有限入力の部品' : 'finite-input parts'}</span></div>
-            <div><strong>4–6D</strong><span>{ja ? '厳密セル実行' : 'exact cell execution'}</span></div>
-            <div><strong>98.90%</strong><span>{ja ? '外部操作の構造被覆' : 'external operation coverage'}</span></div>
+            <div><strong>3 / 3</strong><span>{ja ? '工学情報の因果比較' : 'semantic causal checks'}</span></div>
+            <div><strong>4–12D</strong><span>{ja ? '厳密セル実行' : 'exact cell execution'}</span></div>
+            <div><strong>57 / 57</strong><span>{ja ? '広域回帰試験' : 'geometry regression tests'}</span></div>
           </div>
 
           <figure className={styles.heroDrawing}>
             <Image
-              src="/research/engineering-geometry/spoked-wheel.svg"
-              alt={ja ? 'MORTRAが生成したスポーク車輪の第三角法機械図面' : 'Third-angle mechanical drawing of a spoked wheel generated by MORTRA'}
+              src="/research/engineering-geometry/declarative-flange-semantics.svg"
+              alt={ja ? 'MORTRAが生成した工学情報付き6穴フランジの第三角法機械図面' : 'Third-angle mechanical drawing of a six-hole flange with engineering semantics generated by MORTRA'}
               fill
               priority
               unoptimized
               sizes="(max-width: 900px) 100vw, 1240px"
             />
             <figcaption>
-              <span>SPK-001</span>
-              {ja ? '形状族未見 / 第三角法・断面A-A・主要寸法' : 'Topology holdout / third-angle projection, section A-A and principal dimensions'}
+              <span>FLG-SEM-001</span>
+              {ja ? '第三角法・断面・寸法・材料・公差・基準・荷重・質量' : 'Third-angle projection, section, dimensions, material, tolerances, datum, load and mass'}
             </figcaption>
           </figure>
         </div>
@@ -207,7 +219,7 @@ export function EngineeringGeometryResearchPage({ lang = 'en' }: { lang?: Lang }
           <div className={styles.sectionHead}>
             <div>
               <p className={styles.sectionLabel}>02 / DIMENSION-INDEPENDENT EXECUTION</p>
-              <h2>{ja ? '次元が増えても、射は増やさない。' : 'More dimensions, no new morphisms.'}</h2>
+              <h2>{ja ? '次元が変わっても、射は同じ。' : 'More dimensions, no new morphisms.'}</h2>
             </div>
             <p>{ja
               ? '3次元の機械部品と4次元以上の有限セルは、実行系だけを切り替えます。操作名と型規則は共通で、座標と射の履歴は厳密な有理数として保存します。'
@@ -217,14 +229,14 @@ export function EngineeringGeometryResearchPage({ lang = 'en' }: { lang?: Lang }
           <div className={styles.dimensionShowcase}>
             <figure className={styles.dimensionCanvas}>
               <Image
-                src="/research/engineering-geometry/hypercube-4d.svg"
-                alt={ja ? 'MORTRAが厳密な有理座標で生成した4次元立方体の2次元射影' : 'Two-dimensional projection of a 4D hypercube generated by MORTRA with exact rational coordinates'}
+                src="/research/engineering-geometry/hypercube-8d.svg"
+                alt={ja ? 'MORTRAが厳密な有理座標で生成した8次元立方体の2次元射影' : 'Two-dimensional projection of an 8D hypercube generated by MORTRA with exact rational coordinates'}
                 fill
                 loading="eager"
                 unoptimized
                 sizes="(max-width: 900px) 100vw, 700px"
               />
-              <figcaption>{ja ? '4次元立方体 / 16頂点・32辺 / 厳密有理射影' : '4D hypercube / 16 vertices, 32 edges / exact rational projection'}</figcaption>
+              <figcaption>{ja ? '8次元立方体 / 256頂点・1,024辺 / 厳密有理射影' : '8D hypercube / 256 vertices, 1,024 edges / exact rational projection'}</figcaption>
             </figure>
 
             <div className={styles.dimensionData}>
@@ -236,8 +248,8 @@ export function EngineeringGeometryResearchPage({ lang = 'en' }: { lang?: Lang }
                 </div>
               ))}
               <p className={styles.dimensionNote}>{ja
-                ? '1次元から7次元まで、頂点数 2ⁿ と辺数 n·2ⁿ⁻¹を回帰試験で照合しました。一般の滑らかな高次元CADではなく、有限頂点・有限辺を持つアフィンセルが現在の実行範囲です。'
-                : 'Regression tests cover dimensions 1 through 7 and verify 2ⁿ vertices and n·2ⁿ⁻¹ edges. The current scope is finite affine cells, not general smooth higher-dimensional CAD.'}</p>
+                ? '1次元から12次元まで、頂点数 2ⁿ と辺数 n·2ⁿ⁻¹を回帰試験で照合しました。高次元では、有限頂点と有限辺を持つアフィンセルを有理数で厳密に実行します。'
+                : 'Regression tests cover dimensions 1 through 12 and verify 2ⁿ vertices and n·2ⁿ⁻¹ edges. In higher dimensions MORTRA executes finite affine cells with exact rational coordinates.'}</p>
             </div>
           </div>
         </div>
@@ -251,8 +263,8 @@ export function EngineeringGeometryResearchPage({ lang = 'en' }: { lang?: Lang }
               <h2>{ja ? '立体と図面を、別々に描かない。' : 'The solid and drawing are never authored separately.'}</h2>
             </div>
             <p>{ja
-              ? '表示用の輪郭を手書きせず、投影線、隠れ線、断面、ハッチをすべて同じB-repから導出します。形状を直せば図面も同時に変わります。'
-              : 'No display outline is hand-authored. Projection lines, hidden lines, sections and hatching are all derived from the same B-rep, so a geometry change propagates to the drawing.'}</p>
+              ? '表示用の輪郭を手書きせず、投影線、隠れ線、断面、ハッチを同じ境界表現から導出します。材料、公差、基準、荷重も同じ対象へ結び付くため、形状を直すと図面と工学情報が同時に更新されます。'
+              : 'No display outline is hand-authored. Projection lines, hidden lines, sections and hatching derive from one boundary representation. Material, tolerance, datum and load assertions reference the same entities, so geometry and engineering information update together.'}</p>
           </div>
 
           <div className={styles.pipeline}>
@@ -264,7 +276,7 @@ export function EngineeringGeometryResearchPage({ lang = 'en' }: { lang?: Lang }
                   'Record the construction with finite JSON and eight morphisms',
                   'Execute an exact 3D B-rep or higher-dimensional rational cell',
                   'Derive projection, hidden lines and sections from the B-rep',
-                  'Attach centrelines, dimensions and notes to semantic entities',
+                  'Attach material, tolerances, datums, joints and loads to referenced entities',
                   'Persist STEP, STL, SVG, DXF and replay JSON',
                 ][itemIndex]}</p>
                 {itemIndex < pipeline.length - 1 ? <ArrowRight size={15} aria-hidden="true" /> : null}
@@ -308,11 +320,11 @@ export function EngineeringGeometryResearchPage({ lang = 'en' }: { lang?: Lang }
           <div className={styles.sectionHead}>
             <div>
               <p className={styles.sectionLabel}>05 / MEASURED RESULT</p>
-              <h2>{ja ? '画像ではなく、形状と成果物を検査する。' : 'Verify geometry and artifacts, not screenshots alone.'}</h2>
+              <h2>{ja ? '形状と成果物で示す。' : 'Verify geometry and artifacts, not screenshots alone.'}</h2>
             </div>
             <p>{ja
-              ? '6件すべてでB-repの妥当性、単一ソリッド、閉形式体積、STEPを検査しました。5件では第三角法、隠れ線、断面、SVG、DXFも生成し、図面を目視検査しています。'
-              : 'All six cases check B-rep validity, single-solid topology, closed-form volume and STEP. Five also generate third-angle views, hidden lines, sections, SVG and DXF for visual inspection.'}</p>
+              ? '既存6部品では境界表現と閉形式体積を検査しました。さらに3部品へ工学情報を追加し、形状と8操作が変わらないことを比較しました。第三角法、断面、寸法、STEP、STL、SVG、DXF、JSONを同じ構成から生成しています。'
+              : 'Six existing parts verify boundary-representation validity and closed-form volume. Three additional causal comparisons attach engineering semantics and confirm that geometry and all eight operations remain unchanged. Third-angle drawings, sections, dimensions, STEP, STL, SVG, DXF and JSON derive from the same construction.'}</p>
           </div>
 
           <div className={styles.resultTable}>
@@ -326,22 +338,22 @@ export function EngineeringGeometryResearchPage({ lang = 'en' }: { lang?: Lang }
           </div>
 
           <div className={styles.artifactLinks}>
-            <a href="/research/engineering-geometry/thin-wall-enclosure.step" download>
-              <Box size={18} aria-hidden="true" /><span><b>STEP</b><small>{ja ? '開放薄肉箱の厳密形状' : 'exact thin-wall enclosure'}</small></span><Download size={14} aria-hidden="true" />
+            <a href="/research/engineering-geometry/declarative-flange-semantics.step" download>
+              <Box size={18} aria-hidden="true" /><span><b>STEP</b><small>{ja ? '工学情報付き6穴フランジ' : 'six-hole flange with engineering semantics'}</small></span><Download size={14} aria-hidden="true" />
             </a>
-            <a href="/research/engineering-geometry/normal-offset-gasket.dxf" download>
-              <Ruler size={18} aria-hidden="true" /><span><b>DXF</b><small>{ja ? '第三角法機械図面' : 'third-angle drawing'}</small></span><Download size={14} aria-hidden="true" />
+            <a href="/research/engineering-geometry/declarative-flange-semantics.dxf" download>
+              <Ruler size={18} aria-hidden="true" /><span><b>DXF</b><small>{ja ? '材料・公差・荷重付き第三角法図面' : 'third-angle drawing with material, tolerance and load data'}</small></span><Download size={14} aria-hidden="true" />
             </a>
-            <a href="/research/engineering-geometry/hypercube-4d.json" target="_blank" rel="noreferrer">
-              <FileJson2 size={18} aria-hidden="true" /><span><b>4D JSON</b><small>{ja ? '厳密座標と射の履歴' : 'exact coordinates and morphism history'}</small></span><ArrowRight size={14} aria-hidden="true" />
+            <a href="/research/engineering-geometry/hypercube-8d.svg" target="_blank" rel="noreferrer">
+              <Layers3 size={18} aria-hidden="true" /><span><b>{ja ? '8次元射影' : '8D projection'}</b><small>{ja ? '厳密有理座標によるSVG' : 'SVG from exact rational coordinates'}</small></span><ArrowRight size={14} aria-hidden="true" />
             </a>
-            <a href="/research/engineering-geometry/finite-language-summary.json" target="_blank" rel="noreferrer">
-              <FileJson2 size={18} aria-hidden="true" /><span><b>{ja ? '実験結果' : 'Results'}</b><small>{ja ? '3次元・高次元の全記録' : 'all 3D and higher-dimensional records'}</small></span><ArrowRight size={14} aria-hidden="true" />
+            <a href="/research/engineering-geometry/engineering-semantics-summary.json" target="_blank" rel="noreferrer">
+              <FileJson2 size={18} aria-hidden="true" /><span><b>{ja ? '意味層・12次元実験' : 'Semantics and 12D results'}</b><small>{ja ? '3部品と5次元条件の全記録' : 'all records for three parts and five dimension cases'}</small></span><ArrowRight size={14} aria-hidden="true" />
             </a>
             <a href="/research/engineering-geometry/cadtestbench-operator-coverage.json" target="_blank" rel="noreferrer">
               <FileJson2 size={18} aria-hidden="true" /><span><b>{ja ? '構造監査' : 'Structural audit'}</b><small>{ja ? '2,400プログラム' : '2,400 programs'}</small></span><ArrowRight size={14} aria-hidden="true" />
             </a>
-            <a href="https://github.com/corcondor/mortra/blob/release/mortra-1-beta/docs/research/MORTRA-FINITE-ENGINEERING-LANGUAGE-20260831.md" target="_blank" rel="noreferrer">
+            <a href="https://github.com/corcondor/mortra/blob/release/mortra-1-beta/docs/research/MORTRA-ENGINEERING-SEMANTICS-AND-ND-GENERALIZATION-20260831.md" target="_blank" rel="noreferrer">
               <Github size={18} aria-hidden="true" /><span><b>{ja ? '研究記録' : 'Research record'}</b><small>{ja ? '原理・方法・結果・限界' : 'principle, method, result and limits'}</small></span><ArrowRight size={14} aria-hidden="true" />
             </a>
           </div>
@@ -351,16 +363,16 @@ export function EngineeringGeometryResearchPage({ lang = 'en' }: { lang?: Lang }
       <section className={styles.section} id="boundary">
         <div className={`${styles.shell} ${styles.boundaryGrid}`}>
           <div>
-            <p className={styles.sectionLabel}>06 / CURRENT BOUNDARY</p>
-            <h2>{ja ? '次に増やすのは、部品名ではない。' : 'The next additions are not part names.'}</h2>
+            <p className={styles.sectionLabel}>06 / NEXT ENGINEERING LAYER</p>
+            <h2>{ja ? '次に接続するのは、解析と製造判断。' : 'Next: analysis and manufacturing decisions.'}</h2>
           </div>
           <div className={styles.boundaryCopy}>
             <p>{ja
-              ? '今回示したのは幾何と図面です。材料、荷重、疲労、熱、加工公差、表面粗さ、GD&T、組立順序、BOMはまだ実行対象ではありません。これらを constrain と annotate へ型付きで接続することが次の工学的課題です。'
-              : 'This experiment covers geometry and drawing. Material, loads, fatigue, heat, manufacturing tolerance, surface finish, GD&T, assembly sequence and BOM are not executable yet. The next engineering task is to connect them to constrain and annotate with explicit types.'}</p>
+              ? '材料、密度、加工法、公差、表面粗さ、基準、接合、力、モーメントは、property・relation・actionの三形式で接続しました。次は同じ対象参照を保ったまま、幾何公差、溶接記号、部品表、応力、疲労、熱へ拡張します。'
+              : 'Material, density, process, tolerance, surface finish, datums, joints, forces and moments now share three forms: property, relation and action. The next step preserves the same entity references while extending to geometric tolerancing, weld symbols, bills of materials, stress, fatigue and heat.'}</p>
             <p>{ja
-              ? '図面は第三角法、隠れ線、中心線、断面、主要寸法を備えますが、ASMEまたはISOへの適合認証は行っていません。OpenCascadeによる厳密B-repは3次元までです。4次元以上は厳密有理アフィンセルとして実行しており、一般の滑らかな高次元CADではありません。螺旋ばねは厳密STEPまでを確認し、図面は完了扱いにしていません。'
-              : 'The drawings include third-angle projection, hidden lines, centrelines, sections and principal dimensions, but are not certified against ASME or ISO. Exact OpenCascade B-reps stop at three dimensions. Higher dimensions execute as exact rational affine cells, not general smooth CAD. The helical spring is verified through exact STEP only; its drawing is not counted as complete.'}</p>
+              ? '物理的な製品形状と機械図面は3次元の境界表現で扱います。4次元以上は、機構の配位空間、状態空間、設計変数空間へ使える厳密なアフィンセルとして扱います。この役割分担により、機械製図の正確さと高次元数学の一般性を同じ8操作で共有できます。'
+              : 'Physical product geometry and mechanical drawings use three-dimensional boundary representations. Higher dimensions use exact affine cells for configuration spaces, state spaces and design-variable spaces. This separation shares the same eight operations without confusing physical drawings with higher-dimensional mathematics.'}</p>
           </div>
         </div>
       </section>

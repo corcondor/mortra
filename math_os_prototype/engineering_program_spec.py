@@ -24,6 +24,7 @@ from .engineering_cad_backend import (
     _valid,
 )
 from .engineering_geometry_ir import BasisOp
+from .engineering_semantics import EngineeringAssertion, EngineeringSemanticGraph
 
 
 SEED_KINDS = frozenset(
@@ -332,6 +333,7 @@ class EngineeringProgramSpec:
     nominal_dimensions_mm: dict[str, float] = field(default_factory=dict)
     section_plane: str = "XZ"
     metadata: dict[str, Any] = field(default_factory=dict)
+    engineering_semantics: tuple[EngineeringAssertion, ...] = ()
 
     def __post_init__(self) -> None:
         _json_value(self.nominal_dimensions_mm, path="nominal_dimensions_mm")
@@ -352,6 +354,16 @@ class EngineeringProgramSpec:
             known.add(step.output)
         if self.output not in known:
             raise ValueError(f"unknown output entity: {self.output}")
+        for assertion in self.engineering_semantics:
+            missing = [
+                name
+                for name in (assertion.subject, *assertion.objects)
+                if name not in known
+            ]
+            if missing:
+                raise ValueError(
+                    f"engineering assertion references unavailable entities: {missing}"
+                )
 
     @classmethod
     def from_dict(cls, payload: Mapping[str, Any]) -> "EngineeringProgramSpec":
@@ -384,6 +396,10 @@ class EngineeringProgramSpec:
             },
             section_plane=str(payload.get("section_plane", "XZ")),
             metadata=dict(payload.get("metadata", {})),
+            engineering_semantics=tuple(
+                EngineeringAssertion.from_dict(item)
+                for item in payload.get("engineering_semantics", [])
+            ),
         )
 
     @classmethod
@@ -416,6 +432,9 @@ class EngineeringProgramSpec:
             "nominal_dimensions_mm": self.nominal_dimensions_mm,
             "section_plane": self.section_plane,
             "metadata": self.metadata,
+            "engineering_semantics": [
+                assertion.to_dict() for assertion in self.engineering_semantics
+            ],
         }
 
     @property
@@ -442,13 +461,29 @@ class DeclarativeCadResult:
             f"{name.replace('_', ' ').upper()}: {value:g} mm"
             for name, value in self.spec.nominal_dimensions_mm.items()
         ]
+        ambient_dimensions = {
+            name: entity.ref.geometric_type.ambient_dimension
+            for name, entity in self.entities.items()
+        }
+        measures = {
+            name: {"volume_mm3": float(entity.shape.volume)}
+            for name, entity in self.entities.items()
+            if hasattr(entity.shape, "volume") and float(entity.shape.volume) > 0
+        }
+        compiled_semantics = EngineeringSemanticGraph(
+            self.spec.engineering_semantics
+        ).compile(
+            ambient_dimensions=ambient_dimensions,
+            measures=measures,
+        )
         metadata = {
             **self.spec.metadata,
             "program_schema": "mortra-engineering-program-v1",
             "program_hash": self.spec.stable_hash,
             "seed_kinds": sorted({seed.kind for seed in self.spec.seeds}),
             "arbitrary_native_input": False,
-            "drawing_notes": drawing_notes,
+            "drawing_notes": [*drawing_notes, *compiled_semantics.drawing_notes],
+            "engineering_semantics": compiled_semantics.to_dict(),
         }
         return EngineeringPart(
             part_id=self.spec.program_id,

@@ -1799,8 +1799,12 @@ def export_part_artifacts(part: EngineeringPart, output_dir: Path) -> dict[str, 
     timings["section_and_hatching"] = time.perf_counter() - stage_started
 
     note_lines = ["NOMINAL DIMENSIONS", *part.metadata.get("drawing_notes", [])]
+    note_top = 22.0
+    note_bottom = -38.0
+    note_step = min(5.4, (note_top - note_bottom) / max(1, len(note_lines) - 1))
+    note_size = 2.7 if len(note_lines) <= 10 else 2.35
     for index, note in enumerate(note_lines):
-        labels.append(Pos(103, 8 - index * 6) * Text(note, 2.7))
+        labels.append(Pos(103, note_top - index * note_step) * Text(note, note_size))
 
     border = TechnicalDrawing(
         designed_by="MORTRA",
