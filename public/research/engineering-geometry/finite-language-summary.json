@@ -1,5 +1,5 @@
 {
-  "experiment": "finite-language-engineering-generalization-v1",
+  "experiment": "finite-language-engineering-generalization-v2",
   "basis": {
     "basis": [
       "transform",
@@ -51,9 +51,9 @@
     "sketch"
   ],
   "arbitrary_native_input_allowed": false,
-  "runtime_hash": "72e39102c430f592fda2959eaf863b2ba80de41765138140c5611f18159d7108",
-  "cad_cases": 3,
-  "cad_cases_passed": 3,
+  "runtime_hash": "d7ed4f843a86ea833458502a7f3f32d00bb153fb954f3c007884f1c4dd8597b7",
+  "cad_cases": 6,
+  "cad_cases_passed": 6,
   "all_cad_breps_valid": true,
   "all_cad_single_solid": true,
   "used_basis_operations": [
@@ -61,6 +61,7 @@
     "combine",
     "constrain",
     "project",
+    "select",
     "slice",
     "sweep",
     "transform"
@@ -105,12 +106,12 @@
     "scope": "AST method-call coverage only; programs were not scored for CAD correctness",
     "program_files": 2400,
     "construction_calls": 24213,
-    "runtime_covered_construction_calls": 23787,
-    "runtime_covered_construction_call_ratio": 0.9824061454590509,
-    "files_with_only_runtime_covered_construction": 2166,
-    "files_with_only_runtime_covered_construction_ratio": 0.9025
+    "runtime_covered_construction_calls": 23946,
+    "runtime_covered_construction_call_ratio": 0.9889728658158841,
+    "files_with_only_runtime_covered_construction": 2277,
+    "files_with_only_runtime_covered_construction_ratio": 0.94875
   },
-  "elapsed_seconds": 0.09249360000103479,
+  "elapsed_seconds": 290.96308280000085,
   "records": [
     {
       "part_id": "declarative_flange",
@@ -139,14 +140,14 @@
         "constrain": 3,
         "annotate": 1
       },
-      "reused": true,
+      "reused": false,
       "timings_seconds": {
-        "step_export": 0.09374079999543028,
-        "stl_mesh_export": 0.43976999999722466,
-        "orthographic_hidden_line_projection": 0.274753800003964,
-        "section_and_hatching": 0.06415299999935087,
-        "svg_export": 0.005628699997032527,
-        "dxf_export": 1.382856999996875
+        "step_export": 0.43506450000131736,
+        "stl_mesh_export": 0.5315082000015536,
+        "orthographic_hidden_line_projection": 0.09357669999735663,
+        "section_and_hatching": 0.12618819999624975,
+        "svg_export": 0.564680400006182,
+        "dxf_export": 1.7787317000038456
       },
       "artifacts": {
         "step": "declarative_flange.step",
@@ -182,9 +183,9 @@
         "constrain": 3,
         "annotate": 0
       },
-      "reused": true,
+      "reused": false,
       "timings_seconds": {
-        "step_export": 0.009797400001843926
+        "step_export": 0.1024660999974003
       },
       "artifacts": {
         "step": "helical_spring_holdout.step"
@@ -217,20 +218,149 @@
         "constrain": 3,
         "annotate": 0
       },
-      "reused": true,
+      "reused": false,
       "timings_seconds": {
-        "step_export": 0.014312699997390155,
-        "stl_mesh_export": 0.020534300005238038,
-        "orthographic_hidden_line_projection": 0.10200470000563655,
-        "section_and_hatching": 0.06624929999816231,
-        "svg_export": 0.0066910000023199245,
-        "dxf_export": 1.139097600003879
+        "step_export": 0.008454799994069617,
+        "stl_mesh_export": 0.02814859999489272,
+        "orthographic_hidden_line_projection": 0.0338082999951439,
+        "section_and_hatching": 0.048964600006002,
+        "svg_export": 0.06500469999446068,
+        "dxf_export": 2.469851699999708
       },
       "artifacts": {
         "step": "rounded_link_plate_holdout.step",
         "stl": "rounded_link_plate_holdout.stl",
         "svg": "rounded_link_plate_holdout-drawing.svg",
         "dxf": "rounded_link_plate_holdout-drawing.dxf"
+      }
+    },
+    {
+      "part_id": "normal_offset_gasket_holdout",
+      "passed": true,
+      "geometry": {
+        "volume_mm3": 824.5486677646168,
+        "surface_area_mm2": 1374.2477796076937,
+        "solid_count": 1,
+        "face_count": 14,
+        "edge_count": 36,
+        "bbox_mm": [
+          46.0,
+          30.0,
+          2.0
+        ],
+        "is_valid": true
+      },
+      "program_hash": "4c1a433f9c6334be3d2d892f556ffce8055e109c8f37d6680a35aa24a3ffd90a",
+      "operator_histogram": {
+        "transform": 0,
+        "sweep": 2,
+        "combine": 1,
+        "select": 1,
+        "slice": 1,
+        "project": 4,
+        "constrain": 3,
+        "annotate": 0
+      },
+      "reused": false,
+      "timings_seconds": {
+        "step_export": 0.15781520000018645,
+        "stl_mesh_export": 0.08504979999997886,
+        "orthographic_hidden_line_projection": 0.17712359999859473,
+        "section_and_hatching": 0.03926530000171624,
+        "svg_export": 0.05010049999691546,
+        "dxf_export": 3.7737761000025785
+      },
+      "artifacts": {
+        "step": "normal_offset_gasket_holdout.step",
+        "stl": "normal_offset_gasket_holdout.stl",
+        "svg": "normal_offset_gasket_holdout-drawing.svg",
+        "dxf": "normal_offset_gasket_holdout-drawing.dxf"
+      }
+    },
+    {
+      "part_id": "thin_wall_enclosure_holdout",
+      "passed": true,
+      "geometry": {
+        "volume_mm3": 7152.0,
+        "surface_area_mm2": 7432.0,
+        "solid_count": 1,
+        "face_count": 11,
+        "edge_count": 24,
+        "bbox_mm": [
+          40.0,
+          30.0,
+          20.0
+        ],
+        "is_valid": true
+      },
+      "program_hash": "b04bcf8f688c3e7b0b2527539bd5a26116fbe060fdd056dcc61dc1bb4ef5326c",
+      "operator_histogram": {
+        "transform": 0,
+        "sweep": 2,
+        "combine": 0,
+        "select": 1,
+        "slice": 1,
+        "project": 4,
+        "constrain": 3,
+        "annotate": 0
+      },
+      "reused": false,
+      "timings_seconds": {
+        "step_export": 0.012350199998763856,
+        "stl_mesh_export": 0.009281899998313747,
+        "orthographic_hidden_line_projection": 0.026929699997708667,
+        "section_and_hatching": 0.062178800006222446,
+        "svg_export": 0.6408947000018088,
+        "dxf_export": 0.9837608999951044
+      },
+      "artifacts": {
+        "step": "thin_wall_enclosure_holdout.step",
+        "stl": "thin_wall_enclosure_holdout.stl",
+        "svg": "thin_wall_enclosure_holdout-drawing.svg",
+        "dxf": "thin_wall_enclosure_holdout-drawing.dxf"
+      }
+    },
+    {
+      "part_id": "filleted_post_holdout",
+      "passed": true,
+      "geometry": {
+        "volume_mm3": 5922.743338823082,
+        "surface_area_mm2": 2133.0442269800037,
+        "solid_count": 1,
+        "face_count": 10,
+        "edge_count": 24,
+        "bbox_mm": [
+          30.0,
+          20.0,
+          10.0
+        ],
+        "is_valid": true
+      },
+      "program_hash": "70bcd4c2bd5666a36cc209617e12541df8649aad3ed6032b7df2f99e2aa42dd6",
+      "operator_histogram": {
+        "transform": 0,
+        "sweep": 2,
+        "combine": 0,
+        "select": 1,
+        "slice": 1,
+        "project": 4,
+        "constrain": 3,
+        "annotate": 0
+      },
+      "reused": false,
+      "timings_seconds": {
+        "step_export": 0.19543149999663,
+        "stl_mesh_export": 0.012220099997648504,
+        "orthographic_hidden_line_projection": 0.020420900000317488,
+        "section_and_hatching": 0.2821505999963847,
+        "svg_export": 0.10711550000269199,
+        "dxf_export": 1.0729038000063156
+      },
+      "artifacts": {
+        "step": "filleted_post_holdout.step",
+        "stl": "filleted_post_holdout.stl",
+        "svg": "filleted_post_holdout-drawing.svg",
+        "dxf": "filleted_post_holdout-drawing.dxf"
       }
     }
   ]

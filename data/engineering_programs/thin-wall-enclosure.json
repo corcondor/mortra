@@ -1,0 +1,78 @@
+{
+  "program_id": "thin_wall_enclosure_holdout",
+  "title": "Open-top thin-wall enclosure holdout",
+  "seeds": [
+    {
+      "name": "footprint",
+      "kind": "rectangle",
+      "parameters": {"width": 40, "height": 30}
+    }
+  ],
+  "steps": [
+    {
+      "output": "outer_solid",
+      "op": "sweep",
+      "inputs": ["footprint"],
+      "parameters": {"trajectory": "line", "vector": [0, 0, 20]}
+    },
+    {
+      "output": "opening_face",
+      "op": "select",
+      "inputs": ["outer_solid"],
+      "parameters": {
+        "selector": "faces",
+        "where": {
+          "normal": [0, 0, 1],
+          "position_axis": "Z",
+          "extreme": "max"
+        }
+      }
+    },
+    {
+      "output": "enclosure",
+      "op": "sweep",
+      "inputs": ["opening_face", "outer_solid"],
+      "parameters": {
+        "trajectory": "normal_bundle",
+        "cross_section": "interval",
+        "result": "boundary_layer",
+        "distance": -2,
+        "join": "arc"
+      }
+    },
+    {
+      "output": "valid",
+      "op": "constrain",
+      "inputs": ["enclosure"],
+      "parameters": {"predicate": "valid_brep"}
+    },
+    {
+      "output": "connected",
+      "op": "constrain",
+      "inputs": ["valid"],
+      "parameters": {"predicate": "single_solid"}
+    },
+    {
+      "output": "result",
+      "op": "constrain",
+      "inputs": ["connected"],
+      "parameters": {
+        "predicate": "volume_close",
+        "expected": 7152,
+        "tolerance": 0.00001
+      }
+    }
+  ],
+  "output": "result",
+  "section_plane": "XZ",
+  "nominal_dimensions_mm": {
+    "outer_width": 40,
+    "outer_depth": 30,
+    "outer_height": 20,
+    "wall_thickness": 2
+  },
+  "metadata": {
+    "evaluation_role": "normal_bundle_holdout",
+    "family": "open boundary layer"
+  }
+}

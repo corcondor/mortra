@@ -1,5 +1,5 @@
 {
-  "audit": "cadtestbench-operator-coverage-v1",
+  "audit": "cadtestbench-operator-coverage-v2",
   "scope": "AST method-call coverage only; programs were not scored for CAD correctness",
   "source": {
     "dataset": "CADTestBench",
@@ -11,23 +11,22 @@
   "parse_errors": [],
   "method_calls": 61482,
   "construction_calls": 24213,
-  "runtime_covered_construction_calls": 23787,
-  "runtime_covered_construction_call_ratio": 0.9824061454590509,
-  "files_with_only_runtime_covered_construction": 2166,
-  "files_with_only_runtime_covered_construction_ratio": 0.9025,
+  "runtime_covered_construction_calls": 23946,
+  "runtime_covered_construction_call_ratio": 0.9889728658158841,
+  "files_with_only_runtime_covered_construction": 2277,
+  "files_with_only_runtime_covered_construction_ratio": 0.94875,
   "category_counts": {
     "finite_data_gap": 15,
     "non_construction": 37269,
-    "runtime_basis": 12282,
+    "runtime_basis": 12441,
     "runtime_data": 11505,
-    "runtime_operation_gap": 159,
     "unclassified": 252
   },
   "basis_operation_counts": {
     "combine": 1821,
     "select": 4971,
     "slice": 1284,
-    "sweep": 2442,
+    "sweep": 2601,
     "transform": 1764
   },
   "methods_by_category": {
@@ -461,6 +460,10 @@
         "count": 141
       },
       {
+        "method": "fillet",
+        "count": 135
+      },
+      {
         "method": "array",
         "count": 96
       },
@@ -485,6 +488,10 @@
         "count": 24
       },
       {
+        "method": "shell",
+        "count": 21
+      },
+      {
         "method": "sweep",
         "count": 15
       },
@@ -506,6 +513,10 @@
       },
       {
         "method": "revolve",
+        "count": 3
+      },
+      {
+        "method": "offset2D",
         "count": 3
       }
     ],
@@ -593,20 +604,6 @@
       {
         "method": "face",
         "count": 9
-      }
-    ],
-    "runtime_operation_gap": [
-      {
-        "method": "fillet",
-        "count": 135
-      },
-      {
-        "method": "shell",
-        "count": 21
-      },
-      {
-        "method": "offset2D",
-        "count": 3
       }
     ],
     "unclassified": [

@@ -28,6 +28,30 @@ const operations = [
 
 const drawings = [
   {
+    src: '/research/engineering-geometry/normal-offset-gasket.svg',
+    id: 'NGS-001',
+    en: 'Normal-offset gasket',
+    ja: '法線オフセット・ガスケット',
+    detailEn: 'A parallel set, Boolean difference and linear sweep from one normal-bundle rule.',
+    detailJa: '平行集合、形状差、直線掃引を一つの法線束規則から構成。',
+  },
+  {
+    src: '/research/engineering-geometry/thin-wall-enclosure.svg',
+    id: 'ENC-001',
+    en: 'Open thin-wall enclosure',
+    ja: '開放薄肉箱',
+    detailEn: 'A selected opening face and normal interval generate the wall layer and section.',
+    detailJa: '開口面の選択と法線区間から壁層と断面を生成。',
+  },
+  {
+    src: '/research/engineering-geometry/filleted-post.svg',
+    id: 'BLD-001',
+    en: 'Rolling-ball edge blend',
+    ja: '4辺の円弧角丸',
+    detailEn: 'Four selected edges share the same disk-sector sweep used by planar corner blends.',
+    detailJa: '選択した4辺へ、平面角丸と共通の円板扇形掃引を適用。',
+  },
+  {
     src: '/research/engineering-geometry/rounded-link-plate.svg',
     id: 'LNK-001',
     en: 'Rounded link plate',
@@ -70,16 +94,16 @@ const pipeline = [
 ] as const
 
 const resultRows = [
-  ['有限入力プログラム', 'Finite-input programs', '3 / 3', 'フランジ、螺旋ばね、丸端リンク板を任意B-rep入力なしで実行', 'Flange, helical spring and rounded link plate executed without arbitrary B-rep inputs'],
-  ['閉形式体積', 'Closed-form volumes', '3 / 3', '数値の正体積だけでなく、各形状の幾何式と照合', 'Checked against a geometric formula, not only positive numerical volume'],
+  ['有限入力プログラム', 'Finite-input programs', '6 / 6', '曲線部品、平行集合、薄肉化、角丸を任意B-rep入力なしで実行', 'Curve-based parts, parallel sets, thin walls and blends executed without arbitrary B-rep inputs'],
+  ['閉形式体積', 'Closed-form volumes', '6 / 6', '数値の正体積だけでなく、各形状の幾何式と照合', 'Checked against a geometric formula, not only positive numerical volume'],
   ['高次元セル', 'Higher-dimensional cells', '4D / 5D / 6D', '同じ sweep と project で厳密有理セルを構成・射影', 'Exact rational cells constructed and projected with the same sweep and project operations'],
-  ['外部操作の構造被覆', 'External operation coverage', '23,787 / 24,213', 'CADTestBench 2,400プログラムの構成呼び出しを静的に監査', 'Static audit of construction calls in 2,400 CADTestBench programs'],
-  ['完全被覆ファイル', 'Fully covered files', '2,166 / 2,400', '各ファイル内の構成呼び出しがすべて現在の実行系に対応', 'Every construction call in each file maps to the current runtime'],
+  ['外部操作の構造被覆', 'External operation coverage', '23,946 / 24,213', 'CADTestBench 2,400プログラムの構成呼び出しを静的に監査', 'Static audit of construction calls in 2,400 CADTestBench programs'],
+  ['完全被覆ファイル', 'Fully covered files', '2,277 / 2,400', '各ファイル内の構成呼び出しがすべて現在の実行系に対応', 'Every construction call in each file maps to the current runtime'],
   ['追加した射', 'Added morphisms', '0', '曲線部品と高次元実行のための部品別命令は追加していない', 'No part-specific operation was added for curve-based parts or higher dimensions'],
 ] as const
 
 const dimensionRows = [
-  ['3D', '3 / 3', 'finite programs', '3 STEP / 2 drawings'],
+  ['3D', '6 / 6', 'finite programs', '6 STEP / 5 drawings'],
   ['4D', '16', 'vertices', '32 edges'],
   ['5D', '32', 'vertices', '80 edges'],
   ['6D', '64', 'vertices', '192 edges'],
@@ -113,9 +137,9 @@ export function EngineeringGeometryResearchPage({ lang = 'en' }: { lang?: Lang }
 
           <div className={styles.metricRail} aria-label={ja ? '実験結果' : 'Experiment results'}>
             <div><strong>8</strong><span>{ja ? '共通射' : 'generic morphisms'}</span></div>
-            <div><strong>3 / 3</strong><span>{ja ? '有限入力の部品' : 'finite-input parts'}</span></div>
+            <div><strong>6 / 6</strong><span>{ja ? '有限入力の部品' : 'finite-input parts'}</span></div>
             <div><strong>4–6D</strong><span>{ja ? '厳密セル実行' : 'exact cell execution'}</span></div>
-            <div><strong>98.24%</strong><span>{ja ? '外部操作の構造被覆' : 'external operation coverage'}</span></div>
+            <div><strong>98.90%</strong><span>{ja ? '外部操作の構造被覆' : 'external operation coverage'}</span></div>
           </div>
 
           <figure className={styles.heroDrawing}>
@@ -254,12 +278,12 @@ export function EngineeringGeometryResearchPage({ lang = 'en' }: { lang?: Lang }
         <div className={styles.shell}>
           <div className={styles.sectionHead}>
             <div>
-              <p className={styles.sectionLabel}>04 / TOPOLOGY HOLDOUTS</p>
-              <h2>{ja ? '基底に無かった形状族で試す。' : 'Test shapes absent from the basis set.'}</h2>
+              <p className={styles.sectionLabel}>04 / STRUCTURAL HOLDOUTS</p>
+              <h2>{ja ? '名前ではなく、構造を変えて試す。' : 'Change the structure, not just the name.'}</h2>
             </div>
             <p>{ja
-              ? '寸法を変えただけの評価ではありません。基底5族に含まれない反復スポーク、二枚ラグ、三軸交差流路を固定し、演算集合を変えずに生成しました。'
-              : 'These are not dimension-only variants. Repeated spokes, paired lugs and three-axis intersecting passages were held out from the five-family basis and generated without changing the operator set.'}</p>
+              ? '平行集合、薄肉境界層、円板扇形の包絡、反復スポーク、二枚ラグ、三軸交差流路を、演算集合を変えずに生成しました。角丸・薄肉化・平面オフセットは別命令ではなく、同じ法線束の掃引です。'
+              : 'Parallel sets, thin boundary layers, disk-sector envelopes, repeated spokes, paired lugs and intersecting passages were generated without changing the operator set. Fillets, shells and planar offsets are one normal-bundle sweep, not separate commands.'}</p>
           </div>
 
           <div className={styles.drawingList}>
@@ -287,8 +311,8 @@ export function EngineeringGeometryResearchPage({ lang = 'en' }: { lang?: Lang }
               <h2>{ja ? '画像ではなく、形状と成果物を検査する。' : 'Verify geometry and artifacts, not screenshots alone.'}</h2>
             </div>
             <p>{ja
-              ? '3件すべてでB-repの妥当性、単一ソリッド、閉形式体積、STEPを検査しました。図面生成まで完了した2件では、断面、投影領域、SVG、DXFも独立に検査しています。'
-              : 'All three cases check B-rep validity, single-solid topology, closed-form volume and STEP. The two completed drawing cases also check sections, view bounds, SVG and DXF independently.'}</p>
+              ? '6件すべてでB-repの妥当性、単一ソリッド、閉形式体積、STEPを検査しました。5件では第三角法、隠れ線、断面、SVG、DXFも生成し、図面を目視検査しています。'
+              : 'All six cases check B-rep validity, single-solid topology, closed-form volume and STEP. Five also generate third-angle views, hidden lines, sections, SVG and DXF for visual inspection.'}</p>
           </div>
 
           <div className={styles.resultTable}>
@@ -302,10 +326,10 @@ export function EngineeringGeometryResearchPage({ lang = 'en' }: { lang?: Lang }
           </div>
 
           <div className={styles.artifactLinks}>
-            <a href="/research/engineering-geometry/rounded-link-plate.step" download>
-              <Box size={18} aria-hidden="true" /><span><b>STEP</b><small>{ja ? '丸端リンク板の厳密形状' : 'exact rounded-link solid'}</small></span><Download size={14} aria-hidden="true" />
+            <a href="/research/engineering-geometry/thin-wall-enclosure.step" download>
+              <Box size={18} aria-hidden="true" /><span><b>STEP</b><small>{ja ? '開放薄肉箱の厳密形状' : 'exact thin-wall enclosure'}</small></span><Download size={14} aria-hidden="true" />
             </a>
-            <a href="/research/engineering-geometry/rounded-link-plate.dxf" download>
+            <a href="/research/engineering-geometry/normal-offset-gasket.dxf" download>
               <Ruler size={18} aria-hidden="true" /><span><b>DXF</b><small>{ja ? '第三角法機械図面' : 'third-angle drawing'}</small></span><Download size={14} aria-hidden="true" />
             </a>
             <a href="/research/engineering-geometry/hypercube-4d.json" target="_blank" rel="noreferrer">

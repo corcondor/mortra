@@ -31,6 +31,9 @@ PROGRAM_FILES = (
     "declarative-flange.json",
     "helical-spring.json",
     "rounded-link-plate.json",
+    "normal-offset-gasket.json",
+    "thin-wall-enclosure.json",
+    "filleted-post.json",
 )
 
 RUNTIME_FILES = (
@@ -112,8 +115,8 @@ def main() -> int:
         type=Path,
         default=ROOT
         / "artifacts"
-        / "engineering-geometry-basis-20260831"
-        / "cadtestbench-operator-coverage.json",
+        / "declarative-engineering-generalization-20260831-normal-bundle"
+        / "cadtestbench-operator-coverage-v2.json",
     )
     parser.add_argument(
         "--program",
@@ -190,7 +193,7 @@ def main() -> int:
         progress_path.write_text(
             json.dumps(
                 {
-                    "experiment": "finite-language-engineering-generalization-v1",
+                    "experiment": "finite-language-engineering-generalization-v2",
                     "completed": [record["part_id"] for record in records],
                     "pending": [
                         Path(item).stem
@@ -218,7 +221,7 @@ def main() -> int:
         }
     )
     summary = {
-        "experiment": "finite-language-engineering-generalization-v1",
+        "experiment": "finite-language-engineering-generalization-v2",
         "basis": basis_summary(),
         "finite_seed_kinds": sorted(SEED_KINDS),
         "arbitrary_native_input_allowed": False,

@@ -1,0 +1,77 @@
+{
+  "program_id": "normal_offset_gasket_holdout",
+  "title": "Normal-offset rectangular gasket holdout",
+  "seeds": [
+    {
+      "name": "core_profile",
+      "kind": "rectangle",
+      "parameters": {"width": 40, "height": 24}
+    }
+  ],
+  "steps": [
+    {
+      "output": "profile_boundary",
+      "op": "select",
+      "inputs": ["core_profile"],
+      "parameters": {"selector": "outer_boundary"}
+    },
+    {
+      "output": "offset_profile",
+      "op": "sweep",
+      "inputs": ["profile_boundary", "core_profile"],
+      "parameters": {
+        "trajectory": "normal_bundle",
+        "cross_section": "interval",
+        "result": "parallel_set",
+        "distance": 3,
+        "join": "arc"
+      }
+    },
+    {
+      "output": "gasket_profile",
+      "op": "combine",
+      "inputs": ["offset_profile", "core_profile"],
+      "parameters": {"operation": "difference"}
+    },
+    {
+      "output": "gasket",
+      "op": "sweep",
+      "inputs": ["gasket_profile"],
+      "parameters": {"trajectory": "line", "vector": [0, 0, 2]}
+    },
+    {
+      "output": "valid",
+      "op": "constrain",
+      "inputs": ["gasket"],
+      "parameters": {"predicate": "valid_brep"}
+    },
+    {
+      "output": "connected",
+      "op": "constrain",
+      "inputs": ["valid"],
+      "parameters": {"predicate": "single_solid"}
+    },
+    {
+      "output": "result",
+      "op": "constrain",
+      "inputs": ["connected"],
+      "parameters": {
+        "predicate": "volume_close",
+        "expected": 824.5486677646163,
+        "tolerance": 0.00001
+      }
+    }
+  ],
+  "output": "result",
+  "section_plane": "XZ",
+  "nominal_dimensions_mm": {
+    "core_width": 40,
+    "core_height": 24,
+    "offset": 3,
+    "thickness": 2
+  },
+  "metadata": {
+    "evaluation_role": "normal_bundle_holdout",
+    "family": "planar parallel set"
+  }
+}

@@ -1,0 +1,501 @@
+{
+  "part_id": "thin_wall_enclosure_holdout",
+  "title": "Open-top thin-wall enclosure holdout",
+  "passed": true,
+  "kernel": "build123d/OpenCascade exact B-rep",
+  "dimensions_mm": {
+    "outer_width": 40.0,
+    "outer_depth": 30.0,
+    "outer_height": 20.0,
+    "wall_thickness": 2.0
+  },
+  "geometry": {
+    "volume_mm3": 7152.0,
+    "surface_area_mm2": 7432.0,
+    "solid_count": 1,
+    "face_count": 11,
+    "edge_count": 24,
+    "bbox_mm": [
+      40.0,
+      30.0,
+      20.0
+    ],
+    "is_valid": true
+  },
+  "checks": [
+    {
+      "name": "valid_brep",
+      "passed": true,
+      "observed": true,
+      "expected": true,
+      "tolerance": null,
+      "message": ""
+    },
+    {
+      "name": "single_solid",
+      "passed": true,
+      "observed": 1,
+      "expected": 1,
+      "tolerance": null,
+      "message": ""
+    },
+    {
+      "name": "volume_close",
+      "passed": true,
+      "observed": 7152.0,
+      "expected": 7152.0,
+      "tolerance": 1e-05,
+      "message": ""
+    }
+  ],
+  "views": [
+    {
+      "name": "TOP",
+      "visible_edges": 8,
+      "hidden_edges": 0,
+      "bbox": {
+        "width": 60.0,
+        "height": 45.0
+      },
+      "source_bbox": {
+        "width": 40.0,
+        "height": 30.0
+      },
+      "drawing_scale": 1.5,
+      "page_box": [
+        -184,
+        28,
+        -24,
+        122
+      ]
+    },
+    {
+      "name": "FRONT",
+      "visible_edges": 4,
+      "hidden_edges": 12,
+      "bbox": {
+        "width": 60.0,
+        "height": 30.0
+      },
+      "source_bbox": {
+        "width": 40.0,
+        "height": 20.0
+      },
+      "drawing_scale": 1.5,
+      "page_box": [
+        -184,
+        -55,
+        -24,
+        17
+      ]
+    },
+    {
+      "name": "RIGHT",
+      "visible_edges": 4,
+      "hidden_edges": 12,
+      "bbox": {
+        "width": 45.0,
+        "height": 30.0
+      },
+      "source_bbox": {
+        "width": 30.0,
+        "height": 20.0
+      },
+      "drawing_scale": 1.5,
+      "page_box": [
+        -12,
+        -55,
+        82,
+        17
+      ]
+    },
+    {
+      "name": "ISOMETRIC",
+      "visible_edges": 16,
+      "hidden_edges": 10,
+      "bbox": {
+        "width": 66.82159082212877,
+        "height": 56.4011605296461
+      },
+      "source_bbox": {
+        "width": 49.49747468305833,
+        "height": 41.778637429367485
+      },
+      "drawing_scale": 1.35,
+      "page_box": [
+        30,
+        28,
+        184,
+        122
+      ]
+    }
+  ],
+  "section": {
+    "plane": "XZ",
+    "face_count": 1,
+    "area_mm2": 151.9999999999999,
+    "hatch_segment_count": 14,
+    "drawing_scale": 1.5,
+    "page_box": [
+      -184,
+      -121,
+      -18,
+      -71
+    ]
+  },
+  "program": {
+    "program_id": "thin_wall_enclosure_holdout",
+    "basis_version": "engineering-geometry-8op-v1",
+    "entities": {
+      "footprint": {
+        "name": "footprint",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 2,
+          "kind": "region"
+        },
+        "role": "input"
+      },
+      "outer_solid": {
+        "name": "outer_solid",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 3,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "opening_face": {
+        "name": "opening_face",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 2,
+          "kind": "faces"
+        },
+        "role": "geometry"
+      },
+      "enclosure": {
+        "name": "enclosure",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 3,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "valid": {
+        "name": "valid",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 3,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "connected": {
+        "name": "connected",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 3,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "result": {
+        "name": "result",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 3,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "drawing_top": {
+        "name": "drawing_top",
+        "geometric_type": {
+          "ambient_dimension": 2,
+          "intrinsic_dimension": 2,
+          "kind": "drawing"
+        },
+        "role": "geometry"
+      },
+      "drawing_front": {
+        "name": "drawing_front",
+        "geometric_type": {
+          "ambient_dimension": 2,
+          "intrinsic_dimension": 2,
+          "kind": "drawing"
+        },
+        "role": "geometry"
+      },
+      "drawing_right": {
+        "name": "drawing_right",
+        "geometric_type": {
+          "ambient_dimension": 2,
+          "intrinsic_dimension": 2,
+          "kind": "drawing"
+        },
+        "role": "geometry"
+      },
+      "drawing_isometric": {
+        "name": "drawing_isometric",
+        "geometric_type": {
+          "ambient_dimension": 2,
+          "intrinsic_dimension": 2,
+          "kind": "drawing"
+        },
+        "role": "geometry"
+      },
+      "section_xz": {
+        "name": "section_xz",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 2,
+          "kind": "section"
+        },
+        "role": "geometry"
+      }
+    },
+    "steps": [
+      {
+        "step_id": "s001",
+        "op": "sweep",
+        "inputs": [
+          "footprint"
+        ],
+        "output": "outer_solid",
+        "parameters": {
+          "path_dimension": 1,
+          "trajectory": "line",
+          "vector": [
+            0.0,
+            0.0,
+            20.0
+          ]
+        }
+      },
+      {
+        "step_id": "s002",
+        "op": "select",
+        "inputs": [
+          "outer_solid"
+        ],
+        "output": "opening_face",
+        "parameters": {
+          "selector": "faces",
+          "where": {
+            "normal": [
+              0,
+              0,
+              1
+            ],
+            "position_axis": "Z",
+            "extreme": "max"
+          }
+        }
+      },
+      {
+        "step_id": "s003",
+        "op": "sweep",
+        "inputs": [
+          "opening_face",
+          "outer_solid"
+        ],
+        "output": "enclosure",
+        "parameters": {
+          "path_dimension": 1,
+          "trajectory": "normal_bundle",
+          "cross_section": "interval",
+          "result": "boundary_layer",
+          "distance": -2.0,
+          "tolerance": 0.0001,
+          "join": "arc"
+        }
+      },
+      {
+        "step_id": "s004",
+        "op": "constrain",
+        "inputs": [
+          "enclosure"
+        ],
+        "output": "valid",
+        "parameters": {
+          "predicate": "valid_brep",
+          "passed": true
+        }
+      },
+      {
+        "step_id": "s005",
+        "op": "constrain",
+        "inputs": [
+          "valid"
+        ],
+        "output": "connected",
+        "parameters": {
+          "predicate": "single_solid",
+          "passed": true
+        }
+      },
+      {
+        "step_id": "s006",
+        "op": "constrain",
+        "inputs": [
+          "connected"
+        ],
+        "output": "result",
+        "parameters": {
+          "predicate": "volume_close",
+          "passed": true
+        }
+      },
+      {
+        "step_id": "s007",
+        "op": "project",
+        "inputs": [
+          "result"
+        ],
+        "output": "drawing_top",
+        "parameters": {
+          "projection": "orthographic",
+          "look_from": [
+            0,
+            0,
+            160
+          ],
+          "look_up": [
+            0,
+            1,
+            0
+          ],
+          "include_hidden": false
+        }
+      },
+      {
+        "step_id": "s008",
+        "op": "project",
+        "inputs": [
+          "result"
+        ],
+        "output": "drawing_front",
+        "parameters": {
+          "projection": "orthographic",
+          "look_from": [
+            0,
+            -160,
+            0
+          ],
+          "look_up": [
+            0,
+            0,
+            1
+          ],
+          "include_hidden": true
+        }
+      },
+      {
+        "step_id": "s009",
+        "op": "project",
+        "inputs": [
+          "result"
+        ],
+        "output": "drawing_right",
+        "parameters": {
+          "projection": "orthographic",
+          "look_from": [
+            160,
+            0,
+            0
+          ],
+          "look_up": [
+            0,
+            0,
+            1
+          ],
+          "include_hidden": true
+        }
+      },
+      {
+        "step_id": "s010",
+        "op": "project",
+        "inputs": [
+          "result"
+        ],
+        "output": "drawing_isometric",
+        "parameters": {
+          "projection": "orthographic",
+          "look_from": [
+            150,
+            -150,
+            120
+          ],
+          "look_up": [
+            0,
+            0,
+            1
+          ],
+          "include_hidden": true
+        }
+      },
+      {
+        "step_id": "s011",
+        "op": "slice",
+        "inputs": [
+          "result"
+        ],
+        "output": "section_xz",
+        "parameters": {
+          "codimension": 1,
+          "plane": "XZ"
+        }
+      }
+    ],
+    "operator_histogram": {
+      "transform": 0,
+      "sweep": 2,
+      "combine": 0,
+      "select": 1,
+      "slice": 1,
+      "project": 4,
+      "constrain": 3,
+      "annotate": 0
+    }
+  },
+  "metadata": {
+    "evaluation_role": "normal_bundle_holdout",
+    "family": "open boundary layer",
+    "program_schema": "mortra-engineering-program-v1",
+    "program_hash": "b04bcf8f688c3e7b0b2527539bd5a26116fbe060fdd056dcc61dc1bb4ef5326c",
+    "seed_kinds": [
+      "rectangle"
+    ],
+    "arbitrary_native_input": false,
+    "drawing_notes": [
+      "OUTER WIDTH: 40 mm",
+      "OUTER DEPTH: 30 mm",
+      "OUTER HEIGHT: 20 mm",
+      "WALL THICKNESS: 2 mm"
+    ],
+    "runtime_hash": "d7ed4f843a86ea833458502a7f3f32d00bb153fb954f3c007884f1c4dd8597b7"
+  },
+  "mesh": {
+    "format": "STL",
+    "exporter": "OpenCascade serial BRepMesh + StlAPI_Writer",
+    "linear_deflection_mm": 0.05,
+    "angular_deflection_rad": 0.15,
+    "file_size_bytes": 1484
+  },
+  "timings_seconds": {
+    "step_export": 0.012350199998763856,
+    "stl_mesh_export": 0.009281899998313747,
+    "orthographic_hidden_line_projection": 0.026929699997708667,
+    "section_and_hatching": 0.062178800006222446,
+    "svg_export": 0.6408947000018088,
+    "dxf_export": 0.9837608999951044
+  },
+  "artifacts": {
+    "step": "thin_wall_enclosure_holdout.step",
+    "stl": "thin_wall_enclosure_holdout.stl",
+    "svg": "thin_wall_enclosure_holdout-drawing.svg",
+    "dxf": "thin_wall_enclosure_holdout-drawing.dxf"
+  }
+}

@@ -12,7 +12,9 @@ from math_os_prototype.engineering_program_spec import (
     DeclarativeCadExecutor,
     EngineeringProgramSpec,
     SeedSpec,
+    StepSpec,
 )
+from math_os_prototype.engineering_geometry_ir import BasisOp
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -43,6 +45,94 @@ def test_program_rejects_forward_references() -> None:
                 "output": "solid",
             }
         )
+
+
+def test_public_language_rejects_hidden_part_specific_parameters() -> None:
+    with pytest.raises(ValueError, match="unsupported parameters"):
+        SeedSpec("profile", "rectangle", {"width": 2, "height": 3, "gear": 17})
+    with pytest.raises(ValueError, match="unsupported parameters"):
+        StepSpec(
+            "solid",
+            BasisOp.SWEEP,
+            ("profile",),
+            {
+                "trajectory": "line",
+                "vector": [0, 0, 1],
+                "part_family": "bracket",
+            },
+        )
+
+
+def test_normal_bundle_language_has_one_closed_generic_family() -> None:
+    StepSpec(
+        "offset",
+        BasisOp.SWEEP,
+        ("boundary", "source"),
+        {
+            "trajectory": "normal_bundle",
+            "cross_section": "interval",
+            "result": "parallel_set",
+            "distance": 2,
+        },
+    )
+    with pytest.raises(ValueError, match="normal_bundle semantics"):
+        StepSpec(
+            "bad",
+            BasisOp.SWEEP,
+            ("boundary", "source"),
+            {
+                "trajectory": "normal_bundle",
+                "cross_section": "logo_shape",
+                "result": "parallel_set",
+                "distance": 2,
+            },
+        )
+
+
+def test_planar_and_solid_blends_share_the_same_normal_bundle_semantics() -> None:
+    spec = EngineeringProgramSpec.from_dict(
+        {
+            "program_id": "planar_blend_holdout",
+            "seeds": [
+                {
+                    "name": "rectangle",
+                    "kind": "rectangle",
+                    "parameters": {"width": 20, "height": 10},
+                }
+            ],
+            "steps": [
+                {
+                    "output": "corners",
+                    "op": "select",
+                    "inputs": ["rectangle"],
+                    "parameters": {"selector": "vertices"},
+                },
+                {
+                    "output": "rounded_profile",
+                    "op": "sweep",
+                    "inputs": ["corners", "rectangle"],
+                    "parameters": {
+                        "trajectory": "normal_bundle",
+                        "cross_section": "disk_sector",
+                        "result": "blend",
+                        "distance": 2,
+                    },
+                },
+                {
+                    "output": "result",
+                    "op": "sweep",
+                    "inputs": ["rounded_profile"],
+                    "parameters": {"trajectory": "line", "vector": [0, 0, 3]},
+                },
+            ],
+            "output": "result",
+        }
+    )
+    result = DeclarativeCadExecutor().execute(spec)
+    assert result.output.shape.is_valid
+    assert result.output.shape.volume == pytest.approx(
+        3 * (200 - 16 + 4 * math.pi), abs=1e-7
+    )
 
 
 pytestmark = pytest.mark.skipif(
@@ -196,3 +286,61 @@ def test_scale_and_mirror_are_transform_parameters() -> None:
     result = DeclarativeCadExecutor().execute(spec)
     assert result.output.shape.volume == pytest.approx(8 * 3.141592653589793)
     assert result.executor.program.operator_histogram()["transform"] == 2
+
+
+@pytest.mark.parametrize(
+    ("filename", "expected_volume"),
+    [
+        ("normal-offset-gasket.json", 824.5486677646163),
+        ("thin-wall-enclosure.json", 7152.0),
+        ("filleted-post.json", 5922.743338823081),
+    ],
+)
+def test_normal_bundle_holdouts_close_exact_brep_obligations(
+    filename: str,
+    expected_volume: float,
+) -> None:
+    spec = EngineeringProgramSpec.from_json(PROGRAMS / filename)
+    result = DeclarativeCadExecutor().execute(spec)
+    part = result.to_engineering_part()
+
+    assert part.passed
+    assert part.entity.shape.is_valid
+    assert len(part.entity.shape.solids()) == 1
+    assert part.entity.shape.volume == pytest.approx(expected_volume, abs=1e-5)
+    assert part.program.operator_histogram()["sweep"] >= 2
+    assert any(
+        step.op is BasisOp.SWEEP
+        and step.parameters.get("trajectory") == "normal_bundle"
+        for step in part.program.steps
+    )
+
+
+@pytest.mark.parametrize(
+    ("filename", "new_distance"),
+    [
+        ("normal-offset-gasket.json", 4.0),
+        ("thin-wall-enclosure.json", -3.0),
+        ("filleted-post.json", 4.0),
+    ],
+)
+def test_normal_bundle_parameters_change_geometry_without_new_operations(
+    filename: str,
+    new_distance: float,
+) -> None:
+    payload = json.loads((PROGRAMS / filename).read_text(encoding="utf-8"))
+    baseline = DeclarativeCadExecutor().execute(
+        EngineeringProgramSpec.from_dict(payload)
+    ).output.shape
+    changed = copy.deepcopy(payload)
+    for step in changed["steps"]:
+        if step["parameters"].get("trajectory") == "normal_bundle":
+            step["parameters"]["distance"] = new_distance
+    changed["program_id"] += "_parameter_holdout"
+    candidate = DeclarativeCadExecutor().execute(
+        EngineeringProgramSpec.from_dict(changed)
+    ).output.shape
+
+    assert candidate.is_valid
+    assert len(candidate.solids()) == 1
+    assert candidate.volume != pytest.approx(baseline.volume, abs=1e-5)

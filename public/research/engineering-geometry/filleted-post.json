@@ -1,0 +1,495 @@
+{
+  "part_id": "filleted_post_holdout",
+  "title": "Four-edge rolling-ball blend holdout",
+  "passed": true,
+  "kernel": "build123d/OpenCascade exact B-rep",
+  "dimensions_mm": {
+    "width": 30.0,
+    "depth": 20.0,
+    "height": 10.0,
+    "fillet_radius": 3.0
+  },
+  "geometry": {
+    "volume_mm3": 5922.743338823082,
+    "surface_area_mm2": 2133.0442269800037,
+    "solid_count": 1,
+    "face_count": 10,
+    "edge_count": 24,
+    "bbox_mm": [
+      30.0,
+      20.0,
+      10.0
+    ],
+    "is_valid": true
+  },
+  "checks": [
+    {
+      "name": "valid_brep",
+      "passed": true,
+      "observed": true,
+      "expected": true,
+      "tolerance": null,
+      "message": ""
+    },
+    {
+      "name": "single_solid",
+      "passed": true,
+      "observed": 1,
+      "expected": 1,
+      "tolerance": null,
+      "message": ""
+    },
+    {
+      "name": "volume_close",
+      "passed": true,
+      "observed": 5922.743338823082,
+      "expected": 5922.743338823081,
+      "tolerance": 1e-05,
+      "message": ""
+    }
+  ],
+  "views": [
+    {
+      "name": "TOP",
+      "visible_edges": 8,
+      "hidden_edges": 0,
+      "bbox": {
+        "width": 45.0,
+        "height": 30.0
+      },
+      "source_bbox": {
+        "width": 30.0,
+        "height": 20.0
+      },
+      "drawing_scale": 1.5,
+      "page_box": [
+        -184,
+        28,
+        -24,
+        122
+      ]
+    },
+    {
+      "name": "FRONT",
+      "visible_edges": 10,
+      "hidden_edges": 8,
+      "bbox": {
+        "width": 45.00000019999999,
+        "height": 15.000000200000002
+      },
+      "source_bbox": {
+        "width": 30.0000002,
+        "height": 10.0000002
+      },
+      "drawing_scale": 1.5,
+      "page_box": [
+        -184,
+        -55,
+        -24,
+        17
+      ]
+    },
+    {
+      "name": "RIGHT",
+      "visible_edges": 10,
+      "hidden_edges": 8,
+      "bbox": {
+        "width": 30.000000200000002,
+        "height": 15.000000200000002
+      },
+      "source_bbox": {
+        "width": 20.000000200000002,
+        "height": 10.0000002
+      },
+      "drawing_scale": 1.5,
+      "page_box": [
+        -12,
+        -55,
+        82,
+        17
+      ]
+    },
+    {
+      "name": "ISOMETRIC",
+      "visible_edges": 21,
+      "hidden_edges": 5,
+      "bbox": {
+        "width": 44.374577874869885,
+        "height": 33.59877358579459
+      },
+      "source_bbox": {
+        "width": 32.87005768508881,
+        "height": 24.887980433921918
+      },
+      "drawing_scale": 1.35,
+      "page_box": [
+        30,
+        28,
+        184,
+        122
+      ]
+    }
+  ],
+  "section": {
+    "plane": "XZ",
+    "face_count": 1,
+    "area_mm2": 299.99999999999994,
+    "hatch_segment_count": 7,
+    "drawing_scale": 1.5,
+    "page_box": [
+      -184,
+      -121,
+      -18,
+      -71
+    ]
+  },
+  "program": {
+    "program_id": "filleted_post_holdout",
+    "basis_version": "engineering-geometry-8op-v1",
+    "entities": {
+      "footprint": {
+        "name": "footprint",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 2,
+          "kind": "region"
+        },
+        "role": "input"
+      },
+      "sharp_post": {
+        "name": "sharp_post",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 3,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "vertical_edges": {
+        "name": "vertical_edges",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 1,
+          "kind": "edges"
+        },
+        "role": "geometry"
+      },
+      "blended_post": {
+        "name": "blended_post",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 3,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "valid": {
+        "name": "valid",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 3,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "connected": {
+        "name": "connected",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 3,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "result": {
+        "name": "result",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 3,
+          "kind": "region"
+        },
+        "role": "geometry"
+      },
+      "drawing_top": {
+        "name": "drawing_top",
+        "geometric_type": {
+          "ambient_dimension": 2,
+          "intrinsic_dimension": 2,
+          "kind": "drawing"
+        },
+        "role": "geometry"
+      },
+      "drawing_front": {
+        "name": "drawing_front",
+        "geometric_type": {
+          "ambient_dimension": 2,
+          "intrinsic_dimension": 2,
+          "kind": "drawing"
+        },
+        "role": "geometry"
+      },
+      "drawing_right": {
+        "name": "drawing_right",
+        "geometric_type": {
+          "ambient_dimension": 2,
+          "intrinsic_dimension": 2,
+          "kind": "drawing"
+        },
+        "role": "geometry"
+      },
+      "drawing_isometric": {
+        "name": "drawing_isometric",
+        "geometric_type": {
+          "ambient_dimension": 2,
+          "intrinsic_dimension": 2,
+          "kind": "drawing"
+        },
+        "role": "geometry"
+      },
+      "section_xz": {
+        "name": "section_xz",
+        "geometric_type": {
+          "ambient_dimension": 3,
+          "intrinsic_dimension": 2,
+          "kind": "section"
+        },
+        "role": "geometry"
+      }
+    },
+    "steps": [
+      {
+        "step_id": "s001",
+        "op": "sweep",
+        "inputs": [
+          "footprint"
+        ],
+        "output": "sharp_post",
+        "parameters": {
+          "path_dimension": 1,
+          "trajectory": "line",
+          "vector": [
+            0.0,
+            0.0,
+            10.0
+          ]
+        }
+      },
+      {
+        "step_id": "s002",
+        "op": "select",
+        "inputs": [
+          "sharp_post"
+        ],
+        "output": "vertical_edges",
+        "parameters": {
+          "selector": "edges",
+          "where": {
+            "axis": "Z"
+          }
+        }
+      },
+      {
+        "step_id": "s003",
+        "op": "sweep",
+        "inputs": [
+          "vertical_edges",
+          "sharp_post"
+        ],
+        "output": "blended_post",
+        "parameters": {
+          "path_dimension": 2,
+          "trajectory": "normal_bundle",
+          "cross_section": "disk_sector",
+          "result": "blend",
+          "distance": 3.0,
+          "tolerance": 0.0001,
+          "join": "arc"
+        }
+      },
+      {
+        "step_id": "s004",
+        "op": "constrain",
+        "inputs": [
+          "blended_post"
+        ],
+        "output": "valid",
+        "parameters": {
+          "predicate": "valid_brep",
+          "passed": true
+        }
+      },
+      {
+        "step_id": "s005",
+        "op": "constrain",
+        "inputs": [
+          "valid"
+        ],
+        "output": "connected",
+        "parameters": {
+          "predicate": "single_solid",
+          "passed": true
+        }
+      },
+      {
+        "step_id": "s006",
+        "op": "constrain",
+        "inputs": [
+          "connected"
+        ],
+        "output": "result",
+        "parameters": {
+          "predicate": "volume_close",
+          "passed": true
+        }
+      },
+      {
+        "step_id": "s007",
+        "op": "project",
+        "inputs": [
+          "result"
+        ],
+        "output": "drawing_top",
+        "parameters": {
+          "projection": "orthographic",
+          "look_from": [
+            0,
+            0,
+            160
+          ],
+          "look_up": [
+            0,
+            1,
+            0
+          ],
+          "include_hidden": false
+        }
+      },
+      {
+        "step_id": "s008",
+        "op": "project",
+        "inputs": [
+          "result"
+        ],
+        "output": "drawing_front",
+        "parameters": {
+          "projection": "orthographic",
+          "look_from": [
+            0,
+            -160,
+            0
+          ],
+          "look_up": [
+            0,
+            0,
+            1
+          ],
+          "include_hidden": true
+        }
+      },
+      {
+        "step_id": "s009",
+        "op": "project",
+        "inputs": [
+          "result"
+        ],
+        "output": "drawing_right",
+        "parameters": {
+          "projection": "orthographic",
+          "look_from": [
+            160,
+            0,
+            0
+          ],
+          "look_up": [
+            0,
+            0,
+            1
+          ],
+          "include_hidden": true
+        }
+      },
+      {
+        "step_id": "s010",
+        "op": "project",
+        "inputs": [
+          "result"
+        ],
+        "output": "drawing_isometric",
+        "parameters": {
+          "projection": "orthographic",
+          "look_from": [
+            150,
+            -150,
+            120
+          ],
+          "look_up": [
+            0,
+            0,
+            1
+          ],
+          "include_hidden": true
+        }
+      },
+      {
+        "step_id": "s011",
+        "op": "slice",
+        "inputs": [
+          "result"
+        ],
+        "output": "section_xz",
+        "parameters": {
+          "codimension": 1,
+          "plane": "XZ"
+        }
+      }
+    ],
+    "operator_histogram": {
+      "transform": 0,
+      "sweep": 2,
+      "combine": 0,
+      "select": 1,
+      "slice": 1,
+      "project": 4,
+      "constrain": 3,
+      "annotate": 0
+    }
+  },
+  "metadata": {
+    "evaluation_role": "normal_bundle_holdout",
+    "family": "rolling-ball blend",
+    "program_schema": "mortra-engineering-program-v1",
+    "program_hash": "70bcd4c2bd5666a36cc209617e12541df8649aad3ed6032b7df2f99e2aa42dd6",
+    "seed_kinds": [
+      "rectangle"
+    ],
+    "arbitrary_native_input": false,
+    "drawing_notes": [
+      "WIDTH: 30 mm",
+      "DEPTH: 20 mm",
+      "HEIGHT: 10 mm",
+      "FILLET RADIUS: 3 mm"
+    ],
+    "runtime_hash": "d7ed4f843a86ea833458502a7f3f32d00bb153fb954f3c007884f1c4dd8597b7"
+  },
+  "mesh": {
+    "format": "STL",
+    "exporter": "OpenCascade serial BRepMesh + StlAPI_Writer",
+    "linear_deflection_mm": 0.05,
+    "angular_deflection_rad": 0.15,
+    "file_size_bytes": 17484
+  },
+  "timings_seconds": {
+    "step_export": 0.19543149999663,
+    "stl_mesh_export": 0.012220099997648504,
+    "orthographic_hidden_line_projection": 0.020420900000317488,
+    "section_and_hatching": 0.2821505999963847,
+    "svg_export": 0.10711550000269199,
+    "dxf_export": 1.0729038000063156
+  },
+  "artifacts": {
+    "step": "filleted_post_holdout.step",
+    "stl": "filleted_post_holdout.stl",
+    "svg": "filleted_post_holdout-drawing.svg",
+    "dxf": "filleted_post_holdout-drawing.dxf"
+  }
+}

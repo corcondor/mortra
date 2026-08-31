@@ -30,6 +30,9 @@ BASIS_METHODS: dict[str, str] = {
     "revolve": "sweep",
     "loft": "sweep",
     "twistExtrude": "sweep",
+    "fillet": "sweep",
+    "shell": "sweep",
+    "offset2D": "sweep",
     "union": "combine",
     "cut": "combine",
     "intersect": "combine",
@@ -84,10 +87,7 @@ FINITE_DATA_GAPS = {
 # Feature operations whose decomposition into the eight operations is not yet in
 # the public executor.  They must remain visible rather than being over-claimed.
 RUNTIME_OPERATION_GAPS = {
-    "fillet",
     "chamfer",
-    "shell",
-    "offset2D",
     "split",
     "interpPlate",
     "text",
@@ -223,7 +223,9 @@ def main() -> int:
         "unclassified",
     }
     construction_calls = sum(
-        count for category, count in category_counts.items() if category in construction_categories
+        count
+        for category, count in category_counts.items()
+        if category in construction_categories
     )
     covered_calls = category_counts["runtime_basis"] + category_counts["runtime_data"]
     files_with_only_covered_construction = 0
@@ -235,7 +237,7 @@ def main() -> int:
             files_with_only_covered_construction += 1
 
     report = {
-        "audit": "cadtestbench-operator-coverage-v1",
+        "audit": "cadtestbench-operator-coverage-v2",
         "scope": "AST method-call coverage only; programs were not scored for CAD correctness",
         "source": git_metadata(args.cadtestbench.resolve()),
         "program_files": len(files),

@@ -4,11 +4,8 @@ This module builds exact boundary representations (B-reps), records every geomet
 operation in :mod:`engineering_geometry_ir`, and derives drawings from the same
 solid.  It intentionally avoids a second, hand-written drawing model.
 
-The optional dependency is installed in a dedicated research environment:
-
-    C:/Users/81808/.cache/mortra-cad-venv/Scripts/python.exe
-
-The web worker does not need OpenCascade unless it executes this backend.
+Run this optional backend in an environment with build123d and OpenCascade.
+The web worker does not need those dependencies unless it executes CAD programs.
 """
 from __future__ import annotations
 
@@ -18,7 +15,8 @@ import json
 import math
 from pathlib import Path
 import time
-from typing import Any, Callable, Iterable, Sequence
+from typing import Any, Callable, Iterable, Mapping, Sequence
+import xml.etree.ElementTree as ET
 
 from .engineering_geometry_ir import BasisOp, ConstructionProgram, EntityRef, GeometricType
 
@@ -32,6 +30,7 @@ def _load_build123d() -> dict[str, Any]:
             Edge,
             ExtensionLine,
             Face,
+            Kind,
             LineType,
             Location,
             PageSize,
@@ -45,6 +44,7 @@ def _load_build123d() -> dict[str, Any]:
             Unit,
             Vector,
             Wire,
+            offset,
             section,
         )
         from build123d.exporters import Drawing, ExportDXF, ExportSVG
@@ -52,7 +52,7 @@ def _load_build123d() -> dict[str, Any]:
     except ImportError as exc:  # pragma: no cover - depends on the research venv
         raise RuntimeError(
             "The engineering CAD backend requires build123d/OpenCascade. "
-            "Run it with C:/Users/81808/.cache/mortra-cad-venv/Scripts/python.exe"
+            "Install build123d in the active Python environment."
         ) from exc
 
     return locals()
@@ -297,6 +297,92 @@ class CadExecutor:
         )
         return CadEntity(ref, shape)
 
+    def normal_bundle_sweep(
+        self,
+        carrier: CadEntity,
+        source: CadEntity,
+        name: str,
+        *,
+        distance: float,
+        cross_section: str,
+        result: str,
+        tolerance: float = 0.0001,
+        join: str = "arc",
+    ) -> CadEntity:
+        """Sweep a fixed cross-section along a selected boundary stratum.
+
+        This is the common semantics behind planar offsets, thin walls, and
+        rolling-ball blends.  The CAD kernel may use a specialized robust
+        implementation, but the recorded operation remains one typed sweep over
+        a selected carrier.  No part-family command crosses this boundary.
+        """
+
+        if distance == 0:
+            raise ValueError("normal bundle distance must be nonzero")
+        if join not in {"arc", "intersection"}:
+            raise ValueError("normal bundle join must be arc or intersection")
+        Kind = self.b3d["Kind"]
+        join_kind = Kind.ARC if join == "arc" else Kind.INTERSECTION
+
+        if (cross_section, result) == ("interval", "parallel_set"):
+            shape = self.b3d["offset"](
+                source.shape,
+                amount=distance,
+                kind=join_kind,
+            )
+            faces = list(shape.faces()) if hasattr(shape, "faces") else []
+            if len(faces) == 1:
+                shape = faces[0]
+        elif (cross_section, result) == ("interval", "boundary_layer"):
+            openings = list(carrier.shape.faces())
+            shape = source.shape.hollow(
+                openings,
+                thickness=distance,
+                tolerance=tolerance,
+                kind=join_kind,
+            )
+        elif (cross_section, result) == ("disk_sector", "blend"):
+            if distance < 0:
+                raise ValueError("blend radius must be positive")
+            if carrier.ref.geometric_type.intrinsic_dimension == 0:
+                vertices = list(carrier.shape.vertices())
+                if not vertices:
+                    raise ValueError("planar blend requires selected vertices")
+                shape = source.shape.fillet_2d(distance, vertices)
+            else:
+                edges = list(carrier.shape.edges())
+                if not edges:
+                    raise ValueError("solid blend requires selected edges")
+                shape = source.shape.fillet(distance, edges)
+        else:
+            raise ValueError(
+                "unsupported normal bundle semantics: "
+                f"{cross_section!r}, {result!r}"
+            )
+
+        if hasattr(shape, "clean"):
+            shape = shape.clean()
+        path_dimension = (
+            source.ref.geometric_type.intrinsic_dimension
+            - carrier.ref.geometric_type.intrinsic_dimension
+        )
+        if path_dimension <= 0:
+            raise ValueError("normal bundle carrier must be lower-dimensional")
+        ref = self.program.apply(
+            BasisOp.SWEEP,
+            [carrier.ref, source.ref],
+            name,
+            source.ref.geometric_type,
+            path_dimension=path_dimension,
+            trajectory="normal_bundle",
+            cross_section=cross_section,
+            result=result,
+            distance=distance,
+            tolerance=tolerance,
+            join=join,
+        )
+        return CadEntity(ref, shape)
+
     def combine(
         self,
         operation: str,
@@ -382,6 +468,7 @@ class CadExecutor:
         name: str,
         *,
         selector: str,
+        where: Mapping[str, Any] | None = None,
     ) -> CadEntity:
         """Select a lower-dimensional feature without introducing a CAD feature API."""
         Compound = self.b3d["Compound"]
@@ -390,11 +477,29 @@ class CadExecutor:
             shape = entity.shape.outer_wire()
             output_dimension = source_dimension - 1
         elif selector == "edges" and hasattr(entity.shape, "edges"):
-            shape = Compound(list(entity.shape.edges()))
+            features = self._filter_features(
+                list(entity.shape.edges()), "edges", where or {}
+            )
+            if not features:
+                raise ValueError("edge selection is empty")
+            shape = Compound(features)
             output_dimension = 1
         elif selector == "faces" and hasattr(entity.shape, "faces"):
-            shape = Compound(list(entity.shape.faces()))
+            features = self._filter_features(
+                list(entity.shape.faces()), "faces", where or {}
+            )
+            if not features:
+                raise ValueError("face selection is empty")
+            shape = Compound(features)
             output_dimension = 2
+        elif selector == "vertices" and hasattr(entity.shape, "vertices"):
+            features = self._filter_features(
+                list(entity.shape.vertices()), "vertices", where or {}
+            )
+            if not features:
+                raise ValueError("vertex selection is empty")
+            shape = Compound(features)
+            output_dimension = 0
         else:
             raise ValueError(f"unsupported selector for this entity: {selector}")
         ref = self.program.apply(
@@ -407,8 +512,98 @@ class CadExecutor:
                 selector,
             ),
             selector=selector,
+            where=dict(where or {}),
         )
         return CadEntity(ref, shape)
+
+    @staticmethod
+    def _filter_features(
+        features: list[Any],
+        feature_kind: str,
+        where: Mapping[str, Any],
+    ) -> list[Any]:
+        """Apply coordinate-free geometric predicates before optional extremum selection."""
+
+        if not where:
+            return features
+        tolerance = float(where.get("tolerance", 1e-6))
+        axes = {
+            "X": (1.0, 0.0, 0.0),
+            "Y": (0.0, 1.0, 0.0),
+            "Z": (0.0, 0.0, 1.0),
+        }
+
+        def xyz(vector: Any) -> tuple[float, float, float]:
+            return (float(vector.X), float(vector.Y), float(vector.Z))
+
+        def unit(values: Sequence[float]) -> tuple[float, float, float]:
+            length = math.sqrt(sum(value * value for value in values))
+            if length <= tolerance:
+                raise ValueError("selection direction must be nonzero")
+            return tuple(value / length for value in values)  # type: ignore[return-value]
+
+        filtered = list(features)
+        if "axis" in where:
+            if feature_kind != "edges":
+                raise ValueError("axis selection applies only to edges")
+            try:
+                target = axes[str(where["axis"])]
+            except KeyError as exc:
+                raise ValueError(f"unsupported selection axis: {where['axis']}") from exc
+            filtered = [
+                edge
+                for edge in filtered
+                if abs(
+                    abs(
+                        sum(
+                            a * b
+                            for a, b in zip(
+                                unit(xyz(edge.tangent_at(0.5))), target
+                            )
+                        )
+                    )
+                    - 1.0
+                )
+                <= tolerance
+            ]
+
+        if "normal" in where:
+            if feature_kind != "faces":
+                raise ValueError("normal selection applies only to faces")
+            target = unit(tuple(float(value) for value in where["normal"]))
+            filtered = [
+                face
+                for face in filtered
+                if 1.0
+                - sum(a * b for a, b in zip(unit(xyz(face.normal_at())), target))
+                <= tolerance
+            ]
+
+        if "extreme" in where:
+            if "position_axis" not in where:
+                raise ValueError("extreme selection requires position_axis")
+            try:
+                axis_index = {"X": 0, "Y": 1, "Z": 2}[
+                    str(where["position_axis"])
+                ]
+            except KeyError as exc:
+                raise ValueError(
+                    f"unsupported position axis: {where['position_axis']}"
+                ) from exc
+            extreme = str(where["extreme"])
+            if extreme not in {"min", "max"}:
+                raise ValueError("selection extreme must be min or max")
+            coordinates = [xyz(feature.center())[axis_index] for feature in filtered]
+            if coordinates:
+                target_coordinate = (
+                    min(coordinates) if extreme == "min" else max(coordinates)
+                )
+                filtered = [
+                    feature
+                    for feature, coordinate in zip(filtered, coordinates)
+                    if abs(coordinate - target_coordinate) <= tolerance
+                ]
+        return filtered
 
     def slice(self, entity: CadEntity, name: str, plane: Any) -> CadEntity:
         section = self.b3d["section"](entity.shape, plane)
@@ -1376,6 +1571,36 @@ def _dimension_pair(
     ]
 
 
+def _add_svg_sheet_background(path: Path, color: str = "#ffffff") -> None:
+    """Make an exported technical drawing render as an opaque paper sheet."""
+
+    tree = ET.parse(path)
+    root = tree.getroot()
+    view_box = root.get("viewBox", "").split()
+    if len(view_box) != 4:
+        raise ValueError(f"technical drawing SVG has no usable viewBox: {path}")
+    namespace = root.tag.partition("}")[0].removeprefix("{")
+    if namespace:
+        ET.register_namespace("", namespace)
+        tag = f"{{{namespace}}}rect"
+    else:
+        tag = "rect"
+    x, y, width, height = view_box
+    sheet = ET.Element(
+        tag,
+        {
+            "id": "drawing-sheet",
+            "x": x,
+            "y": y,
+            "width": width,
+            "height": height,
+            "fill": color,
+        },
+    )
+    root.insert(0, sheet)
+    tree.write(path, encoding="utf-8", xml_declaration=True)
+
+
 def export_part_artifacts(part: EngineeringPart, output_dir: Path) -> dict[str, Any]:
     """Export STEP, STL, B-rep-derived drawings, and a replay manifest."""
 
@@ -1607,6 +1832,7 @@ def export_part_artifacts(part: EngineeringPart, output_dir: Path) -> dict[str, 
     svg.add_shape([*labels, *dimensions], layer="dimensions")
     stage_started = time.perf_counter()
     svg.write(svg_path)
+    _add_svg_sheet_background(svg_path)
     timings["svg_export"] = time.perf_counter() - stage_started
 
     dxf = ExportDXF(unit=Unit.MM, line_weight=0.28)

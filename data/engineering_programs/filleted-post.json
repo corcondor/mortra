@@ -1,0 +1,70 @@
+{
+  "program_id": "filleted_post_holdout",
+  "title": "Four-edge rolling-ball blend holdout",
+  "seeds": [
+    {
+      "name": "footprint",
+      "kind": "rectangle",
+      "parameters": {"width": 30, "height": 20}
+    }
+  ],
+  "steps": [
+    {
+      "output": "sharp_post",
+      "op": "sweep",
+      "inputs": ["footprint"],
+      "parameters": {"trajectory": "line", "vector": [0, 0, 10]}
+    },
+    {
+      "output": "vertical_edges",
+      "op": "select",
+      "inputs": ["sharp_post"],
+      "parameters": {"selector": "edges", "where": {"axis": "Z"}}
+    },
+    {
+      "output": "blended_post",
+      "op": "sweep",
+      "inputs": ["vertical_edges", "sharp_post"],
+      "parameters": {
+        "trajectory": "normal_bundle",
+        "cross_section": "disk_sector",
+        "result": "blend",
+        "distance": 3
+      }
+    },
+    {
+      "output": "valid",
+      "op": "constrain",
+      "inputs": ["blended_post"],
+      "parameters": {"predicate": "valid_brep"}
+    },
+    {
+      "output": "connected",
+      "op": "constrain",
+      "inputs": ["valid"],
+      "parameters": {"predicate": "single_solid"}
+    },
+    {
+      "output": "result",
+      "op": "constrain",
+      "inputs": ["connected"],
+      "parameters": {
+        "predicate": "volume_close",
+        "expected": 5922.743338823081,
+        "tolerance": 0.00001
+      }
+    }
+  ],
+  "output": "result",
+  "section_plane": "XZ",
+  "nominal_dimensions_mm": {
+    "width": 30,
+    "depth": 20,
+    "height": 10,
+    "fillet_radius": 3
+  },
+  "metadata": {
+    "evaluation_role": "normal_bundle_holdout",
+    "family": "rolling-ball blend"
+  }
+}

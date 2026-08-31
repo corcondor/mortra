@@ -40,6 +40,238 @@ SEED_KINDS = frozenset(
 )
 
 
+_COMMON_PLANAR_SEED_KEYS = frozenset({"plane", "offset", "frame"})
+_SEED_PARAMETER_KEYS: dict[str, frozenset[str]] = {
+    "disk": _COMMON_PLANAR_SEED_KEYS | {"radius"},
+    "rectangle": _COMMON_PLANAR_SEED_KEYS | {"width", "height"},
+    "polygon": _COMMON_PLANAR_SEED_KEYS | {"points"},
+    "segment_path": frozenset({"start", "end"}),
+    "polyline_path": frozenset({"points", "close"}),
+    "circle_path": _COMMON_PLANAR_SEED_KEYS | {"radius"},
+    "helix_path": frozenset(
+        {
+            "pitch",
+            "height",
+            "radius",
+            "center",
+            "normal",
+            "angle_degrees",
+            "lefthand",
+        }
+    ),
+    "sketch": _COMMON_PLANAR_SEED_KEYS
+    | {"start", "commands", "close", "filled"},
+}
+_SEED_REQUIRED_KEYS: dict[str, frozenset[str]] = {
+    "disk": frozenset({"radius"}),
+    "rectangle": frozenset({"width", "height"}),
+    "polygon": frozenset({"points"}),
+    "segment_path": frozenset({"start", "end"}),
+    "polyline_path": frozenset({"points"}),
+    "circle_path": frozenset({"radius"}),
+    "helix_path": frozenset({"pitch", "height", "radius"}),
+    "sketch": frozenset({"start", "commands"}),
+}
+
+
+def _closed_parameters(
+    parameters: Mapping[str, Any],
+    *,
+    allowed: frozenset[str],
+    required: frozenset[str] = frozenset(),
+    path: str,
+) -> None:
+    unknown = sorted(set(parameters) - allowed)
+    if unknown:
+        raise ValueError(f"{path} contains unsupported parameters: {unknown}")
+    missing = sorted(required - set(parameters))
+    if missing:
+        raise ValueError(f"{path} is missing required parameters: {missing}")
+
+
+def _validate_seed_parameters(kind: str, parameters: Mapping[str, Any], *, path: str) -> None:
+    _closed_parameters(
+        parameters,
+        allowed=_SEED_PARAMETER_KEYS[kind],
+        required=_SEED_REQUIRED_KEYS[kind],
+        path=path,
+    )
+    frame = parameters.get("frame")
+    if frame is not None:
+        if not isinstance(frame, Mapping):
+            raise TypeError(f"{path}.frame must be an object")
+        _closed_parameters(
+            frame,
+            allowed=frozenset({"origin", "x_dir", "z_dir"}),
+            required=frozenset({"origin", "z_dir"}),
+            path=f"{path}.frame",
+        )
+    if kind == "sketch":
+        for index, command in enumerate(parameters.get("commands", [])):
+            if not isinstance(command, Mapping):
+                raise TypeError(f"{path}.commands[{index}] must be an object")
+            family = str(command.get("kind", ""))
+            command_keys = {
+                "line": frozenset({"kind", "to"}),
+                "arc3": frozenset({"kind", "mid", "to"}),
+                "radius_arc": frozenset({"kind", "radius", "to"}),
+            }
+            if family not in command_keys:
+                raise ValueError(f"unsupported sketch command: {family}")
+            _closed_parameters(
+                command,
+                allowed=command_keys[family],
+                required=command_keys[family],
+                path=f"{path}.commands[{index}]",
+            )
+
+
+def _validate_step_parameters(
+    op: BasisOp,
+    inputs: tuple[str, ...],
+    parameters: Mapping[str, Any],
+    *,
+    path: str,
+) -> None:
+    single_input = {
+        BasisOp.TRANSFORM,
+        BasisOp.SELECT,
+        BasisOp.SLICE,
+        BasisOp.PROJECT,
+        BasisOp.CONSTRAIN,
+        BasisOp.ANNOTATE,
+    }
+    if op in single_input and len(inputs) != 1:
+        raise ValueError(f"{path} requires exactly one input")
+    if op is BasisOp.COMBINE and len(inputs) < 2:
+        raise ValueError(f"{path} requires at least two inputs")
+
+    if op is BasisOp.TRANSFORM:
+        allowed = frozenset(
+            {
+                "translation",
+                "rotation_axis",
+                "angle_degrees",
+                "scale",
+                "scale_about",
+                "mirror_plane",
+            }
+        )
+        _closed_parameters(parameters, allowed=allowed, path=path)
+        if not parameters:
+            raise ValueError(f"{path} must specify a transformation")
+        return
+
+    if op is BasisOp.SWEEP:
+        family = str(parameters.get("trajectory", ""))
+        schemas: dict[str, tuple[frozenset[str], frozenset[str], int | None]] = {
+            "line": (
+                frozenset({"trajectory", "vector"}),
+                frozenset({"trajectory", "vector"}),
+                1,
+            ),
+            "circle": (
+                frozenset({"trajectory", "axis", "angle_degrees"}),
+                frozenset({"trajectory"}),
+                1,
+            ),
+            "section_family": (
+                frozenset({"trajectory", "ruled"}),
+                frozenset({"trajectory"}),
+                None,
+            ),
+            "explicit_path": (
+                frozenset({"trajectory", "is_frenet"}),
+                frozenset({"trajectory"}),
+                2,
+            ),
+            "normal_bundle": (
+                frozenset(
+                    {
+                        "trajectory",
+                        "cross_section",
+                        "result",
+                        "distance",
+                        "tolerance",
+                        "join",
+                    }
+                ),
+                frozenset({"trajectory", "cross_section", "result", "distance"}),
+                2,
+            ),
+        }
+        if family not in schemas:
+            raise ValueError(f"unsupported sweep trajectory: {family}")
+        allowed, required, arity = schemas[family]
+        _closed_parameters(parameters, allowed=allowed, required=required, path=path)
+        if arity is not None and len(inputs) != arity:
+            raise ValueError(f"{path} trajectory {family} requires {arity} inputs")
+        if family == "section_family" and len(inputs) < 2:
+            raise ValueError(f"{path} section_family requires at least two inputs")
+        if family == "normal_bundle":
+            pair = (str(parameters["cross_section"]), str(parameters["result"]))
+            valid_pairs = {
+                ("interval", "parallel_set"),
+                ("interval", "boundary_layer"),
+                ("disk_sector", "blend"),
+            }
+            if pair not in valid_pairs:
+                raise ValueError(f"unsupported normal_bundle semantics: {pair}")
+            if float(parameters["distance"]) == 0:
+                raise ValueError("normal_bundle distance must be nonzero")
+            if pair == ("disk_sector", "blend") and float(parameters["distance"]) < 0:
+                raise ValueError("normal_bundle blend radius must be positive")
+            if str(parameters.get("join", "arc")) not in {"arc", "intersection"}:
+                raise ValueError("normal_bundle join must be arc or intersection")
+        return
+
+    schemas = {
+        BasisOp.COMBINE: (
+            frozenset({"operation"}),
+            frozenset({"operation"}),
+        ),
+        BasisOp.SELECT: (
+            frozenset({"selector", "where"}),
+            frozenset({"selector"}),
+        ),
+        BasisOp.SLICE: (
+            frozenset({"plane", "offset"}),
+            frozenset(),
+        ),
+        BasisOp.PROJECT: (
+            frozenset({"look_from", "look_up", "include_hidden"}),
+            frozenset({"look_from", "look_up"}),
+        ),
+        BasisOp.CONSTRAIN: (
+            frozenset({"predicate", "expected", "tolerance", "description"}),
+            frozenset({"predicate"}),
+        ),
+        BasisOp.ANNOTATE: (
+            frozenset({"name", "fields"}),
+            frozenset(),
+        ),
+    }
+    allowed, required = schemas[op]
+    _closed_parameters(parameters, allowed=allowed, required=required, path=path)
+    if op is BasisOp.COMBINE and str(parameters["operation"]) not in {
+        "union",
+        "difference",
+        "intersection",
+    }:
+        raise ValueError(f"unsupported combine operation: {parameters['operation']}")
+    if op is BasisOp.SELECT and "where" in parameters:
+        where = parameters["where"]
+        if not isinstance(where, Mapping):
+            raise TypeError(f"{path}.where must be an object")
+        _closed_parameters(
+            where,
+            allowed=frozenset(
+                {"axis", "normal", "position_axis", "extreme", "tolerance"}
+            ),
+            path=f"{path}.where",
+        )
+
+
 def _json_value(value: Any, *, path: str) -> None:
     if value is None or isinstance(value, (bool, int, float, str)):
         return
@@ -66,6 +298,11 @@ class SeedSpec:
         if self.kind not in SEED_KINDS:
             raise ValueError(f"unknown seed kind: {self.kind}")
         _json_value(self.parameters, path=f"seed[{self.name}].parameters")
+        _validate_seed_parameters(
+            self.kind,
+            self.parameters,
+            path=f"seed[{self.name}].parameters",
+        )
 
 
 @dataclass(frozen=True)
@@ -77,6 +314,12 @@ class StepSpec:
 
     def __post_init__(self) -> None:
         _json_value(self.parameters, path=f"step[{self.output}].parameters")
+        _validate_step_parameters(
+            self.op,
+            self.inputs,
+            self.parameters,
+            path=f"step[{self.output}].parameters",
+        )
 
 
 @dataclass(frozen=True)
@@ -484,13 +727,27 @@ class DeclarativeCadExecutor:
                     step.output,
                     is_frenet=bool(params.get("is_frenet", False)),
                 )
+            elif family == "normal_bundle":
+                entity = executor.normal_bundle_sweep(
+                    inputs[0],
+                    inputs[1],
+                    step.output,
+                    distance=float(params["distance"]),
+                    cross_section=str(params["cross_section"]),
+                    result=str(params["result"]),
+                    tolerance=float(params.get("tolerance", 0.0001)),
+                    join=str(params.get("join", "arc")),
+                )
             else:
                 raise ValueError(f"unsupported sweep trajectory: {family}")
         elif step.op is BasisOp.COMBINE:
             entity = executor.combine(str(params["operation"]), inputs, step.output)
         elif step.op is BasisOp.SELECT:
             entity = executor.select(
-                inputs[0], step.output, selector=str(params["selector"])
+                inputs[0],
+                step.output,
+                selector=str(params["selector"]),
+                where=dict(params.get("where", {})),
             )
         elif step.op is BasisOp.SLICE:
             plane = self._plane(

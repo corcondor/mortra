@@ -90,5 +90,7 @@ def test_drawing_is_brep_derived_fitted_and_hatched(tmp_path) -> None:
     assert manifest["section"]["face_count"] > 0
     assert manifest["section"]["hatch_segment_count"] > 0
     assert (tmp_path / "flange.step").stat().st_size > 0
-    assert (tmp_path / "flange-drawing.svg").stat().st_size > 0
+    drawing_svg = tmp_path / "flange-drawing.svg"
+    assert drawing_svg.stat().st_size > 0
+    assert 'id="drawing-sheet"' in drawing_svg.read_text(encoding="utf-8")
     assert (tmp_path / "flange-drawing.dxf").stat().st_size > 0
