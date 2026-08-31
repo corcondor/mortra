@@ -435,8 +435,8 @@ export function synthesizeCertifiedPellRecurrenceFusion(
     diagram: {
       version: 1,
       kind: 'state',
-      title: '二つの整数軌道の直積',
-      caption: 'Pell単数の軌道と漸化式の軌道を同じ有限状態上で進め、合同条件が成立する状態を示します。',
+      title: '二つの整数列を同時に追う',
+      caption: 'Pell方程式の解の列と漸化式の列を同時に進め、合同条件が成立する状態を示します。',
       states: diagramStates,
       transitions: diagramStates.map((state, index) => ({
         from: state.id,
@@ -577,7 +577,10 @@ function independentlyReplayPellX(pell: ParsedPellOrbit, count: number): bigint[
 }
 
 function rationalTex(value: Q): string {
-  return value.d === 1n ? String(value.n) : '\\frac{' + value.n + '}{' + value.d + '}'
+  if (value.d === 1n) return String(value.n)
+  return value.n < 0n
+    ? '-\\frac{' + (-value.n) + '}{' + value.d + '}'
+    : '\\frac{' + value.n + '}{' + value.d + '}'
 }
 
 export function synthesizeCertifiedPellIndexedPowerSumFusion(
@@ -603,7 +606,19 @@ export function synthesizeCertifiedPellIndexedPowerSumFusion(
   if (!evaluation) return []
   const [unitX, unitY] = pell.fundamental
   const c = evaluation.sumTex
-  const comparisonTable = evaluation.tableTex.replaceAll('b_k', 'x_k')
+  const comparisonTable = evaluation.checked.length > 0
+    ? [
+        '\\[',
+        '\\begin{array}{c|' + 'c'.repeat(evaluation.checked.length) + '}',
+        'k&' + evaluation.checked.map(item => item.index).join('&') + '\\\\',
+        '\\hline',
+        'x_k&' + evaluation.checked.map(item => item.exponent).join('&') + '\\\\',
+        'u_{x_k}-' + evaluation.sumTex + '&' +
+          evaluation.checked.map(item => rationalTex(item.difference)).join('&'),
+        '\\end{array}',
+        '\\]',
+      ].join('\n')
+    : '\\[\\text{上の評価を適用する前に直接計算すべき項はない。}\\]'
   const answerTex = '\\(k\\in' + integerSetTex(evaluation.answerIndices) + '\\)'
   const unitTex = unitX + '+' + (unitY === 1n ? '' : String(unitY)) +
     '\\sqrt{' + pell.discriminant + '}'
@@ -622,11 +637,13 @@ export function synthesizeCertifiedPellIndexedPowerSumFusion(
   const solution = [
     '\\(X=\\sin\\theta,\\ Y=\\cos\\theta\\) とおき、\\(u_m=X^m+Y^m\\) とする。条件から',
     '\\[X+Y=' + c + ',\\qquad XY=\\frac{(' + c + ')^2-1}{2},\\]',
-    'よってNewton和は',
+    'したがって、\\(X,Y\\) はともに',
+    '\\[t^2-' + c + 't-\\frac{1-(' + c + ')^2}{2}=0\\]',
+    'の解である。各辺にそれぞれ \\(X^m,Y^m\\) を掛けて加えると、べき和 \\(u_m\\) は',
     '\\[u_0=2,\\quad u_1=' + c +
       ',\\quad u_{m+2}=' + c + 'u_{m+1}+\\frac{1-(' + c + ')^2}{2}u_m\\tag{1}\\]',
     'を満たす。',
-    '一方、Pell単数を掛けると',
+    '一方、\\(x_k+y_k\\sqrt{' + pell.discriminant + '}\\) に \\(' + unitTex + '\\) を掛け、\\(1,\\sqrt{' + pell.discriminant + '}\\) の係数を比較すると',
     '\\[',
     '\\binom{x_{k+1}}{y_{k+1}}=',
     '\\begin{pmatrix}' + unitX + '&' + pell.discriminant * unitY + '\\\\' +
@@ -643,11 +660,13 @@ export function synthesizeCertifiedPellIndexedPowerSumFusion(
     '\\[|u_m|\\le ' + c + '\\,m r^{m-1}<' + c + ',\\]',
     '偶数 \\(m\\ge' + evaluation.thresholds.even + '\\) では',
     '\\[0<u_m\\le2r^m<' + c + '.\\]',
-    'Pell軌道の \\(x_k\\) は狭義単調に増加し、最後に表示した項は \\(' +
-      generated.terms.at(-1) + '\\ge' + evaluation.cutoff + '\\) である。したがって以後に新しい解はない。',
+    '\\(x_k\\) は狭義単調に増加する。表には、上の評価をまだ適用できない項だけを載せた。表にない項は、奇数なら \\(x_k\\ge' +
+      evaluation.thresholds.odd + '\\)、偶数なら \\(x_k\\ge' + evaluation.thresholds.even +
+      '\\) なので、いずれも不等式を満たさない。また、\\(x_' + generated.terms.length + '=' +
+      generated.terms.at(-1) + '\\ge' + evaluation.cutoff + '\\) であり、以後も増加するから、新しい解はない。',
     'よって',
     '\\[k\\in' + integerSetTex(evaluation.answerIndices) + '\\]',
-    'である。Pell添字は二次単数の乗法と独立な二階漸化式の双方で再生し、冪和も逐次計算と伴行列累乗の双方で確認した。',
+    'である。Pell方程式の解の列は、上の行列計算とは別に二階漸化式でも再生した。べき和も、逐次計算と伴行列の累乗という二つの方法で同じ値になることを確認した。',
   ].join('\n')
   const structureId = 'certified.pell-indexed-power-sum.' + hash({
     discriminant: String(pell.discriminant),
@@ -685,13 +704,13 @@ export function synthesizeCertifiedPellIndexedPowerSumFusion(
     diagram: {
       version: 1,
       kind: 'state',
-      title: 'Pell軌道を冪和の添字へ作用させる',
-      caption: '一方の親が二次単数の整数軌道を生成し、他方の親が冪和の状態遷移を与えます。',
+      title: 'Pell方程式の解をべき和の指数にする',
+      caption: '一方の親から得た整数列を、もう一方の親から得たべき和の指数として使います。色付きの状態だけが不等式を満たします。',
       states: [
         ...exactStates,
         {
           id: 'tail',
-          label: 'x_k ≥ ' + evaluation.cutoff + ': tail bound',
+          label: 'x_k ≥ ' + evaluation.cutoff + ': 一括評価',
           terminal: true,
         },
       ],
@@ -699,12 +718,12 @@ export function synthesizeCertifiedPellIndexedPowerSumFusion(
         ...exactStates.slice(1).map((state, index) => ({
           from: exactStates[index].id,
           to: state.id,
-          label: 'Pell unit',
+          label: '次の解',
         })),
         {
           from: exactStates.at(-1)?.id ?? 'k1',
           to: 'tail',
-          label: 'certified cutoff',
+          label: '以後をまとめて評価',
         },
       ],
     },

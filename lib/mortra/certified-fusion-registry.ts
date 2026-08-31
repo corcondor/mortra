@@ -1,16 +1,6 @@
-import {
-  synthesizeCertifiedPolynomialFusions,
-  type CertifiedFusionCard,
-  type CertifiedFusionParent,
-} from './certified-fusion'
-import { synthesizeCertifiedCircleRadicalAxisFusion } from './certified-circle-fusion'
-import { synthesizeCertifiedMobiusPolynomialFusion } from './certified-mobius-polynomial-fusion'
-import { synthesizeCertifiedIndexedPowerSumFusion } from './certified-indexed-power-fusion'
-import {
-  synthesizeCertifiedPellIndexedPowerSumFusion,
-  synthesizeCertifiedPellRecurrenceFusion,
-} from './certified-pell-recurrence-fusion'
-import { synthesizeCertifiedAnswerRecurrenceFusion } from './certified-answer-recurrence-fusion'
+import type { CertifiedFusionCard, CertifiedFusionParent } from './certified-fusion'
+import { planCertifiedFusions } from './certified-fusion-planner'
+import { attachCertifiedGenerationAudit } from './certified-problem-generation-audit'
 
 export const CERTIFIED_FUSION_CAPABILITIES = [
   {
@@ -48,36 +38,18 @@ export const CERTIFIED_FUSION_CAPABILITIES = [
     labelJa: '検証済み厳密解どうしの二階漸化式合成',
     labelEn: 'companion recurrence from two certified exact answers',
   },
+  {
+    id: 'finite-state-rational-angle-orbit',
+    labelJa: '整数漸化式と有理角の有限状態合成',
+    labelEn: 'finite-state composition of integer recurrences and rational angles',
+  },
 ] as const
-
-type CertifiedFusionEngine = (
-  parents: CertifiedFusionParent[],
-  requested: number,
-) => CertifiedFusionCard[]
-
-const ENGINES: readonly CertifiedFusionEngine[] = [
-  synthesizeCertifiedPolynomialFusions,
-  (parents, requested) => synthesizeCertifiedMobiusPolynomialFusion(parents).slice(0, requested),
-  (parents, requested) => synthesizeCertifiedCircleRadicalAxisFusion(parents).slice(0, requested),
-  (parents, requested) => synthesizeCertifiedIndexedPowerSumFusion(parents).slice(0, requested),
-  (parents, requested) => synthesizeCertifiedPellRecurrenceFusion(parents).slice(0, requested),
-  (parents, requested) => synthesizeCertifiedPellIndexedPowerSumFusion(parents).slice(0, requested),
-  synthesizeCertifiedAnswerRecurrenceFusion,
-]
 
 export function synthesizeCertifiedFusions(
   parents: CertifiedFusionParent[],
   requested = 1,
 ): CertifiedFusionCard[] {
-  const cards: CertifiedFusionCard[] = []
-  const seen = new Set<string>()
-  for (const engine of ENGINES) {
-    for (const card of engine(parents, Math.max(0, requested - cards.length))) {
-      if (seen.has(card.structure_blueprint.id)) continue
-      seen.add(card.structure_blueprint.id)
-      cards.push(card)
-      if (cards.length >= requested) return cards
-    }
-  }
-  return cards
+  return planCertifiedFusions(parents, requested).cards
+    .map(card => attachCertifiedGenerationAudit(card, parents))
+    .filter(card => card.generation_audit?.passed)
 }

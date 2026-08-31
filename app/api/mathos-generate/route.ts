@@ -1602,19 +1602,24 @@ export async function POST(request: NextRequest) {
             verifying: '元の多項式への逆代入恒等式と全親依存性を厳密に照合しています',
           },
           'certified.recurrence_indexed_power_sum': {
-            structuring: '一方を二階漸化式の添字軌道、もう一方を対称冪和の状態遷移へ型付けしました',
-            inducing: '漸化式が生成する添字をNewton冪和へ引き戻し、新しい分類問題を構成しています',
-            verifying: '有理数漸化式と伴行列の二経路を照合し、無限尾部の評価を検証しています',
+            structuring: '一方から整数列を、もう一方から三角関数のべき和を抽出しました',
+            inducing: '整数列の各項をべき和の指数として組み合わせ、新しい分類問題を構成しています',
+            verifying: '二次方程式から得た漸化式と行列計算を照合し、残りの全項を一括評価しています',
           },
           'certified.pell_recurrence_state_product': {
-            structuring: 'Pell方程式を二次単数の軌道へ、漸化式を伴行列の軌道へ型付けしました',
+            structuring: 'Pell方程式の正の整数解と、漸化式が作る整数列を抽出しました',
             inducing: '二つの整数軌道を判別式を法とする有限状態上で合成しています',
             verifying: '連分数・逐次遷移・独立な行列累乗で周期と合同条件を照合しています',
           },
           'certified.pell_indexed_power_sum': {
-            structuring: 'Pell方程式を添字軌道へ、三角条件を対称冪和の遷移へ型付けしました',
-            inducing: '二次単数が生成する添字をNewton冪和へ引き戻しています',
-            verifying: 'Pell不変量・独立漸化式・冪和行列・無限尾部を別経路で検証しています',
+            structuring: 'Pell方程式の正の整数解と、三角関数のべき和を抽出しました',
+            inducing: 'Pell方程式の解が作る整数を、べき和の指数として組み合わせています',
+            verifying: 'Pell方程式、二階漸化式、べき和の行列計算、残りの全項の評価を別々に確認しています',
+          },
+          'certified.recurrence_rational_angle_orbit': {
+            structuring: '整数漸化式を有限状態へ、有理角を円周上の巡回状態へ型付けしました',
+            inducing: '二つの状態を同期させ、余弦列の周期問題を構成しています',
+            verifying: '全状態の列挙、行列累乗による独立再生、周期の最小性を照合しています',
           },
           'certified.answer_pair_companion_recurrence': {
             structuring: '二つの保存済み証明書から厳密なスカラー解を別々に再生しました',
@@ -1625,7 +1630,7 @@ export async function POST(request: NextRequest) {
         const copy = progressCopy[family] ?? {
           structuring: '両方の親問題を一変数多項式の根配置へ型付けしました',
           inducing: '二つの根配置を別々の入力ポートとして合成しています',
-          verifying: 'Newton和とSylvester終結式を独立に計算し、係数列を照合しています',
+          verifying: '根のべき和と終結式を独立に計算し、係数列を照合しています',
         }
         send({
           phase: 'structuring',

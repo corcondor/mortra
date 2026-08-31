@@ -105,7 +105,11 @@ test('the same Pell orbit acts as an exponent generator for the shared power-sum
   const card = cards[0]
   assert.equal(card.answer_tex, '\\(k\\in\\{1\\}\\)')
   assert.match(card.statement_tex, /\\sin\^\{x_k\}/)
-  assert.match(card.solution_tex, /x_k&2&7/)
+  assert.match(card.solution_tex, /x_k&2/)
+  assert.match(card.solution_tex, /2026/)
+  assert.doesNotMatch(card.solution_tex, /x_k&2&7/)
+  assert.ok(card.solution_tex.includes(String.raw`奇数なら \(x_k\ge7\)`))
+  assert.doesNotMatch(card.solution_tex, /Newton和|Pell単数/)
   assert.equal(card.verification.independent_check, true)
   assert.equal(card.fusion_derivation.ablationPassed, true)
 })

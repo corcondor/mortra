@@ -15,6 +15,36 @@ export type CertifiedFusionParent = {
   } | null
 }
 
+export type CertifiedProblemGenerationTraceNode = {
+  id: string
+  kind: 'premise' | 'derived' | 'bridge' | 'goal' | 'verification'
+  label: string
+  dependsOn: string[]
+  parentIds: string[]
+}
+
+export type CertifiedProblemGenerationAudit = {
+  schema: 1
+  passed: boolean
+  reversePlaybackOnly: boolean
+  tracedParentIds: string[]
+  minimalPremiseIds: string[]
+  unusedPremiseIds: string[]
+  proofStepCount: number
+  checks: {
+    exactSolvability: boolean
+    independentVerification: boolean
+    clauseCompleteness: boolean
+    premiseMinimality: boolean
+    allParentDependence: boolean
+    crossParentComposition: boolean
+    statementDiffersFromParents: boolean
+    nontrivialProof: boolean
+  }
+  failures: string[]
+  trace: CertifiedProblemGenerationTraceNode[]
+}
+
 type ParsedPolynomial = {
   parentId: string
   variable: string
@@ -103,6 +133,7 @@ export type CertifiedFusionCard = {
     valid_hypotheses: number
     elapsed_ms: number
   }
+  generation_audit?: CertifiedProblemGenerationAudit
 }
 
 type PolyZ = bigint[]

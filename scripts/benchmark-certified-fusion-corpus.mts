@@ -1,17 +1,13 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { basename, resolve } from 'node:path'
 
-import { parseAffineCircleParent } from '../lib/mortra/certified-circle-fusion.js'
-import { parseMonicIntegerPolynomial } from '../lib/mortra/certified-fusion.js'
 import { certifiedFusionKind } from '../lib/mortra/certified-fusion-kind.js'
 import { synthesizeCertifiedFusions } from '../lib/mortra/certified-fusion-registry.js'
 import { parseCertifiedExactScalar } from '../lib/mortra/certified-answer-recurrence-fusion.js'
-import { parseMobiusRootTransport } from '../lib/mortra/certified-mobius-polynomial-fusion.js'
 import {
-  parsePositiveSecondOrderRecurrence,
-  parseTrigonometricPowerSum,
-} from '../lib/mortra/certified-indexed-power-fusion.js'
-import { parsePellOrbit } from '../lib/mortra/certified-pell-recurrence-fusion.js'
+  elaborateCertifiedFusionParent,
+  type CertifiedFusionEndpointKind,
+} from '../lib/mortra/certified-fusion-planner.js'
 
 type CorpusProblem = {
   id: string
@@ -71,21 +67,15 @@ if (catalogPath) {
     } : problem
   })
 }
-const endpointParsers = [
-  ['monic_integer_polynomial', parseMonicIntegerPolynomial],
-  ['mobius_root_transport', parseMobiusRootTransport],
-  ['affine_circle', parseAffineCircleParent],
-  ['positive_second_order_recurrence', parsePositiveSecondOrderRecurrence],
-  ['trigonometric_power_sum', parseTrigonometricPowerSum],
-  ['pell_orbit', parsePellOrbit],
-] as const
 const typedEndpoints = problems.flatMap(problem => {
-  const types = endpointParsers.flatMap(([type, parser]) => parser(problem) ? [type] : [])
+  const types = [...new Set(elaborateCertifiedFusionParent(problem).map(item => item.kind))]
   return types.length ? [{ id: problem.id, label: problem.label, types }] : []
 })
-const endpointTypeCounts = Object.fromEntries(endpointParsers.map(([type]) => [
-  type,
-  typedEndpoints.filter(endpoint => endpoint.types.includes(type)).length,
+const endpointKinds = [...new Set(typedEndpoints.flatMap(endpoint => endpoint.types))]
+  .sort() as CertifiedFusionEndpointKind[]
+const endpointTypeCounts = Object.fromEntries(endpointKinds.map(kind => [
+  kind,
+  typedEndpoints.filter(endpoint => endpoint.types.includes(kind)).length,
 ]))
 const successes: Array<{
   left: { id: string; label: string }
@@ -97,6 +87,11 @@ const successes: Array<{
   exactBackend: boolean
   independentCheck: boolean
   ablationPassed: boolean
+  generationAuditPassed: boolean
+  reversePlaybackOnly: boolean
+  premiseMinimalityPassed: boolean
+  unusedPremiseCount: number
+  proofStepCount: number
 }> = []
 const familyCounts: Record<string, number> = {}
 let directCertifiedPairCount = 0
@@ -126,6 +121,11 @@ for (let left = 0; left < problems.length; left += 1) {
         exactBackend: card.verification.exact_backend,
         independentCheck: card.verification.independent_check,
         ablationPassed: card.fusion_derivation.ablationPassed,
+        generationAuditPassed: card.generation_audit?.passed === true,
+        reversePlaybackOnly: card.generation_audit?.reversePlaybackOnly ?? true,
+        premiseMinimalityPassed: card.generation_audit?.checks.premiseMinimality === true,
+        unusedPremiseCount: card.generation_audit?.unusedPremiseIds.length ?? -1,
+        proofStepCount: card.generation_audit?.proofStepCount ?? 0,
       })
     }
   }
@@ -133,7 +133,7 @@ for (let left = 0; left < problems.length; left += 1) {
 
 const pairCount = problems.length * (problems.length - 1) / 2
 const report = {
-  schema: 3,
+  schema: 6,
   source: basename(resolve(texPath)),
   measuredAt: new Date().toISOString(),
   problemCount: problems.length,
@@ -152,7 +152,13 @@ const report = {
   certificateCompositionPairCount,
   familyCounts,
   allCertificatesComplete: successes.every(item =>
-    item.exactBackend && item.independentCheck && item.ablationPassed,
+    item.exactBackend
+      && item.independentCheck
+      && item.ablationPassed
+      && item.generationAuditPassed
+      && !item.reversePlaybackOnly
+      && item.premiseMinimalityPassed
+      && item.unusedPremiseCount === 0,
   ),
   elapsedMs: Date.now() - startedAt,
   successes,

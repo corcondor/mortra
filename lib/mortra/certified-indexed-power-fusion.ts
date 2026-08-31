@@ -78,6 +78,18 @@ function qTex(value: Q): string {
   return value.d === 1n ? value.n.toString() : `\\frac{${value.n}}{${value.d}}`
 }
 
+function linearCombinationTex(terms: Array<{ coefficient: bigint; variable: string }>): string {
+  const nonzeroTerms = terms.filter(term => term.coefficient !== 0n)
+  if (nonzeroTerms.length === 0) return '0'
+  return nonzeroTerms.map((term, index) => {
+    const negative = term.coefficient < 0n
+    const magnitude = negative ? -term.coefficient : term.coefficient
+    const coefficient = magnitude === 1n ? '' : String(magnitude)
+    const sign = index === 0 ? (negative ? '-' : '') : (negative ? '-' : '+')
+    return `${sign}${coefficient}${term.variable}`
+  }).join('')
+}
+
 function parseRational(source: string): Q | null {
   const compact = source.replace(/\s+/g, '')
   const latex = compact.match(/^\\(?:d?frac)\{([+-]?\d+)\}\{(\d+)\}$/)
@@ -348,9 +360,13 @@ export function certifyIndexedPowerSumTerms(
     term <= 0n || (index > 0 && term < terms[index - 1])
   )) return null
 
-  const exactTerms = terms.filter(term => term < BigInt(cutoff))
+  const exactTerms = terms
+    .map((exponent, index) => ({ exponent, index: index + 1 }))
+    .filter(({ exponent }) => exponent % 2n === 0n
+      ? exponent < BigInt(thresholds.even)
+      : exponent < BigInt(thresholds.odd))
   const maximumExponent = Number(exactTerms.reduce(
-    (maximum, term) => term > maximum ? term : maximum,
+    (maximum, item) => item.exponent > maximum ? item.exponent : maximum,
     0n,
   ))
   const product = q(
@@ -358,13 +374,13 @@ export function certifyIndexedPowerSumTerms(
     2n * powerParent.sum.d * powerParent.sum.d,
   )
   const sums = powerSumSequential(powerParent.sum, product, maximumExponent)
-  const comparisons = exactTerms.map((exponent, index) => {
+  const comparisons = exactTerms.map(({ exponent, index }) => {
     const numericExponent = Number(exponent)
     const sequential = sums[numericExponent]
     const independent = powerSumByMatrix(powerParent.sum, product, numericExponent)
     if (!equal(sequential, independent)) return null
     return {
-      index: index + 1,
+      index,
       exponent,
       difference: subtract(sequential, powerParent.sum),
       passed: compare(sequential, powerParent.sum) > 0,
@@ -428,15 +444,19 @@ export function synthesizeCertifiedIndexedPowerSumFusion(
   } = evaluation
   const [initial1, initial2] = recurrence.initial
   const [coefficient1, coefficient2] = recurrence.coefficients
-  const recurrenceTex = `a_1=${initial1},\\ a_2=${initial2},\\ a_{k+2}=${coefficient1}a_{k+1}+${coefficient2}a_k`
+  const recurrenceRightHandSide = linearCombinationTex([
+    { coefficient: coefficient1, variable: 'a_{k+1}' },
+    { coefficient: coefficient2, variable: 'a_k' },
+  ])
+  const recurrenceTex = `a_1=${initial1},\\ a_2=${initial2},\\ a_{k+2}=${recurrenceRightHandSide}`
   const comparisonCells = checked.map(item => item.difference.n > 0n ? '>0' : item.difference.n < 0n ? '<0' : '=0')
-  const table = String.raw`\[
+  const table = checked.length > 0 ? String.raw`\[
 \begin{array}{c|${'c'.repeat(checked.length)}}
 k&${checked.map(item => item.index).join('&')}\\\hline
 a_k&${checked.map(item => item.exponent).join('&')}\\
 u_{a_k}-${c}&${comparisonCells.join('&')}
 \end{array}
-\]`
+\]` : String.raw`\[\text{直接計算すべき項はない。}\]`
   const statement = `数列 \\(\\{a_k\\}\\) を
 \\[${recurrenceTex}\\]
 で定める。実数 \\(\\theta\\) が
@@ -445,9 +465,11 @@ u_{a_k}-${c}&${comparisonCells.join('&')}
 \\[\\sin^{a_k}\\theta+\\cos^{a_k}\\theta>${c}\\]
 となる正の整数 \\(k\\) をすべて求めよ。`
   const solution = `\\(x=\\sin\\theta,\\ y=\\cos\\theta\\) とおき、\\(u_m=x^m+y^m\\) とする。条件から
-\\[x+y=${c},\\qquad xy=\\frac{(${c})^2-1}{2},\\]
-したがってNewton和の漸化式
-\\[u_0=2,\\quad u_1=${c},\\quad u_{m+2}=${c}u_{m+1}+\\frac{1-(${c})^2}{2}u_m\\tag{1}\\]
+  \\[x+y=${c},\\qquad xy=\\frac{(${c})^2-1}{2},\\]
+  したがって、\\(x,y\\) はともに
+  \\[t^2-${c}t-\\frac{1-(${c})^2}{2}=0\\]
+  の解である。各辺にそれぞれ \\(x^m,y^m\\) を掛けて加えると、べき和 \\(u_m\\) は
+  \\[u_0=2,\\quad u_1=${c},\\quad u_{m+2}=${c}u_{m+1}+\\frac{1-(${c})^2}{2}u_m\\tag{1}\\]
 を得る。一方、第一の親問題から得た添字列は
 \\[${terms.map(String).join(', ')},\\ldots\\]
 である。\\((1)\\)を厳密有理数で計算すると
@@ -460,7 +482,7 @@ ${table}
 \\[|u_m|=\\alpha^m-\\beta^m\\le ${c}\\,m r^{m-1}<${c},\\]
 偶数 \\(m\\ge ${thresholds.even}\\) では
 \\[0<u_m\\le2r^m<${c}.\\]
-添字列は正で単調に増加し、第2項以後は狭義単調である。表の次の項は \\(a_${terms.length}=${terms.at(-1)}\\ge${cutoff}\\) である。よって以後は上の二評価のいずれかに入り、新しい解は生じない。したがって答えは
+  添字列は正で単調に増加し、第2項以後は狭義単調である。表には、上の評価をまだ適用できない項だけを載せた。表にない項は、奇数なら \\(a_k\\ge${thresholds.odd}\\)、偶数なら \\(a_k\\ge${thresholds.even}\\) なので、いずれも不等式を満たさない。また、\\(a_${terms.length}=${terms.at(-1)}\\ge${cutoff}\\) であり、添字列は以後も増加するから、新しい解は生じない。したがって答えは
 \\[k\\in${integerSetTex(answerIndices)}\\]
 である。なお、\\((1)\\)による逐次計算とは独立に、冪和の \\(2\\times2\\) 伴行列と添字列の伴行列を高速累乗し、表の全項が一致することを確認した。`
   const answer = `\\(k\\in${integerSetTex(answerIndices)}\\)`
@@ -500,16 +522,16 @@ ${table}
     diagram: {
       version: 1,
       kind: 'state',
-      title: '漸化式の添字を冪和へ作用させる',
-      caption: '一方の親が添字列を生成し、もう一方の親が冪和の状態遷移を与えます。色付きの状態だけが不等式を満たします。',
-      states: [...exactStates, { id: 'tail', label: `a_k ≥ ${cutoff}: tail bound`, terminal: true }],
+      title: '漸化式の項をべき和の指数にする',
+      caption: '一方の親から得た整数列を、もう一方の親から得たべき和の指数として使います。色付きの状態だけが不等式を満たします。',
+      states: [...exactStates, { id: 'tail', label: `a_k ≥ ${cutoff}: 一括評価`, terminal: true }],
       transitions: [
         ...exactStates.slice(1).map((state, index) => ({
           from: exactStates[index].id,
           to: state.id,
-          label: 'recurrence',
+          label: '次の項',
         })),
-        { from: exactStates.at(-1)?.id ?? 'k1', to: 'tail', label: 'certified cutoff' },
+        { from: exactStates.at(-1)?.id ?? 'k1', to: 'tail', label: '以後をまとめて評価' },
       ],
     },
     parent_ids: parents.map(parent => parent.id),

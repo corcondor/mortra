@@ -41,6 +41,18 @@ export type ProblemArtifactCard = {
     claim_ja?: string
     status?: string
   }>
+  generation_audit?: {
+    passed?: boolean
+    reversePlaybackOnly?: boolean
+    tracedParentIds?: string[]
+    minimalPremiseIds?: string[]
+    unusedPremiseIds?: string[]
+    checks?: {
+      premiseMinimality?: boolean
+      allParentDependence?: boolean
+      crossParentComposition?: boolean
+    }
+  }
   verification?: {
     method?: string
     exact_backend?: boolean
@@ -199,6 +211,11 @@ function stateLabelLines(label: string): string[] {
 }
 
 function StateFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind: 'state' }> }) {
+  const compactStateLayout = diagram.states.length <= 2
+  const canvasWidth = compactStateLayout ? 360 : 760
+  const horizontalInset = compactStateLayout ? 50 : 70
+  const stateX = (index: number) => horizontalInset
+    + (index * (canvasWidth - 2 * horizontalInset)) / Math.max(1, diagram.states.length - 1)
   const visibleEdges = diagram.transitions.filter(transition => {
     const from = diagram.states.findIndex(state => state.id === transition.from)
     const to = diagram.states.findIndex(state => state.id === transition.to)
@@ -206,7 +223,11 @@ function StateFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind: 'st
   })
   return (
     <div className={styles.stateFigure} role="img" aria-label={diagram.title}>
-      <svg viewBox="0 0 760 230" className={styles.stateSvg}>
+      <svg
+        viewBox={`0 0 ${canvasWidth} 230`}
+        className={styles.stateSvg}
+        style={compactStateLayout ? { minWidth: 0 } : undefined}
+      >
         <defs>
           <marker id="state-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
             <path d="M0,0 L8,4 L0,8 Z" className={styles.stateArrowHead} />
@@ -215,8 +236,8 @@ function StateFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind: 'st
         {visibleEdges.map((transition, index) => {
           const from = diagram.states.findIndex(state => state.id === transition.from)
           const to = diagram.states.findIndex(state => state.id === transition.to)
-          const fromX = 70 + (from * 620) / Math.max(1, diagram.states.length - 1)
-          const toX = 70 + (to * 620) / Math.max(1, diagram.states.length - 1)
+          const fromX = stateX(from)
+          const toX = stateX(to)
           const upper = to > from
           const y = upper ? 84 : 150
           return (
@@ -235,12 +256,12 @@ function StateFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind: 'st
           const fromValue = Number(state.label)
           const toValue = Number(next.label)
           if (!Number.isFinite(fromValue) || !Number.isFinite(toValue) || toValue - fromValue <= 1) return null
-          const fromX = 70 + (index * 620) / Math.max(1, diagram.states.length - 1)
-          const toX = 70 + ((index + 1) * 620) / Math.max(1, diagram.states.length - 1)
+          const fromX = stateX(index)
+          const toX = stateX(index + 1)
           return <text key={`${state.id}-${next.id}-gap`} x={(fromX + toX) / 2} y="121" className={styles.stateGap}>⋯</text>
         })}
         {diagram.states.map((state, index) => {
-          const cx = 70 + (index * 620) / Math.max(1, diagram.states.length - 1)
+          const cx = stateX(index)
           const labelLines = stateLabelLines(state.label)
           const multiline = labelLines.length > 1
           return (
@@ -457,6 +478,12 @@ const ARTIFACT_TEXT = {
     solutionPending: '現在は型付き構造まで形成済みです。証明と反例検査が完了するまで、模範解答としては公開しません。',
     proofRoute: '証明の経路',
     proofObligations: '証明義務',
+    generationAudit: '生成監査',
+    generationAuditPassed: '公開条件を通過',
+    generationAuditPending: '監査未完了',
+    allParentsUsed: '親問題への依存',
+    crossParentComposition: '構造の交差合成',
+    premiseMinimality: '条件の必要性',
     obligationVerified: '検証済み',
     certificate: '証明書',
     structuralFusion: '構造融合',
@@ -475,6 +502,12 @@ const ARTIFACT_TEXT = {
     solutionPending: 'The typed structure is in place. The worked solution is withheld until the proof and counterexample search complete.',
     proofRoute: 'Proof route',
     proofObligations: 'Proof obligations',
+    generationAudit: 'Generation audit',
+    generationAuditPassed: 'Publication checks passed',
+    generationAuditPending: 'Audit incomplete',
+    allParentsUsed: 'Parent dependence',
+    crossParentComposition: 'Cross-parent composition',
+    premiseMinimality: 'Premise necessity',
     obligationVerified: 'Verified',
     certificate: 'Certificate',
     structuralFusion: 'Structural fusion',
@@ -634,6 +667,55 @@ export function ProblemArtifact({ card, compact = false, showVerification = true
                 </li>
               )
             })}
+          </ul>
+        </section>
+      ) : null}
+
+      {card.generation_audit ? (
+        <section className={styles.obligationAudit} aria-labelledby="generation-audit-title">
+          <div className={styles.proofAuditHead}>
+            <p className={styles.label} id="generation-audit-title">{a.generationAudit}</p>
+            <span>{card.generation_audit.passed ? a.generationAuditPassed : a.generationAuditPending}</span>
+          </div>
+          <ul className={styles.obligationList}>
+            {[
+              {
+                id: 'parent-dependence',
+                label: a.allParentsUsed,
+                passed: card.generation_audit.checks?.allParentDependence === true,
+                detail: lang === 'ja'
+                  ? `${card.generation_audit.tracedParentIds?.length ?? 0}件の親問題を最終目標まで逆追跡しました。`
+                  : `Traced ${card.generation_audit.tracedParentIds?.length ?? 0} parents to the final goal.`,
+              },
+              {
+                id: 'cross-parent-composition',
+                label: a.crossParentComposition,
+                passed: card.generation_audit.checks?.crossParentComposition === true,
+                detail: lang === 'ja'
+                  ? '異なる親問題の途中結果を一つの証明操作で合成しました。'
+                  : 'Combined intermediate results from distinct parents in one proof operation.',
+              },
+              {
+                id: 'premise-minimality',
+                label: a.premiseMinimality,
+                passed: card.generation_audit.checks?.premiseMinimality === true,
+                detail: lang === 'ja'
+                  ? `未使用の条件は${card.generation_audit.unusedPremiseIds?.length ?? 0}件です。`
+                  : `${card.generation_audit.unusedPremiseIds?.length ?? 0} unused premises.`,
+              },
+            ].map(item => (
+              <li className={styles.obligationItem} key={item.id}>
+                <CheckCircle2
+                  size={16}
+                  aria-hidden="true"
+                  className={item.passed ? styles.obligationCheck : styles.obligationPending}
+                />
+                <div>
+                  <span>{item.label} / {item.passed ? a.obligationVerified : a.candidate}</span>
+                  <p>{item.detail}</p>
+                </div>
+              </li>
+            ))}
           </ul>
         </section>
       ) : null}

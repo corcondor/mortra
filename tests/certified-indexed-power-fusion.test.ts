@@ -30,7 +30,11 @@ test('unseen corpus endpoints produce a new exact indexed power-sum problem', ()
   assert.equal(card.verification.independent_check, true)
   assert.equal(card.fusion_derivation.ablationPassed, true)
   assert.deepEqual(new Set(card.parent_ids), new Set([recurrenceParent.id, powerParent.id]))
-  assert.match(card.solution_tex, /Newton和/)
+  assert.match(card.solution_tex, /二次方程式/)
+  assert.match(card.solution_tex, /べき和/)
+  assert.doesNotMatch(card.solution_tex, /Newton和/)
+  assert.match(card.statement_tex, /a_\{k\+2\}=a_\{k\+1\}\+a_k/)
+  assert.doesNotMatch(card.statement_tex, /1a_/)
   assert.match(card.solution_tex, /伴行列/)
   assert.equal(card.diagram.kind, 'state')
 })
@@ -75,6 +79,19 @@ test('mutating recurrence data recomputes the answer rather than replaying a tem
   assert.notEqual(changed.answer_tex, base.answer_tex)
   assert.equal(changed.answer_tex, String.raw`\(k\in\{2,3,4,5\}\)`)
   assert.notEqual(changed.structure_blueprint.id, base.structure_blueprint.id)
+})
+
+test('parity tail filtering preserves the original recurrence index', () => {
+  const mutation = {
+    id: 'non-prefix-exact-check',
+    statement: String.raw`A_1=7,\ A_2=8,\ A_{j+2}=A_{j+1}+A_j.`,
+  }
+  const card = synthesizeCertifiedIndexedPowerSumFusion([mutation, powerParent])[0]
+  assert.ok(card)
+  assert.equal(card.answer_tex, String.raw`\(k\in\{2\}\)`)
+  assert.match(card.solution_tex, /k&2/)
+  assert.match(card.solution_tex, /a_k&8/)
+  assert.doesNotMatch(card.solution_tex, /a_k&7&8/)
 })
 
 test('both typed parents are indispensable', () => {
