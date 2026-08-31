@@ -1,0 +1,1319 @@
+{
+  "schema": 1,
+  "sourceLabel": "全問題.tex",
+  "sourceSha256": "f6712759df96385a3fdd758678415a231e28519cbde2ac13866e8406f64fa737",
+  "problemCount": 90,
+  "verifiedCount": 80,
+  "entries": [
+    {
+      "id": "fullproblem-001",
+      "ordinal": 1,
+      "label": "問題1",
+      "statement": "\\[\n\\frac{\\int_{0}^{1}f(x)g(x)dx}{\\sqrt{\\int_{0}^{1}f(x)^2dx}\\sqrt{\\int_{0}^{1}g(x)^2dx}}=\\cos{\\frac{\\pi}{6}}\n\\]\nを満たす関数$f(x),g(x)$を一組求めよ.",
+      "status": "verified",
+      "familyId": "solve.functional_analysis.hilbert_normalized_inner_product_witness",
+      "answerTex": "\\(f(x)=1,\\quad g(x)=\\sqrt{3} x\\)",
+      "solutionTex": "\\textbf{1.} 区間長を \\(L=1\\)，中点を \\(m=\\frac{1}{2}\\) とする。\n\n\\textbf{2.} \\(e_1=1\\)，\\(e_2=\\sqrt{3} \\left(2 x - 1\\right)\\) は \\(L^2\\) 内で正規直交する。\n\n\\textbf{3.} \\(f=e_1\\)，\\(g=\\frac{\\sqrt{3}}{2}e_1+\\sqrt{1-\\frac{\\sqrt{3}}{2}^2}e_2\\) と構成する。\n\n\\textbf{4.} 直接積分により \\(\\|f\\|^2=\\|g\\|^2=1\\)，\\(\\langle f,g\\rangle=\\frac{\\sqrt{3}}{2}\\) を確認した。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-001",
+        "method": "solve.functional_analysis.hilbert_normalized_inner_product_witness"
+      }
+    },
+    {
+      "id": "fullproblem-002",
+      "ordinal": 2,
+      "label": "問題2",
+      "statement": "半径$n$の2円の中心間距離が\n$n+\\frac12,\\ \\sqrt{n(n+1)}$のときの共通部分の面積を $S_n,T_n$ とする.\n\\[\n\\lim_{n\\to\\infty}(S_n-T_n)\n\\]\nを求めよ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_circle_overlap_difference_limit",
+      "answerTex": "\\(- \\frac{\\sqrt{3}}{8}\\)",
+      "solutionTex": "\\textbf{1.} 等半径円の共通部分面積A(d)は中心距離dについて A'(d)=-sqrt(4n\\textasciicircum{}2-d\\textasciicircum{}2) を満たす。\n\n\\textbf{2.} 二つの中心距離の差を有理化し、n倍極限を求めた。\n\n\\textbf{3.} 平均値の定理で面積差を導関数と距離差の積へ還元した。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-002",
+        "method": "solve.structural_theorem.structural_theorem_circle_overlap_difference_limit"
+      }
+    },
+    {
+      "id": "fullproblem-003",
+      "ordinal": 3,
+      "label": "問題3",
+      "statement": "1から$n$までの自然数が書かれたカードが1枚ずつあり，2枚を同時に引いたカードの値の相加平均，相乗平均を\n$X_n,\\ Y_n$ とする．また，$X_n,\\ Y_n$ の相関係数を $\\rho_n$ とする．\n\\[\n\\lim_{n\\to\\infty}\\rho_n\n\\]\nを求めよ．",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_sample_mean_geomean_correlation",
+      "answerTex": "\\(\\frac{8 \\sqrt{102}}{85}\\)",
+      "solutionTex": "\\textbf{1.} 二枚の値を \\(n\\) で割った組は、\\(n\\to\\infty\\) で独立な一様分布 \\(U,V\\sim\\mathrm{Unif}[0,1]\\) へ収束する。相関係数は共通の正の尺度で不変なので、\\(X=(U+V)/2,\\ Y=\\sqrt{UV}\\) を調べればよい。\n\n\\textbf{2.} 積分から \\[\\mathrm E[X]=\\frac12,\\quad \\mathrm E[Y]=\\frac49,\\quad \\mathrm E[X^2]=\\frac7{24},\\quad \\mathrm E[Y^2]=\\frac14,\\quad \\mathrm E[XY]=\\frac4{15}\\] を得る。従って \\[\\operatorname{Cov}(X,Y)=\\frac2{45},\\qquad \\operatorname{Var}(X)=\\frac1{24},\\qquad \\operatorname{Var}(Y)=\\frac{17}{324}.\\]\n\n\\textbf{3.} よって \\[\\rho=\\frac{\\operatorname{Cov}(X,Y)}{\\sqrt{\\operatorname{Var}(X)\\operatorname{Var}(Y)}}=\\frac{2/45}{\\sqrt{17/(24\\cdot324)}}=\\frac{8\\sqrt{102}}{85}.\\] 両分散は正なので、この規格化に退化はない。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-003",
+        "method": "solve.structural_theorem.structural_theorem_sample_mean_geomean_correlation"
+      }
+    },
+    {
+      "id": "fullproblem-004",
+      "ordinal": 4,
+      "label": "問題4",
+      "statement": "1から$n$までの自然数が書かれたカードが1枚ずつあり，$k(<n)$枚を同時に引き，\\\\\nその相加平均，相乗平均を$X_{n,k},Y_{n,k}$とし，\n$X_{n,k}$と$Y_{n,k}$の相関係数を$\\cos\\theta_{n,k}$とする.\n\\[\n\\lim_{k\\to\\infty}\\lim_{n\\to\\infty}\\theta_{n,k}\n\\]\nを求めよ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_sample_mean_geomean_correlation",
+      "answerTex": "\\(\\frac{\\pi}{6}\\)",
+      "solutionTex": "\\textbf{1.} \\(n\\) を先に無限大へ送ると、\\(k\\) 枚の規格化値は独立な \\(U_1,\\ldots,U_k\\sim\\mathrm{Unif}[0,1]\\) へ収束する。\\[A_k=\\frac1k\\sum_{i=1}^kU_i,\\qquad L_k=\\frac1k\\sum_{i=1}^k\\log U_i\\] とおけば、相加平均は \\(A_k\\)、相乗平均は \\(G_k=e^{L_k}\\) である。\n\n\\textbf{2.} \\[\\mathrm E[U]=\\frac12,\\quad\\operatorname{Var}(U)=\\frac1{12},\\quad\\mathrm E[\\log U]=-1,\\quad\\operatorname{Var}(\\log U)=1,\\quad\\mathrm E[U\\log U]=-\\frac14\\] より \\(\\operatorname{Cov}(U,\\log U)=1/4\\) である。多変量中心極限定理から \\((A_k,L_k)\\) の極限相関は \\[\\frac{1/4}{\\sqrt{(1/12)\\cdot1}}=\\frac{\\sqrt3}{2}\\] となる。\n\n\\textbf{3.} 指数関数の微分 \\(e^{-1}\\) は正なので、デルタ法により \\((A_k,G_k)\\) も同じ極限相関 \\(\\sqrt3/2\\) をもつ。\\(\\theta_{n,k}\\in[0,\\pi]\\) だから \\[\\lim_{k\\to\\infty}\\lim_{n\\to\\infty}\\theta_{n,k}=\\cos^{-1}\\frac{\\sqrt3}{2}=\\frac\\pi6.\\]",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-004",
+        "method": "solve.structural_theorem.structural_theorem_sample_mean_geomean_correlation"
+      }
+    },
+    {
+      "id": "fullproblem-005",
+      "ordinal": 5,
+      "label": "問題5",
+      "statement": "\\begin{enumerate}\n\\item[(1)] $\\displaystyle \\frac{1}{1-\\cos\\frac{2\\pi}{7}}$ を有理化せよ.\n\\item[(2)] $\\displaystyle \\cos\\frac{2\\pi}{7}$ を小数第2位まで求めよ.\n\\end{enumerate}",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_cyclotomic_cosine_observations",
+      "answerTex": "\\(\\text{1/(1-alpha)=8*x**2/7 + 12*x/7 + 8/7, alpha=0.62}\\)",
+      "solutionTex": "\\textbf{1.} cos(2pi/m)の最小多項式を円分多項式から計算した。\n\n\\textbf{2.} Q[x]/(minimal polynomial)で1-xの逆元をEuclid互除法により求めた。\n\n\\textbf{3.} 根の分離区間を数値評価し指定桁へ丸めた。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-005",
+        "method": "solve.structural_theorem.structural_theorem_cyclotomic_cosine_observations"
+      }
+    },
+    {
+      "id": "fullproblem-006",
+      "ordinal": 6,
+      "label": "問題6",
+      "statement": "素数 $p,q$ に対し\n\\[\nq=2026^p+p^{2026}\n\\]\nを満たすような組 $(p,q)$ は存在しないことを示せ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_prime_power_sum_composite",
+      "answerTex": "\\(存在しない\\)",
+      "solutionTex": "\\textbf{1.} p=2 では和は 2 より大きい偶数である。\n\n\\textbf{2.} 奇素数 p != 2027 では Fermat の小定理により和は 2027 で割り切れる。\n\n\\textbf{3.} p=2027 の例外枝も 5 で割り切れる。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-006",
+        "method": "solve.structural_theorem.structural_theorem_prime_power_sum_composite"
+      }
+    },
+    {
+      "id": "fullproblem-007",
+      "ordinal": 7,
+      "label": "問題7",
+      "statement": "$0<\\theta<\\dfrac{\\pi}{2}$とし，$(a,b,c)$は$(\\sin\\theta,\\cos\\theta,\\tan\\theta)$の置換(並び替え)とする.\\\\\nこのとき,三次方程式\\\\\n\\[\nx^3+ax^2+bx+c=0\n\\]\nについて考える.\n(1)\\ この方程式は必ず虚数解をもつことを示せ.\\\\\n(2)\\ 三解が複素平面上で正三角形の頂点をなすとき,その正三角形の面積の最大値と\\((a,b,c)\\) を求めよ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_permuted_trigonometric_cubic",
+      "answerTex": "\\(\\max\\Delta=\\frac{2^{\\frac{2}{3}} \\sqrt{3} \\left(7 + 3 \\sqrt{13}\\right)^{\\frac{2}{3}}}{8 \\sqrt[3]{-3 + \\sqrt{13}}},\\quad (a,b,c)=(\\sin\\theta,\\cos\\theta,\\tan\\theta),\\quad \\theta=\\arccos\\!\\left(- \\frac{3}{2} + \\frac{\\sqrt{13}}{2}\\right)\\)",
+      "solutionTex": "\\textbf{1.} 係数はすべて正なので非負の実根はない。もし三根がすべて実なら -u,-v,-w (u,v,w>0) と書け、Newton不等式から a\\textasciicircum{}2>=3b, b\\textasciicircum{}2>=3ac, ab>=9c が必要になる。\n\n\\textbf{2.} (a,b,c)を(sin theta,cos theta,tan theta)の6置換に分け、tan theta=sin theta/cos thetaを代入すると、各場合で cos\\textasciicircum{}2>=9, sin cos>=3, 1>=9, sin>=3 のいずれかが必要になり矛盾する。従って非実共役根を必ず持つ。\n\n\\textbf{3.} x=y-a/3 と減次すると y\\textasciicircum{}3+py+q=0, p=b-a\\textasciicircum{}2/3 となる。三根の重心は原点なので、三根が正三角形をなすことと p=0 は同値である。\n\n\\textbf{4.} 6置換を対称性のまま評価すると最大候補は (a,b,c)=(sin theta,cos theta,tan theta)。条件 cos theta=sin\\textasciicircum{}2 theta/3 から cos theta=(sqrt(13)-3)/2 が一意に定まる。\n\n\\textbf{5.} この候補では q=tan theta-sin\\textasciicircum{}3 theta/27>80/27。他の全候補は |q|<1+sqrt(3)/9 なので厳密に分離される。正三角形の面積 3sqrt(3)|q|\\textasciicircum{}(2/3)/4 に代入して最大値を得る。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-007",
+        "method": "solve.structural_theorem.structural_theorem_permuted_trigonometric_cubic"
+      }
+    },
+    {
+      "id": "fullproblem-008",
+      "ordinal": 8,
+      "label": "問題8",
+      "statement": "\\[\nx^2+\\sin \\theta x+\\cos \\theta =0\n\\]\nの2解を$\\alpha,\\beta$ とする.\n\\[\n\\sqrt[\\alpha]{\\beta}+ \\sqrt[\\beta]{\\alpha}\n\\]\nの最大値と最小値を求めよ.",
+      "status": "unresolved",
+      "familyId": null,
+      "answerTex": null,
+      "solutionTex": null,
+      "certificate": null
+    },
+    {
+      "id": "fullproblem-009",
+      "ordinal": 9,
+      "label": "問題9",
+      "statement": "次の極限を求めよ.\n\\[\n\\lim_{x \\to 0}\\frac{(1+x)^{\\frac{1}{x}}-(1+\\tan x)^{\\frac{1}{\\tan x}}}{(1+x)^{\\frac{1}{x}}-(1+\\sin x)^{\\frac{1}{\\sin x}}}\n\\]",
+      "status": "verified",
+      "familyId": "solve.exact.limit",
+      "answerTex": "\\(-2\\)",
+      "solutionTex": "\\textbf{1.} \\(x\\to 0\\) における局所形を調べる。\n\n\\textbf{2.} \\(\\frac{\\left(x + 1\\right)^{\\frac{1}{x}} - \\left(\\tan{\\left(x \\right)} + 1\\right)^{\\frac{1}{\\tan{\\left(x \\right)}}}}{\\left(x + 1\\right)^{\\frac{1}{x}} - \\left(\\sin{\\left(x \\right)} + 1\\right)^{\\frac{1}{\\sin{\\left(x \\right)}}}}=-2 - \\frac{9 x^{2}}{10} + \\frac{11 x^{3}}{12} + O\\left(x^{4}\\right)\\) と局所展開できる。\n\n\\textbf{3.} したがって極限値は \\(-2\\) である。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-009",
+        "method": "solve.exact.limit"
+      }
+    },
+    {
+      "id": "fullproblem-010",
+      "ordinal": 10,
+      "label": "問題10",
+      "statement": "$n$ を正の整数とする．複素数平面上の点\n\\[\n z_n = n + i\n\\]\nを考える．\n\\begin{enumerate}\n\\item[(1)]\n整数列 $1 \\le j_1 \\le j_2 \\le \\cdots \\le j_m \\le n$\nに対して，\n\\[\n \\tan(\\arg z_{j_1} + \\arg z_{j_2} + \\cdots + \\arg z_{j_m}) = 1\n\\]\nを満たすような $\\{j_m\\}$ の条件を求めよ．\n\\item[(2)]\n(1)を用いて,\n\\[\n3.141< \\pi <3.142\n\\]\nを示せ.\n\\end{enumerate}",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_complex_argument_arctangent_certificate",
+      "answerTex": "\\(e_k=e_k(j_1,\\ldots,j_m),\\ e_0=1\\) とすると \\(\\displaystyle\\sum_{q\\ge0}(-1)^q e_{m-2q}=\\sum_{q\\ge0}(-1)^q e_{m-2q-1}\\) が必要十分条件であり、\\(3.141<\\pi<3.142\\) である。",
+      "solutionTex": "\\textbf{1.} Z=prod\\_r(j\\_r+i) と置く。各因子は第1象限にあり、arg Z は各 arg(j\\_r+i) の和に合同である。従って tan(sum arg z\\_\\{j\\_r\\})=1 は Re Z=Im Z と同値である。\n\n\\textbf{2.} e\\_kをj\\_1,...,j\\_mの基本対称式、e\\_0=1とする。積を展開すると Re Z=sum\\_\\{q>=0\\}(-1)\\textasciicircum{}q e\\_\\{m-2q\\}, Im Z=sum\\_\\{q>=0\\}(-1)\\textasciicircum{}q e\\_\\{m-2q-1\\} となり、両者の等式が必要十分条件である。\n\n\\textbf{3.} (2+i)(3+i)=5+5i なので、0<atan(1/2)+atan(1/3)<pi/2 と合わせて atan(1/2)+atan(1/3)=pi/4 を得る。\n\n\\textbf{4.} 0<x<=1では arctan x=x-x\\textasciicircum{}3/3+x\\textasciicircum{}5/5-... は絶対値が減少する交代級数である。負項で終わる6項和は下界、正項で終わる5項和は上界になる。\n\n\\textbf{5.} x=1/2,1/3へ適用して4倍すると 21940173935/6983843328<pi<498668825/158723712。左端は3.141より490255219/872980416000大きく、右端は3.142より5134763/19840464000小さい。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-010",
+        "method": "solve.structural_theorem.structural_theorem_complex_argument_arctangent_certificate"
+      }
+    },
+    {
+      "id": "fullproblem-011",
+      "ordinal": 11,
+      "label": "問題11",
+      "statement": "数列 $\\{a_n\\}$ を $a_1=a_2=1,\\ a_{n+2}=\\dfrac{1}{a_{n+1}+\\dfrac{1}{a_n}}$ と定める.\n\n(1)\\ $a_n$ を求めよ.\n\n(2)\\ $a_{2n+2}=\\displaystyle\\int_0^1 (1-x^2)^n\\,dx$ を示せ.\n\n(3)\\ $\\displaystyle\\lim_{n\\to\\infty}\\sqrt{n}\\,a_{2n}$ を求めよ.\n\n(4)\\ $\\displaystyle\\int_0^\\infty e^{-x^2}\\,dx$ を求めよ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_wallis_nonlinear_recurrence",
+      "answerTex": "\\(\\text{a\\_(n+2)=n*a\\_n/(n+1); a\\_(2m)=(2m-2)!!/(2m-1)!!; lim sqrt(n)a\\_(2n)=sqrt(pi)/2; integral exp(-x\\textasciicircum{}2)=sqrt(pi)/2}\\)",
+      "solutionTex": "\\textbf{1.} 元の非線形漸化式を一段ずらして代入し、同じ偶奇列上の二段比へ縮約した。\n\n\\textbf{2.} 偶数項・奇数項を二重階乗で表示し、積分I\\_n=integral(1-x\\textasciicircum{}2)\\textasciicircum{}nと一致させた。\n\n\\textbf{3.} Wallis積とGaussian積分の二重積分変換で共通極限を閉じた。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-011",
+        "method": "solve.structural_theorem.structural_theorem_wallis_nonlinear_recurrence"
+      }
+    },
+    {
+      "id": "fullproblem-012",
+      "ordinal": 12,
+      "label": "問題12",
+      "statement": "1辺の長さが $1$ の正十二面体の頂点から相異なる$3$点A,B,Cを取るとき，\n$\\triangle$ABCの面積$S$の最大値を求めよ．",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_regular_dodecahedron_max_triangle",
+      "answerTex": "\\(\\sqrt{\\frac{43 \\sqrt{5}}{32} + \\frac{97}{32}}\\)",
+      "solutionTex": "\\textbf{1.} 正十二面体を黄金比座標の20頂点として実現した。\n\n\\textbf{2.} 全ての頂点三つ組の外積ノルムを厳密比較し、辺長で正規化した。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-012",
+        "method": "solve.structural_theorem.structural_theorem_regular_dodecahedron_max_triangle"
+      }
+    },
+    {
+      "id": "fullproblem-013",
+      "ordinal": 13,
+      "label": "問題13",
+      "statement": "放物線P : $y = x^2 $、直線Q : $y =ax +b$を考える.放物線と直線の交点を A, B とする。\\\\PをQで折り返した像とPとの交点のうちQ上にない点を C とする.AB,BC,CAがすべて整数となるような$a,b$は存在するか.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_parabola_reflection_integer_triangle_impossibility",
+      "answerTex": "\\(\\text{そのような実数 }a,b\\text{ は存在しない。}\\)",
+      "solutionTex": "\\textbf{1.} 直線 \\(Q\\) を \\(X\\) 軸へ、弦 \\(AB\\) の中点を原点へ移す。 \\(A=(-c/2,0),\\ B=(c/2,0)\\) と書く。 \\(A=B\\) なら \\(Q\\) は放物線の支持接線であり、反射像との交点は接点だけなので、 \\(C\\notin Q\\) より \\(c>0\\) である。\n\n\\textbf{2.} 剛体移動後の単位放物線は \\((\\ell X+\\mu Y+u)^2=-\\mu X+\\ell Y+v\\), \\(\\ell^2+\\mu^2=1\\) と書ける。 \\(C=(x,h)\\ (h\\ne0)\\) とその反射 \\(C'=(x,-h)\\) はともに元の放物線上にある。 \\(A,B\\) の式の差と \\(C,C'\\) の式の差から \\(u=-\\mu/(2\\ell)\\), \\(x=1/(2\\mu\\ell^2)\\) を得る。\n\n\\textbf{3.} 残る一式は \\(\\ell^2(c^2/4-x^2)=\\mu^2h^2\\) である。 \\(M=c^2/4-x^2>0,\\ z=M/h^2>0\\) と置き、 \\(\\ell,\\mu\\) を消去すると \\(4x^2z=(1+z)^3\\) を得る。\n\n\\textbf{4.} 三辺を \\(p=BC,\\ q=CA,\\ c=AB\\) とすれば \\(x=(q^2-p^2)/(2c)\\) かつ \\(h^2=p^2-(x-c/2)^2\\) なので \\(x,z\\in\\mathbb Q\\)。 \\(A,B\\) を交換して \\(x>0\\) としてよい。 \\(t=2x/(1+z)\\) と置くと \\(t>1\\) で、 \\(z=1/(t^2-1),\\ x=t^3/(2(t^2-1))\\) となる。\n\n\\textbf{5.} 既約分数 \\(t=m/n\\ (m>n>0)\\) と \\(d=m^2-n^2\\) を用いると \\(x=m^3/(2nd)\\) である。 \\(\\gcd(m,nd)=1\\) と \\(x=(q^2-p^2)/(2c)\\) より、ある \\(k\\in\\mathbb Z_{>0}\\) が存在して \\(c=knd,\\ q^2-p^2=km^3\\) となる。\n\n\\textbf{6.}  \\(\\mathcal A=kn^2d^2-m^3=2nd(c/2-x)>0\\) と置く。 \\(z=n^2/d\\) を辺長の式へ戻すと \\(p^2=\\dfrac{m^2\\mathcal A(\\mathcal A+2md)}{4n^4d^2}\\)。 従って整数 \\(Y>0\\) が存在して \\(Y^2=\\mathcal A(\\mathcal A+2md)\\), \\(mY=2n^2dp\\) となる。\n\n\\textbf{7.}  \\(\\gcd(m,d)=1\\) だから \\(d\\mid Y\\)。一方 \\(Y^2+(md)^2=(\\mathcal A+md)^2\\) より \\(d\\mid\\mathcal A+md\\)。 しかも \\(\\mathcal A+md=n^2(kd^2-m)\\) なので \\(d\\mid n^2m\\)。 \\(\\gcd(d,mn)=1\\) から \\(d=1\\) となるが、 \\(d=m^2-n^2=(m-n)(m+n)\\ge3\\) に反する。よって条件を満たす \\(a,b\\) は存在しない。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-013",
+        "method": "solve.structural_theorem.structural_theorem_parabola_reflection_integer_triangle_impossibility"
+      }
+    },
+    {
+      "id": "fullproblem-014",
+      "ordinal": 14,
+      "label": "問題14",
+      "statement": "自然数 $n$ に対し，その約数の個数を $p$，約数の総和を $q$ とする。\\\\\n(1) $n,p,q$ を三辺とする直角三角形は存在するか.\\\\\n(2) $p+q=2026$ となる$n$ を全て求めよ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_divisor_statistics_constraints",
+      "answerTex": "\\(\\text{直角三角形: []; p+q=2026: [1346]}\\)",
+      "solutionTex": "\\textbf{1.} sigma(n) >= n なので sigma(n)+d(n)=T の候補は n<=T に限られる。\n\n\\textbf{2.} 有限区間の各 n で約数集合を生成し、個数・総和・三平方条件を整数演算で再検査した。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-014",
+        "method": "solve.structural_theorem.structural_theorem_divisor_statistics_constraints"
+      }
+    },
+    {
+      "id": "fullproblem-015",
+      "ordinal": 15,
+      "label": "問題15",
+      "statement": "A, B, C はある三角形の角であるとする．  \nこのとき，$xy$ 平面での点 $(\\cos A \\cos B \\cos C, \\sin A \\sin B \\sin C)$ の通過する領域の面積を求めよ．",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_triangle_angle_product_region_area",
+      "answerTex": "\\(\\dfrac{\\pi}{16}\\)",
+      "solutionTex": "\\textbf{1.} X=cos A cos B cos C, Y=sin A sin B sin C と置く。A+B+C=pi から cot A cot B+cot B cot C+cot C cot A=1, cot A cot B cot C=X/Y, cot A+cot B+cot C=(X+1)/Y を得る。\n\n\\textbf{2.} 従ってcot A,cot B,cot Cは t\\textasciicircum{}3-((X+1)/Y)t\\textasciicircum{}2+t-X/Y=0 の三根である。(X,Y)は角の順序を除いて三角形を一意に定めるので、A<=B<=C の一室だけを積分すれば重複しない。\n\n\\textbf{3.} C=pi-A-Bとして写像のJacobianを計算すると J=-sin(C-A)sin(C-B)sin(B-A)。順序室の内部ではJ<0である。\n\n\\textbf{4.} u=B-A, v=C-B と置くと A=(pi-2u-v)/3, dA dB=du dv/3、領域はu,v>=0, 2u+v<=piとなる。面積要素は sin(u+v)sin u sin v/3 である。\n\n\\textbf{5.} vを先に積分すると、残る三項の積分は順にpi/16, pi/8, 0。最後の座標Jacobian 1/3を掛けて (pi/16+pi/8)/3=pi/16 を得る。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-015",
+        "method": "solve.structural_theorem.structural_theorem_triangle_angle_product_region_area"
+      }
+    },
+    {
+      "id": "fullproblem-016",
+      "ordinal": 16,
+      "label": "問題16",
+      "statement": "実数 $t\\ (>1), a,b$ と数列$x_n$を\n\\[\nx_{n+2}=a\\,x_{n+1}+b\\,x_n,\\qquad x_1=x_2=1\n\\]\n\nで定める．さらに数列$F_n$を\n\\[\nF_0=0,\\qquad F_{n+1}=F_n+\\frac{x_{n+1}}{t^{n+1}}\n\\]\nとする.\\\\\n極限 $F=\\lim\\limits_{n\\to \\infty}F_n$ が定数となるように $t$ が動くとき、$(a,b)$ の\n通過領域を図示せよ．",
+      "status": "unresolved",
+      "familyId": null,
+      "answerTex": null,
+      "solutionTex": null,
+      "certificate": null
+    },
+    {
+      "id": "fullproblem-017",
+      "ordinal": 17,
+      "label": "問題17",
+      "statement": "\\[ \nx^3-2026x^2-2029x-1=0 \n\\]\nを解け．",
+      "status": "verified",
+      "familyId": "solve.exact.cubic_trigonometric_chart",
+      "answerTex": "\\(\\left\\{\\,\\frac{2026}{3}+\\frac{2 \\sqrt{4110763}}{3}\\cos\\left(\\frac{1}{3}\\arccos\\left(\\frac{4055 \\sqrt{4110763}}{8221526}\\right)-\\frac{2\\pi k}{3}\\right)\\;\\middle|\\;k=0,1,2\\,\\right\\}\\)",
+      "solutionTex": "\\textbf{1.} 左辺から右辺を移項し、\\(x^{3} - 2026 x^{2} - 2029 x - 1=0\\) とする。判別式は \\(16898372442169>0\\) なので、相異なる実根は3個である。\n\n\\textbf{2.} \\(x=y + \\frac{2026}{3}\\) とおくと、係数恒等式により \\(y^{3} - \\frac{4110763 y}{3} - \\frac{16669143965}{27}=0\\) へ正規化される。\n\n\\textbf{3.} \\(y=2\\sqrt{-- \\frac{4110763}{3}/3}\\cos\\theta\\) とおき、三倍角公式 \\(4\\cos^3\\theta-3\\cos\\theta=\\cos3\\theta\\) を使うと、\\(\\cos3\\theta=\\frac{4055 \\sqrt{4110763}}{8221526}\\) を得る。\n\n\\textbf{4.} したがって \\(x=\\frac{2026}{3}+\\frac{2 \\sqrt{4110763}}{3}\\cos\\left(\\frac{1}{3}\\arccos\\left(\\frac{4055 \\sqrt{4110763}}{8221526}\\right)-\\frac{2\\pi k}{3}\\right)\\;(k=0,1,2)\\) である。正規化恒等式と三倍角公式が各候補を元の三次式へ戻し、判別式と次数が完全性を保証する。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-017",
+        "method": "solve.exact.cubic_trigonometric_chart"
+      }
+    },
+    {
+      "id": "fullproblem-018",
+      "ordinal": 18,
+      "label": "問題18",
+      "statement": "\\[\n\\alpha=\\cos\\frac{2\\pi}{11}\n\\]\nを根に持つ有理数係数の最小多項式は，\n\\[\nf(x)=32x^5+16x^4-32x^3-12x^2+6x+1\n\\]\nであることが知られている.\nいま，変換\n\\[\nS=\\frac{1}{1-x}\n\\]\nにより，\\(\\alpha\\) に対応する真の値 \\(S^{*}\\) が，ある有理関数 \\(S=g(S)\\) の不動点\n\\[\nS^{*}=g(S^{*})\n\\]\nになったとする.\n\n\\begin{enumerate}\n\\item[(1)]\n\\(g(S)\\) を\n\\[\ng(S)=C_{0}+\\frac{C_{1}}{S}+\\frac{C_{2}}{S^{2}}+\\frac{C_{3}}{S^{3}}+\\frac{C_{4}}{S^{4}}\n\\]\nの形で表すとき，定数項 \\(C_{0}\\) の値を求めよ.\n\n\\item[(2)]\n\\(S^{*}\\) の近傍における反復 \\(S_{n+1}=g(S_{n})\\) の収束の速さを決定する値\n\\[\nk=\\lvert g'(S^{*})\\rvert\n\\]\nを考える.\n\\(k\\) の値を \\(\\cos\\frac{\\pi}{11}\\) を用いて表せ.\n\\end{enumerate}",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_mobius_polynomial_fixed_point",
+      "answerTex": "\\(\\left(C_{0},k\\right)=\\left(10,\\;- 2 \\left(-1 + \\cos{\\left(\\frac{\\pi}{11} \\right)}\\right) \\left(- 4 \\cos{\\left(\\frac{\\pi}{11} \\right)} - 1 + 4 \\cos^{2}{\\left(\\frac{\\pi}{11} \\right)} + 8 \\cos^{3}{\\left(\\frac{\\pi}{11} \\right)}\\right)\\right)\\)",
+      "solutionTex": "\\textbf{1.} d=5 とし、P(S)=S\\textasciicircum{}d f(1-1/S) を展開すると P(S)=11*S**5 - 110*S**4 + 308*S**3 - 352*S**2 + 176*S - 32 となる。\n\n\\textbf{2.} P(S)=0 を最高次係数 11 で割って S について解くと、S=g(S), g(S)=(110*S**4 - 308*S**3 + 352*S**2 - 176*S + 32)/(11*S**4) を得る。従って C\\_0=10 である。\n\n\\textbf{3.} c=cos(pi/11) と置けば alpha=2c\\textasciicircum{}2-1 である。c の最小多項式 32*c**5 - 16*c**4 - 32*c**3 + 12*c**2 + 6*c - 1 で f(2c\\textasciicircum{}2-1) を割った余りは0なので、根の対応は厳密に再生される。\n\n\\textbf{4.} g'(1/(1-alpha)) を同じ商環で簡約すると -2*(c - 1)*(8*c**3 + 4*c**2 - 4*c - 1) となる。最小多項式で割った余りを証明書として保存した。\n\n\\textbf{5.} この代数的数の符号を厳密判定して絶対値を取ると k=-2*(-1 + cos(pi/11))*(-4*cos(pi/11) - 1 + 4*cos(pi/11)**2 + 8*cos(pi/11)**3) となる。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-018",
+        "method": "solve.structural_theorem.structural_theorem_mobius_polynomial_fixed_point"
+      }
+    },
+    {
+      "id": "fullproblem-019",
+      "ordinal": 19,
+      "label": "問題19",
+      "statement": "$n\\ge3$とする.モニックな有理数係数$(n+1)$次多項式$y=f(x)$の極値点は正$n$角形の頂点をなさないことを示せ．",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_rational_polynomial_regular_polygon_extrema_impossible",
+      "answerTex": "そのような多項式は存在しない。",
+      "solutionTex": "\\textbf{1.} 反対に、極値点が正 \\(n\\) 角形の全頂点をなすと仮定する。グラフ上の相異なる点なので横座標は相異なる。中心を \\((h,v)\\)、外接円半径を \\(R>0\\)、\\(\\phi_k=\\theta+2\\pi k/n\\) として、\\((x_k,y_k)=(h+R\\cos\\phi_k,v+R\\sin\\phi_k)\\) と書ける。\n\n\\textbf{2.} \\(f\\) はモニックな \\(n+1\\) 次式で、これら \\(n\\) 個の横座標はすべて \\(f'\\) の零点だから、\\[f'(x)=(n+1)P(x),\\qquad P(x)=2^{1-n}R^n\\left\\{T_n\\!\\left(\\frac{x-h}{R}\\right)-\\cos(n\\theta)\\right\\}.\\]これは正多角形の \\(n\\) 個の横座標を一つの Chebyshev ファイバーへ縮約した式である。\n\n\\textbf{3.} \\(P\\in\\mathbb Q[x]\\) である。上式の \\(x^{n-1},x^{n-2}\\) の係数はそれぞれ \\(-nh\\)、\\(\\binom n2h^2-nR^2/4\\) なので、\\[h\\in\\mathbb Q,\\qquad R^2\\in\\mathbb Q.\\]\n\n\\textbf{4.} \\(u=(x-h)/R,\\ c=\\cos(n\\theta)\\) とする。\\(\\int T_n(u)\\,du=T_{n+1}(u)/(2(n+1))-T_{n-1}(u)/(2(n-1))\\)を用いて各 \\(u_k=\\cos\\phi_k\\) で評価すると、ある定数 \\(C\\) と\\(K=(n+1)2^{1-n}R^{n+1}>0\\) により\\[f(x_k)=C-\\frac{K}{n^2-1}\\{n^2c\\cos\\phi_k+n\\sin(n\\theta)\\sin\\phi_k\\}.\\]\n\n\\textbf{5.} \\(n\\ge3\\) では、頂点上の三つのベクトル\\(1,\\cos\\phi_k,\\sin\\phi_k\\) は一次独立である。上式が \\(y_k=v+R\\sin\\phi_k\\) と全ての \\(k\\) で一致するには\\(\\cos(n\\theta)=0\\) が必要であり、符号も比較すると\\(\\sin(n\\theta)=-1\\) である。さらに\\[R^n=\\frac{2^{n-1}(n-1)}{n}.\\]\n\n\\textbf{6.} 最後の式は \\(R^2\\in\\mathbb Q\\) と両立しない。\\(n\\) が奇数なら \\(R\\in\\mathbb Q\\) であり、素数 \\(p\\mid n\\) に対する右辺の \\(p\\)-進付値は \\(-v_p(n)\\)。これは非零で絶対値が \\(n\\) 未満なので有理数の \\(n\\) 乗の付値にならない。\\(n\\) が偶数なら\\((R^2)^{n/2}=2^{n-1}(n-1)/n\\)。\\(n\\) に奇素因子があればそれを、\\(n\\) が2の冪なら \\(n-1\\) の奇素因子を取ると、右辺の付値は非零で絶対値が \\(n/2\\) 未満となり、\\(n/2\\) の倍数ではない。いずれも矛盾する。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-019",
+        "method": "solve.structural_theorem.structural_theorem_rational_polynomial_regular_polygon_extrema_impossible"
+      }
+    },
+    {
+      "id": "fullproblem-020",
+      "ordinal": 20,
+      "label": "問題20",
+      "statement": "実数$p(\\neq0)$に対し数列 $x_n$ を \n\\[\nx_1=1,\\ x_2=2,\\ \nx_{n+2}=\\left(\\frac{x_{n+1}^p+x_n^p}{2}\\right)^{\\frac1p}\\ (n\\ge1)\n\\]\nと定める.\\\\\n(1)\\ $x_n$ を $n,p$で表せ.\\\\\n(2)\\ $\\displaystyle \\lim_{p\\to 0} \\lim_{n\\to\\infty} x_n(p)$ を求めよ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_power_mean_linearized_recurrence",
+      "answerTex": "\\[x_n=\\left\\{\\frac{1+2^{p+1}}3+\\frac{2(1-2^p)}3\\left(-\\frac12\\right)^{n-1}\\right\\}^{1/p}.\\]\\[\\lim_{p\\to0}\\lim_{n\\to\\infty}x_n(p)=2^{2/3}.\\]",
+      "solutionTex": "\\textbf{1.} 全ての項は正である。そこで \\(y_n=x_n^p\\) と置くと、非線形なべき平均漸化式は \\[2y_{n+2}=y_{n+1}+y_n\\] へ可逆に変換される。\n\n\\textbf{2.} 特性方程式は \\(2\\lambda^2-\\lambda-1=(\\lambda-1)(2\\lambda+1)\\) である。従って \\[y_n=\\frac{x_1^p+2x_2^p}{3}+\\frac{2(x_1^p-x_2^p)}3\\left(-\\frac12\\right)^{n-1}.\\] 初期値と漸化式への代入残差はいずれも0である。正の \\(p\\) 乗根を取れば \\(x_n\\) の表示を得る。\n\n\\textbf{3.} \\(n\\to\\infty\\) では安定モード \\((-1/2)^{n-1}\\) が消えるため、\\[\\lim_{n\\to\\infty}x_n(p)=\\left(\\frac{x_1^p+2x_2^p}{3}\\right)^{1/p}.\\]\n\n\\textbf{4.} 最後に対数を取る。\\[\\lim_{p\\to0}\\frac1p\\log\\frac{x_1^p+2x_2^p}{3}=\\left.\\frac{d}{dp}\\log\\frac{x_1^p+2x_2^p}{3}\\right|_{p=0}=\\frac13\\log x_1+\\frac23\\log x_2.\\] よって極限は \\(x_1^{1/3}x_2^{2/3}\\)、特に \\(x_1=1,x_2=2\\) では \\(2^{2/3}\\) である。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-020",
+        "method": "solve.structural_theorem.structural_theorem_power_mean_linearized_recurrence"
+      }
+    },
+    {
+      "id": "fullproblem-021",
+      "ordinal": 21,
+      "label": "問題21",
+      "statement": "座標平面上の格子点集合 $\\{(x,y) \\in \\mathbb{Z}^2 \\mid 1 \\le x, y \\le 3n\\}$ を要素数が等しい三つの部分集合に分ける．\n各部分集合に対し回帰直線を一つずつ定めるとき，\nこれら三直線で囲まれた三角形の面積の最大値を求めよ．",
+      "status": "unresolved",
+      "familyId": null,
+      "answerTex": null,
+      "solutionTex": null,
+      "certificate": null
+    },
+    {
+      "id": "fullproblem-022",
+      "ordinal": 22,
+      "label": "問題22",
+      "statement": "$\\displaystyle \\sum_{p:素数}\\dfrac{1}{p^2}<\\frac12$を示せ.",
+      "status": "verified",
+      "familyId": "solve.number_theory.prime_structure_bound_prime_reciprocal_power_series",
+      "answerTex": "\\(\\displaystyle\\sum_{p\\ \\mathrm{prime}}p^{-2}<\\frac{1}{2}\\)",
+      "solutionTex": "\\textbf{1.} 素数を \\(2\\) と奇素数に分け，奇素数全体を \\(3\\) 以上の奇数全体へ包含する。\n\n\\textbf{2.} したがって和は \\(2^{-2}+\\sum_{m\\ge3,\\ m\\ \\mathrm{odd}}m^{-2}=- \\frac{3}{4} + \\frac{\\pi^{2}}{8}\\) より小さい。\n\n\\textbf{3.} \\(\\pi<22/7\\) を代入すると上界は \\(\\frac{95}{196}<\\frac{1}{2}\\) である。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-022",
+        "method": "solve.number_theory.prime_structure_bound_prime_reciprocal_power_series"
+      }
+    },
+    {
+      "id": "fullproblem-023",
+      "ordinal": 23,
+      "label": "問題23",
+      "statement": "$n$を自然数とする.\\ $\\cos\\dfrac{\\pi}{n},\\cos\\dfrac{2\\pi}{n},\\cos\\dfrac{3\\pi}{n} $を三辺とする三角形の面積の最小値を求めよ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_trigonometric_side_area_extremum",
+      "answerTex": "\\(\\frac{\\sqrt{2} \\sqrt{-1 + 2 \\sqrt{\\frac{\\sqrt{2}}{4} + \\frac{1}{2}}} \\sqrt{1 + 2 \\sqrt{\\frac{\\sqrt{2}}{4} + \\frac{1}{2}}} \\sqrt{- 4 \\sqrt{\\frac{\\sqrt{2}}{4} + \\frac{1}{2}} + \\frac{\\sqrt{2}}{2} + 4 \\left(\\frac{\\sqrt{2}}{4} + \\frac{1}{2}\\right)^{\\frac{3}{2}}} \\sqrt{- 4 \\left(\\frac{\\sqrt{2}}{4} + \\frac{1}{2}\\right)^{\\frac{3}{2}} + \\frac{\\sqrt{2}}{2} + 4 \\sqrt{\\frac{\\sqrt{2}}{4} + \\frac{1}{2}}}}{8}\\)",
+      "solutionTex": "\\textbf{1.} c=cos(pi/n) と置き、Heron式の面積平方をcの多項式へ変換した。\n\n\\textbf{2.} n=7では三角不等式が破れ、n=8から成立する。\n\n\\textbf{3.} n>=8ではc\\textasciicircum{}2>5/6であり、導関数の残余四次式はSturm列により根を持たず負である。\n\n\\textbf{4.} 従って面積はnとともに増加し、最小はn=8である。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-023",
+        "method": "solve.structural_theorem.structural_theorem_trigonometric_side_area_extremum"
+      }
+    },
+    {
+      "id": "fullproblem-024",
+      "ordinal": 24,
+      "label": "問題24",
+      "statement": "$n$を自然数とする.\\ $\\sin\\dfrac{\\pi}{n},\\sin\\dfrac{2\\pi}{n},\\sin\\dfrac{3\\pi}{n} $を三辺とする三角形の面積の最大値を求めよ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_trigonometric_side_area_extremum",
+      "answerTex": "\\(\\sqrt{- \\left(- \\frac{3}{4} + \\frac{\\sqrt{5}}{4}\\right)^{3}} \\left(- \\frac{1}{2} + \\frac{\\sqrt{5}}{2}\\right) \\left(\\frac{1}{4} + \\frac{\\sqrt{5}}{4}\\right) \\left(\\frac{\\sqrt{5}}{4} + \\frac{5}{4}\\right)^{\\frac{3}{2}} \\left(\\frac{\\sqrt{5}}{2} + \\frac{3}{2}\\right)\\)",
+      "solutionTex": "\\textbf{1.} c=cos(pi/n) と置くと面積平方はc\\textasciicircum{}2(1-c\\textasciicircum{}2)\\textasciicircum{}3(4c\\textasciicircum{}2-1)\\textasciicircum{}2になる。\n\n\\textbf{2.} n>=5ではc\\textasciicircum{}2>=cos\\textasciicircum{}2(pi/5)>3/5で、導関数の符号を決める24c\\textasciicircum{}4-16c\\textasciicircum{}2+1は正である。\n\n\\textbf{3.} 従ってn>=5では面積が減少する。n=4との厳密比較でn=5の方が大きい。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-024",
+        "method": "solve.structural_theorem.structural_theorem_trigonometric_side_area_extremum"
+      }
+    },
+    {
+      "id": "fullproblem-025",
+      "ordinal": 25,
+      "label": "問題25",
+      "statement": "座標平面上の格子点集合 $\\{(x,y) \\in \\mathbb{Z}^2 \\mid 1 \\le x, y \\le 2n\\}$ を要素数が等しい二つの部分集合に分ける．\n各部分集合に対し回帰直線を一つずつ定め、\nこれら二直線の成す角が$ \\dfrac{\\pi}{3} $になるべく近くなるように点を選ぶ.\\\\\n(1) $n=2$のとき、$ \\sqrt{3} $を有理近似せよ.\\\\\n(2) $n=3$のとき、$ \\sqrt{3} $を有理近似せよ.\\\\",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_balanced_grid_regression_angle_approximation",
+      "answerTex": "\\(\\text{(1) }\\frac{7016}{4053}\\qquad \\text{(2) }\\frac{627}{362}\\)",
+      "solutionTex": "\\textbf{1.} 一方の部分集合を \\(S\\)、その要素数を \\(k\\) とし、\\(X=\\sum_Sx,\\ Y=\\sum_Sy,\\ Q=\\sum_Sx^2,\\ C=\\sum_Sxy\\) とおく。\\(y\\) を \\(x\\) で回帰した直線の傾きは\\[b_S=\\frac{kC-XY}{kQ-X^2}\\]である。補集合の5統計量は全格子の統計量との差で決まる。従って個々の点集合ではなく \\((k,X,Y,Q,C)\\) だけを調べれば十分である。\n\n\\textbf{2.} 一つの \\(x\\) 列から \\(c\\) 個の \\(y\\in\\{1,\\ldots,m\\}\\) を選ぶと、\\(\\sum y\\) は\\[c(c+1)/2,\\ c(c+1)/2+1,\\ldots,c(2m-c+1)/2\\]の全整数を取る。よって列ごとの選択は、個々の部分集合ではなく\\((c,\\sum y,x\\sum y)\\) の有限状態へ正確に縮約できる。\n\n\\textbf{3.} さらに、二部分集合の交換、格子の左右反転、上下反転は二直線の鋭角を変えないので同じ軌道を一度だけ調べる。二直線の傾きを\\(b_1,b_2\\) とすると\\[\\tan\\theta=\\left|\\frac{b_1-b_2}{1+b_1b_2}\\right|\\]であり、全比較は有理数の整数演算だけで行える。\n\n\\textbf{4.} \\((1)\\) \\(m=4\\) では、\\(\\binom{16}{8}=12870\\) 個の部分集合を直接調べる代わりに、4629 個の十分統計状態へ縮約し、対称性代表 827 個を厳密走査した。\\(\\sqrt3\\) の直下は \\(\\frac{7016}{4053}\\)、直上は \\(\\frac{1672}{961}\\) である。\n\n\\textbf{5.} 角度誤差の比較には、小さい方を \\(l\\)、大きい方を \\(u\\) として\\[\\arctan l+\\arctan u\\ge\\frac{2\\pi}{3}\\iff\\left(\\frac{l+u}{lu-1}\\right)^2\\le3\\]を用いる。実際、\\[\\frac{l+u}{lu-1}=\\frac{13518992}{7835819},\\qquad\\left(\\frac{l+u}{lu-1}\\right)^2-3=-\\frac{1437033506219}{61400059400761}<0.\\]従って選ばれる近似は \\(\\frac{7016}{4053}\\) である。\n\n\\textbf{6.} 実現可能性も保存されている。例えば各列で選ぶ行の集合\\(S_x=\\{y:(x,y)\\in S_1\\}\\) を\\[\\begin{array}{c|cccc}x&1&2&3&4\\\\\\hline S_x&\\{1\\}&\\{1,2,3\\}&\\{1,3\\}&\\{3,4\\}\\end{array}\\]と取ると、二本の回帰直線の傾きは\\(46/63\\) と\\(-42/95\\) であり、上の正接値を正確に再生する。\n\n\\textbf{7.} \\((2)\\) \\(m=6\\) では、\\(\\binom{36}{18}=9075135300\\) 個の部分集合を直接調べる代わりに、9243322 個の十分統計状態へ縮約し、対称性代表 1204405 個を厳密走査した。\\(\\sqrt3\\) の直下は \\(\\frac{627}{362}\\)、直上は \\(\\frac{35784}{20659}\\) である。\n\n\\textbf{8.} 角度誤差の比較には、小さい方を \\(l\\)、大きい方を \\(u\\) として\\[\\arctan l+\\arctan u\\ge\\frac{2\\pi}{3}\\iff\\left(\\frac{l+u}{lu-1}\\right)^2\\le3\\]を用いる。実際、\\[\\frac{l+u}{lu-1}=\\frac{25907001}{14958010},\\qquad\\left(\\frac{l+u}{lu-1}\\right)^2-3=-\\frac{53488666299}{223742063160100}<0.\\]従って選ばれる近似は \\(\\frac{627}{362}\\) である。\n\n\\textbf{9.} 実現可能性も保存されている。例えば各列で選ぶ行の集合\\(S_x=\\{y:(x,y)\\in S_2\\}\\) を\\[\\begin{array}{c|cccccc}x&1&2&3&4&5&6\\\\\\hline S_x&\\{6\\}&\\{3,4,5,6\\}&\\{2,4,5,6\\}&\\{1,2,3,4\\}&\\{1\\}&\\{1,2,3,4\\}\\end{array}\\]と取ると、二本の回帰直線の傾きは\\(-2/3\\) と\\(89/180\\) であり、上の正接値を正確に再生する。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-025",
+        "method": "solve.structural_theorem.structural_theorem_balanced_grid_regression_angle_approximation"
+      }
+    },
+    {
+      "id": "fullproblem-026",
+      "ordinal": 26,
+      "label": "問題26",
+      "statement": "$0<x<2$ とする．指数積分を\n\\[\n\\mathrm{Ei}(x)=\\lim_{s\\to\\infty}\\int_x^s \\frac{e^{-t}}{t}\\,dt\n\\]\nと定める.\\\\\n(1)\\quad $e^x$ と $\\dfrac{2+x}{2-x}$ の大小を比較せよ.　\\\\\n(2)\\quad $\\displaystyle \\ln\\frac{2+x}{2-x}$ と $\\displaystyle \\frac{2+\\ln x}{2-\\ln x}$ の大小を比較せよ.\\\\\n(3)\\quad $\\mathrm{Ei}(2)$ と $\\dfrac{3}{8e^2}$ の大小を比較せよ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_cayley_exponential_integral_comparisons",
+      "answerTex": "\\(\\text{(1) }e^x<\\dfrac{2+x}{2-x},\\quad\\text{(2) }\\ln\\dfrac{2+x}{2-x}>\\dfrac{2+\\ln x}{2-\\ln x},\\quad\\text{(3) }\\mathrm{Ei}(2)<\\dfrac{3}{8e^2}\\)",
+      "solutionTex": "\\textbf{1.} \\(T(u)=(2+u)/(2-u)\\)、\\(H(u)=\\log T(u)-u\\) とおく。直接微分すると\\[H(0)=0,\\qquad H'(u)=\\frac{u^2}{4-u^2}.\\]従って \\(0<x<2\\) では \\(H(x)>0\\)、すなわち\\[e^x<T(x)=\\frac{2+x}{2-x}.\\]\n\n\\textbf{2.} (2) では \\(y=\\log x\\) とおけば \\(-\\infty<y<\\log2\\) であり、示すべき式は \\(\\log T(e^y)>T(y)\\) となる。\\(y\\le-2\\) なら \\(T(y)\\le0<\\log T(e^y)\\)。\\(-2<y<0\\) なら \\(H(y)<0\\) と (1) より\\[T(y)<e^y<\\log T(e^y).\\]\\(y=0\\) では \\(\\log3>1\\) である。\n\n\\textbf{3.} 残る \\(0<y<\\log2\\) を考える。Cayley 変換の正項展開から\\[H(e^y)>\\frac{e^{3y}}{12}>\\frac1{12}.\\]一方、指数級数との係数比較により\\[T(y)-e^y<\\frac{y^3}{12}+\\frac{y^4}{12}+\\frac{y^5}{16(1-y/2)}.\\]\\(e^{7/10}>1+7/10+(7/10)^2/2+(7/10)^3/6>2\\) だから\\(\\log2<7/10\\)。右辺は増加関数なので\\[T(y)-e^y<\\frac{202027}{3120000}<\\frac1{12}<H(e^y).\\]従ってこの場合にも \\(\\log T(e^y)>T(y)\\) である。\n\n\\textbf{4.} (3) は部分積分により\\[\\operatorname{Ei}(2)=\\frac{e^{-2}}2-\\int_2^\\infty\\frac{e^{-t}}{t^2}\\,dt.\\]\\(G(t)=t-2-2\\log(t/2)\\) とおくと、\\(t\\ge2\\) で\\(G(2)=0\\)、\\(G'(t)=1-2/t\\ge0\\) である。従って\\[\\frac1{t^2}\\ge\\frac{e^{-(t-2)}}4\\]であり、\\(t>2\\) では狭義不等号となる。\n\n\\textbf{5.} よって\\[\\int_2^\\infty\\frac{e^{-t}}{t^2}\\,dt>\\frac14\\int_2^\\infty e^{-t}e^{-(t-2)}\\,dt=\\frac{e^{-2}}8.\\]以上から\\[\\operatorname{Ei}(2)<e^{-2}\\left(\\frac12-\\frac18\\right)=\\frac{3}{8e^2}.\\]",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-026",
+        "method": "solve.structural_theorem.structural_theorem_cayley_exponential_integral_comparisons"
+      }
+    },
+    {
+      "id": "fullproblem-027",
+      "ordinal": 27,
+      "label": "問題27",
+      "statement": "一辺の長さが $1$ の正六角形の $6$ 頂点から,1点飛ばしずつ 3 頂点を選ぶ.  \\\\    \n    このような選び方は $2$ 通り存在しているが、そのどちらも考える.  \\\\\n    選んだ $3$ 頂点をそれぞれ通るように、さらに未選出の $3$ 頂点のうちの $1$ つは,\\\\\n    二次関数のグラフの頂点であるようにしてつくられた二次関数のグラフ\\\\\n    $Q_1, Q_2, Q_3, Q_4, Q_5, Q_6$ によって囲まれた領域の面積を求めよ.\\\\\n    ただし、この「二次関数のグラフ」とは「放物線」のことをさす。",
+      "status": "unresolved",
+      "familyId": null,
+      "answerTex": null,
+      "solutionTex": null,
+      "certificate": null
+    },
+    {
+      "id": "fullproblem-028",
+      "ordinal": 28,
+      "label": "問題28",
+      "statement": "$\\displaystyle\\int_0^{\\frac{\\pi}2}\\{\\cos(\\cos x+\\sin x)+\\sin(\\cos x+\\sin x)\\}\\,dx<2$\nを示せ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_nested_sine_cosine_integral_bound",
+      "answerTex": "\\(\\displaystyle \\int_0^{\\pi/2}\\{\\cos(\\cos x+\\sin x)+\\sin(\\cos x+\\sin x)\\}\\,dx<2.\\)",
+      "solutionTex": "\\textbf{1.} \\(h(t)=\\sin t+\\cos t\\)、\\(u(x)=\\sin x+\\cos x\\) と置く。\\(1\\le u(x)\\le\\sqrt2\\) であり、\\[\\frac2\\pi\\int_0^{\\pi/2}u(x)\\,dx=\\frac4\\pi.\\] また、この範囲では \\(h''(t)=-h(t)<0\\) である。従って Jensen の不等式から \\[\\frac2\\pi\\int_0^{\\pi/2}h(u(x))\\,dx\\le h\\!\\left(\\frac4\\pi\\right).\\]\n\n\\textbf{2.} ここで \\(d=\\pi/2-4/\\pi\\) と置く。\\(3<\\pi<22/7\\) より \\[0<d<\\frac{23}{77}<\\frac3{10}.\\] これは補角が第1象限にあるという部分で、\\[h\\!\\left(\\frac4\\pi\\right)=\\cos d+\\sin d\\] と書ける。\n\n\\textbf{3.} \\(0<d<3/10\\) に対し、\\(\\sin d<d\\) かつ交代級数評価から \\[\\cos d<1-\\frac{d^2}{2}+\\frac{d^4}{24}<1-\\frac{d^2}{3}.\\] よって \\[h\\!\\left(\\frac4\\pi\\right)<1+d-\\frac{d^2}{3}.\\]\n\n\\textbf{4.} 関数 \\(1+2d-d^2/3\\) はこの区間で増加するので \\[1+2d-\\frac{d^2}{3}<1+\\frac35-\\frac3{100}=\\frac{157}{100}<\\frac\\pi2,\\] ただし最後は \\(\\pi>333/106>157/50\\) を用いた。従って \\(h(4/\\pi)<\\pi/2-d=4/\\pi\\) である。Jensen の評価へ戻すと、求める積分は厳密に \\(2\\) 未満となる。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-028",
+        "method": "solve.structural_theorem.structural_theorem_nested_sine_cosine_integral_bound"
+      }
+    },
+    {
+      "id": "fullproblem-029",
+      "ordinal": 29,
+      "label": "問題29",
+      "statement": "$n\\in \\mathbb{N}$に対して,\\ $f_1(x)=\\cos x+\\sin x,\\ f_{n+1}(x)=\\cos \\{f_n(x)\\} +\\sin \\{f_n(x)\\}$とする.\\\\\n\\[\n\\displaystyle\\int_0^{\\frac{\\pi}2}f_n(x)dx\\le 2\n\\]\nを示せ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_sine_cosine_iteration_integral_bound",
+      "answerTex": "\\(\\begin{aligned}&\\text{(1) 与えられた接線上界が成立},\\qquad\\text{(2) }\\alpha<4/\\pi,\\\\&\\text{(3) 与えられた二段上界が成立},\\qquad\\text{(4) }\\displaystyle\\int_0^{\\pi/2}f_n(x)\\,dx\\le2.\\end{aligned}\\)",
+      "solutionTex": "\\textbf{1.} \\(h(t)=\\sin t+\\cos t\\) とおく。\\(1\\le t\\le\\sqrt2\\) では\\(1<h(t)<\\sqrt2\\) だから、この区間は反復で不変である。また \\([\\pi/3,\\pi/2]\\) では \\(h''=-h<0\\)。従って\\(a=5\\pi/12\\) における接線が上界となり、\\[h(x)\\le h(a)+h'(a)(x-a)=\\frac{\\sqrt6}{2}-\\frac{\\sqrt2}{2}\\left(x-\\frac{5\\pi}{12}\\right).\\]\n\n\\textbf{2.} \\(g(x)=x-h(x)\\) とおくと、\\(g(0)=-1\\)、\\(g(\\pi/2)=\\pi/2-1>0\\)、さらに\\(g'(x)=1-\\cos x+\\sin x>0\\ (0<x\\le\\pi/2)\\) である。従って零点 \\(\\alpha\\) は一意である。上の接線へ \\(x=4/\\pi\\) を代入し、\\(333/106<\\pi<355/113\\)、\\(140/99<\\sqrt2<99/70\\)、\\(265/153<\\sqrt3<97/56\\) を用いると、\\[\\frac4\\pi-h\\!\\left(\\frac4\\pi\\right)>\\frac{7259089}{314501600}>\\frac1{1000}.\\]ゆえに \\(g(4/\\pi)>0\\) であり、\\(\\alpha<4/\\pi\\) である。\n\n\\textbf{3.} \\(H=h\\circ h\\)、\\(c=4/\\pi\\)、\\(\\lambda=(\\sqrt3-1)/2\\)、\\(D(t)=c+\\lambda(t-c)-H(t)\\) とおく。交代 Taylor 評価を12次まで有理数で行うと\\[D(1)>\\frac1{400},\\quad D(\\sqrt2)>\\frac1{3000},\\quad D'(1)>\\frac18,\\quad D'(\\sqrt2)<-\\frac1{22}.\\]これら四つの残差は証明書内で厳密有理数として再生される。\n\n\\textbf{4.} \\(h'=\\cos-\\sin<0\\)、\\(h>0\\) を用いて直接微分すると\\[H'''(t)=3h(H_0)h(t)h'(t)-h'(H_0)h'(t)\\{h'(t)^2+1\\}<0,\\qquad H_0=h(t).\\]従って \\(D'\\) は凸である。上の端点符号から \\(D\\) は内部に局所最小値を持たず、最小値は端点で取る。よって \\(D(t)>0\\)、すなわち\\[H(t)\\le\\frac4\\pi+\\frac{\\sqrt3-1}{2}\\left(t-\\frac4\\pi\\right)\\qquad(1\\le t\\le\\sqrt2).\\]\n\n\\textbf{5.} \\(I_n=\\int_0^{\\pi/2}f_n(x)\\,dx\\) とおく。\\(I_1=2\\) である。また \\(h\\) の凹性と Jensen の不等式、(2) より\\[I_2\\le\\frac\\pi2h\\left(\\frac2\\pi I_1\\right)=\\frac\\pi2h(4/\\pi)<2.\\](3) を \\(t=f_n(x)\\) に適用して積分すると\\[I_{n+2}\\le2+\\frac{\\sqrt3-1}{2}(I_n-2).\\]係数は \\(0<(\\sqrt3-1)/2<1\\) なので、\\(I_1\\le2\\)、\\(I_2<2\\) から偶数列・奇数列それぞれの帰納法により \\(I_n\\le2\\) が全ての \\(n\\) で従う。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-029",
+        "method": "solve.structural_theorem.structural_theorem_sine_cosine_iteration_integral_bound"
+      }
+    },
+    {
+      "id": "fullproblem-030",
+      "ordinal": 30,
+      "label": "問題30",
+      "statement": "区間 $I=\\left[0,\\dfrac{\\pi}{4}\\right]$ において，関数列 $\\{f_n(x)\\}$ を次のように定義する。\n\\[\nf_1(x)=0,\n\\qquad\nf_{n+1}(x)=\\int_{0}^{x}\\left\\{1+\\bigl(f_n(t)\\bigr)^2\\right\\}\\,dt\n\\quad (n=1,2,3,\\ldots).\n\\]\n(1)\n\\ $f_2(x),\\,f_3(x)$ を求めよ.\\\\\n(2)\n\\ すべての自然数 $n$ と区間 $I$ 内のすべての $x$ において\n\\[\n0\\le f_n(x)\\le \\tan x\n\\]\nが成り立つこと示せ.\\\\\n(3)\n\\ すべての自然数 $n$ と区間 $I$ 内のすべての $x$ において，\n\\[\nf_{n+1}(x)-f_n(x)\\ge 0\n\\]\nが成り立つことを示せ.\\\\\n(4)\n\\ 区間 $I$ における真の関数との差を\n\\[\ne_n(x)=\\tan x-f_n(x)\n\\]\nとおく.すべての自然数 $n$ と区間 $I$ 内のすべての $x$ において，次の不等式が成り立つことを示せ.\\\\\n\\[\n0\\le e_{n+1}(x)\\le 2\\int_{0}^{x} e_n(t)\\,dt\n\\]\nさらに，この結果を用いて区間 $I$ において\n\\[\n\\lim_{n\\to\\infty} f_n(x)=\\tan x\n\\]\nが成り立つことを示せ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_picard_riccati_iteration",
+      "answerTex": "\\(\\text{f\\_2=x, f\\_3=x+x\\textasciicircum{}3/3, and f\\_n increases pointwise to tan(x) on [0,pi/4]}\\)",
+      "solutionTex": "\\textbf{1.} 積分作用素T(f)(x)=integral\\_0\\textasciicircum{}x(1+f\\textasciicircum{}2)を定義し、最初の二反復を計算した。\n\n\\textbf{2.} 0<=f<=tanなら単調性により0<=T(f)<=T(tan)=tanである。\n\n\\textbf{3.} 差の因数分解tan\\textasciicircum{}2-f\\textasciicircum{}2=(tan-f)(tan+f)とtan+f<=2から誤差積分不等式を得る。\n\n\\textbf{4.} 反復すると誤差は2\\textasciicircum{}n x\\textasciicircum{}n/n!で抑えられ一様に0へ収束する。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-030",
+        "method": "solve.structural_theorem.structural_theorem_picard_riccati_iteration"
+      }
+    },
+    {
+      "id": "fullproblem-031",
+      "ordinal": 31,
+      "label": "問題31",
+      "statement": "$n$ を自然数とする。区間 $[-1,1]$ 上の連続関数 $f(x)$ が\n\\[\nf(x)=1-n^2\\int_x^1 \\frac{\\cInv x-\\cInv t}{\\sqrt{1-t^2}}f(t)dt\n\\qquad(-1\\le x\\le 1)\n\\]\nを満たすとする.\n\n\\begin{enumerate}\n\\item $(-1,1)$ において\n\\[\n(1-x^2)f''(x)-x f'(x)+n^2 f(x)=0\n\\]\nを示せ.\n\\item 積分方程式を満たす $f(x)$ を求めよ.\n\\item 以降 $n=p$ を $3$ 以上の奇素数とし，$\\alpha=\\cos\\frac{2\\pi}{p}$ とする.\n問2で得た $f(x)$ について\n\\[\nf(x)-1=2^{p-1}(x-1)\\{P(x)\\}^2\n\\]\nと因数分解できることを示せ.\n\\item  $f''(\\alpha)$ を求め，さらに\n$|P'(\\alpha)|$ を $p$ のみで表せ.\n\\end{enumerate}",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_chebyshev_integral_equation",
+      "answerTex": "\\(f(x)=T_n(x).\\) 奇素数 \\(p\\) に対して \\(T_p(x)-1=2^{p-1}(x-1)P(x)^2\\) であり、\\[f''(\\alpha)=-\\frac{p^2}{\\sin^2(2\\pi/p)},\\qquad |P'(\\alpha)|=\\frac{p}{2^{(p+3)/2}\\sin^2(\\pi/p)\\cos(\\pi/p)}.\\]",
+      "solutionTex": "\\textbf{1.} 積分項を \\(A(x)\\) とおく。下端では核が0なのでLeibniz則から \\[f'(x)=\\frac{n^2}{\\sqrt{1-x^2}}\\int_x^1\\frac{f(t)}{\\sqrt{1-t^2}}\\,dt.\\]従って \\(\\sqrt{1-x^2}f'(x)\\) をもう一度微分すれば \\[(1-x^2)f''(x)-xf'(x)+n^2f(x)=0\\] を得る。\n\n\\textbf{2.} \\(x=\\cos\\theta\\), \\(u(\\theta)=f(\\cos\\theta)\\) と置くと \\(u''+n^2u=0\\) である。元の積分方程式から \\(f(1)=1\\)、さらに上の一階微分式から \\(u'(0)=0\\) である。よって \\(u(\\theta)=\\cos n\\theta\\)、すなわち \\(f(x)=T_n(x)\\) である。この関数を一階微分式へ戻すと積分定数も一致するため、逆向きも成立する。\n\n\\textbf{3.} \\(p\\) を奇素数とする。\\(T_p(x)=1\\) の根は \\(x=1\\) と \\(\\alpha_k=\\cos(2\\pi k/p)\\ (1\\le k\\le(p-1)/2)\\) である。\\(x=1\\) は単根、各 \\(\\alpha_k\\) は二重根で、\\(T_p\\) の最高次係数は \\(2^{p-1}\\) だから \\[T_p(x)-1=2^{p-1}(x-1)\\left\\{\\prod_{k=1}^{(p-1)/2}(x-\\alpha_k)\\right\\}^2.\\]従って \\(P(x)=\\prod_{k=1}^{(p-1)/2}(x-\\alpha_k)\\) と取れる。\n\n\\textbf{4.} \\(\\alpha=\\cos(2\\pi/p)\\) では \\(T_p(\\alpha)=1\\)、\\(T_p'(\\alpha)=0\\) である。微分方程式へ代入して \\[f''(\\alpha)=-\\frac{p^2}{1-\\alpha^2}=-\\frac{p^2}{\\sin^2(2\\pi/p)}.\\]\n\n\\textbf{5.} \\(x=\\alpha\\) の二次係数を平方因子分解の両辺で比較すると \\[\\frac12f''(\\alpha)=2^{p-1}(\\alpha-1)P'(\\alpha)^2.\\]ここで \\(1-\\alpha=2\\sin^2(\\pi/p)\\)、\\(\\sin(2\\pi/p)=2\\sin(\\pi/p)\\cos(\\pi/p)\\) を用いると \\[|P'(\\alpha)|=\\frac{p}{2^{(p+3)/2}\\sin^2(\\pi/p)\\cos(\\pi/p)}\\]を得る。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-031",
+        "method": "solve.structural_theorem.structural_theorem_chebyshev_integral_equation"
+      }
+    },
+    {
+      "id": "fullproblem-032",
+      "ordinal": 32,
+      "label": "問題32",
+      "statement": "$n\\in \\mathbb{N}$ に対して $x_n,\\ x_{n+1},\\ x_{n+2}$ が三角形の三辺をなし,\n正の数列 $\\{x_n\\}$ が\n\\[\nx_{n+2}=px_{n+1}+qx_n\\qquad (p,q>0)\n\\]\nを満たす．\n\\[\n\\lim_{n\\to\\infty}\\left\\lfloor \\frac{x_{n+2}}{x_n}+\\frac{x_n}{x_{n+2}} \\right\\rfloor\n\\]\nを求めよ．",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_positive_recurrence_triangle_limit",
+      "answerTex": "\\(2\\)",
+      "solutionTex": "\\textbf{1.} 特性方程式z\\textasciicircum{}2-pz-q=0は正根lambdaと負根muを持ち、p>0よりlambda>|mu|である。正数列なのでlambda項の係数は0でなく、x\\_(n+1)/x\\_nはlambdaへ収束する。\n\n\\textbf{2.} 三角不等式をx\\_nで割って極限を取ると lambda\\textasciicircum{}2<=lambda+1 かつ lambda\\textasciicircum{}2+lambda>=1、従って1/phi<=lambda<=phiである。\n\n\\textbf{3.} 端点で等号なら、対応する三角不等式の正の差は負根muの定数倍だけになる。mu<0なので符号が交互に変わるか恒等的に0となり、いずれも全ての三角形が非退化という条件に反する。\n\n\\textbf{4.} 従って1/phi<lambda<phi。2<=lambda\\textasciicircum{}2+lambda\\textasciicircum{}(-2)<3なので、その床は2である。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-032",
+        "method": "solve.structural_theorem.structural_theorem_positive_recurrence_triangle_limit"
+      }
+    },
+    {
+      "id": "fullproblem-033",
+      "ordinal": 33,
+      "label": "問題33",
+      "statement": "三辺が全て素数である三角形の外接円半径は無理数であることを示せ.",
+      "status": "verified",
+      "familyId": "solve.number_theory.prime_structure_prove_prime_triangle_circumradius_irrational",
+      "answerTex": "\\(R\\notin\\mathbb{Q}\\)",
+      "solutionTex": "\\textbf{1.} 辺を \\(a,b,c\\)，面積を \\(\\Delta\\) とし，Heron恒等式の整数 \\(D=(4\\Delta)^2\\) を用いる。すると \\(R=abc/\\sqrt D\\) である。\n\n\\textbf{2.} 三辺が奇素数なら \\(D\\equiv3\\pmod 8\\) であり，平方数ではない。\n\n\\textbf{3.} 一辺だけが \\(2\\) なら三角不等式から他の二辺は同じ奇素数 \\(p\\) で，\\(D=16(p^2-1)\\) は平方数でない。\n\n\\textbf{4.} 二辺が \\(2\\) なら残りは \\(3\\) で \\(D=63\\)，三辺とも \\(2\\) なら \\(D=48\\) となり，いずれも平方数でない。\n\n\\textbf{5.} 全場合で \\(\\sqrt D\\) は無理数なので，\\(R=abc/\\sqrt D\\) も無理数である。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-033",
+        "method": "solve.number_theory.prime_structure_prove_prime_triangle_circumradius_irrational"
+      }
+    },
+    {
+      "id": "fullproblem-034",
+      "ordinal": 34,
+      "label": "問題34",
+      "statement": "正の整数 $m$ のうち\n\\[\nm^2-3\\,\\biggl\\lfloor \\frac{m}{\\sqrt3} \\biggr\\rfloor^2=1\n\\]\nを満たすものを $1=m_0<m_1<m_2<\\cdots$ と並べ，\n\\[\nP_k=\\left(m_k,\\;\\biggl\\lfloor \\frac{m_k}{\\sqrt3} \\biggr\\rfloor \\right)\n\\]\nとおく.双曲線\n\\[\nx^2-3y^2=1\\quad (y\\ge 0)\n\\]\nの弧 $P_kP_{k+1}$ と線分 $P_kP_{k+1}$ に囲まれる面積を $S_k$ とする.\n$S_k$ を求めよ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_pell_hyperbola_segment_area",
+      "answerTex": "\\(- \\frac{\\sqrt{3} \\log{\\left(\\sqrt{3} + 2 \\right)}}{6} + \\frac{1}{2}\\)",
+      "solutionTex": "\\textbf{1.} Pell解を x+y*sqrt(3)=(2+sqrt(3))\\textasciicircum{}k と媒介した。\n\n\\textbf{2.} 双曲線を (cosh u,sinh u/sqrt(3)) と書くと隣接点のパラメータ差は一定である。\n\n\\textbf{3.} Greenの公式で弧と弦の符号付き面積を計算した。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-034",
+        "method": "solve.structural_theorem.structural_theorem_pell_hyperbola_segment_area"
+      }
+    },
+    {
+      "id": "fullproblem-035",
+      "ordinal": 35,
+      "label": "問題35",
+      "statement": "$a,b,c\\in\\mathbb Z$ が\n\\[\n\\frac{ab+bc+ca}{a+b+c}+\\frac{abc}{ab+bc+ca}+\\frac{a+b+c}{abc}\\in\\mathbb Z,\\qquad \\gcd(a,b,c)=1\n\\]\nをみたしている．\\\\\nこのとき，条件を満たす組 $(a,b,c)$をすべて求めよ．\\\\\nただし$ a+b+c\\neq0,\\ ab+bc+ca\\neq0,\\ abc\\neq0$ とする．",
+      "status": "unresolved",
+      "familyId": null,
+      "answerTex": null,
+      "solutionTex": null,
+      "certificate": null
+    },
+    {
+      "id": "fullproblem-036",
+      "ordinal": 36,
+      "label": "問題36",
+      "statement": "原点を $O$，曲線 $P$ を\n\\[\n  P:\\ y = x^2\n\\]\nとする.\\\\\n$P$ を $O$ を中心として角 $\\theta$ だけ回転させてできる曲線を $Q$ とし，\n$P$ と $Q$ の $O$ 以外の交点を $R$ とする.このとき\n\\[\n  \\lim_{\\theta \\to 0} \\theta^2 \\cdot OR\n\\]\nの値を求めよ.",
+      "status": "verified",
+      "familyId": "solve.exact.limit",
+      "answerTex": "\\(0\\)",
+      "solutionTex": "\\textbf{1.} \\(\\theta\\to 0\\) における局所形を調べる。\n\n\\textbf{2.} \\(\\theta^{2} O R=O R \\theta^{2}\\) と局所展開できる。\n\n\\textbf{3.} したがって極限値は \\(0\\) である。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-036",
+        "method": "solve.exact.limit"
+      }
+    },
+    {
+      "id": "fullproblem-037",
+      "ordinal": 37,
+      "label": "問題37",
+      "statement": "原点を $O$，曲線 $P$ を\n\\[\n  P:\\ y = x^2\n\\]\nとする.\\\\\n$P$ を $O$ を中心として角 $\\theta$ だけ回転させてできる曲線を $Q$ とし，\\\\\n曲線 $P$ と $Q$ で囲まれた領域を $x$ 軸周りに回転させた体積を $V(\\theta)$とする.\n\\[\n  \\lim_{\\theta \\to 0} \\theta^5 V(\\theta)\n\\]\n の値を求めよ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_rotated_parabola_volume_limit",
+      "answerTex": "\\(\\text{両側極限は存在しない},\\qquad \\lim_{\\theta\\to0^+}\\theta^5V(\\theta)=\\frac{128 \\pi}{15},\\quad \\lim_{\\theta\\to0^-}\\theta^5V(\\theta)=- \\frac{128 \\pi}{15}\\)",
+      "solutionTex": "\\textbf{1.} P:y=x\\textasciicircum{}2 を角 theta 回転した曲線を u で媒介すると、Q=(u cos theta-u\\textasciicircum{}2 sin theta, u sin theta+u\\textasciicircum{}2 cos theta) となる。y\\_Q=x\\_Q\\textasciicircum{}2 が交点条件である。\n\n\\textbf{2.} theta>0 として u=v/theta, X=theta x, Y=theta\\textasciicircum{}2 y と吹き上げる。交点式は -v\\textasciicircum{}3(v-2) へ収束し、非零交点は単根 v=2 に収束する。Q は (X,Y)=(v-v\\textasciicircum{}2,v\\textasciicircum{}2)、P は Y=X\\textasciicircum{}2 へ収束する。\n\n\\textbf{3.} 回転体の断面を、Qの上枝 v in [1/2,2]、下枝 v in [0,1/2]、Pの内側 X in [-2,0] に分ける。各断面の半径平方を積分すると 4779/320-1/960-32/5=128/15 となる。\n\n\\textbf{4.} 従って右極限は128pi/15。負の回転は正の回転をy軸対称にしたもので、x軸回転体の体積は変わらないから V(-theta)=V(theta) である。\n\n\\textbf{5.} theta\\textasciicircum{}5 は奇関数なので左極限は -128pi/15。左右が一致せず、問題文どおりの両側極限は存在しない。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-037",
+        "method": "solve.structural_theorem.structural_theorem_rotated_parabola_volume_limit"
+      }
+    },
+    {
+      "id": "fullproblem-038",
+      "ordinal": 38,
+      "label": "問題38",
+      "statement": "$\\displaystyle \\frac{2\\pi}{5}<\\int_{0}^{\\frac{\\pi}{2}}\\frac{\\sin x}{x}dx<\\dfrac32$ を示せ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_sine_integral_rational_bounds",
+      "answerTex": "\\(\\text{2*pi/5 < integral(sin(x)/x,0,pi/2) < 3/2}\\)",
+      "solutionTex": "\\textbf{1.} sin x の交代Taylor級数を x\\textasciicircum{}5 まで上下から挟んだ。\n\n\\textbf{2.} xで割って項別積分した。下界はpi\\textasciicircum{}2<72/5、上界はpi<22/7を代入した有理数比較で厳密に閉じた。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-038",
+        "method": "solve.structural_theorem.structural_theorem_sine_integral_rational_bounds"
+      }
+    },
+    {
+      "id": "fullproblem-039",
+      "ordinal": 39,
+      "label": "問題39",
+      "statement": "$p,q,r$を三辺とする三角形と$p+q+r,pq+qr+rp,pqr$を三辺とする三角形が存在するような素数の組$(p,q,r)$を全て求めよ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_prime_elementary_symmetric_triangle",
+      "answerTex": "\\(\\text{up to permutation: (2,2,r), (2,3,r) for prime r; (2,5,5), (2,5,7), (3,3,3), (3,3,5), (3,3,7)}\\)",
+      "solutionTex": "\\textbf{1.} 基本対称式e1,e2,e3のうち、e1+e3>e2 は (p-1)(q-1)(r-1)+1>0 なので自動的に成り立つ。\n\n\\textbf{2.} 残る条件をpqrで割る。p>=5なら右辺は高々3/5+3/25<1だから、pは2または3である。\n\n\\textbf{3.} p=2,3では条件をそれぞれ長方形型の整数不等式へ因数分解し、素数q,rを有限分類する。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-039",
+        "method": "solve.structural_theorem.structural_theorem_prime_elementary_symmetric_triangle"
+      }
+    },
+    {
+      "id": "fullproblem-040",
+      "ordinal": 40,
+      "label": "問題40",
+      "statement": "1から$n$までの自然数が書かれたカードが1枚ずつあり,同時に3枚引く.\\\\\n$(1)$ カードの値が三角形の三辺となるような確率$p(n)$を求めよ.また,$\\displaystyle \\lim_{n\\to\\infty}p(n)$を求めよ.\\\\\n$(2)$ カードの値が鋭角三角形の三辺となるような確率を$q(n)$とする.$\\displaystyle \\lim_{n\\to\\infty}q(n)$を求めよ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_three_sample_triangle_probabilities",
+      "answerTex": "\\(\\text{p(n)=1-sum(c=3..n,floor((c-1)\\textasciicircum{}2/4))/C(n,3), lim p(n)=1/2; lim q(n)=1-pi/4}\\)",
+      "solutionTex": "\\textbf{1.} a<b<cと並べると非三角形はa+b<=cであり、固定したcごとの個数はfloor((c-1)\\textasciicircum{}2/4)である。\n\n\\textbf{2.} これをc=3からnまで足し、全組合せC(n,3)から引いて有限nのp(n)を得る。\n\n\\textbf{3.} n で規格化した極限領域の体積は三角形で1/12、鋭角条件で1/6-pi/24である。\n\n\\textbf{4.} 全順序領域の体積1/6で割ると各極限を得る。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-040",
+        "method": "solve.structural_theorem.structural_theorem_three_sample_triangle_probabilities"
+      }
+    },
+    {
+      "id": "fullproblem-041",
+      "ordinal": 41,
+      "label": "問題41",
+      "statement": "三角形の内接円半径を$r$,外接円半径を$R$とする.点$(r+R,rR)$がとりうる通過領域を図示せよ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_triangle_radii_symmetric_region",
+      "answerTex": "\\(\\text{\\{(x,y) | x>0, 0<y<=2*x\\textasciicircum{}2/9\\}}\\)",
+      "solutionTex": "\\textbf{1.} 三角形の半径対は R>=2r>0 を満たし、この条件は極限を含めて実現可能である。\n\n\\textbf{2.} x=R+r を固定すると y=r(x-r) であり、0<r<=x/3 だから 0<y<=2x\\textasciicircum{}2/9 となる。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-041",
+        "method": "solve.structural_theorem.structural_theorem_triangle_radii_symmetric_region"
+      }
+    },
+    {
+      "id": "fullproblem-042",
+      "ordinal": 42,
+      "label": "問題42",
+      "statement": "$\\sqrt{e^{\\pi \\sqrt{e^{\\pi \\sqrt{e^{\\pi \\cdots}}}}}} \\text{の値を求めよ.}$",
+      "status": "verified",
+      "familyId": "solve.calculus.iteration_convergence",
+      "answerTex": "\\(\\infty\\)",
+      "solutionTex": "\\textbf{1.} 有限段を \\(x_0=1\\), \\(x_{n+1}=\\exp(\\frac{\\pi}{2}x_n)\\) と表す。\n\n\\textbf{2.} \\(\\log(F(x)/x)=\\frac{\\pi x}{2} - \\log{\\left(x \\right)}\\) は \\(x=\\frac{2}{\\pi}\\) で最小となる。\n\n\\textbf{3.} その最小値は \\(1 - \\log{\\left(\\frac{2}{\\pi} \\right)}>0\\) なので，すべての \\(x>0\\) で \\(F(x)>x\\) である。\n\n\\textbf{4.} 反復列は単調増加する。有限極限を持てば固定点になるが固定点は存在しないため，無限大へ発散する。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-042",
+        "method": "solve.calculus.iteration_convergence"
+      }
+    },
+    {
+      "id": "fullproblem-043",
+      "ordinal": 43,
+      "label": "問題43",
+      "statement": "$(1) \\angle C=2\\angle A $を満たし, 三角形$ABC$の三辺全てが整数となる組を一つ求めよ. \\\\\n $(2) \\angle C=3\\angle A  $を満たし, 三角形$ABC$の三辺全てが整数となる組を一つ求めよ.\\\\\n$ (3) $全ての自然数$n$に対し, $ \\angle C=n \\angle A $を満たし, 三角形$ABC$の三辺全てが整数となる組が存在することを示せ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_rational_angle_multiple_integer_triangles",
+      "answerTex": "\\(\\text{(1) (a,b,c)=(25, 11, 30); (2) (a,b,c)=(125, 112, 195); (3) tan(A/2)=1/n and (a,b,c) proportional to (sin A,sin((n+1)A),sin(nA))}\\)",
+      "solutionTex": "\\textbf{1.} n=1は正三角形とする。n>=2ではtan(A/2)=1/nと置くと sin A=2n/(n\\textasciicircum{}2+1), cos A=(n\\textasciicircum{}2-1)/(n\\textasciicircum{}2+1) は有理数である。\n\n\\textbf{2.} A<2/nより(n+1)A<2+2/n<=3<pi。B=pi-(n+1)A, C=nAとすれば三つとも正の角でC=nAを満たす。\n\n\\textbf{3.} 正弦定理により辺を sin A, sin((n+1)A), sin(nA) に比例させる。正弦の加法漸化式から全て有理数なので、共通分母を払えば整数三角形になる。\n\n\\textbf{4.} n=2,3を同じ構成で計算すると、それぞれ(25,11,30),(125,112,195)を得る。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-043",
+        "method": "solve.structural_theorem.structural_theorem_rational_angle_multiple_integer_triangles"
+      }
+    },
+    {
+      "id": "fullproblem-044",
+      "ordinal": 44,
+      "label": "問題44",
+      "statement": "$(1)\\ e<1+\\sqrt3$を示せ.\\\\\n$(2) \\displaystyle\\int_{0}^{1}e^x \\sin xdx$は整数か.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_elementary_exponential_bounds",
+      "answerTex": "\\(\\text{e<1+sqrt(3); integral\\_0\\textasciicircum{}1 e\\textasciicircum{}x sin(x) dx is not an integer}\\)",
+      "solutionTex": "\\textbf{1.} e の級数余項を評価して e<11/4<1+sqrt(3) を得る。\n\n\\textbf{2.} 積分は (1+e(sin1-cos1))/2 である。\n\n\\textbf{3.} sin, cos の交代級数と e<11/4 から 1/2<I<1 を得るため整数ではない。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-044",
+        "method": "solve.structural_theorem.structural_theorem_elementary_exponential_bounds"
+      }
+    },
+    {
+      "id": "fullproblem-045",
+      "ordinal": 45,
+      "label": "問題45",
+      "statement": "相異なる自然数 $a,b,c$ について，$a^b,b^c,c^a$ が三角形の三辺となるとき，\n$a+b+c$ の最小値を求めよ．",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_finite_power_triangle_minimum",
+      "answerTex": "\\(16\\)",
+      "solutionTex": "\\textbf{1.} a+b+c の昇順に有限組を列挙した。\n\n\\textbf{2.} 各組で相異性と三つの三角不等式を整数演算で検査した。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-045",
+        "method": "solve.structural_theorem.structural_theorem_finite_power_triangle_minimum"
+      }
+    },
+    {
+      "id": "fullproblem-046",
+      "ordinal": 46,
+      "label": "問題46",
+      "statement": "素数 $p<q<r$ に対し，$p^q,q^r,r^p$ は三角形の三辺となり得るか．",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_ordered_prime_power_triangle",
+      "answerTex": "\\(三角形の三辺にはなり得ない\\)",
+      "solutionTex": "\\textbf{1.} p<q<r と q>=3 を用いる。log(x)/(x-1) の単調減少性から p log r<(r-1)log q、従って r\\textasciicircum{}p<q\\textasciicircum{}(r-1) を得る。\n\n\\textbf{2.} また p<q かつ q<r-1 から p\\textasciicircum{}q<q\\textasciicircum{}(r-1) である。\n\n\\textbf{3.} よって r\\textasciicircum{}p+p\\textasciicircum{}q<2q\\textasciicircum{}(r-1)<q\\textasciicircum{}r となり、最大辺q\\textasciicircum{}rが三角不等式を破る。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-046",
+        "method": "solve.structural_theorem.structural_theorem_ordered_prime_power_triangle"
+      }
+    },
+    {
+      "id": "fullproblem-047",
+      "ordinal": 47,
+      "label": "問題47",
+      "statement": "素数 $p>q$ に対し，\n$\\sin\\alpha+\\sin\\beta=\\cos\\alpha+\\cos\\beta=\\dfrac{p-q}{p+q}$\nかつ $\\sin\\alpha,\\sin\\beta\\in\\mathbb{Q}$ であるとき，\n$\\sin\\alpha,\\,\\sin\\beta$ を求めよ．",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_rational_sine_prime_ratio",
+      "answerTex": "\\(\\text{\\{sin(alpha),sin(beta)\\}=\\{4/5,-3/5\\}; necessarily (p,q)=(3,2)}\\)",
+      "solutionTex": "\\textbf{1.} 二つの単位ベクトルの和がs(1,1)なので、二つの正弦は (s±sqrt(2-s\\textasciicircum{}2))/2 である。\n\n\\textbf{2.} s=(p-q)/(p+q)を代入すると、有理性は p\\textasciicircum{}2+6pq+q\\textasciicircum{}2 が平方であることと同値になる。\n\n\\textbf{3.} qが奇素数なら (p+3q-k)(p+3q+k)=8q\\textasciicircum{}2 の因子対は三種類だけで、いずれもpを合成数または0にする。\n\n\\textbf{4.} q=2では積32の同偶因子対を調べるとp=3だけが残り、正弦は4/5と-3/5になる。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-047",
+        "method": "solve.structural_theorem.structural_theorem_rational_sine_prime_ratio"
+      }
+    },
+    {
+      "id": "fullproblem-048",
+      "ordinal": 48,
+      "label": "問題48",
+      "statement": "直径 $AB$ の円の中心を $O$ とする．各整数 $n\\ge2$ に対し，\n同じ半円上に $BP_n=nAP_n$ を満たす点 $P_n$ をとる．\n相異なる素数 $p,q,r$ で\n\\[ \\angle AOP_p=\\angle AOP_q+\\angle AOP_r \\]\nを満たすものをすべて求めよ．",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_prime_angle_addition_on_circle",
+      "answerTex": "\\(\\text{\\{p,q,r\\}=\\{2,3,7\\}}\\)",
+      "solutionTex": "\\textbf{1.} 円周角と弦比から angle(AOP\\_n)=2 arctan(1/n) を得る。\n\n\\textbf{2.} 正接の加法定理で (q-p)(r-p)=p\\textasciicircum{}2+1 に変換する。\n\n\\textbf{3.} pが奇数なら二因子の偶奇が他の二素数と両立しないためp=2、約数を調べて3,7を得る。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-048",
+        "method": "solve.structural_theorem.structural_theorem_prime_angle_addition_on_circle"
+      }
+    },
+    {
+      "id": "fullproblem-049",
+      "ordinal": 49,
+      "label": "問題49",
+      "statement": "二辺の長さが素数で，外接円半径と内接円半径の積が素数となる\n整数三角形をすべて求めよ．",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_prime_two_side_triangle_radii_product",
+      "answerTex": "\\(\\{(5,7,8),\\,(5,12,13),\\,(5,16,19),\\,(7,8,13)\\}\\)",
+      "solutionTex": "\\textbf{1.} 三辺をp<=q（素数）とn（正整数）とする。R=abc/(4Delta), r=Delta/s より、面積を消去して Rr=pqn/[2(p+q+n)] を得る。\n\n\\textbf{2.} p=2 のとき三角不等式から n=q-1,q,q+1 の三通りだけであり、各分母に対する合同式で整数にすらならない。p=q の場合も、素数ellの位置を分けると p=3,n=12 だけが残るが三角不等式に反する。\n\n\\textbf{3.} 従ってp<qは相異なる奇素数でnは偶数。ellをRrの素数値とする。ell!=qなら法qで q|(p+n)。また q<p+n<3q なのでp+n=2qとなるが、右辺から奇数pを引いたnは奇数となり矛盾する。よってell=qである。\n\n\\textbf{4.} ell=qを元の等式へ戻すと n(p-2)=2(p+q)。p-2は奇数なので q+2=k(p-2), n=2(k+1) と書ける。三角不等式は 4<p<4(k+1)/(k-1) に等価で、p>=5からk<9を得る。\n\n\\textbf{5.} 2<=k<=8とその範囲内の素数pだけを厳密整数演算で調べると、(p,q,n)=(5,7,8),(5,13,12),(5,19,16),(7,13,8) が残る。辺を昇順に並べた四つが答えである。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-049",
+        "method": "solve.structural_theorem.structural_theorem_prime_two_side_triangle_radii_product"
+      }
+    },
+    {
+      "id": "fullproblem-050",
+      "ordinal": 50,
+      "label": "問題49",
+      "statement": "1つの内角が $120^\\circ$ であり，3辺の長さがすべて素数であるような\n三角形をすべて求めよ．",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_prime_triangle_fixed_angle",
+      "answerTex": "\\(存在しない\\)",
+      "solutionTex": "\\textbf{1.} 120度の余弦定理より、向かい辺の平方は p\\textasciicircum{}2+q\\textasciicircum{}2+pq である。\n\n\\textbf{2.} 三辺が奇素数なら右辺は 3 (mod 8) で平方にならない。\n\n\\textbf{3.} 一辺が2の枝は平方差を因数分解すると正の素数解を持たない。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-050",
+        "method": "solve.structural_theorem.structural_theorem_prime_triangle_fixed_angle"
+      }
+    },
+    {
+      "id": "fullproblem-051",
+      "ordinal": 51,
+      "label": "問題50",
+      "statement": "正の整数 $x,y,z$ について，\n$x+y+z,\\ xy+yz+zx,\\ xyz$ がこの順に等差数列をなすものを\nすべて求めよ．",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_symmetric_integer_progression",
+      "answerTex": "\\(\\text{permutations of \\{(3,6,27),(3,7,16),(4,4,24)\\}}\\)",
+      "solutionTex": "\\textbf{1.} x<=y<=z として等差条件を z の一次方程式にした。\n\n\\textbf{2.} 式を xyz で割ると 1<=6/x なので x<=6 である。\n\n\\textbf{3.} 各 x で分母の整除条件と z>=y を有限検査した。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-051",
+        "method": "solve.structural_theorem.structural_theorem_symmetric_integer_progression"
+      }
+    },
+    {
+      "id": "fullproblem-052",
+      "ordinal": 52,
+      "label": "問題51",
+      "statement": "放物線$y=x^2$上の格子点を三つ選んで三角形をつくる．\n三点の横座標が相異なる素数であり，面積も素数であるものをすべて求めよ．",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_prime_abscissa_parabola_triangle",
+      "answerTex": "\\(\\text{横座標 \\{2,3,5\\}（面積 3）}\\)",
+      "solutionTex": "\\textbf{1.} 放物線上三点の面積は |(p-q)(q-r)(r-p)|/2 である。\n\n\\textbf{2.} 三つとも奇素数なら面積は合成数になるため2を含む。\n\n\\textbf{3.} 残る積が素数になる条件から双子素数3,5だけが残る。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-052",
+        "method": "solve.structural_theorem.structural_theorem_prime_abscissa_parabola_triangle"
+      }
+    },
+    {
+      "id": "fullproblem-053",
+      "ordinal": 53,
+      "label": "問題52",
+      "statement": "$(p+qi)^r=s+pqri$を満たす素数 $p,q,r,s$ をすべて求めよ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_gaussian_prime_power_identity",
+      "answerTex": "\\(\\text{(p,q,r,s)=(3,2,2,5)}\\)",
+      "solutionTex": "\\textbf{1.} r=2 では虚部条件が自動的に成り、s=p\\textasciicircum{}2-q\\textasciicircum{}2=(p-q)(p+q) を素数条件で解く。\n\n\\textbf{2.} 奇素数rでは虚部を法pで見るとp=qを得る。\n\n\\textbf{3.} p=qを戻すと偶数の冪が奇素数rに等しい必要があり矛盾する。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-053",
+        "method": "solve.structural_theorem.structural_theorem_gaussian_prime_power_identity"
+      }
+    },
+    {
+      "id": "fullproblem-054",
+      "ordinal": 54,
+      "label": "問題53",
+      "statement": "(1) $ \\tan\\alpha =p,\\tan \\beta=q,\\tan(\\alpha-\\beta)=\\dfrac{1}{p+q}$ をみたす素数 $p, q$求めよ.\\\\\n $ n\\in\\mathbb{N},\\ F_1=F_2=1,\\ F_{n+2}=F_{n+1}+F_n$ で定まる数列$\\{F\\}$を考える,\\\\\n(2) $F_{n+1}^2-F_{n+1}F_n-F_n^2=(-1)^n$を示せ.\\\\\n(3) $F_n,F_{n+1}$がともに素数となる$n$をすべて求めよ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_fibonacci_prime_neighbors",
+      "answerTex": "\\(\\text{(1)}\\ (p,q)=(5,3).\\qquad \\text{(2)}\\ F_{n+1}^2-F_{n+1}F_n-F_n^2=(-1)^n.\\qquad \\text{(3)}\\ n\\in\\{3,4\\}.\\)",
+      "solutionTex": "\\textbf{1.} 正接の差の公式から \\[\\frac{p-q}{1+pq}=\\frac1{p+q}\\] であり、従って \\[p^2-pq-q^2=1.\\] 特に \\(p>q\\)。また \\(p\\ge2q\\) なら左辺は少なくとも \\(q^2>1\\) なので \\(q<p<2q\\) である。\n\n\\textbf{2.} 法 \\(q\\) で \\(p^2\\equiv1\\pmod q\\)。\\(q\\) は素数だから \\(p\\equiv\\pm1\\pmod q\\) であり、上の範囲と合わせると \\(p=q+1\\) または \\(p=2q-1\\)。前者は素数の偶奇から \\((p,q)=(3,2)\\) だけだが元のノルムは \\(-1\\)。後者を代入すると \\(q(q-3)=0\\) なので \\((p,q)=(5,3)\\) である。\n\n\\textbf{3.} \\(C_n=F_{n+1}^2-F_{n+1}F_n-F_n^2\\) と置く。\\(F_{n+2}=F_{n+1}+F_n\\) を代入すると \\(C_{n+1}=-C_n\\)、かつ \\(C_1=-1\\) だから \\[C_n=(-1)^n.\\]\n\n\\textbf{4.} 標準的な整除性 \\(d\\mid m\\Rightarrow F_d\\mid F_m\\) を用いる。合成数 \\(m\\ne4\\) には \\(3\\le d<m\\) となる約数があり、\\(1<F_d<F_m\\) なので \\(F_m\\) は合成数である。従って \\(F_m\\) が素数なら \\(m\\) は素数または \\(m=4\\) である。\n\n\\textbf{5.} \\(F_n,F_{n+1}\\) がともに素数なら、連続する添字 \\(n,n+1\\) はそれぞれ素数または4でなければならない。\\(n\\ge3\\) では一方が偶数なので、それは4に限る。従って \\(n=3,4\\)。実際 \\((F_3,F_4)=(2,3)\\)、\\((F_4,F_5)=(3,5)\\) はどちらも素数である。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-054",
+        "method": "solve.structural_theorem.structural_theorem_fibonacci_prime_neighbors"
+      }
+    },
+    {
+      "id": "fullproblem-055",
+      "ordinal": 55,
+      "label": "問題54",
+      "statement": "整数三角形の三辺の相加平均を$A$,相乗平均を$G$,外接円半径$R$,内接円半径$r$とする.\\\\\n(1)\\ $2\\sqrt{3}r \\le G \\le A \\le \\sqrt{3}R$ を示せ.\\\\\n(2)\\ $2\\sqrt{3}r, A, \\sqrt{3}R$ が相異なる素数となる三辺の組を求めよ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_integer_triangle_mean_radii_prime_chain",
+      "answerTex": "\\((a,b,c)=(3,5,7)\\)（辺の順序を除く）",
+      "solutionTex": "\\textbf{1.} 相加相乗平均から \\(G\\le A\\) である。また三角形の角を \\(\\alpha,\\beta,\\gamma\\) とすれば \\(a=2R\\sin\\alpha\\) などであり、正弦の凹性から \\[a+b+c\\le 2R\\cdot3\\sin\\frac{\\pi}{3}=3\\sqrt3R.\\] 従って \\(A\\le\\sqrt3R\\) である。\n\n\\textbf{2.} \\(x=s-a,y=s-b,z=s-c\\) と置くと \\(x+y+z=s\\) である。Heron の公式と \\(\\Delta=rs\\) から \\(r^2=xyz/s\\le s^2/27\\)、従って \\(s\\ge3\\sqrt3r\\) を得る。さらに Euler の不等式 \\(R\\ge2r\\) と \\(G^3=abc=4Rrs\\) を掛け合わせれば \\[G^3\\ge24\\sqrt3r^3=(2\\sqrt3r)^3.\\] これで \\(2\\sqrt3r\\le G\\le A\\le\\sqrt3R\\) が閉じる。\n\n\\textbf{3.} \\(P=2\\sqrt3r,\\ M=A,\\ Q=\\sqrt3R\\) と置く。\\(s=3M/2\\) と \\(abc=4Rrs\\) から \\[PMQ=abc\\] である。左辺は相異なる三素数の積である。三辺の一つが1なら、残る二辺は整数なので三角不等式は二数の差を1未満に強制するが、一方は素数、他方は二素数の積であり一致できない。従って各辺は \\(P,M,Q\\) のいずれか一つである。\n\n\\textbf{4.} \\(M\\) は三辺の相加平均でもあるから \\(P+Q=2M\\)。順序を入れ替えて \\(P=M-d,Q=M+d\\ (d>0)\\) と書く。三辺 \\(M-d,M,M+d\\) を Heron の公式へ入れ、条件 \\(P=2\\sqrt3r\\) を二乗して消去すると \\[\\frac{3M^2d(2M-5d)}{16}=0.\\] よって \\(d=2M/5\\) である。\n\n\\textbf{5.} 従って \\((P,M,Q)=(3M/5,M,7M/5)\\)。三数が整数で \\(M\\) 自身も素数なので \\(5\\mid M\\) から \\(M=5\\)。したがって三辺は順序を除いて \\((3,5,7)\\) である。直接代入すると \\((2\\sqrt3r,A,\\sqrt3R)=(3,5,7)\\) となり、全条件を満たす。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-055",
+        "method": "solve.structural_theorem.structural_theorem_integer_triangle_mean_radii_prime_chain"
+      }
+    },
+    {
+      "id": "fullproblem-056",
+      "ordinal": 56,
+      "label": "問題55",
+      "statement": "\\noindent\n正の整数 $n$ に対して，関数 $f_n(x)$ を\n\\begin{align*}\nf_1(x)=\\cos x+\\sin x,\\\nf_{n+1}(x)=f_1(f_n(x))\n\\qquad (n=1,2,3,\\ldots)\n\\end{align*}\nによって定める.\n\\medskip\n\\begin{enumerate}\n\n\\item\n$\\dfrac{\\pi}{3}\\leq x\\leq \\dfrac{\\pi}{2}$\nにおいて，次を示せ.\n\\begin{equation*}\nf_1(x)\n\\leq\n-\\frac{\\sqrt{2}}{2}\n\\left(x-\\frac{5\\pi}{12}\\right)\n+\n\\frac{\\sqrt{6}}{2}\n\\end{equation*}\n\n\n\\item\n方程式\n\\begin{equation*}\nx-f_1(x)=0\n\\end{equation*}\nは$0\\le x\\le \\dfrac{\\pi}{2}$にただ一つの実数解$\\alpha$ をもつことを示し, $\\alpha$と$\\dfrac{4}{\\pi}$の大小を比較せよ.\n\n\\item\n$1\\leq t\\leq \\sqrt{2}$のとき，次を示せ.\n\\begin{equation*}\nf_1(f_1(t))\n\\leq\n\\frac{4}{\\pi}\n+\n\\frac{\\sqrt{3}-1}{2}\n\\left(t-\\frac{4}{\\pi}\\right)\n\\end{equation*}\n\n\\item\nすべての正の整数 $n$ に対して，次を示せ.\n\\begin{equation*}\n\\int_0^{\\frac{\\pi}{2}} f_n(x)dx\\leq 2\n\\end{equation*}\n\n\\end{enumerate}",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_sine_cosine_iteration_integral_bound",
+      "answerTex": "\\(\\begin{aligned}&\\text{(1) 与えられた接線上界が成立},\\qquad\\text{(2) }\\alpha<4/\\pi,\\\\&\\text{(3) 与えられた二段上界が成立},\\qquad\\text{(4) }\\displaystyle\\int_0^{\\pi/2}f_n(x)\\,dx\\le2.\\end{aligned}\\)",
+      "solutionTex": "\\textbf{1.} \\(h(t)=\\sin t+\\cos t\\) とおく。\\(1\\le t\\le\\sqrt2\\) では\\(1<h(t)<\\sqrt2\\) だから、この区間は反復で不変である。また \\([\\pi/3,\\pi/2]\\) では \\(h''=-h<0\\)。従って\\(a=5\\pi/12\\) における接線が上界となり、\\[h(x)\\le h(a)+h'(a)(x-a)=\\frac{\\sqrt6}{2}-\\frac{\\sqrt2}{2}\\left(x-\\frac{5\\pi}{12}\\right).\\]\n\n\\textbf{2.} \\(g(x)=x-h(x)\\) とおくと、\\(g(0)=-1\\)、\\(g(\\pi/2)=\\pi/2-1>0\\)、さらに\\(g'(x)=1-\\cos x+\\sin x>0\\ (0<x\\le\\pi/2)\\) である。従って零点 \\(\\alpha\\) は一意である。上の接線へ \\(x=4/\\pi\\) を代入し、\\(333/106<\\pi<355/113\\)、\\(140/99<\\sqrt2<99/70\\)、\\(265/153<\\sqrt3<97/56\\) を用いると、\\[\\frac4\\pi-h\\!\\left(\\frac4\\pi\\right)>\\frac{7259089}{314501600}>\\frac1{1000}.\\]ゆえに \\(g(4/\\pi)>0\\) であり、\\(\\alpha<4/\\pi\\) である。\n\n\\textbf{3.} \\(H=h\\circ h\\)、\\(c=4/\\pi\\)、\\(\\lambda=(\\sqrt3-1)/2\\)、\\(D(t)=c+\\lambda(t-c)-H(t)\\) とおく。交代 Taylor 評価を12次まで有理数で行うと\\[D(1)>\\frac1{400},\\quad D(\\sqrt2)>\\frac1{3000},\\quad D'(1)>\\frac18,\\quad D'(\\sqrt2)<-\\frac1{22}.\\]これら四つの残差は証明書内で厳密有理数として再生される。\n\n\\textbf{4.} \\(h'=\\cos-\\sin<0\\)、\\(h>0\\) を用いて直接微分すると\\[H'''(t)=3h(H_0)h(t)h'(t)-h'(H_0)h'(t)\\{h'(t)^2+1\\}<0,\\qquad H_0=h(t).\\]従って \\(D'\\) は凸である。上の端点符号から \\(D\\) は内部に局所最小値を持たず、最小値は端点で取る。よって \\(D(t)>0\\)、すなわち\\[H(t)\\le\\frac4\\pi+\\frac{\\sqrt3-1}{2}\\left(t-\\frac4\\pi\\right)\\qquad(1\\le t\\le\\sqrt2).\\]\n\n\\textbf{5.} \\(I_n=\\int_0^{\\pi/2}f_n(x)\\,dx\\) とおく。\\(I_1=2\\) である。また \\(h\\) の凹性と Jensen の不等式、(2) より\\[I_2\\le\\frac\\pi2h\\left(\\frac2\\pi I_1\\right)=\\frac\\pi2h(4/\\pi)<2.\\](3) を \\(t=f_n(x)\\) に適用して積分すると\\[I_{n+2}\\le2+\\frac{\\sqrt3-1}{2}(I_n-2).\\]係数は \\(0<(\\sqrt3-1)/2<1\\) なので、\\(I_1\\le2\\)、\\(I_2<2\\) から偶数列・奇数列それぞれの帰納法により \\(I_n\\le2\\) が全ての \\(n\\) で従う。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-056",
+        "method": "solve.structural_theorem.structural_theorem_sine_cosine_iteration_integral_bound"
+      }
+    },
+    {
+      "id": "fullproblem-057",
+      "ordinal": 57,
+      "label": "問題56",
+      "statement": "時計の3つの針（時針，分針，秒針）の長さはそれぞれ \\(1,2,3\\) であるとする．\nこのとき，3針の先端を結んでできる三角形の面積の最大値は \\(5\\) 未満であることを示せ．",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_radial_triangle_area_bound",
+      "answerTex": "\\(\\text{最大値は 5 未満}\\)",
+      "solutionTex": "\\textbf{1.} 回転対称性で一針を固定し、面積の2倍を 2sin u+6sin(v-u)-3sin v とした。\n\n\\textbf{2.} v を消去して一変数上界を作り、二回平方した四次多項式の正値性をSturm列で検証した。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-057",
+        "method": "solve.structural_theorem.structural_theorem_radial_triangle_area_bound"
+      }
+    },
+    {
+      "id": "fullproblem-058",
+      "ordinal": 58,
+      "label": "問題57",
+      "statement": "曲線 $y=x^3−2x$ 上の3点を頂点とする正三角形の重心の軌跡が囲む部分の面積を求めよ.",
+      "status": "verified",
+      "familyId": "solve.geometry_symbolic.cubic_equilateral_centroid_locus_area",
+      "answerTex": "\\(\\frac{4\\pi}{9}\\left(2-\\sqrt{3}\\right)\\)",
+      "solutionTex": "\\textbf{1.} 正三角形の頂点を重心のまわりに位相差 \\(2\\pi/3\\) の3点として置く。\n\n\\textbf{2.} 三次曲線へ代入し，3点で一致すべき一次・二次Fourierモードを消去する。\n\n\\textbf{3.} 半径の二乗 \\(u\\) は \\(\\frac{144 X^{4} + 36 X^{2} u - 192 X^{2} + 9 u^{2} - 48 u + 80}{16}=0\\) を満たす。\n\n\\textbf{4.} 二つの半径枝から重心軌跡の上下境界を得て，閉じた二成分を厳密積分する。\n\n\\textbf{5.} 各成分の面積は \\(\\frac{2 \\pi \\left(2 - \\sqrt{3}\\right)}{9}\\) なので，全体は \\(- \\frac{4 \\pi \\left(-2 + \\sqrt{3}\\right)}{9}\\) である。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-058",
+        "method": "solve.geometry_symbolic.cubic_equilateral_centroid_locus_area"
+      }
+    },
+    {
+      "id": "fullproblem-059",
+      "ordinal": 59,
+      "label": "問題58",
+      "statement": "平面上に一辺$\\sqrt3$の正方形を固定する.一辺$\\sqrt2+\\sqrt6$の正三角形を, \\\\\nこの正方形を含むように自由に動かすとき, 正三角形の通過領域の面積を求めよ.",
+      "status": "verified",
+      "familyId": "solve.geometry_symbolic.latex_to_container_square_in_equilateral_triangle_sweep",
+      "answerTex": "\\(- 18 \\sqrt{2} - 10 \\sqrt{6} + 2 \\sqrt{3} + 9 + 2 \\pi \\left(2 \\sqrt{3} + 5\\right)\\)",
+      "solutionTex": "問題文を字句・構文解析し，量化・定義域・等式を型付き制約へ変換する。実行演算は \\(\\mathrm{container.square\\_in\\_equilateral\\_triangle}\\) であり，厳密計算対象は \\(support-function boundary integration\\) である。計算結果は \\(- 18 \\sqrt{2} - 10 \\sqrt{6} + 2 \\sqrt{3} + 9 + 2 \\pi \\left(2 \\sqrt{3} + 5\\right)\\)。最後に得られた候補を元の条件へ戻して検査した。All executable tool calls completed. Dedicated solver returned solved status.",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-059",
+        "method": "solve.geometry_symbolic.latex_to_container_square_in_equilateral_triangle_sweep"
+      }
+    },
+    {
+      "id": "fullproblem-060",
+      "ordinal": 60,
+      "label": "問題59",
+      "statement": "原点を$\\textrm{O}$とする.曲線$y=x^3-12x^2+45x-54$の$x$軸とともに有界領域を囲む弧上を点$\\textrm{P},\\textrm{Q}$が$\\overrightarrow{\\textrm{OP}}\\cdot\\overrightarrow{\\textrm{OQ}}=20$を満たしながら動くとき,線分$\\textrm{PQ}$の通過領域の面積を求めよ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_cubic_arc_dot_chord_sweep_area",
+      "answerTex": "\\(\\frac{31877}{5184}+\\frac14\\log 2\\)",
+      "solutionTex": "\\textbf{1.} 曲線の式は\\[f(x)=x^3-12x^2+45x-54=(x-6)(x-3)^2.\\]従って \\(x=3\\) から \\(x=6\\) までの弧だけが \\(x\\) 軸と有界領域を囲む。\\(x=3+t\\) と移すと \\(0\\le t\\le3\\) で\\[g(t)=t^2(t-3)\\]となる。\n\n\\textbf{2.} \\(P,Q\\) の移した横座標を \\(u,v\\)、\\(S=u+v,\\ R=uv\\) とおく。内積条件を展開して対称式へ戻すと\\[(u+3)(v+3)+g(u)g(v)-20=(R-1)(R^2-3RS+10R-3S+11)=0.\\]\n\n\\textbf{3.} 第二因子が0なら\\[S=\\frac{R^2+10R+11}{3(R+1)}.\\]一方 \\(0\\le u,v\\le3\\) より\\((3-u)(3-v)\\ge0\\)、従って \\(S\\le3+R/3\\) である。しかし両辺の差は \\(2/(3(R+1))>0\\) となり矛盾する。従って許容される全ての弦で\\[uv=1\\]である。\n\n\\textbf{4.} \\(uv=1\\) かつ \\(u,v\\in[0,3]\\) なので\\[2\\le S=u+v\\le\\frac{10}{3}.\\]三次式から弦を引くと \\(u,v\\) を零点に持つ三次式になるため、第三の零点は \\(3-S\\) である。従って弦の式は\\[\\ell_S(t)=(S^2-3S-1)t+3-S.\\]\n\n\\textbf{5.} 固定した \\(t\\in[1/3,3]\\) を通る弦の条件は\\(t^2-St+1\\le0\\)、すなわち\\[t+\\frac1t\\le S\\le\\frac{10}{3}.\\]\\(\\ell_S(t)\\) は \\(S\\) の上に凸な二次式である。上端は常に \\(S=10/3\\) の弦\\[U(t)=\\frac{t-3}{9}\\]で与えられる。\n\n\\textbf{6.} 下端は通常 \\(g(t)=t^3-3t^2\\) である。ただし \\(\\partial\\ell_S(t)/\\partial S=0\\) となる\\(S=3/2+1/(2t)\\) が許容区間に入る\\(1/2\\le t\\le1\\) では包絡線\\[H(t)=-\\frac{13t^2-6t+1}{4t}\\]が下端となる。\\(S\\) が連続区間を動くので、各鉛直断面には欠落がない。\n\n\\textbf{7.} 従って求める面積は\\[\\begin{aligned}A={}&\\int_{1/3}^{1/2}(U-g)\\,dt+\\int_{1/2}^{1}(U-H)\\,dt+\\int_{1}^{3}(U-g)\\,dt\\\\={}&\\frac{31877}{5184}+\\frac14\\log2.\\end{aligned}\\]平行移動 \\(x=t+3\\) は面積を変えないので、これが元の通過領域の面積である。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-060",
+        "method": "solve.structural_theorem.structural_theorem_cubic_arc_dot_chord_sweep_area"
+      }
+    },
+    {
+      "id": "fullproblem-061",
+      "ordinal": 61,
+      "label": "問題60",
+      "statement": "鋭角三角形$ABC$の内部の点$O$から三辺におろした垂線の足を$P,Q,R$とする.\\\\ $OA,OB,OC,OP,OQ,OR$ のうち五つが素数,一つが自然数となるような\\\\組$(OA,OB,OC,OP,OQ,OR)$を求めよ.",
+      "status": "unresolved",
+      "familyId": null,
+      "answerTex": null,
+      "solutionTex": null,
+      "certificate": null
+    },
+    {
+      "id": "fullproblem-062",
+      "ordinal": 62,
+      "label": "問題61",
+      "statement": "$x>1$において, \n\\[\n\\tan \\Big(e\\Big(1-\\dfrac1x \\Big)^x \\Big)+\\dfrac{1}{x}<\\dfrac{\\pi}{2}\n\\]\nを示せ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_exponential_tangent_convex_bound",
+      "answerTex": "\\(成立\\)",
+      "solutionTex": "\\textbf{1.} y=1/x とおけば 0<y<1 であり、左辺のtanの引数は e(1-y)\\textasciicircum{}(1/y) となる。\n\n\\textbf{2.} 1+log(1-y)/y=-sum\\_(m>=1)y\\textasciicircum{}m/(m+1)、log(1-y/2)=-sum\\_(m>=1)y\\textasciicircum{}m/(m 2\\textasciicircum{}m) である。各係数を比較すると前者が小さいので、e(1-y)\\textasciicircum{}(1/y)<1-y/2 を得る。\n\n\\textbf{3.} tanは(0,1)で狭義単調増加するから、元の左辺は h(y)=tan(1-y/2)+y より小さい。h''(y)=sec\\textasciicircum{}2(1-y/2)tan(1-y/2)/2>0 なので、hは凸で最大値は端点にある。\n\n\\textbf{4.} 交代Taylor級数から tan(1)<606/389<39/25<157/100、1+tan(1/2)<8933/5777<31/20<157/100 を得る。さらに 157/100<333/212<pi/2 だから、両端点とも pi/2 未満である。\n\n\\textbf{5.} 従ってすべての x>1 について tan(e(1-1/x)\\textasciicircum{}x)+1/x<pi/2 が成り立つ。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-062",
+        "method": "solve.structural_theorem.structural_theorem_exponential_tangent_convex_bound"
+      }
+    },
+    {
+      "id": "fullproblem-063",
+      "ordinal": 63,
+      "label": "問題62",
+      "statement": "任意の三角形 \\(ABC\\) に対して\n\\[\n\\frac{\n(1+\\sin A)^{\\frac{1}{\\sin A}+\\frac12}\n+(1+\\sin B)^{\\frac{1}{\\sin B}+\\frac12}\n+(1+\\sin C)^{\\frac{1}{\\sin C}+\\frac12}\n-3e\n}{\n\\sin A\\sin B+\\sin B\\sin C+\\sin C\\sin A\n}\n<M\n\\]\nが成り立つような実数 \\(M\\) の最小値を求めよ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_triangle_sine_exponential_ratio_supremum",
+      "answerTex": "\\(M_{\\min}=\\dfrac{e}{6}\\)",
+      "solutionTex": "\\textbf{1.} 0<x<=1で h(x)=(1/x+1/2)log(1+x)-1 と置く。log(1+x\\textasciicircum{}2/12)-h(x) の導関数を正の分母で払う。\n\n\\textbf{2.} log(1+x)>x-x\\textasciicircum{}2/2+x\\textasciicircum{}3/3-x\\textasciicircum{}4/4+x\\textasciicircum{}5/5-x\\textasciicircum{}6/6 を代入すると、分子は x\\textasciicircum{}4(180-46x+29x\\textasciicircum{}2-123x\\textasciicircum{}3+2x\\textasciicircum{}4-10x\\textasciicircum{}5)/30 以上である。0<x<=1では括弧内は1以上だから正である。\n\n\\textbf{3.} 従って (1+x)\\textasciicircum{}(1/x+1/2)<e(1+x\\textasciicircum{}2/12)、すなわち g(x)-e<ex\\textasciicircum{}2/12 を得る。\n\n\\textbf{4.} x=sin A,y=sin B,z=sin C は三角形の三辺に比例する。x=u+v,y=v+w,z=w+u (u,v,w>0) と書けば、2(xy+yz+zx)-(x\\textasciicircum{}2+y\\textasciicircum{}2+z\\textasciicircum{}2)=4(uv+vw+wu)>0 である。\n\n\\textbf{5.} 三つの項へ一変数上界を足し合わせると、与式は e/12・(x\\textasciicircum{}2+y\\textasciicircum{}2+z\\textasciicircum{}2)/(xy+yz+zx)<e/6 となる。\n\n\\textbf{6.} A=t,C=t\\textasciicircum{}2,B=pi-t-t\\textasciicircum{}2 としてtを0へ近づけると、(g(x)-e)/x\\textasciicircum{}2はe/12へ、二次比は2へ近づく。従ってe/6より小さい定数は使えず、最小値はe/6である。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-063",
+        "method": "solve.structural_theorem.structural_theorem_triangle_sine_exponential_ratio_supremum"
+      }
+    },
+    {
+      "id": "fullproblem-064",
+      "ordinal": 64,
+      "label": "問題63",
+      "statement": "任意の三角形 \\(ABC\\) に対し，その内接円と外接円の半径を\nそれぞれ \\(r,R\\) とする．\n\\[\n\\left(\\cos A+\\cos B+\\cos C\\right)^{\\frac{R}{r}}<M\n\\]\nが成り立つような実数 \\(M\\) の最小値を求めよ．",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_triangle_radii_exponential_bound",
+      "answerTex": "\\(e\\)",
+      "solutionTex": "\\textbf{1.} cos A+cos B+cos C=1+r/R を用いる。\n\n\\textbf{2.} u=r/R とすれば式は (1+u)\\textasciicircum{}(1/u) で、u>0 上単調減少し上限は e である。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-064",
+        "method": "solve.structural_theorem.structural_theorem_triangle_radii_exponential_bound"
+      }
+    },
+    {
+      "id": "fullproblem-065",
+      "ordinal": 65,
+      "label": "問題64",
+      "statement": "\\(C=\\dfrac{\\pi}{2}\\) である三角形 \\(ABC\\) の内接円と外接円の半径を，\nそれぞれ \\(r,R\\) とする．\\\\任意のこのような三角形に対して\n\\[\n\\left(\\sin A+\\sin B\\right)^{\\frac{R}{r}}\n\\]\nの値域を求めよ．",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_triangle_radii_exponential_bound",
+      "answerTex": "\\(\\text{[2**(1/(2*(-1 + sqrt(2)))), e)}\\)",
+      "solutionTex": "\\textbf{1.} 直角三角形では R/r=1/(u-1), u=sin A+cos A である。\n\n\\textbf{2.} log(u)/(u-1) は u>1 で単調減少するため端点と極限で値域が決まる。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-065",
+        "method": "solve.structural_theorem.structural_theorem_triangle_radii_exponential_bound"
+      }
+    },
+    {
+      "id": "fullproblem-066",
+      "ordinal": 66,
+      "label": "問題65",
+      "statement": "$2^{\\sqrt2}<e$を示せ.",
+      "status": "verified",
+      "familyId": "solve.formal_proof.typed_analysis_decide_closed_proposition",
+      "answerTex": "\\(2^{\\sqrt{2}} < e\\)",
+      "solutionTex": "\\textbf{1.} 両辺が正なので対数を取り，指数と対数の積を評価する。\n\n\\textbf{2.} \\(y=(2-1)/(2+1)=\\frac{1}{3}\\) とおくと， \\(\\log a=2\\sum_{k\\ge0}y^{2k+1}/(2k+1)\\) である。\n\n\\textbf{3.} 第 \\(1\\) 項までと等比級数による剰余評価から \\(\\log 2<\\frac{25}{36}\\) を得る。\n\n\\textbf{4.} \\(\\sqrt{2}\\cdot \\frac{25}{36}<1\\) なので，\\(\\sqrt{2}\\log 2<1\\)。\n\n\\textbf{5.} 指数関数の単調性より \\(2^{\\sqrt{2}}<e\\) である。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-066",
+        "method": "solve.formal_proof.typed_analysis_decide_closed_proposition"
+      }
+    },
+    {
+      "id": "fullproblem-067",
+      "ordinal": 67,
+      "label": "問題66",
+      "statement": "自然数 \\(n\\geq 4\\) に対し，\n\\[\na_n=\n\\left(\n\\sin\\frac{\\pi}{n}+\\cos\\frac{\\pi}{n}\n\\right)^{\n\\frac{1}{\n\\sin\\frac{\\pi}{n}+\\cos\\frac{\\pi}{n}-1\n}\n+\\sin\\frac{\\pi}{n}+\\cos\\frac{\\pi}{n}-1\n}\n\\]\nと定める．数列 \\(\\{a_n\\}\\) の最小値を求め，さらに\n\\[\n\\lim_{n\\to\\infty}n(e-a_n)\n\\]\nを求めよ．",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_discrete_trigonometric_exponential_asymptotic",
+      "answerTex": "\\(\\text{minimum a\\_12=(sqrt(6)/2)**(-1 + sqrt(6)/2 + 1/(-1 + sqrt(6)/2)); limit=E*pi/2}\\)",
+      "solutionTex": "\\textbf{1.} u\\_n=sin(pi/n)+cos(pi/n)-1 と置くと、u\\_nはnについて狭義単調減少し、log a\\_n=F(u\\_n)=(u\\_n+1/u\\_n)log(1+u\\_n)である。\n\n\\textbf{2.} F''の分子でlog(1+u)>=u-u\\textasciicircum{}2/2を使うと2u\\textasciicircum{}3>0が残るため、F'は狭義単調増加する。\n\n\\textbf{3.} 交代級数の有理評価からF'(11/50)<0<F'(28/125)を得る。またu\\_13<11/50<28/125<u\\_12なので、最小候補はn=12,13に限られる。\n\n\\textbf{4.} pi, sqrt(6), log(1+u)の有理上下界を合成してF(u\\_13)-F(u\\_12)>0を直接証明し、離散列の最小をn=12に確定した。\n\n\\textbf{5.} F(u)=1-u/2+O(u\\textasciicircum{}2), u\\_n=pi/n+O(n\\textasciicircum{}-2)を合成すると n(e-a\\_n) -> e*pi/2 となる。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-067",
+        "method": "solve.structural_theorem.structural_theorem_discrete_trigonometric_exponential_asymptotic"
+      }
+    },
+    {
+      "id": "fullproblem-068",
+      "ordinal": 68,
+      "label": "問題67",
+      "statement": "半径1の円板 $D$ が $x,y,z\\geq0$ の範囲に含まれ，3つの座標平面のそれぞれとただ1点を\\\\共有しながら動く．$D$ の通過領域を $xy$ 平面に正射影して得られる図形の面積を求めよ．",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_coordinate_tangent_disk_projection_area",
+      "answerTex": "\\(\\left(3+\\frac{\\pi}{4}\\right)\\)",
+      "solutionTex": "\\textbf{1.} 円板の半径を \\(r=1\\) とし、その平面の単位法線を\\(\\boldsymbol n=(a,b,c)\\)、中心を \\(C=(p,q,s)\\) とする。円板内で \\(x\\) 座標が動ける半径は\\(r\\sqrt{1-a^2}\\) である。\\(x=0\\) とただ1点で接し、円板全体が \\(x\\ge0\\) にあることから\\[p=r\\sqrt{1-a^2}.\\]同様に\\[q=r\\sqrt{1-b^2},\\qquad s=r\\sqrt{1-c^2}.\\]\n\n\\textbf{2.} \\(xy\\) 平面への射影を \\(E_{\\boldsymbol n}\\) とする。方向 \\((u,v)\\) に対する支持関数は、円板平面への直交射影を用いて\\[h_{\\boldsymbol n}(u,v)=r\\left\\{u\\sqrt{1-a^2}+v\\sqrt{1-b^2}+\\sqrt{u^2+v^2-(au+bv)^2}\\right\\}.\\]また各座標の中心値と射影半径が等しいので、常に\\[0\\le x,y\\le2r.\\]\n\n\\textbf{3.} \\(u,v\\ge0\\) なら\\(\\sqrt{1-a^2},\\sqrt{1-b^2}\\le1\\) および\\(\\sqrt{u^2+v^2-(au+bv)^2}\\le\\sqrt{u^2+v^2}\\) より\\[h_{\\boldsymbol n}(u,v)\\le r\\{u+v+\\sqrt{u^2+v^2}\\}.\\]従って \\(x>r,\\ y>r\\) の点に\\((u,v)=(x-r,y-r)/\\sqrt{(x-r)^2+(y-r)^2}\\) を代入すると\\[(x-r)^2+(y-r)^2\\le r^2.\\]よって全射影は、正方形 \\([0,2r]^2\\) の右上隅を中心 \\((r,r)\\)、半径 \\(r\\) の円弧で切った領域 \\(R\\) に含まれる。\n\n\\textbf{4.} 逆に \\(0<\\lambda<1\\) として法線を\\((\\sqrt{1-\\lambda^2},0,\\lambda)\\) と取る。これは三座標平面へ一意に接し、その射影楕円は\\[\\left(\\frac{x-r\\lambda}{r\\lambda}\\right)^2+\\left(\\frac{y-r}{r}\\right)^2\\le1.\\]\\(\\lambda\\) を動かすと、各 \\(0\\le y\\le2r\\) で\\[0<x<r+\\sqrt{r^2-(y-r)^2}\\]をすべて覆う。法線 \\((0,\\sqrt{1-\\lambda^2},\\lambda)\\) の族はこれを \\(x,y\\) について入れ替えた領域を覆う。\n\n\\textbf{5.} この二領域の和は、\\(x\\le r\\) または \\(y\\le r\\) では正方形全体を覆う。\\(x>r,\\ y>r\\) では、どちらかに入る条件がちょうど\\[(x-r)^2+(y-r)^2\\le r^2\\]となる。従って測度0の境界を除いて和は \\(R\\) 全体であり、上の包含と合わせて掃引領域の閉包は \\(R\\) である。\n\n\\textbf{6.} 右上の \\(r\\times r\\) 正方形から半径 \\(r\\) の四分円を除いた部分だけが掃引されない。従って面積は\\[\\begin{aligned}|R|&=4r^2-\\left(r^2-\\frac{\\pi r^2}{4}\\right)\\\\&=r^2\\left(3+\\frac{\\pi}{4}\\right).\\end{aligned}\\]\\(r=1\\) を代入して \\(\\left(3+\\frac{\\pi}{4}\\right)\\) を得る。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-068",
+        "method": "solve.structural_theorem.structural_theorem_coordinate_tangent_disk_projection_area"
+      }
+    },
+    {
+      "id": "fullproblem-069",
+      "ordinal": 69,
+      "label": "問題68",
+      "statement": "1辺が1の正方形の紙を切って, 円錐の底面と側面を作るとき, 円錐の体積の最大値を求めよ.\\\\\nただし, 円と扇形をそれぞれ1枚ずつ切り出すこととする.",
+      "status": "unresolved",
+      "familyId": null,
+      "answerTex": null,
+      "solutionTex": null,
+      "certificate": null
+    },
+    {
+      "id": "fullproblem-070",
+      "ordinal": 70,
+      "label": "問題69",
+      "statement": "1辺の長さが2の立方体\n$C=\\{(x,y,z)\\mid 0\\le x,y,z\\le2\\}$\nに半径1の円板 $D$ が含まれている．\n$D$の円周が，立方体の4つの面\n$x=0,\\ y=0,\\ z=0,\\ z=2$\nの内部とそれぞれただ1点を共有しながら動くとき，\\(D\\) の通過領域の体積を求めよ．",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_four_face_tangent_disk_swept_volume",
+      "answerTex": "\\(\\frac{\\pi^2}{2}\\)",
+      "solutionTex": "\\textbf{1.} 円板の半径を \\(r=1\\)、立方体の一辺を \\(2r=2\\) とする。円板平面の単位法線を \\(\\boldsymbol n=(a,b,c)\\)、中心を\\(C=(p,q,s)\\) とする。円板の \\(z\\) 方向の半径は\\(r\\sqrt{1-c^2}\\) である。\n\n\\textbf{2.} 円周が平行な二面 \\(z=0,\\ z=2r\\) の双方に一点で接するため、中心は \\(s=r\\)、\\(z\\) 方向の半径も \\(r\\) でなければならない。従って\\[\\sqrt{1-c^2}=1,\\qquad c=0.\\]すなわち法線は水平である。\n\n\\textbf{3.} \\(a^2+b^2=1\\) であり、\\(x=0,\\ y=0\\) への接触条件から\\[C=(r|b|,r|a|,r).\\]従って中心の \\(xy\\) 座標は半径 \\(r\\) の四分円周上を動く。\n\n\\textbf{4.} 高さ \\(z\\) を固定し、\\(\\zeta=z-r\\) とおく。円板内で残る水平線分の半長は\\[\\rho(z)=\\sqrt{r^2-\\zeta^2}=\\sqrt{r^2-(z-r)^2}.\\]水平単位方向は \\((-b,a)\\) なので、その線分上の点は\\[(x,y)=(r|b|-bt,\\ r|a|+at),\\qquad |t|\\le\\rho(z)\\]と書ける。\n\n\\textbf{5.} この点の原点距離を \\(R\\) とすると、三角不等式から\\[r-|t|\\le R\\le r+|t|,\\]従って高さ \\(z\\) の全断面は、第一象限の\\(r-\\rho(z)\\le R\\le r+\\rho(z)\\) に含まれる。\n\n\\textbf{6.} 逆向きの包含も成り立つ。\\(a,b\\) の符号を反対に取ると水平方向\\((-b,a)\\) は中心ベクトル \\((|b|,|a|)\\) と平行になる。四分円上の中心方向と \\(|t|\\le\\rho(z)\\) を動かすことで、半径区間 \\([r-\\rho(z),r+\\rho(z)]\\) の全方向を覆う。従って断面はちょうど四分円環である。\n\n\\textbf{7.} その面積は\\[A(z)=\\frac{\\pi}{4}\\{(r+\\rho)^2-(r-\\rho)^2\\}=\\pi r\\sqrt{r^2-(z-r)^2}.\\]よって Cavalieri の原理により\\[\\begin{aligned}V&=\\int_0^{2r}A(z)\\,dz\\\\&=\\pi r\\int_{-r}^{r}\\sqrt{r^2-\\zeta^2}\\,d\\zeta\\\\&=\\frac{\\pi^2r^3}{2}.\\end{aligned}\\]\\(r=1\\) を代入して \\(\\frac{\\pi^2}{2}\\) を得る。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-070",
+        "method": "solve.structural_theorem.structural_theorem_four_face_tangent_disk_swept_volume"
+      }
+    },
+    {
+      "id": "fullproblem-071",
+      "ordinal": 71,
+      "label": "問題70",
+      "statement": "(1) 自然数$n$において, $\\displaystyle \\operatorname{Im}\\left(1+\\frac{i}{n}\\right)^n$が最大となる$n$を全て求めよ.\\\\\n(2) 正の実数$x$において, $\\displaystyle \\operatorname{Im}\\left(1+\\frac{i}{x}\\right)^x <\\dfrac{e}{2^{\\sqrt2}}$を示せ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_complex_binomial_imaginary_extremum",
+      "answerTex": "\\(\\text{(1) }n=1,2.\\qquad \\text{(2) }\\operatorname{Im}\\left(1+\\frac{i}{x}\\right)^x<\\frac{e}{2^{\\sqrt2}}\\quad(x>0).\\)",
+      "solutionTex": "\\textbf{1.} 整数 \\(n\\) では虚部を二項展開すると \\(1-\\binom{n}{3}n^{-3}+\\binom{n}{5}n^{-5}-\\cdots\\) となる。第2項以後の絶対値は狭義減少するため、\\(n\\ge3\\) では虚部は1未満である。\\(n=1,2\\) ではともに1なので、最大となるのは \\(n=1,2\\) である。\n\n\\textbf{2.} 実数 \\(x>0\\) では極形式により虚部を \\((1+x^{-2})^{x/2}\\sin\\!\\left(x\\arctan\\frac1x\\right)\\) と書く。\\(0<x\\le1/4\\) では絶対値因子が2未満、偏角が2/5未満なので虚部は1未満。\\(x\\ge4\\) では絶対値因子が8/7未満かつ \\(\\sin1<101/120\\) より、やはり1未満である。\n\n\\textbf{3.} \\(1/4\\le x\\le4\\) は、\\(\\arctan(1/x)=\\pi/4-\\arctan((x-1)/(x+1))\\)、\\(\\log z=2\\operatorname{arctanh}((z-1)/(z+1))\\) を使い、440個の有理区間で交代級数の剰余まで上向き評価した。全区間で \\(\\log\\operatorname{Im}((1+i/x)^x)<49/2500\\) を得る。\n\n\\textbf{4.} \\(\\sqrt2<99/70\\) と \\(\\log2<23581/34020\\) から \\(1-\\sqrt2\\log2>5209/264600>49/2500\\)。指数関数の単調性により所望の不等式が従う。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-071",
+        "method": "solve.structural_theorem.structural_theorem_complex_binomial_imaginary_extremum"
+      }
+    },
+    {
+      "id": "fullproblem-072",
+      "ordinal": 72,
+      "label": "問題71",
+      "statement": "実数$x$に対し, その小数部分を$\\langle x\\rangle$とする. 正の整数$n$に対し\\\\\n$\\displaystyle f_n(x)=\\frac12-\\frac1\\pi\\sum_{k=1}^{n}\\frac{\\sin 2\\pi kx}{k}\n\\quad (0\\le x\\le1)$\nとおく.\n\n曲線 $y=f_n(x)$ と直線 $y=\\dfrac12$ で囲まれる部分を，直線$y=\\dfrac12$のまわりに一回転してできる立体の体積を $V_n$ とする.\n\n(1) $V_n$ を $n$ を用いて表せ.\n\n(2) $0<x<1$において\n$\\displaystyle \\lim_{n\\to\\infty}f_n(x)=\\langle x\\rangle$\nであることを示せ.\n\n(3) $\\displaystyle \\sum_{k=1}^{\\infty}\\frac1{k^2}$ を求めよ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_fourier_rotation_volume",
+      "answerTex": "\\(\\text{V\\_n=(1/(2*pi))*sum(k=1..n,1/k\\textasciicircum{}2), lim V\\_n=pi/12}\\)",
+      "solutionTex": "\\textbf{1.} 回転体積を pi*integral(f\\_n-1/2)\\textasciicircum{}2 dx に変換した。\n\n\\textbf{2.} 正弦系の直交性で交差項を消し、平方和だけを残した。\n\n\\textbf{3.} Basel和を用いて極限 pi/12 を得る。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-072",
+        "method": "solve.structural_theorem.structural_theorem_fourier_rotation_volume"
+      }
+    },
+    {
+      "id": "fullproblem-073",
+      "ordinal": 73,
+      "label": "問題72",
+      "statement": "正の整数 $n$ に対し, $x\\ne n+\\dfrac{2}{3}$ において\n\\[\nf_n(x)=\\frac{(2-3n)x+3n^2+4}{-3x+3n+2}\n\\]\nと定める. 相異なる素数 $p,q,r$ が\n\\[\nf_n(p)=q,\\quad f_n(q)=r,\\quad f_n(r)=p\n\\]\nを満たすとき, 組 $(n,p,q,r)$ をすべて求めよ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_mobius_prime_three_cycle",
+      "answerTex": "\\(\\text{(n,p,q,r)=(5,3,5,7) and cyclic permutations}\\)",
+      "solutionTex": "\\textbf{1.} x=n+y と平行移動すると写像は n に依らない3周期写像 g(y) になる。\n\n\\textbf{2.} g(y)が整数なら 2-3y は16の約数なので整数軌道は \\{-2,0,2\\} に限られる。\n\n\\textbf{3.} n-2,n,n+2 が全て素数となるのは3の剰余から n=5 のみである。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-073",
+        "method": "solve.structural_theorem.structural_theorem_mobius_prime_three_cycle"
+      }
+    },
+    {
+      "id": "fullproblem-074",
+      "ordinal": 74,
+      "label": "問題73",
+      "statement": "$n\\ge3$ とし,単位円に内接する正$n$角形の周上を $PQ=1$ を保って2点$P,Q$が動くときの\n線分$PQ$の通過領域を$D_n$とする.\n$D_3,D_4,…,D_n$ の共通部分の面積を$S_n$とするとき,\n$\\displaystyle\\lim_{n\\to\\infty}S_n$を求めよ.",
+      "status": "unresolved",
+      "familyId": null,
+      "answerTex": null,
+      "solutionTex": null,
+      "certificate": null
+    },
+    {
+      "id": "fullproblem-075",
+      "ordinal": 75,
+      "label": "問題74",
+      "statement": "正の整数$n\\ge2$に対し，曲線$r=\\sin n\\theta$によって囲まれる領域を$x$軸のまわりに1回転して得られる立体の体積を $V_n$ とする.\\\\\n(1) $V_n$を求め，極限$\\displaystyle \\alpha =\\lim_{n\\to\\infty}V_n$を求めよ.\\\\\n(2) $V_n>\\alpha$及び,\\ $\\dfrac{11305}{972}(2-\\sqrt3)<\\pi$を示せ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_polar_rose_revolution_volume",
+      "answerTex": "\\(V_n=\\frac{8\\pi n^3}{(n^2-1)(9n^2-1)}\\cot\\frac{\\pi}{2n},\\qquad \\alpha=\\frac{16}{9}.\\quad V_n>\\alpha,\\qquad \\frac{11305}{972}(2-\\sqrt3)<\\pi.\\)",
+      "solutionTex": "\\textbf{1.} 回転後の同じ空間方向には、元の平面の偏角 \\(\\theta\\) と \\(-\\theta\\) がともに写る。この2方向の有効半径の最大値は、偶数・奇数いずれの \\(n\\) でも \\(|\\sin n\\theta|\\) である。従って球座標により \\(V_n=\\frac{2\\pi}{3}\\int_0^\\pi|\\sin n\\theta|^3\\sin\\theta\\,d\\theta\\) となる。花弁を別々の立体として足してはいないので重複は生じない。\n\n\\textbf{2.} 奇数 \\(m\\) に対し、各区間 \\([k\\pi/n,(k+1)\\pi/n]\\) で符号をそろえて積和公式を適用すると \\(J_m=\\int_0^\\pi\\!\\operatorname{sgn}(\\sin n\\theta)\\sin(mn\\theta)\\sin\\theta\\,d\\theta=\\frac{2mn}{m^2n^2-1}\\cot\\frac{\\pi}{2n}\\) を得る。\n\n\\textbf{3.} \\(|\\sin n\\theta|^3=\\operatorname{sgn}(\\sin n\\theta)(3\\sin n\\theta-\\sin3n\\theta)/4\\) なので、\\((3J_1-J_3)/4\\) を整理すれば \\(V_n=\\frac{8\\pi n^3}{(n^2-1)(9n^2-1)}\\cot\\frac{\\pi}{2n}\\) となる。\n\n\\textbf{4.} \\(x=\\pi/(2n)\\) とすると \\(x\\cot x\\to1\\) であるから \\(\\alpha=\\lim_{n\\to\\infty}V_n=16/9\\) である。\n\n\\textbf{5.} Eulerの \\(\\cos x\\) の積を対数微分し、正冪級数の係数を \\(\\sum_{k\\ge1}(2k-1)^{-2}=\\pi^2/8\\) と比較すると \\(\\tan x/x<1/(1-4x^2/\\pi^2)\\) を得る。従って \\(x\\cot x>1-1/n^2>(1-1/n^2)(1-1/(9n^2))\\) であり、上の体積公式から全ての \\(n\\ge2\\) で \\(V_n>16/9\\) が従う。\n\n\\textbf{6.} 最後に \\(n=6\\) を代入すると \\(V_6=1728\\pi(2+\\sqrt3)/11305\\)。\\(V_6>16/9\\) と \\((2+\\sqrt3)^{-1}=2-\\sqrt3\\) から \\(\\frac{11305}{972}(2-\\sqrt3)<\\pi\\) を得る。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-075",
+        "method": "solve.structural_theorem.structural_theorem_polar_rose_revolution_volume"
+      }
+    },
+    {
+      "id": "fullproblem-076",
+      "ordinal": 76,
+      "label": "問題75",
+      "statement": "実数$a,b$が,任意の正の実数 $x$ に対して\n\\[\n\\log x+2<ax+b<e^x\n\\]\nを満たすとする.\n点P$(a,b)$の存在範囲を図示し,その面積を求めよ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_log_exponential_support_region",
+      "answerTex": "\\(\\text{1<a<e, 1-log(a)<b<a(1-log(a)); area=-E + 5/4 + exp(2)/4}\\)",
+      "solutionTex": "\\textbf{1.} log x+2<ax+bを全x>0で満たすにはa>0であり、差の最小点x=1/aから b>1-log a が必要十分である。\n\n\\textbf{2.} ax+b<e\\textasciicircum{}xについて、0<a<=1では下端x->0が支配してb<=1となり前者と両立しない。a>1では接点x=log aから b<a(1-log a) を得る。\n\n\\textbf{3.} 二つの境界の上下関係は(a-1)(1-log a)>0と同値なので1<a<eである。\n\n\\textbf{4.} 縦幅(a-1)(1-log a)をa=1からeまで積分し、面積(e\\textasciicircum{}2-4e+5)/4を得る。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-076",
+        "method": "solve.structural_theorem.structural_theorem_log_exponential_support_region"
+      }
+    },
+    {
+      "id": "fullproblem-077",
+      "ordinal": 77,
+      "label": "問題76",
+      "statement": "素数$a,b,c$に対して, $a^a+b^b-c^c,a^a-b^b+c^c$がともに素数となる組$(a,b,c)$は存在するか.",
+      "status": "unresolved",
+      "familyId": null,
+      "answerTex": null,
+      "solutionTex": null,
+      "certificate": null
+    },
+    {
+      "id": "fullproblem-078",
+      "ordinal": 78,
+      "label": "問題77",
+      "statement": "$\\sin\\theta,\\cos\\theta,\\tan\\theta$がこの順で等比数列をなすような$\\cos\\theta$を求めよ.",
+      "status": "verified",
+      "familyId": "solve.symbolic_algebra.progression_geometric_constraint",
+      "answerTex": "\\(- \\frac{1}{3} + \\frac{1}{9 \\sqrt[3]{\\frac{\\sqrt{69}}{18} + \\frac{25}{54}}} + \\sqrt[3]{\\frac{\\sqrt{69}}{18} + \\frac{25}{54}}\\)",
+      "solutionTex": "\\textbf{1.} 3項がこの順で等比数列をなす条件を，中項の二乗＝両端の積として書く。\n\n\\textbf{2.} 三角関数を \\(s=\\sin\\theta,\\ c=\\cos\\theta\\) と \\(s^2+c^2=1\\) に落とす。\n\n\\textbf{3.} 補助変数を消去すると \\(c^{3} + c^{2} - 1=0\\) を得る。\n\n\\textbf{4.} 値域 \\(\\left[-1, 1\\right]\\) 内の解を元の等比条件へ戻し，\\(- \\frac{1}{3} + \\frac{1}{9 \\sqrt[3]{\\frac{\\sqrt{69}}{18} + \\frac{25}{54}}} + \\sqrt[3]{\\frac{\\sqrt{69}}{18} + \\frac{25}{54}}\\) だけが残る。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-078",
+        "method": "solve.symbolic_algebra.progression_geometric_constraint"
+      }
+    },
+    {
+      "id": "fullproblem-079",
+      "ordinal": 79,
+      "label": "問題78",
+      "statement": "正の整数 \\(n\\geqq 3\\) に対し，外接円の半径が \\(1\\) である二つの正 \\(n\\) 角形を考える．\n以下，固定する正 \\(n\\) 角形はすべて同じ中心 \\(O\\) と同じ頂点 \\(P_1\\) を共有するように配置する．\n一方を固定し，他方を，一辺を共有する状態から，接点が常に両者の頂点となるように，\n固定した正 \\(n\\) 角形の外側を滑ることなく一周させる．\nこのとき，動く正 \\(n\\) 角形が通過する部分を \\(D_n\\) とする．\n\\(D_3,D_4,\\ldots,D_n\\) の共通部分の面積を \\(S_n\\) とするとき，$\\displaystyle\\lim_{n\\to\\infty} S_n$\nを求めよ．",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_regular_polygon_external_roll_common_limit",
+      "answerTex": "\\(\\displaystyle 1\\left[2\\sum_{\\nu=1}^{8}\\bigl(B_{d_\\nu}(b_\\nu-\\phi_\\nu)-B_{d_\\nu}(a_\\nu-\\phi_\\nu)\\bigr)-\\pi\\right]\\;=\\;16.082892753530\\ldots\\)",
+      "solutionTex": "\\textbf{1.} 相似変換により、外接円半径を1から \\(1\\) へ変えると全長は \\(1\\) 倍、面積は \\(1\\) 倍になる。以下では単位半径で計算し、最後にこの面積倍率を戻す。\n\n\\textbf{2.} 固定正 \\(n\\) 角形を \\(K_n\\)、頂点を \\(P_j=e^{2\\pi i j/n}\\) とする。動く多角形を初期共有辺の外側へ置き、接触頂点が \\(P_j\\) の区間では \\[g_j(t)=R_{P_j,t}\\circ g_{j-1},\\qquad 0\\le t\\le\\frac{4\\pi}{n}\\] と書ける。従って \\(D_n=\\bigcup_{j,t}g_j(t)K_n\\) は一般の \\(SE(2)\\) 掃引 \\(\\operatorname{Sweep}(K,g)=\\bigcup_tg(t)K\\) の特殊例である。\n\n\\textbf{3.} \\(d_n\\) を \\(K_n\\) の直径とすると \\[d_n=\\begin{cases}2&(n\\text{ 偶数}),\\\\2\\cos\\dfrac{\\pi}{2n}&(n\\text{ 奇数}).\\end{cases}\\] 各支点区間の多角形は \\(\\overline B(P_j,d_n)\\) 内にある。逆に、偶数 \\(n\\) では唯一の最長対角線が外向き方向の \\([-2\\pi/n,2\\pi/n]\\) を掃き、奇数 \\(n\\) では二本の最長対角線の扇形が隣接して、円板合併の外側 Voronoi 弧を覆う。これらの扇形と \\(K_n\\) は円板合併を尽くすので、\\[F_n:=D_n\\cup K_n=\\bigcup_{j=0}^{n-1}\\overline B(P_j,d_n).\\tag{1}\\]\n\n\\textbf{4.} (1) は原点について星形である。\\(\\delta_j=\\theta-2\\pi j/n\\) とすると動径関数は \\[R_n(\\theta)=\\max_j\\left\\{\\cos\\delta_j+\\sqrt{d_n^2-\\sin^2\\delta_j}\\right\\}.\\tag{2}\\] その最小値は、偶数なら \\(\\cos(\\pi/n)+\\sqrt{4-\\sin^2(\\pi/n)}\\)、奇数なら \\(1+2\\cos(\\pi/n)\\) である。\\(n\\ge6\\) ではいずれも \\(1+\\sqrt3=\\max R_3\\) より大きい。従って \\[\\bigcap_{k=3}^{N}F_k=F_3\\cap F_4\\cap F_5\\qquad(N\\ge5).\\tag{3}\\]\n\n\\textbf{5.} 一方、\\(K_n\\) は半径 \\(\\cos(\\pi/n)\\) の円板を含むので、\\(\\bigcup_{n\\ge3}K_n\\) は単位開円板を尽くす。転動中の内部は固定多角形の内部と交わらないから、(3) より \\[\\lim_{N\\to\\infty}S_N=\\operatorname{area}(F_3\\cap F_4\\cap F_5)-\\pi.\\tag{4}\\]\n\n\\textbf{6.} \\(C(\\phi,d)=\\overline B(e^{i\\phi},d)\\)、\\(d_5=2\\cos(\\pi/10)\\) とする。\\(\\theta_5^-\\), \\(\\theta_5^+\\), \\(\\theta_4^-\\), \\(\\theta_4^+\\) をそれぞれ \\(C(2\\pi/3,\\sqrt3)\\) と \\(C(2\\pi/5,d_5)\\), \\(C(4\\pi/5,d_5)\\), \\(C(\\pi/2,2)\\), \\(C(\\pi,2)\\) の外側交点の偏角として、順に区間 \\((\\pi/2,3\\pi/5)\\), \\((3\\pi/5,2\\pi/3)\\), \\((2\\pi/3,3\\pi/4)\\), \\((3\\pi/4,5\\pi/6)\\) の根を選ぶ。円円交点公式から \\[\\frac1\\pi(\\theta_5^-,\\theta_5^+,\\theta_4^-,\\theta_4^+)=(0.578731785259,0.645530388326,0.698712662623,0.772814474171).\\]\n\n\\textbf{7.} \\[B_d(u)=\\frac{d^2u}{2}+\\frac{\\sin2u}{4}+\\frac{\\sin u\\sqrt{d^2-\\sin^2u}+d^2\\arcsin(\\sin u/d)}2\\] とおくと、\\(B_d'(u)=\\frac12(\\cos u+\\sqrt{d^2-\\sin^2u})^2\\) である。\\(0\\le\\theta\\le\\pi\\) における (2) の最小包絡は順に \\[(3,0),(3,2\\pi/3),(5,2\\pi/5),(5,4\\pi/5),(3,2\\pi/3),(4,\\pi/2),(4,\\pi),(3,2\\pi/3)\\] の円弧で、切替点は \\[0,\\frac\\pi3,\\theta_5^-,\\frac{3\\pi}5,\\theta_5^+,\\theta_4^-,\\frac{3\\pi}4,\\theta_4^+,\\pi.\\] 各区間 \\([a_\\nu,b_\\nu]\\) の中心偏角を \\(\\phi_\\nu\\)、半径を \\(d_\\nu\\) とすれば、(4) は厳密に \\[2\\sum_{\\nu=1}^{8}\\{B_{d_\\nu}(b_\\nu-\\phi_\\nu)-B_{d_\\nu}(a_\\nu-\\phi_\\nu)\\}-\\pi.\\tag{5}\\]\n\n\\textbf{8.} 円円交点残差、八区間の能動枝、原始関数を再生すると全て0になる。(5) の値は \\[\\boxed{16.082892753530\\ldots}\\] である。式 (5) が逆三角関数と平方根だけからなる厳密値であり、小数はその表示値である。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-079",
+        "method": "solve.structural_theorem.structural_theorem_regular_polygon_external_roll_common_limit"
+      }
+    },
+    {
+      "id": "fullproblem-080",
+      "ordinal": 80,
+      "label": "問題79",
+      "statement": "数列 $\\{a_n\\}$ を\n\\[\na_1=a_2=\\frac{\\pi}{4},\\qquad\na_{n+2}=a_{n+1}+a_n\n\\]\nによって定める.\n\n\\begin{enumerate}\n\\item\n次の極限を求めよ.\n\\[\n\\lim_{n\\to\\infty}\n\\frac1n\\sum_{k=1}^{n}\\sin a_k\n\\]\n\n\\item\n多項式 $P_m(x)$ を\n\\[\nP_0(x)=1,\\qquad P_1(x)=x,\n\\]\n\\[\nP_{m+2}(x)=2xP_{m+1}(x)-P_m(x)\n\\qquad (m=0,1,2,\\ldots)\n\\]\nによって定める. 任意の実数 $x$ に対し\n\\[\nP_m(\\cos x)=\\cos mx\n\\]\nが成り立つことを示せ.\n\n\\item\n正の整数 $m$ に対し，次の極限を $m$ に応じて求めよ.\n\\[\n\\lim_{n\\to\\infty}\n\\frac1n\\sum_{k=1}^{n}P_m(\\sin a_k)\n\\]\n\\end{enumerate}",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_fibonacci_angle_period_average",
+      "answerTex": "\\(\\text{(1)}\\ \\frac16.\\qquad \\text{(2)}\\ P_m(x)=T_m(x).\\)\n\\[\\text{(3)}\\quad \\lim_{n\\to\\infty}\\frac1n\\sum_{k=1}^nP_m(\\sin a_k)=\\begin{cases}1&(m\\equiv0\\pmod 8),\\\\-\\frac13&(m\\equiv4\\pmod 8),\\\\0&(m\\equiv2,6\\pmod 8),\\\\\\frac16&(m\\ \\text{is odd}).\\end{cases}\\]",
+      "solutionTex": "\\textbf{1.} \\(a_n=F_n\\pi/4\\) と書く。ただし \\(F_1=F_2=1\\) である。状態 \\((F_n,F_{n+1})\\bmod 8\\) は12周期で、一周期は \\[1,1,2,3,5,0,5,5,2,7,1,0\\] となる。従って長い和の Ces\\`aro 平均は、この12項の平均に一致する。\n\n\\textbf{2.} 一周期について \\[\\sum_{k=1}^{12}\\sin\\frac{F_k\\pi}{4}=2\\] だから、(1) の極限は \\(2/12=1/6\\) である。\n\n\\textbf{3.} (2) の漸化式と初期値は Chebyshev 多項式 \\(T_m\\) の定義そのものである。実際、加法定理から \\[2\\cos x\\cos((m+1)x)-\\cos(mx)=\\cos((m+2)x)\\] なので、帰納法により \\(P_m(\\cos x)=\\cos(mx)\\) を得る。\n\n\\textbf{4.} \\(\\sin a_k=\\cos(\\pi/2-a_k)\\) より \\[P_m(\\sin a_k)=\\cos\\!\\left(\\frac{m\\pi}{2}-\\frac{mF_k\\pi}{4}\\right).\\] 法8の一周期を集計すると \\[\\frac{2(1+(-1)^m)\\cos(m\\pi/4)+1+\\cos(m\\pi/2)}6\\] となる。これを \\(m\\bmod8\\) で整理すれば、表示した4場合を得る。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-080",
+        "method": "solve.structural_theorem.structural_theorem_fibonacci_angle_period_average"
+      }
+    },
+    {
+      "id": "fullproblem-081",
+      "ordinal": 81,
+      "label": "問題80",
+      "statement": "三角形 $ABC$ の内角を $A,B,C$ とする.\n\\[\n\\sin(A+B\\cos C)+\\sin(B+C\\cos A)+\\sin(C+A\\cos B)\n\\]\nの最大値を求めよ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_triangle_angle_sine_sum_maximum",
+      "answerTex": "\\(3\\)",
+      "solutionTex": "\\textbf{1.} 各正弦項は実数上で1以下なので、三項の和は3以下である。\n\n\\textbf{2.} A=B=C=pi/3では各偏角がpi/3+(pi/3)cos(pi/3)=pi/2となる。\n\n\\textbf{3.} 三項が同時に1となる正三角形が存在するため、上界3は達成される。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-081",
+        "method": "solve.structural_theorem.structural_theorem_triangle_angle_sine_sum_maximum"
+      }
+    },
+    {
+      "id": "fullproblem-082",
+      "ordinal": 82,
+      "label": "問題81",
+      "statement": "自然数 1 から $n$ までの和が, $n$ 以下の素数の積と等しいとき, $n$を求めよ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_triangular_primorial_equality",
+      "answerTex": "\\(\\text{False}\\)",
+      "solutionTex": "\\textbf{1.} n=1から10は素数積を逐次更新する整数計算で全検査し、1と3だけを得る。\n\n\\textbf{2.} m=11ではP(m)>T\\_(2m-1)であるため、11<=n<22に解はない。\n\n\\textbf{3.} Bertrandの仮説により(m,2m)に素数があり、m>=5ならP(2m)>mP(m)>T\\_(4m-1)である。\n\n\\textbf{4.} mを倍々にする帰納法でn>=11を覆う。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-082",
+        "method": "solve.structural_theorem.structural_theorem_triangular_primorial_equality"
+      }
+    },
+    {
+      "id": "fullproblem-083",
+      "ordinal": 83,
+      "label": "問題82",
+      "statement": "極座標平面上の曲線 \\(C:r=\\sin\\theta\\) 上に，原点 \\(O\\) と異なる\n相異なる5点 \\(P_1,P_2,P_3,P_4,P_5\\) があり，\n\\[\nP_kP_{k+1}=P_kO\\quad(k=1,2,3,4),\\qquad\nP_5P_1=P_5O\n\\]\nおよび\n\\[\nOP_1<OP_2<OP_3<OP_4<OP_5\n\\]\nを満たしている.\n\n\\begin{enumerate}\n\\item[(1)]\n次の等式を示せ.\n\\[\n\\frac{1}{OP_1}\n=\n\\frac{1}{OP_2}\n+\\frac{1}{OP_3}\n+\\frac{1}{OP_4}\n+\\frac{1}{OP_5}.\n\\]\n\n\\item[(2)]\n次の等式を示せ.\n\\[\n\\frac{1}{P_1P_3}+\\frac{1}{P_2P_5}\n=\n\\frac{1}{P_1P_4}\n+\\frac{1}{P_2P_4}\n+\\frac{1}{P_3P_5}.\n\\]\n\\end{enumerate}",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_polar_circle_doubling_reciprocal_identities",
+      "answerTex": "\\(\\theta_k=2^{k-1}\\pi/31\\ (k=1,\\ldots,5)\\) と定まり、\\(\\dfrac1{OP_1}=\\sum_{k=2}^5\\dfrac1{OP_k}\\) および第(2)式がともに成立する。",
+      "solutionTex": "\\textbf{1.} r=sin theta は中心(0,1/2)、半径1/2の円である。角theta,phiに対応する二点の弦長は |sin(theta-phi)|、原点からの距離はsin thetaである。\n\n\\textbf{2.} 原点でない次点について |sin(phi-theta)|=sin theta を解くと phi=2theta (mod pi)。従って5点は円周角の倍角写像で巡回し、2\\textasciicircum{}5 theta\\_1=theta\\_1 (mod pi) から theta\\_1=j*pi/31 となる。\n\n\\textbf{3.} 半径sin(theta)の大小は residue j のmin(j,31-j)の大小で決まる。6本の倍角軌道を有限列挙すると、厳密増加する軌道は (1,2,4,8,16) だけである。\n\n\\textbf{4.} csc u=cot(u/2)-cot u を用いると csc2x+csc4x+csc8x+csc16x=cot x-cot16x。31x=piよりcot16x=-tan(x/2)なので、これはcsc xに等しい。第(1)式を得る。\n\n\\textbf{5.} 弦長公式から第(2)式は csc3x+csc14x=csc7x+csc6x+csc12x。cot14x=tan(3x/2), cot12x=tan(7x/2) と csc u=cot(u/2)-cot u を使うと、両辺ともcot3x+cot7xへ縮約される。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-083",
+        "method": "solve.structural_theorem.structural_theorem_polar_circle_doubling_reciprocal_identities"
+      }
+    },
+    {
+      "id": "fullproblem-084",
+      "ordinal": 84,
+      "label": "問題83",
+      "statement": "実数 $t$ が $-\\pi\\leq t\\leq\\pi$ の範囲を動くとき，点\n\\[\nP\\left(\n\\cos\\left(\\frac{\\pi\\sin t}{2t}\\right),\n\\sin(t-\\sin t)\n\\right)\n\\]\nの描く曲線を $C$ とする.\n\n曲線 $C$ によって囲まれる部分の面積を $S$ とするとき，\n\\[\nS<1\n\\]\nを示せ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_parametric_symmetric_area_bound",
+      "answerTex": "\\(S<1\\)",
+      "solutionTex": "\\textbf{1.} \\(x(t)=\\cos\\!\\left(\\frac{\\pi\\sin t}{2t}\\right)\\), \\(y(t)=\\sin(t-\\sin t)\\) とおく。\\(x\\) は偶関数、\\(y\\) は奇関数である。\n\n\\textbf{2.} \\(0<t<\\pi\\) では \\(\\sin t-t\\cos t>0\\) かつ \\(1-\\cos t>0\\) である。したがって \\(x(t)\\) は狭義増加し、\\(h(t)=t-\\sin t\\) も増加する。曲線は \\(x\\) 軸について対称な単純閉曲線なので \\(S=2\\int_0^\\pi y(t)\\,dx(t)\\) である。\n\n\\textbf{3.} \\([0,\\pi]\\) を 72 等分する。各節点で、Machin公式による \\(\\pi\\) の有理区間と \\(\\sin z\\) の交代Taylor級数を用いて \\(x\\) の上下端および \\(y\\) の上端を有理数で囲む。\n\n\\textbf{4.} \\(x\\) の単調性と \\(\\sin h\\) の \\(h=\\pi/2\\) を境とする単峰性から、各小区間で上側面積を \\(\\sup y\\,[x(t_{k+1})-x(t_k)]\\) で抑える。これらは同じ型の Riemann--Stieltjes上和であり、個別の数値解法ではない。\n\n\\textbf{5.} 厳密な有理数計算で上下を合わせると \\(S<499638101/500000000<1\\) を得る。よって所望の \\(S<1\\) が従う。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-084",
+        "method": "solve.structural_theorem.structural_theorem_parametric_symmetric_area_bound"
+      }
+    },
+    {
+      "id": "fullproblem-085",
+      "ordinal": 85,
+      "label": "問題84",
+      "statement": "$\\dfrac{\\theta}{\\pi}$ が有理数であるとする.\n\\[\n\\tan^n\\theta+\\frac{1}{\\tan^n\\theta}=2^p\n\\]\nを満たす自然数 $n$，素数 $p$，および $\\theta$ をすべて求めよ.",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_rational_angle_reciprocal_power_of_two",
+      "answerTex": "\\(n=1,\\ p=2,\\quad \\theta\\equiv\\frac{\\pi}{12},\\frac{5\\pi}{12}\\pmod{\\pi}.\\)",
+      "solutionTex": "\\textbf{1.} \\(t=\\tan\\theta\\) と置く。式に \\(t^{-n}\\) があるので \\(t\\ne0\\) である。 \\(X=t^n\\) は \\(X^2-2^pX+1=0\\) を満たし、その二根は正である。\n\n\\textbf{2.} \\(\\theta/\\pi\\in\\mathbb Q\\) なので \\(t\\) は全実円分体に属する。 任意の埋め込み \\(\\sigma\\) に対し \\(\\sigma(t^2)\\ge0\\) で、 \\(\\sigma(t^2)^n\\) は高々二値しか取らない。 非負実数上で \\(u\\mapsto u^n\\) は単射だから \\([\\mathbb Q(t^2):\\mathbb Q]\\le2\\) である。\n\n\\textbf{3.} \\(\\zeta=e^{2i\\theta}\\) の位数を \\(m\\) とすると \\(2\\cos2\\theta=\\zeta+\\zeta^{-1}\\) は次数 \\(\\varphi(m)/2\\) の代数的整数である。従って \\(\\varphi(m)\\le4\\)。 素因子と指数を調べると \\(m\\in\\{1,2,3,4,5,6,8,10,12\\}\\) に限られる。\n\n\\textbf{4.} \\(m=1,2\\) では \\(t^{-n}\\) が定義できない。 \\(m=3,6\\) では \\(t^2=3\\) または \\(1/3\\) で、奇数乗は無理数、偶数乗は分母に3が残る。 \\(m=4\\) では左辺は \\(\\pm2\\) である。\n\n\\textbf{5.} \\(m=5,10\\) では \\(u=t^2\\) に対する \\(u+u^{-1}\\) の二共役が \\(6\\pm8\\sqrt5/5\\) となる。 元の左辺が有理なら、その平方から \\(u^n+u^{-n}\\) も有理である。 しかし \\(u^n+u^{-n}=2T_n((u+u^{-1})/2)\\) は \\(u+u^{-1}>2\\) で狭義単調だから二共役で値が異なり、矛盾する。\n\n\\textbf{6.} \\(m=8\\) の偶数乗は \\((1+\\sqrt2)^n+(\\sqrt2-1)^n\\equiv2\\pmod4\\)、奇数乗は無理数である。 \\(m=12\\) では \\(A_n=(2+\\sqrt3)^n+(2-\\sqrt3)^n\\) が \\(A_n=4A_{n-1}-A_{n-2}\\) を満たし、 \\(A_n\\bmod8\\) は \\(2,4,6,4\\) を周期的に取る。\n\n\\textbf{7.} 従って2の素数乗になれるのは \\(A_1=4=2^2\\) だけである。 このとき \\(t=2\\pm\\sqrt3\\)、すなわち \\(\\theta\\equiv\\pi/12,5\\pi/12\\pmod\\pi\\)。 元の式へ代入すると両方とも確かに成立する。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-085",
+        "method": "solve.structural_theorem.structural_theorem_rational_angle_reciprocal_power_of_two"
+      }
+    },
+    {
+      "id": "fullproblem-086",
+      "ordinal": 86,
+      "label": "問題85",
+      "statement": "実数 $c$ に対し，曲線\n\\[\nC_c:y=x^3-cx\n\\]\nを考える．点 $P$ から $C_c$ に相異なる3本の接線\n$\\ell_1,\\ell_2,\\ell_3$ が引け，\n$\\ell_1,\\ell_2$ のなす角と $\\ell_2,\\ell_3$ のなす角が\nともに $\\dfrac{\\pi}{3}$ であるとする．\nまた，$\\ell_1,\\ell_2,\\ell_3$ と $C_c$ との接点を\nそれぞれ $A,B,C$ とする．\n\n\\begin{enumerate}\n\\item[(1)] $c=3$ のとき，点 $P$ の座標をすべて求めよ．\n\\item[(2)] $c$ のとりうる値の範囲を求めよ．\n\\item[(3)] 三角形 $ABC$ の面積の最小値を求めよ．\n\\end{enumerate}",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_cubic_tangent_equiangular_extremum",
+      "answerTex": "\\(\\text{(1)}\\quad r_{\\delta}=3+\\delta\\sqrt6,\\quad \\delta,\\varepsilon\\in\\{-1,1\\}.\\)\\[P=\\left(\\frac{2\\varepsilon}{3}\\sqrt{5r_{\\delta}},-\\frac{10\\varepsilon}{3\\sqrt{5r_{\\delta}}}\\right).\\]\\(\\text{(2)}\\quad c\\in[\\sqrt3,\\infty).\\)\\[\\text{(3)}\\quad [ABC]_{\\min}=\\sqrt{\\frac{5543\\sqrt{241}-5647}{300000}}.\\]",
+      "solutionTex": "\\textbf{1.} 接点の横座標を \\(t\\) とすると、接線は \\(y=(3t^2-c)x-2t^3\\) である。\\(P=(u,v)\\) を通る接点は \\(2t^3-3ut^2+cu+v=0\\) の3根 \\(t_1,t_2,t_3\\) である。従って \\(s=t_1+t_2+t_3=3u/2\\)、\\(t_1t_2+t_2t_3+t_3t_1=0\\) である。\n\n\\textbf{2.} \\(\\ell_1,\\ell_3\\) は相異なり、ともに \\(\\ell_2\\) と \\(\\pi/3\\) をなすので、\\(\\ell_2\\) の両側の二方向を占める。従って3本の方向は \\(\\pi/3\\) 間隔である。このことと、傾き \\(m_i\\) がある \\(h\\) に対する \\(m^3-3hm^2-3m+h=0\\) の3根になることは同値である。よって \\(\\sigma_2(m_1,m_2,m_3)=-3\\)、\\(\\sigma_1+3\\sigma_3=0\\) である。これは傾きの順序や基準方向に依存しない射影的な条件である。\n\n\\textbf{3.} \\(e_3=t_1t_2t_3\\)、\\(q=cs+3e_3\\) とおく。\\(m_i=3t_i^2-c\\) を前段の二つの対称式へ代入すると \\(2sq=c^2+1\\)、\\(s^2+3q^2=c(c^2+1)\\) を得る。従って \\(sq>0\\) であり、\\(r=s/q>0\\) とおけば \\(c=(r+3/r)/2\\) である。相加相乗平均から \\(c\\ge\\sqrt3\\)。逆に任意の \\(r>0\\) でこの式と二条件を満たす \\(s,q\\) が取れるので、範囲はちょうど \\([\\sqrt3,\\infty)\\) である。\n\n\\textbf{4.} 実際、\\(s^2=(r^2+1)(r^2+9)/(8r)\\)、\\(e_3=-s(r^2+1)/(6r)\\) であり、接点三次式の判別式は \\(\\Delta=(r^2+1)^3(r^2+9)/(96r)>0\\) となる。従って全ての \\(r>0\\) で接点は相異なる実数で、逆構成に欠落はない。\n\n\\textbf{5.} \\(c=3\\) では \\(r^2-6r+3=0\\) より \\(r=3\\pm\\sqrt6\\)、\\(s^2=5r\\)、\\(q=5/s\\) である。また \\(u=2s/3,\\ v=-2q/3\\) なので、\\(s\\) の二つの符号を合わせて(1)の4点を得る。\n\n\\textbf{6.} 三接点のVandermonde行列式では、\\(y_i=t_i^3-ct_i\\) の線形項を消せる。さらに \\(t_i^3=st_i^2+e_3\\) だから \\(2[ABC]=|s|\\,|(t_1-t_2)(t_2-t_3)(t_3-t_1)|\\)。判別式を代入すると \\([ABC]=(r^2+1)^2(r^2+9)/(32\\sqrt3\\,r)\\) となる。\n\n\\textbf{7.} その導関数の符号は \\(5r^4+28r^2-9\\) の符号に一致する。\\(r>0\\) で唯一の零点は \\(r^2=(\\sqrt{241}-14)/5\\) で、両端では面積が無限大へ発散する。この点での面積の平方を整理すると \\((5543\\sqrt{241}-5647)/300000\\) となり、(3)を得る。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-086",
+        "method": "solve.structural_theorem.structural_theorem_cubic_tangent_equiangular_extremum"
+      }
+    },
+    {
+      "id": "fullproblem-087",
+      "ordinal": 87,
+      "label": "問題86",
+      "statement": "素数$p,q,r$に対して, $\\dfrac{p^q+q^r}{r^p}$ が素数ならば$p=q=r$は真か偽か.",
+      "status": "unresolved",
+      "familyId": null,
+      "answerTex": null,
+      "solutionTex": null,
+      "certificate": null
+    },
+    {
+      "id": "fullproblem-088",
+      "ordinal": 88,
+      "label": "問題87",
+      "statement": "$0<2p<q$ を満たす互いに素な自然数 $p,q$ と自然数 $n\\geqq2$ に対し，\n\\[\n\\cos^n\\frac{p\\pi}{q}+\\sin^n\\frac{p\\pi}{q}\n=\n\\cos\\frac{np\\pi}{q}+\\sin\\frac{np\\pi}{q}\n\\]\nが成り立つ組 $(n,p,q)$ をすべて求めよ．",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_rational_angle_power_identity",
+      "answerTex": "\\(\\{(n,p,q)=(2,1,4)\\}\\)",
+      "solutionTex": "\\textbf{1.} \\(\\alpha=p\\pi/q\\), \\(x=\\cos\\alpha\\), \\(y=\\sin\\alpha\\) とおく。\\(K=\\mathbb Q(\\zeta_{4q})\\) の自己同型 \\(\\sigma_k\\ (k\\in(\\mathbb Z/4q\\mathbb Z)^\\times)\\) に対し、\\[\\sigma_k(x)=\\cos(k\\alpha),\\qquad \\sigma_k(y)=\\chi_4(k)\\sin(k\\alpha)\\] である。左辺の任意の共役は、\\(n\\ge2\\) より絶対値が \\(|\\cos(k\\alpha)|^n+|\\sin(k\\alpha)|^n\\le1\\) である。従って右辺を二乗して \\[\\chi_4(k)\\sin(2nk\\alpha)\\le0\\tag{1}\\] が全ての単元 \\(k\\) に対して必要である。\n\n\\textbf{2.} \\(np/q=A/Q\\ (\\gcd(A,Q)=1)\\) と既約化する。(1) と中国剰余定理を用いると \\(Q\\) が奇数または \\(2\\pmod4\\) のときは \\(Q=1,2\\) しか残らない。\\(4\\mid Q\\) では、半区間 \\(0<r<Q/2\\) の単元が全て \\(1\\pmod4\\) でなければならない。\\(8\\mid Q\\) では \\(r=Q/2-1\\)、\\(Q=4m,\\ 3\\nmid m\\) では \\(r=Q/2-3\\)、\\(Q=12M>12\\) では \\(r=2M+1,2M+5,2M+9\\) のいずれかが反例となる。従って \\[Q\\in\\{1,2,4,12\\},\\qquad \\sin(2n\\alpha)\\in\\{0,-1,-1/2\\}.\\tag{2}\\]\n\n\\textbf{3.} 元の等式の左辺は正であり、その平方は \\(1+\\sin(2n\\alpha)\\) に等しい。値 \\(-1\\) は不可能である。値0の場合、\\(n>2\\) なら \\(x^n+y^n<x^2+y^2=1\\) なので \\(n=2\\)。このとき \\(\\cos2\\alpha+\\sin2\\alpha=1\\) と \\(0<\\alpha<\\pi/2\\) から \\(\\alpha=\\pi/4\\)、すなわち \\((n,p,q)=(2,1,4)\\) を得る。\n\n\\textbf{4.} 残る値 \\(-1/2\\) を排除する。このとき \\(x^n+y^n=1/\\sqrt2\\)。全共役は \\(f_n(t)=\\cos^nt+\\sin^nt\\) の水準 \\(\\pm1/\\sqrt2\\) に入る。\\(f_n'\\) の零点で分けた八つの開八分円では符号と単調性が固定されるので、この二水準の点は合計高々8個である。一方、共役角は \\(\\varphi(2q)/2\\) 個あるから \\(\\varphi(2q)\\le16\\)。\\(12\\mid q\\) と合わせると \\(2q\\in\\{24,48\\}\\)、従って \\(q\\in\\{12,24\\}\\) だけが残る。\n\n\\textbf{5.} \\(q=12\\) では \\(n\\equiv3\\pmod4\\) であり、\\(\\sigma_5\\) は \\((x,y)\\) を \\((y,x)\\) へ移す。左辺を保存する一方、右辺をその負へ移すので矛盾する。\\(q=24\\) では \\(n\\equiv2\\pmod4\\) であり、\\(k=11\\) または35の自己同型が \\((x,y)\\) を \\((y,-x)\\) へ移す。同様に左辺を保存して右辺を反転するので矛盾する。\n\n\\textbf{6.} 最後に \\((n,p,q)=(2,1,4)\\) を代入すると、左辺は \\(\\cos^2(\\pi/4)+\\sin^2(\\pi/4)=1\\)、右辺は \\(\\cos(\\pi/2)+\\sin(\\pi/2)=1\\) である。従って求める組は \\(\\boxed{(2,1,4)}\\) のみである。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-088",
+        "method": "solve.structural_theorem.structural_theorem_rational_angle_power_identity"
+      }
+    },
+    {
+      "id": "fullproblem-089",
+      "ordinal": 89,
+      "label": "問題88",
+      "statement": "\\[\n\\lim_{n\\to\\infty}\n\\left\\{\n\\sum_{k=0}^{n}\n\\left(1+\\frac{1}{{}_n C_k}\\right)^{{}_n C_k}\n-en\n\\right\\}\n\\]\nを求めよ．",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_binomial_exponential_edge_limit",
+      "answerTex": "\\(4 - e\\)",
+      "solutionTex": "\\textbf{1.} m=C(n,k), a=1 とおく。log(1+x) の上下評価から 0<=exp(a)-(1+a/m)\\textasciicircum{}m<=exp(a)a\\textasciicircum{}2/(2m) を得る。\n\n\\textbf{2.} k=1,n-1 では 1/C(n,k)=1/n である。2<=k<=n-2 では C(n,k)>=C(n,2) なので、内部の逆二項係数和は 2(n-3)/(n(n-1)) 以下である。\n\n\\textbf{3.} 従って 1<=k<=n-1 の全誤差は exp(a)a\\textasciicircum{}2/2 と 4/n 未満の積で抑えられ、n->infinity で0へ収束する。\n\n\\textbf{4.} 端点 k=0,n は常に (1+a)\\textasciicircum{}1=2 である。内部 n-1 項を exp(a) に置き換え、n exp(a) を引くと極限は 4 - E となる。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-089",
+        "method": "solve.structural_theorem.structural_theorem_binomial_exponential_edge_limit"
+      }
+    },
+    {
+      "id": "fullproblem-090",
+      "ordinal": 90,
+      "label": "問題89",
+      "statement": "実数 $\\theta$ が\n\\[\n\\sin\\theta+\\cos\\theta=\\frac{1}{2027}\n\\]\nを満たしているとする．\n\n\\[\n\\sin^n\\theta+\\cos^n\\theta>\\frac{1}{2027}\n\\]\nとなる正の整数 $n$ をすべて求めよ．",
+      "status": "verified",
+      "familyId": "solve.structural_theorem.structural_theorem_trigonometric_power_sum_threshold",
+      "answerTex": "\\(\\{2, 3, 4, 5, 6, 8, 10, 12, 14, 16, 18, 20, 22\\}\\)",
+      "solutionTex": "\\textbf{1.} \\(s=\\sin\\theta+\\cos\\theta=\\frac{1}{2027}\\) とおく。\\[\\sin\\theta\\cos\\theta=\\frac{s^2-1}{2}<0\\]であるから、\\(\\{\\sin\\theta,\\cos\\theta\\}=\\{u,-v\\}\\) \\((0<v<u<1)\\) と書ける。\n\n\\textbf{2.} このとき \\(u-v=s\\)、\\(u^2+v^2=1\\)、\\(uv=(1-s^2)/2=\\frac{2054364}{4108729}\\) である。偶数 \\(n\\) には \\(E_n=u^n+v^n\\)、奇数 \\(n\\) には\\[O_n=\\frac{u^n-v^n}{u-v}\\]とおく。\\(\\rho=(uv)^2=\\frac{4220411444496}{16881653995441}\\) とすれば、両列は\\[X_{n+2}=X_n-\\rho X_{n-2}\\]を満たす。\n\n\\textbf{3.} 従って状態を\\[\\binom{X_{n+2}}{X_n}=\\begin{pmatrix}1&-\\frac{4220411444496}{16881653995441}\\\\1&0\\end{pmatrix}\\binom{X_n}{X_{n-2}}\\]で進めればよい。厳密有理数演算により、偶数列は \\(n=24\\)、奇数列は \\(n=7\\) で初めて条件を満たさなくなる。\n\n\\textbf{4.} 実際、\\(E_n>0\\)、\\(O_n>0\\) であり、上の漸化式から各部分列は狭義単調減少する。また偶数では元のべき和が \\(E_n\\)、奇数では \\(sO_n\\) だから、最初の不成立以後に条件が再び成立することはない。\n\n\\textbf{5.} 最後に元の Newton 漸化式\\[P_n=\\frac{1}{2027}P_{n-1}+\\frac{2054364}{4108729}P_{n-2},\\qquad P_0=2,\\quad P_1=\\frac{1}{2027}\\]を \\(n=24\\) まで独立に再生して照合した。従って求める集合は\\[\\boxed{\\{2, 3, 4, 5, 6, 8, 10, 12, 14, 16, 18, 20, 22\\}}\\]である。",
+      "certificate": {
+        "verified": true,
+        "id": "mortra-fullproblem-proof-090",
+        "method": "solve.structural_theorem.structural_theorem_trigonometric_power_sum_threshold"
+      }
+    }
+  ]
+}
