@@ -28,13 +28,13 @@ async function verifyViewport(name, viewport) {
   page.on('pageerror', error => runtimeErrors.push(error.message))
 
   await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 60_000 })
-  await page.getByLabel('問題Aを全問題.texから選択').selectOption('fullproblem-034')
-  await page.getByLabel('問題Bを全問題.texから選択').selectOption('fullproblem-090')
+  await page.getByLabel('問題Aを全問題.texから選択').selectOption('fullproblem-001')
+  await page.getByLabel('問題Bを全問題.texから選択').selectOption('fullproblem-054')
   await page.getByRole('button', { name: '融合問題を生成', exact: true }).click()
   await page.getByText('生成完了', { exact: true }).waitFor({ timeout: 60_000 })
 
   const requiredTexts = [
-    { text: 'Pell方程式', exact: false },
+    { text: '生成した問題 1 / 7', exact: true },
     { text: '親問題への依存', exact: false },
     { text: '2件の親問題を最終目標まで逆追跡しました。', exact: true },
     { text: '未使用の条件は0件です。', exact: true },
@@ -50,6 +50,36 @@ async function verifyViewport(name, viewport) {
     documentWidth: document.documentElement.scrollWidth,
     bodyWidth: document.body.scrollWidth,
   }))
+
+  const artifact = page
+    .getByText('生成監査', { exact: true })
+    .locator('xpath=ancestor::article[1]')
+  const nextButton = page.getByRole('button', { name: '次の問題', exact: true })
+  const previousButton = page.getByRole('button', { name: '前の問題', exact: true })
+  const generatedProblemTexts = []
+  for (let index = 0; index < 7; index += 1) {
+    await page
+      .getByText(`生成した問題 ${index + 1} / 7`, { exact: true })
+      .waitFor({ timeout: 10_000 })
+    generatedProblemTexts.push(await artifact.innerText())
+    if (index < 6) await nextButton.click()
+  }
+  const nextDisabledAtEnd = await nextButton.isDisabled()
+  for (let index = 6; index > 0; index -= 1) await previousButton.click()
+  await page.getByText('生成した問題 1 / 7', { exact: true }).waitFor({ timeout: 10_000 })
+  const returnedToFirstProblem = await artifact.innerText() === generatedProblemTexts[0]
+
+  const screenshotPath = resolve(outputDirectory, `${name}.png`)
+  await page.screenshot({ path: screenshotPath, fullPage: true })
+  const artifactScreenshotPath = resolve(outputDirectory, `${name}-generated-problem.png`)
+  await artifact.screenshot({ path: artifactScreenshotPath })
+
+  await page.reload({ waitUntil: 'domcontentloaded' })
+  await page.getByLabel('問題Aを全問題.texから選択').selectOption('fullproblem-034')
+  await page.getByLabel('問題Bを全問題.texから選択').selectOption('fullproblem-090')
+  await page.getByRole('button', { name: '融合問題を生成', exact: true }).click()
+  await page.getByText('生成完了', { exact: true }).waitFor({ timeout: 60_000 })
+  const pellVisible = await page.getByText('Pell方程式', { exact: false }).count() > 0
   const generatedDiagram = page.getByRole('img', {
     name: 'Pell方程式の解をべき和の指数にする',
     exact: true,
@@ -70,13 +100,6 @@ async function verifyViewport(name, viewport) {
       ),
     }
   })
-  const screenshotPath = resolve(outputDirectory, `${name}.png`)
-  await page.screenshot({ path: screenshotPath, fullPage: true })
-  const artifactScreenshotPath = resolve(outputDirectory, `${name}-generated-problem.png`)
-  await page
-    .getByText('生成監査', { exact: true })
-    .locator('xpath=ancestor::article[1]')
-    .screenshot({ path: artifactScreenshotPath })
   const diagramScreenshotPath = resolve(outputDirectory, `${name}-generated-diagram.png`)
   await generatedDiagram.screenshot({ path: diagramScreenshotPath })
   await context.close()
@@ -91,6 +114,11 @@ async function verifyViewport(name, viewport) {
     noHorizontalOverflow:
       layout.documentWidth <= layout.viewportWidth && layout.bodyWidth <= layout.viewportWidth,
     layout,
+    generatedProblemCount: generatedProblemTexts.length,
+    distinctGeneratedProblemCount: new Set(generatedProblemTexts).size,
+    nextDisabledAtEnd,
+    returnedToFirstProblem,
+    pellVisible,
     diagramLayout,
     runtimeErrors,
   }
@@ -104,6 +132,11 @@ try {
   const passed = results.every(result =>
     Object.values(result.visible).every(Boolean)
     && result.noHorizontalOverflow
+    && result.generatedProblemCount === 7
+    && result.distinctGeneratedProblemCount === 7
+    && result.nextDisabledAtEnd
+    && result.returnedToFirstProblem
+    && result.pellVisible
     && result.diagramLayout.stateCount >= 2
     && result.diagramLayout.allStatesWithinBounds
     && result.runtimeErrors.length === 0,

@@ -15,6 +15,8 @@ type CatalogEntry = {
 type Candidate = {
   cardId: string
   family: string
+  observable: string
+  querySignature: string
   parents: Array<{ id: string; label: string; ordinal: number }>
   endpointKinds: string[]
   statement: string
@@ -108,6 +110,10 @@ function dominates(left: Candidate, right: Candidate): boolean {
 
 const catalogPath = resolve(argument('--catalog') ?? 'artifacts/benchmarks/fullproblem-certified-catalog-20260831.json')
 const outputPath = resolve(argument('--out') ?? 'artifacts/benchmarks/certified-difficult-problem-generation-20260901.json')
+const perPairLimit = Number(argument('--per-pair-limit') ?? '64')
+if (!Number.isInteger(perPairLimit) || perPairLimit < 1) {
+  throw new Error('--per-pair-limit must be a positive integer')
+}
 const catalog = JSON.parse(await readFile(catalogPath, 'utf8')) as { entries: CatalogEntry[] }
 const entries = catalog.entries
 const corpusGrams = entries.map(entry => ({ entry, grams: ngrams(entry.statement) }))
@@ -119,7 +125,7 @@ for (let leftIndex = 0; leftIndex < entries.length; leftIndex += 1) {
     const left = entries[leftIndex]
     const right = entries[rightIndex]
     const parents = [left, right].map(parent => ({ id: parent.id, statement: parent.statement }))
-    const cards = synthesizeCertifiedFusions(parents, 3)
+    const cards = synthesizeCertifiedFusions(parents, perPairLimit)
       .filter(card => certifiedFusionKind(card.family_id) === 'structural')
     for (const card of cards) {
       if (seenCards.has(card.id)) continue
@@ -131,6 +137,8 @@ for (let leftIndex = 0; leftIndex < entries.length; leftIndex += 1) {
       candidates.push({
         cardId: card.id,
         family: card.family_id,
+        observable: card.structure_blueprint.observable,
+        querySignature: card.structure_blueprint.structuralUniqueness.querySignature,
         parents: [left, right].map(parent => ({
           id: parent.id,
           label: parent.label,
@@ -167,6 +175,11 @@ const familyCounts = Object.fromEntries(
     .sort()
     .map(family => [family, candidates.filter(candidate => candidate.family === family).length]),
 )
+const observableCounts = Object.fromEntries(
+  [...new Set(candidates.map(candidate => candidate.observable))]
+    .sort()
+    .map(observable => [observable, candidates.filter(candidate => candidate.observable === observable).length]),
+)
 const paretoFront = candidates.filter(candidate =>
   !candidates.some(other => other.cardId !== candidate.cardId && dominates(other, candidate)),
 )
@@ -184,11 +197,16 @@ const report = {
   method: {
     population: `${entries.length}問の全組合せ`,
     pairCount: entries.length * (entries.length - 1) / 2,
+    perPairLimit,
     selection: '証明深度・表現数・答えの演算数・90問に対する表層新規性を別々に測り、単一の恣意的総合点へ潰さない',
     proofRequirement: '厳密計算、独立検算、両親依存、交差合成、条件最小性、逆再生拒否のすべて',
   },
   candidateCount: candidates.length,
   familyCounts,
+  observableCounts,
+  distinctCardIdCount: new Set(candidates.map(candidate => candidate.cardId)).size,
+  distinctStatementCount: new Set(candidates.map(candidate => canonical(candidate.statement))).size,
+  distinctQuestionFormCount: new Set(candidates.map(candidate => candidate.querySignature)).size,
   allAuditsPassed: candidates.every(candidate =>
     candidate.exactBackend
     && candidate.independentCheck
@@ -208,6 +226,7 @@ process.stdout.write(`${JSON.stringify({
   outputPath,
   candidateCount: candidates.length,
   familyCounts,
+  observableCounts,
   allAuditsPassed: report.allAuditsPassed,
   paretoFront: paretoFront.map(candidate => ({
     cardId: candidate.cardId,

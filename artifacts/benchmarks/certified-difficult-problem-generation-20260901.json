@@ -1,26 +1,47 @@
 {
   "schema": 1,
-  "measuredAt": "2026-08-31T16:17:44.537Z",
+  "measuredAt": "2026-08-31T18:08:44.954Z",
   "purpose": "直接構造融合が、単なる逆再生ではない検証済み難問候補を生成できるかを測る",
   "method": {
     "population": "90問の全組合せ",
     "pairCount": 4005,
+    "perPairLimit": 64,
     "selection": "証明深度・表現数・答えの演算数・90問に対する表層新規性を別々に測り、単一の恣意的総合点へ潰さない",
     "proofRequirement": "厳密計算、独立検算、両親依存、交差合成、条件最小性、逆再生拒否のすべて"
   },
-  "candidateCount": 11,
+  "candidateCount": 49,
   "familyCounts": {
     "certified.mobius_polynomial_fixed_point_transport": 1,
     "certified.pell_indexed_power_sum": 1,
     "certified.pell_recurrence_state_product": 1,
     "certified.recurrence_indexed_power_sum": 1,
-    "certified.recurrence_rational_angle_orbit": 7
+    "certified.recurrence_rational_angle_orbit": 45
   },
+  "observableCounts": {
+    "cosine_zero_index_set": 3,
+    "eventual_cosine_sign_profile": 7,
+    "eventual_minimal_sine_period": 7,
+    "eventual_minimal_trigonometric_period": 7,
+    "eventual_minimal_unit_circle_point_period": 7,
+    "indexed_power_sum_inequality_solution_set": 1,
+    "initial_unit_circle_point_return_set": 7,
+    "pell_indexed_power_sum_inequality_solution_set": 1,
+    "periodic_congruence_solution_set": 1,
+    "sine_zero_index_set": 7,
+    "transported_root_fixed_point_equation": 1
+  },
+  "distinctCardIdCount": 49,
+  "distinctStatementCount": 49,
+  "distinctQuestionFormCount": 11,
   "allAuditsPassed": true,
   "paretoFrontCardIds": [
-    "mortra-certified-finite-state-trig.b387eebb79c14218",
-    "mortra-certified-finite-state-trig.93f68cc87a2b6734",
-    "mortra-certified-finite-state-trig.6e8d726320f4a279",
+    "mortra-certified-finite-state-trig-sine-period.5e58ddb7ee08e891",
+    "mortra-certified-finite-state-trig-cosine-sign-profile.6eccd3506a1049f2",
+    "mortra-certified-finite-state-trig-sine-period.6759fdb09834e7b1",
+    "mortra-certified-finite-state-trig-sine-period.47e64a404650be4d",
+    "mortra-certified-finite-state-trig-unit-circle-point-period.55263c29172f158f",
+    "mortra-certified-finite-state-trig-sine-period.2e5a1d4cc6a08bd0",
+    "mortra-certified-finite-state-trig-unit-circle-point-period.03150d5e7766a4c0",
     "mortra-certified.pell-recurrence-product.e7bc6fac4b7b816a",
     "mortra-certified.pell-indexed-power-sum.88fa901da61aad9f"
   ],
@@ -28,19 +49,59 @@
     "mortra-certified.pell-indexed-power-sum.88fa901da61aad9f",
     "mortra-certified.pell-recurrence-product.e7bc6fac4b7b816a",
     "mortra-certified.indexed-power-sum.33b630d2c7648ffc",
+    "mortra-certified-finite-state-trig-unit-circle-point-period.55263c29172f158f",
+    "mortra-certified-finite-state-trig-unit-circle-point-period.03150d5e7766a4c0",
+    "mortra-certified-finite-state-trig-unit-circle-point-period.24f0c8d65f2275cc",
+    "mortra-certified-finite-state-trig-sine-period.47e64a404650be4d",
+    "mortra-certified-finite-state-trig-unit-circle-point-period.bc790266914ad0d1",
     "mortra-certified-finite-state-trig.6e8d726320f4a279",
+    "mortra-certified-finite-state-trig-sine-period.2e5a1d4cc6a08bd0",
+    "mortra-certified-finite-state-trig-sine-period.c660715a8ebc5249",
+    "mortra-certified-finite-state-trig-unit-circle-point-period.14273deaacefc9a8",
     "mortra-certified-finite-state-trig.b387eebb79c14218",
+    "mortra-certified-finite-state-trig-unit-circle-point-period.f572dcd114f8bf36",
+    "mortra-certified-finite-state-trig-sine-period.5e58ddb7ee08e891",
+    "mortra-certified-finite-state-trig-sine-period.6759fdb09834e7b1",
     "mortra-certified-finite-state-trig.015a7c04dc0a0604",
+    "mortra-certified-finite-state-trig-sine-period.e6e34e943bfcedb0",
     "mortra-certified-finite-state-trig.93f68cc87a2b6734",
     "mortra-certified-finite-state-trig.fa9875c41c6984bf",
     "mortra-certified-finite-state-trig.a44cdc7ecb8af119",
+    "mortra-certified-finite-state-trig-unit-circle-point-period.c683ef896253090e",
     "mortra-certified-finite-state-trig.a7caf4b761a3f505",
+    "mortra-certified-finite-state-trig-sine-period.d59bce1a906575a9",
+    "mortra-certified-finite-state-trig-cosine-sign-profile.6eccd3506a1049f2",
+    "mortra-certified-finite-state-trig-cosine-sign-profile.ca479946cac8ffab",
+    "mortra-certified-finite-state-trig-cosine-sign-profile.303421580badbba6",
+    "mortra-certified-finite-state-trig-cosine-sign-profile.9f4c564fba0fe16a",
+    "mortra-certified-finite-state-trig-cosine-sign-profile.0601ad950b7a2b4e",
+    "mortra-certified-finite-state-trig-cosine-sign-profile.6634d3d7379503c4",
+    "mortra-certified-finite-state-trig-cosine-sign-profile.5f34a2723856e2e3",
+    "mortra-certified-finite-state-trig-initial-point-return-set.1a06481514fac528",
+    "mortra-certified-finite-state-trig-sine-zero-set.2d93cb06cf151cb2",
+    "mortra-certified-finite-state-trig-initial-point-return-set.b222ebde6df8359a",
+    "mortra-certified-finite-state-trig-sine-zero-set.dbdefb105031ed11",
+    "mortra-certified-finite-state-trig-cosine-zero-set.f8e299a5252e7094",
+    "mortra-certified-finite-state-trig-cosine-zero-set.bb40b7d6d50b86a0",
+    "mortra-certified-finite-state-trig-cosine-zero-set.dc3a160459ac99a2",
+    "mortra-certified-finite-state-trig-initial-point-return-set.a0a682a61736d824",
+    "mortra-certified-finite-state-trig-initial-point-return-set.a8785833f3f948c9",
+    "mortra-certified-finite-state-trig-initial-point-return-set.a69a65f5751a429c",
+    "mortra-certified-finite-state-trig-initial-point-return-set.97585341984fb243",
+    "mortra-certified-finite-state-trig-sine-zero-set.a332d495e905f28a",
+    "mortra-certified-finite-state-trig-sine-zero-set.57570a9dc991a7a4",
+    "mortra-certified-finite-state-trig-sine-zero-set.c4dd27110de5af2f",
+    "mortra-certified-finite-state-trig-initial-point-return-set.30b63b2e0770ac4b",
+    "mortra-certified-finite-state-trig-sine-zero-set.93d7850bb8c7ecb0",
+    "mortra-certified-finite-state-trig-sine-zero-set.9855b002e9001c4f",
     "mortra-certified.mobius-polynomial-fixed-point.b9949dd26a69df47"
   ],
   "candidates": [
     {
       "cardId": "mortra-certified-finite-state-trig.b387eebb79c14218",
       "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_minimal_trigonometric_period",
+      "querySignature": "minimal eventual period and one exact cycle",
       "parents": [
         {
           "id": "fullproblem-001",
@@ -81,8 +142,274 @@
       "unusedPremiseCount": 0
     },
     {
+      "cardId": "mortra-certified-finite-state-trig-sine-period.c660715a8ebc5249",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_minimal_sine_period",
+      "querySignature": "minimal eventual sine period and one exact cycle",
+      "parents": [
+        {
+          "id": "fullproblem-001",
+          "label": "問題1",
+          "ordinal": 1
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{6}\\) を定め、\\(s_n=\\sin(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(s_{n+T}=s_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,24)\\)。1周期は \\(\\sin \\frac{\\pi}{6}, \\sin \\frac{\\pi}{6}, \\sin \\frac{\\pi}{3}, 1, \\sin \\frac{\\pi}{6}, -\\sin \\frac{2\\pi}{3}, \\sin \\frac{\\pi}{6}, -1, -\\sin \\frac{2\\pi}{3}, -\\sin \\frac{5\\pi}{6}, \\sin \\frac{\\pi}{6}, 0, \\sin \\frac{\\pi}{6}, \\sin \\frac{\\pi}{6}, -\\sin \\frac{2\\pi}{3}, 1, \\sin \\frac{\\pi}{6}, \\sin \\frac{\\pi}{3}, \\sin \\frac{\\pi}{6}, -1, \\sin \\frac{\\pi}{3}, -\\sin \\frac{5\\pi}{6}, \\sin \\frac{\\pi}{6}, 0\\)。",
+      "solution": "角 \\(\\theta=\\frac{\\pi}{6}\\) に対して正弦の値は \\(F_n\\bmod 12\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 12\\) を考える。正弦では位相 \\(r\\) と \\(6-r\\) が同じ値を与える。この同値関係で状態をまとめ、状態周期 24 の約数を小さい順にすべて検査すると、正弦列の最小周期は 24 である。循環前も直接照合すると最小開始添字は \\(N_0=1\\) となる。したがって1周期は \\(\\sin \\frac{\\pi}{6}, \\sin \\frac{\\pi}{6}, \\sin \\frac{\\pi}{3}, 1, \\sin \\frac{\\pi}{6}, -\\sin \\frac{2\\pi}{3}, \\sin \\frac{\\pi}{6}, -1, -\\sin \\frac{2\\pi}{3}, -\\sin \\frac{5\\pi}{6}, \\sin \\frac{\\pi}{6}, 0, \\sin \\frac{\\pi}{6}, \\sin \\frac{\\pi}{6}, -\\sin \\frac{2\\pi}{3}, 1, \\sin \\frac{\\pi}{6}, \\sin \\frac{\\pi}{3}, \\sin \\frac{\\pi}{6}, -1, \\sin \\frac{\\pi}{3}, -\\sin \\frac{5\\pi}{6}, \\sin \\frac{\\pi}{6}, 0\\) である。独立検算として遷移行列の二進累乗で全状態を再生し、逐次遷移と一致することを確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 11.284962500721157
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 44,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.104895,
+      "maximumCorpusSurfaceJaccard": 0.106383,
+      "corpusSurfaceNovelty": 0.893617,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-unit-circle-point-period.24f0c8d65f2275cc",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_minimal_unit_circle_point_period",
+      "querySignature": "minimal eventual unit-circle point period and one exact orbit",
+      "parents": [
+        {
+          "id": "fullproblem-001",
+          "label": "問題1",
+          "ordinal": 1
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{6}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(z_{n+T}=z_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の点を順に書け。",
+      "answer": "\\((N_0,T)=(1,24)\\)。1周期は \\(\\left(\\cos \\frac{\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(\\cos \\frac{\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(0,1\\right), \\left(\\cos \\frac{5\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(\\cos \\frac{2\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(0,-1\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{5\\pi}{6},-\\sin \\frac{5\\pi}{6}\\right), \\left(\\cos \\frac{5\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(1,0\\right), \\left(\\cos \\frac{5\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(\\cos \\frac{5\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(0,1\\right), \\left(\\cos \\frac{\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(\\cos \\frac{2\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{5\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(0,-1\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{6},-\\sin \\frac{5\\pi}{6}\\right), \\left(\\cos \\frac{\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(1,0\\right)\\)。",
+      "solution": "点 \\(z_n\\) は、位相 \\(F_n\\theta\\) を単位円上の点としてそのまま記録する。したがって \\(z_n\\) は \\(F_n\\bmod 12\\) だけで決まる。状態 \\(v_n=(F_n,F_{n+1})\\bmod 12\\) を列挙すると、循環開始位置は 0、状態周期は 24 である。単位円上の点では余弦だけの場合のような \\(r\\) と \\(-r\\) の同一視を行わない。状態周期の約数をすべて検査すると、点列の最小周期は 24、最小開始添字は \\(N_0=1\\) となる。よって1周期は \\(\\left(\\cos \\frac{\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(\\cos \\frac{\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(0,1\\right), \\left(\\cos \\frac{5\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(\\cos \\frac{2\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(0,-1\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{5\\pi}{6},-\\sin \\frac{5\\pi}{6}\\right), \\left(\\cos \\frac{5\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(1,0\\right), \\left(\\cos \\frac{5\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(\\cos \\frac{5\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(0,1\\right), \\left(\\cos \\frac{\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(\\cos \\frac{2\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{5\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(0,-1\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{6},-\\sin \\frac{5\\pi}{6}\\right), \\left(\\cos \\frac{\\pi}{6},\\sin \\frac{\\pi}{6}\\right), \\left(1,0\\right)\\) である。遷移行列の二進累乗による再生も逐次列挙と一致した。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 11.684962500721156
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 80,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.103679,
+      "maximumCorpusSurfaceJaccard": 0.127572,
+      "corpusSurfaceNovelty": 0.872428,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-sine-zero-set.a332d495e905f28a",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "sine_zero_index_set",
+      "querySignature": "classify all recurrence indices at which the rational-angle sine vanishes",
+      "parents": [
+        {
+          "id": "fullproblem-001",
+          "label": "問題1",
+          "ordinal": 1
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{6}\\) を定める。\\(\\sin(F_n\\theta)=0\\) となるすべての整数 \\(n\\ge 1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 1,\\quad n\\bmod 12\\in\\{0\\}\\}\\)",
+      "solution": "\\(\\sin(F_n\\theta)=0\\) であることは、位相が \\(0\\) または \\(\\pi\\) に一致すること、すなわち \\(F_n1\\equiv0,6\\pmod{12}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 12\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 12 である。周期部分で条件を満たす剰余は \\(\\{0\\}\\)、周期部分の開始添字は 1 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 1,\\quad n\\bmod 12\\in\\{0\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 11.484962500721156
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 1,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.133333,
+      "maximumCorpusSurfaceJaccard": 0.148936,
+      "corpusSurfaceNovelty": 0.851064,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-cosine-zero-set.f8e299a5252e7094",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "cosine_zero_index_set",
+      "querySignature": "classify all recurrence indices at which the rational-angle cosine vanishes",
+      "parents": [
+        {
+          "id": "fullproblem-001",
+          "label": "問題1",
+          "ordinal": 1
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{6}\\) を定める。\\(\\cos(F_n\\theta)=0\\) となるすべての整数 \\(n\\ge 1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 1,\\quad n\\bmod 12\\in\\{4,8\\}\\}\\)",
+      "solution": "\\(\\cos(F_n\\theta)=0\\) であることは、\\(2F_n1\\equiv6\\pmod{12}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 12\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 12 である。周期部分で条件を満たす剰余は \\(\\{4,8\\}\\)、周期部分の開始添字は 1 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 1,\\quad n\\bmod 12\\in\\{4,8\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 11.484962500721156
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 1,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.133333,
+      "maximumCorpusSurfaceJaccard": 0.142857,
+      "corpusSurfaceNovelty": 0.857143,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-initial-point-return-set.a0a682a61736d824",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "initial_unit_circle_point_return_set",
+      "querySignature": "classify every return time to the initial unit-circle point",
+      "parents": [
+        {
+          "id": "fullproblem-001",
+          "label": "問題1",
+          "ordinal": 1
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{6}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。\\(z_n=z_1\\) となるすべての整数 \\(n>1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 2,\\quad n\\bmod 24\\in\\{1,2,7,17,23\\}\\}\\)",
+      "solution": "余弦と正弦の組が等しいことは位相そのものが等しいことと同値なので、\\(z_n=z_1\\) は \\(F_n1\\equiv1\\pmod{12}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 12\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 24 である。周期部分で条件を満たす剰余は \\(\\{1,2,7,17,23\\}\\)、周期部分の開始添字は 2 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 2,\\quad n\\bmod 24\\in\\{1,2,7,17,23\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 11.484962500721156
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 1,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.122137,
+      "maximumCorpusSurfaceJaccard": 0.144231,
+      "corpusSurfaceNovelty": 0.855769,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-cosine-sign-profile.303421580badbba6",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_cosine_sign_profile",
+      "querySignature": "minimal eventual cosine-sign period and exact sign multiplicities",
+      "parents": [
+        {
+          "id": "fullproblem-001",
+          "label": "問題1",
+          "ordinal": 1
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{6}\\) を定め、\n\\[\n\\varepsilon_n=\\begin{cases}\n1&\\cos(F_n\\theta)>0,\\\\\n0&\\cos(F_n\\theta)=0,\\\\\n-1&\\cos(F_n\\theta)<0\n\\end{cases}\n\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(\\varepsilon_{n+T}=\\varepsilon_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求めよ。さらに、1周期中の \\(1,0,-1\\) の個数をこの順に求めよ。",
+      "answer": "\\((N_0,T)=(1,24)\\)、個数は \\((12,4,8)\\)。",
+      "solution": "位相を \\(r\\pi/6\\) と書く。余弦の符号は \\(2r<6\\) または \\(2r>18\\) のとき正、等号のとき0、それ以外のとき負である。したがって符号は \\(F_n\\bmod 12\\) だけで決まる。合同状態を列挙して得られる符号列について、状態周期 24 の約数をすべて検査すると、最小周期は 24、最小開始添字は \\(N_0=1\\) となる。1周期を数えると、正が 12 個、0が 4 個、負が 8 個である。遷移行列の二進累乗で状態を独立に再生し、符号と個数が一致することも確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 11.584962500721156
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 1,
+      "solutionSentenceCount": 6,
+      "maximumParentSurfaceJaccard": 0.097143,
+      "maximumCorpusSurfaceJaccard": 0.104377,
+      "corpusSurfaceNovelty": 0.895623,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
       "cardId": "mortra-certified-finite-state-trig.a44cdc7ecb8af119",
       "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_minimal_trigonometric_period",
+      "querySignature": "minimal eventual period and one exact cycle",
       "parents": [
         {
           "id": "fullproblem-005",
@@ -123,8 +450,230 @@
       "unusedPremiseCount": 0
     },
     {
+      "cardId": "mortra-certified-finite-state-trig-sine-period.5e58ddb7ee08e891",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_minimal_sine_period",
+      "querySignature": "minimal eventual sine period and one exact cycle",
+      "parents": [
+        {
+          "id": "fullproblem-005",
+          "label": "問題5",
+          "ordinal": 5
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{2\\pi}{7}\\) を定め、\\(s_n=\\sin(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(s_{n+T}=s_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,16)\\)。1周期は \\(\\sin \\frac{2\\pi}{7}, \\sin \\frac{2\\pi}{7}, \\sin \\frac{3\\pi}{7}, \\sin \\frac{\\pi}{7}, -\\sin \\frac{4\\pi}{7}, \\sin \\frac{2\\pi}{7}, -\\sin \\frac{5\\pi}{7}, 0, -\\sin \\frac{5\\pi}{7}, -\\sin \\frac{5\\pi}{7}, -\\sin \\frac{4\\pi}{7}, -\\sin \\frac{6\\pi}{7}, \\sin \\frac{3\\pi}{7}, -\\sin \\frac{5\\pi}{7}, \\sin \\frac{2\\pi}{7}, 0\\)。",
+      "solution": "角 \\(\\theta=\\frac{2\\pi}{7}\\) に対して正弦の値は \\(F_n\\bmod 14\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 14\\) を考える。正弦では位相 \\(r\\) と \\(7-r\\) が同じ値を与える。この同値関係で状態をまとめ、状態周期 48 の約数を小さい順にすべて検査すると、正弦列の最小周期は 16 である。循環前も直接照合すると最小開始添字は \\(N_0=1\\) となる。したがって1周期は \\(\\sin \\frac{2\\pi}{7}, \\sin \\frac{2\\pi}{7}, \\sin \\frac{3\\pi}{7}, \\sin \\frac{\\pi}{7}, -\\sin \\frac{4\\pi}{7}, \\sin \\frac{2\\pi}{7}, -\\sin \\frac{5\\pi}{7}, 0, -\\sin \\frac{5\\pi}{7}, -\\sin \\frac{5\\pi}{7}, -\\sin \\frac{4\\pi}{7}, -\\sin \\frac{6\\pi}{7}, \\sin \\frac{3\\pi}{7}, -\\sin \\frac{5\\pi}{7}, \\sin \\frac{2\\pi}{7}, 0\\) である。独立検算として遷移行列の二進累乗で全状態を再生し、逐次遷移と一致することを確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 11.507354922057605
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 36,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.10453,
+      "maximumCorpusSurfaceJaccard": 0.10453,
+      "corpusSurfaceNovelty": 0.89547,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-unit-circle-point-period.bc790266914ad0d1",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_minimal_unit_circle_point_period",
+      "querySignature": "minimal eventual unit-circle point period and one exact orbit",
+      "parents": [
+        {
+          "id": "fullproblem-005",
+          "label": "問題5",
+          "ordinal": 5
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{2\\pi}{7}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(z_{n+T}=z_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の点を順に書け。",
+      "answer": "\\((N_0,T)=(1,16)\\)。1周期は \\(\\left(\\cos \\frac{2\\pi}{7},\\sin \\frac{2\\pi}{7}\\right), \\left(\\cos \\frac{2\\pi}{7},\\sin \\frac{2\\pi}{7}\\right), \\left(\\cos \\frac{4\\pi}{7},\\sin \\frac{3\\pi}{7}\\right), \\left(\\cos \\frac{6\\pi}{7},\\sin \\frac{\\pi}{7}\\right), \\left(\\cos \\frac{4\\pi}{7},-\\sin \\frac{4\\pi}{7}\\right), \\left(\\cos \\frac{2\\pi}{7},\\sin \\frac{2\\pi}{7}\\right), \\left(\\cos \\frac{2\\pi}{7},-\\sin \\frac{5\\pi}{7}\\right), \\left(1,0\\right), \\left(\\cos \\frac{2\\pi}{7},-\\sin \\frac{5\\pi}{7}\\right), \\left(\\cos \\frac{2\\pi}{7},-\\sin \\frac{5\\pi}{7}\\right), \\left(\\cos \\frac{4\\pi}{7},-\\sin \\frac{4\\pi}{7}\\right), \\left(\\cos \\frac{6\\pi}{7},-\\sin \\frac{6\\pi}{7}\\right), \\left(\\cos \\frac{4\\pi}{7},\\sin \\frac{3\\pi}{7}\\right), \\left(\\cos \\frac{2\\pi}{7},-\\sin \\frac{5\\pi}{7}\\right), \\left(\\cos \\frac{2\\pi}{7},\\sin \\frac{2\\pi}{7}\\right), \\left(1,0\\right)\\)。",
+      "solution": "点 \\(z_n\\) は、位相 \\(F_n\\theta\\) を単位円上の点としてそのまま記録する。したがって \\(z_n\\) は \\(F_n\\bmod 14\\) だけで決まる。状態 \\(v_n=(F_n,F_{n+1})\\bmod 14\\) を列挙すると、循環開始位置は 0、状態周期は 48 である。単位円上の点では余弦だけの場合のような \\(r\\) と \\(-r\\) の同一視を行わない。状態周期の約数をすべて検査すると、点列の最小周期は 16、最小開始添字は \\(N_0=1\\) となる。よって1周期は \\(\\left(\\cos \\frac{2\\pi}{7},\\sin \\frac{2\\pi}{7}\\right), \\left(\\cos \\frac{2\\pi}{7},\\sin \\frac{2\\pi}{7}\\right), \\left(\\cos \\frac{4\\pi}{7},\\sin \\frac{3\\pi}{7}\\right), \\left(\\cos \\frac{6\\pi}{7},\\sin \\frac{\\pi}{7}\\right), \\left(\\cos \\frac{4\\pi}{7},-\\sin \\frac{4\\pi}{7}\\right), \\left(\\cos \\frac{2\\pi}{7},\\sin \\frac{2\\pi}{7}\\right), \\left(\\cos \\frac{2\\pi}{7},-\\sin \\frac{5\\pi}{7}\\right), \\left(1,0\\right), \\left(\\cos \\frac{2\\pi}{7},-\\sin \\frac{5\\pi}{7}\\right), \\left(\\cos \\frac{2\\pi}{7},-\\sin \\frac{5\\pi}{7}\\right), \\left(\\cos \\frac{4\\pi}{7},-\\sin \\frac{4\\pi}{7}\\right), \\left(\\cos \\frac{6\\pi}{7},-\\sin \\frac{6\\pi}{7}\\right), \\left(\\cos \\frac{4\\pi}{7},\\sin \\frac{3\\pi}{7}\\right), \\left(\\cos \\frac{2\\pi}{7},-\\sin \\frac{5\\pi}{7}\\right), \\left(\\cos \\frac{2\\pi}{7},\\sin \\frac{2\\pi}{7}\\right), \\left(1,0\\right)\\) である。遷移行列の二進累乗による再生も逐次列挙と一致した。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 11.907354922057603
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 64,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.103333,
+      "maximumCorpusSurfaceJaccard": 0.117886,
+      "corpusSurfaceNovelty": 0.882114,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-sine-zero-set.2d93cb06cf151cb2",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "sine_zero_index_set",
+      "querySignature": "classify all recurrence indices at which the rational-angle sine vanishes",
+      "parents": [
+        {
+          "id": "fullproblem-005",
+          "label": "問題5",
+          "ordinal": 5
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{2\\pi}{7}\\) を定める。\\(\\sin(F_n\\theta)=0\\) となるすべての整数 \\(n\\ge 1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 1,\\quad n\\bmod 8\\in\\{0\\}\\}\\)",
+      "solution": "\\(\\sin(F_n\\theta)=0\\) であることは、位相が \\(0\\) または \\(\\pi\\) に一致すること、すなわち \\(F_n2\\equiv0,7\\pmod{14}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 14\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 8 である。周期部分で条件を満たす剰余は \\(\\{0\\}\\)、周期部分の開始添字は 1 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 1,\\quad n\\bmod 8\\in\\{0\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 11.707354922057604
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 1,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.13278,
+      "maximumCorpusSurfaceJaccard": 0.136126,
+      "corpusSurfaceNovelty": 0.863874,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-initial-point-return-set.1a06481514fac528",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "initial_unit_circle_point_return_set",
+      "querySignature": "classify every return time to the initial unit-circle point",
+      "parents": [
+        {
+          "id": "fullproblem-005",
+          "label": "問題5",
+          "ordinal": 5
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{2\\pi}{7}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。\\(z_n=z_1\\) となるすべての整数 \\(n>1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 2,\\quad n\\bmod 16\\in\\{1,2,6,15\\}\\}\\)",
+      "solution": "余弦と正弦の組が等しいことは位相そのものが等しいことと同値なので、\\(z_n=z_1\\) は \\(F_n2\\equiv2\\pmod{14}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 14\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 16 である。周期部分で条件を満たす剰余は \\(\\{1,2,6,15\\}\\)、周期部分の開始添字は 2 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 2,\\quad n\\bmod 16\\in\\{1,2,6,15\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 11.707354922057604
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 1,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.121673,
+      "maximumCorpusSurfaceJaccard": 0.132948,
+      "corpusSurfaceNovelty": 0.867052,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-cosine-sign-profile.6eccd3506a1049f2",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_cosine_sign_profile",
+      "querySignature": "minimal eventual cosine-sign period and exact sign multiplicities",
+      "parents": [
+        {
+          "id": "fullproblem-005",
+          "label": "問題5",
+          "ordinal": 5
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{2\\pi}{7}\\) を定め、\n\\[\n\\varepsilon_n=\\begin{cases}\n1&\\cos(F_n\\theta)>0,\\\\\n0&\\cos(F_n\\theta)=0,\\\\\n-1&\\cos(F_n\\theta)<0\n\\end{cases}\n\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(\\varepsilon_{n+T}=\\varepsilon_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求めよ。さらに、1周期中の \\(1,0,-1\\) の個数をこの順に求めよ。",
+      "answer": "\\((N_0,T)=(1,8)\\)、個数は \\((5,0,3)\\)。",
+      "solution": "位相を \\(r\\pi/7\\) と書く。余弦の符号は \\(2r<7\\) または \\(2r>21\\) のとき正、等号のとき0、それ以外のとき負である。したがって符号は \\(F_n\\bmod 14\\) だけで決まる。合同状態を列挙して得られる符号列について、状態周期 48 の約数をすべて検査すると、最小周期は 8、最小開始添字は \\(N_0=1\\) となる。1周期を数えると、正が 5 個、0が 0 個、負が 3 個である。遷移行列の二進累乗で状態を独立に再生し、符号と個数が一致することも確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 11.807354922057604
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 1,
+      "solutionSentenceCount": 6,
+      "maximumParentSurfaceJaccard": 0.096866,
+      "maximumCorpusSurfaceJaccard": 0.096866,
+      "corpusSurfaceNovelty": 0.903134,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
       "cardId": "mortra-certified.mobius-polynomial-fixed-point.b9949dd26a69df47",
       "family": "certified.mobius_polynomial_fixed_point_transport",
+      "observable": "transported_root_fixed_point_equation",
+      "querySignature": "transport-root-scheme-and-recover-fixed-map",
       "parents": [
         {
           "id": "fullproblem-017",
@@ -167,6 +716,8 @@
     {
       "cardId": "mortra-certified-finite-state-trig.93f68cc87a2b6734",
       "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_minimal_trigonometric_period",
+      "querySignature": "minimal eventual period and one exact cycle",
       "parents": [
         {
           "id": "fullproblem-018",
@@ -208,8 +759,235 @@
       "unusedPremiseCount": 0
     },
     {
+      "cardId": "mortra-certified-finite-state-trig-sine-period.6759fdb09834e7b1",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_minimal_sine_period",
+      "querySignature": "minimal eventual sine period and one exact cycle",
+      "parents": [
+        {
+          "id": "fullproblem-018",
+          "label": "問題18",
+          "ordinal": 18
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order",
+        "transform.mobius"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{2\\pi}{11}\\) を定め、\\(s_n=\\sin(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(s_{n+T}=s_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,10)\\)。1周期は \\(\\sin \\frac{2\\pi}{11}, \\sin \\frac{2\\pi}{11}, \\sin \\frac{4\\pi}{11}, \\sin \\frac{5\\pi}{11}, \\sin \\frac{\\pi}{11}, -\\sin \\frac{6\\pi}{11}, \\sin \\frac{4\\pi}{11}, -\\sin \\frac{9\\pi}{11}, \\sin \\frac{2\\pi}{11}, 0\\)。",
+      "solution": "角 \\(\\theta=\\frac{2\\pi}{11}\\) に対して正弦の値は \\(F_n\\bmod 22\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 22\\) を考える。正弦では位相 \\(r\\) と \\(11-r\\) が同じ値を与える。この同値関係で状態をまとめ、状態周期 30 の約数を小さい順にすべて検査すると、正弦列の最小周期は 10 である。循環前も直接照合すると最小開始添字は \\(N_0=1\\) となる。したがって1周期は \\(\\sin \\frac{2\\pi}{11}, \\sin \\frac{2\\pi}{11}, \\sin \\frac{4\\pi}{11}, \\sin \\frac{5\\pi}{11}, \\sin \\frac{\\pi}{11}, -\\sin \\frac{6\\pi}{11}, \\sin \\frac{4\\pi}{11}, -\\sin \\frac{9\\pi}{11}, \\sin \\frac{2\\pi}{11}, 0\\) である。独立検算として遷移行列の二進累乗で全状態を再生し、逐次遷移と一致することを確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 12.159431618637297
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 21,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.104167,
+      "maximumCorpusSurfaceJaccard": 0.104167,
+      "corpusSurfaceNovelty": 0.895833,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-unit-circle-point-period.14273deaacefc9a8",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_minimal_unit_circle_point_period",
+      "querySignature": "minimal eventual unit-circle point period and one exact orbit",
+      "parents": [
+        {
+          "id": "fullproblem-018",
+          "label": "問題18",
+          "ordinal": 18
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order",
+        "transform.mobius"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{2\\pi}{11}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(z_{n+T}=z_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の点を順に書け。",
+      "answer": "\\((N_0,T)=(1,10)\\)。1周期は \\(\\left(\\cos \\frac{2\\pi}{11},\\sin \\frac{2\\pi}{11}\\right), \\left(\\cos \\frac{2\\pi}{11},\\sin \\frac{2\\pi}{11}\\right), \\left(\\cos \\frac{4\\pi}{11},\\sin \\frac{4\\pi}{11}\\right), \\left(\\cos \\frac{6\\pi}{11},\\sin \\frac{5\\pi}{11}\\right), \\left(\\cos \\frac{10\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(\\cos \\frac{6\\pi}{11},-\\sin \\frac{6\\pi}{11}\\right), \\left(\\cos \\frac{4\\pi}{11},\\sin \\frac{4\\pi}{11}\\right), \\left(\\cos \\frac{2\\pi}{11},-\\sin \\frac{9\\pi}{11}\\right), \\left(\\cos \\frac{2\\pi}{11},\\sin \\frac{2\\pi}{11}\\right), \\left(1,0\\right)\\)。",
+      "solution": "点 \\(z_n\\) は、位相 \\(F_n\\theta\\) を単位円上の点としてそのまま記録する。したがって \\(z_n\\) は \\(F_n\\bmod 22\\) だけで決まる。状態 \\(v_n=(F_n,F_{n+1})\\bmod 22\\) を列挙すると、循環開始位置は 0、状態周期は 30 である。単位円上の点では余弦だけの場合のような \\(r\\) と \\(-r\\) の同一視を行わない。状態周期の約数をすべて検査すると、点列の最小周期は 10、最小開始添字は \\(N_0=1\\) となる。よって1周期は \\(\\left(\\cos \\frac{2\\pi}{11},\\sin \\frac{2\\pi}{11}\\right), \\left(\\cos \\frac{2\\pi}{11},\\sin \\frac{2\\pi}{11}\\right), \\left(\\cos \\frac{4\\pi}{11},\\sin \\frac{4\\pi}{11}\\right), \\left(\\cos \\frac{6\\pi}{11},\\sin \\frac{5\\pi}{11}\\right), \\left(\\cos \\frac{10\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(\\cos \\frac{6\\pi}{11},-\\sin \\frac{6\\pi}{11}\\right), \\left(\\cos \\frac{4\\pi}{11},\\sin \\frac{4\\pi}{11}\\right), \\left(\\cos \\frac{2\\pi}{11},-\\sin \\frac{9\\pi}{11}\\right), \\left(\\cos \\frac{2\\pi}{11},\\sin \\frac{2\\pi}{11}\\right), \\left(1,0\\right)\\) である。遷移行列の二進累乗による再生も逐次列挙と一致した。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 12.559431618637298
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 39,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.10299,
+      "maximumCorpusSurfaceJaccard": 0.121951,
+      "corpusSurfaceNovelty": 0.878049,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-sine-zero-set.dbdefb105031ed11",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "sine_zero_index_set",
+      "querySignature": "classify all recurrence indices at which the rational-angle sine vanishes",
+      "parents": [
+        {
+          "id": "fullproblem-018",
+          "label": "問題18",
+          "ordinal": 18
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order",
+        "transform.mobius"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{2\\pi}{11}\\) を定める。\\(\\sin(F_n\\theta)=0\\) となるすべての整数 \\(n\\ge 1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 1,\\quad n\\bmod 10\\in\\{0\\}\\}\\)",
+      "solution": "\\(\\sin(F_n\\theta)=0\\) であることは、位相が \\(0\\) または \\(\\pi\\) に一致すること、すなわち \\(F_n2\\equiv0,11\\pmod{22}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 22\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 10 である。周期部分で条件を満たす剰余は \\(\\{0\\}\\)、周期部分の開始添字は 1 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 1,\\quad n\\bmod 10\\in\\{0\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 12.359431618637299
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 1,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.132231,
+      "maximumCorpusSurfaceJaccard": 0.141361,
+      "corpusSurfaceNovelty": 0.858639,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-initial-point-return-set.b222ebde6df8359a",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "initial_unit_circle_point_return_set",
+      "querySignature": "classify every return time to the initial unit-circle point",
+      "parents": [
+        {
+          "id": "fullproblem-018",
+          "label": "問題18",
+          "ordinal": 18
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order",
+        "transform.mobius"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{2\\pi}{11}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。\\(z_n=z_1\\) となるすべての整数 \\(n>1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 2,\\quad n\\bmod 10\\in\\{1,2,9\\}\\}\\)",
+      "solution": "余弦と正弦の組が等しいことは位相そのものが等しいことと同値なので、\\(z_n=z_1\\) は \\(F_n2\\equiv2\\pmod{22}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 22\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 10 である。周期部分で条件を満たす剰余は \\(\\{1,2,9\\}\\)、周期部分の開始添字は 2 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 2,\\quad n\\bmod 10\\in\\{1,2,9\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 12.359431618637299
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 1,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.121212,
+      "maximumCorpusSurfaceJaccard": 0.137441,
+      "corpusSurfaceNovelty": 0.862559,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-cosine-sign-profile.ca479946cac8ffab",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_cosine_sign_profile",
+      "querySignature": "minimal eventual cosine-sign period and exact sign multiplicities",
+      "parents": [
+        {
+          "id": "fullproblem-018",
+          "label": "問題18",
+          "ordinal": 18
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order",
+        "transform.mobius"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{2\\pi}{11}\\) を定め、\n\\[\n\\varepsilon_n=\\begin{cases}\n1&\\cos(F_n\\theta)>0,\\\\\n0&\\cos(F_n\\theta)=0,\\\\\n-1&\\cos(F_n\\theta)<0\n\\end{cases}\n\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(\\varepsilon_{n+T}=\\varepsilon_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求めよ。さらに、1周期中の \\(1,0,-1\\) の個数をこの順に求めよ。",
+      "answer": "\\((N_0,T)=(1,10)\\)、個数は \\((7,0,3)\\)。",
+      "solution": "位相を \\(r\\pi/11\\) と書く。余弦の符号は \\(2r<11\\) または \\(2r>33\\) のとき正、等号のとき0、それ以外のとき負である。したがって符号は \\(F_n\\bmod 22\\) だけで決まる。合同状態を列挙して得られる符号列について、状態周期 30 の約数をすべて検査すると、最小周期は 10、最小開始添字は \\(N_0=1\\) となる。1周期を数えると、正が 7 個、0が 0 個、負が 3 個である。遷移行列の二進累乗で状態を独立に再生し、符号と個数が一致することも確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 12.459431618637296
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 1,
+      "solutionSentenceCount": 6,
+      "maximumParentSurfaceJaccard": 0.096591,
+      "maximumCorpusSurfaceJaccard": 0.1,
+      "corpusSurfaceNovelty": 0.9,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
       "cardId": "mortra-certified-finite-state-trig.6e8d726320f4a279",
       "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_minimal_trigonometric_period",
+      "querySignature": "minimal eventual period and one exact cycle",
       "parents": [
         {
           "id": "fullproblem-018",
@@ -251,8 +1029,235 @@
       "unusedPremiseCount": 0
     },
     {
+      "cardId": "mortra-certified-finite-state-trig-sine-period.47e64a404650be4d",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_minimal_sine_period",
+      "querySignature": "minimal eventual sine period and one exact cycle",
+      "parents": [
+        {
+          "id": "fullproblem-018",
+          "label": "問題18",
+          "ordinal": 18
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order",
+        "transform.mobius"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{11}\\) を定め、\\(s_n=\\sin(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(s_{n+T}=s_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,30)\\)。1周期は \\(\\sin \\frac{\\pi}{11}, \\sin \\frac{\\pi}{11}, \\sin \\frac{2\\pi}{11}, \\sin \\frac{3\\pi}{11}, \\sin \\frac{5\\pi}{11}, \\sin \\frac{3\\pi}{11}, -\\sin \\frac{9\\pi}{11}, -\\sin \\frac{10\\pi}{11}, -\\sin \\frac{10\\pi}{11}, 0, \\sin \\frac{\\pi}{11}, -\\sin \\frac{10\\pi}{11}, -\\sin \\frac{9\\pi}{11}, \\sin \\frac{3\\pi}{11}, -\\sin \\frac{6\\pi}{11}, -\\sin \\frac{8\\pi}{11}, -\\sin \\frac{9\\pi}{11}, \\sin \\frac{\\pi}{11}, \\sin \\frac{\\pi}{11}, 0, -\\sin \\frac{10\\pi}{11}, \\sin \\frac{\\pi}{11}, -\\sin \\frac{9\\pi}{11}, -\\sin \\frac{8\\pi}{11}, \\sin \\frac{5\\pi}{11}, -\\sin \\frac{8\\pi}{11}, \\sin \\frac{2\\pi}{11}, -\\sin \\frac{10\\pi}{11}, \\sin \\frac{\\pi}{11}, 0\\)。",
+      "solution": "角 \\(\\theta=\\frac{\\pi}{11}\\) に対して正弦の値は \\(F_n\\bmod 22\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 22\\) を考える。正弦では位相 \\(r\\) と \\(11-r\\) が同じ値を与える。この同値関係で状態をまとめ、状態周期 30 の約数を小さい順にすべて検査すると、正弦列の最小周期は 30 である。循環前も直接照合すると最小開始添字は \\(N_0=1\\) となる。したがって1周期は \\(\\sin \\frac{\\pi}{11}, \\sin \\frac{\\pi}{11}, \\sin \\frac{2\\pi}{11}, \\sin \\frac{3\\pi}{11}, \\sin \\frac{5\\pi}{11}, \\sin \\frac{3\\pi}{11}, -\\sin \\frac{9\\pi}{11}, -\\sin \\frac{10\\pi}{11}, -\\sin \\frac{10\\pi}{11}, 0, \\sin \\frac{\\pi}{11}, -\\sin \\frac{10\\pi}{11}, -\\sin \\frac{9\\pi}{11}, \\sin \\frac{3\\pi}{11}, -\\sin \\frac{6\\pi}{11}, -\\sin \\frac{8\\pi}{11}, -\\sin \\frac{9\\pi}{11}, \\sin \\frac{\\pi}{11}, \\sin \\frac{\\pi}{11}, 0, -\\sin \\frac{10\\pi}{11}, \\sin \\frac{\\pi}{11}, -\\sin \\frac{9\\pi}{11}, -\\sin \\frac{8\\pi}{11}, \\sin \\frac{5\\pi}{11}, -\\sin \\frac{8\\pi}{11}, \\sin \\frac{2\\pi}{11}, -\\sin \\frac{10\\pi}{11}, \\sin \\frac{\\pi}{11}, 0\\) である。独立検算として遷移行列の二進累乗で全状態を再生し、逐次遷移と一致することを確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 12.159431618637297
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 68,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.10453,
+      "maximumCorpusSurfaceJaccard": 0.110638,
+      "corpusSurfaceNovelty": 0.889362,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-unit-circle-point-period.55263c29172f158f",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_minimal_unit_circle_point_period",
+      "querySignature": "minimal eventual unit-circle point period and one exact orbit",
+      "parents": [
+        {
+          "id": "fullproblem-018",
+          "label": "問題18",
+          "ordinal": 18
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order",
+        "transform.mobius"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{11}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(z_{n+T}=z_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の点を順に書け。",
+      "answer": "\\((N_0,T)=(1,30)\\)。1周期は \\(\\left(\\cos \\frac{\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(\\cos \\frac{\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(\\cos \\frac{2\\pi}{11},\\sin \\frac{2\\pi}{11}\\right), \\left(\\cos \\frac{3\\pi}{11},\\sin \\frac{3\\pi}{11}\\right), \\left(\\cos \\frac{5\\pi}{11},\\sin \\frac{5\\pi}{11}\\right), \\left(\\cos \\frac{8\\pi}{11},\\sin \\frac{3\\pi}{11}\\right), \\left(\\cos \\frac{9\\pi}{11},-\\sin \\frac{9\\pi}{11}\\right), \\left(\\cos \\frac{\\pi}{11},-\\sin \\frac{10\\pi}{11}\\right), \\left(\\cos \\frac{10\\pi}{11},-\\sin \\frac{10\\pi}{11}\\right), \\left(-1,0\\right), \\left(\\cos \\frac{\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(\\cos \\frac{10\\pi}{11},-\\sin \\frac{10\\pi}{11}\\right), \\left(\\cos \\frac{9\\pi}{11},-\\sin \\frac{9\\pi}{11}\\right), \\left(\\cos \\frac{3\\pi}{11},\\sin \\frac{3\\pi}{11}\\right), \\left(\\cos \\frac{6\\pi}{11},-\\sin \\frac{6\\pi}{11}\\right), \\left(\\cos \\frac{3\\pi}{11},-\\sin \\frac{8\\pi}{11}\\right), \\left(\\cos \\frac{9\\pi}{11},-\\sin \\frac{9\\pi}{11}\\right), \\left(\\cos \\frac{10\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(\\cos \\frac{\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(-1,0\\right), \\left(\\cos \\frac{10\\pi}{11},-\\sin \\frac{10\\pi}{11}\\right), \\left(\\cos \\frac{\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(\\cos \\frac{9\\pi}{11},-\\sin \\frac{9\\pi}{11}\\right), \\left(\\cos \\frac{8\\pi}{11},-\\sin \\frac{8\\pi}{11}\\right), \\left(\\cos \\frac{5\\pi}{11},\\sin \\frac{5\\pi}{11}\\right), \\left(\\cos \\frac{3\\pi}{11},-\\sin \\frac{8\\pi}{11}\\right), \\left(\\cos \\frac{2\\pi}{11},\\sin \\frac{2\\pi}{11}\\right), \\left(\\cos \\frac{\\pi}{11},-\\sin \\frac{10\\pi}{11}\\right), \\left(\\cos \\frac{\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(1,0\\right)\\)。",
+      "solution": "点 \\(z_n\\) は、位相 \\(F_n\\theta\\) を単位円上の点としてそのまま記録する。したがって \\(z_n\\) は \\(F_n\\bmod 22\\) だけで決まる。状態 \\(v_n=(F_n,F_{n+1})\\bmod 22\\) を列挙すると、循環開始位置は 0、状態周期は 30 である。単位円上の点では余弦だけの場合のような \\(r\\) と \\(-r\\) の同一視を行わない。状態周期の約数をすべて検査すると、点列の最小周期は 30、最小開始添字は \\(N_0=1\\) となる。よって1周期は \\(\\left(\\cos \\frac{\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(\\cos \\frac{\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(\\cos \\frac{2\\pi}{11},\\sin \\frac{2\\pi}{11}\\right), \\left(\\cos \\frac{3\\pi}{11},\\sin \\frac{3\\pi}{11}\\right), \\left(\\cos \\frac{5\\pi}{11},\\sin \\frac{5\\pi}{11}\\right), \\left(\\cos \\frac{8\\pi}{11},\\sin \\frac{3\\pi}{11}\\right), \\left(\\cos \\frac{9\\pi}{11},-\\sin \\frac{9\\pi}{11}\\right), \\left(\\cos \\frac{\\pi}{11},-\\sin \\frac{10\\pi}{11}\\right), \\left(\\cos \\frac{10\\pi}{11},-\\sin \\frac{10\\pi}{11}\\right), \\left(-1,0\\right), \\left(\\cos \\frac{\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(\\cos \\frac{10\\pi}{11},-\\sin \\frac{10\\pi}{11}\\right), \\left(\\cos \\frac{9\\pi}{11},-\\sin \\frac{9\\pi}{11}\\right), \\left(\\cos \\frac{3\\pi}{11},\\sin \\frac{3\\pi}{11}\\right), \\left(\\cos \\frac{6\\pi}{11},-\\sin \\frac{6\\pi}{11}\\right), \\left(\\cos \\frac{3\\pi}{11},-\\sin \\frac{8\\pi}{11}\\right), \\left(\\cos \\frac{9\\pi}{11},-\\sin \\frac{9\\pi}{11}\\right), \\left(\\cos \\frac{10\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(\\cos \\frac{\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(-1,0\\right), \\left(\\cos \\frac{10\\pi}{11},-\\sin \\frac{10\\pi}{11}\\right), \\left(\\cos \\frac{\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(\\cos \\frac{9\\pi}{11},-\\sin \\frac{9\\pi}{11}\\right), \\left(\\cos \\frac{8\\pi}{11},-\\sin \\frac{8\\pi}{11}\\right), \\left(\\cos \\frac{5\\pi}{11},\\sin \\frac{5\\pi}{11}\\right), \\left(\\cos \\frac{3\\pi}{11},-\\sin \\frac{8\\pi}{11}\\right), \\left(\\cos \\frac{2\\pi}{11},\\sin \\frac{2\\pi}{11}\\right), \\left(\\cos \\frac{\\pi}{11},-\\sin \\frac{10\\pi}{11}\\right), \\left(\\cos \\frac{\\pi}{11},\\sin \\frac{\\pi}{11}\\right), \\left(1,0\\right)\\) である。遷移行列の二進累乗による再生も逐次列挙と一致した。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 12.559431618637298
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 124,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.103333,
+      "maximumCorpusSurfaceJaccard": 0.131687,
+      "corpusSurfaceNovelty": 0.868313,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-sine-zero-set.9855b002e9001c4f",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "sine_zero_index_set",
+      "querySignature": "classify all recurrence indices at which the rational-angle sine vanishes",
+      "parents": [
+        {
+          "id": "fullproblem-018",
+          "label": "問題18",
+          "ordinal": 18
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order",
+        "transform.mobius"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{11}\\) を定める。\\(\\sin(F_n\\theta)=0\\) となるすべての整数 \\(n\\ge 1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 1,\\quad n\\bmod 10\\in\\{0\\}\\}\\)",
+      "solution": "\\(\\sin(F_n\\theta)=0\\) であることは、位相が \\(0\\) または \\(\\pi\\) に一致すること、すなわち \\(F_n1\\equiv0,11\\pmod{22}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 22\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 10 である。周期部分で条件を満たす剰余は \\(\\{0\\}\\)、周期部分の開始添字は 1 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 1,\\quad n\\bmod 10\\in\\{0\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 12.359431618637299
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 1,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.13278,
+      "maximumCorpusSurfaceJaccard": 0.154255,
+      "corpusSurfaceNovelty": 0.845745,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-initial-point-return-set.30b63b2e0770ac4b",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "initial_unit_circle_point_return_set",
+      "querySignature": "classify every return time to the initial unit-circle point",
+      "parents": [
+        {
+          "id": "fullproblem-018",
+          "label": "問題18",
+          "ordinal": 18
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order",
+        "transform.mobius"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{11}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。\\(z_n=z_1\\) となるすべての整数 \\(n>1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 2,\\quad n\\bmod 30\\in\\{1,2,11,19,22,29\\}\\}\\)",
+      "solution": "余弦と正弦の組が等しいことは位相そのものが等しいことと同値なので、\\(z_n=z_1\\) は \\(F_n1\\equiv1\\pmod{22}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 22\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 30 である。周期部分で条件を満たす剰余は \\(\\{1,2,11,19,22,29\\}\\)、周期部分の開始添字は 2 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 2,\\quad n\\bmod 30\\in\\{1,2,11,19,22,29\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 12.359431618637299
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 1,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.121673,
+      "maximumCorpusSurfaceJaccard": 0.149038,
+      "corpusSurfaceNovelty": 0.850962,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-cosine-sign-profile.5f34a2723856e2e3",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_cosine_sign_profile",
+      "querySignature": "minimal eventual cosine-sign period and exact sign multiplicities",
+      "parents": [
+        {
+          "id": "fullproblem-018",
+          "label": "問題18",
+          "ordinal": 18
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order",
+        "transform.mobius"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{11}\\) を定め、\n\\[\n\\varepsilon_n=\\begin{cases}\n1&\\cos(F_n\\theta)>0,\\\\\n0&\\cos(F_n\\theta)=0,\\\\\n-1&\\cos(F_n\\theta)<0\n\\end{cases}\n\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(\\varepsilon_{n+T}=\\varepsilon_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求めよ。さらに、1周期中の \\(1,0,-1\\) の個数をこの順に求めよ。",
+      "answer": "\\((N_0,T)=(1,30)\\)、個数は \\((17,0,13)\\)。",
+      "solution": "位相を \\(r\\pi/11\\) と書く。余弦の符号は \\(2r<11\\) または \\(2r>33\\) のとき正、等号のとき0、それ以外のとき負である。したがって符号は \\(F_n\\bmod 22\\) だけで決まる。合同状態を列挙して得られる符号列について、状態周期 30 の約数をすべて検査すると、最小周期は 30、最小開始添字は \\(N_0=1\\) となる。1周期を数えると、正が 17 個、0が 0 個、負が 13 個である。遷移行列の二進累乗で状態を独立に再生し、符号と個数が一致することも確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 12.459431618637296
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 1,
+      "solutionSentenceCount": 6,
+      "maximumParentSurfaceJaccard": 0.096866,
+      "maximumCorpusSurfaceJaccard": 0.107744,
+      "corpusSurfaceNovelty": 0.892256,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
       "cardId": "mortra-certified-finite-state-trig.015a7c04dc0a0604",
       "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_minimal_trigonometric_period",
+      "querySignature": "minimal eventual period and one exact cycle",
       "parents": [
         {
           "id": "fullproblem-025",
@@ -293,8 +1298,230 @@
       "unusedPremiseCount": 0
     },
     {
+      "cardId": "mortra-certified-finite-state-trig-sine-period.2e5a1d4cc6a08bd0",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_minimal_sine_period",
+      "querySignature": "minimal eventual sine period and one exact cycle",
+      "parents": [
+        {
+          "id": "fullproblem-025",
+          "label": "問題25",
+          "ordinal": 25
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{3}\\) を定め、\\(s_n=\\sin(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(s_{n+T}=s_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,24)\\)。1周期は \\(\\sin \\frac{\\pi}{3}, \\sin \\frac{\\pi}{3}, \\sin \\frac{\\pi}{3}, 0, -\\sin \\frac{2\\pi}{3}, \\sin \\frac{\\pi}{3}, \\sin \\frac{\\pi}{3}, 0, -\\sin \\frac{2\\pi}{3}, \\sin \\frac{\\pi}{3}, -\\sin \\frac{2\\pi}{3}, 0, -\\sin \\frac{2\\pi}{3}, -\\sin \\frac{2\\pi}{3}, -\\sin \\frac{2\\pi}{3}, 0, \\sin \\frac{\\pi}{3}, -\\sin \\frac{2\\pi}{3}, -\\sin \\frac{2\\pi}{3}, 0, \\sin \\frac{\\pi}{3}, -\\sin \\frac{2\\pi}{3}, \\sin \\frac{\\pi}{3}, 0\\)。",
+      "solution": "角 \\(\\theta=\\frac{\\pi}{3}\\) に対して正弦の値は \\(F_n\\bmod 6\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 6\\) を考える。正弦では位相 \\(r\\) と \\(3-r\\) が同じ値を与える。この同値関係で状態をまとめ、状態周期 24 の約数を小さい順にすべて検査すると、正弦列の最小周期は 24 である。循環前も直接照合すると最小開始添字は \\(N_0=1\\) となる。したがって1周期は \\(\\sin \\frac{\\pi}{3}, \\sin \\frac{\\pi}{3}, \\sin \\frac{\\pi}{3}, 0, -\\sin \\frac{2\\pi}{3}, \\sin \\frac{\\pi}{3}, \\sin \\frac{\\pi}{3}, 0, -\\sin \\frac{2\\pi}{3}, \\sin \\frac{\\pi}{3}, -\\sin \\frac{2\\pi}{3}, 0, -\\sin \\frac{2\\pi}{3}, -\\sin \\frac{2\\pi}{3}, -\\sin \\frac{2\\pi}{3}, 0, \\sin \\frac{\\pi}{3}, -\\sin \\frac{2\\pi}{3}, -\\sin \\frac{2\\pi}{3}, 0, \\sin \\frac{\\pi}{3}, -\\sin \\frac{2\\pi}{3}, \\sin \\frac{\\pi}{3}, 0\\) である。独立検算として遷移行列の二進累乗で全状態を再生し、逐次遷移と一致することを確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 10.284962500721157
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 46,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.104895,
+      "maximumCorpusSurfaceJaccard": 0.106383,
+      "corpusSurfaceNovelty": 0.893617,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-unit-circle-point-period.03150d5e7766a4c0",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_minimal_unit_circle_point_period",
+      "querySignature": "minimal eventual unit-circle point period and one exact orbit",
+      "parents": [
+        {
+          "id": "fullproblem-025",
+          "label": "問題25",
+          "ordinal": 25
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{3}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(z_{n+T}=z_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の点を順に書け。",
+      "answer": "\\((N_0,T)=(1,24)\\)。1周期は \\(\\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{2\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(-1,0\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{2\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(-1,0\\right), \\left(\\cos \\frac{2\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(1,0\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{2\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(-1,0\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{2\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(-1,0\\right), \\left(\\cos \\frac{2\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(1,0\\right)\\)。",
+      "solution": "点 \\(z_n\\) は、位相 \\(F_n\\theta\\) を単位円上の点としてそのまま記録する。したがって \\(z_n\\) は \\(F_n\\bmod 6\\) だけで決まる。状態 \\(v_n=(F_n,F_{n+1})\\bmod 6\\) を列挙すると、循環開始位置は 0、状態周期は 24 である。単位円上の点では余弦だけの場合のような \\(r\\) と \\(-r\\) の同一視を行わない。状態周期の約数をすべて検査すると、点列の最小周期は 24、最小開始添字は \\(N_0=1\\) となる。よって1周期は \\(\\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{2\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(-1,0\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{2\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(-1,0\\right), \\left(\\cos \\frac{2\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(1,0\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{2\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(-1,0\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{2\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(-1,0\\right), \\left(\\cos \\frac{2\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},-\\sin \\frac{2\\pi}{3}\\right), \\left(\\cos \\frac{\\pi}{3},\\sin \\frac{\\pi}{3}\\right), \\left(1,0\\right)\\) である。遷移行列の二進累乗による再生も逐次列挙と一致した。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 10.684962500721156
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 86,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.103679,
+      "maximumCorpusSurfaceJaccard": 0.127572,
+      "corpusSurfaceNovelty": 0.872428,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-sine-zero-set.57570a9dc991a7a4",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "sine_zero_index_set",
+      "querySignature": "classify all recurrence indices at which the rational-angle sine vanishes",
+      "parents": [
+        {
+          "id": "fullproblem-025",
+          "label": "問題25",
+          "ordinal": 25
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{3}\\) を定める。\\(\\sin(F_n\\theta)=0\\) となるすべての整数 \\(n\\ge 1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 1,\\quad n\\bmod 4\\in\\{0\\}\\}\\)",
+      "solution": "\\(\\sin(F_n\\theta)=0\\) であることは、位相が \\(0\\) または \\(\\pi\\) に一致すること、すなわち \\(F_n1\\equiv0,3\\pmod{6}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 6\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 4 である。周期部分で条件を満たす剰余は \\(\\{0\\}\\)、周期部分の開始添字は 1 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 1,\\quad n\\bmod 4\\in\\{0\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 10.484962500721156
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 1,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.133333,
+      "maximumCorpusSurfaceJaccard": 0.148936,
+      "corpusSurfaceNovelty": 0.851064,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-initial-point-return-set.a8785833f3f948c9",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "initial_unit_circle_point_return_set",
+      "querySignature": "classify every return time to the initial unit-circle point",
+      "parents": [
+        {
+          "id": "fullproblem-025",
+          "label": "問題25",
+          "ordinal": 25
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{3}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。\\(z_n=z_1\\) となるすべての整数 \\(n>1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 2,\\quad n\\bmod 24\\in\\{1,2,7,10,17,23\\}\\}\\)",
+      "solution": "余弦と正弦の組が等しいことは位相そのものが等しいことと同値なので、\\(z_n=z_1\\) は \\(F_n1\\equiv1\\pmod{6}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 6\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 24 である。周期部分で条件を満たす剰余は \\(\\{1,2,7,10,17,23\\}\\)、周期部分の開始添字は 2 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 2,\\quad n\\bmod 24\\in\\{1,2,7,10,17,23\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 10.484962500721156
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 1,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.122137,
+      "maximumCorpusSurfaceJaccard": 0.144231,
+      "corpusSurfaceNovelty": 0.855769,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-cosine-sign-profile.9f4c564fba0fe16a",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_cosine_sign_profile",
+      "querySignature": "minimal eventual cosine-sign period and exact sign multiplicities",
+      "parents": [
+        {
+          "id": "fullproblem-025",
+          "label": "問題25",
+          "ordinal": 25
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{3}\\) を定め、\n\\[\n\\varepsilon_n=\\begin{cases}\n1&\\cos(F_n\\theta)>0,\\\\\n0&\\cos(F_n\\theta)=0,\\\\\n-1&\\cos(F_n\\theta)<0\n\\end{cases}\n\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(\\varepsilon_{n+T}=\\varepsilon_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求めよ。さらに、1周期中の \\(1,0,-1\\) の個数をこの順に求めよ。",
+      "answer": "\\((N_0,T)=(1,12)\\)、個数は \\((7,0,5)\\)。",
+      "solution": "位相を \\(r\\pi/3\\) と書く。余弦の符号は \\(2r<3\\) または \\(2r>9\\) のとき正、等号のとき0、それ以外のとき負である。したがって符号は \\(F_n\\bmod 6\\) だけで決まる。合同状態を列挙して得られる符号列について、状態周期 24 の約数をすべて検査すると、最小周期は 12、最小開始添字は \\(N_0=1\\) となる。1周期を数えると、正が 7 個、0が 0 個、負が 5 個である。遷移行列の二進累乗で状態を独立に再生し、符号と個数が一致することも確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 10.584962500721156
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 1,
+      "solutionSentenceCount": 6,
+      "maximumParentSurfaceJaccard": 0.097143,
+      "maximumCorpusSurfaceJaccard": 0.104377,
+      "corpusSurfaceNovelty": 0.895623,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
       "cardId": "mortra-certified.pell-recurrence-product.e7bc6fac4b7b816a",
       "family": "certified.pell_recurrence_state_product",
+      "observable": "periodic_congruence_solution_set",
+      "querySignature": "classify-equality-states-in-product-orbit",
       "parents": [
         {
           "id": "fullproblem-034",
@@ -337,6 +1564,8 @@
     {
       "cardId": "mortra-certified.pell-indexed-power-sum.88fa901da61aad9f",
       "family": "certified.pell_indexed_power_sum",
+      "observable": "pell_indexed_power_sum_inequality_solution_set",
+      "querySignature": "classify-pell-indexed-power-sum-inequality",
       "parents": [
         {
           "id": "fullproblem-034",
@@ -378,6 +1607,8 @@
     {
       "cardId": "mortra-certified-finite-state-trig.a7caf4b761a3f505",
       "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_minimal_trigonometric_period",
+      "querySignature": "minimal eventual period and one exact cycle",
       "parents": [
         {
           "id": "fullproblem-054",
@@ -418,8 +1649,274 @@
       "unusedPremiseCount": 0
     },
     {
+      "cardId": "mortra-certified-finite-state-trig-sine-period.d59bce1a906575a9",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_minimal_sine_period",
+      "querySignature": "minimal eventual sine period and one exact cycle",
+      "parents": [
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        },
+        {
+          "id": "fullproblem-065",
+          "label": "問題64",
+          "ordinal": 65
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{2}\\) を定め、\\(s_n=\\sin(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(s_{n+T}=s_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,6)\\)。1周期は \\(1, 1, 0, -1, 1, 0\\)。",
+      "solution": "角 \\(\\theta=\\frac{\\pi}{2}\\) に対して正弦の値は \\(F_n\\bmod 4\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 4\\) を考える。正弦では位相 \\(r\\) と \\(2-r\\) が同じ値を与える。この同値関係で状態をまとめ、状態周期 6 の約数を小さい順にすべて検査すると、正弦列の最小周期は 6 である。循環前も直接照合すると最小開始添字は \\(N_0=1\\) となる。したがって1周期は \\(1, 1, 0, -1, 1, 0\\) である。独立検算として遷移行列の二進累乗で全状態を再生し、逐次遷移と一致することを確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 9.7
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 2,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.105263,
+      "maximumCorpusSurfaceJaccard": 0.106838,
+      "corpusSurfaceNovelty": 0.893162,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-unit-circle-point-period.c683ef896253090e",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_minimal_unit_circle_point_period",
+      "querySignature": "minimal eventual unit-circle point period and one exact orbit",
+      "parents": [
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        },
+        {
+          "id": "fullproblem-065",
+          "label": "問題64",
+          "ordinal": 65
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{2}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(z_{n+T}=z_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の点を順に書け。",
+      "answer": "\\((N_0,T)=(1,6)\\)。1周期は \\(\\left(0,1\\right), \\left(0,1\\right), \\left(-1,0\\right), \\left(0,-1\\right), \\left(0,1\\right), \\left(1,0\\right)\\)。",
+      "solution": "点 \\(z_n\\) は、位相 \\(F_n\\theta\\) を単位円上の点としてそのまま記録する。したがって \\(z_n\\) は \\(F_n\\bmod 4\\) だけで決まる。状態 \\(v_n=(F_n,F_{n+1})\\bmod 4\\) を列挙すると、循環開始位置は 0、状態周期は 6 である。単位円上の点では余弦だけの場合のような \\(r\\) と \\(-r\\) の同一視を行わない。状態周期の約数をすべて検査すると、点列の最小周期は 6、最小開始添字は \\(N_0=1\\) となる。よって1周期は \\(\\left(0,1\\right), \\left(0,1\\right), \\left(-1,0\\right), \\left(0,-1\\right), \\left(0,1\\right), \\left(1,0\\right)\\) である。遷移行列の二進累乗による再生も逐次列挙と一致した。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 10.1
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 3,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.104027,
+      "maximumCorpusSurfaceJaccard": 0.128099,
+      "corpusSurfaceNovelty": 0.871901,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-sine-zero-set.93d7850bb8c7ecb0",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "sine_zero_index_set",
+      "querySignature": "classify all recurrence indices at which the rational-angle sine vanishes",
+      "parents": [
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        },
+        {
+          "id": "fullproblem-065",
+          "label": "問題64",
+          "ordinal": 65
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{2}\\) を定める。\\(\\sin(F_n\\theta)=0\\) となるすべての整数 \\(n\\ge 1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 1,\\quad n\\bmod 3\\in\\{0\\}\\}\\)",
+      "solution": "\\(\\sin(F_n\\theta)=0\\) であることは、位相が \\(0\\) または \\(\\pi\\) に一致すること、すなわち \\(F_n1\\equiv0,2\\pmod{4}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 4\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 3 である。周期部分で条件を満たす剰余は \\(\\{0\\}\\)、周期部分の開始添字は 1 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 1,\\quad n\\bmod 3\\in\\{0\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 9.9
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 1,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.133891,
+      "maximumCorpusSurfaceJaccard": 0.149733,
+      "corpusSurfaceNovelty": 0.850267,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-cosine-zero-set.dc3a160459ac99a2",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "cosine_zero_index_set",
+      "querySignature": "classify all recurrence indices at which the rational-angle cosine vanishes",
+      "parents": [
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        },
+        {
+          "id": "fullproblem-065",
+          "label": "問題64",
+          "ordinal": 65
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{2}\\) を定める。\\(\\cos(F_n\\theta)=0\\) となるすべての整数 \\(n\\ge 1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 1,\\quad n\\bmod 3\\in\\{1,2\\}\\}\\)",
+      "solution": "\\(\\cos(F_n\\theta)=0\\) であることは、\\(2F_n1\\equiv2\\pmod{4}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 4\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 3 である。周期部分で条件を満たす剰余は \\(\\{1,2\\}\\)、周期部分の開始添字は 1 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 1,\\quad n\\bmod 3\\in\\{1,2\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 9.9
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 1,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.133891,
+      "maximumCorpusSurfaceJaccard": 0.143617,
+      "corpusSurfaceNovelty": 0.856383,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-initial-point-return-set.97585341984fb243",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "initial_unit_circle_point_return_set",
+      "querySignature": "classify every return time to the initial unit-circle point",
+      "parents": [
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        },
+        {
+          "id": "fullproblem-065",
+          "label": "問題64",
+          "ordinal": 65
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{2}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。\\(z_n=z_1\\) となるすべての整数 \\(n>1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 2,\\quad n\\bmod 6\\in\\{1,2,5\\}\\}\\)",
+      "solution": "余弦と正弦の組が等しいことは位相そのものが等しいことと同値なので、\\(z_n=z_1\\) は \\(F_n1\\equiv1\\pmod{4}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 4\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 6 である。周期部分で条件を満たす剰余は \\(\\{1,2,5\\}\\)、周期部分の開始添字は 2 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 2,\\quad n\\bmod 6\\in\\{1,2,5\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 9.9
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 1,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.122605,
+      "maximumCorpusSurfaceJaccard": 0.144928,
+      "corpusSurfaceNovelty": 0.855072,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-cosine-sign-profile.6634d3d7379503c4",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_cosine_sign_profile",
+      "querySignature": "minimal eventual cosine-sign period and exact sign multiplicities",
+      "parents": [
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        },
+        {
+          "id": "fullproblem-065",
+          "label": "問題64",
+          "ordinal": 65
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{2}\\) を定め、\n\\[\n\\varepsilon_n=\\begin{cases}\n1&\\cos(F_n\\theta)>0,\\\\\n0&\\cos(F_n\\theta)=0,\\\\\n-1&\\cos(F_n\\theta)<0\n\\end{cases}\n\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(\\varepsilon_{n+T}=\\varepsilon_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求めよ。さらに、1周期中の \\(1,0,-1\\) の個数をこの順に求めよ。",
+      "answer": "\\((N_0,T)=(1,6)\\)、個数は \\((1,4,1)\\)。",
+      "solution": "位相を \\(r\\pi/2\\) と書く。余弦の符号は \\(2r<2\\) または \\(2r>6\\) のとき正、等号のとき0、それ以外のとき負である。したがって符号は \\(F_n\\bmod 4\\) だけで決まる。合同状態を列挙して得られる符号列について、状態周期 6 の約数をすべて検査すると、最小周期は 6、最小開始添字は \\(N_0=1\\) となる。1周期を数えると、正が 1 個、0が 4 個、負が 1 個である。遷移行列の二進累乗で状態を独立に再生し、符号と個数が一致することも確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 10
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 1,
+      "solutionSentenceCount": 6,
+      "maximumParentSurfaceJaccard": 0.097421,
+      "maximumCorpusSurfaceJaccard": 0.10473,
+      "corpusSurfaceNovelty": 0.89527,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
       "cardId": "mortra-certified-finite-state-trig.fa9875c41c6984bf",
       "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_minimal_trigonometric_period",
+      "querySignature": "minimal eventual period and one exact cycle",
       "parents": [
         {
           "id": "fullproblem-054",
@@ -460,8 +1957,274 @@
       "unusedPremiseCount": 0
     },
     {
+      "cardId": "mortra-certified-finite-state-trig-sine-period.e6e34e943bfcedb0",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_minimal_sine_period",
+      "querySignature": "minimal eventual sine period and one exact cycle",
+      "parents": [
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        },
+        {
+          "id": "fullproblem-080",
+          "label": "問題79",
+          "ordinal": 80
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{4}\\) を定め、\\(s_n=\\sin(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(s_{n+T}=s_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,12)\\)。1周期は \\(\\sin \\frac{\\pi}{4}, \\sin \\frac{\\pi}{4}, 1, \\sin \\frac{\\pi}{4}, -\\sin \\frac{3\\pi}{4}, 0, -\\sin \\frac{3\\pi}{4}, -\\sin \\frac{3\\pi}{4}, 1, -\\sin \\frac{3\\pi}{4}, \\sin \\frac{\\pi}{4}, 0\\)。",
+      "solution": "角 \\(\\theta=\\frac{\\pi}{4}\\) に対して正弦の値は \\(F_n\\bmod 8\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 8\\) を考える。正弦では位相 \\(r\\) と \\(4-r\\) が同じ値を与える。この同値関係で状態をまとめ、状態周期 12 の約数を小さい順にすべて検査すると、正弦列の最小周期は 12 である。循環前も直接照合すると最小開始添字は \\(N_0=1\\) となる。したがって1周期は \\(\\sin \\frac{\\pi}{4}, \\sin \\frac{\\pi}{4}, 1, \\sin \\frac{\\pi}{4}, -\\sin \\frac{3\\pi}{4}, 0, -\\sin \\frac{3\\pi}{4}, -\\sin \\frac{3\\pi}{4}, 1, -\\sin \\frac{3\\pi}{4}, \\sin \\frac{\\pi}{4}, 0\\) である。独立検算として遷移行列の二進累乗で全状態を再生し、逐次遷移と一致することを確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 10.7
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 21,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.104895,
+      "maximumCorpusSurfaceJaccard": 0.106383,
+      "corpusSurfaceNovelty": 0.893617,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-unit-circle-point-period.f572dcd114f8bf36",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_minimal_unit_circle_point_period",
+      "querySignature": "minimal eventual unit-circle point period and one exact orbit",
+      "parents": [
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        },
+        {
+          "id": "fullproblem-080",
+          "label": "問題79",
+          "ordinal": 80
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{4}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(z_{n+T}=z_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の点を順に書け。",
+      "answer": "\\((N_0,T)=(1,12)\\)。1周期は \\(\\left(\\cos \\frac{\\pi}{4},\\sin \\frac{\\pi}{4}\\right), \\left(\\cos \\frac{\\pi}{4},\\sin \\frac{\\pi}{4}\\right), \\left(0,1\\right), \\left(\\cos \\frac{3\\pi}{4},\\sin \\frac{\\pi}{4}\\right), \\left(\\cos \\frac{3\\pi}{4},-\\sin \\frac{3\\pi}{4}\\right), \\left(1,0\\right), \\left(\\cos \\frac{3\\pi}{4},-\\sin \\frac{3\\pi}{4}\\right), \\left(\\cos \\frac{3\\pi}{4},-\\sin \\frac{3\\pi}{4}\\right), \\left(0,1\\right), \\left(\\cos \\frac{\\pi}{4},-\\sin \\frac{3\\pi}{4}\\right), \\left(\\cos \\frac{\\pi}{4},\\sin \\frac{\\pi}{4}\\right), \\left(1,0\\right)\\)。",
+      "solution": "点 \\(z_n\\) は、位相 \\(F_n\\theta\\) を単位円上の点としてそのまま記録する。したがって \\(z_n\\) は \\(F_n\\bmod 8\\) だけで決まる。状態 \\(v_n=(F_n,F_{n+1})\\bmod 8\\) を列挙すると、循環開始位置は 0、状態周期は 12 である。単位円上の点では余弦だけの場合のような \\(r\\) と \\(-r\\) の同一視を行わない。状態周期の約数をすべて検査すると、点列の最小周期は 12、最小開始添字は \\(N_0=1\\) となる。よって1周期は \\(\\left(\\cos \\frac{\\pi}{4},\\sin \\frac{\\pi}{4}\\right), \\left(\\cos \\frac{\\pi}{4},\\sin \\frac{\\pi}{4}\\right), \\left(0,1\\right), \\left(\\cos \\frac{3\\pi}{4},\\sin \\frac{\\pi}{4}\\right), \\left(\\cos \\frac{3\\pi}{4},-\\sin \\frac{3\\pi}{4}\\right), \\left(1,0\\right), \\left(\\cos \\frac{3\\pi}{4},-\\sin \\frac{3\\pi}{4}\\right), \\left(\\cos \\frac{3\\pi}{4},-\\sin \\frac{3\\pi}{4}\\right), \\left(0,1\\right), \\left(\\cos \\frac{\\pi}{4},-\\sin \\frac{3\\pi}{4}\\right), \\left(\\cos \\frac{\\pi}{4},\\sin \\frac{\\pi}{4}\\right), \\left(1,0\\right)\\) である。遷移行列の二進累乗による再生も逐次列挙と一致した。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 11.1
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 37,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.103679,
+      "maximumCorpusSurfaceJaccard": 0.127572,
+      "corpusSurfaceNovelty": 0.872428,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-sine-zero-set.c4dd27110de5af2f",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "sine_zero_index_set",
+      "querySignature": "classify all recurrence indices at which the rational-angle sine vanishes",
+      "parents": [
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        },
+        {
+          "id": "fullproblem-080",
+          "label": "問題79",
+          "ordinal": 80
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{4}\\) を定める。\\(\\sin(F_n\\theta)=0\\) となるすべての整数 \\(n\\ge 1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 1,\\quad n\\bmod 6\\in\\{0\\}\\}\\)",
+      "solution": "\\(\\sin(F_n\\theta)=0\\) であることは、位相が \\(0\\) または \\(\\pi\\) に一致すること、すなわち \\(F_n1\\equiv0,4\\pmod{8}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 8\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 6 である。周期部分で条件を満たす剰余は \\(\\{0\\}\\)、周期部分の開始添字は 1 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 1,\\quad n\\bmod 6\\in\\{0\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 10.9
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 1,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.133333,
+      "maximumCorpusSurfaceJaccard": 0.148936,
+      "corpusSurfaceNovelty": 0.851064,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-cosine-zero-set.bb40b7d6d50b86a0",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "cosine_zero_index_set",
+      "querySignature": "classify all recurrence indices at which the rational-angle cosine vanishes",
+      "parents": [
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        },
+        {
+          "id": "fullproblem-080",
+          "label": "問題79",
+          "ordinal": 80
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{4}\\) を定める。\\(\\cos(F_n\\theta)=0\\) となるすべての整数 \\(n\\ge 1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 1,\\quad n\\bmod 6\\in\\{3\\}\\}\\)",
+      "solution": "\\(\\cos(F_n\\theta)=0\\) であることは、\\(2F_n1\\equiv4\\pmod{8}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 8\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 6 である。周期部分で条件を満たす剰余は \\(\\{3\\}\\)、周期部分の開始添字は 1 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 1,\\quad n\\bmod 6\\in\\{3\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 10.9
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 1,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.133333,
+      "maximumCorpusSurfaceJaccard": 0.142857,
+      "corpusSurfaceNovelty": 0.857143,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-initial-point-return-set.a69a65f5751a429c",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "initial_unit_circle_point_return_set",
+      "querySignature": "classify every return time to the initial unit-circle point",
+      "parents": [
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        },
+        {
+          "id": "fullproblem-080",
+          "label": "問題79",
+          "ordinal": 80
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{4}\\) を定め、\n\\[z_n=\\left(\\cos(F_n\\theta),\\ \\sin(F_n\\theta)\\right)\\]\nとおく。\\(z_n=z_1\\) となるすべての整数 \\(n>1\\) を求めよ。",
+      "answer": "\\(\\{n:n\\ge 2,\\quad n\\bmod 12\\in\\{1,2,11\\}\\}\\)",
+      "solution": "余弦と正弦の組が等しいことは位相そのものが等しいことと同値なので、\\(z_n=z_1\\) は \\(F_n1\\equiv1\\pmod{8}\\) と同値である。したがって、この条件の真偽は状態 \\(v_n=(F_n,F_{n+1})\\bmod 8\\) だけで決まる。状態を一巡させ、条件の真偽を0と1で記録すると、循環開始位置は 0、真偽列の最小周期は 12 である。周期部分で条件を満たす剰余は \\(\\{1,2,11\\}\\)、周期部分の開始添字は 2 である。循環前の該当添字も別に調べると \\(\\varnothing\\) となる。以上を合わせて答えは \\(\\{n:n\\ge 2,\\quad n\\bmod 12\\in\\{1,2,11\\}\\}\\) である。独立検算として、遷移行列の二進累乗から得た状態でも同じ真偽列になることを全状態で確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 10.9
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 1,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.122137,
+      "maximumCorpusSurfaceJaccard": 0.144231,
+      "corpusSurfaceNovelty": 0.855769,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig-cosine-sign-profile.0601ad950b7a2b4e",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "observable": "eventual_cosine_sign_profile",
+      "querySignature": "minimal eventual cosine-sign period and exact sign multiplicities",
+      "parents": [
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        },
+        {
+          "id": "fullproblem-080",
+          "label": "問題79",
+          "ordinal": 80
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{4}\\) を定め、\n\\[\n\\varepsilon_n=\\begin{cases}\n1&\\cos(F_n\\theta)>0,\\\\\n0&\\cos(F_n\\theta)=0,\\\\\n-1&\\cos(F_n\\theta)<0\n\\end{cases}\n\\]\nとおく。すべての \\(n\\ge N_0\\) で \\(\\varepsilon_{n+T}=\\varepsilon_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求めよ。さらに、1周期中の \\(1,0,-1\\) の個数をこの順に求めよ。",
+      "answer": "\\((N_0,T)=(1,12)\\)、個数は \\((6,2,4)\\)。",
+      "solution": "位相を \\(r\\pi/4\\) と書く。余弦の符号は \\(2r<4\\) または \\(2r>12\\) のとき正、等号のとき0、それ以外のとき負である。したがって符号は \\(F_n\\bmod 8\\) だけで決まる。合同状態を列挙して得られる符号列について、状態周期 12 の約数をすべて検査すると、最小周期は 12、最小開始添字は \\(N_0=1\\) となる。1周期を数えると、正が 6 個、0が 2 個、負が 4 個である。遷移行列の二進累乗で状態を独立に再生し、符号と個数が一致することも確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 11
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 1,
+      "solutionSentenceCount": 6,
+      "maximumParentSurfaceJaccard": 0.097143,
+      "maximumCorpusSurfaceJaccard": 0.104377,
+      "corpusSurfaceNovelty": 0.895623,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
       "cardId": "mortra-certified.indexed-power-sum.33b630d2c7648ffc",
       "family": "certified.recurrence_indexed_power_sum",
+      "observable": "indexed_power_sum_inequality_solution_set",
+      "querySignature": "classify-recurrence-indexed-power-sum-inequality",
       "parents": [
         {
           "id": "fullproblem-054",

@@ -57,6 +57,38 @@ test('a recurrence and a rational angle synthesize an exact finite-state problem
   assert.ok(card.search_evidence.hypotheses_evaluated <= card.verification.samples[0] ** 2)
 })
 
+test('one typed parent pair supports several distinct exact questions', () => {
+  const cards = synthesizeCertifiedFiniteStateTrigFusion([recurrenceParent, angleParent], 64)
+  assert.equal(cards.length, 7)
+  assert.equal(new Set(cards.map(card => card.structure_blueprint.id)).size, cards.length)
+  assert.deepEqual(
+    new Set(cards.map(card => card.structure_blueprint.observable)),
+    new Set([
+      'eventual_minimal_trigonometric_period',
+      'eventual_minimal_sine_period',
+      'eventual_minimal_unit_circle_point_period',
+      'sine_zero_index_set',
+      'cosine_zero_index_set',
+      'initial_unit_circle_point_return_set',
+      'eventual_cosine_sign_profile',
+    ]),
+  )
+  assert.ok(cards.every(card => card.verification.exact_backend && card.verification.independent_check))
+})
+
+test('zero sets, return times, and sign counts agree with the Fibonacci orbit modulo 12', () => {
+  const cards = synthesizeCertifiedFiniteStateTrigFusion([recurrenceParent, angleParent], 64)
+  const byObservable = new Map(cards.map(card => [card.structure_blueprint.observable, card]))
+
+  assert.match(byObservable.get('sine_zero_index_set')?.answer_tex ?? '', /n\\bmod 12\\in\\\{0\\\}/)
+  assert.match(byObservable.get('cosine_zero_index_set')?.answer_tex ?? '', /n\\bmod 12\\in\\\{4,8\\\}/)
+  assert.match(
+    byObservable.get('initial_unit_circle_point_return_set')?.answer_tex ?? '',
+    /n\\bmod 24\\in\\\{1,2,7,17,23\\\}/,
+  )
+  assert.ok((byObservable.get('eventual_cosine_sign_profile')?.answer_tex ?? '').includes('(12,4,8)'))
+})
+
 test('input order and problem identifiers do not affect the normalized structure', () => {
   const base = synthesizeCertifiedFiniteStateTrigFusion([recurrenceParent, angleParent], 1)[0]
   const renamedRecurrence = { ...recurrenceParent, id: 'renamed-recurrence' }

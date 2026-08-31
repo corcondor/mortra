@@ -1,0 +1,506 @@
+{
+  "schema": 1,
+  "measuredAt": "2026-08-31T17:48:25.224Z",
+  "purpose": "直接構造融合が、単なる逆再生ではない検証済み難問候補を生成できるかを測る",
+  "method": {
+    "population": "90問の全組合せ",
+    "pairCount": 4005,
+    "perPairLimit": 64,
+    "selection": "証明深度・表現数・答えの演算数・90問に対する表層新規性を別々に測り、単一の恣意的総合点へ潰さない",
+    "proofRequirement": "厳密計算、独立検算、両親依存、交差合成、条件最小性、逆再生拒否のすべて"
+  },
+  "candidateCount": 11,
+  "familyCounts": {
+    "certified.mobius_polynomial_fixed_point_transport": 1,
+    "certified.pell_indexed_power_sum": 1,
+    "certified.pell_recurrence_state_product": 1,
+    "certified.recurrence_indexed_power_sum": 1,
+    "certified.recurrence_rational_angle_orbit": 7
+  },
+  "allAuditsPassed": true,
+  "paretoFrontCardIds": [
+    "mortra-certified-finite-state-trig.b387eebb79c14218",
+    "mortra-certified-finite-state-trig.93f68cc87a2b6734",
+    "mortra-certified-finite-state-trig.6e8d726320f4a279",
+    "mortra-certified.pell-recurrence-product.e7bc6fac4b7b816a",
+    "mortra-certified.pell-indexed-power-sum.88fa901da61aad9f"
+  ],
+  "proofDepthRanking": [
+    "mortra-certified.pell-indexed-power-sum.88fa901da61aad9f",
+    "mortra-certified.pell-recurrence-product.e7bc6fac4b7b816a",
+    "mortra-certified.indexed-power-sum.33b630d2c7648ffc",
+    "mortra-certified-finite-state-trig.6e8d726320f4a279",
+    "mortra-certified-finite-state-trig.b387eebb79c14218",
+    "mortra-certified-finite-state-trig.015a7c04dc0a0604",
+    "mortra-certified-finite-state-trig.93f68cc87a2b6734",
+    "mortra-certified-finite-state-trig.fa9875c41c6984bf",
+    "mortra-certified-finite-state-trig.a44cdc7ecb8af119",
+    "mortra-certified-finite-state-trig.a7caf4b761a3f505",
+    "mortra-certified.mobius-polynomial-fixed-point.b9949dd26a69df47"
+  ],
+  "candidates": [
+    {
+      "cardId": "mortra-certified-finite-state-trig.b387eebb79c14218",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "parents": [
+        {
+          "id": "fullproblem-001",
+          "label": "問題1",
+          "ordinal": 1
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{6}\\) を定め、\\(c_n=\\cos(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(c_{n+T}=c_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,24)\\)。1周期は \\(\\cos \\frac{\\pi}{6}, \\cos \\frac{\\pi}{6}, \\cos \\frac{\\pi}{3}, 0, \\cos \\frac{5\\pi}{6}, \\cos \\frac{2\\pi}{3}, \\cos \\frac{\\pi}{6}, 0, \\cos \\frac{\\pi}{3}, \\cos \\frac{5\\pi}{6}, \\cos \\frac{5\\pi}{6}, 1, \\cos \\frac{5\\pi}{6}, \\cos \\frac{5\\pi}{6}, \\cos \\frac{\\pi}{3}, 0, \\cos \\frac{\\pi}{6}, \\cos \\frac{2\\pi}{3}, \\cos \\frac{5\\pi}{6}, 0, \\cos \\frac{\\pi}{3}, \\cos \\frac{\\pi}{6}, \\cos \\frac{\\pi}{6}, 1\\)。",
+      "solution": "角 \\(\\theta=\\frac{\\pi}{6}\\) に対して余弦の値は \\(F_n\\bmod 12\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 12\\) を考える。遷移行列は\n\\[\nA=\\begin{pmatrix}0&1\\\\1&1\\end{pmatrix}\n\\]\nである。有限個の状態を順に調べると、状態の循環開始位置は 0、状態周期は 24 である。余弦は位相 \\(r\\) と \\(-r\\) を同じ値へ写すため、余弦列の最小周期は 24 まで短くなる。循環前も直接照合すると最小開始添字は \\(N_0=1\\) であり、1周期は \\(\\cos \\frac{\\pi}{6}, \\cos \\frac{\\pi}{6}, \\cos \\frac{\\pi}{3}, 0, \\cos \\frac{5\\pi}{6}, \\cos \\frac{2\\pi}{3}, \\cos \\frac{\\pi}{6}, 0, \\cos \\frac{\\pi}{3}, \\cos \\frac{5\\pi}{6}, \\cos \\frac{5\\pi}{6}, 1, \\cos \\frac{5\\pi}{6}, \\cos \\frac{5\\pi}{6}, \\cos \\frac{\\pi}{3}, 0, \\cos \\frac{\\pi}{6}, \\cos \\frac{2\\pi}{3}, \\cos \\frac{5\\pi}{6}, 0, \\cos \\frac{\\pi}{3}, \\cos \\frac{\\pi}{6}, \\cos \\frac{\\pi}{6}, 1\\) である。独立検算として \\(A^k v_1\\) を二進法で計算し、逐次遷移と全状態で一致することを確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 11.084962500721156
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 37,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.104895,
+      "maximumCorpusSurfaceJaccard": 0.106383,
+      "corpusSurfaceNovelty": 0.893617,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig.a44cdc7ecb8af119",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "parents": [
+        {
+          "id": "fullproblem-005",
+          "label": "問題5",
+          "ordinal": 5
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{2\\pi}{7}\\) を定め、\\(c_n=\\cos(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(c_{n+T}=c_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,8)\\)。1周期は \\(\\cos \\frac{2\\pi}{7}, \\cos \\frac{2\\pi}{7}, \\cos \\frac{4\\pi}{7}, \\cos \\frac{6\\pi}{7}, \\cos \\frac{4\\pi}{7}, \\cos \\frac{2\\pi}{7}, \\cos \\frac{2\\pi}{7}, 1\\)。",
+      "solution": "角 \\(\\theta=\\frac{2\\pi}{7}\\) に対して余弦の値は \\(F_n\\bmod 14\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 14\\) を考える。遷移行列は\n\\[\nA=\\begin{pmatrix}0&1\\\\1&1\\end{pmatrix}\n\\]\nである。有限個の状態を順に調べると、状態の循環開始位置は 0、状態周期は 48 である。余弦は位相 \\(r\\) と \\(-r\\) を同じ値へ写すため、余弦列の最小周期は 8 まで短くなる。循環前も直接照合すると最小開始添字は \\(N_0=1\\) であり、1周期は \\(\\cos \\frac{2\\pi}{7}, \\cos \\frac{2\\pi}{7}, \\cos \\frac{4\\pi}{7}, \\cos \\frac{6\\pi}{7}, \\cos \\frac{4\\pi}{7}, \\cos \\frac{2\\pi}{7}, \\cos \\frac{2\\pi}{7}, 1\\) である。独立検算として \\(A^k v_1\\) を二進法で計算し、逐次遷移と全状態で一致することを確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 11.307354922057604
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 15,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.10453,
+      "maximumCorpusSurfaceJaccard": 0.10453,
+      "corpusSurfaceNovelty": 0.89547,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified.mobius-polynomial-fixed-point.b9949dd26a69df47",
+      "family": "certified.mobius_polynomial_fixed_point_transport",
+      "parents": [
+        {
+          "id": "fullproblem-017",
+          "label": "問題17",
+          "ordinal": 17
+        },
+        {
+          "id": "fullproblem-018",
+          "label": "問題18",
+          "ordinal": 18
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "polynomial.root_configuration",
+        "transform.mobius"
+      ],
+      "statement": "\\(f(x)=x^{3}-2026x^{2}-2029x-1\\) とし、その根を \\(\\alpha_1,\\ldots,\\alpha_3\\) とする。一次分数変換\n\\[T(x)=\\frac{1}{-x+1}\\]\nにより \\(S_i=T(\\alpha_i)\\) とおく。\n\n\\(S_1,\\ldots,S_3\\) をちょうど根にもつ整数係数多項式 \\(P(S)\\) を一つ求めよ。さらに、\\(P(S)=0\\) を\n\\[S=g(S)=C_0+\\frac{C_1}{S}+\\frac{C_2}{S^{2}}\\]\nの形へ直し、\\(g(S)\\) と \\(C_0\\) を求めよ。",
+      "answer": "\\(P(S)=4055S^{3}-6078S^{2}+2023S+1\\),\\quad \\(g(S)=\\frac{6078S^{2}-2023S-1}{4055S^{2}}\\),\\quad \\(C_0=\\frac{6078}{4055}\\)",
+      "solution": "変換行列の行列式は \\(\\Delta=1\\neq0\\) であり、逆変換は\n\\[x=\\frac{S-1}{S}\\]\nである。したがって分母を払った\n\\[P(S)=S^{3}f\\!\\left(\\frac{S-1}{S}\\right)\n=4055S^{3}-6078S^{2}+2023S+1\\]\nの根は、重複度込みでちょうど \\(S_i=T(\\alpha_i)\\) である。\n\n最高次項を右辺へ移すと\n\\[S=\\frac{6078S^{2}-2023S-1}{4055S^{2}}=g(S)\\]\nとなり、\\(S^0\\) に対応する定数項は \\(C_0=\\frac{6078}{4055}\\) である。\n\n独立な逆向き検証として \\(S=T(x)\\) を代入し、\n\\[\\left(-x+1\\right)^{3}P(T(x))=-\\Delta^{3}f(x)\\]\nを整数係数多項式の係数比較で確認した。また\n\\[4055S^{2}\\{S-g(S)\\}=P(S)\\]\nも恒等的に成り立つ。よって余分な固定点も欠落した固定点もない。",
+      "declaredDifficulty": {
+        "band": "A_exact_algebraic_dynamics_fusion",
+        "score": 10.3
+      },
+      "proofStepCount": 7,
+      "representationCount": 8,
+      "answerOperationCount": 14,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.149893,
+      "maximumCorpusSurfaceJaccard": 0.149893,
+      "corpusSurfaceNovelty": 0.850107,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig.93f68cc87a2b6734",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "parents": [
+        {
+          "id": "fullproblem-018",
+          "label": "問題18",
+          "ordinal": 18
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order",
+        "transform.mobius"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{2\\pi}{11}\\) を定め、\\(c_n=\\cos(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(c_{n+T}=c_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,10)\\)。1周期は \\(\\cos \\frac{2\\pi}{11}, \\cos \\frac{2\\pi}{11}, \\cos \\frac{4\\pi}{11}, \\cos \\frac{6\\pi}{11}, \\cos \\frac{10\\pi}{11}, \\cos \\frac{6\\pi}{11}, \\cos \\frac{4\\pi}{11}, \\cos \\frac{2\\pi}{11}, \\cos \\frac{2\\pi}{11}, 1\\)。",
+      "solution": "角 \\(\\theta=\\frac{2\\pi}{11}\\) に対して余弦の値は \\(F_n\\bmod 22\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 22\\) を考える。遷移行列は\n\\[\nA=\\begin{pmatrix}0&1\\\\1&1\\end{pmatrix}\n\\]\nである。有限個の状態を順に調べると、状態の循環開始位置は 0、状態周期は 30 である。余弦は位相 \\(r\\) と \\(-r\\) を同じ値へ写すため、余弦列の最小周期は 10 まで短くなる。循環前も直接照合すると最小開始添字は \\(N_0=1\\) であり、1周期は \\(\\cos \\frac{2\\pi}{11}, \\cos \\frac{2\\pi}{11}, \\cos \\frac{4\\pi}{11}, \\cos \\frac{6\\pi}{11}, \\cos \\frac{10\\pi}{11}, \\cos \\frac{6\\pi}{11}, \\cos \\frac{4\\pi}{11}, \\cos \\frac{2\\pi}{11}, \\cos \\frac{2\\pi}{11}, 1\\) である。独立検算として \\(A^k v_1\\) を二進法で計算し、逐次遷移と全状態で一致することを確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 11.959431618637296
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 19,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.104167,
+      "maximumCorpusSurfaceJaccard": 0.104167,
+      "corpusSurfaceNovelty": 0.895833,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig.6e8d726320f4a279",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "parents": [
+        {
+          "id": "fullproblem-018",
+          "label": "問題18",
+          "ordinal": 18
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order",
+        "transform.mobius"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{11}\\) を定め、\\(c_n=\\cos(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(c_{n+T}=c_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,30)\\)。1周期は \\(\\cos \\frac{\\pi}{11}, \\cos \\frac{\\pi}{11}, \\cos \\frac{2\\pi}{11}, \\cos \\frac{3\\pi}{11}, \\cos \\frac{5\\pi}{11}, \\cos \\frac{8\\pi}{11}, \\cos \\frac{9\\pi}{11}, \\cos \\frac{\\pi}{11}, \\cos \\frac{10\\pi}{11}, -1, \\cos \\frac{\\pi}{11}, \\cos \\frac{10\\pi}{11}, \\cos \\frac{9\\pi}{11}, \\cos \\frac{3\\pi}{11}, \\cos \\frac{6\\pi}{11}, \\cos \\frac{3\\pi}{11}, \\cos \\frac{9\\pi}{11}, \\cos \\frac{10\\pi}{11}, \\cos \\frac{\\pi}{11}, -1, \\cos \\frac{10\\pi}{11}, \\cos \\frac{\\pi}{11}, \\cos \\frac{9\\pi}{11}, \\cos \\frac{8\\pi}{11}, \\cos \\frac{5\\pi}{11}, \\cos \\frac{3\\pi}{11}, \\cos \\frac{2\\pi}{11}, \\cos \\frac{\\pi}{11}, \\cos \\frac{\\pi}{11}, 1\\)。",
+      "solution": "角 \\(\\theta=\\frac{\\pi}{11}\\) に対して余弦の値は \\(F_n\\bmod 22\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 22\\) を考える。遷移行列は\n\\[\nA=\\begin{pmatrix}0&1\\\\1&1\\end{pmatrix}\n\\]\nである。有限個の状態を順に調べると、状態の循環開始位置は 0、状態周期は 30 である。余弦は位相 \\(r\\) と \\(-r\\) を同じ値へ写すため、余弦列の最小周期は 30 まで短くなる。循環前も直接照合すると最小開始添字は \\(N_0=1\\) であり、1周期は \\(\\cos \\frac{\\pi}{11}, \\cos \\frac{\\pi}{11}, \\cos \\frac{2\\pi}{11}, \\cos \\frac{3\\pi}{11}, \\cos \\frac{5\\pi}{11}, \\cos \\frac{8\\pi}{11}, \\cos \\frac{9\\pi}{11}, \\cos \\frac{\\pi}{11}, \\cos \\frac{10\\pi}{11}, -1, \\cos \\frac{\\pi}{11}, \\cos \\frac{10\\pi}{11}, \\cos \\frac{9\\pi}{11}, \\cos \\frac{3\\pi}{11}, \\cos \\frac{6\\pi}{11}, \\cos \\frac{3\\pi}{11}, \\cos \\frac{9\\pi}{11}, \\cos \\frac{10\\pi}{11}, \\cos \\frac{\\pi}{11}, -1, \\cos \\frac{10\\pi}{11}, \\cos \\frac{\\pi}{11}, \\cos \\frac{9\\pi}{11}, \\cos \\frac{8\\pi}{11}, \\cos \\frac{5\\pi}{11}, \\cos \\frac{3\\pi}{11}, \\cos \\frac{2\\pi}{11}, \\cos \\frac{\\pi}{11}, \\cos \\frac{\\pi}{11}, 1\\) である。独立検算として \\(A^k v_1\\) を二進法で計算し、逐次遷移と全状態で一致することを確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 11.959431618637296
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 57,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.10453,
+      "maximumCorpusSurfaceJaccard": 0.110638,
+      "corpusSurfaceNovelty": 0.889362,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig.015a7c04dc0a0604",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "parents": [
+        {
+          "id": "fullproblem-025",
+          "label": "問題25",
+          "ordinal": 25
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{3}\\) を定め、\\(c_n=\\cos(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(c_{n+T}=c_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,12)\\)。1周期は \\(\\cos \\frac{\\pi}{3}, \\cos \\frac{\\pi}{3}, \\cos \\frac{2\\pi}{3}, -1, \\cos \\frac{\\pi}{3}, \\cos \\frac{2\\pi}{3}, \\cos \\frac{\\pi}{3}, -1, \\cos \\frac{2\\pi}{3}, \\cos \\frac{\\pi}{3}, \\cos \\frac{\\pi}{3}, 1\\)。",
+      "solution": "角 \\(\\theta=\\frac{\\pi}{3}\\) に対して余弦の値は \\(F_n\\bmod 6\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 6\\) を考える。遷移行列は\n\\[\nA=\\begin{pmatrix}0&1\\\\1&1\\end{pmatrix}\n\\]\nである。有限個の状態を順に調べると、状態の循環開始位置は 0、状態周期は 24 である。余弦は位相 \\(r\\) と \\(-r\\) を同じ値へ写すため、余弦列の最小周期は 12 まで短くなる。循環前も直接照合すると最小開始添字は \\(N_0=1\\) であり、1周期は \\(\\cos \\frac{\\pi}{3}, \\cos \\frac{\\pi}{3}, \\cos \\frac{2\\pi}{3}, -1, \\cos \\frac{\\pi}{3}, \\cos \\frac{2\\pi}{3}, \\cos \\frac{\\pi}{3}, -1, \\cos \\frac{2\\pi}{3}, \\cos \\frac{\\pi}{3}, \\cos \\frac{\\pi}{3}, 1\\) である。独立検算として \\(A^k v_1\\) を二進法で計算し、逐次遷移と全状態で一致することを確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 10.084962500721156
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 21,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.104895,
+      "maximumCorpusSurfaceJaccard": 0.106383,
+      "corpusSurfaceNovelty": 0.893617,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified.pell-recurrence-product.e7bc6fac4b7b816a",
+      "family": "certified.pell_recurrence_state_product",
+      "parents": [
+        {
+          "id": "fullproblem-034",
+          "label": "問題34",
+          "ordinal": 34
+        },
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        }
+      ],
+      "endpointKinds": [
+        "number_theory.pell_orbit",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(x^2-3y^2=1\\) の非負整数解を、\n\\[\nx_n+y_n\\sqrt{3}=(2+\\sqrt{3})^n\n\\qquad(n=1,2,3,\\ldots)\n\\]\nで定める。また、整数列 \\(\\{a_n\\}\\) を\n\\[a_1=1,\\quad a_2=1,\\quad a_{n+2}=a_{n+1}+a_n\\]\nで定める。合同式\n\\[\nx_n\\equiv a_n\\pmod{3}\n\\]\nを満たす正の整数 \\(n\\) をすべて求めよ。",
+      "answer": "\\(n\\ge1,\\quad n\\bmod 8\\in\\{2,3,5\\}\\)",
+      "solution": "Pell方程式の最小の正の解は \\((2,1)\\) である。連分数法により得られ、正の解はすべて\n\\[\nx_n+y_n\\sqrt{3}=(2+\\sqrt{3})^n\n\\]\nと一意に表される。したがって\n\\[\n\\binom{x_{n+1}}{y_{n+1}}=\n\\begin{pmatrix}2&3\\\\1&2\\end{pmatrix}\n\\binom{x_n}{y_n}\n\\]\nである。一方、与えられた漸化式も\n\\[\n\\binom{a_{n+1}}{a_n}=\n\\begin{pmatrix}1&1\\\\1&0\\end{pmatrix}\n\\binom{a_n}{a_{n-1}}\n\\]\nと書ける。両者を法 \\(3\\) で同時に追うと、状態\n\\((x_n,y_n,a_n,a_{n+1})\\bmod 3\\) は有限個しかなく、次の表を得る。\n\\[\n\\begin{array}{c|cccccccc}\nn&1&2&3&4&5&6&7&8\\\\\\hline\nx_n\\bmod 3&2&1&2&1&2&1&2&1\\\\\na_n\\bmod 3&1&1&2&0&2&2&1&0\\\\\n\\text{一致}&\\times&\\circ&\\circ&\\times&\\circ&\\times&\\times&\\times\n\\end{array}\n\\]\n第 \\(1\\) 項の完全状態が 24 段後に初めて戻る。さらに一周期内の一致・不一致だけを比較すると最小周期は 8 である。したがって合同条件は以後も周期 8 で繰り返す。\n表で二つの剰余が一致する列だけを取れば、\n\\[n\\ge1,\\quad n\\bmod 8\\in\\{2,3,5\\}\\]\nである。なお、表は逐次漸化式と二つの伴行列の高速累乗を別々に実行して一致を確認している。",
+      "declaredDifficulty": {
+        "band": "A_exact_cross_domain_fusion",
+        "score": 8.9
+      },
+      "proofStepCount": 9,
+      "representationCount": 9,
+      "answerOperationCount": 1,
+      "solutionSentenceCount": 10,
+      "maximumParentSurfaceJaccard": 0.092949,
+      "maximumCorpusSurfaceJaccard": 0.136842,
+      "corpusSurfaceNovelty": 0.863158,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified.pell-indexed-power-sum.88fa901da61aad9f",
+      "family": "certified.pell_indexed_power_sum",
+      "parents": [
+        {
+          "id": "fullproblem-034",
+          "label": "問題34",
+          "ordinal": 34
+        },
+        {
+          "id": "fullproblem-090",
+          "label": "問題89",
+          "ordinal": 90
+        }
+      ],
+      "endpointKinds": [
+        "number_theory.pell_orbit",
+        "trigonometry.power_sum"
+      ],
+      "statement": "Pell方程式 \\(x^2-3y^2=1\\) の正の解を\n\\[\nx_k+y_k\\sqrt{3}=(2+\\sqrt{3})^k\n\\qquad(k=1,2,3,\\ldots)\n\\]\nで定める。実数 \\(\\theta\\) が\n\\[\\sin\\theta+\\cos\\theta=\\frac{1}{2027}\\]\nを満たすとき、\n\\[\\sin^{x_k}\\theta+\\cos^{x_k}\\theta>\\frac{1}{2027}\\]\nとなる正の整数 \\(k\\) をすべて求めよ。",
+      "answer": "\\(k\\in\\{1\\}\\)",
+      "solution": "\\(X=\\sin\\theta,\\ Y=\\cos\\theta\\) とおき、\\(u_m=X^m+Y^m\\) とする。条件から\n\\[X+Y=\\frac{1}{2027},\\qquad XY=\\frac{(\\frac{1}{2027})^2-1}{2},\\]\nしたがって、\\(X,Y\\) はともに\n\\[t^2-\\frac{1}{2027}t-\\frac{1-(\\frac{1}{2027})^2}{2}=0\\]\nの解である。各辺にそれぞれ \\(X^m,Y^m\\) を掛けて加えると、べき和 \\(u_m\\) は\n\\[u_0=2,\\quad u_1=\\frac{1}{2027},\\quad u_{m+2}=\\frac{1}{2027}u_{m+1}+\\frac{1-(\\frac{1}{2027})^2}{2}u_m\\tag{1}\\]\nを満たす。\n一方、\\(x_k+y_k\\sqrt{3}\\) に \\(2+\\sqrt{3}\\) を掛け、\\(1,\\sqrt{3}\\) の係数を比較すると\n\\[\n\\binom{x_{k+1}}{y_{k+1}}=\n\\begin{pmatrix}2&3\\\\1&2\\end{pmatrix}\\binom{x_k}{y_k}\n\\]\nであり、添字列は\n\\[2, 7, 26,\\ldots\\]\nとなる。これを \\((1)\\) に代入して厳密有理数で比較すると\n\\[\n\\begin{array}{c|c}\nk&1\\\\\n\\hline\nx_k&2\\\\\nu_{x_k}-\\frac{1}{2027}&\\frac{2026}{2027}\n\\end{array}\n\\]\nを得る。\n残りを評価する。\\(X=\\alpha>0,\\ Y=-\\beta<0\\) とすると \\(\\alpha-\\beta=\\frac{1}{2027}\\) であり、\n\\[\\max(\\alpha,\\beta)<r=\\frac{71}{100}\\]\nが成り立つ。奇数 \\(m\\ge7\\) では\n\\[|u_m|\\le \\frac{1}{2027}\\,m r^{m-1}<\\frac{1}{2027},\\]\n偶数 \\(m\\ge26\\) では\n\\[0<u_m\\le2r^m<\\frac{1}{2027}.\\]\n\\(x_k\\) は狭義単調に増加する。表には、上の評価をまだ適用できない項だけを載せた。表にない項は、奇数なら \\(x_k\\ge7\\)、偶数なら \\(x_k\\ge26\\) なので、いずれも不等式を満たさない。また、\\(x_3=26\\ge26\\) であり、以後も増加するから、新しい解はない。\nよって\n\\[k\\in\\{1\\}\\]\nである。Pell方程式の解の列は、上の行列計算とは別に二階漸化式でも再生した。べき和も、逐次計算と伴行列の累乗という二つの方法で同じ値になることを確認した。",
+      "declaredDifficulty": {
+        "band": "A_exact_cross_domain_fusion",
+        "score": 9.2
+      },
+      "proofStepCount": 10,
+      "representationCount": 10,
+      "answerOperationCount": 0,
+      "solutionSentenceCount": 15,
+      "maximumParentSurfaceJaccard": 0.291005,
+      "maximumCorpusSurfaceJaccard": 0.291005,
+      "corpusSurfaceNovelty": 0.708995,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig.a7caf4b761a3f505",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "parents": [
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        },
+        {
+          "id": "fullproblem-065",
+          "label": "問題64",
+          "ordinal": 65
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{2}\\) を定め、\\(c_n=\\cos(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(c_{n+T}=c_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,6)\\)。1周期は \\(0, 0, -1, 0, 0, 1\\)。",
+      "solution": "角 \\(\\theta=\\frac{\\pi}{2}\\) に対して余弦の値は \\(F_n\\bmod 4\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 4\\) を考える。遷移行列は\n\\[\nA=\\begin{pmatrix}0&1\\\\1&1\\end{pmatrix}\n\\]\nである。有限個の状態を順に調べると、状態の循環開始位置は 0、状態周期は 6 である。余弦は位相 \\(r\\) と \\(-r\\) を同じ値へ写すため、余弦列の最小周期は 6 まで短くなる。循環前も直接照合すると最小開始添字は \\(N_0=1\\) であり、1周期は \\(0, 0, -1, 0, 0, 1\\) である。独立検算として \\(A^k v_1\\) を二進法で計算し、逐次遷移と全状態で一致することを確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 9.5
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 2,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.105263,
+      "maximumCorpusSurfaceJaccard": 0.106838,
+      "corpusSurfaceNovelty": 0.893162,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified-finite-state-trig.fa9875c41c6984bf",
+      "family": "certified.recurrence_rational_angle_orbit",
+      "parents": [
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        },
+        {
+          "id": "fullproblem-080",
+          "label": "問題79",
+          "ordinal": 80
+        }
+      ],
+      "endpointKinds": [
+        "angle.rational_phase",
+        "sequence.integer_second_order",
+        "sequence.positive_second_order"
+      ],
+      "statement": "\\(F_{1}=1,\\ F_{2}=1,\\ F_{n+2}=F_{n+1}+F_{n}\\) と \\(\\theta=\\frac{\\pi}{4}\\) を定め、\\(c_n=\\cos(F_n\\theta)\\) とおく。すべての \\(n\\ge N_0\\) で \\(c_{n+T}=c_n\\) となる辞書式最小の正整数対 \\((N_0,T)\\) を求め、1周期の値を順に書け。",
+      "answer": "\\((N_0,T)=(1,12)\\)。1周期は \\(\\cos \\frac{\\pi}{4}, \\cos \\frac{\\pi}{4}, 0, \\cos \\frac{3\\pi}{4}, \\cos \\frac{3\\pi}{4}, 1, \\cos \\frac{3\\pi}{4}, \\cos \\frac{3\\pi}{4}, 0, \\cos \\frac{\\pi}{4}, \\cos \\frac{\\pi}{4}, 1\\)。",
+      "solution": "角 \\(\\theta=\\frac{\\pi}{4}\\) に対して余弦の値は \\(F_n\\bmod 8\\) だけで決まる。そこで状態 \\(v_n=(F_n,F_{n+1})\\bmod 8\\) を考える。遷移行列は\n\\[\nA=\\begin{pmatrix}0&1\\\\1&1\\end{pmatrix}\n\\]\nである。有限個の状態を順に調べると、状態の循環開始位置は 0、状態周期は 12 である。余弦は位相 \\(r\\) と \\(-r\\) を同じ値へ写すため、余弦列の最小周期は 12 まで短くなる。循環前も直接照合すると最小開始添字は \\(N_0=1\\) であり、1周期は \\(\\cos \\frac{\\pi}{4}, \\cos \\frac{\\pi}{4}, 0, \\cos \\frac{3\\pi}{4}, \\cos \\frac{3\\pi}{4}, 1, \\cos \\frac{3\\pi}{4}, \\cos \\frac{3\\pi}{4}, 0, \\cos \\frac{\\pi}{4}, \\cos \\frac{\\pi}{4}, 1\\) である。独立検算として \\(A^k v_1\\) を二進法で計算し、逐次遷移と全状態で一致することを確かめた。",
+      "declaredDifficulty": {
+        "band": "A_exact_finite_state_fusion",
+        "score": 10.5
+      },
+      "proofStepCount": 8,
+      "representationCount": 8,
+      "answerOperationCount": 17,
+      "solutionSentenceCount": 7,
+      "maximumParentSurfaceJaccard": 0.104895,
+      "maximumCorpusSurfaceJaccard": 0.106383,
+      "corpusSurfaceNovelty": 0.893617,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    },
+    {
+      "cardId": "mortra-certified.indexed-power-sum.33b630d2c7648ffc",
+      "family": "certified.recurrence_indexed_power_sum",
+      "parents": [
+        {
+          "id": "fullproblem-054",
+          "label": "問題53",
+          "ordinal": 54
+        },
+        {
+          "id": "fullproblem-090",
+          "label": "問題89",
+          "ordinal": 90
+        }
+      ],
+      "endpointKinds": [
+        "sequence.integer_second_order",
+        "sequence.positive_second_order",
+        "trigonometry.power_sum"
+      ],
+      "statement": "数列 \\(\\{a_k\\}\\) を\n\\[a_1=1,\\ a_2=1,\\ a_{k+2}=a_{k+1}+a_k\\]\nで定める。実数 \\(\\theta\\) が\n\\[\\sin\\theta+\\cos\\theta=\\frac{1}{2027}\\]\nを満たすとき、\n\\[\\sin^{a_k}\\theta+\\cos^{a_k}\\theta>\\frac{1}{2027}\\]\nとなる正の整数 \\(k\\) をすべて求めよ。",
+      "answer": "\\(k\\in\\{3,4,5,6\\}\\)",
+      "solution": "\\(x=\\sin\\theta,\\ y=\\cos\\theta\\) とおき、\\(u_m=x^m+y^m\\) とする。条件から\n  \\[x+y=\\frac{1}{2027},\\qquad xy=\\frac{(\\frac{1}{2027})^2-1}{2},\\]\n  したがって、\\(x,y\\) はともに\n  \\[t^2-\\frac{1}{2027}t-\\frac{1-(\\frac{1}{2027})^2}{2}=0\\]\n  の解である。各辺にそれぞれ \\(x^m,y^m\\) を掛けて加えると、べき和 \\(u_m\\) は\n  \\[u_0=2,\\quad u_1=\\frac{1}{2027},\\quad u_{m+2}=\\frac{1}{2027}u_{m+1}+\\frac{1-(\\frac{1}{2027})^2}{2}u_m\\tag{1}\\]\nを得る。一方、第一の親問題から得た添字列は\n\\[1, 1, 2, 3, 5, 8, 13, 21, 34,\\ldots\\]\nである。\\((1)\\)を厳密有理数で計算すると\n\\[\n\\begin{array}{c|cccccc}\nk&1&2&3&4&5&6\\\\\\hline\na_k&1&1&2&3&5&8\\\\\nu_{a_k}-\\frac{1}{2027}&=0&=0&>0&>0&>0&>0\n\\end{array}\n\\]\nとなる。\n\n残りが有限計算の外へ逃げないことを示す。\\(x=\\alpha>0,\\ y=-\\beta<0\\) と番号を付けると、\\(\\alpha-\\beta=\\frac{1}{2027}\\) である。二次方程式から\n\\[\\max(\\alpha,\\beta)<r=\\frac{71}{100}\\]\nが従う。実際、\\((2r-\\frac{1}{2027})^2>2-(\\frac{1}{2027})^2\\) は整数の大小比較で確認できる。奇数 \\(m\\ge 7\\) では\n\\[|u_m|=\\alpha^m-\\beta^m\\le \\frac{1}{2027}\\,m r^{m-1}<\\frac{1}{2027},\\]\n偶数 \\(m\\ge 26\\) では\n\\[0<u_m\\le2r^m<\\frac{1}{2027}.\\]\n  添字列は正で単調に増加し、第2項以後は狭義単調である。表には、上の評価をまだ適用できない項だけを載せた。表にない項は、奇数なら \\(a_k\\ge7\\)、偶数なら \\(a_k\\ge26\\) なので、いずれも不等式を満たさない。また、\\(a_9=34\\ge26\\) であり、添字列は以後も増加するから、新しい解は生じない。したがって答えは\n\\[k\\in\\{3,4,5,6\\}\\]\nである。なお、\\((1)\\)による逐次計算とは独立に、冪和の \\(2\\times2\\) 伴行列と添字列の伴行列を高速累乗し、表の全項が一致することを確認した。",
+      "declaredDifficulty": {
+        "band": "A_exact_cross_domain_fusion",
+        "score": 9.4
+      },
+      "proofStepCount": 9,
+      "representationCount": 9,
+      "answerOperationCount": 0,
+      "solutionSentenceCount": 16,
+      "maximumParentSurfaceJaccard": 0.361842,
+      "maximumCorpusSurfaceJaccard": 0.361842,
+      "corpusSurfaceNovelty": 0.638158,
+      "exactBackend": true,
+      "independentCheck": true,
+      "allParentDependence": true,
+      "crossParentComposition": true,
+      "premiseMinimality": true,
+      "reversePlaybackOnly": false,
+      "unusedPremiseCount": 0
+    }
+  ]
+}

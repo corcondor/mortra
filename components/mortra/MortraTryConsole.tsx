@@ -5,6 +5,8 @@ import {
   Braces,
   Check,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   CircleHelp,
   DraftingCompass,
   GitMerge,
@@ -281,6 +283,8 @@ function isResolvedCard(card: GeneratedCard | null | undefined) {
   return Boolean(card?.answer_tex?.trim() && card?.solution_tex?.trim())
 }
 
+const PUBLIC_FUSION_COUNT = 7
+
 export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
   const c = CONSOLE_TEXT[lang]
   const tr = c.tr
@@ -298,6 +302,7 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
   const [elapsed, setElapsed] = useState(0)
   const [draft, setDraft] = useState('')
   const [result, setResult] = useState<GenerationResult | null>(null)
+  const [selectedCardIndex, setSelectedCardIndex] = useState(0)
   const [jobId, setJobId] = useState<string | null>(null)
   const [telemetry, setTelemetry] = useState<JobTelemetry | null>(null)
   const [trace, setTrace] = useState<TraceLine[]>([])
@@ -553,6 +558,7 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
     setElapsed(0)
     setTelemetry(null)
     setResult(null)
+    setSelectedCardIndex(0)
     setDraft('')
     setTrace([])
     addTrace(nextMode === 'solve'
@@ -597,7 +603,7 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
         headers: { 'Content-Type': 'application/json' },
         signal: controller.signal,
         body: JSON.stringify({
-          count: 1,
+          count: PUBLIC_FUSION_COUNT,
           stream: true,
           mode: 'fusion',
           surface: 'public_try',
@@ -653,6 +659,7 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
     setParentAId(null)
     setParentBId(null)
     setResult(null)
+    setSelectedCardIndex(0)
     setDraft('')
     setTrace([])
     setPhase('idle')
@@ -670,7 +677,9 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
     seenRemoteLogsRef.current.clear()
   }
 
-  const card = cardFromResult(result)
+  const resultCards = result?.cards ?? []
+  const card = resultCards[Math.min(selectedCardIndex, Math.max(0, resultCards.length - 1))]
+    ?? cardFromResult(result)
   const visibleMode = running || card ? taskMode : workspaceMode === 'fusion' ? 'fusion' : 'solve'
   const phases = visibleMode === 'solve' ? SOLVE_PHASES : FUSION_PHASES
   const progress = phase === 'complete' ? 1 : Math.max(0.08, Math.min(0.92, (stage + 0.7) / phases.length))
@@ -933,6 +942,36 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
 
       {card ? (
         <div className={styles.generatedArtifact}>
+          {resultCards.length > 1 ? (
+            <div className={styles.commandActions} aria-label={lang === 'ja' ? '生成した問題の切り替え' : 'Generated problem navigation'}>
+              <span>
+                {lang === 'ja' ? '生成した問題' : 'Generated problem'}
+                {' '}{selectedCardIndex + 1} / {resultCards.length}
+              </span>
+              <div>
+                <button
+                  className={styles.workspaceIconButton}
+                  type="button"
+                  onClick={() => setSelectedCardIndex(index => Math.max(0, index - 1))}
+                  disabled={selectedCardIndex === 0}
+                  title={lang === 'ja' ? '前の問題' : 'Previous problem'}
+                  aria-label={lang === 'ja' ? '前の問題' : 'Previous problem'}
+                >
+                  <ChevronLeft size={15} aria-hidden="true" />
+                </button>
+                <button
+                  className={styles.workspaceIconButton}
+                  type="button"
+                  onClick={() => setSelectedCardIndex(index => Math.min(resultCards.length - 1, index + 1))}
+                  disabled={selectedCardIndex >= resultCards.length - 1}
+                  title={lang === 'ja' ? '次の問題' : 'Next problem'}
+                  aria-label={lang === 'ja' ? '次の問題' : 'Next problem'}
+                >
+                  <ChevronRight size={15} aria-hidden="true" />
+                </button>
+              </div>
+            </div>
+          ) : null}
           <ProblemArtifact card={card} lang={lang} />
         </div>
       ) : null}

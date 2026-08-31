@@ -1618,8 +1618,8 @@ export async function POST(request: NextRequest) {
           },
           'certified.recurrence_rational_angle_orbit': {
             structuring: '整数漸化式を有限状態へ、有理角を円周上の巡回状態へ型付けしました',
-            inducing: '二つの状態を同期させ、余弦列の周期問題を構成しています',
-            verifying: '全状態の列挙、行列累乗による独立再生、周期の最小性を照合しています',
+            inducing: '二つの状態を同期させ、周期・零点・回帰時刻を別々の問題へ構成しています',
+            verifying: '全状態の列挙、行列累乗による独立再生、各分類の完全性を照合しています',
           },
           'certified.answer_pair_companion_recurrence': {
             structuring: '二つの保存済み証明書から厳密なスカラー解を別々に再生しました',
