@@ -1,0 +1,39 @@
+{
+  "program_id": "helical_spring_holdout",
+  "title": "Three-turn helical compression spring holdout",
+  "seeds": [
+    {
+      "name": "wire_profile",
+      "kind": "disk",
+      "parameters": {
+        "radius": 1.6,
+        "frame": {
+          "origin": [13, 0, 0],
+          "x_dir": [1, 0, 0],
+          "z_dir": [0, 13, 1.2732395447351628]
+        }
+      }
+    },
+    {"name": "centerline", "kind": "helix_path", "parameters": {"pitch": 8, "height": 24, "radius": 13}}
+  ],
+  "steps": [
+    {"output": "spring", "op": "sweep", "inputs": ["wire_profile", "centerline"], "parameters": {"trajectory": "explicit_path", "is_frenet": true}},
+    {"output": "valid", "op": "constrain", "inputs": ["spring"], "parameters": {"predicate": "valid_brep"}},
+    {"output": "connected", "op": "constrain", "inputs": ["valid"], "parameters": {"predicate": "single_solid"}},
+    {"output": "result", "op": "constrain", "inputs": ["connected"], "parameters": {"predicate": "volume_close", "expected": 1980.19235467032, "tolerance": 0.01}}
+  ],
+  "output": "result",
+  "section_plane": "XZ",
+  "nominal_dimensions_mm": {
+    "mean_coil_diameter": 26,
+    "wire_diameter": 3.2,
+    "free_height": 24,
+    "pitch": 8
+  },
+  "metadata": {
+    "evaluation_role": "external_family_holdout",
+    "family": "path sweep",
+    "artifact_profile": "exact_shape_only",
+    "drawing_status": "not_scored_due_to_ocp_tubular_sweep_tessellation_cost"
+  }
+}

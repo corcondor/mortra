@@ -1,0 +1,624 @@
+{
+  "arithmetic": "rational_exact",
+  "ambient_dimension": 4,
+  "intrinsic_dimension": 4,
+  "vertices": 16,
+  "edges": 32,
+  "projected_vertices": 16,
+  "projected_edges": 32,
+  "new_basis_operations": 0,
+  "program": {
+    "program_id": "exact-rational-hypercube-4d",
+    "basis_version": "engineering-geometry-8op-v1",
+    "entities": {
+      "origin": {
+        "name": "origin",
+        "geometric_type": {
+          "ambient_dimension": 4,
+          "intrinsic_dimension": 0,
+          "kind": "point"
+        },
+        "role": "input"
+      },
+      "axis_sweep_1": {
+        "name": "axis_sweep_1",
+        "geometric_type": {
+          "ambient_dimension": 4,
+          "intrinsic_dimension": 1,
+          "kind": "polytope"
+        },
+        "role": "geometry"
+      },
+      "axis_sweep_2": {
+        "name": "axis_sweep_2",
+        "geometric_type": {
+          "ambient_dimension": 4,
+          "intrinsic_dimension": 2,
+          "kind": "polytope"
+        },
+        "role": "geometry"
+      },
+      "axis_sweep_3": {
+        "name": "axis_sweep_3",
+        "geometric_type": {
+          "ambient_dimension": 4,
+          "intrinsic_dimension": 3,
+          "kind": "polytope"
+        },
+        "role": "geometry"
+      },
+      "axis_sweep_4": {
+        "name": "axis_sweep_4",
+        "geometric_type": {
+          "ambient_dimension": 4,
+          "intrinsic_dimension": 4,
+          "kind": "polytope"
+        },
+        "role": "geometry"
+      },
+      "drawing": {
+        "name": "drawing",
+        "geometric_type": {
+          "ambient_dimension": 2,
+          "intrinsic_dimension": 2,
+          "kind": "polytope_projection"
+        },
+        "role": "geometry"
+      }
+    },
+    "steps": [
+      {
+        "step_id": "s001",
+        "op": "sweep",
+        "inputs": [
+          "origin"
+        ],
+        "output": "axis_sweep_1",
+        "parameters": {
+          "path_dimension": 1,
+          "trajectory": "line",
+          "vector": [
+            "1",
+            "0",
+            "0",
+            "0"
+          ],
+          "arithmetic": "rational_exact"
+        }
+      },
+      {
+        "step_id": "s002",
+        "op": "sweep",
+        "inputs": [
+          "axis_sweep_1"
+        ],
+        "output": "axis_sweep_2",
+        "parameters": {
+          "path_dimension": 1,
+          "trajectory": "line",
+          "vector": [
+            "0",
+            "1",
+            "0",
+            "0"
+          ],
+          "arithmetic": "rational_exact"
+        }
+      },
+      {
+        "step_id": "s003",
+        "op": "sweep",
+        "inputs": [
+          "axis_sweep_2"
+        ],
+        "output": "axis_sweep_3",
+        "parameters": {
+          "path_dimension": 1,
+          "trajectory": "line",
+          "vector": [
+            "0",
+            "0",
+            "1",
+            "0"
+          ],
+          "arithmetic": "rational_exact"
+        }
+      },
+      {
+        "step_id": "s004",
+        "op": "sweep",
+        "inputs": [
+          "axis_sweep_3"
+        ],
+        "output": "axis_sweep_4",
+        "parameters": {
+          "path_dimension": 1,
+          "trajectory": "line",
+          "vector": [
+            "0",
+            "0",
+            "0",
+            "1"
+          ],
+          "arithmetic": "rational_exact"
+        }
+      },
+      {
+        "step_id": "s005",
+        "op": "project",
+        "inputs": [
+          "axis_sweep_4"
+        ],
+        "output": "drawing",
+        "parameters": {
+          "matrix": [
+            [
+              "1",
+              "0",
+              "3/5",
+              "-2/5"
+            ],
+            [
+              "0",
+              "1",
+              "2/5",
+              "3/5"
+            ]
+          ],
+          "arithmetic": "rational_exact"
+        }
+      }
+    ],
+    "operator_histogram": {
+      "transform": 0,
+      "sweep": 4,
+      "combine": 0,
+      "select": 0,
+      "slice": 0,
+      "project": 1,
+      "constrain": 0,
+      "annotate": 0
+    }
+  },
+  "cell": {
+    "entity": "axis_sweep_4",
+    "geometric_type": {
+      "ambient_dimension": 4,
+      "intrinsic_dimension": 4,
+      "kind": "polytope"
+    },
+    "vertices": [
+      [
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      [
+        "1",
+        "0",
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "1",
+        "0",
+        "0"
+      ],
+      [
+        "1",
+        "1",
+        "0",
+        "0"
+      ],
+      [
+        "0",
+        "0",
+        "1",
+        "0"
+      ],
+      [
+        "1",
+        "0",
+        "1",
+        "0"
+      ],
+      [
+        "0",
+        "1",
+        "1",
+        "0"
+      ],
+      [
+        "1",
+        "1",
+        "1",
+        "0"
+      ],
+      [
+        "0",
+        "0",
+        "0",
+        "1"
+      ],
+      [
+        "1",
+        "0",
+        "0",
+        "1"
+      ],
+      [
+        "0",
+        "1",
+        "0",
+        "1"
+      ],
+      [
+        "1",
+        "1",
+        "0",
+        "1"
+      ],
+      [
+        "0",
+        "0",
+        "1",
+        "1"
+      ],
+      [
+        "1",
+        "0",
+        "1",
+        "1"
+      ],
+      [
+        "0",
+        "1",
+        "1",
+        "1"
+      ],
+      [
+        "1",
+        "1",
+        "1",
+        "1"
+      ]
+    ],
+    "edges": [
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        0,
+        4
+      ],
+      [
+        0,
+        8
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        1,
+        5
+      ],
+      [
+        1,
+        9
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        2,
+        6
+      ],
+      [
+        2,
+        10
+      ],
+      [
+        3,
+        7
+      ],
+      [
+        3,
+        11
+      ],
+      [
+        4,
+        5
+      ],
+      [
+        4,
+        6
+      ],
+      [
+        4,
+        12
+      ],
+      [
+        5,
+        7
+      ],
+      [
+        5,
+        13
+      ],
+      [
+        6,
+        7
+      ],
+      [
+        6,
+        14
+      ],
+      [
+        7,
+        15
+      ],
+      [
+        8,
+        9
+      ],
+      [
+        8,
+        10
+      ],
+      [
+        8,
+        12
+      ],
+      [
+        9,
+        11
+      ],
+      [
+        9,
+        13
+      ],
+      [
+        10,
+        11
+      ],
+      [
+        10,
+        14
+      ],
+      [
+        11,
+        15
+      ],
+      [
+        12,
+        13
+      ],
+      [
+        12,
+        14
+      ],
+      [
+        13,
+        15
+      ],
+      [
+        14,
+        15
+      ]
+    ]
+  },
+  "projection": {
+    "entity": "drawing",
+    "geometric_type": {
+      "ambient_dimension": 2,
+      "intrinsic_dimension": 2,
+      "kind": "polytope_projection"
+    },
+    "vertices": [
+      [
+        "0",
+        "0"
+      ],
+      [
+        "1",
+        "0"
+      ],
+      [
+        "0",
+        "1"
+      ],
+      [
+        "1",
+        "1"
+      ],
+      [
+        "3/5",
+        "2/5"
+      ],
+      [
+        "8/5",
+        "2/5"
+      ],
+      [
+        "3/5",
+        "7/5"
+      ],
+      [
+        "8/5",
+        "7/5"
+      ],
+      [
+        "-2/5",
+        "3/5"
+      ],
+      [
+        "3/5",
+        "3/5"
+      ],
+      [
+        "-2/5",
+        "8/5"
+      ],
+      [
+        "3/5",
+        "8/5"
+      ],
+      [
+        "1/5",
+        "1"
+      ],
+      [
+        "6/5",
+        "1"
+      ],
+      [
+        "1/5",
+        "2"
+      ],
+      [
+        "6/5",
+        "2"
+      ]
+    ],
+    "edges": [
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        0,
+        4
+      ],
+      [
+        0,
+        8
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        1,
+        5
+      ],
+      [
+        1,
+        9
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        2,
+        6
+      ],
+      [
+        2,
+        10
+      ],
+      [
+        3,
+        7
+      ],
+      [
+        3,
+        11
+      ],
+      [
+        4,
+        5
+      ],
+      [
+        4,
+        6
+      ],
+      [
+        4,
+        12
+      ],
+      [
+        5,
+        7
+      ],
+      [
+        5,
+        13
+      ],
+      [
+        6,
+        7
+      ],
+      [
+        6,
+        14
+      ],
+      [
+        7,
+        15
+      ],
+      [
+        8,
+        9
+      ],
+      [
+        8,
+        10
+      ],
+      [
+        8,
+        12
+      ],
+      [
+        9,
+        11
+      ],
+      [
+        9,
+        13
+      ],
+      [
+        10,
+        11
+      ],
+      [
+        10,
+        14
+      ],
+      [
+        11,
+        15
+      ],
+      [
+        12,
+        13
+      ],
+      [
+        12,
+        14
+      ],
+      [
+        13,
+        15
+      ],
+      [
+        14,
+        15
+      ]
+    ]
+  },
+  "svg": "hypercube-4d-rational-projection.svg"
+}

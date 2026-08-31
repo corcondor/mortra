@@ -1,0 +1,43 @@
+{
+  "program_id": "rounded_link_plate_holdout",
+  "title": "Rounded two-hole link plate",
+  "seeds": [
+    {
+      "name": "outer_profile",
+      "kind": "sketch",
+      "parameters": {
+        "start": [-10, -5],
+        "commands": [
+          {"kind": "line", "to": [10, -5]},
+          {"kind": "radius_arc", "radius": -5, "to": [10, 5]},
+          {"kind": "line", "to": [-10, 5]},
+          {"kind": "arc3", "mid": [-15, 0], "to": [-10, -5]}
+        ],
+        "close": true,
+        "filled": true
+      }
+    },
+    {"name": "hole_profile", "kind": "disk", "parameters": {"radius": 2}}
+  ],
+  "steps": [
+    {"output": "plate", "op": "sweep", "inputs": ["outer_profile"], "parameters": {"trajectory": "line", "vector": [0, 0, 4]}},
+    {"output": "left_hole_profile", "op": "transform", "inputs": ["hole_profile"], "parameters": {"translation": [-8, 0, 0]}},
+    {"output": "right_hole_profile", "op": "transform", "inputs": ["hole_profile"], "parameters": {"translation": [8, 0, 0]}},
+    {"output": "left_hole", "op": "sweep", "inputs": ["left_hole_profile"], "parameters": {"trajectory": "line", "vector": [0, 0, 4]}},
+    {"output": "right_hole", "op": "sweep", "inputs": ["right_hole_profile"], "parameters": {"trajectory": "line", "vector": [0, 0, 4]}},
+    {"output": "finished", "op": "combine", "inputs": ["plate", "left_hole", "right_hole"], "parameters": {"operation": "difference"}},
+    {"output": "valid", "op": "constrain", "inputs": ["finished"], "parameters": {"predicate": "valid_brep"}},
+    {"output": "connected", "op": "constrain", "inputs": ["valid"], "parameters": {"predicate": "single_solid"}},
+    {"output": "result", "op": "constrain", "inputs": ["connected"], "parameters": {"predicate": "volume_close", "expected": 1013.62830044411, "tolerance": 0.00001}}
+  ],
+  "output": "result",
+  "section_plane": "XZ",
+  "nominal_dimensions_mm": {
+    "overall_length": 30,
+    "width": 10,
+    "thickness": 4,
+    "hole_diameter": 4,
+    "hole_spacing": 16
+  },
+  "metadata": {"evaluation_role": "curve_grammar_holdout", "family": "line and circular-arc sketch"}
+}

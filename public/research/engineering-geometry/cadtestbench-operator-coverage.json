@@ -1,0 +1,811 @@
+{
+  "audit": "cadtestbench-operator-coverage-v1",
+  "scope": "AST method-call coverage only; programs were not scored for CAD correctness",
+  "source": {
+    "dataset": "CADTestBench",
+    "repository": "https://github.com/dimitrismallis/CADTestBench.git",
+    "revision": "e29283cc61db7329039d95b429766a50bfd37f89"
+  },
+  "program_files": 2400,
+  "parsed_files": 2400,
+  "parse_errors": [],
+  "method_calls": 61482,
+  "construction_calls": 24213,
+  "runtime_covered_construction_calls": 23787,
+  "runtime_covered_construction_call_ratio": 0.9824061454590509,
+  "files_with_only_runtime_covered_construction": 2166,
+  "files_with_only_runtime_covered_construction_ratio": 0.9025,
+  "category_counts": {
+    "finite_data_gap": 15,
+    "non_construction": 37269,
+    "runtime_basis": 12282,
+    "runtime_data": 11505,
+    "runtime_operation_gap": 159,
+    "unclassified": 252
+  },
+  "basis_operation_counts": {
+    "combine": 1821,
+    "select": 4971,
+    "slice": 1284,
+    "sweep": 2442,
+    "transform": 1764
+  },
+  "methods_by_category": {
+    "finite_data_gap": [
+      {
+        "method": "arc",
+        "count": 9
+      },
+      {
+        "method": "spline",
+        "count": 6
+      }
+    ],
+    "non_construction": [
+      {
+        "method": "abs",
+        "count": 9420
+      },
+      {
+        "method": "val",
+        "count": 4830
+      },
+      {
+        "method": "create_cad",
+        "count": 4800
+      },
+      {
+        "method": "print",
+        "count": 3453
+      },
+      {
+        "method": "size",
+        "count": 3171
+      },
+      {
+        "method": "isInside",
+        "count": 2490
+      },
+      {
+        "method": "export",
+        "count": 2400
+      },
+      {
+        "method": "BoundingBox",
+        "count": 1386
+      },
+      {
+        "method": "Volume",
+        "count": 1263
+      },
+      {
+        "method": "centerOfMass",
+        "count": 585
+      },
+      {
+        "method": "Vector",
+        "count": 378
+      },
+      {
+        "method": "Center",
+        "count": 360
+      },
+      {
+        "method": "sqrt",
+        "count": 294
+      },
+      {
+        "method": "len",
+        "count": 267
+      },
+      {
+        "method": "sin",
+        "count": 222
+      },
+      {
+        "method": "radians",
+        "count": 216
+      },
+      {
+        "method": "cos",
+        "count": 210
+      },
+      {
+        "method": "max",
+        "count": 153
+      },
+      {
+        "method": "min",
+        "count": 126
+      },
+      {
+        "method": "float",
+        "count": 126
+      },
+      {
+        "method": "facesIntersectedByLine",
+        "count": 84
+      },
+      {
+        "method": "degrees",
+        "count": 72
+      },
+      {
+        "method": "vals",
+        "count": 69
+      },
+      {
+        "method": "ValueError",
+        "count": 63
+      },
+      {
+        "method": "range",
+        "count": 60
+      },
+      {
+        "method": "acos",
+        "count": 51
+      },
+      {
+        "method": "Area",
+        "count": 42
+      },
+      {
+        "method": "append",
+        "count": 42
+      },
+      {
+        "method": "atan2",
+        "count": 36
+      },
+      {
+        "method": "CenterOfBoundBox",
+        "count": 33
+      },
+      {
+        "method": "linspace",
+        "count": 30
+      },
+      {
+        "method": "sum",
+        "count": 27
+      },
+      {
+        "method": "newObject",
+        "count": 27
+      },
+      {
+        "method": "Shape",
+        "count": 27
+      },
+      {
+        "method": "norm",
+        "count": 24
+      },
+      {
+        "method": "asin",
+        "count": 18
+      },
+      {
+        "method": "sorted",
+        "count": 18
+      },
+      {
+        "method": "edge_len",
+        "count": 18
+      },
+      {
+        "method": "angle_at_vertex",
+        "count": 15
+      },
+      {
+        "method": "dot",
+        "count": 15
+      },
+      {
+        "method": "tan",
+        "count": 12
+      },
+      {
+        "method": "line_intersect",
+        "count": 12
+      },
+      {
+        "method": "normalAt",
+        "count": 12
+      },
+      {
+        "method": "arc_mid",
+        "count": 12
+      },
+      {
+        "method": "X",
+        "count": 12
+      },
+      {
+        "method": "Y",
+        "count": 12
+      },
+      {
+        "method": "offset_line_inward",
+        "count": 12
+      },
+      {
+        "method": "intersect_lines",
+        "count": 12
+      },
+      {
+        "method": "zip",
+        "count": 9
+      },
+      {
+        "method": "enumerate",
+        "count": 9
+      },
+      {
+        "method": "hex_area",
+        "count": 9
+      },
+      {
+        "method": "tri_area",
+        "count": 9
+      },
+      {
+        "method": "inward_normal",
+        "count": 9
+      },
+      {
+        "method": "all",
+        "count": 9
+      },
+      {
+        "method": "findSolid",
+        "count": 9
+      },
+      {
+        "method": "round",
+        "count": 9
+      },
+      {
+        "method": "dist",
+        "count": 9
+      },
+      {
+        "method": "gp_Trsf",
+        "count": 9
+      },
+      {
+        "method": "BRepBuilderAPI_Transform",
+        "count": 9
+      },
+      {
+        "method": "gp_Pnt",
+        "count": 9
+      },
+      {
+        "method": "hex_vol",
+        "count": 9
+      },
+      {
+        "method": "radial_hole",
+        "count": 9
+      },
+      {
+        "method": "ngon_diameter_from_side",
+        "count": 9
+      },
+      {
+        "method": "insert_midpoint_inward",
+        "count": 6
+      },
+      {
+        "method": "make_rounded_square_cutter",
+        "count": 6
+      },
+      {
+        "method": "gp_Ax1",
+        "count": 6
+      },
+      {
+        "method": "gp_Dir",
+        "count": 6
+      },
+      {
+        "method": "make_sector_arc_points",
+        "count": 6
+      },
+      {
+        "method": "polygon_area",
+        "count": 6
+      },
+      {
+        "method": "circle_union_area",
+        "count": 6
+      },
+      {
+        "method": "BRepFilletAPI_MakeFillet",
+        "count": 6
+      },
+      {
+        "method": "Solid",
+        "count": 6
+      },
+      {
+        "method": "sketch_trapezoid",
+        "count": 6
+      },
+      {
+        "method": "rounded_square_sketch",
+        "count": 6
+      },
+      {
+        "method": "right_trapezoid_prism",
+        "count": 6
+      },
+      {
+        "method": "sector_wire",
+        "count": 6
+      },
+      {
+        "method": "compute_area_numerical",
+        "count": 3
+      },
+      {
+        "method": "tri_vol",
+        "count": 3
+      },
+      {
+        "method": "offset_polygon_inward",
+        "count": 3
+      },
+      {
+        "method": "signed_area",
+        "count": 3
+      },
+      {
+        "method": "TopExp_Explorer",
+        "count": 3
+      },
+      {
+        "method": "set",
+        "count": 3
+      },
+      {
+        "method": "TopoDS_Edge",
+        "count": 3
+      },
+      {
+        "method": "BRepAdaptor_Curve",
+        "count": 3
+      },
+      {
+        "method": "TopoDS_Iterator",
+        "count": 3
+      },
+      {
+        "method": "shoelace",
+        "count": 3
+      },
+      {
+        "method": "right_trapezoid",
+        "count": 3
+      },
+      {
+        "method": "sector_profile",
+        "count": 3
+      },
+      {
+        "method": "list",
+        "count": 3
+      }
+    ],
+    "runtime_basis": [
+      {
+        "method": "faces",
+        "count": 3804
+      },
+      {
+        "method": "extrude",
+        "count": 2421
+      },
+      {
+        "method": "workplane",
+        "count": 1284
+      },
+      {
+        "method": "translate",
+        "count": 591
+      },
+      {
+        "method": "union",
+        "count": 561
+      },
+      {
+        "method": "edges",
+        "count": 483
+      },
+      {
+        "method": "center",
+        "count": 483
+      },
+      {
+        "method": "solids",
+        "count": 387
+      },
+      {
+        "method": "hole",
+        "count": 378
+      },
+      {
+        "method": "cut",
+        "count": 330
+      },
+      {
+        "method": "cutThruAll",
+        "count": 300
+      },
+      {
+        "method": "vertices",
+        "count": 297
+      },
+      {
+        "method": "pushPoints",
+        "count": 264
+      },
+      {
+        "method": "rotate",
+        "count": 183
+      },
+      {
+        "method": "cutBlind",
+        "count": 141
+      },
+      {
+        "method": "array",
+        "count": 96
+      },
+      {
+        "method": "transformed",
+        "count": 81
+      },
+      {
+        "method": "moved",
+        "count": 51
+      },
+      {
+        "method": "add",
+        "count": 48
+      },
+      {
+        "method": "fuse",
+        "count": 33
+      },
+      {
+        "method": "combine",
+        "count": 24
+      },
+      {
+        "method": "sweep",
+        "count": 15
+      },
+      {
+        "method": "scale",
+        "count": 9
+      },
+      {
+        "method": "intersect",
+        "count": 6
+      },
+      {
+        "method": "mirror",
+        "count": 6
+      },
+      {
+        "method": "loft",
+        "count": 3
+      },
+      {
+        "method": "revolve",
+        "count": 3
+      }
+    ],
+    "runtime_data": [
+      {
+        "method": "Workplane",
+        "count": 3399
+      },
+      {
+        "method": "lineTo",
+        "count": 1887
+      },
+      {
+        "method": "rect",
+        "count": 1365
+      },
+      {
+        "method": "circle",
+        "count": 1071
+      },
+      {
+        "method": "box",
+        "count": 906
+      },
+      {
+        "method": "close",
+        "count": 720
+      },
+      {
+        "method": "moveTo",
+        "count": 618
+      },
+      {
+        "method": "cylinder",
+        "count": 321
+      },
+      {
+        "method": "Sketch",
+        "count": 177
+      },
+      {
+        "method": "polygon",
+        "count": 174
+      },
+      {
+        "method": "placeSketch",
+        "count": 162
+      },
+      {
+        "method": "polyline",
+        "count": 159
+      },
+      {
+        "method": "threePointArc",
+        "count": 147
+      },
+      {
+        "method": "push",
+        "count": 117
+      },
+      {
+        "method": "Plane",
+        "count": 87
+      },
+      {
+        "method": "reset",
+        "count": 72
+      },
+      {
+        "method": "radiusArc",
+        "count": 69
+      },
+      {
+        "method": "wire",
+        "count": 21
+      },
+      {
+        "method": "makeBox",
+        "count": 12
+      },
+      {
+        "method": "Location",
+        "count": 12
+      },
+      {
+        "method": "face",
+        "count": 9
+      }
+    ],
+    "runtime_operation_gap": [
+      {
+        "method": "fillet",
+        "count": 135
+      },
+      {
+        "method": "shell",
+        "count": 21
+      },
+      {
+        "method": "offset2D",
+        "count": 3
+      }
+    ],
+    "unclassified": [
+      {
+        "method": "NearestToPointSelector",
+        "count": 18
+      },
+      {
+        "method": "segment",
+        "count": 15
+      },
+      {
+        "method": "Edges",
+        "count": 12
+      },
+      {
+        "method": "toPending",
+        "count": 12
+      },
+      {
+        "method": "Value",
+        "count": 9
+      },
+      {
+        "method": "assemble",
+        "count": 6
+      },
+      {
+        "method": "atan",
+        "count": 6
+      },
+      {
+        "method": "SetRotation",
+        "count": 6
+      },
+      {
+        "method": "concatenate",
+        "count": 6
+      },
+      {
+        "method": "rotateAboutCenter",
+        "count": 6
+      },
+      {
+        "method": "More",
+        "count": 6
+      },
+      {
+        "method": "Build",
+        "count": 6
+      },
+      {
+        "method": "ShapeType",
+        "count": 6
+      },
+      {
+        "method": "Next",
+        "count": 6
+      },
+      {
+        "method": "Add",
+        "count": 6
+      },
+      {
+        "method": "Z",
+        "count": 6
+      },
+      {
+        "method": "IsDone",
+        "count": 6
+      },
+      {
+        "method": "makeFromWires",
+        "count": 6
+      },
+      {
+        "method": "max",
+        "count": 6
+      },
+      {
+        "method": "min",
+        "count": 6
+      },
+      {
+        "method": "polarArray",
+        "count": 6
+      },
+      {
+        "method": "wires",
+        "count": 6
+      },
+      {
+        "method": "tangentAt",
+        "count": 6
+      },
+      {
+        "method": "startPoint",
+        "count": 3
+      },
+      {
+        "method": "endPoint",
+        "count": 3
+      },
+      {
+        "method": "clean",
+        "count": 3
+      },
+      {
+        "method": "SetScale",
+        "count": 3
+      },
+      {
+        "method": "radius",
+        "count": 3
+      },
+      {
+        "method": "consolidateWires",
+        "count": 3
+      },
+      {
+        "method": "makeCylinder",
+        "count": 3
+      },
+      {
+        "method": "solve",
+        "count": 3
+      },
+      {
+        "method": "geomType",
+        "count": 3
+      },
+      {
+        "method": "Current",
+        "count": 3
+      },
+      {
+        "method": "GetType",
+        "count": 3
+      },
+      {
+        "method": "FirstParameter",
+        "count": 3
+      },
+      {
+        "method": "LastParameter",
+        "count": 3
+      },
+      {
+        "method": "cast",
+        "count": 3
+      },
+      {
+        "method": "makeCompound",
+        "count": 3
+      },
+      {
+        "method": "quad",
+        "count": 3
+      },
+      {
+        "method": "slot2D",
+        "count": 3
+      },
+      {
+        "method": "Matrix",
+        "count": 3
+      },
+      {
+        "method": "transformGeometry",
+        "count": 3
+      },
+      {
+        "method": "AreaNthSelector",
+        "count": 3
+      },
+      {
+        "method": "hull",
+        "count": 3
+      },
+      {
+        "method": "ancestors",
+        "count": 3
+      },
+      {
+        "method": "hypot",
+        "count": 3
+      },
+      {
+        "method": "toTuple",
+        "count": 3
+      },
+      {
+        "method": "filter",
+        "count": 3
+      },
+      {
+        "method": "Length",
+        "count": 3
+      }
+    ]
+  }
+}

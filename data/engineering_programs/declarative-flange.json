@@ -1,0 +1,40 @@
+{
+  "program_id": "declarative_flange",
+  "title": "Declarative six-hole flange",
+  "seeds": [
+    {"name": "outer_disk", "kind": "disk", "parameters": {"radius": 34.0}},
+    {"name": "bore_disk", "kind": "disk", "parameters": {"radius": 12.0}},
+    {"name": "bolt_disk", "kind": "disk", "parameters": {"radius": 3.2}}
+  ],
+  "steps": [
+    {"output": "annulus", "op": "combine", "inputs": ["outer_disk", "bore_disk"], "parameters": {"operation": "difference"}},
+    {"output": "body", "op": "sweep", "inputs": ["annulus"], "parameters": {"trajectory": "line", "vector": [0, 0, 8]}},
+    {"output": "bolt_profile_1", "op": "transform", "inputs": ["bolt_disk"], "parameters": {"translation": [25, 0, 0]}},
+    {"output": "bolt_hole_1", "op": "sweep", "inputs": ["bolt_profile_1"], "parameters": {"trajectory": "line", "vector": [0, 0, 8]}},
+    {"output": "bolt_profile_2", "op": "transform", "inputs": ["bolt_disk"], "parameters": {"translation": [12.5, 21.650635094610966, 0]}},
+    {"output": "bolt_hole_2", "op": "sweep", "inputs": ["bolt_profile_2"], "parameters": {"trajectory": "line", "vector": [0, 0, 8]}},
+    {"output": "bolt_profile_3", "op": "transform", "inputs": ["bolt_disk"], "parameters": {"translation": [-12.5, 21.650635094610966, 0]}},
+    {"output": "bolt_hole_3", "op": "sweep", "inputs": ["bolt_profile_3"], "parameters": {"trajectory": "line", "vector": [0, 0, 8]}},
+    {"output": "bolt_profile_4", "op": "transform", "inputs": ["bolt_disk"], "parameters": {"translation": [-25, 0, 0]}},
+    {"output": "bolt_hole_4", "op": "sweep", "inputs": ["bolt_profile_4"], "parameters": {"trajectory": "line", "vector": [0, 0, 8]}},
+    {"output": "bolt_profile_5", "op": "transform", "inputs": ["bolt_disk"], "parameters": {"translation": [-12.5, -21.650635094610966, 0]}},
+    {"output": "bolt_hole_5", "op": "sweep", "inputs": ["bolt_profile_5"], "parameters": {"trajectory": "line", "vector": [0, 0, 8]}},
+    {"output": "bolt_profile_6", "op": "transform", "inputs": ["bolt_disk"], "parameters": {"translation": [12.5, -21.650635094610966, 0]}},
+    {"output": "bolt_hole_6", "op": "sweep", "inputs": ["bolt_profile_6"], "parameters": {"trajectory": "line", "vector": [0, 0, 8]}},
+    {"output": "finished", "op": "combine", "inputs": ["body", "bolt_hole_1", "bolt_hole_2", "bolt_hole_3", "bolt_hole_4", "bolt_hole_5", "bolt_hole_6"], "parameters": {"operation": "difference"}},
+    {"output": "valid", "op": "constrain", "inputs": ["finished"], "parameters": {"predicate": "valid_brep"}},
+    {"output": "connected", "op": "constrain", "inputs": ["valid"], "parameters": {"predicate": "single_solid"}},
+    {"output": "volume_checked", "op": "constrain", "inputs": ["connected"], "parameters": {"predicate": "volume_close", "expected": 23890.17850237051, "tolerance": 0.00001}},
+    {"output": "result", "op": "annotate", "inputs": ["volume_checked"], "parameters": {"name": "drawing", "fields": {"standard": "third-angle", "hole_count": 6}}}
+  ],
+  "output": "result",
+  "section_plane": "XZ",
+  "nominal_dimensions_mm": {
+    "outer_diameter": 68,
+    "bore_diameter": 24,
+    "thickness": 8,
+    "bolt_hole_diameter": 6.4,
+    "bolt_circle_diameter": 50
+  },
+  "metadata": {"evaluation_role": "declarative_replay"}
+}

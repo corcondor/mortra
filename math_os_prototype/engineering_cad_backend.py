@@ -17,6 +17,7 @@ from datetime import date
 import json
 import math
 from pathlib import Path
+import time
 from typing import Any, Callable, Iterable, Sequence
 
 from .engineering_geometry_ir import BasisOp, ConstructionProgram, EntityRef, GeometricType
@@ -48,7 +49,6 @@ def _load_build123d() -> dict[str, Any]:
         )
         from build123d.exporters import Drawing, ExportDXF, ExportSVG
         from build123d.exporters3d import export_step
-        from build123d.mesher import Mesher
     except ImportError as exc:  # pragma: no cover - depends on the research venv
         raise RuntimeError(
             "The engineering CAD backend requires build123d/OpenCascade. "
@@ -56,6 +56,36 @@ def _load_build123d() -> dict[str, Any]:
         ) from exc
 
     return locals()
+
+
+def _export_stl_serial(
+    shape: Any,
+    path: Path,
+    *,
+    tolerance: float,
+    angular_tolerance: float,
+) -> None:
+    """Mesh a B-rep without OpenCascade's parallel meshing path.
+
+    The parallel path in the pinned Windows OCP build stalls on swept helical
+    faces.  Serial meshing is deterministic and keeps STEP as the exact source.
+    """
+
+    from OCP.BRepMesh import BRepMesh_IncrementalMesh  # type: ignore
+    from OCP.StlAPI import StlAPI_Writer  # type: ignore
+
+    mesh = BRepMesh_IncrementalMesh(
+        shape.wrapped,
+        tolerance,
+        True,
+        angular_tolerance,
+        False,
+    )
+    mesh.Perform()
+    writer = StlAPI_Writer()
+    writer.ASCIIMode = False
+    if not writer.Write(shape.wrapped, str(path)):
+        raise RuntimeError(f"failed to export STL: {path}")
 
 
 @dataclass
@@ -139,10 +169,17 @@ class CadExecutor:
         translation: tuple[float, float, float] | None = None,
         rotation_axis: Any | None = None,
         angle_degrees: float = 0.0,
+        scale: float | tuple[float, float, float] | None = None,
+        scale_about: tuple[float, float, float] = (0.0, 0.0, 0.0),
+        mirror_plane: Any | None = None,
     ) -> CadEntity:
         shape = entity.shape
         if rotation_axis is not None and angle_degrees:
             shape = shape.rotate(rotation_axis, angle_degrees)
+        if scale is not None:
+            shape = shape.scale(scale, about=scale_about)
+        if mirror_plane is not None:
+            shape = shape.mirror(mirror_plane)
         if translation is not None:
             shape = shape.translate(translation)
         ref = self.program.apply(
@@ -152,6 +189,9 @@ class CadExecutor:
             entity.ref.geometric_type,
             translation=translation,
             angle_degrees=angle_degrees,
+            scale=scale,
+            scale_about=scale_about,
+            mirror_plane=str(mirror_plane) if mirror_plane is not None else None,
         )
         return CadEntity(ref, shape)
 
@@ -226,6 +266,37 @@ class CadExecutor:
         )
         return CadEntity(ref, shape)
 
+    def path_sweep(
+        self,
+        profile: CadEntity,
+        path: CadEntity,
+        name: str,
+        *,
+        is_frenet: bool = False,
+    ) -> CadEntity:
+        """Sweep one profile along an explicit typed path.
+
+        Helices, splines, and polylines remain path data.  They do not become new
+        operation families: every case is recorded as the same ``sweep`` morphism.
+        """
+        Solid = self.b3d["Solid"]
+        shape = Solid.sweep(profile.shape, path.shape, is_frenet=is_frenet)
+        output_type = GeometricType(
+            max(3, profile.ref.geometric_type.ambient_dimension),
+            min(3, profile.ref.geometric_type.intrinsic_dimension + 1),
+            "region",
+        )
+        ref = self.program.apply(
+            BasisOp.SWEEP,
+            [profile.ref, path.ref],
+            name,
+            output_type,
+            path_dimension=1,
+            trajectory="explicit_path",
+            is_frenet=is_frenet,
+        )
+        return CadEntity(ref, shape)
+
     def combine(
         self,
         operation: str,
@@ -264,6 +335,7 @@ class CadExecutor:
         expected: Any,
         tolerance: float | None = None,
         description: str = "",
+        output_name: str | None = None,
     ) -> CadEntity:
         passed, observed = predicate(entity.shape)
         check = CheckResult(
@@ -278,7 +350,8 @@ class CadExecutor:
         ref = self.program.apply(
             BasisOp.CONSTRAIN,
             [entity.ref],
-            f"{entity.ref.name}__checked_{len(self.constraint_results)}",
+            output_name
+            or f"{entity.ref.name}__checked_{len(self.constraint_results)}",
             entity.ref.geometric_type,
             predicate=name,
             passed=bool(passed),
@@ -289,18 +362,53 @@ class CadExecutor:
         self,
         entity: CadEntity,
         name: str,
+        output_name: str | None = None,
         **annotations: Any,
     ) -> CadEntity:
         self.annotations[name] = dict(annotations)
         ref = self.program.apply(
             BasisOp.ANNOTATE,
             [entity.ref],
-            f"{entity.ref.name}__annotated_{len(self.annotations)}",
+            output_name or f"{entity.ref.name}__annotated_{len(self.annotations)}",
             entity.ref.geometric_type,
             annotation_set=name,
             fields=sorted(annotations),
         )
         return CadEntity(ref, entity.shape)
+
+    def select(
+        self,
+        entity: CadEntity,
+        name: str,
+        *,
+        selector: str,
+    ) -> CadEntity:
+        """Select a lower-dimensional feature without introducing a CAD feature API."""
+        Compound = self.b3d["Compound"]
+        source_dimension = entity.ref.geometric_type.intrinsic_dimension
+        if selector == "outer_boundary" and hasattr(entity.shape, "outer_wire"):
+            shape = entity.shape.outer_wire()
+            output_dimension = source_dimension - 1
+        elif selector == "edges" and hasattr(entity.shape, "edges"):
+            shape = Compound(list(entity.shape.edges()))
+            output_dimension = 1
+        elif selector == "faces" and hasattr(entity.shape, "faces"):
+            shape = Compound(list(entity.shape.faces()))
+            output_dimension = 2
+        else:
+            raise ValueError(f"unsupported selector for this entity: {selector}")
+        ref = self.program.apply(
+            BasisOp.SELECT,
+            [entity.ref],
+            name,
+            GeometricType(
+                entity.ref.geometric_type.ambient_dimension,
+                output_dimension,
+                selector,
+            ),
+            selector=selector,
+        )
+        return CadEntity(ref, shape)
 
     def slice(self, entity: CadEntity, name: str, plane: Any) -> CadEntity:
         section = self.b3d["section"](entity.shape, plane)
@@ -1280,7 +1388,6 @@ def export_part_artifacts(part: EngineeringPart, output_dir: Path) -> dict[str, 
         ExportDXF,
         ExportSVG,
         LineType,
-        Mesher,
         PageSize,
         Plane,
         Pos,
@@ -1297,7 +1404,6 @@ def export_part_artifacts(part: EngineeringPart, output_dir: Path) -> dict[str, 
         b3d["ExportDXF"],
         b3d["ExportSVG"],
         b3d["LineType"],
-        b3d["Mesher"],
         b3d["PageSize"],
         b3d["Plane"],
         b3d["Pos"],
@@ -1315,10 +1421,22 @@ def export_part_artifacts(part: EngineeringPart, output_dir: Path) -> dict[str, 
     dxf_path = output_dir / f"{part.part_id}-drawing.dxf"
     manifest_path = output_dir / f"{part.part_id}.json"
 
+    timings: dict[str, float] = {}
+    stage_started = time.perf_counter()
     export_step(part.entity.shape, step_path)
-    mesher = Mesher()
-    mesher.add_shape(part.entity.shape)
-    mesher.write(stl_path)
+    timings["step_export"] = time.perf_counter() - stage_started
+
+    # STEP remains the exact B-rep. STL is a display/manufacturing mesh, so an
+    # explicit 0.05 mm chord tolerance avoids pathological over-tessellation of
+    # long helical faces caused by the library's 0.001 mm default.
+    stage_started = time.perf_counter()
+    _export_stl_serial(
+        part.entity.shape,
+        stl_path,
+        tolerance=0.05,
+        angular_tolerance=0.15,
+    )
+    timings["stl_mesh_export"] = time.perf_counter() - stage_started
 
     # Third-angle layout. The lower-right quadrant is reserved for the title block.
     views = [
@@ -1336,6 +1454,7 @@ def export_part_artifacts(part: EngineeringPart, output_dir: Path) -> dict[str, 
     section_hatches: list[Any] = []
     view_metrics: list[dict[str, Any]] = []
 
+    stage_started = time.perf_counter()
     raw_views: list[tuple[DrawingViewSpec, list[Any], list[Any], Any]] = []
     for view in views:
         Drawing = b3d["Drawing"]
@@ -1359,6 +1478,9 @@ def export_part_artifacts(part: EngineeringPart, output_dir: Path) -> dict[str, 
         hid = _shape_edges(drawing.hidden_lines)
         bbox = _view_bbox(vis, Compound)
         raw_views.append((view, vis, hid, bbox))
+    timings["orthographic_hidden_line_projection"] = (
+        time.perf_counter() - stage_started
+    )
 
     orthographic_scale = min(
         _fit_scale(bbox, view.page_box, maximum=1.5)
@@ -1411,6 +1533,7 @@ def export_part_artifacts(part: EngineeringPart, output_dir: Path) -> dict[str, 
                 )
             )
 
+    stage_started = time.perf_counter()
     section_plane = getattr(Plane, part.section_plane)
     raw_section = section(part.entity.shape, section_plane)
     part.program.apply(
@@ -1448,6 +1571,7 @@ def export_part_artifacts(part: EngineeringPart, output_dir: Path) -> dict[str, 
     else:
         section_bbox = None
         section_placement = None
+    timings["section_and_hatching"] = time.perf_counter() - stage_started
 
     note_lines = ["NOMINAL DIMENSIONS", *part.metadata.get("drawing_notes", [])]
     for index, note in enumerate(note_lines):
@@ -1481,7 +1605,9 @@ def export_part_artifacts(part: EngineeringPart, output_dir: Path) -> dict[str, 
     svg.add_shape(border.faces(), layer="text")
     svg.add_shape(visible, layer="visible")
     svg.add_shape([*labels, *dimensions], layer="dimensions")
+    stage_started = time.perf_counter()
     svg.write(svg_path)
+    timings["svg_export"] = time.perf_counter() - stage_started
 
     dxf = ExportDXF(unit=Unit.MM, line_weight=0.28)
     dxf.add_layer("visible", line_weight=0.30)
@@ -1495,7 +1621,9 @@ def export_part_artifacts(part: EngineeringPart, output_dir: Path) -> dict[str, 
     dxf.add_shape(centers, layer="center")
     dxf.add_shape(section_hatches, layer="hatch")
     dxf.add_shape([*labels, *dimensions], layer="dimensions")
+    stage_started = time.perf_counter()
     dxf.write(dxf_path)
+    timings["dxf_export"] = time.perf_counter() - stage_started
 
     bbox = part.entity.shape.bounding_box()
     manifest = {
@@ -1525,12 +1653,66 @@ def export_part_artifacts(part: EngineeringPart, output_dir: Path) -> dict[str, 
         },
         "program": part.program.to_dict(),
         "metadata": part.metadata,
+        "mesh": {
+            "format": "STL",
+            "exporter": "OpenCascade serial BRepMesh + StlAPI_Writer",
+            "linear_deflection_mm": 0.05,
+            "angular_deflection_rad": 0.15,
+            "file_size_bytes": stl_path.stat().st_size,
+        },
+        "timings_seconds": timings,
         "artifacts": {
             "step": step_path.name,
             "stl": stl_path.name,
             "svg": svg_path.name,
             "dxf": dxf_path.name,
         },
+    }
+    manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    return manifest
+
+
+def export_exact_shape_artifact(
+    part: EngineeringPart, output_dir: Path
+) -> dict[str, Any]:
+    """Export an exact STEP and replay certificate without forcing tessellation.
+
+    Smooth path sweeps can be exact and valid while being prohibitively slow to
+    mesh in the pinned Windows OCP build.  This profile records that distinction
+    instead of treating an unfinished STL or drawing as a successful artifact.
+    """
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    step_path = output_dir / f"{part.part_id}.step"
+    manifest_path = output_dir / f"{part.part_id}.json"
+    export_step = _load_build123d()["export_step"]
+    started = time.perf_counter()
+    export_step(part.entity.shape, step_path)
+    elapsed = time.perf_counter() - started
+    bbox = part.entity.shape.bounding_box()
+    manifest = {
+        "part_id": part.part_id,
+        "title": part.title,
+        "passed": part.passed,
+        "artifact_profile": "exact_shape_only",
+        "kernel": "build123d/OpenCascade exact B-rep",
+        "dimensions_mm": part.nominal_dimensions_mm,
+        "geometry": {
+            "volume_mm3": part.entity.shape.volume,
+            "surface_area_mm2": part.entity.shape.area,
+            "solid_count": len(part.entity.shape.solids()),
+            "face_count": len(part.entity.shape.faces()),
+            "edge_count": len(part.entity.shape.edges()),
+            "bbox_mm": [bbox.size.X, bbox.size.Y, bbox.size.Z],
+            "is_valid": bool(part.entity.shape.is_valid),
+        },
+        "checks": [check.__dict__ for check in part.checks],
+        "views": [],
+        "section": None,
+        "program": part.program.to_dict(),
+        "metadata": part.metadata,
+        "timings_seconds": {"step_export": elapsed},
+        "artifacts": {"step": step_path.name},
     }
     manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     return manifest
