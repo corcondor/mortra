@@ -1,0 +1,490 @@
+{
+ "problem": "XinXingV28p2",
+ "source_figure": "artifacts/exact-chart-complement-seven-more-20260828/XinXingV28p2.proof-focus.svg",
+ "viewBox": "0 0 936 396",
+ "points": {
+  "A": [
+   260.156605,
+   45.113367
+  ],
+  "B": [
+   71.181212,
+   186.844912
+  ],
+  "C": [
+   395.139028,
+   186.844912
+  ],
+  "I": [
+   711.139625,
+   124.204118
+  ],
+  "O": [
+   689.790497,
+   208.414565
+  ],
+  "D": [
+   711.139625,
+   188.2515
+  ],
+  "E": [
+   757.518763,
+   80.03351
+  ],
+  "F": [
+   672.711196,
+   72.966212
+  ],
+  "J": [
+   233.16012,
+   42.86366
+  ],
+  "K": [
+   115.050499,
+   318.452775
+  ],
+  "L": [
+   331.022377,
+   336.450431
+  ],
+  "X": [
+   278.143489,
+   362.745397
+  ],
+  "Y": [
+   313.228526,
+   63.86926
+  ],
+  "Z": [
+   202.944912,
+   45.686798
+  ],
+  "O1": [
+   702.83988,
+   223.801055
+  ],
+  "O2": [
+   730.813094,
+   117.646295
+  ],
+  "O3": [
+   685.845165,
+   113.363635
+  ],
+  "U": [
+   803.388456,
+   107.401437
+  ],
+  "V": [
+   607.466861,
+   103.124319
+  ],
+  "T": [
+   720.909564,
+   85.667134
+  ]
+ },
+ "goal": "coll t o i",
+ "steps": [
+  {
+   "text": "a b c = triangle",
+   "defines": [
+    "A",
+    "B",
+    "C"
+   ],
+   "points": [
+    "A",
+    "B",
+    "C"
+   ],
+   "segments": [
+    {
+     "id": "line2d_1",
+     "from": "A",
+     "to": "B",
+     "a": [
+      260.156605,
+      45.113367
+     ],
+     "b": [
+      71.181212,
+      186.844912
+     ]
+    },
+    {
+     "id": "line2d_2",
+     "from": "B",
+     "to": "C",
+     "a": [
+      71.181212,
+      186.844912
+     ],
+     "b": [
+      395.139028,
+      186.844912
+     ]
+    },
+    {
+     "id": "line2d_3",
+     "from": "C",
+     "to": "A",
+     "a": [
+      395.139028,
+      186.844912
+     ],
+     "b": [
+      260.156605,
+      45.113367
+     ]
+    }
+   ]
+  },
+  {
+   "text": "o = circumcenter a b c",
+   "defines": [
+    "O"
+   ],
+   "points": [
+    "O"
+   ],
+   "segments": []
+  },
+  {
+   "text": "i = incenter a b c",
+   "defines": [
+    "I"
+   ],
+   "points": [
+    "I"
+   ],
+   "segments": [
+    {
+     "id": "line2d_12",
+     "from": "I",
+     "to": "O",
+     "a": [
+      711.139625,
+      124.204118
+     ],
+     "b": [
+      689.790497,
+      208.414565
+     ]
+    }
+   ]
+  },
+  {
+   "text": "j1 = on_line a i, on_circle o a",
+   "defines": [
+    "J1"
+   ],
+   "points": [],
+   "segments": []
+  },
+  {
+   "text": "j = mirror j1 o",
+   "defines": [
+    "J"
+   ],
+   "points": [
+    "J"
+   ],
+   "segments": [
+    {
+     "id": "line2d_4",
+     "from": "A",
+     "to": "J",
+     "a": [
+      260.156605,
+      45.113367
+     ],
+     "b": [
+      233.16012,
+      42.86366
+     ]
+    }
+   ]
+  },
+  {
+   "text": "k1 = on_line b i, on_circle o a",
+   "defines": [
+    "K1"
+   ],
+   "points": [],
+   "segments": []
+  },
+  {
+   "text": "k = mirror k1 o",
+   "defines": [
+    "K"
+   ],
+   "points": [
+    "K"
+   ],
+   "segments": [
+    {
+     "id": "line2d_5",
+     "from": "B",
+     "to": "K",
+     "a": [
+      71.181212,
+      186.844912
+     ],
+     "b": [
+      115.050499,
+      318.452775
+     ]
+    }
+   ]
+  },
+  {
+   "text": "l1 = on_line c i, on_circle o a",
+   "defines": [
+    "L1"
+   ],
+   "points": [],
+   "segments": []
+  },
+  {
+   "text": "l = mirror l1 o",
+   "defines": [
+    "L"
+   ],
+   "points": [
+    "L"
+   ],
+   "segments": [
+    {
+     "id": "line2d_6",
+     "from": "C",
+     "to": "L",
+     "a": [
+      395.139028,
+      186.844912
+     ],
+     "b": [
+      331.022377,
+      336.450431
+     ]
+    }
+   ]
+  },
+  {
+   "text": "d = foot i b c",
+   "defines": [
+    "D"
+   ],
+   "points": [
+    "D"
+   ],
+   "segments": []
+  },
+  {
+   "text": "e = foot i a c",
+   "defines": [
+    "E"
+   ],
+   "points": [
+    "E"
+   ],
+   "segments": []
+  },
+  {
+   "text": "f = foot i a b",
+   "defines": [
+    "F"
+   ],
+   "points": [
+    "F"
+   ],
+   "segments": []
+  },
+  {
+   "text": "x = on_line j d, on_circle o a",
+   "defines": [
+    "X"
+   ],
+   "points": [
+    "X"
+   ],
+   "segments": []
+  },
+  {
+   "text": "y = on_line k e, on_circle o a",
+   "defines": [
+    "Y"
+   ],
+   "points": [
+    "Y"
+   ],
+   "segments": []
+  },
+  {
+   "text": "z = on_line l f, on_circle o a",
+   "defines": [
+    "Z"
+   ],
+   "points": [
+    "Z"
+   ],
+   "segments": []
+  },
+  {
+   "text": "o1 = circumcenter x e f",
+   "defines": [
+    "O1"
+   ],
+   "points": [
+    "O1"
+   ],
+   "segments": []
+  },
+  {
+   "text": "o2 = circumcenter y f d",
+   "defines": [
+    "O2"
+   ],
+   "points": [
+    "O2"
+   ],
+   "segments": []
+  },
+  {
+   "text": "o3 = circumcenter z d e",
+   "defines": [
+    "O3"
+   ],
+   "points": [
+    "O3"
+   ],
+   "segments": []
+  },
+  {
+   "text": "u = on_circle o1 f, on_circle o2 f",
+   "defines": [
+    "U"
+   ],
+   "points": [
+    "U"
+   ],
+   "segments": [
+    {
+     "id": "line2d_10",
+     "from": "F",
+     "to": "U",
+     "a": [
+      672.711196,
+      72.966212
+     ],
+     "b": [
+      803.388456,
+      107.401437
+     ]
+    }
+   ]
+  },
+  {
+   "text": "v = on_circle o1 e, on_circle o3 e",
+   "defines": [
+    "V"
+   ],
+   "points": [
+    "V"
+   ],
+   "segments": [
+    {
+     "id": "line2d_11",
+     "from": "E",
+     "to": "V",
+     "a": [
+      757.518763,
+      80.03351
+     ],
+     "b": [
+      607.466861,
+      103.124319
+     ]
+    }
+   ]
+  },
+  {
+   "text": "t = on_line u f, on_line v e",
+   "defines": [
+    "T"
+   ],
+   "points": [
+    "T"
+   ],
+   "segments": []
+  },
+  {
+   "text": "coll t o i",
+   "points": [],
+   "segments": [
+    {
+     "id": "goal",
+     "from": "T",
+     "to": "O",
+     "a": [
+      720.909564,
+      85.667134
+     ],
+     "b": [
+      689.790497,
+      208.414565
+     ]
+    },
+    {
+     "id": "line2d_7",
+     "from": null,
+     "to": null,
+     "a": [
+      233.16012,
+      42.86366
+     ],
+     "b": [
+      253.407484,
+      186.844912
+     ]
+    },
+    {
+     "id": "line2d_8",
+     "from": null,
+     "to": null,
+     "a": [
+      115.050499,
+      318.452775
+     ],
+     "b": [
+      297.393135,
+      84.211724
+     ]
+    },
+    {
+     "id": "line2d_9",
+     "from": null,
+     "to": null,
+     "a": [
+      331.022377,
+      336.450431
+     ],
+     "b": [
+      216.962229,
+      77.509149
+     ]
+    }
+   ],
+   "is_goal": true,
+   "goal_kind": "coll",
+   "goal_points": [
+    "T",
+    "O",
+    "I"
+   ],
+   "residual": 5.82775213395718e-07,
+   "residual_unit": "px",
+   "verified": true
+  }
+ ]
+}

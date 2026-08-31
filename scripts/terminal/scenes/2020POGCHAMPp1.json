@@ -1,0 +1,325 @@
+{
+ "problem": "2020POGCHAMPp1",
+ "source_figure": "artifacts/exact-chart-complement-next-seven-20260828/2020POGCHAMPp1.proof-focus.svg",
+ "viewBox": "0 0 656.39952 469.19952",
+ "points": {
+  "A": [
+   285.871595,
+   353.456224
+  ],
+  "B": [
+   443.653823,
+   353.456224
+  ],
+  "C": [
+   333.206263,
+   132.561105
+  ],
+  "D": [
+   404.997177,
+   276.142932
+  ],
+  "M": [
+   388.430043,
+   243.008664
+  ],
+  "T": [
+   371.862909,
+   209.874396
+  ],
+  "P": [
+   486.956901,
+   222.950528
+  ],
+  "G": [
+   390.387202,
+   178.943926
+  ],
+  "E": [
+   501.638792,
+   353.456224
+  ],
+  "F": [
+   317.447282,
+   206.103016
+  ],
+  "Q": [
+   142.026797,
+   65.766628
+  ]
+ },
+ "goal": "para a q b c",
+ "steps": [
+  {
+   "text": "a b c = triangle",
+   "defines": [
+    "A",
+    "B",
+    "C"
+   ],
+   "points": [
+    "A",
+    "B",
+    "C"
+   ],
+   "segments": [
+    {
+     "id": "line2d_1",
+     "from": "A",
+     "to": "B",
+     "a": [
+      285.871595,
+      353.456224
+     ],
+     "b": [
+      443.653823,
+      353.456224
+     ]
+    },
+    {
+     "id": "line2d_2",
+     "from": "A",
+     "to": "C",
+     "a": [
+      285.871595,
+      353.456224
+     ],
+     "b": [
+      333.206263,
+      132.561105
+     ]
+    },
+    {
+     "id": "line2d_3",
+     "from": "B",
+     "to": "C",
+     "a": [
+      443.653823,
+      353.456224
+     ],
+     "b": [
+      333.206263,
+      132.561105
+     ]
+    }
+   ]
+  },
+  {
+   "text": "o = circumcenter a b c",
+   "defines": [
+    "O"
+   ],
+   "points": [],
+   "segments": []
+  },
+  {
+   "text": "p = on_circle o a",
+   "defines": [
+    "P"
+   ],
+   "points": [
+    "P"
+   ],
+   "segments": [
+    {
+     "id": "line2d_4",
+     "from": "A",
+     "to": "P",
+     "a": [
+      285.871595,
+      353.456224
+     ],
+     "b": [
+      486.956901,
+      222.950528
+     ]
+    }
+   ]
+  },
+  {
+   "text": "d = on_line a p, on_line b c",
+   "defines": [
+    "D"
+   ],
+   "points": [
+    "D"
+   ],
+   "segments": []
+  },
+  {
+   "text": "m = midpoint b c",
+   "defines": [
+    "M"
+   ],
+   "points": [
+    "M"
+   ],
+   "segments": []
+  },
+  {
+   "text": "t = mirror d m",
+   "defines": [
+    "T"
+   ],
+   "points": [
+    "T"
+   ],
+   "segments": [
+    {
+     "id": "line2d_5",
+     "from": "A",
+     "to": "T",
+     "a": [
+      285.871595,
+      353.456224
+     ],
+     "b": [
+      371.862909,
+      209.874396
+     ]
+    }
+   ]
+  },
+  {
+   "text": "o1 = circumcenter p d t",
+   "defines": [
+    "O1"
+   ],
+   "points": [],
+   "segments": []
+  },
+  {
+   "text": "g = on_line a t, on_circle o1 p",
+   "defines": [
+    "G"
+   ],
+   "points": [
+    "G"
+   ],
+   "segments": [
+    {
+     "id": "line2d_7",
+     "from": "G",
+     "to": "P",
+     "a": [
+      390.387202,
+      178.943926
+     ],
+     "b": [
+      486.956901,
+      222.950528
+     ]
+    }
+   ]
+  },
+  {
+   "text": "o2 = circumcenter a g p",
+   "defines": [
+    "O2"
+   ],
+   "points": [],
+   "segments": []
+  },
+  {
+   "text": "e = on_line a b, on_circle o2 a",
+   "defines": [
+    "E"
+   ],
+   "points": [
+    "E"
+   ],
+   "segments": []
+  },
+  {
+   "text": "f = on_line a c, on_circle o2 a",
+   "defines": [
+    "F"
+   ],
+   "points": [
+    "F"
+   ],
+   "segments": [
+    {
+     "id": "line2d_6",
+     "from": "E",
+     "to": "F",
+     "a": [
+      501.638792,
+      353.456224
+     ],
+     "b": [
+      317.447282,
+      206.103016
+     ]
+    }
+   ]
+  },
+  {
+   "text": "q = on_line e f, on_line g p",
+   "defines": [
+    "Q"
+   ],
+   "points": [
+    "Q"
+   ],
+   "segments": [
+    {
+     "id": "line2d_8",
+     "from": "A",
+     "to": "Q",
+     "a": [
+      285.871595,
+      353.456224
+     ],
+     "b": [
+      142.026797,
+      65.766628
+     ]
+    }
+   ]
+  },
+  {
+   "text": "para a q b c",
+   "points": [],
+   "segments": [
+    {
+     "id": "goal",
+     "from": "A",
+     "to": "Q",
+     "a": [
+      285.871595,
+      353.456224
+     ],
+     "b": [
+      142.026797,
+      65.766628
+     ]
+    },
+    {
+     "id": "goal",
+     "from": "B",
+     "to": "C",
+     "a": [
+      443.653823,
+      353.456224
+     ],
+     "b": [
+      333.206263,
+      132.561105
+     ]
+    }
+   ],
+   "is_goal": true,
+   "goal_kind": "para",
+   "goal_points": [
+    "A",
+    "Q",
+    "B",
+    "C"
+   ],
+   "residual": 1.2074182697257333e-06,
+   "residual_unit": "deg",
+   "verified": true
+  }
+ ]
+}

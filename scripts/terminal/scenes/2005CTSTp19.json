@@ -1,0 +1,275 @@
+{
+ "problem": "2005CTSTp19",
+ "source_figure": "artifacts/exact-chart-complement-seven-more-20260828/2005CTSTp19.proof-focus.svg",
+ "viewBox": "0 0 648 468",
+ "points": {
+  "P": [
+   405.058179,
+   273.816038
+  ],
+  "A": [
+   527.92093,
+   273.816038
+  ],
+  "B": [
+   448.060142,
+   107.270152
+  ],
+  "C": [
+   319.054254,
+   273.816038
+  ],
+  "D": [
+   389.700335,
+   333.296711
+  ],
+  "O": [
+   423.487592,
+   221.473045
+  ],
+  "O1": [
+   472.632692,
+   202.43923
+  ],
+  "O2": [
+   466.489554,
+   309.504442
+  ],
+  "Q": [
+   531.599757,
+   281.076681
+  ],
+  "E": [
+   518.572677,
+   289.332735
+  ],
+  "F": [
+   400.577927,
+   336.021106
+  ],
+  "X": [
+   77.077108,
+   254.997294
+  ]
+ },
+ "goal": "coll x d f",
+ "steps": [
+  {
+   "text": "a b c = triangle",
+   "defines": [
+    "A",
+    "B",
+    "C"
+   ],
+   "points": [
+    "A",
+    "B",
+    "C"
+   ],
+   "segments": [
+    {
+     "id": "line2d_1",
+     "from": "A",
+     "to": "C",
+     "a": [
+      527.92093,
+      273.816038
+     ],
+     "b": [
+      319.054254,
+      273.816038
+     ]
+    }
+   ]
+  },
+  {
+   "text": "d = on_circum a b c",
+   "defines": [
+    "D"
+   ],
+   "points": [
+    "D"
+   ],
+   "segments": [
+    {
+     "id": "line2d_2",
+     "from": "B",
+     "to": "D",
+     "a": [
+      448.060142,
+      107.270152
+     ],
+     "b": [
+      389.700335,
+      333.296711
+     ]
+    }
+   ]
+  },
+  {
+   "text": "o = circumcenter a b c",
+   "defines": [
+    "O"
+   ],
+   "points": [
+    "O"
+   ],
+   "segments": []
+  },
+  {
+   "text": "p = on_line a c, on_line b d",
+   "defines": [
+    "P"
+   ],
+   "points": [
+    "P"
+   ],
+   "segments": []
+  },
+  {
+   "text": "o1 = on_bline p b",
+   "defines": [
+    "O1"
+   ],
+   "points": [
+    "O1"
+   ],
+   "segments": []
+  },
+  {
+   "text": "o2 = on_bline p a",
+   "defines": [
+    "O2"
+   ],
+   "points": [
+    "O2"
+   ],
+   "segments": []
+  },
+  {
+   "text": "q = on_circle o1 p, on_circle o2 p",
+   "defines": [
+    "Q"
+   ],
+   "points": [
+    "Q"
+   ],
+   "segments": [
+    {
+     "id": "line2d_3",
+     "from": "P",
+     "to": "Q",
+     "a": [
+      405.058179,
+      273.816038
+     ],
+     "b": [
+      531.599757,
+      281.076681
+     ]
+    }
+   ]
+  },
+  {
+   "text": "e = on_circle o1 p, on_circle o a",
+   "defines": [
+    "E"
+   ],
+   "points": [
+    "E"
+   ],
+   "segments": [
+    {
+     "id": "line2d_4",
+     "from": "C",
+     "to": "E",
+     "a": [
+      319.054254,
+      273.816038
+     ],
+     "b": [
+      518.572677,
+      289.332735
+     ]
+    }
+   ]
+  },
+  {
+   "text": "f = on_circle o2 p, on_circle o a",
+   "defines": [
+    "F"
+   ],
+   "points": [
+    "F"
+   ],
+   "segments": [
+    {
+     "id": "line2d_5",
+     "from": "D",
+     "to": "F",
+     "a": [
+      389.700335,
+      333.296711
+     ],
+     "b": [
+      400.577927,
+      336.021106
+     ]
+    }
+   ]
+  },
+  {
+   "text": "x = on_line p q, on_line c e",
+   "defines": [
+    "X"
+   ],
+   "points": [
+    "X"
+   ],
+   "segments": [
+    {
+     "id": "line2d_6",
+     "from": "F",
+     "to": "X",
+     "a": [
+      400.577927,
+      336.021106
+     ],
+     "b": [
+      77.077108,
+      254.997294
+     ]
+    }
+   ]
+  },
+  {
+   "text": "coll x d f",
+   "points": [],
+   "segments": [
+    {
+     "id": "goal",
+     "from": "X",
+     "to": "F",
+     "a": [
+      77.077108,
+      254.997294
+     ],
+     "b": [
+      400.577927,
+      336.021106
+     ]
+    }
+   ],
+   "is_goal": true,
+   "goal_kind": "coll",
+   "goal_points": [
+    "X",
+    "D",
+    "F"
+   ],
+   "residual": 1.3361232530507277e-07,
+   "residual_unit": "px",
+   "verified": true
+  }
+ ]
+}
