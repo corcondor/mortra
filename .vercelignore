@@ -13,12 +13,14 @@ artifacts/
 # なって上限 225MB を超えていた。Next.js のビルド自体は成功していて、
 # 失敗はこの Python 関数の段階で起きていた。
 #
-# Web と api/solve.py が実際に必要とする data 配下は次の2つだけ。
+# Web と api/solve.py が実際に必要とする data 配下は次の3つだけ。
 #   data/mathos   app/api/mathos-generate/route.ts が静的 import (2.4MB)
+#   data/mortra   公開問題カタログ API と融合生成 API が静的 import
 #   data/strokes  lib/handwriting.ts / handwriting2d.ts が import (32KB)
 # 残りは HAGeo の実行成果物で、実行時には参照されない。
 data/*
 !data/mathos
+!data/mortra
 !data/strokes
 
 # design-world / ornament / video の書き出し。app・lib・components・api の
