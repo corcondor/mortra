@@ -10,6 +10,7 @@ export interface DiscoveryParent {
 
 type OperatorSignature = {
   patterns: RegExp[]
+  match?: 'any' | 'all'
   sorts: string[]
   morphisms: Array<{ name: string; source: string; target: string; law: string }>
 }
@@ -22,6 +23,8 @@ const OPERATOR_SIGNATURES: OperatorSignature[] = [
   { patterns: [/\\lim(?![A-Za-z])/i, /極限/], sorts: ['Sequence', 'LimitObject'], morphisms: [{ name: 'Limit', source: 'Sequence', target: 'LimitObject', law: 'Limit(a)=lim a_n when defined' }] },
   { patterns: [/微分|導関数/, /f\s*['′]/], sorts: ['DifferentiableFunction', 'Function'], morphisms: [{ name: 'Derivative', source: 'DifferentiableFunction', target: 'Function', law: 'D(f)=f\'' }] },
   { patterns: [/\\equiv(?![A-Za-z])/i, /合同|法\s*\\?pmod|modulo/i], sorts: ['IntegerStructure', 'ResidueClassStructure'], morphisms: [{ name: 'QuotientModulo', source: 'IntegerStructure', target: 'ResidueClassStructure', law: 'q_m(a)=[a]_m' }] },
+  { patterns: [/整数|自然数|integer|natural\s+number/i], sorts: ['IntegerStructure'], morphisms: [{ name: 'IntegerElaboration', source: 'ArithmeticExpression', target: 'IntegerStructure', law: 'declared integer-valued variables and their arithmetic constraints form an integer structure' }] },
+  { patterns: [/互いに素|coprime/i], sorts: ['CoprimeIntegerTuple'], morphisms: [{ name: 'CoprimeRestriction', source: 'IntegerTuple', target: 'CoprimeIntegerTuple', law: 'gcd of the declared integer tuple is one' }] },
   { patterns: [/素数|prime/i], sorts: ['PrimeSpectrum', 'IntegerStructure'], morphisms: [{ name: 'PrimeRestriction', source: 'IntegerStructure', target: 'PrimeSpectrum', law: 'restrict parameters to primes' }] },
   { patterns: [/整数三角形|三辺.{0,12}整数|integer-sided triangle/i], sorts: ['IntegralTriangle', 'TriangleMetricData'], morphisms: [{ name: 'IntegralSideRestriction', source: 'TriangleMetricData', target: 'IntegralTriangle', law: 'side lengths lie in the positive integers' }] },
   { patterns: [/外接円半径|内接円半径|傍接円半径|circumradius|inradius/i], sorts: ['TriangleMetricData', 'RadiusObservable'], morphisms: [{ name: 'TriangleRadiusObservable', source: 'TriangleMetricData', target: 'RadiusObservable', law: 'radius observables are rational expressions after Heron elimination' }] },
@@ -40,8 +43,11 @@ const OPERATOR_SIGNATURES: OperatorSignature[] = [
   { patterns: [/確率|期待値/], sorts: ['ProbabilitySpace', 'RandomVariable'], morphisms: [{ name: 'Expectation', source: 'RandomVariable', target: 'Real', law: 'E[X]=integral X dP' }] },
   { patterns: [/二次形式|quadratic form/i], sorts: ['QuadraticForm', 'SymmetricBilinearForm'], morphisms: [{ name: 'Polarization', source: 'QuadraticForm', target: 'SymmetricBilinearForm', law: 'q(x)=x^T A x for a unique symmetric matrix A' }] },
   { patterns: [/分散|共分散|variance|covariance/i], sorts: ['RandomVector', 'SecondMomentTensor'], morphisms: [{ name: 'SecondMomentMatrix', source: 'RandomVector', target: 'SecondMomentTensor', law: 'M=E[XX^T]=Cov(X)+E[X]E[X]^T' }] },
-  { patterns: [/直角三角形|right triangle/i, /互いに素|primitive|coprime/i], sorts: ['PrimitiveIntegerRightTriangle', 'EuclidParameterPair'], morphisms: [{ name: 'PrimitivePythagoreanParameterization', source: 'PrimitiveIntegerRightTriangle', target: 'EuclidParameterPair', law: '(a,b,c)=(m^2-n^2,2mn,m^2+n^2) for coprime opposite-parity m>n' }] },
-  { patterns: [/内接円半径.*外接円半径|外接円半径.*内接円半径|inradius.*circumradius|circumradius.*inradius/i, /素数|prime/i], sorts: ['TriangleRadii', 'PrimeProductConstraint'], morphisms: [{ name: 'PrimeRadiusProductFactorization', source: 'TriangleRadii', target: 'PrimeProductConstraint', law: 'for a primitive right triangle, Rr=(r/2)c' }] },
+  { patterns: [/\\?(?:sin|cos|tan)(?:\s*\^|\s*\()|正弦|余弦|三角関数/i], sorts: ['TrigonometricExpression'], morphisms: [{ name: 'UnitCircleEvaluation', source: 'AngleExpression', target: 'TrigonometricExpression', law: 'sin and cos are coordinate observables of the unit-circle action' }] },
+  { patterns: [/格子点|lattice\s+point/i], sorts: ['AffineLattice', 'LatticePointSet'], morphisms: [{ name: 'LatticePointRestriction', source: 'AffineSpace', target: 'LatticePointSet', law: 'retain points whose coordinates lie in the integer lattice' }] },
+  { patterns: [/直線|line/i, /格子点|整数解|lattice\s+point|integer\s+solution/i], match: 'all', sorts: ['AffineLatticeSlice', 'LinearDiophantineConstraint'], morphisms: [{ name: 'AffineLatticeSliceElaboration', source: 'AffineLattice', target: 'LinearDiophantineConstraint', law: 'an affine linear equation restricts an integer lattice to a Diophantine slice' }] },
+  { patterns: [/直角三角形|right triangle/i, /互いに素|primitive|coprime/i], match: 'all', sorts: ['PrimitiveIntegerRightTriangle', 'EuclidParameterPair'], morphisms: [{ name: 'PrimitivePythagoreanParameterization', source: 'PrimitiveIntegerRightTriangle', target: 'EuclidParameterPair', law: '(a,b,c)=(m^2-n^2,2mn,m^2+n^2) for coprime opposite-parity m>n' }] },
+  { patterns: [/内接円半径.*外接円半径|外接円半径.*内接円半径|inradius.*circumradius|circumradius.*inradius/i, /素数|prime/i], match: 'all', sorts: ['TriangleRadii', 'PrimeProductConstraint'], morphisms: [{ name: 'PrimeRadiusProductFactorization', source: 'TriangleRadii', target: 'PrimeProductConstraint', law: 'for a primitive right triangle, Rr=(r/2)c' }] },
 ]
 
 const CONSTRUCTORS = [
@@ -89,7 +95,10 @@ export function liftParent(parent: DiscoveryParent) {
   const roots: string[] = []
   const morphisms: Array<{ name: string; source: string; target: string; law: string; origin: string }> = []
   for (const signature of OPERATOR_SIGNATURES) {
-    if (!signature.patterns.some(pattern => pattern.test(source))) continue
+    const matched = signature.match === 'all'
+      ? signature.patterns.every(pattern => pattern.test(source))
+      : signature.patterns.some(pattern => pattern.test(source))
+    if (!matched) continue
     for (const sort of signature.sorts) if (!roots.includes(sort)) roots.push(sort)
     for (const morphism of signature.morphisms) {
       if (morphisms.some(item => item.name === morphism.name)) continue

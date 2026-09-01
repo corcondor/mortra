@@ -47,3 +47,59 @@ test('all selected parents remain distinct proof inputs', () => {
   assert.equal(derivation.assignments.length, 3)
   assert.equal(new Set(derivation.assignments.map(item => item.parentId)).size, 3)
 })
+
+test('coprimality alone does not elaborate an unrelated problem as a primitive right triangle', () => {
+  const result = discoverParentStructures([{
+    id: 'lattice-line',
+    statement: '互いに素な正の整数 a,b に対し、直線 ax+by=ab 上の格子点を分類せよ。',
+  }])
+  const roots = result.parent_graphs[0].semantic_roots
+  assert.ok(!roots.includes('PrimitiveIntegerRightTriangle'))
+  assert.ok(!roots.includes('EuclidParameterPair'))
+  assert.ok(roots.includes('CoprimeIntegerTuple'))
+  assert.ok(roots.includes('AffineLattice'))
+  assert.ok(roots.includes('LinearDiophantineConstraint'))
+})
+
+test('primitive right-triangle elaboration requires both structural conditions', () => {
+  const result = discoverParentStructures([{
+    id: 'primitive-right-triangle',
+    statement: '二辺が互いに素である整数直角三角形の三辺を分類せよ。',
+  }])
+  const roots = result.parent_graphs[0].semantic_roots
+  assert.ok(roots.includes('PrimitiveIntegerRightTriangle'))
+  assert.ok(roots.includes('EuclidParameterPair'))
+})
+
+test('primality alone does not elaborate an unrelated problem as a prime radius product', () => {
+  const result = discoverParentStructures([{
+    id: 'cyclotomic-prime',
+    statement: '素数 p に対し、円分多項式の整数係数因子を分類せよ。',
+  }])
+  const roots = result.parent_graphs[0].semantic_roots
+  assert.ok(!roots.includes('TriangleRadii'))
+  assert.ok(!roots.includes('PrimeProductConstraint'))
+  assert.ok(roots.includes('IntegerStructure'))
+})
+
+test('rational-angle classification retains reusable trigonometric and integer structure', () => {
+  const result = discoverParentStructures([{
+    id: 'rational-angle',
+    statement: '互いに素な自然数 p,q に対し、cos^n(p*pi/q)+sin^n(p*pi/q)=1 となる組を分類せよ。',
+  }])
+  const roots = result.parent_graphs[0].semantic_roots
+  assert.ok(roots.includes('IntegerStructure'))
+  assert.ok(roots.includes('CoprimeIntegerTuple'))
+  assert.ok(roots.includes('TrigonometricExpression'))
+  assert.ok(!roots.some(root => root.startsWith('OpaqueStructure[')))
+})
+
+test('prime radius-product elaboration requires radius and primality evidence', () => {
+  const result = discoverParentStructures([{
+    id: 'prime-radius-product',
+    statement: '整数三角形の内接円半径と外接円半径の積が素数となる場合を求めよ。',
+  }])
+  const roots = result.parent_graphs[0].semantic_roots
+  assert.ok(roots.includes('TriangleRadii'))
+  assert.ok(roots.includes('PrimeProductConstraint'))
+})
