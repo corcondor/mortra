@@ -959,6 +959,107 @@ def synthesize_second_order_recurrence(statement: str) -> RuntimeSolutionSynthes
     if parsed is None:
         return None
     sequence, coefficient_current, coefficient_previous, initial_zero, initial_one, target_index = parsed
+    asks_for_generating_function = (
+        "母関数" in statement
+        or "generating function" in statement.lower()
+    )
+    asks_for_closed_form = target_index is not None or any(
+        marker in statement.lower()
+        for marker in (
+            "一般項",
+            "閉形式",
+            "遷移行列",
+            "状態行列",
+            "特性多項式",
+            "特性方程式",
+            "general term",
+            "closed form",
+            "transition matrix",
+            "characteristic polynomial",
+        )
+    )
+    if not asks_for_generating_function and not asks_for_closed_form:
+        return None
+
+    if asks_for_generating_function:
+        z = sp.symbols("z")
+        numerator = sp.simplify(
+            initial_zero + (initial_one - coefficient_current * initial_zero) * z
+        )
+        denominator = sp.simplify(
+            1 - coefficient_current * z - coefficient_previous * z**2
+        )
+        generating_function = sp.cancel(numerator / denominator)
+        replay_limit = 8
+        sequence_values = [sp.simplify(initial_zero), sp.simplify(initial_one)]
+        for _ in range(2, replay_limit + 1):
+            sequence_values.append(sp.simplify(
+                coefficient_current * sequence_values[-1]
+                + coefficient_previous * sequence_values[-2]
+            ))
+        series = sp.series(generating_function, z, 0, replay_limit + 1).removeO().expand()
+        replayed_coefficients = [sp.simplify(series.coeff(z, index)) for index in range(replay_limit + 1)]
+        if replayed_coefficients != sequence_values:
+            return None
+        if sp.simplify(denominator * generating_function - numerator) != 0:
+            return None
+
+        matrix = sp.Matrix([[coefficient_current, coefficient_previous], [1, 0]])
+        matrix_tex = sp.latex(matrix)
+        generating_tex = sp.latex(generating_function)
+        numerator_tex = sp.latex(numerator)
+        denominator_tex = sp.latex(denominator)
+        diagram = state_transition_diagram(
+            [
+                {"id": "recurrence", "label": rf"{sequence}_{{n+2}}={sp.latex(coefficient_current)}{sequence}_{{n+1}}+({sp.latex(coefficient_previous)}){sequence}_n", "terminal": False},
+                {"id": "series", "label": rf"A(z)=\sum_{{n\ge0}}{sequence}_n z^n", "terminal": False},
+                {"id": "verified", "label": "係数を再生", "terminal": True},
+            ],
+            [
+                {"from": "recurrence", "to": "series", "label": rf"(1-{sp.latex(coefficient_current)}z-({sp.latex(coefficient_previous)})z^2)A(z)", "tone": "primary"},
+                {"from": "series", "to": "verified", "label": rf"0\le n\le {replay_limit}", "tone": "secondary"},
+            ],
+            title="漸化式と母関数",
+            caption="漸化式を形式的べき級数へ変換し、係数を元の数列へ戻して検証します。",
+        )
+        return RuntimeSolutionSynthesis(
+            answer={"generating_function": generating_function},
+            answer_tex=rf"\[A(z)=\sum_{{n=0}}^\infty {sequence}_n z^n={generating_tex}\]",
+            tool_name="mortra.runtime_second_order_recurrence",
+            expression_tex=rf"{sequence}_{{n+2}}={sp.latex(coefficient_current)}{sequence}_{{n+1}}+({sp.latex(coefficient_previous)}){sequence}_n",
+            derivation_tex=(
+                rf"母関数を \(A(z)=\sum_{{n=0}}^\infty {sequence}_n z^n\) とおく。",
+                rf"漸化式に \(z^{{n+2}}\) を掛けて \(n\ge0\) で加えると、\({denominator_tex}A(z)={numerator_tex}\) を得る。",
+                rf"従って \(A(z)={generating_tex}\) である。",
+                rf"この有理関数を \(z^{replay_limit}\) まで展開し、得られた係数が元の漸化式から計算した \({sequence}_0,\ldots,{sequence}_{{{replay_limit}}}\) と全て一致することを確認した。",
+            ),
+            verification_checks=(
+                "現在入力から二階漸化式の係数と初期値を抽出",
+                "形式的べき級数の恒等式を厳密に整理",
+                "分母を掛け戻して恒等式の残差が0であることを確認",
+                f"母関数の係数と逐次計算を0から{replay_limit}まで照合",
+            ),
+            proof_program=(
+                {"rule": "elaborate_second_order_recurrence", "coefficients": [str(coefficient_current), str(coefficient_previous)]},
+                {"rule": "construct_companion_matrix", "matrix": [[str(value) for value in row] for row in matrix.tolist()]},
+                {"rule": "derive_ordinary_generating_function", "numerator": sp.srepr(numerator), "denominator": sp.srepr(denominator)},
+                {"rule": "verify_generating_function_identity", "residual": "0"},
+                {"rule": "replay_generating_function_coefficients", "through": replay_limit},
+                {"rule": "render_recurrence_generating_function_diagram"},
+            ),
+            diagram=diagram,
+            witness={
+                "sequence": sequence,
+                "observable": "ordinary_generating_function",
+                "coefficients": [str(coefficient_current), str(coefficient_previous)],
+                "initial": [str(initial_zero), str(initial_one)],
+                "numerator": sp.srepr(numerator),
+                "denominator": sp.srepr(denominator),
+                "generating_function": sp.srepr(generating_function),
+                "replayed_coefficients": [sp.srepr(value) for value in replayed_coefficients],
+            },
+        )
+
     n = sp.symbols("n", integer=True, nonnegative=True)
     characteristic = sp.Poly(
         sp.Symbol("r") ** 2 - coefficient_current * sp.Symbol("r") - coefficient_previous,

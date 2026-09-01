@@ -31,7 +31,11 @@ from math_os_prototype.runtime_discrete_profile_synthesis import (
     synthesize_discrete_trig_profile_problem,
 )
 from math_os_prototype.runtime_solution_synthesis import synthesize_runtime_solution
+from math_os_prototype.cubic_centroid_locus import (
+    execute_cubic_centroid_locus_query,
+)
 from math_os_prototype.hilbert_witness_query import execute_hilbert_witness_query
+from math_os_prototype.iteration_query import execute_iteration_query
 from math_os_prototype.prime_structure_query import execute_prime_structure_query
 from math_os_prototype.symbolic_query import execute_symbolic_query
 from math_os_prototype.typed_proof_synthesis import (
@@ -455,6 +459,16 @@ def _replay_exact_backend_certificate(
             "symbolic_query",
             execute_symbolic_query,
             "primitive_exact_operation",
+        ),
+        "sympy.iteration_query": (
+            "iteration_query",
+            execute_iteration_query,
+            "synthesized_proof_program",
+        ),
+        "sympy.cubic_centroid_locus": (
+            "cubic_centroid_locus_query",
+            execute_cubic_centroid_locus_query,
+            "synthesized_proof_program",
         ),
         "sympy.hilbert_witness_query": (
             "hilbert_witness_query",

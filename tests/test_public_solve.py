@@ -108,6 +108,39 @@ class PublicSolveTests(unittest.TestCase):
         self.assertEqual(card["answer_tex"], r"\(14\)")
         self.assertEqual(len(card["diagram"]["states"]), 4)
 
+    def test_nested_radical_iteration_replays_a_current_input_certificate(self) -> None:
+        status, payload = solve_public_problem(
+            r"$\sqrt{4^{1\sqrt{4^{1\sqrt{4^{1\cdots}}}}}} \text{の値を求めよ.}$"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(card["answer_tex"], r"\(\infty\)")
+        self.assertEqual(
+            card["execution_certificate"]["tool_name"],
+            "sympy.iteration_query",
+        )
+        self.assertIn("固定点", card["solution_tex"])
+
+    def test_cubic_centroid_locus_replays_after_coefficient_change(self) -> None:
+        status, payload = solve_public_problem(
+            r"曲線 $y=x^3-5x+7$ 上の3点を頂点とする正三角形の重心の軌跡が囲む部分の面積を求めよ."
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(
+            card["answer_tex"],
+            r"\(\frac{4 \pi \left(5 - \sqrt{3}\right)}{9}\)",
+        )
+        self.assertEqual(
+            card["execution_certificate"]["tool_name"],
+            "sympy.cubic_centroid_locus",
+        )
+        self.assertIn("Fourier", card["solution_tex"])
+
     def test_second_order_recurrence_compiles_to_matrix_and_closed_form(self) -> None:
         status, payload = solve_public_problem(
             "数列 {a_n} を a_0=2, a_1=5, a_{n+2}=3a_{n+1}-2a_n で定める。"
@@ -132,6 +165,49 @@ class PublicSolveTests(unittest.TestCase):
         self.assert_runtime_synthesis_card(card)
         self.assertIn("729", card["answer_tex"])
         self.assertEqual(card["execution_certificate"]["witness"]["coefficients"], ["4", "-3"])
+
+    def test_second_order_recurrence_answers_the_requested_generating_function(self) -> None:
+        status, payload = solve_public_problem(
+            "数列 a_0=2, a_1=3, a_{n+2}=4a_{n+1}-3a_n の母関数を求めよ。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(
+            card["answer_tex"],
+            r"\[A(z)=\sum_{n=0}^\infty a_n z^n=\frac{2 - 5 z}{3 z^{2} - 4 z + 1}\]",
+        )
+        witness = card["execution_certificate"]["witness"]
+        self.assertEqual(witness["observable"], "ordinary_generating_function")
+        self.assertEqual(witness["replayed_coefficients"][:5], ["Integer(2)", "Integer(3)", "Integer(6)", "Integer(15)", "Integer(42)"])
+        self.assertIn("母関数", card["solution_tex"])
+        self.assertNotIn("a_n=", card["answer_tex"])
+
+    def test_generating_function_recomputes_after_coefficient_change(self) -> None:
+        status, payload = solve_public_problem(
+            "数列 c_0=1, c_1=4, c_{n+2}=5c_{n+1}-6c_n の母関数を求めよ。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(
+            card["answer_tex"],
+            r"\[A(z)=\sum_{n=0}^\infty c_n z^n=\frac{1 - z}{6 z^{2} - 5 z + 1}\]",
+        )
+        self.assertEqual(
+            card["execution_certificate"]["witness"]["replayed_coefficients"][:4],
+            ["Integer(1)", "Integer(4)", "Integer(14)", "Integer(46)"],
+        )
+
+    def test_recurrence_kernel_does_not_answer_a_different_observable(self) -> None:
+        status, payload = solve_public_problem(
+            "数列 a_0=2, a_1=3, a_{n+2}=4a_{n+1}-3a_n のディリクレ級数を求めよ。"
+        )
+
+        self.assertEqual(status, 422)
+        self.assertEqual(payload["generated"], 0)
 
     def test_linear_congruence_enumerates_every_residue_class(self) -> None:
         status, payload = solve_public_problem(

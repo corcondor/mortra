@@ -124,7 +124,7 @@ def execute_cubic_centroid_locus_query(payload: dict[str, Any]) -> dict[str, Any
     if sp.N(gap.subs(X, midpoint)) < 0:
         gap = -gap
     one_lobe_area = integrate_symmetric_quadratic_radical(gap, X, positive_interval)
-    total_area = sp.factor(2 * one_lobe_area)
+    total_area = sp.simplify(2 * one_lobe_area)
     if total_area.has(sp.Integral) or sp.N(total_area) <= 0:
         raise ValueError("locus area did not close to a positive exact value")
 
@@ -135,7 +135,7 @@ def execute_cubic_centroid_locus_query(payload: dict[str, Any]) -> dict[str, Any
         "status": "solved",
         "query_operator": "equilateral_centroid_locus_area",
         "answer_exact": str(total_area),
-        "answer_tex": rf"\(\frac{{4\pi}}{{9}}\left(2-\sqrt{{3}}\right)\)",
+        "answer_tex": rf"\({sp.latex(total_area)}\)",
         "source_curve": str(polynomial.as_expr()),
         "horizontal_shift": str(horizontal_shift),
         "depressed_linear_coefficient": str(linear_coefficient),
