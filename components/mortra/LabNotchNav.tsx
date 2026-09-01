@@ -19,6 +19,7 @@ export function LabNotchNav({ lang, active = 'home', alternateHref }: LabNotchNa
   const hoverRef = useRef(false)
   const focusRef = useRef(false)
   const closeTimerRef = useRef<number | null>(null)
+  const lastScrollYRef = useRef(0)
   const home = lang === 'ja' ? '/ja' : '/'
   const research = lang === 'ja' ? '/ja/research' : '/research'
 
@@ -37,8 +38,22 @@ export function LabNotchNav({ lang, active = 'home', alternateHref }: LabNotchNa
   useEffect(() => {
     const coarse = window.matchMedia('(pointer: coarse)')
     if (coarse.matches) {
-      setExpanded(true)
-      return
+      lastScrollYRef.current = window.scrollY
+      setExpanded(window.scrollY <= 24)
+
+      const onScroll = () => {
+        const nextY = window.scrollY
+        const delta = nextY - lastScrollYRef.current
+
+        if (nextY <= 24) setExpanded(true)
+        else if (delta > 4) setExpanded(false)
+        else if (delta < -12) setExpanded(true)
+
+        lastScrollYRef.current = nextY
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true })
+      return () => window.removeEventListener('scroll', onScroll)
     }
 
     const onPointerMove = (event: PointerEvent) => {
