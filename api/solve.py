@@ -365,11 +365,82 @@ def _annotate_capability_provenance(certificate: dict[str, Any]) -> dict[str, An
         ).hexdigest()
     elif origin == "registered_parameterized_morphism":
         certificate["registered_composite_used"] = True
-        certificate.setdefault("composite_cache_role", "registered_parameterized_schema")
+        if certificate.get("cold_generalization_validated") is True:
+            certificate["registered_completed_route_used"] = False
+            certificate.setdefault(
+                "composite_cache_role", "verified_cold_parameterized_schema"
+            )
+        else:
+            certificate["registered_completed_route_used"] = True
+            certificate.setdefault("composite_cache_role", "registered_parameterized_schema")
     else:
         certificate.setdefault("registered_composite_used", False)
+        certificate.setdefault("registered_completed_route_used", False)
         certificate.setdefault("composite_cache_role", "not_applicable")
     return certificate
+
+
+def _is_verified_cold_parameterized_morphism(certificate: dict[str, Any]) -> bool:
+    """Accept a theorem schema only when it is replayed against the current input."""
+
+    if (
+        certificate.get("kind") != "structural_theorem_replay"
+        or certificate.get("capability_origin") != "registered_parameterized_morphism"
+        or certificate.get("verified") is not True
+        or certificate.get("cold_generalization_validated") is not True
+        or certificate.get("registered_completed_route_used") is not False
+    ):
+        return False
+
+    contract = certificate.get("cold_generalization_contract")
+    query_objects = certificate.get("query_objects")
+    if not isinstance(contract, dict) or not isinstance(query_objects, dict):
+        return False
+    required_keys = contract.get("required_object_keys")
+    replay_obligations = contract.get("replay_obligations")
+    if (
+        not isinstance(required_keys, (list, tuple))
+        or not required_keys
+        or not isinstance(replay_obligations, (list, tuple))
+        or not replay_obligations
+        or not set(required_keys).issubset(query_objects)
+        or certificate.get("replayed_contract_obligations") != list(replay_obligations)
+        or not isinstance(contract.get("generic_operation"), str)
+        or not str(contract.get("generic_operation")).strip()
+    ):
+        return False
+
+    forbidden_query_keys = {
+        "answer",
+        "answer_tex",
+        "expected_answer",
+        "problem_id",
+        "benchmark_id",
+    }
+    forbidden_replay_keys = {"expected_answer", "problem_id", "benchmark_id"}
+
+    def contains_forbidden_key(value: Any, forbidden: set[str]) -> bool:
+        if isinstance(value, dict):
+            if forbidden.intersection(value):
+                return True
+            return any(contains_forbidden_key(item, forbidden) for item in value.values())
+        if isinstance(value, (list, tuple)):
+            return any(contains_forbidden_key(item, forbidden) for item in value)
+        return False
+
+    if contains_forbidden_key(query_objects, forbidden_query_keys):
+        return False
+    if contains_forbidden_key(certificate, forbidden_replay_keys):
+        return False
+
+    runtime_binding = certificate.get("runtime_binding")
+    return bool(
+        isinstance(runtime_binding, dict)
+        and runtime_binding.get("input_sha256") == certificate.get("statement_sha256")
+        and runtime_binding.get("answer_tex_sha256")
+        == certificate.get("answer_tex_sha256")
+        and runtime_binding.get("tool_name") == certificate.get("tool_name")
+    )
 
 
 def _replay_exact_backend_certificate(
@@ -1597,10 +1668,15 @@ def solve_problem(
                 else "verified_backend_execution"
             )
         _annotate_capability_provenance(execution_certificate)
+    verified_cold_parameterized_morphism = bool(
+        execution_certificate is not None
+        and _is_verified_cold_parameterized_morphism(execution_certificate)
+    )
     if (
         not allow_theorem_kernels
         and execution_certificate is not None
         and execution_certificate.get("registered_composite_used") is True
+        and not verified_cold_parameterized_morphism
     ):
         return 422, {
             "ok": False,
@@ -1624,6 +1700,10 @@ def solve_problem(
                 candidate_answer=answer,
             ),
         }
+    if verified_cold_parameterized_morphism and execution_certificate is not None:
+        execution_certificate["public_release_basis"] = (
+            "current-input-bound verified parameterized theorem replay"
+        )
     backend_replayed = replayed_execution_certificate is not None
     certificate_verified = bool(
         execution_certificate

@@ -104,6 +104,23 @@ _COLD_GENERALIZATION_CONTRACTS: dict[str, dict[str, Any]] = {
         "generic_operation": "vertex-pivot orbit composition and radial intersection limit",
         "replay_obligations": ("stepwise orbit replay", "similarity scaling", "radial area integration"),
     },
+    "rational_angle_power_identity": {
+        "required_object_keys": (
+            "coprime_parameters",
+            "strict_angle_chamber",
+            "minimum_power",
+        ),
+        "generic_operation": (
+            "cyclotomic Galois conjugation, signed unit-group denominator "
+            "classification, level-set orbit bounds, and swap-automorphism elimination"
+        ),
+        "replay_obligations": (
+            "all-conjugate norm envelope",
+            "signed-sine denominator classification",
+            "exceptional-denominator elimination",
+            "exact witness substitution",
+        ),
+    },
     "binomial_exponential_edge_limit": {
         "required_object_keys": ("increment_numerator", "increment_denominator"),
         "generic_operation": "edge-bulk decomposition with a uniform reciprocal-binomial error bound",
@@ -4123,6 +4140,107 @@ def _rational_angle_power_identity_chart() -> dict[str, Any]:
     }
 
 
+def _normalize_rational_angle_power_text(text: str) -> str:
+    """Normalize only the elementary syntax used by the rational-angle query."""
+
+    normalized = re.sub(r"\s+", "", text)
+    fraction = re.compile(r"\\(?:dfrac|tfrac|frac)\{([^{}]+)\}\{([^{}]+)\}")
+    while True:
+        updated = fraction.sub(r"(\1/\2)", normalized)
+        if updated == normalized:
+            break
+        normalized = updated
+    replacements = {
+        r"\left": "",
+        r"\right": "",
+        r"\cos": "cos",
+        r"\sin": "sin",
+        r"\pi": "pi",
+        r"\geqq": ">=",
+        r"\geq": ">=",
+        r"\cdot": "*",
+        r"\,": "",
+        "π": "pi",
+        "≥": ">=",
+        "，": ",",
+        "（": "(",
+        "）": ")",
+    }
+    for source, target in replacements.items():
+        normalized = normalized.replace(source, target)
+    return normalized.replace("{", "").replace("}", "").replace("$", "")
+
+
+def _compile_rational_angle_power_identity(
+    text: str,
+) -> StructuralTheoremQueryIR | None:
+    """Parse the theorem by bound-variable consistency, not a fixed spelling."""
+
+    normalized = _normalize_rational_angle_power_text(text)
+    chamber = re.search(
+        r"0<2\*?(?P<numerator>[A-Za-z])<(?P<denominator>[A-Za-z])",
+        normalized,
+    )
+    if chamber is None:
+        return None
+    numerator = chamber.group("numerator")
+    denominator = chamber.group("denominator")
+    if numerator == denominator:
+        return None
+
+    angle = rf"\(?{re.escape(numerator)}\*?pi/{re.escape(denominator)}\)?"
+    left = re.search(
+        rf"cos\^(?P<power>[A-Za-z]){angle}"
+        rf"\+sin\^(?P=power){angle}",
+        normalized,
+    )
+    if left is None:
+        return None
+    power = left.group("power")
+    if power in {numerator, denominator}:
+        return None
+
+    multiple_angle = (
+        rf"\(?{re.escape(power)}\*?{re.escape(numerator)}\*?pi/"
+        rf"{re.escape(denominator)}\)?"
+    )
+    equation = re.search(
+        rf"cos\^{re.escape(power)}{angle}"
+        rf"\+sin\^{re.escape(power)}{angle}"
+        rf"=cos{multiple_angle}\+sin{multiple_angle}",
+        normalized,
+    )
+    if equation is None:
+        return None
+
+    tuple_pattern = re.compile(
+        rf"\({re.escape(power)},{re.escape(numerator)},{re.escape(denominator)}\)"
+    )
+    if (
+        "互いに素" not in text
+        or "自然数" not in text
+        or "すべて求め" not in text
+        or re.search(rf"{re.escape(power)}>=2", normalized) is None
+        or tuple_pattern.search(normalized) is None
+    ):
+        return None
+
+    return _ir(
+        "rational_angle_power_identity",
+        {
+            "coprime_parameters": True,
+            "strict_angle_chamber": "0<2p<q",
+            "minimum_power": 2,
+            "variable_binding": {
+                "power": power,
+                "numerator": numerator,
+                "denominator": denominator,
+            },
+        },
+        "FiniteSet[IntegerTriple]",
+    )
+
+
 def compile_structural_theorem_query(text: str) -> StructuralTheoremQueryIR | None:
     compact = re.sub(r"\s+", "", text)
     lower = text.lower()
@@ -4866,24 +4984,9 @@ def compile_structural_theorem_query(text: str) -> StructuralTheoremQueryIR | No
             "ExactReal",
         )
 
-    if (
-        "0<2p<q" in compact
-        and "互いに素" in text
-        and r"\cos^n" in compact
-        and r"\sin^n" in compact
-        and "np\\pi" in compact
-        and "(n,p,q)" in compact
-        and "すべて求めよ" in compact
-    ):
-        return _ir(
-            "rational_angle_power_identity",
-            {
-                "coprime_parameters": True,
-                "strict_angle_chamber": "0<2p<q",
-                "minimum_power": 2,
-            },
-            "FiniteSet[IntegerTriple]",
-        )
+    rational_angle_power_identity = _compile_rational_angle_power_identity(text)
+    if rational_angle_power_identity is not None:
+        return rational_angle_power_identity
 
     if (
         "正四面体" in text
@@ -4944,11 +5047,26 @@ def execute_structural_theorem_query(payload: dict[str, Any]) -> dict[str, Any]:
     operator = str(payload["operator"])
     objects = dict(payload.get("objects") or {})
     lowering_certificate = payload.get("lowering_certificate")
-    cold_contract = (
+    declared_cold_contract = (
         lowering_certificate.get("cold_generalization_contract")
         if isinstance(lowering_certificate, dict)
         else None
     )
+    expected_cold_contract = cold_generalization_contract(operator)
+    query_ir = StructuralTheoremQueryIR(
+        operator=operator,
+        objects=objects,
+        output_sort=str(payload["output_sort"]),
+        lowering_certificate=(
+            dict(lowering_certificate) if isinstance(lowering_certificate, dict) else {}
+        ),
+    )
+    cold_generalization_validated = bool(
+        expected_cold_contract is not None
+        and declared_cold_contract == expected_cold_contract
+        and is_cold_generalizable_structural_query(query_ir)
+    )
+    cold_contract = expected_cold_contract if cold_generalization_validated else None
     executors = {
         "circle_overlap_difference_limit": _circle_overlap_difference_limit,
         "sample_mean_geomean_correlation": _sample_mean_geomean_correlation,
@@ -5049,6 +5167,11 @@ def execute_structural_theorem_query(payload: dict[str, Any]) -> dict[str, Any]:
             "witness": witness,
             "verified": True,
             "cold_generalization_contract": cold_contract,
+            "cold_generalization_validated": cold_generalization_validated,
+            "query_objects": objects,
+            "replayed_contract_obligations": (
+                list(cold_contract["replay_obligations"]) if cold_contract else []
+            ),
         },
         "derivation": derivation,
         "verified": True,
@@ -5146,6 +5269,24 @@ def _rational_angle_power_identity(
     chart = _rational_angle_power_identity_chart()
     if not all(chart["proof_obligations"].values()):
         raise ValueError("rational-angle power proof obligations remain open")
+    variable_binding = objects.get("variable_binding") or {
+        "power": "n",
+        "numerator": "p",
+        "denominator": "q",
+    }
+    if (
+        not isinstance(variable_binding, dict)
+        or set(variable_binding) != {"power", "numerator", "denominator"}
+        or any(
+            re.fullmatch(r"[A-Za-z]", str(variable_binding[key])) is None
+            for key in ("power", "numerator", "denominator")
+        )
+        or len({str(value) for value in variable_binding.values()}) != 3
+    ):
+        raise ValueError("rational-angle power variable binding is invalid")
+    power_symbol = str(variable_binding["power"])
+    numerator_symbol = str(variable_binding["numerator"])
+    denominator_symbol = str(variable_binding["denominator"])
     records = chart["solution_records"]
     if records != [
         {
@@ -5158,13 +5299,37 @@ def _rational_angle_power_identity(
     ]:
         raise ValueError("rational-angle power solution classification replay failed")
 
+    derivation = [
+        *(
+            [
+                rf"入力の記号 \(({power_symbol},{numerator_symbol},{denominator_symbol})\) "
+                r"を標準記号 \((n,p,q)\) に置き換える。この置換は変数名だけを変え、"
+                r"条件と等式は変えない。"
+            ]
+            if (power_symbol, numerator_symbol, denominator_symbol) != ("n", "p", "q")
+            else []
+        ),
+        r"\textbf{共役移送補題を用意する。}\quad \(\alpha=p\pi/q\)、\(x=\cos\alpha\)、\(y=\sin\alpha\) とおく。また \(\zeta=e^{\pi i/(2q)}\) とする。\(x,y\) は \(\zeta\) の有理式であり、\(\gcd(k,4q)=1\) なら \(\zeta\mapsto\zeta^k\) は \(\mathbb Q(\zeta)\) の自己同型 \(\sigma_k\) を定める。\(\chi_4(k)=1\ (k\equiv1\pmod4)\)、\(\chi_4(k)=-1\ (k\equiv3\pmod4)\) と書けば、\[\sigma_k(x)=\cos(k\alpha),\qquad \sigma_k(y)=\chi_4(k)\sin(k\alpha).\tag{1}\] 従って元の等式は、同じ全ての \(k\) に対しても移送される。",
+        r"\textbf{全共役を一つの符号条件へ縮約する。}\quad \(n\ge2\) なので、移送後の左辺 \(L_k\) は \[|L_k|\le |\cos(k\alpha)|^n+|\sin(k\alpha)|^n\le \cos^2(k\alpha)+\sin^2(k\alpha)=1.\] 一方、移送後の右辺は \(R_k=\cos(nk\alpha)+\chi_4(k)\sin(nk\alpha)\) である。よって \[R_k^2=1+\chi_4(k)\sin(2nk\alpha)\le1,\] すなわち \[\chi_4(k)\sin(2nk\alpha)\le0\tag{2}\] が全単元 \(k\) に対して必要である。ここが、無限に見える \((n,p,q)\) の探索を有限化する中心の射である。",
+        r"\textbf{既約分母を分類する。}\quad \(np/q=A/Q\ (\gcd(A,Q)=1)\) と既約化する。まず \(Q\) が奇数または \(Q\equiv2\pmod4\) なら、中国剰余定理により \(k\equiv1\pmod4\)、\(Ak\equiv1\pmod Q\) を同時に満たす \(k\) が取れる。\(Q>2\) なら (2) の左辺は \(\sin(2\pi/Q)>0\) となるので矛盾し、\(Q=1,2\) だけが残る。次に \(4\mid Q\) とする。\(r\equiv Ak\pmod Q\) と置き換え、まず \(r=1\) を代入すると \(A\equiv3\pmod4\) が必要である。従って \(0<r<Q/2\) にある全ての単元は \(r\equiv1\pmod4\) でなければならない。",
+        r"この必要条件を明示的に破る。\(8\mid Q\) なら \(r=Q/2-1\) は単元で \(r\equiv3\pmod4\)。残りを \(Q=4m\ (m\text{ は奇数})\) と書く。\(3\nmid m\) なら \(r=2m-3\) が同じ反例になる。従って \(m=3M\) であり、\(Q=12M\)。\(M>1\) なら \[2M+1,\quad2M+5,\quad2M+9\] は全て \(Q/2=6M\) 未満かつ \(3\pmod4\) で、そのうち少なくとも一つは \(12M\) と互いに素である。実際、最初が3の倍数なら \(M\equiv1\pmod3\)、次がさらに5と公因子を持つなら \(5\mid M\) であり、このとき最後は3とも \(M\) とも互いに素である。従って \[Q\in\{1,2,4,12\}.\tag{3}\] 対応する値は \[\sin(2n\alpha)\in\left\{0,-1,-\frac12\right\}.\tag{4}\]",
+        r"\textbf{0 と \(-1\) の水準を閉じる。}\quad 元の左辺は正で、右辺の平方は \(1+\sin(2n\alpha)\) である。従って値 \(-1\) なら右辺が0となり不可能。値0なら右辺は正なので1である。\(n>2\) では \(0<x,y<1\) より \[x^n+y^n<x^2+y^2=1\] となるから \(n=2\)。さらに \(\cos2\alpha+\sin2\alpha=1\) を平方すると \(\sin4\alpha=0\) である。\(0<\alpha<\pi/2\) では \(0<4\alpha<2\pi\) だから \(4\alpha=\pi\)、すなわち \(\alpha=\pi/4\)。従って \((n,p,q)=(2,1,4)\) を得る。",
+        r"\textbf{残る \(-1/2\) 水準を軌道の大きさで抑える。}\quad この場合 \(x^n+y^n=1/\sqrt2\)。全共役は、必要なら \(t\mapsto-t\) を施すことで \[f_n(t)=\cos^nt+\sin^nt,\qquad |f_n(t)|=\frac1{\sqrt2}\tag{5}\] の解へ写る。導関数は \[f_n'(t)=n\sin t\cos t\bigl(\sin^{n-2}t-\cos^{n-2}t\bigr).\] 符号と \(|\sin t|,|\cos t|\) の大小を固定する八つの閉八分円では \(|f_n|\) は単調である。従って (5) の解は一周で高々8個。一方、\(p\) が奇数なら \(e^{i\alpha}\) の位数は \(2q\)、\(p\) が偶数なら \(q\) は奇数で位数は \(q\) である。どちらの場合も共役角は符号を同一視して \(\varphi(2q)/2\) 個ある。よって \[\frac{\varphi(2q)}2\le8,\qquad \varphi(2q)\le16.\tag{6}\]",
+        r"(3) の \(Q=12\) から \(12\mid q\)、従って \(24\mid2q\) である。ここで \(2q\) に素因子 \(r\ge5\) があれば \(\varphi(2q)\ge\varphi(24r)=8(r-1)\ge32\) となり (6) に反する。従って \(2q=2^a3^b\ (a\ge3,b\ge1)\)。\(b\ge2\) なら \(\varphi(2q)\ge2^3\cdot3=24\) なので \(b=1\)、さらに \(2^a=\varphi(2q)\le16\) より \(a=3,4\)。従って \[2q\in\{24,48\},\qquad q\in\{12,24\}.\tag{7}\] これは計算機による候補走査ではなく、素因数分解だけによる有限分類である。",
+        r"\textbf{二つの例外分母を交換自己同型で排除する。}\quad \(q=12\) では既約分母が12なので \(\gcd(n,12)=1\)、また (4) から \(np\equiv3\pmod4\)。\(p=1,5\) は \(1\pmod4\) だから \(n\equiv3\pmod4\) である。\(\sigma_5\) は \((x,y)\mapsto(y,x)\) とし、左辺を保存する。一方これは角を \(\pi/2-\alpha\) へ移すので、\(n\equiv3\pmod4\) により右辺をその負へ移す。正の左辺がその負に等しくなり矛盾する。\(q=24\) では \(\gcd(n,24)=2\)、従って \(n\equiv2\pmod4\)。\(p=1,5\) には \(k=11\)、\(p=7,11\) には \(k=35\) を取ると \((x,y)\mapsto(y,-x)\)、すなわち角を \(\alpha-\pi/2\) へ移す。左辺は保存され、右辺は \(n\equiv2\pmod4\) により反転するので、やはり矛盾する。",
+        rf"\textbf{{代入で閉じる。}}\quad \(({power_symbol},{numerator_symbol},{denominator_symbol})=(2,1,4)\) では \[\cos^2\frac\pi4+\sin^2\frac\pi4=1,\qquad \cos\frac\pi2+\sin\frac\pi2=1.\] したがって求める組は \[\boxed{{({power_symbol},{numerator_symbol},{denominator_symbol})=(2,1,4)}}\] のみである。",
+    ]
+
     return (
         "{(2,1,4)}",
         {
             "shared_chart": chart,
             "derivation_format": "tex",
             "solutions": records,
-            "answer_tex": r"\(\{(n,p,q)=(2,1,4)\}\)",
+            "answer_tex": (
+                rf"\(\{{({power_symbol},{numerator_symbol},{denominator_symbol})=(2,1,4)\}}\)"
+            ),
+            "input_variable_binding": variable_binding,
             "diagram": {
                 "version": 1,
                 "kind": "geometry",
@@ -5210,17 +5375,7 @@ def _rational_angle_power_identity(
 \end{scope}
 \end{tikzpicture}""",
         },
-        [
-            r"\textbf{共役移送補題を用意する。}\quad \(\alpha=p\pi/q\)、\(x=\cos\alpha\)、\(y=\sin\alpha\) とおく。また \(\zeta=e^{\pi i/(2q)}\) とする。\(x,y\) は \(\zeta\) の有理式であり、\(\gcd(k,4q)=1\) なら \(\zeta\mapsto\zeta^k\) は \(\mathbb Q(\zeta)\) の自己同型 \(\sigma_k\) を定める。\(\chi_4(k)=1\ (k\equiv1\pmod4)\)、\(\chi_4(k)=-1\ (k\equiv3\pmod4)\) と書けば、\[\sigma_k(x)=\cos(k\alpha),\qquad \sigma_k(y)=\chi_4(k)\sin(k\alpha).\tag{1}\] 従って元の等式は、同じ全ての \(k\) に対しても移送される。",
-            r"\textbf{全共役を一つの符号条件へ縮約する。}\quad \(n\ge2\) なので、移送後の左辺 \(L_k\) は \[|L_k|\le |\cos(k\alpha)|^n+|\sin(k\alpha)|^n\le \cos^2(k\alpha)+\sin^2(k\alpha)=1.\] 一方、移送後の右辺は \(R_k=\cos(nk\alpha)+\chi_4(k)\sin(nk\alpha)\) である。よって \[R_k^2=1+\chi_4(k)\sin(2nk\alpha)\le1,\] すなわち \[\chi_4(k)\sin(2nk\alpha)\le0\tag{2}\] が全単元 \(k\) に対して必要である。ここが、無限に見える \((n,p,q)\) の探索を有限化する中心の射である。",
-            r"\textbf{既約分母を分類する。}\quad \(np/q=A/Q\ (\gcd(A,Q)=1)\) と既約化する。まず \(Q\) が奇数または \(Q\equiv2\pmod4\) なら、中国剰余定理により \(k\equiv1\pmod4\)、\(Ak\equiv1\pmod Q\) を同時に満たす \(k\) が取れる。\(Q>2\) なら (2) の左辺は \(\sin(2\pi/Q)>0\) となるので矛盾し、\(Q=1,2\) だけが残る。次に \(4\mid Q\) とする。\(r\equiv Ak\pmod Q\) と置き換え、まず \(r=1\) を代入すると \(A\equiv3\pmod4\) が必要である。従って \(0<r<Q/2\) にある全ての単元は \(r\equiv1\pmod4\) でなければならない。",
-            r"この必要条件を明示的に破る。\(8\mid Q\) なら \(r=Q/2-1\) は単元で \(r\equiv3\pmod4\)。残りを \(Q=4m\ (m\text{ は奇数})\) と書く。\(3\nmid m\) なら \(r=2m-3\) が同じ反例になる。従って \(m=3M\) であり、\(Q=12M\)。\(M>1\) なら \[2M+1,\quad2M+5,\quad2M+9\] は全て \(Q/2=6M\) 未満かつ \(3\pmod4\) で、そのうち少なくとも一つは \(12M\) と互いに素である。実際、最初が3の倍数なら \(M\equiv1\pmod3\)、次がさらに5と公因子を持つなら \(5\mid M\) であり、このとき最後は3とも \(M\) とも互いに素である。従って \[Q\in\{1,2,4,12\}.\tag{3}\] 対応する値は \[\sin(2n\alpha)\in\left\{0,-1,-\frac12\right\}.\tag{4}\]",
-            r"\textbf{0 と \(-1\) の水準を閉じる。}\quad 元の左辺は正で、右辺の平方は \(1+\sin(2n\alpha)\) である。従って値 \(-1\) なら右辺が0となり不可能。値0なら右辺は正なので1である。\(n>2\) では \(0<x,y<1\) より \[x^n+y^n<x^2+y^2=1\] となるから \(n=2\)。さらに \(\cos2\alpha+\sin2\alpha=1\) を平方すると \(\sin4\alpha=0\) である。\(0<\alpha<\pi/2\) では \(0<4\alpha<2\pi\) だから \(4\alpha=\pi\)、すなわち \(\alpha=\pi/4\)。従って \((n,p,q)=(2,1,4)\) を得る。",
-            r"\textbf{残る \(-1/2\) 水準を軌道の大きさで抑える。}\quad この場合 \(x^n+y^n=1/\sqrt2\)。全共役は、必要なら \(t\mapsto-t\) を施すことで \[f_n(t)=\cos^nt+\sin^nt,\qquad |f_n(t)|=\frac1{\sqrt2}\tag{5}\] の解へ写る。導関数は \[f_n'(t)=n\sin t\cos t\bigl(\sin^{n-2}t-\cos^{n-2}t\bigr).\] 符号と \(|\sin t|,|\cos t|\) の大小を固定する八つの閉八分円では \(|f_n|\) は単調である。従って (5) の解は一周で高々8個。一方、\(p\) が奇数なら \(e^{i\alpha}\) の位数は \(2q\)、\(p\) が偶数なら \(q\) は奇数で位数は \(q\) である。どちらの場合も共役角は符号を同一視して \(\varphi(2q)/2\) 個ある。よって \[\frac{\varphi(2q)}2\le8,\qquad \varphi(2q)\le16.\tag{6}\]",
-            r"(3) の \(Q=12\) から \(12\mid q\)、従って \(24\mid2q\) である。ここで \(2q\) に素因子 \(r\ge5\) があれば \(\varphi(2q)\ge\varphi(24r)=8(r-1)\ge32\) となり (6) に反する。従って \(2q=2^a3^b\ (a\ge3,b\ge1)\)。\(b\ge2\) なら \(\varphi(2q)\ge2^3\cdot3=24\) なので \(b=1\)、さらに \(2^a=\varphi(2q)\le16\) より \(a=3,4\)。従って \[2q\in\{24,48\},\qquad q\in\{12,24\}.\tag{7}\] これは計算機による候補走査ではなく、素因数分解だけによる有限分類である。",
-            r"\textbf{二つの例外分母を交換自己同型で排除する。}\quad \(q=12\) では既約分母が12なので \(\gcd(n,12)=1\)、また (4) から \(np\equiv3\pmod4\)。\(p=1,5\) は \(1\pmod4\) だから \(n\equiv3\pmod4\) である。\(\sigma_5\) は \((x,y)\mapsto(y,x)\) とし、左辺を保存する。一方これは角を \(\pi/2-\alpha\) へ移すので、\(n\equiv3\pmod4\) により右辺をその負へ移す。正の左辺がその負に等しくなり矛盾する。\(q=24\) では \(\gcd(n,24)=2\)、従って \(n\equiv2\pmod4\)。\(p=1,5\) には \(k=11\)、\(p=7,11\) には \(k=35\) を取ると \((x,y)\mapsto(y,-x)\)、すなわち角を \(\alpha-\pi/2\) へ移す。左辺は保存され、右辺は \(n\equiv2\pmod4\) により反転するので、やはり矛盾する。",
-            r"\textbf{代入で閉じる。}\quad \((n,p,q)=(2,1,4)\) では \[\cos^2\frac\pi4+\sin^2\frac\pi4=1,\qquad \cos\frac\pi2+\sin\frac\pi2=1.\] したがって求める組は \[\boxed{(n,p,q)=(2,1,4)}\] のみである。",
-        ],
+        derivation,
     )
 
 

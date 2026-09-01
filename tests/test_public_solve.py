@@ -333,7 +333,7 @@ class PublicSolveTests(unittest.TestCase):
                 self.assertEqual(status, 200)
                 self.assertIn(expected, payload["cards"][0]["answer_tex"])
 
-    def test_public_product_rejects_a_registered_completed_route(self) -> None:
+    def test_public_product_accepts_a_current_input_bound_theorem_schema(self) -> None:
         problem = (
             r"実数 $\alpha$ が $\sin\alpha+\cos\alpha=\frac{1}{37}$ を満たしているとする。"
             r"$\sin^n\alpha+\cos^n\alpha>\frac{1}{37}$ となる正の整数 $n$ をすべて求めよ。"
@@ -341,9 +341,17 @@ class PublicSolveTests(unittest.TestCase):
 
         status, payload = solve_public_problem(problem)
 
-        self.assertEqual(status, 422)
-        self.assertEqual(payload["generated"], 0)
-        self.assertIn("登録済み", payload["error"])
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        certificate = card["execution_certificate"]
+        self.assertEqual(card["answer_tex"], r"\(\{2, 3, 4, 5, 6, 8, 10, 12\}\)")
+        self.assertTrue(certificate["registered_composite_used"])
+        self.assertFalse(certificate["registered_completed_route_used"])
+        self.assertTrue(certificate["cold_generalization_validated"])
+        self.assertEqual(
+            certificate["public_release_basis"],
+            "current-input-bound verified parameterized theorem replay",
+        )
 
     def test_public_product_solves_an_unregistered_exact_integral(self) -> None:
         status, payload = solve_public_problem(r"$\int_0^1 x^3\,dx$ を求めよ。")
@@ -360,7 +368,7 @@ class PublicSolveTests(unittest.TestCase):
             r"\cos\frac{np\pi}{q}+\sin\frac{np\pi}{q}$ が成り立つ組 $(n,p,q)$ をすべて求めよ．"
         )
 
-        status, payload = solve_problem(problem)
+        status, payload = solve_public_problem(problem)
 
         self.assertEqual(status, 200)
         card = payload["cards"][0]
@@ -378,6 +386,38 @@ class PublicSolveTests(unittest.TestCase):
         self.assertIn("証明義務", document)
         self.assertIn("O8", document)
         self.assertIn(card["verification"]["certificate_sha256"], document)
+
+    def test_rational_angle_power_identity_accepts_ascii_and_alpha_renaming(self) -> None:
+        problem = (
+            "0<2a<b を満たす互いに素な自然数 a,b と自然数 m>=2 に対し、"
+            "cos^m(a*pi/b)+sin^m(a*pi/b)=cos(m*a*pi/b)+sin(m*a*pi/b) "
+            "が成り立つ組 (m,a,b) をすべて求めよ。"
+        )
+
+        status, payload = solve_public_problem(problem)
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assertEqual(card["answer_tex"], r"\(\{(m,a,b)=(2,1,4)\}\)")
+        certificate = card["execution_certificate"]
+        self.assertEqual(
+            certificate["query_objects"]["variable_binding"],
+            {"power": "m", "numerator": "a", "denominator": "b"},
+        )
+        self.assertTrue(certificate["cold_generalization_validated"])
+        self.assertIn("標準記号", card["solution_tex"])
+
+    def test_rational_angle_power_identity_rejects_inconsistent_binders(self) -> None:
+        problem = (
+            "0<2a<b を満たす互いに素な自然数 a,b と自然数 m>=2 に対し、"
+            "cos^m(a*pi/b)+sin^m(a*pi/b)=cos(k*a*pi/b)+sin(k*a*pi/b) "
+            "が成り立つ組 (m,a,b) をすべて求めよ。"
+        )
+
+        status, payload = solve_public_problem(problem)
+
+        self.assertEqual(status, 422)
+        self.assertEqual(payload["generated"], 0)
 
     def test_rational_angle_reciprocal_power_is_solved_by_cyclotomic_trace(self) -> None:
         problem = (
@@ -455,7 +495,7 @@ class PublicSolveTests(unittest.TestCase):
             "S_nとするとき，lim S_nを求めよ。"
         )
 
-        status, payload = solve_problem(problem)
+        status, payload = solve_public_problem(problem)
 
         self.assertEqual(status, 200)
         card = payload["cards"][0]
@@ -470,6 +510,20 @@ class PublicSolveTests(unittest.TestCase):
         self.assertIn("arc[start angle", card["solution_document_tex"])
         for index in range(3, 8):
             self.assertIn(f"n={index}", card["solution_document_tex"])
+
+    def test_regular_polygon_roll_does_not_infer_missing_alignment(self) -> None:
+        problem = (
+            "正の整数 n>=3 に対し、外接円の半径が1である二つの正n角形を考える。"
+            "一方を固定し、他方を一辺を共有する状態から、接点が常に両者の頂点となるように、"
+            "固定した正n角形の外側を滑ることなく一周させる。"
+            "動く正n角形が通過する部分をD_nとする。D_3,D_4,...,D_nの共通部分の面積を"
+            "S_nとするとき、lim S_nを求め、運動と通過領域を図示せよ。"
+        )
+
+        status, payload = solve_public_problem(problem)
+
+        self.assertEqual(status, 422)
+        self.assertEqual(payload["generated"], 0)
 
     def test_solution_tex_normalizes_extracted_list_environments(self) -> None:
         status, payload = solve_problem(
