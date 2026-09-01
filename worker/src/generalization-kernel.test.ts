@@ -118,6 +118,40 @@ test('the language query is wired into a typed Worker goal', () => {
   assert.deepEqual(proof.query_sorts, ['Proof'])
 })
 
+test('grounds exact quadratic and second-moment structures and joins them by trace pairing', () => {
+  const parents = [
+    {
+      id: 'quadratic-parent',
+      statement: String.raw`二次形式 \(q(x,y)=2x^2+3xy+5y^2\) を考える。`,
+    },
+    {
+      id: 'moment-parent',
+      statement: String.raw`確率変数 \(X,Y\) は E[X]=1, E[Y]=-2, Var(X)=3, Var(Y)=4, Cov(X,Y)=0 を満たす。`,
+    },
+  ]
+  const formGraph = buildSemanticHypergraph(parents[0])
+  const momentGraph = buildSemanticHypergraph(parents[1])
+  assert.ok(formGraph.root_sorts.includes('SymmetricBilinearForm'))
+  assert.equal(formGraph.root_sorts.includes('SecondMomentTensor'), false)
+  assert.ok(momentGraph.root_sorts.includes('SecondMomentTensor'))
+  assert.equal(momentGraph.root_sorts.includes('SymmetricBilinearForm'), false)
+
+  const result = generalizeParents(parents, 3, 2_000)
+  assert.equal(result.certificate.target_sort, 'Scalar')
+  assert.deepEqual(result.certificate.roadmap.map(step => step.morphism), ['TracePairing'])
+  assert.deepEqual(new Set(result.certificate.roadmap[0].parent_ids), new Set(['quadratic-parent', 'moment-parent']))
+})
+
+test('does not ground the quadratic-expectation bridge from keywords alone', () => {
+  const result = generalizeParents([
+    { id: 'words-only', statement: '二次形式と期待値の関係について考察せよ。' },
+    { id: 'unrelated', statement: '整数 n の性質を調べよ。' },
+  ], 3, 1_000)
+  assert.equal(result.graphs[0].root_sorts.includes('SymmetricBilinearForm'), false)
+  assert.equal(result.graphs[0].root_sorts.includes('SecondMomentTensor'), false)
+  assert.equal(result.certificate.roadmap.some(step => step.morphism === 'TracePairing'), false)
+})
+
 test('grounds an executable constraint IR only after exact query-directed lowering succeeds', () => {
   const solvable = buildSemanticHypergraph({
     id: 'fresh-linear-ir',

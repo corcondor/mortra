@@ -4,15 +4,15 @@ import type { DiscoveryParent } from './parent-conditioned-discovery'
 import type { ExecutableFusionCard } from './executable-fusion'
 import { runtimeSynthesisCertificate } from './execution-certificate'
 
-type Q = { n: bigint; d: bigint }
+export type Q = { n: bigint; d: bigint }
 
-type QuadraticForm = {
+export type QuadraticForm = {
   parentId: string
   variables: readonly [string, string]
   coefficients: readonly [Q, Q, Q]
 }
 
-type SecondMomentData = {
+export type SecondMomentData = {
   parentId: string
   variables: readonly [string, string]
   matrix: readonly [readonly [Q, Q], readonly [Q, Q]]
@@ -25,6 +25,17 @@ export type RuntimeQuadraticExpectationGeneration = {
   reason: string
   cards: ExecutableFusionCard[]
   hypothesesEvaluated: number
+}
+
+export type QuadraticExpectationParentSemantics = {
+  quadraticForm: QuadraticForm | null
+  secondMoments: SecondMomentData | null
+}
+
+export type QuadraticExpectationSemanticObject = {
+  sort: 'SymmetricBilinearForm' | 'SecondMomentTensor'
+  surface: string
+  canonical: string
 }
 
 const ZERO: Q = { n: 0n, d: 1n }
@@ -220,6 +231,47 @@ function parseMomentData(parent: DiscoveryParent): SecondMomentData | null {
       `\\operatorname{Cov}(${x},${y})=${tex(covariance)}`,
     source: 'mean-covariance',
   }
+}
+
+/**
+ * Exact, parent-local elaboration shared by generation and the generalization
+ * kernel. Merely mentioning a quadratic form or expectation is insufficient:
+ * a complete coefficient vector or positive-semidefinite moment matrix must be
+ * reconstructed from the current statement.
+ */
+export function inspectQuadraticExpectationParent(
+  parent: DiscoveryParent,
+): QuadraticExpectationParentSemantics {
+  return {
+    quadraticForm: parseQuadraticForm(parent),
+    secondMoments: parseMomentData(parent),
+  }
+}
+
+export function extractQuadraticExpectationSemanticObjects(
+  parent: DiscoveryParent,
+): QuadraticExpectationSemanticObject[] {
+  const inspected = inspectQuadraticExpectationParent(parent)
+  const objects: QuadraticExpectationSemanticObject[] = []
+  if (inspected.quadraticForm) {
+    const form = inspected.quadraticForm
+    const coefficients = form.coefficients.map(format).join(',')
+    objects.push({
+      sort: 'SymmetricBilinearForm',
+      surface: `${form.variables.join(',')}:${coefficients}`,
+      canonical: `SymmetricBilinearForm[${form.variables.join(',')};${coefficients}]`,
+    })
+  }
+  if (inspected.secondMoments) {
+    const moments = inspected.secondMoments
+    const entries = moments.matrix.flatMap(row => row.map(format)).join(',')
+    objects.push({
+      sort: 'SecondMomentTensor',
+      surface: moments.conditionsTex,
+      canonical: `SecondMomentTensor[${moments.variables.join(',')};${entries}]`,
+    })
+  }
+  return objects
 }
 
 function expectation(coefficients: readonly [Q, Q, Q], moments: SecondMomentData['matrix']): Q {
@@ -524,8 +576,9 @@ export function synthesizeRuntimeQuadraticExpectationProblems(
   if (parents.some(parent => parent.id === undefined) || new Set(parents.map(parent => String(parent.id))).size !== 2) {
     return { applicable: false, reason: 'both current parents require distinct stable ids', cards: [], hypothesesEvaluated: 0 }
   }
-  const forms = parents.map(parseQuadraticForm)
-  const momentSets = parents.map(parseMomentData)
+  const inspected = parents.map(inspectQuadraticExpectationParent)
+  const forms = inspected.map(item => item.quadraticForm)
+  const momentSets = inspected.map(item => item.secondMoments)
   const form = forms.find((value): value is QuadraticForm => value !== null)
   const moments = momentSets.find((value): value is SecondMomentData => value !== null)
   if (!form || !moments || form.parentId === moments.parentId) {

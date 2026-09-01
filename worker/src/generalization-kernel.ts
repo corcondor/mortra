@@ -11,6 +11,7 @@ import { extractPolynomial } from './polynomial-root-fusion'
 import { extractSymbolicPowerRelation } from './symbolic-power-relation'
 import { lowerLinearPredicateStatement } from './linear-predicate-lowerer'
 import { verifyLinearInvariantCertificate } from './exact-linear-invariant'
+import { extractQuadraticExpectationSemanticObjects } from './runtime-quadratic-expectation-generation'
 import { VERIFIED_DOMAIN_EXTENSIONS } from './verified-domain-extensions'
 import {
   dischargeProofObligations,
@@ -331,6 +332,13 @@ const CORE_HYPER_MORPHISM_BASIS: readonly HyperMorphismSchema[] = [
     allows_cross_parent_fusion: false,
   },
   {
+    name: 'TracePairing',
+    sources: ['SymmetricBilinearForm', 'SecondMomentTensor'],
+    target: 'Scalar',
+    preserves: ['exact-rational-value', 'parent-provenance'],
+    backend: ['exact-rational-matrix-arithmetic', 'direct-expansion-replay'],
+  },
+  {
     name: 'MapOrbitEvaluation',
     sources: ['RationalSelfMap', 'FiniteAlgebraicOrbit'],
     target: 'FiniteFamily',
@@ -565,6 +573,9 @@ export function buildSemanticHypergraph(parent: DiscoveryParent): SemanticHyperg
   const polynomial = extractPolynomial(parent, 0)
   if (polynomial) {
     addGroundedObject('Polynomial', polynomial.source, `Polynomial[${hash(polynomial.normalized, 16)}]`)
+  }
+  for (const object of extractQuadraticExpectationSemanticObjects(parent)) {
+    addGroundedObject(object.sort, object.surface, object.canonical)
   }
   const linearConstraint = lowerLinearPredicateStatement(text)
   if (linearConstraint.status === 'lowered' &&

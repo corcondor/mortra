@@ -31,6 +31,32 @@ test('does not manufacture a full-provenance goal when no typed bridge exists', 
   assert.ok(result.terms.every(term => term.program.kind === 'parent' || term.program.args.length > 0))
 })
 
+test('enumerates the exact quadratic-expectation contraction with both parents in provenance', () => {
+  const parents = [
+    {
+      id: 'fresh-form',
+      statement: String.raw`二次形式 \(h(u,v)=7u^2-4uv+3v^2\) を考える。`,
+    },
+    {
+      id: 'fresh-moments',
+      statement: String.raw`確率変数 \(U,V\) は E[U]=2, E[V]=-1, Var(U)=5, Var(V)=2, Cov(U,V)=1 を満たす。`,
+    },
+  ]
+  const generalized = generalizeParents(parents, 3, 2_000)
+  const result = enumerateTypedTerms(generalized.graphs, {
+    maxDepth: 2,
+    maxStates: 500,
+    goalSorts: ['Scalar'],
+    terminalMorphismsBySort: { Scalar: ['TracePairing'] },
+  })
+  const goal = result.goals.find(term =>
+    term.program.kind === 'apply' && term.program.morphism === 'TracePairing')
+  assert.ok(goal)
+  assert.deepEqual(goal.parentIds, ['fresh-form', 'fresh-moments'])
+  assert.equal(goal.program.kind, 'apply')
+  assert.equal(goal.program.kind === 'apply' && goal.program.args.length, 2)
+})
+
 test('does not certify a given assumption as the requested proof', () => {
   const graph = buildSemanticHypergraph({
     id: 'non-vacuous-proof',
