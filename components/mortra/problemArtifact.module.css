@@ -395,6 +395,10 @@
   overflow-x: auto;
 }
 
+.stateMobileFlow {
+  display: none;
+}
+
 .variationWrap {
   overflow-x: auto;
   padding: 34px 20px 42px;
@@ -781,6 +785,98 @@
 
   .morphismStep:nth-child(even) i {
     display: none;
+  }
+
+  .stateFigure {
+    min-height: 0;
+    padding: 28px 18px;
+    overflow: visible;
+  }
+
+  .stateSvg {
+    display: none;
+  }
+
+  .stateMobileFlow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .stateMobileItem {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .stateMobileNode {
+    display: grid;
+    min-width: 132px;
+    max-width: min(240px, 82vw);
+    min-height: 48px;
+    place-items: center;
+    border: 1px solid #44515c;
+    border-radius: 999px;
+    padding: 9px 22px;
+    color: #eef2f4;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    line-height: 1.45;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+
+  .stateMobileActive {
+    border-color: #31c7df;
+    box-shadow: 0 0 0 2px rgba(49, 199, 223, 0.14);
+  }
+
+  .stateMobileTerminal {
+    border-color: #eef2f4;
+    box-shadow: inset 0 0 0 3px #050708, inset 0 0 0 4px #eef2f4;
+  }
+
+  .stateMobileConnector {
+    position: relative;
+    display: flex;
+    width: min(240px, 82vw);
+    height: 64px;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 8px;
+    color: #8c99a4;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+  }
+
+  .stateMobileConnector span {
+    max-width: calc(50% - 14px);
+    line-height: 1.35;
+    text-align: left;
+    overflow-wrap: anywhere;
+  }
+
+  .stateMobileConnector i {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    width: 1px;
+    height: 42px;
+    background: #64717d;
+    transform: translateX(-50%);
+  }
+
+  .stateMobileConnector i::after {
+    position: absolute;
+    bottom: -1px;
+    left: -4px;
+    width: 0;
+    height: 0;
+    border-top: 7px solid #64717d;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+    content: "";
   }
 
   .calculusIdentity {

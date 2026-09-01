@@ -240,8 +240,18 @@ function stateLabelLines(label: string): string[] {
 
 function StateFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind: 'state' }> }) {
   const fitStateLayout = diagram.states.length <= 3
-  const canvasWidth = diagram.states.length <= 2 ? 360 : diagram.states.length === 3 ? 440 : 760
-  const horizontalInset = fitStateLayout ? 50 : 70
+  const stateLabel = (index: number) => diagramMathToPlainText(diagram.states[index]?.label ?? '')
+  const stateRadiusX = (index: number) => {
+    const longestLine = Math.max(...stateLabelLines(stateLabel(index)).map(line => Array.from(line).length))
+    return Math.max(27, Math.min(74, 13 + longestLine * 6.2))
+  }
+  const maxStateRadiusX = Math.max(27, ...diagram.states.map((_, index) => stateRadiusX(index)))
+  const canvasWidth = diagram.states.length <= 2
+    ? 420
+    : diagram.states.length === 3
+      ? 560
+      : Math.max(760, diagram.states.length * 170)
+  const horizontalInset = maxStateRadiusX + 18
   const stateX = (index: number) => horizontalInset
     + (index * (canvasWidth - 2 * horizontalInset)) / Math.max(1, diagram.states.length - 1)
   const visibleEdges = diagram.transitions.filter(transition => {
@@ -249,8 +259,34 @@ function StateFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind: 'st
     const to = diagram.states.findIndex(state => state.id === transition.to)
     return from >= 0 && to >= 0 && Math.abs(from - to) === 1
   })
+  const forwardTransition = (index: number) => {
+    const state = diagram.states[index]
+    const next = diagram.states[index + 1]
+    return visibleEdges.find(transition => transition.from === state?.id && transition.to === next?.id)
+      ?? visibleEdges.find(transition => transition.from === next?.id && transition.to === state?.id)
+  }
   return (
     <div className={styles.stateFigure} role="img" aria-label={diagram.title}>
+      <div className={styles.stateMobileFlow} aria-hidden="true">
+        {diagram.states.map((state, index) => {
+          const transition = index < diagram.states.length - 1 ? forwardTransition(index) : undefined
+          return (
+            <div className={styles.stateMobileItem} key={`mobile-${state.id}`}>
+              <div
+                className={`${styles.stateMobileNode} ${state.terminal ? styles.stateMobileTerminal : ''} ${state.active ? styles.stateMobileActive : ''}`}
+              >
+                {diagramMathToPlainText(state.label)}
+              </div>
+              {index < diagram.states.length - 1 ? (
+                <div className={styles.stateMobileConnector}>
+                  {transition?.label ? <span>{diagramMathToPlainText(transition.label)}</span> : null}
+                  <i />
+                </div>
+              ) : null}
+            </div>
+          )
+        })}
+      </div>
       <svg
         viewBox={`0 0 ${canvasWidth} 230`}
         className={styles.stateSvg}
@@ -268,10 +304,12 @@ function StateFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind: 'st
           const toX = stateX(to)
           const upper = to > from
           const y = upper ? 84 : 150
+          const fromRadiusX = stateRadiusX(from)
+          const toRadiusX = stateRadiusX(to)
           return (
             <g key={`${transition.from}-${transition.to}-${index}`}>
               <path
-                d={`M ${fromX + (upper ? 18 : -18)} 114 Q ${(fromX + toX) / 2} ${y} ${toX + (upper ? -22 : 22)} 114`}
+                d={`M ${fromX + (upper ? fromRadiusX : -fromRadiusX)} 114 Q ${(fromX + toX) / 2} ${y} ${toX + (upper ? -toRadiusX : toRadiusX)} 114`}
                 className={styles.stateEdge}
                 markerEnd="url(#state-arrow)"
               />
@@ -290,14 +328,15 @@ function StateFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind: 'st
         })}
         {diagram.states.map((state, index) => {
           const cx = stateX(index)
-          const labelLines = stateLabelLines(diagramMathToPlainText(state.label))
+          const labelLines = stateLabelLines(stateLabel(index))
           const multiline = labelLines.length > 1
           return (
             <g key={state.id}>
-              <circle
+              <ellipse
                 cx={cx}
                 cy="114"
-                r={state.active ? (multiline ? 29 : 25) : (multiline ? 27 : 21)}
+                rx={stateRadiusX(index) + (state.active ? 3 : 0)}
+                ry={state.active ? (multiline ? 31 : 27) : (multiline ? 29 : 23)}
                 className={`${styles.stateNode} ${state.terminal ? styles.stateTerminal : ''} ${state.active ? styles.stateActive : ''}`}
               />
               <text
