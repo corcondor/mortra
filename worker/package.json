@@ -7,6 +7,7 @@
     "build": "tsc",
     "start": "node dist/process-job.js",
     "dev": "tsx src/process-job.ts",
+    "pretest": "node ../lib/release/check-public-python-closure.mjs",
     "test": "tsx --test src/*.test.ts",
     "audit:standard-model": "tsx src/standard-model-audit.ts"
   },
