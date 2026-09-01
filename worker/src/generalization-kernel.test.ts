@@ -118,6 +118,17 @@ test('the language query is wired into a typed Worker goal', () => {
   assert.deepEqual(proof.query_sorts, ['Proof'])
 })
 
+test('a named Dirichlet-series query gets its own typed codomain', () => {
+  const graph = buildSemanticHypergraph({
+    id: 'renamable-recurrence',
+    statement: '数列 b_0=2, b_1=3, b_{n+2}=4b_{n+1}-3b_n のディリクレ級数を求めよ。',
+  })
+  assert.deepEqual(graph.query_sorts, ['DirichletSeries'])
+  assert.ok(graph.query_bindings?.some(binding =>
+    binding.sort === 'DirichletSeries' && binding.canonical === 'Query[compute:dirichlet_series]',
+  ))
+})
+
 test('grounds exact quadratic and second-moment structures and joins them by trace pairing', () => {
   const parents = [
     {

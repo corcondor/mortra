@@ -32,6 +32,7 @@ test('promotes probe-reachable morphism declarations into the shared atlas', () 
     'PrimeValuation',
     'ElementarySymmetricChart',
     'RecurrenceExtraction',
+    'DirichletTransform',
     'ConfigurationDiscretization',
     'PropositionCertification',
   ]) assert.ok(names.has(name), name)
@@ -47,6 +48,7 @@ test('the shared atlas reaches held-out goals in four domains without family ids
     graph('number', ['Integer', 'PrimeSpectrum'], ['IntegerInvariant']),
     graph('algebra', ['FiniteFamily'], ['Proposition']),
     graph('analysis', ['Sequence'], ['Real']),
+    graph('dirichlet', ['Sequence'], ['DirichletSeries']),
     graph('combinatorics', ['GeometricConfiguration'], ['Integer']),
   ]
   for (const item of cases) {

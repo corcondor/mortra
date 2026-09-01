@@ -56,6 +56,7 @@ export type RelationSyntax = {
 export type QuerySyntax = {
   kind: 'compute' | 'prove' | 'classify' | 'optimize' | 'measure' | 'observe'
   clause: number
+  observable?: 'ordinary_generating_function' | 'dirichlet_series'
 }
 
 export type ClauseSyntax = {
@@ -222,7 +223,14 @@ function queryOf(raw: string, clause: number): QuerySyntax | null {
   if (/分類せよ|すべて求めよ|全て求めよ|\b(?:classify|find all|determine all)\b/i.test(raw)) return { kind: 'classify', clause }
   if (/最大|最小|極値|\b(?:maximum|minimum|maximize|minimize|largest|smallest)\b/i.test(raw)) return { kind: 'optimize', clause }
   if (/(?:面積|体積|測度|\barea\b|\bvolume\b)/i.test(raw) && /求めよ|求めなさい|計算せよ|\b(?:find|determine|compute|calculate)\b/i.test(raw)) return { kind: 'measure', clause }
-  if (/求めよ|求めなさい|計算せよ|解け|解きなさい|\b(?:find|determine|compute|calculate|evaluate|solve)\b/i.test(raw)) return { kind: 'compute', clause }
+  if (/求めよ|求めなさい|計算せよ|解け|解きなさい|\b(?:find|determine|compute|calculate|evaluate|solve)\b/i.test(raw)) {
+    const observable = /(?:ディリクレ級数|Dirichlet\s+series)/iu.test(raw)
+      ? 'dirichlet_series' as const
+      : /(?:母関数|generating\s+function)/iu.test(raw)
+        ? 'ordinary_generating_function' as const
+        : undefined
+    return { kind: 'compute', clause, observable }
+  }
   return null
 }
 
@@ -287,6 +295,7 @@ function relationsOf(raw: string, tokens: MathToken[], clause: number, offset: n
     'ならば', 'のとき', 'とき', 'かつ', 'または',
     'を満たす', 'が成り立つ', 'であることを示せ', 'ことを示せ', 'を示せ', '証明せよ',
     'を求めよ', 'を求めなさい', 'を計算せよ',
+    'のディリクレ級数', 'の母関数', 'の一般項', 'の閉形式', 'の特性多項式', 'の特性方程式',
     'とする', 'と定める', 'で定める', 'と定義する',
     '、', ',', '。', '；', ';',
   ]

@@ -658,15 +658,20 @@ export function buildSemanticHypergraph(parent: DiscoveryParent): SemanticHyperg
       observe: 'Scalar',
     }
     const explicitQueryNodes = nodes.filter(node => node.role === 'query')
-    const sort = language.ir.query.kind === 'compute' &&
+    const namedObservableSort = language.ir.query.observable === 'dirichlet_series'
+      ? 'DirichletSeries'
+      : language.ir.query.observable === 'ordinary_generating_function'
+        ? 'Polynomial'
+        : null
+    const sort = namedObservableSort ?? (language.ir.query.kind === 'compute' &&
       explicitQueryNodes.some(node => node.canonical === 'Cardinality')
       ? 'Integer'
-      : queryTarget[language.ir.query.kind]
+      : queryTarget[language.ir.query.kind])
     querySorts.add(sort)
     const queryClause = clauses.find(clause => clause.id === language.ir.query?.clause)
     const goalCanonical = language.ir.query.kind === 'prove'
       ? explicitGoalConstraint?.canonical ?? `GoalText[${hash(queryClause?.raw ?? text, 16)}]`
-      : `Query[${language.ir.query.kind}]`
+      : `Query[${language.ir.query.kind}${language.ir.query.observable ? `:${language.ir.query.observable}` : ''}]`
     const goalSurface = explicitGoalConstraint
       ? `${explicitGoalConstraint.lhs} ${explicitGoalConstraint.operator} ${explicitGoalConstraint.rhs}`
       : queryClause?.raw ?? language.ir.query.kind
@@ -691,11 +696,11 @@ export function buildSemanticHypergraph(parent: DiscoveryParent): SemanticHyperg
       })
     }
     nodes.push({
-      id: `${id}:query:${language.ir.query.kind}`,
+      id: `${id}:query:${language.ir.query.kind}${language.ir.query.observable ? `:${language.ir.query.observable}` : ''}`,
       role: 'query',
-      canonical: `Query[${language.ir.query.kind}]`,
+      canonical: `Query[${language.ir.query.kind}${language.ir.query.observable ? `:${language.ir.query.observable}` : ''}]`,
       sort,
-      surface: language.ir.query.kind,
+      surface: language.ir.query.observable ?? language.ir.query.kind,
       parent_id: id,
     })
   }

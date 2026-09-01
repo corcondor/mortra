@@ -55,6 +55,7 @@ export const VERIFIED_DOMAIN_EXTENSIONS: readonly VerifiedDomainMorphism[] = [
   { name: 'RecurrenceSolution', sources: ['RecurrenceRelation'], target: 'ClosedFormSequence', preserves: ['index-shift', 'initial-state'], backend: ['sympy.rsolve', 'generating-function'] },
   { name: 'ClosedFormRealization', sources: ['ClosedFormSequence'], target: 'Sequence', preserves: ['index-set', 'value'], backend: ['identity'] },
   { name: 'ClosedFormTermFamily', sources: ['ClosedFormSequence'], target: 'FiniteFamily', preserves: ['index-set', 'multiplicity'], backend: ['recurrence-engine'] },
+  { name: 'DirichletTransform', sources: ['ClosedFormSequence'], target: 'DirichletSeries', preserves: ['index-set', 'coefficient-sequence', 'convergence-domain'], backend: ['polylogarithm', 'root-growth-test', 'series-term-test'] },
   { name: 'LimitOfClosedForm', sources: ['ClosedFormSequence'], target: 'Real', preserves: ['limit'], backend: ['sympy.limit'] },
   { name: 'MonotoneBoundedCertificate', sources: ['Sequence', 'Proposition'], target: 'ConvergenceCertificate', preserves: ['both-parent-provenance', 'order', 'boundedness'], backend: ['induction-engine', 'cvc5'] },
   { name: 'SqueezeCertificate', sources: ['Sequence', 'ClosedFormSequence'], target: 'ConvergenceCertificate', preserves: ['both-parent-provenance', 'order', 'limit'], backend: ['interval-arithmetic', 'sympy.limit'] },

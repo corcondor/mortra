@@ -30,6 +30,17 @@ test('new mathematical names are introduced from definitions without a lexicon e
   assert.equal(result.ir.query?.kind, 'measure')
 })
 
+test('types a named Dirichlet-series observable without absorbing it into the recurrence', () => {
+  const result = elaborateMathematicalText(
+    '数列 a_0=2, a_1=3, a_{n+2}=4a_{n+1}-3a_n のディリクレ級数を求めよ。',
+  )
+  assert.equal(result.ir.query?.kind, 'compute')
+  assert.equal(result.ir.query?.observable, 'dirichlet_series')
+  const recurrence = result.ir.constraints.find(constraint => constraint.lhs.includes('n+2'))
+  assert.ok(recurrence)
+  assert.equal(recurrence?.rhs.includes('ディリクレ'), false)
+})
+
 test('parse forest is finite and explicitly reports truncation', () => {
   const text = Array.from({ length: 10 }, (_, index) => `条件${index}を満たす`).join('。')
   const forest = parseMathematicalText(text, 8)

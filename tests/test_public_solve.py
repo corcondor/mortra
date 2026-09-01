@@ -204,9 +204,55 @@ class PublicSolveTests(unittest.TestCase):
             ["Integer(1)", "Integer(4)", "Integer(14)", "Integer(46)"],
         )
 
-    def test_recurrence_kernel_does_not_answer_a_different_observable(self) -> None:
+    def test_recurrence_dirichlet_series_proves_exponential_divergence(self) -> None:
         status, payload = solve_public_problem(
             "数列 a_0=2, a_1=3, a_{n+2}=4a_{n+1}-3a_n のディリクレ級数を求めよ。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(
+            card["execution_certificate"]["tool_name"],
+            "mortra.runtime_second_order_dirichlet_series",
+        )
+        witness = card["execution_certificate"]["witness"]
+        self.assertEqual(witness["observable"], "dirichlet_series")
+        self.assertEqual(witness["convergence_domain"], "empty")
+        self.assertEqual(witness["dominant_ratio_limit"], "1")
+        self.assertIn("すべての", card["answer_tex"])
+        self.assertIn("発散", card["solution_tex"])
+        self.assertEqual(card["diagram"]["kind"], "state")
+
+    def test_recurrence_dirichlet_series_recomputes_changed_growth_rate(self) -> None:
+        status, payload = solve_public_problem(
+            "数列 b_0=2, b_1=3, b_{n+2}=3b_{n+1}-2b_n のディリクレ級数を求めよ。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        witness = card["execution_certificate"]["witness"]
+        self.assertEqual(witness["convergence_domain"], "empty")
+        self.assertIn("Integer(2)", witness["dominant_root"])
+        self.assertNotIn("Integer(3)", witness["dominant_root"])
+
+    def test_recurrence_dirichlet_series_handles_exponentially_decaying_modes(self) -> None:
+        status, payload = solve_public_problem(
+            "数列 c_0=2, c_1=5/6, c_{n+2}=5/6c_{n+1}-1/6c_n のディリクレ級数を求めよ。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        witness = card["execution_certificate"]["witness"]
+        self.assertEqual(witness["convergence_domain"], "complex-plane")
+        self.assertIn("polylog", witness["dirichlet_series"])
+        self.assertIn("s\\in\\mathbb C", card["answer_tex"])
+
+    def test_recurrence_dirichlet_series_does_not_fall_back_to_a_different_observable(self) -> None:
+        status, payload = solve_public_problem(
+            "数列 d_0=1, d_1=1, d_{n+2}=2d_{n+1}-d_n のディリクレ級数を求めよ。"
         )
 
         self.assertEqual(status, 422)
@@ -364,7 +410,7 @@ class PublicSolveTests(unittest.TestCase):
         self.assertEqual(status, 200)
         card = payload["cards"][0]
         self.assert_runtime_synthesis_card(card)
-        self.assertEqual(card["answer_tex"], r"\(0<I<2\)")
+        self.assertEqual(card["answer_tex"], r"\[0<I<2.\]")
         self.assertIn("Cauchy--Schwarz", card["solution_tex"])
         self.assertIn(r"\pi<22/7", card["solution_tex"])
         self.assertIn("diagram", card)
@@ -383,8 +429,8 @@ class PublicSolveTests(unittest.TestCase):
             card["execution_certificate"]["tool_name"],
             "mortra.runtime_complement_angle_integral_bound",
         )
-        self.assertIn(r"\int", card["answer_tex"])
-        self.assertIn("<2", card["answer_tex"])
+        self.assertIn(r"\int", card["statement_tex"])
+        self.assertIn(r"0<I<2", card["answer_tex"])
         self.assertEqual(
             card["execution_certificate"]["proof_program"][0]["input_form"],
             "bare",

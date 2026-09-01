@@ -664,7 +664,9 @@ export function ProblemArtifact({ card, compact = false, showVerification = true
 
       <section className={styles.statementSection}>
         <p className={styles.label}>{a.statement}</p>
-        <div className={styles.statement}><MathText text={card.statement_tex ?? ''} large={!compact} /></div>
+        <div className={styles.statement} data-artifact-section="statement">
+          <MathText text={card.statement_tex ?? ''} large={!compact} />
+        </div>
       </section>
 
       {card.visual_explanation?.steps.length ? (
@@ -676,11 +678,13 @@ export function ProblemArtifact({ card, compact = false, showVerification = true
       <div className={styles.solutionGrid}>
         <section>
           <p className={styles.label}>{a.answer}</p>
-          <div className={styles.answer}><MathText text={card.answer_tex?.trim() || a.undecided} large /></div>
+          <div className={styles.answer} data-artifact-section="answer">
+            <MathText text={card.answer_tex?.trim() || a.undecided} large />
+          </div>
         </section>
         <section>
           <p className={styles.label}>{a.solution}</p>
-          <div className={styles.solution}>
+          <div className={styles.solution} data-artifact-section="solution">
             <MathText text={card.solution_tex?.trim() || a.solutionPending} />
           </div>
         </section>

@@ -264,6 +264,11 @@ async function runCase(testCase) {
   const horizontalOverflow = await page.evaluate(() => (
     document.documentElement.scrollWidth > document.documentElement.clientWidth + 1
   ))
+  const artifactSectionOverflow = artifactExists
+    ? await artifact.locator('[data-artifact-section]').evaluateAll(elements => elements
+      .filter(element => element.scrollWidth > element.clientWidth + 1)
+      .map(element => element.getAttribute('data-artifact-section') ?? 'unknown'))
+    : []
 
   const screenshotPath = resolve(outputDirectory, `${testCase.id}.png`)
   if (artifactExists) {
@@ -319,6 +324,7 @@ async function runCase(testCase) {
     && !encoding.undefinedLiteral
     && encoding.rawMathMarkup.length === 0
     && !horizontalOverflow
+    && artifactSectionOverflow.length === 0
     && unexpectedConsoleErrors.length === 0
     && outcomeAccepted
     && resolvedChecks
@@ -342,6 +348,7 @@ async function runCase(testCase) {
     verification,
     finalVisualStepSelected,
     horizontalOverflow,
+    artifactSectionOverflow,
     phaseCodes,
     transcript,
     bodyTail: bodyText.slice(-2000),

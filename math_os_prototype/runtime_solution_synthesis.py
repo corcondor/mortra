@@ -49,6 +49,12 @@ def _real_float(value: sp.Expr) -> float | None:
     return float(numeric.real)
 
 
+def _proves_strictly_positive(value: sp.Expr) -> bool:
+    """Accept an order comparison only when SymPy proves it exactly."""
+
+    return sp.simplify(value > 0) is sp.S.true
+
+
 def _latex_interval(left: sp.Expr | None, right: sp.Expr | None) -> str:
     left_tex = r"-\infty" if left is None else sp.latex(left)
     right_tex = r"\infty" if right is None else sp.latex(right)
@@ -950,10 +956,296 @@ def _parse_second_order_recurrence(
     )
 
 
+def _distinct_second_order_closed_form(
+    coefficient_current: sp.Expr,
+    coefficient_previous: sp.Expr,
+    initial_zero: sp.Expr,
+    initial_one: sp.Expr,
+) -> tuple[
+    sp.Symbol,
+    sp.Poly,
+    tuple[tuple[sp.Expr, sp.Expr], ...],
+    sp.Expr,
+    tuple[sp.Expr, ...],
+] | None:
+    """Solve and replay a second-order recurrence with two distinct roots."""
+
+    n = sp.symbols("n", integer=True, nonnegative=True)
+    root_symbol = sp.Symbol("r")
+    characteristic = sp.Poly(
+        root_symbol**2 - coefficient_current * root_symbol - coefficient_previous,
+        root_symbol,
+    )
+    roots = sp.roots(characteristic.as_expr(), root_symbol)
+    if len(roots) != 2 or any(multiplicity != 1 for multiplicity in roots.values()):
+        return None
+    first_root, second_root = tuple(roots)
+    first_weight, second_weight = sp.symbols("C_1 C_2")
+    weights = sp.solve(
+        (
+            sp.Eq(first_weight + second_weight, initial_zero),
+            sp.Eq(first_weight * first_root + second_weight * second_root, initial_one),
+        ),
+        (first_weight, second_weight),
+        dict=True,
+    )
+    if len(weights) != 1:
+        return None
+    weighted_roots = (
+        (first_root, sp.simplify(weights[0][first_weight])),
+        (second_root, sp.simplify(weights[0][second_weight])),
+    )
+    closed_form = sp.simplify(sum(
+        (weight * root**n for root, weight in weighted_roots),
+        sp.Integer(0),
+    ))
+    replay_limit = 8
+    values = [sp.simplify(initial_zero), sp.simplify(initial_one)]
+    for _ in range(2, replay_limit + 1):
+        values.append(sp.simplify(
+            coefficient_current * values[-1] + coefficient_previous * values[-2]
+        ))
+    residuals = tuple(
+        sp.simplify(closed_form.subs(n, index) - values[index])
+        for index in range(replay_limit + 1)
+    )
+    recurrence_residual = sp.simplify(
+        closed_form.subs(n, n + 2)
+        - coefficient_current * closed_form.subs(n, n + 1)
+        - coefficient_previous * closed_form
+    )
+    if any(residual != 0 for residual in residuals) or recurrence_residual != 0:
+        return None
+    return n, characteristic, weighted_roots, closed_form, residuals
+
+
+def synthesize_second_order_dirichlet_series(
+    statement: str,
+) -> RuntimeSolutionSynthesis | None:
+    """Map a current-input recurrence to its Dirichlet series and convergence set."""
+
+    if not re.search(r"(?:ディリクレ級数|Dirichlet\s+series)", statement, re.IGNORECASE):
+        return None
+    parsed = _parse_second_order_recurrence(statement)
+    if parsed is None:
+        return None
+    sequence, coefficient_current, coefficient_previous, initial_zero, initial_one, _ = parsed
+    solved = _distinct_second_order_closed_form(
+        coefficient_current,
+        coefficient_previous,
+        initial_zero,
+        initial_one,
+    )
+    if solved is None:
+        return None
+    n, characteristic, weighted_roots, closed_form, residuals = solved
+    absolute_roots = tuple(sp.simplify(sp.Abs(root)) for root, _ in weighted_roots)
+    numeric_absolute_roots = tuple(_real_float(value) for value in absolute_roots)
+    if any(value is None for value in numeric_absolute_roots):
+        return None
+
+    matrix = sp.Matrix([[coefficient_current, coefficient_previous], [1, 0]])
+    matrix_tex = sp.latex(matrix)
+    closed_tex = sp.latex(closed_form)
+    characteristic_tex = sp.latex(characteristic.as_expr())
+    root_rows = r",\;".join(
+        rf"({sp.latex(root)},{sp.latex(weight)})"
+        for root, weight in weighted_roots
+    )
+    common_program: tuple[dict[str, Any], ...] = (
+        {
+            "rule": "elaborate_second_order_recurrence",
+            "coefficients": [str(coefficient_current), str(coefficient_previous)],
+        },
+        {
+            "rule": "construct_companion_matrix",
+            "matrix": [[str(value) for value in row] for row in matrix.tolist()],
+        },
+        {
+            "rule": "factor_characteristic_polynomial",
+            "roots": [sp.srepr(root) for root, _ in weighted_roots],
+        },
+        {
+            "rule": "solve_initial_value_weights",
+            "weighted_roots": [
+                {"root": sp.srepr(root), "weight": sp.srepr(weight)}
+                for root, weight in weighted_roots
+            ],
+        },
+        {"rule": "replay_recurrence_identity", "through": len(residuals) - 1},
+        {"rule": "apply_dirichlet_transform", "start_index": 1},
+    )
+    common_witness = {
+        "sequence": sequence,
+        "observable": "dirichlet_series",
+        "coefficients": [str(coefficient_current), str(coefficient_previous)],
+        "initial": [str(initial_zero), str(initial_one)],
+        "characteristic_polynomial": sp.srepr(characteristic.as_expr()),
+        "closed_form": sp.srepr(closed_form),
+        "weighted_roots": [
+            {"root": sp.srepr(root), "weight": sp.srepr(weight), "absolute_value": sp.srepr(absolute)}
+            for (root, weight), absolute in zip(weighted_roots, absolute_roots)
+        ],
+        "recurrence_replay_residuals": [str(residual) for residual in residuals],
+    }
+
+    dominant_index = max(
+        range(len(weighted_roots)),
+        key=lambda index: float(numeric_absolute_roots[index]),
+    )
+    other_index = 1 - dominant_index
+    dominant_root, dominant_weight = weighted_roots[dominant_index]
+    dominant_absolute = absolute_roots[dominant_index]
+    spectral_gap = sp.simplify(dominant_absolute - absolute_roots[other_index])
+    above_one = sp.simplify(dominant_absolute - 1)
+    spectral_gap_value = _real_float(spectral_gap)
+    above_one_value = _real_float(above_one)
+    ratio_limit = sp.simplify(sp.limit(
+        closed_form / (dominant_weight * dominant_root**n),
+        n,
+        sp.oo,
+    )) if dominant_weight != 0 else None
+    proves_exponential_obstruction = (
+        dominant_weight != 0
+        and spectral_gap_value is not None
+        and above_one_value is not None
+        and _proves_strictly_positive(spectral_gap)
+        and _proves_strictly_positive(above_one)
+        and ratio_limit == 1
+    )
+
+    if proves_exponential_obstruction:
+        diagram = state_transition_diagram(
+            [
+                {"id": "recurrence", "label": "二階漸化式", "terminal": False},
+                {"id": "closed", "label": "特性根と一般項", "terminal": False},
+                {"id": "dirichlet", "label": "ディリクレ変換", "terminal": False},
+                {"id": "domain", "label": "収束する点なし", "terminal": True},
+            ],
+            [
+                {"from": "recurrence", "to": "closed", "label": "伴随行列", "tone": "primary"},
+                {"from": "closed", "to": "dirichlet", "label": "a_n / n^s", "tone": "primary"},
+                {"from": "dirichlet", "to": "domain", "label": "一般項が0に収束しない", "tone": "secondary"},
+            ],
+            title="漸化式とディリクレ級数",
+            caption="特性根から数列の増大度を求め、級数の一般項が0へ収束するかを判定します。",
+        )
+        return RuntimeSolutionSynthesis(
+            answer={"closed_form": closed_form, "convergence_domain": "empty"},
+            answer_tex=(
+                rf"\[{sequence}_n={closed_tex}.\]"
+                rf"\[D(s)=\sum_{{n=1}}^\infty\frac{{{sequence}_n}}{{n^s}}.\]"
+                r"すべての \(s\in\mathbb C\) に対して発散する。"
+            ),
+            tool_name="mortra.runtime_second_order_dirichlet_series",
+            expression_tex=rf"D(s)=\sum_{{n=1}}^\infty {sequence}_n n^{{-s}}",
+            derivation_tex=(
+                rf"伴随行列 \(M={matrix_tex}\) の特性多項式は \({characteristic_tex}\) である。",
+                rf"特性根と初期値から得る（根, 係数）の組は \({root_rows}\) であり、従って \({sequence}_n={closed_tex}\) となる。",
+                rf"絶対値が最大の特性根は \({sp.latex(dominant_root)}\) で、その係数は \({sp.latex(dominant_weight)}\ne0\) である。他の根との絶対値の差は \({sp.latex(spectral_gap)}>0\) だから、\(\displaystyle\lim_{{n\to\infty}}\frac{{{sequence}_n}}{{{sp.latex(dominant_weight)}({sp.latex(dominant_root)})^n}}=1\) である。",
+                rf"任意の \(s=\sigma+it\in\mathbb C\) に対し、\(\left|{sequence}_n/n^s\right|=|{sequence}_n|/n^\sigma\) は0に収束しない。従って級数の必要条件を満たさず、\(D(s)\) はどの \(s\) に対しても発散する。",
+            ),
+            verification_checks=(
+                "現在入力から二階漸化式とディリクレ級数という観測量を抽出",
+                "特性根と初期値係数を厳密に計算",
+                "一般項を元の漸化式へ0番から8番まで再代入",
+                "最大特性根の係数が0でなく、他の根との絶対値の差が正であることを確認",
+                "ディリクレ級数の一般項が0へ収束しないことから全複素平面での発散を証明",
+            ),
+            proof_program=common_program + (
+                {
+                    "rule": "prove_dominant_root_asymptotic",
+                    "dominant_root": sp.srepr(dominant_root),
+                    "dominant_weight": sp.srepr(dominant_weight),
+                    "ratio_limit": str(ratio_limit),
+                },
+                {"rule": "apply_series_term_test", "convergence_domain": "empty"},
+                {"rule": "render_dirichlet_convergence_diagram"},
+            ),
+            diagram=diagram,
+            witness={
+                **common_witness,
+                "convergence_domain": "empty",
+                "dominant_root": sp.srepr(dominant_root),
+                "dominant_weight": sp.srepr(dominant_weight),
+                "spectral_gap": sp.srepr(spectral_gap),
+                "dominant_ratio_limit": str(ratio_limit),
+            },
+        )
+
+    proves_exponential_decay = all(
+        value is not None and _proves_strictly_positive(1 - exact_value)
+        for value, exact_value in zip(numeric_absolute_roots, absolute_roots)
+    )
+    if not proves_exponential_decay:
+        return None
+    s = sp.symbols("s")
+    dirichlet_expression = sp.simplify(sum(
+        (weight * sp.polylog(s, root) for root, weight in weighted_roots),
+        sp.Integer(0),
+    ))
+    dirichlet_tex = sp.latex(dirichlet_expression)
+    diagram = state_transition_diagram(
+        [
+            {"id": "recurrence", "label": "二階漸化式", "terminal": False},
+            {"id": "closed", "label": "特性根と一般項", "terminal": False},
+            {"id": "transform", "label": "多重対数関数へ変換", "terminal": False},
+            {"id": "domain", "label": "全複素平面で収束", "terminal": True},
+        ],
+        [
+            {"from": "recurrence", "to": "closed", "label": "特性多項式", "tone": "primary"},
+            {"from": "closed", "to": "transform", "label": "項別に変換", "tone": "primary"},
+            {"from": "transform", "to": "domain", "label": "指数減衰", "tone": "secondary"},
+        ],
+        title="漸化式とディリクレ級数",
+        caption="一般項を特性根ごとに分解し、各項のディリクレ変換と収束域を求めます。",
+    )
+    return RuntimeSolutionSynthesis(
+        answer={"closed_form": closed_form, "dirichlet_series": dirichlet_expression},
+        answer_tex=(
+            rf"\[{sequence}_n={closed_tex}.\]"
+            rf"\[D(s)=\sum_{{n=1}}^\infty\frac{{{sequence}_n}}{{n^s}}={dirichlet_tex}.\]"
+            r"すべての \(s\in\mathbb C\) に対して絶対収束する。"
+        ),
+        tool_name="mortra.runtime_second_order_dirichlet_series",
+        expression_tex=rf"D(s)=\sum_{{n=1}}^\infty {sequence}_n n^{{-s}}",
+        derivation_tex=(
+            rf"特性多項式 \({characteristic_tex}\) と初期値から \({sequence}_n={closed_tex}\) を得る。",
+            rf"定義 \(\operatorname{{Li}}_s(z)=\sum_{{n=1}}^\infty z^n/n^s\) を各特性根へ適用すると \(D(s)={dirichlet_tex}\) となる。",
+            r"すべての特性根の絶対値が1未満なので、指数減衰は任意の多項式増大より速い。従ってこの級数は任意の複素数 \(s\) で絶対収束する。",
+        ),
+        verification_checks=(
+            "現在入力から二階漸化式とディリクレ級数という観測量を抽出",
+            "特性根と初期値係数を厳密に計算",
+            "一般項を元の漸化式へ0番から8番まで再代入",
+            "全特性根の絶対値が1未満であることを確認",
+            "一般項を多重対数関数の定義へ項別に戻して照合",
+        ),
+        proof_program=common_program + (
+            {
+                "rule": "map_characteristic_modes_to_polylogarithms",
+                "expression": sp.srepr(dirichlet_expression),
+            },
+            {"rule": "prove_exponential_decay_normal_convergence", "convergence_domain": "complex-plane"},
+            {"rule": "render_dirichlet_convergence_diagram"},
+        ),
+        diagram=diagram,
+        witness={
+            **common_witness,
+            "convergence_domain": "complex-plane",
+            "dirichlet_series": sp.srepr(dirichlet_expression),
+        },
+    )
+
+
 def synthesize_second_order_recurrence(statement: str) -> RuntimeSolutionSynthesis | None:
     """Compile a current-input recurrence to its companion matrix and roots."""
 
     if "漸化式" not in statement and "数列" not in statement:
+        return None
+    if re.search(r"(?:ディリクレ級数|Dirichlet\s+series)", statement, re.IGNORECASE):
+        # The dedicated transform must close the requested observable. Falling
+        # back to a closed form would answer a different question.
         return None
     parsed = _parse_second_order_recurrence(statement)
     if parsed is None:
@@ -1703,7 +1995,11 @@ def synthesize_first_quadrant_trig_integral_bound(statement: str) -> RuntimeSolu
     )
     return RuntimeSolutionSynthesis(
         answer=True,
-        answer_tex=rf"\(0<{name}<2\)" if input_form == "assigned" else rf"\({sp.latex(integral)}<2\)",
+        answer_tex=(
+            rf"\[0<{name}<2.\]"
+            if input_form == "assigned"
+            else r"左辺を \(I\) とおくと、\[0<I<2.\]"
+        ),
         tool_name="mortra.runtime_complement_angle_integral_bound",
         expression_tex=sp.latex(integral),
         derivation_tex=derivation,
@@ -1742,6 +2038,7 @@ def synthesize_runtime_solution(statement: str) -> RuntimeSolutionSynthesis | No
         synthesize_positive_monomial_extremum,
         synthesize_coordinate_triangle_centers,
         synthesize_tetrahedron_volume,
+        synthesize_second_order_dirichlet_series,
         synthesize_second_order_recurrence,
         synthesize_linear_congruence,
         synthesize_factorial_valuation,
