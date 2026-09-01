@@ -21,6 +21,7 @@ import { LiveTexPreview } from './LiveTexPreview'
 import { ProblemArtifact, type ProblemArtifactCard } from './ProblemArtifact'
 import type { ProblemDiagram } from '@/lib/mortra/problem-artifact'
 import type { Lang } from '@/lib/mortra/i18n'
+import { resolvePublicWorkspace, type PublicWorkspaceMode } from '@/lib/mortra/public-workspace-mode'
 import styles from '@/app/mortra/mortra.module.css'
 
 type ProgressMessage = {
@@ -103,11 +104,9 @@ type CatalogProblem = {
   familyId?: string | null
 }
 
-type WorkspaceMode = 'solve' | 'fusion' | 'draw'
-
 type WorkspaceCommand = {
-  id: WorkspaceMode
-  command: '/solve' | '/combine' | '/draw'
+  id: PublicWorkspaceMode
+  command: '/try' | '/solve' | '/combine' | '/draw'
   icon: typeof Braces
   ja: string
   en: string
@@ -117,6 +116,16 @@ type WorkspaceCommand = {
 }
 
 const WORKSPACE_COMMANDS: WorkspaceCommand[] = [
+  {
+    id: 'auto',
+    command: '/try',
+    icon: Play,
+    ja: '入力数で自動判定',
+    en: 'Choose from the input',
+    detailJa: '一問なら解答を返し、二問なら共有構造から融合問題と解答を生成します。',
+    detailEn: 'Solve one entered problem, or fuse two entered problems through their shared structure.',
+    example: '/try A [B]',
+  },
   {
     id: 'solve',
     command: '/solve',
@@ -154,8 +163,6 @@ const SEARCH_BUDGET_SECONDS = 90
 
 const CONSOLE_TEXT = {
   ja: {
-    parentA: '方程式 $x^2-5x+6=0$ を解け。',
-    parentB: '方程式 $y^2-y-1=0$ の根を考える。',
     fusionPhases: ['構造化', '候補生成', '融合検査', '厳密検証', '保存'],
     solvePhases: ['構造化', '制約化', '厳密計算', '検証', '解答'],
     labelA: '問題',
@@ -202,8 +209,6 @@ const CONSOLE_TEXT = {
     },
   },
   en: {
-    parentA: 'Solve the equation $x^2-5x+6=0$.',
-    parentB: 'Consider the roots of $y^2-y-1=0$.',
     fusionPhases: ['Structure', 'Candidates', 'Fusion check', 'Exact verify', 'Save'],
     solvePhases: ['Structure', 'Constraints', 'Exact compute', 'Verify', 'Answer'],
     labelA: 'Problem',
@@ -290,8 +295,8 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
   const tr = c.tr
   const FUSION_PHASES = c.fusionPhases.map((label, i) => ({ key: `fusion-${i}`, label }))
   const SOLVE_PHASES = c.solvePhases.map((label, i) => ({ key: `solve-${i}`, label }))
-  const [parentA, setParentA] = useState<string>(c.parentA)
-  const [parentB, setParentB] = useState<string>(c.parentB)
+  const [parentA, setParentA] = useState('')
+  const [parentB, setParentB] = useState('')
   const [parentAId, setParentAId] = useState<string | null>(null)
   const [parentBId, setParentBId] = useState<string | null>(null)
   const [catalog, setCatalog] = useState<CatalogProblem[]>([])
@@ -306,12 +311,12 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
   const [jobId, setJobId] = useState<string | null>(null)
   const [telemetry, setTelemetry] = useState<JobTelemetry | null>(null)
   const [trace, setTrace] = useState<TraceLine[]>([])
-  const [taskMode, setTaskMode] = useState<'solve' | 'fusion'>('fusion')
-  const [workspaceMode, setWorkspaceMode] = useState<WorkspaceMode>('fusion')
-  const [commandLine, setCommandLine] = useState('/combine')
+  const [taskMode, setTaskMode] = useState<'solve' | 'fusion'>('solve')
+  const [workspaceMode, setWorkspaceMode] = useState<PublicWorkspaceMode>('auto')
+  const [commandLine, setCommandLine] = useState('/try')
   const [commandMenuOpen, setCommandMenuOpen] = useState(false)
   const [showAllCommands, setShowAllCommands] = useState(false)
-  const [commandHelp, setCommandHelp] = useState<WorkspaceMode>('fusion')
+  const [commandHelp, setCommandHelp] = useState<PublicWorkspaceMode>('auto')
   const abortRef = useRef<AbortController | null>(null)
   const helpTimerRef = useRef<number | null>(null)
   const traceSequenceRef = useRef(0)
@@ -360,7 +365,7 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
     })
   }, [])
 
-  const chooseCommand = useCallback((next: WorkspaceMode) => {
+  const chooseCommand = useCallback((next: PublicWorkspaceMode) => {
     const command = WORKSPACE_COMMANDS.find(item => item.id === next)
     if (!command) return
     setWorkspaceMode(next)
@@ -368,14 +373,9 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
     setCommandLine(command.command)
     setCommandMenuOpen(false)
     setShowAllCommands(false)
-    if (next !== 'fusion') {
-      setParentB('')
-      setParentBId(null)
-    }
-    else setParentB(value => value || c.parentB)
-  }, [c.parentB])
+  }, [])
 
-  const beginCommandHelp = (command: WorkspaceMode) => {
+  const beginCommandHelp = (command: PublicWorkspaceMode) => {
     if (helpTimerRef.current !== null) window.clearTimeout(helpTimerRef.current)
     helpTimerRef.current = window.setTimeout(() => {
       setCommandHelp(command)
@@ -533,19 +533,23 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
 
   const run = async () => {
     const a = parentA.trim()
-    const b = workspaceMode === 'fusion' ? parentB.trim() : ''
-    const inputs = workspaceMode === 'fusion' ? [a, b].filter(Boolean) : [a || b].filter(Boolean)
-    if (inputs.length === 0) {
+    const b = parentB.trim()
+    const request = resolvePublicWorkspace(workspaceMode, a, b)
+    if (request.error === 'empty') {
       addTrace(tr.needInput)
       setPhase('error')
       return
     }
-    if (workspaceMode === 'fusion' && inputs.length < 2) {
+    if (request.error === 'needs_two') {
       addTrace(tr.needTwo)
       setPhase('error')
       return
     }
-    const nextMode = workspaceMode === 'fusion' ? 'fusion' : 'solve'
+    const parentEntries = request.inputSlots.map(slot => slot === 'a'
+      ? { id: parentAId, statement: a }
+      : { id: parentBId, statement: b })
+    const inputs = parentEntries.map(entry => entry.statement)
+    const nextMode = request.taskMode
     setTaskMode(nextMode)
 
     abortRef.current?.abort()
@@ -575,7 +579,7 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
           signal: controller.signal,
           body: JSON.stringify({
             problem: inputs[0],
-            problemId: parentAId,
+            problemId: parentEntries[0].id,
             output: workspaceMode === 'draw' ? 'solution_and_diagram' : 'solution',
             diagram_required: workspaceMode === 'draw',
           }),
@@ -596,7 +600,7 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
             body: JSON.stringify({
               count: 1,
               parents: [{
-                id: parentAId ?? parentId(inputs[0], 1),
+                id: parentEntries[0].id ?? parentId(inputs[0], 1),
                 statement: inputs[0],
               }],
             }),
@@ -636,9 +640,9 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
           surface: 'public_try',
           searchDepth: 'deep',
           searchBudgetSeconds: SEARCH_BUDGET_SECONDS,
-          parents: inputs.map((statement, index) => ({
-            id: (index === 0 ? parentAId : parentBId) ?? parentId(statement, index + 1),
-            statement,
+          parents: parentEntries.map((entry, index) => ({
+            id: entry.id ?? parentId(entry.statement, index + 1),
+            statement: entry.statement,
           })),
         }),
       })
@@ -681,8 +685,8 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
 
   const reset = () => {
     abortRef.current?.abort()
-    setParentA(c.parentA)
-    setParentB(c.parentB)
+    setParentA('')
+    setParentB('')
     setParentAId(null)
     setParentBId(null)
     setResult(null)
@@ -694,10 +698,10 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
     setElapsed(0)
     setTelemetry(null)
     setStartedAt(null)
-    setTaskMode('fusion')
-    setWorkspaceMode('fusion')
-    setCommandLine('/combine')
-    setCommandHelp('fusion')
+    setTaskMode('solve')
+    setWorkspaceMode('auto')
+    setCommandLine('/try')
+    setCommandHelp('auto')
     setCommandMenuOpen(false)
     setShowAllCommands(false)
     traceSequenceRef.current = 0
@@ -707,7 +711,8 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
   const resultCards = result?.cards ?? []
   const card = resultCards[Math.min(selectedCardIndex, Math.max(0, resultCards.length - 1))]
     ?? cardFromResult(result)
-  const visibleMode = running || card ? taskMode : workspaceMode === 'fusion' ? 'fusion' : 'solve'
+  const workspaceResolution = resolvePublicWorkspace(workspaceMode, parentA, parentB)
+  const visibleMode = running || card ? taskMode : workspaceResolution.taskMode
   const phases = visibleMode === 'solve' ? SOLVE_PHASES : FUSION_PHASES
   const progress = phase === 'complete' ? 1 : Math.max(0.08, Math.min(0.92, (stage + 0.7) / phases.length))
   const currentMessage = trace.at(-1)?.text ?? ''
@@ -838,7 +843,7 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
                   spellCheck={false}
                 />
               </div>
-              {workspaceMode === 'fusion' && (
+              {(workspaceMode === 'auto' || workspaceMode === 'fusion') && (
                 <div className={styles.sourceEditor}>
                   <label htmlFor="mortra-parent-b"><span>B</span><b>{c.labelB}</b><small>TeX / UTF-8</small></label>
                   {catalog.length > 0 ? (
@@ -868,7 +873,7 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
             </div>
 
             <div className={styles.commandActions}>
-              <span><code>{WORKSPACE_COMMANDS.find(item => item.id === workspaceMode)?.command}</code>{lang === 'ja' ? ' を実行' : ' execution'}</span>
+              <span><code>{workspaceResolution.command}</code>{lang === 'ja' ? ' を実行' : ' execution'}</span>
               <div>
                 {running ? (
                   <button className={styles.workspaceIconButton} type="button" onClick={stop} title={c.stopWatch} aria-label={c.stopWatch}>
@@ -878,19 +883,24 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
                 <button className={styles.workspaceIconButton} type="button" onClick={reset} title={c.resetInput} aria-label={c.resetInput}>
                   <RotateCcw size={14} aria-hidden="true" />
                 </button>
-                <button className={styles.workspaceRunButton} type="button" onClick={() => void run()} disabled={running}>
+                <button className={styles.workspaceRunButton} type="button" onClick={() => void run()} disabled={running || workspaceResolution.error !== null}>
                   {running ? <LoaderCircle className={styles.spin} size={15} aria-hidden="true" /> : <Play size={14} fill="currentColor" aria-hidden="true" />}
                   {running
                     ? (visibleMode === 'solve' ? c.solving : c.generating)
                     : workspaceMode === 'draw'
                       ? (lang === 'ja' ? '解いて図を作る' : 'Solve and draw')
-                      : workspaceMode === 'fusion' ? c.fuseTwo : c.solveOne}
+                      : workspaceResolution.taskMode === 'fusion' ? c.fuseTwo : c.solveOne}
                 </button>
               </div>
             </div>
           </section>
 
-          <LiveTexPreview lang={lang} sourceA={parentA} sourceB={parentB} mode={workspaceMode} />
+          <LiveTexPreview
+            lang={lang}
+            sourceA={parentA}
+            sourceB={parentB}
+            mode={workspaceMode === 'auto' ? 'fusion' : workspaceMode}
+          />
         </div>
 
         {showExecution ? (

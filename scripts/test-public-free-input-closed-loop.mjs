@@ -21,6 +21,25 @@ const viewport = process.env.MORTRA_VIEWPORT === 'mobile'
 
 const builtInCases = [
   {
+    id: 'auto-a-single',
+    mode: 'auto',
+    expected: 'resolved',
+    a: '実数 x, y が 2x+y=11, x-y=1 を満たすとき、x+3y を求めよ。',
+  },
+  {
+    id: 'auto-b-single',
+    mode: 'auto',
+    expected: 'resolved',
+    b: '方程式 x^2-3x-7=0 の二つの根を α, β とするとき、α^3+β^3 を求めよ。',
+  },
+  {
+    id: 'auto-two-fusion',
+    mode: 'auto',
+    expected: 'resolved',
+    a: '方程式 $x^2-5x+6=0$ を解け。',
+    b: '方程式 $y^2-y-1=0$ の根を考える。',
+  },
+  {
     id: 'linear-single',
     mode: 'solve',
     expected: 'resolved',
@@ -80,11 +99,11 @@ const cases = caseFile
   : builtInCases
 if (!Array.isArray(cases) || cases.some(testCase => (
   typeof testCase?.id !== 'string'
-  || !['solve', 'fusion', 'draw'].includes(testCase?.mode)
-  || typeof testCase?.a !== 'string'
+  || !['auto', 'solve', 'fusion', 'draw'].includes(testCase?.mode)
+  || (typeof testCase?.a !== 'string' && typeof testCase?.b !== 'string')
   || (testCase.mode === 'fusion' && typeof testCase?.b !== 'string')
 ))) {
-  throw new TypeError('MORTRA_CASE_FILE must contain an array of valid solve, fusion, or draw cases')
+  throw new TypeError('MORTRA_CASE_FILE must contain an array of valid auto, solve, fusion, or draw cases')
 }
 
 const selectedCases = caseFilter ? cases.filter(testCase => caseFilter.has(testCase.id)) : cases
@@ -100,12 +119,15 @@ const browser = await chromium.launch({
 })
 
 function commandFor(mode) {
+  if (mode === 'auto') return null
   if (mode === 'draw') return '/draw'
   if (mode === 'solve') return '/solve'
   return '/combine'
 }
 
-function buttonFor(mode) {
+function buttonFor(testCase) {
+  const { mode } = testCase
+  if (mode === 'auto') return testCase.a?.trim() && testCase.b?.trim() ? '融合問題を生成' : '問題を解く'
   if (mode === 'draw') return '解いて図を作る'
   if (mode === 'solve') return '問題を解く'
   return '融合問題を生成'
@@ -154,18 +176,21 @@ async function runCase(testCase) {
   await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 180_000 })
   const pageIdentity = { url: page.url(), title: await page.title() }
 
-  const command = page.getByRole('textbox', { name: 'コマンド', exact: true })
-  await command.fill(commandFor(testCase.mode))
-  await command.press('Enter')
-  await page.locator('#mortra-parent-a').fill(testCase.a)
-  if (testCase.mode === 'fusion') await page.locator('#mortra-parent-b').fill(testCase.b)
+  const requestedCommand = commandFor(testCase.mode)
+  if (requestedCommand) {
+    const command = page.getByRole('textbox', { name: 'コマンド', exact: true })
+    await command.fill(requestedCommand)
+    await command.press('Enter')
+  }
+  if (typeof testCase.a === 'string') await page.locator('#mortra-parent-a').fill(testCase.a)
+  if (typeof testCase.b === 'string') await page.locator('#mortra-parent-b').fill(testCase.b)
 
   const inputRoundTrip = {
-    a: await page.locator('#mortra-parent-a').inputValue() === testCase.a,
-    b: testCase.mode !== 'fusion' || await page.locator('#mortra-parent-b').inputValue() === testCase.b,
+    a: typeof testCase.a !== 'string' || await page.locator('#mortra-parent-a').inputValue() === testCase.a,
+    b: typeof testCase.b !== 'string' || await page.locator('#mortra-parent-b').inputValue() === testCase.b,
   }
 
-  await page.getByRole('button', { name: buttonFor(testCase.mode), exact: true }).click()
+  await page.getByRole('button', { name: buttonFor(testCase), exact: true }).click()
   const outcomeState = await waitForOutcome(page)
 
   let reconnectedAfterReload = null
@@ -259,6 +284,13 @@ async function runCase(testCase) {
     && verification.hasCertificate
     && (!testCase.requireDiagramWhenResolved || verification.diagramCount > 0)
   )
+  const expectedTaskMode = testCase.mode === 'fusion'
+    || (testCase.mode === 'auto' && Boolean(testCase.a?.trim() && testCase.b?.trim()))
+    ? 'fusion'
+    : 'solve'
+  const routeCorrect = expectedTaskMode === 'fusion'
+    ? apiResponses.some(response => response.url.includes('/api/mathos-generate'))
+    : apiResponses.some(response => response.url.includes('/api/solve'))
   const passed = Boolean(
     pageIdentity.url.startsWith(baseUrl)
     && pageIdentity.title.includes('MORTRA')
@@ -271,6 +303,7 @@ async function runCase(testCase) {
     && unexpectedConsoleErrors.length === 0
     && outcomeAccepted
     && resolvedChecks
+    && routeCorrect
     && (outcomeState.outcome !== 'queued' || reconnectedAfterReload === true)
   )
 
@@ -294,6 +327,7 @@ async function runCase(testCase) {
     transcript,
     bodyTail: bodyText.slice(-2000),
     apiResponses,
+    routeCorrect,
     consoleErrors,
     unexpectedConsoleErrors,
     screenshotPath,
