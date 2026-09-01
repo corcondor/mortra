@@ -221,19 +221,17 @@ async function runCase(testCase) {
     : 0
   const rawMathMarkup = artifactExists
     ? await artifact.evaluate(root => {
-      const pattern = /\\(?:sqrt|infty|frac|pi|to|cdot|left|right|operatorname)\b/
+      const pattern = /(?:\\(?:sqrt|infty|frac|pi|to|cdot|left|right|operatorname)\b|[_^]\{[^}\n]+\})/
       const matches = new Set()
-      for (const scope of root.querySelectorAll('table, svg')) {
-        const walker = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT)
-        let node = walker.nextNode()
-        while (node) {
-          const parent = node.parentElement
-          const text = node.textContent?.trim() ?? ''
-          if (parent && !parent.closest('.katex, script, style, textarea') && pattern.test(text)) {
-            matches.add(text)
-          }
-          node = walker.nextNode()
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT)
+      let node = walker.nextNode()
+      while (node) {
+        const parent = node.parentElement
+        const text = node.textContent?.trim() ?? ''
+        if (parent && !parent.closest('.katex, script, style, textarea') && pattern.test(text)) {
+          matches.add(text)
         }
+        node = walker.nextNode()
       }
       return [...matches]
     })

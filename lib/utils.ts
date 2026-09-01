@@ -19,14 +19,28 @@ const MATH_RE = /\$\$([\s\S]*?)\$\$|\\\[([\s\S]*?)\\\]|\\\(([\s\S]*?)\\\)|\$((?:
 // \dfrac, \sqrt, \frac, \int, \sum 等のコマンドが含まれていれば数式とみなす
 const BARE_LATEX_RE = /\\(?:d?frac|sqrt|int|oint|iint|sum|prod|lim|inf[ty]+|pmod|equiv|[lg]eq|binom|quad|qquad|cdot|mathbb|mathbf|mathrm|text|overline|underline|vec|hat|bar|tilde|widehat|widetilde|begin|end|left|right|[Pp]i|alpha|beta|gamma|[Dd]elta|epsilon|zeta|eta|theta|lambda|mu|nu|xi|rho|sigma|tau|phi|chi|psi|omega|partial|nabla|forall|exists|in|subset|cup|cap|to|iff|implies|land|lor|neg|pm|mp|times|div|otimes|oplus)\b/
 
+// Runtime synthesis also returns compact answers such as
+// `P(z)=z^{6}-9z^{5}+...` without delimiters or a backslash command.  Those
+// are valid TeX, but BARE_LATEX_RE alone cannot distinguish them from prose.
+// Require a clearly mathematical base together with a sub/superscript so
+// ordinary text containing braces is not sent to KaTeX.
+const BARE_SCRIPTED_MATH_RE = /(?:[A-Za-z][A-Za-z0-9]*\s*(?:\([^\n)]*\))?|[A-Za-z0-9)\]])\s*[_^]\s*(?:\{[^{}\n]+\}|[A-Za-z0-9])/u
+const NATURAL_LANGUAGE_RE = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u
+
+function isBareMathLine(line: string): boolean {
+  const trimmed = line.trim()
+  if (!trimmed || NATURAL_LANGUAGE_RE.test(trimmed)) return false
+  return BARE_LATEX_RE.test(trimmed) || BARE_SCRIPTED_MATH_RE.test(trimmed)
+}
+
 /** テキストセグメントに生 LaTeX が含まれていれば inline math として返す */
 function splitBareLatex(raw: string): MathSegment[] {
-  if (!BARE_LATEX_RE.test(raw)) return [{ type: 'text', content: raw }]
+  if (!raw.split('\n').some(isBareMathLine)) return [{ type: 'text', content: raw }]
   // 行単位で「LaTeX が多い行」と「普通のテキスト行」を分ける
   const lines = raw.split('\n')
   const result: MathSegment[] = []
   for (const line of lines) {
-    if (BARE_LATEX_RE.test(line)) {
+    if (isBareMathLine(line)) {
       // この行は数式扱い
       result.push({ type: 'inline', content: line.trim() })
     } else if (line.trim()) {
