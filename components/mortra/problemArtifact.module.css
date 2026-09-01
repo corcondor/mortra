@@ -115,6 +115,8 @@
 }
 
 .statement {
+  max-width: 100%;
+  overflow-wrap: anywhere;
   color: #f2f4f5;
   font-size: 14px;
   line-height: 1.95;
@@ -814,5 +816,14 @@
   .variationTable th:first-child {
     width: 42px;
     min-width: 42px;
+  }
+
+  .statement :global(.katex-display > .katex) {
+    font-size: 0.9em;
+  }
+
+  .answer :global(.katex-display > .katex),
+  .solution :global(.katex-display > .katex) {
+    font-size: 0.8em;
   }
 }
