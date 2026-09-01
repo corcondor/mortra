@@ -81,10 +81,20 @@ const toneClass = (tone: DiagramShape['tone']) => {
 
 function PlaneFigure({ diagram }: { diagram: PlaneProblemDiagram }) {
   const { xMin, xMax, yMin, yMax } = diagram.viewport
-  const x = (value: number) => PAD + ((value - xMin) / (xMax - xMin)) * (WIDTH - PAD * 2)
-  const y = (value: number) => HEIGHT - PAD - ((value - yMin) / (yMax - yMin)) * (HEIGHT - PAD * 2)
-  const rx = (value: number) => (value / (xMax - xMin)) * (WIDTH - PAD * 2)
-  const ry = (value: number) => (value / (yMax - yMin)) * (HEIGHT - PAD * 2)
+  const xRange = Math.max(xMax - xMin, Number.EPSILON)
+  const yRange = Math.max(yMax - yMin, Number.EPSILON)
+  const drawWidth = WIDTH - PAD * 2
+  const drawHeight = HEIGHT - PAD * 2
+  const preserveMetric = diagram.shapes.some(shape => shape.kind === 'circle' || shape.kind === 'arc')
+  const uniformScale = Math.min(drawWidth / xRange, drawHeight / yRange)
+  const xScale = preserveMetric ? uniformScale : drawWidth / xRange
+  const yScale = preserveMetric ? uniformScale : drawHeight / yRange
+  const xOffset = PAD + (drawWidth - xRange * xScale) / 2
+  const yOffset = PAD + (drawHeight - yRange * yScale) / 2
+  const x = (value: number) => xOffset + (value - xMin) * xScale
+  const y = (value: number) => yOffset + (yMax - value) * yScale
+  const rx = (value: number) => value * xScale
+  const ry = (value: number) => value * yScale
   const axisX = yMin <= 0 && yMax >= 0 ? y(0) : HEIGHT - PAD
   const axisY = xMin <= 0 && xMax >= 0 ? x(0) : PAD
 
@@ -211,9 +221,9 @@ function stateLabelLines(label: string): string[] {
 }
 
 function StateFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind: 'state' }> }) {
-  const compactStateLayout = diagram.states.length <= 2
-  const canvasWidth = compactStateLayout ? 360 : 760
-  const horizontalInset = compactStateLayout ? 50 : 70
+  const fitStateLayout = diagram.states.length <= 3
+  const canvasWidth = diagram.states.length <= 2 ? 360 : diagram.states.length === 3 ? 440 : 760
+  const horizontalInset = fitStateLayout ? 50 : 70
   const stateX = (index: number) => horizontalInset
     + (index * (canvasWidth - 2 * horizontalInset)) / Math.max(1, diagram.states.length - 1)
   const visibleEdges = diagram.transitions.filter(transition => {
@@ -226,7 +236,7 @@ function StateFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind: 'st
       <svg
         viewBox={`0 0 ${canvasWidth} 230`}
         className={styles.stateSvg}
-        style={compactStateLayout ? { minWidth: 0 } : undefined}
+        style={fitStateLayout ? { minWidth: 0 } : undefined}
       >
         <defs>
           <marker id="state-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">

@@ -117,3 +117,113 @@ test('the language query is wired into a typed Worker goal', () => {
   assert.deepEqual(algebra.query_sorts, ['Scalar'])
   assert.deepEqual(proof.query_sorts, ['Proof'])
 })
+
+test('grounds an executable constraint IR only after exact query-directed lowering succeeds', () => {
+  const solvable = buildSemanticHypergraph({
+    id: 'fresh-linear-ir',
+    statement: String.raw`方程式 \(7x-5=30\) を解け。`,
+  })
+  const nonlinear = buildSemanticHypergraph({
+    id: 'nonlinear-open-ir',
+    statement: String.raw`方程式 \(x^2+x+1=0\) の解を求めよ。`,
+  })
+  assert.ok(solvable.root_bindings?.some(binding =>
+    binding.sort === 'ExecutableConstraintIR' && binding.canonical.startsWith('ConstraintIR[')))
+  assert.equal(nonlinear.root_bindings?.some(binding =>
+    binding.sort === 'ExecutableConstraintIR'), false)
+})
+
+test('separates proof assumptions, quantified context, and the demanded proposition', () => {
+  const graph = buildSemanticHypergraph({
+    id: 'proof-separation',
+    statement: '整数 n に対し、n>0 ならば n^2>0 を示せ。',
+  })
+  assert.ok(graph.root_sorts.includes('AssumptionProposition'))
+  assert.ok(!graph.root_sorts.includes('GoalProposition'))
+  assert.ok(!graph.root_sorts.includes('Proposition'))
+  assert.ok(!graph.root_sorts.includes('QuantifierContext'))
+  assert.deepEqual(
+    graph.root_bindings?.filter(binding => binding.role === 'assumption').map(binding => binding.canonical),
+    ['Relation[>,v0,0]'],
+  )
+  assert.deepEqual(
+    graph.query_bindings?.map(binding => [binding.sort, binding.canonical]),
+    [['GoalProposition', 'Relation[>,v0^2,0]']],
+  )
+  assert.deepEqual(
+    graph.language_analysis.constraints.map(constraint => constraint.role),
+    ['assumption', 'goal'],
+  )
+})
+
+test('does not invent an operator input merely because the operation is mentioned', () => {
+  const graph = buildSemanticHypergraph({
+    id: 'ungrounded-limit',
+    statement: '未知の数列の極限を求めよ。',
+  })
+  assert.equal(graph.root_sorts.includes('FilteredObject'), false)
+  assert.equal(graph.root_sorts.includes('FiniteFamily'), false)
+  assert.equal(graph.root_bindings?.some(binding =>
+    binding.canonical.startsWith('InferredInput[')), false)
+})
+
+test('grounds a nested query from the current expression AST rather than an Atlas route', () => {
+  const graph = buildSemanticHypergraph({
+    id: 'fresh-limit-sum',
+    statement: String.raw`\[\lim_{r\to\infty}\{\sum_{j=0}^{r}j-r^2\}\]を求めよ。`,
+  })
+  assert.deepEqual(graph.query_expression_ir, [
+    'Limit',
+    'r',
+    'Infinity',
+    ['Subtract', ['Sum', 'j', 0, 'r', 'j'], ['Power', 'r', 2]],
+  ])
+  assert.ok(graph.root_bindings?.some(binding =>
+    binding.sort === 'ExecutableExpression' && binding.canonical.startsWith('ExpressionIR[')))
+  assert.ok(graph.edges.some(edge =>
+    edge.morphism === 'EvaluateExpression' && edge.source === 'ExecutableExpression'))
+})
+
+test('query operators are taken from the demanded clause, not background wording', () => {
+  const minimalPolynomial = buildSemanticHypergraph({
+    statement: String.raw`\(\alpha\) の最小多項式を \(f(x)\) とする。
+      \(g(S)=C_0+C_1/S\) の定数項 \(C_0\) を求めよ。`,
+  })
+  const finalSeries = buildSemanticHypergraph({
+    statement: String.raw`立体の体積を \(V_n\) とする。(1) \(V_n\) を求めよ。
+      (2) \(\sum_{k=1}^{\infty}1/k^2\) を求めよ。`,
+  })
+  assert.equal(minimalPolynomial.nodes.some(node => node.canonical === 'Extremum'), false)
+  assert.equal(finalSeries.nodes.some(node => node.canonical === 'Measure'), false)
+})
+
+test('a query may recover an observable through an exact named reference', () => {
+  const graph = buildSemanticHypergraph({
+    statement: String.raw`双曲線の弧と線分に囲まれる面積を \(S_k\) とする。\(S_k\) を求めよ。`,
+  })
+  assert.ok(graph.nodes.some(node => node.canonical === 'Measure'))
+})
+
+test('direct measure and extremum requests remain attached to the final query', () => {
+  const graph = buildSemanticHypergraph({
+    statement: String.raw`曲線上の三点を A,B,C とする。三角形 ABC の面積の最小値を求めよ。`,
+  })
+  assert.ok(graph.nodes.some(node => node.canonical === 'Measure'))
+  assert.ok(graph.nodes.some(node => node.canonical === 'Extremum'))
+})
+
+test('keeps intermediate observables out of the final proof demand', () => {
+  const graph = buildSemanticHypergraph({
+    statement: String.raw`三角形の面積の最大値は \(5\) 未満であることを示せ。`,
+  })
+  assert.ok(graph.nodes.some(node => node.canonical === 'Measure'))
+  assert.ok(graph.nodes.some(node => node.canonical === 'Extremum'))
+  assert.deepEqual(graph.query_sorts, ['Proof'])
+})
+
+test('uses the cardinality codomain for an explicit counting query', () => {
+  const graph = buildSemanticHypergraph({
+    statement: String.raw`条件を満たす整数の個数を求めよ。`,
+  })
+  assert.deepEqual(graph.query_sorts, ['Integer'])
+})

@@ -609,11 +609,26 @@ def try_generic_limit(structure: StructuralIR) -> dict[str, Any]:
     if parsed is None:
         return {"status": "not_applicable", "reason": "could not parse limit target"}
     variable, point, expression = parsed
+    if not is_executable_math_text(expression):
+        return {
+            "status": "not_applicable",
+            "reason": "the extracted limit target is not a mathematical expression",
+            "target": expression,
+        }
     try:
         symbols = {name: sp.symbols(name) for name in sorted(set(structure.variables + [variable]))}
         var = symbols[variable]
         expr = sp.sympify(normalize_expr(expression), locals=symbols)
         point_expr = sympy_point(point, symbols)
+        declared_symbols = set(symbols.values())
+        unbound_symbols = (expr.free_symbols | point_expr.free_symbols) - declared_symbols
+        if unbound_symbols:
+            return {
+                "status": "not_applicable",
+                "reason": "the limit contains symbols that were not bound by semantic elaboration",
+                "unbound_symbols": sorted(str(item) for item in unbound_symbols),
+                "target": expression,
+            }
         result = sp.limit(expr, var, point_expr)
         return {
             "status": "solved",
@@ -634,16 +649,37 @@ def try_generic_integral(structure: StructuralIR) -> dict[str, Any]:
     if parsed is None:
         return {"status": "not_applicable", "reason": "could not parse integral target"}
     variable, lower, upper, expression = parsed
+    if not is_executable_math_text(expression):
+        return {
+            "status": "not_applicable",
+            "reason": "the extracted integrand is not a mathematical expression",
+            "target": expression,
+        }
     try:
         symbols = {name: sp.symbols(name) for name in sorted(set(structure.variables + [variable]))}
         var = symbols[variable]
         expr = sp.sympify(normalize_expr(expression), locals=symbols)
+        declared_symbols = set(symbols.values())
+        if expr.free_symbols - declared_symbols:
+            return {
+                "status": "not_applicable",
+                "reason": "the integrand contains symbols that were not bound by semantic elaboration",
+                "unbound_symbols": sorted(str(item) for item in expr.free_symbols - declared_symbols),
+                "target": expression,
+            }
         if lower is None or upper is None:
             result = sp.integrate(expr, var)
             bounds = None
         else:
             lower_expr = sympy_point(lower, symbols)
             upper_expr = sympy_point(upper, symbols)
+            bound_symbols = lower_expr.free_symbols | upper_expr.free_symbols
+            if bound_symbols - declared_symbols:
+                return {
+                    "status": "not_applicable",
+                    "reason": "an integration bound contains symbols that were not bound by semantic elaboration",
+                    "unbound_symbols": sorted(str(item) for item in bound_symbols - declared_symbols),
+                }
             result = sp.integrate(expr, (var, lower_expr, upper_expr))
             bounds = [str(lower_expr), str(upper_expr)]
         return {
@@ -1061,6 +1097,21 @@ def clean_expression_target(text: str) -> str:
     text = text.strip(" ,，。.;")
     text = re.sub(r"\s+", " ", text)
     return text
+
+
+def is_executable_math_text(text: str) -> bool:
+    """Accept only the compact mathematical language understood by normalize_expr.
+
+    This prevents an imperative suffix such as ``を求めよ`` from being interpreted
+    as a product of newly invented SymPy symbols when LaTeX token boundaries were
+    lost earlier in the pipeline.
+    """
+
+    candidate = text.strip()
+    return bool(candidate) and re.fullmatch(
+        r"[A-Za-z0-9_+\-*/^().,\s]+",
+        candidate,
+    ) is not None
 
 
 def clean_relation_text(text: str) -> str:

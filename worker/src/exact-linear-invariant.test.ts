@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { executeLinearInvariant, type LinearInvariantProgram } from './exact-linear-invariant'
+import {
+  executeLinearInvariant,
+  verifyLinearInvariantCertificate,
+  type LinearInvariantProgram,
+} from './exact-linear-invariant'
 
 test('one exact elimination kernel proves additive, logarithmic, and angle invariants', () => {
   const programs: LinearInvariantProgram[] = [
@@ -35,7 +39,23 @@ test('one exact elimination kernel proves additive, logarithmic, and angle invar
     assert.equal(result.status, 'proved')
     assert.equal(result.expectedMatches, true)
     assert.ok(result.usedProvenance.length >= 2)
+    assert.equal(verifyLinearInvariantCertificate(program, result), true)
   }
+})
+
+test('proof-combination replay rejects a modified answer', () => {
+  const program: LinearInvariantProgram = {
+    coordinate: 'additive',
+    equations: [
+      { terms: { x: 1, y: 1 }, rhs: 19, provenance: ['sum'] },
+      { terms: { y: 1 }, rhs: 4, provenance: ['observation'] },
+    ],
+    goal: { terms: { x: 1 } },
+  }
+  const certificate = executeLinearInvariant(program)
+  assert.equal(certificate.value, '15')
+  assert.equal(verifyLinearInvariantCertificate(program, certificate), true)
+  assert.equal(verifyLinearInvariantCertificate(program, { ...certificate, value: '16' }), false)
 })
 
 test('alpha-renaming preserves the exact elimination certificate', () => {

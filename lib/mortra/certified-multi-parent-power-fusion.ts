@@ -16,6 +16,14 @@ import {
   parseRationalAngles,
   type ParsedRationalAngle,
 } from './certified-finite-state-trig-fusion'
+import {
+  exactRationalCosineOfDoubleAngle,
+  selectCertifiedRationalAngleQuadraticComparisons,
+  verifyRationalAngleQuadraticCertificate,
+  type RationalAngleQuadraticProjection,
+} from './exact-rational-angle-order'
+
+export { exactRationalCosineOfDoubleAngle } from './exact-rational-angle-order'
 
 type TypedParents = {
   recurrenceParent: CertifiedFusionParent
@@ -24,32 +32,6 @@ type TypedParents = {
   power: ParsedTrigonometricPowerSum
   angleParent: CertifiedFusionParent
   angle: ParsedRationalAngle
-}
-
-function gcd(left: bigint, right: bigint): bigint {
-  let a = left < 0n ? -left : left
-  let b = right < 0n ? -right : right
-  while (b !== 0n) [a, b] = [b, a % b]
-  return a || 1n
-}
-
-function rational(numerator: bigint, denominator = 1n): Q {
-  if (denominator === 0n) throw new Error('zero denominator')
-  const sign = denominator < 0n ? -1n : 1n
-  const divisor = gcd(numerator, denominator)
-  return {
-    n: sign * numerator / divisor,
-    d: sign * denominator / divisor,
-  }
-}
-
-function compare(left: Q, right: Q): number {
-  const difference = left.n * right.d - right.n * left.d
-  return difference < 0n ? -1 : difference > 0n ? 1 : 0
-}
-
-function subtract(left: Q, right: Q): Q {
-  return rational(left.n * right.d - right.n * left.d, left.d * right.d)
 }
 
 function rationalText(value: Q): string {
@@ -61,26 +43,6 @@ function rationalTex(value: Q): string {
   return value.n < 0n
     ? String.raw`-\frac{${-value.n}}{${value.d}}`
     : String.raw`\frac{${value.n}}{${value.d}}`
-}
-
-function positiveMod(value: bigint, modulus: bigint): bigint {
-  const residue = value % modulus
-  return residue < 0n ? residue + modulus : residue
-}
-
-/**
- * Return cos(2 phi) only when the rational angle has an exact rational
- * value. The finite cases are checked as residues modulo 2 pi.
- */
-export function exactRationalCosineOfDoubleAngle(angle: ParsedRationalAngle): Q | null {
-  const denominator = angle.denominator
-  const residue = positiveMod(2n * angle.numerator, 2n * denominator)
-  if (residue === 0n) return rational(1n)
-  if (residue === denominator) return rational(-1n)
-  if (2n * residue === denominator || 2n * residue === 3n * denominator) return rational(0n)
-  if (3n * residue === denominator || 3n * residue === 5n * denominator) return rational(1n, 2n)
-  if (3n * residue === 2n * denominator || 3n * residue === 4n * denominator) return rational(-1n, 2n)
-  return null
 }
 
 function selectTypedParents(parents: CertifiedFusionParent[]): TypedParents | null {
@@ -137,6 +99,14 @@ function angleTex(angle: ParsedRationalAngle): string {
   return String.raw`\frac{${angle.numerator}\pi}{${angle.denominator}}`
 }
 
+function quadraticProjectionTex(
+  angle: ParsedRationalAngle,
+  projection: RationalAngleQuadraticProjection,
+): string {
+  const operator = projection === 'sine_squared' ? String.raw`\sin^2` : String.raw`\cos^2`
+  return String.raw`${operator}\!\left(${angleTex(angle)}\right)`
+}
+
 function integerSetTex(values: number[]): string {
   return values.length ? String.raw`\{${values.join(',')}\}` : String.raw`\varnothing`
 }
@@ -165,8 +135,6 @@ export function synthesizeCertifiedThreeParentPowerThresholdFusion(
   if (parents.length !== 3 || new Set(parents.map(parent => parent.id)).size !== 3) return []
   const typed = selectTypedParents(parents)
   if (!typed) return []
-  const threshold = exactRationalCosineOfDoubleAngle(typed.angle)
-  if (!threshold || compare(threshold, typed.power.sum) <= 0) return []
 
   const baseCard = synthesizeCertifiedIndexedPowerSumFusion([
     typed.recurrenceParent,
@@ -179,14 +147,27 @@ export function synthesizeCertifiedThreeParentPowerThresholdFusion(
   if (!terms) return []
   const evaluation = certifyIndexedPowerSumTerms(typed.power, terms)
   if (!evaluation) return []
+  const certifiedThreshold = selectCertifiedRationalAngleQuadraticComparisons(
+    typed.angle,
+    typed.power.sum,
+    evaluation.checked.map(item => item.value),
+  )
+  if (!certifiedThreshold) return []
+  if (!verifyRationalAngleQuadraticCertificate(certifiedThreshold.certificate)) return []
 
-  const comparisons = evaluation.checked.map(item => ({
+  const comparisons = evaluation.checked.map((item, index) => ({
     ...item,
-    difference: subtract(item.value, threshold),
-    passed: compare(item.value, threshold) > 0,
+    relation: certifiedThreshold.comparisons[index].relation,
+    passed: certifiedThreshold.comparisons[index].relation === 'greater',
   }))
   const answerIndices = comparisons.filter(item => item.passed).map(item => item.index)
-  const thresholdTex = rationalTex(threshold)
+  const thresholdTex = quadraticProjectionTex(
+    typed.angle,
+    certifiedThreshold.certificate.projection,
+  )
+  const exactThresholdTex = certifiedThreshold.certificate.exactValue
+    ? rationalTex(certifiedThreshold.certificate.exactValue)
+    : null
   const sumTex = rationalTex(typed.power.sum)
   const recurrenceDefinition = recurrenceTex(typed.recurrence)
   const phiTex = angleTex(typed.angle)
@@ -199,7 +180,7 @@ export function synthesizeCertifiedThreeParentPowerThresholdFusion(
         String.raw`\hline`,
         'a_k&' + comparisons.map(item => item.exponent).join('&') + '\\\\',
         'u_{a_k}-' + thresholdTex + '&' +
-          comparisons.map(item => rationalTex(item.difference)).join('&'),
+          comparisons.map(item => item.passed ? '>0' : '<0').join('&'),
         String.raw`\end{array}`,
         String.raw`\]`,
       ].join('\n')
@@ -209,7 +190,7 @@ export function synthesizeCertifiedThreeParentPowerThresholdFusion(
 で定める。実数 \(\theta\) と角 \(\varphi\) が
 \[\sin\theta+\cos\theta=${sumTex},\qquad \varphi=${phiTex}\]
 を満たすとする。
-\[\sin^{a_k}\theta+\cos^{a_k}\theta>\cos(2\varphi)\]
+\[\sin^{a_k}\theta+\cos^{a_k}\theta>${thresholdTex}\]
 となる正の整数 \(k\) をすべて求めよ。`
   const solution = String.raw`\(X=\sin\theta,\ Y=\cos\theta\) とおき、\(u_m=X^m+Y^m\) とする。
 \[
@@ -222,9 +203,15 @@ u_{m+2}=${sumTex}u_{m+1}+\frac{1-(${sumTex})^2}{2}u_m\tag{1}
 \]
 を満たす。
 
-\(\varphi=${phiTex}\) なので、倍角の値を厳密に計算すると
-\[\cos(2\varphi)=${thresholdTex}\]
-である。漸化式で得られる指数を \((1)\) へ代入すると
+\(\varphi=${phiTex}\) なので、倍角の恒等式
+\[
+\sin^2\varphi=\frac{1-\cos(2\varphi)}2,\qquad
+\cos^2\varphi=\frac{1+\cos(2\varphi)}2
+\]
+により、比較基準を \(${thresholdTex}\) とする。${exactThresholdTex
+    ? String.raw`この値は厳密に \(${exactThresholdTex}\) である。`
+    : String.raw`この代数的数との大小は、Machin の公式による \(\pi\) の有理上下界と、余弦級数の交代級数剰余を用いて有理数の大小へ還元した。`}
+漸化式で得られる指数を \((1)\) へ代入すると
 ${table}
 となる。
 
@@ -236,8 +223,8 @@ ${table}
 
   const morphisms = [
     ...baseCard.morphism_chain.filter(morphism => morphism !== 'AllParentAblation'),
-    'RationalAngleElaboration',
-    'CertifiedObservableProjection',
+    'RationalAngleQuadraticProjection',
+    'CertifiedAlgebraicOrderComparison',
     'AllParentAblation',
   ]
   const structureId = `certified.three-parent-power-threshold.${hash({
@@ -247,6 +234,7 @@ ${table}
     },
     sum: rationalText(typed.power.sum),
     angle: [String(typed.angle.numerator), String(typed.angle.denominator)],
+    projection: certifiedThreshold.certificate.projection,
   })}`
   const exactStates = comparisons.map(item => ({
     id: `k${item.index}`,
@@ -268,23 +256,23 @@ ${table}
     proof_roadmap: [
       ...(baseCard.proof_roadmap ?? []),
       {
-        morphism_id: 'RationalAngleElaboration',
-        label_ja: '有理角から比較基準を求める',
+        morphism_id: 'RationalAngleQuadraticProjection',
+        label_ja: '有理角を二次の三角量へ写す',
         source_ja: '第三の親問題に現れる角',
-        target_ja: '厳密な有理数の比較基準',
-        role_ja: '角を倍角へ移し、余弦の値を記号的に確定します。',
+        target_ja: '厳密な代数的比較基準',
+        role_ja: '倍角公式により、有理角を正の二次量へ可逆に変換します。',
       },
       {
-        morphism_id: 'CertifiedObservableProjection',
-        label_ja: '同じべき和軌道を新しい基準で比較する',
+        morphism_id: 'CertifiedAlgebraicOrderComparison',
+        label_ja: 'べき和と代数的数を厳密比較する',
         source_ja: '漸化式で添字付けされたべき和',
         target_ja: '第三の親が定める不等式の解集合',
-        role_ja: 'べき和を再計算せず、証明済みの各状態を新しい基準と厳密比較します。',
+        role_ja: '有理上下界が分離するまで精密化し、各状態の符号を証明します。',
       },
     ],
     proof_obligations: [
       ...(baseCard.proof_obligations ?? []),
-      { id: 'rational-angle-threshold', claim_ja: '第三の親問題から得た余弦の値が厳密に正しい', status: 'verified' },
+      { id: 'rational-angle-threshold', claim_ja: '第三の親問題から得た二次三角量の上下界が厳密に正しい', status: 'verified' },
       { id: 'three-parent-dependence', claim_ja: '三つの親問題がすべて生成問題の定義に必要である', status: 'verified' },
     ],
     diagram: {
@@ -309,11 +297,12 @@ ${table}
     parent_ids: [typed.recurrence.parentId, typed.power.parentId, typed.angle.parentId],
     verification: {
       ...baseCard.verification,
-      method: baseCard.verification.method + ' + exact rational double-angle threshold + typed three-parent ablation',
+      method: baseCard.verification.method + ' + exact algebraic rational-angle comparison + typed three-parent ablation',
       samples: [
         ...baseCard.verification.samples,
         Number(typed.angle.numerator),
         Number(typed.angle.denominator),
+        certifiedThreshold.certificate.cosineTaylorTerms,
         answerIndices.length,
       ],
     },
@@ -323,32 +312,32 @@ ${table}
     },
     fusion_derivation: {
       passed: true,
-      reason: 'the recurrence supplies the exponent orbit, the trigonometric parent supplies the power-sum transition, and the rational-angle parent supplies the exact comparison threshold',
+      reason: 'the recurrence supplies the exponent orbit, the trigonometric parent supplies the power-sum transition, and the rational-angle parent supplies a certified algebraic comparison threshold',
       ablationPassed: true,
       assignments: [
         ...baseCard.fusion_derivation.assignments,
         {
           parentId: typed.angle.parentId,
-          portId: 'rational_angle_threshold',
+          portId: 'rational_angle_quadratic_threshold',
           role: 'comparison threshold',
           matchedAnchors: [typed.angle.evidence],
-          witnessSteps: ['RationalAngleElaboration', 'ExactRationalInequality'],
+          witnessSteps: ['RationalAngleQuadraticProjection', 'CertifiedAlgebraicOrderComparison'],
         },
       ],
       bridges: [{
         id: 'three-parent-threshold-pullback',
-        witnessStep: 'CertifiedObservableProjection',
-        consumes: ['exponent_orbit', 'power_sum_transition', 'rational_angle_threshold'],
+        witnessStep: 'CertifiedAlgebraicOrderComparison',
+        consumes: ['exponent_orbit', 'power_sum_transition', 'rational_angle_quadratic_threshold'],
         produces: 'three_parent_indexed_power_sum_inequality',
       }],
       intermediatePropositions: [
         ...baseCard.fusion_derivation.intermediatePropositions,
         {
           parentId: typed.angle.parentId,
-          morphism: 'RationalAngleElaboration',
+          morphism: 'RationalAngleQuadraticProjection',
           source: 'RationalAngle',
-          target: 'ExactRationalThreshold',
-          proposition: `cos(2 phi)=${rationalText(threshold)}`,
+          target: 'CertifiedAlgebraicThreshold',
+          proposition: `${certifiedThreshold.certificate.projection}(${typed.angle.numerator}/${typed.angle.denominator} pi)=${thresholdTex}`,
           proved: true,
         },
       ],
@@ -356,7 +345,7 @@ ${table}
     structure_blueprint: {
       ...baseCard.structure_blueprint,
       id: structureId,
-      observable: 'three_parent_indexed_power_sum_threshold_solution_set',
+      observable: 'three_parent_indexed_power_sum_quadratic_angle_threshold_solution_set',
       operators: morphisms,
       tags: [...baseCard.structure_blueprint.tags, 'three-parent', 'rational-angle-threshold'],
       morphismChain: morphisms,
@@ -364,8 +353,8 @@ ${table}
         ...proofCertificate,
         {
           id: 'rational-angle-threshold',
-          claim: `cosine of the doubled rational angle equals ${rationalText(threshold)} exactly`,
-          verifier: 'finite exact rational-angle residue table',
+          claim: `${thresholdTex} lies in the independently replayed exact rational interval [${rationalText(certifiedThreshold.certificate.threshold.lower)}, ${rationalText(certifiedThreshold.certificate.threshold.upper)}]`,
+          verifier: 'Machin pi interval + alternating cosine remainder + independent certificate replay',
         },
         {
           id: 'three-parent-ablation',
@@ -377,20 +366,20 @@ ${table}
         ...baseCard.structure_blueprint.structuralUniqueness,
         conditionSkeleton: [
           ...baseCard.structure_blueprint.structuralUniqueness.conditionSkeleton,
-          'rational-angle-derived-exact-threshold',
+          'rational-angle-derived-certified-algebraic-threshold',
         ],
-        querySignature: 'classify recurrence-indexed power sums above an independent rational-angle threshold',
+        querySignature: 'classify recurrence-indexed power sums above an independent quadratic rational-angle threshold',
         normalForm: answer,
         freeParameters: [
           ...baseCard.structure_blueprint.structuralUniqueness.freeParameters,
-          'rational angle with exact rational doubled cosine',
+          'rational angle with certified algebraic quadratic projection',
         ],
         numericInstanceConstants: [
           ...baseCard.structure_blueprint.structuralUniqueness.numericInstanceConstants,
           Number(typed.angle.numerator),
           Number(typed.angle.denominator),
-          Number(threshold.n),
-          Number(threshold.d),
+          certifiedThreshold.certificate.projection === 'sine_squared' ? 0 : 1,
+          certifiedThreshold.certificate.cosineTaylorTerms,
         ],
       },
     },

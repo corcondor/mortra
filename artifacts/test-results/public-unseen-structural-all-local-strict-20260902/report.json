@@ -1,0 +1,723 @@
+{
+  "schema": 1,
+  "measuredAt": "2026-09-01T15:40:44.517Z",
+  "baseUrl": "http://127.0.0.1:3002/ja",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "passed": true,
+  "summary": {
+    "cases": 13,
+    "passed": 13,
+    "resolved": 13,
+    "queued": 0,
+    "failed": []
+  },
+  "results": [
+    {
+      "id": "recurrence-general",
+      "mode": "draw",
+      "expected": "resolved",
+      "passed": true,
+      "durationMs": 4124,
+      "outcome": "resolved",
+      "jobId": null,
+      "reconnectedAfterReload": null,
+      "generatedCount": 1,
+      "pageIdentity": {
+        "url": "http://127.0.0.1:3002/ja",
+        "title": "MORTRA — Finite primitives. Infinite mathematics."
+      },
+      "encoding": {
+        "inputRoundTrip": {
+          "a": true,
+          "b": true
+        },
+        "replacementCharacter": false,
+        "probableMojibake": false,
+        "undefinedLiteral": false
+      },
+      "verification": {
+        "verifiedLabel": true,
+        "hasStatement": true,
+        "hasAnswer": true,
+        "hasSolution": true,
+        "hasCertificate": true,
+        "diagramCount": 1,
+        "diagramLabels": [
+          "漸化式・行列・特性多項式"
+        ],
+        "visualStepCount": 4
+      },
+      "finalVisualStepSelected": true,
+      "horizontalOverflow": false,
+      "phaseCodes": [
+        "complete",
+        "p = [0.33, 0.34, 0.33]",
+        "r = 1.70e-1",
+        "frontier = 0"
+      ],
+      "transcript": "0:39:41\n·\n入力問題を解答対象として受理しました。\n0:39:41\n·\nLaTeX数式を構文解析\n0:39:41\n·\n型付きの実行可能式へ変換\n0:39:41\n·\nmortra.runtime_second_order_recurrence で厳密計算\n0:39:41\n·\n未評価演算と制約残差を検査\n0:39:41\n›\n問題文・解答・検証証明書を出力",
+      "bodyTail": "候補を出す\nHAGeo 数値incidence\nTong 型付き構成\nLOCAL FORMAL LANGUAGES\n各々の言語のまま解く\nNewclid DD閉包\nNewclid 型付き遷移\nAR残差\nGCLC-Wu 多項式義務\nSyGuS 開義務\nKNOWLEDGE\n意味を保って写す\nOpenMath 項\nMMT theory graph\ninterface view\nCOORDINATION\n優先順位と予算だけ\nexact 証明書交換（既定）\nSheaf-ADMM（実験・既定OFF）\nTRUTH\nここだけが真偽を決める\n型付き native 証明書の再生\nEXECUTION\n速くする。真理は変えない\nRISC-V 型付き命令スケジューリング\nFPGA bitset関係閉包 / 有界多項式核\n真理ではない\n優先順位と予算だけ\n証明書の再生のみ\n真理を変えない\n情報は下へ流れる。真偽を決める権限は真理面だけが持ち、上へ戻らない。\nこの4つの制約は validate_unified_geometry_architecture() が実行時に検査し、破れば例外で落ちる。\nFIG. 2 — 表現 Atlas と transition map\n一つの幾何対象 — 三角形ABCとその垂心\n関係 chart\nNewclid DD\nperp(A,B,C,D)\ncoll(A,B,C)\ncyclic(A,B,C,D)\n原子\n計量 chart\n偏極・内積\n⟨u,v⟩ = 0\n二次形式 q(x)\n距離の等式\n原子\nアフィン chart\n行列式・rank\ndet[...] = 0\nrank M ≤ 2\n線形従属\n原子\ntransition\ntransition\n情報理論の対応\nchart\n= encoder\nbridge\n= channel\ncertificate replay\n= decoder / verifier\nresidual\n= syndrome\nただし意味の欠落は確率的な通信雑音ではない。同一視しない。\n2026-08-22 の測定: 橋は完成した証明書を運ぶ。未完成の義務を別の原子で作り直す経路が無い。\n構成エラー 7→0 / 静的反証 2,395件 / テスト 130/130 — それでも実問題の chart 経由候補は 0、追加正答 0/3。\n問題文\n日本語のまま\n何を訊かれたか\n求めよ / 示せ /\nすべて求めよ\n幾何の演繹\n点・線・円\n式の計算\n極限・積分\n不等式\n範囲\n証明\n示せ\n解集合\nすべて求めよ\n検証\n証明書を\n作り直す\n答える\n図と手順つき\n答えない\n推測を出さない\n振り分け先が複数あるから、幾何以外も同じ核を通る\n別々の方法で考える\n\n図形の演繹、座標計算、Wu法、Groebner消去を、無理に一つの方法へ統一しません。\n\n途中結果を共有する\n\n一つの方法で証明できた事実を、別の方法でも使える形へ変換して先へ進みます。\n\n正しさは証明で決める\n\nどの経路を調べるかは協調して決めますが、結論の正しさは多数決ではなく証明書で確認します。\n\n絞り込みを回路へ\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-series向け論理合成まで通過しています。\n\n05 / RESEARCH\n\n数学構造の標準模型をつくる。\n\n問題文から証明書まで、数学を実行可能に。\n\nCOORDINATION\n\n異なる証明法をつなぐ\n\n演繹、座標、Wu法、Groebner消去が、それぞれの得意な方法で考え、途中結果を相互に利用します。\n\nSELF-ORGANIZATION\n\n局所の判断から全体解へ\n\n一つの大きなモデルに判断を集中させず、複数の推論器が必要な情報だけを交換して答えへ進む方法を研究しています。\n\nADAPTIVE SEARCH\n\n必要な経路だけを深く探す\n\n簡単な探索から始め、解けない問題だけ計算を増やします。すべての候補を同じ深さまで調べる無駄を減らします。\n\nHARDWARE\n\n探索の絞り込みを、回路に落とした\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-seriesへの論理合成も通過しました。\n\nFinite primitives. Infinite mathematics.\n\n式・図・運動を、一つの構造の別の見え方として持つ。下の立方体は飾りではありません。断面の多角形を毎フレーム計算しています。\n\n同じ構造を、式でも図でも運動でも\n指紋を固定した実験\n規則名つきの導出列\nMORTRA / Model 1\nGitHub\nX\n@MORTRA_AI\nFinite primitives. Infinite mathematics.",
+      "apiResponses": [
+        {
+          "url": "http://127.0.0.1:3002/api/solve",
+          "status": 200
+        }
+      ],
+      "consoleErrors": [],
+      "screenshotPath": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\test-results\\public-unseen-structural-all-local-strict-20260902\\recurrence-general.png"
+    },
+    {
+      "id": "linear-congruence",
+      "mode": "solve",
+      "expected": "resolved",
+      "passed": true,
+      "durationMs": 3867,
+      "outcome": "resolved",
+      "jobId": null,
+      "reconnectedAfterReload": null,
+      "generatedCount": 1,
+      "pageIdentity": {
+        "url": "http://127.0.0.1:3002/ja",
+        "title": "MORTRA — Finite primitives. Infinite mathematics."
+      },
+      "encoding": {
+        "inputRoundTrip": {
+          "a": true,
+          "b": true
+        },
+        "replacementCharacter": false,
+        "probableMojibake": false,
+        "undefinedLiteral": false
+      },
+      "verification": {
+        "verifiedLabel": true,
+        "hasStatement": true,
+        "hasAnswer": true,
+        "hasSolution": true,
+        "hasCertificate": true,
+        "diagramCount": 1,
+        "diagramLabels": [
+          "解答で実行した変換"
+        ],
+        "visualStepCount": 4
+      },
+      "finalVisualStepSelected": true,
+      "horizontalOverflow": false,
+      "phaseCodes": [
+        "complete",
+        "p = [0.33, 0.34, 0.33]",
+        "r = 1.70e-1",
+        "frontier = 0"
+      ],
+      "transcript": "0:39:45\n·\n入力問題を解答対象として受理しました。\n0:39:46\n·\nLaTeX数式を構文解析\n0:39:46\n·\n型付きの実行可能式へ変換\n0:39:46\n·\nmortra.runtime_linear_congruence で厳密計算\n0:39:46\n·\n未評価演算と制約残差を検査\n0:39:46\n›\n問題文・解答・検証証明書を出力",
+      "bodyTail": "候補を出す\nHAGeo 数値incidence\nTong 型付き構成\nLOCAL FORMAL LANGUAGES\n各々の言語のまま解く\nNewclid DD閉包\nNewclid 型付き遷移\nAR残差\nGCLC-Wu 多項式義務\nSyGuS 開義務\nKNOWLEDGE\n意味を保って写す\nOpenMath 項\nMMT theory graph\ninterface view\nCOORDINATION\n優先順位と予算だけ\nexact 証明書交換（既定）\nSheaf-ADMM（実験・既定OFF）\nTRUTH\nここだけが真偽を決める\n型付き native 証明書の再生\nEXECUTION\n速くする。真理は変えない\nRISC-V 型付き命令スケジューリング\nFPGA bitset関係閉包 / 有界多項式核\n真理ではない\n優先順位と予算だけ\n証明書の再生のみ\n真理を変えない\n情報は下へ流れる。真偽を決める権限は真理面だけが持ち、上へ戻らない。\nこの4つの制約は validate_unified_geometry_architecture() が実行時に検査し、破れば例外で落ちる。\nFIG. 2 — 表現 Atlas と transition map\n一つの幾何対象 — 三角形ABCとその垂心\n関係 chart\nNewclid DD\nperp(A,B,C,D)\ncoll(A,B,C)\ncyclic(A,B,C,D)\n原子\n計量 chart\n偏極・内積\n⟨u,v⟩ = 0\n二次形式 q(x)\n距離の等式\n原子\nアフィン chart\n行列式・rank\ndet[...] = 0\nrank M ≤ 2\n線形従属\n原子\ntransition\ntransition\n情報理論の対応\nchart\n= encoder\nbridge\n= channel\ncertificate replay\n= decoder / verifier\nresidual\n= syndrome\nただし意味の欠落は確率的な通信雑音ではない。同一視しない。\n2026-08-22 の測定: 橋は完成した証明書を運ぶ。未完成の義務を別の原子で作り直す経路が無い。\n構成エラー 7→0 / 静的反証 2,395件 / テスト 130/130 — それでも実問題の chart 経由候補は 0、追加正答 0/3。\n問題文\n日本語のまま\n何を訊かれたか\n求めよ / 示せ /\nすべて求めよ\n幾何の演繹\n点・線・円\n式の計算\n極限・積分\n不等式\n範囲\n証明\n示せ\n解集合\nすべて求めよ\n検証\n証明書を\n作り直す\n答える\n図と手順つき\n答えない\n推測を出さない\n振り分け先が複数あるから、幾何以外も同じ核を通る\n別々の方法で考える\n\n図形の演繹、座標計算、Wu法、Groebner消去を、無理に一つの方法へ統一しません。\n\n途中結果を共有する\n\n一つの方法で証明できた事実を、別の方法でも使える形へ変換して先へ進みます。\n\n正しさは証明で決める\n\nどの経路を調べるかは協調して決めますが、結論の正しさは多数決ではなく証明書で確認します。\n\n絞り込みを回路へ\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-series向け論理合成まで通過しています。\n\n05 / RESEARCH\n\n数学構造の標準模型をつくる。\n\n問題文から証明書まで、数学を実行可能に。\n\nCOORDINATION\n\n異なる証明法をつなぐ\n\n演繹、座標、Wu法、Groebner消去が、それぞれの得意な方法で考え、途中結果を相互に利用します。\n\nSELF-ORGANIZATION\n\n局所の判断から全体解へ\n\n一つの大きなモデルに判断を集中させず、複数の推論器が必要な情報だけを交換して答えへ進む方法を研究しています。\n\nADAPTIVE SEARCH\n\n必要な経路だけを深く探す\n\n簡単な探索から始め、解けない問題だけ計算を増やします。すべての候補を同じ深さまで調べる無駄を減らします。\n\nHARDWARE\n\n探索の絞り込みを、回路に落とした\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-seriesへの論理合成も通過しました。\n\nFinite primitives. Infinite mathematics.\n\n式・図・運動を、一つの構造の別の見え方として持つ。下の立方体は飾りではありません。断面の多角形を毎フレーム計算しています。\n\n同じ構造を、式でも図でも運動でも\n指紋を固定した実験\n規則名つきの導出列\nMORTRA / Model 1\nGitHub\nX\n@MORTRA_AI\nFinite primitives. Infinite mathematics.",
+      "apiResponses": [
+        {
+          "url": "http://127.0.0.1:3002/api/solve",
+          "status": 200
+        }
+      ],
+      "consoleErrors": [],
+      "screenshotPath": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\test-results\\public-unseen-structural-all-local-strict-20260902\\linear-congruence.png"
+    },
+    {
+      "id": "factorial-valuation",
+      "mode": "solve",
+      "expected": "resolved",
+      "passed": true,
+      "durationMs": 3838,
+      "outcome": "resolved",
+      "jobId": null,
+      "reconnectedAfterReload": null,
+      "generatedCount": 1,
+      "pageIdentity": {
+        "url": "http://127.0.0.1:3002/ja",
+        "title": "MORTRA — Finite primitives. Infinite mathematics."
+      },
+      "encoding": {
+        "inputRoundTrip": {
+          "a": true,
+          "b": true
+        },
+        "replacementCharacter": false,
+        "probableMojibake": false,
+        "undefinedLiteral": false
+      },
+      "verification": {
+        "verifiedLabel": true,
+        "hasStatement": true,
+        "hasAnswer": true,
+        "hasSolution": true,
+        "hasCertificate": true,
+        "diagramCount": 1,
+        "diagramLabels": [
+          "解答で実行した変換"
+        ],
+        "visualStepCount": 4
+      },
+      "finalVisualStepSelected": true,
+      "horizontalOverflow": false,
+      "phaseCodes": [
+        "complete",
+        "p = [0.33, 0.34, 0.33]",
+        "r = 1.70e-1",
+        "frontier = 0"
+      ],
+      "transcript": "0:39:49\n·\n入力問題を解答対象として受理しました。\n0:39:50\n·\nLaTeX数式を構文解析\n0:39:50\n·\n型付きの実行可能式へ変換\n0:39:50\n·\nmortra.runtime_factorial_prime_valuation で厳密計算\n0:39:50\n·\n未評価演算と制約残差を検査\n0:39:50\n›\n問題文・解答・検証証明書を出力",
+      "bodyTail": "候補を出す\nHAGeo 数値incidence\nTong 型付き構成\nLOCAL FORMAL LANGUAGES\n各々の言語のまま解く\nNewclid DD閉包\nNewclid 型付き遷移\nAR残差\nGCLC-Wu 多項式義務\nSyGuS 開義務\nKNOWLEDGE\n意味を保って写す\nOpenMath 項\nMMT theory graph\ninterface view\nCOORDINATION\n優先順位と予算だけ\nexact 証明書交換（既定）\nSheaf-ADMM（実験・既定OFF）\nTRUTH\nここだけが真偽を決める\n型付き native 証明書の再生\nEXECUTION\n速くする。真理は変えない\nRISC-V 型付き命令スケジューリング\nFPGA bitset関係閉包 / 有界多項式核\n真理ではない\n優先順位と予算だけ\n証明書の再生のみ\n真理を変えない\n情報は下へ流れる。真偽を決める権限は真理面だけが持ち、上へ戻らない。\nこの4つの制約は validate_unified_geometry_architecture() が実行時に検査し、破れば例外で落ちる。\nFIG. 2 — 表現 Atlas と transition map\n一つの幾何対象 — 三角形ABCとその垂心\n関係 chart\nNewclid DD\nperp(A,B,C,D)\ncoll(A,B,C)\ncyclic(A,B,C,D)\n原子\n計量 chart\n偏極・内積\n⟨u,v⟩ = 0\n二次形式 q(x)\n距離の等式\n原子\nアフィン chart\n行列式・rank\ndet[...] = 0\nrank M ≤ 2\n線形従属\n原子\ntransition\ntransition\n情報理論の対応\nchart\n= encoder\nbridge\n= channel\ncertificate replay\n= decoder / verifier\nresidual\n= syndrome\nただし意味の欠落は確率的な通信雑音ではない。同一視しない。\n2026-08-22 の測定: 橋は完成した証明書を運ぶ。未完成の義務を別の原子で作り直す経路が無い。\n構成エラー 7→0 / 静的反証 2,395件 / テスト 130/130 — それでも実問題の chart 経由候補は 0、追加正答 0/3。\n問題文\n日本語のまま\n何を訊かれたか\n求めよ / 示せ /\nすべて求めよ\n幾何の演繹\n点・線・円\n式の計算\n極限・積分\n不等式\n範囲\n証明\n示せ\n解集合\nすべて求めよ\n検証\n証明書を\n作り直す\n答える\n図と手順つき\n答えない\n推測を出さない\n振り分け先が複数あるから、幾何以外も同じ核を通る\n別々の方法で考える\n\n図形の演繹、座標計算、Wu法、Groebner消去を、無理に一つの方法へ統一しません。\n\n途中結果を共有する\n\n一つの方法で証明できた事実を、別の方法でも使える形へ変換して先へ進みます。\n\n正しさは証明で決める\n\nどの経路を調べるかは協調して決めますが、結論の正しさは多数決ではなく証明書で確認します。\n\n絞り込みを回路へ\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-series向け論理合成まで通過しています。\n\n05 / RESEARCH\n\n数学構造の標準模型をつくる。\n\n問題文から証明書まで、数学を実行可能に。\n\nCOORDINATION\n\n異なる証明法をつなぐ\n\n演繹、座標、Wu法、Groebner消去が、それぞれの得意な方法で考え、途中結果を相互に利用します。\n\nSELF-ORGANIZATION\n\n局所の判断から全体解へ\n\n一つの大きなモデルに判断を集中させず、複数の推論器が必要な情報だけを交換して答えへ進む方法を研究しています。\n\nADAPTIVE SEARCH\n\n必要な経路だけを深く探す\n\n簡単な探索から始め、解けない問題だけ計算を増やします。すべての候補を同じ深さまで調べる無駄を減らします。\n\nHARDWARE\n\n探索の絞り込みを、回路に落とした\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-seriesへの論理合成も通過しました。\n\nFinite primitives. Infinite mathematics.\n\n式・図・運動を、一つの構造の別の見え方として持つ。下の立方体は飾りではありません。断面の多角形を毎フレーム計算しています。\n\n同じ構造を、式でも図でも運動でも\n指紋を固定した実験\n規則名つきの導出列\nMORTRA / Model 1\nGitHub\nX\n@MORTRA_AI\nFinite primitives. Infinite mathematics.",
+      "apiResponses": [
+        {
+          "url": "http://127.0.0.1:3002/api/solve",
+          "status": 200
+        }
+      ],
+      "consoleErrors": [],
+      "screenshotPath": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\test-results\\public-unseen-structural-all-local-strict-20260902\\factorial-valuation.png"
+    },
+    {
+      "id": "biased-coin-run",
+      "mode": "draw",
+      "expected": "resolved",
+      "passed": true,
+      "durationMs": 4041,
+      "outcome": "resolved",
+      "jobId": null,
+      "reconnectedAfterReload": null,
+      "generatedCount": 1,
+      "pageIdentity": {
+        "url": "http://127.0.0.1:3002/ja",
+        "title": "MORTRA — Finite primitives. Infinite mathematics."
+      },
+      "encoding": {
+        "inputRoundTrip": {
+          "a": true,
+          "b": true
+        },
+        "replacementCharacter": false,
+        "probableMojibake": false,
+        "undefinedLiteral": false
+      },
+      "verification": {
+        "verifiedLabel": true,
+        "hasStatement": true,
+        "hasAnswer": true,
+        "hasSolution": true,
+        "hasCertificate": true,
+        "diagramCount": 1,
+        "diagramLabels": [
+          "連続する表の待ち時間"
+        ],
+        "visualStepCount": 4
+      },
+      "finalVisualStepSelected": true,
+      "horizontalOverflow": false,
+      "phaseCodes": [
+        "complete",
+        "p = [0.33, 0.34, 0.33]",
+        "r = 1.70e-1",
+        "frontier = 0"
+      ],
+      "transcript": "0:39:53\n·\n入力問題を解答対象として受理しました。\n0:39:54\n·\nLaTeX数式を構文解析\n0:39:54\n·\n型付きの実行可能式へ変換\n0:39:54\n·\nmortra.runtime_finite_state_expectation で厳密計算\n0:39:54\n·\n未評価演算と制約残差を検査\n0:39:54\n›\n問題文・解答・検証証明書を出力",
+      "bodyTail": "候補を出す\nHAGeo 数値incidence\nTong 型付き構成\nLOCAL FORMAL LANGUAGES\n各々の言語のまま解く\nNewclid DD閉包\nNewclid 型付き遷移\nAR残差\nGCLC-Wu 多項式義務\nSyGuS 開義務\nKNOWLEDGE\n意味を保って写す\nOpenMath 項\nMMT theory graph\ninterface view\nCOORDINATION\n優先順位と予算だけ\nexact 証明書交換（既定）\nSheaf-ADMM（実験・既定OFF）\nTRUTH\nここだけが真偽を決める\n型付き native 証明書の再生\nEXECUTION\n速くする。真理は変えない\nRISC-V 型付き命令スケジューリング\nFPGA bitset関係閉包 / 有界多項式核\n真理ではない\n優先順位と予算だけ\n証明書の再生のみ\n真理を変えない\n情報は下へ流れる。真偽を決める権限は真理面だけが持ち、上へ戻らない。\nこの4つの制約は validate_unified_geometry_architecture() が実行時に検査し、破れば例外で落ちる。\nFIG. 2 — 表現 Atlas と transition map\n一つの幾何対象 — 三角形ABCとその垂心\n関係 chart\nNewclid DD\nperp(A,B,C,D)\ncoll(A,B,C)\ncyclic(A,B,C,D)\n原子\n計量 chart\n偏極・内積\n⟨u,v⟩ = 0\n二次形式 q(x)\n距離の等式\n原子\nアフィン chart\n行列式・rank\ndet[...] = 0\nrank M ≤ 2\n線形従属\n原子\ntransition\ntransition\n情報理論の対応\nchart\n= encoder\nbridge\n= channel\ncertificate replay\n= decoder / verifier\nresidual\n= syndrome\nただし意味の欠落は確率的な通信雑音ではない。同一視しない。\n2026-08-22 の測定: 橋は完成した証明書を運ぶ。未完成の義務を別の原子で作り直す経路が無い。\n構成エラー 7→0 / 静的反証 2,395件 / テスト 130/130 — それでも実問題の chart 経由候補は 0、追加正答 0/3。\n問題文\n日本語のまま\n何を訊かれたか\n求めよ / 示せ /\nすべて求めよ\n幾何の演繹\n点・線・円\n式の計算\n極限・積分\n不等式\n範囲\n証明\n示せ\n解集合\nすべて求めよ\n検証\n証明書を\n作り直す\n答える\n図と手順つき\n答えない\n推測を出さない\n振り分け先が複数あるから、幾何以外も同じ核を通る\n別々の方法で考える\n\n図形の演繹、座標計算、Wu法、Groebner消去を、無理に一つの方法へ統一しません。\n\n途中結果を共有する\n\n一つの方法で証明できた事実を、別の方法でも使える形へ変換して先へ進みます。\n\n正しさは証明で決める\n\nどの経路を調べるかは協調して決めますが、結論の正しさは多数決ではなく証明書で確認します。\n\n絞り込みを回路へ\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-series向け論理合成まで通過しています。\n\n05 / RESEARCH\n\n数学構造の標準模型をつくる。\n\n問題文から証明書まで、数学を実行可能に。\n\nCOORDINATION\n\n異なる証明法をつなぐ\n\n演繹、座標、Wu法、Groebner消去が、それぞれの得意な方法で考え、途中結果を相互に利用します。\n\nSELF-ORGANIZATION\n\n局所の判断から全体解へ\n\n一つの大きなモデルに判断を集中させず、複数の推論器が必要な情報だけを交換して答えへ進む方法を研究しています。\n\nADAPTIVE SEARCH\n\n必要な経路だけを深く探す\n\n簡単な探索から始め、解けない問題だけ計算を増やします。すべての候補を同じ深さまで調べる無駄を減らします。\n\nHARDWARE\n\n探索の絞り込みを、回路に落とした\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-seriesへの論理合成も通過しました。\n\nFinite primitives. Infinite mathematics.\n\n式・図・運動を、一つの構造の別の見え方として持つ。下の立方体は飾りではありません。断面の多角形を毎フレーム計算しています。\n\n同じ構造を、式でも図でも運動でも\n指紋を固定した実験\n規則名つきの導出列\nMORTRA / Model 1\nGitHub\nX\n@MORTRA_AI\nFinite primitives. Infinite mathematics.",
+      "apiResponses": [
+        {
+          "url": "http://127.0.0.1:3002/api/solve",
+          "status": 200
+        }
+      ],
+      "consoleErrors": [],
+      "screenshotPath": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\test-results\\public-unseen-structural-all-local-strict-20260902\\biased-coin-run.png"
+    },
+    {
+      "id": "quartic-variation",
+      "mode": "draw",
+      "expected": "resolved",
+      "passed": true,
+      "durationMs": 4296,
+      "outcome": "resolved",
+      "jobId": null,
+      "reconnectedAfterReload": null,
+      "generatedCount": 1,
+      "pageIdentity": {
+        "url": "http://127.0.0.1:3002/ja",
+        "title": "MORTRA — Finite primitives. Infinite mathematics."
+      },
+      "encoding": {
+        "inputRoundTrip": {
+          "a": true,
+          "b": true
+        },
+        "replacementCharacter": false,
+        "probableMojibake": false,
+        "undefinedLiteral": false
+      },
+      "verification": {
+        "verifiedLabel": true,
+        "hasStatement": true,
+        "hasAnswer": true,
+        "hasSolution": true,
+        "hasCertificate": true,
+        "diagramCount": 2,
+        "diagramLabels": [
+          "増減表",
+          "関数の概形"
+        ],
+        "visualStepCount": 4
+      },
+      "finalVisualStepSelected": true,
+      "horizontalOverflow": false,
+      "phaseCodes": [
+        "complete",
+        "p = [0.33, 0.34, 0.33]",
+        "r = 1.70e-1",
+        "frontier = 0"
+      ],
+      "transcript": "0:39:58\n·\n入力問題を解答対象として受理しました。\n0:39:58\n·\nLaTeX数式を構文解析\n0:39:58\n·\n型付きの実行可能式へ変換\n0:39:58\n·\nmortra.runtime_univariate_variation で厳密計算\n0:39:58\n·\n未評価演算と制約残差を検査\n0:39:58\n›\n問題文・解答・検証証明書を出力",
+      "bodyTail": "候補を出す\nHAGeo 数値incidence\nTong 型付き構成\nLOCAL FORMAL LANGUAGES\n各々の言語のまま解く\nNewclid DD閉包\nNewclid 型付き遷移\nAR残差\nGCLC-Wu 多項式義務\nSyGuS 開義務\nKNOWLEDGE\n意味を保って写す\nOpenMath 項\nMMT theory graph\ninterface view\nCOORDINATION\n優先順位と予算だけ\nexact 証明書交換（既定）\nSheaf-ADMM（実験・既定OFF）\nTRUTH\nここだけが真偽を決める\n型付き native 証明書の再生\nEXECUTION\n速くする。真理は変えない\nRISC-V 型付き命令スケジューリング\nFPGA bitset関係閉包 / 有界多項式核\n真理ではない\n優先順位と予算だけ\n証明書の再生のみ\n真理を変えない\n情報は下へ流れる。真偽を決める権限は真理面だけが持ち、上へ戻らない。\nこの4つの制約は validate_unified_geometry_architecture() が実行時に検査し、破れば例外で落ちる。\nFIG. 2 — 表現 Atlas と transition map\n一つの幾何対象 — 三角形ABCとその垂心\n関係 chart\nNewclid DD\nperp(A,B,C,D)\ncoll(A,B,C)\ncyclic(A,B,C,D)\n原子\n計量 chart\n偏極・内積\n⟨u,v⟩ = 0\n二次形式 q(x)\n距離の等式\n原子\nアフィン chart\n行列式・rank\ndet[...] = 0\nrank M ≤ 2\n線形従属\n原子\ntransition\ntransition\n情報理論の対応\nchart\n= encoder\nbridge\n= channel\ncertificate replay\n= decoder / verifier\nresidual\n= syndrome\nただし意味の欠落は確率的な通信雑音ではない。同一視しない。\n2026-08-22 の測定: 橋は完成した証明書を運ぶ。未完成の義務を別の原子で作り直す経路が無い。\n構成エラー 7→0 / 静的反証 2,395件 / テスト 130/130 — それでも実問題の chart 経由候補は 0、追加正答 0/3。\n問題文\n日本語のまま\n何を訊かれたか\n求めよ / 示せ /\nすべて求めよ\n幾何の演繹\n点・線・円\n式の計算\n極限・積分\n不等式\n範囲\n証明\n示せ\n解集合\nすべて求めよ\n検証\n証明書を\n作り直す\n答える\n図と手順つき\n答えない\n推測を出さない\n振り分け先が複数あるから、幾何以外も同じ核を通る\n別々の方法で考える\n\n図形の演繹、座標計算、Wu法、Groebner消去を、無理に一つの方法へ統一しません。\n\n途中結果を共有する\n\n一つの方法で証明できた事実を、別の方法でも使える形へ変換して先へ進みます。\n\n正しさは証明で決める\n\nどの経路を調べるかは協調して決めますが、結論の正しさは多数決ではなく証明書で確認します。\n\n絞り込みを回路へ\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-series向け論理合成まで通過しています。\n\n05 / RESEARCH\n\n数学構造の標準模型をつくる。\n\n問題文から証明書まで、数学を実行可能に。\n\nCOORDINATION\n\n異なる証明法をつなぐ\n\n演繹、座標、Wu法、Groebner消去が、それぞれの得意な方法で考え、途中結果を相互に利用します。\n\nSELF-ORGANIZATION\n\n局所の判断から全体解へ\n\n一つの大きなモデルに判断を集中させず、複数の推論器が必要な情報だけを交換して答えへ進む方法を研究しています。\n\nADAPTIVE SEARCH\n\n必要な経路だけを深く探す\n\n簡単な探索から始め、解けない問題だけ計算を増やします。すべての候補を同じ深さまで調べる無駄を減らします。\n\nHARDWARE\n\n探索の絞り込みを、回路に落とした\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-seriesへの論理合成も通過しました。\n\nFinite primitives. Infinite mathematics.\n\n式・図・運動を、一つの構造の別の見え方として持つ。下の立方体は飾りではありません。断面の多角形を毎フレーム計算しています。\n\n同じ構造を、式でも図でも運動でも\n指紋を固定した実験\n規則名つきの導出列\nMORTRA / Model 1\nGitHub\nX\n@MORTRA_AI\nFinite primitives. Infinite mathematics.",
+      "apiResponses": [
+        {
+          "url": "http://127.0.0.1:3002/api/solve",
+          "status": 200
+        }
+      ],
+      "consoleErrors": [],
+      "screenshotPath": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\test-results\\public-unseen-structural-all-local-strict-20260902\\quartic-variation.png"
+    },
+    {
+      "id": "rational-variation",
+      "mode": "draw",
+      "expected": "resolved",
+      "passed": true,
+      "durationMs": 5260,
+      "outcome": "resolved",
+      "jobId": null,
+      "reconnectedAfterReload": null,
+      "generatedCount": 1,
+      "pageIdentity": {
+        "url": "http://127.0.0.1:3002/ja",
+        "title": "MORTRA — Finite primitives. Infinite mathematics."
+      },
+      "encoding": {
+        "inputRoundTrip": {
+          "a": true,
+          "b": true
+        },
+        "replacementCharacter": false,
+        "probableMojibake": false,
+        "undefinedLiteral": false
+      },
+      "verification": {
+        "verifiedLabel": true,
+        "hasStatement": true,
+        "hasAnswer": true,
+        "hasSolution": true,
+        "hasCertificate": true,
+        "diagramCount": 2,
+        "diagramLabels": [
+          "増減表",
+          "有理関数の概形"
+        ],
+        "visualStepCount": 4
+      },
+      "finalVisualStepSelected": true,
+      "horizontalOverflow": false,
+      "phaseCodes": [
+        "complete",
+        "p = [0.33, 0.34, 0.33]",
+        "r = 1.70e-1",
+        "frontier = 0"
+      ],
+      "transcript": "0:40:02\n·\n入力問題を解答対象として受理しました。\n0:40:02\n·\nLaTeX数式を構文解析\n0:40:02\n·\n型付きの実行可能式へ変換\n0:40:02\n·\nmortra.runtime_rational_variation で厳密計算\n0:40:02\n·\n未評価演算と制約残差を検査\n0:40:02\n›\n問題文・解答・検証証明書を出力",
+      "bodyTail": "候補を出す\nHAGeo 数値incidence\nTong 型付き構成\nLOCAL FORMAL LANGUAGES\n各々の言語のまま解く\nNewclid DD閉包\nNewclid 型付き遷移\nAR残差\nGCLC-Wu 多項式義務\nSyGuS 開義務\nKNOWLEDGE\n意味を保って写す\nOpenMath 項\nMMT theory graph\ninterface view\nCOORDINATION\n優先順位と予算だけ\nexact 証明書交換（既定）\nSheaf-ADMM（実験・既定OFF）\nTRUTH\nここだけが真偽を決める\n型付き native 証明書の再生\nEXECUTION\n速くする。真理は変えない\nRISC-V 型付き命令スケジューリング\nFPGA bitset関係閉包 / 有界多項式核\n真理ではない\n優先順位と予算だけ\n証明書の再生のみ\n真理を変えない\n情報は下へ流れる。真偽を決める権限は真理面だけが持ち、上へ戻らない。\nこの4つの制約は validate_unified_geometry_architecture() が実行時に検査し、破れば例外で落ちる。\nFIG. 2 — 表現 Atlas と transition map\n一つの幾何対象 — 三角形ABCとその垂心\n関係 chart\nNewclid DD\nperp(A,B,C,D)\ncoll(A,B,C)\ncyclic(A,B,C,D)\n原子\n計量 chart\n偏極・内積\n⟨u,v⟩ = 0\n二次形式 q(x)\n距離の等式\n原子\nアフィン chart\n行列式・rank\ndet[...] = 0\nrank M ≤ 2\n線形従属\n原子\ntransition\ntransition\n情報理論の対応\nchart\n= encoder\nbridge\n= channel\ncertificate replay\n= decoder / verifier\nresidual\n= syndrome\nただし意味の欠落は確率的な通信雑音ではない。同一視しない。\n2026-08-22 の測定: 橋は完成した証明書を運ぶ。未完成の義務を別の原子で作り直す経路が無い。\n構成エラー 7→0 / 静的反証 2,395件 / テスト 130/130 — それでも実問題の chart 経由候補は 0、追加正答 0/3。\n問題文\n日本語のまま\n何を訊かれたか\n求めよ / 示せ /\nすべて求めよ\n幾何の演繹\n点・線・円\n式の計算\n極限・積分\n不等式\n範囲\n証明\n示せ\n解集合\nすべて求めよ\n検証\n証明書を\n作り直す\n答える\n図と手順つき\n答えない\n推測を出さない\n振り分け先が複数あるから、幾何以外も同じ核を通る\n別々の方法で考える\n\n図形の演繹、座標計算、Wu法、Groebner消去を、無理に一つの方法へ統一しません。\n\n途中結果を共有する\n\n一つの方法で証明できた事実を、別の方法でも使える形へ変換して先へ進みます。\n\n正しさは証明で決める\n\nどの経路を調べるかは協調して決めますが、結論の正しさは多数決ではなく証明書で確認します。\n\n絞り込みを回路へ\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-series向け論理合成まで通過しています。\n\n05 / RESEARCH\n\n数学構造の標準模型をつくる。\n\n問題文から証明書まで、数学を実行可能に。\n\nCOORDINATION\n\n異なる証明法をつなぐ\n\n演繹、座標、Wu法、Groebner消去が、それぞれの得意な方法で考え、途中結果を相互に利用します。\n\nSELF-ORGANIZATION\n\n局所の判断から全体解へ\n\n一つの大きなモデルに判断を集中させず、複数の推論器が必要な情報だけを交換して答えへ進む方法を研究しています。\n\nADAPTIVE SEARCH\n\n必要な経路だけを深く探す\n\n簡単な探索から始め、解けない問題だけ計算を増やします。すべての候補を同じ深さまで調べる無駄を減らします。\n\nHARDWARE\n\n探索の絞り込みを、回路に落とした\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-seriesへの論理合成も通過しました。\n\nFinite primitives. Infinite mathematics.\n\n式・図・運動を、一つの構造の別の見え方として持つ。下の立方体は飾りではありません。断面の多角形を毎フレーム計算しています。\n\n同じ構造を、式でも図でも運動でも\n指紋を固定した実験\n規則名つきの導出列\nMORTRA / Model 1\nGitHub\nX\n@MORTRA_AI\nFinite primitives. Infinite mathematics.",
+      "apiResponses": [
+        {
+          "url": "http://127.0.0.1:3002/api/solve",
+          "status": 200
+        }
+      ],
+      "consoleErrors": [],
+      "screenshotPath": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\test-results\\public-unseen-structural-all-local-strict-20260902\\rational-variation.png"
+    },
+    {
+      "id": "constrained-extremum",
+      "mode": "solve",
+      "expected": "resolved",
+      "passed": true,
+      "durationMs": 4353,
+      "outcome": "resolved",
+      "jobId": null,
+      "reconnectedAfterReload": null,
+      "generatedCount": 1,
+      "pageIdentity": {
+        "url": "http://127.0.0.1:3002/ja",
+        "title": "MORTRA — Finite primitives. Infinite mathematics."
+      },
+      "encoding": {
+        "inputRoundTrip": {
+          "a": true,
+          "b": true
+        },
+        "replacementCharacter": false,
+        "probableMojibake": false,
+        "undefinedLiteral": false
+      },
+      "verification": {
+        "verifiedLabel": true,
+        "hasStatement": true,
+        "hasAnswer": true,
+        "hasSolution": true,
+        "hasCertificate": true,
+        "diagramCount": 1,
+        "diagramLabels": [
+          "制約条件上の目的関数"
+        ],
+        "visualStepCount": 4
+      },
+      "finalVisualStepSelected": true,
+      "horizontalOverflow": false,
+      "phaseCodes": [
+        "complete",
+        "p = [0.33, 0.34, 0.33]",
+        "r = 1.70e-1",
+        "frontier = 0"
+      ],
+      "transcript": "0:40:08\n·\n入力問題を解答対象として受理しました。\n0:40:08\n·\nLaTeX数式を構文解析\n0:40:08\n·\n型付きの実行可能式へ変換\n0:40:08\n·\nmortra.runtime_positive_monomial_extremum で厳密計算\n0:40:08\n·\n未評価演算と制約残差を検査\n0:40:08\n›\n問題文・解答・検証証明書を出力",
+      "bodyTail": "候補を出す\nHAGeo 数値incidence\nTong 型付き構成\nLOCAL FORMAL LANGUAGES\n各々の言語のまま解く\nNewclid DD閉包\nNewclid 型付き遷移\nAR残差\nGCLC-Wu 多項式義務\nSyGuS 開義務\nKNOWLEDGE\n意味を保って写す\nOpenMath 項\nMMT theory graph\ninterface view\nCOORDINATION\n優先順位と予算だけ\nexact 証明書交換（既定）\nSheaf-ADMM（実験・既定OFF）\nTRUTH\nここだけが真偽を決める\n型付き native 証明書の再生\nEXECUTION\n速くする。真理は変えない\nRISC-V 型付き命令スケジューリング\nFPGA bitset関係閉包 / 有界多項式核\n真理ではない\n優先順位と予算だけ\n証明書の再生のみ\n真理を変えない\n情報は下へ流れる。真偽を決める権限は真理面だけが持ち、上へ戻らない。\nこの4つの制約は validate_unified_geometry_architecture() が実行時に検査し、破れば例外で落ちる。\nFIG. 2 — 表現 Atlas と transition map\n一つの幾何対象 — 三角形ABCとその垂心\n関係 chart\nNewclid DD\nperp(A,B,C,D)\ncoll(A,B,C)\ncyclic(A,B,C,D)\n原子\n計量 chart\n偏極・内積\n⟨u,v⟩ = 0\n二次形式 q(x)\n距離の等式\n原子\nアフィン chart\n行列式・rank\ndet[...] = 0\nrank M ≤ 2\n線形従属\n原子\ntransition\ntransition\n情報理論の対応\nchart\n= encoder\nbridge\n= channel\ncertificate replay\n= decoder / verifier\nresidual\n= syndrome\nただし意味の欠落は確率的な通信雑音ではない。同一視しない。\n2026-08-22 の測定: 橋は完成した証明書を運ぶ。未完成の義務を別の原子で作り直す経路が無い。\n構成エラー 7→0 / 静的反証 2,395件 / テスト 130/130 — それでも実問題の chart 経由候補は 0、追加正答 0/3。\n問題文\n日本語のまま\n何を訊かれたか\n求めよ / 示せ /\nすべて求めよ\n幾何の演繹\n点・線・円\n式の計算\n極限・積分\n不等式\n範囲\n証明\n示せ\n解集合\nすべて求めよ\n検証\n証明書を\n作り直す\n答える\n図と手順つき\n答えない\n推測を出さない\n振り分け先が複数あるから、幾何以外も同じ核を通る\n別々の方法で考える\n\n図形の演繹、座標計算、Wu法、Groebner消去を、無理に一つの方法へ統一しません。\n\n途中結果を共有する\n\n一つの方法で証明できた事実を、別の方法でも使える形へ変換して先へ進みます。\n\n正しさは証明で決める\n\nどの経路を調べるかは協調して決めますが、結論の正しさは多数決ではなく証明書で確認します。\n\n絞り込みを回路へ\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-series向け論理合成まで通過しています。\n\n05 / RESEARCH\n\n数学構造の標準模型をつくる。\n\n問題文から証明書まで、数学を実行可能に。\n\nCOORDINATION\n\n異なる証明法をつなぐ\n\n演繹、座標、Wu法、Groebner消去が、それぞれの得意な方法で考え、途中結果を相互に利用します。\n\nSELF-ORGANIZATION\n\n局所の判断から全体解へ\n\n一つの大きなモデルに判断を集中させず、複数の推論器が必要な情報だけを交換して答えへ進む方法を研究しています。\n\nADAPTIVE SEARCH\n\n必要な経路だけを深く探す\n\n簡単な探索から始め、解けない問題だけ計算を増やします。すべての候補を同じ深さまで調べる無駄を減らします。\n\nHARDWARE\n\n探索の絞り込みを、回路に落とした\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-seriesへの論理合成も通過しました。\n\nFinite primitives. Infinite mathematics.\n\n式・図・運動を、一つの構造の別の見え方として持つ。下の立方体は飾りではありません。断面の多角形を毎フレーム計算しています。\n\n同じ構造を、式でも図でも運動でも\n指紋を固定した実験\n規則名つきの導出列\nMORTRA / Model 1\nGitHub\nX\n@MORTRA_AI\nFinite primitives. Infinite mathematics.",
+      "apiResponses": [
+        {
+          "url": "http://127.0.0.1:3002/api/solve",
+          "status": 200
+        }
+      ],
+      "consoleErrors": [],
+      "screenshotPath": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\test-results\\public-unseen-structural-all-local-strict-20260902\\constrained-extremum.png"
+    },
+    {
+      "id": "tetrahedron-volume",
+      "mode": "draw",
+      "expected": "resolved",
+      "passed": true,
+      "durationMs": 5390,
+      "outcome": "resolved",
+      "jobId": null,
+      "reconnectedAfterReload": null,
+      "generatedCount": 1,
+      "pageIdentity": {
+        "url": "http://127.0.0.1:3002/ja",
+        "title": "MORTRA — Finite primitives. Infinite mathematics."
+      },
+      "encoding": {
+        "inputRoundTrip": {
+          "a": true,
+          "b": true
+        },
+        "replacementCharacter": false,
+        "probableMojibake": false,
+        "undefinedLiteral": false
+      },
+      "verification": {
+        "verifiedLabel": true,
+        "hasStatement": true,
+        "hasAnswer": true,
+        "hasSolution": true,
+        "hasCertificate": true,
+        "diagramCount": 1,
+        "diagramLabels": [
+          "四面体の座標投影図"
+        ],
+        "visualStepCount": 4
+      },
+      "finalVisualStepSelected": true,
+      "horizontalOverflow": false,
+      "phaseCodes": [
+        "complete",
+        "p = [0.33, 0.34, 0.33]",
+        "r = 1.70e-1",
+        "frontier = 0"
+      ],
+      "transcript": "0:40:13\n·\n入力問題を解答対象として受理しました。\n0:40:13\n·\nLaTeX数式を構文解析\n0:40:13\n·\n型付きの実行可能式へ変換\n0:40:13\n·\nmortra.runtime_tetrahedron_determinant_volume で厳密計算\n0:40:13\n·\n未評価演算と制約残差を検査\n0:40:13\n›\n問題文・解答・検証証明書を出力",
+      "bodyTail": "候補を出す\nHAGeo 数値incidence\nTong 型付き構成\nLOCAL FORMAL LANGUAGES\n各々の言語のまま解く\nNewclid DD閉包\nNewclid 型付き遷移\nAR残差\nGCLC-Wu 多項式義務\nSyGuS 開義務\nKNOWLEDGE\n意味を保って写す\nOpenMath 項\nMMT theory graph\ninterface view\nCOORDINATION\n優先順位と予算だけ\nexact 証明書交換（既定）\nSheaf-ADMM（実験・既定OFF）\nTRUTH\nここだけが真偽を決める\n型付き native 証明書の再生\nEXECUTION\n速くする。真理は変えない\nRISC-V 型付き命令スケジューリング\nFPGA bitset関係閉包 / 有界多項式核\n真理ではない\n優先順位と予算だけ\n証明書の再生のみ\n真理を変えない\n情報は下へ流れる。真偽を決める権限は真理面だけが持ち、上へ戻らない。\nこの4つの制約は validate_unified_geometry_architecture() が実行時に検査し、破れば例外で落ちる。\nFIG. 2 — 表現 Atlas と transition map\n一つの幾何対象 — 三角形ABCとその垂心\n関係 chart\nNewclid DD\nperp(A,B,C,D)\ncoll(A,B,C)\ncyclic(A,B,C,D)\n原子\n計量 chart\n偏極・内積\n⟨u,v⟩ = 0\n二次形式 q(x)\n距離の等式\n原子\nアフィン chart\n行列式・rank\ndet[...] = 0\nrank M ≤ 2\n線形従属\n原子\ntransition\ntransition\n情報理論の対応\nchart\n= encoder\nbridge\n= channel\ncertificate replay\n= decoder / verifier\nresidual\n= syndrome\nただし意味の欠落は確率的な通信雑音ではない。同一視しない。\n2026-08-22 の測定: 橋は完成した証明書を運ぶ。未完成の義務を別の原子で作り直す経路が無い。\n構成エラー 7→0 / 静的反証 2,395件 / テスト 130/130 — それでも実問題の chart 経由候補は 0、追加正答 0/3。\n問題文\n日本語のまま\n何を訊かれたか\n求めよ / 示せ /\nすべて求めよ\n幾何の演繹\n点・線・円\n式の計算\n極限・積分\n不等式\n範囲\n証明\n示せ\n解集合\nすべて求めよ\n検証\n証明書を\n作り直す\n答える\n図と手順つき\n答えない\n推測を出さない\n振り分け先が複数あるから、幾何以外も同じ核を通る\n別々の方法で考える\n\n図形の演繹、座標計算、Wu法、Groebner消去を、無理に一つの方法へ統一しません。\n\n途中結果を共有する\n\n一つの方法で証明できた事実を、別の方法でも使える形へ変換して先へ進みます。\n\n正しさは証明で決める\n\nどの経路を調べるかは協調して決めますが、結論の正しさは多数決ではなく証明書で確認します。\n\n絞り込みを回路へ\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-series向け論理合成まで通過しています。\n\n05 / RESEARCH\n\n数学構造の標準模型をつくる。\n\n問題文から証明書まで、数学を実行可能に。\n\nCOORDINATION\n\n異なる証明法をつなぐ\n\n演繹、座標、Wu法、Groebner消去が、それぞれの得意な方法で考え、途中結果を相互に利用します。\n\nSELF-ORGANIZATION\n\n局所の判断から全体解へ\n\n一つの大きなモデルに判断を集中させず、複数の推論器が必要な情報だけを交換して答えへ進む方法を研究しています。\n\nADAPTIVE SEARCH\n\n必要な経路だけを深く探す\n\n簡単な探索から始め、解けない問題だけ計算を増やします。すべての候補を同じ深さまで調べる無駄を減らします。\n\nHARDWARE\n\n探索の絞り込みを、回路に落とした\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-seriesへの論理合成も通過しました。\n\nFinite primitives. Infinite mathematics.\n\n式・図・運動を、一つの構造の別の見え方として持つ。下の立方体は飾りではありません。断面の多角形を毎フレーム計算しています。\n\n同じ構造を、式でも図でも運動でも\n指紋を固定した実験\n規則名つきの導出列\nMORTRA / Model 1\nGitHub\nX\n@MORTRA_AI\nFinite primitives. Infinite mathematics.",
+      "apiResponses": [
+        {
+          "url": "http://127.0.0.1:3002/api/solve",
+          "status": 200
+        }
+      ],
+      "consoleErrors": [],
+      "screenshotPath": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\test-results\\public-unseen-structural-all-local-strict-20260902\\tetrahedron-volume.png"
+    },
+    {
+      "id": "die-first-repeat",
+      "mode": "draw",
+      "expected": "resolved",
+      "passed": true,
+      "durationMs": 5439,
+      "outcome": "resolved",
+      "jobId": null,
+      "reconnectedAfterReload": null,
+      "generatedCount": 1,
+      "pageIdentity": {
+        "url": "http://127.0.0.1:3002/ja",
+        "title": "MORTRA — Finite primitives. Infinite mathematics."
+      },
+      "encoding": {
+        "inputRoundTrip": {
+          "a": true,
+          "b": true
+        },
+        "replacementCharacter": false,
+        "probableMojibake": false,
+        "undefinedLiteral": false
+      },
+      "verification": {
+        "verifiedLabel": true,
+        "hasStatement": true,
+        "hasAnswer": true,
+        "hasSolution": true,
+        "hasCertificate": true,
+        "diagramCount": 1,
+        "diagramLabels": [
+          "最初の重複までの状態遷移"
+        ],
+        "visualStepCount": 4
+      },
+      "finalVisualStepSelected": true,
+      "horizontalOverflow": false,
+      "phaseCodes": [
+        "complete",
+        "p = [0.33, 0.34, 0.33]",
+        "r = 1.70e-1",
+        "frontier = 0"
+      ],
+      "transcript": "0:40:18\n·\n入力問題を解答対象として受理しました。\n0:40:18\n·\nLaTeX数式を構文解析\n0:40:18\n·\n型付きの実行可能式へ変換\n0:40:18\n·\nmortra.runtime_first_repeat_die_expectation で厳密計算\n0:40:18\n·\n未評価演算と制約残差を検査\n0:40:18\n›\n問題文・解答・検証証明書を出力",
+      "bodyTail": "候補を出す\nHAGeo 数値incidence\nTong 型付き構成\nLOCAL FORMAL LANGUAGES\n各々の言語のまま解く\nNewclid DD閉包\nNewclid 型付き遷移\nAR残差\nGCLC-Wu 多項式義務\nSyGuS 開義務\nKNOWLEDGE\n意味を保って写す\nOpenMath 項\nMMT theory graph\ninterface view\nCOORDINATION\n優先順位と予算だけ\nexact 証明書交換（既定）\nSheaf-ADMM（実験・既定OFF）\nTRUTH\nここだけが真偽を決める\n型付き native 証明書の再生\nEXECUTION\n速くする。真理は変えない\nRISC-V 型付き命令スケジューリング\nFPGA bitset関係閉包 / 有界多項式核\n真理ではない\n優先順位と予算だけ\n証明書の再生のみ\n真理を変えない\n情報は下へ流れる。真偽を決める権限は真理面だけが持ち、上へ戻らない。\nこの4つの制約は validate_unified_geometry_architecture() が実行時に検査し、破れば例外で落ちる。\nFIG. 2 — 表現 Atlas と transition map\n一つの幾何対象 — 三角形ABCとその垂心\n関係 chart\nNewclid DD\nperp(A,B,C,D)\ncoll(A,B,C)\ncyclic(A,B,C,D)\n原子\n計量 chart\n偏極・内積\n⟨u,v⟩ = 0\n二次形式 q(x)\n距離の等式\n原子\nアフィン chart\n行列式・rank\ndet[...] = 0\nrank M ≤ 2\n線形従属\n原子\ntransition\ntransition\n情報理論の対応\nchart\n= encoder\nbridge\n= channel\ncertificate replay\n= decoder / verifier\nresidual\n= syndrome\nただし意味の欠落は確率的な通信雑音ではない。同一視しない。\n2026-08-22 の測定: 橋は完成した証明書を運ぶ。未完成の義務を別の原子で作り直す経路が無い。\n構成エラー 7→0 / 静的反証 2,395件 / テスト 130/130 — それでも実問題の chart 経由候補は 0、追加正答 0/3。\n問題文\n日本語のまま\n何を訊かれたか\n求めよ / 示せ /\nすべて求めよ\n幾何の演繹\n点・線・円\n式の計算\n極限・積分\n不等式\n範囲\n証明\n示せ\n解集合\nすべて求めよ\n検証\n証明書を\n作り直す\n答える\n図と手順つき\n答えない\n推測を出さない\n振り分け先が複数あるから、幾何以外も同じ核を通る\n別々の方法で考える\n\n図形の演繹、座標計算、Wu法、Groebner消去を、無理に一つの方法へ統一しません。\n\n途中結果を共有する\n\n一つの方法で証明できた事実を、別の方法でも使える形へ変換して先へ進みます。\n\n正しさは証明で決める\n\nどの経路を調べるかは協調して決めますが、結論の正しさは多数決ではなく証明書で確認します。\n\n絞り込みを回路へ\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-series向け論理合成まで通過しています。\n\n05 / RESEARCH\n\n数学構造の標準模型をつくる。\n\n問題文から証明書まで、数学を実行可能に。\n\nCOORDINATION\n\n異なる証明法をつなぐ\n\n演繹、座標、Wu法、Groebner消去が、それぞれの得意な方法で考え、途中結果を相互に利用します。\n\nSELF-ORGANIZATION\n\n局所の判断から全体解へ\n\n一つの大きなモデルに判断を集中させず、複数の推論器が必要な情報だけを交換して答えへ進む方法を研究しています。\n\nADAPTIVE SEARCH\n\n必要な経路だけを深く探す\n\n簡単な探索から始め、解けない問題だけ計算を増やします。すべての候補を同じ深さまで調べる無駄を減らします。\n\nHARDWARE\n\n探索の絞り込みを、回路に落とした\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-seriesへの論理合成も通過しました。\n\nFinite primitives. Infinite mathematics.\n\n式・図・運動を、一つの構造の別の見え方として持つ。下の立方体は飾りではありません。断面の多角形を毎フレーム計算しています。\n\n同じ構造を、式でも図でも運動でも\n指紋を固定した実験\n規則名つきの導出列\nMORTRA / Model 1\nGitHub\nX\n@MORTRA_AI\nFinite primitives. Infinite mathematics.",
+      "apiResponses": [
+        {
+          "url": "http://127.0.0.1:3002/api/solve",
+          "status": 200
+        }
+      ],
+      "consoleErrors": [],
+      "screenshotPath": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\test-results\\public-unseen-structural-all-local-strict-20260902\\die-first-repeat.png"
+    },
+    {
+      "id": "trigonometric-equation",
+      "mode": "draw",
+      "expected": "resolved",
+      "passed": true,
+      "durationMs": 6061,
+      "outcome": "resolved",
+      "jobId": null,
+      "reconnectedAfterReload": null,
+      "generatedCount": 1,
+      "pageIdentity": {
+        "url": "http://127.0.0.1:3002/ja",
+        "title": "MORTRA — Finite primitives. Infinite mathematics."
+      },
+      "encoding": {
+        "inputRoundTrip": {
+          "a": true,
+          "b": true
+        },
+        "replacementCharacter": false,
+        "probableMojibake": false,
+        "undefinedLiteral": false
+      },
+      "verification": {
+        "verifiedLabel": true,
+        "hasStatement": true,
+        "hasAnswer": true,
+        "hasSolution": true,
+        "hasCertificate": true,
+        "diagramCount": 1,
+        "diagramLabels": [
+          "三角関数と定数直線の交点"
+        ],
+        "visualStepCount": 4
+      },
+      "finalVisualStepSelected": true,
+      "horizontalOverflow": false,
+      "phaseCodes": [
+        "complete",
+        "p = [0.33, 0.34, 0.33]",
+        "r = 1.70e-1",
+        "frontier = 0"
+      ],
+      "transcript": "0:40:24\n·\n入力問題を解答対象として受理しました。\n0:40:24\n·\nLaTeX数式を構文解析\n0:40:24\n·\n型付きの実行可能式へ変換\n0:40:24\n·\nmortra.runtime_linear_trigonometric_equation で厳密計算\n0:40:24\n·\n未評価演算と制約残差を検査\n0:40:24\n›\n問題文・解答・検証証明書を出力",
+      "bodyTail": "候補を出す\nHAGeo 数値incidence\nTong 型付き構成\nLOCAL FORMAL LANGUAGES\n各々の言語のまま解く\nNewclid DD閉包\nNewclid 型付き遷移\nAR残差\nGCLC-Wu 多項式義務\nSyGuS 開義務\nKNOWLEDGE\n意味を保って写す\nOpenMath 項\nMMT theory graph\ninterface view\nCOORDINATION\n優先順位と予算だけ\nexact 証明書交換（既定）\nSheaf-ADMM（実験・既定OFF）\nTRUTH\nここだけが真偽を決める\n型付き native 証明書の再生\nEXECUTION\n速くする。真理は変えない\nRISC-V 型付き命令スケジューリング\nFPGA bitset関係閉包 / 有界多項式核\n真理ではない\n優先順位と予算だけ\n証明書の再生のみ\n真理を変えない\n情報は下へ流れる。真偽を決める権限は真理面だけが持ち、上へ戻らない。\nこの4つの制約は validate_unified_geometry_architecture() が実行時に検査し、破れば例外で落ちる。\nFIG. 2 — 表現 Atlas と transition map\n一つの幾何対象 — 三角形ABCとその垂心\n関係 chart\nNewclid DD\nperp(A,B,C,D)\ncoll(A,B,C)\ncyclic(A,B,C,D)\n原子\n計量 chart\n偏極・内積\n⟨u,v⟩ = 0\n二次形式 q(x)\n距離の等式\n原子\nアフィン chart\n行列式・rank\ndet[...] = 0\nrank M ≤ 2\n線形従属\n原子\ntransition\ntransition\n情報理論の対応\nchart\n= encoder\nbridge\n= channel\ncertificate replay\n= decoder / verifier\nresidual\n= syndrome\nただし意味の欠落は確率的な通信雑音ではない。同一視しない。\n2026-08-22 の測定: 橋は完成した証明書を運ぶ。未完成の義務を別の原子で作り直す経路が無い。\n構成エラー 7→0 / 静的反証 2,395件 / テスト 130/130 — それでも実問題の chart 経由候補は 0、追加正答 0/3。\n問題文\n日本語のまま\n何を訊かれたか\n求めよ / 示せ /\nすべて求めよ\n幾何の演繹\n点・線・円\n式の計算\n極限・積分\n不等式\n範囲\n証明\n示せ\n解集合\nすべて求めよ\n検証\n証明書を\n作り直す\n答える\n図と手順つき\n答えない\n推測を出さない\n振り分け先が複数あるから、幾何以外も同じ核を通る\n別々の方法で考える\n\n図形の演繹、座標計算、Wu法、Groebner消去を、無理に一つの方法へ統一しません。\n\n途中結果を共有する\n\n一つの方法で証明できた事実を、別の方法でも使える形へ変換して先へ進みます。\n\n正しさは証明で決める\n\nどの経路を調べるかは協調して決めますが、結論の正しさは多数決ではなく証明書で確認します。\n\n絞り込みを回路へ\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-series向け論理合成まで通過しています。\n\n05 / RESEARCH\n\n数学構造の標準模型をつくる。\n\n問題文から証明書まで、数学を実行可能に。\n\nCOORDINATION\n\n異なる証明法をつなぐ\n\n演繹、座標、Wu法、Groebner消去が、それぞれの得意な方法で考え、途中結果を相互に利用します。\n\nSELF-ORGANIZATION\n\n局所の判断から全体解へ\n\n一つの大きなモデルに判断を集中させず、複数の推論器が必要な情報だけを交換して答えへ進む方法を研究しています。\n\nADAPTIVE SEARCH\n\n必要な経路だけを深く探す\n\n簡単な探索から始め、解けない問題だけ計算を増やします。すべての候補を同じ深さまで調べる無駄を減らします。\n\nHARDWARE\n\n探索の絞り込みを、回路に落とした\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-seriesへの論理合成も通過しました。\n\nFinite primitives. Infinite mathematics.\n\n式・図・運動を、一つの構造の別の見え方として持つ。下の立方体は飾りではありません。断面の多角形を毎フレーム計算しています。\n\n同じ構造を、式でも図でも運動でも\n指紋を固定した実験\n規則名つきの導出列\nMORTRA / Model 1\nGitHub\nX\n@MORTRA_AI\nFinite primitives. Infinite mathematics.",
+      "apiResponses": [
+        {
+          "url": "http://127.0.0.1:3002/api/solve",
+          "status": 200
+        }
+      ],
+      "consoleErrors": [],
+      "screenshotPath": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\test-results\\public-unseen-structural-all-local-strict-20260902\\trigonometric-equation.png"
+    },
+    {
+      "id": "recurrence-congruence-fusion",
+      "mode": "fusion",
+      "expected": "resolved",
+      "passed": true,
+      "durationMs": 4129,
+      "outcome": "resolved",
+      "jobId": null,
+      "reconnectedAfterReload": null,
+      "generatedCount": 3,
+      "pageIdentity": {
+        "url": "http://127.0.0.1:3002/ja",
+        "title": "MORTRA — Finite primitives. Infinite mathematics."
+      },
+      "encoding": {
+        "inputRoundTrip": {
+          "a": true,
+          "b": true
+        },
+        "replacementCharacter": false,
+        "probableMojibake": false,
+        "undefinedLiteral": false
+      },
+      "verification": {
+        "verifiedLabel": true,
+        "hasStatement": true,
+        "hasAnswer": true,
+        "hasSolution": true,
+        "hasCertificate": true,
+        "diagramCount": 1,
+        "diagramLabels": [
+          "漸化式の有限状態軌道"
+        ],
+        "visualStepCount": 0
+      },
+      "finalVisualStepSelected": false,
+      "horizontalOverflow": false,
+      "phaseCodes": [
+        "complete",
+        "p = [0.33, 0.34, 0.33]",
+        "r = 1.70e-1",
+        "frontier = 0"
+      ],
+      "transcript": "0:40:30\n·\n親問題AとBを、別々の証明入力として受理しました。\n0:40:30\n·\n登録済み完成ルートを参照せず、現在の親問題から実行プログラムを合成します\n0:40:30\n·\n親問題を型付き意味表現へ変換し、入力から実行時の項と証明義務を構成しています\n0:40:30\n·\nruntime-polynomial-root-generation: binary root-set generation requires exactly two selected parents and two parseable polynomial constraints\n0:40:30\n·\nruntime-quadratic-expectation-generation: the current parents do not provide one executable quadratic form and one executable second-moment structure\n0:40:30\n·\nruntime-recurrence-congruence-generation: current-input typed program and exact certificate closed without structural search\n0:40:30\n·\nsynthesized_proof_program を厳密計算と親アブレーションで検証しました\n0:40:30\n›\n実行時に合成・検証した問題文、解答、証明書を保存しています",
+      "bodyTail": "候補を出す\nHAGeo 数値incidence\nTong 型付き構成\nLOCAL FORMAL LANGUAGES\n各々の言語のまま解く\nNewclid DD閉包\nNewclid 型付き遷移\nAR残差\nGCLC-Wu 多項式義務\nSyGuS 開義務\nKNOWLEDGE\n意味を保って写す\nOpenMath 項\nMMT theory graph\ninterface view\nCOORDINATION\n優先順位と予算だけ\nexact 証明書交換（既定）\nSheaf-ADMM（実験・既定OFF）\nTRUTH\nここだけが真偽を決める\n型付き native 証明書の再生\nEXECUTION\n速くする。真理は変えない\nRISC-V 型付き命令スケジューリング\nFPGA bitset関係閉包 / 有界多項式核\n真理ではない\n優先順位と予算だけ\n証明書の再生のみ\n真理を変えない\n情報は下へ流れる。真偽を決める権限は真理面だけが持ち、上へ戻らない。\nこの4つの制約は validate_unified_geometry_architecture() が実行時に検査し、破れば例外で落ちる。\nFIG. 2 — 表現 Atlas と transition map\n一つの幾何対象 — 三角形ABCとその垂心\n関係 chart\nNewclid DD\nperp(A,B,C,D)\ncoll(A,B,C)\ncyclic(A,B,C,D)\n原子\n計量 chart\n偏極・内積\n⟨u,v⟩ = 0\n二次形式 q(x)\n距離の等式\n原子\nアフィン chart\n行列式・rank\ndet[...] = 0\nrank M ≤ 2\n線形従属\n原子\ntransition\ntransition\n情報理論の対応\nchart\n= encoder\nbridge\n= channel\ncertificate replay\n= decoder / verifier\nresidual\n= syndrome\nただし意味の欠落は確率的な通信雑音ではない。同一視しない。\n2026-08-22 の測定: 橋は完成した証明書を運ぶ。未完成の義務を別の原子で作り直す経路が無い。\n構成エラー 7→0 / 静的反証 2,395件 / テスト 130/130 — それでも実問題の chart 経由候補は 0、追加正答 0/3。\n問題文\n日本語のまま\n何を訊かれたか\n求めよ / 示せ /\nすべて求めよ\n幾何の演繹\n点・線・円\n式の計算\n極限・積分\n不等式\n範囲\n証明\n示せ\n解集合\nすべて求めよ\n検証\n証明書を\n作り直す\n答える\n図と手順つき\n答えない\n推測を出さない\n振り分け先が複数あるから、幾何以外も同じ核を通る\n別々の方法で考える\n\n図形の演繹、座標計算、Wu法、Groebner消去を、無理に一つの方法へ統一しません。\n\n途中結果を共有する\n\n一つの方法で証明できた事実を、別の方法でも使える形へ変換して先へ進みます。\n\n正しさは証明で決める\n\nどの経路を調べるかは協調して決めますが、結論の正しさは多数決ではなく証明書で確認します。\n\n絞り込みを回路へ\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-series向け論理合成まで通過しています。\n\n05 / RESEARCH\n\n数学構造の標準模型をつくる。\n\n問題文から証明書まで、数学を実行可能に。\n\nCOORDINATION\n\n異なる証明法をつなぐ\n\n演繹、座標、Wu法、Groebner消去が、それぞれの得意な方法で考え、途中結果を相互に利用します。\n\nSELF-ORGANIZATION\n\n局所の判断から全体解へ\n\n一つの大きなモデルに判断を集中させず、複数の推論器が必要な情報だけを交換して答えへ進む方法を研究しています。\n\nADAPTIVE SEARCH\n\n必要な経路だけを深く探す\n\n簡単な探索から始め、解けない問題だけ計算を増やします。すべての候補を同じ深さまで調べる無駄を減らします。\n\nHARDWARE\n\n探索の絞り込みを、回路に落とした\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-seriesへの論理合成も通過しました。\n\nFinite primitives. Infinite mathematics.\n\n式・図・運動を、一つの構造の別の見え方として持つ。下の立方体は飾りではありません。断面の多角形を毎フレーム計算しています。\n\n同じ構造を、式でも図でも運動でも\n指紋を固定した実験\n規則名つきの導出列\nMORTRA / Model 1\nGitHub\nX\n@MORTRA_AI\nFinite primitives. Infinite mathematics.",
+      "apiResponses": [
+        {
+          "url": "http://127.0.0.1:3002/api/mathos-generate",
+          "status": 200
+        }
+      ],
+      "consoleErrors": [],
+      "screenshotPath": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\test-results\\public-unseen-structural-all-local-strict-20260902\\recurrence-congruence-fusion.png"
+    },
+    {
+      "id": "quadratic-expectation-fusion",
+      "mode": "fusion",
+      "expected": "resolved",
+      "passed": true,
+      "durationMs": 5969,
+      "outcome": "resolved",
+      "jobId": null,
+      "reconnectedAfterReload": null,
+      "generatedCount": 3,
+      "pageIdentity": {
+        "url": "http://127.0.0.1:3002/ja",
+        "title": "MORTRA — Finite primitives. Infinite mathematics."
+      },
+      "encoding": {
+        "inputRoundTrip": {
+          "a": true,
+          "b": true
+        },
+        "replacementCharacter": false,
+        "probableMojibake": false,
+        "undefinedLiteral": false
+      },
+      "verification": {
+        "verifiedLabel": true,
+        "hasStatement": true,
+        "hasAnswer": true,
+        "hasSolution": true,
+        "hasCertificate": true,
+        "diagramCount": 1,
+        "diagramLabels": [
+          "二次形式と期待値の接続"
+        ],
+        "visualStepCount": 0
+      },
+      "finalVisualStepSelected": false,
+      "horizontalOverflow": false,
+      "phaseCodes": [
+        "complete",
+        "p = [0.33, 0.34, 0.33]",
+        "r = 1.70e-1",
+        "frontier = 0"
+      ],
+      "transcript": "0:40:36\n·\n親問題AとBを、別々の証明入力として受理しました。\n0:40:36\n·\n登録済み完成ルートを参照せず、現在の親問題から実行プログラムを合成します\n0:40:36\n·\n親問題を型付き意味表現へ変換し、入力から実行時の項と証明義務を構成しています\n0:40:36\n·\nruntime-polynomial-root-generation: binary root-set generation requires exactly two selected parents and two parseable polynomial constraints\n0:40:36\n·\nruntime-quadratic-expectation-generation: current-input typed program and exact certificate closed without structural search\n0:40:36\n·\nsynthesized_proof_program を厳密計算と親アブレーションで検証しました\n0:40:36\n›\n実行時に合成・検証した問題文、解答、証明書を保存しています",
+      "bodyTail": "候補を出す\nHAGeo 数値incidence\nTong 型付き構成\nLOCAL FORMAL LANGUAGES\n各々の言語のまま解く\nNewclid DD閉包\nNewclid 型付き遷移\nAR残差\nGCLC-Wu 多項式義務\nSyGuS 開義務\nKNOWLEDGE\n意味を保って写す\nOpenMath 項\nMMT theory graph\ninterface view\nCOORDINATION\n優先順位と予算だけ\nexact 証明書交換（既定）\nSheaf-ADMM（実験・既定OFF）\nTRUTH\nここだけが真偽を決める\n型付き native 証明書の再生\nEXECUTION\n速くする。真理は変えない\nRISC-V 型付き命令スケジューリング\nFPGA bitset関係閉包 / 有界多項式核\n真理ではない\n優先順位と予算だけ\n証明書の再生のみ\n真理を変えない\n情報は下へ流れる。真偽を決める権限は真理面だけが持ち、上へ戻らない。\nこの4つの制約は validate_unified_geometry_architecture() が実行時に検査し、破れば例外で落ちる。\nFIG. 2 — 表現 Atlas と transition map\n一つの幾何対象 — 三角形ABCとその垂心\n関係 chart\nNewclid DD\nperp(A,B,C,D)\ncoll(A,B,C)\ncyclic(A,B,C,D)\n原子\n計量 chart\n偏極・内積\n⟨u,v⟩ = 0\n二次形式 q(x)\n距離の等式\n原子\nアフィン chart\n行列式・rank\ndet[...] = 0\nrank M ≤ 2\n線形従属\n原子\ntransition\ntransition\n情報理論の対応\nchart\n= encoder\nbridge\n= channel\ncertificate replay\n= decoder / verifier\nresidual\n= syndrome\nただし意味の欠落は確率的な通信雑音ではない。同一視しない。\n2026-08-22 の測定: 橋は完成した証明書を運ぶ。未完成の義務を別の原子で作り直す経路が無い。\n構成エラー 7→0 / 静的反証 2,395件 / テスト 130/130 — それでも実問題の chart 経由候補は 0、追加正答 0/3。\n問題文\n日本語のまま\n何を訊かれたか\n求めよ / 示せ /\nすべて求めよ\n幾何の演繹\n点・線・円\n式の計算\n極限・積分\n不等式\n範囲\n証明\n示せ\n解集合\nすべて求めよ\n検証\n証明書を\n作り直す\n答える\n図と手順つき\n答えない\n推測を出さない\n振り分け先が複数あるから、幾何以外も同じ核を通る\n別々の方法で考える\n\n図形の演繹、座標計算、Wu法、Groebner消去を、無理に一つの方法へ統一しません。\n\n途中結果を共有する\n\n一つの方法で証明できた事実を、別の方法でも使える形へ変換して先へ進みます。\n\n正しさは証明で決める\n\nどの経路を調べるかは協調して決めますが、結論の正しさは多数決ではなく証明書で確認します。\n\n絞り込みを回路へ\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-series向け論理合成まで通過しています。\n\n05 / RESEARCH\n\n数学構造の標準模型をつくる。\n\n問題文から証明書まで、数学を実行可能に。\n\nCOORDINATION\n\n異なる証明法をつなぐ\n\n演繹、座標、Wu法、Groebner消去が、それぞれの得意な方法で考え、途中結果を相互に利用します。\n\nSELF-ORGANIZATION\n\n局所の判断から全体解へ\n\n一つの大きなモデルに判断を集中させず、複数の推論器が必要な情報だけを交換して答えへ進む方法を研究しています。\n\nADAPTIVE SEARCH\n\n必要な経路だけを深く探す\n\n簡単な探索から始め、解けない問題だけ計算を増やします。すべての候補を同じ深さまで調べる無駄を減らします。\n\nHARDWARE\n\n探索の絞り込みを、回路に落とした\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-seriesへの論理合成も通過しました。\n\nFinite primitives. Infinite mathematics.\n\n式・図・運動を、一つの構造の別の見え方として持つ。下の立方体は飾りではありません。断面の多角形を毎フレーム計算しています。\n\n同じ構造を、式でも図でも運動でも\n指紋を固定した実験\n規則名つきの導出列\nMORTRA / Model 1\nGitHub\nX\n@MORTRA_AI\nFinite primitives. Infinite mathematics.",
+      "apiResponses": [
+        {
+          "url": "http://127.0.0.1:3002/api/mathos-generate",
+          "status": 200
+        }
+      ],
+      "consoleErrors": [],
+      "screenshotPath": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\test-results\\public-unseen-structural-all-local-strict-20260902\\quadratic-expectation-fusion.png"
+    },
+    {
+      "id": "geometry-arithmetic-fusion",
+      "mode": "fusion",
+      "expected": "resolved",
+      "passed": true,
+      "durationMs": 6431,
+      "outcome": "resolved",
+      "jobId": null,
+      "reconnectedAfterReload": null,
+      "generatedCount": 3,
+      "pageIdentity": {
+        "url": "http://127.0.0.1:3002/ja",
+        "title": "MORTRA — Finite primitives. Infinite mathematics."
+      },
+      "encoding": {
+        "inputRoundTrip": {
+          "a": true,
+          "b": true
+        },
+        "replacementCharacter": false,
+        "probableMojibake": false,
+        "undefinedLiteral": false
+      },
+      "verification": {
+        "verifiedLabel": true,
+        "hasStatement": true,
+        "hasAnswer": true,
+        "hasSolution": true,
+        "hasCertificate": true,
+        "diagramCount": 1,
+        "diagramLabels": [
+          "原始直角三角形と二つの半径"
+        ],
+        "visualStepCount": 4
+      },
+      "finalVisualStepSelected": true,
+      "horizontalOverflow": false,
+      "phaseCodes": [
+        "complete",
+        "p = [0.33, 0.34, 0.33]",
+        "r = 1.70e-1",
+        "frontier = 0"
+      ],
+      "transcript": "0:40:42\n·\n親問題AとBを、別々の証明入力として受理しました。\n0:40:42\n·\n登録済み完成ルートを参照せず、現在の親問題から実行プログラムを合成します\n0:40:42\n·\n親問題を型付き意味表現へ変換し、入力から実行時の項と証明義務を構成しています\n0:40:42\n·\nruntime-polynomial-root-generation: binary root-set generation requires exactly two selected parents and two parseable polynomial constraints\n0:40:42\n·\nruntime-quadratic-expectation-generation: the current parents do not provide one executable quadratic form and one executable second-moment structure\n0:40:42\n·\nruntime-recurrence-congruence-generation: the current parents do not provide one executable second-order recurrence and one executable linear congruence\n0:40:42\n·\nruntime-primitive-right-triangle-generation: current-input typed program and exact certificate closed without structural search\n0:40:42\n·\nsynthesized_proof_program を厳密計算と親アブレーションで検証しました\n0:40:42\n›\n実行時に合成・検証した問題文、解答、証明書を保存しています",
+      "bodyTail": "候補を出す\nHAGeo 数値incidence\nTong 型付き構成\nLOCAL FORMAL LANGUAGES\n各々の言語のまま解く\nNewclid DD閉包\nNewclid 型付き遷移\nAR残差\nGCLC-Wu 多項式義務\nSyGuS 開義務\nKNOWLEDGE\n意味を保って写す\nOpenMath 項\nMMT theory graph\ninterface view\nCOORDINATION\n優先順位と予算だけ\nexact 証明書交換（既定）\nSheaf-ADMM（実験・既定OFF）\nTRUTH\nここだけが真偽を決める\n型付き native 証明書の再生\nEXECUTION\n速くする。真理は変えない\nRISC-V 型付き命令スケジューリング\nFPGA bitset関係閉包 / 有界多項式核\n真理ではない\n優先順位と予算だけ\n証明書の再生のみ\n真理を変えない\n情報は下へ流れる。真偽を決める権限は真理面だけが持ち、上へ戻らない。\nこの4つの制約は validate_unified_geometry_architecture() が実行時に検査し、破れば例外で落ちる。\nFIG. 2 — 表現 Atlas と transition map\n一つの幾何対象 — 三角形ABCとその垂心\n関係 chart\nNewclid DD\nperp(A,B,C,D)\ncoll(A,B,C)\ncyclic(A,B,C,D)\n原子\n計量 chart\n偏極・内積\n⟨u,v⟩ = 0\n二次形式 q(x)\n距離の等式\n原子\nアフィン chart\n行列式・rank\ndet[...] = 0\nrank M ≤ 2\n線形従属\n原子\ntransition\ntransition\n情報理論の対応\nchart\n= encoder\nbridge\n= channel\ncertificate replay\n= decoder / verifier\nresidual\n= syndrome\nただし意味の欠落は確率的な通信雑音ではない。同一視しない。\n2026-08-22 の測定: 橋は完成した証明書を運ぶ。未完成の義務を別の原子で作り直す経路が無い。\n構成エラー 7→0 / 静的反証 2,395件 / テスト 130/130 — それでも実問題の chart 経由候補は 0、追加正答 0/3。\n問題文\n日本語のまま\n何を訊かれたか\n求めよ / 示せ /\nすべて求めよ\n幾何の演繹\n点・線・円\n式の計算\n極限・積分\n不等式\n範囲\n証明\n示せ\n解集合\nすべて求めよ\n検証\n証明書を\n作り直す\n答える\n図と手順つき\n答えない\n推測を出さない\n振り分け先が複数あるから、幾何以外も同じ核を通る\n別々の方法で考える\n\n図形の演繹、座標計算、Wu法、Groebner消去を、無理に一つの方法へ統一しません。\n\n途中結果を共有する\n\n一つの方法で証明できた事実を、別の方法でも使える形へ変換して先へ進みます。\n\n正しさは証明で決める\n\nどの経路を調べるかは協調して決めますが、結論の正しさは多数決ではなく証明書で確認します。\n\n絞り込みを回路へ\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-series向け論理合成まで通過しています。\n\n05 / RESEARCH\n\n数学構造の標準模型をつくる。\n\n問題文から証明書まで、数学を実行可能に。\n\nCOORDINATION\n\n異なる証明法をつなぐ\n\n演繹、座標、Wu法、Groebner消去が、それぞれの得意な方法で考え、途中結果を相互に利用します。\n\nSELF-ORGANIZATION\n\n局所の判断から全体解へ\n\n一つの大きなモデルに判断を集中させず、複数の推論器が必要な情報だけを交換して答えへ進む方法を研究しています。\n\nADAPTIVE SEARCH\n\n必要な経路だけを深く探す\n\n簡単な探索から始め、解けない問題だけ計算を増やします。すべての候補を同じ深さまで調べる無駄を減らします。\n\nHARDWARE\n\n探索の絞り込みを、回路に落とした\n\n候補検査の専用回路を設計し、200万通りの入力でソフト実装との完全一致を確認。Xilinx 7-seriesへの論理合成も通過しました。\n\nFinite primitives. Infinite mathematics.\n\n式・図・運動を、一つの構造の別の見え方として持つ。下の立方体は飾りではありません。断面の多角形を毎フレーム計算しています。\n\n同じ構造を、式でも図でも運動でも\n指紋を固定した実験\n規則名つきの導出列\nMORTRA / Model 1\nGitHub\nX\n@MORTRA_AI\nFinite primitives. Infinite mathematics.",
+      "apiResponses": [
+        {
+          "url": "http://127.0.0.1:3002/api/mathos-generate",
+          "status": 200
+        }
+      ],
+      "consoleErrors": [],
+      "screenshotPath": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\test-results\\public-unseen-structural-all-local-strict-20260902\\geometry-arithmetic-fusion.png"
+    }
+  ]
+}

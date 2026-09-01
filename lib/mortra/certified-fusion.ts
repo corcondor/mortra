@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto'
 import type { ProblemDiagram } from './problem-artifact'
 
 type FusionOperation = 'sum' | 'difference' | 'product'
+type RootConfigurationObservable = 'trace_norm' | 'power_sums'
 
 export type CertifiedFusionParent = {
   id: string
@@ -414,6 +415,127 @@ ${solution}
 `
 }
 
+function integerTex(value: bigint): string {
+  return value < 0n ? `-${String(-value)}` : String(value)
+}
+
+function observableProjectionCard(
+  base: CertifiedFusionCard,
+  left: ParsedPolynomial,
+  right: ParsedPolynomial,
+  operation: FusionOperation,
+  polynomial: bigint[],
+  directPowerSums: bigint[],
+  projection: RootConfigurationObservable,
+  ordinal: number,
+): CertifiedFusionCard | null {
+  const degree = polynomial.length - 1
+  const resultantPowerSums = powerSums(polynomial, Math.min(3, degree))
+  if (!resultantPowerSums.every((value, index) => value === directPowerSums[index])) return null
+
+  const observable = operationTex(operation)
+  const rootSymbol = '\\gamma'
+  const projectionMorphism = projection === 'trace_norm'
+    ? 'VietaTraceNormProjection'
+    : 'NewtonMomentProjection'
+  const morphisms = [...base.morphism_chain, projectionMorphism]
+  const projectionId = `${base.structure_blueprint.id}.${projection}`
+  const proofCertificate = [
+    ...base.structure_blueprint.proofCertificate,
+    {
+      id: projection,
+      claim: projection === 'trace_norm'
+        ? 'trace and norm agree between Vieta projection and the independently eliminated polynomial'
+        : 'the first power sums agree between direct parent-moment composition and the independently eliminated polynomial',
+      verifier: projection === 'trace_norm'
+        ? 'BigInt Vieta coefficient projection + Sylvester resultant'
+        : 'BigInt Newton recurrence on two independently constructed coefficient paths',
+    },
+  ]
+
+  let statement: string
+  let answer: string
+  let solution: string
+  let family: string
+  let querySignature: string
+  let observableName: string
+
+  if (projection === 'trace_norm') {
+    const trace = resultantPowerSums[1]
+    const norm = degree % 2 === 0 ? polynomial[0] : -polynomial[0]
+    statement = String.raw`\(f(x)=${polynomialTex(left.coefficients)}\), \(g(x)=${polynomialTex(right.coefficients)}\) とする。\(f\) の根を重複度込みで \(\alpha_1,\ldots,\alpha_${left.coefficients.length - 1}\)、\(g\) の根を \(\beta_1,\ldots,\beta_${right.coefficients.length - 1}\) とする。\(${rootSymbol}_{ij}=${observable}\) とおくとき、\[T=\sum_{i=1}^{${left.coefficients.length - 1}}\sum_{j=1}^{${right.coefficients.length - 1}}${rootSymbol}_{ij},\qquad N=\prod_{i=1}^{${left.coefficients.length - 1}}\prod_{j=1}^{${right.coefficients.length - 1}}${rootSymbol}_{ij}\]\(T,N\) を求めよ。`
+    answer = String.raw`\(T=${integerTex(trace)},\quad N=${integerTex(norm)}\)`
+    solution = String.raw`まず親問題の二つの根配置を ${operationJapanese(operation)}で合成する。直接Newton和を合成すると、第1べき和は \(T=${integerTex(directPowerSums[1])}\) となる。一方、同じ根配置を終結式で消去して得たモニック多項式は \[P(z)=${polynomialTex(polynomial, 'z')}\] である。Vietaの公式より、\(z^{${degree - 1}}\) の係数から \(T=${integerTex(trace)}\)、定数項から \(N=${integerTex(norm)}\) を得る。直接合成した第1べき和とVietaの値は一致する。`
+    family = `certified.polynomial_root_${operation}_trace_norm`
+    querySignature = `compute-trace-and-norm-of-root-${operation}-configuration`
+    observableName = `root_multiset_${operation}_trace_norm`
+  } else {
+    const maximum = Math.min(3, degree)
+    const moments = resultantPowerSums.slice(1, maximum + 1)
+    const definitions = moments
+      .map((_, index) => String.raw`s_${index + 1}=\sum_{i,j}${rootSymbol}_{ij}^{${index + 1}}`)
+      .join(String.raw`,\qquad `)
+    const values = moments
+      .map((value, index) => String.raw`s_${index + 1}=${integerTex(value)}`)
+      .join(String.raw`,\quad `)
+    statement = String.raw`\(f(x)=${polynomialTex(left.coefficients)}\), \(g(x)=${polynomialTex(right.coefficients)}\) とする。\(f\) の根を重複度込みで \(\alpha_1,\ldots,\alpha_${left.coefficients.length - 1}\)、\(g\) の根を \(\beta_1,\ldots,\beta_${right.coefficients.length - 1}\) とし、\(${rootSymbol}_{ij}=${observable}\) とおく。\[${definitions}\]を求めよ。`
+    answer = String.raw`\(${values}\)`
+    solution = String.raw`各親多項式の係数からNewton和を求める。${operationJapanese(operation)}の二項展開を用いると、親のべき和だけから \[${values}\] を得る。独立検証として、終結式で \(\alpha_i,\beta_j\) を消去すると \[P(z)=${polynomialTex(polynomial, 'z')}\] となる。この係数列へNewtonの恒等式を適用しても同じ \(s_1,\ldots,s_${maximum}\) が得られる。`
+    family = `certified.polynomial_root_${operation}_power_sums`
+    querySignature = `compute-initial-power-sums-of-root-${operation}-configuration`
+    observableName = `root_multiset_${operation}_initial_power_sums`
+  }
+
+  return {
+    ...base,
+    id: `mortra-${projectionId}`,
+    statement_tex: statement,
+    answer_tex: answer,
+    solution_tex: solution,
+    solution_document_tex: texDocument(statement, solution),
+    family_id: family,
+    morphism_chain: morphisms,
+    diagram: {
+      version: 1,
+      kind: 'morphism',
+      title: projection === 'trace_norm' ? '合成根配置のトレースとノルム' : '合成根配置のべき和',
+      caption: projection === 'trace_norm'
+        ? '同じ有限根配置を、Newton和とVietaの係数射の二経路で読み取ります。'
+        : '親のべき和を直接合成した値と、終結式の係数から再生した値を照合します。',
+      nodes: morphisms,
+    },
+    verification: {
+      ...base.verification,
+      method: projection === 'trace_norm'
+        ? 'exact parent power sums + independent Sylvester resultant + Vieta trace/norm projection'
+        : 'exact parent power-sum composition + independent Sylvester resultant + Newton replay',
+    },
+    difficulty: {
+      band: 'A_exact_algebraic_fusion',
+      score: base.difficulty.score + (projection === 'trace_norm' ? 0.6 : 1.1),
+    },
+    structure_blueprint: {
+      ...base.structure_blueprint,
+      id: projectionId,
+      observable: observableName,
+      operators: morphisms,
+      morphismChain: morphisms,
+      tags: [...base.structure_blueprint.tags, projection === 'trace_norm' ? 'vieta-invariants' : 'newton-moments'],
+      proofCertificate,
+      structuralUniqueness: {
+        ...base.structure_blueprint.structuralUniqueness,
+        querySignature,
+        normalForm: answer,
+      },
+    },
+    search_evidence: {
+      ...base.search_evidence,
+      hypotheses_evaluated: base.search_evidence.hypotheses_evaluated + ordinal,
+      valid_hypotheses: base.search_evidence.valid_hypotheses + ordinal,
+    },
+  }
+}
+
 export function synthesizeCertifiedPolynomialFusions(
   parents: CertifiedFusionParent[],
   requested = 1,
@@ -425,10 +547,17 @@ export function synthesizeCertifiedPolynomialFusions(
   const [left, right] = parsed as [ParsedPolynomial, ParsedPolynomial]
   const operations: FusionOperation[] = ['sum', 'product', 'difference']
   const cards: CertifiedFusionCard[] = []
+  const composedConfigurations: Array<{
+    operation: FusionOperation
+    polynomial: bigint[]
+    directPowerSums: bigint[]
+    base: CertifiedFusionCard
+  }> = []
 
   for (const operation of operations) {
     if (cards.length >= requested) break
-    const newton = polynomialFromPowerSums(composedPowerSums(left.coefficients, right.coefficients, operation))
+    const directPowerSums = composedPowerSums(left.coefficients, right.coefficients, operation)
+    const newton = polynomialFromPowerSums(directPowerSums)
     const resultant = resultantPolynomial(left.coefficients, right.coefficients, operation)
     if (!newton || !resultant || !equalPolynomial(newton, resultant)) continue
 
@@ -461,7 +590,7 @@ export function synthesizeCertifiedPolynomialFusions(
       { id: 'resultant', claim: 'independent elimination yields the identical monic polynomial', verifier: 'BigInt Sylvester determinant' },
       { id: 'ablation', claim: 'both degree-at-least-two parent root configurations occupy indispensable input ports and determine the output degree product', verifier: 'typed all-parent cardinality check' },
     ]
-    cards.push({
+    const base: CertifiedFusionCard = {
       id: `mortra-${structureId}`,
       statement_tex: statement,
       answer_tex: answer,
@@ -541,7 +670,27 @@ export function synthesizeCertifiedPolynomialFusions(
         valid_hypotheses: cards.length + 1,
         elapsed_ms: Date.now() - startedAt,
       },
-    })
+    }
+    cards.push(base)
+    composedConfigurations.push({ operation, polynomial: newton, directPowerSums, base })
+  }
+
+  const projections: RootConfigurationObservable[] = ['trace_norm', 'power_sums']
+  for (const projection of projections) {
+    for (const configuration of composedConfigurations) {
+      if (cards.length >= requested) return cards
+      const projected = observableProjectionCard(
+        configuration.base,
+        left,
+        right,
+        configuration.operation,
+        configuration.polynomial,
+        configuration.directPowerSums,
+        projection,
+        cards.length + 1,
+      )
+      if (projected) cards.push(projected)
+    }
   }
   return cards
 }

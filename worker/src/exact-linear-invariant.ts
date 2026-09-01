@@ -45,10 +45,11 @@ export type LinearInvariantCertificate = {
   variables: string[]
   residual: Record<string, string>
   blockedSideConditions: string[]
+  proofCoefficients: string[] | null
 }
 
 type Q = { n: bigint; d: bigint }
-type Row = { values: Q[]; provenance: Set<string> }
+type Row = { values: Q[]; provenance: Set<string>; witness: Q[] }
 
 const ZERO: Q = { n: 0n, d: 1n }
 const ONE: Q = { n: 1n, d: 1n }
@@ -92,18 +93,27 @@ function equal(a: Q, b: Q): boolean { return a.n === b.n && a.d === b.d }
 function format(a: Q): string { return a.d === 1n ? String(a.n) : `${a.n}/${a.d}` }
 
 function scaled(row: Row, factor: Q): Row {
-  return { values: row.values.map(value => mul(value, factor)), provenance: new Set(row.provenance) }
+  return {
+    values: row.values.map(value => mul(value, factor)),
+    provenance: new Set(row.provenance),
+    witness: row.witness.map(value => mul(value, factor)),
+  }
 }
 
 function subtractRows(left: Row, right: Row, factor: Q): Row {
   return {
     values: left.values.map((value, index) => sub(value, mul(right.values[index], factor))),
     provenance: new Set([...left.provenance, ...right.provenance]),
+    witness: left.witness.map((value, index) => sub(value, mul(right.witness[index], factor))),
   }
 }
 
 function rref(rows: Row[], variableCount: number): { rows: Row[]; pivots: number[] } {
-  const matrix = rows.map(row => ({ values: [...row.values], provenance: new Set(row.provenance) }))
+  const matrix = rows.map(row => ({
+    values: [...row.values],
+    provenance: new Set(row.provenance),
+    witness: [...row.witness],
+  }))
   const pivots: number[] = []
   let pivotRow = 0
   for (let column = 0; column < variableCount && pivotRow < matrix.length; column++) {
@@ -131,12 +141,14 @@ export function executeLinearInvariant(program: LinearInvariantProgram): LinearI
     return {
       status: 'blocked', coordinate: program.coordinate, value: null, expectedMatches: null,
       usedProvenance: [], rank: 0, variables, residual: {}, blockedSideConditions: blocked,
+      proofCoefficients: null,
     }
   }
 
-  const rows: Row[] = program.equations.map(equation => ({
+  const rows: Row[] = program.equations.map((equation, equationIndex) => ({
     values: [...variables.map(variable => parse(equation.terms[variable] ?? 0)), parse(equation.rhs)],
     provenance: new Set(equation.provenance),
+    witness: program.equations.map((_, index) => index === equationIndex ? ONE : ZERO),
   }))
   const reduced = rref(rows, variables.length)
   const contradiction = reduced.rows.find(row =>
@@ -147,6 +159,7 @@ export function executeLinearInvariant(program: LinearInvariantProgram): LinearI
       status: 'inconsistent', coordinate: program.coordinate, value: null, expectedMatches: null,
       usedProvenance: [...contradiction.provenance].sort(), rank: reduced.pivots.length,
       variables, residual: {}, blockedSideConditions: [],
+      proofCoefficients: null,
     }
   }
 
@@ -157,6 +170,7 @@ export function executeLinearInvariant(program: LinearInvariantProgram): LinearI
       neg(parse(program.goal.constant ?? 0)),
     ],
     provenance: new Set(),
+    witness: program.equations.map(() => ZERO),
   }
   reduced.pivots.forEach((column, rowIndex) => {
     const coefficient = goal.values[column]
@@ -171,6 +185,7 @@ export function executeLinearInvariant(program: LinearInvariantProgram): LinearI
       status: 'underdetermined', coordinate: program.coordinate, value: null, expectedMatches: null,
       usedProvenance: [...goal.provenance].sort(), rank: reduced.pivots.length,
       variables, residual, blockedSideConditions: [],
+      proofCoefficients: null,
     }
   }
   // Elimination computes goal_terms - value = 0, hence value is -constant.
@@ -181,5 +196,47 @@ export function executeLinearInvariant(program: LinearInvariantProgram): LinearI
     expectedMatches: expected === null ? null : equal(value, expected),
     usedProvenance: [...goal.provenance].sort(), rank: reduced.pivots.length,
     variables, residual: {}, blockedSideConditions: [],
+    proofCoefficients: goal.witness.map(value => format(neg(value))),
+  }
+}
+
+/**
+ * Replay a proved certificate without performing elimination again.
+ *
+ * The stored coefficients must express the requested goal equation as one
+ * exact rational linear combination of the input equations.  This makes a
+ * certificate independently checkable and prevents a solver status flag from
+ * being accepted as proof by itself.
+ */
+export function verifyLinearInvariantCertificate(
+  program: LinearInvariantProgram,
+  certificate: LinearInvariantCertificate,
+): boolean {
+  if (certificate.status !== 'proved' || certificate.value === null) return false
+  if (!certificate.proofCoefficients || certificate.proofCoefficients.length !== program.equations.length) {
+    return false
+  }
+  if ((program.sideConditions ?? []).some(condition => !condition.proved)) return false
+  try {
+    const coefficients = certificate.proofCoefficients.map(parse)
+    const variables = [...new Set([
+      ...program.equations.flatMap(equation => Object.keys(equation.terms)),
+      ...Object.keys(program.goal.terms),
+    ])].sort()
+    for (const variable of variables) {
+      const combined = program.equations.reduce(
+        (sum, equation, index) => add(sum, mul(coefficients[index], parse(equation.terms[variable] ?? 0))),
+        ZERO,
+      )
+      if (!equal(combined, parse(program.goal.terms[variable] ?? 0))) return false
+    }
+    const combinedRhs = program.equations.reduce(
+      (sum, equation, index) => add(sum, mul(coefficients[index], parse(equation.rhs))),
+      ZERO,
+    )
+    const expectedRhs = sub(parse(certificate.value), parse(program.goal.constant ?? 0))
+    return equal(combinedRhs, expectedRhs)
+  } catch {
+    return false
   }
 }

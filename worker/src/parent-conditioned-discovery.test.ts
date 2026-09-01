@@ -11,6 +11,17 @@ const congruence = (id: string, variable = 'x', residue = '1') => ({
   statement: `素数 p に対し ${variable}^2\\equiv-${residue}\\pmod p の可解性を示せ。`,
 })
 
+test('one problem creates a query-closure obligation instead of being rejected', () => {
+  const result = discoverParentStructures([{
+    id: 'single',
+    statement: '実数 $x,y$ は $x+y=19$, $y=4$ を満たす。$x$ を求めよ。',
+  }])
+  assert.equal(result.parent_graphs.length, 1)
+  assert.ok(result.hypotheses.length > 0)
+  assert.equal(result.cards[0].parent_ids[0], 'single')
+  assert.match(result.cards[0].structure_blueprint.observable, /QueryClosure/)
+})
+
 test('unknown parents are lifted from their operators instead of a remembered family', () => {
   const result = discoverParentStructures([integral('i'), congruence('n')], 3)
   assert.equal(result.discovered, 3)

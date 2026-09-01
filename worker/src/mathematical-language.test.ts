@@ -69,3 +69,9 @@ test('English olympiad imperatives elaborate to the same finite query kinds', ()
   assert.equal(elaborateMathematicalText('Determine the maximum possible value.').ir.query?.kind, 'optimize')
   assert.equal(elaborateMathematicalText('Calculate the area of the triangle.').ir.query?.kind, 'measure')
 })
+
+test('Japanese solve and calculation imperatives become executable query kinds', () => {
+  assert.equal(elaborateMathematicalText('方程式 $2x+1=7$ を解け。').ir.query?.kind, 'compute')
+  assert.equal(elaborateMathematicalText('$x+y$ を計算せよ。').ir.query?.kind, 'compute')
+  assert.equal(elaborateMathematicalText('$x$ を求めなさい。').ir.query?.kind, 'compute')
+})

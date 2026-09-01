@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto'
 import type { DiscoveryParent } from './parent-conditioned-discovery'
+import { registeredMorphismCertificate } from './execution-certificate'
 
 type Matrix2 = readonly [bigint, bigint, bigint, bigint]
 
@@ -67,18 +68,26 @@ export type ExecutableFusionCard = {
     }
   }
   search_evidence: { hypotheses_evaluated: number; valid_hypotheses: number; elapsed_ms: number }
+  execution_certificate?: Record<string, unknown>
+  diagram?: unknown
+  diagram_tikz?: string
+  visual_explanation?: unknown
+  proof_roadmap?: unknown
+  proof_obligations?: unknown
 }
 
 function hash(value: unknown, length = 12): string {
   return createHash('sha256').update(JSON.stringify(value)).digest('hex').slice(0, length)
 }
 
-function parseLinear(expression: string): [bigint, bigint] | null {
+function parseLinear(expression: string, variable = 'z'): [bigint, bigint] | null {
   const normalized = expression
     .replace(/\\left|\\right/g, '')
     .replace(/[{}\s]/g, '')
     .replace(/−/g, '-')
-  const match = normalized.match(/^([+-]?\d*)z([+-]\d+)?$/)
+  if (/^[+-]?\d+$/.test(normalized)) return [0n, BigInt(normalized)]
+  const escapedVariable = variable.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const match = normalized.match(new RegExp(`^([+-]?\\d*)${escapedVariable}([+-]\\d+)?$`))
   if (!match) return null
   const coefficient = match[1] === '' || match[1] === '+' ? 1n : match[1] === '-' ? -1n : BigInt(match[1])
   return [coefficient, BigInt(match[2] || '0')]
@@ -87,10 +96,11 @@ function parseLinear(expression: string): [bigint, bigint] | null {
 export function extractMobiusMap(parents: DiscoveryParent[]): { matrix: Matrix2; parentId: string } | null {
   for (const parent of parents) {
     const source = parent.statement ?? ''
-    const match = source.match(/T\s*\(\s*z\s*\)\s*=\s*\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}/i)
+    const match = source.match(/[A-Za-z][A-Za-z0-9_]*\s*\(\s*([A-Za-z])\s*\)\s*=\s*\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}/i)
     if (!match) continue
-    const numerator = parseLinear(match[1])
-    const denominator = parseLinear(match[2])
+    const variable = match[1]
+    const numerator = parseLinear(match[2], variable)
+    const denominator = parseLinear(match[3], variable)
     if (!numerator || !denominator) continue
     const matrix: Matrix2 = [numerator[0], numerator[1], denominator[0], denominator[1]]
     if (matrix[0] * matrix[3] === matrix[1] * matrix[2]) continue
@@ -313,6 +323,18 @@ export function synthesizeExecutableFusions(
           morphismChain: morphisms, executable: true, proofCertificate,
         },
         search_evidence: { hypotheses_evaluated: 64, valid_hypotheses: cards.length + 1, elapsed_ms: Date.now() - startedAt },
+        execution_certificate: registeredMorphismCertificate({
+          parents,
+          program: {
+            schema: 'rational-map-finite-orbit',
+            matrix: mobius.matrix.map(String),
+            iteration: exponent,
+            observable,
+            instantiated_matrix: iterated.map(String),
+            morphism_chain: morphisms,
+          },
+          checks: proofCertificate.map(step => `${step.id}: ${step.verifier}`),
+        }),
       })
     }
   }

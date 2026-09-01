@@ -13,6 +13,16 @@ test('lowers raw TeX equations and executes an affine query exactly', () => {
   assert.equal(result.certificate.usedProvenance.length, 2)
 })
 
+test('lowers bare formulas embedded in Japanese prose', () => {
+  const result = lowerLinearPredicateStatement(
+    '実数 x,y は x+y=19, y=4 を満たす。x を求めよ。',
+  )
+  assert.equal(result.status, 'lowered')
+  if (result.status !== 'lowered') return
+  assert.equal(result.certificate.status, 'proved')
+  assert.equal(result.certificate.value, '15')
+})
+
 test('one lowering morphism executes additive, valuation, and angle coordinates', () => {
   const documents = [
     {
@@ -66,4 +76,53 @@ test('rejects nonlinear products instead of pretending a backend exists', () => 
     goal: 'x',
   })
   assert.equal(result.status, 'nonlinear')
+})
+
+test('compiles Japanese solve imperatives without a registered problem shape', () => {
+  const result = lowerLinearPredicateStatement('方程式 $7x-5=30$ を解け。')
+  assert.equal(result.status, 'lowered')
+  if (result.status !== 'lowered') return
+  assert.equal(result.certificate.status, 'proved')
+  assert.equal(result.certificate.value, '5')
+  assert.equal(result.elaboration?.goal_source, 'single_unknown')
+  assert.equal(result.elaboration?.query_kind, 'compute')
+})
+
+test('separates a queried equality from its supporting constraints', () => {
+  const result = lowerLinearPredicateStatement(
+    '実数 $x,y$ は $x+y=10$, $y=3$ を満たす。このとき $x=7$ を示せ。',
+  )
+  assert.equal(result.status, 'lowered')
+  if (result.status !== 'lowered') return
+  assert.equal(result.program.equations.length, 2)
+  assert.equal(result.certificate.status, 'proved')
+  assert.equal(result.certificate.value, '0')
+  assert.equal(result.certificate.expectedMatches, true)
+  assert.equal(result.elaboration?.goal_source, 'query_relation')
+  assert.equal(result.elaboration?.query_kind, 'prove')
+})
+
+test('infers an angle coordinate from the mathematical language', () => {
+  const result = lowerLinearPredicateStatement(
+    '角を表す量 $d_a,d_b,d_c$ が $d_a-d_b=\\frac{1}{2}$, $d_b-d_c=0$ を満たす。$d_a-d_c$ を求めよ。',
+  )
+  assert.equal(result.status, 'lowered')
+  if (result.status !== 'lowered') return
+  assert.equal(result.program.coordinate, 'angle')
+  assert.equal(result.certificate.status, 'proved')
+  assert.equal(result.certificate.value, '1/2')
+})
+
+test('alpha-renaming and changed constants recompute the answer', () => {
+  const cases = [
+    ['実数 $p,q$ は $p+q=23$, $q=8$ を満たす。$p$ を計算せよ。', '15'],
+    ['実数 $u,v$ は $u+v=41$, $v=12$ を満たす。$u$ を求めなさい。', '29'],
+  ] as const
+  for (const [statement, expected] of cases) {
+    const result = lowerLinearPredicateStatement(statement)
+    assert.equal(result.status, 'lowered')
+    if (result.status !== 'lowered') continue
+    assert.equal(result.certificate.status, 'proved')
+    assert.equal(result.certificate.value, expected)
+  }
 })

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+import json
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -10,10 +11,348 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
 
-from api.solve import solve_problem
+from api.solve import solve_problem, solve_public_problem
 
 
 class PublicSolveTests(unittest.TestCase):
+    def assert_runtime_synthesis_card(self, card: dict[str, object]) -> None:
+        certificate = card["execution_certificate"]
+        verification = card["verification"]
+        self.assertEqual(certificate["capability_origin"], "synthesized_proof_program")
+        self.assertFalse(certificate["registered_composite_used"])
+        self.assertTrue(certificate["verified"])
+        self.assertTrue(verification["exact_backend"])
+        self.assertTrue(verification["independent_check"])
+        self.assertGreater(len(card["solution_tex"]), 80)
+        self.assertNotIn("\ufffd", json.dumps(card, ensure_ascii=False, default=str))
+
+    def test_current_input_function_variation_generates_exact_table_and_plot(self) -> None:
+        status, payload = solve_public_problem(
+            "関数 f(x)=x^3-3x の増減、極大値、極小値を求め、グラフの概形を描け。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(card["diagram"]["kind"], "calculus")
+        self.assertEqual(card["diagram"]["variable"], "x")
+        self.assertEqual(card["diagram"]["functionTex"], "x^{3} - 3 x")
+        self.assertEqual(card["diagram"]["derivativeTex"], r"3 \left(x - 1\right) \left(x + 1\right)")
+        self.assertEqual(card["diagram"]["domainTex"], r"\mathbb{R}")
+        self.assertTrue(card["diagram"]["certificateMethod"])
+        self.assertNotIn("undefined", json.dumps(card["diagram"], ensure_ascii=False))
+        self.assertIn("x=-1", card["answer_tex"])
+        self.assertIn("x=1", card["answer_tex"])
+        self.assertIn("2", card["answer_tex"])
+
+    def test_function_variation_recomputes_after_coefficient_change(self) -> None:
+        status, payload = solve_public_problem(
+            "関数 f(x)=x^3-12x の増減、極大値、極小値を求め、グラフの概形を描け。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertIn("x=-2", card["answer_tex"])
+        self.assertIn("x=2", card["answer_tex"])
+        self.assertIn("16", card["answer_tex"])
+
+    def test_current_input_triangle_centers_generate_exact_construction(self) -> None:
+        status, payload = solve_public_problem(
+            "座標平面上の三角形 A(0,0), B(6,0), C(2,4) の外心と内心を求め、"
+            "解答に必要な補助線を含む図を描け。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(card["diagram"]["kind"], "plane")
+        self.assertIn(r"O=\left(3,1\right)", card["answer_tex"])
+        self.assertGreaterEqual(len(card["diagram"]["shapes"]), 8)
+
+    def test_triangle_centers_recompute_after_coordinate_change(self) -> None:
+        status, payload = solve_public_problem(
+            "座標平面上の三角形 A(0,0), B(8,0), C(0,6) の外心と内心を求め、図を描け。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertIn(r"O=\left(4,3\right)", card["answer_tex"])
+        self.assertIn(r"I=\left(2,2\right)", card["answer_tex"])
+
+    def test_current_input_coin_run_generates_state_equations_and_diagram(self) -> None:
+        status, payload = solve_public_problem(
+            "公平な硬貨を繰り返し投げ、表が2回連続した時点で終了する。"
+            "終了までの投数の期待値を求め、状態遷移図を用いて説明せよ。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(card["answer_tex"], r"\(6\)")
+        self.assertEqual(card["diagram"]["kind"], "state")
+        self.assertEqual(len(card["diagram"]["states"]), 3)
+
+    def test_coin_run_recomputes_for_three_consecutive_heads(self) -> None:
+        status, payload = solve_public_problem(
+            "公平な硬貨を繰り返し投げ、表が3回連続した時点で終了する。"
+            "終了までの投数の期待値を求め、状態遷移図を用いて説明せよ。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(card["answer_tex"], r"\(14\)")
+        self.assertEqual(len(card["diagram"]["states"]), 4)
+
+    def test_second_order_recurrence_compiles_to_matrix_and_closed_form(self) -> None:
+        status, payload = solve_public_problem(
+            "数列 {a_n} を a_0=2, a_1=5, a_{n+2}=3a_{n+1}-2a_n で定める。"
+            "一般項と a_{10} を求め、漸化式を表す遷移行列を図示せよ。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertIn("3071", card["answer_tex"])
+        self.assertEqual(card["diagram"]["kind"], "state")
+        self.assertEqual(card["execution_certificate"]["witness"]["coefficients"], ["3", "-2"])
+
+    def test_second_order_recurrence_recomputes_changed_coefficients(self) -> None:
+        status, payload = solve_public_problem(
+            "数列 {b_n} を b_0=1, b_1=3, b_{n+2}=4b_{n+1}-3b_n で定める。"
+            "一般項と b_6 を求め、遷移行列を図示せよ。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertIn("729", card["answer_tex"])
+        self.assertEqual(card["execution_certificate"]["witness"]["coefficients"], ["4", "-3"])
+
+    def test_linear_congruence_enumerates_every_residue_class(self) -> None:
+        status, payload = solve_public_problem(
+            "整数 x について、合同式 14x≡30 (mod 100) を満たす剰余類をすべて求めよ。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(card["execution_certificate"]["witness"]["solutions"], [45, 95])
+
+    def test_factorial_valuation_uses_prime_power_multiplicities(self) -> None:
+        status, payload = solve_public_problem("100! を割り切る最大の 2 のべき 2^k を求めよ。")
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(card["answer_tex"], r"\(k=97\)")
+        self.assertEqual(card["execution_certificate"]["witness"]["terms"], [50, 25, 12, 6, 3, 1])
+
+    def test_biased_coin_run_uses_input_probability(self) -> None:
+        status, payload = solve_public_problem(
+            "表の出る確率が 1/3 の硬貨を独立に投げ、表が3回連続した時点で終了する。"
+            "終了までの投数の期待値を求め、状態遷移図で説明せよ。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(card["answer_tex"], r"\(39\)")
+        self.assertEqual(card["execution_certificate"]["witness"]["probability_heads"], "1/3")
+
+    def test_rational_variation_keeps_poles_separate_from_critical_points(self) -> None:
+        status, payload = solve_public_problem(
+            "関数 f(x)=(x^2+1)/(x-1) の増減と極値を求め、漸近線を含むグラフの概形を描け。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(card["diagram"]["kind"], "calculus")
+        self.assertIn(r"1 - \sqrt{2}", card["answer_tex"])
+        self.assertIn(r"y=x + 1", card["answer_tex"])
+        self.assertEqual(card["execution_certificate"]["witness"]["poles"], ["Integer(1)"])
+
+    def test_positive_monomial_extremum_is_recomputed_from_exponents(self) -> None:
+        status, payload = solve_public_problem(
+            "正の実数 x,y が x+y=10 を満たすとき、x^2y の最大値と、そのときの x,y を求めよ。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertIn(r"\frac{4000}{27}", card["answer_tex"])
+        self.assertEqual(card["execution_certificate"]["witness"]["exponents"], [2, 1])
+        self.assertEqual(card["diagram"]["kind"], "plane")
+
+    def test_tetrahedron_volume_and_projection_share_the_same_coordinates(self) -> None:
+        status, payload = solve_public_problem(
+            "空間内の4点 A(0,0,0), B(2,0,0), C(0,3,0), D(0,0,4) が作る四面体の体積を求め、"
+            "座標軸と四面体を図示せよ。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(card["answer_tex"], r"\(V=4\)")
+        self.assertEqual(card["diagram"]["kind"], "plane")
+        self.assertGreaterEqual(len(card["diagram"]["shapes"]), 13)
+
+    def test_first_repeat_die_expectation_has_an_independent_survival_sum(self) -> None:
+        status, payload = solve_public_problem(
+            "公平な6面体のさいころを繰り返し投げ、初めて同じ目が2回現れた時点で終了する。"
+            "終了までの投数の期待値を求め、状態遷移図で説明せよ。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(card["answer_tex"], r"\(E_0=\frac{1223}{324}\)")
+        self.assertEqual(card["diagram"]["kind"], "state")
+        self.assertEqual(card["execution_certificate"]["witness"]["sides"], 6)
+
+    def test_linear_trigonometric_equation_returns_all_half_open_period_roots(self) -> None:
+        status, payload = solve_public_problem(
+            "0≤x<2π において sin x+cos x=1 を満たす x をすべて求め、二つのグラフの交点として図示せよ。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(card["answer_tex"], r"\(x=0,\;\frac{\pi}{2}\)")
+        self.assertEqual(card["diagram"]["kind"], "plane")
+        self.assertEqual(len(card["execution_certificate"]["witness"]["solutions"]), 2)
+
+    def test_runtime_structural_kernels_recompute_unseen_parameters(self) -> None:
+        cases = (
+            (
+                "関数 f(x)=(x^2+4)/(x-2) の増減と極値を求め、漸近線を含むグラフの概形を描け。",
+                r"2 + 2 \sqrt{2}",
+                "mortra.runtime_rational_variation",
+            ),
+            (
+                "正の実数 u,v が u+v=15 を満たすとき、u^3v^2 の最大値と、そのときの u,v を求めよ。",
+                "26244",
+                "mortra.runtime_positive_monomial_extremum",
+            ),
+            (
+                "空間内の4点 P(0,0,0), Q(3,0,0), R(0,4,0), S(0,0,5) が作る四面体の体積を求め、"
+                "座標軸と四面体を図示せよ。",
+                r"V=10",
+                "mortra.runtime_tetrahedron_determinant_volume",
+            ),
+            (
+                "公平な4面体のさいころを繰り返し投げ、初めて同じ目が2回現れた時点で終了する。"
+                "終了までの投数の期待値を求め、状態遷移図で説明せよ。",
+                r"\frac{103}{32}",
+                "mortra.runtime_first_repeat_die_expectation",
+            ),
+            (
+                "0≤t<2π において 2sin t=1 を満たす t をすべて求め、二つのグラフの交点として図示せよ。",
+                r"\frac{5 \pi}{6}",
+                "mortra.runtime_linear_trigonometric_equation",
+            ),
+            (
+                "整数 z について、合同式 18z≡12 (mod 30) を満たす剰余類をすべて求めよ。",
+                r"29",
+                "mortra.runtime_linear_congruence",
+            ),
+            (
+                "75! を割り切る最大の 3 のべき 3^k を求めよ。",
+                r"k=35",
+                "mortra.runtime_factorial_prime_valuation",
+            ),
+        )
+        for statement, expected, tool_name in cases:
+            with self.subTest(statement=statement):
+                status, payload = solve_public_problem(statement)
+                self.assertEqual(status, 200)
+                card = payload["cards"][0]
+                self.assert_runtime_synthesis_card(card)
+                self.assertIn(expected, card["answer_tex"])
+                self.assertEqual(card["execution_certificate"]["tool_name"], tool_name)
+
+    def test_current_input_integral_inequality_generates_exact_visual_proof(self) -> None:
+        status, payload = solve_public_problem(
+            r"I=\int_0^{\pi/2}\{\cos(\cos x+\sin x)+\sin(\cos x+\sin x)\}\,dx "
+            r"とする。0<I<2 を証明せよ。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(card["answer_tex"], r"\(0<I<2\)")
+        self.assertIn("Cauchy--Schwarz", card["solution_tex"])
+        self.assertIn(r"\pi<22/7", card["solution_tex"])
+        self.assertIn("diagram", card)
+
+    def test_integral_chart_does_not_accept_a_different_integrand(self) -> None:
+        status, payload = solve_public_problem(
+            r"I=\int_0^{\pi/2}\sin(\cos x+\sin x)\,dx とする。0<I<2 を証明せよ。"
+        )
+
+        if status == 200:
+            tool = payload["cards"][0]["execution_certificate"].get("tool_name")
+            self.assertNotEqual(tool, "mortra.runtime_complement_angle_integral_bound")
+
+    def test_bare_japanese_linear_system_projects_requested_expression(self) -> None:
+        status, payload = solve_public_problem(
+            "実数 x, y が 2x+y=11, x-y=1 を満たすとき、x+3y を求めよ。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assertIn("13", card["answer_tex"])
+        self.assertTrue(card["verification"]["exact_backend"])
+        self.assertTrue(card["verification"]["independent_check"])
+
+    def test_bare_japanese_symmetric_root_expression_uses_vieta_chart(self) -> None:
+        status, payload = solve_public_problem(
+            "方程式 x^2-3x-7=0 の二つの根を α, β とするとき、α^3+β^3 を求めよ。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assertIn("90", card["answer_tex"])
+        self.assertIn("symmetric_root_expression", card["family_id"])
+        self.assertTrue(card["verification"]["independent_check"])
+
+    def test_bare_linear_projection_recomputes_after_alpha_and_number_changes(self) -> None:
+        cases = (
+            (
+                "実数 p, q が 4p-q=17, p+2q=1 を満たすとき、3p+q を求めよ。",
+                r"\frac{92}{9}",
+            ),
+            ("実数 u, v が 3u+2v=19, u-v=3 を満たすとき、u+4v を求めよ。", "13"),
+        )
+        for statement, expected in cases:
+            with self.subTest(statement=statement):
+                status, payload = solve_public_problem(statement)
+                self.assertEqual(status, 200)
+                self.assertIn(expected, payload["cards"][0]["answer_tex"])
+
+    def test_public_product_rejects_a_registered_completed_route(self) -> None:
+        problem = (
+            r"実数 $\alpha$ が $\sin\alpha+\cos\alpha=\frac{1}{37}$ を満たしているとする。"
+            r"$\sin^n\alpha+\cos^n\alpha>\frac{1}{37}$ となる正の整数 $n$ をすべて求めよ。"
+        )
+
+        status, payload = solve_public_problem(problem)
+
+        self.assertEqual(status, 422)
+        self.assertEqual(payload["generated"], 0)
+        self.assertIn("登録済み", payload["error"])
+
+    def test_public_product_solves_an_unregistered_exact_integral(self) -> None:
+        status, payload = solve_public_problem(r"$\int_0^1 x^3\,dx$ を求めよ。")
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assertIn(r"\frac{1}{4}", card["answer_tex"])
+        self.assertFalse(card["execution_certificate"]["registered_composite_used"])
+
     def test_rational_angle_power_identity_exports_its_actual_proof_route(self) -> None:
         problem = (
             r"$0<2p<q$ を満たす互いに素な自然数 $p,q$ と自然数 $n\geqq2$ に対し，"
@@ -164,6 +503,14 @@ class PublicSolveTests(unittest.TestCase):
         self.assertIn(r"\arccos", card["answer_tex"])
         self.assertEqual(card["diagram"]["title"], "三次方程式の3実根")
 
+    def test_three_real_cubic_derivation_has_a_well_formed_square_root(self) -> None:
+        status, payload = solve_problem(r"$x^3-7x+3=0$ を解け。")
+
+        self.assertEqual(status, 200)
+        solution = payload["cards"][0]["solution_tex"]
+        self.assertNotIn(r"\sqrt{--", solution)
+        self.assertIn(r"\sqrt{\frac{7}{3}}", solution)
+
     def test_definite_integral_uses_exact_backend(self) -> None:
         status, payload = solve_problem(r"$\int_0^1 x^2\,dx$ を求めよ。")
 
@@ -292,6 +639,121 @@ class PublicSolveTests(unittest.TestCase):
 
         self.assertEqual(status, 422)
         self.assertEqual(payload["generated"], 0)
+        self.assertEqual(
+            payload["diagnostics"]["schema"],
+            "mortra.single-problem-failure.v1",
+        )
+        self.assertTrue(payload["diagnostics"]["operations"])
+
+    def test_correlation_limit_is_synthesized_in_cold_mode(self) -> None:
+        problem = (
+            r"1から$n$までのカードから2枚を引く。相加平均と相乗平均を"
+            r"$X_n,Y_n$ とし、その相関係数を $\rho_n$ とする。"
+            r"$\lim_{n\to\infty}\rho_n$ を求めよ。"
+        )
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assertEqual(card["answer_tex"], r"\(\frac{8 \sqrt{102}}{85}\)")
+        certificate = card["execution_certificate"]
+        self.assertEqual(certificate["capability_origin"], "synthesized_proof_program")
+        self.assertFalse(certificate["registered_composite_used"])
+        self.assertEqual(certificate["composite_cache_role"], "not_consulted")
+        self.assertEqual(
+            certificate["witness"]["generated_moment_obligations"],
+            ["E_X", "E_Y", "E_X2", "E_Y2", "E_XY"],
+        )
+        rules = [step["rule"] for step in certificate["proof_program"]]
+        self.assertIn("correlation_dependency_expansion", rules)
+        self.assertIn("independent_double_integral_replay", rules)
+
+    def test_correlation_program_recomputes_different_observables(self) -> None:
+        problem = (
+            r"1から$N$までの整数が書かれたカードが1枚ずつある。2枚を同時に引き、"
+            r"その値の和を $S_N$、積を $P_N$ とする。$S_N,P_N$ の相関係数を $c_N$ とする。"
+            r"$\lim_{N\to\infty}c_N$ を求めよ。"
+        )
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assertEqual(card["answer_tex"], r"\(\frac{\sqrt{42}}{7}\)")
+        certificate = card["execution_certificate"]
+        self.assertFalse(certificate["registered_composite_used"])
+        self.assertEqual(
+            certificate["witness"]["observable_expressions"],
+            {"S": "u + v", "P": "u*v"},
+        )
+
+    def test_triangle_recurrence_floor_limit_is_synthesized_in_cold_mode(self) -> None:
+        problem = r"""
+        \(n\in\mathbb N\) に対して \(x_n,x_{n+1},x_{n+2}\) が三角形の三辺をなし、
+        正の数列 \(\{x_n\}\) が
+        \[
+        x_{n+2}=p x_{n+1}+q x_n\qquad(p,q>0)
+        \]
+        を満たす。
+        \[
+        \lim_{n\to\infty}\left\lfloor
+        \frac{x_{n+2}}{x_n}+\frac{x_n}{x_{n+2}}
+        \right\rfloor
+        \]
+        を求めよ。
+        """
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assertEqual(card["answer_tex"], r"\(2\)")
+        certificate = card["execution_certificate"]
+        self.assertEqual(certificate["capability_origin"], "synthesized_proof_program")
+        self.assertFalse(certificate["registered_composite_used"])
+        self.assertEqual(certificate["composite_cache_role"], "not_consulted")
+        rules = [step["rule"] for step in certificate["proof_program"]]
+        self.assertIn("companion_matrix_lift", rules)
+        self.assertIn("alternating_subdominant_endpoint_exclusion", rules)
+        self.assertIn("eventual_floor_stability", rules)
+
+    def test_discrete_profile_minimum_is_discovered_in_cold_mode(self) -> None:
+        problem = r"""
+        自然数 \(n\geq4\) に対し，
+        \[
+        a_n=(\sin\frac{\pi}{n}+\cos\frac{\pi}{n})^{
+        \frac{1}{\sin\frac{\pi}{n}+\cos\frac{\pi}{n}-1}
+        +\sin\frac{\pi}{n}+\cos\frac{\pi}{n}-1}
+        \]
+        と定める。数列 \(\{a_n\}\) の最小値を求め，さらに
+        \[\lim_{n\to\infty}n(e-a_n)\]
+        を求めよ。
+        """
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        certificate = card["execution_certificate"]
+        self.assertEqual(certificate["capability_origin"], "synthesized_proof_program")
+        self.assertFalse(certificate["registered_composite_used"])
+        self.assertEqual(certificate["witness"]["selected_index"], 12)
+        self.assertEqual(certificate["witness"]["scaled_limit"], "E*pi/2")
+        rules = [step["rule"] for step in certificate["proof_program"]]
+        self.assertIn("runtime_derivative_root_search", rules)
+        self.assertIn("exact_candidate_interval_comparison", rules)
+
+    def test_limit_does_not_treat_an_unresolved_geometric_distance_as_a_scalar_product(self) -> None:
+        problem = (
+            r"原点を $O$，曲線 $P:y=x^2$ とする。$P$ を角 $\theta$ 回転した曲線との"
+            r"交点を $R$ とする。$\lim_{\theta\to0}\theta^2\cdot OR$ を求めよ。"
+        )
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
+
+        self.assertEqual(status, 422)
+        self.assertEqual(payload["generated"], 0)
 
     def test_curated_structural_theorem_is_not_used_in_cold_mode(self) -> None:
         status, payload = solve_problem(
@@ -302,6 +764,150 @@ class PublicSolveTests(unittest.TestCase):
         self.assertEqual(status, 422)
         self.assertEqual(payload["generated"], 0)
         self.assertEqual(payload["evaluation_mode"], "cold")
+
+    def test_registered_parameterized_morphism_remains_available_for_research_replay(self) -> None:
+        problem = (
+            r"実数 $\alpha$ が $\sin\alpha+\cos\alpha=\frac{1}{37}$ を満たしているとする。"
+            r"$\sin^n\alpha+\cos^n\alpha>\frac{1}{37}$ となる正の整数 $n$ をすべて求めよ。"
+        )
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=True)
+
+        self.assertEqual(status, 200)
+        self.assertEqual(payload["evaluation_mode"], "portfolio")
+        card = payload["cards"][0]
+        self.assertEqual(
+            card["family_id"],
+            "solve.structural_theorem.structural_theorem_trigonometric_power_sum_threshold",
+        )
+        contract = card["execution_certificate"]["cold_generalization_contract"]
+        self.assertTrue(card["execution_certificate"]["registered_composite_used"])
+        self.assertEqual(
+            contract["required_object_keys"],
+            ["sum_numerator", "sum_denominator"],
+        )
+        self.assertNotIn("expected_answer", card["execution_certificate"])
+
+    def test_unregistered_exponential_inequality_synthesizes_a_proof_program(self) -> None:
+        status, payload = solve_problem(
+            r"$2^{\sqrt2}<e$を示せ。",
+            allow_theorem_kernels=False,
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        certificate = card["execution_certificate"]
+        self.assertEqual(certificate["capability_origin"], "synthesized_proof_program")
+        self.assertGreater(certificate["search_statistics"]["hypotheses_evaluated"], 1)
+        self.assertIn(
+            "exponential_taylor_lower",
+            [step["rule"] for step in certificate["proof_program"]],
+        )
+        self.assertNotIn("problem_id", certificate)
+        self.assertNotIn("expected_answer", certificate)
+
+    def test_same_primitive_search_recomposes_for_unregistered_constants(self) -> None:
+        for problem in (
+            r"$4^{\frac13}<e$を示せ。",
+            r"$e<1+\sqrt3$を示せ。",
+        ):
+            with self.subTest(problem=problem):
+                status, payload = solve_problem(
+                    problem,
+                    allow_theorem_kernels=False,
+                )
+                self.assertEqual(status, 200)
+                certificate = payload["cards"][0]["execution_certificate"]
+                self.assertEqual(
+                    certificate["capability_origin"],
+                    "synthesized_proof_program",
+                )
+
+    def test_finite_orbit_problem_is_synthesized_before_multipart_decomposition(self) -> None:
+        problem = r"""
+        数列 \(\{a_n\}\) を
+        \[
+        a_1=a_2=\frac{\pi}{4},\qquad a_{n+2}=a_{n+1}+a_n
+        \]
+        によって定める。
+        \begin{enumerate}
+        \item \(\displaystyle\lim_{N\to\infty}\frac1N\sum_{k=1}^{N}\sin a_k\) を求めよ。
+        \item \(P_0(x)=1\), \(P_1(x)=x\),
+        \(P_{m+2}(x)=2xP_{m+1}(x)-P_m(x)\) と定める。
+        \(P_m(\cos x)=\cos mx\) を示せ。
+        \item \(\displaystyle\lim_{N\to\infty}\frac1N\sum_{k=1}^{N}P_m(\sin a_k)\)
+        を \(m\) に応じて求めよ。
+        \end{enumerate}
+        """
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
+
+        self.assertEqual(status, 200)
+        self.assertEqual(payload["evaluation_mode"], "cold")
+        card = payload["cards"][0]
+        certificate = card["execution_certificate"]
+        self.assertEqual(certificate["capability_origin"], "synthesized_proof_program")
+        self.assertFalse(certificate["registered_composite_used"])
+        self.assertEqual(certificate["composite_cache_role"], "not_consulted")
+        self.assertEqual(certificate["witness"]["modulus"], 8)
+        self.assertEqual(certificate["witness"]["state_period"], 12)
+        self.assertIn(r"\frac{1}{6}", card["answer_tex"])
+        self.assertIn(r"m\equiv 4\pmod{8}", card["answer_tex"])
+        rules = [step["rule"] for step in certificate["proof_program"]]
+        self.assertIn("modular_matrix_replay", rules)
+        self.assertIn("exact_obligation_replay", rules)
+
+    def test_finite_orbit_public_solver_recomputes_changed_symbols_and_coefficients(self) -> None:
+        problem = r"""
+        \(b_2=\frac{\pi}{6},\ b_3=\frac{\pi}{3}\) とし、
+        \(b_{j+2}=2b_{j+1}-b_j\) で数列を定める。
+        \(\displaystyle\lim_{N\to\infty}\frac1N\sum_{r=2}^{N}\cos b_r\) を求めよ。
+        """
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        certificate = card["execution_certificate"]
+        self.assertEqual(card["answer_tex"], r"\(0\)")
+        self.assertEqual(certificate["witness"]["modulus"], 12)
+        recurrence = certificate["witness"]["input_ir"]["recurrence"]
+        self.assertEqual(recurrence["sequence_symbol"], "b")
+        self.assertEqual(recurrence["coefficients"], (2, -1))
+        self.assertFalse(certificate["registered_composite_used"])
+
+    def test_false_exponential_inequality_is_not_published_without_a_certificate(self) -> None:
+        status, payload = solve_problem(
+            r"$8^{\frac12}<e$を示せ。",
+            allow_theorem_kernels=False,
+        )
+
+        self.assertEqual(status, 422)
+        self.assertEqual(payload["generated"], 0)
+        self.assertIn("証明書", payload["error"])
+
+    def test_trigonometric_geometric_progression_is_elaborated_from_its_relation(self) -> None:
+        status, payload = solve_problem(
+            r"$\sin\theta,$ $\cos\theta,$ $\tan\theta$がこの順で等比数列をなすような"
+            r"$\cos\theta$を求めよ。",
+            allow_theorem_kernels=False,
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assertEqual(card["family_id"], "solve.exact.typed_relation_elimination")
+        self.assertIn(r"c^{3} + c^{2} - 1", card["solution_tex"])
+        self.assertIn("resultant elimination", card["verification"]["method"])
+
+    def test_trigonometric_geometric_progression_is_alpha_renamable(self) -> None:
+        status, payload = solve_problem(
+            r"$\sin\phi,$ $\cos\phi,$ $\tan\phi$がこの順で等比数列をなすような"
+            r"$\cos\phi$を求めよ。",
+            allow_theorem_kernels=False,
+        )
+
+        self.assertEqual(status, 200)
+        self.assertEqual(payload["cards"][0]["family_id"], "solve.exact.typed_relation_elimination")
 
     def test_public_default_uses_theorem_portfolio(self) -> None:
         status, payload = solve_problem(
@@ -329,7 +935,7 @@ class PublicSolveTests(unittest.TestCase):
         self.assertEqual(payload["generated"], 0)
         self.assertNotIn("cards", payload)
 
-    def test_verified_geometry_falls_back_to_typed_mathos_pipeline(self) -> None:
+    def test_fixed_parameter_geometry_answer_is_not_published_as_generation(self) -> None:
         problem = (
             r"平面上に一辺$\sqrt3$の正方形を固定する."
             r"一辺$\sqrt2+\sqrt6$の正三角形を,この正方形を含むように自由に動かすとき,"
@@ -337,8 +943,9 @@ class PublicSolveTests(unittest.TestCase):
         )
         status, payload = solve_problem(problem)
 
-        self.assertEqual(status, 200)
-        self.assertIn(r"2 \pi", payload["cards"][0]["answer_tex"])
+        self.assertEqual(status, 422)
+        self.assertEqual(payload["generated"], 0)
+        self.assertNotIn("cards", payload)
 
     def test_partial_subexpression_does_not_verify_the_whole_problem(self) -> None:
         problem = (
@@ -346,6 +953,37 @@ class PublicSolveTests(unittest.TestCase):
             r"$S=\frac{1}{1-x}$で変換した不動点反復の収束次数と誤差定数を求めよ。"
         )
         status, payload = solve_problem(problem)
+
+        self.assertEqual(status, 422)
+        self.assertEqual(payload["generated"], 0)
+
+    def test_numbered_obligations_require_every_part_to_be_certified(self) -> None:
+        problem = (
+            r"\begin{enumerate}"
+            r"\item[(1)] $\int_0^1 x\,dx$ を求めよ。"
+            r"\item[(2)] $f(x)=x^3-2x$ の導関数を求めよ。"
+            r"\end{enumerate}"
+        )
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assertEqual(card["family_id"], "solve.composite.all_obligations")
+        self.assertEqual(len(card["proof_obligations"]), 2)
+        self.assertTrue(all(item["status"] == "verified" for item in card["proof_obligations"]))
+        self.assertIn(r"\frac{1}{2}", card["answer_tex"])
+        self.assertIn(r"3 x^{2} - 2", card["answer_tex"])
+
+    def test_one_solved_part_does_not_certify_a_two_part_problem(self) -> None:
+        problem = (
+            r"\begin{enumerate}"
+            r"\item[(1)] $\int_0^1 x\,dx$ を求めよ。"
+            r"\item[(2)] 任意の未知の位相空間の分類を証明せよ。"
+            r"\end{enumerate}"
+        )
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
 
         self.assertEqual(status, 422)
         self.assertEqual(payload["generated"], 0)

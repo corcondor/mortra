@@ -17,6 +17,8 @@ test('synthesizes an abstract radius-product divisibility lemma from two endpoin
   assert.equal(result.cards[0].structure_blueprint.structuralUniqueness?.uniqueNormalForm, true)
   assert.equal(result.cards[0].structure_blueprint.structuralUniqueness?.finiteSolutionSet, false)
   assert.deepEqual(result.cards[0].structure_blueprint.structuralUniqueness?.numericInstanceConstants, [])
+  assert.equal(result.cards[0].execution_certificate?.capability_origin, 'synthesized_proof_program')
+  assert.equal(result.cards[0].execution_certificate?.registered_composite_used, false)
 })
 
 test('derives integer topology lemmas from Euler and incidence relations', () => {
@@ -29,6 +31,8 @@ test('derives integer topology lemmas from Euler and incidence relations', () =>
   assert.match(result.cards[0].statement_tex, /gcd|\\gcd/)
   assert.match(result.cards[0].answer_tex, /V-\\chi/)
   assert.ok(result.cards[0].morphism_chain.includes('IncidenceDoubleCounting'))
+  assert.equal(result.cards[0].execution_certificate?.capability_origin, 'registered_parameterized_morphism')
+  assert.equal(result.cards[0].execution_certificate?.registered_composite_used, true)
 })
 
 test('rejects redundant or unrelated parent selections', () => {

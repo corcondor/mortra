@@ -1057,6 +1057,28 @@ class MathOsPrototypeTest(unittest.TestCase):
         self.assertEqual(integral_result["answer"], "1/3")
         self.assertEqual(factor_result["answer"], "(x + 1)**2")
 
+    def test_generic_limit_rejects_an_unelaborated_sequence_target(self):
+        result = solve_request_payload(
+            {
+                "problem": (
+                    r"1から$n$までのカードから2枚を引く。相加平均と相乗平均を"
+                    r"$X_n,Y_n$ とし、その相関係数を $\rho_n$ とする。"
+                    r"$\lim_{n\to\infty}\rho_n$ を求めよ。"
+                ),
+                "full_pipeline": True,
+                "allow_theorem_kernels": False,
+            }
+        )
+
+        self.assertIsNone(result["answer"])
+        limit_action = next(
+            action
+            for action in result["data"]["math_search"]["actions"]
+            if action["name"] == "generic_sympy_limit"
+        )
+        self.assertEqual(limit_action["result"]["status"], "not_applicable")
+        self.assertNotEqual(limit_action["result"].get("answer_exact"), "を求めよ。")
+
     def test_factorization_proof_clause_is_not_an_imperative_factor_query(self):
         problem = r"""
         $f(x)-1=2^{p-1}(x-1)\{P(x)\}^2$ と因数分解できることを示せ。
@@ -1875,6 +1897,20 @@ class MathOsPrototypeTest(unittest.TestCase):
     def test_latex_frontend_preserves_bare_trigonometric_application(self):
         parsed = parse_latex_problem(r"$\sin\theta,\cos x,\tan t$")
         self.assertEqual(parsed.math_segments, ["sin(theta),cos(x),tan(t)"])
+
+    def test_latex_frontend_preserves_indexed_functions_and_nested_limits(self):
+        parsed = parse_latex_problem(
+            r"$k(<n)$, $\cos\theta_{n,k}$, "
+            r"$\lim_{k\to\infty}\lim_{n\to\infty}\theta_{n,k}$"
+        )
+        self.assertEqual(
+            parsed.math_segments,
+            [
+                "(k < n)",
+                "cos(theta_n_k)",
+                "limit_k to infinity limit_n to infinity theta_n_k",
+            ],
+        )
 
     def test_typed_analysis_executes_unseen_latex_limit(self):
         ir = run_pipeline(r"次の極限を求めよ。\[\lim_{t\to0}(1+3t)^{1/t}\]")

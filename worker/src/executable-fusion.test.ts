@@ -19,6 +19,12 @@ test('extracts an unseen Mobius map from the selected parent statement', () => {
   assert.deepEqual(extractMobiusMap(parents), { matrix: [3n, 2n, 1n, 2n], parentId: 'graph-parent' })
 })
 
+test('elaborates a renamed affine map as a matrix with zero lower-left entry', () => {
+  assert.deepEqual(extractMobiusMap([
+    { id: 'affine-parent', statement: '一次分数変換 A(y)=\\frac{4y+3}{5} を考える。' },
+  ]), { matrix: [4n, 3n, 0n, 5n], parentId: 'affine-parent' })
+})
+
 test('synthesizes requested verified problems instead of pending structures', () => {
   const cards = synthesizeExecutableFusions(parents, 3)
   assert.equal(cards.length, 3)

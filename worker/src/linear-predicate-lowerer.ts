@@ -1,10 +1,12 @@
 import {
-  extractLatexSegments,
+  extractMathSegments,
   parseLatexExpression,
   parseLatexRelation,
+  symbolsInMathExpression,
   type MathExpression,
   type MathRelationIR,
 } from './math-expression-ir'
+import { elaborateMathematicalText, type QuerySyntax } from './mathematical-language'
 import {
   executeLinearInvariant,
   type LinearCoordinate,
@@ -25,7 +27,16 @@ export type LinearPredicateDocument = {
 }
 
 export type LinearPredicateLowering =
-  | { status: 'lowered'; program: LinearInvariantProgram; certificate: LinearInvariantCertificate }
+  | {
+      status: 'lowered'
+      program: LinearInvariantProgram
+      certificate: LinearInvariantCertificate
+      elaboration?: {
+        query_kind: QuerySyntax['kind'] | null
+        goal_source: 'query_expression' | 'query_relation' | 'single_unknown'
+        constraint_count: number
+      }
+    }
   | { status: 'parse_error' | 'non_equality' | 'nonlinear' | 'missing_goal' | 'missing_constraints'; detail: string }
 
 const ZERO: Q = { n: 0n, d: 1n }
@@ -202,11 +213,84 @@ export function lowerLinearPredicateDocument(document: LinearPredicateDocument):
 
 export function lowerLinearPredicateStatement(
   statement: string,
-  coordinate: LinearCoordinate = 'additive',
+  coordinate?: LinearCoordinate,
 ): LinearPredicateLowering {
-  const segments = extractLatexSegments(statement)
-  const relations = segments.filter(segment => parseLatexRelation(segment) !== null)
-  const expressions = segments.filter(segment => parseLatexRelation(segment) === null && parseLatexExpression(segment) !== null)
-  if (!expressions.length) return { status: 'missing_goal', detail: 'no standalone TeX goal expression was found' }
-  return lowerLinearPredicateDocument({ coordinate, relations, goal: expressions.at(-1)! })
+  const language = elaborateMathematicalText(statement)
+  const selected = language.forest.analyses[language.ir.selected_analysis]
+  const query = language.ir.query
+  const clauses = selected?.clauses ?? []
+  const clauseSegments = clauses.map(clause => ({
+    clause: clause.id,
+    query: clause.query,
+    segments: extractMathSegments(clause.raw),
+  }))
+  const segments = clauseSegments.flatMap(clause => clause.segments.map(value => ({
+    clause: clause.clause,
+    value,
+    relation: parseLatexRelation(value),
+    expression: parseLatexExpression(value),
+  })))
+  const inferredCoordinate: LinearCoordinate = coordinate ?? (
+    /(?:付値|valuation|p-adic|\\operatorname\{ord\}|\\nu_)/iu.test(statement)
+      ? 'log_multiplicative'
+      : /(?:角|偏角|ラジアン|angle|argument|\\angle)/iu.test(statement)
+        ? 'angle'
+        : 'additive'
+  )
+  const queryClause = query?.clause
+  const querySegments = queryClause === undefined
+    ? segments
+    : segments.filter(segment => segment.clause === queryClause)
+  const queryExpressions = querySegments.filter(segment =>
+    segment.relation === null && segment.expression !== null &&
+    symbolsInMathExpression(segment.expression).length > 0,
+  )
+
+  let goal: string | null = queryExpressions.at(-1)?.value ?? null
+  let goalSource: 'query_expression' | 'query_relation' | 'single_unknown' = 'query_expression'
+  let expected: string | number | bigint | undefined
+  let goalRelationValue: string | null = null
+
+  if (!goal && query?.kind === 'prove') {
+    const target = [...querySegments].reverse().find(segment => segment.relation?.operator === 'Equal')
+    if (target?.relation) {
+      const equality = target.value.indexOf('=')
+      if (equality >= 0) {
+        goal = `((${target.value.slice(0, equality)}))-(${target.value.slice(equality + 1)})`
+        goalRelationValue = target.value
+        goalSource = 'query_relation'
+        expected = 0
+      }
+    }
+  }
+
+  const relationSegments = segments.filter(segment => segment.relation !== null)
+  if (!goal && query?.kind === 'compute' && relationSegments.length > 0) {
+    const variables = [...new Set(relationSegments.flatMap(segment => segment.relation?.variables ?? []))]
+    if (variables.length === 1) {
+      goal = variables[0]
+      goalSource = 'single_unknown'
+    }
+  }
+
+  if (!goal) return { status: 'missing_goal', detail: 'the query clause did not identify an executable mathematical observable' }
+  const relations = relationSegments
+    .filter(segment => segment.value !== goalRelationValue)
+    .map(segment => segment.value)
+  const lowered = lowerLinearPredicateDocument({
+    coordinate: inferredCoordinate,
+    relations,
+    goal,
+    expected,
+  })
+  return lowered.status === 'lowered'
+    ? {
+        ...lowered,
+        elaboration: {
+          query_kind: query?.kind ?? null,
+          goal_source: goalSource,
+          constraint_count: relations.length,
+        },
+      }
+    : lowered
 }

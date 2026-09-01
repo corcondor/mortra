@@ -1,12 +1,15 @@
 import { spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 import type { ExecutableFusionCard } from './executable-fusion'
 import type { HyperMorphismSchema } from './generalization-kernel'
 import type { DiscoveryParent } from './parent-conditioned-discovery'
 import type { CertifiedLawRecord } from './primitive-law-inducer'
 import { extractDistinctiveParentObligations } from './parent-obligation-coverage'
+import {
+  registeredMorphismCertificate,
+  runtimeSynthesisCertificate,
+} from './execution-certificate'
 
 type DomainMode = 'triangle' | 'topology'
 
@@ -24,6 +27,7 @@ type ParentFeatures = {
 }
 
 type BackendCandidate = {
+  capability_origin: 'synthesized_proof_program' | 'registered_parameterized_morphism'
   id: string
   kind: string
   observable: string
@@ -81,7 +85,7 @@ function hash(value: unknown, length = 14): string {
 }
 
 function backendPath(): string {
-  return path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'backend', 'arithmetic_geometry_induction.py')
+  return path.resolve(__dirname, '..', 'backend', 'arithmetic_geometry_induction.py')
 }
 
 function runBackend(request: object): BackendResult | null {
@@ -260,6 +264,29 @@ export function induceArithmeticGeometryLemmas(
       numericInstanceConstants: [],
       conditionAblationPassed: true,
     }
+    const executionCertificate = candidate.capability_origin === 'synthesized_proof_program'
+      ? runtimeSynthesisCertificate({
+          origin: 'synthesized_proof_program',
+          parents,
+          cacheRole: registeredLaws.length ? 'duplicate_exclusion_only' : 'not_consulted',
+          generatedProgram: {
+            grammar: telemetry.synthesis_engine,
+            candidate_id: candidate.id,
+            observable: candidate.observable,
+            expression: candidate.expression,
+            morphism_chain: morphisms,
+          },
+          checks: proofCertificate.map(step => `${step.id}: ${step.verifier}`),
+        })
+      : registeredMorphismCertificate({
+          parents,
+          program: {
+            schema_id: candidate.id,
+            instantiated_expression: candidate.expression,
+            morphism_chain: morphisms,
+          },
+          checks: proofCertificate.map(step => `${step.id}: ${step.verifier}`),
+        })
     return {
       id: `mathos-${hash(structureId, 18)}`,
       family_id: `discovered.${candidate.id}`,
@@ -344,6 +371,7 @@ export function induceArithmeticGeometryLemmas(
         valid_hypotheses: telemetry.certified,
         elapsed_ms: 0,
       },
+      execution_certificate: executionCertificate,
     }
   })
   return {

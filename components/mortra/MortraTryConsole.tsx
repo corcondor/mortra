@@ -283,7 +283,7 @@ function isResolvedCard(card: GeneratedCard | null | undefined) {
   return Boolean(card?.answer_tex?.trim() && card?.solution_tex?.trim())
 }
 
-const PUBLIC_FUSION_COUNT = 7
+const PUBLIC_FUSION_COUNT = 3
 
 export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
   const c = CONSOLE_TEXT[lang]
@@ -588,6 +588,33 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
           throw new Error(tr.solveApi(response.status))
         }
         for (const line of solved.trace ?? []) addTrace(line)
+        if (!response.ok && response.status === 422) {
+          const researchResponse = await fetch('/api/research-start', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            signal: controller.signal,
+            body: JSON.stringify({
+              count: 1,
+              parents: [{
+                id: parentAId ?? parentId(inputs[0], 1),
+                statement: inputs[0],
+              }],
+            }),
+          })
+          const queued = await researchResponse.json() as GenerationResult & { error?: string }
+          for (const line of queued.trace ?? []) addTrace(line)
+          if (!researchResponse.ok || !queued.discoveryJobId) {
+            throw new Error(queued.error || tr.solveApi(researchResponse.status))
+          }
+          setResult(queued)
+          setDraft(inputs[0])
+          setJobId(queued.discoveryJobId)
+          window.localStorage.setItem(JOB_KEY, queued.discoveryJobId)
+          setPhase('searching')
+          setStage(1)
+          addTrace(tr.movedToLong)
+          return
+        }
         if (!response.ok) throw new Error(solved.error || tr.solveApi(response.status))
         setStage(4)
         setPhase('complete')

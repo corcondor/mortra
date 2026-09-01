@@ -1163,7 +1163,7 @@ def expression_requested_by_query(lower: str, expressions: list[str]) -> str:
     # Display order is significant: in ``Determine T if C1,...,Cn`` the
     # observation precedes the constraints, while in ``compute T`` it is the
     # last (and usually only) non-relational span.
-    if any(marker in lower for marker in ("determine", "求め", "値")):
+    if "determine" in lower:
         return expressions[0]
     return expressions[-1]
 
@@ -1320,10 +1320,16 @@ def function_call_present(source: str, name: str) -> bool:
 
 def extract_named_roots(text: str) -> list[str]:
     match = re.search(
-        r"\b([a-z])\s*(?:,|and)\s*([a-z])\s+(?:are|be)\s+(?:the\s+)?(?:solutions|roots)",
+        r"\b([a-z][a-z0-9_]*)\s*(?:,|and)\s*([a-z][a-z0-9_]*)\s+(?:are|be)\s+(?:the\s+)?(?:solutions|roots)",
         text,
     )
-    return [match.group(1), match.group(2)] if match else []
+    if match:
+        return [match.group(1), match.group(2)]
+    japanese = re.search(
+        r"(?:根|解)(?:を|は)?\s*([a-z][a-z0-9_]*)\s*(?:,|、)\s*([a-z][a-z0-9_]*)\s*(?:とする|とするとき|である)",
+        text,
+    )
+    return [japanese.group(1), japanese.group(2)] if japanese else []
 
 
 def extract_known_solution_substitution(

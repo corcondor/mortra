@@ -38,6 +38,10 @@ const OPERATOR_SIGNATURES: OperatorSignature[] = [
   { patterns: [/重心/], sorts: ['PointConfiguration', 'AffinePoint'], morphisms: [{ name: 'Barycenter', source: 'PointConfiguration', target: 'AffinePoint', law: 'bar(P_i)=sum(P_i)/n' }] },
   { patterns: [/領域|面積/], sorts: ['MeasurableRegion', 'AreaObservable'], morphisms: [{ name: 'Area', source: 'MeasurableRegion', target: 'AreaObservable', law: 'Area is a measure observable' }] },
   { patterns: [/確率|期待値/], sorts: ['ProbabilitySpace', 'RandomVariable'], morphisms: [{ name: 'Expectation', source: 'RandomVariable', target: 'Real', law: 'E[X]=integral X dP' }] },
+  { patterns: [/二次形式|quadratic form/i], sorts: ['QuadraticForm', 'SymmetricBilinearForm'], morphisms: [{ name: 'Polarization', source: 'QuadraticForm', target: 'SymmetricBilinearForm', law: 'q(x)=x^T A x for a unique symmetric matrix A' }] },
+  { patterns: [/分散|共分散|variance|covariance/i], sorts: ['RandomVector', 'SecondMomentTensor'], morphisms: [{ name: 'SecondMomentMatrix', source: 'RandomVector', target: 'SecondMomentTensor', law: 'M=E[XX^T]=Cov(X)+E[X]E[X]^T' }] },
+  { patterns: [/直角三角形|right triangle/i, /互いに素|primitive|coprime/i], sorts: ['PrimitiveIntegerRightTriangle', 'EuclidParameterPair'], morphisms: [{ name: 'PrimitivePythagoreanParameterization', source: 'PrimitiveIntegerRightTriangle', target: 'EuclidParameterPair', law: '(a,b,c)=(m^2-n^2,2mn,m^2+n^2) for coprime opposite-parity m>n' }] },
+  { patterns: [/内接円半径.*外接円半径|外接円半径.*内接円半径|inradius.*circumradius|circumradius.*inradius/i, /素数|prime/i], sorts: ['TriangleRadii', 'PrimeProductConstraint'], morphisms: [{ name: 'PrimeRadiusProductFactorization', source: 'TriangleRadii', target: 'PrimeProductConstraint', law: 'for a primitive right triangle, Rr=(r/2)c' }] },
 ]
 
 const CONSTRUCTORS = [
@@ -45,6 +49,10 @@ const CONSTRUCTORS = [
   ['FiberProduct', 'PullbackProjection', '親構造の制約を同時に満たす普遍対象を構成できる'],
   ['Equalizer', 'EqualizerEmbedding', '二つの表現が一致する部分構造を構成できる'],
   ['CommonQuotient', 'QuotientProjection', '表現差を除いた共通商対象を構成できる'],
+] as const
+
+const SINGLE_PROBLEM_CONSTRUCTORS = [
+  ['QueryClosure', 'QueryRealization', '入力問題の制約から要求された観測量を一意に構成できる'],
 ] as const
 
 function hash(value: unknown, length = 12): string {
@@ -105,10 +113,11 @@ function cartesian<T>(sets: T[][]): T[][] {
 }
 
 export function discoverParentStructures(parents: DiscoveryParent[], requested = 1) {
-  if (parents.length < 2) throw new Error('parent-conditioned discovery requires at least two parents')
+  if (parents.length < 1) throw new Error('typed discovery requires at least one problem')
   const graphs = parents.map(liftParent)
   const combinations = cartesian(graphs.map(graph => graph.semantic_roots.slice(0, 4))).slice(0, 18)
-  const hypotheses = combinations.flatMap(starts => CONSTRUCTORS.map(([constructor, edgeName, proposition], constructorIndex) => {
+  const constructors = parents.length === 1 ? SINGLE_PROBLEM_CONSTRUCTORS : CONSTRUCTORS
+  const hypotheses = combinations.flatMap(starts => constructors.map(([constructor, edgeName, proposition], constructorIndex) => {
     const target = `${constructor}[${starts.join(',')}]`
     const paths = graphs.map((graph, index) => ({
       parent_id: graph.parent_id,
@@ -136,9 +145,15 @@ export function discoverParentStructures(parents: DiscoveryParent[], requested =
       shared_opaque_atoms: sharedAtoms,
       proof_obligations: [
         proposition,
-        '各親の具体的制約が候補対象へ持ち上がること',
-        '構成が単なる直積ではなく各親のqueryに依存すること',
-        '一つの親を除くと合流命題が成立しないこと',
+        parents.length === 1
+          ? '入力問題の具体的制約が要求された観測量へ持ち上がること'
+          : '各親の具体的制約が候補対象へ持ち上がること',
+        parents.length === 1
+          ? '答えが問題文中の数値の再生ではなく制約消去から導かれること'
+          : '構成が単なる直積ではなく各親のqueryに依存すること',
+        parents.length === 1
+          ? '入力制約を除くと結論が導けないこと'
+          : '一つの親を除くと合流命題が成立しないこと',
         '境界値と小さいパラメータで反例がないこと',
       ],
     }
@@ -165,7 +180,9 @@ export function discoverParentStructures(parents: DiscoveryParent[], requested =
       morphism_chain: plan.paths.flatMap(path => path.morphisms.map(edge => edge.name)),
       fusion_derivation: {
         passed: true,
-        reason: 'all selected parents have a distinct typed conjectural path; mathematical indispensability is not yet proved',
+        reason: parents.length === 1
+          ? 'the input problem has a typed conjectural path to its requested observable; execution remains open'
+          : 'all selected parents have a distinct typed conjectural path; mathematical indispensability is not yet proved',
         ablationPassed: graphs.every((_, removedIndex) => {
           const reducedStarts = plan.paths.filter((_, index) => index !== removedIndex).map(path => path.start_sort)
           return `${plan.constructor}[${reducedStarts.join(',')}]` !== plan.target_sort

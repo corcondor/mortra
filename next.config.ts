@@ -2,6 +2,9 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  outputFileTracingIncludes: {
+    '/api/mathos-generate': ['./worker/backend/sympy_fusion.py'],
+  },
   experimental: {
     proxyTimeout: 300_000,
   },

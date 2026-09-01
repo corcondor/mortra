@@ -146,8 +146,8 @@ export async function processJob(jobId: string) {
     }
 
     const parents = Array.isArray(rawJob.parents) ? rawJob.parents as ParentProblem[] : []
-    if (parents.length < 2 || parents.some(parent => !parent.id || !parent.statement)) {
-      throw new Error('structural discovery requires at least two complete parent problems')
+    if (parents.length < 1 || parents.some(parent => !parent.id || !parent.statement)) {
+      throw new Error('structural discovery requires at least one complete parent problem')
     }
 
     const count = Math.max(1, Math.min(Number(rawJob.count) || 3, 10))
@@ -166,7 +166,7 @@ export async function processJob(jobId: string) {
       updated_at: startedAt,
     }).eq('id', jobId)
 
-    pushLog(`[lift] ${parents.length} parent problems -> typed objects, constraints, and observables`)
+    pushLog(`[lift] ${parents.length} input problem${parents.length === 1 ? '' : 's'} -> typed objects, constraints, and observables`)
     const { data: learnedRows } = await supabase.from('problems')
       .select('meta').eq('source_file', 'mortra_parent_conditioned_discovery').limit(1000)
     const legacyRows = await supabase.from('problems')
@@ -176,6 +176,7 @@ export async function processJob(jobId: string) {
       .filter((law): law is CertifiedLawRecord => law !== null)
       .map(law => [`${law.arity}:${law.expression}`, law])).values()]
     pushLog(`[atlas] loaded ${certifiedLaws.length} previously certified dynamic morphisms`)
+    await flushLogs(jobId)
 
     const autonomous = runAutonomousSynthesis(
       parents,
@@ -194,6 +195,7 @@ export async function processJob(jobId: string) {
 
     if (cards.length) {
       await saveCards(cards, userId)
+      const continuingAfterDelivery = searchState.continuing
       const result = {
         engine: 'MORTRA executable parent-conditioned synthesis',
         generated: cards.length,
@@ -202,8 +204,10 @@ export async function processJob(jobId: string) {
         cards,
         searchState,
         searchRuntime: {
-          phase: 'completed',
-          message: '検証済みの複合実行プログラムを保存しました',
+          phase: continuingAfterDelivery ? 'waiting_next_round' : 'completed',
+          message: continuingAfterDelivery
+            ? `検証済み問題を先に保存しました。登録済み経路を実行時合成へ置き換える未実装演算${searchState.execution_obligations?.length ?? 0}件を継続します`
+            : '検証済みの複合実行プログラムを保存しました',
           started_at: startedAt,
           finished_at: new Date().toISOString(),
         },
@@ -217,12 +221,16 @@ export async function processJob(jobId: string) {
           registeredAt: new Date().toISOString(),
         })),
         errors: [],
+        backgroundResearch: continuingAfterDelivery,
       }
       pushLog(`[verified] ${cards.length}/${count} candidates passed backend, counterexample, and parent-ablation checks`)
+      if (continuingAfterDelivery) {
+        pushLog(`[continue] delivered verified cards; runtime execution obligations=${searchState.execution_obligations?.length ?? 0}`)
+      }
       await flushLogs(jobId)
       await supabase.from('generation_jobs').update({
-        status: 'done',
-        model: 'mortra-executable-discovery',
+        status: continuingAfterDelivery ? 'processing' : 'done',
+        model: continuingAfterDelivery ? 'mortra-autonomous-structural-search' : 'mortra-executable-discovery',
         result,
         error: null,
         updated_at: new Date().toISOString(),
@@ -235,7 +243,7 @@ export async function processJob(jobId: string) {
       searchState,
       searchRuntime: {
         phase: (searchState.stagnant_rounds ?? 0) >= 3 ? 'stalled_waiting' : 'waiting_next_round',
-        message: '現在のfrontierを保存し、次の型付き探索ラウンドへ継続します',
+        message: `ラウンド${searchState.round}を完了しました。深さ${searchState.depth}まで${searchState.states_explored ?? 0}状態を検査し、未閉鎖義務${searchState.frontier.length}件から次の探索を再開します`,
         started_at: startedAt,
         finished_at: new Date().toISOString(),
       },

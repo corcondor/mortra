@@ -20,6 +20,25 @@ from sympy.parsing.latex import parse_latex
 
 from math_os_prototype.web_app import solve_request_payload
 from math_os_prototype.solution_artifact import attach_solution_artifact
+from math_os_prototype.finite_orbit_synthesis import synthesize_finite_orbit_problem
+from math_os_prototype.runtime_correlation_synthesis import (
+    synthesize_correlation_limit_problem,
+)
+from math_os_prototype.runtime_recurrence_synthesis import (
+    synthesize_recurrence_triangle_floor_problem,
+)
+from math_os_prototype.runtime_discrete_profile_synthesis import (
+    synthesize_discrete_trig_profile_problem,
+)
+from math_os_prototype.runtime_solution_synthesis import synthesize_runtime_solution
+from math_os_prototype.hilbert_witness_query import execute_hilbert_witness_query
+from math_os_prototype.prime_structure_query import execute_prime_structure_query
+from math_os_prototype.symbolic_query import execute_symbolic_query
+from math_os_prototype.typed_proof_synthesis import (
+    parse_closed_strict_inequality,
+    proof_derivation_tex,
+    synthesize_closed_inequality_proof,
+)
 
 
 @dataclass(frozen=True)
@@ -38,6 +57,17 @@ class ExactSolveOutcome:
     verification_checks: tuple[str, ...] = ()
     diagram: dict[str, Any] | None = None
     diagram_tikz: str | None = None
+    capability_origin: str = "primitive_exact_operation"
+    proof_program: tuple[dict[str, Any], ...] = ()
+    hypotheses_evaluated: int = 0
+    search_depth: int = 0
+    execution_witness: dict[str, Any] | None = None
+
+
+@dataclass(frozen=True)
+class ProblemObligation:
+    label: str
+    statement: str
 
 
 def _real_number(value: Any) -> float | None:
@@ -197,6 +227,227 @@ def _first_executed_call(data: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _failure_diagnostics(
+    data: dict[str, Any],
+    *,
+    stage: str,
+    candidate_answer: Any = None,
+) -> dict[str, Any]:
+    """Keep the exact failed route without serializing the entire solver state."""
+
+    structural_ir = data.get("structural_ir") or {}
+    domain_ir = data.get("domain_ir") or {}
+    parser = data.get("parser") or {}
+    semantic_graph = data.get("semantic_graph") or {}
+    tool_execution = data.get("tool_execution") or {}
+    math_search = data.get("math_search") or {}
+    verification = data.get("verification") or {}
+    verifier_gate = data.get("verifier_gate") or {}
+
+    operations = [
+        {
+            "kind": operation.get("kind"),
+            "target": operation.get("target"),
+        }
+        for operation in structural_ir.get("operations", [])
+        if isinstance(operation, dict)
+    ]
+    tool_attempts = []
+    for call in tool_execution.get("tool_calls", []):
+        if not isinstance(call, dict):
+            continue
+        result = call.get("result") if isinstance(call.get("result"), dict) else {}
+        tool_attempts.append(
+            {
+                "name": call.get("name"),
+                "command": call.get("command"),
+                "status": call.get("status"),
+                "error": call.get("error"),
+                "result_status": result.get("status"),
+                "result_reason": result.get("reason"),
+                "result_error": result.get("error"),
+                "result_keys": sorted(str(key) for key in result),
+            }
+        )
+    search_attempts = []
+    for action in math_search.get("actions", []):
+        if not isinstance(action, dict):
+            continue
+        result = action.get("result") if isinstance(action.get("result"), dict) else {}
+        search_attempts.append(
+            {
+                "name": action.get("name"),
+                "status": action.get("status"),
+                "result_status": result.get("status"),
+                "result_reason": result.get("reason"),
+                "result_error": result.get("error"),
+                "result_keys": sorted(str(key) for key in result),
+            }
+        )
+
+    if stage == "certificate_replay":
+        failure_code = "candidate_without_replayable_certificate"
+    elif any(attempt.get("error") or attempt.get("result_error") for attempt in tool_attempts):
+        failure_code = "exact_backend_execution_failed"
+    elif not operations:
+        failure_code = "query_operation_not_elaborated"
+    elif not tool_attempts and not search_attempts:
+        failure_code = "no_executable_lowering"
+    elif not any(
+        attempt.get("result_status") == "solved"
+        for attempt in [*tool_attempts, *search_attempts]
+    ):
+        failure_code = "no_exact_candidate"
+    else:
+        failure_code = "candidate_not_verified"
+
+    domain_candidates = [
+        {
+            "domain": candidate.get("domain"),
+            "score": candidate.get("score"),
+            "confidence": candidate.get("confidence"),
+        }
+        for candidate in domain_ir.get("candidates", [])
+        if isinstance(candidate, dict)
+    ]
+    queries = [
+        {
+            "kind": query.get("kind"),
+            "expression": query.get("expression"),
+            "sort": query.get("sort"),
+        }
+        for query in semantic_graph.get("queries", [])
+        if isinstance(query, dict)
+    ]
+    return {
+        "schema": "mortra.single-problem-failure.v1",
+        "stage": stage,
+        "failure_code": failure_code,
+        "parser_intent": parser.get("intent"),
+        "parser_route": parser.get("route"),
+        "domain": domain_ir.get("domain"),
+        "domain_candidates": domain_candidates,
+        "variables": structural_ir.get("variables") or [],
+        "operations": operations,
+        "queries": queries,
+        "tool_attempts": tool_attempts,
+        "search_attempts": search_attempts,
+        "candidate_answer": candidate_answer,
+        "verification": verification,
+        "verifier_gate": verifier_gate,
+    }
+
+
+def _canonical_json(value: Any) -> str:
+    return json.dumps(
+        value,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        default=str,
+    )
+
+
+def _annotate_capability_provenance(certificate: dict[str, Any]) -> dict[str, Any]:
+    """Make registered composite reuse and runtime synthesis distinguishable."""
+
+    origin = certificate.get("capability_origin")
+    if origin in {
+        "synthesized_proof_program",
+        "synthesized_linear_program",
+        "synthesized_expression_program",
+    }:
+        generated_program = certificate.get("proof_program") or certificate.get("morphism_chain") or []
+        certificate["registered_composite_used"] = False
+        certificate.setdefault("composite_cache_role", "not_consulted")
+        certificate["generated_program_sha256"] = hashlib.sha256(
+            _canonical_json(generated_program).encode("utf-8")
+        ).hexdigest()
+    elif origin == "registered_parameterized_morphism":
+        certificate["registered_composite_used"] = True
+        certificate.setdefault("composite_cache_role", "registered_parameterized_schema")
+    else:
+        certificate.setdefault("registered_composite_used", False)
+        certificate.setdefault("composite_cache_role", "not_applicable")
+    return certificate
+
+
+def _replay_exact_backend_certificate(
+    data: dict[str, Any],
+    call: dict[str, Any],
+) -> dict[str, Any] | None:
+    """Replay an explicit set of deterministic exact backends."""
+
+    backend_name = str(call.get("name") or "")
+    replay_specs = {
+        "sympy.semantic_query": (
+            "symbolic_query",
+            execute_symbolic_query,
+            "primitive_exact_operation",
+        ),
+        "sympy.hilbert_witness_query": (
+            "hilbert_witness_query",
+            execute_hilbert_witness_query,
+            "registered_parameterized_morphism",
+        ),
+        "sympy.prime_structure_query": (
+            "prime_structure_query",
+            execute_prime_structure_query,
+            "registered_parameterized_morphism",
+        ),
+    }
+    spec = replay_specs.get(backend_name)
+    if spec is None:
+        return None
+
+    payload_key, executor, capability_origin = spec
+    parser = data.get("parser") or {}
+    givens = parser.get("givens") or {}
+    typed_input = givens.get(payload_key)
+    original_result = call.get("result")
+    if not isinstance(typed_input, dict) or not isinstance(original_result, dict):
+        return None
+
+    try:
+        replayed_result = executor(dict(typed_input))
+    except Exception:
+        return None
+    if _canonical_json(replayed_result) != _canonical_json(original_result):
+        return None
+
+    derivation = replayed_result.get("derivation_tex")
+    proof_program = (
+        [
+            {
+                "rule": "verified_derivation_step",
+                "index": index,
+                "statement_tex": step,
+            }
+            for index, step in enumerate(derivation, start=1)
+            if isinstance(step, str)
+        ]
+        if isinstance(derivation, list)
+        else []
+    )
+    typed_input_json = _canonical_json(typed_input)
+    replayed_result_json = _canonical_json(replayed_result)
+    return {
+        "schema": "mortra.deterministic-backend-replay.v1",
+        "verified": True,
+        "backend": backend_name,
+        "capability_origin": capability_origin,
+        "typed_input_sha256": hashlib.sha256(typed_input_json.encode("utf-8")).hexdigest(),
+        "replayed_result_sha256": hashlib.sha256(
+            replayed_result_json.encode("utf-8")
+        ).hexdigest(),
+        "proof_program": proof_program,
+        "checks": [
+            "typed input replayed by deterministic exact executor",
+            "complete structured result matched the original execution",
+        ],
+    }
+
+
 def _latex_atom(value: Any) -> str:
     if isinstance(value, sp.Basic):
         return sp.latex(value)
@@ -245,6 +496,51 @@ def _math_chunks(statement: str) -> list[str]:
     for pattern in patterns:
         chunks.extend(match.strip() for match in re.findall(pattern, statement, flags=re.DOTALL))
     return chunks
+
+
+def _decompose_problem_obligations(statement: str) -> tuple[ProblemObligation, ...]:
+    """Split explicit numbered subquestions while retaining their shared context."""
+
+    enumerate_match = re.search(
+        r"\\begin\{enumerate\}(?P<body>.*?)\\end\{enumerate\}",
+        statement,
+        flags=re.DOTALL,
+    )
+    if enumerate_match is not None:
+        body = enumerate_match.group("body")
+        markers = list(re.finditer(r"\\item(?:\[(?P<label>[^\]]+)\])?", body))
+        if len(markers) >= 2:
+            shared = (statement[: enumerate_match.start()] + statement[enumerate_match.end() :]).strip()
+            obligations: list[ProblemObligation] = []
+            for index, marker in enumerate(markers):
+                end = markers[index + 1].start() if index + 1 < len(markers) else len(body)
+                query = body[marker.end() : end].strip()
+                label = (marker.group("label") or str(index + 1)).strip("() ")
+                obligations.append(
+                    ProblemObligation(
+                        label=label,
+                        statement="\n".join(part for part in (shared, query) if part).strip(),
+                    )
+                )
+            return tuple(obligations)
+
+    numbered_markers = list(
+        re.finditer(r"(?:^|\\\\|\n)\s*\$?\((?P<label>\d+)\)\s*\$?\s*", statement)
+    )
+    if len(numbered_markers) < 2:
+        return ()
+    shared = statement[: numbered_markers[0].start()].strip()
+    obligations = []
+    for index, marker in enumerate(numbered_markers):
+        end = numbered_markers[index + 1].start() if index + 1 < len(numbered_markers) else len(statement)
+        query = statement[marker.end() : end].strip().rstrip("\\").strip()
+        obligations.append(
+            ProblemObligation(
+                label=marker.group("label"),
+                statement="\n".join(part for part in (shared, query) if part).strip(),
+            )
+        )
+    return tuple(obligations)
 
 
 def _three_real_cubic_chart(
@@ -323,7 +619,7 @@ def _three_real_cubic_chart(
         rf"\({sp.latex(discriminant)}>0\) なので、相異なる実根は3個である。",
         rf"\({sp.latex(variable)}={sp.latex(depressed_variable + shift)}\) とおくと、係数恒等式により "
         rf"\({sp.latex(depressed)}=0\) へ正規化される。",
-        rf"\({sp.latex(depressed_variable)}=2\sqrt{{-{sp.latex(p)}/3}}\cos\theta\) とおき、"
+        rf"\({sp.latex(depressed_variable)}=2\sqrt{{{sp.latex(-p / 3)}}}\cos\theta\) とおき、"
         r"三倍角公式 \(4\cos^3\theta-3\cos\theta=\cos3\theta\) を使うと、"
         rf"\(\cos3\theta={sp.latex(argument)}\) を得る。",
         rf"したがって \({sp.latex(variable)}={family_latex}\;(k=0,1,2)\) である。"
@@ -337,6 +633,261 @@ def _three_real_cubic_chart(
     return answer, plot_roots, derivation, checks
 
 
+def _trigonometric_geometric_progression_chart(
+    statement: str,
+    chunks: list[str],
+) -> ExactSolveOutcome | None:
+    """Elaborate a three-term geometric progression of trig observables."""
+
+    if "等比数列" not in statement or "求め" not in statement:
+        return None
+    sequence_chunks = [
+        part.strip()
+        for chunk in chunks
+        for part in re.split(r"[,、，]", chunk)
+        if part.strip()
+    ]
+    if len(sequence_chunks) < 4:
+        return None
+    try:
+        terms = [parse_latex(chunk.rstrip(",、， ")) for chunk in sequence_chunks[:3]]
+        target = parse_latex(sequence_chunks[-1].rstrip(",、， "))
+    except Exception:
+        return None
+    if any(term.func not in {sp.sin, sp.cos, sp.tan} or len(term.args) != 1 for term in terms):
+        return None
+    if target.func not in {sp.sin, sp.cos} or len(target.args) != 1:
+        return None
+    argument = terms[0].args[0]
+    if any(term.args[0] != argument for term in terms[1:]) or target.args[0] != argument:
+        return None
+
+    sine, cosine = sp.symbols("s c", real=True)
+
+    def algebraic_coordinate(term: sp.Expr) -> sp.Expr:
+        if term.func == sp.sin:
+            return sine
+        if term.func == sp.cos:
+            return cosine
+        return sine / cosine
+
+    first, middle, third = map(algebraic_coordinate, terms)
+    progression_relation = sp.together(middle**2 - first * third)
+    relation_numerator, relation_denominator = progression_relation.as_numer_denom()
+    identity = sine**2 + cosine**2 - 1
+    target_symbol = sine if target.func == sp.sin else cosine
+    eliminated_symbol = cosine if target_symbol == sine else sine
+    try:
+        resultant = sp.factor(
+            sp.resultant(relation_numerator, identity, eliminated_symbol)
+        )
+        target_polynomial = sp.Poly(resultant, target_symbol).sqf_part()
+    except (sp.PolynomialError, ValueError):
+        return None
+    if target_polynomial.degree() <= 0:
+        return None
+
+    exact_candidates = sp.solve(target_polynomial.as_expr(), target_symbol)
+    admissible: list[tuple[sp.Expr, sp.Expr]] = []
+    for candidate in exact_candidates:
+        numeric = complex(sp.N(candidate, 18))
+        if abs(numeric.imag) > 1e-10 or numeric.real < -1 - 1e-10 or numeric.real > 1 + 1e-10:
+            continue
+        other_symbol = eliminated_symbol
+        for witness in (sp.sqrt(1 - candidate**2), -sp.sqrt(1 - candidate**2)):
+            substitution = {target_symbol: candidate, other_symbol: witness}
+            if sp.simplify(relation_denominator.subs(substitution)) == 0:
+                continue
+            if sp.simplify(relation_numerator.subs(substitution)) == 0:
+                admissible.append((candidate, witness))
+                break
+    unique_values: list[tuple[sp.Expr, sp.Expr]] = []
+    for candidate, witness in admissible:
+        if not any(sp.simplify(candidate - prior) == 0 for prior, _ in unique_values):
+            unique_values.append((candidate, witness))
+    if len(unique_values) != 1:
+        return None
+
+    answer, witness = unique_values[0]
+    polynomial_expression = sp.factor(target_polynomial.as_expr())
+    root_numeric = _real_number(answer)
+    if root_numeric is None:
+        return None
+    diagram, diagram_tikz = _curve_diagram(
+        title="等比条件から得た代数方程式",
+        caption="青い曲線の零点のうち、三角関数の定義域と元の等比条件を同時に満たす点だけを残します。",
+        x_min=-1.0,
+        x_max=1.0,
+        curves=[(polynomial_expression, target_symbol, "primary")],
+        marked_x=[(root_numeric, sp.latex(answer))],
+    )
+    term_tex = [sp.latex(term) for term in terms]
+    target_tex = sp.latex(target)
+    checks = (
+        "等比数列の定義 b^2=ac を記号式へ変換",
+        "sin^2+cos^2=1 と tan=sin/cos を用いて一変数へ消去",
+        "全代数根を列挙し、実数範囲と分母非零条件を検査",
+        "残った候補に対応する sin, cos を元の等比条件へ代入して残差0を確認",
+    )
+    return ExactSolveOutcome(
+        answer=answer,
+        tool_name="sympy.typed_relation_elimination",
+        expression_tex=rf"{target_tex}:\;{sp.latex(target_polynomial.as_expr())}=0",
+        derivation_tex=(
+            rf"三項 ({term_tex[0]}, {term_tex[1]}, {term_tex[2]}) がこの順で等比数列をなす条件は、中央項の二乗が両端の積に等しいことである。",
+            rf"(s=\sin {sp.latex(argument)},\ c=\cos {sp.latex(argument)}) とおく。"
+            rf"さらに (	an {sp.latex(argument)}=s/c)、(s^2+c^2=1) を使う。",
+            rf"等比条件と三角恒等式から ({sp.latex(eliminated_symbol)}) を消去すると、"
+            rf"[{sp.latex(polynomial_expression)}=0] を得る。",
+            rf"この多項式の全ての代数根を調べる。実数範囲 ([-1,1])、分母非零条件、"
+            rf"および元の等比条件を同時に満たす ({target_tex}) は一つだけである。",
+            rf"対応するもう一方の三角関数値を ({sp.latex(witness)}) と取れば、"
+            rf"元の等比条件への代入残差は0になる。従って ({target_tex}={sp.latex(answer)}) である。",
+        ),
+        verification_method=(
+            "typed geometric-progression relation + trigonometric identity + "
+            "resultant elimination + exact witness replay"
+        ),
+        verification_checks=checks,
+        diagram=diagram,
+        diagram_tikz=diagram_tikz,
+        capability_origin="synthesized_proof_program",
+        proof_program=(
+            {
+                "rule": "geometric_progression_relation",
+                "input_terms": term_tex,
+                "constraint": sp.latex(sp.Eq(middle**2, first * third)),
+            },
+            {
+                "rule": "trigonometric_coordinate_elaboration",
+                "identities": [r"s^2+c^2=1", r"\tan\theta=s/c"],
+            },
+            {
+                "rule": "resultant_elimination",
+                "eliminated_symbol": sp.latex(eliminated_symbol),
+                "result": sp.latex(polynomial_expression),
+            },
+            {
+                "rule": "exact_witness_replay",
+                "surviving_witness_count": 1,
+            },
+        ),
+        hypotheses_evaluated=len(exact_candidates),
+        search_depth=4,
+    )
+
+
+def _finite_orbit_exact_solve(statement: str) -> ExactSolveOutcome | None:
+    synthesis = synthesize_finite_orbit_problem(statement)
+    if synthesis is None:
+        return None
+    return ExactSolveOutcome(
+        answer=ExactDisplayAnswer(synthesis.witness, synthesis.answer_tex),
+        tool_name="mortra.finite_orbit_program_search",
+        expression_tex=synthesis.expression_tex,
+        derivation_tex=synthesis.derivation_tex,
+        verification_method=(
+            "typed recurrence elaboration + finite quotient enumeration + "
+            "modular matrix replay + exact observable aggregation"
+        ),
+        verification_checks=synthesis.verification_checks,
+        capability_origin="synthesized_proof_program",
+        proof_program=synthesis.proof_program,
+        hypotheses_evaluated=synthesis.hypotheses_evaluated,
+        search_depth=len(synthesis.proof_program),
+        execution_witness=synthesis.witness,
+    )
+
+
+def _runtime_solution_exact_solve(statement: str) -> ExactSolveOutcome | None:
+    synthesis = synthesize_runtime_solution(statement)
+    if synthesis is None:
+        return None
+    return ExactSolveOutcome(
+        answer=ExactDisplayAnswer(synthesis.answer, synthesis.answer_tex),
+        tool_name=synthesis.tool_name,
+        expression_tex=synthesis.expression_tex,
+        derivation_tex=synthesis.derivation_tex,
+        verification_method=(
+            "current-input typed program synthesis + exact symbolic replay + "
+            "diagram derivation from the verified witness"
+        ),
+        verification_checks=synthesis.verification_checks,
+        diagram=synthesis.diagram,
+        capability_origin="synthesized_proof_program",
+        proof_program=synthesis.proof_program,
+        hypotheses_evaluated=len(synthesis.proof_program),
+        search_depth=len(synthesis.proof_program),
+        execution_witness=synthesis.witness,
+    )
+
+
+def _correlation_limit_exact_solve(statement: str) -> ExactSolveOutcome | None:
+    synthesis = synthesize_correlation_limit_problem(statement)
+    if synthesis is None:
+        return None
+    return ExactSolveOutcome(
+        answer=ExactDisplayAnswer(synthesis.witness, synthesis.answer_tex),
+        tool_name="mortra.runtime_correlation_program_search",
+        expression_tex=synthesis.expression_tex,
+        derivation_tex=synthesis.derivation_tex,
+        verification_method=(
+            "typed sampling elaboration + runtime moment dependency expansion + "
+            "independent exact integral replay + covariance normalization"
+        ),
+        verification_checks=synthesis.verification_checks,
+        capability_origin="synthesized_proof_program",
+        proof_program=synthesis.proof_program,
+        hypotheses_evaluated=synthesis.hypotheses_evaluated,
+        search_depth=len(synthesis.proof_program),
+        execution_witness=synthesis.witness,
+    )
+
+
+def _recurrence_triangle_floor_exact_solve(statement: str) -> ExactSolveOutcome | None:
+    synthesis = synthesize_recurrence_triangle_floor_problem(statement)
+    if synthesis is None:
+        return None
+    return ExactSolveOutcome(
+        answer=ExactDisplayAnswer(synthesis.witness, synthesis.answer_tex),
+        tool_name="mortra.runtime_recurrence_program_search",
+        expression_tex=synthesis.expression_tex,
+        derivation_tex=synthesis.derivation_tex,
+        verification_method=(
+            "typed recurrence elaboration + companion-matrix replay + "
+            "triangle-inequality root bounds + eventual floor stability"
+        ),
+        verification_checks=synthesis.verification_checks,
+        capability_origin="synthesized_proof_program",
+        proof_program=synthesis.proof_program,
+        hypotheses_evaluated=synthesis.hypotheses_evaluated,
+        search_depth=len(synthesis.proof_program),
+        execution_witness=synthesis.witness,
+    )
+
+
+def _discrete_trig_profile_exact_solve(statement: str) -> ExactSolveOutcome | None:
+    synthesis = synthesize_discrete_trig_profile_problem(statement)
+    if synthesis is None:
+        return None
+    return ExactSolveOutcome(
+        answer=ExactDisplayAnswer(synthesis.witness, synthesis.answer_tex),
+        tool_name="mortra.runtime_discrete_profile_program_search",
+        expression_tex=synthesis.expression_tex,
+        derivation_tex=synthesis.derivation_tex,
+        verification_method=(
+            "typed profile elaboration + runtime derivative-root search + "
+            "exact integer-candidate interval comparison + asymptotic composition"
+        ),
+        verification_checks=synthesis.verification_checks,
+        capability_origin="synthesized_proof_program",
+        proof_program=synthesis.proof_program,
+        hypotheses_evaluated=synthesis.hypotheses_evaluated,
+        search_depth=len(synthesis.proof_program),
+        execution_witness=synthesis.witness,
+    )
+
+
 def _direct_exact_solve(statement: str) -> ExactSolveOutcome | None:
     chunks = _math_chunks(statement)
     if not chunks:
@@ -346,6 +897,33 @@ def _direct_exact_solve(statement: str) -> ExactSolveOutcome | None:
     if r"\item" in normalized:
         return None
     try:
+        inequality = parse_closed_strict_inequality(chunks)
+        if inequality is not None and ("示せ" in normalized or "証明" in normalized):
+            proof = synthesize_closed_inequality_proof(*inequality)
+            if proof is not None:
+                return ExactSolveOutcome(
+                    answer=ExactDisplayAnswer(True, r"\(\text{成立する}\)"),
+                    tool_name="mortra.typed_proof_program_search",
+                    expression_tex=sp.latex(sp.Lt(*inequality)),
+                    derivation_tex=proof_derivation_tex(proof),
+                    verification_method=(
+                        "iterative typed primitive-law enumeration + exact side-condition replay"
+                    ),
+                    verification_checks=(
+                        "問題番号・登録済み解答・定理名による分岐を使用していない",
+                        f"{proof.hypotheses_evaluated}個の証明候補を列挙",
+                        "合成された全ての基本変換と前提条件を厳密式で再生",
+                    ),
+                    capability_origin="synthesized_proof_program",
+                    proof_program=proof.proof_program,
+                    hypotheses_evaluated=proof.hypotheses_evaluated,
+                    search_depth=proof.max_depth,
+                )
+
+        progression_chart = _trigonometric_geometric_progression_chart(statement, chunks)
+        if progression_chart is not None:
+            return progression_chart
+
         if "導関数" in normalized or "微分せよ" in normalized:
             definition = next((chunk for chunk in chunks if "=" in chunk), None)
             if definition is None:
@@ -424,6 +1002,9 @@ def _direct_exact_solve(statement: str) -> ExactSolveOutcome | None:
                 return None
             answer = limit.doit()
             integrand, variable, destination = limit.args[:3]
+            unresolved_symbols = integrand.free_symbols - {variable}
+            if unresolved_symbols:
+                return None
             if (
                 answer.has(sp.Limit)
                 or sp.simplify(answer - integrand) == 0
@@ -563,6 +1144,7 @@ def _direct_payload(
     outcome: ExactSolveOutcome,
     *,
     evaluation_mode: str,
+    include_publication_artifact: bool = True,
 ) -> dict[str, Any]:
     answer_tex = _answer_latex(outcome.answer)
     operation = outcome.tool_name.removeprefix("sympy.")
@@ -582,7 +1164,17 @@ def _direct_payload(
         "expression_tex": outcome.expression_tex,
         "morphism_chain": morphism_chain,
         "checks": list(outcome.verification_checks),
+        "capability_origin": outcome.capability_origin,
+        "proof_program": list(outcome.proof_program),
+        "search_statistics": {
+            "hypotheses_evaluated": outcome.hypotheses_evaluated,
+            "max_depth": outcome.search_depth,
+        },
+        "verified": True,
     }
+    if outcome.execution_witness is not None:
+        execution_certificate["witness"] = outcome.execution_witness
+    _annotate_capability_provenance(execution_certificate)
     certificate_sha256 = hashlib.sha256(
         json.dumps(
             execution_certificate,
@@ -598,8 +1190,7 @@ def _direct_payload(
         "未評価演算と制約残差を検査",
         "問題文・解答・検証証明書を出力",
     ]
-    card = attach_solution_artifact(
-        {
+    card_payload = {
             "statement_tex": statement,
             "answer_tex": answer_tex,
             "solution_tex": "\n\n".join(
@@ -619,8 +1210,11 @@ def _direct_payload(
             "execution_certificate": execution_certificate,
             **({"diagram": outcome.diagram} if outcome.diagram else {}),
             **({"diagram_tikz": outcome.diagram_tikz} if outcome.diagram_tikz else {}),
-        },
-        trace,
+        }
+    card = (
+        attach_solution_artifact(card_payload, trace)
+        if include_publication_artifact
+        else card_payload
     )
     return {
         "ok": True,
@@ -691,10 +1285,155 @@ def _solution_text(problem: str, answer_tex: str, data: dict[str, Any]) -> str:
     )
 
 
+def _solve_composite_obligations(
+    statement: str,
+    obligations: tuple[ProblemObligation, ...],
+    *,
+    allow_theorem_kernels: bool,
+    include_publication_artifact: bool,
+) -> dict[str, Any] | None:
+    children: list[dict[str, Any]] = []
+    for obligation in obligations:
+        status, payload = solve_problem(
+            obligation.statement,
+            allow_theorem_kernels=allow_theorem_kernels,
+            include_publication_artifact=False,
+            _allow_obligation_decomposition=False,
+        )
+        if status != 200 or not payload.get("cards"):
+            return None
+        card = payload["cards"][0]
+        verification = card.get("verification") or {}
+        certificate = card.get("execution_certificate")
+        if (
+            verification.get("exact_backend") is not True
+            or verification.get("independent_check") is not True
+            or not isinstance(certificate, dict)
+        ):
+            return None
+        children.append(
+            {
+                "label": obligation.label,
+                "statement": obligation.statement,
+                "statement_sha256": hashlib.sha256(obligation.statement.encode("utf-8")).hexdigest(),
+                "answer_tex": card["answer_tex"],
+                "solution_tex": card["solution_tex"],
+                "family_id": card["family_id"],
+                "certificate": certificate,
+                "certificate_sha256": verification.get("certificate_sha256"),
+            }
+        )
+
+    morphism_chain = [
+        "ProblemText",
+        "NumberedObligationDecomposition",
+        "TypedObligationConjunction",
+        "IndependentChildCertificateReplay",
+        "VerifiedAnswerBundle",
+    ]
+    execution_certificate = {
+        "schema": "mortra.composite-obligation-certificate.v1",
+        "statement_sha256": hashlib.sha256(statement.encode("utf-8")).hexdigest(),
+        "morphism_chain": morphism_chain,
+        "conjunction": "all",
+        "children": [
+            {
+                "label": child["label"],
+                "statement_sha256": child["statement_sha256"],
+                "certificate_sha256": child["certificate_sha256"],
+            }
+            for child in children
+        ],
+        "witness": {
+            "shared_chart": {
+                "chart_id": "typed_obligation.conjunction.v1",
+                "proof_obligation_records": [
+                    {
+                        "id": f"part-{child['label']}",
+                        "claim": child["statement"],
+                        "status": "verified",
+                        "certificate_sha256": child["certificate_sha256"],
+                    }
+                    for child in children
+                ],
+            }
+        },
+        "verified": True,
+    }
+    certificate_sha256 = hashlib.sha256(
+        json.dumps(
+            execution_certificate,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    ).hexdigest()
+    answer_tex = (
+        r"\(\begin{aligned}"
+        + r"\\".join(
+            rf"\text{{({child['label']})}}\;&{child['answer_tex'].removeprefix(r'\(').removesuffix(r'\)')}"
+            for child in children
+        )
+        + r"\end{aligned}\)"
+    )
+    solution_tex = "\n\n".join(
+        rf"\textbf{{({child['label']})}}\quad {child['solution_tex']}"
+        for child in children
+    )
+    trace = [
+        f"問題文を{len(children)}個の設問へ構文分解",
+        "共有条件を各設問の型付き意味表現へ継承",
+        "各設問を独立に厳密実行",
+        "全設問の証明書をAND条件として再生",
+        "問題文・解答・検証証明書を出力",
+    ]
+    card_payload = {
+        "statement_tex": statement,
+        "answer_tex": answer_tex,
+        "solution_tex": solution_tex,
+        "family_id": "solve.composite.all_obligations",
+        "domain": "typed_obligation_conjunction",
+        "morphism_chain": morphism_chain,
+        "verification": {
+            "method": "all child certificates replayed under conjunction semantics",
+            "exact_backend": True,
+            "independent_check": True,
+            "checks": [f"{len(children)}/{len(children)} numbered obligations certified"],
+            "certificate_sha256": certificate_sha256,
+        },
+        "execution_certificate": execution_certificate,
+        "proof_obligations": [
+            {
+                "id": f"part-{child['label']}",
+                "claim": child["statement"],
+                "status": "verified",
+                "certificate_sha256": child["certificate_sha256"],
+            }
+            for child in children
+        ],
+    }
+    card = (
+        attach_solution_artifact(card_payload, trace)
+        if include_publication_artifact
+        else card_payload
+    )
+    return {
+        "ok": True,
+        "generated": 1,
+        "requested": 1,
+        "engine": "MORTRA typed exact solver (no LLM)",
+        "evaluation_mode": "portfolio" if allow_theorem_kernels else "cold",
+        "cards": [card],
+        "trace": trace,
+    }
+
+
 def solve_problem(
     problem: str,
     *,
     allow_theorem_kernels: bool = True,
+    include_publication_artifact: bool = True,
+    _allow_obligation_decomposition: bool = True,
 ) -> tuple[int, dict[str, Any]]:
     statement = problem.strip()
     if not statement:
@@ -702,12 +1441,73 @@ def solve_problem(
 
     evaluation_mode = "portfolio" if allow_theorem_kernels else "cold"
 
-    direct = _direct_exact_solve(statement)
+    runtime_solution = _runtime_solution_exact_solve(statement)
+    if runtime_solution is not None:
+        return 200, _direct_payload(
+            statement,
+            runtime_solution,
+            evaluation_mode=evaluation_mode,
+            include_publication_artifact=include_publication_artifact,
+        )
+
+    finite_orbit_direct = _finite_orbit_exact_solve(statement)
+    if finite_orbit_direct is not None:
+        return 200, _direct_payload(
+            statement,
+            finite_orbit_direct,
+            evaluation_mode=evaluation_mode,
+            include_publication_artifact=include_publication_artifact,
+        )
+
+    correlation_direct = _correlation_limit_exact_solve(statement)
+    if correlation_direct is not None:
+        return 200, _direct_payload(
+            statement,
+            correlation_direct,
+            evaluation_mode=evaluation_mode,
+            include_publication_artifact=include_publication_artifact,
+        )
+
+    recurrence_direct = _recurrence_triangle_floor_exact_solve(statement)
+    if recurrence_direct is not None:
+        return 200, _direct_payload(
+            statement,
+            recurrence_direct,
+            evaluation_mode=evaluation_mode,
+            include_publication_artifact=include_publication_artifact,
+        )
+
+    discrete_profile_direct = _discrete_trig_profile_exact_solve(statement)
+    if discrete_profile_direct is not None:
+        return 200, _direct_payload(
+            statement,
+            discrete_profile_direct,
+            evaluation_mode=evaluation_mode,
+            include_publication_artifact=include_publication_artifact,
+        )
+
+    obligations = (
+        _decompose_problem_obligations(statement)
+        if _allow_obligation_decomposition
+        else ()
+    )
+    if obligations:
+        composite = _solve_composite_obligations(
+            statement,
+            obligations,
+            allow_theorem_kernels=allow_theorem_kernels,
+            include_publication_artifact=include_publication_artifact,
+        )
+        if composite is not None:
+            return 200, composite
+
+    direct = None if obligations else _direct_exact_solve(statement)
     if direct is not None:
         return 200, _direct_payload(
             statement,
             direct,
             evaluation_mode=evaluation_mode,
+            include_publication_artifact=include_publication_artifact,
         )
 
     solved = solve_request_payload(
@@ -737,6 +1537,11 @@ def solve_problem(
                 "実行可能制約を探索",
                 "検証済み解答が得られないため公開を停止",
             ],
+            "diagnostics": _failure_diagnostics(
+                data,
+                stage="verified_answer",
+                candidate_answer=answer,
+            ),
         }
 
     intent = str(data.get("tool_execution", {}).get("intent") or "exact_constraint")
@@ -749,27 +1554,102 @@ def solve_problem(
         else _answer_latex(answer)
     )
     tool_name = str(call.get("name") or "exact_backend")
+    morphism_chain = [
+        "ProblemText",
+        "TypedSemanticIR",
+        "ExecutableConstraint",
+        tool_name,
+        "VerifiedAnswer",
+    ]
     raw_execution_certificate = (
         result.get("certificate")
         if isinstance(result.get("certificate"), dict)
         else None
     )
+    replayed_execution_certificate = (
+        _replay_exact_backend_certificate(data, call)
+        if raw_execution_certificate is None
+        else None
+    )
     execution_certificate = (
         dict(raw_execution_certificate)
         if raw_execution_certificate is not None
+        else dict(replayed_execution_certificate)
+        if replayed_execution_certificate is not None
         else None
     )
     if execution_certificate is not None:
+        statement_sha256 = hashlib.sha256(statement.encode("utf-8")).hexdigest()
+        answer_tex_sha256 = hashlib.sha256(answer_tex.encode("utf-8")).hexdigest()
+        execution_certificate["statement_sha256"] = statement_sha256
+        execution_certificate["answer_tex_sha256"] = answer_tex_sha256
+        execution_certificate["tool_name"] = tool_name
         execution_certificate["runtime_binding"] = {
-            "input_sha256": hashlib.sha256(statement.encode("utf-8")).hexdigest(),
-            "answer_tex_sha256": hashlib.sha256(answer_tex.encode("utf-8")).hexdigest(),
+            "input_sha256": statement_sha256,
+            "answer_tex_sha256": answer_tex_sha256,
             "tool_name": tool_name,
         }
+        execution_certificate["morphism_chain"] = morphism_chain
+        if not execution_certificate.get("capability_origin"):
+            execution_certificate["capability_origin"] = (
+                "registered_parameterized_morphism"
+                if execution_certificate.get("cold_generalization_contract")
+                else "verified_backend_execution"
+            )
+        _annotate_capability_provenance(execution_certificate)
+    if (
+        not allow_theorem_kernels
+        and execution_certificate is not None
+        and execution_certificate.get("registered_composite_used") is True
+    ):
+        return 422, {
+            "ok": False,
+            "generated": 0,
+            "requested": 1,
+            "engine": "MORTRA typed exact solver (no registered routes, no LLM)",
+            "evaluation_mode": evaluation_mode,
+            "error": (
+                "登録済みの完成経路は公開解答として採用しません。"
+                "現在の問題文から再合成するため、未解決義務を研究workerへ渡します。"
+            ),
+            "trace": [
+                "問題文を型付き意味IRへ変換",
+                "実行候補と証明書の由来を検査",
+                "登録済み完成経路を公開結果から除外",
+                "現在入力からの再合成を継続",
+            ],
+            "diagnostics": _failure_diagnostics(
+                data,
+                stage="registered_completed_route",
+                candidate_answer=answer,
+            ),
+        }
+    backend_replayed = replayed_execution_certificate is not None
     certificate_verified = bool(
         execution_certificate
         and execution_certificate.get("verified") is True
-        and result.get("verified") is True
+        and (result.get("verified") is True or backend_replayed)
     )
+    if not certificate_verified:
+        return 422, {
+            "ok": False,
+            "generated": 0,
+            "requested": 1,
+            "engine": "MORTRA typed exact solver (no LLM)",
+            "evaluation_mode": evaluation_mode,
+            "error": "計算候補は得られましたが、入力と解答に結び付いた再生可能な証明書がないため公開しません。",
+            "trace": [
+                "問題文を型付き意味IRへ変換",
+                "計算候補を取得",
+                "証明書の入力ハッシュ・解答ハッシュ・検証済み状態を検査",
+                "証明書が不完全なため未解決義務として保存",
+            ],
+            "diagnostics": _failure_diagnostics(
+                data,
+                stage="certificate_replay",
+                candidate_answer=answer,
+            ),
+        }
     certificate_sha256 = (
         hashlib.sha256(
             json.dumps(
@@ -795,16 +1675,10 @@ def solve_problem(
         "solution_tex": _solution_text(statement, answer_tex, data),
         "family_id": f"solve.{route}.{intent}",
         "domain": route,
-        "morphism_chain": [
-            "ProblemText",
-            "TypedSemanticIR",
-            "ExecutableConstraint",
-            tool_name,
-            "VerifiedAnswer",
-        ],
+        "morphism_chain": morphism_chain,
         "verification": {
             "method": f"{tool_name}: exact execution + original-constraint check",
-            "exact_backend": bool(result.get("verified") is True),
+            "exact_backend": bool(result.get("verified") is True or backend_replayed),
             "independent_check": certificate_verified,
             "verification_scope": (
                 "deterministic in-process witness replay; "
@@ -823,7 +1697,11 @@ def solve_problem(
         display_value = result.get(display_key)
         if display_value:
             card_payload[display_key] = display_value
-    card = attach_solution_artifact(card_payload, trace)
+    card = (
+        attach_solution_artifact(card_payload, trace)
+        if include_publication_artifact
+        else card_payload
+    )
     return 200, {
         "ok": True,
         "generated": 1,
@@ -833,6 +1711,12 @@ def solve_problem(
         "cards": [card],
         "trace": trace,
     }
+
+
+def solve_public_problem(problem: str) -> tuple[int, dict[str, Any]]:
+    """Run the product solver without research-only completed routes."""
+
+    return solve_problem(problem, allow_theorem_kernels=False)
 
 
 class handler(BaseHTTPRequestHandler):
@@ -852,7 +1736,7 @@ class handler(BaseHTTPRequestHandler):
         try:
             length = int(self.headers.get("Content-Length", "0"))
             payload = json.loads(self.rfile.read(length) or b"{}")
-            status, result = solve_problem(str(payload.get("problem") or ""))
+            status, result = solve_public_problem(str(payload.get("problem") or ""))
         except Exception as error:  # The public endpoint must return structured failure.
             status, result = 500, {"ok": False, "error": f"解答器の実行に失敗しました: {error}"}
         self._json(status, result)

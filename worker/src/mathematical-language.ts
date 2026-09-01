@@ -105,7 +105,8 @@ export type ElaboratedMathematicalIR = {
 const PARTICLES = ['に対して', 'について', 'によって', 'において', 'として', 'から', 'まで', 'より', 'ならば', 'とき', 'ので', 'を', 'が', 'は', 'の', 'に', 'で', 'と']
 const KEYWORDS = [
   'すべて', '全て', '任意', '存在する', '存在し', '満たす', '定める', '定義する',
-  'とする', '求めよ', '示せ', '証明せよ', '分類せよ', '最大値', '最小値',
+  'とする', '求めよ', '求めなさい', '計算せよ', '解け', '解きなさい',
+  '示せ', '証明せよ', '分類せよ', '最大値', '最小値',
   'find', 'determine', 'compute', 'calculate', 'prove', 'show', 'classify',
 ]
 const MULTI_RELATIONS = ['<=>', '=>', '<=', '>=', '!=', '==', '≦', '≧', '≠', '∈', '⊂', '⊆', '→', '↦']
@@ -220,8 +221,8 @@ function queryOf(raw: string, clause: number): QuerySyntax | null {
   if (/示せ|証明せよ|\b(?:prove|show)\b/i.test(raw)) return { kind: 'prove', clause }
   if (/分類せよ|すべて求めよ|全て求めよ|\b(?:classify|find all|determine all)\b/i.test(raw)) return { kind: 'classify', clause }
   if (/最大|最小|極値|\b(?:maximum|minimum|maximize|minimize|largest|smallest)\b/i.test(raw)) return { kind: 'optimize', clause }
-  if (/(?:面積|体積|測度|\barea\b|\bvolume\b)/i.test(raw) && /求めよ|\b(?:find|determine|compute|calculate)\b/i.test(raw)) return { kind: 'measure', clause }
-  if (/求めよ|\b(?:find|determine|compute|calculate|evaluate)\b/i.test(raw)) return { kind: 'compute', clause }
+  if (/(?:面積|体積|測度|\barea\b|\bvolume\b)/i.test(raw) && /求めよ|求めなさい|計算せよ|\b(?:find|determine|compute|calculate)\b/i.test(raw)) return { kind: 'measure', clause }
+  if (/求めよ|求めなさい|計算せよ|解け|解きなさい|\b(?:find|determine|compute|calculate|evaluate|solve)\b/i.test(raw)) return { kind: 'compute', clause }
   return null
 }
 
@@ -280,19 +281,32 @@ function declarationsOf(raw: string, clause: number, offset: number): Declaratio
 }
 
 function relationsOf(raw: string, tokens: MathToken[], clause: number, offset: number): RelationSyntax[] {
-  return tokens.filter(token => token.kind === 'relation').map(token => {
+  const relations = tokens.filter(token => token.kind === 'relation')
+  const leftBoundaries = ['、', ',', '。', 'に対し', 'に対して', 'ならば', 'のとき', 'とき', 'かつ', 'または']
+  const rightBoundaries = [
+    'ならば', 'のとき', 'とき', 'かつ', 'または',
+    'を満たす', 'が成り立つ', 'であることを示せ', 'ことを示せ', 'を示せ', '証明せよ',
+    'を求めよ', 'を求めなさい', 'を計算せよ',
+    'とする', 'と定める', 'で定める', 'と定義する',
+    '、', ',', '。', '；', ';',
+  ]
+  return relations.map(token => {
     const localStart = Math.max(0, token.start - offset)
     const localEnd = Math.max(0, token.end - offset)
     const prefix = raw.slice(0, localStart)
-    const boundaryMarkers = ['、', ',', '。', 'に対し', 'に対して']
-    const boundary = Math.max(...boundaryMarkers.map(marker => {
+    const boundary = Math.max(...leftBoundaries.map(marker => {
       const index = prefix.lastIndexOf(marker)
-      return index < 0 ? -1 : index + marker.length - 1
+      return index < 0 ? -1 : index + marker.length
+    }))
+    const suffix = raw.slice(localEnd)
+    const rightBoundary = Math.min(...rightBoundaries.map(marker => {
+      const index = suffix.indexOf(marker)
+      return index < 0 ? suffix.length : index
     }))
     return {
       operator: token.value,
-      lhs: prefix.slice(boundary + 1).trim(),
-      rhs: raw.slice(localEnd).replace(/(?:とする|と定める|で定める|と定義する).*$/u, '').trim(),
+      lhs: prefix.slice(Math.max(0, boundary)).trim(),
+      rhs: suffix.slice(0, rightBoundary).trim(),
       clause,
       start: token.start,
       end: token.end,

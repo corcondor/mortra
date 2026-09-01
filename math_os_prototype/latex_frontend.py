@@ -30,6 +30,17 @@ GREEK_NAMES = {
     "pi": "pi",
 }
 
+UNICODE_GREEK_NAMES = {
+    "α": "alpha",
+    "β": "beta",
+    "γ": "gamma",
+    "θ": "theta",
+    "ρ": "rho",
+    "λ": "lambda",
+    "μ": "mu",
+    "π": "pi",
+}
+
 
 @dataclass
 class LatexProblem:
@@ -80,6 +91,10 @@ def parse_latex_problem(source: str) -> LatexProblem:
     text, spans = split_tex_text_math(body)
     for span in spans:
         math_segments.append(normalize_latex_math(span.content))
+    # Public input commonly omits TeX delimiters.  With no delimited spans,
+    # scan the finite mathematical alphabet and keep only plausible formulas.
+    if not spans:
+        math_segments.extend(extract_bare_math_segments(body))
     text = normalize_latex_text(text)
     normalized_text = normalize_spacing(text)
     notes = [
@@ -87,6 +102,46 @@ def parse_latex_problem(source: str) -> LatexProblem:
         "Math delimiters were scanned by a deterministic TeX input scanner.",
     ]
     return LatexProblem(source, body, normalized_text, math_segments, notes)
+
+
+def _is_plain_math_character(character: str) -> bool:
+    return bool(
+        re.fullmatch(r"[A-Za-z0-9_\u0370-\u03ff]", character)
+        or re.fullmatch(r"[+\-*/^=<>.(){}\[\]\\]", character)
+        or character.isspace()
+    )
+
+
+def _is_plausible_plain_math(candidate: str) -> bool:
+    if not candidate or not re.search(r"[A-Za-z0-9\u0370-\u03ff]", candidate):
+        return False
+    if re.search(r"[=+\-*/^<>\\]", candidate) or re.search(r"\d", candidate):
+        return True
+    words = [word for word in candidate.strip().split() if word]
+    return len(words) == 1 and bool(
+        re.fullmatch(r"[A-Za-z\u0370-\u03ff][A-Za-z0-9_\u0370-\u03ff]*", words[0])
+    )
+
+
+def extract_bare_math_segments(source: str) -> list[str]:
+    """Extract bare formulas from prose without selecting a problem family."""
+
+    segments: list[str] = []
+    candidate: list[str] = []
+
+    def flush() -> None:
+        value = "".join(candidate).strip()
+        candidate.clear()
+        if _is_plausible_plain_math(value):
+            segments.append(normalize_latex_math(value))
+
+    for character in source:
+        if character not in {",", "，"} and _is_plain_math_character(character):
+            candidate.append(character)
+        else:
+            flush()
+    flush()
+    return segments
 
 
 def is_tex_document(source: str) -> bool:
@@ -218,6 +273,7 @@ def normalize_latex_math(expr: str) -> str:
     expr = normalize_mathbb(expr)
     expr = normalize_fractions(expr)
     expr = normalize_sqrt(expr)
+    expr = normalize_subscripts(expr)
     expr = normalize_bare_function_arguments(expr)
     for latex, plain in LATEX_FUNCTIONS.items():
         expr = expr.replace(latex, plain)
@@ -228,14 +284,16 @@ def normalize_latex_math(expr: str) -> str:
     # ``n!=3`` (factorial followed by equality) with the ``!=`` relation.
     expr = normalize_factorials(expr)
     replacements = {
-        r"\int": "integral",
+        r"\int": " integral ",
+        r"\sum": " sum ",
+        r"\prod": " product ",
         r"\cdot": "*",
         r"\times": "*",
         r"\div": "/",
         r"\ast": " astop ",
         r"\to": " to ",
-        r"\infty": "infinity",
-        r"\lim": "limit",
+        r"\infty": " infinity ",
+        r"\lim": " limit ",
         r"\in": " in ",
         r"\leq": "<=",
         r"\le": "<=",
@@ -250,9 +308,17 @@ def normalize_latex_math(expr: str) -> str:
     }
     for old, new in replacements.items():
         expr = expr.replace(old, new)
+    expr = normalize_limit_binders(expr)
     expr = normalize_powers(expr)
     expr = expr.replace("{", "").replace("}", "")
     expr = expr.replace("^", "**")
+    # ``k(<n)`` is occasionally used in exam TeX for the relation ``k<n``.
+    # It is not a function application and must not become ``k*(<n)``.
+    expr = re.sub(
+        r"\b([A-Za-z][A-Za-z0-9_]*)\s*\(\s*(<=|>=|<|>)",
+        r"(\1 \2 ",
+        expr,
+    )
     expr = normalize_spacing(expr)
     return insert_implicit_multiplication(expr)
 
@@ -268,21 +334,61 @@ def normalize_bare_function_arguments(expr: str) -> str:
     """
     greek = "|".join(re.escape(name) for name in GREEK_NAMES)
     functions = "|".join(re.escape(name.removeprefix("\\")) for name in LATEX_FUNCTIONS)
+    subscript = r"(?P<subscript>_(?:[A-Za-z0-9_]+|\([^()]*\)))?"
     expr = re.sub(
-        rf"\\(?P<function>{functions})\s*\\(?P<argument>{greek})(?![A-Za-z])",
-        lambda match: f"{match.group('function')}({GREEK_NAMES[match.group('argument')]})",
+        rf"\\(?P<function>{functions})\s*\\(?P<argument>{greek}){subscript}(?![A-Za-z])",
+        lambda match: (
+            f"{match.group('function')}({GREEK_NAMES[match.group('argument')]}"
+            f"{match.group('subscript') or ''})"
+        ),
         expr,
     )
     expr = re.sub(
-        rf"\\(?P<function>{functions})\s*(?P<argument>[A-Za-z])(?![A-Za-z0-9_])",
-        lambda match: f"{match.group('function')}({match.group('argument')})",
+        rf"\\(?P<function>{functions})\s*(?P<argument>[A-Za-z]){subscript}(?![A-Za-z0-9_])",
+        lambda match: (
+            f"{match.group('function')}({match.group('argument')}"
+            f"{match.group('subscript') or ''})"
+        ),
         expr,
     )
     return expr
 
 
+def normalize_subscripts(expr: str) -> str:
+    """Preserve TeX subscripts as one indexed symbol before removing braces."""
+
+    command = "_"
+    cursor = 0
+    while True:
+        start = expr.find("_{", cursor)
+        if start < 0:
+            break
+        content, end = read_braced(expr, start + 1)
+        normalized = normalize_latex_math(content)
+        atomic_parts = [part.strip() for part in normalized.split(",")]
+        if atomic_parts and all(
+            re.fullmatch(r"[A-Za-z0-9_]+", part) for part in atomic_parts
+        ):
+            replacement = command + "_".join(atomic_parts)
+        else:
+            replacement = command + f"({normalized})"
+        expr = expr[:start] + replacement + expr[end:]
+        cursor = start + len(replacement)
+    return expr
+
+
+def normalize_limit_binders(expr: str) -> str:
+    """Lower a TeX limit subscript without merging it into the limit body."""
+
+    return re.sub(
+        r"\blimit\s*_\(\s*([A-Za-z])\s+to\s+([^()]+?)\s*\)",
+        lambda match: f"limit_{match.group(1)} to {match.group(2).strip()} ",
+        expr,
+    )
+
+
 def normalize_text_macros(expr: str) -> str:
-    for command in (r"\text", r"\mbox", r"\mathrm"):
+    for command in (r"\text", r"\mbox", r"\mathrm", r"\operatorname"):
         while command in expr:
             start = expr.find(command)
             arg_start = skip_spaces(expr, start + len(command))
@@ -461,7 +567,7 @@ def normalize_spacing(text: str) -> str:
 
 
 def normalize_unicode_math_symbols(text: str) -> str:
-    return (
+    normalized = (
         text.replace("＋", "+")
         .replace("－", "-")
         .replace("−", "-")
@@ -471,3 +577,6 @@ def normalize_unicode_math_symbols(text: str) -> str:
         .replace("＾", "^")
         .replace("＝", "=")
     )
+    for symbol, name in UNICODE_GREEK_NAMES.items():
+        normalized = normalized.replace(symbol, name)
+    return normalized

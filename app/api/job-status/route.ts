@@ -57,6 +57,9 @@ export async function GET(req: NextRequest) {
         stagnant_rounds?: number
         last_progress_at?: string
         synthesized_programs?: unknown[]
+        reused_parameterized_morphisms?: number
+        primitive_executions?: number
+        execution_obligations?: string[]
       }
       searchRuntime?: {
         phase?: string
@@ -232,6 +235,9 @@ export async function GET(req: NextRequest) {
         stagnant_rounds: state?.stagnant_rounds ?? 0,
         last_progress_at: state?.last_progress_at ?? null,
         synthesized_programs: state?.synthesized_programs?.length ?? 0,
+        reused_parameterized_morphisms: state?.reused_parameterized_morphisms ?? 0,
+        primitive_executions: state?.primitive_executions ?? 0,
+        execution_obligations: state?.execution_obligations?.length ?? 0,
       },
       resume_requested: resumeRequested,
       replacement_job_id: replacementJobId,

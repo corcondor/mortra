@@ -1,12 +1,12 @@
 import { spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 import type { ExecutableFusionCard } from './executable-fusion'
 import type { HyperMorphismSchema } from './generalization-kernel'
 import type { DiscoveryParent } from './parent-conditioned-discovery'
 import { extractDistinctiveParentObligations } from './parent-obligation-coverage'
 import { extractPolynomial } from './polynomial-root-fusion'
+import { runtimeSynthesisCertificate } from './execution-certificate'
 
 type BackendCandidate = {
   expression: string
@@ -93,7 +93,7 @@ function hash(value: unknown, length = 14): string {
 }
 
 function backendPath(): string {
-  return path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'backend', 'primitive_law_induction.py')
+  return path.resolve(__dirname, '..', 'backend', 'primitive_law_induction.py')
 }
 
 function runBackend(request: object): BackendResult | null {
@@ -277,6 +277,19 @@ export function inducePrimitiveLaws(
         valid_hypotheses: result.telemetry.certified,
         elapsed_ms: 0,
       },
+      execution_certificate: runtimeSynthesisCertificate({
+        origin: 'synthesized_proof_program',
+        parents,
+        cacheRole: registeredLaws.length ? 'duplicate_exclusion_only' : 'not_consulted',
+        generatedProgram: {
+          grammar: candidate.synthesis_engine,
+          expression: candidate.expression,
+          result_polynomial: candidate.result,
+          morphism_chain: morphisms,
+          parent_constraints: selectedInputs.map(input => input.normalized),
+        },
+        checks: proofCertificate.map(step => `${step.id}: ${step.verifier}`),
+      }),
     }
   })
   return {

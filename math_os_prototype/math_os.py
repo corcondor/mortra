@@ -36,7 +36,11 @@ try:
     from math_os_prototype.prime_structure_query import compile_prime_structure_query, execute_prime_structure_query
     from math_os_prototype.symbolic_query import compile_symbolic_query, execute_symbolic_query
     from math_os_prototype.typed_analysis_query import compile_typed_analysis_query, execute_typed_analysis_query
-    from math_os_prototype.structural_theorem_query import compile_structural_theorem_query, execute_structural_theorem_query
+    from math_os_prototype.structural_theorem_query import (
+        compile_structural_theorem_query,
+        execute_structural_theorem_query,
+        is_cold_generalizable_structural_query,
+    )
     from math_os_prototype.vector_query import compile_vector_query, execute_vector_query
     from math_os_prototype.tool_adapters import ToolRegistry
 except ImportError:  # Allows `python math_os_prototype\math_os.py ...`.
@@ -58,7 +62,11 @@ except ImportError:  # Allows `python math_os_prototype\math_os.py ...`.
     from prime_structure_query import compile_prime_structure_query, execute_prime_structure_query
     from symbolic_query import compile_symbolic_query, execute_symbolic_query
     from typed_analysis_query import compile_typed_analysis_query, execute_typed_analysis_query
-    from structural_theorem_query import compile_structural_theorem_query, execute_structural_theorem_query
+    from structural_theorem_query import (
+        compile_structural_theorem_query,
+        execute_structural_theorem_query,
+        is_cold_generalizable_structural_query,
+    )
     from vector_query import compile_vector_query, execute_vector_query
     from tool_adapters import ToolRegistry
 
@@ -253,12 +261,13 @@ class ProblemCompiler:
         # Typed theorem kernels are independent of the legacy surface-specialist
         # router.  Keeping the switches separate prevents a broad heuristic from
         # shadowing a more precise executable theorem query in portfolio runs.
-        theorem_query = (
-            compile_structural_theorem_query(text)
-            if self.allow_theorem_kernels and not self.allow_specialized
-            else None
+        theorem_query = compile_structural_theorem_query(text)
+        theorem_query_is_cold_generalizable = bool(
+            theorem_query is not None
+            and is_cold_generalizable_structural_query(theorem_query)
         )
-        if theorem_query is not None:
+        theorem_query_allowed = self.allow_theorem_kernels or theorem_query_is_cold_generalizable
+        if theorem_query is not None and theorem_query_allowed and not self.allow_specialized:
             payload = theorem_query.to_dict()
             return MathIR(
                 problem=text,
@@ -357,10 +366,7 @@ class ProblemCompiler:
         # Backward-compatible ordering for callers that explicitly enable the
         # legacy surface-specialist router: dedicated adapters get first refusal,
         # then the typed theorem portfolio handles the remaining statements.
-        theorem_query = (
-            compile_structural_theorem_query(text) if self.allow_theorem_kernels else None
-        )
-        if theorem_query is not None:
+        if theorem_query is not None and theorem_query_allowed:
             payload = theorem_query.to_dict()
             return MathIR(
                 problem=text,

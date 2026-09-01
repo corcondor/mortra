@@ -1,6 +1,16 @@
 import { createHash } from 'node:crypto'
 import type { DiscoveryParent } from './parent-conditioned-discovery'
+import { extractMobiusMap } from './executable-fusion'
 import { elaborateMathematicalText } from './mathematical-language'
+import {
+  extractBoundMathExpression,
+  isDirectBoundExpressionQuery,
+  type MathExpression,
+} from './math-expression-ir'
+import { extractPolynomial } from './polynomial-root-fusion'
+import { extractSymbolicPowerRelation } from './symbolic-power-relation'
+import { lowerLinearPredicateStatement } from './linear-predicate-lowerer'
+import { verifyLinearInvariantCertificate } from './exact-linear-invariant'
 import { VERIFIED_DOMAIN_EXTENSIONS } from './verified-domain-extensions'
 import {
   dischargeProofObligations,
@@ -10,7 +20,22 @@ import {
   type TypedProofObligation,
 } from './kernel-calculus'
 
-export type SemanticRole = 'object' | 'operator' | 'relation' | 'query'
+export type SemanticRole = 'object' | 'operator' | 'relation' | 'query' | 'assumption' | 'goal'
+
+export type SemanticBindingRole = 'object' | 'assumption' | 'goal'
+
+export type SemanticBinding = {
+  id: string
+  role: SemanticBindingRole
+  canonical: string
+  sort: string
+  surface: string
+  parent_id: string
+  /** Normalized proposition proved or demanded by this binding. */
+  proposition_canonical?: string
+  /** Required for CertifiedProposition; absent on assumptions and goals. */
+  certificate_hash?: string
+}
 
 export type SemanticNode = {
   id: string
@@ -37,6 +62,12 @@ export type SemanticHypergraph = {
   edges: SemanticEdge[]
   root_sorts: string[]
   query_sorts: string[]
+  /** Exact expression parsed from the current query; never an Atlas route. */
+  query_expression_ir?: MathExpression
+  /** Concrete inputs. Unlike root_sorts, this keeps two propositions of the same sort distinct. */
+  root_bindings?: SemanticBinding[]
+  /** Demanded values or propositions. Query bindings are never available as input terms. */
+  query_bindings?: SemanticBinding[]
   language_analysis: {
     token_count: number
     parse_count: number
@@ -45,7 +76,13 @@ export type SemanticHypergraph = {
     quantifier_prefix: string[]
     definitions: Array<{ symbol: string; canonical: string; sort: string }>
     declarations: Array<{ symbol: string; sort: string; implicit_forall: boolean }>
-    constraints: Array<{ operator: string; canonical: string }>
+    constraints: Array<{
+      id: string
+      operator: string
+      canonical: string
+      clause: number
+      role: 'assumption' | 'goal'
+    }>
     unresolved_references: string[]
     diagnostics: string[]
   }
@@ -111,7 +148,7 @@ const OPERATOR_SCHEMAS: readonly OperatorSchema[] = [
   { canonical: 'IntegerRestriction', patterns: [/整数|自然数|integer/i], input: 'ArithmeticObject', output: 'IntegerPredicate', preserves: ['integrality'], backend: ['integer-arithmetic'] },
   { canonical: 'PrimeRestriction', patterns: [/素数|prime/i], input: 'Integer', output: 'PrimeSpectrum', preserves: ['primality'], backend: ['primality-test', 'modular-arithmetic'] },
   { canonical: 'ZeroLocus', patterns: [/方程式|解とする|根とする|=\s*0/], input: 'Function', output: 'AlgebraicSet', preserves: ['solution-set', 'multiplicity'], backend: ['polynomial-solver', 'groebner-basis'] },
-  { canonical: 'RootsOfUnity', patterns: [/z\s*\^\s*\{?n\}?\s*=\s*1|1\s*の\s*n\s*乗根|1の冪根|roots? of unity/i], input: 'CyclicGroup', output: 'FiniteAlgebraicOrbit', preserves: ['cyclic-order', 'multiplicity'], backend: ['cyclotomic-polynomial'] },
+  { canonical: 'RootsOfUnity', patterns: [/[A-Za-z]\s*\^\s*\{?[A-Za-z]\}?\s*=\s*[+-]?\d+|1\s*の\s*n\s*乗根|1の冪根|roots? of unity/i], input: 'CyclicGroup', output: 'FiniteAlgebraicOrbit', preserves: ['cyclic-order', 'multiplicity'], backend: ['cyclotomic-polynomial'] },
   { canonical: 'MobiusMap', patterns: [/一次分数変換|m[oö]bius|T\s*\(\s*z\s*\)\s*=\s*\\frac/i], input: 'Matrix2', output: 'RationalSelfMap', preserves: ['cross-ratio', 'projective-orbit'], backend: ['matrix-power', 'rational-normal-form'] },
   { canonical: 'Iteration', patterns: [/反復|合成写像|\\circ\s*\d+|iterate/i], input: 'SelfMap', output: 'Orbit', preserves: ['orbit'], backend: ['matrix-power', 'recurrence-engine'] },
   { canonical: 'RootConfiguration', patterns: [/根|解と係数|多項式/], input: 'Polynomial', output: 'FiniteAlgebraicOrbit', preserves: ['multiplicity', 'symmetric-action'], backend: ['vieta', 'resultant'] },
@@ -129,7 +166,6 @@ const OPERATOR_SCHEMAS: readonly OperatorSchema[] = [
   { canonical: 'CeilingProjection', patterns: [/\\lceil|天井関数|ceiling|\bceil\b/i], input: 'Real', output: 'Integer', preserves: ['least-integer-upper-bound', 'order'], backend: ['exact-rounding', 'presburger-arithmetic'] },
   { canonical: 'FloorProjection', patterns: [/\\lfloor|床関数|floor function|\bfloor\b/i], input: 'Real', output: 'Integer', preserves: ['greatest-integer-lower-bound', 'order'], backend: ['exact-rounding', 'presburger-arithmetic'] },
   { canonical: 'PercentScalarAction', patterns: [/\\%|百分率|パーセント|percent|\d\s*%/i], input: 'RateQuantityPair', output: 'Quantity', preserves: ['unit', 'rational-scaling'], backend: ['rational-arithmetic', 'unit-checker'] },
-  { canonical: 'Proof', patterns: [/示せ|証明|prove/i], input: 'Proposition', output: 'Proof', role: 'query', preserves: ['truth'], backend: ['lean', 'smt', 'symbolic-identity'] },
 ]
 
 export type MorphismSchema = {
@@ -140,7 +176,7 @@ export type MorphismSchema = {
   backend: string[]
 }
 
-const MORPHISM_ATLAS: readonly MorphismSchema[] = [
+const PRIMITIVE_MORPHISM_BASIS: readonly MorphismSchema[] = [
   { name: 'CoordinateRealization', source: 'GeometricConfiguration', target: 'PolynomialSystem', preserves: ['incidence', 'metric'], backend: ['coordinate-algebra'] },
   { name: 'EquationEncoding', source: 'PolynomialSystem', target: 'AlgebraicSet', preserves: ['solution-set'], backend: ['groebner-basis'] },
   { name: 'ParameterElimination', source: 'AlgebraicSet', target: 'SemialgebraicSet', preserves: ['projection'], backend: ['resultant', 'quantifier-elimination'] },
@@ -208,6 +244,20 @@ const MORPHISM_ATLAS: readonly MorphismSchema[] = [
   // 余弦定理そのものを射にすると1問専用になる（暗記）
   { name: 'MetricRelationIdeal', source: 'TriangleMetricData', target: 'PolynomialSystem', preserves: ['metric'], backend: ['groebner-basis', 'coordinate-algebra'] },
   { name: 'DesignatedRootEvaluation', source: 'AlgebraicSet', target: 'Real', preserves: ['exactness'], backend: ['polynomial-solver'] },
+  {
+    name: 'SolveConstraintQuery',
+    source: 'ExecutableConstraintIR',
+    target: 'Scalar',
+    preserves: ['query-observable', 'input-constraints', 'exact-value'],
+    backend: ['exact-linear-invariant'],
+  },
+  {
+    name: 'EnumerateConstraintSolutions',
+    source: 'ExecutableConstraintIR',
+    target: 'FiniteSet',
+    preserves: ['query-solution-set', 'input-constraints', 'multiplicity'],
+    backend: ['exact-solution-enumeration'],
+  },
 ]
 
 export type HyperMorphismSchema = {
@@ -221,8 +271,8 @@ export type HyperMorphismSchema = {
   allows_cross_parent_fusion?: boolean
 }
 
-const CORE_HYPER_MORPHISM_ATLAS: readonly HyperMorphismSchema[] = [
-  ...MORPHISM_ATLAS.map(edge => ({ ...edge, sources: [edge.source] })),
+const CORE_HYPER_MORPHISM_BASIS: readonly HyperMorphismSchema[] = [
+  ...PRIMITIVE_MORPHISM_BASIS.map(edge => ({ ...edge, sources: [edge.source] })),
 
   /*
    * 複数の親が1本の射で出会う手段が、数値層に一つも無かった。
@@ -247,12 +297,21 @@ const CORE_HYPER_MORPHISM_ATLAS: readonly HyperMorphismSchema[] = [
     allows_cross_parent_fusion: false,
   },
   {
-    // Proposition が出次数0だったので、証明を連鎖できなかった
-    name: 'PropositionConjunction',
-    sources: ['Proposition', 'Proposition'],
-    target: 'Proposition',
-    preserves: ['truth'],
-    backend: ['smt-nonlinear-real'],
+    // Combining givens creates another given context; it is not a proof of the goal.
+    name: 'AssumptionConjunction',
+    sources: ['AssumptionProposition', 'AssumptionProposition'],
+    target: 'AssumptionProposition',
+    preserves: ['assumption-context'],
+    backend: ['logical-conjunction'],
+    allows_cross_parent_fusion: false,
+  },
+  {
+    // Only proof-bearing propositions may be composed without losing certification.
+    name: 'CertifiedConjunction',
+    sources: ['CertifiedProposition', 'CertifiedProposition'],
+    target: 'CertifiedProposition',
+    preserves: ['truth', 'proof-certificate'],
+    backend: ['proof-certificate-composition'],
     allows_cross_parent_fusion: false,
   },
   {
@@ -343,8 +402,8 @@ const CORE_HYPER_MORPHISM_ATLAS: readonly HyperMorphismSchema[] = [
   },
 ]
 
-const HYPER_MORPHISM_ATLAS: readonly HyperMorphismSchema[] = [
-  ...CORE_HYPER_MORPHISM_ATLAS,
+const HYPER_MORPHISM_BASIS: readonly HyperMorphismSchema[] = [
+  ...CORE_HYPER_MORPHISM_BASIS,
   ...VERIFIED_DOMAIN_EXTENSIONS.map(edge => ({
     ...edge,
     // Probe experiments established within-problem reachability.  They did
@@ -353,8 +412,13 @@ const HYPER_MORPHISM_ATLAS: readonly HyperMorphismSchema[] = [
   })),
 ]
 
+export function primitiveMorphismBasis(): readonly HyperMorphismSchema[] {
+  return HYPER_MORPHISM_BASIS
+}
+
+/** Compatibility name for existing audits. Production synthesis uses primitiveMorphismBasis. */
 export function executableMorphismAtlas(): readonly HyperMorphismSchema[] {
-  return HYPER_MORPHISM_ATLAS
+  return primitiveMorphismBasis()
 }
 
 /**
@@ -365,14 +429,14 @@ export function executableMorphismAtlas(): readonly HyperMorphismSchema[] {
 export function certifiedExecutableMorphismAtlas(
   evidence: Readonly<Record<string, ProofEvidence>>,
 ): readonly HyperMorphismSchema[] {
-  return HYPER_MORPHISM_ATLAS.filter(rule => {
+  return HYPER_MORPHISM_BASIS.filter(rule => {
     const lowering = dischargeProofObligations(lowerMorphismToKnowledgeCore(rule), evidence)
     return !hasOpenProofObligations(lowering)
   })
 }
 
 export function coreExecutableMorphismAtlas(): readonly HyperMorphismSchema[] {
-  return CORE_HYPER_MORPHISM_ATLAS
+  return CORE_HYPER_MORPHISM_BASIS
 }
 
 function hash(value: unknown, length = 12): string {
@@ -408,6 +472,53 @@ function inferredSort(text: string): string {
   return `OpaqueSort[${hash(text, 10)}]`
 }
 
+function observableIdentifiers(clause: { tokens: Array<{ kind: string; value: string }> }): Set<string> {
+  return new Set(clause.tokens
+    .filter(token => token.kind === 'identifier')
+    .map(token => token.value)
+    .filter(value => value.includes('_') || /^[A-ZΑ-Ω]/u.test(value)))
+}
+
+function operatorClauses(
+  schema: OperatorSchema,
+  clauses: Array<{ id: number; raw: string; tokens: Array<{ kind: string; value: string }> }>,
+  queryClauseId: number | undefined,
+): Array<{ id: number; raw: string; tokens: Array<{ kind: string; value: string }> }> {
+  if (schema.role !== 'query') return clauses
+  const queryClause = clauses.find(clause => clause.id === queryClauseId)
+  if (!queryClause) return []
+  const direct = schema.patterns.some(pattern => pattern.test(queryClause.raw)) ? [queryClause] : []
+  const querySymbols = observableIdentifiers(queryClause)
+  if (!querySymbols.size) return direct
+  const linked = clauses.filter(clause => {
+    if (clause.id === queryClause.id || clause.id > queryClause.id) return false
+    if (!schema.patterns.some(pattern => pattern.test(clause.raw))) return false
+    const clauseSymbols = observableIdentifiers(clause)
+    return [...querySymbols].some(symbol => clauseSymbols.has(symbol))
+  })
+  return [...direct, ...linked]
+}
+
+function queryExpressionFromText(
+  text: string,
+  queryKind: string | null,
+): { expression: MathExpression; surface: string } | null {
+  if (!queryKind || !['compute', 'observe'].includes(queryKind)) return null
+  if (!isDirectBoundExpressionQuery(text)) return null
+  return extractBoundMathExpression(text)
+}
+
+function explicitEntityObjects(text: string): Array<{ sort: string; surface: string }> {
+  const schemas: Array<{ sort: string; pattern: RegExp }> = [
+    { sort: 'Triangle', pattern: /(?:三角形|triangle)\s*[A-Za-z]*/i },
+    { sort: 'TopologicalSpace', pattern: /(?:位相空間|topological\s+space)/i },
+  ]
+  return schemas.flatMap(schema => {
+    const match = text.match(schema.pattern)
+    return match ? [{ sort: schema.sort, surface: match[0] }] : []
+  })
+}
+
 export function buildSemanticHypergraph(parent: DiscoveryParent): SemanticHypergraph {
   const id = parentId(parent)
   const text = textOf(parent)
@@ -416,15 +527,67 @@ export function buildSemanticHypergraph(parent: DiscoveryParent): SemanticHyperg
   const edges: SemanticEdge[] = []
   const rootSorts = new Set<string>()
   const querySorts = new Set<string>()
+  const rootBindings: SemanticBinding[] = []
+  const queryBindings: SemanticBinding[] = []
+  const clauses = language.forest.analyses[language.ir.selected_analysis]?.clauses ?? []
+  const proofQuery = language.ir.query?.kind === 'prove' ? language.ir.query : null
+  const queryExpression = queryExpressionFromText(text, language.ir.query?.kind ?? null)
+  const proofClauseConstraints = proofQuery
+    ? language.ir.constraints
+      .filter(constraint => constraint.clause === proofQuery.clause)
+      .sort((left, right) => left.start - right.start)
+    : []
+  // In a proof clause, the final explicit relation is the demanded conclusion.
+  // Earlier relations remain assumptions. If there is no explicit relation, the
+  // complete proof clause is retained as an opaque but concrete goal proposition.
+  const explicitGoalConstraint = proofClauseConstraints.at(-1) ?? null
+  const assumptionConstraints = language.ir.constraints.filter(constraint => constraint !== explicitGoalConstraint)
   const groundedSorts = new Set<string>([
     ...language.ir.definitions.map(definition => definition.inferred_sort),
     ...language.ir.declarations.map(declaration => declaration.sort),
-    ...(language.ir.constraints.length || language.ir.quantifiers.length ? ['Proposition'] : []),
+    ...(assumptionConstraints.length ? ['AssumptionProposition'] : []),
   ])
-
-  const clauses = language.forest.analyses[language.ir.selected_analysis]?.clauses ?? []
+  const groundedObjects: Array<{ sort: string; surface: string; canonical: string }> = []
+  const addGroundedObject = (sort: string, surface: string, canonical: string) => {
+    if (groundedObjects.some(object => object.sort === sort && object.canonical === canonical)) return
+    groundedObjects.push({ sort, surface, canonical })
+    groundedSorts.add(sort)
+  }
+  for (const entity of explicitEntityObjects(text)) {
+    addGroundedObject(entity.sort, entity.surface, `ParsedEntity[${entity.sort},${hash(entity.surface, 10)}]`)
+  }
+  const mobius = extractMobiusMap([parent])
+  if (mobius) addGroundedObject('Matrix2', mobius.matrix.join(','), `Matrix2[${mobius.matrix.join(',')}]`)
+  const powerRelation = extractSymbolicPowerRelation(parent)
+  if (powerRelation) {
+    addGroundedObject('CyclicGroup', powerRelation.source, `PowerRelation[${powerRelation.source}]`)
+  }
+  const polynomial = extractPolynomial(parent, 0)
+  if (polynomial) {
+    addGroundedObject('Polynomial', polynomial.source, `Polynomial[${hash(polynomial.normalized, 16)}]`)
+  }
+  const linearConstraint = lowerLinearPredicateStatement(text)
+  if (linearConstraint.status === 'lowered' &&
+      linearConstraint.certificate.status === 'proved' &&
+      verifyLinearInvariantCertificate(linearConstraint.program, linearConstraint.certificate)) {
+    addGroundedObject(
+      'ExecutableConstraintIR',
+      linearConstraint.program.goal.expected === undefined
+        ? JSON.stringify(linearConstraint.program.goal)
+        : String(linearConstraint.program.goal.expected),
+      `ConstraintIR[${hash(linearConstraint.program, 20)}]`,
+    )
+  }
+  if (queryExpression) {
+    addGroundedObject(
+      'ExecutableExpression',
+      queryExpression.surface,
+      `ExpressionIR[${hash(queryExpression.expression, 20)}]`,
+    )
+  }
   for (const schema of OPERATOR_SCHEMAS) {
-    const match = clauses.flatMap(clause => schema.patterns.map(pattern => clause.raw.match(pattern))).find(Boolean)
+    const candidateClauses = operatorClauses(schema, clauses, language.ir.query?.clause)
+    const match = candidateClauses.flatMap(clause => schema.patterns.map(pattern => clause.raw.match(pattern))).find(Boolean)
     if (!match) continue
     const nodeId = `${id}:op:${schema.canonical}`
     nodes.push({
@@ -435,13 +598,9 @@ export function buildSemanticHypergraph(parent: DiscoveryParent): SemanticHyperg
       surface: match[0],
       parent_id: id,
     })
-    // The input object exists in the parent. The output is only available after
-    // the detected operator has actually been applied by the planner.
-    // A query names a demanded output, not an already available input object.
-    // Treating "prove" as evidence that a Proposition already exists makes
-    // every proof goal succeed vacuously.
-    if (schema.role !== 'query') rootSorts.add(schema.input)
-    if (schema.role === 'query') querySorts.add(schema.output)
+    // Detecting an operator does not prove that its input object exists.
+    // Inputs enter root_sorts only through declarations, parsed entities, exact
+    // relations, or an expression AST built from the current statement.
     edges.push({
       source: schema.input,
       target: schema.output,
@@ -464,8 +623,39 @@ export function buildSemanticHypergraph(parent: DiscoveryParent): SemanticHyperg
       measure: 'Scalar',
       observe: 'Scalar',
     }
-    const sort = queryTarget[language.ir.query.kind]
+    const explicitQueryNodes = nodes.filter(node => node.role === 'query')
+    const sort = language.ir.query.kind === 'compute' &&
+      explicitQueryNodes.some(node => node.canonical === 'Cardinality')
+      ? 'Integer'
+      : queryTarget[language.ir.query.kind]
     querySorts.add(sort)
+    const queryClause = clauses.find(clause => clause.id === language.ir.query?.clause)
+    const goalCanonical = language.ir.query.kind === 'prove'
+      ? explicitGoalConstraint?.canonical ?? `GoalText[${hash(queryClause?.raw ?? text, 16)}]`
+      : `Query[${language.ir.query.kind}]`
+    const goalSurface = explicitGoalConstraint
+      ? `${explicitGoalConstraint.lhs} ${explicitGoalConstraint.operator} ${explicitGoalConstraint.rhs}`
+      : queryClause?.raw ?? language.ir.query.kind
+    const binding: SemanticBinding = {
+      id: `${id}:goal:${hash(goalCanonical, 10)}`,
+      role: 'goal',
+      canonical: goalCanonical,
+      sort: language.ir.query.kind === 'prove' ? 'GoalProposition' : sort,
+      surface: goalSurface,
+      parent_id: id,
+      proposition_canonical: language.ir.query.kind === 'prove' ? goalCanonical : undefined,
+    }
+    queryBindings.push(binding)
+    if (language.ir.query.kind === 'prove') {
+      nodes.push({
+        id: binding.id,
+        role: 'query',
+        canonical: binding.canonical,
+        sort: binding.sort,
+        surface: binding.surface,
+        parent_id: id,
+      })
+    }
     nodes.push({
       id: `${id}:query:${language.ir.query.kind}`,
       role: 'query',
@@ -475,57 +665,112 @@ export function buildSemanticHypergraph(parent: DiscoveryParent): SemanticHyperg
       parent_id: id,
     })
   }
-  for (const definition of language.ir.definitions) {
+  if (queryExpression) {
     nodes.push({
+      id: `${id}:query:evaluate-expression`,
+      role: 'query',
+      canonical: 'EvaluateExpression',
+      sort: 'Scalar',
+      surface: queryExpression.surface,
+      parent_id: id,
+    })
+    edges.push({
+      source: 'ExecutableExpression',
+      target: 'Scalar',
+      morphism: 'EvaluateExpression',
+      preserves: ['binder-scope', 'operator-order', 'exact-value'],
+      backend: ['exact-expression-ir'],
+      proved: true,
+      contributes_provenance: true,
+    })
+  }
+  for (const definition of language.ir.definitions) {
+    const binding: SemanticBinding = {
       id: `${id}:${definition.id}`,
       role: 'object',
       canonical: definition.canonical,
       sort: definition.inferred_sort,
       surface: definition.symbol,
       parent_id: id,
-    })
+    }
+    nodes.push(binding)
     rootSorts.add(definition.inferred_sort)
+    rootBindings.push(binding)
   }
   for (const declaration of language.ir.declarations) {
-    nodes.push({
+    const binding: SemanticBinding = {
       id: `${id}:declaration:${declaration.symbol}`,
       role: 'object',
       canonical: `Declared[${declaration.sort}]`,
       sort: declaration.sort,
       surface: declaration.symbol,
       parent_id: id,
-    })
+    }
+    nodes.push(binding)
     rootSorts.add(declaration.sort)
+    rootBindings.push(binding)
   }
-  for (const constraint of language.ir.constraints) {
-    nodes.push({
-      id: `${id}:constraint:${hash(constraint.canonical, 8)}`,
-      role: 'relation',
+  for (const object of groundedObjects) {
+    if (rootBindings.some(binding =>
+      binding.sort === object.sort && binding.canonical === object.canonical)) continue
+    const binding: SemanticBinding = {
+      id: `${id}:grounded:${hash([object.sort, object.canonical], 12)}`,
+      role: 'object',
+      canonical: object.canonical,
+      sort: object.sort,
+      surface: object.surface,
+      parent_id: id,
+    }
+    nodes.push(binding)
+    rootSorts.add(object.sort)
+    rootBindings.push(binding)
+  }
+  for (const constraint of assumptionConstraints) {
+    const binding: SemanticBinding = {
+      id: `${id}:assumption:${hash([constraint.canonical, constraint.start], 10)}`,
+      role: 'assumption',
       canonical: constraint.canonical,
-      sort: 'Proposition',
+      sort: 'AssumptionProposition',
       surface: `${constraint.lhs} ${constraint.operator} ${constraint.rhs}`,
       parent_id: id,
-    })
-    rootSorts.add('Proposition')
+      proposition_canonical: constraint.canonical,
+    }
+    nodes.push({ ...binding, role: 'relation' })
+    rootSorts.add(binding.sort)
+    rootBindings.push(binding)
   }
   language.ir.quantifiers.forEach((quantifier, index) => {
     nodes.push({
       id: `${id}:quantifier:${index}`,
       role: 'relation',
       canonical: `${quantifier.kind === 'forall' ? 'Forall' : 'Exists'}[${index}]`,
-      sort: 'Proposition',
+      sort: 'QuantifierContext',
       surface: `${quantifier.kind}:${quantifier.variable ?? '?'}`,
       parent_id: id,
     })
-    rootSorts.add('Proposition')
   })
-  if (!rootSorts.size) rootSorts.add(`OpaqueSort[${hash(text || id, 10)}]`)
+  if (!rootSorts.size) {
+    const sort = `OpaqueSort[${hash(text || id, 10)}]`
+    const binding: SemanticBinding = {
+      id: `${id}:opaque:${hash(text || id, 10)}`,
+      role: 'object',
+      canonical: sort,
+      sort,
+      surface: text || id,
+      parent_id: id,
+    }
+    rootSorts.add(sort)
+    rootBindings.push(binding)
+  }
   return {
     parent_id: id,
     nodes,
     edges,
     root_sorts: [...rootSorts],
     query_sorts: [...querySorts],
+    query_expression_ir: queryExpression?.expression,
+    root_bindings: rootBindings,
+    query_bindings: queryBindings,
     language_analysis: {
       token_count: language.forest.tokens.length,
       parse_count: language.forest.analyses.length,
@@ -543,8 +788,11 @@ export function buildSemanticHypergraph(parent: DiscoveryParent): SemanticHyperg
         implicit_forall: declaration.implicit_forall,
       })),
       constraints: language.ir.constraints.map(constraint => ({
+        id: `${id}:${constraint === explicitGoalConstraint ? 'goal' : 'assumption'}:${hash([constraint.canonical, constraint.start], 10)}`,
         operator: constraint.operator,
         canonical: constraint.canonical,
+        clause: constraint.clause,
+        role: constraint === explicitGoalConstraint ? 'goal' : 'assumption',
       })),
       unresolved_references: language.ir.unresolved_references,
       diagnostics: language.ir.diagnostics,
@@ -559,7 +807,7 @@ function pathsFrom(source: string, maxDepth: number): Array<{ target: string; ed
   while (queue.length) {
     const current = queue.shift()!
     if (current.edges.length >= maxDepth) continue
-    for (const edge of MORPHISM_ATLAS) {
+    for (const edge of PRIMITIVE_MORPHISM_BASIS) {
       if (edge.source !== current.sort) continue
       const next = [...current.edges, edge]
       const prior = seen.get(edge.target)
@@ -626,7 +874,7 @@ function planJointHypergraph(graphs: SemanticHypergraph[], maxDepth: number, max
     .join('|')
   seen.add(keyOf(initial))
   const planningEdges = [
-    ...HYPER_MORPHISM_ATLAS.map(edge => ({ ...edge, originMask: 0 })),
+    ...HYPER_MORPHISM_BASIS.map(edge => ({ ...edge, originMask: 0 })),
     ...graphs.flatMap((graph, graphIndex) => graph.edges.map(edge => ({
       name: edge.morphism,
       sources: [edge.source],

@@ -106,6 +106,12 @@ type GenerationCard = {
       conditionAblationPassed: boolean
     }
   }
+  execution_certificate?: {
+    capability_origin?: 'synthesized_proof_program' | 'synthesized_linear_program' | 'synthesized_expression_program' | 'registered_parameterized_morphism' | 'primitive_exact_operation' | 'verified_backend_execution'
+    registered_composite_used?: boolean
+    generated_program_sha256?: string
+    instantiated_program_sha256?: string
+  }
 }
 
 type GenerationResult = {
@@ -142,7 +148,10 @@ type GenerationResult = {
     cvc5_checked?: number
     cvc5_available?: boolean
     egglog_available?: boolean
-    synthesized_programs?: Array<{ id: string; morphism_chain: string[]; verified: true }>
+    synthesized_programs?: Array<{ id: string; morphism_chain: string[]; origin?: string; verified: true }>
+    reused_parameterized_morphisms?: number
+    primitive_executions?: number
+    execution_obligations?: string[]
   }
   generalization?: {
     id: string
@@ -230,6 +239,9 @@ type JobTelemetry = {
   stagnant_rounds: number
   last_progress_at: string | null
   synthesized_programs: number
+  reused_parameterized_morphisms: number
+  primitive_executions: number
+  execution_obligations: number
 }
 
 const PHASE_INFO: Record<string, { label: string; note: string; color: string }> = {
@@ -491,7 +503,9 @@ export function GenerationPanel({
           `今回 ${state.local_expansions ?? 1} 段階を局所展開 / 探索状態 ${state.states_explored ?? '?'} / 進展量 ${state.progress_delta ?? 0}`,
           `原始法則候補 ${state.induction_enumerated ?? 0} / 検証 ${state.induction_tested ?? 0} / 反例棄却 ${state.induction_rejected ?? 0} / 新規認証 ${state.induced_laws ?? 0}`,
           `合成器 ${state.induction_engine ?? 'unavailable'} / 候補式列挙 ${state.synthesis_terms_examined ?? 0} / 同値類 ${state.equivalence_classes ?? 0} / cvc5検査 ${state.cvc5_checked ?? 0}`,
-          `自動登録済み複合射 ${state.synthesized_programs?.length ?? 0} 件`,
+          `その場で合成した証明プログラム ${state.synthesized_programs?.length ?? 0} 件`,
+          `登録済み汎用定理の再利用 ${state.reused_parameterized_morphisms ?? 0} 件`,
+          `未実装の基本演算 ${state.execution_obligations?.length ?? 0} 件`,
           state.stagnant_rounds
             ? `同一frontierが ${state.stagnant_rounds} 回続いています。型付き列挙と実行backendだけで次候補を探索します。`
             : `未解決frontier ${state.frontier?.length ?? 0} 件を保持。次回も自動再開します。`,
@@ -757,7 +771,9 @@ export function GenerationPanel({
               <p className="text-[10px] text-zinc-500">
                 {generatedCards.some(card => card.unresolved)
                   ? '選択問題から一から構成・未証明候補は研究キューで継続検証'
-                  : 'その場で新規構成・検証済み・問題一覧にも自動反映'}
+                  : generatedCards.every(card => card.execution_certificate?.registered_composite_used === false)
+                    ? '入力から実行木をその場で構成し、検証済みの問題だけを表示'
+                    : 'その場での実行木合成と、登録済み複合解法の再利用を区別して表示'}
               </p>
             </div>
             <span className="text-[10px] tabular-nums text-emerald-300">
@@ -768,7 +784,15 @@ export function GenerationPanel({
             <article key={`${card.family_id}-${index}`} className={`rounded-md border p-4 ${card.unresolved ? 'border-amber-500/25 bg-amber-500/[0.04]' : 'border-emerald-500/25 bg-emerald-500/[0.04]'}`}>
               <div className="mb-2 flex flex-wrap items-center gap-2 text-[9px] text-zinc-500">
                 <span className={`font-semibold ${card.unresolved ? 'text-amber-300' : 'text-emerald-300'}`}>
-                  {card.unresolved ? '研究候補' : '生成'} {index + 1}
+                  {card.unresolved
+                    ? '研究候補'
+                    : card.execution_certificate?.capability_origin === 'synthesized_proof_program' ||
+                        card.execution_certificate?.capability_origin === 'synthesized_linear_program' ||
+                        card.execution_certificate?.capability_origin === 'synthesized_expression_program'
+                      ? 'その場で合成'
+                      : card.execution_certificate?.capability_origin === 'registered_parameterized_morphism'
+                        ? '複合解法を再利用'
+                        : '検証済み生成'} {index + 1}
                 </span>
                 <span>{card.family_id ?? 'unknown family'}</span>
                 {card.morphism_chain?.length ? <span>{card.morphism_chain.length} 検証段</span> : null}
@@ -865,6 +889,23 @@ export function GenerationPanel({
                 <div className="mb-2 text-[10px] text-zinc-500">
                   {card.unresolved ? '保留構造' : card.structure_blueprint.executable ? '実行構造' : '誘導構造'}: {card.structure_blueprint.id}
                 </div>
+              ) : null}
+              {card.execution_certificate?.capability_origin ? (
+                <details className="mb-3 border-y border-zinc-800 py-2 text-[9px] leading-4 text-zinc-500">
+                  <summary className="cursor-pointer text-[10px] text-emerald-300">
+                    {card.execution_certificate.registered_composite_used === false
+                      ? 'その場で構成した実行木を表示'
+                      : card.execution_certificate.capability_origin === 'registered_parameterized_morphism'
+                        ? '再利用した複合解法を表示'
+                        : '実行経路を表示'}
+                  </summary>
+                  <div className="mt-2 break-words text-zinc-300">
+                    {card.morphism_chain?.join(' → ') || '実行経路なし'}
+                  </div>
+                  <div className="mt-1 text-zinc-600">
+                    生成元: {card.execution_certificate.capability_origin}
+                  </div>
+                </details>
               ) : null}
               {card.structure_blueprint?.proofCertificate?.length ? (
                 <details className="mb-3 border-y border-zinc-800 py-2">
@@ -1002,7 +1043,10 @@ export function GenerationPanel({
                   <div><div className="text-zinc-600">実行候補</div><div className="tabular-nums text-zinc-200">{jobTelemetry.executable_goals.toLocaleString()}</div></div>
                   <div><div className="text-zinc-600">FRONTIER</div><div className="tabular-nums text-zinc-200">{jobTelemetry.frontier_count}</div></div>
                   <div><div className="text-zinc-600">停滞</div><div className="tabular-nums text-zinc-200">{jobTelemetry.stagnant_rounds} round</div></div>
-                  <div><div className="text-zinc-600">複合射</div><div className="tabular-nums text-zinc-200">{jobTelemetry.synthesized_programs}</div></div>
+                  <div><div className="text-zinc-600">合成証明</div><div className="tabular-nums text-emerald-300">{jobTelemetry.synthesized_programs}</div></div>
+                  <div><div className="text-zinc-600">定理再利用</div><div className="tabular-nums text-zinc-200">{jobTelemetry.reused_parameterized_morphisms}</div></div>
+                  <div><div className="text-zinc-600">基本演算</div><div className="tabular-nums text-zinc-200">{jobTelemetry.primitive_executions}</div></div>
+                  <div><div className="text-zinc-600">未実装演算</div><div className="tabular-nums text-amber-300">{jobTelemetry.execution_obligations}</div></div>
                   <div><div className="text-zinc-600">最終更新</div><div className="tabular-nums text-zinc-200">{formatDuration(jobTelemetry.seconds_since_update)}前</div></div>
                   <div><div className="text-zinc-600">局所展開</div><div className="tabular-nums text-zinc-200">{jobTelemetry.local_expansions} 段階</div></div>
                   <div><div className="text-zinc-600">探索状態</div><div className="tabular-nums text-zinc-200">{jobTelemetry.states_explored.toLocaleString()}</div></div>

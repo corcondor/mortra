@@ -4,12 +4,8 @@ import {
   liftParent,
   type DiscoveryParent,
 } from './parent-conditioned-discovery'
-import {
-  extractMobiusMap,
-  synthesizeExecutableFusions,
-  type ExecutableFusionCard,
-} from './executable-fusion'
-import { executableMorphismAtlas, generalizeParents, type GeneralizationCertificate } from './generalization-kernel'
+import type { ExecutableFusionCard } from './executable-fusion'
+import { primitiveMorphismBasis, generalizeParents, type GeneralizationCertificate } from './generalization-kernel'
 import {
   inducePrimitiveLaws,
   type PrimitiveLawInductionResult,
@@ -17,13 +13,31 @@ import {
 } from './primitive-law-inducer'
 import { enumerateTypedTerms, type TypedEnumerationResult } from './typed-term-enumerator'
 import {
-  supportsPolynomialRootFusion,
-  synthesizePolynomialRootFusions,
-} from './polynomial-root-fusion'
+  executeTypedPrograms,
+  inspectTypedProgramExecution,
+} from './typed-program-executor'
 import {
   induceArithmeticGeometryLemmas,
   type ArithmeticGeometryInductionResult,
 } from './arithmetic-geometry-inducer'
+import {
+  exactSingleProblemSupport,
+  synthesizeExactSingleProblem,
+} from './single-problem-exact'
+import { synthesizeExactCasSingleProblem } from './single-problem-cas'
+import { synthesizeRuntimeExpressionProblems } from './runtime-expression-synthesizer'
+import { synthesizeRuntimeLinearProblems } from './runtime-linear-problem-generation'
+import { synthesizeRuntimeQuadraticExpectationProblems } from './runtime-quadratic-expectation-generation'
+import { synthesizeRuntimeRecurrenceCongruenceProblems } from './runtime-recurrence-congruence-generation'
+import { synthesizeRuntimePrimitiveRightTriangleProblems } from './runtime-primitive-right-triangle-generation'
+import {
+  supportsPolynomialRootFusion,
+  synthesizePolynomialRootFusions,
+} from './polynomial-root-fusion'
+import {
+  capabilityOrigin,
+  isRuntimeSynthesisCertificate,
+} from './execution-certificate'
 
 export type StrategyAttempt = {
   strategy: string
@@ -67,6 +81,11 @@ export type AutonomousSearchState = {
   cvc5_available?: boolean
   egglog_available?: boolean
   synthesized_programs?: SynthesizedProgram[]
+  reused_parameterized_morphisms?: number
+  primitive_executions?: number
+  composite_cache_entries?: number
+  composite_cache_mode?: 'not_consulted' | 'duplicate_exclusion_only'
+  execution_obligations?: string[]
 }
 
 export type SynthesizedProgram = {
@@ -75,6 +94,7 @@ export type SynthesizedProgram = {
   output_sort: string
   morphism_chain: string[]
   backend_contracts: string[]
+  origin: string
   verified: true
 }
 
@@ -108,6 +128,7 @@ export function hasCompleteParentProof(
   if (assignments.some(assignment => !consumedPorts.has(assignment.portId))) return false
   if (card.morphism_chain.length === 0 || card.structure_blueprint.proofCertificate.length === 0) return false
   if (card.morphism_chain.join('\u0000') !== card.structure_blueprint.morphismChain.join('\u0000')) return false
+  if (!capabilityOrigin(card.execution_certificate)) return false
   return card.verification.exact_backend && card.verification.independent_check
 }
 
@@ -120,6 +141,7 @@ export type SynthesisContext = {
   enumeration: TypedEnumerationResult
   induction: PrimitiveLawInductionResult
   arithmeticGeometry: ArithmeticGeometryInductionResult
+  compositeCacheRole: 'not_consulted' | 'duplicate_exclusion_only'
 }
 
 const ARITHMETIC_GEOMETRY_CEGIS: SynthesisStrategy = {
@@ -133,6 +155,29 @@ const ARITHMETIC_GEOMETRY_CEGIS: SynthesisStrategy = {
   },
   execute(context) {
     return context.arithmeticGeometry.cards.slice(0, context.requested)
+  },
+}
+
+const EXACT_SINGLE_PROBLEM: SynthesisStrategy = {
+  id: 'exact-single-problem-proof-synthesis',
+  version: 1,
+  supports(context) {
+    return exactSingleProblemSupport(context.parents)
+  },
+  execute(context) {
+    return synthesizeExactSingleProblem(context.parents).slice(0, context.requested)
+  },
+}
+
+const EXACT_CAS_SINGLE_PROBLEM: SynthesisStrategy = {
+  id: 'exact-cas-single-problem-proof-synthesis',
+  version: 1,
+  supports(context) {
+    const result = synthesizeExactCasSingleProblem(context.parents)
+    return { applicable: result.applicable, reason: result.reason }
+  },
+  execute(context) {
+    return synthesizeExactCasSingleProblem(context.parents).cards.slice(0, context.requested)
   },
 }
 
@@ -175,44 +220,117 @@ function fingerprint(parents: DiscoveryParent[]): string {
   })))).digest('hex').slice(0, 20)
 }
 
-const TYPED_COMPOSITE_PROGRAM_SYNTHESIS: SynthesisStrategy = {
-  id: 'typed-composite-program-synthesis',
+const RUNTIME_TYPED_PROGRAM_EXECUTION: SynthesisStrategy = {
+  id: 'runtime-typed-program-execution',
   version: 1,
   supports(context) {
     const fullPrograms = context.enumeration.goals.filter(goal =>
-      goal.parentIds.length === context.parents.length && goal.steps.every(step => step.backend.length > 0),
+      goal.parentIds.length === context.parents.length &&
+      goal.steps.every(step => step.backend.length > 0) &&
+      inspectTypedProgramExecution(goal.program).executable,
     )
     return {
       applicable: fullPrograms.length > 0,
       reason: fullPrograms.length
-        ? `${fullPrograms.length} full-provenance typed programs are executable by primitive contracts`
-        : 'no full-provenance typed program reaches an executable observable',
+        ? `${fullPrograms.length} cold typed ASTs are executable by primitive handlers`
+        : 'no full-provenance typed AST reaches a currently implemented primitive handler',
     }
   },
   execute(context) {
-    const programs = context.enumeration.goals.map(goal => new Set(goal.steps.map(step => step.morphism)))
-    const hasRootSetProgram = programs.some(chain =>
-      chain.has('RootMinkowskiSum') || chain.has('RootMinkowskiDifference') || chain.has('RootPointwiseProduct'),
-    )
-    if (hasRootSetProgram && supportsPolynomialRootFusion(context.parents).applicable) {
-      return synthesizePolynomialRootFusions(context.parents, context.requested, context.round)
+    return executeTypedPrograms(
+      context.parents,
+      context.enumeration.goals,
+      context.requested,
+      context.compositeCacheRole,
+    ).cards
+  },
+}
+
+const RUNTIME_EXPRESSION_GRAMMAR: SynthesisStrategy = {
+  id: 'runtime-expression-grammar',
+  version: 1,
+  supports(context) {
+    const result = synthesizeRuntimeExpressionProblems(context.parents, context.requested)
+    return { applicable: result.applicable, reason: result.reason }
+  },
+  execute(context) {
+    return synthesizeRuntimeExpressionProblems(context.parents, context.requested).cards
+  },
+}
+
+const RUNTIME_POLYNOMIAL_ROOT_GENERATION: SynthesisStrategy = {
+  id: 'runtime-polynomial-root-generation',
+  version: 1,
+  supports(context) {
+    if (context.parents.length !== 2) {
+      return { applicable: false, reason: 'binary root-set composition currently requires exactly two selected parents' }
     }
-    const hasFiniteOrbitProgram = programs.some(chain => chain.has('MapOrbitEvaluation'))
-    if (hasFiniteOrbitProgram && extractMobiusMap(context.parents)) {
-      const minIteration = 2 + Math.max(0, context.round - 1) * 4
-      return synthesizeExecutableFusions(context.parents, context.requested, {
-        minIteration,
-        maxIteration: minIteration + Math.max(3, context.depth),
-      })
-    }
-    return []
+    const support = supportsPolynomialRootFusion(context.parents)
+    return { applicable: support.applicable, reason: support.reason }
+  },
+  execute(context) {
+    return synthesizePolynomialRootFusions(context.parents, context.requested, context.round)
+  },
+}
+
+const RUNTIME_LINEAR_PROBLEM_GENERATION: SynthesisStrategy = {
+  id: 'runtime-linear-problem-generation',
+  version: 1,
+  supports(context) {
+    const result = synthesizeRuntimeLinearProblems(context.parents, context.requested)
+    return { applicable: result.applicable, reason: result.reason }
+  },
+  execute(context) {
+    return synthesizeRuntimeLinearProblems(context.parents, context.requested).cards
+  },
+}
+
+const RUNTIME_QUADRATIC_EXPECTATION_GENERATION: SynthesisStrategy = {
+  id: 'runtime-quadratic-expectation-generation',
+  version: 1,
+  supports(context) {
+    const result = synthesizeRuntimeQuadraticExpectationProblems(context.parents, context.requested)
+    return { applicable: result.applicable, reason: result.reason }
+  },
+  execute(context) {
+    return synthesizeRuntimeQuadraticExpectationProblems(context.parents, context.requested).cards
+  },
+}
+
+const RUNTIME_RECURRENCE_CONGRUENCE_GENERATION: SynthesisStrategy = {
+  id: 'runtime-recurrence-congruence-generation',
+  version: 1,
+  supports(context) {
+    const result = synthesizeRuntimeRecurrenceCongruenceProblems(context.parents, context.requested)
+    return { applicable: result.applicable, reason: result.reason }
+  },
+  execute(context) {
+    return synthesizeRuntimeRecurrenceCongruenceProblems(context.parents, context.requested).cards
+  },
+}
+
+const RUNTIME_PRIMITIVE_RIGHT_TRIANGLE_GENERATION: SynthesisStrategy = {
+  id: 'runtime-primitive-right-triangle-generation',
+  version: 1,
+  supports(context) {
+    const result = synthesizeRuntimePrimitiveRightTriangleProblems(context.parents, context.requested)
+    return { applicable: result.applicable, reason: result.reason }
+  },
+  execute(context) {
+    return synthesizeRuntimePrimitiveRightTriangleProblems(context.parents, context.requested).cards
   },
 }
 
 export const DEFAULT_SYNTHESIS_STRATEGIES: readonly SynthesisStrategy[] = [
   ARITHMETIC_GEOMETRY_CEGIS,
+  RUNTIME_POLYNOMIAL_ROOT_GENERATION,
+  RUNTIME_QUADRATIC_EXPECTATION_GENERATION,
+  RUNTIME_RECURRENCE_CONGRUENCE_GENERATION,
+  RUNTIME_PRIMITIVE_RIGHT_TRIANGLE_GENERATION,
+  RUNTIME_TYPED_PROGRAM_EXECUTION,
+  RUNTIME_LINEAR_PROBLEM_GENERATION,
+  RUNTIME_EXPRESSION_GRAMMAR,
   PRIMITIVE_LAW_CEGIS,
-  TYPED_COMPOSITE_PROGRAM_SYNTHESIS,
 ]
 
 function initialState(parents: DiscoveryParent[]): AutonomousSearchState {
@@ -279,15 +397,13 @@ export function runAutonomousSynthesis(
   state.cvc5_checked = induction.telemetry.cvc5_checked
   state.cvc5_available = induction.telemetry.cvc5_available
   state.egglog_available = induction.telemetry.egglog_available
-  const learnedRules = certifiedLaws.map(law => ({
-    name: law.name,
-    sources: law.sources,
-    target: law.target,
-    preserves: law.preserves,
-    backend: law.backend,
-  }))
-  const executableRules = induction.rules.length || arithmeticGeometry.rules.length || learnedRules.length
-    ? [...executableMorphismAtlas(), ...learnedRules, ...induction.rules, ...arithmeticGeometry.rules]
+  state.composite_cache_entries = certifiedLaws.length
+  state.composite_cache_mode = certifiedLaws.length ? 'duplicate_exclusion_only' : 'not_consulted'
+  // Persisted composites may prevent duplicate publication, but they never add
+  // reachability to the cold synthesis graph. Fresh success must be derivable
+  // from the primitive basis and laws induced from the current parents.
+  const executableRules = induction.rules.length || arithmeticGeometry.rules.length
+    ? [...primitiveMorphismBasis(), ...induction.rules, ...arithmeticGeometry.rules]
     : undefined
   let enumeration = enumerateTypedTerms(generalized.graphs, {
     maxDepth: Math.max(6, state.depth),
@@ -326,7 +442,11 @@ export function runAutonomousSynthesis(
   state.progress_delta = Math.max(0, enumeration.terms.length - priorTerms) +
     Math.max(0, enumeration.goals.length - priorGoals) * 1000
   state.hypotheses_evaluated += discovery.hypotheses.length
-  state.frontier = enumeration.frontier.length
+  state.execution_obligations = [...new Set(enumeration.goals
+    .filter(goal => goal.parentIds.length === parents.length)
+    .flatMap(goal => inspectTypedProgramExecution(goal.program).unsupported))]
+    .slice(0, 64)
+  const structuralFrontier = enumeration.frontier.length
     ? enumeration.frontier.slice(0, 48).map(item => ({
         source: item.sources.join(' × '),
         target: item.target,
@@ -345,6 +465,14 @@ export function runAutonomousSynthesis(
           obligation: hypothesis.proof_obligations[1],
         })),
       )
+  state.frontier = [
+    ...state.execution_obligations.map(obligation => ({
+      source: 'typed program',
+      target: 'primitive executor',
+      obligation,
+    })),
+    ...structuralFrontier,
+  ].slice(0, 48)
 
   const frontierFingerprint = createHash('sha256').update(JSON.stringify({
     frontier: state.frontier,
@@ -369,20 +497,35 @@ export function runAutonomousSynthesis(
     enumeration,
     induction,
     arithmeticGeometry,
+    compositeCacheRole: state.composite_cache_mode ?? 'not_consulted',
   }
   const roundAttempts: StrategyAttempt[] = []
   const cards: ExecutableFusionCard[] = []
 
-  for (const strategy of strategies) {
+  const activeStrategies = parents.length === 1 && strategies === DEFAULT_SYNTHESIS_STRATEGIES
+    ? [EXACT_SINGLE_PROBLEM, EXACT_CAS_SINGLE_PROBLEM, ...strategies]
+    : strategies
+  for (const strategy of activeStrategies) {
+    const remaining = Math.max(0, requested - cards.length)
+    if (remaining === 0) break
+    const strategyContext = remaining === context.requested
+      ? context
+      : { ...context, requested: remaining }
     const started = Date.now()
-    const support = strategy.supports(context)
+    const support = strategy.supports(strategyContext)
     let generated: ExecutableFusionCard[] = []
     let reason = support.reason
     if (support.applicable) {
       try {
-        generated = strategy.execute(context).filter(card => hasCompleteParentProof(card, parents))
+        const verified = strategy.execute(strategyContext).filter(card => hasCompleteParentProof(card, parents))
+        const rejectedRegistered = verified.filter(card =>
+          capabilityOrigin(card.execution_certificate) === 'registered_parameterized_morphism' ||
+          card.execution_certificate?.registered_composite_used === true)
+        generated = verified.filter(card => !rejectedRegistered.includes(card))
         reason = generated.length
           ? 'typed construction, exact backend, and independent verification succeeded'
+          : rejectedRegistered.length
+            ? 'registered completed routes are replay artifacts and cannot count as autonomous generation'
           : 'applicable types found but verification produced no surviving construction'
       } catch (error) {
         reason = `strategy error: ${error instanceof Error ? error.message : String(error)}`
@@ -405,7 +548,9 @@ export function runAutonomousSynthesis(
   }
 
   state.attempts = state.attempts.slice(-200)
-  state.synthesized_programs = cards.map(card => ({
+  const cardOrigin = (card: ExecutableFusionCard) => capabilityOrigin(card.execution_certificate)
+  const synthesizedCards = cards.filter(card => isRuntimeSynthesisCertificate(card.execution_certificate))
+  state.synthesized_programs = synthesizedCards.map(card => ({
     id: `program.${createHash('sha256').update(JSON.stringify({
       parents: card.parent_ids,
       chain: card.morphism_chain,
@@ -415,9 +560,19 @@ export function runAutonomousSynthesis(
     output_sort: card.structure_blueprint.observable,
     morphism_chain: [...card.morphism_chain],
     backend_contracts: [...new Set(card.structure_blueprint.proofCertificate.map(step => step.verifier))],
+    origin: cardOrigin(card)!,
     verified: true,
   }))
-  state.continuing = cards.length < requested
+  state.reused_parameterized_morphisms = cards.filter(
+    card => cardOrigin(card) === 'registered_parameterized_morphism',
+  ).length
+  state.primitive_executions = cards.filter(
+    card => cardOrigin(card) === 'primitive_exact_operation' || cardOrigin(card) === 'verified_backend_execution',
+  ).length
+  const registeredFallbackIsStillRequired = cards.some(
+    card => cardOrigin(card) === 'registered_parameterized_morphism',
+  ) && synthesizedCards.length < requested && (state.execution_obligations?.length ?? 0) > 0
+  state.continuing = cards.length < requested || registeredFallbackIsStillRequired
   const retryDelayMs = state.progress_delta > 0
     ? 60_000
     : (state.stagnant_rounds ?? 0) < 3

@@ -573,7 +573,7 @@
 .answer {
   max-width: 100%;
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: visible;
   color: #a3e635;
   font-size: 18px;
   line-height: 1.7;
@@ -796,5 +796,23 @@
 
   .visualStepperControls code {
     max-width: 62vw;
+  }
+
+  .variationTable {
+    min-width: 0;
+    table-layout: fixed;
+    font-size: 9px;
+  }
+
+  .variationTable th,
+  .variationTable td {
+    min-width: 0;
+    padding: 11px 3px;
+    overflow-wrap: anywhere;
+  }
+
+  .variationTable th:first-child {
+    width: 42px;
+    min-width: 42px;
   }
 }

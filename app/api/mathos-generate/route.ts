@@ -2,14 +2,15 @@ import { after, NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { generateLiveProblem, type StructureBlueprint } from '@/lib/mathos-live'
 import { buildProblemDiagram } from '@/lib/mortra/problem-artifact'
-import {
-  type CertifiedFusionCard,
-} from '@/lib/mortra/certified-fusion'
-import { synthesizeCertifiedFusions } from '@/lib/mortra/certified-fusion-registry'
-import { certifiedFusionKind } from '@/lib/mortra/certified-fusion-kind'
 import verifiedBatch from '@/data/mathos/continuous_verified_problem_batch1.json'
-import fullProblemCatalog from '@/data/mortra/full-problem-catalog.json'
 import { generalizeParents, type GeneralizationCertificate } from '../../../worker/src/generalization-kernel'
+import {
+  type AutonomousSearchState,
+  type StrategyAttempt,
+} from '../../../worker/src/autonomous-synthesis'
+import { runPublicRuntimeGeneration } from '../../../worker/src/public-runtime-generation'
+import { capabilityOrigin } from '../../../worker/src/execution-certificate'
+import type { ExecutableFusionCard } from '../../../worker/src/executable-fusion'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -221,41 +222,6 @@ type ParentInput = {
   meta?: string | Record<string, unknown> | null
 }
 
-type FullProblemCatalogEntry = {
-  id: string
-  statement: string
-  status: 'verified' | 'unresolved'
-  answerTex: string | null
-  solutionTex: string | null
-  certificate: {
-    verified: true
-    id: string
-    method: string
-  } | null
-}
-
-const FULL_PROBLEM_ENTRIES = (fullProblemCatalog as { entries: FullProblemCatalogEntry[] }).entries
-const FULL_PROBLEM_BY_ID = new Map(FULL_PROBLEM_ENTRIES.map(entry => [entry.id, entry]))
-const FULL_PROBLEM_BY_STATEMENT = new Map(FULL_PROBLEM_ENTRIES.map(entry => [canonical(entry.statement), entry]))
-
-function certifiedParentFromInput(parent: ParentInput, index: number) {
-  const catalogEntry = (parent.id && FULL_PROBLEM_BY_ID.get(parent.id)) ||
-    (parent.statement && FULL_PROBLEM_BY_STATEMENT.get(canonical(parent.statement))) || null
-  if (!catalogEntry) {
-    return {
-      id: parent.id ?? `parent-${index + 1}`,
-      statement: parent.statement ?? '',
-    }
-  }
-  return {
-    id: catalogEntry.id,
-    statement: catalogEntry.statement,
-    answer: catalogEntry.status === 'verified' ? catalogEntry.answerTex : null,
-    solution: catalogEntry.status === 'verified' ? catalogEntry.solutionTex : null,
-    certificate: catalogEntry.status === 'verified' ? catalogEntry.certificate : null,
-  }
-}
-
 type GenerationProfile = {
   domain?: string
   tags: string[]
@@ -314,19 +280,19 @@ const EXECUTABLE_TAG_BRIDGES: Record<string, string[]> = {
   extremum: ['derivative', 'variation', 'function_graph'],
 }
 
-async function persistCertifiedFusionCards(cards: CertifiedFusionCard[]): Promise<string[]> {
+async function persistRuntimeSynthesizedCards(cards: ExecutableFusionCard[]): Promise<string[]> {
   const errors: string[] = []
   for (const card of cards) {
     const meta = {
       familyId: card.family_id,
-      fusionKind: certifiedFusionKind(card.family_id),
       diagram: card.diagram,
       morphismChain: card.morphism_chain,
       verificationMethod: card.verification.method,
-      generatedBy: 'mortra_certified_reversible_synthesis',
+      generatedBy: 'mortra_runtime_parent_synthesis',
       structureBlueprint: card.structure_blueprint,
       fusionDerivation: card.fusion_derivation,
       searchEvidence: card.search_evidence,
+      executionCertificate: card.execution_certificate,
     }
     try {
       const { error } = await getSupabaseAdmin().from('problems').upsert({
@@ -348,7 +314,7 @@ async function persistCertifiedFusionCards(cards: CertifiedFusionCard[]): Promis
         meta: JSON.stringify(meta),
         generation: 0,
         parent_ids: card.parent_ids,
-        source_file: 'mortra_certified_reversible_synthesis',
+        source_file: 'mortra_runtime_parent_synthesis',
       }, { onConflict: 'id' })
       if (error) errors.push(`保存失敗: ${error.message}`)
     } catch (error) {
@@ -358,10 +324,10 @@ async function persistCertifiedFusionCards(cards: CertifiedFusionCard[]): Promis
   return errors
 }
 
-function scheduleCertifiedFusionPersistence(cards: CertifiedFusionCard[]) {
+function scheduleRuntimeSynthesizedPersistence(cards: ExecutableFusionCard[]) {
   after(async () => {
-    const errors = await persistCertifiedFusionCards(cards)
-    if (errors.length) console.error('[certified-fusion:persistence]', errors.join(' | '))
+    const errors = await persistRuntimeSynthesizedCards(cards)
+    if (errors.length) console.error('[runtime-synthesis:persistence]', errors.join(' | '))
   })
 }
 
@@ -822,12 +788,79 @@ type GenerationResult = {
   generated: number
   requested: number
   engine: string
-  cards: Array<Record<string, unknown> | CertifiedFusionCard>
+  cards: Array<Record<string, unknown> | ExecutableFusionCard>
   errors: string[]
   rejectionCounts?: Record<string, number>
   discoveryQueued?: boolean
   discoveryJobId?: string
   generalization?: GeneralizationCertificate
+  discovered?: number
+  searchState?: AutonomousSearchState
+  strategyAttempts?: StrategyAttempt[]
+  backgroundResearch?: boolean
+}
+
+function runtimeParentsFromInput(parents: ParentInput[]) {
+  return parents.map((parent, index) => ({
+    id: parent.id?.trim() || `runtime-parent-${index + 1}`,
+    statement: parent.statement?.trim() || '',
+    answer: parent.answer ?? null,
+    solution: parent.solution ?? null,
+    inspiration: parent.inspiration ?? null,
+  }))
+}
+
+function generateRuntimeParentConditionedCards(
+  parents: ParentInput[],
+  count: number,
+  emit: ProgressEmitter = () => undefined,
+  options: { persist?: boolean } = {},
+): GenerationResult {
+  emit({
+    phase: 'structuring',
+    message: '親問題を型付き意味表現へ変換し、入力から実行時の項と証明義務を構成しています',
+    current: 0,
+    total: count,
+  })
+  const autonomous = runPublicRuntimeGeneration(runtimeParentsFromInput(parents), count)
+
+  for (const attempt of autonomous.attempts) {
+    emit({
+      phase: attempt.applicable ? 'inducing' : 'searching',
+      message: `${attempt.strategy}: ${attempt.reason}`,
+      current: Math.min(autonomous.cards.length, count),
+      total: count,
+    })
+  }
+  for (const card of autonomous.cards) {
+    emit({
+      phase: 'verifying',
+      message: `${capabilityOrigin(card.execution_certificate) ?? 'runtime_program'} を厳密計算と親アブレーションで検証しました`,
+      current: Math.min(autonomous.cards.indexOf(card) + 1, count),
+      total: count,
+      draft: card.statement_tex,
+      familyId: card.family_id,
+      morphisms: card.morphism_chain,
+      structureId: card.structure_blueprint.id,
+      structureStatus: 'new',
+    })
+  }
+  if (autonomous.cards.length && options.persist !== false) {
+    scheduleRuntimeSynthesizedPersistence(autonomous.cards)
+  }
+
+  return {
+    generated: autonomous.cards.length,
+    requested: count,
+    engine: 'MORTRA runtime typed synthesis (no registered routes, no LLM)',
+    cards: autonomous.cards,
+    errors: [],
+    discovered: autonomous.discovery.hypotheses.length,
+    generalization: autonomous.generalization,
+    searchState: autonomous.state,
+    strategyAttempts: autonomous.attempts,
+    backgroundResearch: autonomous.state.continuing,
+  }
 }
 
 async function enqueueParentConditionedDiscovery(
@@ -1563,21 +1596,15 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  const certifiedParents = parents.map(certifiedParentFromInput)
-  const certifiedFusionCards = mode === 'fusion'
-    ? synthesizeCertifiedFusions(certifiedParents, count)
-    : []
-  if (certifiedFusionCards.length > 0) {
-    const result: GenerationResult = {
-      generated: certifiedFusionCards.length,
-      requested: count,
-      engine: 'MORTRA exact reversible synthesis (no LLM)',
-      cards: certifiedFusionCards,
-      errors: [],
-      rejectionCounts: {},
+  // A product fusion request is generated from the current parents only.
+  // Completed registry routes and live family templates are research/replay
+  // artifacts; consulting them here would turn generation into memorization.
+  if (mode === 'fusion') {
+    if (!stream) {
+      const generated = generateRuntimeParentConditionedCards(parents, count)
+      const result = await enqueueParentConditionedDiscovery(generated, parents, count, mode)
+      return NextResponse.json(result)
     }
-    scheduleCertifiedFusionPersistence(certifiedFusionCards)
-    if (!stream) return NextResponse.json(result)
 
     const encoder = new TextEncoder()
     return new Response(new ReadableStream({
@@ -1585,74 +1612,52 @@ export async function POST(request: NextRequest) {
         const send = (event: ProgressEvent | { phase: 'done'; result: GenerationResult }) => {
           controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`))
         }
-        const family = certifiedFusionCards[0]?.family_id
-        const progressCopy: Record<string, {
-          structuring: string
-          inducing: string
-          verifying: string
-        }> = {
-          'certified.circle_radical_axis': {
-            structuring: '両方の親問題を円の対称二次形式へ型付けしました',
-            inducing: '二つの方べき関数の差から根軸を構成しています',
-            verifying: '根軸上の有理点で両円の方べきを独立再計算しています',
-          },
-          'certified.mobius_polynomial_fixed_point_transport': {
-            structuring: '一方を多項式の根配置、もう一方を非退化な一次分数変換へ型付けしました',
-            inducing: '逆変換で根配置を移送し、固定点方程式へ再構成しています',
-            verifying: '元の多項式への逆代入恒等式と全親依存性を厳密に照合しています',
-          },
-          'certified.recurrence_indexed_power_sum': {
-            structuring: '一方から整数列を、もう一方から三角関数のべき和を抽出しました',
-            inducing: '整数列の各項をべき和の指数として組み合わせ、新しい分類問題を構成しています',
-            verifying: '二次方程式から得た漸化式と行列計算を照合し、残りの全項を一括評価しています',
-          },
-          'certified.pell_recurrence_state_product': {
-            structuring: 'Pell方程式の正の整数解と、漸化式が作る整数列を抽出しました',
-            inducing: '二つの整数軌道を判別式を法とする有限状態上で合成しています',
-            verifying: '連分数・逐次遷移・独立な行列累乗で周期と合同条件を照合しています',
-          },
-          'certified.pell_indexed_power_sum': {
-            structuring: 'Pell方程式の正の整数解と、三角関数のべき和を抽出しました',
-            inducing: 'Pell方程式の解が作る整数を、べき和の指数として組み合わせています',
-            verifying: 'Pell方程式、二階漸化式、べき和の行列計算、残りの全項の評価を別々に確認しています',
-          },
-          'certified.recurrence_rational_angle_orbit': {
-            structuring: '整数漸化式を有限状態へ、有理角を円周上の巡回状態へ型付けしました',
-            inducing: '二つの状態を同期させ、周期・零点・回帰時刻を別々の問題へ構成しています',
-            verifying: '全状態の列挙、行列累乗による独立再生、各分類の完全性を照合しています',
-          },
-          'certified.answer_pair_companion_recurrence': {
-            structuring: '二つの保存済み証明書から厳密なスカラー解を別々に再生しました',
-            inducing: '二つの解の和と積を係数とする二階漸化式へ合成しています',
-            verifying: '恒等式の係数消去と独立な整数標本で一般項を再検証しています',
-          },
+        try {
+          send({
+            phase: 'start',
+            message: '登録済み完成ルートを参照せず、現在の親問題から実行プログラムを合成します',
+            current: 0,
+            total: count,
+          })
+          // Give the first SSE packet a chance to reach the browser before the
+          // bounded synchronous enumerator starts.
+          await new Promise(resolve => setTimeout(resolve, 0))
+          const generated = generateRuntimeParentConditionedCards(parents, count, send)
+          const result = await enqueueParentConditionedDiscovery(generated, parents, count, mode)
+          if (result.discoveryQueued) {
+            send({
+              phase: 'registering',
+              message: '未閉鎖の証明義務と探索frontierを保存し、同じ入力から長時間探索を再開します',
+              current: result.generated,
+              total: count,
+              structureId: result.discoveryJobId,
+              structureStatus: 'pending',
+            })
+          } else {
+            send({
+              phase: 'saving',
+              message: '実行時に合成・検証した問題文、解答、証明書を保存しています',
+              current: result.generated,
+              total: count,
+            })
+          }
+          send({ phase: 'done', result })
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error)
+          send({ phase: 'error', message, current: 0, total: count })
+          send({
+            phase: 'done',
+            result: {
+              generated: 0,
+              requested: count,
+              engine: 'MORTRA runtime typed synthesis (no registered routes, no LLM)',
+              cards: [],
+              errors: [message],
+            },
+          })
+        } finally {
+          controller.close()
         }
-        const copy = progressCopy[family] ?? {
-          structuring: '両方の親問題を一変数多項式の根配置へ型付けしました',
-          inducing: '二つの根配置を別々の入力ポートとして合成しています',
-          verifying: '根のべき和と終結式を独立に計算し、係数列を照合しています',
-        }
-        send({
-          phase: 'structuring',
-          message: copy.structuring,
-          current: 0,
-          total: count,
-        })
-        send({
-          phase: 'inducing',
-          message: copy.inducing,
-          current: 0,
-          total: count,
-        })
-        send({
-          phase: 'verifying',
-          message: copy.verifying,
-          current: certifiedFusionCards.length,
-          total: count,
-        })
-        send({ phase: 'saving', message: '問題カードを返し、ライブラリ保存を継続しています', current: certifiedFusionCards.length, total: count })
-        send({ phase: 'done', result })
-        controller.close()
       },
     }), {
       headers: {
@@ -1665,20 +1670,15 @@ export async function POST(request: NextRequest) {
   }
 
   const shuffledParents = [...parents]
-  // 融合時はUIで選択した順序を監査ログまで保つ。ランダム化は一括類題だけに限る。
-  if (mode !== 'fusion') {
-    for (let i = shuffledParents.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1))
-      ;[shuffledParents[i], shuffledParents[j]] = [shuffledParents[j], shuffledParents[i]]
-    }
+  for (let i = shuffledParents.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[shuffledParents[i], shuffledParents[j]] = [shuffledParents[j], shuffledParents[i]]
   }
   const profiles = mode === 'batch' && shuffledParents.length > 0
     ? shuffledParents.map(parent => {
         return buildGenerationProfile([parent], parent.topic_a || domain, 'similar')
       })
-    : mode === 'fusion' && shuffledParents.length > 1
-      ? buildFusionProfiles(shuffledParents, domain)
-      : [buildGenerationProfile(parents, domain, mode)]
+    : [buildGenerationProfile(parents, domain, mode)]
   const generalization = parents.length
     ? generalizeParents(
         parents,

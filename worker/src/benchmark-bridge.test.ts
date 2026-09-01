@@ -32,5 +32,6 @@ test('benchmark bridge does not mistake a standalone number for the requested an
     statement: 'A board has $36$ cells. Determine the number of valid colourings.',
     compact: true,
   })
-  assert.equal(result.execution.status, 'missing_constraints')
+  assert.notEqual(result.execution.status, 'lowered')
+  assert.equal(result.execution_proof_status, 'unproved')
 })

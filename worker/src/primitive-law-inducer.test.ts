@@ -20,6 +20,12 @@ test('induces previously unregistered executable laws from a typed expression gr
   assert.equal(result.telemetry.cvc5_available, true)
   assert.equal(result.telemetry.egglog_available, true)
   assert.match(result.cards[0].statement_tex, /f_\{2\}/)
+  assert.ok(result.cards.every(card =>
+    card.execution_certificate?.capability_origin === 'synthesized_proof_program'))
+  assert.ok(result.cards.every(card =>
+    card.execution_certificate?.registered_composite_used === false))
+  assert.ok(result.cards.every(card =>
+    card.execution_certificate?.composite_cache_role === 'not_consulted'))
 })
 
 test('uses every selected polynomial parent in one synthesized observable', () => {
@@ -55,7 +61,7 @@ test('later rounds explore different certified expression programs', () => {
   assert.ok(first.cards.some(card => !laterExpressions.has(card.fusion_derivation.bridges[0].witnessStep)))
 })
 
-test('loads certified Atlas laws and explores a different program', () => {
+test('uses the composite cache only to exclude duplicates and still synthesizes a new program', () => {
   const first = inducePrimitiveLaws(parents, 1, 1, 8)
   const firstLaw = first.cards[0].structure_blueprint.synthesizedLaw!
   const next = inducePrimitiveLaws(parents, 1, 1, 8, [firstLaw])
@@ -64,6 +70,8 @@ test('loads certified Atlas laws and explores a different program', () => {
     next.cards[0].fusion_derivation.bridges[0].witnessStep,
     first.cards[0].fusion_derivation.bridges[0].witnessStep,
   )
+  assert.equal(next.cards[0].execution_certificate?.registered_composite_used, false)
+  assert.equal(next.cards[0].execution_certificate?.composite_cache_role, 'duplicate_exclusion_only')
 })
 
 test('does not fabricate a law when parent constraints cannot be executed', () => {

@@ -21,6 +21,21 @@ from typing import Any
 import sympy as sp
 
 try:
+    from .exact_interval_charts import (
+        alternating_trig_bounds as _shared_alternating_trig_bounds,
+        alternating_trig_interval_chart as _shared_alternating_trig_interval_chart,
+        log_one_plus_bounds as _shared_log_one_plus_bounds,
+        log_profile_bounds as _shared_log_profile_bounds,
+    )
+except ImportError:
+    from exact_interval_charts import (
+        alternating_trig_bounds as _shared_alternating_trig_bounds,
+        alternating_trig_interval_chart as _shared_alternating_trig_interval_chart,
+        log_one_plus_bounds as _shared_log_one_plus_bounds,
+        log_profile_bounds as _shared_log_profile_bounds,
+    )
+
+try:
     from .visual_reasoning import (
         BOUNDARY_ARRANGEMENT,
         ENVELOPE_STABILIZATION,
@@ -63,7 +78,84 @@ class StructuralTheoremQueryIR:
         return asdict(self)
 
 
+_COLD_GENERALIZATION_CONTRACTS: dict[str, dict[str, Any]] = {
+    "circle_overlap_difference_limit": {
+        "required_object_keys": ("offset_numerator", "offset_denominator"),
+        "generic_operation": "circle-intersection area followed by an asymptotic difference limit",
+        "replay_obligations": ("exact area identity", "parameter-dependent limit"),
+    },
+    "prime_power_sum_composite": {
+        "required_object_keys": ("base",),
+        "generic_operation": "prime-successor witness and exact divisibility replay",
+        "replay_obligations": ("successor-prime construction", "nontrivial divisor verification"),
+    },
+    "power_mean_linearized_recurrence": {
+        "required_object_keys": ("first", "second", "weight_denominator"),
+        "generic_operation": "positive power conjugacy followed by a companion-matrix recurrence",
+        "replay_obligations": ("reversible conjugacy", "Cayley-Hamilton identity", "parameter limit"),
+    },
+    "regular_polygon_external_roll_common_limit": {
+        "required_object_keys": (
+            "circumradius",
+            "minimum_order",
+            "alignment",
+            "contact_mode",
+        ),
+        "generic_operation": "vertex-pivot orbit composition and radial intersection limit",
+        "replay_obligations": ("stepwise orbit replay", "similarity scaling", "radial area integration"),
+    },
+    "binomial_exponential_edge_limit": {
+        "required_object_keys": ("increment_numerator", "increment_denominator"),
+        "generic_operation": "edge-bulk decomposition with a uniform reciprocal-binomial error bound",
+        "replay_obligations": ("uniform logarithmic enclosure", "vanishing total error"),
+    },
+    "trigonometric_power_sum_threshold": {
+        "required_object_keys": ("sum_numerator", "sum_denominator"),
+        "generic_operation": "Newton power-sum recurrence and parity-transition threshold search",
+        "replay_obligations": ("companion-matrix identity", "exact first-failure certificate"),
+    },
+}
+
+
+def cold_generalization_contract(operator: str) -> dict[str, Any] | None:
+    """Return the executable-morphism contract available without an answer catalog.
+
+    A finite mathematical vocabulary is allowed in cold mode.  A stored problem
+    answer is not.  The contract therefore names the input fields that must be
+    elaborated from the current statement and the proof obligations that the
+    executor must replay for those values.
+    """
+
+    contract = _COLD_GENERALIZATION_CONTRACTS.get(operator)
+    return dict(contract) if contract is not None else None
+
+
+def is_cold_generalizable_structural_query(query: StructuralTheoremQueryIR) -> bool:
+    """Decide whether ``query`` is a parameterized morphism, not answer lookup."""
+
+    contract = cold_generalization_contract(query.operator)
+    if contract is None:
+        return False
+    required = set(contract["required_object_keys"])
+    if not required.issubset(query.objects):
+        return False
+
+    forbidden_keys = {"answer", "answer_tex", "expected_answer", "problem_id", "benchmark_id"}
+
+    def contains_forbidden_key(value: Any) -> bool:
+        if isinstance(value, dict):
+            if forbidden_keys.intersection(value):
+                return True
+            return any(contains_forbidden_key(item) for item in value.values())
+        if isinstance(value, (list, tuple)):
+            return any(contains_forbidden_key(item) for item in value)
+        return False
+
+    return not contains_forbidden_key(query.objects)
+
+
 def _ir(operator: str, objects: dict[str, Any], output_sort: str) -> StructuralTheoremQueryIR:
+    cold_contract = cold_generalization_contract(operator)
     return StructuralTheoremQueryIR(
         operator=operator,
         objects=objects,
@@ -73,6 +165,7 @@ def _ir(operator: str, objects: dict[str, Any], output_sort: str) -> StructuralT
             "operator": operator,
             "alpha_renamable": True,
             "memorized_answer": False,
+            "cold_generalization_contract": cold_contract,
         },
     )
 
@@ -4633,11 +4726,13 @@ def compile_structural_theorem_query(text: str) -> StructuralTheoremQueryIR | No
         return _ir("triangle_angle_sine_sum_maximum", {}, "Real")
 
     sine_cosine_sum = re.search(
-        r"\\sin\\theta\+\\cos\\theta=\\(?:d)?frac\{(\d+)\}\{(\d+)\}",
+        r"\\sin(?P<angle_sum>\\[A-Za-z]+|[A-Za-z])"
+        r"\+\\cos(?P=angle_sum)=\\(?:d)?frac\{(?P<sum_num>\d+)\}\{(?P<sum_den>\d+)\}",
         compact,
     )
     sine_cosine_power_target = re.search(
-        r"\\sin\^\{?n\}?\\theta\+\\cos\^\{?n\}?\\theta>\\(?:d)?frac\{(\d+)\}\{(\d+)\}",
+        r"\\sin\^\{?n\}?(?P<angle_power>\\[A-Za-z]+|[A-Za-z])"
+        r"\+\\cos\^\{?n\}?(?P=angle_power)>\\(?:d)?frac\{(?P<target_num>\d+)\}\{(?P<target_den>\d+)\}",
         compact,
     )
     if (
@@ -4645,9 +4740,12 @@ def compile_structural_theorem_query(text: str) -> StructuralTheoremQueryIR | No
         and sine_cosine_power_target
         and "正の整数" in text
         and "すべて求めよ" in text
-        and sine_cosine_sum.groups() == sine_cosine_power_target.groups()
+        and sine_cosine_sum.group("angle_sum") == sine_cosine_power_target.group("angle_power")
+        and sine_cosine_sum.group("sum_num") == sine_cosine_power_target.group("target_num")
+        and sine_cosine_sum.group("sum_den") == sine_cosine_power_target.group("target_den")
     ):
-        numerator, denominator = map(int, sine_cosine_sum.groups())
+        numerator = int(sine_cosine_sum.group("sum_num"))
+        denominator = int(sine_cosine_sum.group("sum_den"))
         if denominator > 0 and 0 < numerator < denominator:
             return _ir(
                 "trigonometric_power_sum_threshold",
@@ -4845,6 +4943,12 @@ def compile_structural_theorem_query(text: str) -> StructuralTheoremQueryIR | No
 def execute_structural_theorem_query(payload: dict[str, Any]) -> dict[str, Any]:
     operator = str(payload["operator"])
     objects = dict(payload.get("objects") or {})
+    lowering_certificate = payload.get("lowering_certificate")
+    cold_contract = (
+        lowering_certificate.get("cold_generalization_contract")
+        if isinstance(lowering_certificate, dict)
+        else None
+    )
     executors = {
         "circle_overlap_difference_limit": _circle_overlap_difference_limit,
         "sample_mean_geomean_correlation": _sample_mean_geomean_correlation,
@@ -4944,6 +5048,7 @@ def execute_structural_theorem_query(payload: dict[str, Any]) -> dict[str, Any]:
             "operator": operator,
             "witness": witness,
             "verified": True,
+            "cold_generalization_contract": cold_contract,
         },
         "derivation": derivation,
         "verified": True,
@@ -8153,49 +8258,12 @@ def _nested_sine_cosine_integral_bound(objects: dict[str, Any]) -> tuple[str, di
 
 
 def _alternating_trig_bounds(x: sp.Rational) -> tuple[sp.Rational, sp.Rational, sp.Rational, sp.Rational]:
-    if not (0 <= x <= sp.Rational(3, 2)):
-        raise ValueError("Taylor enclosure expects 0<=x<=3/2")
-    sin_terms = [(-1) ** k * x ** (2 * k + 1) / sp.factorial(2 * k + 1) for k in range(7)]
-    cos_terms = [(-1) ** k * x ** (2 * k) / sp.factorial(2 * k) for k in range(7)]
-    sin_partial = [sum(sin_terms[: index + 1], sp.Integer(0)) for index in range(len(sin_terms))]
-    cos_partial = [sum(cos_terms[: index + 1], sp.Integer(0)) for index in range(len(cos_terms))]
-    return sin_partial[5], sin_partial[4], cos_partial[5], cos_partial[4]
+    return _shared_alternating_trig_bounds(x)
 
 
 def _alternating_trig_interval_chart(points: list[sp.Rational]) -> dict[str, Any]:
     """Certify rational sin/cos enclosures with one reusable Taylor chart."""
-
-    if not points:
-        raise ValueError("trigonometric interval chart requires at least one point")
-    evaluations: list[dict[str, str]] = []
-    seen: set[sp.Rational] = set()
-    for raw_point in points:
-        point = sp.Rational(raw_point)
-        if point in seen:
-            continue
-        seen.add(point)
-        sin_lower, sin_upper, cos_lower, cos_upper = _alternating_trig_bounds(point)
-        if not (sin_lower <= sin_upper and cos_lower <= cos_upper):
-            raise ValueError("alternating trigonometric enclosure order failed")
-        evaluations.append(
-            {
-                "x": sp.sstr(point),
-                "sin_lower": sp.sstr(sin_lower),
-                "sin_upper": sp.sstr(sin_upper),
-                "cos_lower": sp.sstr(cos_lower),
-                "cos_upper": sp.sstr(cos_upper),
-            }
-        )
-    return {
-        "chart_id": "transcendental.sin_cos.alternating_interval.v1",
-        "atomic_chart_ids": [
-            "power_series.alternating_remainder.v1",
-            "rational.interval.composition.v1",
-        ],
-        "domain": "0<=x<=3/2",
-        "highest_retained_degrees": {"sin": 11, "cos": 10},
-        "evaluations": evaluations,
-    }
+    return _shared_alternating_trig_interval_chart(points)
 
 
 def _h_bounds(x: sp.Rational) -> tuple[sp.Rational, sp.Rational]:
@@ -8209,21 +8277,11 @@ def _d_bounds(x: sp.Rational) -> tuple[sp.Rational, sp.Rational]:
 
 
 def _log_one_plus_bounds(x: sp.Rational, terms: int = 14) -> tuple[sp.Rational, sp.Rational]:
-    if not (0 < x < 1) or terms < 2 or terms % 2:
-        raise ValueError("log enclosure expects 0<x<1 and an even term count")
-    partials: list[sp.Rational] = []
-    total = sp.Rational(0)
-    for k in range(1, terms + 1):
-        total += (-1) ** (k + 1) * x**k / k
-        partials.append(total)
-    return partials[-1], partials[-2]
+    return _shared_log_one_plus_bounds(x, terms)
 
 
 def _log_profile_bounds(lower: sp.Rational, upper: sp.Rational) -> tuple[sp.Rational, sp.Rational]:
-    log_lower = _log_one_plus_bounds(lower)[0]
-    log_upper = _log_one_plus_bounds(upper)[1]
-    # u+1/u is decreasing on (0,1), while log(1+u) is increasing.
-    return (upper + 1 / upper) * log_lower, (lower + 1 / lower) * log_upper
+    return _shared_log_profile_bounds(lower, upper)
 
 
 def _sine_cosine_iteration_certificate() -> tuple[dict[str, sp.Rational], dict[str, Any]]:

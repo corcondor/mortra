@@ -79,6 +79,7 @@ def triangle_candidates():
         if not identity_ok:
             continue
         common = {
+            "capability_origin": "synthesized_proof_program",
             "observable": f"{left_name}*{right_name}",
             "observable_tex": observable_tex,
             "expression": str(expression),
@@ -177,6 +178,7 @@ def topology_candidates():
     for value in samples:
         assert math.gcd(3 * value, 2 * value) == value
     base = {
+        "capability_origin": "registered_parameterized_morphism",
         "domain": "arithmetic_topology",
         "source_types": ["FiniteTriangulation", "IntegerPredicate"],
         "samples": samples,

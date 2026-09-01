@@ -18,7 +18,13 @@ export const VERIFIED_DOMAIN_EXTENSIONS: readonly VerifiedDomainMorphism[] = [
   // Shared coercions and proof discharge.
   { name: 'RealAsScalar', sources: ['Real'], target: 'Scalar', preserves: ['value'], backend: ['identity'] },
   { name: 'ScalarAsArithmeticObject', sources: ['Scalar'], target: 'ArithmeticObject', preserves: ['value'], backend: ['identity'] },
-  { name: 'PropositionCertification', sources: ['Proposition'], target: 'Proof', preserves: ['truth'], backend: ['lean', 'smt', 'symbolic-identity'] },
+  {
+    name: 'PropositionCertification',
+    sources: ['GoalProposition', 'CertifiedProposition'],
+    target: 'Proof',
+    preserves: ['truth', 'goal-identity', 'proof-certificate'],
+    backend: ['goal-certificate-match'],
+  },
 
   // Integer and arithmetic structure.
   { name: 'DivisorLattice', sources: ['Integer'], target: 'FiniteSet', preserves: ['divisor-lattice', 'prime-valuations'], backend: ['prime-valuation', 'integer-factorization'] },
@@ -38,7 +44,7 @@ export const VERIFIED_DOMAIN_EXTENSIONS: readonly VerifiedDomainMorphism[] = [
   { name: 'RealRootRealizabilityCone', sources: ['SymmetricCoordinates'], target: 'SemialgebraicSet', preserves: ['symmetric-action', 'realizability'], backend: ['newton-maclaurin', 'discriminant'] },
   { name: 'PowerMeanFiltration', sources: ['FiniteFamily'], target: 'MeanTower', preserves: ['symmetric-action', 'order'], backend: ['power-mean'] },
   { name: 'MeanTowerOrdering', sources: ['MeanTower'], target: 'Proposition', preserves: ['order'], backend: ['power-mean-inequality'] },
-  { name: 'PositivstellensatzCertificate', sources: ['SemialgebraicSet'], target: 'Proof', preserves: ['truth', 'feasible-set'], backend: ['sos', 'cvc5'] },
+  { name: 'PositivstellensatzCertificate', sources: ['SemialgebraicSet'], target: 'CertifiedProposition', preserves: ['truth', 'feasible-set', 'proof-certificate'], backend: ['sos', 'cvc5'] },
   { name: 'RaviSubstitution', sources: ['TriangleMetricData'], target: 'FiniteFamily', preserves: ['triangle-inequality', 'positivity'], backend: ['linear-substitution'] },
   { name: 'RootPlaneRealization', sources: ['FiniteAlgebraicOrbit'], target: 'GeometricConfiguration', preserves: ['multiplicity', 'incidence'], backend: ['complex-plane-embedding'] },
 
