@@ -219,6 +219,25 @@ async function runCase(testCase) {
   const visualStepCount = artifactExists
     ? await artifact.getByRole('button', { name: /^手順 [0-9]+:/ }).count()
     : 0
+  const rawMathMarkup = artifactExists
+    ? await artifact.evaluate(root => {
+      const pattern = /\\(?:sqrt|infty|frac|pi|to|cdot|left|right|operatorname)\b/
+      const matches = new Set()
+      for (const scope of root.querySelectorAll('table, svg')) {
+        const walker = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT)
+        let node = walker.nextNode()
+        while (node) {
+          const parent = node.parentElement
+          const text = node.textContent?.trim() ?? ''
+          if (parent && !parent.closest('.katex, script, style, textarea') && pattern.test(text)) {
+            matches.add(text)
+          }
+          node = walker.nextNode()
+        }
+      }
+      return [...matches]
+    })
+    : []
   let finalVisualStepSelected = false
   if (artifactExists && visualStepCount > 1) {
     await artifact.getByRole('button', { name: /^手順 [0-9]+:/ }).nth(visualStepCount - 1).click()
@@ -242,6 +261,7 @@ async function runCase(testCase) {
     replacementCharacter: replacementCharacter.test(bodyText),
     probableMojibake: mojibakePattern.test(bodyText),
     undefinedLiteral: /\bundefined\b/.test(artifactText),
+    rawMathMarkup,
   }
   const horizontalOverflow = await page.evaluate(() => (
     document.documentElement.scrollWidth > document.documentElement.clientWidth + 1
@@ -299,6 +319,7 @@ async function runCase(testCase) {
     && !encoding.replacementCharacter
     && !encoding.probableMojibake
     && !encoding.undefinedLiteral
+    && encoding.rawMathMarkup.length === 0
     && !horizontalOverflow
     && unexpectedConsoleErrors.length === 0
     && outcomeAccepted

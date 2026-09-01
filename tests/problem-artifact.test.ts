@@ -3,7 +3,16 @@ import assert from 'node:assert/strict'
 
 import { buildProblemDiagram } from '../lib/mortra/problem-artifact'
 import { validateCalculusAnalysis, type CertifiedCalculusAnalysis } from '../lib/mortra/calculus-analysis'
+import { diagramMathToPlainText } from '../lib/mortra/diagram-text'
 import { generateLiveProblem } from '../lib/mathos-live'
+
+test('SVG math annotations use readable Unicode instead of raw TeX', () => {
+  assert.equal(
+    diagramMathToPlainText('2+2\\sqrt{2},\\quad x\\to\\infty'),
+    '2+2\u221a2, x\u2192\u221e',
+  )
+  assert.equal(diagramMathToPlainText('(-\\infty,1-\\sqrt{2})'), '(-\u221e,1-\u221a2)')
+})
 
 test('geometry families produce an explanatory plane figure', () => {
   const diagram = buildProblemDiagram({

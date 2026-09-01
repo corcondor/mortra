@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { CheckCircle2, ChevronLeft, ChevronRight, FileDown, FlaskConical, Pause, Play } from 'lucide-react'
 import { MathText } from '@/components/MathText'
+import { diagramMathToPlainText } from '@/lib/mortra/diagram-text'
 import type { Lang } from '@/lib/mortra/i18n'
 import {
   buildProblemDiagram,
@@ -77,6 +78,23 @@ const toneClass = (tone: DiagramShape['tone']) => {
   if (tone === 'secondary') return styles.secondary
   if (tone === 'accent') return styles.accent
   return styles.muted
+}
+
+const naturalLanguagePattern = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u
+
+function VariationValue({ value, forceMath = false }: { value: string; forceMath?: boolean }) {
+  const trimmed = value.trim()
+  if (!trimmed) return null
+  const directional = trimmed.match(/^([\u2197\u2198])\s*(.*)$/u)
+  const prefix = directional?.[1]
+  const body = directional?.[2] ?? trimmed
+  const plain = naturalLanguagePattern.test(body) || body === 'undefined'
+  return (
+    <span>
+      {prefix ? <span aria-hidden="true">{prefix} </span> : null}
+      {plain && !forceMath ? body : <MathText text={`\\(${body}\\)`} />}
+    </span>
+  )
 }
 
 function PlaneFigure({ diagram }: { diagram: PlaneProblemDiagram }) {
@@ -171,7 +189,7 @@ function PlaneFigure({ diagram }: { diagram: PlaneProblemDiagram }) {
                   y={(y(shape.from.y) + y(shape.to.y)) / 2 - 9}
                   textAnchor="middle"
                   className={styles.diagramLabel}
-                >{shape.label}</text>
+                >{diagramMathToPlainText(shape.label)}</text>
               ) : null}
             </g>
           )
@@ -184,13 +202,13 @@ function PlaneFigure({ diagram }: { diagram: PlaneProblemDiagram }) {
               y={y(shape.point.y)}
               textAnchor="middle"
               className={`${styles.diagramLabel} ${toneClass(shape.tone)}`}
-            >{shape.text}</text>
+            >{diagramMathToPlainText(shape.text)}</text>
           )
         }
         return (
           <g key={index} className={toneClass(shape.tone)}>
             <circle cx={x(shape.point.x)} cy={y(shape.point.y)} r="5.5" className={styles.point} />
-            {shape.label ? <text x={x(shape.point.x) + 9} y={y(shape.point.y) - 9} className={styles.pointLabel}>{shape.label}</text> : null}
+            {shape.label ? <text x={x(shape.point.x) + 9} y={y(shape.point.y) - 9} className={styles.pointLabel}>{diagramMathToPlainText(shape.label)}</text> : null}
           </g>
         )
       })}
@@ -306,15 +324,19 @@ function VariationFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind:
       <table className={styles.variationTable}>
         <thead>
           <tr>
-            <th>{diagram.variableLabel ?? 'x'}</th>
-            {diagram.columns.map((column, index) => <th key={`${column}-${index}`}>{column}</th>)}
+            <th><VariationValue value={diagram.variableLabel ?? 'x'} forceMath /></th>
+            {diagram.columns.map((column, index) => (
+              <th key={`${column}-${index}`}><VariationValue value={column} forceMath /></th>
+            ))}
           </tr>
         </thead>
         <tbody>
           {diagram.rows.map(row => (
             <tr key={row.label} className={row.tone ? toneClass(row.tone) : undefined}>
-              <th>{row.label}</th>
-              {row.cells.map((cell, index) => <td key={`${row.label}-${index}`}>{cell}</td>)}
+              <th><VariationValue value={row.label} forceMath /></th>
+              {row.cells.map((cell, index) => (
+                <td key={`${row.label}-${index}`}><VariationValue value={cell} /></td>
+              ))}
             </tr>
           ))}
         </tbody>
