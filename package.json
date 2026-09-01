@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "node scripts/dev.mjs",
+    "check:public-python": "node lib/release/check-public-python-closure.mjs",
+    "prebuild": "npm run check:public-python",
     "build": "next build",
     "start": "next start -p 3002",
     "lint": "next lint",

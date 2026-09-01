@@ -2,6 +2,7 @@ import { spawnSync } from 'node:child_process'
 import { resolve } from 'node:path'
 
 import type { MathExpression } from './math-expression-ir'
+import { locateRepositoryRoot, pythonBackendEnvironment } from './python-backend-runtime'
 
 export type ExactExpressionEvaluation = {
   ok: boolean
@@ -20,22 +21,26 @@ type ExactExpressionBatchResponse = {
   error?: unknown
 }
 
-function repositoryRoot(): string {
-  return resolve(__dirname, '..', '..')
-}
-
 export function evaluateExactExpression(expression: MathExpression): ExactExpressionEvaluation {
   return evaluateExactExpressions([expression])[0] ?? { ok: false, error: 'empty exact-expression response' }
 }
 
 export function evaluateExactExpressions(expressions: readonly MathExpression[]): ExactExpressionEvaluation[] {
   if (expressions.length === 0) return []
-  const root = repositoryRoot()
+  const scriptRelativePath = 'worker/backend/exact_expression_ir.py'
+  let root: string
+  try {
+    root = locateRepositoryRoot(scriptRelativePath)
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    return expressions.map(() => ({ ok: false, error: message }))
+  }
   const python = process.env.MORTRA_PYTHON || process.env.PYTHON ||
     (process.platform === 'win32' ? 'python' : 'python3')
-  const script = resolve(root, 'worker', 'backend', 'exact_expression_ir.py')
+  const script = resolve(root, scriptRelativePath)
   const run = spawnSync(python, ['-B', script], {
     cwd: root,
+    env: pythonBackendEnvironment(root),
     input: JSON.stringify({ expression_irs: expressions }),
     encoding: 'utf8',
     timeout: 120_000,

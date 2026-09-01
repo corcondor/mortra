@@ -8,6 +8,7 @@ import {
   type DiscoveryParent,
 } from './parent-conditioned-discovery'
 import { extractBoundMathExpression, isDirectBoundExpressionQuery } from './math-expression-ir'
+import { locateRepositoryRoot, pythonBackendEnvironment } from './python-backend-runtime'
 
 type BridgeCard = {
   statement_tex?: unknown
@@ -67,17 +68,15 @@ function record(value: unknown): Record<string, unknown> | null {
     : null
 }
 
-function repositoryRoot(): string {
-  return resolve(__dirname, '..', '..')
-}
-
 function invokeBridgeRequest(request: Record<string, unknown>): BridgeResponse {
-  const root = repositoryRoot()
+  const scriptRelativePath = 'worker/backend/exact_problem_solver_bridge.py'
+  const root = locateRepositoryRoot(scriptRelativePath)
   const python = process.env.MORTRA_PYTHON || process.env.PYTHON || (process.platform === 'win32' ? 'python' : 'python3')
-  const script = resolve(root, 'worker', 'backend', 'exact_problem_solver_bridge.py')
+  const script = resolve(root, scriptRelativePath)
   const batchSize = Array.isArray(request.statements) ? request.statements.length : 1
   const run = spawnSync(python, ['-B', script], {
     cwd: root,
+    env: pythonBackendEnvironment(root),
     input: JSON.stringify(request),
     encoding: 'utf8',
     timeout: Math.max(120_000, batchSize * 45_000),
