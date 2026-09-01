@@ -12,6 +12,10 @@ test('SVG math annotations use readable Unicode instead of raw TeX', () => {
     '2+2\u221a2, x\u2192\u221e',
   )
   assert.equal(diagramMathToPlainText('(-\\infty,1-\\sqrt{2})'), '(-\u221e,1-\u221a2)')
+  assert.equal(
+    diagramMathToPlainText('A(z)=\\sum_{n\\ge0}a_n z^n'),
+    'A(z)=\u03a3[n\u22650]a[n] z^n',
+  )
 })
 
 test('geometry families produce an explanatory plane figure', () => {

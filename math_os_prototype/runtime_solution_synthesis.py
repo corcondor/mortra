@@ -1011,13 +1011,13 @@ def synthesize_second_order_recurrence(statement: str) -> RuntimeSolutionSynthes
         denominator_tex = sp.latex(denominator)
         diagram = state_transition_diagram(
             [
-                {"id": "recurrence", "label": rf"{sequence}_{{n+2}}={sp.latex(coefficient_current)}{sequence}_{{n+1}}+({sp.latex(coefficient_previous)}){sequence}_n", "terminal": False},
-                {"id": "series", "label": rf"A(z)=\sum_{{n\ge0}}{sequence}_n z^n", "terminal": False},
-                {"id": "verified", "label": "係数を再生", "terminal": True},
+                {"id": "recurrence", "label": "二階漸化式", "terminal": False},
+                {"id": "series", "label": "母関数 A(z)", "terminal": False},
+                {"id": "verified", "label": "係数を照合", "terminal": True},
             ],
             [
-                {"from": "recurrence", "to": "series", "label": rf"(1-{sp.latex(coefficient_current)}z-({sp.latex(coefficient_previous)})z^2)A(z)", "tone": "primary"},
-                {"from": "series", "to": "verified", "label": rf"0\le n\le {replay_limit}", "tone": "secondary"},
+                {"from": "recurrence", "to": "series", "label": "べき級数として加える", "tone": "primary"},
+                {"from": "series", "to": "verified", "label": f"n=0,...,{replay_limit}", "tone": "secondary"},
             ],
             title="漸化式と母関数",
             caption="漸化式を形式的べき級数へ変換し、係数を元の数列へ戻して検証します。",

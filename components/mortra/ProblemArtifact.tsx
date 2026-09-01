@@ -275,7 +275,7 @@ function StateFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind: 'st
                 className={styles.stateEdge}
                 markerEnd="url(#state-arrow)"
               />
-              {transition.label ? <text x={(fromX + toX) / 2} y={upper ? y - 4 : y + 16} className={styles.stateEdgeLabel}>{transition.label}</text> : null}
+              {transition.label ? <text x={(fromX + toX) / 2} y={upper ? y - 4 : y + 16} className={styles.stateEdgeLabel}>{diagramMathToPlainText(transition.label)}</text> : null}
             </g>
           )
         })}
@@ -290,7 +290,7 @@ function StateFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind: 'st
         })}
         {diagram.states.map((state, index) => {
           const cx = stateX(index)
-          const labelLines = stateLabelLines(state.label)
+          const labelLines = stateLabelLines(diagramMathToPlainText(state.label))
           const multiline = labelLines.length > 1
           return (
             <g key={state.id}>

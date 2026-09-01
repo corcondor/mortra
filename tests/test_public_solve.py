@@ -183,6 +183,9 @@ class PublicSolveTests(unittest.TestCase):
         self.assertEqual(witness["replayed_coefficients"][:5], ["Integer(2)", "Integer(3)", "Integer(6)", "Integer(15)", "Integer(42)"])
         self.assertIn("母関数", card["solution_tex"])
         self.assertNotIn("a_n=", card["answer_tex"])
+        diagram_text = json.dumps(card["diagram"], ensure_ascii=False)
+        self.assertNotIn("\\", diagram_text)
+        self.assertNotIn("_{", diagram_text)
 
     def test_generating_function_recomputes_after_coefficient_change(self) -> None:
         status, payload = solve_public_problem(
