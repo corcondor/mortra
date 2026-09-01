@@ -44,6 +44,8 @@ class PublicSolveTests(unittest.TestCase):
         self.assertIn("x=-1", card["answer_tex"])
         self.assertIn("x=1", card["answer_tex"])
         self.assertIn("2", card["answer_tex"])
+        self.assertIn(r"したがって \(x=", card["solution_tex"])
+        self.assertNotIn("したがって x=", card["solution_tex"])
 
     def test_function_variation_recomputes_after_coefficient_change(self) -> None:
         status, payload = solve_public_problem(

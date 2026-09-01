@@ -225,7 +225,13 @@ def synthesize_univariate_variation(statement: str) -> RuntimeSolutionSynthesis 
             + r"\(" + r",\;".join(sp.latex(root) for root in real_roots) + r"\) である。",
             "これらで数直線を分け、導関数の符号を調べると図の増減表を得る。",
             "符号が正から負へ変わる点が極大、負から正へ変わる点が極小である。"
-            + ("したがって " + "、".join(extrema_tex) + "。" if extrema_tex else ""),
+            + (
+                "したがって "
+                + "、".join(rf"\({item}\)" for item in extrema_tex)
+                + "。"
+                if extrema_tex
+                else ""
+            ),
         ),
         verification_checks=checks,
         proof_program=proof_program,

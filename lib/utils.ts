@@ -24,28 +24,102 @@ const BARE_LATEX_RE = /\\(?:d?frac|sqrt|int|oint|iint|sum|prod|lim|inf[ty]+|pmod
 // are valid TeX, but BARE_LATEX_RE alone cannot distinguish them from prose.
 // Require a clearly mathematical base together with a sub/superscript so
 // ordinary text containing braces is not sent to KaTeX.
-const BARE_SCRIPTED_MATH_RE = /(?:[A-Za-z][A-Za-z0-9]*\s*(?:\([^\n)]*\))?|[A-Za-z0-9)\]])\s*[_^]\s*(?:\{[^{}\n]+\}|[A-Za-z0-9])/u
+const BARE_SCRIPTED_MATH_RE = /(?:\p{L}[\p{L}\p{N}]*\s*(?:\([^\n)]*\))?|[\p{L}\p{N})\]])\s*[_^]\s*(?:\{[^{}\n]+\}|[\p{L}\p{N}])/u
 const NATURAL_LANGUAGE_RE = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u
+const BARE_RELATION_OPERATOR_RE = /\\(?:leq?|geq?|equiv)|[=<>≤≥≡]/u
+
+function hasBareMathRelation(value: string): boolean {
+  const relation = BARE_RELATION_OPERATOR_RE.exec(value)
+  if (!relation || relation.index === undefined) return false
+
+  const left = value.slice(0, relation.index).trim()
+  const right = value.slice(relation.index + relation[0].length).trim()
+  return (
+    /(?:[\p{L}\p{N})\]}]|\\[A-Za-z]+)$/u.test(left)
+    && /^(?:[\p{L}\p{N}(\[{+\-]|\\[A-Za-z]+)/u.test(right)
+  )
+}
 
 function isBareMathLine(line: string): boolean {
   const trimmed = line.trim()
   if (!trimmed || NATURAL_LANGUAGE_RE.test(trimmed)) return false
-  return BARE_LATEX_RE.test(trimmed) || BARE_SCRIPTED_MATH_RE.test(trimmed)
+  return (
+    BARE_LATEX_RE.test(trimmed)
+    || BARE_SCRIPTED_MATH_RE.test(trimmed)
+    || hasBareMathRelation(trimmed)
+  )
+}
+
+function isMixedBareMath(value: string): boolean {
+  const trimmed = value.trim()
+  if (!trimmed || NATURAL_LANGUAGE_RE.test(trimmed)) return false
+
+  // A subscript alone in Japanese prose (for example "答えは z^{6} である")
+  // is ambiguous. Mixed prose is split only when a TeX command or a relation
+  // gives an explicit mathematical boundary.
+  return BARE_LATEX_RE.test(trimmed) || hasBareMathRelation(trimmed)
+}
+
+function splitMixedBareMathLine(line: string): { found: boolean; segments: MathSegment[] } {
+  const segments: MathSegment[] = []
+  let cursor = 0
+  let found = false
+
+  for (const match of line.matchAll(/[^\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]+/gu)) {
+    const run = match[0]
+    const runStart = match.index ?? 0
+    const leadingLength = run.match(/^[\s。、，；：！？「」『』【】]+/u)?.[0].length ?? 0
+    const trailingLength = run.match(/[\s。、，；：！？「」『』【】]+$/u)?.[0].length ?? 0
+    const candidateStart = runStart + leadingLength
+    const candidateEnd = runStart + run.length - trailingLength
+    if (candidateStart >= candidateEnd) continue
+
+    const candidate = line.slice(candidateStart, candidateEnd)
+    if (!isMixedBareMath(candidate)) continue
+
+    if (candidateStart > cursor) {
+      segments.push({ type: 'text', content: line.slice(cursor, candidateStart) })
+    }
+    segments.push({ type: 'inline', content: candidate })
+    cursor = candidateEnd
+    found = true
+  }
+
+  if (found && cursor < line.length) {
+    segments.push({ type: 'text', content: line.slice(cursor) })
+  }
+  return { found, segments }
 }
 
 /** テキストセグメントに生 LaTeX が含まれていれば inline math として返す */
 function splitBareLatex(raw: string): MathSegment[] {
-  if (!raw.split('\n').some(isBareMathLine)) return [{ type: 'text', content: raw }]
-  // 行単位で「LaTeX が多い行」と「普通のテキスト行」を分ける
   const lines = raw.split('\n')
-  const result: MathSegment[] = []
+  const parsedLines: MathSegment[][] = []
+  let foundMath = false
+
   for (const line of lines) {
     if (isBareMathLine(line)) {
-      // この行は数式扱い
-      result.push({ type: 'inline', content: line.trim() })
-    } else if (line.trim()) {
-      result.push({ type: 'text', content: line })
+      parsedLines.push([{ type: 'inline', content: line.trim() }])
+      foundMath = true
+      continue
     }
+
+    const mixed = splitMixedBareMathLine(line)
+    if (mixed.found) {
+      parsedLines.push(mixed.segments)
+      foundMath = true
+    } else {
+      parsedLines.push(line.trim() ? [{ type: 'text', content: line }] : [])
+    }
+  }
+
+  if (!foundMath) return [{ type: 'text', content: raw }]
+
+  // Keep the historical line boundary after every parsed line. MathText uses
+  // it to preserve the layout of generated derivations.
+  const result: MathSegment[] = []
+  for (const segments of parsedLines) {
+    result.push(...segments)
     result.push({ type: 'text', content: '\n' })
   }
   return result
