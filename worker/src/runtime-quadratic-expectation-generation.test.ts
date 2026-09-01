@@ -55,6 +55,21 @@ test('accepts direct second moments and either parent order', () => {
   assert.equal(hasCompleteParentProof(result.cards[0], reversed), true)
 })
 
+test('preserves current variable names throughout the generated statement and solution', () => {
+  const result = synthesizeRuntimeQuadraticExpectationProblems([
+    { id: 'form-renamed', statement: '二次形式 h(u,v)=7u^2-4uv+3v^2 を考える。' },
+    { id: 'moments-renamed', statement: '確率変数 U,V は E[U]=2, E[V]=-1, Var(U)=5, Var(V)=2, Cov(U,V)=1 を満たす。' },
+  ], 1)
+  assert.equal(result.cards.length, 1)
+  const card = result.cards[0]
+  assert.match(card.statement_tex, /q\(u,v\)/)
+  assert.ok(card.statement_tex.includes('確率変数 \\(U,V\\)'))
+  assert.match(card.statement_tex, /q\(U,V\)/)
+  assert.equal(card.statement_tex.includes('確率変数 \\(X,Y\\)'), false)
+  assert.match(card.solution_tex, /\\binom\{U\}\{V\}/)
+  assert.match(card.solution_tex, /\\mathbb E\[UV\]/)
+})
+
 test('mutating coefficients or moments changes the generated certified value', () => {
   const changedForm = synthesizeRuntimeQuadraticExpectationProblems([
     { ...parents[0], statement: '二次形式 q(x,y)=4x^2+3xy+5y^2 を考える。' },

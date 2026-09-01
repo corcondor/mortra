@@ -284,21 +284,23 @@ function expectation(coefficients: readonly [Q, Q, Q], moments: SecondMomentData
 function transform(
   coefficients: readonly [Q, Q, Q],
   variant: number,
+  variables: readonly [string, string],
 ): { coefficients: readonly [Q, Q, Q]; substitution: string; determinant: 1 } {
-  if (variant === 0) return { coefficients, substitution: '(x,y)', determinant: 1 }
+  const [x, y] = variables
+  if (variant === 0) return { coefficients, substitution: `(${x},${y})`, determinant: 1 }
   const magnitude = BigInt(Math.ceil(variant / 2))
   const t = q(variant % 2 === 1 ? magnitude : -magnitude)
   const [a, b, c] = coefficients
   if (variant % 4 <= 1) {
     return {
       coefficients: [a, add(multiply(q(2n), multiply(a, t)), b), add(add(multiply(a, square(t)), multiply(b, t)), c)],
-      substitution: `(x${t.n < 0n ? '' : '+'}${format(t)}y,y)`,
+      substitution: `(${x}${t.n < 0n ? '' : '+'}${format(t)}${y},${y})`,
       determinant: 1,
     }
   }
   return {
     coefficients: [add(add(a, multiply(b, t)), multiply(c, square(t))), add(b, multiply(q(2n), multiply(c, t))), c],
-    substitution: `(x,y${t.n < 0n ? '' : '+'}${format(t)}x)`,
+    substitution: `(${x},${y}${t.n < 0n ? '' : '+'}${format(t)}${x})`,
     determinant: 1,
   }
 }
@@ -355,7 +357,7 @@ function generatedCard(
   variant: number,
   hypothesesEvaluated: number,
 ): ExecutableFusionCard | null {
-  const transformed = transform(form.coefficients, variant)
+  const transformed = transform(form.coefficients, variant, form.variables)
   const value = expectation(transformed.coefficients, moments.matrix)
   const directValue = add(
     add(multiply(transformed.coefficients[0], moments.matrix[0][0]), multiply(transformed.coefficients[1], moments.matrix[1][0])),
@@ -372,7 +374,9 @@ function generatedCard(
     moments: moments.matrix.map(row => row.map(format)),
     variant,
   })
-  const qTex = polynomialTex(transformed.coefficients, 'x', 'y')
+  const [formX, formY] = form.variables
+  const [randomX, randomY] = moments.variables
+  const qTex = polynomialTex(transformed.coefficients, formX, formY)
   const matrix = matrixTex(transformed.coefficients)
   const secondMomentMatrix = momentMatrixTex(moments.matrix)
   const answer = tex(value)
@@ -438,15 +442,15 @@ function generatedCard(
   return {
     id: `mortra-runtime-quadratic-expectation.${signature}`,
     family_id: 'runtime.quadratic_form_expectation',
-    statement_tex: `二次形式 \\(q(x,y)=${qTex}\\) とする。確率変数 \\(X,Y\\) が ` +
-      `\\(${moments.conditionsTex}\\) を満たすとき、\\(\\mathbb E[q(X,Y)]\\) を求めよ。`,
+    statement_tex: `二次形式 \\(q(${formX},${formY})=${qTex}\\) とする。確率変数 \\(${randomX},${randomY}\\) が ` +
+      `\\(${moments.conditionsTex}\\) を満たすとき、\\(\\mathbb E[q(${randomX},${randomY})]\\) を求めよ。`,
     answer_tex: answer,
     solution_tex: `二次形式と二次モーメントを、それぞれ対称行列` +
-      `\\[A=${matrix},\\qquad M=\\mathbb E\\left[\\binom{X}{Y}(X\\;Y)\\right]=${secondMomentMatrix}\\]` +
+      `\\[A=${matrix},\\qquad M=\\mathbb E\\left[\\binom{${randomX}}{${randomY}}(${randomX}\\;${randomY})\\right]=${secondMomentMatrix}\\]` +
       `で表す。二次形式の期待値は、対応する成分を掛けて足すことで` +
-      `\\[\\mathbb E[q(X,Y)]=\\operatorname{tr}(AM)=${answer}\\]` +
+      `\\[\\mathbb E[q(${randomX},${randomY})]=\\operatorname{tr}(AM)=${answer}\\]` +
       `となる。直接展開しても` +
-      `\\[${tex(transformed.coefficients[0])}\\mathbb E[X^2]+${tex(transformed.coefficients[1])}\\mathbb E[XY]+${tex(transformed.coefficients[2])}\\mathbb E[Y^2]=${answer}\\]` +
+      `\\[${tex(transformed.coefficients[0])}\\mathbb E[${randomX}^2]+${tex(transformed.coefficients[1])}\\mathbb E[${randomX}${randomY}]+${tex(transformed.coefficients[2])}\\mathbb E[${randomY}^2]=${answer}\\]` +
       `であり、行列計算と一致する。座標変換 ${transformed.substitution} の行列式は1なので、元の二次形式の構造を失っていない。` +
       `さらに、証明書に保存した階数1の摂動により、二次形式または二次モーメントのどちらを変えても答えが変わることを厳密に確認した。`,
     domain: 'quadratic_forms_and_probability',
