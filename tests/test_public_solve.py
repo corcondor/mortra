@@ -369,6 +369,36 @@ class PublicSolveTests(unittest.TestCase):
         self.assertIn(r"\pi<22/7", card["solution_tex"])
         self.assertIn("diagram", card)
 
+    def test_original_bare_integral_inequality_elaborates_to_the_same_proof(self) -> None:
+        status, payload = solve_public_problem(
+            r"$\displaystyle\int_0^{\frac{\pi}2}"
+            r"\{\cos(\cos x+\sin x)+\sin(\cos x+\sin x)\}\,dx<2$"
+            "\nを示せ。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(
+            card["execution_certificate"]["tool_name"],
+            "mortra.runtime_complement_angle_integral_bound",
+        )
+        self.assertIn(r"\int", card["answer_tex"])
+        self.assertIn("<2", card["answer_tex"])
+        self.assertEqual(
+            card["execution_certificate"]["proof_program"][0]["input_form"],
+            "bare",
+        )
+
+    def test_bare_integral_chart_preserves_the_requested_bound(self) -> None:
+        status, payload = solve_public_problem(
+            r"\int_0^{\pi/2}\{\cos(\cos x+\sin x)+\sin(\cos x+\sin x)\}\,dx<3 を示せ."
+        )
+
+        if status == 200:
+            tool = payload["cards"][0]["execution_certificate"].get("tool_name")
+            self.assertNotEqual(tool, "mortra.runtime_complement_angle_integral_bound")
+
     def test_integral_chart_does_not_accept_a_different_integrand(self) -> None:
         status, payload = solve_public_problem(
             r"I=\int_0^{\pi/2}\sin(\cos x+\sin x)\,dx とする。0<I<2 を証明せよ。"

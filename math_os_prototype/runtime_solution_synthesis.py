@@ -1605,38 +1605,61 @@ def synthesize_linear_trigonometric_equation(statement: str) -> RuntimeSolutionS
     )
 
 
+def _parse_integral_tex(integral_tex: str) -> sp.Integral | None:
+    try:
+        integral = parse_latex(integral_tex.replace("−", "-"))
+    except Exception:
+        return None
+    if not isinstance(integral, sp.Integral):
+        return None
+    named_constants = {
+        symbol: sp.pi
+        for symbol in integral.free_symbols
+        if symbol.name in {"pi", "π"}
+    }
+    return integral.xreplace(named_constants) if named_constants else integral
+
+
 def _assigned_integral(statement: str) -> tuple[str, sp.Integral] | None:
     match = re.search(
-        r"(?P<name>[A-Za-z])\s*=\s*(?P<integral>\\int.*?\\,?d[A-Za-z])(?=\s*(?:とする|、|。|0\s*<|$))",
+        r"(?P<name>[A-Za-z])\s*=\s*(?P<integral>\\int.*?\\,?(?<!\\)d[A-Za-z])(?=\s*(?:とする|、|。|0\s*<|$))",
         statement,
         flags=re.DOTALL,
     )
     if match is None:
         return None
-    try:
-        integral = parse_latex(match.group("integral").replace("−", "-"))
-    except Exception:
-        return None
-    if isinstance(integral, sp.Integral):
-        named_constants = {
-            symbol: sp.pi
-            for symbol in integral.free_symbols
-            if symbol.name in {"pi", "π"}
-        }
-        if named_constants:
-            integral = integral.xreplace(named_constants)
-    return (match.group("name"), integral) if isinstance(integral, sp.Integral) else None
+    integral = _parse_integral_tex(match.group("integral"))
+    return (match.group("name"), integral) if integral is not None else None
+
+
+def _bare_integral(statement: str) -> sp.Integral | None:
+    match = re.search(
+        r"(?P<integral>\\int.*?\\,?(?<!\\)d[A-Za-z])(?=\s*(?:<|\\lt|\\le|\\leq|を|。|$))",
+        statement,
+        flags=re.DOTALL,
+    )
+    return _parse_integral_tex(match.group("integral")) if match is not None else None
 
 
 def synthesize_first_quadrant_trig_integral_bound(statement: str) -> RuntimeSolutionSynthesis | None:
     """Synthesize the complement-angle/Cauchy proof for its structural form."""
 
     assigned = _assigned_integral(statement)
-    if assigned is None or "証明" not in statement:
+    bare_integral = _bare_integral(statement) if assigned is None else None
+    if assigned is None and bare_integral is None:
         return None
-    name, integral = assigned
+    if "証明" not in statement and "示せ" not in statement:
+        return None
+    input_form = "assigned" if assigned is not None else "bare"
+    name, integral = assigned if assigned is not None else ("I", bare_integral)
+    assert integral is not None
     compact = re.sub(r"\s+", "", statement)
-    if f"0<{name}<2" not in compact:
+    if assigned is not None and f"{name}<2" not in compact:
+        return None
+    if assigned is None and re.search(
+        r"(?:<|\\lt)2(?:\$|\\\)|\\\])?(?:を(?:示せ|証明せよ)|。|\.|$)",
+        compact,
+    ) is None:
         return None
     if len(integral.limits) != 1 or len(integral.limits[0]) != 3:
         return None
@@ -1669,7 +1692,8 @@ def synthesize_first_quadrant_trig_integral_bound(statement: str) -> RuntimeSolu
         marked_points=(),
     )
     derivation = (
-        rf"\(u=\sin {sp.latex(variable)}+\cos {sp.latex(variable)}\) とおく。\(0\le {sp.latex(variable)}\le\pi/2\) では \(1\le u\le\sqrt2<\pi/2\) なので、\(\sin u+\cos u>0\) であり \({name}>0\) である。",
+        (r"左辺の積分を \(I\) とおく。" if input_form == "bare" else "")
+        + rf"\(u=\sin {sp.latex(variable)}+\cos {sp.latex(variable)}\) とおく。\(0\le {sp.latex(variable)}\le\pi/2\) では \(1\le u\le\sqrt2<\pi/2\) なので、\(\sin u+\cos u>0\) であり \({name}>0\) である。",
         r"また \(\pi/2<2u<\pi\) だから、補角 \(\pi-2u\) は第1象限にある。したがって \(\sin 2u=\sin(\pi-2u)<\pi-2u\) である。",
         r"よって \((\sin u+\cos u)^2=1+\sin2u<1+\pi-2u\) となる。さらに Cauchy--Schwarz の不等式より"
         + rf"\[{name}^2\le\frac{{\pi}}{{2}}\int_0^{{\pi/2}}(\sin u+\cos u)^2\,d{sp.latex(variable)}"
@@ -1679,7 +1703,7 @@ def synthesize_first_quadrant_trig_integral_bound(statement: str) -> RuntimeSolu
     )
     return RuntimeSolutionSynthesis(
         answer=True,
-        answer_tex=rf"\(0<{name}<2\)",
+        answer_tex=rf"\(0<{name}<2\)" if input_form == "assigned" else rf"\({sp.latex(integral)}<2\)",
         tool_name="mortra.runtime_complement_angle_integral_bound",
         expression_tex=sp.latex(integral),
         derivation_tex=derivation,
@@ -1690,6 +1714,7 @@ def synthesize_first_quadrant_trig_integral_bound(statement: str) -> RuntimeSolu
             "3<pi<22/7 と単調性により最終上界が4未満であることを有理数比較",
         ),
         proof_program=(
+            {"rule": "elaborate_integral_upper_bound_query", "input_form": input_form, "bound": "2"},
             {"rule": "introduce_inner_trigonometric_coordinate", "u": sp.srepr(u)},
             {"rule": "move_double_angle_to_first_quadrant"},
             {"rule": "apply_sine_linear_upper_bound"},
@@ -1699,6 +1724,7 @@ def synthesize_first_quadrant_trig_integral_bound(statement: str) -> RuntimeSolu
         ),
         diagram=diagram,
         witness={
+            "input_form": input_form,
             "inner_coordinate": sp.srepr(u),
             "inner_integral": str(u_integral),
             "rational_pi_bound": "22/7",
