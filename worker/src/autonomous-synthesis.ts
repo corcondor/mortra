@@ -29,6 +29,7 @@ import { synthesizeRuntimeExpressionProblems } from './runtime-expression-synthe
 import { synthesizeRuntimeLinearProblems } from './runtime-linear-problem-generation'
 import { synthesizeRuntimeQuadraticExpectationProblems } from './runtime-quadratic-expectation-generation'
 import { synthesizeRuntimeRecurrenceCongruenceProblems } from './runtime-recurrence-congruence-generation'
+import { synthesizeRuntimeLatticePickProblems } from './runtime-lattice-pick-generation'
 import { synthesizeRuntimePrimitiveRightTriangleProblems } from './runtime-primitive-right-triangle-generation'
 import {
   supportsPolynomialRootFusion,
@@ -309,6 +310,18 @@ const RUNTIME_RECURRENCE_CONGRUENCE_GENERATION: SynthesisStrategy = {
   },
 }
 
+const RUNTIME_LATTICE_PICK_GENERATION: SynthesisStrategy = {
+  id: 'runtime-lattice-pick-generation',
+  version: 1,
+  supports(context) {
+    const result = synthesizeRuntimeLatticePickProblems(context.parents, context.requested)
+    return { applicable: result.applicable, reason: result.reason }
+  },
+  execute(context) {
+    return synthesizeRuntimeLatticePickProblems(context.parents, context.requested).cards
+  },
+}
+
 const RUNTIME_PRIMITIVE_RIGHT_TRIANGLE_GENERATION: SynthesisStrategy = {
   id: 'runtime-primitive-right-triangle-generation',
   version: 1,
@@ -326,6 +339,7 @@ export const DEFAULT_SYNTHESIS_STRATEGIES: readonly SynthesisStrategy[] = [
   RUNTIME_POLYNOMIAL_ROOT_GENERATION,
   RUNTIME_QUADRATIC_EXPECTATION_GENERATION,
   RUNTIME_RECURRENCE_CONGRUENCE_GENERATION,
+  RUNTIME_LATTICE_PICK_GENERATION,
   RUNTIME_PRIMITIVE_RIGHT_TRIANGLE_GENERATION,
   RUNTIME_TYPED_PROGRAM_EXECUTION,
   RUNTIME_LINEAR_PROBLEM_GENERATION,

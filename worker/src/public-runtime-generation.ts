@@ -16,6 +16,7 @@ import {
   synthesizePolynomialRootFusions,
 } from './polynomial-root-fusion'
 import { synthesizeRuntimeExpressionProblems } from './runtime-expression-synthesizer'
+import { synthesizeRuntimeLatticePickProblems } from './runtime-lattice-pick-generation'
 import { synthesizeRuntimeLinearProblems } from './runtime-linear-problem-generation'
 import { synthesizeRuntimeQuadraticExpectationProblems } from './runtime-quadratic-expectation-generation'
 import { synthesizeRuntimeRecurrenceCongruenceProblems } from './runtime-recurrence-congruence-generation'
@@ -78,6 +79,16 @@ function directRuntimeGeneration(
       recurrenceCongruence.applicable,
       recurrenceCongruence.reason,
       () => recurrenceCongruence.cards,
+    )
+  }
+
+  if (cards.length < requested) {
+    const latticePick = synthesizeRuntimeLatticePickProblems(parents, requested - cards.length)
+    record(
+      'runtime-lattice-pick-generation',
+      latticePick.applicable,
+      latticePick.reason,
+      () => latticePick.cards,
     )
   }
 

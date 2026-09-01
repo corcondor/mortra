@@ -61,6 +61,22 @@ test('coprimality alone does not elaborate an unrelated problem as a primitive r
   assert.ok(roots.includes('LinearDiophantineConstraint'))
 })
 
+test('lattice polygon and coprime line retain the reusable Pick bridge endpoints', () => {
+  const result = discoverParentStructures([
+    {
+      id: 'pick-parent',
+      statement: '格子点を頂点とする凸多角形の面積、内部格子点数、境界格子点数の関係を証明せよ。',
+    },
+    {
+      id: 'segment-parent',
+      statement: '互いに素な正の整数 a,b に対し、直線 ax+by=ab の第1象限の線分上にある格子点を分類せよ。',
+    },
+  ])
+  assert.ok(result.parent_graphs[0].semantic_roots.includes('LatticePolygonInvariant'))
+  assert.ok(result.parent_graphs[1].semantic_roots.includes('CoprimeIntegerTuple'))
+  assert.ok(result.parent_graphs[1].semantic_roots.includes('LinearDiophantineConstraint'))
+})
+
 test('primitive right-triangle elaboration requires both structural conditions', () => {
   const result = discoverParentStructures([{
     id: 'primitive-right-triangle',
