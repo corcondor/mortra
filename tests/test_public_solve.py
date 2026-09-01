@@ -47,6 +47,69 @@ class PublicSolveTests(unittest.TestCase):
         self.assertIn(r"したがって \(x=", card["solution_tex"])
         self.assertNotIn("したがって x=", card["solution_tex"])
 
+    def test_normalized_inner_product_constructs_exact_function_pair(self) -> None:
+        status, payload = solve_public_problem(
+            r"\frac{\int_0^1 f(x)g(x)dx}{\sqrt{\int_0^1 f(x)^2dx}\sqrt{\int_0^1 g(x)^2dx}}"
+            r"=\cos\frac{\pi}{6} を満たす関数 f(x),g(x) を一組求め、図示せよ。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(
+            card["execution_certificate"]["tool_name"],
+            "mortra.runtime_normalized_inner_product_realization",
+        )
+        self.assertEqual(card["diagram"]["kind"], "plane")
+        self.assertIn(r"f(x)=1", card["answer_tex"])
+        self.assertIn(r"g(x)=\sqrt{3} x", card["answer_tex"])
+        witness = card["execution_certificate"]["witness"]
+        self.assertEqual(witness["gram_matrix"], [["1", "sqrt(3)/2"], ["sqrt(3)/2", "1"]])
+        self.assertEqual(witness["normalized_inner_product"], "sqrt(3)/2")
+
+    def test_normalized_inner_product_accepts_corpus_style_braced_bounds(self) -> None:
+        status, payload = solve_public_problem(
+            r"\[\frac{\int_{0}^{1} f(x)g(x)\,dx}"
+            r"{\sqrt{\int_{0}^{1} f(x)^2\,dx}\sqrt{\int_{0}^{1} g(x)^2\,dx}}"
+            r"=\cos\frac{\pi}{6}\]を満たす関数$f(x),g(x)$を一組求めよ。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(
+            card["execution_certificate"]["tool_name"],
+            "mortra.runtime_normalized_inner_product_realization",
+        )
+        self.assertIn(r"f(x)=1", card["answer_tex"])
+        self.assertIn(r"g(x)=\sqrt{3} x", card["answer_tex"])
+
+    def test_normalized_inner_product_recomputes_interval_and_target(self) -> None:
+        status, payload = solve_public_problem(
+            r"区間 [2,5] 上で \frac{\int_2^5 p(t)q(t)dt}"
+            r"{\sqrt{\int_2^5 p(t)^2dt}\sqrt{\int_2^5 q(t)^2dt}}=\frac12 "
+            r"を満たす関数 p(t),q(t) を一組求め、図示せよ。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertIn(r"p(t)=\frac{\sqrt{3}}{3}", card["answer_tex"])
+        self.assertIn(r"q(t)=\frac{\sqrt{3} \left(t - 3\right)}{3}", card["answer_tex"])
+        witness = card["execution_certificate"]["witness"]
+        self.assertEqual(witness["interval"], ["2", "5"])
+        self.assertEqual(witness["target"], "1/2")
+        self.assertEqual(witness["normalized_inner_product"], "1/2")
+
+    def test_normalized_inner_product_rejects_impossible_target(self) -> None:
+        status, payload = solve_public_problem(
+            r"\frac{\int_0^1 f(x)g(x)dx}{\sqrt{\int_0^1 f(x)^2dx}\sqrt{\int_0^1 g(x)^2dx}}"
+            r"=2 を満たす関数 f(x),g(x) を一組求めよ。"
+        )
+
+        self.assertEqual(status, 422)
+        self.assertEqual(payload["generated"], 0)
+
     def test_function_variation_recomputes_after_coefficient_change(self) -> None:
         status, payload = solve_public_problem(
             "関数 f(x)=x^3-12x の増減、極大値、極小値を求め、グラフの概形を描け。"

@@ -55,6 +55,190 @@ def _proves_strictly_positive(value: sp.Expr) -> bool:
     return sp.simplify(value > 0) is sp.S.true
 
 
+def _sympify_exact_scalar(source: str) -> sp.Expr | None:
+    try:
+        value = sp.sympify(
+            source.replace("^", "**"),
+            locals={"sin": sp.sin, "cos": sp.cos, "sqrt": sp.sqrt, "pi": sp.pi},
+        )
+    except (sp.SympifyError, TypeError, ValueError):
+        return None
+    if value.free_symbols or value.is_real is not True:
+        return None
+    return sp.simplify(value)
+
+
+def _parse_normalized_integral_inner_product(
+    statement: str,
+) -> tuple[str, str, sp.Symbol, sp.Expr, sp.Expr, sp.Expr] | None:
+    """Recognize an exact normalized L2 inner-product realization query."""
+
+    if not re.search(r"(?:一組|1組|pair\s+of\s+functions|find\s+functions)", statement, re.I):
+        return None
+    if not re.search(r"(?:関数|functions?)", statement, re.I):
+        return None
+
+    integral_pattern = re.compile(
+        r"integral\s+_(?P<lower>\([^)]*\)|[^\s*]+)\*\*"
+        r"(?P<upper>\([^)]*\)|[^\s*]+)\s*\*?\s*"
+        r"(?P<body>[A-Za-z][A-Za-z0-9_]*\*\([A-Za-z]\)"
+        r"(?:\*[A-Za-z][A-Za-z0-9_]*\*\([A-Za-z]\)|\*\*2))\*d"
+        r"(?P<variable>[A-Za-z])"
+    )
+
+    for segment in parse_latex_problem(statement).math_segments:
+        if "integral" not in segment or "=" not in segment:
+            continue
+        left, right = segment.rsplit("=", 1)
+        matches = list(integral_pattern.finditer(left))
+        if len(matches) != 3 or left.count("sqrt(") != 2:
+            continue
+
+        bounds = {(match.group("lower"), match.group("upper")) for match in matches}
+        variables = {match.group("variable") for match in matches}
+        if len(bounds) != 1 or len(variables) != 1:
+            continue
+        variable_name = variables.pop()
+
+        product_atoms = re.findall(
+            rf"([A-Za-z][A-Za-z0-9_]*)\*\({re.escape(variable_name)}\)",
+            matches[0].group("body"),
+        )
+        if len(product_atoms) != 2 or product_atoms[0] == product_atoms[1]:
+            continue
+        squared_atoms: list[str] = []
+        for match in matches[1:]:
+            squared = re.fullmatch(
+                rf"([A-Za-z][A-Za-z0-9_]*)\*\({re.escape(variable_name)}\)\*\*2",
+                match.group("body"),
+            )
+            if squared is None:
+                break
+            squared_atoms.append(squared.group(1))
+        if len(squared_atoms) != 2 or set(squared_atoms) != set(product_atoms):
+            continue
+
+        lower_source, upper_source = next(iter(bounds))
+        lower = _sympify_exact_scalar(lower_source)
+        upper = _sympify_exact_scalar(upper_source)
+        target = _sympify_exact_scalar(right)
+        if lower is None or upper is None or target is None:
+            continue
+        if not _proves_strictly_positive(upper - lower):
+            continue
+        if sp.simplify(1 - target**2 >= 0) is not sp.S.true:
+            continue
+        return product_atoms[0], product_atoms[1], sp.Symbol(variable_name), lower, upper, target
+    return None
+
+
+def synthesize_normalized_inner_product_realization(
+    statement: str,
+) -> RuntimeSolutionSynthesis | None:
+    """Construct two interval functions with a requested normalized inner product."""
+
+    parsed = _parse_normalized_integral_inner_product(statement)
+    if parsed is None:
+        return None
+    first_name, second_name, variable, lower, upper, target = parsed
+    length = sp.simplify(upper - lower)
+    midpoint = sp.simplify((lower + upper) / 2)
+    first_basis = sp.simplify(1 / sp.sqrt(length))
+    second_basis = sp.simplify(sp.sqrt(12 / length**3) * (variable - midpoint))
+    orthogonal_weight = sp.simplify(sp.sqrt(1 - target**2))
+    first_function = first_basis
+    second_function = sp.simplify(target * first_basis + orthogonal_weight * second_basis)
+
+    first_norm = sp.simplify(sp.integrate(first_function**2, (variable, lower, upper)))
+    second_norm = sp.simplify(sp.integrate(second_function**2, (variable, lower, upper)))
+    cross_inner_product = sp.simplify(
+        sp.integrate(first_function * second_function, (variable, lower, upper))
+    )
+    basis_cross = sp.simplify(
+        sp.integrate(first_basis * second_basis, (variable, lower, upper))
+    )
+    normalized_value = sp.simplify(
+        cross_inner_product / sp.sqrt(first_norm * second_norm)
+    )
+    if (first_norm, second_norm, basis_cross, normalized_value) != (1, 1, 0, target):
+        return None
+
+    lower_float = _real_float(lower)
+    upper_float = _real_float(upper)
+    if lower_float is None or upper_float is None:
+        return None
+    first_numeric: Callable[[float], float] = sp.lambdify(variable, first_function, "math")
+    second_numeric: Callable[[float], float] = sp.lambdify(variable, second_function, "math")
+    diagram = function_plot_diagram(
+        [
+            (rf"{first_name}({variable})={sp.latex(first_function)}", first_numeric, "primary"),
+            (rf"{second_name}({variable})={sp.latex(second_function)}", second_numeric, "accent"),
+        ],
+        x_min=lower_float,
+        x_max=upper_float,
+        title="構成した二つの関数",
+        caption="同じ厳密式から描画しています。内積とノルムは標本値ではなく記号積分で検証しています。",
+    )
+    diagram.update(
+        {
+            "domainTex": rf"[{sp.latex(lower)},{sp.latex(upper)}]",
+            "functionTex": [sp.latex(first_function), sp.latex(second_function)],
+            "targetInnerProductTex": sp.latex(target),
+            "certificateMethod": "exact Gram matrix integration",
+        }
+    )
+
+    answer_tex = (
+        r"\["
+        + rf"{first_name}({sp.latex(variable)})={sp.latex(first_function)},\qquad "
+        + rf"{second_name}({sp.latex(variable)})={sp.latex(second_function)}"
+        + r"\]"
+    )
+    derivation = (
+        rf"区間の長さを \(L={sp.latex(length)}\)、中点を \(m={sp.latex(midpoint)}\) とする。"
+        rf"\(u({sp.latex(variable)})=1/\sqrt{{L}}\)、"
+        rf"\(v({sp.latex(variable)})=\sqrt{{12/L^3}}\,({sp.latex(variable)}-m)\) とおく。",
+        rf"直接積分すると \(\int_{{{sp.latex(lower)}}}^{{{sp.latex(upper)}}}u^2\,d{sp.latex(variable)}=1\)、"
+        rf"\(\int_{{{sp.latex(lower)}}}^{{{sp.latex(upper)}}}v^2\,d{sp.latex(variable)}=1\)、"
+        rf"\(\int_{{{sp.latex(lower)}}}^{{{sp.latex(upper)}}}uv\,d{sp.latex(variable)}=0\) である。",
+        rf"そこで \(c={sp.latex(target)}\) とし、\(f=u\)、"
+        rf"\(g=cu+\sqrt{{1-c^2}}\,v\) と構成する。\(u,v\) は正規直交しているので、"
+        r"\(\lVert f\rVert=\lVert g\rVert=1\)、\(\langle f,g\rangle=c\) となる。",
+        rf"この区間と目標値について式を整理すると、上に示した "
+        rf"\({first_name}({sp.latex(variable)})\)、\({second_name}({sp.latex(variable)})\) を得る。"
+        rf"実際、正規化内積は厳密に \({sp.latex(normalized_value)}\) である。",
+    )
+    return RuntimeSolutionSynthesis(
+        answer={first_name: first_function, second_name: second_function},
+        answer_tex=answer_tex,
+        tool_name="mortra.runtime_normalized_inner_product_realization",
+        expression_tex=rf"\langle {first_name},{second_name}\rangle={sp.latex(target)}",
+        derivation_tex=derivation,
+        verification_checks=(
+            "三つの積分が同じ有限区間と同じ積分変数を使うことを型検査",
+            "目標値が実数で -1 以上 1 以下であることを厳密比較",
+            "入力区間から生成した二関数の Gram 行列を記号積分で再計算",
+            "二つのノルムが1、相互内積が入力された目標値と一致することを確認",
+        ),
+        proof_program=(
+            {"rule": "elaborate_normalized_l2_inner_product", "domain": [str(lower), str(upper)]},
+            {"rule": "construct_interval_orthonormal_frame", "length": str(length), "midpoint": str(midpoint)},
+            {"rule": "rotate_orthonormal_frame", "cosine": str(target), "sine": str(orthogonal_weight)},
+            {"rule": "replay_exact_gram_matrix", "gram": [[str(first_norm), str(cross_inner_product)], [str(cross_inner_product), str(second_norm)]]},
+        ),
+        diagram=diagram,
+        witness={
+            "interval": [str(lower), str(upper)],
+            "variable": variable.name,
+            "target": str(target),
+            "basis": [sp.srepr(first_basis), sp.srepr(second_basis)],
+            "functions": [sp.srepr(first_function), sp.srepr(second_function)],
+            "gram_matrix": [[str(first_norm), str(cross_inner_product)], [str(cross_inner_product), str(second_norm)]],
+            "normalized_inner_product": str(normalized_value),
+        },
+    )
+
+
 def _latex_interval(left: sp.Expr | None, right: sp.Expr | None) -> str:
     left_tex = r"-\infty" if left is None else sp.latex(left)
     right_tex = r"\infty" if right is None else sp.latex(right)
@@ -2033,6 +2217,7 @@ def synthesize_runtime_solution(statement: str) -> RuntimeSolutionSynthesis | No
     """Run reusable current-input kernels from narrowest proof obligation."""
 
     for synthesizer in (
+        synthesize_normalized_inner_product_realization,
         synthesize_univariate_variation,
         synthesize_rational_variation,
         synthesize_positive_monomial_extremum,
