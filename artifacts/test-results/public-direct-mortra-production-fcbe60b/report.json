@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "verified_at": "2026-09-02T10:07:00+09:00",
+  "verified_at": "2026-09-02T10:12:00+09:00",
   "production_url": "https://mortra.ai/ja",
   "external_llm_used": false,
   "summary": {
@@ -81,7 +81,10 @@
       "immediate_http_status": 422,
       "research_start_http_status": 202,
       "initial_job_id": "9ab202e4-7b91-476e-bac7-05eb3c304c92",
-      "resumed_job_id": "79269387-550c-4f7d-ba5b-db4137fe6ab8",
+      "resumed_job_ids": [
+        "79269387-550c-4f7d-ba5b-db4137fe6ab8",
+        "ca26ae6c-2ee9-4594-ad61-2e607001161b"
+      ],
       "rounds": [
         {
           "round": 1,
@@ -98,12 +101,21 @@
           "executable_goals": 220,
           "preserved_frontier": 48,
           "generated": 0
+        },
+        {
+          "round": 3,
+          "depth": 10,
+          "states_explored": 2445,
+          "executable_goals": 436,
+          "preserved_frontier": 48,
+          "generated": 0
         }
       ],
       "cause": "Natural-language geometry was not lowered to executable point, line, reflection, and concyclicity relations.",
       "github_actions": [
         "https://github.com/corcondor/mortra/actions/runs/33577650766",
-        "https://github.com/corcondor/mortra/actions/runs/33577954791"
+        "https://github.com/corcondor/mortra/actions/runs/33577954791",
+        "https://github.com/corcondor/mortra/actions/runs/33578252824"
       ]
     }
   ],
