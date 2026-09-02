@@ -82,7 +82,7 @@ def _parse_normalized_integral_inner_product(
         r"integral\s+_(?P<lower>\([^)]*\)|[^\s*]+)\*\*"
         r"(?P<upper>\([^)]*\)|[^\s*]+)\s*\*?\s*"
         r"(?P<body>[A-Za-z][A-Za-z0-9_]*\*\([A-Za-z]\)"
-        r"(?:\*[A-Za-z][A-Za-z0-9_]*\*\([A-Za-z]\)|\*\*2))\*d"
+        r"(?:\*[A-Za-z][A-Za-z0-9_]*\*\([A-Za-z]\)|\*\*2))\s*\*?\s*d"
         r"(?P<variable>[A-Za-z])"
     )
 

@@ -126,6 +126,9 @@ def _is_plausible_plain_math(candidate: str) -> bool:
 def extract_bare_math_segments(source: str) -> list[str]:
     """Extract bare formulas from prose without selecting a problem family."""
 
+    # TeX spacing commands are presentation-only.  In particular, the comma
+    # in ``\,`` must not be mistaken for a separator between bare formulas.
+    source = re.sub(r"\\(?:[,;:!]|quad\b|qquad\b)", " ", source).replace(r"\ ", " ")
     segments: list[str] = []
     candidate: list[str] = []
 

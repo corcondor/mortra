@@ -69,9 +69,9 @@ class PublicSolveTests(unittest.TestCase):
 
     def test_normalized_inner_product_accepts_corpus_style_braced_bounds(self) -> None:
         status, payload = solve_public_problem(
-            r"\[\frac{\int_{0}^{1} f(x)g(x)\,dx}"
+            r"\frac{\int_{0}^{1} f(x)g(x)\,dx}"
             r"{\sqrt{\int_{0}^{1} f(x)^2\,dx}\sqrt{\int_{0}^{1} g(x)^2\,dx}}"
-            r"=\cos\frac{\pi}{6}\]を満たす関数$f(x),g(x)$を一組求めよ。"
+            r"=\cos\frac{\pi}{6} を満たす関数 f(x),g(x) を一組求め、図示せよ。"
         )
 
         self.assertEqual(status, 200)

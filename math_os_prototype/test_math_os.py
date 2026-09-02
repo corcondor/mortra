@@ -1231,6 +1231,17 @@ class MathOsPrototypeTest(unittest.TestCase):
         self.assertIn("x!=1", parsed.normalized_text)
         self.assertEqual(len(parsed.math_segments), 2)
 
+    def test_bare_latex_spacing_command_does_not_split_a_fraction(self):
+        parsed = parse_latex_problem(
+            r"\frac{\int_{0}^{1} f(x)g(x)\,dx}"
+            r"{\sqrt{\int_{0}^{1} f(x)^2\,dx}\sqrt{\int_{0}^{1} g(x)^2\,dx}}"
+            r"=\cos\frac{\pi}{6} を満たす関数を一組求めよ。"
+        )
+
+        self.assertEqual(len(parsed.math_segments), 1)
+        self.assertIn("integral _0**(1) f*(x)*g*(x) dx", parsed.math_segments[0])
+        self.assertIn("=cos((pi)/(6))", parsed.math_segments[0])
+
     def test_latex_text_macro_style_problem_solves(self):
         problem = (
             r"$\text{実数 }x,y\text{ が }x+y=5\text{ かつ }xy=6"
