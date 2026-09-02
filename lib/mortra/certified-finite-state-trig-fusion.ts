@@ -1,6 +1,11 @@
 import { createHash } from 'node:crypto'
 
 import type { CertifiedFusionCard, CertifiedFusionParent } from './certified-fusion'
+import {
+  enumerateFiniteOrbit,
+  minimalDivisorPeriod,
+  minimalPeriodicStart,
+} from './finite-generated-action'
 
 export type ParsedIntegerSecondOrderRecurrence = {
   parentId: string
@@ -211,23 +216,18 @@ function enumerateOrbit(
   modulus: bigint,
 ): { states: State[]; cycleStart: number; statePeriod: number } | null {
   const maximumStates = Number(modulus * modulus) + 1
-  const states: State[] = []
-  const seen = new Map<string, number>()
-  let state: State = [
-    positiveMod(recurrence.initial[0], modulus),
-    positiveMod(recurrence.initial[1], modulus),
-  ]
-  for (let index = 0; index <= maximumStates; index += 1) {
-    const key = stateKey(state)
-    const previous = seen.get(key)
-    if (previous !== undefined) {
-      return { states, cycleStart: previous, statePeriod: index - previous }
-    }
-    seen.set(key, index)
-    states.push(state)
-    state = nextState(state, recurrence.coefficients, modulus)
-  }
-  return null
+  const orbit = enumerateFiniteOrbit<State>({
+    initial: [
+      positiveMod(recurrence.initial[0], modulus),
+      positiveMod(recurrence.initial[1], modulus),
+    ],
+    next: state => nextState(state, recurrence.coefficients, modulus),
+    key: stateKey,
+    maxStates: maximumStates,
+  })
+  return orbit
+    ? { states: orbit.states, cycleStart: orbit.cycleOffset, statePeriod: orbit.period }
+    : null
 }
 
 function rawPhase(value: bigint, angle: ParsedRationalAngle): bigint {
@@ -248,14 +248,6 @@ function sinePhaseKey(phase: bigint, angle: ParsedRationalAngle): bigint {
 
 function phaseKey(value: bigint, angle: ParsedRationalAngle): bigint {
   return cosinePhaseKey(rawPhase(value, angle), angle)
-}
-
-function divisors(value: number): number[] {
-  const out: number[] = []
-  for (let candidate = 1; candidate <= value; candidate += 1) {
-    if (value % candidate === 0) out.push(candidate)
-  }
-  return out
 }
 
 function stateAt(
@@ -293,27 +285,13 @@ function certifyKeyOrbit(
     angle,
   )
   const cycleKeys = Array.from({ length: statePeriod }, (_, index) => keyAt(cycleStart + index))
-  const observablePeriod = divisors(statePeriod).find(period =>
-    cycleKeys.every((key, index) => key === cycleKeys[(index + period) % statePeriod]),
-  )
-  if (!observablePeriod) return null
-
-  let observableStart = cycleStart
-  for (let candidate = 0; candidate <= cycleStart; candidate += 1) {
-    let valid = true
-    for (let index = candidate; index < cycleStart + statePeriod; index += 1) {
-      const left = keyAt(index)
-      const right = keyAt(index + observablePeriod)
-      if (left !== right) {
-        valid = false
-        break
-      }
-    }
-    if (valid) {
-      observableStart = candidate
-      break
-    }
-  }
+  const observablePeriod = minimalDivisorPeriod(cycleKeys)
+  const observableStart = minimalPeriodicStart({
+    stateCycleStart: cycleStart,
+    observablePeriod,
+    verificationLength: statePeriod,
+    valueAt: keyAt,
+  })
 
   const transition: Matrix2 = [0n, 1n, recurrence.coefficients[1], recurrence.coefficients[0]]
   const cycleState = states[cycleStart]

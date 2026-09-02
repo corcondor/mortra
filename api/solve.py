@@ -36,6 +36,7 @@ from math_os_prototype.cubic_centroid_locus import (
 )
 from math_os_prototype.hilbert_witness_query import execute_hilbert_witness_query
 from math_os_prototype.iteration_query import execute_iteration_query
+from math_os_prototype.latex_frontend import parse_latex_problem
 from math_os_prototype.prime_structure_query import execute_prime_structure_query
 from math_os_prototype.polytope_containment import (
     validate_published_theorem_dependency,
@@ -613,7 +614,13 @@ def _math_chunks(statement: str) -> list[str]:
     chunks: list[str] = []
     for pattern in patterns:
         chunks.extend(match.strip() for match in re.findall(pattern, statement, flags=re.DOTALL))
-    return chunks
+    # The public editor accepts ordinary Japanese prose without requiring
+    # explicit $...$ delimiters.  The deterministic front end identifies the
+    # same mathematical spans, so both input styles must reach the exact
+    # solver through one syntax path.
+    if not chunks:
+        chunks.extend(parse_latex_problem(statement).math_segments)
+    return list(dict.fromkeys(chunk for chunk in chunks if chunk))
 
 
 def _decompose_problem_obligations(statement: str) -> tuple[ProblemObligation, ...]:
@@ -1160,7 +1167,7 @@ def _direct_exact_solve(statement: str) -> ExactSolveOutcome | None:
             )
 
         equation_tex = next((chunk for chunk in chunks if "=" in chunk), None)
-        if equation_tex is not None and ("解け" in normalized or "解を" in normalized):
+        if equation_tex is not None:
             left_tex, right_tex = equation_tex.split("=", 1)
             left = parse_latex(left_tex.replace("−", "-"))
             right = parse_latex(right_tex.replace("−", "-"))
@@ -1168,6 +1175,12 @@ def _direct_exact_solve(statement: str) -> ExactSolveOutcome | None:
             if len(variables) != 1:
                 return None
             variable = variables[0]
+            variable_query = re.search(
+                rf"(?<![A-Za-z0-9_]){re.escape(variable.name)}(?![A-Za-z0-9_])\s*を求め",
+                normalized,
+            )
+            if not ("解け" in normalized or "解を" in normalized or variable_query):
+                return None
             expression = sp.expand(left - right)
             try:
                 polynomial = sp.Poly(expression, variable)
@@ -1252,6 +1265,41 @@ def _direct_exact_solve(statement: str) -> ExactSolveOutcome | None:
                 verification_checks=("各候補を元の等式へ代入し、残差0を確認",),
                 diagram=diagram,
                 diagram_tikz=diagram_tikz,
+                capability_origin="synthesized_expression_program",
+                proof_program=(
+                    {
+                        "rule": "elaborate_univariate_equation",
+                        "variable": variable.name,
+                        "equation": sp.srepr(sp.Eq(left, right)),
+                    },
+                    {
+                        "rule": "normalize_equation_to_zero",
+                        "expression": sp.srepr(expression),
+                    },
+                    {
+                        "rule": "solve_exact_univariate_equation",
+                        "roots": [sp.srepr(root) for root in roots],
+                    },
+                    {
+                        "rule": "replay_roots_in_original_equation",
+                        "residuals": [
+                            sp.srepr(sp.simplify(expression.subs(variable, root)))
+                            for root in roots
+                        ],
+                    },
+                ),
+                hypotheses_evaluated=len(roots),
+                search_depth=4,
+                execution_witness={
+                    "variable": variable.name,
+                    "equation": sp.srepr(sp.Eq(left, right)),
+                    "normalized_expression": sp.srepr(expression),
+                    "roots": [sp.srepr(root) for root in roots],
+                    "residuals": [
+                        sp.srepr(sp.simplify(expression.subs(variable, root)))
+                        for root in roots
+                    ],
+                },
             )
     except Exception:
         return None

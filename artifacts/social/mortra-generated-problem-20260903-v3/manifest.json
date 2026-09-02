@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "generatedAt": "2026-09-02T15:47:36.543Z",
+  "sourceReport": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\benchmarks\\runtime-structural-probes-20260903-v4.json",
+  "caseId": "polynomial-product-base",
+  "family": "runtime.polynomial_root_product",
+  "cardId": "mathos-discovered-096916340094",
+  "exactBackend": true,
+  "independentCheck": true,
+  "completeParentProof": true,
+  "registeredCompositeUsed": false,
+  "statement": "\\(f(x)=x^{3} - 2 x - 2\\), \\(g(x)=x^{2} + x - 1\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かしたとき、\\(\\alpha\\beta\\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。",
+  "answer": "P(z)=z^{6} - 6 z^{4} + 8 z^{3} + 4 z^{2} - 4 z - 4",
+  "domain": "algebraic_geometry",
+  "morphismChain": [
+    "PolynomialConstraintExtraction",
+    "RootConfiguration",
+    "PointwiseProduct",
+    "FiberProduct",
+    "ParameterElimination",
+    "Resultant",
+    "SquareFreeReduction",
+    "NumericRootCounterexampleCheck",
+    "ParentPerturbationAblation"
+  ],
+  "diagram": {
+    "version": 1,
+    "kind": "morphism",
+    "title": "二つの根集合から新しい根集合を作る",
+    "caption": "二つの多項式の根を全て組み合わせ、積を取ってから、終結式で一変数の多項式へ戻します。",
+    "nodes": [
+      "f の根 3 個",
+      "g の根 2 個",
+      "全ての組 6 個",
+      "\\alpha\\beta",
+      "終結式で消去",
+      "重複を除いてモニック化",
+      "P の根 6 個"
+    ]
+  },
+  "proofRoadmap": [
+    "二つの親問題から一変数多項式を読み取る",
+    "二つの根集合の直積を作る",
+    "各組を積へ写す",
+    "片方の根を終結式で消去する",
+    "平方因子を除き、最高次係数を1にする",
+    "全ての数値根を独立に代入して確かめる"
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\social\\mortra-generated-problem-20260903-v3\\instagram-problem.png",
+      "width": 1080,
+      "height": 1350,
+      "replacementCharacters": 0
+    },
+    {
+      "path": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\social\\mortra-generated-problem-20260903-v3\\instagram-solution.png",
+      "width": 1080,
+      "height": 1350,
+      "replacementCharacters": 0
+    },
+    {
+      "path": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\social\\mortra-generated-problem-20260903-v3\\x-problem.png",
+      "width": 1600,
+      "height": 900,
+      "replacementCharacters": 0
+    },
+    {
+      "path": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\social\\mortra-generated-problem-20260903-v3\\x-solution.png",
+      "width": 1600,
+      "height": 900,
+      "replacementCharacters": 0
+    }
+  ]
+}

@@ -561,6 +561,34 @@ export function synthesizePolynomialRootFusions(
             },
             checks: proofCertificate.map(step => `${step.id}: ${step.verifier}`),
           }),
+          diagram: {
+            version: 1,
+            kind: 'morphism',
+            title: '二つの根集合から新しい根集合を作る',
+            caption: `二つの多項式の根を全て組み合わせ、${operationLabel(operation)}を取ってから、終結式で一変数の多項式へ戻します。`,
+            nodes: [
+              `f の根 ${result.degree_left} 個`,
+              `g の根 ${result.degree_right} 個`,
+              `全ての組 ${result.degree_left * result.degree_right} 個`,
+              expression,
+              '終結式で消去',
+              '重複を除いてモニック化',
+              `P の根 ${result.degree_result} 個`,
+            ],
+          },
+          proof_roadmap: [
+            '二つの親問題から一変数多項式を読み取る',
+            '二つの根集合の直積を作る',
+            `各組を${operationLabel(operation)}へ写す`,
+            '片方の根を終結式で消去する',
+            '平方因子を除き、最高次係数を1にする',
+            '全ての数値根を独立に代入して確かめる',
+          ],
+          proof_obligations: proofCertificate.map(step => ({
+            id: step.id,
+            claim_ja: step.claim,
+            status: 'verified',
+          })),
         })
       }
     }

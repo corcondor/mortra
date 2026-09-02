@@ -839,6 +839,24 @@ class PublicSolveTests(unittest.TestCase):
         self.assertIn(r"\frac{1}{4}", card["answer_tex"])
         self.assertFalse(card["execution_certificate"]["registered_composite_used"])
 
+    def test_public_product_solves_plain_japanese_linear_equation_with_diagram(self) -> None:
+        status, payload = solve_public_problem(
+            "実数 t が 17t+5=158 を満たすとき、t を求めよ。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assertEqual(card["answer_tex"], r"\(\left\{9\right\}\)")
+        self.assertEqual(card["diagram"]["kind"], "plane")
+        self.assertIn("17 t - 153", card["solution_tex"])
+        certificate = card["execution_certificate"]
+        self.assertEqual(certificate["capability_origin"], "synthesized_expression_program")
+        self.assertFalse(certificate["registered_composite_used"])
+        self.assertTrue(certificate["verified"])
+        self.assertEqual(certificate["witness"]["roots"], ["Integer(9)"])
+        self.assertEqual(certificate["witness"]["residuals"], ["Integer(0)"])
+        self.assertNotIn("\ufffd", json.dumps(card, ensure_ascii=False, default=str))
+
     def test_rational_angle_power_identity_exports_its_actual_proof_route(self) -> None:
         problem = (
             r"$0<2p<q$ を満たす互いに素な自然数 $p,q$ と自然数 $n\geqq2$ に対し，"

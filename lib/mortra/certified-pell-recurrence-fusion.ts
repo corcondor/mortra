@@ -2,6 +2,11 @@ import { createHash } from 'node:crypto'
 
 import type { CertifiedFusionCard, CertifiedFusionParent } from './certified-fusion'
 import {
+  enumerateFiniteOrbit,
+  minimalDivisorPeriod,
+  minimalPeriodicStart,
+} from './finite-generated-action'
+import {
   certifyIndexedPowerSumTerms,
   certifyPowerSumTail,
   parsePositiveSecondOrderRecurrence,
@@ -102,10 +107,6 @@ export function parsePellOrbit(parent: CertifiedFusionParent): ParsedPellOrbit |
   }
 }
 
-function stateKey(state: ProductState): string {
-  return [state.x, state.y, state.current, state.next].join(',')
-}
-
 function transition(
   state: ProductState,
   pell: ParsedPellOrbit,
@@ -128,32 +129,28 @@ function enumerateProductOrbit(
 ): { rows: StateRow[]; cycleStart: number; period: number } | null {
   const modulus = pell.discriminant
   const [unitX, unitY] = pell.fundamental
-  let state: ProductState = {
-    x: positiveMod(unitX, modulus),
-    y: positiveMod(unitY, modulus),
-    current: positiveMod(recurrence.initial[0], modulus),
-    next: positiveMod(recurrence.initial[1], modulus),
-  }
-  const seen = new Map<string, number>()
-  const rows: StateRow[] = []
-
-  for (let index = 1; index <= 250_000; index += 1) {
-    const key = stateKey(state)
-    const previous = seen.get(key)
-    if (previous !== undefined) {
-      const period = index - previous
-      if (period < 1 || period > 128) return null
-      return { rows, cycleStart: previous, period }
-    }
-    seen.set(key, index)
-    rows.push({
-      index,
+  const orbit = enumerateFiniteOrbit<ProductState>({
+    initial: {
+      x: positiveMod(unitX, modulus),
+      y: positiveMod(unitY, modulus),
+      current: positiveMod(recurrence.initial[0], modulus),
+      next: positiveMod(recurrence.initial[1], modulus),
+    },
+    next: state => transition(state, pell, recurrence),
+    key: state => [state.x, state.y, state.current, state.next].join(','),
+    startIndex: 1,
+    maxStates: 250_000,
+  })
+  if (!orbit || orbit.period > 128) return null
+  return {
+    rows: orbit.states.map((state, offset) => ({
+      index: offset + 1,
       ...state,
       accepted: state.x === state.current,
-    })
-    state = transition(state, pell, recurrence)
+    })),
+    cycleStart: orbit.cycleStart,
+    period: orbit.period,
   }
-  return null
 }
 
 function multiplyMatrix(left: Matrix2, right: Matrix2, modulus: bigint): Matrix2 {
@@ -292,13 +289,7 @@ function minimalObservablePeriod(
   const cycleRows = rows.filter(
     row => row.index >= cycleStart && row.index < cycleStart + statePeriod,
   )
-  for (let candidate = 1; candidate <= statePeriod; candidate += 1) {
-    if (statePeriod % candidate !== 0) continue
-    if (cycleRows.every((row, offset) =>
-      row.accepted === cycleRows[offset % candidate].accepted
-    )) return candidate
-  }
-  return statePeriod
+  return minimalDivisorPeriod(cycleRows.map(row => row.accepted))
 }
 
 function certifyProjectionPeriod(
@@ -314,35 +305,16 @@ function certifyProjectionPeriod(
     const normalized = cycleStart + ((index - cycleStart) % statePeriod + statePeriod) % statePeriod
     return byIndex.get(normalized) ?? ''
   }
-  let period = statePeriod
-  for (let candidate = 1; candidate <= statePeriod; candidate += 1) {
-    if (statePeriod % candidate !== 0) continue
-    let valid = true
-    for (let index = cycleStart; index < cycleStart + statePeriod; index += 1) {
-      if (valueAt(index) !== valueAt(index + candidate)) {
-        valid = false
-        break
-      }
-    }
-    if (valid) {
-      period = candidate
-      break
-    }
-  }
-  let start = cycleStart
-  for (let candidate = 1; candidate <= cycleStart; candidate += 1) {
-    let valid = true
-    for (let index = candidate; index < cycleStart + statePeriod; index += 1) {
-      if (valueAt(index) !== valueAt(index + period)) {
-        valid = false
-        break
-      }
-    }
-    if (valid) {
-      start = candidate
-      break
-    }
-  }
+  const period = minimalDivisorPeriod(
+    Array.from({ length: statePeriod }, (_, offset) => valueAt(cycleStart + offset)),
+  )
+  const start = minimalPeriodicStart({
+    stateCycleStart: cycleStart,
+    observablePeriod: period,
+    verificationLength: statePeriod,
+    minimumStart: 1,
+    valueAt,
+  })
   return {
     start,
     period,

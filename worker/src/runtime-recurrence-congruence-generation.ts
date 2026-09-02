@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto'
 
+import { enumerateFiniteOrbit } from '../../lib/mortra/finite-generated-action'
 import type { DiscoveryParent } from './parent-conditioned-discovery'
 import type { ExecutableFusionCard } from './executable-fusion'
 import { runtimeSynthesisCertificate } from './execution-certificate'
@@ -151,19 +152,15 @@ function buildOrbit(
     canonical(recurrence.initial[1], modulus),
   ]
   for (let index = 0; index < shift; index++) state = nextState(state, recurrence, modulus)
-  const states: Array<readonly [number, number]> = []
-  const seen = new Map<string, number>()
-  while (states.length < maxStates) {
-    const key = `${state[0]},${state[1]}`
-    const previous = seen.get(key)
-    if (previous !== undefined) {
-      return { states, preperiod: previous, period: states.length - previous }
-    }
-    seen.set(key, states.length)
-    states.push(state)
-    state = nextState(state, recurrence, modulus)
-  }
-  return null
+  const orbit = enumerateFiniteOrbit({
+    initial: state,
+    next: current => nextState(current, recurrence, modulus),
+    key: current => `${current[0]},${current[1]}`,
+    maxStates,
+  })
+  return orbit
+    ? { states: orbit.states, preperiod: orbit.cycleOffset, period: orbit.period }
+    : null
 }
 
 function multiplyMatrix(left: number[][], right: number[][], modulus: number): number[][] {

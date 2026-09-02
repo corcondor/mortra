@@ -1,0 +1,124 @@
+{
+  "schema": 1,
+  "purpose": "No expected answers are stored. Each pair probes current-input synthesis and exact recomputation.",
+  "cases": [
+    {
+      "id": "polynomial-product-base",
+      "relation": "baseline",
+      "parents": [
+        { "id": "poly-a", "statement": "実数 α は α^3-2α-2=0 を満たす。" },
+        { "id": "poly-b", "statement": "実数 β は β^2+β-1=0 を満たす。" }
+      ]
+    },
+    {
+      "id": "polynomial-product-mutation",
+      "relation": "recompute",
+      "comparesTo": "polynomial-product-base",
+      "parents": [
+        { "id": "poly-a-mutated", "statement": "実数 α は α^3-3α-1=0 を満たす。" },
+        { "id": "poly-b-mutated", "statement": "実数 β は β^2-β-1=0 を満たす。" }
+      ]
+    },
+    {
+      "id": "polynomial-transport-base",
+      "relation": "baseline",
+      "parents": [
+        { "id": "quintic-orbit", "statement": "方程式 z^5-3z^2+2z-7=0 のすべての根を考える。" },
+        { "id": "fractional-map", "statement": "一次分数変換 T(w)=\\frac{3w-2}{w+2} を考える。" }
+      ]
+    },
+    {
+      "id": "quadratic-expectation-base",
+      "relation": "baseline",
+      "parents": [
+        { "id": "quadratic-form", "statement": "二次形式 q(u,v)=7u^2-4uv+5v^2 を考える。" },
+        { "id": "second-moments", "statement": "確率変数 U,V は E[U]=2, E[V]=-1, Var(U)=3, Var(V)=6, Cov(U,V)=1 を満たす。" }
+      ]
+    },
+    {
+      "id": "quadratic-expectation-mutation",
+      "relation": "recompute",
+      "comparesTo": "quadratic-expectation-base",
+      "parents": [
+        { "id": "quadratic-form-mutated", "statement": "二次形式 q(u,v)=5u^2+6uv+8v^2 を考える。" },
+        { "id": "second-moments-mutated", "statement": "確率変数 U,V は E[U]=1, E[V]=2, Var(U)=4, Var(V)=3, Cov(U,V)=-1 を満たす。" }
+      ]
+    },
+    {
+      "id": "recurrence-congruence-base",
+      "relation": "baseline",
+      "parents": [
+        { "id": "affine-recurrence", "statement": "整数列 {a_n} を a_0=2, a_1=7, a_{n+2}=3a_{n+1}-2a_n+1 で定める。" },
+        { "id": "linear-congruence", "statement": "整数 x について、7x≡3 (mod 17) を満たす剰余類を求めよ。" }
+      ]
+    },
+    {
+      "id": "recurrence-congruence-mutation",
+      "relation": "recompute",
+      "comparesTo": "recurrence-congruence-base",
+      "parents": [
+        { "id": "affine-recurrence-mutated", "statement": "整数列 {a_n} を a_0=4, a_1=9, a_{n+2}=3a_{n+1}-2a_n+1 で定める。" },
+        { "id": "linear-congruence-mutated", "statement": "整数 x について、7x≡5 (mod 17) を満たす剰余類を求めよ。" }
+      ]
+    },
+    {
+      "id": "lattice-pick-base",
+      "relation": "baseline",
+      "parents": [
+        { "id": "pick-invariant", "statement": "格子点を頂点とする単純な凸多角形について、面積、内部格子点数、境界格子点数の関係を証明せよ。" },
+        { "id": "coprime-segment", "statement": "互いに素な正の整数 a,b に対し、直線 ax+by=ab の第1象限内の線分上にある格子点を分類し、その個数を求めよ。" }
+      ]
+    },
+    {
+      "id": "lattice-pick-renamed",
+      "relation": "alpha-equivalent",
+      "comparesTo": "lattice-pick-base",
+      "renames": { "a": "r", "b": "s", "x": "X", "y": "Y" },
+      "parents": [
+        { "id": "pick-invariant-renamed", "statement": "Prove Pick's theorem relating area, interior lattice points, and boundary lattice points of a lattice polygon." },
+        { "id": "coprime-segment-renamed", "statement": "For coprime positive integers r,s, classify the lattice points on the first-quadrant segment rX+sY=rs." }
+      ]
+    },
+    {
+      "id": "primitive-triangle-base",
+      "relation": "baseline",
+      "parents": [
+        { "id": "primitive-triangle", "statement": "直角三角形の3辺の長さを互いに素な自然数とする。" },
+        { "id": "prime-radius", "statement": "三角形の内接円半径と外接円半径の積が素数となる条件を考える。" }
+      ]
+    },
+    {
+      "id": "primitive-triangle-renamed",
+      "relation": "alpha-equivalent",
+      "comparesTo": "primitive-triangle-base",
+      "parents": [
+        { "id": "primitive-triangle-renamed", "statement": "A primitive right triangle has pairwise coprime integer sides." },
+        { "id": "prime-radius-renamed", "statement": "The product of the inradius and circumradius of a triangle is prime." }
+      ]
+    },
+    {
+      "id": "linear-composition-base",
+      "relation": "baseline",
+      "parents": [
+        { "id": "linear-left", "statement": "実数 x,y は x+y=23, x-y=7 を満たす。x を求めよ。" },
+        { "id": "linear-right", "statement": "実数 a,b は 3a+2b=19, a-b=3 を満たす。b を求めよ。" }
+      ]
+    },
+    {
+      "id": "linear-composition-mutation",
+      "relation": "recompute",
+      "comparesTo": "linear-composition-base",
+      "parents": [
+        { "id": "linear-left-mutated", "statement": "実数 x,y は x+y=31, x-y=9 を満たす。x を求めよ。" },
+        { "id": "linear-right-mutated", "statement": "実数 a,b は 3a+2b=29, a-b=4 を満たす。b を求めよ。" }
+      ]
+    },
+    {
+      "id": "linear-single-parent",
+      "relation": "baseline",
+      "parents": [
+        { "id": "single-linear", "statement": "実数 t が 13t-11=67 を満たすとき、t を求めよ。" }
+      ]
+    }
+  ]
+}

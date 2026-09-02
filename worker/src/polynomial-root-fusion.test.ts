@@ -26,6 +26,7 @@ test('constructs a new root-set problem by exact elimination', () => {
   assert.ok(cards.every(card => card.execution_certificate?.registered_composite_used === false))
   assert.ok(cards.every(card => card.statement_tex.includes('\\(f(x)=')))
   assert.ok(cards.every(card => card.solution_tex.includes('\\operatorname{Res}')))
+  assert.ok(cards.every(card => (card.diagram as { kind?: string })?.kind === 'morphism'))
 })
 
 test('renaming variables keeps the same morphism certificate', () => {

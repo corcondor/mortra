@@ -11,16 +11,7 @@ import {
 import { generalizeParents } from './generalization-kernel'
 import { capabilityOrigin } from './execution-certificate'
 import type { ExecutableFusionCard } from './executable-fusion'
-import {
-  supportsPolynomialRootFusion,
-  synthesizePolynomialRootFusions,
-} from './polynomial-root-fusion'
-import { synthesizeRuntimeExpressionProblems } from './runtime-expression-synthesizer'
-import { synthesizeRuntimeLatticePickProblems } from './runtime-lattice-pick-generation'
-import { synthesizeRuntimeLinearProblems } from './runtime-linear-problem-generation'
-import { synthesizeRuntimeQuadraticExpectationProblems } from './runtime-quadratic-expectation-generation'
-import { synthesizeRuntimeRecurrenceCongruenceProblems } from './runtime-recurrence-congruence-generation'
-import { synthesizeRuntimePrimitiveRightTriangleProblems } from './runtime-primitive-right-triangle-generation'
+import { runtimeGenerationEngines } from './runtime-generation-registry'
 
 function directRuntimeGeneration(
   parents: DiscoveryParent[],
@@ -28,98 +19,26 @@ function directRuntimeGeneration(
 ): AutonomousSynthesisResult | null {
   const attempts: StrategyAttempt[] = []
   const cards: ExecutableFusionCard[] = []
-  const record = (
-    strategy: string,
-    applicable: boolean,
-    reason: string,
-    execute: () => ReturnType<typeof synthesizePolynomialRootFusions>,
-  ) => {
-    if (cards.length >= requested) return
+  for (const engine of runtimeGenerationEngines()) {
+    if (cards.length >= requested) break
     const startedAt = Date.now()
-    const generated = applicable
-      ? execute().filter(card => hasCompleteParentProof(card, parents))
+    const result = engine.synthesize(parents, requested - cards.length)
+    const generated = result.applicable
+      ? result.cards.filter(card => hasCompleteParentProof(card, parents))
       : []
     cards.push(...generated.slice(0, requested - cards.length))
     attempts.push({
-      strategy,
+      strategy: engine.id,
       version: 1,
       round: 1,
       depth: 0,
-      applicable,
+      applicable: result.applicable,
       generated: generated.length,
       reason: generated.length
         ? 'current-input typed program and exact certificate closed without structural search'
-        : reason,
+        : result.reason,
       elapsed_ms: Date.now() - startedAt,
     })
-  }
-
-  const polynomial = supportsPolynomialRootFusion(parents)
-  record(
-    'runtime-polynomial-root-generation',
-    polynomial.applicable,
-    polynomial.reason,
-    () => synthesizePolynomialRootFusions(parents, requested - cards.length, 1),
-  )
-
-  if (cards.length < requested) {
-    const quadraticExpectation = synthesizeRuntimeQuadraticExpectationProblems(parents, requested - cards.length)
-    record(
-      'runtime-quadratic-expectation-generation',
-      quadraticExpectation.applicable,
-      quadraticExpectation.reason,
-      () => quadraticExpectation.cards,
-    )
-  }
-
-  if (cards.length < requested) {
-    const recurrenceCongruence = synthesizeRuntimeRecurrenceCongruenceProblems(parents, requested - cards.length)
-    record(
-      'runtime-recurrence-congruence-generation',
-      recurrenceCongruence.applicable,
-      recurrenceCongruence.reason,
-      () => recurrenceCongruence.cards,
-    )
-  }
-
-  if (cards.length < requested) {
-    const latticePick = synthesizeRuntimeLatticePickProblems(parents, requested - cards.length)
-    record(
-      'runtime-lattice-pick-generation',
-      latticePick.applicable,
-      latticePick.reason,
-      () => latticePick.cards,
-    )
-  }
-
-  if (cards.length < requested) {
-    const primitiveRightTriangle = synthesizeRuntimePrimitiveRightTriangleProblems(parents, requested - cards.length)
-    record(
-      'runtime-primitive-right-triangle-generation',
-      primitiveRightTriangle.applicable,
-      primitiveRightTriangle.reason,
-      () => primitiveRightTriangle.cards,
-    )
-  }
-
-  if (cards.length < requested) {
-    const linear = synthesizeRuntimeLinearProblems(parents, requested - cards.length)
-    record(
-      'runtime-linear-problem-generation',
-      linear.applicable,
-      linear.reason,
-      () => linear.cards,
-    )
-  }
-
-  if (cards.length < requested) {
-    const expression = synthesizeRuntimeExpressionProblems(parents, requested - cards.length)
-    record(
-      'runtime-expression-grammar',
-      expression.applicable,
-      expression.reason,
-      () => expression.cards,
-    )
   }
 
   // Partial direct output does not suppress the general search. It is returned

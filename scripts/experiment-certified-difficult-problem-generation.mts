@@ -2,8 +2,13 @@ import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
 import { certifiedFusionKind } from '../lib/mortra/certified-fusion-kind.js'
+import type { CertifiedFusionCard } from '../lib/mortra/certified-fusion.js'
 import { synthesizeCertifiedFusions } from '../lib/mortra/certified-fusion-registry.js'
 import { elaborateCertifiedFusionParent } from '../lib/mortra/certified-fusion-planner.js'
+import {
+  problemStructureFingerprints,
+  selectStructurallyDiverseProblems,
+} from '../lib/mortra/problem-structure-normal-form.js'
 
 type CatalogEntry = {
   id: string
@@ -37,6 +42,9 @@ type Candidate = {
   premiseMinimality: boolean
   reversePlaybackOnly: boolean
   unusedPremiseCount: number
+  kernelFingerprint: string
+  programFingerprint: string
+  taskFingerprint: string
 }
 
 function argument(name: string): string | undefined {
@@ -118,6 +126,7 @@ const catalog = JSON.parse(await readFile(catalogPath, 'utf8')) as { entries: Ca
 const entries = catalog.entries
 const corpusGrams = entries.map(entry => ({ entry, grams: ngrams(entry.statement) }))
 const candidates: Candidate[] = []
+const structuralCards: CertifiedFusionCard[] = []
 const seenCards = new Set<string>()
 
 for (let leftIndex = 0; leftIndex < entries.length; leftIndex += 1) {
@@ -134,6 +143,8 @@ for (let leftIndex = 0; leftIndex < entries.length; leftIndex += 1) {
       const parentSimilarities = [left, right].map(parent => jaccard(cardGrams, ngrams(parent.statement)))
       const corpusSimilarities = corpusGrams.map(item => jaccard(cardGrams, item.grams))
       const audit = card.generation_audit
+      const fingerprints = problemStructureFingerprints(card)
+      structuralCards.push(card)
       candidates.push({
         cardId: card.id,
         family: card.family_id,
@@ -165,6 +176,9 @@ for (let leftIndex = 0; leftIndex < entries.length; leftIndex += 1) {
         premiseMinimality: audit?.checks.premiseMinimality === true,
         reversePlaybackOnly: audit?.reversePlaybackOnly ?? true,
         unusedPremiseCount: audit?.unusedPremiseIds.length ?? -1,
+        kernelFingerprint: fingerprints.kernel,
+        programFingerprint: fingerprints.program,
+        taskFingerprint: fingerprints.task,
       })
     }
   }
@@ -189,6 +203,25 @@ const byProofDepth = [...candidates].sort((left, right) =>
   || right.answerOperationCount - left.answerOperationCount
   || right.corpusSurfaceNovelty - left.corpusSurfaceNovelty,
 )
+const candidateById = new Map(candidates.map(candidate => [candidate.cardId, candidate]))
+const structurallyDiverse = selectStructurallyDiverseProblems(structuralCards, 16)
+  .map(card => candidateById.get(card.id))
+  .filter((candidate): candidate is Candidate => candidate !== undefined)
+const kernelCounts = Object.fromEntries(
+  [...new Set(candidates.map(candidate => candidate.kernelFingerprint))]
+    .sort()
+    .map(signature => [signature, candidates.filter(candidate => candidate.kernelFingerprint === signature).length]),
+)
+const taskCounts = Object.fromEntries(
+  [...new Set(candidates.map(candidate => candidate.taskFingerprint))]
+    .sort()
+    .map(signature => [signature, candidates.filter(candidate => candidate.taskFingerprint === signature).length]),
+)
+const programCounts = Object.fromEntries(
+  [...new Set(candidates.map(candidate => candidate.programFingerprint))]
+    .sort()
+    .map(signature => [signature, candidates.filter(candidate => candidate.programFingerprint === signature).length]),
+)
 
 const report = {
   schema: 1,
@@ -200,6 +233,7 @@ const report = {
     perPairLimit,
     selection: '証明深度・表現数・答えの演算数・90問に対する表層新規性を別々に測り、単一の恣意的総合点へ潰さない',
     proofRequirement: '厳密計算、独立検算、両親依存、交差合成、条件最小性、逆再生拒否のすべて',
+    structuralCounting: '親ID・変数名・数値・答えを除き、実行核、親から実行核への型付き入力形成、問いの3層を別々に数える',
   },
   candidateCount: candidates.length,
   familyCounts,
@@ -207,6 +241,14 @@ const report = {
   distinctCardIdCount: new Set(candidates.map(candidate => candidate.cardId)).size,
   distinctStatementCount: new Set(candidates.map(candidate => canonical(candidate.statement))).size,
   distinctQuestionFormCount: new Set(candidates.map(candidate => candidate.querySignature)).size,
+  distinctKernelCount: Object.keys(kernelCounts).length,
+  distinctProgramCount: Object.keys(programCounts).length,
+  distinctTaskCount: Object.keys(taskCounts).length,
+  surfaceCandidatesPerKernel: rounded(candidates.length / Math.max(1, Object.keys(kernelCounts).length)),
+  kernelCounts,
+  programCounts,
+  taskCounts,
+  structurallyDiverseCardIds: structurallyDiverse.map(candidate => candidate.cardId),
   allAuditsPassed: candidates.every(candidate =>
     candidate.exactBackend
     && candidate.independentCheck
@@ -227,7 +269,21 @@ process.stdout.write(`${JSON.stringify({
   candidateCount: candidates.length,
   familyCounts,
   observableCounts,
+  distinctKernelCount: report.distinctKernelCount,
+  distinctProgramCount: report.distinctProgramCount,
+  distinctTaskCount: report.distinctTaskCount,
+  surfaceCandidatesPerKernel: report.surfaceCandidatesPerKernel,
   allAuditsPassed: report.allAuditsPassed,
+  structurallyDiverse: structurallyDiverse.map(candidate => ({
+    cardId: candidate.cardId,
+    parents: candidate.parents.map(parent => parent.label),
+    family: candidate.family,
+    observable: candidate.observable,
+    difficulty: candidate.declaredDifficulty.score,
+    kernelFingerprint: candidate.kernelFingerprint.slice(0, 12),
+    programFingerprint: candidate.programFingerprint.slice(0, 12),
+    taskFingerprint: candidate.taskFingerprint.slice(0, 12),
+  })),
   paretoFront: paretoFront.map(candidate => ({
     cardId: candidate.cardId,
     parents: candidate.parents.map(parent => parent.label),
