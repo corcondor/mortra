@@ -46,6 +46,8 @@ test('accepts the parents in either order and supports an affine recurrence', ()
   const result = synthesizeRuntimeRecurrenceCongruenceProblems(reversed, 2)
   assert.equal(result.cards.length, 2)
   assert.ok(result.cards.every(card => hasCompleteParentProof(card, reversed)))
+  assert.match(result.cards[0].statement_tex, /b_\{n\+2\}=2b_\{n\+1\}-b_n\+1/)
+  assert.doesNotMatch(result.cards[0].statement_tex, /b_n\+\\\)/)
 })
 
 test('changing either current parent changes the generated certified result', () => {

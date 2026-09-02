@@ -316,3 +316,95 @@ export function problemTaskPrimitiveSet(programs: readonly ProblemTaskAlgebra[])
     programs.some(program => program.operations.some(operation => operation.operator === primitive)),
   )
 }
+
+export const PROBLEM_TASK_CORE_PRIMITIVES = [
+  'transform',
+  'combine',
+  'restrict',
+  'aggregate',
+  'canonicalize',
+] as const
+
+export type ProblemTaskCorePrimitive = typeof PROBLEM_TASK_CORE_PRIMITIVES[number]
+
+export type ProblemTaskCoreOperation = {
+  operator: ProblemTaskCorePrimitive
+  /** The typed law parameter preserves the exact derived operation. */
+  law: ProblemTaskPrimitive
+  output: ProblemTaskValueSort
+}
+
+export type ProblemTaskCoreAlgebra = {
+  schema: 1
+  input: ProblemTaskValueSort
+  operations: ProblemTaskCoreOperation[]
+  output: ProblemTaskValueSort
+  complete: boolean
+  opaqueSignature?: string
+}
+
+const CORE_FAMILY_BY_LAW: Record<ProblemTaskPrimitive, ProblemTaskCorePrimitive> = {
+  transport: 'transform',
+  map: 'transform',
+  pair: 'combine',
+  equalizer: 'restrict',
+  preimage: 'restrict',
+  boundary: 'restrict',
+  fold: 'aggregate',
+  period: 'aggregate',
+  extremum: 'aggregate',
+  eliminate: 'aggregate',
+  contract: 'aggregate',
+  normalize: 'canonicalize',
+}
+
+/**
+ * Quotient the surface task vocabulary by five reusable mathematical laws.
+ * The law parameter is retained, so the quotient is exactly reversible and
+ * does not merge period, integration, elimination, or expectation by name.
+ */
+export function compressProblemTaskAlgebra(program: ProblemTaskAlgebra): ProblemTaskCoreAlgebra {
+  return {
+    schema: 1,
+    input: program.input,
+    operations: program.operations.map(operation => ({
+      operator: CORE_FAMILY_BY_LAW[operation.operator],
+      law: operation.operator,
+      output: operation.output,
+    })),
+    output: program.output,
+    complete: program.complete,
+    ...(program.opaqueSignature ? { opaqueSignature: program.opaqueSignature } : {}),
+  }
+}
+
+export function expandProblemTaskCoreAlgebra(program: ProblemTaskCoreAlgebra): ProblemTaskAlgebra {
+  for (const operation of program.operations) {
+    if (CORE_FAMILY_BY_LAW[operation.law] !== operation.operator) {
+      throw new Error(`task law ${operation.law} does not belong to ${operation.operator}`)
+    }
+  }
+  return {
+    schema: 1,
+    input: program.input,
+    operations: program.operations.map(operation => ({
+      operator: operation.law,
+      output: operation.output,
+    })),
+    output: program.output,
+    complete: program.complete,
+    ...(program.opaqueSignature ? { opaqueSignature: program.opaqueSignature } : {}),
+  }
+}
+
+export function problemTaskCorePrimitiveSet(
+  programs: readonly ProblemTaskCoreAlgebra[],
+): ProblemTaskCorePrimitive[] {
+  return PROBLEM_TASK_CORE_PRIMITIVES.filter(primitive =>
+    programs.some(program => program.operations.some(operation => operation.operator === primitive)),
+  )
+}
+
+export function problemTaskCoreFingerprint(program: ProblemTaskAlgebra): string {
+  return digest(compressProblemTaskAlgebra(program))
+}

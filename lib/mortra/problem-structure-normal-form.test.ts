@@ -181,6 +181,7 @@ test('engine-emitted task algebra does not depend on observable wording', () => 
   assert.equal(leftFingerprint.normalForm.task.algebraOrigin, 'emitted')
   assert.equal(rightFingerprint.normalForm.task.algebraOrigin, 'emitted')
   assert.equal(leftFingerprint.algebra, rightFingerprint.algebra)
+  assert.equal(leftFingerprint.coreAlgebra, rightFingerprint.coreAlgebra)
   assert.equal(leftFingerprint.task, rightFingerprint.task)
 })
 

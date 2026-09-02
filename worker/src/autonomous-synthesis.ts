@@ -33,6 +33,7 @@ import { synthesizeRuntimeLatticePickProblems } from './runtime-lattice-pick-gen
 import { synthesizeRuntimePrimitiveRightTriangleProblems } from './runtime-primitive-right-triangle-generation'
 import {
   supportsPolynomialRootFusion,
+  synthesizePolynomialPairMapFusions,
   synthesizePolynomialRootFusions,
 } from './polynomial-root-fusion'
 import {
@@ -274,6 +275,21 @@ const RUNTIME_POLYNOMIAL_ROOT_GENERATION: SynthesisStrategy = {
   },
 }
 
+const RUNTIME_POLYNOMIAL_PAIR_MAP_GENERATION: SynthesisStrategy = {
+  id: 'runtime-polynomial-pair-map-generation',
+  version: 1,
+  supports(context) {
+    if (context.parents.length !== 2) {
+      return { applicable: false, reason: 'a polynomial pair map requires exactly two current parents' }
+    }
+    const support = supportsPolynomialRootFusion(context.parents)
+    return { applicable: support.applicable, reason: support.reason }
+  },
+  execute(context) {
+    return synthesizePolynomialPairMapFusions(context.parents, context.requested, context.round)
+  },
+}
+
 const RUNTIME_LINEAR_PROBLEM_GENERATION: SynthesisStrategy = {
   id: 'runtime-linear-problem-generation',
   version: 1,
@@ -337,6 +353,7 @@ const RUNTIME_PRIMITIVE_RIGHT_TRIANGLE_GENERATION: SynthesisStrategy = {
 export const DEFAULT_SYNTHESIS_STRATEGIES: readonly SynthesisStrategy[] = [
   ARITHMETIC_GEOMETRY_CEGIS,
   RUNTIME_POLYNOMIAL_ROOT_GENERATION,
+  RUNTIME_POLYNOMIAL_PAIR_MAP_GENERATION,
   RUNTIME_QUADRATIC_EXPECTATION_GENERATION,
   RUNTIME_RECURRENCE_CONGRUENCE_GENERATION,
   RUNTIME_LATTICE_PICK_GENERATION,

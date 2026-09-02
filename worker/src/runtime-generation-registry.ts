@@ -1,7 +1,9 @@
 import type { DiscoveryParent } from './parent-conditioned-discovery'
 import type { ExecutableFusionCard } from './executable-fusion'
 import {
+  polynomialPairMapBasis,
   supportsPolynomialRootFusion,
+  synthesizePolynomialPairMapFusions,
   synthesizePolynomialRootFusions,
 } from './polynomial-root-fusion'
 import { synthesizeRuntimeExpressionProblems } from './runtime-expression-synthesizer'
@@ -36,6 +38,23 @@ const ENGINES: RuntimeGenerationEngine[] = [
         reason: cards.length ? `${cards.length} exact root-set problems synthesized` : support.reason,
         cards,
         hypothesesEvaluated: support.applicable ? 3 : 0,
+      }
+    },
+  },
+  {
+    id: 'runtime-polynomial-pair-map-generation',
+    synthesize: (parents, requested) => {
+      const support = supportsPolynomialRootFusion(parents)
+      const cards = support.applicable
+        ? synthesizePolynomialPairMapFusions(parents, requested, 1)
+        : []
+      return {
+        applicable: cards.length > 0,
+        reason: cards.length
+          ? `${cards.length} exact polynomial pair-map problems synthesized`
+          : support.reason,
+        cards,
+        hypothesesEvaluated: support.applicable ? polynomialPairMapBasis().length : 0,
       }
     },
   },

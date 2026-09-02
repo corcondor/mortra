@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """MORTRA の検証済み問題を X へ投稿する。"""
 import argparse
+import hashlib
 import json
 import os
 import sys
@@ -56,12 +57,78 @@ def _strip_latex_dollars(text: str) -> str:
     text = re.sub(r'\\\(([\s\S]*?)\\\)', r'\1', text)
     return text.strip()
 
+
+def _sha256_file(path: str) -> str:
+    digest = hashlib.sha256()
+    with open(path, 'rb') as source:
+        for chunk in iter(lambda: source.read(1024 * 1024), b''):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _validate_publication_manifest(manifest_path: str, image_paths: list[str]) -> dict:
+    absolute_manifest = os.path.abspath(manifest_path)
+    if not os.path.isfile(absolute_manifest):
+        raise RuntimeError(f"投稿マニフェストが見つかりません: {absolute_manifest}")
+
+    with open(absolute_manifest, encoding='utf-8') as source:
+        manifest = json.load(source)
+
+    if manifest.get('schema') != 3:
+        raise RuntimeError('投稿マニフェストの schema が3ではありません')
+    replay = manifest.get('replayEvidence') or {}
+    if replay.get('status') != 'accepted' or replay.get('errors'):
+        raise RuntimeError('再生証明が accepted ではありません')
+    if replay.get('card_id') != manifest.get('cardId'):
+        raise RuntimeError('再生証明と投稿カードのIDが一致しません')
+
+    manifest_dir = os.path.dirname(absolute_manifest)
+    expected_outputs: dict[str, str] = {}
+    for output in manifest.get('outputs') or []:
+        output_path = output.get('path')
+        expected_sha = output.get('sha256')
+        if not output_path or not expected_sha:
+            continue
+        if not os.path.isabs(output_path):
+            output_path = os.path.join(manifest_dir, output_path)
+        expected_outputs[os.path.normcase(os.path.abspath(output_path))] = expected_sha.lower()
+
+    verified_images = []
+    for image_path in image_paths:
+        absolute_image = os.path.abspath(image_path)
+        key = os.path.normcase(absolute_image)
+        expected_sha = expected_outputs.get(key)
+        if not expected_sha:
+            raise RuntimeError(f"画像が投稿マニフェストにありません: {absolute_image}")
+        actual_sha = _sha256_file(absolute_image)
+        if actual_sha.lower() != expected_sha:
+            raise RuntimeError(
+                f"画像のSHA-256が一致しません: {absolute_image} "
+                f"(expected={expected_sha}, actual={actual_sha})"
+            )
+        verified_images.append({'path': absolute_image, 'sha256': actual_sha})
+
+    return {
+        'path': absolute_manifest,
+        'card_id': manifest.get('cardId'),
+        'replay_sha256': replay.get('replay_sha256'),
+        'verified_images': verified_images,
+    }
+
 def post(
     text: str,
     image_paths: list[str],
     publish: bool = False,
     expected_account: str = 'MORTRA_AI',
+    manifest_path: str | None = None,
 ) -> dict:
+    publication_manifest = None
+    if manifest_path:
+        try:
+            publication_manifest = _validate_publication_manifest(manifest_path, image_paths)
+        except (OSError, ValueError, RuntimeError) as error:
+            return {"ok": False, "error": str(error)}
+
     try:
         x = _credentials()
     except RuntimeError as error:
@@ -120,6 +187,7 @@ def post(
             "text": safe_text,
             "text_length": len(safe_text),
             "images": normalized_paths,
+            "publication_manifest": publication_manifest,
         }
 
     media_ids = None
@@ -134,7 +202,13 @@ def post(
     resp     = client.create_tweet(text=safe_text, media_ids=media_ids)
     tweet_id = resp.data['id']
     url      = f"https://x.com/i/web/status/{tweet_id}"
-    return {"ok": True, "tweet_id": tweet_id, "url": url, "account": account}
+    return {
+        "ok": True,
+        "tweet_id": tweet_id,
+        "url": url,
+        "account": account,
+        "publication_manifest": publication_manifest,
+    }
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -142,6 +216,7 @@ if __name__ == '__main__':
     parser.add_argument('--image-path', action='append', default=[])
     parser.add_argument('--publish', action='store_true', help='実際に投稿する。省略時は検査のみ。')
     parser.add_argument('--expected-account', default=os.environ.get('X_EXPECTED_USERNAME', 'MORTRA_AI'))
+    parser.add_argument('--manifest', help='生成時のSHA-256と再生証明を含む投稿マニフェスト。')
     args = parser.parse_args()
 
     result = post(
@@ -149,6 +224,7 @@ if __name__ == '__main__':
         args.image_path,
         publish=args.publish,
         expected_account=args.expected_account,
+        manifest_path=args.manifest,
     )
     print(json.dumps(result, ensure_ascii=False))
     sys.exit(0 if result['ok'] else 1)

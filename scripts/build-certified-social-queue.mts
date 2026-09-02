@@ -1,6 +1,9 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 
+import { auditPublicationContent } from '../worker/src/publication-content-audit.js'
+import { canonicalSha256 } from '../worker/src/research-evidence-envelope.js'
+
 type JsonRecord = Record<string, unknown>
 
 type Candidate = JsonRecord & {
@@ -85,6 +88,18 @@ function taskPrimitives(candidate: Candidate): string[] {
     .filter(Boolean)
 }
 
+function replayEvidenceErrors(candidate: Candidate): string[] {
+  const replay = candidate.replayEvidence
+  if (!replay || typeof replay !== 'object' || Array.isArray(replay)) return ['missing-replay-evidence']
+  const value = replay as JsonRecord
+  if (value.status !== 'accepted') return ['replay-evidence-not-accepted']
+  if (text(value.card_id) !== candidate.id) return ['replay-card-id-mismatch']
+  const digest = text(value.replay_sha256)
+  if (!/^[0-9a-f]{64}$/.test(digest)) return ['invalid-replay-digest']
+  const { replay_sha256: _digest, ...withoutDigest } = value
+  return canonicalSha256(withoutDigest) === digest ? [] : ['replay-digest-mismatch']
+}
+
 function rejectionReasons(candidate: Candidate, minimumDifficulty: number): string[] {
   const reasons: string[] = []
   if (candidate.taskAlgebraOrigin !== 'emitted') reasons.push('task-program-not-emitted')
@@ -95,11 +110,19 @@ function rejectionReasons(candidate: Candidate, minimumDifficulty: number): stri
   if (candidate.registeredCompositeUsed !== false) reasons.push('registered-composite-used-or-unknown')
   if (candidate.hasDiagram !== true) reasons.push('missing-diagram')
   if (!candidate.statement || !candidate.answer || !candidate.solution) reasons.push('incomplete-publication-content')
+  const contentAudit = auditPublicationContent({
+    statement_tex: candidate.statement,
+    answer_tex: candidate.answer,
+    solution_tex: candidate.solution,
+  })
+  if (!contentAudit.passed) reasons.push('publication-content-audit-failed')
+  reasons.push(...replayEvidenceErrors(candidate))
   if (candidate.difficulty < minimumDifficulty) reasons.push('below-minimum-difficulty')
   return reasons
 }
 
 const defaultReports = [
+  'artifacts/benchmarks/certified-polynomial-map-search-20260903.json',
   'artifacts/benchmarks/certified-social-problem-search-20260903.json',
   'artifacts/benchmarks/runtime-structural-probes-20260903-task-algebra.json',
 ]
@@ -143,7 +166,7 @@ if (!selected.length) throw new Error('no directly emitted, independently verifi
 
 const primitives = [...new Set(selected.flatMap(taskPrimitives))].sort()
 const report = {
-  schema: 1,
+  schema: 2,
   measuredAt: new Date().toISOString(),
   purpose: 'Select structurally distinct MORTRA-generated problems for public release.',
   method: {
@@ -158,6 +181,8 @@ const report = {
       'two-parent dependence proof when applicable',
       'generated diagram and complete solution',
       'no registered composite template',
+      'replayable parent, proof, program, and artifact SHA-256 binding',
+      'publication text and TeX syntax audit',
     ],
   },
   inputReports: reportPaths,

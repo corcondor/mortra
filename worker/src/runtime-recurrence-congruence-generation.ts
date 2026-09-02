@@ -254,7 +254,7 @@ function recurrenceTex(recurrence: RecurrenceSpec): string {
   const signed = (value: number, body: string, first: boolean): string => {
     if (value === 0) return ''
     const magnitude = Math.abs(value)
-    const coefficient = magnitude === 1 ? '' : String(magnitude)
+    const coefficient = magnitude === 1 && body ? '' : String(magnitude)
     if (first) return `${value < 0 ? '-' : ''}${coefficient}${body}`
     return `${value < 0 ? '-' : '+'}${coefficient}${body}`
   }

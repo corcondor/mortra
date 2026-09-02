@@ -1,9 +1,11 @@
 import { createHash } from 'node:crypto'
 
 import {
+  compressProblemTaskAlgebra,
   compileProblemTaskAlgebra,
   normalizeExplicitProblemTaskAlgebra,
   type ProblemTaskAlgebra,
+  type ProblemTaskCoreAlgebra,
 } from './problem-task-algebra'
 
 type StructureBlueprint = {
@@ -88,6 +90,7 @@ export type ProblemStructureNormalForm = {
   task: {
     observable: string
     algebra: ProblemTaskAlgebra
+    coreAlgebra: ProblemTaskCoreAlgebra
     algebraOrigin: 'emitted' | 'inferred'
     morphisms: string[]
     verifiers: string[]
@@ -110,6 +113,8 @@ export type ProblemStructureFingerprints = {
   task: string
   /** The typed question program, independent of the source-domain program. */
   algebra: string
+  /** Five-law quotient of the typed question program. */
+  coreAlgebra: string
 }
 
 function clean(value: unknown): string {
@@ -256,6 +261,7 @@ export function normalizeProblemStructure(card: StructuralProblemCard): ProblemS
       observable: blueprint.observable,
       querySignature: uniqueness?.querySignature,
     })
+  const coreAlgebra = compressProblemTaskAlgebra(algebra)
 
   return {
     schema: 3,
@@ -275,6 +281,7 @@ export function normalizeProblemStructure(card: StructuralProblemCard): ProblemS
     task: {
       observable: clean(blueprint.observable),
       algebra,
+      coreAlgebra,
       algebraOrigin: emittedAlgebra ? 'emitted' : 'inferred',
       morphisms: basisProgram(operators),
       verifiers: sorted((blueprint.proofCertificate ?? []).map(certificate => verifierBasis(certificate.verifier))),
@@ -307,6 +314,7 @@ export function problemStructureFingerprints(card: StructuralProblemCard): Probl
       proofObligations,
     }),
     algebra: digest(normalForm.task.algebra),
+    coreAlgebra: digest(normalForm.task.coreAlgebra),
   }
 }
 

@@ -12,6 +12,7 @@ import {
 } from './execution-certificate'
 import type { ExecutableFusionCard } from './executable-fusion'
 import type { DiscoveryParent } from './parent-conditioned-discovery'
+import { auditPublicationContent } from './publication-content-audit'
 
 export type CardReplayEvidence = {
   schema: 'mortra.card-replay.v1'
@@ -161,6 +162,7 @@ export function replayCardEvidence(
   if (!card.statement_tex.trim()) errors.push('generated statement is empty')
   if (!card.answer_tex.trim()) errors.push('exact answer is empty')
   if (!card.solution_tex.trim()) errors.push('worked solution is empty')
+  errors.push(...auditPublicationContent(card).errors)
   if (card.unresolved !== false || card.discovery_status !== 'verified') {
     errors.push('card is not marked as a verified resolved artifact')
   }

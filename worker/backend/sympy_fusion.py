@@ -50,6 +50,106 @@ def root_composition(left, right, operation):
     return monic_squarefree(sp.resultant(f, transformed, x), z)
 
 
+def parse_pair_map(terms):
+    x, y = sp.symbols("x y")
+    if not isinstance(terms, list) or not terms or len(terms) > 12:
+        raise ValueError("polynomial pair map requires 1 to 12 terms")
+    expression = sp.Integer(0)
+    depends_on_x = False
+    depends_on_y = False
+    for term in terms:
+        if not isinstance(term, dict):
+            raise ValueError("pair-map term must be an object")
+        coefficient = term.get("coefficient")
+        x_power = term.get("left_power")
+        y_power = term.get("right_power")
+        if not isinstance(coefficient, int) or coefficient == 0 or abs(coefficient) > 12:
+            raise ValueError("pair-map coefficients must be nonzero bounded integers")
+        if not isinstance(x_power, int) or not isinstance(y_power, int):
+            raise ValueError("pair-map powers must be integers")
+        if x_power < 0 or y_power < 0 or x_power > 3 or y_power > 3:
+            raise ValueError("pair-map powers exceed the bounded polynomial grammar")
+        expression += coefficient * x ** x_power * y ** y_power
+        depends_on_x = depends_on_x or x_power > 0
+        depends_on_y = depends_on_y or y_power > 0
+    expression = sp.expand(expression)
+    if not depends_on_x or not depends_on_y:
+        raise ValueError("pair map must depend on both parent coordinates")
+    return expression
+
+
+def polynomial_pair_map(left, right, map_expression):
+    x, y, z = sp.symbols("x y z")
+    f = left.as_expr().subs(left.gens[0], x)
+    g = right.as_expr().subs(right.gens[0], y)
+    first = sp.resultant(f, sp.expand(z - map_expression), x)
+    second = sp.resultant(g, first, y)
+    return monic_squarefree(second, z)
+
+
+def polynomial_pair_map_elimination(left, right, map_expression):
+    x, y, z = sp.symbols("x y z")
+    f = left.as_expr().subs(left.gens[0], x)
+    g = right.as_expr().subs(right.gens[0], y)
+    first = sp.expand(sp.resultant(f, sp.expand(z - map_expression), x))
+    second = sp.Poly(sp.expand(sp.resultant(g, first, y)), z, domain=sp.QQ).monic()
+    derivative_gcd = sp.gcd(second, second.diff()).monic()
+    squarefree = second.sqf_part().monic()
+    return first, second, derivative_gcd, squarefree
+
+
+def numeric_pair_map_check(left, right, result, map_expression):
+    x, y = sp.symbols("x y")
+    left_roots = [complex(root) for root in sp.nroots(left.as_expr(), maxsteps=300)]
+    right_roots = [complex(root) for root in sp.nroots(right.as_expr(), maxsteps=300)]
+    result_roots = [complex(root) for root in sp.nroots(result.as_expr(), maxsteps=300)]
+    evaluator = sp.lambdify((x, y), map_expression, "math")
+    expected = [complex(evaluator(a, b)) for a in left_roots for b in right_roots]
+    tolerance = 2e-7
+    expected_is_covered = all(
+        any(abs(value - root) <= tolerance * max(1.0, abs(value)) for root in result_roots)
+        for value in expected
+    )
+    result_has_no_extra_roots = all(
+        any(abs(root - value) <= tolerance * max(1.0, abs(root)) for value in expected)
+        for root in result_roots
+    )
+    return expected_is_covered and result_has_no_extra_roots
+
+
+def polynomial_pair_map_response(left, right, terms):
+    map_expression = parse_pair_map(terms)
+    first, elimination, derivative_gcd, result = polynomial_pair_map_elimination(
+        left, right, map_expression
+    )
+    if not numeric_pair_map_check(left, right, result, map_expression):
+        raise ValueError("independent numerical polynomial-pair-map check failed")
+    left_perturbed = polynomial_pair_map(perturb(left), right, map_expression)
+    right_perturbed = polynomial_pair_map(left, perturb(right), map_expression)
+    if left_perturbed == result or right_perturbed == result:
+        raise ValueError("parent perturbation did not change the polynomial-pair-map result")
+    return {
+        "left": latex_polynomial(left.monic()),
+        "right": latex_polynomial(right.monic()),
+        "result": latex_polynomial(result),
+        "left_sympy": sp.sstr(left.monic().as_expr()),
+        "right_sympy": sp.sstr(right.monic().as_expr()),
+        "result_sympy": sp.sstr(result.as_expr()),
+        "map": sp.latex(map_expression),
+        "map_sympy": sp.sstr(map_expression),
+        "map_terms": terms,
+        "first_resultant": sp.latex(first),
+        "elimination_result": sp.latex(elimination.as_expr(), order="lex"),
+        "elimination_gcd": sp.latex(derivative_gcd.as_expr(), order="lex"),
+        "degree_left": left.degree(),
+        "degree_right": right.degree(),
+        "degree_result": result.degree(),
+        "exact": True,
+        "numeric_check": True,
+        "ablation": True,
+    }
+
+
 def numeric_check(left, right, result, operation):
     left_roots = [complex(root) for root in sp.nroots(left.as_expr(), maxsteps=200)]
     right_roots = [complex(root) for root in sp.nroots(right.as_expr(), maxsteps=200)]
@@ -209,6 +309,15 @@ def main():
         polynomial = parse_polynomial(request["polynomial"])
         json.dump(
             rational_map_orbit(request["map"], polynomial),
+            sys.stdout,
+            ensure_ascii=False,
+        )
+        return
+    if request.get("request") == "polynomial_pair_map":
+        left = parse_polynomial(request["left"])
+        right = parse_polynomial(request["right"])
+        json.dump(
+            polynomial_pair_map_response(left, right, request["map_terms"]),
             sys.stdout,
             ensure_ascii=False,
         )

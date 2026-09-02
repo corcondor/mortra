@@ -21,6 +21,17 @@ import {
 export type PolynomialRootOperation = 'sum' | 'difference' | 'product'
 export type PolynomialRootInvariant = 'trace' | 'norm'
 
+export type PolynomialPairMapTerm = {
+  coefficient: number
+  left_power: number
+  right_power: number
+}
+
+export type PolynomialPairMapSpec = {
+  id: string
+  terms: PolynomialPairMapTerm[]
+}
+
 export type RationalMapInput = {
   parentId: string
   source: string
@@ -87,9 +98,85 @@ export type ExactRationalRootMapResult = {
   error?: never
 }
 
+export type ExactPolynomialPairMapResult = {
+  left: string
+  right: string
+  result: string
+  left_sympy: string
+  right_sympy: string
+  result_sympy: string
+  map: string
+  map_sympy: string
+  map_terms: PolynomialPairMapTerm[]
+  first_resultant: string
+  elimination_result: string
+  elimination_gcd: string
+  degree_left: number
+  degree_right: number
+  degree_result: number
+  exact: true
+  numeric_check: true
+  ablation: true
+  error?: never
+}
+
 const backendCache = new Map<string, ExactPolynomialRootOperationResult | null>()
 const invariantBackendCache = new Map<string, ExactPolynomialRootInvariantResult | null>()
 const rationalMapBackendCache = new Map<string, ExactRationalRootMapResult | null>()
+const polynomialPairMapBackendCache = new Map<string, ExactPolynomialPairMapResult | null>()
+
+function enumeratePolynomialPairMapGrammar(maximum = 4): PolynomialPairMapSpec[] {
+  const monomials: Array<Omit<PolynomialPairMapTerm, 'coefficient'>> = []
+  for (let totalDegree = 0; totalDegree <= 3; totalDegree += 1) {
+    for (let leftPower = totalDegree; leftPower >= 0; leftPower -= 1) {
+      monomials.push({ left_power: leftPower, right_power: totalDegree - leftPower })
+    }
+  }
+  const supports: Array<Array<Omit<PolynomialPairMapTerm, 'coefficient'>>> = []
+  for (let first = 0; first < monomials.length; first += 1) {
+    for (let second = first + 1; second < monomials.length; second += 1) {
+      for (let third = second + 1; third < monomials.length; third += 1) {
+        const support = [monomials[first], monomials[second], monomials[third]]
+        if (!support.some(term => term.left_power > 0) || !support.some(term => term.right_power > 0)) continue
+        if (!support.some(term => term.left_power > 0 && term.right_power > 0)) continue
+        supports.push(support)
+      }
+    }
+  }
+  const supportKey = (support: Array<Omit<PolynomialPairMapTerm, 'coefficient'>>) =>
+    support.map(term => `${term.left_power}:${term.right_power}`).sort().join('|')
+  const score = (support: Array<Omit<PolynomialPairMapTerm, 'coefficient'>>) => {
+    const keys = new Set(support.map(term => `${term.left_power}:${term.right_power}`))
+    const symmetryPenalty = support.filter(term => !keys.has(`${term.right_power}:${term.left_power}`)).length
+    const degrees = support.map(term => term.left_power + term.right_power)
+    const spread = Math.max(...degrees) - Math.min(...degrees)
+    const maximumDegree = Math.max(...degrees)
+    const constantPenalty = support.some(term => term.left_power === 0 && term.right_power === 0) ? 1 : 0
+    return [symmetryPenalty, spread, Math.abs(maximumDegree - 2), constantPenalty, supportKey(support)] as const
+  }
+  supports.sort((left, right) => {
+    const leftScore = score(left)
+    const rightScore = score(right)
+    for (let index = 0; index < leftScore.length - 1; index += 1) {
+      const difference = Number(leftScore[index]) - Number(rightScore[index])
+      if (difference) return difference
+    }
+    return String(leftScore.at(-1)).localeCompare(String(rightScore.at(-1)))
+  })
+  return supports.slice(0, maximum).map(support => ({
+    id: `grammar-map-${supportKey(support).replaceAll(':', '_').replaceAll('|', '-')}`,
+    terms: support.map(term => ({ coefficient: 1, ...term })),
+  }))
+}
+
+const PAIR_MAP_BASIS: readonly PolynomialPairMapSpec[] = enumeratePolynomialPairMapGrammar()
+
+export function polynomialPairMapBasis(): PolynomialPairMapSpec[] {
+  return PAIR_MAP_BASIS.map(map => ({
+    id: map.id,
+    terms: map.terms.map(term => ({ ...term })),
+  }))
+}
 
 function hash(value: unknown, length = 12): string {
   return createHash('sha256').update(JSON.stringify(value)).digest('hex').slice(0, length)
@@ -329,6 +416,68 @@ export function executePolynomialRootOperation(
   return null
 }
 
+function normalizePolynomialPairMap(spec: PolynomialPairMapSpec): PolynomialPairMapSpec | null {
+  if (!spec.id.trim() || !spec.terms.length || spec.terms.length > 12) return null
+  const combined = new Map<string, PolynomialPairMapTerm>()
+  for (const term of spec.terms) {
+    if (!Number.isSafeInteger(term.coefficient) || term.coefficient === 0 || Math.abs(term.coefficient) > 12) return null
+    if (!Number.isSafeInteger(term.left_power) || !Number.isSafeInteger(term.right_power)) return null
+    if (term.left_power < 0 || term.right_power < 0 || term.left_power > 3 || term.right_power > 3) return null
+    const key = `${term.left_power}:${term.right_power}`
+    const coefficient = (combined.get(key)?.coefficient ?? 0) + term.coefficient
+    if (coefficient === 0) combined.delete(key)
+    else combined.set(key, { ...term, coefficient })
+  }
+  const terms = [...combined.values()].sort((left, right) =>
+    right.left_power - left.left_power || right.right_power - left.right_power,
+  )
+  if (!terms.length || !terms.some(term => term.left_power > 0) || !terms.some(term => term.right_power > 0)) return null
+  return { id: spec.id.trim(), terms }
+}
+
+export function executePolynomialPairMap(
+  left: PolynomialInput,
+  right: PolynomialInput,
+  map: PolynomialPairMapSpec,
+): ExactPolynomialPairMapResult | null {
+  const normalizedMap = normalizePolynomialPairMap(map)
+  if (!normalizedMap) return null
+  const cacheKey = JSON.stringify([left.normalized, right.normalized, normalizedMap.terms])
+  if (polynomialPairMapBackendCache.has(cacheKey)) return polynomialPairMapBackendCache.get(cacheKey) ?? null
+  const request = JSON.stringify({
+    request: 'polynomial_pair_map',
+    left: left.normalized,
+    right: right.normalized,
+    map_terms: normalizedMap.terms,
+  })
+  const commands = process.platform === 'win32' ? ['python', 'py'] : ['python3', 'python']
+  for (const command of commands) {
+    const args = command === 'py' ? ['-3', backendPath()] : [backendPath()]
+    const result = spawnSync(command, args, {
+      input: request,
+      encoding: 'utf8',
+      timeout: 120_000,
+      maxBuffer: 8 * 1024 * 1024,
+    })
+    if (result.error && (result.error as NodeJS.ErrnoException).code === 'ENOENT') continue
+    if (!result.stdout) {
+      polynomialPairMapBackendCache.set(cacheKey, null)
+      return null
+    }
+    try {
+      const parsed = JSON.parse(result.stdout) as ExactPolynomialPairMapResult | { error: string }
+      const value = 'error' in parsed ? null : parsed
+      polynomialPairMapBackendCache.set(cacheKey, value)
+      return value
+    } catch {
+      polynomialPairMapBackendCache.set(cacheKey, null)
+      return null
+    }
+  }
+  polynomialPairMapBackendCache.set(cacheKey, null)
+  return null
+}
+
 export function executePolynomialRootInvariant(
   polynomial: PolynomialInput,
   invariant: PolynomialRootInvariant,
@@ -478,7 +627,11 @@ export function synthesizePolynomialRootFusions(
         const morphisms = [
           'PolynomialConstraintExtraction',
           'RootConfiguration',
-          operation === 'sum' ? 'MinkowskiSum' : operation === 'difference' ? 'MinkowskiDifference' : 'PointwiseProduct',
+          operation === 'sum'
+            ? 'RootMinkowskiSum'
+            : operation === 'difference'
+              ? 'RootMinkowskiDifference'
+              : 'RootPointwiseProduct',
           'FiberProduct',
           'ParameterElimination',
           'Resultant',
@@ -621,6 +774,251 @@ P(z)=\operatorname{monic}\!\left(\frac{R(z)}{\gcd(R(z),R'(z))}\right)
           proof_obligations: proofCertificate.map((step, index) => ({
             id: step.id,
             claim_ja: proofClaimsJa[index],
+            status: 'verified',
+          })),
+        })
+      }
+    }
+  }
+  return cards
+}
+
+function pairMapRootTex(source: string): string {
+  return source
+    .replace(/\bx\b/g, '\\alpha')
+    .replace(/\by\b/g, '\\beta')
+}
+
+function pairMapDefinitionTex(source: string): string {
+  return source
+    .replace(/\bx\b/g, 'u')
+    .replace(/\by\b/g, 'v')
+}
+
+function rotatePairMaps(round: number): PolynomialPairMapSpec[] {
+  const basis = polynomialPairMapBasis()
+  const offset = basis.length ? ((round - 1) % basis.length + basis.length) % basis.length : 0
+  return [...basis.slice(offset), ...basis.slice(0, offset)]
+}
+
+/**
+ * Generate questions from one bounded grammar of bivariate polynomial maps.
+ * Individual maps are data; all of them share the same product, map,
+ * elimination, square-free normalization, and verification implementation.
+ */
+export function synthesizePolynomialPairMapFusions(
+  parents: DiscoveryParent[],
+  requested: number,
+  round = 1,
+): ExecutableFusionCard[] {
+  const startedAt = Date.now()
+  const support = supportsPolynomialRootFusion(parents)
+  if (!support.applicable || requested <= 0) return []
+  const cards: ExecutableFusionCard[] = []
+  for (let leftIndex = 0; leftIndex < support.inputs.length; leftIndex += 1) {
+    for (let rightIndex = leftIndex + 1; rightIndex < support.inputs.length; rightIndex += 1) {
+      const left = support.inputs[leftIndex]
+      const right = support.inputs[rightIndex]
+      if (left.parentId === right.parentId) continue
+      for (const map of rotatePairMaps(round)) {
+        if (cards.length >= requested) return cards
+        const result = executePolynomialPairMap(left, right, map)
+        if (!result) continue
+        const parentIds = [left.parentId, right.parentId]
+        const rootExpression = pairMapRootTex(result.map)
+        const mapDefinition = pairMapDefinitionTex(result.map)
+        const structureId = `root-pair-map.${hash({
+          parentIds,
+          left: result.left,
+          right: result.right,
+          terms: result.map_terms,
+        })}`
+        const morphisms = [
+          'PolynomialConstraintExtraction',
+          'RootConfiguration',
+          'CartesianProduct',
+          'BivariatePolynomialMap',
+          'FiberProduct',
+          'ParameterElimination',
+          'IteratedResultant',
+          'SquareFreeReduction',
+          'NumericRootCounterexampleCheck',
+          'ParentPerturbationAblation',
+        ]
+        const proofCertificate = [
+          { id: 'typed-inputs', claim: 'both parents elaborate to univariate polynomial constraints', verifier: 'MathOS typed parser + SymPy Poly(QQ)' },
+          { id: 'cartesian-map', claim: 'the same bivariate polynomial map is applied to every ordered root pair', verifier: 'typed finite-product polynomial map' },
+          { id: 'iterated-resultant', claim: 'two exact eliminations project the mapped zero-dimensional configuration to z', verifier: 'two exact SymPy resultants over QQ' },
+          { id: 'squarefree', claim: 'the output roots are the distinct mapped values', verifier: 'exact square-free monic reduction' },
+          { id: 'numeric-check', claim: 'all numerical pair-map values and output roots cover each other', verifier: 'independent nroots comparison' },
+          { id: 'ablation', claim: 'perturbing either parent changes the output polynomial', verifier: 'two-sided parent perturbation' },
+        ]
+        const obligations = proofCertificate.map(item => item.claim)
+        const answer = `P(z)=${result.result}`
+        const statement = String.raw`\(f(x)=${result.left}\), \(g(x)=${result.right}\), \(H(u,v)=${mapDefinition}\) とする。\(f(\alpha)=0\), \(g(\beta)=0\) を満たす複素数 \(\alpha,\beta\) をすべて動かしたとき、\(H(\alpha,\beta)=${rootExpression}\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。`
+        const solution = String.raw`\(f(x)=0\) の根を \(\alpha\)、\(g(y)=0\) の根を \(\beta\) とする。二変数の写像を
+\[
+H(x,y)=${result.map}
+\]
+とおく。まず \(x\) を消去して
+\[
+A(y,z)=\operatorname{Res}_x\!\left(f(x),z-H(x,y)\right)
+\]
+を作り、次に \(y\) を消去して
+\[
+R(z)=\operatorname{Res}_y\!\left(g(y),A(y,z)\right)
+\]
+とおく。終結式の消去定理により、\(R\) の零点は \(H(\alpha,\beta)\) の値全体に一致する。二段目を有理数係数のまま展開し、モニック化すると
+\[
+R(z)=${result.elimination_result}
+\]
+を得る。さらに \(\gcd(R(z),R'(z))=${result.elimination_gcd}\) だから、平方因子を除いた答えは \(P(z)=${result.result}\) である。全9組の値との相互照合と、左右の親式を別々に変える検査も通過した。`
+        const mapComplexity = result.map_terms.reduce(
+          (sum, term) => sum + 1 + term.left_power + term.right_power,
+          0,
+        )
+        cards.push({
+          id: `mathos-generated-map-${hash([structureId, result.result])}`,
+          family_id: 'runtime.polynomial_pair_map',
+          statement_tex: statement,
+          answer_tex: answer,
+          solution_tex: solution,
+          domain: 'algebraic_geometry',
+          morphism_chain: morphisms,
+          parent_ids: parentIds,
+          unresolved: false,
+          discovery_status: 'verified',
+          verification: {
+            method: 'exact iterated resultants plus independent root-map coverage and parent perturbation',
+            exact_backend: true,
+            independent_check: true,
+            samples: [result.degree_left, result.degree_right, result.degree_result, result.map_terms.length],
+          },
+          difficulty: {
+            band: 'A_algebraic_elimination',
+            score: 7 + result.degree_result + mapComplexity * 0.25,
+          },
+          fusion_derivation: {
+            passed: true,
+            reason: 'both current root configurations are combined by one grammar-generated bivariate polynomial map',
+            ablationPassed: true,
+            assignments: [
+              {
+                parentId: left.parentId,
+                portId: 'left_root_configuration',
+                role: 'object',
+                matchedAnchors: [left.source],
+                witnessSteps: ['PolynomialConstraintExtraction', 'RootConfiguration'],
+                requiredObligations: obligations,
+                consumedObligations: obligations,
+                coverage: 1,
+              },
+              {
+                parentId: right.parentId,
+                portId: 'right_root_configuration',
+                role: 'object',
+                matchedAnchors: [right.source],
+                witnessSteps: ['PolynomialConstraintExtraction', 'RootConfiguration'],
+                requiredObligations: obligations,
+                consumedObligations: obligations,
+                coverage: 1,
+              },
+            ],
+            bridges: [{
+              id: `polynomial-pair-map:${structureId}`,
+              witnessStep: 'BivariatePolynomialMap',
+              consumes: ['left_root_configuration', 'right_root_configuration'],
+              produces: 'MappedAlgebraicConfiguration',
+            }],
+            intermediatePropositions: [
+              { parentId: left.parentId, morphism: 'RootConfiguration', source: 'Polynomial', target: 'FiniteAlgebraicConfiguration', proposition: 'the roots of f form the left finite configuration', proved: true },
+              { parentId: right.parentId, morphism: 'RootConfiguration', source: 'Polynomial', target: 'FiniteAlgebraicConfiguration', proposition: 'the roots of g form the right finite configuration', proved: true },
+            ],
+          },
+          structure_blueprint: {
+            id: structureId,
+            version: 1,
+            kernel: 'polynomial_map_on_product_of_algebraic_configurations',
+            observable: 'minimal_squarefree_polynomial_of_mapped_root_pairs',
+            operators: morphisms,
+            domain: 'algebraic_geometry',
+            tags: ['polynomial', 'root_configuration', 'product', 'polynomial_map', 'resultant'],
+            morphismChain: morphisms,
+            executable: true,
+            proofCertificate,
+            taskAlgebra: {
+              schema: 1,
+              input: 'algebraic-configuration',
+              operations: [
+                { operator: 'pair', output: 'configuration' },
+                { operator: 'map', output: 'configuration' },
+                { operator: 'eliminate', output: 'polynomial' },
+                { operator: 'normalize', output: 'polynomial' },
+              ],
+              output: 'polynomial',
+              complete: true,
+            },
+          },
+          search_evidence: {
+            hypotheses_evaluated: PAIR_MAP_BASIS.length,
+            valid_hypotheses: cards.length + 1,
+            elapsed_ms: Date.now() - startedAt,
+          },
+          execution_certificate: runtimeSynthesisCertificate({
+            origin: 'synthesized_proof_program',
+            parents,
+            generatedProgram: {
+              schema: 'mortra.runtime-polynomial-pair-map.v1',
+              map_id: map.id,
+              map_terms: result.map_terms,
+              left_parent_id: left.parentId,
+              right_parent_id: right.parentId,
+              left_polynomial: result.left,
+              right_polynomial: result.right,
+              generated_resultant: result.result,
+              first_resultant: result.first_resultant,
+              elimination_result: result.elimination_result,
+              elimination_gcd: result.elimination_gcd,
+              exact: result.exact,
+              numeric_root_check: result.numeric_check,
+              whole_parent_ablation: result.ablation,
+              morphism_chain: morphisms,
+            },
+            checks: proofCertificate.map(step => `${step.id}: ${step.verifier}`),
+          }),
+          diagram: {
+            version: 1,
+            kind: 'morphism',
+            title: '根の直積を一つの多項式写像で観測する',
+            caption: '写像を文法から入力し、直積、写像、消去、正規化の同じ証明プログラムを再利用します。',
+            nodes: [
+              `f の根 ${result.degree_left} 個`,
+              `g の根 ${result.degree_right} 個`,
+              `直積 ${result.degree_left * result.degree_right} 組`,
+              `H(x,y) = ${result.map}`,
+              '二段の終結式',
+              '平方因子を除去',
+              `P の根 ${result.degree_result} 個`,
+            ],
+          },
+          proof_roadmap: [
+            { morphism_id: morphisms[0], label_ja: '二つの親式を一変数多項式として読む', source_ja: '現在の二つの親問題', target_ja: '二つの根配置', role_ja: '係数や変数名に依存しない型付き入力を作ります。' },
+            { morphism_id: morphisms[2], label_ja: '二つの根配置の直積を作る', source_ja: '二つの有限根配置', target_ja: '全ての順序付き根の組', role_ja: 'どの根の組も落としません。' },
+            { morphism_id: morphisms[3], label_ja: '同じ多項式写像を全ての組へ作用させる', source_ja: '根の直積', target_ja: 'H の値の有限集合', role_ja: '問題ごとの解法ではなく、係数付き写像を入力として扱います。' },
+            { morphism_id: morphisms[6], label_ja: '二つの根を順に消去する', source_ja: '三変数の代数制約', target_ja: 'z の一変数多項式', role_ja: '有理数係数のまま厳密に計算します。' },
+            { morphism_id: morphisms[7], label_ja: '異なる値を一度ずつ残す', source_ja: '消去多項式', target_ja: '平方因子を持たないモニック多項式', role_ja: '重複と定数倍を正規化します。' },
+            { morphism_id: `${morphisms[8]}+${morphisms[9]}`, label_ja: '全根と両親依存性を独立検査する', source_ja: '生成した多項式', target_ja: '再生可能な証明書', role_ja: '全組の値との相互被覆と二方向の摂動を検査します。' },
+          ],
+          proof_obligations: proofCertificate.map((step, index) => ({
+            id: step.id,
+            claim_ja: [
+              '二つの親問題を一変数多項式として一意に読み取れる。',
+              '全ての順序付き根の組へ同じ二変数多項式を適用している。',
+              '二段の終結式が二つの根変数を厳密に消去する。',
+              '平方因子の除去後の根が相異なる写像値全体と一致する。',
+              '全ての数値的写像値と出力多項式の根が相互に対応する。',
+              'どちらの親多項式を変えても出力が変わる。',
+            ][index],
             status: 'verified',
           })),
         })

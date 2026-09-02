@@ -1,13 +1,17 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
+  executePolynomialPairMap,
   executePolynomialRootInvariant,
   executeRationalMapOnRoots,
   extractPolynomial,
   extractRationalMap,
+  polynomialPairMapBasis,
   supportsPolynomialRootFusion,
+  synthesizePolynomialPairMapFusions,
   synthesizePolynomialRootFusions,
 } from './polynomial-root-fusion'
+import { auditPublicationContent } from './publication-content-audit'
 
 const parents = [
   { id: 'left', statement: '方程式 $x^2-2=0$ の根について考える。' },
@@ -66,6 +70,48 @@ test('abstains unless two distinct parents provide executable polynomial inputs'
   ]
   assert.equal(supportsPolynomialRootFusion(unsupported).applicable, false)
   assert.deepEqual(synthesizePolynomialRootFusions(unsupported, 1), [])
+})
+
+test('applies one generic bivariate polynomial-map proof program to several maps', () => {
+  const cards = synthesizePolynomialPairMapFusions(parents, 4, 1)
+
+  assert.equal(cards.length, 4)
+  assert.equal(new Set(cards.map(card => card.answer_tex)).size, 4)
+  assert.ok(cards.every(card => card.family_id === 'runtime.polynomial_pair_map'))
+  assert.ok(cards.every(card => card.statement_tex.includes('H(u,v)=')))
+  assert.ok(cards.every(card => !/H\(u,v\)=[^)]*\b[xy]\b/.test(card.statement_tex)))
+  assert.ok(cards.every(card => card.solution_tex.includes('\\operatorname{Res}_x')))
+  assert.ok(cards.every(card => card.solution_tex.includes('\\operatorname{Res}_y')))
+  assert.ok(cards.every(card => card.solution_tex.includes('R(z)=')))
+  assert.ok(cards.every(card => card.solution_tex.includes('\\gcd(R(z),R\'(z))=')))
+  assert.ok(cards.every(card => card.verification.exact_backend && card.verification.independent_check))
+  assert.ok(cards.every(card => card.fusion_derivation.ablationPassed))
+  assert.ok(cards.every(card => auditPublicationContent(card).passed))
+  assert.equal(new Set(cards.map(card => card.structure_blueprint.kernel)).size, 1)
+  assert.equal(new Set(cards.map(card => JSON.stringify(card.structure_blueprint.taskAlgebra))).size, 1)
+})
+
+test('recomputes a generic pair map after either parent polynomial changes', () => {
+  const left = extractPolynomial(parents[0], 0)
+  const right = extractPolynomial(parents[1], 1)
+  const changedLeft = extractPolynomial({
+    id: 'left',
+    statement: '方程式 $x^2-5=0$ の根について考える。',
+  }, 0)
+  const map = polynomialPairMapBasis()[1]
+
+  assert.ok(left)
+  assert.ok(right)
+  assert.ok(changedLeft)
+  const original = executePolynomialPairMap(left, right, map)
+  const changed = executePolynomialPairMap(changedLeft, right, map)
+  assert.ok(original)
+  assert.ok(changed)
+  assert.notEqual(changed.result_sympy, original.result_sympy)
+  assert.equal(original.numeric_check, true)
+  assert.equal(changed.numeric_check, true)
+  assert.ok(original.elimination_result.length > 0)
+  assert.ok(original.elimination_gcd.length > 0)
 })
 
 test('computes trace and norm from arbitrary exact polynomial coefficients', () => {

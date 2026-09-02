@@ -1,0 +1,300 @@
+{
+  "schema": 2,
+  "measuredAt": "2026-09-02T22:56:11.520Z",
+  "purpose": "Select structurally distinct MORTRA-generated problems for public release.",
+  "method": {
+    "unit": "typed task program",
+    "deduplication": "one card per taskAlgebraFingerprint",
+    "minimumDifficulty": 8,
+    "maximum": 1,
+    "required": [
+      "engine-emitted typed task program",
+      "exact backend certificate",
+      "independent answer check",
+      "two-parent dependence proof when applicable",
+      "generated diagram and complete solution",
+      "no registered composite template",
+      "replayable parent, proof, program, and artifact SHA-256 binding",
+      "publication text and TeX syntax audit"
+    ]
+  },
+  "inputReports": [
+    "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\benchmarks\\certified-polynomial-map-search-20260903.json"
+  ],
+  "candidateCount": 1,
+  "eligibleCount": 1,
+  "rejectedCounts": {},
+  "selectedCount": 1,
+  "selectedTaskAlgebraCount": 1,
+  "taskPrimitiveCount": 4,
+  "taskPrimitives": [
+    "eliminate",
+    "map",
+    "normalize",
+    "pair"
+  ],
+  "cases": [
+    {
+      "id": "publication-01",
+      "sourceReport": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\benchmarks\\certified-polynomial-map-search-20260903.json",
+      "sourceCaseId": "fresh-certified-polynomial-map",
+      "cards": [
+        {
+          "id": "mathos-generated-map-adf417b609f1",
+          "engine": "runtime-polynomial-pair-map-generation",
+          "family": "runtime.polynomial_pair_map",
+          "statement": "\\(f(x)=x^{3} - x - 1\\), \\(g(x)=x^{3} + x - 1\\), \\(H(u,v)=u^{2} + u v + v^{2}\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かしたとき、\\(H(\\alpha,\\beta)=\\alpha^{2} + \\alpha \\beta + \\beta^{2}\\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。",
+          "answer": "P(z)=z^{9} - 27 z^{6} - 2 z^{5} - 27 z^{4} - 9 z^{2} + z - 1",
+          "solution": "\\(f(x)=0\\) の根を \\(\\alpha\\)、\\(g(y)=0\\) の根を \\(\\beta\\) とする。二変数の写像を\n\\[\nH(x,y)=x^{2} + x y + y^{2}\n\\]\nとおく。まず \\(x\\) を消去して\n\\[\nA(y,z)=\\operatorname{Res}_x\\!\\left(f(x),z-H(x,y)\\right)\n\\]\nを作り、次に \\(y\\) を消去して\n\\[\nR(z)=\\operatorname{Res}_y\\!\\left(g(y),A(y,z)\\right)\n\\]\nとおく。終結式の消去定理により、\\(R\\) の零点は \\(H(\\alpha,\\beta)\\) の値全体に一致する。二段目を有理数係数のまま展開し、モニック化すると\n\\[\nR(z)=z^{9} - 27 z^{6} - 2 z^{5} - 27 z^{4} - 9 z^{2} + z - 1\n\\]\nを得る。さらに \\(\\gcd(R(z),R'(z))=1\\) だから、平方因子を除いた答えは \\(P(z)=z^{9} - 27 z^{6} - 2 z^{5} - 27 z^{4} - 9 z^{2} + z - 1\\) である。全9組の値との相互照合と、左右の親式を別々に変える検査も通過した。",
+          "domain": "algebraic_geometry",
+          "morphismChain": [
+            "PolynomialConstraintExtraction",
+            "RootConfiguration",
+            "CartesianProduct",
+            "BivariatePolynomialMap",
+            "FiberProduct",
+            "ParameterElimination",
+            "IteratedResultant",
+            "SquareFreeReduction",
+            "NumericRootCounterexampleCheck",
+            "ParentPerturbationAblation"
+          ],
+          "structureBlueprint": {
+            "id": "root-pair-map.4f845f7638b7",
+            "version": 1,
+            "kernel": "polynomial_map_on_product_of_algebraic_configurations",
+            "observable": "minimal_squarefree_polynomial_of_mapped_root_pairs",
+            "operators": [
+              "PolynomialConstraintExtraction",
+              "RootConfiguration",
+              "CartesianProduct",
+              "BivariatePolynomialMap",
+              "FiberProduct",
+              "ParameterElimination",
+              "IteratedResultant",
+              "SquareFreeReduction",
+              "NumericRootCounterexampleCheck",
+              "ParentPerturbationAblation"
+            ],
+            "domain": "algebraic_geometry",
+            "tags": [
+              "polynomial",
+              "root_configuration",
+              "product",
+              "polynomial_map",
+              "resultant"
+            ],
+            "morphismChain": [
+              "PolynomialConstraintExtraction",
+              "RootConfiguration",
+              "CartesianProduct",
+              "BivariatePolynomialMap",
+              "FiberProduct",
+              "ParameterElimination",
+              "IteratedResultant",
+              "SquareFreeReduction",
+              "NumericRootCounterexampleCheck",
+              "ParentPerturbationAblation"
+            ],
+            "executable": true,
+            "proofCertificate": [
+              {
+                "id": "typed-inputs",
+                "claim": "both parents elaborate to univariate polynomial constraints",
+                "verifier": "MathOS typed parser + SymPy Poly(QQ)"
+              },
+              {
+                "id": "cartesian-map",
+                "claim": "the same bivariate polynomial map is applied to every ordered root pair",
+                "verifier": "typed finite-product polynomial map"
+              },
+              {
+                "id": "iterated-resultant",
+                "claim": "two exact eliminations project the mapped zero-dimensional configuration to z",
+                "verifier": "two exact SymPy resultants over QQ"
+              },
+              {
+                "id": "squarefree",
+                "claim": "the output roots are the distinct mapped values",
+                "verifier": "exact square-free monic reduction"
+              },
+              {
+                "id": "numeric-check",
+                "claim": "all numerical pair-map values and output roots cover each other",
+                "verifier": "independent nroots comparison"
+              },
+              {
+                "id": "ablation",
+                "claim": "perturbing either parent changes the output polynomial",
+                "verifier": "two-sided parent perturbation"
+              }
+            ],
+            "taskAlgebra": {
+              "schema": 1,
+              "input": "algebraic-configuration",
+              "operations": [
+                {
+                  "operator": "pair",
+                  "output": "configuration"
+                },
+                {
+                  "operator": "map",
+                  "output": "configuration"
+                },
+                {
+                  "operator": "eliminate",
+                  "output": "polynomial"
+                },
+                {
+                  "operator": "normalize",
+                  "output": "polynomial"
+                }
+              ],
+              "output": "polynomial",
+              "complete": true
+            }
+          },
+          "diagram": {
+            "version": 1,
+            "kind": "morphism",
+            "title": "根の直積を一つの多項式写像で観測する",
+            "caption": "写像を文法から入力し、直積、写像、消去、正規化の同じ証明プログラムを再利用します。",
+            "nodes": [
+              "f の根 3 個",
+              "g の根 3 個",
+              "直積 9 組",
+              "H(x,y) = x^{2} + x y + y^{2}",
+              "二段の終結式",
+              "平方因子を除去",
+              "P の根 9 個"
+            ]
+          },
+          "proofRoadmap": [
+            {
+              "morphism_id": "PolynomialConstraintExtraction",
+              "label_ja": "二つの親式を一変数多項式として読む",
+              "source_ja": "現在の二つの親問題",
+              "target_ja": "二つの根配置",
+              "role_ja": "係数や変数名に依存しない型付き入力を作ります。"
+            },
+            {
+              "morphism_id": "CartesianProduct",
+              "label_ja": "二つの根配置の直積を作る",
+              "source_ja": "二つの有限根配置",
+              "target_ja": "全ての順序付き根の組",
+              "role_ja": "どの根の組も落としません。"
+            },
+            {
+              "morphism_id": "BivariatePolynomialMap",
+              "label_ja": "同じ多項式写像を全ての組へ作用させる",
+              "source_ja": "根の直積",
+              "target_ja": "H の値の有限集合",
+              "role_ja": "問題ごとの解法ではなく、係数付き写像を入力として扱います。"
+            },
+            {
+              "morphism_id": "IteratedResultant",
+              "label_ja": "二つの根を順に消去する",
+              "source_ja": "三変数の代数制約",
+              "target_ja": "z の一変数多項式",
+              "role_ja": "有理数係数のまま厳密に計算します。"
+            },
+            {
+              "morphism_id": "SquareFreeReduction",
+              "label_ja": "異なる値を一度ずつ残す",
+              "source_ja": "消去多項式",
+              "target_ja": "平方因子を持たないモニック多項式",
+              "role_ja": "重複と定数倍を正規化します。"
+            },
+            {
+              "morphism_id": "NumericRootCounterexampleCheck+ParentPerturbationAblation",
+              "label_ja": "全根と両親依存性を独立検査する",
+              "source_ja": "生成した多項式",
+              "target_ja": "再生可能な証明書",
+              "role_ja": "全組の値との相互被覆と二方向の摂動を検査します。"
+            }
+          ],
+          "proofObligations": [
+            {
+              "id": "typed-inputs",
+              "claim_ja": "二つの親問題を一変数多項式として一意に読み取れる。",
+              "status": "verified"
+            },
+            {
+              "id": "cartesian-map",
+              "claim_ja": "全ての順序付き根の組へ同じ二変数多項式を適用している。",
+              "status": "verified"
+            },
+            {
+              "id": "iterated-resultant",
+              "claim_ja": "二段の終結式が二つの根変数を厳密に消去する。",
+              "status": "verified"
+            },
+            {
+              "id": "squarefree",
+              "claim_ja": "平方因子の除去後の根が相異なる写像値全体と一致する。",
+              "status": "verified"
+            },
+            {
+              "id": "numeric-check",
+              "claim_ja": "全ての数値的写像値と出力多項式の根が相互に対応する。",
+              "status": "verified"
+            },
+            {
+              "id": "ablation",
+              "claim_ja": "どちらの親多項式を変えても出力が変わる。",
+              "status": "verified"
+            }
+          ],
+          "hasDiagram": true,
+          "difficulty": 18.25,
+          "verificationMethod": "exact iterated resultants plus independent root-map coverage and parent perturbation",
+          "exactBackend": true,
+          "independentCheck": true,
+          "completeParentProof": true,
+          "capabilityOrigin": "synthesized_proof_program",
+          "registeredCompositeUsed": false,
+          "taskFingerprint": "c78a20e3e161dda748d095a7c263ba7eab97330b4d74ee24fb8ee7b9f34d7333",
+          "taskAlgebraFingerprint": "59c2bac6a041c61ebab1f9fe3fd8713fe7c8877ccd8edd1e75e87f02387600c4",
+          "coreAlgebraFingerprint": "a7956536fe1c342045099bebc7f80f46c15dae18e5082dbc57335d4ec16f7a12",
+          "taskAlgebraOrigin": "emitted",
+          "mapId": "grammar-map-0_2-1_1-2_0",
+          "resultDegree": 9,
+          "termCount": 7,
+          "maximumCoefficient": 27,
+          "corpusSurfaceNovelty": 0.926471,
+          "replayEvidence": {
+            "schema": "mortra.card-replay.v1",
+            "card_id": "mathos-generated-map-adf417b609f1",
+            "status": "accepted",
+            "errors": [],
+            "capability_origin": "synthesized_proof_program",
+            "parent_ids": [
+              "pair-4-parent-1",
+              "pair-4-parent-2"
+            ],
+            "input_binding_sha256": "156167c1d0ed756ed10e6652d77d4702fc0781607349c4f264327da7867a1c35",
+            "artifact_sha256": "a99b3df9a76f018810b2ff3f0303d546fba2e03c8efbcd3074f003471530ef37",
+            "proof_sha256": "add3610f7975aa30a622ef1f774e249ba7cea28e74a4a9e306264a9188989810",
+            "execution_certificate_sha256": "19efca0939bcf4bba9ca1dd20f352c90560e769915e4195693e5fd363c509f39",
+            "generated_program_sha256": "931d2339f1b88e3ffe0a7388e6f8522445067bc81c6994c8b31fb447b5c83b7d",
+            "replay_sha256": "5bac640d964cbfd71e021f36af529c1087b3cd080cb0abd514065be8000c6b58"
+          },
+          "parents": [
+            {
+              "id": "pair-4-parent-1",
+              "statement": "方程式 \\(x^3-x-1=0\\) のすべての複素数解を考える。"
+            },
+            {
+              "id": "pair-4-parent-2",
+              "statement": "方程式 \\(x^3+x-1=0\\) のすべての複素数解を考える。"
+            }
+          ],
+          "caseId": "fresh-certified-polynomial-map",
+          "sourceReport": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\benchmarks\\certified-polynomial-map-search-20260903.json",
+          "publicationRank": 1,
+          "publicationState": "awaiting-action-time-confirmation"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,320 @@
+{
+  "schema": 3,
+  "generatedAt": "2026-09-02T22:57:19.873Z",
+  "sourceReport": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\social\\mortra-polynomial-map-queue-20260903.json",
+  "caseId": "publication-01",
+  "family": "runtime.polynomial_pair_map",
+  "cardId": "mathos-generated-map-adf417b609f1",
+  "exactBackend": true,
+  "independentCheck": true,
+  "completeParentProof": true,
+  "registeredCompositeUsed": false,
+  "taskAlgebraOrigin": "emitted",
+  "taskAlgebraFingerprint": "59c2bac6a041c61ebab1f9fe3fd8713fe7c8877ccd8edd1e75e87f02387600c4",
+  "taskAlgebra": {
+    "schema": 1,
+    "input": "algebraic-configuration",
+    "operations": [
+      {
+        "operator": "pair",
+        "output": "configuration"
+      },
+      {
+        "operator": "map",
+        "output": "configuration"
+      },
+      {
+        "operator": "eliminate",
+        "output": "polynomial"
+      },
+      {
+        "operator": "normalize",
+        "output": "polynomial"
+      }
+    ],
+    "output": "polynomial",
+    "complete": true
+  },
+  "replayEvidence": {
+    "schema": "mortra.card-replay.v1",
+    "card_id": "mathos-generated-map-adf417b609f1",
+    "status": "accepted",
+    "errors": [],
+    "capability_origin": "synthesized_proof_program",
+    "parent_ids": [
+      "pair-4-parent-1",
+      "pair-4-parent-2"
+    ],
+    "input_binding_sha256": "156167c1d0ed756ed10e6652d77d4702fc0781607349c4f264327da7867a1c35",
+    "artifact_sha256": "a99b3df9a76f018810b2ff3f0303d546fba2e03c8efbcd3074f003471530ef37",
+    "proof_sha256": "add3610f7975aa30a622ef1f774e249ba7cea28e74a4a9e306264a9188989810",
+    "execution_certificate_sha256": "19efca0939bcf4bba9ca1dd20f352c90560e769915e4195693e5fd363c509f39",
+    "generated_program_sha256": "931d2339f1b88e3ffe0a7388e6f8522445067bc81c6994c8b31fb447b5c83b7d",
+    "replay_sha256": "5bac640d964cbfd71e021f36af529c1087b3cd080cb0abd514065be8000c6b58"
+  },
+  "statement": "\\(f(x)=x^{3} - x - 1\\), \\(g(x)=x^{3} + x - 1\\), \\(H(u,v)=u^{2} + u v + v^{2}\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かしたとき、\\(H(\\alpha,\\beta)=\\alpha^{2} + \\alpha \\beta + \\beta^{2}\\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。",
+  "answer": "P(z)=z^{9} - 27 z^{6} - 2 z^{5} - 27 z^{4} - 9 z^{2} + z - 1",
+  "solution": "\\(f(x)=0\\) の根を \\(\\alpha\\)、\\(g(y)=0\\) の根を \\(\\beta\\) とする。二変数の写像を\n\\[\nH(x,y)=x^{2} + x y + y^{2}\n\\]\nとおく。まず \\(x\\) を消去して\n\\[\nA(y,z)=\\operatorname{Res}_x\\!\\left(f(x),z-H(x,y)\\right)\n\\]\nを作り、次に \\(y\\) を消去して\n\\[\nR(z)=\\operatorname{Res}_y\\!\\left(g(y),A(y,z)\\right)\n\\]\nとおく。終結式の消去定理により、\\(R\\) の零点は \\(H(\\alpha,\\beta)\\) の値全体に一致する。二段目を有理数係数のまま展開し、モニック化すると\n\\[\nR(z)=z^{9} - 27 z^{6} - 2 z^{5} - 27 z^{4} - 9 z^{2} + z - 1\n\\]\nを得る。さらに \\(\\gcd(R(z),R'(z))=1\\) だから、平方因子を除いた答えは \\(P(z)=z^{9} - 27 z^{6} - 2 z^{5} - 27 z^{4} - 9 z^{2} + z - 1\\) である。全9組の値との相互照合と、左右の親式を別々に変える検査も通過した。",
+  "domain": "algebraic_geometry",
+  "morphismChain": [
+    "PolynomialConstraintExtraction",
+    "RootConfiguration",
+    "CartesianProduct",
+    "BivariatePolynomialMap",
+    "FiberProduct",
+    "ParameterElimination",
+    "IteratedResultant",
+    "SquareFreeReduction",
+    "NumericRootCounterexampleCheck",
+    "ParentPerturbationAblation"
+  ],
+  "diagram": {
+    "version": 1,
+    "kind": "morphism",
+    "title": "根の直積を一つの多項式写像で観測する",
+    "caption": "写像を文法から入力し、直積、写像、消去、正規化の同じ証明プログラムを再利用します。",
+    "nodes": [
+      "f の根 3 個",
+      "g の根 3 個",
+      "直積 9 組",
+      "H(x,y) = x^{2} + x y + y^{2}",
+      "二段の終結式",
+      "平方因子を除去",
+      "P の根 9 個"
+    ]
+  },
+  "proofRoadmap": [
+    {
+      "morphism_id": "PolynomialConstraintExtraction",
+      "label_ja": "二つの親式を一変数多項式として読む",
+      "source_ja": "現在の二つの親問題",
+      "target_ja": "二つの根配置",
+      "role_ja": "係数や変数名に依存しない型付き入力を作ります。"
+    },
+    {
+      "morphism_id": "CartesianProduct",
+      "label_ja": "二つの根配置の直積を作る",
+      "source_ja": "二つの有限根配置",
+      "target_ja": "全ての順序付き根の組",
+      "role_ja": "どの根の組も落としません。"
+    },
+    {
+      "morphism_id": "BivariatePolynomialMap",
+      "label_ja": "同じ多項式写像を全ての組へ作用させる",
+      "source_ja": "根の直積",
+      "target_ja": "H の値の有限集合",
+      "role_ja": "問題ごとの解法ではなく、係数付き写像を入力として扱います。"
+    },
+    {
+      "morphism_id": "IteratedResultant",
+      "label_ja": "二つの根を順に消去する",
+      "source_ja": "三変数の代数制約",
+      "target_ja": "z の一変数多項式",
+      "role_ja": "有理数係数のまま厳密に計算します。"
+    },
+    {
+      "morphism_id": "SquareFreeReduction",
+      "label_ja": "異なる値を一度ずつ残す",
+      "source_ja": "消去多項式",
+      "target_ja": "平方因子を持たないモニック多項式",
+      "role_ja": "重複と定数倍を正規化します。"
+    },
+    {
+      "morphism_id": "NumericRootCounterexampleCheck+ParentPerturbationAblation",
+      "label_ja": "全根と両親依存性を独立検査する",
+      "source_ja": "生成した多項式",
+      "target_ja": "再生可能な証明書",
+      "role_ja": "全組の値との相互被覆と二方向の摂動を検査します。"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\social\\mortra-polynomial-map-20260903\\instagram-problem.png",
+      "sha256": "301ef15fa19b9cc2fccb7910059719ec55efd44b76f765fdcab0af98d84b2b7d",
+      "width": 1080,
+      "height": 1350,
+      "layout": {
+        "width": 1080,
+        "height": 1350,
+        "scrollX": 0,
+        "scrollY": 0,
+        "replacementCharacters": 0,
+        "regions": {
+          "header": {
+            "top": 64,
+            "right": 1016,
+            "bottom": 120,
+            "left": 64
+          },
+          "main": {
+            "top": 120,
+            "right": 1016,
+            "bottom": 1234,
+            "left": 64
+          },
+          "primary": {
+            "top": 181.36,
+            "right": 1016,
+            "bottom": 521.45,
+            "left": 64
+          },
+          "secondary": {
+            "top": 664.41,
+            "right": 1016,
+            "bottom": 1164.41,
+            "left": 64
+          },
+          "footer": {
+            "top": 1287,
+            "right": 1016,
+            "bottom": 1304,
+            "left": 64
+          }
+        },
+        "clipped": [],
+        "overlaps": []
+      }
+    },
+    {
+      "path": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\social\\mortra-polynomial-map-20260903\\instagram-solution.png",
+      "sha256": "7888c9b857fb892aafa1cc7a4f52b821e843ea2ee7463bda0d15231e8e6a2207",
+      "width": 1080,
+      "height": 1350,
+      "layout": {
+        "width": 1080,
+        "height": 1350,
+        "scrollX": 0,
+        "scrollY": 0,
+        "replacementCharacters": 0,
+        "regions": {
+          "header": {
+            "top": 64,
+            "right": 1016,
+            "bottom": 120,
+            "left": 64
+          },
+          "main": {
+            "top": 120,
+            "right": 1016,
+            "bottom": 1234,
+            "left": 64
+          },
+          "primary": {
+            "top": 159.53,
+            "right": 1016,
+            "bottom": 854.97,
+            "left": 64
+          },
+          "secondary": {
+            "top": 878.97,
+            "right": 1016,
+            "bottom": 1194.47,
+            "left": 64
+          },
+          "footer": {
+            "top": 1287,
+            "right": 1016,
+            "bottom": 1304,
+            "left": 64
+          }
+        },
+        "clipped": [],
+        "overlaps": []
+      }
+    },
+    {
+      "path": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\social\\mortra-polynomial-map-20260903\\x-problem.png",
+      "sha256": "119e0d1f83cd4aa82ebcb12e6b1ab16d0043bcf73931235706867f77aef75393",
+      "width": 1600,
+      "height": 900,
+      "layout": {
+        "width": 1600,
+        "height": 900,
+        "scrollX": 0,
+        "scrollY": 0,
+        "replacementCharacters": 0,
+        "regions": {
+          "header": {
+            "top": 48,
+            "right": 1530,
+            "bottom": 104,
+            "left": 70
+          },
+          "main": {
+            "top": 104,
+            "right": 1530,
+            "bottom": 798,
+            "left": 70
+          },
+          "primary": {
+            "top": 273.41,
+            "right": 688.63,
+            "bottom": 628.59,
+            "left": 70
+          },
+          "secondary": {
+            "top": 156,
+            "right": 1530,
+            "bottom": 746,
+            "left": 742.63
+          },
+          "footer": {
+            "top": 849,
+            "right": 1530,
+            "bottom": 866,
+            "left": 70
+          }
+        },
+        "clipped": [],
+        "overlaps": []
+      }
+    },
+    {
+      "path": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\social\\mortra-polynomial-map-20260903\\x-solution.png",
+      "sha256": "cdf114c97c2e9dfddf8d9e84f71406ddf40b755e0bc1aacb9409c8130c9a1288",
+      "width": 1600,
+      "height": 900,
+      "layout": {
+        "width": 1600,
+        "height": 900,
+        "scrollX": 0,
+        "scrollY": 0,
+        "replacementCharacters": 0,
+        "regions": {
+          "header": {
+            "top": 48,
+            "right": 1530,
+            "bottom": 104,
+            "left": 70
+          },
+          "main": {
+            "top": 104,
+            "right": 1530,
+            "bottom": 798,
+            "left": 70
+          },
+          "primary": {
+            "top": 136.69,
+            "right": 713.08,
+            "bottom": 765.3,
+            "left": 70
+          },
+          "secondary": {
+            "top": 285.75,
+            "right": 1530,
+            "bottom": 616.25,
+            "left": 775.08
+          },
+          "footer": {
+            "top": 849,
+            "right": 1530,
+            "bottom": 866,
+            "left": 70
+          }
+        },
+        "clipped": [],
+        "overlaps": []
+      }
+    }
+  ]
+}

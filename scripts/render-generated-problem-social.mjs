@@ -1,4 +1,5 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { createHash } from 'node:crypto'
 import { createRequire } from 'node:module'
 import { homedir } from 'node:os'
 import { dirname, resolve } from 'node:path'
@@ -83,6 +84,14 @@ function hasDirectTaskProgram(card) {
     && taskAlgebra.operations.length > 0
 }
 
+function hasReplayEvidence(card) {
+  const replay = record(card.replayEvidence)
+  return replay.status === 'accepted'
+    && replay.card_id === card.id
+    && typeof replay.replay_sha256 === 'string'
+    && /^[0-9a-f]{64}$/.test(replay.replay_sha256)
+}
+
 function diagramFor(card) {
   const source = record(card.diagram)
   const nodes = stringList(source.nodes)
@@ -135,6 +144,13 @@ function roadmapFor(card) {
   return explicit.length ? explicit : stringList(card.morphismChain)
 }
 
+function verificationLabel(card) {
+  if (card.family === 'runtime.polynomial_pair_map') {
+    return '二段の厳密終結式・全根相互照合・左右の親式の独立変更'
+  }
+  return card.verificationMethod ?? '厳密な記号計算を独立に再生'
+}
+
 function shell({ card, kind, orientation, katexCss, generatedDate }) {
   const isProblem = kind === 'problem'
   const isPortrait = orientation === 'portrait'
@@ -143,7 +159,11 @@ function shell({ card, kind, orientation, katexCss, generatedDate }) {
   const roadmap = roadmapFor(card)
   const titleClass = diagram.title.length > 24 ? 'long-title' : ''
   const statementClass = card.statement.length > 260 ? 'dense-copy' : card.statement.length > 175 ? 'medium-copy' : ''
-  const solutionClass = card.solution.length > 320 ? 'dense-solution' : ''
+  const solutionClass = card.solution.length > 560
+    ? 'very-dense-solution'
+    : card.solution.length > 320
+      ? 'dense-solution'
+      : ''
   const answerMath = math(card.answer, true)
   const roadmapRows = roadmap.map((step, index) => `<div class="proof-row"><span>${String(index + 1).padStart(2, '0')}</span><p>${mixedTex(step)}</p></div>`).join('')
   const content = isProblem
@@ -157,25 +177,25 @@ function shell({ card, kind, orientation, katexCss, generatedDate }) {
       </main>`
     : `<main class="solution-layout">
         <section class="solution-summary ${solutionClass}">
-          <p class="section-label">EXACT ANSWER / REPLAYABLE PROOF</p>
+          <p class="section-label">MORTRA / EXACT ANSWER / REPLAYABLE PROOF</p>
           <h1>答えと証明経路</h1>
           <div class="answer">${answerMath}</div>
           <div class="solution-text">${mixedTex(card.solution)}</div>
         </section>
         <section class="proof"><div class="proof-heading"><span>PROOF ROADMAP</span><b>${roadmap.length} steps</b></div>
           <div class="proof-grid">${roadmapRows}</div>
-          <div class="verification"><span>VERIFIED</span>${escapeHtml(card.verificationMethod ?? 'exact symbolic replay')}</div>
+          <div class="verification"><span>VERIFIED</span>${escapeHtml(verificationLabel(card))}</div>
         </section>
       </main>`
   return `<!doctype html><html lang="ja"><head><meta charset="utf-8"><style>${katexCss}
     :root{color-scheme:dark}*{box-sizing:border-box}html,body{margin:0;width:${dimensions.width}px;height:${dimensions.height}px;overflow:hidden;background:#040608;color:#f5f7f8}
     body{font-family:"Yu Gothic UI","Yu Gothic","Hiragino Kaku Gothic ProN",sans-serif;letter-spacing:0}
     .frame{position:relative;width:100%;height:100%;padding:${isPortrait ? '64px 64px 56px' : '48px 70px 42px'};background:#040608}
-    .frame:before{content:"";position:absolute;inset:18px;border:1px solid #2b343a;pointer-events:none}
-    header{display:flex;align-items:center;justify-content:space-between;height:56px;border-bottom:1px solid #2b343a;padding-bottom:20px}
+    .frame:before{content:"";position:absolute;z-index:4;inset:18px;border:1px solid #2b343a;pointer-events:none}
+    header{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;height:56px;border-bottom:1px solid #2b343a;padding-bottom:20px}
     .brand{display:flex;align-items:center;gap:14px;font-weight:700;font-size:24px}.mark{width:35px;height:35px;border:1px solid #6ee7f2;display:grid;place-items:center;color:#6ee7f2;font-family:Georgia,serif;font-size:19px}
     .serial{font-family:Consolas,monospace;color:#8c9aa3;font-size:15px}.serial strong{color:#6ee7f2;font-weight:500}
-    main{position:relative;height:calc(100% - 116px)}
+    main{position:relative;z-index:1;height:calc(100% - 116px)}
     .problem-layout{display:grid;grid-template-columns:${isPortrait ? '1fr' : '0.88fr 1.12fr'};grid-template-rows:${isPortrait ? '0.84fr 1.16fr' : '1fr'};gap:${isPortrait ? '12px' : '54px'};align-items:center}
     .statement{align-self:center}.section-label{font-family:Consolas,monospace;color:#6ee7f2;font-size:${isPortrait ? '16px' : '14px'};margin:0 0 22px}
     h1{font-size:${isPortrait ? '54px' : '55px'};line-height:1.2;margin:0 0 ${isPortrait ? '30px' : '28px'};font-weight:680;letter-spacing:0;max-width:14em}.long-title{font-size:${isPortrait ? '45px' : '46px'}}
@@ -183,14 +203,14 @@ function shell({ card, kind, orientation, katexCss, generatedDate }) {
     .diagram{min-height:${isPortrait ? '500px' : '590px'};display:flex;flex-direction:column;justify-content:center;border-left:${isPortrait ? '0' : '1px solid #202a30'};padding-left:${isPortrait ? '0' : '42px'}}
     .diagram-heading{display:flex;justify-content:space-between;gap:22px;align-items:baseline;border-bottom:1px solid #2b343a;padding:0 0 18px;margin-bottom:22px}.diagram-heading span,.proof-heading span{font:13px Consolas,monospace;color:#6ee7f2}.diagram-heading b{font-size:${isPortrait ? '20px' : '17px'};font-weight:560;color:#d8dfe3;text-align:right}
     .graph-canvas{display:grid;grid-template-columns:${isPortrait ? '1fr 46px 2.25fr' : '0.82fr 50px 2.2fr'};gap:14px;align-items:center;min-height:${isPortrait ? '330px' : '390px'}}.source-bank{display:grid;gap:16px}.flow-bank{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.graph-node{position:relative;min-height:${isPortrait ? '92px' : '98px'};border:1px solid #34434b;background:#071015;padding:18px 16px;display:flex;flex-direction:column;justify-content:center;gap:9px;overflow:hidden}.graph-node>span{font:12px Consolas,monospace;color:#6ee7f2}.graph-node>div{font-size:${isPortrait ? '18px' : '17px'};line-height:1.38;color:#eef3f5}.source-node{border-color:#5d7882}.flow-node:last-child{border-color:#98f2aa}.merge-rail{height:100%;position:relative;display:grid;place-items:center;color:#6ee7f2;font:25px Consolas,monospace}.merge-rail i{position:absolute;left:0;width:52%;height:1px;background:#46616b}.merge-rail i:first-child{top:30%;transform:rotate(28deg);transform-origin:left}.merge-rail i:nth-child(2){bottom:30%;transform:rotate(-28deg);transform-origin:left}.merge-rail strong{font-weight:400}.diagram-caption{font-size:${isPortrait ? '17px' : '16px'};line-height:1.65;color:#8fa0a8;border-top:1px solid #202a30;margin:22px 0 0;padding-top:17px}
-    .solution-layout{display:grid;grid-template-columns:${isPortrait ? '1fr' : '0.92fr 1.08fr'};grid-template-rows:${isPortrait ? '0.9fr 1.1fr' : '1fr'};gap:${isPortrait ? '24px' : '62px'};align-items:center}.solution-summary{align-self:center}
-    .answer{border-top:1px solid #6ee7f2;border-bottom:1px solid #2b343a;padding:${isPortrait ? '24px 0' : '24px 0'};font-size:${isPortrait ? '21px' : '18px'};overflow:hidden}.answer .katex-display{margin:0;text-align:left}.solution-text{font-size:${isPortrait ? '19px' : '16px'};line-height:1.72;color:#b9c4c9;margin-top:22px}.dense-solution .solution-text{font-size:${isPortrait ? '17px' : '14px'}}.solution-text .katex-display{margin:.45em 0;text-align:left}
+    .solution-layout{display:grid;grid-template-columns:${isPortrait ? '1fr' : '0.92fr 1.08fr'};grid-template-rows:${isPortrait ? 'auto auto' : '1fr'};gap:${isPortrait ? '24px' : '62px'};align-content:center;align-items:${isPortrait ? 'start' : 'center'}}.solution-summary{align-self:center}
+    .answer{border-top:1px solid #6ee7f2;border-bottom:1px solid #2b343a;padding:${isPortrait ? '24px 0' : '24px 0'};font-size:${isPortrait ? '21px' : '18px'};overflow:hidden}.answer .katex-display{margin:0;text-align:left}.solution-text{font-size:${isPortrait ? '19px' : '16px'};line-height:1.72;color:#b9c4c9;margin-top:22px}.dense-solution .solution-text{font-size:${isPortrait ? '17px' : '14px'}}.very-dense-solution h1{font-size:${isPortrait ? '44px' : '46px'}}.very-dense-solution .answer{padding:${isPortrait ? '16px 0' : '17px 0'}}.very-dense-solution .solution-text{font-size:${isPortrait ? '15px' : '13px'};line-height:1.55;margin-top:15px}.solution-text .katex-display{margin:.45em 0;text-align:left}
     .proof{border-top:1px solid #2b343a}.proof-heading{display:flex;justify-content:space-between;padding:18px 0;border-bottom:1px solid #2b343a}.proof-heading b{font:13px Consolas,monospace;color:#8c9aa3;font-weight:400}.proof-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:24px}.proof-row{display:grid;grid-template-columns:40px 1fr;gap:10px;padding:${isPortrait ? '16px 0' : '17px 0'};border-bottom:1px solid #202a30;min-height:${isPortrait ? '74px' : '80px'}}.proof-row>span{font:13px Consolas,monospace;color:#6ee7f2}.proof-row p{font-size:${isPortrait ? '17px' : '15px'};line-height:1.5;color:#c4cdd1;margin:0}.verification{margin-top:18px;font-size:${isPortrait ? '15px' : '13px'};line-height:1.5;color:#84939a}.verification span{color:#98f2aa;font:12px Consolas,monospace;margin-right:16px}
-    footer{position:absolute;left:${isPortrait ? '64px' : '70px'};right:${isPortrait ? '64px' : '70px'};bottom:${isPortrait ? '46px' : '34px'};display:flex;justify-content:space-between;align-items:center;color:#8c9aa3;font:14px Consolas,monospace}footer strong{color:#98f2aa;font-weight:500}
+    footer{position:absolute;z-index:3;left:${isPortrait ? '64px' : '70px'};right:${isPortrait ? '64px' : '70px'};bottom:${isPortrait ? '46px' : '34px'};display:flex;justify-content:space-between;align-items:center;color:#8c9aa3;font:14px Consolas,monospace}footer strong{color:#98f2aa;font-weight:500}
   </style></head><body><div class="frame">
     <header><div class="brand"><span class="mark">M</span>MORTRA</div><div class="serial"><strong>GENERATED + VERIFIED</strong> / ${escapeHtml(generatedDate)}</div></header>
     ${content}
-    <footer><span>NO STORED ANSWER · NO LLM IN GENERATION</span><strong>mortra.ai</strong></footer>
+    <footer><span>EXACT SYMBOLIC GENERATION · REPLAY ${escapeHtml(card.replayEvidence.replay_sha256.slice(0, 12))}</span><strong>mortra.ai</strong></footer>
   </div></body></html>`
 }
 
@@ -208,14 +228,15 @@ const eligible = reportCases
     && card.independentCheck
     && card.completeParentProof
     && !card.registeredCompositeUsed
-    && hasDirectTaskProgram(card))
+    && hasDirectTaskProgram(card)
+    && hasReplayEvidence(card))
   .filter(card => !requestedCaseId || card.caseId === requestedCaseId)
   .filter(card => !requestedFamily || card.family === requestedFamily)
   .filter(card => !requestedCardId || card.id === requestedCardId)
   .sort((left, right) => right.difficulty - left.difficulty || left.id.localeCompare(right.id))
 const card = eligible[0]
 if (!card) throw new Error(`no eligible card found for ${requestedCaseId ?? '*'} / ${requestedFamily ?? '*'} / ${requestedCardId ?? '*'}`)
-if (!card.exactBackend || !card.independentCheck || !card.completeParentProof || card.registeredCompositeUsed || !hasDirectTaskProgram(card)) {
+if (!card.exactBackend || !card.independentCheck || !card.completeParentProof || card.registeredCompositeUsed || !hasDirectTaskProgram(card) || !hasReplayEvidence(card)) {
   throw new Error('the selected card is not eligible for publication')
 }
 
@@ -276,6 +297,29 @@ try {
           ? [`${name}:clipped`]
           : []
       })
+      const overlaps = []
+      if (regions.header && regions.main && regions.header.bottom > regions.main.top) {
+        overlaps.push('header-main-overlap')
+      }
+      if (regions.primary && regions.main && regions.primary.top < regions.main.top) {
+        overlaps.push('primary-above-main')
+      }
+      if (regions.secondary && regions.main && regions.secondary.bottom > regions.main.bottom) {
+        overlaps.push('secondary-below-main')
+      }
+      if (regions.primary && regions.secondary
+        && regions.primary.left < regions.secondary.right
+        && regions.primary.right > regions.secondary.left
+        && regions.primary.top < regions.secondary.bottom
+        && regions.primary.bottom > regions.secondary.top) {
+        overlaps.push('primary-secondary-overlap')
+      }
+      if (regions.footer && regions.primary && regions.primary.bottom > regions.footer.top) {
+        overlaps.push('primary-footer-overlap')
+      }
+      if (regions.footer && regions.secondary && regions.secondary.bottom > regions.footer.top) {
+        overlaps.push('secondary-footer-overlap')
+      }
       return {
         width: document.documentElement.scrollWidth,
         height: document.documentElement.scrollHeight,
@@ -284,6 +328,7 @@ try {
         replacementCharacters: (document.body.innerText.match(/\uFFFD/g) ?? []).length,
         regions,
         clipped,
+        overlaps,
       }
     })
     if (runtimeErrors.length
@@ -292,12 +337,14 @@ try {
       || layout.scrollX !== 0
       || layout.scrollY !== 0
       || layout.replacementCharacters
-      || layout.clipped.length) {
+      || layout.clipped.length
+      || layout.overlaps.length) {
       throw new Error(`${target.name} failed layout audit: ${JSON.stringify({ runtimeErrors, layout })}`)
     }
     const outputPath = resolve(outputDirectory, target.name)
     await page.screenshot({ path: outputPath })
-    outputs.push({ path: outputPath, width: target.width, height: target.height, layout })
+    const sha256 = createHash('sha256').update(await readFile(outputPath)).digest('hex')
+    outputs.push({ path: outputPath, sha256, width: target.width, height: target.height, layout })
     await context.close()
   }
 } finally {
@@ -305,7 +352,7 @@ try {
 }
 
 const manifest = {
-  schema: 2,
+  schema: 3,
   generatedAt: new Date().toISOString(),
   sourceReport: reportPath,
   caseId: card.caseId,
@@ -318,8 +365,10 @@ const manifest = {
   taskAlgebraOrigin: card.taskAlgebraOrigin,
   taskAlgebraFingerprint: card.taskAlgebraFingerprint,
   taskAlgebra: record(card.structureBlueprint).taskAlgebra,
+  replayEvidence: card.replayEvidence,
   statement: card.statement,
   answer: card.answer,
+  solution: card.solution,
   domain: card.domain,
   morphismChain: card.morphismChain,
   diagram: card.diagram,
