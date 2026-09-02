@@ -66,6 +66,7 @@ class ExactSolveOutcome:
     hypotheses_evaluated: int = 0
     search_depth: int = 0
     execution_witness: dict[str, Any] | None = None
+    visual_explanation: dict[str, Any] | None = None
 
 
 @dataclass(frozen=True)
@@ -904,6 +905,7 @@ def _runtime_solution_exact_solve(statement: str) -> ExactSolveOutcome | None:
         hypotheses_evaluated=len(synthesis.proof_program),
         search_depth=len(synthesis.proof_program),
         execution_witness=synthesis.witness,
+        visual_explanation=synthesis.visual_explanation,
     )
 
 
@@ -1295,6 +1297,7 @@ def _direct_payload(
             "execution_certificate": execution_certificate,
             **({"diagram": outcome.diagram} if outcome.diagram else {}),
             **({"diagram_tikz": outcome.diagram_tikz} if outcome.diagram_tikz else {}),
+            **({"visual_explanation": outcome.visual_explanation} if outcome.visual_explanation else {}),
         }
     card = (
         attach_solution_artifact(card_payload, trace)

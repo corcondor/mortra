@@ -157,6 +157,61 @@ class PublicSolveTests(unittest.TestCase):
         self.assertIn(r"O=\left(4,3\right)", card["answer_tex"])
         self.assertIn(r"I=\left(2,2\right)", card["answer_tex"])
 
+    def test_orthocenter_reflections_generate_fresh_exact_proof_and_diagrams(self) -> None:
+        status, payload = solve_public_problem(
+            "鋭角三角形 ABC の垂心を H とする。H を辺 BC、CA、AB に関して"
+            "対称移動した3点が三角形 ABC の外接円上にあることを証明し、"
+            "各対称点と補助線を含む図を描け。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(
+            card["execution_certificate"]["tool_name"],
+            "mortra.runtime_orthocenter_line_reflection_circumcircle",
+        )
+        self.assertEqual(card["diagram"]["kind"], "plane")
+        self.assertEqual(len(card["visual_explanation"]["steps"]), 4)
+        self.assertTrue(card["publication_contract"]["diagram_for_every_visual_step"])
+        witness = card["execution_certificate"]["witness"]
+        self.assertEqual(len(witness["typed_ir"]["reflections"]), 3)
+        self.assertTrue(all(value == "Integer(0)" for value in witness["display_circle_residuals"].values()))
+        self.assertIn("任意の一辺", card["solution_tex"])
+
+    def test_orthocenter_reflection_solver_generalizes_over_labels_and_each_side_wording(self) -> None:
+        status, payload = solve_public_problem(
+            "三角形 PQR の垂心を T とする。T を三角形 PQR の各辺に関して"
+            "それぞれ折り返して得られる三点が、PQR の外接円周上にあることを示せ。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        witness = card["execution_certificate"]["witness"]
+        self.assertEqual(witness["typed_ir"]["vertices"], ["P", "Q", "R"])
+        self.assertEqual(
+            [item["result"] for item in witness["typed_ir"]["reflections"]],
+            ["T_P", "T_Q", "T_R"],
+        )
+
+    def test_orthocenter_reflection_solver_accepts_named_single_reflection(self) -> None:
+        status, payload = solve_public_problem(
+            "三角形 ABC の垂心を H とする。辺 BC に関する H の対称点を X とする。"
+            "X が三角形 ABC の外接円上にあることを証明せよ。"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        witness = card["execution_certificate"]["witness"]
+        self.assertEqual(witness["typed_ir"]["reflections"], [{
+            "source": "H",
+            "axis": ["B", "C"],
+            "result": "X",
+            "opposite_vertex": "A",
+        }])
+
     def test_current_input_coin_run_generates_state_equations_and_diagram(self) -> None:
         status, payload = solve_public_problem(
             "公平な硬貨を繰り返し投げ、表が2回連続した時点で終了する。"

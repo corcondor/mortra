@@ -17,6 +17,9 @@ from typing import Any, Callable
 import sympy as sp
 from sympy.parsing.latex import parse_latex
 
+from math_os_prototype.euclidean_geometry_runtime import (
+    synthesize_euclidean_geometry_runtime,
+)
 from math_os_prototype.latex_frontend import parse_latex_problem
 from math_os_prototype.visual_reasoning import (
     function_plot_diagram,
@@ -37,6 +40,7 @@ class RuntimeSolutionSynthesis:
     proof_program: tuple[dict[str, Any], ...]
     diagram: dict[str, Any] | None
     witness: dict[str, Any]
+    visual_explanation: dict[str, Any] | None = None
 
 
 def _real_float(value: sp.Expr) -> float | None:
@@ -1015,6 +1019,26 @@ def synthesize_coordinate_triangle_centers(statement: str) -> RuntimeSolutionSyn
             "circumcenter": [sp.srepr(value) for value in circumcenter],
             "incenter": [sp.srepr(value) for value in incenter],
         },
+    )
+
+
+def synthesize_euclidean_geometry(statement: str) -> RuntimeSolutionSynthesis | None:
+    """Compile supported Euclidean relations into a fresh symbolic proof."""
+
+    proof = synthesize_euclidean_geometry_runtime(statement)
+    if proof is None:
+        return None
+    return RuntimeSolutionSynthesis(
+        answer=proof.answer,
+        answer_tex=proof.answer_tex,
+        tool_name=proof.tool_name,
+        expression_tex=proof.expression_tex,
+        derivation_tex=proof.derivation_tex,
+        verification_checks=proof.verification_checks,
+        proof_program=proof.proof_program,
+        diagram=proof.diagram,
+        witness=proof.witness,
+        visual_explanation=proof.visual_explanation,
     )
 
 
@@ -2278,6 +2302,7 @@ def synthesize_runtime_solution(statement: str) -> RuntimeSolutionSynthesis | No
 
     for synthesizer in (
         synthesize_normalized_inner_product_realization,
+        synthesize_euclidean_geometry,
         synthesize_univariate_variation,
         synthesize_rational_variation,
         synthesize_positive_monomial_extremum,

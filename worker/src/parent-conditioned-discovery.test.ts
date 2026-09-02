@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { discoverParentStructures } from './parent-conditioned-discovery'
+import { discoverParentStructures, liftParent } from './parent-conditioned-discovery'
 
 const integral = (id: string, variable = 'a_n', upper = '1') => ({
   id,
@@ -118,4 +118,49 @@ test('prime radius-product elaboration requires radius and primality evidence', 
   const roots = result.parent_graphs[0].semantic_roots
   assert.ok(roots.includes('TriangleRadii'))
   assert.ok(roots.includes('PrimeProductConstraint'))
+})
+
+test('orthocenter reflections are lifted as typed relations instead of an unresolved phrase', () => {
+  const graph = liftParent({
+    id: 'orthocenter-reflections',
+    statement: '鋭角三角形 ABC の垂心を H とする。H を辺 BC、CA、AB に関して対称移動した3点が三角形 ABC の外接円上にあることを証明せよ。',
+  })
+  assert.deepEqual(graph.semantic_roots.slice(0, 3), [
+    'CircumcircleIncidence',
+    'LineReflectionConfiguration',
+    'OrthocenterConfiguration',
+  ])
+  assert.ok(!graph.constraints.includes('unresolved_relation'))
+  assert.ok(graph.constraints.includes('perpendicular_incidence'))
+  assert.ok(graph.constraints.includes('line_reflection'))
+  assert.ok(graph.constraints.includes('circle_incidence'))
+  assert.equal(graph.typed_relations.filter(relation => relation.kind === 'line_reflection').length, 3)
+  assert.equal(graph.typed_relations.filter(relation => relation.kind === 'on_circumcircle').length, 3)
+  assert.equal(graph.query.target, 'each_reflection_on_triangle_circumcircle')
+})
+
+test('euclidean elaboration generalizes labels and all-side wording', () => {
+  const graph = liftParent({
+    id: 'renamed-orthocenter-reflections',
+    statement: '三角形 PQR の垂心を T とする。T を三角形 PQR の各辺に関して折り返して得る三点が外接円上にあることを示せ。',
+  })
+  const reflections = graph.typed_relations.filter(relation => relation.kind === 'line_reflection')
+  assert.deepEqual(reflections.map(relation => relation.result), ['T_P', 'T_Q', 'T_R'])
+  assert.deepEqual(reflections.map(relation => relation.axis.join('')), ['QR', 'RP', 'PQ'])
+})
+
+test('one named reflection is kept as one reusable line-reflection relation', () => {
+  const graph = liftParent({
+    id: 'named-orthocenter-reflection',
+    statement: '三角形 ABC の垂心を H とする。H を辺 BC に関して対称移動した点を X とする。X が三角形 ABC の外接円上にあることを証明せよ。',
+  })
+  const reflections = graph.typed_relations.filter(relation => relation.kind === 'line_reflection')
+  assert.equal(reflections.length, 1)
+  assert.deepEqual(reflections[0], {
+    kind: 'line_reflection',
+    source: 'H',
+    axis: ['B', 'C'],
+    result: 'X',
+    oppositeVertex: 'A',
+  })
 })

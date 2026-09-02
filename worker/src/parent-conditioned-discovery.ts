@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto'
+import { elaborateEuclideanStatement } from './euclidean-statement-elaboration'
 
 export interface DiscoveryParent {
   id?: string
@@ -93,7 +94,8 @@ function queryKind(text: string): string {
 export function liftParent(parent: DiscoveryParent) {
   const parentId = String(parent.id || `parent-${hash(parent, 8)}`)
   const source = parent.statement ?? ''
-  const roots: string[] = []
+  const euclidean = elaborateEuclideanStatement(source)
+  const roots: string[] = [...(euclidean?.semanticRoots ?? [])]
   const morphisms: Array<{ name: string; source: string; target: string; law: string; origin: string }> = []
   for (const signature of OPERATOR_SIGNATURES) {
     const matched = signature.match === 'all'
@@ -108,12 +110,20 @@ export function liftParent(parent: DiscoveryParent) {
   }
   const atoms = latexAtoms(source)
   if (!roots.length) roots.push(`OpaqueStructure[${hash(atoms.length ? atoms : source, 10)}]`)
+  const constraints = [...new Set([
+    ...constraintKinds(source).filter(kind => kind !== 'unresolved_relation'),
+    ...(euclidean?.constraints ?? []),
+  ])]
   return {
     parent_id: parentId,
     semantic_roots: roots,
     morphisms,
-    constraints: constraintKinds(source),
-    query: { kind: queryKind(source), target: parent.answer ? 'known_answer' : 'unknown_answer' },
+    constraints: constraints.length ? constraints : ['unresolved_relation'],
+    query: {
+      kind: queryKind(source),
+      target: euclidean?.queryTarget ?? (parent.answer ? 'known_answer' : 'unknown_answer'),
+    },
+    typed_relations: euclidean?.relations ?? [],
     opaque_atoms: atoms,
   }
 }
