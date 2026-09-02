@@ -30,6 +30,22 @@ test('connects a current quadratic form and current moments by an exact trace id
   assert.equal(card.diagram && (card.diagram as { kind?: string }).kind, 'morphism')
 })
 
+test('separates a Japanese instruction suffix from the quadratic expression', () => {
+  const result = synthesizeRuntimeQuadraticExpectationProblems([
+    {
+      id: 'ui-quadratic-form',
+      statement: '二次形式 $q(x,y)=2x^2+3xy+5y^2$ を対称行列で表せ。',
+    },
+    {
+      id: 'ui-second-moments',
+      statement: '確率変数 $X,Y$ が $E[X]=1, E[Y]=-2, Var(X)=3, Var(Y)=4, Cov(X,Y)=0$ を満たすとき、二次モーメント行列を求めよ。',
+    },
+  ], 1)
+
+  assert.equal(result.cards.length, 1)
+  assert.equal(result.cards[0].answer_tex, '42')
+})
+
 test('synthesizes several fresh questions through invertible coordinate charts', () => {
   const result = synthesizeRuntimeQuadraticExpectationProblems(parents, 5)
   assert.equal(result.cards.length, 5)

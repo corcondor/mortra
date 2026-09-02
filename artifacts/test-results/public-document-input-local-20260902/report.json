@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-02T14:30:00+09:00",
+  "baseCommit": "d7cee1efe5d36c95463ddd5bf0e77895c766c491",
+  "environment": {
+    "target": "local production-equivalent UI",
+    "url": "http://127.0.0.1:3002/ja",
+    "externalLlmUsed": false,
+    "ocr": "browser-local Tesseract and Pix2Text-compatible ONNX inference"
+  },
+  "acceptance": {
+    "input": "The mathematical statement remains reviewable and contains no replacement characters.",
+    "solution": "A result counts as solved only when the requested answer, proof steps, and certificate are present.",
+    "diagram": "A mathematical diagram or graph must be derived from the solved structure, not used as decoration.",
+    "unresolved": "An unfinished search remains unresolved and preserves its frontier for continuation."
+  },
+  "cases": [
+    {
+      "id": "typed-quadratic-easy",
+      "difficulty": "easy",
+      "input": "typed",
+      "statement": "x^2 - 5x + 6 = 0",
+      "transcription": "pass",
+      "mathematicalStatus": "solved",
+      "exactAnswer": "{2, 3}",
+      "diagram": "parabola and zeros",
+      "proofSteps": 4,
+      "certificate": true,
+      "mojibake": false,
+      "evidence": "mobile-easy-result-viewport.png"
+    },
+    {
+      "id": "right-triangle-incenter-circumcenter-image",
+      "difficulty": "medium",
+      "input": "PNG",
+      "transcription": "pass",
+      "mathematicalStatus": "solved",
+      "exactAnswer": "1/4",
+      "diagram": "right triangle, circumcircle, incircle, O and I",
+      "proofSteps": 3,
+      "certificate": true,
+      "mojibake": false,
+      "evidence": "right-triangle-step2-viewport.png; right-triangle-step3-viewport.png"
+    },
+    {
+      "id": "integral-inequality-pdf",
+      "difficulty": "medium",
+      "input": "PDF",
+      "sourcePages": 9,
+      "pagesRead": 1,
+      "transcription": "pass",
+      "warningShown": true,
+      "mathematicalStatus": "solved",
+      "exactAnswer": "0 < I < 2",
+      "diagram": "integrand and bound graphs",
+      "proof": "complementary-angle reduction and Cauchy-Schwarz inequality",
+      "certificate": true,
+      "mojibake": false,
+      "evidence": "pdf-integral-result-full.png"
+    },
+    {
+      "id": "cubic-unit-circle-rational-angle-hexagon-image",
+      "difficulty": "hard",
+      "input": "PNG",
+      "transcription": "pass",
+      "mathematicalStatus": "unresolved",
+      "searchObserved": {
+        "round": 3,
+        "depth": 10,
+        "enumeratedTerms": 2601,
+        "executableGoals": 485,
+        "preservedFrontier": 48
+      },
+      "defectFound": "The first carrier was incorrectly chosen as IntegerStructure because an integer constraint appeared in the question.",
+      "fix": "Carrier structures are now ordered before constraint structures; this statement starts from CubicPolynomialMap.",
+      "certificate": false,
+      "mojibake": false,
+      "evidence": "hard-cubic-circle-ocr-viewport.png; hard-cubic-circle-search-viewport.png"
+    },
+    {
+      "id": "tetrahedron-cube-image",
+      "difficulty": "hard",
+      "input": "PNG",
+      "transcription": "pass",
+      "mathematicalStatus": "unresolved",
+      "certificate": false,
+      "mojibake": false
+    },
+    {
+      "id": "quadratic-form-expectation-fusion",
+      "difficulty": "medium-to-hard",
+      "input": "two typed parent problems",
+      "transcription": "pass",
+      "mathematicalStatus": "generated-and-verified",
+      "generatedProblems": 3,
+      "exactAnswers": [42, 74, 70],
+      "diagram": "q to A to second-moment matrix M to tr(AM) to expectation",
+      "morphisms": 7,
+      "verificationChecks": 6,
+      "certificate": true,
+      "mojibake": false,
+      "evidence": "quadratic-expectation-fusion.png; quadratic-expectation-result-viewport.png; quadratic-expectation-answer-viewport.png"
+    }
+  ],
+  "responsiveUi": {
+    "viewport": "390x844",
+    "status": "pass",
+    "overlap": false,
+    "evidence": "mobile-current-viewport.png; mobile-easy-result-viewport.png"
+  },
+  "tests": {
+    "documentInput": "12/12 pass",
+    "parentDiscoveryAndQuadraticFusion": "23/23 pass",
+    "publicSolvePython": "107/107 pass",
+    "worker": "196/196 pass",
+    "typescript": "pass",
+    "productionBuild": "pass; /ja first-load JavaScript 460 kB"
+  },
+  "conclusion": {
+    "verified": "Typed input, image OCR, first-problem PDF extraction, exact single-problem solving, proof diagrams, and one-to-many quadratic-expectation fusion work locally without an external LLM.",
+    "notVerified": "The hard cubic-circle problem and the tetrahedron-cube problem are not solved and are not counted as successes.",
+    "nextGate": "Deploy the tested commit and repeat the same cases on https://mortra.ai/ja."
+  }
+}

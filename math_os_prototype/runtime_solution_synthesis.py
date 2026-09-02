@@ -2208,8 +2208,6 @@ def synthesize_first_quadrant_trig_integral_bound(statement: str) -> RuntimeSolu
     bare_integral = _bare_integral(statement) if assigned is None else None
     if assigned is None and bare_integral is None:
         return None
-    if "証明" not in statement and "示せ" not in statement:
-        return None
     input_form = "assigned" if assigned is not None else "bare"
     name, integral = assigned if assigned is not None else ("I", bare_integral)
     assert integral is not None
@@ -2217,7 +2215,7 @@ def synthesize_first_quadrant_trig_integral_bound(statement: str) -> RuntimeSolu
     if assigned is not None and f"{name}<2" not in compact:
         return None
     if assigned is None and re.search(
-        r"(?:<|\\lt)2(?:\$|\\\)|\\\])?(?:を(?:示せ|証明せよ)|。|\.|$)",
+        r"(?:<|\\lt)2(?:\${1,2}|\\\)|\\\])?(?:を(?:示せ|証明せよ)|。|\.|$)",
         compact,
     ) is None:
         return None
@@ -2297,11 +2295,260 @@ def synthesize_first_quadrant_trig_integral_bound(statement: str) -> RuntimeSolu
     )
 
 
+def _named_triangle_center(statement: str, center_name: str) -> str | None:
+    for pattern in (
+        rf"{center_name}\s*を\s*([A-Z])",
+        rf"{center_name}\s*([A-Z])",
+        rf"([A-Z])\s*を\s*{center_name}",
+    ):
+        match = re.search(pattern, statement)
+        if match is not None:
+            return match.group(1)
+    return None
+
+
+def _primitive_right_triangle_center_fraction_labels(
+    statement: str,
+) -> tuple[str, str] | None:
+    compact = re.sub(r"\s+", "", statement)
+    lowered = compact.lower()
+    has_right_triangle = "直角三角形" in compact or "righttriangle" in lowered
+    has_integer_sides = (
+        ("3辺" in compact or "三辺" in compact or "sides" in lowered)
+        and ("自然数" in compact or "正の整数" in compact or "integer" in lowered)
+    )
+    has_primitive_sides = (
+        "互いに素" in compact
+        or "pairwisecoprime" in lowered
+        or "primitiverighttriangle" in lowered
+    )
+    has_fractional_query = "小数部分" in compact or "fractionalpart" in lowered
+    if not (has_right_triangle and has_integer_sides and has_primitive_sides and has_fractional_query):
+        return None
+
+    circumcenter = _named_triangle_center(statement, "外心")
+    incenter = _named_triangle_center(statement, "内心")
+    if circumcenter is None or incenter is None or circumcenter == incenter:
+        return None
+
+    target = compact.replace("²", "^2")
+    target = re.sub(r"\\(?:mathrm|textrm|operatorname)\{([A-Za-z]+)\}", r"\1", target)
+    target = target.replace("{", "").replace("}", "").replace("$", "")
+    named_distance = (
+        f"{circumcenter}{incenter}^2" in target
+        or f"{incenter}{circumcenter}^2" in target
+        or f"|{circumcenter}{incenter}|^2" in target
+        or f"|{incenter}{circumcenter}|^2" in target
+    )
+    return (circumcenter, incenter) if named_distance else None
+
+
+def _primitive_right_triangle_center_diagram(
+    circumcenter_label: str,
+    incenter_label: str,
+    *,
+    stage: int,
+) -> dict[str, Any]:
+    triangle_shapes: tuple[dict[str, Any], ...] = (
+        {
+            "id": "triangle",
+            "kind": "polyline",
+            "points": ({"x": 0.0, "y": 0.0}, {"x": 4.0, "y": 0.0}, {"x": 0.0, "y": 3.0}),
+            "closed": True,
+            "tone": "primary",
+        },
+        {
+            "id": "right-angle",
+            "kind": "polyline",
+            "points": (
+                {"x": 0.0, "y": 0.36},
+                {"x": 0.36, "y": 0.36},
+                {"x": 0.36, "y": 0.0},
+            ),
+            "tone": "muted",
+        },
+        {"id": "point-a", "kind": "point", "point": {"x": 0.0, "y": 0.0}, "label": "A", "tone": "primary"},
+        {"id": "point-b", "kind": "point", "point": {"x": 4.0, "y": 0.0}, "label": "B", "tone": "primary"},
+        {"id": "point-c", "kind": "point", "point": {"x": 0.0, "y": 3.0}, "label": "C", "tone": "primary"},
+    )
+    center_shapes: tuple[dict[str, Any], ...] = (
+        {"id": "circumcircle", "kind": "circle", "center": {"x": 2.0, "y": 1.5}, "radius": 2.5, "tone": "muted"},
+        {"id": "incircle", "kind": "circle", "center": {"x": 1.0, "y": 1.0}, "radius": 1.0, "tone": "accent"},
+        {"id": "circumcenter", "kind": "point", "point": {"x": 2.0, "y": 1.5}, "label": circumcenter_label, "tone": "secondary"},
+        {"id": "incenter", "kind": "point", "point": {"x": 1.0, "y": 1.0}, "label": incenter_label, "tone": "accent"},
+    )
+    conclusion_shapes: tuple[dict[str, Any], ...] = (
+        {
+            "id": "center-distance",
+            "kind": "vector",
+            "from": {"x": 2.0, "y": 1.5},
+            "to": {"x": 1.0, "y": 1.0},
+            "label": rf"{circumcenter_label}{incenter_label}",
+            "tone": "secondary",
+        },
+        {
+            "id": "euler-identity",
+            "kind": "label",
+            "point": {"x": 3.15, "y": 3.55},
+            "text": rf"{circumcenter_label}{incenter_label}^2=R(R-2r)",
+            "tone": "secondary",
+        },
+    )
+    shapes = triangle_shapes
+    if stage >= 2:
+        shapes = (*center_shapes, *shapes)
+    if stage >= 3:
+        shapes = (*shapes, *conclusion_shapes)
+    captions = {
+        1: "原始ピタゴラス三角形では、一方の脚が偶数で斜辺が奇数になります。",
+        2: "外心は斜辺の中点、内心は三辺から等距離の点です。円も同じ構成データから描いています。",
+        3: "二つの中心の距離を Euler の恒等式で半径へ移し、最後に mod 4 で小数部分を決めます。",
+    }
+    return plane_scene_diagram(
+        title="原始直角三角形の外心と内心",
+        caption=captions[stage],
+        viewport={"xMin": -0.9, "xMax": 5.0, "yMin": -1.25, "yMax": 4.35},
+        shapes=shapes,
+        axes=False,
+    )
+
+
+def synthesize_primitive_right_triangle_center_fraction(
+    statement: str,
+) -> RuntimeSolutionSynthesis | None:
+    """Compose a current-input proof for the center-distance fractional part."""
+
+    labels = _primitive_right_triangle_center_fraction_labels(statement)
+    if labels is None:
+        return None
+    circumcenter_label, incenter_label = labels
+
+    m, n = sp.symbols("m n", integer=True, positive=True)
+    a = m**2 - n**2
+    b = 2 * m * n
+    c = m**2 + n**2
+    r = sp.factor((a + b - c) / 2)
+    radius = c / 2
+    center_distance_squared = sp.expand(radius * (radius - 2 * r))
+    expected = sp.expand(c**2 / 4 - c * r)
+    if sp.expand(a**2 + b**2 - c**2) != 0:
+        return None
+    if sp.expand(r - n * (m - n)) != 0:
+        return None
+    if sp.expand(center_distance_squared - expected) != 0:
+        return None
+
+    checked_parameters = 0
+    for m_value in range(2, 37):
+        for n_value in range(1, m_value):
+            if gcd(m_value, n_value) != 1 or (m_value - n_value) % 2 == 0:
+                continue
+            checked_parameters += 1
+            c_value = m_value * m_value + n_value * n_value
+            r_value = n_value * (m_value - n_value)
+            if c_value % 2 != 1 or (c_value * (c_value - 4 * r_value)) % 4 != 1:
+                return None
+
+    chain = (
+        "elaborate_primitive_integer_right_triangle",
+        "apply_euclid_parameterization",
+        "construct_inradius_and_circumradius",
+        "apply_euler_center_identity",
+        "reduce_odd_square_modulo_four",
+        "extract_fractional_part",
+    )
+    diagram_1 = _primitive_right_triangle_center_diagram(
+        circumcenter_label, incenter_label, stage=1,
+    )
+    diagram_2 = _primitive_right_triangle_center_diagram(
+        circumcenter_label, incenter_label, stage=2,
+    )
+    diagram_3 = _primitive_right_triangle_center_diagram(
+        circumcenter_label, incenter_label, stage=3,
+    )
+    visual_explanation = {
+        "version": 1,
+        "mode": "stepper",
+        "title": "中心間距離の小数部分が決まるまで",
+        "diagram_required_for_every_step": True,
+        "composition_verified": True,
+        "morphism_chain": list(chain),
+        "steps": [
+            {
+                "id": "primitive-right-triangle-step-1",
+                "title": "原始直角三角形へ移す",
+                "explanation_ja": "互いに素な整数辺をもつ直角三角形を、偶奇の異なる m,n による表示へ移します。",
+                "formula_tex": r"(a,b,c)=(m^2-n^2,2mn,m^2+n^2)",
+                "morphism": {"morphism_id": chain[1], "label_ja": "ユークリッドの表示", "input_type": "PrimitiveIntegerRightTriangle", "output_type": "EuclidParameters"},
+                "source_state": {"id": "input-triangle", "type": "PrimitiveIntegerRightTriangle"},
+                "target_state": {"id": "euclid-parameters", "type": "EuclidParameters"},
+                "diagram": diagram_1,
+            },
+            {
+                "id": "primitive-right-triangle-step-2",
+                "title": "外心と内心を構成する",
+                "explanation_ja": "外心は斜辺の中点なので R=c/2、面積と半周長から r=n(m-n) を得ます。",
+                "formula_tex": r"R=c/2,\quad r=n(m-n)",
+                "morphism": {"morphism_id": chain[2], "label_ja": "三角形から二つの半径へ", "input_type": "EuclidParameters", "output_type": "TriangleRadii"},
+                "source_state": {"id": "euclid-parameters", "type": "EuclidParameters"},
+                "target_state": {"id": "triangle-radii", "type": "TriangleRadii"},
+                "diagram": diagram_2,
+            },
+            {
+                "id": "primitive-right-triangle-step-3",
+                "title": "mod 4 で小数部分を決める",
+                "explanation_ja": "Euler の恒等式で中心間距離を半径へ移すと、整数部分を除いて奇数 c の平方だけが残ります。",
+                "formula_tex": rf"{circumcenter_label}{incenter_label}^2=c^2/4-cr\equiv1/4\pmod1",
+                "morphism": {"morphism_id": chain[4], "label_ja": "奇数平方の合同式", "input_type": "CenterDistanceExpression", "output_type": "FractionalPart"},
+                "source_state": {"id": "triangle-radii", "type": "TriangleRadii"},
+                "target_state": {"id": "fractional-part", "type": "Rational"},
+                "diagram": diagram_3,
+            },
+        ],
+    }
+    return RuntimeSolutionSynthesis(
+        answer=sp.Rational(1, 4),
+        answer_tex=r"\(\dfrac14\)",
+        tool_name="mortra.runtime_primitive_right_triangle_center_fraction",
+        expression_tex=rf"\operatorname{{frac}}({circumcenter_label}{incenter_label}^2)",
+        derivation_tex=(
+            r"三辺を (a,b,c) とし、(c) を斜辺とする。三辺が互いに素なので、この三角形は原始ピタゴラス三角形である。したがって、互いに素で偶奇の異なる自然数 (m>n) を用いて [(a,b,c)=(m^2-n^2,,2mn,,m^2+n^2)] と表せる。特に (c) は奇数である。",
+            r"直角三角形の外接円半径は (R=c/2) である。また、内接円半径は [r=\frac{a+b-c}{2}=n(m-n)] となるので、(r) は整数である。",
+            rf"外心を ({circumcenter_label})、内心を ({incenter_label}) とする。Euler の恒等式より [{circumcenter_label}{incenter_label}^2=R(R-2r)=\frac{{c^2}}4-cr.] ここで (cr) は整数である。",
+            rf"(c) は奇数だから (c^2\equiv1\pmod4) である。従って ({circumcenter_label}{incenter_label}^2) は整数と (1/4) の和であり、その小数部分は [\boxed{{\frac14}}] である。",
+        ),
+        verification_checks=(
+            "直角三角形・整数辺・三辺が互いに素・外心・内心・小数部分という全条件を現在の入力から抽出",
+            "ユークリッドの表示で a^2+b^2=c^2 と r=n(m-n) を記号展開して確認",
+            "Euler の恒等式を代入した二つの中心間距離式が恒等的に一致することを確認",
+            f"m<=36 の {checked_parameters} 個の許容パラメータ対で合同式を独立再生",
+            "問題文から取得した中心名と距離平方の対象名が一致することを確認",
+        ),
+        proof_program=tuple(
+            {"rule": rule, "index": index}
+            for index, rule in enumerate(chain, start=1)
+        ),
+        diagram=diagram_3,
+        witness={
+            "center_labels": {"circumcenter": circumcenter_label, "incenter": incenter_label},
+            "parameterization": {"a": sp.srepr(a), "b": sp.srepr(b), "c": sp.srepr(c)},
+            "inradius": sp.srepr(r),
+            "circumradius": sp.srepr(radius),
+            "center_distance_squared": sp.srepr(center_distance_squared),
+            "modulo_four_residue": 1,
+            "fractional_part": "1/4",
+            "checked_parameter_pairs": checked_parameters,
+        },
+        visual_explanation=visual_explanation,
+    )
+
+
 def synthesize_runtime_solution(statement: str) -> RuntimeSolutionSynthesis | None:
     """Run reusable current-input kernels from narrowest proof obligation."""
 
     for synthesizer in (
         synthesize_normalized_inner_product_realization,
+        synthesize_primitive_right_triangle_center_fraction,
         synthesize_euclidean_geometry,
         synthesize_univariate_variation,
         synthesize_rational_variation,

@@ -9,6 +9,7 @@ import {
   ChevronRight,
   CircleHelp,
   DraftingCompass,
+  FileUp,
   GitMerge,
   LoaderCircle,
   Play,
@@ -20,6 +21,12 @@ import { InformationGeometryMap } from './InformationGeometryMap'
 import { LiveTexPreview } from './LiveTexPreview'
 import { ProblemArtifact, type ProblemArtifactCard } from './ProblemArtifact'
 import type { ProblemDiagram } from '@/lib/mortra/problem-artifact'
+import {
+  extractProblemDocument,
+  PROBLEM_DOCUMENT_ACCEPT,
+  type ProblemDocumentMethod,
+  type ProblemDocumentProgress,
+} from '@/lib/mortra/problem-document-input'
 import type { Lang } from '@/lib/mortra/i18n'
 import { resolvePublicWorkspace, type PublicWorkspaceMode } from '@/lib/mortra/public-workspace-mode'
 import styles from '@/app/mortra/mortra.module.css'
@@ -93,6 +100,16 @@ type TraceLine = {
   id: string
   at: number | null
   text: string
+}
+
+type DocumentImportState = {
+  slot: 'a' | 'b'
+  fileName: string
+  progress: ProblemDocumentProgress
+  method?: ProblemDocumentMethod
+  formulaBoxes?: number
+  warning?: string
+  error?: string
 }
 
 type CatalogProblem = {
@@ -185,6 +202,9 @@ const CONSOLE_TEXT = {
     tStates: '検査状態', tGoals: '実行候補', tFrontier: '未閉鎖義務',
     traceSummary: '処理記録',
     researchNotice: '直接の構造融合を優先し、対応外でも二つの検証済み厳密解は共通の漸化式へ合成します。未知問題は停止せず長時間探索へ移します。',
+    importDocument: '画像・PDFから問題文を読み取る',
+    importingDocument: '文字を読み取り中',
+    importedDocument: '読み取り完了。問題文を確認して実行してください。',
     searching: '探索中',
     nextRound: (s: number) => `次の探索まで ${s} 秒`,
     resuming: '再開準備中',
@@ -231,6 +251,9 @@ const CONSOLE_TEXT = {
     tStates: 'States seen', tGoals: 'Executable goals', tFrontier: 'Open obligations',
     traceSummary: 'Execution log',
     researchNotice: 'Direct structural fusion runs first. Two certified exact answers can also be composed through one reusable recurrence construction; unknown inputs continue in long-running search.',
+    importDocument: 'Read a problem from an image or PDF',
+    importingDocument: 'Reading text',
+    importedDocument: 'Text extracted. Review the problem before running it.',
     searching: 'Searching',
     nextRound: (s: number) => `Next round in ${s}s`,
     resuming: 'Resuming',
@@ -317,7 +340,11 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
   const [commandMenuOpen, setCommandMenuOpen] = useState(false)
   const [showAllCommands, setShowAllCommands] = useState(false)
   const [commandHelp, setCommandHelp] = useState<PublicWorkspaceMode>('auto')
+  const [documentImport, setDocumentImport] = useState<DocumentImportState | null>(null)
   const abortRef = useRef<AbortController | null>(null)
+  const parentAFileRef = useRef<HTMLInputElement | null>(null)
+  const parentBFileRef = useRef<HTMLInputElement | null>(null)
+  const importSequenceRef = useRef(0)
   const helpTimerRef = useRef<number | null>(null)
   const traceSequenceRef = useRef(0)
   const seenRemoteLogsRef = useRef(new Set<string>())
@@ -353,6 +380,45 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
     } else {
       setParentBId(null)
       setParentB(value)
+    }
+  }
+
+  const importDocument = async (slot: 'a' | 'b', file: File | null) => {
+    if (!file || running) return
+    const sequence = ++importSequenceRef.current
+    setDocumentImport({
+      slot,
+      fileName: file.name,
+      progress: { phase: 'loading', progress: 0 },
+    })
+    try {
+      const imported = await extractProblemDocument(file, progress => {
+        if (importSequenceRef.current !== sequence) return
+        setDocumentImport(current => current?.slot === slot
+          ? { ...current, progress }
+          : current)
+      })
+      if (importSequenceRef.current !== sequence) return
+      editParent(slot, imported.text)
+      setDocumentImport({
+        slot,
+        fileName: imported.fileName,
+        progress: { phase: 'complete', progress: 1, pages: imported.pages },
+        method: imported.method,
+        formulaBoxes: imported.formulaBoxes,
+        warning: imported.warnings[0],
+      })
+    } catch (error) {
+      if (importSequenceRef.current !== sequence) return
+      setDocumentImport({
+        slot,
+        fileName: file.name,
+        progress: { phase: 'complete', progress: 0 },
+        error: error instanceof Error ? error.message : String(error),
+      })
+    } finally {
+      const input = slot === 'a' ? parentAFileRef.current : parentBFileRef.current
+      if (input) input.value = ''
     }
   }
 
@@ -681,10 +747,20 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
   const stop = () => {
     abortRef.current?.abort()
     setRunning(false)
+    setJobId(null)
   }
 
   const reset = () => {
     abortRef.current?.abort()
+    importSequenceRef.current += 1
+    setRunning(false)
+    setJobId(null)
+    window.localStorage.removeItem(JOB_KEY)
+    const url = new URL(window.location.href)
+    if (url.searchParams.has('job')) {
+      url.searchParams.delete('job')
+      window.history.replaceState(window.history.state, '', url)
+    }
     setParentA('')
     setParentB('')
     setParentAId(null)
@@ -704,6 +780,7 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
     setCommandHelp('auto')
     setCommandMenuOpen(false)
     setShowAllCommands(false)
+    setDocumentImport(null)
     traceSequenceRef.current = 0
     seenRemoteLogsRef.current.clear()
   }
@@ -724,6 +801,28 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
       : running
         ? c.resuming
         : null
+  const importingDocument = documentImport !== null
+    && documentImport.progress.phase !== 'complete'
+    && !documentImport.error
+
+  const importStatus = (slot: 'a' | 'b') => {
+    if (!documentImport || documentImport.slot !== slot) return null
+    if (documentImport.error) return documentImport.error
+    if (documentImport.progress.phase === 'complete') {
+      if (documentImport.warning) return lang === 'ja' ? '読み取り完了・要確認' : 'Imported · review'
+      if (documentImport.formulaBoxes) {
+        return lang === 'ja'
+          ? `読み取り完了・数式 ${documentImport.formulaBoxes}`
+          : `Imported · ${documentImport.formulaBoxes} formula${documentImport.formulaBoxes === 1 ? '' : 's'}`
+      }
+      return c.importedDocument
+    }
+    const percent = Math.round(documentImport.progress.progress * 100)
+    const page = documentImport.progress.page && documentImport.progress.pages
+      ? ` ${documentImport.progress.page}/${documentImport.progress.pages}`
+      : ''
+    return `${c.importingDocument}${page} ${percent}%`
+  }
 
   return (
     <>
@@ -819,7 +918,43 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
 
             <div className={styles.sourceEditorStack}>
               <div className={styles.sourceEditor}>
-                <label htmlFor="mortra-parent-a"><span>A</span><b>{c.labelA}</b><small>TeX / UTF-8</small></label>
+                <div className={styles.sourceEditorHeader}>
+                  <label htmlFor="mortra-parent-a"><span>A</span><b>{c.labelA}</b></label>
+                  <div className={styles.sourceEditorTools}>
+                    <small
+                      className={documentImport?.slot === 'a'
+                        ? documentImport.error
+                          ? styles.sourceImportError
+                          : documentImport.warning
+                            ? styles.sourceImportWarning
+                            : ''
+                        : ''}
+                      title={documentImport?.slot === 'a' ? documentImport.warning : undefined}
+                      aria-live="polite"
+                    >
+                      {importStatus('a') ?? 'TeX / UTF-8'}
+                    </small>
+                    <input
+                      ref={parentAFileRef}
+                      className={styles.sourceFileInput}
+                      type="file"
+                      accept={PROBLEM_DOCUMENT_ACCEPT}
+                      onChange={event => void importDocument('a', event.target.files?.[0] ?? null)}
+                    />
+                    <button
+                      className={styles.sourceImportButton}
+                      type="button"
+                      disabled={running || importingDocument}
+                      onClick={() => parentAFileRef.current?.click()}
+                      title={c.importDocument}
+                      aria-label={c.importDocument}
+                    >
+                      {importingDocument && documentImport?.slot === 'a'
+                        ? <LoaderCircle className={styles.spin} size={13} aria-hidden="true" />
+                        : <FileUp size={13} aria-hidden="true" />}
+                    </button>
+                  </div>
+                </div>
                 {catalog.length > 0 ? (
                   <select
                     className={styles.problemCatalogSelect}
@@ -845,7 +980,43 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
               </div>
               {(workspaceMode === 'auto' || workspaceMode === 'fusion') && (
                 <div className={styles.sourceEditor}>
-                  <label htmlFor="mortra-parent-b"><span>B</span><b>{c.labelB}</b><small>TeX / UTF-8</small></label>
+                  <div className={styles.sourceEditorHeader}>
+                    <label htmlFor="mortra-parent-b"><span>B</span><b>{c.labelB}</b></label>
+                    <div className={styles.sourceEditorTools}>
+                      <small
+                        className={documentImport?.slot === 'b'
+                          ? documentImport.error
+                            ? styles.sourceImportError
+                            : documentImport.warning
+                              ? styles.sourceImportWarning
+                              : ''
+                          : ''}
+                        title={documentImport?.slot === 'b' ? documentImport.warning : undefined}
+                        aria-live="polite"
+                      >
+                        {importStatus('b') ?? 'TeX / UTF-8'}
+                      </small>
+                      <input
+                        ref={parentBFileRef}
+                        className={styles.sourceFileInput}
+                        type="file"
+                        accept={PROBLEM_DOCUMENT_ACCEPT}
+                        onChange={event => void importDocument('b', event.target.files?.[0] ?? null)}
+                      />
+                      <button
+                        className={styles.sourceImportButton}
+                        type="button"
+                        disabled={running || importingDocument}
+                        onClick={() => parentBFileRef.current?.click()}
+                        title={c.importDocument}
+                        aria-label={c.importDocument}
+                      >
+                        {importingDocument && documentImport?.slot === 'b'
+                          ? <LoaderCircle className={styles.spin} size={13} aria-hidden="true" />
+                          : <FileUp size={13} aria-hidden="true" />}
+                      </button>
+                    </div>
+                  </div>
                   {catalog.length > 0 ? (
                     <select
                       className={styles.problemCatalogSelect}
@@ -883,7 +1054,7 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
                 <button className={styles.workspaceIconButton} type="button" onClick={reset} title={c.resetInput} aria-label={c.resetInput}>
                   <RotateCcw size={14} aria-hidden="true" />
                 </button>
-                <button className={styles.workspaceRunButton} type="button" onClick={() => void run()} disabled={running || workspaceResolution.error !== null}>
+                <button className={styles.workspaceRunButton} type="button" onClick={() => void run()} disabled={running || importingDocument || workspaceResolution.error !== null}>
                   {running ? <LoaderCircle className={styles.spin} size={15} aria-hidden="true" /> : <Play size={14} fill="currentColor" aria-hidden="true" />}
                   {running
                     ? (visibleMode === 'solve' ? c.solving : c.generating)

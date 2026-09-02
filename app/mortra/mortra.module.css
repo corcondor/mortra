@@ -2858,16 +2858,25 @@
   background: #070a0c;
 }
 
-.sourceEditor label {
+.sourceEditorHeader {
   display: flex;
   min-height: 34px;
   align-items: center;
+  justify-content: space-between;
   gap: 9px;
   padding: 0 16px;
   color: #8b969e;
 }
 
-.sourceEditor label span {
+.sourceEditorHeader label {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 9px;
+  cursor: text;
+}
+
+.sourceEditorHeader label span {
   display: grid;
   width: 18px;
   height: 18px;
@@ -2878,15 +2887,69 @@
   font: 9px "IBM Plex Mono", ui-monospace, monospace;
 }
 
-.sourceEditor label b {
+.sourceEditorHeader label b {
   font-size: 10px;
   font-weight: 540;
 }
 
-.sourceEditor label small {
-  margin-left: auto;
+.sourceEditorTools {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.sourceEditorTools small {
+  max-width: 280px;
+  overflow: hidden;
   color: #4e5a63;
   font: 8px "IBM Plex Mono", ui-monospace, monospace;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sourceEditorTools .sourceImportError {
+  color: #ff8f9b;
+}
+
+.sourceEditorTools .sourceImportWarning {
+  color: #d6b66f;
+}
+
+.sourceFileInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.sourceImportButton {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 26px;
+  place-items: center;
+  border: 1px solid rgba(219, 231, 235, 0.14);
+  border-radius: 4px;
+  background: rgba(225, 235, 238, 0.035);
+  color: #83919a;
+  cursor: pointer;
+}
+
+.sourceImportButton:hover:not(:disabled),
+.sourceImportButton:focus-visible:not(:disabled) {
+  border-color: rgba(98, 216, 232, 0.52);
+  outline: none;
+  color: var(--cyan);
+}
+
+.sourceImportButton:disabled {
+  cursor: wait;
+  opacity: 0.55;
 }
 
 .problemCatalogSelect {
@@ -3588,6 +3651,21 @@
   .sourceEditor textarea,
   .sourceEditorStack > .sourceEditor:only-child textarea {
     min-height: 170px;
+  }
+
+  .sourceEditorHeader {
+    min-height: 44px;
+    padding: 0 12px;
+  }
+
+  .sourceEditorTools small {
+    max-width: 42vw;
+  }
+
+  .sourceImportButton {
+    width: 34px;
+    height: 34px;
+    flex-basis: 34px;
   }
 
   .commandActions {

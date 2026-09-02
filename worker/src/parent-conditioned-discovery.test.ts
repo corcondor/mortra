@@ -110,6 +110,21 @@ test('rational-angle classification retains reusable trigonometric and integer s
   assert.ok(!roots.some(root => root.startsWith('OpaqueStructure[')))
 })
 
+test('an integer angle denominator does not replace the curve configuration as the primary carrier', () => {
+  const result = discoverParentStructures([{
+    id: 'cubic-circle-rational-hexagon',
+    statement: String.raw`原点を通り、最高次係数が正である3次関数 y=f(x) と単位円 x^{2}+y^{2}=1 が相異なる6点で交わる。交点を結ぶ六角形の各内角が \frac{p_i}{q}\pi と表せる正の整数 q の最小値と f(x) を求めよ。`,
+  }])
+  const roots = result.parent_graphs[0].semantic_roots
+  assert.equal(roots[0], 'CubicPolynomialMap')
+  assert.ok(roots.includes('Circle'))
+  assert.ok(roots.includes('CurveIntersection'))
+  assert.ok(roots.includes('Polygon'))
+  assert.ok(roots.includes('RationalAngleStructure'))
+  assert.ok(roots.indexOf('IntegerStructure') > roots.indexOf('RationalAngleStructure'))
+  assert.match(result.cards[0].structure_blueprint.observable, /QueryClosure\[CubicPolynomialMap\]/)
+})
+
 test('prime radius-product elaboration requires radius and primality evidence', () => {
   const result = discoverParentStructures([{
     id: 'prime-radius-product',

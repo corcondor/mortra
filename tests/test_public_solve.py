@@ -101,6 +101,52 @@ class PublicSolveTests(unittest.TestCase):
         self.assertEqual(witness["target"], "1/2")
         self.assertEqual(witness["normalized_inner_product"], "1/2")
 
+    def test_primitive_right_triangle_center_fraction_is_synthesized_from_current_input(self) -> None:
+        statement = (
+            "3辺の長さが互いに素な自然数である直角三角形の外心をO,"
+            "内心をIとする. $OI^{2}$ の小数部分を求めよ."
+        )
+
+        status, payload = solve_public_problem(statement)
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(card["answer_tex"], r"\(\dfrac14\)")
+        self.assertEqual(
+            card["execution_certificate"]["tool_name"],
+            "mortra.runtime_primitive_right_triangle_center_fraction",
+        )
+        self.assertEqual(card["diagram"]["kind"], "plane")
+        self.assertEqual(len(card["visual_explanation"]["steps"]), 3)
+        self.assertIn(r"c^2\equiv1\pmod4", card["solution_tex"])
+
+    def test_primitive_right_triangle_center_fraction_uses_renamed_centers(self) -> None:
+        statement = (
+            "三辺が互いに素な正の整数である直角三角形について,"
+            "外心をP, 内心をJとする. $JP^2$ の小数部分を求めよ."
+        )
+
+        status, payload = solve_public_problem(statement)
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        witness = card["execution_certificate"]["witness"]
+        self.assertEqual(witness["center_labels"], {"circumcenter": "P", "incenter": "J"})
+        self.assertIn(r"PJ^2", card["solution_tex"])
+
+    def test_center_fraction_chart_rejects_missing_primitivity(self) -> None:
+        statement = (
+            "3辺の長さが自然数である直角三角形の外心をO,"
+            "内心をIとする. $OI^2$ の小数部分を求めよ."
+        )
+
+        status, payload = solve_public_problem(statement)
+
+        self.assertEqual(status, 422)
+        self.assertEqual(payload["generated"], 0)
+
     def test_normalized_inner_product_rejects_impossible_target(self) -> None:
         status, payload = solve_public_problem(
             r"\frac{\int_{0}^{1} f(x)g(x)\,dx}"
@@ -559,6 +605,26 @@ class PublicSolveTests(unittest.TestCase):
             "mortra.runtime_complement_angle_integral_bound",
         )
         self.assertIn(r"\int", card["statement_tex"])
+        self.assertIn(r"0<I<2", card["answer_tex"])
+        self.assertEqual(
+            card["execution_certificate"]["proof_program"][0]["input_form"],
+            "bare",
+        )
+
+    def test_formula_only_ocr_integral_inequality_elaborates_to_the_same_proof(self) -> None:
+        status, payload = solve_public_problem(
+            "$$\n"
+            r"\int_{0}^{\frac{\pi}{2}} \{\cos (\cos x+\sin x)+\sin (\cos x+\sin x)\} \,dx<2"
+            "\n$$"
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(
+            card["execution_certificate"]["tool_name"],
+            "mortra.runtime_complement_angle_integral_bound",
+        )
         self.assertIn(r"0<I<2", card["answer_tex"])
         self.assertEqual(
             card["execution_certificate"]["proof_program"][0]["input_form"],

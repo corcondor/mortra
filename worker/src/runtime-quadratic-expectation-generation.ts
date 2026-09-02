@@ -135,6 +135,7 @@ function parseQuadraticForm(parent: DiscoveryParent): QuadraticForm | null {
   const variables = [definition[1], definition[2]] as const
   const expression = definition[3]
     .replace(/[，,].*$/, '')
+    .replace(/[ぁ-んァ-ヶ一-龠々].*$/, '')
     .replace(/(?:とする|を考える|である).*$/, '')
   const signed = /^[+-]/.test(expression) ? expression : `+${expression}`
   const terms = signed.match(/[+-][^+-]+/g)

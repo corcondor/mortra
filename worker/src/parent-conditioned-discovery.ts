@@ -12,6 +12,7 @@ export interface DiscoveryParent {
 type OperatorSignature = {
   patterns: RegExp[]
   match?: 'any' | 'all'
+  role?: 'carrier' | 'constraint'
   sorts: string[]
   morphisms: Array<{ name: string; source: string; target: string; law: string }>
 }
@@ -24,21 +25,25 @@ const OPERATOR_SIGNATURES: OperatorSignature[] = [
   { patterns: [/\\lim(?![A-Za-z])/i, /極限/], sorts: ['Sequence', 'LimitObject'], morphisms: [{ name: 'Limit', source: 'Sequence', target: 'LimitObject', law: 'Limit(a)=lim a_n when defined' }] },
   { patterns: [/微分|導関数/, /f\s*['′]/], sorts: ['DifferentiableFunction', 'Function'], morphisms: [{ name: 'Derivative', source: 'DifferentiableFunction', target: 'Function', law: 'D(f)=f\'' }] },
   { patterns: [/\\equiv(?![A-Za-z])/i, /合同|法\s*\\?pmod|modulo/i], sorts: ['IntegerStructure', 'ResidueClassStructure'], morphisms: [{ name: 'QuotientModulo', source: 'IntegerStructure', target: 'ResidueClassStructure', law: 'q_m(a)=[a]_m' }] },
-  { patterns: [/整数|自然数|integer|natural\s+number/i], sorts: ['IntegerStructure'], morphisms: [{ name: 'IntegerElaboration', source: 'ArithmeticExpression', target: 'IntegerStructure', law: 'declared integer-valued variables and their arithmetic constraints form an integer structure' }] },
-  { patterns: [/互いに素|coprime/i], sorts: ['CoprimeIntegerTuple'], morphisms: [{ name: 'CoprimeRestriction', source: 'IntegerTuple', target: 'CoprimeIntegerTuple', law: 'gcd of the declared integer tuple is one' }] },
-  { patterns: [/素数|prime/i], sorts: ['PrimeSpectrum', 'IntegerStructure'], morphisms: [{ name: 'PrimeRestriction', source: 'IntegerStructure', target: 'PrimeSpectrum', law: 'restrict parameters to primes' }] },
+  { patterns: [/整数|自然数|integer|natural\s+number/i], role: 'constraint', sorts: ['IntegerStructure'], morphisms: [{ name: 'IntegerElaboration', source: 'ArithmeticExpression', target: 'IntegerStructure', law: 'declared integer-valued variables and their arithmetic constraints form an integer structure' }] },
+  { patterns: [/互いに素|coprime/i], role: 'constraint', sorts: ['CoprimeIntegerTuple'], morphisms: [{ name: 'CoprimeRestriction', source: 'IntegerTuple', target: 'CoprimeIntegerTuple', law: 'gcd of the declared integer tuple is one' }] },
+  { patterns: [/素数|prime/i], role: 'constraint', sorts: ['PrimeSpectrum', 'IntegerStructure'], morphisms: [{ name: 'PrimeRestriction', source: 'IntegerStructure', target: 'PrimeSpectrum', law: 'restrict parameters to primes' }] },
   { patterns: [/整数三角形|三辺.{0,12}整数|integer-sided triangle/i], sorts: ['IntegralTriangle', 'TriangleMetricData'], morphisms: [{ name: 'IntegralSideRestriction', source: 'TriangleMetricData', target: 'IntegralTriangle', law: 'side lengths lie in the positive integers' }] },
   { patterns: [/外接円半径|内接円半径|傍接円半径|circumradius|inradius/i], sorts: ['TriangleMetricData', 'RadiusObservable'], morphisms: [{ name: 'TriangleRadiusObservable', source: 'TriangleMetricData', target: 'RadiusObservable', law: 'radius observables are rational expressions after Heron elimination' }] },
   { patterns: [/位相空間|閉曲面|topological space|closed surface/i], sorts: ['TopologicalSpace'], morphisms: [] },
   { patterns: [/三角形分割|単体分割|triangulation|simplicial complex/i], sorts: ['FiniteTriangulation', 'TopologicalSpace'], morphisms: [{ name: 'TriangulationElaboration', source: 'TopologicalSpace', target: 'FiniteTriangulation', law: 'a finite triangulation presents incidence data of the space' }] },
   { patterns: [/Euler標数|オイラー標数|Euler characteristic/i], sorts: ['FiniteTriangulation', 'IntegerInvariant'], morphisms: [{ name: 'EulerCharacteristic', source: 'FiniteTriangulation', target: 'IntegerInvariant', law: 'chi=V-E+F' }] },
   { patterns: [/平方剰余|Legendre|ルジャンドル/i], sorts: ['ResidueClassStructure', 'QuadraticCharacter'], morphisms: [{ name: 'QuadraticCharacterMap', source: 'ResidueClassStructure', target: 'QuadraticCharacter', law: 'chi_p(a)=(a/p)' }] },
+  { patterns: [/3次関数|三次関数|cubic/i], sorts: ['CubicPolynomialMap', 'PlaneCurve'], morphisms: [{ name: 'PolynomialGraph', source: 'CubicPolynomialMap', target: 'PlaneCurve', law: 'a real polynomial map determines its graph as a plane curve' }] },
   { patterns: [/多項式|方程式/, /[A-Za-z]\s*\^\s*\{?\d+\}?/], sorts: ['Polynomial', 'AlgebraicSet'], morphisms: [{ name: 'ZeroLocus', source: 'Polynomial', target: 'AlgebraicSet', law: 'V(f)={x | f(x)=0}' }] },
   { patterns: [/曲線|軌跡|包絡線/], sorts: ['PlaneCurve'], morphisms: [] },
+  { patterns: [/交わる|交点|intersection/i], sorts: ['CurveIntersection', 'PointConfiguration'], morphisms: [{ name: 'IntersectionConfiguration', source: 'CurvePair', target: 'PointConfiguration', law: 'the common zero locus of two curve equations is their typed intersection configuration' }] },
   { patterns: [/接線/], sorts: ['PlaneCurve', 'LineFamily'], morphisms: [{ name: 'TangentFamily', source: 'PlaneCurve', target: 'LineFamily', law: 'C maps to its tangent family' }] },
   { patterns: [/点|頂点|交点/], sorts: ['PointConfiguration'], morphisms: [] },
   { patterns: [/三角形|正三角形/], sorts: ['Triangle', 'PointConfiguration'], morphisms: [{ name: 'VertexConfiguration', source: 'Triangle', target: 'PointConfiguration', law: 'a triangle maps to its vertices' }] },
+  { patterns: [/多角形|四角形|五角形|六角形|polygon|quadrilateral|hexagon/i], sorts: ['Polygon', 'PointConfiguration'], morphisms: [{ name: 'PolygonVertexConfiguration', source: 'Polygon', target: 'PointConfiguration', law: 'a polygon maps to its cyclically ordered vertex configuration' }] },
   { patterns: [/円|外接円|内接円/], sorts: ['Circle', 'PlaneCurve'], morphisms: [{ name: 'CircleEmbedding', source: 'Circle', target: 'PlaneCurve', law: 'a circle is a plane curve' }] },
+  { patterns: [/\\frac\s*\{[^{}]+\}\s*\{[^{}]+\}\s*\\pi|有理角|rational\s+angle/i], sorts: ['RationalAngleStructure', 'AngleConfiguration'], morphisms: [{ name: 'RationalAngleElaboration', source: 'AngleConfiguration', target: 'RationalAngleStructure', law: 'all declared angles lie in a common rational multiple lattice of pi' }] },
   { patterns: [/重心/], sorts: ['PointConfiguration', 'AffinePoint'], morphisms: [{ name: 'Barycenter', source: 'PointConfiguration', target: 'AffinePoint', law: 'bar(P_i)=sum(P_i)/n' }] },
   { patterns: [/領域|面積/], sorts: ['MeasurableRegion', 'AreaObservable'], morphisms: [{ name: 'Area', source: 'MeasurableRegion', target: 'AreaObservable', law: 'Area is a measure observable' }] },
   { patterns: [/確率|期待値/], sorts: ['ProbabilitySpace', 'RandomVariable'], morphisms: [{ name: 'Expectation', source: 'RandomVariable', target: 'Real', law: 'E[X]=integral X dP' }] },
@@ -95,20 +100,25 @@ export function liftParent(parent: DiscoveryParent) {
   const parentId = String(parent.id || `parent-${hash(parent, 8)}`)
   const source = parent.statement ?? ''
   const euclidean = elaborateEuclideanStatement(source)
-  const roots: string[] = [...(euclidean?.semanticRoots ?? [])]
+  const carrierRoots: string[] = [...(euclidean?.semanticRoots ?? [])]
+  const constraintRoots: string[] = []
   const morphisms: Array<{ name: string; source: string; target: string; law: string; origin: string }> = []
   for (const signature of OPERATOR_SIGNATURES) {
     const matched = signature.match === 'all'
       ? signature.patterns.every(pattern => pattern.test(source))
       : signature.patterns.some(pattern => pattern.test(source))
     if (!matched) continue
-    for (const sort of signature.sorts) if (!roots.includes(sort)) roots.push(sort)
+    const destination = signature.role === 'constraint' ? constraintRoots : carrierRoots
+    for (const sort of signature.sorts) {
+      if (!carrierRoots.includes(sort) && !constraintRoots.includes(sort)) destination.push(sort)
+    }
     for (const morphism of signature.morphisms) {
       if (morphisms.some(item => item.name === morphism.name)) continue
       morphisms.push({ ...morphism, origin: `parent:${parentId}:operator_vocabulary` })
     }
   }
   const atoms = latexAtoms(source)
+  const roots = [...carrierRoots, ...constraintRoots]
   if (!roots.length) roots.push(`OpaqueStructure[${hash(atoms.length ? atoms : source, 10)}]`)
   const constraints = [...new Set([
     ...constraintKinds(source).filter(kind => kind !== 'unresolved_relation'),
