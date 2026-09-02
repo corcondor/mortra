@@ -1,0 +1,185 @@
+{
+  "schema": 1,
+  "verified_at": "2026-09-02T11:01:11+09:00",
+  "production_url": "https://mortra.ai/ja",
+  "production_commit": "70ef46b",
+  "external_llm_used": false,
+  "browsers": [
+    {
+      "engine": "Chromium",
+      "version": "152.0.7977.65",
+      "viewport": "1440x900"
+    },
+    {
+      "engine": "Chromium",
+      "version": "152.0.7977.65",
+      "viewport": "390x844",
+      "mobile": true,
+      "touch": true
+    }
+  ],
+  "summary": {
+    "single_problem_inputs_passed": 8,
+    "single_problem_inputs_failed": 0,
+    "fusion_runs_passed": 2,
+    "verified_fusion_cards_inspected": 3,
+    "coefficient_mutations_recomputed": 1,
+    "diagram_required_cases_passed": 4,
+    "replacement_characters": 0,
+    "raw_text_commands": 0,
+    "unexpected_console_errors": 0,
+    "unexpected_page_errors": 0,
+    "desktop_horizontal_overflow": false,
+    "mobile_horizontal_overflow": false,
+    "public_file_inputs": 0
+  },
+  "cases": [
+    {
+      "id": "simple-linear-system",
+      "input": "実数 x,y は x+y=19, y=4 を満たす。x を求めよ。",
+      "status": "passed",
+      "family": "solve.symbolic_algebra.symbolic_query_solve_system_evaluate",
+      "answer": 15,
+      "certificate": "97a245f38c8f4d8d52983a8ffef4384fd6754b586b8e3012d1335a36376c2399"
+    },
+    {
+      "id": "calculus-variation-graph",
+      "input": "関数 f(x)=x^3-3x の増減、極大値、極小値を求め、グラフの概形を描け。",
+      "status": "passed",
+      "family": "solve.exact.mortra.runtime_univariate_variation",
+      "answer": {
+        "increasing": ["(-infinity,-1)", "(1,infinity)"],
+        "decreasing": ["(-1,1)"],
+        "local_maximum": 2,
+        "local_minimum": -2
+      },
+      "diagram": "variation-table-and-function-graph",
+      "certificate": "97add6501008a547ce5a17c44779873ec7dfec74174a90fb54f6b64e43628eaf"
+    },
+    {
+      "id": "three-consecutive-heads",
+      "input": "公平な硬貨を繰り返し投げ、表が3回連続した時点で終了する。終了までの投数の期待値を求め、状態遷移図を描け。",
+      "status": "passed",
+      "family": "solve.exact.mortra.runtime_finite_state_expectation",
+      "answer": 14,
+      "diagram": "four-state-transition-diagram",
+      "certificate": "248f7965a3ba91d9ac4fcfd279a8da6687bfbd287a3a5d946bde13d5958d163f"
+    },
+    {
+      "id": "coordinate-triangle-centers",
+      "input": "座標平面上の三角形 A(0,0), B(6,0), C(2,4) の外心と内心を求め、解答に必要な補助線を含む図を描け。",
+      "status": "passed",
+      "family": "solve.exact.mortra.runtime_coordinate_triangle_centers",
+      "answer_format": "exact",
+      "circumcenter": "(3,1)",
+      "diagram": "triangle-with-perpendicular-and-angle-bisectors",
+      "certificate": "9d22f825d8c95c7f9f04b43eaa8f2ba982a6061434741743c88713e8dbcff16a"
+    },
+    {
+      "id": "orthocenter-reflections-concyclic",
+      "input": "鋭角三角形 ABC の垂心を H とする。H を辺 BC、CA、AB に関して対称移動した3点が三角形 ABC の外接円上にあることを証明し、各対称点と補助線を含む図を描け。",
+      "status": "passed",
+      "family": "solve.exact.mortra.runtime_orthocenter_line_reflection_circumcircle",
+      "proof": "universal-coordinate-proof-with-symbolic-zero-residual",
+      "diagram": "four-step-semantic-construction",
+      "certificate": "e353d69b645bb4aa22f9408caba7049a7f4c27e0f42984ed11cb8ad451c3fa50"
+    },
+    {
+      "id": "orthocenter-reflections-renamed-and-paraphrased",
+      "input": "鋭角三角形 PQR の垂心を T とする。T を各辺に関して折り返して得られる3点が三角形 PQR の外接円上にあることを証明し、図を描け。",
+      "status": "passed",
+      "family": "solve.exact.mortra.runtime_orthocenter_line_reflection_circumcircle",
+      "renamed_vertices_preserved": true,
+      "renamed_orthocenter_preserved": true,
+      "diagram": true,
+      "certificate": true
+    },
+    {
+      "id": "latex-limit",
+      "input": "$\\lim_{x\\to0}\\frac{\\sin x}{x}$ を求めよ。",
+      "status": "passed",
+      "family": "solve.exact.limit",
+      "answer": 1,
+      "diagram": "limit-neighborhood",
+      "certificate": "21f4af5353cf873f8c1506cc4172a0f9f2f33f2504a4fb23b240c7cdd3c2a03f"
+    },
+    {
+      "id": "rational-angle-power-identity",
+      "input": "0<2p<q を満たす互いに素な自然数 p,q と自然数 n>=2 に対し、cos^n(p*pi/q)+sin^n(p*pi/q)=cos(n*p*pi/q)+sin(n*p*pi/q) が成り立つ組 (n,p,q) をすべて求めよ。",
+      "status": "passed",
+      "family": "solve.structural_theorem.structural_theorem_rational_angle_power_identity",
+      "answer": "(n,p,q)=(2,1,4)",
+      "proof_steps": 9,
+      "proof_path_morphisms": 6,
+      "certificate_checks": 8
+    },
+    {
+      "id": "quadratic-form-expectation-fusion",
+      "parents": [
+        "二次形式 q(x,y)=2x^2+3xy+5y^2 を考える。",
+        "確率変数 X,Y は独立で E[X]=1, E[Y]=-2, Var(X)=3, Var(Y)=4 とする。"
+      ],
+      "status": "passed",
+      "family": "runtime.quadratic_form_expectation",
+      "cards": 3,
+      "answers": [42, 74, 70],
+      "diagram": "quadratic-form-to-moment-trace-map",
+      "certificate_checks_per_card": 6
+    },
+    {
+      "id": "quadratic-form-expectation-coefficient-mutation",
+      "mutation": "coefficient of x^2 changed from 2 to 4",
+      "status": "passed",
+      "answer_before": 42,
+      "answer_after": 50,
+      "independent_direct_expansion": "4E[X^2]+3E[XY]+5E[Y^2]=50"
+    }
+  ],
+  "visual_checks": {
+    "desktop": {
+      "viewport": "1440x900",
+      "horizontal_overflow": false,
+      "orthocenter_final_figure_contains": ["triangle", "orthocenter", "three reflected points", "three reflection segments", "circumcircle"]
+    },
+    "mobile": {
+      "viewport": "390x844",
+      "horizontal_overflow": false,
+      "calculus_figure_contains": ["variation table", "function graph", "exact derivative certificate"]
+    }
+  },
+  "ocr": {
+    "japanese_unicode_tex_string_input": "passed",
+    "replacement_characters": 0,
+    "raw_tex_commands_in_rendered_result": 0,
+    "image_or_pdf_ocr": "not_exposed_in_public_ui",
+    "reason": "The production page contains no input[type=file]."
+  },
+  "tests": {
+    "public_python": "103 passed",
+    "worker": "194 passed",
+    "next_production_build": "passed",
+    "vercel_deployment": "READY"
+  },
+  "screenshots": [
+    {
+      "file": "desktop-hard-geometry-final-step.png",
+      "sha256": "54f918692c0c685c20d48c289d00643128ec44e549c2cee23710b113f215af59"
+    },
+    {
+      "file": "desktop-hard-geometry.png",
+      "sha256": "ed33e56ba39d1824efd5075d9b541fb80b0a93801868cace7499a2bbb3135ff2"
+    },
+    {
+      "file": "desktop-quadratic-expectation-fusion.png",
+      "sha256": "d7d5f77ecafb782de2e6cd233af1a0e48384664098e28163a88e882455224fb6"
+    },
+    {
+      "file": "mobile-calculus-graph.png",
+      "sha256": "d42ffe607558a94b2a08800efa40f30e87e57b95c920ec14b6ca7047f0c860b5"
+    },
+    {
+      "file": "mobile-calculus.png",
+      "sha256": "45a438e6bea01f03a2dd5b9d47e80910c60a067fc67715886f0950e54d23010b"
+    }
+  ]
+}
