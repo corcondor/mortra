@@ -38,6 +38,14 @@ function parentPayload(parents: readonly DiscoveryParent[]) {
   }))
 }
 
+export function certificateValueSha256(value: unknown): string {
+  return sha256(value)
+}
+
+export function certificateParentSha256(parents: readonly DiscoveryParent[]): string {
+  return sha256(parentPayload(parents))
+}
+
 export function runtimeSynthesisCertificate(input: RuntimeCertificateInput): Record<string, unknown> {
   return {
     schema: 'mortra.runtime-synthesis.v1',
@@ -45,8 +53,8 @@ export function runtimeSynthesisCertificate(input: RuntimeCertificateInput): Rec
     capability_origin: input.origin,
     registered_composite_used: false,
     composite_cache_role: input.cacheRole ?? 'not_consulted',
-    input_parent_sha256: sha256(parentPayload(input.parents)),
-    generated_program_sha256: sha256(input.generatedProgram),
+    input_parent_sha256: certificateParentSha256(input.parents),
+    generated_program_sha256: certificateValueSha256(input.generatedProgram),
     generated_program: input.generatedProgram,
     checks: [...input.checks],
   }
@@ -59,8 +67,8 @@ export function registeredMorphismCertificate(input: RegisteredCertificateInput)
     capability_origin: 'registered_parameterized_morphism',
     registered_composite_used: true,
     composite_cache_role: 'registered_parameterized_schema',
-    input_parent_sha256: sha256(parentPayload(input.parents)),
-    instantiated_program_sha256: sha256(input.program),
+    input_parent_sha256: certificateParentSha256(input.parents),
+    instantiated_program_sha256: certificateValueSha256(input.program),
     instantiated_program: input.program,
     checks: [...input.checks],
   }

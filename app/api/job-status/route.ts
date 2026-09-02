@@ -66,10 +66,20 @@ export async function GET(req: NextRequest) {
         message?: string
         started_at?: string
       }
+      researchEvidence?: {
+        status?: string
+        evidence_sha256?: string
+        previous_evidence_sha256?: string | null
+        output?: {
+          accepted_card_count?: number
+          rejected_card_count?: number
+        }
+      }
       superseded_by?: string
     } | null)
     let state = resultEnvelope?.searchState
     const runtime = resultEnvelope?.searchRuntime
+    const researchEvidence = resultEnvelope?.researchEvidence
     let replacementJobId: string | null = resultEnvelope?.superseded_by ?? null
     if (replacementJobId) {
       const { data: replacement } = await supabase
@@ -238,6 +248,11 @@ export async function GET(req: NextRequest) {
         reused_parameterized_morphisms: state?.reused_parameterized_morphisms ?? 0,
         primitive_executions: state?.primitive_executions ?? 0,
         execution_obligations: state?.execution_obligations?.length ?? 0,
+        evidence_status: researchEvidence?.status ?? null,
+        evidence_sha256: researchEvidence?.evidence_sha256 ?? null,
+        previous_evidence_sha256: researchEvidence?.previous_evidence_sha256 ?? null,
+        accepted_card_replays: researchEvidence?.output?.accepted_card_count ?? 0,
+        rejected_card_replays: researchEvidence?.output?.rejected_card_count ?? 0,
       },
       resume_requested: resumeRequested,
       replacement_job_id: replacementJobId,

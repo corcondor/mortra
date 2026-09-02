@@ -11,6 +11,11 @@ import {
 import { runPublicRuntimeGeneration } from '../../../worker/src/public-runtime-generation'
 import { capabilityOrigin } from '../../../worker/src/execution-certificate'
 import type { ExecutableFusionCard } from '../../../worker/src/executable-fusion'
+import {
+  sealResearchRound,
+  verifyResearchEvidenceEnvelope,
+  type ResearchEvidenceEnvelope,
+} from '../../../worker/src/research-evidence-envelope'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -293,6 +298,7 @@ async function persistRuntimeSynthesizedCards(cards: ExecutableFusionCard[]): Pr
       fusionDerivation: card.fusion_derivation,
       searchEvidence: card.search_evidence,
       executionCertificate: card.execution_certificate,
+      researchEvidence: card.research_evidence,
     }
     try {
       const { error } = await getSupabaseAdmin().from('problems').upsert({
@@ -798,6 +804,7 @@ type GenerationResult = {
   searchState?: AutonomousSearchState
   strategyAttempts?: StrategyAttempt[]
   backgroundResearch?: boolean
+  researchEvidence?: ResearchEvidenceEnvelope
 }
 
 function runtimeParentsFromInput(parents: ParentInput[]) {
@@ -822,21 +829,37 @@ function generateRuntimeParentConditionedCards(
     current: 0,
     total: count,
   })
-  const autonomous = runPublicRuntimeGeneration(runtimeParentsFromInput(parents), count)
+  const runtimeParents = runtimeParentsFromInput(parents)
+  const autonomous = runPublicRuntimeGeneration(runtimeParents, count)
+  const sealed = sealResearchRound({
+    parents: runtimeParents,
+    cards: autonomous.cards,
+    requested: count,
+    state: autonomous.state,
+  })
+  const evidenceErrors = verifyResearchEvidenceEnvelope({
+    evidence: sealed.evidence,
+    parents: runtimeParents,
+    acceptedCards: sealed.cards,
+    state: sealed.state,
+  })
+  if (evidenceErrors.length) {
+    throw new Error(`research evidence replay failed: ${evidenceErrors.join('; ')}`)
+  }
 
   for (const attempt of autonomous.attempts) {
     emit({
       phase: attempt.applicable ? 'inducing' : 'searching',
       message: `${attempt.strategy}: ${attempt.reason}`,
-      current: Math.min(autonomous.cards.length, count),
+      current: Math.min(sealed.cards.length, count),
       total: count,
     })
   }
-  for (const card of autonomous.cards) {
+  for (const card of sealed.cards) {
     emit({
       phase: 'verifying',
       message: `${capabilityOrigin(card.execution_certificate) ?? 'runtime_program'} を厳密計算と親アブレーションで検証しました`,
-      current: Math.min(autonomous.cards.indexOf(card) + 1, count),
+      current: Math.min(sealed.cards.indexOf(card) + 1, count),
       total: count,
       draft: card.statement_tex,
       familyId: card.family_id,
@@ -845,21 +868,22 @@ function generateRuntimeParentConditionedCards(
       structureStatus: 'new',
     })
   }
-  if (autonomous.cards.length && options.persist !== false) {
-    scheduleRuntimeSynthesizedPersistence(autonomous.cards)
+  if (sealed.cards.length && options.persist !== false) {
+    scheduleRuntimeSynthesizedPersistence(sealed.cards)
   }
 
   return {
-    generated: autonomous.cards.length,
+    generated: sealed.cards.length,
     requested: count,
     engine: 'MORTRA runtime typed synthesis (no registered routes, no LLM)',
-    cards: autonomous.cards,
+    cards: sealed.cards,
     errors: [],
     discovered: autonomous.discovery.hypotheses.length,
     generalization: autonomous.generalization,
-    searchState: autonomous.state,
+    searchState: sealed.state,
     strategyAttempts: autonomous.attempts,
-    backgroundResearch: autonomous.state.continuing,
+    backgroundResearch: sealed.state.continuing,
+    researchEvidence: sealed.evidence,
   }
 }
 

@@ -13,6 +13,11 @@ import {
   type AutonomousSearchState,
 } from './autonomous-synthesis'
 import type { CertifiedLawRecord } from './primitive-law-inducer'
+import {
+  sealResearchRound,
+  verifyResearchEvidenceEnvelope,
+  type ResearchEvidenceEnvelope,
+} from './research-evidence-envelope'
 
 const SUPABASE_URL = process.env.SUPABASE_URL!
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -42,6 +47,7 @@ interface LogEntry {
 
 type PreviousResult = {
   searchState?: AutonomousSearchState
+  researchEvidence?: Pick<ResearchEvidenceEnvelope, 'evidence_sha256'>
 } & Record<string, unknown>
 
 function certifiedLawFromMeta(meta: unknown): CertifiedLawRecord | null {
@@ -78,6 +84,7 @@ async function flushLogs(jobId: string) {
 async function saveCards(
   cards: ReturnType<typeof runAutonomousSynthesis>['cards'],
   userId: string | null,
+  researchEvidence: ResearchEvidenceEnvelope,
 ) {
   const { data: latest } = await supabase.from('problems')
     .select('generation').order('generation', { ascending: false }).limit(1).single()
@@ -102,6 +109,12 @@ async function saveCards(
         },
         structureBlueprint: card.structure_blueprint,
         verification: card.verification,
+        executionCertificate: card.execution_certificate,
+        researchEvidence: {
+          envelopeSha256: researchEvidence.evidence_sha256,
+          previousEvidenceSha256: researchEvidence.previous_evidence_sha256,
+          replay: researchEvidence.card_replays.find(replay => replay.card_id === card.id) ?? null,
+        },
       }),
       surprise: 8,
       minimality: 7,
@@ -186,15 +199,33 @@ export async function processJob(jobId: string) {
       new Date(),
       certifiedLaws,
     )
-    const { discovery, cards, state: searchState } = autonomous
+    const { discovery } = autonomous
+    const sealed = sealResearchRound({
+      parents,
+      cards: autonomous.cards,
+      requested: count,
+      state: autonomous.state,
+      previousEvidenceSha256: previous?.researchEvidence?.evidence_sha256 ?? null,
+    })
+    const { cards, state: searchState, evidence: researchEvidence } = sealed
+    const evidenceErrors = verifyResearchEvidenceEnvelope({
+      evidence: researchEvidence,
+      parents,
+      acceptedCards: cards,
+      state: searchState,
+    })
+    if (evidenceErrors.length) {
+      throw new Error(`research evidence replay failed: ${evidenceErrors.join('; ')}`)
+    }
     pushLog(`[enumeration] round=${searchState.round}, depth=${searchState.depth}, terms=${searchState.terms_enumerated ?? 0}, executable_goals=${searchState.executable_goals ?? 0}`)
     pushLog(`[induction] tested=${searchState.induction_tested ?? 0}, rejected=${searchState.induction_rejected ?? 0}, certified=${searchState.induced_laws ?? 0}`)
     for (const attempt of autonomous.attempts) {
       pushLog(`[backend:${attempt.applicable ? 'apply' : 'skip'}] ${attempt.strategy}@${attempt.version}: ${attempt.reason}`)
     }
+    pushLog(`[evidence] ${researchEvidence.status}; accepted=${researchEvidence.output.accepted_card_count}, rejected=${researchEvidence.output.rejected_card_count}, sha256=${researchEvidence.evidence_sha256}`)
 
     if (cards.length) {
-      await saveCards(cards, userId)
+      await saveCards(cards, userId, researchEvidence)
       const continuingAfterDelivery = searchState.continuing
       const result = {
         engine: 'MORTRA executable parent-conditioned synthesis',
@@ -203,6 +234,7 @@ export async function processJob(jobId: string) {
         requested: count,
         cards,
         searchState,
+        researchEvidence,
         searchRuntime: {
           phase: continuingAfterDelivery ? 'waiting_next_round' : 'completed',
           message: continuingAfterDelivery
@@ -241,6 +273,7 @@ export async function processJob(jobId: string) {
     const result = {
       ...discovery,
       searchState,
+      researchEvidence,
       searchRuntime: {
         phase: (searchState.stagnant_rounds ?? 0) >= 3 ? 'stalled_waiting' : 'waiting_next_round',
         message: `ラウンド${searchState.round}を完了しました。深さ${searchState.depth}まで${searchState.states_explored ?? 0}状態を検査し、未閉鎖義務${searchState.frontier.length}件から次の探索を再開します`,

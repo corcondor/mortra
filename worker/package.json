@@ -2,10 +2,10 @@
   "name": "sakumon-worker",
   "version": "1.0.0",
   "description": "MORTRA typed structural-discovery worker",
-  "main": "dist/process-job.js",
+  "main": "dist/worker/src/process-job.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/process-job.js",
+    "start": "node dist/worker/src/process-job.js",
     "dev": "tsx src/process-job.ts",
     "pretest": "node ../lib/release/check-public-python-closure.mjs",
     "test": "tsx --test src/*.test.ts",

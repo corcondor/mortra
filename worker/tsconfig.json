@@ -4,12 +4,22 @@
     "module": "commonjs",
     "lib": ["ES2022"],
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": "..",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "resolveJsonModule": true
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist", "src/probe-*.ts", "src/dbg-*.ts"]
+  "include": [
+    "src",
+    "../lib/mortra/problem-task-algebra.ts",
+    "../lib/mortra/finite-generated-action.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/**/*.test.ts",
+    "src/probe-*.ts",
+    "src/dbg-*.ts"
+  ]
 }

@@ -46,7 +46,12 @@ type GeneratedCard = ProblemArtifactCard & {
   diagram?: ProblemDiagram
   family_id?: string
   morphism_chain?: string[]
-  verification?: { method?: string }
+  verification?: {
+    method?: string
+    exact_backend?: boolean
+    independent_check?: boolean
+    certificate_sha256?: string
+  }
 }
 
 type GenerationResult = {
@@ -69,6 +74,10 @@ type GenerationResult = {
     continuing?: boolean
     next_attempt_at?: string | null
   }
+  researchEvidence?: {
+    status?: string
+    evidence_sha256?: string
+  }
 }
 
 type JobTelemetry = {
@@ -85,6 +94,10 @@ type JobTelemetry = {
   states_explored?: number
   frontier_count?: number
   induced_laws?: number
+  evidence_status?: string | null
+  evidence_sha256?: string | null
+  accepted_card_replays?: number
+  rejected_card_replays?: number
 }
 
 type JobStatus = {
@@ -199,7 +212,7 @@ const CONSOLE_TEXT = {
     phaseStripAria: '実際の生成段階',
     telemetryAria: '自律探索の現在地',
     tState: '状態', tRound: 'ラウンド', tDepth: '探索深さ',
-    tStates: '検査状態', tGoals: '実行候補', tFrontier: '未閉鎖義務',
+    tStates: '検査状態', tGoals: '実行候補', tFrontier: '未閉鎖義務', tEvidence: '証拠記録',
     traceSummary: '処理記録',
     researchNotice: '直接の構造融合を優先し、対応外でも二つの検証済み厳密解は共通の漸化式へ合成します。未知問題は停止せず長時間探索へ移します。',
     importDocument: '画像・PDFから問題文を読み取る',
@@ -248,7 +261,7 @@ const CONSOLE_TEXT = {
     phaseStripAria: 'Actual generation stages',
     telemetryAria: 'Current state of the autonomous search',
     tState: 'State', tRound: 'Round', tDepth: 'Depth',
-    tStates: 'States seen', tGoals: 'Executable goals', tFrontier: 'Open obligations',
+    tStates: 'States seen', tGoals: 'Executable goals', tFrontier: 'Open obligations', tEvidence: 'Evidence',
     traceSummary: 'Execution log',
     researchNotice: 'Direct structural fusion runs first. Two certified exact answers can also be composed through one reusable recurrence construction; unknown inputs continue in long-running search.',
     importDocument: 'Read a problem from an image or PDF',
@@ -801,6 +814,13 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
       : running
         ? c.resuming
         : null
+  const evidenceState = telemetry?.evidence_status === 'certified'
+    ? (lang === 'ja' ? '再検証済み' : 'Replayed')
+    : telemetry?.evidence_status === 'certified_partial'
+      ? (lang === 'ja' ? '一部再検証済み' : 'Partly replayed')
+      : telemetry?.evidence_status === 'rejected'
+        ? (lang === 'ja' ? '不一致' : 'Mismatch')
+        : (lang === 'ja' ? '検証中' : 'Verifying')
   const importingDocument = documentImport !== null
     && documentImport.progress.phase !== 'complete'
     && !documentImport.error
@@ -1140,6 +1160,10 @@ export function MortraTryConsole({ lang = 'en' }: { lang?: Lang }) {
                 <div><span>{c.tStates}</span><strong>{(telemetry.states_explored ?? 0).toLocaleString(c.locale)}</strong></div>
                 <div><span>{c.tGoals}</span><strong>{telemetry.executable_goals ?? 0}</strong></div>
                 <div><span>{c.tFrontier}</span><strong>{telemetry.frontier_count ?? 0}</strong></div>
+                <div title={telemetry.evidence_sha256 ?? undefined}>
+                  <span>{c.tEvidence}</span>
+                  <strong>{evidenceState}</strong>
+                </div>
               </div>
             ) : null}
 

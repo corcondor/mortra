@@ -16,7 +16,13 @@ export type ExecutableFusionCard = {
   parent_ids: string[]
   unresolved: false
   discovery_status: 'verified'
-  verification: { method: string; exact_backend: true; independent_check: true; samples: number[] }
+  verification: {
+    method: string
+    exact_backend: true
+    independent_check: true
+    samples: number[]
+    certificate_sha256?: string
+  }
   difficulty: { band: string; score: number }
   fusion_derivation: {
     passed: true
@@ -71,6 +77,15 @@ export type ExecutableFusionCard = {
   }
   search_evidence: { hypotheses_evaluated: number; valid_hypotheses: number; elapsed_ms: number }
   execution_certificate?: Record<string, unknown>
+  research_evidence?: {
+    schema: 'mortra.card-replay.v1'
+    envelope_sha256: string
+    previous_evidence_sha256: string | null
+    replay_sha256: string
+    artifact_sha256: string
+    proof_sha256: string
+    execution_certificate_sha256: string
+  }
   diagram?: unknown
   diagram_tikz?: string
   visual_explanation?: unknown
