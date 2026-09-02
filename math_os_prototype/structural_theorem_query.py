@@ -594,6 +594,160 @@ def _regular_tetrahedron_cube_support_chart() -> dict[str, Any]:
     return regular_tetrahedron_cube_containment(sp.Integer(1))
 
 
+def _regular_tetrahedron_cube_diagram() -> dict[str, Any]:
+    """Project the certified 3D placement and its attaining section to 2D."""
+
+    def point(x: float, y: float) -> dict[str, float]:
+        return {"x": x, "y": y}
+
+    apex = point(-0.2, 3.25)
+    left = point(-2.7, -1.4)
+    right = point(2.6, -1.4)
+    rear = point(1.25, 0.1)
+    cube_front = [
+        point(-1.2, -0.65),
+        point(0.3, -0.65),
+        point(0.3, 0.65),
+        point(-1.2, 0.65),
+    ]
+    cube_back = [
+        point(value["x"] + 0.5, value["y"] + 0.3)
+        for value in cube_front
+    ]
+    square_side = 4 * sqrt(3) / (2 + sqrt(3))
+    square_left = 6.5 - square_side / 2
+    section_square = [
+        point(square_left, -1.4),
+        point(square_left + square_side, -1.4),
+        point(square_left + square_side, -1.4 + square_side),
+        point(square_left, -1.4 + square_side),
+    ]
+    return {
+        "version": 1,
+        "kind": "plane",
+        "title": "正四面体に入る最大の立方体",
+        "caption": (
+            "左は三次元配置の投影図、右は等号を与える平行断面である。"
+            "断面の正方形比から、支持関数による上限と同じ辺長を構成する。"
+        ),
+        "viewport": {
+            "xMin": -3.15,
+            "xMax": 9.05,
+            "yMin": -2.0,
+            "yMax": 3.7,
+        },
+        "axes": False,
+        "shapes": [
+            {
+                "id": "tetra-outline",
+                "kind": "polyline",
+                "points": [apex, left, right],
+                "closed": True,
+                "tone": "primary",
+            },
+            {
+                "id": "tetra-rear-a",
+                "kind": "polyline",
+                "points": [apex, rear],
+                "tone": "muted",
+                "dashed": True,
+            },
+            {
+                "id": "tetra-rear-b",
+                "kind": "polyline",
+                "points": [left, rear],
+                "tone": "muted",
+                "dashed": True,
+            },
+            {
+                "id": "tetra-rear-c",
+                "kind": "polyline",
+                "points": [right, rear],
+                "tone": "muted",
+                "dashed": True,
+            },
+            {
+                "id": "spatial-label",
+                "kind": "label",
+                "point": point(-0.15, 3.5),
+                "text": "三次元配置の投影",
+                "tone": "muted",
+            },
+            {
+                "id": "cube-front",
+                "kind": "polyline",
+                "points": cube_front,
+                "closed": True,
+                "tone": "secondary",
+                "fill": True,
+            },
+            {
+                "id": "cube-back",
+                "kind": "polyline",
+                "points": cube_back,
+                "closed": True,
+                "tone": "secondary",
+            },
+            *[
+                {
+                    "id": f"cube-edge-{index}",
+                    "kind": "polyline",
+                    "points": [cube_front[index], cube_back[index]],
+                    "tone": "secondary",
+                }
+                for index in range(4)
+            ],
+            {
+                "id": "cube-label",
+                "kind": "label",
+                "point": point(-0.25, -0.02),
+                "text": "立方体",
+                "tone": "secondary",
+            },
+            {
+                "id": "panel-divider",
+                "kind": "polyline",
+                "points": [point(3.55, -1.75), point(3.55, 3.45)],
+                "tone": "muted",
+                "dashed": True,
+            },
+            {
+                "id": "section-triangle",
+                "kind": "polyline",
+                "points": [
+                    point(4.5, -1.4),
+                    point(8.5, -1.4),
+                    point(6.5, 2.0641016151),
+                ],
+                "closed": True,
+                "tone": "primary",
+            },
+            {
+                "id": "section-square",
+                "kind": "polyline",
+                "points": section_square,
+                "closed": True,
+                "tone": "secondary",
+                "fill": True,
+            },
+            {
+                "id": "section-label",
+                "kind": "label",
+                "point": point(6.5, 2.45),
+                "text": "等号を与える平行断面",
+                "tone": "muted",
+            },
+            {
+                "id": "section-ratio",
+                "kind": "label",
+                "point": point(6.5, -1.72),
+                "text": "正方形比 = sqrt(3)/(2+sqrt(3))",
+                "tone": "accent",
+            },
+        ],
+    }
+
+
 @lru_cache(maxsize=1)
 def _primitive_right_triangle_center_fraction_chart() -> dict[str, Any]:
     """Reduce every primitive Pythagorean triple to one congruence class."""
@@ -5494,12 +5648,7 @@ def _regular_tetrahedron_max_cube(
             "scale": sp.sstr(edge),
             "maximum_side": sp.sstr(side),
             "answer_tex": answer_tex,
-            "diagram": {
-                "version": 1,
-                "kind": "geometry",
-                "title": "正四面体に入る最大の立方体",
-                "caption": "左は三次元配置の模式図、右は等号を与える平行断面である。",
-            },
+            "diagram": _regular_tetrahedron_cube_diagram(),
             "diagram_tikz": r"""\begin{tikzpicture}[scale=.88,
   x={(.92cm,-.32cm)},y={(.82cm,.34cm)},z={(0cm,1cm)}]
 \coordinate (A) at (0,0,3.1);

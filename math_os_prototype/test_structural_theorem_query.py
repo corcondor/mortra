@@ -1343,6 +1343,12 @@ class StructuralTheoremQueryTests(unittest.TestCase):
         self.assertTrue(result["certificate"]["cold_generalization_validated"])
         self.assertIn(r"\frac{8\rho}{S(U)}", result["derivation_tex"][1])
         self.assertIn("tikzpicture", result["diagram_tikz"])
+        self.assertEqual(result["diagram"]["kind"], "plane")
+        self.assertGreaterEqual(len(result["diagram"]["shapes"]), 16)
+        self.assertIn(
+            "section-square",
+            {shape.get("id") for shape in result["diagram"]["shapes"]},
+        )
 
         scaled = compile_structural_theorem_query(statement.replace("1辺が1", "1辺が2"))
         self.assertIsNotNone(scaled)

@@ -716,6 +716,20 @@ class PublicSolveTests(unittest.TestCase):
         card = payload["cards"][0]
         self.assertIn(r"\frac{\sqrt{6}}", card["answer_tex"])
         self.assertIn("tikzpicture", card["diagram_tikz"])
+        self.assertEqual(card["diagram"]["kind"], "plane")
+        self.assertEqual(
+            card["visual_explanation"]["steps"][-1]["diagram"]["kind"],
+            "plane",
+        )
+        self.assertIn(
+            "section-square",
+            {
+                shape.get("id")
+                for shape in card["visual_explanation"]["steps"][-1]["diagram"][
+                    "shapes"
+                ]
+            },
+        )
         self.assertIn("三次元配置の模式図", card["solution_document_tex"])
         self.assertIn("Croft", card["solution_tex"])
         certificate = card["execution_certificate"]
