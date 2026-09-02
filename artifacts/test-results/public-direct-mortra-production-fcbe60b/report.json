@@ -1,0 +1,157 @@
+{
+  "schema": 1,
+  "verified_at": "2026-09-02T10:07:00+09:00",
+  "production_url": "https://mortra.ai/ja",
+  "external_llm_used": false,
+  "summary": {
+    "single_problem_families_passed": 5,
+    "fusion_families_passed": 1,
+    "verified_fusion_cards": 3,
+    "infeasibility_proofs_passed": 1,
+    "hard_geometry_solved": false,
+    "replacement_characters": 0,
+    "raw_text_commands": 0,
+    "unexpected_console_errors": 0,
+    "unexpected_request_errors": 0,
+    "public_file_inputs": 0
+  },
+  "cases": [
+    {
+      "id": "normalized-inner-product",
+      "status": "passed",
+      "answer": "f(x)=1, g(x)=sqrt(3)x",
+      "diagram": true,
+      "http_status": 200
+    },
+    {
+      "id": "cubic-variation",
+      "status": "passed",
+      "answer": "critical points -2 and 2; local maximum 16; local minimum -16",
+      "diagram": "variation-table-and-function-graph",
+      "http_status": 200
+    },
+    {
+      "id": "coordinate-triangle-centers",
+      "status": "passed",
+      "answer_format": "exact",
+      "diagram": "plane-geometry-with-auxiliary-lines",
+      "http_status": 200
+    },
+    {
+      "id": "three-consecutive-heads",
+      "status": "passed",
+      "answer": 14,
+      "diagram": {
+        "kind": "finite-state-transition",
+        "states": 4,
+        "transitions": 6,
+        "mobile_horizontal_overflow": false
+      },
+      "http_status": 200
+    },
+    {
+      "id": "recurrence-dirichlet",
+      "status": "passed",
+      "answer": "a_n=(3^n+3)/2; Dirichlet series diverges for every complex s",
+      "diagram": true,
+      "http_status": 200
+    },
+    {
+      "id": "quadratic-form-expectation-fusion",
+      "status": "passed",
+      "cards": 3,
+      "answers": [42, 74, 70],
+      "statements_distinct": true,
+      "proof_paths_distinct": true,
+      "diagram": true,
+      "http_status": 200
+    },
+    {
+      "id": "normalized-inner-product-infeasible-target",
+      "status": "passed",
+      "answer": "no such pair exists",
+      "certificate": "Cauchy-Schwarz: |c|<=1, but c=2",
+      "diagram": "allowed interval [-1,1]",
+      "http_status": 200,
+      "research_fallback_started": false
+    },
+    {
+      "id": "orthocenter-reflections-concyclic",
+      "status": "unsolved",
+      "immediate_http_status": 422,
+      "research_start_http_status": 202,
+      "initial_job_id": "9ab202e4-7b91-476e-bac7-05eb3c304c92",
+      "resumed_job_id": "79269387-550c-4f7d-ba5b-db4137fe6ab8",
+      "rounds": [
+        {
+          "round": 1,
+          "depth": 4,
+          "states_explored": 805,
+          "executable_goals": 148,
+          "preserved_frontier": 41,
+          "generated": 0
+        },
+        {
+          "round": 2,
+          "depth": 7,
+          "states_explored": 1217,
+          "executable_goals": 220,
+          "preserved_frontier": 48,
+          "generated": 0
+        }
+      ],
+      "cause": "Natural-language geometry was not lowered to executable point, line, reflection, and concyclicity relations.",
+      "github_actions": [
+        "https://github.com/corcondor/mortra/actions/runs/33577650766",
+        "https://github.com/corcondor/mortra/actions/runs/33577954791"
+      ]
+    }
+  ],
+  "tests": {
+    "public_python": "100 passed",
+    "public_build": "passed",
+    "worker_github_actions": "191 passed"
+  },
+  "commits": [
+    "c6ab1ba",
+    "46e4366",
+    "5f93144",
+    "fcbe60b",
+    "05afc94"
+  ],
+  "screenshots": [
+    {
+      "file": "01-inner-product-final.png",
+      "sha256": "b612bc372192bcf1e4d0d32f36c2151f02873505685c12569cecb18a91a4b9c3"
+    },
+    {
+      "file": "02-calculus-cubic-final.png",
+      "sha256": "d945ca8d0a0b133fd0ec296aa15fe74c54c3e2e5ab004cdca1b11d0169edc5fb"
+    },
+    {
+      "file": "03-coordinate-geometry-centers-final.png",
+      "sha256": "40e97fa27a996bceb60d9eda45bbf88a26120faa05045e8d47a47dd96c4b0684"
+    },
+    {
+      "file": "05-recurrence-dirichlet-final.png",
+      "sha256": "8f0ec83e5adb3af70b6f32628221e23c7465f1f614a1486a21f9c1df2b1abd81"
+    },
+    {
+      "file": "07-fusion-quadratic-expectation-fixed.png",
+      "sha256": "ec03ddde554e5a3e58112d6ec170752b2a6dc043fc1a857b0cb3547d9df889ae"
+    },
+    {
+      "file": "10-mobile-probability-all-transitions.png",
+      "sha256": "b556cc8fe3032d4e0f3b98563b940472d8ca3179d54ed1e80a853fad4be6b3a5"
+    },
+    {
+      "file": "11-infeasible-inner-product-proof.png",
+      "sha256": "469ba8a6f19a3e4a3f27d4edce2cdf9f9604cd3fdcb0a01f0d6a0d50481c92e7"
+    }
+  ],
+  "ocr": {
+    "japanese_and_tex_string_input": "passed",
+    "image_or_pdf_ocr": "not_exposed_in_public_ui",
+    "reason": "The production page contains no file input."
+  }
+}
