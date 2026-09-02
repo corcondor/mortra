@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { CheckCircle2, ChevronLeft, ChevronRight, FileDown, FlaskConical, Pause, Play } from 'lucide-react'
 import { MathText } from '@/components/MathText'
 import { diagramMathToPlainText } from '@/lib/mortra/diagram-text'
@@ -239,6 +239,7 @@ function stateLabelLines(label: string): string[] {
 }
 
 function StateFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind: 'state' }> }) {
+  const arrowMarkerId = `state-arrow-${useId().replace(/:/g, '')}`
   const fitStateLayout = diagram.states.length <= 3
   const stateLabel = (index: number) => diagramMathToPlainText(diagram.states[index]?.label ?? '')
   const stateRadiusX = (index: number) => {
@@ -254,22 +255,24 @@ function StateFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind: 'st
   const horizontalInset = maxStateRadiusX + 18
   const stateX = (index: number) => horizontalInset
     + (index * (canvasWidth - 2 * horizontalInset)) / Math.max(1, diagram.states.length - 1)
-  const visibleEdges = diagram.transitions.filter(transition => {
-    const from = diagram.states.findIndex(state => state.id === transition.from)
-    const to = diagram.states.findIndex(state => state.id === transition.to)
-    return from >= 0 && to >= 0 && Math.abs(from - to) === 1
+  const visibleEdges = diagram.transitions.flatMap((transition, index) => {
+    const fromIndex = diagram.states.findIndex(state => state.id === transition.from)
+    const toIndex = diagram.states.findIndex(state => state.id === transition.to)
+    return fromIndex >= 0 && toIndex >= 0 ? [{ ...transition, index, fromIndex, toIndex }] : []
   })
-  const forwardTransition = (index: number) => {
-    const state = diagram.states[index]
-    const next = diagram.states[index + 1]
-    return visibleEdges.find(transition => transition.from === state?.id && transition.to === next?.id)
-      ?? visibleEdges.find(transition => transition.from === next?.id && transition.to === state?.id)
-  }
+  const nodeY = 132
+  const canvasHeight = 270
   return (
-    <div className={styles.stateFigure} role="img" aria-label={diagram.title}>
+    <div
+      className={styles.stateFigure}
+      role="img"
+      aria-label={diagram.title}
+      data-state-count={diagram.states.length}
+      data-transition-count={visibleEdges.length}
+    >
       <div className={styles.stateMobileFlow} aria-hidden="true">
         {diagram.states.map((state, index) => {
-          const transition = index < diagram.states.length - 1 ? forwardTransition(index) : undefined
+          const outgoing = visibleEdges.filter(transition => transition.fromIndex === index)
           return (
             <div className={styles.stateMobileItem} key={`mobile-${state.id}`}>
               <div
@@ -277,10 +280,15 @@ function StateFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind: 'st
               >
                 {diagramMathToPlainText(state.label)}
               </div>
-              {index < diagram.states.length - 1 ? (
-                <div className={styles.stateMobileConnector}>
-                  {transition?.label ? <span>{diagramMathToPlainText(transition.label)}</span> : null}
-                  <i />
+              {outgoing.length ? (
+                <div className={styles.stateMobileTransitions}>
+                  {outgoing.map(transition => (
+                    <div className={styles.stateMobileTransition} key={`mobile-edge-${transition.index}`}>
+                      <span>{transition.label ? diagramMathToPlainText(transition.label) : '遷移'}</span>
+                      <i aria-hidden="true">→</i>
+                      <b>{stateLabel(transition.toIndex)}</b>
+                    </div>
+                  ))}
                 </div>
               ) : null}
             </div>
@@ -288,32 +296,42 @@ function StateFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind: 'st
         })}
       </div>
       <svg
-        viewBox={`0 0 ${canvasWidth} 230`}
+        viewBox={`0 0 ${canvasWidth} ${canvasHeight}`}
         className={styles.stateSvg}
         style={fitStateLayout ? { minWidth: 0 } : undefined}
       >
         <defs>
-          <marker id="state-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <marker id={arrowMarkerId} markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
             <path d="M0,0 L8,4 L0,8 Z" className={styles.stateArrowHead} />
           </marker>
         </defs>
-        {visibleEdges.map((transition, index) => {
-          const from = diagram.states.findIndex(state => state.id === transition.from)
-          const to = diagram.states.findIndex(state => state.id === transition.to)
-          const fromX = stateX(from)
-          const toX = stateX(to)
-          const upper = to > from
-          const y = upper ? 84 : 150
-          const fromRadiusX = stateRadiusX(from)
-          const toRadiusX = stateRadiusX(to)
+        {visibleEdges.map(transition => {
+          const fromX = stateX(transition.fromIndex)
+          const toX = stateX(transition.toIndex)
+          const fromRadiusX = stateRadiusX(transition.fromIndex)
+          const toRadiusX = stateRadiusX(transition.toIndex)
+          const selfLoop = transition.fromIndex === transition.toIndex
+          const forward = transition.toIndex > transition.fromIndex
+          const span = Math.abs(transition.toIndex - transition.fromIndex)
+          const controlY = forward
+            ? Math.max(34, 86 - Math.max(0, span - 1) * 18)
+            : Math.min(canvasHeight - 30, 184 + Math.max(0, span - 1) * 18)
+          const startX = fromX + (forward ? fromRadiusX : -fromRadiusX)
+          const endX = toX + (forward ? -toRadiusX : toRadiusX)
+          const loopHeight = 52 + (transition.index % 3) * 9
+          const path = selfLoop
+            ? `M ${fromX - fromRadiusX * 0.42} ${nodeY - 20} C ${fromX - fromRadiusX * 0.5} ${nodeY - loopHeight} ${fromX + fromRadiusX * 0.5} ${nodeY - loopHeight} ${fromX + fromRadiusX * 0.42} ${nodeY - 20}`
+            : `M ${startX} ${nodeY} Q ${(fromX + toX) / 2} ${controlY} ${endX} ${nodeY}`
+          const labelX = selfLoop ? fromX : (fromX + toX) / 2
+          const labelY = selfLoop ? nodeY - loopHeight - 5 : (forward ? controlY - 5 : controlY + 17)
           return (
-            <g key={`${transition.from}-${transition.to}-${index}`}>
+            <g key={`${transition.from}-${transition.to}-${transition.index}`}>
               <path
-                d={`M ${fromX + (upper ? fromRadiusX : -fromRadiusX)} 114 Q ${(fromX + toX) / 2} ${y} ${toX + (upper ? -toRadiusX : toRadiusX)} 114`}
+                d={path}
                 className={styles.stateEdge}
-                markerEnd="url(#state-arrow)"
+                markerEnd={`url(#${arrowMarkerId})`}
               />
-              {transition.label ? <text x={(fromX + toX) / 2} y={upper ? y - 4 : y + 16} className={styles.stateEdgeLabel}>{diagramMathToPlainText(transition.label)}</text> : null}
+              {transition.label ? <text x={labelX} y={labelY} className={styles.stateEdgeLabel}>{diagramMathToPlainText(transition.label)}</text> : null}
             </g>
           )
         })}
@@ -334,14 +352,14 @@ function StateFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind: 'st
             <g key={state.id}>
               <ellipse
                 cx={cx}
-                cy="114"
+                cy={nodeY}
                 rx={stateRadiusX(index) + (state.active ? 3 : 0)}
                 ry={state.active ? (multiline ? 31 : 27) : (multiline ? 29 : 23)}
                 className={`${styles.stateNode} ${state.terminal ? styles.stateTerminal : ''} ${state.active ? styles.stateActive : ''}`}
               />
               <text
                 x={cx}
-                y={multiline ? 111 : 119}
+                y={multiline ? nodeY - 3 : nodeY + 5}
                 textAnchor="middle"
                 className={`${styles.stateLabel} ${multiline ? styles.stateLabelMultiline : ''}`}
               >
