@@ -16,6 +16,7 @@ test('SVG math annotations use readable Unicode instead of raw TeX', () => {
     diagramMathToPlainText('A(z)=\\sum_{n\\ge0}a_n z^n'),
     'A(z)=\u03a3[n\u22650]a[n] z^n',
   )
+  assert.equal(diagramMathToPlainText('\\alpha+\\beta, \\theta, \\varphi'), '\u03b1+\u03b2, \u03b8, \u03c6')
 })
 
 test('geometry families produce an explanatory plane figure', () => {

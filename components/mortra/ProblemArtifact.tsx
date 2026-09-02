@@ -222,7 +222,7 @@ function MorphismFigure({ diagram }: { diagram: Extract<ProblemDiagram, { kind: 
       {diagram.nodes.map((node, index) => (
         <div className={styles.morphismStep} key={`${node}-${index}`}>
           <span>{String(index + 1).padStart(2, '0')}</span>
-          <b>{node}</b>
+          <b>{diagramMathToPlainText(node)}</b>
           {index < diagram.nodes.length - 1 ? <i aria-hidden="true">→</i> : null}
         </div>
       ))}

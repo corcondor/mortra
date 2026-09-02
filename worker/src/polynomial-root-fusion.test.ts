@@ -27,6 +27,10 @@ test('constructs a new root-set problem by exact elimination', () => {
   assert.ok(cards.every(card => card.statement_tex.includes('\\(f(x)=')))
   assert.ok(cards.every(card => card.solution_tex.includes('\\operatorname{Res}')))
   assert.ok(cards.every(card => (card.diagram as { kind?: string })?.kind === 'morphism'))
+  assert.ok(cards.every(card => Array.isArray(card.proof_roadmap)))
+  assert.ok(cards.every(card => card.proof_roadmap?.every(step => typeof step === 'object' && Boolean(step.label_ja))))
+  assert.ok(cards.every(card => !(card.diagram as { nodes?: string[] }).nodes?.some(node => node.includes('\\\\'))))
+  assert.ok(cards.every(card => card.proof_obligations?.every(obligation => /[\u3040-\u30ff\u3400-\u9fff]/.test(obligation.claim_ja))))
 })
 
 test('renaming variables keeps the same morphism certificate', () => {

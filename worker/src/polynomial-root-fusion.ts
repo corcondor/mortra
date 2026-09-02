@@ -420,6 +420,12 @@ function operationTex(operation: PolynomialRootOperation): string {
   return '\\alpha\\beta'
 }
 
+function operationPlainText(operation: PolynomialRootOperation): string {
+  if (operation === 'sum') return 'α + β'
+  if (operation === 'difference') return 'α − β'
+  return 'αβ'
+}
+
 function operationLabel(operation: PolynomialRootOperation): string {
   if (operation === 'sum') return '和'
   if (operation === 'difference') return '差'
@@ -496,6 +502,14 @@ export function synthesizePolynomialRootFusions(
           { id: 'numeric-check', claim: 'all numerical pairwise root compositions vanish in P', verifier: 'independent nroots comparison' },
           { id: 'ablation', claim: 'perturbing either parent changes P', verifier: 'two-sided parent perturbation' },
         ]
+        const proofClaimsJa = [
+          '二つの親問題がともに一変数多項式の制約として読み取れる。',
+          '二つの根集合の順序付きの組を全て構成している。',
+          `終結式による消去は、各組から得られる${operationLabel(operation)}を全て根に持つ。`,
+          '平方因子を除いた出力の根は、合成した値の異なる値全体と一致する。',
+          '全ての根の組を独立に数値計算し、出力多項式の根と一致する。',
+          'どちらの親多項式を変えても出力が変わり、両方の親問題が必要である。',
+        ]
         cards.push({
           id: `mathos-discovered-${hash([structureId, result.result])}`,
           family_id: `runtime.polynomial_root_${operation}`,
@@ -570,23 +584,23 @@ export function synthesizePolynomialRootFusions(
               `f の根 ${result.degree_left} 個`,
               `g の根 ${result.degree_right} 個`,
               `全ての組 ${result.degree_left * result.degree_right} 個`,
-              expression,
+              operationPlainText(operation),
               '終結式で消去',
               '重複を除いてモニック化',
               `P の根 ${result.degree_result} 個`,
             ],
           },
           proof_roadmap: [
-            '二つの親問題から一変数多項式を読み取る',
-            '二つの根集合の直積を作る',
-            `各組を${operationLabel(operation)}へ写す`,
-            '片方の根を終結式で消去する',
-            '平方因子を除き、最高次係数を1にする',
-            '全ての数値根を独立に代入して確かめる',
+            { morphism_id: morphisms[0], label_ja: '親問題から多項式を読み取る', source_ja: '二つの親問題', target_ja: '二つの一変数多項式', role_ja: '変数名ではなく係数と次数を保存します。' },
+            { morphism_id: morphisms[1], label_ja: '根の配置を構成する', source_ja: '一変数多項式', target_ja: '有限な代数的根集合', role_ja: '各多項式の根を個別の数値ではなく、方程式で定まる集合として扱います。' },
+            { morphism_id: morphisms[2], label_ja: `根の組を${operationLabel(operation)}へ写す`, source_ja: '二つの根集合の直積', target_ja: `${operationLabel(operation)}の値の集合`, role_ja: '全ての順序付きの根の組に同じ二項演算を適用します。' },
+            { morphism_id: morphisms[5], label_ja: '終結式で一方の根を消去する', source_ja: '二変数の代数制約', target_ja: 'z の一変数多項式', role_ja: '根を近似値に変えず、有理数係数のまま厳密に消去します。' },
+            { morphism_id: morphisms[6], label_ja: '異なる値だけを残す', source_ja: '終結式', target_ja: '平方因子を持たないモニック多項式', role_ja: '重複根を除き、最高次係数を1にします。' },
+            { morphism_id: `${morphisms[7]}+${morphisms[8]}`, label_ja: '全根と親依存性を独立に検証する', source_ja: '出力多項式', target_ja: '再生可能な検証証明書', role_ja: '全根の数値照合と、両親を別々に変える検査を実行します。' },
           ],
-          proof_obligations: proofCertificate.map(step => ({
+          proof_obligations: proofCertificate.map((step, index) => ({
             id: step.id,
-            claim_ja: step.claim,
+            claim_ja: proofClaimsJa[index],
             status: 'verified',
           })),
         })
