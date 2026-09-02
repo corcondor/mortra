@@ -126,8 +126,6 @@ def _parse_normalized_integral_inner_product(
             continue
         if not _proves_strictly_positive(upper - lower):
             continue
-        if sp.simplify(1 - target**2 >= 0) is not sp.S.true:
-            continue
         return product_atoms[0], product_atoms[1], sp.Symbol(variable_name), lower, upper, target
     return None
 
@@ -141,6 +139,68 @@ def synthesize_normalized_inner_product_realization(
     if parsed is None:
         return None
     first_name, second_name, variable, lower, upper, target = parsed
+    infeasible_gap = sp.simplify(target**2 - 1)
+    if _proves_strictly_positive(infeasible_gap):
+        target_float = _real_float(target)
+        if target_float is None:
+            return None
+        extent = max(1.4, abs(target_float) + 0.4)
+        diagram = plane_scene_diagram(
+            title="正規化内積が取り得る範囲",
+            caption="コーシー・シュワルツの不等式による許容範囲 [-1,1] と、入力された目標値を同じ数直線上に示しています。",
+            viewport={"xMin": -extent, "xMax": extent, "yMin": -0.55, "yMax": 0.55},
+            axes=True,
+            shapes=(
+                {
+                    "kind": "polyline",
+                    "id": "feasible-range",
+                    "points": ({"x": -1.0, "y": 0.0}, {"x": 1.0, "y": 0.0}),
+                    "tone": "primary",
+                },
+                {"kind": "point", "id": "lower-bound", "point": {"x": -1.0, "y": 0.0}, "label": "-1", "tone": "primary"},
+                {"kind": "point", "id": "upper-bound", "point": {"x": 1.0, "y": 0.0}, "label": "1", "tone": "primary"},
+                {
+                    "kind": "point",
+                    "id": "requested-target",
+                    "point": {"x": target_float, "y": 0.0},
+                    "label": rf"入力値 {sp.latex(target)}",
+                    "tone": "accent",
+                },
+            ),
+        )
+        return RuntimeSolutionSynthesis(
+            answer={"exists": False, "target": str(target)},
+            answer_tex=r"\[\text{そのような関数の組は存在しない。}\]",
+            tool_name="mortra.runtime_normalized_inner_product_infeasibility",
+            expression_tex=rf"\left|\langle {first_name},{second_name}\rangle_{{\mathrm{{norm}}}}\right|\le 1<{sp.latex(sp.Abs(target))}",
+            derivation_tex=(
+                rf"分母が定義されるため、\({first_name},{second_name}\) はともに零関数ではない。",
+                rf"コーシー・シュワルツの不等式より、正規化内積 \(c\) は必ず \(|c|\le 1\) を満たす。",
+                rf"入力された値は \(c={sp.latex(target)}\) であり、厳密に \(c^2-1={sp.latex(infeasible_gap)}>0\) である。したがって \(|c|>1\) となり矛盾する。",
+                r"よって、条件を満たす実関数の組は存在しない。",
+            ),
+            verification_checks=(
+                "三つの積分が同じ有限区間と同じ積分変数を使うことを型検査",
+                "目標値を入力から厳密式として復元",
+                "目標値の二乗から1を引いた値が厳密に正であることを確認",
+                "コーシー・シュワルツの不等式による必要条件 |c|<=1 と矛盾することを確認",
+            ),
+            proof_program=(
+                {"rule": "elaborate_normalized_l2_inner_product", "domain": [str(lower), str(upper)]},
+                {"rule": "apply_cauchy_schwarz", "bound": "Abs(c) <= 1"},
+                {"rule": "compare_exact_target", "target": str(target), "target_squared_minus_one": str(infeasible_gap)},
+                {"rule": "close_by_contradiction"},
+            ),
+            diagram=diagram,
+            witness={
+                "interval": [str(lower), str(upper)],
+                "variable": variable.name,
+                "target": str(target),
+                "target_squared_minus_one": str(infeasible_gap),
+                "feasible_interval": ["-1", "1"],
+                "exists": False,
+            },
+        )
     length = sp.simplify(upper - lower)
     midpoint = sp.simplify((lower + upper) / 2)
     first_basis = sp.simplify(1 / sp.sqrt(length))

@@ -103,12 +103,23 @@ class PublicSolveTests(unittest.TestCase):
 
     def test_normalized_inner_product_rejects_impossible_target(self) -> None:
         status, payload = solve_public_problem(
-            r"\frac{\int_0^1 f(x)g(x)dx}{\sqrt{\int_0^1 f(x)^2dx}\sqrt{\int_0^1 g(x)^2dx}}"
-            r"=2 を満たす関数 f(x),g(x) を一組求めよ。"
+            r"\frac{\int_{0}^{1} f(x)g(x)\,dx}"
+            r"{\sqrt{\int_{0}^{1} f(x)^2\,dx}\sqrt{\int_{0}^{1} g(x)^2\,dx}}"
+            r"=2 を満たす実関数 f(x),g(x) を一組求め、図示せよ。"
         )
 
-        self.assertEqual(status, 422)
-        self.assertEqual(payload["generated"], 0)
+        self.assertEqual(status, 200)
+        self.assertEqual(payload["generated"], 1)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(
+            card["execution_certificate"]["tool_name"],
+            "mortra.runtime_normalized_inner_product_infeasibility",
+        )
+        self.assertIn("存在しない", card["answer_tex"])
+        self.assertEqual(card["execution_certificate"]["witness"]["exists"], False)
+        self.assertEqual(card["execution_certificate"]["witness"]["target_squared_minus_one"], "3")
+        self.assertEqual(card["diagram"]["kind"], "plane")
 
     def test_function_variation_recomputes_after_coefficient_change(self) -> None:
         status, payload = solve_public_problem(
