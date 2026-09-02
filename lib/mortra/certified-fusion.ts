@@ -116,6 +116,7 @@ export type CertifiedFusionCard = {
     morphismChain: string[]
     executable: true
     proofCertificate: Array<{ id: string; claim: string; verifier: string }>
+    taskAlgebra?: import('./problem-task-algebra').ProblemTaskAlgebra
     structuralUniqueness: {
       schema: 1
       conditionSkeleton: string[]

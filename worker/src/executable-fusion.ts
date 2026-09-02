@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto'
+import type { ProblemTaskAlgebra } from '../../lib/mortra/problem-task-algebra'
 import type { DiscoveryParent } from './parent-conditioned-discovery'
 import { registeredMorphismCertificate } from './execution-certificate'
 
@@ -45,6 +46,7 @@ export type ExecutableFusionCard = {
     morphismChain: string[]
     executable: true
     proofCertificate: Array<{ id: string; claim: string; verifier: string }>
+    taskAlgebra?: ProblemTaskAlgebra
     synthesizedLaw?: {
       name: string
       expression: string

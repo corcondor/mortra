@@ -72,6 +72,17 @@ function stringList(value) {
   return Array.isArray(value) ? value.filter(item => typeof item === 'string' && item.trim()) : []
 }
 
+function hasDirectTaskProgram(card) {
+  const blueprint = record(card.structureBlueprint)
+  const taskAlgebra = record(blueprint.taskAlgebra)
+  return card.taskAlgebraOrigin === 'emitted'
+    && typeof card.taskAlgebraFingerprint === 'string'
+    && card.taskAlgebraFingerprint.length > 0
+    && taskAlgebra.complete === true
+    && Array.isArray(taskAlgebra.operations)
+    && taskAlgebra.operations.length > 0
+}
+
 function diagramFor(card) {
   const source = record(card.diagram)
   const nodes = stringList(source.nodes)
@@ -114,7 +125,13 @@ function morphismDiagram(card) {
 }
 
 function roadmapFor(card) {
-  const explicit = stringList(card.proofRoadmap)
+  const explicit = Array.isArray(card.proofRoadmap)
+    ? card.proofRoadmap.flatMap(step => {
+        if (typeof step === 'string' && step.trim()) return [step]
+        const value = record(step)
+        return typeof value.label_ja === 'string' && value.label_ja.trim() ? [value.label_ja.trim()] : []
+      })
+    : []
   return explicit.length ? explicit : stringList(card.morphismChain)
 }
 
@@ -180,21 +197,25 @@ function shell({ card, kind, orientation, katexCss, generatedDate }) {
 const reportPath = resolve(argument('--report') ?? 'artifacts/benchmarks/runtime-structural-probes-20260903.json')
 const requestedCaseId = argument('--case')
 const requestedFamily = argument('--family')
+const requestedCardId = argument('--card')
 const outputDirectory = resolve(argument('--out') ?? 'artifacts/social/mortra-generated-problem-20260903')
 const report = JSON.parse(await readFile(reportPath, 'utf8'))
-const eligible = report.cases
+const reportCases = Array.isArray(report.cases) ? report.cases : []
+const eligible = reportCases
   .flatMap(probe => probe.cards.map(card => ({ ...card, caseId: probe.id })))
   .filter(card => card.hasDiagram
     && card.exactBackend
     && card.independentCheck
     && card.completeParentProof
-    && !card.registeredCompositeUsed)
+    && !card.registeredCompositeUsed
+    && hasDirectTaskProgram(card))
   .filter(card => !requestedCaseId || card.caseId === requestedCaseId)
   .filter(card => !requestedFamily || card.family === requestedFamily)
+  .filter(card => !requestedCardId || card.id === requestedCardId)
   .sort((left, right) => right.difficulty - left.difficulty || left.id.localeCompare(right.id))
 const card = eligible[0]
-if (!card) throw new Error(`no eligible card found for ${requestedCaseId ?? '*'} / ${requestedFamily ?? '*'}`)
-if (!card.exactBackend || !card.independentCheck || !card.completeParentProof || card.registeredCompositeUsed) {
+if (!card) throw new Error(`no eligible card found for ${requestedCaseId ?? '*'} / ${requestedFamily ?? '*'} / ${requestedCardId ?? '*'}`)
+if (!card.exactBackend || !card.independentCheck || !card.completeParentProof || card.registeredCompositeUsed || !hasDirectTaskProgram(card)) {
   throw new Error('the selected card is not eligible for publication')
 }
 
@@ -229,17 +250,54 @@ try {
       timeout: 15_000,
     })
     await page.waitForTimeout(750)
-    const overflow = await page.evaluate(() => ({
-      width: document.documentElement.scrollWidth,
-      height: document.documentElement.scrollHeight,
-      replacementCharacters: (document.body.innerText.match(/\uFFFD/g) ?? []).length,
-    }))
-    if (runtimeErrors.length || overflow.width !== target.width || overflow.height !== target.height || overflow.replacementCharacters) {
-      throw new Error(`${target.name} failed layout audit: ${JSON.stringify({ runtimeErrors, overflow })}`)
+    await page.evaluate(() => window.scrollTo(0, 0))
+    const layout = await page.evaluate(() => {
+      const bounds = selector => {
+        const element = document.querySelector(selector)
+        if (!element) return null
+        const box = element.getBoundingClientRect()
+        return {
+          top: Math.round(box.top * 100) / 100,
+          right: Math.round(box.right * 100) / 100,
+          bottom: Math.round(box.bottom * 100) / 100,
+          left: Math.round(box.left * 100) / 100,
+        }
+      }
+      const regions = {
+        header: bounds('header'),
+        main: bounds('main'),
+        primary: bounds('.statement, .solution-summary'),
+        secondary: bounds('.diagram, .proof'),
+        footer: bounds('footer'),
+      }
+      const clipped = Object.entries(regions).flatMap(([name, box]) => {
+        if (!box) return [`${name}:missing`]
+        return box.top < 0 || box.left < 0 || box.right > window.innerWidth || box.bottom > window.innerHeight
+          ? [`${name}:clipped`]
+          : []
+      })
+      return {
+        width: document.documentElement.scrollWidth,
+        height: document.documentElement.scrollHeight,
+        scrollX: window.scrollX,
+        scrollY: window.scrollY,
+        replacementCharacters: (document.body.innerText.match(/\uFFFD/g) ?? []).length,
+        regions,
+        clipped,
+      }
+    })
+    if (runtimeErrors.length
+      || layout.width !== target.width
+      || layout.height !== target.height
+      || layout.scrollX !== 0
+      || layout.scrollY !== 0
+      || layout.replacementCharacters
+      || layout.clipped.length) {
+      throw new Error(`${target.name} failed layout audit: ${JSON.stringify({ runtimeErrors, layout })}`)
     }
     const outputPath = resolve(outputDirectory, target.name)
     await page.screenshot({ path: outputPath })
-    outputs.push({ path: outputPath, width: target.width, height: target.height, ...overflow })
+    outputs.push({ path: outputPath, width: target.width, height: target.height, layout })
     await context.close()
   }
 } finally {
@@ -247,7 +305,7 @@ try {
 }
 
 const manifest = {
-  schema: 1,
+  schema: 2,
   generatedAt: new Date().toISOString(),
   sourceReport: reportPath,
   caseId: card.caseId,
@@ -257,6 +315,9 @@ const manifest = {
   independentCheck: card.independentCheck,
   completeParentProof: card.completeParentProof,
   registeredCompositeUsed: card.registeredCompositeUsed,
+  taskAlgebraOrigin: card.taskAlgebraOrigin,
+  taskAlgebraFingerprint: card.taskAlgebraFingerprint,
+  taskAlgebra: record(card.structureBlueprint).taskAlgebra,
   statement: card.statement,
   answer: card.answer,
   domain: card.domain,

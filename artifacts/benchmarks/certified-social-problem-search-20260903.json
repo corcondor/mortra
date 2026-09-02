@@ -1,0 +1,4829 @@
+{
+  "schema": 1,
+  "measuredAt": "2026-09-02T18:14:50.422Z",
+  "purpose": "問題固有の表現や期待解答を保存せず、共通の型付き問い代数から公開可能な難問を探索する",
+  "method": {
+    "searchSpace": "既約かつ重根を持たない x^3+px+q の有界係数集合から相異なる二式を選ぶ",
+    "expectedAnswersStored": false,
+    "externalLlmUsed": false,
+    "generation": "二つの有限根配置に同じ二項写像を適用し、終結式、重複因子除去、独立な全根照合で検証する",
+    "publicationFilter": "結果次数9以上、5項以上10項以下、最大係数1000以下、答え180文字以下"
+  },
+  "cubicCount": 68,
+  "pairCount": 2278,
+  "generatedCardCount": 3468,
+  "publishableCardCount": 2512,
+  "distinctTaskAlgebraCount": 1,
+  "emittedTaskAlgebraCount": 3468,
+  "inferredTaskAlgebraCount": 0,
+  "allGeneratedCardsCertified": true,
+  "parentsAbsentFromCatalog": true,
+  "mutationAudit": {
+    "sameTaskProgram": true,
+    "sameTaskAlgebra": true,
+    "changedAnswer": true,
+    "passed": true,
+    "selectedAnswer": "P(z)=z^{9} + 9 z^{7} + 9 z^{6} + 21 z^{5} + 18 z^{4} - 12 z^{3} + 9 z^{2} - 25 z + 31",
+    "mutatedAnswer": "P(z)=z^{9} + 3 z^{7} + 3 z^{6} + 9 z^{5} + 42 z^{4} + 62 z^{3} + 27 z^{2} + 21 z - 35"
+  },
+  "selectedCardId": "mathos-discovered-0cf95a86c2ef",
+  "cases": [
+    {
+      "id": "fresh-certified-algebraic-composition",
+      "relation": "bounded-search-selection",
+      "parentCount": 2,
+      "cards": [
+        {
+          "id": "mathos-discovered-0cf95a86c2ef",
+          "engine": "runtime-polynomial-root-generation",
+          "family": "runtime.polynomial_root_difference",
+          "statement": "\\(f(x)=x^{3} + x + 1\\), \\(g(x)=x^{3} + 2 x - 2\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かしたとき、\\(\\alpha-\\beta\\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。",
+          "answer": "P(z)=z^{9} + 9 z^{7} + 9 z^{6} + 21 z^{5} + 18 z^{4} - 12 z^{3} + 9 z^{2} - 25 z + 31",
+          "solution": "\\(f(x)=0\\) の根を \\(\\alpha\\)、\\(g(y)=0\\) の根を \\(\\beta\\) とする。差 \\(\\alpha-\\beta\\) から一方の根を消去するため、\n\\[\nR(z)=\\operatorname{Res}_x\\!\\left(f(x),g(x-z)\\right)\n\\]\nとおく。\\(z=\\alpha-\\beta\\) なら、\\(x=\\alpha\\) は終結式を作る二つの多項式の共通根になるので、\\(R(z)=0\\) である。逆に \\(R(z)=0\\) なら共通根 \\(x=\\alpha\\) が存在し、もう一方の式からある根 \\(\\beta\\) が得られる。したがって \\(R\\) の根は求める差の値と一致する。同じ値が複数の根の組から現れる場合だけ因子が重なるため、\n\\[\nP(z)=\\operatorname{monic}\\!\\left(\\frac{R(z)}{\\gcd(R(z),R'(z))}\\right)\n\\]\nとすれば、異なる値を一度ずつ根にもつ。係数を有理数のまま展開すると \\(P(z)=z^{9} + 9 z^{7} + 9 z^{6} + 21 z^{5} + 18 z^{4} - 12 z^{3} + 9 z^{2} - 25 z + 31\\) を得る。最後に、全ての根の組を別計算で代入し、どちらの親多項式を変えても \\(P\\) が変わることを確認した。",
+          "domain": "algebraic_geometry",
+          "morphismChain": [
+            "PolynomialConstraintExtraction",
+            "RootConfiguration",
+            "MinkowskiDifference",
+            "FiberProduct",
+            "ParameterElimination",
+            "Resultant",
+            "SquareFreeReduction",
+            "NumericRootCounterexampleCheck",
+            "ParentPerturbationAblation"
+          ],
+          "structureBlueprint": {
+            "id": "root-set.difference.0979093bc863",
+            "version": 1,
+            "kernel": "binary_operation_on_algebraic_root_configurations",
+            "observable": "minimal_squarefree_root_polynomial_of_difference",
+            "operators": [
+              "PolynomialConstraintExtraction",
+              "RootConfiguration",
+              "MinkowskiDifference",
+              "FiberProduct",
+              "ParameterElimination",
+              "Resultant",
+              "SquareFreeReduction",
+              "NumericRootCounterexampleCheck",
+              "ParentPerturbationAblation"
+            ],
+            "domain": "algebraic_geometry",
+            "tags": [
+              "polynomial",
+              "root_configuration",
+              "difference",
+              "resultant"
+            ],
+            "morphismChain": [
+              "PolynomialConstraintExtraction",
+              "RootConfiguration",
+              "MinkowskiDifference",
+              "FiberProduct",
+              "ParameterElimination",
+              "Resultant",
+              "SquareFreeReduction",
+              "NumericRootCounterexampleCheck",
+              "ParentPerturbationAblation"
+            ],
+            "executable": true,
+            "proofCertificate": [
+              {
+                "id": "typed-inputs",
+                "claim": "both parents elaborate to univariate polynomial constraints",
+                "verifier": "MathOS typed parser + SymPy Poly(QQ)"
+              },
+              {
+                "id": "fiber-product",
+                "claim": "the joint root configuration contains every ordered pair (alpha,beta)",
+                "verifier": "finite algebraic fiber product"
+              },
+              {
+                "id": "resultant",
+                "claim": "elimination computes every value of difference",
+                "verifier": "SymPy exact resultant over QQ"
+              },
+              {
+                "id": "squarefree",
+                "claim": "the output roots are the distinct composed values",
+                "verifier": "exact square-free monic reduction"
+              },
+              {
+                "id": "numeric-check",
+                "claim": "all numerical pairwise root compositions vanish in P",
+                "verifier": "independent nroots comparison"
+              },
+              {
+                "id": "ablation",
+                "claim": "perturbing either parent changes P",
+                "verifier": "two-sided parent perturbation"
+              }
+            ],
+            "taskAlgebra": {
+              "schema": 1,
+              "input": "algebraic-configuration",
+              "operations": [
+                {
+                  "operator": "pair",
+                  "output": "configuration"
+                },
+                {
+                  "operator": "map",
+                  "output": "configuration"
+                },
+                {
+                  "operator": "eliminate",
+                  "output": "polynomial"
+                },
+                {
+                  "operator": "normalize",
+                  "output": "polynomial"
+                }
+              ],
+              "output": "polynomial",
+              "complete": true
+            }
+          },
+          "diagram": {
+            "version": 1,
+            "kind": "morphism",
+            "title": "二つの根集合から新しい根集合を作る",
+            "caption": "二つの多項式の根を全て組み合わせ、差を取ってから、終結式で一変数の多項式へ戻します。",
+            "nodes": [
+              "f の根 3 個",
+              "g の根 3 個",
+              "全ての組 9 個",
+              "α − β",
+              "終結式で消去",
+              "重複を除いてモニック化",
+              "P の根 9 個"
+            ]
+          },
+          "proofRoadmap": [
+            {
+              "morphism_id": "PolynomialConstraintExtraction",
+              "label_ja": "親問題から多項式を読み取る",
+              "source_ja": "二つの親問題",
+              "target_ja": "二つの一変数多項式",
+              "role_ja": "変数名ではなく係数と次数を保存します。"
+            },
+            {
+              "morphism_id": "RootConfiguration",
+              "label_ja": "根の配置を構成する",
+              "source_ja": "一変数多項式",
+              "target_ja": "有限な代数的根集合",
+              "role_ja": "各多項式の根を個別の数値ではなく、方程式で定まる集合として扱います。"
+            },
+            {
+              "morphism_id": "MinkowskiDifference",
+              "label_ja": "根の組を差へ写す",
+              "source_ja": "二つの根集合の直積",
+              "target_ja": "差の値の集合",
+              "role_ja": "全ての順序付きの根の組に同じ二項演算を適用します。"
+            },
+            {
+              "morphism_id": "Resultant",
+              "label_ja": "終結式で一方の根を消去する",
+              "source_ja": "二変数の代数制約",
+              "target_ja": "z の一変数多項式",
+              "role_ja": "根を近似値に変えず、有理数係数のまま厳密に消去します。"
+            },
+            {
+              "morphism_id": "SquareFreeReduction",
+              "label_ja": "異なる値だけを残す",
+              "source_ja": "終結式",
+              "target_ja": "平方因子を持たないモニック多項式",
+              "role_ja": "重複根を除き、最高次係数を1にします。"
+            },
+            {
+              "morphism_id": "NumericRootCounterexampleCheck+ParentPerturbationAblation",
+              "label_ja": "全根と親依存性を独立に検証する",
+              "source_ja": "出力多項式",
+              "target_ja": "再生可能な検証証明書",
+              "role_ja": "全根の数値照合と、両親を別々に変える検査を実行します。"
+            }
+          ],
+          "proofObligations": [
+            {
+              "id": "typed-inputs",
+              "claim_ja": "二つの親問題がともに一変数多項式の制約として読み取れる。",
+              "status": "verified"
+            },
+            {
+              "id": "fiber-product",
+              "claim_ja": "二つの根集合の順序付きの組を全て構成している。",
+              "status": "verified"
+            },
+            {
+              "id": "resultant",
+              "claim_ja": "終結式による消去は、各組から得られる差を全て根に持つ。",
+              "status": "verified"
+            },
+            {
+              "id": "squarefree",
+              "claim_ja": "平方因子を除いた出力の根は、合成した値の異なる値全体と一致する。",
+              "status": "verified"
+            },
+            {
+              "id": "numeric-check",
+              "claim_ja": "全ての根の組を独立に数値計算し、出力多項式の根と一致する。",
+              "status": "verified"
+            },
+            {
+              "id": "ablation",
+              "claim_ja": "どちらの親多項式を変えても出力が変わり、両方の親問題が必要である。",
+              "status": "verified"
+            }
+          ],
+          "hasDiagram": true,
+          "difficulty": 18.25,
+          "verificationMethod": "exact resultant plus independent numerical roots and parent perturbation",
+          "exactBackend": true,
+          "independentCheck": true,
+          "completeParentProof": true,
+          "capabilityOrigin": "synthesized_proof_program",
+          "registeredCompositeUsed": false,
+          "taskFingerprint": "e38c97f93a667de55270ceb0316ad68e7f7507c9d11af934338610b6d66eb678",
+          "taskAlgebraFingerprint": "59c2bac6a041c61ebab1f9fe3fd8713fe7c8877ccd8edd1e75e87f02387600c4",
+          "taskAlgebraOrigin": "emitted",
+          "resultDegree": 9,
+          "termCount": 9,
+          "maximumCoefficient": 31,
+          "corpusSurfaceNovelty": 0.920904,
+          "parents": [
+            {
+              "id": "bounded-cubic-56-62-0",
+              "statement": "方程式 \\(x^3+x+1=0\\) のすべての複素数解を考える。"
+            },
+            {
+              "id": "bounded-cubic-56-62-1",
+              "statement": "方程式 \\(x^3+2x-2=0\\) のすべての複素数解を考える。"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "topCandidates": [
+    {
+      "id": "mathos-discovered-0cf95a86c2ef",
+      "engine": "runtime-polynomial-root-generation",
+      "family": "runtime.polynomial_root_difference",
+      "statement": "\\(f(x)=x^{3} + x + 1\\), \\(g(x)=x^{3} + 2 x - 2\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かしたとき、\\(\\alpha-\\beta\\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。",
+      "answer": "P(z)=z^{9} + 9 z^{7} + 9 z^{6} + 21 z^{5} + 18 z^{4} - 12 z^{3} + 9 z^{2} - 25 z + 31",
+      "solution": "\\(f(x)=0\\) の根を \\(\\alpha\\)、\\(g(y)=0\\) の根を \\(\\beta\\) とする。差 \\(\\alpha-\\beta\\) から一方の根を消去するため、\n\\[\nR(z)=\\operatorname{Res}_x\\!\\left(f(x),g(x-z)\\right)\n\\]\nとおく。\\(z=\\alpha-\\beta\\) なら、\\(x=\\alpha\\) は終結式を作る二つの多項式の共通根になるので、\\(R(z)=0\\) である。逆に \\(R(z)=0\\) なら共通根 \\(x=\\alpha\\) が存在し、もう一方の式からある根 \\(\\beta\\) が得られる。したがって \\(R\\) の根は求める差の値と一致する。同じ値が複数の根の組から現れる場合だけ因子が重なるため、\n\\[\nP(z)=\\operatorname{monic}\\!\\left(\\frac{R(z)}{\\gcd(R(z),R'(z))}\\right)\n\\]\nとすれば、異なる値を一度ずつ根にもつ。係数を有理数のまま展開すると \\(P(z)=z^{9} + 9 z^{7} + 9 z^{6} + 21 z^{5} + 18 z^{4} - 12 z^{3} + 9 z^{2} - 25 z + 31\\) を得る。最後に、全ての根の組を別計算で代入し、どちらの親多項式を変えても \\(P\\) が変わることを確認した。",
+      "domain": "algebraic_geometry",
+      "morphismChain": [
+        "PolynomialConstraintExtraction",
+        "RootConfiguration",
+        "MinkowskiDifference",
+        "FiberProduct",
+        "ParameterElimination",
+        "Resultant",
+        "SquareFreeReduction",
+        "NumericRootCounterexampleCheck",
+        "ParentPerturbationAblation"
+      ],
+      "structureBlueprint": {
+        "id": "root-set.difference.0979093bc863",
+        "version": 1,
+        "kernel": "binary_operation_on_algebraic_root_configurations",
+        "observable": "minimal_squarefree_root_polynomial_of_difference",
+        "operators": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiDifference",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "domain": "algebraic_geometry",
+        "tags": [
+          "polynomial",
+          "root_configuration",
+          "difference",
+          "resultant"
+        ],
+        "morphismChain": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiDifference",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "executable": true,
+        "proofCertificate": [
+          {
+            "id": "typed-inputs",
+            "claim": "both parents elaborate to univariate polynomial constraints",
+            "verifier": "MathOS typed parser + SymPy Poly(QQ)"
+          },
+          {
+            "id": "fiber-product",
+            "claim": "the joint root configuration contains every ordered pair (alpha,beta)",
+            "verifier": "finite algebraic fiber product"
+          },
+          {
+            "id": "resultant",
+            "claim": "elimination computes every value of difference",
+            "verifier": "SymPy exact resultant over QQ"
+          },
+          {
+            "id": "squarefree",
+            "claim": "the output roots are the distinct composed values",
+            "verifier": "exact square-free monic reduction"
+          },
+          {
+            "id": "numeric-check",
+            "claim": "all numerical pairwise root compositions vanish in P",
+            "verifier": "independent nroots comparison"
+          },
+          {
+            "id": "ablation",
+            "claim": "perturbing either parent changes P",
+            "verifier": "two-sided parent perturbation"
+          }
+        ],
+        "taskAlgebra": {
+          "schema": 1,
+          "input": "algebraic-configuration",
+          "operations": [
+            {
+              "operator": "pair",
+              "output": "configuration"
+            },
+            {
+              "operator": "map",
+              "output": "configuration"
+            },
+            {
+              "operator": "eliminate",
+              "output": "polynomial"
+            },
+            {
+              "operator": "normalize",
+              "output": "polynomial"
+            }
+          ],
+          "output": "polynomial",
+          "complete": true
+        }
+      },
+      "diagram": {
+        "version": 1,
+        "kind": "morphism",
+        "title": "二つの根集合から新しい根集合を作る",
+        "caption": "二つの多項式の根を全て組み合わせ、差を取ってから、終結式で一変数の多項式へ戻します。",
+        "nodes": [
+          "f の根 3 個",
+          "g の根 3 個",
+          "全ての組 9 個",
+          "α − β",
+          "終結式で消去",
+          "重複を除いてモニック化",
+          "P の根 9 個"
+        ]
+      },
+      "proofRoadmap": [
+        {
+          "morphism_id": "PolynomialConstraintExtraction",
+          "label_ja": "親問題から多項式を読み取る",
+          "source_ja": "二つの親問題",
+          "target_ja": "二つの一変数多項式",
+          "role_ja": "変数名ではなく係数と次数を保存します。"
+        },
+        {
+          "morphism_id": "RootConfiguration",
+          "label_ja": "根の配置を構成する",
+          "source_ja": "一変数多項式",
+          "target_ja": "有限な代数的根集合",
+          "role_ja": "各多項式の根を個別の数値ではなく、方程式で定まる集合として扱います。"
+        },
+        {
+          "morphism_id": "MinkowskiDifference",
+          "label_ja": "根の組を差へ写す",
+          "source_ja": "二つの根集合の直積",
+          "target_ja": "差の値の集合",
+          "role_ja": "全ての順序付きの根の組に同じ二項演算を適用します。"
+        },
+        {
+          "morphism_id": "Resultant",
+          "label_ja": "終結式で一方の根を消去する",
+          "source_ja": "二変数の代数制約",
+          "target_ja": "z の一変数多項式",
+          "role_ja": "根を近似値に変えず、有理数係数のまま厳密に消去します。"
+        },
+        {
+          "morphism_id": "SquareFreeReduction",
+          "label_ja": "異なる値だけを残す",
+          "source_ja": "終結式",
+          "target_ja": "平方因子を持たないモニック多項式",
+          "role_ja": "重複根を除き、最高次係数を1にします。"
+        },
+        {
+          "morphism_id": "NumericRootCounterexampleCheck+ParentPerturbationAblation",
+          "label_ja": "全根と親依存性を独立に検証する",
+          "source_ja": "出力多項式",
+          "target_ja": "再生可能な検証証明書",
+          "role_ja": "全根の数値照合と、両親を別々に変える検査を実行します。"
+        }
+      ],
+      "proofObligations": [
+        {
+          "id": "typed-inputs",
+          "claim_ja": "二つの親問題がともに一変数多項式の制約として読み取れる。",
+          "status": "verified"
+        },
+        {
+          "id": "fiber-product",
+          "claim_ja": "二つの根集合の順序付きの組を全て構成している。",
+          "status": "verified"
+        },
+        {
+          "id": "resultant",
+          "claim_ja": "終結式による消去は、各組から得られる差を全て根に持つ。",
+          "status": "verified"
+        },
+        {
+          "id": "squarefree",
+          "claim_ja": "平方因子を除いた出力の根は、合成した値の異なる値全体と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "numeric-check",
+          "claim_ja": "全ての根の組を独立に数値計算し、出力多項式の根と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "ablation",
+          "claim_ja": "どちらの親多項式を変えても出力が変わり、両方の親問題が必要である。",
+          "status": "verified"
+        }
+      ],
+      "hasDiagram": true,
+      "difficulty": 18.25,
+      "verificationMethod": "exact resultant plus independent numerical roots and parent perturbation",
+      "exactBackend": true,
+      "independentCheck": true,
+      "completeParentProof": true,
+      "capabilityOrigin": "synthesized_proof_program",
+      "registeredCompositeUsed": false,
+      "taskFingerprint": "e38c97f93a667de55270ceb0316ad68e7f7507c9d11af934338610b6d66eb678",
+      "taskAlgebraFingerprint": "59c2bac6a041c61ebab1f9fe3fd8713fe7c8877ccd8edd1e75e87f02387600c4",
+      "taskAlgebraOrigin": "emitted",
+      "resultDegree": 9,
+      "termCount": 9,
+      "maximumCoefficient": 31,
+      "corpusSurfaceNovelty": 0.920904,
+      "parents": [
+        {
+          "id": "bounded-cubic-56-62-0",
+          "statement": "方程式 \\(x^3+x+1=0\\) のすべての複素数解を考える。"
+        },
+        {
+          "id": "bounded-cubic-56-62-1",
+          "statement": "方程式 \\(x^3+2x-2=0\\) のすべての複素数解を考える。"
+        }
+      ]
+    },
+    {
+      "id": "mathos-discovered-c5f3b7dcf75d",
+      "engine": "runtime-polynomial-root-generation",
+      "family": "runtime.polynomial_root_sum",
+      "statement": "\\(f(x)=x^{3} + x - 1\\), \\(g(x)=x^{3} + 2 x - 2\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かしたとき、\\(\\alpha+\\beta\\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。",
+      "answer": "P(z)=z^{9} + 9 z^{7} - 9 z^{6} + 21 z^{5} - 18 z^{4} - 12 z^{3} - 9 z^{2} - 25 z - 31",
+      "solution": "\\(f(x)=0\\) の根を \\(\\alpha\\)、\\(g(y)=0\\) の根を \\(\\beta\\) とする。和 \\(\\alpha+\\beta\\) から一方の根を消去するため、\n\\[\nR(z)=\\operatorname{Res}_x\\!\\left(f(x),g(z-x)\\right)\n\\]\nとおく。\\(z=\\alpha+\\beta\\) なら、\\(x=\\alpha\\) は終結式を作る二つの多項式の共通根になるので、\\(R(z)=0\\) である。逆に \\(R(z)=0\\) なら共通根 \\(x=\\alpha\\) が存在し、もう一方の式からある根 \\(\\beta\\) が得られる。したがって \\(R\\) の根は求める和の値と一致する。同じ値が複数の根の組から現れる場合だけ因子が重なるため、\n\\[\nP(z)=\\operatorname{monic}\\!\\left(\\frac{R(z)}{\\gcd(R(z),R'(z))}\\right)\n\\]\nとすれば、異なる値を一度ずつ根にもつ。係数を有理数のまま展開すると \\(P(z)=z^{9} + 9 z^{7} - 9 z^{6} + 21 z^{5} - 18 z^{4} - 12 z^{3} - 9 z^{2} - 25 z - 31\\) を得る。最後に、全ての根の組を別計算で代入し、どちらの親多項式を変えても \\(P\\) が変わることを確認した。",
+      "domain": "algebraic_geometry",
+      "morphismChain": [
+        "PolynomialConstraintExtraction",
+        "RootConfiguration",
+        "MinkowskiSum",
+        "FiberProduct",
+        "ParameterElimination",
+        "Resultant",
+        "SquareFreeReduction",
+        "NumericRootCounterexampleCheck",
+        "ParentPerturbationAblation"
+      ],
+      "structureBlueprint": {
+        "id": "root-set.sum.cf0c6f0eb1da",
+        "version": 1,
+        "kernel": "binary_operation_on_algebraic_root_configurations",
+        "observable": "minimal_squarefree_root_polynomial_of_sum",
+        "operators": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiSum",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "domain": "algebraic_geometry",
+        "tags": [
+          "polynomial",
+          "root_configuration",
+          "sum",
+          "resultant"
+        ],
+        "morphismChain": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiSum",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "executable": true,
+        "proofCertificate": [
+          {
+            "id": "typed-inputs",
+            "claim": "both parents elaborate to univariate polynomial constraints",
+            "verifier": "MathOS typed parser + SymPy Poly(QQ)"
+          },
+          {
+            "id": "fiber-product",
+            "claim": "the joint root configuration contains every ordered pair (alpha,beta)",
+            "verifier": "finite algebraic fiber product"
+          },
+          {
+            "id": "resultant",
+            "claim": "elimination computes every value of sum",
+            "verifier": "SymPy exact resultant over QQ"
+          },
+          {
+            "id": "squarefree",
+            "claim": "the output roots are the distinct composed values",
+            "verifier": "exact square-free monic reduction"
+          },
+          {
+            "id": "numeric-check",
+            "claim": "all numerical pairwise root compositions vanish in P",
+            "verifier": "independent nroots comparison"
+          },
+          {
+            "id": "ablation",
+            "claim": "perturbing either parent changes P",
+            "verifier": "two-sided parent perturbation"
+          }
+        ],
+        "taskAlgebra": {
+          "schema": 1,
+          "input": "algebraic-configuration",
+          "operations": [
+            {
+              "operator": "pair",
+              "output": "configuration"
+            },
+            {
+              "operator": "map",
+              "output": "configuration"
+            },
+            {
+              "operator": "eliminate",
+              "output": "polynomial"
+            },
+            {
+              "operator": "normalize",
+              "output": "polynomial"
+            }
+          ],
+          "output": "polynomial",
+          "complete": true
+        }
+      },
+      "diagram": {
+        "version": 1,
+        "kind": "morphism",
+        "title": "二つの根集合から新しい根集合を作る",
+        "caption": "二つの多項式の根を全て組み合わせ、和を取ってから、終結式で一変数の多項式へ戻します。",
+        "nodes": [
+          "f の根 3 個",
+          "g の根 3 個",
+          "全ての組 9 個",
+          "α + β",
+          "終結式で消去",
+          "重複を除いてモニック化",
+          "P の根 9 個"
+        ]
+      },
+      "proofRoadmap": [
+        {
+          "morphism_id": "PolynomialConstraintExtraction",
+          "label_ja": "親問題から多項式を読み取る",
+          "source_ja": "二つの親問題",
+          "target_ja": "二つの一変数多項式",
+          "role_ja": "変数名ではなく係数と次数を保存します。"
+        },
+        {
+          "morphism_id": "RootConfiguration",
+          "label_ja": "根の配置を構成する",
+          "source_ja": "一変数多項式",
+          "target_ja": "有限な代数的根集合",
+          "role_ja": "各多項式の根を個別の数値ではなく、方程式で定まる集合として扱います。"
+        },
+        {
+          "morphism_id": "MinkowskiSum",
+          "label_ja": "根の組を和へ写す",
+          "source_ja": "二つの根集合の直積",
+          "target_ja": "和の値の集合",
+          "role_ja": "全ての順序付きの根の組に同じ二項演算を適用します。"
+        },
+        {
+          "morphism_id": "Resultant",
+          "label_ja": "終結式で一方の根を消去する",
+          "source_ja": "二変数の代数制約",
+          "target_ja": "z の一変数多項式",
+          "role_ja": "根を近似値に変えず、有理数係数のまま厳密に消去します。"
+        },
+        {
+          "morphism_id": "SquareFreeReduction",
+          "label_ja": "異なる値だけを残す",
+          "source_ja": "終結式",
+          "target_ja": "平方因子を持たないモニック多項式",
+          "role_ja": "重複根を除き、最高次係数を1にします。"
+        },
+        {
+          "morphism_id": "NumericRootCounterexampleCheck+ParentPerturbationAblation",
+          "label_ja": "全根と親依存性を独立に検証する",
+          "source_ja": "出力多項式",
+          "target_ja": "再生可能な検証証明書",
+          "role_ja": "全根の数値照合と、両親を別々に変える検査を実行します。"
+        }
+      ],
+      "proofObligations": [
+        {
+          "id": "typed-inputs",
+          "claim_ja": "二つの親問題がともに一変数多項式の制約として読み取れる。",
+          "status": "verified"
+        },
+        {
+          "id": "fiber-product",
+          "claim_ja": "二つの根集合の順序付きの組を全て構成している。",
+          "status": "verified"
+        },
+        {
+          "id": "resultant",
+          "claim_ja": "終結式による消去は、各組から得られる和を全て根に持つ。",
+          "status": "verified"
+        },
+        {
+          "id": "squarefree",
+          "claim_ja": "平方因子を除いた出力の根は、合成した値の異なる値全体と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "numeric-check",
+          "claim_ja": "全ての根の組を独立に数値計算し、出力多項式の根と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "ablation",
+          "claim_ja": "どちらの親多項式を変えても出力が変わり、両方の親問題が必要である。",
+          "status": "verified"
+        }
+      ],
+      "hasDiagram": true,
+      "difficulty": 18.25,
+      "verificationMethod": "exact resultant plus independent numerical roots and parent perturbation",
+      "exactBackend": true,
+      "independentCheck": true,
+      "completeParentProof": true,
+      "capabilityOrigin": "synthesized_proof_program",
+      "registeredCompositeUsed": false,
+      "taskFingerprint": "e38c97f93a667de55270ceb0316ad68e7f7507c9d11af934338610b6d66eb678",
+      "taskAlgebraFingerprint": "59c2bac6a041c61ebab1f9fe3fd8713fe7c8877ccd8edd1e75e87f02387600c4",
+      "taskAlgebraOrigin": "emitted",
+      "resultDegree": 9,
+      "termCount": 9,
+      "maximumCoefficient": 31,
+      "corpusSurfaceNovelty": 0.920904,
+      "parents": [
+        {
+          "id": "bounded-cubic-55-62-0",
+          "statement": "方程式 \\(x^3+x-1=0\\) のすべての複素数解を考える。"
+        },
+        {
+          "id": "bounded-cubic-55-62-1",
+          "statement": "方程式 \\(x^3+2x-2=0\\) のすべての複素数解を考える。"
+        }
+      ]
+    },
+    {
+      "id": "mathos-discovered-83d22f4b5045",
+      "engine": "runtime-polynomial-root-generation",
+      "family": "runtime.polynomial_root_sum",
+      "statement": "\\(f(x)=x^{3} - 2 x - 2\\), \\(g(x)=x^{3} - x - 1\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かしたとき、\\(\\alpha+\\beta\\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。",
+      "answer": "P(z)=z^{9} - 9 z^{7} - 9 z^{6} + 21 z^{5} + 18 z^{4} - 42 z^{3} - 9 z^{2} + 29 z - 23",
+      "solution": "\\(f(x)=0\\) の根を \\(\\alpha\\)、\\(g(y)=0\\) の根を \\(\\beta\\) とする。和 \\(\\alpha+\\beta\\) から一方の根を消去するため、\n\\[\nR(z)=\\operatorname{Res}_x\\!\\left(f(x),g(z-x)\\right)\n\\]\nとおく。\\(z=\\alpha+\\beta\\) なら、\\(x=\\alpha\\) は終結式を作る二つの多項式の共通根になるので、\\(R(z)=0\\) である。逆に \\(R(z)=0\\) なら共通根 \\(x=\\alpha\\) が存在し、もう一方の式からある根 \\(\\beta\\) が得られる。したがって \\(R\\) の根は求める和の値と一致する。同じ値が複数の根の組から現れる場合だけ因子が重なるため、\n\\[\nP(z)=\\operatorname{monic}\\!\\left(\\frac{R(z)}{\\gcd(R(z),R'(z))}\\right)\n\\]\nとすれば、異なる値を一度ずつ根にもつ。係数を有理数のまま展開すると \\(P(z)=z^{9} - 9 z^{7} - 9 z^{6} + 21 z^{5} + 18 z^{4} - 42 z^{3} - 9 z^{2} + 29 z - 23\\) を得る。最後に、全ての根の組を別計算で代入し、どちらの親多項式を変えても \\(P\\) が変わることを確認した。",
+      "domain": "algebraic_geometry",
+      "morphismChain": [
+        "PolynomialConstraintExtraction",
+        "RootConfiguration",
+        "MinkowskiSum",
+        "FiberProduct",
+        "ParameterElimination",
+        "Resultant",
+        "SquareFreeReduction",
+        "NumericRootCounterexampleCheck",
+        "ParentPerturbationAblation"
+      ],
+      "structureBlueprint": {
+        "id": "root-set.sum.ff0c98656593",
+        "version": 1,
+        "kernel": "binary_operation_on_algebraic_root_configurations",
+        "observable": "minimal_squarefree_root_polynomial_of_sum",
+        "operators": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiSum",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "domain": "algebraic_geometry",
+        "tags": [
+          "polynomial",
+          "root_configuration",
+          "sum",
+          "resultant"
+        ],
+        "morphismChain": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiSum",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "executable": true,
+        "proofCertificate": [
+          {
+            "id": "typed-inputs",
+            "claim": "both parents elaborate to univariate polynomial constraints",
+            "verifier": "MathOS typed parser + SymPy Poly(QQ)"
+          },
+          {
+            "id": "fiber-product",
+            "claim": "the joint root configuration contains every ordered pair (alpha,beta)",
+            "verifier": "finite algebraic fiber product"
+          },
+          {
+            "id": "resultant",
+            "claim": "elimination computes every value of sum",
+            "verifier": "SymPy exact resultant over QQ"
+          },
+          {
+            "id": "squarefree",
+            "claim": "the output roots are the distinct composed values",
+            "verifier": "exact square-free monic reduction"
+          },
+          {
+            "id": "numeric-check",
+            "claim": "all numerical pairwise root compositions vanish in P",
+            "verifier": "independent nroots comparison"
+          },
+          {
+            "id": "ablation",
+            "claim": "perturbing either parent changes P",
+            "verifier": "two-sided parent perturbation"
+          }
+        ],
+        "taskAlgebra": {
+          "schema": 1,
+          "input": "algebraic-configuration",
+          "operations": [
+            {
+              "operator": "pair",
+              "output": "configuration"
+            },
+            {
+              "operator": "map",
+              "output": "configuration"
+            },
+            {
+              "operator": "eliminate",
+              "output": "polynomial"
+            },
+            {
+              "operator": "normalize",
+              "output": "polynomial"
+            }
+          ],
+          "output": "polynomial",
+          "complete": true
+        }
+      },
+      "diagram": {
+        "version": 1,
+        "kind": "morphism",
+        "title": "二つの根集合から新しい根集合を作る",
+        "caption": "二つの多項式の根を全て組み合わせ、和を取ってから、終結式で一変数の多項式へ戻します。",
+        "nodes": [
+          "f の根 3 個",
+          "g の根 3 個",
+          "全ての組 9 個",
+          "α + β",
+          "終結式で消去",
+          "重複を除いてモニック化",
+          "P の根 9 個"
+        ]
+      },
+      "proofRoadmap": [
+        {
+          "morphism_id": "PolynomialConstraintExtraction",
+          "label_ja": "親問題から多項式を読み取る",
+          "source_ja": "二つの親問題",
+          "target_ja": "二つの一変数多項式",
+          "role_ja": "変数名ではなく係数と次数を保存します。"
+        },
+        {
+          "morphism_id": "RootConfiguration",
+          "label_ja": "根の配置を構成する",
+          "source_ja": "一変数多項式",
+          "target_ja": "有限な代数的根集合",
+          "role_ja": "各多項式の根を個別の数値ではなく、方程式で定まる集合として扱います。"
+        },
+        {
+          "morphism_id": "MinkowskiSum",
+          "label_ja": "根の組を和へ写す",
+          "source_ja": "二つの根集合の直積",
+          "target_ja": "和の値の集合",
+          "role_ja": "全ての順序付きの根の組に同じ二項演算を適用します。"
+        },
+        {
+          "morphism_id": "Resultant",
+          "label_ja": "終結式で一方の根を消去する",
+          "source_ja": "二変数の代数制約",
+          "target_ja": "z の一変数多項式",
+          "role_ja": "根を近似値に変えず、有理数係数のまま厳密に消去します。"
+        },
+        {
+          "morphism_id": "SquareFreeReduction",
+          "label_ja": "異なる値だけを残す",
+          "source_ja": "終結式",
+          "target_ja": "平方因子を持たないモニック多項式",
+          "role_ja": "重複根を除き、最高次係数を1にします。"
+        },
+        {
+          "morphism_id": "NumericRootCounterexampleCheck+ParentPerturbationAblation",
+          "label_ja": "全根と親依存性を独立に検証する",
+          "source_ja": "出力多項式",
+          "target_ja": "再生可能な検証証明書",
+          "role_ja": "全根の数値照合と、両親を別々に変える検査を実行します。"
+        }
+      ],
+      "proofObligations": [
+        {
+          "id": "typed-inputs",
+          "claim_ja": "二つの親問題がともに一変数多項式の制約として読み取れる。",
+          "status": "verified"
+        },
+        {
+          "id": "fiber-product",
+          "claim_ja": "二つの根集合の順序付きの組を全て構成している。",
+          "status": "verified"
+        },
+        {
+          "id": "resultant",
+          "claim_ja": "終結式による消去は、各組から得られる和を全て根に持つ。",
+          "status": "verified"
+        },
+        {
+          "id": "squarefree",
+          "claim_ja": "平方因子を除いた出力の根は、合成した値の異なる値全体と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "numeric-check",
+          "claim_ja": "全ての根の組を独立に数値計算し、出力多項式の根と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "ablation",
+          "claim_ja": "どちらの親多項式を変えても出力が変わり、両方の親問題が必要である。",
+          "status": "verified"
+        }
+      ],
+      "hasDiagram": true,
+      "difficulty": 18.25,
+      "verificationMethod": "exact resultant plus independent numerical roots and parent perturbation",
+      "exactBackend": true,
+      "independentCheck": true,
+      "completeParentProof": true,
+      "capabilityOrigin": "synthesized_proof_program",
+      "registeredCompositeUsed": false,
+      "taskFingerprint": "e38c97f93a667de55270ceb0316ad68e7f7507c9d11af934338610b6d66eb678",
+      "taskAlgebraFingerprint": "59c2bac6a041c61ebab1f9fe3fd8713fe7c8877ccd8edd1e75e87f02387600c4",
+      "taskAlgebraOrigin": "emitted",
+      "resultDegree": 9,
+      "termCount": 9,
+      "maximumCoefficient": 42,
+      "corpusSurfaceNovelty": 0.920904,
+      "parents": [
+        {
+          "id": "bounded-cubic-30-38-0",
+          "statement": "方程式 \\(x^3-2x-2=0\\) のすべての複素数解を考える。"
+        },
+        {
+          "id": "bounded-cubic-30-38-1",
+          "statement": "方程式 \\(x^3-x-1=0\\) のすべての複素数解を考える。"
+        }
+      ]
+    },
+    {
+      "id": "mathos-discovered-afd1a241c053",
+      "engine": "runtime-polynomial-root-generation",
+      "family": "runtime.polynomial_root_difference",
+      "statement": "\\(f(x)=x^{3} - 2 x - 2\\), \\(g(x)=x^{3} - x - 1\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かしたとき、\\(\\alpha-\\beta\\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。",
+      "answer": "P(z)=z^{9} - 9 z^{7} - 3 z^{6} + 21 z^{5} + 18 z^{4} + 42 z^{3} - 3 z^{2} - 7 z - 1",
+      "solution": "\\(f(x)=0\\) の根を \\(\\alpha\\)、\\(g(y)=0\\) の根を \\(\\beta\\) とする。差 \\(\\alpha-\\beta\\) から一方の根を消去するため、\n\\[\nR(z)=\\operatorname{Res}_x\\!\\left(f(x),g(x-z)\\right)\n\\]\nとおく。\\(z=\\alpha-\\beta\\) なら、\\(x=\\alpha\\) は終結式を作る二つの多項式の共通根になるので、\\(R(z)=0\\) である。逆に \\(R(z)=0\\) なら共通根 \\(x=\\alpha\\) が存在し、もう一方の式からある根 \\(\\beta\\) が得られる。したがって \\(R\\) の根は求める差の値と一致する。同じ値が複数の根の組から現れる場合だけ因子が重なるため、\n\\[\nP(z)=\\operatorname{monic}\\!\\left(\\frac{R(z)}{\\gcd(R(z),R'(z))}\\right)\n\\]\nとすれば、異なる値を一度ずつ根にもつ。係数を有理数のまま展開すると \\(P(z)=z^{9} - 9 z^{7} - 3 z^{6} + 21 z^{5} + 18 z^{4} + 42 z^{3} - 3 z^{2} - 7 z - 1\\) を得る。最後に、全ての根の組を別計算で代入し、どちらの親多項式を変えても \\(P\\) が変わることを確認した。",
+      "domain": "algebraic_geometry",
+      "morphismChain": [
+        "PolynomialConstraintExtraction",
+        "RootConfiguration",
+        "MinkowskiDifference",
+        "FiberProduct",
+        "ParameterElimination",
+        "Resultant",
+        "SquareFreeReduction",
+        "NumericRootCounterexampleCheck",
+        "ParentPerturbationAblation"
+      ],
+      "structureBlueprint": {
+        "id": "root-set.difference.ff0c98656593",
+        "version": 1,
+        "kernel": "binary_operation_on_algebraic_root_configurations",
+        "observable": "minimal_squarefree_root_polynomial_of_difference",
+        "operators": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiDifference",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "domain": "algebraic_geometry",
+        "tags": [
+          "polynomial",
+          "root_configuration",
+          "difference",
+          "resultant"
+        ],
+        "morphismChain": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiDifference",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "executable": true,
+        "proofCertificate": [
+          {
+            "id": "typed-inputs",
+            "claim": "both parents elaborate to univariate polynomial constraints",
+            "verifier": "MathOS typed parser + SymPy Poly(QQ)"
+          },
+          {
+            "id": "fiber-product",
+            "claim": "the joint root configuration contains every ordered pair (alpha,beta)",
+            "verifier": "finite algebraic fiber product"
+          },
+          {
+            "id": "resultant",
+            "claim": "elimination computes every value of difference",
+            "verifier": "SymPy exact resultant over QQ"
+          },
+          {
+            "id": "squarefree",
+            "claim": "the output roots are the distinct composed values",
+            "verifier": "exact square-free monic reduction"
+          },
+          {
+            "id": "numeric-check",
+            "claim": "all numerical pairwise root compositions vanish in P",
+            "verifier": "independent nroots comparison"
+          },
+          {
+            "id": "ablation",
+            "claim": "perturbing either parent changes P",
+            "verifier": "two-sided parent perturbation"
+          }
+        ],
+        "taskAlgebra": {
+          "schema": 1,
+          "input": "algebraic-configuration",
+          "operations": [
+            {
+              "operator": "pair",
+              "output": "configuration"
+            },
+            {
+              "operator": "map",
+              "output": "configuration"
+            },
+            {
+              "operator": "eliminate",
+              "output": "polynomial"
+            },
+            {
+              "operator": "normalize",
+              "output": "polynomial"
+            }
+          ],
+          "output": "polynomial",
+          "complete": true
+        }
+      },
+      "diagram": {
+        "version": 1,
+        "kind": "morphism",
+        "title": "二つの根集合から新しい根集合を作る",
+        "caption": "二つの多項式の根を全て組み合わせ、差を取ってから、終結式で一変数の多項式へ戻します。",
+        "nodes": [
+          "f の根 3 個",
+          "g の根 3 個",
+          "全ての組 9 個",
+          "α − β",
+          "終結式で消去",
+          "重複を除いてモニック化",
+          "P の根 9 個"
+        ]
+      },
+      "proofRoadmap": [
+        {
+          "morphism_id": "PolynomialConstraintExtraction",
+          "label_ja": "親問題から多項式を読み取る",
+          "source_ja": "二つの親問題",
+          "target_ja": "二つの一変数多項式",
+          "role_ja": "変数名ではなく係数と次数を保存します。"
+        },
+        {
+          "morphism_id": "RootConfiguration",
+          "label_ja": "根の配置を構成する",
+          "source_ja": "一変数多項式",
+          "target_ja": "有限な代数的根集合",
+          "role_ja": "各多項式の根を個別の数値ではなく、方程式で定まる集合として扱います。"
+        },
+        {
+          "morphism_id": "MinkowskiDifference",
+          "label_ja": "根の組を差へ写す",
+          "source_ja": "二つの根集合の直積",
+          "target_ja": "差の値の集合",
+          "role_ja": "全ての順序付きの根の組に同じ二項演算を適用します。"
+        },
+        {
+          "morphism_id": "Resultant",
+          "label_ja": "終結式で一方の根を消去する",
+          "source_ja": "二変数の代数制約",
+          "target_ja": "z の一変数多項式",
+          "role_ja": "根を近似値に変えず、有理数係数のまま厳密に消去します。"
+        },
+        {
+          "morphism_id": "SquareFreeReduction",
+          "label_ja": "異なる値だけを残す",
+          "source_ja": "終結式",
+          "target_ja": "平方因子を持たないモニック多項式",
+          "role_ja": "重複根を除き、最高次係数を1にします。"
+        },
+        {
+          "morphism_id": "NumericRootCounterexampleCheck+ParentPerturbationAblation",
+          "label_ja": "全根と親依存性を独立に検証する",
+          "source_ja": "出力多項式",
+          "target_ja": "再生可能な検証証明書",
+          "role_ja": "全根の数値照合と、両親を別々に変える検査を実行します。"
+        }
+      ],
+      "proofObligations": [
+        {
+          "id": "typed-inputs",
+          "claim_ja": "二つの親問題がともに一変数多項式の制約として読み取れる。",
+          "status": "verified"
+        },
+        {
+          "id": "fiber-product",
+          "claim_ja": "二つの根集合の順序付きの組を全て構成している。",
+          "status": "verified"
+        },
+        {
+          "id": "resultant",
+          "claim_ja": "終結式による消去は、各組から得られる差を全て根に持つ。",
+          "status": "verified"
+        },
+        {
+          "id": "squarefree",
+          "claim_ja": "平方因子を除いた出力の根は、合成した値の異なる値全体と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "numeric-check",
+          "claim_ja": "全ての根の組を独立に数値計算し、出力多項式の根と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "ablation",
+          "claim_ja": "どちらの親多項式を変えても出力が変わり、両方の親問題が必要である。",
+          "status": "verified"
+        }
+      ],
+      "hasDiagram": true,
+      "difficulty": 18.25,
+      "verificationMethod": "exact resultant plus independent numerical roots and parent perturbation",
+      "exactBackend": true,
+      "independentCheck": true,
+      "completeParentProof": true,
+      "capabilityOrigin": "synthesized_proof_program",
+      "registeredCompositeUsed": false,
+      "taskFingerprint": "e38c97f93a667de55270ceb0316ad68e7f7507c9d11af934338610b6d66eb678",
+      "taskAlgebraFingerprint": "59c2bac6a041c61ebab1f9fe3fd8713fe7c8877ccd8edd1e75e87f02387600c4",
+      "taskAlgebraOrigin": "emitted",
+      "resultDegree": 9,
+      "termCount": 9,
+      "maximumCoefficient": 42,
+      "corpusSurfaceNovelty": 0.920904,
+      "parents": [
+        {
+          "id": "bounded-cubic-30-38-0",
+          "statement": "方程式 \\(x^3-2x-2=0\\) のすべての複素数解を考える。"
+        },
+        {
+          "id": "bounded-cubic-30-38-1",
+          "statement": "方程式 \\(x^3-x-1=0\\) のすべての複素数解を考える。"
+        }
+      ]
+    },
+    {
+      "id": "mathos-discovered-ccd079e31e92",
+      "engine": "runtime-polynomial-root-generation",
+      "family": "runtime.polynomial_root_sum",
+      "statement": "\\(f(x)=x^{3} - 2 x + 2\\), \\(g(x)=x^{3} - x - 1\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かしたとき、\\(\\alpha+\\beta\\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。",
+      "answer": "P(z)=z^{9} - 9 z^{7} + 3 z^{6} + 21 z^{5} - 18 z^{4} + 42 z^{3} + 3 z^{2} - 7 z + 1",
+      "solution": "\\(f(x)=0\\) の根を \\(\\alpha\\)、\\(g(y)=0\\) の根を \\(\\beta\\) とする。和 \\(\\alpha+\\beta\\) から一方の根を消去するため、\n\\[\nR(z)=\\operatorname{Res}_x\\!\\left(f(x),g(z-x)\\right)\n\\]\nとおく。\\(z=\\alpha+\\beta\\) なら、\\(x=\\alpha\\) は終結式を作る二つの多項式の共通根になるので、\\(R(z)=0\\) である。逆に \\(R(z)=0\\) なら共通根 \\(x=\\alpha\\) が存在し、もう一方の式からある根 \\(\\beta\\) が得られる。したがって \\(R\\) の根は求める和の値と一致する。同じ値が複数の根の組から現れる場合だけ因子が重なるため、\n\\[\nP(z)=\\operatorname{monic}\\!\\left(\\frac{R(z)}{\\gcd(R(z),R'(z))}\\right)\n\\]\nとすれば、異なる値を一度ずつ根にもつ。係数を有理数のまま展開すると \\(P(z)=z^{9} - 9 z^{7} + 3 z^{6} + 21 z^{5} - 18 z^{4} + 42 z^{3} + 3 z^{2} - 7 z + 1\\) を得る。最後に、全ての根の組を別計算で代入し、どちらの親多項式を変えても \\(P\\) が変わることを確認した。",
+      "domain": "algebraic_geometry",
+      "morphismChain": [
+        "PolynomialConstraintExtraction",
+        "RootConfiguration",
+        "MinkowskiSum",
+        "FiberProduct",
+        "ParameterElimination",
+        "Resultant",
+        "SquareFreeReduction",
+        "NumericRootCounterexampleCheck",
+        "ParentPerturbationAblation"
+      ],
+      "structureBlueprint": {
+        "id": "root-set.sum.26d09366ac4a",
+        "version": 1,
+        "kernel": "binary_operation_on_algebraic_root_configurations",
+        "observable": "minimal_squarefree_root_polynomial_of_sum",
+        "operators": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiSum",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "domain": "algebraic_geometry",
+        "tags": [
+          "polynomial",
+          "root_configuration",
+          "sum",
+          "resultant"
+        ],
+        "morphismChain": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiSum",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "executable": true,
+        "proofCertificate": [
+          {
+            "id": "typed-inputs",
+            "claim": "both parents elaborate to univariate polynomial constraints",
+            "verifier": "MathOS typed parser + SymPy Poly(QQ)"
+          },
+          {
+            "id": "fiber-product",
+            "claim": "the joint root configuration contains every ordered pair (alpha,beta)",
+            "verifier": "finite algebraic fiber product"
+          },
+          {
+            "id": "resultant",
+            "claim": "elimination computes every value of sum",
+            "verifier": "SymPy exact resultant over QQ"
+          },
+          {
+            "id": "squarefree",
+            "claim": "the output roots are the distinct composed values",
+            "verifier": "exact square-free monic reduction"
+          },
+          {
+            "id": "numeric-check",
+            "claim": "all numerical pairwise root compositions vanish in P",
+            "verifier": "independent nroots comparison"
+          },
+          {
+            "id": "ablation",
+            "claim": "perturbing either parent changes P",
+            "verifier": "two-sided parent perturbation"
+          }
+        ],
+        "taskAlgebra": {
+          "schema": 1,
+          "input": "algebraic-configuration",
+          "operations": [
+            {
+              "operator": "pair",
+              "output": "configuration"
+            },
+            {
+              "operator": "map",
+              "output": "configuration"
+            },
+            {
+              "operator": "eliminate",
+              "output": "polynomial"
+            },
+            {
+              "operator": "normalize",
+              "output": "polynomial"
+            }
+          ],
+          "output": "polynomial",
+          "complete": true
+        }
+      },
+      "diagram": {
+        "version": 1,
+        "kind": "morphism",
+        "title": "二つの根集合から新しい根集合を作る",
+        "caption": "二つの多項式の根を全て組み合わせ、和を取ってから、終結式で一変数の多項式へ戻します。",
+        "nodes": [
+          "f の根 3 個",
+          "g の根 3 個",
+          "全ての組 9 個",
+          "α + β",
+          "終結式で消去",
+          "重複を除いてモニック化",
+          "P の根 9 個"
+        ]
+      },
+      "proofRoadmap": [
+        {
+          "morphism_id": "PolynomialConstraintExtraction",
+          "label_ja": "親問題から多項式を読み取る",
+          "source_ja": "二つの親問題",
+          "target_ja": "二つの一変数多項式",
+          "role_ja": "変数名ではなく係数と次数を保存します。"
+        },
+        {
+          "morphism_id": "RootConfiguration",
+          "label_ja": "根の配置を構成する",
+          "source_ja": "一変数多項式",
+          "target_ja": "有限な代数的根集合",
+          "role_ja": "各多項式の根を個別の数値ではなく、方程式で定まる集合として扱います。"
+        },
+        {
+          "morphism_id": "MinkowskiSum",
+          "label_ja": "根の組を和へ写す",
+          "source_ja": "二つの根集合の直積",
+          "target_ja": "和の値の集合",
+          "role_ja": "全ての順序付きの根の組に同じ二項演算を適用します。"
+        },
+        {
+          "morphism_id": "Resultant",
+          "label_ja": "終結式で一方の根を消去する",
+          "source_ja": "二変数の代数制約",
+          "target_ja": "z の一変数多項式",
+          "role_ja": "根を近似値に変えず、有理数係数のまま厳密に消去します。"
+        },
+        {
+          "morphism_id": "SquareFreeReduction",
+          "label_ja": "異なる値だけを残す",
+          "source_ja": "終結式",
+          "target_ja": "平方因子を持たないモニック多項式",
+          "role_ja": "重複根を除き、最高次係数を1にします。"
+        },
+        {
+          "morphism_id": "NumericRootCounterexampleCheck+ParentPerturbationAblation",
+          "label_ja": "全根と親依存性を独立に検証する",
+          "source_ja": "出力多項式",
+          "target_ja": "再生可能な検証証明書",
+          "role_ja": "全根の数値照合と、両親を別々に変える検査を実行します。"
+        }
+      ],
+      "proofObligations": [
+        {
+          "id": "typed-inputs",
+          "claim_ja": "二つの親問題がともに一変数多項式の制約として読み取れる。",
+          "status": "verified"
+        },
+        {
+          "id": "fiber-product",
+          "claim_ja": "二つの根集合の順序付きの組を全て構成している。",
+          "status": "verified"
+        },
+        {
+          "id": "resultant",
+          "claim_ja": "終結式による消去は、各組から得られる和を全て根に持つ。",
+          "status": "verified"
+        },
+        {
+          "id": "squarefree",
+          "claim_ja": "平方因子を除いた出力の根は、合成した値の異なる値全体と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "numeric-check",
+          "claim_ja": "全ての根の組を独立に数値計算し、出力多項式の根と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "ablation",
+          "claim_ja": "どちらの親多項式を変えても出力が変わり、両方の親問題が必要である。",
+          "status": "verified"
+        }
+      ],
+      "hasDiagram": true,
+      "difficulty": 18.25,
+      "verificationMethod": "exact resultant plus independent numerical roots and parent perturbation",
+      "exactBackend": true,
+      "independentCheck": true,
+      "completeParentProof": true,
+      "capabilityOrigin": "synthesized_proof_program",
+      "registeredCompositeUsed": false,
+      "taskFingerprint": "e38c97f93a667de55270ceb0316ad68e7f7507c9d11af934338610b6d66eb678",
+      "taskAlgebraFingerprint": "59c2bac6a041c61ebab1f9fe3fd8713fe7c8877ccd8edd1e75e87f02387600c4",
+      "taskAlgebraOrigin": "emitted",
+      "resultDegree": 9,
+      "termCount": 9,
+      "maximumCoefficient": 42,
+      "corpusSurfaceNovelty": 0.920904,
+      "parents": [
+        {
+          "id": "bounded-cubic-31-38-0",
+          "statement": "方程式 \\(x^3-2x+2=0\\) のすべての複素数解を考える。"
+        },
+        {
+          "id": "bounded-cubic-31-38-1",
+          "statement": "方程式 \\(x^3-x-1=0\\) のすべての複素数解を考える。"
+        }
+      ]
+    },
+    {
+      "id": "mathos-discovered-e677ff89f288",
+      "engine": "runtime-polynomial-root-generation",
+      "family": "runtime.polynomial_root_difference",
+      "statement": "\\(f(x)=x^{3} - 2 x + 2\\), \\(g(x)=x^{3} - x - 1\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かしたとき、\\(\\alpha-\\beta\\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。",
+      "answer": "P(z)=z^{9} - 9 z^{7} + 9 z^{6} + 21 z^{5} - 18 z^{4} - 42 z^{3} + 9 z^{2} + 29 z + 23",
+      "solution": "\\(f(x)=0\\) の根を \\(\\alpha\\)、\\(g(y)=0\\) の根を \\(\\beta\\) とする。差 \\(\\alpha-\\beta\\) から一方の根を消去するため、\n\\[\nR(z)=\\operatorname{Res}_x\\!\\left(f(x),g(x-z)\\right)\n\\]\nとおく。\\(z=\\alpha-\\beta\\) なら、\\(x=\\alpha\\) は終結式を作る二つの多項式の共通根になるので、\\(R(z)=0\\) である。逆に \\(R(z)=0\\) なら共通根 \\(x=\\alpha\\) が存在し、もう一方の式からある根 \\(\\beta\\) が得られる。したがって \\(R\\) の根は求める差の値と一致する。同じ値が複数の根の組から現れる場合だけ因子が重なるため、\n\\[\nP(z)=\\operatorname{monic}\\!\\left(\\frac{R(z)}{\\gcd(R(z),R'(z))}\\right)\n\\]\nとすれば、異なる値を一度ずつ根にもつ。係数を有理数のまま展開すると \\(P(z)=z^{9} - 9 z^{7} + 9 z^{6} + 21 z^{5} - 18 z^{4} - 42 z^{3} + 9 z^{2} + 29 z + 23\\) を得る。最後に、全ての根の組を別計算で代入し、どちらの親多項式を変えても \\(P\\) が変わることを確認した。",
+      "domain": "algebraic_geometry",
+      "morphismChain": [
+        "PolynomialConstraintExtraction",
+        "RootConfiguration",
+        "MinkowskiDifference",
+        "FiberProduct",
+        "ParameterElimination",
+        "Resultant",
+        "SquareFreeReduction",
+        "NumericRootCounterexampleCheck",
+        "ParentPerturbationAblation"
+      ],
+      "structureBlueprint": {
+        "id": "root-set.difference.26d09366ac4a",
+        "version": 1,
+        "kernel": "binary_operation_on_algebraic_root_configurations",
+        "observable": "minimal_squarefree_root_polynomial_of_difference",
+        "operators": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiDifference",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "domain": "algebraic_geometry",
+        "tags": [
+          "polynomial",
+          "root_configuration",
+          "difference",
+          "resultant"
+        ],
+        "morphismChain": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiDifference",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "executable": true,
+        "proofCertificate": [
+          {
+            "id": "typed-inputs",
+            "claim": "both parents elaborate to univariate polynomial constraints",
+            "verifier": "MathOS typed parser + SymPy Poly(QQ)"
+          },
+          {
+            "id": "fiber-product",
+            "claim": "the joint root configuration contains every ordered pair (alpha,beta)",
+            "verifier": "finite algebraic fiber product"
+          },
+          {
+            "id": "resultant",
+            "claim": "elimination computes every value of difference",
+            "verifier": "SymPy exact resultant over QQ"
+          },
+          {
+            "id": "squarefree",
+            "claim": "the output roots are the distinct composed values",
+            "verifier": "exact square-free monic reduction"
+          },
+          {
+            "id": "numeric-check",
+            "claim": "all numerical pairwise root compositions vanish in P",
+            "verifier": "independent nroots comparison"
+          },
+          {
+            "id": "ablation",
+            "claim": "perturbing either parent changes P",
+            "verifier": "two-sided parent perturbation"
+          }
+        ],
+        "taskAlgebra": {
+          "schema": 1,
+          "input": "algebraic-configuration",
+          "operations": [
+            {
+              "operator": "pair",
+              "output": "configuration"
+            },
+            {
+              "operator": "map",
+              "output": "configuration"
+            },
+            {
+              "operator": "eliminate",
+              "output": "polynomial"
+            },
+            {
+              "operator": "normalize",
+              "output": "polynomial"
+            }
+          ],
+          "output": "polynomial",
+          "complete": true
+        }
+      },
+      "diagram": {
+        "version": 1,
+        "kind": "morphism",
+        "title": "二つの根集合から新しい根集合を作る",
+        "caption": "二つの多項式の根を全て組み合わせ、差を取ってから、終結式で一変数の多項式へ戻します。",
+        "nodes": [
+          "f の根 3 個",
+          "g の根 3 個",
+          "全ての組 9 個",
+          "α − β",
+          "終結式で消去",
+          "重複を除いてモニック化",
+          "P の根 9 個"
+        ]
+      },
+      "proofRoadmap": [
+        {
+          "morphism_id": "PolynomialConstraintExtraction",
+          "label_ja": "親問題から多項式を読み取る",
+          "source_ja": "二つの親問題",
+          "target_ja": "二つの一変数多項式",
+          "role_ja": "変数名ではなく係数と次数を保存します。"
+        },
+        {
+          "morphism_id": "RootConfiguration",
+          "label_ja": "根の配置を構成する",
+          "source_ja": "一変数多項式",
+          "target_ja": "有限な代数的根集合",
+          "role_ja": "各多項式の根を個別の数値ではなく、方程式で定まる集合として扱います。"
+        },
+        {
+          "morphism_id": "MinkowskiDifference",
+          "label_ja": "根の組を差へ写す",
+          "source_ja": "二つの根集合の直積",
+          "target_ja": "差の値の集合",
+          "role_ja": "全ての順序付きの根の組に同じ二項演算を適用します。"
+        },
+        {
+          "morphism_id": "Resultant",
+          "label_ja": "終結式で一方の根を消去する",
+          "source_ja": "二変数の代数制約",
+          "target_ja": "z の一変数多項式",
+          "role_ja": "根を近似値に変えず、有理数係数のまま厳密に消去します。"
+        },
+        {
+          "morphism_id": "SquareFreeReduction",
+          "label_ja": "異なる値だけを残す",
+          "source_ja": "終結式",
+          "target_ja": "平方因子を持たないモニック多項式",
+          "role_ja": "重複根を除き、最高次係数を1にします。"
+        },
+        {
+          "morphism_id": "NumericRootCounterexampleCheck+ParentPerturbationAblation",
+          "label_ja": "全根と親依存性を独立に検証する",
+          "source_ja": "出力多項式",
+          "target_ja": "再生可能な検証証明書",
+          "role_ja": "全根の数値照合と、両親を別々に変える検査を実行します。"
+        }
+      ],
+      "proofObligations": [
+        {
+          "id": "typed-inputs",
+          "claim_ja": "二つの親問題がともに一変数多項式の制約として読み取れる。",
+          "status": "verified"
+        },
+        {
+          "id": "fiber-product",
+          "claim_ja": "二つの根集合の順序付きの組を全て構成している。",
+          "status": "verified"
+        },
+        {
+          "id": "resultant",
+          "claim_ja": "終結式による消去は、各組から得られる差を全て根に持つ。",
+          "status": "verified"
+        },
+        {
+          "id": "squarefree",
+          "claim_ja": "平方因子を除いた出力の根は、合成した値の異なる値全体と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "numeric-check",
+          "claim_ja": "全ての根の組を独立に数値計算し、出力多項式の根と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "ablation",
+          "claim_ja": "どちらの親多項式を変えても出力が変わり、両方の親問題が必要である。",
+          "status": "verified"
+        }
+      ],
+      "hasDiagram": true,
+      "difficulty": 18.25,
+      "verificationMethod": "exact resultant plus independent numerical roots and parent perturbation",
+      "exactBackend": true,
+      "independentCheck": true,
+      "completeParentProof": true,
+      "capabilityOrigin": "synthesized_proof_program",
+      "registeredCompositeUsed": false,
+      "taskFingerprint": "e38c97f93a667de55270ceb0316ad68e7f7507c9d11af934338610b6d66eb678",
+      "taskAlgebraFingerprint": "59c2bac6a041c61ebab1f9fe3fd8713fe7c8877ccd8edd1e75e87f02387600c4",
+      "taskAlgebraOrigin": "emitted",
+      "resultDegree": 9,
+      "termCount": 9,
+      "maximumCoefficient": 42,
+      "corpusSurfaceNovelty": 0.920904,
+      "parents": [
+        {
+          "id": "bounded-cubic-31-38-0",
+          "statement": "方程式 \\(x^3-2x+2=0\\) のすべての複素数解を考える。"
+        },
+        {
+          "id": "bounded-cubic-31-38-1",
+          "statement": "方程式 \\(x^3-x-1=0\\) のすべての複素数解を考える。"
+        }
+      ]
+    },
+    {
+      "id": "mathos-discovered-1914b5917273",
+      "engine": "runtime-polynomial-root-generation",
+      "family": "runtime.polynomial_root_difference",
+      "statement": "\\(f(x)=x^{3} - 3 x - 1\\), \\(g(x)=x^{3} - x - 2\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かしたとき、\\(\\alpha-\\beta\\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。",
+      "answer": "P(z)=z^{9} - 12 z^{7} + 3 z^{6} + 39 z^{5} + 21 z^{4} + 17 z^{3} + 12 z^{2} + 45 z - 19",
+      "solution": "\\(f(x)=0\\) の根を \\(\\alpha\\)、\\(g(y)=0\\) の根を \\(\\beta\\) とする。差 \\(\\alpha-\\beta\\) から一方の根を消去するため、\n\\[\nR(z)=\\operatorname{Res}_x\\!\\left(f(x),g(x-z)\\right)\n\\]\nとおく。\\(z=\\alpha-\\beta\\) なら、\\(x=\\alpha\\) は終結式を作る二つの多項式の共通根になるので、\\(R(z)=0\\) である。逆に \\(R(z)=0\\) なら共通根 \\(x=\\alpha\\) が存在し、もう一方の式からある根 \\(\\beta\\) が得られる。したがって \\(R\\) の根は求める差の値と一致する。同じ値が複数の根の組から現れる場合だけ因子が重なるため、\n\\[\nP(z)=\\operatorname{monic}\\!\\left(\\frac{R(z)}{\\gcd(R(z),R'(z))}\\right)\n\\]\nとすれば、異なる値を一度ずつ根にもつ。係数を有理数のまま展開すると \\(P(z)=z^{9} - 12 z^{7} + 3 z^{6} + 39 z^{5} + 21 z^{4} + 17 z^{3} + 12 z^{2} + 45 z - 19\\) を得る。最後に、全ての根の組を別計算で代入し、どちらの親多項式を変えても \\(P\\) が変わることを確認した。",
+      "domain": "algebraic_geometry",
+      "morphismChain": [
+        "PolynomialConstraintExtraction",
+        "RootConfiguration",
+        "MinkowskiDifference",
+        "FiberProduct",
+        "ParameterElimination",
+        "Resultant",
+        "SquareFreeReduction",
+        "NumericRootCounterexampleCheck",
+        "ParentPerturbationAblation"
+      ],
+      "structureBlueprint": {
+        "id": "root-set.difference.8596dbb6a5c2",
+        "version": 1,
+        "kernel": "binary_operation_on_algebraic_root_configurations",
+        "observable": "minimal_squarefree_root_polynomial_of_difference",
+        "operators": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiDifference",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "domain": "algebraic_geometry",
+        "tags": [
+          "polynomial",
+          "root_configuration",
+          "difference",
+          "resultant"
+        ],
+        "morphismChain": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiDifference",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "executable": true,
+        "proofCertificate": [
+          {
+            "id": "typed-inputs",
+            "claim": "both parents elaborate to univariate polynomial constraints",
+            "verifier": "MathOS typed parser + SymPy Poly(QQ)"
+          },
+          {
+            "id": "fiber-product",
+            "claim": "the joint root configuration contains every ordered pair (alpha,beta)",
+            "verifier": "finite algebraic fiber product"
+          },
+          {
+            "id": "resultant",
+            "claim": "elimination computes every value of difference",
+            "verifier": "SymPy exact resultant over QQ"
+          },
+          {
+            "id": "squarefree",
+            "claim": "the output roots are the distinct composed values",
+            "verifier": "exact square-free monic reduction"
+          },
+          {
+            "id": "numeric-check",
+            "claim": "all numerical pairwise root compositions vanish in P",
+            "verifier": "independent nroots comparison"
+          },
+          {
+            "id": "ablation",
+            "claim": "perturbing either parent changes P",
+            "verifier": "two-sided parent perturbation"
+          }
+        ],
+        "taskAlgebra": {
+          "schema": 1,
+          "input": "algebraic-configuration",
+          "operations": [
+            {
+              "operator": "pair",
+              "output": "configuration"
+            },
+            {
+              "operator": "map",
+              "output": "configuration"
+            },
+            {
+              "operator": "eliminate",
+              "output": "polynomial"
+            },
+            {
+              "operator": "normalize",
+              "output": "polynomial"
+            }
+          ],
+          "output": "polynomial",
+          "complete": true
+        }
+      },
+      "diagram": {
+        "version": 1,
+        "kind": "morphism",
+        "title": "二つの根集合から新しい根集合を作る",
+        "caption": "二つの多項式の根を全て組み合わせ、差を取ってから、終結式で一変数の多項式へ戻します。",
+        "nodes": [
+          "f の根 3 個",
+          "g の根 3 個",
+          "全ての組 9 個",
+          "α − β",
+          "終結式で消去",
+          "重複を除いてモニック化",
+          "P の根 9 個"
+        ]
+      },
+      "proofRoadmap": [
+        {
+          "morphism_id": "PolynomialConstraintExtraction",
+          "label_ja": "親問題から多項式を読み取る",
+          "source_ja": "二つの親問題",
+          "target_ja": "二つの一変数多項式",
+          "role_ja": "変数名ではなく係数と次数を保存します。"
+        },
+        {
+          "morphism_id": "RootConfiguration",
+          "label_ja": "根の配置を構成する",
+          "source_ja": "一変数多項式",
+          "target_ja": "有限な代数的根集合",
+          "role_ja": "各多項式の根を個別の数値ではなく、方程式で定まる集合として扱います。"
+        },
+        {
+          "morphism_id": "MinkowskiDifference",
+          "label_ja": "根の組を差へ写す",
+          "source_ja": "二つの根集合の直積",
+          "target_ja": "差の値の集合",
+          "role_ja": "全ての順序付きの根の組に同じ二項演算を適用します。"
+        },
+        {
+          "morphism_id": "Resultant",
+          "label_ja": "終結式で一方の根を消去する",
+          "source_ja": "二変数の代数制約",
+          "target_ja": "z の一変数多項式",
+          "role_ja": "根を近似値に変えず、有理数係数のまま厳密に消去します。"
+        },
+        {
+          "morphism_id": "SquareFreeReduction",
+          "label_ja": "異なる値だけを残す",
+          "source_ja": "終結式",
+          "target_ja": "平方因子を持たないモニック多項式",
+          "role_ja": "重複根を除き、最高次係数を1にします。"
+        },
+        {
+          "morphism_id": "NumericRootCounterexampleCheck+ParentPerturbationAblation",
+          "label_ja": "全根と親依存性を独立に検証する",
+          "source_ja": "出力多項式",
+          "target_ja": "再生可能な検証証明書",
+          "role_ja": "全根の数値照合と、両親を別々に変える検査を実行します。"
+        }
+      ],
+      "proofObligations": [
+        {
+          "id": "typed-inputs",
+          "claim_ja": "二つの親問題がともに一変数多項式の制約として読み取れる。",
+          "status": "verified"
+        },
+        {
+          "id": "fiber-product",
+          "claim_ja": "二つの根集合の順序付きの組を全て構成している。",
+          "status": "verified"
+        },
+        {
+          "id": "resultant",
+          "claim_ja": "終結式による消去は、各組から得られる差を全て根に持つ。",
+          "status": "verified"
+        },
+        {
+          "id": "squarefree",
+          "claim_ja": "平方因子を除いた出力の根は、合成した値の異なる値全体と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "numeric-check",
+          "claim_ja": "全ての根の組を独立に数値計算し、出力多項式の根と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "ablation",
+          "claim_ja": "どちらの親多項式を変えても出力が変わり、両方の親問題が必要である。",
+          "status": "verified"
+        }
+      ],
+      "hasDiagram": true,
+      "difficulty": 18.25,
+      "verificationMethod": "exact resultant plus independent numerical roots and parent perturbation",
+      "exactBackend": true,
+      "independentCheck": true,
+      "completeParentProof": true,
+      "capabilityOrigin": "synthesized_proof_program",
+      "registeredCompositeUsed": false,
+      "taskFingerprint": "e38c97f93a667de55270ceb0316ad68e7f7507c9d11af934338610b6d66eb678",
+      "taskAlgebraFingerprint": "59c2bac6a041c61ebab1f9fe3fd8713fe7c8877ccd8edd1e75e87f02387600c4",
+      "taskAlgebraOrigin": "emitted",
+      "resultDegree": 9,
+      "termCount": 9,
+      "maximumCoefficient": 45,
+      "corpusSurfaceNovelty": 0.920904,
+      "parents": [
+        {
+          "id": "bounded-cubic-23-37-0",
+          "statement": "方程式 \\(x^3-3x-1=0\\) のすべての複素数解を考える。"
+        },
+        {
+          "id": "bounded-cubic-23-37-1",
+          "statement": "方程式 \\(x^3-x-2=0\\) のすべての複素数解を考える。"
+        }
+      ]
+    },
+    {
+      "id": "mathos-discovered-7a6f7a6f564d",
+      "engine": "runtime-polynomial-root-generation",
+      "family": "runtime.polynomial_root_sum",
+      "statement": "\\(f(x)=x^{3} - 3 x + 1\\), \\(g(x)=x^{3} - x - 2\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かしたとき、\\(\\alpha+\\beta\\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。",
+      "answer": "P(z)=z^{9} - 12 z^{7} - 3 z^{6} + 39 z^{5} - 21 z^{4} + 17 z^{3} - 12 z^{2} + 45 z + 19",
+      "solution": "\\(f(x)=0\\) の根を \\(\\alpha\\)、\\(g(y)=0\\) の根を \\(\\beta\\) とする。和 \\(\\alpha+\\beta\\) から一方の根を消去するため、\n\\[\nR(z)=\\operatorname{Res}_x\\!\\left(f(x),g(z-x)\\right)\n\\]\nとおく。\\(z=\\alpha+\\beta\\) なら、\\(x=\\alpha\\) は終結式を作る二つの多項式の共通根になるので、\\(R(z)=0\\) である。逆に \\(R(z)=0\\) なら共通根 \\(x=\\alpha\\) が存在し、もう一方の式からある根 \\(\\beta\\) が得られる。したがって \\(R\\) の根は求める和の値と一致する。同じ値が複数の根の組から現れる場合だけ因子が重なるため、\n\\[\nP(z)=\\operatorname{monic}\\!\\left(\\frac{R(z)}{\\gcd(R(z),R'(z))}\\right)\n\\]\nとすれば、異なる値を一度ずつ根にもつ。係数を有理数のまま展開すると \\(P(z)=z^{9} - 12 z^{7} - 3 z^{6} + 39 z^{5} - 21 z^{4} + 17 z^{3} - 12 z^{2} + 45 z + 19\\) を得る。最後に、全ての根の組を別計算で代入し、どちらの親多項式を変えても \\(P\\) が変わることを確認した。",
+      "domain": "algebraic_geometry",
+      "morphismChain": [
+        "PolynomialConstraintExtraction",
+        "RootConfiguration",
+        "MinkowskiSum",
+        "FiberProduct",
+        "ParameterElimination",
+        "Resultant",
+        "SquareFreeReduction",
+        "NumericRootCounterexampleCheck",
+        "ParentPerturbationAblation"
+      ],
+      "structureBlueprint": {
+        "id": "root-set.sum.df83e3ed2249",
+        "version": 1,
+        "kernel": "binary_operation_on_algebraic_root_configurations",
+        "observable": "minimal_squarefree_root_polynomial_of_sum",
+        "operators": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiSum",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "domain": "algebraic_geometry",
+        "tags": [
+          "polynomial",
+          "root_configuration",
+          "sum",
+          "resultant"
+        ],
+        "morphismChain": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiSum",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "executable": true,
+        "proofCertificate": [
+          {
+            "id": "typed-inputs",
+            "claim": "both parents elaborate to univariate polynomial constraints",
+            "verifier": "MathOS typed parser + SymPy Poly(QQ)"
+          },
+          {
+            "id": "fiber-product",
+            "claim": "the joint root configuration contains every ordered pair (alpha,beta)",
+            "verifier": "finite algebraic fiber product"
+          },
+          {
+            "id": "resultant",
+            "claim": "elimination computes every value of sum",
+            "verifier": "SymPy exact resultant over QQ"
+          },
+          {
+            "id": "squarefree",
+            "claim": "the output roots are the distinct composed values",
+            "verifier": "exact square-free monic reduction"
+          },
+          {
+            "id": "numeric-check",
+            "claim": "all numerical pairwise root compositions vanish in P",
+            "verifier": "independent nroots comparison"
+          },
+          {
+            "id": "ablation",
+            "claim": "perturbing either parent changes P",
+            "verifier": "two-sided parent perturbation"
+          }
+        ],
+        "taskAlgebra": {
+          "schema": 1,
+          "input": "algebraic-configuration",
+          "operations": [
+            {
+              "operator": "pair",
+              "output": "configuration"
+            },
+            {
+              "operator": "map",
+              "output": "configuration"
+            },
+            {
+              "operator": "eliminate",
+              "output": "polynomial"
+            },
+            {
+              "operator": "normalize",
+              "output": "polynomial"
+            }
+          ],
+          "output": "polynomial",
+          "complete": true
+        }
+      },
+      "diagram": {
+        "version": 1,
+        "kind": "morphism",
+        "title": "二つの根集合から新しい根集合を作る",
+        "caption": "二つの多項式の根を全て組み合わせ、和を取ってから、終結式で一変数の多項式へ戻します。",
+        "nodes": [
+          "f の根 3 個",
+          "g の根 3 個",
+          "全ての組 9 個",
+          "α + β",
+          "終結式で消去",
+          "重複を除いてモニック化",
+          "P の根 9 個"
+        ]
+      },
+      "proofRoadmap": [
+        {
+          "morphism_id": "PolynomialConstraintExtraction",
+          "label_ja": "親問題から多項式を読み取る",
+          "source_ja": "二つの親問題",
+          "target_ja": "二つの一変数多項式",
+          "role_ja": "変数名ではなく係数と次数を保存します。"
+        },
+        {
+          "morphism_id": "RootConfiguration",
+          "label_ja": "根の配置を構成する",
+          "source_ja": "一変数多項式",
+          "target_ja": "有限な代数的根集合",
+          "role_ja": "各多項式の根を個別の数値ではなく、方程式で定まる集合として扱います。"
+        },
+        {
+          "morphism_id": "MinkowskiSum",
+          "label_ja": "根の組を和へ写す",
+          "source_ja": "二つの根集合の直積",
+          "target_ja": "和の値の集合",
+          "role_ja": "全ての順序付きの根の組に同じ二項演算を適用します。"
+        },
+        {
+          "morphism_id": "Resultant",
+          "label_ja": "終結式で一方の根を消去する",
+          "source_ja": "二変数の代数制約",
+          "target_ja": "z の一変数多項式",
+          "role_ja": "根を近似値に変えず、有理数係数のまま厳密に消去します。"
+        },
+        {
+          "morphism_id": "SquareFreeReduction",
+          "label_ja": "異なる値だけを残す",
+          "source_ja": "終結式",
+          "target_ja": "平方因子を持たないモニック多項式",
+          "role_ja": "重複根を除き、最高次係数を1にします。"
+        },
+        {
+          "morphism_id": "NumericRootCounterexampleCheck+ParentPerturbationAblation",
+          "label_ja": "全根と親依存性を独立に検証する",
+          "source_ja": "出力多項式",
+          "target_ja": "再生可能な検証証明書",
+          "role_ja": "全根の数値照合と、両親を別々に変える検査を実行します。"
+        }
+      ],
+      "proofObligations": [
+        {
+          "id": "typed-inputs",
+          "claim_ja": "二つの親問題がともに一変数多項式の制約として読み取れる。",
+          "status": "verified"
+        },
+        {
+          "id": "fiber-product",
+          "claim_ja": "二つの根集合の順序付きの組を全て構成している。",
+          "status": "verified"
+        },
+        {
+          "id": "resultant",
+          "claim_ja": "終結式による消去は、各組から得られる和を全て根に持つ。",
+          "status": "verified"
+        },
+        {
+          "id": "squarefree",
+          "claim_ja": "平方因子を除いた出力の根は、合成した値の異なる値全体と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "numeric-check",
+          "claim_ja": "全ての根の組を独立に数値計算し、出力多項式の根と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "ablation",
+          "claim_ja": "どちらの親多項式を変えても出力が変わり、両方の親問題が必要である。",
+          "status": "verified"
+        }
+      ],
+      "hasDiagram": true,
+      "difficulty": 18.25,
+      "verificationMethod": "exact resultant plus independent numerical roots and parent perturbation",
+      "exactBackend": true,
+      "independentCheck": true,
+      "completeParentProof": true,
+      "capabilityOrigin": "synthesized_proof_program",
+      "registeredCompositeUsed": false,
+      "taskFingerprint": "e38c97f93a667de55270ceb0316ad68e7f7507c9d11af934338610b6d66eb678",
+      "taskAlgebraFingerprint": "59c2bac6a041c61ebab1f9fe3fd8713fe7c8877ccd8edd1e75e87f02387600c4",
+      "taskAlgebraOrigin": "emitted",
+      "resultDegree": 9,
+      "termCount": 9,
+      "maximumCoefficient": 45,
+      "corpusSurfaceNovelty": 0.920904,
+      "parents": [
+        {
+          "id": "bounded-cubic-24-37-0",
+          "statement": "方程式 \\(x^3-3x+1=0\\) のすべての複素数解を考える。"
+        },
+        {
+          "id": "bounded-cubic-24-37-1",
+          "statement": "方程式 \\(x^3-x-2=0\\) のすべての複素数解を考える。"
+        }
+      ]
+    },
+    {
+      "id": "mathos-discovered-5d6ae01f5f34",
+      "engine": "runtime-polynomial-root-generation",
+      "family": "runtime.polynomial_root_sum",
+      "statement": "\\(f(x)=x^{3} - 3 x + 3\\), \\(g(x)=x^{3} - x - 1\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かしたとき、\\(\\alpha+\\beta\\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。",
+      "answer": "P(z)=z^{9} - 12 z^{7} + 6 z^{6} + 39 z^{5} - 48 z^{4} + 53 z^{3} + 24 z^{2} - 36 z + 8",
+      "solution": "\\(f(x)=0\\) の根を \\(\\alpha\\)、\\(g(y)=0\\) の根を \\(\\beta\\) とする。和 \\(\\alpha+\\beta\\) から一方の根を消去するため、\n\\[\nR(z)=\\operatorname{Res}_x\\!\\left(f(x),g(z-x)\\right)\n\\]\nとおく。\\(z=\\alpha+\\beta\\) なら、\\(x=\\alpha\\) は終結式を作る二つの多項式の共通根になるので、\\(R(z)=0\\) である。逆に \\(R(z)=0\\) なら共通根 \\(x=\\alpha\\) が存在し、もう一方の式からある根 \\(\\beta\\) が得られる。したがって \\(R\\) の根は求める和の値と一致する。同じ値が複数の根の組から現れる場合だけ因子が重なるため、\n\\[\nP(z)=\\operatorname{monic}\\!\\left(\\frac{R(z)}{\\gcd(R(z),R'(z))}\\right)\n\\]\nとすれば、異なる値を一度ずつ根にもつ。係数を有理数のまま展開すると \\(P(z)=z^{9} - 12 z^{7} + 6 z^{6} + 39 z^{5} - 48 z^{4} + 53 z^{3} + 24 z^{2} - 36 z + 8\\) を得る。最後に、全ての根の組を別計算で代入し、どちらの親多項式を変えても \\(P\\) が変わることを確認した。",
+      "domain": "algebraic_geometry",
+      "morphismChain": [
+        "PolynomialConstraintExtraction",
+        "RootConfiguration",
+        "MinkowskiSum",
+        "FiberProduct",
+        "ParameterElimination",
+        "Resultant",
+        "SquareFreeReduction",
+        "NumericRootCounterexampleCheck",
+        "ParentPerturbationAblation"
+      ],
+      "structureBlueprint": {
+        "id": "root-set.sum.6d2d9b31a818",
+        "version": 1,
+        "kernel": "binary_operation_on_algebraic_root_configurations",
+        "observable": "minimal_squarefree_root_polynomial_of_sum",
+        "operators": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiSum",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "domain": "algebraic_geometry",
+        "tags": [
+          "polynomial",
+          "root_configuration",
+          "sum",
+          "resultant"
+        ],
+        "morphismChain": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiSum",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "executable": true,
+        "proofCertificate": [
+          {
+            "id": "typed-inputs",
+            "claim": "both parents elaborate to univariate polynomial constraints",
+            "verifier": "MathOS typed parser + SymPy Poly(QQ)"
+          },
+          {
+            "id": "fiber-product",
+            "claim": "the joint root configuration contains every ordered pair (alpha,beta)",
+            "verifier": "finite algebraic fiber product"
+          },
+          {
+            "id": "resultant",
+            "claim": "elimination computes every value of sum",
+            "verifier": "SymPy exact resultant over QQ"
+          },
+          {
+            "id": "squarefree",
+            "claim": "the output roots are the distinct composed values",
+            "verifier": "exact square-free monic reduction"
+          },
+          {
+            "id": "numeric-check",
+            "claim": "all numerical pairwise root compositions vanish in P",
+            "verifier": "independent nroots comparison"
+          },
+          {
+            "id": "ablation",
+            "claim": "perturbing either parent changes P",
+            "verifier": "two-sided parent perturbation"
+          }
+        ],
+        "taskAlgebra": {
+          "schema": 1,
+          "input": "algebraic-configuration",
+          "operations": [
+            {
+              "operator": "pair",
+              "output": "configuration"
+            },
+            {
+              "operator": "map",
+              "output": "configuration"
+            },
+            {
+              "operator": "eliminate",
+              "output": "polynomial"
+            },
+            {
+              "operator": "normalize",
+              "output": "polynomial"
+            }
+          ],
+          "output": "polynomial",
+          "complete": true
+        }
+      },
+      "diagram": {
+        "version": 1,
+        "kind": "morphism",
+        "title": "二つの根集合から新しい根集合を作る",
+        "caption": "二つの多項式の根を全て組み合わせ、和を取ってから、終結式で一変数の多項式へ戻します。",
+        "nodes": [
+          "f の根 3 個",
+          "g の根 3 個",
+          "全ての組 9 個",
+          "α + β",
+          "終結式で消去",
+          "重複を除いてモニック化",
+          "P の根 9 個"
+        ]
+      },
+      "proofRoadmap": [
+        {
+          "morphism_id": "PolynomialConstraintExtraction",
+          "label_ja": "親問題から多項式を読み取る",
+          "source_ja": "二つの親問題",
+          "target_ja": "二つの一変数多項式",
+          "role_ja": "変数名ではなく係数と次数を保存します。"
+        },
+        {
+          "morphism_id": "RootConfiguration",
+          "label_ja": "根の配置を構成する",
+          "source_ja": "一変数多項式",
+          "target_ja": "有限な代数的根集合",
+          "role_ja": "各多項式の根を個別の数値ではなく、方程式で定まる集合として扱います。"
+        },
+        {
+          "morphism_id": "MinkowskiSum",
+          "label_ja": "根の組を和へ写す",
+          "source_ja": "二つの根集合の直積",
+          "target_ja": "和の値の集合",
+          "role_ja": "全ての順序付きの根の組に同じ二項演算を適用します。"
+        },
+        {
+          "morphism_id": "Resultant",
+          "label_ja": "終結式で一方の根を消去する",
+          "source_ja": "二変数の代数制約",
+          "target_ja": "z の一変数多項式",
+          "role_ja": "根を近似値に変えず、有理数係数のまま厳密に消去します。"
+        },
+        {
+          "morphism_id": "SquareFreeReduction",
+          "label_ja": "異なる値だけを残す",
+          "source_ja": "終結式",
+          "target_ja": "平方因子を持たないモニック多項式",
+          "role_ja": "重複根を除き、最高次係数を1にします。"
+        },
+        {
+          "morphism_id": "NumericRootCounterexampleCheck+ParentPerturbationAblation",
+          "label_ja": "全根と親依存性を独立に検証する",
+          "source_ja": "出力多項式",
+          "target_ja": "再生可能な検証証明書",
+          "role_ja": "全根の数値照合と、両親を別々に変える検査を実行します。"
+        }
+      ],
+      "proofObligations": [
+        {
+          "id": "typed-inputs",
+          "claim_ja": "二つの親問題がともに一変数多項式の制約として読み取れる。",
+          "status": "verified"
+        },
+        {
+          "id": "fiber-product",
+          "claim_ja": "二つの根集合の順序付きの組を全て構成している。",
+          "status": "verified"
+        },
+        {
+          "id": "resultant",
+          "claim_ja": "終結式による消去は、各組から得られる和を全て根に持つ。",
+          "status": "verified"
+        },
+        {
+          "id": "squarefree",
+          "claim_ja": "平方因子を除いた出力の根は、合成した値の異なる値全体と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "numeric-check",
+          "claim_ja": "全ての根の組を独立に数値計算し、出力多項式の根と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "ablation",
+          "claim_ja": "どちらの親多項式を変えても出力が変わり、両方の親問題が必要である。",
+          "status": "verified"
+        }
+      ],
+      "hasDiagram": true,
+      "difficulty": 18.25,
+      "verificationMethod": "exact resultant plus independent numerical roots and parent perturbation",
+      "exactBackend": true,
+      "independentCheck": true,
+      "completeParentProof": true,
+      "capabilityOrigin": "synthesized_proof_program",
+      "registeredCompositeUsed": false,
+      "taskFingerprint": "e38c97f93a667de55270ceb0316ad68e7f7507c9d11af934338610b6d66eb678",
+      "taskAlgebraFingerprint": "59c2bac6a041c61ebab1f9fe3fd8713fe7c8877ccd8edd1e75e87f02387600c4",
+      "taskAlgebraOrigin": "emitted",
+      "resultDegree": 9,
+      "termCount": 9,
+      "maximumCoefficient": 53,
+      "corpusSurfaceNovelty": 0.920904,
+      "parents": [
+        {
+          "id": "bounded-cubic-25-38-0",
+          "statement": "方程式 \\(x^3-3x+3=0\\) のすべての複素数解を考える。"
+        },
+        {
+          "id": "bounded-cubic-25-38-1",
+          "statement": "方程式 \\(x^3-x-1=0\\) のすべての複素数解を考える。"
+        }
+      ]
+    },
+    {
+      "id": "mathos-discovered-c5be70190a75",
+      "engine": "runtime-polynomial-root-generation",
+      "family": "runtime.polynomial_root_difference",
+      "statement": "\\(f(x)=x^{3} - 3 x - 3\\), \\(g(x)=x^{3} - x - 1\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かしたとき、\\(\\alpha-\\beta\\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。",
+      "answer": "P(z)=z^{9} - 12 z^{7} - 6 z^{6} + 39 z^{5} + 48 z^{4} + 53 z^{3} - 24 z^{2} - 36 z - 8",
+      "solution": "\\(f(x)=0\\) の根を \\(\\alpha\\)、\\(g(y)=0\\) の根を \\(\\beta\\) とする。差 \\(\\alpha-\\beta\\) から一方の根を消去するため、\n\\[\nR(z)=\\operatorname{Res}_x\\!\\left(f(x),g(x-z)\\right)\n\\]\nとおく。\\(z=\\alpha-\\beta\\) なら、\\(x=\\alpha\\) は終結式を作る二つの多項式の共通根になるので、\\(R(z)=0\\) である。逆に \\(R(z)=0\\) なら共通根 \\(x=\\alpha\\) が存在し、もう一方の式からある根 \\(\\beta\\) が得られる。したがって \\(R\\) の根は求める差の値と一致する。同じ値が複数の根の組から現れる場合だけ因子が重なるため、\n\\[\nP(z)=\\operatorname{monic}\\!\\left(\\frac{R(z)}{\\gcd(R(z),R'(z))}\\right)\n\\]\nとすれば、異なる値を一度ずつ根にもつ。係数を有理数のまま展開すると \\(P(z)=z^{9} - 12 z^{7} - 6 z^{6} + 39 z^{5} + 48 z^{4} + 53 z^{3} - 24 z^{2} - 36 z - 8\\) を得る。最後に、全ての根の組を別計算で代入し、どちらの親多項式を変えても \\(P\\) が変わることを確認した。",
+      "domain": "algebraic_geometry",
+      "morphismChain": [
+        "PolynomialConstraintExtraction",
+        "RootConfiguration",
+        "MinkowskiDifference",
+        "FiberProduct",
+        "ParameterElimination",
+        "Resultant",
+        "SquareFreeReduction",
+        "NumericRootCounterexampleCheck",
+        "ParentPerturbationAblation"
+      ],
+      "structureBlueprint": {
+        "id": "root-set.difference.c28505f1fcfd",
+        "version": 1,
+        "kernel": "binary_operation_on_algebraic_root_configurations",
+        "observable": "minimal_squarefree_root_polynomial_of_difference",
+        "operators": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiDifference",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "domain": "algebraic_geometry",
+        "tags": [
+          "polynomial",
+          "root_configuration",
+          "difference",
+          "resultant"
+        ],
+        "morphismChain": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiDifference",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "executable": true,
+        "proofCertificate": [
+          {
+            "id": "typed-inputs",
+            "claim": "both parents elaborate to univariate polynomial constraints",
+            "verifier": "MathOS typed parser + SymPy Poly(QQ)"
+          },
+          {
+            "id": "fiber-product",
+            "claim": "the joint root configuration contains every ordered pair (alpha,beta)",
+            "verifier": "finite algebraic fiber product"
+          },
+          {
+            "id": "resultant",
+            "claim": "elimination computes every value of difference",
+            "verifier": "SymPy exact resultant over QQ"
+          },
+          {
+            "id": "squarefree",
+            "claim": "the output roots are the distinct composed values",
+            "verifier": "exact square-free monic reduction"
+          },
+          {
+            "id": "numeric-check",
+            "claim": "all numerical pairwise root compositions vanish in P",
+            "verifier": "independent nroots comparison"
+          },
+          {
+            "id": "ablation",
+            "claim": "perturbing either parent changes P",
+            "verifier": "two-sided parent perturbation"
+          }
+        ],
+        "taskAlgebra": {
+          "schema": 1,
+          "input": "algebraic-configuration",
+          "operations": [
+            {
+              "operator": "pair",
+              "output": "configuration"
+            },
+            {
+              "operator": "map",
+              "output": "configuration"
+            },
+            {
+              "operator": "eliminate",
+              "output": "polynomial"
+            },
+            {
+              "operator": "normalize",
+              "output": "polynomial"
+            }
+          ],
+          "output": "polynomial",
+          "complete": true
+        }
+      },
+      "diagram": {
+        "version": 1,
+        "kind": "morphism",
+        "title": "二つの根集合から新しい根集合を作る",
+        "caption": "二つの多項式の根を全て組み合わせ、差を取ってから、終結式で一変数の多項式へ戻します。",
+        "nodes": [
+          "f の根 3 個",
+          "g の根 3 個",
+          "全ての組 9 個",
+          "α − β",
+          "終結式で消去",
+          "重複を除いてモニック化",
+          "P の根 9 個"
+        ]
+      },
+      "proofRoadmap": [
+        {
+          "morphism_id": "PolynomialConstraintExtraction",
+          "label_ja": "親問題から多項式を読み取る",
+          "source_ja": "二つの親問題",
+          "target_ja": "二つの一変数多項式",
+          "role_ja": "変数名ではなく係数と次数を保存します。"
+        },
+        {
+          "morphism_id": "RootConfiguration",
+          "label_ja": "根の配置を構成する",
+          "source_ja": "一変数多項式",
+          "target_ja": "有限な代数的根集合",
+          "role_ja": "各多項式の根を個別の数値ではなく、方程式で定まる集合として扱います。"
+        },
+        {
+          "morphism_id": "MinkowskiDifference",
+          "label_ja": "根の組を差へ写す",
+          "source_ja": "二つの根集合の直積",
+          "target_ja": "差の値の集合",
+          "role_ja": "全ての順序付きの根の組に同じ二項演算を適用します。"
+        },
+        {
+          "morphism_id": "Resultant",
+          "label_ja": "終結式で一方の根を消去する",
+          "source_ja": "二変数の代数制約",
+          "target_ja": "z の一変数多項式",
+          "role_ja": "根を近似値に変えず、有理数係数のまま厳密に消去します。"
+        },
+        {
+          "morphism_id": "SquareFreeReduction",
+          "label_ja": "異なる値だけを残す",
+          "source_ja": "終結式",
+          "target_ja": "平方因子を持たないモニック多項式",
+          "role_ja": "重複根を除き、最高次係数を1にします。"
+        },
+        {
+          "morphism_id": "NumericRootCounterexampleCheck+ParentPerturbationAblation",
+          "label_ja": "全根と親依存性を独立に検証する",
+          "source_ja": "出力多項式",
+          "target_ja": "再生可能な検証証明書",
+          "role_ja": "全根の数値照合と、両親を別々に変える検査を実行します。"
+        }
+      ],
+      "proofObligations": [
+        {
+          "id": "typed-inputs",
+          "claim_ja": "二つの親問題がともに一変数多項式の制約として読み取れる。",
+          "status": "verified"
+        },
+        {
+          "id": "fiber-product",
+          "claim_ja": "二つの根集合の順序付きの組を全て構成している。",
+          "status": "verified"
+        },
+        {
+          "id": "resultant",
+          "claim_ja": "終結式による消去は、各組から得られる差を全て根に持つ。",
+          "status": "verified"
+        },
+        {
+          "id": "squarefree",
+          "claim_ja": "平方因子を除いた出力の根は、合成した値の異なる値全体と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "numeric-check",
+          "claim_ja": "全ての根の組を独立に数値計算し、出力多項式の根と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "ablation",
+          "claim_ja": "どちらの親多項式を変えても出力が変わり、両方の親問題が必要である。",
+          "status": "verified"
+        }
+      ],
+      "hasDiagram": true,
+      "difficulty": 18.25,
+      "verificationMethod": "exact resultant plus independent numerical roots and parent perturbation",
+      "exactBackend": true,
+      "independentCheck": true,
+      "completeParentProof": true,
+      "capabilityOrigin": "synthesized_proof_program",
+      "registeredCompositeUsed": false,
+      "taskFingerprint": "e38c97f93a667de55270ceb0316ad68e7f7507c9d11af934338610b6d66eb678",
+      "taskAlgebraFingerprint": "59c2bac6a041c61ebab1f9fe3fd8713fe7c8877ccd8edd1e75e87f02387600c4",
+      "taskAlgebraOrigin": "emitted",
+      "resultDegree": 9,
+      "termCount": 9,
+      "maximumCoefficient": 53,
+      "corpusSurfaceNovelty": 0.920904,
+      "parents": [
+        {
+          "id": "bounded-cubic-22-38-0",
+          "statement": "方程式 \\(x^3-3x-3=0\\) のすべての複素数解を考える。"
+        },
+        {
+          "id": "bounded-cubic-22-38-1",
+          "statement": "方程式 \\(x^3-x-1=0\\) のすべての複素数解を考える。"
+        }
+      ]
+    },
+    {
+      "id": "mathos-discovered-1dce3ea3ae48",
+      "engine": "runtime-polynomial-root-generation",
+      "family": "runtime.polynomial_root_difference",
+      "statement": "\\(f(x)=x^{3} - 3 x - 1\\), \\(g(x)=x^{3} - 2\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かしたとき、\\(\\alpha-\\beta\\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。",
+      "answer": "P(z)=z^{9} - 9 z^{7} + 3 z^{6} + 27 z^{5} + 36 z^{4} + 30 z^{3} + 27 z^{2} + 45 z - 53",
+      "solution": "\\(f(x)=0\\) の根を \\(\\alpha\\)、\\(g(y)=0\\) の根を \\(\\beta\\) とする。差 \\(\\alpha-\\beta\\) から一方の根を消去するため、\n\\[\nR(z)=\\operatorname{Res}_x\\!\\left(f(x),g(x-z)\\right)\n\\]\nとおく。\\(z=\\alpha-\\beta\\) なら、\\(x=\\alpha\\) は終結式を作る二つの多項式の共通根になるので、\\(R(z)=0\\) である。逆に \\(R(z)=0\\) なら共通根 \\(x=\\alpha\\) が存在し、もう一方の式からある根 \\(\\beta\\) が得られる。したがって \\(R\\) の根は求める差の値と一致する。同じ値が複数の根の組から現れる場合だけ因子が重なるため、\n\\[\nP(z)=\\operatorname{monic}\\!\\left(\\frac{R(z)}{\\gcd(R(z),R'(z))}\\right)\n\\]\nとすれば、異なる値を一度ずつ根にもつ。係数を有理数のまま展開すると \\(P(z)=z^{9} - 9 z^{7} + 3 z^{6} + 27 z^{5} + 36 z^{4} + 30 z^{3} + 27 z^{2} + 45 z - 53\\) を得る。最後に、全ての根の組を別計算で代入し、どちらの親多項式を変えても \\(P\\) が変わることを確認した。",
+      "domain": "algebraic_geometry",
+      "morphismChain": [
+        "PolynomialConstraintExtraction",
+        "RootConfiguration",
+        "MinkowskiDifference",
+        "FiberProduct",
+        "ParameterElimination",
+        "Resultant",
+        "SquareFreeReduction",
+        "NumericRootCounterexampleCheck",
+        "ParentPerturbationAblation"
+      ],
+      "structureBlueprint": {
+        "id": "root-set.difference.e7f288c10d01",
+        "version": 1,
+        "kernel": "binary_operation_on_algebraic_root_configurations",
+        "observable": "minimal_squarefree_root_polynomial_of_difference",
+        "operators": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiDifference",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "domain": "algebraic_geometry",
+        "tags": [
+          "polynomial",
+          "root_configuration",
+          "difference",
+          "resultant"
+        ],
+        "morphismChain": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiDifference",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "executable": true,
+        "proofCertificate": [
+          {
+            "id": "typed-inputs",
+            "claim": "both parents elaborate to univariate polynomial constraints",
+            "verifier": "MathOS typed parser + SymPy Poly(QQ)"
+          },
+          {
+            "id": "fiber-product",
+            "claim": "the joint root configuration contains every ordered pair (alpha,beta)",
+            "verifier": "finite algebraic fiber product"
+          },
+          {
+            "id": "resultant",
+            "claim": "elimination computes every value of difference",
+            "verifier": "SymPy exact resultant over QQ"
+          },
+          {
+            "id": "squarefree",
+            "claim": "the output roots are the distinct composed values",
+            "verifier": "exact square-free monic reduction"
+          },
+          {
+            "id": "numeric-check",
+            "claim": "all numerical pairwise root compositions vanish in P",
+            "verifier": "independent nroots comparison"
+          },
+          {
+            "id": "ablation",
+            "claim": "perturbing either parent changes P",
+            "verifier": "two-sided parent perturbation"
+          }
+        ],
+        "taskAlgebra": {
+          "schema": 1,
+          "input": "algebraic-configuration",
+          "operations": [
+            {
+              "operator": "pair",
+              "output": "configuration"
+            },
+            {
+              "operator": "map",
+              "output": "configuration"
+            },
+            {
+              "operator": "eliminate",
+              "output": "polynomial"
+            },
+            {
+              "operator": "normalize",
+              "output": "polynomial"
+            }
+          ],
+          "output": "polynomial",
+          "complete": true
+        }
+      },
+      "diagram": {
+        "version": 1,
+        "kind": "morphism",
+        "title": "二つの根集合から新しい根集合を作る",
+        "caption": "二つの多項式の根を全て組み合わせ、差を取ってから、終結式で一変数の多項式へ戻します。",
+        "nodes": [
+          "f の根 3 個",
+          "g の根 3 個",
+          "全ての組 9 個",
+          "α − β",
+          "終結式で消去",
+          "重複を除いてモニック化",
+          "P の根 9 個"
+        ]
+      },
+      "proofRoadmap": [
+        {
+          "morphism_id": "PolynomialConstraintExtraction",
+          "label_ja": "親問題から多項式を読み取る",
+          "source_ja": "二つの親問題",
+          "target_ja": "二つの一変数多項式",
+          "role_ja": "変数名ではなく係数と次数を保存します。"
+        },
+        {
+          "morphism_id": "RootConfiguration",
+          "label_ja": "根の配置を構成する",
+          "source_ja": "一変数多項式",
+          "target_ja": "有限な代数的根集合",
+          "role_ja": "各多項式の根を個別の数値ではなく、方程式で定まる集合として扱います。"
+        },
+        {
+          "morphism_id": "MinkowskiDifference",
+          "label_ja": "根の組を差へ写す",
+          "source_ja": "二つの根集合の直積",
+          "target_ja": "差の値の集合",
+          "role_ja": "全ての順序付きの根の組に同じ二項演算を適用します。"
+        },
+        {
+          "morphism_id": "Resultant",
+          "label_ja": "終結式で一方の根を消去する",
+          "source_ja": "二変数の代数制約",
+          "target_ja": "z の一変数多項式",
+          "role_ja": "根を近似値に変えず、有理数係数のまま厳密に消去します。"
+        },
+        {
+          "morphism_id": "SquareFreeReduction",
+          "label_ja": "異なる値だけを残す",
+          "source_ja": "終結式",
+          "target_ja": "平方因子を持たないモニック多項式",
+          "role_ja": "重複根を除き、最高次係数を1にします。"
+        },
+        {
+          "morphism_id": "NumericRootCounterexampleCheck+ParentPerturbationAblation",
+          "label_ja": "全根と親依存性を独立に検証する",
+          "source_ja": "出力多項式",
+          "target_ja": "再生可能な検証証明書",
+          "role_ja": "全根の数値照合と、両親を別々に変える検査を実行します。"
+        }
+      ],
+      "proofObligations": [
+        {
+          "id": "typed-inputs",
+          "claim_ja": "二つの親問題がともに一変数多項式の制約として読み取れる。",
+          "status": "verified"
+        },
+        {
+          "id": "fiber-product",
+          "claim_ja": "二つの根集合の順序付きの組を全て構成している。",
+          "status": "verified"
+        },
+        {
+          "id": "resultant",
+          "claim_ja": "終結式による消去は、各組から得られる差を全て根に持つ。",
+          "status": "verified"
+        },
+        {
+          "id": "squarefree",
+          "claim_ja": "平方因子を除いた出力の根は、合成した値の異なる値全体と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "numeric-check",
+          "claim_ja": "全ての根の組を独立に数値計算し、出力多項式の根と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "ablation",
+          "claim_ja": "どちらの親多項式を変えても出力が変わり、両方の親問題が必要である。",
+          "status": "verified"
+        }
+      ],
+      "hasDiagram": true,
+      "difficulty": 18.25,
+      "verificationMethod": "exact resultant plus independent numerical roots and parent perturbation",
+      "exactBackend": true,
+      "independentCheck": true,
+      "completeParentProof": true,
+      "capabilityOrigin": "synthesized_proof_program",
+      "registeredCompositeUsed": false,
+      "taskFingerprint": "e38c97f93a667de55270ceb0316ad68e7f7507c9d11af934338610b6d66eb678",
+      "taskAlgebraFingerprint": "59c2bac6a041c61ebab1f9fe3fd8713fe7c8877ccd8edd1e75e87f02387600c4",
+      "taskAlgebraOrigin": "emitted",
+      "resultDegree": 9,
+      "termCount": 9,
+      "maximumCoefficient": 53,
+      "corpusSurfaceNovelty": 0.92,
+      "parents": [
+        {
+          "id": "bounded-cubic-23-47-0",
+          "statement": "方程式 \\(x^3-3x-1=0\\) のすべての複素数解を考える。"
+        },
+        {
+          "id": "bounded-cubic-23-47-1",
+          "statement": "方程式 \\(x^3-2=0\\) のすべての複素数解を考える。"
+        }
+      ]
+    },
+    {
+      "id": "mathos-discovered-6079511a05e8",
+      "engine": "runtime-polynomial-root-generation",
+      "family": "runtime.polynomial_root_sum",
+      "statement": "\\(f(x)=x^{3} - 3 x + 1\\), \\(g(x)=x^{3} - 2\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かしたとき、\\(\\alpha+\\beta\\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。",
+      "answer": "P(z)=z^{9} - 9 z^{7} - 3 z^{6} + 27 z^{5} - 36 z^{4} + 30 z^{3} - 27 z^{2} + 45 z + 53",
+      "solution": "\\(f(x)=0\\) の根を \\(\\alpha\\)、\\(g(y)=0\\) の根を \\(\\beta\\) とする。和 \\(\\alpha+\\beta\\) から一方の根を消去するため、\n\\[\nR(z)=\\operatorname{Res}_x\\!\\left(f(x),g(z-x)\\right)\n\\]\nとおく。\\(z=\\alpha+\\beta\\) なら、\\(x=\\alpha\\) は終結式を作る二つの多項式の共通根になるので、\\(R(z)=0\\) である。逆に \\(R(z)=0\\) なら共通根 \\(x=\\alpha\\) が存在し、もう一方の式からある根 \\(\\beta\\) が得られる。したがって \\(R\\) の根は求める和の値と一致する。同じ値が複数の根の組から現れる場合だけ因子が重なるため、\n\\[\nP(z)=\\operatorname{monic}\\!\\left(\\frac{R(z)}{\\gcd(R(z),R'(z))}\\right)\n\\]\nとすれば、異なる値を一度ずつ根にもつ。係数を有理数のまま展開すると \\(P(z)=z^{9} - 9 z^{7} - 3 z^{6} + 27 z^{5} - 36 z^{4} + 30 z^{3} - 27 z^{2} + 45 z + 53\\) を得る。最後に、全ての根の組を別計算で代入し、どちらの親多項式を変えても \\(P\\) が変わることを確認した。",
+      "domain": "algebraic_geometry",
+      "morphismChain": [
+        "PolynomialConstraintExtraction",
+        "RootConfiguration",
+        "MinkowskiSum",
+        "FiberProduct",
+        "ParameterElimination",
+        "Resultant",
+        "SquareFreeReduction",
+        "NumericRootCounterexampleCheck",
+        "ParentPerturbationAblation"
+      ],
+      "structureBlueprint": {
+        "id": "root-set.sum.0a34527555be",
+        "version": 1,
+        "kernel": "binary_operation_on_algebraic_root_configurations",
+        "observable": "minimal_squarefree_root_polynomial_of_sum",
+        "operators": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiSum",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "domain": "algebraic_geometry",
+        "tags": [
+          "polynomial",
+          "root_configuration",
+          "sum",
+          "resultant"
+        ],
+        "morphismChain": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiSum",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "executable": true,
+        "proofCertificate": [
+          {
+            "id": "typed-inputs",
+            "claim": "both parents elaborate to univariate polynomial constraints",
+            "verifier": "MathOS typed parser + SymPy Poly(QQ)"
+          },
+          {
+            "id": "fiber-product",
+            "claim": "the joint root configuration contains every ordered pair (alpha,beta)",
+            "verifier": "finite algebraic fiber product"
+          },
+          {
+            "id": "resultant",
+            "claim": "elimination computes every value of sum",
+            "verifier": "SymPy exact resultant over QQ"
+          },
+          {
+            "id": "squarefree",
+            "claim": "the output roots are the distinct composed values",
+            "verifier": "exact square-free monic reduction"
+          },
+          {
+            "id": "numeric-check",
+            "claim": "all numerical pairwise root compositions vanish in P",
+            "verifier": "independent nroots comparison"
+          },
+          {
+            "id": "ablation",
+            "claim": "perturbing either parent changes P",
+            "verifier": "two-sided parent perturbation"
+          }
+        ],
+        "taskAlgebra": {
+          "schema": 1,
+          "input": "algebraic-configuration",
+          "operations": [
+            {
+              "operator": "pair",
+              "output": "configuration"
+            },
+            {
+              "operator": "map",
+              "output": "configuration"
+            },
+            {
+              "operator": "eliminate",
+              "output": "polynomial"
+            },
+            {
+              "operator": "normalize",
+              "output": "polynomial"
+            }
+          ],
+          "output": "polynomial",
+          "complete": true
+        }
+      },
+      "diagram": {
+        "version": 1,
+        "kind": "morphism",
+        "title": "二つの根集合から新しい根集合を作る",
+        "caption": "二つの多項式の根を全て組み合わせ、和を取ってから、終結式で一変数の多項式へ戻します。",
+        "nodes": [
+          "f の根 3 個",
+          "g の根 3 個",
+          "全ての組 9 個",
+          "α + β",
+          "終結式で消去",
+          "重複を除いてモニック化",
+          "P の根 9 個"
+        ]
+      },
+      "proofRoadmap": [
+        {
+          "morphism_id": "PolynomialConstraintExtraction",
+          "label_ja": "親問題から多項式を読み取る",
+          "source_ja": "二つの親問題",
+          "target_ja": "二つの一変数多項式",
+          "role_ja": "変数名ではなく係数と次数を保存します。"
+        },
+        {
+          "morphism_id": "RootConfiguration",
+          "label_ja": "根の配置を構成する",
+          "source_ja": "一変数多項式",
+          "target_ja": "有限な代数的根集合",
+          "role_ja": "各多項式の根を個別の数値ではなく、方程式で定まる集合として扱います。"
+        },
+        {
+          "morphism_id": "MinkowskiSum",
+          "label_ja": "根の組を和へ写す",
+          "source_ja": "二つの根集合の直積",
+          "target_ja": "和の値の集合",
+          "role_ja": "全ての順序付きの根の組に同じ二項演算を適用します。"
+        },
+        {
+          "morphism_id": "Resultant",
+          "label_ja": "終結式で一方の根を消去する",
+          "source_ja": "二変数の代数制約",
+          "target_ja": "z の一変数多項式",
+          "role_ja": "根を近似値に変えず、有理数係数のまま厳密に消去します。"
+        },
+        {
+          "morphism_id": "SquareFreeReduction",
+          "label_ja": "異なる値だけを残す",
+          "source_ja": "終結式",
+          "target_ja": "平方因子を持たないモニック多項式",
+          "role_ja": "重複根を除き、最高次係数を1にします。"
+        },
+        {
+          "morphism_id": "NumericRootCounterexampleCheck+ParentPerturbationAblation",
+          "label_ja": "全根と親依存性を独立に検証する",
+          "source_ja": "出力多項式",
+          "target_ja": "再生可能な検証証明書",
+          "role_ja": "全根の数値照合と、両親を別々に変える検査を実行します。"
+        }
+      ],
+      "proofObligations": [
+        {
+          "id": "typed-inputs",
+          "claim_ja": "二つの親問題がともに一変数多項式の制約として読み取れる。",
+          "status": "verified"
+        },
+        {
+          "id": "fiber-product",
+          "claim_ja": "二つの根集合の順序付きの組を全て構成している。",
+          "status": "verified"
+        },
+        {
+          "id": "resultant",
+          "claim_ja": "終結式による消去は、各組から得られる和を全て根に持つ。",
+          "status": "verified"
+        },
+        {
+          "id": "squarefree",
+          "claim_ja": "平方因子を除いた出力の根は、合成した値の異なる値全体と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "numeric-check",
+          "claim_ja": "全ての根の組を独立に数値計算し、出力多項式の根と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "ablation",
+          "claim_ja": "どちらの親多項式を変えても出力が変わり、両方の親問題が必要である。",
+          "status": "verified"
+        }
+      ],
+      "hasDiagram": true,
+      "difficulty": 18.25,
+      "verificationMethod": "exact resultant plus independent numerical roots and parent perturbation",
+      "exactBackend": true,
+      "independentCheck": true,
+      "completeParentProof": true,
+      "capabilityOrigin": "synthesized_proof_program",
+      "registeredCompositeUsed": false,
+      "taskFingerprint": "e38c97f93a667de55270ceb0316ad68e7f7507c9d11af934338610b6d66eb678",
+      "taskAlgebraFingerprint": "59c2bac6a041c61ebab1f9fe3fd8713fe7c8877ccd8edd1e75e87f02387600c4",
+      "taskAlgebraOrigin": "emitted",
+      "resultDegree": 9,
+      "termCount": 9,
+      "maximumCoefficient": 53,
+      "corpusSurfaceNovelty": 0.92,
+      "parents": [
+        {
+          "id": "bounded-cubic-24-47-0",
+          "statement": "方程式 \\(x^3-3x+1=0\\) のすべての複素数解を考える。"
+        },
+        {
+          "id": "bounded-cubic-24-47-1",
+          "statement": "方程式 \\(x^3-2=0\\) のすべての複素数解を考える。"
+        }
+      ]
+    },
+    {
+      "id": "mathos-discovered-a42db83a2707",
+      "engine": "runtime-polynomial-root-generation",
+      "family": "runtime.polynomial_root_difference",
+      "statement": "\\(f(x)=x^{3} - x + 1\\), \\(g(x)=x^{3} + 2 x - 1\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かしたとき、\\(\\alpha-\\beta\\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。",
+      "answer": "P(z)=z^{9} + 3 z^{7} + 6 z^{6} + 9 z^{5} + 3 z^{4} - 10 z^{3} + 54 z^{2} - 24 z + 17",
+      "solution": "\\(f(x)=0\\) の根を \\(\\alpha\\)、\\(g(y)=0\\) の根を \\(\\beta\\) とする。差 \\(\\alpha-\\beta\\) から一方の根を消去するため、\n\\[\nR(z)=\\operatorname{Res}_x\\!\\left(f(x),g(x-z)\\right)\n\\]\nとおく。\\(z=\\alpha-\\beta\\) なら、\\(x=\\alpha\\) は終結式を作る二つの多項式の共通根になるので、\\(R(z)=0\\) である。逆に \\(R(z)=0\\) なら共通根 \\(x=\\alpha\\) が存在し、もう一方の式からある根 \\(\\beta\\) が得られる。したがって \\(R\\) の根は求める差の値と一致する。同じ値が複数の根の組から現れる場合だけ因子が重なるため、\n\\[\nP(z)=\\operatorname{monic}\\!\\left(\\frac{R(z)}{\\gcd(R(z),R'(z))}\\right)\n\\]\nとすれば、異なる値を一度ずつ根にもつ。係数を有理数のまま展開すると \\(P(z)=z^{9} + 3 z^{7} + 6 z^{6} + 9 z^{5} + 3 z^{4} - 10 z^{3} + 54 z^{2} - 24 z + 17\\) を得る。最後に、全ての根の組を別計算で代入し、どちらの親多項式を変えても \\(P\\) が変わることを確認した。",
+      "domain": "algebraic_geometry",
+      "morphismChain": [
+        "PolynomialConstraintExtraction",
+        "RootConfiguration",
+        "MinkowskiDifference",
+        "FiberProduct",
+        "ParameterElimination",
+        "Resultant",
+        "SquareFreeReduction",
+        "NumericRootCounterexampleCheck",
+        "ParentPerturbationAblation"
+      ],
+      "structureBlueprint": {
+        "id": "root-set.difference.a35815232690",
+        "version": 1,
+        "kernel": "binary_operation_on_algebraic_root_configurations",
+        "observable": "minimal_squarefree_root_polynomial_of_difference",
+        "operators": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiDifference",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "domain": "algebraic_geometry",
+        "tags": [
+          "polynomial",
+          "root_configuration",
+          "difference",
+          "resultant"
+        ],
+        "morphismChain": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiDifference",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "executable": true,
+        "proofCertificate": [
+          {
+            "id": "typed-inputs",
+            "claim": "both parents elaborate to univariate polynomial constraints",
+            "verifier": "MathOS typed parser + SymPy Poly(QQ)"
+          },
+          {
+            "id": "fiber-product",
+            "claim": "the joint root configuration contains every ordered pair (alpha,beta)",
+            "verifier": "finite algebraic fiber product"
+          },
+          {
+            "id": "resultant",
+            "claim": "elimination computes every value of difference",
+            "verifier": "SymPy exact resultant over QQ"
+          },
+          {
+            "id": "squarefree",
+            "claim": "the output roots are the distinct composed values",
+            "verifier": "exact square-free monic reduction"
+          },
+          {
+            "id": "numeric-check",
+            "claim": "all numerical pairwise root compositions vanish in P",
+            "verifier": "independent nroots comparison"
+          },
+          {
+            "id": "ablation",
+            "claim": "perturbing either parent changes P",
+            "verifier": "two-sided parent perturbation"
+          }
+        ],
+        "taskAlgebra": {
+          "schema": 1,
+          "input": "algebraic-configuration",
+          "operations": [
+            {
+              "operator": "pair",
+              "output": "configuration"
+            },
+            {
+              "operator": "map",
+              "output": "configuration"
+            },
+            {
+              "operator": "eliminate",
+              "output": "polynomial"
+            },
+            {
+              "operator": "normalize",
+              "output": "polynomial"
+            }
+          ],
+          "output": "polynomial",
+          "complete": true
+        }
+      },
+      "diagram": {
+        "version": 1,
+        "kind": "morphism",
+        "title": "二つの根集合から新しい根集合を作る",
+        "caption": "二つの多項式の根を全て組み合わせ、差を取ってから、終結式で一変数の多項式へ戻します。",
+        "nodes": [
+          "f の根 3 個",
+          "g の根 3 個",
+          "全ての組 9 個",
+          "α − β",
+          "終結式で消去",
+          "重複を除いてモニック化",
+          "P の根 9 個"
+        ]
+      },
+      "proofRoadmap": [
+        {
+          "morphism_id": "PolynomialConstraintExtraction",
+          "label_ja": "親問題から多項式を読み取る",
+          "source_ja": "二つの親問題",
+          "target_ja": "二つの一変数多項式",
+          "role_ja": "変数名ではなく係数と次数を保存します。"
+        },
+        {
+          "morphism_id": "RootConfiguration",
+          "label_ja": "根の配置を構成する",
+          "source_ja": "一変数多項式",
+          "target_ja": "有限な代数的根集合",
+          "role_ja": "各多項式の根を個別の数値ではなく、方程式で定まる集合として扱います。"
+        },
+        {
+          "morphism_id": "MinkowskiDifference",
+          "label_ja": "根の組を差へ写す",
+          "source_ja": "二つの根集合の直積",
+          "target_ja": "差の値の集合",
+          "role_ja": "全ての順序付きの根の組に同じ二項演算を適用します。"
+        },
+        {
+          "morphism_id": "Resultant",
+          "label_ja": "終結式で一方の根を消去する",
+          "source_ja": "二変数の代数制約",
+          "target_ja": "z の一変数多項式",
+          "role_ja": "根を近似値に変えず、有理数係数のまま厳密に消去します。"
+        },
+        {
+          "morphism_id": "SquareFreeReduction",
+          "label_ja": "異なる値だけを残す",
+          "source_ja": "終結式",
+          "target_ja": "平方因子を持たないモニック多項式",
+          "role_ja": "重複根を除き、最高次係数を1にします。"
+        },
+        {
+          "morphism_id": "NumericRootCounterexampleCheck+ParentPerturbationAblation",
+          "label_ja": "全根と親依存性を独立に検証する",
+          "source_ja": "出力多項式",
+          "target_ja": "再生可能な検証証明書",
+          "role_ja": "全根の数値照合と、両親を別々に変える検査を実行します。"
+        }
+      ],
+      "proofObligations": [
+        {
+          "id": "typed-inputs",
+          "claim_ja": "二つの親問題がともに一変数多項式の制約として読み取れる。",
+          "status": "verified"
+        },
+        {
+          "id": "fiber-product",
+          "claim_ja": "二つの根集合の順序付きの組を全て構成している。",
+          "status": "verified"
+        },
+        {
+          "id": "resultant",
+          "claim_ja": "終結式による消去は、各組から得られる差を全て根に持つ。",
+          "status": "verified"
+        },
+        {
+          "id": "squarefree",
+          "claim_ja": "平方因子を除いた出力の根は、合成した値の異なる値全体と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "numeric-check",
+          "claim_ja": "全ての根の組を独立に数値計算し、出力多項式の根と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "ablation",
+          "claim_ja": "どちらの親多項式を変えても出力が変わり、両方の親問題が必要である。",
+          "status": "verified"
+        }
+      ],
+      "hasDiagram": true,
+      "difficulty": 18.25,
+      "verificationMethod": "exact resultant plus independent numerical roots and parent perturbation",
+      "exactBackend": true,
+      "independentCheck": true,
+      "completeParentProof": true,
+      "capabilityOrigin": "synthesized_proof_program",
+      "registeredCompositeUsed": false,
+      "taskFingerprint": "e38c97f93a667de55270ceb0316ad68e7f7507c9d11af934338610b6d66eb678",
+      "taskAlgebraFingerprint": "59c2bac6a041c61ebab1f9fe3fd8713fe7c8877ccd8edd1e75e87f02387600c4",
+      "taskAlgebraOrigin": "emitted",
+      "resultDegree": 9,
+      "termCount": 9,
+      "maximumCoefficient": 54,
+      "corpusSurfaceNovelty": 0.920904,
+      "parents": [
+        {
+          "id": "bounded-cubic-39-63-0",
+          "statement": "方程式 \\(x^3-x+1=0\\) のすべての複素数解を考える。"
+        },
+        {
+          "id": "bounded-cubic-39-63-1",
+          "statement": "方程式 \\(x^3+2x-1=0\\) のすべての複素数解を考える。"
+        }
+      ]
+    },
+    {
+      "id": "mathos-discovered-c356be6d9f9b",
+      "engine": "runtime-polynomial-root-generation",
+      "family": "runtime.polynomial_root_sum",
+      "statement": "\\(f(x)=x^{3} - x - 1\\), \\(g(x)=x^{3} + 2 x - 1\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かしたとき、\\(\\alpha+\\beta\\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。",
+      "answer": "P(z)=z^{9} + 3 z^{7} - 6 z^{6} + 9 z^{5} - 3 z^{4} - 10 z^{3} - 54 z^{2} - 24 z - 17",
+      "solution": "\\(f(x)=0\\) の根を \\(\\alpha\\)、\\(g(y)=0\\) の根を \\(\\beta\\) とする。和 \\(\\alpha+\\beta\\) から一方の根を消去するため、\n\\[\nR(z)=\\operatorname{Res}_x\\!\\left(f(x),g(z-x)\\right)\n\\]\nとおく。\\(z=\\alpha+\\beta\\) なら、\\(x=\\alpha\\) は終結式を作る二つの多項式の共通根になるので、\\(R(z)=0\\) である。逆に \\(R(z)=0\\) なら共通根 \\(x=\\alpha\\) が存在し、もう一方の式からある根 \\(\\beta\\) が得られる。したがって \\(R\\) の根は求める和の値と一致する。同じ値が複数の根の組から現れる場合だけ因子が重なるため、\n\\[\nP(z)=\\operatorname{monic}\\!\\left(\\frac{R(z)}{\\gcd(R(z),R'(z))}\\right)\n\\]\nとすれば、異なる値を一度ずつ根にもつ。係数を有理数のまま展開すると \\(P(z)=z^{9} + 3 z^{7} - 6 z^{6} + 9 z^{5} - 3 z^{4} - 10 z^{3} - 54 z^{2} - 24 z - 17\\) を得る。最後に、全ての根の組を別計算で代入し、どちらの親多項式を変えても \\(P\\) が変わることを確認した。",
+      "domain": "algebraic_geometry",
+      "morphismChain": [
+        "PolynomialConstraintExtraction",
+        "RootConfiguration",
+        "MinkowskiSum",
+        "FiberProduct",
+        "ParameterElimination",
+        "Resultant",
+        "SquareFreeReduction",
+        "NumericRootCounterexampleCheck",
+        "ParentPerturbationAblation"
+      ],
+      "structureBlueprint": {
+        "id": "root-set.sum.78fdd02756de",
+        "version": 1,
+        "kernel": "binary_operation_on_algebraic_root_configurations",
+        "observable": "minimal_squarefree_root_polynomial_of_sum",
+        "operators": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiSum",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "domain": "algebraic_geometry",
+        "tags": [
+          "polynomial",
+          "root_configuration",
+          "sum",
+          "resultant"
+        ],
+        "morphismChain": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiSum",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "executable": true,
+        "proofCertificate": [
+          {
+            "id": "typed-inputs",
+            "claim": "both parents elaborate to univariate polynomial constraints",
+            "verifier": "MathOS typed parser + SymPy Poly(QQ)"
+          },
+          {
+            "id": "fiber-product",
+            "claim": "the joint root configuration contains every ordered pair (alpha,beta)",
+            "verifier": "finite algebraic fiber product"
+          },
+          {
+            "id": "resultant",
+            "claim": "elimination computes every value of sum",
+            "verifier": "SymPy exact resultant over QQ"
+          },
+          {
+            "id": "squarefree",
+            "claim": "the output roots are the distinct composed values",
+            "verifier": "exact square-free monic reduction"
+          },
+          {
+            "id": "numeric-check",
+            "claim": "all numerical pairwise root compositions vanish in P",
+            "verifier": "independent nroots comparison"
+          },
+          {
+            "id": "ablation",
+            "claim": "perturbing either parent changes P",
+            "verifier": "two-sided parent perturbation"
+          }
+        ],
+        "taskAlgebra": {
+          "schema": 1,
+          "input": "algebraic-configuration",
+          "operations": [
+            {
+              "operator": "pair",
+              "output": "configuration"
+            },
+            {
+              "operator": "map",
+              "output": "configuration"
+            },
+            {
+              "operator": "eliminate",
+              "output": "polynomial"
+            },
+            {
+              "operator": "normalize",
+              "output": "polynomial"
+            }
+          ],
+          "output": "polynomial",
+          "complete": true
+        }
+      },
+      "diagram": {
+        "version": 1,
+        "kind": "morphism",
+        "title": "二つの根集合から新しい根集合を作る",
+        "caption": "二つの多項式の根を全て組み合わせ、和を取ってから、終結式で一変数の多項式へ戻します。",
+        "nodes": [
+          "f の根 3 個",
+          "g の根 3 個",
+          "全ての組 9 個",
+          "α + β",
+          "終結式で消去",
+          "重複を除いてモニック化",
+          "P の根 9 個"
+        ]
+      },
+      "proofRoadmap": [
+        {
+          "morphism_id": "PolynomialConstraintExtraction",
+          "label_ja": "親問題から多項式を読み取る",
+          "source_ja": "二つの親問題",
+          "target_ja": "二つの一変数多項式",
+          "role_ja": "変数名ではなく係数と次数を保存します。"
+        },
+        {
+          "morphism_id": "RootConfiguration",
+          "label_ja": "根の配置を構成する",
+          "source_ja": "一変数多項式",
+          "target_ja": "有限な代数的根集合",
+          "role_ja": "各多項式の根を個別の数値ではなく、方程式で定まる集合として扱います。"
+        },
+        {
+          "morphism_id": "MinkowskiSum",
+          "label_ja": "根の組を和へ写す",
+          "source_ja": "二つの根集合の直積",
+          "target_ja": "和の値の集合",
+          "role_ja": "全ての順序付きの根の組に同じ二項演算を適用します。"
+        },
+        {
+          "morphism_id": "Resultant",
+          "label_ja": "終結式で一方の根を消去する",
+          "source_ja": "二変数の代数制約",
+          "target_ja": "z の一変数多項式",
+          "role_ja": "根を近似値に変えず、有理数係数のまま厳密に消去します。"
+        },
+        {
+          "morphism_id": "SquareFreeReduction",
+          "label_ja": "異なる値だけを残す",
+          "source_ja": "終結式",
+          "target_ja": "平方因子を持たないモニック多項式",
+          "role_ja": "重複根を除き、最高次係数を1にします。"
+        },
+        {
+          "morphism_id": "NumericRootCounterexampleCheck+ParentPerturbationAblation",
+          "label_ja": "全根と親依存性を独立に検証する",
+          "source_ja": "出力多項式",
+          "target_ja": "再生可能な検証証明書",
+          "role_ja": "全根の数値照合と、両親を別々に変える検査を実行します。"
+        }
+      ],
+      "proofObligations": [
+        {
+          "id": "typed-inputs",
+          "claim_ja": "二つの親問題がともに一変数多項式の制約として読み取れる。",
+          "status": "verified"
+        },
+        {
+          "id": "fiber-product",
+          "claim_ja": "二つの根集合の順序付きの組を全て構成している。",
+          "status": "verified"
+        },
+        {
+          "id": "resultant",
+          "claim_ja": "終結式による消去は、各組から得られる和を全て根に持つ。",
+          "status": "verified"
+        },
+        {
+          "id": "squarefree",
+          "claim_ja": "平方因子を除いた出力の根は、合成した値の異なる値全体と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "numeric-check",
+          "claim_ja": "全ての根の組を独立に数値計算し、出力多項式の根と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "ablation",
+          "claim_ja": "どちらの親多項式を変えても出力が変わり、両方の親問題が必要である。",
+          "status": "verified"
+        }
+      ],
+      "hasDiagram": true,
+      "difficulty": 18.25,
+      "verificationMethod": "exact resultant plus independent numerical roots and parent perturbation",
+      "exactBackend": true,
+      "independentCheck": true,
+      "completeParentProof": true,
+      "capabilityOrigin": "synthesized_proof_program",
+      "registeredCompositeUsed": false,
+      "taskFingerprint": "e38c97f93a667de55270ceb0316ad68e7f7507c9d11af934338610b6d66eb678",
+      "taskAlgebraFingerprint": "59c2bac6a041c61ebab1f9fe3fd8713fe7c8877ccd8edd1e75e87f02387600c4",
+      "taskAlgebraOrigin": "emitted",
+      "resultDegree": 9,
+      "termCount": 9,
+      "maximumCoefficient": 54,
+      "corpusSurfaceNovelty": 0.92,
+      "parents": [
+        {
+          "id": "bounded-cubic-38-63-0",
+          "statement": "方程式 \\(x^3-x-1=0\\) のすべての複素数解を考える。"
+        },
+        {
+          "id": "bounded-cubic-38-63-1",
+          "statement": "方程式 \\(x^3+2x-1=0\\) のすべての複素数解を考える。"
+        }
+      ]
+    },
+    {
+      "id": "mathos-discovered-43d81e64a52c",
+      "engine": "runtime-polynomial-root-generation",
+      "family": "runtime.polynomial_root_difference",
+      "statement": "\\(f(x)=x^{3} - 3 x + 1\\), \\(g(x)=x^{3} - x - 1\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かしたとき、\\(\\alpha-\\beta\\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。",
+      "answer": "P(z)=z^{9} - 12 z^{7} + 6 z^{6} + 39 z^{5} - 12 z^{4} - 55 z^{3} + 24 z^{2} + 36 z - 8",
+      "solution": "\\(f(x)=0\\) の根を \\(\\alpha\\)、\\(g(y)=0\\) の根を \\(\\beta\\) とする。差 \\(\\alpha-\\beta\\) から一方の根を消去するため、\n\\[\nR(z)=\\operatorname{Res}_x\\!\\left(f(x),g(x-z)\\right)\n\\]\nとおく。\\(z=\\alpha-\\beta\\) なら、\\(x=\\alpha\\) は終結式を作る二つの多項式の共通根になるので、\\(R(z)=0\\) である。逆に \\(R(z)=0\\) なら共通根 \\(x=\\alpha\\) が存在し、もう一方の式からある根 \\(\\beta\\) が得られる。したがって \\(R\\) の根は求める差の値と一致する。同じ値が複数の根の組から現れる場合だけ因子が重なるため、\n\\[\nP(z)=\\operatorname{monic}\\!\\left(\\frac{R(z)}{\\gcd(R(z),R'(z))}\\right)\n\\]\nとすれば、異なる値を一度ずつ根にもつ。係数を有理数のまま展開すると \\(P(z)=z^{9} - 12 z^{7} + 6 z^{6} + 39 z^{5} - 12 z^{4} - 55 z^{3} + 24 z^{2} + 36 z - 8\\) を得る。最後に、全ての根の組を別計算で代入し、どちらの親多項式を変えても \\(P\\) が変わることを確認した。",
+      "domain": "algebraic_geometry",
+      "morphismChain": [
+        "PolynomialConstraintExtraction",
+        "RootConfiguration",
+        "MinkowskiDifference",
+        "FiberProduct",
+        "ParameterElimination",
+        "Resultant",
+        "SquareFreeReduction",
+        "NumericRootCounterexampleCheck",
+        "ParentPerturbationAblation"
+      ],
+      "structureBlueprint": {
+        "id": "root-set.difference.5fe52e8c6f90",
+        "version": 1,
+        "kernel": "binary_operation_on_algebraic_root_configurations",
+        "observable": "minimal_squarefree_root_polynomial_of_difference",
+        "operators": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiDifference",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "domain": "algebraic_geometry",
+        "tags": [
+          "polynomial",
+          "root_configuration",
+          "difference",
+          "resultant"
+        ],
+        "morphismChain": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiDifference",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "executable": true,
+        "proofCertificate": [
+          {
+            "id": "typed-inputs",
+            "claim": "both parents elaborate to univariate polynomial constraints",
+            "verifier": "MathOS typed parser + SymPy Poly(QQ)"
+          },
+          {
+            "id": "fiber-product",
+            "claim": "the joint root configuration contains every ordered pair (alpha,beta)",
+            "verifier": "finite algebraic fiber product"
+          },
+          {
+            "id": "resultant",
+            "claim": "elimination computes every value of difference",
+            "verifier": "SymPy exact resultant over QQ"
+          },
+          {
+            "id": "squarefree",
+            "claim": "the output roots are the distinct composed values",
+            "verifier": "exact square-free monic reduction"
+          },
+          {
+            "id": "numeric-check",
+            "claim": "all numerical pairwise root compositions vanish in P",
+            "verifier": "independent nroots comparison"
+          },
+          {
+            "id": "ablation",
+            "claim": "perturbing either parent changes P",
+            "verifier": "two-sided parent perturbation"
+          }
+        ],
+        "taskAlgebra": {
+          "schema": 1,
+          "input": "algebraic-configuration",
+          "operations": [
+            {
+              "operator": "pair",
+              "output": "configuration"
+            },
+            {
+              "operator": "map",
+              "output": "configuration"
+            },
+            {
+              "operator": "eliminate",
+              "output": "polynomial"
+            },
+            {
+              "operator": "normalize",
+              "output": "polynomial"
+            }
+          ],
+          "output": "polynomial",
+          "complete": true
+        }
+      },
+      "diagram": {
+        "version": 1,
+        "kind": "morphism",
+        "title": "二つの根集合から新しい根集合を作る",
+        "caption": "二つの多項式の根を全て組み合わせ、差を取ってから、終結式で一変数の多項式へ戻します。",
+        "nodes": [
+          "f の根 3 個",
+          "g の根 3 個",
+          "全ての組 9 個",
+          "α − β",
+          "終結式で消去",
+          "重複を除いてモニック化",
+          "P の根 9 個"
+        ]
+      },
+      "proofRoadmap": [
+        {
+          "morphism_id": "PolynomialConstraintExtraction",
+          "label_ja": "親問題から多項式を読み取る",
+          "source_ja": "二つの親問題",
+          "target_ja": "二つの一変数多項式",
+          "role_ja": "変数名ではなく係数と次数を保存します。"
+        },
+        {
+          "morphism_id": "RootConfiguration",
+          "label_ja": "根の配置を構成する",
+          "source_ja": "一変数多項式",
+          "target_ja": "有限な代数的根集合",
+          "role_ja": "各多項式の根を個別の数値ではなく、方程式で定まる集合として扱います。"
+        },
+        {
+          "morphism_id": "MinkowskiDifference",
+          "label_ja": "根の組を差へ写す",
+          "source_ja": "二つの根集合の直積",
+          "target_ja": "差の値の集合",
+          "role_ja": "全ての順序付きの根の組に同じ二項演算を適用します。"
+        },
+        {
+          "morphism_id": "Resultant",
+          "label_ja": "終結式で一方の根を消去する",
+          "source_ja": "二変数の代数制約",
+          "target_ja": "z の一変数多項式",
+          "role_ja": "根を近似値に変えず、有理数係数のまま厳密に消去します。"
+        },
+        {
+          "morphism_id": "SquareFreeReduction",
+          "label_ja": "異なる値だけを残す",
+          "source_ja": "終結式",
+          "target_ja": "平方因子を持たないモニック多項式",
+          "role_ja": "重複根を除き、最高次係数を1にします。"
+        },
+        {
+          "morphism_id": "NumericRootCounterexampleCheck+ParentPerturbationAblation",
+          "label_ja": "全根と親依存性を独立に検証する",
+          "source_ja": "出力多項式",
+          "target_ja": "再生可能な検証証明書",
+          "role_ja": "全根の数値照合と、両親を別々に変える検査を実行します。"
+        }
+      ],
+      "proofObligations": [
+        {
+          "id": "typed-inputs",
+          "claim_ja": "二つの親問題がともに一変数多項式の制約として読み取れる。",
+          "status": "verified"
+        },
+        {
+          "id": "fiber-product",
+          "claim_ja": "二つの根集合の順序付きの組を全て構成している。",
+          "status": "verified"
+        },
+        {
+          "id": "resultant",
+          "claim_ja": "終結式による消去は、各組から得られる差を全て根に持つ。",
+          "status": "verified"
+        },
+        {
+          "id": "squarefree",
+          "claim_ja": "平方因子を除いた出力の根は、合成した値の異なる値全体と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "numeric-check",
+          "claim_ja": "全ての根の組を独立に数値計算し、出力多項式の根と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "ablation",
+          "claim_ja": "どちらの親多項式を変えても出力が変わり、両方の親問題が必要である。",
+          "status": "verified"
+        }
+      ],
+      "hasDiagram": true,
+      "difficulty": 18.25,
+      "verificationMethod": "exact resultant plus independent numerical roots and parent perturbation",
+      "exactBackend": true,
+      "independentCheck": true,
+      "completeParentProof": true,
+      "capabilityOrigin": "synthesized_proof_program",
+      "registeredCompositeUsed": false,
+      "taskFingerprint": "e38c97f93a667de55270ceb0316ad68e7f7507c9d11af934338610b6d66eb678",
+      "taskAlgebraFingerprint": "59c2bac6a041c61ebab1f9fe3fd8713fe7c8877ccd8edd1e75e87f02387600c4",
+      "taskAlgebraOrigin": "emitted",
+      "resultDegree": 9,
+      "termCount": 9,
+      "maximumCoefficient": 55,
+      "corpusSurfaceNovelty": 0.920455,
+      "parents": [
+        {
+          "id": "bounded-cubic-24-38-0",
+          "statement": "方程式 \\(x^3-3x+1=0\\) のすべての複素数解を考える。"
+        },
+        {
+          "id": "bounded-cubic-24-38-1",
+          "statement": "方程式 \\(x^3-x-1=0\\) のすべての複素数解を考える。"
+        }
+      ]
+    },
+    {
+      "id": "mathos-discovered-2aa6a887c612",
+      "engine": "runtime-polynomial-root-generation",
+      "family": "runtime.polynomial_root_sum",
+      "statement": "\\(f(x)=x^{3} - 3 x - 1\\), \\(g(x)=x^{3} - x - 1\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かしたとき、\\(\\alpha+\\beta\\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。",
+      "answer": "P(z)=z^{9} - 12 z^{7} - 6 z^{6} + 39 z^{5} + 12 z^{4} - 55 z^{3} - 24 z^{2} + 36 z + 8",
+      "solution": "\\(f(x)=0\\) の根を \\(\\alpha\\)、\\(g(y)=0\\) の根を \\(\\beta\\) とする。和 \\(\\alpha+\\beta\\) から一方の根を消去するため、\n\\[\nR(z)=\\operatorname{Res}_x\\!\\left(f(x),g(z-x)\\right)\n\\]\nとおく。\\(z=\\alpha+\\beta\\) なら、\\(x=\\alpha\\) は終結式を作る二つの多項式の共通根になるので、\\(R(z)=0\\) である。逆に \\(R(z)=0\\) なら共通根 \\(x=\\alpha\\) が存在し、もう一方の式からある根 \\(\\beta\\) が得られる。したがって \\(R\\) の根は求める和の値と一致する。同じ値が複数の根の組から現れる場合だけ因子が重なるため、\n\\[\nP(z)=\\operatorname{monic}\\!\\left(\\frac{R(z)}{\\gcd(R(z),R'(z))}\\right)\n\\]\nとすれば、異なる値を一度ずつ根にもつ。係数を有理数のまま展開すると \\(P(z)=z^{9} - 12 z^{7} - 6 z^{6} + 39 z^{5} + 12 z^{4} - 55 z^{3} - 24 z^{2} + 36 z + 8\\) を得る。最後に、全ての根の組を別計算で代入し、どちらの親多項式を変えても \\(P\\) が変わることを確認した。",
+      "domain": "algebraic_geometry",
+      "morphismChain": [
+        "PolynomialConstraintExtraction",
+        "RootConfiguration",
+        "MinkowskiSum",
+        "FiberProduct",
+        "ParameterElimination",
+        "Resultant",
+        "SquareFreeReduction",
+        "NumericRootCounterexampleCheck",
+        "ParentPerturbationAblation"
+      ],
+      "structureBlueprint": {
+        "id": "root-set.sum.c93b7399dad7",
+        "version": 1,
+        "kernel": "binary_operation_on_algebraic_root_configurations",
+        "observable": "minimal_squarefree_root_polynomial_of_sum",
+        "operators": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiSum",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "domain": "algebraic_geometry",
+        "tags": [
+          "polynomial",
+          "root_configuration",
+          "sum",
+          "resultant"
+        ],
+        "morphismChain": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiSum",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "executable": true,
+        "proofCertificate": [
+          {
+            "id": "typed-inputs",
+            "claim": "both parents elaborate to univariate polynomial constraints",
+            "verifier": "MathOS typed parser + SymPy Poly(QQ)"
+          },
+          {
+            "id": "fiber-product",
+            "claim": "the joint root configuration contains every ordered pair (alpha,beta)",
+            "verifier": "finite algebraic fiber product"
+          },
+          {
+            "id": "resultant",
+            "claim": "elimination computes every value of sum",
+            "verifier": "SymPy exact resultant over QQ"
+          },
+          {
+            "id": "squarefree",
+            "claim": "the output roots are the distinct composed values",
+            "verifier": "exact square-free monic reduction"
+          },
+          {
+            "id": "numeric-check",
+            "claim": "all numerical pairwise root compositions vanish in P",
+            "verifier": "independent nroots comparison"
+          },
+          {
+            "id": "ablation",
+            "claim": "perturbing either parent changes P",
+            "verifier": "two-sided parent perturbation"
+          }
+        ],
+        "taskAlgebra": {
+          "schema": 1,
+          "input": "algebraic-configuration",
+          "operations": [
+            {
+              "operator": "pair",
+              "output": "configuration"
+            },
+            {
+              "operator": "map",
+              "output": "configuration"
+            },
+            {
+              "operator": "eliminate",
+              "output": "polynomial"
+            },
+            {
+              "operator": "normalize",
+              "output": "polynomial"
+            }
+          ],
+          "output": "polynomial",
+          "complete": true
+        }
+      },
+      "diagram": {
+        "version": 1,
+        "kind": "morphism",
+        "title": "二つの根集合から新しい根集合を作る",
+        "caption": "二つの多項式の根を全て組み合わせ、和を取ってから、終結式で一変数の多項式へ戻します。",
+        "nodes": [
+          "f の根 3 個",
+          "g の根 3 個",
+          "全ての組 9 個",
+          "α + β",
+          "終結式で消去",
+          "重複を除いてモニック化",
+          "P の根 9 個"
+        ]
+      },
+      "proofRoadmap": [
+        {
+          "morphism_id": "PolynomialConstraintExtraction",
+          "label_ja": "親問題から多項式を読み取る",
+          "source_ja": "二つの親問題",
+          "target_ja": "二つの一変数多項式",
+          "role_ja": "変数名ではなく係数と次数を保存します。"
+        },
+        {
+          "morphism_id": "RootConfiguration",
+          "label_ja": "根の配置を構成する",
+          "source_ja": "一変数多項式",
+          "target_ja": "有限な代数的根集合",
+          "role_ja": "各多項式の根を個別の数値ではなく、方程式で定まる集合として扱います。"
+        },
+        {
+          "morphism_id": "MinkowskiSum",
+          "label_ja": "根の組を和へ写す",
+          "source_ja": "二つの根集合の直積",
+          "target_ja": "和の値の集合",
+          "role_ja": "全ての順序付きの根の組に同じ二項演算を適用します。"
+        },
+        {
+          "morphism_id": "Resultant",
+          "label_ja": "終結式で一方の根を消去する",
+          "source_ja": "二変数の代数制約",
+          "target_ja": "z の一変数多項式",
+          "role_ja": "根を近似値に変えず、有理数係数のまま厳密に消去します。"
+        },
+        {
+          "morphism_id": "SquareFreeReduction",
+          "label_ja": "異なる値だけを残す",
+          "source_ja": "終結式",
+          "target_ja": "平方因子を持たないモニック多項式",
+          "role_ja": "重複根を除き、最高次係数を1にします。"
+        },
+        {
+          "morphism_id": "NumericRootCounterexampleCheck+ParentPerturbationAblation",
+          "label_ja": "全根と親依存性を独立に検証する",
+          "source_ja": "出力多項式",
+          "target_ja": "再生可能な検証証明書",
+          "role_ja": "全根の数値照合と、両親を別々に変える検査を実行します。"
+        }
+      ],
+      "proofObligations": [
+        {
+          "id": "typed-inputs",
+          "claim_ja": "二つの親問題がともに一変数多項式の制約として読み取れる。",
+          "status": "verified"
+        },
+        {
+          "id": "fiber-product",
+          "claim_ja": "二つの根集合の順序付きの組を全て構成している。",
+          "status": "verified"
+        },
+        {
+          "id": "resultant",
+          "claim_ja": "終結式による消去は、各組から得られる和を全て根に持つ。",
+          "status": "verified"
+        },
+        {
+          "id": "squarefree",
+          "claim_ja": "平方因子を除いた出力の根は、合成した値の異なる値全体と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "numeric-check",
+          "claim_ja": "全ての根の組を独立に数値計算し、出力多項式の根と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "ablation",
+          "claim_ja": "どちらの親多項式を変えても出力が変わり、両方の親問題が必要である。",
+          "status": "verified"
+        }
+      ],
+      "hasDiagram": true,
+      "difficulty": 18.25,
+      "verificationMethod": "exact resultant plus independent numerical roots and parent perturbation",
+      "exactBackend": true,
+      "independentCheck": true,
+      "completeParentProof": true,
+      "capabilityOrigin": "synthesized_proof_program",
+      "registeredCompositeUsed": false,
+      "taskFingerprint": "e38c97f93a667de55270ceb0316ad68e7f7507c9d11af934338610b6d66eb678",
+      "taskAlgebraFingerprint": "59c2bac6a041c61ebab1f9fe3fd8713fe7c8877ccd8edd1e75e87f02387600c4",
+      "taskAlgebraOrigin": "emitted",
+      "resultDegree": 9,
+      "termCount": 9,
+      "maximumCoefficient": 55,
+      "corpusSurfaceNovelty": 0.91954,
+      "parents": [
+        {
+          "id": "bounded-cubic-23-38-0",
+          "statement": "方程式 \\(x^3-3x-1=0\\) のすべての複素数解を考える。"
+        },
+        {
+          "id": "bounded-cubic-23-38-1",
+          "statement": "方程式 \\(x^3-x-1=0\\) のすべての複素数解を考える。"
+        }
+      ]
+    },
+    {
+      "id": "mathos-discovered-0dcbafd4238c",
+      "engine": "runtime-polynomial-root-generation",
+      "family": "runtime.polynomial_root_difference",
+      "statement": "\\(f(x)=x^{3} - x - 1\\), \\(g(x)=x^{3} - 2\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かしたとき、\\(\\alpha-\\beta\\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。",
+      "answer": "P(z)=z^{9} - 3 z^{7} + 3 z^{6} + 3 z^{5} + 12 z^{4} + 56 z^{3} + 3 z^{2} + 15 z - 1",
+      "solution": "\\(f(x)=0\\) の根を \\(\\alpha\\)、\\(g(y)=0\\) の根を \\(\\beta\\) とする。差 \\(\\alpha-\\beta\\) から一方の根を消去するため、\n\\[\nR(z)=\\operatorname{Res}_x\\!\\left(f(x),g(x-z)\\right)\n\\]\nとおく。\\(z=\\alpha-\\beta\\) なら、\\(x=\\alpha\\) は終結式を作る二つの多項式の共通根になるので、\\(R(z)=0\\) である。逆に \\(R(z)=0\\) なら共通根 \\(x=\\alpha\\) が存在し、もう一方の式からある根 \\(\\beta\\) が得られる。したがって \\(R\\) の根は求める差の値と一致する。同じ値が複数の根の組から現れる場合だけ因子が重なるため、\n\\[\nP(z)=\\operatorname{monic}\\!\\left(\\frac{R(z)}{\\gcd(R(z),R'(z))}\\right)\n\\]\nとすれば、異なる値を一度ずつ根にもつ。係数を有理数のまま展開すると \\(P(z)=z^{9} - 3 z^{7} + 3 z^{6} + 3 z^{5} + 12 z^{4} + 56 z^{3} + 3 z^{2} + 15 z - 1\\) を得る。最後に、全ての根の組を別計算で代入し、どちらの親多項式を変えても \\(P\\) が変わることを確認した。",
+      "domain": "algebraic_geometry",
+      "morphismChain": [
+        "PolynomialConstraintExtraction",
+        "RootConfiguration",
+        "MinkowskiDifference",
+        "FiberProduct",
+        "ParameterElimination",
+        "Resultant",
+        "SquareFreeReduction",
+        "NumericRootCounterexampleCheck",
+        "ParentPerturbationAblation"
+      ],
+      "structureBlueprint": {
+        "id": "root-set.difference.794f2b187908",
+        "version": 1,
+        "kernel": "binary_operation_on_algebraic_root_configurations",
+        "observable": "minimal_squarefree_root_polynomial_of_difference",
+        "operators": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiDifference",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "domain": "algebraic_geometry",
+        "tags": [
+          "polynomial",
+          "root_configuration",
+          "difference",
+          "resultant"
+        ],
+        "morphismChain": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiDifference",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "executable": true,
+        "proofCertificate": [
+          {
+            "id": "typed-inputs",
+            "claim": "both parents elaborate to univariate polynomial constraints",
+            "verifier": "MathOS typed parser + SymPy Poly(QQ)"
+          },
+          {
+            "id": "fiber-product",
+            "claim": "the joint root configuration contains every ordered pair (alpha,beta)",
+            "verifier": "finite algebraic fiber product"
+          },
+          {
+            "id": "resultant",
+            "claim": "elimination computes every value of difference",
+            "verifier": "SymPy exact resultant over QQ"
+          },
+          {
+            "id": "squarefree",
+            "claim": "the output roots are the distinct composed values",
+            "verifier": "exact square-free monic reduction"
+          },
+          {
+            "id": "numeric-check",
+            "claim": "all numerical pairwise root compositions vanish in P",
+            "verifier": "independent nroots comparison"
+          },
+          {
+            "id": "ablation",
+            "claim": "perturbing either parent changes P",
+            "verifier": "two-sided parent perturbation"
+          }
+        ],
+        "taskAlgebra": {
+          "schema": 1,
+          "input": "algebraic-configuration",
+          "operations": [
+            {
+              "operator": "pair",
+              "output": "configuration"
+            },
+            {
+              "operator": "map",
+              "output": "configuration"
+            },
+            {
+              "operator": "eliminate",
+              "output": "polynomial"
+            },
+            {
+              "operator": "normalize",
+              "output": "polynomial"
+            }
+          ],
+          "output": "polynomial",
+          "complete": true
+        }
+      },
+      "diagram": {
+        "version": 1,
+        "kind": "morphism",
+        "title": "二つの根集合から新しい根集合を作る",
+        "caption": "二つの多項式の根を全て組み合わせ、差を取ってから、終結式で一変数の多項式へ戻します。",
+        "nodes": [
+          "f の根 3 個",
+          "g の根 3 個",
+          "全ての組 9 個",
+          "α − β",
+          "終結式で消去",
+          "重複を除いてモニック化",
+          "P の根 9 個"
+        ]
+      },
+      "proofRoadmap": [
+        {
+          "morphism_id": "PolynomialConstraintExtraction",
+          "label_ja": "親問題から多項式を読み取る",
+          "source_ja": "二つの親問題",
+          "target_ja": "二つの一変数多項式",
+          "role_ja": "変数名ではなく係数と次数を保存します。"
+        },
+        {
+          "morphism_id": "RootConfiguration",
+          "label_ja": "根の配置を構成する",
+          "source_ja": "一変数多項式",
+          "target_ja": "有限な代数的根集合",
+          "role_ja": "各多項式の根を個別の数値ではなく、方程式で定まる集合として扱います。"
+        },
+        {
+          "morphism_id": "MinkowskiDifference",
+          "label_ja": "根の組を差へ写す",
+          "source_ja": "二つの根集合の直積",
+          "target_ja": "差の値の集合",
+          "role_ja": "全ての順序付きの根の組に同じ二項演算を適用します。"
+        },
+        {
+          "morphism_id": "Resultant",
+          "label_ja": "終結式で一方の根を消去する",
+          "source_ja": "二変数の代数制約",
+          "target_ja": "z の一変数多項式",
+          "role_ja": "根を近似値に変えず、有理数係数のまま厳密に消去します。"
+        },
+        {
+          "morphism_id": "SquareFreeReduction",
+          "label_ja": "異なる値だけを残す",
+          "source_ja": "終結式",
+          "target_ja": "平方因子を持たないモニック多項式",
+          "role_ja": "重複根を除き、最高次係数を1にします。"
+        },
+        {
+          "morphism_id": "NumericRootCounterexampleCheck+ParentPerturbationAblation",
+          "label_ja": "全根と親依存性を独立に検証する",
+          "source_ja": "出力多項式",
+          "target_ja": "再生可能な検証証明書",
+          "role_ja": "全根の数値照合と、両親を別々に変える検査を実行します。"
+        }
+      ],
+      "proofObligations": [
+        {
+          "id": "typed-inputs",
+          "claim_ja": "二つの親問題がともに一変数多項式の制約として読み取れる。",
+          "status": "verified"
+        },
+        {
+          "id": "fiber-product",
+          "claim_ja": "二つの根集合の順序付きの組を全て構成している。",
+          "status": "verified"
+        },
+        {
+          "id": "resultant",
+          "claim_ja": "終結式による消去は、各組から得られる差を全て根に持つ。",
+          "status": "verified"
+        },
+        {
+          "id": "squarefree",
+          "claim_ja": "平方因子を除いた出力の根は、合成した値の異なる値全体と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "numeric-check",
+          "claim_ja": "全ての根の組を独立に数値計算し、出力多項式の根と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "ablation",
+          "claim_ja": "どちらの親多項式を変えても出力が変わり、両方の親問題が必要である。",
+          "status": "verified"
+        }
+      ],
+      "hasDiagram": true,
+      "difficulty": 18.25,
+      "verificationMethod": "exact resultant plus independent numerical roots and parent perturbation",
+      "exactBackend": true,
+      "independentCheck": true,
+      "completeParentProof": true,
+      "capabilityOrigin": "synthesized_proof_program",
+      "registeredCompositeUsed": false,
+      "taskFingerprint": "e38c97f93a667de55270ceb0316ad68e7f7507c9d11af934338610b6d66eb678",
+      "taskAlgebraFingerprint": "59c2bac6a041c61ebab1f9fe3fd8713fe7c8877ccd8edd1e75e87f02387600c4",
+      "taskAlgebraOrigin": "emitted",
+      "resultDegree": 9,
+      "termCount": 9,
+      "maximumCoefficient": 56,
+      "corpusSurfaceNovelty": 0.91954,
+      "parents": [
+        {
+          "id": "bounded-cubic-38-47-0",
+          "statement": "方程式 \\(x^3-x-1=0\\) のすべての複素数解を考える。"
+        },
+        {
+          "id": "bounded-cubic-38-47-1",
+          "statement": "方程式 \\(x^3-2=0\\) のすべての複素数解を考える。"
+        }
+      ]
+    },
+    {
+      "id": "mathos-discovered-50f57f1773b1",
+      "engine": "runtime-polynomial-root-generation",
+      "family": "runtime.polynomial_root_sum",
+      "statement": "\\(f(x)=x^{3} - x + 1\\), \\(g(x)=x^{3} - 2\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かしたとき、\\(\\alpha+\\beta\\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。",
+      "answer": "P(z)=z^{9} - 3 z^{7} - 3 z^{6} + 3 z^{5} - 12 z^{4} + 56 z^{3} - 3 z^{2} + 15 z + 1",
+      "solution": "\\(f(x)=0\\) の根を \\(\\alpha\\)、\\(g(y)=0\\) の根を \\(\\beta\\) とする。和 \\(\\alpha+\\beta\\) から一方の根を消去するため、\n\\[\nR(z)=\\operatorname{Res}_x\\!\\left(f(x),g(z-x)\\right)\n\\]\nとおく。\\(z=\\alpha+\\beta\\) なら、\\(x=\\alpha\\) は終結式を作る二つの多項式の共通根になるので、\\(R(z)=0\\) である。逆に \\(R(z)=0\\) なら共通根 \\(x=\\alpha\\) が存在し、もう一方の式からある根 \\(\\beta\\) が得られる。したがって \\(R\\) の根は求める和の値と一致する。同じ値が複数の根の組から現れる場合だけ因子が重なるため、\n\\[\nP(z)=\\operatorname{monic}\\!\\left(\\frac{R(z)}{\\gcd(R(z),R'(z))}\\right)\n\\]\nとすれば、異なる値を一度ずつ根にもつ。係数を有理数のまま展開すると \\(P(z)=z^{9} - 3 z^{7} - 3 z^{6} + 3 z^{5} - 12 z^{4} + 56 z^{3} - 3 z^{2} + 15 z + 1\\) を得る。最後に、全ての根の組を別計算で代入し、どちらの親多項式を変えても \\(P\\) が変わることを確認した。",
+      "domain": "algebraic_geometry",
+      "morphismChain": [
+        "PolynomialConstraintExtraction",
+        "RootConfiguration",
+        "MinkowskiSum",
+        "FiberProduct",
+        "ParameterElimination",
+        "Resultant",
+        "SquareFreeReduction",
+        "NumericRootCounterexampleCheck",
+        "ParentPerturbationAblation"
+      ],
+      "structureBlueprint": {
+        "id": "root-set.sum.f2988ee4e091",
+        "version": 1,
+        "kernel": "binary_operation_on_algebraic_root_configurations",
+        "observable": "minimal_squarefree_root_polynomial_of_sum",
+        "operators": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiSum",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "domain": "algebraic_geometry",
+        "tags": [
+          "polynomial",
+          "root_configuration",
+          "sum",
+          "resultant"
+        ],
+        "morphismChain": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiSum",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "executable": true,
+        "proofCertificate": [
+          {
+            "id": "typed-inputs",
+            "claim": "both parents elaborate to univariate polynomial constraints",
+            "verifier": "MathOS typed parser + SymPy Poly(QQ)"
+          },
+          {
+            "id": "fiber-product",
+            "claim": "the joint root configuration contains every ordered pair (alpha,beta)",
+            "verifier": "finite algebraic fiber product"
+          },
+          {
+            "id": "resultant",
+            "claim": "elimination computes every value of sum",
+            "verifier": "SymPy exact resultant over QQ"
+          },
+          {
+            "id": "squarefree",
+            "claim": "the output roots are the distinct composed values",
+            "verifier": "exact square-free monic reduction"
+          },
+          {
+            "id": "numeric-check",
+            "claim": "all numerical pairwise root compositions vanish in P",
+            "verifier": "independent nroots comparison"
+          },
+          {
+            "id": "ablation",
+            "claim": "perturbing either parent changes P",
+            "verifier": "two-sided parent perturbation"
+          }
+        ],
+        "taskAlgebra": {
+          "schema": 1,
+          "input": "algebraic-configuration",
+          "operations": [
+            {
+              "operator": "pair",
+              "output": "configuration"
+            },
+            {
+              "operator": "map",
+              "output": "configuration"
+            },
+            {
+              "operator": "eliminate",
+              "output": "polynomial"
+            },
+            {
+              "operator": "normalize",
+              "output": "polynomial"
+            }
+          ],
+          "output": "polynomial",
+          "complete": true
+        }
+      },
+      "diagram": {
+        "version": 1,
+        "kind": "morphism",
+        "title": "二つの根集合から新しい根集合を作る",
+        "caption": "二つの多項式の根を全て組み合わせ、和を取ってから、終結式で一変数の多項式へ戻します。",
+        "nodes": [
+          "f の根 3 個",
+          "g の根 3 個",
+          "全ての組 9 個",
+          "α + β",
+          "終結式で消去",
+          "重複を除いてモニック化",
+          "P の根 9 個"
+        ]
+      },
+      "proofRoadmap": [
+        {
+          "morphism_id": "PolynomialConstraintExtraction",
+          "label_ja": "親問題から多項式を読み取る",
+          "source_ja": "二つの親問題",
+          "target_ja": "二つの一変数多項式",
+          "role_ja": "変数名ではなく係数と次数を保存します。"
+        },
+        {
+          "morphism_id": "RootConfiguration",
+          "label_ja": "根の配置を構成する",
+          "source_ja": "一変数多項式",
+          "target_ja": "有限な代数的根集合",
+          "role_ja": "各多項式の根を個別の数値ではなく、方程式で定まる集合として扱います。"
+        },
+        {
+          "morphism_id": "MinkowskiSum",
+          "label_ja": "根の組を和へ写す",
+          "source_ja": "二つの根集合の直積",
+          "target_ja": "和の値の集合",
+          "role_ja": "全ての順序付きの根の組に同じ二項演算を適用します。"
+        },
+        {
+          "morphism_id": "Resultant",
+          "label_ja": "終結式で一方の根を消去する",
+          "source_ja": "二変数の代数制約",
+          "target_ja": "z の一変数多項式",
+          "role_ja": "根を近似値に変えず、有理数係数のまま厳密に消去します。"
+        },
+        {
+          "morphism_id": "SquareFreeReduction",
+          "label_ja": "異なる値だけを残す",
+          "source_ja": "終結式",
+          "target_ja": "平方因子を持たないモニック多項式",
+          "role_ja": "重複根を除き、最高次係数を1にします。"
+        },
+        {
+          "morphism_id": "NumericRootCounterexampleCheck+ParentPerturbationAblation",
+          "label_ja": "全根と親依存性を独立に検証する",
+          "source_ja": "出力多項式",
+          "target_ja": "再生可能な検証証明書",
+          "role_ja": "全根の数値照合と、両親を別々に変える検査を実行します。"
+        }
+      ],
+      "proofObligations": [
+        {
+          "id": "typed-inputs",
+          "claim_ja": "二つの親問題がともに一変数多項式の制約として読み取れる。",
+          "status": "verified"
+        },
+        {
+          "id": "fiber-product",
+          "claim_ja": "二つの根集合の順序付きの組を全て構成している。",
+          "status": "verified"
+        },
+        {
+          "id": "resultant",
+          "claim_ja": "終結式による消去は、各組から得られる和を全て根に持つ。",
+          "status": "verified"
+        },
+        {
+          "id": "squarefree",
+          "claim_ja": "平方因子を除いた出力の根は、合成した値の異なる値全体と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "numeric-check",
+          "claim_ja": "全ての根の組を独立に数値計算し、出力多項式の根と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "ablation",
+          "claim_ja": "どちらの親多項式を変えても出力が変わり、両方の親問題が必要である。",
+          "status": "verified"
+        }
+      ],
+      "hasDiagram": true,
+      "difficulty": 18.25,
+      "verificationMethod": "exact resultant plus independent numerical roots and parent perturbation",
+      "exactBackend": true,
+      "independentCheck": true,
+      "completeParentProof": true,
+      "capabilityOrigin": "synthesized_proof_program",
+      "registeredCompositeUsed": false,
+      "taskFingerprint": "e38c97f93a667de55270ceb0316ad68e7f7507c9d11af934338610b6d66eb678",
+      "taskAlgebraFingerprint": "59c2bac6a041c61ebab1f9fe3fd8713fe7c8877ccd8edd1e75e87f02387600c4",
+      "taskAlgebraOrigin": "emitted",
+      "resultDegree": 9,
+      "termCount": 9,
+      "maximumCoefficient": 56,
+      "corpusSurfaceNovelty": 0.91954,
+      "parents": [
+        {
+          "id": "bounded-cubic-39-47-0",
+          "statement": "方程式 \\(x^3-x+1=0\\) のすべての複素数解を考える。"
+        },
+        {
+          "id": "bounded-cubic-39-47-1",
+          "statement": "方程式 \\(x^3-2=0\\) のすべての複素数解を考える。"
+        }
+      ]
+    },
+    {
+      "id": "mathos-discovered-0470cb848e96",
+      "engine": "runtime-polynomial-root-generation",
+      "family": "runtime.polynomial_root_difference",
+      "statement": "\\(f(x)=x^{3} - 3 x - 1\\), \\(g(x)=x^{3} - 2 x - 2\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かしたとき、\\(\\alpha-\\beta\\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。",
+      "answer": "P(z)=z^{9} - 15 z^{7} + 3 z^{6} + 57 z^{5} + 6 z^{4} - 8 z^{3} + 3 z^{2} + 27 z - 3",
+      "solution": "\\(f(x)=0\\) の根を \\(\\alpha\\)、\\(g(y)=0\\) の根を \\(\\beta\\) とする。差 \\(\\alpha-\\beta\\) から一方の根を消去するため、\n\\[\nR(z)=\\operatorname{Res}_x\\!\\left(f(x),g(x-z)\\right)\n\\]\nとおく。\\(z=\\alpha-\\beta\\) なら、\\(x=\\alpha\\) は終結式を作る二つの多項式の共通根になるので、\\(R(z)=0\\) である。逆に \\(R(z)=0\\) なら共通根 \\(x=\\alpha\\) が存在し、もう一方の式からある根 \\(\\beta\\) が得られる。したがって \\(R\\) の根は求める差の値と一致する。同じ値が複数の根の組から現れる場合だけ因子が重なるため、\n\\[\nP(z)=\\operatorname{monic}\\!\\left(\\frac{R(z)}{\\gcd(R(z),R'(z))}\\right)\n\\]\nとすれば、異なる値を一度ずつ根にもつ。係数を有理数のまま展開すると \\(P(z)=z^{9} - 15 z^{7} + 3 z^{6} + 57 z^{5} + 6 z^{4} - 8 z^{3} + 3 z^{2} + 27 z - 3\\) を得る。最後に、全ての根の組を別計算で代入し、どちらの親多項式を変えても \\(P\\) が変わることを確認した。",
+      "domain": "algebraic_geometry",
+      "morphismChain": [
+        "PolynomialConstraintExtraction",
+        "RootConfiguration",
+        "MinkowskiDifference",
+        "FiberProduct",
+        "ParameterElimination",
+        "Resultant",
+        "SquareFreeReduction",
+        "NumericRootCounterexampleCheck",
+        "ParentPerturbationAblation"
+      ],
+      "structureBlueprint": {
+        "id": "root-set.difference.b2875283dea3",
+        "version": 1,
+        "kernel": "binary_operation_on_algebraic_root_configurations",
+        "observable": "minimal_squarefree_root_polynomial_of_difference",
+        "operators": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiDifference",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "domain": "algebraic_geometry",
+        "tags": [
+          "polynomial",
+          "root_configuration",
+          "difference",
+          "resultant"
+        ],
+        "morphismChain": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiDifference",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "executable": true,
+        "proofCertificate": [
+          {
+            "id": "typed-inputs",
+            "claim": "both parents elaborate to univariate polynomial constraints",
+            "verifier": "MathOS typed parser + SymPy Poly(QQ)"
+          },
+          {
+            "id": "fiber-product",
+            "claim": "the joint root configuration contains every ordered pair (alpha,beta)",
+            "verifier": "finite algebraic fiber product"
+          },
+          {
+            "id": "resultant",
+            "claim": "elimination computes every value of difference",
+            "verifier": "SymPy exact resultant over QQ"
+          },
+          {
+            "id": "squarefree",
+            "claim": "the output roots are the distinct composed values",
+            "verifier": "exact square-free monic reduction"
+          },
+          {
+            "id": "numeric-check",
+            "claim": "all numerical pairwise root compositions vanish in P",
+            "verifier": "independent nroots comparison"
+          },
+          {
+            "id": "ablation",
+            "claim": "perturbing either parent changes P",
+            "verifier": "two-sided parent perturbation"
+          }
+        ],
+        "taskAlgebra": {
+          "schema": 1,
+          "input": "algebraic-configuration",
+          "operations": [
+            {
+              "operator": "pair",
+              "output": "configuration"
+            },
+            {
+              "operator": "map",
+              "output": "configuration"
+            },
+            {
+              "operator": "eliminate",
+              "output": "polynomial"
+            },
+            {
+              "operator": "normalize",
+              "output": "polynomial"
+            }
+          ],
+          "output": "polynomial",
+          "complete": true
+        }
+      },
+      "diagram": {
+        "version": 1,
+        "kind": "morphism",
+        "title": "二つの根集合から新しい根集合を作る",
+        "caption": "二つの多項式の根を全て組み合わせ、差を取ってから、終結式で一変数の多項式へ戻します。",
+        "nodes": [
+          "f の根 3 個",
+          "g の根 3 個",
+          "全ての組 9 個",
+          "α − β",
+          "終結式で消去",
+          "重複を除いてモニック化",
+          "P の根 9 個"
+        ]
+      },
+      "proofRoadmap": [
+        {
+          "morphism_id": "PolynomialConstraintExtraction",
+          "label_ja": "親問題から多項式を読み取る",
+          "source_ja": "二つの親問題",
+          "target_ja": "二つの一変数多項式",
+          "role_ja": "変数名ではなく係数と次数を保存します。"
+        },
+        {
+          "morphism_id": "RootConfiguration",
+          "label_ja": "根の配置を構成する",
+          "source_ja": "一変数多項式",
+          "target_ja": "有限な代数的根集合",
+          "role_ja": "各多項式の根を個別の数値ではなく、方程式で定まる集合として扱います。"
+        },
+        {
+          "morphism_id": "MinkowskiDifference",
+          "label_ja": "根の組を差へ写す",
+          "source_ja": "二つの根集合の直積",
+          "target_ja": "差の値の集合",
+          "role_ja": "全ての順序付きの根の組に同じ二項演算を適用します。"
+        },
+        {
+          "morphism_id": "Resultant",
+          "label_ja": "終結式で一方の根を消去する",
+          "source_ja": "二変数の代数制約",
+          "target_ja": "z の一変数多項式",
+          "role_ja": "根を近似値に変えず、有理数係数のまま厳密に消去します。"
+        },
+        {
+          "morphism_id": "SquareFreeReduction",
+          "label_ja": "異なる値だけを残す",
+          "source_ja": "終結式",
+          "target_ja": "平方因子を持たないモニック多項式",
+          "role_ja": "重複根を除き、最高次係数を1にします。"
+        },
+        {
+          "morphism_id": "NumericRootCounterexampleCheck+ParentPerturbationAblation",
+          "label_ja": "全根と親依存性を独立に検証する",
+          "source_ja": "出力多項式",
+          "target_ja": "再生可能な検証証明書",
+          "role_ja": "全根の数値照合と、両親を別々に変える検査を実行します。"
+        }
+      ],
+      "proofObligations": [
+        {
+          "id": "typed-inputs",
+          "claim_ja": "二つの親問題がともに一変数多項式の制約として読み取れる。",
+          "status": "verified"
+        },
+        {
+          "id": "fiber-product",
+          "claim_ja": "二つの根集合の順序付きの組を全て構成している。",
+          "status": "verified"
+        },
+        {
+          "id": "resultant",
+          "claim_ja": "終結式による消去は、各組から得られる差を全て根に持つ。",
+          "status": "verified"
+        },
+        {
+          "id": "squarefree",
+          "claim_ja": "平方因子を除いた出力の根は、合成した値の異なる値全体と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "numeric-check",
+          "claim_ja": "全ての根の組を独立に数値計算し、出力多項式の根と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "ablation",
+          "claim_ja": "どちらの親多項式を変えても出力が変わり、両方の親問題が必要である。",
+          "status": "verified"
+        }
+      ],
+      "hasDiagram": true,
+      "difficulty": 18.25,
+      "verificationMethod": "exact resultant plus independent numerical roots and parent perturbation",
+      "exactBackend": true,
+      "independentCheck": true,
+      "completeParentProof": true,
+      "capabilityOrigin": "synthesized_proof_program",
+      "registeredCompositeUsed": false,
+      "taskFingerprint": "e38c97f93a667de55270ceb0316ad68e7f7507c9d11af934338610b6d66eb678",
+      "taskAlgebraFingerprint": "59c2bac6a041c61ebab1f9fe3fd8713fe7c8877ccd8edd1e75e87f02387600c4",
+      "taskAlgebraOrigin": "emitted",
+      "resultDegree": 9,
+      "termCount": 9,
+      "maximumCoefficient": 57,
+      "corpusSurfaceNovelty": 0.921348,
+      "parents": [
+        {
+          "id": "bounded-cubic-23-30-0",
+          "statement": "方程式 \\(x^3-3x-1=0\\) のすべての複素数解を考える。"
+        },
+        {
+          "id": "bounded-cubic-23-30-1",
+          "statement": "方程式 \\(x^3-2x-2=0\\) のすべての複素数解を考える。"
+        }
+      ]
+    },
+    {
+      "id": "mathos-discovered-407b3c436963",
+      "engine": "runtime-polynomial-root-generation",
+      "family": "runtime.polynomial_root_sum",
+      "statement": "\\(f(x)=x^{3} - 3 x + 1\\), \\(g(x)=x^{3} - 2 x - 2\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かしたとき、\\(\\alpha+\\beta\\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。",
+      "answer": "P(z)=z^{9} - 15 z^{7} - 3 z^{6} + 57 z^{5} - 6 z^{4} - 8 z^{3} - 3 z^{2} + 27 z + 3",
+      "solution": "\\(f(x)=0\\) の根を \\(\\alpha\\)、\\(g(y)=0\\) の根を \\(\\beta\\) とする。和 \\(\\alpha+\\beta\\) から一方の根を消去するため、\n\\[\nR(z)=\\operatorname{Res}_x\\!\\left(f(x),g(z-x)\\right)\n\\]\nとおく。\\(z=\\alpha+\\beta\\) なら、\\(x=\\alpha\\) は終結式を作る二つの多項式の共通根になるので、\\(R(z)=0\\) である。逆に \\(R(z)=0\\) なら共通根 \\(x=\\alpha\\) が存在し、もう一方の式からある根 \\(\\beta\\) が得られる。したがって \\(R\\) の根は求める和の値と一致する。同じ値が複数の根の組から現れる場合だけ因子が重なるため、\n\\[\nP(z)=\\operatorname{monic}\\!\\left(\\frac{R(z)}{\\gcd(R(z),R'(z))}\\right)\n\\]\nとすれば、異なる値を一度ずつ根にもつ。係数を有理数のまま展開すると \\(P(z)=z^{9} - 15 z^{7} - 3 z^{6} + 57 z^{5} - 6 z^{4} - 8 z^{3} - 3 z^{2} + 27 z + 3\\) を得る。最後に、全ての根の組を別計算で代入し、どちらの親多項式を変えても \\(P\\) が変わることを確認した。",
+      "domain": "algebraic_geometry",
+      "morphismChain": [
+        "PolynomialConstraintExtraction",
+        "RootConfiguration",
+        "MinkowskiSum",
+        "FiberProduct",
+        "ParameterElimination",
+        "Resultant",
+        "SquareFreeReduction",
+        "NumericRootCounterexampleCheck",
+        "ParentPerturbationAblation"
+      ],
+      "structureBlueprint": {
+        "id": "root-set.sum.d85342e25ff8",
+        "version": 1,
+        "kernel": "binary_operation_on_algebraic_root_configurations",
+        "observable": "minimal_squarefree_root_polynomial_of_sum",
+        "operators": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiSum",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "domain": "algebraic_geometry",
+        "tags": [
+          "polynomial",
+          "root_configuration",
+          "sum",
+          "resultant"
+        ],
+        "morphismChain": [
+          "PolynomialConstraintExtraction",
+          "RootConfiguration",
+          "MinkowskiSum",
+          "FiberProduct",
+          "ParameterElimination",
+          "Resultant",
+          "SquareFreeReduction",
+          "NumericRootCounterexampleCheck",
+          "ParentPerturbationAblation"
+        ],
+        "executable": true,
+        "proofCertificate": [
+          {
+            "id": "typed-inputs",
+            "claim": "both parents elaborate to univariate polynomial constraints",
+            "verifier": "MathOS typed parser + SymPy Poly(QQ)"
+          },
+          {
+            "id": "fiber-product",
+            "claim": "the joint root configuration contains every ordered pair (alpha,beta)",
+            "verifier": "finite algebraic fiber product"
+          },
+          {
+            "id": "resultant",
+            "claim": "elimination computes every value of sum",
+            "verifier": "SymPy exact resultant over QQ"
+          },
+          {
+            "id": "squarefree",
+            "claim": "the output roots are the distinct composed values",
+            "verifier": "exact square-free monic reduction"
+          },
+          {
+            "id": "numeric-check",
+            "claim": "all numerical pairwise root compositions vanish in P",
+            "verifier": "independent nroots comparison"
+          },
+          {
+            "id": "ablation",
+            "claim": "perturbing either parent changes P",
+            "verifier": "two-sided parent perturbation"
+          }
+        ],
+        "taskAlgebra": {
+          "schema": 1,
+          "input": "algebraic-configuration",
+          "operations": [
+            {
+              "operator": "pair",
+              "output": "configuration"
+            },
+            {
+              "operator": "map",
+              "output": "configuration"
+            },
+            {
+              "operator": "eliminate",
+              "output": "polynomial"
+            },
+            {
+              "operator": "normalize",
+              "output": "polynomial"
+            }
+          ],
+          "output": "polynomial",
+          "complete": true
+        }
+      },
+      "diagram": {
+        "version": 1,
+        "kind": "morphism",
+        "title": "二つの根集合から新しい根集合を作る",
+        "caption": "二つの多項式の根を全て組み合わせ、和を取ってから、終結式で一変数の多項式へ戻します。",
+        "nodes": [
+          "f の根 3 個",
+          "g の根 3 個",
+          "全ての組 9 個",
+          "α + β",
+          "終結式で消去",
+          "重複を除いてモニック化",
+          "P の根 9 個"
+        ]
+      },
+      "proofRoadmap": [
+        {
+          "morphism_id": "PolynomialConstraintExtraction",
+          "label_ja": "親問題から多項式を読み取る",
+          "source_ja": "二つの親問題",
+          "target_ja": "二つの一変数多項式",
+          "role_ja": "変数名ではなく係数と次数を保存します。"
+        },
+        {
+          "morphism_id": "RootConfiguration",
+          "label_ja": "根の配置を構成する",
+          "source_ja": "一変数多項式",
+          "target_ja": "有限な代数的根集合",
+          "role_ja": "各多項式の根を個別の数値ではなく、方程式で定まる集合として扱います。"
+        },
+        {
+          "morphism_id": "MinkowskiSum",
+          "label_ja": "根の組を和へ写す",
+          "source_ja": "二つの根集合の直積",
+          "target_ja": "和の値の集合",
+          "role_ja": "全ての順序付きの根の組に同じ二項演算を適用します。"
+        },
+        {
+          "morphism_id": "Resultant",
+          "label_ja": "終結式で一方の根を消去する",
+          "source_ja": "二変数の代数制約",
+          "target_ja": "z の一変数多項式",
+          "role_ja": "根を近似値に変えず、有理数係数のまま厳密に消去します。"
+        },
+        {
+          "morphism_id": "SquareFreeReduction",
+          "label_ja": "異なる値だけを残す",
+          "source_ja": "終結式",
+          "target_ja": "平方因子を持たないモニック多項式",
+          "role_ja": "重複根を除き、最高次係数を1にします。"
+        },
+        {
+          "morphism_id": "NumericRootCounterexampleCheck+ParentPerturbationAblation",
+          "label_ja": "全根と親依存性を独立に検証する",
+          "source_ja": "出力多項式",
+          "target_ja": "再生可能な検証証明書",
+          "role_ja": "全根の数値照合と、両親を別々に変える検査を実行します。"
+        }
+      ],
+      "proofObligations": [
+        {
+          "id": "typed-inputs",
+          "claim_ja": "二つの親問題がともに一変数多項式の制約として読み取れる。",
+          "status": "verified"
+        },
+        {
+          "id": "fiber-product",
+          "claim_ja": "二つの根集合の順序付きの組を全て構成している。",
+          "status": "verified"
+        },
+        {
+          "id": "resultant",
+          "claim_ja": "終結式による消去は、各組から得られる和を全て根に持つ。",
+          "status": "verified"
+        },
+        {
+          "id": "squarefree",
+          "claim_ja": "平方因子を除いた出力の根は、合成した値の異なる値全体と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "numeric-check",
+          "claim_ja": "全ての根の組を独立に数値計算し、出力多項式の根と一致する。",
+          "status": "verified"
+        },
+        {
+          "id": "ablation",
+          "claim_ja": "どちらの親多項式を変えても出力が変わり、両方の親問題が必要である。",
+          "status": "verified"
+        }
+      ],
+      "hasDiagram": true,
+      "difficulty": 18.25,
+      "verificationMethod": "exact resultant plus independent numerical roots and parent perturbation",
+      "exactBackend": true,
+      "independentCheck": true,
+      "completeParentProof": true,
+      "capabilityOrigin": "synthesized_proof_program",
+      "registeredCompositeUsed": false,
+      "taskFingerprint": "e38c97f93a667de55270ceb0316ad68e7f7507c9d11af934338610b6d66eb678",
+      "taskAlgebraFingerprint": "59c2bac6a041c61ebab1f9fe3fd8713fe7c8877ccd8edd1e75e87f02387600c4",
+      "taskAlgebraOrigin": "emitted",
+      "resultDegree": 9,
+      "termCount": 9,
+      "maximumCoefficient": 57,
+      "corpusSurfaceNovelty": 0.921348,
+      "parents": [
+        {
+          "id": "bounded-cubic-24-30-0",
+          "statement": "方程式 \\(x^3-3x+1=0\\) のすべての複素数解を考える。"
+        },
+        {
+          "id": "bounded-cubic-24-30-1",
+          "statement": "方程式 \\(x^3-2x-2=0\\) のすべての複素数解を考える。"
+        }
+      ]
+    }
+  ]
+}

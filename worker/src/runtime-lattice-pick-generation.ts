@@ -389,6 +389,16 @@ function generatedCard(
       morphismChain: chain,
       executable: true,
       proofCertificate,
+      taskAlgebra: {
+        schema: 1,
+        input: 'lattice-region',
+        operations: [
+          { operator: 'preimage', output: 'lattice-region' },
+          { operator: 'fold', output: 'scalar' },
+        ],
+        output: 'scalar',
+        complete: true,
+      },
       synthesizedLaw: {
         name: 'CoprimeLatticeTriangleCount',
         expression: 'gcd(a,b)=1 => I(T_(a,b))=(a-1)(b-1)/2',

@@ -1,5 +1,11 @@
 import { createHash } from 'node:crypto'
 
+import {
+  compileProblemTaskAlgebra,
+  normalizeExplicitProblemTaskAlgebra,
+  type ProblemTaskAlgebra,
+} from './problem-task-algebra'
+
 type StructureBlueprint = {
   version?: number
   kernel?: string
@@ -9,6 +15,7 @@ type StructureBlueprint = {
   operators?: string[]
   tags?: string[]
   proofCertificate?: Array<{ verifier?: string }>
+  taskAlgebra?: ProblemTaskAlgebra
   synthesizedLaw?: {
     name?: string
     arity?: number
@@ -56,7 +63,7 @@ export type StructuralProblemCard = {
 }
 
 export type ProblemStructureNormalForm = {
-  schema: 2
+  schema: 3
   kernel: {
     name: string
     domain: string
@@ -80,6 +87,8 @@ export type ProblemStructureNormalForm = {
   }
   task: {
     observable: string
+    algebra: ProblemTaskAlgebra
+    algebraOrigin: 'emitted' | 'inferred'
     morphisms: string[]
     verifiers: string[]
     conditionSkeleton: string[]
@@ -99,6 +108,8 @@ export type ProblemStructureFingerprints = {
   program: string
   /** Full program plus the requested observable and proof obligations. */
   task: string
+  /** The typed question program, independent of the source-domain program. */
+  algebra: string
 }
 
 function clean(value: unknown): string {
@@ -239,9 +250,15 @@ export function normalizeProblemStructure(card: StructuralProblemCard): ProblemS
   const uniqueness = blueprint.structuralUniqueness
   const operators = blueprint.morphismChain ?? blueprint.operators ?? card.morphism_chain ?? []
   const kernelName = conceptualKernelName(blueprint, card.family_id)
+  const emittedAlgebra = normalizeExplicitProblemTaskAlgebra(blueprint.taskAlgebra)
+  const algebra = emittedAlgebra ?? compileProblemTaskAlgebra({
+      kernel: kernelName,
+      observable: blueprint.observable,
+      querySignature: uniqueness?.querySignature,
+    })
 
   return {
-    schema: 2,
+    schema: 3,
     kernel: {
       name: kernelName,
       domain: kernelName === 'finite-generated-action-observable'
@@ -257,6 +274,8 @@ export function normalizeProblemStructure(card: StructuralProblemCard): ProblemS
     },
     task: {
       observable: clean(blueprint.observable),
+      algebra,
+      algebraOrigin: emittedAlgebra ? 'emitted' : 'inferred',
       morphisms: basisProgram(operators),
       verifiers: sorted((blueprint.proofCertificate ?? []).map(certificate => verifierBasis(certificate.verifier))),
       conditionSkeleton: sorted(uniqueness?.conditionSkeleton),
@@ -271,11 +290,23 @@ export function normalizeProblemStructure(card: StructuralProblemCard): ProblemS
 
 export function problemStructureFingerprints(card: StructuralProblemCard): ProblemStructureFingerprints {
   const normalForm = normalizeProblemStructure(card)
+  const proofObligations = {
+    verifiers: normalForm.task.verifiers,
+    freeParameterCount: normalForm.task.freeParameterCount,
+    uniqueNormalForm: normalForm.task.uniqueNormalForm,
+    finiteSolutionSet: normalForm.task.finiteSolutionSet,
+  }
   return {
     normalForm,
     kernel: digest(normalForm.kernel),
     program: digest({ kernel: normalForm.kernel, program: normalForm.program }),
-    task: digest(normalForm),
+    task: digest({
+      kernel: normalForm.kernel,
+      program: normalForm.program,
+      algebra: normalForm.task.algebra,
+      proofObligations,
+    }),
+    algebra: digest(normalForm.task.algebra),
   }
 }
 

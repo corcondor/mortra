@@ -9,6 +9,7 @@ import {
   selectStructurallyDiverseProblems,
   type StructuralProblemCard,
 } from '../lib/mortra/problem-structure-normal-form.js'
+import { problemTaskPrimitiveSet } from '../lib/mortra/problem-task-algebra.js'
 import { hasCompleteParentProof } from '../worker/src/autonomous-synthesis.js'
 import { capabilityOrigin } from '../worker/src/execution-certificate.js'
 import type { ExecutableFusionCard } from '../worker/src/executable-fusion.js'
@@ -160,6 +161,9 @@ const summaries = cards.map(card => {
     kernelFingerprint: fingerprints.kernel,
     programFingerprint: fingerprints.program,
     taskFingerprint: fingerprints.task,
+    taskAlgebraFingerprint: fingerprints.algebra,
+    taskAlgebra: fingerprints.normalForm.task.algebra,
+    taskAlgebraOrigin: fingerprints.normalForm.task.algebraOrigin,
     difficulty: card.difficulty.score,
     proofStepCount: card.generation_audit?.proofStepCount ?? card.morphism_chain.length,
     morphismCount: new Set(card.morphism_chain).size,
@@ -174,8 +178,18 @@ const summaryById = new Map(summaries.map(summary => [summary.cardId, summary]))
 const kernelCount = new Set(summaries.map(summary => summary.kernelFingerprint)).size
 const programCount = new Set(summaries.map(summary => summary.programFingerprint)).size
 const taskCount = new Set(summaries.map(summary => summary.taskFingerprint)).size
+const taskAlgebraCount = new Set(summaries.map(summary => summary.taskAlgebraFingerprint)).size
+const surfaceQuestionCount = new Set(summaries.map(summary => summary.observable)).size
+const taskAlgebras = [...new Map(summaries.map(summary => [
+  summary.taskAlgebraFingerprint,
+  summary.taskAlgebra,
+])).values()]
+const taskPrimitives = problemTaskPrimitiveSet(taskAlgebras)
+const incompleteTaskAlgebraCount = summaries.filter(summary => !summary.taskAlgebra.complete).length
+const emittedTaskAlgebraCount = summaries.filter(summary => summary.taskAlgebraOrigin === 'emitted').length
+const inferredTaskAlgebraCount = summaries.filter(summary => summary.taskAlgebraOrigin === 'inferred').length
 const report = {
-  schema: 1,
+  schema: 2,
   measuredAt: new Date().toISOString(),
   purpose: '問題固有の文面や数値を記憶せず、少数の型付き作問核から構造の異なる難問を生成できるか測る',
   method: {
@@ -185,12 +199,20 @@ const report = {
     pairsVisited,
     perEngineLimit,
     engines: ['certified-fusion-planner', ...engines.map(engine => engine.id)],
-    selection: '親ID・記号・数値・答えを除き、実行核、型付き入力形成、問いを分離して重複を除く',
+    selection: '親ID・記号・数値・答えを除き、実行核、型付き入力形成、型付き問い代数を分離して重複を除く',
   },
   rawCardCount: cards.length,
   distinctKernelCount: kernelCount,
   distinctProgramCount: programCount,
   distinctTaskCount: taskCount,
+  distinctSurfaceQuestionCount: surfaceQuestionCount,
+  distinctTaskAlgebraCount: taskAlgebraCount,
+  surfaceQuestionsPerTaskAlgebra: rounded(surfaceQuestionCount / Math.max(1, taskAlgebraCount)),
+  taskPrimitiveCount: taskPrimitives.length,
+  taskPrimitives,
+  incompleteTaskAlgebraCount,
+  emittedTaskAlgebraCount,
+  inferredTaskAlgebraCount,
   rawCardsPerKernel: rounded(cards.length / Math.max(1, kernelCount)),
   engineAttempts: Object.fromEntries([...engineAttempts].sort()),
   engineAccepted: Object.fromEntries([...engineAccepted].sort()),
@@ -209,6 +231,14 @@ process.stdout.write(`${JSON.stringify({
   distinctKernelCount: kernelCount,
   distinctProgramCount: programCount,
   distinctTaskCount: taskCount,
+  distinctSurfaceQuestionCount: surfaceQuestionCount,
+  distinctTaskAlgebraCount: taskAlgebraCount,
+  surfaceQuestionsPerTaskAlgebra: report.surfaceQuestionsPerTaskAlgebra,
+  taskPrimitiveCount: taskPrimitives.length,
+  taskPrimitives,
+  incompleteTaskAlgebraCount,
+  emittedTaskAlgebraCount,
+  inferredTaskAlgebraCount,
   rawCardsPerKernel: report.rawCardsPerKernel,
   engineAccepted: report.engineAccepted,
   failureCount: failures.length,

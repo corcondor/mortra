@@ -470,6 +470,16 @@ function generatedCard(
       morphismChain: chain,
       executable: true,
       proofCertificate,
+      taskAlgebra: {
+        schema: 1,
+        input: 'finite-orbit',
+        operations: [
+          { operator: 'map', output: 'sequence' },
+          { operator: 'preimage', output: 'index-set' },
+        ],
+        output: 'index-set',
+        complete: true,
+      },
       synthesizedLaw: {
         name: 'FiniteOrbitPredicatePullback',
         expression: 'indices(T^n(v0) in P) are transient points plus periodic residue classes',

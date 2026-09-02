@@ -1,0 +1,293 @@
+{
+  "schema": 2,
+  "generatedAt": "2026-09-02T19:37:04.426Z",
+  "sourceReport": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\social\\mortra-certified-social-queue-20260903.json",
+  "caseId": "publication-01",
+  "family": "runtime.polynomial_root_difference",
+  "cardId": "mathos-discovered-0cf95a86c2ef",
+  "exactBackend": true,
+  "independentCheck": true,
+  "completeParentProof": true,
+  "registeredCompositeUsed": false,
+  "taskAlgebraOrigin": "emitted",
+  "taskAlgebraFingerprint": "59c2bac6a041c61ebab1f9fe3fd8713fe7c8877ccd8edd1e75e87f02387600c4",
+  "taskAlgebra": {
+    "schema": 1,
+    "input": "algebraic-configuration",
+    "operations": [
+      {
+        "operator": "pair",
+        "output": "configuration"
+      },
+      {
+        "operator": "map",
+        "output": "configuration"
+      },
+      {
+        "operator": "eliminate",
+        "output": "polynomial"
+      },
+      {
+        "operator": "normalize",
+        "output": "polynomial"
+      }
+    ],
+    "output": "polynomial",
+    "complete": true
+  },
+  "statement": "\\(f(x)=x^{3} + x + 1\\), \\(g(x)=x^{3} + 2 x - 2\\) とする。\\(f(\\alpha)=0\\), \\(g(\\beta)=0\\) を満たす複素数 \\(\\alpha,\\beta\\) をすべて動かしたとき、\\(\\alpha-\\beta\\) の異なる値全体をちょうど根にもつモニック多項式を求めよ。",
+  "answer": "P(z)=z^{9} + 9 z^{7} + 9 z^{6} + 21 z^{5} + 18 z^{4} - 12 z^{3} + 9 z^{2} - 25 z + 31",
+  "domain": "algebraic_geometry",
+  "morphismChain": [
+    "PolynomialConstraintExtraction",
+    "RootConfiguration",
+    "MinkowskiDifference",
+    "FiberProduct",
+    "ParameterElimination",
+    "Resultant",
+    "SquareFreeReduction",
+    "NumericRootCounterexampleCheck",
+    "ParentPerturbationAblation"
+  ],
+  "diagram": {
+    "version": 1,
+    "kind": "morphism",
+    "title": "二つの根集合から新しい根集合を作る",
+    "caption": "二つの多項式の根を全て組み合わせ、差を取ってから、終結式で一変数の多項式へ戻します。",
+    "nodes": [
+      "f の根 3 個",
+      "g の根 3 個",
+      "全ての組 9 個",
+      "α − β",
+      "終結式で消去",
+      "重複を除いてモニック化",
+      "P の根 9 個"
+    ]
+  },
+  "proofRoadmap": [
+    {
+      "morphism_id": "PolynomialConstraintExtraction",
+      "label_ja": "親問題から多項式を読み取る",
+      "source_ja": "二つの親問題",
+      "target_ja": "二つの一変数多項式",
+      "role_ja": "変数名ではなく係数と次数を保存します。"
+    },
+    {
+      "morphism_id": "RootConfiguration",
+      "label_ja": "根の配置を構成する",
+      "source_ja": "一変数多項式",
+      "target_ja": "有限な代数的根集合",
+      "role_ja": "各多項式の根を個別の数値ではなく、方程式で定まる集合として扱います。"
+    },
+    {
+      "morphism_id": "MinkowskiDifference",
+      "label_ja": "根の組を差へ写す",
+      "source_ja": "二つの根集合の直積",
+      "target_ja": "差の値の集合",
+      "role_ja": "全ての順序付きの根の組に同じ二項演算を適用します。"
+    },
+    {
+      "morphism_id": "Resultant",
+      "label_ja": "終結式で一方の根を消去する",
+      "source_ja": "二変数の代数制約",
+      "target_ja": "z の一変数多項式",
+      "role_ja": "根を近似値に変えず、有理数係数のまま厳密に消去します。"
+    },
+    {
+      "morphism_id": "SquareFreeReduction",
+      "label_ja": "異なる値だけを残す",
+      "source_ja": "終結式",
+      "target_ja": "平方因子を持たないモニック多項式",
+      "role_ja": "重複根を除き、最高次係数を1にします。"
+    },
+    {
+      "morphism_id": "NumericRootCounterexampleCheck+ParentPerturbationAblation",
+      "label_ja": "全根と親依存性を独立に検証する",
+      "source_ja": "出力多項式",
+      "target_ja": "再生可能な検証証明書",
+      "role_ja": "全根の数値照合と、両親を別々に変える検査を実行します。"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\social\\mortra-generated-problem-20260903-fresh-cubic\\instagram-problem.png",
+      "width": 1080,
+      "height": 1350,
+      "layout": {
+        "width": 1080,
+        "height": 1350,
+        "scrollX": 0,
+        "scrollY": 0,
+        "replacementCharacters": 0,
+        "regions": {
+          "header": {
+            "top": 64,
+            "right": 1016,
+            "bottom": 120,
+            "left": 64
+          },
+          "main": {
+            "top": 120,
+            "right": 1016,
+            "bottom": 1234,
+            "left": 64
+          },
+          "primary": {
+            "top": 173,
+            "right": 1016,
+            "bottom": 529.83,
+            "left": 64
+          },
+          "secondary": {
+            "top": 664.41,
+            "right": 1016,
+            "bottom": 1164.41,
+            "left": 64
+          },
+          "footer": {
+            "top": 1287,
+            "right": 1016,
+            "bottom": 1304,
+            "left": 64
+          }
+        },
+        "clipped": []
+      }
+    },
+    {
+      "path": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\social\\mortra-generated-problem-20260903-fresh-cubic\\instagram-solution.png",
+      "width": 1080,
+      "height": 1350,
+      "layout": {
+        "width": 1080,
+        "height": 1350,
+        "scrollX": 0,
+        "scrollY": 0,
+        "replacementCharacters": 0,
+        "regions": {
+          "header": {
+            "top": 64,
+            "right": 1016,
+            "bottom": 120,
+            "left": 64
+          },
+          "main": {
+            "top": 120,
+            "right": 1016,
+            "bottom": 1234,
+            "left": 64
+          },
+          "primary": {
+            "top": 120,
+            "right": 1016,
+            "bottom": 698.75,
+            "left": 64
+          },
+          "secondary": {
+            "top": 820.63,
+            "right": 1016,
+            "bottom": 1136.13,
+            "left": 64
+          },
+          "footer": {
+            "top": 1287,
+            "right": 1016,
+            "bottom": 1304,
+            "left": 64
+          }
+        },
+        "clipped": []
+      }
+    },
+    {
+      "path": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\social\\mortra-generated-problem-20260903-fresh-cubic\\x-problem.png",
+      "width": 1600,
+      "height": 900,
+      "layout": {
+        "width": 1600,
+        "height": 900,
+        "scrollX": 0,
+        "scrollY": 0,
+        "replacementCharacters": 0,
+        "regions": {
+          "header": {
+            "top": 48,
+            "right": 1530,
+            "bottom": 104,
+            "left": 70
+          },
+          "main": {
+            "top": 104,
+            "right": 1530,
+            "bottom": 798,
+            "left": 70
+          },
+          "primary": {
+            "top": 284.56,
+            "right": 688.63,
+            "bottom": 617.44,
+            "left": 70
+          },
+          "secondary": {
+            "top": 156,
+            "right": 1530,
+            "bottom": 746,
+            "left": 742.63
+          },
+          "footer": {
+            "top": 849,
+            "right": 1530,
+            "bottom": 866,
+            "left": 70
+          }
+        },
+        "clipped": []
+      }
+    },
+    {
+      "path": "C:\\Users\\81808\\.openclaw\\workspace\\mortra-1-release\\artifacts\\social\\mortra-generated-problem-20260903-fresh-cubic\\x-solution.png",
+      "width": 1600,
+      "height": 900,
+      "layout": {
+        "width": 1600,
+        "height": 900,
+        "scrollX": 0,
+        "scrollY": 0,
+        "replacementCharacters": 0,
+        "regions": {
+          "header": {
+            "top": 48,
+            "right": 1530,
+            "bottom": 104,
+            "left": 70
+          },
+          "main": {
+            "top": 104,
+            "right": 1530,
+            "bottom": 798,
+            "left": 70
+          },
+          "primary": {
+            "top": 183.52,
+            "right": 713.08,
+            "bottom": 718.48,
+            "left": 70
+          },
+          "secondary": {
+            "top": 285.75,
+            "right": 1530,
+            "bottom": 616.25,
+            "left": 775.08
+          },
+          "footer": {
+            "top": 849,
+            "right": 1530,
+            "bottom": 866,
+            "left": 70
+          }
+        },
+        "clipped": []
+      }
+    }
+  ]
+}

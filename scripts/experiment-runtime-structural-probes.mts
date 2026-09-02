@@ -5,6 +5,7 @@ import {
   problemStructureFingerprints,
   selectStructurallyDiverseProblems,
 } from '../lib/mortra/problem-structure-normal-form.js'
+import { problemTaskPrimitiveSet } from '../lib/mortra/problem-task-algebra.js'
 import { hasCompleteParentProof } from '../worker/src/autonomous-synthesis.js'
 import { capabilityOrigin } from '../worker/src/execution-certificate.js'
 import type { ExecutableFusionCard } from '../worker/src/executable-fusion.js'
@@ -85,6 +86,9 @@ const caseResults: Array<{
     kernelFingerprint: string
     programFingerprint: string
     taskFingerprint: string
+    taskAlgebraFingerprint: string
+    taskAlgebra: ReturnType<typeof problemStructureFingerprints>['normalForm']['task']['algebra']
+    taskAlgebraOrigin: ReturnType<typeof problemStructureFingerprints>['normalForm']['task']['algebraOrigin']
   }>
 }> = []
 
@@ -128,6 +132,9 @@ for (const probe of bank.cases) {
         kernelFingerprint: fingerprints.kernel,
         programFingerprint: fingerprints.program,
         taskFingerprint: fingerprints.task,
+        taskAlgebraFingerprint: fingerprints.algebra,
+        taskAlgebra: fingerprints.normalForm.task.algebra,
+        taskAlgebraOrigin: fingerprints.normalForm.task.algebraOrigin,
       })
     }
   }
@@ -192,9 +199,15 @@ const engineAccepted = Object.fromEntries(engines.map(engine => [
 const kernelCount = new Set(caseResults.flatMap(result => result.cards.map(card => card.kernelFingerprint))).size
 const programCount = new Set(caseResults.flatMap(result => result.cards.map(card => card.programFingerprint))).size
 const taskCount = new Set(caseResults.flatMap(result => result.cards.map(card => card.taskFingerprint))).size
+const taskAlgebraCount = new Set(caseResults.flatMap(result => result.cards.map(card => card.taskAlgebraFingerprint))).size
 const certifiedCards = caseResults.flatMap(result => result.cards)
+const taskAlgebras = [...new Map(certifiedCards.map(card => [
+  card.taskAlgebraFingerprint,
+  card.taskAlgebra,
+])).values()]
+const taskPrimitives = problemTaskPrimitiveSet(taskAlgebras)
 const report = {
-  schema: 1,
+  schema: 2,
   measuredAt: new Date().toISOString(),
   purpose: bank.purpose,
   method: {
@@ -211,6 +224,12 @@ const report = {
   distinctKernelCount: kernelCount,
   distinctProgramCount: programCount,
   distinctTaskCount: taskCount,
+  distinctTaskAlgebraCount: taskAlgebraCount,
+  taskPrimitiveCount: taskPrimitives.length,
+  taskPrimitives,
+  incompleteTaskAlgebraCount: certifiedCards.filter(card => !card.taskAlgebra.complete).length,
+  emittedTaskAlgebraCount: certifiedCards.filter(card => card.taskAlgebraOrigin === 'emitted').length,
+  inferredTaskAlgebraCount: certifiedCards.filter(card => card.taskAlgebraOrigin === 'inferred').length,
   engineAccepted,
   allCardsCertified: certifiedCards.length > 0 && certifiedCards.every(card =>
     card.exactBackend
@@ -242,6 +261,9 @@ const report = {
       kernelFingerprint: fingerprints.kernel,
       programFingerprint: fingerprints.program,
       taskFingerprint: fingerprints.task,
+      taskAlgebraFingerprint: fingerprints.algebra,
+      taskAlgebra: fingerprints.normalForm.task.algebra,
+      taskAlgebraOrigin: fingerprints.normalForm.task.algebraOrigin,
     }
   }),
   cases: caseResults,
@@ -256,6 +278,12 @@ process.stdout.write(`${JSON.stringify({
   distinctKernelCount: report.distinctKernelCount,
   distinctProgramCount: report.distinctProgramCount,
   distinctTaskCount: report.distinctTaskCount,
+  distinctTaskAlgebraCount: report.distinctTaskAlgebraCount,
+  taskPrimitiveCount: report.taskPrimitiveCount,
+  taskPrimitives: report.taskPrimitives,
+  incompleteTaskAlgebraCount: report.incompleteTaskAlgebraCount,
+  emittedTaskAlgebraCount: report.emittedTaskAlgebraCount,
+  inferredTaskAlgebraCount: report.inferredTaskAlgebraCount,
   engineAccepted: report.engineAccepted,
   allCardsCertified: report.allCardsCertified,
   allRelationAuditsPassed: report.allRelationAuditsPassed,

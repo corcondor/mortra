@@ -9,12 +9,25 @@
  * 使い方:
  *   node scripts/upload-public-asset.mjs export/video/robot_ninepoint_reel.mp4
  */
+import { existsSync, readFileSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import { basename } from 'node:path'
 import { createClient } from '@supabase/supabase-js'
-import { config } from 'dotenv'
 
-config({ path: '.env.local' })
+function loadEnvFile(path) {
+  if (!existsSync(path)) return
+  for (const line of readFileSync(path, 'utf8').split(/\r?\n/)) {
+    const value = line.trim()
+    if (!value || value.startsWith('#')) continue
+    const separator = value.indexOf('=')
+    if (separator < 1) continue
+    const key = value.slice(0, separator).trim()
+    const content = value.slice(separator + 1).trim().replace(/^["']|["']$/g, '')
+    if (key && !(key in process.env)) process.env[key] = content
+  }
+}
+
+loadEnvFile('.env.local')
 
 const BUCKET = 'public-assets'
 

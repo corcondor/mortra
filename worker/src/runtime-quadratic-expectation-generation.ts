@@ -544,6 +544,13 @@ function generatedCard(
       morphismChain: chain,
       executable: true,
       proofCertificate,
+      taskAlgebra: {
+        schema: 1,
+        input: 'random-vector',
+        operations: [{ operator: 'contract', output: 'scalar' }],
+        output: 'scalar',
+        complete: true,
+      },
       synthesizedLaw: {
         name: 'ExpectedQuadraticFormTraceIdentity',
         expression: 'E[X^T A X]=tr(A E[XX^T])',

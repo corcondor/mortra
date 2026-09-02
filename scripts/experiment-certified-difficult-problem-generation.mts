@@ -9,6 +9,7 @@ import {
   problemStructureFingerprints,
   selectStructurallyDiverseProblems,
 } from '../lib/mortra/problem-structure-normal-form.js'
+import { problemTaskPrimitiveSet } from '../lib/mortra/problem-task-algebra.js'
 
 type CatalogEntry = {
   id: string
@@ -45,6 +46,9 @@ type Candidate = {
   kernelFingerprint: string
   programFingerprint: string
   taskFingerprint: string
+  taskAlgebraFingerprint: string
+  taskAlgebra: ReturnType<typeof problemStructureFingerprints>['normalForm']['task']['algebra']
+  taskAlgebraOrigin: ReturnType<typeof problemStructureFingerprints>['normalForm']['task']['algebraOrigin']
 }
 
 function argument(name: string): string | undefined {
@@ -179,6 +183,9 @@ for (let leftIndex = 0; leftIndex < entries.length; leftIndex += 1) {
         kernelFingerprint: fingerprints.kernel,
         programFingerprint: fingerprints.program,
         taskFingerprint: fingerprints.task,
+        taskAlgebraFingerprint: fingerprints.algebra,
+        taskAlgebra: fingerprints.normalForm.task.algebra,
+        taskAlgebraOrigin: fingerprints.normalForm.task.algebraOrigin,
       })
     }
   }
@@ -222,9 +229,19 @@ const programCounts = Object.fromEntries(
     .sort()
     .map(signature => [signature, candidates.filter(candidate => candidate.programFingerprint === signature).length]),
 )
+const taskAlgebraCounts = Object.fromEntries(
+  [...new Set(candidates.map(candidate => candidate.taskAlgebraFingerprint))]
+    .sort()
+    .map(signature => [signature, candidates.filter(candidate => candidate.taskAlgebraFingerprint === signature).length]),
+)
+const taskAlgebras = [...new Map(candidates.map(candidate => [
+  candidate.taskAlgebraFingerprint,
+  candidate.taskAlgebra,
+])).values()]
+const taskPrimitives = problemTaskPrimitiveSet(taskAlgebras)
 
 const report = {
-  schema: 1,
+  schema: 2,
   measuredAt: new Date().toISOString(),
   purpose: '直接構造融合が、単なる逆再生ではない検証済み難問候補を生成できるかを測る',
   method: {
@@ -233,7 +250,7 @@ const report = {
     perPairLimit,
     selection: '証明深度・表現数・答えの演算数・90問に対する表層新規性を別々に測り、単一の恣意的総合点へ潰さない',
     proofRequirement: '厳密計算、独立検算、両親依存、交差合成、条件最小性、逆再生拒否のすべて',
-    structuralCounting: '親ID・変数名・数値・答えを除き、実行核、親から実行核への型付き入力形成、問いの3層を別々に数える',
+    structuralCounting: '親ID・変数名・数値・答えを除き、実行核、親から実行核への型付き入力形成、型付き問い代数の3層を別々に数える',
   },
   candidateCount: candidates.length,
   familyCounts,
@@ -244,10 +261,17 @@ const report = {
   distinctKernelCount: Object.keys(kernelCounts).length,
   distinctProgramCount: Object.keys(programCounts).length,
   distinctTaskCount: Object.keys(taskCounts).length,
+  distinctTaskAlgebraCount: Object.keys(taskAlgebraCounts).length,
+  taskPrimitiveCount: taskPrimitives.length,
+  taskPrimitives,
+  incompleteTaskAlgebraCount: candidates.filter(candidate => !candidate.taskAlgebra.complete).length,
+  emittedTaskAlgebraCount: candidates.filter(candidate => candidate.taskAlgebraOrigin === 'emitted').length,
+  inferredTaskAlgebraCount: candidates.filter(candidate => candidate.taskAlgebraOrigin === 'inferred').length,
   surfaceCandidatesPerKernel: rounded(candidates.length / Math.max(1, Object.keys(kernelCounts).length)),
   kernelCounts,
   programCounts,
   taskCounts,
+  taskAlgebraCounts,
   structurallyDiverseCardIds: structurallyDiverse.map(candidate => candidate.cardId),
   allAuditsPassed: candidates.every(candidate =>
     candidate.exactBackend
@@ -272,6 +296,12 @@ process.stdout.write(`${JSON.stringify({
   distinctKernelCount: report.distinctKernelCount,
   distinctProgramCount: report.distinctProgramCount,
   distinctTaskCount: report.distinctTaskCount,
+  distinctTaskAlgebraCount: report.distinctTaskAlgebraCount,
+  taskPrimitiveCount: report.taskPrimitiveCount,
+  taskPrimitives: report.taskPrimitives,
+  incompleteTaskAlgebraCount: report.incompleteTaskAlgebraCount,
+  emittedTaskAlgebraCount: report.emittedTaskAlgebraCount,
+  inferredTaskAlgebraCount: report.inferredTaskAlgebraCount,
   surfaceCandidatesPerKernel: report.surfaceCandidatesPerKernel,
   allAuditsPassed: report.allAuditsPassed,
   structurallyDiverse: structurallyDiverse.map(candidate => ({

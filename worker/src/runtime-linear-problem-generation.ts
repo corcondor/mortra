@@ -429,6 +429,16 @@ function generatedCard(
       morphismChain: chain,
       executable: true,
       proofCertificate,
+      taskAlgebra: {
+        schema: 1,
+        input: 'typed-object',
+        operations: [
+          { operator: 'eliminate', output: 'scalar' },
+          { operator: 'normalize', output: 'scalar' },
+        ],
+        output: 'scalar',
+        complete: true,
+      },
     },
     search_evidence: {
       hypotheses_evaluated: hypothesesEvaluated,

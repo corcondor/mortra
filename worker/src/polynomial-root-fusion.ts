@@ -493,7 +493,15 @@ export function synthesizePolynomialRootFusions(
           : operation === 'difference'
             ? 'g(x-z)'
             : `x^{${result.degree_right}}g(z/x)`
-        const solution = String.raw`\(f(x)=0\) の根 \(\alpha\) と \(g(y)=0\) の根 \(\beta\) の${operationLabel(operation)}を消去する。したがって \[R(z)=\operatorname{Res}_x\!\left(f(x),${substitution}\right)\] を計算し、重複根を除いてモニック化すればよい。厳密終結式計算により \(P(z)=${result.result}\) を得る。全根の数値照合と、各親多項式を独立に摂動するアブレーション検査も通過した。`
+        const solution = String.raw`\(f(x)=0\) の根を \(\alpha\)、\(g(y)=0\) の根を \(\beta\) とする。${operationLabel(operation)} \(${expression}\) から一方の根を消去するため、
+\[
+R(z)=\operatorname{Res}_x\!\left(f(x),${substitution}\right)
+\]
+とおく。\(z=${expression}\) なら、\(x=\alpha\) は終結式を作る二つの多項式の共通根になるので、\(R(z)=0\) である。逆に \(R(z)=0\) なら共通根 \(x=\alpha\) が存在し、もう一方の式からある根 \(\beta\) が得られる。したがって \(R\) の根は求める${operationLabel(operation)}の値と一致する。同じ値が複数の根の組から現れる場合だけ因子が重なるため、
+\[
+P(z)=\operatorname{monic}\!\left(\frac{R(z)}{\gcd(R(z),R'(z))}\right)
+\]
+とすれば、異なる値を一度ずつ根にもつ。係数を有理数のまま展開すると \(P(z)=${result.result}\) を得る。最後に、全ての根の組を別計算で代入し、どちらの親多項式を変えても \(P\) が変わることを確認した。`
         const proofCertificate = [
           { id: 'typed-inputs', claim: 'both parents elaborate to univariate polynomial constraints', verifier: 'MathOS typed parser + SymPy Poly(QQ)' },
           { id: 'fiber-product', claim: `the joint root configuration contains every ordered pair (alpha,beta)`, verifier: 'finite algebraic fiber product' },
@@ -553,6 +561,18 @@ export function synthesizePolynomialRootFusions(
             morphismChain: morphisms,
             executable: true,
             proofCertificate,
+            taskAlgebra: {
+              schema: 1,
+              input: 'algebraic-configuration',
+              operations: [
+                { operator: 'pair', output: 'configuration' },
+                { operator: 'map', output: 'configuration' },
+                { operator: 'eliminate', output: 'polynomial' },
+                { operator: 'normalize', output: 'polynomial' },
+              ],
+              output: 'polynomial',
+              complete: true,
+            },
           },
           search_evidence: { hypotheses_evaluated: operations.length, valid_hypotheses: cards.length + 1, elapsed_ms: Date.now() - startedAt },
           execution_certificate: runtimeSynthesisCertificate({

@@ -16,6 +16,7 @@ function card(options: {
   kernel?: string
   tags?: string[]
   roles?: string[]
+  taskAlgebra?: NonNullable<NonNullable<StructuralProblemCard['structure_blueprint']>['taskAlgebra']>
 }): StructuralProblemCard {
   return {
     id: options.id,
@@ -50,6 +51,7 @@ function card(options: {
       tags: options.tags ?? [],
       morphismChain: ['Elaborate', 'FiniteOrbit', options.observable],
       proofCertificate: [{ verifier: 'exact finite enumeration' }],
+      taskAlgebra: options.taskAlgebra,
       structuralUniqueness: {
         conditionSkeleton: ['second-order recurrence', 'linear congruence'],
         querySignature: options.query,
@@ -76,6 +78,130 @@ test('a new observable is a new task but not a new mathematical kernel', () => {
   assert.equal(problemStructureFingerprints(indices).kernel, problemStructureFingerprints(period).kernel)
   assert.equal(problemStructureFingerprints(indices).program, problemStructureFingerprints(period).program)
   assert.notEqual(problemStructureFingerprints(indices).task, problemStructureFingerprints(period).task)
+})
+
+test('sine and cosine zero sets compile to one typed question program', () => {
+  const sine = card({
+    id: 'sine-zero',
+    parentIds: ['a', 'b'],
+    observable: 'sine_zero_index_set',
+    query: 'classify all recurrence indices at which the rational-angle sine vanishes',
+    score: 8,
+  })
+  const cosine = card({
+    id: 'cosine-zero',
+    parentIds: ['a', 'b'],
+    observable: 'cosine_zero_index_set',
+    query: 'classify all recurrence indices at which the rational-angle cosine vanishes',
+    score: 8,
+  })
+  assert.equal(problemStructureFingerprints(sine).algebra, problemStructureFingerprints(cosine).algebra)
+  assert.equal(problemStructureFingerprints(sine).task, problemStructureFingerprints(cosine).task)
+})
+
+test('trigonometric names do not split the minimal-period operation', () => {
+  const sine = card({
+    id: 'sine-period',
+    parentIds: ['a', 'b'],
+    observable: 'eventual_minimal_sine_period',
+    query: 'minimal eventual sine period and one exact cycle',
+    score: 8,
+  })
+  const cosine = card({
+    id: 'cosine-period',
+    parentIds: ['a', 'b'],
+    observable: 'eventual_minimal_trigonometric_period',
+    query: 'minimal eventual period and one exact cycle',
+    score: 8,
+  })
+  assert.equal(problemStructureFingerprints(sine).algebra, problemStructureFingerprints(cosine).algebra)
+  assert.equal(problemStructureFingerprints(sine).task, problemStructureFingerprints(cosine).task)
+})
+
+test('a preimage task and a period task remain distinct', () => {
+  const zeros = card({
+    id: 'zero-set',
+    parentIds: ['a', 'b'],
+    observable: 'sine_zero_index_set',
+    query: 'classify all indices at which sine vanishes',
+    score: 8,
+  })
+  const period = card({
+    id: 'period',
+    parentIds: ['a', 'b'],
+    observable: 'eventual_minimal_sine_period',
+    query: 'minimal eventual sine period and one exact cycle',
+    score: 8,
+  })
+  assert.notEqual(problemStructureFingerprints(zeros).algebra, problemStructureFingerprints(period).algebra)
+  assert.notEqual(problemStructureFingerprints(zeros).task, problemStructureFingerprints(period).task)
+})
+
+test('unelaborated tasks are not merged merely because their source sort agrees', () => {
+  const left = card({ id: 'opaque-a', parentIds: ['a', 'b'], observable: 'UnmappedAlpha', query: 'first unknown query', score: 8 })
+  const right = card({ id: 'opaque-b', parentIds: ['a', 'b'], observable: 'UnmappedBeta', query: 'second unknown query', score: 8 })
+  assert.equal(problemStructureFingerprints(left).normalForm.task.algebra.complete, false)
+  assert.notEqual(problemStructureFingerprints(left).algebra, problemStructureFingerprints(right).algebra)
+  assert.notEqual(problemStructureFingerprints(left).task, problemStructureFingerprints(right).task)
+})
+
+test('engine-emitted task algebra does not depend on observable wording', () => {
+  const taskAlgebra = {
+    schema: 1 as const,
+    input: 'algebraic-configuration' as const,
+    operations: [
+      { operator: 'pair' as const, output: 'configuration' as const },
+      { operator: 'map' as const, output: 'configuration' as const },
+      { operator: 'eliminate' as const, output: 'polynomial' as const },
+      { operator: 'normalize' as const, output: 'polynomial' as const },
+    ],
+    output: 'polynomial' as const,
+    complete: true as const,
+  }
+  const left = card({
+    id: 'emitted-a',
+    parentIds: ['a', 'b'],
+    observable: 'completely-new-wording-a',
+    query: 'unknown surface question a',
+    score: 8,
+    kernel: 'binary_operation_on_algebraic_root_configurations',
+    taskAlgebra,
+  })
+  const right = card({
+    id: 'emitted-b',
+    parentIds: ['c', 'd'],
+    observable: 'completely-new-wording-b',
+    query: 'unknown surface question b',
+    score: 8,
+    kernel: 'binary_operation_on_algebraic_root_configurations',
+    taskAlgebra,
+  })
+  const leftFingerprint = problemStructureFingerprints(left)
+  const rightFingerprint = problemStructureFingerprints(right)
+  assert.equal(leftFingerprint.normalForm.task.algebraOrigin, 'emitted')
+  assert.equal(rightFingerprint.normalForm.task.algebraOrigin, 'emitted')
+  assert.equal(leftFingerprint.algebra, rightFingerprint.algebra)
+  assert.equal(leftFingerprint.task, rightFingerprint.task)
+})
+
+test('malformed emitted task algebra is rejected instead of being trusted', () => {
+  const malformed = card({
+    id: 'malformed',
+    parentIds: ['a', 'b'],
+    observable: 'unmapped-observable',
+    query: 'unmapped-query',
+    score: 8,
+    taskAlgebra: {
+      schema: 1,
+      input: 'typed-object',
+      operations: [{ operator: 'map', output: 'sequence' }],
+      output: 'scalar',
+      complete: true,
+    },
+  })
+  const fingerprint = problemStructureFingerprints(malformed)
+  assert.equal(fingerprint.normalForm.task.algebraOrigin, 'inferred')
+  assert.equal(fingerprint.normalForm.task.algebra.complete, false)
 })
 
 test('selection gives each kernel a representative before surface variants', () => {

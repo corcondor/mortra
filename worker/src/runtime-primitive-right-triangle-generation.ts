@@ -359,6 +359,16 @@ function generatedCard(
       morphismChain: chain,
       executable: true,
       proofCertificate,
+      taskAlgebra: {
+        schema: 1,
+        input: 'typed-object',
+        operations: [
+          { operator: 'map', output: 'sequence' },
+          { operator: 'preimage', output: 'index-set' },
+        ],
+        output: 'index-set',
+        complete: true,
+      },
       synthesizedLaw: {
         name: 'PrimitiveRightTrianglePrimeRadiusClassification',
         expression: 'primitive right triangle and prime Rr imply (a,b,c)=(5,12,13)',

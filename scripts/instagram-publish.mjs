@@ -1,5 +1,5 @@
 /**
- * Instagram へリール／画像を自動投稿する。
+ * Instagram へリール、画像、画像カルーセルを投稿する。
  *
  * Content Publishing API は 3 段階:
  *   1. POST /{ig-user-id}/media          … コンテナを作る（動画の URL を渡す）
@@ -20,46 +20,72 @@
  * 使い方:
  *   node scripts/instagram-publish.mjs --video <公開URL> --caption "本文"
  *   node scripts/instagram-publish.mjs --image <公開URL> --caption "本文"
+ *   node scripts/instagram-publish.mjs --image <問題URL> --image <解答URL> --caption "本文"
  *   node scripts/instagram-publish.mjs ... --dry   … 実際には投稿せず検査だけ
  */
-import { config } from 'dotenv'
+import { existsSync, readFileSync } from 'node:fs'
 
-config({ path: '.env.local' })
+function loadEnvFile(path) {
+  if (!existsSync(path)) return
+  for (const line of readFileSync(path, 'utf8').split(/\r?\n/)) {
+    const value = line.trim()
+    if (!value || value.startsWith('#')) continue
+    const separator = value.indexOf('=')
+    if (separator < 1) continue
+    const key = value.slice(0, separator).trim()
+    const content = value.slice(separator + 1).trim().replace(/^["']|["']$/g, '')
+    if (key && !(key in process.env)) process.env[key] = content
+  }
+}
+
+loadEnvFile('.env.local')
 
 const GRAPH = 'https://graph.facebook.com/v21.0'
 
 const args = process.argv.slice(2)
-const flag = (name) => {
-  const index = args.indexOf(`--${name}`)
-  return index >= 0 ? args[index + 1] : undefined
+const flags = (name) => {
+  const values = []
+  for (let index = 0; index < args.length; index += 1) {
+    if (args[index] === `--${name}` && args[index + 1]) values.push(args[index + 1])
+  }
+  return values
 }
+const flag = (name) => flags(name).at(-1)
 const has = (name) => args.includes(`--${name}`)
 
 const token = process.env.IG_ACCESS_TOKEN
 const igUserId = process.env.IG_USER_ID
 const videoUrl = flag('video')
-const imageUrl = flag('image')
+const imageUrls = flags('image')
 const caption = flag('caption') ?? ''
 const dryRun = has('dry')
+const expectedAccount = (flag('expected-account') ?? process.env.IG_EXPECTED_USERNAME ?? 'mortra_ai').replace(/^@/, '')
 
 function fail(message) {
   console.error(`✗ ${message}`)
   process.exit(1)
 }
 
-if (!videoUrl && !imageUrl) fail('--video か --image のどちらかが要る')
+if (!videoUrl && !imageUrls.length) fail('--video か --image のどちらかが要る')
+if (videoUrl && imageUrls.length) fail('--video と --image は同時に指定できない')
+if (imageUrls.length > 10) fail('Instagram のカルーセル画像は10枚までです')
 
 // 公開 URL が本当に取れるかを先に確かめる。ここで落ちるのが一番多い。
-const target = videoUrl ?? imageUrl
-const head = await fetch(target, { method: 'GET', headers: { Range: 'bytes=0-1' } })
-  .catch(() => null)
-if (!head || !head.ok) {
-  fail(`メディアの URL が外部から取れない (${head?.status ?? 'ネットワークエラー'}): ${target}`)
-}
-const contentType = head.headers.get('content-type') ?? ''
-console.log(`メディア確認: ${head.status} ${contentType}`)
-if (videoUrl && !contentType.includes('mp4') && !contentType.includes('video')) {
-  fail(`動画の Content-Type が mp4 でない: ${contentType}`)
+const targets = videoUrl ? [videoUrl] : imageUrls
+for (const target of targets) {
+  const head = await fetch(target, { method: 'GET', headers: { Range: 'bytes=0-1' } })
+    .catch(() => null)
+  if (!head || !head.ok) {
+    fail(`メディアの URL が外部から取れない (${head?.status ?? 'ネットワークエラー'}): ${target}`)
+  }
+  const contentType = head.headers.get('content-type') ?? ''
+  console.log(`メディア確認: ${head.status} ${contentType} ${target}`)
+  if (videoUrl && !contentType.includes('mp4') && !contentType.includes('video')) {
+    fail(`動画の Content-Type が mp4 でない: ${contentType}`)
+  }
+  if (!videoUrl && !contentType.includes('image')) {
+    fail(`画像の Content-Type ではない: ${contentType}`)
+  }
 }
 
 if (!token || !igUserId) {
@@ -69,48 +95,85 @@ if (!token || !igUserId) {
   console.log()
   console.log('入ったら実行されるリクエスト:')
   console.log(`  POST ${GRAPH}/${igUserId ?? '<IG_USER_ID>'}/media`)
-  console.log(`       ${videoUrl ? `media_type=REELS&video_url=${target}` : `image_url=${target}`}`)
+  console.log(`       ${videoUrl ? `media_type=REELS&video_url=${videoUrl}` : `image_url=${imageUrls[0]}`}`)
   console.log(`       caption=${JSON.stringify(caption).slice(0, 60)}...`)
   console.log(`  GET  ${GRAPH}/<container-id>?fields=status_code   （FINISHED まで待つ）`)
   console.log(`  POST ${GRAPH}/${igUserId ?? '<IG_USER_ID>'}/media_publish`)
-  process.exit(0)
+  process.exit(1)
+}
+
+const account = await fetch(
+  `${GRAPH}/${igUserId}?fields=id,username&access_token=${token}`,
+).then(response => response.json()).catch(() => null)
+if (!account || account.error) fail(`Instagram アカウントを確認できない: ${JSON.stringify(account?.error ?? null)}`)
+if (String(account.username ?? '').toLowerCase() !== expectedAccount.toLowerCase()) {
+  fail(`投稿先が @${expectedAccount} ではなく @${account.username ?? 'unknown'} です`)
 }
 
 if (dryRun) {
-  console.log('--dry なのでここまで。認証情報は揃っている。')
+  console.log(JSON.stringify({
+    dryRun: true,
+    account: { id: account.id, username: account.username },
+    mediaType: videoUrl ? 'REELS' : imageUrls.length > 1 ? 'CAROUSEL' : 'IMAGE',
+    mediaCount: targets.length,
+    captionLength: caption.length,
+  }, null, 2))
   process.exit(0)
 }
 
-// 1. コンテナ
-const createParams = new URLSearchParams({ caption, access_token: token })
-if (videoUrl) {
-  createParams.set('media_type', 'REELS')
-  createParams.set('video_url', videoUrl)
-} else {
-  createParams.set('image_url', imageUrl)
+async function createContainer(params) {
+  params.set('access_token', token)
+  const created = await fetch(`${GRAPH}/${igUserId}/media`, {
+    method: 'POST', body: params,
+  }).then(response => response.json())
+  if (created.error) fail(`コンテナ作成に失敗: ${JSON.stringify(created.error)}`)
+  console.log(`コンテナ作成: ${created.id}`)
+  return created.id
 }
-const created = await fetch(`${GRAPH}/${igUserId}/media`, {
-  method: 'POST', body: createParams,
-}).then((r) => r.json())
-if (created.error) fail(`コンテナ作成に失敗: ${JSON.stringify(created.error)}`)
-const containerId = created.id
-console.log(`コンテナ作成: ${containerId}`)
 
-// 2. 処理待ち。動画は 30 秒〜数分かかる。
-if (videoUrl) {
+async function waitUntilFinished(containerId) {
   const deadline = Date.now() + 10 * 60 * 1000
   for (;;) {
-    if (Date.now() > deadline) fail('動画の処理が10分で終わらなかった')
+    if (Date.now() > deadline) fail(`メディアの処理が10分で終わらなかった: ${containerId}`)
     const status = await fetch(
       `${GRAPH}/${containerId}?fields=status_code,status&access_token=${token}`,
-    ).then((r) => r.json())
+    ).then(response => response.json())
     if (status.status_code === 'FINISHED') { console.log('処理完了'); break }
     if (status.status_code === 'ERROR') {
-      fail(`動画の処理でエラー: ${status.status ?? '詳細なし'}`)
+      fail(`メディアの処理でエラー: ${status.status ?? '詳細なし'}`)
     }
     console.log(`  待機中… ${status.status_code ?? '?'}`)
     await new Promise((resolve) => setTimeout(resolve, 6000))
   }
+}
+
+let containerId
+if (videoUrl) {
+  containerId = await createContainer(new URLSearchParams({
+    caption,
+    media_type: 'REELS',
+    video_url: videoUrl,
+  }))
+  await waitUntilFinished(containerId)
+} else if (imageUrls.length === 1) {
+  containerId = await createContainer(new URLSearchParams({ caption, image_url: imageUrls[0] }))
+  await waitUntilFinished(containerId)
+} else {
+  const children = []
+  for (const imageUrl of imageUrls) {
+    const childId = await createContainer(new URLSearchParams({
+      image_url: imageUrl,
+      is_carousel_item: 'true',
+    }))
+    await waitUntilFinished(childId)
+    children.push(childId)
+  }
+  containerId = await createContainer(new URLSearchParams({
+    caption,
+    media_type: 'CAROUSEL',
+    children: children.join(','),
+  }))
+  await waitUntilFinished(containerId)
 }
 
 // 3. 公開
