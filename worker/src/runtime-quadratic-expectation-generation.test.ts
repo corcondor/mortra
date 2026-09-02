@@ -38,6 +38,16 @@ test('synthesizes several fresh questions through invertible coordinate charts',
   assert.ok(result.cards.every(card => card.verification.exact_backend && card.verification.independent_check))
 })
 
+test('writes negative coefficients and unit shears as ordinary mathematics', () => {
+  const result = synthesizeRuntimeQuadraticExpectationProblems(parents, 3)
+  assert.equal(result.cards.length, 3)
+  assert.ok(result.cards[1].solution_tex.includes('座標変換 \\((x+y,y)\\)'))
+  assert.match(result.cards[2].solution_tex, /-7\\mathbb E\[XY\]/)
+  assert.ok(result.cards[2].solution_tex.includes('座標変換 \\((x,y-x)\\)'))
+  assert.equal(result.cards[2].solution_tex.includes('+-7'), false)
+  assert.equal(result.cards[2].solution_tex.includes('-1x'), false)
+})
+
 test('accepts direct second moments and either parent order', () => {
   const reversed = [
     {

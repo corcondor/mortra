@@ -294,28 +294,39 @@ function transform(
   if (variant % 4 <= 1) {
     return {
       coefficients: [a, add(multiply(q(2n), multiply(a, t)), b), add(add(multiply(a, square(t)), multiply(b, t)), c)],
-      substitution: `(${x}${t.n < 0n ? '' : '+'}${format(t)}${y},${y})`,
+      substitution: `(${signedVariableOffset(x, t, y)},${y})`,
       determinant: 1,
     }
   }
   return {
     coefficients: [add(add(a, multiply(b, t)), multiply(c, square(t))), add(b, multiply(q(2n), multiply(c, t))), c],
-    substitution: `(${x},${y}${t.n < 0n ? '' : '+'}${format(t)}${x})`,
+    substitution: `(${x},${signedVariableOffset(y, t, x)})`,
     determinant: 1,
   }
 }
 
-function polynomialTex(coefficients: readonly [Q, Q, Q], x: string, y: string): string {
-  const monomials = [`${x}^{2}`, `${x}${y}`, `${y}^{2}`]
+function signedVariableOffset(base: string, coefficient: Q, variable: string): string {
+  if (isZero(coefficient)) return base
+  const negative = coefficient.n < 0n
+  const absolute = q(negative ? -coefficient.n : coefficient.n, coefficient.d)
+  const magnitude = equal(absolute, ONE) ? '' : tex(absolute)
+  return `${base}${negative ? '-' : '+'}${magnitude}${variable}`
+}
+
+function linearCombinationTex(coefficients: readonly Q[], terms: readonly string[]): string {
   const pieces: string[] = []
   coefficients.forEach((coefficient, index) => {
     if (isZero(coefficient)) return
     const negative = coefficient.n < 0n
     const absolute = q(negative ? -coefficient.n : coefficient.n, coefficient.d)
-    const body = equal(absolute, ONE) ? monomials[index] : `${tex(absolute)}${monomials[index]}`
+    const body = equal(absolute, ONE) ? terms[index] : `${tex(absolute)}${terms[index]}`
     pieces.push(pieces.length === 0 ? (negative ? `-${body}` : body) : (negative ? `-${body}` : `+${body}`))
   })
   return pieces.join('') || '0'
+}
+
+function polynomialTex(coefficients: readonly [Q, Q, Q], x: string, y: string): string {
+  return linearCombinationTex(coefficients, [`${x}^{2}`, `${x}${y}`, `${y}^{2}`])
 }
 
 function matrixTex(coefficients: readonly [Q, Q, Q]): string {
@@ -377,6 +388,11 @@ function generatedCard(
   const [formX, formY] = form.variables
   const [randomX, randomY] = moments.variables
   const qTex = polynomialTex(transformed.coefficients, formX, formY)
+  const directExpansionTex = linearCombinationTex(transformed.coefficients, [
+    `\\mathbb E[${randomX}^2]`,
+    `\\mathbb E[${randomX}${randomY}]`,
+    `\\mathbb E[${randomY}^2]`,
+  ])
   const matrix = matrixTex(transformed.coefficients)
   const secondMomentMatrix = momentMatrixTex(moments.matrix)
   const answer = tex(value)
@@ -450,8 +466,8 @@ function generatedCard(
       `で表す。二次形式の期待値は、対応する成分を掛けて足すことで` +
       `\\[\\mathbb E[q(${randomX},${randomY})]=\\operatorname{tr}(AM)=${answer}\\]` +
       `となる。直接展開しても` +
-      `\\[${tex(transformed.coefficients[0])}\\mathbb E[${randomX}^2]+${tex(transformed.coefficients[1])}\\mathbb E[${randomX}${randomY}]+${tex(transformed.coefficients[2])}\\mathbb E[${randomY}^2]=${answer}\\]` +
-      `であり、行列計算と一致する。座標変換 ${transformed.substitution} の行列式は1なので、元の二次形式の構造を失っていない。` +
+      `\\[${directExpansionTex}=${answer}\\]` +
+      `であり、行列計算と一致する。座標変換 \\(${transformed.substitution}\\) の行列式は1なので、元の二次形式の構造を失っていない。` +
       `さらに、証明書に保存した階数1の摂動により、二次形式または二次モーメントのどちらを変えても答えが変わることを厳密に確認した。`,
     domain: 'quadratic_forms_and_probability',
     morphism_chain: chain,
