@@ -53,6 +53,8 @@
 
 本番環境の機械可読記録と画面記録は `artifacts/test-results/public-document-input-production-4cd0abc/` に保存した。
 
+続くコミット `b22735111572c6e315a87f20293d09b57d94f716` では、直角三角形の解説にあった重複読点を修正した。本番APIの解説原文と幅390ピクセルの実画面を再確認し、三辺が `(m^2-n^2,2mn,m^2+n^2)` と表示されることを確認した。
+
 すべての事例で、Unicodeの置換文字 `U+FFFD` は検出されなかった。日本語と数式の混在による文字化けも確認されなかった。幅390ピクセル、高さ844ピクセルのスマートフォン表示でも、入力、進行状況、図、答え、証明書は重ならずに表示された。
 
 公開用ビルドは成功した。日本語トップページ `/ja` の初回読込JavaScriptは460 kBである。約200 MBの文字・数式認識モデルはこの数値に含まれず、画像またはPDFを選んだ場合だけ読み込まれる。
@@ -85,4 +87,5 @@
 - 画面記録: `artifacts/test-results/public-document-input-local-20260902/`
 - ローカル基準コミット: `d7cee1efe5d36c95463ddd5bf0e77895c766c491`
 - 本番再検証コミット: `4cd0abc2de2e98b0d7e20865c9e846c83219e673`
+- 最終表示確認コミット: `b22735111572c6e315a87f20293d09b57d94f716`
 - 本番機械可読記録: `artifacts/test-results/public-document-input-production-4cd0abc/report.json`

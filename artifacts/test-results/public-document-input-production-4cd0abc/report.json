@@ -1,7 +1,8 @@
 {
   "schemaVersion": 1,
   "recordedAt": "2026-09-02T15:26:35+09:00",
-  "deployedCommit": "4cd0abc2de2e98b0d7e20865c9e846c83219e673",
+  "baseDeployedCommit": "4cd0abc2de2e98b0d7e20865c9e846c83219e673",
+  "finalVerifiedCommit": "b22735111572c6e315a87f20293d09b57d94f716",
   "environment": {
     "target": "production",
     "url": "https://mortra.ai/ja?qa=4cd0abc",
@@ -40,7 +41,7 @@
       "proofMorphisms": 4,
       "certificate": true,
       "mojibake": false,
-      "evidence": ["right-triangle-image-result.png"]
+      "evidence": ["right-triangle-image-result.png", "mobile-right-triangle-punctuation-fixed.png"]
     },
     {
       "id": "integral-inequality-pdf",
@@ -120,6 +121,15 @@
   "performanceObservation": {
     "status": "needs-improvement",
     "detail": "The first browser-local OCR model load and PDF recognition took several minutes. Exact timing was not instrumented in this run. Subsequent PNG recognition completed, but still showed a visible wait."
+  },
+  "finalDisplayRecheck": {
+    "commit": "b22735111572c6e315a87f20293d09b57d94f716",
+    "case": "right-triangle-incenter-circumcenter-image",
+    "rawApiTuple": "(m^2-n^2,2mn,m^2+n^2)",
+    "visibleTuple": "(m^2-n^2,2mn,m^2+n^2)",
+    "duplicateCommas": false,
+    "certificateSha256": "d75e4861c7c7662296e2886979d03dd876b20115850a33b932aa1b1251f267cd",
+    "evidence": "mobile-right-triangle-punctuation-fixed.png"
   },
   "conclusion": {
     "verified": "Production supports typed input, PNG OCR, first-page PDF extraction, exact single-problem solutions with diagrams and certificates, and a verified one-to-many quadratic-form/expectation fusion.",
