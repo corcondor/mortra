@@ -750,6 +750,87 @@ class PublicSolveTests(unittest.TestCase):
             certificate["statement_sha256"],
         )
 
+    def test_public_product_solves_cubic_circle_hexagon_with_exact_figure(self) -> None:
+        problem = (
+            r"原点を通り、最高次係数が正である3次関数 $y=f(x)$ と単位円 "
+            r"$x^2+y^2=1$ が相異なる6点で交わる。これらの交点を結んで作る"
+            r"六角形の各内角が $p_1\pi/q,\ldots,p_6\pi/q$ と表せる正の整数 "
+            r"$q$ の最小値と、そのときの $f(x)$ を求めよ。"
+        )
+
+        status, payload = solve_public_problem(problem)
+
+        self.assertEqual(status, 200)
+        self.assertIs(payload["uses_external_llm"], False)
+        card = payload["cards"][0]
+        self.assertEqual(
+            card["answer_tex"],
+            r"\(q=5,\qquad f(x)=\frac{4(\sqrt5-1)}{\sqrt3}x^3-"
+            r"\frac{3\sqrt5-2}{\sqrt3}x.\)",
+        )
+        self.assertEqual(card["diagram"]["kind"], "plane")
+        self.assertEqual(len(card["diagram"]["shapes"]), 12)
+        self.assertGreaterEqual(len(card["visual_explanation"]["steps"]), 4)
+        certificate = card["execution_certificate"]
+        self.assertTrue(certificate["cold_generalization_validated"])
+        self.assertFalse(certificate["registered_completed_route_used"])
+        self.assertEqual(
+            certificate["query_objects"]["polygon_vertex_source"],
+            "all_intersections_in_cyclic_order",
+        )
+        self.assertEqual(
+            certificate["witness"]["current_input_replay"][
+                "scaled_substitution_residuals"
+            ],
+            ["0"] * 6,
+        )
+
+    def test_public_cubic_circle_hexagon_recomputes_scale_and_variable_names(self) -> None:
+        problem = (
+            r"原点を通る首項係数が正の三次関数 $v=g(u)$ と円 $u^2+v^2=4$ は"
+            r"異なる六個の点で交わる。全交点を順に結んだ6角形の各内角が "
+            r"$a_1\pi/r,\ldots,a_6\pi/r$ と表される。正の整数 $r$ の最小値と"
+            r" $g(u)$ を求めよ。"
+        )
+
+        status, payload = solve_public_problem(problem)
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assertIn(r"r=5", card["answer_tex"])
+        self.assertIn(r"g(u)", card["answer_tex"])
+        certificate = card["execution_certificate"]
+        self.assertTrue(certificate["cold_generalization_validated"])
+        self.assertEqual(certificate["query_objects"]["circle_radius"], "2")
+        self.assertEqual(
+            certificate["query_objects"]["variable_binding"],
+            {
+                "abscissa": "u",
+                "ordinate": "v",
+                "function": "g",
+                "denominator": "r",
+            },
+        )
+
+    def test_public_cubic_circle_hexagon_accepts_live_japanese_word_order(self) -> None:
+        problem = (
+            "原点を通り、最高次係数が正である3次関数 y=f(x) と単位円 "
+            "x^2+y^2=1 が相異なる6点で交わる。これらの交点を円周上の順に"
+            "結んでできる六角形の各内角が、ある正の整数 q と整数 "
+            "p_1,p_2,...,p_6 を用いて p_1π/q,p_2π/q,...,p_6π/q と"
+            "表せるとする。q の最小値と、そのときの f(x) を求めよ。"
+        )
+
+        status, payload = solve_public_problem(problem)
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assertIn(r"q=5", card["answer_tex"])
+        self.assertEqual(card["diagram"]["kind"], "plane")
+        self.assertTrue(
+            card["execution_certificate"]["cold_generalization_validated"]
+        )
+
     def test_public_product_solves_an_unregistered_exact_integral(self) -> None:
         status, payload = solve_public_problem(r"$\int_0^1 x^3\,dx$ を求めよ。")
 

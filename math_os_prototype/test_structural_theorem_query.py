@@ -1271,8 +1271,114 @@ class StructuralTheoremQueryTests(unittest.TestCase):
             phase_audit["accepted_point_sets_mod_60"],
             [[1, 19, 25, 31, 49, 55]],
         )
-        self.assertIn(r"\operatorname{Im}(e_2)", result["derivation_tex"][2])
+        self.assertTrue(
+            any(
+                r"\operatorname{Im}(e_2)" in step
+                for step in result["derivation_tex"]
+            )
+        )
         self.assertIn("tikzpicture", result["diagram_tikz"])
+        self.assertTrue(result["certificate"]["cold_generalization_validated"])
+        self.assertEqual(result["diagram"]["kind"], "plane")
+        self.assertEqual(len(result["diagram"]["shapes"]), 12)
+
+    def test_cubic_circle_rational_hexagon_scales_and_alpha_renames(self) -> None:
+        statement = (
+            r"原点を通る首項係数が正の三次関数 $v=g(u)$ と円 "
+            r"$u^2+v^2=4$ は異なる六個の点で交わる。全交点を順に結んだ"
+            r"6角形の各内角が $a_1\pi/r,\ldots,a_6\pi/r$ と表される。"
+            r"正の整数 $r$ の最小値と $g(u)$ を求めよ。"
+        )
+
+        compiled = compile_structural_theorem_query(statement)
+
+        self.assertIsNotNone(compiled)
+        self.assertEqual(compiled.operator, "cubic_circle_rational_hexagon")
+        self.assertEqual(compiled.objects["circle_radius"], "2")
+        self.assertEqual(
+            compiled.objects["variable_binding"],
+            {
+                "abscissa": "u",
+                "ordinate": "v",
+                "function": "g",
+                "denominator": "r",
+            },
+        )
+        result = execute_structural_theorem_query(compiled.to_dict())
+        self.assertTrue(result["certificate"]["cold_generalization_validated"])
+        self.assertIn("r=5", result["answer_exact"])
+        self.assertIn("g(u)", result["answer_tex"])
+        self.assertNotIn(r"\left(2\right)^2", result["answer_tex"])
+        self.assertIn(r"\frac{(\sqrt5-1)}{\sqrt3}u^3", result["answer_tex"])
+        derivation = "\n".join(result["derivation_tex"])
+        self.assertIn(r"a_i\pi/r", derivation)
+        self.assertIn(r"\(r=3\)", derivation)
+        self.assertNotIn(r"p_i\pi/q", derivation)
+        self.assertNotIn(r"\(f(x)", derivation)
+        self.assertEqual(
+            result["certificate"]["witness"]["current_input_replay"][
+                "scaled_substitution_residuals"
+            ],
+            ["0"] * 6,
+        )
+        expected_leading = (sp.sqrt(5) - 1) / sp.sqrt(3)
+        actual_leading = sp.sympify(
+            result["certificate"]["witness"]["cubic_coefficients"]["u^3"]
+        )
+        self.assertEqual(sp.simplify(actual_leading - expected_leading), 0)
+
+    def test_cubic_circle_rational_hexagon_accepts_declared_denominator_before_angles(self) -> None:
+        statement = (
+            "原点を通り、最高次係数が正である3次関数 y=f(x) と単位円 "
+            "x^2+y^2=1 が相異なる6点で交わる。これらの交点を円周上の順に"
+            "結んでできる六角形の各内角が、ある正の整数 q と整数 "
+            "p_1,p_2,...,p_6 を用いて p_1π/q,p_2π/q,...,p_6π/q と"
+            "表せるとする。q の最小値と、そのときの f(x) を求めよ。"
+        )
+
+        compiled = compile_structural_theorem_query(statement)
+
+        self.assertIsNotNone(compiled)
+        self.assertEqual(compiled.operator, "cubic_circle_rational_hexagon")
+        result = execute_structural_theorem_query(compiled.to_dict())
+        self.assertTrue(result["verified"])
+        self.assertIn("q=5", result["answer_exact"])
+
+    def test_cubic_circle_rational_hexagon_accepts_pi_after_fraction(self) -> None:
+        statement = (
+            r"原点を通り、最高次係数が正である3次関数 $y=f(x)$ と単位円 "
+            r"$x^2+y^2=1$ が相異なる6点で交わる。これらの交点を結ぶ六角形の"
+            r"各内角が $\frac{p_1}{q}\pi,\ldots,\frac{p_6}{q}\pi$ と表せる"
+            r"正の整数 $q$ の最小値と $f(x)$ を求めよ。"
+        )
+
+        compiled = compile_structural_theorem_query(statement)
+
+        self.assertIsNotNone(compiled)
+        self.assertEqual(compiled.objects["variable_binding"]["denominator"], "q")
+
+    def test_cubic_circle_rational_hexagon_rejects_changed_structure(self) -> None:
+        statement = (
+            r"原点を通り、最高次係数が正である3次関数 $y=f(x)$ と単位円 "
+            r"$x^2+y^2=1$ が相異なる6点で交わる。これらを結ぶ六角形の各内角が "
+            r"$p_1\pi/q,\ldots,p_6\pi/q$ と表せる正の整数qの最小値とf(x)を求めよ。"
+        )
+        mutations = (
+            statement.replace("原点を通り、", ""),
+            statement.replace("最高次係数が正", "最高次係数が負"),
+            statement.replace("相異なる6点", "相異なる5点"),
+            statement.replace("六角形", "五角形"),
+            statement.replace("各内角", "各辺長"),
+            statement.replace("x^2+y^2=1", "(x-1)^2+y^2=1"),
+            statement.replace("x^2+y^2=1", "x^2+y^2=4"),
+        )
+        for mutation in mutations:
+            with self.subTest(mutation=mutation):
+                compiled = compile_structural_theorem_query(mutation)
+                self.assertTrue(
+                    compiled is None
+                    or compiled.operator != "cubic_circle_rational_hexagon"
+                )
 
     def test_sample_mean_geomean_correlation_emits_reusable_exact_chart(self) -> None:
         statement = (

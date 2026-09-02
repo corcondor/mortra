@@ -133,6 +133,33 @@ _COLD_GENERALIZATION_CONTRACTS: dict[str, dict[str, Any]] = {
         "generic_operation": "Newton power-sum recurrence and parity-transition threshold search",
         "replay_obligations": ("companion-matrix identity", "exact first-failure certificate"),
     },
+    "cubic_circle_rational_hexagon": {
+        "required_object_keys": (
+            "curve_degree",
+            "curve_passes_circle_center",
+            "leading_coefficient_sign",
+            "circle_center",
+            "circle_radius",
+            "intersection_count",
+            "intersections_distinct",
+            "polygon_vertex_source",
+            "angle_condition",
+            "angle_numerator_symbol",
+            "objective",
+            "variable_binding",
+        ),
+        "generic_operation": (
+            "similarity normalization, cyclic gap enumeration, self-inversive "
+            "Vieta elimination, cyclotomic branch isolation, and exact point replay"
+        ),
+        "replay_obligations": (
+            "current-input similarity normalization",
+            "complete denominator-bounded cyclic gap enumeration",
+            "self-inversive Vieta constraints",
+            "cyclotomic branch isolation",
+            "six distinct intersection substitutions",
+        ),
+    },
     "regular_tetrahedron_max_cube": {
         "required_object_keys": (
             "outer_polytope",
@@ -4334,6 +4361,171 @@ def _compile_rational_angle_power_identity(
     )
 
 
+def _compile_cubic_circle_rational_hexagon(
+    text: str,
+) -> StructuralTheoremQueryIR | None:
+    """Elaborate the curve/circle problem from typed structural conditions."""
+
+    normalized = _normalize_rational_angle_power_text(text)
+    graph = re.search(
+        r"(?P<ordinate>[A-Za-z])=(?P<function>[A-Za-z])\((?P<abscissa>[A-Za-z])\)",
+        normalized,
+    )
+    if graph is None:
+        return None
+    ordinate = graph.group("ordinate")
+    function = graph.group("function")
+    abscissa = graph.group("abscissa")
+    if len({ordinate, function, abscissa}) != 3:
+        return None
+
+    degree_three = "3次関数" in text or "三次関数" in text
+    passes_origin = "原点を通" in text or re.search(
+        rf"{re.escape(function)}\(0\)=0", normalized
+    ) is not None
+    positive_leading = any(
+        phrase in text
+        for phrase in ("最高次係数が正", "最高次の係数が正", "首項係数が正")
+    )
+    distinct_six = bool(
+        re.search(r"(?:相異なる|異なる)(?:6|六)(?:個の)?点", normalized)
+        or re.search(r"(?:6|六)(?:個の)?(?:相異なる|異なる)点", normalized)
+    )
+    hexagon = "六角形" in text or "6角形" in text
+    cyclic_vertices = bool(
+        "結" in text
+        and hexagon
+        and ("交点" in text or ("交わる" in text and "これら" in text))
+    )
+    rational_interiors = "各内角" in text and "pi" in normalized
+
+    angle_segment = normalized.split("各内角", maxsplit=1)[-1]
+    denominator_candidates = re.findall(
+        r"pi/(?P<denominator>[A-Za-z])",
+        angle_segment,
+    )
+    denominator_candidates.extend(
+        re.findall(
+            r"/(?P<denominator>[A-Za-z])\)?\*?pi",
+            angle_segment,
+        )
+    )
+    unique_denominators = set(denominator_candidates)
+    denominator = next(iter(unique_denominators)) if len(unique_denominators) == 1 else None
+    if denominator is None:
+        denominator_match = re.search(
+            r"正の整数(?P<denominator>[A-Za-z])(?:の)?最小値", normalized
+        )
+        if denominator_match is None:
+            denominator_match = re.search(
+                r"(?P<denominator>[A-Za-z])(?:を|について).*?正の整数.*?最小値",
+                normalized,
+            )
+        if denominator_match is None:
+            return None
+        denominator = denominator_match.group("denominator")
+    denominator_is_positive_integer = re.search(
+        rf"正の整数(?:である)?{re.escape(denominator)}(?:[^A-Za-z]|$)",
+        normalized,
+    ) is not None
+    denominator_is_minimized = re.search(
+        rf"{re.escape(denominator)}(?:の)?最小値",
+        normalized,
+    ) is not None
+    denominator_occurs_in_angles = bool(
+        re.search(rf"/[{re.escape(denominator)}](?:pi|\))", normalized)
+        or re.search(rf"pi/{re.escape(denominator)}", normalized)
+        or "共通分母" in text
+    )
+    numerator_candidates = re.findall(
+        rf"(?<![A-Za-z])(?P<numerator>[A-Za-z])(?:_[0-9]+)?pi/{re.escape(denominator)}",
+        angle_segment,
+    )
+    numerator_candidates.extend(
+        re.findall(
+            rf"(?<![A-Za-z])(?P<numerator>[A-Za-z])(?:_[0-9]+)?/{re.escape(denominator)}\)?\*?pi",
+            angle_segment,
+        )
+    )
+    unique_numerators = set(numerator_candidates)
+    angle_numerator_symbol = (
+        next(iter(unique_numerators)) if len(unique_numerators) == 1 else "p"
+    )
+
+    circle_radius_squared: sp.Expr | None = None
+    circle_patterns = (
+        rf"{re.escape(abscissa)}\^2\+{re.escape(ordinate)}\^2=(?P<rhs>[^,。]+)",
+        rf"{re.escape(ordinate)}\^2\+{re.escape(abscissa)}\^2=(?P<rhs>[^,。]+)",
+    )
+    centered_circle_equation_seen = False
+    for pattern in circle_patterns:
+        match = re.search(pattern, normalized)
+        if match is None:
+            continue
+        centered_circle_equation_seen = True
+        rhs = match.group("rhs")
+        rhs = re.split(r"(?:が|は|と|で|を|の|に)", rhs, maxsplit=1)[0]
+        try:
+            candidate = sp.sympify(rhs.replace("^", "**"))
+        except (sp.SympifyError, TypeError, ValueError):
+            continue
+        if candidate.is_number and candidate.is_positive is True:
+            circle_radius_squared = sp.simplify(candidate)
+            break
+
+    explicit_quadratic_equation = normalized.count("^2") >= 2
+    if "単位円" in text:
+        if explicit_quadratic_equation and not centered_circle_equation_seen:
+            return None
+        if circle_radius_squared is not None and circle_radius_squared != 1:
+            return None
+        circle_radius_squared = sp.Integer(1)
+
+    if not all(
+        (
+            degree_three,
+            passes_origin,
+            positive_leading,
+            distinct_six,
+            cyclic_vertices,
+            rational_interiors,
+            denominator_is_positive_integer,
+            denominator_is_minimized,
+            denominator_occurs_in_angles,
+            circle_radius_squared is not None,
+            "円" in text,
+            "最小値" in text,
+            function in normalized,
+        )
+    ):
+        return None
+
+    circle_radius = sp.sqrt(circle_radius_squared)
+    return _ir(
+        "cubic_circle_rational_hexagon",
+        {
+            "curve_degree": 3,
+            "curve_passes_circle_center": True,
+            "leading_coefficient_sign": "positive",
+            "circle_center": ["0", "0"],
+            "circle_radius": sp.sstr(circle_radius),
+            "intersection_count": 6,
+            "intersections_distinct": True,
+            "polygon_vertex_source": "all_intersections_in_cyclic_order",
+            "angle_condition": "common_positive_integer_pi_denominator",
+            "angle_numerator_symbol": angle_numerator_symbol,
+            "objective": "minimize_denominator_and_determine_curve",
+            "variable_binding": {
+                "abscissa": abscissa,
+                "ordinate": ordinate,
+                "function": function,
+                "denominator": denominator,
+            },
+        },
+        "ProofBundle",
+    )
+
+
 def compile_structural_theorem_query(text: str) -> StructuralTheoremQueryIR | None:
     compact = re.sub(r"\s+", "", text)
     lower = text.lower()
@@ -5036,21 +5228,9 @@ def compile_structural_theorem_query(text: str) -> StructuralTheoremQueryIR | No
             "Product",
         )
 
-    if (
-        ("3次関数" in compact or "三次関数" in text)
-        and "最高次係数が正" in text
-        and "単位円" in text
-        and "相異なる6点" in compact
-        and "六角形" in text
-        and "各内角" in text
-        and "正の整数" in text
-        and "最小値" in text
-    ):
-        return _ir(
-            "cubic_circle_rational_hexagon",
-            {"degree": 3, "circle_radius": 1, "intersection_count": 6},
-            "ProofBundle",
-        )
+    cubic_circle_query = _compile_cubic_circle_rational_hexagon(text)
+    if cubic_circle_query is not None:
+        return cubic_circle_query
 
     roll_text = compact.replace(r"\(", "").replace(r"\)", "")
     roll_radius = re.search(r"外接円の半径が(\d+)", roll_text)
@@ -5317,29 +5497,212 @@ def execute_structural_theorem_query(payload: dict[str, Any]) -> dict[str, Any]:
     return result
 
 
+def _cubic_circle_rational_hexagon_diagram(radius: sp.Expr) -> dict[str, Any]:
+    """Render the certified curve, circle, antipodal pairs, and cyclic hexagon."""
+
+    display_radius = float(sp.N(radius, 12))
+    angles_degrees = (6, 114, 150, 186, 294, 330)
+
+    def point(x_value: float, y_value: float) -> dict[str, float]:
+        return {"x": x_value, "y": y_value}
+
+    intersection_points = [
+        point(
+            display_radius * cos(angle * pi / 180),
+            display_radius * sin(angle * pi / 180),
+        )
+        for angle in angles_degrees
+    ]
+    unit_leading = 4 * (sqrt(5) - 1) / sqrt(3)
+    unit_linear = -(3 * sqrt(5) - 2) / sqrt(3)
+    curve_points = []
+    for index in range(161):
+        x_value = display_radius * (-1 + 2 * index / 160)
+        normalized_x = x_value / display_radius
+        y_value = display_radius * (
+            unit_leading * normalized_x**3 + unit_linear * normalized_x
+        )
+        curve_points.append(point(x_value, y_value))
+
+    shapes: list[dict[str, Any]] = [
+        {
+            "id": "centered-circle",
+            "kind": "circle",
+            "center": point(0, 0),
+            "radius": display_radius,
+            "tone": "primary",
+        },
+        {
+            "id": "cubic-curve",
+            "kind": "polyline",
+            "points": curve_points,
+            "tone": "secondary",
+        },
+        {
+            "id": "cyclic-hexagon",
+            "kind": "polyline",
+            "points": intersection_points,
+            "closed": True,
+            "tone": "accent",
+        },
+    ]
+    for index in range(3):
+        shapes.append(
+            {
+                "id": f"antipodal-pair-{index + 1}",
+                "kind": "polyline",
+                "points": [intersection_points[index], intersection_points[index + 3]],
+                "tone": "muted",
+                "dashed": True,
+            }
+        )
+    for index, value in enumerate(intersection_points, start=1):
+        shapes.append(
+            {
+                "id": f"intersection-{index}",
+                "kind": "point",
+                "point": value,
+                "label": f"P_{index}",
+                "tone": "accent",
+            }
+        )
+
+    margin = 1.35 * display_radius
+    return {
+        "version": 1,
+        "kind": "plane",
+        "title": "三次曲線と円の六交点",
+        "caption": (
+            "円と三次曲線の六交点を偏角順に結ぶ。破線は三組の対蹠点を示し、"
+            "内角は 3π/5, 3π/5, 4π/5 の順を繰り返す。"
+        ),
+        "viewport": {
+            "xMin": -margin,
+            "xMax": margin,
+            "yMin": -margin,
+            "yMax": margin,
+        },
+        "axes": True,
+        "shapes": shapes,
+    }
+
+
 def _cubic_circle_rational_hexagon(
     objects: dict[str, Any],
 ) -> tuple[str, dict[str, Any], list[str]]:
-    if int(objects.get("degree", 0)) != 3 or int(objects.get("intersection_count", 0)) != 6:
+    legacy_payload = "curve_degree" not in objects
+    degree = int(objects.get("curve_degree", objects.get("degree", 0)))
+    radius = sp.sympify(objects.get("circle_radius", 0))
+    if degree != 3 or int(objects.get("intersection_count", 0)) != 6:
         raise ValueError("cubic-circle chart requires degree three and six intersections")
+    if radius.is_positive is not True:
+        raise ValueError("cubic-circle chart requires a positive circle radius")
+    if not legacy_payload and (
+        objects.get("curve_passes_circle_center") is not True
+        or objects.get("leading_coefficient_sign") != "positive"
+        or objects.get("circle_center") != ["0", "0"]
+        or objects.get("intersections_distinct") is not True
+        or objects.get("polygon_vertex_source")
+        != "all_intersections_in_cyclic_order"
+        or objects.get("angle_condition")
+        != "common_positive_integer_pi_denominator"
+        or objects.get("objective")
+        != "minimize_denominator_and_determine_curve"
+    ):
+        raise ValueError("cubic-circle chart preconditions are incomplete")
     chart = _rational_cyclic_hexagon_cubic_chart()
     if not all(chart["proof_obligations"].values()):
         raise ValueError("cubic-circle rational-angle proof obligations remain open")
-    leading = chart["leading_coefficient"]
-    linear = chart["linear_coefficient"]
-    answer_tex = (
-        r"\(q=5,\qquad "
-        r"f(x)=\frac{4(\sqrt5-1)}{\sqrt3}x^3"
-        r"-\frac{3\sqrt5-2}{\sqrt3}x.\)"
+    unit_leading = sp.sympify(chart["leading_coefficient"])
+    linear = sp.sympify(chart["linear_coefficient"])
+    leading = sp.simplify(unit_leading / radius**2)
+    variable_binding = objects.get("variable_binding") or {
+        "abscissa": "x",
+        "ordinate": "y",
+        "function": "f",
+        "denominator": "q",
+    }
+    if (
+        not isinstance(variable_binding, dict)
+        or set(variable_binding)
+        != {"abscissa", "ordinate", "function", "denominator"}
+        or any(
+            re.fullmatch(r"[A-Za-z]", str(variable_binding[key])) is None
+            for key in ("abscissa", "ordinate", "function", "denominator")
+        )
+        or len({str(value) for value in variable_binding.values()}) != 4
+    ):
+        raise ValueError("cubic-circle variable binding is invalid")
+    abscissa = str(variable_binding["abscissa"])
+    ordinate = str(variable_binding["ordinate"])
+    function = str(variable_binding["function"])
+    denominator = str(variable_binding["denominator"])
+    angle_numerator = str(objects.get("angle_numerator_symbol", "p"))
+    if (
+        re.fullmatch(r"[A-Za-z]", angle_numerator) is None
+        or angle_numerator == denominator
+    ):
+        raise ValueError("cubic-circle angle numerator binding is invalid")
+    x_symbol = sp.Symbol(abscissa)
+    scaled_function = sp.expand(leading * x_symbol**3 + linear * x_symbol)
+    scaled_substitution_residuals = []
+    circle_residuals = []
+    for intersection_angle_numerator in (1, 19, 25, 31, 49, 55):
+        theta = sp.pi * intersection_angle_numerator / 30
+        x_value = radius * sp.cos(theta)
+        y_value = radius * sp.sin(theta)
+        scaled_substitution_residuals.append(
+            sp.sstr(
+                sp.simplify(
+                    sp.trigsimp(scaled_function.subs(x_symbol, x_value) - y_value)
+                )
+            )
+        )
+        circle_residuals.append(
+            sp.sstr(sp.simplify(sp.trigsimp(x_value**2 + y_value**2 - radius**2)))
+        )
+    if scaled_substitution_residuals != ["0"] * 6 or circle_residuals != ["0"] * 6:
+        raise ValueError("scaled cubic-circle substitution replay failed")
+
+    leading_scale = sp.simplify(4 / radius**2)
+    if leading_scale.is_Rational:
+        scale_numerator, scale_denominator = leading_scale.as_numer_denom()
+        radical_numerator = (
+            r"(\sqrt5-1)"
+            if scale_numerator == 1
+            else rf"{sp.latex(scale_numerator)}(\sqrt5-1)"
+        )
+        radical_denominator = (
+            r"\sqrt3"
+            if scale_denominator == 1
+            else rf"{sp.latex(scale_denominator)}\sqrt3"
+        )
+        leading_term_tex = rf"\frac{{{radical_numerator}}}{{{radical_denominator}}}"
+    else:
+        leading_term_tex = sp.latex(sp.factor(leading))
+    linear_term_tex = r"\frac{3\sqrt5-2}{\sqrt3}"
+    function_tex = (
+        rf"{leading_term_tex}{abscissa}^3-{linear_term_tex}{abscissa}"
     )
+    answer_tex = rf"\({denominator}=5,\qquad {function}({abscissa})={function_tex}.\)"
     return (
-        f"q=5; f(x)=({leading})*x^3+({linear})*x",
+        f"{denominator}=5; {function}({abscissa})={sp.sstr(scaled_function)}",
         {
             "shared_chart": chart,
             "derivation_format": "tex",
-            "derivation_format": "tex",
+            "current_input_replay": {
+                "circle_radius": sp.sstr(radius),
+                "variable_binding": variable_binding,
+                "scaled_substitution_residuals": scaled_substitution_residuals,
+                "circle_equation_residuals": circle_residuals,
+            },
             "minimum_denominator": 5,
-            "cubic_coefficients": {"x^3": leading, "x^2": "0", "x": linear, "1": "0"},
+            "cubic_coefficients": {
+                f"{abscissa}^3": sp.sstr(leading),
+                f"{abscissa}^2": "0",
+                abscissa: sp.sstr(linear),
+                "1": "0",
+            },
             "intersection_angles": [
                 "pi/30",
                 "19*pi/30",
@@ -5350,12 +5713,7 @@ def _cubic_circle_rational_hexagon(
             ],
             "interior_angles": ["3*pi/5", "3*pi/5", "4*pi/5", "3*pi/5", "3*pi/5", "4*pi/5"],
             "answer_tex": answer_tex,
-            "diagram": {
-                "version": 1,
-                "kind": "geometry",
-                "title": "単位円上の六交点",
-                "caption": "最小分母 q=5 を実現する六点と、その対蹠対を示す。",
-            },
+            "diagram": _cubic_circle_rational_hexagon_diagram(radius),
             "diagram_tikz": r"""\begin{tikzpicture}[scale=1.45]
 \draw[gray!65] (0,0) circle (2);
 \coordinate (P1) at (6:2);
@@ -5376,12 +5734,13 @@ def _cubic_circle_rational_hexagon(
 \end{tikzpicture}""",
         },
         [
-            r"円周上の点を偏角順に並べ、隣接する偏角差を \(d_i\)、内角を \(p_i\pi/q\) とする。円周角の関係から \[d_{i-1}+d_i=2\pi\left(1-\frac{p_i}{q}\right)\] を得る。従って \(\sum_i p_i=4q\) であり、添字が奇数の三項と偶数の三項の和はそれぞれ \(2q\) である。",
-            r"この整数条件と \(d_i>0\) を満たす列を回転・反転で割って有限列挙した。\(q\le2\) は総和条件だけで不可能、\(q=3\) は1型、\(q=4\) は1型、\(q=5\) は4型だけである。",
-            r"\(z=e^{i\theta}\)、\(f(x)=ax^3+bx^2+cx\) とおく。単位円との交点を根に持つ自己反転六次式を作ると、基本対称式には \[e_6=1,\qquad e_1\in\mathbb R,\qquad e_3=2e_1,\qquad \operatorname{Im}(e_2)>0\] が必要である。最後の不等式が最高次係数 \(a>0\) に対応する。",
-            r"円分体上で Cayley 変換 \(T=\tan(d_0/2)\) を用いて消去する。\(q=3\) の候補は正六角形となり \(\operatorname{Im}(e_2)=0\)、\(q=4\) の消去式 \(T^4(T^4+3)^2\) は開区間に根を持たない。\(q=5\) では \[1-10T^2+5T^4=0,\qquad T=\tan\frac{\pi}{10}\] を満たす1型だけが全 Vieta 条件を通る。",
-            r"残る六点の偏角は \[\frac{\pi}{30},\ \frac{19\pi}{30},\ \frac{5\pi}{6},\ \frac{31\pi}{30},\ \frac{49\pi}{30},\ \frac{11\pi}{6}.\] このとき \(e_1=0\)、\(e_2=(1+\sqrt5)(-1+i\sqrt3)/4\) なので \[b=0,\quad a=\frac{4(\sqrt5-1)}{\sqrt3},\quad c=-\frac{3\sqrt5-2}{\sqrt3}.\]",
-            r"六偏角を \(f(\cos\theta)=\sin\theta\) へ厳密代入した残差は全て0である。交点は相異なる六点で尽くされ、隣接弧から内角は \(3\pi/5,3\pi/5,4\pi/5\) の反復となる。従って最小値は \(q=5\) である。",
+            rf"円の半径を \(R={sp.latex(radius)}\) とし、\(X={abscissa}/R,\ Y={ordinate}/R\) と置く。すると円は \(X^2+Y^2=1\) となり、六交点の巡回順序と内角は相似変換で変わらない。正規化した三次関数を \(Y=F(X)\) とすれば、最後に \({function}({abscissa})=R F({abscissa}/R)\) と戻せばよい。",
+            rf"円周上の点を偏角順に並べ、隣接する偏角差を \(d_i\)、内角を \({angle_numerator}_i\pi/{denominator}\) とする。円周角の関係から \[d_{{i-1}}+d_i=2\pi\left(1-\frac{{{angle_numerator}_i}}{{{denominator}}}\right)\] を得る。従って \(\sum_i {angle_numerator}_i=4{denominator}\) であり、添字が奇数の三項と偶数の三項の和はそれぞれ \(2{denominator}\) である。",
+            rf"この整数条件と \(d_i>0\) を満たす列を回転・反転で割って有限列挙した。\({denominator}\le2\) は総和条件だけで不可能、\({denominator}=3\) は1型、\({denominator}=4\) は1型、\({denominator}=5\) は4型だけである。",
+            r"\(z=e^{i\theta}\)、\(F(X)=AX^3+BX^2+CX\) とおく。単位円との交点を根に持つ自己反転六次式を作ると、基本対称式には \[e_6=1,\qquad e_1\in\mathbb R,\qquad e_3=2e_1,\qquad \operatorname{Im}(e_2)>0\] が必要である。最後の不等式が最高次係数 \(A>0\) に対応する。",
+            rf"円分体上で Cayley 変換 \(T=\tan(d_0/2)\) を用いて消去する。\({denominator}=3\) の候補は正六角形となり \(\operatorname{{Im}}(e_2)=0\)、\({denominator}=4\) の消去式 \(T^4(T^4+3)^2\) は開区間に根を持たない。\({denominator}=5\) では \[1-10T^2+5T^4=0,\qquad T=\tan\frac{{\pi}}{{10}}\] を満たす1型だけが全 Vieta 条件を通る。",
+            r"残る六点の偏角は \[\frac{\pi}{30},\ \frac{19\pi}{30},\ \frac{5\pi}{6},\ \frac{31\pi}{30},\ \frac{49\pi}{30},\ \frac{11\pi}{6}.\] このとき \(e_1=0\)、\(e_2=(1+\sqrt5)(-1+i\sqrt3)/4\) なので、正規化後は \[F(X)=\frac{4(\sqrt5-1)}{\sqrt3}X^3-\frac{3\sqrt5-2}{\sqrt3}X.\]",
+            rf"元の尺度へ戻すと \[{function}({abscissa})={function_tex}.\] 六偏角について \({function}(R\cos\theta)=R\sin\theta\) と円の方程式を厳密代入した残差は全て0である。交点は相異なる六点で尽くされ、内角は \(3\pi/5,3\pi/5,4\pi/5\) の反復となる。従って最小値は \({denominator}=5\) である。",
         ],
     )
 
