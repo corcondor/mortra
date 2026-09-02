@@ -37,6 +37,9 @@ from math_os_prototype.cubic_centroid_locus import (
 from math_os_prototype.hilbert_witness_query import execute_hilbert_witness_query
 from math_os_prototype.iteration_query import execute_iteration_query
 from math_os_prototype.prime_structure_query import execute_prime_structure_query
+from math_os_prototype.polytope_containment import (
+    validate_published_theorem_dependency,
+)
 from math_os_prototype.symbolic_query import execute_symbolic_query
 from math_os_prototype.typed_proof_synthesis import (
     parse_closed_strict_inequality,
@@ -414,6 +417,35 @@ def _is_verified_cold_parameterized_morphism(certificate: dict[str, Any]) -> boo
         or not str(contract.get("generic_operation")).strip()
     ):
         return False
+
+    trusted_theorem_ids = contract.get("trusted_theorem_ids")
+    if trusted_theorem_ids:
+        witness = certificate.get("witness")
+        dependencies = (
+            witness.get("trusted_theorem_dependencies")
+            if isinstance(witness, dict)
+            else None
+        )
+        if not isinstance(trusted_theorem_ids, (list, tuple)) or not isinstance(
+            dependencies, list
+        ):
+            return False
+        dependency_ids = [
+            item.get("theorem_id")
+            for item in dependencies
+            if isinstance(item, dict)
+        ]
+        if dependency_ids != list(trusted_theorem_ids):
+            return False
+        if not all(
+            isinstance(item, dict) and validate_published_theorem_dependency(item)
+            for item in dependencies
+        ):
+            return False
+        if witness.get("proof_basis") != (
+            "published_global_theorem_with_exact_current_input_replay"
+        ):
+            return False
 
     forbidden_query_keys = {
         "answer",
@@ -1813,7 +1845,9 @@ def solve_problem(
 def solve_public_problem(problem: str) -> tuple[int, dict[str, Any]]:
     """Run the product solver without research-only completed routes."""
 
-    return solve_problem(problem, allow_theorem_kernels=False)
+    status, payload = solve_problem(problem, allow_theorem_kernels=False)
+    payload["uses_external_llm"] = False
+    return status, payload
 
 
 class handler(BaseHTTPRequestHandler):
@@ -1827,7 +1861,14 @@ class handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_GET(self) -> None:  # noqa: N802 - Vercel handler contract
-        self._json(200, {"engine": "MORTRA typed exact solver (no LLM)", "mode": "single-problem"})
+        self._json(
+            200,
+            {
+                "engine": "MORTRA typed exact solver (no LLM)",
+                "mode": "single-problem",
+                "uses_external_llm": False,
+            },
+        )
 
     def do_POST(self) -> None:  # noqa: N802 - Vercel handler contract
         try:

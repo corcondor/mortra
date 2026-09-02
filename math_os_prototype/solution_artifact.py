@@ -659,7 +659,7 @@ def build_solution_document(
     )
     visual_section = _visual_explanation_tex(visual_explanation)
     if visual_section:
-        figure_section = visual_section
+        figure_section += visual_section
     roadmap_section = (
         rf"""\clearpage
 \section*{{使った射と役割}}

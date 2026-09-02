@@ -1332,6 +1332,15 @@ class StructuralTheoremQueryTests(unittest.TestCase):
         chart = result["certificate"]["witness"]["shared_chart"]
         self.assertEqual(chart["contact_residual"], ["0"] * 4)
         self.assertTrue(all(chart["proof_obligations"].values()))
+        self.assertEqual(
+            chart["proof_basis"],
+            "published_global_theorem_with_exact_current_input_replay",
+        )
+        self.assertEqual(
+            chart["trusted_theorem_dependencies"][0]["theorem_id"],
+            "croft.1980.regular_cube_in_regular_tetrahedron",
+        )
+        self.assertTrue(result["certificate"]["cold_generalization_validated"])
         self.assertIn(r"\frac{8\rho}{S(U)}", result["derivation_tex"][1])
         self.assertIn("tikzpicture", result["diagram_tikz"])
 
@@ -1341,6 +1350,63 @@ class StructuralTheoremQueryTests(unittest.TestCase):
         self.assertEqual(
             sp.simplify(sp.sympify(scaled_result["answer_exact"]) - 2 * expected),
             0,
+        )
+        self.assertIn("2", scaled_result["answer_tex"])
+
+        fractional = compile_structural_theorem_query(
+            statement.replace("1辺が1", "一辺の長さが7/3")
+        )
+        self.assertIsNotNone(fractional)
+        fractional_result = execute_structural_theorem_query(fractional.to_dict())
+        self.assertEqual(
+            sp.simplify(
+                sp.sympify(fractional_result["answer_exact"])
+                - sp.Rational(7, 3) * expected
+            ),
+            0,
+        )
+
+        variants = (
+            "一辺の長さが2の正四面体の内部に収まる立方体の一辺の最大値を求めよ。",
+            r"一辺が$\frac{7}{3}$である正四面体の中に入る立方体の辺長の最大値を求めよ。",
+        )
+        expected_edges = (sp.Integer(2), sp.Rational(7, 3))
+        for variant, variant_edge in zip(variants, expected_edges):
+            with self.subTest(variant=variant):
+                variant_ir = compile_structural_theorem_query(variant)
+                self.assertIsNotNone(variant_ir)
+                self.assertEqual(
+                    variant_ir.objects,
+                    {
+                        "outer_polytope": "regular_tetrahedron",
+                        "outer_edge": sp.sstr(variant_edge),
+                        "inner_polytope": "cube",
+                        "containment_mode": "euclidean_similarity_inside",
+                        "objective": "maximize_inner_edge",
+                        "ambient_dimension": 3,
+                    },
+                )
+                variant_result = execute_structural_theorem_query(variant_ir.to_dict())
+                self.assertEqual(
+                    sp.simplify(
+                        sp.sympify(variant_result["answer_exact"])
+                        - variant_edge * expected
+                    ),
+                    0,
+                )
+
+        for invalid_edge in ("0", "-1"):
+            invalid = compile_structural_theorem_query(
+                statement.replace("1辺が1", f"1辺が{invalid_edge}")
+            )
+            self.assertIsNotNone(invalid)
+            with self.assertRaises(ValueError):
+                execute_structural_theorem_query(invalid.to_dict())
+
+        self.assertIsNone(
+            compile_structural_theorem_query(
+                statement.replace("1辺が1", "1辺がa")
+            )
         )
 
     def test_primitive_right_triangle_center_fraction_uses_radius_chart(self) -> None:

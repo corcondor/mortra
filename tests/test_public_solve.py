@@ -694,6 +694,7 @@ class PublicSolveTests(unittest.TestCase):
         status, payload = solve_public_problem(problem)
 
         self.assertEqual(status, 200)
+        self.assertIs(payload["uses_external_llm"], False)
         card = payload["cards"][0]
         certificate = card["execution_certificate"]
         self.assertEqual(card["answer_tex"], r"\(\{2, 3, 4, 5, 6, 8, 10, 12\}\)")
@@ -703,6 +704,36 @@ class PublicSolveTests(unittest.TestCase):
         self.assertEqual(
             certificate["public_release_basis"],
             "current-input-bound verified parameterized theorem replay",
+        )
+
+    def test_public_product_solves_tetrahedron_cube_with_explicit_global_theorem_dependency(self) -> None:
+        problem = "一辺が1である正四面体に完全に含むことができる立方体の一辺の大きさの最大値を求めよ。"
+
+        status, payload = solve_public_problem(problem)
+
+        self.assertEqual(status, 200)
+        self.assertIs(payload["uses_external_llm"], False)
+        card = payload["cards"][0]
+        self.assertIn(r"\frac{\sqrt{6}}", card["answer_tex"])
+        self.assertIn("tikzpicture", card["diagram_tikz"])
+        self.assertIn("三次元配置の模式図", card["solution_document_tex"])
+        self.assertIn("Croft", card["solution_tex"])
+        certificate = card["execution_certificate"]
+        self.assertTrue(certificate["cold_generalization_validated"])
+        self.assertFalse(certificate["registered_completed_route_used"])
+        self.assertEqual(
+            certificate["witness"]["proof_basis"],
+            "published_global_theorem_with_exact_current_input_replay",
+        )
+        dependency = certificate["witness"]["trusted_theorem_dependencies"][0]
+        self.assertEqual(
+            dependency["theorem_id"],
+            "croft.1980.regular_cube_in_regular_tetrahedron",
+        )
+        self.assertTrue(dependency["registry_integrity_valid"])
+        self.assertEqual(
+            certificate["runtime_binding"]["input_sha256"],
+            certificate["statement_sha256"],
         )
 
     def test_public_product_solves_an_unregistered_exact_integral(self) -> None:

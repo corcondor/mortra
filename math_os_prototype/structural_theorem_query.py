@@ -27,6 +27,7 @@ try:
         log_one_plus_bounds as _shared_log_one_plus_bounds,
         log_profile_bounds as _shared_log_profile_bounds,
     )
+    from .polytope_containment import regular_tetrahedron_cube_containment
 except ImportError:
     from exact_interval_charts import (
         alternating_trig_bounds as _shared_alternating_trig_bounds,
@@ -34,6 +35,7 @@ except ImportError:
         log_one_plus_bounds as _shared_log_one_plus_bounds,
         log_profile_bounds as _shared_log_profile_bounds,
     )
+    from polytope_containment import regular_tetrahedron_cube_containment
 
 try:
     from .visual_reasoning import (
@@ -130,6 +132,29 @@ _COLD_GENERALIZATION_CONTRACTS: dict[str, dict[str, Any]] = {
         "required_object_keys": ("sum_numerator", "sum_denominator"),
         "generic_operation": "Newton power-sum recurrence and parity-transition threshold search",
         "replay_obligations": ("companion-matrix identity", "exact first-failure certificate"),
+    },
+    "regular_tetrahedron_max_cube": {
+        "required_object_keys": (
+            "outer_polytope",
+            "outer_edge",
+            "inner_polytope",
+            "containment_mode",
+            "objective",
+            "ambient_dimension",
+        ),
+        "generic_operation": (
+            "convex-polytope half-space support reduction, similarity scaling, "
+            "and exact instantiation of a published global containment theorem"
+        ),
+        "replay_obligations": (
+            "published theorem registry integrity",
+            "current-input similarity scaling",
+            "all-vertex half-space containment",
+            "exact equality construction",
+        ),
+        "trusted_theorem_ids": (
+            "croft.1980.regular_cube_in_regular_tetrahedron",
+        ),
     },
 }
 
@@ -564,95 +589,9 @@ def _rational_cyclic_hexagon_cubic_chart() -> dict[str, Any]:
 
 @lru_cache(maxsize=1)
 def _regular_tetrahedron_cube_support_chart() -> dict[str, Any]:
-    """Replay the exact support-function optimum for a cube in a tetrahedron."""
+    """Compatibility wrapper for the unit-edge containment certificate."""
 
-    sqrt2, sqrt3, sqrt6 = sp.sqrt(2), sp.sqrt(3), sp.sqrt(6)
-    normals = sp.Matrix(
-        [
-            [1, 1, 1],
-            [1, -1, -1],
-            [-1, 1, -1],
-            [-1, -1, 1],
-        ]
-    ) / sqrt3
-    orientation = sp.Matrix(
-        [
-            [-1 / sqrt3, -1 / sqrt6, -1 / sqrt2],
-            [1 / sqrt3, 1 / sqrt6, -1 / sqrt2],
-            [1 / sqrt3, -2 / sqrt6, 0],
-        ]
-    )
-    if sp.simplify(orientation.T * orientation) != sp.eye(3):
-        raise ValueError("cube orientation is not orthonormal")
-
-    support_matrix = sp.simplify(normals * orientation)
-    row_support = sp.Matrix(
-        [sum(abs(value) for value in support_matrix.row(index)) for index in range(4)]
-    )
-    support_sum = sp.simplify(sum(row_support))
-    expected_support_sum = sp.simplify(2 + 4 * sqrt2 / 3 + 2 * sqrt6 / 3)
-    if sp.simplify(support_sum - expected_support_sum) != 0:
-        raise ValueError("tetrahedron-cube support sum replay failed")
-
-    inradius = sqrt6 / 12
-    side = sp.simplify(8 * inradius / support_sum)
-    expected_side = sp.simplify(sqrt6 / (sqrt6 + 2 * sqrt2 + 3))
-    if sp.simplify(side - expected_side) != 0:
-        raise ValueError("tetrahedron-cube side recovery failed")
-
-    right_hand_side = sp.ones(4, 1) * inradius - side * row_support / 2
-    center = sp.simplify((normals.T * normals).inv() * normals.T * right_hand_side)
-    contact_residual = sp.simplify(
-        normals * center + side * row_support / 2 - sp.ones(4, 1) * inradius
-    )
-    if contact_residual != sp.zeros(4, 1):
-        raise ValueError("maximal cube contact certificate failed")
-
-    section_ratio = sp.simplify(sqrt3 / (2 + sqrt3))
-    tetrahedron_height = sqrt6 / 3
-    section_solution = sp.simplify(
-        section_ratio * tetrahedron_height / (tetrahedron_height + section_ratio)
-    )
-    if sp.simplify(section_solution - side) != 0:
-        raise ValueError("parallel-section construction disagrees with support optimum")
-
-    return {
-        "chart_id": "regular_tetrahedron.cube.support_optimum.v1",
-        "atomic_chart_ids": [
-            "convex_polytope.halfspace_support.v1",
-            "orthogonal_frame.l1_sign_chamber.v1",
-            "equilateral_section.maximal_square.v1",
-        ],
-        "normal_model": [[sp.sstr(value) for value in row] for row in normals.tolist()],
-        "inradius": sp.sstr(inradius),
-        "support_identity": (
-            "s(U)=8*rho/sum_(i,j)|<n_i,u_j>|; minimizing the denominator "
-            "over orthonormal frames gives the global optimum"
-        ),
-        "global_support_lower_bound": sp.sstr(expected_support_sum),
-        "orientation": [[sp.sstr(value) for value in row] for row in orientation.tolist()],
-        "support_matrix": [
-            [sp.sstr(value) for value in row] for row in support_matrix.tolist()
-        ],
-        "row_support": [sp.sstr(value) for value in row_support],
-        "center": [sp.sstr(value) for value in center],
-        "contact_residual": ["0", "0", "0", "0"],
-        "section_square_ratio": sp.sstr(section_ratio),
-        "tetrahedron_height": sp.sstr(tetrahedron_height),
-        "maximum_side": sp.sstr(side),
-        "global_upper_bound_source": {
-            "theorem": "Croft's regular-tetrahedron/cube containment optimum",
-            "certified_reference": "Moritz Firsching, arXiv:1407.0683",
-            "url": "https://arxiv.org/abs/1407.0683",
-        },
-        "proof_obligations": {
-            "halfspace_model_exact": True,
-            "orientation_orthonormal": True,
-            "global_support_lower_bound_instantiated": True,
-            "all_four_face_contacts_exact": True,
-            "parallel_section_construction_attains_bound": True,
-        },
-    }
+    return regular_tetrahedron_cube_containment(sp.Integer(1))
 
 
 @lru_cache(maxsize=1)
@@ -4988,24 +4927,60 @@ def compile_structural_theorem_query(text: str) -> StructuralTheoremQueryIR | No
     if rational_angle_power_identity is not None:
         return rational_angle_power_identity
 
+    tetrahedron_cube_containment = any(
+        phrase in compact
+        for phrase in (
+            "完全に含",
+            "内部に含",
+            "内に収ま",
+            "内部に収ま",
+            "中に入",
+            "内部に入",
+            "内接させ",
+        )
+    )
     if (
         "正四面体" in text
         and "立方体" in text
-        and "完全に含" in text
-        and "最大値" in text
+        and tetrahedron_cube_containment
+        and "最大" in text
     ):
         tetrahedron_edge_match = re.search(
-            r"1辺が(?P<edge>\d+(?:/\d+)?)である正四面体",
+            r"(?:1辺|一辺)(?:の長さ)?が(?P<edge>-?(?:\d+(?:\.\d+)?|\d+/\d+))"
+            r"(?:である|の)正四面体",
             compact,
         )
-        tetrahedron_edge = (
-            sp.Rational(tetrahedron_edge_match.group("edge"))
-            if tetrahedron_edge_match
-            else (_extract_length_before(text, "正四面体") or sp.Integer(1))
+        tetrahedron_tex_edge_match = re.search(
+            r"(?:1辺|一辺)(?:の長さ)?が\$?\\(?:d?frac)"
+            r"\{(?P<numerator>\d+)\}\{(?P<denominator>\d+)\}\$?"
+            r"(?:である|の)正四面体",
+            compact,
         )
+        try:
+            if tetrahedron_edge_match:
+                tetrahedron_edge = sp.Rational(tetrahedron_edge_match.group("edge"))
+            elif tetrahedron_tex_edge_match:
+                tetrahedron_edge = sp.Rational(
+                    int(tetrahedron_tex_edge_match.group("numerator")),
+                    int(tetrahedron_tex_edge_match.group("denominator")),
+                )
+            else:
+                inferred_edge = _extract_length_before(text, "正四面体")
+                if inferred_edge is None:
+                    return None
+                tetrahedron_edge = inferred_edge
+        except (TypeError, ValueError, ZeroDivisionError):
+            return None
         return _ir(
             "regular_tetrahedron_max_cube",
-            {"tetrahedron_edge": sp.sstr(tetrahedron_edge), "ambient_dimension": 3},
+            {
+                "outer_polytope": "regular_tetrahedron",
+                "outer_edge": sp.sstr(tetrahedron_edge),
+                "inner_polytope": "cube",
+                "containment_mode": "euclidean_similarity_inside",
+                "objective": "maximize_inner_edge",
+                "ambient_dimension": 3,
+            },
             "PositiveReal",
         )
 
@@ -5493,20 +5468,28 @@ def _regular_polygon_external_roll_common_limit(
 def _regular_tetrahedron_max_cube(
     objects: dict[str, Any],
 ) -> tuple[str, dict[str, Any], list[str]]:
-    edge = sp.sympify(objects.get("tetrahedron_edge", 0))
-    if edge.is_positive is not True or int(objects.get("ambient_dimension", 0)) != 3:
+    edge = sp.sympify(objects.get("outer_edge", 0))
+    if (
+        objects.get("outer_polytope") != "regular_tetrahedron"
+        or objects.get("inner_polytope") != "cube"
+        or objects.get("containment_mode") != "euclidean_similarity_inside"
+        or objects.get("objective") != "maximize_inner_edge"
+        or edge.is_positive is not True
+        or int(objects.get("ambient_dimension", 0)) != 3
+    ):
         raise ValueError("regular-tetrahedron cube chart requires a positive 3D edge")
-    chart = _regular_tetrahedron_cube_support_chart()
-    unit_side = sp.sympify(chart["maximum_side"])
-    side = sp.simplify(edge * unit_side)
-    answer_tex = (
-        r"\(\displaystyle "
-        r"\frac{\sqrt6}{\sqrt6+2\sqrt2+3}\)"
-    )
+    chart = regular_tetrahedron_cube_containment(edge)
+    side = sp.sympify(chart["maximum_side"])
+    answer_tex = rf"\(\displaystyle {sp.latex(side)}\)"
+    edge_tex = sp.latex(edge)
+    inradius_tex = sp.latex(sp.sympify(chart["inradius"]))
+    support_bound_tex = sp.latex(sp.sympify(chart["global_support_lower_bound"]))
     return (
         sp.sstr(side),
         {
             "shared_chart": chart,
+            "proof_basis": chart["proof_basis"],
+            "trusted_theorem_dependencies": chart["trusted_theorem_dependencies"],
             "derivation_format": "tex",
             "scale": sp.sstr(edge),
             "maximum_side": sp.sstr(side),
@@ -5514,28 +5497,50 @@ def _regular_tetrahedron_max_cube(
             "diagram": {
                 "version": 1,
                 "kind": "geometry",
-                "title": "正四面体の平行断面",
-                "caption": "等号配置を、正三角形断面内の最大正方形として示す。",
+                "title": "正四面体に入る最大の立方体",
+                "caption": "左は三次元配置の模式図、右は等号を与える平行断面である。",
             },
-            "diagram_tikz": r"""\begin{tikzpicture}[scale=1.05]
-\pgfmathsetmacro{\sq}{4*sqrt(3)/(2+sqrt(3))}
-\pgfmathsetmacro{\leftx}{2-\sq/2}
-\draw[very thick] (0,0)--(4,0)--(2,{2*sqrt(3)})--cycle;
-\fill[cyan!14] (\leftx,0) rectangle ++(\sq,\sq);
-\draw[very thick,cyan!70!black] (\leftx,0) rectangle ++(\sq,\sq);
-\fill[cyan!70!black] (\leftx,\sq) circle (1.2pt)
-  ({4-\leftx},\sq) circle (1.2pt);
-\draw[<->] (\leftx,-.28)--({\leftx+\sq},-.28)
-  node[midway,below,font=\footnotesize] {$\sqrt3/(2+\sqrt3)$};
-\node[font=\footnotesize,align=center] at (2,{2*sqrt(3)+.48})
-  {平行断面内の最大正方形};
+            "diagram_tikz": r"""\begin{tikzpicture}[scale=.88,
+  x={(.92cm,-.32cm)},y={(.82cm,.34cm)},z={(0cm,1cm)}]
+\coordinate (A) at (0,0,3.1);
+\coordinate (B) at (-2.5,-1.8,0);
+\coordinate (C) at (2.5,-1.8,0);
+\coordinate (D) at (0,2.35,0);
+\draw[very thick] (A)--(B)--(C)--cycle (A)--(D)--(B) (D)--(C);
+\coordinate (p000) at (-.88,-.62,.58);
+\coordinate (p100) at (.70,-.62,.58);
+\coordinate (p010) at (-.88,.68,.58);
+\coordinate (p110) at (.70,.68,.58);
+\coordinate (p001) at (-.88,-.62,1.70);
+\coordinate (p101) at (.70,-.62,1.70);
+\coordinate (p011) at (-.88,.68,1.70);
+\coordinate (p111) at (.70,.68,1.70);
+\fill[cyan!12,opacity=.65] (p000)--(p100)--(p110)--(p010)--cycle;
+\fill[cyan!18,opacity=.65] (p001)--(p101)--(p111)--(p011)--cycle;
+\draw[cyan!75!black,thick]
+  (p000)--(p100)--(p110)--(p010)--cycle
+  (p001)--(p101)--(p111)--(p011)--cycle
+  (p000)--(p001) (p100)--(p101) (p110)--(p111) (p010)--(p011);
+\node[font=\footnotesize] at (0,-2.4,-.35) {三次元配置の模式図};
+\begin{scope}[
+  reset cm,x={(1cm,0cm)},y={(0cm,1cm)},xshift=6.2cm,scale=.70]
+  \pgfmathsetmacro{\sq}{4*sqrt(3)/(2+sqrt(3))}
+  \pgfmathsetmacro{\leftx}{2-\sq/2}
+  \draw[very thick] (0,0)--(4,0)--(2,{2*sqrt(3)})--cycle;
+  \fill[cyan!14] (\leftx,0) rectangle ++(\sq,\sq);
+  \draw[very thick,cyan!70!black] (\leftx,0) rectangle ++(\sq,\sq);
+  \draw[<->] (\leftx,-.28)--({\leftx+\sq},-.28)
+    node[midway,below,font=\footnotesize] {$\sqrt3/(2+\sqrt3)$};
+  \node[font=\footnotesize,align=center] at (2,{2*sqrt(3)+.48})
+    {平行断面内の最大正方形};
+\end{scope}
 \end{tikzpicture}""",
         },
         [
-            r"正四面体を、内接球半径 \(\rho=\sqrt6/12\) と外向き単位法線 \(n_1,\ldots,n_4\) をもつ四つの半空間で表す。中心 \(c\)、辺長 \(s\)、直交方向 \(u_1,u_2,u_3\) の立方体が入る必要十分条件は \[n_i\cdot c+\frac{s}{2}\sum_{j=1}^3|n_i\cdot u_j|\le\rho\qquad(i=1,\ldots,4)\] である。",
+            rf"正四面体の一辺を \(a={edge_tex}\) と置く。内接球半径は \(\rho={inradius_tex}\) である。正四面体を外向き単位法線 \(n_1,\ldots,n_4\) をもつ四つの半空間で表す。中心 \(c\)、辺長 \(s\)、互いに直交する単位ベクトル \(u_1,u_2,u_3\) をもつ立方体が入る必要十分条件は \[n_i\cdot c+\frac{{s}}{{2}}\sum_{{j=1}}^3|n_i\cdot u_j|\le\rho\qquad(i=1,\ldots,4)\] である。",
             r"\(\sum_i n_i=0\) なので四不等式を加えると \[s\le\frac{8\rho}{S(U)},\qquad S(U)=\sum_{i=1}^4\sum_{j=1}^3|n_i\cdot u_j|.\] 等号時は右辺の和も0となり中心 \(c\) を復元できるため、これは各向き \(U\) で必要十分である。",
-            r"Croft の正四面体内接立方体定理を有限符号室ごとに適用すると、直交枠全体で \[S(U)\ge 2+\frac{4\sqrt2}{3}+\frac{2\sqrt6}{3}.\] 証明書には等号を与える直交行列、支持値、および四面すべての接触残差0を保存した。",
-            r"従って \[s\le\frac{8(\sqrt6/12)}{2+4\sqrt2/3+2\sqrt6/3}=\frac{\sqrt6}{\sqrt6+2\sqrt2+3}.\] 一面に平行な配置では、正三角形断面内の最大正方形比 \(\sqrt3/(2+\sqrt3)\) から同じ辺長を構成できるので、この上限は達成される。",
+            rf"Croft が証明した正四面体内接立方体の大域定理を用いると、立方体のすべての向きについて \[S(U)\ge {support_bound_tex}.\] MORTRAの証明書は、この公刊済み定理を外部の補題として明記している。さらに、現在の入力から等号を与える直交行列、立方体の8頂点、および四面すべての接触を厳密に再計算している。",
+            rf"従って \[s\le\frac{{8\rho}}{{{support_bound_tex}}}={sp.latex(side)}.\] 図の配置では、正三角形断面内の最大正方形比 \(\sqrt3/(2+\sqrt3)\) から同じ辺長を構成できる。したがって上限は達成され、求める最大値は \[{sp.latex(side)}\] である。",
         ],
     )
 
