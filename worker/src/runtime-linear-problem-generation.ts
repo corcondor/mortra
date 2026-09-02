@@ -363,7 +363,7 @@ function generatedCard(
   return {
     id: `mortra-runtime-linear-generation.${signature}`,
     family_id: 'runtime.linear_constraint_composition',
-    statement_tex: `実数 ${blocks.flatMap(block => block.generatedVariables).map(variableTex).join(',')} が` +
+    statement_tex: `実数 \\(${blocks.flatMap(block => block.generatedVariables).map(variableTex).join(', ')}\\) が` +
       `\\[\\begin{aligned}${equationRows}\\end{aligned}\\]` +
       `を満たすとき、\\[${targetTex}\\] の値を求めよ。`,
     answer_tex: answerTex,

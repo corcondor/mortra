@@ -29,6 +29,8 @@ test('generates many exact problems from fresh current constraints without a reg
     assert.equal(hasCompleteParentProof(card, freshParents), true)
     assert.deepEqual(new Set(card.parent_ids), new Set(freshParents.map(parent => parent.id)))
     assert.match(card.statement_tex, /u_\{1,1\}/)
+    assert.match(card.statement_tex, /実数 \\\(u_\{1,1\}/)
+    assert.match(card.statement_tex, /u_\{2,2\}\\\) が/)
     assert.match(card.statement_tex, /\\quad/)
     assert.doesNotMatch(card.statement_tex, /:quad/)
     assert.match(card.solution_tex, /線形結合/)

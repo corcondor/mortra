@@ -1,7 +1,16 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { createRequire } from 'node:module'
 import { resolve } from 'node:path'
 
-import { chromium } from 'playwright-core'
+const require = createRequire(import.meta.url)
+let chromium
+try {
+  ({ chromium } = require('playwright-core'))
+} catch (error) {
+  const playwrightPath = process.env.MORTRA_PLAYWRIGHT_PATH
+  if (!playwrightPath) throw error
+  ;({ chromium } = require(playwrightPath))
+}
 
 const baseUrl = process.argv[2] ?? 'https://mortra.ai/ja'
 const outputDirectory = resolve(
