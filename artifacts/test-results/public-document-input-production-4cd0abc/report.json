@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-02T15:26:35+09:00",
+  "deployedCommit": "4cd0abc2de2e98b0d7e20865c9e846c83219e673",
+  "environment": {
+    "target": "production",
+    "url": "https://mortra.ai/ja?qa=4cd0abc",
+    "externalLlmUsed": false,
+    "viewportDesktop": "1440x1000",
+    "viewportMobile": "390x844"
+  },
+  "acceptance": {
+    "transcription": "The recognized statement must preserve the mathematical conditions and contain no U+FFFD replacement character.",
+    "solution": "A case counts as solved only when the requested answer, proof steps, diagram, and certificate are present.",
+    "generation": "A fusion case counts as generated only when every published problem has a recomputed exact answer and verification checks.",
+    "unresolved": "A continuing search without a certificate remains unresolved."
+  },
+  "cases": [
+    {
+      "id": "typed-quadratic-easy",
+      "input": "typed",
+      "difficulty": "easy",
+      "mathematicalStatus": "solved",
+      "exactAnswer": "{2, 3}",
+      "diagram": "parabola and zeros",
+      "proofMorphisms": 4,
+      "certificateSha256": "879ada18eec431effb1069f7cf6d99edf363142f1d125b9bb9578d2453f88f98",
+      "mojibake": false,
+      "evidence": ["typed-quadratic-result.png", "mobile-quadratic-answer.png"]
+    },
+    {
+      "id": "right-triangle-incenter-circumcenter-image",
+      "input": "PNG",
+      "difficulty": "medium",
+      "recognizedStatement": "3辺の長さが互いに素な自然数である直角三角形の外心をO,内心をIとする. OI^2 の小数部分を求めよ.",
+      "transcription": "pass",
+      "mathematicalStatus": "solved",
+      "exactAnswer": "1/4",
+      "diagram": "right triangle, circumcircle, incircle, O and I",
+      "proofMorphisms": 4,
+      "certificate": true,
+      "mojibake": false,
+      "evidence": ["right-triangle-image-result.png"]
+    },
+    {
+      "id": "integral-inequality-pdf",
+      "input": "nine-page PDF",
+      "difficulty": "medium",
+      "pagesRead": 1,
+      "scopeWarningShown": true,
+      "transcription": "pass",
+      "mathematicalStatus": "solved",
+      "exactAnswer": "0 < I < 2",
+      "diagram": "integrand and upper-bound graphs",
+      "proof": "complementary-angle reduction and Cauchy-Schwarz inequality",
+      "certificateSha256": "148dfab3f0ba36cea2f7726a10feddbc7ac0d996c5846112c1ab08e3ff5692ce",
+      "mojibake": false,
+      "evidence": ["pdf-integral-result.png", "pdf-integral-answer.png"]
+    },
+    {
+      "id": "quadratic-form-expectation-fusion",
+      "input": "two typed parent problems",
+      "difficulty": "medium-to-hard",
+      "mathematicalStatus": "generated-and-verified",
+      "generatedProblems": 3,
+      "exactAnswers": [42, 74, 70],
+      "diagram": "q to A to second-moment matrix M to tr(AM) to expectation",
+      "morphisms": 7,
+      "verificationChecks": 6,
+      "mojibake": false,
+      "evidence": ["quadratic-expectation-fusion-result.png", "quadratic-expectation-answer.png"]
+    },
+    {
+      "id": "cubic-unit-circle-rational-angle-hexagon-image",
+      "input": "PNG",
+      "difficulty": "hard",
+      "transcription": "pass",
+      "mathematicalStatus": "unresolved-search-continuing",
+      "searchObserved": {
+        "jobPrefix": "719ed87e",
+        "round": 1,
+        "depth": 4,
+        "enumeratedTerms": 991,
+        "executableGoals": 197,
+        "preservedFrontier": 40,
+        "primaryCarrier": "CubicPolynomialMap"
+      },
+      "certificate": false,
+      "mojibake": false,
+      "evidence": ["hard-cubic-circle-search.png"]
+    },
+    {
+      "id": "tetrahedron-cube-image",
+      "input": "PNG",
+      "difficulty": "hard-three-dimensional",
+      "recognizedStatement": "1辺が1である正四面体に完全に含むことができる立方体の1辺の大きさの最大値を求めよ",
+      "transcription": "pass",
+      "mathematicalStatus": "unresolved-search-continuing",
+      "searchObserved": {
+        "jobPrefix": "cdfc1dd8",
+        "round": 0,
+        "depth": 0,
+        "frontier": 0
+      },
+      "certificate": false,
+      "mojibake": false,
+      "evidence": ["tetrahedron-cube-search.png"]
+    }
+  ],
+  "responsiveUi": {
+    "viewport": "390x844",
+    "case": "typed-quadratic-easy",
+    "status": "pass",
+    "overlapObserved": false,
+    "exactAnswerVisible": true,
+    "diagramVisible": true,
+    "certificatePresent": true,
+    "evidence": ["mobile-quadratic-result.png", "mobile-quadratic-answer.png"]
+  },
+  "performanceObservation": {
+    "status": "needs-improvement",
+    "detail": "The first browser-local OCR model load and PDF recognition took several minutes. Exact timing was not instrumented in this run. Subsequent PNG recognition completed, but still showed a visible wait."
+  },
+  "conclusion": {
+    "verified": "Production supports typed input, PNG OCR, first-page PDF extraction, exact single-problem solutions with diagrams and certificates, and a verified one-to-many quadratic-form/expectation fusion.",
+    "notVerified": "The cubic-circle rational-angle problem and tetrahedron-cube optimization problem did not produce certificates and are not counted as solved.",
+    "defects": "OCR startup latency remains high. The tetrahedron-cube case has no executable search frontier at the observed stage."
+  }
+}

@@ -2512,7 +2512,7 @@ def synthesize_primitive_right_triangle_center_fraction(
         tool_name="mortra.runtime_primitive_right_triangle_center_fraction",
         expression_tex=rf"\operatorname{{frac}}({circumcenter_label}{incenter_label}^2)",
         derivation_tex=(
-            r"三辺を (a,b,c) とし、(c) を斜辺とする。三辺が互いに素なので、この三角形は原始ピタゴラス三角形である。したがって、互いに素で偶奇の異なる自然数 (m>n) を用いて [(a,b,c)=(m^2-n^2,,2mn,,m^2+n^2)] と表せる。特に (c) は奇数である。",
+            r"三辺を (a,b,c) とし、(c) を斜辺とする。三辺が互いに素なので、この三角形は原始ピタゴラス三角形である。したがって、互いに素で偶奇の異なる自然数 (m>n) を用いて [(a,b,c)=(m^2-n^2,2mn,m^2+n^2)] と表せる。特に (c) は奇数である。",
             r"直角三角形の外接円半径は (R=c/2) である。また、内接円半径は [r=\frac{a+b-c}{2}=n(m-n)] となるので、(r) は整数である。",
             rf"外心を ({circumcenter_label})、内心を ({incenter_label}) とする。Euler の恒等式より [{circumcenter_label}{incenter_label}^2=R(R-2r)=\frac{{c^2}}4-cr.] ここで (cr) は整数である。",
             rf"(c) は奇数だから (c^2\equiv1\pmod4) である。従って ({circumcenter_label}{incenter_label}^2) は整数と (1/4) の和であり、その小数部分は [\boxed{{\frac14}}] である。",
