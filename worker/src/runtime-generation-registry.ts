@@ -12,6 +12,7 @@ import { synthesizeRuntimeLinearProblems } from './runtime-linear-problem-genera
 import { synthesizeRuntimePrimitiveRightTriangleProblems } from './runtime-primitive-right-triangle-generation'
 import { synthesizeRuntimeQuadraticExpectationProblems } from './runtime-quadratic-expectation-generation'
 import { synthesizeRuntimeRecurrenceCongruenceProblems } from './runtime-recurrence-congruence-generation'
+import { synthesizeRuntimeBranchingMomentProblems } from './runtime-branching-moment-generation'
 
 export type RuntimeGenerationResult = {
   applicable: boolean
@@ -26,6 +27,10 @@ export type RuntimeGenerationEngine = {
 }
 
 const ENGINES: RuntimeGenerationEngine[] = [
+  {
+    id: 'runtime-branching-moment-generation',
+    synthesize: synthesizeRuntimeBranchingMomentProblems,
+  },
   {
     id: 'runtime-polynomial-root-generation',
     synthesize: (parents, requested) => {

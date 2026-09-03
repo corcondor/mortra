@@ -343,7 +343,7 @@ export type ProblemTaskCoreAlgebra = {
   opaqueSignature?: string
 }
 
-const CORE_FAMILY_BY_LAW: Record<ProblemTaskPrimitive, ProblemTaskCorePrimitive> = {
+export const CORE_FAMILY_BY_LAW: Record<ProblemTaskPrimitive, ProblemTaskCorePrimitive> = {
   transport: 'transform',
   map: 'transform',
   pair: 'combine',

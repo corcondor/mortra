@@ -33,3 +33,30 @@ test('public gateway re-synthesizes inputs shaped like an old registered case', 
     assert.equal(card.execution_certificate?.registered_composite_used, false)
   }
 })
+
+test('public gateway fuses the two shear maps when users submit them as separate parents', () => {
+  const parents = [
+    {
+      id: 'public-left-shear',
+      statement: String.raw`整数の組に対する写像 \(L(x,y)=(x+y,y)\) を考える。`,
+    },
+    {
+      id: 'public-right-shear',
+      statement: String.raw`整数の組に対する写像 \(R(u,v)=(u,u+v)\) を考える。`,
+    },
+  ]
+  const result = runPublicRuntimeGeneration(parents, 2)
+
+  assert.equal(result.cards.length, 2)
+  for (const card of result.cards) {
+    assert.deepEqual(card.parent_ids, ['public-left-shear', 'public-right-shear'])
+    assert.deepEqual(
+      card.fusion_derivation.assignments.map(item => item.parentId),
+      ['public-left-shear', 'public-right-shear'],
+    )
+    assert.equal(card.structure_blueprint.synthesizedLaw?.arity, 2)
+    assert.equal(capabilityOrigin(card.execution_certificate), 'synthesized_proof_program')
+    assert.equal(card.execution_certificate?.registered_composite_used, false)
+    assert.equal(card.unresolved, false)
+  }
+})

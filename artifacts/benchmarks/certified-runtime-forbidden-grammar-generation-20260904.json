@@ -1,0 +1,340 @@
+{
+  "schema": "mortra.runtime-forbidden-grammar-generation.v1",
+  "generated_at": "2026-09-03T19:27:35.424Z",
+  "benchmark_scope": {
+    "parent_maps": [
+      "L(a,b)=(a+b,b)",
+      "R(a,b)=(a,a+b)"
+    ],
+    "grammar_search": "all L/R-exchange-symmetric pairs of forbidden words of length three",
+    "requested_public_cards": 4,
+    "split_parent_public_cards": 4,
+    "completed_problem_templates_consulted": false
+  },
+  "discovery": {
+    "hypotheses_evaluated": 4,
+    "accepted_forbidden_word_sets": [
+      [
+        "LLL",
+        "RRR"
+      ],
+      [
+        "LRL",
+        "RLR"
+      ]
+    ],
+    "rejected": [
+      {
+        "forbiddenWords": [
+          "LLR",
+          "RRL"
+        ],
+        "reason": "no finite two-block exponential-growth witness was found"
+      },
+      {
+        "forbiddenWords": [
+          "LRR",
+          "RLL"
+        ],
+        "reason": "no finite two-block exponential-growth witness was found"
+      }
+    ]
+  },
+  "generated_cards": [
+    {
+      "id": "mortra-runtime-mirror-forbidden-coordinate-sum.61e5847a934ed3ca",
+      "family_id": "runtime.mirror_forbidden_word_coordinate_sum_limit",
+      "forbidden_words": [
+        "LLL",
+        "RRR"
+      ],
+      "answer_tex": "\\(\\frac{2}{3}+\\sqrt[3]{\\frac{61+9\\sqrt{29}}{54}}+\\sqrt[3]{\\frac{61-9\\sqrt{29}}{54}}\\)",
+      "statement_sha256": "3111da5a916375704590ade472a581c59ab7810fa671c2dd92507a9280221c84",
+      "solution_sha256": "e0c2bbc8a58c4c0f5f64a0411f02388ec7936edffe89a3bfad7822221bf47a9a",
+      "generated_program_sha256": "08871edc1ff95e5d834a2eedd2fe9092f4aeeb1ffee2ad00f6a3324d2e5acfb6",
+      "composition_fingerprint": "0762b21ae1038239ff15685b2873ecab431e1208ccdb7d2c9c3d4c5d2c8248c7",
+      "composition_metrics": {
+        "nodeCount": 1639,
+        "repeatIndependentOperationCount": 1639,
+        "expandedOperationCount": 1639,
+        "edgeCount": 1993,
+        "heterogeneousEdgeCount": 1817,
+        "distinctLawTransitionCount": 8,
+        "structuralQuotientNodeCount": 1639,
+        "distinctCompositionContextCount": 117,
+        "rootToOutputPathCount": 356,
+        "heterogeneousDepth": 34,
+        "branchCount": 355,
+        "mergeCount": 355,
+        "repetitionSiteCount": 0,
+        "coreAlphabet": [
+          "transform",
+          "combine",
+          "restrict",
+          "aggregate",
+          "canonicalize"
+        ],
+        "structuralAlphabet": [
+          "L",
+          "legal",
+          "R",
+          "moment-0",
+          "moment-1"
+        ],
+        "taskLaws": [
+          "pair",
+          "map",
+          "fold",
+          "preimage",
+          "boundary",
+          "eliminate",
+          "normalize"
+        ],
+        "maximumRepeatedBranchFraction": 0
+      },
+      "first_exact_terms": [
+        "6",
+        "18",
+        "44",
+        "114",
+        "288",
+        "736",
+        "1872",
+        "4770"
+      ],
+      "characteristic_polynomial": [
+        "1",
+        "-1",
+        "-3",
+        "-2",
+        "-1"
+      ],
+      "dominant_factor": [
+        "1",
+        "-2",
+        "-1",
+        "-1"
+      ],
+      "safe_block_code": {
+        "blockLength": 2,
+        "blocks": [
+          "LR",
+          "RL"
+        ]
+      },
+      "publication_errors": [],
+      "checks": {
+        "analysis_found": true,
+        "independent_enumeration_matches": true,
+        "card_samples_match_analysis": true,
+        "parent_proof_complete": true,
+        "synthesized_at_runtime": true,
+        "registered_composite_unused": true,
+        "publication_audit_passed": true,
+        "exact_answer_has_no_decimal": true,
+        "cube_root_tex_is_well_formed": true,
+        "every_proof_stage_has_a_renderable_diagram": true,
+        "deep_composition_audit_passed": true
+      },
+      "passed": true
+    },
+    {
+      "id": "mortra-runtime-mirror-forbidden-coordinate-sum.e47d0e7563877b2d",
+      "family_id": "runtime.mirror_forbidden_word_coordinate_sum_limit",
+      "forbidden_words": [
+        "LRL",
+        "RLR"
+      ],
+      "answer_tex": "\\(1+\\sqrt[3]{\\frac{9+\\sqrt{69}}{18}}+\\sqrt[3]{\\frac{9-\\sqrt{69}}{18}}\\)",
+      "statement_sha256": "32373e38ba6412f050a5deaa1e926d5b9dfabb53b8b2e6f5cd174a5b4d279196",
+      "solution_sha256": "d9d237febeae17cf056b2779ac7a5ee8ddb02013c1ba377d8eb52b4a15bd2028",
+      "generated_program_sha256": "97cee554c8fb9af0eab09dbb19091c7fc84ce97d5c5cd926ff8a8618d32d6c79",
+      "composition_fingerprint": "89fea96fdb4820a01f318a9db89c989643c6cdc95691fb6120559a06f6e83b1c",
+      "composition_metrics": {
+        "nodeCount": 1639,
+        "repeatIndependentOperationCount": 1639,
+        "expandedOperationCount": 1639,
+        "edgeCount": 1993,
+        "heterogeneousEdgeCount": 1817,
+        "distinctLawTransitionCount": 8,
+        "structuralQuotientNodeCount": 1639,
+        "distinctCompositionContextCount": 117,
+        "rootToOutputPathCount": 356,
+        "heterogeneousDepth": 34,
+        "branchCount": 355,
+        "mergeCount": 355,
+        "repetitionSiteCount": 0,
+        "coreAlphabet": [
+          "transform",
+          "combine",
+          "restrict",
+          "aggregate",
+          "canonicalize"
+        ],
+        "structuralAlphabet": [
+          "L",
+          "legal",
+          "R",
+          "moment-0",
+          "moment-1"
+        ],
+        "taskLaws": [
+          "pair",
+          "map",
+          "fold",
+          "preimage",
+          "boundary",
+          "eliminate",
+          "normalize"
+        ],
+        "maximumRepeatedBranchFraction": 0
+      },
+      "first_exact_terms": [
+        "6",
+        "18",
+        "38",
+        "92",
+        "210",
+        "492",
+        "1140",
+        "2654"
+      ],
+      "characteristic_polynomial": [
+        "1",
+        "-2",
+        "-1",
+        "1",
+        "-1"
+      ],
+      "dominant_factor": [
+        "1",
+        "-3",
+        "2",
+        "-1"
+      ],
+      "safe_block_code": {
+        "blockLength": 2,
+        "blocks": [
+          "LL",
+          "RR"
+        ]
+      },
+      "publication_errors": [],
+      "checks": {
+        "analysis_found": true,
+        "independent_enumeration_matches": true,
+        "card_samples_match_analysis": true,
+        "parent_proof_complete": true,
+        "synthesized_at_runtime": true,
+        "registered_composite_unused": true,
+        "publication_audit_passed": true,
+        "exact_answer_has_no_decimal": true,
+        "cube_root_tex_is_well_formed": true,
+        "every_proof_stage_has_a_renderable_diagram": true,
+        "deep_composition_audit_passed": true
+      },
+      "passed": true
+    }
+  ],
+  "multi_parent_public_gateway": {
+    "parents": [
+      {
+        "id": "unseen-left-shear-parent",
+        "statement": "整数の組に対する写像 \\(L(x,y)=(x+y,y)\\) を考える。"
+      },
+      {
+        "id": "unseen-right-shear-parent",
+        "statement": "整数の組に対する写像 \\(R(u,v)=(u,u+v)\\) を考える。"
+      }
+    ],
+    "cards": [
+      {
+        "id": "mortra-runtime-branching-fourth-moment.1fe7cc295fc4e0ee",
+        "family_id": "runtime.binary_shear_fourth_moment_limit",
+        "parent_ids": [
+          "unseen-left-shear-parent",
+          "unseen-right-shear-parent"
+        ],
+        "assigned_parent_ids": [
+          "unseen-left-shear-parent",
+          "unseen-right-shear-parent"
+        ],
+        "synthesized_law_arity": 2,
+        "proof_complete": true,
+        "capability_origin": "synthesized_proof_program",
+        "unresolved": false
+      },
+      {
+        "id": "mortra-runtime-no-repeated-right-coordinate-sum.ec426bb9448a262a",
+        "family_id": "runtime.no_repeated_right_coordinate_sum_limit",
+        "parent_ids": [
+          "unseen-left-shear-parent",
+          "unseen-right-shear-parent"
+        ],
+        "assigned_parent_ids": [
+          "unseen-left-shear-parent",
+          "unseen-right-shear-parent"
+        ],
+        "synthesized_law_arity": 2,
+        "proof_complete": true,
+        "capability_origin": "synthesized_proof_program",
+        "unresolved": false
+      },
+      {
+        "id": "mortra-runtime-mirror-forbidden-coordinate-sum.b127ede43ae1e957",
+        "family_id": "runtime.mirror_forbidden_word_coordinate_sum_limit",
+        "parent_ids": [
+          "unseen-left-shear-parent",
+          "unseen-right-shear-parent"
+        ],
+        "assigned_parent_ids": [
+          "unseen-left-shear-parent",
+          "unseen-right-shear-parent"
+        ],
+        "synthesized_law_arity": 2,
+        "proof_complete": true,
+        "capability_origin": "synthesized_proof_program",
+        "unresolved": false
+      },
+      {
+        "id": "mortra-runtime-mirror-forbidden-coordinate-sum.59fa6017950fc3c8",
+        "family_id": "runtime.mirror_forbidden_word_coordinate_sum_limit",
+        "parent_ids": [
+          "unseen-left-shear-parent",
+          "unseen-right-shear-parent"
+        ],
+        "assigned_parent_ids": [
+          "unseen-left-shear-parent",
+          "unseen-right-shear-parent"
+        ],
+        "synthesized_law_arity": 2,
+        "proof_complete": true,
+        "capability_origin": "synthesized_proof_program",
+        "unresolved": false
+      }
+    ],
+    "continuing": false
+  },
+  "summary_checks": {
+    "all_four_length_three_mirror_pairs_evaluated": true,
+    "exactly_two_grammars_closed": true,
+    "exactly_two_grammars_rejected_with_reasons": true,
+    "public_gateway_returned_four_cards": true,
+    "two_generated_grammar_cards_published": true,
+    "generated_grammars_are_structurally_distinct": true,
+    "every_generated_card_passed": true,
+    "public_search_finished": true,
+    "split_parents_returned_four_cards": true,
+    "split_parents_are_both_used": true,
+    "split_parent_bridge_is_binary": true,
+    "split_parent_proofs_are_complete": true,
+    "split_parent_cards_are_runtime_synthesized": true,
+    "split_parent_search_finished": true
+  },
+  "passed": true,
+  "source_sha256": {
+    "lib/mortra/finite-word-grammar.ts": "524853c5cfe92c945abb6cd2a35f6ecafde50985310061da83dcd6cc2319cde7",
+    "worker/src/runtime-branching-moment-generation.ts": "f978ef51c08117004aab48ed34992d2a9384d80557d4d4d1024c8a2ef7a700ac",
+    "worker/src/public-runtime-generation.ts": "d83d208e35598a30080f9dfacaa551582221b1ab8d37ead06ced1c9e51905315"
+  }
+}
