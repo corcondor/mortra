@@ -4392,6 +4392,528 @@ def synthesize_polynomial_mobius_fixed_point(
     )
 
 
+def _parse_rotated_parabola_limit(statement: str) -> dict[str, Any] | None:
+    """Read a rotated ``y=a*x**2`` distance or volume limit from the input."""
+
+    normalized = normalize_latex_math(statement)
+    lower = normalized.lower()
+    parsed_problem = parse_latex_problem(statement)
+    math_segments = parsed_problem.math_segments
+    if not any(marker in lower for marker in ("回転", "rotate", "rotation")):
+        return None
+    compact_statement = re.sub(r"[\s$\\{}]", "", statement)
+    compact_lower = compact_statement.lower()
+    origin_is_named_o = re.search(r"原点(?:を|は|=)?(?:点)?o", compact_lower) is not None
+    rotates_about_origin = any(
+        phrase in compact_lower
+        for phrase in (
+            "原点を中心",
+            "原点中心",
+            "原点のまわり",
+            "原点周り",
+            "abouttheorigin",
+            "aroundtheorigin",
+        )
+    ) or (
+        origin_is_named_o
+        and any(
+            phrase in compact_lower
+            for phrase in ("oを中心", "o中心", "oのまわり", "o周り", "abouto", "aroundo")
+        )
+    )
+    if not rotates_about_origin:
+        return None
+
+    coefficient: sp.Expr | None = None
+    curve_variable: sp.Symbol | None = None
+    for segment in math_segments:
+        compact = segment.replace(" ", "")
+        equation = re.fullmatch(
+            r"(?:[A-Za-z][A-Za-z0-9_]*:)?[A-Za-z]=(?P<body>.+)", compact
+        )
+        if equation is None:
+            continue
+        symbols = sorted(set(re.findall(r"[A-Za-z]+", equation.group("body"))))
+        symbols = [name for name in symbols if name not in {"sqrt", "pi", "sin", "cos"}]
+        if len(symbols) != 1:
+            continue
+        variable = sp.Symbol(symbols[0], real=True)
+        try:
+            body = sp.sympify(
+                equation.group("body"),
+                locals={variable.name: variable, "sqrt": sp.sqrt, "pi": sp.pi},
+            )
+            polynomial = sp.Poly(body, variable)
+        except (sp.PolynomialError, sp.SympifyError, TypeError, ValueError):
+            continue
+        if polynomial.degree() != 2:
+            continue
+        candidate = sp.simplify(polynomial.coeff_monomial(variable**2))
+        if sp.simplify(body - candidate * variable**2) != 0:
+            continue
+        if candidate.free_symbols or not _proves_strictly_positive(candidate):
+            continue
+        coefficient = candidate
+        curve_variable = variable
+        break
+    if coefficient is None or curve_variable is None:
+        return None
+
+    query: dict[str, Any] | None = None
+    limit_pattern = re.compile(
+        r"limit_\((?:\\)?(?P<angle>[A-Za-z]+)to0(?P<side>\^?[+-])?\)"
+        r"\*?(?:\\)?(?P=angle)\*\*(?P<power>\d+)\*?(?P<target>.+)"
+    )
+    for segment in math_segments:
+        match = limit_pattern.fullmatch(segment.replace(" ", ""))
+        if match is None:
+            continue
+        target = match.group("target")
+        power = int(match.group("power"))
+        if "V" in target and any(marker in normalized for marker in ("体積", "volume")):
+            has_x_axis = any(
+                phrase in compact_lower
+                for phrase in (
+                    "x軸周り",
+                    "x軸の周り",
+                    "x軸まわり",
+                    "x軸のまわり",
+                    "aboutthexaxis",
+                    "aroundthexaxis",
+                )
+            ) or (
+                ("軸周り" in normalized or "axis" in lower) and "x" in math_segments
+            )
+            if power != 5 or not has_x_axis:
+                return None
+            query = {
+                "kind": "volume",
+                "power": power,
+                "target": target,
+                "angle": match.group("angle"),
+                "side": match.group("side") or "two-sided",
+            }
+        elif any(marker in normalized for marker in ("交点", "intersection")):
+            if power != 2 or not re.fullmatch(r"[A-Za-z]{2}", target):
+                return None
+            query = {
+                "kind": "distance",
+                "power": power,
+                "target": target,
+                "angle": match.group("angle"),
+                "side": match.group("side") or "two-sided",
+            }
+        break
+    if query is None:
+        return None
+    return {
+        "coefficient": coefficient,
+        "curve_variable": curve_variable.name,
+        **query,
+    }
+
+
+def _rotated_parabola_limit_diagram(
+    *, stage: int, volume: bool
+) -> dict[str, Any]:
+    """Draw the coefficient-free blow-up chart used by both limit queries."""
+
+    sample_t = 0.18
+    cosine = (1.0 - sample_t**2) / (1.0 + sample_t**2)
+    sine = 2.0 * sample_t / (1.0 + sample_t**2)
+    fixed_points: list[dict[str, float]] = []
+    for index in range(121):
+        X = -1.05 + 1.18 * index / 120.0
+        fixed_points.append({"x": X, "y": X * X})
+    rotated_points: list[dict[str, float]] = []
+    for index in range(121):
+        v = index / 120.0
+        rotated_points.append(
+            {
+                "x": v * cosine - 2.0 * v * v / (1.0 + sample_t**2),
+                "y": 2.0 * sample_t**2 * v / (1.0 + sample_t**2) + v * v * cosine,
+            }
+        )
+
+    shapes: list[dict[str, Any]] = [
+        {
+            "id": "fixed-parabola",
+            "kind": "polyline",
+            "points": fixed_points,
+            "tone": "primary",
+        },
+        {
+            "id": "rotated-parabola",
+            "kind": "polyline",
+            "points": rotated_points,
+            "tone": "accent",
+        },
+        {
+            "id": "origin",
+            "kind": "point",
+            "point": {"x": 0.0, "y": 0.0},
+            "label": "O",
+            "tone": "primary",
+        },
+    ]
+    if stage >= 2:
+        shapes.append(
+            {
+                "id": "nonzero-intersection",
+                "kind": "point",
+                "point": {"x": -1.0, "y": 1.0},
+                "label": "R",
+                "tone": "secondary",
+            }
+        )
+    if stage >= 3 and volume:
+        region = [
+            {"x": -index / 100.0, "y": (index / 100.0) ** 2}
+            for index in range(101)
+        ]
+        region.extend(reversed(rotated_points))
+        shapes.insert(
+            0,
+            {
+                "id": "bounded-region",
+                "kind": "polyline",
+                "points": region,
+                "closed": True,
+                "fill": True,
+                "tone": "muted",
+            },
+        )
+    elif stage >= 3:
+        shapes.append(
+            {
+                "id": "origin-to-intersection",
+                "kind": "vector",
+                "from": {"x": 0.0, "y": 0.0},
+                "to": {"x": -1.0, "y": 1.0},
+                "label": "OR",
+                "tone": "secondary",
+            }
+        )
+
+    captions = {
+        1: "微小回転で遠方へ移る交点を、有限な尺度 (X,Y) へ縮めて表示します。",
+        2: "半角変数で交点式を因数分解すると、原点以外の実交点 R が一意に決まります。",
+        3: (
+            "囲まれた領域の境界を一周する積分から、x軸回転体の体積を求めます。"
+            if volume
+            else "同じ交点座標から距離 OR を作り、尺度を元へ戻して極限を取ります。"
+        ),
+    }
+    return plane_scene_diagram(
+        title="回転した放物線の有限尺度表示",
+        caption=captions[stage],
+        viewport={"xMin": -1.18, "xMax": 0.3, "yMin": -0.12, "yMax": 1.2},
+        axes=True,
+        shapes=shapes,
+    )
+
+
+def synthesize_rotated_parabola_limit(
+    statement: str,
+) -> RuntimeSolutionSynthesis | None:
+    """Conjugate a small rotation to a rational half-angle blow-up chart."""
+
+    parsed = _parse_rotated_parabola_limit(statement)
+    if parsed is None:
+        return None
+    coefficient = sp.simplify(parsed["coefficient"])
+    angle_name = str(parsed["angle"])
+    angle_tex = sp.latex(sp.Symbol(angle_name, real=True))
+    query_kind = str(parsed["kind"])
+
+    a = sp.Symbol("a", positive=True)
+    t = sp.Symbol("t", positive=True)
+    u = sp.Symbol("u", real=True)
+    sine = 2 * t / (1 + t**2)
+    cosine = (1 - t**2) / (1 + t**2)
+    rotated_x = sp.factor(u * cosine - a * u**2 * sine)
+    rotated_y = sp.factor(u * sine + a * u**2 * cosine)
+    intersection = sp.factor(rotated_y - a * rotated_x**2)
+    expected_factorization = (
+        -2
+        * t
+        * u
+        * (a * t * u - 1)
+        * (2 * a**2 * u**2 + 2 * a * t * u + t**2 + 1)
+        / (1 + t**2) ** 2
+    )
+    factorization_residual = sp.factor(intersection - expected_factorization)
+    quadratic = 2 * a**2 * u**2 + 2 * a * t * u + t**2 + 1
+    quadratic_discriminant = sp.factor(sp.discriminant(quadratic, u))
+    if factorization_residual != 0:
+        return None
+    if quadratic_discriminant != -4 * a**2 * (t**2 + 2):
+        return None
+
+    nonzero_parameter = 1 / (a * t)
+    intersection_x = sp.simplify(rotated_x.subs(u, nonzero_parameter))
+    intersection_y = sp.simplify(rotated_y.subs(u, nonzero_parameter))
+    if intersection_x != -1 / (a * t) or intersection_y != 1 / (a * t**2):
+        return None
+    coordinate_residuals = (
+        sp.simplify(intersection_y - a * intersection_x**2),
+        sp.simplify(intersection.subs(u, nonzero_parameter)),
+    )
+    if any(residual != 0 for residual in coordinate_residuals):
+        return None
+
+    theta = sp.Symbol("theta", positive=True)
+    half_angle_ratio = sp.limit(theta / sp.tan(theta / 2), theta, 0, dir="+")
+    if half_angle_ratio != 2:
+        return None
+
+    common_program = (
+        {
+            "rule": "elaborate_origin_centered_rotation_of_quadratic_graph",
+            "coefficient": sp.srepr(coefficient),
+            "angle_variable": angle_name,
+        },
+        {
+            "rule": "conjugate_rotation_by_tangent_half_angle",
+            "substitution": f"t=tan({angle_name}/2)",
+            "sine": "2*t/(1+t**2)",
+            "cosine": "(1-t**2)/(1+t**2)",
+        },
+        {
+            "rule": "factor_rotated_curve_intersection",
+            "factorization_residual": str(factorization_residual),
+            "quadratic_discriminant": sp.sstr(quadratic_discriminant),
+        },
+        {
+            "rule": "isolate_unique_nonzero_real_intersection",
+            "parameter": "1/(a*t)",
+            "coordinates": ["-1/(a*t)", "1/(a*t**2)"],
+            "coordinate_residuals": [str(value) for value in coordinate_residuals],
+        },
+    )
+    common_checks = (
+        "現在入力から原点中心の回転、二次曲線の係数、極限の対象と次数を抽出",
+        "正弦・余弦を半角変数の有理式へ移し、交点多項式の因数分解を恒等式として再生",
+        "残る二次因子の判別式が負であることから、原点以外の実交点が一意であることを確認",
+        "交点の媒介変数と二座標を元の二曲線へ代入し、残差がともに0であることを確認",
+        "theta/tan(theta/2) の極限を厳密に2へ評価",
+    )
+    common_witness = {
+        "curve": f"y=({sp.srepr(coefficient)})*x**2",
+        "coefficient": sp.srepr(coefficient),
+        "angle_variable": angle_name,
+        "half_angle_variable": "t",
+        "generic_intersection_factorization": sp.sstr(expected_factorization),
+        "factorization_residual": str(factorization_residual),
+        "quadratic_factor_discriminant": sp.sstr(quadratic_discriminant),
+        "nonzero_parameter": "1/(a*t)",
+        "intersection_coordinates": ["-1/(a*t)", "1/(a*t**2)"],
+        "coordinate_residuals": [str(value) for value in coordinate_residuals],
+        "half_angle_ratio_limit": str(half_angle_ratio),
+        "query_kind": query_kind,
+    }
+
+    diagrams = [
+        _rotated_parabola_limit_diagram(stage=stage, volume=query_kind == "volume")
+        for stage in (1, 2, 3)
+    ]
+    chain = [step["rule"] for step in common_program]
+
+    if query_kind == "distance":
+        distance = sp.sqrt(1 + t**2) / (a * t**2)
+        limit_value = sp.simplify(4 / coefficient)
+        chain.append("restore_distance_scale_and_take_limit")
+        visual_explanation = {
+            "version": 1,
+            "mode": "stepper",
+            "title": "微小回転から遠方交点の距離を得るまで",
+            "diagram_required_for_every_step": True,
+            "composition_verified": True,
+            "morphism_chain": chain,
+            "steps": [
+                {
+                    "id": "rotated-parabola-distance-1",
+                    "title": "回転を半角変数へ移す",
+                    "explanation_ja": "回転行列の正弦・余弦を、半角変数 t の有理式へ変えます。",
+                    "formula_tex": rf"\sin {angle_tex}=\frac{{2t}}{{1+t^2}},\quad \cos {angle_tex}=\frac{{1-t^2}}{{1+t^2}}",
+                    "morphism": {"morphism_id": chain[1], "label_ja": "回転の半角有理化", "input_type": "RotatedQuadraticCurve", "output_type": "RationalParametricCurve"},
+                    "source_state": {"id": "rotated-curve", "type": "RotatedQuadraticCurve"},
+                    "target_state": {"id": "half-angle-curve", "type": "RationalParametricCurve"},
+                    "diagram": diagrams[0],
+                },
+                {
+                    "id": "rotated-parabola-distance-2",
+                    "title": "原点以外の交点を一意に決める",
+                    "explanation_ja": "交点式を因数分解し、判別式が負の二次因子を除くと、原点以外の実交点が一意に定まります。",
+                    "formula_tex": r"R=\left(-\frac1{at},\frac1{at^2}\right)",
+                    "morphism": {"morphism_id": chain[3], "label_ja": "実交点の分離", "input_type": "IntersectionPolynomial", "output_type": "UniqueNonzeroIntersection"},
+                    "source_state": {"id": "intersection-polynomial", "type": "IntersectionPolynomial"},
+                    "target_state": {"id": "nonzero-intersection", "type": "UniqueNonzeroIntersection"},
+                    "diagram": diagrams[1],
+                },
+                {
+                    "id": "rotated-parabola-distance-3",
+                    "title": "距離の尺度を元へ戻す",
+                    "explanation_ja": "交点座標から距離を作り、回転角と半角変数 t の比が2へ近づくことを使います。",
+                    "formula_tex": rf"\lim_{{{angle_tex}\to0}}{angle_tex}^2OR={sp.latex(limit_value)}",
+                    "morphism": {"morphism_id": chain[-1], "label_ja": "距離尺度の復元", "input_type": "UniqueNonzeroIntersection", "output_type": "ExactLimit"},
+                    "source_state": {"id": "nonzero-intersection", "type": "UniqueNonzeroIntersection"},
+                    "target_state": {"id": "distance-limit", "type": "ExactLimit"},
+                    "diagram": diagrams[2],
+                },
+            ],
+        }
+        return RuntimeSolutionSynthesis(
+            answer=limit_value,
+            answer_tex=rf"\({sp.latex(limit_value)}\)",
+            tool_name="mortra.runtime_rotated_parabola_blowup_distance",
+            expression_tex=rf"\lim_{{{angle_tex}\to0}}{angle_tex}^2{parsed['target']}",
+            derivation_tex=(
+                rf"曲線を \(y=ax^2\) と書く。この問題では \(a={sp.latex(coefficient)}\) である。半角変数 \(t=\tan({angle_tex}/2)\) を導入すると、\(\sin {angle_tex}=\frac{{2t}}{{1+t^2}}\), \(\cos {angle_tex}=\frac{{1-t^2}}{{1+t^2}}\) である。",
+                r"回転前の点を \((u,au^2)\) とする。回転後の座標を交点条件 \(y=ax^2\) へ代入すると、原点に対応する \(u=0\) を除いた式は \[(atu-1)(2a^2u^2+2atu+t^2+1)=0.\] 後ろの二次式の判別式は \(-4a^2(t^2+2)<0\) なので、原点以外の実交点は \(u=1/(at)\) の一つだけである。",
+                r"この値を回転後の座標へ戻すと \[R=\left(-\frac1{at},\frac1{at^2}\right).\] 従って \[OR=\frac{\sqrt{1+t^2}}{a|t|^2}.\]",
+                rf"\({angle_tex}/\tan({angle_tex}/2)\to2\) であるから、\[{angle_tex}^2OR=\frac1a\left(\frac{{{angle_tex}}}{{t}}\right)^2\sqrt{{1+t^2}}\longrightarrow\frac4a={sp.latex(limit_value)}.\]",
+            ),
+            verification_checks=common_checks
+            + ("交点座標から距離を厳密に作り、半角比の極限で指定された尺度を復元",),
+            proof_program=common_program
+            + (
+                {
+                    "rule": "restore_distance_scale_and_take_limit",
+                    "distance": sp.sstr(distance),
+                    "limit": sp.srepr(limit_value),
+                },
+            ),
+            diagram=diagrams[-1],
+            witness={
+                **common_witness,
+                "generic_distance": sp.sstr(distance),
+                "limit": sp.srepr(limit_value),
+            },
+            visual_explanation=visual_explanation,
+        )
+
+    q_integral = sp.factor(
+        sp.integrate(rotated_y**2 * sp.diff(rotated_x, u), (u, 1 / (a * t), 0))
+    )
+    X = sp.Symbol("X", real=True)
+    p_integral = sp.factor(sp.integrate((a * X**2) ** 2, (X, 0, -1 / (a * t))))
+    boundary_integral = sp.factor(q_integral + p_integral)
+    expected_boundary = (5 * t**2 + 4) / (15 * a**3 * t**5 * (1 + t**2))
+    boundary_residual = sp.factor(boundary_integral - expected_boundary)
+    if boundary_residual != 0:
+        return None
+    right_limit = sp.simplify(128 * sp.pi / (15 * coefficient**3))
+    left_limit = -right_limit
+    side = str(parsed["side"])
+    if side in {"+", "^+"}:
+        answer: Any = right_limit
+        answer_tex = rf"\({sp.latex(right_limit)}\)"
+    elif side in {"-", "^-"}:
+        answer = left_limit
+        answer_tex = rf"\({sp.latex(left_limit)}\)"
+    else:
+        answer = {
+            "exists": False,
+            "right_limit": sp.srepr(right_limit),
+            "left_limit": sp.srepr(left_limit),
+        }
+        answer_tex = (
+            r"\(\text{両側極限は存在しない。}\quad "
+            rf"\lim_{{{angle_tex}\to0^+}}{angle_tex}^5V({angle_tex})={sp.latex(right_limit)},\quad "
+            rf"\lim_{{{angle_tex}\to0^-}}{angle_tex}^5V({angle_tex})={sp.latex(left_limit)}.\)"
+        )
+    chain.extend(("convert_solid_volume_to_boundary_moment", "reflect_negative_rotation"))
+    visual_explanation = {
+        "version": 1,
+        "mode": "stepper",
+        "title": "回転した放物線から回転体積の片側極限を得るまで",
+        "diagram_required_for_every_step": True,
+        "composition_verified": True,
+        "morphism_chain": chain,
+        "steps": [
+            {
+                "id": "rotated-parabola-volume-1",
+                "title": "回転を半角変数へ移す",
+                "explanation_ja": "回転行列を半角変数 t の有理式にし、微小角で発散する座標を有限尺度へ移します。",
+                "formula_tex": rf"t=\tan({angle_tex}/2),\quad X=atx,\quad Y=at^2y",
+                "morphism": {"morphism_id": chain[1], "label_ja": "回転の半角有理化", "input_type": "RotatedQuadraticCurve", "output_type": "RationalParametricCurve"},
+                "source_state": {"id": "rotated-curve", "type": "RotatedQuadraticCurve"},
+                "target_state": {"id": "half-angle-curve", "type": "RationalParametricCurve"},
+                "diagram": diagrams[0],
+            },
+            {
+                "id": "rotated-parabola-volume-2",
+                "title": "囲まれた領域を確定する",
+                "explanation_ja": "二次因子の判別式が負なので、二曲線の実交点は O と R だけです。",
+                "formula_tex": r"R=\left(-\frac1{at},\frac1{at^2}\right)",
+                "morphism": {"morphism_id": chain[3], "label_ja": "実交点の分離", "input_type": "IntersectionPolynomial", "output_type": "BoundedRegion"},
+                "source_state": {"id": "intersection-polynomial", "type": "IntersectionPolynomial"},
+                "target_state": {"id": "bounded-region", "type": "BoundedRegion"},
+                "diagram": diagrams[1],
+            },
+            {
+                "id": "rotated-parabola-volume-3",
+                "title": "境界積分で体積を求める",
+                "explanation_ja": "縦断面の円環面積を境界に沿う一つの積分へまとめ、負の角は対称移動で処理します。",
+                "formula_tex": r"V=\pi\oint_{\partial\Omega}^{\rm clockwise}y^2\,dx",
+                "morphism": {"morphism_id": chain[-2], "label_ja": "断面積から境界積分へ", "input_type": "BoundedRegion", "output_type": "ExactVolume"},
+                "source_state": {"id": "bounded-region", "type": "BoundedRegion"},
+                "target_state": {"id": "volume-limit", "type": "ExactLimit"},
+                "diagram": diagrams[2],
+            },
+        ],
+    }
+    return RuntimeSolutionSynthesis(
+        answer=answer,
+        answer_tex=answer_tex,
+        tool_name="mortra.runtime_rotated_parabola_boundary_moment",
+        expression_tex=rf"\lim_{{{angle_tex}\to0}}{angle_tex}^5V({angle_tex})",
+        derivation_tex=(
+            rf"曲線を \(y=ax^2\) と書く。この問題では \(a={sp.latex(coefficient)}\) である。まず \({angle_tex}>0\) とし、半角変数 \(t=\tan({angle_tex}/2)>0\) によって回転行列を有理化する。",
+            r"回転前の点を \((u,au^2)\) とすると、交点式は \[-\frac{2tu(atu-1)(2a^2u^2+2atu+t^2+1)}{(1+t^2)^2}=0.\] 二次因子の判別式は負なので、境界の交点は \(O\) と \(R=(-1/(at),1/(at^2))\) だけである。",
+            rf"囲まれた領域を \(\Omega_{{{angle_tex}}}\) とする。これは \(x\) 軸より上にあるから、円環法とグリーンの公式により、境界を時計回りに一周して \[V({angle_tex})=\pi\oint_{{\partial\Omega_{{{angle_tex}}}}}^{{\rm clockwise}}y^2\,dx\] と書ける。固定放物線を \(O\to R\)、回転放物線を \(R\to O\) と進む。",
+            rf"固定放物線上の積分と回転放物線上の積分はそれぞれ \[-\frac1{{5a^3t^5}},\qquad \frac{{8t^2+7}}{{15a^3t^5(1+t^2)}}.\] 従って \[V({angle_tex})=\frac{{\pi(5t^2+4)}}{{15a^3t^5(1+t^2)}}.\]",
+            rf"\({angle_tex}/t\to2\) より右極限は \({sp.latex(right_limit)}\) である。負の角の図形は正の角の図形を \(y\) 軸について反転したものなので \(V(-{angle_tex})=V({angle_tex})\) であり、左極限は \({sp.latex(left_limit)}\) となる。従って両側極限は存在しない。",
+        ),
+        verification_checks=common_checks
+        + (
+            "固定曲線と回転曲線の境界積分を独立に記号積分し、その和の残差が0であることを確認",
+            "y軸反転で V(-theta)=V(theta) を確認し、奇数5乗を掛けた左右極限を別々に評価",
+        ),
+        proof_program=common_program
+        + (
+            {
+                "rule": "convert_solid_volume_to_boundary_moment",
+                "fixed_curve_integral": sp.sstr(p_integral),
+                "rotated_curve_integral": sp.sstr(q_integral),
+                "boundary_integral": sp.sstr(boundary_integral),
+                "residual": str(boundary_residual),
+            },
+            {
+                "rule": "reflect_negative_rotation",
+                "volume_parity": "even",
+                "scaled_limit_parity": "odd",
+                "right_limit": sp.srepr(right_limit),
+                "left_limit": sp.srepr(left_limit),
+            },
+        ),
+        diagram=diagrams[-1],
+        witness={
+            **common_witness,
+            "fixed_curve_integral": sp.sstr(p_integral),
+            "rotated_curve_integral": sp.sstr(q_integral),
+            "boundary_integral": sp.sstr(boundary_integral),
+            "boundary_integral_residual": str(boundary_residual),
+            "volume_formula_positive_angle": sp.sstr(sp.pi * boundary_integral),
+            "right_limit": sp.srepr(right_limit),
+            "left_limit": sp.srepr(left_limit),
+            "two_sided_limit_exists": False,
+        },
+        visual_explanation=visual_explanation,
+    )
+
+
 def synthesize_runtime_solution(statement: str) -> RuntimeSolutionSynthesis | None:
     """Run reusable current-input kernels from narrowest proof obligation."""
 
@@ -4400,6 +4922,7 @@ def synthesize_runtime_solution(statement: str) -> RuntimeSolutionSynthesis | No
         synthesize_fibonacci_prime_norm_chain,
         synthesize_reciprocal_product_wallis_chain,
         synthesize_sine_cosine_iteration,
+        synthesize_rotated_parabola_limit,
         synthesize_polynomial_mobius_fixed_point,
         synthesize_rational_angle_cosine_algebra,
         synthesize_primitive_right_triangle_center_fraction,

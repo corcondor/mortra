@@ -192,6 +192,15 @@ _STAGE_LABELS_JA = {
     "mortra.runtime_sine_cosine_fixed_point": "一意な固定点とその位置",
     "mortra.runtime_sine_cosine_two_step_bound": "二段反復の一次上界",
     "mortra.runtime_sine_cosine_iteration_integral_bound": "積分列の二段縮小評価",
+    "mortra.runtime_rotated_parabola_blowup_distance": "回転放物線の交点と距離極限",
+    "mortra.runtime_rotated_parabola_boundary_moment": "回転放物線領域の体積極限",
+    "elaborate_origin_centered_rotation_of_quadratic_graph": "原点中心の二次曲線回転",
+    "conjugate_rotation_by_tangent_half_angle": "回転の半角有理化",
+    "factor_rotated_curve_intersection": "交点式の因数分解",
+    "isolate_unique_nonzero_real_intersection": "原点以外の実交点の分離",
+    "restore_distance_scale_and_take_limit": "距離尺度の復元",
+    "convert_solid_volume_to_boundary_moment": "回転体積の境界積分",
+    "reflect_negative_rotation": "負の回転角への反転対称性",
     "solve.exact.mortra.runtime_sine_cosine_tangent_bound": "凹性から得た接線上界",
     "solve.exact.mortra.runtime_sine_cosine_fixed_point": "一意な固定点とその位置",
     "solve.exact.mortra.runtime_sine_cosine_two_step_bound": "二段反復の一次上界",
@@ -268,6 +277,42 @@ _MORPHISM_PRESENTATION_JA: dict[str, tuple[str, str]] = {
         "点ごとの上界を積分へ移す",
         "二段反復の一次上界を積分し、偶数番目と奇数番目をそれぞれ帰納する。",
     ),
+    "mortra.runtime_rotated_parabola_blowup_distance": (
+        "半角変数で遠方交点の距離を求める",
+        "回転を半角変数の有理式へ移し、交点式を因数分解してから距離の尺度を元へ戻す。",
+    ),
+    "mortra.runtime_rotated_parabola_boundary_moment": (
+        "境界積分で回転体積の極限を求める",
+        "二曲線の交点を確定し、囲まれた領域の境界積分と反転対称性から左右の極限を求める。",
+    ),
+    "elaborate_origin_centered_rotation_of_quadratic_graph": (
+        "原点中心の回転を座標で表す",
+        "二次曲線上の点へ回転行列を作用させ、交点条件へ代入できる座標表示を得る。",
+    ),
+    "conjugate_rotation_by_tangent_half_angle": (
+        "回転を半角変数の有理式へ移す",
+        "正弦と余弦を半角変数で表し、交点と極限を有理式として扱えるようにする。",
+    ),
+    "factor_rotated_curve_intersection": (
+        "交点式を因数分解する",
+        "回転後の点を元の二次曲線へ代入し、各因子と判別式を厳密に検査する。",
+    ),
+    "isolate_unique_nonzero_real_intersection": (
+        "原点以外の実交点を一つに定める",
+        "判別式が負の因子を除き、残る一次因子から交点の媒介変数と座標を求める。",
+    ),
+    "restore_distance_scale_and_take_limit": (
+        "交点距離の尺度を元へ戻す",
+        "交点座標から距離を作り、半角変数と回転角の比を用いて極限を求める。",
+    ),
+    "convert_solid_volume_to_boundary_moment": (
+        "回転体積を境界積分へ直す",
+        "円環法を境界に沿う積分へまとめ、固定曲線と回転曲線の寄与を別々に計算する。",
+    ),
+    "reflect_negative_rotation": (
+        "負の回転角を反転対称性で扱う",
+        "領域の体積が回転角の偶関数であることを用い、左右の片側極限を比較する。",
+    ),
 }
 
 for _runtime_morphism in (
@@ -275,6 +320,8 @@ for _runtime_morphism in (
     "mortra.runtime_sine_cosine_fixed_point",
     "mortra.runtime_sine_cosine_two_step_bound",
     "mortra.runtime_sine_cosine_iteration_integral_bound",
+    "mortra.runtime_rotated_parabola_blowup_distance",
+    "mortra.runtime_rotated_parabola_boundary_moment",
 ):
     _MORPHISM_PRESENTATION_JA[f"solve.exact.{_runtime_morphism}"] = (
         _MORPHISM_PRESENTATION_JA[_runtime_morphism]
@@ -727,6 +774,11 @@ def _visual_explanation_tex(visual_explanation: dict[str, Any] | None) -> str:
         title = _escape_text(str(step.get("title") or f"手順 {index}"))
         explanation = _escape_text(str(step.get("explanation_ja") or ""))
         formula = str(step.get("formula_tex") or "").strip()
+        if formula and not re.match(
+            r"^(?:\\\[|\\\(|\$|\\begin\{(?:equation|align|gather|displaymath)\*?\})",
+            formula,
+        ):
+            formula = "\\[\n" + formula + "\n\\]"
         diagram_tex = _diagram_to_tex(step["diagram"])
         sections.extend(
             [

@@ -1336,7 +1336,66 @@ class PublicSolveTests(unittest.TestCase):
         self.assertIn("runtime_derivative_root_search", rules)
         self.assertIn("exact_candidate_interval_comparison", rules)
 
-    def test_limit_does_not_treat_an_unresolved_geometric_distance_as_a_scalar_product(self) -> None:
+    def test_rotated_parabola_distance_is_synthesized_in_cold_mode(self) -> None:
+        problem = (
+            r"原点を $O$，曲線 $P:y=x^2$ とする。"
+            r"$P$ を $O$ を中心として角 $\theta$ だけ回転した曲線を $Q$ とし、"
+            r"$P$ と $Q$ の $O$ 以外の交点を $R$ とする。"
+            r"$\lim_{\theta\to0}\theta^2\cdot OR$ を求めよ。"
+        )
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(card["answer_tex"], r"\(4\)")
+        certificate = card["execution_certificate"]
+        self.assertEqual(
+            certificate["tool_name"],
+            "mortra.runtime_rotated_parabola_blowup_distance",
+        )
+        self.assertEqual(certificate["witness"]["factorization_residual"], "0")
+        self.assertEqual(certificate["witness"]["coordinate_residuals"], ["0", "0"])
+        self.assertEqual(len(certificate["statement_sha256"]), 64)
+        self.assertEqual(len(certificate["answer_tex_sha256"]), 64)
+        self.assertEqual(len(certificate["generated_program_sha256"]), 64)
+        rules = [step["rule"] for step in certificate["proof_program"]]
+        self.assertIn("factor_rotated_curve_intersection", rules)
+        self.assertIn("isolate_unique_nonzero_real_intersection", rules)
+        self.assertIn("restore_distance_scale_and_take_limit", rules)
+        visual_steps = card["visual_explanation"]["steps"]
+        self.assertEqual(len(visual_steps), 3)
+        self.assertTrue(all(step["diagram"]["kind"] == "plane" for step in visual_steps))
+        self.assertIn(
+            "半角変数で遠方交点の距離を求める",
+            [step["label_ja"] for step in card["proof_roadmap"]],
+        )
+        self.assertNotIn(
+            "structural_theorem_query",
+            json.dumps(certificate, ensure_ascii=False),
+        )
+
+    def test_rotated_parabola_distance_recomputes_coefficient_and_angle_name(self) -> None:
+        problem = (
+            r"原点を $O$，曲線 $P:y=2x^2$ とする。"
+            r"$P$ を $O$ を中心として角 $\varphi$ だけ回転した曲線との"
+            r"原点以外の交点を $R$ とする。"
+            r"$\lim_{\varphi\to0}\varphi^2 OR$ を求めよ。"
+        )
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(card["answer_tex"], r"\(2\)")
+        witness = card["execution_certificate"]["witness"]
+        self.assertEqual(witness["coefficient"], "Integer(2)")
+        self.assertEqual(witness["angle_variable"], "varphi")
+        self.assertIn(r"\varphi^2OR", card["solution_tex"])
+
+    def test_rotated_parabola_distance_requires_an_explicit_origin_center(self) -> None:
         problem = (
             r"原点を $O$，曲線 $P:y=x^2$ とする。$P$ を角 $\theta$ 回転した曲線との"
             r"交点を $R$ とする。$\lim_{\theta\to0}\theta^2\cdot OR$ を求めよ。"
@@ -1593,6 +1652,29 @@ class PublicSolveTests(unittest.TestCase):
             r"$\cos 1$ を小数第2位まで求めよ。",
             allow_theorem_kernels=False,
         )
+
+        self.assertEqual(status, 422)
+        self.assertEqual(payload["generated"], 0)
+
+    def test_rotated_parabola_distance_rejects_a_different_rotation_center(self) -> None:
+        problem = (
+            r"原点を通る曲線 $P:y=x^2$ を点 $A(1,0)$ を中心として"
+            r"角 $\theta$ だけ回転した曲線との交点を $R$ とする。"
+            r"$\lim_{\theta\to0}\theta^2 OR$ を求めよ。"
+        )
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
+
+        self.assertEqual(status, 422)
+        self.assertEqual(payload["generated"], 0)
+
+    def test_rotated_parabola_distance_rejects_a_translated_quadratic(self) -> None:
+        problem = (
+            r"曲線 $P:y=x^2+1$ を原点中心に角 $\theta$ だけ回転した曲線との"
+            r"交点を $R$ とする。$\lim_{\theta\to0}\theta^2 OR$ を求めよ。"
+        )
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
 
         self.assertEqual(status, 422)
         self.assertEqual(payload["generated"], 0)
@@ -2132,15 +2214,70 @@ class PublicSolveTests(unittest.TestCase):
         status, payload = solve_problem(
             r"曲線$P:y=x^2$を原点中心に角$\theta$だけ回転した曲線をQとする。"
             r"PとQで囲まれた領域をx軸周りに回転した体積を$V(\theta)$とする。"
-            r"$\lim_{\theta\to0}\theta^5V(\theta)$を求めよ。"
+            r"$\lim_{\theta\to0}\theta^5V(\theta)$を求めよ。",
+            allow_theorem_kernels=False,
         )
 
         self.assertEqual(status, 200)
         card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
         self.assertIn("存在しない", card["answer_tex"])
         self.assertIn(r"\frac{128 \pi}{15}", card["answer_tex"])
-        self.assertIn("吹き上げ", card["solution_tex"])
-        self.assertIn("左右", card["solution_tex"])
+        self.assertIn("半角変数", card["solution_tex"])
+        self.assertIn("グリーン", card["solution_tex"])
+        self.assertIn("右極限", card["solution_tex"])
+        self.assertIn("左極限", card["solution_tex"])
+        certificate = card["execution_certificate"]
+        self.assertEqual(
+            certificate["tool_name"],
+            "mortra.runtime_rotated_parabola_boundary_moment",
+        )
+        self.assertEqual(certificate["witness"]["boundary_integral_residual"], "0")
+        self.assertFalse(certificate["witness"]["two_sided_limit_exists"])
+        rules = [step["rule"] for step in certificate["proof_program"]]
+        self.assertIn("convert_solid_volume_to_boundary_moment", rules)
+        self.assertIn("reflect_negative_rotation", rules)
+        visual_steps = card["visual_explanation"]["steps"]
+        self.assertEqual(len(visual_steps), 3)
+        self.assertTrue(all(step["diagram"]["kind"] == "plane" for step in visual_steps))
+        self.assertIn(
+            "境界積分で回転体積の極限を求める",
+            [step["label_ja"] for step in card["proof_roadmap"]],
+        )
+        self.assertNotIn(
+            "structural_theorem_query",
+            json.dumps(certificate, ensure_ascii=False),
+        )
+
+    def test_rotated_parabola_volume_recomputes_quadratic_scale(self) -> None:
+        status, payload = solve_problem(
+            r"曲線 $P:y=2x^2$ を原点中心に角 $\varphi$ だけ回転した曲線を $Q$ とする。"
+            r"$P$ と $Q$ で囲まれた領域を $x$ 軸周りに回転した体積を"
+            r"$V(\varphi)$ とする。"
+            r"$\lim_{\varphi\to0}\varphi^5V(\varphi)$ を求めよ。",
+            allow_theorem_kernels=False,
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertIn(r"\frac{16 \pi}{15}", card["answer_tex"])
+        self.assertIn(r"- \frac{16 \pi}{15}", card["answer_tex"])
+        witness = card["execution_certificate"]["witness"]
+        self.assertEqual(witness["coefficient"], "Integer(2)")
+        self.assertEqual(witness["angle_variable"], "varphi")
+
+    def test_rotated_parabola_volume_rejects_a_different_revolution_axis(self) -> None:
+        status, payload = solve_problem(
+            r"曲線 $P:y=x^2$ を原点中心に角 $\theta$ だけ回転した曲線を $Q$ とする。"
+            r"$P$ と $Q$ で囲まれた領域を $y$ 軸周りに回転した体積を"
+            r"$V(\theta)$ とする。"
+            r"$\lim_{\theta\to0}\theta^5V(\theta)$ を求めよ。",
+            allow_theorem_kernels=False,
+        )
+
+        self.assertEqual(status, 422)
+        self.assertEqual(payload["generated"], 0)
 
     def test_prime_two_side_triangle_radii_problem_returns_all_triangles(self) -> None:
         status, payload = solve_problem(
