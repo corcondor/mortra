@@ -3,6 +3,7 @@ from math_os_prototype.solution_artifact import (
     _safe_statement,
     _state_diagram_tex,
     _state_layout,
+    _variation_diagram_tex,
 )
 
 
@@ -28,6 +29,26 @@ def test_plane_diagram_renders_explicit_math_labels_without_escaping() -> None:
 
 def test_safe_statement_removes_internal_trailing_whitespace() -> None:
     assert _safe_statement("$x>1$において, \n\\[x<2\\]\n") == "$x>1$において,\n\\[x<2\\]"
+
+
+def test_variation_diagram_distinguishes_math_cells_from_text_cells() -> None:
+    tex = _variation_diagram_tex(
+        {
+            "kind": "variation",
+            "variableLabel": "傾き",
+            "columns": ({"tex": r"1<a<e"},),
+            "rows": (
+                {
+                    "label": "共通部分",
+                    "cells": ({"tex": r"1-\log a<b<a(1-\log a)"},),
+                },
+            ),
+        }
+    )
+
+    assert r"\(1<a<e\)" in tex
+    assert r"\(1-\log a<b<a(1-\log a)\)" in tex
+    assert r"\textbackslash{}log" not in tex
 
 
 def test_state_diagram_renders_formulae_in_non_overlapping_boxes() -> None:

@@ -790,6 +790,73 @@ class PublicSolveTests(unittest.TestCase):
             tool = payload["cards"][0]["execution_certificate"].get("tool_name")
             self.assertNotEqual(tool, "mortra.runtime_ordered_sample_volume_ratio")
 
+    def test_log_exp_affine_sandwich_region_is_synthesized_cold(self) -> None:
+        problem = (
+            r"実数$a,b$が,任意の正の実数$x$に対して"
+            r"$\log x+2<ax+b<e^x$を満たすとする."
+            r"点P$(a,b)$の存在範囲を図示し,その面積を求めよ."
+        )
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertIn(r"1<a<e", card["answer_tex"])
+        self.assertIn(r"1-\log a<b<a(1-\log a)", card["answer_tex"])
+        self.assertIn(r"\frac{e^2-4e+5}{4}", card["answer_tex"])
+        certificate = card["execution_certificate"]
+        self.assertEqual(
+            certificate["tool_name"],
+            "mortra.runtime_elementary_inequality_envelope",
+        )
+        witness = certificate["witness"]
+        self.assertEqual(witness["lower_boundary"], "1 - log(a)")
+        self.assertEqual(witness["upper_boundary"], "a*(1 - log(a))")
+        self.assertEqual(witness["slope_interval"], "1<a<e")
+        self.assertEqual(witness["area"], "-E + 5/4 + exp(2)/4")
+        self.assertEqual(len(card["visual_explanation"]["steps"]), 4)
+        self.assertNotIn(
+            "structural_theorem_query",
+            json.dumps(certificate, ensure_ascii=False),
+        )
+
+    def test_log_exp_affine_sandwich_recomputes_renamed_symbols(self) -> None:
+        problem = (
+            r"実数$u,v$が,すべての正の実数$t$に対して"
+            r"$\log t+2<v+ut<e^t$を満たす."
+            r"点Q$(u,v)$の領域を図示し,面積を求めよ."
+        )
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertIn(r"1<u<e", card["answer_tex"])
+        self.assertIn(r"1-\log u<v<u(1-\log u)", card["answer_tex"])
+        witness = card["execution_certificate"]["witness"]
+        self.assertEqual(witness["variable"], "t")
+        self.assertEqual(witness["slope_symbol"], "u")
+        self.assertEqual(witness["intercept_symbol"], "v")
+
+    def test_log_exp_affine_sandwich_rejects_changed_lower_curve(self) -> None:
+        problem = (
+            r"実数$a,b$が,任意の正の実数$x$に対して"
+            r"$\log x+3<ax+b<e^x$を満たすとする."
+            r"点P$(a,b)$の存在範囲を図示し,その面積を求めよ."
+        )
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
+
+        if status == 200:
+            tool = payload["cards"][0]["execution_certificate"].get("tool_name")
+            witness = payload["cards"][0]["execution_certificate"].get("witness", {})
+            self.assertFalse(
+                tool == "mortra.runtime_elementary_inequality_envelope"
+                and witness.get("query_kind") == "log_exp_affine_sandwich_region"
+            )
+
     def test_sinc_integral_envelope_recomputes_changed_bounds_and_variable(self) -> None:
         status, payload = solve_problem(
             r"$\frac{\pi}{3}<\int_0^{\pi/2}\frac{\sin t}{t}\,dt<\frac75$を示せ。",

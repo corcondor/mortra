@@ -26,6 +26,9 @@ from math_os_prototype.exact_interval_charts import (
     alternating_trig_interval_chart,
 )
 from math_os_prototype.latex_frontend import normalize_latex_math, parse_latex_problem
+from math_os_prototype.runtime_log_exp_envelope_synthesis import (
+    synthesize_log_exp_affine_sandwich,
+)
 from math_os_prototype.runtime_ordered_sample_synthesis import (
     synthesize_ordered_three_sample_probabilities,
 )
@@ -5889,6 +5892,7 @@ def synthesize_runtime_solution(statement: str) -> RuntimeSolutionSynthesis | No
 
     for synthesizer in (
         synthesize_ordered_three_sample_probabilities,
+        synthesize_log_exp_affine_sandwich,
         synthesize_normalized_inner_product_realization,
         synthesize_fibonacci_prime_norm_chain,
         synthesize_reciprocal_product_wallis_chain,

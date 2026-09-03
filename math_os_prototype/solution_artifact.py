@@ -211,6 +211,11 @@ _STAGE_LABELS_JA = {
     "transport_homogeneous_lattice_predicate_to_volume": "格子点比から体積比への移送",
     "integrate_acute_triangle_cross_section": "鋭角領域の断面積分",
     "normalize_by_ordered_sample_volume": "全標本体積による正規化",
+    "elaborate_affine_function_sandwich": "全域で二曲線間にある直線の型付け",
+    "minimize_log_affine_gap_by_tangency": "対数側の接線境界",
+    "minimize_exp_affine_gap_by_tangency": "指数側の接線境界",
+    "intersect_dual_envelopes": "上下の係数領域の共通部分",
+    "integrate_parameter_slice_width": "係数領域の縦断面積分",
     "elaborate_elementary_inequality_query": "初等不等式の型付け",
     "construct_alternating_series_envelope": "交代級数の上下包絡",
     "transport_order_through_definite_integral": "不等式の定積分への移送",
@@ -370,6 +375,26 @@ _MORPHISM_PRESENTATION_JA: dict[str, tuple[str, str]] = {
     "normalize_by_ordered_sample_volume": (
         "全標本の体積で割る",
         "求めた部分領域の体積を 0<a<b<c<1 の全体積で割り、確率の極限を確定する。",
+    ),
+    "elaborate_affine_function_sandwich": (
+        "二つの曲線の間にある直線を読み取る",
+        "正の変数、直線の傾きと切片、下側と上側の厳密不等式、係数領域と面積の問いを区別する。",
+    ),
+    "minimize_log_affine_gap_by_tangency": (
+        "対数曲線との接点から下側境界を求める",
+        "直線と対数曲線との差を微分し、その最小値が正になる切片の条件を求める。",
+    ),
+    "minimize_exp_affine_gap_by_tangency": (
+        "指数曲線との接点から上側境界を求める",
+        "指数曲線と直線との差を微分し、傾きが1以下の場合と1より大きい場合を分けて切片の条件を求める。",
+    ),
+    "intersect_dual_envelopes": (
+        "上下二つの条件を重ねる",
+        "二つの切片境界の差を因数分解し、共通部分が存在する傾きの範囲を確定する。",
+    ),
+    "integrate_parameter_slice_width": (
+        "係数領域の幅を積分する",
+        "傾きを固定したときの切片の幅を求め、その幅を許される傾き全体で積分する。",
     ),
     "elaborate_elementary_inequality_query": (
         "初等不等式を型付きの証明義務へ移す",
@@ -823,18 +848,26 @@ def _state_diagram_tex(diagram: dict[str, Any]) -> str:
 
 
 def _variation_diagram_tex(diagram: dict[str, Any]) -> str:
-    columns = [str(value) for value in diagram.get("columns") or []]
+    def render_cell(value: Any) -> str:
+        if isinstance(value, dict):
+            formula = str(value.get("tex") or "").strip()
+            if formula:
+                return rf"\({formula}\)"
+            return _escape_text(str(value.get("text") or ""))
+        return _escape_text(str(value))
+
+    columns = list(diagram.get("columns") or [])
     rows = [row for row in diagram.get("rows") or [] if isinstance(row, dict)]
     if not columns or not rows:
         return ""
     spec = "|l|" + "c|" * len(columns)
     header = " & ".join(
         [_escape_text(str(diagram.get("variableLabel") or "区間"))]
-        + [_escape_text(column) for column in columns]
+        + [render_cell(column) for column in columns]
     )
     body = []
     for row in rows:
-        cells = [_escape_text(str(cell)) for cell in row.get("cells") or []]
+        cells = [render_cell(cell) for cell in row.get("cells") or []]
         body.append(
             " & ".join([_escape_text(str(row.get("label") or "")), *cells]) + r" \\ \hline"
         )
