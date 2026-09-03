@@ -46,6 +46,8 @@ class StudySpec:
     hatch: bool = False
     show_guides: bool = True
     line_only: bool = False
+    material: str = "watercolor"
+    cast_shadow: bool = False
 
 
 def _font(size: int, *, bold: bool = False) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
@@ -495,9 +497,16 @@ STUDIES = (
 )
 
 
-def _screen_transform(projected: dict[str, object], size: int, padding: float = 0.075):
-    xs = [point.x for point in projected.values()]
-    ys = [point.y for point in projected.values()]
+def _screen_transform(
+    projected: dict[str, object],
+    size: int,
+    padding: float = 0.075,
+    *,
+    bounds_projected: dict[str, object] | None = None,
+):
+    bounds = bounds_projected or projected
+    xs = [point.x for point in bounds.values()]
+    ys = [point.y for point in bounds.values()]
     min_x, max_x = min(xs), max(xs)
     min_y, max_y = min(ys), max(ys)
     scale = min(
@@ -545,6 +554,49 @@ def _hatch_face(
     canvas.alpha_composite(lines)
 
 
+def _shadow_projection(
+    figure: SpatialFigure,
+    camera: Camera,
+    light: np.ndarray,
+) -> dict[str, object]:
+    ground_z = min(point[2] for point in figure.points.values()) - 0.32
+    points: dict[str, tuple[float, float, float]] = {}
+    for point_id, value in figure.points.items():
+        point = np.asarray(value, dtype=np.float64)
+        travel = max(0.0, (point[2] - ground_z) / max(float(light[2]), 1e-6))
+        shadow = point - travel * light
+        shadow[2] = ground_z
+        points[f"shadow:{point_id}"] = tuple(shadow.tolist())
+    shadow_figure = replace(figure, points=points, edges=(), faces=(), node_ids=())
+    return project_points(shadow_figure, camera)
+
+
+def _glass_face_style(
+    pigment: str,
+    paper: str,
+    normal: np.ndarray,
+    light: np.ndarray,
+    eye_direction: np.ndarray,
+) -> tuple[tuple[int, int, int, int], int]:
+    facing = abs(float(np.dot(normal, eye_direction)))
+    diffuse = 0.20 + 0.80 * abs(float(np.dot(normal, light)))
+    half_vector = normalize(light + eye_direction)
+    specular = abs(float(np.dot(normal, half_vector))) ** 42
+    fresnel = 0.035 + 0.965 * (1.0 - facing) ** 5
+    thickness = 1.0 / max(facing, 0.18)
+    transmission = math.exp(-0.34 * thickness)
+
+    base = _rgb(pigment)
+    ground = _rgb(paper)
+    lit = base * (0.50 + 0.45 * diffuse)
+    lit += np.asarray((255.0, 252.0, 248.0)) * (0.40 * specular + 0.13 * fresnel)
+    lit = transmission * lit + (1.0 - transmission) * (0.72 * base + 0.28 * ground)
+    alpha = int(np.clip(48 + 82 * (1.0 - transmission) + 34 * fresnel, 44, 148))
+    highlight_alpha = int(np.clip(28 + 150 * specular + 62 * fresnel, 28, 210))
+    color = np.uint8(np.clip(lit, 0, 255))
+    return (int(color[0]), int(color[1]), int(color[2]), alpha), highlight_alpha
+
+
 def render_spatial_figure(
     figure: SpatialFigure,
     spec: StudySpec,
@@ -556,9 +608,14 @@ def render_spatial_figure(
     rng = np.random.default_rng(SEED + int(spec.study_id) * 7919 + seed_offset)
     canvas = _paper(size, palette, rng)
     projected = project_points(figure, spec.camera)
-    screen = _screen_transform(projected, size)
     eye_direction = camera_direction(spec.camera)
     light = normalize((-0.55, -0.35, 0.76))
+    shadow_projected = _shadow_projection(figure, spec.camera, light) if spec.cast_shadow else {}
+    screen = _screen_transform(
+        {**projected, **shadow_projected},
+        size,
+        bounds_projected=projected,
+    )
 
     if spec.show_guides:
         guides = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
@@ -571,6 +628,21 @@ def render_spatial_figure(
         guide_draw.line((center, size * 0.08, center, size * 0.92), fill=_rgba(palette.guide, 28), width=1)
         canvas.alpha_composite(guides)
 
+    if shadow_projected:
+        shadow_layer = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
+        shadow_draw = ImageDraw.Draw(shadow_layer)
+        for face in figure.faces:
+            polygon = [screen(f"shadow:{item}") for item in face.vertex_ids]
+            shadow_draw.polygon(polygon, fill=(34, 48, 62, 18))
+        for edge in figure.edges:
+            shadow_draw.line(
+                (screen(f"shadow:{edge.start_id}"), screen(f"shadow:{edge.end_id}")),
+                fill=(34, 48, 62, 20),
+                width=2,
+            )
+        shadow_layer = shadow_layer.filter(ImageFilter.GaussianBlur(max(3.0, size / 125.0)))
+        canvas.alpha_composite(shadow_layer)
+
     faces = sorted(
         figure.faces,
         key=lambda face: sum(projected[item].depth for item in face.vertex_ids) / len(face.vertex_ids),
@@ -580,20 +652,36 @@ def render_spatial_figure(
         for face_index, face in enumerate(faces):
             polygon = [screen(item) for item in face.vertex_ids]
             normal = face_normal(figure, face)
-            diffuse = abs(float(np.dot(normal, light)))
-            facing = abs(float(np.dot(normal, eye_direction)))
-            tone = min(1.0, 0.08 + 0.70 * diffuse + 0.22 * (1.0 - facing))
             pigment = palette.pigments[face.pigment_index % len(palette.pigments)]
-            fill = _mix(pigment, palette.paper, 0.42 + 0.50 * tone)
             layer = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
             draw = ImageDraw.Draw(layer)
-            for pass_index, alpha in enumerate((46, 64, 86)):
-                draw.polygon(
-                    _jittered_polygon(polygon, rng, 0.42 + 0.30 * pass_index),
-                    fill=(fill[0], fill[1], fill[2], int(alpha * (0.65 + 0.55 * tone))),
+            if spec.material == "glass":
+                fill, highlight_alpha = _glass_face_style(
+                    pigment,
+                    palette.paper,
+                    normal,
+                    light,
+                    eye_direction,
                 )
-            bleed = layer.filter(ImageFilter.GaussianBlur(1.15))
-            canvas.alpha_composite(bleed)
+                draw.polygon(_jittered_polygon(polygon, rng, 0.18), fill=fill)
+                draw.line(
+                    [*polygon, polygon[0]],
+                    fill=(246, 250, 252, highlight_alpha),
+                    width=max(1, size // 650),
+                    joint="curve",
+                )
+                canvas.alpha_composite(layer.filter(ImageFilter.GaussianBlur(0.55)))
+            else:
+                diffuse = abs(float(np.dot(normal, light)))
+                facing = abs(float(np.dot(normal, eye_direction)))
+                tone = min(1.0, 0.08 + 0.70 * diffuse + 0.22 * (1.0 - facing))
+                fill = _mix(pigment, palette.paper, 0.42 + 0.50 * tone)
+                for pass_index, alpha in enumerate((46, 64, 86)):
+                    draw.polygon(
+                        _jittered_polygon(polygon, rng, 0.42 + 0.30 * pass_index),
+                        fill=(fill[0], fill[1], fill[2], int(alpha * (0.65 + 0.55 * tone))),
+                    )
+                canvas.alpha_composite(layer.filter(ImageFilter.GaussianBlur(1.15)))
             canvas.alpha_composite(layer)
             if spec.hatch and face_index % 4 == 0:
                 _hatch_face(canvas, polygon, palette.ink, 38, 0.42 + 0.16 * (face_index % 3), 12 + face_index % 5)

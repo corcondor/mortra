@@ -35,6 +35,7 @@ EXISTING_SPATIAL_OPERATIONS = frozenset(
         "Rotate3",
         "Projection",
         "midpoint",
+        "reflect",
     }
 )
 
@@ -145,6 +146,27 @@ PALETTES: dict[str, SpatialPalette] = {
     "mint-rose": SpatialPalette(
         "#F6F1EB", ("#B9D6CB", "#EAB7C7", "#F0D7A7", "#AFC6D9"), "#31474B", "#A7AAA3", "#CF6178"
     ),
+    "spectrum-glass": SpatialPalette(
+        "#F7F4EF",
+        ("#2E6FAF", "#73C7C4", "#F08EAA", "#F4C65D", "#826CB4", "#DCEAF5"),
+        "#18344D",
+        "#91A5B2",
+        "#F05F91",
+    ),
+    "prism-coral": SpatialPalette(
+        "#F8F2ED",
+        ("#E85D75", "#F3A55D", "#F5D36B", "#65B9AF", "#5D8FC7", "#B579BA"),
+        "#27384A",
+        "#A6A0A2",
+        "#E54872",
+    ),
+    "sapphire-amber": SpatialPalette(
+        "#F4F3EF",
+        ("#174F8A", "#3C86C6", "#8AC8D4", "#F2B749", "#E67563", "#B9D8EA"),
+        "#132D43",
+        "#9AA8B2",
+        "#F2A43D",
+    ),
 }
 
 
@@ -238,6 +260,30 @@ class SpatialBuilder:
         second = np.asarray(self.points[second_id], dtype=np.float64)
         value = tuple(((first + second) / 2.0).tolist())
         self.point(point_id, value, operation="midpoint", inputs=(first_id, second_id), node=node)
+
+    def reflected_point(
+        self,
+        point_id: str,
+        source_id: str,
+        *,
+        plane_point: Vec3 = (0.0, 0.0, 0.0),
+        plane_normal: Vec3 = (0.0, 1.0, 0.0),
+        node: bool = False,
+    ) -> None:
+        """Reflect a point in a plane using MORTRA's existing ``reflect`` construction."""
+
+        source = np.asarray(self.points[source_id], dtype=np.float64)
+        origin = np.asarray(plane_point, dtype=np.float64)
+        normal = normalize(plane_normal)
+        reflected = source - 2.0 * float(np.dot(source - origin, normal)) * normal
+        self.point(
+            point_id,
+            tuple(reflected.tolist()),
+            operation="reflect",
+            inputs=(source_id,),
+            parameters={"plane_point": list(plane_point), "plane_normal": list(plane_normal)},
+            node=node,
+        )
 
     def edge(self, edge_id: str, start_id: str, end_id: str, role: str = "result") -> None:
         if start_id == end_id:
@@ -390,4 +436,3 @@ def rotate_figure(figure: SpatialFigure, axis: Vec3, angle: float, suffix: str) 
 
 def new_morphism_count(figure: SpatialFigure) -> int:
     return len(figure.operations_used - EXISTING_SPATIAL_OPERATIONS)
-
