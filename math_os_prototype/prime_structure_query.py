@@ -57,8 +57,22 @@ def compile_prime_structure_query(text: str) -> PrimeStructureQuery | None:
                         },
                     )
 
-    triangle_tokens = ("三辺", "素数", "三角形", "外接円半径", "無理数", "示せ")
-    if all(token in compact for token in triangle_tokens):
+    has_triangle_sides = any(token in compact for token in ("三辺", "3辺", "三つの辺"))
+    has_all_prime_sides = "素数" in compact and any(
+        token in compact for token in ("全て", "すべて", "いずれも", "全部")
+    )
+    has_circumradius = any(
+        token in compact for token in ("外接円半径", "外接円の半径")
+    )
+    has_proof_request = any(token in compact for token in ("示せ", "証明せよ"))
+    if (
+        "三角形" in compact
+        and has_triangle_sides
+        and has_all_prime_sides
+        and has_circumradius
+        and "無理数" in compact
+        and has_proof_request
+    ):
         return PrimeStructureQuery(
             operator="prove_prime_triangle_circumradius_irrational",
             parameters={},
@@ -101,28 +115,59 @@ def execute_prime_structure_query(payload: dict[str, Any]) -> dict[str, Any]:
         }
 
     if query.operator == "prove_prime_triangle_circumradius_irrational":
-        # D=(4 area)^2.  Each branch below is an exact square obstruction.
-        residues = {
-            "all_odd": (3, 8),
-            "one_side_two": "D=16(p^2-1), and (p-1)^2<p^2-1<p^2",
-            "two_sides_two": (63, "not_square"),
-            "three_sides_two": (48, "not_square"),
-        }
-        if any(sp.ntheory.primetest.is_square(value) for value in (3, 63, 48)):
+        a, b, c, p = sp.symbols("a b c p", integer=True, positive=True)
+        heron_discriminant = (a + b + c) * (-a + b + c) * (a - b + c) * (a + b - c)
+        symmetric_form = 2 * (a**2 * b**2 + b**2 * c**2 + c**2 * a**2) - (
+            a**4 + b**4 + c**4
+        )
+        one_two_case = sp.factor(heron_discriminant.subs({a: 2, b: p, c: p}))
+        two_two_case = int(heron_discriminant.subs({a: 2, b: 2, c: 3}))
+        three_two_case = int(heron_discriminant.subs({a: 2, b: 2, c: 2}))
+        if (
+            sp.expand(heron_discriminant - symmetric_form) != 0
+            or sp.simplify(one_two_case - 16 * (p**2 - 1)) != 0
+            or (two_two_case, three_two_case) != (63, 48)
+            or any(
+                sp.ntheory.primetest.is_square(value)
+                for value in (3, two_two_case, three_two_case)
+            )
+        ):
             raise ValueError("square-obstruction self-check failed")
+        case_certificates = {
+            "all_sides_odd": {
+                "identity": str(symmetric_form),
+                "odd_square_mod_8": 1,
+                "discriminant_mod_8": 3,
+                "square_residues_mod_8": [0, 1, 4],
+            },
+            "exactly_one_side_two": {
+                "triangle_inequality_consequence": "|p-q|<2; odd primes p,q imply p=q",
+                "discriminant": str(one_two_case),
+                "strict_square_gap": "(p-1)^2 < p^2-1 < p^2 for p>=3",
+            },
+            "exactly_two_sides_two": {
+                "triangle_inequality_consequence": "odd prime p<4 implies p=3",
+                "discriminant": two_two_case,
+                "is_square": False,
+            },
+            "all_sides_two": {
+                "discriminant": three_two_case,
+                "is_square": False,
+            },
+        }
         return {
             "status": "solved",
             "query_operator": query.operator,
             "answer_exact": "True",
             "answer_tex": r"\(R\notin\mathbb{Q}\)",
-            "case_certificates": residues,
+            "case_certificates": case_certificates,
             "lowering_certificate": query.lowering_certificate,
             "derivation_tex": [
-                r"辺を \(a,b,c\)，面積を \(\Delta\) とし，Heron恒等式の整数 \(D=(4\Delta)^2\) を用いる。すると \(R=abc/\sqrt D\) である。",
-                r"三辺が奇素数なら \(D\equiv3\pmod 8\) であり，平方数ではない。",
+                r"辺を \(a,b,c\)，面積を \(\Delta\) とし，\(D=(4\Delta)^2=(a+b+c)(-a+b+c)(a-b+c)(a+b-c)\) とおく。外接円半径は \(R=abc/\sqrt D\) である。",
+                r"恒等式 \(D=2(a^2b^2+b^2c^2+c^2a^2)-(a^4+b^4+c^4)\) を使う。三辺が奇素数なら各平方は法 \(8\) で \(1\) だから，\(D\equiv6-3\equiv3\pmod8\) であり，平方数ではない。",
                 r"一辺だけが \(2\) なら三角不等式から他の二辺は同じ奇素数 \(p\) で，\(D=16(p^2-1)\) は平方数でない。",
                 r"二辺が \(2\) なら残りは \(3\) で \(D=63\)，三辺とも \(2\) なら \(D=48\) となり，いずれも平方数でない。",
-                r"全場合で \(\sqrt D\) は無理数なので，\(R=abc/\sqrt D\) も無理数である。",
+                r"全場合で \(D\) は平方数でない。もし \(R=abc/\sqrt D\) が有理数なら \(\sqrt D=abc/R\) も有理数となるが，整数 \(D\) の平方根が有理数なら \(D\) は平方数である。これは矛盾である。",
             ],
         }
     raise ValueError(f"unsupported prime structure operator: {query.operator}")

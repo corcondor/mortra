@@ -7412,6 +7412,17 @@ def _mobius_polynomial_fixed_point(
     polynomial = sp.expand(
         sum(coefficient * x ** (degree - index) for index, coefficient in enumerate(coefficients))
     )
+    supplied_polynomial = sp.Poly(polynomial, x, domain=sp.QQ)
+    alpha_minimal = sp.Poly(
+        sp.minimal_polynomial(sp.cos(2 * sp.pi / order), x),
+        x,
+        domain=sp.QQ,
+    )
+    if (
+        supplied_polynomial.degree() != alpha_minimal.degree()
+        or supplied_polynomial.monic() != alpha_minimal.monic()
+    ):
+        raise ValueError("the supplied polynomial is not the stated cosine minimal polynomial")
 
     transformed = sp.cancel(S**degree * polynomial.subs(x, 1 - 1 / S))
     transformed_numerator, transformed_denominator = sp.fraction(transformed)
@@ -7505,6 +7516,20 @@ def _mobius_polynomial_fixed_point(
             f"g'(1/(1-alpha)) を同じ商環で簡約すると {sp.sstr(reduced_derivative)} となる。最小多項式で割った余りを証明書として保存した。",
             f"この代数的数の符号を厳密判定して絶対値を取ると k={sp.sstr(contraction_at_root)} となる。",
         ],
+    )
+
+
+def solve_mobius_polynomial_fixed_point_chart(
+    coefficients: list[str] | tuple[str, ...],
+    cyclotomic_order: int,
+) -> tuple[str, dict[str, Any], list[str]]:
+    """Run the reusable polynomial/Mobius chart without consulting a registry."""
+
+    return _mobius_polynomial_fixed_point(
+        {
+            "coefficients": list(coefficients),
+            "cyclotomic_order": int(cyclotomic_order),
+        }
     )
 
 

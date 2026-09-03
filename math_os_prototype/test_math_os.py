@@ -1057,6 +1057,28 @@ class MathOsPrototypeTest(unittest.TestCase):
         self.assertEqual(integral_result["answer"], "1/3")
         self.assertEqual(factor_result["answer"], "(x + 1)**2")
 
+    def test_greek_symbol_remains_one_typed_variable(self):
+        structure = analyze_structure(r"実数 $\theta$ が $\theta+1=3$ を満たす。$\theta$ を求めよ。")
+        self.assertIn("theta", structure.variables)
+        self.assertNotIn("t*h*e*t*a", " ".join(structure.expressions))
+
+        result = run_math_search(structure)
+        self.assertEqual(result.answer, "2")
+
+    def test_geometric_angle_relation_is_not_scalar_algebra(self):
+        problem = r"三角形ABCで $\angle C=n$ とする。$n$ を求めよ。"
+        self.assertIsNone(compile_symbolic_query(problem))
+        structure = analyze_structure(problem)
+        self.assertNotIn("sympy.solve", structure.tool_affordances)
+        self.assertIn("structural_relation", {item.kind for item in structure.constraints})
+
+    def test_multipart_problem_is_not_collapsed_to_one_scalar_solve(self):
+        problem = r"(1) $x+y=5$ を解け。(2) $x^2-y^2=5(x-y)$ を示せ。"
+        self.assertIsNone(compile_symbolic_query(problem))
+        action_names = {action["name"] for action in run_math_search(analyze_structure(problem)).actions}
+        self.assertNotIn("generic_sympy_solve", action_names)
+        self.assertNotIn("generic_sympy_system_solve", action_names)
+
     def test_generic_limit_rejects_an_unelaborated_sequence_target(self):
         result = solve_request_payload(
             {
@@ -1239,7 +1261,7 @@ class MathOsPrototypeTest(unittest.TestCase):
         )
 
         self.assertEqual(len(parsed.math_segments), 1)
-        self.assertIn("integral _0**(1) f*(x)*g*(x) dx", parsed.math_segments[0])
+        self.assertIn("integral_0**(1) f*(x)*g*(x) dx", parsed.math_segments[0])
         self.assertIn("=cos((pi)/(6))", parsed.math_segments[0])
 
     def test_latex_text_macro_style_problem_solves(self):
@@ -1260,19 +1282,17 @@ class MathOsPrototypeTest(unittest.TestCase):
         )
         result = solve_request_payload({"problem": problem, "full_pipeline": True})
         self.assertTrue(result["ok"])
-        self.assertEqual(result["data"]["parser"]["intent"], "latex_to_equilateral_triangle_centroid_locus_area")
-        self.assertIsNone(result["answer"])
-        self.assertEqual(result["data"]["math_search"]["answer"], None)
-        self.assertNotIn("sympy.envelope", [call["name"] for call in result["data"]["tool_execution"]["tool_calls"]])
+        self.assertEqual(result["data"]["parser"]["intent"], "latex_to_cubic_equilateral_centroid_locus_area")
+        self.assertEqual(
+            sp.simplify(sp.sympify(result["answer"]) - 4 * sp.pi * (2 - sp.sqrt(3)) / 9),
+            0,
+        )
         tool_call = result["data"]["tool_execution"]["tool_calls"][0]
-        self.assertEqual(tool_call["name"], "geometry.constraint_ir")
-        self.assertEqual(tool_call["result"]["status"], "formalized")
-        self.assertTrue(tool_call["result"]["no_memorized_answer"])
-        self.assertIn("PointOnCurve", [constraint["type"] for constraint in tool_call["result"]["constraints"]])
-        self.assertIn("Equilateral", [constraint["type"] for constraint in tool_call["result"]["constraints"]])
-        self.assertEqual(tool_call["result"]["query"]["type"], "AreaOfBoundedLocus")
-        self.assertEqual(result["data"]["formal_ir"]["metas"][0]["name"], "A")
-        self.assertIn("geometry_constraint_compilation", [strategy["name"] for strategy in result["data"]["strategies"]])
+        self.assertEqual(tool_call["name"], "sympy.cubic_centroid_locus")
+        self.assertEqual(tool_call["result"]["status"], "solved")
+        self.assertEqual(tool_call["result"]["source_curve"], "x**3 - 2*x")
+        self.assertFalse(tool_call["result"]["lowering_certificate"]["memorized_answer"])
+        self.assertEqual(len(tool_call["result"]["centroid_y_branches"]), 2)
 
     def test_equilateral_triangle_centroid_locus_coeff_change_uses_same_ir(self):
         problem = (
@@ -1281,12 +1301,14 @@ class MathOsPrototypeTest(unittest.TestCase):
         )
         result = solve_request_payload({"problem": problem, "full_pipeline": True})
         self.assertTrue(result["ok"])
-        self.assertIsNone(result["answer"])
+        self.assertEqual(
+            sp.simplify(sp.sympify(result["answer"]) - 4 * sp.pi * (3 - sp.sqrt(3)) / 9),
+            0,
+        )
         tool_call = result["data"]["tool_execution"]["tool_calls"][0]
-        self.assertEqual(tool_call["name"], "geometry.constraint_ir")
-        self.assertEqual(tool_call["result"]["status"], "formalized")
-        self.assertEqual(tool_call["result"]["objects"][0]["equation"], "y = x**3-3*x")
-        self.assertEqual(tool_call["result"]["query"]["type"], "AreaOfBoundedLocus")
+        self.assertEqual(tool_call["name"], "sympy.cubic_centroid_locus")
+        self.assertEqual(tool_call["result"]["source_curve"], "x**3 - 3*x")
+        self.assertFalse(tool_call["result"]["lowering_certificate"]["memorized_answer"])
 
     def test_web_solution_url_parser(self):
         url = "https://math.stackexchange.com/questions/1234567/example-title"

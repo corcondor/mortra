@@ -85,6 +85,24 @@ QUANTITY_KEYWORDS: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("remainder", ("余り", "remainder")),
 )
 
+GREEK_VARIABLE_NAMES = ("alpha", "beta", "gamma", "theta", "rho", "lambda", "mu")
+NON_SCALAR_RELATION_NAMES = {
+    "angle",
+    "circle",
+    "coll",
+    "cong",
+    "cyclic",
+    "eqangle",
+    "eqratio",
+    "integral",
+    "limit",
+    "midp",
+    "para",
+    "perp",
+    "product",
+    "sum",
+}
+
 
 def analyze_structure(text: str) -> StructuralIR:
     normalized, expressions, notes = normalize_problem_text(text)
@@ -186,6 +204,14 @@ def extract_variables(text: str, expressions: list[str]) -> list[str]:
         }:
             continue
         names.add(name)
+    greek_pattern = "|".join(GREEK_VARIABLE_NAMES)
+    names.update(
+        match.group(0)
+        for match in re.finditer(
+            rf"\b(?:{greek_pattern})(?:_[A-Za-z0-9_]+)?\b",
+            joined,
+        )
+    )
     return sorted(names, key=lambda item: (len(item), item))[:16]
 
 
@@ -268,7 +294,10 @@ def extract_constraints(text: str, relations: list[str], variables: list[str]) -
 
     for relation in relations:
         relation_vars = [var for var in variables if re.search(rf"\b{re.escape(var)}\b", relation)]
-        kind = "equation" if "=" in relation and not any(op in relation for op in ("<", ">")) else "inequality"
+        if not is_scalar_algebraic_relation(relation):
+            kind = "structural_relation"
+        else:
+            kind = "equation" if "=" in relation and not any(op in relation for op in ("<", ">")) else "inequality"
         constraints.append(StructuralConstraint(kind=kind, expression=relation, variables=relation_vars))
 
     # ``in`` must be a token and an interval must have explicit delimiters.
@@ -403,7 +432,8 @@ def infer_tool_affordances(
     entity_kinds = {entity.kind for entity in entities}
     affordances: list[str] = []
 
-    if relations and op_kinds & {"compute_or_solve", "solve_all"}:
+    scalar_relations = [relation for relation in relations if is_scalar_algebraic_relation(relation)]
+    if scalar_relations and op_kinds & {"compute_or_solve", "solve_all"}:
         affordances.append("sympy.solve")
     if "limit" in op_kinds:
         affordances.extend(["sympy.limit", "wolfram.limit"])
@@ -424,6 +454,11 @@ def infer_tool_affordances(
     if op_kinds & {"optimize"}:
         affordances.extend(["critical_point_search", "boundary_case_analysis", "wolfram.maximize"])
     return unique_preserve_order(affordances)
+
+
+def is_scalar_algebraic_relation(relation: str) -> bool:
+    names = "|".join(sorted(NON_SCALAR_RELATION_NAMES, key=len, reverse=True))
+    return re.search(rf"(?<![A-Za-z0-9_])(?:{names})(?=_|\b)", relation) is None
 
 
 def score_structure(

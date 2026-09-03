@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+import hashlib
 import json
 import unittest
 from pathlib import Path
@@ -1435,6 +1436,178 @@ class PublicSolveTests(unittest.TestCase):
         self.assertEqual(status, 422)
         self.assertEqual(payload["generated"], 0)
         self.assertIn("証明書", payload["error"])
+
+    def test_prime_reciprocal_square_bound_is_synthesized_in_cold_mode(self) -> None:
+        status, payload = solve_problem(
+            r"$\displaystyle \sum_{p:素数}\dfrac{1}{p^2}<\frac12$を示せ。",
+            allow_theorem_kernels=False,
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        certificate = card["execution_certificate"]
+        self.assertEqual(certificate["backend"], "sympy.prime_structure_query")
+        self.assertIn("奇素数全体", card["solution_tex"])
+        self.assertIn(r"\frac{1}{2}", card["answer_tex"])
+
+    def test_prime_reciprocal_bound_recomputes_target_and_abstains_when_too_strong(self) -> None:
+        loose_status, loose_payload = solve_problem(
+            r"$\displaystyle \sum_{p:素数}\dfrac{1}{p^2}<\frac35$を示せ。",
+            allow_theorem_kernels=False,
+        )
+        strong_status, strong_payload = solve_problem(
+            r"$\displaystyle \sum_{p:素数}\dfrac{1}{p^2}<\frac25$を示せ。",
+            allow_theorem_kernels=False,
+        )
+
+        self.assertEqual(loose_status, 200)
+        self.assert_runtime_synthesis_card(loose_payload["cards"][0])
+        self.assertIn(r"\frac{3}{5}", loose_payload["cards"][0]["answer_tex"])
+        self.assertEqual(strong_status, 422)
+        self.assertEqual(strong_payload["generated"], 0)
+
+    def test_prime_triangle_circumradius_is_synthesized_by_four_parity_cases(self) -> None:
+        status, payload = solve_problem(
+            "三辺が全て素数である三角形の外接円半径は無理数であることを示せ。",
+            allow_theorem_kernels=False,
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        certificate = card["execution_certificate"]
+        self.assertEqual(certificate["backend"], "sympy.prime_structure_query")
+        self.assertIn(r"D\equiv6-3\equiv3\pmod8", card["solution_tex"])
+        self.assertEqual(
+            len(certificate["proof_program"]),
+            5,
+        )
+
+    def test_prime_triangle_circumradius_chart_accepts_paraphrase_but_not_integer_sides(self) -> None:
+        paraphrase_status, paraphrase_payload = solve_problem(
+            "三角形の3辺がいずれも素数なら、その外接円の半径が無理数であることを証明せよ。",
+            allow_theorem_kernels=False,
+        )
+        nonprime_status, nonprime_payload = solve_problem(
+            "三角形の3辺がいずれも整数なら、その外接円の半径が無理数であることを証明せよ。",
+            allow_theorem_kernels=False,
+        )
+
+        self.assertEqual(paraphrase_status, 200)
+        self.assert_runtime_synthesis_card(paraphrase_payload["cards"][0])
+        self.assertEqual(nonprime_status, 422)
+        self.assertEqual(nonprime_payload["generated"], 0)
+
+    def test_rational_angle_cosine_problem_certifies_both_numbered_parts(self) -> None:
+        problem = (
+            r"\begin{enumerate}"
+            r"\item[(1)] $\displaystyle\frac{1}{1-\cos\frac{2\pi}{7}}$ を有理化せよ。"
+            r"\item[(2)] $\displaystyle\cos\frac{2\pi}{7}$ を小数第2位まで求めよ。"
+            r"\end{enumerate}"
+        )
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        certificate = card["execution_certificate"]
+        self.assertEqual(card["family_id"], "solve.composite.all_obligations")
+        self.assertEqual(len(card["proof_obligations"]), 2)
+        self.assertTrue(all(item["status"] == "verified" for item in card["proof_obligations"]))
+        self.assertEqual(certificate["capability_origin"], "synthesized_proof_program")
+        self.assertFalse(certificate["registered_composite_used"])
+        self.assertEqual(
+            certificate["answer_tex_sha256"],
+            hashlib.sha256(card["answer_tex"].encode("utf-8")).hexdigest(),
+        )
+        self.assertIn(r"\frac{8 \cos^{2}", card["answer_tex"])
+        self.assertIn("0.62", card["answer_tex"])
+
+    def test_rational_angle_cosine_chart_recomputes_the_angle(self) -> None:
+        exact_status, exact_payload = solve_problem(
+            r"$\displaystyle\frac{1}{1-\cos\frac{2\pi}{5}}$ を有理化せよ。",
+            allow_theorem_kernels=False,
+        )
+        decimal_status, decimal_payload = solve_problem(
+            r"$\displaystyle\cos\frac{2\pi}{5}$ を小数第2位まで求めよ。",
+            allow_theorem_kernels=False,
+        )
+
+        self.assertEqual(exact_status, 200)
+        self.assertEqual(decimal_status, 200)
+        exact_card = exact_payload["cards"][0]
+        decimal_card = decimal_payload["cards"][0]
+        self.assert_runtime_synthesis_card(exact_card)
+        self.assert_runtime_synthesis_card(decimal_card)
+        self.assertEqual(
+            exact_card["execution_certificate"]["witness"]["minimal_polynomial"],
+            "4*x**2 + 2*x - 1",
+        )
+        self.assertEqual(decimal_card["answer_tex"], r"\(0.31\)")
+        self.assertEqual(decimal_card["diagram"]["kind"], "plane")
+
+    def test_cyclotomic_chart_does_not_claim_an_irrational_angle(self) -> None:
+        status, payload = solve_problem(
+            r"$\cos 1$ を小数第2位まで求めよ。",
+            allow_theorem_kernels=False,
+        )
+
+        self.assertEqual(status, 422)
+        self.assertEqual(payload["generated"], 0)
+
+    def test_mobius_polynomial_chart_certifies_numbered_parts_without_registry(self) -> None:
+        problem = (
+            r"\[\alpha=\cos\frac{2\pi}{11}\]"
+            r"の最小多項式は \[f(x)=32x^5+16x^4-32x^3-12x^2+6x+1\] である。"
+            r"変換 \[S=\frac{1}{1-x}\] により \(S=g(S)\), \(S^{*}=g(S^{*})\) とする。"
+            r"\begin{enumerate}"
+            r"\item[(1)] \(g(S)=C_{0}+\frac{C_{1}}S+\cdots+\frac{C_{4}}{S^4}\) "
+            r"と表したとき \(C_0\) を求めよ。"
+            r"\item[(2)] \(S_{n+1}=g(S_n)\) とし "
+            r"\[k=\lvert g'(S^{*})\rvert\] を \(\cos\frac{\pi}{11}\) で表せ。"
+            r"\end{enumerate}"
+        )
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        certificate = card["execution_certificate"]
+        self.assertEqual(card["family_id"], "solve.composite.all_obligations")
+        self.assertIn(r"\text{(1)}\;&10", card["answer_tex"])
+        self.assertIn(r"\cos{\left(\frac{\pi}{11} \right)}", card["answer_tex"])
+        self.assertEqual(certificate["capability_origin"], "synthesized_proof_program")
+        self.assertFalse(certificate["registered_composite_used"])
+        self.assertEqual(len(certificate["children"]), 2)
+
+    def test_mobius_polynomial_chart_recomputes_order_and_rejects_false_bindings(self) -> None:
+        problem = (
+            r"\[\alpha=\cos\frac{2\pi}{5}\]"
+            r"の最小多項式は \[f(x)=4x^2+2x-1\] である。"
+            r"変換 \[S=\frac{1}{1-x}\] により \(S=g(S)\), \(S^{*}=g(S^{*})\) とする。"
+            r"\begin{enumerate}"
+            r"\item[(1)] \(g(S)=C_{0}+\frac{C_{1}}S\) と表したとき \(C_0\) を求めよ。"
+            r"\item[(2)] \(S_{n+1}=g(S_n)\) とし "
+            r"\[k=\lvert g'(S^{*})\rvert\] を \(\cos\frac{\pi}{5}\) で表せ。"
+            r"\end{enumerate}"
+        )
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
+        multiple_status, _ = solve_problem(
+            problem.replace("4x^2+2x-1", "4x^3-10x^2-7x+3"),
+            allow_theorem_kernels=False,
+        )
+        wrong_half_angle_status, _ = solve_problem(
+            problem.replace(r"\cos\frac{\pi}{5}", r"\cos\frac{\pi}{7}"),
+            allow_theorem_kernels=False,
+        )
+
+        self.assertEqual(status, 200)
+        self.assertIn(r"\text{(1)}\;&2", payload["cards"][0]["answer_tex"])
+        self.assertIn(r"\frac{3}{2} - \frac{\sqrt{5}}{2}", payload["cards"][0]["answer_tex"])
+        self.assertEqual(multiple_status, 422)
+        self.assertEqual(wrong_half_angle_status, 422)
 
     def test_trigonometric_geometric_progression_is_elaborated_from_its_relation(self) -> None:
         status, payload = solve_problem(

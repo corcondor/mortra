@@ -30,6 +30,18 @@ from math_os_prototype.runtime_recurrence_synthesis import (
 from math_os_prototype.runtime_discrete_profile_synthesis import (
     synthesize_discrete_trig_profile_problem,
 )
+from math_os_prototype.runtime_mobius_cycle_synthesis import (
+    synthesize_mobius_prime_cycle_problem,
+)
+from math_os_prototype.runtime_rational_unit_sum_synthesis import (
+    synthesize_rational_unit_vector_sum_problem,
+)
+from math_os_prototype.runtime_trigonometric_triangle_synthesis import (
+    synthesize_trigonometric_triangle_problem,
+)
+from math_os_prototype.runtime_triangle_radii_exponential_synthesis import (
+    synthesize_triangle_radii_exponential_problem,
+)
 from math_os_prototype.runtime_solution_synthesis import synthesize_runtime_solution
 from math_os_prototype.cubic_centroid_locus import (
     execute_cubic_centroid_locus_query,
@@ -527,6 +539,19 @@ def _replay_exact_backend_certificate(
     if not isinstance(typed_input, dict) or not isinstance(original_result, dict):
         return None
 
+    # This operator compiles its exponent and requested bound from the current
+    # statement, then constructs and checks the odd-integer majorant.  The
+    # other prime-structure operator is still a registered theorem replay.
+    if (
+        backend_name == "sympy.prime_structure_query"
+        and typed_input.get("operator")
+        in {
+            "bound_prime_reciprocal_power_series",
+            "prove_prime_triangle_circumradius_irrational",
+        }
+    ):
+        capability_origin = "synthesized_proof_program"
+
     try:
         replayed_result = executor(dict(typed_input))
     except Exception:
@@ -944,6 +969,112 @@ def _runtime_solution_exact_solve(statement: str) -> ExactSolveOutcome | None:
         hypotheses_evaluated=len(synthesis.proof_program),
         search_depth=len(synthesis.proof_program),
         execution_witness=synthesis.witness,
+        visual_explanation=synthesis.visual_explanation,
+    )
+
+
+def _mobius_prime_cycle_exact_solve(statement: str) -> ExactSolveOutcome | None:
+    synthesis = synthesize_mobius_prime_cycle_problem(statement)
+    if synthesis is None:
+        return None
+    return ExactSolveOutcome(
+        answer=ExactDisplayAnswer(synthesis.witness, synthesis.answer_tex),
+        tool_name="mortra.runtime_mobius_cycle_program_search",
+        expression_tex=synthesis.expression_tex,
+        derivation_tex=synthesis.derivation_tex,
+        verification_method=(
+            "typed fractional-linear elaboration + affine conjugacy search + "
+            "projective matrix-period replay + determinant-divisor orbit "
+            "classification + prime residue-cover proof"
+        ),
+        verification_checks=synthesis.verification_checks,
+        capability_origin="synthesized_proof_program",
+        proof_program=synthesis.proof_program,
+        hypotheses_evaluated=synthesis.hypotheses_evaluated,
+        search_depth=len(synthesis.proof_program),
+        execution_witness=synthesis.witness,
+        diagram=synthesis.diagram,
+        diagram_tikz=synthesis.diagram_tikz,
+        visual_explanation=synthesis.visual_explanation,
+    )
+
+
+def _rational_unit_vector_sum_exact_solve(statement: str) -> ExactSolveOutcome | None:
+    synthesis = synthesize_rational_unit_vector_sum_problem(statement)
+    if synthesis is None:
+        return None
+    return ExactSolveOutcome(
+        answer=ExactDisplayAnswer(synthesis.witness, synthesis.answer_tex),
+        tool_name="mortra.runtime_rational_unit_sum_program_search",
+        expression_tex=synthesis.expression_tex,
+        derivation_tex=synthesis.derivation_tex,
+        verification_method=(
+            "typed equal-unit-vector sum elaboration + chord-midpoint "
+            "decomposition + rational-square reduction + complete prime "
+            "factor-pair classification + original constraint replay"
+        ),
+        verification_checks=synthesis.verification_checks,
+        capability_origin="synthesized_proof_program",
+        proof_program=synthesis.proof_program,
+        hypotheses_evaluated=synthesis.hypotheses_evaluated,
+        search_depth=len(synthesis.proof_program),
+        execution_witness=synthesis.witness,
+        diagram=synthesis.diagram,
+        diagram_tikz=synthesis.diagram_tikz,
+        visual_explanation=synthesis.visual_explanation,
+    )
+
+
+def _trigonometric_triangle_exact_solve(statement: str) -> ExactSolveOutcome | None:
+    synthesis = synthesize_trigonometric_triangle_problem(statement)
+    if synthesis is None:
+        return None
+    return ExactSolveOutcome(
+        answer=ExactDisplayAnswer(synthesis.witness, synthesis.answer_tex),
+        tool_name="mortra.runtime_trigonometric_triangle_program_search",
+        expression_tex=synthesis.expression_tex,
+        derivation_tex=synthesis.derivation_tex,
+        verification_method=(
+            "typed trigonometric side elaboration + multiple-angle polynomialization + "
+            "Heron identity + exact admissibility boundary + semialgebraic "
+            "tail monotonicity + original triangle replay"
+        ),
+        verification_checks=synthesis.verification_checks,
+        capability_origin="synthesized_proof_program",
+        proof_program=synthesis.proof_program,
+        hypotheses_evaluated=synthesis.hypotheses_evaluated,
+        search_depth=len(synthesis.proof_program),
+        execution_witness=synthesis.witness,
+        diagram=synthesis.diagram,
+        diagram_tikz=synthesis.diagram_tikz,
+        visual_explanation=synthesis.visual_explanation,
+    )
+
+
+def _triangle_radii_exponential_exact_solve(
+    statement: str,
+) -> ExactSolveOutcome | None:
+    synthesis = synthesize_triangle_radii_exponential_problem(statement)
+    if synthesis is None:
+        return None
+    return ExactSolveOutcome(
+        answer=ExactDisplayAnswer(synthesis.witness, synthesis.answer_tex),
+        tool_name="mortra.runtime_triangle_radii_exponential_program_search",
+        expression_tex=synthesis.expression_tex,
+        derivation_tex=synthesis.derivation_tex,
+        verification_method=(
+            "typed triangle-radii elaboration + common shifted-power profile + "
+            "exact logarithmic monotonicity + open/closed endpoint image + "
+            "original expression replay"
+        ),
+        verification_checks=synthesis.verification_checks,
+        capability_origin="synthesized_proof_program",
+        proof_program=synthesis.proof_program,
+        hypotheses_evaluated=synthesis.hypotheses_evaluated,
+        search_depth=len(synthesis.proof_program),
+        execution_witness=synthesis.witness,
+        diagram=synthesis.diagram,
+        diagram_tikz=synthesis.diagram_tikz,
         visual_explanation=synthesis.visual_explanation,
     )
 
@@ -1473,22 +1604,41 @@ def _solve_composite_obligations(
         card = payload["cards"][0]
         verification = card.get("verification") or {}
         certificate = card.get("execution_certificate")
+        child_answer_tex = card.get("answer_tex")
+        child_statement_sha256 = hashlib.sha256(
+            obligation.statement.encode("utf-8")
+        ).hexdigest()
+        child_answer_sha256 = (
+            hashlib.sha256(child_answer_tex.encode("utf-8")).hexdigest()
+            if isinstance(child_answer_tex, str)
+            else None
+        )
+        child_certificate_sha256 = (
+            hashlib.sha256(_canonical_json(certificate).encode("utf-8")).hexdigest()
+            if isinstance(certificate, dict)
+            else None
+        )
         if (
             verification.get("exact_backend") is not True
             or verification.get("independent_check") is not True
             or not isinstance(certificate, dict)
+            or certificate.get("verified") is not True
+            or certificate.get("statement_sha256") != child_statement_sha256
+            or child_answer_sha256 is None
+            or certificate.get("answer_tex_sha256") != child_answer_sha256
+            or verification.get("certificate_sha256") != child_certificate_sha256
         ):
             return None
         children.append(
             {
                 "label": obligation.label,
                 "statement": obligation.statement,
-                "statement_sha256": hashlib.sha256(obligation.statement.encode("utf-8")).hexdigest(),
-                "answer_tex": card["answer_tex"],
+                "statement_sha256": child_statement_sha256,
+                "answer_tex": child_answer_tex,
                 "solution_tex": card["solution_tex"],
                 "family_id": card["family_id"],
                 "certificate": certificate,
-                "certificate_sha256": verification.get("certificate_sha256"),
+                "certificate_sha256": child_certificate_sha256,
             }
         )
 
@@ -1499,11 +1649,50 @@ def _solve_composite_obligations(
         "IndependentChildCertificateReplay",
         "VerifiedAnswerBundle",
     ]
+    answer_tex = (
+        r"\(\begin{aligned}"
+        + r"\\".join(
+            rf"\text{{({child['label']})}}\;&{child['answer_tex'].removeprefix(r'\(').removesuffix(r'\)')}"
+            for child in children
+        )
+        + r"\end{aligned}\)"
+    )
+    solution_tex = "\n\n".join(
+        rf"\textbf{{({child['label']})}}\quad {child['solution_tex']}"
+        for child in children
+    )
+    registered_composite_used = any(
+        child["certificate"].get("registered_composite_used") is True
+        for child in children
+    )
     execution_certificate = {
         "schema": "mortra.composite-obligation-certificate.v1",
         "statement_sha256": hashlib.sha256(statement.encode("utf-8")).hexdigest(),
+        "answer_tex_sha256": hashlib.sha256(answer_tex.encode("utf-8")).hexdigest(),
         "morphism_chain": morphism_chain,
         "conjunction": "all",
+        "capability_origin": (
+            "registered_parameterized_morphism"
+            if registered_composite_used
+            else "synthesized_proof_program"
+        ),
+        "registered_composite_used": registered_composite_used,
+        "registered_completed_route_used": registered_composite_used,
+        "composite_cache_role": (
+            "contains_registered_child"
+            if registered_composite_used
+            else "not_consulted"
+        ),
+        "proof_program": [
+            {
+                "rule": "replay_child_certificate",
+                "label": child["label"],
+                "statement_sha256": child["statement_sha256"],
+                "certificate_sha256": child["certificate_sha256"],
+            }
+            for child in children
+        ]
+        + [{"rule": "conjunction_introduction", "arity": len(children)}],
         "children": [
             {
                 "label": child["label"],
@@ -1536,18 +1725,6 @@ def _solve_composite_obligations(
             separators=(",", ":"),
         ).encode("utf-8")
     ).hexdigest()
-    answer_tex = (
-        r"\(\begin{aligned}"
-        + r"\\".join(
-            rf"\text{{({child['label']})}}\;&{child['answer_tex'].removeprefix(r'\(').removesuffix(r'\)')}"
-            for child in children
-        )
-        + r"\end{aligned}\)"
-    )
-    solution_tex = "\n\n".join(
-        rf"\textbf{{({child['label']})}}\quad {child['solution_tex']}"
-        for child in children
-    )
     trace = [
         f"問題文を{len(children)}個の設問へ構文分解",
         "共有条件を各設問の型付き意味表現へ継承",
@@ -1614,6 +1791,42 @@ def solve_problem(
         return 200, _direct_payload(
             statement,
             runtime_solution,
+            evaluation_mode=evaluation_mode,
+            include_publication_artifact=include_publication_artifact,
+        )
+
+    mobius_prime_cycle = _mobius_prime_cycle_exact_solve(statement)
+    if mobius_prime_cycle is not None:
+        return 200, _direct_payload(
+            statement,
+            mobius_prime_cycle,
+            evaluation_mode=evaluation_mode,
+            include_publication_artifact=include_publication_artifact,
+        )
+
+    rational_unit_sum = _rational_unit_vector_sum_exact_solve(statement)
+    if rational_unit_sum is not None:
+        return 200, _direct_payload(
+            statement,
+            rational_unit_sum,
+            evaluation_mode=evaluation_mode,
+            include_publication_artifact=include_publication_artifact,
+        )
+
+    trigonometric_triangle = _trigonometric_triangle_exact_solve(statement)
+    if trigonometric_triangle is not None:
+        return 200, _direct_payload(
+            statement,
+            trigonometric_triangle,
+            evaluation_mode=evaluation_mode,
+            include_publication_artifact=include_publication_artifact,
+        )
+
+    triangle_radii_exponential = _triangle_radii_exponential_exact_solve(statement)
+    if triangle_radii_exponential is not None:
+        return 200, _direct_payload(
+            statement,
+            triangle_radii_exponential,
             evaluation_mode=evaluation_mode,
             include_publication_artifact=include_publication_artifact,
         )

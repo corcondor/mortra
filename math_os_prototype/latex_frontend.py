@@ -11,13 +11,14 @@ import re
 from dataclasses import asdict, dataclass
 
 
-KNOWN_FUNCTIONS = {"sin", "cos", "tan", "exp", "log", "sqrt", "factorial"}
+KNOWN_FUNCTIONS = {"sin", "cos", "tan", "exp", "log", "sqrt", "factorial", "arg"}
 LATEX_FUNCTIONS = {
     r"\sin": "sin",
     r"\cos": "cos",
     r"\tan": "tan",
     r"\exp": "exp",
     r"\log": "log",
+    r"\arg": "arg",
 }
 GREEK_NAMES = {
     "alpha": "alpha",
@@ -270,8 +271,26 @@ def normalize_latex_math(expr: str) -> str:
     # symbolic lowering stage consumes these as a constraint conjunction.
     expr = expr.replace(r"\\", ";")
     expr = expr.replace(r"\left", "").replace(r"\right", "")
-    expr = expr.replace(r"\,", "").replace(r"\;", "").replace(r"\!", "")
+    # TeX spacing commands are semantically empty, but they still delimit
+    # neighbouring tokens.  Removing them outright turns ``n\,dx`` into the
+    # unrelated identifier ``ndx`` before implicit multiplication runs.
+    expr = expr.replace(r"\,", " ").replace(r"\;", " ").replace(r"\!", " ")
     expr = expr.replace(r"\ ", " ")
+    # Layout commands carry no mathematical meaning.  Remove them before
+    # compact-variable splitting, otherwise ``\displaystyle`` becomes the
+    # spurious product ``d*i*s*p*...`` and contaminates every downstream IR.
+    expr = re.sub(
+        r"\\(?:displaystyle|textstyle|scriptstyle|scriptscriptstyle|limits|nolimits)\b",
+        " ",
+        expr,
+    )
+    expr = re.sub(
+        r"\\(?:qquad|quad|enspace|enskip|thinspace|medspace|thickspace)\b",
+        " ",
+        expr,
+    )
+    expr = re.sub(r"\\(?:Bigg|bigg|Big|big)(?:l|r|m)?\b", "", expr)
+    expr = re.sub(r"\\hspace\*?\{[^{}]*\}", " ", expr)
     expr = normalize_text_macros(expr)
     expr = normalize_mathbb(expr)
     expr = normalize_fractions(expr)
@@ -287,16 +306,20 @@ def normalize_latex_math(expr: str) -> str:
     # ``n!=3`` (factorial followed by equality) with the ``!=`` relation.
     expr = normalize_factorials(expr)
     replacements = {
-        r"\int": " integral ",
-        r"\sum": " sum ",
-        r"\prod": " product ",
+        # Binders stay adjacent to a following subscript so the structural
+        # parser can distinguish ``integral_0`` from prose containing an
+        # integral.  Surrounding whitespace is normalized below.
+        r"\int": "integral",
+        r"\sum": "sum",
+        r"\prod": "product",
         r"\cdot": "*",
         r"\times": "*",
         r"\div": "/",
         r"\ast": " astop ",
         r"\to": " to ",
-        r"\infty": " infinity ",
-        r"\lim": " limit ",
+        r"\infty": "infinity",
+        r"\lim": "limit",
+        r"\angle": "angle ",
         r"\in": " in ",
         r"\leq": "<=",
         r"\le": "<=",
@@ -367,13 +390,18 @@ def normalize_subscripts(expr: str) -> str:
         if start < 0:
             break
         content, end = read_braced(expr, start + 1)
-        normalized = normalize_latex_math(content)
-        atomic_parts = [part.strip() for part in normalized.split(",")]
-        if atomic_parts and all(
-            re.fullmatch(r"[A-Za-z0-9_]+", part) for part in atomic_parts
+        raw_parts = [part.strip() for part in content.split(",")]
+        if raw_parts and all(
+            re.fullmatch(r"(?:\\[A-Za-z]+|[A-Za-z0-9_]+)", part)
+            for part in raw_parts
         ):
+            atomic_parts = [
+                GREEK_NAMES.get(part.removeprefix("\\"), part.removeprefix("\\"))
+                for part in raw_parts
+            ]
             replacement = command + "_".join(atomic_parts)
         else:
+            normalized = normalize_latex_math(content)
             replacement = command + f"({normalized})"
         expr = expr[:start] + replacement + expr[end:]
         cursor = start + len(replacement)
@@ -533,19 +561,26 @@ def split_compact_variables(expr: str) -> str:
         word = match.group(0)
         syntax_words = {
             "and",
+            "angle",
+            "arg",
             "as",
             "astop",
             "for",
             "if",
             "in",
+            "infinity",
+            "integral",
             "is",
             "lim",
+            "limit",
             "max",
             "min",
             "mod",
             "not",
             "of",
             "or",
+            "product",
+            "sum",
             "to",
         }
         if (

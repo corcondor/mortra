@@ -14,6 +14,12 @@ from typing import Any
 
 try:
     import sympy as sp
+    from sympy.parsing.sympy_parser import (
+        convert_xor,
+        implicit_multiplication_application,
+        parse_expr,
+        standard_transformations,
+    )
 except ImportError:  # pragma: no cover
     sp = None
 
@@ -25,7 +31,24 @@ except ImportError:  # Allows local script use.
     from tool_adapters import WolframAdapter
 
 
-KNOWN_FUNCTIONS = ("sin", "cos", "tan", "log", "exp", "sqrt")
+KNOWN_FUNCTIONS = ("sin", "cos", "tan", "log", "exp", "sqrt", "factorial", "arg")
+GREEK_SYMBOL_NAMES = ("alpha", "beta", "gamma", "theta", "rho", "lambda", "mu")
+NON_SCALAR_OPERATOR_NAMES = {
+    "angle",
+    "circle",
+    "coll",
+    "cong",
+    "cyclic",
+    "eqangle",
+    "eqratio",
+    "integral",
+    "limit",
+    "midp",
+    "para",
+    "perp",
+    "product",
+    "sum",
+}
 
 
 @dataclass
@@ -131,7 +154,10 @@ def generate_actions(structure: StructuralIR) -> list[MathAction]:
     affordances = set(structure.tool_affordances)
     operation_kinds = {operation.kind for operation in structure.operations}
     actions: list[MathAction] = []
-    suppress_plain_equation_solve = is_geometry_locus_measure_problem(structure)
+    suppress_plain_equation_solve = (
+        is_geometry_locus_measure_problem(structure)
+        or has_multiple_numbered_tasks(structure.source_text)
+    )
 
     if contains_text(structure, ("絶対値", "absolute value", "modulus")):
         actions.append(
@@ -319,8 +345,8 @@ def try_generic_sympy_solve(structure: StructuralIR) -> dict[str, Any]:
     try:
         lhs_text, rhs_text = relation.split("=", 1)
         symbols = {name: sp.symbols(name) for name in structure.variables}
-        lhs = sp.sympify(normalize_expr(lhs_text), locals=symbols)
-        rhs = sp.sympify(normalize_expr(rhs_text), locals=symbols)
+        lhs = parse_math_expression(lhs_text, symbols)
+        rhs = parse_math_expression(rhs_text, symbols)
         var = symbols[variable]
         expr = lhs - rhs
         filtered = []
@@ -348,10 +374,10 @@ def try_generic_value_from_constraints(structure: StructuralIR) -> dict[str, Any
         equations = []
         for constraint in equation_constraints:
             lhs_text, rhs_text = constraint.expression.split("=", 1)
-            lhs = sp.sympify(normalize_expr(lhs_text), locals=symbols)
-            rhs = sp.sympify(normalize_expr(rhs_text), locals=symbols)
+            lhs = parse_math_expression(lhs_text, symbols)
+            rhs = parse_math_expression(rhs_text, symbols)
             equations.append(sp.Eq(lhs, rhs))
-        target = sp.sympify(normalize_expr(target_text), locals=symbols)
+        target = parse_math_expression(target_text, symbols)
         solve_vars = sorted(
             {symbol for equation in equations for symbol in equation.free_symbols},
             key=lambda item: item.name,
@@ -396,8 +422,8 @@ def try_generic_system_solve(structure: StructuralIR) -> dict[str, Any]:
         equations = []
         for constraint in equation_constraints:
             lhs_text, rhs_text = constraint.expression.split("=", 1)
-            lhs = sp.sympify(normalize_expr(lhs_text), locals=symbols)
-            rhs = sp.sympify(normalize_expr(rhs_text), locals=symbols)
+            lhs = parse_math_expression(lhs_text, symbols)
+            rhs = parse_math_expression(rhs_text, symbols)
             equations.append(sp.Eq(lhs, rhs))
         solve_vars = sorted(
             {symbol for equation in equations for symbol in equation.free_symbols},
@@ -440,7 +466,7 @@ def try_generic_existence_range(structure: StructuralIR) -> dict[str, Any]:
         if parameter not in symbols:
             return {"status": "not_applicable", "reason": "range parameter is not symbolic"}
         lhs_text, rhs_text = equation_constraints[0].expression.split("=", 1)
-        expr = sp.sympify(normalize_expr(lhs_text), locals=symbols) - sp.sympify(normalize_expr(rhs_text), locals=symbols)
+        expr = parse_math_expression(lhs_text, symbols) - parse_math_expression(rhs_text, symbols)
         param_symbol = symbols[parameter]
         existence_vars = sorted(expr.free_symbols - {param_symbol}, key=lambda item: item.name)
         if len(existence_vars) != 1:
@@ -543,7 +569,7 @@ def try_generic_forall_quadratic_positivity(structure: StructuralIR) -> dict[str
             return {"status": "not_applicable", "reason": "expected one universally quantified variable"}
         var = all_symbols[variable_candidates[0]]
         lhs_text, op, rhs_text = split_relation_operator(relation)
-        expr = sp.sympify(normalize_expr(lhs_text), locals=all_symbols) - sp.sympify(normalize_expr(rhs_text), locals=all_symbols)
+        expr = parse_math_expression(lhs_text, all_symbols) - parse_math_expression(rhs_text, all_symbols)
         poly = sp.Poly(expr, var)
         if poly.degree() != 2:
             return {"status": "not_applicable", "reason": "currently handles quadratic expressions"}
@@ -584,7 +610,7 @@ def try_generic_expression_transform(structure: StructuralIR) -> dict[str, Any]:
         return {"status": "not_applicable", "reason": "no target expression"}
     try:
         symbols = {name: sp.symbols(name) for name in structure.variables}
-        expr = sp.sympify(normalize_expr(target), locals=symbols)
+        expr = parse_math_expression(target, symbols)
         if operation.kind == "factor":
             result = sp.factor(expr)
         elif operation.kind == "expand":
@@ -615,10 +641,16 @@ def try_generic_limit(structure: StructuralIR) -> dict[str, Any]:
             "reason": "the extracted limit target is not a mathematical expression",
             "target": expression,
         }
+    if has_opaque_index_dependency(expression, variable):
+        return {
+            "status": "not_applicable",
+            "reason": "an indexed sequence target needs a recurrence or explicit scalar elaboration",
+            "target": expression,
+        }
     try:
         symbols = {name: sp.symbols(name) for name in sorted(set(structure.variables + [variable]))}
         var = symbols[variable]
-        expr = sp.sympify(normalize_expr(expression), locals=symbols)
+        expr = parse_math_expression(expression, symbols)
         point_expr = sympy_point(point, symbols)
         declared_symbols = set(symbols.values())
         unbound_symbols = (expr.free_symbols | point_expr.free_symbols) - declared_symbols
@@ -658,7 +690,7 @@ def try_generic_integral(structure: StructuralIR) -> dict[str, Any]:
     try:
         symbols = {name: sp.symbols(name) for name in sorted(set(structure.variables + [variable]))}
         var = symbols[variable]
-        expr = sp.sympify(normalize_expr(expression), locals=symbols)
+        expr = parse_math_expression(expression, symbols)
         declared_symbols = set(symbols.values())
         if expr.free_symbols - declared_symbols:
             return {
@@ -767,7 +799,7 @@ def try_generic_optimization(structure: StructuralIR) -> dict[str, Any]:
         return {"status": "not_applicable", "reason": "no objective expression"}
     try:
         symbols = {name: sp.symbols(name, real=True) for name in structure.variables}
-        expr = sp.sympify(normalize_expr(target), locals=symbols)
+        expr = parse_math_expression(target, symbols)
         variables = sorted(expr.free_symbols, key=lambda item: item.name)
         if len(variables) != 1:
             return {"status": "not_applicable", "reason": "currently handles one-variable objectives"}
@@ -803,7 +835,7 @@ def try_generic_complex_absolute_value(structure: StructuralIR) -> dict[str, Any
     try:
         _, rhs_text = relation.split("=", 1)
         symbols = {name: sp.symbols(name) for name in structure.variables if name not in {"i", "I"}}
-        expr = sp.sympify(normalize_expr(rhs_text), locals={**symbols, "i": sp.I, "I": sp.I})
+        expr = parse_math_expression(rhs_text, {**symbols, "i": sp.I, "I": sp.I})
         value = sp.simplify(sp.Abs(expr))
         return {
             "status": "solved",
@@ -939,8 +971,8 @@ def parse_relation(relation: str, variables: list[str]) -> Any:
     for op in ("<=", ">=", "<", ">"):
         if op in relation:
             lhs_text, rhs_text = relation.split(op, 1)
-            lhs = sp.sympify(normalize_expr(lhs_text), locals=symbols)
-            rhs = sp.sympify(normalize_expr(rhs_text), locals=symbols)
+            lhs = parse_math_expression(lhs_text, symbols)
+            rhs = parse_math_expression(rhs_text, symbols)
             if op == "<=":
                 return lhs <= rhs
             if op == ">=":
@@ -996,8 +1028,8 @@ def relation_constraint_holds(relation: str, assignment: dict[str, int]) -> bool
         if "=" in relation and "!=" not in relation:
             lhs_text, rhs_text = relation.split("=", 1)
             symbols = {name: sp.symbols(name) for name in variables}
-            lhs = sp.sympify(normalize_expr(lhs_text), locals=symbols)
-            rhs = sp.sympify(normalize_expr(rhs_text), locals=symbols)
+            lhs = parse_math_expression(lhs_text, symbols)
+            rhs = parse_math_expression(rhs_text, symbols)
             return bool(sp.simplify((lhs - rhs).subs({symbols[name]: assignment[name] for name in variables})) == 0)
     except Exception:
         return True
@@ -1012,6 +1044,9 @@ def choose_variable(variables: list[str], relation: str) -> str | None:
 
 
 def choose_target_expression(structure: StructuralIR) -> str | None:
+    requested_variable = choose_requested_variable(structure)
+    if requested_variable is not None:
+        return requested_variable
     relation_set = {clean_relation_text(relation) for relation in structure.relations}
     variable_set = set(structure.variables)
     for expression in reversed(structure.expressions):
@@ -1026,6 +1061,28 @@ def choose_target_expression(structure: StructuralIR) -> str | None:
             continue
         return candidate
     return None
+
+
+def choose_requested_variable(structure: StructuralIR) -> str | None:
+    text = structure.normalized_text
+    patterns = (
+        r"\b([A-Za-z][A-Za-z0-9_]*)\b\s*を求め",
+        r"\bsolve\s+for\s+([A-Za-z][A-Za-z0-9_]*)\b",
+        r"\bfind\s+(?:the\s+value\s+of\s+)?([A-Za-z][A-Za-z0-9_]*)\b",
+        r"\bvalue\s+of\s+([A-Za-z][A-Za-z0-9_]*)\b",
+    )
+    for pattern in patterns:
+        match = re.search(pattern, text, flags=re.IGNORECASE)
+        if match and match.group(1) in structure.variables:
+            return match.group(1)
+    return None
+
+
+def has_opaque_index_dependency(expression: str, variable: str) -> bool:
+    return re.search(
+        rf"\b[A-Za-z][A-Za-z0-9]*_(?:[A-Za-z0-9_]*_)?{re.escape(variable)}(?:_|\b)",
+        expression,
+    ) is not None
 
 
 def choose_range_parameter(structure: StructuralIR) -> str | None:
@@ -1135,6 +1192,10 @@ def is_geometry_locus_measure_problem(structure: StructuralIR) -> bool:
     return False
 
 
+def has_multiple_numbered_tasks(source: str) -> bool:
+    return len(re.findall(r"(?<![A-Za-z0-9_])\(\s*\d+\s*\)", source)) >= 2
+
+
 def inputform(formula: str) -> str:
     return f"ToString[InputForm[FullSimplify[{formula}]]]"
 
@@ -1142,17 +1203,41 @@ def inputform(formula: str) -> str:
 def normalize_expr(expr: str) -> str:
     expr = expr.replace("^", "**")
     expr = normalize_function_application(expr)
-    placeholders: dict[str, str] = {}
-    for index, function_name in enumerate(KNOWN_FUNCTIONS):
-        placeholder = f"@{index}@"
-        placeholders[placeholder] = function_name
-        expr = re.sub(rf"\b{function_name}\b", placeholder, expr)
-    expr = re.sub(r"(?<=\d)(?=[A-Za-z])", "*", expr)
-    expr = re.sub(r"(?<=[A-Za-z])(?=\d)", "*", expr)
-    expr = re.sub(r"(?<=[A-Za-z])(?=[A-Za-z])", "*", expr)
-    for placeholder, function_name in placeholders.items():
-        expr = expr.replace(placeholder, function_name)
-    return expr.strip()
+    return re.sub(r"\s+", " ", expr).strip()
+
+
+def parse_math_expression(expr: str, symbols: dict[str, Any]) -> Any:
+    normalized = normalize_expr(expr)
+    names = "|".join(sorted(NON_SCALAR_OPERATOR_NAMES, key=len, reverse=True))
+    if re.search(rf"(?<![A-Za-z0-9_])(?:{names})(?=_|\b)", normalized):
+        raise ValueError("typed binder or structural relation cannot be parsed as scalar algebra")
+    local_dict = dict(symbols)
+    for name in GREEK_SYMBOL_NAMES:
+        local_dict.setdefault(name, sp.Symbol(name, real=True))
+    local_dict.update(
+        {
+            "sqrt": sp.sqrt,
+            "sin": sp.sin,
+            "cos": sp.cos,
+            "tan": sp.tan,
+            "log": sp.log,
+            "exp": sp.exp,
+            "factorial": sp.factorial,
+            "arg": sp.arg,
+            "Abs": sp.Abs,
+            "re": sp.re,
+            "im": sp.im,
+            "pi": sp.pi,
+            "infinity": sp.oo,
+            "oo": sp.oo,
+        }
+    )
+    return parse_expr(
+        normalized,
+        local_dict=local_dict,
+        transformations=standard_transformations + (convert_xor, implicit_multiplication_application),
+        evaluate=True,
+    )
 
 
 def normalize_function_application(expr: str) -> str:
@@ -1163,7 +1248,7 @@ def normalize_function_application(expr: str) -> str:
 
 def sympy_point(text: str, symbols: dict[str, Any]) -> Any:
     normalized = text.replace("infinity", "oo")
-    return sp.sympify(normalize_expr(normalized), locals={**symbols, "oo": sp.oo})
+    return parse_math_expression(normalized, symbols)
 
 
 def to_wolfram_expr(expr: str) -> str:

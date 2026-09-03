@@ -21,6 +21,9 @@ from math_os_prototype.euclidean_geometry_runtime import (
     synthesize_euclidean_geometry_runtime,
 )
 from math_os_prototype.latex_frontend import parse_latex_problem
+from math_os_prototype.structural_theorem_query import (
+    solve_mobius_polynomial_fixed_point_chart,
+)
 from math_os_prototype.visual_reasoning import (
     function_plot_diagram,
     plane_scene_diagram,
@@ -83,7 +86,7 @@ def _parse_normalized_integral_inner_product(
         return None
 
     integral_pattern = re.compile(
-        r"integral\s+_(?P<lower>\([^)]*\)|[^\s*]+)\*\*"
+        r"integral\s*_(?P<lower>\([^)]*\)|[^\s*]+)\*\*"
         r"(?P<upper>\([^)]*\)|[^\s*]+)\s*\*?\s*"
         r"(?P<body>[A-Za-z][A-Za-z0-9_]*\*\([A-Za-z]\)"
         r"(?:\*[A-Za-z][A-Za-z0-9_]*\*\([A-Za-z]\)|\*\*2))\s*\*?\s*d"
@@ -2543,11 +2546,544 @@ def synthesize_primitive_right_triangle_center_fraction(
     )
 
 
+def _parse_unevaluated_closed_expression(source: str) -> sp.Expr | None:
+    try:
+        expression = sp.sympify(
+            source.replace("^", "**"),
+            locals={"sin": sp.sin, "cos": sp.cos, "sqrt": sp.sqrt, "pi": sp.pi},
+            evaluate=False,
+        )
+    except (sp.SympifyError, TypeError, ValueError):
+        return None
+    if not isinstance(expression, sp.Basic) or expression.free_symbols:
+        return None
+    return expression
+
+
+def _rational_angle_cosine_certificate(
+    expression: sp.Expr,
+) -> dict[str, Any] | None:
+    cosine_atoms = tuple(expression.atoms(sp.cos))
+    if len(cosine_atoms) != 1:
+        return None
+    cosine = cosine_atoms[0]
+    ratio = sp.simplify(cosine.args[0] / sp.pi)
+    if ratio.is_Rational is not True:
+        return None
+
+    numerator = int(ratio.p)
+    denominator = int(ratio.q)
+    divisor = gcd(abs(numerator), 2 * denominator)
+    root_order = (2 * denominator) // divisor
+    root_exponent = (numerator // divisor) % root_order
+    if root_order <= 2 or root_exponent == 0:
+        return None
+
+    x, z = sp.symbols("x z")
+    try:
+        minimal = sp.Poly(sp.minpoly(cosine, x), x, domain=sp.QQ)
+        cyclotomic = sp.Poly(sp.cyclotomic_poly(root_order, z), z, domain=sp.QQ)
+        resultant = sp.Poly(
+            sp.resultant(cyclotomic.as_expr(), z**2 - 2 * x * z + 1, z),
+            x,
+            domain=sp.QQ,
+        )
+    except (sp.PolynomialError, NotImplementedError, TypeError, ValueError):
+        return None
+    if resultant.rem(minimal) != 0:
+        return None
+
+    reduced_exponent = min(root_exponent, root_order - root_exponent)
+    conjugate_exponents = [
+        index
+        for index in range(1, root_order // 2 + 1)
+        if gcd(index, root_order) == 1
+    ]
+    if (
+        reduced_exponent not in conjugate_exponents
+        or len(conjugate_exponents) != minimal.degree()
+    ):
+        return None
+    descending_rank = conjugate_exponents.index(reduced_exponent)
+    return {
+        "cosine": cosine,
+        "ratio": ratio,
+        "root_order": root_order,
+        "root_exponent": root_exponent,
+        "reduced_exponent": reduced_exponent,
+        "descending_rank": descending_rank,
+        "conjugate_exponents": conjugate_exponents,
+        "minimal": minimal,
+        "cyclotomic": cyclotomic,
+        "resultant": resultant,
+        "x": x,
+    }
+
+
+def _root_of_unity_diagram(certificate: dict[str, Any]) -> dict[str, Any] | None:
+    order = int(certificate["root_order"])
+    if order > 24:
+        return None
+    exponent = int(certificate["root_exponent"])
+    shapes: list[dict[str, Any]] = [
+        {
+            "id": "unit-circle",
+            "kind": "circle",
+            "center": {"x": 0.0, "y": 0.0},
+            "radius": 1.0,
+            "tone": "muted",
+        },
+        {
+            "id": "real-axis",
+            "kind": "polyline",
+            "points": ({"x": -1.2, "y": 0.0}, {"x": 1.2, "y": 0.0}),
+            "tone": "muted",
+        },
+    ]
+    for index in range(order):
+        point = {
+            "x": float(sp.N(sp.cos(2 * sp.pi * index / order), 18)),
+            "y": float(sp.N(sp.sin(2 * sp.pi * index / order), 18)),
+        }
+        shapes.append(
+            {
+                "id": f"root-{index}",
+                "kind": "point",
+                "point": point,
+                "label": rf"\zeta^{{{index}}}" if index in {0, exponent} else "",
+                "tone": "accent" if index == exponent else "primary",
+            }
+        )
+    projection = float(sp.N(certificate["cosine"], 18))
+    target_y = float(sp.N(sp.sin(certificate["cosine"].args[0]), 18))
+    shapes.append(
+        {
+            "id": "real-projection",
+            "kind": "polyline",
+            "points": ({"x": projection, "y": target_y}, {"x": projection, "y": 0.0}),
+            "tone": "accent",
+        }
+    )
+    return plane_scene_diagram(
+        title=f"{order}乗根と実部",
+        caption="有理角の余弦を、単位円上の1の冪根の実部として表しています。",
+        viewport={"xMin": -1.35, "xMax": 1.35, "yMin": -1.25, "yMax": 1.25},
+        shapes=tuple(shapes),
+        axes=False,
+    )
+
+
+def synthesize_rational_angle_cosine_algebra(
+    statement: str,
+) -> RuntimeSolutionSynthesis | None:
+    """Use one cyclotomic chart for exact reduction and certified rounding."""
+
+    parsed = parse_latex_problem(statement)
+    if len(parsed.math_segments) != 1:
+        return None
+    source = parsed.math_segments[0]
+    expression = _parse_unevaluated_closed_expression(source)
+    if expression is None:
+        return None
+    certificate = _rational_angle_cosine_certificate(expression)
+    if certificate is None:
+        return None
+
+    cosine = certificate["cosine"]
+    minimal: sp.Poly = certificate["minimal"]
+    x: sp.Symbol = certificate["x"]
+    minimal_tex = sp.latex(minimal.as_expr())
+    angle_tex = sp.latex(cosine.args[0])
+    diagram = _root_of_unity_diagram(certificate)
+    compact = re.sub(r"\s+", "", statement)
+
+    if "有理化" in compact or re.search(r"\brationali[sz]e\b", statement, re.I):
+        lifted = expression.xreplace({cosine: x})
+        numerator, denominator = sp.fraction(sp.cancel(lifted))
+        if not denominator.has(x):
+            return None
+        try:
+            inverse = sp.invert(denominator, minimal.as_expr(), domain=sp.QQ)
+        except (sp.PolynomialError, NotImplementedError, ValueError):
+            return None
+        reduced = sp.rem(sp.expand(numerator * inverse), minimal.as_expr(), x)
+        quotient, remainder = sp.div(
+            sp.expand(denominator * reduced - numerator),
+            minimal.as_expr(),
+            x,
+        )
+        if sp.expand(remainder) != 0:
+            return None
+        answer_expression = reduced.xreplace({x: cosine})
+        answer_tex = rf"\({sp.latex(answer_expression)}\)"
+        return RuntimeSolutionSynthesis(
+            answer=answer_expression,
+            answer_tex=answer_tex,
+            tool_name="mortra.runtime_cyclotomic_inverse_reduction",
+            expression_tex=sp.latex(expression),
+            derivation_tex=(
+                rf"\(\zeta=e^{{i{angle_tex}}}\), \(x=\dfrac{{\zeta+\zeta^{{-1}}}}{{2}}=\cos {angle_tex}\) とおく。\(\zeta\) の円分方程式と \(\zeta^2-2x\zeta+1=0\) から \(x\) を消去すると、最小多項式 \({minimal_tex}=0\) を得る。",
+                rf"\(\mathbb{{Q}}[x]/({minimal_tex})\) で分母の逆元を拡張ユークリッド互除法により求めると、入力式は \({sp.latex(reduced)}\) に等しい。",
+                rf"実際、分母を \(d(x)\)、分子を \(n(x)\) とすれば、\(d(x)\left({sp.latex(reduced)}\right)-n(x)=({sp.latex(quotient)})({minimal_tex})\) である。従って \({minimal_tex}=0\) を満たす元の余弦で両辺は厳密に一致する。",
+            ),
+            verification_checks=(
+                "入力から有理角と1の冪根の位数を抽出",
+                "円分多項式と z^2-2xz+1 の終結式が最小多項式で割り切れることを確認",
+                "拡張ユークリッド互除法で分母の逆元を構成",
+                "分母×出力-分子が最小多項式の倍数であることを記号的に再生",
+            ),
+            proof_program=(
+                {"rule": "elaborate_rational_angle", "ratio_to_pi": str(certificate["ratio"])},
+                {"rule": "construct_cyclotomic_polynomial", "order": certificate["root_order"], "polynomial": str(certificate["cyclotomic"].as_expr())},
+                {"rule": "eliminate_root_of_unity", "minimal_polynomial": str(minimal.as_expr())},
+                {"rule": "extended_euclidean_inverse", "denominator": str(denominator), "inverse": str(inverse)},
+                {"rule": "reduce_mod_minimal_polynomial", "reduced_expression": str(reduced)},
+                {"rule": "replay_bezout_identity", "quotient": str(quotient), "remainder": str(remainder)},
+            ),
+            diagram=diagram,
+            witness={
+                "ratio_to_pi": str(certificate["ratio"]),
+                "root_order": certificate["root_order"],
+                "cyclotomic_polynomial": str(certificate["cyclotomic"].as_expr()),
+                "resultant": str(certificate["resultant"].as_expr()),
+                "minimal_polynomial": str(minimal.as_expr()),
+                "lifted_expression": str(lifted),
+                "denominator_inverse": str(inverse),
+                "reduced_expression": str(reduced),
+                "bezout_quotient": str(quotient),
+                "bezout_remainder": str(remainder),
+            },
+        )
+
+    decimal_match = re.search(r"小数第\s*(\d+)\s*位", statement)
+    if decimal_match is None:
+        decimal_match = re.search(r"(?:to|at)\s+(\d+)\s+decimal\s+places?", statement, re.I)
+    if decimal_match is None or expression != cosine:
+        return None
+    digits = int(decimal_match.group(1))
+    if not 0 <= digits <= 12:
+        return None
+
+    selected_interval: tuple[sp.Rational, sp.Rational] | None = None
+    rounded_integer: int | None = None
+    scale = 10**digits
+    for guard_digits in range(digits + 3, digits + 13):
+        intervals = minimal.intervals(eps=sp.Rational(1, 10**guard_digits))
+        if len(intervals) != minimal.degree() or any(multiplicity != 1 for _, multiplicity in intervals):
+            return None
+        ascending_index = minimal.degree() - 1 - int(certificate["descending_rank"])
+        lower, upper = intervals[ascending_index][0]
+        lower_round = int(sp.floor(lower * scale + sp.Rational(1, 2)))
+        upper_round = int(sp.floor(upper * scale + sp.Rational(1, 2)))
+        if lower_round == upper_round:
+            selected_interval = (lower, upper)
+            rounded_integer = lower_round
+            break
+    if selected_interval is None or rounded_integer is None:
+        return None
+
+    sign = "-" if rounded_integer < 0 else ""
+    absolute = abs(rounded_integer)
+    if digits:
+        rounded_text = f"{sign}{absolute // scale}.{absolute % scale:0{digits}d}"
+    else:
+        rounded_text = f"{sign}{absolute}"
+    lower, upper = selected_interval
+    rounding_lower = sp.Rational(2 * rounded_integer - 1, 2 * scale)
+    rounding_upper = sp.Rational(2 * rounded_integer + 1, 2 * scale)
+    if not (rounding_lower < lower < upper < rounding_upper):
+        return None
+
+    return RuntimeSolutionSynthesis(
+        answer=rounded_text,
+        answer_tex=rf"\({rounded_text}\)",
+        tool_name="mortra.runtime_cyclotomic_root_isolation",
+        expression_tex=sp.latex(expression),
+        derivation_tex=(
+            rf"\(x=\cos {angle_tex}\) とおく。1の冪根との関係から、\(x\) の最小多項式は \({minimal_tex}\) である。",
+            rf"この多項式の実根を有理数だけで分離すると、対象の根は \({sp.latex(lower)}<x<{sp.latex(upper)}\) にただ一つ存在する。角 \({angle_tex}\) は \(0\) から \(\pi\) の間での順序により、この区間の根に対応する。",
+            rf"区間全体が丸め区間 \({sp.latex(rounding_lower)}<x<{sp.latex(rounding_upper)}\) に含まれるので、小数第 {digits} 位までの値は \({rounded_text}\) である。",
+        ),
+        verification_checks=(
+            "入力から有理角と1の冪根の位数を抽出",
+            "円分消去で対象余弦の最小多項式を構成",
+            "全実根を相異なる有理区間へ厳密分離",
+            "余弦の単調性と共役指数の順序から対象根を選択",
+            "選択区間全体が同じ十進丸め区間に含まれることを確認",
+        ),
+        proof_program=(
+            {"rule": "elaborate_rational_angle", "ratio_to_pi": str(certificate["ratio"])},
+            {"rule": "construct_cyclotomic_polynomial", "order": certificate["root_order"]},
+            {"rule": "eliminate_root_of_unity", "minimal_polynomial": str(minimal.as_expr())},
+            {"rule": "isolate_all_real_roots", "interval": [str(lower), str(upper)]},
+            {"rule": "select_conjugate_by_cosine_order", "descending_rank": certificate["descending_rank"]},
+            {"rule": "certify_decimal_rounding", "digits": digits, "rounded": rounded_text},
+        ),
+        diagram=diagram,
+        witness={
+            "ratio_to_pi": str(certificate["ratio"]),
+            "root_order": certificate["root_order"],
+            "minimal_polynomial": str(minimal.as_expr()),
+            "conjugate_exponents": certificate["conjugate_exponents"],
+            "descending_rank": certificate["descending_rank"],
+            "isolating_interval": [str(lower), str(upper)],
+            "rounding_interval": [str(rounding_lower), str(rounding_upper)],
+            "digits": digits,
+            "rounded": rounded_text,
+        },
+    )
+
+
+def _parse_mobius_polynomial_fixed_point_input(
+    statement: str,
+) -> dict[str, Any] | None:
+    """Extract a polynomial root transport directly from the current statement."""
+
+    segments = parse_latex_problem(statement).math_segments
+    angle_match = next(
+        (
+            match
+            for segment in segments
+            if (
+                match := re.fullmatch(
+                    r"[A-Za-z]+\s*=\s*cos\(\(2\*pi\)/\((\d+)\)\)",
+                    segment,
+                )
+            )
+        ),
+        None,
+    )
+    if angle_match is None:
+        return None
+    order = int(angle_match.group(1))
+    if order < 3:
+        return None
+
+    polynomial_match = next(
+        (
+            match
+            for segment in segments
+            if "**" in segment
+            and (
+                match := re.fullmatch(
+                    r"(?P<function>[A-Za-z]+)\*\((?P<variable>[A-Za-z]+)\)=(?P<body>.+)",
+                    segment,
+                )
+            )
+        ),
+        None,
+    )
+    if polynomial_match is None:
+        return None
+    variable = sp.Symbol(polynomial_match.group("variable"), real=True)
+    try:
+        polynomial = sp.Poly(
+            sp.sympify(polynomial_match.group("body"), locals={variable.name: variable}),
+            variable,
+            domain=sp.QQ,
+        )
+    except (sp.PolynomialError, sp.SympifyError, TypeError, ValueError):
+        return None
+    if polynomial.degree() < 2 or polynomial.LC() == 0:
+        return None
+
+    transform_verified = False
+    for segment in segments:
+        transform_match = re.fullmatch(r"(?P<state>[A-Za-z]+)=(?P<body>.+)", segment)
+        if transform_match is None or transform_match.group("state") != "S":
+            continue
+        try:
+            transform = sp.sympify(
+                transform_match.group("body"),
+                locals={variable.name: variable},
+            )
+        except (sp.SympifyError, TypeError, ValueError):
+            continue
+        if sp.cancel(transform - 1 / (1 - variable)) == 0:
+            transform_verified = True
+            break
+    if not transform_verified or not any("S=g*(S)" in segment for segment in segments):
+        return None
+
+    asks_constant = any(segment == "C_0" for segment in segments)
+    asks_contraction = any(
+        "k=" in segment and "g'" in segment and "lvert" in segment
+        for segment in segments
+    )
+    if asks_constant == asks_contraction:
+        return None
+    if asks_contraction and not any(
+        re.fullmatch(rf"cos\(\(pi\)/\({order}\)\)", segment)
+        for segment in segments
+    ):
+        return None
+
+    return {
+        "coefficients": tuple(sp.sstr(value) for value in polynomial.all_coeffs()),
+        "order": order,
+        "query": "contraction" if asks_contraction else "constant",
+        "polynomial": polynomial,
+        "variable": variable,
+    }
+
+
+def synthesize_polynomial_mobius_fixed_point(
+    statement: str,
+) -> RuntimeSolutionSynthesis | None:
+    """Transport an algebraic root to a fixed-point map and certify its derivative."""
+
+    parsed = _parse_mobius_polynomial_fixed_point_input(statement)
+    if parsed is None:
+        return None
+    try:
+        _, witness, _ = solve_mobius_polynomial_fixed_point_chart(
+            parsed["coefficients"],
+            parsed["order"],
+        )
+    except (ArithmeticError, KeyError, TypeError, ValueError, sp.PolynomialError):
+        return None
+
+    S, c = sp.symbols("S c", real=True)
+    try:
+        transformed = sp.sympify(witness["transformed_polynomial"], locals={"S": S})
+        fixed_map = sp.sympify(witness["fixed_map"], locals={"S": S})
+        cosine_minimal = sp.sympify(
+            witness["cosine_minimal_polynomial"], locals={"c": c}
+        )
+        reduced_derivative = sp.sympify(
+            witness["derivative_remainder"], locals={"c": c}
+        )
+        contraction = sp.sympify(
+            witness["contraction_factor"],
+            locals={"cos": sp.cos, "pi": sp.pi},
+        )
+        constant_term = sp.Rational(witness["constant_term"])
+    except (sp.SympifyError, TypeError, ValueError):
+        return None
+
+    order = int(parsed["order"])
+    query = str(parsed["query"])
+    fixed_map_expanded = sp.apart(fixed_map, S)
+    diagram = state_transition_diagram(
+        [
+            {"id": "root", "label": rf"\alpha=\cos(2\pi/{order})", "terminal": False},
+            {"id": "mobius", "label": r"S^*=1/(1-\alpha)", "terminal": False},
+            {"id": "fixed", "label": r"S=g(S)", "terminal": query == "constant"},
+            {"id": "linearized", "label": r"k=|g'(S^*)|", "terminal": query == "contraction"},
+        ],
+        [
+            {"from": "root", "to": "mobius", "label": r"S=1/(1-x)", "tone": "primary"},
+            {"from": "mobius", "to": "fixed", "label": "多項式を移送", "tone": "primary"},
+            {"from": "fixed", "to": "linearized", "label": "固定点で微分", "tone": "secondary"},
+        ],
+        title="代数的数から固定点写像へ",
+        caption="同じ根を分数変換で固定点へ移し、写像の定数項と局所的な収束率を読み取ります。",
+    )
+    common_program = (
+        {
+            "rule": "parse_current_polynomial_and_rational_angle",
+            "coefficients": list(parsed["coefficients"]),
+            "cyclotomic_order": order,
+        },
+        {
+            "rule": "verify_supplied_minimal_polynomial_at_root",
+            "root_remainder": witness["root_remainder"],
+        },
+        {
+            "rule": "transport_polynomial_by_fractional_linear_map",
+            "map": "S=1/(1-x)",
+            "transformed_polynomial": witness["transformed_polynomial"],
+        },
+        {
+            "rule": "replay_fixed_point_identity",
+            "residual": witness["fixed_point_identity"],
+        },
+    )
+    common_checks = (
+        "現在の問題文から有理角・多項式係数・分数変換を抽出",
+        "与えられた多項式が指定された余弦を根に持つことを最小多項式による除算で確認",
+        "分数変換後の多項式を厳密に展開し、固定点恒等式の残差が0であることを確認",
+    )
+    common_witness = {
+        **witness,
+        "query": query,
+        "source_polynomial": sp.sstr(parsed["polynomial"].as_expr()),
+    }
+    transformed_tex = sp.latex(transformed)
+    fixed_map_tex = sp.latex(fixed_map_expanded)
+
+    if query == "constant":
+        return RuntimeSolutionSynthesis(
+            answer=constant_term,
+            answer_tex=rf"\({sp.latex(constant_term)}\)",
+            tool_name="mortra.runtime_polynomial_mobius_transport",
+            expression_tex=rf"S^{{{parsed['polynomial'].degree()}}}f(1-S^{{-1}})",
+            derivation_tex=(
+                rf"\(x=1-\dfrac1S\) を \(f(x)=0\) に代入し、分母を払うと \({transformed_tex}=0\) となる。",
+                rf"最高次の項を左辺に残して整理すると、\(S=g(S)\), \(g(S)={fixed_map_tex}\) を得る。",
+                rf"従って \(S\) の負の冪を含まない定数項は \(C_0={sp.latex(constant_term)}\) である。",
+            ),
+            verification_checks=common_checks + (
+                "固定点写像を1/Sの多項式として展開し、定数項を厳密に抽出",
+            ),
+            proof_program=common_program
+            + (
+                {
+                    "rule": "extract_constant_coefficient_at_infinity",
+                    "constant_term": str(constant_term),
+                },
+            ),
+            diagram=diagram,
+            witness=common_witness,
+        )
+
+    contraction_tex = sp.latex(contraction)
+    derivative_tex = sp.latex(reduced_derivative)
+    minimal_tex = sp.latex(cosine_minimal)
+    return RuntimeSolutionSynthesis(
+        answer=contraction,
+        answer_tex=rf"\({contraction_tex}\)",
+        tool_name="mortra.runtime_polynomial_mobius_transport",
+        expression_tex=r"k=|g'(S^*)|",
+        derivation_tex=(
+            rf"同じ変換から \(S=g(S)\), \(g(S)={fixed_map_tex}\) を得る。",
+            rf"\(c=\cos\dfrac{{\pi}}{{{order}}}\) とおくと \(\alpha=2c^2-1\) である。\(c\) の最小多項式は \({minimal_tex}\) であり、与えられた \(f(2c^2-1)\) はこれで割り切れる。",
+            rf"\(S^*=1/(1-\alpha)\) を \(g'(S)\) に代入し、上の最小多項式で高次の冪を消去すると \(g'(S^*)={derivative_tex}\) となる。",
+            rf"この値の符号を代数的数として厳密に判定して絶対値を取ると、\(k={contraction_tex}\) である。",
+        ),
+        verification_checks=common_checks
+        + (
+            "半角公式 alpha=2c^2-1 を代入し、指定余弦の最小多項式との整合性を確認",
+            "固定点での導関数を商環で簡約し、除算余りを再計算",
+            "導関数の符号を厳密判定して絶対値を確定",
+        ),
+        proof_program=common_program
+        + (
+            {
+                "rule": "transport_root_by_half_angle",
+                "minimal_polynomial": witness["cosine_minimal_polynomial"],
+            },
+            {
+                "rule": "differentiate_at_fixed_point_and_reduce",
+                "remainder": witness["derivative_remainder"],
+            },
+            {
+                "rule": "certify_algebraic_sign_and_absolute_value",
+                "sign": witness["derivative_sign"],
+            },
+        ),
+        diagram=diagram,
+        witness=common_witness,
+    )
+
+
 def synthesize_runtime_solution(statement: str) -> RuntimeSolutionSynthesis | None:
     """Run reusable current-input kernels from narrowest proof obligation."""
 
     for synthesizer in (
         synthesize_normalized_inner_product_realization,
+        synthesize_polynomial_mobius_fixed_point,
+        synthesize_rational_angle_cosine_algebra,
         synthesize_primitive_right_triangle_center_fraction,
         synthesize_euclidean_geometry,
         synthesize_univariate_variation,

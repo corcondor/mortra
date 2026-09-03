@@ -27,6 +27,11 @@ except ImportError:
     from latex_frontend import parse_latex_problem
 
 
+GREEK_SYMBOL_NAMES = {"alpha", "beta", "gamma", "theta", "rho", "lambda", "mu"}
+SCALAR_FUNCTION_NAMES = {"sqrt", "sin", "cos", "tan", "log", "exp", "factorial", "arg"}
+NON_SCALAR_OPERATOR_NAMES = {"angle", "integral", "limit", "sum", "product"}
+
+
 @dataclass(frozen=True)
 class SymbolicQueryIR:
     constraints: list[str]
@@ -45,9 +50,21 @@ class SymbolicQueryIR:
 
 
 def compile_symbolic_query(text: str) -> SymbolicQueryIR | None:
+    if has_multiple_numbered_tasks(text):
+        return None
     parsed = parse_latex_problem(text)
-    segments = [clean_math_segment(part) for item in parsed.math_segments for part in split_math_statements(item)]
+    segments = [
+        strip_scalar_query_wrapper(clean_math_segment(part))
+        for item in parsed.math_segments
+        for part in split_math_statements(item)
+    ]
     segments = [item for item in segments if item]
+    # Binders and geometric relations need their own typed lowering.  Treating
+    # them as scalar identifiers silently changes, for example, ``angle C``
+    # into an algebraic product and can produce a certificate for the wrong
+    # proposition.
+    if any(contains_non_scalar_operator(item) for item in segments):
+        return None
     lower = parsed.normalized_text.lower()
     definitions = extract_function_definitions(segments)
     definitions.update(extract_piecewise_function_definitions(parsed.math_segments))
@@ -59,7 +76,11 @@ def compile_symbolic_query(text: str) -> SymbolicQueryIR | None:
         for relation in expand_chained_relation(clause)
     ]
     constraints = expand_tuple_equalities(constraints)
-    expressions = [item for item in segments if not relation_operator(item)]
+    expressions = [
+        item
+        for item in segments
+        if not relation_operator(item) and not is_domain_declaration(item)
+    ]
     variables = sorted(extract_symbols(segments) - set(definitions))
 
     function_observation = requested_function_set(lower, definitions)
@@ -421,7 +442,23 @@ def compile_symbolic_query(text: str) -> SymbolicQueryIR | None:
         )
 
     excluded_solve_observation = any(
-        marker in lower for marker in ("asymptote", "radius", "area", "volume", "distance", "remainder", "|z|", "modulus")
+        marker in lower
+        for marker in (
+            "asymptote",
+            "radius",
+            "area",
+            "volume",
+            "distance",
+            "remainder",
+            "|z|",
+            "modulus",
+            "passing region",
+            "locus",
+            "envelope",
+            "通過領域",
+            "軌跡",
+            "包絡線",
+        )
     )
     if equation and query_requests_solution(lower) and not excluded_solve_observation:
         solve_operator = "solve"
@@ -742,7 +779,7 @@ def result_payload(ir: SymbolicQueryIR, result: Any, *, expression: str) -> dict
         answer = [sp.sstr(item) for item in result]
     else:
         answer = sp.sstr(result)
-    return {
+    payload = {
         "answer_exact": answer,
         "query_operator": ir.query_operator,
         "output_sort": ir.output_sort,
@@ -750,6 +787,9 @@ def result_payload(ir: SymbolicQueryIR, result: Any, *, expression: str) -> dict
         "constraint_count": len(ir.constraints),
         "verified": True,
     }
+    if ir.query_operator in {"solve", "solve_minimum", "solve_maximum"} and isinstance(answer, list):
+        payload["solutions"] = answer
+    return payload
 
 
 def solve_polynomial_extremum(expression: sp.Expr, variable: sp.Symbol, operator: str) -> sp.Expr:
@@ -783,6 +823,8 @@ def parse_relation(source: str, locals_map: dict[str, Any]) -> Any:
 
 def parse_expression(source: str, locals_map: dict[str, Any]) -> sp.Expr:
     cleaned = re.sub(r"\b(?:If|Let|Find|Solve|What|For)\b.*?(?=[A-Za-z0-9_(])", "", source).strip(" .,?:~")
+    if contains_non_scalar_operator(cleaned):
+        raise ValueError("typed binder or structural relation cannot be parsed as a scalar expression")
     cleaned = normalize_absolute_values(cleaned)
     cleaned = normalize_factorials(cleaned)
     cleaned = cleaned.replace("[", "(").replace("]", ")")
@@ -1138,12 +1180,44 @@ def evaluate_binary_operator(source: str, parameters: dict[str, Any], locals_map
 def sympy_locals(ir: SymbolicQueryIR) -> dict[str, Any]:
     names = extract_symbols([*ir.constraints, *ir.expressions, ir.target]) | set(ir.variables)
     locals_map: dict[str, Any] = {name: sp.Symbol(name, real=True) for name in names if name not in ir.definitions}
-    locals_map.update({"sqrt": sp.sqrt, "sin": sp.sin, "cos": sp.cos, "tan": sp.tan, "log": sp.log, "exp": sp.exp, "factorial": sp.factorial, "I": sp.I, "i": sp.I, "pi": sp.pi})
+    locals_map.update(
+        {
+            "sqrt": sp.sqrt,
+            "sin": sp.sin,
+            "cos": sp.cos,
+            "tan": sp.tan,
+            "log": sp.log,
+            "exp": sp.exp,
+            "factorial": sp.factorial,
+            "arg": sp.arg,
+            "I": sp.I,
+            "i": sp.I,
+            "pi": sp.pi,
+            "infinity": sp.oo,
+            "oo": sp.oo,
+        }
+    )
     return locals_map
 
 
 def clean_math_segment(source: str) -> str:
     return source.strip().strip(".,;:?")
+
+
+def strip_scalar_query_wrapper(source: str) -> str:
+    match = re.fullmatch(
+        r"\s*(?:solve|find)\s+(.+?)(?:\s+for\s+[A-Za-z][A-Za-z0-9_]*)?\s*",
+        source,
+        flags=re.IGNORECASE,
+    )
+    return match.group(1).strip() if match else source
+
+
+def is_domain_declaration(source: str) -> bool:
+    return re.fullmatch(
+        r"\s*[A-Za-z][A-Za-z0-9_]*\s+in\s+(?:R|Z|C|N)\s*",
+        source,
+    ) is not None
 
 
 def split_math_statements(source: str) -> list[str]:
@@ -1173,15 +1247,54 @@ def is_closed_scalar_term(source: str) -> bool:
     if names - {"i"}:
         return False
     try:
-        expression = parse_expression(source, {"i": sp.I, "I": sp.I, "pi": sp.pi})
+        expression = parse_expression(
+            source,
+            {"i": sp.I, "I": sp.I, "pi": sp.pi, "infinity": sp.oo, "oo": sp.oo},
+        )
     except Exception:
         return False
     return not expression.free_symbols and not isinstance(expression, (sp.MatrixBase, sp.Set))
 
 
 def extract_symbols(sources: list[str]) -> set[str]:
-    ignored = {"sqrt", "sin", "cos", "tan", "log", "exp", "infinity"}
-    return {name for source in sources for name in re.findall(r"\b[A-Za-z]\b", source) if name not in ignored}
+    ignored = {
+        *SCALAR_FUNCTION_NAMES,
+        *NON_SCALAR_OPERATOR_NAMES,
+        "I",
+        "R",
+        "Z",
+        "and",
+        "as",
+        "astop",
+        "for",
+        "if",
+        "in",
+        "infinity",
+        "is",
+        "not",
+        "of",
+        "oo",
+        "or",
+        "pi",
+        "to",
+    }
+    return {
+        name
+        for source in sources
+        for name in re.findall(r"\b[A-Za-z][A-Za-z0-9_]*\b", source)
+        if name not in ignored
+        and (len(name) == 1 or "_" in name or name in GREEK_SYMBOL_NAMES)
+    }
+
+
+def contains_non_scalar_operator(source: str) -> bool:
+    names = "|".join(sorted(NON_SCALAR_OPERATOR_NAMES, key=len, reverse=True))
+    return re.search(rf"(?<![A-Za-z0-9_])(?:{names})(?=_|\b)", source) is not None
+
+
+def has_multiple_numbered_tasks(source: str) -> bool:
+    labels = re.findall(r"(?<![A-Za-z0-9_])\(\s*\d+\s*\)", source)
+    return len(labels) >= 2
 
 
 def infer_symbol(source: str) -> str | None:
