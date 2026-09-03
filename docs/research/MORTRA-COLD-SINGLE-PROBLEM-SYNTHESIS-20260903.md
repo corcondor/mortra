@@ -12,6 +12,7 @@
 4. 非線形漸化式でも、隣接項の積とその逆数を状態に選べば一次遷移へ移せる場合がある。その閉形式を積分の縮約公式へ接続すれば、数列、Wallis 型積分、Gaussian 積分を同じ証明鎖で扱える。
 5. 原点中心に回転した二次曲線では、回転角の正弦と余弦を半角変数の有理式へ移すと、交点、距離、面積、回転体積を一つの因数分解から導ける。
 6. 式の形が異なる初等解析の問題でも、関数を厳密な上下界で挟み、単調性・積分・凸性を通して順序を移すという同じ証明構造へ縮約できる。
+7. 相異なる整数から選ぶ確率では、有限個の格子点計数と、尺度極限における順序領域の体積比を同じ不等式から導けば、有限公式と極限確率を一つの証明鎖で扱える。
 
 ## 方法
 
@@ -26,7 +27,7 @@
 - 厳密計算、独立再生、問題文と解答の SHA-256 一致をすべて必須にする。
 - 登録済み複合経路による6問は総認証数には含めるが、登録非依存数には含めない。
 
-比較元は `artifacts/benchmarks/cold-single-problem-coverage-triangle-radii-exponential-hash-bound-20260903.json`、途中の比較点は `artifacts/benchmarks/cold-single-problem-coverage-mobius-polynomial-transport-20260903.json` と `artifacts/benchmarks/cold-single-problem-coverage-fibonacci-norm-chain-20260903.json` である。最終結果は `artifacts/benchmarks/cold-single-problem-coverage-elementary-envelopes-20260903.json`、その SHA-256 は `FC2D3F0461DF226EDAC24354694833303B40E3DCA8C6018F031240280AE482BF` である。
+比較元は `artifacts/benchmarks/cold-single-problem-coverage-triangle-radii-exponential-hash-bound-20260903.json`、途中の比較点は `artifacts/benchmarks/cold-single-problem-coverage-mobius-polynomial-transport-20260903.json` と `artifacts/benchmarks/cold-single-problem-coverage-fibonacci-norm-chain-20260903.json` である。最終結果は `artifacts/benchmarks/cold-single-problem-coverage-ordered-sample-volume-20260903.json`、その SHA-256 は `CF64456C7D0DF9D28E1DF7AB70EAD6D6811DAD8787EB4B7A34F48EBE4459CBB7` である。
 
 ## 実装した共通構造
 
@@ -353,16 +354,55 @@ F(1)<\frac{31}{20}<\frac{157}{100}<\frac\pi2.
 
 変形試験では、問題38の変数を `t`、要求区間を `\pi/3<I<7/5` に変えて再計算できた一方、偽の上界 `I<4/3` は拒否した。問題44の積分変数を `t` に変えても認証し、偽命題 `e<1+\sqrt2` は拒否した。問題61は変数を `z` に変えても認証し、末項を `2/z` に変えた入力は拒否した。従って、この増分は問題番号や完成解答の照合ではなく、現在入力の係数・変数・要求境界から証明を再構成している。
 
+### 相異なる整数標本の格子点計数と体積比
+
+問題40では、`1` から `n` までの相異なる三枚を同時に選び、小さい順に `a<b<c` とおく。三角形にならない条件は `a+b\le c` である。最大辺 `c` を固定すると、そのような組の個数は
+
+\[
+\sum_{b=2}^{c-1}\min(b-1,c-b)
+=\left\lfloor\frac{(c-1)^2}{4}\right\rfloor.
+\]
+
+従って、三角形になる組の個数は `{}_nC_3` からこの和を引けばよい。偶数と奇数を分けて有限和を厳密に評価すると、`n=2r` と `n=2r+1` に対して
+
+\[
+p(2r)=\frac{4r-5}{8r-4},\qquad
+p(2r+1)=\frac{4r^2-3r-1}{8r^2-2}.
+\]
+
+どちらも `r\to\infty` で `1/2` に収束する。式変形だけの検査とは別に、`3\le n\le20` の全ての三つ組を列挙し、上の公式と一致することも確認した。
+
+鋭角三角形については、同じ順序条件を単位立方体へ尺度変換する。全ての順序付き領域 `0<x<y<z<1` の体積は `1/6` であり、鋭角条件は `x^2+y^2>z^2` である。境界上の格子点は全体の三次増加に対して二次以下なので極限比に寄与しない。鋭角領域の体積は
+
+\[
+\begin{aligned}
+V
+&=\int_0^1\int_{z/\sqrt2}^{z}
+\left(y-\sqrt{z^2-y^2}\right)\,dy\,dz\\
+&=\frac13\int_{1/\sqrt2}^{1}
+\left(t-\sqrt{1-t^2}\right)\,dt
+=\frac{4-\pi}{24}.
+\end{aligned}
+\]
+
+従って、求める極限は
+
+\[
+\lim_{n\to\infty}q(n)=\frac{V}{1/6}=1-\frac\pi4.
+\]
+
+実装は問題番号を参照せず、自然数カードが一枚ずつ、三枚を同時に選ぶこと、三角形と鋭角三角形の二つの問いを型付き条件として読み取る。変数名を `m,P,Q` へ変えた未登録入力でも式を再計算した。一方、カードを戻して選ぶ文へ変えた入力は、標本空間が異なるためこのチャートでは認証しなかった。公開用解答には、三辺の順序、固定した最大辺に対する格子点、偶奇公式、三角形領域、鋭角領域の五図を、証明データから生成した。
+
 ## 結果
 
 | 指標 | 比較元 | 最終 | 差 |
 |---|---:|---:|---:|
-| 認証済み | 25/90 | 38/90 | +13 |
-| 登録非依存 | 19/90 | 32/90 | +13 |
+| 認証済み | 25/90 | 39/90 | +14 |
+| 登録非依存 | 19/90 | 33/90 | +14 |
 | 登録済み複合再利用 | 6/90 | 6/90 | 0 |
-| 未解決 | 65/90 | 52/90 | -13 |
+| 未解決 | 65/90 | 51/90 | -14 |
 
-新たに認証した問題は次の13問だけであり、既存25問の後退はなかった。共有初等関数チャート追加直前の35問と最終38問を全90行で比較すると、認証状態、解答、証明書が変わったのは問題38、問題44、問題62だけである。
+新たに認証した問題は次の14問だけであり、既存25問の後退はなかった。相異なる整数標本チャート追加直前の38問と最終39問を全90行で比較すると、認証状態、解答、証明書が変わったのは問題40だけであり、既存38問の証明書 SHA-256 は全て不変だった。
 
 | 問題 | 共通構造 | 証明書 SHA-256 |
 |---:|---|---|
@@ -375,6 +415,7 @@ F(1)<\frac{31}{20}<\frac{157}{100}<\frac\pi2.
 | 36 | 半角有理化、交点式の因数分解、実交点分離、距離尺度の復元 | `c4c17e047e46b1fd573b53192bc99f66b4e38bf3acacfb15734693db9c59de2e` |
 | 37 | 半角有理化、実交点分離、境界積分、反転対称性 | `1de14d3ed7611fdae28659264ce70b17baa2bb115abf8b9fd205b49cf4e740fb` |
 | 38 | sinc の交代級数上下界、積分への順序移送、円周率の有理区間評価 | `afc6a4da0c80ef3080f4f18c311dc2253e24e05222e0a2aed243c4067218e684` |
+| 40 | 相異なる三標本の格子点計数、偶奇和、順序領域の体積比 | `d95437e60cd77a582c5b864b892c17210515ea08b803f9559e118672e491675a` |
 | 44 | 正の級数余項、平方による根号比較、正弦の直線上界、複数設問合成 | `6cacedccaa6319bd426b0673d05b84dbba2e2b3c01eb0a4270de27a7c6d5aea4` |
 | 54 | 正接の二次形式、素数合同式、漸化式の二次準不変量、Fibonacci 添字整除性、複数設問合成 | `eaa25402804e889d2a664dbdb5797c7cd7e0f7c0861ab4a1be80b12c70874d1d` |
 | 55 | 接線、固定点、二段反復、積分上界の四子証明書合成 | `23e362cfc71b2b1fc4762fea8c1c315be7a25422e4bb3d7111551c3d1123d86b` |
@@ -398,7 +439,7 @@ k=2\left(1-\cos\frac{\pi}{11}\right)
 
 問題11の変形試験では、数列名と添字を変え、共通初期値を2へ変えると `c=-3/4` を再計算し、上昇階乗の引数 `1/8` と `5/8` を含む一般項を生成した。分母内の `1/u_k` を `2/u_k` へ変えた漸化式と、積分の指数を `n+1` へ変えた偽命題はいずれも不認証になった。
 
-現在の公開解法・証明書・図レンダラーの中核試験は `332 passed in 136.55s`、数式入力の追加試験は `4 passed in 0.07s` だった。最終90問再実行は33.875秒で完了し、例外による認証は0件だった。問題38、問題44、問題62はそれぞれ5、6、5ページの公開用PDFへ変換した。3冊とも LaTeX の overfull/underfull、未定義命令、数式モード欠落の警告は0件だった。全16ページを画像化し、数式、日本語、曲線、数直線、変化表、証明経路の欠落・重なり・文字化けがないことを目視確認した。図の分数・根号・円周率は文字列ではなく数式ラベルとして描画する。
+現在の公開解法・証明書・図レンダラーの中核試験は、問題40追加後の対象集合で `166 passed in 116.59s`、数式入力の追加試験は `4 passed in 0.07s` だった。最終90問再実行は34.527秒で完了し、例外による認証は0件だった。問題38、問題40、問題44、問題62はそれぞれ5、7、6、5ページの公開用PDFへ変換した。4冊とも LaTeX の overfull/underfull、未定義命令、数式モード欠落の警告は0件だった。問題40の全7ページを画像化し、数式、日本語、格子点、棒グラフ、積分領域、証明経路の欠落・重なり・文字化けがないことを目視確認した。図の分数・根号・円周率は文字列ではなく数式ラベルとして描画する。
 
 - `artifacts/fullproblems/cold-single-problem-011-reciprocal-wallis-20260903/solution.tex` (`SHA-256 048EDD0860054B473360C5D5AD2F88DDA0820657A88382D83682940FE809FD9E`)
 - `artifacts/fullproblems/cold-single-problem-011-reciprocal-wallis-20260903/solution.pdf` (`SHA-256 CB2B247E5C408F71202992C6C4384B29277868AD031AFF4E9574DAE134EC99DB`)
@@ -414,15 +455,18 @@ k=2\left(1-\cos\frac{\pi}{11}\right)
 - `artifacts/benchmarks/cold-single-problem-coverage-rotated-parabola-20260903.json` (`SHA-256 8BA92E0ED9379E0F1E7C6D2B7BD951C670495D5BC2CD5D7C81B81A2463548E57`)
 - `artifacts/fullproblems/cold-single-problem-038-sinc-integral-envelope-20260903/solution.tex` (`SHA-256 21F113DFA48F2BA83F53A9F47310BC9AD19B38AA978910DE81AAC6D2F27DDD91`)
 - `artifacts/fullproblems/cold-single-problem-038-sinc-integral-envelope-20260903/solution.pdf` (`SHA-256 C0E2CC6DF5BFEF9960EC2B34BB9525FD4F7A63446CC6023FE35281F6ACBA5853`)
+- `artifacts/fullproblems/cold-single-problem-040-ordered-sample-volume-20260903/solution.tex` (`SHA-256 AAE4E44237C3D64A7719C9742AC1D8B5D0D1A571B428C339245A11E6C503B14B`)
+- `artifacts/fullproblems/cold-single-problem-040-ordered-sample-volume-20260903/solution.pdf` (`SHA-256 C30A820BA1261C42A3BF8324D9CCE15E37574397CD6F403BA9D5401B1CA14945`)
 - `artifacts/fullproblems/cold-single-problem-044-elementary-envelope-20260903/solution.tex` (`SHA-256 EB3889EBBBE51BA61D982B6E2BAE1EF029483E9C4B5CD91A3D6BB86FD881FACF`)
 - `artifacts/fullproblems/cold-single-problem-044-elementary-envelope-20260903/solution.pdf` (`SHA-256 2A11075487AEC9336C94B5E7279B39DA83320D40E5BF9770A3889FDE82606166`)
 - `artifacts/fullproblems/cold-single-problem-062-exponential-tangent-envelope-20260903/solution.tex` (`SHA-256 AA83925B851338A92F9B34296310751D7AA31BAE038AE18B1A79F7672F2EBBF6`)
 - `artifacts/fullproblems/cold-single-problem-062-exponential-tangent-envelope-20260903/solution.pdf` (`SHA-256 1E37D06740969445069B2BE01C7169CC88A39C4ECC7B79CB7917DFDF1CCAE576`)
 - `artifacts/benchmarks/cold-single-problem-coverage-elementary-envelopes-20260903.json` (`SHA-256 FC2D3F0461DF226EDAC24354694833303B40E3DCA8C6018F031240280AE482BF`)
+- `artifacts/benchmarks/cold-single-problem-coverage-ordered-sample-volume-20260903.json` (`SHA-256 CF64456C7D0DF9D28E1DF7AB70EAD6D6811DAD8787EB4B7A34F48EBE4459CBB7`)
 
 ## 考察
 
-今回の13問増は、解答文字列の追加ではない。各増分は現在入力の係数、角度、指数、初期値、目標値から証明プログラムを再構成し、値を変えた問題でも再計算する。現時点での実証範囲は90問中38問、登録非依存では32問であり、未解決は52問残る。
+今回の14問増は、解答文字列の追加ではない。各増分は現在入力の係数、角度、指数、初期値、目標値から証明プログラムを再構成し、値を変えた問題でも再計算する。現時点での実証範囲は90問中39問、登録非依存では33問であり、未解決は51問残る。
 
 問題18は、旧経路では登録済み定理として解けていた。今回の差分は答えを新しく知ったことではなく、その計算核を登録名から切り離し、現在の問題文から到達できるようにした点にある。これにより、同じ構造を持つ別の円分位数と係数へ適用できる。
 
@@ -436,11 +480,13 @@ k=2\left(1-\cos\frac{\pi}{11}\right)
 
 問題38、問題44、問題61は、使う初等関数も問いの形も異なる。それでも、局所的な厳密上下界を作り、順序を保つ操作だけを通して目標へ運び、最後を有理数比較で閉じるという同じ構造で認証できた。新しい問題固有規則を3本追加したのではなく、一つの上下界チャートの分岐として実装したことが今回の縮約である。
 
+問題40では、有限の格子点計数と連続領域の体積計算を別の解答として登録せず、同じ順序条件と三角不等式を二つの尺度で読む。有限 `n` では最大辺を固定した二次元格子点和、極限では三次元順序領域の体積となる。鋭角条件も新しい場合分け表ではなく、最大辺に対する二次形式 `a^2+b^2>c^2` の切断面として扱った。これは、組合せ確率から幾何的確率への再利用可能な移送である。
+
 一方、これだけで任意の不等式を扱えるわけではない。交代級数の単調減少、正の級数の尾、単調関数、凸関数の端点最大という適用条件を証明書に残し、条件の違う変形は拒否している。特に問題61では有限標本による係数確認を採用せず、全ての次数を覆う式へ置き換えた。得点の増加だけでなく、誤った一般化を防ぐ適用条件まで再生可能にした点が重要である。
 
 ## 結論
 
-型付き入口、少数の可逆チャート、子証明書の論理積という三層を組み合わせることで、凍結90問の登録非依存認証率を `19/90` から `32/90` へ上げた。総認証数は `38/90`、未解決は52問である。次の改善対象も、問題番号別の完成解法ではなく、停止した型付き義務を複数問まとめて閉じる最小の共通変換とする。
+型付き入口、少数の可逆チャート、子証明書の論理積という三層を組み合わせることで、凍結90問の登録非依存認証率を `19/90` から `33/90` へ上げた。総認証数は `39/90`、未解決は51問である。次の改善対象も、問題番号別の完成解法ではなく、停止した型付き義務を複数問まとめて閉じる最小の共通変換とする。
 
 ## 公開記録
 

@@ -203,6 +203,14 @@ _STAGE_LABELS_JA = {
     "convert_solid_volume_to_boundary_moment": "回転体積の境界積分",
     "reflect_negative_rotation": "負の回転角への反転対称性",
     "mortra.runtime_elementary_inequality_envelope": "初等関数の厳密な上下界",
+    "mortra.runtime_ordered_sample_volume_ratio": "整数標本の格子点計数と体積比",
+    "elaborate_without_replacement_three_sample": "相異なる三標本の型付け",
+    "quotient_permutations_by_strict_order": "三標本の昇順化",
+    "count_lattice_pairs_at_fixed_maximum": "最大値を固定した格子点計数",
+    "split_quasi_polynomial_by_parity": "偶奇別の閉形式",
+    "transport_homogeneous_lattice_predicate_to_volume": "格子点比から体積比への移送",
+    "integrate_acute_triangle_cross_section": "鋭角領域の断面積分",
+    "normalize_by_ordered_sample_volume": "全標本体積による正規化",
     "elaborate_elementary_inequality_query": "初等不等式の型付け",
     "construct_alternating_series_envelope": "交代級数の上下包絡",
     "transport_order_through_definite_integral": "不等式の定積分への移送",
@@ -331,6 +339,38 @@ _MORPHISM_PRESENTATION_JA: dict[str, tuple[str, str]] = {
         "初等関数を厳密な上下界で挟む",
         "級数の剰余、単調性、積分による順序保存を組み合わせ、浮動小数近似なしで不等式を閉じる。",
     ),
+    "mortra.runtime_ordered_sample_volume_ratio": (
+        "整数標本を格子点計数と体積比で解く",
+        "相異なる整数を昇順に並べ、有限の場合は格子点を数え、極限では同じ不等式が定める領域の体積へ移す。",
+    ),
+    "elaborate_without_replacement_three_sample": (
+        "三枚の相異なる標本を読み取る",
+        "標本の範囲、非復元抽出、標本数、二つの確率の問いを問題文から区別する。",
+    ),
+    "quotient_permutations_by_strict_order": (
+        "三枚を小さい順に並べる",
+        "同じ三枚の並べ方を一つにまとめ、最大値を明示した a<b<c の形へ移す。",
+    ),
+    "count_lattice_pairs_at_fixed_maximum": (
+        "最大値を固定して格子点を数える",
+        "最大辺 c ごとに残る二つの整数の範囲を数え、床関数一つにまとめる。",
+    ),
+    "split_quasi_polynomial_by_parity": (
+        "床関数を偶奇別に足す",
+        "偶数項と奇数項を多項式へ直し、有限和と確率を閉形式にする。",
+    ),
+    "transport_homogeneous_lattice_predicate_to_volume": (
+        "格子点の割合を体積の割合へ移す",
+        "変数を標本上限で割り、同次な不等式が定める単位領域の体積比として極限を求める。",
+    ),
+    "integrate_acute_triangle_cross_section": (
+        "鋭角三角形の領域を積分する",
+        "最大辺に対する平方和条件を単位円の外側として表し、断面の長さを厳密に積分する。",
+    ),
+    "normalize_by_ordered_sample_volume": (
+        "全標本の体積で割る",
+        "求めた部分領域の体積を 0<a<b<c<1 の全体積で割り、確率の極限を確定する。",
+    ),
     "elaborate_elementary_inequality_query": (
         "初等不等式を型付きの証明義務へ移す",
         "関数、区間、比較対象、整数判定を問題文から取り出し、必要な上下界の向きを確定する。",
@@ -389,6 +429,7 @@ for _runtime_morphism in (
     "mortra.runtime_rotated_parabola_blowup_distance",
     "mortra.runtime_rotated_parabola_boundary_moment",
     "mortra.runtime_elementary_inequality_envelope",
+    "mortra.runtime_ordered_sample_volume_ratio",
 ):
     _MORPHISM_PRESENTATION_JA[f"solve.exact.{_runtime_morphism}"] = (
         _MORPHISM_PRESENTATION_JA[_runtime_morphism]

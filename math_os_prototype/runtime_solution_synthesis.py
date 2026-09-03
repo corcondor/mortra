@@ -26,6 +26,9 @@ from math_os_prototype.exact_interval_charts import (
     alternating_trig_interval_chart,
 )
 from math_os_prototype.latex_frontend import normalize_latex_math, parse_latex_problem
+from math_os_prototype.runtime_ordered_sample_synthesis import (
+    synthesize_ordered_three_sample_probabilities,
+)
 from math_os_prototype.structural_theorem_query import (
     solve_mobius_polynomial_fixed_point_chart,
 )
@@ -5885,6 +5888,7 @@ def synthesize_runtime_solution(statement: str) -> RuntimeSolutionSynthesis | No
     """Run reusable current-input kernels from narrowest proof obligation."""
 
     for synthesizer in (
+        synthesize_ordered_three_sample_probabilities,
         synthesize_normalized_inner_product_realization,
         synthesize_fibonacci_prime_norm_chain,
         synthesize_reciprocal_product_wallis_chain,

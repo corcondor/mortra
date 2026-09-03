@@ -719,6 +719,77 @@ class PublicSolveTests(unittest.TestCase):
             json.dumps(certificate, ensure_ascii=False),
         )
 
+    def test_three_card_triangle_probabilities_are_synthesized_cold(self) -> None:
+        problem = (
+            r"1から$n$までの自然数が書かれたカードが1枚ずつあり,同時に3枚引く.\\"
+            r"$(1)$ カードの値が三角形の三辺となるような確率$p(n)$を求めよ."
+            r"また,$\displaystyle \lim_{n\to\infty}p(n)$を求めよ.\\"
+            r"$(2)$ カードの値が鋭角三角形の三辺となるような確率を$q(n)$とする."
+            r"$\displaystyle \lim_{n\to\infty}q(n)$を求めよ."
+        )
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertIn(r"\dfrac{4r-5}{8r-4}", card["answer_tex"])
+        self.assertIn(r"1-\frac\pi4", card["answer_tex"])
+        self.assertIn("最大辺", card["solution_tex"])
+        self.assertIn(r"\frac\pi8-\frac14", card["solution_tex"])
+        certificate = card["execution_certificate"]
+        self.assertEqual(
+            certificate["tool_name"],
+            "mortra.runtime_ordered_sample_volume_ratio",
+        )
+        witness = certificate["witness"]
+        self.assertEqual(witness["bad_count_at_fixed_largest"], "floor((c-1)^2/4)")
+        self.assertEqual(witness["acute_volume"], "1/6 - pi/24")
+        self.assertEqual(witness["acute_limit"], "1 - pi/4")
+        self.assertEqual(len(witness["brute_force_checks"]), 18)
+        self.assertEqual(len(card["visual_explanation"]["steps"]), 5)
+        self.assertTrue(
+            all(step["diagram"]["kind"] == "plane" for step in card["visual_explanation"]["steps"])
+        )
+        self.assertNotIn(
+            "structural_theorem_query",
+            json.dumps(certificate, ensure_ascii=False),
+        )
+
+    def test_three_card_probability_chart_recomputes_renamed_symbols(self) -> None:
+        problem = (
+            r"1から$m$までの自然数が書かれたカードが1枚ずつあり,3枚を同時に選ぶ.\\"
+            r"$(1)$ 三角形の三辺となるような確率$P(m)$を求めよ."
+            r"また,$\lim_{m\to\infty}P(m)$を求めよ.\\"
+            r"$(2)$ 鋭角三角形の三辺となるような確率を$Q(m)$とする."
+            r"$\lim_{m\to\infty}Q(m)$を求めよ."
+        )
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertIn(r"P(m)", card["answer_tex"])
+        self.assertIn(r"Q(m)", card["answer_tex"])
+        witness = card["execution_certificate"]["witness"]
+        self.assertEqual(witness["upper_symbol"], "m")
+        self.assertEqual(witness["ordinary_probability_symbol"], "P")
+        self.assertEqual(witness["acute_probability_symbol"], "Q")
+
+    def test_three_card_probability_chart_rejects_sampling_with_replacement(self) -> None:
+        problem = (
+            r"1から$n$までの自然数が書かれたカードが1枚ずつあり,3枚を同時に引いて戻す."
+            r"三角形の三辺となる確率$p(n)$と鋭角三角形の三辺となる確率$q(n)$について,"
+            r"$p(n)$と$\lim_{n\to\infty}p(n)$と$\lim_{n\to\infty}q(n)$を求めよ."
+        )
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
+
+        if status == 200:
+            tool = payload["cards"][0]["execution_certificate"].get("tool_name")
+            self.assertNotEqual(tool, "mortra.runtime_ordered_sample_volume_ratio")
+
     def test_sinc_integral_envelope_recomputes_changed_bounds_and_variable(self) -> None:
         status, payload = solve_problem(
             r"$\frac{\pi}{3}<\int_0^{\pi/2}\frac{\sin t}{t}\,dt<\frac75$を示せ。",
