@@ -183,6 +183,10 @@ _STAGE_LABELS_JA = {
     "sympy.integrate": "定積分の値",
     "sympy.limit": "極限値",
     "sympy.cubic_trigonometric_chart": "三角関数で表した三つの実根",
+    "NumberedObligationDecomposition": "番号付きの設問",
+    "TypedObligationConjunction": "共通条件を引き継いだ各設問",
+    "IndependentChildCertificateReplay": "再生済みの部分証明",
+    "VerifiedAnswerBundle": "全設問の検証済み解答",
     "VerifiedAnswer": "検証済み解答",
 }
 
@@ -223,6 +227,22 @@ _MORPHISM_PRESENTATION_JA: dict[str, tuple[str, str]] = {
     "sympy.cubic_trigonometric_chart": (
         "三次方程式を角度へ移す",
         "三倍角の公式へ対応させ、三つの実根を角度の違いとして求める。",
+    ),
+    "NumberedObligationDecomposition": (
+        "設問ごとに分ける",
+        "共通の問題文を保ったまま、求める内容を番号付きの設問へ分ける。",
+    ),
+    "TypedObligationConjunction": (
+        "共通条件を各設問へ引き継ぐ",
+        "数列の定義と初期値を各設問へ引き継ぎ、四つの証明対象を確定する。",
+    ),
+    "IndependentChildCertificateReplay": (
+        "各設問の証明書を再生する",
+        "各設問の計算と論証を独立に再実行し、全ての結論を検証する。",
+    ),
+    "VerifiedAnswerBundle": (
+        "全設問の証明を一つにまとめる",
+        "独立に検証した四つの結論を、元の問題に対する一つの解答としてまとめる。",
     ),
 }
 
@@ -292,8 +312,7 @@ def _roadmap_items(roadmap: list[dict[str, Any]]) -> str:
 {_escape_text(str(entry.get('source_ja') or '入力'))}
 $\longrightarrow$
 {_escape_text(str(entry.get('target_ja') or '出力'))}\\
-{_escape_text(str(entry.get('role_ja') or '型を保ったまま中間表現を変換する。'))}\\
-\texttt{{{_escape_text(str(entry.get('morphism_id') or 'unrecorded'))}}}"""
+{_escape_text(str(entry.get('role_ja') or '型を保ったまま中間表現を変換する。'))}"""
         for index, entry in enumerate(roadmap, start=1)
     )
 
@@ -303,8 +322,11 @@ def _obligation_items(obligations: list[dict[str, Any]]) -> str:
     for item in obligations:
         status = str(item.get("status") or "unknown")
         readable_status = "検証済み" if status == "verified" else status
+        obligation_id = str(item.get("id") or "?")
+        part_match = re.fullmatch(r"part-(\d+)", obligation_id)
+        readable_id = f"設問({part_match.group(1)})" if part_match else obligation_id
         lines.append(
-            rf"\item \textbf{{{_escape_text(str(item.get('id') or '?'))}}}: "
+            rf"\item \textbf{{{_escape_text(readable_id)}}}: "
             rf"{_escape_text(str(item.get('claim_ja') or '証明義務'))} "
             rf"（{_escape_text(readable_status)}）"
         )
@@ -450,33 +472,148 @@ def _plane_diagram_tex(diagram: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+_UNSAFE_STATE_TEX = re.compile(
+    r"\\(?:begin|catcode|csname|def|end|include|input|newcommand|openout|read|usepackage|write)\b"
+)
+
+
+def _state_label_tex(item: dict[str, Any], *, max_width: str) -> str:
+    """Render a state label as text or as a constrained mathematical formula."""
+
+    explicit_math = item.get("label_tex") or item.get("labelTex")
+    raw = str(explicit_math or item.get("label") or item.get("id") or "").strip()
+    if not raw:
+        return ""
+    if raw.startswith(r"\(") and raw.endswith(r"\)"):
+        raw = raw[2:-2].strip()
+        explicit_math = True
+    elif raw.startswith(r"\[") and raw.endswith(r"\]"):
+        raw = raw[2:-2].strip()
+        explicit_math = True
+
+    contains_japanese = bool(re.search(r"[\u3040-\u30ff\u3400-\u9fff]", raw))
+    looks_mathematical = bool(
+        explicit_math
+        or (
+            not contains_japanese
+            and (
+                re.search(r"\\[A-Za-z]+", raw)
+                or re.search(r"[_^=<>]", raw)
+            )
+        )
+    )
+    unsafe = bool(
+        _UNSAFE_STATE_TEX.search(raw)
+        or any(mark in raw for mark in ("$", "%", "#", "&"))
+    )
+    if not looks_mathematical or unsafe:
+        return _escape_text(raw)
+
+    formula = rf"\(\displaystyle {raw}\)"
+    visible_length = len(re.sub(r"\\[A-Za-z]+|[{}]", "", raw))
+    if visible_length > 18:
+        return rf"\resizebox{{{max_width}}}{{!}}{{{formula}}}"
+    return formula
+
+
+def _state_layout(
+    states: list[dict[str, Any]], transitions: list[dict[str, Any]]
+) -> tuple[dict[int, tuple[int, float]], dict[int, int]]:
+    """Place forward deductions by rank and wrap long chains after four ranks."""
+
+    index_by_id = {str(state.get("id")): index for index, state in enumerate(states)}
+    ranks = [0 for _ in states]
+    outgoing: dict[int, list[int]] = {index: [] for index in range(len(states))}
+    for transition in transitions:
+        source = index_by_id.get(str(transition.get("from")))
+        target = index_by_id.get(str(transition.get("to")))
+        if source is not None and target is not None and target > source:
+            outgoing[source].append(target)
+    for source in range(len(states)):
+        for target in outgoing[source]:
+            ranks[target] = max(ranks[target], ranks[source] + 1)
+
+    grouped: dict[int, list[int]] = {}
+    for index, rank in enumerate(ranks):
+        grouped.setdefault(rank, []).append(index)
+
+    block_spans: dict[int, int] = {}
+    for rank, members in grouped.items():
+        block = rank // 4
+        block_spans[block] = max(block_spans.get(block, 1), len(members))
+    block_bases: dict[int, float] = {}
+    cursor = 0.0
+    for block in sorted(block_spans):
+        block_bases[block] = -cursor
+        cursor += block_spans[block] + 1.4
+
+    positions: dict[int, tuple[int, float]] = {}
+    for rank, members in grouped.items():
+        block = rank // 4
+        offset = rank % 4
+        column = offset if block % 2 == 0 else 3 - offset
+        for lane, index in enumerate(members):
+            vertical = (len(members) - 1) / 2 - lane
+            positions[index] = (column, block_bases[block] + vertical)
+    return positions, {index: rank for index, rank in enumerate(ranks)}
+
+
 def _state_diagram_tex(diagram: dict[str, Any]) -> str:
     states = [state for state in diagram.get("states") or [] if isinstance(state, dict)]
     if not states:
         return ""
+    transitions = [
+        transition
+        for transition in diagram.get("transitions") or []
+        if isinstance(transition, dict)
+    ]
+    positions, ranks = _state_layout(states, transitions)
     lines = [
-        r"\begin{tikzpicture}[x=2.45cm,y=1cm,>=Latex,",
-        r"state/.style={draw,circle,minimum size=12mm,align=center,font=\scriptsize}]",
+        r"\begin{tikzpicture}[x=3.72cm,y=1.55cm,>=Latex,",
+        r"state box/.style={draw,rounded corners=1.5pt,text width=27mm,minimum height=11mm,align=center,inner xsep=2mm,inner ysep=2mm,font=\scriptsize},",
+        r"flow/.style={-{Latex[length=2mm]},thick},",
+        r"edge label/.style={fill=white,inner xsep=1.5pt,inner ysep=1pt,align=center,font=\scriptsize}]",
     ]
     for index, state in enumerate(states):
-        style = "state"
+        style = "state box"
         if state.get("active"):
             style += ",very thick,draw=cyan!65!black,fill=cyan!10"
         elif state.get("terminal"):
             style += ",very thick,draw=magenta!65!black"
-        label = _escape_text(str(state.get("label") or state.get("id") or index))
-        lines.append(rf"\node[{style}] (s{index}) at ({index},0) {{{label}}};")
+        label = _state_label_tex(state, max_width="25mm")
+        column, vertical = positions[index]
+        lines.append(
+            rf"\node[{style}] (s{index}) at ({column},{vertical:.3f}) {{{label}}};"
+        )
     index_by_id = {str(state.get("id")): index for index, state in enumerate(states)}
-    for transition in diagram.get("transitions") or []:
-        if not isinstance(transition, dict):
-            continue
+    for transition in transitions:
         source = index_by_id.get(str(transition.get("from")))
         target = index_by_id.get(str(transition.get("to")))
         if source is None or target is None:
             continue
-        label = _escape_text(str(transition.get("label") or ""))
-        label_node = rf" node[above,font=\scriptsize] {{{label}}}" if label else ""
-        lines.append(rf"\draw[->,thick] (s{source}) --{label_node} (s{target});")
+        label = _state_label_tex(transition, max_width="24mm")
+        source_vertical = positions[source][1]
+        target_vertical = positions[target][1]
+        if abs(source_vertical - target_vertical) < 1e-9:
+            label_position = "above=6.5mm"
+        elif source_vertical > target_vertical:
+            label_position = "above=1.5mm"
+        else:
+            label_position = "below=1.5mm"
+        label_node = (
+            rf" node[midway,edge label,{label_position}] {{{label}}}" if label else ""
+        )
+        if source == target:
+            lines.append(
+                rf"\draw[flow] (s{source}) to[out=35,in=145,looseness=6]"
+                rf"{label_node} (s{target});"
+            )
+        elif ranks[target] <= ranks[source]:
+            lines.append(
+                rf"\draw[flow] (s{source}) to[bend left=24]{label_node} (s{target});"
+            )
+        else:
+            lines.append(rf"\draw[flow] (s{source}) --{label_node} (s{target});")
     lines.append(r"\end{tikzpicture}")
     return "\n".join(lines)
 

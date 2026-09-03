@@ -1685,6 +1685,31 @@ def _solution_text(problem: str, answer_tex: str, data: dict[str, Any]) -> str:
     )
 
 
+def _composite_math_body(answer_tex: str) -> str:
+    """Remove child-level math wrappers before embedding in one aligned block."""
+
+    source = answer_tex.strip()
+    block_pattern = re.compile(
+        r"(?:\\\[(?P<display>.*?)\\\]|\\\((?P<inline>.*?)\\\))",
+        re.DOTALL,
+    )
+    blocks: list[str] = []
+    cursor = 0
+    for match in block_pattern.finditer(source):
+        if source[cursor : match.start()].strip():
+            return source
+        body = match.group("display")
+        if body is None:
+            body = match.group("inline")
+        blocks.append((body or "").strip())
+        cursor = match.end()
+    if not blocks or source[cursor:].strip():
+        return source
+    if len(blocks) == 1:
+        return blocks[0]
+    return r"\begin{gathered}" + r"\\".join(blocks) + r"\end{gathered}"
+
+
 def _solve_composite_obligations(
     statement: str,
     obligations: tuple[ProblemObligation, ...],
@@ -1755,7 +1780,7 @@ def _solve_composite_obligations(
     answer_tex = (
         r"\(\begin{aligned}"
         + r"\\".join(
-            rf"\text{{({child['label']})}}\;&{child['answer_tex'].removeprefix(r'\(').removesuffix(r'\)')}"
+            rf"\text{{({child['label']})}}\;&{_composite_math_body(child['answer_tex'])}"
             for child in children
         )
         + r"\end{aligned}\)"
@@ -1832,7 +1857,7 @@ def _solve_composite_obligations(
         f"問題文を{len(children)}個の設問へ構文分解",
         "共有条件を各設問の型付き意味表現へ継承",
         "各設問を独立に厳密実行",
-        "全設問の証明書をAND条件として再生",
+        "全設問の証明書を再生し、全てが成立することを確認",
         "問題文・解答・検証証明書を出力",
     ]
     visual_steps: list[dict[str, Any]] = []
@@ -1933,7 +1958,7 @@ def _solve_composite_obligations(
         "domain": "typed_obligation_conjunction",
         "morphism_chain": morphism_chain,
         "verification": {
-            "method": "all child certificates replayed under conjunction semantics",
+            "method": "各設問の証明書を独立に再生し、全ての成立を確認",
             "exact_backend": True,
             "independent_check": True,
             "checks": [f"{len(children)}/{len(children)} numbered obligations certified"],

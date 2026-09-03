@@ -12,7 +12,12 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
 
-from api.solve import _decompose_problem_obligations, solve_problem, solve_public_problem
+from api.solve import (
+    _composite_math_body,
+    _decompose_problem_obligations,
+    solve_problem,
+    solve_public_problem,
+)
 
 
 class PublicSolveTests(unittest.TestCase):
@@ -59,6 +64,14 @@ class PublicSolveTests(unittest.TestCase):
             self.assertEqual(obligations[1].statement.count("$"), 2)
             self.assertIn("x^2=1", obligations[0].statement)
             self.assertIn("x^2=4", obligations[1].statement)
+
+    def test_composite_math_body_normalizes_inline_and_display_blocks(self) -> None:
+        self.assertEqual(_composite_math_body(r"\(x=1\)"), "x=1")
+        self.assertEqual(_composite_math_body(r"\[x=1\]"), "x=1")
+        self.assertEqual(
+            _composite_math_body(r"\[x=1\]\[y=2\]"),
+            r"\begin{gathered}x=1\\y=2\end{gathered}",
+        )
 
     def test_numbered_obligation_split_propagates_used_interstitial_definition(self) -> None:
         statement = (
@@ -1724,6 +1737,84 @@ class PublicSolveTests(unittest.TestCase):
         )
         self.assertEqual(wrong_identity_status, 422)
         self.assertEqual(wrong_prime_status, 422)
+
+    def test_reciprocal_recurrence_wallis_chain_certifies_all_parts_without_registry(self) -> None:
+        problem = (
+            r"数列 $\{a_n\}$ を $a_1=a_2=1,\ "
+            r"a_{n+2}=\dfrac{1}{a_{n+1}+\dfrac{1}{a_n}}$ と定める。\\ "
+            r"(1)\ $a_n$ を求めよ。\\ "
+            r"(2)\ $a_{2n+2}=\displaystyle\int_0^1(1-x^2)^n\,dx$ を示せ。\\ "
+            r"(3)\ $\displaystyle\lim_{n\to\infty}\sqrt n\,a_{2n}$ を求めよ。\\ "
+            r"(4)\ $\displaystyle\int_0^\infty e^{-x^2}\,dx$ を求めよ。"
+        )
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        certificate = card["execution_certificate"]
+        self.assertEqual(card["family_id"], "solve.composite.all_obligations")
+        self.assertIn(r"\frac{(2m-2)!!}{(2m-1)!!}", card["answer_tex"])
+        self.assertIn(r"\frac{\sqrt\pi}2", card["answer_tex"])
+        self.assertNotIn(r"\[", card["answer_tex"])
+        self.assertNotIn(r"\]", card["answer_tex"])
+        self.assertTrue(card["answer_tex"].startswith(r"\(\begin{aligned}"))
+        self.assertTrue(card["answer_tex"].endswith(r"\end{aligned}\)"))
+        self.assertIn(r"t_n=a_na_{n+1}", card["solution_tex"])
+        self.assertIn(r"J_{2n-1}J_{2n}=\dfrac{\pi}{4n}", card["solution_tex"])
+        self.assertEqual(certificate["capability_origin"], "synthesized_proof_program")
+        self.assertFalse(certificate["registered_composite_used"])
+        self.assertEqual(len(certificate["children"]), 4)
+        self.assertEqual(len(card["visual_explanation"]["steps"]), 4)
+        self.assertTrue(card["visual_explanation"]["composition_verified"])
+        document = card["solution_document_tex"]
+        self.assertIn("設問ごとに分ける", document)
+        self.assertIn("各設問の証明書を再生する", document)
+        self.assertIn("全設問の証明を一つにまとめる", document)
+        self.assertNotIn("NumberedObligationDecomposition", document)
+        self.assertNotIn("IndependentChildCertificateReplay", document)
+        self.assertIn(r"\textbf{設問(1)}", document)
+        self.assertIn("各設問の証明書を独立に再生し、全ての成立を確認", document)
+        self.assertNotIn("part-1", document)
+        self.assertNotIn("conjunction semantics", document)
+
+    def test_reciprocal_recurrence_chart_recomputes_initial_value_and_rejects_mutations(self) -> None:
+        renamed = (
+            r"正の数列 $\{u_k\}$ を $u_1=u_2=2,\ "
+            r"u_{k+2}=\dfrac{1}{u_{k+1}+\dfrac{1}{u_k}}$ と定める。"
+            r"$u_k$ を求めよ。"
+        )
+        wrong_recurrence = renamed.replace(
+            r"\dfrac{1}{u_k}",
+            r"\dfrac{2}{u_k}",
+        )
+        false_integral = (
+            r"数列 $\{a_n\}$ を $a_1=a_2=1,\ "
+            r"a_{n+2}=\dfrac{1}{a_{n+1}+\dfrac{1}{a_n}}$ と定める。"
+            r"$a_{2n+2}=\displaystyle\int_0^1(1-x^2)^{n+1}\,dx$ を示せ。"
+        )
+
+        status, payload = solve_problem(renamed, allow_theorem_kernels=False)
+        wrong_status, _ = solve_problem(
+            wrong_recurrence,
+            allow_theorem_kernels=False,
+        )
+        false_integral_status, _ = solve_problem(
+            false_integral,
+            allow_theorem_kernels=False,
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(
+            card["execution_certificate"]["witness"]["product_shift"],
+            "Rational(-3, 4)",
+        )
+        self.assertIn(r"\frac{1}{8}", card["answer_tex"])
+        self.assertIn(r"\frac{5}{8}", card["answer_tex"])
+        self.assertEqual(wrong_status, 422)
+        self.assertEqual(false_integral_status, 422)
 
     def test_trigonometric_geometric_progression_is_elaborated_from_its_relation(self) -> None:
         status, payload = solve_problem(

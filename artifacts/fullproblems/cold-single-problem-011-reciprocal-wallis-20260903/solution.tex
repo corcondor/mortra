@@ -1,0 +1,248 @@
+\documentclass[uplatex,dvipdfmx,11pt]{jsarticle}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{geometry}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage[unicode]{hyperref}
+\providecommand{\cInv}{\cos^{-1}}
+\providecommand{\E}{\mathrm{E}}
+\providecommand{\V}{\mathrm{V}}
+\providecommand{\Cov}{\mathrm{Cov}}
+\geometry{margin=24mm}
+
+\begin{document}
+\begin{center}
+{\LARGE\bfseries MORTRA 検証済み解答\par}
+\vspace{1mm}
+{\small 分野：数列・解析\qquad 問題・厳密解・図・証明経路・講評}
+\end{center}
+\vspace{1mm}
+\hrule
+\vspace{5mm}
+
+\section*{問題}
+数列 $\{a_n\}$ を $a_1=a_2=1,\ a_{n+2}=\dfrac{1}{a_{n+1}+\dfrac{1}{a_n}}$ と定める.
+
+(1)\ $a_n$ を求めよ.
+
+(2)\ $a_{2n+2}=\displaystyle\int_0^1 (1-x^2)^n\,dx$ を示せ.
+
+(3)\ $\displaystyle\lim_{n\to\infty}\sqrt{n}\,a_{2n}$ を求めよ.
+
+(4)\ $\displaystyle\int_0^\infty e^{-x^2}\,dx$ を求めよ.
+
+\section*{答え}
+\(\begin{aligned}\text{(1)}\;&a_1=1,\qquad a_{2m}=\frac{(2m-2)!!}{(2m-1)!!},\qquad a_{2m+1}=\frac{(2m-1)!!}{(2m)!!}\quad(m=1,2,\ldots).\\\text{(2)}\;&a_{2n+2}=\int_0^1(1-x^2)^{n}\,dx=\frac{(2n)!!}{(2n+1)!!}.\\\text{(3)}\;&\lim_{n\to\infty}\sqrt{n}\,a_{2n}=\frac{\sqrt\pi}2.\\\text{(4)}\;&\int_0^\infty e^{-x^2}\,dx=\frac{\sqrt\pi}2.\end{aligned}\)
+
+\section*{解答}
+\textbf{(1)}\quad \textbf{1.} 初期値は正であり、漸化式から全ての項も正である。\(t_n=a_na_{n+1}\) とおく。
+
+\textbf{2.} 元の式を有理化すると \(a_{n+2}=a_n/(1+t_n)\)。従って \(t_{n+1}=t_n/(1+t_n)\) であり、逆数を取れば \(1/t_{n+1}=1/t_n+1\) となる。
+
+\textbf{3.} \(t_1=1\) なので \(t_n=1/(n+c)\), \(c=0\) である。
+
+\textbf{4.} 従って \(a_{n+2}=\dfrac{n}{n+1}a_n\)。 初期値 \(a_1=a_2=1\) から偶数番目と奇数番目を別々に掛けると、 \(a_{2m}=\dfrac{(2m-2)!!}{(2m-1)!!}\),  \(a_{2m+1}=\dfrac{(2m-1)!!}{(2m)!!}\) を得る。
+
+\textbf{(2)}\quad \textbf{1.} \(I_n=\int_0^1(1-x^2)^{n}\,dx\) とおく。
+
+\textbf{2.} \(x(1-x^2)^{n}\) を微分し、端点0,1で積分すると \((2n+1)I_n=2nI_{n-1}\)。従って \(I_n=\dfrac{2n}{2n+1}I_{n-1}\), \(I_0=1\)。
+
+\textbf{3.} 一方、隣接積の線形化から \(a_{2n+2}=\dfrac{2n}{2n+1}a_{2n}\), \(a_2=1\)。初期値と漸化式が一致するため、両者は全ての \(n\ge0\) で等しい。
+
+\textbf{4.} 共通の積表示は \(\dfrac{(2n)!!}{(2n+1)!!}\) である。
+
+\textbf{(3)}\quad \textbf{1.} \(J_r=\int_0^{\pi/2}\sin^r x\,dx\) とおく。部分積分から \(J_r=\dfrac{r-1}rJ_{r-2}\)。従って \(J_{2n-1}=a_{2n}\)。
+
+\textbf{2.} \(0<\sin x<1\) より \(J_{2n+1}<J_{2n}<J_{2n-1}\)。また \(J_{2n+1}=\dfrac{2n}{2n+1}J_{2n-1}\) だから、\(\dfrac{2n}{2n+1}<\dfrac{J_{2n}}{J_{2n-1}}<1\)。よってこの比は1へ収束する。
+
+\textbf{3.} 縮約公式を掛け合わせると \(J_{2n-1}J_{2n}=\dfrac{\pi}{4n}\)。従って \(nJ_{2n-1}^2\to\pi/4\)。全て正なので平方根を取り、結論を得る。
+
+\textbf{(4)}\quad \textbf{1.} 第(2)問の積分で \(x=y/\sqrt n\) とおくと、\(\sqrt n\,a_{2n+2}=\int_0^{\sqrt n}(1-y^2/n)^n\,dy\)。
+
+\textbf{2.} 固定した \(y\) に対して \((1-y^2/n)^n\to e^{-y^2}\)。また Bernoulli の不等式から、左辺の被積分関数を区間外で0としたものは \(1/(1+y^2)\) 以下である。従って積分の極限を取ることができる。
+
+\textbf{3.} 第(3)問と添字を一つずらした極限より、左辺は \(\sqrt\pi/2\) へ収束する。従って \(\int_0^\infty e^{-x^2}\,dx=\sqrt\pi/2\)。
+
+\textbf{4.} 独立な確認として、積分を \(G\) とおけば、第一象限で極座標変換して \(G^2=(\pi/2)\int_0^\infty re^{-r^2}dr=\pi/4\)。\(G>0\) なので同じ値を得る。
+
+\clearpage
+
+\section*{一手ずつ見る図解}
+
+\subsection*{1. 設問(1)の証明経路}
+
+設問(1)の証明状態を図で確認し、検証済みの証明書を全設問の証明束へ追加します。
+
+\[a_1=1,\qquad a_{2m}=\frac{(2m-2)!!}{(2m-1)!!},\qquad a_{2m+1}=\frac{(2m-1)!!}{(2m)!!}\quad(m=1,2,\ldots).\]
+
+\begin{center}
+
+\begin{tikzpicture}[x=3.72cm,y=1.55cm,>=Latex,
+state box/.style={draw,rounded corners=1.5pt,text width=27mm,minimum height=11mm,align=center,inner xsep=2mm,inner ysep=2mm,font=\scriptsize},
+flow/.style={-{Latex[length=2mm]},thick},
+edge label/.style={fill=white,inner xsep=1.5pt,inner ysep=1pt,align=center,font=\scriptsize}]
+\node[state box] (s0) at (0,0.000) {逆数型漸化式};
+\node[state box] (s1) at (1,0.000) {\(\displaystyle t_n=a_na_{n+1}\)};
+\node[state box] (s2) at (2,0.000) {\(\displaystyle t_{n+1}^{-1}=t_n^{-1}+1\)};
+\node[state box,very thick,draw=magenta!65!black] (s3) at (3,0.000) {偶奇別の閉形式};
+\draw[flow] (s0) -- node[midway,edge label,above=6.5mm] {隣接積} (s1);
+\draw[flow] (s1) -- node[midway,edge label,above=6.5mm] {逆数} (s2);
+\draw[flow] (s2) -- node[midway,edge label,above=6.5mm] {二段比} (s3);
+\end{tikzpicture}
+
+\end{center}
+
+{\footnotesize\texttt{solve.exact.mortra.runtime\_reciprocal\_product\_recurrence}}
+
+\subsection*{2. 設問(2)の証明経路}
+
+設問(2)の証明状態を図で確認し、検証済みの証明書を全設問の証明束へ追加します。
+
+\[a_{2n+2}=\int_0^1(1-x^2)^{n}\,dx=\frac{(2n)!!}{(2n+1)!!}.\]
+
+\begin{center}
+
+\begin{tikzpicture}[x=3.72cm,y=1.55cm,>=Latex,
+state box/.style={draw,rounded corners=1.5pt,text width=27mm,minimum height=11mm,align=center,inner xsep=2mm,inner ysep=2mm,font=\scriptsize},
+flow/.style={-{Latex[length=2mm]},thick},
+edge label/.style={fill=white,inner xsep=1.5pt,inner ysep=1pt,align=center,font=\scriptsize}]
+\node[state box] (s0) at (0,0.500) {\(\displaystyle a_{2n+2}\)};
+\node[state box] (s1) at (1,0.000) {\(\displaystyle \frac{2n}{2n+1}\)};
+\node[state box] (s2) at (0,-0.500) {\resizebox{25mm}{!}{\(\displaystyle I_n=\int_0^1(1-x^2)^n dx\)}};
+\node[state box,very thick,draw=magenta!65!black] (s3) at (2,0.000) {\(\displaystyle a_{2n+2}=I_n\)};
+\draw[flow] (s0) -- node[midway,edge label,above=1.5mm] {二段漸化式} (s1);
+\draw[flow] (s2) -- node[midway,edge label,below=1.5mm] {部分積分} (s1);
+\draw[flow] (s1) -- node[midway,edge label,above=6.5mm] {初期値1} (s3);
+\end{tikzpicture}
+
+\end{center}
+
+{\footnotesize\texttt{solve.exact.mortra.runtime\_reciprocal\_recurrence\_beta\_identity}}
+
+\subsection*{3. 設問(3)の証明経路}
+
+設問(3)の証明状態を図で確認し、検証済みの証明書を全設問の証明束へ追加します。
+
+\[\lim_{n\to\infty}\sqrt{n}\,a_{2n}=\frac{\sqrt\pi}2.\]
+
+\begin{center}
+
+\begin{tikzpicture}[x=3.72cm,y=1.55cm,>=Latex,
+state box/.style={draw,rounded corners=1.5pt,text width=27mm,minimum height=11mm,align=center,inner xsep=2mm,inner ysep=2mm,font=\scriptsize},
+flow/.style={-{Latex[length=2mm]},thick},
+edge label/.style={fill=white,inner xsep=1.5pt,inner ysep=1pt,align=center,font=\scriptsize}]
+\node[state box] (s0) at (0,0.500) {\(\displaystyle J_{2n-1}=a_{2n}\)};
+\node[state box] (s1) at (0,-0.500) {\(\displaystyle J_{2n}\)};
+\node[state box] (s2) at (1,0.000) {\resizebox{25mm}{!}{\(\displaystyle \frac{2n}{2n+1}<\frac{J_{2n}}{J_{2n-1}}<1\)}};
+\node[state box,very thick,draw=magenta!65!black] (s3) at (2,0.000) {\(\displaystyle \sqrt n\,a_{2n}\to\sqrt\pi/2\)};
+\draw[flow] (s0) -- node[midway,edge label,above=1.5mm] {単調性} (s2);
+\draw[flow] (s1) -- node[midway,edge label,below=1.5mm] {縮約公式} (s2);
+\draw[flow] (s2) -- node[midway,edge label,above=6.5mm] {\(\displaystyle J_{2n-1}J_{2n}=\pi/(4n)\)} (s3);
+\end{tikzpicture}
+
+\end{center}
+
+{\footnotesize\texttt{solve.exact.mortra.runtime\_reciprocal\_recurrence\_wallis\_limit}}
+
+\subsection*{4. 設問(4)の証明経路}
+
+設問(4)の証明状態を図で確認し、検証済みの証明書を全設問の証明束へ追加します。
+
+\[\int_0^\infty e^{-x^2}\,dx=\frac{\sqrt\pi}2.\]
+
+\begin{center}
+
+\begin{tikzpicture}[x=3.72cm,y=1.55cm,>=Latex,
+state box/.style={draw,rounded corners=1.5pt,text width=27mm,minimum height=11mm,align=center,inner xsep=2mm,inner ysep=2mm,font=\scriptsize},
+flow/.style={-{Latex[length=2mm]},thick},
+edge label/.style={fill=white,inner xsep=1.5pt,inner ysep=1pt,align=center,font=\scriptsize}]
+\node[state box] (s0) at (0,0.000) {\(\displaystyle \sqrt n\int_0^1(1-x^2)^n dx\)};
+\node[state box] (s1) at (1,0.000) {\(\displaystyle x=y/\sqrt n\)};
+\node[state box] (s2) at (2,0.000) {\(\displaystyle (1-y^2/n)^n\to e^{-y^2}\)};
+\node[state box,very thick,draw=magenta!65!black] (s3) at (3,0.000) {\(\displaystyle \int_0^\infty e^{-y^2}dy=\sqrt\pi/2\)};
+\draw[flow] (s0) -- node[midway,edge label,above=6.5mm] {変数変換} (s1);
+\draw[flow] (s1) -- node[midway,edge label,above=6.5mm] {指数極限} (s2);
+\draw[flow] (s2) -- node[midway,edge label,above=6.5mm] {Wallis 極限} (s3);
+\end{tikzpicture}
+
+\end{center}
+
+{\footnotesize\texttt{solve.exact.mortra.runtime\_reciprocal\_recurrence\_gaussian\_limit}}
+
+\section*{講評}
+\noindent\textbf{出題意図}\quad 数列・解析の条件を実行可能な関係へ移し、設問ごとに分ける、共通条件を各設問へ引き継ぐ、各設問の証明書を再生するを一つの証明として組み立てる力を問う。
+
+\noindent\textbf{想定する入試}\quad 記述式の大学入試または数学コンテストを想定し、変換の根拠と最終検証までを採点対象とする。
+
+\noindent\textbf{独自性}\quad 数値近似や答えの照合で終えず、問題文から答えまで実際に通過した射と証明義務を再生できる。
+
+
+\section*{証明の経路}
+\begin{center}
+\begin{tikzpicture}[
+  node distance=3.5mm,
+  stage/.style={draw,rounded corners=1pt,align=left,text width=118mm,minimum height=7mm,inner xsep=4pt,inner ysep=2pt,font=\small},
+  flow/.style={-{Latex[length=2mm]},thick,cyan!55!black},
+  edge label/.style={fill=white,inner xsep=3pt,font=\scriptsize\bfseries}
+]
+\node[stage] (n0) {問題文};
+\node[stage,below=of n0] (n1) {番号付きの設問};
+\draw[flow] (n0) -- node[edge label] {設問ごとに分ける} (n1);
+\node[stage,below=of n1] (n2) {共通条件を引き継いだ各設問};
+\draw[flow] (n1) -- node[edge label] {共通条件を各設問へ引き継ぐ} (n2);
+\node[stage,below=of n2] (n3) {再生済みの部分証明};
+\draw[flow] (n2) -- node[edge label] {各設問の証明書を再生する} (n3);
+\node[stage,below=of n3] (n4) {全設問の検証済み解答};
+\draw[flow] (n3) -- node[edge label] {全設問の証明を一つにまとめる} (n4);
+\end{tikzpicture}
+\end{center}
+
+\clearpage
+\section*{使った射と役割}
+\begin{itemize}
+\item \textbf{M1: 設問ごとに分ける}\\
+問題文
+$\longrightarrow$
+番号付きの設問\\
+共通の問題文を保ったまま、求める内容を番号付きの設問へ分ける。
+\item \textbf{M2: 共通条件を各設問へ引き継ぐ}\\
+番号付きの設問
+$\longrightarrow$
+共通条件を引き継いだ各設問\\
+数列の定義と初期値を各設問へ引き継ぎ、四つの証明対象を確定する。
+\item \textbf{M3: 各設問の証明書を再生する}\\
+共通条件を引き継いだ各設問
+$\longrightarrow$
+再生済みの部分証明\\
+各設問の計算と論証を独立に再実行し、全ての結論を検証する。
+\item \textbf{M4: 全設問の証明を一つにまとめる}\\
+再生済みの部分証明
+$\longrightarrow$
+全設問の検証済み解答\\
+独立に検証した四つの結論を、元の問題に対する一つの解答としてまとめる。
+\end{itemize}
+
+
+\section*{証明義務}
+\begin{itemize}
+\item \textbf{設問(1)}: 証明義務 （検証済み）
+\item \textbf{設問(2)}: 証明義務 （検証済み）
+\item \textbf{設問(3)}: 証明義務 （検証済み）
+\item \textbf{設問(4)}: 証明義務 （検証済み）
+\end{itemize}
+
+
+\section*{検証記録}
+\begin{itemize}
+\item 問題文を4個の設問へ構文分解
+\item 共有条件を各設問の型付き意味表現へ継承
+\item 各設問を独立に厳密実行
+\item 全設問の証明書を再生し、全てが成立することを確認
+\item 問題文・解答・検証証明書を出力
+\end{itemize}
+\noindent\texttt{各設問の証明書を独立に再生し、全ての成立を確認}
+\par\noindent{\footnotesize 証明書 SHA-256: \nolinkurl{4fa576ddbdad0cc1b6279082211ca0cdd7ffe7d60f45a260b0a1b7069f5c16c4}}
+
+\end{document}

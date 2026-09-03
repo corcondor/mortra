@@ -3167,6 +3167,453 @@ def synthesize_fibonacci_prime_norm_chain(
     )
 
 
+def _parse_reciprocal_product_recurrence(
+    statement: str,
+) -> dict[str, Any] | None:
+    """Read u_(n+2)=1/(u_(n+1)+1/u_n) from the current statement."""
+
+    pattern = re.compile(
+        r"(?P<sequence>[A-Za-z]+)_1=(?P=sequence)_2=(?P<initial>[^,]+),"
+        r"(?P=sequence)_\((?P<index>[A-Za-z]+)\+2\)="
+        r"\(\(1\)/\((?P=sequence)_\((?P=index)\+1\)\+"
+        r"\(\(1\)/\((?P=sequence)_(?P=index)\)\)\)\)"
+    )
+    for segment in parse_latex_problem(statement).math_segments:
+        match = pattern.fullmatch(segment.replace(" ", ""))
+        if match is None:
+            continue
+        initial = _sympify_exact_scalar(match.group("initial"))
+        if initial is None or not _proves_strictly_positive(initial):
+            return None
+        return {
+            "sequence": match.group("sequence"),
+            "index": match.group("index"),
+            "initial": initial,
+        }
+    return None
+
+
+def _reciprocal_product_recurrence_query(
+    statement: str,
+    context: dict[str, Any],
+) -> dict[str, str] | None:
+    sequence = context["sequence"]
+    index_name = context["index"]
+    compact_segments = [
+        segment.replace(" ", "")
+        for segment in parse_latex_problem(statement).math_segments
+    ]
+
+    queries: list[dict[str, str]] = []
+    integral_pattern = re.compile(
+        rf"{re.escape(sequence)}_\(2\*(?P<index>[A-Za-z]+)\+2\)="
+        r"integral_0\*\*1\*?\(1-(?P<variable>[A-Za-z]+)\*\*2\)\*\*"
+        r"(?P=index)d(?P=variable)"
+    )
+    limit_pattern = re.compile(
+        r"limit_(?P<index>[A-Za-z]+)toinfinitysqrt\((?P=index)\)"
+        rf"{re.escape(sequence)}_(?:\(2\*(?P=index)\)|2\*(?P=index))"
+    )
+    gaussian_pattern = re.compile(
+        r"integral_0\*\*infinitye\*\*\(-(?P<variable>[A-Za-z]+)\*\*2\)"
+        r"d(?P=variable)"
+    )
+    for segment in compact_segments:
+        if match := integral_pattern.fullmatch(segment):
+            queries.append({"kind": "beta_identity", **match.groupdict()})
+        if match := limit_pattern.fullmatch(segment):
+            queries.append({"kind": "wallis_limit", **match.groupdict()})
+        if match := gaussian_pattern.fullmatch(segment):
+            queries.append({"kind": "gaussian_integral", **match.groupdict()})
+
+    if not queries and re.search(r"(?:求め|find|determine)", statement, re.I):
+        if any(segment == f"{sequence}_{index_name}" for segment in compact_segments):
+            queries.append({"kind": "closed_form", "index": index_name})
+    if len(queries) != 1:
+        return None
+    return queries[0]
+
+
+def synthesize_reciprocal_product_wallis_chain(
+    statement: str,
+) -> RuntimeSolutionSynthesis | None:
+    """Linearize a reciprocal recurrence and compose its Wallis consequences."""
+
+    context = _parse_reciprocal_product_recurrence(statement)
+    if context is None:
+        return None
+    query = _reciprocal_product_recurrence_query(statement, context)
+    if query is None:
+        return None
+
+    sequence = context["sequence"]
+    index_name = context["index"]
+    initial = context["initial"]
+    u, v = sp.symbols("u v", positive=True)
+    n = sp.Symbol("n", integer=True, positive=True)
+    m = sp.Symbol("m", integer=True, nonnegative=True)
+    next_value = sp.simplify(1 / (v + 1 / u))
+    rationalized_next = sp.simplify(u / (1 + u * v))
+    rationalization_residual = sp.factor(next_value - rationalized_next)
+    reciprocal_increment_residual = sp.factor(
+        1 / (v * next_value) - 1 / (u * v) - 1
+    )
+    c = sp.simplify(1 / initial**2 - 1)
+    product_formula = sp.simplify(1 / (n + c))
+    product_base_residual = sp.simplify(initial**2 - product_formula.subs(n, 1))
+    product_step_residual = sp.simplify(
+        product_formula.subs(n, n + 1)
+        - product_formula / (1 + product_formula)
+    )
+    two_step_factor_residual = sp.simplify(
+        1 / (1 + product_formula) - (n + c) / (n + c + 1)
+    )
+
+    odd_formula = sp.simplify(
+        initial
+        * sp.rf((c + 1) / 2, m)
+        / sp.rf((c + 2) / 2, m)
+    )
+    even_formula = sp.simplify(
+        initial
+        * sp.rf((c + 2) / 2, m)
+        / sp.rf((c + 3) / 2, m)
+    )
+    odd_ratio = sp.simplify(
+        sp.expand_func(sp.combsimp(odd_formula.subs(m, m + 1) / odd_formula))
+    )
+    even_ratio = sp.simplify(
+        sp.expand_func(sp.combsimp(even_formula.subs(m, m + 1) / even_formula))
+    )
+    odd_ratio_residual = sp.simplify(
+        odd_ratio - (2 * m + c + 1) / (2 * m + c + 2)
+    )
+    even_ratio_residual = sp.simplify(
+        even_ratio - (2 * m + c + 2) / (2 * m + c + 3)
+    )
+    closed_form_base_residuals = (
+        sp.simplify(odd_formula.subs(m, 0) - initial),
+        sp.simplify(even_formula.subs(m, 0) - initial),
+    )
+    common_residuals = (
+        rationalization_residual,
+        reciprocal_increment_residual,
+        product_base_residual,
+        product_step_residual,
+        two_step_factor_residual,
+        odd_ratio_residual,
+        even_ratio_residual,
+        *closed_form_base_residuals,
+    )
+    if any(residual != 0 for residual in common_residuals):
+        return None
+
+    sample_values = [initial, initial]
+    for _ in range(8):
+        sample_values.append(
+            sp.simplify(1 / (sample_values[-1] + 1 / sample_values[-2]))
+        )
+    common_checks = (
+        "現在入力から数列名、添字、初期値、逆数型二階漸化式を抽出",
+        "次項を有理化し、隣接積の逆数が毎回1だけ増えることを恒等式で確認",
+        "隣接積の閉形式の初期値と一段遷移を記号計算で再生",
+        "偶数列・奇数列の積表示について基底と項比を独立に確認",
+        "最初の10項を元の非線形漸化式から厳密数として再計算",
+    )
+    common_program = (
+        {"rule": "rationalize_reciprocal_recurrence", "residual": "0"},
+        {
+            "rule": "lift_to_adjacent_product",
+            "transition": "t_(n+1)=t_n/(1+t_n)",
+            "residual": "0",
+        },
+        {
+            "rule": "linearize_by_reciprocal",
+            "transition": "1/t_(n+1)=1/t_n+1",
+            "residual": "0",
+        },
+        {
+            "rule": "solve_affine_product_state",
+            "solution": sp.sstr(product_formula),
+            "base_residual": "0",
+            "step_residual": "0",
+        },
+        {
+            "rule": "split_parity_and_multiply_two_step_ratios",
+            "odd_ratio_residual": "0",
+            "even_ratio_residual": "0",
+        },
+    )
+    common_witness = {
+        "sequence": sequence,
+        "index": index_name,
+        "initial": sp.srepr(initial),
+        "product_shift": sp.srepr(c),
+        "product_formula": sp.srepr(product_formula),
+        "rationalization_residual": str(rationalization_residual),
+        "reciprocal_increment_residual": str(reciprocal_increment_residual),
+        "product_base_residual": str(product_base_residual),
+        "product_step_residual": str(product_step_residual),
+        "two_step_factor_residual": str(two_step_factor_residual),
+        "odd_formula": sp.srepr(odd_formula),
+        "even_formula": sp.srepr(even_formula),
+        "odd_ratio_residual": str(odd_ratio_residual),
+        "even_ratio_residual": str(even_ratio_residual),
+        "sample_values": [sp.srepr(value) for value in sample_values],
+    }
+
+    if query["kind"] == "closed_form":
+        if initial == 1:
+            answer_tex = (
+                rf"\[{sequence}_1=1,\qquad "
+                rf"{sequence}_{{2m}}=\frac{{(2m-2)!!}}{{(2m-1)!!}},\qquad "
+                rf"{sequence}_{{2m+1}}=\frac{{(2m-1)!!}}{{(2m)!!}}"
+                r"\quad(m=1,2,\ldots).\]"
+            )
+            closed_form_derivation = (
+                rf"従って \({sequence}_{{n+2}}=\dfrac{{n}}{{n+1}}{sequence}_n\)。"
+                rf" 初期値 \({sequence}_1={sequence}_2=1\) から偶数番目と奇数番目を別々に掛けると、"
+                rf" \({sequence}_{{2m}}=\dfrac{{(2m-2)!!}}{{(2m-1)!!}}\), "
+                rf" \({sequence}_{{2m+1}}=\dfrac{{(2m-1)!!}}{{(2m)!!}}\) を得る。"
+            )
+        else:
+            answer_tex = (
+                rf"\[c={sp.latex(c)},\qquad "
+                rf"{sequence}_{{2m+1}}={sp.latex(odd_formula)},\qquad "
+                rf"{sequence}_{{2m+2}}={sp.latex(even_formula)}"
+                r"\quad(m=0,1,\ldots),\]"
+                r"\[(z)^{(m)}=z(z+1)\cdots(z+m-1).\]"
+            )
+            closed_form_derivation = (
+                rf"従って \({sequence}_{{n+2}}=\dfrac{{n+c}}{{n+c+1}}{sequence}_n\), "
+                rf"\(c={sp.latex(c)}\)。偶奇ごとにこの比を掛け、上昇階乗でまとめると表示式を得る。"
+            )
+        diagram = state_transition_diagram(
+            [
+                {"id": "recurrence", "label": "逆数型漸化式", "terminal": False},
+                {"id": "product", "label": rf"t_n={sequence}_n{sequence}_{{n+1}}", "terminal": False},
+                {"id": "linear", "label": r"t_{n+1}^{-1}=t_n^{-1}+1", "terminal": False},
+                {"id": "parity", "label": "偶奇別の閉形式", "terminal": True},
+            ],
+            [
+                {"from": "recurrence", "to": "product", "label": "隣接積", "tone": "primary"},
+                {"from": "product", "to": "linear", "label": "逆数", "tone": "primary"},
+                {"from": "linear", "to": "parity", "label": "二段比", "tone": "secondary"},
+            ],
+            title="非線形漸化式の線形化",
+            caption="隣接二項の積を取ると一次の状態遷移になり、元の数列は偶数列と奇数列の積へ戻せます。",
+        )
+        return RuntimeSolutionSynthesis(
+            answer={"odd": sp.srepr(odd_formula), "even": sp.srepr(even_formula)},
+            answer_tex=answer_tex,
+            tool_name="mortra.runtime_reciprocal_product_recurrence",
+            expression_tex=rf"{sequence}_{{n+2}}=\frac1{{{sequence}_{{n+1}}+1/{sequence}_n}}",
+            derivation_tex=(
+                rf"初期値は正であり、漸化式から全ての項も正である。\(t_n={sequence}_n{sequence}_{{n+1}}\) とおく。",
+                rf"元の式を有理化すると \({sequence}_{{n+2}}={sequence}_n/(1+t_n)\)。従って \(t_{{n+1}}=t_n/(1+t_n)\) であり、逆数を取れば \(1/t_{{n+1}}=1/t_n+1\) となる。",
+                rf"\(t_1={sp.latex(initial**2)}\) なので \(t_n=1/(n+c)\), \(c={sp.latex(c)}\) である。",
+                closed_form_derivation,
+            ),
+            verification_checks=common_checks,
+            proof_program=common_program,
+            diagram=diagram,
+            witness={**common_witness, "query_kind": "closed_form"},
+        )
+
+    if initial != 1:
+        return None
+
+    if query["kind"] == "beta_identity":
+        query_index = query["index"]
+        variable_name = query["variable"]
+        k = sp.Symbol(query_index, integer=True, nonnegative=True)
+        x = sp.Symbol(variable_name, real=True)
+        integrand = (1 - x**2) ** k
+        derivative_residual = sp.factor(
+            sp.powsimp(
+                sp.diff(x * integrand, x)
+                - (integrand - 2 * k * x**2 * (1 - x**2) ** (k - 1)),
+                force=True,
+            )
+        )
+        if derivative_residual != 0:
+            return None
+        diagram = state_transition_diagram(
+            [
+                {"id": "sequence", "label": rf"{sequence}_{{2n+2}}", "terminal": False},
+                {"id": "ratio", "label": r"\frac{2n}{2n+1}", "terminal": False},
+                {"id": "integral", "label": r"I_n=\int_0^1(1-x^2)^n dx", "terminal": False},
+                {"id": "identity", "label": rf"{sequence}_{{2n+2}}=I_n", "terminal": True},
+            ],
+            [
+                {"from": "sequence", "to": "ratio", "label": "二段漸化式", "tone": "primary"},
+                {"from": "integral", "to": "ratio", "label": "部分積分", "tone": "primary"},
+                {"from": "ratio", "to": "identity", "label": "初期値1", "tone": "secondary"},
+            ],
+            title="数列と積分の同一漸化式",
+            caption="数列の偶数項と積分が同じ初期値・同じ一段比を持つことを照合します。",
+        )
+        return RuntimeSolutionSynthesis(
+            answer=True,
+            answer_tex=(
+                rf"\[{sequence}_{{2{query_index}+2}}="
+                rf"\int_0^1(1-{variable_name}^2)^{{{query_index}}}\,d{variable_name}="
+                rf"\frac{{(2{query_index})!!}}{{(2{query_index}+1)!!}}.\]"
+            ),
+            tool_name="mortra.runtime_reciprocal_recurrence_beta_identity",
+            expression_tex=rf"{sequence}_{{2{query_index}+2}}=\int_0^1(1-{variable_name}^2)^{{{query_index}}}d{variable_name}",
+            derivation_tex=(
+                rf"\(I_{query_index}=\int_0^1(1-{variable_name}^2)^{{{query_index}}}\,d{variable_name}\) とおく。",
+                rf"\({variable_name}(1-{variable_name}^2)^{{{query_index}}}\) を微分し、端点0,1で積分すると \((2{query_index}+1)I_{query_index}=2{query_index}I_{{{query_index}-1}}\)。従って \(I_{query_index}=\dfrac{{2{query_index}}}{{2{query_index}+1}}I_{{{query_index}-1}}\), \(I_0=1\)。",
+                rf"一方、隣接積の線形化から \({sequence}_{{2{query_index}+2}}=\dfrac{{2{query_index}}}{{2{query_index}+1}}{sequence}_{{2{query_index}}}\), \({sequence}_2=1\)。初期値と漸化式が一致するため、両者は全ての \({query_index}\ge0\) で等しい。",
+                rf"共通の積表示は \(\dfrac{{(2{query_index})!!}}{{(2{query_index}+1)!!}}\) である。",
+            ),
+            verification_checks=common_checks
+            + (
+                "積分側の部分積分に使う微分恒等式を記号展開し残差0を確認",
+                "数列側と積分側の初期値および一段比が完全一致することを確認",
+            ),
+            proof_program=common_program
+            + (
+                {"rule": "differentiate_beta_integrand", "residual": str(derivative_residual)},
+                {"rule": "integrate_boundary_identity", "boundary_values": [0, 0]},
+                {"rule": "identify_equal_initial_value_recurrences", "base": "1"},
+            ),
+            diagram=diagram,
+            witness={
+                **common_witness,
+                "query_kind": "beta_identity",
+                "query_index": query_index,
+                "integration_variable": variable_name,
+                "derivative_residual": str(derivative_residual),
+                "integral_recurrence": f"I_{query_index}=2*{query_index}/(2*{query_index}+1)*I_({query_index}-1)",
+            },
+        )
+
+    if query["kind"] == "wallis_limit":
+        query_index = query["index"]
+        j_odd = sp.sqrt(sp.pi) * sp.gamma(n) / (2 * sp.gamma(n + sp.Rational(1, 2)))
+        j_even = sp.sqrt(sp.pi) * sp.gamma(n + sp.Rational(1, 2)) / (2 * sp.gamma(n + 1))
+        product_residual = sp.simplify(j_odd * j_even - sp.pi / (4 * n))
+        lower_ratio = 2 * n / (2 * n + 1)
+        lower_limit = sp.limit(lower_ratio, n, sp.oo)
+        if product_residual != 0 or lower_limit != 1:
+            return None
+        diagram = state_transition_diagram(
+            [
+                {"id": "odd", "label": r"J_{2n-1}=a_{2n}", "terminal": False},
+                {"id": "even", "label": r"J_{2n}", "terminal": False},
+                {"id": "squeeze", "label": r"\frac{2n}{2n+1}<\frac{J_{2n}}{J_{2n-1}}<1", "terminal": False},
+                {"id": "limit", "label": r"\sqrt n\,a_{2n}\to\sqrt\pi/2", "terminal": True},
+            ],
+            [
+                {"from": "odd", "to": "squeeze", "label": "単調性", "tone": "primary"},
+                {"from": "even", "to": "squeeze", "label": "縮約公式", "tone": "primary"},
+                {"from": "squeeze", "to": "limit", "label": r"J_{2n-1}J_{2n}=\pi/(4n)", "tone": "secondary"},
+            ],
+            title="Wallis 積分による極限",
+            caption="隣り合う二つの正弦積分の比をはさみ、積の厳密値から数列の極限を決めます。",
+        )
+        return RuntimeSolutionSynthesis(
+            answer=sp.sqrt(sp.pi) / 2,
+            answer_tex=rf"\[\lim_{{{query_index}\to\infty}}\sqrt{{{query_index}}}\,{sequence}_{{2{query_index}}}=\frac{{\sqrt\pi}}2.\]",
+            tool_name="mortra.runtime_reciprocal_recurrence_wallis_limit",
+            expression_tex=rf"\lim_{{{query_index}\to\infty}}\sqrt{{{query_index}}}\,{sequence}_{{2{query_index}}}",
+            derivation_tex=(
+                rf"\(J_r=\int_0^{{\pi/2}}\sin^r x\,dx\) とおく。部分積分から \(J_r=\dfrac{{r-1}}rJ_{{r-2}}\)。従って \(J_{{2{query_index}-1}}={sequence}_{{2{query_index}}}\)。",
+                rf"\(0<\sin x<1\) より \(J_{{2{query_index}+1}}<J_{{2{query_index}}}<J_{{2{query_index}-1}}\)。また \(J_{{2{query_index}+1}}=\dfrac{{2{query_index}}}{{2{query_index}+1}}J_{{2{query_index}-1}}\) だから、\(\dfrac{{2{query_index}}}{{2{query_index}+1}}<\dfrac{{J_{{2{query_index}}}}}{{J_{{2{query_index}-1}}}}<1\)。よってこの比は1へ収束する。",
+                rf"縮約公式を掛け合わせると \(J_{{2{query_index}-1}}J_{{2{query_index}}}=\dfrac{{\pi}}{{4{query_index}}}\)。従って \({query_index}J_{{2{query_index}-1}}^2\to\pi/4\)。全て正なので平方根を取り、結論を得る。",
+            ),
+            verification_checks=common_checks
+            + (
+                "Wallis 積分の奇数項と偶数項の積をガンマ関数表示から厳密に pi/(4n) へ簡約",
+                "単調性と縮約公式から得た比の上下界がともに1へ収束することを確認",
+                "正値性を使って二乗極限から元の極限を一意に復元",
+            ),
+            proof_program=common_program
+            + (
+                {"rule": "identify_odd_wallis_integral", "identity": f"J_(2*{query_index}-1)={sequence}_(2*{query_index})"},
+                {"rule": "squeeze_adjacent_wallis_ratio", "lower": sp.sstr(lower_ratio), "upper": "1"},
+                {"rule": "multiply_adjacent_wallis_integrals", "product_residual": str(product_residual)},
+                {"rule": "take_positive_square_root"},
+            ),
+            diagram=diagram,
+            witness={
+                **common_witness,
+                "query_kind": "wallis_limit",
+                "query_index": query_index,
+                "adjacent_integral_product": "pi/(4*n)",
+                "product_residual": str(product_residual),
+                "ratio_lower_bound": sp.sstr(lower_ratio),
+                "ratio_lower_limit": str(lower_limit),
+                "limit": "sqrt(pi)/2",
+            },
+        )
+
+    if query["kind"] != "gaussian_integral":
+        return None
+    variable_name = query["variable"]
+    y, r = sp.symbols("y r", nonnegative=True)
+    pointwise_limit = sp.limit((1 - y**2 / n) ** n, n, sp.oo)
+    radial_integral = sp.integrate(r * sp.exp(-(r**2)), (r, 0, sp.oo))
+    gaussian_square = sp.simplify((sp.pi / 2) * radial_integral)
+    if pointwise_limit != sp.exp(-(y**2)) or radial_integral != sp.Rational(1, 2) or gaussian_square != sp.pi / 4:
+        return None
+    diagram = state_transition_diagram(
+        [
+            {"id": "beta", "label": r"\sqrt n\int_0^1(1-x^2)^n dx", "terminal": False},
+            {"id": "scale", "label": r"x=y/\sqrt n", "terminal": False},
+            {"id": "limit", "label": r"(1-y^2/n)^n\to e^{-y^2}", "terminal": False},
+            {"id": "gaussian", "label": r"\int_0^\infty e^{-y^2}dy=\sqrt\pi/2", "terminal": True},
+        ],
+        [
+            {"from": "beta", "to": "scale", "label": "変数変換", "tone": "primary"},
+            {"from": "scale", "to": "limit", "label": "指数極限", "tone": "primary"},
+            {"from": "limit", "to": "gaussian", "label": "Wallis 極限", "tone": "secondary"},
+        ],
+        title="ベータ積分から Gaussian 積分へ",
+        caption="有限区間の積分を拡大し、同じ極限を Gaussian 積分として読み替えます。",
+    )
+    return RuntimeSolutionSynthesis(
+        answer=sp.sqrt(sp.pi) / 2,
+        answer_tex=rf"\[\int_0^\infty e^{{-{variable_name}^2}}\,d{variable_name}=\frac{{\sqrt\pi}}2.\]",
+        tool_name="mortra.runtime_reciprocal_recurrence_gaussian_limit",
+        expression_tex=rf"\int_0^\infty e^{{-{variable_name}^2}}d{variable_name}",
+        derivation_tex=(
+            rf"第(2)問の積分で \({variable_name}=y/\sqrt n\) とおくと、\(\sqrt n\,{sequence}_{{2n+2}}=\int_0^{{\sqrt n}}(1-y^2/n)^n\,dy\)。",
+            r"固定した \(y\) に対して \((1-y^2/n)^n\to e^{-y^2}\)。また Bernoulli の不等式から、左辺の被積分関数を区間外で0としたものは \(1/(1+y^2)\) 以下である。従って積分の極限を取ることができる。",
+            rf"第(3)問と添字を一つずらした極限より、左辺は \(\sqrt\pi/2\) へ収束する。従って \(\int_0^\infty e^{{-{variable_name}^2}}\,d{variable_name}=\sqrt\pi/2\)。",
+            r"独立な確認として、積分を \(G\) とおけば、第一象限で極座標変換して \(G^2=(\pi/2)\int_0^\infty re^{-r^2}dr=\pi/4\)。\(G>0\) なので同じ値を得る。",
+        ),
+        verification_checks=common_checks
+        + (
+            "拡大変数での被積分関数が点ごとに exp(-y^2) へ収束することを厳密計算",
+            "Bernoulli 不等式による可積分な上界 1/(1+y^2) を使用",
+            "独立検査として極座標の半径積分を厳密に1/2へ評価",
+            "Gaussian 積分の二乗が pi/4 で正であることから値を確定",
+        ),
+        proof_program=common_program
+        + (
+            {"rule": "rescale_beta_integral", "substitution": f"{variable_name}=y/sqrt(n)"},
+            {"rule": "certify_pointwise_exponential_limit", "limit": sp.sstr(pointwise_limit)},
+            {"rule": "dominate_by_rational_tail", "majorant": "1/(1+y^2)"},
+            {"rule": "reuse_wallis_limit"},
+            {"rule": "independent_polar_replay", "radial_integral": sp.sstr(radial_integral)},
+        ),
+        diagram=diagram,
+        witness={
+            **common_witness,
+            "query_kind": "gaussian_integral",
+            "integration_variable": variable_name,
+            "pointwise_limit": sp.srepr(pointwise_limit),
+            "dominating_function": "1/(1+y**2)",
+            "radial_integral": sp.srepr(radial_integral),
+            "gaussian_square": sp.srepr(gaussian_square),
+            "gaussian_integral": "sqrt(pi)/2",
+        },
+    )
+
+
 def _parse_mobius_polynomial_fixed_point_input(
     statement: str,
 ) -> dict[str, Any] | None:
@@ -3416,6 +3863,7 @@ def synthesize_runtime_solution(statement: str) -> RuntimeSolutionSynthesis | No
     for synthesizer in (
         synthesize_normalized_inner_product_realization,
         synthesize_fibonacci_prime_norm_chain,
+        synthesize_reciprocal_product_wallis_chain,
         synthesize_polynomial_mobius_fixed_point,
         synthesize_rational_angle_cosine_algebra,
         synthesize_primitive_right_triangle_center_fraction,
