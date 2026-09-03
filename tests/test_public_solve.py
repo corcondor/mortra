@@ -12,7 +12,7 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
 
-from api.solve import solve_problem, solve_public_problem
+from api.solve import _decompose_problem_obligations, solve_problem, solve_public_problem
 
 
 class PublicSolveTests(unittest.TestCase):
@@ -47,6 +47,34 @@ class PublicSolveTests(unittest.TestCase):
         self.assertIn("2", card["answer_tex"])
         self.assertIn(r"したがって \(x=", card["solution_tex"])
         self.assertNotIn("したがって x=", card["solution_tex"])
+
+    def test_numbered_obligation_split_preserves_opening_math_delimiters(self) -> None:
+        inside_math = r"$(1) x^2=1$を解け。\\ $(2) x^2=4$を解け。"
+        after_marker = r"(1) $x^2=1$を解け。\\ (2) $x^2=4$を解け。"
+
+        for statement in (inside_math, after_marker):
+            obligations = _decompose_problem_obligations(statement)
+            self.assertEqual([item.label for item in obligations], ["1", "2"])
+            self.assertEqual(obligations[0].statement.count("$"), 2)
+            self.assertEqual(obligations[1].statement.count("$"), 2)
+            self.assertIn("x^2=1", obligations[0].statement)
+            self.assertIn("x^2=4", obligations[1].statement)
+
+    def test_numbered_obligation_split_propagates_used_interstitial_definition(self) -> None:
+        statement = (
+            r"(1) $p+q$を求めよ。\\ "
+            r"$n\in\mathbb{N},\ F_1=F_2=1,\ F_{n+2}=F_{n+1}+F_n$ "
+            r"で定まる数列を考える。\\ "
+            r"(2) $F_{n+1}^2-F_nF_{n+1}-F_n^2=(-1)^n$を示せ。\\ "
+            r"(3) $F_n,F_{n+1}$がともに素数となる$n$を求めよ。"
+        )
+
+        obligations = _decompose_problem_obligations(statement)
+
+        self.assertEqual(len(obligations), 3)
+        self.assertIn("$p+q$", obligations[0].statement)
+        self.assertIn("F_1=F_2=1", obligations[1].statement)
+        self.assertIn("F_1=F_2=1", obligations[2].statement)
 
     def test_normalized_inner_product_constructs_exact_function_pair(self) -> None:
         status, payload = solve_public_problem(
@@ -1608,6 +1636,94 @@ class PublicSolveTests(unittest.TestCase):
         self.assertIn(r"\frac{3}{2} - \frac{\sqrt{5}}{2}", payload["cards"][0]["answer_tex"])
         self.assertEqual(multiple_status, 422)
         self.assertEqual(wrong_half_angle_status, 422)
+
+    def test_fibonacci_prime_norm_problem_certifies_all_parts_without_registry(self) -> None:
+        problem = (
+            r"(1) $\tan\alpha=p,\tan\beta=q,"
+            r"\tan(\alpha-\beta)=\dfrac{1}{p+q}$を満たす素数$p,q$を求めよ。\\ "
+            r"$n\in\mathbb{N},\ F_1=F_2=1,\ F_{n+2}=F_{n+1}+F_n$"
+            r"で定まる数列$\{F\}$を考える。\\ "
+            r"(2) $F_{n+1}^2-F_{n+1}F_n-F_n^2=(-1)^n$を示せ。\\ "
+            r"(3) $F_n,F_{n+1}$がともに素数となる$n$をすべて求めよ。"
+        )
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        certificate = card["execution_certificate"]
+        self.assertEqual(card["family_id"], "solve.composite.all_obligations")
+        self.assertIn(r"\text{(1)}\;&(p,q)=(5,3)", card["answer_tex"])
+        self.assertIn(r"\text{(3)}\;&n\in\{3,4\}", card["answer_tex"])
+        self.assertIn(r"F_{a+b}=F_{a-1}F_b+F_aF_{b+1}", card["solution_tex"])
+        self.assertEqual(
+            certificate["statement_sha256"],
+            hashlib.sha256(problem.encode("utf-8")).hexdigest(),
+        )
+        self.assertEqual(certificate["capability_origin"], "synthesized_proof_program")
+        self.assertFalse(certificate["registered_composite_used"])
+        self.assertEqual(len(certificate["children"]), 3)
+        self.assertEqual(card["diagram"]["kind"], "state")
+        self.assertEqual(len(card["visual_explanation"]["steps"]), 3)
+        self.assertTrue(card["visual_explanation"]["composition_verified"])
+
+    def test_tangent_prime_norm_chart_recomputes_names_and_rejects_changed_relation(self) -> None:
+        problem = (
+            r"\(\tan u=r,\tan v=s,\tan(u-v)=\dfrac{1}{r+s}\)"
+            r"を満たす素数\(r,s\)を求めよ。"
+        )
+        wrong_relation = problem.replace(r"\dfrac{1}{r+s}", r"\dfrac{2}{r+s}")
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
+        wrong_status, _ = solve_problem(
+            wrong_relation,
+            allow_theorem_kernels=False,
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(card["answer_tex"], r"\((r,s)=(5,3)\)")
+        self.assertEqual(
+            card["execution_certificate"]["witness"]["variables"],
+            ["r", "s"],
+        )
+        self.assertEqual(wrong_status, 422)
+
+    def test_recurrence_quadratic_chart_recomputes_scale_and_rejects_false_identity(self) -> None:
+        scaled_identity = (
+            r"\(m\in\mathbb{N},\ G_1=G_2=2,\ G_{m+2}=G_{m+1}+G_m\)"
+            r"とする。\(G_{m+1}^2-G_{m+1}G_m-G_m^2=4(-1)^m\)を示せ。"
+        )
+        wrong_identity = scaled_identity.replace("=4(-1)^m", "=5(-1)^m")
+        wrong_prime_context = (
+            r"\(m\in\mathbb{N},\ G_1=G_2=2,\ G_{m+2}=G_{m+1}+G_m\)"
+            r"とする。\(G_m,G_{m+1}\)がともに素数となる\(m\)をすべて求めよ。"
+        )
+
+        status, payload = solve_problem(
+            scaled_identity,
+            allow_theorem_kernels=False,
+        )
+        wrong_identity_status, _ = solve_problem(
+            wrong_identity,
+            allow_theorem_kernels=False,
+        )
+        wrong_prime_status, _ = solve_problem(
+            wrong_prime_context,
+            allow_theorem_kernels=False,
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertIn(r"4 \left(-1\right)^{m}", card["answer_tex"])
+        self.assertEqual(
+            card["execution_certificate"]["witness"]["initial_pair"],
+            ["2", "2"],
+        )
+        self.assertEqual(wrong_identity_status, 422)
+        self.assertEqual(wrong_prime_status, 422)
 
     def test_trigonometric_geometric_progression_is_elaborated_from_its_relation(self) -> None:
         status, payload = solve_problem(

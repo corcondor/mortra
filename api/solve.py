@@ -648,6 +648,108 @@ def _math_chunks(statement: str) -> list[str]:
     return list(dict.fromkeys(chunk for chunk in chunks if chunk))
 
 
+def _context_identifier_tokens(statement: str) -> set[str]:
+    """Return symbols useful for propagating interstitial definitions."""
+
+    ignored = {
+        "cos",
+        "sin",
+        "tan",
+        "log",
+        "ln",
+        "exp",
+        "sqrt",
+        "frac",
+        "dfrac",
+        "mathbb",
+        "mathrm",
+        "left",
+        "right",
+    }
+    tokens: set[str] = set()
+    for segment in parse_latex_problem(statement).math_segments:
+        tokens.update(
+            token
+            for token in re.findall(r"[A-Za-z][A-Za-z0-9_]*", segment)
+            if token not in ignored
+        )
+    return tokens
+
+
+def _interstitial_definition_fragments(statement: str) -> tuple[str, ...]:
+    """Find standalone definitions introduced between numbered questions."""
+
+    fragments = [
+        fragment.strip().strip("\\").strip()
+        for fragment in re.split(r"(?:\\\\\s*(?:\r?\n)?|\r?\n)+", statement)
+    ]
+    definition_cues = (
+        "と定め",
+        "で定ま",
+        "を考え",
+        "とする",
+        "をおく",
+        "を定義",
+        "define",
+        "defined by",
+        "let ",
+        "where ",
+        "consider ",
+    )
+    query_cues = (
+        "求めよ",
+        "示せ",
+        "証明せよ",
+        "図示せよ",
+        "find ",
+        "prove ",
+        "show ",
+        "determine ",
+    )
+    definitions: list[str] = []
+    for fragment in fragments:
+        lowered = fragment.lower()
+        if (
+            fragment
+            and "=" in fragment
+            and any(cue in lowered for cue in definition_cues)
+            and not any(cue in lowered for cue in query_cues)
+            and _context_identifier_tokens(fragment)
+        ):
+            definitions.append(fragment)
+    return tuple(dict.fromkeys(definitions))
+
+
+def _with_dependent_interstitial_context(
+    shared: str,
+    raw_queries: list[tuple[str, str]],
+) -> tuple[ProblemObligation, ...]:
+    """Propagate only earlier standalone definitions used by a later query."""
+
+    prior_definitions: list[tuple[str, set[str]]] = []
+    obligations: list[ProblemObligation] = []
+    for label, query in raw_queries:
+        query_symbols = _context_identifier_tokens(query)
+        inherited = [
+            definition
+            for definition, symbols in prior_definitions
+            if symbols & query_symbols
+        ]
+        obligations.append(
+            ProblemObligation(
+                label=label,
+                statement="\n".join(
+                    part for part in (shared, *inherited, query) if part
+                ).strip(),
+            )
+        )
+        for definition in _interstitial_definition_fragments(query):
+            entry = (definition, _context_identifier_tokens(definition))
+            if entry not in prior_definitions:
+                prior_definitions.append(entry)
+    return tuple(obligations)
+
+
 def _decompose_problem_obligations(statement: str) -> tuple[ProblemObligation, ...]:
     """Split explicit numbered subquestions while retaining their shared context."""
 
@@ -661,36 +763,35 @@ def _decompose_problem_obligations(statement: str) -> tuple[ProblemObligation, .
         markers = list(re.finditer(r"\\item(?:\[(?P<label>[^\]]+)\])?", body))
         if len(markers) >= 2:
             shared = (statement[: enumerate_match.start()] + statement[enumerate_match.end() :]).strip()
-            obligations: list[ProblemObligation] = []
+            raw_queries: list[tuple[str, str]] = []
             for index, marker in enumerate(markers):
                 end = markers[index + 1].start() if index + 1 < len(markers) else len(body)
                 query = body[marker.end() : end].strip()
                 label = (marker.group("label") or str(index + 1)).strip("() ")
-                obligations.append(
-                    ProblemObligation(
-                        label=label,
-                        statement="\n".join(part for part in (shared, query) if part).strip(),
-                    )
-                )
-            return tuple(obligations)
+                raw_queries.append((label, query))
+            return _with_dependent_interstitial_context(shared, raw_queries)
 
     numbered_markers = list(
-        re.finditer(r"(?:^|\\\\|\n)\s*\$?\((?P<label>\d+)\)\s*\$?\s*", statement)
+        re.finditer(
+            r"(?:^|\\\\|\n)\s*(?:"
+            r"\$\((?P<math_label>\d+)\)(?P<math_close>\$)?"
+            r"|\((?P<plain_label>\d+)\)"
+            r")\s*",
+            statement,
+        )
     )
     if len(numbered_markers) < 2:
         return ()
     shared = statement[: numbered_markers[0].start()].strip()
-    obligations = []
+    raw_queries = []
     for index, marker in enumerate(numbered_markers):
         end = numbered_markers[index + 1].start() if index + 1 < len(numbered_markers) else len(statement)
         query = statement[marker.end() : end].strip().rstrip("\\").strip()
-        obligations.append(
-            ProblemObligation(
-                label=marker.group("label"),
-                statement="\n".join(part for part in (shared, query) if part).strip(),
-            )
-        )
-    return tuple(obligations)
+        if marker.group("math_label") and marker.group("math_close") is None:
+            query = "$" + query
+        label = marker.group("math_label") or marker.group("plain_label")
+        raw_queries.append((str(label), query))
+    return _with_dependent_interstitial_context(shared, raw_queries)
 
 
 def _three_real_cubic_chart(
@@ -1637,6 +1738,8 @@ def _solve_composite_obligations(
                 "answer_tex": child_answer_tex,
                 "solution_tex": card["solution_tex"],
                 "family_id": card["family_id"],
+                "diagram": card.get("diagram"),
+                "visual_explanation": card.get("visual_explanation"),
                 "certificate": certificate,
                 "certificate_sha256": child_certificate_sha256,
             }
@@ -1732,6 +1835,96 @@ def _solve_composite_obligations(
         "全設問の証明書をAND条件として再生",
         "問題文・解答・検証証明書を出力",
     ]
+    visual_steps: list[dict[str, Any]] = []
+    progress_index = 0
+    for child in children:
+        child_visual = child.get("visual_explanation")
+        source_steps = (
+            child_visual.get("steps")
+            if isinstance(child_visual, dict)
+            and isinstance(child_visual.get("steps"), list)
+            else None
+        )
+        if not source_steps and isinstance(child.get("diagram"), dict):
+            source_steps = [
+                {
+                    "title": f"設問({child['label']})の証明経路",
+                    "explanation_ja": (
+                        f"設問({child['label']})の証明状態を図で確認し、"
+                        "検証済みの証明書を全設問の証明束へ追加します。"
+                    ),
+                    "formula_tex": child["answer_tex"],
+                    "morphism": {"morphism_id": child["family_id"]},
+                    "diagram": child["diagram"],
+                }
+            ]
+        for local_index, source_step in enumerate(source_steps or (), start=1):
+            if not isinstance(source_step, dict) or not isinstance(
+                source_step.get("diagram"), dict
+            ):
+                continue
+            source_morphism = source_step.get("morphism")
+            morphism_id = (
+                str(source_morphism.get("morphism_id"))
+                if isinstance(source_morphism, dict)
+                and source_morphism.get("morphism_id")
+                else str(child["family_id"])
+            )
+            visual_steps.append(
+                {
+                    "id": f"part-{child['label']}-step-{local_index}",
+                    "title": str(
+                        source_step.get("title")
+                        or f"設問({child['label']})の証明経路"
+                    ),
+                    "explanation_ja": str(
+                        source_step.get("explanation_ja")
+                        or (
+                            f"設問({child['label']})の証明状態を図で確認し、"
+                            "検証済みの証明書を全設問の証明束へ追加します。"
+                        )
+                    ),
+                    "formula_tex": str(
+                        source_step.get("formula_tex") or child["answer_tex"]
+                    ),
+                    "morphism": {
+                        "morphism_id": morphism_id,
+                        "label_ja": f"設問({child['label']})の厳密証明",
+                        "input_type": "CertifiedObligationBundle",
+                        "output_type": "CertifiedObligationBundle",
+                    },
+                    "source_state": {
+                        "id": f"certified-parts-{progress_index}",
+                        "type": "CertifiedObligationBundle",
+                    },
+                    "target_state": {
+                        "id": f"certified-parts-{progress_index + 1}",
+                        "type": "CertifiedObligationBundle",
+                    },
+                    "evidence": {
+                        "label": child["label"],
+                        "statement_sha256": child["statement_sha256"],
+                        "certificate_sha256": child["certificate_sha256"],
+                    },
+                    "diagram": source_step["diagram"],
+                }
+            )
+            progress_index += 1
+    visual_explanation = (
+        {
+            "version": 1,
+            "mode": "stepper",
+            "title": "各設問の証明を一手ずつ見る",
+            "diagram_required_for_every_step": True,
+            "composition_verified": True,
+            "morphism_chain": [
+                step["morphism"]["morphism_id"] for step in visual_steps
+            ],
+            "steps": visual_steps,
+        }
+        if visual_steps
+        else None
+    )
     card_payload = {
         "statement_tex": statement,
         "answer_tex": answer_tex,
@@ -1756,6 +1949,12 @@ def _solve_composite_obligations(
             }
             for child in children
         ],
+        **({"diagram": visual_steps[0]["diagram"]} if visual_steps else {}),
+        **(
+            {"visual_explanation": visual_explanation}
+            if visual_explanation is not None
+            else {}
+        ),
     }
     card = (
         attach_solution_artifact(card_payload, trace)

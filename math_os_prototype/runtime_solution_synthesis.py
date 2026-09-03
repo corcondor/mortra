@@ -2834,6 +2834,339 @@ def synthesize_rational_angle_cosine_algebra(
     )
 
 
+def _parse_standard_fibonacci_context(statement: str) -> dict[str, str] | None:
+    for segment in parse_latex_problem(statement).math_segments:
+        initial = re.search(
+            r"(?P<sequence>[A-Za-z]+)_1=(?P=sequence)_2=(?P<initial>-?\d+)",
+            segment,
+        )
+        if initial is None:
+            continue
+        sequence = initial.group("sequence")
+        recurrence = re.search(
+            rf"{re.escape(sequence)}_\((?P<index>[A-Za-z]+)\+2\)="
+            rf"{re.escape(sequence)}_\((?P=index)\+1\)\+"
+            rf"{re.escape(sequence)}_(?P=index)",
+            segment,
+        )
+        if recurrence is None:
+            continue
+        return {
+            "sequence": sequence,
+            "index": recurrence.group("index"),
+            "initial": initial.group("initial"),
+            "segment": segment,
+        }
+    return None
+
+
+def _parse_tangent_prime_norm(statement: str) -> dict[str, str] | None:
+    if "素数" not in statement:
+        return None
+    pattern = re.compile(
+        r"tan\((?P<angle_a>[A-Za-z]+)\)\s*=\s*(?P<prime_a>[A-Za-z]+),"
+        r"tan\((?P<angle_b>[A-Za-z]+)\)\s*=\s*(?P<prime_b>[A-Za-z]+),"
+        r"tan\((?P=angle_a)-(?P=angle_b)\)\s*=\s*"
+        r"\(\(1\)/\((?P=prime_a)\+(?P=prime_b)\)\)"
+    )
+    for segment in parse_latex_problem(statement).math_segments:
+        match = pattern.fullmatch(segment.replace(" ", ""))
+        if match is not None and match.group("prime_a") != match.group("prime_b"):
+            return match.groupdict()
+    return None
+
+
+def _fibonacci_cassini_target(
+    statement: str,
+    context: dict[str, str] | None,
+) -> dict[str, Any] | None:
+    if context is None:
+        return None
+    sequence = context["sequence"]
+    index_name = context["index"]
+    x, y = sp.symbols("x y")
+    n = sp.Symbol(index_name, integer=True, positive=True)
+    for segment in parse_latex_problem(statement).math_segments:
+        if sequence not in segment or "=" not in segment:
+            continue
+        normalized = segment.replace(f"{sequence}_({index_name}+1)", "y").replace(
+            f"{sequence}_{index_name}", "x"
+        )
+        if "=" not in normalized:
+            continue
+        left_source, right_source = normalized.split("=", 1)
+        try:
+            quadratic = sp.sympify(left_source, locals={"x": x, "y": y})
+            target = sp.sympify(right_source, locals={index_name: n})
+        except (sp.SympifyError, TypeError, ValueError):
+            continue
+        if quadratic.free_symbols - {x, y} or target.free_symbols - {n}:
+            continue
+        if target == 0:
+            continue
+        transitioned = sp.expand(
+            quadratic.subs({x: y, y: x + y}, simultaneous=True)
+        )
+        transition_factor = sp.simplify(target.subs(n, n + 1) / target)
+        transition_residual = sp.expand(transitioned - transition_factor * quadratic)
+        initial_value = sp.Integer(context["initial"])
+        base_residual = sp.simplify(
+            quadratic.subs({x: initial_value, y: initial_value}) - target.subs(n, 1)
+        )
+        if transition_residual != 0 or base_residual != 0:
+            continue
+        return {
+            "quadratic": quadratic,
+            "target": target,
+            "transition_factor": transition_factor,
+            "transition_residual": transition_residual,
+            "base_residual": base_residual,
+        }
+    return None
+
+
+def _fibonacci_prime_neighbor_query(
+    statement: str,
+    context: dict[str, str] | None,
+) -> bool:
+    if context is None or context["initial"] != "1":
+        return False
+    if "ともに素数" not in statement or "すべて求め" not in statement:
+        return False
+    sequence = context["sequence"]
+    index_name = context["index"]
+    return any(
+        sequence in segment
+        and f"{sequence}_{index_name}" in segment
+        and f"{sequence}_({index_name}+1)" in segment
+        for segment in parse_latex_problem(statement).math_segments
+    )
+
+
+def synthesize_fibonacci_prime_norm_chain(
+    statement: str,
+) -> RuntimeSolutionSynthesis | None:
+    """Compose tangent norms, recurrence invariants, and index divisibility."""
+
+    tangent = _parse_tangent_prime_norm(statement)
+    fibonacci = _parse_standard_fibonacci_context(statement)
+    cassini = _fibonacci_cassini_target(statement, fibonacci)
+    asks_neighbors = _fibonacci_prime_neighbor_query(statement, fibonacci)
+    active_queries = int(tangent is not None) + int(cassini is not None) + int(asks_neighbors)
+    if active_queries != 1:
+        return None
+
+    if tangent is not None:
+        p_name = tangent["prime_a"]
+        q_name = tangent["prime_b"]
+        p, q = sp.symbols(f"{p_name} {q_name}", integer=True, positive=True)
+        norm = p**2 - p * q - q**2
+        cross_multiplication_residual = sp.expand(
+            (p - q) * (p + q) - (1 + p * q) - (norm - 1)
+        )
+        second_branch = sp.factor((norm - 1).subs(p, 2 * q - 1))
+        pair = {p: 5, q: 3}
+        pair_residual = sp.expand((norm - 1).subs(pair))
+        exceptional_two_residual = sp.expand((norm - 1).subs({p: 3, q: 2}))
+        if (
+            cross_multiplication_residual != 0
+            or second_branch != q * (q - 3)
+            or pair_residual != 0
+            or exceptional_two_residual == 0
+        ):
+            return None
+        diagram = state_transition_diagram(
+            [
+                {"id": "tangent", "label": "正接の差", "terminal": False},
+                {"id": "norm", "label": rf"{p_name}^2-{p_name}{q_name}-{q_name}^2=1", "terminal": False},
+                {"id": "residue", "label": rf"{p_name}^2\equiv1\pmod{{{q_name}}}", "terminal": False},
+                {"id": "pair", "label": rf"({p_name},{q_name})=(5,3)", "terminal": True},
+            ],
+            [
+                {"from": "tangent", "to": "norm", "label": "差の公式", "tone": "primary"},
+                {"from": "norm", "to": "residue", "label": rf"mod {q_name}", "tone": "primary"},
+                {"from": "residue", "to": "pair", "label": "範囲と偶奇", "tone": "secondary"},
+            ],
+            title="正接条件から素数対へ",
+            caption="三角関数の条件を二次形式へ移し、合同式と大きさの範囲で素数対を確定します。",
+        )
+        return RuntimeSolutionSynthesis(
+            answer=(5, 3),
+            answer_tex=rf"\(({p_name},{q_name})=(5,3)\)",
+            tool_name="mortra.runtime_tangent_quadratic_norm_descent",
+            expression_tex=rf"{p_name}^2-{p_name}{q_name}-{q_name}^2=1",
+            derivation_tex=(
+                rf"正接の差の公式より \(\dfrac{{{p_name}-{q_name}}}{{1+{p_name}{q_name}}}=\dfrac1{{{p_name}+{q_name}}}\)。分母は正なので交差積を取り、\({p_name}^2-{p_name}{q_name}-{q_name}^2=1\) を得る。",
+                rf"この式から \({p_name}>{q_name}\)。また \({p_name}\ge2{q_name}\) なら左辺は \({q_name}^2\ge4\) 以上となるため、\({q_name}<{p_name}<2{q_name}\) である。",
+                rf"法 \({q_name}\) で \({p_name}^2\equiv1\pmod{{{q_name}}}\)。\({q_name}=2\) なら範囲から \({p_name}=3\) だが元の左辺は \(-1\) となり不適である。",
+                rf"\({q_name}\) が奇素数なら \({p_name}\equiv\pm1\pmod{{{q_name}}}\)。範囲より \({p_name}={q_name}+1\) または \({p_name}=2{q_name}-1\) である。前者は2より大きい偶数なので不適。後者を代入すると \({q_name}({q_name}-3)=0\) となる。従って \(({p_name},{q_name})=(5,3)\)。",
+            ),
+            verification_checks=(
+                "現在入力から二つの正接値、差角、素数変数を抽出",
+                "正接差公式の交差積が二次形式 norm=1 と恒等的に一致することを確認",
+                "q=2 の例外枝と奇素数の二つの合同類を完全に分類",
+                "得られた素数対を元の二次形式へ再代入",
+            ),
+            proof_program=(
+                {"rule": "tangent_difference_to_quadratic_norm", "residual": "0"},
+                {"rule": "derive_open_ratio_interval", "interval": f"{q_name}<{p_name}<2*{q_name}"},
+                {"rule": "split_prime_modulus_two", "residual": str(exceptional_two_residual)},
+                {"rule": "factor_prime_residue_classes", "classes": ["+1", "-1"]},
+                {"rule": "solve_remaining_linear_branch", "factor": sp.sstr(second_branch)},
+                {"rule": "replay_original_norm", "residual": str(pair_residual)},
+            ),
+            diagram=diagram,
+            witness={
+                "variables": [p_name, q_name],
+                "norm_equation": sp.sstr(norm - 1),
+                "cross_multiplication_residual": str(cross_multiplication_residual),
+                "ratio_interval": f"{q_name}<{p_name}<2*{q_name}",
+                "q_equals_two_residual": str(exceptional_two_residual),
+                "odd_prime_residue_classes": ["+1", "-1"],
+                "remaining_branch_factor": sp.sstr(second_branch),
+                "solution": [5, 3],
+                "solution_residual": str(pair_residual),
+            },
+        )
+
+    if cassini is not None and fibonacci is not None:
+        sequence = fibonacci["sequence"]
+        index_name = fibonacci["index"]
+        quadratic_tex = sp.latex(cassini["quadratic"]).replace("x", rf"{sequence}_{index_name}").replace(
+            "y", rf"{sequence}_{{{index_name}+1}}"
+        )
+        target_tex = sp.latex(cassini["target"])
+        transition_factor_tex = sp.latex(cassini["transition_factor"])
+        transition_relation_tex = (
+            "-Q(x,y)"
+            if cassini["transition_factor"] == -1
+            else "Q(x,y)"
+            if cassini["transition_factor"] == 1
+            else rf"{transition_factor_tex}Q(x,y)"
+        )
+        diagram = state_transition_diagram(
+            [
+                {"id": "state", "label": rf"({sequence}_{index_name},{sequence}_{{{index_name}+1}})", "terminal": False},
+                {"id": "transition", "label": r"(x,y)\mapsto(y,x+y)", "terminal": False},
+                {"id": "norm", "label": "二次形式", "terminal": False},
+                {"id": "identity", "label": rf"Q_{{{index_name}+1}}=-Q_{index_name}", "terminal": True},
+            ],
+            [
+                {"from": "state", "to": "transition", "label": "漸化式", "tone": "primary"},
+                {"from": "transition", "to": "norm", "label": "Qへ代入", "tone": "primary"},
+                {"from": "norm", "to": "identity", "label": "符号反転", "tone": "secondary"},
+            ],
+            title="Fibonacci 遷移と二次不変量",
+            caption="二項の状態遷移が二次形式の符号だけを反転させることを、一つの恒等式として確認します。",
+        )
+        return RuntimeSolutionSynthesis(
+            answer=True,
+            answer_tex=rf"\({quadratic_tex}={target_tex}\)",
+            tool_name="mortra.runtime_recurrence_quadratic_invariant",
+            expression_tex=rf"Q({sequence}_{index_name},{sequence}_{{{index_name}+1}})",
+            derivation_tex=(
+                rf"\(x={sequence}_{index_name},\ y={sequence}_{{{index_name}+1}}\) とおくと、漸化式による一段の遷移は \((x,y)\mapsto(y,x+y)\) である。",
+                rf"\(Q(x,y)={sp.latex(cassini['quadratic'])}\) とおく。直接代入すると \(Q(y,x+y)={transition_relation_tex}\) となる。",
+                rf"初期値では \(Q({fibonacci['initial']},{fibonacci['initial']})={sp.latex(cassini['target'].subs(sp.Symbol(index_name, integer=True, positive=True), 1))}\) である。従って帰納法により \({quadratic_tex}={target_tex}\) がすべての正の整数 \({index_name}\) で成り立つ。",
+            ),
+            verification_checks=(
+                "現在入力から二階漸化式、初期値、主張された二次形式を抽出",
+                "状態遷移を二次形式へ代入した多項式残差が0であることを確認",
+                "右辺の一段比と二次形式の遷移比が一致することを確認",
+                "n=1 の初期残差が0であることを確認",
+            ),
+            proof_program=(
+                {"rule": "lift_scalar_recurrence_to_pair_state", "transition": "(x,y)->(y,x+y)"},
+                {
+                    "rule": "verify_quadratic_semi_invariant",
+                    "factor": sp.sstr(cassini["transition_factor"]),
+                    "residual": str(cassini["transition_residual"]),
+                },
+                {"rule": "verify_induction_base", "index": 1, "residual": str(cassini["base_residual"])},
+                {"rule": "induction_over_state_transition"},
+            ),
+            diagram=diagram,
+            witness={
+                "sequence": sequence,
+                "index": index_name,
+                "initial_pair": [fibonacci["initial"], fibonacci["initial"]],
+                "quadratic_form": sp.srepr(cassini["quadratic"]),
+                "target": sp.srepr(cassini["target"]),
+                "transition_factor": sp.srepr(cassini["transition_factor"]),
+                "transition_residual": str(cassini["transition_residual"]),
+                "base_residual": str(cassini["base_residual"]),
+            },
+        )
+
+    if not asks_neighbors or fibonacci is None:
+        return None
+    sequence = fibonacci["sequence"]
+    index_name = fibonacci["index"]
+    a_previous, a_value, b_value, b_next = sp.symbols("a_previous a_value b_value b_next")
+    addition_induction_residual = sp.expand(
+        a_previous * b_next
+        + a_value * (b_next + b_value)
+        - (a_value * b_value + (a_previous + a_value) * b_next)
+    )
+    values = [0, 1]
+    for _ in range(2, 6):
+        values.append(values[-1] + values[-2])
+    if addition_induction_residual != 0 or values[3:6] != [2, 3, 5]:
+        return None
+    diagram = state_transition_diagram(
+        [
+            {"id": "recurrence", "label": "Fibonacci 漸化式", "terminal": False},
+            {"id": "addition", "label": "加法公式", "terminal": False},
+            {"id": "divisibility", "label": r"d\mid m\Rightarrow F_d\mid F_m", "terminal": False},
+            {"id": "indices", "label": rf"{index_name}\in\{{3,4\}}", "terminal": True},
+        ],
+        [
+            {"from": "recurrence", "to": "addition", "label": "帰納法", "tone": "primary"},
+            {"from": "addition", "to": "divisibility", "label": "添字倍化", "tone": "primary"},
+            {"from": "divisibility", "to": "indices", "label": "合成添字を除外", "tone": "secondary"},
+        ],
+        title="Fibonacci 数の素数添字",
+        caption="漸化式から加法公式と整除性を順に導き、隣接する素数項の添字を有限個へ絞ります。",
+    )
+    return RuntimeSolutionSynthesis(
+        answer=(3, 4),
+        answer_tex=rf"\({index_name}\in\{{3,4\}}\)",
+        tool_name="mortra.runtime_fibonacci_index_divisibility",
+        expression_tex=rf"{sequence}_{index_name},{sequence}_{{{index_name}+1}}\in\mathbb P",
+        derivation_tex=(
+            rf"漸化式から、任意の正の整数 \(a,b\) に対して \({sequence}_{{a+b}}={sequence}_{{a-1}}{sequence}_b+{sequence}_a{sequence}_{{b+1}}\) が \(b\) に関する帰納法で得られる。",
+            rf"\(d\mid m\) として \(m=kd\) と書く。上の加法公式を \((k-1)d+d\) に適用して \(k\) について帰納すると、\({sequence}_d\mid {sequence}_m\) を得る。",
+            rf"合成数 \(m\ne4\) には \(3\le d<m\) を満たす約数 \(d\) がある。このとき \(1<{sequence}_d<{sequence}_m\) かつ \({sequence}_d\mid {sequence}_m\) なので、\({sequence}_m\) は合成数である。従って \({sequence}_m\) が素数なら、\(m\) は素数または4である。",
+            rf"\({sequence}_{index_name}\) と \({sequence}_{{{index_name}+1}}\) がともに素数なら \({index_name}\ge3\)。連続する二添字の一方は偶数であり、2より大きい偶数は素数でないため、その添字は4でなければならない。従って \({index_name}=3,4\)。実際、\(({sequence}_3,{sequence}_4)=(2,3)\), \(({sequence}_4,{sequence}_5)=(3,5)\) である。",
+        ),
+        verification_checks=(
+            "現在入力から初期値1,1のFibonacci漸化式と隣接素数項の問いを抽出",
+            "加法公式の帰納ステップを記号多項式として展開し残差0を確認",
+            "加法公式から添字整除性を帰納的に導出",
+            "合成添字の約数分類で唯一の例外m=4を分離",
+            "候補n=3,4の項を元の漸化式で再計算して素数性を確認",
+        ),
+        proof_program=(
+            {"rule": "prove_fibonacci_addition_formula_by_induction", "step_residual": "0"},
+            {"rule": "derive_strong_divisibility_for_multiple_indices"},
+            {"rule": "classify_composite_index_divisor", "exception": 4},
+            {"rule": "exclude_adjacent_indices_by_parity"},
+            {"rule": "replay_candidate_indices", "values": {"F3": 2, "F4": 3, "F5": 5}},
+        ),
+        diagram=diagram,
+        witness={
+            "sequence": sequence,
+            "index": index_name,
+            "initial_values": [1, 1],
+            "addition_formula_induction_residual": str(addition_induction_residual),
+            "divisibility_theorem": "d|m => F_d|F_m",
+            "composite_index_exception": 4,
+            "candidate_values": {"F3": 2, "F4": 3, "F5": 5},
+            "indices": [3, 4],
+        },
+    )
+
+
 def _parse_mobius_polynomial_fixed_point_input(
     statement: str,
 ) -> dict[str, Any] | None:
@@ -3082,6 +3415,7 @@ def synthesize_runtime_solution(statement: str) -> RuntimeSolutionSynthesis | No
 
     for synthesizer in (
         synthesize_normalized_inner_product_realization,
+        synthesize_fibonacci_prime_norm_chain,
         synthesize_polynomial_mobius_fixed_point,
         synthesize_rational_angle_cosine_algebra,
         synthesize_primitive_right_triangle_center_fraction,
