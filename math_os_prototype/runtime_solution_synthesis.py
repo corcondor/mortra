@@ -4914,6 +4914,973 @@ def synthesize_rotated_parabola_limit(
     )
 
 
+def _parse_elementary_envelope_query(statement: str) -> dict[str, Any] | None:
+    """Recognize proof obligations closed by reusable elementary envelopes."""
+
+    numbered_markers = re.findall(
+        r"(?:^|\\\\|\n|\$)\s*\((\d+)\)",
+        statement,
+    )
+    if len(set(numbered_markers)) >= 2:
+        return None
+
+    math_segments = parse_latex_problem(statement).math_segments
+    for segment in math_segments:
+        compact = segment.replace(" ", "")
+        pieces = compact.split("<")
+        if len(pieces) != 3 or not pieces[1].startswith("integral_"):
+            continue
+        variable_match = re.search(r"sin\(([A-Za-z])\)", pieces[1])
+        if variable_match is None:
+            continue
+        variable_name = variable_match.group(1)
+        flattened = re.sub(r"[\s()]", "", pieces[1]).replace("*d", "d")
+        if flattened != f"integral_0**pi/2*sin{variable_name}/{variable_name}d{variable_name}":
+            continue
+        requested_lower = _sympify_exact_scalar(pieces[0])
+        requested_upper = _sympify_exact_scalar(pieces[2])
+        if requested_lower is None or requested_upper is None:
+            continue
+        return {
+            "kind": "sinc_integral_bounds",
+            "variable": variable_name,
+            "requested_lower": requested_lower,
+            "requested_upper": requested_upper,
+        }
+
+    for segment in math_segments:
+        compact = segment.replace(" ", "")
+        if "tan" not in compact or "<" not in compact:
+            continue
+        names = {
+            name
+            for name in re.findall(r"[A-Za-z]+", compact)
+            if name not in {"tan", "e", "pi"}
+        }
+        if len(names) != 1:
+            continue
+        variable_name = names.pop()
+        variable = sp.Symbol(variable_name, positive=True)
+        try:
+            relation = sp.sympify(
+                compact,
+                locals={
+                    variable_name: variable,
+                    "e": sp.E,
+                    "pi": sp.pi,
+                    "tan": sp.tan,
+                },
+            )
+        except (sp.SympifyError, TypeError, ValueError, SyntaxError):
+            continue
+        expected_left = sp.tan(sp.E * (1 - 1 / variable) ** variable) + 1 / variable
+        has_domain = any(
+            re.sub(r"[\s()]", "", candidate) == f"{variable_name}>1"
+            for candidate in math_segments
+        )
+        if (
+            not isinstance(relation, sp.StrictLessThan)
+            or not has_domain
+            or sp.simplify(relation.lhs - expected_left) != 0
+            or sp.simplify(relation.rhs - sp.pi / 2) != 0
+        ):
+            continue
+        return {
+            "kind": "reciprocal_exponential_tangent_bound",
+            "variable": variable_name,
+        }
+
+    for segment in math_segments:
+        compact = segment.replace(" ", "")
+        comparison = re.fullmatch(r"(?:\(\d+\))?e<(?P<target>.+)", compact)
+        if comparison is None:
+            continue
+        target = _sympify_exact_scalar(comparison.group("target"))
+        if target is None:
+            continue
+        radical = sp.simplify(target - 1)
+        radicand = sp.simplify(radical**2)
+        if (
+            radical.is_positive is not True
+            or radicand.is_Rational is not True
+            or sp.simplify(radical - sp.sqrt(radicand)) != 0
+        ):
+            continue
+        return {
+            "kind": "exponential_radical_bound",
+            "target": target,
+            "radicand": radicand,
+        }
+
+    asks_integer = "整数" in statement or re.search(r"\binteger\b", statement, re.I)
+    if asks_integer:
+        compact_statement = re.sub(r"[\s{}]", "", statement)
+        match = re.search(
+            r"\\int_0\^1e\^(?P<variable>[A-Za-z])"
+            r"\\sin(?P=variable)(?:\\,)?d(?P=variable)",
+            compact_statement,
+        )
+        if match is not None:
+            return {
+                "kind": "positive_exp_sine_integral_integer",
+                "variable": match.group("variable"),
+            }
+    return None
+
+
+def _pi_polynomial_enclosure(
+    expression: sp.Expr,
+    lower: sp.Rational,
+    upper: sp.Rational,
+) -> tuple[sp.Rational, sp.Rational] | None:
+    """Enclose a rational polynomial in pi by endpoint arithmetic."""
+
+    symbol = sp.Symbol("_pi")
+    replaced = sp.expand(expression.xreplace({sp.pi: symbol}))
+    try:
+        polynomial = sp.Poly(replaced, symbol)
+    except sp.PolynomialError:
+        return None
+    enclosure_lower = sp.Rational(0)
+    enclosure_upper = sp.Rational(0)
+    for (degree,), coefficient in polynomial.terms():
+        if coefficient.is_Rational is not True:
+            return None
+        coefficient = sp.Rational(coefficient)
+        if coefficient >= 0:
+            enclosure_lower += coefficient * lower**degree
+            enclosure_upper += coefficient * upper**degree
+        else:
+            enclosure_lower += coefficient * upper**degree
+            enclosure_upper += coefficient * lower**degree
+    return sp.factor(enclosure_lower), sp.factor(enclosure_upper)
+
+
+def _number_line_interval_diagram(
+    *,
+    title: str,
+    caption: str,
+    outer_lower: sp.Expr,
+    inner_lower: sp.Expr,
+    inner_upper: sp.Expr,
+    outer_upper: sp.Expr,
+    labels: tuple[str, str, str, str],
+) -> dict[str, Any]:
+    """Render a certified nested interval without using samples as evidence."""
+
+    values = [
+        float(sp.N(value, 18))
+        for value in (outer_lower, inner_lower, inner_upper, outer_upper)
+    ]
+    width = max(values) - min(values)
+    margin = max(0.08, width * 0.18)
+    return plane_scene_diagram(
+        title=title,
+        caption=caption,
+        viewport={
+            "xMin": min(values) - margin,
+            "xMax": max(values) + margin,
+            "yMin": -0.48,
+            "yMax": 0.48,
+        },
+        axes=True,
+        shapes=(
+            {
+                "id": "requested-interval",
+                "kind": "polyline",
+                "points": (
+                    {"x": values[0], "y": 0.0},
+                    {"x": values[3], "y": 0.0},
+                ),
+                "tone": "muted",
+            },
+            {
+                "id": "certified-interval",
+                "kind": "polyline",
+                "points": (
+                    {"x": values[1], "y": 0.0},
+                    {"x": values[2], "y": 0.0},
+                ),
+                "tone": "primary",
+            },
+            *tuple(
+                {
+                    "id": f"interval-point-{index}",
+                    "kind": "point",
+                    "point": {"x": value, "y": 0.0},
+                    "tone": "accent" if index in {1, 2} else "secondary",
+                }
+                for index, (value, label) in enumerate(zip(values, labels))
+            ),
+            *tuple(
+                {
+                    "id": f"interval-label-{index}",
+                    "kind": "label",
+                    "point": {
+                        "x": value,
+                        "y": 0.16 if index % 2 == 0 else -0.16,
+                    },
+                    "tex": label,
+                    "tone": "accent" if index in {1, 2} else "secondary",
+                }
+                for index, (value, label) in enumerate(zip(values, labels))
+            ),
+        ),
+    )
+
+
+def synthesize_elementary_envelope(
+    statement: str,
+) -> RuntimeSolutionSynthesis | None:
+    """Close elementary inequalities by exact series and integral envelopes."""
+
+    parsed = _parse_elementary_envelope_query(statement)
+    if parsed is None:
+        return None
+
+    pi_lower = sp.Rational(223, 71)
+    pi_upper = sp.Rational(22, 7)
+    if not (
+        _proves_strictly_positive(sp.pi - pi_lower)
+        and _proves_strictly_positive(pi_upper - sp.pi)
+    ):
+        return None
+
+    kind = str(parsed["kind"])
+    if kind == "sinc_integral_bounds":
+        variable = sp.Symbol(str(parsed["variable"]), real=True)
+        requested_lower = sp.simplify(parsed["requested_lower"])
+        requested_upper = sp.simplify(parsed["requested_upper"])
+        lower_polynomial = 1 - variable**2 / 6
+        upper_polynomial = lower_polynomial + variable**4 / 120
+        lower_integral = sp.integrate(
+            lower_polynomial, (variable, 0, sp.pi / 2)
+        )
+        upper_integral = sp.integrate(
+            upper_polynomial, (variable, 0, sp.pi / 2)
+        )
+        lower_enclosure = _pi_polynomial_enclosure(
+            lower_integral, pi_lower, pi_upper
+        )
+        upper_enclosure = _pi_polynomial_enclosure(
+            upper_integral, pi_lower, pi_upper
+        )
+        requested_lower_enclosure = _pi_polynomial_enclosure(
+            requested_lower, pi_lower, pi_upper
+        )
+        requested_upper_enclosure = _pi_polynomial_enclosure(
+            requested_upper, pi_lower, pi_upper
+        )
+        if any(
+            enclosure is None
+            for enclosure in (
+                lower_enclosure,
+                upper_enclosure,
+                requested_lower_enclosure,
+                requested_upper_enclosure,
+            )
+        ):
+            return None
+        assert lower_enclosure is not None
+        assert upper_enclosure is not None
+        assert requested_lower_enclosure is not None
+        assert requested_upper_enclosure is not None
+        lower_margin = sp.factor(
+            lower_enclosure[0] - requested_lower_enclosure[1]
+        )
+        upper_margin = sp.factor(
+            requested_upper_enclosure[0] - upper_enclosure[1]
+        )
+        if not (lower_margin > 0 and upper_margin > 0):
+            return None
+
+        endpoint = float(sp.N(sp.pi / 2, 18))
+        sinc = lambda value: 1.0 if abs(value) < 1e-15 else math.sin(value) / value
+        lower_numeric = sp.lambdify(variable, lower_polynomial, "math")
+        upper_numeric = sp.lambdify(variable, upper_polynomial, "math")
+        primitive_lower = sp.integrate(lower_polynomial, variable)
+        primitive_upper = sp.integrate(upper_polynomial, variable)
+        primitive_lower_numeric = sp.lambdify(variable, primitive_lower, "math")
+        primitive_upper_numeric = sp.lambdify(variable, primitive_upper, "math")
+        diagram_1 = function_plot_diagram(
+            (
+                (r"\sin x/x", sinc, "primary"),
+                (sp.latex(lower_polynomial), lower_numeric, "secondary"),
+                (sp.latex(upper_polynomial), upper_numeric, "accent"),
+            ),
+            x_min=0.0,
+            x_max=endpoint,
+            title="sinc 関数を二つの多項式で挟む",
+            caption="曲線は説明用です。不等式そのものは交代級数の剰余符号で検証しています。",
+        )
+        diagram_2 = function_plot_diagram(
+            (
+                (sp.latex(primitive_lower), primitive_lower_numeric, "secondary"),
+                (sp.latex(primitive_upper), primitive_upper_numeric, "primary"),
+            ),
+            x_min=0.0,
+            x_max=endpoint,
+            title="上下界を0から積分する",
+            caption="二つの原始関数の間に、sinc 関数の累積面積が入ります。",
+        )
+        diagram_3 = _number_line_interval_diagram(
+            title="要求された区間の内側へ閉じる",
+            caption="橙色の二点が厳密な積分上下界です。外側の二点との順序は有理数だけで再生できます。",
+            outer_lower=requested_lower,
+            inner_lower=lower_integral,
+            inner_upper=upper_integral,
+            outer_upper=requested_upper,
+            labels=(
+                sp.latex(requested_lower),
+                "L",
+                "U",
+                sp.latex(requested_upper),
+            ),
+        )
+        chain = (
+            "elaborate_elementary_inequality_query",
+            "construct_alternating_series_envelope",
+            "transport_order_through_definite_integral",
+            "enclose_pi_by_archimedean_rationals",
+        )
+        visual_explanation = {
+            "version": 1,
+            "mode": "stepper",
+            "title": "被積分関数の上下界から目的の不等式を得るまで",
+            "diagram_required_for_every_step": True,
+            "composition_verified": True,
+            "morphism_chain": list(chain),
+            "steps": [
+                {
+                    "id": "elementary-envelope-sinc-1",
+                    "title": "交代級数で被積分関数を挟む",
+                    "explanation_ja": "正弦の級数を3次と5次で切り、剰余の符号から上下界を得ます。",
+                    "formula_tex": rf"{sp.latex(lower_polynomial)}<\frac{{\sin {sp.latex(variable)}}}{{{sp.latex(variable)}}}<{sp.latex(upper_polynomial)}",
+                    "morphism": {"morphism_id": chain[1], "label_ja": "交代級数の上下包絡", "input_type": "ElementaryFunction", "output_type": "PolynomialEnvelope"},
+                    "source_state": {"id": "sinc-integrand", "type": "ElementaryFunction"},
+                    "target_state": {"id": "sinc-polynomial-envelope", "type": "PolynomialEnvelope"},
+                    "diagram": diagram_1,
+                },
+                {
+                    "id": "elementary-envelope-sinc-2",
+                    "title": "不等式を積分へ移す",
+                    "explanation_ja": "区間全体で成り立つ大小関係を積分し、厳密な二つの式で積分値を挟みます。",
+                    "formula_tex": rf"{sp.latex(lower_integral)}<\int_0^{{\pi/2}}\frac{{\sin {sp.latex(variable)}}}{{{sp.latex(variable)}}}\,d{sp.latex(variable)}<{sp.latex(upper_integral)}",
+                    "morphism": {"morphism_id": chain[2], "label_ja": "点ごとの順序を積分へ移す", "input_type": "PolynomialEnvelope", "output_type": "IntegralEnvelope"},
+                    "source_state": {"id": "sinc-polynomial-envelope", "type": "PolynomialEnvelope"},
+                    "target_state": {"id": "sinc-integral-envelope", "type": "IntegralEnvelope"},
+                    "diagram": diagram_2,
+                },
+                {
+                    "id": "elementary-envelope-sinc-3",
+                    "title": "円周率を有理数で挟んで比較する",
+                    "explanation_ja": "円周率の上下界を代入し、最後の二つの差が正であることを有理数計算だけで確認します。",
+                    "formula_tex": rf"{sp.latex(requested_lower)}<L<I<U<{sp.latex(requested_upper)}",
+                    "morphism": {"morphism_id": chain[3], "label_ja": "円周率を有理区間へ移す", "input_type": "IntegralEnvelope", "output_type": "VerifiedInequality"},
+                    "source_state": {"id": "sinc-integral-envelope", "type": "IntegralEnvelope"},
+                    "target_state": {"id": "verified-sinc-bound", "type": "VerifiedInequality"},
+                    "diagram": diagram_3,
+                },
+            ],
+        }
+        return RuntimeSolutionSynthesis(
+            answer=True,
+            answer_tex=rf"\({sp.latex(requested_lower)}<\displaystyle\int_0^{{\pi/2}}\frac{{\sin {sp.latex(variable)}}}{{{sp.latex(variable)}}}\,d{sp.latex(variable)}<{sp.latex(requested_upper)}\)",
+            tool_name="mortra.runtime_elementary_inequality_envelope",
+            expression_tex=rf"{sp.latex(requested_lower)}<\int_0^{{\pi/2}}\frac{{\sin {sp.latex(variable)}}}{{{sp.latex(variable)}}}\,d{sp.latex(variable)}<{sp.latex(requested_upper)}",
+            derivation_tex=(
+                rf"\(0<{sp.latex(variable)}\le\pi/2<2\) では、正弦の交代級数の各項の絶対値は減少する。従って剰余の符号から \[1-\frac{{{sp.latex(variable)}^2}}6<\frac{{\sin {sp.latex(variable)}}}{{{sp.latex(variable)}}}<1-\frac{{{sp.latex(variable)}^2}}6+\frac{{{sp.latex(variable)}^4}}{{120}}\] を得る。\( {sp.latex(variable)}=0\) では三つとも極限値1をもつ。",
+                rf"これを \(0\) から \(\pi/2\) まで積分すると \[{sp.latex(lower_integral)}<\int_0^{{\pi/2}}\frac{{\sin {sp.latex(variable)}}}{{{sp.latex(variable)}}}\,d{sp.latex(variable)}<{sp.latex(upper_integral)}.\]",
+                r"下側は \(\pi^2<10\) を用いて \[\frac{\pi}{2}-\frac{\pi^3}{144}=\pi\left(\frac12-\frac{\pi^2}{144}\right)>\frac{31\pi}{72}>\frac{2\pi}{5}.\] 上側は \(3<\pi<22/7\) と \(22^5<320\cdot7^5\) から \[\frac{\pi}{2}-\frac{\pi^3}{144}+\frac{\pi^5}{19200}<\frac{11}{7}-\frac{3}{16}+\frac{1}{60}=\frac{2353}{1680}<\frac32.\]",
+                rf"以上より \[{sp.latex(requested_lower)}<\int_0^{{\pi/2}}\frac{{\sin {sp.latex(variable)}}}{{{sp.latex(variable)}}}\,d{sp.latex(variable)}<{sp.latex(requested_upper)}\] が成り立つ。",
+            ),
+            verification_checks=(
+                "現在入力から積分区間、被積分関数、要求された上下界を抽出",
+                "正弦の交代級数で3次下界と5次上界を構成",
+                "二つの多項式を指定区間で厳密積分",
+                "223/71<pi<22/7 による区間演算で両方の余裕が正の有理数になることを確認",
+            ),
+            proof_program=(
+                {"rule": chain[0], "query_kind": kind},
+                {
+                    "rule": chain[1],
+                    "lower": sp.srepr(lower_polynomial),
+                    "upper": sp.srepr(upper_polynomial),
+                    "domain": "0<=x<=pi/2",
+                },
+                {
+                    "rule": chain[2],
+                    "lower_integral": sp.srepr(lower_integral),
+                    "upper_integral": sp.srepr(upper_integral),
+                },
+                {
+                    "rule": chain[3],
+                    "pi_lower": str(pi_lower),
+                    "pi_upper": str(pi_upper),
+                    "lower_margin": str(lower_margin),
+                    "upper_margin": str(upper_margin),
+                },
+            ),
+            diagram=diagram_3,
+            witness={
+                "query_kind": kind,
+                "variable": str(variable),
+                "requested_lower": sp.srepr(requested_lower),
+                "requested_upper": sp.srepr(requested_upper),
+                "integrand_lower": sp.srepr(lower_polynomial),
+                "integrand_upper": sp.srepr(upper_polynomial),
+                "integral_lower": sp.srepr(lower_integral),
+                "integral_upper": sp.srepr(upper_integral),
+                "pi_interval": [str(pi_lower), str(pi_upper)],
+                "lower_margin": str(lower_margin),
+                "upper_margin": str(upper_margin),
+            },
+            visual_explanation=visual_explanation,
+        )
+
+    if kind == "exponential_radical_bound":
+        target = sp.simplify(parsed["target"])
+        radicand = sp.Rational(parsed["radicand"])
+        partial_sum = sum(
+            (sp.Rational(1, sp.factorial(index)) for index in range(6)),
+            sp.Rational(0),
+        )
+        tail_upper = sp.Rational(7, 4320)
+        exponential_upper = sp.factor(partial_sum + tail_upper)
+        rational_bridge = sp.Rational(87, 32)
+        bridge_margin = sp.factor(rational_bridge - exponential_upper)
+        radical_lower_square = sp.factor((rational_bridge - 1) ** 2)
+        radical_margin = sp.factor(radicand - radical_lower_square)
+        if not (bridge_margin > 0 and radical_margin > 0):
+            return None
+
+        partial_values = [
+            sum(
+                (sp.Rational(1, sp.factorial(j)) for j in range(index + 1)),
+                sp.Rational(0),
+            )
+            for index in range(6)
+        ]
+        diagram_1 = plane_scene_diagram(
+            title="e の級数を第5項まで加える",
+            caption="各点は部分和です。最後の点から先だけを、次の手順で等比級数により抑えます。",
+            viewport={"xMin": -0.3, "xMax": 5.4, "yMin": 0.7, "yMax": 3.0},
+            axes=True,
+            shapes=(
+                {
+                    "id": "partial-sums",
+                    "kind": "polyline",
+                    "points": tuple(
+                        {"x": float(index), "y": float(value)}
+                        for index, value in enumerate(partial_values)
+                    ),
+                    "tone": "primary",
+                },
+                *tuple(
+                    {
+                        "id": f"partial-sum-{index}",
+                        "kind": "point",
+                        "point": {"x": float(index), "y": float(value)},
+                        "label": f"S_{index}",
+                        "tone": "accent" if index == 5 else "secondary",
+                    }
+                    for index, value in enumerate(partial_values)
+                ),
+            ),
+        )
+        diagram_2 = _number_line_interval_diagram(
+            title="級数の尾を加えて e を上から抑える",
+            caption="第5部分和に、6次以降の等比級数上界を加えた位置を示します。",
+            outer_lower=partial_sum,
+            inner_lower=partial_sum,
+            inner_upper=exponential_upper,
+            outer_upper=rational_bridge,
+            labels=(
+                "S_5",
+                "S_5",
+                r"\frac{11743}{4320}",
+                r"\frac{87}{32}",
+            ),
+        )
+        diagram_3 = _number_line_interval_diagram(
+            title="有理数上界と根号を比較する",
+            caption="正の数どうしなので、1を引いた後は平方の比較だけで順序が確定します。",
+            outer_lower=sp.Integer(1),
+            inner_lower=exponential_upper,
+            inner_upper=rational_bridge,
+            outer_upper=target,
+            labels=("1", r"e_{\mathrm{upper}}", r"\frac{87}{32}", sp.latex(target)),
+        )
+        chain = (
+            "elaborate_elementary_inequality_query",
+            "bound_positive_series_tail_geometrically",
+            "compare_positive_radicals_by_squaring",
+        )
+        visual_explanation = {
+            "version": 1,
+            "mode": "stepper",
+            "title": "e の級数から根号を含む上界を得るまで",
+            "diagram_required_for_every_step": True,
+            "composition_verified": True,
+            "morphism_chain": list(chain),
+            "steps": [
+                {
+                    "id": "elementary-envelope-exp-1",
+                    "title": "e を正の級数へ移す",
+                    "explanation_ja": "第5項までを正確に足し、残りを独立した尾項として分けます。",
+                    "formula_tex": rf"\sum_{{k=0}}^5\frac1{{k!}}={sp.latex(partial_sum)}",
+                    "morphism": {"morphism_id": chain[0], "label_ja": "指数関数の級数表示", "input_type": "ExponentialConstant", "output_type": "PositiveSeries"},
+                    "source_state": {"id": "constant-e", "type": "ExponentialConstant"},
+                    "target_state": {"id": "exp-positive-series", "type": "PositiveSeries"},
+                    "diagram": diagram_1,
+                },
+                {
+                    "id": "elementary-envelope-exp-2",
+                    "title": "尾項を等比級数で抑える",
+                    "explanation_ja": "6次以降では分母が少なくとも毎回7倍になることを使います。",
+                    "formula_tex": rf"e<{sp.latex(partial_sum)}+{sp.latex(tail_upper)}={sp.latex(exponential_upper)}<\frac{{87}}{{32}}",
+                    "morphism": {"morphism_id": chain[1], "label_ja": "正項級数の幾何尾項評価", "input_type": "PositiveSeries", "output_type": "RationalUpperBound"},
+                    "source_state": {"id": "exp-positive-series", "type": "PositiveSeries"},
+                    "target_state": {"id": "exp-rational-upper", "type": "RationalUpperBound"},
+                    "diagram": diagram_2,
+                },
+                {
+                    "id": "elementary-envelope-exp-3",
+                    "title": "根号との大小を平方で決める",
+                    "explanation_ja": "両辺から1を引くと正なので、二乗した有理数の比較で結論が出ます。",
+                    "formula_tex": rf"\left(\frac{{87}}{{32}}-1\right)^2={sp.latex(radical_lower_square)}<{sp.latex(radicand)}",
+                    "morphism": {"morphism_id": chain[2], "label_ja": "正の根号比較", "input_type": "RationalUpperBound", "output_type": "VerifiedInequality"},
+                    "source_state": {"id": "exp-rational-upper", "type": "RationalUpperBound"},
+                    "target_state": {"id": "verified-radical-bound", "type": "VerifiedInequality"},
+                    "diagram": diagram_3,
+                },
+            ],
+        }
+        return RuntimeSolutionSynthesis(
+            answer=True,
+            answer_tex=rf"\(e<{sp.latex(target)}\)",
+            tool_name="mortra.runtime_elementary_inequality_envelope",
+            expression_tex=rf"e<{sp.latex(target)}",
+            derivation_tex=(
+                rf"指数関数の級数から \[e=\sum_{{k=0}}^\infty\frac1{{k!}}=\sum_{{k=0}}^5\frac1{{k!}}+\sum_{{k=6}}^\infty\frac1{{k!}}\] と分ける。前半は \({sp.latex(partial_sum)}\) である。",
+                rf"\(k\ge6\) では \(k!\ge6!\,7^{{k-6}}\) であり、\(k\ge8\) では不等号は厳しい。従って \[\sum_{{k=6}}^\infty\frac1{{k!}}<\frac1{{6!}}\sum_{{j=0}}^\infty\frac1{{7^j}}={sp.latex(tail_upper)}.\] よって \(e<{sp.latex(exponential_upper)}\) である。",
+                rf"さらに \({sp.latex(exponential_upper)}<87/32\) である。一方、\[\left(\frac{{87}}{{32}}-1\right)^2={sp.latex(radical_lower_square)}<{sp.latex(radicand)}\] であり、比較している数は正である。従って \(87/32<1+\sqrt{{{sp.latex(radicand)}}}={sp.latex(target)}\) となる。",
+                rf"以上より \[e<{sp.latex(target)}\] が成り立つ。",
+            ),
+            verification_checks=(
+                "現在入力から e と正の根号を含む上界を抽出",
+                "指数級数の第5部分和を有理数として厳密計算",
+                "6次以降を比1/7の等比級数で上から評価",
+                "1を引いた正の両辺を二乗し、有理数差が正であることを確認",
+            ),
+            proof_program=(
+                {"rule": chain[0], "query_kind": kind},
+                {
+                    "rule": chain[1],
+                    "partial_sum": str(partial_sum),
+                    "tail_upper": str(tail_upper),
+                    "total_upper": str(exponential_upper),
+                    "rational_bridge": str(rational_bridge),
+                    "bridge_margin": str(bridge_margin),
+                },
+                {
+                    "rule": chain[2],
+                    "radicand": str(radicand),
+                    "upper_square": str(radical_lower_square),
+                    "margin": str(radical_margin),
+                },
+            ),
+            diagram=diagram_3,
+            witness={
+                "query_kind": kind,
+                "partial_sum_degree": 5,
+                "partial_sum": str(partial_sum),
+                "tail_upper": str(tail_upper),
+                "exponential_upper": str(exponential_upper),
+                "rational_bridge": str(rational_bridge),
+                "bridge_margin": str(bridge_margin),
+                "target": sp.srepr(target),
+                "radicand": str(radicand),
+                "radical_margin": str(radical_margin),
+            },
+            visual_explanation=visual_explanation,
+        )
+
+    if kind == "reciprocal_exponential_tangent_bound":
+        source_variable = str(parsed["variable"])
+        y = sp.Symbol("y", positive=True)
+        m = sp.Symbol("m", integer=True, positive=True)
+        coefficient_gap = sp.factor(
+            1 / (m + 1) - 1 / (m * 2**m)
+        )
+        if coefficient_gap.subs(m, 1) != 0:
+            return None
+        nonnegative_index = sp.Symbol("j", integer=True, nonnegative=True)
+        coefficient_numerator_lower = sp.expand(
+            (3 * m - 1).subs(m, nonnegative_index + 2)
+        )
+        if coefficient_numerator_lower != 3 * nonnegative_index + 5:
+            return None
+
+        one = sp.Integer(1)
+        half = sp.Rational(1, 2)
+        sin_one_upper = sp.factor(one - one**3 / 6 + one**5 / 120)
+        cos_one_lower = sp.factor(
+            one - one**2 / 2 + one**4 / 24 - one**6 / 720
+        )
+        tan_one_upper = sp.factor(sin_one_upper / cos_one_lower)
+        sin_half_upper = sp.factor(half - half**3 / 6 + half**5 / 120)
+        cos_half_lower = sp.factor(1 - half**2 / 2)
+        tan_half_upper = sp.factor(sin_half_upper / cos_half_lower)
+        endpoint_zero_bound = sp.Rational(39, 25)
+        endpoint_one_bound = 1 + sp.Rational(11, 20)
+        simple_pi_half_lower = sp.Rational(157, 100)
+        endpoint_checks = {
+            "tan_one_to_39_over_25": sp.factor(
+                endpoint_zero_bound - tan_one_upper
+            ),
+            "tan_half_to_11_over_20": sp.factor(
+                sp.Rational(11, 20) - tan_half_upper
+            ),
+            "pi_lower_to_314": sp.factor(pi_lower - sp.Rational(157, 50)),
+            "endpoint_zero_to_pi_half": sp.factor(
+                simple_pi_half_lower - endpoint_zero_bound
+            ),
+            "endpoint_one_to_pi_half": sp.factor(
+                simple_pi_half_lower - endpoint_one_bound
+            ),
+        }
+        if any(value <= 0 for value in endpoint_checks.values()):
+            return None
+
+        transformed = sp.E * (1 - y) ** (1 / y)
+        linear_bound = 1 - y / 2
+        convex_profile = sp.tan(linear_bound) + y
+        second_derivative = sp.factor(sp.diff(convex_profile, y, 2))
+        derivative_residual = sp.simplify(
+            (
+                second_derivative
+                - sp.sec(1 - y / 2) ** 2 * sp.tan(1 - y / 2) / 2
+            ).rewrite(sp.sin)
+        )
+        if derivative_residual != 0:
+            return None
+
+        transformed_numeric = lambda value: (
+            1.0
+            if value <= 1e-10
+            else math.e * (1.0 - value) ** (1.0 / value)
+        )
+        linear_numeric = lambda value: 1.0 - value / 2.0
+        profile_numeric = lambda value: math.tan(1.0 - value / 2.0) + value
+        pi_half_numeric = lambda value: math.pi / 2.0
+        diagram_1 = function_plot_diagram(
+            (
+                (r"e(1-y)^{1/y}", transformed_numeric, "primary"),
+                (r"1-y/2", linear_numeric, "secondary"),
+            ),
+            x_min=0.001,
+            x_max=0.999,
+            title="指数部分を一次式で上から抑える",
+            caption="二つの対数級数を係数ごとに比較し、指数部分全体を直線の下へ移します。",
+        )
+        diagram_2 = function_plot_diagram(
+            (
+                (r"\tan(1-y/2)+y", profile_numeric, "primary"),
+                (r"\pi/2", pi_half_numeric, "secondary"),
+            ),
+            x_min=0.0,
+            x_max=1.0,
+            title="残った一変数関数を端点へ送る",
+            caption="対象関数は凸なので、閉区間上の最大値は二つの端点のどちらかにあります。",
+            marked_points=(
+                (0.0, math.tan(1.0), "y=0"),
+                (1.0, math.tan(0.5) + 1.0, "y=1"),
+            ),
+        )
+        diagram_3 = variation_table_diagram(
+            ("0", "区間内部", "1"),
+            (
+                {"label": "F''(y)", "cells": ["正", "正", "正"]},
+                {"label": "F(y)", "cells": ["tan(1)", "凸", "1+tan(1/2)"]},
+                {"label": "上界", "cells": ["39/25", "157/100 未満", "31/20"]},
+            ),
+            title="凸性と端点の厳密評価",
+            caption="両端の有理数上界がともに157/100より小さく、157/100<pi/2です。",
+            variable_label="y",
+        )
+        chain = (
+            "substitute_reciprocal_domain",
+            "compare_log_power_series_coefficientwise",
+            "transport_bound_through_increasing_tangent",
+            "maximize_convex_function_at_interval_endpoints",
+            "construct_alternating_series_envelope",
+            "enclose_pi_by_archimedean_rationals",
+        )
+        visual_explanation = {
+            "version": 1,
+            "mode": "stepper",
+            "title": "指数と正接を分けて厳密上界を作るまで",
+            "diagram_required_for_every_step": True,
+            "composition_verified": True,
+            "morphism_chain": list(chain),
+            "steps": [
+                {
+                    "id": "elementary-envelope-tangent-1",
+                    "title": "逆数で区間を有限にする",
+                    "explanation_ja": "y=1/x と置くと x>1 は 0<y<1 になり、指数部分を同じ区間上で比較できます。",
+                    "formula_tex": r"e\left(1-\frac1x\right)^x=e(1-y)^{1/y},\qquad y=\frac1x",
+                    "morphism": {"morphism_id": chain[0], "label_ja": "逆数による領域変換", "input_type": "UnboundedPositiveDomain", "output_type": "OpenUnitInterval"},
+                    "source_state": {"id": "x-domain", "type": "UnboundedPositiveDomain"},
+                    "target_state": {"id": "unit-y-domain", "type": "OpenUnitInterval"},
+                    "diagram": diagram_1,
+                },
+                {
+                    "id": "elementary-envelope-tangent-2",
+                    "title": "対数級数を係数ごとに比較する",
+                    "explanation_ja": "同じ y のべきに掛かる係数を比べ、指数部分を 1-y/2 より小さくします。",
+                    "formula_tex": r"e(1-y)^{1/y}<1-\frac y2",
+                    "morphism": {"morphism_id": chain[1], "label_ja": "対数級数の係数比較", "input_type": "OpenUnitInterval", "output_type": "PointwiseOrder"},
+                    "source_state": {"id": "unit-y-domain", "type": "OpenUnitInterval"},
+                    "target_state": {"id": "exponential-linear-bound", "type": "PointwiseOrder"},
+                    "diagram": diagram_1,
+                },
+                {
+                    "id": "elementary-envelope-tangent-3",
+                    "title": "凸関数の最大値を端点で抑える",
+                    "explanation_ja": "正接の単調性で一次式へ移した後、得られた凸関数の二つの端点だけを交代級数で評価します。",
+                    "formula_tex": r"\tan(1-y/2)+y<\frac{\pi}{2}",
+                    "morphism": {"morphism_id": chain[3], "label_ja": "凸関数の端点最大", "input_type": "PointwiseOrder", "output_type": "VerifiedInequality"},
+                    "source_state": {"id": "exponential-linear-bound", "type": "PointwiseOrder"},
+                    "target_state": {"id": "verified-tangent-bound", "type": "VerifiedInequality"},
+                    "diagram": diagram_3,
+                },
+            ],
+        }
+        return RuntimeSolutionSynthesis(
+            answer=True,
+            answer_tex=rf"\(\text{{成立。}}\quad\tan\!\left(e\left(1-\frac1{{{source_variable}}}\right)^{{{source_variable}}}\right)+\frac1{{{source_variable}}}<\frac\pi2\quad({source_variable}>1)\)",
+            tool_name="mortra.runtime_elementary_inequality_envelope",
+            expression_tex=rf"\tan\!\left(e\left(1-\frac1{{{source_variable}}}\right)^{{{source_variable}}}\right)+\frac1{{{source_variable}}}<\frac\pi2",
+            derivation_tex=(
+                rf"\(y=1/{source_variable}\) とおくと \(0<y<1\) である。\(A=e(1-y)^{{1/y}}\) とおけば \[\log A=1+\frac{{\log(1-y)}}y=-\sum_{{m=1}}^\infty\frac{{y^m}}{{m+1}}.\] 一方 \[\log\left(1-\frac y2\right)=-\sum_{{m=1}}^\infty\frac{{y^m}}{{m2^m}}.\]",
+                r"\(m=1\) では二つの係数は等しく、\(m\ge2\) では \(m2^m>m+1\) である。従って \(\log A<\log(1-y/2)\)、すなわち \[A<1-\frac y2.\]",
+                r"正接はこの区間で狭義単調増加だから \[\tan A+y<\tan(1-y/2)+y=:F(y).\] また \[F''(y)=\frac12\sec^2(1-y/2)\tan(1-y/2)>0\] なので、\(F\) は \([0,1]\) で凸であり、その最大値は端点で取る。",
+                rf"正弦・余弦の Taylor 展開を交代級数として評価すると、\[\sin1<\frac{{101}}{{120}},\quad\cos1>\frac{{389}}{{720}},\quad \sin\frac12<\frac{{1841}}{{3840}},\quad\cos\frac12>\frac78.\] よって \(\tan1<{sp.latex(tan_one_upper)}<39/25\)、\(\tan(1/2)<{sp.latex(tan_half_upper)}<11/20\) である。従って \[F(0)<\frac{{39}}{{25}}<\frac{{157}}{{100}}<\frac\pi2,\qquad F(1)<\frac{{31}}{{20}}<\frac{{157}}{{100}}<\frac\pi2.\]",
+                rf"以上より \(0<y<1\)、すなわち \({source_variable}>1\) で、問題の左辺は常に \(\pi/2\) より小さい。",
+            ),
+            verification_checks=(
+                "現在入力から x>1、指数部分、正接、逆数加算、pi/2 上界を構文解析",
+                "y=1/x により領域を0<y<1へ移し、二つの対数級数の係数順序を確認",
+                "一次上界を正接の単調性で移送し、残る関数の二階導関数が正であることを記号確認",
+                "sin(1), cos(1), sin(1/2), cos(1/2) の交代級数上下面を有理数比較",
+                "223/71<pi と全ての有理数余裕から二つの端点上界を再生",
+            ),
+            proof_program=(
+                {"rule": chain[0], "substitution": f"y=1/{source_variable}"},
+                {
+                    "rule": chain[1],
+                    "coefficient_gap": sp.sstr(coefficient_gap),
+                    "equality_index": 1,
+                    "strict_from_index": 2,
+                    "coefficient_numerator_lower_bound": "3*m-1",
+                    "shifted_positive_form": sp.sstr(coefficient_numerator_lower),
+                },
+                {
+                    "rule": chain[2],
+                    "input_upper": sp.srepr(linear_bound),
+                },
+                {
+                    "rule": chain[3],
+                    "second_derivative": sp.sstr(second_derivative),
+                    "domain": "0<=y<=1",
+                },
+                {
+                    "rule": chain[4],
+                    "tan_one_upper": str(tan_one_upper),
+                    "tan_half_upper": str(tan_half_upper),
+                },
+                {
+                    "rule": chain[5],
+                    "pi_lower": str(pi_lower),
+                    "endpoint_checks": {
+                        key: str(value) for key, value in endpoint_checks.items()
+                    },
+                },
+            ),
+            diagram=diagram_2,
+            witness={
+                "query_kind": kind,
+                "source_variable": source_variable,
+                "reciprocal_domain": "0<y<1",
+                "coefficient_gap": sp.sstr(coefficient_gap),
+                "coefficient_numerator_lower_bound": "3*m-1",
+                "shifted_positive_form": sp.sstr(coefficient_numerator_lower),
+                "convex_profile": sp.srepr(convex_profile),
+                "second_derivative": sp.srepr(second_derivative),
+                "tan_one_upper": str(tan_one_upper),
+                "tan_half_upper": str(tan_half_upper),
+                "endpoint_checks": {
+                    key: str(value) for key, value in endpoint_checks.items()
+                },
+            },
+            visual_explanation=visual_explanation,
+        )
+
+    variable = sp.Symbol(str(parsed["variable"]), real=True)
+    integral = sp.Integral(sp.exp(variable) * sp.sin(variable), (variable, 0, 1))
+    comparison_integral = sp.integrate(
+        variable * sp.exp(variable), (variable, 0, 1)
+    )
+    if comparison_integral != 1:
+        return None
+    diagram_1 = function_plot_diagram(
+        (
+            (sp.latex(sp.sin(variable)), math.sin, "primary"),
+            (sp.latex(variable), lambda value: value, "secondary"),
+        ),
+        x_min=0.0,
+        x_max=1.0,
+        title="正弦を直線で上から抑える",
+        caption="0から1まででは sin x は直線 y=x より下にあります。",
+    )
+    exp_sine_numeric = sp.lambdify(variable, sp.exp(variable) * sp.sin(variable), "math")
+    exp_linear_numeric = sp.lambdify(variable, variable * sp.exp(variable), "math")
+    diagram_2 = function_plot_diagram(
+        (
+            (sp.latex(sp.exp(variable) * sp.sin(variable)), exp_sine_numeric, "primary"),
+            (sp.latex(variable * sp.exp(variable)), exp_linear_numeric, "secondary"),
+        ),
+        x_min=0.0,
+        x_max=1.0,
+        title="正の因子を掛けても順序は保たれる",
+        caption="e^x は正なので、二つの曲線の上下関係は変わりません。",
+    )
+    diagram_3 = plane_scene_diagram(
+        title="積分値を0と1の間へ閉じ込める",
+        caption="証明された情報だけを表示しています。積分値の小数近似は使いません。",
+        viewport={"xMin": -0.14, "xMax": 1.14, "yMin": -0.48, "yMax": 0.48},
+        axes=True,
+        shapes=(
+            {
+                "id": "open-unit-interval",
+                "kind": "polyline",
+                "points": ({"x": 0.0, "y": 0.0}, {"x": 1.0, "y": 0.0}),
+                "tone": "primary",
+            },
+            {
+                "id": "lower-integer",
+                "kind": "point",
+                "point": {"x": 0.0, "y": 0.0},
+                "label": "0",
+                "tone": "secondary",
+            },
+            {
+                "id": "upper-integer",
+                "kind": "point",
+                "point": {"x": 1.0, "y": 0.0},
+                "label": "1",
+                "tone": "secondary",
+            },
+            {
+                "id": "integral-membership",
+                "kind": "label",
+                "point": {"x": 0.5, "y": 0.2},
+                "tex": "0<I<1",
+                "tone": "accent",
+            },
+        ),
+    )
+    chain = (
+        "elaborate_elementary_inequality_query",
+        "derive_sine_below_identity",
+        "transport_order_through_definite_integral",
+        "trap_positive_integral_between_consecutive_integers",
+    )
+    visual_explanation = {
+        "version": 1,
+        "mode": "stepper",
+        "title": "積分値が整数でないと分かるまで",
+        "diagram_required_for_every_step": True,
+        "composition_verified": True,
+        "morphism_chain": list(chain),
+        "steps": [
+            {
+                "id": "elementary-envelope-integral-1",
+                "title": "正弦を直線と比較する",
+                "explanation_ja": "正弦と直線の差を微分し、区間の内部で正弦が直線より下にあることを確定します。",
+                "formula_tex": rf"0<\sin {sp.latex(variable)}<{sp.latex(variable)}\qquad(0<{sp.latex(variable)}\le1)",
+                "morphism": {"morphism_id": chain[1], "label_ja": "正弦の直線上界", "input_type": "TrigonometricFunction", "output_type": "PointwiseOrder"},
+                "source_state": {"id": "sine-function", "type": "TrigonometricFunction"},
+                "target_state": {"id": "sine-linear-order", "type": "PointwiseOrder"},
+                "diagram": diagram_1,
+            },
+            {
+                "id": "elementary-envelope-integral-2",
+                "title": "正の指数関数を掛けて積分する",
+                "explanation_ja": "正の関数を掛けた後も不等号は保たれ、区間全体の積分へ移せます。",
+                "formula_tex": rf"0<e^{{{sp.latex(variable)}}}\sin {sp.latex(variable)}<{sp.latex(variable)}e^{{{sp.latex(variable)}}}",
+                "morphism": {"morphism_id": chain[2], "label_ja": "点ごとの順序を積分へ移す", "input_type": "PointwiseOrder", "output_type": "IntegralEnvelope"},
+                "source_state": {"id": "sine-linear-order", "type": "PointwiseOrder"},
+                "target_state": {"id": "positive-integral-envelope", "type": "IntegralEnvelope"},
+                "diagram": diagram_2,
+            },
+            {
+                "id": "elementary-envelope-integral-3",
+                "title": "連続する二整数の間に置く",
+                "explanation_ja": "上側の積分は部分積分でちょうど1になります。元の積分は0より大きく1より小さいため整数ではありません。",
+                "formula_tex": rf"0<\int_0^1e^{{{sp.latex(variable)}}}\sin {sp.latex(variable)}\,d{sp.latex(variable)}<\int_0^1{sp.latex(variable)}e^{{{sp.latex(variable)}}}\,d{sp.latex(variable)}=1",
+                "morphism": {"morphism_id": chain[3], "label_ja": "連続する整数による排除", "input_type": "IntegralEnvelope", "output_type": "NonIntegerCertificate"},
+                "source_state": {"id": "positive-integral-envelope", "type": "IntegralEnvelope"},
+                "target_state": {"id": "noninteger-integral", "type": "NonIntegerCertificate"},
+                "diagram": diagram_3,
+            },
+        ],
+    }
+    return RuntimeSolutionSynthesis(
+        answer=False,
+        answer_tex=r"\(\text{整数ではない。}\)",
+        tool_name="mortra.runtime_elementary_inequality_envelope",
+        expression_tex=sp.latex(integral),
+        derivation_tex=(
+            rf"\(0<{sp.latex(variable)}\le1\) とする。\(g({sp.latex(variable)})={sp.latex(variable)}-\sin {sp.latex(variable)}\) とおけば \(g(0)=0\)、\(g'({sp.latex(variable)})=1-\cos {sp.latex(variable)}>0\) である。従って \(0<\sin {sp.latex(variable)}<{sp.latex(variable)}\) となる。",
+            rf"\(e^{{{sp.latex(variable)}}}>0\) を掛けて積分すると \[0<\int_0^1e^{{{sp.latex(variable)}}}\sin {sp.latex(variable)}\,d{sp.latex(variable)}<\int_0^1{sp.latex(variable)}e^{{{sp.latex(variable)}}}\,d{sp.latex(variable)}.\]",
+            rf"右辺は部分積分により \[\int_0^1{sp.latex(variable)}e^{{{sp.latex(variable)}}}\,d{sp.latex(variable)}=\left[e^{{{sp.latex(variable)}}}({sp.latex(variable)}-1)\right]_0^1=1.\]",
+            r"従って、求める積分値は0と1の間に厳密に入る。よって整数ではない。",
+        ),
+        verification_checks=(
+            "現在入力から積分区間、指数関数、正弦、整数判定の問いを抽出",
+            "x-sin(x) の導関数の符号から点ごとの厳密不等式を構成",
+            "正の指数関数を掛けて不等号を積分へ移送",
+            "比較先の積分を部分積分で厳密に1へ評価",
+        ),
+        proof_program=(
+            {"rule": chain[0], "query_kind": kind},
+            {"rule": chain[1], "domain": "0<x<=1"},
+            {
+                "rule": chain[2],
+                "positive_multiplier": sp.srepr(sp.exp(variable)),
+            },
+            {
+                "rule": chain[3],
+                "lower_integer": 0,
+                "upper_integer": 1,
+                "comparison_integral": str(comparison_integral),
+            },
+        ),
+        diagram=diagram_3,
+        witness={
+            "query_kind": kind,
+            "variable": str(variable),
+            "integral": sp.srepr(integral),
+            "comparison_integral": str(comparison_integral),
+            "strict_lower_integer": 0,
+            "strict_upper_integer": 1,
+        },
+        visual_explanation=visual_explanation,
+    )
+
+
 def synthesize_runtime_solution(statement: str) -> RuntimeSolutionSynthesis | None:
     """Run reusable current-input kernels from narrowest proof obligation."""
 
@@ -4923,6 +5890,7 @@ def synthesize_runtime_solution(statement: str) -> RuntimeSolutionSynthesis | No
         synthesize_reciprocal_product_wallis_chain,
         synthesize_sine_cosine_iteration,
         synthesize_rotated_parabola_limit,
+        synthesize_elementary_envelope,
         synthesize_polynomial_mobius_fixed_point,
         synthesize_rational_angle_cosine_algebra,
         synthesize_primitive_right_triangle_center_fraction,

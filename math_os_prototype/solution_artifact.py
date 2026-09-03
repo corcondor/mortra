@@ -56,7 +56,8 @@ def _safe_statement(value: str) -> str:
     )
     # Every item is now an explicit paragraph.  Leaving its former list wrapper
     # behind creates an invalid empty enumerate/itemize environment.
-    return re.sub(r"\\(?:begin|end)\{(?:enumerate|itemize)\}", "", standalone)
+    normalized = re.sub(r"\\(?:begin|end)\{(?:enumerate|itemize)\}", "", standalone)
+    return "\n".join(line.rstrip() for line in normalized.splitlines())
 
 
 def _field_labels(card: dict[str, Any]) -> list[str]:
@@ -201,6 +202,19 @@ _STAGE_LABELS_JA = {
     "restore_distance_scale_and_take_limit": "距離尺度の復元",
     "convert_solid_volume_to_boundary_moment": "回転体積の境界積分",
     "reflect_negative_rotation": "負の回転角への反転対称性",
+    "mortra.runtime_elementary_inequality_envelope": "初等関数の厳密な上下界",
+    "elaborate_elementary_inequality_query": "初等不等式の型付け",
+    "construct_alternating_series_envelope": "交代級数の上下包絡",
+    "transport_order_through_definite_integral": "不等式の定積分への移送",
+    "enclose_pi_by_archimedean_rationals": "円周率の有理区間評価",
+    "bound_positive_series_tail_geometrically": "正項級数の尾項評価",
+    "compare_positive_radicals_by_squaring": "正の根号の平方比較",
+    "derive_sine_below_identity": "正弦の直線上界",
+    "trap_positive_integral_between_consecutive_integers": "連続する整数による排除",
+    "substitute_reciprocal_domain": "逆数による区間変換",
+    "compare_log_power_series_coefficientwise": "対数級数の係数比較",
+    "transport_bound_through_increasing_tangent": "正接による上界の移送",
+    "maximize_convex_function_at_interval_endpoints": "凸関数の端点最大",
     "solve.exact.mortra.runtime_sine_cosine_tangent_bound": "凹性から得た接線上界",
     "solve.exact.mortra.runtime_sine_cosine_fixed_point": "一意な固定点とその位置",
     "solve.exact.mortra.runtime_sine_cosine_two_step_bound": "二段反復の一次上界",
@@ -313,6 +327,58 @@ _MORPHISM_PRESENTATION_JA: dict[str, tuple[str, str]] = {
         "負の回転角を反転対称性で扱う",
         "領域の体積が回転角の偶関数であることを用い、左右の片側極限を比較する。",
     ),
+    "mortra.runtime_elementary_inequality_envelope": (
+        "初等関数を厳密な上下界で挟む",
+        "級数の剰余、単調性、積分による順序保存を組み合わせ、浮動小数近似なしで不等式を閉じる。",
+    ),
+    "elaborate_elementary_inequality_query": (
+        "初等不等式を型付きの証明義務へ移す",
+        "関数、区間、比較対象、整数判定を問題文から取り出し、必要な上下界の向きを確定する。",
+    ),
+    "construct_alternating_series_envelope": (
+        "交代級数から多項式の上下界を作る",
+        "項の絶対値が減少する区間を確認し、切り捨て次数に応じた剰余の符号を利用する。",
+    ),
+    "transport_order_through_definite_integral": (
+        "点ごとの不等式を定積分へ移す",
+        "区間上の上下関係と正の乗数を保ったまま、関数の比較を積分値の比較へ変える。",
+    ),
+    "enclose_pi_by_archimedean_rationals": (
+        "円周率を有理数の区間で挟む",
+        "円周率を含む多項式を有理区間で外側から評価し、最後の符号判定を有理数計算へ落とす。",
+    ),
+    "bound_positive_series_tail_geometrically": (
+        "正項級数の残りを等比級数で抑える",
+        "有限部分和より後の分母増加を共通比へ変換し、無限の尾項に有理数上界を与える。",
+    ),
+    "compare_positive_radicals_by_squaring": (
+        "正の根号を平方して比較する",
+        "両辺の正値を確認してから平方し、根号を含む大小比較を有理数の符号判定へ変える。",
+    ),
+    "derive_sine_below_identity": (
+        "正弦を直線で上から抑える",
+        "x-sin(x) の導関数を調べ、正の区間で sin(x)<x を得る。",
+    ),
+    "trap_positive_integral_between_consecutive_integers": (
+        "正の積分を連続する二整数の間へ置く",
+        "比較積分を厳密に評価し、対象が整数になれない開区間へ閉じ込める。",
+    ),
+    "substitute_reciprocal_domain": (
+        "逆数で無限区間を単位区間へ移す",
+        "x>1 を y=1/x によって 0<y<1 へ変え、同値な一変数不等式を作る。",
+    ),
+    "compare_log_power_series_coefficientwise": (
+        "二つの対数級数を係数ごとに比べる",
+        "同じべきに掛かる正の係数を比較し、区間全体で成り立つ指数関数の上界を得る。",
+    ),
+    "transport_bound_through_increasing_tangent": (
+        "上界を単調な正接へ通す",
+        "二つの角が正接の単調区間にあることを確認し、角の大小を正接値の大小へ移す。",
+    ),
+    "maximize_convex_function_at_interval_endpoints": (
+        "凸関数の最大値を端点で評価する",
+        "二階導関数の正値から凸性を確認し、閉区間全体の上界を二つの端点へ縮約する。",
+    ),
 }
 
 for _runtime_morphism in (
@@ -322,6 +388,7 @@ for _runtime_morphism in (
     "mortra.runtime_sine_cosine_iteration_integral_bound",
     "mortra.runtime_rotated_parabola_blowup_distance",
     "mortra.runtime_rotated_parabola_boundary_moment",
+    "mortra.runtime_elementary_inequality_envelope",
 ):
     _MORPHISM_PRESENTATION_JA[f"solve.exact.{_runtime_morphism}"] = (
         _MORPHISM_PRESENTATION_JA[_runtime_morphism]
@@ -556,8 +623,10 @@ def _plane_diagram_tex(diagram: dict[str, Any]) -> str:
                 px, py = float(point["x"]), float(point["y"])
             except (KeyError, TypeError, ValueError):
                 continue
-            label = _escape_text(str(shape.get("text") or ""))
-            if label:
+            label_tex = str(shape.get("tex") or "").strip()
+            label_text = _escape_text(str(shape.get("text") or "").strip())
+            if label_tex or label_text:
+                label = rf"\({label_tex}\)" if label_tex else label_text
                 lines.append(
                     rf"\node[font=\scriptsize,fill=white,inner sep=1.5pt] "
                     rf"at ({px:.8f},{py:.8f}) {{{label}}};"

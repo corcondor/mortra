@@ -691,6 +691,170 @@ class PublicSolveTests(unittest.TestCase):
             tool = payload["cards"][0]["execution_certificate"].get("tool_name")
             self.assertNotEqual(tool, "mortra.runtime_complement_angle_integral_bound")
 
+    def test_sinc_integral_bounds_are_synthesized_without_a_registered_route(self) -> None:
+        status, payload = solve_problem(
+            r"$\frac{2\pi}{5}<\int_0^{\pi/2}\frac{\sin x}{x}\,dx<\frac32$を示せ。",
+            allow_theorem_kernels=False,
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertIn(r"\frac{2 \pi}{5}", card["answer_tex"])
+        self.assertIn(r"\frac{3}{2}", card["answer_tex"])
+        certificate = card["execution_certificate"]
+        self.assertEqual(
+            certificate["tool_name"],
+            "mortra.runtime_elementary_inequality_envelope",
+        )
+        witness = certificate["witness"]
+        self.assertEqual(witness["lower_margin"], "107066/1095885")
+        self.assertEqual(
+            witness["upper_margin"],
+            "2766887507659/21655476637200",
+        )
+        self.assertEqual(len(card["visual_explanation"]["steps"]), 3)
+        self.assertNotIn(
+            "structural_theorem_query",
+            json.dumps(certificate, ensure_ascii=False),
+        )
+
+    def test_sinc_integral_envelope_recomputes_changed_bounds_and_variable(self) -> None:
+        status, payload = solve_problem(
+            r"$\frac{\pi}{3}<\int_0^{\pi/2}\frac{\sin t}{t}\,dt<\frac75$を示せ。",
+            allow_theorem_kernels=False,
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        witness = card["execution_certificate"]["witness"]
+        self.assertEqual(witness["variable"], "t")
+        self.assertEqual(witness["requested_lower"], "Mul(Rational(1, 3), pi)")
+        self.assertEqual(witness["requested_upper"], "Rational(7, 5)")
+
+    def test_sinc_integral_envelope_rejects_an_uncertified_false_upper_bound(self) -> None:
+        status, payload = solve_problem(
+            r"$\frac{2\pi}{5}<\int_0^{\pi/2}\frac{\sin x}{x}\,dx<\frac43$を示せ。",
+            allow_theorem_kernels=False,
+        )
+
+        if status == 200:
+            tool = payload["cards"][0]["execution_certificate"].get("tool_name")
+            self.assertNotEqual(tool, "mortra.runtime_elementary_inequality_envelope")
+
+    def test_two_part_exponential_problem_requires_both_child_certificates(self) -> None:
+        problem = (
+            r"$(1)\ e<1+\sqrt3$を示せ.\\"
+            r"$(2)\ \displaystyle\int_0^1e^x\sin x\,dx$は整数か."
+        )
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assertEqual(card["family_id"], "solve.composite.all_obligations")
+        self.assert_runtime_synthesis_card(card)
+        self.assertIn(r"e<1 + \sqrt{3}", card["answer_tex"])
+        self.assertIn("整数ではない", card["answer_tex"])
+        certificate = card["execution_certificate"]
+        self.assertEqual(len(certificate["children"]), 2)
+        self.assertEqual(len(card["proof_obligations"]), 2)
+        self.assertEqual(len(card["visual_explanation"]["steps"]), 6)
+        self.assertTrue(
+            all(
+                child["certificate_sha256"]
+                for child in certificate["children"]
+            )
+        )
+
+    def test_positive_exp_sine_integral_reuses_the_chart_with_a_new_variable(self) -> None:
+        status, payload = solve_problem(
+            r"$\int_0^1e^t\sin t\,dt$は整数か。",
+            allow_theorem_kernels=False,
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertIn("整数ではない", card["answer_tex"])
+        witness = card["execution_certificate"]["witness"]
+        self.assertEqual(witness["variable"], "t")
+        self.assertEqual(witness["comparison_integral"], "1")
+
+    def test_exponential_radical_bound_rejects_an_insufficient_target(self) -> None:
+        status, payload = solve_problem(
+            r"$e<1+\sqrt2$を示せ。",
+            allow_theorem_kernels=False,
+        )
+
+        if status == 200:
+            tool = payload["cards"][0]["execution_certificate"].get("tool_name")
+            self.assertNotEqual(tool, "mortra.runtime_elementary_inequality_envelope")
+
+    def test_reciprocal_exponential_tangent_bound_is_synthesized_cold(self) -> None:
+        problem = (
+            r"$x>1$において、"
+            r"$\tan\left(e\left(1-\frac1x\right)^x\right)+\frac1x<\frac\pi2$"
+            r"を示せ。"
+        )
+
+        status, payload = solve_problem(problem, allow_theorem_kernels=False)
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertIn(r"\frac\pi2", card["answer_tex"])
+        certificate = card["execution_certificate"]
+        self.assertEqual(
+            certificate["tool_name"],
+            "mortra.runtime_elementary_inequality_envelope",
+        )
+        witness = certificate["witness"]
+        self.assertEqual(witness["source_variable"], "x")
+        self.assertEqual(
+            witness["endpoint_checks"]["tan_one_to_39_over_25"],
+            "21/9725",
+        )
+        self.assertEqual(
+            witness["endpoint_checks"]["tan_half_to_11_over_20"],
+            "1/480",
+        )
+        self.assertEqual(len(card["visual_explanation"]["steps"]), 3)
+        self.assertNotIn(
+            "structural_theorem_query",
+            json.dumps(certificate, ensure_ascii=False),
+        )
+
+    def test_reciprocal_exponential_tangent_bound_reuses_a_new_variable(self) -> None:
+        status, payload = solve_problem(
+            r"$z>1$のとき"
+            r"$\tan\left(e\left(1-\frac1z\right)^z\right)+\frac1z<\frac\pi2$"
+            r"を証明せよ。",
+            allow_theorem_kernels=False,
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        self.assertEqual(
+            card["execution_certificate"]["witness"]["source_variable"],
+            "z",
+        )
+        self.assertIn(r"\frac1{z}", card["answer_tex"])
+
+    def test_reciprocal_exponential_tangent_chart_rejects_a_changed_summand(self) -> None:
+        status, payload = solve_problem(
+            r"$x>1$のとき"
+            r"$\tan\left(e\left(1-\frac1x\right)^x\right)+\frac2x<\frac\pi2$"
+            r"を証明せよ。",
+            allow_theorem_kernels=False,
+        )
+
+        if status == 200:
+            tool = payload["cards"][0]["execution_certificate"].get("tool_name")
+            self.assertNotEqual(tool, "mortra.runtime_elementary_inequality_envelope")
+
     def test_bare_japanese_linear_system_projects_requested_expression(self) -> None:
         status, payload = solve_public_problem(
             "実数 x, y が 2x+y=11, x-y=1 を満たすとき、x+3y を求めよ。"

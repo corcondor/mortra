@@ -1,4 +1,33 @@
-from math_os_prototype.solution_artifact import _state_diagram_tex, _state_layout
+from math_os_prototype.solution_artifact import (
+    _plane_diagram_tex,
+    _safe_statement,
+    _state_diagram_tex,
+    _state_layout,
+)
+
+
+def test_plane_diagram_renders_explicit_math_labels_without_escaping() -> None:
+    diagram = {
+        "kind": "plane",
+        "viewport": {"xMin": 0, "xMax": 3, "yMin": -1, "yMax": 1},
+        "axes": True,
+        "shapes": [
+            {
+                "kind": "label",
+                "point": {"x": 2, "y": 0},
+                "tex": r"1+\sqrt{3}",
+            }
+        ],
+    }
+
+    tex = _plane_diagram_tex(diagram)
+
+    assert r"\(1+\sqrt{3}\)" in tex
+    assert r"\textbackslash{}sqrt" not in tex
+
+
+def test_safe_statement_removes_internal_trailing_whitespace() -> None:
+    assert _safe_statement("$x>1$において, \n\\[x<2\\]\n") == "$x>1$において,\n\\[x<2\\]"
 
 
 def test_state_diagram_renders_formulae_in_non_overlapping_boxes() -> None:
