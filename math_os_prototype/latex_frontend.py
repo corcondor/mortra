@@ -42,6 +42,17 @@ UNICODE_GREEK_NAMES = {
     "π": "pi",
 }
 
+DISPLAY_MATH_ENVIRONMENTS = (
+    "align",
+    "align*",
+    "equation",
+    "equation*",
+    "gather",
+    "gather*",
+    "multline",
+    "multline*",
+)
+
 
 @dataclass
 class LatexProblem:
@@ -176,7 +187,7 @@ def split_tex_text_math(source: str) -> tuple[str, list[TexMathSpan]]:
             continue
 
         content_start = i + len(delimiter)
-        close_delimiter = {"$": "$", "$$": "$$", r"\(": r"\)", r"\[": r"\]"}[delimiter]
+        close_delimiter = math_close_delimiter(delimiter)
         end = find_math_end(source, content_start, close_delimiter)
         if end is None:
             i += len(delimiter)
@@ -203,7 +214,21 @@ def math_start_delimiter(source: str, index: int) -> str | None:
         return "$$"
     if source[index] == "$" and not is_escaped(source, index):
         return "$"
+    for environment in DISPLAY_MATH_ENVIRONMENTS:
+        delimiter = rf"\begin{{{environment}}}"
+        if source.startswith(delimiter, index):
+            return delimiter
     return None
+
+
+def math_close_delimiter(open_delimiter: str) -> str:
+    fixed = {"$": "$", "$$": "$$", r"\(": r"\)", r"\[": r"\]"}
+    if open_delimiter in fixed:
+        return fixed[open_delimiter]
+    match = re.fullmatch(r"\\begin\{([^{}]+)\}", open_delimiter)
+    if match is None or match.group(1) not in DISPLAY_MATH_ENVIRONMENTS:
+        raise ValueError(f"unsupported math delimiter: {open_delimiter}")
+    return rf"\end{{{match.group(1)}}}"
 
 
 def find_math_end(source: str, start: int, close_delimiter: str) -> int | None:
@@ -267,9 +292,14 @@ def normalize_latex_math(expr: str) -> str:
     expr = re.sub(r"\\begin\{(?:aligned|align\*?|gathered|cases)\}", " ", expr)
     expr = re.sub(r"\\end\{(?:aligned|align\*?|gathered|cases)\}", " ", expr)
     expr = expr.replace("&", "")
+    # Some imported exam corpora contain a single trailing backslash where
+    # TeX would normally require ``\\``.  It is still unambiguously a row
+    # boundary when followed immediately by a newline.
+    expr = re.sub(r"[,，]?\s*\\{1,2}[ \t]*(?:\r?\n)+\s*", ";", expr)
     # Preserve display rows as mathematical statement separators.  The
     # symbolic lowering stage consumes these as a constraint conjunction.
     expr = expr.replace(r"\\", ";")
+    expr = re.sub(r"[,，]?\s*;\s*", ";", expr)
     expr = expr.replace(r"\left", "").replace(r"\right", "")
     # TeX spacing commands are semantically empty, but they still delimit
     # neighbouring tokens.  Removing them outright turns ``n\,dx`` into the
@@ -455,7 +485,10 @@ def normalize_fractions(expr: str) -> str:
             lambda match: f"({match.group(1)}+(({match.group(2)})/({match.group(3)})))",
             expr,
         )
-        compact_pattern = re.compile(rf"{re.escape(command)}\s*([A-Za-z0-9])\s*([A-Za-z0-9])")
+        compact_atom = r"(?:\\[A-Za-z]+|[A-Za-z0-9])"
+        compact_pattern = re.compile(
+            rf"{re.escape(command)}\s*({compact_atom})\s*({compact_atom})"
+        )
         expr = compact_pattern.sub(
             lambda match: f"(({normalize_latex_math(match.group(1))})/({normalize_latex_math(match.group(2))}))",
             expr,

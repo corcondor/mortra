@@ -1816,6 +1816,122 @@ class PublicSolveTests(unittest.TestCase):
         self.assertEqual(wrong_status, 422)
         self.assertEqual(false_integral_status, 422)
 
+    def test_sine_cosine_iteration_chart_certifies_direct_and_scaffold_forms(self) -> None:
+        direct = (
+            r"$n\in\mathbb N$ に対し、$f_1(x)=\cos x+\sin x,$ "
+            r"$f_{n+1}(x)=\cos\{f_n(x)\}+\sin\{f_n(x)\}$ とする。"
+            r"$\displaystyle\int_0^{\frac{\pi}{2}}f_n(x)\,dx\leq2$ を示せ。"
+        )
+        scaffold = r"""
+            正の整数 $n$ に対して、関数 $f_n(x)$ を
+            \begin{align*}
+            f_1(x)&=\cos x+\sin x,\\
+            f_{n+1}(x)&=f_1(f_n(x))
+            \end{align*}
+            によって定める。
+            \begin{enumerate}
+            \item $\dfrac{\pi}{3}\leq x\leq\dfrac{\pi}{2}$ において
+            \begin{equation*}
+            f_1(x)\leq-\dfrac{\sqrt{2}}{2}\left(x-\dfrac{5\pi}{12}\right)
+            +\dfrac{\sqrt{6}}{2}
+            \end{equation*}
+            を示せ。
+            \item 方程式 $x-f_1(x)=0$ は $0\leq x\leq\dfrac{\pi}{2}$ に
+            ただ一つの解 $\alpha$ をもつことを示し、$\alpha$ と $\dfrac4\pi$ を比較せよ。
+            \item $1\leq t\leq\sqrt2$ のとき
+            \begin{equation*}
+            f_1(f_1(t))\leq\dfrac4\pi+\dfrac{\sqrt3-1}{2}
+            \left(t-\dfrac4\pi\right)
+            \end{equation*}
+            を示せ。
+            \item 全ての正の整数 $n$ に対して
+            \begin{equation*}
+            \int_0^{\frac{\pi}{2}}f_n(x)\,dx\leq2
+            \end{equation*}
+            を示せ。
+            \end{enumerate}
+        """
+
+        direct_status, direct_payload = solve_problem(
+            direct,
+            allow_theorem_kernels=False,
+        )
+        scaffold_status, scaffold_payload = solve_problem(
+            scaffold,
+            allow_theorem_kernels=False,
+        )
+
+        self.assertEqual(direct_status, 200)
+        direct_card = direct_payload["cards"][0]
+        self.assert_runtime_synthesis_card(direct_card)
+        self.assertEqual(
+            direct_card["execution_certificate"]["witness"]["query_kind"],
+            "integral_bound",
+        )
+        self.assertIn(r"I_{n+2}", direct_card["solution_tex"])
+        self.assertIn(r"D(1)>1/400", direct_card["solution_tex"])
+        self.assertIn(r"H'''(t)", direct_card["solution_tex"])
+        self.assertNotIn("LatexSyntaxTree", direct_card["solution_document_tex"])
+        self.assertNotIn("SymPyExpression", direct_card["solution_document_tex"])
+        self.assertNotIn(
+            "mortra.runtime_sine_cosine_iteration_integral_bound",
+            direct_card["solution_document_tex"],
+        )
+        self.assertNotIn(
+            "current-input typed program synthesis",
+            direct_card["solution_document_tex"],
+        )
+        self.assertIn("積分列の二段縮小評価", direct_card["solution_document_tex"])
+        self.assertEqual(scaffold_status, 200)
+        scaffold_card = scaffold_payload["cards"][0]
+        scaffold_certificate = scaffold_card["execution_certificate"]
+        self.assertEqual(scaffold_card["family_id"], "solve.composite.all_obligations")
+        self.assertEqual(scaffold_certificate["capability_origin"], "synthesized_proof_program")
+        self.assertFalse(scaffold_certificate["registered_composite_used"])
+        self.assertEqual(len(scaffold_certificate["children"]), 4)
+        self.assertEqual(len(scaffold_card["visual_explanation"]["steps"]), 4)
+        self.assertIn(r"\alpha<\frac4\pi", scaffold_card["answer_tex"])
+        self.assertIn(r"\int_0^{\pi/2}f_{n}(x)\,dx\le2", scaffold_card["answer_tex"])
+        self.assertNotIn("solve.exact.mortra.runtime", scaffold_card["solution_document_tex"])
+        self.assertIn("各設問の証明書を再生する", scaffold_card["solution_document_tex"])
+
+    def test_sine_cosine_iteration_chart_generalizes_names_and_rejects_false_targets(self) -> None:
+        renamed = (
+            r"$g_1(y)=\sin y+\cos y,$ "
+            r"$g_{k+1}(y)=\sin\{g_k(y)\}+\cos\{g_k(y)\}$ とする。"
+            r"$\displaystyle\int_0^{\frac{\pi}{2}}g_k(y)\,dy\leq2$ を示せ。"
+        )
+        false_bound = renamed.replace(r"\leq2", r"\leq1")
+        wrong_map = renamed.replace(r"\sin y+\cos y", r"2\sin y+\cos y")
+        incomplete_parent = r"""
+            $f_1(x)=\cos x+\sin x,$ $f_{n+1}(x)=f_1(f_n(x))$ とする。
+            \begin{enumerate}
+            \item $\dfrac{\pi}{3}\leq x\leq\dfrac{\pi}{2}$ で
+            $f_1(x)\leq-\dfrac{\sqrt2}{2}(x-\dfrac{5\pi}{12})+\dfrac{\sqrt6}{2}$ を示せ。
+            \item $1\leq t\leq\sqrt2$ で
+            $f_1(f_1(t))\leq\dfrac4\pi+\dfrac{\sqrt3}{2}(t-\dfrac4\pi)$ を示せ。
+            \end{enumerate}
+        """
+
+        status, payload = solve_problem(renamed, allow_theorem_kernels=False)
+        false_status, _ = solve_problem(false_bound, allow_theorem_kernels=False)
+        wrong_map_status, _ = solve_problem(wrong_map, allow_theorem_kernels=False)
+        incomplete_status, _ = solve_problem(
+            incomplete_parent,
+            allow_theorem_kernels=False,
+        )
+
+        self.assertEqual(status, 200)
+        card = payload["cards"][0]
+        self.assert_runtime_synthesis_card(card)
+        witness = card["execution_certificate"]["witness"]
+        self.assertEqual(witness["sequence"], "g")
+        self.assertEqual(witness["index"], "k")
+        self.assertEqual(witness["source_variable"], "y")
+        self.assertEqual(false_status, 422)
+        self.assertEqual(wrong_map_status, 422)
+        self.assertEqual(incomplete_status, 422)
+
     def test_trigonometric_geometric_progression_is_elaborated_from_its_relation(self) -> None:
         status, payload = solve_problem(
             r"$\sin\theta,$ $\cos\theta,$ $\tan\theta$がこの順で等比数列をなすような"

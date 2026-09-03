@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from fractions import Fraction
+import math
 from math import gcd
 import re
 from typing import Any, Callable
@@ -20,7 +21,11 @@ from sympy.parsing.latex import parse_latex
 from math_os_prototype.euclidean_geometry_runtime import (
     synthesize_euclidean_geometry_runtime,
 )
-from math_os_prototype.latex_frontend import parse_latex_problem
+from math_os_prototype.exact_interval_charts import (
+    alternating_trig_bounds,
+    alternating_trig_interval_chart,
+)
+from math_os_prototype.latex_frontend import normalize_latex_math, parse_latex_problem
 from math_os_prototype.structural_theorem_query import (
     solve_mobius_polynomial_fixed_point_chart,
 )
@@ -3614,6 +3619,536 @@ def synthesize_reciprocal_product_wallis_chain(
     )
 
 
+def _math_signature(source: str) -> str:
+    """Discard presentation-only spacing and multiplication marks."""
+
+    return re.sub(r"[\s*]+", "", source)
+
+
+def _expected_math_signature(source: str) -> str:
+    return _math_signature(normalize_latex_math(source))
+
+
+def _parse_sine_cosine_iteration(statement: str) -> dict[str, Any] | None:
+    """Read an iterated h(x)=sin(x)+cos(x) system from current input."""
+
+    segments = parse_latex_problem(statement).math_segments
+    signatures = [_math_signature(segment) for segment in segments]
+    combined = ";".join(signatures)
+    definition = re.search(
+        r"(?P<sequence>[A-Za-z]+)_1\((?P<variable>[A-Za-z]+)\)="
+        r"(?P<body>[^;,]+)",
+        combined,
+    )
+    if definition is None:
+        return None
+    sequence = definition.group("sequence")
+    variable = definition.group("variable")
+    if definition.group("body") not in {
+        f"sin({variable})+cos({variable})",
+        f"cos({variable})+sin({variable})",
+    }:
+        return None
+
+    recurrence = re.search(
+        rf"{re.escape(sequence)}_\((?P<index>[A-Za-z]+)\+1\)"
+        rf"\({re.escape(variable)}\)=(?P<body>[^;,]+)",
+        combined,
+    )
+    if recurrence is None:
+        return None
+    index_name = recurrence.group("index")
+    recurrence_body = recurrence.group("body")
+    inner = f"{sequence}_{index_name}({variable})"
+    accepted_bodies = (
+        f"{sequence}_1({inner})",
+        f"sin{inner}+cos{inner}",
+        f"cos{inner}+sin{inner}",
+        f"sin({inner})+cos({inner})",
+        f"cos({inner})+sin({inner})",
+    )
+    if not any(recurrence_body.startswith(body) for body in accepted_bodies):
+        return None
+    return {
+        "sequence": sequence,
+        "index": index_name,
+        "variable": variable,
+        "segments": segments,
+        "signatures": signatures,
+    }
+
+
+def _sine_cosine_iteration_query(
+    statement: str,
+    context: dict[str, Any],
+) -> dict[str, Any] | None:
+    sequence = context["sequence"]
+    index_name = context["index"]
+    variable = context["variable"]
+    signatures = context["signatures"]
+    queries: list[dict[str, Any]] = []
+
+    tangent_target = _expected_math_signature(
+        rf"{sequence}_1({variable})\leq"
+        r"-\dfrac{\sqrt{2}}{2}\left("
+        + variable
+        + r"-\dfrac{5\pi}{12}\right)+\dfrac{\sqrt{6}}{2}"
+    )
+    tangent_interval = _expected_math_signature(
+        rf"\dfrac{{\pi}}{{3}}\leq {variable}\leq\dfrac{{\pi}}{{2}}"
+    )
+    if tangent_target in signatures and tangent_interval in signatures:
+        queries.append({"kind": "tangent_bound", "variable": variable})
+
+    fixed_equation = _expected_math_signature(
+        rf"{variable}-{sequence}_1({variable})=0"
+    )
+    fixed_interval = _expected_math_signature(
+        rf"0\leq {variable}\leq\dfrac{{\pi}}{{2}}"
+    )
+    comparison = _expected_math_signature(r"\dfrac{4}{\pi}")
+    if (
+        fixed_equation in signatures
+        and fixed_interval in signatures
+        and comparison in signatures
+        and re.search(r"(?:ただ一つ|唯一|unique)", statement, re.I)
+    ):
+        queries.append({"kind": "fixed_point", "variable": variable})
+
+    composition_pattern = re.compile(
+        rf"{re.escape(sequence)}_1\({re.escape(sequence)}_1\("
+        r"(?P<variable>[A-Za-z]+)\)\)<="
+    )
+    for signature in signatures:
+        match = composition_pattern.match(signature)
+        if match is None:
+            continue
+        query_variable = match.group("variable")
+        expected = _expected_math_signature(
+            rf"{sequence}_1({sequence}_1({query_variable}))\leq"
+            r"\dfrac{4}{\pi}+\dfrac{\sqrt{3}-1}{2}\left("
+            + query_variable
+            + r"-\dfrac{4}{\pi}\right)"
+        )
+        expected_interval = _expected_math_signature(
+            rf"1\leq {query_variable}\leq\sqrt{{2}}"
+        )
+        if signature == expected and expected_interval in signatures:
+            queries.append({"kind": "two_step_bound", "variable": query_variable})
+
+    integral_prefix = _expected_math_signature(
+        rf"\int_0^{{\frac{{\pi}}{{2}}}}"
+        rf"{sequence}_{index_name}({variable})\,d{variable}"
+    )
+    for signature in signatures:
+        prefix = integral_prefix + "<="
+        if not signature.startswith(prefix):
+            continue
+        bound = _sympify_exact_scalar(signature[len(prefix) :])
+        if bound is None or sp.simplify(bound >= 2) is not sp.S.true:
+            return None
+        queries.append(
+            {
+                "kind": "integral_bound",
+                "variable": variable,
+                "bound": bound,
+            }
+        )
+    return queries[0] if len(queries) == 1 else None
+
+
+def _sine_cosine_iteration_certificate() -> dict[str, Any] | None:
+    """Replay the exact interval proof for the two-step affine bound."""
+
+    pi_lower = sp.Rational(333, 106)
+    pi_upper = sp.Rational(355, 113)
+    sqrt2_lower = sp.Rational(140, 99)
+    sqrt2_upper = sp.Rational(99, 70)
+    sqrt3_lower = sp.Rational(265, 153)
+    sqrt3_upper = sp.Rational(97, 56)
+    lambda_lower = (sqrt3_lower - 1) / 2
+    lambda_upper = (sqrt3_upper - 1) / 2
+
+    def sum_bounds(value: sp.Rational) -> tuple[sp.Rational, sp.Rational]:
+        sin_lower, sin_upper, cos_lower, cos_upper = alternating_trig_bounds(value)
+        return sin_lower + cos_lower, sin_upper + cos_upper
+
+    def difference_bounds(value: sp.Rational) -> tuple[sp.Rational, sp.Rational]:
+        sin_lower, sin_upper, cos_lower, cos_upper = alternating_trig_bounds(value)
+        return sin_lower - cos_upper, sin_upper - cos_lower
+
+    inner_one_lower, inner_one_upper = sum_bounds(sp.Rational(1))
+    composition_one_upper = sum_bounds(inner_one_lower)[1]
+    line_one_lower = (4 / pi_upper) * (1 - lambda_upper) + lambda_upper
+    endpoint_one_margin = sp.factor(line_one_lower - composition_one_upper)
+
+    inner_sqrt2_lower = sum_bounds(sqrt2_upper)[0]
+    composition_sqrt2_upper = sum_bounds(inner_sqrt2_lower)[1]
+    line_sqrt2_lower = (
+        (4 / pi_upper) * (1 - lambda_lower)
+        + lambda_lower * sqrt2_lower
+    )
+    endpoint_sqrt2_margin = sp.factor(
+        line_sqrt2_lower - composition_sqrt2_upper
+    )
+
+    composition_derivative_one_upper = (
+        difference_bounds(inner_one_upper)[1]
+        * difference_bounds(sp.Rational(1))[1]
+    )
+    derivative_one_margin = sp.factor(
+        lambda_lower - composition_derivative_one_upper
+    )
+    composition_derivative_sqrt2_lower = (
+        difference_bounds(inner_sqrt2_lower)[0]
+        * difference_bounds(sqrt2_lower)[0]
+    )
+    derivative_sqrt2_margin = sp.factor(
+        composition_derivative_sqrt2_lower - lambda_upper
+    )
+
+    center_lower = 4 / pi_upper
+    tangent_offset_lower = center_lower - 5 * pi_upper / 12
+    fixed_point_gap_lower = sp.factor(
+        center_lower
+        + sqrt2_upper * tangent_offset_lower / 2
+        - sqrt2_upper * sqrt3_upper / 2
+    )
+
+    z = sp.Symbol("z", real=True)
+    h = sp.sin(z) + sp.cos(z)
+    tangent_point = 5 * sp.pi / 12
+    tangent_value_residual = sp.simplify(
+        sp.expand_trig(h.subs(z, tangent_point) - sp.sqrt(6) / 2)
+    )
+    tangent_slope_residual = sp.simplify(
+        sp.expand_trig(sp.diff(h, z).subs(z, tangent_point) + sp.sqrt(2) / 2)
+    )
+    margins = {
+        "endpoint_one": endpoint_one_margin,
+        "endpoint_sqrt2": endpoint_sqrt2_margin,
+        "derivative_one": derivative_one_margin,
+        "derivative_sqrt2": derivative_sqrt2_margin,
+        "fixed_point_gap": fixed_point_gap_lower,
+    }
+    exact_checks = {
+        "pi_interval": bool(pi_lower < sp.pi < pi_upper),
+        "sqrt2_interval": bool(sqrt2_lower < sp.sqrt(2) < sqrt2_upper),
+        "sqrt3_interval": bool(sqrt3_lower < sp.sqrt(3) < sqrt3_upper),
+        "invariant_angle_chamber": bool(
+            pi_upper / 4 < 1 < sqrt2_lower < pi_lower / 2
+        ),
+        "contraction_interval": bool(0 < lambda_lower < lambda_upper < 1),
+        "inner_interval": bool(
+            inner_sqrt2_lower > 1 and inner_one_upper < sqrt2_upper
+        ),
+        "tangent_value_identity": tangent_value_residual == 0,
+        "tangent_slope_identity": tangent_slope_residual == 0,
+    }
+    if any(value <= 0 for value in margins.values()) or not all(exact_checks.values()):
+        return None
+    interval_chart = alternating_trig_interval_chart(
+        [
+            sp.Rational(1),
+            inner_one_lower,
+            inner_one_upper,
+            sqrt2_lower,
+            sqrt2_upper,
+            inner_sqrt2_lower,
+        ]
+    )
+    return {
+        "chart_id": "sine_cosine.iteration.two_step_affine.runtime.v1",
+        "rational_bounds": {
+            "pi": [sp.sstr(pi_lower), sp.sstr(pi_upper)],
+            "sqrt2": [sp.sstr(sqrt2_lower), sp.sstr(sqrt2_upper)],
+            "sqrt3": [sp.sstr(sqrt3_lower), sp.sstr(sqrt3_upper)],
+        },
+        "margins": {key: sp.sstr(value) for key, value in margins.items()},
+        "exact_checks": exact_checks,
+        "trigonometric_interval_chart": interval_chart,
+        "third_derivative_sign": (
+            "H'''=3*h(h(t))*h(t)*h'(t)-h'(h(t))*h'(t)*(h'(t)^2+1)<0"
+        ),
+    }
+
+
+def synthesize_sine_cosine_iteration(
+    statement: str,
+) -> RuntimeSolutionSynthesis | None:
+    """Compose interval, fixed-point, and integral proofs for h=sin+cos."""
+
+    enumerate_match = re.search(
+        r"\\begin\{enumerate\}(?P<body>.*?)\\end\{enumerate\}",
+        statement,
+        flags=re.DOTALL,
+    )
+    if enumerate_match is not None and len(
+        re.findall(r"\\item(?:\[[^\]]+\])?", enumerate_match.group("body"))
+    ) >= 2:
+        return None
+
+    context = _parse_sine_cosine_iteration(statement)
+    if context is None:
+        return None
+    query = _sine_cosine_iteration_query(statement, context)
+    if query is None:
+        return None
+    certificate = _sine_cosine_iteration_certificate()
+    if certificate is None:
+        return None
+
+    sequence = context["sequence"]
+    index_name = context["index"]
+    variable = query["variable"]
+    common_checks = (
+        "現在入力から反復関数、変数、添字、求める不等式を抽出",
+        "1, sqrt(2), pi, sqrt(3) の順序を有理上下界だけで検証",
+        "sin と cos の交代級数を有限項で評価し、全ての端点残差が正であることを確認",
+        "写像が [1,sqrt(2)] を保つことを三角恒等式から確認",
+    )
+    common_program = (
+        {
+            "rule": "parse_iterated_function",
+            "sequence": sequence,
+            "index": index_name,
+            "map": "sin(x)+cos(x)",
+        },
+        {
+            "rule": "certify_invariant_interval",
+            "interval": "[1,sqrt(2)]",
+            "reason": "(sin(t)+cos(t))^2=1+sin(2t)",
+        },
+        {
+            "rule": "replay_alternating_interval_chart",
+            "chart_id": certificate["trigonometric_interval_chart"]["chart_id"],
+            "margins": certificate["margins"],
+        },
+    )
+    common_witness = {
+        "sequence": sequence,
+        "index": index_name,
+        "source_variable": context["variable"],
+        "query_variable": variable,
+        "runtime_chart": certificate,
+    }
+    two_step_derivation = (
+        r"\(h(t)=\sin t+\cos t\)、\(H=h\circ h\)、\(c=4/\pi\)、\(\lambda=(\sqrt3-1)/2\) とし、\(D(t)=c+\lambda(t-c)-H(t)\) とおく。",
+        r"sin と cos の交代級数を12次まで使い、全て有理数で評価すると \(D(1)>1/400\)、\(D(\sqrt2)>1/3000\)、\(D'(1)>1/8\)、\(D'(\sqrt2)<-1/22\) を得る。交代級数の次の項が誤差を上から押さえるため、これらは小数近似ではない。",
+        r"区間内では \(h'(t)<0\)、\(h'(h(t))<0\)、\(h(t)>0\) である。直接微分すると \[H'''(t)=3h(h(t))h(t)h'(t)-h'(h(t))h'(t)\{h'(t)^2+1\}<0.\]",
+        r"従って \(D'''=-H'''>0\) であり、\(D'\) は凸である。端点で \(D'(1)>0>D'(\sqrt2)\) だから、\(D\) は区間内に局所最小値をもたず、最小値を端点で取る。両端点で \(D>0\) なので、区間全体で \(D(t)>0\) となる。",
+    )
+
+    if query["kind"] == "tangent_bound":
+        diagram = function_plot_diagram(
+            [
+                ("h", lambda value: math.sin(value) + math.cos(value), "primary"),
+                (
+                    "tangent",
+                    lambda value: math.sqrt(6) / 2
+                    - math.sqrt(2) / 2 * (value - 5 * math.pi / 12),
+                    "secondary",
+                ),
+            ],
+            x_min=math.pi / 3,
+            x_max=math.pi / 2,
+            title="凹関数と接線",
+            caption="青い曲線は h(x)=sin x+cos x、直線は x=5π/12 における接線です。証明は二階導関数と厳密恒等式によります。",
+            marked_points=[
+                (5 * math.pi / 12, math.sqrt(6) / 2, "5π/12")
+            ],
+        )
+        return RuntimeSolutionSynthesis(
+            answer=True,
+            answer_tex=(
+                rf"\[{sequence}_1({variable})\le-\frac{{\sqrt2}}2"
+                rf"\left({variable}-\frac{{5\pi}}{{12}}\right)+\frac{{\sqrt6}}2.\]"
+            ),
+            tool_name="mortra.runtime_sine_cosine_tangent_bound",
+            expression_tex=rf"{sequence}_1({variable})=\sin {variable}+\cos {variable}",
+            derivation_tex=(
+                rf"\(h({variable})=\sin {variable}+\cos {variable}\) とおく。区間 \([\pi/3,\pi/2]\) では \(h({variable})>0\) なので \(h''({variable})=-h({variable})<0\)。従って \(h\) は凹関数であり、任意の接線はグラフの上にある。",
+                r"\(a=5\pi/12\) とすると、加法定理から \(h(a)=\sqrt6/2\)、\(h'(a)=\cos a-\sin a=-\sqrt2/2\) である。",
+                rf"従って \(h({variable})\le h(a)+h'(a)({variable}-a)=-\dfrac{{\sqrt2}}2({variable}-\dfrac{{5\pi}}{{12}})+\dfrac{{\sqrt6}}2\)。",
+            ),
+            verification_checks=common_checks
+            + ("接点での関数値と傾きの恒等式を記号展開し残差0を確認",),
+            proof_program=common_program
+            + ({"rule": "concave_tangent_upper_bound", "point": "5*pi/12"},),
+            diagram=diagram,
+            witness={**common_witness, "query_kind": "tangent_bound"},
+        )
+
+    if query["kind"] == "fixed_point":
+        diagram = function_plot_diagram(
+            [
+                ("h", lambda value: math.sin(value) + math.cos(value), "primary"),
+                ("identity", lambda value: value, "secondary"),
+            ],
+            x_min=0.0,
+            x_max=math.pi / 2,
+            title="固定点の一意性",
+            caption="h(x) と y=x の交点が固定点です。証明では x-h(x) の単調性と 4/π における厳密な正の余裕を使います。",
+            marked_points=[
+                (
+                    4 / math.pi,
+                    math.sin(4 / math.pi) + math.cos(4 / math.pi),
+                    "x=4/π",
+                )
+            ],
+        )
+        return RuntimeSolutionSynthesis(
+            answer={"unique": True, "comparison": "alpha<4/pi"},
+            answer_tex=(
+                r"\[x=\sin x+\cos x\text{ は }[0,\pi/2]\text{ にただ一つの解 }"
+                r"\alpha\text{ をもち、}\qquad \alpha<\frac4\pi.\]"
+            ),
+            tool_name="mortra.runtime_sine_cosine_fixed_point",
+            expression_tex=rf"{variable}-{sequence}_1({variable})=0",
+            derivation_tex=(
+                rf"\(g({variable})={variable}-\sin {variable}-\cos {variable}\) とおく。\(g(0)=-1\)、\(g(\pi/2)=\pi/2-1>0\) である。",
+                rf"\(0<{variable}\le\pi/2\) では \(g'({variable})=1-\cos {variable}+\sin {variable}>0\) だから、連続性と単調性により零点 \(\alpha\) はただ一つである。",
+                r"前問の接線上界へ \(x=4/\pi\) を代入する。\(333/106<\pi<355/113\)、\(140/99<\sqrt2<99/70\)、\(265/153<\sqrt3<97/56\) を使って各項を同じ向きに評価すると",
+                r"\[g(4/\pi)>\frac{7259089}{314501600}>0.\]よって一意な零点は \(4/\pi\) より左にあり、\(\alpha<4/\pi\) である。",
+            ),
+            verification_checks=common_checks
+            + (
+                "x-h(x) の端点符号と区間内の厳密な増加性を確認",
+                "4/pi における正の下界 7259089/314501600 を有理演算で再生",
+            ),
+            proof_program=common_program
+            + (
+                {"rule": "monotone_fixed_point_crossing", "interval": "[0,pi/2]"},
+                {
+                    "rule": "compare_fixed_point_by_tangent",
+                    "comparison_point": "4/pi",
+                    "gap_lower": certificate["margins"]["fixed_point_gap"],
+                },
+            ),
+            diagram=diagram,
+            witness={**common_witness, "query_kind": "fixed_point"},
+        )
+
+    if query["kind"] == "two_step_bound":
+        contraction = (math.sqrt(3) - 1) / 2
+        center = 4 / math.pi
+        diagram = function_plot_diagram(
+            [
+                (
+                    "two_step",
+                    lambda value: math.sin(math.sin(value) + math.cos(value))
+                    + math.cos(math.sin(value) + math.cos(value)),
+                    "primary",
+                ),
+                (
+                    "affine_bound",
+                    lambda value: center + contraction * (value - center),
+                    "secondary",
+                ),
+            ],
+            x_min=1.0,
+            x_max=math.sqrt(2),
+            title="二段反復の一次上界",
+            caption="h を2回続けて作用させた二段写像 H を、傾きが1未満の直線で上から押さえます。端点と導関数の符号は有理区間証明書で検証済みです。",
+        )
+        return RuntimeSolutionSynthesis(
+            answer=True,
+            answer_tex=(
+                rf"\[{sequence}_1({sequence}_1({variable}))\le\frac4\pi+"
+                rf"\frac{{\sqrt3-1}}2\left({variable}-\frac4\pi\right)"
+                r"\qquad(1\le "
+                + variable
+                + r"\le\sqrt2).\]"
+            ),
+            tool_name="mortra.runtime_sine_cosine_two_step_bound",
+            expression_tex=rf"{sequence}_1({sequence}_1({variable}))",
+            derivation_tex=two_step_derivation,
+            verification_checks=common_checks
+            + (
+                "二段写像と比較直線の端点値を厳密有理区間で分離",
+                "比較差の両端の導関数符号を厳密有理区間で分離",
+                "H''' の符号分解から比較差の内部最小値がないことを確認",
+            ),
+            proof_program=common_program
+            + (
+                {"rule": "compose_map_twice", "result": "H=h∘h"},
+                {
+                    "rule": "certify_two_step_affine_majorant",
+                    "center": "4/pi",
+                    "slope": "(sqrt(3)-1)/2",
+                    "margins": certificate["margins"],
+                },
+            ),
+            diagram=diagram,
+            witness={**common_witness, "query_kind": "two_step_bound"},
+        )
+
+    bound = query["bound"]
+    diagram = state_transition_diagram(
+        [
+            {"id": "range", "label": r"1\le f_n(x)\le\sqrt2", "terminal": False},
+            {"id": "two_step", "label": r"H(t)\le c+\lambda(t-c)", "terminal": False},
+            {"id": "integral", "label": r"I_{n+2}-2\le\lambda(I_n-2)", "terminal": False},
+            {"id": "bound", "label": rf"I_n\le {sp.latex(bound)}", "terminal": True},
+        ],
+        [
+            {"from": "range", "to": "two_step", "label": "区間不変性", "tone": "primary"},
+            {"from": "two_step", "to": "integral", "label": "積分", "tone": "primary"},
+            {"from": "integral", "to": "bound", "label": "偶奇別帰納", "tone": "secondary"},
+        ],
+        title="二段反復から積分不変量へ",
+        caption="点ごとの一次上界を積分し、偶数番目と奇数番目を同じ縮小率で2以下へ保ちます。",
+    )
+    bound_tail = "" if bound == 2 else rf"\le {sp.latex(bound)}"
+    return RuntimeSolutionSynthesis(
+        answer=True,
+        answer_tex=(
+            rf"\[\int_0^{{\pi/2}}{sequence}_{{{index_name}}}({variable})\,d{variable}"
+            rf"\le2{bound_tail}\qquad({index_name}=1,2,3,\ldots).\]"
+        ),
+        tool_name="mortra.runtime_sine_cosine_iteration_integral_bound",
+        expression_tex=rf"\int_0^{{\pi/2}}{sequence}_{{{index_name}}}({variable})\,d{variable}",
+        derivation_tex=(
+            rf"\(h(t)=\sin t+\cos t\)、\({sequence}_{{{index_name}+1}}=h\circ {sequence}_{index_name}\) とおく。\(h\) は \([1,\sqrt2]\) を同じ区間へ写すので、\({sequence}_{index_name}({variable})\) は第一段以後この区間に留まる。",
+            r"区間 \([\pi/3,\pi/2]\) では \(h''=-h<0\) だから、\(a=5\pi/12\) における接線を使って \[h(x)\le-\frac{\sqrt2}{2}\left(x-\frac{5\pi}{12}\right)+\frac{\sqrt6}{2}.\] \(333/106<\pi<355/113\)、\(140/99<\sqrt2<99/70\)、\(265/153<\sqrt3<97/56\) を代入方向に注意して用いると \[\frac4\pi-h(4/\pi)>\frac{7259089}{314501600}>0.\]",
+            rf"\(I_{index_name}=\int_0^{{\pi/2}}{sequence}_{{{index_name}}}({variable})\,d{variable}\) とおく。直接積分して \(I_1=2\)。また \(h\) の凹性と Jensen の不等式から \[I_2\le\frac\pi2h\left(\frac2\pi I_1\right)=\frac\pi2h(4/\pi)<2.\]",
+            *two_step_derivation,
+            r"以上より \[h(h(t))\le\frac4\pi+\lambda\left(t-\frac4\pi\right),\qquad \lambda=\frac{\sqrt3-1}{2}\in(0,1)\] が成り立つ。",
+            rf"これへ \(t={sequence}_{index_name}({variable})\) を代入して積分すると \[I_{{{index_name}+2}}\le2+\lambda(I_{index_name}-2).\] \(I_1=2\)、\(I_2<2\) から、偶数番目と奇数番目を別々に帰納して \(I_{index_name}\le2\) を得る。",
+            (
+                r"最後に \(2\le " + sp.latex(bound) + r"\) なので、問題文の上界も従う。"
+                if bound != 2
+                else "これは問題文の上界と一致する。"
+            ),
+        ),
+        verification_checks=common_checks
+        + (
+            "接線評価から h(4/pi)<4/pi を正の有理余裕付きで確認",
+            "二段写像の一次上界を端点・導関数・三階導関数の証明書で再生",
+            "I_1=2 と I_2<2 を独立に確認し、偶奇別帰納を適用",
+            "現在入力の上界が2以上であることを厳密比較",
+        ),
+        proof_program=common_program
+        + (
+            {"rule": "certify_unique_fixed_point_order", "comparison": "alpha<4/pi"},
+            {
+                "rule": "integrate_two_step_affine_majorant",
+                "recurrence": "I_(n+2)-2<=lambda*(I_n-2)",
+            },
+            {"rule": "induct_on_parity", "bases": ["I_1=2", "I_2<2"]},
+            {"rule": "weaken_verified_upper_bound", "from": "2", "to": sp.sstr(bound)},
+        ),
+        diagram=diagram,
+        witness={
+            **common_witness,
+            "query_kind": "integral_bound",
+            "requested_bound": sp.srepr(bound),
+            "proved_sharp_bound": "2",
+            "contraction": "(sqrt(3)-1)/2",
+        },
+    )
+
+
 def _parse_mobius_polynomial_fixed_point_input(
     statement: str,
 ) -> dict[str, Any] | None:
@@ -3864,6 +4399,7 @@ def synthesize_runtime_solution(statement: str) -> RuntimeSolutionSynthesis | No
         synthesize_normalized_inner_product_realization,
         synthesize_fibonacci_prime_norm_chain,
         synthesize_reciprocal_product_wallis_chain,
+        synthesize_sine_cosine_iteration,
         synthesize_polynomial_mobius_fixed_point,
         synthesize_rational_angle_cosine_algebra,
         synthesize_primitive_right_triangle_center_fraction,

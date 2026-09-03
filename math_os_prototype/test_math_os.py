@@ -1253,6 +1253,44 @@ class MathOsPrototypeTest(unittest.TestCase):
         self.assertIn("x!=1", parsed.normalized_text)
         self.assertEqual(len(parsed.math_segments), 2)
 
+    def test_latex_frontend_scans_display_math_environments(self):
+        parsed = parse_latex_problem(
+            r"""
+            数列を
+            \begin{align*}
+            f_1(x)&=\cos x+\sin x,\\
+            f_{n+1}(x)&=f_1(f_n(x))
+            \end{align*}
+            と定める。
+            \begin{equation*}
+            \int_0^{\frac{\pi}{2}}f_n(x)\,dx\leq2
+            \end{equation*}
+            を示せ。
+            """
+        )
+
+        self.assertEqual(len(parsed.math_segments), 2)
+        self.assertEqual(
+            parsed.math_segments[0],
+            "f_1*(x)=cos(x)+sin(x);f_(n+1)*(x)=f_1*(f_n*(x))",
+        )
+        self.assertEqual(
+            parsed.math_segments[1],
+            "integral_0**(((pi)/(2)))*f_n*(x) dx<=2",
+        )
+        self.assertNotIn(r"\begin{align", parsed.normalized_text)
+        self.assertNotIn(r"\begin{equation", parsed.normalized_text)
+
+    def test_latex_frontend_normalizes_compact_command_fractions(self):
+        parsed = parse_latex_problem(
+            r"$x\leq\dfrac4\pi+\dfrac{\sqrt3-1}{2}(t-\dfrac4\pi)$"
+        )
+
+        self.assertEqual(
+            parsed.math_segments,
+            ["x<=((4)/(pi))+((sqrt(3)-1)/(2))*(t-((4)/(pi)))"],
+        )
+
     def test_bare_latex_spacing_command_does_not_split_a_fraction(self):
         parsed = parse_latex_problem(
             r"\frac{\int_{0}^{1} f(x)g(x)\,dx}"

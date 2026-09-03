@@ -188,6 +188,14 @@ _STAGE_LABELS_JA = {
     "IndependentChildCertificateReplay": "再生済みの部分証明",
     "VerifiedAnswerBundle": "全設問の検証済み解答",
     "VerifiedAnswer": "検証済み解答",
+    "mortra.runtime_sine_cosine_tangent_bound": "凹性から得た接線上界",
+    "mortra.runtime_sine_cosine_fixed_point": "一意な固定点とその位置",
+    "mortra.runtime_sine_cosine_two_step_bound": "二段反復の一次上界",
+    "mortra.runtime_sine_cosine_iteration_integral_bound": "積分列の二段縮小評価",
+    "solve.exact.mortra.runtime_sine_cosine_tangent_bound": "凹性から得た接線上界",
+    "solve.exact.mortra.runtime_sine_cosine_fixed_point": "一意な固定点とその位置",
+    "solve.exact.mortra.runtime_sine_cosine_two_step_bound": "二段反復の一次上界",
+    "solve.exact.mortra.runtime_sine_cosine_iteration_integral_bound": "積分列の二段縮小評価",
 }
 
 
@@ -244,11 +252,50 @@ _MORPHISM_PRESENTATION_JA: dict[str, tuple[str, str]] = {
         "全設問の証明を一つにまとめる",
         "独立に検証した四つの結論を、元の問題に対する一つの解答としてまとめる。",
     ),
+    "mortra.runtime_sine_cosine_tangent_bound": (
+        "凹性から接線上界を得る",
+        "二階導関数の符号を確かめ、接点での値と傾きから区間全体の上界を得る。",
+    ),
+    "mortra.runtime_sine_cosine_fixed_point": (
+        "固定点の個数と位置を決める",
+        "差の単調性で解の一意性を示し、接線上界でその位置を比較する。",
+    ),
+    "mortra.runtime_sine_cosine_two_step_bound": (
+        "二段反復を一次式で押さえる",
+        "比較差の端点値と導関数の形を確かめ、区間全体で成り立つ一次上界を得る。",
+    ),
+    "mortra.runtime_sine_cosine_iteration_integral_bound": (
+        "点ごとの上界を積分へ移す",
+        "二段反復の一次上界を積分し、偶数番目と奇数番目をそれぞれ帰納する。",
+    ),
 }
+
+for _runtime_morphism in (
+    "mortra.runtime_sine_cosine_tangent_bound",
+    "mortra.runtime_sine_cosine_fixed_point",
+    "mortra.runtime_sine_cosine_two_step_bound",
+    "mortra.runtime_sine_cosine_iteration_integral_bound",
+):
+    _MORPHISM_PRESENTATION_JA[f"solve.exact.{_runtime_morphism}"] = (
+        _MORPHISM_PRESENTATION_JA[_runtime_morphism]
+    )
 
 
 def _display_stage_ja(stage: str) -> str:
     return _STAGE_LABELS_JA.get(stage, stage.replace("_", " "))
+
+
+def _readable_audit_text(value: str) -> str:
+    """Keep implementation identifiers in JSON while presenting readable prose."""
+
+    text = value
+    for technical_id, label in sorted(
+        _STAGE_LABELS_JA.items(), key=lambda item: len(item[0]), reverse=True
+    ):
+        text = text.replace(technical_id, label)
+    if "current-input typed program synthesis" in text:
+        return "現在の問題文から合成した証明を、厳密な記号計算と図の根拠から再生"
+    return text
 
 
 def _roadmap_from_chain(chain: Iterable[str]) -> list[dict[str, str]]:
@@ -680,8 +727,6 @@ def _visual_explanation_tex(visual_explanation: dict[str, Any] | None) -> str:
         title = _escape_text(str(step.get("title") or f"手順 {index}"))
         explanation = _escape_text(str(step.get("explanation_ja") or ""))
         formula = str(step.get("formula_tex") or "").strip()
-        morphism = step.get("morphism") or {}
-        morphism_id = _escape_text(str(morphism.get("morphism_id") or "unrecorded"))
         diagram_tex = _diagram_to_tex(step["diagram"])
         sections.extend(
             [
@@ -691,7 +736,6 @@ def _visual_explanation_tex(visual_explanation: dict[str, Any] | None) -> str:
                 r"\begin{center}",
                 diagram_tex,
                 r"\end{center}",
-                rf"{{\footnotesize\texttt{{{morphism_id}}}}}",
             ]
         )
     return "\n\n".join(section for section in sections if section)
@@ -832,9 +876,11 @@ def build_solution_document(
 \noindent\textbf{{独自性}}\quad {_escape_text(str(editorial_data.get('distinctive_point') or ''))}
 """
     trace_items = "\n".join(
-        rf"\item {_escape_text(str(step))}" for step in trace if str(step).strip()
+        rf"\item {_escape_text(_readable_audit_text(str(step)))}"
+        for step in trace
+        if str(step).strip()
     )
-    method = _escape_text(verification_method)
+    method = _escape_text(_readable_audit_text(verification_method))
     return rf"""\documentclass[uplatex,dvipdfmx,11pt]{{jsarticle}}
 \usepackage{{amsmath,amssymb,amsthm,mathtools}}
 \usepackage{{geometry}}
@@ -885,7 +931,7 @@ def build_solution_document(
 \begin{{itemize}}
 {trace_items}
 \end{{itemize}}
-\noindent\texttt{{{method}}}
+\noindent\textbf{{検証方法}}\quad {method}
 {certificate_record}
 
 \end{{document}}
