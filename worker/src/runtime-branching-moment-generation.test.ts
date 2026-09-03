@@ -155,6 +155,37 @@ test('combines complementary shear maps from two indispensable parents', () => {
   }
 })
 
+test('recognizes complementary shear structure without relying on L and R as names', () => {
+  const renamedMaps = [
+    {
+      id: 'first-renamed-map',
+      statement: String.raw`写像 \(F(p,q)=(q+p,q)\) を考える。`,
+    },
+    {
+      id: 'second-renamed-map',
+      statement: String.raw`写像 \(G(s,t)=(s,t+s)\) を考える。`,
+    },
+  ]
+  const support = supportsBranchingMomentGeneration(renamedMaps)
+  assert.equal(support.applicable, true, support.reason)
+  assert.deepEqual(support.mapAssignments?.map(item => [item.sourceName, item.symbol]), [
+    ['f', 'L'],
+    ['g', 'R'],
+  ])
+
+  const canonical = synthesizeRuntimeBranchingMomentProblems(splitParents, 2).cards
+  const renamed = synthesizeRuntimeBranchingMomentProblems(renamedMaps, 2).cards
+  assert.equal(renamed.length, 2)
+  for (let index = 0; index < renamed.length; index += 1) {
+    assert.equal(renamed[index].answer_tex, canonical[index].answer_tex)
+    assert.equal(
+      compositionGenomeFingerprint(renamed[index].structure_blueprint.compositionGenome!),
+      compositionGenomeFingerprint(canonical[index].structure_blueprint.compositionGenome!),
+    )
+    assert.equal(hasCompleteParentProof(renamed[index], renamedMaps), true)
+  }
+})
+
 test('rejects a two-parent request when either parent is dispensable', () => {
   const redundant = [
     parent[0],

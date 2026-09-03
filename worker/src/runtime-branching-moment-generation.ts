@@ -31,6 +31,7 @@ type ShearSymbol = 'L' | 'R'
 
 type ShearMapAssignment = {
   parentId: string
+  sourceName: string
   symbol: ShearSymbol
   variables: readonly [string, string]
 }
@@ -138,6 +139,38 @@ function compact(value: string): string {
     .toLowerCase()
 }
 
+function isVariableSum(expression: string, first: string, second: string): boolean {
+  const terms = expression.split('+')
+  return terms.length === 2
+    && terms[0] !== terms[1]
+    && new Set(terms).size === 2
+    && terms.includes(first)
+    && terms.includes(second)
+}
+
+function extractUnitShearMaps(source: string): Array<{
+  sourceName: string
+  symbol: ShearSymbol
+  variables: readonly [string, string]
+}> {
+  const maps: Array<{
+    sourceName: string
+    symbol: ShearSymbol
+    variables: readonly [string, string]
+  }> = []
+  const pattern = /([a-z][a-z0-9_]*)\(([a-z]),([a-z])\)=\(([^,()]+),([^,()]+)\)/gi
+  for (const match of source.matchAll(pattern)) {
+    const [, sourceName, first, second, outputFirst, outputSecond] = match
+    if (first === second) continue
+    if (isVariableSum(outputFirst, first, second) && outputSecond === second) {
+      maps.push({ sourceName, symbol: 'L', variables: [first, second] })
+    } else if (outputFirst === first && isVariableSum(outputSecond, first, second)) {
+      maps.push({ sourceName, symbol: 'R', variables: [first, second] })
+    }
+  }
+  return maps
+}
+
 export function supportsBranchingMomentGeneration(
   parents: readonly DiscoveryParent[],
 ): BranchingMomentSupport {
@@ -152,20 +185,14 @@ export function supportsBranchingMomentGeneration(
   const mapAssignments: ShearMapAssignment[] = []
   for (const parent of parents) {
     const source = compact(parent.statement ?? '')
-    const left = source.match(/l\(([a-z]),([a-z])\)=\(\1\+\2,\2\)/i)
-    if (left) {
+    for (const map of extractUnitShearMaps(source)) {
+      if (mapAssignments.some(assignment =>
+        assignment.parentId === String(parent.id) && assignment.symbol === map.symbol)) continue
       mapAssignments.push({
         parentId: String(parent.id),
-        symbol: 'L',
-        variables: [left[1], left[2]],
-      })
-    }
-    const right = source.match(/r\(([a-z]),([a-z])\)=\(\1,\1\+\2\)/i)
-    if (right) {
-      mapAssignments.push({
-        parentId: String(parent.id),
-        symbol: 'R',
-        variables: [right[1], right[2]],
+        sourceName: map.sourceName,
+        symbol: map.symbol,
+        variables: map.variables,
       })
     }
   }
@@ -200,8 +227,8 @@ export function supportsBranchingMomentGeneration(
 function mapAnchor(assignment: ShearMapAssignment): string {
   const [first, second] = assignment.variables
   return assignment.symbol === 'L'
-    ? `L(${first},${second})=(${first}+${second},${second})`
-    : `R(${first},${second})=(${first},${first}+${second})`
+    ? `${assignment.sourceName}(${first},${second})=(${first}+${second},${second})`
+    : `${assignment.sourceName}(${first},${second})=(${first},${first}+${second})`
 }
 
 function groupedMapAssignments(support: ResolvedBranchingMomentSupport) {

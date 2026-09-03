@@ -25,11 +25,11 @@ const parents = [{
 const splitParents = [
   {
     id: 'unseen-left-shear-parent',
-    statement: String.raw`整数の組に対する写像 \(L(x,y)=(x+y,y)\) を考える。`,
+    statement: String.raw`整数の組に対する写像 \(F(p,q)=(q+p,q)\) を考える。`,
   },
   {
     id: 'unseen-right-shear-parent',
-    statement: String.raw`整数の組に対する写像 \(R(u,v)=(u,u+v)\) を考える。`,
+    statement: String.raw`整数の組に対する写像 \(G(s,t)=(s,t+s)\) を考える。`,
   },
 ]
 
@@ -143,6 +143,7 @@ const artifact = {
   generated_at: new Date().toISOString(),
   benchmark_scope: {
     parent_maps: ['L(a,b)=(a+b,b)', 'R(a,b)=(a,a+b)'],
+    split_parent_maps: ['F(p,q)=(q+p,q)', 'G(s,t)=(s,t+s)'],
     grammar_search: 'all L/R-exchange-symmetric pairs of forbidden words of length three',
     requested_public_cards: 4,
     split_parent_public_cards: 4,
