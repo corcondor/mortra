@@ -1,9 +1,14 @@
-name: Verify MORTRA Worker Kernel
+name: Verify MORTRA Kernels
 
 on:
   push:
-    branches: [master]
+    branches: [master, codex/q-directed-closure-20260913]
     paths:
+      - "math_os_prototype/**"
+      - "scripts/*.py"
+      - "configs/q-directed-verification.json"
+      - "requirements*.txt"
+      - "docs/handoff/Q-DIRECTED*.md"
       - "worker/**"
       - "lib/proof-scene.ts"
       - "lib/mortra/vision/**"
@@ -25,6 +30,11 @@ on:
       - ".github/workflows/worker-ci.yml"
   pull_request:
     paths:
+      - "math_os_prototype/**"
+      - "scripts/*.py"
+      - "configs/q-directed-verification.json"
+      - "requirements*.txt"
+      - "docs/handoff/Q-DIRECTED*.md"
       - "worker/**"
       - "lib/proof-scene.ts"
       - "lib/mortra/vision/**"
@@ -45,16 +55,33 @@ on:
       - "scripts/external_backend_invariant.py"
       - ".github/workflows/worker-ci.yml"
   workflow_dispatch:
-
-concurrency:
-  group: mortra-worker-kernel-${{ github.ref }}
-  cancel-in-progress: true
+    inputs:
+      verification_suite:
+        description: Existing Worker checks or q-directed research reproduction
+        type: choice
+        options: [worker, q-directed]
+        default: worker
+      target_ref:
+        description: Research commit or branch (empty uses the triggering SHA)
+        type: string
+        default: ""
+      expected_sha:
+        description: Optional full expected research SHA; mismatch stops before tests
+        type: string
+        default: ""
 
 permissions:
   contents: read
 
 jobs:
   verify:
+    if: >-
+      ${{ !(github.ref == 'refs/heads/codex/q-directed-closure-20260913' && github.event_name == 'push')
+          && !(github.event_name == 'pull_request' && (github.head_ref == 'codex/q-directed-closure-20260913' || github.base_ref == 'codex/q-directed-closure-20260913'))
+          && !(github.event_name == 'workflow_dispatch' && inputs.verification_suite == 'q-directed') }}
+    concurrency:
+      group: mortra-worker-kernel-${{ github.ref }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -99,3 +126,86 @@ jobs:
       - name: Type-check the production Worker
         working-directory: worker
         run: npm run build
+
+  q-directed-verification:
+    if: >-
+      ${{ (github.event_name == 'push' && github.ref == 'refs/heads/codex/q-directed-closure-20260913')
+          || (github.event_name == 'pull_request' && (github.head_ref == 'codex/q-directed-closure-20260913' || github.base_ref == 'codex/q-directed-closure-20260913'))
+          || (github.event_name == 'workflow_dispatch' && inputs.verification_suite == 'q-directed') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency:
+      group: mortra-q-directed-${{ github.event_name }}-${{ inputs.target_ref || github.head_ref || github.ref }}
+      cancel-in-progress: false
+    permissions:
+      contents: read
+    env:
+      PYTHONNOUSERSITE: "1"
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUTF8: "1"
+      PYTHONPATH: ""
+      TARGET_REF: ${{ inputs.target_ref || github.sha }}
+      EXPECTED_SHA: ${{ inputs.expected_sha || (!inputs.target_ref && github.sha) || '' }}
+      REPORT_REF: ${{ inputs.target_ref || github.ref }}
+      VERIFY_OUTPUT: ${{ runner.temp }}/q-directed-verification
+    steps:
+      - name: Check out the verification harness at the workflow SHA
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: ci-control
+          persist-credentials: false
+      - name: Check out the research target
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_REF }}
+          path: target
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.10"
+          cache: pip
+          cache-dependency-path: |
+            ci-control/requirements.txt
+            ci-control/requirements-test.txt
+      - name: Freeze exact target, commands, and initial verification record
+        shell: bash
+        run: |
+          python ci-control/scripts/verify_q_directed_ci.py --prepare \
+            --repo target --output "$VERIFY_OUTPUT" \
+            --repository "$GITHUB_REPOSITORY" --ref "$REPORT_REF" \
+            --expected-sha "$EXPECTED_SHA"
+          cat "$VERIFY_OUTPUT/git-sha.txt"
+          cat "$VERIFY_OUTPUT/plan.json"
+      - name: Install formally declared verification dependencies
+        shell: bash
+        run: |
+          python -m pip install -r ci-control/requirements-test.txt 2>&1 | tee "$VERIFY_OUTPUT/dependency-install.log"
+          python -m pip check 2>&1 | tee "$VERIFY_OUTPUT/dependency-check.log"
+      - name: Test verification gates
+        run: python -m unittest discover -s ci-control/tests -p test_q_directed_ci.py -v
+      - name: Reproduce tests, acquisition, stored reuse, and refusal
+        shell: bash
+        run: |
+          python ci-control/scripts/verify_q_directed_ci.py --execute \
+            --repo target --output "$VERIFY_OUTPUT"
+      - name: Publish machine-readable summary
+        if: always()
+        shell: bash
+        run: |
+          if [ -f "$VERIFY_OUTPUT/verification.json" ]; then
+            echo '### Q-directed reproduction' >> "$GITHUB_STEP_SUMMARY"
+            echo 'The target SHA and harness SHA are recorded separately.' >> "$GITHUB_STEP_SUMMARY"
+            echo '~~~json' >> "$GITHUB_STEP_SUMMARY"
+            cat "$VERIFY_OUTPUT/verification.json" >> "$GITHUB_STEP_SUMMARY"
+            echo '~~~' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload fresh verification evidence, including failures
+        id: evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: q-directed-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/q-directed-verification/
+          if-no-files-found: error
+          retention-days: 30

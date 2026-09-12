@@ -11,8 +11,27 @@ certificate scope and measured costs.
 
 Run from the repository root. The development runtime was Python 3.12.10,
 SymPy 1.14.0 and python-flint 0.9.0 on Windows. Dependencies are listed in
-`requirements.txt`. Install those dependencies in the chosen Python environment
-if needed. A shared dependency installation is not a shared source checkout.
+`requirements.txt` (runtime) and `requirements-test.txt` (the related test
+environment). A fresh environment needs both, via:
+
+```powershell
+python -m venv ../mortra-verification-venv
+../mortra-verification-venv/Scripts/python -m pip install -r requirements-test.txt
+```
+
+On Linux/macOS use `../mortra-verification-venv/bin/python`. Use that interpreter
+for the commands below. NumPy is a runtime import of `research_action_policy`;
+pytest is imported by three of the selected test modules. The original root-only
+dependency recipe omitted these and was incomplete. The test definition pins
+SymPy 1.14.0, NumPy 1.26.4 and pytest 8.4.1; the runtime keeps its compatible ranges.
+A shared dependency installation is not a shared source checkout.
+
+The shared GitHub Actions entry is the existing `worker-ci.yml`, research job
+`q-directed-verification`. See [CI operation and workflow audit](Q-DIRECTED-CI-20260913.md).
+The machine-readable suite/workload definition is
+`configs/q-directed-verification.json`. The harness executes the same 17 modules
+with Python's unittest loader in a fresh process and writes structured counts.
+It does not add pytest-style function discovery to the documented 351-test set.
 
 The following command selects all 17 related modules, totaling 351 tests. It
 does not claim to run every test in the repository.
@@ -111,7 +130,14 @@ Every completed result seal must report unchanged sources. Raw executable-file
 fingerprints are conservative version checks: a changed version or file encoding
 may reject an old store and must not be silently waived to force reuse.
 
+The shared CI acceptance run uses the just-generated store, not the packaged
+Windows store. It executes normal, changed-start reuse, collision fallback and
+reuse-only refusal in separate processes. It records the packaged-store command
+above as an optional portability experiment, not as a mandatory cross-encoding
+reuse promise. No file fingerprint or certificate scope is weakened.
+
 Post-commit verification logs must identify the exact commit tested. They are
 kept outside that commit; amending a commit after testing would change the SHA
 and no longer be a test of the amended commit. Do not merge main or push as
-part of this verification.
+part of this local verification. Publishing the explicitly requested CI
+connection on the research branch is a separate development operation.

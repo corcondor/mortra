@@ -1,0 +1,31 @@
+{
+  "schema": "mortra.q-directed-verification-plan.v1",
+  "expected_tests": 351,
+  "test_modules": [
+    "scripts.test_abstraction_correspondence",
+    "scripts.test_action_observable_basis",
+    "scripts.test_holonomic_route_discovery",
+    "scripts.test_holonomic_fast_coefficients",
+    "scripts.test_holonomic_algebraic_discovery",
+    "scripts.test_holonomic_ode_source",
+    "scripts.test_library_compression",
+    "scripts.test_representation_progress",
+    "scripts.test_iteration_law",
+    "scripts.test_acquisition_session",
+    "scripts.test_expand_for_execution",
+    "scripts.test_call_candidate_dedup",
+    "scripts.test_fold_observable",
+    "scripts.test_representation_evaluation",
+    "scripts.test_representation_policy",
+    "scripts.test_quotient_counting",
+    "scripts.test_q_directed_representation"
+  ],
+  "verify_lengths": [3, 5],
+  "common_arguments": ["--degree", "1", "--max-terms", "2", "--certificate-depth", "3", "--probe-length", "3", "--verify", "3", "5"],
+  "runs": [
+    {"id": "normal", "task": "axis1", "route": "q-directed", "answer": 6, "reuse_length": 9},
+    {"id": "reuse", "task": "axis1-from-AG", "route": "reuse", "answer": 12, "reuse_length": 14, "ledger": "normal/ledger.json"},
+    {"id": "refusal", "task": "axis1-collision-free", "route": "q-directed", "answer": 6, "reuse_length": 9},
+    {"id": "refusal-reuse", "task": "axis1-collision-free", "route": "reuse", "answer": 6, "reuse_length": 9, "ledger": "normal/ledger.json"}
+  ]
+}
