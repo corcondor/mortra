@@ -1,0 +1,10366 @@
+{
+ "schema": "mortra.acquisition-session.v1",
+ "config": {
+  "domain": "fold_observable",
+  "fold_min": 3,
+  "fold_counts_per_cycle": 2,
+  "fold_beam_width": 32,
+  "call_scan": 400,
+  "observable_degree": 2,
+  "observables_per_cycle": 6,
+  "observable_dimension_cap": 120,
+  "block_order_cap": 32,
+  "prediction_repeats": 5,
+  "observable_terms": 1,
+  "observable_coefficients": [
+   1
+  ],
+  "frame_depth": 4,
+  "sum_length": 3,
+  "fold_seed": 20260904,
+  "seeds": [
+   {
+    "op": "hyper",
+    "a": [
+     1
+    ],
+    "b": []
+   }
+  ],
+  "tasks": [],
+  "certificates": [],
+  "certify_pairs": [],
+  "state_names": [],
+  "parameter_names": [],
+  "abstraction_witnesses": [],
+  "degree_x": 1,
+  "derivatives": 1,
+  "product_degree": 1,
+  "holdout": 16,
+  "proof_backend": "closure",
+  "conservation_degree": 2,
+  "span_degree": 2,
+  "span_derivatives": 0,
+  "morphism_derivatives": 0,
+  "library_weight": 2,
+  "library_calls": 6,
+  "library_share": 0.34,
+  "share_jobs": false,
+  "budget": 4,
+  "criterion": "final_output",
+  "sweeps_per_cycle": 4,
+  "allowance": 15000000,
+  "growth": 2,
+  "draft_count": 3,
+  "learn_rounds": 3,
+  "learn_pairs": 20000,
+  "learn_limit": 6,
+  "learn_keep": 8,
+  "max_seconds": 900,
+  "max_traced_lines": 400000000,
+  "max_cycles": 3,
+  "barren_cycles": 99,
+  "min_compression_bits": 1
+ },
+ "domain": {
+  "schema": "mortra.fold-observable-domain.v1",
+  "cursor": 18,
+  "step_verification": {
+   "exact": true,
+   "frames_checked": 24,
+   "letters": 4,
+   "identities_checked": 96,
+   "centre": "symbolic; every integer centre is covered",
+   "scope": "exact for every frame the alphabet reaches within 4 folds and every centre",
+   "failures": []
+  },
+  "acquisitions": [
+   {
+    "observable": "c1",
+    "dimension": 4,
+    "basis": [
+     "c1",
+     "F11 - F31 + c1",
+     "F11 + F31 + c1",
+     "F21 + F31 + c1"
+    ],
+    "action_matrices": {
+     "A": [
+      [
+       "0",
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "1",
+       "1",
+       "-1",
+       "0"
+      ],
+      [
+       "-1",
+       "2",
+       "0",
+       "0"
+      ],
+      [
+       "-2",
+       "2",
+       "0",
+       "1"
+      ]
+     ],
+     "C": [
+      [
+       "0",
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "2",
+       "0"
+      ],
+      [
+       "1",
+       "-1",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "1"
+      ]
+     ],
+     "G": [
+      [
+       "0",
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "-2",
+       "1",
+       "0",
+       "2"
+      ],
+      [
+       "0",
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "1",
+       "-1",
+       "1",
+       "0"
+      ]
+     ],
+     "T": [
+      [
+       "0",
+       "1",
+       "-1",
+       "1"
+      ],
+      [
+       "0",
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "-2",
+       "2",
+       "-1",
+       "2"
+      ],
+      [
+       "-1",
+       "2",
+       "-2",
+       "2"
+      ]
+     ]
+    },
+    "identity_residuals_all_zero": true,
+    "closure_scope": "all finite words; linear closure of supplied polynomial observations",
+    "minimality": "smallest generator-invariant linear space containing this observable; not a claim of minimality over all representations",
+    "step_premise": {
+     "exact": true,
+     "frames_checked": 24,
+     "identities_checked": 96,
+     "scope": "exact for every frame the alphabet reaches within 4 folds and every centre"
+    },
+    "repeat_laws": [
+     {
+      "block": "GCC",
+      "block_order": 2,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 2,
+      "base_case_exact": true,
+      "generator_steps": 16,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "0"
+       }
+      },
+      "recurrence": {
+       "proved": false,
+       "block": "GCC",
+       "reason": "ValueError: the observed sequence is zero or exceeds the state dimension"
+      }
+     },
+     {
+      "block": "ATTA",
+      "block_order": 2,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 2,
+      "base_case_exact": true,
+      "generator_steps": 16,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "0"
+       }
+      },
+      "recurrence": {
+       "proved": false,
+       "block": "ATTA",
+       "reason": "ValueError: the observed sequence is zero or exceeds the state dimension"
+      }
+     }
+    ]
+   },
+   {
+    "observable": "c2",
+    "dimension": 4,
+    "basis": [
+     "c2",
+     "F12 - F32 + c2",
+     "F12 + F32 + c2",
+     "F22 + F32 + c2"
+    ],
+    "action_matrices": {
+     "A": [
+      [
+       "0",
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "1",
+       "1",
+       "-1",
+       "0"
+      ],
+      [
+       "-1",
+       "2",
+       "0",
+       "0"
+      ],
+      [
+       "-2",
+       "2",
+       "0",
+       "1"
+      ]
+     ],
+     "C": [
+      [
+       "0",
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "2",
+       "0"
+      ],
+      [
+       "1",
+       "-1",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "1"
+      ]
+     ],
+     "G": [
+      [
+       "0",
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "-2",
+       "1",
+       "0",
+       "2"
+      ],
+      [
+       "0",
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "1",
+       "-1",
+       "1",
+       "0"
+      ]
+     ],
+     "T": [
+      [
+       "0",
+       "1",
+       "-1",
+       "1"
+      ],
+      [
+       "0",
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "-2",
+       "2",
+       "-1",
+       "2"
+      ],
+      [
+       "-1",
+       "2",
+       "-2",
+       "2"
+      ]
+     ]
+    },
+    "identity_residuals_all_zero": true,
+    "closure_scope": "all finite words; linear closure of supplied polynomial observations",
+    "minimality": "smallest generator-invariant linear space containing this observable; not a claim of minimality over all representations",
+    "step_premise": {
+     "exact": true,
+     "frames_checked": 24,
+     "identities_checked": 96,
+     "scope": "exact for every frame the alphabet reaches within 4 folds and every centre"
+    },
+    "repeat_laws": [
+     {
+      "block": "GCC",
+      "block_order": 2,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 2,
+      "base_case_exact": true,
+      "generator_steps": 16,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "-1"
+       }
+      },
+      "recurrence": {
+       "proved": true,
+       "block": "GCC",
+       "order": 2,
+       "coefficients": [
+        "1",
+        "0"
+       ],
+       "characteristic_polynomial": "r**2 - 1",
+       "characteristic_factorization": "(r - 1)*(r + 1)",
+       "initial_values": [
+        "0",
+        "-1"
+       ],
+       "residuals_all_zero": true,
+       "scope": "exact scalar recurrence of the observable along repeats of this block, certified on consecutive residuals and carried by the characteristic recurrence of the block matrix"
+      }
+     },
+     {
+      "block": "ATTA",
+      "block_order": 2,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 2,
+      "base_case_exact": true,
+      "generator_steps": 16,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "0"
+       }
+      },
+      "recurrence": {
+       "proved": false,
+       "block": "ATTA",
+       "reason": "ValueError: the observed sequence is zero or exceeds the state dimension"
+      }
+     }
+    ]
+   },
+   {
+    "observable": "c3",
+    "dimension": 4,
+    "basis": [
+     "c3",
+     "F13 - F33 + c3",
+     "F13 + F33 + c3",
+     "F23 + F33 + c3"
+    ],
+    "action_matrices": {
+     "A": [
+      [
+       "0",
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "1",
+       "1",
+       "-1",
+       "0"
+      ],
+      [
+       "-1",
+       "2",
+       "0",
+       "0"
+      ],
+      [
+       "-2",
+       "2",
+       "0",
+       "1"
+      ]
+     ],
+     "C": [
+      [
+       "0",
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "2",
+       "0"
+      ],
+      [
+       "1",
+       "-1",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "1"
+      ]
+     ],
+     "G": [
+      [
+       "0",
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "-2",
+       "1",
+       "0",
+       "2"
+      ],
+      [
+       "0",
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "1",
+       "-1",
+       "1",
+       "0"
+      ]
+     ],
+     "T": [
+      [
+       "0",
+       "1",
+       "-1",
+       "1"
+      ],
+      [
+       "0",
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "-2",
+       "2",
+       "-1",
+       "2"
+      ],
+      [
+       "-1",
+       "2",
+       "-2",
+       "2"
+      ]
+     ]
+    },
+    "identity_residuals_all_zero": true,
+    "closure_scope": "all finite words; linear closure of supplied polynomial observations",
+    "minimality": "smallest generator-invariant linear space containing this observable; not a claim of minimality over all representations",
+    "step_premise": {
+     "exact": true,
+     "frames_checked": 24,
+     "identities_checked": 96,
+     "scope": "exact for every frame the alphabet reaches within 4 folds and every centre"
+    },
+    "repeat_laws": [
+     {
+      "block": "GCC",
+      "block_order": 2,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 2,
+      "base_case_exact": true,
+      "generator_steps": 16,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "1"
+       }
+      },
+      "recurrence": {
+       "proved": true,
+       "block": "GCC",
+       "order": 2,
+       "coefficients": [
+        "1",
+        "0"
+       ],
+       "characteristic_polynomial": "r**2 - 1",
+       "characteristic_factorization": "(r - 1)*(r + 1)",
+       "initial_values": [
+        "0",
+        "1"
+       ],
+       "residuals_all_zero": true,
+       "scope": "exact scalar recurrence of the observable along repeats of this block, certified on consecutive residuals and carried by the characteristic recurrence of the block matrix"
+      }
+     },
+     {
+      "block": "ATTA",
+      "block_order": 2,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 2,
+      "base_case_exact": true,
+      "generator_steps": 16,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "-2"
+       }
+      },
+      "recurrence": {
+       "proved": true,
+       "block": "ATTA",
+       "order": 2,
+       "coefficients": [
+        "1",
+        "0"
+       ],
+       "characteristic_polynomial": "r**2 - 1",
+       "characteristic_factorization": "(r - 1)*(r + 1)",
+       "initial_values": [
+        "0",
+        "-2"
+       ],
+       "residuals_all_zero": true,
+       "scope": "exact scalar recurrence of the observable along repeats of this block, certified on consecutive residuals and carried by the characteristic recurrence of the block matrix"
+      }
+     }
+    ]
+   },
+   {
+    "observable": "F11",
+    "dimension": 3,
+    "basis": [
+     "F11",
+     "-F31",
+     "F21"
+    ],
+    "action_matrices": {
+     "A": [
+      [
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1"
+      ]
+     ],
+     "C": [
+      [
+       "0",
+       "-1",
+       "0"
+      ],
+      [
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1"
+      ]
+     ],
+     "G": [
+      [
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "0",
+       "-1",
+       "0"
+      ]
+     ],
+     "T": [
+      [
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "-1"
+      ],
+      [
+       "0",
+       "1",
+       "0"
+      ]
+     ]
+    },
+    "identity_residuals_all_zero": true,
+    "closure_scope": "all finite words; linear closure of supplied polynomial observations",
+    "minimality": "smallest generator-invariant linear space containing this observable; not a claim of minimality over all representations",
+    "step_premise": {
+     "exact": true,
+     "frames_checked": 24,
+     "identities_checked": 96,
+     "scope": "exact for every frame the alphabet reaches within 4 folds and every centre"
+    },
+    "repeat_laws": [
+     {
+      "block": "GCC",
+      "block_order": 2,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 2,
+      "base_case_exact": true,
+      "generator_steps": 12,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "1"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "-1"
+       }
+      },
+      "recurrence": {
+       "proved": true,
+       "block": "GCC",
+       "order": 1,
+       "coefficients": [
+        "-1"
+       ],
+       "characteristic_polynomial": "r + 1",
+       "characteristic_factorization": "r + 1",
+       "initial_values": [
+        "1"
+       ],
+       "residuals_all_zero": true,
+       "scope": "exact scalar recurrence of the observable along repeats of this block, certified on consecutive residuals and carried by the characteristic recurrence of the block matrix"
+      }
+     },
+     {
+      "block": "ATTA",
+      "block_order": 2,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 2,
+      "base_case_exact": true,
+      "generator_steps": 12,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "1"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "1"
+       }
+      },
+      "recurrence": {
+       "proved": true,
+       "block": "ATTA",
+       "order": 1,
+       "coefficients": [
+        "1"
+       ],
+       "characteristic_polynomial": "r - 1",
+       "characteristic_factorization": "r - 1",
+       "initial_values": [
+        "1"
+       ],
+       "residuals_all_zero": true,
+       "scope": "exact scalar recurrence of the observable along repeats of this block, certified on consecutive residuals and carried by the characteristic recurrence of the block matrix"
+      }
+     }
+    ]
+   },
+   {
+    "observable": "F12",
+    "dimension": 3,
+    "basis": [
+     "F12",
+     "-F32",
+     "F22"
+    ],
+    "action_matrices": {
+     "A": [
+      [
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1"
+      ]
+     ],
+     "C": [
+      [
+       "0",
+       "-1",
+       "0"
+      ],
+      [
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1"
+      ]
+     ],
+     "G": [
+      [
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "0",
+       "-1",
+       "0"
+      ]
+     ],
+     "T": [
+      [
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "-1"
+      ],
+      [
+       "0",
+       "1",
+       "0"
+      ]
+     ]
+    },
+    "identity_residuals_all_zero": true,
+    "closure_scope": "all finite words; linear closure of supplied polynomial observations",
+    "minimality": "smallest generator-invariant linear space containing this observable; not a claim of minimality over all representations",
+    "step_premise": {
+     "exact": true,
+     "frames_checked": 24,
+     "identities_checked": 96,
+     "scope": "exact for every frame the alphabet reaches within 4 folds and every centre"
+    },
+    "repeat_laws": [
+     {
+      "block": "GCC",
+      "block_order": 2,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 2,
+      "base_case_exact": true,
+      "generator_steps": 12,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "0"
+       }
+      },
+      "recurrence": {
+       "proved": false,
+       "block": "GCC",
+       "reason": "ValueError: the observed sequence is zero or exceeds the state dimension"
+      }
+     },
+     {
+      "block": "ATTA",
+      "block_order": 2,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 2,
+      "base_case_exact": true,
+      "generator_steps": 12,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "0"
+       }
+      },
+      "recurrence": {
+       "proved": false,
+       "block": "ATTA",
+       "reason": "ValueError: the observed sequence is zero or exceeds the state dimension"
+      }
+     }
+    ]
+   },
+   {
+    "observable": "F13",
+    "dimension": 3,
+    "basis": [
+     "F13",
+     "-F33",
+     "F23"
+    ],
+    "action_matrices": {
+     "A": [
+      [
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1"
+      ]
+     ],
+     "C": [
+      [
+       "0",
+       "-1",
+       "0"
+      ],
+      [
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1"
+      ]
+     ],
+     "G": [
+      [
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "0",
+       "-1",
+       "0"
+      ]
+     ],
+     "T": [
+      [
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "-1"
+      ],
+      [
+       "0",
+       "1",
+       "0"
+      ]
+     ]
+    },
+    "identity_residuals_all_zero": true,
+    "closure_scope": "all finite words; linear closure of supplied polynomial observations",
+    "minimality": "smallest generator-invariant linear space containing this observable; not a claim of minimality over all representations",
+    "step_premise": {
+     "exact": true,
+     "frames_checked": 24,
+     "identities_checked": 96,
+     "scope": "exact for every frame the alphabet reaches within 4 folds and every centre"
+    },
+    "repeat_laws": [
+     {
+      "block": "GCC",
+      "block_order": 2,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 2,
+      "base_case_exact": true,
+      "generator_steps": 12,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "0"
+       }
+      },
+      "recurrence": {
+       "proved": false,
+       "block": "GCC",
+       "reason": "ValueError: the observed sequence is zero or exceeds the state dimension"
+      }
+     },
+     {
+      "block": "ATTA",
+      "block_order": 2,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 2,
+      "base_case_exact": true,
+      "generator_steps": 12,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "0"
+       }
+      },
+      "recurrence": {
+       "proved": false,
+       "block": "ATTA",
+       "reason": "ValueError: the observed sequence is zero or exceeds the state dimension"
+      }
+     }
+    ]
+   },
+   {
+    "observable": "F21",
+    "dimension": 3,
+    "basis": [
+     "F21",
+     "F31",
+     "F11"
+    ],
+    "action_matrices": {
+     "A": [
+      [
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "0",
+       "-1",
+       "0"
+      ]
+     ],
+     "C": [
+      [
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "-1"
+      ],
+      [
+       "0",
+       "1",
+       "0"
+      ]
+     ],
+     "G": [
+      [
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1"
+      ]
+     ],
+     "T": [
+      [
+       "0",
+       "-1",
+       "0"
+      ],
+      [
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1"
+      ]
+     ]
+    },
+    "identity_residuals_all_zero": true,
+    "closure_scope": "all finite words; linear closure of supplied polynomial observations",
+    "minimality": "smallest generator-invariant linear space containing this observable; not a claim of minimality over all representations",
+    "step_premise": {
+     "exact": true,
+     "frames_checked": 24,
+     "identities_checked": 96,
+     "scope": "exact for every frame the alphabet reaches within 4 folds and every centre"
+    },
+    "repeat_laws": [
+     {
+      "block": "GCGCG",
+      "block_order": 4,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 4,
+      "base_case_exact": true,
+      "generator_steps": 24,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q2": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q3": {
+        "slope": "0",
+        "intercept": "0"
+       }
+      },
+      "recurrence": {
+       "proved": false,
+       "block": "GCGCG",
+       "reason": "ValueError: the observed sequence is zero or exceeds the state dimension"
+      }
+     },
+     {
+      "block": "GATTTC",
+      "block_order": 3,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 3,
+      "base_case_exact": true,
+      "generator_steps": 18,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "1"
+       },
+       "q2": {
+        "slope": "0",
+        "intercept": "0"
+       }
+      },
+      "recurrence": {
+       "proved": true,
+       "block": "GATTTC",
+       "order": 3,
+       "coefficients": [
+        "1",
+        "0",
+        "0"
+       ],
+       "characteristic_polynomial": "r**3 - 1",
+       "characteristic_factorization": "(r - 1)*(r**2 + r + 1)",
+       "initial_values": [
+        "0",
+        "1",
+        "0"
+       ],
+       "residuals_all_zero": true,
+       "scope": "exact scalar recurrence of the observable along repeats of this block, certified on consecutive residuals and carried by the characteristic recurrence of the block matrix"
+      }
+     }
+    ]
+   },
+   {
+    "observable": "F22",
+    "dimension": 3,
+    "basis": [
+     "F22",
+     "F32",
+     "F12"
+    ],
+    "action_matrices": {
+     "A": [
+      [
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "0",
+       "-1",
+       "0"
+      ]
+     ],
+     "C": [
+      [
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "-1"
+      ],
+      [
+       "0",
+       "1",
+       "0"
+      ]
+     ],
+     "G": [
+      [
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1"
+      ]
+     ],
+     "T": [
+      [
+       "0",
+       "-1",
+       "0"
+      ],
+      [
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1"
+      ]
+     ]
+    },
+    "identity_residuals_all_zero": true,
+    "closure_scope": "all finite words; linear closure of supplied polynomial observations",
+    "minimality": "smallest generator-invariant linear space containing this observable; not a claim of minimality over all representations",
+    "step_premise": {
+     "exact": true,
+     "frames_checked": 24,
+     "identities_checked": 96,
+     "scope": "exact for every frame the alphabet reaches within 4 folds and every centre"
+    },
+    "repeat_laws": [
+     {
+      "block": "GCGCG",
+      "block_order": 4,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 4,
+      "base_case_exact": true,
+      "generator_steps": 24,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "1"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "1"
+       },
+       "q2": {
+        "slope": "0",
+        "intercept": "1"
+       },
+       "q3": {
+        "slope": "0",
+        "intercept": "1"
+       }
+      },
+      "recurrence": {
+       "proved": true,
+       "block": "GCGCG",
+       "order": 1,
+       "coefficients": [
+        "1"
+       ],
+       "characteristic_polynomial": "r - 1",
+       "characteristic_factorization": "r - 1",
+       "initial_values": [
+        "1"
+       ],
+       "residuals_all_zero": true,
+       "scope": "exact scalar recurrence of the observable along repeats of this block, certified on consecutive residuals and carried by the characteristic recurrence of the block matrix"
+      }
+     },
+     {
+      "block": "GATTTC",
+      "block_order": 3,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 3,
+      "base_case_exact": true,
+      "generator_steps": 18,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "1"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q2": {
+        "slope": "0",
+        "intercept": "0"
+       }
+      },
+      "recurrence": {
+       "proved": true,
+       "block": "GATTTC",
+       "order": 3,
+       "coefficients": [
+        "1",
+        "0",
+        "0"
+       ],
+       "characteristic_polynomial": "r**3 - 1",
+       "characteristic_factorization": "(r - 1)*(r**2 + r + 1)",
+       "initial_values": [
+        "1",
+        "0",
+        "0"
+       ],
+       "residuals_all_zero": true,
+       "scope": "exact scalar recurrence of the observable along repeats of this block, certified on consecutive residuals and carried by the characteristic recurrence of the block matrix"
+      }
+     }
+    ]
+   },
+   {
+    "observable": "F23",
+    "dimension": 3,
+    "basis": [
+     "F23",
+     "F33",
+     "F13"
+    ],
+    "action_matrices": {
+     "A": [
+      [
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "0",
+       "-1",
+       "0"
+      ]
+     ],
+     "C": [
+      [
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "-1"
+      ],
+      [
+       "0",
+       "1",
+       "0"
+      ]
+     ],
+     "G": [
+      [
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1"
+      ]
+     ],
+     "T": [
+      [
+       "0",
+       "-1",
+       "0"
+      ],
+      [
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1"
+      ]
+     ]
+    },
+    "identity_residuals_all_zero": true,
+    "closure_scope": "all finite words; linear closure of supplied polynomial observations",
+    "minimality": "smallest generator-invariant linear space containing this observable; not a claim of minimality over all representations",
+    "step_premise": {
+     "exact": true,
+     "frames_checked": 24,
+     "identities_checked": 96,
+     "scope": "exact for every frame the alphabet reaches within 4 folds and every centre"
+    },
+    "repeat_laws": [
+     {
+      "block": "GCGCG",
+      "block_order": 4,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 4,
+      "base_case_exact": true,
+      "generator_steps": 24,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q2": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q3": {
+        "slope": "0",
+        "intercept": "0"
+       }
+      },
+      "recurrence": {
+       "proved": false,
+       "block": "GCGCG",
+       "reason": "ValueError: the observed sequence is zero or exceeds the state dimension"
+      }
+     },
+     {
+      "block": "GATTTC",
+      "block_order": 3,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 3,
+      "base_case_exact": true,
+      "generator_steps": 18,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q2": {
+        "slope": "0",
+        "intercept": "-1"
+       }
+      },
+      "recurrence": {
+       "proved": true,
+       "block": "GATTTC",
+       "order": 3,
+       "coefficients": [
+        "1",
+        "0",
+        "0"
+       ],
+       "characteristic_polynomial": "r**3 - 1",
+       "characteristic_factorization": "(r - 1)*(r**2 + r + 1)",
+       "initial_values": [
+        "0",
+        "0",
+        "-1"
+       ],
+       "residuals_all_zero": true,
+       "scope": "exact scalar recurrence of the observable along repeats of this block, certified on consecutive residuals and carried by the characteristic recurrence of the block matrix"
+      }
+     }
+    ]
+   },
+   {
+    "observable": "F31",
+    "dimension": 3,
+    "basis": [
+     "F31",
+     "F11",
+     "-F21"
+    ],
+    "action_matrices": {
+     "A": [
+      [
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1"
+      ]
+     ],
+     "C": [
+      [
+       "0",
+       "-1",
+       "0"
+      ],
+      [
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1"
+      ]
+     ],
+     "G": [
+      [
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0"
+      ]
+     ],
+     "T": [
+      [
+       "0",
+       "0",
+       "-1"
+      ],
+      [
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "1",
+       "0",
+       "0"
+      ]
+     ]
+    },
+    "identity_residuals_all_zero": true,
+    "closure_scope": "all finite words; linear closure of supplied polynomial observations",
+    "minimality": "smallest generator-invariant linear space containing this observable; not a claim of minimality over all representations",
+    "step_premise": {
+     "exact": true,
+     "frames_checked": 24,
+     "identities_checked": 96,
+     "scope": "exact for every frame the alphabet reaches within 4 folds and every centre"
+    },
+    "repeat_laws": [
+     {
+      "block": "GCGCG",
+      "block_order": 4,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 4,
+      "base_case_exact": true,
+      "generator_steps": 24,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "1"
+       },
+       "q2": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q3": {
+        "slope": "0",
+        "intercept": "-1"
+       }
+      },
+      "recurrence": {
+       "proved": true,
+       "block": "GCGCG",
+       "order": 2,
+       "coefficients": [
+        "-1",
+        "0"
+       ],
+       "characteristic_polynomial": "r**2 + 1",
+       "characteristic_factorization": "r**2 + 1",
+       "initial_values": [
+        "0",
+        "1"
+       ],
+       "residuals_all_zero": true,
+       "scope": "exact scalar recurrence of the observable along repeats of this block, certified on consecutive residuals and carried by the characteristic recurrence of the block matrix"
+      }
+     },
+     {
+      "block": "GATTTC",
+      "block_order": 3,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 3,
+      "base_case_exact": true,
+      "generator_steps": 18,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q2": {
+        "slope": "0",
+        "intercept": "-1"
+       }
+      },
+      "recurrence": {
+       "proved": true,
+       "block": "GATTTC",
+       "order": 3,
+       "coefficients": [
+        "1",
+        "0",
+        "0"
+       ],
+       "characteristic_polynomial": "r**3 - 1",
+       "characteristic_factorization": "(r - 1)*(r**2 + r + 1)",
+       "initial_values": [
+        "0",
+        "0",
+        "-1"
+       ],
+       "residuals_all_zero": true,
+       "scope": "exact scalar recurrence of the observable along repeats of this block, certified on consecutive residuals and carried by the characteristic recurrence of the block matrix"
+      }
+     }
+    ]
+   },
+   {
+    "observable": "F32",
+    "dimension": 3,
+    "basis": [
+     "F32",
+     "F12",
+     "-F22"
+    ],
+    "action_matrices": {
+     "A": [
+      [
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1"
+      ]
+     ],
+     "C": [
+      [
+       "0",
+       "-1",
+       "0"
+      ],
+      [
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1"
+      ]
+     ],
+     "G": [
+      [
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0"
+      ]
+     ],
+     "T": [
+      [
+       "0",
+       "0",
+       "-1"
+      ],
+      [
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "1",
+       "0",
+       "0"
+      ]
+     ]
+    },
+    "identity_residuals_all_zero": true,
+    "closure_scope": "all finite words; linear closure of supplied polynomial observations",
+    "minimality": "smallest generator-invariant linear space containing this observable; not a claim of minimality over all representations",
+    "step_premise": {
+     "exact": true,
+     "frames_checked": 24,
+     "identities_checked": 96,
+     "scope": "exact for every frame the alphabet reaches within 4 folds and every centre"
+    },
+    "repeat_laws": [
+     {
+      "block": "GCGCG",
+      "block_order": 4,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 4,
+      "base_case_exact": true,
+      "generator_steps": 24,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q2": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q3": {
+        "slope": "0",
+        "intercept": "0"
+       }
+      },
+      "recurrence": {
+       "proved": false,
+       "block": "GCGCG",
+       "reason": "ValueError: the observed sequence is zero or exceeds the state dimension"
+      }
+     },
+     {
+      "block": "GATTTC",
+      "block_order": 3,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 3,
+      "base_case_exact": true,
+      "generator_steps": 18,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "-1"
+       },
+       "q2": {
+        "slope": "0",
+        "intercept": "0"
+       }
+      },
+      "recurrence": {
+       "proved": true,
+       "block": "GATTTC",
+       "order": 3,
+       "coefficients": [
+        "1",
+        "0",
+        "0"
+       ],
+       "characteristic_polynomial": "r**3 - 1",
+       "characteristic_factorization": "(r - 1)*(r**2 + r + 1)",
+       "initial_values": [
+        "0",
+        "-1",
+        "0"
+       ],
+       "residuals_all_zero": true,
+       "scope": "exact scalar recurrence of the observable along repeats of this block, certified on consecutive residuals and carried by the characteristic recurrence of the block matrix"
+      }
+     }
+    ]
+   },
+   {
+    "observable": "F33",
+    "dimension": 3,
+    "basis": [
+     "F33",
+     "F13",
+     "-F23"
+    ],
+    "action_matrices": {
+     "A": [
+      [
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1"
+      ]
+     ],
+     "C": [
+      [
+       "0",
+       "-1",
+       "0"
+      ],
+      [
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1"
+      ]
+     ],
+     "G": [
+      [
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0"
+      ]
+     ],
+     "T": [
+      [
+       "0",
+       "0",
+       "-1"
+      ],
+      [
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "1",
+       "0",
+       "0"
+      ]
+     ]
+    },
+    "identity_residuals_all_zero": true,
+    "closure_scope": "all finite words; linear closure of supplied polynomial observations",
+    "minimality": "smallest generator-invariant linear space containing this observable; not a claim of minimality over all representations",
+    "step_premise": {
+     "exact": true,
+     "frames_checked": 24,
+     "identities_checked": 96,
+     "scope": "exact for every frame the alphabet reaches within 4 folds and every centre"
+    },
+    "repeat_laws": [
+     {
+      "block": "GCGCG",
+      "block_order": 4,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 4,
+      "base_case_exact": true,
+      "generator_steps": 24,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "1"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q2": {
+        "slope": "0",
+        "intercept": "-1"
+       },
+       "q3": {
+        "slope": "0",
+        "intercept": "0"
+       }
+      },
+      "recurrence": {
+       "proved": true,
+       "block": "GCGCG",
+       "order": 2,
+       "coefficients": [
+        "-1",
+        "0"
+       ],
+       "characteristic_polynomial": "r**2 + 1",
+       "characteristic_factorization": "r**2 + 1",
+       "initial_values": [
+        "1",
+        "0"
+       ],
+       "residuals_all_zero": true,
+       "scope": "exact scalar recurrence of the observable along repeats of this block, certified on consecutive residuals and carried by the characteristic recurrence of the block matrix"
+      }
+     },
+     {
+      "block": "GATTTC",
+      "block_order": 3,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 3,
+      "base_case_exact": true,
+      "generator_steps": 18,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "1"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q2": {
+        "slope": "0",
+        "intercept": "0"
+       }
+      },
+      "recurrence": {
+       "proved": true,
+       "block": "GATTTC",
+       "order": 3,
+       "coefficients": [
+        "1",
+        "0",
+        "0"
+       ],
+       "characteristic_polynomial": "r**3 - 1",
+       "characteristic_factorization": "(r - 1)*(r**2 + r + 1)",
+       "initial_values": [
+        "1",
+        "0",
+        "0"
+       ],
+       "residuals_all_zero": true,
+       "scope": "exact scalar recurrence of the observable along repeats of this block, certified on consecutive residuals and carried by the characteristic recurrence of the block matrix"
+      }
+     }
+    ]
+   },
+   {
+    "observable": "c1**2",
+    "dimension": 10,
+    "basis": [
+     "c1**2",
+     "F11**2 - 2*F11*F31 + 2*F11*c1 + F31**2 - 2*F31*c1 + c1**2",
+     "F11**2 + 2*F11*F31 + 2*F11*c1 + F31**2 + 2*F31*c1 + c1**2",
+     "F21**2 + 2*F21*F31 + 2*F21*c1 + F31**2 + 2*F31*c1 + c1**2",
+     "F21**2 - 2*F21*F31 + 2*F21*c1 + F31**2 - 2*F31*c1 + c1**2",
+     "4*F31**2 - 4*F31*c1 + c1**2",
+     "4*F11**2 + 8*F11*F31 + 4*F11*c1 + 4*F31**2 + 4*F31*c1 + c1**2",
+     "F11**2 + 4*F11*F21 + 2*F11*F31 + 2*F11*c1 + 4*F21**2 + 4*F21*F31 + 4*F21*c1 + F31**2 + 2*F31*c1 + c1**2",
+     "4*F11**2 - 8*F11*F31 + 4*F11*c1 + 4*F31**2 - 4*F31*c1 + c1**2",
+     "4*F11**2 + 4*F11*F21 - 4*F11*F31 + 4*F11*c1 + F21**2 - 2*F21*F31 + 2*F21*c1 + F31**2 - 2*F31*c1 + c1**2"
+    ],
+    "action_matrices": {
+     "A": [
+      [
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "3",
+       "0",
+       "-3",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "1",
+       "-3",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "3",
+       "0"
+      ],
+      [
+       "0",
+       "-7",
+       "6",
+       "-3",
+       "2",
+       "1",
+       "-2",
+       "1",
+       "2",
+       "1"
+      ],
+      [
+       "1",
+       "-1",
+       "-2",
+       "0",
+       "0",
+       "2",
+       "1",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "-2",
+       "-4",
+       "4",
+       "-1",
+       "2",
+       "2",
+       "-1",
+       "0",
+       "1",
+       "0"
+      ]
+     ],
+     "C": [
+      [
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "-4",
+       "4",
+       "0",
+       "0",
+       "1",
+       "-1",
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "2",
+       "-2",
+       "1",
+       "-1",
+       "0",
+       "1",
+       "0",
+       "-1",
+       "1"
+      ],
+      [
+       "3",
+       "3",
+       "-6",
+       "0",
+       "0",
+       "-2",
+       "3",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "1",
+       "-10",
+       "7",
+       "0",
+       "0",
+       "2",
+       "-2",
+       "0",
+       "3",
+       "0"
+      ],
+      [
+       "0",
+       "-1",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "1",
+       "1",
+       "-1"
+      ],
+      [
+       "1",
+       "0",
+       "-3",
+       "0",
+       "0",
+       "0",
+       "3",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "-2",
+       "0",
+       "0",
+       "2",
+       "-2",
+       "2",
+       "1",
+       "0",
+       "-1",
+       "1"
+      ]
+     ],
+     "G": [
+      [
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "-4",
+       "4",
+       "0",
+       "0",
+       "1",
+       "-1",
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "-1",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "1",
+       "1",
+       "-1"
+      ],
+      [
+       "3",
+       "-3",
+       "0",
+       "-3",
+       "3",
+       "-2",
+       "0",
+       "3",
+       "3",
+       "-3"
+      ],
+      [
+       "3",
+       "-1",
+       "0",
+       "-3",
+       "2",
+       "-2",
+       "1",
+       "1",
+       "2",
+       "-2"
+      ],
+      [
+       "-2",
+       "-5",
+       "6",
+       "0",
+       "0",
+       "2",
+       "-1",
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "3",
+       "-3",
+       "0",
+       "-3",
+       "0",
+       "0",
+       "0",
+       "3",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "1",
+       "-2",
+       "1",
+       "-2",
+       "1",
+       "1",
+       "1",
+       "-1",
+       "1"
+      ]
+     ],
+     "T": [
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "-3",
+       "3",
+       "-2",
+       "2",
+       "0",
+       "-1",
+       "1",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "-5",
+       "4",
+       "-3",
+       "4",
+       "0",
+       "-1",
+       "1",
+       "2",
+       "-1"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "3",
+       "-1",
+       "0",
+       "-2",
+       "0",
+       "0",
+       "0",
+       "1",
+       "1",
+       "-1"
+      ],
+      [
+       "3",
+       "-9",
+       "6",
+       "-6",
+       "3",
+       "0",
+       "-2",
+       "3",
+       "3",
+       "0"
+      ],
+      [
+       "-2",
+       "-10",
+       "10",
+       "-4",
+       "4",
+       "2",
+       "-3",
+       "1",
+       "3",
+       "0"
+      ],
+      [
+       "3",
+       "1",
+       "-2",
+       "-2",
+       "1",
+       "-2",
+       "1",
+       "1",
+       "2",
+       "-2"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0"
+      ]
+     ]
+    },
+    "identity_residuals_all_zero": true,
+    "closure_scope": "all finite words; linear closure of supplied polynomial observations",
+    "minimality": "smallest generator-invariant linear space containing this observable; not a claim of minimality over all representations",
+    "step_premise": {
+     "exact": true,
+     "frames_checked": 24,
+     "identities_checked": 96,
+     "scope": "exact for every frame the alphabet reaches within 4 folds and every centre"
+    },
+    "repeat_laws": [
+     {
+      "block": "CCCGATT",
+      "block_order": null,
+      "proved": false,
+      "reason": "non_affine_length_dependence",
+      "scope": null,
+      "feature_states": null,
+      "base_case_exact": null,
+      "generator_steps": null,
+      "all_steps_exact": null,
+      "fit_used_as_proof": null,
+      "formulas": null,
+      "recurrence": {
+       "proved": true,
+       "block": "CCCGATT",
+       "order": 3,
+       "coefficients": [
+        "1",
+        "-1",
+        "1"
+       ],
+       "characteristic_polynomial": "r**3 - r**2 + r - 1",
+       "characteristic_factorization": "(r - 1)*(r**2 + 1)",
+       "initial_values": [
+        "0",
+        "0",
+        "4"
+       ],
+       "residuals_all_zero": true,
+       "scope": "exact scalar recurrence of the observable along repeats of this block, certified on consecutive residuals and carried by the characteristic recurrence of the block matrix"
+      }
+     },
+     {
+      "block": "TTTAGCCC",
+      "block_order": 3,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 3,
+      "base_case_exact": true,
+      "generator_steps": 60,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "4"
+       },
+       "q2": {
+        "slope": "0",
+        "intercept": "1"
+       }
+      },
+      "recurrence": {
+       "proved": true,
+       "block": "TTTAGCCC",
+       "order": 3,
+       "coefficients": [
+        "1",
+        "0",
+        "0"
+       ],
+       "characteristic_polynomial": "r**3 - 1",
+       "characteristic_factorization": "(r - 1)*(r**2 + r + 1)",
+       "initial_values": [
+        "0",
+        "4",
+        "1"
+       ],
+       "residuals_all_zero": true,
+       "scope": "exact scalar recurrence of the observable along repeats of this block, certified on consecutive residuals and carried by the characteristic recurrence of the block matrix"
+      }
+     }
+    ]
+   },
+   {
+    "observable": "c1*c2",
+    "dimension": 10,
+    "basis": [
+     "c1*c2",
+     "F11*F12 - F11*F32 + F11*c2 - F12*F31 + F12*c1 + F31*F32 - F31*c2 - F32*c1 + c1*c2",
+     "F11*F12 + F11*F32 + F11*c2 + F12*F31 + F12*c1 + F31*F32 + F31*c2 + F32*c1 + c1*c2",
+     "F21*F22 + F21*F32 + F21*c2 + F22*F31 + F22*c1 + F31*F32 + F31*c2 + F32*c1 + c1*c2",
+     "F21*F22 - F21*F32 + F21*c2 - F22*F31 + F22*c1 + F31*F32 - F31*c2 - F32*c1 + c1*c2",
+     "4*F31*F32 - 2*F31*c2 - 2*F32*c1 + c1*c2",
+     "4*F11*F12 + 4*F11*F32 + 2*F11*c2 + 4*F12*F31 + 2*F12*c1 + 4*F31*F32 + 2*F31*c2 + 2*F32*c1 + c1*c2",
+     "F11*F12 + 2*F11*F22 + F11*F32 + F11*c2 + 2*F12*F21 + F12*F31 + F12*c1 + 4*F21*F22 + 2*F21*F32 + 2*F21*c2 + 2*F22*F31 + 2*F22*c1 + F31*F32 + F31*c2 + F32*c1 + c1*c2",
+     "4*F11*F12 - 4*F11*F32 + 2*F11*c2 - 4*F12*F31 + 2*F12*c1 + 4*F31*F32 - 2*F31*c2 - 2*F32*c1 + c1*c2",
+     "4*F11*F12 + 2*F11*F22 - 2*F11*F32 + 2*F11*c2 + 2*F12*F21 - 2*F12*F31 + 2*F12*c1 + F21*F22 - F21*F32 + F21*c2 - F22*F31 + F22*c1 + F31*F32 - F31*c2 - F32*c1 + c1*c2"
+    ],
+    "action_matrices": {
+     "A": [
+      [
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "3",
+       "0",
+       "-3",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "1",
+       "-3",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "3",
+       "0"
+      ],
+      [
+       "0",
+       "-7",
+       "6",
+       "-3",
+       "2",
+       "1",
+       "-2",
+       "1",
+       "2",
+       "1"
+      ],
+      [
+       "1",
+       "-1",
+       "-2",
+       "0",
+       "0",
+       "2",
+       "1",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "-2",
+       "-4",
+       "4",
+       "-1",
+       "2",
+       "2",
+       "-1",
+       "0",
+       "1",
+       "0"
+      ]
+     ],
+     "C": [
+      [
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "-4",
+       "4",
+       "0",
+       "0",
+       "1",
+       "-1",
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "2",
+       "-2",
+       "1",
+       "-1",
+       "0",
+       "1",
+       "0",
+       "-1",
+       "1"
+      ],
+      [
+       "3",
+       "3",
+       "-6",
+       "0",
+       "0",
+       "-2",
+       "3",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "1",
+       "-10",
+       "7",
+       "0",
+       "0",
+       "2",
+       "-2",
+       "0",
+       "3",
+       "0"
+      ],
+      [
+       "0",
+       "-1",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "1",
+       "1",
+       "-1"
+      ],
+      [
+       "1",
+       "0",
+       "-3",
+       "0",
+       "0",
+       "0",
+       "3",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "-2",
+       "0",
+       "0",
+       "2",
+       "-2",
+       "2",
+       "1",
+       "0",
+       "-1",
+       "1"
+      ]
+     ],
+     "G": [
+      [
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "-4",
+       "4",
+       "0",
+       "0",
+       "1",
+       "-1",
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "-1",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "1",
+       "1",
+       "-1"
+      ],
+      [
+       "3",
+       "-3",
+       "0",
+       "-3",
+       "3",
+       "-2",
+       "0",
+       "3",
+       "3",
+       "-3"
+      ],
+      [
+       "3",
+       "-1",
+       "0",
+       "-3",
+       "2",
+       "-2",
+       "1",
+       "1",
+       "2",
+       "-2"
+      ],
+      [
+       "-2",
+       "-5",
+       "6",
+       "0",
+       "0",
+       "2",
+       "-1",
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "3",
+       "-3",
+       "0",
+       "-3",
+       "0",
+       "0",
+       "0",
+       "3",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "1",
+       "-2",
+       "1",
+       "-2",
+       "1",
+       "1",
+       "1",
+       "-1",
+       "1"
+      ]
+     ],
+     "T": [
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "-3",
+       "3",
+       "-2",
+       "2",
+       "0",
+       "-1",
+       "1",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "-5",
+       "4",
+       "-3",
+       "4",
+       "0",
+       "-1",
+       "1",
+       "2",
+       "-1"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "3",
+       "-1",
+       "0",
+       "-2",
+       "0",
+       "0",
+       "0",
+       "1",
+       "1",
+       "-1"
+      ],
+      [
+       "3",
+       "-9",
+       "6",
+       "-6",
+       "3",
+       "0",
+       "-2",
+       "3",
+       "3",
+       "0"
+      ],
+      [
+       "-2",
+       "-10",
+       "10",
+       "-4",
+       "4",
+       "2",
+       "-3",
+       "1",
+       "3",
+       "0"
+      ],
+      [
+       "3",
+       "1",
+       "-2",
+       "-2",
+       "1",
+       "-2",
+       "1",
+       "1",
+       "2",
+       "-2"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0"
+      ]
+     ]
+    },
+    "identity_residuals_all_zero": true,
+    "closure_scope": "all finite words; linear closure of supplied polynomial observations",
+    "minimality": "smallest generator-invariant linear space containing this observable; not a claim of minimality over all representations",
+    "step_premise": {
+     "exact": true,
+     "frames_checked": 24,
+     "identities_checked": 96,
+     "scope": "exact for every frame the alphabet reaches within 4 folds and every centre"
+    },
+    "repeat_laws": [
+     {
+      "block": "CCCGATT",
+      "block_order": null,
+      "proved": false,
+      "reason": "non_affine_length_dependence",
+      "scope": null,
+      "feature_states": null,
+      "base_case_exact": null,
+      "generator_steps": null,
+      "all_steps_exact": null,
+      "fit_used_as_proof": null,
+      "formulas": null,
+      "recurrence": {
+       "proved": true,
+       "block": "CCCGATT",
+       "order": 4,
+       "coefficients": [
+        "1",
+        "0",
+        "0",
+        "0"
+       ],
+       "characteristic_polynomial": "r**4 - 1",
+       "characteristic_factorization": "(r - 1)*(r + 1)*(r**2 + 1)",
+       "initial_values": [
+        "0",
+        "0",
+        "-4",
+        "0"
+       ],
+       "residuals_all_zero": true,
+       "scope": "exact scalar recurrence of the observable along repeats of this block, certified on consecutive residuals and carried by the characteristic recurrence of the block matrix"
+      }
+     },
+     {
+      "block": "TTTAGCCC",
+      "block_order": 3,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 3,
+      "base_case_exact": true,
+      "generator_steps": 60,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "-2"
+       },
+       "q2": {
+        "slope": "0",
+        "intercept": "-2"
+       }
+      },
+      "recurrence": {
+       "proved": true,
+       "block": "TTTAGCCC",
+       "order": 3,
+       "coefficients": [
+        "1",
+        "0",
+        "0"
+       ],
+       "characteristic_polynomial": "r**3 - 1",
+       "characteristic_factorization": "(r - 1)*(r**2 + r + 1)",
+       "initial_values": [
+        "0",
+        "-2",
+        "-2"
+       ],
+       "residuals_all_zero": true,
+       "scope": "exact scalar recurrence of the observable along repeats of this block, certified on consecutive residuals and carried by the characteristic recurrence of the block matrix"
+      }
+     }
+    ]
+   },
+   {
+    "observable": "c1*c3",
+    "dimension": 10,
+    "basis": [
+     "c1*c3",
+     "F11*F13 - F11*F33 + F11*c3 - F13*F31 + F13*c1 + F31*F33 - F31*c3 - F33*c1 + c1*c3",
+     "F11*F13 + F11*F33 + F11*c3 + F13*F31 + F13*c1 + F31*F33 + F31*c3 + F33*c1 + c1*c3",
+     "F21*F23 + F21*F33 + F21*c3 + F23*F31 + F23*c1 + F31*F33 + F31*c3 + F33*c1 + c1*c3",
+     "F21*F23 - F21*F33 + F21*c3 - F23*F31 + F23*c1 + F31*F33 - F31*c3 - F33*c1 + c1*c3",
+     "4*F31*F33 - 2*F31*c3 - 2*F33*c1 + c1*c3",
+     "4*F11*F13 + 4*F11*F33 + 2*F11*c3 + 4*F13*F31 + 2*F13*c1 + 4*F31*F33 + 2*F31*c3 + 2*F33*c1 + c1*c3",
+     "F11*F13 + 2*F11*F23 + F11*F33 + F11*c3 + 2*F13*F21 + F13*F31 + F13*c1 + 4*F21*F23 + 2*F21*F33 + 2*F21*c3 + 2*F23*F31 + 2*F23*c1 + F31*F33 + F31*c3 + F33*c1 + c1*c3",
+     "4*F11*F13 - 4*F11*F33 + 2*F11*c3 - 4*F13*F31 + 2*F13*c1 + 4*F31*F33 - 2*F31*c3 - 2*F33*c1 + c1*c3",
+     "4*F11*F13 + 2*F11*F23 - 2*F11*F33 + 2*F11*c3 + 2*F13*F21 - 2*F13*F31 + 2*F13*c1 + F21*F23 - F21*F33 + F21*c3 - F23*F31 + F23*c1 + F31*F33 - F31*c3 - F33*c1 + c1*c3"
+    ],
+    "action_matrices": {
+     "A": [
+      [
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "3",
+       "0",
+       "-3",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "1",
+       "-3",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "3",
+       "0"
+      ],
+      [
+       "0",
+       "-7",
+       "6",
+       "-3",
+       "2",
+       "1",
+       "-2",
+       "1",
+       "2",
+       "1"
+      ],
+      [
+       "1",
+       "-1",
+       "-2",
+       "0",
+       "0",
+       "2",
+       "1",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "-2",
+       "-4",
+       "4",
+       "-1",
+       "2",
+       "2",
+       "-1",
+       "0",
+       "1",
+       "0"
+      ]
+     ],
+     "C": [
+      [
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "-4",
+       "4",
+       "0",
+       "0",
+       "1",
+       "-1",
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "2",
+       "-2",
+       "1",
+       "-1",
+       "0",
+       "1",
+       "0",
+       "-1",
+       "1"
+      ],
+      [
+       "3",
+       "3",
+       "-6",
+       "0",
+       "0",
+       "-2",
+       "3",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "1",
+       "-10",
+       "7",
+       "0",
+       "0",
+       "2",
+       "-2",
+       "0",
+       "3",
+       "0"
+      ],
+      [
+       "0",
+       "-1",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "1",
+       "1",
+       "-1"
+      ],
+      [
+       "1",
+       "0",
+       "-3",
+       "0",
+       "0",
+       "0",
+       "3",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "-2",
+       "0",
+       "0",
+       "2",
+       "-2",
+       "2",
+       "1",
+       "0",
+       "-1",
+       "1"
+      ]
+     ],
+     "G": [
+      [
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "-4",
+       "4",
+       "0",
+       "0",
+       "1",
+       "-1",
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "-1",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "1",
+       "1",
+       "-1"
+      ],
+      [
+       "3",
+       "-3",
+       "0",
+       "-3",
+       "3",
+       "-2",
+       "0",
+       "3",
+       "3",
+       "-3"
+      ],
+      [
+       "3",
+       "-1",
+       "0",
+       "-3",
+       "2",
+       "-2",
+       "1",
+       "1",
+       "2",
+       "-2"
+      ],
+      [
+       "-2",
+       "-5",
+       "6",
+       "0",
+       "0",
+       "2",
+       "-1",
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "3",
+       "-3",
+       "0",
+       "-3",
+       "0",
+       "0",
+       "0",
+       "3",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "1",
+       "-2",
+       "1",
+       "-2",
+       "1",
+       "1",
+       "1",
+       "-1",
+       "1"
+      ]
+     ],
+     "T": [
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "-3",
+       "3",
+       "-2",
+       "2",
+       "0",
+       "-1",
+       "1",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "-5",
+       "4",
+       "-3",
+       "4",
+       "0",
+       "-1",
+       "1",
+       "2",
+       "-1"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "3",
+       "-1",
+       "0",
+       "-2",
+       "0",
+       "0",
+       "0",
+       "1",
+       "1",
+       "-1"
+      ],
+      [
+       "3",
+       "-9",
+       "6",
+       "-6",
+       "3",
+       "0",
+       "-2",
+       "3",
+       "3",
+       "0"
+      ],
+      [
+       "-2",
+       "-10",
+       "10",
+       "-4",
+       "4",
+       "2",
+       "-3",
+       "1",
+       "3",
+       "0"
+      ],
+      [
+       "3",
+       "1",
+       "-2",
+       "-2",
+       "1",
+       "-2",
+       "1",
+       "1",
+       "2",
+       "-2"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0"
+      ]
+     ]
+    },
+    "identity_residuals_all_zero": true,
+    "closure_scope": "all finite words; linear closure of supplied polynomial observations",
+    "minimality": "smallest generator-invariant linear space containing this observable; not a claim of minimality over all representations",
+    "step_premise": {
+     "exact": true,
+     "frames_checked": 24,
+     "identities_checked": 96,
+     "scope": "exact for every frame the alphabet reaches within 4 folds and every centre"
+    },
+    "repeat_laws": [
+     {
+      "block": "CCCGATT",
+      "block_order": null,
+      "proved": false,
+      "reason": "non_affine_length_dependence",
+      "scope": null,
+      "feature_states": null,
+      "base_case_exact": null,
+      "generator_steps": null,
+      "all_steps_exact": null,
+      "fit_used_as_proof": null,
+      "formulas": null,
+      "recurrence": {
+       "proved": true,
+       "block": "CCCGATT",
+       "order": 6,
+       "coefficients": [
+        "-1",
+        "2",
+        "-3",
+        "4",
+        "-3",
+        "2"
+       ],
+       "characteristic_polynomial": "r**6 - 2*r**5 + 3*r**4 - 4*r**3 + 3*r**2 - 2*r + 1",
+       "characteristic_factorization": "(r - 1)**2*(r**2 + 1)**2",
+       "initial_values": [
+        "0",
+        "0",
+        "-8",
+        "-12",
+        "0",
+        "0"
+       ],
+       "residuals_all_zero": true,
+       "scope": "exact scalar recurrence of the observable along repeats of this block, certified on consecutive residuals and carried by the characteristic recurrence of the block matrix"
+      }
+     },
+     {
+      "block": "TTTAGCCC",
+      "block_order": 3,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 3,
+      "base_case_exact": true,
+      "generator_steps": 60,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "-2"
+       },
+       "q2": {
+        "slope": "0",
+        "intercept": "1"
+       }
+      },
+      "recurrence": {
+       "proved": true,
+       "block": "TTTAGCCC",
+       "order": 3,
+       "coefficients": [
+        "1",
+        "0",
+        "0"
+       ],
+       "characteristic_polynomial": "r**3 - 1",
+       "characteristic_factorization": "(r - 1)*(r**2 + r + 1)",
+       "initial_values": [
+        "0",
+        "-2",
+        "1"
+       ],
+       "residuals_all_zero": true,
+       "scope": "exact scalar recurrence of the observable along repeats of this block, certified on consecutive residuals and carried by the characteristic recurrence of the block matrix"
+      }
+     }
+    ]
+   },
+   {
+    "observable": "F11*c1",
+    "dimension": 9,
+    "basis": [
+     "F11*c1",
+     "-F11*F31 + F31**2 - F31*c1",
+     "F11*F31 + F31**2 + F31*c1",
+     "F11*F21 + F11*F31 + F11*c1",
+     "F11*F21 - F11*F31 + F11*c1",
+     "2*F11**2 + 2*F11*F31 + F11*c1",
+     "F11*F21 + 2*F21**2 + F21*F31 + F21*c1",
+     "-F11*F21 + F21*F31 - F21*c1",
+     "-F11*F21 - F21*F31 - F21*c1"
+    ],
+    "action_matrices": {
+     "A": [
+      [
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0",
+       "1",
+       "-1",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "-2",
+       "2",
+       "1",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "1",
+       "0",
+       "-1/2",
+       "1/2",
+       "0",
+       "0",
+       "-1/2",
+       "1/2"
+      ],
+      [
+       "0",
+       "1",
+       "0",
+       "1/2",
+       "-1/2",
+       "0",
+       "0",
+       "-1/2",
+       "1/2"
+      ],
+      [
+       "0",
+       "2",
+       "1",
+       "-1",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0",
+       "1/2",
+       "1/2",
+       "0",
+       "1",
+       "-3/2",
+       "3/2"
+      ],
+      [
+       "-1",
+       "0",
+       "0",
+       "1/2",
+       "1/2",
+       "0",
+       "0",
+       "3/2",
+       "-1/2"
+      ],
+      [
+       "1",
+       "0",
+       "0",
+       "-1/2",
+       "-1/2",
+       "0",
+       "0",
+       "3/2",
+       "-1/2"
+      ]
+     ],
+     "C": [
+      [
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0",
+       "-1",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1",
+       "-1/2",
+       "1/2",
+       "0",
+       "0",
+       "1/2",
+       "-1/2"
+      ],
+      [
+       "0",
+       "0",
+       "1",
+       "1/2",
+       "-1/2",
+       "0",
+       "0",
+       "1/2",
+       "-1/2"
+      ],
+      [
+       "0",
+       "1",
+       "2",
+       "-1",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "1",
+       "0",
+       "0",
+       "-1/2",
+       "-1/2",
+       "0",
+       "1",
+       "1/2",
+       "-1/2"
+      ],
+      [
+       "1",
+       "0",
+       "0",
+       "-1/2",
+       "-1/2",
+       "0",
+       "0",
+       "-1/2",
+       "3/2"
+      ],
+      [
+       "-1",
+       "0",
+       "0",
+       "1/2",
+       "1/2",
+       "0",
+       "0",
+       "-1/2",
+       "3/2"
+      ]
+     ],
+     "G": [
+      [
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "1",
+       "0",
+       "0",
+       "1",
+       "-1",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0",
+       "2",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "1",
+       "0",
+       "0",
+       "-1",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "1",
+       "2",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "-1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "-1",
+       "1"
+      ],
+      [
+       "0",
+       "0",
+       "-1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ]
+     ],
+     "T": [
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "-1",
+       "1"
+      ],
+      [
+       "-1",
+       "0",
+       "0",
+       "0",
+       "2",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "1",
+       "0",
+       "0",
+       "-1",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "-3",
+       "0",
+       "0",
+       "0",
+       "3",
+       "1",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "2",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "-1",
+       "1"
+      ],
+      [
+       "0",
+       "-1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "-1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "-1"
+      ]
+     ]
+    },
+    "identity_residuals_all_zero": true,
+    "closure_scope": "all finite words; linear closure of supplied polynomial observations",
+    "minimality": "smallest generator-invariant linear space containing this observable; not a claim of minimality over all representations",
+    "step_premise": {
+     "exact": true,
+     "frames_checked": 24,
+     "identities_checked": 96,
+     "scope": "exact for every frame the alphabet reaches within 4 folds and every centre"
+    },
+    "repeat_laws": [
+     {
+      "block": "CCCGATT",
+      "block_order": null,
+      "proved": false,
+      "reason": "non_affine_length_dependence",
+      "scope": null,
+      "feature_states": null,
+      "base_case_exact": null,
+      "generator_steps": null,
+      "all_steps_exact": null,
+      "fit_used_as_proof": null,
+      "formulas": null,
+      "recurrence": {
+       "proved": true,
+       "block": "CCCGATT",
+       "order": 4,
+       "coefficients": [
+        "1",
+        "0",
+        "0",
+        "0"
+       ],
+       "characteristic_polynomial": "r**4 - 1",
+       "characteristic_factorization": "(r - 1)*(r + 1)*(r**2 + 1)",
+       "initial_values": [
+        "0",
+        "0",
+        "2",
+        "0"
+       ],
+       "residuals_all_zero": true,
+       "scope": "exact scalar recurrence of the observable along repeats of this block, certified on consecutive residuals and carried by the characteristic recurrence of the block matrix"
+      }
+     },
+     {
+      "block": "TTTAGCCC",
+      "block_order": 3,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 3,
+      "base_case_exact": true,
+      "generator_steps": 54,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q2": {
+        "slope": "0",
+        "intercept": "0"
+       }
+      },
+      "recurrence": {
+       "proved": false,
+       "block": "TTTAGCCC",
+       "reason": "ValueError: the observed sequence is zero or exceeds the state dimension"
+      }
+     }
+    ]
+   },
+   {
+    "observable": "F12*c1",
+    "dimension": 12,
+    "basis": [
+     "F12*c1",
+     "-F11*F32 + F31*F32 - F32*c1",
+     "F11*F32 + F31*F32 + F32*c1",
+     "F12*F21 + F12*F31 + F12*c1",
+     "F12*F21 - F12*F31 + F12*c1",
+     "2*F11*F12 + 2*F12*F31 + F12*c1",
+     "F11*F22 + 2*F21*F22 + F22*F31 + F22*c1",
+     "-F11*F22 + F22*F31 - F22*c1",
+     "-F11*F22 - F22*F31 - F22*c1",
+     "-2*F11*F32 - F21*F32 + F31*F32 - F32*c1",
+     "F21*F32 + F31*F32 + F32*c1",
+     "2*F11*F22 + 2*F21*F22 - 2*F22*F31 + F22*c1"
+    ],
+    "action_matrices": {
+     "A": [
+      [
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0",
+       "1",
+       "-1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "-2",
+       "2",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "1",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "-1",
+       "0"
+      ],
+      [
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "-1",
+       "3",
+       "-2",
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "1",
+       "0",
+       "0",
+       "-1"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "1",
+       "-2",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0",
+       "-1",
+       "2",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "3",
+       "-5",
+       "5",
+       "0",
+       "0",
+       "-2"
+      ]
+     ],
+     "C": [
+      [
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0",
+       "-1",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "1",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "-1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "2",
+       "-1",
+       "1",
+       "0",
+       "0",
+       "-1"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "-2",
+       "3",
+       "0",
+       "0",
+       "-1"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "-1",
+       "1",
+       "0",
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "-1",
+       "0",
+       "0",
+       "1",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "-1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "-1",
+       "4",
+       "-4",
+       "0",
+       "0",
+       "2"
+      ]
+     ],
+     "G": [
+      [
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "1",
+       "0",
+       "0",
+       "1",
+       "-1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0",
+       "2",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "1",
+       "0",
+       "0",
+       "-1",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "1",
+       "2",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "-1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "-1",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "-1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "2",
+       "-2",
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "-1",
+       "1",
+       "0",
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "0",
+       "3",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "-2",
+       "1",
+       "0"
+      ]
+     ],
+     "T": [
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "-1",
+       "1",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0",
+       "0",
+       "2",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "1",
+       "0",
+       "0",
+       "-1",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "-3",
+       "0",
+       "0",
+       "0",
+       "3",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "1",
+       "2",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "-1",
+       "0"
+      ],
+      [
+       "0",
+       "-1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "-1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "-1",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "1",
+       "0",
+       "0",
+       "-1"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "2",
+       "-3",
+       "3",
+       "0",
+       "0",
+       "-1"
+      ],
+      [
+       "0",
+       "2",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0"
+      ]
+     ]
+    },
+    "identity_residuals_all_zero": true,
+    "closure_scope": "all finite words; linear closure of supplied polynomial observations",
+    "minimality": "smallest generator-invariant linear space containing this observable; not a claim of minimality over all representations",
+    "step_premise": {
+     "exact": true,
+     "frames_checked": 24,
+     "identities_checked": 96,
+     "scope": "exact for every frame the alphabet reaches within 4 folds and every centre"
+    },
+    "repeat_laws": [
+     {
+      "block": "CCCGATT",
+      "block_order": null,
+      "proved": false,
+      "reason": "non_affine_length_dependence",
+      "scope": null,
+      "feature_states": null,
+      "base_case_exact": null,
+      "generator_steps": null,
+      "all_steps_exact": null,
+      "fit_used_as_proof": null,
+      "formulas": null,
+      "recurrence": {
+       "proved": true,
+       "block": "CCCGATT",
+       "order": 4,
+       "coefficients": [
+        "1",
+        "0",
+        "0",
+        "0"
+       ],
+       "characteristic_polynomial": "r**4 - 1",
+       "characteristic_factorization": "(r - 1)*(r + 1)*(r**2 + 1)",
+       "initial_values": [
+        "0",
+        "0",
+        "0",
+        "2"
+       ],
+       "residuals_all_zero": true,
+       "scope": "exact scalar recurrence of the observable along repeats of this block, certified on consecutive residuals and carried by the characteristic recurrence of the block matrix"
+      }
+     },
+     {
+      "block": "TTTAGCCC",
+      "block_order": 3,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 3,
+      "base_case_exact": true,
+      "generator_steps": 72,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q2": {
+        "slope": "0",
+        "intercept": "1"
+       }
+      },
+      "recurrence": {
+       "proved": true,
+       "block": "TTTAGCCC",
+       "order": 3,
+       "coefficients": [
+        "1",
+        "0",
+        "0"
+       ],
+       "characteristic_polynomial": "r**3 - 1",
+       "characteristic_factorization": "(r - 1)*(r**2 + r + 1)",
+       "initial_values": [
+        "0",
+        "0",
+        "1"
+       ],
+       "residuals_all_zero": true,
+       "scope": "exact scalar recurrence of the observable along repeats of this block, certified on consecutive residuals and carried by the characteristic recurrence of the block matrix"
+      }
+     }
+    ]
+   },
+   {
+    "observable": "F13*c1",
+    "dimension": 12,
+    "basis": [
+     "F13*c1",
+     "-F11*F33 + F31*F33 - F33*c1",
+     "F11*F33 + F31*F33 + F33*c1",
+     "F13*F21 + F13*F31 + F13*c1",
+     "F13*F21 - F13*F31 + F13*c1",
+     "2*F11*F13 + 2*F13*F31 + F13*c1",
+     "F11*F23 + 2*F21*F23 + F23*F31 + F23*c1",
+     "-F11*F23 + F23*F31 - F23*c1",
+     "-F11*F23 - F23*F31 - F23*c1",
+     "-2*F11*F33 - F21*F33 + F31*F33 - F33*c1",
+     "F21*F33 + F31*F33 + F33*c1",
+     "2*F11*F23 + 2*F21*F23 - 2*F23*F31 + F23*c1"
+    ],
+    "action_matrices": {
+     "A": [
+      [
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0",
+       "1",
+       "-1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "-2",
+       "2",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "1",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "-1",
+       "0"
+      ],
+      [
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "-1",
+       "3",
+       "-2",
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "1",
+       "0",
+       "0",
+       "-1"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "1",
+       "-2",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0",
+       "-1",
+       "2",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "3",
+       "-5",
+       "5",
+       "0",
+       "0",
+       "-2"
+      ]
+     ],
+     "C": [
+      [
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0",
+       "-1",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "1",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "-1",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "2",
+       "-1",
+       "1",
+       "0",
+       "0",
+       "-1"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "-2",
+       "3",
+       "0",
+       "0",
+       "-1"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "-1",
+       "1",
+       "0",
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "-1",
+       "0",
+       "0",
+       "1",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "-1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "-1",
+       "4",
+       "-4",
+       "0",
+       "0",
+       "2"
+      ]
+     ],
+     "G": [
+      [
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "1",
+       "0",
+       "0",
+       "1",
+       "-1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0",
+       "2",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "1",
+       "0",
+       "0",
+       "-1",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "1",
+       "2",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "-1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "-1",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "-1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "2",
+       "-2",
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "-1",
+       "1",
+       "0",
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "0",
+       "3",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "-2",
+       "1",
+       "0"
+      ]
+     ],
+     "T": [
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "-1",
+       "1",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "0",
+       "0",
+       "2",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "1",
+       "0",
+       "0",
+       "-1",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "-3",
+       "0",
+       "0",
+       "0",
+       "3",
+       "1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "1",
+       "2",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "-1",
+       "0"
+      ],
+      [
+       "0",
+       "-1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "-1",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "-1",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0",
+       "1",
+       "0",
+       "0",
+       "-1"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "2",
+       "-3",
+       "3",
+       "0",
+       "0",
+       "-1"
+      ],
+      [
+       "0",
+       "2",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "0",
+       "1",
+       "0"
+      ]
+     ]
+    },
+    "identity_residuals_all_zero": true,
+    "closure_scope": "all finite words; linear closure of supplied polynomial observations",
+    "minimality": "smallest generator-invariant linear space containing this observable; not a claim of minimality over all representations",
+    "step_premise": {
+     "exact": true,
+     "frames_checked": 24,
+     "identities_checked": 96,
+     "scope": "exact for every frame the alphabet reaches within 4 folds and every centre"
+    },
+    "repeat_laws": [
+     {
+      "block": "CCCGATT",
+      "block_order": null,
+      "proved": false,
+      "reason": "non_affine_length_dependence",
+      "scope": null,
+      "feature_states": null,
+      "base_case_exact": null,
+      "generator_steps": null,
+      "all_steps_exact": null,
+      "fit_used_as_proof": null,
+      "formulas": null,
+      "recurrence": {
+       "proved": false,
+       "block": "CCCGATT",
+       "reason": "ValueError: the observed sequence is zero or exceeds the state dimension"
+      }
+     },
+     {
+      "block": "TTTAGCCC",
+      "block_order": 3,
+      "proved": true,
+      "reason": null,
+      "scope": "all_finite_words",
+      "feature_states": 3,
+      "base_case_exact": true,
+      "generator_steps": 72,
+      "all_steps_exact": true,
+      "fit_used_as_proof": false,
+      "formulas": {
+       "q0": {
+        "slope": "0",
+        "intercept": "0"
+       },
+       "q1": {
+        "slope": "0",
+        "intercept": "2"
+       },
+       "q2": {
+        "slope": "0",
+        "intercept": "0"
+       }
+      },
+      "recurrence": {
+       "proved": true,
+       "block": "TTTAGCCC",
+       "order": 3,
+       "coefficients": [
+        "1",
+        "0",
+        "0"
+       ],
+       "characteristic_polynomial": "r**3 - 1",
+       "characteristic_factorization": "(r - 1)*(r**2 + r + 1)",
+       "initial_values": [
+        "0",
+        "2",
+        "0"
+       ],
+       "residuals_all_zero": true,
+       "scope": "exact scalar recurrence of the observable along repeats of this block, certified on consecutive residuals and carried by the characteristic recurrence of the block matrix"
+      }
+     }
+    ]
+   }
+  ],
+  "blocks": [
+   "GCC",
+   "ATTA",
+   "GCGCG",
+   "GATTTC",
+   "CCCGATT",
+   "TTTAGCCC"
+  ],
+  "checks": [
+   {
+    "observable": "c1",
+    "mode": "word",
+    "word": "GCCCCG",
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 7,
+    "intersecting_pairs": 1
+   },
+   {
+    "observable": "c1",
+    "mode": "block_power",
+    "word": "GCC",
+    "repeats": 1,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 4,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "c1",
+    "mode": "block_power",
+    "word": "GCCGCC",
+    "repeats": 2,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 7,
+    "intersecting_pairs": 1
+   },
+   {
+    "observable": "c1",
+    "mode": "block_power",
+    "word": "GCCGCCGCC",
+    "repeats": 3,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 10,
+    "intersecting_pairs": 4
+   },
+   {
+    "observable": "c1",
+    "mode": "block_power",
+    "word": "GCCGCCGCCGCC",
+    "repeats": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 13,
+    "intersecting_pairs": 8
+   },
+   {
+    "observable": "c1",
+    "mode": "block_power",
+    "word": "GCCGCCGCCGCCGCC",
+    "repeats": 5,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 16,
+    "intersecting_pairs": 14
+   },
+   {
+    "observable": "c1",
+    "mode": "sum_over_all_words",
+    "word": "all-words-3",
+    "length": 3,
+    "predicted": "56",
+    "observed": "56",
+    "agree": true,
+    "note": "every word of this length, collision-free or not; not a sum over collision-free words"
+   },
+   {
+    "observable": "c2",
+    "mode": "word",
+    "word": "GCCCCG",
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 7,
+    "intersecting_pairs": 1
+   },
+   {
+    "observable": "c2",
+    "mode": "recurrence",
+    "word": "GCC#rec",
+    "repeats": 1,
+    "order": 2,
+    "predicted": "-1",
+    "observed": "-1",
+    "agree": true
+   },
+   {
+    "observable": "c2",
+    "mode": "recurrence",
+    "word": "GCCGCC#rec",
+    "repeats": 2,
+    "order": 2,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "c2",
+    "mode": "recurrence",
+    "word": "GCCGCCGCC#rec",
+    "repeats": 3,
+    "order": 2,
+    "predicted": "-1",
+    "observed": "-1",
+    "agree": true
+   },
+   {
+    "observable": "c2",
+    "mode": "recurrence",
+    "word": "GCCGCCGCCGCC#rec",
+    "repeats": 4,
+    "order": 2,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "c2",
+    "mode": "recurrence",
+    "word": "GCCGCCGCCGCCGCC#rec",
+    "repeats": 5,
+    "order": 2,
+    "predicted": "-1",
+    "observed": "-1",
+    "agree": true
+   },
+   {
+    "observable": "c2",
+    "mode": "block_power",
+    "word": "GCC",
+    "repeats": 1,
+    "predicted": "-1",
+    "observed": "-1",
+    "agree": true,
+    "panels": 4,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "c2",
+    "mode": "block_power",
+    "word": "GCCGCC",
+    "repeats": 2,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 7,
+    "intersecting_pairs": 1
+   },
+   {
+    "observable": "c2",
+    "mode": "block_power",
+    "word": "GCCGCCGCC",
+    "repeats": 3,
+    "predicted": "-1",
+    "observed": "-1",
+    "agree": true,
+    "panels": 10,
+    "intersecting_pairs": 4
+   },
+   {
+    "observable": "c2",
+    "mode": "block_power",
+    "word": "GCCGCCGCCGCC",
+    "repeats": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 13,
+    "intersecting_pairs": 8
+   },
+   {
+    "observable": "c2",
+    "mode": "block_power",
+    "word": "GCCGCCGCCGCCGCC",
+    "repeats": 5,
+    "predicted": "-1",
+    "observed": "-1",
+    "agree": true,
+    "panels": 16,
+    "intersecting_pairs": 14
+   },
+   {
+    "observable": "c2",
+    "mode": "sum_over_all_words",
+    "word": "all-words-3",
+    "length": 3,
+    "predicted": "56",
+    "observed": "56",
+    "agree": true,
+    "note": "every word of this length, collision-free or not; not a sum over collision-free words"
+   },
+   {
+    "observable": "c3",
+    "mode": "word",
+    "word": "GCCCCG",
+    "predicted": "2",
+    "observed": "2",
+    "agree": true,
+    "panels": 7,
+    "intersecting_pairs": 1
+   },
+   {
+    "observable": "c3",
+    "mode": "recurrence",
+    "word": "GCC#rec",
+    "repeats": 1,
+    "order": 2,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true
+   },
+   {
+    "observable": "c3",
+    "mode": "recurrence",
+    "word": "GCCGCC#rec",
+    "repeats": 2,
+    "order": 2,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "c3",
+    "mode": "recurrence",
+    "word": "GCCGCCGCC#rec",
+    "repeats": 3,
+    "order": 2,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true
+   },
+   {
+    "observable": "c3",
+    "mode": "recurrence",
+    "word": "GCCGCCGCCGCC#rec",
+    "repeats": 4,
+    "order": 2,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "c3",
+    "mode": "recurrence",
+    "word": "GCCGCCGCCGCCGCC#rec",
+    "repeats": 5,
+    "order": 2,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true
+   },
+   {
+    "observable": "c3",
+    "mode": "block_power",
+    "word": "GCC",
+    "repeats": 1,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true,
+    "panels": 4,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "c3",
+    "mode": "block_power",
+    "word": "GCCGCC",
+    "repeats": 2,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 7,
+    "intersecting_pairs": 1
+   },
+   {
+    "observable": "c3",
+    "mode": "block_power",
+    "word": "GCCGCCGCC",
+    "repeats": 3,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true,
+    "panels": 10,
+    "intersecting_pairs": 4
+   },
+   {
+    "observable": "c3",
+    "mode": "block_power",
+    "word": "GCCGCCGCCGCC",
+    "repeats": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 13,
+    "intersecting_pairs": 8
+   },
+   {
+    "observable": "c3",
+    "mode": "block_power",
+    "word": "GCCGCCGCCGCCGCC",
+    "repeats": 5,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true,
+    "panels": 16,
+    "intersecting_pairs": 14
+   },
+   {
+    "observable": "c3",
+    "mode": "sum_over_all_words",
+    "word": "all-words-3",
+    "length": 3,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "note": "every word of this length, collision-free or not; not a sum over collision-free words"
+   },
+   {
+    "observable": "F11",
+    "mode": "word",
+    "word": "GCCCCG",
+    "predicted": "1",
+    "observed": "1",
+    "agree": true,
+    "panels": 7,
+    "intersecting_pairs": 1
+   },
+   {
+    "observable": "F11",
+    "mode": "recurrence",
+    "word": "GCC#rec",
+    "repeats": 1,
+    "order": 1,
+    "predicted": "-1",
+    "observed": "-1",
+    "agree": true
+   },
+   {
+    "observable": "F11",
+    "mode": "recurrence",
+    "word": "GCCGCC#rec",
+    "repeats": 2,
+    "order": 1,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true
+   },
+   {
+    "observable": "F11",
+    "mode": "recurrence",
+    "word": "GCCGCCGCC#rec",
+    "repeats": 3,
+    "order": 1,
+    "predicted": "-1",
+    "observed": "-1",
+    "agree": true
+   },
+   {
+    "observable": "F11",
+    "mode": "recurrence",
+    "word": "GCCGCCGCCGCC#rec",
+    "repeats": 4,
+    "order": 1,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true
+   },
+   {
+    "observable": "F11",
+    "mode": "recurrence",
+    "word": "GCCGCCGCCGCCGCC#rec",
+    "repeats": 5,
+    "order": 1,
+    "predicted": "-1",
+    "observed": "-1",
+    "agree": true
+   },
+   {
+    "observable": "F11",
+    "mode": "block_power",
+    "word": "GCC",
+    "repeats": 1,
+    "predicted": "-1",
+    "observed": "-1",
+    "agree": true,
+    "panels": 4,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "F11",
+    "mode": "block_power",
+    "word": "GCCGCC",
+    "repeats": 2,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true,
+    "panels": 7,
+    "intersecting_pairs": 1
+   },
+   {
+    "observable": "F11",
+    "mode": "block_power",
+    "word": "GCCGCCGCC",
+    "repeats": 3,
+    "predicted": "-1",
+    "observed": "-1",
+    "agree": true,
+    "panels": 10,
+    "intersecting_pairs": 4
+   },
+   {
+    "observable": "F11",
+    "mode": "block_power",
+    "word": "GCCGCCGCCGCC",
+    "repeats": 4,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true,
+    "panels": 13,
+    "intersecting_pairs": 8
+   },
+   {
+    "observable": "F11",
+    "mode": "block_power",
+    "word": "GCCGCCGCCGCCGCC",
+    "repeats": 5,
+    "predicted": "-1",
+    "observed": "-1",
+    "agree": true,
+    "panels": 16,
+    "intersecting_pairs": 14
+   },
+   {
+    "observable": "F11",
+    "mode": "sum_over_all_words",
+    "word": "all-words-3",
+    "length": 3,
+    "predicted": "8",
+    "observed": "8",
+    "agree": true,
+    "note": "every word of this length, collision-free or not; not a sum over collision-free words"
+   },
+   {
+    "observable": "F12",
+    "mode": "word",
+    "word": "GCCCCG",
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 7,
+    "intersecting_pairs": 1
+   },
+   {
+    "observable": "F12",
+    "mode": "block_power",
+    "word": "GCC",
+    "repeats": 1,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 4,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "F12",
+    "mode": "block_power",
+    "word": "GCCGCC",
+    "repeats": 2,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 7,
+    "intersecting_pairs": 1
+   },
+   {
+    "observable": "F12",
+    "mode": "block_power",
+    "word": "GCCGCCGCC",
+    "repeats": 3,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 10,
+    "intersecting_pairs": 4
+   },
+   {
+    "observable": "F12",
+    "mode": "block_power",
+    "word": "GCCGCCGCCGCC",
+    "repeats": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 13,
+    "intersecting_pairs": 8
+   },
+   {
+    "observable": "F12",
+    "mode": "block_power",
+    "word": "GCCGCCGCCGCCGCC",
+    "repeats": 5,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 16,
+    "intersecting_pairs": 14
+   },
+   {
+    "observable": "F12",
+    "mode": "sum_over_all_words",
+    "word": "all-words-3",
+    "length": 3,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "note": "every word of this length, collision-free or not; not a sum over collision-free words"
+   },
+   {
+    "observable": "F13",
+    "mode": "word",
+    "word": "GCCCCG",
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 7,
+    "intersecting_pairs": 1
+   },
+   {
+    "observable": "F13",
+    "mode": "block_power",
+    "word": "GCC",
+    "repeats": 1,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 4,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "F13",
+    "mode": "block_power",
+    "word": "GCCGCC",
+    "repeats": 2,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 7,
+    "intersecting_pairs": 1
+   },
+   {
+    "observable": "F13",
+    "mode": "block_power",
+    "word": "GCCGCCGCC",
+    "repeats": 3,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 10,
+    "intersecting_pairs": 4
+   },
+   {
+    "observable": "F13",
+    "mode": "block_power",
+    "word": "GCCGCCGCCGCC",
+    "repeats": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 13,
+    "intersecting_pairs": 8
+   },
+   {
+    "observable": "F13",
+    "mode": "block_power",
+    "word": "GCCGCCGCCGCCGCC",
+    "repeats": 5,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 16,
+    "intersecting_pairs": 14
+   },
+   {
+    "observable": "F13",
+    "mode": "sum_over_all_words",
+    "word": "all-words-3",
+    "length": 3,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "note": "every word of this length, collision-free or not; not a sum over collision-free words"
+   },
+   {
+    "observable": "F21",
+    "mode": "word",
+    "word": "GCGCGGCGCG",
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 11,
+    "intersecting_pairs": 5
+   },
+   {
+    "observable": "F21",
+    "mode": "block_power",
+    "word": "GCGCG",
+    "repeats": 1,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 6,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "F21",
+    "mode": "block_power",
+    "word": "GCGCGGCGCG",
+    "repeats": 2,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 11,
+    "intersecting_pairs": 5
+   },
+   {
+    "observable": "F21",
+    "mode": "block_power",
+    "word": "GCGCGGCGCGGCGCG",
+    "repeats": 3,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 16,
+    "intersecting_pairs": 14
+   },
+   {
+    "observable": "F21",
+    "mode": "block_power",
+    "word": "GCGCGGCGCGGCGCGGCGCG",
+    "repeats": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 21,
+    "intersecting_pairs": 27
+   },
+   {
+    "observable": "F21",
+    "mode": "block_power",
+    "word": "GCGCGGCGCGGCGCGGCGCGGCGCG",
+    "repeats": 5,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 26,
+    "intersecting_pairs": 44
+   },
+   {
+    "observable": "F22",
+    "mode": "word",
+    "word": "GCGCGGCGCG",
+    "predicted": "1",
+    "observed": "1",
+    "agree": true,
+    "panels": 11,
+    "intersecting_pairs": 5
+   },
+   {
+    "observable": "F22",
+    "mode": "recurrence",
+    "word": "GCGCG#rec",
+    "repeats": 1,
+    "order": 1,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true
+   },
+   {
+    "observable": "F22",
+    "mode": "recurrence",
+    "word": "GCGCGGCGCG#rec",
+    "repeats": 2,
+    "order": 1,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true
+   },
+   {
+    "observable": "F22",
+    "mode": "recurrence",
+    "word": "GCGCGGCGCGGCGCG#rec",
+    "repeats": 3,
+    "order": 1,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true
+   },
+   {
+    "observable": "F22",
+    "mode": "recurrence",
+    "word": "GCGCGGCGCGGCGCGGCGCG#rec",
+    "repeats": 4,
+    "order": 1,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true
+   },
+   {
+    "observable": "F22",
+    "mode": "recurrence",
+    "word": "GCGCGGCGCGGCGCGGCGCGGCGCG#rec",
+    "repeats": 5,
+    "order": 1,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true
+   },
+   {
+    "observable": "F22",
+    "mode": "block_power",
+    "word": "GCGCG",
+    "repeats": 1,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true,
+    "panels": 6,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "F22",
+    "mode": "block_power",
+    "word": "GCGCGGCGCG",
+    "repeats": 2,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true,
+    "panels": 11,
+    "intersecting_pairs": 5
+   },
+   {
+    "observable": "F22",
+    "mode": "block_power",
+    "word": "GCGCGGCGCGGCGCG",
+    "repeats": 3,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true,
+    "panels": 16,
+    "intersecting_pairs": 14
+   },
+   {
+    "observable": "F22",
+    "mode": "block_power",
+    "word": "GCGCGGCGCGGCGCGGCGCG",
+    "repeats": 4,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true,
+    "panels": 21,
+    "intersecting_pairs": 27
+   },
+   {
+    "observable": "F22",
+    "mode": "block_power",
+    "word": "GCGCGGCGCGGCGCGGCGCGGCGCG",
+    "repeats": 5,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true,
+    "panels": 26,
+    "intersecting_pairs": 44
+   },
+   {
+    "observable": "F23",
+    "mode": "word",
+    "word": "GCGCGGCGCG",
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 11,
+    "intersecting_pairs": 5
+   },
+   {
+    "observable": "F23",
+    "mode": "block_power",
+    "word": "GCGCG",
+    "repeats": 1,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 6,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "F23",
+    "mode": "block_power",
+    "word": "GCGCGGCGCG",
+    "repeats": 2,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 11,
+    "intersecting_pairs": 5
+   },
+   {
+    "observable": "F23",
+    "mode": "block_power",
+    "word": "GCGCGGCGCGGCGCG",
+    "repeats": 3,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 16,
+    "intersecting_pairs": 14
+   },
+   {
+    "observable": "F23",
+    "mode": "block_power",
+    "word": "GCGCGGCGCGGCGCGGCGCG",
+    "repeats": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 21,
+    "intersecting_pairs": 27
+   },
+   {
+    "observable": "F23",
+    "mode": "block_power",
+    "word": "GCGCGGCGCGGCGCGGCGCGGCGCG",
+    "repeats": 5,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 26,
+    "intersecting_pairs": 44
+   },
+   {
+    "observable": "F31",
+    "mode": "word",
+    "word": "GCGCGGCGCG",
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 11,
+    "intersecting_pairs": 5
+   },
+   {
+    "observable": "F31",
+    "mode": "recurrence",
+    "word": "GCGCG#rec",
+    "repeats": 1,
+    "order": 2,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true
+   },
+   {
+    "observable": "F31",
+    "mode": "recurrence",
+    "word": "GCGCGGCGCG#rec",
+    "repeats": 2,
+    "order": 2,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "F31",
+    "mode": "recurrence",
+    "word": "GCGCGGCGCGGCGCG#rec",
+    "repeats": 3,
+    "order": 2,
+    "predicted": "-1",
+    "observed": "-1",
+    "agree": true
+   },
+   {
+    "observable": "F31",
+    "mode": "recurrence",
+    "word": "GCGCGGCGCGGCGCGGCGCG#rec",
+    "repeats": 4,
+    "order": 2,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "F31",
+    "mode": "recurrence",
+    "word": "GCGCGGCGCGGCGCGGCGCGGCGCG#rec",
+    "repeats": 5,
+    "order": 2,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true
+   },
+   {
+    "observable": "F31",
+    "mode": "block_power",
+    "word": "GCGCG",
+    "repeats": 1,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true,
+    "panels": 6,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "F31",
+    "mode": "block_power",
+    "word": "GCGCGGCGCG",
+    "repeats": 2,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 11,
+    "intersecting_pairs": 5
+   },
+   {
+    "observable": "F31",
+    "mode": "block_power",
+    "word": "GCGCGGCGCGGCGCG",
+    "repeats": 3,
+    "predicted": "-1",
+    "observed": "-1",
+    "agree": true,
+    "panels": 16,
+    "intersecting_pairs": 14
+   },
+   {
+    "observable": "F31",
+    "mode": "block_power",
+    "word": "GCGCGGCGCGGCGCGGCGCG",
+    "repeats": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 21,
+    "intersecting_pairs": 27
+   },
+   {
+    "observable": "F31",
+    "mode": "block_power",
+    "word": "GCGCGGCGCGGCGCGGCGCGGCGCG",
+    "repeats": 5,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true,
+    "panels": 26,
+    "intersecting_pairs": 44
+   },
+   {
+    "observable": "F32",
+    "mode": "word",
+    "word": "GCGCGGCGCG",
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 11,
+    "intersecting_pairs": 5
+   },
+   {
+    "observable": "F32",
+    "mode": "block_power",
+    "word": "GCGCG",
+    "repeats": 1,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 6,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "F32",
+    "mode": "block_power",
+    "word": "GCGCGGCGCG",
+    "repeats": 2,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 11,
+    "intersecting_pairs": 5
+   },
+   {
+    "observable": "F32",
+    "mode": "block_power",
+    "word": "GCGCGGCGCGGCGCG",
+    "repeats": 3,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 16,
+    "intersecting_pairs": 14
+   },
+   {
+    "observable": "F32",
+    "mode": "block_power",
+    "word": "GCGCGGCGCGGCGCGGCGCG",
+    "repeats": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 21,
+    "intersecting_pairs": 27
+   },
+   {
+    "observable": "F32",
+    "mode": "block_power",
+    "word": "GCGCGGCGCGGCGCGGCGCGGCGCG",
+    "repeats": 5,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 26,
+    "intersecting_pairs": 44
+   },
+   {
+    "observable": "F33",
+    "mode": "word",
+    "word": "GCGCGGCGCG",
+    "predicted": "-1",
+    "observed": "-1",
+    "agree": true,
+    "panels": 11,
+    "intersecting_pairs": 5
+   },
+   {
+    "observable": "F33",
+    "mode": "recurrence",
+    "word": "GCGCG#rec",
+    "repeats": 1,
+    "order": 2,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "F33",
+    "mode": "recurrence",
+    "word": "GCGCGGCGCG#rec",
+    "repeats": 2,
+    "order": 2,
+    "predicted": "-1",
+    "observed": "-1",
+    "agree": true
+   },
+   {
+    "observable": "F33",
+    "mode": "recurrence",
+    "word": "GCGCGGCGCGGCGCG#rec",
+    "repeats": 3,
+    "order": 2,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "F33",
+    "mode": "recurrence",
+    "word": "GCGCGGCGCGGCGCGGCGCG#rec",
+    "repeats": 4,
+    "order": 2,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true
+   },
+   {
+    "observable": "F33",
+    "mode": "recurrence",
+    "word": "GCGCGGCGCGGCGCGGCGCGGCGCG#rec",
+    "repeats": 5,
+    "order": 2,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "F33",
+    "mode": "block_power",
+    "word": "GCGCG",
+    "repeats": 1,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 6,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "F33",
+    "mode": "block_power",
+    "word": "GCGCGGCGCG",
+    "repeats": 2,
+    "predicted": "-1",
+    "observed": "-1",
+    "agree": true,
+    "panels": 11,
+    "intersecting_pairs": 5
+   },
+   {
+    "observable": "F33",
+    "mode": "block_power",
+    "word": "GCGCGGCGCGGCGCG",
+    "repeats": 3,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 16,
+    "intersecting_pairs": 14
+   },
+   {
+    "observable": "F33",
+    "mode": "block_power",
+    "word": "GCGCGGCGCGGCGCGGCGCG",
+    "repeats": 4,
+    "predicted": "1",
+    "observed": "1",
+    "agree": true,
+    "panels": 21,
+    "intersecting_pairs": 27
+   },
+   {
+    "observable": "F33",
+    "mode": "block_power",
+    "word": "GCGCGGCGCGGCGCGGCGCGGCGCG",
+    "repeats": 5,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 26,
+    "intersecting_pairs": 44
+   },
+   {
+    "observable": "c1**2",
+    "mode": "word",
+    "word": "CCCGATTTTAGCCC",
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 15,
+    "intersecting_pairs": 1
+   },
+   {
+    "observable": "c1**2",
+    "mode": "recurrence",
+    "word": "CCCGATT#rec",
+    "repeats": 1,
+    "order": 3,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "c1**2",
+    "mode": "recurrence",
+    "word": "CCCGATTCCCGATT#rec",
+    "repeats": 2,
+    "order": 3,
+    "predicted": "4",
+    "observed": "4",
+    "agree": true
+   },
+   {
+    "observable": "c1**2",
+    "mode": "recurrence",
+    "word": "CCCGATTCCCGATTCCCGATT#rec",
+    "repeats": 3,
+    "order": 3,
+    "predicted": "4",
+    "observed": "4",
+    "agree": true
+   },
+   {
+    "observable": "c1**2",
+    "mode": "recurrence",
+    "word": "CCCGATTCCCGATTCCCGATTCCCGATT#rec",
+    "repeats": 4,
+    "order": 3,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "c1**2",
+    "mode": "recurrence",
+    "word": "CCCGATTCCCGATTCCCGATTCCCGATTCCCGATT#rec",
+    "repeats": 5,
+    "order": 3,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "c1**2",
+    "mode": "block_power",
+    "word": "CCCGATT",
+    "repeats": 1,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 8,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "c1**2",
+    "mode": "block_power",
+    "word": "CCCGATTCCCGATT",
+    "repeats": 2,
+    "predicted": "4",
+    "observed": "4",
+    "agree": true,
+    "panels": 15,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "c1**2",
+    "mode": "block_power",
+    "word": "CCCGATTCCCGATTCCCGATT",
+    "repeats": 3,
+    "predicted": "4",
+    "observed": "4",
+    "agree": true,
+    "panels": 22,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "c1**2",
+    "mode": "block_power",
+    "word": "CCCGATTCCCGATTCCCGATTCCCGATT",
+    "repeats": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 29,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "c1**2",
+    "mode": "block_power",
+    "word": "CCCGATTCCCGATTCCCGATTCCCGATTCCCGATT",
+    "repeats": 5,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 36,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "c1*c2",
+    "mode": "word",
+    "word": "CCCGATTTTAGCCC",
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 15,
+    "intersecting_pairs": 1
+   },
+   {
+    "observable": "c1*c2",
+    "mode": "recurrence",
+    "word": "CCCGATT#rec",
+    "repeats": 1,
+    "order": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "c1*c2",
+    "mode": "recurrence",
+    "word": "CCCGATTCCCGATT#rec",
+    "repeats": 2,
+    "order": 4,
+    "predicted": "-4",
+    "observed": "-4",
+    "agree": true
+   },
+   {
+    "observable": "c1*c2",
+    "mode": "recurrence",
+    "word": "CCCGATTCCCGATTCCCGATT#rec",
+    "repeats": 3,
+    "order": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "c1*c2",
+    "mode": "recurrence",
+    "word": "CCCGATTCCCGATTCCCGATTCCCGATT#rec",
+    "repeats": 4,
+    "order": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "c1*c2",
+    "mode": "recurrence",
+    "word": "CCCGATTCCCGATTCCCGATTCCCGATTCCCGATT#rec",
+    "repeats": 5,
+    "order": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "c1*c2",
+    "mode": "block_power",
+    "word": "CCCGATT",
+    "repeats": 1,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 8,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "c1*c2",
+    "mode": "block_power",
+    "word": "CCCGATTCCCGATT",
+    "repeats": 2,
+    "predicted": "-4",
+    "observed": "-4",
+    "agree": true,
+    "panels": 15,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "c1*c2",
+    "mode": "block_power",
+    "word": "CCCGATTCCCGATTCCCGATT",
+    "repeats": 3,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 22,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "c1*c2",
+    "mode": "block_power",
+    "word": "CCCGATTCCCGATTCCCGATTCCCGATT",
+    "repeats": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 29,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "c1*c2",
+    "mode": "block_power",
+    "word": "CCCGATTCCCGATTCCCGATTCCCGATTCCCGATT",
+    "repeats": 5,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 36,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "c1*c3",
+    "mode": "word",
+    "word": "CCCGATTTTAGCCC",
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 15,
+    "intersecting_pairs": 1
+   },
+   {
+    "observable": "c1*c3",
+    "mode": "recurrence",
+    "word": "CCCGATT#rec",
+    "repeats": 1,
+    "order": 6,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "c1*c3",
+    "mode": "recurrence",
+    "word": "CCCGATTCCCGATT#rec",
+    "repeats": 2,
+    "order": 6,
+    "predicted": "-8",
+    "observed": "-8",
+    "agree": true
+   },
+   {
+    "observable": "c1*c3",
+    "mode": "recurrence",
+    "word": "CCCGATTCCCGATTCCCGATT#rec",
+    "repeats": 3,
+    "order": 6,
+    "predicted": "-12",
+    "observed": "-12",
+    "agree": true
+   },
+   {
+    "observable": "c1*c3",
+    "mode": "recurrence",
+    "word": "CCCGATTCCCGATTCCCGATTCCCGATT#rec",
+    "repeats": 4,
+    "order": 6,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "c1*c3",
+    "mode": "recurrence",
+    "word": "CCCGATTCCCGATTCCCGATTCCCGATTCCCGATT#rec",
+    "repeats": 5,
+    "order": 6,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "c1*c3",
+    "mode": "block_power",
+    "word": "CCCGATT",
+    "repeats": 1,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 8,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "c1*c3",
+    "mode": "block_power",
+    "word": "CCCGATTCCCGATT",
+    "repeats": 2,
+    "predicted": "-8",
+    "observed": "-8",
+    "agree": true,
+    "panels": 15,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "c1*c3",
+    "mode": "block_power",
+    "word": "CCCGATTCCCGATTCCCGATT",
+    "repeats": 3,
+    "predicted": "-12",
+    "observed": "-12",
+    "agree": true,
+    "panels": 22,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "c1*c3",
+    "mode": "block_power",
+    "word": "CCCGATTCCCGATTCCCGATTCCCGATT",
+    "repeats": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 29,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "c1*c3",
+    "mode": "block_power",
+    "word": "CCCGATTCCCGATTCCCGATTCCCGATTCCCGATT",
+    "repeats": 5,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 36,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "F11*c1",
+    "mode": "word",
+    "word": "CCCGATTTTAGCCC",
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 15,
+    "intersecting_pairs": 1
+   },
+   {
+    "observable": "F11*c1",
+    "mode": "recurrence",
+    "word": "CCCGATT#rec",
+    "repeats": 1,
+    "order": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "F11*c1",
+    "mode": "recurrence",
+    "word": "CCCGATTCCCGATT#rec",
+    "repeats": 2,
+    "order": 4,
+    "predicted": "2",
+    "observed": "2",
+    "agree": true
+   },
+   {
+    "observable": "F11*c1",
+    "mode": "recurrence",
+    "word": "CCCGATTCCCGATTCCCGATT#rec",
+    "repeats": 3,
+    "order": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "F11*c1",
+    "mode": "recurrence",
+    "word": "CCCGATTCCCGATTCCCGATTCCCGATT#rec",
+    "repeats": 4,
+    "order": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "F11*c1",
+    "mode": "recurrence",
+    "word": "CCCGATTCCCGATTCCCGATTCCCGATTCCCGATT#rec",
+    "repeats": 5,
+    "order": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "F11*c1",
+    "mode": "block_power",
+    "word": "CCCGATT",
+    "repeats": 1,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 8,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "F11*c1",
+    "mode": "block_power",
+    "word": "CCCGATTCCCGATT",
+    "repeats": 2,
+    "predicted": "2",
+    "observed": "2",
+    "agree": true,
+    "panels": 15,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "F11*c1",
+    "mode": "block_power",
+    "word": "CCCGATTCCCGATTCCCGATT",
+    "repeats": 3,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 22,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "F11*c1",
+    "mode": "block_power",
+    "word": "CCCGATTCCCGATTCCCGATTCCCGATT",
+    "repeats": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 29,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "F11*c1",
+    "mode": "block_power",
+    "word": "CCCGATTCCCGATTCCCGATTCCCGATTCCCGATT",
+    "repeats": 5,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 36,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "F12*c1",
+    "mode": "word",
+    "word": "CCCGATTTTAGCCC",
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 15,
+    "intersecting_pairs": 1
+   },
+   {
+    "observable": "F12*c1",
+    "mode": "recurrence",
+    "word": "CCCGATT#rec",
+    "repeats": 1,
+    "order": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "F12*c1",
+    "mode": "recurrence",
+    "word": "CCCGATTCCCGATT#rec",
+    "repeats": 2,
+    "order": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "F12*c1",
+    "mode": "recurrence",
+    "word": "CCCGATTCCCGATTCCCGATT#rec",
+    "repeats": 3,
+    "order": 4,
+    "predicted": "2",
+    "observed": "2",
+    "agree": true
+   },
+   {
+    "observable": "F12*c1",
+    "mode": "recurrence",
+    "word": "CCCGATTCCCGATTCCCGATTCCCGATT#rec",
+    "repeats": 4,
+    "order": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "F12*c1",
+    "mode": "recurrence",
+    "word": "CCCGATTCCCGATTCCCGATTCCCGATTCCCGATT#rec",
+    "repeats": 5,
+    "order": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true
+   },
+   {
+    "observable": "F12*c1",
+    "mode": "block_power",
+    "word": "CCCGATT",
+    "repeats": 1,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 8,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "F12*c1",
+    "mode": "block_power",
+    "word": "CCCGATTCCCGATT",
+    "repeats": 2,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 15,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "F12*c1",
+    "mode": "block_power",
+    "word": "CCCGATTCCCGATTCCCGATT",
+    "repeats": 3,
+    "predicted": "2",
+    "observed": "2",
+    "agree": true,
+    "panels": 22,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "F12*c1",
+    "mode": "block_power",
+    "word": "CCCGATTCCCGATTCCCGATTCCCGATT",
+    "repeats": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 29,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "F12*c1",
+    "mode": "block_power",
+    "word": "CCCGATTCCCGATTCCCGATTCCCGATTCCCGATT",
+    "repeats": 5,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 36,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "F13*c1",
+    "mode": "word",
+    "word": "CCCGATTTTAGCCC",
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 15,
+    "intersecting_pairs": 1
+   },
+   {
+    "observable": "F13*c1",
+    "mode": "block_power",
+    "word": "CCCGATT",
+    "repeats": 1,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 8,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "F13*c1",
+    "mode": "block_power",
+    "word": "CCCGATTCCCGATT",
+    "repeats": 2,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 15,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "F13*c1",
+    "mode": "block_power",
+    "word": "CCCGATTCCCGATTCCCGATT",
+    "repeats": 3,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 22,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "F13*c1",
+    "mode": "block_power",
+    "word": "CCCGATTCCCGATTCCCGATTCCCGATT",
+    "repeats": 4,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 29,
+    "intersecting_pairs": 0
+   },
+   {
+    "observable": "F13*c1",
+    "mode": "block_power",
+    "word": "CCCGATTCCCGATTCCCGATTCCCGATTCCCGATT",
+    "repeats": 5,
+    "predicted": "0",
+    "observed": "0",
+    "agree": true,
+    "panels": 36,
+    "intersecting_pairs": 0
+   }
+  ],
+  "sha256": "b926fa264ea23c7e848c39cb352ee07d3f9868ebcdb28e4627ce2e0b17ad79e3"
+ },
+ "cycles": [
+  {
+   "cycle": 0,
+   "allowance": 15000000,
+   "seconds": 1.45,
+   "spent_lines": 0,
+   "sweeps": [
+    {
+     "sweep": 0,
+     "route": "observation representation",
+     "asked_for": [
+      "c1",
+      "c2",
+      "c3",
+      "F11",
+      "F12",
+      "F13"
+     ],
+     "attempted": [
+      "c1",
+      "c2",
+      "c3",
+      "F11",
+      "F12",
+      "F13"
+     ],
+     "attempted_kinds": [
+      "closure",
+      "closure",
+      "closure",
+      "closure",
+      "closure",
+      "closure"
+     ],
+     "accepted": "F13",
+     "candidates_exhausted": false,
+     "undrafted": 84,
+     "spent_lines": 0,
+     "refused": [],
+     "dimensions": {
+      "c1": 4,
+      "c2": 4,
+      "c3": 4,
+      "F11": 3,
+      "F12": 3,
+      "F13": 3
+     }
+    },
+    {
+     "sweep": 0,
+     "route": "repeat law, where the premises fit",
+     "asked_for": [
+      "GCC",
+      "ATTA"
+     ],
+     "attempted": [
+      "c1 on GCC",
+      "c1 on ATTA",
+      "c2 on GCC",
+      "c2 on ATTA",
+      "c3 on GCC",
+      "c3 on ATTA",
+      "F11 on GCC",
+      "F11 on ATTA",
+      "F12 on GCC",
+      "F12 on ATTA",
+      "F13 on GCC",
+      "F13 on ATTA"
+     ],
+     "attempted_kinds": [
+      "repeat_law",
+      "repeat_law",
+      "repeat_law",
+      "repeat_law",
+      "repeat_law",
+      "repeat_law",
+      "repeat_law",
+      "repeat_law",
+      "repeat_law",
+      "repeat_law",
+      "repeat_law",
+      "repeat_law"
+     ],
+     "accepted": "F13 on ATTA",
+     "candidates_exhausted": false,
+     "undrafted": 0,
+     "spent_lines": 0,
+     "note": "a repeat law that does not hold leaves its closure untouched; not every candidate is affine in length"
+    }
+   ],
+   "accepted_count": 2,
+   "corpus_programs": 0,
+   "corpus_bits": 0,
+   "compression_bits": 0,
+   "library": [],
+   "learn_rounds": [],
+   "follow_up_calls": [
+    {
+     "id": "4023a45b66c9c909",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCCCG",
+     "reason": null
+    },
+    {
+     "id": "5d7a98155dd85395",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCC",
+     "reason": null
+    },
+    {
+     "id": "c9c10d2c7e638776",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCC",
+     "reason": null
+    },
+    {
+     "id": "6c47a5a8507988b8",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCC",
+     "reason": null
+    },
+    {
+     "id": "b01dc3d4346d177c",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCCGCC",
+     "reason": null
+    },
+    {
+     "id": "dec54dab911adcd5",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCCGCCGCC",
+     "reason": null
+    },
+    {
+     "id": "83b84075b2959250",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "all-words-3",
+     "reason": null
+    },
+    {
+     "id": "b9d7f960de30ce4d",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCCCG",
+     "reason": null
+    },
+    {
+     "id": "18baa65d9dd2e41a",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCC#rec",
+     "reason": null
+    },
+    {
+     "id": "ded9cd6915f94cce",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCC#rec",
+     "reason": null
+    },
+    {
+     "id": "225468ed231f70d1",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCC#rec",
+     "reason": null
+    },
+    {
+     "id": "9e622a1dedf780a4",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCCGCC#rec",
+     "reason": null
+    },
+    {
+     "id": "7f8fa574abd83c9e",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCCGCCGCC#rec",
+     "reason": null
+    },
+    {
+     "id": "ccf9ccfb1bff3c04",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCC",
+     "reason": null
+    },
+    {
+     "id": "9f9736d3fd9b5214",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCC",
+     "reason": null
+    },
+    {
+     "id": "f1ddff4e89be4ae8",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCC",
+     "reason": null
+    },
+    {
+     "id": "e56e3d362c1b14ce",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCCGCC",
+     "reason": null
+    },
+    {
+     "id": "eaffe83490d8198a",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCCGCCGCC",
+     "reason": null
+    },
+    {
+     "id": "23d498f57e703227",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "all-words-3",
+     "reason": null
+    },
+    {
+     "id": "8af9c7db1b97483f",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCCCG",
+     "reason": null
+    },
+    {
+     "id": "39edc688b2d3022c",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCC#rec",
+     "reason": null
+    },
+    {
+     "id": "d896a088f0226609",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCC#rec",
+     "reason": null
+    },
+    {
+     "id": "23db29bbdb51629e",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCC#rec",
+     "reason": null
+    },
+    {
+     "id": "b58a9604f9b35e80",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCCGCC#rec",
+     "reason": null
+    },
+    {
+     "id": "04a4b8557fb995c8",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCCGCCGCC#rec",
+     "reason": null
+    },
+    {
+     "id": "ddc27b4c42a60e57",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCC",
+     "reason": null
+    },
+    {
+     "id": "4090b2e19e8c0ecf",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCC",
+     "reason": null
+    },
+    {
+     "id": "5d6c8139d25d5eab",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCC",
+     "reason": null
+    },
+    {
+     "id": "50e8816b4c2a8e63",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCCGCC",
+     "reason": null
+    },
+    {
+     "id": "9003e08ce175d542",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCCGCCGCC",
+     "reason": null
+    },
+    {
+     "id": "84fdae6272c193e2",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "all-words-3",
+     "reason": null
+    },
+    {
+     "id": "7ac434597fcbc3a8",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCCCG",
+     "reason": null
+    },
+    {
+     "id": "79e488d4e8635541",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCC#rec",
+     "reason": null
+    },
+    {
+     "id": "9a65316dcc5af76e",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCC#rec",
+     "reason": null
+    },
+    {
+     "id": "f7035f99441dfc05",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCC#rec",
+     "reason": null
+    },
+    {
+     "id": "a7ba37d15376d25c",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCCGCC#rec",
+     "reason": null
+    },
+    {
+     "id": "1d3c0bbf7d1d47d8",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCCGCCGCC#rec",
+     "reason": null
+    },
+    {
+     "id": "f41de9d4a0c57849",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCC",
+     "reason": null
+    },
+    {
+     "id": "3977a5b54d7e4ba4",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCC",
+     "reason": null
+    },
+    {
+     "id": "48c17acb65bdb726",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCC",
+     "reason": null
+    },
+    {
+     "id": "6faa049f336c7fbe",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCCGCC",
+     "reason": null
+    },
+    {
+     "id": "c728bc982b727607",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCCGCCGCC",
+     "reason": null
+    },
+    {
+     "id": "2c5585d35419ca2d",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "all-words-3",
+     "reason": null
+    },
+    {
+     "id": "8f52759e3350acc7",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCCCG",
+     "reason": null
+    },
+    {
+     "id": "8dcf3ab25bed7b26",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCC",
+     "reason": null
+    },
+    {
+     "id": "a8c01b750de9aac9",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCC",
+     "reason": null
+    },
+    {
+     "id": "49b4f7b983704f9e",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCC",
+     "reason": null
+    },
+    {
+     "id": "77fba39903de479f",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCCGCC",
+     "reason": null
+    },
+    {
+     "id": "c2af3e37c9fe6ffb",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCCGCCGCC",
+     "reason": null
+    },
+    {
+     "id": "982e2769a0838111",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "all-words-3",
+     "reason": null
+    },
+    {
+     "id": "96ed68e6ec985364",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCCCG",
+     "reason": null
+    },
+    {
+     "id": "20c843d89e4db46f",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCC",
+     "reason": null
+    },
+    {
+     "id": "1b030647672abc07",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCC",
+     "reason": null
+    },
+    {
+     "id": "a7591bcad44f26b4",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCC",
+     "reason": null
+    },
+    {
+     "id": "e74e47e76b7462f1",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCCGCC",
+     "reason": null
+    },
+    {
+     "id": "b0529bb4852c5c15",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCCGCCGCCGCCGCC",
+     "reason": null
+    },
+    {
+     "id": "7bc73ec422b203dd",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "all-words-3",
+     "reason": null
+    }
+   ],
+   "pending": [
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77,
+    78,
+    79,
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87,
+    88,
+    89
+   ],
+   "revisited_calls": []
+  },
+  {
+   "cycle": 1,
+   "allowance": 30000000,
+   "seconds": 0.931,
+   "spent_lines": 0,
+   "sweeps": [
+    {
+     "sweep": 1,
+     "route": "observation representation",
+     "asked_for": [
+      "F21",
+      "F22",
+      "F23",
+      "F31",
+      "F32",
+      "F33"
+     ],
+     "attempted": [
+      "F21",
+      "F22",
+      "F23",
+      "F31",
+      "F32",
+      "F33"
+     ],
+     "attempted_kinds": [
+      "closure",
+      "closure",
+      "closure",
+      "closure",
+      "closure",
+      "closure"
+     ],
+     "accepted": "F33",
+     "candidates_exhausted": false,
+     "undrafted": 78,
+     "spent_lines": 0,
+     "refused": [],
+     "dimensions": {
+      "F21": 3,
+      "F22": 3,
+      "F23": 3,
+      "F31": 3,
+      "F32": 3,
+      "F33": 3
+     }
+    },
+    {
+     "sweep": 1,
+     "route": "repeat law, where the premises fit",
+     "asked_for": [
+      "GCGCG",
+      "GATTTC"
+     ],
+     "attempted": [
+      "F21 on GCGCG",
+      "F21 on GATTTC",
+      "F22 on GCGCG",
+      "F22 on GATTTC",
+      "F23 on GCGCG",
+      "F23 on GATTTC",
+      "F31 on GCGCG",
+      "F31 on GATTTC",
+      "F32 on GCGCG",
+      "F32 on GATTTC",
+      "F33 on GCGCG",
+      "F33 on GATTTC"
+     ],
+     "attempted_kinds": [
+      "repeat_law",
+      "repeat_law",
+      "repeat_law",
+      "repeat_law",
+      "repeat_law",
+      "repeat_law",
+      "repeat_law",
+      "repeat_law",
+      "repeat_law",
+      "repeat_law",
+      "repeat_law",
+      "repeat_law"
+     ],
+     "accepted": "F33 on GATTTC",
+     "candidates_exhausted": false,
+     "undrafted": 0,
+     "spent_lines": 0,
+     "note": "a repeat law that does not hold leaves its closure untouched; not every candidate is affine in length"
+    }
+   ],
+   "accepted_count": 2,
+   "corpus_programs": 0,
+   "corpus_bits": 0,
+   "compression_bits": 0,
+   "library": [],
+   "learn_rounds": [],
+   "follow_up_calls": [
+    {
+     "id": "5ac8c5d9c989dd9d",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "7b83730fd94265e0",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCG",
+     "reason": null
+    },
+    {
+     "id": "61f4fdcbfada31e5",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "7f38ef4cb802dcd2",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "fcd3d26389945057",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "9668d29713f0ae47",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCGGCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "16cb8577f2012f47",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "14805d2617515331",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCG#rec",
+     "reason": null
+    },
+    {
+     "id": "45fa7d4c0c3dd6ef",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCG#rec",
+     "reason": null
+    },
+    {
+     "id": "5c15e33dcfb00edb",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCG#rec",
+     "reason": null
+    },
+    {
+     "id": "3e24f9a5a2a9886d",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCGGCGCG#rec",
+     "reason": null
+    },
+    {
+     "id": "83318bb792b712b1",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCGGCGCGGCGCG#rec",
+     "reason": null
+    },
+    {
+     "id": "632aa65aa2ef4d12",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCG",
+     "reason": null
+    },
+    {
+     "id": "854770caa888a054",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "616bd18c7b6f7882",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "b38cabdc6ddbf8e3",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "868f2cc0e53b12d1",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCGGCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "9a876990b5b03792",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "d66d6318f7616d0f",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCG",
+     "reason": null
+    },
+    {
+     "id": "79cb3f2c8a5d2b2a",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "0d87a08d349897cc",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "9dfc4c6f143eb574",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "8556dc12b26885c6",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCGGCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "5585a3e62aa57963",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "eb5f18eb8fde6f86",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCG#rec",
+     "reason": null
+    },
+    {
+     "id": "0a3507e3f499eb54",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCG#rec",
+     "reason": null
+    },
+    {
+     "id": "50f30f2002e23884",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCG#rec",
+     "reason": null
+    },
+    {
+     "id": "044b7d08277d06e6",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCGGCGCG#rec",
+     "reason": null
+    },
+    {
+     "id": "311d39d5373f1d91",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCGGCGCGGCGCG#rec",
+     "reason": null
+    },
+    {
+     "id": "7da2f745524cb716",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCG",
+     "reason": null
+    },
+    {
+     "id": "163b90229a7bf32c",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "21db8d6919b3952c",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "e4083bd3f90e4b8d",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "a6e8ff2af7ea476d",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCGGCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "3da6d868efe42527",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "ce5e4893861dda71",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCG",
+     "reason": null
+    },
+    {
+     "id": "529f41a48e000ee0",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "16e741b30990e8aa",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "e0d07b2cc673548d",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "30d8f1fe0a3e0be0",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCGGCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "0a020b33e6fc894f",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "231329289f54385b",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCG#rec",
+     "reason": null
+    },
+    {
+     "id": "04cbfe924fb9e0ba",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCG#rec",
+     "reason": null
+    },
+    {
+     "id": "7428ed33b09089ba",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCG#rec",
+     "reason": null
+    },
+    {
+     "id": "5ea42007ae3211ca",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCGGCGCG#rec",
+     "reason": null
+    },
+    {
+     "id": "520c2572bb511158",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCGGCGCGGCGCG#rec",
+     "reason": null
+    },
+    {
+     "id": "2749d2c360d802a6",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCG",
+     "reason": null
+    },
+    {
+     "id": "93bb01cdbfe58d60",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "82eaa143c7df2953",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "5fa67f812df1144f",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCGGCGCG",
+     "reason": null
+    },
+    {
+     "id": "36c79320cbb9e891",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "GCGCGGCGCGGCGCGGCGCGGCGCG",
+     "reason": null
+    }
+   ],
+   "pending": [
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77,
+    78,
+    79,
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87,
+    88,
+    89
+   ],
+   "revisited_calls": []
+  },
+  {
+   "cycle": 2,
+   "allowance": 60000000,
+   "seconds": 9.38,
+   "spent_lines": 0,
+   "sweeps": [
+    {
+     "sweep": 2,
+     "route": "observation representation",
+     "asked_for": [
+      "c1**2",
+      "c1*c2",
+      "c1*c3",
+      "F11*c1",
+      "F12*c1",
+      "F13*c1"
+     ],
+     "attempted": [
+      "c1**2",
+      "c1*c2",
+      "c1*c3",
+      "F11*c1",
+      "F12*c1",
+      "F13*c1"
+     ],
+     "attempted_kinds": [
+      "closure",
+      "closure",
+      "closure",
+      "closure",
+      "closure",
+      "closure"
+     ],
+     "accepted": "F13*c1",
+     "candidates_exhausted": false,
+     "undrafted": 72,
+     "spent_lines": 0,
+     "refused": [],
+     "dimensions": {
+      "c1**2": 10,
+      "c1*c2": 10,
+      "c1*c3": 10,
+      "F11*c1": 9,
+      "F12*c1": 12,
+      "F13*c1": 12
+     }
+    },
+    {
+     "sweep": 2,
+     "route": "repeat law, where the premises fit",
+     "asked_for": [
+      "CCCGATT",
+      "TTTAGCCC"
+     ],
+     "attempted": [
+      "c1**2 on TTTAGCCC",
+      "c1*c2 on TTTAGCCC",
+      "c1*c3 on TTTAGCCC",
+      "F11*c1 on TTTAGCCC",
+      "F12*c1 on TTTAGCCC",
+      "F13*c1 on TTTAGCCC"
+     ],
+     "attempted_kinds": [
+      "repeat_law",
+      "repeat_law",
+      "repeat_law",
+      "repeat_law",
+      "repeat_law",
+      "repeat_law"
+     ],
+     "accepted": "F13*c1 on TTTAGCCC",
+     "candidates_exhausted": false,
+     "undrafted": 0,
+     "spent_lines": 0,
+     "note": "a repeat law that does not hold leaves its closure untouched; not every candidate is affine in length"
+    }
+   ],
+   "accepted_count": 2,
+   "corpus_programs": 0,
+   "corpus_bits": 0,
+   "compression_bits": 0,
+   "library": [],
+   "learn_rounds": [],
+   "follow_up_calls": [
+    {
+     "id": "aa22f6d8da21607f",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTTTAGCCC",
+     "reason": null
+    },
+    {
+     "id": "5abba234ee032512",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATT#rec",
+     "reason": null
+    },
+    {
+     "id": "f68cad646ac218df",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATT#rec",
+     "reason": null
+    },
+    {
+     "id": "d1be899785fa16cb",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATT#rec",
+     "reason": null
+    },
+    {
+     "id": "d0ab284e62ba9645",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATTCCCGATT#rec",
+     "reason": null
+    },
+    {
+     "id": "e4af3ec7e8b533b9",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATTCCCGATTCCCGATT#rec",
+     "reason": null
+    },
+    {
+     "id": "f09aa0021f87ce89",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATT",
+     "reason": null
+    },
+    {
+     "id": "aa54b079530dfb23",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATT",
+     "reason": null
+    },
+    {
+     "id": "685f26d10e16a3f0",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATT",
+     "reason": null
+    },
+    {
+     "id": "b68770cb397aef64",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATTCCCGATT",
+     "reason": null
+    },
+    {
+     "id": "8ff47bc6e98cc093",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATTCCCGATTCCCGATT",
+     "reason": null
+    },
+    {
+     "id": "8acdfac6ed10587e",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTTTAGCCC",
+     "reason": null
+    },
+    {
+     "id": "909b75f979009852",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATT#rec",
+     "reason": null
+    },
+    {
+     "id": "6058db6c91728455",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATT#rec",
+     "reason": null
+    },
+    {
+     "id": "ed1bf42a57cb5e8b",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATT#rec",
+     "reason": null
+    },
+    {
+     "id": "c0a7c557b580209e",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATTCCCGATT#rec",
+     "reason": null
+    },
+    {
+     "id": "53b7b533be158b1e",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATTCCCGATTCCCGATT#rec",
+     "reason": null
+    },
+    {
+     "id": "60b5598e55ee32f2",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATT",
+     "reason": null
+    },
+    {
+     "id": "e8fe4cd90c60155d",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATT",
+     "reason": null
+    },
+    {
+     "id": "9bd78cddb2f50ec8",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATT",
+     "reason": null
+    },
+    {
+     "id": "4068348e51260d7c",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATTCCCGATT",
+     "reason": null
+    },
+    {
+     "id": "5a57250c1f265a78",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATTCCCGATTCCCGATT",
+     "reason": null
+    },
+    {
+     "id": "d7d13f149f41ba70",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTTTAGCCC",
+     "reason": null
+    },
+    {
+     "id": "bd3f1fd75ff4202a",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATT#rec",
+     "reason": null
+    },
+    {
+     "id": "da4a84f20b3af7fa",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATT#rec",
+     "reason": null
+    },
+    {
+     "id": "6233b6900c2f1840",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATT#rec",
+     "reason": null
+    },
+    {
+     "id": "bce54ac01d1d505f",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATTCCCGATT#rec",
+     "reason": null
+    },
+    {
+     "id": "12297ca11e3097d7",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATTCCCGATTCCCGATT#rec",
+     "reason": null
+    },
+    {
+     "id": "02bd55e186df2783",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATT",
+     "reason": null
+    },
+    {
+     "id": "6c2ff097e710c3e6",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATT",
+     "reason": null
+    },
+    {
+     "id": "5c258b3edc9dbe63",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATT",
+     "reason": null
+    },
+    {
+     "id": "53be5f3ef4f89edb",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATTCCCGATT",
+     "reason": null
+    },
+    {
+     "id": "bd755a4053dc2c94",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATTCCCGATTCCCGATT",
+     "reason": null
+    },
+    {
+     "id": "7f76edf78071a2fd",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTTTAGCCC",
+     "reason": null
+    },
+    {
+     "id": "2f2d14f9ef5931ab",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATT#rec",
+     "reason": null
+    },
+    {
+     "id": "aa0d5bf9122391a7",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATT#rec",
+     "reason": null
+    },
+    {
+     "id": "028b741af23b180d",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATT#rec",
+     "reason": null
+    },
+    {
+     "id": "311c95b21d335550",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATTCCCGATT#rec",
+     "reason": null
+    },
+    {
+     "id": "8f908fb468708242",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATTCCCGATTCCCGATT#rec",
+     "reason": null
+    },
+    {
+     "id": "4666df8d73c82866",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATT",
+     "reason": null
+    },
+    {
+     "id": "d99460231deb07d3",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATT",
+     "reason": null
+    },
+    {
+     "id": "6bf1883c292da2bd",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATT",
+     "reason": null
+    },
+    {
+     "id": "e6c15d441f8fad3d",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATTCCCGATT",
+     "reason": null
+    },
+    {
+     "id": "9b1e9d6b93d23afb",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATTCCCGATTCCCGATT",
+     "reason": null
+    },
+    {
+     "id": "00e3e9df2d63c172",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTTTAGCCC",
+     "reason": null
+    },
+    {
+     "id": "ba05e47391a21a58",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATT#rec",
+     "reason": null
+    },
+    {
+     "id": "d8fd56466431328e",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATT#rec",
+     "reason": null
+    },
+    {
+     "id": "aaa9462c300716d2",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATT#rec",
+     "reason": null
+    },
+    {
+     "id": "d9854b290a59f694",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATTCCCGATT#rec",
+     "reason": null
+    },
+    {
+     "id": "55c1c80f7472bf33",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATTCCCGATTCCCGATT#rec",
+     "reason": null
+    },
+    {
+     "id": "1587a863a4659b25",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATT",
+     "reason": null
+    },
+    {
+     "id": "74e66d1634132ba8",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATT",
+     "reason": null
+    },
+    {
+     "id": "73b0a0ab5877e44c",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATT",
+     "reason": null
+    },
+    {
+     "id": "7176c0b659527b71",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATTCCCGATT",
+     "reason": null
+    },
+    {
+     "id": "4bd5c16d4e3df4c6",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATTCCCGATTCCCGATT",
+     "reason": null
+    },
+    {
+     "id": "565c8063f8a61d0a",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTTTAGCCC",
+     "reason": null
+    },
+    {
+     "id": "41c4889debf529a0",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATT",
+     "reason": null
+    },
+    {
+     "id": "4be627c965a37847",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATT",
+     "reason": null
+    },
+    {
+     "id": "6b7c35090f6ca8e0",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATT",
+     "reason": null
+    },
+    {
+     "id": "ac62273f242d0aa5",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATTCCCGATT",
+     "reason": null
+    },
+    {
+     "id": "1e37092493f703f6",
+     "call": null,
+     "definition_index": null,
+     "definition_id": null,
+     "definition_depth": null,
+     "call_bits": null,
+     "expanded_bits": null,
+     "expands_to": null,
+     "word": "CCCGATTCCCGATTCCCGATTCCCGATTCCCGATT",
+     "reason": null
+    }
+   ],
+   "pending": [
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77,
+    78,
+    79,
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87,
+    88,
+    89
+   ],
+   "revisited_calls": []
+  }
+ ],
+ "elapsed_seconds": 11.781,
+ "stop_reason": "cycle cap reached (3)",
+ "stop_note": "a stop is an operational condition, not a proof that nothing further can be found: `pending` lists what was enumerated and never drafted, and resuming continues from it",
+ "sha256": "96ce7ea672bb169e13069cf3d0c07bc180390b4f98c0c6b8d43aaa359f4fafcf"
+}

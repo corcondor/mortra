@@ -1,0 +1,57 @@
+{
+ "schema": "mortra.exact-abstraction-seal.v1",
+ "date": "2026-09-12",
+ "git_head": "43b99c0b06e8590325293edd7a277dd565f899a2",
+ "python": "3.12.10",
+ "new_or_changed": [
+  "math_os_prototype/quotient_counting.py",
+  "math_os_prototype/representation_certificate.py",
+  "math_os_prototype/fold_tasks.py",
+  "math_os_prototype/self_directed_search.py",
+  "math_os_prototype/representation_benchmarks.py",
+  "math_os_prototype/representation_evaluation.py",
+  "math_os_prototype/representation_ledger.py",
+  "math_os_prototype/representation_policy.py",
+  "scripts/run_representation_tasks.py",
+  "scripts/run_route.py",
+  "scripts/measure_routes.py",
+  "scripts/test_quotient_counting.py",
+  "scripts/test_representation_policy.py",
+  "scripts/test_representation_evaluation.py"
+ ],
+ "reused_unchanged": [
+  "math_os_prototype/fold_observable_system.py",
+  "math_os_prototype/rigid_fold_problem_discovery.py",
+  "math_os_prototype/finite_generator_problem_dna.py",
+  "math_os_prototype/holonomic_route_discovery.py",
+  "math_os_prototype/differential_representation.py"
+ ],
+ "sha256": {
+  "math_os_prototype/quotient_counting.py": "25c286d77155a691d55ae67aea21481ce70f3d4eed7eb2e4c1336a448176a708",
+  "math_os_prototype/representation_certificate.py": "0c943a729ca4f12e139989661b6b3c7ef76dd91f30ed7f10a9909c135504c231",
+  "math_os_prototype/fold_tasks.py": "bd298225eee7a07b6d322bf9c6ca29890f82872ae8093d6b85c4ec264da6db54",
+  "math_os_prototype/self_directed_search.py": "43759cf988568ba1419e9ec211ed48dfa3c88c2f4063b16c3a32f8e9393b11f8",
+  "math_os_prototype/representation_benchmarks.py": "a88edcc3949704afb650949bf68e28d8680c91dde7832d0cafa4f2f609a82970",
+  "math_os_prototype/representation_evaluation.py": "c9df3e46b378ad1dd80f7f5a63ddd1f339da26398a68fc35953ae739de2bbf94",
+  "math_os_prototype/representation_ledger.py": "5f1c70c00e63d8fd604ae3cb84f7f13b2f966c1ebabd35e8d68f0908858255ed",
+  "math_os_prototype/representation_policy.py": "8dbc00ea4e78bd34e2203a8c425509c80df8fde311777573ce61bdb8260aa090",
+  "scripts/run_representation_tasks.py": "ac25b18b024f9ad52afae2e96f85919184dfe3ce552bc28064e267c68c4c27a8",
+  "scripts/run_route.py": "271b9de73b35bfbe0b05575b3a1be9c4044f43b27017553ce2a24979e39eca48",
+  "scripts/measure_routes.py": "a33c623d700c3bf42a965d20dc714cc3525a3f09cfc06d52a8729fd0e454e3f1",
+  "scripts/test_quotient_counting.py": "6bafbf1bab894f7be6858eedf0410eec29026d24bb2f76eb7aeea2e657803b7a",
+  "scripts/test_representation_policy.py": "812cb54e8999cf326a45465b9986824b3e547675633baf31dfcd0bc2c985889a",
+  "scripts/test_representation_evaluation.py": "5442c59b56a236edd0aaa0c7cb78f1609354e8cd1343e9f5f29e7030ad13653c",
+  "math_os_prototype/fold_observable_system.py": "8065bcf82878ecba719b94b59f526042661691eafbdebd242254c7f5e6960b83",
+  "math_os_prototype/rigid_fold_problem_discovery.py": "3db647f03b4215e97cc8ecc1629abd324dbf90d9fadde17370db73563607f296",
+  "math_os_prototype/finite_generator_problem_dna.py": "f48c48a5c41bb72c3bb296fc8a7b9f655ddb32d2cc841010f90d6f163431cb2e",
+  "math_os_prototype/holonomic_route_discovery.py": "ce42f614bc0db8610e595b5d17587ab458aea00756c0b5f19ce5d838abf5767c",
+  "math_os_prototype/differential_representation.py": "bd4e2600593b74bd38b746eb3336e396f0c1d56c930a0f0c75d9bebbfdfa9a23"
+ },
+ "rerun": {
+  "tasks": "python scripts/run_representation_tasks.py --output <dir> --degree 1 --max-terms 2 --certificate-depth 4 --probe-length 4 --verify 5 6 7 --answer 10 12 --reuse-length 14",
+  "timings": "python scripts/measure_routes.py --task axis1 --length 8 --repeat 5 --ledger <dir>/ledger.json --output <dir>",
+  "one_route": "python scripts/run_route.py --task axis1 --route represented --length 12 --ledger <dir>/ledger.json",
+  "tests": "python -m unittest scripts.test_quotient_counting scripts.test_representation_policy scripts.test_representation_evaluation scripts.test_fold_observable"
+ },
+ "scope": "digests of the files as they stand in the working tree at the time of writing. They do not establish that the runs above used these bytes; they let a later reader see whether the files have changed since."
+}

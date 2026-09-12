@@ -1,0 +1,193 @@
+==========================================================================
+ONE PATH THAT ACTUALLY RAN
+==========================================================================
+
+  TASK      f(0), f'(0), ..., f^(40)(0)  for  f = exp(x)/(1-x)
+            the two paths run independently from the same input and are
+            compared only after both have finished
+      |
+      v   without the representation: differentiate again for each order
+  BASELINE  derivative primitive entries 10227   (sympy.diff requests 40)
+            trace opens ['sympy.diff', 'Expr.diff', 'Expr.diff', 'Expr.diff']
+            largest intermediate expression 243 operations
+            wall 13.23396s   peak memory 6225392 bytes
+      |
+      v   acquisition: annihilating operator read coefficientwise
+  REPRESENTATION  order 4 recurrence, 39 steps, seeds stored, no derivative value stored
+            acquisition cost 96 primitive calls, 0.968562s
+            checked at acquisition against 24 terms of the independent series route
+      |
+      v   using it: unroll the stored recurrence, multiply by n!
+  REPRESENTED  derivative primitive entries 0   (sympy.diff requests 0)
+            trace contains only ['cancel']
+            wall 0.52368s   peak memory 726073 bytes
+      |
+      v   compared afterwards
+  AGREEMENT  41 orders, all agree True, first disagreement None
+            verified at acquisition up to order 24; held out 17 orders beyond it, all correct
+
+==========================================================================
+EVERY COMPONENT, SEPARATELY  (nothing is collapsed into one number)
+==========================================================================
+
+--------------------------------------------------------------------------
+differential: exp(x)/(1-x)
+--------------------------------------------------------------------------
+  description compression   MDL / library learning
+    raw 7912 bits | representation 1872 | conditional 96 | net 5944
+    bits saved per task 7816, break-even at 1 tasks
+  state reduction           model reduction / invariant representation
+    raw state 243 -> representation 4
+  primitive calls           caches cold on BOTH sides (True)
+    primitive       10227 -> 39       
+    derivative      10227 -> 0        
+    simplify            0 -> 39       
+  recomputation             memoisation, counted apart
+    the same baseline re-run warm: 40 primitive calls, cache hits {'annihilator': 0, 'coefficients': 0}
+  execution depth           recorded, NOT a success condition
+    40 -> 39   ratio 1.026
+  real cost
+    wall 13.23396s -> 0.52368s   peak 6225392 -> 726073 bytes   flop proxy 5042 -> 619
+  acquisition
+    96 primitive calls, 0.968562s, search nodes 0
+  reuse
+    successful 24   held out 17   failed 0
+  cumulative
+    break-even at 1 reuses, counted in primitive calls
+    reuses                 0           1           2           4           8          16          32
+    baseline               0       10227       20454       40908       81816      163632      327264
+    represented           96         135         174         252         408         720        1344
+
+--------------------------------------------------------------------------
+differential: exp(x**2)
+--------------------------------------------------------------------------
+  description compression   MDL / library learning
+    raw 3408 bits | representation 864 | conditional 96 | net 2448
+    bits saved per task 3312, break-even at 1 tasks
+  state reduction           model reduction / invariant representation
+    raw state 123 -> representation 2
+  primitive calls           caches cold on BOTH sides (True)
+    primitive        6154 -> 40       
+    derivative       6154 -> 0        
+    simplify            0 -> 40       
+  recomputation             memoisation, counted apart
+    the same baseline re-run warm: 43 primitive calls, cache hits {'annihilator': 0, 'coefficients': 0}
+  execution depth           recorded, NOT a success condition
+    40 -> 40   ratio 1.000
+  real cost
+    wall 7.966419s -> 0.068819s   peak 4205804 -> 57681 bytes   flop proxy 2542 -> 399
+  acquisition
+    78 primitive calls, 0.707986s, search nodes 0
+  reuse
+    successful 24   held out 17   failed 0
+  cumulative
+    break-even at 1 reuses, counted in primitive calls
+    reuses                 0           1           2           4           8          16          32
+    baseline               0        6154       12308       24616       49232       98464      196928
+    represented           78         118         158         238         398         718        1358
+
+--------------------------------------------------------------------------
+differential: x*exp(x) + 1/(1-x)
+--------------------------------------------------------------------------
+  description compression   MDL / library learning
+    raw 7768 bits | representation 2984 | conditional 96 | net 4688
+    bits saved per task 7672, break-even at 1 tasks
+  state reduction           model reduction / invariant representation
+    raw state 9 -> representation 6
+  primitive calls           caches cold on BOTH sides (True)
+    primitive         587 -> 39       
+    derivative        587 -> 0        
+    simplify            0 -> 39       
+  recomputation             memoisation, counted apart
+    the same baseline re-run warm: 40 primitive calls, cache hits {'annihilator': 0, 'coefficients': 0}
+  execution depth           recorded, NOT a success condition
+    40 -> 39   ratio 1.026
+  real cost
+    wall 0.749715s -> 1.06638s   peak 430316 -> 1168117 bytes   flop proxy 364 -> 832
+  acquisition
+    116 primitive calls, 1.500248s, search nodes 0
+  reuse
+    successful 24   held out 17   failed 0
+  cumulative
+    break-even at 1 reuses, counted in primitive calls
+    reuses                 0           1           2           4           8          16          32
+    baseline               0         587        1174        2348        4696        9392       18784
+    represented          116         155         194         272         428         740        1364
+
+--------------------------------------------------------------------------
+fold repeat: GCC x 64
+--------------------------------------------------------------------------
+  description compression   MDL / library learning
+    raw 2072 bits | representation 3448 | conditional 1696 | net -3072
+    bits saved per task 376, break-even at 10 tasks
+  state reduction           model reduction / invariant representation
+    raw state 12 -> representation 4
+  primitive calls           caches cold on BOTH sides (True)
+    primitive         192 -> 0        
+    fold_step         192 -> 0        
+  recomputation             memoisation, counted apart
+    the same baseline re-run warm: 192 primitive calls, cache hits {'annihilator': 0, 'coefficients': 0}
+  execution depth           recorded, NOT a success condition
+    192 -> 10   ratio 19.200
+  real cost
+    wall 0.017798s -> 0.014936s   peak 17848 -> 14648 bytes   flop proxy None -> 1036
+  acquisition
+    669 primitive calls, 1.645666s, search nodes 24
+  reuse
+    successful 1   held out 3   failed 0
+  cumulative
+    break-even at 4 reuses, counted in primitive calls
+    reuses                 0           1           2           4           8          16          32
+    baseline               0         192         384         768        1536        3072        6144
+    represented          669         669         669         669         669         669         669
+
+--------------------------------------------------------------------------
+fold search: length 8
+--------------------------------------------------------------------------
+  description compression   MDL / library learning
+    raw 624 bits | representation 3448 | conditional 104 | net -2928
+    bits saved per task 520, break-even at 7 tasks
+  state reduction           model reduction / invariant representation
+    raw state 12 -> representation 4
+  primitive calls           caches cold on BOTH sides (True)
+    primitive      524288 -> 0        
+    fold_step      524288 -> 0        
+  recomputation             memoisation, counted apart
+    the same baseline re-run warm: 524288 primitive calls, cache hits {'annihilator': 0, 'coefficients': 0}
+  search
+    candidates 65536 -> 42   nodes 524288 -> 504   rejected 65280 -> 65280
+  execution depth           recorded, NOT a success condition
+    8 -> 8   ratio 1.000
+  real cost
+    wall 44.080102s -> 0.107664s   peak 9440 -> 31885 bytes   flop proxy None -> 14112
+  acquisition
+    669 primitive calls, 1.645666s, search nodes 24
+  reuse
+    successful 1   held out 2   failed 0
+  cumulative
+    break-even at 1 reuses, counted in primitive calls
+    reuses                 0           1           2           4           8          16          32
+    baseline               0      524288     1048576     2097152     4194304     8388608    16777216
+    represented          669         669         669         669         669         669         669
+  attribution control       the SAME merging, on the raw state, no representation
+    nodes: baseline 524288 | merging alone 9544 | with the representation 504
+    distinct states at depth: raw 1836 | observation vectors 42
+    the control arm reproduces the baseline answer: True
+
+==========================================================================
+WHAT IS NOT CLAIMED
+==========================================================================
+
+  - No claim that these representations are the smallest possible. The fold
+    closure is minimal among LINEAR spaces containing the observation; the
+    differential recurrence is the one the annihilating operator gives.
+  - No claim that depth reduction is the goal. Two of the five comparisons
+    have a depth ratio at or near 1 and are kept as they are.
+  - No claim about any architecture. `sequential depth` is used only as the
+    number of times the same compute core must run in sequence.
+  - The kinematic baselines' internal arithmetic was not instrumented, so
+    their flop proxy is null rather than estimated.
+  - A zero derivative count is a statement about entries to sympy.Expr.diff
+    during that run. The tests include a positive control so that a zero is
+    distinguishable from a broken instrument.
+

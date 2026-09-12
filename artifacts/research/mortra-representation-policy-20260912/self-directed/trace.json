@@ -1,0 +1,1653 @@
+{
+  "schema": "mortra.self-directed-search.v1",
+  "task": "fold displacement along axis 1",
+  "goal": "the words of a given length whose value of c1 is maximal, and how many there are",
+  "grammar": {
+    "degree": 1,
+    "max_terms": 2,
+    "coefficients": [
+      1,
+      -1
+    ],
+    "limit": null,
+    "source": "fold_observable_system.candidate_observables",
+    "note": "the enumeration and its order are the grammar's; nothing is injected or excluded here"
+  },
+  "premise": {
+    "exact": true,
+    "identities_checked": 96,
+    "frames_checked": 24,
+    "centre": "symbolic; every integer centre is covered",
+    "scope": "exact for every frame the alphabet reaches within 4 folds and every centre",
+    "cost": {
+      "wall_time": 0.707088,
+      "primitive_calls": 652
+    }
+  },
+  "candidates_offered": [
+    "c1",
+    "c2",
+    "c3",
+    "F11",
+    "F12",
+    "F13",
+    "F21",
+    "F22",
+    "F23",
+    "F31",
+    "F32",
+    "F33",
+    "c1 + c2",
+    "c1 - c2",
+    "c1 + c3",
+    "c1 - c3",
+    "F11 + c1",
+    "-F11 + c1",
+    "F12 + c1",
+    "-F12 + c1",
+    "F13 + c1",
+    "-F13 + c1",
+    "F21 + c1",
+    "-F21 + c1",
+    "F22 + c1",
+    "-F22 + c1",
+    "F23 + c1",
+    "-F23 + c1",
+    "F31 + c1",
+    "-F31 + c1",
+    "F32 + c1",
+    "-F32 + c1",
+    "F33 + c1",
+    "-F33 + c1",
+    "c2 + c3",
+    "c2 - c3",
+    "F11 + c2",
+    "-F11 + c2",
+    "F12 + c2",
+    "-F12 + c2",
+    "F13 + c2",
+    "-F13 + c2",
+    "F21 + c2",
+    "-F21 + c2",
+    "F22 + c2",
+    "-F22 + c2",
+    "F23 + c2",
+    "-F23 + c2",
+    "F31 + c2",
+    "-F31 + c2",
+    "F32 + c2",
+    "-F32 + c2",
+    "F33 + c2",
+    "-F33 + c2",
+    "F11 + c3",
+    "-F11 + c3",
+    "F12 + c3",
+    "-F12 + c3",
+    "F13 + c3",
+    "-F13 + c3",
+    "F21 + c3",
+    "-F21 + c3",
+    "F22 + c3",
+    "-F22 + c3",
+    "F23 + c3",
+    "-F23 + c3",
+    "F31 + c3",
+    "-F31 + c3",
+    "F32 + c3",
+    "-F32 + c3",
+    "F33 + c3",
+    "-F33 + c3",
+    "F11 + F12",
+    "F11 - F12",
+    "F11 + F13",
+    "F11 - F13",
+    "F11 + F21",
+    "F11 - F21",
+    "F11 + F22",
+    "F11 - F22",
+    "F11 + F23",
+    "F11 - F23",
+    "F11 + F31",
+    "F11 - F31",
+    "F11 + F32",
+    "F11 - F32",
+    "F11 + F33",
+    "F11 - F33",
+    "F12 + F13",
+    "F12 - F13",
+    "F12 + F21",
+    "F12 - F21",
+    "F12 + F22",
+    "F12 - F22",
+    "F12 + F23",
+    "F12 - F23",
+    "F12 + F31",
+    "F12 - F31",
+    "F12 + F32",
+    "F12 - F32",
+    "F12 + F33",
+    "F12 - F33",
+    "F13 + F21",
+    "F13 - F21",
+    "F13 + F22",
+    "F13 - F22",
+    "F13 + F23",
+    "F13 - F23",
+    "F13 + F31",
+    "F13 - F31",
+    "F13 + F32",
+    "F13 - F32",
+    "F13 + F33",
+    "F13 - F33",
+    "F21 + F22",
+    "F21 - F22",
+    "F21 + F23",
+    "F21 - F23",
+    "F21 + F31",
+    "F21 - F31",
+    "F21 + F32",
+    "F21 - F32",
+    "F21 + F33",
+    "F21 - F33",
+    "F22 + F23",
+    "F22 - F23",
+    "F22 + F31",
+    "F22 - F31",
+    "F22 + F32",
+    "F22 - F32",
+    "F22 + F33",
+    "F22 - F33",
+    "F23 + F31",
+    "F23 - F31",
+    "F23 + F32",
+    "F23 - F32",
+    "F23 + F33",
+    "F23 - F33",
+    "F31 + F32",
+    "F31 - F32",
+    "F31 + F33",
+    "F31 - F33",
+    "F32 + F33",
+    "F32 - F33"
+  ],
+  "refused_at_closure": [],
+  "refused_by_certificate": [
+    {
+      "observable": "c2",
+      "dimension": 4,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "c3",
+      "dimension": 4,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F11",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F12",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F13",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F21",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F22",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F23",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F31",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F32",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F33",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "c1 + c2",
+      "dimension": 4,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "c1 - c2",
+      "dimension": 4,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "c1 + c3",
+      "dimension": 4,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "c1 - c3",
+      "dimension": 4,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "c2 + c3",
+      "dimension": 4,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "c2 - c3",
+      "dimension": 4,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F11 + c2",
+      "dimension": 7,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "-F11 + c2",
+      "dimension": 7,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F12 + c2",
+      "dimension": 4,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "-F12 + c2",
+      "dimension": 4,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F13 + c2",
+      "dimension": 7,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "-F13 + c2",
+      "dimension": 7,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F21 + c2",
+      "dimension": 7,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "-F21 + c2",
+      "dimension": 7,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F22 + c2",
+      "dimension": 4,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "-F22 + c2",
+      "dimension": 4,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F23 + c2",
+      "dimension": 7,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "-F23 + c2",
+      "dimension": 7,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F31 + c2",
+      "dimension": 7,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "-F31 + c2",
+      "dimension": 7,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F32 + c2",
+      "dimension": 4,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "-F32 + c2",
+      "dimension": 4,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F33 + c2",
+      "dimension": 7,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "-F33 + c2",
+      "dimension": 7,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F11 + c3",
+      "dimension": 7,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "-F11 + c3",
+      "dimension": 7,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F12 + c3",
+      "dimension": 7,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "-F12 + c3",
+      "dimension": 7,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F13 + c3",
+      "dimension": 4,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "-F13 + c3",
+      "dimension": 4,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F21 + c3",
+      "dimension": 7,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "-F21 + c3",
+      "dimension": 7,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F22 + c3",
+      "dimension": 7,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "-F22 + c3",
+      "dimension": 7,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F23 + c3",
+      "dimension": 4,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "-F23 + c3",
+      "dimension": 4,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F31 + c3",
+      "dimension": 7,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "-F31 + c3",
+      "dimension": 7,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F32 + c3",
+      "dimension": 7,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "-F32 + c3",
+      "dimension": 7,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F33 + c3",
+      "dimension": 4,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "-F33 + c3",
+      "dimension": 4,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F11 + F12",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F11 - F12",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F11 + F13",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F11 - F13",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F11 + F21",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F11 - F21",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F11 + F22",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F11 - F22",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F11 + F23",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F11 - F23",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F11 + F31",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F11 - F31",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F11 + F32",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F11 - F32",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F11 + F33",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F11 - F33",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F12 + F13",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F12 - F13",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F12 + F21",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F12 - F21",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F12 + F22",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F12 - F22",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F12 + F23",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F12 - F23",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F12 + F31",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F12 - F31",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F12 + F32",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F12 - F32",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F12 + F33",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F12 - F33",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F13 + F21",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F13 - F21",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F13 + F22",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F13 - F22",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F13 + F23",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F13 - F23",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F13 + F31",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F13 - F31",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F13 + F32",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F13 - F32",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F13 + F33",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F13 - F33",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F21 + F22",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F21 - F22",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F21 + F23",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F21 - F23",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F21 + F31",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F21 - F31",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F21 + F32",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F21 - F32",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F21 + F33",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F21 - F33",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F22 + F23",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F22 - F23",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F22 + F31",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F22 - F31",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F22 + F32",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F22 - F32",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F22 + F33",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F22 - F33",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F23 + F31",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F23 - F31",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F23 + F32",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F23 - F32",
+      "dimension": 6,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F23 + F33",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F23 - F33",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F31 + F32",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F31 - F32",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F31 + F33",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F31 - F33",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F32 + F33",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    },
+    {
+      "observable": "F32 - F33",
+      "dimension": 3,
+      "refused_by": [
+        "observable"
+      ],
+      "counterexample": null
+    }
+  ],
+  "admitted": [
+    "c1",
+    "F11 + c1",
+    "-F11 + c1",
+    "F12 + c1",
+    "-F12 + c1",
+    "F13 + c1",
+    "-F13 + c1",
+    "F21 + c1",
+    "-F21 + c1",
+    "F22 + c1",
+    "-F22 + c1",
+    "F23 + c1",
+    "-F23 + c1",
+    "F31 + c1",
+    "-F31 + c1",
+    "F32 + c1",
+    "-F32 + c1",
+    "F33 + c1",
+    "-F33 + c1"
+  ],
+  "probe_length": 5,
+  "selection": {
+    "front_sizes": [
+      1,
+      4,
+      2,
+      3,
+      3,
+      2,
+      2,
+      2
+    ],
+    "order": "Pareto fronts; within a front, active before dormant. No component is weighted against another and there is no total",
+    "gate": "a representation without an admitting certificate for this task is not offered at all, rather than ranked low",
+    "offered": [
+      {
+        "observable": "c1",
+        "front": 1,
+        "dimension": 4,
+        "status": "active",
+        "objectives": {
+          "description_gain_bits": -2952,
+          "state_dimension_ratio": 3.0,
+          "primitive_calls_eliminated": 5120,
+          "search_nodes_eliminated": 4960,
+          "search_candidates_eliminated": 1002,
+          "depth_reduction_ratio": 1.0,
+          "wall_time_saved": 0.495583,
+          "reuse_successes": 1,
+          "cheap_acquisition": -17
+        }
+      },
+      {
+        "observable": "-F11 + c1",
+        "front": 2,
+        "dimension": 4,
+        "status": "active",
+        "objectives": {
+          "description_gain_bits": -3384,
+          "state_dimension_ratio": 3.0,
+          "primitive_calls_eliminated": 5120,
+          "search_nodes_eliminated": 4960,
+          "search_candidates_eliminated": 1002,
+          "depth_reduction_ratio": 1.0,
+          "wall_time_saved": 0.456755,
+          "reuse_successes": 1,
+          "cheap_acquisition": -17
+        }
+      },
+      {
+        "observable": "-F21 + c1",
+        "front": 2,
+        "dimension": 4,
+        "status": "active",
+        "objectives": {
+          "description_gain_bits": -3368,
+          "state_dimension_ratio": 3.0,
+          "primitive_calls_eliminated": 5120,
+          "search_nodes_eliminated": 4960,
+          "search_candidates_eliminated": 1002,
+          "depth_reduction_ratio": 1.0,
+          "wall_time_saved": 0.39677,
+          "reuse_successes": 1,
+          "cheap_acquisition": -17
+        }
+      },
+      {
+        "observable": "F31 + c1",
+        "front": 2,
+        "dimension": 4,
+        "status": "active",
+        "objectives": {
+          "description_gain_bits": -3024,
+          "state_dimension_ratio": 3.0,
+          "primitive_calls_eliminated": 5120,
+          "search_nodes_eliminated": 4960,
+          "search_candidates_eliminated": 1002,
+          "depth_reduction_ratio": 1.0,
+          "wall_time_saved": 0.449817,
+          "reuse_successes": 0,
+          "cheap_acquisition": -17
+        }
+      },
+      {
+        "observable": "-F31 + c1",
+        "front": 2,
+        "dimension": 4,
+        "status": "active",
+        "objectives": {
+          "description_gain_bits": -3104,
+          "state_dimension_ratio": 3.0,
+          "primitive_calls_eliminated": 5120,
+          "search_nodes_eliminated": 4960,
+          "search_candidates_eliminated": 1002,
+          "depth_reduction_ratio": 1.0,
+          "wall_time_saved": 0.461083,
+          "reuse_successes": 0,
+          "cheap_acquisition": -17
+        }
+      },
+      {
+        "observable": "F11 + c1",
+        "front": 3,
+        "dimension": 4,
+        "status": "active",
+        "objectives": {
+          "description_gain_bits": -3224,
+          "state_dimension_ratio": 3.0,
+          "primitive_calls_eliminated": 5120,
+          "search_nodes_eliminated": 4960,
+          "search_candidates_eliminated": 1002,
+          "depth_reduction_ratio": 1.0,
+          "wall_time_saved": 0.453057,
+          "reuse_successes": 0,
+          "cheap_acquisition": -17
+        }
+      },
+      {
+        "observable": "F21 + c1",
+        "front": 3,
+        "dimension": 4,
+        "status": "active",
+        "objectives": {
+          "description_gain_bits": -3264,
+          "state_dimension_ratio": 3.0,
+          "primitive_calls_eliminated": 5120,
+          "search_nodes_eliminated": 4960,
+          "search_candidates_eliminated": 1002,
+          "depth_reduction_ratio": 1.0,
+          "wall_time_saved": 0.460859,
+          "reuse_successes": 0,
+          "cheap_acquisition": -17
+        }
+      },
+      {
+        "observable": "F22 + c1",
+        "front": 4,
+        "dimension": 7,
+        "status": "active",
+        "objectives": {
+          "description_gain_bits": -8480,
+          "state_dimension_ratio": 1.7142857142857142,
+          "primitive_calls_eliminated": 5120,
+          "search_nodes_eliminated": 4820,
+          "search_candidates_eliminated": 980,
+          "depth_reduction_ratio": 1.0,
+          "wall_time_saved": 0.375227,
+          "reuse_successes": 0,
+          "cheap_acquisition": -29
+        }
+      },
+      {
+        "observable": "-F22 + c1",
+        "front": 4,
+        "dimension": 7,
+        "status": "active",
+        "objectives": {
+          "description_gain_bits": -8496,
+          "state_dimension_ratio": 1.7142857142857142,
+          "primitive_calls_eliminated": 5120,
+          "search_nodes_eliminated": 4820,
+          "search_candidates_eliminated": 980,
+          "depth_reduction_ratio": 1.0,
+          "wall_time_saved": 0.392259,
+          "reuse_successes": 0,
+          "cheap_acquisition": -29
+        }
+      },
+      {
+        "observable": "F33 + c1",
+        "front": 4,
+        "dimension": 7,
+        "status": "active",
+        "objectives": {
+          "description_gain_bits": -8272,
+          "state_dimension_ratio": 1.7142857142857142,
+          "primitive_calls_eliminated": 5120,
+          "search_nodes_eliminated": 4820,
+          "search_candidates_eliminated": 980,
+          "depth_reduction_ratio": 1.0,
+          "wall_time_saved": 0.373875,
+          "reuse_successes": 0,
+          "cheap_acquisition": -29
+        }
+      },
+      {
+        "observable": "-F12 + c1",
+        "front": 5,
+        "dimension": 7,
+        "status": "active",
+        "objectives": {
+          "description_gain_bits": -8784,
+          "state_dimension_ratio": 1.7142857142857142,
+          "primitive_calls_eliminated": 5120,
+          "search_nodes_eliminated": 4820,
+          "search_candidates_eliminated": 980,
+          "depth_reduction_ratio": 1.0,
+          "wall_time_saved": 0.374679,
+          "reuse_successes": 0,
+          "cheap_acquisition": -29
+        }
+      },
+      {
+        "observable": "F32 + c1",
+        "front": 5,
+        "dimension": 7,
+        "status": "active",
+        "objectives": {
+          "description_gain_bits": -8272,
+          "state_dimension_ratio": 1.7142857142857142,
+          "primitive_calls_eliminated": 5120,
+          "search_nodes_eliminated": 4820,
+          "search_candidates_eliminated": 980,
+          "depth_reduction_ratio": 1.0,
+          "wall_time_saved": 0.369425,
+          "reuse_successes": 0,
+          "cheap_acquisition": -29
+        }
+      },
+      {
+        "observable": "-F32 + c1",
+        "front": 5,
+        "dimension": 7,
+        "status": "active",
+        "objectives": {
+          "description_gain_bits": -8288,
+          "state_dimension_ratio": 1.7142857142857142,
+          "primitive_calls_eliminated": 5120,
+          "search_nodes_eliminated": 4820,
+          "search_candidates_eliminated": 980,
+          "depth_reduction_ratio": 1.0,
+          "wall_time_saved": 0.37331,
+          "reuse_successes": 0,
+          "cheap_acquisition": -29
+        }
+      },
+      {
+        "observable": "F23 + c1",
+        "front": 6,
+        "dimension": 7,
+        "status": "active",
+        "objectives": {
+          "description_gain_bits": -8480,
+          "state_dimension_ratio": 1.7142857142857142,
+          "primitive_calls_eliminated": 5120,
+          "search_nodes_eliminated": 4820,
+          "search_candidates_eliminated": 980,
+          "depth_reduction_ratio": 1.0,
+          "wall_time_saved": 0.370138,
+          "reuse_successes": 0,
+          "cheap_acquisition": -29
+        }
+      },
+      {
+        "observable": "-F33 + c1",
+        "front": 6,
+        "dimension": 7,
+        "status": "active",
+        "objectives": {
+          "description_gain_bits": -8288,
+          "state_dimension_ratio": 1.7142857142857142,
+          "primitive_calls_eliminated": 5120,
+          "search_nodes_eliminated": 4820,
+          "search_candidates_eliminated": 980,
+          "depth_reduction_ratio": 1.0,
+          "wall_time_saved": 0.342649,
+          "reuse_successes": 0,
+          "cheap_acquisition": -29
+        }
+      },
+      {
+        "observable": "F12 + c1",
+        "front": 7,
+        "dimension": 7,
+        "status": "active",
+        "objectives": {
+          "description_gain_bits": -8760,
+          "state_dimension_ratio": 1.7142857142857142,
+          "primitive_calls_eliminated": 5120,
+          "search_nodes_eliminated": 4820,
+          "search_candidates_eliminated": 980,
+          "depth_reduction_ratio": 1.0,
+          "wall_time_saved": 0.367199,
+          "reuse_successes": 0,
+          "cheap_acquisition": -29
+        }
+      },
+      {
+        "observable": "-F23 + c1",
+        "front": 7,
+        "dimension": 7,
+        "status": "active",
+        "objectives": {
+          "description_gain_bits": -8496,
+          "state_dimension_ratio": 1.7142857142857142,
+          "primitive_calls_eliminated": 5120,
+          "search_nodes_eliminated": 4820,
+          "search_candidates_eliminated": 980,
+          "depth_reduction_ratio": 1.0,
+          "wall_time_saved": 0.351165,
+          "reuse_successes": 0,
+          "cheap_acquisition": -29
+        }
+      },
+      {
+        "observable": "F13 + c1",
+        "front": 8,
+        "dimension": 7,
+        "status": "active",
+        "objectives": {
+          "description_gain_bits": -8760,
+          "state_dimension_ratio": 1.7142857142857142,
+          "primitive_calls_eliminated": 5120,
+          "search_nodes_eliminated": 4820,
+          "search_candidates_eliminated": 980,
+          "depth_reduction_ratio": 1.0,
+          "wall_time_saved": 0.329157,
+          "reuse_successes": 0,
+          "cheap_acquisition": -29
+        }
+      },
+      {
+        "observable": "-F13 + c1",
+        "front": 8,
+        "dimension": 7,
+        "status": "active",
+        "objectives": {
+          "description_gain_bits": -8784,
+          "state_dimension_ratio": 1.7142857142857142,
+          "primitive_calls_eliminated": 5120,
+          "search_nodes_eliminated": 4820,
+          "search_candidates_eliminated": 980,
+          "depth_reduction_ratio": 1.0,
+          "wall_time_saved": 0.351706,
+          "reuse_successes": 0,
+          "cheap_acquisition": -29
+        }
+      }
+    ],
+    "not_admissible": []
+  },
+  "selected": {
+    "observable": "c1",
+    "dimension": 4,
+    "basis": [
+      "c1",
+      "F11 - F31 + c1",
+      "F11 + F31 + c1",
+      "F21 + F31 + c1"
+    ],
+    "front": 1,
+    "why": "first of the first Pareto front; nothing in the set beats it on every measured component"
+  },
+  "verification": [
+    {
+      "length": 5,
+      "by_enumeration": {
+        "target": "5",
+        "words_at_target": 32,
+        "distinct_values": 9,
+        "total_words": 1024
+      },
+      "by_representation": {
+        "target": "5",
+        "words_at_target": 32,
+        "distinct_values": 9,
+        "total_words": 1024
+      },
+      "agree": true,
+      "words_enumerated": 1024,
+      "nodes_with_representation": 160
+    },
+    {
+      "length": 6,
+      "by_enumeration": {
+        "target": "6",
+        "words_at_target": 64,
+        "distinct_values": 11,
+        "total_words": 4096
+      },
+      "by_representation": {
+        "target": "6",
+        "words_at_target": 64,
+        "distinct_values": 11,
+        "total_words": 4096
+      },
+      "agree": true,
+      "words_enumerated": 4096,
+      "nodes_with_representation": 248
+    },
+    {
+      "length": 7,
+      "by_enumeration": {
+        "target": "7",
+        "words_at_target": 128,
+        "distinct_values": 13,
+        "total_words": 16384
+      },
+      "by_representation": {
+        "target": "7",
+        "words_at_target": 128,
+        "distinct_values": 13,
+        "total_words": 16384
+      },
+      "agree": true,
+      "words_enumerated": 16384,
+      "nodes_with_representation": 368
+    }
+  ],
+  "answers": [
+    {
+      "length": 10,
+      "answer": {
+        "target": "10",
+        "words_at_target": 1024,
+        "distinct_values": 19,
+        "total_words": 1048576
+      },
+      "search_nodes": 856,
+      "candidates_expanded": 54,
+      "wall_time": 0.175233,
+      "words_this_stands_for": 1048576,
+      "enumeration_would_have_taken": "1048576 words x 10 fold steps"
+    },
+    {
+      "length": 12,
+      "answer": {
+        "target": "12",
+        "words_at_target": 4096,
+        "distinct_values": 23,
+        "total_words": 16777216
+      },
+      "search_nodes": 1304,
+      "candidates_expanded": 66,
+      "wall_time": 0.262557,
+      "words_this_stands_for": 16777216,
+      "enumeration_would_have_taken": "16777216 words x 12 fold steps"
+    },
+    {
+      "length": 14,
+      "answer": {
+        "target": "14",
+        "words_at_target": 16384,
+        "distinct_values": 27,
+        "total_words": 268435456
+      },
+      "search_nodes": 1848,
+      "candidates_expanded": 78,
+      "wall_time": 0.361367,
+      "words_this_stands_for": 268435456,
+      "enumeration_would_have_taken": "268435456 words x 14 fold steps"
+    }
+  ],
+  "all_checks_agree": true,
+  "ledger_entries": 144,
+  "scope": "the answers at the longer lengths are not enumerated and not checked against enumeration; they rest on the certificate, whose own scope is stated in it"
+}

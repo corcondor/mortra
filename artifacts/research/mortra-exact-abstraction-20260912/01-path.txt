@@ -1,0 +1,113 @@
+==============================================================================
+WHAT EACH TASK GOT, AND WHAT IT COST TO GET IT
+==============================================================================
+
+  task                      cands clos.ref cert.ref  adm  spaces        selected  dim
+  -----------------------------------------------------------------------------------
+  axis1                       144        0      125   19       3existing exact route: merge equal concrete states   12
+  c1-plus-c2                  144        0      143    1       1existing exact route: merge equal concrete states   12
+  axis1-from-AG               144        0      125   19       3existing exact route: merge equal concrete states   12
+  axis1-collision-free        144        0      144    0       0         STOPPED    -
+
+  axis1: acquisition 3640 primitive calls, 377.037974s over 144 candidates
+      the premise, and the closure and certification of EVERY candidate, refused ones included. A search pays for what it rejects.
+  c1-plus-c2: acquisition 3640 primitive calls, 261.339655s over 144 candidates
+      the premise, and the closure and certification of EVERY candidate, refused ones included. A search pays for what it rejects.
+  axis1-from-AG: acquisition 3640 primitive calls, 256.003406s over 144 candidates
+      the premise, and the closure and certification of EVERY candidate, refused ones included. A search pays for what it rejects.
+  axis1-collision-free: acquisition 116528 primitive calls, 311.175941s over 144 candidates
+      the premise, and the closure and certification of EVERY candidate, refused ones included. A search pays for what it rejects.
+
+==============================================================================
+ANSWERS: CHECKED WHERE IT COULD BE, COMPUTED WHERE IT COULD NOT
+==============================================================================
+
+  axis1  (fold axis 1 displacement)
+      n=5   v_max=   5 count=32       words=1024       | enumeration agrees True, distribution agrees True
+              nodes 1364 -> 953
+      n=6   v_max=   6 count=64       words=4096       | enumeration agrees True, distribution agrees True
+              nodes 5460 -> 2297
+      n=7   v_max=   7 count=128      words=16384      | enumeration agrees True, distribution agrees True
+              nodes 21844 -> 5065
+      n=10  v_max=  10 count=1024     words=1048576    | NOT enumerated, 27385 nodes, 3836 classes
+      n=12  v_max=  12 count=4096     words=16777216   | NOT enumerated, 63113 nodes, 6932 classes
+
+  c1-plus-c2  (fold c1+c2 displacement)
+      n=5   v_max=   9 count=4        words=1024       | enumeration agrees True, distribution agrees True
+              nodes 1364 -> 953
+      n=6   v_max=  11 count=4        words=4096       | enumeration agrees True, distribution agrees True
+              nodes 5460 -> 2297
+      n=7   v_max=  13 count=4        words=16384      | enumeration agrees True, distribution agrees True
+              nodes 21844 -> 5065
+      n=10  v_max=  19 count=4        words=1048576    | NOT enumerated, 27385 nodes, 3836 classes
+      n=12  v_max=  23 count=4        words=16777216   | NOT enumerated, 63113 nodes, 6932 classes
+
+  axis1-from-AG  (fold axis 1 displacement from AG)
+      n=5   v_max=   7 count=32       words=1024       | enumeration agrees True, distribution agrees True
+              nodes 1364 -> 953
+      n=6   v_max=   8 count=64       words=4096       | enumeration agrees True, distribution agrees True
+              nodes 5460 -> 2297
+      n=7   v_max=   9 count=128      words=16384      | enumeration agrees True, distribution agrees True
+              nodes 21844 -> 5065
+      n=10  v_max=  12 count=1024     words=1048576    | NOT enumerated, 27385 nodes, 3836 classes
+      n=12  v_max=  14 count=4096     words=16777216   | NOT enumerated, 63113 nodes, 6932 classes
+
+  axis1-collision-free: STOPPED -- no candidate in this grammar both closed and preserved what the task needs
+      candidates_enumerated: 144
+      refused_by: ['legality', 'observable']
+      exact: this is a statement about this grammar at this degree and these coefficients, and about the certificate depth used. Widening any of them is a different question
+
+==============================================================================
+REFUSALS, WITH THE COUNTEREXAMPLE INSIDE THE DOMAIN THE DP MERGES IN
+==============================================================================
+
+  axis1: 125 refused -- {'observable': 125}
+
+  c1-plus-c2: 143 refused -- {'observable': 143}
+
+  axis1-from-AG: 125 refused -- {'observable': 125}
+
+  axis1-collision-free: 144 refused -- {'legality': 144, 'observable': 125}
+      check legality, length 3, label T
+      'AAG' -> True   'AAT' -> False
+      both reach observation ['0', '-1', '-1', '0']
+      the two words have the SAME length, which is the only pairing the DP ever merges
+
+==============================================================================
+REUSE: READ BACK FROM THE STORE, NOTHING ACQUIRED
+==============================================================================
+
+  axis1: entry 0a08111773ccaed30dc2fa2c (c1, dim 4)
+      certificate admitted, proved, acquired again: False
+      n=14  v_max=14  count=16384  words=268435456
+      whole call: 0 primitive calls, 0 prover calls, 0.732949s
+
+  c1-plus-c2: entry 6e36ff43e0efdc7e9aaf05dc (c1 + c2, dim 4)
+      certificate admitted, proved, acquired again: False
+      n=14  v_max=27  count=4  words=268435456
+      whole call: 0 primitive calls, 0 prover calls, 2.403209s
+
+  axis1-from-AG: entry 0a08111773ccaed30dc2fa2c (c1, dim 4)
+      certificate admitted, proved, acquired again: False
+      n=14  v_max=16  count=16384  words=268435456
+      whole call: 0 primitive calls, 0 prover calls, 0.701321s
+
+  axis1-collision-free: not reused -- no stored representation carries a certificate admitting it for this task
+==============================================================================
+WHAT IS NOT CLAIMED
+==============================================================================
+
+  - The answers at the unenumerated lengths rest on the certificate. Its
+    domain -- states reached by legal words of EQUAL length -- and the depth
+    it was searched to are recorded with it.
+  - A refusal is about this representation on this task. The collision task
+    is posed on a state that does decide its own legality, so the refusal is
+    not a statement that no representation could serve it.
+  - The counting lemma in `quotient_counting` was written by the implementer.
+    It is general knowledge the run uses, not something the run discovered.
+  - `Pareto non-dominated` means nothing beat it on every measured component.
+    It is not a claim of fastest, optimal, or best for reuse.
+  - Minimality is only within generator-invariant linear spaces containing
+    the supplied observation.
+  - Nothing here was committed.
+

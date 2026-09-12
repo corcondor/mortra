@@ -1,0 +1,51 @@
+==========================================================================
+ONE PATH THAT ACTUALLY RAN
+==========================================================================
+
+  PREMISE   encode(apply_fold_generator(x,g)) = M_g encode(x)
+            exact on 24 frames x 4 letters = 96 identities
+            centre symbolic; every integer centre is covered, failures 0
+            exact for every frame the alphabet reaches within 4 folds and every centre
+      |
+      v   candidate enumeration: degree 2, max_terms 1 (monomials only), coefficients (1,)
+  OBSERVABLE  c1
+      |
+      v   discover_action_observable_basis  (existing, unchanged)
+  BASIS  Phi = ['c1', 'F11 - F31 + c1', 'F11 + F31 + c1', 'F21 + F31 + c1']        dim 4
+         identity residuals all zero: True
+         scope     : all finite words; linear closure of supplied polynomial observations
+         minimality: smallest generator-invariant linear space containing this observable; not a claim of minimality over all representations
+      |
+      v   Phi(T_g(x)) = B_g Phi(x)
+  B_A = [['0', '1', '0', '0'], ['1', '1', '-1', '0'], ['-1', '2', '0', '0'], ['-2', '2', '0', '1']]
+  B_C = [['0', '0', '1', '0'], ['-1', '0', '2', '0'], ['1', '-1', '1', '0'], ['0', '0', '0', '1']]
+  B_G = [['0', '0', '0', '1'], ['-2', '1', '0', '2'], ['0', '0', '1', '0'], ['1', '-1', '1', '0']]
+  B_T = [['0', '1', '-1', '1'], ['0', '1', '0', '0'], ['-2', '2', '-1', '2'], ['-1', '2', '-2', '2']]
+      |
+      v   blocks chosen by search_collision_free_fold_chain
+  GCC       affine law proved=True order=2 states=2
+            recurrence proved=False (ValueError: the observed sequence is zero or excee)
+  ATTA      affine law proved=True order=2 states=2
+            recurrence proved=False (ValueError: the observed sequence is zero or excee)
+      |
+      v   computed from the stored basis and matrices, before any execution
+  one named word               GCCCCG                   predicted 0
+  block power                  GCCGCCGCCGCCGCC          predicted 0
+  sum over ALL words           all-words-3              predicted 56
+      |
+      v   independent check by the original kinematics
+  one named word               observed 0  agree True  panels 7 intersecting 1
+  block power                  observed 0  agree True  panels 16 intersecting 14
+  sum over ALL words           observed 56  agree True
+
+==========================================================================
+WHOLE RUN
+==========================================================================
+  acquisitions 18   cursor 18   blocks ['GCC', 'ATTA', 'GCGCG', 'GATTTC', 'CCCGATT', 'TTTAGCCC']
+  affine repeat law : proved 30/36
+  linear recurrence : proved 24/36
+  cases the affine law refused but the recurrence proved: 5
+  word                 agree 18/18
+  block_power          agree 90/90
+  sum_over_all_words   agree 6/6
+  recurrence           agree 55/55

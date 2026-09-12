@@ -1,0 +1,2304 @@
+{
+ "attribution": [
+  "mathematical_reduction",
+  "memoisation_reduction",
+  "generic_search_reduction",
+  "representation_reduction"
+ ],
+ "components": [
+  "description_gain_bits",
+  "state_dimension_reduction",
+  "primitive_elimination",
+  "search_reduction",
+  "sequential_depth_reduction",
+  "measured_wall_time",
+  "acquisition_cost",
+  "reuse_count",
+  "certificate_scope"
+ ],
+ "cycle": 0,
+ "deletion_policy": "never deleted. Going unused lowers the selection order and nothing else; the entry, its measurements, its certificates and its provenance are kept.",
+ "entries": {
+  "0a08111773ccaed30dc2fa2c": {
+   "acquisition_cost": {
+    "acquisition_fold_step_calls": 652,
+    "acquisition_peak_memory": 696339,
+    "acquisition_primitive_calls": 669,
+    "acquisition_proof_calls": 1,
+    "acquisition_proof_cost": {
+     "centre": "symbolic; every integer centre is covered",
+     "closure_identity_residuals_all_zero": true,
+     "closure_scope": "all finite words; linear closure of supplied polynomial observations",
+     "frames_checked": 24,
+     "identities_checked": 96
+    },
+    "acquisition_search_nodes": 24,
+    "acquisition_search_note": "the frames the alphabet reaches, each enumerated once for the premise",
+    "acquisition_time": 1.605381
+   },
+   "certificates": [
+    {
+     "admissible": true,
+     "checks": [
+      {
+       "from": "finite_generator_problem_dna.discover_action_observable_basis, checked as a polynomial identity",
+       "holds": true,
+       "kind": "proof",
+       "name": "transition",
+       "premise": {
+        "centre": "symbolic; every integer centre is covered",
+        "exact": true,
+        "failures": [],
+        "frames_checked": 24,
+        "identities_checked": 96,
+        "letters": 4,
+        "scope": "exact for every frame the alphabet reaches within 4 folds and every centre"
+       },
+       "scope": "all finite words; linear closure of supplied polynomial observations",
+       "statement": "Phi(T_g(x)) = B_g Phi(x) for every letter g"
+      },
+      {
+       "coefficients": [
+        "1",
+        "0",
+        "0",
+        "0"
+       ],
+       "holds": true,
+       "kind": "proof",
+       "name": "observable",
+       "scope": "every state, not only the reachable ones",
+       "statement": "the observable is an exact linear combination of the basis, so Phi determines it at every state"
+      },
+      {
+       "depends_on": "observable",
+       "goal": "the words of a given length whose value of c1 is maximal, and how many there are",
+       "holds": true,
+       "kind": "structural",
+       "name": "goal",
+       "statement": "the goal is stated as a predicate on the observed value, so it is preserved exactly when the observable is"
+      },
+      {
+       "holds": true,
+       "kind": "proof",
+       "name": "legality",
+       "scope": "every word",
+       "statement": "the task places no constraint on which words may be used, so legality is trivially a function of Phi"
+      }
+     ],
+     "depth": 5,
+     "dimension": 4,
+     "may_merge_states": true,
+     "notes": "every word of the length is allowed",
+     "observable": "c1",
+     "refused_by": [],
+     "schema": "mortra.representation-certificate.v1",
+     "sense": "merging two words because their observations agree is sound for this task only under this certificate. A refusal is a counterexample and is final for the task; an admission without a proof carries the depth it was checked to.",
+     "task": "fold displacement along axis 1",
+     "verdict": "admitted, proved"
+    },
+    {
+     "admissible": true,
+     "checks": [
+      {
+       "from": "finite_generator_problem_dna.discover_action_observable_basis, checked as a polynomial identity",
+       "holds": true,
+       "kind": "proof",
+       "name": "transition",
+       "premise": {
+        "centre": "symbolic; every integer centre is covered",
+        "exact": true,
+        "failures": [],
+        "frames_checked": 24,
+        "identities_checked": 96,
+        "letters": 4,
+        "scope": "exact for every frame the alphabet reaches within 4 folds and every centre"
+       },
+       "scope": "all finite words; linear closure of supplied polynomial observations",
+       "statement": "Phi(T_g(x)) = B_g Phi(x) for every letter g"
+      },
+      {
+       "coefficients": [
+        "1",
+        "0",
+        "0",
+        "0"
+       ],
+       "holds": true,
+       "kind": "proof",
+       "name": "observable",
+       "scope": "every state, not only the reachable ones",
+       "statement": "the observable is an exact linear combination of the basis, so Phi determines it at every state"
+      },
+      {
+       "depends_on": "observable",
+       "goal": "the words of a given length whose value of c1 is maximal, and how many there are",
+       "holds": true,
+       "kind": "structural",
+       "name": "goal",
+       "statement": "the goal is stated as a predicate on the observed value, so it is preserved exactly when the observable is"
+      },
+      {
+       "holds": true,
+       "kind": "proof",
+       "name": "legality",
+       "scope": "every word",
+       "statement": "the task places no constraint on which words may be used, so legality is trivially a function of Phi"
+      }
+     ],
+     "depth": 5,
+     "dimension": 4,
+     "may_merge_states": true,
+     "notes": "every word of the length is allowed",
+     "observable": "c1",
+     "refused_by": [],
+     "schema": "mortra.representation-certificate.v1",
+     "sense": "merging two words because their observations agree is sound for this task only under this certificate. A refusal is a counterexample and is final for the task; an admission without a proof carries the depth it was checked to.",
+     "task": "fold displacement along axis 1",
+     "verdict": "admitted, proved"
+    },
+    {
+     "admissible": false,
+     "checks": [
+      {
+       "from": "finite_generator_problem_dna.discover_action_observable_basis, checked as a polynomial identity",
+       "holds": true,
+       "kind": "proof",
+       "name": "transition",
+       "premise": {
+        "centre": "symbolic; every integer centre is covered",
+        "exact": true,
+        "failures": [],
+        "frames_checked": 24,
+        "identities_checked": 96,
+        "letters": 4,
+        "scope": "exact for every frame the alphabet reaches within 4 folds and every centre"
+       },
+       "scope": "all finite words; linear closure of supplied polynomial observations",
+       "statement": "Phi(T_g(x)) = B_g Phi(x) for every letter g"
+      },
+      {
+       "coefficients": [
+        "1",
+        "0",
+        "0",
+        "0"
+       ],
+       "holds": true,
+       "kind": "proof",
+       "name": "observable",
+       "scope": "every state, not only the reachable ones",
+       "statement": "the observable is an exact linear combination of the basis, so Phi determines it at every state"
+      },
+      {
+       "depends_on": "observable",
+       "goal": "the words of a given length whose value of c1 is maximal, and how many there are",
+       "holds": true,
+       "kind": "structural",
+       "name": "goal",
+       "statement": "the goal is stated as a predicate on the observed value, so it is preserved exactly when the observable is"
+      },
+      {
+       "counterexample": {
+        "observation": [
+         "0",
+         "1",
+         "1",
+         "0"
+        ],
+        "state_a": [
+         0,
+         0,
+         0,
+         1,
+         0,
+         0,
+         0,
+         1,
+         0,
+         0,
+         0,
+         1
+        ],
+        "state_b": [
+         0,
+         0,
+         0,
+         1,
+         0,
+         0,
+         0,
+         1,
+         0,
+         0,
+         0,
+         1
+        ],
+        "value_a": "True",
+        "value_b": "False",
+        "word_a": "",
+        "word_b": "AAAA"
+       },
+       "depth": 5,
+       "holds": false,
+       "kind": "refusal",
+       "name": "legality",
+       "statement": "legality is constant on the classes Phi induces on words",
+       "words_compared": 1365
+      }
+     ],
+     "depth": 5,
+     "dimension": 4,
+     "may_merge_states": false,
+     "notes": "the collision-free variant constrains the WORD, not the state it ends in, so no function of the final state can express it",
+     "observable": "c1",
+     "refused_by": [
+      "legality"
+     ],
+     "schema": "mortra.representation-certificate.v1",
+     "sense": "merging two words because their observations agree is sound for this task only under this certificate. A refusal is a counterexample and is final for the task; an admission without a proof carries the depth it was checked to.",
+     "task": "fold displacement along axis 1, collision-free words only",
+     "verdict": "refused"
+    }
+   ],
+   "deleted": false,
+   "deletion_policy": "never deleted. Going unused lowers the selection order and nothing else; the entry, its measurements, its certificates and its provenance are kept.",
+   "dormant_since": null,
+   "first_seen_cycle": 0,
+   "id": "0a08111773ccaed30dc2fa2c",
+   "kind": "observation representation",
+   "measurements": [
+    {
+     "attribution": {
+      "generic_search_reduction": null,
+      "marginals_add_up_to_total": {
+       "derivative_calls": true,
+       "fold_step_calls": true,
+       "primitive_calls": true,
+       "search_nodes": null,
+       "wall_time": true
+      },
+      "mathematical_reduction": {
+       "derivative_calls": 0,
+       "description": "an existing mathematical route, available without learning anything",
+       "fold_step_calls": 188,
+       "from_rung": "memoised",
+       "primitive_calls": 188,
+       "search_nodes": null,
+       "to_rung": "mathematical",
+       "wall_time": 0.008043
+      },
+      "memoisation_reduction": {
+       "derivative_calls": 0,
+       "description": "the same route again with the caches left warm",
+       "fold_step_calls": 0,
+       "from_rung": "naive",
+       "primitive_calls": 0,
+       "search_nodes": null,
+       "to_rung": "memoised",
+       "wall_time": 0.001416
+      },
+      "reading": "`representation_reduction` is the only column that belongs to the learned representation. A large total with a small representation column means the saving was already available without it.",
+      "representation_reduction": {
+       "derivative_calls": 0,
+       "description": "the learned representation, on top of all of the above",
+       "fold_step_calls": 4,
+       "from_rung": "mathematical",
+       "primitive_calls": 4,
+       "search_nodes": null,
+       "to_rung": "representation",
+       "wall_time": -0.008255
+      },
+      "rungs_absent": [
+       "generic_search"
+      ],
+      "rungs_measured": [
+       "naive",
+       "memoised",
+       "mathematical",
+       "representation"
+      ],
+      "sense": "each rung is a separate run of the same task. The step from one rung to the next is credited to that rung and to nothing else, so the four causes are measured rather than apportioned",
+      "total": {
+       "derivative_calls": 0,
+       "fold_step_calls": 192,
+       "primitive_calls": 192,
+       "search_nodes": null,
+       "wall_time": 0.001204
+      }
+     },
+     "break_evens": {
+      "acquisition_primitive_calls": 669,
+      "bits_saved_per_task": 376,
+      "compute_break_even_reuse_count": 4,
+      "compute_break_even_reuse_count_against_best_baseline": 168,
+      "definitions": {
+       "compute_break_even_reuse_count": "reuses until the acquisition primitive calls are repaid, measured against the naive route",
+       "compute_break_even_reuse_count_against_best_baseline": "the same, measured against the strongest route available WITHOUT this representation. This is the honest one wherever such a route exists, and it is absent when the representation saves nothing over it",
+       "description_break_even_task_count": "tasks until the bits of the representation are repaid by the bits it saves per task",
+       "total_break_even_reuse_count": "the later of the compute and description break-evens -- the MAXIMUM, deliberately. Not a sum and not a weighted blend, because bits and calls have no exchange rate"
+      },
+      "description_break_even_task_count": 10,
+      "per_use_primitive_saving_against_best_baseline": 4,
+      "per_use_primitive_saving_against_naive": 192,
+      "representation_bits": 3448,
+      "total_break_even_reuse_count": 10
+     },
+     "certificate_scope": {
+      "admissible": true,
+      "checks": [
+       {
+        "compared": null,
+        "depth": null,
+        "holds": true,
+        "kind": "proof",
+        "name": "transition",
+        "scope": "all finite words; linear closure of supplied polynomial observations"
+       },
+       {
+        "compared": null,
+        "depth": null,
+        "holds": true,
+        "kind": "proof",
+        "name": "observable",
+        "scope": "every state, not only the reachable ones"
+       },
+       {
+        "compared": null,
+        "depth": null,
+        "holds": true,
+        "kind": "structural",
+        "name": "goal",
+        "scope": null
+       },
+       {
+        "compared": null,
+        "depth": null,
+        "holds": true,
+        "kind": "proof",
+        "name": "legality",
+        "scope": "every word"
+       }
+      ],
+      "refused_by": [],
+      "sense": "a check of kind `proof` holds for every state; one of kind `no counterexample within depth` holds only as far as it was searched, and says how far",
+      "task": "fold displacement along axis 1",
+      "verdict": "admitted, proved"
+     },
+     "description_gain_bits": -3072,
+     "measured_wall_time": {
+      "after": 0.017492,
+      "before": 0.018696,
+      "saved": 0.001204
+     },
+     "primitive_elimination": {
+      "after": 0,
+      "before": 192,
+      "derivative_calls_after": 0,
+      "derivative_calls_before": 0,
+      "derivative_request_calls_after": 0,
+      "derivative_request_calls_before": 0,
+      "eliminated": {
+       "derivative_calls": 0,
+       "fold_step_calls": 192,
+       "proof_calls": 0,
+       "simplify_calls": 0,
+       "solver_calls": 0
+      }
+     },
+     "provenance": {
+      "against_best_baseline": {
+       "added": {},
+       "complete": true,
+       "kept": {},
+       "nodes_added": 0,
+       "nodes_removed": 4,
+       "removed": {
+        "fold_step:apply_fold_generator:A": {
+         "count": 1,
+         "first_positions": [
+          0
+         ],
+         "kind": "fold_step",
+         "label": "apply_fold_generator",
+         "removed": 1,
+         "signature": "A",
+         "surviving": 0
+        },
+        "fold_step:apply_fold_generator:C": {
+         "count": 1,
+         "first_positions": [
+          1
+         ],
+         "kind": "fold_step",
+         "label": "apply_fold_generator",
+         "removed": 1,
+         "signature": "C",
+         "surviving": 0
+        },
+        "fold_step:apply_fold_generator:G": {
+         "count": 1,
+         "first_positions": [
+          2
+         ],
+         "kind": "fold_step",
+         "label": "apply_fold_generator",
+         "removed": 1,
+         "signature": "G",
+         "surviving": 0
+        },
+        "fold_step:apply_fold_generator:T": {
+         "count": 1,
+         "first_positions": [
+          3
+         ],
+         "kind": "fold_step",
+         "label": "apply_fold_generator",
+         "removed": 1,
+         "signature": "T",
+         "surviving": 0
+        }
+       },
+       "sense": "the execution graph of the run WITHOUT the representation, minus the graph of the run WITH it. `complete` is false when the node census hit its cap, in which case the counts are a lower bound"
+      },
+      "against_naive": {
+       "added": {},
+       "complete": true,
+       "kept": {},
+       "nodes_added": 0,
+       "nodes_removed": 192,
+       "removed": {
+        "fold_step:apply_fold_generator:C": {
+         "count": 128,
+         "first_positions": [
+          1,
+          2,
+          4,
+          5,
+          7,
+          8
+         ],
+         "kind": "fold_step",
+         "label": "apply_fold_generator",
+         "removed": 128,
+         "signature": "C",
+         "surviving": 0
+        },
+        "fold_step:apply_fold_generator:G": {
+         "count": 64,
+         "first_positions": [
+          0,
+          3,
+          6,
+          9,
+          12,
+          15
+         ],
+         "kind": "fold_step",
+         "label": "apply_fold_generator",
+         "removed": 64,
+         "signature": "G",
+         "surviving": 0
+        }
+       },
+       "sense": "the execution graph of the run WITHOUT the representation, minus the graph of the run WITH it. `complete` is false when the node census hit its cap, in which case the counts are a lower bound"
+      },
+      "best_baseline_rung": "mathematical",
+      "node_identity": "nodes are keyed by primitive kind, the instrument they were counted at, and a short signature of the call, so a node that survived under another name is not counted as removed",
+      "sense": "which computation nodes stopped happening. Both are kept: `against_naive` is the whole difference from the obvious route, `against_best_baseline` is the part that would still have been executed by the strongest route available WITHOUT this representation -- which is the one that answers what having this representation saved"
+     },
+     "search_reduction": {
+      "candidates_after": null,
+      "candidates_before": null,
+      "nodes_after": null,
+      "nodes_before": null,
+      "rejected_after": null,
+      "rejected_before": null,
+      "units": "neither path searches; the rows are empty, not zero"
+     },
+     "sequential_depth_reduction": {
+      "after": 10,
+      "before": 192,
+      "not_a_success_condition": "a ratio at or below 1 is recorded, not penalised: an acquisition that costs more depth and repays it over later problems is the case worth keeping, and the break-evens are where that is read",
+      "ratio": 19.2
+     },
+     "state_dimension_reduction": {
+      "after": 4,
+      "before": 12,
+      "difference": 8,
+      "ratio": 3.0
+     },
+     "task": "fold repeat: GCC x 64"
+    },
+    {
+     "attribution": {
+      "generic_search_reduction": {
+       "derivative_calls": 0,
+       "description": "a standard search improvement -- merging equal states -- with no learned representation",
+       "fold_step_calls": 514744,
+       "from_rung": "memoised",
+       "primitive_calls": 514744,
+       "search_nodes": 514744,
+       "to_rung": "generic_search",
+       "wall_time": 55.443988
+      },
+      "marginals_add_up_to_total": {
+       "derivative_calls": true,
+       "fold_step_calls": true,
+       "primitive_calls": true,
+       "search_nodes": true,
+       "wall_time": true
+      },
+      "mathematical_reduction": null,
+      "memoisation_reduction": {
+       "derivative_calls": 0,
+       "description": "the same route again with the caches left warm",
+       "fold_step_calls": 0,
+       "from_rung": "naive",
+       "primitive_calls": 0,
+       "search_nodes": 0,
+       "to_rung": "memoised",
+       "wall_time": -1.818863
+      },
+      "reading": "`representation_reduction` is the only column that belongs to the learned representation. A large total with a small representation column means the saving was already available without it.",
+      "representation_reduction": {
+       "derivative_calls": 0,
+       "description": "the learned representation, on top of all of the above",
+       "fold_step_calls": 9544,
+       "from_rung": "generic_search",
+       "primitive_calls": 9544,
+       "search_nodes": 9040,
+       "to_rung": "representation",
+       "wall_time": 0.986875
+      },
+      "rungs_absent": [
+       "mathematical"
+      ],
+      "rungs_measured": [
+       "naive",
+       "memoised",
+       "generic_search",
+       "representation"
+      ],
+      "sense": "each rung is a separate run of the same task. The step from one rung to the next is credited to that rung and to nothing else, so the four causes are measured rather than apportioned",
+      "total": {
+       "derivative_calls": 0,
+       "fold_step_calls": 524288,
+       "primitive_calls": 524288,
+       "search_nodes": 523784,
+       "wall_time": 54.612
+      }
+     },
+     "break_evens": {
+      "acquisition_primitive_calls": 669,
+      "bits_saved_per_task": 520,
+      "compute_break_even_reuse_count": 1,
+      "compute_break_even_reuse_count_against_best_baseline": 1,
+      "definitions": {
+       "compute_break_even_reuse_count": "reuses until the acquisition primitive calls are repaid, measured against the naive route",
+       "compute_break_even_reuse_count_against_best_baseline": "the same, measured against the strongest route available WITHOUT this representation. This is the honest one wherever such a route exists, and it is absent when the representation saves nothing over it",
+       "description_break_even_task_count": "tasks until the bits of the representation are repaid by the bits it saves per task",
+       "total_break_even_reuse_count": "the later of the compute and description break-evens -- the MAXIMUM, deliberately. Not a sum and not a weighted blend, because bits and calls have no exchange rate"
+      },
+      "description_break_even_task_count": 7,
+      "per_use_primitive_saving_against_best_baseline": 9544,
+      "per_use_primitive_saving_against_naive": 524288,
+      "representation_bits": 3448,
+      "total_break_even_reuse_count": 7
+     },
+     "certificate_scope": {
+      "admissible": true,
+      "checks": [
+       {
+        "compared": null,
+        "depth": null,
+        "holds": true,
+        "kind": "proof",
+        "name": "transition",
+        "scope": "all finite words; linear closure of supplied polynomial observations"
+       },
+       {
+        "compared": null,
+        "depth": null,
+        "holds": true,
+        "kind": "proof",
+        "name": "observable",
+        "scope": "every state, not only the reachable ones"
+       },
+       {
+        "compared": null,
+        "depth": null,
+        "holds": true,
+        "kind": "structural",
+        "name": "goal",
+        "scope": null
+       },
+       {
+        "compared": null,
+        "depth": null,
+        "holds": true,
+        "kind": "proof",
+        "name": "legality",
+        "scope": "every word"
+       }
+      ],
+      "refused_by": [],
+      "sense": "a check of kind `proof` holds for every state; one of kind `no counterexample within depth` holds only as far as it was searched, and says how far",
+      "task": "fold displacement along axis 1",
+      "verdict": "admitted, proved"
+     },
+     "description_gain_bits": -2928,
+     "measured_wall_time": {
+      "after": 0.114909,
+      "before": 54.726909,
+      "saved": 54.612
+     },
+     "primitive_elimination": {
+      "after": 0,
+      "before": 524288,
+      "derivative_calls_after": 0,
+      "derivative_calls_before": 0,
+      "derivative_request_calls_after": 0,
+      "derivative_request_calls_before": 0,
+      "eliminated": {
+       "derivative_calls": 0,
+       "fold_step_calls": 524288,
+       "proof_calls": 0,
+       "simplify_calls": 0,
+       "solver_calls": 0
+      }
+     },
+     "provenance": {
+      "against_best_baseline": {
+       "added": {},
+       "complete": true,
+       "kept": {},
+       "nodes_added": 0,
+       "nodes_removed": 9544,
+       "removed": {
+        "fold_step:apply_fold_generator:A": {
+         "count": 2386,
+         "first_positions": [
+          0,
+          4,
+          8,
+          12,
+          16,
+          20
+         ],
+         "kind": "fold_step",
+         "label": "apply_fold_generator",
+         "removed": 2386,
+         "signature": "A",
+         "surviving": 0
+        },
+        "fold_step:apply_fold_generator:C": {
+         "count": 2386,
+         "first_positions": [
+          1,
+          5,
+          9,
+          13,
+          17,
+          21
+         ],
+         "kind": "fold_step",
+         "label": "apply_fold_generator",
+         "removed": 2386,
+         "signature": "C",
+         "surviving": 0
+        },
+        "fold_step:apply_fold_generator:G": {
+         "count": 2386,
+         "first_positions": [
+          2,
+          6,
+          10,
+          14,
+          18,
+          22
+         ],
+         "kind": "fold_step",
+         "label": "apply_fold_generator",
+         "removed": 2386,
+         "signature": "G",
+         "surviving": 0
+        },
+        "fold_step:apply_fold_generator:T": {
+         "count": 2386,
+         "first_positions": [
+          3,
+          7,
+          11,
+          15,
+          19,
+          23
+         ],
+         "kind": "fold_step",
+         "label": "apply_fold_generator",
+         "removed": 2386,
+         "signature": "T",
+         "surviving": 0
+        }
+       },
+       "sense": "the execution graph of the run WITHOUT the representation, minus the graph of the run WITH it. `complete` is false when the node census hit its cap, in which case the counts are a lower bound"
+      },
+      "against_naive": {
+       "added": {},
+       "complete": false,
+       "kept": {},
+       "nodes_added": 0,
+       "nodes_removed": 20000,
+       "removed": {
+        "fold_step:apply_fold_generator:A": {
+         "count": 9313,
+         "first_positions": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+         ],
+         "kind": "fold_step",
+         "label": "apply_fold_generator",
+         "removed": 9313,
+         "signature": "A",
+         "surviving": 0
+        },
+        "fold_step:apply_fold_generator:C": {
+         "count": 4245,
+         "first_positions": [
+          15,
+          38,
+          46,
+          47,
+          54,
+          62
+         ],
+         "kind": "fold_step",
+         "label": "apply_fold_generator",
+         "removed": 4245,
+         "signature": "C",
+         "surviving": 0
+        },
+        "fold_step:apply_fold_generator:G": {
+         "count": 3477,
+         "first_positions": [
+          23,
+          55,
+          70,
+          78,
+          86,
+          87
+         ],
+         "kind": "fold_step",
+         "label": "apply_fold_generator",
+         "removed": 3477,
+         "signature": "G",
+         "surviving": 0
+        },
+        "fold_step:apply_fold_generator:T": {
+         "count": 2965,
+         "first_positions": [
+          31,
+          63,
+          95,
+          102,
+          110,
+          118
+         ],
+         "kind": "fold_step",
+         "label": "apply_fold_generator",
+         "removed": 2965,
+         "signature": "T",
+         "surviving": 0
+        }
+       },
+       "sense": "the execution graph of the run WITHOUT the representation, minus the graph of the run WITH it. `complete` is false when the node census hit its cap, in which case the counts are a lower bound"
+      },
+      "best_baseline_rung": "generic_search",
+      "node_identity": "nodes are keyed by primitive kind, the instrument they were counted at, and a short signature of the call, so a node that survived under another name is not counted as removed",
+      "sense": "which computation nodes stopped happening. Both are kept: `against_naive` is the whole difference from the obvious route, `against_best_baseline` is the part that would still have been executed by the strongest route available WITHOUT this representation -- which is the one that answers what having this representation saved"
+     },
+     "search_reduction": {
+      "candidates_after": 42,
+      "candidates_before": 65536,
+      "nodes_after": 504,
+      "nodes_before": 524288,
+      "rejected_after": 65280,
+      "rejected_before": 65280,
+      "units": "candidates_generated counts what was expanded -- words on the naive rung, distinct raw states on the generic rung, distinct observation vectors on the represented one. search_nodes counts state updates against matrix actions. rejected_candidates is in WORDS on every rung, because the merging rungs carry the multiplicity"
+     },
+     "sequential_depth_reduction": {
+      "after": 8,
+      "before": 8,
+      "not_a_success_condition": "a ratio at or below 1 is recorded, not penalised: an acquisition that costs more depth and repays it over later problems is the case worth keeping, and the break-evens are where that is read",
+      "ratio": 1.0
+     },
+     "state_dimension_reduction": {
+      "after": 4,
+      "before": 12,
+      "difference": 8,
+      "ratio": 3.0
+     },
+     "task": "fold search: length 8"
+    }
+   ],
+   "representation": {
+    "action_matrices": {
+     "A": [
+      [
+       "0",
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "1",
+       "1",
+       "-1",
+       "0"
+      ],
+      [
+       "-1",
+       "2",
+       "0",
+       "0"
+      ],
+      [
+       "-2",
+       "2",
+       "0",
+       "1"
+      ]
+     ],
+     "C": [
+      [
+       "0",
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "-1",
+       "0",
+       "2",
+       "0"
+      ],
+      [
+       "1",
+       "-1",
+       "1",
+       "0"
+      ],
+      [
+       "0",
+       "0",
+       "0",
+       "1"
+      ]
+     ],
+     "G": [
+      [
+       "0",
+       "0",
+       "0",
+       "1"
+      ],
+      [
+       "-2",
+       "1",
+       "0",
+       "2"
+      ],
+      [
+       "0",
+       "0",
+       "1",
+       "0"
+      ],
+      [
+       "1",
+       "-1",
+       "1",
+       "0"
+      ]
+     ],
+     "T": [
+      [
+       "0",
+       "1",
+       "-1",
+       "1"
+      ],
+      [
+       "0",
+       "1",
+       "0",
+       "0"
+      ],
+      [
+       "-2",
+       "2",
+       "-1",
+       "2"
+      ],
+      [
+       "-1",
+       "2",
+       "-2",
+       "2"
+      ]
+     ]
+    },
+    "basis": [
+     "c1",
+     "F11 - F31 + c1",
+     "F11 + F31 + c1",
+     "F21 + F31 + c1"
+    ],
+    "dimension": 4,
+    "identity": "Phi(T_g(x)) = B_g Phi(x)",
+    "kind": "observation representation",
+    "observable": "c1"
+   },
+   "reuse": {
+    "count": 2,
+    "failures": 0,
+    "heldout_successes": 5,
+    "last_used_cycle": 0,
+    "successes": 2,
+    "tasks": [
+     "fold repeat: GCC x 64",
+     "fold search: length 8"
+    ]
+   },
+   "status": "active"
+  },
+  "49e60b02b76e6370c25173dd": {
+   "acquisition_cost": {
+    "acquisition_derivative_calls": 30,
+    "acquisition_derivative_request_calls": 0,
+    "acquisition_peak_memory": 1174299,
+    "acquisition_primitive_calls": 96,
+    "acquisition_proof_calls": 3,
+    "acquisition_proof_cost": {
+     "annihilator_calls": 3,
+     "checked_against": "holonomic_route_discovery.coefficients, which reaches the series through closure arithmetic on the program tree and never through the annihilating operator",
+     "series_terms_checked": 24
+    },
+    "acquisition_search_nodes": 0,
+    "acquisition_search_note": "derived from the annihilating operator rather than searched; there are no candidates to count here",
+    "acquisition_time": 0.846112
+   },
+   "certificates": [
+    {
+     "admissible": true,
+     "checks": [
+      {
+       "holds": true,
+       "kind": "checked to a stated range",
+       "name": "series",
+       "statement": "holonomic_route_discovery.coefficients, which reaches the series through closure arithmetic on the program tree and never through the annihilating operator",
+       "terms": 24
+      }
+     ],
+     "refused_by": [],
+     "schema": "mortra.differential-verification.v1",
+     "scope": "the Taylor coefficients of this program at 0; the recurrence is exact for every index from first_solvable_index upward",
+     "task": "differential: exp(x)/(1-x)",
+     "verdict": "admitted, checked against an independent route"
+    }
+   ],
+   "deleted": false,
+   "deletion_policy": "never deleted. Going unused lowers the selection order and nothing else; the entry, its measurements, its certificates and its provenance are kept.",
+   "dormant_since": null,
+   "first_seen_cycle": 0,
+   "id": "49e60b02b76e6370c25173dd",
+   "kind": "differential action",
+   "measurements": [
+    {
+     "attribution": {
+      "generic_search_reduction": null,
+      "marginals_add_up_to_total": {
+       "derivative_calls": true,
+       "fold_step_calls": true,
+       "primitive_calls": true,
+       "search_nodes": null,
+       "wall_time": true
+      },
+      "mathematical_reduction": {
+       "derivative_calls": 40,
+       "description": "an existing mathematical route, available without learning anything",
+       "fold_step_calls": 0,
+       "from_rung": "memoised",
+       "primitive_calls": 40,
+       "search_nodes": null,
+       "to_rung": "mathematical",
+       "wall_time": 1.50378
+      },
+      "memoisation_reduction": {
+       "derivative_calls": 10187,
+       "description": "the same route again with the caches left warm",
+       "fold_step_calls": 0,
+       "from_rung": "naive",
+       "primitive_calls": 10187,
+       "search_nodes": null,
+       "to_rung": "memoised",
+       "wall_time": 11.733218
+      },
+      "reading": "`representation_reduction` is the only column that belongs to the learned representation. A large total with a small representation column means the saving was already available without it.",
+      "representation_reduction": {
+       "derivative_calls": 0,
+       "description": "the learned representation, on top of all of the above",
+       "fold_step_calls": 0,
+       "from_rung": "mathematical",
+       "primitive_calls": -39,
+       "search_nodes": null,
+       "to_rung": "representation",
+       "wall_time": -0.717786
+      },
+      "rungs_absent": [
+       "generic_search"
+      ],
+      "rungs_measured": [
+       "naive",
+       "memoised",
+       "mathematical",
+       "representation"
+      ],
+      "sense": "each rung is a separate run of the same task. The step from one rung to the next is credited to that rung and to nothing else, so the four causes are measured rather than apportioned",
+      "total": {
+       "derivative_calls": 10227,
+       "fold_step_calls": 0,
+       "primitive_calls": 10188,
+       "search_nodes": null,
+       "wall_time": 12.519212
+      }
+     },
+     "break_evens": {
+      "acquisition_primitive_calls": 96,
+      "bits_saved_per_task": 7816,
+      "compute_break_even_reuse_count": 1,
+      "compute_break_even_reuse_count_against_best_baseline": null,
+      "definitions": {
+       "compute_break_even_reuse_count": "reuses until the acquisition primitive calls are repaid, measured against the naive route",
+       "compute_break_even_reuse_count_against_best_baseline": "the same, measured against the strongest route available WITHOUT this representation. This is the honest one wherever such a route exists, and it is absent when the representation saves nothing over it",
+       "description_break_even_task_count": "tasks until the bits of the representation are repaid by the bits it saves per task",
+       "total_break_even_reuse_count": "the later of the compute and description break-evens -- the MAXIMUM, deliberately. Not a sum and not a weighted blend, because bits and calls have no exchange rate"
+      },
+      "description_break_even_task_count": 1,
+      "per_use_primitive_saving_against_best_baseline": -39,
+      "per_use_primitive_saving_against_naive": 10188,
+      "representation_bits": 1872,
+      "total_break_even_reuse_count": 1
+     },
+     "certificate_scope": {
+      "admissible": true,
+      "checks": [
+       {
+        "compared": null,
+        "depth": null,
+        "holds": true,
+        "kind": "checked to a stated range",
+        "name": "series",
+        "scope": null
+       }
+      ],
+      "refused_by": [],
+      "sense": "a check of kind `proof` holds for every state; one of kind `no counterexample within depth` holds only as far as it was searched, and says how far",
+      "task": "differential: exp(x)/(1-x)",
+      "verdict": "admitted, checked against an independent route"
+     },
+     "description_gain_bits": 5944,
+     "measured_wall_time": {
+      "after": 0.768354,
+      "before": 13.287566,
+      "saved": 12.519212
+     },
+     "primitive_elimination": {
+      "after": 39,
+      "before": 10227,
+      "derivative_calls_after": 0,
+      "derivative_calls_before": 10227,
+      "derivative_request_calls_after": 0,
+      "derivative_request_calls_before": 40,
+      "eliminated": {
+       "derivative_calls": 10227,
+       "fold_step_calls": 0,
+       "proof_calls": 0,
+       "simplify_calls": -39,
+       "solver_calls": 0
+      }
+     },
+     "provenance": {
+      "against_best_baseline": {
+       "added": {
+        "simplify:cancel:Rational": {
+         "added": 39,
+         "count": 39,
+         "first_positions": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+         ],
+         "kind": "simplify",
+         "label": "cancel",
+         "signature": "Rational"
+        }
+       },
+       "complete": true,
+       "kept": {},
+       "nodes_added": 39,
+       "nodes_removed": 0,
+       "removed": {},
+       "sense": "the execution graph of the run WITHOUT the representation, minus the graph of the run WITH it. `complete` is false when the node census hit its cap, in which case the counts are a lower bound"
+      },
+      "against_naive": {
+       "added": {
+        "simplify:cancel:Rational": {
+         "added": 39,
+         "count": 39,
+         "first_positions": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+         ],
+         "kind": "simplify",
+         "label": "cancel",
+         "signature": "Rational"
+        }
+       },
+       "complete": true,
+       "kept": {},
+       "nodes_added": 39,
+       "nodes_removed": 10267,
+       "removed": {
+        "derivative:Expr.diff:Add": {
+         "count": 820,
+         "first_positions": [
+          6,
+          16,
+          23,
+          27,
+          35,
+          48
+         ],
+         "kind": "derivative",
+         "label": "Expr.diff",
+         "removed": 820,
+         "signature": "Add",
+         "surviving": 0
+        },
+        "derivative:Expr.diff:Integer": {
+         "count": 3117,
+         "first_positions": [
+          24,
+          30,
+          33,
+          36,
+          38,
+          43
+         ],
+         "kind": "derivative",
+         "label": "Expr.diff",
+         "removed": 3117,
+         "signature": "Integer",
+         "surviving": 0
+        },
+        "derivative:Expr.diff:Mul": {
+         "count": 821,
+         "first_positions": [
+          1,
+          8,
+          17,
+          18,
+          28,
+          29
+         ],
+         "kind": "derivative",
+         "label": "Expr.diff",
+         "removed": 821,
+         "signature": "Mul",
+         "surviving": 0
+        },
+        "derivative:Expr.diff:NegativeOne": {
+         "count": 3,
+         "first_positions": [
+          9,
+          11,
+          13
+         ],
+         "kind": "derivative",
+         "label": "Expr.diff",
+         "removed": 3,
+         "signature": "NegativeOne",
+         "surviving": 0
+        },
+        "derivative:Expr.diff:One": {
+         "count": 1,
+         "first_positions": [
+          7
+         ],
+         "kind": "derivative",
+         "label": "Expr.diff",
+         "removed": 1,
+         "signature": "One",
+         "surviving": 0
+        },
+        "derivative:Expr.diff:Pow": {
+         "count": 2341,
+         "first_positions": [
+          2,
+          5,
+          19,
+          22,
+          31,
+          34
+         ],
+         "kind": "derivative",
+         "label": "Expr.diff",
+         "removed": 2341,
+         "signature": "Pow",
+         "surviving": 0
+        },
+        "derivative:Expr.diff:Symbol": {
+         "count": 783,
+         "first_positions": [
+          4,
+          10,
+          12,
+          21,
+          41,
+          54
+         ],
+         "kind": "derivative",
+         "label": "Expr.diff",
+         "removed": 783,
+         "signature": "Symbol",
+         "surviving": 0
+        },
+        "derivative:Expr.diff:exp": {
+         "count": 2341,
+         "first_positions": [
+          3,
+          14,
+          20,
+          25,
+          32,
+          37
+         ],
+         "kind": "derivative",
+         "label": "Expr.diff",
+         "removed": 2341,
+         "signature": "exp",
+         "surviving": 0
+        },
+        "derivative_request:sympy.diff:Add": {
+         "count": 39,
+         "first_positions": [
+          15,
+          26,
+          55,
+          97,
+          152,
+          220
+         ],
+         "kind": "derivative_request",
+         "label": "sympy.diff",
+         "removed": 39,
+         "signature": "Add",
+         "surviving": 0
+        },
+        "derivative_request:sympy.diff:Mul": {
+         "count": 1,
+         "first_positions": [
+          0
+         ],
+         "kind": "derivative_request",
+         "label": "sympy.diff",
+         "removed": 1,
+         "signature": "Mul",
+         "surviving": 0
+        }
+       },
+       "sense": "the execution graph of the run WITHOUT the representation, minus the graph of the run WITH it. `complete` is false when the node census hit its cap, in which case the counts are a lower bound"
+      },
+      "best_baseline_rung": "mathematical",
+      "node_identity": "nodes are keyed by primitive kind, the instrument they were counted at, and a short signature of the call, so a node that survived under another name is not counted as removed",
+      "sense": "which computation nodes stopped happening. Both are kept: `against_naive` is the whole difference from the obvious route, `against_best_baseline` is the part that would still have been executed by the strongest route available WITHOUT this representation -- which is the one that answers what having this representation saved"
+     },
+     "search_reduction": {
+      "candidates_after": null,
+      "candidates_before": null,
+      "nodes_after": null,
+      "nodes_before": null,
+      "rejected_after": null,
+      "rejected_before": null,
+      "units": "neither path searches; the rows are empty, not zero"
+     },
+     "sequential_depth_reduction": {
+      "after": 39,
+      "before": 40,
+      "not_a_success_condition": "a ratio at or below 1 is recorded, not penalised: an acquisition that costs more depth and repays it over later problems is the case worth keeping, and the break-evens are where that is read",
+      "ratio": 1.0256410256410255
+     },
+     "state_dimension_reduction": {
+      "after": 4,
+      "before": 243,
+      "difference": 239,
+      "ratio": 60.75
+     },
+     "task": "differential: exp(x)/(1-x)"
+    }
+   ],
+   "representation": {
+    "dimension": 4,
+    "expansion_point": 0,
+    "kind": "differential action",
+    "observable": "jet of {\"left\":{\"a\":[\"1\"],\"b\":[\"1\"],\"op\":\"hyper\"},\"",
+    "program": "{\"left\":{\"a\":[\"1\"],\"b\":[\"1\"],\"op\":\"hyper\"},\"op\":\"mul\",\"right\":{\"a\":[\"1\",\"1\"],\"b\":[\"1\"],\"op\":\"hyper\"}}",
+    "schema": "mortra.differential-representation.v1",
+    "scope": "the Taylor coefficients of this program at 0; the recurrence is exact for every index from first_solvable_index upward",
+    "stored": {
+     "first_solvable_index": 2,
+     "order": 4,
+     "recurrence_polynomials": [
+      "-2*n**4 + 2*n**3",
+      "n**4 + 8*n**3 - 19*n**2 + 14*n - 4",
+      "n**4 - 8*n**3 + 6*n**2 + 8*n - 8",
+      "-2*n**3 + 12*n**2 - 18*n + 8",
+      "n**2 - 4*n + 4"
+     ],
+     "seed_coefficients": [
+      "1",
+      "2"
+     ]
+    }
+   },
+   "reuse": {
+    "count": 1,
+    "failures": 0,
+    "heldout_successes": 17,
+    "last_used_cycle": 0,
+    "successes": 24,
+    "tasks": [
+     "differential: exp(x)/(1-x)"
+    ]
+   },
+   "status": "active"
+  },
+  "9017a103879da04db7454d4e": {
+   "acquisition_cost": {
+    "acquisition_derivative_calls": 43,
+    "acquisition_derivative_request_calls": 1,
+    "acquisition_peak_memory": 1488817,
+    "acquisition_primitive_calls": 116,
+    "acquisition_proof_calls": 5,
+    "acquisition_proof_cost": {
+     "annihilator_calls": 5,
+     "checked_against": "holonomic_route_discovery.coefficients, which reaches the series through closure arithmetic on the program tree and never through the annihilating operator",
+     "series_terms_checked": 24
+    },
+    "acquisition_search_nodes": 0,
+    "acquisition_search_note": "derived from the annihilating operator rather than searched; there are no candidates to count here",
+    "acquisition_time": 1.466381
+   },
+   "certificates": [
+    {
+     "admissible": true,
+     "checks": [
+      {
+       "holds": true,
+       "kind": "checked to a stated range",
+       "name": "series",
+       "statement": "holonomic_route_discovery.coefficients, which reaches the series through closure arithmetic on the program tree and never through the annihilating operator",
+       "terms": 24
+      }
+     ],
+     "refused_by": [],
+     "schema": "mortra.differential-verification.v1",
+     "scope": "the Taylor coefficients of this program at 0; the recurrence is exact for every index from first_solvable_index upward",
+     "task": "differential: x*exp(x) + 1/(1-x)",
+     "verdict": "admitted, checked against an independent route"
+    }
+   ],
+   "deleted": false,
+   "deletion_policy": "never deleted. Going unused lowers the selection order and nothing else; the entry, its measurements, its certificates and its provenance are kept.",
+   "dormant_since": null,
+   "first_seen_cycle": 0,
+   "id": "9017a103879da04db7454d4e",
+   "kind": "differential action",
+   "measurements": [
+    {
+     "attribution": {
+      "generic_search_reduction": null,
+      "marginals_add_up_to_total": {
+       "derivative_calls": true,
+       "fold_step_calls": true,
+       "primitive_calls": true,
+       "search_nodes": null,
+       "wall_time": true
+      },
+      "mathematical_reduction": {
+       "derivative_calls": 40,
+       "description": "an existing mathematical route, available without learning anything",
+       "fold_step_calls": 0,
+       "from_rung": "memoised",
+       "primitive_calls": 40,
+       "search_nodes": null,
+       "to_rung": "mathematical",
+       "wall_time": -0.009197
+      },
+      "memoisation_reduction": {
+       "derivative_calls": 553,
+       "description": "the same route again with the caches left warm",
+       "fold_step_calls": 0,
+       "from_rung": "naive",
+       "primitive_calls": 553,
+       "search_nodes": null,
+       "to_rung": "memoised",
+       "wall_time": 0.988962
+      },
+      "reading": "`representation_reduction` is the only column that belongs to the learned representation. A large total with a small representation column means the saving was already available without it.",
+      "representation_reduction": {
+       "derivative_calls": 0,
+       "description": "the learned representation, on top of all of the above",
+       "fold_step_calls": 0,
+       "from_rung": "mathematical",
+       "primitive_calls": -39,
+       "search_nodes": null,
+       "to_rung": "representation",
+       "wall_time": -1.123944
+      },
+      "rungs_absent": [
+       "generic_search"
+      ],
+      "rungs_measured": [
+       "naive",
+       "memoised",
+       "mathematical",
+       "representation"
+      ],
+      "sense": "each rung is a separate run of the same task. The step from one rung to the next is credited to that rung and to nothing else, so the four causes are measured rather than apportioned",
+      "total": {
+       "derivative_calls": 593,
+       "fold_step_calls": 0,
+       "primitive_calls": 554,
+       "search_nodes": null,
+       "wall_time": -0.144179
+      }
+     },
+     "break_evens": {
+      "acquisition_primitive_calls": 116,
+      "bits_saved_per_task": 7672,
+      "compute_break_even_reuse_count": 1,
+      "compute_break_even_reuse_count_against_best_baseline": null,
+      "definitions": {
+       "compute_break_even_reuse_count": "reuses until the acquisition primitive calls are repaid, measured against the naive route",
+       "compute_break_even_reuse_count_against_best_baseline": "the same, measured against the strongest route available WITHOUT this representation. This is the honest one wherever such a route exists, and it is absent when the representation saves nothing over it",
+       "description_break_even_task_count": "tasks until the bits of the representation are repaid by the bits it saves per task",
+       "total_break_even_reuse_count": "the later of the compute and description break-evens -- the MAXIMUM, deliberately. Not a sum and not a weighted blend, because bits and calls have no exchange rate"
+      },
+      "description_break_even_task_count": 1,
+      "per_use_primitive_saving_against_best_baseline": -39,
+      "per_use_primitive_saving_against_naive": 554,
+      "representation_bits": 2984,
+      "total_break_even_reuse_count": 1
+     },
+     "certificate_scope": {
+      "admissible": true,
+      "checks": [
+       {
+        "compared": null,
+        "depth": null,
+        "holds": true,
+        "kind": "checked to a stated range",
+        "name": "series",
+        "scope": null
+       }
+      ],
+      "refused_by": [],
+      "sense": "a check of kind `proof` holds for every state; one of kind `no counterexample within depth` holds only as far as it was searched, and says how far",
+      "task": "differential: x*exp(x) + 1/(1-x)",
+      "verdict": "admitted, checked against an independent route"
+     },
+     "description_gain_bits": 4688,
+     "measured_wall_time": {
+      "after": 1.170987,
+      "before": 1.026808,
+      "saved": -0.144179
+     },
+     "primitive_elimination": {
+      "after": 39,
+      "before": 593,
+      "derivative_calls_after": 0,
+      "derivative_calls_before": 593,
+      "derivative_request_calls_after": 0,
+      "derivative_request_calls_before": 40,
+      "eliminated": {
+       "derivative_calls": 593,
+       "fold_step_calls": 0,
+       "proof_calls": 0,
+       "simplify_calls": -39,
+       "solver_calls": 0
+      }
+     },
+     "provenance": {
+      "against_best_baseline": {
+       "added": {
+        "simplify:cancel:Integer": {
+         "added": 1,
+         "count": 1,
+         "first_positions": [
+          0
+         ],
+         "kind": "simplify",
+         "label": "cancel",
+         "signature": "Integer"
+        },
+        "simplify:cancel:Rational": {
+         "added": 38,
+         "count": 38,
+         "first_positions": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+         ],
+         "kind": "simplify",
+         "label": "cancel",
+         "signature": "Rational"
+        }
+       },
+       "complete": true,
+       "kept": {},
+       "nodes_added": 39,
+       "nodes_removed": 0,
+       "removed": {},
+       "sense": "the execution graph of the run WITHOUT the representation, minus the graph of the run WITH it. `complete` is false when the node census hit its cap, in which case the counts are a lower bound"
+      },
+      "against_naive": {
+       "added": {
+        "simplify:cancel:Integer": {
+         "added": 1,
+         "count": 1,
+         "first_positions": [
+          0
+         ],
+         "kind": "simplify",
+         "label": "cancel",
+         "signature": "Integer"
+        },
+        "simplify:cancel:Rational": {
+         "added": 38,
+         "count": 38,
+         "first_positions": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+         ],
+         "kind": "simplify",
+         "label": "cancel",
+         "signature": "Rational"
+        }
+       },
+       "complete": true,
+       "kept": {},
+       "nodes_added": 39,
+       "nodes_removed": 633,
+       "removed": {
+        "derivative:Expr.diff:Add": {
+         "count": 80,
+         "first_positions": [
+          1,
+          3,
+          18,
+          20,
+          26,
+          30
+         ],
+         "kind": "derivative",
+         "label": "Expr.diff",
+         "removed": 80,
+         "signature": "Add",
+         "surviving": 0
+        },
+        "derivative:Expr.diff:Integer": {
+         "count": 191,
+         "first_positions": [
+          21,
+          28,
+          31,
+          32,
+          35,
+          38
+         ],
+         "kind": "derivative",
+         "label": "Expr.diff",
+         "removed": 191,
+         "signature": "Integer",
+         "surviving": 0
+        },
+        "derivative:Expr.diff:Mul": {
+         "count": 117,
+         "first_positions": [
+          5,
+          11,
+          22,
+          27,
+          34,
+          40
+         ],
+         "kind": "derivative",
+         "label": "Expr.diff",
+         "removed": 117,
+         "signature": "Mul",
+         "surviving": 0
+        },
+        "derivative:Expr.diff:NegativeOne": {
+         "count": 3,
+         "first_positions": [
+          6,
+          8,
+          10
+         ],
+         "kind": "derivative",
+         "label": "Expr.diff",
+         "removed": 3,
+         "signature": "NegativeOne",
+         "surviving": 0
+        },
+        "derivative:Expr.diff:One": {
+         "count": 1,
+         "first_positions": [
+          4
+         ],
+         "kind": "derivative",
+         "label": "Expr.diff",
+         "removed": 1,
+         "signature": "One",
+         "surviving": 0
+        },
+        "derivative:Expr.diff:Pow": {
+         "count": 78,
+         "first_positions": [
+          2,
+          19,
+          29,
+          33,
+          51,
+          55
+         ],
+         "kind": "derivative",
+         "label": "Expr.diff",
+         "removed": 78,
+         "signature": "Pow",
+         "surviving": 0
+        },
+        "derivative:Expr.diff:Symbol": {
+         "count": 44,
+         "first_positions": [
+          7,
+          9,
+          12,
+          14,
+          15,
+          24
+         ],
+         "kind": "derivative",
+         "label": "Expr.diff",
+         "removed": 44,
+         "signature": "Symbol",
+         "surviving": 0
+        },
+        "derivative:Expr.diff:exp": {
+         "count": 79,
+         "first_positions": [
+          13,
+          16,
+          23,
+          36,
+          39,
+          45
+         ],
+         "kind": "derivative",
+         "label": "Expr.diff",
+         "removed": 79,
+         "signature": "exp",
+         "surviving": 0
+        },
+        "derivative_request:sympy.diff:Add": {
+         "count": 40,
+         "first_positions": [
+          0,
+          17,
+          25,
+          41,
+          57,
+          73
+         ],
+         "kind": "derivative_request",
+         "label": "sympy.diff",
+         "removed": 40,
+         "signature": "Add",
+         "surviving": 0
+        }
+       },
+       "sense": "the execution graph of the run WITHOUT the representation, minus the graph of the run WITH it. `complete` is false when the node census hit its cap, in which case the counts are a lower bound"
+      },
+      "best_baseline_rung": "mathematical",
+      "node_identity": "nodes are keyed by primitive kind, the instrument they were counted at, and a short signature of the call, so a node that survived under another name is not counted as removed",
+      "sense": "which computation nodes stopped happening. Both are kept: `against_naive` is the whole difference from the obvious route, `against_best_baseline` is the part that would still have been executed by the strongest route available WITHOUT this representation -- which is the one that answers what having this representation saved"
+     },
+     "search_reduction": {
+      "candidates_after": null,
+      "candidates_before": null,
+      "nodes_after": null,
+      "nodes_before": null,
+      "rejected_after": null,
+      "rejected_before": null,
+      "units": "neither path searches; the rows are empty, not zero"
+     },
+     "sequential_depth_reduction": {
+      "after": 39,
+      "before": 40,
+      "not_a_success_condition": "a ratio at or below 1 is recorded, not penalised: an acquisition that costs more depth and repays it over later problems is the case worth keeping, and the break-evens are where that is read",
+      "ratio": 1.0256410256410255
+     },
+     "state_dimension_reduction": {
+      "after": 6,
+      "before": 9,
+      "difference": 3,
+      "ratio": 1.5
+     },
+     "task": "differential: x*exp(x) + 1/(1-x)"
+    }
+   ],
+   "representation": {
+    "dimension": 6,
+    "expansion_point": 0,
+    "kind": "differential action",
+    "observable": "jet of {\"left\":{\"left\":{\"coefficients\":[\"0\",\"1\"],\"o",
+    "program": "{\"left\":{\"left\":{\"coefficients\":[\"0\",\"1\"],\"op\":\"poly\"},\"op\":\"mul\",\"right\":{\"a\":[\"1\"],\"b\":[\"1\"],\"op\":\"hyper\"}},\"op\":\"add\",\"right\":{\"a\":[\"1\",\"1\"],\"b\":[\"1\"],\"op\":\"hyper\"}}",
+    "schema": "mortra.differential-representation.v1",
+    "scope": "the Taylor coefficients of this program at 0; the recurrence is exact for every index from first_solvable_index upward",
+    "stored": {
+     "first_solvable_index": 2,
+     "order": 6,
+     "recurrence_polynomials": [
+      "-n**4 + 2*n**3 - n**2",
+      "6*n**4 - 36*n**3 + 82*n**2 - 80*n + 28",
+      "-17*n**4 + 173*n**3 - 676*n**2 + 1176*n - 760",
+      "5*n**4 - 8*n**3 - 240*n**2 + 1133*n - 1410",
+      "6*n**4 - 102*n**3 + 571*n**2 - 1253*n + 862",
+      "n**4 - 28*n**3 + 248*n**2 - 891*n + 1130",
+      "-n**3 + 16*n**2 - 85*n + 150"
+     ],
+     "seed_coefficients": [
+      "1",
+      "2"
+     ]
+    }
+   },
+   "reuse": {
+    "count": 1,
+    "failures": 0,
+    "heldout_successes": 17,
+    "last_used_cycle": 0,
+    "successes": 24,
+    "tasks": [
+     "differential: x*exp(x) + 1/(1-x)"
+    ]
+   },
+   "status": "active"
+  },
+  "f81550600f2879a39b9f3b13": {
+   "acquisition_cost": {
+    "acquisition_derivative_calls": 19,
+    "acquisition_derivative_request_calls": 0,
+    "acquisition_peak_memory": 1897848,
+    "acquisition_primitive_calls": 78,
+    "acquisition_proof_calls": 2,
+    "acquisition_proof_cost": {
+     "annihilator_calls": 2,
+     "checked_against": "holonomic_route_discovery.coefficients, which reaches the series through closure arithmetic on the program tree and never through the annihilating operator",
+     "series_terms_checked": 24
+    },
+    "acquisition_search_nodes": 0,
+    "acquisition_search_note": "derived from the annihilating operator rather than searched; there are no candidates to count here",
+    "acquisition_time": 1.049
+   },
+   "certificates": [
+    {
+     "admissible": true,
+     "checks": [
+      {
+       "holds": true,
+       "kind": "checked to a stated range",
+       "name": "series",
+       "statement": "holonomic_route_discovery.coefficients, which reaches the series through closure arithmetic on the program tree and never through the annihilating operator",
+       "terms": 24
+      }
+     ],
+     "refused_by": [],
+     "schema": "mortra.differential-verification.v1",
+     "scope": "the Taylor coefficients of this program at 0; the recurrence is exact for every index from first_solvable_index upward",
+     "task": "differential: exp(x**2)",
+     "verdict": "admitted, checked against an independent route"
+    }
+   ],
+   "deleted": false,
+   "deletion_policy": "never deleted. Going unused lowers the selection order and nothing else; the entry, its measurements, its certificates and its provenance are kept.",
+   "dormant_since": null,
+   "first_seen_cycle": 0,
+   "id": "f81550600f2879a39b9f3b13",
+   "kind": "differential action",
+   "measurements": [
+    {
+     "attribution": {
+      "generic_search_reduction": null,
+      "marginals_add_up_to_total": {
+       "derivative_calls": true,
+       "fold_step_calls": true,
+       "primitive_calls": true,
+       "search_nodes": null,
+       "wall_time": true
+      },
+      "mathematical_reduction": {
+       "derivative_calls": 43,
+       "description": "an existing mathematical route, available without learning anything",
+       "fold_step_calls": 0,
+       "from_rung": "memoised",
+       "primitive_calls": 43,
+       "search_nodes": null,
+       "to_rung": "mathematical",
+       "wall_time": 0.332229
+      },
+      "memoisation_reduction": {
+       "derivative_calls": 6111,
+       "description": "the same route again with the caches left warm",
+       "fold_step_calls": 0,
+       "from_rung": "naive",
+       "primitive_calls": 6111,
+       "search_nodes": null,
+       "to_rung": "memoised",
+       "wall_time": 7.808899
+      },
+      "reading": "`representation_reduction` is the only column that belongs to the learned representation. A large total with a small representation column means the saving was already available without it.",
+      "representation_reduction": {
+       "derivative_calls": 0,
+       "description": "the learned representation, on top of all of the above",
+       "fold_step_calls": 0,
+       "from_rung": "mathematical",
+       "primitive_calls": -40,
+       "search_nodes": null,
+       "to_rung": "representation",
+       "wall_time": 0.033446
+      },
+      "rungs_absent": [
+       "generic_search"
+      ],
+      "rungs_measured": [
+       "naive",
+       "memoised",
+       "mathematical",
+       "representation"
+      ],
+      "sense": "each rung is a separate run of the same task. The step from one rung to the next is credited to that rung and to nothing else, so the four causes are measured rather than apportioned",
+      "total": {
+       "derivative_calls": 6154,
+       "fold_step_calls": 0,
+       "primitive_calls": 6114,
+       "search_nodes": null,
+       "wall_time": 8.174574
+      }
+     },
+     "break_evens": {
+      "acquisition_primitive_calls": 78,
+      "bits_saved_per_task": 3312,
+      "compute_break_even_reuse_count": 1,
+      "compute_break_even_reuse_count_against_best_baseline": null,
+      "definitions": {
+       "compute_break_even_reuse_count": "reuses until the acquisition primitive calls are repaid, measured against the naive route",
+       "compute_break_even_reuse_count_against_best_baseline": "the same, measured against the strongest route available WITHOUT this representation. This is the honest one wherever such a route exists, and it is absent when the representation saves nothing over it",
+       "description_break_even_task_count": "tasks until the bits of the representation are repaid by the bits it saves per task",
+       "total_break_even_reuse_count": "the later of the compute and description break-evens -- the MAXIMUM, deliberately. Not a sum and not a weighted blend, because bits and calls have no exchange rate"
+      },
+      "description_break_even_task_count": 1,
+      "per_use_primitive_saving_against_best_baseline": -40,
+      "per_use_primitive_saving_against_naive": 6114,
+      "representation_bits": 864,
+      "total_break_even_reuse_count": 1
+     },
+     "certificate_scope": {
+      "admissible": true,
+      "checks": [
+       {
+        "compared": null,
+        "depth": null,
+        "holds": true,
+        "kind": "checked to a stated range",
+        "name": "series",
+        "scope": null
+       }
+      ],
+      "refused_by": [],
+      "sense": "a check of kind `proof` holds for every state; one of kind `no counterexample within depth` holds only as far as it was searched, and says how far",
+      "task": "differential: exp(x**2)",
+      "verdict": "admitted, checked against an independent route"
+     },
+     "description_gain_bits": 2448,
+     "measured_wall_time": {
+      "after": 0.109238,
+      "before": 8.283812,
+      "saved": 8.174574
+     },
+     "primitive_elimination": {
+      "after": 40,
+      "before": 6154,
+      "derivative_calls_after": 0,
+      "derivative_calls_before": 6154,
+      "derivative_request_calls_after": 0,
+      "derivative_request_calls_before": 40,
+      "eliminated": {
+       "derivative_calls": 6154,
+       "fold_step_calls": 0,
+       "proof_calls": 0,
+       "simplify_calls": -40,
+       "solver_calls": 0
+      }
+     },
+     "provenance": {
+      "against_best_baseline": {
+       "added": {
+        "simplify:cancel:Half": {
+         "added": 1,
+         "count": 1,
+         "first_positions": [
+          3
+         ],
+         "kind": "simplify",
+         "label": "cancel",
+         "signature": "Half"
+        },
+        "simplify:cancel:One": {
+         "added": 1,
+         "count": 1,
+         "first_positions": [
+          1
+         ],
+         "kind": "simplify",
+         "label": "cancel",
+         "signature": "One"
+        },
+        "simplify:cancel:Rational": {
+         "added": 18,
+         "count": 18,
+         "first_positions": [
+          5,
+          7,
+          9,
+          11,
+          13,
+          15
+         ],
+         "kind": "simplify",
+         "label": "cancel",
+         "signature": "Rational"
+        },
+        "simplify:cancel:Zero": {
+         "added": 20,
+         "count": 20,
+         "first_positions": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10
+         ],
+         "kind": "simplify",
+         "label": "cancel",
+         "signature": "Zero"
+        }
+       },
+       "complete": true,
+       "kept": {},
+       "nodes_added": 40,
+       "nodes_removed": 0,
+       "removed": {},
+       "sense": "the execution graph of the run WITHOUT the representation, minus the graph of the run WITH it. `complete` is false when the node census hit its cap, in which case the counts are a lower bound"
+      },
+      "against_naive": {
+       "added": {
+        "simplify:cancel:Half": {
+         "added": 1,
+         "count": 1,
+         "first_positions": [
+          3
+         ],
+         "kind": "simplify",
+         "label": "cancel",
+         "signature": "Half"
+        },
+        "simplify:cancel:One": {
+         "added": 1,
+         "count": 1,
+         "first_positions": [
+          1
+         ],
+         "kind": "simplify",
+         "label": "cancel",
+         "signature": "One"
+        },
+        "simplify:cancel:Rational": {
+         "added": 18,
+         "count": 18,
+         "first_positions": [
+          5,
+          7,
+          9,
+          11,
+          13,
+          15
+         ],
+         "kind": "simplify",
+         "label": "cancel",
+         "signature": "Rational"
+        },
+        "simplify:cancel:Zero": {
+         "added": 20,
+         "count": 20,
+         "first_positions": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10
+         ],
+         "kind": "simplify",
+         "label": "cancel",
+         "signature": "Zero"
+        }
+       },
+       "complete": true,
+       "kept": {},
+       "nodes_added": 40,
+       "nodes_removed": 6194,
+       "removed": {
+        "derivative:Expr.diff:Add": {
+         "count": 38,
+         "first_positions": [
+          20,
+          45,
+          75,
+          115,
+          160,
+          215
+         ],
+         "kind": "derivative",
+         "label": "Expr.diff",
+         "removed": 38,
+         "signature": "Add",
+         "surviving": 0
+        },
+        "derivative:Expr.diff:Integer": {
+         "count": 2038,
+         "first_positions": [
+          4,
+          7,
+          10,
+          13,
+          18,
+          22
+         ],
+         "kind": "derivative",
+         "label": "Expr.diff",
+         "removed": 2038,
+         "signature": "Integer",
+         "surviving": 0
+        },
+        "derivative:Expr.diff:Mul": {
+         "count": 419,
+         "first_positions": [
+          6,
+          21,
+          29,
+          46,
+          61,
+          76
+         ],
+         "kind": "derivative",
+         "label": "Expr.diff",
+         "removed": 419,
+         "signature": "Mul",
+         "surviving": 0
+        },
+        "derivative:Expr.diff:Pow": {
+         "count": 1560,
+         "first_positions": [
+          2,
+          16,
+          24,
+          31,
+          34,
+          39
+         ],
+         "kind": "derivative",
+         "label": "Expr.diff",
+         "removed": 1560,
+         "signature": "Pow",
+         "surviving": 0
+        },
+        "derivative:Expr.diff:Symbol": {
+         "count": 860,
+         "first_positions": [
+          3,
+          8,
+          11,
+          14,
+          17,
+          25
+         ],
+         "kind": "derivative",
+         "label": "Expr.diff",
+         "removed": 860,
+         "signature": "Symbol",
+         "surviving": 0
+        },
+        "derivative:Expr.diff:exp": {
+         "count": 1239,
+         "first_positions": [
+          1,
+          9,
+          12,
+          15,
+          23,
+          28
+         ],
+         "kind": "derivative",
+         "label": "Expr.diff",
+         "removed": 1239,
+         "signature": "exp",
+         "surviving": 0
+        },
+        "derivative_request:sympy.diff:Add": {
+         "count": 38,
+         "first_positions": [
+          19,
+          44,
+          74,
+          114,
+          159,
+          214
+         ],
+         "kind": "derivative_request",
+         "label": "sympy.diff",
+         "removed": 38,
+         "signature": "Add",
+         "surviving": 0
+        },
+        "derivative_request:sympy.diff:Mul": {
+         "count": 1,
+         "first_positions": [
+          5
+         ],
+         "kind": "derivative_request",
+         "label": "sympy.diff",
+         "removed": 1,
+         "signature": "Mul",
+         "surviving": 0
+        },
+        "derivative_request:sympy.diff:exp": {
+         "count": 1,
+         "first_positions": [
+          0
+         ],
+         "kind": "derivative_request",
+         "label": "sympy.diff",
+         "removed": 1,
+         "signature": "exp",
+         "surviving": 0
+        }
+       },
+       "sense": "the execution graph of the run WITHOUT the representation, minus the graph of the run WITH it. `complete` is false when the node census hit its cap, in which case the counts are a lower bound"
+      },
+      "best_baseline_rung": "mathematical",
+      "node_identity": "nodes are keyed by primitive kind, the instrument they were counted at, and a short signature of the call, so a node that survived under another name is not counted as removed",
+      "sense": "which computation nodes stopped happening. Both are kept: `against_naive` is the whole difference from the obvious route, `against_best_baseline` is the part that would still have been executed by the strongest route available WITHOUT this representation -- which is the one that answers what having this representation saved"
+     },
+     "search_reduction": {
+      "candidates_after": null,
+      "candidates_before": null,
+      "nodes_after": null,
+      "nodes_before": null,
+      "rejected_after": null,
+      "rejected_before": null,
+      "units": "neither path searches; the rows are empty, not zero"
+     },
+     "sequential_depth_reduction": {
+      "after": 40,
+      "before": 40,
+      "not_a_success_condition": "a ratio at or below 1 is recorded, not penalised: an acquisition that costs more depth and repays it over later problems is the case worth keeping, and the break-evens are where that is read",
+      "ratio": 1.0
+     },
+     "state_dimension_reduction": {
+      "after": 2,
+      "before": 123,
+      "difference": 121,
+      "ratio": 61.5
+     },
+     "task": "differential: exp(x**2)"
+    }
+   ],
+   "representation": {
+    "dimension": 2,
+    "expansion_point": 0,
+    "kind": "differential action",
+    "observable": "jet of {\"child\":{\"a\":[\"1\"],\"b\":[\"1\"],\"op\":\"hyper\"},",
+    "program": "{\"child\":{\"a\":[\"1\"],\"b\":[\"1\"],\"op\":\"hyper\"},\"denominator\":[\"1\"],\"numerator\":[\"0\",\"0\",\"1\"],\"op\":\"pullback\"}",
+    "schema": "mortra.differential-representation.v1",
+    "scope": "the Taylor coefficients of this program at 0; the recurrence is exact for every index from first_solvable_index upward",
+    "stored": {
+     "first_solvable_index": 1,
+     "order": 2,
+     "recurrence_polynomials": [
+      "n**2",
+      "0",
+      "-2*n"
+     ],
+     "seed_coefficients": [
+      "1"
+     ]
+    }
+   },
+   "reuse": {
+    "count": 1,
+    "failures": 0,
+    "heldout_successes": 17,
+    "last_used_cycle": 0,
+    "successes": 24,
+    "tasks": [
+     "differential: exp(x**2)"
+    ]
+   },
+   "status": "active"
+  }
+ },
+ "schema": "mortra.representation-ledger.v1",
+ "sha256": "1d237bd5050c9b95b827979dedbafefcdbe67f2290991333fef40323f01f2069"
+}

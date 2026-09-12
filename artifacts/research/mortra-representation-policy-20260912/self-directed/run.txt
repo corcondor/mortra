@@ -1,0 +1,56 @@
+task   : fold displacement along axis 1
+goal   : the words of a given length whose value of c1 is maximal, and how many there are
+
+premise: exact=True identities=96 frames=24
+grammar: 1 degree, 2 term(s) -> 144 candidates offered
+         ['c1', 'c2', 'c3', 'F11', 'F12', 'F13', 'F21', 'F22', 'F23', 'F31', 'F32', 'F33', 'c1 + c2', 'c1 - c2', 'c1 + c3', 'c1 - c3', 'F11 + c1', '-F11 + c1', 'F12 + c1', '-F12 + c1', 'F13 + c1', '-F13 + c1', 'F21 + c1', '-F21 + c1', 'F22 + c1', '-F22 + c1', 'F23 + c1', '-F23 + c1', 'F31 + c1', '-F31 + c1', 'F32 + c1', '-F32 + c1', 'F33 + c1', '-F33 + c1', 'c2 + c3', 'c2 - c3', 'F11 + c2', '-F11 + c2', 'F12 + c2', '-F12 + c2', 'F13 + c2', '-F13 + c2', 'F21 + c2', '-F21 + c2', 'F22 + c2', '-F22 + c2', 'F23 + c2', '-F23 + c2', 'F31 + c2', '-F31 + c2', 'F32 + c2', '-F32 + c2', 'F33 + c2', '-F33 + c2', 'F11 + c3', '-F11 + c3', 'F12 + c3', '-F12 + c3', 'F13 + c3', '-F13 + c3', 'F21 + c3', '-F21 + c3', 'F22 + c3', '-F22 + c3', 'F23 + c3', '-F23 + c3', 'F31 + c3', '-F31 + c3', 'F32 + c3', '-F32 + c3', 'F33 + c3', '-F33 + c3', 'F11 + F12', 'F11 - F12', 'F11 + F13', 'F11 - F13', 'F11 + F21', 'F11 - F21', 'F11 + F22', 'F11 - F22', 'F11 + F23', 'F11 - F23', 'F11 + F31', 'F11 - F31', 'F11 + F32', 'F11 - F32', 'F11 + F33', 'F11 - F33', 'F12 + F13', 'F12 - F13', 'F12 + F21', 'F12 - F21', 'F12 + F22', 'F12 - F22', 'F12 + F23', 'F12 - F23', 'F12 + F31', 'F12 - F31', 'F12 + F32', 'F12 - F32', 'F12 + F33', 'F12 - F33', 'F13 + F21', 'F13 - F21', 'F13 + F22', 'F13 - F22', 'F13 + F23', 'F13 - F23', 'F13 + F31', 'F13 - F31', 'F13 + F32', 'F13 - F32', 'F13 + F33', 'F13 - F33', 'F21 + F22', 'F21 - F22', 'F21 + F23', 'F21 - F23', 'F21 + F31', 'F21 - F31', 'F21 + F32', 'F21 - F32', 'F21 + F33', 'F21 - F33', 'F22 + F23', 'F22 - F23', 'F22 + F31', 'F22 - F31', 'F22 + F32', 'F22 - F32', 'F22 + F33', 'F22 - F33', 'F23 + F31', 'F23 - F31', 'F23 + F32', 'F23 - F32', 'F23 + F33', 'F23 - F33', 'F31 + F32', 'F31 - F32', 'F31 + F33', 'F31 - F33', 'F32 + F33', 'F32 - F33']
+
+refused at closure    : 0
+refused by certificate: 125
+    c2 (dim 4): refused by ['observable']
+    c3 (dim 4): refused by ['observable']
+    F11 (dim 3): refused by ['observable']
+    F12 (dim 3): refused by ['observable']
+    F13 (dim 3): refused by ['observable']
+    F21 (dim 3): refused by ['observable']
+    F22 (dim 3): refused by ['observable']
+    F23 (dim 3): refused by ['observable']
+admitted              : ['c1', 'F11 + c1', '-F11 + c1', 'F12 + c1', '-F12 + c1', 'F13 + c1', '-F13 + c1', 'F21 + c1', '-F21 + c1', 'F22 + c1', '-F22 + c1', 'F23 + c1', '-F23 + c1', 'F31 + c1', '-F31 + c1', 'F32 + c1', '-F32 + c1', 'F33 + c1', '-F33 + c1']
+
+Pareto fronts: [1, 4, 2, 3, 3, 2, 2, 2]
+    front 1  c1 (dim 4): {'description_gain_bits': -2952, 'state_dimension_ratio': 3.0, 'primitive_calls_eliminated': 5120, 'search_nodes_eliminated': 4960, 'search_candidates_eliminated': 1002, 'depth_reduction_ratio': 1.0, 'wall_time_saved': 0.495583, 'reuse_successes': 1, 'cheap_acquisition': -17}
+    front 2  -F11 + c1 (dim 4): {'description_gain_bits': -3384, 'state_dimension_ratio': 3.0, 'primitive_calls_eliminated': 5120, 'search_nodes_eliminated': 4960, 'search_candidates_eliminated': 1002, 'depth_reduction_ratio': 1.0, 'wall_time_saved': 0.456755, 'reuse_successes': 1, 'cheap_acquisition': -17}
+    front 2  -F21 + c1 (dim 4): {'description_gain_bits': -3368, 'state_dimension_ratio': 3.0, 'primitive_calls_eliminated': 5120, 'search_nodes_eliminated': 4960, 'search_candidates_eliminated': 1002, 'depth_reduction_ratio': 1.0, 'wall_time_saved': 0.39677, 'reuse_successes': 1, 'cheap_acquisition': -17}
+    front 2  F31 + c1 (dim 4): {'description_gain_bits': -3024, 'state_dimension_ratio': 3.0, 'primitive_calls_eliminated': 5120, 'search_nodes_eliminated': 4960, 'search_candidates_eliminated': 1002, 'depth_reduction_ratio': 1.0, 'wall_time_saved': 0.449817, 'reuse_successes': 0, 'cheap_acquisition': -17}
+    front 2  -F31 + c1 (dim 4): {'description_gain_bits': -3104, 'state_dimension_ratio': 3.0, 'primitive_calls_eliminated': 5120, 'search_nodes_eliminated': 4960, 'search_candidates_eliminated': 1002, 'depth_reduction_ratio': 1.0, 'wall_time_saved': 0.461083, 'reuse_successes': 0, 'cheap_acquisition': -17}
+    front 3  F11 + c1 (dim 4): {'description_gain_bits': -3224, 'state_dimension_ratio': 3.0, 'primitive_calls_eliminated': 5120, 'search_nodes_eliminated': 4960, 'search_candidates_eliminated': 1002, 'depth_reduction_ratio': 1.0, 'wall_time_saved': 0.453057, 'reuse_successes': 0, 'cheap_acquisition': -17}
+    front 3  F21 + c1 (dim 4): {'description_gain_bits': -3264, 'state_dimension_ratio': 3.0, 'primitive_calls_eliminated': 5120, 'search_nodes_eliminated': 4960, 'search_candidates_eliminated': 1002, 'depth_reduction_ratio': 1.0, 'wall_time_saved': 0.460859, 'reuse_successes': 0, 'cheap_acquisition': -17}
+    front 4  F22 + c1 (dim 7): {'description_gain_bits': -8480, 'state_dimension_ratio': 1.7142857142857142, 'primitive_calls_eliminated': 5120, 'search_nodes_eliminated': 4820, 'search_candidates_eliminated': 980, 'depth_reduction_ratio': 1.0, 'wall_time_saved': 0.375227, 'reuse_successes': 0, 'cheap_acquisition': -29}
+    front 4  -F22 + c1 (dim 7): {'description_gain_bits': -8496, 'state_dimension_ratio': 1.7142857142857142, 'primitive_calls_eliminated': 5120, 'search_nodes_eliminated': 4820, 'search_candidates_eliminated': 980, 'depth_reduction_ratio': 1.0, 'wall_time_saved': 0.392259, 'reuse_successes': 0, 'cheap_acquisition': -29}
+    front 4  F33 + c1 (dim 7): {'description_gain_bits': -8272, 'state_dimension_ratio': 1.7142857142857142, 'primitive_calls_eliminated': 5120, 'search_nodes_eliminated': 4820, 'search_candidates_eliminated': 980, 'depth_reduction_ratio': 1.0, 'wall_time_saved': 0.373875, 'reuse_successes': 0, 'cheap_acquisition': -29}
+    front 5  -F12 + c1 (dim 7): {'description_gain_bits': -8784, 'state_dimension_ratio': 1.7142857142857142, 'primitive_calls_eliminated': 5120, 'search_nodes_eliminated': 4820, 'search_candidates_eliminated': 980, 'depth_reduction_ratio': 1.0, 'wall_time_saved': 0.374679, 'reuse_successes': 0, 'cheap_acquisition': -29}
+    front 5  F32 + c1 (dim 7): {'description_gain_bits': -8272, 'state_dimension_ratio': 1.7142857142857142, 'primitive_calls_eliminated': 5120, 'search_nodes_eliminated': 4820, 'search_candidates_eliminated': 980, 'depth_reduction_ratio': 1.0, 'wall_time_saved': 0.369425, 'reuse_successes': 0, 'cheap_acquisition': -29}
+    front 5  -F32 + c1 (dim 7): {'description_gain_bits': -8288, 'state_dimension_ratio': 1.7142857142857142, 'primitive_calls_eliminated': 5120, 'search_nodes_eliminated': 4820, 'search_candidates_eliminated': 980, 'depth_reduction_ratio': 1.0, 'wall_time_saved': 0.37331, 'reuse_successes': 0, 'cheap_acquisition': -29}
+    front 6  F23 + c1 (dim 7): {'description_gain_bits': -8480, 'state_dimension_ratio': 1.7142857142857142, 'primitive_calls_eliminated': 5120, 'search_nodes_eliminated': 4820, 'search_candidates_eliminated': 980, 'depth_reduction_ratio': 1.0, 'wall_time_saved': 0.370138, 'reuse_successes': 0, 'cheap_acquisition': -29}
+    front 6  -F33 + c1 (dim 7): {'description_gain_bits': -8288, 'state_dimension_ratio': 1.7142857142857142, 'primitive_calls_eliminated': 5120, 'search_nodes_eliminated': 4820, 'search_candidates_eliminated': 980, 'depth_reduction_ratio': 1.0, 'wall_time_saved': 0.342649, 'reuse_successes': 0, 'cheap_acquisition': -29}
+    front 7  F12 + c1 (dim 7): {'description_gain_bits': -8760, 'state_dimension_ratio': 1.7142857142857142, 'primitive_calls_eliminated': 5120, 'search_nodes_eliminated': 4820, 'search_candidates_eliminated': 980, 'depth_reduction_ratio': 1.0, 'wall_time_saved': 0.367199, 'reuse_successes': 0, 'cheap_acquisition': -29}
+    front 7  -F23 + c1 (dim 7): {'description_gain_bits': -8496, 'state_dimension_ratio': 1.7142857142857142, 'primitive_calls_eliminated': 5120, 'search_nodes_eliminated': 4820, 'search_candidates_eliminated': 980, 'depth_reduction_ratio': 1.0, 'wall_time_saved': 0.351165, 'reuse_successes': 0, 'cheap_acquisition': -29}
+    front 8  F13 + c1 (dim 7): {'description_gain_bits': -8760, 'state_dimension_ratio': 1.7142857142857142, 'primitive_calls_eliminated': 5120, 'search_nodes_eliminated': 4820, 'search_candidates_eliminated': 980, 'depth_reduction_ratio': 1.0, 'wall_time_saved': 0.329157, 'reuse_successes': 0, 'cheap_acquisition': -29}
+    front 8  -F13 + c1 (dim 7): {'description_gain_bits': -8784, 'state_dimension_ratio': 1.7142857142857142, 'primitive_calls_eliminated': 5120, 'search_nodes_eliminated': 4820, 'search_candidates_eliminated': 980, 'depth_reduction_ratio': 1.0, 'wall_time_saved': 0.351706, 'reuse_successes': 0, 'cheap_acquisition': -29}
+
+selected: c1 dim 4
+          basis ['c1', 'F11 - F31 + c1', 'F11 + F31 + c1', 'F21 + F31 + c1']
+          first of the first Pareto front; nothing in the set beats it on every measured component
+
+length  5  enumeration {'target': '5', 'words_at_target': 32, 'distinct_values': 9, 'total_words': 1024}  ->  agrees True  (nodes with representation 160)
+length  6  enumeration {'target': '6', 'words_at_target': 64, 'distinct_values': 11, 'total_words': 4096}  ->  agrees True  (nodes with representation 248)
+length  7  enumeration {'target': '7', 'words_at_target': 128, 'distinct_values': 13, 'total_words': 16384}  ->  agrees True  (nodes with representation 368)
+
+length 10  answer {'target': '10', 'words_at_target': 1024, 'distinct_values': 19, 'total_words': 1048576}
+           856 nodes, 54 classes, 0.175233s, standing for 1048576 words
+length 12  answer {'target': '12', 'words_at_target': 4096, 'distinct_values': 23, 'total_words': 16777216}
+           1304 nodes, 66 classes, 0.262557s, standing for 16777216 words
+length 14  answer {'target': '14', 'words_at_target': 16384, 'distinct_values': 27, 'total_words': 268435456}
+           1848 nodes, 78 classes, 0.361367s, standing for 268435456 words
+
+scope: the answers at the longer lengths are not enumerated and not checked against enumeration; they rest on the certificate, whose own scope is stated in it

@@ -1,0 +1,49 @@
+exp(x)/(1-x): every derivative value at 0 up to order 40
+========================================================
+
+[1] raw computation graph (no representation)
+
+    f0 = exp(x)/(1-x) ------> [Expr.diff] --> f1 --> [Expr.diff] --> f2 --> ... --> f40
+                                  |                |                |              |
+                               subs x=0         subs x=0         subs x=0       subs x=0
+                                  v                v                v              v
+                                f(0)             f'(0)            f''(0)       f^(40)(0)
+    
+      every arrow enters the derivative primitive: 10227 entries measured
+      the expression carried from step to step is symbolic and grows
+
+[2] learned representation
+
+    annihilating operator   sum_j c_j(x) D^j  f = 0
+             |
+             |  read coefficientwise: D becomes an index shift
+             v
+       P0(n) a_n + P1(n) a_(n-1) + ... + P4(n) a_(n-4) = 0     (n >= 2)
+             |
+             |  window J_m = (a_(m-4), ..., a_(m-1))
+             v
+       J_(m+1) = B(m) J_m          B(m) the 4x4 companion matrix
+    
+      stored: the five polynomials, the first solvable index, two seeds.
+      not stored: any derivative value.
+
+[3] reduced computation graph (with the representation)
+
+    a0,a1 --> [B(2)] --> a2 --> [B(3)] --> a3 --> ... --> [B(40)] --> a40
+                 |          |         |                       |
+                x 2!       x 3!      x 4!                   x 40!
+                 v          v         v                       v
+               f''(0)    f'''(0)   f''''(0)               f^(40)(0)
+    
+      entries to the derivative primitive: 0
+      the state carried from step to step is four rational numbers
+
+legend
+
+    [Expr.diff]  the derivative primitive, counted at sympy.Expr.diff,
+                 which every derivative in sympy passes through
+    [B(m)]       one companion-matrix action: the acquired representation
+    
+    the fold comparison is the same shape with the depth changing instead:
+      chain of frame updates, depth 192
+      block matrix, squared up, depth 10

@@ -1,0 +1,34 @@
+{
+  "seeds": [{"op": "hyper", "a": [1], "b": []}],
+  "state_names": ["u", "v"],
+  "parameter_names": ["c"],
+  "certify_pairs": [
+    {"left":  {"op": "hyper", "a": ["1/2", 1], "b": [1]},
+     "right": {"op": "hyper", "a": ["1/2"],    "b": []}}
+  ],
+  "tasks": [
+    {"id": "a-to-b",
+     "program": {"op": "hyper", "a": ["1/2", 1], "b": [1]},
+     "target":  {"op": "hyper", "a": ["1/2"],    "b": []}}
+  ],
+  "degree_x": 1,
+  "derivatives": 1,
+  "product_degree": 1,
+  "budget": 4,
+
+  "sweeps_per_cycle": 3,
+  "allowance": 15000000,
+  "growth": 2,
+  "draft_count": 3,
+
+  "learn_rounds": 3,
+  "learn_pairs": 20000,
+  "learn_limit": 6,
+  "learn_keep": 8,
+
+  "max_seconds": 600,
+  "max_traced_lines": 400000000,
+  "max_cycles": 4,
+  "barren_cycles": 2,
+  "min_compression_bits": 1
+}

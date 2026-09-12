@@ -1,0 +1,7 @@
+comparison                             prim.before prim.after deriv.before deriv.after   depth b/a break-even
+-------------------------------------------------------------------------------------------------------------
+differential: exp(x)/(1-x)                   10227         39        10227           0       40/39          1
+differential: exp(x**2)                       6154         40         6154           0       40/40          1
+differential: x*exp(x) + 1/(1-x)               587         39          587           0       40/39          1
+fold repeat: GCC x 64                          192          0            0           0      192/10          4
+fold search: length 8                       524288          0            0           0         8/8          1

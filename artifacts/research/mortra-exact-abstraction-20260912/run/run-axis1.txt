@@ -1,0 +1,53 @@
+task   : fold axis 1 displacement
+goal   : the maximum of c1 over all words of a given length, and how many attain it
+counts : words of the given length over the label alphabet
+state  : the twelve coordinates: the doubled centre and the frame. Nothing else is consulted, because legality is vacuous here
+legal  : declared vacuous by the task
+
+premise: exact=True 96 identities over 24 frames
+grammar: degree 1, 2 term(s) -> 144 candidates
+
+refused at closure    : 0
+refused by certificate: 125
+    c2             dim 4   refused by ['observable']
+    c3             dim 4   refused by ['observable']
+    F11            dim 3   refused by ['observable']
+    F12            dim 3   refused by ['observable']
+    F13            dim 3   refused by ['observable']
+    F21            dim 3   refused by ['observable']
+admitted              : 19
+acquisition cost      : 3640 primitive calls, 377.037974s over 144 candidates (rejected ones included)
+
+span class c1 (dim 4) also spanned by 6 other candidate(s)
+span class F12 + c1 (dim 7) also spanned by 5 other candidate(s)
+span class F13 + c1 (dim 7) also spanned by 5 other candidate(s)
+3 distinct spaces among 19 admitted candidates
+
+Pareto fronts: [2, 1, 1]
+    front 1  existing exact route: merge equal concrete states dim 12: {'description_gain_bits': 0, 'state_dimension_ratio': 1.0, 'primitive_calls_eliminated': 32, 'search_nodes_eliminated': 31, 'search_candidates_eliminated': 95, 'depth_reduction_ratio': 1.0, 'wall_time_saved': 0.002139, 'reuse_successes': 1, 'cheap_acquisition': 0}
+    front 1  c1             dim 4: {'description_gain_bits': -3016, 'state_dimension_ratio': 3.0, 'primitive_calls_eliminated': 340, 'search_nodes_eliminated': 251, 'search_candidates_eliminated': 238, 'depth_reduction_ratio': 1.0, 'wall_time_saved': -0.007544, 'reuse_successes': 1, 'cheap_acquisition': -3640}
+    front 2  F12 + c1       dim 7: {'description_gain_bits': -8824, 'state_dimension_ratio': 1.7142857142857142, 'primitive_calls_eliminated': 340, 'search_nodes_eliminated': 183, 'search_candidates_eliminated': 220, 'depth_reduction_ratio': 1.0, 'wall_time_saved': -0.067816, 'reuse_successes': 1, 'cheap_acquisition': -3640}
+    front 3  F13 + c1       dim 7: {'description_gain_bits': -8824, 'state_dimension_ratio': 1.7142857142857142, 'primitive_calls_eliminated': 340, 'search_nodes_eliminated': 183, 'search_candidates_eliminated': 220, 'depth_reduction_ratio': 1.0, 'wall_time_saved': -0.069191, 'reuse_successes': 1, 'cheap_acquisition': -3640}
+
+selected: existing exact route: merge equal concrete states dim 12
+          workload n=[10, 12]: c1                               377.04s acquire + 0.68s run = 377.72s   (2162 nodes)
+          workload n=[10, 12]: existing exact route: merge equa 0.00s acquire + 9.92s run = 9.92s   (90498 nodes)
+          units disagree: by time existing exact route: merge eq, by nodes c1
+          learned alternative on front 1: c1 dim 4
+          learned alternative on front 2: F12 + c1 dim 7
+          learned alternative on front 3: F13 + c1 dim 7
+          the existing exact route is on the first Pareto front and is cheaper over this task own declared workload once acquisition is counted, so the stated tie-break gives it the task. Nothing learned was needed here.
+
+length  5  enumeration v_max=5 count=32 words=1024
+            representation agrees True, distribution agrees True  (1364 nodes -> 953)
+length  6  enumeration v_max=6 count=64 words=4096
+            representation agrees True, distribution agrees True  (5460 nodes -> 2297)
+length  7  enumeration v_max=7 count=128 words=16384
+            representation agrees True, distribution agrees True  (21844 nodes -> 5065)
+
+length 10  v_max=10 count=1024 words=1048576
+            27385 nodes, 3836 classes, 3.147527s, not enumerated
+length 12  v_max=12 count=4096 words=16777216
+            63113 nodes, 6932 classes, 7.230491s, not enumerated
+
+scope: the answers at the longer lengths were computed by the existing exact route and were NOT enumerated. Merging equal states needs no certificate: it preserves every function of the state by construction.
