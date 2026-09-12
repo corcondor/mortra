@@ -10,7 +10,9 @@ Before touching the representation-acquisition line of work, read in this order:
    proved against what is only finite-checked, the known defects, the withdrawn
    claims, and the literature table (which marks every reference as not yet
    retrieved).
-2. `NEXT.md` — the next development item: building the closure directly from a
+2. `docs/handoff/THEORY.md` — the nine points the representation layer rests
+   on, each marked built, partial or not built, with the nonclaims attached.
+3. `NEXT.md` — the next development item: building the closure directly from a
    task's evaluated quantity instead of enumerating the whole candidate grammar.
    It is not implemented; do not edit it to say otherwise.
 
