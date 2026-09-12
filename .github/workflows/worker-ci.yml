@@ -67,7 +67,7 @@ on:
       verification_suite:
         description: Worker checks, q-directed reproduction, or target-free theory experiments
         type: choice
-        options: [worker, q-directed, theory-formation, persistent-learning, frontier-reconnection]
+        options: [worker, q-directed, theory-formation, persistent-learning, frontier-reconnection, capacity-study]
         default: worker
       target_ref:
         description: Research commit or branch (empty uses the triggering SHA)
@@ -145,7 +145,7 @@ jobs:
           || (github.event_name == 'pull_request' && (github.head_ref == 'codex/theory-formation-20260913' || github.base_ref == 'codex/theory-formation-20260913'))
           || (github.event_name == 'workflow_dispatch' && inputs.verification_suite != 'worker') }}
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ (inputs.verification_suite == 'persistent-learning' || inputs.verification_suite == 'frontier-reconnection') && 120 || 20 }}
+    timeout-minutes: ${{ (inputs.verification_suite == 'persistent-learning' || inputs.verification_suite == 'frontier-reconnection' || inputs.verification_suite == 'capacity-study') && 120 || 20 }}
     concurrency:
       group: mortra-q-directed-${{ github.event_name }}-${{ inputs.target_ref || github.head_ref || github.ref }}
       cancel-in-progress: false
@@ -160,8 +160,9 @@ jobs:
       EXPECTED_SHA: ${{ inputs.expected_sha || (!inputs.target_ref && github.sha) || '' }}
       REPORT_REF: ${{ inputs.target_ref || github.ref }}
       THEORY_MODE: ${{ inputs.verification_suite == 'theory-formation' || inputs.verification_suite == 'persistent-learning' || github.ref == 'refs/heads/codex/theory-formation-20260913' || github.head_ref == 'codex/theory-formation-20260913' || github.base_ref == 'codex/theory-formation-20260913' }}
-      LONG_MODE: ${{ inputs.verification_suite == 'persistent-learning' || inputs.verification_suite == 'frontier-reconnection' }}
+      LONG_MODE: ${{ inputs.verification_suite == 'persistent-learning' || inputs.verification_suite == 'frontier-reconnection' || inputs.verification_suite == 'capacity-study' }}
       FRONTIER_MODE: ${{ inputs.verification_suite == 'frontier-reconnection' }}
+      CAPACITY_MODE: ${{ inputs.verification_suite == 'capacity-study' }}
     steps:
       - name: Set output location
         shell: bash
@@ -234,7 +235,7 @@ jobs:
         shell: bash
         run: python -m unittest discover -s tests -p test_persistent_learning_measurement.py -v 2>&1 | tee "$VERIFY_OUTPUT/measurement-tests.log"
       - name: Measure frozen-baseline persistent learning
-        if: env.LONG_MODE == 'true' && env.FRONTIER_MODE != 'true'
+        if: env.LONG_MODE == 'true' && env.FRONTIER_MODE != 'true' && env.CAPACITY_MODE != 'true'
         shell: bash
         run: |
           export MORTRA_BASELINE_ROOT="$GITHUB_WORKSPACE/target"
@@ -255,6 +256,33 @@ jobs:
             --before "$GITHUB_WORKSPACE/baseline" --after "$GITHUB_WORKSPACE/target" \
             --expected-after "$EXPECTED_SHA" --output "$VERIFY_OUTPUT/frontier-reconnection" \
             2>&1 | tee "$VERIFY_OUTPUT/frontier-reconnection.log"
+      - name: Test capacity measurement and freeze both conditions
+        if: env.CAPACITY_MODE == 'true'
+        working-directory: ci-control
+        shell: bash
+        run: |
+          python -m pytest tests/test_capacity_study.py -q 2>&1 | tee "$VERIFY_OUTPUT/capacity-tests.log"
+          export MORTRA_BASELINE_ROOT="$GITHUB_WORKSPACE/target"
+          python scripts/analyze_capacity_study.py --prepare --output "$VERIFY_OUTPUT/capacity-study"
+      - name: Execute unchanged mathematics at both frozen archive capacities
+        if: env.CAPACITY_MODE == 'true'
+        shell: bash
+        run: |
+          export MORTRA_BASELINE_ROOT="$GITHUB_WORKSPACE/target"
+          for capacity in 128 256; do
+            started=$SECONDS
+            python ci-control/scripts/measure_persistent_learning.py \
+              --plan "ci-control/configs/persistent-learning-capacity-$capacity.json" \
+              --output "$VERIFY_OUTPUT/capacity-study/$capacity" \
+              2>&1 | tee "$VERIFY_OUTPUT/capacity-$capacity.log"
+            printf '{"wall_seconds": %s, "resolution_seconds": 1}\n' "$((SECONDS-started))" > "$VERIFY_OUTPUT/capacity-study/$capacity/wall-clock.json"
+          done
+      - name: Measure concept ancestry and disable additional acquisitions
+        if: env.CAPACITY_MODE == 'true'
+        shell: bash
+        run: |
+          export MORTRA_BASELINE_ROOT="$GITHUB_WORKSPACE/target"
+          python ci-control/scripts/analyze_capacity_study.py --output "$VERIFY_OUTPUT/capacity-study" 2>&1 | tee "$VERIFY_OUTPUT/capacity-analysis.log"
       - name: Publish persistent learning report
         if: always() && env.LONG_MODE == 'true'
         shell: bash
