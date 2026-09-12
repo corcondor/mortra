@@ -1,0 +1,18 @@
+{
+  "baseline_sha": "f9f80e39ca92035bfc37490ad5a072289c9cd80f",
+  "baseline_actions_run": "34718259018",
+  "seed": 20260913,
+  "heldout_seed": 739182,
+  "snapshots": [0, 10, 25, 50, 100, 250, 500, 1000, 2000, 4000, 8000, 12000],
+  "domains": ["theory-ring", "theory-fold-frames", "theory-heldout"],
+  "conditions": ["learn", "no-theorems", "no-representations"],
+  "budget_override": {
+    "cycles": 12000, "seconds": 600, "candidates": 16000,
+    "concepts": 128, "active_concepts": 32, "term_size": 9,
+    "representations": 4
+  },
+  "heldout_contexts": 8,
+  "evaluation_repeats": 3,
+  "causal_replay_limit": 4,
+  "scope_note": "One predeclared training seed; fixed signature, enlarged resource bounds, no solver changes. No claim of seed robustness."
+}

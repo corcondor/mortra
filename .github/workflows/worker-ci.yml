@@ -67,7 +67,7 @@ on:
       verification_suite:
         description: Worker checks, q-directed reproduction, or target-free theory experiments
         type: choice
-        options: [worker, q-directed, theory-formation]
+        options: [worker, q-directed, theory-formation, persistent-learning]
         default: worker
       target_ref:
         description: Research commit or branch (empty uses the triggering SHA)
@@ -145,7 +145,7 @@ jobs:
           || (github.event_name == 'pull_request' && (github.head_ref == 'codex/theory-formation-20260913' || github.base_ref == 'codex/theory-formation-20260913'))
           || (github.event_name == 'workflow_dispatch' && inputs.verification_suite != 'worker') }}
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: ${{ inputs.verification_suite == 'persistent-learning' && 120 || 20 }}
     concurrency:
       group: mortra-q-directed-${{ github.event_name }}-${{ inputs.target_ref || github.head_ref || github.ref }}
       cancel-in-progress: false
@@ -159,7 +159,8 @@ jobs:
       TARGET_REF: ${{ inputs.target_ref || github.sha }}
       EXPECTED_SHA: ${{ inputs.expected_sha || (!inputs.target_ref && github.sha) || '' }}
       REPORT_REF: ${{ inputs.target_ref || github.ref }}
-      THEORY_MODE: ${{ inputs.verification_suite == 'theory-formation' || github.ref == 'refs/heads/codex/theory-formation-20260913' || github.head_ref == 'codex/theory-formation-20260913' || github.base_ref == 'codex/theory-formation-20260913' }}
+      THEORY_MODE: ${{ inputs.verification_suite == 'theory-formation' || inputs.verification_suite == 'persistent-learning' || github.ref == 'refs/heads/codex/theory-formation-20260913' || github.head_ref == 'codex/theory-formation-20260913' || github.base_ref == 'codex/theory-formation-20260913' }}
+      LONG_MODE: ${{ inputs.verification_suite == 'persistent-learning' }}
     steps:
       - name: Set output location
         shell: bash
@@ -210,7 +211,7 @@ jobs:
         shell: bash
         run: python -m unittest discover -s tests -p test_theory_formation.py -v 2>&1 | tee "$VERIFY_OUTPUT/theory-tests.log"
       - name: Run frozen target-free experiments and ablations
-        if: env.THEORY_MODE == 'true'
+        if: env.THEORY_MODE == 'true' && env.LONG_MODE != 'true'
         working-directory: target
         shell: bash
         run: |
@@ -219,6 +220,26 @@ jobs:
             args+=(--config configs/theory-heldout.json)
           fi
           python scripts/verify_theory_formation.py --output "$VERIFY_OUTPUT/theory" "${args[@]}" 2>&1 | tee "$VERIFY_OUTPUT/theory-run.log"
+      - name: Test longitudinal measurement isolation
+        if: env.LONG_MODE == 'true'
+        working-directory: ci-control
+        shell: bash
+        run: python -m unittest discover -s tests -p test_persistent_learning_measurement.py -v 2>&1 | tee "$VERIFY_OUTPUT/measurement-tests.log"
+      - name: Measure frozen-baseline persistent learning
+        if: env.LONG_MODE == 'true'
+        shell: bash
+        run: |
+          export MORTRA_BASELINE_ROOT="$GITHUB_WORKSPACE/target"
+          python ci-control/scripts/measure_persistent_learning.py \
+            --plan ci-control/configs/persistent-learning.json \
+            --output "$VERIFY_OUTPUT/persistent-learning" 2>&1 | tee "$VERIFY_OUTPUT/persistent-learning.log"
+      - name: Publish persistent learning report
+        if: always() && env.LONG_MODE == 'true'
+        shell: bash
+        run: |
+          if [ -f "$VERIFY_OUTPUT/persistent-learning/report.md" ]; then
+            cat "$VERIFY_OUTPUT/persistent-learning/report.md" >> "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Publish machine-readable summary
         if: always()
         shell: bash
