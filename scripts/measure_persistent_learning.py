@@ -120,13 +120,21 @@ def evaluate(state, suite, oracle, *, disabled=(), repeats=1):
             start = time.perf_counter()
             e = evaluation_copy(state, disabled)
             e.conjecture(task["left"], task["right"], kind=task["kind"])
-            qid = next(iter(e.state["conjectures"]))
-            e.state["conjectures"][qid]["provenance"] = "external_evaluation"
+            qid = next(iter(e.state["conjectures"]), None)
+            if qid is not None:
+                e.state["conjectures"][qid]["provenance"] = "external_evaluation"
             setup = time.perf_counter()-start
             start = time.perf_counter()
-            e.settle(qid)
+            if qid is not None:
+                e.settle(qid)
+                q = e.state["conjectures"][qid]
+            else:
+                # The baseline deliberately does not pose syntactically x=x.
+                # Do not add a fallback solver or count this as unsolved math.
+                assert task["left"] == task["right"]
+                q = {"status": "not_queued_reflexive", "attempts": [],
+                     "certificate": {"reason": "existing conjecture method omits identical expressions"}}
             elapsed = time.perf_counter()-start
-            q = e.state["conjectures"][qid]
             status = "proved" if q["status"] == "proved_redundant" else q["status"]
             if status in {"proved", "disproved"} and status != oracle[task["id"]]["status"]:
                 raise AssertionError("held-out answer disagrees with independent exact check")
@@ -148,14 +156,15 @@ def evaluate(state, suite, oracle, *, disabled=(), repeats=1):
                      "exact_training_query_seen": any(q.get("left") == task["left"] and q.get("right") == task["right"] for q in state["conjectures"].values()),
                      "reuse_scope": "same-domain new expression, not a new domain or theory"})
     assert original == digest(state), "held-out evaluation mutated the learning state"
+    eligible = [r for r in rows if r["status"] != "not_queued_reflexive"]
     return {"rows": rows, "summary": {
         "solved_count": sum(r["status"] in {"proved", "disproved"} for r in rows),
         "proved_count": sum(r["status"] == "proved" for r in rows),
         "refuted_count": sum(r["status"] == "disproved" for r in rows),
-        "median_search_nodes": median([r["search_nodes"] for r in rows]),
-        "median_proof_cost": median([r["prover_input_ast_nodes"] for r in rows]),
-        "median_prover_calls": median([r["prover_calls"] for r in rows]),
-        "median_runtime": median([r["runtime"] for r in rows]),
+        "median_search_nodes": median([r["search_nodes"] for r in eligible]),
+        "median_proof_cost": median([r["prover_input_ast_nodes"] for r in eligible]),
+        "median_prover_calls": median([r["prover_calls"] for r in eligible]),
+        "median_runtime": median([r["runtime"] for r in eligible]),
         "total_prover_calls": sum(r["prover_calls"] for r in rows),
         "total_prover_input_ast_nodes": sum(r["prover_input_ast_nodes"] for r in rows),
         "cross_task_reuse_count": sum(bool(r["dependencies"]) for r in rows),
@@ -164,7 +173,10 @@ def evaluate(state, suite, oracle, *, disabled=(), repeats=1):
         "search_node_unit": "rule candidates inspected by existing rewrite; NOT prover-tree nodes",
         "proof_cost_unit": "AST nodes sent to existing exact prover; NOT CPU instructions",
         "representation_note": "Theory.settle has no stored-space routing; no new route supplied by harness",
-        "heldout_count": len(rows), "snapshot_unchanged": True}}
+        "heldout_count": len(rows), "eligible_heldout_count": len(eligible),
+        "not_queued_reflexive_count": len(rows)-len(eligible),
+        "median_population": "fixed questions actually queued; identical-expression omissions reported separately",
+        "snapshot_unchanged": True}}
 
 
 def metrics(state):
@@ -202,7 +214,12 @@ def metrics(state):
         "representation_reuse_count": sum(r["reuse_count"] for r in reps.values()),
         "procedure_reuse_count": sum(p["reuse_count"] for p in state["procedures"].values()),
         "archive_concepts": len(concepts), "active_concepts": len(state["active_concepts"]),
-        "archived_rules": len(state["rewrite_rules"]), "active_rules": len(state["active_rules"]),
+        "archived_rules": len(state["rewrite_rules"]),
+        "active_rules": len(state["rewrite_rules"]) if state["flags"]["theorem_reuse"] else 0,
+        "recorded_active_rule_ids": len(state["active_rules"]),
+        "active_rule_note": "effective matching reads rules(), not the potentially stale active_rules bookkeeping field",
+        "archived_unexpanded_concepts": sum(cid not in state["expanded"] for cid in concepts),
+        "inactive_unexpanded_concepts": sum(cid not in state["expanded"] and cid not in state["active_concepts"] for cid in concepts),
         "generator_distribution": dict(Counter(v for c in acquired for v in operators(c["definition"]))),
         "recent_query_constructor_distribution": dict(Counter(q["left"]["op"] for q in recent)),
         "representation_family_distribution": dict(families),

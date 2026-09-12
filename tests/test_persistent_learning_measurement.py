@@ -62,6 +62,22 @@ class MeasurementTests(unittest.TestCase):
         with self.assertRaises(AssertionError):
             evaluate(state, suite, {suite[0]["id"]: {"status": "disproved"}})
 
+    def test_reflexive_questions_are_baseline_omissions_not_solver_failures(self):
+        state = Theory(CONFIG).snapshot()
+        x = term("var", name="u")
+        suite = [{"id": "same", "family": "debug", "left": x, "right": x, "kind": "equality"}]
+        result = evaluate(state, suite, {"same": {"status": "proved"}})
+        self.assertEqual(result["rows"][0]["status"], "not_queued_reflexive")
+        self.assertEqual(result["summary"]["eligible_heldout_count"], 0)
+        self.assertEqual(result["summary"]["not_queued_reflexive_count"], 1)
+        self.assertIsNone(result["summary"]["median_runtime"])
+
+    def test_effective_rules_not_stale_bookkeeping_are_counted(self):
+        state = Theory(CONFIG).snapshot()
+        state["active_rules"] = ["stale"]
+        self.assertEqual(metrics(state)["active_rules"], 0)
+        self.assertEqual(metrics(state)["recorded_active_rule_ids"], 1)
+
     def test_archive_counts_are_not_capability_scores(self):
         row = metrics(Theory(CONFIG).snapshot())
         self.assertEqual(row["new_semantic_representations"], 0)

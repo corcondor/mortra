@@ -67,6 +67,12 @@ The same mathematical structure may already be known: syntactic novelty is
 not a claim of world novelty, unseen theorem families or difficult mathematics.
 Exact repeated training-query overlap is recorded explicitly.
 
+Questions with syntactically identical sides are deliberately omitted by the
+baseline's existing conjecture registration. They remain in the frozen suite,
+with status `not_queued_reflexive`. They are not silently solved by the harness,
+nor called unsolved mathematics. Counts and medians use the actually queued
+population, with the raw suite size and omission count reported separately.
+
 Every normal-learning checkpoint evaluates the same 64 questions. For the two
 full-run ablations, evaluate initial and final states; intermediate snapshots
 retain all knowledge and training metrics. Three answer timing repetitions per
@@ -142,6 +148,25 @@ environment versions, snapshots, trajectories (JSON/CSV), exact outcomes,
 events, dependencies, ablations, regression checks, report and verification.json.
 Infrastructure success and capability improvement are separate. More archive
 entries or passing tests alone never establish the latter.
+
+## Measurement correction, separate run
+
+[Run 34720100877](https://github.com/corcondor/mortra/actions/runs/34720100877)
+at control SHA `279821f1c4cbaa08b54408e9ef97ad4544b2874e` failed in the
+evaluator: it assumed every submitted pair created a conjecture. For identical
+sides the baseline creates none, causing StopIteration at the initial finite
+table evaluation. Six other domain/condition runs finished, but this failed
+experiment is not the completed primary experiment. Its
+[artifact](https://github.com/corcondor/mortra/actions/runs/34720100877/artifacts/10306094180)
+is retained unchanged.
+
+The correction handles the existing omission as described above. It does not
+change questions, seeds, budgets or mathematical code. The rerun starts every
+archive empty, under a new control SHA and Actions run ID. Two guard tests were
+added. Measurement of effective active rules now reads the behavior of `rules()`;
+the historical `active_rules` bookkeeping field can be stale and is recorded
+separately. Inactive unexpanded concepts are counted for stop diagnosis. These
+are evaluator-only corrections, not learner improvements.
 
 ## Interpretation and references
 
