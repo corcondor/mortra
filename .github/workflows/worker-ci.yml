@@ -67,7 +67,7 @@ on:
       verification_suite:
         description: Worker checks, q-directed reproduction, or target-free theory experiments
         type: choice
-        options: [worker, q-directed, theory-formation, persistent-learning]
+        options: [worker, q-directed, theory-formation, persistent-learning, frontier-reconnection]
         default: worker
       target_ref:
         description: Research commit or branch (empty uses the triggering SHA)
@@ -145,7 +145,7 @@ jobs:
           || (github.event_name == 'pull_request' && (github.head_ref == 'codex/theory-formation-20260913' || github.base_ref == 'codex/theory-formation-20260913'))
           || (github.event_name == 'workflow_dispatch' && inputs.verification_suite != 'worker') }}
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ inputs.verification_suite == 'persistent-learning' && 120 || 20 }}
+    timeout-minutes: ${{ (inputs.verification_suite == 'persistent-learning' || inputs.verification_suite == 'frontier-reconnection') && 120 || 20 }}
     concurrency:
       group: mortra-q-directed-${{ github.event_name }}-${{ inputs.target_ref || github.head_ref || github.ref }}
       cancel-in-progress: false
@@ -160,7 +160,8 @@ jobs:
       EXPECTED_SHA: ${{ inputs.expected_sha || (!inputs.target_ref && github.sha) || '' }}
       REPORT_REF: ${{ inputs.target_ref || github.ref }}
       THEORY_MODE: ${{ inputs.verification_suite == 'theory-formation' || inputs.verification_suite == 'persistent-learning' || github.ref == 'refs/heads/codex/theory-formation-20260913' || github.head_ref == 'codex/theory-formation-20260913' || github.base_ref == 'codex/theory-formation-20260913' }}
-      LONG_MODE: ${{ inputs.verification_suite == 'persistent-learning' }}
+      LONG_MODE: ${{ inputs.verification_suite == 'persistent-learning' || inputs.verification_suite == 'frontier-reconnection' }}
+      FRONTIER_MODE: ${{ inputs.verification_suite == 'frontier-reconnection' }}
     steps:
       - name: Set output location
         shell: bash
@@ -184,6 +185,13 @@ jobs:
           cache-dependency-path: |
             ci-control/requirements.txt
             ci-control/requirements-test.txt
+      - name: Check out the original mathematical baseline for paired comparison
+        if: env.FRONTIER_MODE == 'true'
+        uses: actions/checkout@v4
+        with:
+          ref: f9f80e39ca92035bfc37490ad5a072289c9cd80f
+          path: baseline
+          persist-credentials: false
       - name: Freeze exact target, commands, and initial verification record
         shell: bash
         run: |
@@ -226,13 +234,27 @@ jobs:
         shell: bash
         run: python -m unittest discover -s tests -p test_persistent_learning_measurement.py -v 2>&1 | tee "$VERIFY_OUTPUT/measurement-tests.log"
       - name: Measure frozen-baseline persistent learning
-        if: env.LONG_MODE == 'true'
+        if: env.LONG_MODE == 'true' && env.FRONTIER_MODE != 'true'
         shell: bash
         run: |
           export MORTRA_BASELINE_ROOT="$GITHUB_WORKSPACE/target"
           python ci-control/scripts/measure_persistent_learning.py \
             --plan ci-control/configs/persistent-learning.json \
             --output "$VERIFY_OUTPUT/persistent-learning" 2>&1 | tee "$VERIFY_OUTPUT/persistent-learning.log"
+      - name: Test frontier and resource-bound measurement guards
+        if: env.FRONTIER_MODE == 'true'
+        working-directory: ci-control
+        shell: bash
+        run: |
+          python -m pytest tests/test_frontier_reconnection.py tests/test_persistent_learning_state_audit.py -q 2>&1 | tee "$VERIFY_OUTPUT/frontier-tests.log"
+      - name: Run the frozen before-after frontier experiment
+        if: env.FRONTIER_MODE == 'true'
+        shell: bash
+        run: |
+          python ci-control/scripts/measure_frontier_reconnection.py \
+            --before "$GITHUB_WORKSPACE/baseline" --after "$GITHUB_WORKSPACE/target" \
+            --expected-after "$EXPECTED_SHA" --output "$VERIFY_OUTPUT/frontier-reconnection" \
+            2>&1 | tee "$VERIFY_OUTPUT/frontier-reconnection.log"
       - name: Publish persistent learning report
         if: always() && env.LONG_MODE == 'true'
         shell: bash

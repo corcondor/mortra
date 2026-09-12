@@ -19,12 +19,14 @@ import subprocess
 import sys
 import time
 import traceback
+from unittest.mock import patch
 
 CONTROL = Path(__file__).resolve().parents[1]
 # Set before imports: every mathematical function below comes from the baseline.
 ROOT = Path(os.environ.get("MORTRA_BASELINE_ROOT", CONTROL)).resolve()
 sys.path.insert(0, str(ROOT))
 from math_os_prototype.theory_formation import Theory
+from math_os_prototype import theory_formation as theory_module
 from math_os_prototype.theory_domain import Domain, term, size
 from math_os_prototype.representation_progress import digest
 from scripts.run_theory_formation import source_seal, write
@@ -111,7 +113,13 @@ def evaluation_copy(state, disabled=()):
     return e
 
 
-def evaluate(state, suite, oracle, *, disabled=(), repeats=1):
+class ProofInputBudgetExceeded(RuntimeError):
+    def __init__(self, requested, limit):
+        self.requested, self.limit = requested, limit
+        super().__init__(f"prover input requires {requested} AST nodes; limit {limit}")
+
+
+def evaluate(state, suite, oracle, *, disabled=(), repeats=1, proof_node_budget=None):
     original = digest(state)
     rows = []
     for task in suite:
@@ -119,14 +127,40 @@ def evaluate(state, suite, oracle, *, disabled=(), repeats=1):
         for _ in range(repeats):
             start = time.perf_counter()
             e = evaluation_copy(state, disabled)
+            if proof_node_budget is not None:
+                if type(proof_node_budget) is not int or proof_node_budget < 1:
+                    raise ValueError("positive prover input budget required")
+                original_settle = e.domain.settle
+                def limited_settle(left, right, kind="equality"):
+                    requested = size(left)+size(right)
+                    if requested > proof_node_budget:
+                        raise ProofInputBudgetExceeded(requested, proof_node_budget)
+                    return original_settle(left, right, kind)
+                e.domain.settle = limited_settle
             e.conjecture(task["left"], task["right"], kind=task["kind"])
             qid = next(iter(e.state["conjectures"]), None)
             if qid is not None:
                 e.state["conjectures"][qid]["provenance"] = "external_evaluation"
             setup = time.perf_counter()-start
+            matching_seconds = 0.0
+            original_rewrite = theory_module.rewrite
+            def measured_rewrite(*args, **kwargs):
+                nonlocal matching_seconds
+                began = time.perf_counter()
+                try:
+                    return original_rewrite(*args, **kwargs)
+                finally:
+                    matching_seconds += time.perf_counter()-began
             start = time.perf_counter()
             if qid is not None:
-                e.settle(qid)
+                try:
+                    # Instrument only this discarded evaluation, not the learner.
+                    with patch.object(theory_module, "rewrite", measured_rewrite):
+                        e.settle(qid)
+                except ProofInputBudgetExceeded as exc:
+                    e.state["conjectures"][qid].update(status="budget_exceeded", certificate={
+                        "reason": str(exc), "requested_prover_input_nodes": exc.requested,
+                        "proof_node_budget": exc.limit, "proof_was_executed": False})
                 q = e.state["conjectures"][qid]
             else:
                 # The baseline deliberately does not pose syntactically x=x.
@@ -146,7 +180,10 @@ def evaluate(state, suite, oracle, *, disabled=(), repeats=1):
                             "prover_calls": costs.get("certification", {}).get("proof_calls", 0),
                             "prover_input_ast_nodes": costs.get("certification", {}).get("semantic_nodes", 0),
                             "search_nodes": costs.get("rewrite", {}).get("rule_matches_checked", 0),
-                            "dependencies": deps, "certificate": q["certificate"]})
+                            "matching_seconds": matching_seconds,
+                            "certification_seconds": costs.get("certification", {}).get("seconds", 0),
+                            "dependencies": deps, "certificate": q["certificate"],
+                            "dependency_note": "not recorded before the blocked prover call" if status == "budget_exceeded" else "recorded by existing solver"})
         base = samples[0]
         if any((s["status"], s["dependencies"], s["prover_calls"], s["search_nodes"]) !=
                (base["status"], base["dependencies"], base["prover_calls"], base["search_nodes"]) for s in samples):
@@ -167,12 +204,18 @@ def evaluate(state, suite, oracle, *, disabled=(), repeats=1):
         "median_runtime": median([r["runtime"] for r in eligible]),
         "total_prover_calls": sum(r["prover_calls"] for r in rows),
         "total_prover_input_ast_nodes": sum(r["prover_input_ast_nodes"] for r in rows),
+        "total_rule_inspections": sum(r["search_nodes"] for r in rows),
+        "median_matching_seconds": median([median([s["matching_seconds"] for s in r["samples"]]) for r in eligible]),
+        "median_certification_seconds": median([median([s["certification_seconds"] for s in r["samples"]]) for r in eligible]),
         "cross_task_reuse_count": sum(bool(r["dependencies"]) for r in rows),
         "procedure_reuse_count": sum(len(r["dependencies"]) for r in rows),
         "representation_reuse_count": 0,
         "search_node_unit": "rule candidates inspected by existing rewrite; NOT prover-tree nodes",
         "proof_cost_unit": "AST nodes sent to existing exact prover; NOT CPU instructions",
         "representation_note": "Theory.settle has no stored-space routing; no new route supplied by harness",
+        "budget_exceeded_count": sum(r["status"] == "budget_exceeded" for r in rows),
+        "proof_node_budget": proof_node_budget,
+        "budget_note": "per-call prover-input AST bound, enforced before exact proof; not a total runtime bound",
         "heldout_count": len(rows), "eligible_heldout_count": len(eligible),
         "not_queued_reflexive_count": len(rows)-len(eligible),
         "median_population": "fixed questions actually queued; identical-expression omissions reported separately",
@@ -276,8 +319,8 @@ def final_comparison(first, last):
     return {
         "newly_solved_heldout_tasks": [k for k in a if not solved(a[k]) and solved(b[k])],
         "lost_heldout_tasks": [k for k in a if solved(a[k]) and not solved(b[k])],
-        "tasks_with_fewer_prover_calls": [k for k in a if b[k]["prover_calls"] < a[k]["prover_calls"]],
-        "tasks_with_lower_prover_input": [k for k in a if b[k]["prover_input_ast_nodes"] < a[k]["prover_input_ast_nodes"]],
+        "tasks_with_fewer_prover_calls": [k for k in a if solved(a[k]) and solved(b[k]) and b[k]["prover_calls"] < a[k]["prover_calls"]],
+        "tasks_with_lower_prover_input": [k for k in a if solved(a[k]) and solved(b[k]) and b[k]["prover_input_ast_nodes"] < a[k]["prover_input_ast_nodes"]],
         "tasks_with_more_rule_search": [k for k in a if b[k]["search_nodes"] > a[k]["search_nodes"]],
         "initial": first["summary"], "final": last["summary"]}
 
@@ -367,7 +410,8 @@ def main():
                                process_and_snapshot_seconds=time.perf_counter()-start)
                     stopped = state["cycle"] < checkpoint
                     if condition == "learn" or checkpoint == 0 or checkpoint == plan["snapshots"][-1] or stopped:
-                        final_eval = evaluate(state, suites[name], oracles[name], repeats=plan["evaluation_repeats"])
+                        final_eval = evaluate(state, suites[name], oracles[name], repeats=plan["evaluation_repeats"],
+                                              proof_node_budget=plan.get("proof_node_budget"))
                         if initial_eval is None: initial_eval = final_eval
                         write(output/"heldout.json", final_eval)
                         row["heldout"] = final_eval["summary"]
@@ -396,14 +440,16 @@ def main():
                 ablations = {}
                 if condition == "learn":
                     all_rules = {r["theorem"] for r in state["rewrite_rules"]}
-                    off = evaluate(state, suites[name], oracles[name], disabled=all_rules, repeats=plan["evaluation_repeats"])
+                    off = evaluate(state, suites[name], oracles[name], disabled=all_rules, repeats=plan["evaluation_repeats"],
+                                   proof_node_budget=plan.get("proof_node_budget"))
                     write(directory/"no-active-rules-heldout.json", off)
                     ablations["all_rules_disabled"] = final_comparison(off, final_eval)
                     used = {t for r in final_eval["rows"] for t in r["dependencies"]}
                     if used:
                         root = min(used, key=lambda t: (state["theorems"][t]["born"], t))
                         for label, disabled in [("single", {root}), ("with-descendants", descendants(state, root))]:
-                            removed = evaluate(state, suites[name], oracles[name], disabled=disabled, repeats=plan["evaluation_repeats"])
+                            removed = evaluate(state, suites[name], oracles[name], disabled=disabled, repeats=plan["evaluation_repeats"],
+                                               proof_node_budget=plan.get("proof_node_budget"))
                             write(directory/(label+"-heldout.json"), removed)
                             ablations[label] = {"root": root, "disabled": sorted(disabled), **final_comparison(removed, final_eval)}
                     write(directory/"closure-causal-replays.json", causal_replays(state, plan["causal_replay_limit"]))

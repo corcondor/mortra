@@ -195,6 +195,7 @@ class Theory:
             if parent is None:
                 return
             s["expanded"].append(parent["id"])
+            self.event("concept_expanded", concept=parent["id"])
             others = [s["concepts"][cid]["definition"] for cid in s["active_concepts"]]
             for t in self.domain.compose(parent["definition"], others):
                 if size(t) <= self.budget["term_size"] and digest(t) not in s["seen"]:
@@ -432,6 +433,11 @@ class Theory:
 
     def actions(self):
         s = self.state
+        if not s["pending_terms"] and not any(cid not in s["expanded"] for cid in s["active_concepts"]):
+            previous = list(s["active_concepts"])
+            self.refresh_active()
+            if previous != s["active_concepts"]:
+                self.event("active_frontier_refreshed", previous=previous, active=list(s["active_concepts"]))
         options = []
         def offer(kind, payload, cost, novelty, uncertainty):
             options.append({"kind": kind, "payload": payload, "estimated_operations": cost,
