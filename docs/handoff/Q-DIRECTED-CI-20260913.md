@@ -144,3 +144,11 @@ python scripts/verify_q_directed_ci.py --execute --repo . --output ../q-ci-fresh
 
 Use a clean committed target and a new output directory. No merge into release,
 master or main is part of this change.
+
+## Failed CI attempts
+
+Run [34711748754](https://github.com/corcondor/mortra/actions/runs/34711748754)
+at `cb92c53653205255bcaae9f7c4a1c52b48ebc0ab` was rejected before any job ran:
+`runner.temp` is unavailable in job-level `env`. No tests ran and no artifact
+was produced. The correction sets the output location inside a shell step using
+`RUNNER_TEMP`. Subsequent runs do not reclassify this failure.

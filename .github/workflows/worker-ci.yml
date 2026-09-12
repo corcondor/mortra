@@ -147,8 +147,10 @@ jobs:
       TARGET_REF: ${{ inputs.target_ref || github.sha }}
       EXPECTED_SHA: ${{ inputs.expected_sha || (!inputs.target_ref && github.sha) || '' }}
       REPORT_REF: ${{ inputs.target_ref || github.ref }}
-      VERIFY_OUTPUT: ${{ runner.temp }}/q-directed-verification
     steps:
+      - name: Set output location
+        shell: bash
+        run: echo "VERIFY_OUTPUT=$RUNNER_TEMP/q-directed-verification" >> "$GITHUB_ENV"
       - name: Check out the verification harness at the workflow SHA
         uses: actions/checkout@v4
         with:
